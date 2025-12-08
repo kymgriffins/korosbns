@@ -1,19 +1,17 @@
 "use client";
 
-import React from 'react';
-import Image from 'next/image';
-import { integrations } from '@/constants/integrations';
-import Wrapper from '@/components/global/wrapper';
-import SectionBadge from '@/components/ui/section-badge';
-import { motion } from 'motion/react';
-import Link from 'next/link';
-import { cn } from '@/utils';
-import { Button } from "../ui/button";
 import Icons from '@/components/global/icons';
+import Wrapper from '@/components/global/wrapper';
 import { Routes } from "@/constants";
-import Container from "../global/container";
-import { Particles } from "../ui/particles";
 import { useIsMobile } from "@/hooks";
+import { cn } from '@/utils';
+import { motion } from 'motion/react';
+import Image from 'next/image';
+import Link from 'next/link';
+import React from 'react';
+import Container from "@/components/global/container";
+import { Button } from "@/components/ui/button";
+import { Particles } from "@/components/ui/particles";
 
 const logoMap: Record<string, string> = {
     Layers: '/icons/integrations/layers.svg',
@@ -67,8 +65,8 @@ const Integrations = () => {
 
     return (
         <section id="integrations" className="w-full py-16 lg:py-24 relative z-0">
-            <div className="absolute -z-10 top-0 -right-1/4 inset-1/12 bg-primary/5 rounded-full blur-[8rem]" />
-            <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-52 lg:size-80 bg-primary/10 rounded-full blur-[8rem]" />
+            <div className="hidden lg:block absolute -z-10 top-0 -right-1/4 inset-1/12 bg-primary/5 rounded-full blur-[8rem]" />
+            <div className="hidden lg:block absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-52 lg:size-80 bg-primary/10 rounded-full blur-[8rem]" />
 
             <Particles
                 quantity={100}
@@ -83,7 +81,7 @@ const Integrations = () => {
                 <div className="aspect-16/10 group relative mx-auto flex max-w-80 items-center justify-between sm:max-w-xs lg:max-w-md">
                     <div
                         role="presentation"
-                        className="bg-linear-to-b border-foreground/5 absolute inset-0 z-10 aspect-square animate-spin items-center justify-center rounded-full border-t from-primary/15 to-transparent to-25% opacity-0 duration-[3.5s] group-hover:opacity-100"
+                        className="bg-linear-to-b border-foreground/5 absolute inset-0 z-10 aspect-square animate-spin hidden lg:block items-center justify-center rounded-full border-t from-primary/15 to-transparent to-25% opacity-0 duration-[3.5s] group-hover:opacity-100"
                     />
 
                     <div

@@ -35,7 +35,7 @@ const Membership = () => {
     return (
         <section id="membership" className="w-full py-16 lg:py-24 relative">
 
-            <div className="absolute -z-10 top-0 -left-1/4 size-1/3 bg-primary/10 rounded-full blur-[8rem]" />
+            <div className="hidden lg:block absolute -z-10 top-0 -left-1/4 size-1/3 bg-primary/10 rounded-full blur-[8rem]" />
 
             <Wrapper>
                 <div className="flex flex-col items-center text-center">
