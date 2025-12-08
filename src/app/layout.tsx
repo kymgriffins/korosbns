@@ -23,7 +23,7 @@ export default function RootLayout({
                 )}
             >
                 <Providers>
-                    {/* <LoadingScreen /> */}
+                    <LoadingScreen />
                     <FlareCursor />
                     {children}
                 </Providers>
