@@ -85,7 +85,7 @@ const Integrations = () => {
             />
 
             <Wrapper>
-                <div className="aspect-16/10 group relative mx-auto flex max-w-80 items-center justify-between sm:max-w-xs lg:max-w-md">
+                <div className="aspect-square group relative mx-auto flex max-w-80 items-center justify-between sm:max-w-xs lg:max-w-md uppercase">
                     <div
                         role="presentation"
                         className="bg-linear-to-b border-foreground/5 absolute inset-0 z-10 aspect-square animate-spin hidden lg:block items-center justify-center rounded-full border-t from-primary/15 to-transparent to-25% opacity-0 duration-[3.5s] group-hover:opacity-100"
@@ -129,11 +129,6 @@ const Integrations = () => {
                         className="bg-linear-to-b from-foreground/10 absolute inset-16 flex aspect-square scale-90 items-center justify-center rounded-full border-t border-foreground/5 to-transparent to-25% z-30"
                     >
                         <IntegrationCard
-                            className="absolute top-0 -translate-y-1/2"
-                            iconSrc={logoMap.WhatsApp.icon}
-                            href={logoMap.WhatsApp.href}
-                        />
-                        <IntegrationCard
                             className="absolute left-0 top-1/4 -translate-x-1/4 -translate-y-1/4"
                             iconSrc={logoMap.LinkedIn.icon}
                             href={logoMap.LinkedIn.href}
@@ -145,15 +140,19 @@ const Integrations = () => {
                         />
                     </motion.div>
 
-                        <div className="bg-transparent relative z-20 mx-auto my-2 flex justify-center w-fit">
-                            <Image
-                                src="/logo.svg"
-                                alt="Budget Ndio Story"
-                                width={120}
-                                height={60}
-                                className="w-auto h-12"
-                            />
+                    <Container animation="blurIn" delay={0.5} className="absolute inset-x-0 bottom-0 lg:bottom-1/10 mx-auto my-2 flex justify-center gap-2 w-fit scale-90 lg:scale-100">
+                        <div className="relative flex size-16 rounded-full border border-foreground/10 bg-background/50 backdrop-blur-md">
+                            <div className="m-auto">
+                                <Image
+                                    src="/logo.svg"
+                                    alt="Budget Ndio Story"
+                                    width={100}
+                                    height={50}
+                                    className="w-auto h-6"
+                                />
+                            </div>
                         </div>
+                    </Container>
                 </div>
 
                 <div className="relative z-20 mx-auto -mt-4 max-w-lg space-y-6 text-center">

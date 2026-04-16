@@ -2,8 +2,16 @@ import { Routes } from "./routes";
 
 export const NAV_LINKS = [
     {
-        label: "",
-        href: "/",
+        label: "Stories",
+        href: "#workflow",
+    },
+    {
+        label: "Impact",
+        href: "#integrations",
+    },
+    {
+        label: "Leadership",
+        href: "#voices",
     },
 ] as const;
 

@@ -109,7 +109,7 @@ const Cta = () => {
                                 whileHover={{ scale: 1.05 }}
                                 className="mt-6"
                             >
-                                <Link href={Routes.Dashboard}>
+                                <Link href="#integrations">
                                     <Button size="lg" className="text-base">
                                         Join us
                                     </Button>
