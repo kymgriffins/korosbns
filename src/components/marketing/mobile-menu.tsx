@@ -65,7 +65,7 @@ const MobileMenu = ({ isOpen, setIsOpen }: Props) => {
                                 className="w-full"
                                 onClick={() => setIsOpen(false)}
                             >
-                                Start for free
+                                Join us
                             </Button>
                         </Link>
                     </motion.div>

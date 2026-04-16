@@ -2,51 +2,33 @@ import { Routes } from "./routes";
 
 export const NAV_LINKS = [
     {
-        label: "Difference",
-        href: Routes.Difference,
-    },
-    {
-        label: "Workflow",
-        href: Routes.Workflow,
-    },
-    {
-        label: "Capabilities",
-        href: Routes.Capabilities,
-    },
-    {
-        label: "Integrations",
-        href: Routes.Integrations,
-    },
-    {
-        label: "Membership",
-        href: Routes.Membership,
+        label: "",
+        href: "/",
     },
 ] as const;
 
 export const footerLinks = {
     product: [
-        { label: "Features", href: "#capabilities" },
-        { label: "Integrations", href: "#integrations" },
-        { label: "Pricing", href: "#membership" },
-        { label: "Changelog", href: "#" }
+        { label: "Stories", href: "#" },
+        { label: "Explainers", href: "#capabilities" },
+        { label: "Impact", href: "#difference" },
+        { label: "Get Involved", href: "#membership" }
     ],
     resources: [
-        { label: "Docs", href: "#" },
-        { label: "API", href: "#" },
-        { label: "Support", href: "#" },
-        { label: "Status", href: "#" }
+        { label: "Budget Guides", href: "#" },
+        { label: "Reports", href: "#" },
+        { label: "Newsletter", href: "#" },
+        { label: "Contact", href: "#" }
     ],
     company: [
-        { label: "About", href: "#" },
-        { label: "Blog", href: "#" },
-        { label: "Careers", href: "#" },
-        { label: "Contact", href: "#" }
+        { label: "About BNS", href: "#" },
+        { label: "Team", href: "#" },
+        { label: "Media", href: "#" },
+        { label: "Partners", href: "#" }
     ]
 };
 
 export const socialLinks = [
-    { label: "X", href: "https://x.com", icon: "x" },
-    { label: "GitHub", href: "https://github.com", icon: "github" },
-    { label: "LinkedIn", href: "https://linkedin.com", icon: "linkedin" },
-    { label: "Dribbble", href: "https://dribbble.com", icon: "dribbble" }
+    { label: "X", href: "https://x.com/budgetndiostory", icon: "x" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/company/budgetndiostory", icon: "linkedin" }
 ];

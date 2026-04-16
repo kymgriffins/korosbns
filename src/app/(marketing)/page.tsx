@@ -14,12 +14,12 @@ const HomePage = () => {
         <div className="w-full min-h-dvh pt-18">
             <Background />
             <Hero />
-            <Socials />
-            <Difference />
+            {/* <Socials /> */}
+            {/* <Difference /> */}
             <Workflow />
             <Capibilities />
             <Integrations />
-            <Membership />
+            {/* <Membership /> */}
             <WallOfLove />
             <Cta />
         </div>

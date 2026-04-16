@@ -10,7 +10,6 @@ import Dashboard from './dashboard';
 import { motion, useMotionValue } from 'motion/react';
 import { cn } from '@/utils';
 import Balancer from 'react-wrap-balancer';
-import Image from 'next/image';
 import Container from "../global/container";
 
 const badges = [
@@ -61,8 +60,8 @@ const FloatingBadge = ({ text, top, left, right, index }: { text: string; top: s
 
 const Hero = () => {
 
-    const badge = "Meet the Avento OS";
-    const description = "Stop patching together Notion, Slack, and Excel. Avento creates a single source of truth for your projects, clients, and cash flow";
+    const badge = "Budget Ndio Story";
+    const description = "We turn national and county budgets into simple stories, visuals, and action steps for young Kenyans.";
 
     return (
         <section className="relative w-full flex items-center justify-center pt-16 lg:pt-32 pb-4 overflow-hidden">
@@ -94,7 +93,7 @@ const Hero = () => {
 
                     <h1 className="text-4xl md:text-6xl font-semibold tracking-tight font-heading mt-8">
                         <Balancer>
-                            {"The OS for High".split(" ").map((word, index) => (
+                            {"Turning budget data".split(" ").map((word, index) => (
                                 <motion.span
                                     initial={{ filter: "blur(10px)", opacity: 0, y: 10 }}
                                     animate={{ filter: "blur(0px)", opacity: 1, y: 0 }}
@@ -106,14 +105,14 @@ const Hero = () => {
                                 </motion.span>
                             ))}
                             <br />
-                            {"Performance Agencies".split(" ").map((word, index) => (
+                            {"into stories for youth".split(" ").map((word, index) => (
                                 <motion.span
                                     initial={{ filter: "blur(10px)", opacity: 0, y: 10 }}
                                     animate={{ filter: "blur(0px)", opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.4, delay: (4 + index) * 0.05 }}
+                                    transition={{ duration: 0.4, delay: (3 + index) * 0.05 }}
                                     className={cn(
                                         "inline-block",
-                                        word === "Performance" && "bg-linear-to-r from-primary via-blue-500 to-primary bg-size-[200%_100%] animate-[shimmer_3s_ease-in-out_infinite] text-transparent bg-clip-text"
+                                        word === "stories" && "bg-linear-to-r from-primary via-blue-500 to-primary bg-size-[200%_100%] animate-[shimmer_3s_ease-in-out_infinite] text-transparent bg-clip-text"
                                     )}
                                     key={index}
                                 >
@@ -147,12 +146,12 @@ const Hero = () => {
                     >
                         <Link href={Routes.Dashboard}>
                             <Button size="lg">
-                                Start for free
+                                Explore stories
                             </Button>
                         </Link>
                         <Link href={Routes.Home}>
                             <Button size="lg" variant="outline">
-                                Get demo
+                                Follow us
                             </Button>
                         </Link>
                     </motion.div>
@@ -168,15 +167,16 @@ const Hero = () => {
                         <div className="absolute top-1/4 left-1/2 -z-10 w-4/5 h-1/3 -translate-x-1/2 -translate-y-1/2 bg-primary/20 blur-[10rem] opacity-50" />
 
                         <div className="rounded-lg md:rounded-[24px] border border-foreground/10 bg-background overflow-hidden">
-                            <Image
-                                src="/images/dashboard.png"
-                                alt="Dashboard Preview"
-                                width={2896}
-                                height={1804}
-                                priority
-                                className="w-full h-auto lg:hidden"
-                            />
-                            <div className="hidden lg:block">
+                            <div className="relative aspect-[16/10] w-full bg-black">
+                                <iframe
+                                    src="https://www.youtube.com/embed/Ed9lP0-komE?rel=0&modestbranding=1"
+                                    title="Budget Ndio Story overview"
+                                    className="absolute inset-0 w-full h-full"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                />
+                            </div>
+                            <div className="hidden">
                                 <Dashboard />
                             </div>
                         </div>

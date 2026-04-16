@@ -223,7 +223,7 @@ const Capibilities = () => {
                             <div className="relative">
                                 <div className="flex items-baseline gap-1">
                                     <h3 className="text-3xl bg-linear-to-r from-foreground to-foreground/70 text-transparent bg-clip-text font-semibold">
-                                        {stats[1]?.value} Sends
+                                        Yearly Budgets
                                     </h3>
                                 </div>
                                 <p className="text-muted-foreground mt-2 text-sm leading-relaxed">

@@ -1,18 +1,17 @@
 export const WORKFLOW_STEPS = [
     {
         number: "1",
-        title: "Capture",
-        description: "Add your clients, projects, tasks, and files in one place",
+        title: "Identify",
+        description: "Spot complex budget data and public spending reports that need attention.",
     },
     {
         number: "2",
-        title: "Organize",
-        description: "Plan work, assign tasks and keep everything structured",
+        title: "Clarify",
+        description: "Break down the numbers into simple, shareable stories and visual formats.",
     },
     {
         number: "3",
-        title: "Deliver",
-        description: "Track progress, share updates, and deliver work on time",
+        title: "Amplify",
+        description: "Distribute the stories across every platform to demand accountability and action.",
     },
 ];
-

@@ -61,7 +61,7 @@ const Navbar = () => {
                         <div className="flex items-center gap-2 lg:gap-3">
                             <Link href={Routes.Dashboard}>
                                 <Button variant="white" className="hidden lg:flex">
-                                    Start for free
+                                    Join us
                                 </Button>
                             </Link>
                             <Button

@@ -32,7 +32,7 @@ const Footer = () => {
                             <Icons.wordmark className="h-5 w-auto text-foreground" />
                         </Link>
                         <p className="text-sm text-muted-foreground mt-4 max-w-xs">
-                            Simple workspace for teams
+                            Youth-led budget clarity for Kenya
                         </p>
 
                         <form onSubmit={handleSubmit} className="mt-6 w-full md:max-w-xs">
@@ -113,7 +113,7 @@ const Footer = () => {
 
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4 mt-12 pt-8 border-t border-foreground/5">
                     <p className="text-sm text-muted-foreground">
-                        © {new Date().getFullYear()} Avento. All rights reserved.
+                        © {new Date().getFullYear()} Budget Ndio Story. All rights reserved.
                     </p>
 
                     <div className="flex items-center gap-4">

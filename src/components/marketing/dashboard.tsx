@@ -22,27 +22,26 @@ const Dashboard = () => {
                     </div>
                     <div className="px-3 py-2.5 text-foreground/60 hover:text-white hover:bg-white/5 rounded-lg flex items-center gap-3 text-sm font-medium transition-colors cursor-pointer">
                         <Users className="w-4 h-4" />
-                        <span>Clients</span>
+                        <span>Budgets</span>
                         <span className="ml-auto text-xs bg-white/10 px-1.5 py-0.5 rounded">48</span>
                     </div>
                     <div className="px-3 py-2.5 text-foreground/60 hover:text-white hover:bg-white/5 rounded-lg flex items-center gap-3 text-sm font-medium transition-colors cursor-pointer">
                         <CheckSquare className="w-4 h-4" />
-                        <span>Tasks</span>
+                        <span>Updates</span>
                         <span className="ml-auto text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded">8</span>
                     </div>
                     <div className="px-3 py-2.5 text-foreground/60 hover:text-white hover:bg-white/5 rounded-lg flex items-center gap-3 text-sm font-medium transition-colors cursor-pointer">
                         <CircleUserRound className="w-4 h-4" />
-                        <span>Team</span>
+                        <span>Partners</span>
                     </div>
                     <div className="px-3 py-2.5 text-foreground/60 hover:text-white hover:bg-white/5 rounded-lg flex items-center gap-3 text-sm font-medium transition-colors cursor-pointer">
                         <Receipt className="w-4 h-4" />
-                        <span>Invoices</span>
+                        <span>Spending</span>
                     </div>
                     <div className="px-3 py-2.5 text-foreground/60 hover:text-white hover:bg-white/5 rounded-lg flex items-center gap-3 text-sm font-medium transition-colors cursor-pointer">
                         <FileText className="w-4 h-4" />
-                        <span>Files</span>
+                        <span>Explainers</span>
                     </div>
-
                     <div className="my-2 border-t border-foreground/10" />
 
                     <div className="px-3 py-2.5 text-foreground/60 hover:text-white hover:bg-white/5 rounded-lg flex items-center gap-3 text-sm font-medium transition-colors cursor-pointer">
@@ -68,7 +67,7 @@ const Dashboard = () => {
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="text-xs font-medium text-white truncate">Shreyas Sihasane</p>
-                            <p className="text-xs text-foreground/60 truncate">shreyas@avento.app</p>
+                            <p className="text-xs text-foreground/60 truncate">hello@budgetndiostory.org</p>
                         </div>
                         <MoreHorizontal className="w-4 h-4 text-foreground/60" />
                     </div>
@@ -113,22 +112,22 @@ const Dashboard = () => {
                         <div className="space-y-6">
                             <div>
                                 <div className="flex items-center justify-between mb-4">
-                                    <h2 className="text-sm font-semibold">Your Tasks Today</h2>
-                                    <span className="text-xs text-foreground/60">8 tasks</span>
+                                    <h2 className="text-sm font-semibold">Your Actions Today</h2>
+                                    <span className="text-xs text-foreground/60">8 updates</span>
                                 </div>
                                 <div className="space-y-2">
                                     <div className="flex items-center gap-3 p-3 bg-foreground/2 hover:bg-foreground/5 rounded-lg transition-colors cursor-pointer border border-foreground/10">
                                         <div className="w-1 h-8 bg-primary rounded-full" />
                                         <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-medium">Review project proposal</p>
-                                            <p className="text-xs text-foreground/60">Acme Corp • Due in 2 hours</p>
+                                            <p className="text-sm font-medium">Review budget story draft</p>
+                                            <p className="text-xs text-foreground/60">Health fund analysis • Due in 2 hours</p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3 p-3 bg-foreground/2 hover:bg-foreground/5 rounded-lg transition-colors cursor-pointer border border-foreground/10">
                                         <div className="w-1 h-8 bg-tertiary rounded-full" />
                                         <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-medium">Send invoice to client</p>
-                                            <p className="text-xs text-foreground/60">Tech Startup • Overdue</p>
+                                            <p className="text-sm font-medium">Publish county budget reel</p>
+                                            <p className="text-xs text-foreground/60">Education spending • Overdue</p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3 p-3 bg-foreground/2 hover:bg-foreground/5 rounded-lg transition-colors cursor-pointer border border-foreground/10">
@@ -150,19 +149,19 @@ const Dashboard = () => {
 
                             <div>
                                 <div className="flex items-center justify-between mb-4">
-                                    <h2 className="text-sm font-semibold">Active Projects</h2>
+                                    <h2 className="text-sm font-semibold">Active Stories</h2>
                                     <span className="text-xs text-primary cursor-pointer hover:underline">View all</span>
                                 </div>
                                 <div className="grid grid-cols-2 gap-3">
                                     <div className="bg-foreground/2 border border-foreground/10 rounded-lg p-4 hover:border-primary/30 transition-colors cursor-pointer">
                                         <div className="flex items-center justify-between mb-3">
                                             <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                                                <span className="text-primary font-semibold text-xs">AC</span>
+                                                <span className="text-primary font-semibold text-xs">CH</span>
                                             </div>
                                             <span className="text-xs text-foreground/60">3 days left</span>
                                         </div>
-                                        <h3 className="text-sm font-semibold mb-1">Acme Rebrand</h3>
-                                        <p className="text-xs text-foreground/60 mb-3">Acme Corp</p>
+                                        <h3 className="text-sm font-semibold mb-1">County Health Story</h3>
+                                        <p className="text-xs text-foreground/60 mb-3">Nairobi County</p>
                                         <div className="space-y-1">
                                             <div className="flex items-center justify-between text-xs">
                                                 <span className="text-foreground/60">Progress</span>
@@ -176,12 +175,12 @@ const Dashboard = () => {
                                     <div className="bg-foreground/2 border border-foreground/10 rounded-lg p-4 hover:border-primary/30 transition-colors cursor-pointer">
                                         <div className="flex items-center justify-between mb-3">
                                             <div className="w-8 h-8 rounded-lg bg-tertiary/10 flex items-center justify-center">
-                                                <span className="text-tertiary font-semibold text-xs">TS</span>
+                                                <span className="text-tertiary font-semibold text-xs">EB</span>
                                             </div>
                                             <span className="text-xs text-foreground/60">1 week left</span>
                                         </div>
-                                        <h3 className="text-sm font-semibold mb-1">Tech Startup</h3>
-                                        <p className="text-xs text-foreground/60 mb-3">Website Design</p>
+                                        <h3 className="text-sm font-semibold mb-1">Education Budget</h3>
+                                        <p className="text-xs text-foreground/60 mb-3">County spending breakdown</p>
                                         <div className="space-y-1">
                                             <div className="flex items-center justify-between text-xs">
                                                 <span className="text-foreground/60">Progress</span>

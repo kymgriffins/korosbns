@@ -13,50 +13,57 @@ import Container from "@/components/global/container";
 import { Button } from "@/components/ui/button";
 import { Particles } from "@/components/ui/particles";
 
-const logoMap: Record<string, string> = {
-    Layers: '/icons/integrations/layers.svg',
-    Convex: '/icons/integrations/convex.svg',
-    Heptabase: '/icons/integrations/heptabase.svg',
-    Mintlify: '/icons/integrations/mintlify.svg',
-    Dribbble: '/icons/integrations/dribbble.svg',
-    Soldera: '/icons/integrations/soldera.svg'
+const logoMap = {
+    Instagram: { icon: '/icons/integrations/instagram.svg', href: 'https://www.instagram.com/budgetndiostory' },
+    X: { icon: '/icons/integrations/social-x.svg', href: 'https://x.com/budgetndiostory' },
+    TikTok: { icon: '/icons/integrations/tiktok.svg', href: 'https://www.tiktok.com/@budgetndiostory' },
+    WhatsApp: { icon: '/icons/integrations/whatsapp.svg', href: 'https://chat.whatsapp.com/something' },
+    LinkedIn: { icon: '/icons/integrations/linkedin.svg', href: 'https://www.linkedin.com/company/budgetndiostory' },
+    YouTube: { icon: '/icons/integrations/youtube.svg', href: 'https://www.youtube.com/@budgetndiostory' }
 };
 
 const IntegrationCard = ({
-    children,
     className,
     isCenter = false,
-    iconSrc
+    iconSrc,
+    href
 }: {
-    children?: React.ReactNode;
     className?: string;
     isCenter?: boolean;
     iconSrc?: string;
+    href?: string;
 }) => {
-    return (
+    const CardContent = (
         <div
             className={cn(
-                "relative group flex size-12 rounded-full border border-foreground/10 bg-background backdrop-blur-md",
+                "relative group flex size-12 rounded-full border border-foreground/10 bg-background backdrop-blur-md transition-all duration-300",
+                href && "hover:border-primary/50 hover:shadow-[0_0_15px_rgba(0,85,255,0.2)]",
                 className
             )}
         >
-            {iconSrc ? (
+            {iconSrc && (
                 <div className="m-auto size-fit">
                     <Image
                         src={iconSrc}
                         alt=""
                         width={isCenter ? 32 : 20}
                         height={isCenter ? 32 : 20}
-                        className="size-5 grayscale group-hover:grayscale-0 hover:scale-110 transition-all duration-300"
+                        className="size-5 opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"
                     />
-                </div>
-            ) : (
-                <div className={cn("m-auto size-fit *:size-5", isCenter && "*:size-8")}>
-                    {children}
                 </div>
             )}
         </div>
     );
+
+    if (href) {
+        return (
+            <Link href={href} target="_blank" className={className}>
+                {CardContent}
+            </Link>
+        );
+    }
+
+    return CardContent;
 };
 
 const Integrations = () => {
@@ -99,15 +106,18 @@ const Integrations = () => {
                     >
                         <IntegrationCard
                             className="absolute left-0 top-1/4 -translate-x-1/6 -translate-y-1/4"
-                            iconSrc={logoMap.Layers}
+                            iconSrc={logoMap.YouTube.icon}
+                            href={logoMap.YouTube.href}
                         />
                         <IntegrationCard
                             className="absolute top-0 -translate-y-1/2"
-                            iconSrc={logoMap.Convex}
+                            iconSrc={logoMap.X.icon}
+                            href={logoMap.X.href}
                         />
                         <IntegrationCard
                             className="absolute right-0 top-1/4 translate-x-1/6 -translate-y-1/4"
-                            iconSrc={logoMap.Heptabase}
+                            iconSrc={logoMap.TikTok.icon}
+                            href={logoMap.TikTok.href}
                         />
                     </motion.div>
 
@@ -120,23 +130,28 @@ const Integrations = () => {
                     >
                         <IntegrationCard
                             className="absolute top-0 -translate-y-1/2"
-                            iconSrc={logoMap.Soldera}
+                            iconSrc={logoMap.WhatsApp.icon}
+                            href={logoMap.WhatsApp.href}
                         />
                         <IntegrationCard
                             className="absolute left-0 top-1/4 -translate-x-1/4 -translate-y-1/4"
-                            iconSrc={logoMap.Mintlify}
+                            iconSrc={logoMap.LinkedIn.icon}
+                            href={logoMap.LinkedIn.href}
                         />
                         <IntegrationCard
                             className="absolute right-0 top-1/4 translate-x-1/4 -translate-y-1/4"
-                            iconSrc={logoMap.Dribbble}
+                            iconSrc={logoMap.Instagram.icon}
+                            href={logoMap.Instagram.href}
                         />
                     </motion.div>
 
                     <Container animation="blurIn" delay={0.5} className="absolute inset-x-0 bottom-0 lg:bottom-1/10 mx-auto my-2 flex justify-center gap-2 w-fit scale-90 lg:scale-100">
                         <div className="bg-primary/5 relative z-20 rounded-full border border-foreground/10 backdrop-blur-sm p-1.5 group">
-                            <IntegrationCard className="size-14 bg-primary/5">
-                                <Icons.icon className="text-primary group-hover:scale-110 group-active:scale-95 transition-all duration-300" />
-                            </IntegrationCard>
+                            <div className="relative group flex size-14 rounded-full border border-foreground/10 bg-primary/5 transition-all duration-300">
+                                <div className="m-auto">
+                                    <Icons.icon className="size-8 text-primary group-hover:scale-110 group-active:scale-95 transition-all duration-300" />
+                                </div>
+                            </div>
                         </div>
                     </Container>
                 </div>
@@ -149,7 +164,7 @@ const Integrations = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.4, delay: 0.4 }}
                     >
-                        Integrate with your favorite tools
+                        Amplifying voices everywhere
                     </motion.h2>
 
                     <motion.p
@@ -159,7 +174,7 @@ const Integrations = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.4, delay: 0.5 }}
                     >
-                        Connect seamlessly with popular platforms and services to enhance your workflow
+                        We translate complex budget data into simple stories shared across the platforms young Kenyans use most.
                     </motion.p>
 
                     <motion.div
@@ -168,9 +183,9 @@ const Integrations = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.4, delay: 0.6 }}
                     >
-                        <Link href={Routes.Dashboard}>
+                        <Link href="https://www.instagram.com/budgetndiostory" target="_blank">
                             <Button variant="white">
-                                Get Started
+                                Follow the Story
                             </Button>
                         </Link>
                     </motion.div>

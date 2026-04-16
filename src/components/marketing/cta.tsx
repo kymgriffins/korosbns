@@ -77,9 +77,10 @@ const Cta = () => {
                                 transition={{ duration: 0.6, delay: 0.3 }}
                                 className="text-3xl md:text-4xl lg:text-5xl font-medium bg-linear-to-r from-foreground to-foreground/70 text-transparent bg-clip-text leading-[1.2] mt-8 max-w-3xl"
                             >
-                                The better way to
+                                The clearest way to
                                 <br />
-                                manage your work
+                                watch the budget
+
                             </motion.h2>
 
                             <motion.p
@@ -89,7 +90,8 @@ const Cta = () => {
                                 transition={{ duration: 0.6, delay: 0.4 }}
                                 className="text-base md:text-lg text-muted-foreground mt-6 max-w-2xl"
                             >
-                                Join other freelancers and agencies <br /> organizing their business today
+                                Join thousands of young Kenyans tracking spending <br /> and demanding accountability today
+
                             </motion.p>
 
                             <motion.div
@@ -102,7 +104,7 @@ const Cta = () => {
                             >
                                 <Link href={Routes.Dashboard}>
                                     <Button size="lg" className="text-base">
-                                        Start for free
+                                        Join us
                                     </Button>
                                 </Link>
                             </motion.div>

@@ -1,37 +1,37 @@
 export const testimonials = [
     {
         id: 1,
-        name: "Sarah Collins",
-        role: "Freelance Designer",
-        text: "Avento keeps all my client work in one place. No more scattered files or endless emails. Clean and simple.",
+        name: "Amina K.",
+        role: "Student Advocate",
+        text: "Budget Ndio Story helped me understand how county health funds are spent. The stories made it easy to talk to my friends.",
         avatar: "/images/avatars/avatar1.jpg"
     },
     {
         id: 2,
-        name: "Ryan Miller",
-        role: "Agency Owner",
-        text: "Our team uses Avento daily. Project updates and handoffs are so much smoother now. Zero learning curve.",
+        name: "Joseph Mwangi",
+        role: "Community Organizer",
+        text: "I now know where education money goes and how to ask leaders the right questions.",
         avatar: "/images/avatars/avatar2.jpg"
     },
     {
         id: 3,
-        name: "Javier Ortiz",
-        role: "Freelance Developer",
-        text: "The project board keeps everything organized without feeling overwhelming. Perfect for managing clients.",
+        name: "Grace N.",
+        role: "Youth Leader",
+        text: "The visuals made national budget data relatable and helped our community speak up.",
         avatar: "/images/avatars/avatar3.jpg"
     },
     {
         id: 4,
-        name: "Jessica Parker",
-        role: "Marketing Freelancer",
-        text: "Clients, tasks, and invoices in one workspace saves me hours every week. No more app switching chaos.",
+        name: "Dennis K.",
+        role: "Policy Enthusiast",
+        text: "I shared a reel from Budget Ndio Story and we got more young people asking for accountability.",
         avatar: "/images/avatars/avatar4.jpg"
     },
     {
         id: 5,
-        name: "Alex Chen",
-        role: "Creative Director",
-        text: "Managing multiple client projects became effortless with Avento. The timeline view is a game changer for me.",
+        name: "Fatuma A.",
+        role: "Podcast Host",
+        text: "This initiative made budget literacy feel like a movement, not a lecture.",
         avatar: "/images/avatars/avatar5.jpg"
     }
 ];

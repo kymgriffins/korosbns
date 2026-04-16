@@ -1,29 +1,29 @@
 export const capabilities = [
     {
         id: 1,
-        title: "Client Hub",
-        description: "Store client info, notes, files, and ongoing work in one clean view.",
+        title: "Budget Story Hub",
+        description: "See how taxes, education, health and housing budgets affect everyday life.",
         illustration: "/images/client.png",
         icon: "users"
     },
     {
         id: 2,
-        title: "Project Board",
-        description: "Track tasks and deadlines with a simple board and timeline view.",
+        title: "Visual Explainers",
+        description: "Turn complex budget numbers into shareable charts, videos and simple breakdowns.",
         illustration: "/images/project.png",
         icon: "calendar"
     },
     {
         id: 3,
-        title: "Team View",
-        description: "See who's doing what and balance workload across your team.",
+        title: "Community Pulse",
+        description: "Track public spending, compare county budgets, and highlight gaps.",
         illustration: "/images/team.png",
         icon: "zap"
     },
     {
         id: 4,
-        title: "Invoices",
-        description: "Create and send simple invoices and track what's paid.",
+        title: "Civic Action",
+        description: "Give young people clear steps for accountability, petitions and public participation.",
         illustration: "/images/invoices.png",
         icon: "file"
     }
@@ -32,57 +32,64 @@ export const capabilities = [
 export const AVATAR_ITEMS = [
     {
         id: 1,
-        name: "Sarah Chen",
-        designation: "Freelance Designer",
-        image: "/images/avatars/avatar1.jpg"
+        name: "Millicent Makina",
+        designation: "Board Advisor",
+        image: "/images/avatars/team/Millicent .jpeg"
     },
     {
         id: 2,
-        name: "Mike Johnson",
-        designation: "Founder",
-        image: "/images/avatars/avatar2.jpg"
+        name: "Movine Omondi",
+        designation: "Executive Director",
+        image: "/images/avatars/team/Movine Omondi_HeadShot.jpg"
     },
     {
         id: 3,
-        name: "Ethan Wilson",
-        designation: "Freelancer",
-        image: "/images/avatars/avatar3.jpg"
+        name: "James Maingi Mutinda",
+        designation: "Director Partnerships",
+        image: "/images/avatars/team/James Mutinda.jpeg"
     },
     {
         id: 4,
-        name: "Lisa Park",
-        designation: "Freelancer",
-        image: "/images/avatars/avatar4.jpg"
+        name: "Shem Odhiambo Ojunga",
+        designation: "Director Media",
+        image: "/images/avatars/team/Shem Odhiambo Ojunga.jpeg"
     },
     {
         id: 5,
-        name: "Alex Rivera",
-        designation: "Founder",
-        image: "/images/avatars/avatar5.jpg"
+        name: "Nelly Maina",
+        designation: "Lead Podcast Host",
+        image: "/images/avatars/team/Nelly Maina.jpg"
+    },
+    {
+        id: 6,
+        name: "Peculiar Koros",
+        designation: "Director ICT",
+        image: "/images/avatars/team/Koros.jpeg"
     }
 ]
 
 export const stats = [
     {
         id: 1,
-        value: "3k+",
-        label: "freelancers",
+        value: "20k+",
+        label: "young Kenyans reached",
         avatars: [
-            "/images/avatars/avatar1.jpg",
-            "/images/avatars/avatar2.jpg",
-            "/images/avatars/avatar3.jpg",
-            "/images/avatars/avatar4.jpg",
-            "/images/avatars/avatar5.jpg"
+            "/images/avatars/team/Millicent .jpeg",
+            "/images/avatars/team/Movine Omondi_HeadShot.jpg",
+            "/images/avatars/team/James Mutinda.jpeg",
+            "/images/avatars/team/Shem Odhiambo Ojunga.jpeg",
+            "/images/avatars/team/Nelly Maina.jpg",
+            "/images/avatars/team/Koros.jpeg"
         ]
     },
     {
         id: 2,
         value: "1.2M+",
-        label: "Sends",
-        description: "Create and send simple invoices and track what's paid.",
+        label: "views",
+        description: "Stories, reels and explainers making fiscal data easy to follow.",
         button: {
-            text: "Create invoice",
-            href: "#"
+            text: "Follow us",
+            href: "https://www.instagram.com/budgetndiostory"
         }
     }
 ];
