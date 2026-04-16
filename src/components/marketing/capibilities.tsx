@@ -208,7 +208,7 @@ const Capibilities = () => {
                                     {stats[0]?.value} {stats[0]?.label}
                                 </h3>
                                 <p className="text-sm text-muted-foreground mt-1">
-                                    already using Avento
+                                    already using BNS
                                 </p>
                             </div>
                         </motion.div>

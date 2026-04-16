@@ -2,8 +2,7 @@
 
 import React, { useState } from 'react';
 import Wrapper from '@/components/global/wrapper';
-import Icons from '@/components/global/icons';
-import { footerLinks, socialLinks } from '@/constants';
+import { socialLinks } from '@/constants';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,98 +24,41 @@ const Footer = () => {
             <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-foreground/0 via-foreground/20 to-foreground/0" />
             <div className="absolute top-0 inset-x-0 w-1/2 mx-auto h-4 bg-foreground/40 blur-[4rem]" />
 
-            <Wrapper className="py-12">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16">
-                    <div className="lg:col-span-4">
-                        <Link href="/" className="inline-block">
-                            <Icons.wordmark className="h-5 w-auto text-foreground" />
-                        </Link>
-                        <p className="text-sm text-muted-foreground mt-4 max-w-xs">
-                            Youth-led budget clarity for Kenya
-                        </p>
-
-                        <form onSubmit={handleSubmit} className="mt-6 w-full md:max-w-xs">
-                            <div className="flex gap-2">
-                                <Input
-                                    type="email"
-                                    placeholder="Enter your email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                    className="flex-1 h-8.5 text-sm bg-foreground/5 border-foreground/10 focus-visible:ring-0 focus-visible:ring-transparent rounded-full px-4"
-                                />
-                                <Button type="submit" size="sm" >
-                                    Subscribe
-                                </Button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div className="lg:col-span-2" />
-
-                    <div className="lg:col-span-6 grid grid-cols-2 md:grid-cols-3 lg:place-items-end gap-8">
-                        <div>
-                            <h3 className="text-sm font-semibold text-foreground mt-0">
-                                Product
-                            </h3>
-                            <ul className="mt-4 space-y-3">
-                                {footerLinks.product.map((link) => (
-                                    <li key={link.label}>
-                                        <Link
-                                            href={link.href}
-                                            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                                        >
-                                            {link.label}
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        <div>
-                            <h3 className="text-sm font-semibold text-foreground mt-0">
-                                Resources
-                            </h3>
-                            <ul className="mt-4 space-y-3">
-                                {footerLinks.resources.map((link) => (
-                                    <li key={link.label}>
-                                        <Link
-                                            href={link.href}
-                                            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                                        >
-                                            {link.label}
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        <div>
-                            <h3 className="text-sm font-semibold text-foreground mt-0">
-                                Company
-                            </h3>
-                            <ul className="mt-4 space-y-3">
-                                {footerLinks.company.map((link) => (
-                                    <li key={link.label}>
-                                        <Link
-                                            href={link.href}
-                                            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                                        >
-                                            {link.label}
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex flex-col md:flex-row items-center justify-between gap-4 mt-12 pt-8 border-t border-foreground/5">
-                    <p className="text-sm text-muted-foreground">
-                        © {new Date().getFullYear()} Budget Ndio Story. All rights reserved.
+            <Wrapper className="py-12 flex flex-col items-center text-center">
+                <div className="max-w-md w-full flex flex-col items-center">
+                    <Link href="/" className="inline-block group">
+                        <Image 
+                            src="/logo.svg" 
+                            alt="Budget Ndio Story" 
+                            width={160} 
+                            height={32} 
+                            className="h-6 lg:h-7 w-auto transition-all group-hover:brightness-110" 
+                        />
+                    </Link>
+                    <p className="text-sm text-muted-foreground mt-4 max-w-xs">
+                        Youth-led budget clarity for Kenya
                     </p>
 
-                    <div className="flex items-center gap-4">
+                    <form onSubmit={handleSubmit} className="mt-8 w-full">
+                        <p className="text-sm font-medium mb-3">Subscribe to the Story</p>
+                        <div className="flex gap-2 max-w-sm mx-auto">
+                            <Input
+                                type="email"
+                                placeholder="Enter your email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                                className="flex-1 h-10 text-sm bg-foreground/5 border-foreground/10 focus-visible:ring-0 focus-visible:ring-transparent rounded-full px-4"
+                            />
+                            <Button type="submit" size="sm" className="h-10 px-6 rounded-full">
+                                Subscribe
+                            </Button>
+                        </div>
+                    </form>
+                </div>
+
+                <div className="flex flex-col items-center gap-6 mt-12 pt-8 w-full border-t border-foreground/5">
+                    <div className="flex items-center gap-6">
                         {socialLinks.map((social) => (
                             <Link
                                 key={social.label}
@@ -126,18 +68,22 @@ const Footer = () => {
                                 className="opacity-60 hover:opacity-100 transition-opacity"
                             >
                                 <Image
-                                    src={`/icons/integrations/${social.icon}.svg`}
+                                    src={`/icons/integrations/${social.icon === 'x' ? 'social-x' : social.icon}.svg`}
                                     alt={social.label}
-                                    width={20}
-                                    height={20}
+                                    width={24}
+                                    height={24}
                                     className={cn(
-                                        "size-5 grayscale",
-                                        social.icon === "x" && "size-4",
+                                        "size-5 grayscale invert",
+                                        social.icon === "x" && "size-4.5",
                                     )}
                                 />
                             </Link>
                         ))}
                     </div>
+
+                    <p className="text-xs text-muted-foreground">
+                        © {new Date().getFullYear()} Budget Ndio Story. All rights reserved.
+                    </p>
                 </div>
             </Wrapper>
         </footer>

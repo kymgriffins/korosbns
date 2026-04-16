@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import Icons from './icons';
+import Image from 'next/image';
 
 const LoadingScreen = () => {
 
@@ -84,7 +85,13 @@ const LoadingScreen = () => {
                         transform: 'translateX(100px)'
                     }}
                 >
-                    <Icons.wordmark className="h-6 w-auto text-foreground" />
+                    <Image
+                        src="/logo.svg"
+                        alt="Logo"
+                        width={140}
+                        height={40}
+                        className="h-8 w-auto"
+                    />
                 </div>
 
                 <div

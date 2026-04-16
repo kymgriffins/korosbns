@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Routes } from '@/constants';
 import { motion } from 'motion/react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const Cta = () => {
     return (
@@ -67,7 +68,13 @@ const Cta = () => {
                                     }}
                                     className="absolute inset-0 bg-primary/40 rounded-2xl blur-2xl"
                                 />
-                                <Icons.wordmarkGradient className="h-6 text-foreground/90" />
+                                <Image
+                                    src="/logo.svg"
+                                    alt="Logo"
+                                    width={140}
+                                    height={40}
+                                    className="h-8 w-auto"
+                                />
                             </motion.div>
 
                             <motion.h2

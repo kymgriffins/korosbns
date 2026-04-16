@@ -12,6 +12,7 @@ import MobileMenu from "./mobile-menu";
 import { NAV_LINKS, Routes } from "@/constants";
 import { motion } from "motion/react";
 import { useIsMobile } from "@/hooks";
+import Image from "next/image";
 
 const Navbar = () => {
 
@@ -41,8 +42,14 @@ const Navbar = () => {
                 <div className="backdrop-blur-xl rounded-xl lg:rounded-full border border-[rgba(255,255,255,0.1)] h-full flex flex-col overflow-hidden relative">
                     <div className="flex items-center justify-between w-full px-4 min-h-14 md:min-h-16 shrink-0 pb-1">
                         <div className="flex items-center flex-1 lg:flex-none">
-                            <Link href={Routes.Home} className="text-lg font-semibold text-foreground group">
-                                <Icons.wordmark className="w-auto h-5 transition-all group-hover:drop-shadow-[0_0_8px_rgba(0,85,255,0.6)]" />
+                            <Link href={Routes.Home} className="flex items-center gap-2 group">
+                                <Image 
+                                    src="/logo.svg" 
+                                    alt="Budget Ndio Story" 
+                                    width={140} 
+                                    height={28} 
+                                    className="w-auto h-5 lg:h-6 transition-all group-hover:brightness-110" 
+                                />
                             </Link>
                         </div>
 

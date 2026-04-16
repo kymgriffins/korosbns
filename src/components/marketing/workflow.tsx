@@ -37,7 +37,7 @@ const Workflow = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.6, delay: 0.3 }}
                     >
-                        Get your team on the same page with Avento OS
+                        Get your team on the same page with BNS
                     </motion.p>
                 </div>
 

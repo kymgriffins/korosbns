@@ -5,6 +5,7 @@ import { motion } from 'motion/react';
 import Icons from "@/components/global/icons";
 import Wrapper from '@/components/global/wrapper';
 import SectionBadge from '@/components/ui/section-badge';
+import Image from 'next/image';
 
 const Difference = () => {
     return (
@@ -20,7 +21,7 @@ const Difference = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.6, delay: 0.2 }}
                     >
-                        Where Avento stands out
+                        Where BNS stands out
                     </motion.h2>
 
                     <motion.p
@@ -84,7 +85,7 @@ const Difference = () => {
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.5, delay: 0.4 }}
                             >
-                                Avento
+                                BNS
                             </motion.h3>
 
                             <div className="space-y-3 relative">
@@ -120,7 +121,13 @@ const Difference = () => {
                             viewport={{ once: true }}
                             transition={{ duration: 0.8, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
                         >
-                            <Icons.icon className="size-5 text-foreground/80 mb-0.5 mr-0.5" />
+                            <Image
+                                src="/icons/icon.svg"
+                                alt="Logo"
+                                width={20}
+                                height={20}
+                                className="size-5 mb-0.5 mr-0.5"
+                            />
 
                             <motion.div
                                 className="absolute inset-0 rounded-full border-2 border-primary/30"

@@ -145,15 +145,15 @@ const Integrations = () => {
                         />
                     </motion.div>
 
-                    <Container animation="blurIn" delay={0.5} className="absolute inset-x-0 bottom-0 lg:bottom-1/10 mx-auto my-2 flex justify-center gap-2 w-fit scale-90 lg:scale-100">
-                        <div className="bg-primary/5 relative z-20 rounded-full border border-foreground/10 backdrop-blur-sm p-1.5 group">
-                            <div className="relative group flex size-14 rounded-full border border-foreground/10 bg-primary/5 transition-all duration-300">
-                                <div className="m-auto">
-                                    <Icons.icon className="size-8 text-primary group-hover:scale-110 group-active:scale-95 transition-all duration-300" />
-                                </div>
-                            </div>
+                        <div className="bg-transparent relative z-20 mx-auto my-2 flex justify-center w-fit">
+                            <Image
+                                src="/logo.svg"
+                                alt="Budget Ndio Story"
+                                width={120}
+                                height={60}
+                                className="w-auto h-12"
+                            />
                         </div>
-                    </Container>
                 </div>
 
                 <div className="relative z-20 mx-auto -mt-4 max-w-lg space-y-6 text-center">

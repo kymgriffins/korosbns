@@ -14,6 +14,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 const integrationLogos = [
+    '/icons/icon.svg',
     '/icons/integrations/cursor.svg',
     '/icons/integrations/convex.svg',
     '/icons/integrations/dribbble.svg',
