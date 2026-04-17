@@ -13,10 +13,10 @@ import Balancer from 'react-wrap-balancer';
 import Container from "../global/container";
 
 const badges = [
-    { text: "Project Management", top: "15%", left: "5%" },
-    { text: "Client Hub", top: "25%", right: "8%" },
-    { text: "Smart Contracts", top: "60%", left: "10%" },
-    { text: "Invoice Tracking", top: "70%", right: "18%" },
+    { text: "Budget Stories", top: "15%", left: "5%" },
+    { text: "County Spending", top: "25%", right: "8%" },
+    { text: "Data Visuals", top: "60%", left: "10%" },
+    { text: "Action Steps", top: "70%", right: "18%" },
 ];
 
 const FloatingBadge = ({ text, top, left, right, index }: { text: string; top: string; left?: string; right?: string; index: number }) => {

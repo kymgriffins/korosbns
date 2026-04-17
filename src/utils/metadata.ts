@@ -2,18 +2,16 @@ import { Metadata } from "next";
 
 export const generateMetadata = ({
     title = `${process.env.NEXT_PUBLIC_APP_NAME || "Budget Ndio Story"} | Home`,
-    description = `The OS for High Performance Agencies`,
+    description = `Turning budget data into stories for young Kenyans.`,
     image = "/images/og-image.png",
     icons = [
         {
             rel: "apple-touch-icon",
-            sizes: "32x32",
-            url: "/icons/icon.svg"
+            url: "/logo.svg"
         },
         {
             rel: "icon",
-            sizes: "32x32",
-            url: "/icons/icon.svg"
+            url: "/logo.svg"
         },
     ],
     noIndex = false
