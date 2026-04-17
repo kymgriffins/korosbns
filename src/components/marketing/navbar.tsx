@@ -53,14 +53,75 @@ const Navbar = () => {
                             </Link>
                         </div>
 
-                        <div className="lg:flex items-center hidden gap-1 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                        <div className="lg:flex items-center hidden gap-4 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                             {NAV_LINKS.map((item, index) => (
                                 <Link
                                     key={index}
                                     href={item.href}
-                                    className="text-sm text-foreground/70 hover:text-foreground font-medium transition-colors px-3 py-1.5"
+                                    className="relative px-6 py-2.5 group"
                                 >
-                                    {item.label}
+                                    <motion.span
+                                        className="relative z-10 text-sm font-medium text-foreground/70 transition-colors group-hover:text-primary inline-block"
+                                        whileHover={{ 
+                                            y: -2,
+                                            scale: 1.02,
+                                            textShadow: "0 0 8px rgba(0, 85, 255, 0.4)"
+                                        }}
+                                        transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                                    >
+                                        {item.label}
+                                    </motion.span>
+                                    
+                                    {/* Animated Background Pill */}
+                                    <motion.div
+                                        layoutId="nav-pill-active"
+                                        className="absolute inset-0 bg-primary/5 rounded-full border border-primary/10 opacity-0 group-hover:opacity-100 -z-10"
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        whileHover={{ 
+                                            opacity: 1, 
+                                            scale: 1,
+                                            boxShadow: [
+                                                "0 0 10px rgba(0, 85, 255, 0.1)",
+                                                "0 0 20px rgba(0, 85, 255, 0.2)",
+                                                "0 0 10px rgba(0, 85, 255, 0.1)"
+                                            ]
+                                        }}
+                                        transition={{ 
+                                            boxShadow: { repeat: Infinity, duration: 2 },
+                                            opacity: { duration: 0.2 }
+                                        }}
+                                    />
+
+                                    {/* Shimmering 'Comet' Flare */}
+                                    <motion.div
+                                        className="absolute inset-0 rounded-full overflow-hidden opacity-0 group-hover:opacity-100 pointer-events-none"
+                                        initial={{ opacity: 0 }}
+                                        whileHover={{ opacity: 1 }}
+                                    >
+                                        <motion.div 
+                                            className="absolute inset-0 w-1/2 h-full bg-linear-to-r from-transparent via-primary/20 to-transparent -skew-x-12"
+                                            animate={{ 
+                                                x: ["-100%", "200%"],
+                                            }}
+                                            transition={{ 
+                                                repeat: Infinity, 
+                                                duration: 1.5, 
+                                                ease: "easeInOut",
+                                            }}
+                                        />
+                                    </motion.div>
+
+                                    {/* Bottom Animated Bar */}
+                                    <motion.div
+                                        className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-[1.5px] bg-primary rounded-full"
+                                        initial={{ width: 0 }}
+                                        whileHover={{ width: "40%" }}
+                                        transition={{ 
+                                            type: "spring", 
+                                            stiffness: 200, 
+                                            damping: 15 
+                                        }}
+                                    />
                                 </Link>
                             ))}
                         </div>

@@ -2,16 +2,8 @@ import { Routes } from "./routes";
 
 export const NAV_LINKS = [
     {
-        label: "Stories",
-        href: "#workflow",
-    },
-    {
-        label: "Impact",
-        href: "#integrations",
-    },
-    {
-        label: "Leadership",
-        href: "#voices",
+        label: "Contact",
+        href: "/contact",
     },
 ] as const;
 
@@ -26,7 +18,7 @@ export const footerLinks = {
         { label: "Budget Guides", href: "#" },
         { label: "Reports", href: "#" },
         { label: "Newsletter", href: "#" },
-        { label: "Contact", href: "#" }
+        { label: "Contact", href: "/contact" }
     ],
     company: [
         { label: "About BNS", href: "#" },

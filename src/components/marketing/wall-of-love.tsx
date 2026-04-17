@@ -40,25 +40,25 @@ const TeamCard = ({ member }: { member: any }) => {
                             </div>
                             <div className="flex items-center gap-4 lg:gap-6 ml-2">
                                 {member.socials?.x && (
-                                    <Link 
-                                        href={member.socials.x} 
-                                        target="_blank" 
+                                    <Link
+                                        href={member.socials.x}
+                                        target="_blank"
                                         className="text-white/30 hover:text-white transition-all duration-300 hover:scale-125 focus:outline-none"
                                         onClick={(e) => e.stopPropagation()}
                                     >
-                                        <Image 
-                                            src="/icons/integrations/social-x.svg" 
-                                            alt="X" 
-                                            width={18} 
-                                            height={18} 
+                                        <Image
+                                            src="/icons/integrations/social-x.svg"
+                                            alt="X"
+                                            width={18}
+                                            height={18}
                                             className="size-4 lg:size-5"
                                         />
                                     </Link>
                                 )}
                                 {member.socials?.linkedin && (
-                                    <Link 
-                                        href={member.socials.linkedin} 
-                                        target="_blank" 
+                                    <Link
+                                        href={member.socials.linkedin}
+                                        target="_blank"
                                         className="text-white/30 hover:text-white transition-all duration-300 hover:scale-125 focus:outline-none"
                                         onClick={(e) => e.stopPropagation()}
                                     >
@@ -96,7 +96,7 @@ const WallOfLove = () => {
 
         const timer = setTimeout(updateWidths, 800); // Higher delay for complex layout settlement
         window.addEventListener('resize', updateWidths);
-        
+
         const observer = new ResizeObserver(updateWidths);
         if (scrollContentRef.current) observer.observe(scrollContentRef.current);
 
@@ -109,9 +109,9 @@ const WallOfLove = () => {
 
     // Aggressive Displacement: We add a full 60% of viewport width to ensure Peculiar is centered
     const translateX = useTransform(
-        scrollYProgress, 
-        [0, 1], 
-        [0, -(scrollRange - viewportWidth + (viewportWidth * 0.6))] 
+        scrollYProgress,
+        [0, 1],
+        [0, -(scrollRange - viewportWidth + (viewportWidth * 0.6))]
     );
 
     const headerOpacity = useTransform(scrollYProgress, [0.01, 0.04], [1, 0]);
@@ -143,14 +143,14 @@ const WallOfLove = () => {
 
     return (
         <section ref={targetRef} id="voices" className="relative h-[800vh] w-full bg-background/50">
-            <motion.div 
+            <motion.div
                 style={{ zIndex }}
                 className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-hidden bg-background"
             >
                 <div className="hidden lg:block absolute -z-10 top-0 -right-1/4 size-1/3 bg-primary/20 rounded-full blur-[10rem]" />
                 <div className="hidden lg:block absolute -z-10 bottom-0 -left-1/4 size-1/3 bg-primary/10 rounded-full blur-[10rem]" />
 
-                <motion.div 
+                <motion.div
                     style={{ opacity: headerOpacity, y: headerY }}
                     className="absolute top-[8vh] inset-x-0 flex flex-col items-center text-center px-4 z-20 pointer-events-none"
                 >
@@ -163,13 +163,13 @@ const WallOfLove = () => {
                     </p>
                 </motion.div>
 
-                <motion.div 
+                <motion.div
                     style={{ y: scrollerY }}
                     className="relative w-full h-full flex items-center overflow-visible z-10"
                 >
-                    <motion.div 
+                    <motion.div
                         ref={scrollContentRef}
-                        style={{ x: translateX }} 
+                        style={{ x: translateX }}
                         className="flex gap-16 px-[20vw] py-4 w-max h-full items-center"
                     >
                         {team.map((member) => (
@@ -186,14 +186,14 @@ const WallOfLove = () => {
                 <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30">
                     <div className="flex flex-col items-center gap-2">
                         <div className="w-64 h-[2px] bg-white/10 rounded-full overflow-hidden">
-                            <motion.div 
-                                style={{ scaleX: scrollYProgress }} 
-                                className="w-full h-full bg-primary origin-left" 
+                            <motion.div
+                                style={{ scaleX: scrollYProgress }}
+                                className="w-full h-full bg-primary origin-left"
                             />
                         </div>
-                        <p className="text-[9px] text-muted-foreground/30 uppercase tracking-[0.6em] font-bold">
+                        {/* <p className="text-[9px] text-muted-foreground/30 uppercase tracking-[0.6em] font-bold">
                             Leadership Gallery
-                        </p>
+                        </p> */}
                     </div>
                 </div>
             </motion.div>
