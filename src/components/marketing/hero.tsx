@@ -105,7 +105,7 @@ const Hero = () => {
                                 </motion.span>
                             ))}
                             <br />
-                            {"into stories for youth".split(" ").map((word, index) => (
+                            {"into stories for you".split(" ").map((word, index) => (
                                 <motion.span
                                     initial={{ filter: "blur(10px)", opacity: 0, y: 10 }}
                                     animate={{ filter: "blur(0px)", opacity: 1, y: 0 }}
