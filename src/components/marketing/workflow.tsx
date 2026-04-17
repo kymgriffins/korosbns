@@ -37,7 +37,7 @@ const Workflow = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.6, delay: 0.3 }}
                     >
-                        Get your team on the same page with BNS
+                        Empowering youth with fiscal clarity
                     </motion.p>
                 </div>
 

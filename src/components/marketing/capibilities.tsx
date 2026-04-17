@@ -27,7 +27,7 @@ const Capibilities = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.3, delay: 0.2 }}
                     >
-                        Built for how you work
+                        Designed for transparency
                     </motion.h2>
 
                     <motion.p
@@ -37,7 +37,7 @@ const Capibilities = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.3, delay: 0.3 }}
                     >
-                        Clients, projects, tasks, and invoices in one clean interface
+                        Stories, visuals, data, and actions in one clean interface
                     </motion.p>
                 </div>
 
