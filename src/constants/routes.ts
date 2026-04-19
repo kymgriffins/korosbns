@@ -8,4 +8,6 @@ export const Routes = {
     Membership: "/#membership",
 
     Dashboard: "/dashboard",
+    Learn: "/learn",
+    LearnDoc: (doc: string) => `/learn/${doc}`,
 } as const;

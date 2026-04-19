@@ -2,6 +2,10 @@ import { Routes } from "./routes";
 
 export const NAV_LINKS = [
     {
+        label: "Learn",
+        href: Routes.Learn,
+    },
+    {
         label: "Contact",
         href: "/contact",
     },

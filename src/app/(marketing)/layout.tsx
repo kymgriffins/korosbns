@@ -12,12 +12,14 @@ const MarketingLayout = ({
 
     const pathname = usePathname();
     const isContactPage = pathname === "/contact";
+    const isLearnPage = pathname === "/learn";
+    const isLearnDocPage = pathname.startsWith("/learn/") && pathname !== "/learn";
 
     return (
         <main className="w-full relative">
             <Navbar />
             {children}
-            {!isContactPage && <Footer />}
+            {!isContactPage && !isLearnPage && !isLearnDocPage && <Footer />}
         </main>
     );
 };
