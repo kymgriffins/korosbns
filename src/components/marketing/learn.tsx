@@ -6,7 +6,7 @@ import {
     BookOpen, ChevronRight, ChevronLeft, ExternalLink, Folder, Zap, X, Play,
     CheckCircle, XCircle, Award, Target, Lightbulb, Crown, Sparkles, ArrowRight, RefreshCcw,
     Mail, Send, Eye, MonitorPlay, Volume2, VolumeX, Maximize2, Minimize2,
-    HelpCircle, ChevronDown,
+    HelpCircle, ChevronDown, BarChart3, FileText,
 } from "lucide-react";
 import { motion, useScroll, useTransform, AnimatePresence } from "motion/react";
 import Link from "next/link";
@@ -16,10 +16,10 @@ import Wrapper from "../global/wrapper";
 import { Button } from "../ui/button";
 
 const bpsVideos = [
-  { id: 'intro', title: 'Introduction to BPS', url: 'https://youtu.be/A_EXLueEMlk?si=UhJ5b_gjGiFJJvtD' },
-  { id: 'pillars', title: 'BETA Agenda Pillars', url: 'https://youtu.be/jLZe3iPSMfc?si=AwNy30i_P4u3t3lT' },
-  { id: 'numbers', title: 'Budget Numbers Explained', url: 'https://youtu.be/KeNCrx6krl0?si=ChH0YYGTCAzf9Lgn' },
-  { id: 'risks', title: 'Fiscal Risks', url: 'https://youtu.be/SfPwtqUFyj4?si=5nS0WQjXIy1uavN1' },
+  { id: 'intro', title: 'Introduction to BPS', duration: '4:32', url: 'https://www.youtube.com/embed/A_EXLueEMlk' },
+  { id: 'pillars', title: 'BETA Agenda Pillars', duration: '8:15', url: 'https://www.youtube.com/embed/jLZe3iPSMfc' },
+  { id: 'numbers', title: 'Budget Numbers Explained', duration: '6:48', url: 'https://www.youtube.com/embed/KeNCrx6krl0' },
+  { id: 'risks', title: 'Fiscal Risks', duration: '5:22', url: 'https://www.youtube.com/embed/SfPwtqUFyj4' },
 ]
 
 const faqItems = [
@@ -986,6 +986,27 @@ export default function Learn() {
                    </motion.div>
                  )}
               </div>
+            </Container>
+
+            <Container animation="fadeUp" delay={0.15} className="space-y-4">
+              <h2 className="text-xl font-bold">Deep Dive</h2>
+              <Link href="/research" legacyBehavior>
+                <motion.a 
+                  whileHover={{ y: -2 }} 
+                  className="group block p-5 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 transition-all cursor-pointer"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="shrink-0 w-11 h-11 rounded-xl bg-gradient-to-br from-primary to-teal-500 flex items-center justify-center">
+                      <BarChart3 className="size-5 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold group-hover:text-primary">Research & Analysis</h3>
+                      <p className="text-xs text-foreground/60">In-depth analysis with graphs, data & interactive content</p>
+                    </div>
+                    <ArrowRight className="size-4 text-foreground/30 group-hover:text-primary transition-colors" />
+                  </div>
+                </motion.a>
+              </Link>
             </Container>
 
             <Container animation="fadeUp" delay={0.2} className="space-y-6">
