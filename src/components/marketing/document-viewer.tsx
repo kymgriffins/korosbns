@@ -49,7 +49,7 @@ export default function DocumentViewer({ document }: DocumentViewerProps) {
                     style={{ opacity: blobOpacity }}
                 />
                 <motion.div
-                    className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-600/10 blur-[120px] rounded-full"
+                    className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[120px] rounded-full"
                     style={{ opacity: blobOpacity }}
                 />
             </div>
