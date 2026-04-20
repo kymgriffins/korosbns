@@ -1,13 +1,15 @@
-import LearnHub from "@/components/marketing/learn-hub";
+import Learn from "@/components/marketing/learn";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Learn | Budget Ndio Story",
-  description: "Explore interactive stories, articles, and videos to understand Kenya's budget and fiscal policy.",
+    title: "Learn | Budget Ndio Story",
+    description: "Explore resources, guides, and insights on budget storytelling and data journalism.",
 };
 
 const LearnPage = () => {
-  return <LearnHub />;
+    return (
+        <Learn />
+    );
 };
 
 export default LearnPage;
