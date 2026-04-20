@@ -1,0 +1,160 @@
+"use client";
+
+import { useState } from 'react'
+import { cn } from "@/utils";
+import {
+    HelpCircle, ChevronDown, BookOpen, ArrowRight,
+} from "lucide-react";
+import { motion } from "motion/react";
+import Container from "@/components/global/container";
+import Wrapper from "@/components/global/wrapper";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+
+const faqItems = [
+  {
+    q: "What is the Budget Policy Statement (BPS)?",
+    a: "The BPS is a yearly government document that sets out Kenya's spending priorities. It's like a preview of the national budget - showing where money will come from and where it'll go."
+  },
+  {
+    q: "When is the BPS released?",
+    a: "By law (PFM Act), the BPS must be submitted to Parliament by February 15th every year. The final budget comes later on April 30th."
+  },
+  {
+    q: "What's the difference between BPS and the national budget?",
+    a: "Think of BPS as the blueprint or trailer, and the national budget as the full movie. BPS sets the priorities and direction, while the budget is the actual detailed spending plan."
+  },
+  {
+    q: "What is BETA?",
+    a: "BETA = Bottom-Up Economic Transformation Agenda. It's Kenya's plan to grow the economy by focusing on agriculture, small businesses, healthcare, housing, and digital transformation."
+  },
+  {
+    q: "Why does Kenya borrow so much?",
+    a: "Kenya spends more than it collects in taxes (fiscal deficit). The gap is filled through borrowing - both from foreign sources and domestic (like treasury bonds). This helps fund development but also increases debt costs."
+  },
+  {
+    q: "How much goes to county governments?",
+    a: "In 2026/27, counties get KES 420 billion through the equitable share. This funds local services like roads, health, water, and markets in all 47 counties."
+  },
+  {
+    q: "What are the main fiscal risks?",
+    a: "The BPS warns about: rising debt payments, state corporations needing bailouts, economic slowdowns, climate change (droughts/floods), and increased county demands."
+  },
+  {
+    q: "What is the fiscal deficit?",
+    a: "When government spending is higher than revenue, that's a fiscal deficit. Kenya's 2026/27 deficit is around KES 1.15 trillion, financed through borrowing."
+  },
+  {
+    q: "How does the budget affect me?",
+    a: "Every shilling in the budget affects public services you use: roads, schools, hospitals, security, and more. Understanding the budget helps you hold leaders accountable."
+  },
+  {
+    q: "Where can I read the full BPS document?",
+    a: "You can find the official Budget Policy Statement on the National Treasury website or check our Learn section for an interactive breakdown."
+  }
+]
+
+export default function FAQ() {
+  const [openFaq, setOpenFaq] = useState<number | null>(null)
+  
+  return (
+    <section className="relative w-full min-h-screen bg-background overflow-hidden flex flex-col pt-20">
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <motion.div 
+          animate={{ scale: [1, 1.2, 1], rotate: [0, 180, 360] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[120px] rounded-full" 
+        />
+        <motion.div 
+          animate={{ scale: [1.2, 1, 1.2], rotate: [360, 180, 0] }}
+          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+          className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-teal-500/10 blur-[120px] rounded-full" 
+        />
+      </div>
+
+      <Wrapper className="relative z-10 w-full flex-1 flex flex-col justify-between py-6">
+        <div className="flex-1 flex flex-col py-4">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 space-y-12 w-full">
+            <Container animation="fadeUp" className="text-center space-y-4">
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-medium mb-4">
+                  <HelpCircle className="size-3.5" /><span>Got Questions?</span>
+                </div>
+                <h1 className="text-3xl sm:text-5xl font-bold font-heading tracking-tight">Frequently Asked <span className="bg-linear-to-r from-primary via-primary/80 to-teal-500 bg-size-[200%_100%] animate-[shimmer_3s_ease-in-out_infinite] text-transparent bg-clip-text">Questions</span></h1>
+                <p className="text-sm sm:text-base text-foreground/60 mt-4 max-w-xl mx-auto">
+                  Everything you need to know about Kenya's Budget Policy Statement, explained simply.
+                </p>
+              </motion.div>
+            </Container>
+
+            <Container animation="fadeUp" delay={0.1} className="space-y-3">
+              {faqItems.map((item, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.05 }}
+                  className="rounded-xl bg-white/5 border border-white/10 overflow-hidden"
+                >
+                  <button
+                    onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                    className="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-white/5 transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <HelpCircle className="size-5 text-primary shrink-0" />
+                      <span className="text-sm sm:text-base font-medium">{item.q}</span>
+                    </div>
+                    <motion.div
+                      animate={{ rotate: openFaq === idx ? 180 : 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <ChevronDown className="size-5 text-foreground/50 shrink-0" />
+                    </motion.div>
+                  </button>
+                  <motion.div
+                    initial={false}
+                    animate={{ 
+                      height: openFaq === idx ? 'auto' : 0,
+                      opacity: openFaq === idx ? 1 : 0
+                    }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden"
+                  >
+                    <p className="px-5 pb-5 pl-12 sm:pl-13 text-sm text-foreground/70">{item.a}</p>
+                  </motion.div>
+                </motion.div>
+              ))}
+            </Container>
+
+            <Container animation="fadeUp" delay={0.2} className="py-4">
+              <div className="relative p-8 sm:p-10 rounded-3xl bg-gradient-to-br from-primary/20 via-primary/10 to-teal-500/20 border border-primary/20 overflow-hidden text-center">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.05)_1px,transparent_0)] bg-[size:24px_24px]" />
+                <div className="relative z-10 space-y-4">
+                  <h2 className="text-xl sm:text-2xl font-bold">Still have questions?</h2>
+                  <p className="text-sm text-foreground/60 max-w-md mx-auto">
+                    Dive deeper into the Budget Policy Statement with our interactive learning module.
+                  </p>
+                  <Link href="/learn">
+                    <Button size="lg" className="h-11 px-6 rounded-xl text-sm font-medium">
+                      Start Learning <ArrowRight className="size-4 ml-2" />
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </Container>
+
+            <Container animation="fadeUp" delay={0.3} className="max-w-3xl mx-auto w-full pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-foreground/30 px-4">
+              <p className="text-[10px] font-medium">© 2026 Budget Ndio Story.</p>
+              <div className="flex items-center gap-4 text-[9px] font-medium uppercase tracking-wider">
+                <a href="mailto:hello@budgetndiostory.com" className="hover:text-foreground">Email</a>
+                <a href="#" className="hover:text-foreground">Privacy</a>
+                <a href="#" className="hover:text-foreground">Terms</a>
+              </div>
+            </Container>
+          </div>
+        </div>
+      </Wrapper>
+    </section>
+  );
+}
