@@ -109,9 +109,9 @@ const Cta = () => {
                                 whileHover={{ scale: 1.05 }}
                                 className="mt-6"
                             >
-                                <Link href="#integrations">
+                                <Link href="/learn">
                                     <Button size="lg" className="text-base">
-                                        Join us
+                                        Start Learning
                                     </Button>
                                 </Link>
                             </motion.div>

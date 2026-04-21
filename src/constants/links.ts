@@ -6,29 +6,32 @@ export const NAV_LINKS = [
         href: Routes.Learn,
     },
     {
+        label: "FAQ",
+        href: Routes.FAQ,
+    },
+    {
         label: "Contact",
-        href: "/contact",
+        href: Routes.Contact,
     },
 ] as const;
 
 export const footerLinks = {
     product: [
-        { label: "Stories", href: "#" },
-        { label: "Explainers", href: "#capabilities" },
-        { label: "Impact", href: "#difference" },
-        { label: "Get Involved", href: "#membership" }
+        { label: "Stories", href: "/stories" },
+        { label: "Explainers", href: Routes.Capabilities },
+        { label: "Impact", href: "/impact" },
+        { label: "Get Involved", href: Routes.Membership }
     ],
     resources: [
-        { label: "Budget Guides", href: "#" },
-        { label: "Reports", href: "#" },
-        { label: "Newsletter", href: "#" },
-        { label: "Contact", href: "/contact" }
+        { label: "Budget Guides", href: Routes.Learn },
+        { label: "Newsletter", href: "#newsletter" },
+        { label: "Contact", href: Routes.Contact }
     ],
     company: [
-        { label: "About BNS", href: "#" },
-        { label: "Team", href: "#" },
-        { label: "Media", href: "#" },
-        { label: "Partners", href: "#" }
+        { label: "About BNS", href: "/about" },
+        { label: "Team", href: "/about" },
+        { label: "Media", href: "/media" },
+        { label: "Partners", href: "/partners" }
     ]
 };
 

@@ -60,91 +60,190 @@ const storyChapters = [
   { id: 5, title: 'Watching the Risks', emoji: '⚡', duration: '2 min' },
 ]
 
+import { useEffect, useRef } from 'react'
+
 interface DataCardProps {
   label: string
   value: string
   change?: string
   changeType?: 'up' | 'down'
+  prefix?: string
+  suffix?: string
 }
 
-function DataCard({ label, value, change, changeType }: DataCardProps) {
+function AnimatedNumber({ target, prefix = '', suffix = '' }: { target: string; prefix?: string; suffix?: string }) {
+  const [display, setDisplay] = useState(0)
+  const targetNum = parseFloat(target.replace(/[^0-9.]/g, ''))
+  const hasDecimal = target.includes('.')
+  const rafRef = useRef<number>(0)
+  
+  useEffect(() => {
+    const duration = 1500
+    const startTime = performance.now()
+    
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime
+      const progress = Math.min(elapsed / duration, 1)
+      const eased = 1 - Math.pow(1 - progress, 3)
+      setDisplay(eased * targetNum)
+      
+      if (progress < 1) {
+        rafRef.current = requestAnimationFrame(animate)
+      }
+    }
+    
+    rafRef.current = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(rafRef.current)
+  }, [targetNum])
+  
   return (
-    <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-      <div className="text-xs text-foreground/50 uppercase tracking-wider mb-1">{label}</div>
-      <div className="text-2xl font-bold">{value}</div>
-      {change && (
-        <div className={cn("text-xs mt-1 flex items-center gap-1", changeType === 'up' ? 'text-green-400' : 'text-red-400')}>
-          {changeType === 'up' ? <ArrowUpRight className="size-3" /> : <ArrowDownRight className="size-3" />}
-          {change}
-        </div>
-      )}
-    </div>
+    <>{prefix}{hasDecimal ? display.toFixed(2) : Math.round(display)}{suffix}</>
   )
 }
 
-interface BarGraphProps {
-  data: { label: string; value: number }[]
-  maxValue: number
+function DataCard({ label, value, change, changeType, prefix = '', suffix = '' }: DataCardProps) {
+  return (
+    <motion.div 
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      whileHover={{ scale: 1.02, y: -2 }}
+      className="group relative p-5 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 backdrop-blur-sm overflow-hidden"
+    >
+      <div className="absolute inset-0 bg-gradient-to-r from-primary/0 via-primary/5 to-teal-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      <div className="relative">
+        <div className="text-[10px] text-foreground/40 uppercase tracking-widest font-medium mb-2">{label}</div>
+        <div className="text-3xl font-bold tracking-tight">
+          <AnimatedNumber target={value.replace(/[^0-9.]/g, '')} prefix={prefix} suffix={suffix} />
+        </div>
+        {change && (
+          <motion.div 
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            className={cn("mt-2 inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full", 
+              changeType === 'up' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+            )}
+          >
+            {changeType === 'up' ? <ArrowUpRight className="size-3" /> : <ArrowDownRight className="size-3" />}
+            {change}
+          </motion.div>
+        )}
+      </div>
+    </motion.div>
+  )
 }
 
-function BarGraph({ data, maxValue }: BarGraphProps) {
+function BarGraph({ data, maxValue }: { data: { label: string; value: number }[]; maxValue: number }) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {data.map((item, idx) => (
-        <div key={idx} className="space-y-1">
-          <div className="flex justify-between text-xs">
-            <span className="text-foreground/60">{item.label}</span>
-            <span className="font-medium">KES {item.value}T</span>
+        <motion.div 
+          key={idx}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: idx * 0.1 }}
+          className="space-y-2"
+        >
+          <div className="flex justify-between text-sm">
+            <span className="text-foreground/60 font-medium">{item.label}</span>
+            <motion.span 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: idx * 0.1 + 0.3 }}
+              className="font-bold tabular-nums"
+            >
+              KES {item.value}T
+            </motion.span>
           </div>
-          <div className="h-6 bg-white/5 rounded-full overflow-hidden">
+          <div className="relative h-10 rounded-xl bg-white/[0.05] overflow-hidden">
             <motion.div 
               initial={{ width: 0 }}
               animate={{ width: `${(item.value / maxValue) * 100}%` }}
-              transition={{ duration: 0.5, delay: idx * 0.1 }}
-              className="h-full bg-gradient-to-r from-primary to-teal-500 rounded-full"
+              transition={{ duration: 0.8, delay: idx * 0.15, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute inset-y-2 left-0 rounded-xl overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-teal-400" />
+              <motion.div 
+                animate={{ x: ['0%', '100%'] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+              />
+            </motion.div>
+            <motion.div 
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 0.5, delay: idx * 0.15 }}
+              style={{ transformOrigin: 'left' }}
+              className="absolute inset-0 border border-white/10 rounded-xl"
             />
           </div>
-        </div>
+        </motion.div>
       ))}
     </div>
   )
 }
 
-function PieChartGraph({ data }: { data: { label: string; value: number; color: string }[] }) {
+function DonutChart({ data }: { data: { label: string; value: number; color: string }[] }) {
   const total = data.reduce((sum, item) => sum + item.value, 0)
-  let cumulative = 0
   
   return (
-    <div className="relative">
-      <div className="flex items-center justify-center">
-        <div className="relative w-40 h-40 rounded-full bg-white/5 flex items-center justify-center">
+    <div className="flex flex-col items-center">
+      <div className="relative w-52 h-52">
+        <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
           {data.map((item, idx) => {
             const percentage = (item.value / total) * 100
-            const startAngle = (cumulative / total) * 360 - 90
-            cumulative += item.value
+            const radius = 40
+            const circumference = 2 * Math.PI * radius
+            const strokeDashoffset = circumference - (percentage / 100) * circumference
+            
             return (
-              <div
+              <motion.circle
                 key={idx}
-                className={cn("absolute w-full h-full rounded-full", item.color)}
-                style={{ 
-                  clipPath: `conic-gradient(from ${startAngle}deg, ${percentage * 3.6}deg)`,
-                  opacity: 0.8
+                cx="50"
+                cy="50"
+                r={radius - idx * 3}
+                fill="none"
+                stroke={item.color.replace('bg-', '').replace('-500', '').replace('blue', '#3b82f6').replace('teal', '#14b8a6')}
+                strokeWidth="8"
+                strokeLinecap="round"
+                initial={{ strokeDashoffset: circumference }}
+                animate={{ strokeDashoffset }}
+                transition={{ duration: 1.2, delay: idx * 0.2, ease: 'easeOut' }}
+                className="drop-shadow-lg"
+                style={{
+                  filter: `drop-shadow(0 0 8px ${item.color.replace('bg-', '').replace('-500', '').replace('blue', 'rgba(59,130,246,0.5)').replace('teal', 'rgba(20,184,166,0.5)')})`,
                 }}
               />
             )
           })}
-          <div className="absolute w-24 h-24 rounded-full bg-black flex items-center justify-center">
-            <span className="text-xs text-foreground/60">KES {total.toFixed(1)}B</span>
+        </svg>
+        <motion.div 
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.8, type: 'spring' }}
+          className="absolute inset-0 flex items-center justify-center"
+        >
+          <div className="text-center">
+            <div className="text-xs text-foreground/40 uppercase tracking-widest">Total</div>
+            <div className="text-2xl font-bold tabular-nums">KES</div>
+            <div className="text-lg font-semibold tabular-nums">{total.toFixed(1)}B</div>
           </div>
-        </div>
+        </motion.div>
       </div>
-      <div className="mt-4 space-y-2">
+      <div className="mt-6 grid grid-cols-2 gap-3 w-full max-w-xs">
         {data.map((item, idx) => (
-          <div key={idx} className="flex items-center gap-2 text-xs">
-            <div className={cn("w-3 h-3 rounded-full", item.color)} />
-            <span className="flex-1 text-foreground/60">{item.label}</span>
-            <span className="font-medium">KES {item.value}B</span>
-          </div>
+          <motion.div 
+            key={idx}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 + idx * 0.1 }}
+            className="flex items-center gap-2 p-2 rounded-lg bg-white/[0.03] border border-white/5"
+          >
+            <div className={cn("w-3 h-3 rounded-full shadow-lg", item.color)} />
+            <div className="flex-1 min-w-0">
+              <div className="text-[10px] text-foreground/40 truncate">{item.label}</div>
+              <div className="text-sm font-semibold tabular-nums">KES {item.value}B</div>
+            </div>
+          </motion.div>
         ))}
       </div>
     </div>
@@ -302,10 +401,10 @@ export default function Research() {
               >
                 {/* Key Metrics */}
                 <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                  <DataCard label="Total Revenue" value="KES 3.59T" change="+6.5%" changeType="up" />
-                  <DataCard label="Total Expenditure" value="KES 4.74T" change="+10.1%" changeType="up" />
-                  <DataCard label="Fiscal Deficit" value="KES 1.15T" change="+23.7%" changeType="down" />
-                  <DataCard label="Debt Interest" value="KES 1.2T" change="+8.2%" changeType="down" />
+                  <DataCard label="Total Revenue" value="KES 3.59T" change="+6.5%" changeType="up" prefix="KES " suffix="T" />
+                  <DataCard label="Total Expenditure" value="KES 4.74T" change="+10.1%" changeType="up" prefix="KES " suffix="T" />
+                  <DataCard label="Fiscal Deficit" value="KES 1.15T" change="+23.7%" changeType="down" prefix="KES " suffix="T" />
+                  <DataCard label="Debt Interest" value="KES 1.2T" change="+8.2%" changeType="down" prefix="KES " suffix="T" />
                 </div>
 
                 {/* Budget Trend Graph */}
@@ -318,7 +417,7 @@ export default function Research() {
                 </div>
 
                 {/* Executive Summary */}
-                <div className="prose prose-invert max-w-none">
+                <div className="typography">
                   <h2>Executive Summary</h2>
                   <p>
                     The Budget Policy Statement (BPS) 2026 represents a pivotal moment in Kenya's fiscal 
@@ -341,16 +440,49 @@ export default function Research() {
                     focusing on five key pillars:
                   </p>
                   
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 not-prose my-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 not-prose my-8">
                     {pillarData.map((pillar, idx) => (
-                      <div key={idx} className="p-4 rounded-xl bg-white/5 border border-white/10">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-semibold">{pillar.name}</span>
-                          <span className="text-xs text-green-400">+{pillar.growth}%</span>
+                      <motion.div 
+                        key={idx}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: idx * 0.1 }}
+                        whileHover={{ y: -4, scale: 1.02 }}
+                        className="group relative p-5 rounded-2xl bg-gradient-to-br from-white/[0.08] to-white/[0.02] border border-white/10 overflow-hidden"
+                      >
+                        <motion.div 
+                          className="absolute inset-0 bg-gradient-to-br from-primary/10 to-teal-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                        />
+                        <div className="relative">
+                          <div className="flex items-center justify-between mb-3">
+                            <span className="font-semibold text-lg">{pillar.name}</span>
+                            <motion.span 
+                              whileHover={{ scale: 1.1 }}
+                              className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-500/20 text-green-400 text-xs font-medium"
+                            >
+                              <ArrowUpRight className="size-3" />
+                              +{pillar.growth}%
+                            </motion.span>
+                          </div>
+                          <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: idx * 0.1 + 0.2 }}
+                            className="text-3xl font-bold tracking-tight"
+                          >
+                            KES {pillar.allocation}B
+                          </motion.div>
+                          <div className="mt-2 h-1.5 rounded-full bg-white/10 overflow-hidden">
+                            <motion.div 
+                              initial={{ width: 0 }}
+                              animate={{ width: `${(pillar.allocation / 70) * 100}%` }}
+                              transition={{ duration: 0.8, delay: idx * 0.1 + 0.3 }}
+                              className="h-full bg-gradient-to-r from-primary to-teal-400 rounded-full"
+                            />
+                          </div>
+                          <div className="mt-2 text-xs text-foreground/40">allocated for FY 2026/27</div>
                         </div>
-                        <div className="text-2xl font-bold">KES {pillar.allocation}B</div>
-                        <div className="text-xs text-foreground/50">allocated</div>
-                      </div>
+                      </motion.div>
                     ))}
                   </div>
 
@@ -361,18 +493,40 @@ export default function Research() {
                   </p>
                   
                   <div className="not-prose my-6">
-                    <PieChartGraph data={debtBreakdown} />
+                    <DonutChart data={debtBreakdown} />
                   </div>
 
                   <h2>Fiscal Risks</h2>
-                  <p>The BPS identifies five key fiscal risks:</p>
-                  <ol>
-                    <li><strong>Public Debt Risk:</strong> Rising debt levels create interest payment pressures</li>
-                    <li><strong>Contingent Liabilities:</strong> State-owned enterprises may require bailouts</li>
-                    <li><strong>Macroeconomic Risks:</strong> Exchange rate and inflation shocks</li>
-                    <li><strong>Climate Change:</strong> Droughts and floods affecting revenue</li>
-                    <li><strong>Devolution Pressures:</strong> Increased county government demands</li>
-                  </ol>
+                  <p>The BPS identifies five key fiscal risks that could impact Kenya's fiscal sustainability:</p>
+                  <div className="not-prose my-6 grid gap-3">
+                    {[
+                      { icon: AlertTriangle, title: 'Public Debt Risk', desc: 'Rising debt levels create interest payment pressures', color: 'text-red-400', bg: 'bg-red-500/20' },
+                      { icon: Building2, title: 'Contingent Liabilities', desc: 'State-owned enterprises may require bailouts', color: 'text-orange-400', bg: 'bg-orange-500/20' },
+                      { icon: TrendingUp, title: 'Macroeconomic Risks', desc: 'Exchange rate and inflation shocks', color: 'text-yellow-400', bg: 'bg-yellow-500/20' },
+                      { icon: DollarSign, title: 'Climate Change', desc: 'Droughts and floods affecting revenue', color: 'text-amber-400', bg: 'bg-amber-500/20' },
+                      { icon: Wallet, title: 'Devolution Pressures', desc: 'Increased county government demands', color: 'text-blue-400', bg: 'bg-blue-500/20' },
+                    ].map((risk, idx) => {
+                      const Icon = risk.icon
+                      return (
+                        <motion.div 
+                          key={idx}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: idx * 0.1 }}
+                          whileHover={{ x: 4 }}
+                          className="flex items-start gap-4 p-4 rounded-xl bg-white/[0.03] border border-white/5 hover:border-white/20 transition-colors"
+                        >
+                          <div className={cn("p-2.5 rounded-xl", risk.bg)}>
+                            <Icon className={cn("size-5", risk.color)} />
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="font-semibold">{risk.title}</h4>
+                            <p className="text-sm text-foreground/50">{risk.desc}</p>
+                          </div>
+                        </motion.div>
+                      )
+                    })}
+                  </div>
                 </div>
               </motion.div>
             )}

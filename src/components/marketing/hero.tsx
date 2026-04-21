@@ -144,14 +144,14 @@ const Hero = () => {
                         transition={{ duration: 0.5, delay: 0.6 }}
                         className={cn("flex items-center gap-4 flex-wrap justify-center mt-8")}
                     >
-                        <Link href="#workflow">
+                        <Link href="/learn">
                             <Button size="lg">
                                 Explore stories
                             </Button>
                         </Link>
-                        <Link href="#integrations">
+                        <Link href="/research">
                             <Button size="lg" variant="outline">
-                                Follow us
+                                Dive into data
                             </Button>
                         </Link>
                     </motion.div>
