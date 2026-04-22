@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { cn } from "@/utils";
 import {
     HelpCircle, ChevronDown, ChevronRight, ArrowRight, FileText, Building2, TrendingUp, 
     AlertTriangle, DollarSign, Wallet, Menu, X, ArrowUpRight, ArrowDownRight,
     Play, Volume2, BookOpen, Folder, Download, BarChart3, Clock, ExternalLink,
 } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, useScroll, useTransform, AnimatePresence, useSpring } from "motion/react";
+import type { MotionValue } from "motion";
 import Link from "next/link";
 import Container from "../global/container";
 import Wrapper from "../global/wrapper";
@@ -43,6 +44,15 @@ const pillarData = [
   { name: 'Digital', allocation: 28.4, growth: 22 },
 ]
 
+const sections = [
+  { id: 'executive-summary', title: 'Executive Summary', label: '01' },
+  { id: 'beta-agenda', title: 'The BETA Agenda', label: '02' },
+  { id: 'revenue-expenditure', title: 'Revenue & Expenditure', label: '03' },
+  { id: 'debt-sustainability', title: 'Debt Sustainability', label: '04' },
+  { id: 'fiscal-risks', title: 'Fiscal Risks', label: '05' },
+  { id: 'conclusion', title: 'Conclusion', label: '06' },
+]
+
 const documents = [
   { name: 'BPS 2026 Full Document', type: 'PDF', size: '2.4 MB' },
   { name: 'BETA Implementation Plan', type: 'PDF', size: '1.8 MB' },
@@ -60,7 +70,202 @@ const storyChapters = [
   { id: 5, title: 'Watching the Risks', emoji: '⚡', duration: '2 min' },
 ]
 
-import { useEffect, useRef } from 'react'
+interface RevealProps {
+  children: React.ReactNode
+  delay?: number
+  direction?: 'up' | 'down' | 'left' | 'right'
+  threshold?: number
+}
+
+function Reveal({ children, delay = 0, direction = 'up', threshold = 0.1 }: RevealProps) {
+  const ref = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start end', 'end start']
+  })
+  
+  const transforms = {
+    up: useTransform(scrollYProgress, [0, 1], [32, 0]),
+    down: useTransform(scrollYProgress, [0, 1], [-32, 0]),
+    left: useTransform(scrollYProgress, [0, 1], [-32, 0]),
+    right: useTransform(scrollYProgress, [0, 1], [32, 0])
+  }
+  
+  const opacity = useTransform(scrollYProgress, [0, threshold], [0, 1])
+  const transform = transforms[direction]
+  
+  return (
+    <motion.div
+      ref={ref}
+      style={{ opacity, transform }}
+      transition={{ 
+        opacity: { duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] },
+        transform: { duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] }
+      }}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
+interface ParallaxLayerProps {
+  children: React.ReactNode
+  speed?: number
+  className?: string
+}
+
+function ParallaxLayer({ children, speed = 0.2, className }: ParallaxLayerProps) {
+  const { scrollY } = useScroll()
+  const y = useTransform(scrollY, [0, 1000], [0, speed * 1000])
+  
+  return (
+    <motion.div style={{ y }} className={className}>
+      {children}
+    </motion.div>
+  )
+}
+
+interface PullQuoteProps {
+  text: string
+  attribution?: string
+}
+
+function PullQuote({ text, attribution }: PullQuoteProps) {
+  return (
+    <Reveal direction="right" delay={0.1}>
+      <blockquote className="my-10 p-6 pl-8 border-l-4 border-primary/80 bg-primary/5 rounded-r-lg">
+        <span className="text-4xl text-primary/60 leading-none align-middle mr-2">"</span>
+        <span className="text-lg italic text-foreground/80 leading-relaxed">{text}</span>
+        {attribution && (
+          <cite className="block mt-3 text-xs text-foreground/40 uppercase tracking-widest">
+            — {attribution}
+          </cite>
+        )}
+      </blockquote>
+    </Reveal>
+  )
+}
+
+interface SectionHeadingProps {
+  id: string
+  label: string
+  title: string
+}
+
+function SectionHeading({ id, label, title }: SectionHeadingProps) {
+  return (
+    <Reveal direction="up">
+      <div id={id} className="scroll-mt-20 pt-14 mb-6">
+        <div className="text-[10px] text-primary uppercase tracking-widest font-medium mb-2">
+          {label}
+        </div>
+        <h2 className="text-2xl sm:text-3xl font-bold border-b border-white/10 pb-4">
+          {title}
+        </h2>
+      </div>
+    </Reveal>
+  )
+}
+
+interface ProgressBarProps {
+  progress: MotionValue<number>
+}
+
+function ProgressBar({ progress }: ProgressBarProps) {
+  const scaleX = useSpring(progress, { stiffness: 100, damping: 30 })
+  
+  return (
+    <motion.div
+      style={{ scaleX }}
+      className="fixed top-0 left-0 right-0 h-0.5 bg-primary/80 origin-left z-50"
+    />
+  )
+}
+
+interface TOCProps {
+  sections: { id: string; title: string; label: string }[]
+  activeSection: string
+}
+
+function TOC({ sections, activeSection }: TOCProps) {
+  const [isOpen, setIsOpen] = useState(false)
+  
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(id)
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  return (
+    <>
+      <motion.div 
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        className="hidden lg:flex fixed right-8 top-1/2 -translate-y-1/2 flex-col items-end gap-1 z-40"
+      >
+        {sections.map((section) => {
+          const isActive = activeSection === section.id
+          return (
+            <button
+              key={section.id}
+              onClick={() => scrollTo(section.id)}
+              title={section.title}
+              className="flex items-center gap-3 cursor-pointer bg-transparent border-none p-1 transition-all"
+            >
+              <motion.span
+                initial={{ opacity: 0, x: 8 }}
+                animate={{ opacity: isActive ? 1 : 0, x: isActive ? 0 : 8 }}
+                className="text-[10px] text-primary uppercase tracking-widest whitespace-nowrap"
+              >
+                {section.title}
+              </motion.span>
+              <motion.span
+                animate={{ 
+                  width: isActive ? 24 : 8,
+                  backgroundColor: isActive ? 'var(--primary)' : 'rgba(255,255,255,0.2)'
+                }}
+                className="h-0.5 rounded-full"
+              />
+            </button>
+          )
+        })}
+      </motion.div>
+
+      <motion.button
+        layoutId="toc-toggle"
+        onClick={() => setIsOpen(!isOpen)}
+        className="lg:hidden fixed bottom-6 right-6 z-50 p-3 bg-primary text-primary-foreground rounded-full"
+      >
+        {isOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+      </motion.button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="lg:hidden fixed bottom-20 right-6 z-40 bg-background/95 backdrop-blur-xl border border-white/10 p-4 rounded-2xl min-w-[220px]"
+          >
+            {sections.map((section) => (
+              <button
+                key={section.id}
+                onClick={() => { scrollTo(section.id); setIsOpen(false) }}
+                className="flex items-center gap-3 w-full p-2 border-b border-white/5 last:border-0"
+              >
+                <span className="text-[10px] text-foreground/40 w-5">{section.label}</span>
+                <span className={cn("text-sm", activeSection === section.id ? "text-primary font-medium" : "text-foreground/60")}>
+                  {section.title}
+                </span>
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  )
+}
+
+
 
 interface DataCardProps {
   label: string
@@ -132,116 +337,247 @@ function DataCard({ label, value, change, changeType, prefix = '', suffix = '' }
   )
 }
 
-function BarGraph({ data, maxValue }: { data: { label: string; value: number }[]; maxValue: number }) {
+function LineChart({ data, maxValue }: { data: { label: string; value: number }[]; maxValue: number }) {
+  const width = 400
+  const height = 200
+  const padding = { top: 20, right: 20, bottom: 30, left: 40 }
+  
+  const chartWidth = width - padding.left - padding.right
+  const chartHeight = height - padding.top - padding.bottom
+  
+  const points = data.map((item, idx) => ({
+    x: padding.left + (idx / (data.length - 1)) * chartWidth,
+    y: padding.top + chartHeight - (item.value / maxValue) * chartHeight,
+    value: item.value,
+    label: item.label
+  }))
+  
+  const pathD = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ')
+  
+  const areaD = `${pathD} L ${points[points.length - 1].x} ${padding.top + chartHeight} L ${points[0].x} ${padding.top + chartHeight} Z`
+  
   return (
-    <div className="space-y-4">
-      {data.map((item, idx) => (
-        <motion.div 
-          key={idx}
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: idx * 0.1 }}
-          className="space-y-2"
-        >
-          <div className="flex justify-between text-sm">
-            <span className="text-foreground/60 font-medium">{item.label}</span>
-            <motion.span 
+    <div className="w-full overflow-x-auto">
+      <svg viewBox={`0 0 ${width} ${height}`} className="w-full min-w-[300px]" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#3b82f6" />
+            <stop offset="100%" stopColor="#60a5fa" />
+          </linearGradient>
+          <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.3" />
+            <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.02" />
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+        
+        {/* Grid lines */}
+        {[0, 1, 2, 3, 4].map((i) => {
+          const y = padding.top + (i / 4) * chartHeight
+          const value = maxValue - (i / 4) * maxValue
+          return (
+            <g key={i}>
+              <line x1={padding.left} y1={y} x2={width - padding.right} y2={y} stroke="currentColor" strokeOpacity="0.1" strokeDasharray="4 4" />
+              <text x={padding.left - 8} y={y + 4} textAnchor="end" className="fill-foreground/40 text-[10px]">{value.toFixed(1)}T</text>
+            </g>
+          )
+        })}
+        
+        {/* Area fill */}
+        <motion.path
+          d={areaD}
+          fill="url(#areaGradient)"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 0.5 }}
+        />
+        
+        {/* Line */}
+        <motion.path
+          d={pathD}
+          fill="none"
+          stroke="url(#lineGradient)"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          filter="url(#glow)"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+        />
+        
+        {/* Data points */}
+        {points.map((point, idx) => (
+          <motion.g key={idx}>
+            <motion.circle
+              cx={point.x}
+              cy={point.y}
+              r="0"
+              fill="#3b82f6"
+              initial={{ r: 0 }}
+              animate={{ r: 6 }}
+              transition={{ delay: idx * 0.1 + 0.8, type: 'spring', stiffness: 200 }}
+              className="drop-shadow-lg"
+            />
+            <motion.circle
+              cx={point.x}
+              cy={point.y}
+              r="0"
+              fill="#1e40af"
+              initial={{ r: 0 }}
+              animate={{ r: 3 }}
+              transition={{ delay: idx * 0.1 + 1 }}
+            />
+            <motion.text
+              x={point.x}
+              y={height - 8}
+              textAnchor="middle"
+              className="fill-foreground/50 text-[10px] font-medium"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: idx * 0.1 + 0.3 }}
-              className="font-bold tabular-nums"
+              transition={{ delay: idx * 0.1 + 1 }}
             >
-              KES {item.value}T
-            </motion.span>
-          </div>
-          <div className="relative h-10 rounded-xl bg-white/[0.05] overflow-hidden">
-            <motion.div 
-              initial={{ width: 0 }}
-              animate={{ width: `${(item.value / maxValue) * 100}%` }}
-              transition={{ duration: 0.8, delay: idx * 0.15, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute inset-y-2 left-0 rounded-xl overflow-hidden"
+              {point.label}
+            </motion.text>
+            <motion.g
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: idx * 0.1 + 1.2 }}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-teal-400" />
-              <motion.div 
-                animate={{ x: ['0%', '100%'] }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-              />
-            </motion.div>
-            <motion.div 
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 0.5, delay: idx * 0.15 }}
-              style={{ transformOrigin: 'left' }}
-              className="absolute inset-0 border border-white/10 rounded-xl"
-            />
-          </div>
-        </motion.div>
-      ))}
+              <rect x={point.x - 24} y={point.y - 28} width={48} height={20} rx={4} className="fill-background/95 stroke-primary/20" strokeWidth="1" />
+              <text x={point.x} y={point.y - 14} textAnchor="middle" className="fill-primary text-[10px] font-semibold">
+                {point.value}T
+              </text>
+            </motion.g>
+          </motion.g>
+        ))}
+      </svg>
+      
+      <div className="flex justify-center gap-4 mt-4 text-xs text-foreground/50">
+        <span className="flex items-center gap-2">
+          <span className="w-3 h-0.5 bg-primary rounded-full" />
+          Expenditure (KES Trillion)
+        </span>
+      </div>
     </div>
   )
 }
 
+interface DonutSlice {
+  d: string
+  percentage: number
+  color: string
+  label: string
+  value: number
+}
+
 function DonutChart({ data }: { data: { label: string; value: number; color: string }[] }) {
-  const total = data.reduce((sum, item) => sum + item.value, 0)
+  const total = data.reduce((sum: number, item) => sum + item.value, 0)
+  const size = 180
+  const center = size / 2
+  const radius = 70
+  const innerRadius = 45
+  
+  const colors = ['#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#dbeafe']
+  
+  const slices: DonutSlice[] = data.map((item: { label: string; value: number; color: string }, idx: number) => {
+    const percentage = (item.value / total) * 100
+    let startAngle = 0
+    for (let i = 0; i < idx; i++) {
+      startAngle += (data[i].value / total) * 360
+    }
+    const endAngle = startAngle + percentage * 3.6
+    
+    const startRad = (startAngle - 90) * (Math.PI / 180)
+    const endRad = (endAngle - 90) * (Math.PI / 180)
+    
+    const x1 = center + radius * Math.cos(startRad)
+    const y1 = center + radius * Math.sin(startRad)
+    const x2 = center + radius * Math.cos(endRad)
+    const y2 = center + radius * Math.sin(endRad)
+    
+    const ix1 = center + innerRadius * Math.cos(startRad)
+    const iy1 = center + innerRadius * Math.sin(startRad)
+    const ix2 = center + innerRadius * Math.cos(endRad)
+    const iy2 = center + innerRadius * Math.sin(endRad)
+    
+    const largeArc = percentage > 50 ? 1 : 0
+    
+    const d = [
+      `M ${x1} ${y1}`,
+      `A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2}`,
+      `L ${ix2} ${iy2}`,
+      `A ${innerRadius} ${innerRadius} 0 ${largeArc} 0 ${ix1} ${iy1}`,
+      'Z'
+    ].join(' ')
+    
+    return { d, percentage, color: colors[idx % colors.length], label: item.label, value: item.value }
+  })
   
   return (
     <div className="flex flex-col items-center">
-      <div className="relative w-52 h-52">
-        <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-          {data.map((item, idx) => {
-            const percentage = (item.value / total) * 100
-            const radius = 40
-            const circumference = 2 * Math.PI * radius
-            const strokeDashoffset = circumference - (percentage / 100) * circumference
-            
-            return (
-              <motion.circle
-                key={idx}
-                cx="50"
-                cy="50"
-                r={radius - idx * 3}
-                fill="none"
-                stroke={item.color.replace('bg-', '').replace('-500', '').replace('blue', '#3b82f6').replace('teal', '#14b8a6')}
-                strokeWidth="8"
-                strokeLinecap="round"
-                initial={{ strokeDashoffset: circumference }}
-                animate={{ strokeDashoffset }}
-                transition={{ duration: 1.2, delay: idx * 0.2, ease: 'easeOut' }}
-                className="drop-shadow-lg"
-                style={{
-                  filter: `drop-shadow(0 0 8px ${item.color.replace('bg-', '').replace('-500', '').replace('blue', 'rgba(59,130,246,0.5)').replace('teal', 'rgba(20,184,166,0.5)')})`,
-                }}
-              />
-            )
-          })}
+      <div className="relative">
+        <svg width={size} height={size} className="drop-shadow-xl">
+          <defs>
+            <filter id="shadow">
+              <feDropShadow dx="0" dy="4" stdDeviation="8" floodOpacity="0.3"/>
+            </filter>
+          </defs>
+          
+          {slices.map((slice: DonutSlice, idx: number) => (
+            <motion.path
+              key={idx}
+              d={slice.d}
+              fill={slice.color}
+              initial={{ scale: 0, originX: center, originY: center }}
+              animate={{ scale: 1 }}
+              transition={{ delay: idx * 0.15, type: 'spring', stiffness: 100 }}
+              whileHover={{ scale: 1.05, originX: center, originY: center }}
+              filter="url(#shadow)"
+              className="cursor-pointer"
+            />
+          ))}
+          
+          <motion.circle
+            cx={center}
+            cy={center}
+            r={innerRadius}
+            fill="currentColor"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.6, type: 'spring' }}
+            className="fill-background"
+          />
+          
+          <motion.g initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.8 }}>
+            <text x={center} y={center - 6} textAnchor="middle" className="fill-primary font-bold text-lg">KES</text>
+            <text x={center} y={center + 14} textAnchor="middle" className="fill-foreground text-xl font-bold">{total.toFixed(1)}B</text>
+          </motion.g>
         </svg>
-        <motion.div 
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.8, type: 'spring' }}
-          className="absolute inset-0 flex items-center justify-center"
-        >
-          <div className="text-center">
-            <div className="text-xs text-foreground/40 uppercase tracking-widest">Total</div>
-            <div className="text-2xl font-bold tabular-nums">KES</div>
-            <div className="text-lg font-semibold tabular-nums">{total.toFixed(1)}B</div>
-          </div>
-        </motion.div>
       </div>
-      <div className="mt-6 grid grid-cols-2 gap-3 w-full max-w-xs">
-        {data.map((item, idx) => (
+      
+      <div className="mt-8 space-y-3 w-full max-w-[200px]">
+        {slices.map((slice: DonutSlice, idx: number) => (
           <motion.div 
             key={idx}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 + idx * 0.1 }}
-            className="flex items-center gap-2 p-2 rounded-lg bg-white/[0.03] border border-white/5"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.6 + idx * 0.1 }}
+            className="flex items-center justify-between p-2 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] transition-colors"
           >
-            <div className={cn("w-3 h-3 rounded-full shadow-lg", item.color)} />
-            <div className="flex-1 min-w-0">
-              <div className="text-[10px] text-foreground/40 truncate">{item.label}</div>
-              <div className="text-sm font-semibold tabular-nums">KES {item.value}B</div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full shadow-lg" style={{ backgroundColor: slice.color }} />
+              <span className="text-xs text-foreground/70">{slice.label}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold text-foreground">{slice.value}B</span>
+              <span className="text-[10px] text-primary/80 font-medium">{slice.percentage.toFixed(0)}%</span>
             </div>
           </motion.div>
         ))}
@@ -256,9 +592,102 @@ export default function Research() {
   const [currentVideo, setCurrentVideo] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
   const [sidebarTab, setSidebarTab] = useState<'modes' | 'docs'>('modes')
+  const [activeSection, setActiveSection] = useState(sections[0].id)
   
+  const { scrollYProgress } = useScroll()
+  const heroRef = useRef<HTMLDivElement>(null)
+  const { scrollYProgress: heroScroll } = useScroll({
+    target: heroRef,
+    offset: ['start start', 'end start']
+  })
+  
+  const heroOpacity = useTransform(heroScroll, [0, 1], [1, 0])
+  const heroY = useTransform(heroScroll, [0, 1], [0, 200])
+  
+  useEffect(() => {
+    const observerOptions = {
+      rootMargin: '-30% 0px -60% 0px'
+    }
+    
+    const observers = sections.map((section) => {
+      const el = document.getElementById(section.id)
+      if (!el) return null
+      
+      const obs = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) {
+          setActiveSection(section.id)
+        }
+      }, observerOptions)
+      
+      obs.observe(el)
+      return obs
+    })
+    
+    return () => observers.forEach((o) => o?.disconnect())
+  }, [])
+
   return (
     <section className="relative w-full min-h-screen bg-background overflow-hidden">
+      <ProgressBar progress={scrollYProgress} />
+      
+      {/* Hero Section with Parallax */}
+      <div ref={heroRef} className="relative h-[85vh] min-h-[520px] overflow-hidden">
+        <motion.div 
+          style={{ opacity: heroOpacity, y: heroY }}
+          className="absolute inset-0 bg-gradient-to-br from-foreground via-foreground/90 to-foreground/80"
+        />
+        
+        <ParallaxLayer speed={-0.1} className="absolute inset-0 pointer-events-none">
+          <svg className="absolute top-[10%] right-[5%] w-72 h-72 opacity-[0.08]" viewBox="0 0 300 300">
+            <circle cx="150" cy="150" r="120" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-primary" />
+            <circle cx="150" cy="150" r="80" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-primary" />
+            <circle cx="150" cy="150" r="40" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-primary" />
+          </svg>
+        </ParallaxLayer>
+        
+        <ParallaxLayer speed={-0.05} className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-[20%] left-[-5%] w-[60%] h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent -rotate-15" />
+        </ParallaxLayer>
+        
+        <div className="relative z-10 h-full flex flex-col justify-end p-8 sm:p-12 lg:p-20">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="max-w-3xl"
+          >
+            <div className="flex items-center gap-3 text-[10px] text-primary uppercase tracking-widest mb-4">
+              <span className="w-8 h-px bg-primary" />
+              Research & Analysis · April 2026
+            </div>
+            
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-heading tracking-tight mb-6 text-primary-foreground">
+              Kenya's Budget<br />
+              Policy Statement<br />
+              <span className="text-primary/80">2026</span>
+            </h1>
+            
+            <p className="text-lg text-primary-foreground/70 max-w-xl mb-8 leading-relaxed">
+              An examination of Kenya's fiscal roadmap — the BETA Agenda, revenue pressures, 
+              debt sustainability, and the structural risks ahead.
+            </p>
+            
+            <div className="flex items-center gap-4 text-sm text-primary-foreground/50">
+              <span>By Millicent Makini</span>
+              <span className="w-1 h-1 rounded-full bg-current" />
+              <span>14 min read</span>
+              <span className="w-1 h-1 rounded-full bg-current" />
+              <span>{sections.length} sections</span>
+            </div>
+          </motion.div>
+        </div>
+        
+        <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-background to-transparent" />
+      </div>
+
+      {/* TOC */}
+      <TOC sections={sections} activeSection={activeSection} />
+
       {/* Animated Background */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         <motion.div 
@@ -400,45 +829,62 @@ export default function Research() {
                 className="space-y-8"
               >
                 {/* Key Metrics */}
-                <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                  <DataCard label="Total Revenue" value="KES 3.59T" change="+6.5%" changeType="up" prefix="KES " suffix="T" />
-                  <DataCard label="Total Expenditure" value="KES 4.74T" change="+10.1%" changeType="up" prefix="KES " suffix="T" />
-                  <DataCard label="Fiscal Deficit" value="KES 1.15T" change="+23.7%" changeType="down" prefix="KES " suffix="T" />
-                  <DataCard label="Debt Interest" value="KES 1.2T" change="+8.2%" changeType="down" prefix="KES " suffix="T" />
-                </div>
+                <Reveal direction="up">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                    <DataCard label="Total Revenue" value="KES 3.59T" change="+6.5%" changeType="up" prefix="KES " suffix="T" />
+                    <DataCard label="Total Expenditure" value="KES 4.74T" change="+10.1%" changeType="up" prefix="KES " suffix="T" />
+                    <DataCard label="Fiscal Deficit" value="KES 1.15T" change="+23.7%" changeType="down" prefix="KES " suffix="T" />
+                    <DataCard label="Debt Interest" value="KES 1.2T" change="+8.2%" changeType="down" prefix="KES " suffix="T" />
+                  </div>
+                </Reveal>
 
                 {/* Budget Trend Graph */}
-                <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
-                  <h3 className="text-lg font-semibold mb-4">Budget Trend (KES Trillion)</h3>
-                  <BarGraph 
-                    data={budgetData.map(d => ({ label: d.year, value: d.expenditure }))}
-                    maxValue={5}
-                  />
-                </div>
+                <Reveal delay={0.1}>
+                  <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+                    <h3 className="text-lg font-semibold mb-4">Budget Trend (KES Trillion)</h3>
+                    <LineChart 
+                      data={budgetData.map(d => ({ label: d.year, value: d.expenditure }))}
+                      maxValue={5}
+                    />
+                  </div>
+                </Reveal>
 
                 {/* Executive Summary */}
                 <div className="typography">
-                  <h2>Executive Summary</h2>
-                  <p>
-                    The Budget Policy Statement (BPS) 2026 represents a pivotal moment in Kenya's fiscal 
-                    trajectory. With a total budget of KES 4.74 trillion, the government continues its 
-                    commitment to the Bottom-Up Economic Transformation Agenda (BETA) while addressing 
-                    emerging fiscal challenges.
-                  </p>
+                  <SectionHeading id="executive-summary" label="01 — Overview" title="Executive Summary" />
                   
-                  <h3>Key Highlights</h3>
-                  <ul>
-                    <li>Revenue target of KES 3.59 trillion represents a 6.5% increase from FY 2025/26</li>
-                    <li>Fiscal deficit of KES 1.15 trillion (3.0% of GDP) - financed through borrowing</li>
-                    <li>County allocation increased to KES 420 billion (+KES 5 billion)</li>
-                    <li>Interest payments on public debt consume KES 1.2 trillion - 25% of revenue</li>
-                  </ul>
+                  <Reveal>
+                    <p>
+                      The Budget Policy Statement (BPS) 2026 represents a pivotal moment in Kenya's fiscal 
+                      trajectory. With a total budget of KES 4.74 trillion, the government continues its 
+                      commitment to the Bottom-Up Economic Transformation Agenda (BETA) while addressing 
+                      emerging fiscal challenges.
+                    </p>
+                  </Reveal>
+                  
+                  <Reveal delay={0.1}>
+                    <h3>Key Highlights</h3>
+                    <ul>
+                      <li>Revenue target of KES 3.59 trillion represents a 6.5% increase from FY 2025/26</li>
+                      <li>Fiscal deficit of KES 1.15 trillion (3.0% of GDP) - financed through borrowing</li>
+                      <li>County allocation increased to KES 420 billion (+KES 5 billion)</li>
+                      <li>Interest payments on public debt consume KES 1.2 trillion - 25% of revenue</li>
+                    </ul>
+                  </Reveal>
 
-                  <h2>The BETA Agenda</h2>
-                  <p>
-                    The Bottom-Up Economic Transformation Agenda remains the cornerstone of government policy, 
-                    focusing on five key pillars:
-                  </p>
+                  <PullQuote 
+                    text="Interest payments consume one in every four shillings of revenue — a structural constraint that will define Kenya's fiscal room for years."
+                    attribution="BPS 2026 Analysis"
+                  />
+
+                  <SectionHeading id="beta-agenda" label="02 — Policy Framework" title="The BETA Agenda" />
+                  
+                  <Reveal>
+                    <p>
+                      The Bottom-Up Economic Transformation Agenda remains the cornerstone of government policy, 
+                      focusing on five key pillars:
+                    </p>
+                  </Reveal>
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 not-prose my-8">
                     {pillarData.map((pillar, idx) => (
@@ -486,18 +932,29 @@ export default function Research() {
                     ))}
                   </div>
 
-                  <h2>Debt Sustainability</h2>
-                  <p>
-                    Interest payments on public debt now consume a significant share of government revenue. 
-                    The graphic below shows how the deficit is financed:
-                  </p>
+                  <SectionHeading id="debt-sustainability" label="04 — Debt Analysis" title="Debt Sustainability" />
+                  
+                  <Reveal>
+                    <p>
+                      Interest payments on public debt now consume a significant share of government revenue. 
+                      The graphic below shows how the deficit is financed:
+                    </p>
+                  </Reveal>
                   
                   <div className="not-prose my-6">
                     <DonutChart data={debtBreakdown} />
                   </div>
 
-                  <h2>Fiscal Risks</h2>
-                  <p>The BPS identifies five key fiscal risks that could impact Kenya's fiscal sustainability:</p>
+                  <PullQuote 
+                    text="When a quarter of all revenue goes to debt service, the budget becomes less a plan for development and more an instrument of financial survival."
+                  />
+
+                  <SectionHeading id="fiscal-risks" label="05 — Risk Register" title="Fiscal Risks" />
+                  
+                  <Reveal>
+                    <p>The BPS identifies five key fiscal risks that could impact Kenya's fiscal sustainability:</p>
+                  </Reveal>
+                  
                   <div className="not-prose my-6 grid gap-3">
                     {[
                       { icon: AlertTriangle, title: 'Public Debt Risk', desc: 'Rising debt levels create interest payment pressures', color: 'text-red-400', bg: 'bg-red-500/20' },
@@ -527,6 +984,22 @@ export default function Research() {
                       )
                     })}
                   </div>
+
+                  <SectionHeading id="conclusion" label="07 — Closing Analysis" title="Conclusion" />
+                  
+                  <Reveal>
+                    <p>
+                      The BPS 2026 is a document of genuine ambition constrained by inherited reality. 
+                      The BETA agenda's supply-side logic is sound, and the revenue trajectory gives 
+                      reason for measured optimism. But the structural burden of debt service, the 
+                      widening deficit, and the clustering of fiscal risks demand more than good intentions.
+                    </p>
+                  </Reveal>
+
+                  <PullQuote 
+                    text="The budget is ultimately a moral document. It reveals what a society truly values, not what it aspires to value."
+                    attribution="Millicent Makini, April 2026"
+                  />
                 </div>
               </motion.div>
             )}
