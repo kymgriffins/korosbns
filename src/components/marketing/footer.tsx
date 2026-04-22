@@ -109,24 +109,22 @@ const Footer = () => {
                         © {new Date().getFullYear()} Budget Ndio Story. All rights reserved.
                     </p>
 
-                    <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-4">
                         {socialLinks.map((social) => (
                             <Link
                                 key={social.label}
                                 href={social.href}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="opacity-60 hover:opacity-100 transition-opacity"
+                                aria-label={social.label}
+                                className="size-9 flex items-center justify-center rounded-full bg-foreground/5 hover:bg-foreground/10 transition-colors"
                             >
                                 <Image
                                     src={`/icons/integrations/${social.icon === 'x' ? 'social-x' : social.icon}.svg`}
                                     alt={social.label}
-                                    width={24}
-                                    height={24}
-                                    className={cn(
-                                        "size-5 grayscale invert",
-                                        social.icon === "x" && "size-4.5",
-                                    )}
+                                    width={20}
+                                    height={20}
+                                    className={social.icon === 'x' ? "size-4" : "size-5"}
                                 />
                             </Link>
                         ))}

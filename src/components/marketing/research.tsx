@@ -627,11 +627,11 @@ export default function Research() {
   }, [])
 
   return (
-    <section className="relative w-full min-h-screen bg-background overflow-hidden">
+    <section className="relative w-full min-h-screen bg-background">
       <ProgressBar progress={scrollYProgress} />
       
       {/* Hero Section with Parallax */}
-      <div ref={heroRef} className="relative h-[85vh] min-h-[520px] overflow-hidden">
+      <div ref={heroRef} className="relative h-[85vh] min-h-[520px] overflow-hidden touch-none">
         <motion.div 
           style={{ opacity: heroOpacity, y: heroY }}
           className="absolute inset-0 bg-gradient-to-br from-foreground via-foreground/90 to-foreground/80"
@@ -689,7 +689,7 @@ export default function Research() {
       <TOC sections={sections} activeSection={activeSection} />
 
       {/* Animated Background */}
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none touch-none">
         <motion.div 
           animate={{ scale: [1, 1.2, 1], rotate: [0, 180, 360] }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}

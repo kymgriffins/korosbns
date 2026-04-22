@@ -37,5 +37,9 @@ export const footerLinks = {
 
 export const socialLinks = [
     { label: "X", href: "https://x.com/budgetndiostory", icon: "x" },
-    { label: "LinkedIn", href: "https://www.linkedin.com/company/budgetndiostory", icon: "linkedin" }
+    { label: "LinkedIn", href: "https://www.linkedin.com/company/budgetndiostory", icon: "linkedin" },
+    { label: "WhatsApp", href: "https://wa.me/254700000000", icon: "whatsapp" },
+    { label: "YouTube", href: "https://youtube.com/@budgetndiostory", icon: "youtube" },
+    { label: "TikTok", href: "https://tiktok.com/@budgetndiostory", icon: "tiktok" },
+    { label: "Instagram", href: "https://instagram.com/budgetndiostory", icon: "instagram" }
 ];

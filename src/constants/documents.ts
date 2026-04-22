@@ -194,7 +194,7 @@ export function transformRepositoryData(repositoryData: any): DocumentType[] {
 // Fetch documents from the API
 export async function fetchDocumentsFromAPI(): Promise<DocumentType[]> {
     try {
-        const response = await fetch('http://api.budgetndiostory.org/docrepository/', {
+        const response = await fetch('http://api.budgetndiostory.org/docrepository/production', {
             next: { revalidate: 3600 } // Cache for 1 hour
         });
         
