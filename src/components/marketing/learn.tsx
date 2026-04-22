@@ -1010,25 +1010,38 @@ export default function Learn() {
             </Container>
 
             <Container animation="fadeUp" delay={0.2} className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold">Budget Documents</h2>
-                <a href="https://drive.google.com/drive/folders/1Lzpc7T5z-VpNVkBOAx5inciHAWQNQKJ1" target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline flex items-center gap-1">View on Drive <ExternalLink className="size-3" /></a>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                {['ADP', 'AGRI', 'APP ACT', 'BPS', 'BROP', 'CBR', 'CFA', 'CFSP', 'CIDP', 'ERE', 'FB', 'PBB'].map(doc => (
-                  <Link key={doc} href={`/learn/${doc.toLowerCase()}`} legacyBehavior>
-                    <motion.a whileHover={{ y: -2 }} className="group p-4 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 transition-all cursor-pointer">
-                      <div className="flex items-start gap-3">
-                        <div className="shrink-0 w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center"><Folder className="size-4 text-primary" /></div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="text-sm font-semibold group-hover:text-primary">{doc}</h3>
-                          <p className="text-[10px] text-foreground/60">Budget Document</p>
-                        </div>
-                      </div>
-                    </motion.a>
-                  </Link>
-                ))}
-              </div>
+                <div className="flex items-center justify-between">
+                    <h2 className="text-xl font-bold">Budget Documents</h2>
+                    <a href="https://drive.google.com/drive/folders/1Lzpc7T5z-VpNVkBOAx5inciHAWQNQKJ1" target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline flex items-center gap-1">View on Drive <ExternalLink className="size-3" /></a>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                    {[
+                        { id: 'adp', title: 'ADP' },
+                        { id: 'agr', title: 'AGR' },
+                        { id: 'app-act', title: 'APP ACT' },
+                        { id: 'bps', title: 'BPS' },
+                        { id: 'brop', title: 'BROP' },
+                        { id: 'cbr', title: 'CBR' },
+                        { id: 'cfa', title: 'CFA' },
+                        { id: 'cfsp', title: 'CFSP' },
+                        { id: 'cidp', title: 'CIDP' },
+                        { id: 'ere', title: 'ERE' },
+                        { id: 'fb', title: 'FB' },
+                        { id: 'pbb', title: 'PBB' }
+                    ].map(doc => (
+                        <Link key={doc.id} href={`/learn/${doc.id}`} legacyBehavior>
+                            <motion.a whileHover={{ y: -2 }} className="group p-4 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 transition-all cursor-pointer">
+                                <div className="flex items-start gap-3">
+                                    <div className="shrink-0 w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center"><Folder className="size-4 text-primary" /></div>
+                                    <div className="flex-1 min-w-0">
+                                        <h3 className="text-sm font-semibold group-hover:text-primary">{doc.title}</h3>
+                                        <p className="text-[10px] text-foreground/60">Budget Document</p>
+                                    </div>
+                                </div>
+                            </motion.a>
+                        </Link>
+                    ))}
+                </div>
             </Container>
 
             <Container animation="fadeUp" delay={0.25} className="space-y-4">

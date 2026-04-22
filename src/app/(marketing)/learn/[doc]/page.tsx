@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getDocumentById } from "@/constants/documents";
+import { fetchDocumentsFromAPI, getDocumentById } from "@/constants/documents";
 import DocumentViewer from "@/components/marketing/document-viewer";
 
 interface Props {
@@ -16,6 +16,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props) {
     const resolvedParams = await params;
+    // Get basic document info for metadata (no API call needed)
     const doc = getDocumentById(resolvedParams.doc);
     
     if (!doc) {
@@ -30,13 +31,19 @@ export async function generateMetadata({ params }: Props) {
 
 const DocumentPage = async ({ params }: Props) => {
     const resolvedParams = await params;
-    const doc = getDocumentById(resolvedParams.doc);
-
-    if (!doc) {
+    const docId = resolvedParams.doc;
+    
+    // Fetch documents from API
+    const documents = await fetchDocumentsFromAPI();
+    
+    // Find the matching document
+    const document = documents.find(doc => doc.id === docId.toLowerCase());
+    
+    if (!document) {
         notFound();
     }
 
-    return <DocumentViewer document={doc} />;
+    return <DocumentViewer document={document} />;
 };
 
 export default DocumentPage;
