@@ -13,6 +13,7 @@ import Link from "next/link";
 import Container from "../global/container";
 import Wrapper from "../global/wrapper";
 import { Button } from "../ui/button";
+import { fetchDocumentsFromAPI, DocumentType } from "@/constants/documents";
 
 type LearnMode = 'video' | 'audio' | 'article' | 'story' | 'docs'
 
@@ -53,7 +54,8 @@ const sections = [
   { id: 'conclusion', title: 'Conclusion', label: '06' },
 ]
 
-const documents = [
+// Fallback documents if API is unavailable
+const fallbackDocuments = [
   { name: 'BPS 2026 Full Document', type: 'PDF', size: '2.4 MB' },
   { name: 'BETA Implementation Plan', type: 'PDF', size: '1.8 MB' },
   { name: 'County Allocation Guidelines', type: 'PDF', size: '0.9 MB' },
@@ -591,8 +593,25 @@ export default function Research() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [currentVideo, setCurrentVideo] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
-  const [sidebarTab, setSidebarTab] = useState<'modes' | 'docs'>('modes')
   const [activeSection, setActiveSection] = useState(sections[0].id)
+  const [repoDocs, setRepoDocs] = useState<DocumentType[]>([])
+  const [loadingDocs, setLoadingDocs] = useState(true)
+
+  useEffect(() => {
+    async function loadDocs() {
+      try {
+        const { documents: fetchedDocs } = await fetchDocumentsFromAPI()
+        if (fetchedDocs && fetchedDocs.length > 0) {
+          setRepoDocs(fetchedDocs)
+        }
+      } catch (err) {
+        console.error("Error fetching docs:", err)
+      } finally {
+        setLoadingDocs(false)
+      }
+    }
+    loadDocs()
+  }, [])
   
   const { scrollYProgress } = useScroll()
   const heroRef = useRef<HTMLDivElement>(null)
@@ -771,22 +790,45 @@ export default function Research() {
         <div className="flex-1 overflow-y-auto p-4">
           <h3 className="text-xs font-semibold text-foreground/50 uppercase tracking-wider mb-3">Document Repository</h3>
           <div className="space-y-2">
-            {documents.map((doc, idx) => (
-              <a
-                key={idx}
-                href="https://drive.google.com/drive/folders/1Lzpc7T5z-VpNVkBOAx5inciHAWQNQKJ1"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
-              >
-                <FileText className="size-4 text-primary" />
-                <div className="flex-1 min-w-0">
-                  <div className="text-sm truncate">{doc.name}</div>
-                  <div className="text-xs text-foreground/50">{doc.type} • {doc.size}</div>
-                </div>
-                <Download className="size-4 text-foreground/30" />
-              </a>
-            ))}
+            {loadingDocs ? (
+              [1,2,3].map(i => (
+                <div key={i} className="h-12 w-full bg-white/5 animate-pulse rounded-lg" />
+              ))
+            ) : repoDocs.length > 0 ? (
+              repoDocs.flatMap(cat => cat.files).slice(0, 10).map((doc, idx) => (
+                <a
+                  key={idx}
+                  href={doc.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
+                >
+                  <FileText className="size-4 text-primary" />
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm truncate">{doc.name}</div>
+                    <div className="text-xs text-foreground/50">PDF • {(doc.size / 1024 / 1024).toFixed(1)} MB</div>
+                  </div>
+                  <Download className="size-4 text-foreground/30" />
+                </a>
+              ))
+            ) : (
+              fallbackDocuments.map((doc, idx) => (
+                <a
+                  key={idx}
+                  href="https://drive.google.com/drive/folders/1Lzpc7T5z-VpNVkBOAx5inciHAWQNQKJ1"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 p-3 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
+                >
+                  <FileText className="size-4 text-primary" />
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm truncate">{doc.name}</div>
+                    <div className="text-xs text-foreground/50">{doc.type} • {doc.size}</div>
+                  </div>
+                  <Download className="size-4 text-foreground/30" />
+                </a>
+              ))
+            )}
           </div>
         </div>
       </motion.aside>
@@ -1092,24 +1134,75 @@ export default function Research() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="space-y-6"
+                className="space-y-8"
               >
-                <h2 className="text-2xl font-bold">Document Repository</h2>
-                <a 
-                  href="https://drive.google.com/drive/folders/1Lzpc7T5z-VpNVkBOAx5inciHAWQNQKJ1"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block p-6 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
-                >
-                  <div className="flex items-center gap-4">
-                    <Folder className="size-10 text-primary" />
-                    <div className="flex-1">
-                      <div className="font-semibold">Google Drive Repository</div>
-                      <div className="text-sm text-foreground/60">Official budget documents and resources</div>
-                    </div>
-                    <ExternalLink className="size-5 text-foreground/30" />
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-bold">Document Repository</h2>
+                  <a 
+                    href="http://api.budgetndiostory.org/docrepository/"
+                    target="_blank"
+                    className="text-xs text-primary hover:underline flex items-center gap-1"
+                  >
+                    Browse API Root <ExternalLink className="size-3" />
+                  </a>
+                </div>
+
+                {loadingDocs ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {[1,2,3,4].map(i => (
+                      <div key={i} className="h-24 bg-white/5 animate-pulse rounded-2xl" />
+                    ))}
                   </div>
-                </a>
+                ) : repoDocs.length > 0 ? (
+                  <div className="space-y-8">
+                    {repoDocs.map((category) => (
+                      <div key={category.id} className="space-y-4">
+                        <div className="flex items-center gap-2">
+                          <Folder className="size-5 text-primary" />
+                          <h3 className="font-semibold text-lg">{category.fullName}</h3>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          {category.files.map((doc, idx) => (
+                            <a
+                              key={idx}
+                              href={doc.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="group p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-primary/10 hover:border-primary/30 transition-all"
+                            >
+                              <div className="flex items-start gap-3">
+                                <div className="p-2 rounded-lg bg-primary/20 text-primary">
+                                  <FileText className="size-5" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <div className="font-medium text-sm truncate group-hover:text-primary transition-colors">
+                                    {doc.name}
+                                  </div>
+                                  <div className="text-xs text-foreground/40 mt-1">
+                                    PDF • {(doc.size / 1024 / 1024).toFixed(2)} MB
+                                  </div>
+                                </div>
+                                <Download className="size-4 text-foreground/20 group-hover:text-primary transition-colors mt-1" />
+                              </div>
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center p-12 rounded-2xl border border-dashed border-white/10">
+                    <Folder className="size-12 text-foreground/10 mx-auto mb-4" />
+                    <p className="text-foreground/40">No documents found in the live repository.</p>
+                    <Button 
+                      variant="outline" 
+                      className="mt-4"
+                      onClick={() => window.open("https://drive.google.com/drive/folders/1Lzpc7T5z-VpNVkBOAx5inciHAWQNQKJ1", "_blank")}
+                    >
+                      Visit Google Drive Backup
+                    </Button>
+                  </div>
+                )}
               </motion.div>
             )}
           </AnimatePresence>

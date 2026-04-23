@@ -163,35 +163,39 @@ function getDocumentInfoFromFolder(
 export function transformRepositoryData(repositoryData: any): DocumentType[] {
   const documents: DocumentType[] = [];
 
-  if (!repositoryData?.files) {
+  if (!repositoryData?.folders || !repositoryData?.documents) {
     return documents;
   }
 
-  for (const folder of repositoryData.files) {
-    if (folder.type !== "folder") continue;
+  const baseUrl = "https://api.budgetndiostory.org";
 
+  for (const folder of repositoryData.folders) {
     const docInfo = getDocumentInfoFromFolder(folder.name);
     if (!docInfo) continue;
 
     const years = parseYearsFromFolderName(folder.name);
-    const baseUrl = "http://api.budgetndiostory.org";
+    
+    // Filter documents that belong to this folder
+    const folderFiles = repositoryData.documents
+      .filter((doc: any) => doc.folder === folder.path)
+      .map((doc: any) => ({
+        name: doc.name,
+        size: doc.size,
+        url: doc.url.startsWith("http") ? doc.url : `${baseUrl}${doc.url}`,
+        modified: doc.modified || 0,
+      }));
 
-    const files: DocumentFile[] = (folder.files || []).map((file: any) => ({
-      name: file.name,
-      size: file.size,
-      url: file.url.startsWith("http") ? file.url : `${baseUrl}${file.url}`,
-      modified: file.modified,
-    }));
-
-    documents.push({
-      id: docInfo.id,
-      title: docInfo.title,
-      fullName: docInfo.fullName,
-      description: docInfo.description,
-      years,
-      files,
-      folderName: folder.name.replace(/\/$/, ""), // Remove trailing slash
-    });
+    if (folderFiles.length > 0) {
+      documents.push({
+        id: docInfo.id,
+        title: docInfo.title,
+        fullName: docInfo.fullName,
+        description: docInfo.description,
+        years,
+        files: folderFiles,
+        folderName: folder.name,
+      });
+    }
   }
 
   return documents;
@@ -206,7 +210,7 @@ export type FetchDocumentsResult = {
 export async function fetchDocumentsFromAPI(): Promise<FetchDocumentsResult> {
   try {
     const response = await fetch(
-      "http://api.budgetndiostory.org/docrepository/production",
+      "https://api.budgetndiostory.org/docrepository/",
       {
         next: { revalidate: 3600 }, // Cache for 1 hour
       },
@@ -226,7 +230,7 @@ export async function fetchDocumentsFromAPI(): Promise<FetchDocumentsResult> {
     }
 
     const data = await response.json();
-    if (!data || !Array.isArray(data.files)) {
+    if (!data || !Array.isArray(data.folders) || !Array.isArray(data.documents)) {
       console.error("Document repository API returned invalid payload:", data);
       return {
         documents: [],
