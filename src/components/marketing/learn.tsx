@@ -27,6 +27,7 @@ import {
 import { AnimatePresence, motion, useScroll, useTransform } from "motion/react";
 import Link from "next/link";
 import { useRef, useState } from "react";
+import { toast } from "sonner";
 import Balancer from "react-wrap-balancer";
 import Container from "../global/container";
 import Wrapper from "../global/wrapper";

@@ -7,6 +7,7 @@ import { footerLinks, socialLinks } from "@/constants";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
+import { toast } from "sonner";
 
 const Footer = () => {
   const [email, setEmail] = useState<string>("");
