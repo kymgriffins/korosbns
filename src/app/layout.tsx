@@ -4,6 +4,7 @@ import { cn, generateMetadata } from "@/utils";
 import Providers from "@/components/global/providers";
 import FlareCursor from "@/components/global/flare-cursor";
 import LoadingScreen from "@/components/global/loading-screen";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata = generateMetadata();
 
@@ -27,6 +28,7 @@ export default function RootLayout({
                     <FlareCursor />
                     {children}
                 </Providers>
+                <Analytics />
             </body>
         </html>
     );
