@@ -291,19 +291,30 @@ function NewsletterSignup() {
      e.preventDefault()
      if (!email) return
      setLoading(true)
+
+     const payload = {
+       email,
+       first_name: email.split('@')[0],
+       source: 'learn_page',
+     }
+
+     console.log('Newsletter subscribe (learn_page) payload:', payload)
+
      try {
        const res = await fetch('https://api.budgetndiostory.org/api/newsletter/subscribe/', {
          method: 'POST',
          headers: { 'Content-Type': 'application/json' },
-         body: JSON.stringify({ email, first_name: email.split('@')[0], source: 'learn_page' })
+         body: JSON.stringify(payload)
        })
        const data = await res.json()
+       console.log('Newsletter subscribe (learn_page) response:', res.status, data)
        if (res.ok && (data.status === 'success' || data.status === 'already_subscribed')) {
          setSubscribed(true)
        } else {
          toast.error(data.message || 'Failed to subscribe')
        }
-     } catch {
+     } catch (error) {
+       console.error('Newsletter subscribe (learn_page) error:', error)
        toast.error('Network error')
      } finally {
        setLoading(false)

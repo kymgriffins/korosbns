@@ -17,17 +17,22 @@ const Footer = () => {
         e.preventDefault();
         if (!email) return;
 
+        const payload = {
+            email,
+            first_name: email.split('@')[0],
+            source: 'website_footer',
+        };
+
+        console.log('Newsletter subscribe (footer) payload:', payload);
+
         try {
             const response = await fetch('https://api.budgetndiostory.org/api/newsletter/subscribe/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    email, 
-                    first_name: email.split('@')[0],
-                    source: 'website_footer' 
-                }),
+                body: JSON.stringify(payload),
             });
             const data = await response.json();
+            console.log('Newsletter subscribe (footer) response:', response.status, data);
             if (response.ok) {
                 if (data.status === 'already_subscribed') {
                     toast.info('You\'re already subscribed! 🎉');
@@ -38,7 +43,8 @@ const Footer = () => {
             } else {
                 toast.error(data.message || 'Failed to subscribe');
             }
-        } catch {
+        } catch (error) {
+            console.error('Newsletter subscribe (footer) error:', error);
             toast.error('Network error. Try again.');
         }
     };
