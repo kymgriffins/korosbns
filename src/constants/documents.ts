@@ -121,7 +121,8 @@ export function getAllDocumentIds(): string[] {
 
 export function getDocumentById(id: string): DocumentType | undefined {
     // This will be used by the static page generation - return basic info without files
-    const info = DOCUMENT_TYPE_MAP[id.toLowerCase()];
+    const normalizedId = id.toUpperCase();
+    const info = DOCUMENT_TYPE_MAP[normalizedId];
     if (info) {
         return {
             ...info,
@@ -191,21 +192,42 @@ export function transformRepositoryData(repositoryData: any): DocumentType[] {
     return documents;
 }
 
+export type FetchDocumentsResult = {
+    documents: DocumentType[];
+    error?: string;
+};
+
 // Fetch documents from the API
-export async function fetchDocumentsFromAPI(): Promise<DocumentType[]> {
+export async function fetchDocumentsFromAPI(): Promise<FetchDocumentsResult> {
     try {
         const response = await fetch('http://api.budgetndiostory.org/docrepository/production', {
             next: { revalidate: 3600 } // Cache for 1 hour
         });
         
         if (!response.ok) {
-            throw new Error(`API error: ${response.status}`);
+            console.error('Document repository API returned non-ok status:', response.status, response.statusText);
+            return {
+                documents: [],
+                error: 'The document repository is temporarily unavailable. Please try again later.',
+            };
         }
         
         const data = await response.json();
-        return transformRepositoryData(data);
+        if (!data || !Array.isArray(data.files)) {
+            console.error('Document repository API returned invalid payload:', data);
+            return {
+                documents: [],
+                error: 'The document repository is temporarily unavailable. Please try again later.',
+            };
+        }
+        return {
+            documents: transformRepositoryData(data),
+        };
     } catch (error) {
         console.error('Failed to fetch documents from API:', error);
-        return [];
+        return {
+            documents: [],
+            error: 'The document repository is temporarily unavailable. Please try again later.',
+        };
     }
 }
