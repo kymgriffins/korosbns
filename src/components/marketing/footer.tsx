@@ -1,174 +1,200 @@
 "use client";
 
-import React, { useState } from 'react';
-import Wrapper from '@/components/global/wrapper';
-import { socialLinks, footerLinks } from '@/constants';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import Image from 'next/image';
-import { cn } from "@/utils";
+import Wrapper from "@/components/global/wrapper";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { footerLinks, socialLinks } from "@/constants";
+import Image from "next/image";
+import Link from "next/link";
+import React, { useState } from "react";
 
 const Footer = () => {
+  const [email, setEmail] = useState<string>("");
 
-    const [email, setEmail] = useState<string>("");
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!email) return;
-
-        const payload = {
-            email,
-            first_name: email.split('@')[0],
-            source: 'website_footer',
-        };
-
-        console.log('Newsletter subscribe (footer) payload:', payload);
-
-        try {
-            const response = await fetch('https://api.budgetndiostory.org/api/newsletter/subscribe/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-            });
-            const data = await response.json();
-            console.log('Newsletter subscribe (footer) response:', response.status, data);
-            if (response.ok) {
-                if (data.status === 'already_subscribed') {
-                    toast.info('You\'re already subscribed! 🎉');
-                } else {
-                    toast.success('Thanks for subscribing! 🎉');
-                }
-                setEmail('');
-            } else {
-                toast.error(data.message || 'Failed to subscribe');
-            }
-        } catch (error) {
-            console.error('Newsletter subscribe (footer) error:', error);
-            toast.error('Network error. Try again.');
-        }
+    const payload = {
+      email,
+      first_name: email.split("@")[0],
+      source: "website_footer",
     };
 
-    return (
-        <footer className="w-full relative mt-16 lg:mt-24 overflow-hidden">
-            <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-foreground/0 via-foreground/20 to-foreground/0" />
-            <div className="absolute top-0 inset-x-0 w-1/2 mx-auto h-4 bg-foreground/40 blur-[4rem]" />
+    console.log("Newsletter subscribe (footer) payload:", payload);
 
-            <Wrapper className="py-16 flex flex-col">
-                {/* Main Footer Content */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12 w-full max-w-6xl mx-auto mb-12">
-                    {/* Brand Column */}
-                    <div className="lg:col-span-2 flex flex-col items-start text-left">
-                        <Link href="/" className="inline-block group mb-4">
-                            <Image
-                                src="/logo.svg"
-                                alt="Budget Ndio Story"
-                                width={160}
-                                height={32}
-                                className="h-6 lg:h-7 w-auto transition-all group-hover:brightness-110"
-                            />
-                        </Link>
-                        <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
-                            Youth-led budget clarity for Kenya. We turn complex budget data into simple stories everyone can understand.
-                        </p>
+    try {
+      const response = await fetch(
+        "https://api.budgetndiostory.org/api/newsletter/subscribe/",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        },
+      );
+      const data = await response.json();
+      console.log(
+        "Newsletter subscribe (footer) response:",
+        response.status,
+        data,
+      );
+      if (response.ok) {
+        if (data.status === "already_subscribed") {
+          toast.info("You're already subscribed! 🎉");
+        } else {
+          toast.success("Thanks for subscribing! 🎉");
+        }
+        setEmail("");
+      } else {
+        toast.error(data.message || "Failed to subscribe");
+      }
+    } catch (error) {
+      console.error("Newsletter subscribe (footer) error:", error);
+      toast.error("Network error. Try again.");
+    }
+  };
 
-                        <form onSubmit={handleSubmit} className="mt-6 w-full max-w-sm">
-                            <p className="text-sm font-medium mb-3">Subscribe to the Story</p>
-                            <div className="flex gap-2">
-                                <Input
-                                    type="email"
-                                    placeholder="Enter your email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                    className="flex-1 h-10 text-sm bg-foreground/5 border-foreground/10 focus-visible:ring-0 focus-visible:ring-transparent rounded-full px-4"
-                                />
-                                <Button type="submit" size="sm" className="h-10 px-6 rounded-full">
-                                    Subscribe
-                                </Button>
-                            </div>
-                        </form>
-                    </div>
+  return (
+    <footer className="w-full relative mt-16 lg:mt-24 overflow-hidden">
+      <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-foreground/0 via-foreground/20 to-foreground/0" />
+      <div className="absolute top-0 inset-x-0 w-1/2 mx-auto h-4 bg-foreground/40 blur-[4rem]" />
 
-                    {/* Product Links */}
-                    <div className="flex flex-col gap-3">
-                        <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground/60">Product</h4>
-                        {footerLinks.product.map((link, idx) => (
-                            <Link
-                                key={idx}
-                                href={link.href}
-                                className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
-                            >
-                                {link.label}
-                            </Link>
-                        ))}
-                    </div>
+      <Wrapper className="py-16 flex flex-col">
+        {/* Main Footer Content */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12 w-full max-w-6xl mx-auto mb-12">
+          {/* Brand Column */}
+          <div className="lg:col-span-2 flex flex-col items-start text-left">
+            <Link href="/" className="inline-block group mb-4">
+              <Image
+                src="/logo.svg"
+                alt="Budget Ndio Story"
+                width={160}
+                height={32}
+                className="h-6 lg:h-7 w-auto transition-all group-hover:brightness-110"
+              />
+            </Link>
+            <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
+              Youth-led budget clarity for Kenya. We turn complex budget data
+              into simple stories everyone can understand.
+            </p>
 
-                    {/* Resources Links */}
-                    <div className="flex flex-col gap-3">
-                        <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground/60">Resources</h4>
-                        {footerLinks.resources.map((link, idx) => (
-                            <Link
-                                key={idx}
-                                href={link.href}
-                                className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
-                            >
-                                {link.label}
-                            </Link>
-                        ))}
-                    </div>
+            <form onSubmit={handleSubmit} className="mt-6 w-full max-w-sm">
+              <p className="text-sm font-medium mb-3">Subscribe to the Story</p>
+              <div className="flex gap-2">
+                <Input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="flex-1 h-10 text-sm bg-foreground/5 border-foreground/10 focus-visible:ring-0 focus-visible:ring-transparent rounded-full px-4"
+                />
+                <Button
+                  type="submit"
+                  size="sm"
+                  className="h-10 px-6 rounded-full"
+                >
+                  Subscribe
+                </Button>
+              </div>
+            </form>
+          </div>
 
-                    {/* Company Links */}
-                    <div className="flex flex-col gap-3">
-                        <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground/60">Company</h4>
-                        {footerLinks.company.map((link, idx) => (
-                            <Link
-                                key={idx}
-                                href={link.href}
-                                className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
-                            >
-                                {link.label}
-                            </Link>
-                        ))}
-                    </div>
-                </div>
+          {/* Product Links */}
+          <div className="flex flex-col gap-3">
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground/60">
+              Product
+            </h4>
+            {footerLinks.product.map((link, idx) => (
+              <Link
+                key={idx}
+                href={link.href}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
 
-                {/* Bottom Bar */}
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-foreground/5 w-full max-w-6xl mx-auto">
-                    <p className="text-xs text-muted-foreground">
-                        © {new Date().getFullYear()} Budget Ndio Story. All rights reserved.
-                    </p>
+          {/* Resources Links */}
+          <div className="flex flex-col gap-3">
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground/60">
+              Resources
+            </h4>
+            {footerLinks.resources.map((link, idx) => (
+              <Link
+                key={idx}
+                href={link.href}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
 
-                    <div className="flex items-center gap-4">
-                        {socialLinks.map((social) => (
-                            <Link
-                                key={social.label}
-                                href={social.href}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                aria-label={social.label}
-                                className="size-9 flex items-center justify-center rounded-full bg-foreground/5 hover:bg-foreground/10 transition-colors"
-                            >
-                                <Image
-                                    src={`/icons/integrations/${social.icon === 'x' ? 'social-x' : social.icon}.svg`}
-                                    alt={social.label}
-                                    width={20}
-                                    height={20}
-                                    className={social.icon === 'x' ? "size-4" : "size-5"}
-                                />
-                            </Link>
-                        ))}
-                    </div>
+          {/* Company Links */}
+          <div className="flex flex-col gap-3">
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground/60">
+              Company
+            </h4>
+            {footerLinks.company.map((link, idx) => (
+              <Link
+                key={idx}
+                href={link.href}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        </div>
 
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                        <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
-                        <span>•</span>
-                        <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
-                    </div>
-                </div>
-            </Wrapper>
-        </footer>
-    );
+        {/* Bottom Bar */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-foreground/5 w-full max-w-6xl mx-auto">
+          <p className="text-xs text-muted-foreground">
+            © {new Date().getFullYear()} Budget Ndio Story. All rights reserved.
+          </p>
+
+          <div className="flex items-center gap-4">
+            {socialLinks.map((social) => (
+              <Link
+                key={social.label}
+                href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={social.label}
+                className="size-9 flex items-center justify-center rounded-full bg-foreground/5 hover:bg-foreground/10 transition-colors"
+              >
+                <Image
+                  src={`/icons/integrations/${social.icon === "x" ? "social-x" : social.icon}.svg`}
+                  alt={social.label}
+                  width={20}
+                  height={20}
+                  className={social.icon === "x" ? "size-4" : "size-5"}
+                />
+              </Link>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+            <Link
+              href="/privacy"
+              className="hover:text-foreground transition-colors"
+            >
+              Privacy
+            </Link>
+            <span>•</span>
+            <Link
+              href="/terms"
+              className="hover:text-foreground transition-colors"
+            >
+              Terms
+            </Link>
+          </div>
+        </div>
+      </Wrapper>
+    </footer>
+  );
 };
 
 export default Footer;
