@@ -287,17 +287,28 @@ function NewsletterSignup() {
   const [subscribed, setSubscribed] = useState(false)
   const [loading, setLoading] = useState(false)
   
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!email) return
-    setLoading(true)
-    const subscribers = JSON.parse(localStorage.getItem('newsletter_subscribers') || '[]')
-    if (!subscribers.includes(email)) {
-      subscribers.push({ email, joinedAt: new Date().toISOString() })
-      localStorage.setItem('newsletter_subscribers', JSON.stringify(subscribers))
-    }
-    setTimeout(() => { setSubscribed(true); setLoading(false) }, 500)
-  }
+   const handleSubmit = async (e: React.FormEvent) => {
+     e.preventDefault()
+     if (!email) return
+     setLoading(true)
+     try {
+       const res = await fetch('https://api.budgetndiostory.org/api/newsletter/subscribe/', {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify({ email, first_name: email.split('@')[0], source: 'learn_page' })
+       })
+       const data = await res.json()
+       if (res.ok && (data.status === 'success' || data.status === 'already_subscribed')) {
+         setSubscribed(true)
+       } else {
+         toast.error(data.message || 'Failed to subscribe')
+       }
+     } catch {
+       toast.error('Network error')
+     } finally {
+       setLoading(false)
+     }
+   }
   
   if (subscribed) {
      return (

@@ -13,10 +13,34 @@ const Footer = () => {
 
     const [email, setEmail] = useState<string>("");
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Newsletter:', email);
-        setEmail('');
+        if (!email) return;
+
+        try {
+            const response = await fetch('https://api.budgetndiostory.org/api/newsletter/subscribe/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    email, 
+                    first_name: email.split('@')[0],
+                    source: 'website_footer' 
+                }),
+            });
+            const data = await response.json();
+            if (response.ok) {
+                if (data.status === 'already_subscribed') {
+                    toast.info('You\'re already subscribed! 🎉');
+                } else {
+                    toast.success('Thanks for subscribing! 🎉');
+                }
+                setEmail('');
+            } else {
+                toast.error(data.message || 'Failed to subscribe');
+            }
+        } catch {
+            toast.error('Network error. Try again.');
+        }
     };
 
     return (
