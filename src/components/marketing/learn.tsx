@@ -22,13 +22,13 @@ import {
     Sparkles,
     Target,
     X,
-    XCircle
+    XCircle,
 } from "lucide-react";
 import { AnimatePresence, motion, useScroll, useTransform } from "motion/react";
 import Link from "next/link";
 import { useRef, useState } from "react";
-import { toast } from "sonner";
 import Balancer from "react-wrap-balancer";
+import { toast } from "sonner";
 import Container from "../global/container";
 import Wrapper from "../global/wrapper";
 import { Button } from "../ui/button";
