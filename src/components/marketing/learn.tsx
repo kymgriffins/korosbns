@@ -9,7 +9,6 @@ import {
     ChevronDown,
     ChevronLeft,
     ChevronRight,
-    FileText,
     Folder,
     HelpCircle,
     Mail,
@@ -20,6 +19,7 @@ import {
     XCircle,
 } from "lucide-react";
 import { AnimatePresence, motion, useScroll, useTransform } from "motion/react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -94,6 +94,15 @@ const hubStories = [
     icon: "🧪",
     action: "Explore",
   },
+  {
+    id: "civic-compass-v2",
+    title: "Civic Compass V2",
+    subtitle: "7-page motion story on wise constitutional leadership",
+    duration: "2m 20s",
+    gradient: "from-blue-700 via-indigo-700 to-slate-900",
+    icon: "🗳️",
+    action: "Start V2",
+  },
 ];
 
 const hubArticles = [
@@ -114,6 +123,30 @@ const hubArticles = [
     title: "Debt and Deficit Explained Simply",
     readTime: "8 min read",
     snippet: "Why deficits happen, what borrowing does, and what risks to watch in each cycle.",
+  },
+];
+
+const deepDiveModules = [
+  {
+    id: "growth-signal",
+    title: "Budget Growth Signal",
+    subtitle: "Track how projected spending scales and where growth should translate into public value.",
+    image: "/images/gradient.svg",
+    accent: "from-cyan-400/85 via-sky-400/80 to-blue-500/75",
+  },
+  {
+    id: "debt-pressure",
+    title: "Debt Pressure & Fiscal Space",
+    subtitle: "Understand debt obligations, refinancing risk, and why fiscal room for services gets tighter.",
+    image: "/images/project.svg",
+    accent: "from-orange-400/85 via-rose-400/80 to-fuchsia-500/75",
+  },
+  {
+    id: "citizen-checklist",
+    title: "Citizen Outcome Checklist",
+    subtitle: "Use practical checks for schools, health, and county delivery after allocations are approved.",
+    image: "/images/invoices.svg",
+    accent: "from-violet-400/85 via-indigo-400/80 to-blue-500/75",
   },
 ];
 
@@ -436,10 +469,118 @@ const futureLabCards = [
   },
 ];
 
+const civicCompassV2Cards = [
+  {
+    id: "v2-intro",
+    title: "Civic Compass V2",
+    subtitle: "Choose leadership that protects tomorrow",
+    hook: "Hook: One vote can defend the constitution or weaken it.",
+    emoji: "🧭",
+    bg: "from-slate-900 via-indigo-900 to-black",
+    content:
+      "A wise leader does not just promise projects. They protect institutions, follow the constitution, and keep power accountable to citizens.",
+    facts: [
+      "🗳️ Your vote shapes systems, not just slogans",
+      "⚖️ Law-abiding leadership builds trust",
+      "🏛️ Institutions outlive campaign seasons",
+      "🧑‍🤝‍🧑 Democracy needs active citizens",
+    ],
+  },
+  {
+    id: "v2-vetting-mindset",
+    title: "Before You Elect, Vet",
+    subtitle: "Leadership is a public trust",
+    emoji: "🔍",
+    bg: "from-zinc-900 via-slate-900 to-blue-900",
+    content:
+      "Treat every candidate like a serious job applicant. Review values, track record, integrity, and respect for lawful process before trusting them with public power.",
+    facts: [
+      "📁 Check delivery record and consistency",
+      "🧾 Follow known sources of campaign funding",
+      "🤝 Watch how they treat critics and media",
+      "📚 Verify policy depth, not just charisma",
+    ],
+  },
+  {
+    id: "v2-constitution",
+    title: "Constitution First",
+    subtitle: "No one is above the law",
+    emoji: "⚖️",
+    bg: "from-indigo-900 via-blue-900 to-slate-950",
+    content:
+      "Wise leaders work within constitutional limits: respecting courts, Parliament, county mandates, and independent oversight institutions.",
+    pillars: [
+      { emoji: "🏛️", title: "Separation of powers", desc: "No office should overreach" },
+      { emoji: "👩‍⚖️", title: "Independent judiciary", desc: "Rights need fair adjudication" },
+      { emoji: "📜", title: "Rule of law", desc: "Law guides decisions, not impulse" },
+      { emoji: "🧾", title: "Public accountability", desc: "Audit trails and open reporting" },
+    ],
+  },
+  {
+    id: "v2-democracy-check",
+    title: "Democracy Is Daily Work",
+    subtitle: "Beyond election day",
+    emoji: "🕊️",
+    bg: "from-slate-900 via-blue-900 to-indigo-950",
+    content:
+      "Democracy survives when leaders accept scrutiny, respect dissent, and protect civil liberties. Silence and fear are warning signs, not stability.",
+    risks: [
+      { title: "🚫 Attacking oversight", desc: "Weakens corruption checks" },
+      { title: "🧨 Divisive rhetoric", desc: "Turns citizens against each other" },
+      { title: "📵 Restricting civic voice", desc: "Reduces public participation" },
+      { title: "🫥 Dodging transparent reporting", desc: "Hides performance failures" },
+    ],
+  },
+  {
+    id: "v2-citizen-scorecard",
+    title: "Citizen Vetting Scorecard",
+    subtitle: "Simple test before support",
+    emoji: "✅",
+    bg: "from-blue-900 via-indigo-900 to-slate-950",
+    content:
+      "Use this quick scorecard to compare candidates. If someone fails most tests, they should not get your mandate.",
+    services: [
+      "Respects constitutional limits",
+      "Publishes clear policy plans",
+      "Has clean integrity record",
+      "Responds to scrutiny calmly",
+      "Builds unity across communities",
+    ],
+    tinyLogo: true,
+  },
+  {
+    id: "v2-collective-action",
+    title: "Vote, Then Monitor",
+    subtitle: "Mandate + follow-through",
+    emoji: "📣",
+    bg: "from-zinc-900 via-indigo-900 to-slate-900",
+    content:
+      "Electing wise leaders is the first step. Keep monitoring budgets, laws, procurement, and service delivery so constitutional promises become lived reality.",
+    facts: [
+      "📝 Track campaign promises quarterly",
+      "🏥 Follow local service outcomes",
+      "📊 Demand open performance data",
+      "🧭 Stay issue-focused, not personality-focused",
+    ],
+  },
+  {
+    id: "v2-credits",
+    title: "Built by the Dev Team",
+    subtitle: "Design-forward civic storytelling",
+    emoji: "🛠️",
+    bg: "from-black via-slate-900 to-indigo-900",
+    content:
+      "This V2 story is crafted in appreciation of the dev team: motion, interaction, and clarity working together to strengthen democratic civic education.",
+    stat: { value: "DEVTEAM", label: "Credits: Design + Engineering + Content" },
+    note: "Thank you for shipping civic tech that helps citizens choose wise, lawful leadership.",
+  },
+];
+
 const storyFlows = {
   "lets-decode": decodeStoryCards,
   "citizen-street": citizenStreetCards,
   "future-lab": futureLabCards,
+  "civic-compass-v2": civicCompassV2Cards,
 } as const;
 type StoryFlowId = keyof typeof storyFlows;
 
@@ -675,9 +816,11 @@ export default function Learn() {
 
   const currentStoryCards = storyFlows[selectedStoryId];
   const currentCard = currentStoryCards[articleIndex];
-  const isQuizPrompt = currentCard?.prompt;
+  const isQuizPrompt = Boolean(currentCard && "prompt" in currentCard && currentCard.prompt);
   const isLastCard = articleIndex === currentStoryCards.length - 1;
-  const totalCards = currentStoryCards.filter((c) => !c.prompt).length;
+  const totalCards = currentStoryCards.filter(
+    (c) => !("prompt" in c && c.prompt),
+  ).length;
   const readingProgress = Math.round((articleIndex / totalCards) * 100);
 
   const { scrollYProgress } = useScroll({
@@ -1159,6 +1302,7 @@ export default function Learn() {
     const risks = currentCard && "risks" in currentCard ? currentCard.risks : undefined;
     const facts = currentCard && "facts" in currentCard ? currentCard.facts : undefined;
     const services = currentCard && "services" in currentCard ? currentCard.services : undefined;
+    const tinyLogo = currentCard && "tinyLogo" in currentCard ? currentCard.tinyLogo : undefined;
     const hasStat = Boolean(stat);
     const hasPillars = Boolean(pillars?.length);
     const hasRisks = Boolean(risks?.length);
@@ -1224,6 +1368,11 @@ export default function Learn() {
                 >
                   {currentCard?.emoji}
                 </motion.div>
+                {tinyLogo && (
+                  <div className="absolute top-4 right-4 rounded-full border border-white/20 bg-black/35 p-1 backdrop-blur-sm">
+                    <Image src="/logo.svg" alt="Budget Ndio Story logo" width={12} height={12} />
+                  </div>
+                )}
 
                 {/* Title */}
                 <motion.h2
@@ -1454,7 +1603,7 @@ export default function Learn() {
   return (
     <section
       ref={containerRef}
-      className="relative w-full min-h-screen bg-background overflow-hidden flex flex-col pt-14 sm:pt-20"
+      className="relative w-full min-h-screen bg-background overflow-x-hidden overflow-y-visible flex flex-col pt-14 sm:pt-20"
     >
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         <motion.div
@@ -1469,13 +1618,41 @@ export default function Learn() {
 
       <Wrapper className="relative z-10 w-full flex-1 flex flex-col justify-between py-4 sm:py-6">
         <div className="flex-1 flex flex-col py-2 sm:py-4">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 space-y-8 sm:space-y-12 w-full">
-            
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 space-y-8 sm:space-y-12 w-full min-w-0">
+            <Container animation="fadeUp" delay={0.02} className="space-y-4">
+              <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900 via-indigo-900/70 to-slate-900 p-5 sm:p-6">
+                <div className="pointer-events-none absolute -right-12 -top-12 size-40 rounded-full bg-primary/25 blur-3xl" />
+                <div className="pointer-events-none absolute -left-12 -bottom-12 size-36 rounded-full bg-cyan-400/20 blur-3xl" />
+                <div className="relative z-10">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/25 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-white/80">
+                    <BookOpen className="size-3.5" />
+                    Learn Hub
+                  </div>
+                  <h1 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">
+                    Learn budget stories faster, with visual explainers
+                  </h1>
+                  <p className="mt-2 max-w-2xl text-sm text-white/75 sm:text-base">
+                    Swipe story cards, open deep dives, and use practical citizen checklists to understand how public money decisions affect real services.
+                  </p>
+                  <div className="mt-4 flex flex-wrap items-center gap-2">
+                    <span className="rounded-full border border-white/20 bg-white/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-white/85">
+                      4 story formats
+                    </span>
+                    <span className="rounded-full border border-white/20 bg-white/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-white/85">
+                      3 deep dives
+                    </span>
+                    <span className="rounded-full border border-white/20 bg-white/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-white/85">
+                      Quiz + survey
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </Container>
 
             <Container animation="fadeUp" delay={0.04} className="space-y-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold">Stories</h2>
-                <span className="text-xs text-foreground/50">
+                <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground/55">
                   Swipe horizontally
                 </span>
               </div>
@@ -1534,69 +1711,63 @@ export default function Learn() {
             </Container>
 
             <Container animation="fadeUp" delay={0.15} className="space-y-4">
-              <h2 className="text-xl font-bold">Deep Dive</h2>
-              <Link
-                href="/learn/bps"
-                className="group block rounded-2xl border border-white/10 bg-linear-to-br from-white/10 via-white/5 to-transparent p-5 sm:p-6 hover:border-primary/40 transition-all cursor-pointer overflow-hidden"
-              >
-                <motion.div whileHover={{ y: -2 }} className="relative">
-                  <div className="absolute -top-10 -right-10 size-40 rounded-full bg-primary/20 blur-3xl pointer-events-none" />
-                  <div className="relative rounded-2xl overflow-hidden border border-white/15 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 h-40 sm:h-52 mb-5">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.12)_1px,transparent_0)] bg-[size:16px_16px]" />
-                    <div className="absolute inset-0 bg-gradient-to-r from-primary/25 via-transparent to-teal-500/20" />
-                    <div className="absolute top-3 left-3 rounded-md bg-black/45 px-2 py-1 text-[10px] uppercase tracking-wider text-white/80">
-                      BPS 2026 Visual Preview
-                    </div>
-                    <div className="absolute left-4 right-4 bottom-4 rounded-xl border border-white/20 bg-black/35 backdrop-blur p-3">
-                      <div className="flex items-center justify-between gap-3">
-                        <div>
-                          <p className="text-xs text-white/70">Priority Signal</p>
-                          <p className="text-sm font-semibold text-white">Education + Health + Jobs</p>
+              <div className="space-y-1.5">
+                <div className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-primary">
+                  <BarChart3 className="size-3.5" />
+                  Deep Dive
+                </div>
+                <h2 className="text-xl font-bold">Guided explainer cards</h2>
+                <p className="text-sm text-foreground/65">
+                  One guided article that explains what the BPS means in plain language.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+                  {deepDiveModules.map((module, index) => (
+                    <Link key={module.id} href="/learn/bps" className="group block min-w-0">
+                      <motion.div
+                        initial={{ opacity: 0, y: 14 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.4, delay: index * 0.08 }}
+                        whileHover={{ y: -2 }}
+                        className="relative overflow-hidden rounded-[24px] bg-white/[0.055] shadow-[0_12px_40px_rgba(0,0,0,0.28)]"
+                      >
+                        <div className="relative m-2 h-44 overflow-hidden rounded-[22px]">
+                          <Image
+                            src={module.image}
+                            alt={module.title}
+                            fill
+                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            sizes="(max-width: 640px) 320px, 360px"
+                          />
+                          <div className={cn("absolute inset-0 bg-linear-to-br", module.accent)} />
+                          <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(8,8,12,0.72)_18%,rgba(8,8,12,0.16)_72%)]" />
+                          <div className="absolute right-3 top-3 rounded-full bg-white/90 p-2 text-black shadow-[0_6px_18px_rgba(0,0,0,0.28)]">
+                            <ArrowRight className="size-3.5" />
+                          </div>
                         </div>
-                        <div className="h-8 w-20 rounded-md bg-gradient-to-r from-primary to-teal-400 opacity-80" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-teal-500 flex items-center justify-center shadow-lg shadow-primary/20">
-                      <FileText className="size-5 text-white" />
-                    </div>
-                    <span className="rounded-full border border-primary/30 bg-primary/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-primary">
-                      Featured Article
-                    </span>
-                  </div>
 
-                  <div className="mt-4">
-                    <h3 className="text-lg sm:text-xl font-bold group-hover:text-primary transition-colors">
-                      Budget Policy Statement (BPS) Deep Dive
-                    </h3>
-                    <p className="text-sm text-foreground/65 mt-2 max-w-2xl">
-                      A professional, visual-first breakdown of priorities, spending direction,
-                      and citizen impact. This is the anchor article for the wider document ecosystem.
-                    </p>
-                  </div>
-
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] text-foreground/80">
-                      Visual analysis
-                    </span>
-                    <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] text-foreground/80">
-                      Policy highlights
-                    </span>
-                    <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] text-foreground/80">
-                      Citizen actions
-                    </span>
-                  </div>
-
-                  <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-                    <div className="inline-flex items-center gap-2 text-xs text-foreground/60">
-                      <Folder className="size-4 text-primary/80" />
-                      More deep dives will expand from the document folders below.
-                    </div>
-                    <ArrowRight className="size-4 text-foreground/30 group-hover:text-primary transition-colors" />
-                  </div>
-                </motion.div>
-              </Link>
+                        <div className="min-w-0 px-4 pb-4 pt-3 sm:px-4 sm:pb-4 sm:pt-3.5">
+                          <h3 className="text-xl sm:text-2xl font-bold leading-tight tracking-tight break-words">
+                            {module.title}
+                          </h3>
+                          <p className="mt-2 text-sm sm:text-[15px] leading-relaxed text-foreground/70 break-words">
+                            {module.subtitle}
+                          </p>
+                        </div>
+                      </motion.div>
+                    </Link>
+                  ))}
+              </div>
+              <div className="pt-2">
+                <Link
+                  href="/learn/deep-dives"
+                  className="inline-flex items-center gap-2 rounded-full border border-primary/35 bg-primary/15 px-4 py-2 text-sm font-semibold text-primary transition-all hover:-translate-y-0.5 hover:bg-primary/25"
+                >
+                  See More Deep Dives
+                  <ArrowRight className="size-4" />
+                </Link>
+              </div>
             </Container>
 
             <Container animation="fadeUp" delay={0.2} className="space-y-4">

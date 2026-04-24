@@ -206,8 +206,10 @@ export type FetchDocumentsResult = {
   error?: string;
 };
 
-// Fetch documents from the API
-export async function fetchDocumentsFromAPI(): Promise<FetchDocumentsResult> {
+let cachedDocumentsResult: FetchDocumentsResult | null = null;
+let inflightDocumentsPromise: Promise<FetchDocumentsResult> | null = null;
+
+async function fetchDocumentsFromApiOnce(): Promise<FetchDocumentsResult> {
   try {
     const response = await fetch(
       "https://api.budgetndiostory.org/docrepository/",
@@ -242,11 +244,41 @@ export async function fetchDocumentsFromAPI(): Promise<FetchDocumentsResult> {
       documents: transformRepositoryData(data),
     };
   } catch (error) {
-    console.error("Failed to fetch documents from API:", error);
+    const maybeCause = (error as { cause?: { code?: string; reason?: string } })?.cause;
+    const isTlsAltNameIssue = maybeCause?.code === "ERR_TLS_CERT_ALTNAME_INVALID";
+    if (isTlsAltNameIssue) {
+      console.warn(
+        "Document repository TLS certificate mismatch for api.budgetndiostory.org; serving fallback empty documents.",
+      );
+    } else {
+      console.error("Failed to fetch documents from API:", error);
+    }
     return {
       documents: [],
       error:
         "The document repository is temporarily unavailable. Please try again later.",
     };
   }
+}
+
+// Fetch documents from the API (deduplicated per server runtime)
+export async function fetchDocumentsFromAPI(): Promise<FetchDocumentsResult> {
+  if (cachedDocumentsResult) {
+    return cachedDocumentsResult;
+  }
+
+  if (inflightDocumentsPromise) {
+    return inflightDocumentsPromise;
+  }
+
+  inflightDocumentsPromise = fetchDocumentsFromApiOnce()
+    .then((result) => {
+      cachedDocumentsResult = result;
+      return result;
+    })
+    .finally(() => {
+      inflightDocumentsPromise = null;
+    });
+
+  return inflightDocumentsPromise;
 }

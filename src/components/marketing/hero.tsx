@@ -64,7 +64,7 @@ const Hero = () => {
     const description = "We turn national and county budgets into simple stories, visuals, and action steps for young Kenyans.";
 
     return (
-        <section className="relative w-full flex items-center justify-center pt-16 lg:pt-32 pb-4 overflow-hidden">
+        <section className="relative w-full flex items-center justify-center pt-8 lg:pt-8 pb-4 overflow-hidden">
             <Wrapper className="relative z-10">
                 <div className="flex flex-col items-center text-center">
                     <motion.div
