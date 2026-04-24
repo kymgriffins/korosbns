@@ -1139,8 +1139,9 @@ export default function Research() {
                 <div className="flex items-center justify-between">
                   <h2 className="text-2xl font-bold">Document Repository</h2>
                   <a 
-                    href="http://api.budgetndiostory.org/docrepository/"
+                    href="https://api.budgetndiostory.org/docrepository/"
                     target="_blank"
+                    rel="noopener noreferrer"
                     className="text-xs text-primary hover:underline flex items-center gap-1"
                   >
                     Browse API Root <ExternalLink className="size-3" />

@@ -7,6 +7,7 @@ import { footerLinks, socialLinks } from "@/constants";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
+import { motion } from "motion/react";
 import { toast } from "sonner";
 
 const Footer = () => {
@@ -157,22 +158,40 @@ const Footer = () => {
           </p>
 
           <div className="flex items-center gap-4">
-            {socialLinks.map((social) => (
+            {socialLinks.map((social, index) => (
               <Link
                 key={social.label}
                 href={social.href}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={social.label}
-                className="size-9 flex items-center justify-center rounded-full bg-foreground/5 hover:bg-foreground/10 transition-colors"
+                className="group relative size-10 flex items-center justify-center rounded-full bg-foreground/5 hover:bg-foreground/10 transition-colors overflow-hidden border border-foreground/10"
               >
-                <Image
-                  src={`/icons/integrations/${social.icon === "x" ? "social-x" : social.icon}.svg`}
-                  alt={social.label}
-                  width={20}
-                  height={20}
-                  className={social.icon === "x" ? "size-4" : "size-5"}
+                <motion.span
+                  aria-hidden
+                  className="absolute inset-0 rounded-full border border-primary/25"
+                  animate={{ rotate: 360 }}
+                  transition={{
+                    duration: 12 + index * 1.2,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
                 />
+                <motion.span
+                  aria-hidden
+                  className="absolute -top-1 -right-1 size-2 rounded-full bg-primary/70 blur-[1px]"
+                  animate={{ opacity: [0.2, 0.9, 0.2], scale: [0.8, 1.2, 0.8] }}
+                  transition={{ duration: 2.8, repeat: Infinity, delay: index * 0.08 }}
+                />
+                <motion.div whileHover={{ y: -1.5, scale: 1.06 }} transition={{ duration: 0.2 }}>
+                  <Image
+                    src={`/icons/integrations/${social.icon === "x" ? "social-x" : social.icon}.svg`}
+                    alt={social.label}
+                    width={20}
+                    height={20}
+                    className={social.icon === "x" ? "size-4" : "size-5"}
+                  />
+                </motion.div>
               </Link>
             ))}
           </div>

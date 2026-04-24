@@ -3,62 +3,31 @@
 import { cn } from "@/utils";
 import {
     ArrowRight,
-    Award,
     BarChart3,
     BookOpen,
     CheckCircle,
     ChevronDown,
     ChevronLeft,
     ChevronRight,
-    ExternalLink,
-    Eye,
+    FileText,
     Folder,
     HelpCircle,
     Mail,
-    MonitorPlay,
-    Play,
     RefreshCcw,
     Send,
-    Sparkles,
     Target,
     X,
     XCircle,
 } from "lucide-react";
 import { AnimatePresence, motion, useScroll, useTransform } from "motion/react";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Balancer from "react-wrap-balancer";
 import { toast } from "sonner";
 import Container from "../global/container";
 import Wrapper from "../global/wrapper";
 import { Button } from "../ui/button";
-
-const bpsVideos = [
-  {
-    id: "intro",
-    title: "Introduction to BPS",
-    duration: "4:32",
-    url: "https://www.youtube.com/embed/A_EXLueEMlk",
-  },
-  {
-    id: "pillars",
-    title: "BETA Agenda Pillars",
-    duration: "8:15",
-    url: "https://www.youtube.com/embed/jLZe3iPSMfc",
-  },
-  {
-    id: "numbers",
-    title: "Budget Numbers Explained",
-    duration: "6:48",
-    url: "https://www.youtube.com/embed/KeNCrx6krl0",
-  },
-  {
-    id: "risks",
-    title: "Fiscal Risks",
-    duration: "5:22",
-    url: "https://www.youtube.com/embed/SfPwtqUFyj4",
-  },
-];
 
 const faqItems = [
   {
@@ -97,11 +66,63 @@ const moduleInfo = {
   credits: "Millicent Makini",
 };
 
-const storyCards = [
+const hubStories = [
+  {
+    id: "lets-decode",
+    title: "Let's Decode",
+    subtitle: "Bold social-style explainers with punchy hooks",
+    duration: "2m 30s",
+    gradient: "from-fuchsia-600 via-violet-600 to-indigo-600",
+    icon: "🔥",
+    action: "Play Story",
+  },
+  {
+    id: "citizen-street",
+    title: "Citizen Street",
+    subtitle: "Real-life day-to-day budget impact story",
+    duration: "2m 10s",
+    gradient: "from-amber-500 via-orange-500 to-rose-500",
+    icon: "🏙️",
+    action: "Open",
+  },
+  {
+    id: "future-lab",
+    title: "Future Lab",
+    subtitle: "Neon data-cards, goals, and risk radar",
+    duration: "2m 00s",
+    gradient: "from-blue-600 via-sky-500 to-cyan-500",
+    icon: "🧪",
+    action: "Explore",
+  },
+];
+
+const hubArticles = [
+  {
+    id: "guide-2026",
+    title: "Beginner Guide: Understanding BPS 2026",
+    readTime: "7 min read",
+    snippet: "A plain-language article on how the Budget Policy Statement shapes spending.",
+  },
+  {
+    id: "counties-breakdown",
+    title: "County Budgets: What KES 420B Means",
+    readTime: "6 min read",
+    snippet: "How county allocations translate into roads, health, markets, and water services.",
+  },
+  {
+    id: "debt-deficit-explained",
+    title: "Debt and Deficit Explained Simply",
+    readTime: "8 min read",
+    snippet: "Why deficits happen, what borrowing does, and what risks to watch in each cycle.",
+  },
+];
+
+const decodeStoryCards = [
   {
     id: "intro",
     title: "Let's Decode the Budget! 🔓",
     subtitle: "Kenya's Money Blueprint",
+    hook: "Hook: This one decision touches your rent, food, and transport.",
     emoji: "🚪",
     bg: "from-indigo-500 via-purple-500 to-pink-500",
     content:
@@ -127,6 +148,7 @@ const storyCards = [
     id: "beta-intro",
     title: "Meet BETA! 🌟",
     subtitle: "The Big Plan for Kenya",
+    hook: "Hook: Five pillars, one national game plan.",
     emoji: "🚀",
     bg: "from-cyan-500 to-blue-500",
     content:
@@ -188,6 +210,7 @@ const storyCards = [
     id: "numbers-intro",
     title: "The Big Numbers! 💰",
     subtitle: "Let's Talk Billions",
+    hook: "Hook: The size of the gap decides tomorrow's taxes.",
     emoji: "😱",
     bg: "from-violet-600 to-purple-600",
     content:
@@ -248,6 +271,7 @@ const storyCards = [
     id: "risks",
     title: "Watch Out! ⚠️",
     subtitle: "Budget Danger Zones",
+    hook: "Hook: These risks can flip a good budget fast.",
     emoji: "⚡",
     bg: "from-gray-700 to-gray-900",
     content: "Things that could mess up the budget:",
@@ -269,6 +293,155 @@ const storyCards = [
     prompt: true,
   },
 ];
+
+const citizenStreetCards = [
+  {
+    id: "street-intro",
+    title: "Morning in Githurai ☀️",
+    subtitle: "Budget meets daily life",
+    hook: "Hook: Budget policy quietly prices your entire day.",
+    emoji: "🚐",
+    bg: "from-orange-500 via-amber-500 to-yellow-500",
+    content:
+      "You wake up, board a matatu, buy breakfast, and head to work. Every one of those costs is shaped by taxes, fuel policy, and county planning.",
+    facts: ["🚌 Transport", "🍞 Food prices", "💡 Electricity", "🏥 Health access"],
+  },
+  {
+    id: "fare",
+    title: "Matatu Fare Shock 😵",
+    subtitle: "Fuel costs ripple everywhere",
+    emoji: "⛽",
+    bg: "from-red-500 to-orange-500",
+    content:
+      "When fuel levies rise, transport operators adjust fares. That pushes up market delivery costs and eventually your lunch bill.",
+    stat: { value: "KES +20-80", label: "🚨Typical fare jump band" },
+  },
+  {
+    id: "market",
+    title: "Soko Realities 🧺",
+    subtitle: "Why unga and mboga shift",
+    emoji: "🥬",
+    bg: "from-green-500 to-emerald-500",
+    content:
+      "Food inflation is not random. Fertilizer subsidies, irrigation investment, and transport costs decide what your basket looks like.",
+    services: ["🌽 Subsidies", "🚚 Logistics", "💧 Irrigation", "📦 Storage"],
+  },
+  {
+    id: "clinic",
+    title: "Clinic Queue Story 🏥",
+    subtitle: "County money at work",
+    emoji: "🩺",
+    bg: "from-rose-500 to-pink-500",
+    content:
+      "Local clinics depend on county allocation quality. Better prioritization means more drugs, staff, and shorter queues.",
+    stat: { value: "KES 420B", label: "🏛️County equitable share" },
+  },
+  {
+    id: "street-risk",
+    title: "Street Risk Radar ⚠️",
+    subtitle: "What can break the plan",
+    emoji: "🌧️",
+    bg: "from-slate-700 to-slate-900",
+    content: "On the ground, these risks hit first:",
+    risks: [
+      { title: "📉 Slow growth", desc: "Jobs and household income tighten" },
+      { title: "⛽ Energy spikes", desc: "Transport and food costs climb" },
+      { title: "🌊 Climate shocks", desc: "Supply chains and farm output dip" },
+      { title: "🏥 Service pressure", desc: "Demand rises faster than facilities" },
+    ],
+  },
+  {
+    id: "quiz-prompt",
+    title: "Street Checkpoint 🎯",
+    subtitle: "Ready for the quiz?",
+    emoji: "✅",
+    bg: "from-amber-500 via-orange-500 to-red-500",
+    content: "You now see how policy hits normal life. Let's test it fast.",
+    prompt: true,
+  },
+];
+
+const futureLabCards = [
+  {
+    id: "lab-intro",
+    title: "Welcome to Future Lab 🧪",
+    subtitle: "Mission: decode 2026 budget",
+    hook: "Hook: Good allocations create momentum, bad ones create drag.",
+    emoji: "🧠",
+    bg: "from-cyan-500 via-blue-600 to-indigo-700",
+    content:
+      "Think of the budget as a control panel. Each lever affects growth, services, and resilience. Your job is to read the signals before the headlines do.",
+  },
+  {
+    id: "growth-engine",
+    title: "Growth Engine 🚀",
+    subtitle: "Where expansion should come from",
+    emoji: "📈",
+    bg: "from-emerald-500 to-teal-600",
+    content:
+      "If agriculture, MSMEs, and digital sectors scale together, employment and tax revenues become more stable over time.",
+    pillars: [
+      { emoji: "🌾", title: "Agriculture", desc: "Food and export stability" },
+      { emoji: "🏪", title: "MSMEs", desc: "Fast local job creation" },
+      { emoji: "📶", title: "Digital", desc: "Efficiency and inclusion" },
+    ],
+  },
+  {
+    id: "allocation-dashboard",
+    title: "Allocation Dashboard 🖥️",
+    subtitle: "Money in vs money out",
+    emoji: "🧮",
+    bg: "from-violet-600 to-purple-700",
+    content:
+      "The critical question is not only how much is spent, but what share goes to productive investment versus locked obligations.",
+    facts: [
+      "💰 Revenue: KES 3.59T",
+      "🛒 Spend: KES 4.74T",
+      "📉 Deficit: KES 1.15T",
+      "🚨 Debt service pressure",
+    ],
+  },
+  {
+    id: "resilience",
+    title: "Resilience Layer 🛡️",
+    subtitle: "Can systems absorb shocks?",
+    emoji: "🌍",
+    bg: "from-blue-500 to-sky-600",
+    content:
+      "Climate, exchange rates, and global prices can all stress fiscal plans. Strong local systems reduce the damage.",
+    services: ["💧 Water systems", "🌾 Food buffers", "🏥 Health readiness", "📊 Data response"],
+  },
+  {
+    id: "risk-matrix",
+    title: "Risk Matrix 🚨",
+    subtitle: "Priority watchlist",
+    emoji: "🛰️",
+    bg: "from-gray-700 to-black",
+    content: "Four red flags to watch this cycle:",
+    risks: [
+      { title: "💳 Debt rollover", desc: "Refinancing gets costlier" },
+      { title: "🏢 SOE liabilities", desc: "Potential bailout burdens" },
+      { title: "📉 Revenue underperformance", desc: "Targets miss reality" },
+      { title: "🌦️ Climate variability", desc: "Agriculture and prices swing" },
+    ],
+  },
+  {
+    id: "quiz-prompt",
+    title: "Systems Check 🎯",
+    subtitle: "Test your analyst instincts",
+    emoji: "🧩",
+    bg: "from-indigo-600 via-violet-600 to-fuchsia-600",
+    content: "You finished the lab run. Ready for your final check?",
+    prompt: true,
+  },
+];
+
+const storyFlows = {
+  "lets-decode": decodeStoryCards,
+  "citizen-street": citizenStreetCards,
+  "future-lab": futureLabCards,
+} as const;
+type StoryFlowId = keyof typeof storyFlows;
 
 const quizQuestions = [
   {
@@ -311,6 +484,21 @@ const quizQuestions = [
     correct: 2,
     explanation:
       "KES 420 billion is allocated to county governments for devolved services like roads, health, water, and markets.",
+  },
+];
+
+const surveyQuestions = [
+  {
+    question: "How clear did this story make the 2026 budget for you?",
+    options: ["Very clear", "Somewhat clear", "Neutral", "Still confusing"],
+  },
+  {
+    question: "Which story format did you enjoy most?",
+    options: ["Let's Decode", "Citizen Street", "Future Lab", "I liked all of them"],
+  },
+  {
+    question: "What should we improve next?",
+    options: ["More visuals/emoji", "Simpler terms", "More local examples", "Shorter pages"],
   },
 ];
 
@@ -466,24 +654,30 @@ function NewsletterSignup() {
   );
 }
 
-type LearnMode = "read" | "watch";
-type AppState = "hub" | "article" | "quiz" | "complete" | "watching";
+type AppState = "hub" | "article" | "quiz" | "complete" | "survey" | "survey-complete";
+const STORY_WATCHED_STORAGE_KEY = "bns_story_watched";
 
 export default function Learn() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [appState, setAppState] = useState<AppState>("hub");
-  const [learnMode, setLearnMode] = useState<LearnMode>("read");
-  const [videoIndex, setVideoIndex] = useState(0);
+  const [selectedStoryId, setSelectedStoryId] = useState<StoryFlowId>("lets-decode");
   const [articleIndex, setArticleIndex] = useState(0);
   const [quizIndex, setQuizIndex] = useState(0);
   const [quizAnswer, setQuizAnswer] = useState<number | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
   const [quizScore, setQuizScore] = useState(0);
   const [readyForQuiz, setReadyForQuiz] = useState(false);
+  const [surveyIndex, setSurveyIndex] = useState(0);
+  const [surveyAnswers, setSurveyAnswers] = useState<Record<number, number>>({});
+  const [watchedStories, setWatchedStories] = useState<Record<string, boolean>>({});
 
-  const currentCard = storyCards[articleIndex];
+  const currentStoryCards = storyFlows[selectedStoryId];
+  const currentCard = currentStoryCards[articleIndex];
   const isQuizPrompt = currentCard?.prompt;
-  const totalCards = storyCards.filter((c) => !c.prompt).length;
+  const isLastCard = articleIndex === currentStoryCards.length - 1;
+  const totalCards = currentStoryCards.filter((c) => !c.prompt).length;
   const readingProgress = Math.round((articleIndex / totalCards) * 100);
 
   const { scrollYProgress } = useScroll({
@@ -498,7 +692,7 @@ export default function Learn() {
   );
 
   const handleNext = () => {
-    if (articleIndex < storyCards.length - 1) {
+    if (articleIndex < currentStoryCards.length - 1) {
       setArticleIndex((i) => i + 1);
     }
   };
@@ -509,13 +703,63 @@ export default function Learn() {
     }
   };
 
-  const handleCardTap = (direction: "prev" | "next") => {
-    if (direction === "prev" && articleIndex > 0) {
-      setArticleIndex((i) => i - 1);
-    } else if (direction === "next" && articleIndex < storyCards.length - 1) {
-      setArticleIndex((i) => i + 1);
-    }
+  const markStoryWatched = (storyId: StoryFlowId) => {
+    setWatchedStories((prev) => {
+      if (prev[storyId]) return prev;
+      const next = { ...prev, [storyId]: true };
+      try {
+        window.localStorage.setItem(STORY_WATCHED_STORAGE_KEY, JSON.stringify(next));
+      } catch {
+        // Ignore storage failures in private mode or restricted environments.
+      }
+      return next;
+    });
   };
+
+  const sortedHubStories = useMemo(() => {
+    return [...hubStories].sort((a, b) => {
+      const aWatched = watchedStories[a.id] ? 1 : 0;
+      const bWatched = watchedStories[b.id] ? 1 : 0;
+      return aWatched - bWatched;
+    });
+  }, [watchedStories]);
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(STORY_WATCHED_STORAGE_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as Record<string, boolean>;
+      setWatchedStories(parsed);
+    } catch {
+      // Ignore invalid/missing local storage data.
+    }
+  }, []);
+
+  useEffect(() => {
+    const storyParam = searchParams.get("story");
+    if (!storyParam) return;
+
+    if (storyParam in storyFlows) {
+      const storyId = storyParam as StoryFlowId;
+      setSelectedStoryId(storyId);
+      markStoryWatched(storyId);
+      setAppState("article");
+      setArticleIndex(0);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (appState !== "article") return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setAppState("hub");
+        setArticleIndex(0);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [appState]);
 
   const startQuiz = () => {
     setAppState("quiz");
@@ -568,6 +812,7 @@ export default function Learn() {
 
   const resultTitle = getTitle(quizScore, quizQuestions.length);
   const finalPct = Math.round((quizScore / quizQuestions.length) * 100);
+  const surveyCompletedCount = Object.keys(surveyAnswers).length;
 
   if (appState === "complete") {
     const emoji =
@@ -635,7 +880,7 @@ export default function Learn() {
 
           <Button
             size="lg"
-            className="w-full h-12 rounded-xl bg-white text-gray-900 hover:bg-white/90"
+            className="hidden md:inline-flex w-full h-12 rounded-xl bg-white text-gray-900 hover:bg-white/90"
             onClick={() => {
               setAppState("hub");
               setArticleIndex(0);
@@ -783,29 +1028,151 @@ export default function Learn() {
     );
   }
 
+  if (appState === "survey-complete") {
+    return (
+      <section className="fixed inset-0 z-[100] bg-gradient-to-br from-indigo-900 via-violet-900 to-black flex items-center justify-center p-6 overflow-hidden">
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="w-full max-w-md rounded-3xl border border-white/20 bg-white/10 backdrop-blur p-8 text-center"
+        >
+          <div className="text-6xl mb-4">📝</div>
+          <h2 className="text-3xl font-bold text-white mb-2">Survey complete</h2>
+          <p className="text-white/70 mb-6">
+            Thanks for the feedback. This helps us improve future stories.
+          </p>
+          <div className="text-sm text-white/80 mb-6">
+            Responses submitted: {surveyCompletedCount}/{surveyQuestions.length}
+          </div>
+          <Button
+            className="hidden md:inline-flex w-full h-11 bg-white text-gray-900 hover:bg-white/90"
+            onClick={() => {
+              setAppState("hub");
+              setSurveyIndex(0);
+              setSurveyAnswers({});
+            }}
+          >
+            Back to Learn Hub
+          </Button>
+        </motion.div>
+      </section>
+    );
+  }
+
+  if (appState === "survey") {
+    const currentSurvey = surveyQuestions[surveyIndex];
+    const progress = ((surveyIndex + 1) / surveyQuestions.length) * 100;
+    const selected = surveyAnswers[surveyIndex];
+
+    return (
+      <section className="fixed inset-0 z-[100] bg-gradient-to-br from-slate-900 via-indigo-900 to-black flex flex-col overflow-hidden">
+        <div className="relative z-10 flex items-center px-4 py-3">
+          <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400"
+              initial={{ width: 0 }}
+              animate={{ width: `${progress}%` }}
+              transition={{ type: "spring", damping: 22 }}
+            />
+          </div>
+          <div className="ml-3 px-2 py-1 rounded-full bg-white/20 text-xs font-medium text-white">
+            {surveyIndex + 1}/{surveyQuestions.length}
+          </div>
+          <button
+            onClick={() => setAppState("hub")}
+            className="ml-2 p-1.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
+          >
+            <X className="size-4 text-white" />
+          </button>
+        </div>
+
+        <div className="relative z-10 flex-1 flex items-center justify-center p-6">
+          <motion.div
+            key={surveyIndex}
+            initial={{ x: 90, opacity: 0, scale: 0.95 }}
+            animate={{ x: 0, opacity: 1, scale: 1 }}
+            exit={{ x: -90, opacity: 0, scale: 0.95 }}
+            transition={{ type: "spring", damping: 18, stiffness: 180 }}
+            className="w-full max-w-md rounded-3xl border border-white/20 bg-white/10 backdrop-blur p-6"
+          >
+            <div className="text-xs uppercase tracking-wider text-cyan-300 font-semibold mb-2">
+              Story Survey
+            </div>
+            <h3 className="text-xl font-bold text-white mb-6">{currentSurvey.question}</h3>
+            <div className="space-y-3">
+              {currentSurvey.options.map((option, idx) => (
+                <button
+                  key={option}
+                  onClick={() =>
+                    setSurveyAnswers((prev) => ({
+                      ...prev,
+                      [surveyIndex]: idx,
+                    }))
+                  }
+                  className={cn(
+                    "w-full p-3 rounded-xl text-left border transition-colors",
+                    selected === idx
+                      ? "border-cyan-300 bg-cyan-400/20 text-white"
+                      : "border-white/20 bg-white/5 text-white/90 hover:bg-white/10",
+                  )}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+
+        <div className="relative z-10 p-4 border-t border-white/10 grid grid-cols-1 md:grid-cols-2 gap-2">
+          <Button
+            variant="outline"
+            className="hidden md:inline-flex h-11 border-white/30 bg-black/20 text-white hover:bg-white/10"
+            disabled={surveyIndex === 0}
+            onClick={() => setSurveyIndex((v) => Math.max(0, v - 1))}
+          >
+            <ChevronLeft className="size-4 mr-1" />
+            Previous
+          </Button>
+          <Button
+            className="h-11 bg-white text-gray-900 hover:bg-white/90 disabled:opacity-40"
+            disabled={selected === undefined}
+            onClick={() => {
+              if (surveyIndex < surveyQuestions.length - 1) {
+                setSurveyIndex((v) => v + 1);
+              } else {
+                setAppState("survey-complete");
+              }
+            }}
+          >
+            {surveyIndex < surveyQuestions.length - 1 ? "Next" : "Finish Survey"}
+            <ArrowRight className="size-4 ml-1" />
+          </Button>
+        </div>
+      </section>
+    );
+  }
+
   if (appState === "article") {
-    const hasStat = currentCard?.stat;
-    const hasPillars = currentCard?.pillars;
-    const hasRisks = currentCard?.risks;
-    const hasFacts = currentCard?.facts;
-    const hasServices = currentCard?.services;
+    const stat = currentCard && "stat" in currentCard ? currentCard.stat : undefined;
+    const note = currentCard && "note" in currentCard ? currentCard.note : undefined;
+    const pillars = currentCard && "pillars" in currentCard ? currentCard.pillars : undefined;
+    const risks = currentCard && "risks" in currentCard ? currentCard.risks : undefined;
+    const facts = currentCard && "facts" in currentCard ? currentCard.facts : undefined;
+    const services = currentCard && "services" in currentCard ? currentCard.services : undefined;
+    const hasStat = Boolean(stat);
+    const hasPillars = Boolean(pillars?.length);
+    const hasRisks = Boolean(risks?.length);
+    const hasFacts = Boolean(facts?.length);
+    const hasServices = Boolean(services?.length);
     const bgGradient = currentCard?.bg || "from-primary to-teal-500";
     const cardBgClass = `bg-gradient-to-br ${bgGradient}`;
 
     return (
       <section className="fixed inset-0 z-[100] bg-black flex flex-col overflow-hidden">
-        {/* Animated background blobs */}
+        {/* Static background */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <motion.div
-            animate={{ scale: [1, 1.2, 1], rotate: [0, 180, 360] }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className={`absolute -top-1/2 -left-1/2 w-[100%] h-[100%] rounded-full opacity-30 ${cardBgClass}`}
-          />
-          <motion.div
-            animate={{ scale: [1.2, 1, 1.2], rotate: [360, 180, 0] }}
-            transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-            className={`absolute -bottom-1/2 -right-1/2 w-[80%] h-[80%] rounded-full opacity-20 ${cardBgClass}`}
-          />
+          <div className={`absolute -top-1/3 -left-1/3 w-[90%] h-[90%] rounded-full opacity-25 ${cardBgClass}`} />
+          <div className={`absolute -bottom-1/3 -right-1/3 w-[75%] h-[75%] rounded-full opacity-20 ${cardBgClass}`} />
         </div>
 
         {/* Progress bar */}
@@ -819,7 +1186,7 @@ export default function Learn() {
             />
           </div>
           <div className="ml-3 px-2 py-1 rounded-full bg-white/20 text-xs font-medium">
-            {articleIndex + 1}/{storyCards.length}
+            {articleIndex + 1}/{currentStoryCards.length}
           </div>
           <button
             onClick={() => {
@@ -831,18 +1198,16 @@ export default function Learn() {
             <X className="size-4 text-white" />
           </button>
         </div>
-
         {/* Swipeable card area */}
         <div className="relative z-10 flex-1 flex items-center justify-center px-4">
           <AnimatePresence mode="wait">
             <motion.div
-              key={articleIndex}
-              initial={{ x: 300, opacity: 0, scale: 0.8, rotate: 5 }}
-              animate={{ x: 0, opacity: 1, scale: 1, rotate: 0 }}
-              exit={{ x: -300, opacity: 0, scale: 0.8, rotate: -5 }}
-              transition={{ type: "spring", damping: 20, stiffness: 200 }}
-              onClick={handleNext}
-              className="w-full max-w-md cursor-grab active:cursor-grabbing"
+              key={`${selectedStoryId}-${articleIndex}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.22 }}
+              className="w-full max-w-md"
             >
               {/* Flashcard */}
               <div
@@ -851,19 +1216,11 @@ export default function Learn() {
                   cardBgClass,
                 )}
               >
-                {/* Card shine effect */}
                 <motion.div
-                  className="absolute inset-0 bg-gradient-to-tr from-white/30 via-transparent to-transparent"
-                  animate={{ x: [-200, 200] }}
-                  transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-                />
-
-                {/* Emoji badge */}
-                <motion.div
-                  initial={{ scale: 0, rotate: -180 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  transition={{ type: "spring", damping: 10, delay: 0.1 }}
-                  className="text-6xl sm:text-7xl mb-4"
+                  initial={{ scale: 0.92, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.2 }}
+                  className="mb-3 text-6xl sm:text-7xl"
                 >
                   {currentCard?.emoji}
                 </motion.div>
@@ -888,6 +1245,17 @@ export default function Learn() {
                   {currentCard?.subtitle}
                 </motion.p>
 
+                {currentCard?.hook && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.18 }}
+                    className="inline-flex mb-4 rounded-full border border-white/30 bg-black/20 px-3 py-1 text-[11px] font-semibold text-white/90"
+                  >
+                    {currentCard.hook}
+                  </motion.div>
+                )}
+
                 {/* Content */}
                 <motion.p
                   initial={{ y: 20, opacity: 0 }}
@@ -907,14 +1275,14 @@ export default function Learn() {
                     className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 text-center mb-4"
                   >
                     <div className="text-3xl sm:text-4xl font-bold text-white">
-                      {currentCard?.stat?.value}
+                      {stat?.value}
                     </div>
                     <div className="text-white/70 text-sm">
-                      {currentCard?.stat?.label}
+                      {stat?.label}
                     </div>
-                    {currentCard?.note && (
+                    {note && (
                       <div className="text-white/50 text-xs mt-2">
-                        {currentCard.note}
+                        {note}
                       </div>
                     )}
                   </motion.div>
@@ -928,7 +1296,7 @@ export default function Learn() {
                     transition={{ delay: 0.25 }}
                     className="grid grid-cols-2 gap-2"
                   >
-                    {currentCard?.facts?.map((fact, i) => (
+                    {facts?.map((fact, i) => (
                       <motion.div
                         key={i}
                         initial={{ scale: 0 }}
@@ -950,7 +1318,7 @@ export default function Learn() {
                     transition={{ delay: 0.25 }}
                     className="space-y-2"
                   >
-                    {currentCard?.pillars?.map((p, i) => (
+                    {pillars?.map((p, i) => (
                       <motion.div
                         key={i}
                         initial={{ x: -20, opacity: 0 }}
@@ -977,7 +1345,7 @@ export default function Learn() {
                     transition={{ delay: 0.25 }}
                     className="space-y-2"
                   >
-                    {currentCard?.risks?.map((r, i) => (
+                    {risks?.map((r, i) => (
                       <motion.div
                         key={i}
                         initial={{ scale: 0 }}
@@ -1005,7 +1373,7 @@ export default function Learn() {
                     transition={{ delay: 0.25 }}
                     className="flex flex-wrap gap-2"
                   >
-                    {currentCard?.services?.map((s, i) => (
+                    {services?.map((s, i) => (
                       <motion.span
                         key={i}
                         initial={{ scale: 0 }}
@@ -1050,20 +1418,24 @@ export default function Learn() {
             </motion.div>
           </AnimatePresence>
 
-          {/* Swipe hints */}
-          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-2 pointer-events-none">
-            <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center opacity-50">
-              <ChevronLeft className="size-6 text-white/50" />
-            </div>
-            <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center opacity-50">
-              <ChevronRight className="size-6 text-white/50" />
-            </div>
+        </div>
+
+        <div className="relative z-10 px-4 pb-2">
+          <div className="mx-auto max-w-md flex justify-center">
+            <Button
+              onClick={handleNext}
+              disabled={isLastCard}
+              className="h-10 min-w-44 bg-white text-gray-900 hover:bg-white/90 disabled:opacity-40"
+            >
+              Next
+              <ChevronRight className="ml-2 size-4" />
+            </Button>
           </div>
         </div>
 
         {/* Navigation dots */}
-        <div className="relative z-10 flex items-center justify-center gap-1.5 p-4">
-          {storyCards.slice(0, 8).map((_, idx) => (
+        <div className="relative z-10 flex items-center justify-center gap-1.5 pb-4">
+          {currentStoryCards.slice(0, 8).map((_, idx) => (
             <motion.button
               key={idx}
               onClick={() => setArticleIndex(idx)}
@@ -1079,97 +1451,10 @@ export default function Learn() {
     );
   }
 
-  if (appState === "watching") {
-    const currentVideo = bpsVideos[videoIndex];
-    const videoProgress = Math.round(
-      ((videoIndex + 1) / bpsVideos.length) * 100,
-    );
-
-    return (
-      <section className="fixed inset-0 z-[100] bg-background flex flex-col">
-        <div className="flex items-center px-4 py-2">
-          <div className="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
-            <motion.div
-              className="h-full bg-gradient-to-r from-primary via-primary/60 to-teal-500 rounded-full"
-              style={{ width: `${videoProgress}%` }}
-            />
-          </div>
-          <button
-            onClick={() => setAppState("hub")}
-            className="ml-3 p-1.5 rounded-full bg-white/10"
-          >
-            <X className="size-4" />
-          </button>
-        </div>
-
-        <div className="flex-1 flex flex-col items-center justify-center p-4">
-          <motion.div
-            key={videoIndex}
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="w-full max-w-3xl"
-          >
-            <div className="relative aspect-video rounded-xl overflow-hidden bg-black">
-              <iframe
-                src={`https://www.youtube.com/embed/${currentVideo.url.split("?")[1].replace("embed=", "").replace("si=", "").split("&")[0]}?enablejsapi=1`}
-                className="absolute inset-0 w-full h-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-            <div className="mt-4 text-center">
-              <div className="text-xs text-foreground/50 mb-2">
-                {videoIndex + 1} of {bpsVideos.length}
-              </div>
-              <h3 className="text-xl font-bold">{currentVideo.title}</h3>
-            </div>
-          </motion.div>
-        </div>
-
-        <div className="p-4 border-t border-white/10 flex gap-3">
-          <Button
-            variant="outline"
-            className="flex-1 h-12 rounded-xl"
-            onClick={() => setVideoIndex((i) => Math.max(0, i - 1))}
-            disabled={videoIndex === 0}
-          >
-            <ChevronLeft className="size-4 mr-2" /> Previous
-          </Button>
-          <Button
-            className="flex-1 h-12 rounded-xl"
-            onClick={() => {
-              if (videoIndex < bpsVideos.length - 1) {
-                setVideoIndex((i) => i + 1);
-              } else {
-                setAppState("hub");
-              }
-            }}
-          >
-            {videoIndex < bpsVideos.length - 1 ? "Next Video" : "Finish"}{" "}
-            <ChevronRight className="size-4 ml-2" />
-          </Button>
-        </div>
-
-        <div className="flex items-center justify-center gap-1 p-3 border-t border-white/10">
-          {bpsVideos.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setVideoIndex(idx)}
-              className={cn(
-                "h-1.5 rounded-full transition-all",
-                videoIndex === idx ? "w-6 bg-teal-500" : "w-1.5 bg-white/20",
-              )}
-            />
-          ))}
-        </div>
-      </section>
-    );
-  }
-
   return (
     <section
       ref={containerRef}
-      className="relative w-full min-h-screen bg-background overflow-hidden flex flex-col pt-20"
+      className="relative w-full min-h-screen bg-background overflow-hidden flex flex-col pt-14 sm:pt-20"
     >
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         <motion.div
@@ -1182,253 +1467,212 @@ export default function Learn() {
         />
       </div>
 
-      <Wrapper className="relative z-10 w-full flex-1 flex flex-col justify-between py-6">
-        <div className="flex-1 flex flex-col py-4">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 space-y-12 w-full">
-            <Container animation="fadeUp" className="text-center space-y-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-medium mb-4">
-                  <BookOpen className="size-3.5" />
-                  <span>
-                    {moduleInfo.module}: {moduleInfo.title}
-                  </span>
-                </div>
-                <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold font-heading tracking-tight">
-                  Master Kenya's{" "}
-                  <span className="bg-linear-to-r from-primary via-primary/80 to-primary bg-size-[200%_100%] animate-[shimmer_3s_ease-in-out_infinite] text-transparent bg-clip-text">
-                    Budget
-                  </span>
-                </h1>
-                <p className="text-sm sm:text-base text-foreground/60 mt-4 max-w-2xl mx-auto">
-                  <Balancer>
-                    Swipe through interactive lessons on the Budget Policy
-                    Statement, test your knowledge, and earn your title.
-                  </Balancer>
-                </p>
-                <p className="text-xs text-foreground/40 mt-2">
-                  Credits: {moduleInfo.credits}
-                </p>
-              </motion.div>
-            </Container>
+      <Wrapper className="relative z-10 w-full flex-1 flex flex-col justify-between py-4 sm:py-6">
+        <div className="flex-1 flex flex-col py-2 sm:py-4">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 space-y-8 sm:space-y-12 w-full">
+            
 
-            <Container animation="fadeUp" delay={0.05} className="space-y-4">
-              <div className="flex items-center justify-center gap-2">
-                <button
-                  onClick={() => setLearnMode("read")}
-                  className={cn(
-                    "flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all",
-                    learnMode === "read"
-                      ? "bg-primary text-white"
-                      : "bg-white/10 text-foreground/60 hover:bg-white/20",
-                  )}
-                >
-                  <Eye className="size-4" /> Read
-                </button>
-                <button
-                  onClick={() => setLearnMode("watch")}
-                  className={cn(
-                    "flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all",
-                    learnMode === "watch"
-                      ? "bg-primary text-white"
-                      : "bg-white/10 text-foreground/60 hover:bg-white/20",
-                  )}
-                >
-                  <MonitorPlay className="size-4" /> Watch
-                </button>
+            <Container animation="fadeUp" delay={0.04} className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold">Stories</h2>
+                <span className="text-xs text-foreground/50">
+                  Swipe horizontally
+                </span>
               </div>
-            </Container>
-
-            <Container animation="fadeUp" delay={0.1} className="space-y-6">
-              <h2 className="text-xl font-bold">
-                {learnMode === "read" ? "Read Mode" : "Watch Mode"}
-              </h2>
-              <div className="grid grid-cols-1 gap-4">
-                {learnMode === "read" ? (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    whileHover={{ y: -4 }}
-                    onClick={() => {
-                      setAppState("article");
-                      setArticleIndex(0);
-                    }}
-                    className="cursor-pointer"
-                  >
-                    <div className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden hover:border-white/20 transition-all">
-                      <div className="h-1.5 bg-gradient-to-r from-primary via-primary/60 to-teal-500" />
-                      <div className="p-6">
-                        <div className="flex items-center justify-between mb-3">
-                          <span className="px-2 py-1 rounded-full text-[10px] font-bold uppercase bg-primary/20 text-primary">
-                            📱 Interactive Course
+              <div className="overflow-x-auto pb-2 [scrollbar-width:thin]">
+                <div className="flex gap-4 w-max pr-2">
+                  {sortedHubStories.map((story) => (
+                    <motion.button
+                      key={story.id}
+                      whileHover={{ y: -3 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => {
+                        const storyId = story.id as StoryFlowId;
+                        setSelectedStoryId(storyId);
+                        markStoryWatched(storyId);
+                        setAppState("article");
+                        setArticleIndex(0);
+                        router.push(`/learn?story=${storyId}`, { scroll: false });
+                      }}
+                      className={cn(
+                        "w-[290px] sm:w-[340px] text-left rounded-[26px] border border-white/20 p-5 text-white",
+                        "bg-gradient-to-br",
+                        story.gradient,
+                      )}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <span className="text-3xl">{story.icon}</span>
+                        <div className="flex flex-col items-end gap-1.5">
+                          <span
+                            className={cn(
+                              "text-[10px] font-semibold uppercase tracking-wider rounded-full px-2 py-1",
+                              watchedStories[story.id]
+                                ? "bg-emerald-500/25 text-emerald-100"
+                                : "bg-amber-500/25 text-amber-100",
+                            )}
+                          >
+                            {watchedStories[story.id] ? "Watched" : "New"}
                           </span>
-                          <span className="text-xs text-foreground/50">
-                            13 sections + 5 quiz questions
-                          </span>
-                        </div>
-                        <h3 className="text-2xl font-bold font-serif mb-2">
-                          The Budget Policy Statement 2026
-                        </h3>
-                        <p className="text-foreground/70 mb-4">
-                          Swipe through 14 pages covering BPS basics, BETA
-                          pillars, budget numbers, fiscal risks, and a knowledge
-                          quiz.
-                        </p>
-                        <div className="flex items-center gap-4 text-sm text-foreground/50">
-                          <span className="flex items-center gap-1">
-                            <Sparkles className="size-4 text-amber-400" />{" "}
-                            Progress tracked
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Target className="size-4 text-teal-400" /> 5
-                            question quiz
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Award className="size-4 text-primary" /> Get titled
+                          <span className="text-[10px] font-semibold uppercase tracking-wider rounded-full bg-black/20 px-2 py-1">
+                            {story.duration}
                           </span>
                         </div>
                       </div>
-                    </div>
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    whileHover={{ y: -4 }}
-                    onClick={() => {
-                      setAppState("watching");
-                      setVideoIndex(0);
-                    }}
-                    className="cursor-pointer"
-                  >
-                    <div className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden hover:border-white/20 transition-all">
-                      <div className="h-1.5 bg-gradient-to-r from-teal-500 via-primary/60 to-primary" />
-                      <div className="p-6">
-                        <div className="flex items-center justify-between mb-3">
-                          <span className="px-2 py-1 rounded-full text-[10px] font-bold uppercase bg-teal-500/20 text-teal-400">
-                            🎬 Video Course
-                          </span>
-                          <span className="text-xs text-foreground/50">
-                            {bpsVideos.length} videos
-                          </span>
-                        </div>
-                        <h3 className="text-2xl font-bold font-serif mb-2">
-                          BPS 2026 Video Series
-                        </h3>
-                        <p className="text-foreground/70 mb-4">
-                          Watch video explanations of the Budget Policy
-                          Statement - from BPS basics to fiscal risks.
-                        </p>
-                        <div className="flex items-center gap-4 text-sm text-foreground/50">
-                          <span className="flex items-center gap-1">
-                            <Play className="size-4 text-teal-400" /> Video
-                            playlist
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Target className="size-4 text-primary" />{" "}
-                            Interactive quiz
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Award className="size-4 text-amber-400" /> Get
-                            titled
-                          </span>
-                        </div>
+                      <h3 className="text-lg font-bold mt-5 leading-tight">
+                        {story.title}
+                      </h3>
+                      <p className="text-sm text-white/80 mt-2">
+                        {story.subtitle}
+                      </p>
+                      <div className="mt-5 inline-flex items-center gap-2 text-xs font-semibold rounded-full bg-black/25 px-3 py-1.5">
+                        {story.action} <ArrowRight className="size-3.5" />
                       </div>
-                    </div>
-                  </motion.div>
-                )}
+                    </motion.button>
+                  ))}
+                </div>
               </div>
             </Container>
 
             <Container animation="fadeUp" delay={0.15} className="space-y-4">
               <h2 className="text-xl font-bold">Deep Dive</h2>
-              <Link href="/research" legacyBehavior>
-                <motion.a
-                  whileHover={{ y: -2 }}
-                  className="group block p-5 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 transition-all cursor-pointer"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="shrink-0 w-11 h-11 rounded-xl bg-gradient-to-br from-primary to-teal-500 flex items-center justify-center">
-                      <BarChart3 className="size-5 text-white" />
+              <Link
+                href="/learn/bps"
+                className="group block rounded-2xl border border-white/10 bg-linear-to-br from-white/10 via-white/5 to-transparent p-5 sm:p-6 hover:border-primary/40 transition-all cursor-pointer overflow-hidden"
+              >
+                <motion.div whileHover={{ y: -2 }} className="relative">
+                  <div className="absolute -top-10 -right-10 size-40 rounded-full bg-primary/20 blur-3xl pointer-events-none" />
+                  <div className="relative rounded-2xl overflow-hidden border border-white/15 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 h-40 sm:h-52 mb-5">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.12)_1px,transparent_0)] bg-[size:16px_16px]" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary/25 via-transparent to-teal-500/20" />
+                    <div className="absolute top-3 left-3 rounded-md bg-black/45 px-2 py-1 text-[10px] uppercase tracking-wider text-white/80">
+                      BPS 2026 Visual Preview
                     </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold group-hover:text-primary">
-                        Research & Analysis
-                      </h3>
-                      <p className="text-xs text-foreground/60">
-                        In-depth analysis with graphs, data & interactive
-                        content
-                      </p>
+                    <div className="absolute left-4 right-4 bottom-4 rounded-xl border border-white/20 bg-black/35 backdrop-blur p-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <div>
+                          <p className="text-xs text-white/70">Priority Signal</p>
+                          <p className="text-sm font-semibold text-white">Education + Health + Jobs</p>
+                        </div>
+                        <div className="h-8 w-20 rounded-md bg-gradient-to-r from-primary to-teal-400 opacity-80" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-teal-500 flex items-center justify-center shadow-lg shadow-primary/20">
+                      <FileText className="size-5 text-white" />
+                    </div>
+                    <span className="rounded-full border border-primary/30 bg-primary/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-primary">
+                      Featured Article
+                    </span>
+                  </div>
+
+                  <div className="mt-4">
+                    <h3 className="text-lg sm:text-xl font-bold group-hover:text-primary transition-colors">
+                      Budget Policy Statement (BPS) Deep Dive
+                    </h3>
+                    <p className="text-sm text-foreground/65 mt-2 max-w-2xl">
+                      A professional, visual-first breakdown of priorities, spending direction,
+                      and citizen impact. This is the anchor article for the wider document ecosystem.
+                    </p>
+                  </div>
+
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] text-foreground/80">
+                      Visual analysis
+                    </span>
+                    <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] text-foreground/80">
+                      Policy highlights
+                    </span>
+                    <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] text-foreground/80">
+                      Citizen actions
+                    </span>
+                  </div>
+
+                  <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+                    <div className="inline-flex items-center gap-2 text-xs text-foreground/60">
+                      <Folder className="size-4 text-primary/80" />
+                      More deep dives will expand from the document folders below.
                     </div>
                     <ArrowRight className="size-4 text-foreground/30 group-hover:text-primary transition-colors" />
                   </div>
-                </motion.a>
+                </motion.div>
               </Link>
             </Container>
 
-            <Container animation="fadeUp" delay={0.2} className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold">Budget Documents</h2>
-                <a
-                  href="https://drive.google.com/drive/folders/1Lzpc7T5z-VpNVkBOAx5inciHAWQNQKJ1"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-primary hover:underline flex items-center gap-1"
-                >
-                  View on Drive <ExternalLink className="size-3" />
-                </a>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                {[
-                  { id: "adp", title: "ADP" },
-                  { id: "agr", title: "AGR" },
-                  { id: "app-act", title: "APP ACT" },
-                  { id: "bps", title: "BPS" },
-                  { id: "brop", title: "BROP" },
-                  { id: "cbr", title: "CBR" },
-                  { id: "cfa", title: "CFA" },
-                  { id: "cfsp", title: "CFSP" },
-                  { id: "cidp", title: "CIDP" },
-                  { id: "ere", title: "ERE" },
-                  { id: "fb", title: "FB" },
-                  { id: "pbb", title: "PBB" },
-                ].map((doc) => (
-                  <Link key={doc.id} href={`/learn/${doc.id}`} legacyBehavior>
-                    <motion.a
-                      whileHover={{ y: -2 }}
-                      className="group p-4 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 transition-all cursor-pointer"
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className="shrink-0 w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                          <Folder className="size-4 text-primary" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="text-sm font-semibold group-hover:text-primary">
-                            {doc.title}
-                          </h3>
-                          <p className="text-[10px] text-foreground/60">
-                            Budget Document
-                          </p>
+            <Container animation="fadeUp" delay={0.2} className="space-y-4">
+              <h2 className="text-xl font-bold">Document Repository</h2>
+              <Link
+                href="/learn/repository"
+                className="group block rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-6 hover:border-primary/30 transition-all overflow-hidden"
+              >
+                <motion.div whileHover={{ y: -2 }} className="relative">
+                  <div className="pointer-events-none absolute -right-10 -top-10 size-36 rounded-full bg-primary/20 blur-3xl" />
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="shrink-0 w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center">
+                      <Folder className="size-5 text-primary" />
+                    </div>
+                    <span className="rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-primary">
+                      Featured Access
+                    </span>
+                  </div>
+                  <h3 className="mt-4 text-lg sm:text-xl font-bold group-hover:text-primary transition-colors">
+                    Explore the full Budget Document Repository
+                  </h3>
+                  <p className="mt-2 text-sm text-foreground/65 max-w-2xl">
+                    We keep Learn focused on stories and deep dives. Browse all budget folders and files in one
+                    dedicated repository view.
+                  </p>
+                  <div className="mt-4 hidden md:block">
+                    <div className="relative h-48">
+                      <div className="absolute top-0 left-0 rounded-full bg-black/35 border border-white/20 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-white/80">
+                        Loading folders...
+                      </div>
+                      <div className="lr-folder lr-folder-a">
+                        <div className="lr-shell">
+                          <div className="lr-layer lr-l4" />
+                          <div className="lr-layer lr-l3" />
+                          <div className="lr-layer lr-l2" />
+                          <div className="lr-layer lr-l1" />
                         </div>
                       </div>
-                    </motion.a>
-                  </Link>
-                ))}
-              </div>
+                      <div className="lr-folder lr-folder-b">
+                        <div className="lr-shell">
+                          <div className="lr-layer lr-l4" />
+                          <div className="lr-layer lr-l3" />
+                          <div className="lr-layer lr-l2" />
+                          <div className="lr-layer lr-l1" />
+                        </div>
+                      </div>
+                      <div className="lr-folder lr-folder-c">
+                        <div className="lr-shell">
+                          <div className="lr-layer lr-l4" />
+                          <div className="lr-layer lr-l3" />
+                          <div className="lr-layer lr-l2" />
+                          <div className="lr-layer lr-l1" />
+                        </div>
+                      </div>
+                      <div className="absolute bottom-1 right-0 inline-flex items-center gap-1.5 rounded-full bg-black/35 border border-white/20 px-2.5 py-1 text-[10px] text-white/80">
+                        <span className="size-1.5 rounded-full bg-primary animate-pulse" />
+                        <span className="size-1.5 rounded-full bg-amber-300 animate-pulse [animation-delay:180ms]" />
+                        <span className="size-1.5 rounded-full bg-cyan-300 animate-pulse [animation-delay:320ms]" />
+                        preparing preview
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary">
+                    Open Repository <ArrowRight className="size-4" />
+                  </div>
+                </motion.div>
+              </Link>
             </Container>
 
             <Container animation="fadeUp" delay={0.25} className="space-y-4">
               <h2 className="text-xl font-bold">Quick Answers</h2>
-              <Link href="/faq" legacyBehavior>
-                <motion.a
-                  whileHover={{ y: -2 }}
-                  className="group block p-5 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 transition-all cursor-pointer"
-                >
+              <Link
+                href="/faq"
+                className="group block p-5 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 transition-all cursor-pointer"
+              >
+                <motion.div whileHover={{ y: -2 }}>
                   <div className="flex items-center gap-4">
                     <div className="shrink-0 w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center">
                       <HelpCircle className="size-5 text-primary" />
@@ -1443,7 +1687,7 @@ export default function Learn() {
                     </div>
                     <ArrowRight className="size-4 text-foreground/30 group-hover:text-primary transition-colors" />
                   </div>
-                </motion.a>
+                </motion.div>
               </Link>
             </Container>
 
@@ -1451,29 +1695,28 @@ export default function Learn() {
               <div className="relative p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-primary/20 via-primary/10 to-teal-500/20 border border-primary/20 overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.05)_1px,transparent_0)] bg-[size:24px_24px]" />
                 <div className="relative z-10 text-center space-y-4">
+                  <p className="text-xs uppercase tracking-wider text-primary font-semibold">
+                    Story Feedback
+                  </p>
                   <h2 className="text-2xl sm:text-3xl font-bold">
-                    Ready to start learning?
+                    Take the Story Survey
                   </h2>
                   <p className="text-sm text-foreground/60 max-w-md mx-auto">
-                    Swipe through the interactive module to understand Kenya's
-                    budget and earn your title.
+                    3 quick questions in the same story vibe to shape what we build next.
                   </p>
                   <Button
                     size="lg"
                     className="h-11 px-6 rounded-xl text-sm font-medium"
                     onClick={() => {
-                      setAppState("article");
-                      setArticleIndex(0);
+                      setSurveyIndex(0);
+                      setSurveyAnswers({});
+                      setAppState("survey");
                     }}
                   >
-                    Start Learning <ChevronRight className="size-4 ml-2" />
+                    Start Survey <ArrowRight className="size-4 ml-2" />
                   </Button>
                 </div>
               </div>
-            </Container>
-
-            <Container animation="fadeUp" delay={0.35} className="space-y-6">
-              <NewsletterSignup />
             </Container>
 
             <Container
@@ -1502,6 +1745,84 @@ export default function Learn() {
           </div>
         </div>
       </Wrapper>
+      <style jsx>{`
+        .lr-folder {
+          position: absolute;
+          width: 190px;
+          height: 132px;
+          perspective: 1300px;
+        }
+        .lr-shell {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          animation: lrFloat 5.1s ease-in-out infinite;
+        }
+        .lr-folder-a {
+          right: 5%;
+          top: 0;
+        }
+        .lr-folder-b {
+          right: 22%;
+          top: 36px;
+        }
+        .lr-folder-c {
+          right: -1%;
+          top: 72px;
+        }
+        .lr-folder-b .lr-shell {
+          animation-delay: 0.4s;
+        }
+        .lr-folder-c .lr-shell {
+          animation-delay: 0.8s;
+        }
+        .lr-layer {
+          position: absolute;
+          inset: 0;
+          border-radius: 16px;
+          transform-origin: bottom center;
+          transition: transform 450ms ease;
+          border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .lr-l4 {
+          background: linear-gradient(to bottom, #2a2d37, #16171d);
+          transform: rotateX(-7deg);
+        }
+        .lr-l3 {
+          inset: 5px;
+          background: linear-gradient(to bottom, rgba(56, 189, 248, 0.22), rgba(14, 116, 144, 0.12));
+          transform: rotateX(-13deg);
+        }
+        .lr-l2 {
+          inset: 9px;
+          background: linear-gradient(to bottom, rgba(251, 191, 36, 0.36), rgba(217, 119, 6, 0.3));
+          transform: rotateX(-20deg);
+        }
+        .lr-l1 {
+          inset: 13px;
+          background: linear-gradient(to bottom, #fbbf24, #d97706);
+          box-shadow: inset 0 18px 34px rgba(251, 191, 36, 0.24), 0 14px 24px rgba(0, 0, 0, 0.3);
+          transform: rotateX(-29deg);
+        }
+        .group:hover .lr-l3 {
+          transform: rotateX(-20deg);
+        }
+        .group:hover .lr-l2 {
+          transform: rotateX(-30deg);
+        }
+        .group:hover .lr-l1 {
+          transform: rotateX(-39deg) translateY(1px);
+        }
+        @keyframes lrFloat {
+          0%,
+          100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-7px);
+          }
+        }
+      `}</style>
     </section>
   );
 }

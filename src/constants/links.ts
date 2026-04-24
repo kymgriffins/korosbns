@@ -17,7 +17,7 @@ export const NAV_LINKS = [
 
 export const footerLinks = {
     product: [
-        { label: "Stories", href: "/stories" },
+        { label: "Stories", href: Routes.Learn },
         { label: "Explainers", href: Routes.Capabilities },
         { label: "Impact", href: "/impact" },
         { label: "Get Involved", href: Routes.Membership }

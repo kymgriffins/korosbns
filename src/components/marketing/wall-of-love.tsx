@@ -43,6 +43,7 @@ const TeamCard = ({ member }: { member: any }) => {
                                     <Link
                                         href={member.socials.x}
                                         target="_blank"
+                                        rel="noopener noreferrer"
                                         className="text-white/30 hover:text-white transition-all duration-300 hover:scale-125 focus:outline-none"
                                         onClick={(e) => e.stopPropagation()}
                                     >
@@ -59,6 +60,7 @@ const TeamCard = ({ member }: { member: any }) => {
                                     <Link
                                         href={member.socials.linkedin}
                                         target="_blank"
+                                        rel="noopener noreferrer"
                                         className="text-white/30 hover:text-white transition-all duration-300 hover:scale-125 focus:outline-none"
                                         onClick={(e) => e.stopPropagation()}
                                     >

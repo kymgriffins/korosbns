@@ -57,7 +57,12 @@ const IntegrationCard = ({
 
     if (href) {
         return (
-            <Link href={href} target="_blank" className={className}>
+            <Link
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={className}
+            >
                 {CardContent}
             </Link>
         );
@@ -182,7 +187,11 @@ const Integrations = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.4, delay: 0.6 }}
                     >
-                        <Link href="https://www.instagram.com/budgetndiostory" target="_blank">
+                        <Link
+                            href="https://www.instagram.com/budgetndiostory"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
                             <Button variant="white">
                                 Follow the Story
                             </Button>

@@ -17,8 +17,8 @@ import { cn } from '@/utils'
 import Balancer from 'react-wrap-balancer'
 
 // Compact X icon
-const XIcon = () => (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+const XIcon = ({ className }: { className?: string }) => (
+    <svg className={className} width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
         <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932 6.064-6.932zm-1.294 19.497h2.039L6.482 3.239H4.293L17.607 20.65z"/>
     </svg>
 )
@@ -167,14 +167,26 @@ export default function Contact() {
                                         whileHover={{ scale: 1.05, y: -2 }}
                                         whileTap={{ scale: 0.98 }}
                                         className={cn(
-                                            "group flex items-center gap-2 px-3 py-2 rounded-xl border transition-all",
+                                            "group relative flex items-center gap-2 px-3 py-2 rounded-xl border transition-all overflow-hidden",
                                             social.color,
                                             social.hoverColor,
                                             "border-white/10 hover:border-white/30"
                                         )}
                                     >
-                                        <div className="flex items-center justify-center size-8 rounded-lg bg-white/20 backdrop-blur-sm">
-                                            <social.icon className="size-4 text-white" />
+                                        <motion.span
+                                            aria-hidden
+                                            className="absolute inset-0 rounded-xl border border-white/20"
+                                            animate={{ rotate: 360 }}
+                                            transition={{ duration: 11 + index, repeat: Infinity, ease: "linear" }}
+                                        />
+                                        <div className="relative flex items-center justify-center size-8 rounded-lg bg-white/20 backdrop-blur-sm">
+                                            <motion.span
+                                                aria-hidden
+                                                className="absolute inset-0 rounded-lg border border-white/40"
+                                                animate={{ opacity: [0.3, 0.9, 0.3], scale: [0.92, 1.04, 0.92] }}
+                                                transition={{ duration: 2.3, repeat: Infinity, delay: index * 0.07 }}
+                                            />
+                                            <social.icon className="size-4 text-white relative z-10" />
                                         </div>
                                         <span className="text-xs font-medium text-white hidden sm:inline">{social.name}</span>
                                     </motion.a>
@@ -280,9 +292,33 @@ export default function Contact() {
                 <Container animation="fadeUp" delay={0.4} className="max-w-3xl mx-auto w-full pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-foreground/30 px-4 sm:px-6">
                     <p className="text-[10px] font-medium">© 2026 Budget Ndio Story.</p>
                     <div className="flex items-center gap-4 text-[9px] font-medium uppercase tracking-wider">
-                        <a href="mailto:hello@budgetndiostory.com" className="hover:text-foreground transition-colors">Email</a>
-                        <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
-                        <a href="#" className="hover:text-foreground transition-colors">Terms</a>
+                        <a href="mailto:hello@budgetndiostory.com" className="group inline-flex items-center gap-1.5 hover:text-foreground transition-colors">
+                            <motion.span
+                                aria-hidden
+                                className="size-1.5 rounded-full bg-primary/70"
+                                animate={{ scale: [0.8, 1.5, 0.8], opacity: [0.4, 1, 0.4] }}
+                                transition={{ duration: 2.2, repeat: Infinity }}
+                            />
+                            Email
+                        </a>
+                        <a href="#" className="group inline-flex items-center gap-1.5 hover:text-foreground transition-colors">
+                            <motion.span
+                                aria-hidden
+                                className="size-1.5 rounded-full bg-blue-400/70"
+                                animate={{ scale: [0.8, 1.5, 0.8], opacity: [0.4, 1, 0.4] }}
+                                transition={{ duration: 2.4, repeat: Infinity, delay: 0.2 }}
+                            />
+                            Privacy
+                        </a>
+                        <a href="#" className="group inline-flex items-center gap-1.5 hover:text-foreground transition-colors">
+                            <motion.span
+                                aria-hidden
+                                className="size-1.5 rounded-full bg-teal-400/70"
+                                animate={{ scale: [0.8, 1.5, 0.8], opacity: [0.4, 1, 0.4] }}
+                                transition={{ duration: 2.6, repeat: Infinity, delay: 0.35 }}
+                            />
+                            Terms
+                        </a>
                     </div>
                 </Container>
             </Wrapper>
