@@ -17,7 +17,7 @@ export const capabilities = [
         id: 3,
         title: "Community Pulse",
         description: "Track public spending, compare county budgets, and highlight gaps.",
-        illustration: "/images/team.png",
+        illustration: "/images/community-pulse.png",
         icon: "zap"
     },
     {

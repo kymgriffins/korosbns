@@ -102,6 +102,15 @@ const hubStories = [
     icon: "🗳️",
     action: "Start V2",
   },
+  {
+    id: "budget-trivia",
+    title: "Trivia Time",
+    subtitle: "Test your history on Kenya's Cabinet Secretaries & Budgets",
+    duration: "1m 30s",
+    gradient: "from-green-600 via-emerald-600 to-teal-700",
+    icon: "🎭",
+    action: "Play Trivia",
+  },
 ];
 
 const hubArticles = [
@@ -580,6 +589,7 @@ const storyFlows = {
   "citizen-street": citizenStreetCards,
   "future-lab": futureLabCards,
   "civic-compass-v2": civicCompassV2Cards,
+  "budget-trivia": [], // Dynamic
 } as const;
 type StoryFlowId = keyof typeof storyFlows;
 
@@ -809,11 +819,66 @@ export default function Learn() {
   const [showFeedback, setShowFeedback] = useState(false);
   const [quizScore, setQuizScore] = useState(0);
   const [readyForQuiz, setReadyForQuiz] = useState(false);
+  const [currentVideo, setCurrentVideo] = useState(0);
+  const [triviaCards, setTriviaCards] = useState<any[]>([]);
   const [surveyIndex, setSurveyIndex] = useState(0);
   const [surveyAnswers, setSurveyAnswers] = useState<Record<number, number>>({});
   const [watchedStories, setWatchedStories] = useState<Record<string, boolean>>({});
+  const [currentFlowCards, setCurrentFlowCards] = useState<any[]>([]);
 
-  const currentStoryCards = storyFlows[selectedStoryId];
+  // Fetch trivia from backend
+  useEffect(() => {
+    const fetchTrivia = async () => {
+      try {
+        const response = await fetch("https://api.budgetndiostory.org/api/trivia/");
+        if (!response.ok) throw new Error("Failed to fetch trivia");
+        const data = await response.json();
+        
+        const mappedTrivia = data.map((t: any) => ({
+          id: `trivia-${t.id}`,
+          title: t.category_display || "Budget Trivia",
+          subtitle: `Year: ${t.year || "Historical"}`,
+          emoji: "❓",
+          bg: "from-green-700 via-emerald-700 to-teal-900",
+          content: t.question,
+          facts: [
+            `✅ Answer: ${t.answer}`,
+            `ℹ️ Context: ${t.context || "No extra info"}`
+          ]
+        }));
+
+        // Add a final card to the trivia cards
+        mappedTrivia.push({
+          id: "trivia-complete",
+          title: "Trivia Complete! 🏆",
+          subtitle: "You're a budget expert!",
+          emoji: "🥳",
+          bg: "from-amber-500 to-orange-500",
+          content: "You've gone through the historical budget trivia. Keep exploring to learn more about Kenya's fiscal history!",
+          prompt: true
+        });
+
+        setTriviaCards(mappedTrivia);
+      } catch (err) {
+        console.error("Error fetching trivia:", err);
+      }
+    };
+    fetchTrivia();
+  }, []);
+
+  const handleStoryStart = (id: StoryFlowId) => {
+    setSelectedStoryId(id);
+    if (id === "budget-trivia" && triviaCards.length > 0) {
+      setCurrentFlowCards(triviaCards);
+    } else if (id !== "budget-trivia") {
+      setCurrentFlowCards(storyFlows[id]);
+    }
+    markStoryWatched(id);
+    setAppState("article");
+    setArticleIndex(0);
+  };
+
+  const currentStoryCards = currentFlowCards.length > 0 ? currentFlowCards : storyFlows[selectedStoryId];
   const currentCard = currentStoryCards[articleIndex];
   const isQuizPrompt = Boolean(currentCard && "prompt" in currentCard && currentCard.prompt);
   const isLastCard = articleIndex === currentStoryCards.length - 1;
@@ -884,11 +949,16 @@ export default function Learn() {
     if (storyParam in storyFlows) {
       const storyId = storyParam as StoryFlowId;
       setSelectedStoryId(storyId);
+      if (storyId === "budget-trivia" && triviaCards.length > 0) {
+        setCurrentFlowCards(triviaCards);
+      } else if (storyId !== "budget-trivia") {
+        setCurrentFlowCards(storyFlows[storyId]);
+      }
       markStoryWatched(storyId);
       setAppState("article");
       setArticleIndex(0);
     }
-  }, [searchParams]);
+  }, [searchParams, triviaCards]);
 
   useEffect(() => {
     if (appState !== "article") return;
