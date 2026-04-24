@@ -2,13 +2,11 @@
 
 import Icons from '@/components/global/icons';
 import Wrapper from '@/components/global/wrapper';
-import { Routes } from "@/constants";
 import { useIsMobile } from "@/hooks";
 import { cn } from '@/utils';
 import { motion } from 'motion/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
 import Container from "@/components/global/container";
 import { Button } from "@/components/ui/button";
 import { Particles } from "@/components/ui/particles";
@@ -18,53 +16,61 @@ const partnerMap = {
         label: "SME",
         name: "Sen Media & Events",
         href: "https://senmedia-events.co.ke/",
+        logoSrc: "/images/senmedia.png",
     },
     ContinentalPot: {
         label: "TCP",
         name: "The Continental Pot",
         href: "https://continentalpot.africa/",
+        logoSrc: "/images/The-Continental-Pot-Vertical-removebg-preview.png",
     },
     ColourTwist: {
         label: "CTM",
         name: "Colour Twist Media",
         href: "https://colortwistmedia.com/",
+        logoSrc: "/images/colortwist.png",
     },
 };
 
 const IntegrationCard = ({
     className,
-    isCenter = false,
-    iconSrc,
+    logoSrc,
+    logoClassName,
     label,
+    name,
     href
 }: {
     className?: string;
-    isCenter?: boolean;
-    iconSrc?: string;
+    logoSrc?: string;
+    logoClassName?: string;
     label?: string;
+    name?: string;
     href?: string;
 }) => {
     const CardContent = (
         <div
             className={cn(
-                "relative group flex size-12 rounded-full border border-foreground/10 bg-background backdrop-blur-md transition-all duration-300",
+                "relative group flex h-20 w-20 items-center justify-center rounded-2xl border border-foreground/10 bg-background/95 p-1.5 backdrop-blur-md transition-all duration-300",
                 href && "hover:border-primary/50 hover:shadow-[0_0_15px_rgba(0,85,255,0.2)]",
                 className
             )}
+            title={name}
         >
-            {iconSrc && (
-                <div className="m-auto size-fit">
+            {logoSrc && (
+                <div className="relative h-full w-full">
                     <Image
-                        src={iconSrc}
-                        alt=""
-                        width={isCenter ? 32 : 20}
-                        height={isCenter ? 32 : 20}
-                        className="size-5 opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"
+                        src={logoSrc}
+                        alt={name ?? "Partner logo"}
+                        fill
+                        className={cn(
+                            "object-contain opacity-95 group-hover:opacity-100 transition-all duration-300",
+                            logoClassName
+                        )}
                     />
                 </div>
             )}
-            {!iconSrc && label && (
-                <div className="m-auto flex size-8 items-center justify-center rounded-full bg-primary/10 text-[10px] font-semibold tracking-wide text-primary">
+            {!logoSrc && label && (
+                <div className="m-auto flex size-10 items-center justify-center rounded-xl bg-primary/10 text-[11px] font-semibold tracking-wide text-primary">
                     {label}
                 </div>
             )}
@@ -126,18 +132,27 @@ const Integrations = () => {
                         className="bg-linear-to-b from-foreground/10 absolute inset-0 flex aspect-square items-center justify-center rounded-full border-t border-foreground/5 to-transparent to-25% z-30"
                     >
                         <IntegrationCard
-                            className="absolute left-0 top-1/4 -translate-x-1/6 -translate-y-1/4"
+                            className="absolute left-[14%] top-1/2 -translate-y-1/2"
+                            logoSrc={partnerMap.SenMedia.logoSrc}
+                            logoClassName="scale-[1.15]"
                             label={partnerMap.SenMedia.label}
+                            name={partnerMap.SenMedia.name}
                             href={partnerMap.SenMedia.href}
                         />
                         <IntegrationCard
-                            className="absolute top-0 -translate-y-1/2"
+                            className="absolute left-1/2 top-[10%] -translate-x-1/2"
+                            logoSrc={partnerMap.ContinentalPot.logoSrc}
+                            logoClassName="scale-[1.55] object-top"
                             label={partnerMap.ContinentalPot.label}
+                            name={partnerMap.ContinentalPot.name}
                             href={partnerMap.ContinentalPot.href}
                         />
                         <IntegrationCard
-                            className="absolute right-0 top-1/4 translate-x-1/6 -translate-y-1/4"
+                            className="absolute right-[14%] top-1/2 -translate-y-1/2"
+                            logoSrc={partnerMap.ColourTwist.logoSrc}
+                            logoClassName="scale-[1.2]"
                             label={partnerMap.ColourTwist.label}
+                            name={partnerMap.ColourTwist.name}
                             href={partnerMap.ColourTwist.href}
                         />
                     </motion.div>
@@ -146,31 +161,33 @@ const Integrations = () => {
                         initial={{ opacity: 0, scale: 0.9 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.6, delay: 0.4 }}
-                        className="bg-linear-to-b from-foreground/10 absolute inset-16 flex aspect-square scale-90 items-center justify-center rounded-full border-t border-foreground/5 to-transparent to-25% z-30"
+                        transition={{ duration: 0.6, delay: 0.3 }}
+                        className="absolute bottom-[10%] left-1/2 z-30 -translate-x-1/2"
                     >
-                        <IntegrationCard
-                            className="absolute left-0 top-1/4 -translate-x-1/4 -translate-y-1/4"
-                            label={partnerMap.SenMedia.label}
-                            href={partnerMap.SenMedia.href}
-                        />
-                        <IntegrationCard
-                            className="absolute right-0 top-1/4 translate-x-1/4 -translate-y-1/4"
-                            label={partnerMap.ColourTwist.label}
-                            href={partnerMap.ColourTwist.href}
-                        />
+                        <div className="flex h-20 w-20 items-center justify-center rounded-full border border-foreground/10 bg-background/80 backdrop-blur-md">
+                            <Image
+                                src="/logo.svg"
+                                alt="Budget Ndio Story"
+                                width={56}
+                                height={24}
+                                className="h-5 w-auto opacity-95"
+                            />
+                        </div>
                     </motion.div>
 
-                    <Container animation="blurIn" delay={0.5} className="absolute inset-x-0 bottom-0 lg:bottom-1/10 mx-auto my-2 flex justify-center gap-2 w-fit scale-90 lg:scale-100">
-                        <div className="relative flex size-16 rounded-full border border-foreground/10 bg-background/50 backdrop-blur-md">
-                            <div className="m-auto">
+                    <Container animation="blurIn" delay={0.5} className="absolute left-1/2 top-1/2 z-40 -translate-x-1/2 -translate-y-1/2 flex justify-center w-fit scale-90 lg:scale-100">
+                        <div className="relative flex h-24 w-22 rounded-2xl border border-foreground/10 bg-background/80 px-2 py-1.5 backdrop-blur-md">
+                            <div className="m-auto flex flex-col items-center justify-center">
                                 <Image
-                                    src="/logo.svg"
-                                    alt="Budget Ndio Story"
-                                    width={100}
-                                    height={50}
-                                    className="w-auto h-6"
+                                    src="/kenya-logo.png"
+                                    alt="Kenya logo"
+                                    width={40}
+                                    height={40}
+                                    className="size-8 object-contain"
                                 />
+                                <span className="mt-1 text-[8px] font-semibold tracking-[0.14em] text-foreground/70">
+                                    KENYA
+                                </span>
                             </div>
                         </div>
                     </Container>

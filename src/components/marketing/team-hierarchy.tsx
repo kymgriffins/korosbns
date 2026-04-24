@@ -6,7 +6,8 @@ import { team } from "@/constants";
 import { motion } from "motion/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Linkedin } from "lucide-react";
+import { ChevronLeft, ChevronRight, Linkedin } from "lucide-react";
+import { useRef } from "react";
 
 type TeamMember = (typeof team)[number];
 
@@ -20,7 +21,7 @@ const TeamTile = ({ member }: { member: TeamMember }) => {
     const username = getMemberUsername(member);
 
     return (
-        <div
+        <article
             role="button"
             tabIndex={0}
             onClick={() => router.push(`/team/${username}`)}
@@ -30,83 +31,120 @@ const TeamTile = ({ member }: { member: TeamMember }) => {
                     router.push(`/team/${username}`);
                 }
             }}
-            className="group block cursor-pointer rounded-2xl border border-foreground/10 bg-cardbox p-4 transition-colors hover:border-primary/30 md:p-5"
+            className="group relative h-[340px] w-[250px] shrink-0 snap-center overflow-hidden rounded-2xl border border-white/15 bg-black/30 sm:h-[380px] sm:w-[280px]"
         >
-            <div className="flex items-center gap-4">
-                <div className="relative size-16 shrink-0 overflow-hidden rounded-xl border border-foreground/10">
-                    <Image src={member.image} alt={member.name} fill className="object-cover object-top" sizes="64px" />
+            <Image
+                src={member.image}
+                alt={member.name}
+                fill
+                className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                sizes="(max-width: 640px) 250px, 280px"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+            <div className="absolute bottom-0 inset-x-0 p-4">
+                <h4 className="truncate text-base font-semibold text-white">{member.name}</h4>
+                <p className="truncate text-xs text-white/75">{member.role}</p>
+                <div className="mt-2 flex items-center gap-3">
+                    {member.socials?.x && (
+                        <a
+                            href={member.socials.x}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(event) => event.stopPropagation()}
+                            className="text-xs text-white/70 hover:text-white"
+                        >
+                            X
+                        </a>
+                    )}
+                    {member.socials?.linkedin && (
+                        <a
+                            href={member.socials.linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(event) => event.stopPropagation()}
+                            className="text-white/70 hover:text-white"
+                        >
+                            <Linkedin className="size-3.5" />
+                        </a>
+                    )}
                 </div>
-                <div className="min-w-0">
-                    <h4 className="truncate text-base font-semibold">{member.name}</h4>
-                    <p className="truncate text-xs text-muted-foreground">{member.role}</p>
-                    <div className="mt-2 flex items-center gap-3">
-                        {member.socials?.x && (
-                            <a
-                                href={member.socials.x}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={(event) => event.stopPropagation()}
-                                className="text-xs text-foreground/70 hover:text-primary"
-                            >
-                                X
-                            </a>
-                        )}
-                        {member.socials?.linkedin && (
-                            <a
-                                href={member.socials.linkedin}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={(event) => event.stopPropagation()}
-                                className="text-foreground/70 hover:text-primary"
-                            >
-                                <Linkedin className="size-3.5" />
-                            </a>
-                        )}
-                    </div>
+            </div>
+        </article>
+    );
+};
+
+const TeamCarousel = ({ members }: { members: TeamMember[] }) => {
+    const rowRef = useRef<HTMLDivElement>(null);
+
+    const scrollByCards = (direction: "left" | "right") => {
+        if (!rowRef.current) return;
+        const cardWidth = 296;
+        const delta = direction === "left" ? -cardWidth : cardWidth;
+        rowRef.current.scrollBy({ left: delta, behavior: "smooth" });
+    };
+
+    return (
+        <div className="relative">
+            <div className="mb-3 flex items-center justify-between">
+                <p className="text-xs text-muted-foreground">Swipe left or right to explore the team</p>
+                <div className="hidden items-center gap-2 md:flex">
+                    <button
+                        type="button"
+                        aria-label="Scroll team left"
+                        onClick={() => scrollByCards("left")}
+                        className="inline-flex size-8 items-center justify-center rounded-full border border-foreground/15 bg-background/70 hover:border-primary/40"
+                    >
+                        <ChevronLeft className="size-4" />
+                    </button>
+                    <button
+                        type="button"
+                        aria-label="Scroll team right"
+                        onClick={() => scrollByCards("right")}
+                        className="inline-flex size-8 items-center justify-center rounded-full border border-foreground/15 bg-background/70 hover:border-primary/40"
+                    >
+                        <ChevronRight className="size-4" />
+                    </button>
                 </div>
+            </div>
+            <div
+                ref={rowRef}
+                className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [scrollbar-width:thin]"
+            >
+                {members.map((member) => (
+                    <TeamTile key={member.name} member={member} />
+                ))}
             </div>
         </div>
     );
 };
 
 const TeamHierarchy = () => {
-    const advisors = team.filter((member) => advisorRoles.has(member.role));
-    const leadership = team.filter((member) => leadershipRoles.has(member.role));
-    const directors = team.filter((member) => member.role.toLowerCase().includes("director") && !leadershipRoles.has(member.role));
-    const operations = team.filter((member) => !advisorRoles.has(member.role) && !leadershipRoles.has(member.role) && !member.role.toLowerCase().includes("director"));
+    const sortedMembers = [
+        ...team.filter((member) => advisorRoles.has(member.role)),
+        ...team.filter((member) => leadershipRoles.has(member.role)),
+        ...team.filter((member) => member.role.toLowerCase().includes("director") && !leadershipRoles.has(member.role)),
+        ...team.filter((member) => !advisorRoles.has(member.role) && !leadershipRoles.has(member.role) && !member.role.toLowerCase().includes("director")),
+    ];
 
     return (
         <section id="team" className="w-full py-16 lg:py-20 bg-background/40">
             <Wrapper>
                 <div className="mx-auto max-w-3xl text-center">
                     <SectionBadge title="Leadership Team" />
-                    <h2 className="title mt-6">Team structure built for clarity</h2>
+                    <h2 className="title mt-6">Meet the team behind the stories</h2>
                     <p className="desc mt-4">
-                        The same team visuals you liked, now arranged in a clean hierarchy that is smoother on mobile and easier to scan.
+                        Browse team profiles as a swipeable carousel and tap any card to open full details.
                     </p>
                 </div>
 
-                <div className="mt-10 space-y-6">
-                    <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="rounded-3xl border border-foreground/10 bg-background/60 p-4 md:p-6">
-                        <p className="mb-4 text-xs uppercase tracking-[0.2em] text-muted-foreground">Governance</p>
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            {advisors.map((member) => <TeamTile key={member.name} member={member} />)}
-                            {leadership.map((member) => <TeamTile key={member.name} member={member} />)}
-                        </div>
-                    </motion.div>
-
-                    <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }} viewport={{ once: true }} className="rounded-3xl border border-foreground/10 bg-background/60 p-4 md:p-6">
-                        <p className="mb-4 text-xs uppercase tracking-[0.2em] text-muted-foreground">Directors</p>
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                            {directors.map((member) => <TeamTile key={member.name} member={member} />)}
-                        </div>
-                    </motion.div>
-
-                    <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }} viewport={{ once: true }} className="rounded-3xl border border-foreground/10 bg-background/60 p-4 md:p-6">
-                        <p className="mb-4 text-xs uppercase tracking-[0.2em] text-muted-foreground">Programs and Community</p>
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            {operations.map((member) => <TeamTile key={member.name} member={member} />)}
-                        </div>
+                <div className="mt-10">
+                    <motion.div
+                        initial={{ opacity: 0, y: 16 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="rounded-3xl border border-foreground/10 bg-background/60 p-4 md:p-6"
+                    >
+                        <TeamCarousel members={sortedMembers} />
                     </motion.div>
                 </div>
             </Wrapper>
