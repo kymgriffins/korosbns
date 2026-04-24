@@ -8,7 +8,6 @@ import {
     CheckCircle,
     ChevronDown,
     ChevronLeft,
-    ChevronRight,
     Folder,
     HelpCircle,
     Mail,
@@ -930,6 +929,14 @@ export default function Learn() {
     }
   };
 
+  const handlePrevQuestion = () => {
+    if (quizIndex > 0) {
+      setQuizIndex((i) => i - 1);
+      setQuizAnswer(null);
+      setShowFeedback(false);
+    }
+  };
+
   const getTitle = (score: number, total: number) => {
     const pct = (score / total) * 100;
     if (pct === 100)
@@ -1065,6 +1072,8 @@ export default function Learn() {
             </div>
           </div>
           <button
+            type="button"
+            aria-label="Cancel quiz and return to hub"
             onClick={() => setAppState("hub")}
             className="ml-2 p-1.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
           >
@@ -1152,21 +1161,29 @@ export default function Learn() {
               </motion.div>
             )}
           </motion.div>
+          <div className="pointer-events-none absolute inset-0 z-20 flex">
+            <button
+              type="button"
+              aria-label="Previous quiz question"
+              data-testid="quiz-tap-left"
+              className="pointer-events-auto h-full w-1/2 bg-transparent"
+              onClick={handlePrevQuestion}
+            />
+            <button
+              type="button"
+              aria-label="Next quiz question"
+              data-testid="quiz-tap-right"
+              className="pointer-events-auto h-full w-1/2 bg-transparent"
+              onClick={() => {
+                if (showFeedback) handleNextQuestion();
+              }}
+            />
+          </div>
         </div>
 
-        {showFeedback && (
-          <div className="relative z-10 p-4">
-            <Button
-              className="w-full h-12 rounded-xl bg-white text-gray-900 hover:bg-white/90 font-medium"
-              onClick={handleNextQuestion}
-            >
-              {quizIndex < quizQuestions.length - 1
-                ? "Next Question"
-                : "See Results!"}{" "}
-              <ArrowRight className="ml-2" />
-            </Button>
-          </div>
-        )}
+        <div className="relative z-10 p-4 text-center text-xs text-white/70">
+          Tap left/right to navigate
+        </div>
       </section>
     );
   }
@@ -1566,35 +1583,27 @@ export default function Learn() {
               </div>
             </motion.div>
           </AnimatePresence>
-
-        </div>
-
-        <div className="relative z-10 px-4 pb-2">
-          <div className="mx-auto max-w-md flex justify-center">
-            <Button
-              onClick={handleNext}
-              disabled={isLastCard}
-              className="h-10 min-w-44 bg-white text-gray-900 hover:bg-white/90 disabled:opacity-40"
-            >
-              Next
-              <ChevronRight className="ml-2 size-4" />
-            </Button>
-          </div>
-        </div>
-
-        {/* Navigation dots */}
-        <div className="relative z-10 flex items-center justify-center gap-1.5 pb-4">
-          {currentStoryCards.slice(0, 8).map((_, idx) => (
-            <motion.button
-              key={idx}
-              onClick={() => setArticleIndex(idx)}
-              className={cn(
-                "h-2 rounded-full transition-all",
-                articleIndex === idx ? "w-6 bg-white" : "w-2 bg-white/30",
-              )}
-              whileTap={{ scale: 0.8 }}
+          <div className="pointer-events-none absolute inset-0 z-20 flex">
+            <button
+              type="button"
+              aria-label="Previous story card"
+              data-testid="story-tap-left"
+              className="pointer-events-auto h-full w-1/2 bg-transparent"
+              onClick={handlePrev}
             />
-          ))}
+            <button
+              type="button"
+              aria-label="Next story card"
+              data-testid="story-tap-right"
+              className="pointer-events-auto h-full w-1/2 bg-transparent"
+              onClick={handleNext}
+            />
+          </div>
+
+        </div>
+
+        <div className="relative z-10 p-4 text-center text-xs text-white/70">
+          Tap left/right to navigate
         </div>
       </section>
     );

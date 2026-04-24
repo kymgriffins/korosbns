@@ -13,24 +13,35 @@ import Container from "@/components/global/container";
 import { Button } from "@/components/ui/button";
 import { Particles } from "@/components/ui/particles";
 
-const logoMap = {
-    Instagram: { icon: '/icons/integrations/instagram.svg', href: 'https://www.instagram.com/budgetndiostory' },
-    X: { icon: '/icons/integrations/social-x.svg', href: 'https://x.com/budgetndiostory' },
-    TikTok: { icon: '/icons/integrations/tiktok.svg', href: 'https://www.tiktok.com/@budgetndiostory' },
-    WhatsApp: { icon: '/icons/integrations/whatsapp.svg', href: 'https://chat.whatsapp.com/something' },
-    LinkedIn: { icon: '/icons/integrations/linkedin.svg', href: 'https://www.linkedin.com/company/budgetndiostory' },
-    YouTube: { icon: '/icons/integrations/youtube.svg', href: 'https://www.youtube.com/@budgetndiostory' }
+const partnerMap = {
+    SenMedia: {
+        label: "SME",
+        name: "Sen Media & Events",
+        href: "https://senmedia-events.co.ke/",
+    },
+    ContinentalPot: {
+        label: "TCP",
+        name: "The Continental Pot",
+        href: "https://continentalpot.africa/",
+    },
+    ColourTwist: {
+        label: "CTM",
+        name: "Colour Twist Media",
+        href: "https://colortwistmedia.com/",
+    },
 };
 
 const IntegrationCard = ({
     className,
     isCenter = false,
     iconSrc,
+    label,
     href
 }: {
     className?: string;
     isCenter?: boolean;
     iconSrc?: string;
+    label?: string;
     href?: string;
 }) => {
     const CardContent = (
@@ -50,6 +61,11 @@ const IntegrationCard = ({
                         height={isCenter ? 32 : 20}
                         className="size-5 opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"
                     />
+                </div>
+            )}
+            {!iconSrc && label && (
+                <div className="m-auto flex size-8 items-center justify-center rounded-full bg-primary/10 text-[10px] font-semibold tracking-wide text-primary">
+                    {label}
                 </div>
             )}
         </div>
@@ -111,18 +127,18 @@ const Integrations = () => {
                     >
                         <IntegrationCard
                             className="absolute left-0 top-1/4 -translate-x-1/6 -translate-y-1/4"
-                            iconSrc={logoMap.YouTube.icon}
-                            href={logoMap.YouTube.href}
+                            label={partnerMap.SenMedia.label}
+                            href={partnerMap.SenMedia.href}
                         />
                         <IntegrationCard
                             className="absolute top-0 -translate-y-1/2"
-                            iconSrc={logoMap.X.icon}
-                            href={logoMap.X.href}
+                            label={partnerMap.ContinentalPot.label}
+                            href={partnerMap.ContinentalPot.href}
                         />
                         <IntegrationCard
                             className="absolute right-0 top-1/4 translate-x-1/6 -translate-y-1/4"
-                            iconSrc={logoMap.TikTok.icon}
-                            href={logoMap.TikTok.href}
+                            label={partnerMap.ColourTwist.label}
+                            href={partnerMap.ColourTwist.href}
                         />
                     </motion.div>
 
@@ -135,13 +151,13 @@ const Integrations = () => {
                     >
                         <IntegrationCard
                             className="absolute left-0 top-1/4 -translate-x-1/4 -translate-y-1/4"
-                            iconSrc={logoMap.LinkedIn.icon}
-                            href={logoMap.LinkedIn.href}
+                            label={partnerMap.SenMedia.label}
+                            href={partnerMap.SenMedia.href}
                         />
                         <IntegrationCard
                             className="absolute right-0 top-1/4 translate-x-1/4 -translate-y-1/4"
-                            iconSrc={logoMap.Instagram.icon}
-                            href={logoMap.Instagram.href}
+                            label={partnerMap.ColourTwist.label}
+                            href={partnerMap.ColourTwist.href}
                         />
                     </motion.div>
 
@@ -168,7 +184,7 @@ const Integrations = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.4, delay: 0.4 }}
                     >
-                        Amplifying voices everywhere
+                        Consortium-led storytelling
                     </motion.h2>
 
                     <motion.p
@@ -178,7 +194,7 @@ const Integrations = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.4, delay: 0.5 }}
                     >
-                        We translate complex budget data into simple stories shared across the platforms young Kenyans use most.
+                        Led by The Continental Pot, Colour Twist Media, and Sen Media & Events to make budget information clear, useful, and actionable for young Kenyans.
                     </motion.p>
 
                     <motion.div
@@ -188,12 +204,12 @@ const Integrations = () => {
                         transition={{ duration: 0.4, delay: 0.6 }}
                     >
                         <Link
-                            href="https://www.instagram.com/budgetndiostory"
+                            href="https://continentalpot.africa/"
                             target="_blank"
                             rel="noopener noreferrer"
                         >
                             <Button variant="white">
-                                Follow the Story
+                                Explore Consortium
                             </Button>
                         </Link>
                     </motion.div>

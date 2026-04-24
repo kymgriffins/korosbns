@@ -1,14 +1,48 @@
 import { Metadata } from "next";
 import { team } from "@/constants/team";
 
-export async function generateMetadata({ params }: { params: Promise<{ username: string }> }): Promise<Metadata> {
-  const resolvedParams = await params;
-  const username = resolvedParams.username;
-  
-  const member = team.find((m) => {
-    const memberUsername = m.socials?.x?.split("/").pop() || m.name.toLowerCase().replace(/\s+/g, "");
-    return memberUsername === username;
+const getMemberUsername = (member: (typeof team)[number]) =>
+  member.socials?.x?.split("/").pop() || member.name.toLowerCase().replace(/\s+/g, "");
+
+const slugifyName = (name: string) =>
+  name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-");
+
+const normalizeParam = (value: string) => decodeURIComponent(value).trim().toLowerCase().replace(/^@/, "");
+
+const matchesMember = (member: (typeof team)[number], rawParam: string, index: number) => {
+  const param = normalizeParam(rawParam);
+  const username = getMemberUsername(member).toLowerCase();
+  const nameSlug = slugifyName(member.name);
+  const numericId = String(index + 1);
+  const prefixedId = `member-${numericId}`;
+
+  return param === username || param === nameSlug || param === numericId || param === prefixedId;
+};
+
+export function generateStaticParams() {
+  return team.flatMap((member, index) => {
+    const username = getMemberUsername(member);
+    const nameSlug = slugifyName(member.name);
+    const numericId = String(index + 1);
+    const prefixedId = `member-${numericId}`;
+
+    return [
+      { username },
+      { username: nameSlug },
+      { username: numericId },
+      { username: prefixedId },
+    ];
   });
+}
+
+export async function generateMetadata({ params }: { params: { username: string } }): Promise<Metadata> {
+  const username = params.username;
+  
+  const member = team.find((m, idx) => matchesMember(m, username, idx));
 
   if (!member) {
     return { title: "Team Member Not Found" };
@@ -32,7 +66,7 @@ import { ArrowLeft, Linkedin, Twitter, ArrowRight } from "lucide-react";
 import { notFound } from "next/navigation";
 
 interface TeamMemberPageProps {
-  params: Promise<{ username: string }>;
+  params: { username: string };
 }
 
 const TeamMemberProfile = ({ member }: { member: typeof team[0] }) => {
@@ -144,7 +178,7 @@ const TeamMemberProfile = ({ member }: { member: typeof team[0] }) => {
           className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-4"
         >
           {team.filter((m) => m.name !== member.name).slice(0, 3).map((m) => {
-            const mUsername = m.socials?.x?.split("/").pop() || m.name.toLowerCase().replace(/\s+/g, "");
+            const mUsername = getMemberUsername(m);
             return (
               <Link
                 key={m.name}
@@ -170,13 +204,9 @@ const TeamMemberProfile = ({ member }: { member: typeof team[0] }) => {
 };
 
 export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
-  const resolvedParams = await params;
-  const username = resolvedParams.username;
+  const username = params.username;
   
-  const member = team.find((m) => {
-    const memberUsername = m.socials?.x?.split("/").pop() || m.name.toLowerCase().replace(/\s+/g, "");
-    return memberUsername === username;
-  });
+  const member = team.find((m, idx) => matchesMember(m, username, idx));
 
   if (!member) {
     notFound();

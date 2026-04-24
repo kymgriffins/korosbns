@@ -4,6 +4,9 @@ import StoriesPromoMarquee from "@/components/marketing/stories-promo-marquee";
 import Workflow from "@/components/marketing/workflow";
 import Capibilities from "@/components/marketing/capibilities";
 import Integrations from "@/components/marketing/integrations";
+import UpcomingProjects from "@/components/marketing/upcoming-projects";
+import TeamHierarchy from "@/components/marketing/team-hierarchy";
+import ConsortiumPartners from "@/components/marketing/consortium-partners";
 import WallOfLove from "@/components/marketing/wall-of-love";
 import Cta from "@/components/marketing/cta";
 import { Metadata } from "next";
@@ -48,6 +51,9 @@ const HomePage = () => {
             <Workflow />
             <Capibilities />
             <Integrations />
+            <UpcomingProjects />
+            <TeamHierarchy />
+            <ConsortiumPartners />
             <WallOfLove />
             <Cta />
         </div>
