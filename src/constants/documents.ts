@@ -5,6 +5,12 @@ export type DocumentFile = {
   modified: number;
 };
 
+const API_BASE_URL =
+  (process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000").replace(
+    /\/+$/,
+    "",
+  );
+
 export type DocumentType = {
   id: string;
   title: string;
@@ -167,7 +173,7 @@ export function transformRepositoryData(repositoryData: any): DocumentType[] {
     return documents;
   }
 
-  const baseUrl = "https://api.budgetndiostory.org";
+  const baseUrl = API_BASE_URL;
 
   for (const folder of repositoryData.folders) {
     const docInfo = getDocumentInfoFromFolder(folder.name);
@@ -212,7 +218,7 @@ let inflightDocumentsPromise: Promise<FetchDocumentsResult> | null = null;
 async function fetchDocumentsFromApiOnce(): Promise<FetchDocumentsResult> {
   try {
     const response = await fetch(
-      "https://api.budgetndiostory.org/docrepository/",
+      `${API_BASE_URL}/docrepository/`,
       {
         next: { revalidate: 3600 }, // Cache for 1 hour
       },
@@ -248,7 +254,7 @@ async function fetchDocumentsFromApiOnce(): Promise<FetchDocumentsResult> {
     const isTlsAltNameIssue = maybeCause?.code === "ERR_TLS_CERT_ALTNAME_INVALID";
     if (isTlsAltNameIssue) {
       console.warn(
-        "Document repository TLS certificate mismatch for api.budgetndiostory.org; serving fallback empty documents.",
+        "Document repository TLS certificate mismatch for configured API base URL; serving fallback empty documents.",
       );
     } else {
       console.error("Failed to fetch documents from API:", error);

@@ -28,6 +28,12 @@ import Container from "../global/container";
 import Wrapper from "../global/wrapper";
 import { Button } from "../ui/button";
 
+const API_BASE_URL =
+  (process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000").replace(
+    /\/+$/,
+    "",
+  );
+
 const faqItems = [
   {
     q: "What is the Budget Policy Statement (BPS)?",
@@ -722,7 +728,7 @@ function NewsletterSignup() {
 
     try {
       const res = await fetch(
-        "https://api.budgetndiostory.org/api/newsletter/subscribe/",
+        `${API_BASE_URL}/api/newsletter/subscribe/`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -830,7 +836,7 @@ export default function Learn() {
   useEffect(() => {
     const fetchTrivia = async () => {
       try {
-        const response = await fetch("https://api.budgetndiostory.org/api/trivia/");
+        const response = await fetch(`${API_BASE_URL}/api/trivia/`);
         if (!response.ok) throw new Error("Failed to fetch trivia");
         const data = await response.json();
         
@@ -1532,7 +1538,7 @@ export default function Learn() {
                     transition={{ delay: 0.25 }}
                     className="grid grid-cols-2 gap-2"
                   >
-                    {facts?.map((fact, i) => (
+                    {facts?.map((fact: string, i: number) => (
                       <motion.div
                         key={i}
                         initial={{ scale: 0 }}
@@ -1554,7 +1560,7 @@ export default function Learn() {
                     transition={{ delay: 0.25 }}
                     className="space-y-2"
                   >
-                    {pillars?.map((p, i) => (
+                    {pillars?.map((p: any, i: number) => (
                       <motion.div
                         key={i}
                         initial={{ x: -20, opacity: 0 }}
@@ -1581,7 +1587,7 @@ export default function Learn() {
                     transition={{ delay: 0.25 }}
                     className="space-y-2"
                   >
-                    {risks?.map((r, i) => (
+                    {risks?.map((r: any, i: number) => (
                       <motion.div
                         key={i}
                         initial={{ scale: 0 }}
@@ -1609,7 +1615,7 @@ export default function Learn() {
                     transition={{ delay: 0.25 }}
                     className="flex flex-wrap gap-2"
                   >
-                    {services?.map((s, i) => (
+                    {services?.map((s: string, i: number) => (
                       <motion.span
                         key={i}
                         initial={{ scale: 0 }}
