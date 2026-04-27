@@ -3,12 +3,28 @@
 import Wrapper from "@/components/global/wrapper";
 import SectionBadge from "@/components/ui/section-badge";
 import { motion } from "motion/react";
+import Image from "next/image";
 import Link from "next/link";
 
 const partners = [
-    { name: "Sen Media & Events", href: "https://senmedia-events.co.ke/" },
-    { name: "The Continental Pot", href: "https://continentalpot.africa/" },
-    { name: "Colour Twist Media", href: "https://colortwistmedia.com/" },
+    {
+        name: "Sen Media & Events",
+        href: "https://senmedia-events.co.ke/",
+        image: "/images/senmedia.png",
+        role: "Events production and audience engagement",
+    },
+    {
+        name: "The Continental Pot",
+        href: "https://continentalpot.africa/",
+        image: "/images/The-Continental-Pot-Vertical-removebg-preview.png",
+        role: "Pan-African civic storytelling and media",
+    },
+    {
+        name: "Colour Twist Media",
+        href: "https://colortwistmedia.com/",
+        image: "/images/colortwist.png",
+        role: "Creative production and digital campaigns",
+    },
 ];
 
 const activities = [
@@ -40,16 +56,30 @@ const ConsortiumPartners = () => {
                     <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                         BNS helps young people understand how budgets shape jobs, healthcare, education, housing, and cost of living, then equips them to participate in fiscal processes with evidence-based insights.
                     </p>
-                    <div className="mt-6 grid grid-cols-1 gap-3 md:grid-cols-3">
+                    <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
                         {partners.map((partner) => (
                             <Link
                                 key={partner.name}
                                 href={partner.href}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="rounded-xl border border-foreground/10 bg-background/70 p-4 text-sm font-medium transition-colors hover:border-primary/40 hover:text-primary"
+                                className="group overflow-hidden rounded-2xl border border-foreground/10 bg-background/70 transition-all hover:-translate-y-1 hover:border-primary/40"
                             >
-                                {partner.name}
+                                <div className="relative h-36 w-full bg-white/70 p-3 dark:bg-muted/30">
+                                    <Image
+                                        src={partner.image}
+                                        alt={`${partner.name} logo`}
+                                        fill
+                                        sizes="(max-width: 768px) 100vw, 33vw"
+                                        className="object-contain transition-transform duration-300 group-hover:scale-105"
+                                    />
+                                </div>
+                                <div className="p-4">
+                                    <p className="text-sm font-semibold transition-colors group-hover:text-primary">
+                                        {partner.name}
+                                    </p>
+                                    <p className="mt-1 text-xs text-muted-foreground">{partner.role}</p>
+                                </div>
                             </Link>
                         ))}
                     </div>

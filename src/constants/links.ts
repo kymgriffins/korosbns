@@ -35,6 +35,7 @@ export const footerLinks = {
     company: [
         { label: "About BNS", href: "/about" },
         { label: "Team", href: "/about" },
+        { label: "Careers", href: Routes.Careers },
         { label: "Media", href: "/media" },
         { label: "Partners", href: "/partners" }
     ]

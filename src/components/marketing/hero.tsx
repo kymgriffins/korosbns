@@ -158,23 +158,7 @@ const Hero = () => {
                             </Button>
                         </Link>
                     </motion.div>
-                    <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.4, delay: 0.75 }}
-                        className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs sm:text-sm text-foreground/70"
-                    >
-                        <span className="text-foreground/55">Meet the team:</span>
-                        {featuredMembers.map((member) => (
-                            <Link
-                                key={member.name}
-                                href={`/team/${getMemberUsername(member)}`}
-                                className="rounded-full border border-foreground/15 px-2.5 py-1 transition-colors hover:border-primary/45 hover:text-primary"
-                            >
-                                {member.name.split(" ")[0]}
-                            </Link>
-                        ))}
-                    </motion.div>
+                  
                 </div>
 
                 <motion.div

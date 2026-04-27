@@ -75,6 +75,17 @@ const TeamCard = ({ member, index }: { member: typeof team[0]; index: number }) 
 };
 
 const About = () => {
+    const openCallRoles = [
+        "Podcast hosts",
+        "Storytellers",
+        "Animators",
+        "Videographers",
+        "Photographers",
+        "Script writers",
+        "Social media managers",
+        "Facilitators",
+    ];
+
     return (
         <section className="relative w-full min-h-screen bg-background overflow-hidden">
             <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
@@ -160,6 +171,52 @@ const About = () => {
                         ))}
                     </div>
                 </div>
+
+                <motion.div
+                    id="join-us"
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                    className="max-w-5xl mx-auto mb-16 lg:mb-24"
+                >
+                    <div className="rounded-2xl lg:rounded-3xl p-8 lg:p-12 bg-foreground/5 border border-foreground/10">
+                        <div className="max-w-3xl">
+                            <SectionBadge title="Join Us" />
+                            <h2 className="text-2xl lg:text-3xl font-bold mt-5">Open call: young creatives wanted (18-34)</h2>
+                            <p className="text-muted-foreground mt-4 leading-relaxed">
+                                Budget Ndio Story is opening space for young creators who care about civic storytelling and public accountability.
+                                If you are between 18 and 34 and ready to shape how Kenya talks about budgets, apply to join our creative network.
+                            </p>
+                        </div>
+
+                        <div className="mt-7 flex flex-wrap gap-3">
+                            {openCallRoles.map((role) => (
+                                <span
+                                    key={role}
+                                    className="rounded-full border border-foreground/15 bg-background px-4 py-2 text-sm font-medium"
+                                >
+                                    {role}
+                                </span>
+                            ))}
+                        </div>
+
+                        <div className="mt-8 flex flex-wrap items-center gap-3">
+                            <Link
+                                href="/careers"
+                                className="inline-flex items-center justify-center rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary/90"
+                            >
+                                See open positions
+                            </Link>
+                            <Link
+                                href="/careers"
+                                className="inline-flex items-center justify-center rounded-xl border border-foreground/15 px-5 py-3 text-sm font-semibold transition-colors hover:border-primary/40 hover:text-primary"
+                            >
+                                Go to careers page
+                            </Link>
+                        </div>
+                    </div>
+                </motion.div>
 
                 {/* Impact Stats */}
                 <motion.div

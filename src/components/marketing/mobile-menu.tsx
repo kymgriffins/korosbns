@@ -58,7 +58,7 @@ const MobileMenu = ({ isOpen, setIsOpen }: Props) => {
                         }}
                         className="flex flex-col gap-3 pt-4"
                     >
-                        <Link href={Routes.Home}>
+                        <Link href={Routes.JoinUs}>
                             <Button
                                 size="default"
                                 variant="white"

@@ -1,3 +1,5 @@
+import { team } from "./team";
+
 export const capabilities = [
     {
         id: 1,
@@ -29,44 +31,12 @@ export const capabilities = [
     }
 ]
 
-export const AVATAR_ITEMS = [
-    {
-        id: 1,
-        name: "Millicent Makina",
-        designation: "Board Advisor",
-        image: "/images/avatars/team/Millicent Makina.jpeg"
-    },
-    {
-        id: 2,
-        name: "Movine Omondi",
-        designation: "Executive Director",
-        image: "/images/avatars/team/Movine Omondi_HeadShot.jpg"
-    },
-    {
-        id: 3,
-        name: "James Maingi Mutinda",
-        designation: "Director Partnerships",
-        image: "/images/avatars/team/James Mutinda.jpeg"
-    },
-    {
-        id: 4,
-        name: "Shem Odhiambo Ojunga",
-        designation: "Director Media",
-        image: "/images/avatars/team/Shem Odhiambo Ojunga.jpeg"
-    },
-    {
-        id: 5,
-        name: "Nelly Maina",
-        designation: "Lead Podcast Host",
-        image: "/images/avatars/team/Nelly Maina.jpg"
-    },
-    {
-        id: 6,
-        name: "Peculiar Koros",
-        designation: "Director ICT",
-        image: "/images/avatars/team/Koros.jpeg"
-    }
-]
+export const AVATAR_ITEMS = team.map((member, index) => ({
+    id: index + 1,
+    name: member.name,
+    designation: member.role,
+    image: member.image,
+}));
 
 export const stats = [
     {
