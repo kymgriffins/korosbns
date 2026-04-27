@@ -1,48 +1,31 @@
 import { Metadata } from "next";
 import { team } from "@/constants/team";
+import {
+  findMemberByParam,
+  getMemberAliases,
+  getMemberUsername,
+  type TeamMember,
+} from "@/lib/team";
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowLeft, ArrowRight, Linkedin, Twitter } from "lucide-react";
+import { notFound } from "next/navigation";
 
-const getMemberUsername = (member: (typeof team)[number]) =>
-  member.socials?.x?.split("/").pop() || member.name.toLowerCase().replace(/\s+/g, "");
-
-const slugifyName = (name: string) =>
-  name
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .replace(/\s+/g, "-");
-
-const normalizeParam = (value: string) => decodeURIComponent(value).trim().toLowerCase().replace(/^@/, "");
-
-const matchesMember = (member: (typeof team)[number], rawParam: string, index: number) => {
-  const param = normalizeParam(rawParam);
-  const username = getMemberUsername(member).toLowerCase();
-  const nameSlug = slugifyName(member.name);
-  const numericId = String(index + 1);
-  const prefixedId = `member-${numericId}`;
-
-  return param === username || param === nameSlug || param === numericId || param === prefixedId;
-};
+type TeamMemberParams = { username: string };
 
 export function generateStaticParams() {
-  return team.flatMap((member, index) => {
-    const username = getMemberUsername(member);
-    const nameSlug = slugifyName(member.name);
-    const numericId = String(index + 1);
-    const prefixedId = `member-${numericId}`;
-
-    return [
-      { username },
-      { username: nameSlug },
-      { username: numericId },
-      { username: prefixedId },
-    ];
-  });
+  return team.flatMap((member) =>
+    getMemberAliases(member).map((username) => ({ username })),
+  );
 }
 
-export async function generateMetadata({ params }: { params: { username: string } }): Promise<Metadata> {
-  const username = params.username;
-  
-  const member = team.find((m, idx) => matchesMember(m, username, idx));
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<TeamMemberParams>;
+}): Promise<Metadata> {
+  const { username } = await params;
+  const member = findMemberByParam(username);
 
   if (!member) {
     return { title: "Team Member Not Found" };
@@ -59,16 +42,6 @@ export async function generateMetadata({ params }: { params: { username: string 
   };
 }
 
-import { motion } from "motion/react";
-import Image from "next/image";
-import Link from "next/link";
-import { ArrowLeft, Linkedin, Twitter, ArrowRight } from "lucide-react";
-import { notFound } from "next/navigation";
-
-interface TeamMemberPageProps {
-  params: { username: string };
-}
-
 const TeamMemberProfile = ({ member }: { member: typeof team[0] }) => {
   return (
     <div className="min-h-screen bg-background">
@@ -78,11 +51,7 @@ const TeamMemberProfile = ({ member }: { member: typeof team[0] }) => {
         <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[120px] rounded-full" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-teal-500/10 blur-[100px] rounded-full" />
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="relative z-10 text-center px-6 py-16"
-        >
+        <div className="relative z-10 text-center px-6 py-16">
           <Link
             href="/about"
             className="inline-flex items-center gap-2 text-sm text-foreground/60 hover:text-foreground mb-8 transition-colors"
@@ -91,12 +60,7 @@ const TeamMemberProfile = ({ member }: { member: typeof team[0] }) => {
             Back to Team
           </Link>
 
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="relative inline-block"
-          >
+          <div className="relative inline-block">
             <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl" />
             <Image
               src={member.image}
@@ -105,23 +69,14 @@ const TeamMemberProfile = ({ member }: { member: typeof team[0] }) => {
               height={160}
               className="relative rounded-full object-cover border-4 border-background shadow-2xl size-40 mx-auto"
             />
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
+          <div>
             <h1 className="text-3xl sm:text-4xl font-bold mt-6 mb-2">{member.name}</h1>
             <p className="text-lg text-primary font-medium">{member.role}</p>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="flex items-center justify-center gap-4 mt-6"
-          >
+          <div className="flex items-center justify-center gap-4 mt-6">
             {member.socials?.linkedin && (
               <Link
                 href={member.socials.linkedin}
@@ -142,17 +97,12 @@ const TeamMemberProfile = ({ member }: { member: typeof team[0] }) => {
                 <Twitter className="size-5" />
               </Link>
             )}
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </div>
 
       <div className="max-w-3xl mx-auto px-6 pb-16">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="p-8 rounded-2xl bg-white/5 border border-white/10"
-        >
+        <div className="p-8 rounded-2xl bg-white/5 border border-white/10">
           <h2 className="text-xl font-semibold mb-4">About {member.name.split(" ")[0]}</h2>
           <p className="text-foreground/70 leading-relaxed mb-6">
             {member.name} is a dedicated member of the Budget Ndio Story team, serving as {member.role.toLowerCase()}. 
@@ -169,14 +119,9 @@ const TeamMemberProfile = ({ member }: { member: typeof team[0] }) => {
               <ArrowRight className="size-4" />
             </Link>
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-4"
-        >
+        <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-4">
           {team.filter((m) => m.name !== member.name).slice(0, 3).map((m) => {
             const mUsername = getMemberUsername(m);
             return (
@@ -197,16 +142,19 @@ const TeamMemberProfile = ({ member }: { member: typeof team[0] }) => {
               </Link>
             );
           })}
-        </motion.div>
+        </div>
       </div>
     </div>
   );
 };
 
-export default async function TeamMemberPage({ params }: TeamMemberPageProps) {
-  const username = params.username;
-  
-  const member = team.find((m, idx) => matchesMember(m, username, idx));
+export default async function TeamMemberPage({
+  params,
+}: {
+  params: Promise<TeamMemberParams>;
+}) {
+  const { username } = await params;
+  const member = findMemberByParam(username);
 
   if (!member) {
     notFound();

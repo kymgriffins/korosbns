@@ -3,6 +3,7 @@
 import Wrapper from "@/components/global/wrapper";
 import SectionBadge from "@/components/ui/section-badge";
 import { team } from "@/constants";
+import { getMemberUsername, type TeamMember } from "@/lib/team";
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -21,12 +22,8 @@ import {
 } from "lucide-react";
 import { useRef, useState } from "react";
 
-type TeamMember = (typeof team)[number];
-
 const leadershipRoles = new Set(["Team Leader - Strategy", "Research Lead", "Media Lead - Communications", "Executive Director"]);
 const advisorRoles = new Set(["Board Advisor"]);
-const getMemberUsername = (member: TeamMember) =>
-    member.socials?.x?.split("/").pop() || member.name.toLowerCase().replace(/\s+/g, "");
 
 const XLogo = ({ className }: { className?: string }) => (
     <svg viewBox="0 0 24 24" aria-hidden="true" className={className} fill="currentColor">
@@ -107,7 +104,7 @@ const TeamTile = ({ member }: { member: TeamMember }) => {
                     router.push(`/team/${username}`);
                 }
             }}
-            className="group relative h-[290px] w-[215px] shrink-0 snap-center overflow-hidden rounded-xl border border-white/10 bg-black/25 transition-colors hover:border-white/20 sm:h-[315px] sm:w-[230px]"
+            className="group relative h-[290px] w-[215px] shrink-0 snap-center cursor-pointer overflow-hidden rounded-xl border border-white/10 bg-black/25 transition-colors hover:border-white/20 sm:h-[315px] sm:w-[230px]"
         >
             {imageError ? (
                 <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/60 via-primary/40 to-black/50">
@@ -212,7 +209,7 @@ const TeamCarousel = ({ members }: { members: TeamMember[] }) => {
                     }
                 }}
                 className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-                style={{ cursor: isDragging ? "grabbing" : "grab" }}
+                style={{ cursor: isDragging ? "grabbing" : "default" }}
             >
                 {members.map((member) => (
                     <TeamTile key={member.name} member={member} />

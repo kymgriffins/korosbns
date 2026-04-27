@@ -7,9 +7,10 @@ import SectionBadge from '@/components/ui/section-badge';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Linkedin, Twitter } from 'lucide-react';
+import { getMemberUsername } from '@/lib/team';
 
 const TeamCard = ({ member, index }: { member: typeof team[0]; index: number }) => {
-    const username = member.socials?.x?.split("/").pop() || member.name.toLowerCase().replace(/\s+/g, "");
+    const username = getMemberUsername(member);
     
     return (
         <motion.div

@@ -5,6 +5,8 @@ import Wrapper from '../global/wrapper';
 import { Button } from '../ui/button';
 import { ArrowRightIcon } from 'lucide-react';
 import { Routes } from '@/constants';
+import { team } from '@/constants/team';
+import { getMemberUsername } from '@/lib/team';
 import Link from 'next/link';
 import Dashboard from './dashboard';
 import { motion, useMotionValue } from 'motion/react';
@@ -62,6 +64,7 @@ const Hero = () => {
 
     const badge = "Fiscal Literacy & Democratic Participation";
     const description = "A Youth-Led Initiative bridging the gap between Kenya's youth energy and national fiscal policy.";
+    const featuredMembers = team.slice(0, 4);
 
     return (
         <section className="relative w-full flex items-center justify-center pt-8 lg:pt-8 pb-4 overflow-hidden">
@@ -154,6 +157,23 @@ const Hero = () => {
                                 Dive into data
                             </Button>
                         </Link>
+                    </motion.div>
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4, delay: 0.75 }}
+                        className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs sm:text-sm text-foreground/70"
+                    >
+                        <span className="text-foreground/55">Meet the team:</span>
+                        {featuredMembers.map((member) => (
+                            <Link
+                                key={member.name}
+                                href={`/team/${getMemberUsername(member)}`}
+                                className="rounded-full border border-foreground/15 px-2.5 py-1 transition-colors hover:border-primary/45 hover:text-primary"
+                            >
+                                {member.name.split(" ")[0]}
+                            </Link>
+                        ))}
                     </motion.div>
                 </div>
 
