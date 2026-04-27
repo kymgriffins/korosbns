@@ -22,7 +22,12 @@ import {
 } from "lucide-react";
 import { useRef, useState } from "react";
 
-const leadershipRoles = new Set(["Team Leader - Strategy", "Research Lead", "Media Lead - Communications", "Executive Director"]);
+const leadershipRoles = new Set([
+    "Executive Director",
+    "Director Partnerships",
+    "Director Media.",
+    "Director ICT",
+]);
 const advisorRoles = new Set(["Board Advisor"]);
 
 const XLogo = ({ className }: { className?: string }) => (

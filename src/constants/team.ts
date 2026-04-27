@@ -1,7 +1,7 @@
 export const team = [
     {
         name: "Movine Omondi",
-        role: "Team Leader - Strategy",
+        role: "Executive Director",
         image: "/images/avatars/team/Movine Omondi_HeadShot.jpg",
         description: "10+ years in public policy and youth advocacy. Former advisor to key civic bodies, leading our holistic strategy.",
         socials: {
@@ -11,7 +11,7 @@ export const team = [
     },
     {
         name: "Peculiar Koros",
-        role: "Research Lead",
+        role: "Director ICT",
         image: "/images/avatars/team/Koros.jpeg",
         description: "Certified researcher with a 100% clean audit record, ensuring our data is rigorous and beyond anecdotes.",
         socials: {
@@ -21,7 +21,7 @@ export const team = [
     },
     {
         name: "Shem Odhiambo Ojunga",
-        role: "Media Lead - Communications",
+        role: "Director Media.",
         image: "/images/avatars/team/Shem Odhiambo Ojunga.jpeg",
         description: "Award-winning digital strategist specializing in viral civic content that meets youth where they are.",
         socials: {
