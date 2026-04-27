@@ -107,7 +107,7 @@ export default function StoriesPromoMarquee() {
   if (closed) return null;
 
   return (
-    <div className="relative z-30 mx-auto mt-4 w-[min(1200px,96%)] rounded-2xl border border-primary/20 bg-background/70 backdrop-blur-md overflow-hidden">
+    <div className="relative z-30 mx-auto mt-4 w-[min(1200px,96%)] rounded-2xl bg-background/70 backdrop-blur-md overflow-hidden">
       <button
         onClick={handleClose}
         aria-label="Close stories promo"
@@ -127,7 +127,11 @@ export default function StoriesPromoMarquee() {
         </div>
         
         <div className="flex items-center gap-2 mr-8">
-            <div className="rounded-full border border-foreground/10 bg-foreground/[0.03] px-2 py-0.5 text-[10px] sm:text-[11px] font-medium text-foreground/70">
+            <div className="flex items-center gap-2 rounded-full border border-foreground/10 bg-foreground/[0.03] px-2 py-1 text-[10px] sm:text-[11px] font-medium text-foreground/70">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                </span>
                 {fxError ? (
                   "USD/KES unavailable"
                 ) : usdKes ? (

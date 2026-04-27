@@ -254,7 +254,7 @@ const TeamHierarchy = () => {
                         initial={{ opacity: 0, y: 16 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="rounded-3xl border border-foreground/10 bg-background/60 p-4 md:p-6"
+                        className="rounded-3xl bg-background/60 p-4 md:p-6"
                     >
                         <TeamCarousel members={sortedMembers} />
                     </motion.div>
