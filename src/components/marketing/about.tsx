@@ -130,7 +130,7 @@ const About = () => {
                 </motion.div>
 
                 {/* Team Section */}
-                <div className="mb-16 lg:mb-24">
+                <div id="team" className="mb-16 lg:mb-24">
                     <div className="text-center max-w-2xl mx-auto mb-12">
                         <SectionBadge title="Leadership Team" />
                         <motion.h2

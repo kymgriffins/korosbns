@@ -5,8 +5,10 @@ import SectionBadge from "@/components/ui/section-badge";
 import { team } from "@/constants";
 import { motion } from "motion/react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
+    ArrowUpRight,
     ChevronLeft,
     ChevronRight,
     Facebook,
@@ -17,7 +19,7 @@ import {
     Mail,
     Youtube,
 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 type TeamMember = (typeof team)[number];
 
@@ -86,6 +88,13 @@ const SocialLinks = ({ member }: { member: TeamMember }) => {
 const TeamTile = ({ member }: { member: TeamMember }) => {
     const router = useRouter();
     const username = getMemberUsername(member);
+    const [imageError, setImageError] = useState(false);
+    const initials = member.name
+        .split(" ")
+        .map((part) => part[0] ?? "")
+        .join("")
+        .slice(0, 2)
+        .toUpperCase();
 
     return (
         <article
@@ -98,22 +107,26 @@ const TeamTile = ({ member }: { member: TeamMember }) => {
                     router.push(`/team/${username}`);
                 }
             }}
-            className="group relative h-[340px] w-[250px] shrink-0 snap-center overflow-hidden rounded-2xl border border-white/15 bg-black/30 sm:h-[380px] sm:w-[280px]"
+            className="group relative h-[290px] w-[215px] shrink-0 snap-center overflow-hidden rounded-xl border border-white/10 bg-black/25 transition-colors hover:border-white/20 sm:h-[315px] sm:w-[230px]"
         >
-            <Image
-                src={member.image}
-                alt={member.name}
-                fill
-                className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                sizes="(max-width: 640px) 250px, 280px"
-            />
+            {imageError ? (
+                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/60 via-primary/40 to-black/50">
+                    <span className="text-3xl font-bold tracking-wide text-white/95">{initials}</span>
+                </div>
+            ) : (
+                <Image
+                    src={member.image}
+                    alt={member.name}
+                    fill
+                    onError={() => setImageError(true)}
+                    className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                    sizes="(max-width: 640px) 250px, 280px"
+                />
+            )}
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-            <div className="absolute bottom-0 inset-x-0 p-4 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                <h4 className="truncate text-base font-semibold text-white">{member.name}</h4>
-                <p className="truncate text-xs text-white/75 mb-2">{member.role}</p>
-                <p className="text-[10px] text-white/60 line-clamp-2 mb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    {member.description}
-                </p>
+            <div className="absolute bottom-0 inset-x-0 p-3.5">
+                <h4 className="truncate text-sm font-semibold text-white">{member.name}</h4>
+                <p className="truncate text-[11px] text-white/75 mb-2">{member.role}</p>
                 <SocialLinks member={member} />
             </div>
         </article>
@@ -125,39 +138,21 @@ const TeamCarousel = ({ members }: { members: TeamMember[] }) => {
     const dragStartXRef = useRef(0);
     const dragStartScrollRef = useRef(0);
     const hasDraggedRef = useRef(false);
-    const isHoveredRef = useRef(false);
-    const isDraggingRef = useRef(false);
-    const [isDragging, setIsDragging] = useState(false); // cursor style only
-
-    const loopMembers = useMemo(() => [...members, ...members], [members]);
+    const [isDragging, setIsDragging] = useState(false);
 
     const scrollByCards = (direction: "left" | "right") => {
-        if (!rowRef.current) return;
-        const cardWidth = 296;
-        const delta = direction === "left" ? -cardWidth : cardWidth;
-        rowRef.current.scrollBy({ left: delta, behavior: "smooth" });
-    };
-
-    useEffect(() => {
         const row = rowRef.current;
         if (!row) return;
-
-        const timer = window.setInterval(() => {
-            if (isHoveredRef.current || isDraggingRef.current) return;
-            row.scrollLeft += 1;
-            const halfway = row.scrollWidth / 2;
-            if (row.scrollLeft >= halfway) {
-                row.scrollLeft -= halfway;
-            }
-        }, 16);
-
-        return () => window.clearInterval(timer);
-    }, []); // ← empty deps: runs once, no teardown on hover/drag
+        const firstCard = row.firstElementChild as HTMLElement | null;
+        const gap = 16;
+        const cardWidth = firstCard ? firstCard.offsetWidth + gap : 246;
+        const delta = direction === "left" ? -cardWidth : cardWidth;
+        row.scrollBy({ left: delta, behavior: "smooth" });
+    };
 
     const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
         if (!rowRef.current) return;
-        isDraggingRef.current = true;   // ← ref for interval check
-        setIsDragging(true);             // ← state for cursor style
+        setIsDragging(true);
         hasDraggedRef.current = false;
         dragStartXRef.current = event.clientX;
         dragStartScrollRef.current = rowRef.current.scrollLeft;
@@ -177,8 +172,7 @@ const TeamCarousel = ({ members }: { members: TeamMember[] }) => {
         if (event.currentTarget.hasPointerCapture(event.pointerId)) {
             event.currentTarget.releasePointerCapture(event.pointerId);
         }
-        isDraggingRef.current = false;  // ← ref
-        setIsDragging(false);            // ← state
+        setIsDragging(false);
     };
 
     return (
@@ -206,8 +200,6 @@ const TeamCarousel = ({ members }: { members: TeamMember[] }) => {
             </div>
             <div
                 ref={rowRef}
-                onMouseEnter={() => { isHoveredRef.current = true; }}
-                onMouseLeave={() => { isHoveredRef.current = false; }}
                 onPointerDown={onPointerDown}
                 onPointerMove={onPointerMove}
                 onPointerUp={onPointerUp}
@@ -222,8 +214,8 @@ const TeamCarousel = ({ members }: { members: TeamMember[] }) => {
                 className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
                 style={{ cursor: isDragging ? "grabbing" : "grab" }}
             >
-                {loopMembers.map((member, index) => (
-                    <TeamTile key={`${member.name}-${index}`} member={member} />
+                {members.map((member) => (
+                    <TeamTile key={member.name} member={member} />
                 ))}
             </div>
         </div>
@@ -237,6 +229,7 @@ const TeamHierarchy = () => {
         ...team.filter((member) => member.role.toLowerCase().includes("director") && !leadershipRoles.has(member.role)),
         ...team.filter((member) => !advisorRoles.has(member.role) && !leadershipRoles.has(member.role) && !member.role.toLowerCase().includes("director")),
     ];
+    const previewMembers = sortedMembers.slice(0, 6);
 
     return (
         <section id="team" className="w-full py-16 lg:py-20 bg-background/40">
@@ -254,10 +247,19 @@ const TeamHierarchy = () => {
                         initial={{ opacity: 0, y: 16 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="rounded-3xl bg-background/60 p-4 md:p-6"
+                        className="rounded-2xl border border-foreground/10 bg-background/60 p-4 md:p-5"
                     >
-                        <TeamCarousel members={sortedMembers} />
+                        <TeamCarousel members={previewMembers} />
                     </motion.div>
+                    <div className="mt-6 flex justify-center">
+                        <Link
+                            href="/about#team"
+                            className="inline-flex items-center gap-2 rounded-full border border-foreground/15 bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:text-primary"
+                        >
+                            See full team
+                            <ArrowUpRight className="size-4" />
+                        </Link>
+                    </div>
                 </div>
             </Wrapper>
         </section>
