@@ -21,7 +21,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 type TeamMember = (typeof team)[number];
 
-const leadershipRoles = new Set(["Executive Director"]);
+const leadershipRoles = new Set(["Team Leader - Strategy", "Research Lead", "Media Lead - Communications", "Executive Director"]);
 const advisorRoles = new Set(["Board Advisor"]);
 const getMemberUsername = (member: TeamMember) =>
     member.socials?.x?.split("/").pop() || member.name.toLowerCase().replace(/\s+/g, "");
@@ -108,9 +108,12 @@ const TeamTile = ({ member }: { member: TeamMember }) => {
                 sizes="(max-width: 640px) 250px, 280px"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-            <div className="absolute bottom-0 inset-x-0 p-4">
+            <div className="absolute bottom-0 inset-x-0 p-4 translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                 <h4 className="truncate text-base font-semibold text-white">{member.name}</h4>
-                <p className="truncate text-xs text-white/75">{member.role}</p>
+                <p className="truncate text-xs text-white/75 mb-2">{member.role}</p>
+                <p className="text-[10px] text-white/60 line-clamp-2 mb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    {member.description}
+                </p>
                 <SocialLinks member={member} />
             </div>
         </article>
@@ -122,8 +125,9 @@ const TeamCarousel = ({ members }: { members: TeamMember[] }) => {
     const dragStartXRef = useRef(0);
     const dragStartScrollRef = useRef(0);
     const hasDraggedRef = useRef(false);
-    const [isHovered, setIsHovered] = useState(false);
-    const [isDragging, setIsDragging] = useState(false);
+    const isHoveredRef = useRef(false);
+    const isDraggingRef = useRef(false);
+    const [isDragging, setIsDragging] = useState(false); // cursor style only
 
     const loopMembers = useMemo(() => [...members, ...members], [members]);
 
@@ -139,7 +143,7 @@ const TeamCarousel = ({ members }: { members: TeamMember[] }) => {
         if (!row) return;
 
         const timer = window.setInterval(() => {
-            if (isHovered || isDragging) return;
+            if (isHoveredRef.current || isDraggingRef.current) return;
             row.scrollLeft += 1;
             const halfway = row.scrollWidth / 2;
             if (row.scrollLeft >= halfway) {
@@ -148,11 +152,12 @@ const TeamCarousel = ({ members }: { members: TeamMember[] }) => {
         }, 16);
 
         return () => window.clearInterval(timer);
-    }, [isHovered, isDragging]);
+    }, []); // ← empty deps: runs once, no teardown on hover/drag
 
     const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
         if (!rowRef.current) return;
-        setIsDragging(true);
+        isDraggingRef.current = true;   // ← ref for interval check
+        setIsDragging(true);             // ← state for cursor style
         hasDraggedRef.current = false;
         dragStartXRef.current = event.clientX;
         dragStartScrollRef.current = rowRef.current.scrollLeft;
@@ -172,7 +177,8 @@ const TeamCarousel = ({ members }: { members: TeamMember[] }) => {
         if (event.currentTarget.hasPointerCapture(event.pointerId)) {
             event.currentTarget.releasePointerCapture(event.pointerId);
         }
-        setIsDragging(false);
+        isDraggingRef.current = false;  // ← ref
+        setIsDragging(false);            // ← state
     };
 
     return (
@@ -200,8 +206,8 @@ const TeamCarousel = ({ members }: { members: TeamMember[] }) => {
             </div>
             <div
                 ref={rowRef}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
+                onMouseEnter={() => { isHoveredRef.current = true; }}
+                onMouseLeave={() => { isHoveredRef.current = false; }}
                 onPointerDown={onPointerDown}
                 onPointerMove={onPointerMove}
                 onPointerUp={onPointerUp}
@@ -236,10 +242,10 @@ const TeamHierarchy = () => {
         <section id="team" className="w-full py-16 lg:py-20 bg-background/40">
             <Wrapper>
                 <div className="mx-auto max-w-3xl text-center">
-                    <SectionBadge title="Leadership Team" />
-                    <h2 className="title mt-6">Meet the team behind the stories</h2>
+                    <SectionBadge title="The Architects" />
+                    <h2 className="title mt-6">Expertise Meeting Execution</h2>
                     <p className="desc mt-4">
-                        Browse team profiles as a swipeable carousel and tap any card to open full details.
+                        A multidisciplinary team of policy experts, researchers, and digital storytellers building the future of civic participation.
                     </p>
                 </div>
 

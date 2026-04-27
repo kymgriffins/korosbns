@@ -14,4 +14,5 @@ export const Routes = {
     Dashboard: "/dashboard",
     Learn: "/learn",
     LearnDoc: (doc: string) => `/learn/${doc}`,
+    Challenges: "/challenges",
 } as const;

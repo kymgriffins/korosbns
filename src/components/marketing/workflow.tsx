@@ -27,7 +27,7 @@ const Workflow = () => {
                     >
                         Chaos to clarity
                         <br />
-                        in three steps
+                        The Strategy
                     </motion.h2>
 
                     <motion.p
@@ -37,7 +37,7 @@ const Workflow = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.6, delay: 0.3 }}
                     >
-                        Empowering youth with fiscal clarity
+                        A holistic approach to civic empowerment
                     </motion.p>
                 </div>
 

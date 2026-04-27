@@ -14,7 +14,7 @@ This file captures the current app seed data based on the existing constants and
   {
     "name": "Millicent Makina",
     "role": "Board Advisor",
-    "image": "/images/avatars/team/Millicent .jpeg",
+    "image": "/images/avatars/team/Millicent Makina.jpeg",
     "socials": {
       "linkedin": "https://linkedin.com/in/millicent-makina",
       "x": "https://x.com/millicentmakina"
@@ -75,7 +75,7 @@ This file captures the current app seed data based on the existing constants and
   "socialLinks": [
     { "label": "X", "href": "https://x.com/budgetndiostory" },
     { "label": "LinkedIn", "href": "https://www.linkedin.com/company/budgetndiostory" },
-    { "label": "WhatsApp", "href": "https://wa.me/254700000000" },
+    { "label": "WhatsApp", "href": "https://wa.me/254790631623" },
     { "label": "YouTube", "href": "https://youtube.com/@budgetndiostory" },
     { "label": "TikTok", "href": "https://tiktok.com/@budgetndiostory" },
     { "label": "Instagram", "href": "https://instagram.com/budgetndiostory" }

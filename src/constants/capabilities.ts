@@ -1,31 +1,31 @@
 export const capabilities = [
     {
         id: 1,
-        title: "Budget Story Hub",
-        description: "See how taxes, education, health and housing budgets affect everyday life.",
+        title: "Docu-Series",
+        description: "\"Follow the Money\": A 6-part investigative series tracking budget allocations to local projects.",
         illustration: "/images/client.png",
-        icon: "users"
+        icon: "video"
     },
     {
         id: 2,
-        title: "Visual Explainers",
-        description: "Turn complex budget numbers into shareable charts, videos and simple breakdowns.",
+        title: "Podcasts",
+        description: "\"Budget Mtaani\": Weekly deep-dives breaking down complex fiscal policies into street slang.",
         illustration: "/images/project.png",
-        icon: "calendar"
+        icon: "mic"
     },
     {
         id: 3,
-        title: "Community Pulse",
-        description: "Track public spending, compare county budgets, and highlight gaps.",
+        title: "Digital Explainers",
+        description: "Viral infographics and 60-second explainers optimized for TikTok, Instagram, and WhatsApp.",
         illustration: "/images/community-pulse.png",
         icon: "zap"
     },
     {
         id: 4,
-        title: "Civic Action",
-        description: "Give young people clear steps for accountability, petitions and public participation.",
+        title: "Actionable Insights",
+        description: "Moving beyond outrage to evidence-based policy demands and youth-led accountability.",
         illustration: "/images/invoices.png",
-        icon: "file"
+        icon: "file-text"
     }
 ]
 
@@ -34,7 +34,7 @@ export const AVATAR_ITEMS = [
         id: 1,
         name: "Millicent Makina",
         designation: "Board Advisor",
-        image: "/images/avatars/team/Millicent .jpeg"
+        image: "/images/avatars/team/Millicent Makina.jpeg"
     },
     {
         id: 2,
@@ -74,7 +74,7 @@ export const stats = [
         value: "20k+",
         label: "young Kenyans reached",
         avatars: [
-            "/images/avatars/team/Millicent .jpeg",
+            "/images/avatars/team/Millicent Makina.jpeg",
             "/images/avatars/team/Movine Omondi_HeadShot.jpg",
             "/images/avatars/team/James Mutinda.jpeg",
             "/images/avatars/team/Shem Odhiambo Ojunga.jpeg",

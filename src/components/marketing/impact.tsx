@@ -8,39 +8,39 @@ import { Users, Eye, Map, Calendar, Heart, Share2 } from 'lucide-react';
 const impactMetrics = [
     {
         icon: Users,
-        value: "20k+",
-        label: "Young Kenyans Reached",
-        description: "Students, activists, and citizens equipped with budget knowledge"
-    },
-    {
-        icon: Eye,
-        value: "1.2M+",
-        label: "Content Views",
-        description: "Across YouTube, Instagram, TikTok and our website"
+        value: "5M+",
+        label: "Youth to be Reached",
+        description: "Through digital platforms, broadcast partnerships, and social media syndication."
     },
     {
         icon: Map,
         value: "47",
         label: "Counties Covered",
-        description: "Every county represented in our analysis"
-    },
-    {
-        icon: Heart,
-        value: "15k+",
-        label: "Newsletter Subscribers",
-        description: "Monthly budget updates delivered directly"
-    },
-    {
-        icon: Share2,
-        value: "50k+",
-        label: "Social Shares",
-        description: "Content shared by engaged community members"
+        description: "Full national coverage with Town Halls interrogation local budget estimates."
     },
     {
         icon: Calendar,
-        value: "5+",
-        label: "Years of Work",
-        description: "Consistent budget tracking and analysis"
+        value: "5000",
+        label: "Budget Champions",
+        description: "Trained budget analysts and civic leaders on the ground across the country."
+    },
+    {
+        icon: Eye,
+        value: "20+",
+        label: "Campus Hubs",
+        description: "Permanent student chapters dedicated to fiscal analysis, debate, and education."
+    },
+    {
+        icon: Heart,
+        value: "1.2M+",
+        label: "Engaged Citizens",
+        description: "Young Kenyans actively following and participating in budget deep-dives."
+    },
+    {
+        icon: Share2,
+        value: "100%",
+        label: "Clean Audit",
+        description: "Maintaining a standard of rigorous data integrity and policy-based accountability."
     }
 ];
 

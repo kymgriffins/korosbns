@@ -49,23 +49,44 @@ export default function StoriesPromoMarquee() {
     let mounted = true;
 
     const fetchUsdKes = async () => {
+      // 1. Try Backend First
       try {
-        const response = await fetch(
-          `${API_BASE_URL}/api/forex/usd-kes/`,
-        );
-        if (!response.ok) throw new Error("FX fetch failed");
-        const data = await response.json();
-        const usdKesRate = Number(data?.usd_kes);
-        if (!Number.isFinite(usdKesRate) || usdKesRate <= 0) {
-          throw new Error("Invalid KES rate");
+        const response = await fetch(`${API_BASE_URL}/api/forex/usd-kes/`);
+        if (response.ok) {
+          const data = await response.json();
+          const usdKesRate = Number(data?.usd_kes);
+          if (Number.isFinite(usdKesRate) && usdKesRate > 0) {
+            if (mounted) {
+              setUsdKes(usdKesRate);
+              setFxError(false);
+              return; // Success, exit
+            }
+          }
         }
-        if (mounted) {
-          setUsdKes(usdKesRate);
-          setFxError(false);
-        }
-      } catch {
-        if (mounted) setFxError(true);
+      } catch (e) {
+        console.warn("Backend FX fetch failed, trying fallback...", e);
       }
+
+      // 2. Try Public Fallback (Google Finance alternative / Open Exchange Rate)
+      try {
+        const response = await fetch("https://open.er-api.com/v6/latest/USD");
+        if (response.ok) {
+          const data = await response.json();
+          const usdKesRate = Number(data?.rates?.KES);
+          if (Number.isFinite(usdKesRate) && usdKesRate > 0) {
+            if (mounted) {
+              setUsdKes(usdKesRate);
+              setFxError(false);
+              return;
+            }
+          }
+        }
+      } catch (e) {
+        console.error("Global FX fallback failed:", e);
+      }
+
+      // 3. If all fails
+      if (mounted) setFxError(true);
     };
 
     fetchUsdKes();
@@ -86,31 +107,36 @@ export default function StoriesPromoMarquee() {
   if (closed) return null;
 
   return (
-    <div className="relative z-30 mx-auto mt-4 w-[min(1200px,96%)] rounded-2xl border border-primary/20 bg-background/70 backdrop-blur-md">
-      <div className="absolute right-12 top-2 z-10 rounded-full border border-foreground/15 bg-background/90 px-2.5 py-1 text-[11px] text-foreground/75">
-        {fxError ? (
-          "USD/KES unavailable"
-        ) : usdKes ? (
-          <>USD/KES {usdKes.toFixed(2)}</>
-        ) : (
-          "USD/KES ..."
-        )}
-      </div>
+    <div className="relative z-30 mx-auto mt-4 w-[min(1200px,96%)] rounded-2xl border border-primary/20 bg-background/70 backdrop-blur-md overflow-hidden">
       <button
         onClick={handleClose}
         aria-label="Close stories promo"
-        className="absolute right-2 top-2 z-10 rounded-full border border-foreground/15 bg-background/90 p-1.5 text-foreground/70 hover:text-foreground"
+        className="absolute right-2 top-2 z-20 rounded-full border border-foreground/15 bg-background/90 p-1.5 text-foreground/70 hover:text-foreground"
       >
         <X className="size-4" />
       </button>
 
-      <div className="flex items-center gap-2 border-b border-foreground/10 px-4 py-2.5">
-        <span className="text-xs font-semibold uppercase tracking-wider text-primary">
-          New Story Drops
-        </span>
-        <span className="text-xs text-foreground/60">
-          Swipe the vibe, pick your lane
-        </span>
+      <div className="flex items-center justify-between border-b border-foreground/10 px-4 py-2.5">
+        <div className="flex items-center gap-2 overflow-hidden">
+          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-primary shrink-0">
+            New Story Drops
+          </span>
+          <span className="hidden sm:inline-block text-xs text-foreground/60 truncate">
+            Swipe the vibe, pick your lane
+          </span>
+        </div>
+        
+        <div className="flex items-center gap-2 mr-8">
+            <div className="rounded-full border border-foreground/10 bg-foreground/[0.03] px-2 py-0.5 text-[10px] sm:text-[11px] font-medium text-foreground/70">
+                {fxError ? (
+                  "USD/KES unavailable"
+                ) : usdKes ? (
+                  <>USD/KES <span className="text-primary font-bold">{usdKes.toFixed(2)}</span></>
+                ) : (
+                  "USD/KES ..."
+                )}
+            </div>
+        </div>
       </div>
 
       <Marquee pauseOnHover className="py-2 [--duration:30s]">

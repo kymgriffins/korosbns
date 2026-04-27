@@ -3,6 +3,8 @@ import Hero from "@/components/marketing/hero";
 import StoriesPromoMarquee from "@/components/marketing/stories-promo-marquee";
 import Workflow from "@/components/marketing/workflow";
 import Capibilities from "@/components/marketing/capibilities";
+import Disconnect from "@/components/marketing/disconnect";
+import ROI from "@/components/marketing/roi";
 import Integrations from "@/components/marketing/integrations";
 import UpcomingProjects from "@/components/marketing/upcoming-projects";
 import TeamHierarchy from "@/components/marketing/team-hierarchy";
@@ -12,23 +14,23 @@ import Cta from "@/components/marketing/cta";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+    title: "Budget Ndio Story | Bridging Youth Energy & Fiscal Policy",
     description:
-        "Budget Ndio Story is a youth-led initiative in Kenya translating public budgets into accessible, actionable information that drives civic engagement and accountability.",
+        "Budget Ndio Story is a youth-led initiative in Kenya transforming complex national budgets into actionable narratives for democratic participation and fiscal literacy.",
     keywords: [
         "Budget Ndio Story",
         "youth-led civic engagement Kenya",
         "budget transparency Kenya",
-        "public finance education",
-        "county budget accountability",
+        "fiscal literacy",
+        "youth fiscal policy",
     ],
     alternates: {
         canonical: "/",
     },
     openGraph: {
-        title: "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+        title: "Budget Ndio Story | Bridging Youth Energy & Fiscal Policy",
         description:
-            "Making national and county budgets understandable and relevant to young people through explainers, videos, and community action.",
+            "Translating Numbers into Narratives. Meeting youth where they are through investigative series, podcasts, and digital explainers.",
         url: "/",
         type: "website",
         images: ["/logo.svg"],
@@ -48,13 +50,15 @@ const HomePage = () => {
             <Background />
             <StoriesPromoMarquee />
             <Hero />
+            <Disconnect />
             <Workflow />
             <Capibilities />
-            <Integrations />
+            <ROI />
+            {/* <Integrations /> */}
             <UpcomingProjects />
             <TeamHierarchy />
             <ConsortiumPartners />
-            <WallOfLove />
+            {/* <WallOfLove /> */}
             <Cta />
         </div>
     )

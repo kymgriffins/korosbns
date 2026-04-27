@@ -60,8 +60,8 @@ const FloatingBadge = ({ text, top, left, right, index }: { text: string; top: s
 
 const Hero = () => {
 
-    const badge = "Budget Ndio Story";
-    const description = "We turn national and county budgets into simple stories, visuals, and action steps for young Kenyans.";
+    const badge = "Fiscal Literacy & Democratic Participation";
+    const description = "A Youth-Led Initiative bridging the gap between Kenya's youth energy and national fiscal policy.";
 
     return (
         <section className="relative w-full flex items-center justify-center pt-8 lg:pt-8 pb-4 overflow-hidden">
@@ -80,7 +80,7 @@ const Hero = () => {
                             "px-2 py-0.5 text-xs font-semibold rounded-full",
                             "bg-foreground text-background"
                         )}>
-                            New
+                            Mission
                         </span>
                         <Container words={true} className="w-min flex text-sm text-foreground/80">
                             {badge.split(" ").map((word, index) => (
@@ -93,7 +93,7 @@ const Hero = () => {
 
                     <h1 className="text-4xl md:text-6xl font-semibold tracking-tight font-heading mt-8">
                         <Balancer>
-                            {"Turning budget data".split(" ").map((word, index) => (
+                            {"Bridging the gap between".split(" ").map((word, index) => (
                                 <motion.span
                                     initial={{ filter: "blur(10px)", opacity: 0, y: 10 }}
                                     animate={{ filter: "blur(0px)", opacity: 1, y: 0 }}
@@ -105,14 +105,14 @@ const Hero = () => {
                                 </motion.span>
                             ))}
                             <br />
-                            {"into stories for you".split(" ").map((word, index) => (
+                            {"youth energy & fiscal policy".split(" ").map((word, index) => (
                                 <motion.span
                                     initial={{ filter: "blur(10px)", opacity: 0, y: 10 }}
                                     animate={{ filter: "blur(0px)", opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.4, delay: (3 + index) * 0.05 }}
+                                    transition={{ duration: 0.4, delay: (4 + index) * 0.05 }}
                                     className={cn(
                                         "inline-block",
-                                        word === "stories" && "bg-linear-to-r from-primary via-blue-500 to-primary bg-size-[200%_100%] animate-[shimmer_3s_ease-in-out_infinite] text-transparent bg-clip-text"
+                                        (word === "youth" || word === "energy") && "bg-linear-to-r from-primary via-blue-500 to-primary bg-size-[200%_100%] animate-[shimmer_3s_ease-in-out_infinite] text-transparent bg-clip-text"
                                     )}
                                     key={index}
                                 >

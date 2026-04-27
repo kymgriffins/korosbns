@@ -10,6 +10,10 @@ export const NAV_LINKS = [
         href: Routes.FAQ,
     },
     {
+        label: "Challenges",
+        href: Routes.Challenges,
+    },
+    {
         label: "Contact",
         href: Routes.Contact,
     },
@@ -20,6 +24,7 @@ export const footerLinks = {
         { label: "Stories", href: Routes.Learn },
         { label: "Explainers", href: Routes.Capabilities },
         { label: "Impact", href: "/impact" },
+        { label: "Challenges", href: Routes.Challenges },
         { label: "Get Involved", href: Routes.Membership }
     ],
     resources: [
@@ -38,7 +43,7 @@ export const footerLinks = {
 export const socialLinks = [
     { label: "X", href: "https://x.com/budgetndiostory", icon: "x" },
     { label: "LinkedIn", href: "https://www.linkedin.com/company/budgetndiostory", icon: "linkedin" },
-    { label: "WhatsApp", href: "https://wa.me/254700000000", icon: "whatsapp" },
+    { label: "WhatsApp", href: "https://wa.me/254790631623", icon: "whatsapp" },
     { label: "YouTube", href: "https://youtube.com/@budgetndiostory", icon: "youtube" },
     { label: "TikTok", href: "https://tiktok.com/@budgetndiostory", icon: "tiktok" },
     { label: "Instagram", href: "https://instagram.com/budgetndiostory", icon: "instagram" }

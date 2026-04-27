@@ -18,7 +18,7 @@ const Capibilities = () => {
 
             <Wrapper>
                 <div className="flex flex-col items-center text-center">
-                    <SectionBadge title="Capabilities" />
+                    <SectionBadge title="Content Engine" />
 
                     <motion.h2
                         className="title mt-6"
@@ -27,7 +27,9 @@ const Capibilities = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.3, delay: 0.2 }}
                     >
-                        Designed for transparency
+                        High-quality production
+                        <br />
+                        Meeting youth where they are
                     </motion.h2>
 
                     <motion.p
@@ -37,7 +39,7 @@ const Capibilities = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.3, delay: 0.3 }}
                     >
-                        Stories, visuals, data, and actions in one clean interface
+                        Translating Numbers into Narratives
                     </motion.p>
                 </div>
 

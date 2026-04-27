@@ -7,34 +7,34 @@ import { CalendarDays, Rocket, Users2 } from "lucide-react";
 
 const projects = [
     {
-        title: "Project TERRA",
-        timeline: "Q3 2026",
-        summary: "Exploring fiscal governance in the digital economy, with youth-centered tax justice storytelling.",
-        tags: ["Digital economy", "Tax equity", "Research + creators"],
+        title: "Town Halls",
+        timeline: "47 Counties",
+        summary: "Physical forums in every county where youth interrogate local budget estimates with MPs and MCAs.",
+        tags: ["Direct dialogue", "Duty bearers", "Budget estimates"],
     },
     {
-        title: "Campus Budget Chapters",
-        timeline: "Rolling 2026",
-        summary: "Launching and mentoring student-led chapters that monitor county and national allocations.",
-        tags: ["University chapters", "Budget clubs", "Peer organizers"],
+        title: "Campus Hubs",
+        timeline: "20 Universities",
+        summary: "Permanent student chapters dedicated to fiscal analysis, debate, and peer-to-peer education.",
+        tags: ["Student leaders", "Fiscal analysis", "Peer education"],
     },
     {
         title: "Budget Verification Hub",
-        timeline: "Q4 2026",
+        timeline: "National Scale",
         summary: "A shared desk connecting youth, journalists, and experts to verify fiscal claims with evidence.",
-        tags: ["Journalist support", "Fact-checking", "Open civic data"],
+        tags: ["Fact-checking", "Open civic data", "Evidence-based"],
     },
 ];
 
 const UpcomingProjects = () => {
     return (
-        <section id="upcoming-projects" className="w-full py-16 lg:py-20">
+        <section id="engagement" className="w-full py-16 lg:py-20">
             <Wrapper>
                 <div className="mx-auto max-w-3xl text-center">
-                    <SectionBadge title="Upcoming Projects" />
-                    <h2 className="title mt-6">What we are building next</h2>
+                    <SectionBadge title="The Engagement" />
+                    <h2 className="title mt-6">From Online Outrage to Offline Action</h2>
                     <p className="desc mt-4">
-                        New initiatives focused on youth participation, evidence-based accountability, and more accessible public finance conversations.
+                        We are building permanent spaces for direct dialogue and peer-to-peer education across the country.
                     </p>
                 </div>
 

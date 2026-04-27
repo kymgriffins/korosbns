@@ -1,17 +1,17 @@
 export const WORKFLOW_STEPS = [
     {
-        number: "1",
-        title: "Identify",
-        description: "Spot complex budget data and public spending reports that need attention.",
+        number: "01",
+        title: "Demystify",
+        description: "Breaking down complex fiscal data into bite-sized, engaging media content like infographics and podcasts.",
     },
     {
-        number: "2",
-        title: "Clarify",
-        description: "Break down the numbers into simple, shareable stories and visual formats.",
+        number: "02",
+        title: "Evidence",
+        description: "Moving beyond anecdotes by generating rigorous data and policy briefs to support youth demands.",
     },
     {
-        number: "3",
-        title: "Amplify",
-        description: "Distribute the stories across every platform to demand accountability and action.",
+        number: "03",
+        title: "Accountability",
+        description: "Creating permanent spaces like Town Halls and Campus Hubs for direct dialogue with duty bearers.",
     },
 ];
