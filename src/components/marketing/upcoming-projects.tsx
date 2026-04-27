@@ -3,7 +3,8 @@
 import Wrapper from "@/components/global/wrapper";
 import SectionBadge from "@/components/ui/section-badge";
 import { motion } from "motion/react";
-import { CalendarDays, Rocket, Users2 } from "lucide-react";
+import { ArrowRight, CalendarDays, Rocket, Users2 } from "lucide-react";
+import Link from "next/link";
 
 const projects = [
     {
@@ -11,18 +12,24 @@ const projects = [
         timeline: "47 Counties",
         summary: "Physical forums in every county where youth interrogate local budget estimates with MPs and MCAs.",
         tags: ["Direct dialogue", "Duty bearers", "Budget estimates"],
+        href: "/learn",
+        cta: "Open civic brief",
     },
     {
         title: "Campus Hubs",
         timeline: "20 Universities",
         summary: "Permanent student chapters dedicated to fiscal analysis, debate, and peer-to-peer education.",
         tags: ["Student leaders", "Fiscal analysis", "Peer education"],
+        href: "/learn?story=civic-compass-v2",
+        cta: "Start leadership story",
     },
     {
         title: "Budget Verification Hub",
         timeline: "National Scale",
         summary: "A shared desk connecting youth, journalists, and experts to verify fiscal claims with evidence.",
         tags: ["Fact-checking", "Open civic data", "Evidence-based"],
+        href: "/challenges",
+        cta: "Join challenge loop",
     },
 ];
 
@@ -62,8 +69,38 @@ const UpcomingProjects = () => {
                                     </div>
                                 ))}
                             </div>
+                            <Link
+                                href={project.href}
+                                className="mt-6 inline-flex items-center gap-1.5 text-xs font-semibold text-primary transition-colors hover:text-primary/80"
+                            >
+                                {project.cta}
+                                <ArrowRight className="size-3.5" />
+                            </Link>
                         </motion.article>
                     ))}
+                </div>
+                <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+                    <Link
+                        href="/learn"
+                        className="inline-flex items-center gap-1.5 rounded-full border border-foreground/10 bg-background px-3 py-1.5 text-xs font-medium text-foreground/80 transition-colors hover:border-primary/30 hover:text-primary"
+                    >
+                        Start Learning
+                        <ArrowRight className="size-3.5" />
+                    </Link>
+                    <Link
+                        href="/learn?story=budget-trivia"
+                        className="inline-flex items-center gap-1.5 rounded-full border border-foreground/10 bg-background px-3 py-1.5 text-xs font-medium text-foreground/80 transition-colors hover:border-primary/30 hover:text-primary"
+                    >
+                        Play Trivia
+                        <ArrowRight className="size-3.5" />
+                    </Link>
+                    <Link
+                        href="/challenges"
+                        className="inline-flex items-center gap-1.5 rounded-full border border-foreground/10 bg-background px-3 py-1.5 text-xs font-medium text-foreground/80 transition-colors hover:border-primary/30 hover:text-primary"
+                    >
+                        Join Challenges
+                        <ArrowRight className="size-3.5" />
+                    </Link>
                 </div>
                 <div className="mt-6 flex items-center justify-center gap-2 text-xs text-muted-foreground">
                     <Users2 className="size-4" />

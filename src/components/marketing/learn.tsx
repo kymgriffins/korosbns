@@ -14,6 +14,7 @@ import {
     RefreshCcw,
     Send,
     Target,
+  Trophy,
     X,
     XCircle,
 } from "lucide-react";
@@ -25,11 +26,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Balancer from "react-wrap-balancer";
 import { toast } from "sonner";
 import Container from "../global/container";
+import { deepDiveCards } from "@/lib/learn-deep-dives";
 import Wrapper from "../global/wrapper";
 import { Button } from "../ui/button";
 
 const API_BASE_URL =
-  (process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000").replace(
+  (process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.budgetndiostory.org").replace(
     /\/+$/,
     "",
   );
@@ -140,29 +142,7 @@ const hubArticles = [
   },
 ];
 
-const deepDiveModules = [
-  {
-    id: "growth-signal",
-    title: "Budget Growth Signal",
-    subtitle: "Track how projected spending scales and where growth should translate into public value.",
-    image: "/images/gradient.svg",
-    accent: "from-cyan-400/85 via-sky-400/80 to-blue-500/75",
-  },
-  {
-    id: "debt-pressure",
-    title: "Debt Pressure & Fiscal Space",
-    subtitle: "Understand debt obligations, refinancing risk, and why fiscal room for services gets tighter.",
-    image: "/images/project.svg",
-    accent: "from-orange-400/85 via-rose-400/80 to-fuchsia-500/75",
-  },
-  {
-    id: "citizen-checklist",
-    title: "Citizen Outcome Checklist",
-    subtitle: "Use practical checks for schools, health, and county delivery after allocations are approved.",
-    image: "/images/invoices.svg",
-    accent: "from-violet-400/85 via-indigo-400/80 to-blue-500/75",
-  },
-];
+const deepDiveModules = deepDiveCards;
 
 const decodeStoryCards = [
   {
@@ -812,6 +792,13 @@ function NewsletterSignup() {
 
 type AppState = "hub" | "article" | "quiz" | "complete" | "survey" | "survey-complete";
 const STORY_WATCHED_STORAGE_KEY = "bns_story_watched";
+const GAMIFICATION_ID_STORAGE_KEY = "bns_gamification_id";
+
+type GamificationState = {
+  points: number;
+  level: number;
+  streak_days: number;
+};
 
 export default function Learn() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -831,6 +818,7 @@ export default function Learn() {
   const [surveyAnswers, setSurveyAnswers] = useState<Record<number, number>>({});
   const [watchedStories, setWatchedStories] = useState<Record<string, boolean>>({});
   const [currentFlowCards, setCurrentFlowCards] = useState<any[]>([]);
+  const [gamification, setGamification] = useState<GamificationState | null>(null);
 
   // Fetch trivia from backend
   useEffect(() => {
@@ -871,6 +859,74 @@ export default function Learn() {
     };
     fetchTrivia();
   }, []);
+
+  const getGamificationId = () => {
+    if (typeof window === "undefined") return "guest";
+    const existing = window.localStorage.getItem(GAMIFICATION_ID_STORAGE_KEY);
+    if (existing) return existing;
+    const generated = `device-${crypto.randomUUID()}`;
+    window.localStorage.setItem(GAMIFICATION_ID_STORAGE_KEY, generated);
+    return generated;
+  };
+
+  const gamificationFetch = async (path: string, init?: RequestInit) => {
+    const identifier = getGamificationId();
+    return fetch(`${API_BASE_URL}${path}`, {
+      ...init,
+      headers: {
+        "Content-Type": "application/json",
+        "X-Gamification-Id": identifier,
+        ...(init?.headers || {}),
+      },
+    });
+  };
+
+  const refreshGamification = async () => {
+    try {
+      const response = await gamificationFetch("/api/gamification/me/");
+      if (!response.ok) return;
+      const data = await response.json();
+      setGamification({
+        points: data.points ?? 0,
+        level: data.level ?? 1,
+        streak_days: data.streak_days ?? 0,
+      });
+    } catch (error) {
+      console.error("Failed to fetch gamification state:", error);
+    }
+  };
+
+  const awardPoints = async (payload: {
+    eventType: "story_complete" | "quiz_complete" | "challenge_submit" | "streak_bonus";
+    points: number;
+    objectId?: string;
+    idempotencyKey: string;
+    metadata?: Record<string, unknown>;
+  }) => {
+    try {
+      const response = await gamificationFetch("/api/gamification/events/", {
+        method: "POST",
+        body: JSON.stringify({
+          event_type: payload.eventType,
+          points: payload.points,
+          object_id: payload.objectId || "",
+          idempotency_key: payload.idempotencyKey,
+          metadata: payload.metadata || {},
+        }),
+      });
+      if (!response.ok) return;
+      const data = await response.json();
+      if (typeof data.points === "number") {
+        setGamification({
+          points: data.points,
+          level: data.level ?? 1,
+          streak_days: data.streak_days ?? 0,
+        });
+      }
+    } catch (error) {
+      console.error("Failed to award points:", error);
+    }
+  };
 
   const handleStoryStart = (id: StoryFlowId) => {
     setSelectedStoryId(id);
@@ -925,6 +981,13 @@ export default function Learn() {
       } catch {
         // Ignore storage failures in private mode or restricted environments.
       }
+      void awardPoints({
+        eventType: "story_complete",
+        points: 10,
+        objectId: storyId,
+        idempotencyKey: `story_complete:${storyId}`,
+        metadata: { source: "learn_story" },
+      });
       return next;
     });
   };
@@ -946,6 +1009,10 @@ export default function Learn() {
     } catch {
       // Ignore invalid/missing local storage data.
     }
+  }, []);
+
+  useEffect(() => {
+    void refreshGamification();
   }, []);
 
   useEffect(() => {
@@ -1001,6 +1068,13 @@ export default function Learn() {
       setQuizAnswer(null);
       setShowFeedback(false);
     } else {
+      void awardPoints({
+        eventType: "quiz_complete",
+        points: 20,
+        objectId: selectedStoryId,
+        idempotencyKey: `quiz_complete:${selectedStoryId}:${new Date().toISOString().slice(0, 10)}`,
+        metadata: { score: quizScore, total: quizQuestions.length },
+      });
       setAppState("complete");
     }
   };
@@ -1713,6 +1787,18 @@ export default function Learn() {
                     <BookOpen className="size-3.5" />
                     Learn Hub
                   </div>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <span className="inline-flex items-center gap-1 rounded-full border border-amber-300/35 bg-amber-400/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-amber-100">
+                    <Trophy className="size-3.5" />
+                    {gamification?.points ?? 0} points
+                  </span>
+                  <span className="inline-flex items-center gap-1 rounded-full border border-cyan-300/35 bg-cyan-400/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-cyan-100">
+                    Lv {gamification?.level ?? 1}
+                  </span>
+                  <span className="inline-flex items-center gap-1 rounded-full border border-emerald-300/35 bg-emerald-400/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-emerald-100">
+                    {gamification?.streak_days ?? 0} day streak
+                  </span>
+                </div>
                   <h1 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">
                     Learn budget stories faster, with visual explainers
                   </h1>
@@ -1803,12 +1889,12 @@ export default function Learn() {
                 </div>
                 <h2 className="text-xl font-bold">Guided explainer cards</h2>
                 <p className="text-sm text-foreground/65">
-                  One guided article that explains what the BPS means in plain language.
+                  One complete BPS explainer plus two docs-guided drafts (CFSP and BROP) sourced from repository standards.
                 </p>
               </div>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                   {deepDiveModules.map((module, index) => (
-                    <Link key={module.id} href="/learn/bps" className="group block min-w-0">
+                    <Link key={module.id} href={module.href} className="group block min-w-0">
                       <motion.div
                         initial={{ opacity: 0, y: 14 }}
                         whileInView={{ opacity: 1, y: 0 }}

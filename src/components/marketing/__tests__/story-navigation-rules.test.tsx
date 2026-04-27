@@ -92,7 +92,9 @@ describe("story + quiz navigation rules", () => {
     expect(screen.getByTestId("quiz-tap-left")).toBeInTheDocument();
     expect(screen.getByTestId("quiz-tap-right")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: /b/i }));
+    const correctOption = screen.getByText("February 15th").closest("button");
+    expect(correctOption).toBeTruthy();
+    fireEvent.click(correctOption!);
     fireEvent.click(screen.getByTestId("quiz-tap-right"));
     expect(screen.getByText(/question 2/i)).toBeInTheDocument();
   });
