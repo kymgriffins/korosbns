@@ -14,7 +14,7 @@ export const Routes = {
     Integrations: "/#integrations",
     Membership: "/#membership",
 
-    Dashboard: "/dashboard",
+    Dashboard: "/dashboard.internal",
     Learn: "/learn",
     LearnDoc: (doc: string) => `/learn/${doc}`,
     Challenges: "/challenges",

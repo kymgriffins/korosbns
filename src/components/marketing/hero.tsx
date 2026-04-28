@@ -8,7 +8,6 @@ import { Routes } from '@/constants';
 import { team } from '@/constants/team';
 import { getMemberUsername } from '@/lib/team';
 import Link from 'next/link';
-import Dashboard from './dashboard';
 import { motion, useMotionValue } from 'motion/react';
 import { cn } from '@/utils';
 import Balancer from 'react-wrap-balancer';
@@ -179,9 +178,6 @@ const Hero = () => {
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                     allowFullScreen
                                 />
-                            </div>
-                            <div className="hidden">
-                                <Dashboard />
                             </div>
                         </div>
                     </div>
