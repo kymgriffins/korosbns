@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/media",
     "/partners",
     "/research",
+    "/tasks",
     "/faq",
     "/contact",
     "/privacy",

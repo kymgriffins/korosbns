@@ -29,6 +29,7 @@ export const footerLinks = {
     ],
     resources: [
         { label: "Budget Guides", href: Routes.Learn },
+        { label: "Task Tracker", href: Routes.Tasks },
         { label: "Newsletter", href: "#newsletter" },
         { label: "Contact", href: Routes.Contact }
     ],

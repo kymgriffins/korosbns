@@ -36,6 +36,28 @@ type OrgProgram = {
   description: string;
 };
 
+type OrgTaskStatus = "todo" | "in_progress" | "done" | "blocked";
+
+type OrgTaskPriority = "low" | "medium" | "high";
+
+type OrgTask = {
+  id: string;
+  title: string;
+  owner: string;
+  due: string;
+  status: OrgTaskStatus;
+  priority: OrgTaskPriority;
+  notes?: string;
+};
+
+type OrgMeeting = {
+  id: string;
+  date: string;
+  title: string;
+  summary: string;
+  actionItems: OrgTask[];
+};
+
 type OrgSeed = {
   id: string;
   shortName: string;
@@ -66,6 +88,7 @@ type OrgSeed = {
     publicPages: { label: string; href: string }[];
     footerSections: typeof footerLinks;
   };
+  meetings: OrgMeeting[];
   seedVersion: string;
   generatedAt: string;
 };
@@ -218,9 +241,152 @@ export const ORG_SEED: OrgSeed = {
     ],
     footerSections: footerLinks,
   },
+  meetings: [
+    {
+      id: "bns-leadership-2026-04-27",
+      date: "2026-04-27",
+      title: "BNS Leadership Meeting",
+      summary:
+        "Website updates got strong feedback but need external UX review. Partnership engagements are accelerating and require a tighter content and media framework.",
+      actionItems: [
+        {
+          id: "task-engage-ui-expert",
+          title: "Engage independent expert for professional UI/UX opinion",
+          owner: "Budget Ndio Story",
+          due: "2026-05-02",
+          status: "todo",
+          priority: "high",
+        },
+        {
+          id: "task-share-strategy-docs",
+          title: "Share strategic plan and context docs with Koros for website updates",
+          owner: "Budget Ndio Story",
+          due: "2026-04-28",
+          status: "in_progress",
+          priority: "high",
+        },
+        {
+          id: "task-share-light-logo",
+          title: "Share lighter version of logo file with Koros",
+          owner: "Shem Ojunga",
+          due: "2026-04-28",
+          status: "todo",
+          priority: "high",
+        },
+        {
+          id: "task-fix-site-bugs",
+          title: "Fix outstanding website bugs and update team",
+          owner: "Koros",
+          due: "2026-05-03",
+          status: "in_progress",
+          priority: "high",
+        },
+        {
+          id: "task-share-short-videos",
+          title: "Share short video assets via Google link with Koros",
+          owner: "James Maingi",
+          due: "2026-04-28",
+          status: "todo",
+          priority: "high",
+        },
+        {
+          id: "task-share-youtube-integration",
+          title: "Share easier YouTube integration methods with Koros",
+          owner: "Budget Ndio Story",
+          due: "2026-04-29",
+          status: "todo",
+          priority: "medium",
+        },
+        {
+          id: "task-confirm-event-date",
+          title: "Confirm law school student availability for May 15 event postponement",
+          owner: "James Maingi",
+          due: "2026-04-29",
+          status: "todo",
+          priority: "high",
+        },
+        {
+          id: "task-design-survey-poster",
+          title: "Finalize research survey poster for Wednesday launch",
+          owner: "James Maingi",
+          due: "2026-04-28",
+          status: "todo",
+          priority: "high",
+        },
+        {
+          id: "task-prepare-tor",
+          title: "Prepare partnership ToR for MPyana and Elizabeth engagement",
+          owner: "James Maingi",
+          due: "2026-04-30",
+          status: "todo",
+          priority: "medium",
+        },
+        {
+          id: "task-prepare-yan-strategy",
+          title: "Coordinate with Liz on strategy for Yan conversation (May 6-8)",
+          owner: "James Maingi",
+          due: "2026-05-05",
+          status: "todo",
+          priority: "medium",
+        },
+        {
+          id: "task-email-aku",
+          title: "Email AKU requesting podcast production date change from Thursday to Tuesday",
+          owner: "Budget Ndio Story",
+          due: "2026-04-28",
+          status: "todo",
+          priority: "high",
+        },
+        {
+          id: "task-call-cra",
+          title: "Call CRA contact and confirm Tuesday podcast schedule",
+          owner: "James Maingi",
+          due: "2026-04-28",
+          status: "todo",
+          priority: "high",
+        },
+        {
+          id: "task-visit-alt-studio",
+          title: "Visit alternative podcast studio and assess production setup",
+          owner: "James Maingi",
+          due: "2026-05-01",
+          status: "todo",
+          priority: "high",
+        },
+        {
+          id: "task-reflect-team-strategy",
+          title: "Reflect on team inclusion strategy and role clarity",
+          owner: "Shem Ojunga",
+          due: "2026-05-02",
+          status: "todo",
+          priority: "medium",
+          notes: "Balance equipment constraints with team utilization.",
+        },
+        {
+          id: "task-post-meeting-notes",
+          title: "Post notes for last week and this week in group chat",
+          owner: "Budget Ndio Story",
+          due: "2026-04-28",
+          status: "todo",
+          priority: "medium",
+        },
+      ],
+    },
+  ],
   seedVersion: "1.0.0",
   generatedAt: new Date().toISOString(),
 };
 
-export type { OrgSeed, OrgPartner, OrgActivity, OrgPlatform, OrgImpactMetric, OrgProgram };
+export type {
+  OrgSeed,
+  OrgPartner,
+  OrgActivity,
+  OrgPlatform,
+  OrgImpactMetric,
+  OrgProgram,
+  OrgTask,
+  OrgTaskPriority,
+  OrgTaskStatus,
+  OrgMeeting,
+};
 
