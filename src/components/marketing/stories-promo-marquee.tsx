@@ -27,12 +27,9 @@ const promoStories = [
   },
 ];
 
+import { API_BASE_URL } from "@/lib/api-config";
+
 const STORAGE_KEY = "bns_story_promo_closed";
-const API_BASE_URL =
-  (process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000").replace(
-    /\/+$/,
-    "",
-  );
 
 export default function StoriesPromoMarquee() {
   const [closed, setClosed] = useState(false);

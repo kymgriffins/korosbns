@@ -55,7 +55,9 @@ const buildHeaders = async () => {
   return headers;
 };
 
-const DEFAULT_REFRESH_ENDPOINT = `${process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000"}/api/auth/refresh/`;
+import { API_BASE_URL } from "@/lib/api-config";
+
+const DEFAULT_REFRESH_ENDPOINT = `${API_BASE_URL}/api/auth/refresh/`;
 
 const tryRefreshAccessToken = async () => {
   const cookieStore = await cookies();

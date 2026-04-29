@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-const DEFAULT_LOGOUT_ENDPOINT = `${process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000"}/api/auth/logout/`;
+import { API_BASE_URL } from "@/lib/api-config";
+
+const DEFAULT_LOGOUT_ENDPOINT = `${API_BASE_URL}/api/auth/logout/`;
 
 export async function POST() {
   const endpoint = process.env.DJANGO_AUTH_LOGOUT_URL ?? DEFAULT_LOGOUT_ENDPOINT;

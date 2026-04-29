@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { getAuthHeaders, refreshAccessIfNeeded } from "@/lib/server/django-auth";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000";
+import { API_BASE_URL } from "@/lib/api-config";
+
+const API_BASE = API_BASE_URL;
 
 const modelEndpoint = (model: string) => `${API_BASE}/api/admin/models/${model}/`;
 

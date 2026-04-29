@@ -30,11 +30,8 @@ import { deepDiveCards } from "@/lib/learn-deep-dives";
 import Wrapper from "../global/wrapper";
 import { Button } from "../ui/button";
 
-const API_BASE_URL =
-  (process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.budgetndiostory.org").replace(
-    /\/+$/,
-    "",
-  );
+import { API_BASE_URL } from "@/lib/api-config";
+
 
 const faqItems = [
   {

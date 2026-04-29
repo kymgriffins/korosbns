@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 
-const DEFAULT_SIGNUP_ENDPOINT = `${process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000"}/api/auth/register/`;
+import { API_BASE_URL } from "@/lib/api-config";
+
+const DEFAULT_SIGNUP_ENDPOINT = `${API_BASE_URL}/api/auth/register/`;
 
 export async function POST(request: Request) {
   const endpoint = process.env.DJANGO_AUTH_REGISTER_URL ?? DEFAULT_SIGNUP_ENDPOINT;

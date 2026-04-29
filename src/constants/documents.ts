@@ -5,11 +5,8 @@ export type DocumentFile = {
   modified: number;
 };
 
-const API_BASE_URL =
-  (process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.budgetndiostory.org").replace(
-    /\/+$/,
-    "",
-  );
+import { API_BASE_URL } from "@/lib/api-config";
+
 
 export type DocumentType = {
   id: string;

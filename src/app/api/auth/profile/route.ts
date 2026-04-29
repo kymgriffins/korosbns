@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://127.0.0.1:8000";
+import { API_BASE_URL } from "@/lib/api-config";
+
+const API_BASE = API_BASE_URL;
 const PROFILE_ENDPOINT = process.env.DJANGO_AUTH_PROFILE_URL ?? `${API_BASE}/api/auth/profile/`;
 const REFRESH_ENDPOINT = process.env.DJANGO_AUTH_REFRESH_URL ?? `${API_BASE}/api/auth/refresh/`;
 

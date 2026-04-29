@@ -10,11 +10,8 @@ import React, { useState } from "react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
 
-const API_BASE_URL =
-  (process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000").replace(
-    /\/+$/,
-    "",
-  );
+import { API_BASE_URL } from "@/lib/api-config";
+
 
 const Footer = () => {
   const [email, setEmail] = useState<string>("");
