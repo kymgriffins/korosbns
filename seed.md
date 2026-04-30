@@ -74,24 +74,24 @@ This file captures the current app seed data based on the existing constants and
 {
   "socialLinks": [
     { "label": "X", "href": "https://x.com/budgetndiostory" },
-    { "label": "LinkedIn", "href": "https://www.linkedin.com/company/budgetndiostory" },
+    { "label": "LinkedIn", "href": "https://www.linkedin.com/company/budget-ndio-story/" },
     { "label": "WhatsApp", "href": "https://wa.me/254790631623" },
     { "label": "YouTube", "href": "https://youtube.com/@budgetndiostory" },
-    { "label": "TikTok", "href": "https://tiktok.com/@budgetndiostory" },
+    { "label": "TikTok", "href": "https://www.tiktok.com/@budget.ndio.story" },
     { "label": "Instagram", "href": "https://instagram.com/budgetndiostory" }
   ],
   "contactSocials": [
     { "name": "X", "href": "https://x.com/budgetndiostory" },
     { "name": "YouTube", "href": "https://youtube.com/@budgetndiostory" },
     { "name": "Instagram", "href": "https://instagram.com/budgetndiostory" },
-    { "name": "LinkedIn", "href": "https://linkedin.com/company/budgetndiostory" }
+    { "name": "LinkedIn", "href": "https://www.linkedin.com/company/budget-ndio-story/" }
   ],
   "integrations": [
     { "name": "Instagram", "href": "https://www.instagram.com/budgetndiostory" },
     { "name": "X", "href": "https://x.com/budgetndiostory" },
-    { "name": "TikTok", "href": "https://www.tiktok.com/@budgetndiostory" },
+    { "name": "TikTok", "href": "https://www.tiktok.com/@budget.ndio.story" },
     { "name": "WhatsApp", "href": "https://chat.whatsapp.com/something" },
-    { "name": "LinkedIn", "href": "https://www.linkedin.com/company/budgetndiostory" },
+    { "name": "LinkedIn", "href": "https://www.linkedin.com/company/budget-ndio-story/" },
     { "name": "YouTube", "href": "https://www.youtube.com/@budgetndiostory" }
   ]
 }

@@ -48,7 +48,7 @@ const socials = [
     {
         name: 'LinkedIn',
         icon: Linkedin,
-        href: 'https://linkedin.com/company/budgetndiostory',
+        href: 'https://www.linkedin.com/company/budget-ndio-story/',
         color: 'bg-[#0077B5]',
         hoverColor: 'hover:bg-[#006396]'
     }

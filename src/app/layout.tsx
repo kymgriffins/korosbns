@@ -22,7 +22,7 @@ const organizationSchema = {
   sameAs: [
     "https://www.youtube.com/@budgetndiostory",
     "https://www.linkedin.com/company/budget-ndio-story/",
-    "https://www.tiktok.com/@budgetndiostory",
+    "https://www.tiktok.com/@budget.ndio.story",
   ],
 };
 
