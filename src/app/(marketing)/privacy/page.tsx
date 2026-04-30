@@ -74,14 +74,14 @@ export default function PrivacyPage() {
                             <li>Opt out of future communications</li>
                         </ul>
                         <p className="mt-3">
-                            To exercise any of these rights, contact us at <a href="mailto:hello@budgetndiostory.com" className="text-primary hover:underline">hello@budgetndiostory.com</a>.
+                            To exercise any of these rights, contact us at <a href="mailto:info@budgetndiostory.com" className="text-primary hover:underline">info@budgetndiostory.com</a>.
                         </p>
                     </section>
 
                     <section>
                         <h2 className="text-2xl font-bold mb-4">7. Contact Us</h2>
                         <p>
-                            If you have questions about this Privacy Policy, please reach out to us at <a href="mailto:hello@budgetndiostory.com" className="text-primary hover:underline">hello@budgetndiostory.com</a>.
+                            If you have questions about this Privacy Policy, please reach out to us at <a href="mailto:info@budgetndiostory.com" className="text-primary hover:underline">info@budgetndiostory.com</a>.
                         </p>
                     </section>
                 </div>

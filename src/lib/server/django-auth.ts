@@ -7,20 +7,19 @@ const REFRESH_ENDPOINT = process.env.DJANGO_AUTH_REFRESH_URL ?? `${API_BASE}/api
 
 export async function getAuthHeaders() {
   const cookieStore = await cookies();
-  let access = cookieStore.get("bns_admin_session")?.value;
+  const access = cookieStore.get("bns_admin_session")?.value;
   const refresh = cookieStore.get("bns_admin_refresh")?.value;
 
-  if (!access || !refresh) {
-    return { headers: { Accept: "application/json", "Content-Type": "application/json" } as HeadersInit };
+  const headers: HeadersInit = {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  };
+
+  if (access) {
+    headers.Authorization = `Bearer ${access}`;
   }
 
-  return {
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${access}`,
-    } as HeadersInit,
-  };
+  return { headers };
 }
 
 export async function refreshAccessIfNeeded(status: number) {

@@ -11,8 +11,10 @@
  */
 
 const PRODUCTION_API = "https://api.budgetndiostory.org";
+const DEFAULT_LOCAL_API = "http://127.0.0.1:8000";
 
 /** Base URL for the Django API, without a trailing slash. */
 export const API_BASE_URL = (
-  process.env.NEXT_PUBLIC_API_BASE_URL || PRODUCTION_API
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  (process.env.NODE_ENV === "development" ? DEFAULT_LOCAL_API : PRODUCTION_API)
 ).replace(/\/+$/, "");

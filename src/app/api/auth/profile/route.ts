@@ -17,21 +17,35 @@ const setAccessCookie = (response: NextResponse, access: string) => {
   });
 };
 
+const doProfileFetch = (token: string) =>
+  fetch(PROFILE_ENDPOINT, {
+    method: "GET",
+    headers: { Accept: "application/json", Authorization: `Bearer ${token}` },
+    cache: "no-store",
+  });
+
 export async function GET() {
   const cookieStore = await cookies();
   let access = cookieStore.get("bns_admin_session")?.value;
   const refresh = cookieStore.get("bns_admin_refresh")?.value;
 
+  if (!access && refresh) {
+    const refreshResponse = await fetch(REFRESH_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({ refresh }),
+      cache: "no-store",
+    });
+
+    if (refreshResponse.ok) {
+      const refreshPayload = await refreshResponse.json().catch(() => ({}));
+      access = refreshPayload?.access as string | undefined;
+    }
+  }
+
   if (!access) {
     return NextResponse.json({ message: "Unauthenticated" }, { status: 401 });
   }
-
-  const doProfileFetch = (token: string) =>
-    fetch(PROFILE_ENDPOINT, {
-      method: "GET",
-      headers: { Accept: "application/json", Authorization: `Bearer ${token}` },
-      cache: "no-store",
-    });
 
   let response = await doProfileFetch(access);
   if (response.status === 401 && refresh) {

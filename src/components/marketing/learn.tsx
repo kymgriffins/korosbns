@@ -2068,7 +2068,7 @@ export default function Learn() {
               </p>
               <div className="flex items-center gap-4 text-[9px] font-medium uppercase tracking-wider">
                 <a
-                  href="mailto:hello@budgetndiostory.com"
+                  href="mailto:info@budgetndiostory.com"
                   className="hover:text-foreground"
                 >
                   Email

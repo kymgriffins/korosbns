@@ -292,7 +292,7 @@ export default function Contact() {
                 <Container animation="fadeUp" delay={0.4} className="max-w-3xl mx-auto w-full pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-foreground/30 px-4 sm:px-6">
                     <p className="text-[10px] font-medium">© 2026 Budget Ndio Story.</p>
                     <div className="flex items-center gap-4 text-[9px] font-medium uppercase tracking-wider">
-                        <a href="mailto:hello@budgetndiostory.com" className="group inline-flex items-center gap-1.5 hover:text-foreground transition-colors">
+                        <a href="mailto:info@budgetndiostory.com" className="group inline-flex items-center gap-1.5 hover:text-foreground transition-colors">
                             <motion.span
                                 aria-hidden
                                 className="size-1.5 rounded-full bg-primary/70"

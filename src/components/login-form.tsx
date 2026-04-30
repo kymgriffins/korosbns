@@ -1,5 +1,3 @@
-import { GalleryVerticalEnd } from "lucide-react"
-
 import { cn } from "@/utils/index"
 import { Button } from "@/components/ui/button"
 import {
@@ -10,6 +8,7 @@ import {
   FieldSeparator,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import Image from "next/image"
 
 interface LoginFormProps extends Omit<React.ComponentProps<"div">, "onSubmit"> {
   email?: string;
@@ -41,8 +40,14 @@ export function LoginForm({
               href="/"
               className="flex flex-col items-center gap-2 font-medium"
             >
-              <div className="flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
-                <GalleryVerticalEnd className="size-6" />
+              <div className="flex h-12 w-12 items-center justify-center">
+                <Image
+                  src="/logo.svg"
+                  alt="Budget Ndio Story"
+                  width={48}
+                  height={48}
+                  className="h-12 w-12"
+                />
               </div>
               <span className="sr-only">BNS Admin</span>
             </a>

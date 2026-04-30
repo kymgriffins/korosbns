@@ -5,7 +5,7 @@ import { API_BASE_URL } from "@/lib/api-config";
 
 const API_BASE = API_BASE_URL;
 
-const modelEndpoint = (model: string) => `${API_BASE}/api/admin/models/${model}/`;
+const modelEndpoint = (model: string, search = "") => `${API_BASE}/api/admin/models/${model}/${search}`;
 
 async function withRetry(url: string, method: string, body?: unknown) {
   const { headers } = await getAuthHeaders();
@@ -45,9 +45,10 @@ async function withRetry(url: string, method: string, body?: unknown) {
   return out;
 }
 
-export async function GET(_: Request, { params }: { params: Promise<{ model: string }> }) {
+export async function GET(request: Request, { params }: { params: Promise<{ model: string }> }) {
   const { model } = await params;
-  return withRetry(modelEndpoint(model), "GET");
+  const search = new URL(request.url).search;
+  return withRetry(modelEndpoint(model, search), "GET");
 }
 
 export async function POST(request: Request, { params }: { params: Promise<{ model: string }> }) {

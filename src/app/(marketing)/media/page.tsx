@@ -41,8 +41,8 @@ export default function MediaPage() {
                     <div className="mt-8 pt-6 border-t border-foreground/10">
                         <p className="text-sm text-muted-foreground">
                             For media inquiries, contact us at{' '}
-                            <a href="mailto:hello@budgetndiostory.com" className="text-primary hover:underline">
-                                hello@budgetndiostory.com
+                            <a href="mailto:info@budgetndiostory.com" className="text-primary hover:underline">
+                                info@budgetndiostory.com
                             </a>
                         </p>
                     </div>

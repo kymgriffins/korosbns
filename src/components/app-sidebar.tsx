@@ -1,24 +1,17 @@
+"use client"
+
+import * as React from "react"
 import {
-  IconCamera,
-  IconChartBar,
-  IconDashboard,
-  IconDatabase,
-  IconFileAi,
-  IconFileDescription,
-  IconFileWord,
-  IconFolder,
-  IconHelp,
+  IconGauge,
   IconInnerShadowTop,
-  IconListDetails,
-  IconReport,
-  IconSearch,
-  IconSettings,
-  IconUsers,
+  IconBook2,
+  IconClipboardList,
+  IconNews,
+  IconUserShield,
+  type Icon,
 } from "@tabler/icons-react"
 
-import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
@@ -30,64 +23,150 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-const defaultData = {
+const data = {
   user: {
     name: "Admin",
-    email: "admin@koros.ai",
+    email: "admin@budgetndiostory.org",
     avatar: "/avatars/admin.jpg",
   },
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "/dashboard.internal",
-      icon: IconDashboard,
-    },
-    {
-      title: "Analytics",
-      url: "#",
-      icon: IconChartBar,
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: IconSettings,
-    },
-  ],
-  documents: [
-    {
-      name: "Data Library",
-      url: "#",
-      icon: IconDatabase,
-    },
-    {
-      name: "Reports",
-      url: "#",
-      icon: IconReport,
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Get Help",
-      url: "#",
-      icon: IconHelp,
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: IconSearch,
-    },
-  ],
 }
+
+const MAX_PRIMARY_SIDEBAR_ITEMS = 5
+
+const defaultNavMain = [
+  {
+    title: "Dashboard",
+    url: "#",
+    icon: IconGauge,
+  },
+  {
+    title: "Duty",
+    url: "#",
+    icon: IconClipboardList,
+  },
+  {
+    title: "Budget Academy",
+    url: "#",
+    icon: IconBook2,
+  },
+  {
+    title: "CMS",
+    url: "#",
+    icon: IconNews,
+  },
+  {
+    title: "Organization",
+    url: "#",
+    icon: IconUserShield,
+  },
+]
+
+type SidebarNavItem = {
+  title: string
+  url: string
+  icon?: Icon
+  onClick?: () => void
+  isActive?: boolean
+}
+
+const SIDEBAR_MODEL_GROUPS: Array<{ title: string; models: string[] }> = [
+  {
+    title: "Operations",
+    models: ["activity", "project", "impactmetric", "roadmapitem"],
+  },
+  {
+    title: "Learn Hub",
+    models: ["trivia", "story", "deepdivearticle", "knowledgeentry", "document", "docfolder"],
+  },
+  {
+    title: "Social & Media",
+    models: ["campaign", "teamquote", "subscriber", "partner", "program"],
+  },
+  {
+    title: "Developer Tools",
+    models: ["organization", "teammember", "organizationmember", "user", "auditlog", "changelog", "versioninfo", "gamificationprofile", "pointevent"],
+  },
+];
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
-  models?: Array<{ name: string; verbose_name: string }>;
-  activeModel?: string;
-  onModelSelect?: (name: string) => void;
-  user?: { name: string; email: string; avatar?: string };
+  navMainItems?: SidebarNavItem[]
+  orgItems?: SidebarNavItem[]
+  governanceItems?: SidebarNavItem[]
+  models?: Array<{ name: string; verbose_name: string }>
+  activeModel?: string
+  onModelSelect?: (name: string) => void
+  user?: { name: string; email: string; avatar?: string }
 }
 
-export function AppSidebar({ models, activeModel, onModelSelect, user, ...props }: AppSidebarProps) {
-  const userData = user ?? defaultData.user;
+export function AppSidebar({
+  navMainItems,
+  orgItems,
+  governanceItems,
+  models,
+  activeModel,
+  onModelSelect,
+  user,
+  ...props
+}: AppSidebarProps) {
+  const mainItems = navMainItems ?? defaultNavMain
+  const userData = user ?? data.user
+
+  const groupedByName = SIDEBAR_MODEL_GROUPS.map((group) => ({
+    title: group.title,
+    items: (models ?? [])
+      .filter((model) => group.models.includes(model.name))
+      .map((model) => ({
+        title: model.verbose_name,
+        url: "#",
+        onClick: () => onModelSelect?.(model.name),
+        isActive: activeModel === model.name,
+      })),
+  })).filter((group) => group.items.length > 0)
+
+  const groupedModelNames = new Set(SIDEBAR_MODEL_GROUPS.flatMap((group) => group.models))
+  const uncategorizedModels = (models ?? [])
+    .filter((model) => !groupedModelNames.has(model.name))
+    .map((model) => ({
+      title: model.verbose_name,
+      url: "#",
+      onClick: () => onModelSelect?.(model.name),
+      isActive: activeModel === model.name,
+    }))
+
+  const groupChildren = (title: string) =>
+    groupedByName.find((group) => group.title === title)?.items ?? []
+
+  const compactSidebarItems = [
+    {
+      title: "Dashboard",
+      url: "#",
+      icon: IconGauge,
+    },
+    {
+      title: "Operations",
+      url: "#",
+      icon: IconClipboardList,
+      children: groupChildren("Operations"),
+    },
+    {
+      title: "Learning",
+      url: "#",
+      icon: IconBook2,
+      children: groupChildren("Learn Hub"),
+    },
+    {
+      title: "Social & Media",
+      url: "#",
+      icon: IconNews,
+      children: groupChildren("Social & Media"),
+    },
+    {
+      title: "Developer Tools",
+      url: "#",
+      icon: IconUserShield,
+      children: groupChildren("Developer Tools").concat(uncategorizedModels),
+    },
+  ].slice(0, MAX_PRIMARY_SIDEBAR_ITEMS)
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
@@ -100,34 +179,23 @@ export function AppSidebar({ models, activeModel, onModelSelect, user, ...props 
             >
               <a href="/">
                 <IconInnerShadowTop className="size-5!" />
-                <span className="text-base font-semibold text-primary">Koros BNS</span>
+                <span className="text-base font-semibold text-primary">BNS Hub</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={defaultData.navMain} />
-        {models && models.length > 0 && (
-          <NavMain 
-            items={[{
-              title: "Models",
-              url: "#",
-              icon: IconDatabase,
-              items: models.map(m => ({
-                title: m.verbose_name,
-                url: "#",
-                onClick: () => onModelSelect?.(m.name),
-                isActive: activeModel === m.name
-              }))
-            }]} 
-          />
-        )}
-        <NavDocuments items={defaultData.documents} />
-        <NavSecondary items={defaultData.navSecondary} className="mt-auto" />
+        <NavMain items={compactSidebarItems.length > 0 ? compactSidebarItems : mainItems.slice(0, MAX_PRIMARY_SIDEBAR_ITEMS)} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={userData} />
+        <NavUser
+          user={{
+            name: userData.name,
+            email: userData.email,
+            avatar: userData.avatar ?? "/avatars/admin.jpg",
+          }}
+        />
       </SidebarFooter>
     </Sidebar>
   )

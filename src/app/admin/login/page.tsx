@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { LoginForm } from "@/components/login-form";
 
 export default function AdminLoginPage() {
@@ -11,6 +12,21 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    async function verifySession() {
+      try {
+        const response = await fetch("/api/auth/profile", { cache: "no-store" });
+        if (response.ok) {
+          router.replace("/admin/dashboard");
+        }
+      } catch {
+        // ignore errors and show login form if not authenticated
+      }
+    }
+
+    verifySession();
+  }, [router]);
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -29,7 +45,8 @@ export default function AdminLoginPage() {
         throw new Error(payload?.message ?? "Invalid credentials.");
       }
 
-      router.push("/dashboard.internal");
+      toast.success("Welcome back. Redirecting to the admin dashboard...");
+      router.replace("/admin/dashboard");
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed.");
