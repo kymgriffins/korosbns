@@ -3,6 +3,7 @@
 This file captures the current app seed data based on the existing constants and marketing components.
 
 ## Organization
+
 - name: Budget Ndio Story
 - short name: BNS
 - description: Youth-led organization making Kenya's national and county budgets transparent, accessible, and easier to understand.
@@ -74,7 +75,10 @@ This file captures the current app seed data based on the existing constants and
 {
   "socialLinks": [
     { "label": "X", "href": "https://x.com/budgetndiostory" },
-    { "label": "LinkedIn", "href": "https://www.linkedin.com/company/budget-ndio-story/" },
+    {
+      "label": "LinkedIn",
+      "href": "https://www.linkedin.com/company/budget-ndio-story/"
+    },
     { "label": "WhatsApp", "href": "https://wa.me/254790631623" },
     { "label": "YouTube", "href": "https://youtube.com/@budgetndiostory" },
     { "label": "TikTok", "href": "https://www.tiktok.com/@budget.ndio.story" },
@@ -84,28 +88,37 @@ This file captures the current app seed data based on the existing constants and
     { "name": "X", "href": "https://x.com/budgetndiostory" },
     { "name": "YouTube", "href": "https://youtube.com/@budgetndiostory" },
     { "name": "Instagram", "href": "https://instagram.com/budgetndiostory" },
-    { "name": "LinkedIn", "href": "https://www.linkedin.com/company/budget-ndio-story/" }
+    {
+      "name": "LinkedIn",
+      "href": "https://www.linkedin.com/company/budget-ndio-story/"
+    }
   ],
   "integrations": [
-    { "name": "Instagram", "href": "https://www.instagram.com/budgetndiostory" },
+    {
+      "name": "Instagram",
+      "href": "https://www.instagram.com/budgetndiostory"
+    },
     { "name": "X", "href": "https://x.com/budgetndiostory" },
     { "name": "TikTok", "href": "https://www.tiktok.com/@budget.ndio.story" },
     { "name": "WhatsApp", "href": "https://chat.whatsapp.com/something" },
-    { "name": "LinkedIn", "href": "https://www.linkedin.com/company/budget-ndio-story/" },
+    {
+      "name": "LinkedIn",
+      "href": "https://www.linkedin.com/company/budget-ndio-story/"
+    },
     { "name": "YouTube", "href": "https://www.youtube.com/@budgetndiostory" }
   ]
 }
 ```
 
-## YouTube Data  ---- dynamic
+## YouTube Data ---- dynamic
 
 ```json
 {
-  "channel": "https://www.youtube.com/@budgetndiostory",
-  
+  "channel": "https://www.youtube.com/@budgetndiostory"
 }
 ```
 
 ## Notes
+
 - The team and social data are drawn directly from `src/constants/team.ts`, `src/constants/links.ts`, `src/components/marketing/contact.tsx`, and `src/components/marketing/integrations.tsx`.
 - YouTube seeds include channel links and the current embedded videos referenced in `src/components/marketing/research.tsx`.
