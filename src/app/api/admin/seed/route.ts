@@ -3,7 +3,7 @@ import { API_BASE_URL } from "@/lib/api-config";
 
 const API_BASE = API_BASE_URL;
 const DEPLOY_WEBHOOK_ENDPOINT =
-  process.env.DJANGO_DEPLOYMENT_WEBHOOK_URL ?? `${API_BASE}/deploy/webhook/`;
+  process.env.DJANGO_DEPLOYMENT_WEBHOOK_URL ?? `${API_BASE}/api/deploy/webhook/`;
 const WEBHOOK_TOKEN = process.env.DEPLOY_WEBHOOK_TOKEN;
 
 async function invokeWebhook(action: "check" | "seed") {
