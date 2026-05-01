@@ -816,6 +816,16 @@ export default function Learn() {
   const [watchedStories, setWatchedStories] = useState<Record<string, boolean>>({});
   const [currentFlowCards, setCurrentFlowCards] = useState<any[]>([]);
   const [gamification, setGamification] = useState<GamificationState | null>(null);
+  const [youtubeVideos, setYoutubeVideos] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch("/api/youtube")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.videos) setYoutubeVideos(data.videos);
+      })
+      .catch((err) => console.error("Failed to load YouTube videos:", err));
+  }, []);
 
   // Fetch trivia from backend
   useEffect(() => {
@@ -1877,6 +1887,56 @@ export default function Learn() {
                 </div>
               </div>
             </Container>
+
+            {youtubeVideos.length > 0 && (
+              <Container animation="fadeUp" delay={0.1} className="space-y-4 pt-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-bold flex items-center gap-2">
+                    <span className="text-red-500">▶</span> Budget Videos
+                  </h2>
+                  <Link 
+                    href="https://youtube.com/@budgetndiostory" 
+                    target="_blank" 
+                    className="text-xs font-semibold text-primary hover:underline"
+                  >
+                    View Channel
+                  </Link>
+                </div>
+                <div className="overflow-x-auto pb-4 [scrollbar-width:thin]">
+                  <div className="flex gap-4 w-max pr-2">
+                    {youtubeVideos.map((video) => (
+                      <Link
+                        key={video.id}
+                        href={`https://www.youtube.com/watch?v=${video.id}`}
+                        target="_blank"
+                        className="group relative block w-[280px] sm:w-[320px] rounded-2xl overflow-hidden border border-white/10 bg-white/5 hover:border-primary/50 transition-all"
+                      >
+                        <div className="relative aspect-video w-full overflow-hidden">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img 
+                            src={video.thumbnail} 
+                            alt={video.title} 
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                          <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
+                          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-red-600/90 rounded-full flex items-center justify-center opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all shadow-lg">
+                            <span className="text-white ml-1">▶</span>
+                          </div>
+                        </div>
+                        <div className="p-4">
+                          <h3 className="text-sm font-semibold leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                            {video.title}
+                          </h3>
+                          <p className="text-xs text-foreground/50 mt-2">
+                            {new Date(video.published).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </Container>
+            )}
 
             <Container animation="fadeUp" delay={0.15} className="space-y-4">
               <div className="space-y-1.5">

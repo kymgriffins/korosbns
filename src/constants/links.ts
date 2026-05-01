@@ -65,4 +65,9 @@ export const socialLinks = [
     href: "https://instagram.com/budgetndiostory",
     icon: "instagram",
   },
+  {
+    label: "Facebook",
+    href: "https://www.facebook.com/share/1CPg2LgfVJ/",
+    icon: "facebook",
+  },
 ];
