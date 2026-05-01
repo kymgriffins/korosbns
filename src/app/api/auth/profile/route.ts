@@ -4,8 +4,8 @@ import { cookies } from "next/headers";
 import { API_BASE_URL } from "@/lib/api-config";
 
 const API_BASE = API_BASE_URL;
-const PROFILE_ENDPOINT = process.env.DJANGO_AUTH_PROFILE_URL ?? `${API_BASE}/api/auth/profile/`;
-const REFRESH_ENDPOINT = process.env.DJANGO_AUTH_REFRESH_URL ?? `${API_BASE}/api/auth/refresh/`;
+const PROFILE_ENDPOINT = `${API_BASE_URL}/api/auth/profile/`;
+const REFRESH_ENDPOINT = `${API_BASE_URL}/api/auth/refresh/`;
 
 const setAccessCookie = (response: NextResponse, access: string) => {
   response.cookies.set("bns_admin_session", access, {

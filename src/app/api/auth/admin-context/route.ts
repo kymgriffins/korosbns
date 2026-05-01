@@ -3,8 +3,7 @@ import { getAuthHeaders, refreshAccessIfNeeded } from "@/lib/server/django-auth"
 import { API_BASE_URL } from "@/lib/api-config";
 
 const API_BASE = API_BASE_URL;
-const CONTEXT_ENDPOINT =
-  process.env.DJANGO_AUTH_ADMIN_CONTEXT_URL ?? `${API_BASE}/api/auth/admin-context/`;
+const CONTEXT_ENDPOINT = `${API_BASE}/api/auth/admin-context/`;
 
 export async function GET() {
   try {

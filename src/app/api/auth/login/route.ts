@@ -2,11 +2,8 @@ import { NextResponse } from "next/server";
 
 import { API_BASE_URL } from "@/lib/api-config";
 
-const DEFAULT_LOGIN_ENDPOINT = `${API_BASE_URL}/api/auth/login/`;
-
 export async function POST(request: Request) {
-  const endpoint = process.env.DJANGO_AUTH_LOGIN_URL ?? DEFAULT_LOGIN_ENDPOINT;
-
+  const endpoint = `${API_BASE_URL}/api/auth/login/`;
   try {
     const body = await request.json();
 

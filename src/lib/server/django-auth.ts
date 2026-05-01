@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 import { API_BASE_URL } from "@/lib/api-config";
 
 const API_BASE = API_BASE_URL;
-const REFRESH_ENDPOINT = process.env.DJANGO_AUTH_REFRESH_URL ?? `${API_BASE}/api/auth/refresh/`;
+const REFRESH_ENDPOINT = `${API_BASE}/api/auth/refresh/`;
 
 export async function getAuthHeaders() {
   const cookieStore = await cookies();

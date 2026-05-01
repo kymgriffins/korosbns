@@ -64,7 +64,7 @@ const tryRefreshAccessToken = async () => {
   const refresh = cookieStore.get("bns_admin_refresh")?.value;
   if (!refresh) return null;
 
-  const endpoint = process.env.DJANGO_AUTH_REFRESH_URL ?? DEFAULT_REFRESH_ENDPOINT;
+  const endpoint = `${API_BASE_URL}/api/auth/refresh/`;
   const response = await fetch(endpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json" },
@@ -78,17 +78,7 @@ const tryRefreshAccessToken = async () => {
 };
 
 export async function GET() {
-  const endpoint = process.env.TASKS_API_URL ?? process.env.NEXT_PUBLIC_TASKS_ENDPOINT;
-
-  if (!endpoint) {
-    return NextResponse.json(
-      {
-        source: "seed",
-        tasks: ORG_SEED.meetings.flatMap((meeting) => meeting.actionItems),
-      },
-      { status: 200 }
-    );
-  }
+  const endpoint = `${API_BASE_URL}/api/roadmap/`;
 
   try {
     let response = await fetch(endpoint, {
@@ -157,17 +147,7 @@ export async function GET() {
 }
 
 export async function PATCH(request: Request) {
-  const updateEndpoint = process.env.TASKS_API_UPDATE_URL;
-
-  if (!updateEndpoint) {
-    return NextResponse.json(
-      {
-        message:
-          "TASKS_API_UPDATE_URL is not configured. Set it to enable status updates in production.",
-      },
-      { status: 501 }
-    );
-  }
+  const updateEndpoint = `${API_BASE_URL}/api/roadmap/{id}/`;
 
   try {
     const payload = await request.json();

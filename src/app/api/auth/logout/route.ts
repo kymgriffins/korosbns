@@ -3,10 +3,8 @@ import { cookies } from "next/headers";
 
 import { API_BASE_URL } from "@/lib/api-config";
 
-const DEFAULT_LOGOUT_ENDPOINT = `${API_BASE_URL}/api/auth/logout/`;
-
 export async function POST() {
-  const endpoint = process.env.DJANGO_AUTH_LOGOUT_URL ?? DEFAULT_LOGOUT_ENDPOINT;
+  const endpoint = `${API_BASE_URL}/api/auth/logout/`;
   const cookieStore = await cookies();
   const accessToken = cookieStore.get("bns_admin_session")?.value;
 

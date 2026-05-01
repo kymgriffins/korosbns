@@ -2,10 +2,8 @@ import { NextResponse } from "next/server";
 
 import { API_BASE_URL } from "@/lib/api-config";
 
-const DEFAULT_SIGNUP_ENDPOINT = `${API_BASE_URL}/api/auth/register/`;
-
 export async function POST(request: Request) {
-  const endpoint = process.env.DJANGO_AUTH_REGISTER_URL ?? DEFAULT_SIGNUP_ENDPOINT;
+  const endpoint = `${API_BASE_URL}/api/auth/register/`;
 
   try {
     const body = await request.json();
