@@ -12,7 +12,7 @@ const surveys = [
     title: "National Youth Budget Perception Pilot Survey",
     description: "Share your views on the national budget and help us create better stories.",
     image: "/images/survey/bnssurvey1.jpeg",
-    link: "https://bit.ly/4tPZnLm",
+    link: "https://budgetndiostory.surveycto.com/collect/bns_nyouth_budget_v1?caseid=",
     alt: "National Youth Budget Perception Pilot Survey",
   },
 ];

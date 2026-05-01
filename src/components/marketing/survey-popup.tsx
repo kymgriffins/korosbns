@@ -34,7 +34,7 @@ export default function SurveyPopup() {
                 </button>
 
                 <div className="relative w-full aspect-[2/3] max-h-[80vh] flex flex-col items-center justify-center text-white overflow-hidden bg-black">
-                    <a href="https://bit.ly/4tPZnLm" target="_blank" rel="noopener noreferrer" className="relative w-full h-full block group">
+                    <a href="https://budgetndiostory.surveycto.com/collect/bns_nyouth_budget_v1?caseid=" target="_blank" rel="noopener noreferrer" className="relative w-full h-full block group">
                         <Image
                             src="/images/survey/bnssurvey1.jpeg"
                             alt="National Youth Budget Perception Pilot Survey"
