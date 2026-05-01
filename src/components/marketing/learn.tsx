@@ -2033,7 +2033,7 @@ export default function Learn() {
                   <div className="mt-4 hidden md:block">
                     <div className="relative h-48">
                       <div className="absolute top-0 left-0 rounded-full bg-black/35 border border-white/20 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-white/80">
-                        Loading folders...
+                        Repository preview
                       </div>
                       <div className="lr-folder lr-folder-a">
                         <div className="lr-shell">
@@ -2063,7 +2063,7 @@ export default function Learn() {
                         <span className="size-1.5 rounded-full bg-primary animate-pulse" />
                         <span className="size-1.5 rounded-full bg-amber-300 animate-pulse [animation-delay:180ms]" />
                         <span className="size-1.5 rounded-full bg-cyan-300 animate-pulse [animation-delay:320ms]" />
-                        preparing preview
+                        open the hub to browse files
                       </div>
                     </div>
                   </div>

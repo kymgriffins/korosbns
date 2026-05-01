@@ -115,21 +115,30 @@ function parseYearsFromFolderName(folderName: string): string[] {
 
 function extractPrefixFromFolderName(folderName: string): string | null {
   // Extract the prefix (e.g., "PBB", "BROP", "APP ACT") from folder name
-  const match = folderName.match(/^([A-Z\s]+)\s+\d{4}-\d{4}/);
+  const normalized = folderName.replace(/\/+$/, "").trim();
+  const match = normalized.match(/^(.+?)\s+\d{4}-\d{4}/);
   if (match) {
     return match[1].trim();
   }
   return null;
 }
 
+function toDocumentId(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .trim();
+}
+
 export function getAllDocumentIds(): string[] {
-  return Object.keys(DOCUMENT_TYPE_MAP);
+  return Object.values(DOCUMENT_TYPE_MAP).map((entry) => entry.id);
 }
 
 export function getDocumentById(id: string): DocumentType | undefined {
-  // This will be used by the static page generation - return basic info without files
-  const normalizedId = id.toUpperCase();
-  const info = DOCUMENT_TYPE_MAP[normalizedId];
+  // Used by static metadata: resolve by URL slug (e.g. "pbb", "app-act")
+  const slug = id.toLowerCase();
+  const info = Object.values(DOCUMENT_TYPE_MAP).find((entry) => entry.id === slug);
   if (info) {
     return {
       ...info,
@@ -144,9 +153,9 @@ export function getDocumentById(id: string): DocumentType | undefined {
 // Parse folder name to get document type info
 function getDocumentInfoFromFolder(
   folderName: string,
-): { id: string; title: string; fullName: string; description: string } | null {
-  const prefix = extractPrefixFromFolderName(folderName);
-  if (!prefix) return null;
+): { id: string; title: string; fullName: string; description: string } {
+  const normalizedFolderName = folderName.replace(/\/+$/, "").trim();
+  const prefix = extractPrefixFromFolderName(normalizedFolderName) || normalizedFolderName;
 
   // Try exact match first
   if (DOCUMENT_TYPE_MAP[prefix]) {
@@ -160,7 +169,13 @@ function getDocumentInfoFromFolder(
     }
   }
 
-  return null;
+  const fallbackTitle = prefix.replace(/\s+/g, " ").trim();
+  return {
+    id: toDocumentId(fallbackTitle),
+    title: fallbackTitle,
+    fullName: `${fallbackTitle} Documents`,
+    description: `${fallbackTitle} repository documents`,
+  };
 }
 
 // Transform API response to DocumentType list
@@ -183,7 +198,6 @@ export function transformRepositoryData(repositoryData: any): DocumentType[] {
 
   for (const folder of repositoryData.folders) {
     const docInfo = getDocumentInfoFromFolder(folder.name);
-    if (!docInfo) continue;
 
     const years = parseYearsFromFolderName(folder.name);
     const normalizedFolderPath = normalizeFolderPath(folder.path || "");
@@ -232,12 +246,35 @@ export type FetchDocumentsResult = {
 let cachedDocumentsResult: FetchDocumentsResult | null = null;
 let inflightDocumentsPromise: Promise<FetchDocumentsResult> | null = null;
 
+function getRepositoryFetchUrls(): string[] {
+  const api = API_BASE_URL.replace(/\/+$/, "");
+  const urls: string[] = [];
+
+  // Prefer same-origin proxy (works from browser + RSC; avoids CORS and some TLS issues)
+  if (typeof window !== "undefined") {
+    urls.push("/api/docrepository/");
+  } else {
+    const siteBase =
+      process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") ||
+      (process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL.replace(/\/+$/, "")}`
+        : "") ||
+      "http://127.0.0.1:3000";
+    urls.push(`${siteBase}/api/docrepository/`);
+  }
+
+  urls.push(
+    `${api}/docrepository/`,
+    `${api}/api/docrepository/`,
+    `${api}/repository/`,
+    `${api}/api/repository/`,
+  );
+  return urls;
+}
+
 async function fetchDocumentsFromApiOnce(): Promise<FetchDocumentsResult> {
   try {
-    const endpoints = [
-      `${API_BASE_URL}/docrepository/`,
-      `${API_BASE_URL}/api/docrepository/`,
-    ];
+    const endpoints = getRepositoryFetchUrls();
     let data: any = null;
     let lastStatusText = "";
     let lastStatusCode = 0;
@@ -308,7 +345,10 @@ export async function fetchDocumentsFromAPI(): Promise<FetchDocumentsResult> {
 
   inflightDocumentsPromise = fetchDocumentsFromApiOnce()
     .then((result) => {
-      cachedDocumentsResult = result;
+      // Do not cache failures — otherwise a transient outage sticks for the whole runtime
+      if (!result.error) {
+        cachedDocumentsResult = result;
+      }
       return result;
     })
     .finally(() => {
