@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/utils";
+import Image from "next/image";
 import {
     ArrowRight,
     BarChart3,
@@ -19,7 +20,6 @@ import {
     XCircle,
 } from "lucide-react";
 import { AnimatePresence, motion, useScroll, useTransform } from "motion/react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -1415,7 +1415,16 @@ export default function Learn() {
             <div className="text-xs uppercase tracking-wider text-cyan-300 font-semibold mb-2">
               Story Survey
             </div>
-            <h3 className="text-xl font-bold text-white mb-6">{currentSurvey.question}</h3>
+            <h3 className="text-xl font-bold text-white mb-4">{currentSurvey.question}</h3>
+            <div className="mb-6 flex justify-center">
+              <Image
+                src="/images/survey/bnssurvey1.jpeg"
+                alt="Survey"
+                width={200}
+                height={300}
+                className="rounded-lg object-contain max-h-32"
+              />
+            </div>
             <div className="space-y-3">
               {currentSurvey.options.map((option, idx) => (
                 <button

@@ -11,6 +11,7 @@ import TeamHierarchy from "@/components/marketing/team-hierarchy";
 import ConsortiumPartners from "@/components/marketing/consortium-partners";
 import WallOfLove from "@/components/marketing/wall-of-love";
 import Cta from "@/components/marketing/cta";
+import SurveyPopup from "@/components/marketing/survey-popup";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -60,6 +61,7 @@ const HomePage = () => {
             <ConsortiumPartners />
             {/* <WallOfLove /> */}
             <Cta />
+            <SurveyPopup />
         </div>
     )
 };
