@@ -88,7 +88,7 @@ export default function NewsletterPopup() {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 z-[200] w-[92vw] max-w-md">
+    <div className="fixed bottom-4 right-2 left-2 sm:right-4 sm:left-auto z-[200] w-auto sm:w-[92vw] sm:max-w-md">
       <div className="relative w-full rounded-2xl border border-white/15 bg-[#0F172A] p-5 text-white shadow-2xl animate-in fade-in slide-in-from-bottom duration-300">
         <button
           onClick={dismiss}
@@ -108,26 +108,26 @@ export default function NewsletterPopup() {
             You are subscribed. Thank you for joining us.
           </p>
         ) : (
-          <form onSubmit={handleSubscribe} className="flex gap-2">
+          <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-2">
             <input
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               placeholder="you@example.com"
               required
-              className="h-11 flex-1 rounded-xl border border-white/20 bg-white/10 px-3 text-sm outline-none placeholder:text-slate-400 focus:border-cyan-300"
+              className="h-11 min-w-0 flex-1 rounded-xl border border-white/20 bg-white/10 px-3 text-sm outline-none placeholder:text-slate-400 focus:border-cyan-300"
             />
             <button
               type="button"
               onClick={dismiss}
-              className="h-11 rounded-xl border border-white/20 bg-white/5 px-4 text-sm font-medium text-white transition hover:bg-white/10"
+              className="h-11 rounded-xl border border-white/20 bg-white/5 px-4 text-sm font-medium text-white transition hover:bg-white/10 w-full sm:w-auto"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="h-11 rounded-xl bg-cyan-500 px-4 text-sm font-semibold text-slate-900 transition hover:bg-cyan-400 disabled:cursor-not-allowed disabled:opacity-70"
+              className="h-11 rounded-xl bg-cyan-500 px-4 text-sm font-semibold text-slate-900 transition hover:bg-cyan-400 disabled:cursor-not-allowed disabled:opacity-70 w-full sm:w-auto"
             >
               {loading ? "..." : "Join"}
             </button>
