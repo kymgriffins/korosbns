@@ -2,6 +2,7 @@ export type DocumentFile = {
   name: string;
   size: number;
   url: string;
+  downloadUrl: string;
   modified: number;
 };
 
@@ -171,22 +172,41 @@ export function transformRepositoryData(repositoryData: any): DocumentType[] {
   }
 
   const baseUrl = API_BASE_URL;
+  const normalizeFolderPath = (path: string) =>
+    path.replace(/^\/+|\/+$/g, "").trim();
+  const toAbsoluteUrl = (path: string) =>
+    path.startsWith("http") ? path : `${baseUrl}${path}`;
+  const getDownloadUrl = (viewUrl: string) => {
+    const separator = viewUrl.includes("?") ? "&" : "?";
+    return `${viewUrl}${separator}download=1`;
+  };
 
   for (const folder of repositoryData.folders) {
     const docInfo = getDocumentInfoFromFolder(folder.name);
     if (!docInfo) continue;
 
     const years = parseYearsFromFolderName(folder.name);
+    const normalizedFolderPath = normalizeFolderPath(folder.path || "");
     
     // Filter documents that belong to this folder
     const folderFiles = repositoryData.documents
-      .filter((doc: any) => doc.folder === folder.path)
-      .map((doc: any) => ({
-        name: doc.name,
-        size: doc.size,
-        url: doc.url.startsWith("http") ? doc.url : `${baseUrl}${doc.url}`,
-        modified: doc.modified || 0,
-      }));
+      .filter((doc: any) => {
+        const normalizedDocFolder = normalizeFolderPath(doc.folder || "");
+        return (
+          normalizedDocFolder === normalizedFolderPath ||
+          normalizedDocFolder.startsWith(`${normalizedFolderPath}/`)
+        );
+      })
+      .map((doc: any) => {
+        const viewUrl = toAbsoluteUrl(doc.url);
+        return {
+          name: doc.name,
+          size: doc.size,
+          url: viewUrl,
+          downloadUrl: getDownloadUrl(viewUrl),
+          modified: doc.modified || 0,
+        };
+      });
 
     if (folderFiles.length > 0) {
       documents.push({
@@ -214,18 +234,31 @@ let inflightDocumentsPromise: Promise<FetchDocumentsResult> | null = null;
 
 async function fetchDocumentsFromApiOnce(): Promise<FetchDocumentsResult> {
   try {
-    const response = await fetch(
+    const endpoints = [
       `${API_BASE_URL}/docrepository/`,
-      {
+      `${API_BASE_URL}/api/docrepository/`,
+    ];
+    let data: any = null;
+    let lastStatusText = "";
+    let lastStatusCode = 0;
+    for (const endpoint of endpoints) {
+      const response = await fetch(endpoint, {
         next: { revalidate: 3600 }, // Cache for 1 hour
-      },
-    );
+      });
+      if (!response.ok) {
+        lastStatusCode = response.status;
+        lastStatusText = response.statusText;
+        continue;
+      }
+      data = await response.json();
+      break;
+    }
 
-    if (!response.ok) {
+    if (!data) {
       console.error(
-        "Document repository API returned non-ok status:",
-        response.status,
-        response.statusText,
+        "Document repository API returned non-ok status for all endpoints:",
+        lastStatusCode,
+        lastStatusText,
       );
       return {
         documents: [],
@@ -234,7 +267,6 @@ async function fetchDocumentsFromApiOnce(): Promise<FetchDocumentsResult> {
       };
     }
 
-    const data = await response.json();
     if (!data || !Array.isArray(data.folders) || !Array.isArray(data.documents)) {
       console.error("Document repository API returned invalid payload:", data);
       return {

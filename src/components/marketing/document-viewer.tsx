@@ -207,7 +207,7 @@ export default function DocumentViewer({ document }: DocumentViewerProps) {
                                                             asChild
                                                         >
                                                             <a 
-                                                                href={file.url}
+                                                                href={file.downloadUrl || `${file.url}${file.url.includes("?") ? "&" : "?"}download=1`}
                                                                 download
                                                                 rel="noopener noreferrer"
                                                             >
