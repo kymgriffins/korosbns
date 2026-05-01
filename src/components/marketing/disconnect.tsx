@@ -33,7 +33,7 @@ const cards = [
 
 const Disconnect = () => {
     return (
-        <section id="disconnect" className="w-full py-16 lg:py-24 relative overflow-hidden">
+        <section id="disconnect" className="w-full py-12 lg:py-16 relative overflow-hidden">
             <Wrapper>
                 <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
                     <SectionBadge title="The Challenge" />
@@ -41,7 +41,7 @@ const Disconnect = () => {
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="text-3xl md:text-5xl font-bold tracking-tight mt-6"
+                        className="text-3xl md:text-5xl font-bold tracking-tight mt-4"
                     >
                         Kenya&apos;s youth are politically active but <span className="text-primary">fiscally excluded.</span>
                     </motion.h2>
@@ -50,13 +50,13 @@ const Disconnect = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: 0.1 }}
-                        className="text-lg text-muted-foreground mt-6 leading-relaxed"
+                        className="text-lg text-muted-foreground mt-4 leading-relaxed"
                     >
                         The energy is there, but the literacy is missing. We are closing the gap between noise and impact.
                     </motion.p>
                 </div>
 
-                <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
                     {cards.map((card, index) => (
                         <motion.div
                             key={index}
@@ -64,16 +64,20 @@ const Disconnect = () => {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: index * 0.1 }}
-                            className="group relative p-8 rounded-3xl border border-white/10 bg-white/2 hover:bg-white/5 transition-all duration-300"
+                            className="group relative p-5 rounded-2xl border border-white/10 bg-white/2 hover:bg-white/5 transition-all duration-300"
                         >
-                            <div className={cn(
-                                "size-12 rounded-2xl flex items-center justify-center mb-6 ring-1 ring-white/10",
-                                card.bg,
-                                card.color
-                            )}>
-                                <card.icon className="size-6" />
+                            <div className="mb-3 flex items-center gap-2.5">
+                                <div
+                                    className={cn(
+                                        "size-8 shrink-0 rounded-lg flex items-center justify-center ring-1 ring-white/10",
+                                        card.bg,
+                                        card.color
+                                    )}
+                                >
+                                    <card.icon className="size-4" />
+                                </div>
+                                <h3 className="text-lg font-bold leading-tight">{card.title}</h3>
                             </div>
-                            <h3 className="text-xl font-bold mb-4">{card.title}</h3>
                             <p className="text-muted-foreground text-sm leading-relaxed">
                                 {card.description}
                             </p>

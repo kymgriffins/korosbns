@@ -104,7 +104,7 @@ export default function StoriesPromoMarquee() {
   if (closed) return null;
 
   return (
-    <div className="relative z-30 mx-auto mt-4 w-[min(1200px,96%)] rounded-2xl bg-background/70 backdrop-blur-md overflow-hidden">
+    <div className="relative z-30 mx-auto mt-1 lg:mt-2 w-[min(1200px,96%)] rounded-2xl bg-background/70 backdrop-blur-md overflow-hidden">
       <button
         onClick={handleClose}
         aria-label="Close stories promo"

@@ -66,7 +66,7 @@ const Hero = () => {
     const featuredMembers = team.slice(0, 4);
 
     return (
-        <section className="relative w-full flex items-center justify-center pt-8 lg:pt-8 pb-4 overflow-hidden">
+        <section className="relative w-full flex items-center justify-center pt-8 lg:pt-8 pb-4 overflow-visible">
             <Wrapper className="relative z-10">
                 <div className="flex flex-col items-center text-center">
                     <motion.div
@@ -93,14 +93,14 @@ const Hero = () => {
                         </Container>
                     </motion.div>
 
-                    <h1 className="text-4xl md:text-6xl font-semibold tracking-tight font-heading mt-8">
+                    <h1 className="text-4xl md:text-6xl font-semibold tracking-tight leading-[1.16] md:leading-[1.12] font-heading mt-8 pb-2 overflow-visible">
                         <Balancer>
                             {"Bridging the gap between".split(" ").map((word, index) => (
                                 <motion.span
                                     initial={{ filter: "blur(10px)", opacity: 0, y: 10 }}
                                     animate={{ filter: "blur(0px)", opacity: 1, y: 0 }}
                                     transition={{ duration: 0.4, delay: index * 0.05 }}
-                                    className="inline-block"
+                                    className="inline-block leading-[1.16] pb-[0.08em]"
                                     key={index}
                                 >
                                     {word}&nbsp;
@@ -113,7 +113,7 @@ const Hero = () => {
                                     animate={{ filter: "blur(0px)", opacity: 1, y: 0 }}
                                     transition={{ duration: 0.4, delay: (4 + index) * 0.05 }}
                                     className={cn(
-                                        "inline-block",
+                                        "inline-block leading-[1.16] pb-[0.08em]",
                                         (word === "youth" || word === "energy") && "bg-linear-to-r from-primary via-blue-500 to-primary bg-size-[200%_100%] animate-[shimmer_3s_ease-in-out_infinite] text-transparent bg-clip-text"
                                     )}
                                     key={index}

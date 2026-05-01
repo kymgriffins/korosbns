@@ -12,6 +12,7 @@ import ConsortiumPartners from "@/components/marketing/consortium-partners";
 import WallOfLove from "@/components/marketing/wall-of-love";
 import Cta from "@/components/marketing/cta";
 import SurveyPopup from "@/components/marketing/survey-popup";
+import NewsletterPopup from "@/components/marketing/newsletter-popup";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -47,7 +48,7 @@ export const metadata: Metadata = {
 
 const HomePage = () => {
     return (
-        <div className="w-full min-h-dvh pt-18">
+        <div className="w-full min-h-dvh pt-6 lg:pt-8">
             <Background />
             <StoriesPromoMarquee />
             <Hero />
@@ -62,6 +63,7 @@ const HomePage = () => {
             {/* <WallOfLove /> */}
             <Cta />
             <SurveyPopup />
+            <NewsletterPopup />
         </div>
     )
 };
