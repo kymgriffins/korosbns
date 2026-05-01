@@ -1778,7 +1778,7 @@ export default function Learn() {
   return (
     <section
       ref={containerRef}
-      className="relative w-full min-h-screen bg-background overflow-x-hidden overflow-y-visible flex flex-col pt-14 sm:pt-20"
+      className="relative w-full min-h-screen bg-background overflow-x-hidden overflow-y-visible flex flex-col"
     >
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         <motion.div

@@ -16,7 +16,7 @@ const MarketingLayout = ({
     const isLearnDocPage = pathname.startsWith("/learn/") && pathname !== "/learn";
 
     return (
-        <main className="w-full relative pt-16 md:pt-18">
+        <main className="w-full relative pt-14 sm:pt-20">
             <Navbar />
             {children}
             {!isContactPage && !isLearnPage && !isLearnDocPage && <Footer />}
