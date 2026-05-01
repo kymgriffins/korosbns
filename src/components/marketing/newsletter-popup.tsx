@@ -6,6 +6,11 @@ import { toast } from "sonner";
 
 import { API_BASE_URL } from "@/lib/api-config";
 
+const NEWSLETTER_SEEN_KEY = "hasSeenNewsletterPopup";
+const SURVEY_HANDLED_KEY = "surveyPopupHandled";
+const SURVEY_HANDLED_EVENT = "bns:survey-popup-handled";
+const NEWSLETTER_DELAY_MS = 12_000;
+
 export default function NewsletterPopup() {
   const [isOpen, setIsOpen] = useState(false);
   const [email, setEmail] = useState("");
@@ -13,18 +18,34 @@ export default function NewsletterPopup() {
   const [subscribed, setSubscribed] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      const hasSeenPopup = sessionStorage.getItem("hasSeenNewsletterPopup");
-      if (!hasSeenPopup) {
-        setIsOpen(true);
-      }
-    }, 5000);
+    const hasSeenPopup = sessionStorage.getItem(NEWSLETTER_SEEN_KEY);
+    if (hasSeenPopup) return;
 
-    return () => clearTimeout(timer);
+    let timer: ReturnType<typeof setTimeout> | null = null;
+
+    const startNewsletterTimer = () => {
+      if (timer) return;
+      timer = setTimeout(() => {
+        if (!sessionStorage.getItem(NEWSLETTER_SEEN_KEY)) {
+          setIsOpen(true);
+        }
+      }, NEWSLETTER_DELAY_MS);
+    };
+
+    if (sessionStorage.getItem(SURVEY_HANDLED_KEY) === "true") {
+      startNewsletterTimer();
+    } else {
+      window.addEventListener(SURVEY_HANDLED_EVENT, startNewsletterTimer, { once: true });
+    }
+
+    return () => {
+      if (timer) clearTimeout(timer);
+      window.removeEventListener(SURVEY_HANDLED_EVENT, startNewsletterTimer);
+    };
   }, []);
 
   const dismiss = () => {
-    sessionStorage.setItem("hasSeenNewsletterPopup", "true");
+    sessionStorage.setItem(NEWSLETTER_SEEN_KEY, "true");
     setIsOpen(false);
   };
 
@@ -48,7 +69,7 @@ export default function NewsletterPopup() {
       if (response.ok) {
         setSubscribed(true);
         setEmail("");
-        sessionStorage.setItem("hasSeenNewsletterPopup", "true");
+        sessionStorage.setItem(NEWSLETTER_SEEN_KEY, "true");
         if (data.status === "already_subscribed") {
           toast.info("Already subscribed. Welcome back!");
         } else {
@@ -67,15 +88,15 @@ export default function NewsletterPopup() {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/75 backdrop-blur-sm p-4">
-      <button
-        onClick={dismiss}
-        className="absolute top-4 right-4 z-[210] rounded-full p-2 text-white/80 bg-black/50 transition hover:bg-black/70 hover:text-white"
-        aria-label="Close newsletter popup"
-      >
-        <X size={18} />
-      </button>
-      <div className="relative w-full max-w-md rounded-2xl border border-white/15 bg-[#0F172A] p-5 text-white shadow-2xl animate-in fade-in zoom-in-95 duration-300">
+    <div className="fixed bottom-4 right-4 z-[200] w-[92vw] max-w-md">
+      <div className="relative w-full rounded-2xl border border-white/15 bg-[#0F172A] p-5 text-white shadow-2xl animate-in fade-in slide-in-from-bottom duration-300">
+        <button
+          onClick={dismiss}
+          className="absolute right-3 top-3 rounded-full p-2 text-white/80 transition hover:bg-black/35 hover:text-white"
+          aria-label="Close newsletter popup"
+        >
+          <X size={18} />
+        </button>
         <p className="mb-2 text-xs font-semibold tracking-wide text-cyan-300">NEWSLETTER</p>
         <h3 className="mb-2 text-xl font-semibold">Get budget updates in your inbox</h3>
         <p className="mb-4 text-sm text-slate-300">
