@@ -92,15 +92,4 @@ export function WorkflowPanel({
       membership={membership}
     />
   );
-
-  return (
-    <Dashboard
-      activeModel={activeModel}
-      setActiveModel={setActiveModel}
-      onModelsLoaded={onModelsLoaded}
-      onProfileLoaded={onProfileLoaded}
-      capabilities={capabilities}
-      membership={membership}
-    />
-  );
 }

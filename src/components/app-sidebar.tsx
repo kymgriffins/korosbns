@@ -96,6 +96,7 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   activeModel?: string
   onModelSelect?: (name: string) => void
   user?: { name: string; email: string; avatar?: string }
+  onManageAccount?: () => void
 }
 
 export function AppSidebar({
@@ -106,6 +107,7 @@ export function AppSidebar({
   activeModel,
   onModelSelect,
   user,
+  onManageAccount,
   ...props
 }: AppSidebarProps) {
   const mainItems = navMainItems ?? defaultNavMain
@@ -195,6 +197,7 @@ export function AppSidebar({
             email: userData.email,
             avatar: userData.avatar ?? "/avatars/admin.jpg",
           }}
+          onManageAccount={onManageAccount}
         />
       </SidebarFooter>
     </Sidebar>

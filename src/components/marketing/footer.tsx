@@ -3,18 +3,60 @@
 import Wrapper from "@/components/global/wrapper";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { footerLinks, socialLinks } from "@/constants";
+import { footerLinks } from "@/constants";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
 
 import { API_BASE_URL } from "@/lib/api-config";
+import { PRIMARY_ORG_SLUG } from "@/constants/org";
+import {
+  type OrgSiteManifest,
+  footerBlurbFromManifest,
+  normalizeSocialLinksForFooter,
+  orgDisplayNameFromManifest,
+} from "@/lib/org-site-manifest";
 
+function integrationIconAsset(icon: string): string {
+  const key =
+    icon === "x" || icon === "twitter"
+      ? "social-x"
+      : icon === "link" || !icon
+        ? "layers"
+        : icon;
+  return `/icons/integrations/${key}.svg`;
+}
 
 const Footer = () => {
   const [email, setEmail] = useState<string>("");
+  const [siteManifest, setSiteManifest] = useState<OrgSiteManifest | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    void fetch(`/api/public/site/${PRIMARY_ORG_SLUG}`, {
+      headers: { Accept: "application/json" },
+      cache: "no-store",
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (alive && data && typeof data === "object") {
+          setSiteManifest(data as OrgSiteManifest);
+        }
+      })
+      .catch(() => undefined);
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const displaySocial = useMemo(
+    () => normalizeSocialLinksForFooter(siteManifest),
+    [siteManifest],
+  );
+  const footerBlurb = footerBlurbFromManifest(siteManifest);
+  const organizationTitle = orgDisplayNameFromManifest(siteManifest);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,16 +114,13 @@ const Footer = () => {
             <Link href="/" className="inline-block group mb-4">
               <Image
                 src="/logo.svg"
-                alt="Budget Ndio Story"
+                alt={organizationTitle}
                 width={160}
                 height={32}
                 className="h-6 lg:h-7 w-auto transition-all group-hover:brightness-110"
               />
             </Link>
-            <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
-              Youth-led budget clarity for Kenya. We turn complex budget data
-              into simple stories everyone can understand.
-            </p>
+            <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">{footerBlurb}</p>
 
             <form onSubmit={handleSubmit} className="mt-6 w-full max-w-sm">
               <p className="text-sm font-medium mb-3">Subscribe to the Story</p>
@@ -156,14 +195,19 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-foreground/5 w-full max-w-6xl mx-auto">
-          <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} Budget Ndio Story. All rights reserved.
-          </p>
+          <div className="text-center sm:text-left text-xs text-muted-foreground space-y-0.5">
+            <p>
+              © {new Date().getFullYear()} {organizationTitle}. All rights reserved.
+            </p>
+            {siteManifest?.legal_footer_note ? (
+              <p className="text-[11px] text-muted-foreground/90">{siteManifest.legal_footer_note}</p>
+            ) : null}
+          </div>
 
           <div className="flex items-center gap-4">
-            {socialLinks.map((social, index) => (
+            {displaySocial.map((social, index) => (
               <Link
-                key={social.label}
+                key={`${social.label}-${social.href}`}
                 href={social.href}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -188,7 +232,7 @@ const Footer = () => {
                 />
                 <motion.div whileHover={{ y: -1.5, scale: 1.06 }} transition={{ duration: 0.2 }}>
                   <Image
-                    src={`/icons/integrations/${social.icon === "x" ? "social-x" : social.icon}.svg`}
+                    src={integrationIconAsset(String(social.icon))}
                     alt={social.label}
                     width={20}
                     height={20}

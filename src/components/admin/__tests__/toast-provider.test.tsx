@@ -4,9 +4,11 @@ import { ToastProvider, useToast, ToastContainer } from "@/components/admin/toas
 import { toast } from "sonner"
 import { useCrudToasts } from "@/components/admin/toast-provider"
 
-// Mock sonner
+// Mock sonner (typed wrapper so assigning .success / .error etc. type-checks)
 vi.mock("sonner", () => {
-  const mockToast = vi.fn()
+  type SonnerToastMock = ReturnType<typeof vi.fn> &
+    Record<"success" | "error" | "promise" | "loading" | "dismiss", ReturnType<typeof vi.fn>>
+  const mockToast = vi.fn() as unknown as SonnerToastMock
   mockToast.success = vi.fn()
   mockToast.error = vi.fn()
   mockToast.promise = vi.fn()

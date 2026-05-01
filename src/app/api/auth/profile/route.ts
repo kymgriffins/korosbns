@@ -77,3 +77,67 @@ export async function GET() {
   }
   return out;
 }
+
+const doProfilePatch = (token: string, body: unknown) =>
+  fetch(PROFILE_ENDPOINT, {
+    method: "PATCH",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(body),
+    cache: "no-store",
+  });
+
+export async function PATCH(req: Request) {
+  const cookieStore = await cookies();
+  let access = cookieStore.get("bns_admin_session")?.value;
+  const refresh = cookieStore.get("bns_admin_refresh")?.value;
+
+  if (!access && refresh) {
+    const refreshResponse = await fetch(REFRESH_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({ refresh }),
+      cache: "no-store",
+    });
+
+    if (refreshResponse.ok) {
+      const refreshPayload = await refreshResponse.json().catch(() => ({}));
+      access = refreshPayload?.access as string | undefined;
+    }
+  }
+
+  if (!access) {
+    return NextResponse.json({ message: "Unauthenticated" }, { status: 401 });
+  }
+
+  const body = await req.json().catch(() => ({}));
+
+  let response = await doProfilePatch(access, body);
+  if (response.status === 401 && refresh) {
+    const refreshResponse = await fetch(REFRESH_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({ refresh }),
+      cache: "no-store",
+    });
+
+    if (refreshResponse.ok) {
+      const refreshPayload = await refreshResponse.json().catch(() => ({}));
+      const nextAccess = refreshPayload?.access as string | undefined;
+      if (nextAccess) {
+        access = nextAccess;
+        response = await doProfilePatch(access, body);
+      }
+    }
+  }
+
+  const payload = await response.json().catch(() => ({}));
+  const out = NextResponse.json(payload, { status: response.status });
+  if (access && access !== cookieStore.get("bns_admin_session")?.value) {
+    setAccessCookie(out, access);
+  }
+  return out;
+}

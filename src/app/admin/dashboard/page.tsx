@@ -3,7 +3,6 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   IconBook2,
@@ -14,6 +13,7 @@ import {
 } from "@tabler/icons-react";
 import React, { useEffect, useMemo, useState } from "react";
 import { WorkflowPanel } from "@/components/admin/workflow-panel";
+import { AdminAccountSheet } from "@/components/admin/admin-account-sheet";
 import { useRouter } from "next/navigation";
 
 type HubSection = "dashboard" | "duty" | "academy" | "cms" | "org";
@@ -69,6 +69,7 @@ const AdminDashboardPage = () => {
   const [profile, setProfile] = useState<any>(null);
   const [capabilities, setCapabilities] = useState<AdminCapabilities | null>(null);
   const [membership, setMembership] = useState<AdminMembership | null>(null);
+  const [accountOpen, setAccountOpen] = useState(false);
 
   const activateSection = (section: HubSection) => {
     setActiveSection(section);
@@ -198,6 +199,12 @@ const AdminDashboardPage = () => {
         } as React.CSSProperties
       }
     >
+      <AdminAccountSheet
+        open={accountOpen}
+        onOpenChange={setAccountOpen}
+        profile={profile}
+        onProfileUpdated={(next) => setProfile(next)}
+      />
       <AppSidebar
         variant="inset"
         navMainItems={navMainItems}
@@ -221,6 +228,7 @@ const AdminDashboardPage = () => {
               }
             : undefined
         }
+        onManageAccount={() => setAccountOpen(true)}
       />
       <SidebarInset>
         <SiteHeader
@@ -234,74 +242,94 @@ const AdminDashboardPage = () => {
           roleLabel={membership?.role ? `Role: ${membership.role}` : undefined}
         />
         {activeSection === "dashboard" ? (
-          <div className="grid gap-4 xl:grid-cols-[1.5fr_1fr] p-4 pt-0">
-            <Card className="border-border/40 shadow-sm">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg">Organization Analytics</CardTitle>
-                <CardDescription>
-                  High-level visibility so admins can decide what to do next.
+          <div className="grid gap-3 p-3 pt-0 sm:p-4 lg:grid-cols-[1.35fr_1fr]">
+            <Card className="shadow-sm ring-1 ring-border/20">
+              <CardHeader className="space-y-0 pb-3">
+                <CardTitle className="text-base">At a glance</CardTitle>
+                <CardDescription className="text-xs">
+                  Session, organization, and how much of the hub is wired up for you.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="grid gap-3 sm:grid-cols-2">
-                <div className="rounded-3xl border border-border/50 bg-muted p-4">
-                  <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">Available data areas</p>
-                  <p className="mt-2 text-3xl font-semibold">{models.length}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">Data collections currently available in your admin system.</p>
+              <CardContent className="grid gap-2 sm:grid-cols-2">
+                <div className="rounded-xl bg-muted/40 p-3 ring-1 ring-border/15">
+                  <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Collections</p>
+                  <p className="mt-1 text-2xl font-semibold tabular-nums">{models.length}</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">Registered admin models.</p>
                 </div>
-                <div className="rounded-3xl border border-border/50 bg-muted p-4">
-                  <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">Organization</p>
-                  <p className="mt-2 text-3xl font-semibold">{membership?.organization_name ?? "Unknown"}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">{membership?.role ? `Role: ${membership.role}` : "Role information not loaded yet."}</p>
-                </div>
-                <div className="rounded-3xl border border-border/50 bg-muted p-4">
-                  <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">Admin access</p>
-                  <p className="mt-2 text-3xl font-semibold">{capabilities ? "Configured" : "Loading"}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {capabilities
-                      ? `${capabilities.can_view_admin ? "You can access admin features." : "Limited access mode."}`
-                      : "Permissions are being loaded."}
+                <div className="rounded-xl bg-muted/40 p-3 ring-1 ring-border/15">
+                  <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Organization</p>
+                  <p className="mt-1 line-clamp-2 text-sm font-semibold leading-snug">
+                    {membership?.organization_name ?? "—"}
+                  </p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    {membership?.role ? membership.role.replace(/_/g, " ") : "Role loading"}
                   </p>
                 </div>
-                <div className="rounded-3xl border border-border/50 bg-muted p-4">
-                  <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">Hub coverage</p>
-                  <p className="mt-2 text-3xl font-semibold">{hubStats.learn + hubStats.social + hubStats.operations}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">Models mapped into operations, learning, and social workspaces.</p>
+                <div className="rounded-xl bg-muted/40 p-3 ring-1 ring-border/15">
+                  <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Access</p>
+                  <p className="mt-1 text-2xl font-semibold tabular-nums">{capabilities ? "Live" : "…"}</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    {capabilities?.can_view_admin ? "RBAC resolved for this session." : "Fetching capabilities."}
+                  </p>
+                </div>
+                <div className="rounded-xl bg-muted/40 p-3 ring-1 ring-border/15">
+                  <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Hub models</p>
+                  <p className="mt-1 text-2xl font-semibold tabular-nums">{hubStats.learn + hubStats.social + hubStats.operations}</p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">Ops + learn + social surfaces.</p>
                 </div>
               </CardContent>
             </Card>
-            <Card className="border-border/40 shadow-sm">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg">Workspace Hubs</CardTitle>
-                <CardDescription>
-                  Choose the hub that matches your task to avoid navigation confusion.
-                </CardDescription>
+            <Card className="shadow-sm ring-1 ring-border/20">
+              <CardHeader className="space-y-0 pb-2">
+                <CardTitle className="text-base">Jump to workspace</CardTitle>
+                <CardDescription className="text-xs">Pick where your task lives—sidebar expands the same grouping.</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="rounded-2xl border border-border/50 p-3">
-                  <p className="font-medium">Learn Hub ({hubStats.learn})</p>
-                  <p className="text-sm text-muted-foreground">Trivia, stories, articles, and learning content.</p>
-                  <Button size="sm" className="mt-2" onClick={() => activateSection("academy")}>Open Learn Hub</Button>
-                </div>
-                <div className="rounded-2xl border border-border/50 p-3">
-                  <p className="font-medium">Social &amp; Media ({hubStats.social})</p>
-                  <p className="text-sm text-muted-foreground">Campaigns, quotes, subscribers, and social-facing updates.</p>
-                  <Button size="sm" variant="outline" className="mt-2" onClick={() => activateSection("cms")}>Open Social Hub</Button>
-                </div>
-                <div className="rounded-2xl border border-border/50 p-3">
-                  <p className="font-medium">Operations ({hubStats.operations})</p>
-                  <p className="text-sm text-muted-foreground">Projects, activities, roadmaps, and impact metrics.</p>
-                  <Button size="sm" variant="outline" className="mt-2" onClick={() => activateSection("duty")}>Open Operations</Button>
-                </div>
-                <div className="rounded-2xl border border-border/50 p-3">
-                  <p className="font-medium">Developer Tools ({hubStats.dev})</p>
-                  <p className="text-sm text-muted-foreground">Audit logs, setup, and technical diagnostics for developers.</p>
-                  <Button size="sm" variant="ghost" className="mt-2" onClick={() => activateSection("org")}>Open Dev Tools</Button>
-                </div>
+              <CardContent className="grid gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => activateSection("academy")}
+                  className="flex w-full flex-col rounded-lg px-3 py-2 text-left ring-1 ring-border/15 transition-colors hover:bg-muted/50"
+                >
+                  <span className="text-sm font-medium">
+                    Learn <span className="text-muted-foreground">· {hubStats.learn}</span>
+                  </span>
+                  <span className="text-[11px] text-muted-foreground">Stories, trivia, docs, curriculum.</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => activateSection("cms")}
+                  className="flex w-full flex-col rounded-lg px-3 py-2 text-left ring-1 ring-border/15 transition-colors hover:bg-muted/50"
+                >
+                  <span className="text-sm font-medium">
+                    Social &amp; media <span className="text-muted-foreground">· {hubStats.social}</span>
+                  </span>
+                  <span className="text-[11px] text-muted-foreground">Campaigns, quotes, subscribers.</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => activateSection("duty")}
+                  className="flex w-full flex-col rounded-lg px-3 py-2 text-left ring-1 ring-border/15 transition-colors hover:bg-muted/50"
+                >
+                  <span className="text-sm font-medium">
+                    Operations <span className="text-muted-foreground">· {hubStats.operations}</span>
+                  </span>
+                  <span className="text-[11px] text-muted-foreground">Projects, roadmap, metrics.</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => activateSection("org")}
+                  className="flex w-full flex-col rounded-lg px-3 py-2 text-left ring-1 ring-border/15 transition-colors hover:bg-muted/50"
+                >
+                  <span className="text-sm font-medium">
+                    Dev tools <span className="text-muted-foreground">· {hubStats.dev}</span>
+                  </span>
+                  <span className="text-[11px] text-muted-foreground">Users, audit, system records.</span>
+                </button>
               </CardContent>
             </Card>
           </div>
         ) : null}
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+        <div className="flex flex-1 flex-col gap-3 px-3 pb-4 pt-0 sm:gap-4 sm:px-4">
           <WorkflowPanel
             activeModel={activeModel}
             setActiveModel={setActiveModel}

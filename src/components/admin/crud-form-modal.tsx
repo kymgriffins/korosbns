@@ -2,7 +2,7 @@ import * as React from "react"
 import { useForm, type UseFormReturn, type SubmitHandler } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { Save, Loader2, X } from "lucide-react"
+import { Save, Loader2, X, ChevronLeft, ChevronRight, PlusCircle, Pencil } from "lucide-react"
 
 import {
   Dialog,
@@ -33,7 +33,19 @@ import {
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { toast } from "sonner"
+
+const FIELDS_PER_STEP = 8
+
+function chunkFields<T extends unknown>(entries: [string, FieldConfig][], size: number): [string, FieldConfig][][] {
+  if (!entries.length) return [[]]
+  const out: [string, FieldConfig][][] = []
+  for (let i = 0; i < entries.length; i += size) {
+    out.push(entries.slice(i, i + size))
+  }
+  return out
+}
 
 export type FieldConfig = {
   name: string
@@ -87,7 +99,15 @@ export function CrudFormModal<T extends Record<string, unknown>>({
   id,
 }: CrudFormModalProps<T>) {
   const [activeTab, setActiveTab] = React.useState("fields")
+  const [fieldStep, setFieldStep] = React.useState(0)
   const isEditing = !!id
+
+  React.useEffect(() => {
+    if (open) {
+      setFieldStep(0)
+      setActiveTab("fields")
+    }
+  }, [open])
 
   // Build dynamic Zod schema from field configs
   const zodSchemaFields: Record<string, z.ZodTypeAny> = {}
@@ -160,68 +180,105 @@ export function CrudFormModal<T extends Record<string, unknown>>({
 
   const visibleFields = Object.entries(schema).filter(([_, config]) => !config.hidden)
 
+  const fieldChunks = React.useMemo(
+    () => chunkFields(visibleFields, FIELDS_PER_STEP),
+    [visibleFields],
+  )
+
+  const fieldStepChunks = activeTab === "fields" ? fieldChunks : []
+  const totalFieldSteps = fieldStepChunks.length
+  const steppedFields =
+    activeTab === "fields" && totalFieldSteps > 1
+      ? fieldStepChunks[Math.min(fieldStep, totalFieldSteps - 1)] ?? []
+      : visibleFields
+
+  const formSlug = React.useMemo(
+    () => title.toLowerCase().replace(/\s+/g, "-"),
+    [title],
+  )
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[calc(100vw-1.5rem)] max-w-2xl h-[min(92vh,920px)] flex flex-col p-0 gap-0 overflow-hidden">
-        <DialogHeader className="px-4 pt-4 pb-2 sm:px-6 sm:pt-6">
-          <DialogTitle className="flex items-center gap-2">
+      <DialogContent className="w-[calc(100vw-1.25rem)] max-w-2xl h-[min(90dvh,880px)] gap-0 overflow-hidden p-0 shadow-lg ring-1 ring-border/20 flex flex-col sm:rounded-xl">
+        <DialogHeader className="gap-1 px-4 pb-3 pt-4 sm:px-6 sm:pt-5">
+          <DialogTitle className="flex items-center gap-2 text-base">
             {isEditing ? (
               <>
-                <span className="text-primary">✏️</span>
+                <Pencil className="text-primary size-4 shrink-0" aria-hidden />
                 Edit {title}
               </>
             ) : (
               <>
-                <span className="text-primary">➕</span>
-                Create New {title}
+                <PlusCircle className="text-primary size-4 shrink-0" aria-hidden />
+                New {title}
               </>
             )}
           </DialogTitle>
-          {description && <DialogDescription>{description}</DialogDescription>}
+          {description && <DialogDescription className="text-xs">{description}</DialogDescription>}
         </DialogHeader>
 
-        <Separator className="my-2" />
+        <Separator className="bg-border/25" />
 
           <div className="flex-1 overflow-hidden flex flex-col min-h-0">
-          <div className="px-4 sm:px-6">
-            <div className="flex gap-4 border-b">
-              <button
-                type="button"
-                onClick={() => setActiveTab("fields")}
-                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-                  activeTab === "fields"
-                    ? "border-primary text-primary"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
-                }`}
+          <div className="px-4 pt-3 sm:px-6">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <TabsList
+                className={`grid h-9 w-full p-0.5 bg-muted/40 ring-1 ring-border/15 ${isEditing ? "grid-cols-2" : "grid-cols-1"}`}
               >
-                Fields
-              </button>
-              {isEditing && (
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("advanced")}
-                  className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-                    activeTab === "advanced"
-                      ? "border-primary text-primary"
-                      : "border-transparent text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  Advanced
-                </button>
-              )}
-            </div>
+                <TabsTrigger value="fields" className="text-xs">
+                  Fields
+                </TabsTrigger>
+                {isEditing ? (
+                  <TabsTrigger value="advanced" className="text-xs">
+                    Danger zone
+                  </TabsTrigger>
+                ) : null}
+              </TabsList>
+            </Tabs>
           </div>
 
-          <ScrollArea className="flex-1 px-4 py-4 min-h-0 sm:px-6">
+          {activeTab === "fields" && totalFieldSteps > 1 ? (
+            <div className="flex items-center justify-between px-4 py-2 sm:px-6">
+              <p className="text-[11px] text-muted-foreground">
+                Step {Math.min(fieldStep + 1, totalFieldSteps)} of {totalFieldSteps}
+              </p>
+              <div className="flex gap-1">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 px-2 text-xs"
+                  disabled={fieldStep <= 0}
+                  onClick={() => setFieldStep((s) => Math.max(0, s - 1))}
+                >
+                  <ChevronLeft className="size-3.5" />
+                  Back
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 px-2 text-xs"
+                  disabled={fieldStep >= totalFieldSteps - 1}
+                  onClick={() => setFieldStep((s) => Math.min(totalFieldSteps - 1, s + 1))}
+                >
+                  Next
+                  <ChevronRight className="size-3.5" />
+                </Button>
+              </div>
+            </div>
+          ) : null}
+
+          <ScrollArea className="min-h-[200px] flex-1 px-4 py-3 sm:px-6">
             <Form {...form}>
               <form
-                id={`${title.toLowerCase().replace(/\s+/g, "-")}-form`}
+                id={`${formSlug}-form`}
                 onSubmit={form.handleSubmit(handleSubmit)}
-                className="space-y-4"
+                className="space-y-3"
               >
                 {activeTab === "fields" && (
-                  <div className="grid gap-4 py-2">
-                    {visibleFields.map(([key, config]) => (
+                  <div className="grid gap-3 py-1">
+                    {steppedFields.map(([key, config]) => (
                       <FormField
                         key={key}
                         control={form.control}
@@ -232,7 +289,9 @@ export function CrudFormModal<T extends Record<string, unknown>>({
                               {config.label}
                               {config.required && <span className="text-destructive text-sm">*</span>}
                               {config.readOnly && (
-                                <span className="text-[10px] text-muted-foreground border px-1 rounded">read-only</span>
+                                <span className="text-[10px] text-muted-foreground rounded bg-muted/60 px-1.5 py-0.5 ring-1 ring-border/15">
+                                  read-only
+                                </span>
                               )}
                             </FormLabel>
                             <FormControl>
@@ -252,27 +311,13 @@ export function CrudFormModal<T extends Record<string, unknown>>({
                 )}
 
                 {activeTab === "advanced" && isEditing && (
-                  <div className="space-y-4 py-2">
-                    <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-4">
-                      <h4 className="font-semibold text-destructive mb-2">Danger Zone</h4>
-                      <p className="text-sm text-muted-foreground mb-3">
-                        Permanently delete this record. This action cannot be undone.
+                  <div className="space-y-3 py-1">
+                    <div className="rounded-lg bg-destructive/5 p-3 ring-1 ring-destructive/20">
+                      <h4 className="mb-1 text-sm font-semibold text-destructive">Delete record</h4>
+                      <p className="text-xs leading-relaxed text-muted-foreground">
+                        This cannot be undone. Use <span className="font-medium text-foreground">Delete</span> in the
+                        bar below when you are certain.
                       </p>
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="sm"
-                        onClick={handleDelete}
-                        disabled={isSaving}
-                        className="gap-2"
-                      >
-                        {isSaving ? (
-                          <Loader2 className="size-4 animate-spin" />
-                        ) : (
-                          <span>🗑️</span>
-                        )}
-                        {deleteLabel}
-                      </Button>
                     </div>
                   </div>
                 )}
@@ -280,39 +325,54 @@ export function CrudFormModal<T extends Record<string, unknown>>({
             </Form>
           </ScrollArea>
 
-          <Separator className="my-2" />
+          <Separator className="bg-border/25" />
 
-          <DialogFooter className="px-4 py-3 bg-muted/20 border-t sm:px-6 sm:py-4 flex-row justify-end gap-2">
+          <DialogFooter className="flex-row flex-wrap justify-end gap-2 border-t border-border/20 bg-muted/15 px-4 py-2.5 sm:px-6 sm:py-3">
             <Button
               type="button"
               variant="outline"
+              size="sm"
               onClick={resetForm}
               disabled={isSaving}
             >
-              <X className="size-4 mr-2" />
+              <X className="mr-1.5 size-3.5" />
               Cancel
             </Button>
-            {isEditing && onDelete && (
+            {isEditing && onDelete && activeTab === "fields" ? (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                onClick={() => setActiveTab("advanced")}
+                disabled={isSaving}
+              >
+                Delete…
+              </Button>
+            ) : null}
+            {isEditing && onDelete && activeTab === "advanced" ? (
               <Button
                 type="button"
                 variant="destructive"
+                size="sm"
                 onClick={handleDelete}
                 disabled={isSaving}
-                className="gap-2"
+                className="gap-1.5"
               >
-                {isSaving ? (
-                  <Loader2 className="size-4 animate-spin" />
-                ) : (
-                  <span>🗑️</span>
-                )}
+                {isSaving ? <Loader2 className="size-3.5 animate-spin" /> : null}
                 {deleteLabel}
               </Button>
-            )}
+            ) : null}
             <Button
               type="submit"
-              form={`${title.toLowerCase().replace(/\s+/g, "-")}-form`}
-              disabled={isSaving}
-              className="gap-2 min-w-[100px]"
+              form={`${formSlug}-form`}
+              disabled={
+                isSaving ||
+                activeTab === "advanced" ||
+                (activeTab === "fields" && totalFieldSteps > 1 && fieldStep < totalFieldSteps - 1)
+              }
+              size="sm"
+              className="gap-1.5 min-w-[96px]"
             >
               {isSaving ? (
                 <Loader2 className="size-4 animate-spin" />
@@ -340,7 +400,7 @@ function renderFieldInput(
 
   if (config.readOnly) {
     return (
-      <div className="flex items-center gap-2 text-sm text-muted-foreground p-2 bg-muted/30 rounded-md border">
+      <div className="flex items-center gap-2 rounded-md bg-muted/40 p-2 text-sm text-muted-foreground ring-1 ring-border/15">
         <span>{String(value ?? "-")}</span>
         <span className="text-xs ml-auto text-muted-foreground/70">(read-only)</span>
       </div>
