@@ -8,9 +8,7 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  return deepDiveCards
-    .filter((item) => item.id !== "bps")
-    .map((item) => ({ slug: item.id }));
+  return deepDiveCards.map((item) => ({ slug: item.id }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
