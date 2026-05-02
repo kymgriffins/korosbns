@@ -10,7 +10,10 @@ export async function POST(request: Request) {
     const body = await request.json();
     const response = await fetch(endpoint, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
       body: JSON.stringify(body),
       cache: "no-store",
       signal: AbortSignal.timeout(10000),
@@ -26,12 +29,15 @@ export async function POST(request: Request) {
     if (!response.ok) {
       return NextResponse.json(
         {
-          message: extractApiErrorMessage(payload, rawText?.trim() ? rawText : "Signup failed."),
+          message: extractApiErrorMessage(
+            payload,
+            rawText?.trim() ? rawText : "Signup failed.",
+          ),
           status: response.status,
           endpoint,
           payload,
         },
-        { status: response.status }
+        { status: response.status },
       );
     }
 
@@ -44,7 +50,7 @@ export async function POST(request: Request) {
         detail,
         endpoint,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

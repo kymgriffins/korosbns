@@ -10,7 +10,10 @@ export async function POST(request: Request) {
 
     const response = await fetch(endpoint, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
       body: JSON.stringify(body),
       cache: "no-store",
       signal: AbortSignal.timeout(10000),
@@ -21,7 +24,7 @@ export async function POST(request: Request) {
     if (!response.ok) {
       return NextResponse.json(
         { message: extractApiErrorMessage(payload, "Login failed.") },
-        { status: response.status }
+        { status: response.status },
       );
     }
 
@@ -29,7 +32,10 @@ export async function POST(request: Request) {
     const refreshToken = payload?.refresh;
 
     if (!accessToken) {
-      return NextResponse.json({ message: "Login response missing access token." }, { status: 502 });
+      return NextResponse.json(
+        { message: "Login response missing access token." },
+        { status: 502 },
+      );
     }
 
     const out = NextResponse.json({ ok: true });
@@ -59,7 +65,7 @@ export async function POST(request: Request) {
         endpoint,
         hint: "Ensure Django API is running and DJANGO_AUTH_LOGIN_URL is reachable from Next.js server.",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
