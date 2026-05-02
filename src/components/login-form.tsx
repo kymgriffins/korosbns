@@ -1,14 +1,13 @@
-import { cn } from "@/utils/index"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-  FieldSeparator,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
-import Image from "next/image"
+    Field,
+    FieldDescription,
+    FieldGroup,
+    FieldLabel
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/utils/index";
+import Image from "next/image";
 
 interface LoginFormProps extends Omit<React.ComponentProps<"div">, "onSubmit"> {
   email?: string;
@@ -40,20 +39,23 @@ export function LoginForm({
               href="/"
               className="flex flex-col items-center gap-2 font-medium"
             >
-              <div className="flex h-12 w-12 items-center justify-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
                 <Image
                   src="/logo.svg"
-                  alt="Budget Ndio Story"
+                  alt="BNS logo"
                   width={48}
                   height={48}
                   className="h-12 w-12"
                 />
               </div>
-              <span className="sr-only">BNS Admin</span>
+              <span className="sr-only">BNS Admin Portal</span>
             </a>
-            <h1 className="text-xl font-bold">Welcome back</h1>
+            <h1 className="text-xl font-bold">Sign in to BNS</h1>
             <FieldDescription>
-              Don&apos;t have an admin account? <a href="/admin/signup" className="underline underline-offset-4">Sign up</a>
+              Don&apos;t have an admin account?{" "}
+              <a href="/admin/signup" className="underline underline-offset-4">
+                Sign up
+              </a>
             </FieldDescription>
           </div>
           <Field>
@@ -85,7 +87,11 @@ export function LoginForm({
               required
             />
           </Field>
-          {error && <p className="text-sm font-medium text-destructive text-center">{error}</p>}
+          {error && (
+            <p className="text-sm font-medium text-destructive text-center">
+              {error}
+            </p>
+          )}
           <Field>
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? "Signing in..." : "Login"}
@@ -94,9 +100,16 @@ export function LoginForm({
         </FieldGroup>
       </form>
       <FieldDescription className="px-6 text-center text-xs">
-        By clicking continue, you agree to our <a href="#" className="underline underline-offset-4">Terms of Service</a>{" "}
-        and <a href="#" className="underline underline-offset-4">Privacy Policy</a>.
+        By clicking continue, you agree to our{" "}
+        <a href="#" className="underline underline-offset-4">
+          Terms of Service
+        </a>{" "}
+        and{" "}
+        <a href="#" className="underline underline-offset-4">
+          Privacy Policy
+        </a>
+        .
       </FieldDescription>
     </div>
-  )
+  );
 }
