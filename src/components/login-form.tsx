@@ -31,15 +31,21 @@ export function LoginForm({
   ...props
 }: LoginFormProps) {
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div
+      className={cn(
+        "flex flex-col gap-6 rounded-3xl border border-black/10 bg-white/95 p-6 shadow-lg shadow-black/10 text-black",
+        className
+      )}
+      {...props}
+    >
       <form onSubmit={onSubmit}>
         <FieldGroup>
           <div className="flex flex-col items-center gap-2 text-center">
             <a
               href="/"
-              className="flex flex-col items-center gap-2 font-medium"
+              className="flex flex-col items-center gap-2 font-medium text-black"
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
                 <Image
                   src="/logo.svg"
                   alt="BNS logo"
@@ -53,7 +59,10 @@ export function LoginForm({
             <h1 className="text-xl font-bold">Sign in to BNS</h1>
             <FieldDescription>
               Don&apos;t have an admin account?{" "}
-              <a href="/admin/signup" className="underline underline-offset-4">
+              <a
+                href="/admin/signup"
+                className="underline underline-offset-4 text-accent hover:text-accent-foreground"
+              >
                 Sign up
               </a>
             </FieldDescription>
@@ -74,7 +83,7 @@ export function LoginForm({
               <FieldLabel htmlFor="password">Password</FieldLabel>
               <a
                 href="#"
-                className="text-sm underline-offset-4 hover:underline"
+                className="text-sm underline text-accent underline-offset-4 hover:text-accent-foreground"
               >
                 Forgot your password?
               </a>
@@ -99,13 +108,13 @@ export function LoginForm({
           </Field>
         </FieldGroup>
       </form>
-      <FieldDescription className="px-6 text-center text-xs">
+      <FieldDescription className="px-6 text-center text-xs text-slate-600">
         By clicking continue, you agree to our{" "}
-        <a href="#" className="underline underline-offset-4">
+        <a href="#" className="underline underline-offset-4 text-accent hover:text-accent-foreground">
           Terms of Service
         </a>{" "}
         and{" "}
-        <a href="#" className="underline underline-offset-4">
+        <a href="#" className="underline underline-offset-4 text-accent hover:text-accent-foreground">
           Privacy Policy
         </a>
         .

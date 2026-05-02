@@ -56,7 +56,7 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <section className="flex min-h-screen flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
+    <section className="flex min-h-screen flex-col items-center justify-center gap-6 bg-slate-50 p-6 md:p-10 text-black">
       <div className="flex w-full max-w-sm flex-col gap-6">
         <LoginForm
           email={email}
