@@ -6,7 +6,7 @@ import Wrapper from '@/components/global/wrapper';
 import SectionBadge from '@/components/ui/section-badge';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Linkedin, Twitter } from 'lucide-react';
+import { IconBrandLinkedin, IconBrandX } from '@tabler/icons-react';
 import { getMemberUsername } from '@/lib/team';
 
 const TeamCard = ({ member, index }: { member: typeof team[0]; index: number }) => {
@@ -52,7 +52,7 @@ const TeamCard = ({ member, index }: { member: typeof team[0]; index: number }) 
                                     onClick={(e) => e.stopPropagation()}
                                     className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
                                 >
-                                    <Linkedin className="size-4 text-white" />
+                                    <IconBrandLinkedin className="size-4 text-white" />
                                 </Link>
                             )}
                             {member.socials?.x && (
@@ -63,7 +63,7 @@ const TeamCard = ({ member, index }: { member: typeof team[0]; index: number }) 
                                     onClick={(e) => e.stopPropagation()}
                                     className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
                                 >
-                                    <Twitter className="size-4 text-white" />
+                                    <IconBrandX className="size-4 text-white" />
                                 </Link>
                             )}
                         </div>

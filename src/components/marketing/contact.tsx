@@ -6,12 +6,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/utils";
 import {
     ArrowRight,
-    Instagram,
-    Linkedin,
     MessageSquare,
     Send,
-    Youtube
 } from "lucide-react";
+import { IconBrandInstagram, IconBrandLinkedin, IconBrandYoutube, IconBrandX } from "@tabler/icons-react";
 import { motion, useScroll, useSpring, useTransform } from "motion/react";
 import React, { useRef, useState } from "react";
 import Balancer from "react-wrap-balancer";
@@ -36,28 +34,28 @@ const XIcon = ({ className }: { className?: string }) => (
 const socials = [
   {
     name: "X",
-    icon: XIcon,
+    icon: IconBrandX,
     href: "https://x.com/budgetndiostory",
     color: "bg-black",
     hoverColor: "hover:bg-neutral-800",
   },
   {
     name: "YouTube",
-    icon: Youtube,
+    icon: IconBrandYoutube,
     href: "https://youtube.com/@budgetndiostory",
     color: "bg-[#FF0000]",
     hoverColor: "hover:bg-[#E60000]",
   },
   {
     name: "Instagram",
-    icon: Instagram,
+    icon: IconBrandInstagram,
     href: "https://instagram.com/budgetndiostory",
     color: "bg-linear-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7]",
     hoverColor: "opacity-90",
   },
   {
     name: "LinkedIn",
-    icon: Linkedin,
+    icon: IconBrandLinkedin,
     href: "https://www.linkedin.com/company/budget-ndio-story/",
     color: "bg-[#0077B5]",
     hoverColor: "hover:bg-[#006396]",

@@ -60,18 +60,21 @@ export function BuilderField({
   description, 
   children, 
   className,
-  error 
+  error,
+  required
 }: { 
   label: string; 
   description?: string; 
   children: React.ReactNode;
   className?: string;
   error?: string;
+  required?: boolean;
 }) {
   return (
     <div className={cn("space-y-2 group/field", className)}>
       <Label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground group-focus-within/field:text-indigo-600 transition-colors ml-1">
         {label}
+        {required && <span className="text-destructive ml-0.5">*</span>}
       </Label>
       <div className="relative">
         {children}

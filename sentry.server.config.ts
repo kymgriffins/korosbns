@@ -31,8 +31,9 @@ if (SENTRY_DSN) {
           // Redact passwords, tokens, and secrets
           const sensitiveKeys = ['password', 'token', 'secret', 'key', 'refresh', 'access'];
           sensitiveKeys.forEach((key) => {
-            if (request.data && typeof request.data === 'object' && key in request.data) {
-              request.data[key] = '[Filtered]';
+            const data = request.data as Record<string, any>;
+            if (data && typeof data === 'object' && key in data) {
+              data[key] = '[Filtered]';
             }
           });
         }

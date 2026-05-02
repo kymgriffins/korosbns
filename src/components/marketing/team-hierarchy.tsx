@@ -12,14 +12,17 @@ import {
     ArrowUpRight,
     ChevronLeft,
     ChevronRight,
-    Facebook,
-    Github,
     Globe,
-    Instagram,
-    Linkedin,
     Mail,
-    Youtube,
 } from "lucide-react";
+import { 
+    IconBrandFacebook, 
+    IconBrandGithub, 
+    IconBrandInstagram, 
+    IconBrandLinkedin, 
+    IconBrandYoutube,
+    IconBrandX
+} from "@tabler/icons-react";
 import { useRef, useState } from "react";
 
 const leadershipRoles = new Set([
@@ -37,12 +40,12 @@ const XLogo = ({ className }: { className?: string }) => (
 );
 
 const socialIconMap = {
-    x: XLogo,
-    linkedin: Linkedin,
-    instagram: Instagram,
-    facebook: Facebook,
-    youtube: Youtube,
-    github: Github,
+    x: IconBrandX,
+    linkedin: IconBrandLinkedin,
+    instagram: IconBrandInstagram,
+    facebook: IconBrandFacebook,
+    youtube: IconBrandYoutube,
+    github: IconBrandGithub,
     website: Globe,
     email: Mail,
 } as const;

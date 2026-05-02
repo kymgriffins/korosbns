@@ -37,6 +37,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
+import { cn } from "@/utils";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -1218,7 +1219,7 @@ const Dashboard = ({ activeModel, setActiveModel, onModelsLoaded, onProfileLoade
                   );
                 const detailText = summaryFields
                   .map((field) => {
-                    const val = item[field.name];
+                    const val = (item as any)[field.name];
                     if (val == null || String(val).trim() === "") return null;
                     return `${field.name.replace(/_/g, " ")}: ${String(val)}`;
                   })
@@ -1232,8 +1233,8 @@ const Dashboard = ({ activeModel, setActiveModel, onModelsLoaded, onProfileLoade
                         <Badge variant="outline" className="border-border/40 capitalize bg-muted/30">
                           {activeMeta?.verbose_name ?? activeModel}
                         </Badge>
-                        {item.status && (
-                          <div className={cn("size-2 rounded-full", item.status === "active" ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" : "bg-amber-500")} />
+                        {(item as any).status && (
+                          <div className={cn("size-2 rounded-full", (item as any).status === "active" ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" : "bg-amber-500")} />
                         )}
                       </div>
                       <CardTitle className="text-lg leading-tight group-hover/card:text-indigo-600 transition-colors">{title}</CardTitle>
@@ -1243,7 +1244,7 @@ const Dashboard = ({ activeModel, setActiveModel, onModelsLoaded, onProfileLoade
                     </CardHeader>
                     <CardContent className="flex items-center justify-between pt-0 pb-6">
                       <div className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
-                        {item.updated_at ? `Updated ${new Date(String(item.updated_at)).toLocaleDateString()}` : "Draft"}
+                        {(item as any).updated_at ? `Updated ${new Date(String((item as any).updated_at)).toLocaleDateString()}` : "Draft"}
                       </div>
                       <div className="flex gap-1 opacity-0 group-hover/card:opacity-100 transition-opacity">
                         <Button

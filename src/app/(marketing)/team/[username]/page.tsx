@@ -8,7 +8,8 @@ import {
 } from "@/lib/team";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Linkedin, Twitter } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { IconBrandLinkedin, IconBrandX } from "@tabler/icons-react";
 import { notFound } from "next/navigation";
 
 type TeamMemberParams = { username: string };
@@ -84,7 +85,7 @@ const TeamMemberProfile = ({ member }: { member: typeof team[0] }) => {
                 rel="noopener noreferrer"
                 className="size-10 flex items-center justify-center rounded-full bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
               >
-                <Linkedin className="size-5" />
+                <IconBrandLinkedin className="size-5" />
               </Link>
             )}
             {member.socials?.x && (
@@ -94,7 +95,7 @@ const TeamMemberProfile = ({ member }: { member: typeof team[0] }) => {
                 rel="noopener noreferrer"
                 className="size-10 flex items-center justify-center rounded-full bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
               >
-                <Twitter className="size-5" />
+                <IconBrandX className="size-5" />
               </Link>
             )}
           </div>
