@@ -1,5 +1,0 @@
-{
-  "buildCommand": "pnpm build",
-  "installCommand": "pnpm install --frozen-lockfile",
-  "packageManager": "pnpm@8.15.0"
-}
