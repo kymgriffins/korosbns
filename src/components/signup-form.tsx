@@ -96,28 +96,6 @@ export function SignupForm({
                   />
                 </Field>
               </div>
-              <Field>
-                <FieldLabel htmlFor="org_name">Organization Name</FieldLabel>
-                <Input
-                  id="org_name"
-                  type="text"
-                  placeholder="My Organization"
-                  value={form?.org_name}
-                  onChange={(e) => setField?.("org_name", e.target.value)}
-                  required
-                />
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="org_slug">Organization Slug</FieldLabel>
-                <Input
-                  id="org_slug"
-                  type="text"
-                  placeholder="my-org"
-                  value={form?.org_slug}
-                  onChange={(e) => setField?.("org_slug", e.target.value)}
-                  required
-                />
-              </Field>
               {error && <p className="text-sm font-medium text-destructive text-center">{error}</p>}
               <Field>
                 <Button type="submit" className="w-full" disabled={loading}>

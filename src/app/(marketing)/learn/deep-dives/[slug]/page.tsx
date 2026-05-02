@@ -27,49 +27,65 @@ export default async function DeepDiveArticlePage({ params }: Props) {
   const article = await fetchDeepDiveArticle(slug);
 
   return (
-    <section className="relative min-h-screen w-full overflow-hidden bg-background pt-16 sm:pt-20">
-      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-        <div className="absolute -left-20 -top-20 size-72 rounded-full bg-primary/15 blur-[120px]" />
-        <div className="absolute -bottom-20 -right-20 size-72 rounded-full bg-violet-500/10 blur-[120px]" />
-      </div>
-
-      <div className="mx-auto w-full max-w-4xl px-4 pb-20 sm:px-6">
+    <section className="relative min-h-screen w-full overflow-hidden bg-background pt-12 sm:pt-16">
+      <div className="mx-auto w-full max-w-3xl px-4 pb-24 sm:px-6">
         <Link
-          href="/learn/deep-dives"
-          className="mb-6 inline-flex items-center gap-2 text-sm text-foreground/60 transition-colors hover:text-primary"
+          href="/learn"
+          className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-foreground/50 transition-colors hover:text-primary"
         >
           <ArrowLeft className="size-4" />
-          Back to Deep Dives
+          Back to Learn Hub
         </Link>
 
-        <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-7">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-primary">
-            {article.sourceLabel} Docs Guide
-          </div>
-          <h1 className="text-3xl font-bold sm:text-4xl">{article.title}</h1>
-          <p className="mt-3 text-sm text-foreground/70 sm:text-base">{article.summary}</p>
+        <article className="space-y-8">
+          <header className="space-y-4">
+            <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-primary">
+              {article.category || "Deep Dive"} · {article.sourceLabel}
+            </div>
+            <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+              {article.title}
+            </h1>
+            <p className="text-xl leading-relaxed text-foreground/60">
+              {article.summary}
+            </p>
+            {article.updatedAt && (
+               <div className="text-xs text-foreground/30 font-medium">
+                  Last updated {new Date(article.updatedAt).toLocaleDateString()}
+               </div>
+            )}
+          </header>
+
+          <hr className="border-white/5" />
 
           <div
-            className="prose prose-invert mt-7 max-w-none prose-p:text-foreground/80 prose-li:text-foreground/80 prose-headings:text-foreground"
+            className="notion-content"
             dangerouslySetInnerHTML={{ __html: article.html }}
           />
 
-          <div className="mt-8 flex flex-wrap gap-3">
-            <a
-              href="https://api.budgetndiostory.org/docrepository/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2.5 text-sm font-semibold hover:bg-white/5"
-            >
-              Open Docs Repository
-            </a>
-            <Link
-              href="/learn"
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-primary/90"
-            >
-              Return to Learn Hub <ArrowRight className="size-4" />
-            </Link>
-          </div>
+          <footer className="mt-16 pt-8 border-t border-white/5">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+              <div className="space-y-1">
+                <p className="text-sm font-semibold text-foreground">Next Step</p>
+                <p className="text-xs text-foreground/50">Keep exploring the budget cycle.</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/learn"
+                  className="inline-flex h-11 items-center gap-2 rounded-xl bg-white px-6 text-sm font-bold text-black transition-all hover:bg-white/90"
+                >
+                  Return to Hub <ArrowRight className="size-4" />
+                </Link>
+                <a
+                  href="https://api.budgetndiostory.org/docrepository/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex h-11 items-center gap-2 rounded-xl border border-white/10 px-6 text-sm font-bold text-foreground transition-all hover:bg-white/5"
+                >
+                  Raw Docs
+                </a>
+              </div>
+            </div>
+          </footer>
         </article>
       </div>
     </section>

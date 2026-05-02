@@ -539,3 +539,64 @@ h6 {
   --sidebar-border: hsl(220 13% 91%);
   --sidebar-ring: hsl(217.2 91.2% 59.8%);
 }
+
+/* Notion-inspired UI Styles */
+.notion-content {
+  @apply space-y-6 text-foreground/90 leading-relaxed;
+}
+
+.notion-content h3 {
+  @apply text-xl font-bold mt-10 mb-4 border-b border-white/5 pb-2 text-foreground;
+}
+
+.notion-content p {
+  @apply mb-4;
+}
+
+.notion-callout {
+  @apply my-8 flex gap-4 rounded-2xl border p-5 backdrop-blur-sm transition-all hover:shadow-lg;
+}
+
+.notion-table {
+  @apply my-8 w-full border-collapse overflow-hidden rounded-2xl border border-white/10 bg-white/5;
+}
+
+.notion-table th {
+  @apply bg-white/10 px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-foreground/70;
+}
+
+.notion-table td {
+  @apply border-t border-white/5 px-4 py-3 text-sm text-foreground/80;
+}
+
+.notion-table tr:hover {
+  @apply bg-white/[0.03];
+}
+
+.notion-cta {
+  @apply my-10 rounded-3xl bg-gradient-to-br from-primary/20 to-teal-500/20 border border-primary/30 p-8 shadow-xl;
+}
+
+.notion-cta h4 {
+  @apply text-lg font-bold mb-3 text-primary flex items-center gap-2;
+}
+
+.notion-cta p {
+  @apply text-sm text-foreground/70 mb-0 leading-relaxed;
+}
+
+.notion-cta a {
+  @apply text-primary underline underline-offset-4 hover:text-primary/80 transition-colors font-medium;
+}
+
+.notion-content ul {
+  @apply list-disc list-outside ml-6 space-y-2 mb-6;
+}
+
+.notion-content li {
+  @apply text-foreground/80;
+}
+
+.notion-content strong {
+  @apply font-bold text-foreground;
+}
