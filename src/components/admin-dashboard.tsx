@@ -528,10 +528,8 @@ const Dashboard = ({ activeModel, setActiveModel, onModelsLoaded, onProfileLoade
   }, [items, searchQuery]);
 
   const openCreateModal = () => {
-    if (!canCreate) return;
-    setCurrentItem(null);
-    setFormData({});
-    setEditModalOpen(true);
+    if (!canCreate || !activeModel) return;
+    router.push(`/admin/${activeModel}/create`);
   };
 
   const applyTemplate = (fieldName: string, before: string, after = "") => {
@@ -564,10 +562,9 @@ const Dashboard = ({ activeModel, setActiveModel, onModelsLoaded, onProfileLoade
   };
 
   const openEditModal = (item: Record<string, unknown>) => {
-    if (!canEdit) return;
-    setCurrentItem(item);
-    setFormData({ ...item });
-    setEditModalOpen(true);
+    if (!canEdit || !activeModel) return;
+    const pk = item.id || item.pk;
+    router.push(`/admin/${activeModel}/${pk}/edit`);
   };
 
   const openDeleteDialog = (item: Record<string, unknown>) => {
@@ -1229,45 +1226,45 @@ const Dashboard = ({ activeModel, setActiveModel, onModelsLoaded, onProfileLoade
                   .join(" • ");
 
                 return (
-                  <Card key={pk} className="border-border/30 shadow-none">
+                  <Card key={pk} className="border-border/30 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 rounded-[2rem] bg-white/50 backdrop-blur-sm group/card overflow-hidden">
                     <CardHeader className="space-y-2 pb-3">
-                      <CardTitle className="text-base leading-snug">{title}</CardTitle>
-                      <CardDescription className="line-clamp-2">
+                      <div className="flex items-center justify-between">
+                        <Badge variant="outline" className="border-border/40 capitalize bg-muted/30">
+                          {activeMeta?.verbose_name ?? activeModel}
+                        </Badge>
+                        {item.status && (
+                          <div className={cn("size-2 rounded-full", item.status === "active" ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" : "bg-amber-500")} />
+                        )}
+                      </div>
+                      <CardTitle className="text-lg leading-tight group-hover/card:text-indigo-600 transition-colors">{title}</CardTitle>
+                      <CardDescription className="line-clamp-2 text-xs">
                         {detailText || "Open this item to edit details."}
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="flex items-center justify-between pt-0">
-                      <Badge variant="outline" className="border-border/40 capitalize">
-                        {activeMeta?.verbose_name ?? activeModel}
-                      </Badge>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            aria-label={`Actions for ${pk}`}
-                            className="gap-1"
-                          >
-                            <MoreHorizontal className="size-4" />
-                            Actions
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => openEditModal(item)} disabled={!canEdit}>
-                            <Edit className="mr-2 size-4" />
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            className="text-destructive"
-                            onClick={() => openDeleteDialog(item)}
-                            disabled={!canDelete}
-                          >
-                            <Trash2 className="mr-2 size-4" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                    <CardContent className="flex items-center justify-between pt-0 pb-6">
+                      <div className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
+                        {item.updated_at ? `Updated ${new Date(String(item.updated_at)).toLocaleDateString()}` : "Draft"}
+                      </div>
+                      <div className="flex gap-1 opacity-0 group-hover/card:opacity-100 transition-opacity">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => openEditModal(item)}
+                          disabled={!canEdit}
+                          className="size-8 rounded-full hover:bg-indigo-50 hover:text-indigo-600"
+                        >
+                          <Edit className="size-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => openDeleteDialog(item)}
+                          disabled={!canDelete}
+                          className="size-8 rounded-full hover:bg-destructive/10 hover:text-destructive"
+                        >
+                          <Trash2 className="size-4" />
+                        </Button>
+                      </div>
                     </CardContent>
                   </Card>
                 );
