@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { API_BASE_URL } from "@/lib/api-config";
+import { extractApiErrorMessage } from "@/lib/api-errors";
 
 export async function POST(request: Request) {
   const endpoint = `${API_BASE_URL}/api/auth/register/`;
@@ -23,14 +24,9 @@ export async function POST(request: Request) {
       payload = {};
     }
     if (!response.ok) {
-      const resolvedMessage =
-        (payload?.detail as string | undefined) ??
-        (payload?.message as string | undefined) ??
-        (rawText?.trim() ? rawText : "Signup failed.");
-
       return NextResponse.json(
         {
-          message: resolvedMessage,
+          message: extractApiErrorMessage(payload, rawText?.trim() ? rawText : "Signup failed."),
           status: response.status,
           endpoint,
           payload,

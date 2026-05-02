@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { API_BASE_URL } from "@/lib/api-config";
+import { extractApiErrorMessage } from "@/lib/api-errors";
 
 export async function POST(request: Request) {
   const endpoint = `${API_BASE_URL}/api/auth/login/`;
@@ -19,7 +20,7 @@ export async function POST(request: Request) {
 
     if (!response.ok) {
       return NextResponse.json(
-        { message: payload?.detail ?? payload?.message ?? "Login failed." },
+        { message: extractApiErrorMessage(payload, "Login failed.") },
         { status: response.status }
       );
     }
