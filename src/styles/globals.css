@@ -255,6 +255,26 @@ h6 {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .bento-grid {
+    grid-template-columns: repeat(12, 1fr);
+  }
+}
+
+.bento-card {
+  @apply relative overflow-hidden rounded-[2.5rem] border border-foreground/10 bg-cardbox transition-all duration-500 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/5;
+}
+
+.bento-card-glass {
+  @apply backdrop-blur-xl bg-white/5 border-white/10;
+}
+
 /* ---break---
  */
 

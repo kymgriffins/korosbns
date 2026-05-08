@@ -18,4 +18,5 @@ export const Routes = {
     Learn: "/learn",
     LearnDoc: (doc: string) => `/learn/${doc}`,
     Challenges: "/challenges",
+    Gallery: "/gallery",
 } as const;

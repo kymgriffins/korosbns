@@ -10,6 +10,7 @@ import UpcomingProjects from "@/components/marketing/upcoming-projects";
 import TeamHierarchy from "@/components/marketing/team-hierarchy";
 import ConsortiumPartners from "@/components/marketing/consortium-partners";
 import WallOfLove from "@/components/marketing/wall-of-love";
+import Gallery from "@/components/marketing/gallery";
 import Cta from "@/components/marketing/cta";
 import SurveyPopup from "@/components/marketing/survey-popup";
 import NewsletterPopup from "@/components/marketing/newsletter-popup";
@@ -60,6 +61,7 @@ const HomePage = () => {
             <UpcomingProjects />
             <TeamHierarchy />
             <ConsortiumPartners />
+            <Gallery />
             {/* <WallOfLove /> */}
             <Cta />
             <SurveyPopup />

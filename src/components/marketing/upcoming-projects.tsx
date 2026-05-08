@@ -5,6 +5,7 @@ import SectionBadge from "@/components/ui/section-badge";
 import { motion } from "motion/react";
 import { ArrowRight, CalendarDays, Rocket, Users2 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 const projects = [
     {
@@ -35,76 +36,134 @@ const projects = [
 
 const UpcomingProjects = () => {
     return (
-        <section id="engagement" className="w-full py-16 lg:py-20">
+        <section id="engagement" className="w-full py-16 lg:py-24">
             <Wrapper>
-                <div className="mx-auto max-w-3xl text-center">
+                <div className="mx-auto max-w-3xl text-center mb-16">
                     <SectionBadge title="The Engagement" />
-                    <h2 className="title mt-6">From Online Outrage to Offline Action</h2>
-                    <p className="desc mt-4">
+                    <h2 className="text-3xl md:text-5xl font-bold font-heading tracking-tight mt-6">
+                        From Online Outrage to Offline Action
+                    </h2>
+                    <p className="text-base md:text-lg text-muted-foreground mt-4 leading-relaxed">
                         We are building permanent spaces for direct dialogue and peer-to-peer education across the country.
                     </p>
                 </div>
 
-                <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-3">
-                    {projects.map((project, index) => (
-                        <motion.article
-                            key={project.title}
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.45, delay: index * 0.08 }}
-                            className="rounded-2xl border border-foreground/10 bg-cardbox p-6"
-                        >
-                            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-foreground/10 px-3 py-1 text-xs text-muted-foreground">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-5 lg:gap-6">
+                    {/* Town Halls - Large Feature Card */}
+                    <motion.article
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5 }}
+                        className="md:col-span-8 group relative overflow-hidden rounded-[2.5rem] border border-foreground/10 bg-cardbox p-8 lg:p-10"
+                    >
+                        <div className="relative z-10 md:max-w-[60%]">
+                            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-foreground/10 px-4 py-1.5 text-xs font-semibold text-primary backdrop-blur-sm">
                                 <CalendarDays className="size-3.5" />
-                                {project.timeline}
+                                47 Counties Active
                             </div>
-                            <h3 className="text-lg font-semibold">{project.title}</h3>
-                            <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{project.summary}</p>
-                            <div className="mt-5 space-y-2">
-                                {project.tags.map((tag) => (
-                                    <div key={tag} className="flex items-center gap-2 text-xs text-foreground/80">
-                                        <Rocket className="size-3.5 text-primary" />
-                                        <span>{tag}</span>
-                                    </div>
+                            <h3 className="text-2xl lg:text-4xl font-bold tracking-tight mb-4">Town Halls</h3>
+                            <p className="text-muted-foreground text-base lg:text-lg leading-relaxed mb-6">
+                                Physical forums in every county where youth interrogate local budget estimates with MPs and MCAs. We bring the policy to the people.
+                            </p>
+                            <div className="flex flex-wrap gap-2 mb-8">
+                                {["Direct dialogue", "Duty bearers", "Budget estimates"].map((tag) => (
+                                    <span key={tag} className="px-3 py-1 rounded-lg bg-foreground/5 text-xs font-medium border border-foreground/5">
+                                        {tag}
+                                    </span>
                                 ))}
                             </div>
                             <Link
-                                href={project.href}
-                                className="mt-6 inline-flex items-center gap-1.5 text-xs font-semibold text-primary transition-colors hover:text-primary/80"
+                                href="/learn"
+                                className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl font-bold transition-all hover:bg-primary/90 hover:gap-3"
                             >
-                                {project.cta}
-                                <ArrowRight className="size-3.5" />
+                                Open civic brief
+                                <ArrowRight className="size-4" />
                             </Link>
-                        </motion.article>
-                    ))}
+                        </div>
+
+                        {/* Background Image/Graphic for the large card */}
+                        <div className="absolute right-0 bottom-0 top-0 w-full md:w-1/2 -z-0 pointer-events-none opacity-20 md:opacity-40 group-hover:opacity-60 transition-opacity duration-500">
+                             <Image 
+                                src="/images/town-hall-1.png" 
+                                alt="Town Hall" 
+                                fill 
+                                className="object-cover object-left md:object-center grayscale group-hover:grayscale-0 transition-all duration-700" 
+                            />
+                            <div className="absolute inset-0 bg-linear-to-l from-cardbox via-cardbox/20 to-transparent" />
+                        </div>
+                    </motion.article>
+
+                    {/* Campus Hubs - Medium Card */}
+                    <motion.article
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: 0.1 }}
+                        className="md:col-span-4 group relative overflow-hidden rounded-[2.5rem] border border-foreground/10 bg-cardbox p-8 flex flex-col justify-between"
+                    >
+                        <div className="relative z-10">
+                            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-foreground/10 px-4 py-1.5 text-xs font-semibold text-muted-foreground">
+                                <Users2 className="size-3.5" />
+                                20 Universities
+                            </div>
+                            <h3 className="text-2xl font-bold mb-3">Campus Hubs</h3>
+                            <p className="text-muted-foreground text-sm leading-relaxed mb-6">
+                                Permanent student chapters dedicated to fiscal analysis, debate, and peer education.
+                            </p>
+                        </div>
+                        
+                        <Link
+                            href="/learn?story=civic-compass-v2"
+                            className="mt-auto inline-flex items-center gap-1.5 text-sm font-bold text-primary hover:gap-2 transition-all"
+                        >
+                            Start leadership story
+                            <ArrowRight className="size-4" />
+                        </Link>
+
+                        <div className="absolute -right-12 -bottom-12 w-48 h-48 bg-primary/10 blur-3xl rounded-full group-hover:bg-primary/20 transition-colors" />
+                    </motion.article>
+
+                    {/* Verification Hub - Small Wide Card */}
+                    <motion.article
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                        className="md:col-span-12 group relative overflow-hidden rounded-[2.5rem] border border-foreground/10 bg-cardbox p-8 lg:p-10 flex flex-col md:flex-row md:items-center justify-between gap-6"
+                    >
+                        <div className="md:max-w-2xl">
+                            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-foreground/10 px-4 py-1.5 text-xs font-semibold text-teal-500">
+                                <Rocket className="size-3.5" />
+                                National Scale Launch
+                            </div>
+                            <h3 className="text-2xl font-bold mb-2">Budget Verification Hub</h3>
+                            <p className="text-muted-foreground text-sm lg:text-base leading-relaxed">
+                                A shared desk connecting youth, journalists, and experts to verify fiscal claims with evidence. Fact-checking the national budget in real-time.
+                            </p>
+                        </div>
+                        <Link
+                            href="/challenges"
+                            className="inline-flex items-center justify-center px-8 py-4 border-2 border-foreground/10 rounded-2xl font-bold transition-all hover:bg-foreground/5 hover:border-primary/30"
+                        >
+                            Join challenge loop
+                        </Link>
+                    </motion.article>
                 </div>
-                <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+
+                <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
                     <Link
                         href="/learn"
-                        className="inline-flex items-center gap-1.5 rounded-full border border-foreground/10 bg-background px-3 py-1.5 text-xs font-medium text-foreground/80 transition-colors hover:border-primary/30 hover:text-primary"
+                        className="px-5 py-2.5 rounded-full border border-foreground/10 bg-background text-sm font-bold text-foreground/80 transition-all hover:bg-foreground/5 hover:scale-105 active:scale-95"
                     >
                         Start Learning
-                        <ArrowRight className="size-3.5" />
                     </Link>
                     <Link
                         href="/learn?story=budget-trivia"
-                        className="inline-flex items-center gap-1.5 rounded-full border border-foreground/10 bg-background px-3 py-1.5 text-xs font-medium text-foreground/80 transition-colors hover:border-primary/30 hover:text-primary"
+                        className="px-5 py-2.5 rounded-full border border-foreground/10 bg-background text-sm font-bold text-foreground/80 transition-all hover:bg-foreground/5 hover:scale-105 active:scale-95"
                     >
                         Play Trivia
-                        <ArrowRight className="size-3.5" />
                     </Link>
-                    <Link
-                        href="/challenges"
-                        className="inline-flex items-center gap-1.5 rounded-full border border-foreground/10 bg-background px-3 py-1.5 text-xs font-medium text-foreground/80 transition-colors hover:border-primary/30 hover:text-primary"
-                    >
-                        Join Challenges
-                        <ArrowRight className="size-3.5" />
-                    </Link>
-                </div>
-                <div className="mt-6 flex items-center justify-center gap-2 text-xs text-muted-foreground">
-                    <Users2 className="size-4" />
-                    <span>Built with youth leaders, creators, and civic partners</span>
                 </div>
             </Wrapper>
         </section>

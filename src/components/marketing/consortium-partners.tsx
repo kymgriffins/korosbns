@@ -5,6 +5,7 @@ import SectionBadge from "@/components/ui/section-badge";
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
+import { Play, Users, Target, CheckCircle, ArrowUpRight } from "lucide-react";
 
 const partners = [
     {
@@ -12,118 +13,168 @@ const partners = [
         href: "https://senmedia-events.co.ke/",
         image: "/images/senmedia.png",
         role: "Events production and audience engagement",
+        description: "Specializing in high-impact media events and civic storytelling that bridges the gap between policy and the public.",
     },
     {
         name: "The Continental Pot",
         href: "https://continentalpot.africa/",
         image: "/images/The-Continental-Pot-Vertical-removebg-preview.png",
         role: "Pan-African civic storytelling and media",
+        description: "A leading platform for Pan-African narratives, focusing on governance, equity, and sustainable development across the continent.",
     },
     {
         name: "Colour Twist Media",
         href: "https://colortwistmedia.com/",
         image: "/images/colortwist.png",
         role: "Creative production and digital campaigns",
+        description: "Experts in digital creativity, producing compelling visual content that mobilizes youth and simplifies complex fiscal data.",
     },
 ];
 
 const activities = [
-    "Simplifying budgets into TikTok videos, Reels, explainers, and podcasts.",
-    "Building youth chapters and training budget organizers in communities and campuses.",
-    "Supporting community monitoring snapshots for public accountability.",
-    "Strengthening discourse through journalist training and an evidence verification hub.",
+    {
+        title: "Simplified Storytelling",
+        description: "Translating technical budgets into relatable TikToks, Reels, and Podcasts for mass consumption.",
+        icon: Play,
+        color: "text-blue-500",
+        bg: "bg-blue-500/10",
+    },
+    {
+        title: "Grassroots Organizing",
+        description: "Establishing university and community chapters to build a nationwide network of budget trackers.",
+        icon: Users,
+        color: "text-purple-500",
+        bg: "bg-purple-500/10",
+    },
+    {
+        title: "Impact Monitoring",
+        description: "Generating real-time snapshots that compare fiscal promises with actual community delivery.",
+        icon: Target,
+        color: "text-emerald-500",
+        bg: "bg-emerald-500/10",
+    },
+    {
+        title: "Verification Hub",
+        description: "A shared evidence desk for journalists and youth to fact-check budget claims with data.",
+        icon: CheckCircle,
+        color: "text-amber-500",
+        bg: "bg-amber-500/10",
+    },
 ];
 
 const ConsortiumPartners = () => {
     return (
-        <section id="consortium" className="w-full py-16 lg:py-20">
+        <section id="consortium" className="w-full py-20 lg:py-32 relative overflow-hidden">
+            {/* Background Decorations */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full -z-10 pointer-events-none">
+                <div className="absolute top-1/4 left-1/4 size-96 bg-primary/5 rounded-full blur-[10rem]" />
+                <div className="absolute bottom-1/4 right-1/4 size-96 bg-blue-500/5 rounded-full blur-[10rem]" />
+            </div>
+
             <Wrapper>
-                <div className="mx-auto max-w-3xl text-center">
-                    <SectionBadge title="Consortium of Partners" />
-                    <h2 className="title mt-6">A Kenya-wide youth-led consortium</h2>
-                    <p className="desc mt-4">
-                        Budget Ndio Story translates public budgets into accessible, actionable information to promote civic engagement and accountability across Kenya.
-                    </p>
+                <div className="mx-auto max-w-4xl text-center mb-16">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                    >
+                        <SectionBadge title="Consortium of Partners" />
+                        <h2 className="text-4xl md:text-6xl font-bold tracking-tight mt-6 bg-linear-to-b from-foreground to-foreground/70 bg-clip-text text-transparent">
+                            A Kenya-wide <span className="text-primary">youth-led</span> consortium
+                        </h2>
+                        <p className="mt-6 text-lg md:text-xl text-muted-foreground leading-relaxed max-w-3xl mx-auto">
+                            BNS is a collaborative force of media, policy, and creative experts turning public finance into a national conversation.
+                        </p>
+                    </motion.div>
                 </div>
 
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="mt-10 rounded-3xl border border-foreground/10 bg-cardbox p-6 md:p-8"
-                >
-                    <h3 className="text-xl font-semibold">Overview</h3>
-                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                        BNS helps young people understand how budgets shape jobs, healthcare, education, housing, and cost of living, then equips them to participate in fiscal processes with evidence-based insights.
-                    </p>
-                    <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
-                        {partners.map((partner) => (
-                            <Link
-                                key={partner.name}
-                                href={partner.href}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="group overflow-hidden rounded-2xl border border-foreground/10 bg-background/70 transition-all hover:-translate-y-1 hover:border-primary/40"
-                            >
-                                <div className="relative h-36 w-full bg-white/70 p-3 dark:bg-muted/30">
-                                    <Image
-                                        src={partner.image}
-                                        alt={`${partner.name} logo`}
-                                        fill
-                                        sizes="(max-width: 768px) 100vw, 33vw"
-                                        className="object-contain transition-transform duration-300 group-hover:scale-105"
-                                    />
-                                </div>
-                                <div className="p-4">
-                                    <p className="text-sm font-semibold transition-colors group-hover:text-primary">
-                                        {partner.name}
-                                    </p>
-                                    <p className="mt-1 text-xs text-muted-foreground">{partner.role}</p>
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
-                </motion.div>
-
-                <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-2">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+                    {/* Main Overview Card */}
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
-                        transition={{ delay: 0.08 }}
-                        className="rounded-3xl border border-foreground/10 bg-background/60 p-6"
+                        className="md:col-span-12 lg:col-span-8 rounded-[2.5rem] border border-foreground/10 bg-cardbox/50 backdrop-blur-sm p-8 md:p-12 relative overflow-hidden group"
                     >
-                        <h3 className="text-lg font-semibold">Key Activities</h3>
-                        <div className="mt-4 space-y-3">
-                            {activities.map((activity, idx) => (
-                                <div key={activity} className="flex gap-3">
-                                    <span className="mt-0.5 inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/15 text-[11px] font-semibold text-primary">
-                                        {idx + 1}
-                                    </span>
-                                    <p className="text-sm text-muted-foreground leading-relaxed">{activity}</p>
-                                </div>
-                            ))}
+                        <div className="relative z-10">
+                            <h3 className="text-2xl font-bold mb-4">The BNS Mission</h3>
+                            <p className="text-muted-foreground text-lg leading-relaxed mb-8 max-w-2xl">
+                                We help young people understand how budgets shape jobs, healthcare, education, and the cost of living. By combining fiscal analysis with creator-led storytelling, we increase literacy and demand accountability.
+                            </p>
+                            
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                                {partners.map((partner, idx) => (
+                                    <Link 
+                                        key={partner.name}
+                                        href={partner.href}
+                                        target="_blank"
+                                        className="group/partner flex flex-col items-center sm:items-start"
+                                    >
+                                        <div className="relative h-16 w-32 grayscale opacity-50 group-hover/partner:grayscale-0 group-hover/partner:opacity-100 transition-all duration-300">
+                                            <Image
+                                                src={partner.image}
+                                                alt={partner.name}
+                                                fill
+                                                className="object-contain"
+                                            />
+                                        </div>
+                                        <span className="mt-3 text-xs font-bold uppercase tracking-widest text-muted-foreground group-hover/partner:text-primary transition-colors">
+                                            {partner.name}
+                                        </span>
+                                    </Link>
+                                ))}
+                            </div>
                         </div>
+
+                        {/* Decorative Gradient */}
+                        <div className="absolute top-0 right-0 w-1/2 h-full bg-linear-to-l from-primary/5 to-transparent -z-0 pointer-events-none" />
                     </motion.div>
 
+                    {/* Impact Card */}
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
-                        transition={{ delay: 0.12 }}
-                        className="rounded-3xl border border-foreground/10 bg-background/60 p-6"
+                        transition={{ delay: 0.1 }}
+                        className="md:col-span-12 lg:col-span-4 rounded-[2.5rem] border border-foreground/10 bg-primary p-8 md:p-10 text-primary-foreground flex flex-col justify-between"
                     >
-                        <h3 className="text-lg font-semibold">Platforms and Impact</h3>
-                        <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-                            BNS publishes on YouTube, TikTok, and LinkedIn, while running trainings, tools, and dialogues that deepen youth understanding of fiscal governance.
-                        </p>
-                        <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-                            By combining fiscal analysis with creator-led storytelling, BNS increases budget literacy, civic participation, and accountability for better use of public resources.
-                        </p>
-                        <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-                            Initiatives like Project TERRA extend this work into digital economy governance, equity, and power in taxation and public spending.
-                        </p>
+                        <div>
+                            <div className="size-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-6">
+                                <ArrowUpRight className="size-6" />
+                            </div>
+                            <h3 className="text-2xl font-bold mb-4 leading-tight">National Scale Participation</h3>
+                            <p className="text-primary-foreground/80 leading-relaxed">
+                                Our consortium reach extends into digital economy governance and equity, scaling through Project TERRA to reach 20k+ youth.
+                            </p>
+                        </div>
+                        <Link 
+                            href="/about" 
+                            className="mt-8 inline-flex items-center gap-2 font-bold hover:gap-3 transition-all"
+                        >
+                            Explore Impact Story
+                            <ArrowUpRight className="size-5" />
+                        </Link>
                     </motion.div>
+
+                    {/* Activity Cards */}
+                    {activities.map((activity, idx) => (
+                        <motion.div
+                            key={activity.title}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.1 + (idx * 0.05) }}
+                            className="md:col-span-6 lg:col-span-3 rounded-[2rem] border border-foreground/10 bg-cardbox/40 p-8 hover:bg-cardbox/60 transition-colors"
+                        >
+                            <div className={`size-12 rounded-xl ${activity.bg} ${activity.color} flex items-center justify-center mb-6`}>
+                                <activity.icon className="size-6" />
+                            </div>
+                            <h4 className="text-lg font-bold mb-3">{activity.title}</h4>
+                            <p className="text-sm text-muted-foreground leading-relaxed">
+                                {activity.description}
+                            </p>
+                        </motion.div>
+                    ))}
                 </div>
             </Wrapper>
         </section>
