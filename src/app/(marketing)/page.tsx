@@ -61,7 +61,7 @@ const HomePage = () => {
             <UpcomingProjects />
             <TeamHierarchy />
             <ConsortiumPartners />
-            <Gallery />
+            {/* <Gallery /> */}
             {/* <WallOfLove /> */}
             <Cta />
             <SurveyPopup />

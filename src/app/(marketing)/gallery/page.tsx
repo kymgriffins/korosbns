@@ -4,7 +4,7 @@ import Wrapper from "@/components/global/wrapper";
 
 export const metadata: Metadata = {
     title: "Gallery | Budget Ndio Story",
-    description: "Visualizing the impact of Budget Ndio Story through moments of civic engagement and transparency across Kenya.",
+    description: "Real-world impact: Visualizing the journey of Budget Ndio Story through authentic moments of civic engagement and transparency across Kenya.",
 };
 
 export default function GalleryPage() {

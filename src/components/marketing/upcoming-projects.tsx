@@ -85,11 +85,11 @@ const UpcomingProjects = () => {
                         {/* Background Image/Graphic for the large card */}
                         <div className="absolute right-0 bottom-0 top-0 w-full md:w-1/2 -z-0 pointer-events-none opacity-20 md:opacity-40 group-hover:opacity-60 transition-opacity duration-500">
                              <Image 
-                                src="/images/town-hall-1.png" 
-                                alt="Town Hall" 
-                                fill 
-                                className="object-cover object-left md:object-center grayscale group-hover:grayscale-0 transition-all duration-700" 
-                            />
+                                 src="/images/towwnhallmay/129A3863.jpg" 
+                                 alt="Town Hall" 
+                                 fill 
+                                 className="object-cover object-left md:object-center grayscale group-hover:grayscale-0 transition-all duration-700" 
+                             />
                             <div className="absolute inset-0 bg-linear-to-l from-cardbox via-cardbox/20 to-transparent" />
                         </div>
                     </motion.article>

@@ -14,10 +14,6 @@ export const NAV_LINKS = [
     href: Routes.Challenges,
   },
   {
-    label: "Gallery",
-    href: Routes.Gallery,
-  },
-  {
     label: "Contact",
     href: Routes.Contact,
   },
@@ -26,7 +22,6 @@ export const NAV_LINKS = [
 export const footerLinks = {
   product: [
     { label: "Stories", href: Routes.Learn },
-    { label: "Gallery", href: Routes.Gallery },
     { label: "Explainers", href: Routes.Capabilities },
     { label: "Impact", href: "/impact" },
     { label: "Challenges", href: Routes.Challenges },
