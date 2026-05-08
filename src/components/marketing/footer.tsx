@@ -117,7 +117,7 @@ const Footer = () => {
                 alt={organizationTitle}
                 width={160}
                 height={32}
-                className="h-6 lg:h-7 w-auto transition-all group-hover:brightness-110"
+                className="h-6 lg:h-7 w-auto transition-all group-hover:brightness-110 dark:invert-0 invert"
               />
             </Link>
             <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">{footerBlurb}</p>

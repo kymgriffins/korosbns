@@ -51,18 +51,15 @@ const HomePage = () => {
     return (
         <div className="w-full min-h-dvh pt-6 lg:pt-8">
             <Background />
-            <StoriesPromoMarquee />
             <Hero />
+            <StoriesPromoMarquee />
+            <UpcomingProjects />
             <Disconnect />
             <Workflow />
             <Capibilities />
             <ROI />
-            {/* <Integrations /> */}
-            <UpcomingProjects />
             <TeamHierarchy />
             <ConsortiumPartners />
-            {/* <Gallery /> */}
-            {/* <WallOfLove /> */}
             <Cta />
             <SurveyPopup />
             <NewsletterPopup />

@@ -89,7 +89,7 @@ export default function NewsletterPopup() {
 
   return (
     <div className="fixed bottom-4 right-2 left-2 sm:right-4 sm:left-auto z-[200] w-auto sm:w-[92vw] sm:max-w-md">
-      <div className="relative w-full rounded-2xl border border-white/15 bg-[#0F172A] p-5 text-white shadow-2xl animate-in fade-in slide-in-from-bottom duration-300">
+      <div className="relative w-full rounded-2xl border border-border bg-background p-5 text-foreground shadow-2xl animate-in fade-in slide-in-from-bottom duration-300">
         <button
           onClick={dismiss}
           className="absolute right-3 top-3 rounded-full p-2 text-white/80 transition hover:bg-black/35 hover:text-white"
@@ -97,9 +97,9 @@ export default function NewsletterPopup() {
         >
           <X size={18} />
         </button>
-        <p className="mb-2 text-xs font-semibold tracking-wide text-cyan-300">NEWSLETTER</p>
+        <p className="mb-2 text-xs font-semibold tracking-wide text-primary">NEWSLETTER</p>
         <h3 className="mb-2 text-xl font-semibold">Get budget updates in your inbox</h3>
-        <p className="mb-4 text-sm text-slate-300">
+        <p className="mb-4 text-sm text-muted-foreground">
           Subscribe for explainers, stories, and policy highlights from Budget Ndio Story.
         </p>
 
@@ -115,19 +115,19 @@ export default function NewsletterPopup() {
               onChange={(event) => setEmail(event.target.value)}
               placeholder="you@example.com"
               required
-              className="h-11 min-w-0 flex-1 rounded-xl border border-white/20 bg-white/10 px-3 text-sm outline-none placeholder:text-slate-400 focus:border-cyan-300"
+              className="h-11 min-w-0 flex-1 rounded-xl border border-border bg-foreground/5 px-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary"
             />
             <button
               type="button"
               onClick={dismiss}
-              className="h-11 rounded-xl border border-white/20 bg-white/5 px-4 text-sm font-medium text-white transition hover:bg-white/10 w-full sm:w-auto"
+              className="h-11 rounded-xl border border-border bg-foreground/5 px-4 text-sm font-medium text-foreground transition hover:bg-foreground/10 w-full sm:w-auto"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="h-11 rounded-xl bg-cyan-500 px-4 text-sm font-semibold text-slate-900 transition hover:bg-cyan-400 disabled:cursor-not-allowed disabled:opacity-70 w-full sm:w-auto"
+              className="h-11 rounded-xl bg-primary px-4 text-sm font-semibold text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-70 w-full sm:w-auto"
             >
               {loading ? "..." : "Join"}
             </button>

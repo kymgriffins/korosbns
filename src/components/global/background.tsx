@@ -15,7 +15,7 @@ const Background = () => {
             <div
                 className="absolute inset-0 w-screen h-screen -z-10"
                 style={{
-                    backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.1) 1.35px, transparent 1.35px)',
+                    backgroundImage: 'radial-gradient(circle, var(--dot-color) 1.35px, transparent 1.35px)',
                     backgroundSize: '24px 24px',
                     maskImage: 'radial-gradient(ellipse 80% 50% at 50% 0%, black 40%, transparent 100%)',
                     WebkitMaskImage: 'radial-gradient(ellipse 80% 50% at 50% 0%, black 40%, transparent 100%)'

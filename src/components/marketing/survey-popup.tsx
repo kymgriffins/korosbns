@@ -43,7 +43,7 @@ export default function SurveyPopup() {
             >
                 <X size={20} />
             </button>
-            <div className="relative w-full max-w-md bg-[#0F172A] rounded-2xl overflow-hidden shadow-2xl border border-white/10 animate-in fade-in zoom-in-95 duration-300">
+            <div className="relative w-full max-w-md bg-background rounded-2xl overflow-hidden shadow-2xl border border-border animate-in fade-in zoom-in-95 duration-300">
                 <div className="relative w-full aspect-[2/3] max-h-[85vh] flex flex-col items-center justify-center text-white overflow-hidden bg-black">
                     <a
                         href="https://budgetndiostory.surveycto.com/collect/bns_nyouth_budget_v1?caseid="
@@ -64,13 +64,13 @@ export default function SurveyPopup() {
                         />
                     </a>
                 </div>
-                <div className="flex items-center justify-end gap-2 p-3 bg-[#0B1222] border-t border-white/10">
+                <div className="flex items-center justify-end gap-2 p-3 bg-foreground/5 border-t border-border">
                     <button
                         onClick={() => {
                             markSurveyHandled();
                             setIsOpen(false);
                         }}
-                        className="h-10 rounded-lg px-4 text-sm font-medium text-white/85 bg-white/10 hover:bg-white/15 transition-colors"
+                        className="h-10 rounded-lg px-4 text-sm font-medium text-foreground/80 bg-foreground/5 hover:bg-foreground/10 transition-colors"
                     >
                         Cancel
                     </button>
@@ -82,7 +82,7 @@ export default function SurveyPopup() {
                             markSurveyHandled();
                             setIsOpen(false);
                         }}
-                        className="h-10 rounded-lg px-4 text-sm font-semibold text-slate-900 bg-cyan-400 hover:bg-cyan-300 transition-colors inline-flex items-center"
+                        className="h-10 rounded-lg px-4 text-sm font-semibold text-white bg-primary hover:bg-primary/90 transition-colors inline-flex items-center"
                     >
                         Take survey
                     </a>

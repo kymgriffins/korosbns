@@ -13,6 +13,7 @@ import { NAV_LINKS, Routes } from "@/constants";
 import { motion } from "motion/react";
 import { useIsMobile } from "@/hooks";
 import Image from "next/image";
+import { ThemeToggle } from "./theme-toggle";
 
 const Navbar = () => {
 
@@ -32,14 +33,14 @@ const Navbar = () => {
 
     return (
         <div className="relative w-full h-full">
-            <div className="z-100 hidden lg:block fixed pointer-events-none inset-x-0 h-[88px] bg-[rgba(10,10,10,0.8)] backdrop-blur-sm [mask:linear-gradient(to_bottom,#000_20%,transparent_calc(100%-20%))]"></div>
+            <div className="z-100 hidden lg:block fixed pointer-events-none inset-x-0 h-[88px] bg-background/80 backdrop-blur-sm [mask:linear-gradient(to_bottom,#000_20%,transparent_calc(100%-20%))]"></div>
             <header
                 className={cn(
                     "fixed top-4 inset-x-0 mx-auto max-w-6xl px-2 md:px-12 z-100 transition-all duration-300 ease-in-out",
                     isOpen ? "h-[calc(100dvh-2rem)]" : "h-14 md:h-16"
                 )}
             >
-                <div className="backdrop-blur-xl rounded-xl lg:rounded-full border border-[rgba(255,255,255,0.1)] h-full flex flex-col overflow-hidden relative">
+                <div className="backdrop-blur-xl rounded-xl lg:rounded-full border border-border h-full flex flex-col overflow-hidden relative bg-background/50">
                     <div className="flex items-center justify-between w-full px-4 min-h-14 md:min-h-16 shrink-0 pb-1">
                         <div className="flex items-center flex-1 lg:flex-none">
                             <Link href={Routes.Home} className="flex items-center gap-2 group">
@@ -48,7 +49,7 @@ const Navbar = () => {
                                     alt="Budget Ndio Story" 
                                     width={140} 
                                     height={28} 
-                                    className="w-auto h-5 lg:h-6 transition-all group-hover:brightness-110" 
+                                    className="w-auto h-5 lg:h-6 transition-all group-hover:brightness-110 dark:invert-0 invert" 
                                 />
                             </Link>
                         </div>
@@ -127,6 +128,7 @@ const Navbar = () => {
                         </div>
 
                         <div className="flex items-center gap-2 lg:gap-3">
+                            <ThemeToggle />
                             <Link href={Routes.JoinUs}>
                                 <Button variant="white" className="hidden lg:flex">
                                     Join us
