@@ -49,7 +49,7 @@ const Navbar = () => {
                                     alt="Budget Ndio Story" 
                                     width={140} 
                                     height={28} 
-                                    className="w-auto h-5 lg:h-6 transition-all group-hover:brightness-110 dark:invert-0 invert" 
+                                    className="w-auto h-5 lg:h-6 transition-all group-hover:brightness-110" 
                                 />
                             </Link>
                         </div>
