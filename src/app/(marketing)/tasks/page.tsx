@@ -24,7 +24,7 @@ type TasksResponse = {
 
 const statusLabel: Record<TaskStatus, string> = {
   todo: "To do",
-  in_progress: "In progress",
+  in_progress: "Progress",
   done: "Done",
   blocked: "Blocked",
 };
@@ -90,9 +90,7 @@ export default function TasksPage() {
             <p className="mt-4 text-muted-foreground">
               Track ownership, deadlines, and execution status from leadership decisions.
             </p>
-            <p className="mt-2 text-xs text-muted-foreground/80">
-              Data source: {data.source === "endpoint" ? "connected endpoint" : "seed fallback"}
-            </p>
+
           </div>
 
           <div className="grid grid-cols-2 gap-3 md:grid-cols-4 mb-8">
@@ -101,7 +99,7 @@ export default function TasksPage() {
               <p className="mt-1 text-2xl font-semibold">{statusCount.todo}</p>
             </div>
             <div className="rounded-xl border border-foreground/10 bg-foreground/5 p-4">
-              <p className="text-xs uppercase tracking-wider text-muted-foreground">In progress</p>
+              <p className="text-xs uppercase tracking-wider text-muted-foreground">Progress</p>
               <p className="mt-1 text-2xl font-semibold">{statusCount.in_progress}</p>
             </div>
             <div className="rounded-xl border border-foreground/10 bg-foreground/5 p-4">
