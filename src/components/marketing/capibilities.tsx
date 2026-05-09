@@ -5,7 +5,7 @@ import Wrapper from '@/components/global/wrapper';
 import SectionBadge from '@/components/ui/section-badge';
 import { motion } from 'motion/react';
 import Link from 'next/link';
-import { Users, Calendar, FileText, Zap, ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { AnimatedTooltip } from '@/components/ui/animated-tooltip';
 import { cn } from '@/utils';
 import { Button } from "../ui/button";
@@ -13,231 +13,141 @@ import Image from "next/image";
 
 const Capibilities = () => {
     return (
-        <section id="capabilities" className="w-full py-16 lg:py-24 relative">
-            <div className="hidden lg:block absolute -z-10 top-0 -left-1/4 size-1/3 bg-primary/10 rounded-full blur-[8rem]" />
-
+        <section id="capabilities" className="w-full py-24 lg:py-40 relative overflow-hidden">
             <Wrapper>
-                <div className="flex flex-col items-center text-center">
+                <div className="flex flex-col items-center text-center mb-20">
                     <SectionBadge title="Content Engine" />
-
                     <motion.h2
-                        className="title mt-6"
+                        className="text-5xl md:text-7xl font-bold tracking-tight mt-6"
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.3, delay: 0.2 }}
+                        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                     >
-                        High-quality production
+                        High-quality production.
                         <br />
-                        Meeting youth where they are
+                        <span className="text-muted-foreground">Meeting youth where they are.</span>
                     </motion.h2>
-
-                    <motion.p
-                        className="desc mt-4"
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.3, delay: 0.3 }}
-                    >
-                        Translating Numbers into Narratives
-                    </motion.p>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-12 max-w-5xl mx-auto">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 max-w-7xl mx-auto">
+                    {/* Large Featured Card */}
                     <motion.div
                         className={cn(
-                            "lg:col-span-7 relative group",
-                            "rounded-xl lg:rounded-2xl p-8 overflow-hidden",
-                            "bg-cardbox",
-                            "transition-all duration-500"
+                            "lg:col-span-8 relative group overflow-hidden rounded-[2.5rem] bg-white dark:bg-[#0A0A0A]",
+                            "shadow-[0_0_0_1px_rgba(0,0,0,0.03),0_20px_40px_-10px_rgba(0,0,0,0.05)]",
+                            "dark:shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_30px_60px_-15px_rgba(0,0,0,0.4)]",
+                            "p-10 lg:p-12 flex flex-col justify-between"
                         )}
-                        initial={{ opacity: 0, y: 10 }}
+                        initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.3, delay: 0.4 }}
+                        transition={{ duration: 0.8, delay: 0.1 }}
                     >
-
-                        <div className="relative">
-                            <div className="flex items-center gap-2 mb-2">
-                                <h3 className="text-xl font-semibold">
-                                    {capabilities[0].title}
-                                </h3>
-                            </div>
-                            <p className="text-muted-foreground text-sm">
+                        <div className="max-w-md relative z-10">
+                            <h3 className="text-3xl font-bold mb-4">{capabilities[0].title}</h3>
+                            <p className="text-muted-foreground text-lg leading-relaxed">
                                 {capabilities[0].description}
                             </p>
                         </div>
 
-                        <div className="mt-6 relative grow h-48 transition-colors duration-300 z-0">
+                        <div className="mt-12 relative h-[300px] w-full">
                             <Image
                                 src={capabilities[0].illustration}
-                                alt="Client"
-                                width={500}
-                                height={500}
-                                unoptimized
-                                className="w-full mx-auto h-full object-contain object-center z-10"
+                                alt={capabilities[0].title}
+                                fill
+                                className="object-contain object-bottom transition-transform duration-700 group-hover:scale-105"
                             />
                         </div>
                     </motion.div>
 
+                    {/* Side Card */}
                     <motion.div
                         className={cn(
-                            "lg:col-span-5 relative group",
-                            "rounded-xl lg:rounded-2xl p-8 overflow-hidden",
-                            "bg-cardbox",
-                            "transition-all duration-500"
+                            "lg:col-span-4 relative group overflow-hidden rounded-[2.5rem] bg-white dark:bg-[#0A0A0A]",
+                            "shadow-[0_0_0_1px_rgba(0,0,0,0.03),0_20px_40px_-10px_rgba(0,0,0,0.05)]",
+                            "dark:shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_30px_60px_-15px_rgba(0,0,0,0.4)]",
+                            "p-10 flex flex-col justify-between"
                         )}
-                        initial={{ opacity: 0, y: 10 }}
+                        initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.3, delay: 0.5 }}
+                        transition={{ duration: 0.8, delay: 0.2 }}
                     >
-
-                        <div className="relative">
-                            <div className="flex items-center gap-2 mb-2">
-                                <h3 className="text-xl font-semibold">
-                                    {capabilities[1].title}
-                                </h3>
-                            </div>
-                            <p className="text-muted-foreground text-sm">
+                        <div>
+                            <h3 className="text-2xl font-bold mb-4">{capabilities[1].title}</h3>
+                            <p className="text-muted-foreground leading-relaxed">
                                 {capabilities[1].description}
                             </p>
                         </div>
 
-                        <div className="mt-6 relative grow h-48 transition-colors duration-300 z-0">
+                        <div className="mt-8 relative h-[200px] w-full">
                             <Image
                                 src={capabilities[1].illustration}
-                                alt="Project"
-                                width={500}
-                                height={500}
-                                unoptimized
-                                className="w-full mx-auto h-full object-contain object-center z-10"
+                                alt={capabilities[1].title}
+                                fill
+                                className="object-contain transition-transform duration-700 group-hover:scale-110"
                             />
                         </div>
                     </motion.div>
 
-                    <motion.div
-                        className={cn(
-                            "lg:col-span-4 relative group",
-                            "rounded-xl lg:rounded-2xl p-6 overflow-hidden",
-                            "bg-cardbox",
-                            "transition-all duration-500"
-                        )}
-                        initial={{ opacity: 0, y: 10 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.3, delay: 0.6 }}
-                    >
-
-                        <div className="relative">
-                            <div className="flex items-center gap-2 mb-2">
-                                <h3 className="text-lg font-semibold">
-                                    {capabilities[2].title}
-                                </h3>
-                            </div>
-                            <p className="text-muted-foreground text-sm leading-relaxed">
-                                {capabilities[2].description}
-                            </p>
-                        </div>
-
-                        <div className="mt-6 relative grow h-48 transition-colors duration-300 z-0">
-                            <Image
-                                src={capabilities[2].illustration}
-                                alt="Team"
-                                width={500}
-                                height={500}
-                                unoptimized
-                                className="w-full mx-auto h-full object-contain object-center z-10"
-                            />
-                        </div>
-                    </motion.div>
-
-                    <motion.div
-                        className={cn(
-                            "lg:col-span-4 relative group",
-                            "rounded-xl lg:rounded-2xl p-6 overflow-hidden",
-                            "bg-cardbox",
-                            "transition-all duration-500"
-                        )}
-                        initial={{ opacity: 0, y: 10 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.3, delay: 0.7 }}
-                    >
-
-                        <div className="relative">
-                            <div className="flex items-center gap-2 mb-2">
-                                <h3 className="text-lg font-semibold">
-                                    {capabilities[3].title}
-                                </h3>
-                            </div>
-                            <p className="text-muted-foreground text-sm leading-relaxed">
-                                {capabilities[3].description}
-                            </p>
-                        </div>
-
-                        <div className="mt-6 relative grow h-48 transition-colors duration-300 z-0">
-                            <Image
-                                src={capabilities[3].illustration}
-                                alt="Team"
-                                width={500}
-                                height={500}
-                                unoptimized
-                                className="w-full mx-auto h-full object-contain object-center z-10"
-                            />
-                        </div>
-                    </motion.div>
-
-                    <motion.div
-                        className="lg:col-span-4 flex flex-col gap-4"
-                        initial={{ opacity: 0, y: 10 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.3, delay: 0.8 }}
-                    >
+                    {/* Bottom Row */}
+                    {capabilities.slice(2, 4).map((cap, idx) => (
                         <motion.div
+                            key={cap.title}
                             className={cn(
-                                "relative group rounded-xl lg:rounded-2xl p-6 overflow-visible",
-                                "bg-cardbox",
-                                "transition-all duration-500"
+                                "lg:col-span-4 relative group overflow-hidden rounded-[2.5rem] bg-white dark:bg-[#0A0A0A]",
+                                "shadow-[0_0_0_1px_rgba(0,0,0,0.03),0_20px_40px_-10px_rgba(0,0,0,0.05)]",
+                                "dark:shadow-[0_0_0_1px_rgba(255,255,255,0.03),0_30px_60px_-15px_rgba(0,0,0,0.4)]",
+                                "p-10 flex flex-col justify-between"
                             )}
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8, delay: 0.3 + idx * 0.1 }}
                         >
-                            <div className="relative overflow-visible">
-                                <div className="flex overflow-visible">
-                                    <AnimatedTooltip items={AVATAR_ITEMS} />
-                                </div>
-                                <h3 className="text-2xl bg-linear-to-r from-foreground to-foreground/70 text-transparent bg-clip-text font-medium mt-4">
-                                    {stats[0]?.value} {stats[0]?.label}
-                                </h3>
-                                <p className="text-sm text-muted-foreground mt-1">
-                                    already using BNS
+                            <div>
+                                <h3 className="text-2xl font-bold mb-4">{cap.title}</h3>
+                                <p className="text-muted-foreground leading-relaxed">
+                                    {cap.description}
                                 </p>
                             </div>
-                        </motion.div>
-
-                        <motion.div
-                            className={cn(
-                                "relative group rounded-xl lg:rounded-2xl p-6 overflow-hidden",
-                                "bg-cardbox",
-                                "transition-all duration-500"
-                            )}
-                        >
-                            <div className="relative">
-                                <div className="flex items-baseline gap-1">
-                                    <h3 className="text-3xl bg-linear-to-r from-foreground to-foreground/70 text-transparent bg-clip-text font-semibold">
-                                        Yearly Budgets
-                                    </h3>
-                                </div>
-                                <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-                                    {stats[1]?.description}
-                                </p>
-                                <Link href="#">
-                                    <Button size="sm" variant="outline" className="mt-2">
-                                        {stats[1]?.button?.text}
-                                    </Button>
-                                </Link>
+                            <div className="mt-8 relative h-[180px] w-full">
+                                <Image
+                                    src={cap.illustration}
+                                    alt={cap.title}
+                                    fill
+                                    className="object-contain transition-transform duration-700 group-hover:scale-110"
+                                />
                             </div>
                         </motion.div>
+                    ))}
+
+                    {/* Stats Card */}
+                    <motion.div
+                        className={cn(
+                            "lg:col-span-4 relative group overflow-hidden rounded-[2.5rem] bg-primary p-10 text-primary-foreground flex flex-col justify-between"
+                        )}
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8, delay: 0.5 }}
+                    >
+                        <div>
+                            <div className="flex mb-6">
+                                <AnimatedTooltip items={AVATAR_ITEMS} />
+                            </div>
+                            <h3 className="text-4xl font-bold mb-2">
+                                {stats[0]?.value} {stats[0]?.label}
+                            </h3>
+                            <p className="text-primary-foreground/80 font-medium">
+                                Active youth using BNS platforms daily.
+                            </p>
+                        </div>
+                        <Button variant="white" size="lg" className="rounded-full mt-10 group/btn">
+                            Join the collective
+                            <ArrowRight className="ml-2 size-4 group-hover/btn:translate-x-1 transition-transform" />
+                        </Button>
                     </motion.div>
                 </div>
             </Wrapper>

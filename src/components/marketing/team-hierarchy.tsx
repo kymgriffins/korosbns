@@ -7,269 +7,203 @@ import { getMemberUsername, type TeamMember } from "@/lib/team";
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import {
-    ArrowUpRight,
-    ChevronLeft,
-    ChevronRight,
-    Globe,
-    Mail,
-} from "lucide-react";
 import { 
-    IconBrandFacebook, 
-    IconBrandGithub, 
-    IconBrandInstagram, 
     IconBrandLinkedin, 
-    IconBrandYoutube,
-    IconBrandX
+    IconBrandX,
+    IconBrandInstagram,
 } from "@tabler/icons-react";
-import { useRef, useState } from "react";
-
-const leadershipRoles = new Set([
-    "Executive Director",
-    "Director Partnerships",
-    "Director Media.",
-    "Director ICT",
-]);
-const advisorRoles = new Set(["Board Advisor"]);
-
-const XLogo = ({ className }: { className?: string }) => (
-    <svg viewBox="0 0 24 24" aria-hidden="true" className={className} fill="currentColor">
-        <path d="M18.244 2H21.5l-7.11 8.129L22.75 22h-6.548l-5.126-6.702L5.2 22H1.94l7.605-8.693L1.5 2h6.712l4.633 6.11L18.244 2zm-1.143 18h1.804L7.228 3.893H5.292L17.101 20z" />
-    </svg>
-);
+import { ArrowUpRight } from "lucide-react";
+import { useState } from "react";
+import { cn } from "@/utils";
 
 const socialIconMap = {
     x: IconBrandX,
     linkedin: IconBrandLinkedin,
     instagram: IconBrandInstagram,
-    facebook: IconBrandFacebook,
-    youtube: IconBrandYoutube,
-    github: IconBrandGithub,
-    website: Globe,
-    email: Mail,
 } as const;
 
-const iconOrder: Array<keyof typeof socialIconMap> = [
-    "x",
-    "linkedin",
-    "instagram",
-    "facebook",
-    "youtube",
-    "github",
-    "website",
-    "email",
-];
-
-const SocialLinks = ({ member }: { member: TeamMember }) => {
-    const socials = (member.socials ?? {}) as Record<string, string | undefined>;
-
-    return (
-        <div className="mt-2 flex items-center gap-2">
-            {iconOrder.map((key) => {
-                const href = socials[key];
-                if (!href) return null;
-                const Icon = socialIconMap[key];
-                const link = key === "email" && !href.startsWith("mailto:") ? `mailto:${href}` : href;
-
-                return (
-                    <a
-                        key={`${member.name}-${key}`}
-                        href={link}
-                        target={key === "email" ? undefined : "_blank"}
-                        rel={key === "email" ? undefined : "noopener noreferrer"}
-                        onClick={(event) => event.stopPropagation()}
-                        className="inline-flex size-7 items-center justify-center rounded-full bg-black/35 text-white/80 transition-colors hover:text-white"
-                        aria-label={`${member.name} ${key}`}
-                    >
-                        <Icon className="size-3.5" />
-                    </a>
-                );
-            })}
-        </div>
-    );
-};
-
-const TeamTile = ({ member }: { member: TeamMember }) => {
-    const router = useRouter();
-    const username = getMemberUsername(member);
+const LeaderCard = ({ member, size = "md" }: { member: TeamMember, size?: "lg" | "md" }) => {
     const [imageError, setImageError] = useState(false);
-    const initials = member.name
-        .split(" ")
-        .map((part) => part[0] ?? "")
-        .join("")
-        .slice(0, 2)
-        .toUpperCase();
+    const username = getMemberUsername(member);
+    const initials = member.name.split(" ").map(n => n[0]).join("").slice(0, 2).toUpperCase();
 
     return (
-        <article
-            role="button"
-            tabIndex={0}
-            onClick={() => router.push(`/team/${username}`)}
-            onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") {
-                    event.preventDefault();
-                    router.push(`/team/${username}`);
-                }
-            }}
-            className="group relative h-[290px] w-[215px] shrink-0 snap-center cursor-pointer overflow-hidden rounded-xl border border-white/10 bg-black/25 transition-colors hover:border-white/20 sm:h-[315px] sm:w-[230px]"
-        >
-            {imageError ? (
-                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/60 via-primary/40 to-black/50">
-                    <span className="text-3xl font-bold tracking-wide text-white/95">{initials}</span>
-                </div>
-            ) : (
-                <Image
-                    src={member.image}
-                    alt={member.name}
-                    fill
-                    onError={() => setImageError(true)}
-                    className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 640px) 250px, 280px"
-                />
+        <motion.div
+            whileHover={{ y: -5 }}
+            className={cn(
+                "group relative overflow-hidden rounded-[2.5rem] bg-white dark:bg-[#0A0A0A] transition-all duration-500",
+                "shadow-[0_0_0_1px_rgba(0,0,0,0.05),0_10px_20px_-5px_rgba(0,0,0,0.1)]",
+                "dark:shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_20px_40px_-10px_rgba(0,0,0,0.5)]",
+                "hover:shadow-[0_0_0_1px_rgba(0,0,0,0.1),0_30px_60px_-15px_rgba(0,0,0,0.2)]",
+                "dark:hover:shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_40px_80px_-20px_rgba(0,0,0,0.8)]",
+                size === "lg" ? "md:col-span-6" : "md:col-span-4"
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-            <div className="absolute bottom-0 inset-x-0 p-3.5">
-                <h4 className="truncate text-sm font-semibold text-white">{member.name}</h4>
-                <p className="truncate text-[11px] text-white/75 mb-2">{member.role}</p>
-                <SocialLinks member={member} />
-            </div>
-        </article>
-    );
-};
-
-const TeamCarousel = ({ members }: { members: TeamMember[] }) => {
-    const rowRef = useRef<HTMLDivElement>(null);
-    const dragStartXRef = useRef(0);
-    const dragStartScrollRef = useRef(0);
-    const hasDraggedRef = useRef(false);
-    const [isDragging, setIsDragging] = useState(false);
-
-    const scrollByCards = (direction: "left" | "right") => {
-        const row = rowRef.current;
-        if (!row) return;
-        const firstCard = row.firstElementChild as HTMLElement | null;
-        const gap = 16;
-        const cardWidth = firstCard ? firstCard.offsetWidth + gap : 246;
-        const delta = direction === "left" ? -cardWidth : cardWidth;
-        row.scrollBy({ left: delta, behavior: "smooth" });
-    };
-
-    const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-        if (!rowRef.current) return;
-        setIsDragging(true);
-        hasDraggedRef.current = false;
-        dragStartXRef.current = event.clientX;
-        dragStartScrollRef.current = rowRef.current.scrollLeft;
-        event.currentTarget.setPointerCapture(event.pointerId);
-    };
-
-    const onPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
-        if (!isDragging || !rowRef.current) return;
-        const delta = event.clientX - dragStartXRef.current;
-        if (Math.abs(delta) > 5) {
-            hasDraggedRef.current = true;
-        }
-        rowRef.current.scrollLeft = dragStartScrollRef.current - delta;
-    };
-
-    const onPointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
-        if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-            event.currentTarget.releasePointerCapture(event.pointerId);
-        }
-        setIsDragging(false);
-    };
-
-    return (
-        <div className="relative">
-            <div className="mb-3 flex items-center justify-between">
-                <p className="text-xs text-muted-foreground">Swipe left or right to explore the team</p>
-                <div className="hidden items-center gap-2 md:flex">
-                    <button
-                        type="button"
-                        aria-label="Scroll team left"
-                        onClick={() => scrollByCards("left")}
-                        className="inline-flex size-8 items-center justify-center rounded-full border border-foreground/15 bg-background/70 hover:border-primary/40"
-                    >
-                        <ChevronLeft className="size-4" />
-                    </button>
-                    <button
-                        type="button"
-                        aria-label="Scroll team right"
-                        onClick={() => scrollByCards("right")}
-                        className="inline-flex size-8 items-center justify-center rounded-full border border-foreground/15 bg-background/70 hover:border-primary/40"
-                    >
-                        <ChevronRight className="size-4" />
-                    </button>
+        >
+            <Link href={`/team/${username}`} className="block h-full">
+                <div className={`relative w-full overflow-hidden ${size === "lg" ? "h-[450px]" : "h-[360px]"}`}>
+                    {imageError ? (
+                        <div className="flex h-full w-full items-center justify-center bg-muted/30">
+                            <span className="text-4xl font-bold text-muted-foreground/40">{initials}</span>
+                        </div>
+                    ) : (
+                        <Image
+                            src={member.image}
+                            alt={member.name}
+                            fill
+                            className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                            onError={() => setImageError(true)}
+                        />
+                    )}
+                    <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </div>
-            </div>
-            <div
-                ref={rowRef}
-                onPointerDown={onPointerDown}
-                onPointerMove={onPointerMove}
-                onPointerUp={onPointerUp}
-                onPointerCancel={onPointerUp}
-                onClickCapture={(event) => {
-                    if (hasDraggedRef.current) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        hasDraggedRef.current = false;
-                    }
-                }}
-                className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-                style={{ cursor: isDragging ? "grabbing" : "default" }}
-            >
-                {members.map((member) => (
-                    <TeamTile key={member.name} member={member} />
-                ))}
-            </div>
-        </div>
+
+                <div className="p-10">
+                    <div className="flex items-center justify-between gap-4">
+                        <div>
+                            <h3 className={cn(
+                                "font-bold tracking-tight text-foreground leading-tight mb-1",
+                                size === "lg" ? "text-3xl lg:text-4xl" : "text-2xl"
+                            )}>
+                                {member.name}
+                            </h3>
+                            <p className="text-primary font-bold text-xs uppercase tracking-widest">
+                                {member.role}
+                            </p>
+                        </div>
+                        <div className="size-12 rounded-full border border-foreground/10 flex items-center justify-center group-hover:bg-primary group-hover:border-primary group-hover:text-white transition-all">
+                            <ArrowUpRight className="size-5" />
+                        </div>
+                    </div>
+                    
+                    <p className="mt-6 text-muted-foreground text-base leading-relaxed line-clamp-2 group-hover:line-clamp-none transition-all duration-300">
+                        {member.description || member.bio?.slice(0, 100) + "..."}
+                    </p>
+
+                    <div className="mt-8 flex items-center gap-4">
+                        {Object.entries(member.socials || {}).map(([key, href]) => {
+                            if (!href) return null;
+                            const Icon = socialIconMap[key as keyof typeof socialIconMap];
+                            if (!Icon) return null;
+                            return (
+                                <span 
+                                    key={key}
+                                    className="text-muted-foreground hover:text-primary transition-colors"
+                                >
+                                    <Icon className="size-5" />
+                                </span>
+                            );
+                        })}
+                    </div>
+                </div>
+            </Link>
+        </motion.div>
     );
 };
 
 const TeamHierarchy = () => {
-    const sortedMembers = [
-        ...team.filter((member) => advisorRoles.has(member.role)),
-        ...team.filter((member) => leadershipRoles.has(member.role)),
-        ...team.filter((member) => member.role.toLowerCase().includes("director") && !leadershipRoles.has(member.role)),
-        ...team.filter((member) => !advisorRoles.has(member.role) && !leadershipRoles.has(member.role) && !member.role.toLowerCase().includes("director")),
-    ];
-    const previewMembers = sortedMembers.slice(0, 6);
+    // Tier 1: Leadership & Advisors
+    const tier1 = team.filter(m => 
+        m.role === "Executive Director" || m.role === "Board Advisor"
+    );
+    
+    // Tier 2: Directors
+    const tier2 = team.filter(m => 
+        m.role.toLowerCase().includes("director") && m.role !== "Executive Director"
+    );
+    
+    // Tier 3: Specialists
+    const tier3 = team.filter(m => 
+        !m.role.toLowerCase().includes("director") && m.role !== "Board Advisor"
+    );
 
     return (
-        <section id="team" className="w-full py-16 lg:py-20 bg-background/40">
+        <section id="team" className="w-full py-40 bg-background relative overflow-hidden">
             <Wrapper>
-                <div className="mx-auto max-w-3xl text-center">
-                    <SectionBadge title="The Architects" />
-                    <h2 className="title mt-6">Expertise Meeting Execution</h2>
-                    <p className="desc mt-4">
-                        A multidisciplinary team of policy experts, researchers, and digital storytellers building the future of civic participation.
-                    </p>
-                </div>
-
-                <div className="mt-10">
+                <div className="max-w-4xl mb-24">
                     <motion.div
-                        initial={{ opacity: 0, y: 16 }}
+                        initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="rounded-2xl border border-foreground/10 bg-background/60 p-4 md:p-5"
                     >
-                        <TeamCarousel members={previewMembers} />
+                        <h2 className="text-5xl md:text-8xl font-bold tracking-[-0.05em] leading-[0.9] mb-12">
+                            The Collective Expertise.
+                        </h2>
+                        <p className="text-xl md:text-2xl text-muted-foreground font-medium leading-relaxed max-w-2xl">
+                            A multidisciplinary group of economists, data scientists, and storytellers building the future of civic participation.
+                        </p>
                     </motion.div>
-                    <div className="mt-6 flex justify-center">
-                        <Link
-                            href="/about#team"
-                            className="inline-flex items-center gap-2 rounded-full border border-foreground/15 bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary/40 hover:text-primary"
-                        >
-                            See full team
-                            <ArrowUpRight className="size-4" />
-                        </Link>
+                </div>
+
+                <div className="space-y-12">
+                    {/* Tier 1: Senior Leadership */}
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+                        {tier1.map((member, idx) => (
+                            <motion.div
+                                key={member.name}
+                                initial={{ opacity: 0, y: 40 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.8, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                                className="md:col-span-6"
+                            >
+                                <LeaderCard member={member} size="lg" />
+                            </motion.div>
+                        ))}
+                    </div>
+
+                    {/* Tier 2: Directors */}
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+                        {tier2.map((member, idx) => (
+                            <motion.div
+                                key={member.name}
+                                initial={{ opacity: 0, y: 40 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.8, delay: 0.2 + (idx * 0.1), ease: [0.16, 1, 0.3, 1] }}
+                                className="md:col-span-4"
+                            >
+                                <LeaderCard member={member} />
+                            </motion.div>
+                        ))}
+                    </div>
+
+                    {/* Tier 3: Specialists */}
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+                        {tier3.map((member, idx) => (
+                            <motion.div
+                                key={member.name}
+                                initial={{ opacity: 0, y: 40 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.8, delay: 0.4 + (idx * 0.1), ease: [0.16, 1, 0.3, 1] }}
+                                className="md:col-span-4"
+                            >
+                                <LeaderCard member={member} />
+                            </motion.div>
+                        ))}
                     </div>
                 </div>
+
+                <motion.div 
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.6 }}
+                    className="mt-32 flex"
+                >
+                    <Link
+                        href="/about#team"
+                        className="h-16 px-10 flex items-center gap-4 rounded-full bg-white text-black font-bold hover:scale-105 transition-transform"
+                    >
+                        Meet the full collective
+                        <ArrowUpRight className="size-5" />
+                    </Link>
+                </motion.div>
             </Wrapper>
         </section>
     );
 };
+
 
 export default TeamHierarchy;
 

@@ -9,7 +9,6 @@ import Link from "next/link";
 import React, { useMemo, useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
-
 import { API_BASE_URL } from "@/lib/api-config";
 import { PRIMARY_ORG_SLUG } from "@/constants/org";
 import {
@@ -46,9 +45,7 @@ const Footer = () => {
         }
       })
       .catch(() => undefined);
-    return () => {
-      alive = false;
-    };
+    return () => { alive = false; };
   }, []);
 
   const displaySocial = useMemo(
@@ -61,202 +58,104 @@ const Footer = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
-
-    const payload = {
-      email,
-      first_name: email.split("@")[0],
-      source: "website_footer",
-    };
-
-    console.log("Newsletter subscribe (footer) payload:", payload);
-
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/newsletter/subscribe/`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        },
-      );
-      const data = await response.json();
-      console.log(
-        "Newsletter subscribe (footer) response:",
-        response.status,
-        data,
-      );
+      const response = await fetch(`${API_BASE_URL}/api/newsletter/subscribe/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, source: "website_footer" }),
+      });
       if (response.ok) {
-        if (data.status === "already_subscribed") {
-          toast.info("You're already subscribed! 🎉");
-        } else {
-          toast.success("Thanks for subscribing! 🎉");
-        }
+        toast.success("Thanks for joining the story! 🎉");
         setEmail("");
       } else {
-        toast.error(data.message || "Failed to subscribe");
+        toast.error("Failed to subscribe");
       }
     } catch (error) {
-      console.error("Newsletter subscribe (footer) error:", error);
       toast.error("Network error. Try again.");
     }
   };
 
   return (
-    <footer className="w-full relative mt-16 lg:mt-24 overflow-hidden">
-      <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-foreground/0 via-foreground/20 to-foreground/0" />
-      <div className="absolute top-0 inset-x-0 w-1/2 mx-auto h-4 bg-foreground/40 blur-[4rem]" />
-
-      <Wrapper className="py-16 flex flex-col">
-        {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12 w-full max-w-6xl mx-auto mb-12">
-          {/* Brand Column */}
-          <div className="lg:col-span-2 flex flex-col items-start text-left">
-            <Link href="/" className="inline-block group mb-4">
+    <footer className="w-full relative py-24 lg:py-40 bg-white dark:bg-black overflow-hidden">
+      {/* Horizon Glow */}
+      <div className="absolute bottom-0 inset-x-0 h-[30rem] bg-linear-to-t from-primary/10 to-transparent -z-10 blur-[8rem] opacity-40" />
+      
+      <Wrapper>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-8 max-w-7xl mx-auto">
+          {/* Brand & Newsletter */}
+          <div className="lg:col-span-5 flex flex-col items-start">
+            <Link href="/" className="group mb-8">
               <Image
                 src="/logo.svg"
                 alt={organizationTitle}
                 width={160}
                 height={32}
-                className="h-6 lg:h-7 w-auto transition-all group-hover:brightness-110"
+                className="h-8 w-auto transition-transform duration-500 group-hover:scale-105"
               />
             </Link>
-            <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">{footerBlurb}</p>
+            <p className="text-xl font-medium tracking-tight leading-relaxed text-muted-foreground mb-12 max-w-md">
+              {footerBlurb}
+            </p>
 
-            <form onSubmit={handleSubmit} className="mt-6 w-full max-w-sm">
-              <p className="text-sm font-medium mb-3">Subscribe to the Story</p>
-              <div className="flex gap-2">
+            <div className="w-full max-w-md p-8 rounded-[2rem] bg-foreground/5 border border-foreground/5 backdrop-blur-sm">
+              <h4 className="text-lg font-bold mb-2">Join the Story</h4>
+              <p className="text-sm text-muted-foreground mb-6">Get weekly insights into the national budget, simplified.</p>
+              <form onSubmit={handleSubmit} className="flex gap-2">
                 <Input
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder="Email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="flex-1 h-10 text-sm bg-foreground/5 border-foreground/10 focus-visible:ring-0 focus-visible:ring-transparent rounded-full px-4"
+                  className="h-12 bg-white dark:bg-black/50 border-foreground/10 rounded-full px-6 focus-visible:ring-1 focus-visible:ring-primary/30"
                 />
-                <Button
-                  type="submit"
-                  size="sm"
-                  className="h-10 px-6 rounded-full"
-                >
-                  Subscribe
+                <Button type="submit" className="h-12 px-6 rounded-full font-bold">
+                  Join
                 </Button>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
 
-          {/* Product Links */}
-          <div className="flex flex-col gap-3">
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground/60">
-              Product
-            </h4>
-            {footerLinks.product.map((link, idx) => (
-              <Link
-                key={idx}
-                href={link.href}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-
-          {/* Resources Links */}
-          <div className="flex flex-col gap-3">
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground/60">
-              Resources
-            </h4>
-            {footerLinks.resources.map((link, idx) => (
-              <Link
-                key={idx}
-                href={link.href}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-
-          {/* Company Links */}
-          <div className="flex flex-col gap-3">
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground/60">
-              Company
-            </h4>
-            {footerLinks.company.map((link, idx) => (
-              <Link
-                key={idx}
-                href={link.href}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
-              >
-                {link.label}
-              </Link>
-            ))}
+          {/* Links Grid */}
+          <div className="lg:col-span-7 grid grid-cols-2 md:grid-cols-3 gap-12">
+            <div className="flex flex-col gap-6">
+              <h5 className="text-[10px] uppercase tracking-[0.2em] font-bold text-foreground/40">Product</h5>
+              {footerLinks.product.map((link) => (
+                <Link key={link.label} href={link.href} className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors">
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+            <div className="flex flex-col gap-6">
+              <h5 className="text-[10px] uppercase tracking-[0.2em] font-bold text-foreground/40">Resources</h5>
+              {footerLinks.resources.map((link) => (
+                <Link key={link.label} href={link.href} className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors">
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+            <div className="flex flex-col gap-6">
+              <h5 className="text-[10px] uppercase tracking-[0.2em] font-bold text-foreground/40">Social</h5>
+              {displaySocial.map((social) => (
+                <Link key={social.label} href={social.href} target="_blank" className="text-base font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2">
+                  {social.label}
+                  <Image src={integrationIconAsset(String(social.icon))} alt="" width={16} height={16} className="opacity-40 grayscale" />
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-foreground/5 w-full max-w-6xl mx-auto">
-          <div className="text-center sm:text-left text-xs text-muted-foreground space-y-0.5">
-            <p>
-              © {new Date().getFullYear()} {organizationTitle}. All rights reserved.
-            </p>
-            {siteManifest?.legal_footer_note ? (
-              <p className="text-[11px] text-muted-foreground/90">{siteManifest.legal_footer_note}</p>
-            ) : null}
+        <div className="mt-32 pt-12 border-t border-foreground/5 flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="flex flex-wrap justify-center md:justify-start gap-8 text-xs font-bold uppercase tracking-widest text-foreground/30">
+            <p>© {new Date().getFullYear()} {organizationTitle}</p>
+            <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link>
           </div>
-
-          <div className="flex items-center gap-4">
-            {displaySocial.map((social, index) => (
-              <Link
-                key={`${social.label}-${social.href}`}
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={social.label}
-                className="group relative size-10 flex items-center justify-center rounded-full bg-foreground/5 hover:bg-foreground/10 transition-colors overflow-hidden border border-foreground/10"
-              >
-                <motion.span
-                  aria-hidden
-                  className="absolute inset-0 rounded-full border border-primary/25"
-                  animate={{ rotate: 360 }}
-                  transition={{
-                    duration: 12 + index * 1.2,
-                    repeat: Infinity,
-                    ease: "linear",
-                  }}
-                />
-                <motion.span
-                  aria-hidden
-                  className="absolute -top-1 -right-1 size-2 rounded-full bg-primary/70 blur-[1px]"
-                  animate={{ opacity: [0.2, 0.9, 0.2], scale: [0.8, 1.2, 0.8] }}
-                  transition={{ duration: 2.8, repeat: Infinity, delay: index * 0.08 }}
-                />
-                <motion.div whileHover={{ y: -1.5, scale: 1.06 }} transition={{ duration: 0.2 }}>
-                  <Image
-                    src={integrationIconAsset(String(social.icon))}
-                    alt={social.label}
-                    width={20}
-                    height={20}
-                    className={social.icon === "x" ? "size-4" : "size-5"}
-                  />
-                </motion.div>
-              </Link>
-            ))}
-          </div>
-
-          <div className="flex items-center gap-4 text-xs text-muted-foreground">
-            <Link
-              href="/privacy"
-              className="hover:text-foreground transition-colors"
-            >
-              Privacy
-            </Link>
-            <span>•</span>
-            <Link
-              href="/terms"
-              className="hover:text-foreground transition-colors"
-            >
-              Terms
-            </Link>
+          
+          <div className="flex items-center gap-3">
+             <div className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+             <span className="text-[10px] font-bold uppercase tracking-widest text-foreground/40">System Operational</span>
           </div>
         </div>
       </Wrapper>

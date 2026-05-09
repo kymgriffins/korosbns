@@ -1,17 +1,14 @@
 import Background from "@/components/global/background";
-import Hero from "@/components/marketing/hero";
-import StoriesPromoMarquee from "@/components/marketing/stories-promo-marquee";
-import Workflow from "@/components/marketing/workflow";
-import Capibilities from "@/components/marketing/capibilities";
-import Disconnect from "@/components/marketing/disconnect";
-import ROI from "@/components/marketing/roi";
-import Integrations from "@/components/marketing/integrations";
-import UpcomingProjects from "@/components/marketing/upcoming-projects";
+import { 
+    HeroSection, 
+    ProblemSection, 
+    StrategySection, 
+    VerificationHub, 
+    TownHallSection, 
+    CTASection 
+} from "@/components/marketing/RedesignComponents";
 import TeamHierarchy from "@/components/marketing/team-hierarchy";
 import ConsortiumPartners from "@/components/marketing/consortium-partners";
-import WallOfLove from "@/components/marketing/wall-of-love";
-import Gallery from "@/components/marketing/gallery";
-import Cta from "@/components/marketing/cta";
 import SurveyPopup from "@/components/marketing/survey-popup";
 import NewsletterPopup from "@/components/marketing/newsletter-popup";
 import { Metadata } from "next";
@@ -49,18 +46,16 @@ export const metadata: Metadata = {
 
 const HomePage = () => {
     return (
-        <div className="w-full min-h-dvh pt-6 lg:pt-8">
+        <div className="w-full min-h-dvh">
             <Background />
-            <Hero />
-            <StoriesPromoMarquee />
-            <UpcomingProjects />
-            <Disconnect />
-            <Workflow />
-            <Capibilities />
-            <ROI />
+            <HeroSection />
+            <ProblemSection />
+            <StrategySection />
+            <TownHallSection />
+            <VerificationHub />
             <TeamHierarchy />
             <ConsortiumPartners />
-            <Cta />
+            <CTASection />
             <SurveyPopup />
             <NewsletterPopup />
         </div>

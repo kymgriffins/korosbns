@@ -1,33 +1,64 @@
-import Image from "next/image";
+"use client";
+
+import { motion } from "motion/react";
 
 const Background = () => {
     return (
-        <div className="w-full h-dvh absolute top-0 left-0 z-0 overflow-hidden">
-            {/* <Image
-                src="/images/gradient.svg"
-                alt="background"
-                width={1024}
-                height={1024}
-                className="object-cover top-0 inset-x-0 w-full mx-auto h-1/2 md:h-3/5 lg:h-4/5"
-            /> */}
-            <div className="absolute top-0 inset-x-0 w-1/4 mx-auto h-1/4 blur-[8rem] bg-primary/30"></div>
+        <div className="w-full min-h-screen absolute top-0 left-0 z-0 overflow-hidden pointer-events-none">
+            {/* Liquid Glows */}
+            <motion.div 
+                animate={{
+                    scale: [1, 1.2, 1],
+                    x: [0, 100, 0],
+                    y: [0, 50, 0],
+                }}
+                transition={{
+                    duration: 20,
+                    repeat: Infinity,
+                    ease: "linear"
+                }}
+                className="absolute top-[-10%] left-[-10%] size-[60rem] bg-primary/10 rounded-full blur-[120px] opacity-60" 
+            />
+            
+            <motion.div 
+                animate={{
+                    scale: [1.2, 1, 1.2],
+                    x: [0, -80, 0],
+                    y: [0, -30, 0],
+                }}
+                transition={{
+                    duration: 25,
+                    repeat: Infinity,
+                    ease: "linear"
+                }}
+                className="absolute bottom-[-10%] right-[-10%] size-[50rem] bg-blue-500/10 rounded-full blur-[100px] opacity-60" 
+            />
 
+            <motion.div 
+                animate={{
+                    scale: [1, 1.1, 1],
+                    x: [0, 50, 0],
+                    y: [0, -50, 0],
+                }}
+                transition={{
+                    duration: 15,
+                    repeat: Infinity,
+                    ease: "linear"
+                }}
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[40rem] bg-purple-500/5 rounded-full blur-[100px] opacity-40" 
+            />
+
+            {/* Subtle Grid */}
             <div
-                className="absolute inset-0 w-screen h-screen -z-10"
+                className="absolute inset-0 w-full h-full"
                 style={{
-                    backgroundImage: 'radial-gradient(circle, var(--dot-color) 1.35px, transparent 1.35px)',
-                    backgroundSize: '24px 24px',
-                    maskImage: 'radial-gradient(ellipse 80% 50% at 50% 0%, black 40%, transparent 100%)',
-                    WebkitMaskImage: 'radial-gradient(ellipse 80% 50% at 50% 0%, black 40%, transparent 100%)'
+                    backgroundImage: 'radial-gradient(circle, var(--dot-color) 1px, transparent 1px)',
+                    backgroundSize: '48px 48px',
+                    opacity: 0.2
                 }}
             ></div>
-
-            {/* <div className="hidden lg:block absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[120px] -z-20" />
-
-            <div className="hidden lg:block absolute top-40 left-20 w-72 h-72 bg-primary/10 rounded-full blur-[100px] -z-20" />
-            <div className="hidden lg:block absolute top-60 right-20 w-80 h-80 bg-tertiary/10 rounded-full blur-[100px] -z-20" /> */}
         </div>
     )
 };
 
-export default Background
+export default Background;
