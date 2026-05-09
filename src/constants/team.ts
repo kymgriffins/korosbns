@@ -20,7 +20,7 @@ export const team = [
     },
     {
         name: "Shem Odhiambo Ojunga",
-        role: "Director Media.",
+        role: "Director Media",
         image: "/images/avatars/team/Shem Odhiambo Ojunga.jpeg",
         description: "Award-winning digital strategist specializing in viral civic content that meets youth where they are.",
         bio: "Shem is an award-winning digital strategist who has shaped how civic content goes viral in Kenya. As Director of Media, he oversees all content production across TikTok, Instagram, YouTube, and podcasts. His expertise lies in transforming dense budget data into snackable, shareable stories that resonate with young audiences across platforms.",

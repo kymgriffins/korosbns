@@ -101,81 +101,62 @@ const LeaderCard = ({ member, size = "md" }: { member: TeamMember, size?: "lg" |
 };
 
 const TeamHierarchy = () => {
-    // Tier 1: Leadership & Advisors
-    const tier1 = team.filter(m => 
-        m.role === "Executive Director" || m.role === "Board Advisor"
-    );
+    // Tier 0: Executive Leadership (Single Focal Point)
+    const execDirector = team.find(m => m.role === "Executive Director");
     
-    // Tier 2: Directors
-    const tier2 = team.filter(m => 
-        m.role.toLowerCase().includes("director") && m.role !== "Executive Director"
-    );
+    // Tier 1: Board & Strategic Advisors
+    const advisors = team.filter(m => m.role === "Board Advisor");
     
-    // Tier 3: Specialists
-    const tier3 = team.filter(m => 
-        !m.role.toLowerCase().includes("director") && m.role !== "Board Advisor"
+    // Tier 2: Directors & Leads
+    const leadership = team.filter(m => 
+        (m.role.toLowerCase().includes("director") || m.role.toLowerCase().includes("lead")) && 
+        m.role !== "Executive Director"
     );
 
     return (
         <section id="team" className="w-full py-40 bg-background relative overflow-hidden">
             <Wrapper>
-                <div className="max-w-4xl mb-24">
+                <div className="max-w-4xl mb-32">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                     >
-                        <h2 className="text-5xl md:text-8xl font-bold tracking-[-0.05em] leading-[0.9] mb-12">
-                            The Collective Expertise.
+                        <h2 className="text-5xl md:text-[9rem] font-bold tracking-[-0.06em] leading-[0.85] mb-12">
+                            Collective <br />
+                            <span className="text-primary italic">Expertise.</span>
                         </h2>
                         <p className="text-xl md:text-2xl text-muted-foreground font-medium leading-relaxed max-w-2xl">
-                            A multidisciplinary group of economists, data scientists, and storytellers building the future of civic participation.
+                            A multidisciplinary collective of economists, data scientists, and storytellers building the future of civic participation.
                         </p>
                     </motion.div>
                 </div>
 
-                <div className="space-y-12">
-                    {/* Tier 1: Senior Leadership */}
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-                        {tier1.map((member, idx) => (
+                <div className="space-y-24">
+                    {/* Tier 0: Executive Leader - MAXIMUM HIERARCHY */}
+                    {execDirector && (
+                        <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
                             <motion.div
-                                key={member.name}
                                 initial={{ opacity: 0, y: 40 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
-                                transition={{ duration: 0.8, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                                className="md:col-span-6"
+                                transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                                className="md:col-span-12"
                             >
-                                <LeaderCard member={member} size="lg" />
+                                <LeaderCard member={execDirector} size="lg" />
                             </motion.div>
-                        ))}
-                    </div>
+                        </div>
+                    )}
 
-                    {/* Tier 2: Directors */}
+                    {/* Tier 1 & 2: Supporting Leadership */}
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-                        {tier2.map((member, idx) => (
+                        {[...advisors, ...leadership].map((member, idx) => (
                             <motion.div
                                 key={member.name}
                                 initial={{ opacity: 0, y: 40 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
-                                transition={{ duration: 0.8, delay: 0.2 + (idx * 0.1), ease: [0.16, 1, 0.3, 1] }}
-                                className="md:col-span-4"
-                            >
-                                <LeaderCard member={member} />
-                            </motion.div>
-                        ))}
-                    </div>
-
-                    {/* Tier 3: Specialists */}
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-                        {tier3.map((member, idx) => (
-                            <motion.div
-                                key={member.name}
-                                initial={{ opacity: 0, y: 40 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.8, delay: 0.4 + (idx * 0.1), ease: [0.16, 1, 0.3, 1] }}
+                                transition={{ duration: 0.8, delay: 0.1 * idx, ease: [0.16, 1, 0.3, 1] }}
                                 className="md:col-span-4"
                             >
                                 <LeaderCard member={member} />

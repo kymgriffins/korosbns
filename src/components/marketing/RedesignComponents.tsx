@@ -167,17 +167,20 @@ const StatHighlight = ({ value, label, primary = false }: { value: number; label
 
   return (
     <div ref={ref} className={cn(
-        "flex flex-col items-center justify-center text-center",
-        primary ? "md:col-span-2 p-20 bg-primary/5 rounded-[4rem] border border-primary/10" : "p-12"
+        "flex flex-col items-center justify-center text-center relative",
+        primary ? "md:col-span-2 p-20 bg-primary/5 rounded-[4rem] border border-primary/10 overflow-hidden" : "p-12"
     )}>
+      {primary && (
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--primary)_0%,transparent_70%)] opacity-10 animate-pulse" />
+      )}
       <div className={cn(
-          "font-bold tracking-tighter tabular-nums mb-4",
-          primary ? "text-8xl md:text-[12rem] text-primary" : "text-5xl md:text-7xl text-white"
+          "font-bold tracking-tighter tabular-nums mb-4 relative z-10",
+          primary ? "text-8xl md:text-[14rem] text-primary" : "text-5xl md:text-7xl text-white"
       )}>
-        {count.toLocaleString()}+
+        {count.toLocaleString()}{primary ? "" : "+"}
       </div>
       <div className={cn(
-          "font-bold uppercase tracking-[0.4em] text-muted-foreground",
+          "font-bold uppercase tracking-[0.4em] text-muted-foreground relative z-10",
           primary ? "text-sm text-primary" : "text-[10px]"
       )}>
         {label}
