@@ -139,69 +139,6 @@ export const ProblemSection = () => {
   );
 };
 
-// --- STRATEGY SECTION (CLARITY) ---
-const StatHighlight = ({ value, label, primary = false }: { value: number; label: string; primary?: boolean }) => {
-  const [count, setCount] = useState(0);
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
-
-  useEffect(() => {
-    if (isInView) {
-      let start = 0;
-      const end = value;
-      const duration = 2500;
-      const increment = end / (duration / 16);
-      
-      const timer = setInterval(() => {
-        start += increment;
-        if (start >= end) {
-          setCount(end);
-          clearInterval(timer);
-        } else {
-          setCount(Math.floor(start));
-        }
-      }, 16);
-      return () => clearInterval(timer);
-    }
-  }, [isInView, value]);
-
-  return (
-    <div ref={ref} className={cn(
-        "flex flex-col items-center justify-center text-center relative",
-        primary ? "md:col-span-2 p-20 bg-primary/5 rounded-[4rem] border border-primary/10 overflow-hidden" : "p-12"
-    )}>
-      {primary && (
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--primary)_0%,transparent_70%)] opacity-10 animate-pulse" />
-      )}
-      <div className={cn(
-          "font-bold tracking-tighter tabular-nums mb-4 relative z-10",
-          primary ? "text-8xl md:text-[14rem] text-primary" : "text-5xl md:text-7xl text-white"
-      )}>
-        {count.toLocaleString()}{primary ? "" : "+"}
-      </div>
-      <div className={cn(
-          "font-bold uppercase tracking-[0.4em] text-muted-foreground relative z-10",
-          primary ? "text-sm text-primary" : "text-[10px]"
-      )}>
-        {label}
-      </div>
-    </div>
-  );
-};
-
-export const StrategySection = () => {
-  return (
-    <section className="py-60 bg-black">
-      <div className="container px-4 mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 items-center">
-          <StatHighlight value={12000} label="Active Citizens" primary />
-          <StatHighlight value={150} label="Data Points" />
-          <StatHighlight value={42} label="Policy Briefs" />
-        </div>
-      </div>
-    </section>
-  );
-};
 
 // --- VERIFICATION HUB ---
 export const VerificationHub = () => {

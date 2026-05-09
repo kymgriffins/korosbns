@@ -50,7 +50,6 @@ const HomePage = () => {
             <Background />
             <HeroSection />
             <ProblemSection />
-            <StrategySection />
             <TownHallSection />
             <VerificationHub />
             <TeamHierarchy />
