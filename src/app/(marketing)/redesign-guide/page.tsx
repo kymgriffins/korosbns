@@ -5,7 +5,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   HeroSection, 
   ProblemSection, 
-  StrategySection, 
   VerificationHub, 
   CTASection,
   TownHallSection 
@@ -143,7 +142,6 @@ export default function RedesignGuidePage() {
               <HeroSection />
               <TownHallSection />
               <ProblemSection />
-              <StrategySection />
               <VerificationHub />
               <CTASection />
             </div>

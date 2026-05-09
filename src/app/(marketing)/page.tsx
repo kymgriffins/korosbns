@@ -2,7 +2,6 @@ import Background from "@/components/global/background";
 import { 
     HeroSection, 
     ProblemSection, 
-    StrategySection, 
     VerificationHub, 
     TownHallSection, 
     CTASection 
