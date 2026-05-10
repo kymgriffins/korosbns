@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  IconBook2,
-  IconClipboardList,
-  IconGauge,
-  IconNews,
-  IconUserShield,
-  type Icon,
-} from "@tabler/icons-react";
+import { type Icon } from "@tabler/icons-react";
 import Image from "next/image";
 import * as React from "react";
 
@@ -22,6 +15,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { SIDEBAR_GROUPS, MAX_PRIMARY_SIDEBAR_ITEMS } from "@/constants/sidebar";
 
 const data = {
   user: {
@@ -31,79 +25,14 @@ const data = {
   },
 };
 
-const MAX_PRIMARY_SIDEBAR_ITEMS = 5;
-
-const defaultNavMain = [
-  {
-    title: "Dashboard",
-    url: "#",
-    icon: IconGauge,
-  },
-  {
-    title: "Duty",
-    url: "#",
-    icon: IconClipboardList,
-  },
-  {
-    title: "Budget Academy",
-    url: "#",
-    icon: IconBook2,
-  },
-  {
-    title: "CMS",
-    url: "#",
-    icon: IconNews,
-  },
-  {
-    title: "Organization",
-    url: "#",
-    icon: IconUserShield,
-  },
-];
-
 type SidebarNavItem = {
   title: string;
   url: string;
   icon?: Icon;
   onClick?: () => void;
   isActive?: boolean;
+  children?: SidebarNavItem[];
 };
-
-const SIDEBAR_MODEL_GROUPS: Array<{ title: string; models: string[] }> = [
-  {
-    title: "Operations",
-    models: ["activity", "project", "impactmetric", "roadmapitem"],
-  },
-  {
-    title: "Learn Hub",
-    models: [
-      "trivia",
-      "story",
-      "deepdivearticle",
-      "knowledgeentry",
-      "document",
-      "docfolder",
-    ],
-  },
-  {
-    title: "Social & Media",
-    models: ["campaign", "teamquote", "subscriber", "partner", "program"],
-  },
-  {
-    title: "Developer Tools",
-    models: [
-      "organization",
-      "teammember",
-      "organizationmember",
-      "user",
-      "auditlog",
-      "changelog",
-      "versioninfo",
-      "gamificationprofile",
-      "pointevent",
-    ],
-  },
-];
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   navMainItems?: SidebarNavItem[];
@@ -127,67 +56,71 @@ export function AppSidebar({
   onManageAccount,
   ...props
 }: AppSidebarProps) {
-  const mainItems = navMainItems ?? defaultNavMain;
   const userData = user ?? data.user;
 
-  const groupedByName = SIDEBAR_MODEL_GROUPS.map((group) => ({
-    title: group.title,
-    items: (models ?? [])
-      .filter((model) => group.models.includes(model.name))
+  // Build the sidebar items dynamically from SIDEBAR_GROUPS
+  const sidebarItems = React.useMemo(() => {
+    if (!models) return navMainItems ?? [];
+
+    const groupedModelNames = new Set(SIDEBAR_GROUPS.flatMap(g => g.models));
+    
+    const items = SIDEBAR_GROUPS.map((group) => {
+      // Special case for dashboard
+      if (group.id === "overview") {
+        return {
+          title: group.title,
+          url: "#",
+          icon: group.icon,
+          onClick: () => onModelSelect?.(""),
+          isActive: activeModel === "" || activeModel === "dashboard",
+        };
+      }
+
+      const groupChildren = (models ?? [])
+        .filter((model) => group.models.includes(model.name))
+        .map((model) => ({
+          title: model.verbose_name,
+          url: "#",
+          onClick: () => onModelSelect?.(model.name),
+          isActive: activeModel === model.name,
+        }));
+
+      if (groupChildren.length === 0) return null;
+
+      return {
+        title: group.title,
+        url: "#",
+        icon: group.icon,
+        children: groupChildren,
+      };
+    }).filter(Boolean) as SidebarNavItem[];
+
+    // Add uncategorized models to the System group or as a separate group if System doesn't exist
+    const uncategorized = (models ?? [])
+      .filter((model) => !groupedModelNames.has(model.name))
       .map((model) => ({
         title: model.verbose_name,
         url: "#",
         onClick: () => onModelSelect?.(model.name),
         isActive: activeModel === model.name,
-      })),
-  })).filter((group) => group.items.length > 0);
+      }));
 
-  const groupedModelNames = new Set(
-    SIDEBAR_MODEL_GROUPS.flatMap((group) => group.models),
-  );
-  const uncategorizedModels = (models ?? [])
-    .filter((model) => !groupedModelNames.has(model.name))
-    .map((model) => ({
-      title: model.verbose_name,
-      url: "#",
-      onClick: () => onModelSelect?.(model.name),
-      isActive: activeModel === model.name,
-    }));
+    if (uncategorized.length > 0) {
+      const systemItem = items.find(i => i.title === "System");
+      if (systemItem) {
+        systemItem.children = [...(systemItem.children ?? []), ...uncategorized];
+      } else {
+        // Find icons for the last item or use a default
+        items.push({
+          title: "Other",
+          url: "#",
+          children: uncategorized,
+        });
+      }
+    }
 
-  const groupChildren = (title: string) =>
-    groupedByName.find((group) => group.title === title)?.items ?? [];
-
-  const compactSidebarItems = [
-    {
-      title: "Dashboard",
-      url: "#",
-      icon: IconGauge,
-    },
-    {
-      title: "Operations",
-      url: "#",
-      icon: IconClipboardList,
-      children: groupChildren("Operations"),
-    },
-    {
-      title: "Learning",
-      url: "#",
-      icon: IconBook2,
-      children: groupChildren("Learn Hub"),
-    },
-    {
-      title: "Social & Media",
-      url: "#",
-      icon: IconNews,
-      children: groupChildren("Social & Media"),
-    },
-    {
-      title: "Developer Tools",
-      url: "#",
-      icon: IconUserShield,
-      children: groupChildren("Developer Tools").concat(uncategorizedModels),
-    },
-  ].slice(0, MAX_PRIMARY_SIDEBAR_ITEMS);
+    return items;
+  }, [models, activeModel, onModelSelect, navMainItems]);
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
@@ -226,11 +159,7 @@ export function AppSidebar({
       </SidebarHeader>
       <SidebarContent>
         <NavMain
-          items={
-            compactSidebarItems.length > 0
-              ? compactSidebarItems
-              : mainItems.slice(0, MAX_PRIMARY_SIDEBAR_ITEMS)
-          }
+          items={sidebarItems.slice(0, MAX_PRIMARY_SIDEBAR_ITEMS)}
         />
       </SidebarContent>
       <SidebarFooter>
@@ -246,3 +175,4 @@ export function AppSidebar({
     </Sidebar>
   );
 }
+

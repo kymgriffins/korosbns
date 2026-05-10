@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
+  trailingSlash: true,
 
   // Performance optimizations
   compress: true, // Enable gzip compression

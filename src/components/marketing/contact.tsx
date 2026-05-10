@@ -9,7 +9,7 @@ import {
     MessageSquare,
     Send,
 } from "lucide-react";
-import { IconBrandInstagram, IconBrandLinkedin, IconBrandYoutube, IconBrandX } from "@tabler/icons-react";
+import { IconBrandInstagram, IconBrandLinkedin, IconBrandYoutube, IconBrandX, IconBrandWhatsapp, IconBrandTiktok, IconBrandFacebook } from "@tabler/icons-react";
 import { motion, useScroll, useSpring, useTransform } from "motion/react";
 import React, { useRef, useState } from "react";
 import Balancer from "react-wrap-balancer";
@@ -59,6 +59,27 @@ const socials = [
     href: "https://www.linkedin.com/company/budget-ndio-story/",
     color: "bg-[#0077B5]",
     hoverColor: "hover:bg-[#006396]",
+  },
+  {
+    name: "WhatsApp",
+    icon: IconBrandWhatsapp,
+    href: "https://wa.me/254790631623",
+    color: "bg-[#25D366]",
+    hoverColor: "hover:bg-[#128C7E]",
+  },
+  {
+    name: "TikTok",
+    icon: IconBrandTiktok,
+    href: "https://www.tiktok.com/@budget.ndio.story",
+    color: "bg-black",
+    hoverColor: "hover:bg-neutral-800",
+  },
+  {
+    name: "Facebook",
+    icon: IconBrandFacebook,
+    href: "https://www.facebook.com/share/1CPg2LgfVJ/",
+    color: "bg-[#1877F2]",
+    hoverColor: "hover:bg-[#0E52B0]",
   },
 ];
 
@@ -354,7 +375,7 @@ export default function Contact() {
           <p className="text-[10px] font-medium">© 2026 Budget Ndio Story.</p>
           <div className="flex items-center gap-4 text-[9px] font-medium uppercase tracking-wider">
             <a
-              href="mailto:info@budgetndiostory.com"
+              href="mailto:info@budgetndiostory.org"
               className="group inline-flex items-center gap-1.5 hover:text-foreground transition-colors"
             >
               <motion.span

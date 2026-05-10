@@ -1164,16 +1164,16 @@ export default function Learn() {
           >
             {emoji}
           </motion.div>
-          <h1 className="text-4xl font-bold text-white mb-2">
+          <h1 className="text-4xl font-bold text-foreground mb-2">
             {resultTitle.title}
           </h1>
-          <p className="text-lg text-white/60 mb-6">{resultTitle.subtitle}</p>
+          <p className="text-lg text-foreground/60 mb-6">{resultTitle.subtitle}</p>
 
-          <div className="p-6 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-sm mb-6">
-            <div className="text-5xl font-bold text-white mb-2">
+          <div className="p-6 rounded-2xl bg-muted/30 border border-border backdrop-blur-sm mb-6">
+            <div className="text-5xl font-bold text-foreground mb-2">
               {quizScore}/{quizQuestions.length}
             </div>
-            <p className="text-sm text-white/50">questions correct</p>
+            <p className="text-sm text-foreground/50">questions correct</p>
             <div className="mt-4 h-3 bg-white/10 rounded-full overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
@@ -1234,7 +1234,7 @@ export default function Learn() {
             onClick={() => setAppState("hub")}
             className="ml-2 p-1.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
           >
-            <X className="size-4 text-white" />
+            <X className="size-4 text-foreground" />
           </button>
         </div>
 
@@ -1452,7 +1452,7 @@ export default function Learn() {
         <div className="relative z-10 p-4 border-t border-white/10 grid grid-cols-1 md:grid-cols-2 gap-2">
           <Button
             variant="outline"
-            className="hidden md:inline-flex h-11 border-white/30 bg-black/20 text-white hover:bg-white/10"
+            className="hidden md:inline-flex h-11 border-border bg-muted/30 text-foreground hover:bg-muted/50"
             disabled={surveyIndex === 0}
             onClick={() => setSurveyIndex((v) => Math.max(0, v - 1))}
           >
@@ -1495,24 +1495,21 @@ export default function Learn() {
     const cardBgClass = `bg-gradient-to-br ${bgGradient}`;
 
     return (
-      <section className="fixed inset-0 z-[100] bg-black flex flex-col overflow-hidden">
-        {/* Static background */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className={`absolute -top-1/3 -left-1/3 w-[90%] h-[90%] rounded-full opacity-25 ${cardBgClass}`} />
-          <div className={`absolute -bottom-1/3 -right-1/3 w-[75%] h-[75%] rounded-full opacity-20 ${cardBgClass}`} />
-        </div>
+      <section className="fixed inset-0 z-[100] bg-background flex flex-col overflow-hidden">
+        {/* Static background - Simplified */}
+        <div className="absolute inset-0 bg-background pointer-events-none" />
 
         {/* Progress bar */}
         <div className="relative z-10 flex items-center px-4 py-3">
-          <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
+          <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
             <motion.div
-              className="h-full bg-white rounded-full"
+              className="h-full bg-foreground rounded-full"
               initial={{ width: 0 }}
               animate={{ width: `${readingProgress}%` }}
               transition={{ type: "spring", damping: 20 }}
             />
           </div>
-          <div className="ml-3 px-2 py-1 rounded-full bg-white/20 text-xs font-medium">
+          <div className="ml-3 px-2 py-1 rounded-full bg-muted text-xs font-medium text-foreground">
             {articleIndex + 1}/{currentStoryCards.length}
           </div>
           <button
@@ -1520,9 +1517,9 @@ export default function Learn() {
               setAppState("hub");
               setArticleIndex(0);
             }}
-            className="ml-2 p-1.5 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
+            className="ml-2 p-1.5 rounded-full bg-muted hover:bg-muted/80 transition-colors"
           >
-            <X className="size-4 text-white" />
+            <X className="size-4 text-foreground" />
           </button>
         </div>
         {/* Swipeable card area */}
@@ -1539,8 +1536,7 @@ export default function Learn() {
               {/* Flashcard */}
               <div
                 className={cn(
-                  "relative p-6 sm:p-8 rounded-3xl border border-white/20 shadow-2xl overflow-hidden",
-                  cardBgClass,
+                  "relative p-6 sm:p-8 rounded-3xl border border-border bg-card overflow-hidden",
                 )}
               >
                 <motion.div
@@ -1552,7 +1548,7 @@ export default function Learn() {
                   {currentCard?.emoji}
                 </motion.div>
                 {tinyLogo && (
-                  <div className="absolute top-4 right-4 rounded-full border border-white/20 bg-black/35 p-1 backdrop-blur-sm">
+                  <div className="absolute top-4 right-4 rounded-full border border-border bg-muted/50 p-1 backdrop-blur-sm">
                     <Image src="/logo.svg" alt="Budget Ndio Story logo" width={12} height={12} />
                   </div>
                 )}
@@ -1562,7 +1558,7 @@ export default function Learn() {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.1 }}
-                  className="text-2xl sm:text-3xl font-bold text-white mb-1"
+                  className="text-2xl sm:text-3xl font-bold text-foreground mb-1"
                 >
                   {currentCard?.title}
                 </motion.h2>
@@ -1572,7 +1568,7 @@ export default function Learn() {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.15 }}
-                  className="text-white/70 text-sm mb-4"
+                  className="text-foreground/70 text-sm mb-4"
                 >
                   {currentCard?.subtitle}
                 </motion.p>
@@ -1582,7 +1578,7 @@ export default function Learn() {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.18 }}
-                    className="inline-flex mb-4 rounded-full border border-white/30 bg-black/20 px-3 py-1 text-[11px] font-semibold text-white/90"
+                    className="inline-flex mb-4 rounded-full border border-border bg-muted/30 px-3 py-1 text-[11px] font-semibold text-foreground/90"
                   >
                     {currentCard.hook}
                   </motion.div>
@@ -1593,7 +1589,7 @@ export default function Learn() {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.2 }}
-                  className="text-white/90 text-base sm:text-lg mb-6 leading-relaxed"
+                  className="text-foreground/90 text-base sm:text-lg mb-6 leading-relaxed"
                 >
                   {currentCard?.content}
                 </motion.p>
@@ -1604,16 +1600,16 @@ export default function Learn() {
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ delay: 0.3, type: "spring" }}
-                    className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 text-center mb-4"
+                    className="bg-muted/50 border border-border rounded-2xl p-4 text-center mb-4"
                   >
-                    <div className="text-3xl sm:text-4xl font-bold text-white">
+                    <div className="text-3xl sm:text-4xl font-bold text-foreground">
                       {stat?.value}
                     </div>
-                    <div className="text-white/70 text-sm">
+                    <div className="text-foreground/70 text-sm">
                       {stat?.label}
                     </div>
                     {note && (
-                      <div className="text-white/50 text-xs mt-2">
+                      <div className="text-foreground/50 text-xs mt-2">
                         {note}
                       </div>
                     )}
@@ -1634,7 +1630,7 @@ export default function Learn() {
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ delay: 0.3 + i * 0.05 }}
-                        className="bg-white/15 rounded-xl px-3 py-2 text-xs text-white/90"
+                        className="bg-muted/50 border border-border rounded-xl px-3 py-2 text-xs text-foreground/90"
                       >
                         {fact}
                       </motion.div>
@@ -1656,11 +1652,11 @@ export default function Learn() {
                         initial={{ x: -20, opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
                         transition={{ delay: 0.3 + i * 0.05 }}
-                        className="flex items-center gap-3 bg-white/15 rounded-xl px-3 py-2"
+                        className="flex items-center gap-3 bg-muted/50 border border-border rounded-xl px-3 py-2"
                       >
                         <span className="text-xl">{p.emoji}</span>
                         <div className="flex-1">
-                          <div className="text-white font-medium text-sm">
+                          <div className="text-foreground font-medium text-sm">
                             {p.title}
                           </div>
                         </div>
@@ -1683,14 +1679,14 @@ export default function Learn() {
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ delay: 0.3 + i * 0.05 }}
-                        className="flex items-center gap-3 bg-red-500/30 rounded-xl px-3 py-2"
+                        className="flex items-center gap-3 bg-muted/50 border border-border rounded-xl px-3 py-2"
                       >
-                        <span className="w-5 h-5 rounded-full bg-red-500/50 flex items-center justify-center text-xs font-bold text-white">
+                        <span className="w-5 h-5 rounded-full bg-muted flex items-center justify-center text-xs font-bold text-foreground">
                           {i + 1}
                         </span>
                         <div className="flex-1">
-                          <div className="text-white text-sm">{r.title}</div>
-                          <div className="text-white/50 text-xs">{r.desc}</div>
+                          <div className="text-foreground text-sm">{r.title}</div>
+                          <div className="text-foreground/50 text-xs">{r.desc}</div>
                         </div>
                       </motion.div>
                     ))}
@@ -1711,7 +1707,7 @@ export default function Learn() {
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ delay: 0.3 + i * 0.05 }}
-                        className="bg-white/20 rounded-full px-3 py-1 text-sm text-white"
+                        className="bg-muted/50 border border-border rounded-full px-3 py-1 text-sm text-foreground"
                       >
                         {s}
                       </motion.span>
@@ -1729,14 +1725,14 @@ export default function Learn() {
                     className="mt-4"
                   >
                     <Button
-                      className="w-full h-14 rounded-xl text-lg font-medium bg-white text-gray-900 hover:bg-white/90"
+                      className="w-full h-14 rounded-xl text-lg font-medium bg-foreground text-background hover:bg-foreground/90"
                       onClick={() => startQuiz()}
                     >
                       <Target className="mr-2" /> Start Quiz
                     </Button>
                     <Button
                       variant="outline"
-                      className="w-full h-12 rounded-xl mt-3 border-white/30 text-white hover:bg-white/10"
+                      className="w-full h-12 rounded-xl mt-3 border-border text-foreground hover:bg-muted/50"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleNext();
@@ -1768,7 +1764,7 @@ export default function Learn() {
 
         </div>
 
-        <div className="relative z-10 p-4 text-center text-xs text-white/70">
+        <div className="relative z-10 p-4 text-center text-xs text-foreground/70">
           Tap left/right to navigate
         </div>
       </section>
@@ -1780,49 +1776,38 @@ export default function Learn() {
       ref={containerRef}
       className="relative w-full min-h-screen bg-background overflow-x-hidden overflow-y-visible flex flex-col"
     >
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[120px] rounded-full"
-          style={{ opacity: blobOpacity }}
-        />
-        <motion.div
-          className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[120px] rounded-full"
-          style={{ opacity: blobOpacity }}
-        />
-      </div>
+      <div className="fixed inset-0 -z-10 bg-background" />
 
       <Wrapper className="relative z-10 w-full flex-1 flex flex-col justify-between py-4 sm:py-6">
         <div className="flex-1 flex flex-col py-2 sm:py-4">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 space-y-8 sm:space-y-12 w-full min-w-0">
             <Container animation="fadeUp" delay={0.02} className="space-y-4">
-              <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900 via-indigo-900/70 to-slate-900 p-5 sm:p-6">
-                <div className="pointer-events-none absolute -right-12 -top-12 size-40 rounded-full bg-primary/25 blur-3xl" />
-                <div className="pointer-events-none absolute -left-12 -bottom-12 size-36 rounded-full bg-cyan-400/20 blur-3xl" />
+              <div className="relative overflow-hidden rounded-3xl border border-border bg-card p-5 sm:p-6">
                 <div className="relative z-10">
-                  <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/25 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-white/80">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-foreground/80">
                     <BookOpen className="size-3.5" />
                     Learn Hub
                   </div>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  <span className="inline-flex items-center gap-1 rounded-full border border-amber-300/35 bg-amber-400/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-amber-100">
+                  <span className="inline-flex items-center gap-1 rounded-full border border-border bg-muted/30 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground/80">
                     <Trophy className="size-3.5" />
                     {gamification?.points ?? 0} points
                   </span>
-                  <span className="inline-flex items-center gap-1 rounded-full border border-cyan-300/35 bg-cyan-400/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-cyan-100">
+                  <span className="inline-flex items-center gap-1 rounded-full border border-border bg-muted/30 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground/80">
                     Lv {gamification?.level ?? 1}
                   </span>
-                  <span className="inline-flex items-center gap-1 rounded-full border border-emerald-300/35 bg-emerald-400/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-emerald-100">
+                  <span className="inline-flex items-center gap-1 rounded-full border border-border bg-muted/30 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground/80">
                     {gamification?.streak_days ?? 0} day streak
                   </span>
                 </div>
                   <h1 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">
                     Learn budget stories faster, with visual explainers
                   </h1>
-                  <p className="mt-2 max-w-2xl text-sm text-white/75 sm:text-base">
+                  <p className="mt-2 max-w-2xl text-sm text-foreground/75 sm:text-base">
                     Swipe story cards, open deep dives, and use practical citizen checklists to understand how public money decisions affect real services.
                   </p>
                   <div className="mt-4 flex flex-wrap items-center gap-2">
-                    <span className="rounded-full border border-white/20 bg-white/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-white/85">
+                    <span className="rounded-full border border-border bg-muted/30 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground/85">
                       4 story formats
                     </span>
                     <span className="rounded-full border border-white/20 bg-white/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-white/85">
@@ -1859,9 +1844,7 @@ export default function Learn() {
                         router.push(`/learn?story=${storyId}`, { scroll: false });
                       }}
                       className={cn(
-                        "w-[290px] sm:w-[340px] text-left rounded-[26px] border border-white/20 p-5 text-white",
-                        "bg-gradient-to-br",
-                        story.gradient,
+                        "w-[290px] sm:w-[340px] text-left rounded-[26px] border border-border p-5 text-foreground bg-card",
                       )}
                     >
                       <div className="flex items-start justify-between gap-3">
@@ -1877,7 +1860,7 @@ export default function Learn() {
                           >
                             {watchedStories[story.id] ? "Watched" : "New"}
                           </span>
-                          <span className="text-[10px] font-semibold uppercase tracking-wider rounded-full bg-black/20 px-2 py-1">
+                          <span className="text-[10px] font-semibold uppercase tracking-wider rounded-full bg-muted px-2 py-1">
                             {story.duration}
                           </span>
                         </div>
@@ -1888,7 +1871,7 @@ export default function Learn() {
                       <p className="text-sm text-white/80 mt-2">
                         {story.subtitle}
                       </p>
-                      <div className="mt-5 inline-flex items-center gap-2 text-xs font-semibold rounded-full bg-black/25 px-3 py-1.5">
+                      <div className="mt-5 inline-flex items-center gap-2 text-xs font-semibold rounded-full bg-muted px-3 py-1.5">
                         {story.action} <ArrowRight className="size-3.5" />
                       </div>
                     </motion.button>
@@ -1927,7 +1910,7 @@ export default function Learn() {
                             alt={video.title} 
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                           />
-                          <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
+                          <div className="absolute inset-0 bg-muted/20 group-hover:bg-muted/10 transition-colors" />
                           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-red-600/90 rounded-full flex items-center justify-center opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all shadow-lg">
                             <span className="text-white ml-1">▶</span>
                           </div>
@@ -1949,7 +1932,7 @@ export default function Learn() {
 
             <Container animation="fadeUp" delay={0.15} className="space-y-4">
               <div className="space-y-1.5">
-                <div className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-primary">
+                <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-foreground/80">
                   <BarChart3 className="size-3.5" />
                   Deep Dive
                 </div>
@@ -1967,19 +1950,17 @@ export default function Learn() {
                         viewport={{ once: true }}
                         transition={{ duration: 0.4, delay: index * 0.08 }}
                         whileHover={{ y: -2 }}
-                        className="relative overflow-hidden rounded-[24px] bg-white/[0.055] shadow-[0_12px_40px_rgba(0,0,0,0.28)]"
+                        className="relative overflow-hidden rounded-[24px] bg-card border border-border"
                       >
-                        <div className="relative m-2 h-44 overflow-hidden rounded-[22px]">
+                        <div className="relative m-2 h-44 overflow-hidden rounded-[18px]">
                           <Image
                             src={module.image}
                             alt={module.title}
                             fill
-                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            className="object-cover dark:invert-0 invert"
                             sizes="(max-width: 640px) 320px, 360px"
                           />
-                          <div className={cn("absolute inset-0 bg-linear-to-br", module.accent)} />
-                          <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(8,8,12,0.72)_18%,rgba(8,8,12,0.16)_72%)]" />
-                          <div className="absolute right-3 top-3 rounded-full bg-white/90 p-2 text-black shadow-[0_6px_18px_rgba(0,0,0,0.28)]">
+                          <div className="absolute right-3 top-3 rounded-full bg-foreground p-2 text-background">
                             <ArrowRight className="size-3.5" />
                           </div>
                         </div>
@@ -1999,7 +1980,7 @@ export default function Learn() {
               <div className="pt-2">
                 <Link
                   href="/learn/deep-dives"
-                  className="inline-flex items-center gap-2 rounded-full border border-primary/35 bg-primary/15 px-4 py-2 text-sm font-semibold text-primary transition-all hover:-translate-y-0.5 hover:bg-primary/25"
+                  className="inline-flex items-center gap-2 rounded-full border border-border bg-muted/30 px-4 py-2 text-sm font-semibold text-foreground transition-all hover:-translate-y-0.5 hover:bg-muted/50"
                 >
                   See More Deep Dives
                   <ArrowRight className="size-4" />
@@ -2032,7 +2013,7 @@ export default function Learn() {
                   </p>
                   <div className="mt-4 hidden md:block">
                     <div className="relative h-48">
-                      <div className="absolute top-0 left-0 rounded-full bg-black/35 border border-white/20 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-white/80">
+                      <div className="absolute top-0 left-0 rounded-full bg-muted/80 border border-border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground/80">
                         Repository preview
                       </div>
                       <div className="lr-folder lr-folder-a">
@@ -2059,7 +2040,7 @@ export default function Learn() {
                           <div className="lr-layer lr-l1" />
                         </div>
                       </div>
-                      <div className="absolute bottom-1 right-0 inline-flex items-center gap-1.5 rounded-full bg-black/35 border border-white/20 px-2.5 py-1 text-[10px] text-white/80">
+                      <div className="absolute bottom-1 right-0 inline-flex items-center gap-1.5 rounded-full bg-muted/80 border border-border px-2.5 py-1 text-[10px] text-foreground/80">
                         <span className="size-1.5 rounded-full bg-primary animate-pulse" />
                         <span className="size-1.5 rounded-full bg-amber-300 animate-pulse [animation-delay:180ms]" />
                         <span className="size-1.5 rounded-full bg-cyan-300 animate-pulse [animation-delay:320ms]" />
@@ -2100,7 +2081,7 @@ export default function Learn() {
             </Container>
 
             <Container animation="fadeUp" delay={0.4} className="py-8">
-              <div className="relative p-8 sm:p-12 rounded-3xl bg-gradient-to-br from-primary/20 via-primary/10 to-teal-500/20 border border-primary/20 overflow-hidden">
+              <div className="relative p-8 sm:p-12 rounded-3xl bg-card border border-border overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.05)_1px,transparent_0)] bg-[size:24px_24px]" />
                 <div className="relative z-10 text-center space-y-4">
                   <p className="text-xs uppercase tracking-wider text-primary font-semibold">

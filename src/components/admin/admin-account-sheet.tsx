@@ -21,6 +21,12 @@ export type AdminProfilePayload = {
   email?: string;
   first_name?: string;
   last_name?: string;
+  bio?: string;
+  phone_number?: string;
+  location?: string;
+  job_title?: string;
+  department?: string;
+  social_links?: Record<string, string>;
 };
 
 type Props = {
@@ -57,9 +63,26 @@ export function AdminAccountSheet({
 }: Props) {
   const [profileTabSaving, setProfileTabSaving] = React.useState(false);
   const [passwordSaving, setPasswordSaving] = React.useState(false);
+  
+  // Basic Info
   const [firstName, setFirstName] = React.useState(profile?.first_name ?? "");
   const [lastName, setLastName] = React.useState(profile?.last_name ?? "");
   const [email, setEmail] = React.useState(profile?.email ?? "");
+  
+  // Extended Profile
+  const [bio, setBio] = React.useState(profile?.bio ?? "");
+  const [phone, setPhone] = React.useState(profile?.phone_number ?? "");
+  const [location, setLocation] = React.useState(profile?.location ?? "");
+  const [jobTitle, setJobTitle] = React.useState(profile?.job_title ?? "");
+  const [department, setDepartment] = React.useState(profile?.department ?? "");
+  
+  // Social Links
+  const [twitter, setTwitter] = React.useState(profile?.social_links?.twitter ?? "");
+  const [linkedin, setLinkedin] = React.useState(profile?.social_links?.linkedin ?? "");
+  const [github, setGithub] = React.useState(profile?.social_links?.github ?? "");
+  const [instagram, setInstagram] = React.useState(profile?.social_links?.instagram ?? "");
+
+  // Password
   const [currentPassword, setCurrentPassword] = React.useState("");
   const [newPassword, setNewPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
@@ -69,7 +92,16 @@ export function AdminAccountSheet({
     setFirstName(profile.first_name ?? "");
     setLastName(profile.last_name ?? "");
     setEmail(profile.email ?? "");
-  }, [open, profile?.first_name, profile?.last_name, profile?.email, profile]);
+    setBio(profile.bio ?? "");
+    setPhone(profile.phone_number ?? "");
+    setLocation(profile.location ?? "");
+    setJobTitle(profile.job_title ?? "");
+    setDepartment(profile.department ?? "");
+    setTwitter(profile.social_links?.twitter ?? "");
+    setLinkedin(profile.social_links?.linkedin ?? "");
+    setGithub(profile.social_links?.github ?? "");
+    setInstagram(profile.social_links?.instagram ?? "");
+  }, [open, profile]);
 
   React.useEffect(() => {
     if (!open) {
@@ -78,6 +110,20 @@ export function AdminAccountSheet({
       setConfirmPassword("");
     }
   }, [open]);
+
+  const sanitizeHandle = (val: string) => {
+    if (!val) return "";
+    try {
+      if (val.startsWith("http") || val.includes("www.")) {
+        const url = new URL(val.startsWith("http") ? val : `https://${val}`);
+        const parts = url.pathname.split("/").filter(Boolean);
+        return parts.length ? parts[parts.length - 1] : val;
+      }
+    } catch {
+      // fallback to original if URL parsing fails
+    }
+    return val;
+  };
 
   const saveProfile = async () => {
     setProfileTabSaving(true);
@@ -89,6 +135,17 @@ export function AdminAccountSheet({
           first_name: firstName.trim(),
           last_name: lastName.trim(),
           email: email.trim(),
+          bio: bio.trim(),
+          phone_number: phone.trim(),
+          location: location.trim(),
+          job_title: jobTitle.trim(),
+          department: department.trim(),
+          social_links: {
+            twitter: sanitizeHandle(twitter.trim()),
+            linkedin: sanitizeHandle(linkedin.trim()),
+            github: sanitizeHandle(github.trim()),
+            instagram: sanitizeHandle(instagram.trim()),
+          }
         }),
         cache: "no-store",
       });
@@ -140,7 +197,6 @@ export function AdminAccountSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
-        showCloseButton
         className="flex h-full w-full flex-col gap-0 overflow-hidden border-l border-border/30 p-0 sm:max-w-md"
       >
         <SheetHeader className="space-y-1 border-b border-border/20 px-4 py-4 text-left">
@@ -162,52 +218,105 @@ export function AdminAccountSheet({
           </div>
           <Separator className="my-3 bg-border/30" />
 
-          <ScrollArea className="min-h-[min(340px,calc(100dvh-12rem))] flex-1 px-4 pb-16">
-            <TabsContent value="profile" className="mt-0 space-y-3 pb-2">
-              <div className="space-y-1.5">
-                <Label htmlFor="acct-first" className="text-xs">
-                  First name
-                </Label>
-                <Input
-                  id="acct-first"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  className="h-9 text-sm"
-                />
+          <ScrollArea className="flex-1 px-4 pb-20">
+            <TabsContent value="profile" className="mt-0 space-y-4 pb-10">
+              {/* Identity */}
+              <div className="space-y-3">
+                <h4 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">Identity</h4>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="acct-first" className="text-xs">First name</Label>
+                    <Input id="acct-first" value={firstName} onChange={(e) => setFirstName(e.target.value)} className="h-9 text-sm" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="acct-last" className="text-xs">Last name</Label>
+                    <Input id="acct-last" value={lastName} onChange={(e) => setLastName(e.target.value)} className="h-9 text-sm" />
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="acct-email" className="text-xs">Email</Label>
+                  <Input id="acct-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="h-9 text-sm" />
+                </div>
               </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="acct-last" className="text-xs">
-                  Last name
-                </Label>
-                <Input
-                  id="acct-last"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  className="h-9 text-sm"
-                />
+
+              <Separator className="bg-border/10" />
+
+              {/* Professional */}
+              <div className="space-y-3">
+                <h4 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">Professional</h4>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="acct-title" className="text-xs">Job Title</Label>
+                    <Input id="acct-title" value={jobTitle} onChange={(e) => setJobTitle(e.target.value)} className="h-9 text-sm" placeholder="e.g. Data Analyst" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="acct-dept" className="text-xs">Department</Label>
+                    <Input id="acct-dept" value={department} onChange={(e) => setDepartment(e.target.value)} className="h-9 text-sm" placeholder="e.g. Research" />
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="acct-bio" className="text-xs">Bio</Label>
+                  <textarea
+                    id="acct-bio"
+                    value={bio}
+                    onChange={(e) => setBio(e.target.value)}
+                    className="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                    placeholder="Tell us about yourself..."
+                  />
+                </div>
               </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="acct-email" className="text-xs">
-                  Email
-                </Label>
-                <Input
-                  id="acct-email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="h-9 text-sm"
-                  autoComplete="email"
-                />
+
+              <Separator className="bg-border/10" />
+
+              {/* Contact & Social */}
+              <div className="space-y-3">
+                <h4 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">Contact & Social</h4>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="acct-phone" className="text-xs">Phone</Label>
+                    <Input id="acct-phone" value={phone} onChange={(e) => setPhone(e.target.value)} className="h-9 text-sm" placeholder="+254..." />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="acct-loc" className="text-xs">Location</Label>
+                    <Input id="acct-loc" value={location} onChange={(e) => setLocation(e.target.value)} className="h-9 text-sm" placeholder="Nairobi, Kenya" />
+                  </div>
+                </div>
+                
+                <div className="space-y-3 pt-1">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="acct-twitter" className="text-xs">X (Twitter) Handle</Label>
+                    <Input 
+                      id="acct-twitter" 
+                      value={twitter} 
+                      onChange={(e) => setTwitter(e.target.value)} 
+                      className="h-9 text-sm font-mono" 
+                      placeholder="username (no https://)" 
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="acct-linkedin" className="text-xs">LinkedIn Username</Label>
+                    <Input 
+                      id="acct-linkedin" 
+                      value={linkedin} 
+                      onChange={(e) => setLinkedin(e.target.value)} 
+                      className="h-9 text-sm font-mono" 
+                      placeholder="johndoe (no https://)" 
+                    />
+                  </div>
+                </div>
               </div>
-              <Button
-                type="button"
-                size="sm"
-                className="mt-4 w-full"
-                disabled={profileTabSaving}
-                onClick={() => void saveProfile()}
-              >
-                {profileTabSaving ? "Saving…" : "Save profile"}
-              </Button>
+
+              <div className="pt-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  className="w-full"
+                  disabled={profileTabSaving}
+                  onClick={() => void saveProfile()}
+                >
+                  {profileTabSaving ? "Saving…" : "Update profile"}
+                </Button>
+              </div>
             </TabsContent>
 
             <TabsContent value="security" className="mt-0 space-y-3 pb-2">

@@ -147,39 +147,55 @@ interface DashboardProps {
 }
 
 const MODEL_CATEGORIES: Array<{
-  id: "org" | "people" | "content" | "system" | "other";
+  id: string;
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   models: string[];
 }> = [
   {
-    id: "org",
-    label: "Organization Operations",
-    icon: Building2,
-    models: ["organization", "project", "campaign", "partner", "program", "activity", "impactmetric"],
+    id: "execution",
+    label: "Execution",
+    icon: Trophy,
+    models: ["activity", "project", "impactmetric", "roadmapitem"],
   },
   {
-    id: "people",
-    label: "People & Governance",
-    icon: Users2,
-    models: ["teammember", "teamquote", "organizationmember", "user", "auditlog"],
+    id: "hub",
+    label: "Knowledge Hub",
+    icon: BookOpenText,
+    models: ["trivia", "story", "deepdivearticle", "knowledgeentry", "document", "docfolder"],
   },
   {
-    id: "content",
-    label: "Knowledge & Content",
-    icon: FileText,
-    models: ["deepdivearticle", "trivia", "story", "document", "docfolder", "knowledgeentry"],
+    id: "governance",
+    label: "Governance",
+    icon: ShieldCheck,
+    models: [
+      "campaign",
+      "teamquote",
+      "subscriber",
+      "partner",
+      "program",
+      "organization",
+      "teammember",
+      "organizationmember",
+    ],
   },
   {
     id: "system",
-    label: "System & Product",
+    label: "System",
     icon: Settings2,
-    models: ["roadmapitem", "changelog", "versioninfo", "subscriber", "gamificationprofile", "pointevent"],
+    models: [
+      "user",
+      "auditlog",
+      "changelog",
+      "versioninfo",
+      "gamificationprofile",
+      "pointevent",
+    ],
   },
   {
     id: "other",
-    label: "Other Models",
-    icon: ShieldCheck,
+    label: "Other",
+    icon: LayoutGrid,
     models: [],
   },
 ];
@@ -313,7 +329,7 @@ const Dashboard = ({ activeModel, setActiveModel, onModelsLoaded, onProfileLoade
   const [searchQuery, setSearchQuery] = useState("");
   const [sortField, setSortField] = useState<string>("-created_at");
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
-  const [activeCategory, setActiveCategory] = useState<string>("org");
+  const [activeCategory, setActiveCategory] = useState<string>("execution");
   const [seedStatus, setSeedStatus] = useState<SeedStatus | null>(null);
   const [seedLoading, setSeedLoading] = useState(false);
   const [recentNotifications, setRecentNotifications] = useState<string[]>([]);

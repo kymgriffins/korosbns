@@ -1,0 +1,8 @@
+src/components/marketing/research.tsx:  { id: 'intro', title: 'Introduction to BPS', duration: '4:32', url: 'https://www.youtube.com/embed/A_EXLueEMlk' },
+src/components/marketing/research.tsx:  { id: 'pillars', title: 'BETA Agenda Pillars Explained', duration: '8:15', url: 'https://www.youtube.com/embed/jLZe3iPSMfc' },
+src/components/marketing/research.tsx:  { id: 'numbers', title: 'Budget Numbers Deep Dive', duration: '6:48', url: 'https://www.youtube.com/embed/KeNCrx6krl0' },
+src/components/marketing/research.tsx:  { id: 'risks', title: 'Fiscal Risks Analysis', duration: '5:22', url: 'https://www.youtube.com/embed/SfPwtqUFyj4' },
+src/components/marketing/hero.tsx:                                    src="https://www.youtube.com/embed/Ed9lP0-komE?rel=0&modestbranding=1"
+src/lib/learn-deep-dives.ts:            <iframe class="w-full h-full" src="https://www.youtube.com/embed/A_EXLueEMlk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+src/lib/learn-deep-dives.ts:            <iframe class="w-full h-full" src="https://www.youtube.com/embed/jLZe3iPSMfc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+src/lib/learn-deep-dives.ts:            <iframe class="w-full h-full" src="https://www.youtube.com/embed/KeNCrx6krl0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>

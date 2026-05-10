@@ -9,7 +9,7 @@ import { Analytics } from "@vercel/analytics/next";
 export const metadata = generateMetadata();
 
 const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://www.budgetndiostory.org";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://app.budgetndiostory.org";
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",

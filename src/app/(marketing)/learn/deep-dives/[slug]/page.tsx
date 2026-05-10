@@ -53,14 +53,14 @@ export default async function DeepDiveArticlePage({ params }: Props) {
             )}
           </header>
 
-          <hr className="border-white/5" />
+          <hr className="border-border" />
 
           <div
-            className="notion-content"
+            className="notion-content prose dark:prose-invert max-w-none"
             dangerouslySetInnerHTML={{ __html: article.html }}
           />
 
-          <footer className="mt-16 pt-8 border-t border-white/5">
+          <footer className="mt-16 pt-8 border-t border-border">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
               <div className="space-y-1">
                 <p className="text-sm font-semibold text-foreground">Next Step</p>
@@ -69,7 +69,7 @@ export default async function DeepDiveArticlePage({ params }: Props) {
               <div className="flex items-center gap-3">
                 <Link
                   href="/learn"
-                  className="inline-flex h-11 items-center gap-2 rounded-xl bg-white px-6 text-sm font-bold text-black transition-all hover:bg-white/90"
+                  className="inline-flex h-11 items-center gap-2 rounded-xl bg-foreground px-6 text-sm font-bold text-background transition-all hover:bg-foreground/90"
                 >
                   Return to Hub <ArrowRight className="size-4" />
                 </Link>
@@ -77,7 +77,7 @@ export default async function DeepDiveArticlePage({ params }: Props) {
                   href="https://api.budgetndiostory.org/docrepository/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex h-11 items-center gap-2 rounded-xl border border-white/10 px-6 text-sm font-bold text-foreground transition-all hover:bg-white/5"
+                  className="inline-flex h-11 items-center gap-2 rounded-xl border border-border px-6 text-sm font-bold text-foreground transition-all hover:bg-muted/10"
                 >
                   Raw Docs
                 </a>

@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://www.budgetndiostory.org";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://app.budgetndiostory.org";
 const appName = process.env.NEXT_PUBLIC_APP_NAME || "Budget Ndio Story";
 
 export const generateMetadata = ({

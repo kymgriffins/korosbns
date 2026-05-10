@@ -5,6 +5,7 @@ import { UsersMembershipsModule } from "@/components/admin/users-memberships-mod
 import { TasksWorkflowModule } from "@/components/admin/tasks-workflow-module";
 import { AuditLogModule } from "@/components/admin/audit-log-module";
 import { ContentOrgWorkspaceModule } from "@/components/admin/content-org-workspace-module";
+import { AutomationModule } from "@/components/admin/automation-module";
 
 type AdminCapabilities = {
   can_view_admin: boolean;
@@ -66,6 +67,10 @@ export function WorkflowPanel({
 
   if (activeModel === "auditlog") {
     return <AuditLogModule orgId={membership?.organization_id} />;
+  }
+
+  if (activeModel === "subscriber") {
+    return <AutomationModule />;
   }
 
   if (contentModels.has(activeModel) || orgModels.has(activeModel)) {
