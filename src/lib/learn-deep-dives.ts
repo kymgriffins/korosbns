@@ -21,7 +21,7 @@ const FALLBACK_ARTICLES: Record<string, DeepDiveArticle> = {
       <div class="notion-content">
         <p class="text-xs text-foreground/50 mb-6 font-medium uppercase tracking-widest">By James Maingi Mutinda & Nelly Maina</p>
         
-        <p>Good morning, good afternoon, and good evening. Welcome to <strong>Budget News Story</strong>, where we make public money make sense.</p>
+        <p>Good morning, good afternoon, and good evening. Welcome to <strong>Budget Ndio Story</strong>, where we make public money make sense.</p>
         
         <div class="notion-callout bg-primary/5 border-primary/20">
           <p><strong>"Young people cannot lead unless they are informed. They cannot influence unless they have knowledge."</strong> If we want to change the course of this country, we have to move beyond opinions and build substantial capacity on national issues.</p>
