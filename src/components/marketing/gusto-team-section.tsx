@@ -85,7 +85,7 @@ const TeamMemberRow = ({ member, index, quote }: { member: any; index: number; q
                         fill
                         className={cn(
                             "object-cover grayscale transition-all duration-[2.5s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:grayscale-0 group-hover:scale-[1.03]",
-                            (member.name === "Peculiar Koros" || member.name === "Millicent Makina") ? "object-top" : "object-center"
+                            (member.name === "Peculiar Koros" || member.name === "Millicent Makina" || member.name === "James Maingi Mutinda") ? "object-top" : "object-center"
                         )}
                         sizes="(max-width: 768px) 100vw, 50vw"
                     />
