@@ -36,15 +36,15 @@ const projects = [
 
 const UpcomingProjects = () => {
     return (
-        <section id="engagement" className="w-full py-16 lg:py-24">
-            <Wrapper>
-                <div className="mx-auto max-w-3xl text-center mb-16">
-                    <SectionBadge title="The Engagement" />
-                    <h2 className="text-3xl md:text-5xl font-bold font-heading tracking-tight mt-6">
-                        From Online Outrage to Offline Action
-                    </h2>
-                    <p className="text-base md:text-lg text-muted-foreground mt-4 leading-relaxed">
-                        We are building permanent spaces for direct dialogue and peer-to-peer education across the country.
+        <section id="engagement" className="w-full py-24 md:py-48">
+            <div className="max-w-[1400px] mx-auto px-8 md:px-16">
+                <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
+                    <div className="max-w-4xl">
+                        <span className="text-primary font-bold uppercase tracking-widest text-sm mb-6 block">The Engagement</span>
+                        <h2 className="gusto-heading">From Online Outrage to <span className="italic font-serif text-primary">Offline Action</span>.</h2>
+                    </div>
+                    <p className="gusto-text max-w-sm mb-4">
+                        Building permanent spaces for direct dialogue and peer-to-peer education across the country.
                     </p>
                 </div>
 
@@ -165,7 +165,7 @@ const UpcomingProjects = () => {
                         Play Trivia
                     </Link>
                 </div>
-            </Wrapper>
+            </div>
         </section>
     );
 };

@@ -152,6 +152,50 @@
   --dot-color: rgba(255, 255, 255, 0.1);
 }
 
+/* Custom Cursor for Studio Gusto Style */
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 150px;
+  height: 150px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: difference;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.custom-cursor.active {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.custom-cursor span {
+  color: black;
+  font-weight: 600;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Typography for Studio Gusto Style */
+.gusto-heading {
+  @apply text-[clamp(2.5rem,8vw,8rem)] font-bold tracking-[-0.04em] leading-[0.95] text-balance;
+}
+
+.gusto-subheading {
+  @apply text-[clamp(1.2rem,3vw,2rem)] font-medium tracking-tight leading-tight text-balance;
+}
+
+.gusto-text {
+  @apply text-lg md:text-xl text-foreground/80 leading-relaxed;
+}
+
 ::-webkit-scrollbar {
   width: 0px;
 }

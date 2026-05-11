@@ -55,23 +55,30 @@ const LoadingScreen = () => {
 
         // Get all individual image items
         const imageItems = imagesContainer.querySelectorAll('.bg-image-item');
+        
+        // Separate items for directional animation (Left 2 cols move down, Right 2 cols move up)
+        const topMoving = Array.from(imageItems).filter((_, i) => (i % 4) < 2);
+        const bottomMoving = Array.from(imageItems).filter((_, i) => (i % 4) >= 2);
 
         tl.set(overlay, { opacity: 1 })
             .set(progressBar, { opacity: 0, y: 20 })
             .set(logo, { opacity: 0, scale: 0.8, filter: 'blur(10px)' })
             .set(progressFill, { scaleX: 0, transformOrigin: 'left' })
-            .set(imageItems, { opacity: 0, scale: 1.1, filter: 'grayscale(100%) contrast(1.2)' })
+            .set(imageItems, { opacity: 0, scale: 1, filter: 'grayscale(100%) contrast(1.2)' })
+            .set(topMoving, { y: -100 }) // Starts at top, moves down to 0
+            .set(bottomMoving, { y: 100 }) // Starts at bottom, moves up to 0
 
-            // 1. Fade in grayscale background images
+            // 1. Fade in images with a directional "pop"
             .to(imageItems, {
-                opacity: 0.15,
-                scale: 1,
-                duration: 1.2,
+                opacity: 0.6,
+                y: 0,
+                filter: 'grayscale(0%) contrast(1)',
+                duration: 1.8,
                 stagger: {
-                    amount: 0.6,
-                    from: "random"
+                    amount: 0.8,
+                    from: "edges"
                 },
-                ease: "power2.out"
+                ease: "power3.out"
             })
 
             // 2. Fade in logo after images start appearing
@@ -101,15 +108,16 @@ const LoadingScreen = () => {
             // 5. Exit animation
             .to([logo, progressBar, imagesContainer], {
                 opacity: 0,
-                y: -20,
-                duration: 0.4,
-                ease: "power2.in"
+                scale: 0.95,
+                filter: 'blur(10px)',
+                duration: 0.6,
+                ease: "power2.inOut"
             })
             .to(overlay, {
                 y: '-100%',
-                duration: 0.8,
-                ease: "power4.inOut",
-            });
+                duration: 1,
+                ease: "expo.inOut",
+            }, "-=0.2");
 
         return () => {
             tl.kill();
@@ -127,29 +135,31 @@ const LoadingScreen = () => {
             {/* Grayscale background images grid */}
             <div 
                 ref={imagesContainerRef}
-                className="absolute inset-0 grid grid-cols-2 md:grid-cols-4 gap-2 p-2 pointer-events-none"
+                className="absolute inset-0 grid grid-cols-2 md:grid-cols-4 gap-1 p-1 pointer-events-none"
             >
                 {images.length > 0 ? (
                     images.map((img, i) => (
-                        <div key={i} className="bg-image-item relative w-full h-full overflow-hidden rounded-xl bg-muted/10">
-                            <Image
-                                src={img.src}
-                                alt={img.alt}
-                                fill
-                                className="object-cover"
-                                sizes="25vw"
-                                priority
-                            />
+                        <div key={i} className="bg-image-item relative w-full h-full overflow-hidden rounded-lg bg-background shadow-sm">
+                            <div className="relative w-full h-full overflow-hidden">
+                                <Image
+                                    src={img.src}
+                                    alt={img.alt}
+                                    fill
+                                    className="object-cover"
+                                    sizes="25vw"
+                                    priority
+                                />
+                            </div>
                         </div>
                     ))
                 ) : (
                     // Placeholder items if images haven't loaded yet
                     Array.from({ length: 12 }).map((_, i) => (
-                        <div key={i} className="bg-image-item w-full h-full rounded-xl bg-muted/10" />
+                        <div key={i} className="bg-image-item w-full h-full rounded-lg bg-muted/10" />
                     ))
                 )}
                 {/* Subtle vignette overlay */}
-                <div className="absolute inset-0 bg-radial-gradient from-transparent to-background opacity-60" />
+                <div className="absolute inset-0 bg-radial-gradient from-transparent to-background opacity-30" />
             </div>
 
             <div className="relative z-10 flex flex-col items-center gap-4">
