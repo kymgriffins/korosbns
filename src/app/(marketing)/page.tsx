@@ -1,19 +1,12 @@
-import Background from "@/components/global/background";
-import Hero from "@/components/marketing/hero";
-import StoriesPromoMarquee from "@/components/marketing/stories-promo-marquee";
-import Workflow from "@/components/marketing/workflow";
-import Capibilities from "@/components/marketing/capibilities";
-import Disconnect from "@/components/marketing/disconnect";
-import ROI from "@/components/marketing/roi";
-import Integrations from "@/components/marketing/integrations";
-import UpcomingProjects from "@/components/marketing/upcoming-projects";
-import TeamHierarchy from "@/components/marketing/team-hierarchy";
+import GustoHero from "@/components/marketing/gusto-hero";
+import GustoMotionText from "@/components/marketing/gusto-motion-text";
+import GustoInteractiveVideo from "@/components/marketing/gusto-interactive-video";
+import GustoArticleSection from "@/components/marketing/gusto-article-section";
 import ConsortiumPartners from "@/components/marketing/consortium-partners";
-import WallOfLove from "@/components/marketing/wall-of-love";
-import Gallery from "@/components/marketing/gallery";
-import Cta from "@/components/marketing/cta";
-import SurveyPopup from "@/components/marketing/survey-popup";
-import NewsletterPopup from "@/components/marketing/newsletter-popup";
+import GustoCloudinaryGallery from "@/components/marketing/gusto-cloudinary-gallery";
+import UpcomingProjects from "@/components/marketing/upcoming-projects";
+import GustoTeamSection from "@/components/marketing/gusto-team-section";
+import GustoPartingHero from "@/components/marketing/gusto-parting-hero";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -49,20 +42,15 @@ export const metadata: Metadata = {
 
 const HomePage = () => {
     return (
-        <div className="w-full min-h-dvh pt-6 lg:pt-8">
-            <Background />
-            <Hero />
-            <StoriesPromoMarquee />
-            <UpcomingProjects />
-            <Disconnect />
-            <Workflow />
-            <Capibilities />
-            <ROI />
-            <TeamHierarchy />
+        <div className="w-full min-h-screen bg-background">
+            <GustoHero />
+            <GustoMotionText />
+            <GustoInteractiveVideo />
             <ConsortiumPartners />
-            <Cta />
-            <SurveyPopup />
-            <NewsletterPopup />
+            <GustoCloudinaryGallery />
+            <UpcomingProjects />
+            <GustoTeamSection />
+            <GustoPartingHero />
         </div>
     )
 };

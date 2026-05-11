@@ -240,9 +240,9 @@ const TeamHierarchy = () => {
         <section id="team" className="w-full py-16 lg:py-20 bg-background/40">
             <Wrapper>
                 <div className="mx-auto max-w-3xl text-center">
-                    <SectionBadge title="The Architects" />
-                    <h2 className="title mt-6">Expertise Meeting Execution</h2>
-                    <p className="desc mt-4">
+                    <span className="g-eyebrow text-primary mb-4 block">Our Team</span>
+                    <h2 className="g-headline tracking-tighter">Expertise Meeting <span className="text-primary italic">Execution</span></h2>
+                    <p className="text-lg md:text-xl font-light leading-relaxed text-muted-foreground mt-6">
                         A multidisciplinary team of policy experts, researchers, and digital storytellers building the future of civic participation.
                     </p>
                 </div>

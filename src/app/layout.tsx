@@ -1,3 +1,4 @@
+import Script from "next/script";
 import FlareCursor from "@/components/global/flare-cursor";
 import LoadingScreen from "@/components/global/loading-screen";
 import Providers from "@/components/global/providers";
@@ -43,6 +44,20 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <Script
+          id="organization-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationSchema),
+          }}
+        />
+        <Script
+          id="website-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
+      </head>
       <body
         className={cn(
           "min-h-dvh bg-background text-foreground font-base antialiased overflow-x-hidden",
@@ -51,16 +66,6 @@ export default function RootLayout({
           handwriting.variable,
         )}
       >
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(organizationSchema),
-          }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
-        />
         <Providers>
           <LoadingScreen />
           <FlareCursor />

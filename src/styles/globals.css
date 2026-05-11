@@ -185,15 +185,15 @@
 
 /* Typography for Studio Gusto Style */
 .gusto-heading {
-  @apply text-[clamp(2.5rem,8vw,8rem)] font-bold tracking-[-0.04em] leading-[0.95] text-balance;
+  @apply text-[clamp(2rem,6vw,5rem)] font-bold tracking-[-0.04em] leading-[0.95] text-balance;
 }
 
 .gusto-subheading {
-  @apply text-[clamp(1.2rem,3vw,2rem)] font-medium tracking-tight leading-tight text-balance;
+  @apply text-[clamp(1.1rem,2.5vw,1.75rem)] font-medium tracking-tight leading-tight text-balance;
 }
 
 .gusto-text {
-  @apply text-lg md:text-xl text-foreground/80 leading-relaxed;
+  @apply text-base md:text-lg text-foreground/80 leading-relaxed;
 }
 
 ::-webkit-scrollbar {
@@ -300,6 +300,19 @@ h6 {
   background: var(--secondary);
   border: 1px solid var(--border);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ── Apple HIG Layered Shadows ── */
+.shadow-premium {
+  box-shadow: 
+    0 1px 1px rgba(0,0,0,0.04),
+    0 8px 24px rgba(0,0,0,0.08);
+}
+
+.shadow-premium-dark {
+  box-shadow: 
+    0 1px 1px rgba(0,0,0,0.2),
+    0 8px 24px rgba(0,0,0,0.4);
 }
 
 .bento-grid {
@@ -665,4 +678,43 @@ h6 {
 
 .notion-content strong {
   @apply font-bold text-foreground;
+}
+
+.bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+.bg-radial-gradient {
+  background: radial-gradient(circle at var(--tw-gradient-from-position, center), var(--tw-gradient-from) 0%, var(--tw-gradient-to) 100%);
+}
+
+/* ── Studio Gusto Premium Typography ── */
+.g-display {
+  @apply text-[clamp(3.5rem,9vw,7.5rem)] font-black tracking-[-0.06em] leading-[0.9] text-balance;
+}
+
+.g-headline {
+  @apply text-[clamp(2.2rem,5vw,4.5rem)] font-black tracking-[-0.04em] leading-[0.95] text-balance;
+}
+
+.g-eyebrow {
+  @apply text-[10px] font-bold tracking-[0.2em] uppercase text-primary;
+}
+
+.g-text {
+  @apply text-base md:text-lg text-muted-foreground leading-7 font-light;
+}
+
+.g-mono {
+  @apply font-mono text-[13px] tracking-tight text-foreground/50 uppercase;
+}
+
+.g-divider {
+  @apply w-full h-[1px] bg-foreground/10 my-8;
+}
+
+/* Smooth Transitions */
+.g-transition {
+  @apply transition-all duration-700;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }

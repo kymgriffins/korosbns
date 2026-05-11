@@ -1,8 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { motion, useScroll, useTransform } from 'motion/react';
+import { motion } from 'motion/react';
 import Image from 'next/image';
+import Container from '@/components/ui/container';
+import { APPLE_EASE } from '@/constants/motion';
+import { Marquee } from '@/components/ui/marquee';
 
 interface CloudinaryImage {
     src: string;
@@ -33,49 +36,88 @@ const GustoCloudinaryGallery = () => {
         fetchImages();
     }, []);
 
-    if (loading) return <div className="h-96 flex items-center justify-center">Loading Gallery...</div>;
+    if (loading) return (
+        <div className="h-[40vh] flex items-center justify-center bg-black">
+            <motion.div 
+                animate={{ opacity: [0.4, 1, 0.4] }} 
+                transition={{ duration: 1.5, repeat: Infinity }}
+                className="g-mono text-white/40"
+            >
+                Loading Gallery...
+            </motion.div>
+        </div>
+    );
+
+    // Split images into two rows
+    const half = Math.ceil(images.length / 2);
+    const row1 = images.slice(0, half);
+    const row2 = images.slice(half);
 
     return (
-        <section className="py-24 md:py-48 bg-black overflow-hidden">
-            <div className="max-w-[1400px] mx-auto px-8 md:px-16 mb-16 md:mb-24">
-                <span className="text-white/40 uppercase tracking-[0.3em] text-xs mb-4 block">Visual Impact</span>
-                <h2 className="gusto-subheading text-white max-w-2xl">Documenting the <span className="italic font-serif text-primary">Movement</span> in the field.</h2>
-            </div>
+        <section className="py-24 md:py-32 bg-black overflow-hidden flex flex-col gap-12">
+            <Container size="ultra">
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7, ease: APPLE_EASE }}
+                    viewport={{ once: true }}
+                >
+                    <span className="g-eyebrow text-primary mb-4 block">Visual Impact</span>
+                    <h2 className="g-headline text-white max-w-4xl tracking-tighter">
+                        Documenting the <span className="text-primary italic">Movement</span> in the field.
+                    </h2>
+                </motion.div>
+            </Container>
 
-            <div className="flex flex-nowrap gap-8 md:gap-12 px-8 md:px-16 overflow-x-auto no-scrollbar py-10">
-                {images.map((image, i) => (
-                    <GalleryItem key={i} image={image} index={i} />
-                ))}
+            <div className="relative flex flex-col gap-8 md:gap-12">
+                {/* Row 1: Left */}
+                <Marquee 
+                    pauseOnHover 
+                    className="[--duration:60s] [--gap:2rem]"
+                >
+                    {row1.map((image, i) => (
+                        <GalleryItem key={`row1-${i}`} image={image} rotate={i % 2 === 0 ? -2 : 1} />
+                    ))}
+                </Marquee>
+
+                {/* Row 2: Right */}
+                <Marquee 
+                    reverse 
+                    pauseOnHover 
+                    className="[--duration:55s] [--gap:2rem]"
+                >
+                    {row2.map((image, i) => (
+                        <GalleryItem key={`row2-${i}`} image={image} rotate={i % 2 === 0 ? 1 : -2} />
+                    ))}
+                </Marquee>
+
+                {/* Overlays for depth */}
+                <div className="absolute inset-y-0 left-0 w-32 md:w-64 bg-linear-to-r from-black to-transparent z-10 pointer-events-none" />
+                <div className="absolute inset-y-0 right-0 w-32 md:w-64 bg-linear-to-l from-black to-transparent z-10 pointer-events-none" />
             </div>
         </section>
     );
 };
 
-const GalleryItem = ({ image, index }: { image: CloudinaryImage; index: number }) => {
-    const ref = React.useRef(null);
-    const { scrollYProgress } = useScroll({
-        target: ref,
-        offset: ["start end", "end start"]
-    });
-
-    const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1, 0.8]);
-    const rotate = useTransform(scrollYProgress, [0, 1], [index % 2 === 0 ? -5 : 5, index % 2 === 0 ? 5 : -5]);
-
+const GalleryItem = ({ image, rotate }: { image: CloudinaryImage; rotate: number }) => {
     return (
         <motion.div
-            ref={ref}
-            style={{ scale, rotate }}
-            className="relative flex-shrink-0 w-[300px] md:w-[450px] aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl"
+            style={{ rotate: `${rotate}deg` }}
+            className="relative w-[300px] md:w-[450px] aspect-[4/3] rounded-[24px] md:rounded-[40px] overflow-hidden group cursor-pointer shadow-2xl transition-all duration-700 hover:scale-[1.02] hover:brightness-110"
         >
             <Image
                 src={image.src}
                 alt={image.alt}
                 fill
-                className="object-cover transition-transform duration-700 hover:scale-110"
+                className="object-cover transition-transform duration-[2s] ease-out group-hover:scale-110"
                 sizes="(max-width: 768px) 300px, 450px"
             />
-            <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-500 flex items-end p-8">
-                <p className="text-white text-sm tracking-widest uppercase">{image.alt}</p>
+            
+            {/* Minimal Caption Overlay */}
+            <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6 md:p-10">
+                <p className="text-white/80 g-mono text-[10px] md:text-xs tracking-widest uppercase">
+                    {image.alt}
+                </p>
             </div>
         </motion.div>
     );
