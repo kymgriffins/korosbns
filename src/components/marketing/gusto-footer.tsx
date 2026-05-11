@@ -21,15 +21,25 @@ const brandIcons: Record<string, string> = {
     facebook: 'lucide:facebook'
 };
 
+const brandColors: Record<string, string> = {
+    x: '#000000',
+    linkedin: '#0077B5',
+    whatsapp: '#25D366',
+    youtube: '#FF0000',
+    tiktok: '#000000',
+    instagram: '#E4405F',
+    facebook: '#1877F2'
+};
+
 const GustoFooter = () => {
     return (
-        <footer className="relative bg-background text-foreground overflow-hidden h-screen flex flex-col justify-between pt-24 pb-12 z-0">
+        <footer className="relative bg-background text-foreground overflow-hidden min-h-screen flex flex-col justify-between pt-24 pb-0 z-0">
             {/* Background Grain */}
             <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none bg-noise" />
 
             <Container size="ultra" className="relative z-10 flex flex-col h-full flex-1">
                 {/* TOP: Monumental CTA */}
-                <div className="pt-20 pb-32 border-b border-foreground/5 flex flex-col lg:flex-row justify-between items-start lg:items-end gap-16">
+                <div className="pt-20 pb-24 border-b border-foreground/5 flex flex-col lg:flex-row justify-between items-start lg:items-end gap-16">
                     <div className="max-w-4xl">
                         <motion.h2 
                             initial={{ opacity: 0, y: 20 }}
@@ -38,7 +48,7 @@ const GustoFooter = () => {
                             className="text-5xl md:text-8xl font-black tracking-[-0.06em] leading-[0.85] mb-12"
                         >
                             Fund fiscal <br />
-                            <span className="text-primary italic font-light">literacy today.</span>
+                            <span className="text-primary font-medium">literacy today.</span>
                         </motion.h2>
                         <div className="flex flex-col md:flex-row items-center gap-8">
                             <a href="mailto:info@budgetndiostory.org" className="flex items-center gap-4 text-2xl md:text-3xl font-light hover:text-primary transition-colors group">
@@ -52,20 +62,21 @@ const GustoFooter = () => {
                     </Button>
                 </div>
 
-                {/* MIDDLE: Precise Columnar Layout */}
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-x-12 gap-y-24 py-24 md:py-32">
+                {/* MIDDLE: Columnar Layout & Socials */}
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-x-12 gap-y-24 py-20 md:py-24">
                     <div className="lg:col-span-2 space-y-10">
-                        <div className="flex flex-wrap gap-6">
+                        <div className="flex flex-wrap gap-5">
                             {socialLinks.map((social) => (
                                 <SocialIcon 
                                     key={social.label} 
                                     icon={brandIcons[social.icon] || social.icon} 
                                     href={social.href}
+                                    brandColor={brandColors[social.icon]}
                                 />
                             ))}
                         </div>
                         <p className="text-base text-muted-foreground max-w-sm leading-relaxed font-light">
-                            Budget Ndio Story is a youth-led Kenyan initiative transforming complex national budgets into actionable narratives for democratic participation.
+                            Transforming complex national budgets into actionable narratives for the next generation.
                         </p>
                     </div>
                     
@@ -96,19 +107,26 @@ const GustoFooter = () => {
                     </div>
                 </div>
 
-                {/* BOTTOM: Watermark Monument */}
-                <div className="mt-auto pt-12">
-                    <div className="opacity-[0.03] dark:opacity-[0.05] hover:opacity-10 transition-opacity duration-1000">
+                {/* BOTTOM: Bidirectional Watermark Marquee */}
+                <div className="mt-auto w-full overflow-hidden border-t border-foreground/5 pt-12">
+                    <div className="flex flex-col gap-0 opacity-[0.06] dark:opacity-[0.1] hover:opacity-30 transition-opacity duration-1000">
                         <ScrollBaseAnimation 
-                            baseVelocity={-0.5} 
+                            baseVelocity={3} 
                             scrollDependent={true}
-                            clasname="text-[15vw] font-black uppercase tracking-[-0.05em] leading-none select-none text-foreground"
+                            clasname="text-[14vw] font-black uppercase tracking-[-0.07em] leading-[0.9] select-none text-foreground"
+                        >
+                            BUDGET NDIO STORY
+                        </ScrollBaseAnimation>
+                        <ScrollBaseAnimation 
+                            baseVelocity={-3} 
+                            scrollDependent={true}
+                            clasname="text-[14vw] font-black uppercase tracking-[-0.07em] leading-[0.9] select-none text-foreground"
                         >
                             BUDGET NDIO STORY
                         </ScrollBaseAnimation>
                     </div>
                     
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-6 py-12 g-mono text-[10px] opacity-20 border-t border-foreground/5 mt-12">
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-6 py-12 g-mono text-[10px] opacity-20 border-t border-foreground/5 mt-12 px-2">
                         <p className="tracking-widest">© 2026 BUDGET NDIO STORY. NATIONAL CIVIC INITIATIVE.</p>
                         <div className="flex gap-12">
                             <Link href="/privacy" className="hover:text-primary transition-colors tracking-widest uppercase">Privacy Policy</Link>
@@ -136,15 +154,21 @@ const FooterColumn = ({ title, links }: { title: string; links: { label: string;
     </div>
 );
 
-const SocialIcon = ({ icon, href }: { icon: string; href: string }) => (
-    <a 
+const SocialIcon = ({ icon, href, brandColor }: { icon: string; href: string; brandColor?: string }) => (
+    <motion.a 
         href={href} 
         target="_blank"
         rel="noopener noreferrer"
-        className="w-12 h-12 rounded-full border border-foreground/10 flex items-center justify-center transition-all duration-500 hover:border-primary hover:text-primary hover:scale-110"
+        whileHover={{ 
+            scale: 1.1, 
+            backgroundColor: brandColor || '#0055FF', 
+            borderColor: brandColor || '#0055FF', 
+            color: '#FFFFFF' 
+        }}
+        className="w-11 h-11 rounded-full border border-foreground/10 flex items-center justify-center transition-all duration-500 text-foreground"
     >
-        <Icon icon={icon} className="w-6 h-6" />
-    </a>
+        <Icon icon={icon} className="w-5 h-5" />
+    </motion.a>
 );
 
 export default GustoFooter;
