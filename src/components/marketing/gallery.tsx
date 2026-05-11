@@ -1,13 +1,21 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "motion/react";
 import Wrapper from "../global/wrapper";
 import SectionBadge from "../ui/section-badge";
 import { cn } from "@/utils";
 
-const images = [
+interface GalleryImage {
+    src: string;
+    alt: string;
+    title?: string;
+    category?: string;
+    className?: string;
+}
+
+const staticImages: GalleryImage[] = [
     {
         src: "/images/towwnhallmay/129A3863.jpg",
         alt: "Town Hall Meeting",
@@ -53,6 +61,37 @@ const images = [
 ];
 
 const Gallery = () => {
+    const [images, setImages] = useState<GalleryImage[]>(staticImages);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchImages = async () => {
+            try {
+                const res = await fetch('/api/images/cohort');
+                const data = await res.json();
+                
+                if (data.images && data.images.length > 0) {
+                    // Map Cloudinary images and assign classes for the grid
+                    const mappedImages = data.images.map((img: any, index: number) => ({
+                        ...img,
+                        title: img.alt.replace(/-/g, ' '),
+                        category: "Cohort",
+                        className: index === 0 ? "md:col-span-2 md:row-span-2" : 
+                                   index === 3 ? "md:col-span-1 md:row-span-2" : 
+                                   "md:col-span-1 md:row-span-1"
+                    }));
+                    setImages(mappedImages.slice(0, 8)); // Show up to 8 images
+                }
+            } catch (error) {
+                console.error("Failed to fetch gallery images:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchImages();
+    }, []);
+
     return (
         <section id="gallery" className="w-full py-16 lg:py-24 bg-background/50">
             <Wrapper>
@@ -92,7 +131,7 @@ const Gallery = () => {
                                 <span className="inline-block px-2 py-0.5 rounded-full bg-primary/20 text-primary text-[10px] font-bold uppercase tracking-wider mb-2 backdrop-blur-sm border border-primary/20">
                                     {image.category}
                                 </span>
-                                <h3 className="text-lg lg:text-xl font-bold text-white leading-tight">
+                                <h3 className="text-lg lg:text-xl font-bold text-white leading-tight capitalize">
                                     {image.title}
                                 </h3>
                             </div>
