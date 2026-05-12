@@ -55,9 +55,9 @@ const GustoPartingHero = () => {
                                 transition={{ duration: 0.7, delay: 0.3, ease: APPLE_EASE }}
                                 viewport={{ once: true }}
                             >
-                                <MagneticButton>
+                                <MagneticCtaLink href="/learn">
                                     Start Your Story
-                                </MagneticButton>
+                                </MagneticCtaLink>
                             </motion.div>
 
                             <motion.div
@@ -87,8 +87,8 @@ const GustoPartingHero = () => {
     );
 };
 
-const MagneticButton = ({ children }: { children: React.ReactNode }) => {
-    const ref = useRef<HTMLButtonElement>(null);
+const MagneticCtaLink = ({ href, children }: { href: string; children: React.ReactNode }) => {
+    const ref = useRef<HTMLAnchorElement>(null);
     const [isHovered, setIsHovered] = useState(false);
 
     const mouseX = useMotionValue(0);
@@ -115,27 +115,29 @@ const MagneticButton = ({ children }: { children: React.ReactNode }) => {
     };
 
     return (
-        <motion.button
+        <Link
             ref={ref}
+            href={href}
             onMouseMove={handleMouseMove}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={handleMouseLeave}
-            style={{ x, y }}
-            className="relative g-eyebrow px-12 py-6 bg-white text-black rounded-full transition-shadow duration-500 hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] active:scale-95"
+            className="relative inline-flex g-eyebrow items-center justify-center rounded-full bg-white px-12 py-6 text-black transition-shadow duration-500 hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] active:scale-95"
         >
-            <span className="relative z-10">{children}</span>
+            <motion.span style={{ x, y }} className="relative z-10">
+                {children}
+            </motion.span>
             <AnimatePresence>
                 {isHovered && (
                     <motion.div
-                        layoutId="glow"
+                        layoutId="gusto-parting-glow"
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 0.4, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.8 }}
-                        className="absolute inset-0 bg-primary blur-lg -z-10"
+                        className="absolute inset-0 -z-10 rounded-full bg-primary blur-lg"
                     />
                 )}
             </AnimatePresence>
-        </motion.button>
+        </Link>
     );
 };
 

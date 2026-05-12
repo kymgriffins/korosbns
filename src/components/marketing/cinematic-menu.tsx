@@ -1,202 +1,239 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import Link from 'next/link';
-import { X, Mail, ArrowRight } from 'lucide-react';
-import { NAV_LINKS, Routes } from '@/constants';
-import { Button } from '../ui/button';
-import Image from 'next/image';
-import NumberFlow from '@number-flow/react';
-import { cn } from '@/utils';
+import React, { useEffect, useRef } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
+import Link from "next/link";
+import Image from "next/image";
+import { X, ArrowRight, Mail } from "lucide-react";
+import NumberFlow from "@number-flow/react";
+import { Icon } from "@iconify/react";
+import { Routes } from "@/constants";
+import { MAIN_MENU_SECTIONS } from "@/constants/navigation";
+import { mailtoOrg, ORG_CONTACT_EMAIL } from "@/constants/org";
+import { socialLinks } from "@/constants/links";
+import { Button } from "../ui/button";
+
+const brandIcons: Record<string, string> = {
+  x: "ri:twitter-x-fill",
+  linkedin: "lucide:linkedin",
+  whatsapp: "lucide:whatsapp",
+  youtube: "lucide:youtube",
+  tiktok: "ri:tiktok-fill",
+  instagram: "lucide:instagram",
+  facebook: "lucide:facebook",
+};
 
 interface CinematicMenuProps {
-    isOpen: boolean;
-    onClose: () => void;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 const CinematicMenu = ({ isOpen, onClose }: CinematicMenuProps) => {
-    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const reduceMotion = useReducedMotion();
+  const closeRef = useRef<HTMLButtonElement>(null);
 
-    // Lock body scroll when menu is open
-    useEffect(() => {
-        if (isOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = '';
-        }
-        return () => {
-            document.body.style.overflow = '';
-        };
-    }, [isOpen]);
+  useEffect(() => {
+    if (!isOpen) return;
+    document.body.style.overflow = "hidden";
+    const focusTimer = window.setTimeout(() => closeRef.current?.focus(), 60);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      window.clearTimeout(focusTimer);
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [isOpen, onClose]);
 
-    const menuItems = [
-        { label: "Learn", href: Routes.Learn },
-        { label: "Challenges", href: Routes.Challenges },
-        { label: "Stories", href: "/learn" },
-        { label: "Research", href: "/research" },
-        { label: "About", href: "/about" },
-        { label: "Contact", href: "/contact" },
-    ];
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Site navigation"
+          initial={reduceMotion ? { opacity: 0 } : { clipPath: "inset(0 0 100% 0)" }}
+          animate={reduceMotion ? { opacity: 1 } : { clipPath: "inset(0% 0 0% 0)" }}
+          exit={reduceMotion ? { opacity: 0 } : { clipPath: "inset(0 0 100% 0)" }}
+          transition={
+            reduceMotion
+              ? { duration: 0.2 }
+              : { duration: 0.65, ease: [0.76, 0, 0.24, 1] }
+          }
+          className="fixed inset-0 z-[200] flex max-h-[100dvh] flex-col bg-background text-foreground md:overflow-hidden"
+        >
+          <div className="pointer-events-none absolute inset-0 overflow-hidden">
+            <div className="absolute inset-0 bg-linear-to-b from-primary/[0.06] via-transparent to-muted/50 dark:from-primary/12 dark:to-background" />
+            <motion.div
+              className="absolute -left-[20%] top-[18%] h-[min(85vw,560px)] w-[min(85vw,560px)] rounded-full bg-primary/10 blur-[120px] dark:bg-primary/18"
+              animate={
+                reduceMotion
+                  ? undefined
+                  : {
+                      x: [0, 36, 0],
+                      y: [0, -28, 0],
+                      opacity: [0.22, 0.42, 0.22],
+                    }
+              }
+              transition={
+                reduceMotion ? undefined : { duration: 18, repeat: Infinity, ease: "easeInOut" }
+              }
+            />
+            <div className="absolute inset-0 bg-noise opacity-[0.035]" />
+          </div>
 
-    return (
-        <AnimatePresence>
-            {isOpen && (
-                <motion.div
-                    initial={{ clipPath: "inset(0 0 100% 0)" }}
-                    animate={{ clipPath: "inset(0% 0 0% 0)" }}
-                    exit={{ clipPath: "inset(0 0 100% 0)" }}
-                    transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-                    className="fixed inset-0 z-[200] bg-black text-white flex flex-col md:flex-row overflow-hidden"
-                >
-                    {/* Background Layer with Drifting Blobs */}
-                    <div className="absolute inset-0 z-0 pointer-events-none">
-                        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/40 via-black to-black" />
-                        
-                        {/* Drifting Blur Blobs */}
-                        <motion.div 
-                            animate={{ 
-                                x: [0, 100, -100, 0],
-                                y: [0, -50, 50, 0],
-                            }}
-                            transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-                            className="absolute top-1/4 left-1/4 w-[40vw] h-[40vw] bg-primary/20 blur-[120px] rounded-full"
-                        />
-                        <motion.div 
-                            animate={{ 
-                                x: [0, -80, 80, 0],
-                                y: [0, 60, -60, 0],
-                            }}
-                            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                            className="absolute bottom-1/4 right-1/4 w-[35vw] h-[35vw] bg-blue-500/10 blur-[100px] rounded-full"
-                        />
+          <div className="relative z-10 flex shrink-0 items-center justify-between border-b border-border/60 px-5 pb-4 pt-[max(1rem,env(safe-area-inset-top))] md:px-12 md:pb-5 md:pt-[max(1.25rem,env(safe-area-inset-top))]">
+            <Link
+              href={Routes.Home}
+              onClick={onClose}
+              className="flex items-center gap-2 opacity-90 transition-opacity hover:opacity-100"
+            >
+              <Image
+                src="/logo.svg"
+                alt="Budget Ndio Story"
+                width={132}
+                height={26}
+                className="h-6 w-auto dark:invert"
+              />
+            </Link>
+            <button
+              ref={closeRef}
+              type="button"
+              aria-label="Close menu"
+              onClick={onClose}
+              className="flex size-11 items-center justify-center rounded-full border border-border/80 bg-muted/50 text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <X className="size-5" />
+            </button>
+          </div>
 
-                        {/* Enhanced Grain Overlay */}
-                        <div className="absolute inset-0 bg-noise opacity-[0.05] pointer-events-none mix-blend-overlay" />
-                    </div>
-
-                    {/* Close Button */}
-                    <button 
-                        onClick={onClose}
-                        className="absolute top-8 right-8 z-[210] p-4 rounded-full bg-white/10 hover:bg-white/20 transition-all active:scale-90 group"
-                    >
-                        <X className="w-8 h-8 group-hover:rotate-90 transition-transform duration-500" />
-                    </button>
-
-                    {/* Left Section: Nav Links */}
-                    <div className="flex-[1.4] flex flex-col justify-center px-6 md:px-16 lg:px-24 z-10 pt-24 md:pt-0">
-                        <nav className="flex flex-col gap-1 md:gap-2">
-                            {menuItems.map((item, index) => (
-                                <motion.div
-                                    key={item.label}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: 0.1 + index * 0.08, duration: 0.6, ease: [0.215, 0.61, 0.355, 1] }}
-                                    onMouseEnter={() => setHoveredIndex(index)}
-                                    onMouseLeave={() => setHoveredIndex(null)}
-                                    className="relative group"
-                                >
-                                    <Link 
-                                        href={item.href}
-                                        onClick={onClose}
-                                        className={cn(
-                                            "inline-block text-4xl md:text-6xl lg:text-8xl font-black uppercase tracking-tighter transition-all duration-500 py-1",
-                                            hoveredIndex !== null && hoveredIndex !== index 
-                                                 ? "opacity-20 blur-[1px]" 
-                                                 : "opacity-100",
-                                            hoveredIndex === index ? "text-[#0066FF] translate-x-4" : "text-white"
-                                        )}
-                                    >
-                                        {item.label}
-                                    </Link>
-                                    
-                                    {/* Animated Underline Tracking Hover */}
-                                    <motion.div 
-                                        className="absolute bottom-0 left-0 h-1 bg-[#0066FF] rounded-full"
-                                        initial={{ width: 0 }}
-                                        animate={{ width: hoveredIndex === index ? "100%" : 0 }}
-                                        transition={{ duration: 0.4, ease: "easeOut" }}
-                                    />
-                                </motion.div>
-                            ))}
-                        </nav>
-                    </div>
-
-                    {/* Right Section: Info & Newsletter */}
-                    <div className="flex-1 border-l border-white/5 flex flex-col justify-between p-8 md:p-16 lg:p-20 z-10 bg-white/[0.02] backdrop-blur-3xl">
-                        <div className="space-y-16">
-                            {/* Block 1: Support */}
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.5 }}
-                            >
-                                <p className="g-mono text-primary mb-3 text-xs tracking-[0.2em]">Institutional Trust</p>
-                                <h3 className="text-2xl md:text-3xl font-bold mb-6 leading-tight">Support civic education across Kenya.</h3>
-                                <Button variant="white" size="lg" className="rounded-full gap-3 h-14 px-8 text-lg hover:scale-105 active:scale-95 transition-all">
-                                    Donate Now <ArrowRight className="w-5 h-5" />
-                                </Button>
-                            </motion.div>
-
-                            {/* Block 2: Newsletter */}
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.6 }}
-                            >
-                                <p className="g-mono text-primary mb-3 text-xs tracking-[0.2em]">Join the Narrative</p>
-                                <h3 className="text-xl md:text-2xl font-bold mb-6 opacity-80">Weekly budget breakdowns delivered.</h3>
-                                <div className="flex flex-col sm:flex-row gap-3">
-                                    <input 
-                                        type="email" 
-                                        placeholder="Enter your email" 
-                                        className="bg-white/5 border border-white/10 rounded-full px-8 py-4 focus:outline-none focus:ring-2 focus:ring-primary w-full text-base transition-all focus:bg-white/10"
-                                    />
-                                    <Button variant="white" className="rounded-full px-10 h-14 text-base font-bold shadow-premium hover:scale-105 transition-all">Join</Button>
-                                </div>
-                            </motion.div>
-
-                            {/* Block 3: Metrics */}
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.7 }}
-                                className="grid grid-cols-3 gap-6 pt-8 border-t border-white/5"
-                            >
-                                {[
-                                    { value: 47, label: "Counties" },
-                                    { value: 20, label: "Reach", suffix: "K+" },
-                                    { value: 500, label: "Members", suffix: "+" }
-                                ].map((stat) => (
-                                    <div key={stat.label}>
-                                        <div className="text-2xl md:text-3xl font-black text-primary">
-                                            <NumberFlow value={stat.value} />{stat.suffix}
-                                        </div>
-                                        <p className="g-mono text-[9px] opacity-40 mt-1">{stat.label}</p>
-                                    </div>
-                                ))}
-                            </motion.div>
-                        </div>
-
-                        {/* Contact Bottom */}
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.8 }}
-                            className="pt-8 border-t border-white/5 flex flex-col gap-4"
+          <div className="relative z-10 grid min-h-0 flex-1 md:grid-cols-[1fr_minmax(280px,400px)] lg:grid-cols-[1.2fr_minmax(320px,420px)]">
+            <nav
+              className="min-h-0 overflow-y-auto overscroll-contain px-5 py-8 pb-[max(2rem,env(safe-area-inset-bottom))] md:px-12 md:py-12 lg:px-20"
+              aria-label="Primary navigation"
+            >
+              <div className="mx-auto max-w-xl space-y-10 md:mx-0 md:max-w-none">
+                {MAIN_MENU_SECTIONS.map((section, sIdx) => (
+                  <div key={section.id}>
+                    <p className="g-mono mb-4 text-[10px] font-black uppercase tracking-[0.35em] text-muted-foreground">
+                      {section.title}
+                    </p>
+                    <ul className="space-y-1">
+                      {section.items.map((item, i) => (
+                        <motion.li
+                          key={`${item.href}-${item.label}`}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{
+                            delay: reduceMotion ? 0 : 0.06 + sIdx * 0.05 + i * 0.035,
+                            duration: 0.35,
+                            ease: [0.22, 1, 0.36, 1],
+                          }}
                         >
-                            <a href="mailto:info@budgetndiostory.org" className="flex items-center gap-3 text-white/40 hover:text-white transition-colors group">
-                                <div className="p-2 rounded-full bg-white/5 group-hover:bg-primary/20 transition-colors">
-                                    <Mail className="w-4 h-4" />
-                                </div>
-                                <span className="font-mono text-[11px] tracking-widest uppercase">info@budgetndiostory.org</span>
-                            </a>
-                        </motion.div>
+                          <Link
+                            href={item.href}
+                            onClick={onClose}
+                            className="group flex items-center justify-between rounded-xl py-2 text-3xl font-semibold tracking-tight text-foreground transition-colors hover:text-primary md:text-4xl lg:text-[2.75rem] lg:leading-[1.05]"
+                          >
+                            <span>{item.label}</span>
+                            <ArrowRight className="size-5 shrink-0 opacity-0 transition-all group-hover:translate-x-0.5 group-hover:opacity-100 md:size-6" />
+                          </Link>
+                        </motion.li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </nav>
+
+            <aside className="flex min-h-0 flex-col gap-10 overflow-y-auto overscroll-contain border-t border-border/60 bg-muted/25 px-5 py-10 md:border-l md:border-t-0 md:px-10 md:py-12 lg:px-14">
+              <div className="space-y-4">
+                <p className="g-mono text-[10px] font-black uppercase tracking-[0.35em] text-primary">
+                  Support
+                </p>
+                <h3 className="text-xl font-semibold leading-snug md:text-2xl">
+                  Help keep civic fiscal education independent.
+                </h3>
+                <Button size="lg" className="h-12 rounded-full px-8" asChild>
+                  <Link href={Routes.Donate} onClick={onClose}>
+                    Donate & partner
+                    <ArrowRight className="size-4" />
+                  </Link>
+                </Button>
+              </div>
+
+              <div className="space-y-4 border-t border-border/50 pt-8">
+                <p className="g-mono text-[10px] font-black uppercase tracking-[0.35em] text-primary">
+                  Updates
+                </p>
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                  Weekly breakdowns and release notes—tell us you want the newsletter when you reach out.
+                </p>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="h-12 rounded-full border-border/80 px-8 bg-transparent"
+                  asChild
+                >
+                  <Link href={`${Routes.Contact}#newsletter`} onClick={onClose}>
+                    Request the newsletter
+                  </Link>
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4 border-t border-border/50 pt-8">
+                {[
+                  { value: 47, label: "Counties", suffix: "" },
+                  { value: 20, label: "Reach", suffix: "K+" },
+                  { value: 500, label: "Members", suffix: "+" },
+                ].map((stat) => (
+                  <div key={stat.label}>
+                    <div className="text-2xl font-bold tracking-tight text-primary md:text-3xl">
+                      <NumberFlow value={stat.value} />
+                      {stat.suffix}
                     </div>
-                </motion.div>
-            )}
-        </AnimatePresence>
-    );
+                    <p className="g-mono mt-1 text-[9px] uppercase tracking-wider text-muted-foreground">
+                      {stat.label}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-auto space-y-6 border-t border-border/50 pt-8 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+                <a
+                  href={mailtoOrg}
+                  className="inline-flex items-center gap-3 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  <span className="flex size-10 items-center justify-center rounded-full border border-border/60 bg-background">
+                    <Mail className="size-4 text-primary" />
+                  </span>
+                  <span className="break-all font-mono text-[11px] uppercase tracking-widest md:break-normal">
+                    {ORG_CONTACT_EMAIL}
+                  </span>
+                </a>
+                <div className="flex flex-wrap gap-2">
+                  {socialLinks.map((s) => (
+                    <a
+                      key={s.label}
+                      href={s.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex size-10 items-center justify-center rounded-full border border-border/60 bg-background text-foreground/70 transition-colors hover:border-primary hover:text-primary"
+                      aria-label={s.label}
+                    >
+                      <Icon icon={brandIcons[s.icon] ?? s.icon} className="size-4" />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </aside>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 };
 
 export default CinematicMenu;

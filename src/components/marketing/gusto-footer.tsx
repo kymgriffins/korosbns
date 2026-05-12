@@ -3,11 +3,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'motion/react';
-import { APPLE_EASE } from '@/constants/motion';
 import Container from '@/components/ui/container';
-import { Button } from '../ui/button';
 import { Icon } from '@iconify/react';
-import { ArrowRight, Mail } from 'lucide-react';
 import { socialLinks } from '@/constants/links';
 import ScrollBaseAnimation from '@/components/ui/scroll-text-marque';
 
@@ -19,16 +16,6 @@ const brandIcons: Record<string, string> = {
     tiktok: 'ri:tiktok-fill',
     instagram: 'lucide:instagram',
     facebook: 'lucide:facebook'
-};
-
-const brandColors: Record<string, string> = {
-    x: '#000000',
-    linkedin: '#0077B5',
-    whatsapp: '#25D366',
-    youtube: '#FF0000',
-    tiktok: '#000000',
-    instagram: '#E4405F',
-    facebook: '#1877F2'
 };
 
 const GustoFooter = () => {
@@ -73,7 +60,7 @@ const GustoFooter = () => {
                             { label: 'Donate', href: '/donate' },
                             { label: 'Join Network', href: '/join' },
                             { label: 'Volunteer', href: '/volunteer' },
-                            { label: 'Impact Report', href: '/careers' }
+                            { label: 'Impact', href: '/impact' }
                         ]} 
                     />
                     

@@ -1,11 +1,10 @@
 "use client";
 
 import { cn } from "@/utils";
-import { MenuIcon, XIcon } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState, useRef } from 'react';
+import { useState, useRef } from "react";
 import { Routes } from "@/constants";
-import { motion, useScroll, useMotionValueEvent, AnimatePresence, useTransform, useSpring, useMotionValue } from "motion/react";
+import { motion, useScroll, useMotionValueEvent, useSpring, useMotionValue } from "motion/react";
 import Image from "next/image";
 import { ThemeToggle } from "./theme-toggle";
 import { Button } from "../ui/button";
@@ -71,16 +70,17 @@ const Navbar = () => {
                     duration: 0.6,
                     ease: [0.22, 1, 0.36, 1]
                 }}
-                className="fixed top-6 inset-x-0 mx-auto z-[150] w-full pointer-events-none"
+                className="fixed inset-x-0 top-[max(1.25rem,env(safe-area-inset-top))] z-[150] mx-auto w-full pointer-events-none px-3 sm:px-4"
             >
                 <div
                     className={cn(
-                        "mx-auto max-w-[95%] md:max-w-[92%] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] pointer-events-auto",
-                        "flex items-center justify-between",
-                        "rounded-full px-4 md:px-6 py-1.5 md:py-2",
+                        "pointer-events-auto mx-auto flex max-w-[min(92vw,1280px)] items-center justify-between rounded-[999px] px-3 py-1.5 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] sm:px-5 md:px-6 md:py-2",
+                        "backdrop-blur-2xl",
                         isScrolled
-                            ? "bg-white/70 dark:bg-black/50 backdrop-blur-2xl border border-black/5 dark:border-white/10 shadow-premium scale-[0.98]"
-                            : "bg-white/5 dark:bg-black/10 backdrop-blur-md border border-white/5 dark:border-black/5"
+                            ? "scale-[0.985] border border-black/8 bg-white/78 shadow-premium dark:border-white/12 dark:bg-black/55"
+                            : "border border-white/14 bg-white/8 dark:border-white/10 dark:bg-black/20",
+                        !isScrolled &&
+                            "supports-[backdrop-filter]:bg-white/6 supports-[backdrop-filter]:dark:bg-black/15"
                     )}
                 >
                     {/* LEFT: Logo */}
@@ -109,12 +109,14 @@ const Navbar = () => {
                             <ThemeToggle />
                         </div>
 
-                        <Link href={Routes.JoinUs} className="hidden sm:block">
+                        <Link href={Routes.JoinUs} className="inline-flex">
                             <Button
                                 variant="ghost"
                                 className={cn(
-                                    "h-10 px-6 rounded-full text-xs font-bold tracking-widest uppercase transition-all",
-                                    !isScrolled ? "text-white hover:bg-white/10" : "text-foreground hover:bg-black/5 dark:hover:bg-white/5"
+                                    "h-9 rounded-full px-4 text-[10px] font-bold uppercase tracking-[0.14em] transition-all sm:h-10 sm:px-6 sm:text-xs sm:tracking-widest",
+                                    !isScrolled
+                                        ? "text-white hover:bg-white/12"
+                                        : "text-foreground hover:bg-black/6 dark:hover:bg-white/8"
                                 )}
                             >
                                 Join
@@ -130,13 +132,15 @@ const Navbar = () => {
                             whileTap={{ scale: 0.98 }}
                             onClick={() => setIsMenuOpen(true)}
                             className={cn(
-                                "h-9 md:h-10 px-5 md:px-6 flex items-center gap-3 rounded-full transition-all duration-500 group/menu relative overflow-hidden",
+                                "group/menu relative flex h-9 items-center gap-2 overflow-hidden rounded-full px-4 transition-all duration-500 md:h-10 md:gap-3 md:px-6",
                                 isScrolled
-                                    ? "bg-primary text-white"
-                                    : "bg-white/10 dark:bg-white/5 text-white backdrop-blur-md border border-white/10 hover:bg-white hover:text-black"
+                                    ? "bg-primary text-primary-foreground shadow-[0_8px_32px_-12px_var(--primary)]"
+                                    : "border border-white/18 bg-white/12 text-white hover:bg-white hover:text-black dark:border-white/12 dark:bg-white/8"
                             )}
                         >
-                            <span className="text-[11px] font-bold tracking-[0.1em] uppercase z-10">Menu</span>
+                            <span className="z-10 text-[10px] font-bold uppercase tracking-[0.14em] md:text-[11px] md:tracking-[0.1em]">
+                                Menu
+                            </span>
 
                             <div className="relative w-4 h-3 z-10 flex flex-col justify-between items-center py-0.5">
                                 <motion.span

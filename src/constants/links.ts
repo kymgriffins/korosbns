@@ -30,7 +30,7 @@ export const footerLinks = {
   resources: [
     { label: "Budget Guides", href: Routes.Learn },
     { label: "Surveys", href: "/surveys" },
-    { label: "Newsletter", href: "#newsletter" },
+    { label: "Newsletter", href: `${Routes.Contact}#newsletter` },
     { label: "Contact", href: Routes.Contact },
   ],
   company: [
