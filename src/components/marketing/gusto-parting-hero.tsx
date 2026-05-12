@@ -8,24 +8,16 @@ import { APPLE_EASE } from '@/constants/motion';
 import { socialLinks } from '@/constants/links';
 import { RandomizedTextEffect } from '@/components/ui/text-randomized';
 
-const brandColors: Record<string, string> = {
-    x: '#1DA1F2',
-    linkedin: '#0077B5',
-    whatsapp: '#25D366',
-    youtube: '#FF0000',
-    tiktok: '#ff0050', // TikTok pink/cyan vibe
-    instagram: '#E4405F',
-    facebook: '#1877F2'
-};
+// Social hover colors are handled dynamically via CSS variables now
 
 const GustoPartingHero = () => {
     return (
         <section className="relative py-24 md:py-32 bg-zinc-950 overflow-hidden">
             <Container size="ultra">
-                <div className="relative w-full rounded-[48px] md:rounded-[64px] overflow-hidden bg-black/40 border border-white/5 p-12 md:p-20">
+                <div className="relative w-full rounded-[24px] overflow-hidden bg-black/40 border border-white/5 p-12 md:p-20">
                     {/* Layered Background */}
                     <div className="absolute inset-0 z-0">
-                        <motion.div 
+                        <motion.div
                             animate={{
                                 scale: [1, 1.1, 1],
                                 opacity: [0.2, 0.3, 0.2],
@@ -42,12 +34,12 @@ const GustoPartingHero = () => {
 
                     <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                         <div className="lg:col-span-8">
-                            <motion.h2 
-                                initial={{ opacity: 0, y: 30 }}
+                            <motion.h2
+                                initial={{ opacity: 0, y: 16 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.8, ease: APPLE_EASE }}
                                 viewport={{ once: true }}
-                                className="text-5xl md:text-8xl font-black text-white leading-[0.85] tracking-tighter"
+                                className="text-5xl md:text-8xl font-black text-white leading-[0.9] tracking-[-0.03em]"
                             >
                                 <RandomizedTextEffect text="EVERY SHILLING" /> <br />
                                 <span className="text-primary italic">
@@ -55,7 +47,7 @@ const GustoPartingHero = () => {
                                 </span>
                             </motion.h2>
                         </div>
-                        
+
                         <div className="lg:col-span-4 flex flex-col items-start lg:items-end gap-8">
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.95 }}
@@ -76,18 +68,12 @@ const GustoPartingHero = () => {
                                 className="flex flex-wrap gap-x-8 gap-y-4 g-mono text-white/40 justify-start lg:justify-end"
                             >
                                 {socialLinks.map((social) => (
-                                    <a 
+                                    <a
                                         key={social.label}
-                                        href={social.href} 
+                                        href={social.href}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="transition-colors duration-300"
-                                        onMouseEnter={(e) => {
-                                            e.currentTarget.style.color = brandColors[social.icon] || 'var(--primary)';
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            e.currentTarget.style.color = '';
-                                        }}
+                                        className="transition-colors duration-300 hover:text-primary"
                                     >
                                         {social.label}
                                     </a>
@@ -140,12 +126,12 @@ const MagneticButton = ({ children }: { children: React.ReactNode }) => {
             <span className="relative z-10">{children}</span>
             <AnimatePresence>
                 {isHovered && (
-                    <motion.div 
+                    <motion.div
                         layoutId="glow"
                         initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
+                        animate={{ opacity: 0.4, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.8 }}
-                        className="absolute inset-0 bg-primary blur-xl -z-10 opacity-40"
+                        className="absolute inset-0 bg-primary blur-lg -z-10"
                     />
                 )}
             </AnimatePresence>

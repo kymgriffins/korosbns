@@ -3,21 +3,21 @@
 import { cn } from "@/utils";
 import Image from "next/image";
 import {
-    ArrowRight,
-    BarChart3,
-    BookOpen,
-    CheckCircle,
-    ChevronDown,
-    ChevronLeft,
-    Folder,
-    HelpCircle,
-    Mail,
-    RefreshCcw,
-    Send,
-    Target,
+  ArrowRight,
+  BarChart3,
+  BookOpen,
+  CheckCircle,
+  ChevronDown,
+  ChevronLeft,
+  Folder,
+  HelpCircle,
+  Mail,
+  RefreshCcw,
+  Send,
+  Target,
   Trophy,
-    X,
-    XCircle,
+  X,
+  XCircle,
 } from "lucide-react";
 import { AnimatePresence, motion, useScroll, useTransform } from "motion/react";
 import Link from "next/link";
@@ -834,7 +834,7 @@ export default function Learn() {
         const response = await fetch(`${API_BASE_URL}/api/trivia/`);
         if (!response.ok) throw new Error("Failed to fetch trivia");
         const data = await response.json();
-        
+
         const mappedTrivia = data.map((t: any) => ({
           id: `trivia-${t.id}`,
           title: t.category_display || "Budget Trivia",
@@ -1264,14 +1264,14 @@ export default function Learn() {
                   className={cn(
                     "w-full p-4 rounded-xl border text-left transition-all flex items-center gap-3",
                     showFeedback &&
-                      idx === q.correct &&
-                      "border-green-500 bg-green-500/20 text-green-400",
+                    idx === q.correct &&
+                    "border-green-500 bg-green-500/20 text-green-400",
                     showFeedback &&
-                      quizAnswer === idx &&
-                      idx !== q.correct &&
-                      "border-red-500 bg-red-500/20 text-red-400",
+                    quizAnswer === idx &&
+                    idx !== q.correct &&
+                    "border-red-500 bg-red-500/20 text-red-400",
                     !showFeedback &&
-                      "border-white/20 bg-white/5 hover:border-white/50 hover:bg-white/10",
+                    "border-white/20 bg-white/5 hover:border-white/50 hover:bg-white/10",
                   )}
                 >
                   <span
@@ -1280,8 +1280,8 @@ export default function Learn() {
                       showFeedback && idx === q.correct
                         ? "bg-green-500 border-green-500 text-black"
                         : showFeedback &&
-                            quizAnswer === idx &&
-                            idx !== q.correct
+                          quizAnswer === idx &&
+                          idx !== q.correct
                           ? "bg-red-500 border-red-500 text-white"
                           : "border-white/30 text-white/70",
                     )}
@@ -1788,18 +1788,18 @@ export default function Learn() {
                     <BookOpen className="size-3.5" />
                     Learn Hub
                   </div>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  <span className="inline-flex items-center gap-1 rounded-full border border-border bg-muted/30 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground/80">
-                    <Trophy className="size-3.5" />
-                    {gamification?.points ?? 0} points
-                  </span>
-                  <span className="inline-flex items-center gap-1 rounded-full border border-border bg-muted/30 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground/80">
-                    Lv {gamification?.level ?? 1}
-                  </span>
-                  <span className="inline-flex items-center gap-1 rounded-full border border-border bg-muted/30 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground/80">
-                    {gamification?.streak_days ?? 0} day streak
-                  </span>
-                </div>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <span className="inline-flex items-center gap-1 rounded-full border border-border bg-muted/30 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground/80">
+                      <Trophy className="size-3.5" />
+                      {gamification?.points ?? 0} points
+                    </span>
+                    <span className="inline-flex items-center gap-1 rounded-full border border-border bg-muted/30 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground/80">
+                      Lv {gamification?.level ?? 1}
+                    </span>
+                    <span className="inline-flex items-center gap-1 rounded-full border border-border bg-muted/30 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground/80">
+                      {gamification?.streak_days ?? 0} day streak
+                    </span>
+                  </div>
                   <h1 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">
                     Learn budget stories faster, with visual explainers
                   </h1>
@@ -1886,9 +1886,9 @@ export default function Learn() {
                   <h2 className="text-xl font-bold flex items-center gap-2">
                     <span className="text-red-500">▶</span> Budget Videos
                   </h2>
-                  <Link 
-                    href="https://youtube.com/@budgetndiostory" 
-                    target="_blank" 
+                  <Link
+                    href="https://youtube.com/@budgetndiostory"
+                    target="_blank"
                     className="text-xs font-semibold text-primary hover:underline"
                   >
                     View Channel
@@ -1905,9 +1905,9 @@ export default function Learn() {
                       >
                         <div className="relative aspect-video w-full overflow-hidden">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img 
-                            src={video.thumbnail} 
-                            alt={video.title} 
+                          <img
+                            src={video.thumbnail}
+                            alt={video.title}
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                           />
                           <div className="absolute inset-0 bg-muted/20 group-hover:bg-muted/10 transition-colors" />
@@ -1942,40 +1942,40 @@ export default function Learn() {
                 </p>
               </div>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-                  {deepDiveModules.map((module, index) => (
-                    <Link key={module.id} href={module.href} className="group block min-w-0">
-                      <motion.div
-                        initial={{ opacity: 0, y: 14 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.4, delay: index * 0.08 }}
-                        whileHover={{ y: -2 }}
-                        className="relative overflow-hidden rounded-[24px] bg-card border border-border"
-                      >
-                        <div className="relative m-2 h-44 overflow-hidden rounded-[18px]">
-                          <Image
-                            src={module.image}
-                            alt={module.title}
-                            fill
-                            className="object-cover dark:invert-0 invert"
-                            sizes="(max-width: 640px) 320px, 360px"
-                          />
-                          <div className="absolute right-3 top-3 rounded-full bg-foreground p-2 text-background">
-                            <ArrowRight className="size-3.5" />
-                          </div>
+                {deepDiveModules.map((module, index) => (
+                  <Link key={module.id} href={module.href} className="group block min-w-0">
+                    <motion.div
+                      initial={{ opacity: 0, y: 14 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.4, delay: index * 0.08 }}
+                      whileHover={{ y: -2 }}
+                      className="relative overflow-hidden rounded-[24px] bg-card border border-border"
+                    >
+                      <div className="relative m-2 h-44 overflow-hidden rounded-[18px]">
+                        <Image
+                          src={module.image}
+                          alt={module.title}
+                          fill
+                          className="object-cover dark:invert-0 invert"
+                          sizes="(max-width: 640px) 320px, 360px"
+                        />
+                        <div className="absolute right-3 top-3 rounded-full bg-foreground p-2 text-background">
+                          <ArrowRight className="size-3.5" />
                         </div>
+                      </div>
 
-                        <div className="min-w-0 px-4 pb-4 pt-3 sm:px-4 sm:pb-4 sm:pt-3.5">
-                          <h3 className="text-xl sm:text-2xl font-bold leading-tight tracking-tight break-words">
-                            {module.title}
-                          </h3>
-                          <p className="mt-2 text-sm sm:text-[15px] leading-relaxed text-foreground/70 break-words">
-                            {module.subtitle}
-                          </p>
-                        </div>
-                      </motion.div>
-                    </Link>
-                  ))}
+                      <div className="min-w-0 px-4 pb-4 pt-3 sm:px-4 sm:pb-4 sm:pt-3.5">
+                        <h3 className="text-xl sm:text-2xl font-bold leading-tight tracking-tight break-words">
+                          {module.title}
+                        </h3>
+                        <p className="mt-2 text-sm sm:text-[15px] leading-relaxed text-foreground/70 break-words">
+                          {module.subtitle}
+                        </p>
+                      </div>
+                    </motion.div>
+                  </Link>
+                ))}
               </div>
               <div className="pt-2">
                 <Link

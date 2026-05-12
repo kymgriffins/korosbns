@@ -97,18 +97,18 @@ const FeatureCard = ({ project, index }: { project: any; index: number }) => {
         >
             {/* Background Image */}
             <div className="absolute inset-0 z-0">
-                <Image 
-                    src={project.image} 
-                    alt={project.title} 
-                    fill 
-                    className="object-cover grayscale opacity-20 group-hover:grayscale-0 group-hover:opacity-40 group-hover:scale-105 transition-all duration-1000" 
+                <Image
+                    src={project.image}
+                    alt={project.title}
+                    fill
+                    className="object-cover grayscale opacity-20 group-hover:grayscale-0 group-hover:opacity-40 group-hover:scale-105 transition-all duration-1000"
                     sizes="(max-width: 768px) 100vw, 33vw"
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-background via-background/40 to-transparent" />
             </div>
 
             {/* Radial Glow */}
-            <motion.div 
+            <motion.div
                 className="absolute inset-0 z-10 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700"
                 style={{
                     background: useTransform(

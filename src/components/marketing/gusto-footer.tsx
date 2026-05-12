@@ -33,37 +33,16 @@ const brandColors: Record<string, string> = {
 
 const GustoFooter = () => {
     return (
-        <footer className="relative bg-background text-foreground overflow-hidden min-h-screen flex flex-col justify-between pt-24 pb-0 z-0">
-            {/* Background Grain */}
-            <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none bg-noise" />
+        <footer className="relative bg-background text-foreground overflow-hidden flex flex-col justify-between pt-16 pb-0 z-0">
+            {/* Atmospheric Depth Layers */}
+            <div className="absolute inset-0 z-0 opacity-100 pointer-events-none bg-linear-to-b from-[#F7F7F5] to-[#E8E8E4] dark:from-[#050505] dark:to-[#0C0C0C]" />
+            <div className="absolute inset-0 z-0 opacity-[0.6] pointer-events-none bg-[radial-gradient(circle_at_top,_rgba(255,255,255,1)_0%,_transparent_70%)] dark:bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.08)_0%,_transparent_60%)]" />
+            <div className="absolute inset-0 z-0 opacity-[0.04] pointer-events-none bg-noise" />
 
             <Container size="ultra" className="relative z-10 flex flex-col h-full flex-1">
-                {/* TOP: Monumental CTA */}
-                <div className="pt-20 pb-24 border-b border-foreground/5 flex flex-col lg:flex-row justify-between items-start lg:items-end gap-16">
-                    <div className="max-w-4xl">
-                        <motion.h2 
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            className="text-5xl md:text-8xl font-black tracking-[-0.06em] leading-[0.85] mb-12"
-                        >
-                            Fund fiscal <br />
-                            <span className="text-primary font-medium">literacy today.</span>
-                        </motion.h2>
-                        <div className="flex flex-col md:flex-row items-center gap-8">
-                            <a href="mailto:info@budgetndiostory.org" className="flex items-center gap-4 text-2xl md:text-3xl font-light hover:text-primary transition-colors group">
-                                <Mail className="w-8 h-8 text-primary opacity-40 group-hover:opacity-100 transition-opacity" />
-                                <span>info@budgetndiostory.org</span>
-                            </a>
-                        </div>
-                    </div>
-                    <Button variant="outline" size="lg" className="rounded-full px-12 h-20 text-2xl font-black group shadow-premium active:scale-95 border-primary/20 hover:bg-primary/5">
-                        Join the Narrative <ArrowRight className="ml-4 w-6 h-6 group-hover:translate-x-2 transition-transform" />
-                    </Button>
-                </div>
 
                 {/* MIDDLE: Columnar Layout & Socials */}
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-x-12 gap-y-24 py-20 md:py-24">
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-x-12 gap-y-12 py-12 md:py-16">
                     <div className="lg:col-span-2 space-y-10">
                         <div className="flex flex-wrap gap-5">
                             {socialLinks.map((social) => (
@@ -71,11 +50,10 @@ const GustoFooter = () => {
                                     key={social.label} 
                                     icon={brandIcons[social.icon] || social.icon} 
                                     href={social.href}
-                                    brandColor={brandColors[social.icon]}
                                 />
                             ))}
                         </div>
-                        <p className="text-base text-muted-foreground max-w-sm leading-relaxed font-light">
+                        <p className="text-sm text-muted-foreground max-w-sm leading-relaxed font-light">
                             Transforming complex national budgets into actionable narratives for the next generation.
                         </p>
                     </div>
@@ -101,33 +79,26 @@ const GustoFooter = () => {
                     
                     <div className="lg:col-span-2 flex flex-col justify-end items-start lg:items-end">
                         <div className="text-left lg:text-right space-y-2">
-                            <p className="g-mono text-[9px] opacity-20 uppercase tracking-[0.5em]">Global HQ</p>
+                            <p className="g-mono text-[11px] opacity-20 uppercase tracking-[0.4em]">Global HQ</p>
                             <p className="text-lg font-light text-muted-foreground">Nairobi, Kenya</p>
                         </div>
                     </div>
                 </div>
 
                 {/* BOTTOM: Bidirectional Watermark Marquee */}
-                <div className="mt-auto w-full overflow-hidden border-t border-foreground/5 pt-12">
-                    <div className="flex flex-col gap-0 opacity-[0.06] dark:opacity-[0.1] hover:opacity-30 transition-opacity duration-1000">
+                <div className="mt-auto w-full overflow-hidden border-t border-foreground/5 pt-8">
+                    <div className="flex flex-col gap-0 group">
                         <ScrollBaseAnimation 
                             baseVelocity={3} 
                             scrollDependent={true}
-                            clasname="text-[14vw] font-black uppercase tracking-[-0.07em] leading-[0.9] select-none text-foreground"
-                        >
-                            BUDGET NDIO STORY
-                        </ScrollBaseAnimation>
-                        <ScrollBaseAnimation 
-                            baseVelocity={-3} 
-                            scrollDependent={true}
-                            clasname="text-[14vw] font-black uppercase tracking-[-0.07em] leading-[0.9] select-none text-foreground"
+                            clasname="text-[8vw] font-black uppercase tracking-[-0.04em] leading-[0.9] select-none text-foreground"
                         >
                             BUDGET NDIO STORY
                         </ScrollBaseAnimation>
                     </div>
                     
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-6 py-12 g-mono text-[10px] opacity-20 border-t border-foreground/5 mt-12 px-2">
-                        <p className="tracking-widest">© 2026 BUDGET NDIO STORY. NATIONAL CIVIC INITIATIVE.</p>
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-6 py-8 g-mono text-[11px] text-muted-foreground border-t border-foreground/5 mt-8 px-2">
+                        <p className="tracking-widest uppercase">© 2026 BUDGET NDIO STORY. NATIONAL CIVIC INITIATIVE.</p>
                         <div className="flex gap-12">
                             <Link href="/privacy" className="hover:text-primary transition-colors tracking-widest uppercase">Privacy Policy</Link>
                             <Link href="/terms" className="hover:text-primary transition-colors tracking-widest uppercase">Terms of Service</Link>
@@ -141,11 +112,11 @@ const GustoFooter = () => {
 
 const FooterColumn = ({ title, links }: { title: string; links: { label: string; href: string }[] }) => (
     <div className="space-y-8">
-        <span className="g-mono text-[9px] text-primary/30 font-black uppercase tracking-[0.4em]">{title}</span>
-        <ul className="space-y-4">
+        <span className="g-mono text-[11px] text-primary/30 font-black uppercase tracking-[0.4em]">{title}</span>
+        <ul className="space-y-3">
             {links.map((link) => (
                 <li key={link.label}>
-                    <Link href={link.href} className="text-xl md:text-2xl font-light text-muted-foreground hover:text-primary transition-all duration-500">
+                    <Link href={link.href} className="text-base md:text-lg font-light text-muted-foreground hover:text-primary transition-all duration-500">
                         {link.label}
                     </Link>
                 </li>
@@ -154,16 +125,16 @@ const FooterColumn = ({ title, links }: { title: string; links: { label: string;
     </div>
 );
 
-const SocialIcon = ({ icon, href, brandColor }: { icon: string; href: string; brandColor?: string }) => (
+const SocialIcon = ({ icon, href }: { icon: string; href: string }) => (
     <motion.a 
         href={href} 
         target="_blank"
         rel="noopener noreferrer"
         whileHover={{ 
-            scale: 1.1, 
-            backgroundColor: brandColor || '#0055FF', 
-            borderColor: brandColor || '#0055FF', 
-            color: '#FFFFFF' 
+            scale: 1.05, 
+            backgroundColor: 'var(--primary)', 
+            borderColor: 'var(--primary)', 
+            color: 'var(--primary-foreground)' 
         }}
         className="w-11 h-11 rounded-full border border-foreground/10 flex items-center justify-center transition-all duration-500 text-foreground"
     >

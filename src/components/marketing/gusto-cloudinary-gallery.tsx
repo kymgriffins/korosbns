@@ -38,8 +38,8 @@ const GustoCloudinaryGallery = () => {
 
     if (loading) return (
         <div className="h-[40vh] flex items-center justify-center bg-black">
-            <motion.div 
-                animate={{ opacity: [0.4, 1, 0.4] }} 
+            <motion.div
+                animate={{ opacity: [0.4, 1, 0.4] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
                 className="g-mono text-white/40"
             >
@@ -63,7 +63,7 @@ const GustoCloudinaryGallery = () => {
                     viewport={{ once: true }}
                 >
                     <span className="g-eyebrow text-primary mb-4 block">Visual Impact</span>
-                    <h2 className="g-headline text-white max-w-4xl tracking-tighter">
+                    <h2 className="g-headline text-white max-w-4xl tracking-[-0.03em]">
                         Documenting the <span className="text-primary italic">Movement</span> in the field.
                     </h2>
                 </motion.div>
@@ -71,23 +71,23 @@ const GustoCloudinaryGallery = () => {
 
             <div className="relative flex flex-col gap-8 md:gap-12">
                 {/* Row 1: Left */}
-                <Marquee 
-                    pauseOnHover 
-                    className="[--duration:60s] [--gap:2rem]"
+                <Marquee
+                    pauseOnHover
+                    className="[--duration:60s] [--gap:2.5rem]"
                 >
                     {row1.map((image, i) => (
-                        <GalleryItem key={`row1-${i}`} image={image} rotate={i % 2 === 0 ? -2 : 1} />
+                        <GalleryItem key={`row1-${i}`} image={image} />
                     ))}
                 </Marquee>
 
                 {/* Row 2: Right */}
-                <Marquee 
-                    reverse 
-                    pauseOnHover 
-                    className="[--duration:55s] [--gap:2rem]"
+                <Marquee
+                    reverse
+                    pauseOnHover
+                    className="[--duration:55s] [--gap:2.5rem]"
                 >
                     {row2.map((image, i) => (
-                        <GalleryItem key={`row2-${i}`} image={image} rotate={i % 2 === 0 ? 1 : -2} />
+                        <GalleryItem key={`row2-${i}`} image={image} />
                     ))}
                 </Marquee>
 
@@ -99,11 +99,10 @@ const GustoCloudinaryGallery = () => {
     );
 };
 
-const GalleryItem = ({ image, rotate }: { image: CloudinaryImage; rotate: number }) => {
+const GalleryItem = ({ image }: { image: CloudinaryImage }) => {
     return (
         <motion.div
-            style={{ rotate: `${rotate}deg` }}
-            className="relative w-[300px] md:w-[450px] aspect-[4/3] rounded-[24px] md:rounded-[40px] overflow-hidden group cursor-pointer shadow-2xl transition-all duration-700 hover:scale-[1.02] hover:brightness-110"
+            className="relative w-[300px] md:w-[450px] aspect-[4/3] rounded-[24px] overflow-hidden group cursor-pointer border border-white/5 transition-all duration-700 hover:scale-[1.02]"
         >
             <Image
                 src={image.src}
@@ -112,10 +111,10 @@ const GalleryItem = ({ image, rotate }: { image: CloudinaryImage; rotate: number
                 className="object-cover transition-transform duration-[2s] ease-out group-hover:scale-110"
                 sizes="(max-width: 768px) 300px, 450px"
             />
-            
+
             {/* Minimal Caption Overlay */}
-            <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6 md:p-10">
-                <p className="text-white/80 g-mono text-[10px] md:text-xs tracking-widest uppercase">
+            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 flex items-end p-6 md:p-10">
+                <p className="text-white/80 g-mono text-[11px] md:text-[12px] tracking-widest uppercase">
                     {image.alt}
                 </p>
             </div>

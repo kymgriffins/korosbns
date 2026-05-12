@@ -34,14 +34,14 @@ const GustoTeamSection = () => {
         <section className="py-32 md:py-48 bg-background overflow-hidden">
             <Container size="ultra">
                 <motion.div
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, y: 16 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, ease: APPLE_EASE }}
                     viewport={{ once: true }}
                     className="mb-32 md:mb-56 text-center"
                 >
                     <span className="g-eyebrow text-primary mb-6 block tracking-[0.4em]">The Architects</span>
-                    <h2 className="g-display text-[clamp(2.5rem,7vw,6rem)] leading-[0.85] tracking-[-0.05em]">
+                    <h2 className="g-display text-[clamp(2.5rem,7vw,6rem)] leading-[0.9] tracking-[-0.03em]">
                         Minds behind <br />
                         <span className="text-primary font-medium">the Kenyan story</span>.
                     </h2>
@@ -49,10 +49,10 @@ const GustoTeamSection = () => {
 
                 <div className="space-y-48 md:space-y-72">
                     {sortedTeam.map((member, index) => (
-                        <TeamMemberRow 
-                            key={member.name} 
-                            member={member} 
-                            index={index} 
+                        <TeamMemberRow
+                            key={member.name}
+                            member={member}
+                            index={index}
                             quote={teamQuotes[member.name]}
                         />
                     ))}
@@ -71,8 +71,8 @@ const TeamMemberRow = ({ member, index, quote }: { member: any; index: number; q
             isEven ? 'md:flex-row' : 'md:flex-row-reverse'
         )}>
             {/* Image Container */}
-            <motion.div 
-                initial={{ opacity: 0, scale: 0.95, y: 40 }}
+            <motion.div
+                initial={{ opacity: 0, scale: 0.98, y: 24 }}
                 whileInView={{ opacity: 1, scale: 1, y: 0 }}
                 transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
                 viewport={{ once: true, margin: "-100px" }}
@@ -84,7 +84,7 @@ const TeamMemberRow = ({ member, index, quote }: { member: any; index: number; q
                         alt={member.name}
                         fill
                         className={cn(
-                            "object-cover grayscale transition-all duration-[2.5s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:grayscale-0 group-hover:scale-[1.03]",
+                            "object-cover grayscale transition-all duration-[2s] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:grayscale-0 group-hover:scale-[1.02]",
                             (member.name === "Peculiar Koros" || member.name === "Millicent Makina" || member.name === "James Maingi Mutinda") ? "object-top" : "object-center"
                         )}
                         sizes="(max-width: 768px) 100vw, 50vw"
@@ -94,21 +94,21 @@ const TeamMemberRow = ({ member, index, quote }: { member: any; index: number; q
             </motion.div>
 
             {/* Content Container */}
-            <motion.div 
-                initial={{ opacity: 0, x: isEven ? 40 : -40 }}
+            <motion.div
+                initial={{ opacity: 0, x: isEven ? 24 : -24 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 1, ease: APPLE_EASE, delay: 0.3 }}
                 viewport={{ once: true, margin: "-100px" }}
                 className="w-full md:w-1/2 flex flex-col justify-center"
             >
                 <div className="space-y-4 mb-10">
-                    <span className="font-mono text-[9px] text-primary font-black uppercase tracking-[0.4em] block">
+                    <span className="font-mono text-[11px] text-primary font-black uppercase tracking-[0.4em] block">
                         {member.role}
                     </span>
-                    <h3 className="text-5xl md:text-6xl lg:text-7xl font-black tracking-[-0.05em] leading-[0.85] text-foreground">
+                    <h3 className="text-5xl md:text-6xl lg:text-7xl font-black tracking-[-0.03em] leading-[0.9] text-foreground">
                         {member.name}
                     </h3>
-                    
+
                     {/* Social Icons Inline */}
                     <div className="flex gap-4 pt-4">
                         {member.socials?.linkedin && (
@@ -128,9 +128,9 @@ const TeamMemberRow = ({ member, index, quote }: { member: any; index: number; q
                     <p className="text-lg md:text-xl text-muted-foreground leading-relaxed font-light max-w-xl">
                         {member.bio || member.description}
                     </p>
-                    
+
                     {quote && (
-                        <motion.div 
+                        <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8, delay: 0.5 }}

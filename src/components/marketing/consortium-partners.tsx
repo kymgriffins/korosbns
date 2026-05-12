@@ -32,10 +32,10 @@ const ConsortiumPartners = () => {
                                 initial={{ y: "100%" }}
                                 whileInView={{ y: 0 }}
                                 viewport={{ once: true }}
-                                transition={{ 
-                                    duration: 1.2, 
-                                    delay: i * 0.15, 
-                                    ease: APPLE_EASE 
+                                transition={{
+                                    duration: 1.2,
+                                    delay: i * 0.15,
+                                    ease: APPLE_EASE
                                 }}
                                 className="block"
                             >

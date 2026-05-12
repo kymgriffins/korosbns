@@ -7,7 +7,7 @@ import { APPLE_EASE } from '@/constants/motion';
 
 const GustoMotionText = () => {
     const containerRef = useRef<HTMLDivElement>(null);
-    
+
     // Using a more focused offset to ensure animation happens while section is primarily in viewport
     const { scrollYProgress } = useScroll({
         target: containerRef,
@@ -31,22 +31,22 @@ const GustoMotionText = () => {
     const totalWords = allWords.length;
 
     return (
-        <section 
+        <section
             ref={containerRef}
             className="relative min-h-[180svh] w-full bg-background overflow-hidden flex flex-col items-center justify-center py-48"
         >
             {/* Cinematic Background Treatment */}
             <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110vw] h-[110vw] bg-primary/5 rounded-full blur-[140px] opacity-40" />
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.03)_100%)] dark:bg-[radial-gradient(circle_at_center,transparent_0%,rgba(255,255,255,0.03)_100%)]" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110vw] h-[110vw] bg-primary/5 rounded-full blur-[140px] opacity-20" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.02)_100%)] dark:bg-[radial-gradient(circle_at_center,transparent_0%,rgba(255,255,255,0.02)_100%)]" />
             </div>
 
             <Container size="ultra" className="relative z-10 grid grid-cols-12 gap-8 md:gap-12 items-center">
-                
+
                 {/* LEFT: Editorial Reading Progress Line */}
                 <div className="hidden lg:block col-span-1 relative h-[500px]">
                     <div className="absolute left-1/2 top-0 bottom-0 w-[2px] bg-foreground/5 rounded-full">
-                        <motion.div 
+                        <motion.div
                             style={{ scaleY: smoothProgress }}
                             className="absolute top-0 left-0 w-full bg-primary origin-top shadow-[0_0_20px_rgba(var(--primary-rgb),0.6)] rounded-full"
                         />
@@ -64,7 +64,7 @@ const GustoMotionText = () => {
                                 <div key={lineIdx} className="flex flex-wrap items-center gap-x-[0.35em] md:gap-x-[0.45em]">
                                     {wordsInLine.map((word, wordIdx) => {
                                         const globalIndex = previousLinesWords + wordIdx;
-                                        
+
                                         // Refined Mapping: 
                                         // Start at 0.05, Finish entirely by 0.85 to ensure user sees everything before exiting
                                         const step = 0.8 / totalWords;
@@ -72,14 +72,14 @@ const GustoMotionText = () => {
                                         const end = start + (step * 0.8);
 
                                         const opacity = useTransform(smoothProgress, [start, end], [0.12, 1]);
-                                        const y = useTransform(smoothProgress, [start, end], [24, 0]);
-                                        const filter = useTransform(smoothProgress, [start, end], ["blur(12px)", "blur(0px)"]);
+                                        const y = useTransform(smoothProgress, [start, end], [16, 0]);
+                                        const filter = useTransform(smoothProgress, [start, end], ["blur(4px)", "blur(0px)"]);
 
                                         return (
                                             <motion.span
                                                 key={wordIdx}
                                                 style={{ opacity, y, filter }}
-                                                className="gusto-heading inline-block text-[11vw] md:text-[9vw] leading-[0.85] tracking-tightest text-foreground"
+                                                className="gusto-heading inline-block text-[11vw] md:text-[9vw] leading-[0.95] tracking-[-0.03em] text-foreground"
                                             >
                                                 {word}
                                             </motion.span>

@@ -69,7 +69,9 @@ export default function ScrollBaseAnimation({
                     key={idx} 
                     className={cn(
                         "mr-8",
-                        word.toLowerCase() === "story" ? "text-primary" : "text-inherit"
+                        word.toLowerCase() === "story" 
+                            ? "text-primary" 
+                            : "text-foreground"
                     )}
                 >
                     {word}

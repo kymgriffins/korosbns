@@ -41,7 +41,7 @@ const Navbar = () => {
     useMotionValueEvent(scrollY, "change", (latest) => {
         const previous = lastScrollY.current;
         const viewportHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
-        
+
         // Hide on scroll down, reveal on scroll up
         if (latest > previous && latest > 150) {
             setHidden(true);
@@ -67,34 +67,34 @@ const Navbar = () => {
                     hidden: { y: -100, opacity: 0 },
                 }}
                 animate={hidden ? "hidden" : "visible"}
-                transition={{ 
-                    duration: 0.6, 
+                transition={{
+                    duration: 0.6,
                     ease: [0.22, 1, 0.36, 1]
                 }}
                 className="fixed top-6 inset-x-0 mx-auto z-[150] w-full pointer-events-none"
             >
-                <div 
+                <div
                     className={cn(
                         "mx-auto max-w-[95%] md:max-w-[92%] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] pointer-events-auto",
                         "flex items-center justify-between",
                         "rounded-full px-4 md:px-6 py-1.5 md:py-2",
-                        isScrolled 
-                            ? "bg-white/70 dark:bg-black/50 backdrop-blur-2xl border border-black/5 dark:border-white/10 shadow-premium scale-[0.98]" 
+                        isScrolled
+                            ? "bg-white/70 dark:bg-black/50 backdrop-blur-2xl border border-black/5 dark:border-white/10 shadow-premium scale-[0.98]"
                             : "bg-white/5 dark:bg-black/10 backdrop-blur-md border border-white/5 dark:border-black/5"
                     )}
                 >
                     {/* LEFT: Logo */}
                     <div className="flex items-center">
                         <Link href={Routes.Home} className="flex items-center gap-2 group/logo transition-transform active:scale-95">
-                            <Image 
-                                src="/logo.svg" 
-                                alt="Budget Ndio Story" 
-                                width={140} 
-                                height={28} 
+                            <Image
+                                src="/logo.svg"
+                                alt="Budget Ndio Story"
+                                width={140}
+                                height={28}
                                 className={cn(
                                     "w-auto h-6 md:h-7 transition-all duration-500 group-hover/logo:scale-105",
                                     !isScrolled && "brightness-0 invert dark:brightness-100 dark:invert-0 opacity-80 hover:opacity-100"
-                                )} 
+                                )}
                             />
                         </Link>
                     </div>
@@ -108,10 +108,10 @@ const Navbar = () => {
                         )}>
                             <ThemeToggle />
                         </div>
-                        
+
                         <Link href={Routes.JoinUs} className="hidden sm:block">
-                            <Button 
-                                variant="ghost" 
+                            <Button
+                                variant="ghost"
                                 className={cn(
                                     "h-10 px-6 rounded-full text-xs font-bold tracking-widest uppercase transition-all",
                                     !isScrolled ? "text-white hover:bg-white/10" : "text-foreground hover:bg-black/5 dark:hover:bg-white/5"
@@ -131,21 +131,21 @@ const Navbar = () => {
                             onClick={() => setIsMenuOpen(true)}
                             className={cn(
                                 "h-9 md:h-10 px-5 md:px-6 flex items-center gap-3 rounded-full transition-all duration-500 group/menu relative overflow-hidden",
-                                isScrolled 
-                                    ? "bg-primary text-white" 
+                                isScrolled
+                                    ? "bg-primary text-white"
                                     : "bg-white/10 dark:bg-white/5 text-white backdrop-blur-md border border-white/10 hover:bg-white hover:text-black"
                             )}
                         >
                             <span className="text-[11px] font-bold tracking-[0.1em] uppercase z-10">Menu</span>
-                            
+
                             <div className="relative w-4 h-3 z-10 flex flex-col justify-between items-center py-0.5">
-                                <motion.span 
+                                <motion.span
                                     animate={isMenuOpen ? { rotate: 45, y: 3.5 } : { rotate: 0, y: 0 }}
-                                    className="block w-full h-0.5 bg-current rounded-full origin-center" 
+                                    className="block w-full h-0.5 bg-current rounded-full origin-center"
                                 />
-                                <motion.span 
+                                <motion.span
                                     animate={isMenuOpen ? { rotate: -45, y: -3.5 } : { rotate: 0, y: 0 }}
-                                    className="block w-full h-0.5 bg-current rounded-full origin-center" 
+                                    className="block w-full h-0.5 bg-current rounded-full origin-center"
                                 />
                             </div>
 

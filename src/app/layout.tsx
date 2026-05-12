@@ -45,16 +45,16 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <Script
-          id="organization-schema"
+        <script
           type="application/ld+json"
+          id="organization-schema"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(organizationSchema),
           }}
         />
-        <Script
-          id="website-schema"
+        <script
           type="application/ld+json"
+          id="website-schema"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
       </head>

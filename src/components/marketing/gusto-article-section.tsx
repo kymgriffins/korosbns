@@ -16,14 +16,14 @@ const GustoArticleSection = () => {
 
                     {/* Left Column (7/12) */}
                     <motion.div
-                        initial={{ opacity: 0, y: 30 }}
+                        initial={{ opacity: 0, y: 16 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.7, ease: APPLE_EASE }}
                         className="lg:col-span-7"
                     >
                         <span className="g-eyebrow mb-4 block text-primary">Mission & Impact</span>
-                        <h2 className="g-headline mb-8 text-black">
+                        <h2 className="g-headline mb-8 text-black tracking-[-0.03em]">
                             Translating numbers into <span className="text-primary">narratives</span>.
                         </h2>
                         <div className="h-px w-full bg-black/5 mb-8" />
@@ -35,13 +35,13 @@ const GustoArticleSection = () => {
                             ].map((item, i) => (
                                 <motion.div
                                     key={item.label}
-                                    initial={{ opacity: 0, y: 20 }}
+                                    initial={{ opacity: 0, y: 12 }}
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
                                     transition={{ duration: 0.6, ease: APPLE_EASE, delay: 0.3 + (i * 0.06) }}
                                 >
                                     <h4 className="text-4xl md:text-5xl font-black mb-1 text-black tracking-tighter">{item.value}</h4>
-                                    <p className="g-mono text-black/40">{item.label}</p>
+                                    <p className="g-mono text-[11px] text-black/40">{item.label}</p>
                                 </motion.div>
                             ))}
                         </div>
@@ -49,7 +49,7 @@ const GustoArticleSection = () => {
 
                     {/* Right Column (5/12) */}
                     <motion.div
-                        initial={{ opacity: 0, y: 30 }}
+                        initial={{ opacity: 0, y: 16 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.7, delay: 0.15, ease: APPLE_EASE }}

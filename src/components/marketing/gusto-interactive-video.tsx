@@ -35,10 +35,10 @@ const GustoInteractiveVideo = () => {
     return (
         <>
             <Container size="ultra" className="py-14 md:py-20">
-                <motion.section 
+                <motion.section
                     ref={sectionRef}
                     style={{ scale, opacity }}
-                    className="relative w-full aspect-video md:h-[70vh] bg-zinc-900 overflow-hidden cursor-none rounded-[28px] md:rounded-[40px] group shadow-premium"
+                    className="relative w-full aspect-video md:h-[70vh] bg-zinc-900 overflow-hidden cursor-none rounded-[24px] group border border-white/5"
                     onMouseEnter={() => setIsHovering(true)}
                     onMouseLeave={() => setIsHovering(false)}
                     onClick={() => setIsOpen(true)}
@@ -50,7 +50,7 @@ const GustoInteractiveVideo = () => {
                                 initial={{ scale: 0, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
                                 exit={{ scale: 0, opacity: 0 }}
-                                transition={{ type: "spring", stiffness: 260, damping: 25 }}
+                                transition={{ duration: 0.5, ease: APPLE_EASE }}
                                 style={{
                                     position: 'fixed',
                                     left: mousePos.x,
@@ -61,7 +61,7 @@ const GustoInteractiveVideo = () => {
                                 className="z-50 pointer-events-none w-28 h-28 bg-white rounded-full flex flex-col items-center justify-center mix-blend-difference"
                             >
                                 <PlayIcon className="w-6 h-6 text-black fill-black" />
-                                <span className="text-black text-[9px] font-bold tracking-widest mt-2 uppercase">Play Story</span>
+                                <span className="text-black text-[11px] font-bold tracking-widest mt-2 uppercase">Play Story</span>
                             </motion.div>
                         )}
                     </AnimatePresence>
@@ -73,7 +73,7 @@ const GustoInteractiveVideo = () => {
                             muted
                             loop
                             playsInline
-                            className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000"
+                            className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:scale-[1.02] transition-all duration-1000"
                         >
                             <source src="https://res.cloudinary.com/dn8lut2fc/video/upload/v1778496651/Untitled_design_maph6q.mp4" type="video/mp4" />
                         </video>
@@ -81,8 +81,8 @@ const GustoInteractiveVideo = () => {
 
                     {/* Content Overlay */}
                     <div className="absolute bottom-0 left-0 right-0 z-20 p-8 md:p-14 bg-linear-to-t from-black/80 to-transparent">
-                        <motion.div 
-                            initial={{ x: -30, opacity: 0 }}
+                        <motion.div
+                            initial={{ x: -16, opacity: 0 }}
                             whileInView={{ x: 0, opacity: 1 }}
                             transition={{ duration: 0.7, ease: APPLE_EASE, delay: 0.2 }}
                             viewport={{ once: true }}
@@ -101,28 +101,28 @@ const GustoInteractiveVideo = () => {
             {/* Video Modal */}
             <AnimatePresence>
                 {isOpen && (
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         className="fixed inset-0 z-[10001] bg-black/95 flex items-center justify-center p-4 md:p-12"
                         onClick={() => setIsOpen(false)}
                     >
-                        <motion.div 
+                        <motion.div
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
                             className="relative w-full max-w-6xl aspect-video bg-black rounded-3xl overflow-hidden shadow-premium"
                             onClick={(e) => e.stopPropagation()}
                         >
-                            <iframe 
-                                src="https://www.youtube.com/embed/fD3yW78uDkY?autoplay=1" 
+                            <iframe
+                                src="https://www.youtube.com/embed/fD3yW78uDkY?autoplay=1"
                                 title="Budget Mtaani Series Part 1"
                                 className="w-full h-full border-0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                 allowFullScreen
                             ></iframe>
-                            <button 
+                            <button
                                 onClick={() => setIsOpen(false)}
                                 className="absolute top-6 right-6 text-white/50 hover:text-white uppercase tracking-widest text-[10px] font-bold transition-colors"
                             >

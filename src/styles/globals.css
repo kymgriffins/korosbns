@@ -83,73 +83,84 @@
 
 :root {
   --radius: 0.65rem;
-  --background: #ffffff;
-  --foreground: #000000;
+  
+  /* Semantic Backgrounds - Light */
+  --background: #F5F5F3; /* Warm White */
+  --bg-primary: #F5F5F3;
+  --bg-secondary: #ECECE8; /* Secondary Surface */
+  --bg-tertiary: #E2E2DE; /* Tertiary Surface */
+  
+  /* Text Tiers - Light */
+  --foreground: #111111; /* Never Gray */
+  --text-primary: #111111;
+  --text-secondary: #525252;
+  --text-muted: #8B8B8B;
+  
   --card: #ffffff;
-  --card-foreground: #000000;
+  --card-foreground: #111111;
   --popover: #ffffff;
-  --popover-foreground: #000000;
-  --primary: hsl(214 100% 50%);
+  --popover-foreground: #111111;
+  
+  /* Accent System - Light */
+  --primary: #2563EB;
   --primary-foreground: #ffffff;
-  --secondary: hsl(0 0% 0% / 0.05);
-  --secondary-foreground: #000000;
-  --tertiary: #000000;
-  --tertiary-foreground: #ffffff;
-  --muted: hsl(0 0% 97%);
-  --muted-foreground: hsl(0 0% 20%);
-  --accent: hsl(214 100% 50%);
+  --accent-soft: rgba(37, 99, 235, 0.12);
+  
+  --secondary: rgba(17, 17, 17, 0.04);
+  --secondary-foreground: #111111;
+  --muted: #ECECE8;
+  --muted-foreground: #525252;
+  
+  --accent: #2563EB;
   --accent-foreground: #ffffff;
-  --destructive: hsl(356 85% 55%);
-  --destructive-foreground: #ffffff;
-  --border: hsl(0 0% 0% / 0.08);
-  --input: hsl(0 0% 100%);
-  --ring: hsl(214 100% 55%);
-  --chart-1: hsl(12 76% 61%);
-  --chart-2: hsl(173 58% 39%);
-  --chart-3: hsl(197 37% 24%);
-  --chart-4: hsl(43 74% 66%);
-  --chart-5: hsl(27 87% 67%);
-  --dot-color: rgba(0, 0, 0, 0.05);
+  
+  /* Borders - Light */
+  --border: rgba(17, 17, 17, 0.08); /* Almost Invisible */
+  --input: rgba(17, 17, 17, 0.08);
+  --ring: #2563EB;
+  
+  --dot-color: rgba(17, 17, 17, 0.05);
   --cardbox: #ffffff;
 }
 
 .dark {
-  --background: #010104;
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: #0055FF;
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --tertiary: hsl(280 70% 60%);
-  --tertiary-foreground: hsl(0 0% 100%);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: #0055FF;
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-  --radius: 0.625rem;
-  --cardbox: #111112;
-  --dot-color: rgba(255, 255, 255, 0.1);
+  /* Semantic Backgrounds - Dark */
+  --background: #050505; /* Deep Base */
+  --bg-primary: #050505;
+  --bg-secondary: #0D0D0D; /* Elevated Surface */
+  --bg-tertiary: #151515; /* Tertiary Surface */
+  
+  /* Text Tiers - Dark */
+  --foreground: #F5F5F3; /* Primary Text */
+  --text-primary: #F5F5F3;
+  --text-secondary: #B8B8B8;
+  --text-muted: #7A7A7A;
+  
+  --card: #0D0D0D;
+  --card-foreground: #F5F5F3;
+  --popover: #0D0D0D;
+  --popover-foreground: #F5F5F3;
+  
+  /* Accent System - Dark (Brighter for Absorption) */
+  --primary: #3B82F6;
+  --primary-foreground: #050505;
+  --accent-soft: rgba(59, 130, 246, 0.15);
+  
+  --secondary: #0D0D0D;
+  --secondary-foreground: #F5F5F3;
+  --muted: #151515;
+  --muted-foreground: #B8B8B8;
+  
+  --accent: #3B82F6;
+  --accent-foreground: #050505;
+  
+  /* Borders - Dark */
+  --border: rgba(245, 245, 243, 0.1);
+  --input: rgba(245, 245, 243, 0.1);
+  --ring: #3B82F6;
+  
+  --cardbox: #0D0D0D;
+  --dot-color: rgba(245, 245, 243, 0.05);
 }
 
 /* Custom Cursor for Studio Gusto Style */
@@ -185,11 +196,13 @@
 
 /* Typography for Studio Gusto Style */
 .gusto-heading {
-  @apply text-[clamp(2rem,6vw,5rem)] font-bold tracking-[-0.04em] leading-[0.95] text-balance;
+  @apply font-bold tracking-[-0.04em] leading-[0.95] text-balance;
+  font-size: clamp(2rem, 6vw, 5rem);
 }
 
 .gusto-subheading {
-  @apply text-[clamp(1.1rem,2.5vw,1.75rem)] font-medium tracking-tight leading-tight text-balance;
+  @apply font-medium tracking-tight leading-tight text-balance;
+  font-size: clamp(1.1rem, 2.5vw, 1.75rem);
 }
 
 .gusto-text {
@@ -304,15 +317,15 @@ h6 {
 
 /* ── Apple HIG Layered Shadows ── */
 .shadow-premium {
-  box-shadow: 
-    0 1px 1px rgba(0,0,0,0.04),
-    0 8px 24px rgba(0,0,0,0.08);
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.04),
+    0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 .shadow-premium-dark {
-  box-shadow: 
-    0 1px 1px rgba(0,0,0,0.2),
-    0 8px 24px rgba(0,0,0,0.4);
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.2),
+    0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 .bento-grid {
@@ -343,6 +356,7 @@ h6 {
     max-width: 65ch;
     color: var(--color-foreground);
   }
+
   .typography h1:not(.not-typography h1) {
     scroll-margin: calc(var(--spacing) * 20);
     font-size: var(--text-4xl);
@@ -350,6 +364,7 @@ h6 {
     font-weight: 800;
     letter-spacing: var(--tracking-tight);
   }
+
   .typography h2:not(.not-typography h2) {
     scroll-margin: calc(var(--spacing) * 20);
     border-bottom: 1px solid var(--color-border);
@@ -360,9 +375,11 @@ h6 {
     letter-spacing: var(--tracking-tight);
     margin-top: calc(var(--spacing) * 12);
   }
+
   .typography h2:not(.not-typography h2):first-child {
     margin-top: 0;
   }
+
   .typography h3:not(.not-typography h3) {
     scroll-margin: calc(var(--spacing) * 20);
     font-size: var(--text-2xl);
@@ -371,9 +388,11 @@ h6 {
     letter-spacing: var(--tracking-tight);
     margin-top: calc(var(--spacing) * 12);
   }
+
   .typography h3:not(.not-typography h3):first-child {
     margin-top: 0;
   }
+
   .typography h4:not(.not-typography h4) {
     scroll-margin: calc(var(--spacing) * 20);
     font-size: var(--text-xl);
@@ -382,9 +401,11 @@ h6 {
     letter-spacing: var(--tracking-tight);
     margin-top: calc(var(--spacing) * 12);
   }
+
   .typography h4:not(.not-typography h4):first-child {
     margin-top: 0;
   }
+
   .typography h5:not(.not-typography h5) {
     scroll-margin: calc(var(--spacing) * 20);
     font-size: var(--text-lg);
@@ -393,9 +414,11 @@ h6 {
     letter-spacing: var(--tracking-tight);
     margin-top: calc(var(--spacing) * 12);
   }
+
   .typography h5:not(.not-typography h5):first-child {
     margin-top: 0;
   }
+
   .typography h6:not(.not-typography h6) {
     scroll-margin: calc(var(--spacing) * 20);
     font-size: var(--text-base);
@@ -404,104 +427,134 @@ h6 {
     letter-spacing: var(--tracking-tight);
     margin-top: calc(var(--spacing) * 12);
   }
+
   .typography h6:not(.not-typography h6):first-child {
     margin-top: 0;
   }
-  .typography h1:not(.not-typography h1) + p, .typography h2:not(.not-typography h2) + p, .typography h3:not(.not-typography h3) + p, .typography h4:not(.not-typography h4) + p, .typography h5:not(.not-typography h5) + p, .typography h6:not(.not-typography h6) + p {
+
+  .typography h1:not(.not-typography h1)+p,
+  .typography h2:not(.not-typography h2)+p,
+  .typography h3:not(.not-typography h3)+p,
+  .typography h4:not(.not-typography h4)+p,
+  .typography h5:not(.not-typography h5)+p,
+  .typography h6:not(.not-typography h6)+p {
     margin-top: 0;
   }
+
   .typography p:not(.not-typography p) {
     line-height: 1.75;
   }
+
   .typography p:not(.not-typography p):not(:first-child) {
     margin-top: calc(var(--spacing) * 6);
   }
+
   .typography li:not(.not-typography li) {
     line-height: 1.75;
   }
+
   .typography a:not(.not-typography a) {
     font-weight: 500;
     color: var(--color-primary);
     text-decoration: underline;
     text-underline-offset: var(--spacing);
   }
+
   .typography blockquote:not(.not-typography blockquote) {
     margin-top: calc(var(--spacing) * 6);
     border-left: 2px solid var(--color-border);
     padding-left: calc(var(--spacing) * 6);
     font-style: italic;
   }
+
   .typography table:not(.not-typography table) {
     margin-top: calc(var(--spacing) * 6);
     margin-bottom: calc(var(--spacing) * 6);
     width: 100%;
     overflow-y: auto;
   }
+
   .typography table:not(.not-typography table) thead tr {
     margin: 0;
     border-top: 1px solid var(--color-border);
     padding: 0;
   }
+
   .typography table:not(.not-typography table) thead tr:nth-child(even) {
     background-color: var(--color-muted);
   }
+
   .typography table:not(.not-typography table) th {
     border: 1px solid var(--color-border);
     padding: calc(var(--spacing) * 2) calc(var(--spacing) * 4);
     text-align: left;
     font-weight: 700;
   }
+
   .typography table:not(.not-typography table) th[align="center"] {
     text-align: center;
   }
+
   .typography table:not(.not-typography table) th[align="right"] {
     text-align: right;
   }
+
   .typography table:not(.not-typography table) tbody tr {
     margin: 0;
     border-top: 1px solid var(--color-border);
     padding: 0;
   }
+
   .typography table:not(.not-typography table) tbody tr:nth-child(even) {
     background-color: var(--color-muted);
   }
+
   .typography table:not(.not-typography table) td {
     border: 1px solid var(--color-border);
     padding: calc(var(--spacing) * 2) calc(var(--spacing) * 4);
     text-align: left;
   }
+
   .typography table:not(.not-typography table) td[align="center"] {
     text-align: center;
   }
+
   .typography table:not(.not-typography table) td[align="right"] {
     text-align: right;
   }
+
   .typography ul:not(.not-typography ul) {
     margin-top: calc(var(--spacing) * 6);
     margin-left: calc(var(--spacing) * 6);
     list-style: disc;
   }
-  .typography ul:not(.not-typography ul) > li {
+
+  .typography ul:not(.not-typography ul)>li {
     margin-top: calc(var(--spacing) * 2);
   }
+
   .typography ul:not(.not-typography ul) p {
     margin-top: 0;
     margin-bottom: 0;
     display: inline;
   }
+
   .typography ol:not(.not-typography ol) {
     margin-top: calc(var(--spacing) * 6);
     margin-left: calc(var(--spacing) * 6);
     list-style: decimal;
   }
-  .typography ol:not(.not-typography ol) > li {
+
+  .typography ol:not(.not-typography ol)>li {
     margin-top: calc(var(--spacing) * 2);
   }
+
   .typography ol:not(.not-typography ol) p {
     margin-top: 0;
     margin-bottom: 0;
     display: inline;
   }
+
   .typography pre:not(.not-typography pre) {
     background-color: var(--color-muted);
     border-radius: calc(var(--radius) - 2px);
@@ -512,6 +565,7 @@ h6 {
     line-height: var(--text-sm--line-height);
     overflow-y: auto;
   }
+
   .typography code:not(pre code):not(.not-typography code) {
     position: relative;
     border-radius: var(--radius);
@@ -522,36 +576,43 @@ h6 {
     line-height: var(--text-sm--line-height);
     font-weight: 600;
   }
+
   .typography .lead:not(.not-typography .lead) {
     font-size: var(--text-xl);
     line-height: var(--text-xl--line-height);
     color: var(--color-muted-foreground);
   }
+
   .typography .large:not(.not-typography .large) {
     font-size: var(--text-lg);
     line-height: var(--text-lg--line-height);
     font-weight: 600;
   }
+
   .typography .small:not(.not-typography .small) {
     font-size: var(--text-sm);
     line-height: 1;
     font-weight: 500;
   }
+
   .typography .muted:not(.not-typography .muted) {
     font-size: var(--text-sm);
     line-height: var(--text-sm--line-height);
     color: var(--color-muted-foreground);
   }
+
   .typography img:not(.not-typography img),
-    .typography picture:not(.not-typography picture),
-    .typography video:not(.not-typography video) {
+  .typography picture:not(.not-typography picture),
+  .typography video:not(.not-typography video) {
     margin-top: calc(var(--spacing) * 6);
     margin-bottom: calc(var(--spacing) * 6);
   }
-  .typography picture > img:not(.not-typography picture > img) {
+
+  .typography picture>img:not(.not-typography picture > img) {
     margin-top: 0;
     margin-bottom: 0;
   }
+
   .typography kbd:not(.not-typography kbd) {
     border-radius: calc(var(--radius) - 2px);
     background-color: var(--color-muted);
@@ -560,47 +621,57 @@ h6 {
     line-height: var(--text-xs--line-height);
     font-weight: 600;
   }
+
   .typography hr {
     margin-top: calc(var(--spacing) * 10);
     margin-bottom: calc(var(--spacing) * 10);
   }
+
   .typography dl:not(.not-typography dl) {
     margin-top: calc(var(--spacing) * 6);
     margin-bottom: calc(var(--spacing) * 6);
   }
+
   .typography dl:not(.not-typography dl) dt {
     font-weight: 600;
     margin-top: calc(var(--spacing) * 6);
     letter-spacing: var(--tracking-tight);
   }
+
   .typography dl:not(.not-typography dl) dt:first-child {
     margin-top: 0;
   }
+
   .typography details:not(.not-typography details) {
     margin-top: calc(var(--spacing) * 6);
   }
+
   .typography details:not(.not-typography details) summary {
     cursor: pointer;
     font-weight: 600;
     margin-top: calc(var(--spacing) * 6);
     letter-spacing: var(--tracking-tight);
   }
+
   .typography details:not(.not-typography details) p:first-of-type {
     margin-top: calc(var(--spacing) * 2);
   }
+
   .typography mark:not(.not-typography mark) {
     background-color: var(--color-yellow-300);
   }
+
   .typography small:not(.not-typography small) {
     font-size: var(--text-xs);
     line-height: 1;
   }
-/* ---break---
+
+  /* ---break---
  */
-@media (min-width: 1024px) {
-  .typography h1:not(.not-typography h1) {
-    font-size: var(--text-5xl);
-    line-height: var(--text-5xl--line-height);
+  @media (min-width: 1024px) {
+    .typography h1:not(.not-typography h1) {
+      font-size: var(--text-5xl);
+      line-height: var(--text-5xl--line-height);
     }
   }
 }
@@ -690,31 +761,33 @@ h6 {
 
 /* ── Studio Gusto Premium Typography ── */
 .g-display {
-  @apply text-[clamp(3.5rem,9vw,7.5rem)] font-black tracking-[-0.06em] leading-[0.9] text-balance;
+  @apply font-black tracking-[-0.03em] leading-[0.9] text-balance;
+  font-size: clamp(3rem, 8vw, 9rem);
 }
 
 .g-headline {
-  @apply text-[clamp(2.2rem,5vw,4.5rem)] font-black tracking-[-0.04em] leading-[0.95] text-balance;
+  @apply font-extrabold tracking-[-0.02em] leading-[1.05] text-balance;
+  font-size: clamp(1.5rem, 3.5vw, 4rem);
 }
 
 .g-eyebrow {
-  @apply text-[10px] font-bold tracking-[0.2em] uppercase text-primary;
+  @apply text-[12px] font-semibold tracking-[0.25em] uppercase text-primary;
 }
 
 .g-text {
-  @apply text-base md:text-lg text-muted-foreground leading-7 font-light;
+  @apply text-base md:text-lg text-muted-foreground leading-relaxed font-light max-w-[65ch];
 }
 
 .g-mono {
-  @apply font-mono text-[13px] tracking-tight text-foreground/50 uppercase;
+  @apply font-mono text-[12px] tracking-tight text-foreground/40 uppercase;
 }
 
 .g-divider {
-  @apply w-full h-[1px] bg-foreground/10 my-8;
+  @apply w-full h-[1px] bg-foreground/5 my-12;
 }
 
 /* Smooth Transitions */
 .g-transition {
   @apply transition-all duration-700;
-  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
 }
