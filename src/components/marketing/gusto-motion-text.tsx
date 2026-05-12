@@ -1,118 +1,168 @@
 "use client";
 
-import React, { useRef } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'motion/react';
-import Container from '@/components/ui/container';
-import { APPLE_EASE } from '@/constants/motion';
+import React, { useRef } from "react";
+import type { MotionValue } from "motion/react";
+import {
+    motion,
+    useScroll,
+    useTransform,
+    useSpring,
+    useReducedMotion,
+} from "motion/react";
+import Container from "@/components/ui/container";
+
+const lines = [
+    "Youths cannot lead",
+    "what they do not",
+    "understand.",
+];
+
+const TOTAL_WORDS = lines.flatMap((l) => l.split(" ")).length;
+
+type AnimatedWordProps = {
+    smoothProgress: MotionValue<number>;
+    globalIndex: number;
+    children: string;
+    reducedMotion: boolean | null;
+};
+
+function AnimatedWord({
+    smoothProgress,
+    globalIndex,
+    children,
+    reducedMotion,
+}: AnimatedWordProps) {
+    const step = 0.72 / Math.max(TOTAL_WORDS, 1);
+    const start = 0.06 + globalIndex * step;
+    const end = Math.min(0.94, start + step * 1.05);
+
+    const opacity = useTransform(
+        smoothProgress,
+        [start, end],
+        reducedMotion ? [1, 1] : [0.18, 1],
+    );
+    const y = useTransform(
+        smoothProgress,
+        [start, end],
+        reducedMotion ? [0, 0] : [10, 0],
+    );
+
+    return (
+        <motion.span
+            style={{ opacity, y }}
+            className="inline-block text-[clamp(2rem,6.5vw,4.75rem)] font-semibold leading-[1.06] tracking-[-0.025em] text-foreground md:text-[clamp(2.25rem,5.5vw,5rem)]"
+        >
+            {children}
+        </motion.span>
+    );
+}
 
 const GustoMotionText = () => {
     const containerRef = useRef<HTMLDivElement>(null);
+    const reducedMotion = useReducedMotion();
 
-    // Using a more focused offset to ensure animation happens while section is primarily in viewport
     const { scrollYProgress } = useScroll({
         target: containerRef,
-        offset: ["start 0.8", "end 0.2"]
+        offset: ["start 0.75", "end 0.35"],
     });
 
     const smoothProgress = useSpring(scrollYProgress, {
-        stiffness: 80,
-        damping: 30,
-        restDelta: 0.001
+        stiffness: 90,
+        damping: 32,
+        restDelta: 0.001,
     });
 
-    const lines = [
-        "Youths cannot lead",
-        "what they do not",
-        "understand."
-    ];
-
-    // Total words across all lines to calculate global progress mapping
-    const allWords = lines.flatMap(line => line.split(" "));
-    const totalWords = allWords.length;
+    const quoteOpacity = useTransform(
+        smoothProgress,
+        [0.45, 0.72],
+        reducedMotion ? [1, 1] : [0, 1],
+    );
+    const quoteY = useTransform(
+        smoothProgress,
+        [0.45, 0.72],
+        reducedMotion ? [0, 0] : [16, 0],
+    );
 
     return (
         <section
             ref={containerRef}
-            className="relative min-h-[180svh] w-full bg-background overflow-hidden flex flex-col items-center justify-center py-48"
+            className="relative min-h-[125svh] w-full overflow-hidden bg-background py-28 md:py-36 lg:py-44"
         >
-            {/* Cinematic Background Treatment */}
-            <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[110vw] h-[110vw] bg-primary/5 rounded-full blur-[140px] opacity-20" />
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.02)_100%)] dark:bg-[radial-gradient(circle_at_center,transparent_0%,rgba(255,255,255,0.02)_100%)]" />
+            <div className="pointer-events-none absolute inset-0 overflow-hidden">
+                <div className="absolute left-1/2 top-[42%] h-[min(90vw,720px)] w-[min(90vw,720px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.06] blur-[100px] dark:bg-primary/[0.09]" />
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_40%,transparent_0%,var(--background)_78%)] opacity-90 dark:opacity-95" />
             </div>
 
-            <Container size="ultra" className="relative z-10 grid grid-cols-12 gap-8 md:gap-12 items-center">
+            <Container size="ultra" className="relative z-10">
+                <div className="mx-auto max-w-[min(100%,920px)]">
+                    {/* Reading indicator — vertical strip (no “dot” cap artifact at scale 0) */}
+                    <div className="mb-14 flex items-stretch gap-8 md:gap-14 lg:gap-16">
+                        <div
+                            className="relative mt-1 w-[2px] shrink-0 self-stretch overflow-hidden rounded-full bg-border/80 md:w-[3px]"
+                            aria-hidden
+                        >
+                            <motion.div
+                                style={{
+                                    scaleY: smoothProgress,
+                                }}
+                                className="absolute inset-x-0 top-0 h-full origin-top rounded-full bg-primary"
+                            />
+                        </div>
 
-                {/* LEFT: Editorial Reading Progress Line */}
-                <div className="hidden lg:block col-span-1 relative h-[500px]">
-                    <div className="absolute left-1/2 top-0 bottom-0 w-[2px] bg-foreground/5 rounded-full">
-                        <motion.div
-                            style={{ scaleY: smoothProgress }}
-                            className="absolute top-0 left-0 w-full bg-primary origin-top shadow-[0_0_20px_rgba(var(--primary-rgb),0.6)] rounded-full"
-                        />
-                    </div>
-                </div>
-
-                {/* CENTER/RIGHT: The Narrative Typography */}
-                <div className="col-span-12 lg:col-span-11 lg:pl-16">
-                    <div className="space-y-6 md:space-y-8">
-                        {lines.map((line, lineIdx) => {
-                            const wordsInLine = line.split(" ");
-                            const previousLinesWords = lines.slice(0, lineIdx).flatMap(l => l.split(" ")).length;
-
-                            return (
-                                <div key={lineIdx} className="flex flex-wrap items-center gap-x-[0.35em] md:gap-x-[0.45em]">
-                                    {wordsInLine.map((word, wordIdx) => {
-                                        const globalIndex = previousLinesWords + wordIdx;
-
-                                        // Refined Mapping: 
-                                        // Start at 0.05, Finish entirely by 0.85 to ensure user sees everything before exiting
-                                        const step = 0.8 / totalWords;
-                                        const start = 0.05 + (globalIndex * step);
-                                        const end = start + (step * 0.8);
-
-                                        const opacity = useTransform(smoothProgress, [start, end], [0.12, 1]);
-                                        const y = useTransform(smoothProgress, [start, end], [16, 0]);
-                                        const filter = useTransform(smoothProgress, [start, end], ["blur(4px)", "blur(0px)"]);
-
-                                        return (
-                                            <motion.span
-                                                key={wordIdx}
-                                                style={{ opacity, y, filter }}
-                                                className="gusto-heading inline-block text-[11vw] md:text-[9vw] leading-[0.95] tracking-[-0.03em] text-foreground"
+                        <div className="min-w-0 flex-1 space-y-5 md:space-y-6 lg:space-y-7">
+                            <p className="g-mono text-[10px] font-semibold uppercase tracking-[0.35em] text-muted-foreground md:text-[11px]">
+                                Why this matters
+                            </p>
+                            {lines.map((line, lineIdx) => {
+                                const wordsInLine = line.split(" ");
+                                const lineWordStart = lines
+                                    .slice(0, lineIdx)
+                                    .flatMap((l) => l.split(" ")).length;
+                                return (
+                                    <div
+                                        key={lineIdx}
+                                        className="flex flex-wrap items-baseline gap-x-[0.28em] gap-y-1 md:gap-x-[0.34em]"
+                                    >
+                                        {wordsInLine.map((word, wordIdx) => (
+                                            <AnimatedWord
+                                                key={`${lineIdx}-${wordIdx}-${word}`}
+                                                smoothProgress={smoothProgress}
+                                                globalIndex={lineWordStart + wordIdx}
+                                                reducedMotion={reducedMotion}
                                             >
                                                 {word}
-                                            </motion.span>
-                                        );
-                                    })}
-                                </div>
-                            );
-                        })}
+                                            </AnimatedWord>
+                                        ))}
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
 
-                    {/* Sub-Manifesto & Attribution */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 1.5, delay: 0.8 }}
-                        className="mt-32 max-w-3xl border-l-2 border-primary/20 pl-10 space-y-8"
+                    <motion.figure
+                        style={{
+                            opacity: quoteOpacity,
+                            y: quoteY,
+                        }}
+                        className="border-t border-border/60 pt-14 md:pt-16"
                     >
-                        <p className="text-2xl md:text-4xl text-muted-foreground font-light leading-relaxed">
-                            "The energy of youth is an engine, but without the fuel of knowledge, it runs in circles."
-                        </p>
-                        <div className="flex items-center gap-6">
-                            <span className="h-px w-16 bg-primary/40" />
-                            <span className="g-mono text-primary text-sm md:text-base uppercase tracking-[0.4em] font-bold">
-                                James Mutinda — Deep Dive Series
-                            </span>
-                        </div>
-                    </motion.div>
+                        <blockquote className="max-w-2xl text-pretty text-xl font-normal leading-relaxed text-foreground/90 md:text-2xl md:leading-snug">
+                            <span className="text-primary/90">&ldquo;</span>
+                            The energy of youth is an engine, but without the fuel of
+                            knowledge, it runs in circles.
+                            <span className="text-primary/90">&rdquo;</span>
+                        </blockquote>
+                        <figcaption className="mt-8 text-[11px] font-medium uppercase tracking-[0.28em] text-muted-foreground md:text-xs md:tracking-[0.32em]">
+                            James Mutinda — Deep Dive Series
+                        </figcaption>
+                    </motion.figure>
                 </div>
             </Container>
 
-            {/* Grain Overlay */}
-            <div className="absolute inset-0 pointer-events-none opacity-[0.04] mix-blend-overlay bg-[url('https://res.cloudinary.com/dn8lut2fc/image/upload/v1739265738/grain_m9u9u6.png')]" />
+            <div
+                className="pointer-events-none absolute inset-0 opacity-[0.035] mix-blend-overlay bg-noise"
+                aria-hidden
+            />
         </section>
     );
 };

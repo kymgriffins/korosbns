@@ -51,6 +51,7 @@ const CinematicMenu = ({ isOpen, onClose }: CinematicMenuProps) => {
     <AnimatePresence>
       {isOpen && (
         <motion.div
+          id="site-navigation-dialog"
           role="dialog"
           aria-modal="true"
           aria-label="Site navigation"

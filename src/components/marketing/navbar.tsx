@@ -2,167 +2,135 @@
 
 import { cn } from "@/utils";
 import Link from "next/link";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Routes } from "@/constants";
-import { motion, useScroll, useMotionValueEvent, useSpring, useMotionValue } from "motion/react";
+import { motion, useScroll, useMotionValueEvent } from "motion/react";
 import Image from "next/image";
 import { ThemeToggle } from "./theme-toggle";
-import { Button } from "../ui/button";
 import CinematicMenu from "./cinematic-menu";
+
+const CENTER_LINKS = [
+    { label: "Learn", href: Routes.Learn },
+    { label: "Research", href: Routes.Research },
+    { label: "About", href: Routes.About },
+] as const;
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-    const [hidden, setHidden] = useState(false);
     const { scrollY } = useScroll();
-    const lastScrollY = useRef(0);
-
     const [isScrolled, setIsScrolled] = useState(false);
 
-    // Magnetic Menu Button
-    const mouseX = useMotionValue(0);
-    const mouseY = useMotionValue(0);
-    const springX = useSpring(mouseX, { stiffness: 150, damping: 15 });
-    const springY = useSpring(mouseY, { stiffness: 150, damping: 15 });
-
-    const handleMouseMove = (e: React.MouseEvent) => {
-        const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
-        mouseX.set(x * 0.35);
-        mouseY.set(y * 0.35);
-    };
-
-    const handleMouseLeave = () => {
-        mouseX.set(0);
-        mouseY.set(0);
-    };
-
     useMotionValueEvent(scrollY, "change", (latest) => {
-        const previous = lastScrollY.current;
-        const viewportHeight = typeof window !== 'undefined' ? window.innerHeight : 800;
-
-        // Hide on scroll down, reveal on scroll up
-        if (latest > previous && latest > 150) {
-            setHidden(true);
-        } else {
-            setHidden(false);
-        }
-
-        // Appearance changes after hero section
-        if (latest > viewportHeight * 0.8) {
+        const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 800;
+        if (latest > viewportHeight * 0.12) {
             setIsScrolled(true);
         } else {
             setIsScrolled(false);
         }
-
-        lastScrollY.current = latest;
     });
 
     return (
         <>
             <motion.header
-                variants={{
-                    visible: { y: 0, opacity: 1 },
-                    hidden: { y: -100, opacity: 0 },
-                }}
-                animate={hidden ? "hidden" : "visible"}
-                transition={{
-                    duration: 0.6,
-                    ease: [0.22, 1, 0.36, 1]
-                }}
-                className="fixed inset-x-0 top-[max(1.25rem,env(safe-area-inset-top))] z-[150] mx-auto w-full pointer-events-none px-3 sm:px-4"
+                initial={false}
+                className={cn(
+                    "fixed inset-x-0 top-0 z-[150] w-full border-b transition-[background-color,border-color,box-shadow] duration-300 ease-out",
+                    isScrolled
+                        ? "border-black/[0.06] bg-background/82 shadow-[0_1px_0_rgba(0,0,0,0.03)] backdrop-blur-xl backdrop-saturate-150 dark:border-white/[0.08] dark:bg-background/78 dark:shadow-[0_1px_0_rgba(255,255,255,0.04)]"
+                        : "border-white/[0.12] bg-black/25 backdrop-blur-2xl backdrop-saturate-150 supports-[backdrop-filter]:bg-black/15",
+                )}
             >
-                <div
-                    className={cn(
-                        "pointer-events-auto mx-auto flex max-w-[min(92vw,1280px)] items-center justify-between rounded-[999px] px-3 py-1.5 transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] sm:px-5 md:px-6 md:py-2",
-                        "backdrop-blur-2xl",
-                        isScrolled
-                            ? "scale-[0.985] border border-black/8 bg-white/78 shadow-premium dark:border-white/12 dark:bg-black/55"
-                            : "border border-white/14 bg-white/8 dark:border-white/10 dark:bg-black/20",
-                        !isScrolled &&
-                            "supports-[backdrop-filter]:bg-white/6 supports-[backdrop-filter]:dark:bg-black/15"
-                    )}
-                >
-                    {/* LEFT: Logo */}
-                    <div className="flex items-center">
-                        <Link href={Routes.Home} className="flex items-center gap-2 group/logo transition-transform active:scale-95">
+                <div className="mx-auto grid h-11 w-full max-w-[1068px] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 px-4 sm:h-12 md:px-6 lg:px-8">
+                    <div className="flex min-w-0 justify-start">
+                        <Link
+                            href={Routes.Home}
+                            className="flex items-center outline-none ring-offset-2 ring-offset-transparent transition-opacity hover:opacity-90 focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-white/40 md:ring-offset-background"
+                        >
                             <Image
                                 src="/logo.svg"
                                 alt="Budget Ndio Story"
                                 width={140}
                                 height={28}
+                                priority
                                 className={cn(
-                                    "w-auto h-6 md:h-7 transition-all duration-500 group-hover/logo:scale-105",
-                                    !isScrolled && "brightness-0 invert dark:brightness-100 dark:invert-0 opacity-80 hover:opacity-100"
+                                    "h-[1.25rem] w-auto md:h-7",
+                                    !isScrolled &&
+                                        "brightness-0 invert drop-shadow-[0_1px_8px_rgba(0,0,0,0.45)] dark:brightness-100 dark:invert-0 dark:drop-shadow-none",
                                 )}
                             />
                         </Link>
                     </div>
 
-                    {/* RIGHT: Controls */}
-                    <div className="flex items-center gap-2 md:gap-4">
-                        {/* Theme Toggle - Embedded styling */}
-                        <div className={cn(
-                            "flex items-center justify-center rounded-full transition-all duration-500",
-                            isScrolled ? "bg-black/5 dark:bg-white/5" : "bg-white/10 dark:bg-black/10"
-                        )}>
+                    <nav
+                        className="hidden items-center justify-center gap-0.5 lg:flex"
+                        aria-label="Primary"
+                    >
+                        {CENTER_LINKS.map((item) => (
+                            <Link
+                                key={item.href}
+                                href={item.href}
+                                className={cn(
+                                    "rounded-full px-3 py-1.5 text-[13px] font-medium tracking-[-0.01em] transition-colors",
+                                    isScrolled
+                                        ? "text-foreground/80 hover:bg-foreground/[0.06] hover:text-foreground"
+                                        : "text-white/90 hover:bg-white/12 hover:text-white",
+                                )}
+                            >
+                                {item.label}
+                            </Link>
+                        ))}
+                    </nav>
+
+                    <div className="flex min-w-0 items-center justify-end gap-1 sm:gap-2">
+                        <div
+                            className={cn(
+                                "flex items-center justify-center rounded-full p-0.5 transition-colors",
+                                isScrolled
+                                    ? "bg-black/[0.04] dark:bg-white/[0.06]"
+                                    : "bg-white/15",
+                            )}
+                        >
                             <ThemeToggle />
                         </div>
 
-                        <Link href={Routes.JoinUs} className="inline-flex">
-                            <Button
-                                variant="ghost"
-                                className={cn(
-                                    "h-9 rounded-full px-4 text-[10px] font-bold uppercase tracking-[0.14em] transition-all sm:h-10 sm:px-6 sm:text-xs sm:tracking-widest",
-                                    !isScrolled
-                                        ? "text-white hover:bg-white/12"
-                                        : "text-foreground hover:bg-black/6 dark:hover:bg-white/8"
-                                )}
-                            >
-                                Join
-                            </Button>
-                        </Link>
-
-                        {/* Animated Menu Button */}
-                        <motion.button
-                            style={{ x: springX, y: springY }}
-                            onMouseMove={handleMouseMove}
-                            onMouseLeave={handleMouseLeave}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            onClick={() => setIsMenuOpen(true)}
+                        <Link
+                            href={Routes.JoinUs}
                             className={cn(
-                                "group/menu relative flex h-9 items-center gap-2 overflow-hidden rounded-full px-4 transition-all duration-500 md:h-10 md:gap-3 md:px-6",
+                                "hidden rounded-full px-3 py-1.5 text-[13px] font-medium tracking-[-0.01em] transition-colors sm:inline-flex sm:px-4",
                                 isScrolled
-                                    ? "bg-primary text-primary-foreground shadow-[0_8px_32px_-12px_var(--primary)]"
-                                    : "border border-white/18 bg-white/12 text-white hover:bg-white hover:text-black dark:border-white/12 dark:bg-white/8"
+                                    ? "text-foreground/90 hover:bg-foreground/[0.06]"
+                                    : "text-white/95 hover:bg-white/12",
                             )}
                         >
-                            <span className="z-10 text-[10px] font-bold uppercase tracking-[0.14em] md:text-[11px] md:tracking-[0.1em]">
-                                Menu
+                            Join
+                        </Link>
+
+                        <button
+                            type="button"
+                            aria-expanded={isMenuOpen}
+                            aria-controls="site-navigation-dialog"
+                            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+                            onClick={() => setIsMenuOpen(true)}
+                            className={cn(
+                                "inline-flex h-8 items-center gap-2 rounded-full px-3.5 text-[13px] font-medium tracking-[-0.01em] transition-colors sm:h-9 sm:px-4",
+                                isScrolled
+                                    ? "bg-foreground text-background hover:bg-foreground/88"
+                                    : "border border-white/25 bg-white/15 text-white hover:bg-white hover:text-black",
+                            )}
+                        >
+                            Menu
+                            <span className="flex flex-col gap-[5px]" aria-hidden>
+                                <span className="block h-[2px] w-[14px] rounded-full bg-current" />
+                                <span className="block h-[2px] w-[14px] rounded-full bg-current" />
                             </span>
-
-                            <div className="relative w-4 h-3 z-10 flex flex-col justify-between items-center py-0.5">
-                                <motion.span
-                                    animate={isMenuOpen ? { rotate: 45, y: 3.5 } : { rotate: 0, y: 0 }}
-                                    className="block w-full h-0.5 bg-current rounded-full origin-center"
-                                />
-                                <motion.span
-                                    animate={isMenuOpen ? { rotate: -45, y: -3.5 } : { rotate: 0, y: 0 }}
-                                    className="block w-full h-0.5 bg-current rounded-full origin-center"
-                                />
-                            </div>
-
-                            {/* Blue glow effect on hover */}
-                            <div className="absolute inset-0 bg-primary opacity-0 group-hover/menu:opacity-100 transition-opacity blur-xl -z-10" />
-                        </motion.button>
+                        </button>
                     </div>
                 </div>
             </motion.header>
 
             <CinematicMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
         </>
-    )
+    );
 };
 
 export default Navbar;
