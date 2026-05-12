@@ -8,7 +8,8 @@ import { type ReactNode } from "react";
 
 interface ContainerProps {
     children: ReactNode;
-    className?: string
+    className?: string;
+    id?: string;
     animation?: "fadeUp" | "fadeDown" | "fadeLeft" | "fadeRight" | "scaleUp" | "blurIn" | "slideUp" | "slideDown" | "zoomIn" | "zoomOut" | "rotateIn";
     delay?: number;
     duration?: number;
@@ -53,6 +54,7 @@ const getVariants = (animation: string) => {
 const Container = ({
     children,
     className,
+    id,
     animation = "fadeUp",
     delay = 0,
     duration = 0.5,
@@ -64,7 +66,7 @@ const Container = ({
     const isMobile = useIsMobile();
 
     if (isMobile) {
-        return <div className={className}>{children}</div>;
+        return <div id={id} className={className}>{children}</div>;
     }
 
     if (words && typeof children === "string") {
@@ -103,6 +105,7 @@ const Container = ({
 
     return (
         <motion.div
+            id={id}
             className={className}
             initial={getVariants(animation)}
             whileInView={{

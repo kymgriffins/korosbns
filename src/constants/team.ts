@@ -1,5 +1,19 @@
 export const team = [
     {
+        name: "Millicent Makina",
+        role: "Board Advisor",
+        image: "/images/avatars/team/Millicent Makina.jpeg",
+        description: "Guiding our governance and ensuring our mission aligns with long-term civic impact goals.",
+        socials: {}
+    },
+    {
+        name: "James Maingi Mutinda",
+        role: "Director Partnerships",
+        image: "/images/avatars/team/James Mutinda.jpeg",
+        description: "Connecting BNS with global and local partners to scale our institutional legacy and democratic stability.",
+        socials: {}
+    },
+    {
         name: "Movine Omondi",
         role: "Executive Director",
         image: "/images/avatars/team/Movine Omondi_HeadShot.jpg",
@@ -9,14 +23,6 @@ export const team = [
             linkedin: "https://www.linkedin.com/in/movine-omondi?utm_source=share_via&utm_content=profile&utm_medium=member_android",
             x: "https://x.com/Movineomondi"
         }
-    },
-    {
-        name: "Peculiar Koros",
-        role: "Director ICT",
-        image: "/images/avatars/team/Koros.jpeg",
-        description: "Certified researcher with a 100% clean audit record, ensuring our data is rigorous and beyond anecdotes.",
-        bio: "Peculiar leads BNS's data infrastructure and technological innovation, ensuring that all fiscal analysis meets rigorous research standards. A certified researcher with an impeccable audit record, she bridges technical data pipelines with civic storytelling. Her work ensures that BNS's digital platforms are secure, scalable, and data-driven.",
-        socials: {}
     },
     {
         name: "Shem Odhiambo Ojunga",
@@ -38,17 +44,11 @@ export const team = [
         socials: {}
     },
     {
-        name: "James Maingi Mutinda",
-        role: "Director Partnerships",
-        image: "/images/avatars/team/James Mutinda.jpeg",
-        description: "Connecting BNS with global and local partners to scale our institutional legacy and democratic stability.",
-        socials: {}
-    },
-    {
-        name: "Millicent Makina",
-        role: "Board Advisor",
-        image: "/images/avatars/team/Millicent Makina.jpeg",
-        description: "Guiding our governance and ensuring our mission aligns with long-term civic impact goals.",
+        name: "Peculiar Koros",
+        role: "Director ICT",
+        image: "/images/avatars/team/Koros.jpeg",
+        description: "Certified researcher with a 100% clean audit record, ensuring our data is rigorous and beyond anecdotes.",
+        bio: "Peculiar leads BNS's data infrastructure and technological innovation, ensuring that all fiscal analysis meets rigorous research standards. A certified researcher with an impeccable audit record, she bridges technical data pipelines with civic storytelling. Her work ensures that BNS's digital platforms are secure, scalable, and data-driven.",
         socials: {}
     },
 ];

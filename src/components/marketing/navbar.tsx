@@ -1,155 +1,136 @@
 "use client";
 
 import { cn } from "@/utils";
-import { ArrowRightIcon, MenuIcon, XIcon } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState, useRef } from 'react';
-import { usePathname } from "next/navigation";
-import Icons from "../global/icons";
-import Wrapper from "../global/wrapper";
-import { Button } from "../ui/button";
-import MobileMenu from "./mobile-menu";
-import { NAV_LINKS, Routes } from "@/constants";
-import { motion } from "motion/react";
-import { useIsMobile } from "@/hooks";
+import { useState } from "react";
+import { Routes } from "@/constants";
+import { motion, useScroll, useMotionValueEvent } from "motion/react";
 import Image from "next/image";
 import { ThemeToggle } from "./theme-toggle";
+import CinematicMenu from "./cinematic-menu";
+
+const CENTER_LINKS = [
+    { label: "Learn", href: Routes.Learn },
+    { label: "Research", href: Routes.Research },
+    { label: "About", href: Routes.About },
+] as const;
 
 const Navbar = () => {
+    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+    const { scrollY } = useScroll();
+    const [isScrolled, setIsScrolled] = useState(false);
 
-    const [isOpen, setIsOpen] = useState<boolean>(false);
-
-    useEffect(() => {
-        if (isOpen) {
-            document.body.style.overflow = 'hidden';
+    useMotionValueEvent(scrollY, "change", (latest) => {
+        const viewportHeight = typeof window !== "undefined" ? window.innerHeight : 800;
+        if (latest > viewportHeight * 0.12) {
+            setIsScrolled(true);
         } else {
-            document.body.style.overflow = '';
+            setIsScrolled(false);
         }
-
-        return () => {
-            document.body.style.overflow = '';
-        };
-    }, [isOpen]);
+    });
 
     return (
-        <div className="relative w-full h-full">
-            <div className="z-100 hidden lg:block fixed pointer-events-none inset-x-0 h-[88px] bg-background/80 backdrop-blur-sm [mask:linear-gradient(to_bottom,#000_20%,transparent_calc(100%-20%))]"></div>
-            <header
+        <>
+            <motion.header
+                initial={false}
                 className={cn(
-                    "fixed top-4 inset-x-0 mx-auto max-w-6xl px-2 md:px-12 z-100 transition-all duration-300 ease-in-out",
-                    isOpen ? "h-[calc(100dvh-2rem)]" : "h-14 md:h-16"
+                    "fixed inset-x-0 top-0 z-[150] w-full border-b transition-[background-color,border-color,box-shadow] duration-300 ease-out",
+                    isScrolled
+                        ? "border-black/[0.06] bg-background/82 shadow-[0_1px_0_rgba(0,0,0,0.03)] backdrop-blur-xl backdrop-saturate-150 dark:border-white/[0.08] dark:bg-background/78 dark:shadow-[0_1px_0_rgba(255,255,255,0.04)]"
+                        : "border-white/[0.12] bg-black/25 backdrop-blur-2xl backdrop-saturate-150 supports-[backdrop-filter]:bg-black/15",
                 )}
             >
-                <div className="backdrop-blur-xl rounded-xl lg:rounded-full border border-border h-full flex flex-col overflow-hidden relative bg-background/50">
-                    <div className="flex items-center justify-between w-full px-4 min-h-14 md:min-h-16 shrink-0 pb-1">
-                        <div className="flex items-center flex-1 lg:flex-none">
-                            <Link href={Routes.Home} className="flex items-center gap-2 group">
-                                <Image 
-                                    src="/logo.svg" 
-                                    alt="Budget Ndio Story" 
-                                    width={140} 
-                                    height={28} 
-                                    className="w-auto h-5 lg:h-6 transition-all group-hover:brightness-110" 
-                                />
-                            </Link>
-                        </div>
-
-                        <div className="lg:flex items-center hidden gap-4 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                            {NAV_LINKS.map((item, index) => (
-                                <Link
-                                    key={index}
-                                    href={item.href}
-                                    className="relative px-6 py-2.5 group"
-                                >
-                                    <motion.span
-                                        className="relative z-10 text-sm font-medium text-foreground/70 transition-colors group-hover:text-primary inline-block"
-                                        whileHover={{ 
-                                            y: -2,
-                                            scale: 1.02,
-                                            textShadow: "0 0 8px rgba(0, 85, 255, 0.4)"
-                                        }}
-                                        transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                                    >
-                                        {item.label}
-                                    </motion.span>
-                                    
-                                    {/* Animated Background Pill */}
-                                    <motion.div
-                                        layoutId="nav-pill-active"
-                                        className="absolute inset-0 bg-primary/5 rounded-full border border-primary/10 opacity-0 group-hover:opacity-100 -z-10"
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        whileHover={{ 
-                                            opacity: 1, 
-                                            scale: 1,
-                                            boxShadow: [
-                                                "0 0 10px rgba(0, 85, 255, 0.1)",
-                                                "0 0 20px rgba(0, 85, 255, 0.2)",
-                                                "0 0 10px rgba(0, 85, 255, 0.1)"
-                                            ]
-                                        }}
-                                        transition={{ 
-                                            boxShadow: { repeat: Infinity, duration: 2 },
-                                            opacity: { duration: 0.2 }
-                                        }}
-                                    />
-
-                                    {/* Shimmering 'Comet' Flare */}
-                                    <motion.div
-                                        className="absolute inset-0 rounded-full overflow-hidden opacity-0 group-hover:opacity-100 pointer-events-none"
-                                        initial={{ opacity: 0 }}
-                                        whileHover={{ opacity: 1 }}
-                                    >
-                                        <motion.div 
-                                            className="absolute inset-0 w-1/2 h-full bg-linear-to-r from-transparent via-primary/20 to-transparent -skew-x-12"
-                                            animate={{ 
-                                                x: ["-100%", "200%"],
-                                            }}
-                                            transition={{ 
-                                                repeat: Infinity, 
-                                                duration: 1.5, 
-                                                ease: "easeInOut",
-                                            }}
-                                        />
-                                    </motion.div>
-
-                                    {/* Bottom Animated Bar */}
-                                    <motion.div
-                                        className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-[1.5px] bg-primary rounded-full"
-                                        initial={{ width: 0 }}
-                                        whileHover={{ width: "40%" }}
-                                        transition={{ 
-                                            type: "spring", 
-                                            stiffness: 200, 
-                                            damping: 15 
-                                        }}
-                                    />
-                                </Link>
-                            ))}
-                        </div>
-
-                        <div className="flex items-center gap-2 lg:gap-3">
-                            <ThemeToggle />
-                            <Link href={Routes.JoinUs}>
-                                <Button variant="white" className="hidden lg:flex">
-                                    Join us
-                                </Button>
-                            </Link>
-                            <Button
-                                size="icon-sm"
-                                variant="ghost"
-                                onClick={() => setIsOpen((prev) => !prev)}
-                                className="lg:hidden"
-                            >
-                                {isOpen ? <XIcon className="size-4 duration-300" /> : <MenuIcon className="size-4 duration-300" />}
-                            </Button>
-                        </div>
+                <div className="mx-auto grid h-11 w-full max-w-[1068px] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 px-4 sm:h-12 md:px-6 lg:px-8">
+                    <div className="flex min-w-0 justify-start">
+                        <Link
+                            href={Routes.Home}
+                            className="flex items-center outline-none ring-offset-2 ring-offset-transparent transition-opacity hover:opacity-90 focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-white/40 md:ring-offset-background"
+                        >
+                            <Image
+                                src="/logo.svg"
+                                alt="Budget Ndio Story"
+                                width={140}
+                                height={28}
+                                priority
+                                className={cn(
+                                    "h-[1.25rem] w-auto md:h-7",
+                                    !isScrolled &&
+                                        "brightness-0 invert drop-shadow-[0_1px_8px_rgba(0,0,0,0.45)] dark:brightness-100 dark:invert-0 dark:drop-shadow-none",
+                                )}
+                            />
+                        </Link>
                     </div>
 
-                    <MobileMenu isOpen={isOpen} setIsOpen={setIsOpen} />
+                    <nav
+                        className="hidden items-center justify-center gap-0.5 lg:flex"
+                        aria-label="Primary"
+                    >
+                        {CENTER_LINKS.map((item) => (
+                            <Link
+                                key={item.href}
+                                href={item.href}
+                                className={cn(
+                                    "rounded-full px-3 py-1.5 text-[13px] font-medium tracking-[-0.01em] transition-colors",
+                                    isScrolled
+                                        ? "text-foreground/80 hover:bg-foreground/[0.06] hover:text-foreground"
+                                        : "text-white/90 hover:bg-white/12 hover:text-white",
+                                )}
+                            >
+                                {item.label}
+                            </Link>
+                        ))}
+                    </nav>
+
+                    <div className="flex min-w-0 items-center justify-end gap-1 sm:gap-2">
+                        <div
+                            className={cn(
+                                "flex items-center justify-center rounded-full p-0.5 transition-colors",
+                                isScrolled
+                                    ? "bg-black/[0.04] dark:bg-white/[0.06]"
+                                    : "bg-white/15",
+                            )}
+                        >
+                            <ThemeToggle />
+                        </div>
+
+                        <Link
+                            href={Routes.JoinUs}
+                            className={cn(
+                                "hidden rounded-full px-3 py-1.5 text-[13px] font-medium tracking-[-0.01em] transition-colors sm:inline-flex sm:px-4",
+                                isScrolled
+                                    ? "text-foreground/90 hover:bg-foreground/[0.06]"
+                                    : "text-white/95 hover:bg-white/12",
+                            )}
+                        >
+                            Join
+                        </Link>
+
+                        <button
+                            type="button"
+                            aria-expanded={isMenuOpen}
+                            aria-controls="site-navigation-dialog"
+                            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+                            onClick={() => setIsMenuOpen(true)}
+                            className={cn(
+                                "inline-flex h-8 items-center gap-2 rounded-full px-3.5 text-[13px] font-medium tracking-[-0.01em] transition-colors sm:h-9 sm:px-4",
+                                isScrolled
+                                    ? "bg-foreground text-background hover:bg-foreground/88"
+                                    : "border border-white/25 bg-white/15 text-white hover:bg-white hover:text-black",
+                            )}
+                        >
+                            Menu
+                            <span className="flex flex-col gap-[5px]" aria-hidden>
+                                <span className="block h-[2px] w-[14px] rounded-full bg-current" />
+                                <span className="block h-[2px] w-[14px] rounded-full bg-current" />
+                            </span>
+                        </button>
+                    </div>
                 </div>
-            </header>
-        </div>
-    )
+            </motion.header>
+
+            <CinematicMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
+        </>
+    );
 };
 
 export default Navbar;

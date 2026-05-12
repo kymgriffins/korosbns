@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,7 +12,7 @@ import {
 } from "lucide-react";
 import { IconBrandInstagram, IconBrandLinkedin, IconBrandYoutube, IconBrandX, IconBrandWhatsapp, IconBrandTiktok, IconBrandFacebook } from "@tabler/icons-react";
 import { motion, useScroll, useSpring, useTransform } from "motion/react";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Balancer from "react-wrap-balancer";
 import { toast } from "sonner";
 import Container from "../global/container";
@@ -92,6 +93,13 @@ export default function Contact() {
   });
   const [formExpanded, setFormExpanded] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.location.hash === "#contact-form") {
+      setFormExpanded(true);
+    }
+  }, []);
 
   // Scroll-based animations
   const { scrollYProgress } = useScroll({
@@ -249,8 +257,32 @@ export default function Contact() {
               </div>
             </Container>
 
+            {/* Newsletter */}
+            <Container
+              animation="fadeUp"
+              delay={0.28}
+              id="newsletter"
+              className="scroll-mt-28 space-y-4 px-4 sm:px-6"
+            >
+              <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 text-center sm:p-8">
+                <h2 className="text-lg font-semibold">Newsletter</h2>
+                <p className="mx-auto mt-2 max-w-md text-sm text-foreground/60">
+                  Want weekly budget breakdowns and release notes? Drop us a line via the contact form and mention “newsletter”—we&apos;ll add you when the list opens publicly.
+                </p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="mt-5 rounded-full border-white/15 bg-transparent"
+                  asChild
+                >
+                  <Link href="#contact-form">Go to contact form</Link>
+                </Button>
+              </div>
+            </Container>
+
             {/* SECTION 3: CONTACT (Inline, Expandable) */}
-            <Container animation="fadeUp" delay={0.3} className="space-y-4">
+            <Container animation="fadeUp" delay={0.3} id="contact-form" className="scroll-mt-28 space-y-4">
               <div className="text-center">
                 <h2 className="text-lg font-semibold">Ready to collaborate?</h2>
                 <p className="text-sm text-foreground/60 mt-1">
@@ -386,8 +418,8 @@ export default function Contact() {
               />
               Email
             </a>
-            <a
-              href="#"
+            <Link
+              href="/privacy"
               className="group inline-flex items-center gap-1.5 hover:text-foreground transition-colors"
             >
               <motion.span
@@ -397,9 +429,9 @@ export default function Contact() {
                 transition={{ duration: 2.4, repeat: Infinity, delay: 0.2 }}
               />
               Privacy
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              href="/terms"
               className="group inline-flex items-center gap-1.5 hover:text-foreground transition-colors"
             >
               <motion.span
@@ -409,7 +441,7 @@ export default function Contact() {
                 transition={{ duration: 2.6, repeat: Infinity, delay: 0.35 }}
               />
               Terms
-            </a>
+            </Link>
           </div>
         </Container>
       </Wrapper>

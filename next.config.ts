@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
   trailingSlash: true,
+  allowedDevOrigins: ['192.168.100.137:3001'],
 
   // Performance optimizations
   compress: true, // Enable gzip compression

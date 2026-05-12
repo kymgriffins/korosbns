@@ -2,67 +2,131 @@
 
 import React from 'react';
 import Link from 'next/link';
-import Container from '../global/container';
 import { motion } from 'motion/react';
+import Container from '@/components/ui/container';
+import { Icon } from '@iconify/react';
+import { socialLinks } from '@/constants/links';
+import ScrollBaseAnimation from '@/components/ui/scroll-text-marque';
+
+const brandIcons: Record<string, string> = {
+    x: 'ri:twitter-x-fill',
+    linkedin: 'lucide:linkedin',
+    whatsapp: 'lucide:whatsapp',
+    youtube: 'lucide:youtube',
+    tiktok: 'ri:tiktok-fill',
+    instagram: 'lucide:instagram',
+    facebook: 'lucide:facebook'
+};
 
 const GustoFooter = () => {
     return (
-        <footer className="bg-black text-white pt-24 md:pt-48 pb-12 md:pb-24 overflow-hidden">
-            <div className="max-w-[1400px] mx-auto px-8 md:px-16">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 mb-32">
-                    <div>
-                        <motion.h2 
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            className="gusto-heading mb-12"
+        <footer className="relative bg-background text-foreground overflow-hidden flex flex-col justify-between pt-16 pb-0 z-0">
+            {/* Atmospheric Depth Layers */}
+            <div className="absolute inset-0 z-0 opacity-100 pointer-events-none bg-linear-to-b from-[#F7F7F5] to-[#E8E8E4] dark:from-[#050505] dark:to-[#0C0C0C]" />
+            <div className="absolute inset-0 z-0 opacity-[0.6] pointer-events-none bg-[radial-gradient(circle_at_top,_rgba(255,255,255,1)_0%,_transparent_70%)] dark:bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.08)_0%,_transparent_60%)]" />
+            <div className="absolute inset-0 z-0 opacity-[0.04] pointer-events-none bg-noise" />
+
+            <Container size="ultra" className="relative z-10 flex flex-col h-full flex-1">
+
+                {/* MIDDLE: Columnar Layout & Socials */}
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-x-12 gap-y-12 py-12 md:py-16">
+                    <div className="lg:col-span-2 space-y-10">
+                        <div className="flex flex-wrap gap-5">
+                            {socialLinks.map((social) => (
+                                <SocialIcon 
+                                    key={social.label} 
+                                    icon={brandIcons[social.icon] || social.icon} 
+                                    href={social.href}
+                                />
+                            ))}
+                        </div>
+                        <p className="text-sm text-muted-foreground max-w-sm leading-relaxed font-light">
+                            Transforming complex national budgets into actionable narratives for the next generation.
+                        </p>
+                    </div>
+                    
+                    <FooterColumn 
+                        title="Platform" 
+                        links={[
+                            { label: 'Narratives', href: '/learn' },
+                            { label: 'Data Hub', href: '/research' },
+                            { label: 'County Tracker', href: '/challenges' },
+                            { label: 'About Us', href: '/about' }
+                        ]} 
+                    />
+                    <FooterColumn 
+                        title="Movement" 
+                        links={[
+                            { label: 'Donate', href: '/donate' },
+                            { label: 'Join Network', href: '/join' },
+                            { label: 'Volunteer', href: '/volunteer' },
+                            { label: 'Impact', href: '/impact' }
+                        ]} 
+                    />
+                    
+                    <div className="lg:col-span-2 flex flex-col justify-end items-start lg:items-end">
+                        <div className="text-left lg:text-right space-y-2">
+                            <p className="g-mono text-[11px] opacity-20 uppercase tracking-[0.4em]">Global HQ</p>
+                            <p className="text-lg font-light text-muted-foreground">Nairobi, Kenya</p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* BOTTOM: Bidirectional Watermark Marquee */}
+                <div className="mt-auto w-full overflow-hidden border-t border-foreground/5 pt-8">
+                    <div className="flex flex-col gap-0 group">
+                        <ScrollBaseAnimation 
+                            baseVelocity={3} 
+                            scrollDependent={true}
+                            clasname="text-[8vw] font-black uppercase tracking-[-0.04em] leading-[0.9] select-none text-foreground"
                         >
-                            Let's write the <br />
-                            <span className="text-primary italic font-serif">next chapter</span> together.
-                        </motion.h2>
-                        <div className="flex flex-col gap-4">
-                            <a href="mailto:hello@budgetndiostory.org" className="text-3xl md:text-5xl font-medium hover:text-primary transition-colors">
-                                hello@budgetndiostory.org
-                            </a>
-                            <p className="text-white/40 tracking-[0.2em] uppercase text-sm">Join the movement</p>
-                        </div>
+                            BUDGET NDIO STORY
+                        </ScrollBaseAnimation>
                     </div>
-
-                    <div className="grid grid-cols-2 gap-12">
-                        <div className="space-y-6">
-                            <h4 className="text-white/40 uppercase tracking-widest text-xs">Explore</h4>
-                            <ul className="space-y-4">
-                                <li><Link href="/learn" className="text-xl hover:translate-x-2 transition-transform inline-block">Stories</Link></li>
-                                <li><Link href="/research" className="text-xl hover:translate-x-2 transition-transform inline-block">Research</Link></li>
-                                <li><Link href="/about" className="text-xl hover:translate-x-2 transition-transform inline-block">About</Link></li>
-                                <li><Link href="/contact" className="text-xl hover:translate-x-2 transition-transform inline-block">Contact</Link></li>
-                            </ul>
-                        </div>
-                        <div className="space-y-6">
-                            <h4 className="text-white/40 uppercase tracking-widest text-xs">Social</h4>
-                            <ul className="space-y-4">
-                                <li><a href="#" className="text-xl hover:translate-x-2 transition-transform inline-block">Instagram</a></li>
-                                <li><a href="#" className="text-xl hover:translate-x-2 transition-transform inline-block">Twitter / X</a></li>
-                                <li><a href="#" className="text-xl hover:translate-x-2 transition-transform inline-block">YouTube</a></li>
-                                <li><a href="#" className="text-xl hover:translate-x-2 transition-transform inline-block">LinkedIn</a></li>
-                            </ul>
+                    
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-6 py-8 g-mono text-[11px] text-muted-foreground border-t border-foreground/5 mt-8 px-2">
+                        <p className="tracking-widest uppercase">© 2026 BUDGET NDIO STORY. NATIONAL CIVIC INITIATIVE.</p>
+                        <div className="flex gap-12">
+                            <Link href="/privacy" className="hover:text-primary transition-colors tracking-widest uppercase">Privacy Policy</Link>
+                            <Link href="/terms" className="hover:text-primary transition-colors tracking-widest uppercase">Terms of Service</Link>
                         </div>
                     </div>
                 </div>
-
-                <div className="pt-12 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-8">
-                    <div className="flex items-center gap-4">
-                        <span className="text-2xl font-bold tracking-tighter">BNS.</span>
-                        <span className="text-white/20 text-sm">© 2026 Budget Ndio Story</span>
-                    </div>
-                    <div className="flex gap-8 text-white/40 text-xs uppercase tracking-widest">
-                        <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
-                        <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
-                    </div>
-                </div>
-            </div>
+            </Container>
         </footer>
     );
 };
+
+const FooterColumn = ({ title, links }: { title: string; links: { label: string; href: string }[] }) => (
+    <div className="space-y-8">
+        <span className="g-mono text-[11px] text-primary/30 font-black uppercase tracking-[0.4em]">{title}</span>
+        <ul className="space-y-3">
+            {links.map((link) => (
+                <li key={link.label}>
+                    <Link href={link.href} className="text-base md:text-lg font-light text-muted-foreground hover:text-primary transition-all duration-500">
+                        {link.label}
+                    </Link>
+                </li>
+            ))}
+        </ul>
+    </div>
+);
+
+const SocialIcon = ({ icon, href }: { icon: string; href: string }) => (
+    <motion.a 
+        href={href} 
+        target="_blank"
+        rel="noopener noreferrer"
+        whileHover={{ 
+            scale: 1.05, 
+            backgroundColor: 'var(--primary)', 
+            borderColor: 'var(--primary)', 
+            color: 'var(--primary-foreground)' 
+        }}
+        className="w-11 h-11 rounded-full border border-foreground/10 flex items-center justify-center transition-all duration-500 text-foreground"
+    >
+        <Icon icon={icon} className="w-5 h-5" />
+    </motion.a>
+);
 
 export default GustoFooter;
