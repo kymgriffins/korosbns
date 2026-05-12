@@ -25,11 +25,16 @@ const MarketingLayout = ({
             </div>
 
             {showFooter && (
-                <div className="sticky bottom-0 z-0 h-screen w-full pointer-events-none">
-                    <div className="pointer-events-auto h-full w-full">
+                <>
+                    <div className="hidden md:block sticky bottom-0 z-0 h-screen w-full pointer-events-none">
+                        <div className="pointer-events-auto h-full w-full">
+                            <GustoFooter />
+                        </div>
+                    </div>
+                    <div className="md:hidden relative z-20 bg-background">
                         <GustoFooter />
                     </div>
-                </div>
+                </>
             )}
         </main>
     );

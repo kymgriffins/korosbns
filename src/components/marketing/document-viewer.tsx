@@ -79,12 +79,7 @@ export default function DocumentViewer({ document }: DocumentViewerProps) {
     }, [document.files, selectedYear, searchQuery]);
 
     return (
-        <section className="relative w-full min-h-screen bg-background overflow-hidden flex flex-col pt-20">
-            {/* Ambient background */}
-            <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-                <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[120px] rounded-full opacity-30" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[120px] rounded-full opacity-30" />
-            </div>
+        <section className="relative w-full min-h-screen bg-surface-0 overflow-hidden flex flex-col pt-20">
 
             <Wrapper className="relative z-10 w-full flex-1 flex flex-col py-6">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full">
@@ -92,7 +87,7 @@ export default function DocumentViewer({ document }: DocumentViewerProps) {
                     <Container animation="fadeUp" className="mb-6">
                         <Link 
                             href="/learn"
-                            className="inline-flex items-center gap-2 text-sm text-foreground/60 hover:text-primary transition-colors"
+                            className="inline-flex items-center gap-2 text-sm text-text-3 hover:text-accent transition-colors"
                         >
                             <ArrowLeft className="size-4" />
                             Back to Learn
@@ -103,14 +98,14 @@ export default function DocumentViewer({ document }: DocumentViewerProps) {
                     <Container animation="fadeUp" delay={0.1} className="mb-8">
                         <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                             <div>
-                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-medium mb-4">
+                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent-soft border border-border-default text-accent text-xs font-medium mb-4">
                                     <FolderOpen className="size-3.5" />
                                     <span>{document.folderName}</span>
                                 </div>
-                                <h1 className="text-2xl sm:text-4xl font-bold font-heading tracking-tight">
+                                <h1 className="g-headline">
                                     {document.fullName}
                                 </h1>
-                                <p className="text-sm sm:text-base text-foreground/60 mt-2 max-w-xl">
+                                <p className="g-text mt-2 max-w-xl">
                                     <Balancer>
                                         {document.description}. Browse and download {document.files.length} documents.
                                     </Balancer>
@@ -124,13 +119,13 @@ export default function DocumentViewer({ document }: DocumentViewerProps) {
                         <div className="flex flex-col sm:flex-row gap-4">
                             {/* Search */}
                             <div className="relative flex-1 max-w-md">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-foreground/40" />
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-text-3" />
                                 <input
                                     type="text"
                                     placeholder="Search documents..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-2 rounded-lg bg-white/5 border border-white/10 text-foreground text-sm placeholder:text-foreground/40 focus:outline-none focus:border-primary/50 transition-colors"
+                                    className="w-full pl-10 pr-4 py-2 rounded-lg bg-surface-1 border border-border-default text-text-1 text-sm placeholder:text-text-3 focus:outline-none focus:border-accent/50 transition-colors"
                                 />
                             </div>
                             
@@ -138,7 +133,7 @@ export default function DocumentViewer({ document }: DocumentViewerProps) {
                             <select 
                                 value={selectedYear || ''}
                                 onChange={(e) => setSelectedYear(e.target.value || null)}
-                                className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-foreground text-sm focus:outline-none focus:border-primary/50 transition-colors"
+                                className="px-4 py-2 rounded-lg bg-surface-1 border border-border-default text-text-1 text-sm focus:outline-none focus:border-accent/50 transition-colors"
                             >
                                 <option value="">All Years</option>
                                 {availableYears.map(year => (
@@ -160,12 +155,12 @@ export default function DocumentViewer({ document }: DocumentViewerProps) {
                                 {filteredFiles.map((file, index) => {
                                     const year = extractYearFromFilename(file.name);
                                     return (
-                                        <motion.div
+                                         <motion.div
                                             key={file.name}
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ duration: 0.3, delay: index * 0.02 }}
-                                            className="group p-4 rounded-xl bg-white/5 border border-white/10 hover:border-primary/30 transition-all"
+                                            className="group p-4 rounded-xl bg-surface-1 border border-border-default hover:border-accent/30 transition-all g-glass"
                                         >
                                             <div className="flex items-start gap-3">
                                                 <div className="shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -175,11 +170,11 @@ export default function DocumentViewer({ document }: DocumentViewerProps) {
                                                     <h3 className="text-sm font-semibold mb-1 group-hover:text-primary transition-colors line-clamp-2" title={file.name}>
                                                         {file.name}
                                                     </h3>
-                                                    <div className="flex items-center gap-3 text-xs text-foreground/40 mb-3">
+                                                    <div className="flex items-center gap-3 text-xs text-text-3 mb-3">
                                                         {year && (
                                                             <span className="inline-flex items-center gap-1">
-                                                                <Calendar className="size-3" />
-                                                                {year}
+                                                                 <Calendar className="size-3" />
+                                                                 {year}
                                                             </span>
                                                         )}
                                                         <span>{formatFileSize(file.size)}</span>
@@ -226,12 +221,12 @@ export default function DocumentViewer({ document }: DocumentViewerProps) {
                     </Container>
 
                     {/* FOOTER */}
-                    <Container animation="fadeUp" delay={0.5} className="max-w-3xl mx-auto w-full pt-12 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-foreground/30 px-4 sm:px-6">
+                    <Container animation="fadeUp" delay={0.5} className="max-w-3xl mx-auto w-full pt-12 border-t border-border-subtle flex flex-col sm:flex-row items-center justify-between gap-4 text-text-3 px-4 sm:px-6">
                         <p className="text-[10px] font-medium">© 2026 Budget Ndio Story.</p>
                         <div className="flex items-center gap-4 text-[9px] font-medium uppercase tracking-wider">
-                            <a href="mailto:info@budgetndiostory.com" className="hover:text-foreground transition-colors">Email</a>
-                            <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
-                            <a href="#" className="hover:text-foreground transition-colors">Terms</a>
+                            <a href="mailto:info@budgetndiostory.com" className="hover:text-text-1 transition-colors">Email</a>
+                            <a href="#" className="hover:text-text-1 transition-colors">Privacy</a>
+                            <a href="#" className="hover:text-text-1 transition-colors">Terms</a>
                         </div>
                     </Container>
                 </div>

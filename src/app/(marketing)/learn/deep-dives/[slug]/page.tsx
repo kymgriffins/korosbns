@@ -25,11 +25,11 @@ export default async function DeepDiveArticlePage({ params }: Props) {
   const article = await fetchDeepDiveArticle(slug);
 
   return (
-    <section className="relative min-h-screen w-full overflow-hidden bg-background pt-12 sm:pt-16">
+    <section className="relative min-h-screen w-full overflow-hidden bg-surface-0 pt-12 sm:pt-16">
       <div className="mx-auto w-full max-w-3xl px-4 pb-24 sm:px-6">
         <Link
           href="/learn"
-          className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-foreground/50 transition-colors hover:text-primary"
+          className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-text-3 transition-colors hover:text-accent"
         >
           <ArrowLeft className="size-4" />
           Back to Learn Hub
@@ -37,39 +37,39 @@ export default async function DeepDiveArticlePage({ params }: Props) {
 
         <article className="space-y-8">
           <header className="space-y-4">
-            <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-primary">
+            <div className="inline-flex items-center gap-2 rounded-full bg-accent-soft border border-border-default px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-accent">
               {article.category || "Deep Dive"} · {article.sourceLabel}
             </div>
-            <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+            <h1 className="g-headline">
               {article.title}
             </h1>
-            <p className="text-xl leading-relaxed text-foreground/60">
+            <p className="g-subheadline">
               {article.summary}
             </p>
             {article.updatedAt && (
-               <div className="text-xs text-foreground/30 font-medium">
+               <div className="text-xs text-text-3 font-medium">
                   Last updated {new Date(article.updatedAt).toLocaleDateString()}
                </div>
             )}
           </header>
 
-          <hr className="border-border" />
+          <hr className="border-border-default" />
 
           <div
-            className="notion-content prose dark:prose-invert max-w-none"
+            className="editorial-content max-w-none"
             dangerouslySetInnerHTML={{ __html: article.html }}
           />
 
-          <footer className="mt-16 pt-8 border-t border-border">
+          <footer className="mt-16 pt-8 border-t border-border-default">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
               <div className="space-y-1">
-                <p className="text-sm font-semibold text-foreground">Next Step</p>
-                <p className="text-xs text-foreground/50">Keep exploring the budget cycle.</p>
+                <p className="text-sm font-semibold text-text-1">Next Step</p>
+                <p className="text-xs text-text-3">Keep exploring the budget cycle.</p>
               </div>
               <div className="flex items-center gap-3">
                 <Link
                   href="/learn"
-                  className="inline-flex h-11 items-center gap-2 rounded-xl bg-foreground px-6 text-sm font-bold text-background transition-all hover:bg-foreground/90"
+                  className="inline-flex h-11 items-center gap-2 rounded-xl bg-text-1 px-6 text-sm font-bold text-surface-0 transition-all hover:bg-text-1/90"
                 >
                   Return to Hub <ArrowRight className="size-4" />
                 </Link>
@@ -77,7 +77,7 @@ export default async function DeepDiveArticlePage({ params }: Props) {
                   href="https://api.budgetndiostory.org/docrepository/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex h-11 items-center gap-2 rounded-xl border border-border px-6 text-sm font-bold text-foreground transition-all hover:bg-muted/10"
+                  className="inline-flex h-11 items-center gap-2 rounded-xl border border-border-default px-6 text-sm font-bold text-text-1 transition-all hover:bg-surface-2/10"
                 >
                   Raw Docs
                 </a>

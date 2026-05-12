@@ -20,7 +20,7 @@ const brandIcons: Record<string, string> = {
 
 const GustoFooter = () => {
     return (
-        <footer className="relative bg-background text-foreground overflow-hidden flex flex-col justify-between pt-16 pb-0 z-0">
+        <footer className="relative bg-background text-foreground overflow-hidden flex flex-col justify-between pt-24 md:pt-32 pb-0 z-0">
             {/* Atmospheric Depth Layers */}
             <div className="absolute inset-0 z-0 opacity-100 pointer-events-none bg-linear-to-b from-[#F7F7F5] to-[#E8E8E4] dark:from-[#050505] dark:to-[#0C0C0C]" />
             <div className="absolute inset-0 z-0 opacity-[0.6] pointer-events-none bg-[radial-gradient(circle_at_top,_rgba(255,255,255,1)_0%,_transparent_70%)] dark:bg-[radial-gradient(circle_at_top,_rgba(59,130,246,0.08)_0%,_transparent_60%)]" />
@@ -29,7 +29,7 @@ const GustoFooter = () => {
             <Container size="ultra" className="relative z-10 flex flex-col h-full flex-1">
 
                 {/* MIDDLE: Columnar Layout & Socials */}
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-x-12 gap-y-12 py-12 md:py-16">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-x-12 gap-y-16 py-12 md:py-20">
                     <div className="lg:col-span-2 space-y-10">
                         <div className="flex flex-wrap gap-5">
                             {socialLinks.map((social) => (
@@ -64,9 +64,9 @@ const GustoFooter = () => {
                         ]} 
                     />
                     
-                    <div className="lg:col-span-2 flex flex-col justify-end items-start lg:items-end">
-                        <div className="text-left lg:text-right space-y-2">
-                            <p className="g-mono text-[11px] opacity-20 uppercase tracking-[0.4em]">Global HQ</p>
+                    <div className="lg:col-span-2 flex flex-col justify-end items-start lg:items-end pt-8 md:pt-0">
+                        <div className="text-left lg:text-right space-y-3">
+                            <p className="g-mono text-[10px] md:text-[11px] opacity-30 uppercase tracking-[0.4em]">Global HQ</p>
                             <p className="text-lg font-light text-muted-foreground">Nairobi, Kenya</p>
                         </div>
                     </div>
@@ -84,9 +84,9 @@ const GustoFooter = () => {
                         </ScrollBaseAnimation>
                     </div>
                     
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-6 py-8 g-mono text-[11px] text-muted-foreground border-t border-foreground/5 mt-8 px-2">
-                        <p className="tracking-widest uppercase">© 2026 BUDGET NDIO STORY. NATIONAL CIVIC INITIATIVE.</p>
-                        <div className="flex gap-12">
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-8 py-10 g-mono text-[10px] md:text-[11px] text-muted-foreground border-t border-foreground/5 mt-10 px-2 text-center md:text-left">
+                        <p className="tracking-widest uppercase leading-relaxed max-w-xs md:max-w-none">© 2026 BUDGET NDIO STORY. NATIONAL CIVIC INITIATIVE.</p>
+                        <div className="flex gap-8 md:gap-12">
                             <Link href="/privacy" className="hover:text-primary transition-colors tracking-widest uppercase">Privacy Policy</Link>
                             <Link href="/terms" className="hover:text-primary transition-colors tracking-widest uppercase">Terms of Service</Link>
                         </div>

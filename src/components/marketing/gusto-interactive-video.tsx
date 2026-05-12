@@ -34,69 +34,45 @@ const GustoInteractiveVideo = () => {
 
     return (
         <>
-            <Container size="ultra" className="py-14 md:py-20">
-                <motion.section
+            <section className="relative w-full pt-12 md:pt-24 pb-0 md:pb-0 px-4 md:px-10 overflow-hidden bg-background">
+                <motion.div
                     ref={sectionRef}
                     style={{ scale, opacity }}
-                    className="relative w-full aspect-video md:h-[70vh] bg-zinc-900 overflow-hidden cursor-none rounded-[24px] group border border-white/5"
-                    onMouseEnter={() => setIsHovering(true)}
-                    onMouseLeave={() => setIsHovering(false)}
+                    className="relative w-full aspect-video md:h-[90vh] bg-zinc-900 overflow-hidden group rounded-[32px] md:rounded-[48px] shadow-2xl"
                     onClick={() => setIsOpen(true)}
                 >
-                    {/* Custom Cursor */}
-                    <AnimatePresence>
-                        {isHovering && !isOpen && (
-                            <motion.div
-                                initial={{ scale: 0, opacity: 0 }}
-                                animate={{ scale: 1, opacity: 1 }}
-                                exit={{ scale: 0, opacity: 0 }}
-                                transition={{ duration: 0.5, ease: APPLE_EASE }}
-                                style={{
-                                    position: 'fixed',
-                                    left: mousePos.x,
-                                    top: mousePos.y,
-                                    x: '-50%',
-                                    y: '-50%',
-                                }}
-                                className="z-50 pointer-events-none w-28 h-28 bg-white rounded-full flex flex-col items-center justify-center mix-blend-difference"
+
+                        <div className="absolute inset-0 z-0">
+                            <div className="absolute inset-0 bg-zinc-900/40 z-10 mix-blend-multiply group-hover:bg-zinc-900/10 transition-colors duration-1000" />
+                            <video
+                                autoPlay
+                                muted
+                                loop
+                                playsInline
+                                className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:scale-[1.05] transition-all duration-[2s] ease-[cubic-bezier(0.22,1,0.36,1)] object-top"
                             >
-                                <PlayIcon className="w-6 h-6 text-black fill-black" />
-                                <span className="text-black text-[11px] font-bold tracking-widest mt-2 uppercase">Play Story</span>
+                                <source src="https://res.cloudinary.com/dn8lut2fc/video/upload/v1778496651/Untitled_design_maph6q.mp4" type="video/mp4" />
+                            </video>
+                        </div>
+
+                        {/* Content Overlay */}
+                        <div className="absolute bottom-0 left-0 right-0 z-20 p-8 md:p-16 bg-linear-to-t from-black/80 via-black/20 to-transparent">
+                            <motion.div
+                                initial={{ y: 20, opacity: 0 }}
+                                whileInView={{ y: 0, opacity: 1 }}
+                                transition={{ duration: 1, ease: APPLE_EASE }}
+                                viewport={{ once: true }}
+                                className="max-w-3xl"
+                            >
+                                <span className="g-eyebrow text-primary/90 mb-4 block">Action through Understanding</span>
+                                <h2 className="g-display text-white mb-6 text-3xl md:text-6xl drop-shadow-2xl">The Budget Mtaani <br className="hidden md:block" /> Series</h2>
+                                <p className="text-white/60 text-[15px] md:text-[18px] font-light leading-relaxed max-w-xl">
+                                    Watch how we're changing the conversation on the streets of Nairobi. Translating fiscal outrage into collective understanding.
+                                </p>
                             </motion.div>
-                        )}
-                    </AnimatePresence>
-
-                    <div className="absolute inset-0 z-0">
-                        <div className="absolute inset-0 bg-zinc-900/40 z-10 mix-blend-multiply group-hover:bg-zinc-900/20 transition-colors duration-700" />
-                        <video
-                            autoPlay
-                            muted
-                            loop
-                            playsInline
-                            className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:scale-[1.02] transition-all duration-1000"
-                        >
-                            <source src="https://res.cloudinary.com/dn8lut2fc/video/upload/v1778496651/Untitled_design_maph6q.mp4" type="video/mp4" />
-                        </video>
-                    </div>
-
-                    {/* Content Overlay */}
-                    <div className="absolute bottom-0 left-0 right-0 z-20 p-8 md:p-14 bg-linear-to-t from-black/80 to-transparent">
-                        <motion.div
-                            initial={{ x: -16, opacity: 0 }}
-                            whileInView={{ x: 0, opacity: 1 }}
-                            transition={{ duration: 0.7, ease: APPLE_EASE, delay: 0.2 }}
-                            viewport={{ once: true }}
-                            className="max-w-2xl"
-                        >
-                            <span className="g-eyebrow text-primary mb-3 block">Action through Understanding</span>
-                            <h2 className="g-headline text-white mb-4 text-3xl md:text-5xl">The Budget Mtaani Series</h2>
-                            <p className="text-white/60 text-base md:text-lg font-light leading-relaxed max-w-lg">
-                                Watch how we're changing the conversation on the streets of Nairobi. Translating fiscal outrage into collective understanding.
-                            </p>
+                        </div>
                         </motion.div>
-                    </div>
-                </motion.section>
-            </Container>
+            </section>
 
             {/* Video Modal */}
             <AnimatePresence>

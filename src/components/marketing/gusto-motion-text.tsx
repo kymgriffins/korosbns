@@ -50,7 +50,7 @@ function AnimatedWord({
     return (
         <motion.span
             style={{ opacity, y }}
-            className="inline-block text-[clamp(2rem,6.5vw,4.75rem)] font-semibold leading-[1.06] tracking-[-0.025em] text-foreground md:text-[clamp(2.25rem,5.5vw,5rem)]"
+            className="inline-block text-[clamp(2.5rem,8vw,5.5rem)] font-bold leading-[0.95] tracking-[-0.04em] text-foreground"
         >
             {children}
         </motion.span>
@@ -63,7 +63,7 @@ const GustoMotionText = () => {
 
     const { scrollYProgress } = useScroll({
         target: containerRef,
-        offset: ["start 0.75", "end 0.35"],
+        offset: ["start 0.75", "end 0.25"],
     });
 
     const smoothProgress = useSpring(scrollYProgress, {
@@ -72,47 +72,28 @@ const GustoMotionText = () => {
         restDelta: 0.001,
     });
 
-    const quoteOpacity = useTransform(
-        smoothProgress,
-        [0.45, 0.72],
-        reducedMotion ? [1, 1] : [0, 1],
-    );
-    const quoteY = useTransform(
-        smoothProgress,
-        [0.45, 0.72],
-        reducedMotion ? [0, 0] : [16, 0],
-    );
-
     return (
         <section
             ref={containerRef}
-            className="relative min-h-[125svh] w-full overflow-hidden bg-background py-28 md:py-36 lg:py-44"
+            className="relative min-h-[80svh] flex items-center justify-center w-full overflow-hidden bg-background py-32 md:py-48"
         >
             <div className="pointer-events-none absolute inset-0 overflow-hidden">
-                <div className="absolute left-1/2 top-[42%] h-[min(90vw,720px)] w-[min(90vw,720px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.06] blur-[100px] dark:bg-primary/[0.09]" />
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_40%,transparent_0%,var(--background)_78%)] opacity-90 dark:opacity-95" />
+                <div className="absolute left-1/2 top-[50%] h-[min(100vw,800px)] w-[min(100vw,800px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.03] blur-[140px] dark:bg-primary/[0.05]" />
             </div>
 
             <Container size="ultra" className="relative z-10">
-                <div className="mx-auto max-w-[min(100%,920px)]">
-                    {/* Reading indicator — vertical strip (no “dot” cap artifact at scale 0) */}
-                    <div className="mb-14 flex items-stretch gap-8 md:gap-14 lg:gap-16">
-                        <div
-                            className="relative mt-1 w-[2px] shrink-0 self-stretch overflow-hidden rounded-full bg-border/80 md:w-[3px]"
-                            aria-hidden
+                <div className="mx-auto max-w-4xl text-center">
+                    <div className="flex flex-col items-center">
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 1, ease: "easeOut" }}
+                            className="mb-12"
                         >
-                            <motion.div
-                                style={{
-                                    scaleY: smoothProgress,
-                                }}
-                                className="absolute inset-x-0 top-0 h-full origin-top rounded-full bg-primary"
-                            />
-                        </div>
-
-                        <div className="min-w-0 flex-1 space-y-5 md:space-y-6 lg:space-y-7">
-                            <p className="g-mono text-[10px] font-semibold uppercase tracking-[0.35em] text-muted-foreground md:text-[11px]">
-                                Why this matters
-                            </p>
+                            <span className="g-eyebrow text-primary/40">The Mandate</span>
+                        </motion.div>
+                        
+                        <div className="flex flex-col items-center gap-4">
                             {lines.map((line, lineIdx) => {
                                 const wordsInLine = line.split(" ");
                                 const lineWordStart = lines
@@ -121,7 +102,7 @@ const GustoMotionText = () => {
                                 return (
                                     <div
                                         key={lineIdx}
-                                        className="flex flex-wrap items-baseline gap-x-[0.28em] gap-y-1 md:gap-x-[0.34em]"
+                                        className="flex flex-wrap justify-center items-baseline gap-x-[0.3em]"
                                     >
                                         {wordsInLine.map((word, wordIdx) => (
                                             <AnimatedWord
@@ -138,29 +119,11 @@ const GustoMotionText = () => {
                             })}
                         </div>
                     </div>
-
-                    <motion.figure
-                        style={{
-                            opacity: quoteOpacity,
-                            y: quoteY,
-                        }}
-                        className="border-t border-border/60 pt-14 md:pt-16"
-                    >
-                        <blockquote className="max-w-2xl text-pretty text-xl font-normal leading-relaxed text-foreground/90 md:text-2xl md:leading-snug">
-                            <span className="text-primary/90">&ldquo;</span>
-                            The energy of youth is an engine, but without the fuel of
-                            knowledge, it runs in circles.
-                            <span className="text-primary/90">&rdquo;</span>
-                        </blockquote>
-                        <figcaption className="mt-8 text-[11px] font-medium uppercase tracking-[0.28em] text-muted-foreground md:text-xs md:tracking-[0.32em]">
-                            James Mutinda — Deep Dive Series
-                        </figcaption>
-                    </motion.figure>
                 </div>
             </Container>
 
             <div
-                className="pointer-events-none absolute inset-0 opacity-[0.035] mix-blend-overlay bg-noise"
+                className="pointer-events-none absolute inset-0 opacity-[0.02] mix-blend-overlay bg-noise"
                 aria-hidden
             />
         </section>

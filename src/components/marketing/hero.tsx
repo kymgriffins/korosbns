@@ -50,8 +50,8 @@ const FloatingBadge = ({ text, top, left, right, index }: { text: string; top: s
             }}
             className="absolute hidden lg:block z-30"
         >
-            <div className="px-3 py-1 rounded-lg border border-foreground/5 backdrop-blur-md">
-                <span className="text-base font-handwriting text-foreground/80 whitespace-nowrap select-none">
+            <div className="px-3 py-1 rounded-lg border border-border-subtle g-glass">
+                <span className="text-base font-handwriting text-text-2 whitespace-nowrap select-none">
                     {text}
                 </span>
             </div>
@@ -74,17 +74,17 @@ const Hero = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
                         className={cn(
-                            "flex items-center justify-center gap-2 pl-1.5 pr-2 py-1.5 rounded-full",
-                            "badge-glow backdrop-blur-md"
+                            "flex items-center justify-center gap-2 pl-1.5 pr-3 py-1.5 rounded-full",
+                            "bg-surface-0 border border-border-default shadow-sm"
                         )}
                     >
                         <span className={cn(
                             "px-2 py-0.5 text-xs font-semibold rounded-full",
-                            "bg-foreground text-background"
+                            "bg-text-1 text-surface-0"
                         )}>
                             Mission
                         </span>
-                        <Container words={true} className="w-min flex text-sm text-foreground/80">
+                        <Container words={true} className="w-min flex text-sm text-text-2">
                             {badge.split(" ").map((word, index) => (
                                 <span className="w-min" key={index}>
                                     {word}&nbsp;
@@ -93,14 +93,14 @@ const Hero = () => {
                         </Container>
                     </motion.div>
 
-                    <h1 className="text-4xl md:text-6xl font-semibold tracking-tight leading-[1.16] md:leading-[1.12] font-heading mt-8 pb-2 overflow-visible">
+                    <h1 className="g-display mt-10 pb-2">
                         <Balancer>
                             {"Bridging the gap between".split(" ").map((word, index) => (
                                 <motion.span
                                     initial={{ filter: "blur(10px)", opacity: 0, y: 10 }}
                                     animate={{ filter: "blur(0px)", opacity: 1, y: 0 }}
                                     transition={{ duration: 0.4, delay: index * 0.05 }}
-                                    className="inline-block leading-[1.16] pb-[0.08em]"
+                                    className="inline-block"
                                     key={index}
                                 >
                                     {word}&nbsp;
@@ -113,8 +113,8 @@ const Hero = () => {
                                     animate={{ filter: "blur(0px)", opacity: 1, y: 0 }}
                                     transition={{ duration: 0.4, delay: (4 + index) * 0.05 }}
                                     className={cn(
-                                        "inline-block leading-[1.16] pb-[0.08em]",
-                                        (word === "youth" || word === "energy") && "bg-linear-to-r from-primary via-blue-500 to-primary bg-size-[200%_100%] animate-[shimmer_3s_ease-in-out_infinite] text-transparent bg-clip-text"
+                                        "inline-block",
+                                        (word === "youth" || word === "energy") && "text-primary"
                                     )}
                                     key={index}
                                 >
@@ -124,7 +124,7 @@ const Hero = () => {
                         </Balancer>
                     </h1>
 
-                    <p className="text-base md:text-lg text-foreground/70 mt-6 max-w-2xl">
+                    <p className="g-text mt-10 text-center">
                         <Balancer>
                             {description.split(" ").map((word, index) => (
                                 <motion.span
@@ -164,12 +164,11 @@ const Hero = () => {
                     initial={{ opacity: 0, filter: "blur(20px)", y: 30 }}
                     animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
                     transition={{ duration: 1, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                    className={cn("mt-10 lg:mt-20 relative")}
+                    className={cn("mt-16 lg:mt-26 relative")}
                 >
-                    <div className="relative mx-auto max-w-6xl rounded-2xl md:rounded-[32px] border border-foreground/10 bg-foreground/5 backdrop-blur-lg p-2">
-                        <div className="absolute top-1/4 left-1/2 -z-10 w-4/5 h-1/3 -translate-x-1/2 -translate-y-1/2 bg-primary/20 blur-[10rem] opacity-50" />
+                    <div className="relative mx-auto max-w-6xl rounded-xl md:rounded-[24px] border border-border-subtle bg-surface-0 p-2">
 
-                        <div className="rounded-lg md:rounded-[24px] border border-foreground/10 bg-background overflow-hidden">
+                        <div className="rounded-lg md:rounded-[20px] border border-border-subtle bg-surface-0 overflow-hidden">
                             <div className="relative aspect-[16/10] w-full bg-black">
                                 <iframe
                                     src="https://www.youtube.com/embed/Ed9lP0-komE?rel=0&modestbranding=1"
@@ -181,9 +180,7 @@ const Hero = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="absolute inset-x-0 bottom-0 z-20 w-full h-3/4 bg-linear-to-t from-background to-background/0 from-10% pointer-events-none" />
-
-                    <div className="absolute top-0 inset-x-0 w-3/5 mx-auto h-1/10 rounded-full bg-primary blur-[4rem] opacity-40 -z-10"></div>
+                    <div className="absolute inset-x-0 bottom-0 z-20 w-full h-3/4 bg-linear-to-t from-surface-0 to-surface-0/0 from-10% pointer-events-none" />
 
                     {badges.map((badge, index) => (
                         <FloatingBadge

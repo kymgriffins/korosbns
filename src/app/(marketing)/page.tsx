@@ -1,12 +1,13 @@
 import GustoHero from "@/components/marketing/gusto-hero";
 import GustoMotionText from "@/components/marketing/gusto-motion-text";
 import GustoInteractiveVideo from "@/components/marketing/gusto-interactive-video";
-import GustoArticleSection from "@/components/marketing/gusto-article-section";
 import ConsortiumPartners from "@/components/marketing/consortium-partners";
 import GustoCloudinaryGallery from "@/components/marketing/gusto-cloudinary-gallery";
 import UpcomingProjects from "@/components/marketing/upcoming-projects";
 import GustoTeamSection from "@/components/marketing/gusto-team-section";
 import GustoPartingHero from "@/components/marketing/gusto-parting-hero";
+import ScrollChoreographyContainer from "@/components/marketing/scroll-choreography-container";
+import CinematicSilence from "@/components/marketing/cinematic-silence";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -42,16 +43,30 @@ export const metadata: Metadata = {
 
 const HomePage = () => {
     return (
-        <div className="w-full min-h-screen bg-background">
+        <ScrollChoreographyContainer className="bg-background">
+            {/* 1. Arrival */}
             <GustoHero />
-            <GustoMotionText />
+            
+            {/* 2. Tension */}
+            <div className="relative z-20">
+                <GustoMotionText />
+            </div>
+
+            {/* 3. Product Proof (Immersive) */}
             <GustoInteractiveVideo />
+            
+            {/* 4. Editorial Features */}
             <ConsortiumPartners />
             <GustoCloudinaryGallery />
+            
             <UpcomingProjects />
+            
+            {/* 6. Release & Vision */}
             <GustoTeamSection />
+            
+            {/* 7. Conversion */}
             <GustoPartingHero />
-        </div>
+        </ScrollChoreographyContainer>
     )
 };
 
