@@ -1,0 +1,453 @@
+{
+  "id": "bns-kenya",
+  "shortName": "BNS",
+  "legalName": "Budget Ndio Story",
+  "website": "https://budgetndiostory.org",
+  "appUrl": "http://localhost:3000",
+  "locale": "en-KE",
+  "country": "Kenya",
+  "tagline": "A youth-led initiative translating public budgets into accessible, actionable civic knowledge.",
+  "mission": "Make national and county budgets understandable and relevant to young people so they can engage in fiscal processes and demand accountability.",
+  "overview": "Budget Ndio Story is a Kenya-wide youth-led consortium that turns public finance information into explainers, videos, and actionable tools for civic participation.",
+  "valueProposition": [
+    "Simplifies technical fiscal documents into relatable stories.",
+    "Builds youth chapter capacity for budget monitoring and organizing.",
+    "Connects creators, journalists, experts, and communities around evidence-based accountability.",
+    "Links budget choices to everyday realities: jobs, healthcare, education, housing, and cost of living."
+  ],
+  "consortium": {
+    "summary": "BNS is led by The Continental Pot, Colour Twist Media, and Sen Media & Events to expand youth fiscal literacy and participation across Kenya.",
+    "partners": [
+      {
+        "id": "sen-media-events",
+        "name": "Sen Media & Events",
+        "website": "https://senmedia-events.co.ke/",
+        "role": "Media production, events, and civic storytelling support"
+      },
+      {
+        "id": "continental-pot",
+        "name": "The Continental Pot",
+        "website": "https://continentalpot.africa/",
+        "role": "Consortium leadership and public interest strategy"
+      },
+      {
+        "id": "colour-twist-media",
+        "name": "Colour Twist Media",
+        "website": "https://colortwistmedia.com/",
+        "role": "Creative production and youth-facing media execution"
+      }
+    ]
+  },
+  "activities": [
+    {
+      "id": "simplify-budgets",
+      "title": "Simplifying Budgets",
+      "description": "Breaks complex budget information into short-form, accessible formats including Reels, TikTok videos, explainers, and podcasts.",
+      "channels": [
+        "TikTok",
+        "YouTube",
+        "Instagram",
+        "Podcast"
+      ]
+    },
+    {
+      "id": "youth-chapters-training",
+      "title": "Youth Chapters and Training",
+      "description": "Builds youth chapters and trains budget organizers across communities and campuses to track allocations and understand fiscal processes.",
+      "channels": [
+        "Campus sessions",
+        "Community workshops",
+        "Learning modules"
+      ]
+    },
+    {
+      "id": "community-monitoring",
+      "title": "Community Monitoring",
+      "description": "Supports accountability snapshots that compare public promises with delivery outcomes and local evidence.",
+      "channels": [
+        "County scorecards",
+        "Public dialogues",
+        "Community trackers"
+      ]
+    },
+    {
+      "id": "journalist-expert-engagement",
+      "title": "Journalist and Expert Engagement",
+      "description": "Strengthens public discourse through media training and verification support for youth creators, journalists, and domain experts.",
+      "channels": [
+        "Newsrooms",
+        "Verification hub",
+        "Policy roundtables"
+      ]
+    }
+  ],
+  "programs": [
+    {
+      "id": "project-terra",
+      "name": "Project TERRA",
+      "stage": "active",
+      "focus": "Fiscal governance in the digital economy",
+      "description": "Explores equity and power in taxation and public spending as digital systems reshape governance and service delivery."
+    },
+    {
+      "id": "budget-verification-hub",
+      "name": "Budget Verification Hub",
+      "stage": "upcoming",
+      "focus": "Evidence-backed public reporting",
+      "description": "Provides a support layer for validating fiscal claims and improving the quality of youth-led and media coverage."
+    },
+    {
+      "id": "youth-budget-chapters",
+      "name": "Youth Budget Chapters",
+      "stage": "active",
+      "focus": "Civic organizing and local accountability",
+      "description": "Scales chapter-based civic action in campuses and communities for budget literacy and accountability monitoring."
+    }
+  ],
+  "platforms": [
+    {
+      "name": "X",
+      "url": "https://x.com/budgetndiostory",
+      "type": "social"
+    },
+    {
+      "name": "LinkedIn",
+      "url": "https://www.linkedin.com/company/budget-ndio-story/",
+      "type": "social"
+    },
+    {
+      "name": "WhatsApp",
+      "url": "https://wa.me/254790631623",
+      "type": "social"
+    },
+    {
+      "name": "YouTube",
+      "url": "https://youtube.com/@budgetndiostory",
+      "type": "social"
+    },
+    {
+      "name": "TikTok",
+      "url": "https://www.tiktok.com/@budget.ndio.story",
+      "type": "social"
+    },
+    {
+      "name": "Instagram",
+      "url": "https://instagram.com/budgetndiostory",
+      "type": "social"
+    },
+    {
+      "name": "Facebook",
+      "url": "https://www.facebook.com/share/1CPg2LgfVJ/",
+      "type": "social"
+    }
+  ],
+  "impact": [
+    {
+      "id": "reach",
+      "label": "Youth reached",
+      "value": "20k+",
+      "note": "From about page impact block"
+    },
+    {
+      "id": "views",
+      "label": "Content views",
+      "value": "1.2M+",
+      "note": "From about page impact block"
+    },
+    {
+      "id": "coverage",
+      "label": "Counties covered",
+      "value": "47",
+      "note": "Kenya county-wide coverage"
+    },
+    {
+      "id": "experience",
+      "label": "Years of work",
+      "value": "5+",
+      "note": "From about page impact block"
+    }
+  ],
+  "leadership": {
+    "advisor": [
+      {
+        "name": "Millicent Makina",
+        "role": "Board Advisor",
+        "image": "/images/avatars/team/Millicent Makina.jpeg",
+        "description": "Guiding our governance and ensuring our mission aligns with long-term civic impact goals.",
+        "socials": {}
+      }
+    ],
+    "executive": [
+      {
+        "name": "Movine Omondi",
+        "role": "Executive Director",
+        "image": "/images/avatars/team/Movine Omondi_HeadShot.jpg",
+        "description": "10+ years in public policy and youth advocacy. Former advisor to key civic bodies, leading our holistic strategy.",
+        "bio": "With over a decade of experience in public policy and youth advocacy, Movine has been at the forefront of transforming how young Kenyans engage with fiscal governance. As Executive Director, she provides strategic leadership across all BNS programs and partnerships. Previously an advisor to key civic bodies, she brings deep expertise in coalition-building and policy translation.",
+        "socials": {
+          "linkedin": "https://www.linkedin.com/in/movine-omondi?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+          "x": "https://x.com/Movineomondi"
+        }
+      }
+    ],
+    "directors": [
+      {
+        "name": "Peculiar Koros",
+        "role": "Director ICT",
+        "image": "/images/avatars/team/Koros.jpeg",
+        "description": "Certified researcher with a 100% clean audit record, ensuring our data is rigorous and beyond anecdotes.",
+        "bio": "Peculiar leads BNS's data infrastructure and technological innovation, ensuring that all fiscal analysis meets rigorous research standards. A certified researcher with an impeccable audit record, she bridges technical data pipelines with civic storytelling. Her work ensures that BNS's digital platforms are secure, scalable, and data-driven.",
+        "socials": {}
+      },
+      {
+        "name": "Shem Odhiambo Ojunga",
+        "role": "Director Media.",
+        "image": "/images/avatars/team/Shem Odhiambo Ojunga.jpeg",
+        "description": "Award-winning digital strategist specializing in viral civic content that meets youth where they are.",
+        "bio": "Shem is an award-winning digital strategist who has shaped how civic content goes viral in Kenya. As Director of Media, he oversees all content production across TikTok, Instagram, YouTube, and podcasts. His expertise lies in transforming dense budget data into snackable, shareable stories that resonate with young audiences across platforms.",
+        "socials": {
+          "linkedin": "https://www.linkedin.com/in/shem-ojunga-731860150?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+          "x": "https://x.com/ojunga_shem"
+        }
+      },
+      {
+        "name": "James Maingi Mutinda",
+        "role": "Director Partnerships",
+        "image": "/images/avatars/team/James Mutinda.jpeg",
+        "description": "Connecting BNS with global and local partners to scale our institutional legacy and democratic stability.",
+        "socials": {}
+      }
+    ],
+    "operations": [
+      {
+        "name": "Nelly Maina",
+        "role": "Lead Podcast Host",
+        "image": "/images/avatars/team/Nelly Maina.jpg",
+        "description": "The voice of 'Budget Mtaani', breaking down complex fiscal policies into relatable street slang.",
+        "bio": "Nelly is the charismatic voice behind Budget Mtaani podcast, where she translates complex fiscal policies into relatable street slang. As Lead Podcast Host, she brings fiscal literacy to life through storytelling, humor, and authentic Kenyan youth culture. Her episodes consistently rank among top podcasts in the civic education category.",
+        "socials": {}
+      }
+    ]
+  },
+  "references": {
+    "publicPages": [
+      {
+        "label": "About",
+        "href": "/about"
+      },
+      {
+        "label": "Partners",
+        "href": "/partners"
+      },
+      {
+        "label": "Media",
+        "href": "/media"
+      },
+      {
+        "label": "Impact",
+        "href": "/impact"
+      },
+      {
+        "label": "Research",
+        "href": "/research"
+      }
+    ],
+    "footerSections": {
+      "product": [
+        {
+          "label": "Stories",
+          "href": "/learn"
+        },
+        {
+          "label": "Explainers",
+          "href": "/#capabilities"
+        },
+        {
+          "label": "Impact",
+          "href": "/impact"
+        },
+        {
+          "label": "Challenges",
+          "href": "/challenges"
+        },
+        {
+          "label": "Get Involved",
+          "href": "/#membership"
+        }
+      ],
+      "resources": [
+        {
+          "label": "Budget Guides",
+          "href": "/learn"
+        },
+        {
+          "label": "Surveys",
+          "href": "/surveys"
+        },
+        {
+          "label": "Newsletter",
+          "href": "#newsletter"
+        },
+        {
+          "label": "Contact",
+          "href": "/contact"
+        }
+      ],
+      "company": [
+        {
+          "label": "About BNS",
+          "href": "/about"
+        },
+        {
+          "label": "Team",
+          "href": "/about"
+        },
+        {
+          "label": "Careers",
+          "href": "/careers"
+        },
+        {
+          "label": "Media",
+          "href": "/media"
+        },
+        {
+          "label": "Partners",
+          "href": "/partners"
+        }
+      ]
+    }
+  },
+  "meetings": [
+    {
+      "id": "bns-leadership-2026-04-27",
+      "date": "2026-04-27",
+      "title": "BNS Leadership Meeting",
+      "summary": "Website updates got strong feedback but need external UX review. Partnership engagements are accelerating and require a tighter content and media framework.",
+      "actionItems": [
+        {
+          "id": "task-engage-ui-expert",
+          "title": "Engage independent expert for professional UI/UX opinion",
+          "owner": "Budget Ndio Story",
+          "due": "2026-05-02",
+          "status": "todo",
+          "priority": "high"
+        },
+        {
+          "id": "task-share-strategy-docs",
+          "title": "Share strategic plan and context docs with Koros for website updates",
+          "owner": "Budget Ndio Story",
+          "due": "2026-04-28",
+          "status": "in_progress",
+          "priority": "high"
+        },
+        {
+          "id": "task-share-light-logo",
+          "title": "Share lighter version of logo file with Koros",
+          "owner": "Shem Ojunga",
+          "due": "2026-04-28",
+          "status": "todo",
+          "priority": "high"
+        },
+        {
+          "id": "task-fix-site-bugs",
+          "title": "Fix outstanding website bugs and update team",
+          "owner": "Koros",
+          "due": "2026-05-03",
+          "status": "in_progress",
+          "priority": "high"
+        },
+        {
+          "id": "task-share-short-videos",
+          "title": "Share short video assets via Google link with Koros",
+          "owner": "James Maingi",
+          "due": "2026-04-28",
+          "status": "todo",
+          "priority": "high"
+        },
+        {
+          "id": "task-share-youtube-integration",
+          "title": "Share easier YouTube integration methods with Koros",
+          "owner": "Budget Ndio Story",
+          "due": "2026-04-29",
+          "status": "todo",
+          "priority": "medium"
+        },
+        {
+          "id": "task-confirm-event-date",
+          "title": "Confirm law school student availability for May 15 event postponement",
+          "owner": "James Maingi",
+          "due": "2026-04-29",
+          "status": "todo",
+          "priority": "high"
+        },
+        {
+          "id": "task-design-survey-poster",
+          "title": "Finalize research survey poster for Wednesday launch",
+          "owner": "James Maingi",
+          "due": "2026-04-28",
+          "status": "todo",
+          "priority": "high"
+        },
+        {
+          "id": "task-prepare-tor",
+          "title": "Prepare partnership ToR for MPyana and Elizabeth engagement",
+          "owner": "James Maingi",
+          "due": "2026-04-30",
+          "status": "todo",
+          "priority": "medium"
+        },
+        {
+          "id": "task-prepare-yan-strategy",
+          "title": "Coordinate with Liz on strategy for Yan conversation (May 6-8)",
+          "owner": "James Maingi",
+          "due": "2026-05-05",
+          "status": "todo",
+          "priority": "medium"
+        },
+        {
+          "id": "task-email-aku",
+          "title": "Email AKU requesting podcast production date change from Thursday to Tuesday",
+          "owner": "Budget Ndio Story",
+          "due": "2026-04-28",
+          "status": "todo",
+          "priority": "high"
+        },
+        {
+          "id": "task-call-cra",
+          "title": "Call CRA contact and confirm Tuesday podcast schedule",
+          "owner": "James Maingi",
+          "due": "2026-04-28",
+          "status": "todo",
+          "priority": "high"
+        },
+        {
+          "id": "task-visit-alt-studio",
+          "title": "Visit alternative podcast studio and assess production setup",
+          "owner": "James Maingi",
+          "due": "2026-05-01",
+          "status": "todo",
+          "priority": "high"
+        },
+        {
+          "id": "task-reflect-team-strategy",
+          "title": "Reflect on team inclusion strategy and role clarity",
+          "owner": "Shem Ojunga",
+          "due": "2026-05-02",
+          "status": "todo",
+          "priority": "medium",
+          "notes": "Balance equipment constraints with team utilization."
+        },
+        {
+          "id": "task-post-meeting-notes",
+          "title": "Post notes for last week and this week in group chat",
+          "owner": "Budget Ndio Story",
+          "due": "2026-04-28",
+          "status": "todo",
+          "priority": "medium"
+        }
+      ]
+    }
+  ],
+  "seedVersion": "1.0.0",
+  "generatedAt": "2026-05-18T14:11:09.987Z"
+}
