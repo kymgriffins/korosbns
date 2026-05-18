@@ -1,12 +1,45 @@
 import { NextResponse } from "next/server";
 
 export async function GET() {
+    const fallbackImages = [
+        {
+            src: "/images/towwnhallmay/129A3912.jpg",
+            alt: "Civic Deliberation Townhall",
+            width: 800,
+            height: 600,
+        },
+        {
+            src: "/images/towwnhallmay/129A3863.jpg",
+            alt: "Youth Engagement Spotlight",
+            width: 800,
+            height: 600,
+        },
+        {
+            src: "/images/towwnhallmay/129A3923.jpg",
+            alt: "Public Budget Presentation Assembly",
+            width: 800,
+            height: 600,
+        },
+        {
+            src: "/images/towwnhallmay/129A4056.jpg",
+            alt: "County Accountability Workshop",
+            width: 800,
+            height: 600,
+        },
+        {
+            src: "/images/towwnhallmay/129A4094.jpg",
+            alt: "Collective Consensus Gathering",
+            width: 800,
+            height: 600,
+        }
+    ];
+
     const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
     const apiKey = process.env.CLOUDINARY_API_KEY;
     const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
     if (!cloudName || !apiKey || !apiSecret) {
-        return NextResponse.json({ error: "Cloudinary credentials not configured" }, { status: 500 });
+        return NextResponse.json({ images: fallbackImages, note: "Loaded local fallback images due to missing Cloudinary credentials" });
     }
 
     try {
