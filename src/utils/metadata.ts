@@ -67,6 +67,9 @@ export const generateMetadata = ({
     images: image ? [image] : undefined,
   },
   category: "Civic Education",
+  other: {
+    "msvalidate.01": "907A93A128DFE576C08F0D8843996E83",
+  },
   icons,
   robots: noIndex
     ? { index: false, follow: false }
