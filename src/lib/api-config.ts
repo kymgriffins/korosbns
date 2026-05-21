@@ -2,8 +2,9 @@
  * Centralized API configuration.
  *
  * Browser:
- * - localhost → "" (same-origin; Next.js rewrites to Django)
- * - production/static host → absolute NEXT_PUBLIC_API_BASE_URL (CORS on API)
+ * - Production citizen site → "" (same-origin `/api/v1` rewrites to BNSKE; no CORS)
+ * - localhost + local Django → direct http://localhost:8000
+ * - localhost + remote API → "" (rewrites)
  *
  * Server (SSR, route handlers): absolute SERVER_API_BASE_URL.
  */
@@ -21,25 +22,34 @@ function normalizeBase(url: string | undefined): string {
 /** Absolute API origin for server-side fetch (no trailing slash). */
 export const SERVER_API_BASE_URL = normalizeBase(env.NEXT_PUBLIC_API_BASE_URL);
 
-function isLocalBrowserHost(): boolean {
-  if (typeof window === "undefined" || !window.location) return false;
-  const host = window.location.hostname;
-  return host === "localhost";
-}
-
 function isLocalApiTarget(base: string): boolean {
   try {
     const host = new URL(base).hostname;
-    return host === "localhost" || host === "localhost";
+    return host === "localhost" || host === "127.0.0.1";
   } catch {
     return false;
   }
 }
 
+/**
+ * Browser API base URL.
+ * - Same host as API (rare): direct absolute calls.
+ * - Local dev + local Django: direct to localhost:8000 (avoids broken POST rewrites).
+ * - Otherwise: "" → same-origin `/api/v1/*` proxied by Next (production + preview).
+ */
 function browserApiBase(): string {
-  if (!isLocalBrowserHost()) return SERVER_API_BASE_URL;
-  // Next `trailingSlash: true` breaks POST/GET proxy loops on `/api/v1/*` — call Django directly.
-  if (isLocalApiTarget(SERVER_API_BASE_URL)) return SERVER_API_BASE_URL;
+  if (typeof window === "undefined" || !window.location) return SERVER_API_BASE_URL;
+  try {
+    const apiOrigin = new URL(SERVER_API_BASE_URL).origin;
+    if (window.location.origin === apiOrigin) return SERVER_API_BASE_URL;
+  } catch {
+    /* fall through */
+  }
+  const isLocalDev =
+    window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+  if (isLocalDev && isLocalApiTarget(SERVER_API_BASE_URL)) {
+    return SERVER_API_BASE_URL;
+  }
   return "";
 }
 

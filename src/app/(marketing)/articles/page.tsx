@@ -1,58 +1,67 @@
-"use client";
-
-import { useEffect, useState } from "react";
+import type { Metadata } from "next";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
-import Wrapper from "@/components/global/wrapper";
-import type { HubArticle } from "@/lib/learn-content";
-import { contentLoadErrorMessage, loadArticleList } from "@/lib/marketing-content";
+import { PageBreadcrumbs } from "@/components/global/page-breadcrumbs";
+import { ArticleCard } from "@/components/citizen/article-card";
 import { Routes } from "@/constants/routes";
+import { fetchArticleListServer } from "@/lib/server-content";
+import { buildPageMetadata } from "@/utils/page-metadata";
 
-export default function ArticlesPage() {
-  const [articles, setArticles] = useState<HubArticle[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+export const metadata: Metadata = buildPageMetadata({
+  title: "Articles | Budget Ndio Story",
+  description:
+    "Budget explainers and analysis from the BNSKE content API — civic education articles for young Kenyans.",
+  path: "/articles",
+});
 
-  useEffect(() => {
-    void loadArticleList()
-      .then(setArticles)
-      .catch((err) => setError(contentLoadErrorMessage(err, "articles")))
-      .finally(() => setLoading(false));
-  }, []);
+export default async function ArticlesPage() {
+  let articles: Awaited<ReturnType<typeof fetchArticleListServer>> = [];
+  let error = "";
+
+  try {
+    articles = await fetchArticleListServer();
+  } catch (err) {
+    error = err instanceof Error ? err.message : "Could not load articles.";
+  }
 
   return (
-    <Wrapper className="py-16">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold mb-4">Articles</h1>
-        <p className="text-muted-foreground mb-10">
-          Budget explainers and analysis from the BNSKE content API.
-        </p>
+    <section className="relative min-h-screen w-full overflow-hidden bg-background pt-4 sm:pt-6">
+      <div className="mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6">
+        <PageBreadcrumbs
+          items={[
+            { label: "Home", href: Routes.Home },
+            { label: "Articles" },
+          ]}
+        />
 
-        {loading && (
-          <div className="flex justify-center py-12">
-            <Loader2 className="size-8 animate-spin" />
-          </div>
-        )}
-        {error && <p className="text-destructive">{error}</p>}
-
-        <div className="grid gap-6">
-          {articles.map((article) => (
-            <Link
-              key={article.id}
-              href={Routes.Article(article.id)}
-              className="block rounded-xl border border-border p-6 hover:border-primary/40 transition-colors"
-            >
-              <h2 className="text-xl font-semibold">{article.title}</h2>
-              <p className="text-sm text-muted-foreground mt-1">{article.readTime}</p>
-              <p className="mt-3 text-muted-foreground line-clamp-2">{article.snippet}</p>
-            </Link>
-          ))}
+        <div className="mb-8 space-y-2">
+          <h1 className="text-3xl font-bold sm:text-4xl">Articles</h1>
+          <p className="max-w-3xl text-sm text-muted-foreground sm:text-base">
+            Budget explainers and analysis — the same rich reading experience as our guided deep dives,
+            powered by the live content API.
+          </p>
         </div>
 
-        {!loading && !error && articles.length === 0 && (
-          <p className="text-muted-foreground">No published articles yet.</p>
-        )}
+        {error ? (
+          <p className="text-destructive" role="alert">
+            {error}
+          </p>
+        ) : null}
+
+        {!error && articles.length === 0 ? (
+          <div className="rounded-2xl border border-border bg-muted/30 p-8 text-center">
+            <p className="text-muted-foreground">No published articles yet.</p>
+            <Link href={Routes.Learn} className="mt-4 inline-block text-sm text-primary hover:underline">
+              Browse the Learn hub →
+            </Link>
+          </div>
+        ) : null}
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {articles.map((article, index) => (
+            <ArticleCard key={article.id} article={article} index={index} />
+          ))}
+        </div>
       </div>
-    </Wrapper>
+    </section>
   );
 }

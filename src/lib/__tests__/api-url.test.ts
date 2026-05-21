@@ -20,6 +20,18 @@ describe("buildApiUrl", () => {
     );
   });
 
+  it("builds relative API paths when browser origin differs from API host", async () => {
+    vi.stubEnv("NEXT_PUBLIC_API_BASE_URL", "https://bnske.budgetndiostory.org");
+    vi.stubGlobal("window", {
+      location: {
+        hostname: "budgetndiostory.org",
+        origin: "https://budgetndiostory.org",
+      },
+    } as Window & typeof globalThis);
+    const { buildApiUrl } = await import("@/lib/api-url");
+    expect(buildApiUrl("/auth/register/")).toBe("/api/v1/auth/register/");
+  });
+
   it("builds relative API paths when target is remote production and browser is localhost", async () => {
     vi.stubEnv("NEXT_PUBLIC_API_BASE_URL", "https://bnske.budgetndiostory.org");
     vi.stubGlobal("window", {

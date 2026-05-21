@@ -223,7 +223,7 @@ export async function fetchDeepDiveArticle(slug: string): Promise<DeepDiveArticl
 
   try {
     const response = await fetch(`${API_BASE_URL}/api/deep-dives/${slug}/`, {
-      next: { revalidate: 600 },
+      next: { revalidate: 60 },
     });
     if (!response.ok) return fallback;
     const data = await response.json();

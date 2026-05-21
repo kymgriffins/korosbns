@@ -2,6 +2,7 @@
 
 import {
   createContext,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -10,8 +11,6 @@ import {
 } from "react";
 import bnsConfig from "@/constants/bnsConfig.json";
 import { citizenApi, type OrgConfigApi } from "@/lib/api-client";
-
-const CACHE_KEY = "bns_org_config_v1";
 
 function staticFallback(): OrgConfigApi {
   return {
@@ -32,60 +31,56 @@ function staticFallback(): OrgConfigApi {
   };
 }
 
-function readCache(): OrgConfigApi | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const raw = localStorage.getItem(CACHE_KEY);
-    return raw ? (JSON.parse(raw) as OrgConfigApi) : null;
-  } catch {
-    return null;
-  }
-}
-
-function writeCache(config: OrgConfigApi): void {
-  if (typeof window === "undefined") return;
-  try {
-    localStorage.setItem(CACHE_KEY, JSON.stringify(config));
-  } catch {
-    /* ignore quota */
-  }
-}
-
 type OrgContextValue = {
   config: OrgConfigApi;
   loading: boolean;
   showNewsletter: boolean;
   showPartners: boolean;
+  refreshConfig: () => Promise<void>;
 };
 
 const OrgContext = createContext<OrgContextValue | null>(null);
 
 export function OrgProvider({ children }: { children: ReactNode }) {
-  const [config, setConfig] = useState<OrgConfigApi>(() => readCache() ?? staticFallback());
+  const [config, setConfig] = useState<OrgConfigApi>(staticFallback);
   const [loading, setLoading] = useState(true);
+
+  const refreshConfig = useCallback(async () => {
+    try {
+      const data = await citizenApi.getOrgConfig();
+      setConfig(data);
+    } catch {
+      /* keep last good config */
+    }
+  }, []);
 
   useEffect(() => {
     let alive = true;
-    void citizenApi
-      .getOrgConfig()
-      .then((data) => {
-        if (!alive) return;
-        setConfig(data);
-        writeCache(data);
-      })
-      .catch(() => {
-        if (!alive) return;
-        const cached = readCache();
-        if (cached) setConfig(cached);
-        else setConfig(staticFallback());
-      })
-      .finally(() => {
+    void (async () => {
+      setLoading(true);
+      try {
+        const data = await citizenApi.getOrgConfig();
+        if (alive) setConfig(data);
+      } catch {
+        if (alive) setConfig(staticFallback());
+      } finally {
         if (alive) setLoading(false);
-      });
+      }
+    })();
     return () => {
       alive = false;
     };
   }, []);
+
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState === "visible") {
+        void refreshConfig();
+      }
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, [refreshConfig]);
 
   const value = useMemo(
     () => ({
@@ -93,8 +88,9 @@ export function OrgProvider({ children }: { children: ReactNode }) {
       loading,
       showNewsletter: config.layout?.show_newsletter_signup !== false,
       showPartners: config.layout?.show_partner_carousel !== false,
+      refreshConfig,
     }),
-    [config, loading],
+    [config, loading, refreshConfig],
   );
 
   return <OrgContext.Provider value={value}>{children}</OrgContext.Provider>;

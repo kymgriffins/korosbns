@@ -36,4 +36,5 @@ export const Routes = {
     Invite: "/invite",
     Account: "/account",
     AccountNotifications: "/account/notifications",
+    AccountSignOut: "/account/sign-out",
 } as const;

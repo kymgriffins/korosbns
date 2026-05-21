@@ -1,4 +1,4 @@
-import { CitizenNav } from "@/components/citizen/citizen-nav";
+import { AuthBreadcrumbBar } from "@/components/citizen/auth-breadcrumb-bar";
 
 export default function CitizenAuthLayout({
   children,
@@ -6,9 +6,9 @@ export default function CitizenAuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-dvh pt-14">
-      <CitizenNav />
-      {children}
+    <div className="min-h-dvh bg-muted/30">
+      <AuthBreadcrumbBar />
+      <main>{children}</main>
     </div>
   );
 }
