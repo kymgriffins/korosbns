@@ -3,9 +3,10 @@ import { citizenApi, type OrgConfigApi } from "@/lib/api-client";
 
 export type { OrgConfigApi };
 
-const CACHE_KEY = "bns_org_config_v1";
-
-let memoryCached: OrgConfigApi | null = null;
+const CACHE_KEY = "bns_org_config_v2";
+const CACHE_TS_KEY = "bns_org_config_v2_ts";
+/** Offline fallback only — never preferred over a successful API response. */
+const OFFLINE_MAX_AGE_MS = 5 * 60 * 1000;
 
 function staticFallback(): OrgConfigApi {
   return {
@@ -24,29 +25,35 @@ function staticFallback(): OrgConfigApi {
   };
 }
 
-/** Public org config from BNSKE with static + localStorage fallback (client) or static (SSR). */
-export async function fetchPublicOrgConfig(): Promise<OrgConfigApi> {
-  if (memoryCached) return memoryCached;
-  if (typeof window !== "undefined") {
-    try {
-      const raw = localStorage.getItem(CACHE_KEY);
-      if (raw) memoryCached = JSON.parse(raw) as OrgConfigApi;
-    } catch {
-      /* ignore */
-    }
+function readOfflineCache(): OrgConfigApi | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const ts = Number(localStorage.getItem(CACHE_TS_KEY) || "0");
+    if (!ts || Date.now() - ts > OFFLINE_MAX_AGE_MS) return null;
+    const raw = localStorage.getItem(CACHE_KEY);
+    return raw ? (JSON.parse(raw) as OrgConfigApi) : null;
+  } catch {
+    return null;
   }
+}
+
+function writeOfflineCache(config: OrgConfigApi): void {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(config));
+    localStorage.setItem(CACHE_TS_KEY, String(Date.now()));
+  } catch {
+    /* ignore quota */
+  }
+}
+
+/** Always hits the network first; uses short-lived offline cache only on failure. */
+export async function fetchPublicOrgConfig(): Promise<OrgConfigApi> {
   try {
     const data = await citizenApi.getOrgConfig();
-    memoryCached = data;
-    if (typeof window !== "undefined") {
-      try {
-        localStorage.setItem(CACHE_KEY, JSON.stringify(data));
-      } catch {
-        /* ignore */
-      }
-    }
+    writeOfflineCache(data);
     return data;
   } catch {
-    return memoryCached ?? staticFallback();
+    return readOfflineCache() ?? staticFallback();
   }
 }

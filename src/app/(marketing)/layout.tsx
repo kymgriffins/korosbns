@@ -14,12 +14,15 @@ const MarketingLayout = ({
     const isContactPage = pathname === "/contact";
     const isLearnPage = pathname === "/learn";
     const isLearnDocPage = pathname.startsWith("/learn/") && pathname !== "/learn";
+    const isAccountPage = pathname.startsWith("/account");
+    const showMarketingFooter =
+        !isContactPage && !isLearnPage && !isLearnDocPage && !isAccountPage;
 
     return (
-        <main className="w-full relative pt-14 sm:pt-20">
-            <Navbar />
+        <main className={`w-full relative ${isAccountPage ? "" : "pt-14 sm:pt-20"}`}>
+            {!isAccountPage && <Navbar />}
             {children}
-            {!isContactPage && !isLearnPage && !isLearnDocPage && <Footer />}
+            {showMarketingFooter && <Footer />}
         </main>
     );
 };

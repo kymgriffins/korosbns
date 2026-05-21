@@ -6,14 +6,26 @@ describe("api-config", () => {
     vi.resetModules();
   });
 
-  it("uses empty browser base for same-origin proxy", async () => {
+  it("uses empty browser base for same-origin proxy on localhost", async () => {
     vi.stubEnv("NEXT_PUBLIC_API_BASE_URL", "https://bnske.budgetndiostory.org");
     vi.stubGlobal("window", {
-      location: { hostname: "localhost" },
+      location: { hostname: "localhost", origin: "http://localhost:3000" },
     } as Window & typeof globalThis);
     const { API_BASE_URL, SERVER_API_BASE_URL } = await import("@/lib/api-config");
     expect(API_BASE_URL).toBe("");
     expect(SERVER_API_BASE_URL).toBe("https://bnske.budgetndiostory.org");
+  });
+
+  it("uses same-origin proxy on production citizen host", async () => {
+    vi.stubEnv("NEXT_PUBLIC_API_BASE_URL", "https://bnske.budgetndiostory.org");
+    vi.stubGlobal("window", {
+      location: {
+        hostname: "budgetndiostory.org",
+        origin: "https://budgetndiostory.org",
+      },
+    } as Window & typeof globalThis);
+    const { API_BASE_URL } = await import("@/lib/api-config");
+    expect(API_BASE_URL).toBe("");
   });
 
   it("uses server base in browser when target is also localhost", async () => {

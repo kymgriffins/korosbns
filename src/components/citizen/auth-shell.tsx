@@ -1,9 +1,5 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-import { Routes } from "@/constants/routes";
-
 export function AuthShell({
   title,
   description,
@@ -14,10 +10,7 @@ export function AuthShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10">
-      <Link href={Routes.Home} className="mb-2">
-        <Image src="/logo.svg" alt="Budget Ndio Story" width={160} height={32} className="h-7 w-auto" />
-      </Link>
+    <div className="flex flex-col items-center justify-center gap-6 px-6 py-10 md:px-10 md:py-14">
       <div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-lg">
         <h1 className="text-2xl font-bold text-center">{title}</h1>
         {description ? (

@@ -1,5 +1,6 @@
 import { buildApiUrl, networkErrorMessage } from "@/lib/api-url";
 import { extractApiErrorMessage, type ApiPayload } from "@/lib/api-errors";
+import { apiFetchInit } from "@/lib/fetch-policy";
 import { logDebug, sanitizeToken } from "@/lib/debug-logs";
 
 export { buildApiUrl };
@@ -96,19 +97,30 @@ export type OrgConfigApi = {
   updated_at?: string;
 };
 
+export type SocialLinkApi = {
+  platform: string;
+  url: string;
+  visibility: string;
+  order?: number;
+};
+
 export type UserProfileApi = {
-  id: string;
-  email: string;
+  id?: string;
+  email?: string;
   first_name?: string;
   last_name?: string;
   display_name?: string;
   bio?: string;
-  avatar_url?: string;
+  headline?: string;
+  location?: string;
+  avatar?: string | null;
+  avatar_url?: string | null;
   profile_visibility?: string;
   allow_discovery?: boolean;
   show_email_publicly?: boolean;
   event_toggles?: Record<string, boolean>;
   digest_frequency?: string;
+  social_links?: SocialLinkApi[];
 };
 
 export type AuthLoginResponse = { access: string; refresh: string };
@@ -240,12 +252,17 @@ export async function apiFetch<T = unknown>(
     hasToken: Boolean(token),
   });
 
+  const method = init.method ?? "GET";
+  const fetchInit = apiFetchInit(method, init);
+  const mergedHeaders = new Headers(fetchInit.headers);
+  headers.forEach((value, key) => mergedHeaders.set(key, value));
+
   let response: Response;
   try {
     response = await fetch(buildApiUrl(path, params), {
-      ...init,
-      headers,
-      credentials: defaultCredentials(path, init.method, credentials),
+      ...fetchInit,
+      headers: mergedHeaders,
+      credentials: defaultCredentials(path, method, credentials),
     });
   } catch (err) {
     logDebug("API", "Request network error", {
@@ -299,11 +316,20 @@ export const citizenApi = {
     password: string;
     first_name?: string;
     last_name?: string;
-  }) =>
-    apiFetch<AuthRegisterResponse>("/auth/register/", {
+  }) => {
+    const payload: Record<string, string> = {
+      email: body.email.trim(),
+      password: body.password,
+    };
+    const first = body.first_name?.trim();
+    const last = body.last_name?.trim();
+    if (first) payload.first_name = first;
+    if (last) payload.last_name = last;
+    return apiFetch<AuthRegisterResponse>("/auth/register/", {
       method: "POST",
-      body: JSON.stringify(body),
-    }),
+      body: JSON.stringify(payload),
+    });
+  },
 
   verifyEmail: (token: string) =>
     apiFetch<{ detail: string }>("/auth/verify/", {
@@ -350,6 +376,21 @@ export const citizenApi = {
       method: "PATCH",
       auth: true,
       body: JSON.stringify(body),
+    }),
+
+  getSocialLinks: () =>
+    apiFetch<SocialLinkApi[]>("/users/me/social-links/", { auth: true }),
+  upsertSocialLink: (body: SocialLinkApi) =>
+    apiFetch<SocialLinkApi>("/users/me/social-links/", {
+      method: "POST",
+      auth: true,
+      body: JSON.stringify(body),
+    }),
+  deleteSocialLink: (platform: string) =>
+    apiFetch<{ detail?: string }>("/users/me/social-links/", {
+      method: "DELETE",
+      auth: true,
+      body: JSON.stringify({ platform }),
     }),
 
   getPublicUser: (id: string) =>

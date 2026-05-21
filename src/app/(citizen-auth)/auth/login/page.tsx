@@ -5,6 +5,8 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { toast } from "sonner";
 import { AuthShell } from "@/components/citizen/auth-shell";
+import { FormStatus } from "@/components/citizen/form-status";
+import { GuestOnly } from "@/components/citizen/guest-only";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,15 +20,19 @@ function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [formError, setFormError] = useState("");
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setFormError("");
     try {
       await login(email, password, next);
       toast.success("Welcome back!");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Login failed.");
+      const message = err instanceof Error ? err.message : "Login failed.";
+      setFormError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -37,6 +43,7 @@ function LoginForm() {
       title="Sign in"
       description="Use your verified Budget Ndio Story account."
     >
+      <FormStatus message={formError} variant="error" />
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
@@ -81,8 +88,10 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<AuthShell title="Sign in">Loading…</AuthShell>}>
-      <LoginForm />
-    </Suspense>
+    <GuestOnly>
+      <Suspense fallback={<AuthShell title="Sign in">Loading…</AuthShell>}>
+        <LoginForm />
+      </Suspense>
+    </GuestOnly>
   );
 }

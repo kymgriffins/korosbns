@@ -31,6 +31,18 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+function normalizeProfile(
+  profile: UserProfileApi,
+  previous?: UserProfileApi | null,
+): UserProfileApi {
+  return {
+    ...profile,
+    email: profile.email ?? previous?.email,
+    avatar_url: profile.avatar_url ?? profile.avatar ?? previous?.avatar_url ?? null,
+    social_links: profile.social_links ?? previous?.social_links,
+  };
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [user, setUser] = useState<UserProfileApi | null>(null);
@@ -45,8 +57,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       logDebug("Auth", "Refreshing authenticated user profile");
       const profile = await citizenApi.getMe();
-      setUser(profile);
-      logDebug("Auth", "User profile refreshed", { email: profile.email });
+      setUser((prev) => {
+        const merged = normalizeProfile(profile, prev);
+        logDebug("Auth", "User profile refreshed", { email: merged.email });
+        return merged;
+      });
     } catch {
       logDebug("Auth", "Refresh user failed; clearing tokens");
       clearAuthTokens();
@@ -71,7 +86,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           storage: getTokenStorageMode(),
         });
         const profile = await citizenApi.getMe();
-        if (alive) setUser(profile);
+        if (alive) setUser(normalizeProfile(profile));
         logDebug("Auth", "Auth hydration complete", { email: profile.email });
       } catch {
         logDebug("Auth", "Auth hydration failed; token cleared");
@@ -97,8 +112,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         storage: getTokenStorageMode(),
       });
       const profile = await citizenApi.getMe();
-      setUser(profile);
-      logDebug("Auth", "Login completed", { email: profile.email, redirectTo });
+      setUser(normalizeProfile({ ...profile, email: profile.email ?? email }));
+      logDebug("Auth", "Login completed", { email, redirectTo });
       router.push(redirectTo);
     },
     [router],

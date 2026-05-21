@@ -243,7 +243,9 @@ export type FetchDocumentsResult = {
   error?: string;
 };
 
+const DOCUMENTS_CACHE_TTL_MS = 2 * 60 * 1000;
 let cachedDocumentsResult: FetchDocumentsResult | null = null;
+let cachedDocumentsAt = 0;
 let inflightDocumentsPromise: Promise<FetchDocumentsResult> | null = null;
 
 function getRepositoryFetchUrls(): string[] {
@@ -280,7 +282,7 @@ async function fetchDocumentsFromApiOnce(): Promise<FetchDocumentsResult> {
     let lastStatusCode = 0;
     for (const endpoint of endpoints) {
       const response = await fetch(endpoint, {
-        next: { revalidate: 3600 }, // Cache for 1 hour
+        cache: "no-store",
       });
       if (!response.ok) {
         lastStatusCode = response.status;
@@ -335,7 +337,10 @@ async function fetchDocumentsFromApiOnce(): Promise<FetchDocumentsResult> {
 
 // Fetch documents from the API (deduplicated per server runtime)
 export async function fetchDocumentsFromAPI(): Promise<FetchDocumentsResult> {
-  if (cachedDocumentsResult) {
+  if (
+    cachedDocumentsResult &&
+    Date.now() - cachedDocumentsAt < DOCUMENTS_CACHE_TTL_MS
+  ) {
     return cachedDocumentsResult;
   }
 
@@ -348,6 +353,7 @@ export async function fetchDocumentsFromAPI(): Promise<FetchDocumentsResult> {
       // Do not cache failures — otherwise a transient outage sticks for the whole runtime
       if (!result.error) {
         cachedDocumentsResult = result;
+        cachedDocumentsAt = Date.now();
       }
       return result;
     })

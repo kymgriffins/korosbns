@@ -26,7 +26,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Balancer from "react-wrap-balancer";
 import { toast } from "sonner";
 import Container from "../global/container";
-import { deepDiveCards } from "@/lib/learn-deep-dives";
 import Wrapper from "../global/wrapper";
 import { Button } from "../ui/button";
 
@@ -86,8 +85,6 @@ const moduleInfo = {
   title: "Reflecting on Kenya's 2026 Budget Policy Statement (BPS)",
   credits: "Millicent Makini",
 };
-
-const deepDiveModules = deepDiveCards;
 
 // Sourced dynamically from BNSKE API
 
@@ -1713,58 +1710,20 @@ export default function Learn() {
               <div className="space-y-1.5">
                 <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-foreground/80">
                   <BarChart3 className="size-3.5" />
-                  Deep Dive
+                  Articles
                 </div>
-                <h2 className="text-xl font-bold">Guided explainer cards</h2>
+                <h2 className="text-xl font-bold">Budget explainers from the API</h2>
                 <p className="text-sm text-foreground/65">
-                  One complete BPS explainer plus two docs-guided drafts (CFSP and BROP) sourced from repository standards.
+                  Long-form articles with the same rich reading layout as our guided deep dives — updated from the live content API.
                 </p>
               </div>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-                  {deepDiveModules.map((module, index) => (
-                    <Link key={module.id} href={module.href} className="group block min-w-0">
-                      <motion.div
-                        initial={{ opacity: 0, y: 14 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.4, delay: index * 0.08 }}
-                        whileHover={{ y: -2 }}
-                        className="relative overflow-hidden rounded-[24px] bg-card border border-border"
-                      >
-                        <div className="relative m-2 h-44 overflow-hidden rounded-[18px]">
-                          <Image
-                            src={module.image}
-                            alt={module.title}
-                            fill
-                            className="object-cover dark:invert-0 invert"
-                            sizes="(max-width: 640px) 320px, 360px"
-                          />
-                          <div className="absolute right-3 top-3 rounded-full bg-foreground p-2 text-background">
-                            <ArrowRight className="size-3.5" />
-                          </div>
-                        </div>
-
-                        <div className="min-w-0 px-4 pb-4 pt-3 sm:px-4 sm:pb-4 sm:pt-3.5">
-                          <h3 className="text-xl sm:text-2xl font-bold leading-tight tracking-tight break-words">
-                            {module.title}
-                          </h3>
-                          <p className="mt-2 text-sm sm:text-[15px] leading-relaxed text-foreground/70 break-words">
-                            {module.subtitle}
-                          </p>
-                        </div>
-                      </motion.div>
-                    </Link>
-                  ))}
-              </div>
-              <div className="pt-2">
-                <Link
-                  href="/learn/deep-dives"
-                  className="inline-flex items-center gap-2 rounded-full border border-border bg-muted/30 px-4 py-2 text-sm font-semibold text-foreground transition-all hover:-translate-y-0.5 hover:bg-muted/50"
-                >
-                  See More Deep Dives
-                  <ArrowRight className="size-4" />
-                </Link>
-              </div>
+              <Link
+                href="/articles"
+                className="group inline-flex items-center gap-2 rounded-full border border-border bg-muted/30 px-4 py-2 text-sm font-semibold text-foreground transition-all hover:-translate-y-0.5 hover:bg-muted/50"
+              >
+                Browse all articles
+                <ArrowRight className="size-4" />
+              </Link>
             </Container>
 
             <Container animation="fadeUp" delay={0.2} className="space-y-4">

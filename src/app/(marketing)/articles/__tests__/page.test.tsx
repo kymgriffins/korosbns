@@ -1,22 +1,19 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import ArticlesPage from "@/app/(marketing)/articles/page";
-import * as marketingContent from "@/lib/marketing-content";
+import * as serverContent from "@/lib/server-content";
 
-vi.mock("@/lib/marketing-content", () => ({
-  loadArticleList: vi.fn(),
-  contentLoadErrorMessage: vi.fn((err: unknown, resource: string) =>
-    err instanceof Error ? err.message : `Could not load ${resource}.`,
-  ),
+vi.mock("@/lib/server-content", () => ({
+  fetchArticleListServer: vi.fn(),
 }));
 
 describe("ArticlesPage", () => {
   beforeEach(() => {
-    vi.mocked(marketingContent.loadArticleList).mockReset();
+    vi.mocked(serverContent.fetchArticleListServer).mockReset();
   });
 
   it("renders articles from the API", async () => {
-    vi.mocked(marketingContent.loadArticleList).mockResolvedValue([
+    vi.mocked(serverContent.fetchArticleListServer).mockResolvedValue([
       {
         id: "health-budget",
         title: "Health spending",
@@ -26,10 +23,9 @@ describe("ArticlesPage", () => {
         body_html: "",
       },
     ]);
-    render(<ArticlesPage />);
-    await waitFor(() => {
-      expect(screen.getByText("Health spending")).toBeInTheDocument();
-    });
+    const ui = await ArticlesPage();
+    render(ui);
+    expect(screen.getByText("Health spending")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /health spending/i })).toHaveAttribute(
       "href",
       "/articles/health-budget",
@@ -37,14 +33,11 @@ describe("ArticlesPage", () => {
   });
 
   it("shows error when article fetch fails", async () => {
-    vi.mocked(marketingContent.loadArticleList).mockRejectedValue(
+    vi.mocked(serverContent.fetchArticleListServer).mockRejectedValue(
       new Error("Network error while contacting the API."),
     );
-    render(<ArticlesPage />);
-    await waitFor(() => {
-      expect(
-        screen.getByText("Network error while contacting the API."),
-      ).toBeInTheDocument();
-    });
+    const ui = await ArticlesPage();
+    render(ui);
+    expect(screen.getByText("Network error while contacting the API.")).toBeInTheDocument();
   });
 });

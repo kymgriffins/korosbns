@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 import { AuthShell } from "@/components/citizen/auth-shell";
+import { FormStatus } from "@/components/citizen/form-status";
+import { GuestOnly } from "@/components/citizen/guest-only";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,16 +21,20 @@ export default function RegisterPage() {
   });
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  const [formError, setFormError] = useState("");
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setFormError("");
     try {
       await citizenApi.register(form);
       setSent(true);
       toast.success("Check your email to verify your account.");
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Registration failed.");
+      const message = err instanceof Error ? err.message : "Registration failed.";
+      setFormError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -36,22 +42,27 @@ export default function RegisterPage() {
 
   if (sent) {
     return (
-      <AuthShell title="Check your email" description={`We sent a verification link to ${form.email}.`}>
-        <Button asChild className="w-full">
-          <Link href={Routes.Login}>Back to sign in</Link>
-        </Button>
-      </AuthShell>
+      <GuestOnly>
+        <AuthShell title="Check your email" description={`We sent a verification link to ${form.email}.`}>
+          <Button asChild className="w-full">
+            <Link href={Routes.Login}>Back to sign in</Link>
+          </Button>
+        </AuthShell>
+      </GuestOnly>
     );
   }
 
   return (
+    <GuestOnly>
     <AuthShell title="Create account" description="Join Budget Ndio Story as a citizen member.">
+      <FormStatus message={formError} variant="error" />
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-2">
             <Label htmlFor="first_name">First name</Label>
             <Input
               id="first_name"
+              autoComplete="given-name"
               value={form.first_name}
               onChange={(e) => setForm((f) => ({ ...f, first_name: e.target.value }))}
             />
@@ -60,6 +71,7 @@ export default function RegisterPage() {
             <Label htmlFor="last_name">Last name</Label>
             <Input
               id="last_name"
+              autoComplete="family-name"
               value={form.last_name}
               onChange={(e) => setForm((f) => ({ ...f, last_name: e.target.value }))}
             />
@@ -70,6 +82,7 @@ export default function RegisterPage() {
           <Input
             id="email"
             type="email"
+            autoComplete="email"
             required
             value={form.email}
             onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
@@ -80,6 +93,7 @@ export default function RegisterPage() {
           <Input
             id="password"
             type="password"
+            autoComplete="new-password"
             required
             minLength={10}
             value={form.password}
@@ -97,5 +111,6 @@ export default function RegisterPage() {
         </Link>
       </p>
     </AuthShell>
+    </GuestOnly>
   );
 }

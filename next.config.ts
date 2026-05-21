@@ -22,7 +22,7 @@ function contentSecurityPolicy(): string {
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob: https:",
     "font-src 'self' data: https:",
-    `connect-src 'self' https:${localApiConnect}`,
+    `connect-src 'self' https://bnske.budgetndiostory.org https://*.budgetndiostory.org${localApiConnect}`,
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",

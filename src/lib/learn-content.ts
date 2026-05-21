@@ -13,11 +13,16 @@ export type HubStory = {
 
 export type HubArticle = {
   id: string;
+  contentId?: string;
   title: string;
   readTime: string;
   snippet: string;
   body: string;
   body_html: string;
+  category?: string;
+  sourceLabel?: string;
+  updatedAt?: string;
+  heroImage?: string | null;
 };
 
 export type StoryFlowCard = Record<string, unknown>;
@@ -56,13 +61,28 @@ export function mapApiArticle(item: Record<string, unknown>): HubArticle {
   const meta = (item.metadata || {}) as Record<string, string>;
   const bodyHtml = wrapNotionContent(String(item.body_html || ""));
   const plainLen = String(item.body || item.summary || "").length;
+  const hero =
+    meta.hero_image ||
+    meta.image ||
+    (typeof item.cover_image === "string" ? item.cover_image : null) ||
+    null;
   return {
     id: String(item.slug || item.id),
+    contentId: item.id != null ? String(item.id) : undefined,
     title: String(item.title || "Article"),
     readTime: meta.readTime || `${Math.ceil(plainLen / 1000) + 3} min read`,
     snippet: String(item.summary || meta.snippet || "Explore this BNSKE budget analysis article."),
     body: String(item.body || ""),
     body_html: bodyHtml,
+    category: meta.category || String(item.category || "Article"),
+    sourceLabel: meta.sourceLabel || meta.source || "BNSKE",
+    updatedAt:
+      typeof item.updated_at === "string"
+        ? item.updated_at
+        : typeof item.published_at === "string"
+          ? item.published_at
+          : undefined,
+    heroImage: hero,
   };
 }
 
