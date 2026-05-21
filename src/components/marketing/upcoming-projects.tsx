@@ -21,7 +21,7 @@ const projects = [
         timeline: "20 Universities",
         summary: "Permanent student chapters dedicated to fiscal analysis, debate, and peer-to-peer education.",
         tags: ["Student leaders", "Fiscal analysis", "Peer education"],
-        href: "/learn?story=civic-compass-v2",
+        href: "/learn",
         cta: "Start leadership story",
     },
     {
@@ -114,7 +114,7 @@ const UpcomingProjects = () => {
                         </div>
                         
                         <Link
-                            href="/learn?story=civic-compass-v2"
+                            href="/learn"
                             className="mt-auto inline-flex items-center gap-1.5 text-sm font-bold text-primary hover:gap-2 transition-all"
                         >
                             Start leadership story

@@ -6,27 +6,6 @@ import { X } from "lucide-react";
 import { Marquee } from "@/components/ui/marquee";
 import { cn } from "@/utils";
 
-const promoStories = [
-  {
-    icon: "🔥",
-    title: "Let's Decode",
-    vibe: "Punchy social explainers",
-    href: "/learn?story=lets-decode",
-  },
-  {
-    icon: "🏙️",
-    title: "Citizen Street",
-    vibe: "Real-life budget impact",
-    href: "/learn?story=citizen-street",
-  },
-  {
-    icon: "🧪",
-    title: "Future Lab",
-    vibe: "Neon data story mode",
-    href: "/learn?story=future-lab",
-  },
-];
-
 import { API_BASE_URL } from "@/lib/api-config";
 
 const STORAGE_KEY = "bns_story_promo_closed";
@@ -35,11 +14,42 @@ export default function StoriesPromoMarquee() {
   const [closed, setClosed] = useState(false);
   const [usdKes, setUsdKes] = useState<number | null>(null);
   const [fxError, setFxError] = useState(false);
+  const [stories, setStories] = useState<any[]>([]);
+  const [loadingStories, setLoadingStories] = useState(true);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     const saved = window.localStorage.getItem(STORAGE_KEY);
     if (saved === "1") setClosed(true);
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    const fetchStories = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/v1/content/stories/`);
+        if (response.ok) {
+          const data = await response.json();
+          if (mounted && data.results && data.results.length > 0) {
+            const mapped = data.results.map((item: any) => ({
+              icon: item.metadata?.icon || "🔥",
+              title: item.title,
+              vibe: item.summary || item.metadata?.subtitle || "Civic explainer story",
+              href: `/learn?story=${item.slug || item.id}`,
+            }));
+            setStories(mapped);
+          }
+        }
+      } catch (e) {
+        console.error("Failed to fetch stories for marquee:", e);
+      } finally {
+        if (mounted) setLoadingStories(false);
+      }
+    };
+    fetchStories();
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -101,7 +111,7 @@ export default function StoriesPromoMarquee() {
     }
   };
 
-  if (closed) return null;
+  if (closed || loadingStories || stories.length === 0) return null;
 
   return (
     <div className="relative z-30 mx-auto mt-1 lg:mt-2 w-[min(1200px,96%)] rounded-2xl bg-background/70 backdrop-blur-md overflow-hidden">
@@ -141,7 +151,7 @@ export default function StoriesPromoMarquee() {
       </div>
 
       <Marquee pauseOnHover className="py-2 [--duration:30s]">
-        {promoStories.map((story) => (
+        {stories.map((story) => (
           <Link
             key={story.title}
             href={story.href}

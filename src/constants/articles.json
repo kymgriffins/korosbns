@@ -1,0 +1,22 @@
+{
+  "articles": [
+    {
+      "id": "guide-2026",
+      "title": "Beginner Guide: Understanding BPS 2026",
+      "readTime": "7 min read",
+      "snippet": "A plain-language article on how the Budget Policy Statement shapes spending."
+    },
+    {
+      "id": "counties-breakdown",
+      "title": "County Budgets: What KES 420B Means",
+      "readTime": "6 min read",
+      "snippet": "How county allocations translate into roads, health, markets, and water services."
+    },
+    {
+      "id": "debt-deficit-explained",
+      "title": "Debt and Deficit Explained Simply",
+      "readTime": "8 min read",
+      "snippet": "Why deficits happen, what borrowing does, and what risks to watch in each cycle."
+    }
+  ]
+}

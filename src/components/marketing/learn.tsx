@@ -70,511 +70,9 @@ const moduleInfo = {
   credits: "Millicent Makini",
 };
 
-const hubStories = [
-  {
-    id: "lets-decode",
-    title: "Let's Decode",
-    subtitle: "Bold social-style explainers with punchy hooks",
-    duration: "2m 30s",
-    gradient: "from-fuchsia-600 via-violet-600 to-indigo-600",
-    icon: "🔥",
-    action: "Play Story",
-  },
-  {
-    id: "citizen-street",
-    title: "Citizen Street",
-    subtitle: "Real-life day-to-day budget impact story",
-    duration: "2m 10s",
-    gradient: "from-amber-500 via-orange-500 to-rose-500",
-    icon: "🏙️",
-    action: "Open",
-  },
-  {
-    id: "future-lab",
-    title: "Future Lab",
-    subtitle: "Neon data-cards, goals, and risk radar",
-    duration: "2m 00s",
-    gradient: "from-blue-600 via-sky-500 to-cyan-500",
-    icon: "🧪",
-    action: "Explore",
-  },
-  {
-    id: "civic-compass-v2",
-    title: "Civic Compass V2",
-    subtitle: "7-page motion story on wise constitutional leadership",
-    duration: "2m 20s",
-    gradient: "from-blue-700 via-indigo-700 to-slate-900",
-    icon: "🗳️",
-    action: "Start V2",
-  },
-  {
-    id: "budget-trivia",
-    title: "Trivia Time",
-    subtitle: "Test your history on Kenya's Cabinet Secretaries & Budgets",
-    duration: "1m 30s",
-    gradient: "from-green-600 via-emerald-600 to-teal-700",
-    icon: "🎭",
-    action: "Play Trivia",
-  },
-];
-
-const hubArticles = [
-  {
-    id: "guide-2026",
-    title: "Beginner Guide: Understanding BPS 2026",
-    readTime: "7 min read",
-    snippet: "A plain-language article on how the Budget Policy Statement shapes spending.",
-  },
-  {
-    id: "counties-breakdown",
-    title: "County Budgets: What KES 420B Means",
-    readTime: "6 min read",
-    snippet: "How county allocations translate into roads, health, markets, and water services.",
-  },
-  {
-    id: "debt-deficit-explained",
-    title: "Debt and Deficit Explained Simply",
-    readTime: "8 min read",
-    snippet: "Why deficits happen, what borrowing does, and what risks to watch in each cycle.",
-  },
-];
-
 const deepDiveModules = deepDiveCards;
 
-const decodeStoryCards = [
-  {
-    id: "intro",
-    title: "Let's Decode the Budget! 🔓",
-    subtitle: "Kenya's Money Blueprint",
-    hook: "Hook: This one decision touches your rent, food, and transport.",
-    emoji: "🚪",
-    bg: "from-indigo-500 via-purple-500 to-pink-500",
-    content:
-      "Ever wonder how the government plans to spend YOUR money? Every year, Kenya releases a secret blueprint called the Budget Policy Statement (BPS)! 🗺️",
-    facts: [
-      "📋 Sets spending priorities for the year",
-      "🏦 Guides both national & county budgets",
-      "📅 Due by February 15th",
-      "💵 Forms the April national budget",
-    ],
-  },
-  {
-    id: "what-is-bps",
-    title: "What is a BPS Actually? 🤔",
-    subtitle: "Think of it like...",
-    emoji: "💡",
-    bg: "from-amber-500 to-orange-500",
-    content:
-      "It's NOT the actual budget - it's the PREVIEW! Like a movie trailer before the full film. 🎬",
-    stat: { value: "Feb 15", label: "📅Deadline (PFM Act)" },
-  },
-  {
-    id: "beta-intro",
-    title: "Meet BETA! 🌟",
-    subtitle: "The Big Plan for Kenya",
-    hook: "Hook: Five pillars, one national game plan.",
-    emoji: "🚀",
-    bg: "from-cyan-500 to-blue-500",
-    content:
-      "BETA = Bottom-Up Economic Transformation Agenda. That's government speak for 'let's grow Kenya from the ground up!' 🌱",
-    pillars: [
-      { emoji: "🌽", title: "Agriculture", desc: "Food for everyone!" },
-      { emoji: "🔥", title: "Hustlers", desc: "Small business boost" },
-      { emoji: "🩺", title: "Healthcare", desc: "Health for all" },
-      { emoji: "🏠", title: "Housing", desc: "Roof over heads" },
-      { emoji: "📱", title: "Digital", desc: "Internet for Kenya" },
-    ],
-  },
-  {
-    id: "agri",
-    title: "Farm Life! 🌾",
-    subtitle: "From Farm to Table",
-    emoji: "🧑‍🌾",
-    bg: "from-green-500 to-emerald-500",
-    content:
-      "Kenya wants to grow MORE food! Think better seeds, Irrigation everywhere, and livestock that won't get sick. 🥩",
-    facts: [
-      "💊 Cheaper fertilizer",
-      "💧 Big irrigation projects",
-      "💉 Livestock vaccines",
-      "🏭 Better storage",
-    ],
-  },
-  {
-    id: "msme",
-    title: "Hustler Energy! ⚡",
-    subtitle: "Small Biz Big Dreams",
-    emoji: "💪",
-    bg: "from-pink-500 to-rose-500",
-    content:
-      "MSMEs = Micro, Small & Medium Enterprises. That's YOUR aunt's duka, the matatu guy, the tailor on the corner! They need cheaper loans! 💰",
-    facts: [
-      "💵 Bigger Hustler Fund",
-      "🏦 Credit guarantees",
-      "📍 Hubs in all 47 counties",
-      "📈 Business growth",
-    ],
-  },
-  {
-    id: "health",
-    title: "Health for All! 🏥",
-    subtitle: "No One Left Behind",
-    emoji: "❤️",
-    bg: "from-red-500 to-pink-500",
-    content:
-      "SHA = Social Health Authority. The goal? 35 MILLION Kenyans with health cover! That's almost everyone! 🙌",
-    facts: [
-      "👩‍⚕️ Community health workers",
-      "🏗️ New clinics",
-      "💻 Digital health records",
-      "💊 Free medicine",
-    ],
-  },
-  {
-    id: "numbers-intro",
-    title: "The Big Numbers! 💰",
-    subtitle: "Let's Talk Billions",
-    hook: "Hook: The size of the gap decides tomorrow's taxes.",
-    emoji: "😱",
-    bg: "from-violet-600 to-purple-600",
-    content:
-      "Buckle up! Here's what the 2026/27 budget looks like in KENYAN SHILLINGS...",
-  },
-  {
-    id: "revenue",
-    title: "Money In! 📈",
-    subtitle: "Where It Comes From",
-    emoji: "💵",
-    bg: "from-emerald-500 to-teal-500",
-    content:
-      "Total revenue the government expects to collect. Taxes, duties, everything!",
-    stat: { value: "KES 3.59T", label: "💰Total Revenue" },
-  },
-  {
-    id: "expenditure",
-    title: "Money Out! 🛒",
-    subtitle: "Where It Goes",
-    emoji: "🛍️",
-    bg: "from-orange-500 to-amber-500",
-    content: "Total planned spending. Roads, salaries, projects - everything!",
-    stat: { value: "KES 4.74T", label: "💸Total Spending" },
-  },
-  {
-    id: "deficit",
-    title: "The Gap! 😬",
-    subtitle: "Spending More Than You Have",
-    emoji: "📉",
-    bg: "from-red-600 to-rose-600",
-    content:
-      "When you spend more than you earn = deficit. Kenya borrows to fill the gap!",
-    stat: { value: "KES 1.15T", label: "🚨The Gap!" },
-    note: "🤝 KES 225B foreign + KES 924B domestic",
-  },
-  {
-    id: "debt",
-    title: "Debt Alarm! 🚨",
-    subtitle: "Already Committed?",
-    emoji: "😰",
-    bg: "from-yellow-500 to-orange-500",
-    content:
-      "-interest on old loans. This money is GONE before anything else! Can't use it for roads or schools.",
-    stat: { value: "KES 1.2T", label: "⚠️Already Committed" },
-  },
-  {
-    id: "counties",
-    title: "Going Local! 🗺️",
-    subtitle: "Counties Get Cash",
-    emoji: "🏛️",
-    bg: "from-blue-500 to-indigo-500",
-    content:
-      "47 counties get a slice for local roads, health centers, markets!",
-    stat: { value: "KES 420B", label: "💵To Counties" },
-    services: ["🛣️Roads", "🏥Health", "💧Water", "🏪Markets", "🎪Events"],
-  },
-  {
-    id: "risks",
-    title: "Watch Out! ⚠️",
-    subtitle: "Budget Danger Zones",
-    hook: "Hook: These risks can flip a good budget fast.",
-    emoji: "⚡",
-    bg: "from-gray-700 to-gray-900",
-    content: "Things that could mess up the budget:",
-    risks: [
-      { title: "📈 Debt spiral", desc: "More borrowing = more interest" },
-      { title: "🏦 SOE bailouts", desc: "State company losses" },
-      { title: "📉 Economy slow", desc: "Less tax collected" },
-      { title: "🌧️ Climate", desc: "Droughts + floods" },
-      { title: "📢 Counties", desc: "More demands" },
-    ],
-  },
-  {
-    id: "quiz-prompt",
-    title: "Ready to Quiz? 🎯",
-    subtitle: "Test Your Knowledge",
-    emoji: "🏆",
-    bg: "from-amber-500 via-orange-500 to-red-500",
-    content: "You made it! Let's see how much you remember. 🎮",
-    prompt: true,
-  },
-];
-
-const citizenStreetCards = [
-  {
-    id: "street-intro",
-    title: "Morning in Githurai ☀️",
-    subtitle: "Budget meets daily life",
-    hook: "Hook: Budget policy quietly prices your entire day.",
-    emoji: "🚐",
-    bg: "from-orange-500 via-amber-500 to-yellow-500",
-    content:
-      "You wake up, board a matatu, buy breakfast, and head to work. Every one of those costs is shaped by taxes, fuel policy, and county planning.",
-    facts: ["🚌 Transport", "🍞 Food prices", "💡 Electricity", "🏥 Health access"],
-  },
-  {
-    id: "fare",
-    title: "Matatu Fare Shock 😵",
-    subtitle: "Fuel costs ripple everywhere",
-    emoji: "⛽",
-    bg: "from-red-500 to-orange-500",
-    content:
-      "When fuel levies rise, transport operators adjust fares. That pushes up market delivery costs and eventually your lunch bill.",
-    stat: { value: "KES +20-80", label: "🚨Typical fare jump band" },
-  },
-  {
-    id: "market",
-    title: "Soko Realities 🧺",
-    subtitle: "Why unga and mboga shift",
-    emoji: "🥬",
-    bg: "from-green-500 to-emerald-500",
-    content:
-      "Food inflation is not random. Fertilizer subsidies, irrigation investment, and transport costs decide what your basket looks like.",
-    services: ["🌽 Subsidies", "🚚 Logistics", "💧 Irrigation", "📦 Storage"],
-  },
-  {
-    id: "clinic",
-    title: "Clinic Queue Story 🏥",
-    subtitle: "County money at work",
-    emoji: "🩺",
-    bg: "from-rose-500 to-pink-500",
-    content:
-      "Local clinics depend on county allocation quality. Better prioritization means more drugs, staff, and shorter queues.",
-    stat: { value: "KES 420B", label: "🏛️County equitable share" },
-  },
-  {
-    id: "street-risk",
-    title: "Street Risk Radar ⚠️",
-    subtitle: "What can break the plan",
-    emoji: "🌧️",
-    bg: "from-slate-700 to-slate-900",
-    content: "On the ground, these risks hit first:",
-    risks: [
-      { title: "📉 Slow growth", desc: "Jobs and household income tighten" },
-      { title: "⛽ Energy spikes", desc: "Transport and food costs climb" },
-      { title: "🌊 Climate shocks", desc: "Supply chains and farm output dip" },
-      { title: "🏥 Service pressure", desc: "Demand rises faster than facilities" },
-    ],
-  },
-  {
-    id: "quiz-prompt",
-    title: "Street Checkpoint 🎯",
-    subtitle: "Ready for the quiz?",
-    emoji: "✅",
-    bg: "from-amber-500 via-orange-500 to-red-500",
-    content: "You now see how policy hits normal life. Let's test it fast.",
-    prompt: true,
-  },
-];
-
-const futureLabCards = [
-  {
-    id: "lab-intro",
-    title: "Welcome to Future Lab 🧪",
-    subtitle: "Mission: decode 2026 budget",
-    hook: "Hook: Good allocations create momentum, bad ones create drag.",
-    emoji: "🧠",
-    bg: "from-cyan-500 via-blue-600 to-indigo-700",
-    content:
-      "Think of the budget as a control panel. Each lever affects growth, services, and resilience. Your job is to read the signals before the headlines do.",
-  },
-  {
-    id: "growth-engine",
-    title: "Growth Engine 🚀",
-    subtitle: "Where expansion should come from",
-    emoji: "📈",
-    bg: "from-emerald-500 to-teal-600",
-    content:
-      "If agriculture, MSMEs, and digital sectors scale together, employment and tax revenues become more stable over time.",
-    pillars: [
-      { emoji: "🌾", title: "Agriculture", desc: "Food and export stability" },
-      { emoji: "🏪", title: "MSMEs", desc: "Fast local job creation" },
-      { emoji: "📶", title: "Digital", desc: "Efficiency and inclusion" },
-    ],
-  },
-  {
-    id: "allocation-dashboard",
-    title: "Allocation Dashboard 🖥️",
-    subtitle: "Money in vs money out",
-    emoji: "🧮",
-    bg: "from-violet-600 to-purple-700",
-    content:
-      "The critical question is not only how much is spent, but what share goes to productive investment versus locked obligations.",
-    facts: [
-      "💰 Revenue: KES 3.59T",
-      "🛒 Spend: KES 4.74T",
-      "📉 Deficit: KES 1.15T",
-      "🚨 Debt service pressure",
-    ],
-  },
-  {
-    id: "resilience",
-    title: "Resilience Layer 🛡️",
-    subtitle: "Can systems absorb shocks?",
-    emoji: "🌍",
-    bg: "from-blue-500 to-sky-600",
-    content:
-      "Climate, exchange rates, and global prices can all stress fiscal plans. Strong local systems reduce the damage.",
-    services: ["💧 Water systems", "🌾 Food buffers", "🏥 Health readiness", "📊 Data response"],
-  },
-  {
-    id: "risk-matrix",
-    title: "Risk Matrix 🚨",
-    subtitle: "Priority watchlist",
-    emoji: "🛰️",
-    bg: "from-gray-700 to-black",
-    content: "Four red flags to watch this cycle:",
-    risks: [
-      { title: "💳 Debt rollover", desc: "Refinancing gets costlier" },
-      { title: "🏢 SOE liabilities", desc: "Potential bailout burdens" },
-      { title: "📉 Revenue underperformance", desc: "Targets miss reality" },
-      { title: "🌦️ Climate variability", desc: "Agriculture and prices swing" },
-    ],
-  },
-  {
-    id: "quiz-prompt",
-    title: "Systems Check 🎯",
-    subtitle: "Test your analyst instincts",
-    emoji: "🧩",
-    bg: "from-indigo-600 via-violet-600 to-fuchsia-600",
-    content: "You finished the lab run. Ready for your final check?",
-    prompt: true,
-  },
-];
-
-const civicCompassV2Cards = [
-  {
-    id: "v2-intro",
-    title: "Civic Compass V2",
-    subtitle: "Choose leadership that protects tomorrow",
-    hook: "Hook: One vote can defend the constitution or weaken it.",
-    emoji: "🧭",
-    bg: "from-slate-900 via-indigo-900 to-black",
-    content:
-      "A wise leader does not just promise projects. They protect institutions, follow the constitution, and keep power accountable to citizens.",
-    facts: [
-      "🗳️ Your vote shapes systems, not just slogans",
-      "⚖️ Law-abiding leadership builds trust",
-      "🏛️ Institutions outlive campaign seasons",
-      "🧑‍🤝‍🧑 Democracy needs active citizens",
-    ],
-  },
-  {
-    id: "v2-vetting-mindset",
-    title: "Before You Elect, Vet",
-    subtitle: "Leadership is a public trust",
-    emoji: "🔍",
-    bg: "from-zinc-900 via-slate-900 to-blue-900",
-    content:
-      "Treat every candidate like a serious job applicant. Review values, track record, integrity, and respect for lawful process before trusting them with public power.",
-    facts: [
-      "📁 Check delivery record and consistency",
-      "🧾 Follow known sources of campaign funding",
-      "🤝 Watch how they treat critics and media",
-      "📚 Verify policy depth, not just charisma",
-    ],
-  },
-  {
-    id: "v2-constitution",
-    title: "Constitution First",
-    subtitle: "No one is above the law",
-    emoji: "⚖️",
-    bg: "from-indigo-900 via-blue-900 to-slate-950",
-    content:
-      "Wise leaders work within constitutional limits: respecting courts, Parliament, county mandates, and independent oversight institutions.",
-    pillars: [
-      { emoji: "🏛️", title: "Separation of powers", desc: "No office should overreach" },
-      { emoji: "👩‍⚖️", title: "Independent judiciary", desc: "Rights need fair adjudication" },
-      { emoji: "📜", title: "Rule of law", desc: "Law guides decisions, not impulse" },
-      { emoji: "🧾", title: "Public accountability", desc: "Audit trails and open reporting" },
-    ],
-  },
-  {
-    id: "v2-democracy-check",
-    title: "Democracy Is Daily Work",
-    subtitle: "Beyond election day",
-    emoji: "🕊️",
-    bg: "from-slate-900 via-blue-900 to-indigo-950",
-    content:
-      "Democracy survives when leaders accept scrutiny, respect dissent, and protect civil liberties. Silence and fear are warning signs, not stability.",
-    risks: [
-      { title: "🚫 Attacking oversight", desc: "Weakens corruption checks" },
-      { title: "🧨 Divisive rhetoric", desc: "Turns citizens against each other" },
-      { title: "📵 Restricting civic voice", desc: "Reduces public participation" },
-      { title: "🫥 Dodging transparent reporting", desc: "Hides performance failures" },
-    ],
-  },
-  {
-    id: "v2-citizen-scorecard",
-    title: "Citizen Vetting Scorecard",
-    subtitle: "Simple test before support",
-    emoji: "✅",
-    bg: "from-blue-900 via-indigo-900 to-slate-950",
-    content:
-      "Use this quick scorecard to compare candidates. If someone fails most tests, they should not get your mandate.",
-    services: [
-      "Respects constitutional limits",
-      "Publishes clear policy plans",
-      "Has clean integrity record",
-      "Responds to scrutiny calmly",
-      "Builds unity across communities",
-    ],
-    tinyLogo: true,
-  },
-  {
-    id: "v2-collective-action",
-    title: "Vote, Then Monitor",
-    subtitle: "Mandate + follow-through",
-    emoji: "📣",
-    bg: "from-zinc-900 via-indigo-900 to-slate-900",
-    content:
-      "Electing wise leaders is the first step. Keep monitoring budgets, laws, procurement, and service delivery so constitutional promises become lived reality.",
-    facts: [
-      "📝 Track campaign promises quarterly",
-      "🏥 Follow local service outcomes",
-      "📊 Demand open performance data",
-      "🧭 Stay issue-focused, not personality-focused",
-    ],
-  },
-  {
-    id: "v2-credits",
-    title: "Built by the Dev Team",
-    subtitle: "Design-forward civic storytelling",
-    emoji: "🛠️",
-    bg: "from-black via-slate-900 to-indigo-900",
-    content:
-      "This V2 story is crafted in appreciation of the dev team: motion, interaction, and clarity working together to strengthen democratic civic education.",
-    stat: { value: "DEVTEAM", label: "Credits: Design + Engineering + Content" },
-    note: "Thank you for shipping civic tech that helps citizens choose wise, lawful leadership.",
-  },
-];
-
-const storyFlows = {
-  "lets-decode": decodeStoryCards,
-  "citizen-street": citizenStreetCards,
-  "future-lab": futureLabCards,
-  "civic-compass-v2": civicCompassV2Cards,
-  "budget-trivia": [], // Dynamic
-} as const;
-type StoryFlowId = keyof typeof storyFlows;
+// Sourced dynamically from BNSKE API
 
 const quizQuestions = [
   {
@@ -802,8 +300,15 @@ export default function Learn() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [appState, setAppState] = useState<AppState>("hub");
-  const [selectedStoryId, setSelectedStoryId] = useState<StoryFlowId>("lets-decode");
+  const [selectedStoryId, setSelectedStoryId] = useState<string>("");
   const [articleIndex, setArticleIndex] = useState(0);
+  const [stories, setStories] = useState<any[]>([]);
+  const [storyFlowsState, setStoryFlowsState] = useState<Record<string, any[]>>({
+    "budget-trivia": []
+  });
+  const [articles, setArticles] = useState<any[]>([]);
+  const [loadingContent, setLoadingContent] = useState<boolean>(true);
+  const [activeArticle, setActiveArticle] = useState<any | null>(null);
   const [quizIndex, setQuizIndex] = useState(0);
   const [quizAnswer, setQuizAnswer] = useState<number | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
@@ -825,6 +330,79 @@ export default function Learn() {
         if (data.videos) setYoutubeVideos(data.videos);
       })
       .catch((err) => console.error("Failed to load YouTube videos:", err));
+  }, []);
+
+  // Fetch stories and articles from BNSKE API
+  useEffect(() => {
+    const fetchContent = async () => {
+      setLoadingContent(true);
+      try {
+        const storiesResponse = await fetch(`${API_BASE_URL}/api/v1/content/stories/`);
+        if (storiesResponse.ok) {
+          const storiesData = await storiesResponse.json();
+          if (storiesData.results && storiesData.results.length > 0) {
+            const parsedStories: any[] = [];
+            const parsedFlows: Record<string, any[]> = {};
+
+            storiesData.results.forEach((item: any) => {
+              const storyId = item.slug || item.id;
+              let flowCards: any[] = [];
+              try {
+                if (item.body) {
+                  flowCards = typeof item.body === "string" ? JSON.parse(item.body) : item.body;
+                }
+              } catch (e) {
+                console.error(`Failed to parse flow body for story ${storyId}:`, e);
+              }
+
+              parsedStories.push({
+                id: storyId,
+                title: item.title,
+                subtitle: item.summary || item.metadata?.subtitle || "Civic explainer story",
+                duration: item.metadata?.duration || "2m 00s",
+                gradient: item.metadata?.gradient || "from-fuchsia-600 via-violet-600 to-indigo-600",
+                icon: item.metadata?.icon || "🔥",
+                action: item.metadata?.action || "Play Story"
+              });
+
+              parsedFlows[storyId] = flowCards;
+            });
+
+            setStories(parsedStories);
+            setStoryFlowsState({
+              ...parsedFlows,
+              "budget-trivia": []
+            });
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch stories from API:", err);
+      }
+
+      try {
+        const articlesResponse = await fetch(`${API_BASE_URL}/api/v1/content/articles/`);
+        if (articlesResponse.ok) {
+          const articlesData = await articlesResponse.json();
+          if (articlesData.results && articlesData.results.length > 0) {
+            const parsedArticles = articlesData.results.map((item: any) => ({
+              id: item.slug || item.id,
+              title: item.title,
+              readTime: item.metadata?.readTime || `${Math.ceil((item.body?.length || 1000) / 1000) + 3} min read`,
+              snippet: item.summary || item.metadata?.snippet || "Explore this BNSKE budget analysis article.",
+              body: item.body || "",
+              body_html: item.body_html || ""
+            }));
+            setArticles(parsedArticles);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch articles from API:", err);
+      } finally {
+        setLoadingContent(false);
+      }
+    };
+
+    fetchContent();
   }, []);
 
   // Fetch trivia from backend
@@ -935,19 +513,20 @@ export default function Learn() {
     }
   };
 
-  const handleStoryStart = (id: StoryFlowId) => {
+  const handleStoryStart = (id: string) => {
     setSelectedStoryId(id);
     if (id === "budget-trivia" && triviaCards.length > 0) {
       setCurrentFlowCards(triviaCards);
-    } else if (id !== "budget-trivia") {
-      setCurrentFlowCards(storyFlows[id]);
+    } else {
+      const cards = storyFlowsState[id];
+      setCurrentFlowCards(cards || []);
     }
     markStoryWatched(id);
     setAppState("article");
     setArticleIndex(0);
   };
 
-  const currentStoryCards = currentFlowCards.length > 0 ? currentFlowCards : storyFlows[selectedStoryId];
+  const currentStoryCards = currentFlowCards.length > 0 ? currentFlowCards : storyFlowsState[selectedStoryId] || [];
   const currentCard = currentStoryCards[articleIndex];
   const isQuizPrompt = Boolean(currentCard && "prompt" in currentCard && currentCard.prompt);
   const isLastCard = articleIndex === currentStoryCards.length - 1;
@@ -979,7 +558,7 @@ export default function Learn() {
     }
   };
 
-  const markStoryWatched = (storyId: StoryFlowId) => {
+  const markStoryWatched = (storyId: string) => {
     setWatchedStories((prev) => {
       if (prev[storyId]) return prev;
       const next = { ...prev, [storyId]: true };
@@ -1000,12 +579,12 @@ export default function Learn() {
   };
 
   const sortedHubStories = useMemo(() => {
-    return [...hubStories].sort((a, b) => {
+    return [...stories].sort((a, b) => {
       const aWatched = watchedStories[a.id] ? 1 : 0;
       const bWatched = watchedStories[b.id] ? 1 : 0;
       return aWatched - bWatched;
     });
-  }, [watchedStories]);
+  }, [stories, watchedStories]);
 
   useEffect(() => {
     try {
@@ -1026,19 +605,10 @@ export default function Learn() {
     const storyParam = searchParams.get("story");
     if (!storyParam) return;
 
-    if (storyParam in storyFlows) {
-      const storyId = storyParam as StoryFlowId;
-      setSelectedStoryId(storyId);
-      if (storyId === "budget-trivia" && triviaCards.length > 0) {
-        setCurrentFlowCards(triviaCards);
-      } else if (storyId !== "budget-trivia") {
-        setCurrentFlowCards(storyFlows[storyId]);
-      }
-      markStoryWatched(storyId);
-      setAppState("article");
-      setArticleIndex(0);
+    if (storyParam === "budget-trivia" || storyParam in storyFlowsState || stories.some(s => s.id === storyParam)) {
+      handleStoryStart(storyParam);
     }
-  }, [searchParams, triviaCards]);
+  }, [searchParams, triviaCards, storyFlowsState, stories]);
 
   useEffect(() => {
     if (appState !== "article") return;
@@ -1479,6 +1049,14 @@ export default function Learn() {
   }
 
   if (appState === "article") {
+    if (!currentStoryCards || currentStoryCards.length === 0) {
+      return (
+        <section className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center p-6 text-center">
+          <h2 className="text-xl font-bold mb-4 text-foreground">No slides available for this story.</h2>
+          <Button onClick={() => setAppState("hub")} className="rounded-xl">Back to Hub</Button>
+        </section>
+      );
+    }
     const stat = currentCard && "stat" in currentCard ? currentCard.stat : undefined;
     const note = currentCard && "note" in currentCard ? currentCard.note : undefined;
     const pillars = currentCard && "pillars" in currentCard ? currentCard.pillars : undefined;
@@ -1830,54 +1408,131 @@ export default function Learn() {
               </div>
               <div className="overflow-x-auto pb-2 [scrollbar-width:thin]">
                 <div className="flex gap-4 w-max pr-2">
-                  {sortedHubStories.map((story) => (
-                    <motion.button
-                      key={story.id}
-                      whileHover={{ y: -3 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => {
-                        const storyId = story.id as StoryFlowId;
-                        setSelectedStoryId(storyId);
-                        markStoryWatched(storyId);
-                        setAppState("article");
-                        setArticleIndex(0);
-                        router.push(`/learn?story=${storyId}`, { scroll: false });
-                      }}
-                      className={cn(
-                        "w-[290px] sm:w-[340px] text-left rounded-[26px] border border-border p-5 text-foreground bg-card",
-                      )}
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <span className="text-3xl">{story.icon}</span>
-                        <div className="flex flex-col items-end gap-1.5">
-                          <span
-                            className={cn(
-                              "text-[10px] font-semibold uppercase tracking-wider rounded-full px-2 py-1",
-                              watchedStories[story.id]
-                                ? "bg-emerald-500/25 text-emerald-100"
-                                : "bg-amber-500/25 text-amber-100",
-                            )}
-                          >
-                            {watchedStories[story.id] ? "Watched" : "New"}
-                          </span>
-                          <span className="text-[10px] font-semibold uppercase tracking-wider rounded-full bg-muted px-2 py-1">
-                            {story.duration}
-                          </span>
+                  {loadingContent ? (
+                    <div className="flex gap-4">
+                      {[1, 2, 3].map((i) => (
+                        <div
+                          key={i}
+                          className="w-[290px] sm:w-[340px] h-[190px] rounded-[26px] border border-border p-5 bg-card/50 animate-pulse flex flex-col justify-between"
+                        >
+                          <div className="flex justify-between">
+                            <div className="w-10 h-10 rounded-xl bg-muted" />
+                            <div className="w-16 h-6 rounded-full bg-muted" />
+                          </div>
+                          <div className="space-y-2">
+                            <div className="h-6 w-3/4 bg-muted/40 rounded" />
+                            <div className="h-4 w-5/6 bg-muted/30 rounded" />
+                          </div>
+                          <div className="h-8 w-24 bg-muted/40 rounded-full" />
                         </div>
-                      </div>
-                      <h3 className="text-lg font-bold mt-5 leading-tight">
-                        {story.title}
-                      </h3>
-                      <p className="text-sm text-white/80 mt-2">
-                        {story.subtitle}
-                      </p>
-                      <div className="mt-5 inline-flex items-center gap-2 text-xs font-semibold rounded-full bg-muted px-3 py-1.5">
-                        {story.action} <ArrowRight className="size-3.5" />
-                      </div>
-                    </motion.button>
-                  ))}
+                      ))}
+                    </div>
+                  ) : (
+                    sortedHubStories.map((story) => (
+                      <motion.button
+                        key={story.id}
+                        whileHover={{ y: -3 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => {
+                          handleStoryStart(story.id);
+                          router.push(`/learn?story=${story.id}`, { scroll: false });
+                        }}
+                        className={cn(
+                          "w-[290px] sm:w-[340px] text-left rounded-[26px] border border-border p-5 text-foreground bg-card",
+                        )}
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <span className="text-3xl">{story.icon}</span>
+                          <div className="flex flex-col items-end gap-1.5">
+                            <span
+                              className={cn(
+                                "text-[10px] font-semibold uppercase tracking-wider rounded-full px-2 py-1",
+                                watchedStories[story.id]
+                                  ? "bg-emerald-500/25 text-emerald-100"
+                                  : "bg-amber-500/25 text-amber-100",
+                              )}
+                            >
+                              {watchedStories[story.id] ? "Watched" : "New"}
+                            </span>
+                            <span className="text-[10px] font-semibold uppercase tracking-wider rounded-full bg-muted px-2 py-1">
+                              {story.duration}
+                            </span>
+                          </div>
+                        </div>
+                        <h3 className="text-lg font-bold mt-5 leading-tight">
+                          {story.title}
+                        </h3>
+                        <p className="text-sm text-white/80 mt-2">
+                          {story.subtitle}
+                        </p>
+                        <div className="mt-5 inline-flex items-center gap-2 text-xs font-semibold rounded-full bg-muted px-3 py-1.5">
+                          {story.action} <ArrowRight className="size-3.5" />
+                        </div>
+                      </motion.button>
+                    ))
+                  )}
                 </div>
               </div>
+            </Container>
+
+            {/* Articles Section */}
+            <Container animation="fadeUp" delay={0.07} className="space-y-4 pt-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold flex items-center gap-2">
+                  <BookOpen className="size-5 text-primary" />
+                  Articles & Insights
+                </h2>
+                {loadingContent && (
+                  <span className="text-xs text-foreground/50 animate-pulse">
+                    Refreshing...
+                  </span>
+                )}
+              </div>
+
+              {loadingContent ? (
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {[1, 2, 3].map((i) => (
+                    <div
+                      key={i}
+                      className="border border-border bg-card/50 rounded-2xl p-5 space-y-4 animate-pulse"
+                    >
+                      <div className="h-4 w-1/4 bg-muted rounded" />
+                      <div className="h-6 w-3/4 bg-muted rounded" />
+                      <div className="h-12 w-full bg-muted rounded" />
+                      <div className="h-8 w-20 bg-muted rounded-full" />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {articles.map((article) => (
+                    <motion.div
+                      key={article.id}
+                      whileHover={{ y: -3 }}
+                      onClick={() => setActiveArticle(article)}
+                      className="group cursor-pointer border border-border bg-card hover:bg-card/85 rounded-2xl p-5 flex flex-col justify-between h-full transition-all relative overflow-hidden"
+                    >
+                      <div className="pointer-events-none absolute -right-8 -top-8 size-24 rounded-full bg-primary/5 blur-xl group-hover:bg-primary/10 transition-all" />
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-semibold uppercase tracking-wider rounded-full bg-muted px-2 py-0.5 text-foreground/70">
+                            {article.readTime || "5 min read"}
+                          </span>
+                        </div>
+                        <h3 className="text-base font-bold leading-snug group-hover:text-primary transition-colors line-clamp-2">
+                          {article.title}
+                        </h3>
+                        <p className="text-xs text-foreground/60 leading-relaxed line-clamp-3">
+                          {article.snippet}
+                        </p>
+                      </div>
+                      <div className="mt-4 flex items-center gap-1.5 text-xs font-semibold text-primary">
+                        Read Article <ArrowRight className="size-3.5 group-hover:translate-x-0.5 transition-transform" />
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
             </Container>
 
             {youtubeVideos.length > 0 && (
@@ -2212,6 +1867,86 @@ export default function Learn() {
           }
         }
       `}</style>
+      
+      {/* Inline Article Reader Modal */}
+      <AnimatePresence>
+        {activeArticle && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[150] bg-background/80 backdrop-blur-md flex items-center justify-center p-4 sm:p-6"
+            onClick={() => setActiveArticle(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.95, y: 20 }}
+              transition={{ type: "spring", damping: 25, stiffness: 220 }}
+              className="bg-card border border-border rounded-3xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between border-b border-border px-6 py-4 bg-muted/20">
+                <div className="space-y-1">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider rounded-full bg-primary/10 text-primary px-2.5 py-0.5">
+                    {activeArticle.readTime || "5 min read"}
+                  </span>
+                  <h2 className="text-lg font-bold text-foreground line-clamp-1">
+                    {activeArticle.title}
+                  </h2>
+                </div>
+                <button
+                  onClick={() => setActiveArticle(null)}
+                  className="p-1.5 rounded-full bg-muted hover:bg-muted/80 text-foreground transition-colors"
+                >
+                  <X className="size-4" />
+                </button>
+              </div>
+
+              {/* Content body */}
+              <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4 [scrollbar-width:thin]">
+                {activeArticle.body_html ? (
+                  <div
+                    className="prose prose-sm prose-invert max-w-none text-foreground/85 space-y-4"
+                    dangerouslySetInnerHTML={{ __html: activeArticle.body_html }}
+                  />
+                ) : (
+                  <div className="text-foreground/85 leading-relaxed whitespace-pre-wrap space-y-4 text-sm sm:text-base">
+                    {activeArticle.body || activeArticle.snippet}
+                  </div>
+                )}
+              </div>
+
+              {/* Footer */}
+              <div className="border-t border-border px-6 py-4 flex items-center justify-between bg-muted/15">
+                <span className="text-[10px] text-foreground/50 font-medium">
+                  Budget Ndio Story • Learn Hub
+                </span>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    if (navigator.share) {
+                      navigator.share({
+                        title: activeArticle.title,
+                        text: activeArticle.snippet,
+                        url: window.location.href,
+                      }).catch(console.error);
+                    } else {
+                      navigator.clipboard.writeText(window.location.href);
+                      toast.success("Link copied to clipboard!");
+                    }
+                  }}
+                  className="rounded-full text-xs gap-1.5 h-8"
+                >
+                  <Send className="size-3" /> Share
+                </Button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
