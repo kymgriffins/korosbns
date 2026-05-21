@@ -1,11 +1,15 @@
 import Learn from "@/components/marketing/learn";
 import { Metadata } from "next";
+import { metaDescription } from "@/utils/metadata";
 import { Suspense } from "react";
+
+const learnDescription = metaDescription(
+    "Explore Kenya's budget through Budget Ndio Story's learn hub: swipeable explainers and youth-friendly literacy built for civic engagement.",
+);
 
 export const metadata: Metadata = {
     title: "Learn Hub | Budget Ndio Story",
-    description:
-        "Explore Budget Ndio Story's story-first learning hub with swipeable explainers, enhanced motion, and youth-friendly budget literacy content for civic engagement in Kenya.",
+    description: learnDescription,
     keywords: [
         "Budget Ndio Story learn hub",
         "Kenya budget explainer videos",

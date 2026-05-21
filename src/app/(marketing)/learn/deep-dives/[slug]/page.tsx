@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { deepDiveCards, fetchDeepDiveArticle } from "@/lib/learn-deep-dives";
+import { metaDescription } from "@/utils/metadata";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -16,7 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const article = await fetchDeepDiveArticle(slug);
   return {
     title: `${article.title} | Budget Ndio Story`,
-    description: article.summary,
+    description: metaDescription(article.summary),
   };
 }
 

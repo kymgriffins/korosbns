@@ -15,11 +15,15 @@ import Cta from "@/components/marketing/cta";
 import SurveyPopup from "@/components/marketing/survey-popup";
 import NewsletterPopup from "@/components/marketing/newsletter-popup";
 import { Metadata } from "next";
+import { metaDescription } from "@/utils/metadata";
+
+const homeDescription = metaDescription(
+    "Budget Ndio Story is a youth-led initiative in Kenya turning complex national budgets into clear narratives for democratic participation and fiscal literacy.",
+);
 
 export const metadata: Metadata = {
     title: "Budget Ndio Story | Bridging Youth Energy & Fiscal Policy",
-    description:
-        "Budget Ndio Story is a youth-led initiative in Kenya transforming complex national budgets into actionable narratives for democratic participation and fiscal literacy.",
+    description: homeDescription,
     keywords: [
         "Budget Ndio Story",
         "youth-led civic engagement Kenya",

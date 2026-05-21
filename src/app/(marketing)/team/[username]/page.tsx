@@ -11,6 +11,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { IconBrandLinkedin, IconBrandX } from "@tabler/icons-react";
 import { notFound } from "next/navigation";
+import { metaDescription } from "@/utils/metadata";
 
 type TeamMemberParams = { username: string };
 
@@ -32,12 +33,15 @@ export async function generateMetadata({
     return { title: "Team Member Not Found" };
   }
 
+  const description = metaDescription(
+    `${member.name} — ${member.role} at Budget Ndio Story. Making Kenya's budget transparent and accessible.`,
+  );
   return {
     title: `${member.name} | Budget Ndio Story`,
-    description: `${member.name} - ${member.role} at Budget Ndio Story. Making Kenya's budget transparent and accessible.`,
+    description,
     openGraph: {
       title: `${member.name} | Budget Ndio Story`,
-      description: `${member.name} - ${member.role} at Budget Ndio Story`,
+      description,
       images: [member.image],
     },
   };

@@ -1,5 +1,6 @@
 import DocumentViewer from "@/components/marketing/document-viewer";
 import { fetchDocumentsFromAPI, getDocumentById } from "@/constants/documents";
+import { metaDescription } from "@/utils/metadata";
 import Link from "next/link";
 
 interface Props {
@@ -25,7 +26,10 @@ export async function generateMetadata({ params }: Props) {
 
   return {
     title: `${doc.fullName} (${doc.title}) | Budget Ndio Story`,
-    description: doc.description,
+    description: metaDescription(
+      doc.description,
+      `Browse ${doc.fullName} documents and budget files on Budget Ndio Story.`,
+    ),
   };
 }
 

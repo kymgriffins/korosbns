@@ -4,7 +4,8 @@ import HulyClient from "./HulyClient";
 
 export const metadata: Metadata = generateMetadata({
   title: "Huly — Midnight Command Center",
-  description: "Experience Huly - the luminous Midnight Command Center. Empowering civic narrative, public finance audits, and youth leadership in Kenya through state-of-the-art interactive workspaces.",
+  description:
+    "Experience Huly: a civic workspace for budget narratives, public finance audits, and youth leadership tools built for Kenya.",
   noIndex: false,
 });
 
