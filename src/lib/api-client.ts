@@ -1,0 +1,436 @@
+import { buildApiUrl, networkErrorMessage } from "@/lib/api-url";
+import { extractApiErrorMessage, type ApiPayload } from "@/lib/api-errors";
+import { logDebug, sanitizeToken } from "@/lib/debug-logs";
+
+export { buildApiUrl };
+
+const ACCESS_KEY = "access_token";
+const REFRESH_KEY = "refresh_token";
+const STORAGE_MODE_KEY = "bns_token_storage_mode";
+
+export type ApiListResponse<T> = {
+  count?: number;
+  results: T[];
+};
+
+export type SurveyQuestionApi = {
+  id: string;
+  text: string;
+  type: "single" | "multiple" | "text" | "rating" | "boolean";
+  choices: string[];
+  is_required: boolean;
+  order: number;
+};
+
+export type SurveyListItemApi = {
+  id: string;
+  title: string;
+  description?: string;
+  allow_anonymous?: boolean;
+  status?: string;
+};
+
+export type SurveyDetailApi = {
+  id: string;
+  title: string;
+  description?: string;
+  allow_anonymous: boolean;
+  questions: SurveyQuestionApi[];
+};
+
+export type TriviaQuestionApi = {
+  id: string;
+  question_text: string;
+  options: string[];
+  order: number;
+  correct_index?: number;
+  explanation?: string;
+};
+
+export type TriviaSetApi = {
+  id: string;
+  title: string;
+  questions: TriviaQuestionApi[];
+  points?: number;
+  expires_at?: string | null;
+};
+
+export type TriviaLeaderboardRow = {
+  display_name?: string;
+  score?: number;
+  rank?: number;
+  completed_at?: string;
+};
+
+export type OrgConfigApi = {
+  tagline?: string;
+  mission?: string;
+  vision?: string;
+  values?: string[];
+  contact?: {
+    email?: string;
+    phone?: string;
+    whatsapp?: string;
+    address?: string;
+  };
+  seo?: {
+    title?: string;
+    description?: string;
+    keywords?: string[];
+    og_image?: string;
+    favicon?: string;
+  };
+  layout?: {
+    show_newsletter_signup?: boolean;
+    show_partner_carousel?: boolean;
+    footer_note?: string;
+  };
+  socials?: { platform: string; url: string; label?: string }[];
+  partners?: {
+    name: string;
+    logo_url?: string;
+    website_url?: string;
+    tier?: string;
+    description?: string;
+  }[];
+  updated_at?: string;
+};
+
+export type UserProfileApi = {
+  id: string;
+  email: string;
+  first_name?: string;
+  last_name?: string;
+  display_name?: string;
+  bio?: string;
+  avatar_url?: string;
+  profile_visibility?: string;
+  allow_discovery?: boolean;
+  show_email_publicly?: boolean;
+  event_toggles?: Record<string, boolean>;
+  digest_frequency?: string;
+};
+
+export type AuthLoginResponse = { access: string; refresh: string };
+export type AuthRegisterResponse = {
+  user: { id: string; email: string };
+  detail: string;
+};
+
+type RequestConfig = RequestInit & {
+  params?: Record<string, string>;
+  auth?: boolean;
+  credentials?: RequestCredentials;
+  _retry?: boolean;
+};
+
+export function getAccessToken(): string | null {
+  if (typeof window === "undefined") return null;
+  const sessionValue = window.sessionStorage.getItem(ACCESS_KEY);
+  if (sessionValue) return sessionValue;
+  const legacyValue = window.localStorage.getItem(ACCESS_KEY);
+  if (legacyValue) {
+    window.sessionStorage.setItem(ACCESS_KEY, legacyValue);
+    window.localStorage.removeItem(ACCESS_KEY);
+    window.localStorage.setItem(STORAGE_MODE_KEY, "hybrid");
+    logDebug("Auth", "Migrated access token to sessionStorage", {
+      token: sanitizeToken(legacyValue),
+    });
+    return legacyValue;
+  }
+  return null;
+}
+
+export function getRefreshToken(): string | null {
+  if (typeof window === "undefined") return null;
+  return window.localStorage.getItem(REFRESH_KEY);
+}
+
+export function getTokenStorageMode(): "hybrid" | "legacy" {
+  if (typeof window === "undefined") return "hybrid";
+  const mode = window.localStorage.getItem(STORAGE_MODE_KEY);
+  return mode === "legacy" ? "legacy" : "hybrid";
+}
+
+export function setAuthTokens(access: string, refresh?: string): void {
+  if (typeof window === "undefined") return;
+  window.sessionStorage.setItem(ACCESS_KEY, access);
+  window.localStorage.setItem(STORAGE_MODE_KEY, "hybrid");
+  if (refresh) window.localStorage.setItem(REFRESH_KEY, refresh);
+}
+
+export function clearAuthTokens(): void {
+  if (typeof window === "undefined") return;
+  window.sessionStorage.removeItem(ACCESS_KEY);
+  window.localStorage.removeItem(ACCESS_KEY);
+  window.localStorage.removeItem(REFRESH_KEY);
+  window.localStorage.removeItem(STORAGE_MODE_KEY);
+}
+
+export function isAuthenticated(): boolean {
+  return Boolean(getAccessToken());
+}
+
+async function refreshAccessToken(): Promise<string | null> {
+  const refresh = getRefreshToken();
+  if (!refresh) return null;
+  logDebug("Auth", "Refreshing access token", { refresh: sanitizeToken(refresh) });
+
+  const response = await fetch(buildApiUrl("/auth/token/refresh/"), {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify({ refresh }),
+  });
+
+  if (!response.ok) {
+    logDebug("Auth", "Refresh token rejected by API", { status: response.status });
+    clearAuthTokens();
+    return null;
+  }
+
+  const data = (await response.json()) as { access?: string };
+  if (data.access) {
+    setAuthTokens(data.access);
+    logDebug("Auth", "Access token refreshed", { access: sanitizeToken(data.access) });
+    return data.access;
+  }
+  logDebug("Auth", "Refresh response had no access token");
+  return null;
+}
+
+function defaultCredentials(
+  path: string,
+  method: string | undefined,
+  explicit?: RequestCredentials,
+): RequestCredentials | undefined {
+  if (explicit) return explicit;
+  if (path.includes("/engagement/surveys/") && method === "POST") return "include";
+  try {
+    const apiOrigin = new URL(buildApiUrl("/")).origin;
+    if (typeof window !== "undefined" && window.location.origin !== apiOrigin) {
+      return "omit";
+    }
+  } catch {
+    /* fall through */
+  }
+  return "same-origin";
+}
+
+export async function apiFetch<T = unknown>(
+  path: string,
+  config: RequestConfig = {},
+): Promise<T> {
+  const { params, auth = false, credentials, _retry, ...init } = config;
+  const headers = new Headers(init.headers);
+  if (!headers.has("Accept")) headers.set("Accept", "application/json");
+  if (init.body && !headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json");
+  }
+
+  const token = getAccessToken();
+  if (auth && token) headers.set("Authorization", `Bearer ${token}`);
+  else if (!auth && token && path.includes("/engagement/surveys/") && init.method === "POST") {
+    headers.set("Authorization", `Bearer ${token}`);
+  }
+
+  logDebug("API", "Request start", {
+    path,
+    method: init.method ?? "GET",
+    auth,
+    hasToken: Boolean(token),
+  });
+
+  let response: Response;
+  try {
+    response = await fetch(buildApiUrl(path, params), {
+      ...init,
+      headers,
+      credentials: defaultCredentials(path, init.method, credentials),
+    });
+  } catch (err) {
+    logDebug("API", "Request network error", {
+      path,
+      method: init.method ?? "GET",
+      message: networkErrorMessage(err),
+    });
+    throw new Error(networkErrorMessage(err));
+  }
+
+  if (response.status === 401 && auth && !_retry) {
+    logDebug("API", "401 received; attempting token refresh", { path });
+    const newAccess = await refreshAccessToken();
+    if (newAccess) {
+      return apiFetch<T>(path, { ...config, auth: true, _retry: true });
+    }
+  }
+
+  if (!response.ok) {
+    const payload = (await response.json().catch(() => ({}))) as ApiPayload;
+    const message = extractApiErrorMessage(
+      payload,
+      response.status === 429
+        ? "Too many requests. Please wait a moment and try again."
+        : `Request failed (${response.status}).`,
+    );
+    logDebug("API", "Request failed", {
+      path,
+      method: init.method ?? "GET",
+      status: response.status,
+      message,
+    });
+    throw new Error(message);
+  }
+
+  logDebug("API", "Request success", {
+    path,
+    method: init.method ?? "GET",
+    status: response.status,
+  });
+
+  if (response.status === 204) return {} as T;
+  return response.json() as Promise<T>;
+}
+
+export const citizenApi = {
+  getOrgConfig: () => apiFetch<OrgConfigApi>("/org/config/"),
+
+  register: (body: {
+    email: string;
+    password: string;
+    first_name?: string;
+    last_name?: string;
+  }) =>
+    apiFetch<AuthRegisterResponse>("/auth/register/", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+
+  verifyEmail: (token: string) =>
+    apiFetch<{ detail: string }>("/auth/verify/", {
+      method: "POST",
+      body: JSON.stringify({ token }),
+    }),
+
+  login: (email: string, password: string) =>
+    apiFetch<AuthLoginResponse>("/auth/login/", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    }),
+
+  logout: () => {
+    const refresh = getRefreshToken();
+    return apiFetch<{ detail?: string }>("/auth/logout/", {
+      method: "POST",
+      auth: true,
+      body: JSON.stringify({ refresh }),
+    });
+  },
+
+  requestPasswordReset: (email: string) =>
+    apiFetch<{ detail: string }>("/auth/password-reset/request/", {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    }),
+
+  confirmPasswordReset: (token: string, password: string) =>
+    apiFetch<{ detail: string }>("/auth/password-reset/confirm/", {
+      method: "POST",
+      body: JSON.stringify({ token, password }),
+    }),
+
+  acceptInvitation: (token: string) =>
+    apiFetch<{ status: string; detail?: string }>("/invitations/accept/", {
+      method: "POST",
+      body: JSON.stringify({ token }),
+    }),
+
+  getMe: () => apiFetch<UserProfileApi>("/users/me/", { auth: true }),
+  patchMe: (body: Partial<UserProfileApi>) =>
+    apiFetch<UserProfileApi>("/users/me/", {
+      method: "PATCH",
+      auth: true,
+      body: JSON.stringify(body),
+    }),
+
+  getPublicUser: (id: string) =>
+    apiFetch<Record<string, unknown>>(`/users/${id}/public/`),
+
+  subscribeNewsletter: (body: { email: string; name?: string; source?: string }) =>
+    apiFetch<{ detail?: string; status?: string }>("/newsletter/subscribe/", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+
+  getStories: () => apiFetch<ApiListResponse<Record<string, unknown>>>("/content/stories/"),
+  getArticles: () => apiFetch<ApiListResponse<Record<string, unknown>>>("/content/articles/"),
+  getArticle: (slug: string) =>
+    apiFetch<Record<string, unknown>>(`/content/articles/${slug}/`),
+  getKnowledge: () => apiFetch<ApiListResponse<Record<string, unknown>>>("/content/knowledge/"),
+  getKnowledgeEntry: (id: string) =>
+    apiFetch<Record<string, unknown>>(`/content/knowledge/${id}/`),
+  getEvents: () => apiFetch<ApiListResponse<Record<string, unknown>>>("/content/events/"),
+  getEvent: (id: string) => apiFetch<Record<string, unknown>>(`/content/events/${id}/`),
+
+  getSurveys: () => apiFetch<ApiListResponse<SurveyListItemApi>>("/engagement/surveys/"),
+  getSurvey: (id: string) => apiFetch<SurveyDetailApi>(`/engagement/surveys/${id}/`),
+  submitSurvey: (id: string, answers: Record<string, unknown>) =>
+    apiFetch<{ response_id: string }>(`/engagement/surveys/${id}/submit/`, {
+      method: "POST",
+      body: JSON.stringify({ answers }),
+      credentials: "include",
+    }),
+
+  getTriviaList: () => apiFetch<ApiListResponse<TriviaSetApi>>("/engagement/trivia/"),
+  getTrivia: (id: string) => apiFetch<TriviaSetApi>(`/engagement/trivia/${id}/`),
+  submitTriviaAttempt: (
+    id: string,
+    answers: Record<string, number>,
+    leaderboardOptIn = false,
+  ) =>
+    apiFetch<{ score: number; streak_count?: number; completed_at?: string }>(
+      `/engagement/trivia/${id}/attempt/`,
+      {
+        method: "POST",
+        auth: true,
+        body: JSON.stringify({ answers, leaderboard_opt_in: leaderboardOptIn }),
+      },
+    ),
+  getTriviaLeaderboard: (id: string) =>
+    apiFetch<{ results: TriviaLeaderboardRow[] }>(`/engagement/trivia/${id}/leaderboard/`),
+
+  getBookmarks: () =>
+    apiFetch<{ results: Record<string, unknown>[] }>("/engagement/bookmarks/", { auth: true }),
+  toggleBookmark: (content_type: string, content_id: string) =>
+    apiFetch<{ toggle: boolean; bookmarks: Record<string, unknown>[] }>(
+      "/engagement/bookmarks/",
+      {
+        method: "POST",
+        auth: true,
+        body: JSON.stringify({ content_type, content_id }),
+      },
+    ),
+
+  getNotifications: (status?: string) =>
+    apiFetch<ApiListResponse<Record<string, unknown>>>("/engagement/notifications/", {
+      auth: true,
+      params: status ? { status } : undefined,
+    }),
+
+  recordShare: (body: {
+    content_type: string;
+    content_id: string;
+    channel: string;
+    target_url?: string;
+  }) =>
+    apiFetch<Record<string, unknown>>("/engagement/share/", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+};
+
+export function wrapNotionContent(html: string): string {
+  const trimmed = html?.trim();
+  if (!trimmed) return "";
+  if (trimmed.includes("notion-content")) return trimmed;
+  return `<div class="notion-content prose dark:prose-invert max-w-none">${trimmed}</div>`;
+}

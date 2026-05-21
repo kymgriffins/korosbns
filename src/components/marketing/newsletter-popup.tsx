@@ -4,7 +4,8 @@ import { useEffect, useState, type FormEvent } from "react";
 import { X } from "lucide-react";
 import { toast } from "sonner";
 
-import { API_BASE_URL } from "@/lib/api-config";
+import { useOrg } from "@/contexts/org-context";
+import { citizenApi } from "@/lib/api-client";
 
 const NEWSLETTER_SEEN_KEY = "hasSeenNewsletterPopup";
 const SURVEY_HANDLED_KEY = "surveyPopupHandled";
@@ -12,12 +13,14 @@ const SURVEY_HANDLED_EVENT = "bns:survey-popup-handled";
 const NEWSLETTER_DELAY_MS = 12_000;
 
 export default function NewsletterPopup() {
+  const { showNewsletter } = useOrg();
   const [isOpen, setIsOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
 
   useEffect(() => {
+    if (!showNewsletter) return;
     const hasSeenPopup = sessionStorage.getItem(NEWSLETTER_SEEN_KEY);
     if (hasSeenPopup) return;
 
@@ -32,7 +35,10 @@ export default function NewsletterPopup() {
       }, NEWSLETTER_DELAY_MS);
     };
 
-    if (sessionStorage.getItem(SURVEY_HANDLED_KEY) === "true") {
+    if (
+      localStorage.getItem(SURVEY_HANDLED_KEY) === "true" ||
+      sessionStorage.getItem(SURVEY_HANDLED_KEY) === "true"
+    ) {
       startNewsletterTimer();
     } else {
       window.addEventListener(SURVEY_HANDLED_EVENT, startNewsletterTimer, { once: true });
@@ -42,7 +48,7 @@ export default function NewsletterPopup() {
       if (timer) clearTimeout(timer);
       window.removeEventListener(SURVEY_HANDLED_EVENT, startNewsletterTimer);
     };
-  }, []);
+  }, [showNewsletter]);
 
   const dismiss = () => {
     sessionStorage.setItem(NEWSLETTER_SEEN_KEY, "true");
@@ -55,37 +61,27 @@ export default function NewsletterPopup() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/newsletter/subscribe/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          first_name: email.split("@")[0],
-          source: "homepage_popup",
-        }),
+      const data = await citizenApi.subscribeNewsletter({
+        email,
+        name: email.split("@")[0],
+        source: "homepage_popup",
       });
-
-      const data = await response.json();
-      if (response.ok) {
-        setSubscribed(true);
-        setEmail("");
-        sessionStorage.setItem(NEWSLETTER_SEEN_KEY, "true");
-        if (data.status === "already_subscribed") {
-          toast.info("Already subscribed. Welcome back!");
-        } else {
-          toast.success("Newsletter subscription successful.");
-        }
+      setSubscribed(true);
+      setEmail("");
+      sessionStorage.setItem(NEWSLETTER_SEEN_KEY, "true");
+      if (data.status === "already_subscribed") {
+        toast.info("Already subscribed. Welcome back!");
       } else {
-        toast.error(data.message || "Subscription failed.");
+        toast.success("Newsletter subscription successful.");
       }
-    } catch {
-      toast.error("Network error. Please try again.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Subscription failed.");
     } finally {
       setLoading(false);
     }
   };
 
-  if (!isOpen) return null;
+  if (!showNewsletter || !isOpen) return null;
 
   return (
     <div className="fixed bottom-4 right-2 left-2 sm:right-4 sm:left-auto z-[200] w-auto sm:w-[92vw] sm:max-w-md">

@@ -1,33 +1,56 @@
 /**
  * Centralized API configuration.
  *
- * In production the env var NEXT_PUBLIC_API_BASE_URL should be set to
- * "https://bnske.budgetndiostory.org".  The fallback below guarantees that even
- * if the variable is missing, every fetch in the app targets the production
- * API rather than localhost.
+ * Browser:
+ * - localhost → "" (same-origin; Next.js rewrites to Django)
+ * - production/static host → absolute NEXT_PUBLIC_API_BASE_URL (CORS on API)
  *
- * For local development, create a `.env.local` file and set:
- *   NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8000
+ * Server (SSR, route handlers): absolute SERVER_API_BASE_URL.
  */
+
+import { env } from "@/env";
 
 const PRODUCTION_API = "https://bnske.budgetndiostory.org";
 
-const envUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-const isLocal = envUrl && (
-  envUrl.includes("localhost") || 
-  envUrl.includes("127.0.0.1") || 
-  envUrl.includes("0.0.0.0") ||
-  envUrl.includes("::1")
-);
+function normalizeBase(url: string | undefined): string {
+  const trimmed = (url ?? "").trim();
+  if (!trimmed) return PRODUCTION_API;
+  return trimmed.replace(/\/+$/, "");
+}
 
-const base = (
-  envUrl && !isLocal ? envUrl : PRODUCTION_API
-).replace(/\/+$/, "");
+/** Absolute API origin for server-side fetch (no trailing slash). */
+export const SERVER_API_BASE_URL = normalizeBase(env.NEXT_PUBLIC_API_BASE_URL);
 
-/** Base URL for the Django API, without a trailing slash.
- * In the browser (client-side), we use relative paths (empty string) to route through
- * the Next.js API proxy and bypass CORS restrictions.
+function isLocalBrowserHost(): boolean {
+  if (typeof window === "undefined" || !window.location) return false;
+  const host = window.location.hostname;
+  return host === "localhost";
+}
+
+function isLocalApiTarget(base: string): boolean {
+  try {
+    const host = new URL(base).hostname;
+    return host === "localhost" || host === "localhost";
+  } catch {
+    return false;
+  }
+}
+
+function browserApiBase(): string {
+  if (!isLocalBrowserHost()) return SERVER_API_BASE_URL;
+  // Next `trailingSlash: true` breaks POST/GET proxy loops on `/api/v1/*` — call Django directly.
+  if (isLocalApiTarget(SERVER_API_BASE_URL)) return SERVER_API_BASE_URL;
+  return "";
+}
+
+/**
+ * Base URL used in fetch calls.
+ * Browser on localhost: empty (rewrites). Browser on deployed static: direct API.
  */
-export const API_BASE_URL = typeof window !== "undefined" ? "" : base;
+export const API_BASE_URL =
+  typeof window !== "undefined" ? browserApiBase() : SERVER_API_BASE_URL;
 
-
+/** Rewrite/proxy target for next.config.ts */
+export function getApiProxyTarget(): string {
+  return normalizeBase(env.API_PROXY_TARGET ?? env.NEXT_PUBLIC_API_BASE_URL);
+}

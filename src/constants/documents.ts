@@ -201,7 +201,7 @@ export function transformRepositoryData(repositoryData: any): DocumentType[] {
 
     const years = parseYearsFromFolderName(folder.name);
     const normalizedFolderPath = normalizeFolderPath(folder.path || "");
-    
+
     // Filter documents that belong to this folder
     const folderFiles = repositoryData.documents
       .filter((doc: any) => {
@@ -259,7 +259,7 @@ function getRepositoryFetchUrls(): string[] {
       (process.env.VERCEL_URL
         ? `https://${process.env.VERCEL_URL.replace(/\/+$/, "")}`
         : "") ||
-      "http://127.0.0.1:3000";
+      "http://localhost:3000";
     urls.push(`${siteBase}/api/docrepository/`);
   }
 

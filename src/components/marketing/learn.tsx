@@ -30,7 +30,24 @@ import { deepDiveCards } from "@/lib/learn-deep-dives";
 import Wrapper from "../global/wrapper";
 import { Button } from "../ui/button";
 
+import { resolveAppUrl } from "@/lib/api-url";
 import { API_BASE_URL } from "@/lib/api-config";
+import {
+  citizenApi,
+  getAccessToken,
+  type SurveyDetailApi,
+  type SurveyQuestionApi,
+} from "@/lib/api-client";
+import {
+  mapApiArticle,
+  mapApiStory,
+  mapStoriesJsonFallback,
+  triviaToBrowseCards,
+  triviaToQuizQuestions,
+  type HubArticle,
+  type HubStory,
+} from "@/lib/learn-content";
+import { fetchPublicOrgConfig } from "@/lib/org-config";
 
 
 const faqItems = [
@@ -115,21 +132,6 @@ const quizQuestions = [
     correct: 2,
     explanation:
       "KES 420 billion is allocated to county governments for devolved services like roads, health, water, and markets.",
-  },
-];
-
-const surveyQuestions = [
-  {
-    question: "How clear did this story make the 2026 budget for you?",
-    options: ["Very clear", "Somewhat clear", "Neutral", "Still confusing"],
-  },
-  {
-    question: "Which story format did you enjoy most?",
-    options: ["Let's Decode", "Citizen Street", "Future Lab", "I liked all of them"],
-  },
-  {
-    question: "What should we improve next?",
-    options: ["More visuals/emoji", "Simpler terms", "More local examples", "Shorter pages"],
   },
 ];
 
@@ -302,13 +304,23 @@ export default function Learn() {
   const [appState, setAppState] = useState<AppState>("hub");
   const [selectedStoryId, setSelectedStoryId] = useState<string>("");
   const [articleIndex, setArticleIndex] = useState(0);
-  const [stories, setStories] = useState<any[]>([]);
+  const [stories, setStories] = useState<HubStory[]>([]);
   const [storyFlowsState, setStoryFlowsState] = useState<Record<string, any[]>>({
     "budget-trivia": []
   });
-  const [articles, setArticles] = useState<any[]>([]);
+  const [articles, setArticles] = useState<HubArticle[]>([]);
   const [loadingContent, setLoadingContent] = useState<boolean>(true);
-  const [activeArticle, setActiveArticle] = useState<any | null>(null);
+  const [contentError, setContentError] = useState<string | null>(null);
+  const [activeArticle, setActiveArticle] = useState<HubArticle | null>(null);
+  const [activeSurvey, setActiveSurvey] = useState<SurveyDetailApi | null>(null);
+  const [surveyLoading, setSurveyLoading] = useState(false);
+  const [surveySubmitting, setSurveySubmitting] = useState(false);
+  const [orgTagline, setOrgTagline] = useState<string | null>(null);
+  const [activeTriviaId, setActiveTriviaId] = useState<string | null>(null);
+  const [apiQuizQuestions, setApiQuizQuestions] = useState<
+    Array<{ id: string; question: string; options: string[]; correct: number; explanation: string }>
+  >([]);
+  const [quizAnswersByQuestion, setQuizAnswersByQuestion] = useState<Record<string, number>>({});
   const [quizIndex, setQuizIndex] = useState(0);
   const [quizAnswer, setQuizAnswer] = useState<number | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
@@ -317,14 +329,14 @@ export default function Learn() {
   const [currentVideo, setCurrentVideo] = useState(0);
   const [triviaCards, setTriviaCards] = useState<any[]>([]);
   const [surveyIndex, setSurveyIndex] = useState(0);
-  const [surveyAnswers, setSurveyAnswers] = useState<Record<number, number>>({});
+  const [surveyAnswers, setSurveyAnswers] = useState<Record<string, unknown>>({});
   const [watchedStories, setWatchedStories] = useState<Record<string, boolean>>({});
   const [currentFlowCards, setCurrentFlowCards] = useState<any[]>([]);
   const [gamification, setGamification] = useState<GamificationState | null>(null);
   const [youtubeVideos, setYoutubeVideos] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch("/api/youtube")
+    fetch(resolveAppUrl("/api/youtube"))
       .then((res) => res.json())
       .then((data) => {
         if (data.videos) setYoutubeVideos(data.videos);
@@ -332,68 +344,47 @@ export default function Learn() {
       .catch((err) => console.error("Failed to load YouTube videos:", err));
   }, []);
 
+  useEffect(() => {
+    void fetchPublicOrgConfig().then((cfg) => {
+      if (cfg.tagline) setOrgTagline(cfg.tagline);
+    });
+  }, []);
+
   // Fetch stories and articles from BNSKE API
   useEffect(() => {
     const fetchContent = async () => {
       setLoadingContent(true);
       try {
-        const storiesResponse = await fetch(`${API_BASE_URL}/api/v1/content/stories/`);
-        if (storiesResponse.ok) {
-          const storiesData = await storiesResponse.json();
-          if (storiesData.results && storiesData.results.length > 0) {
-            const parsedStories: any[] = [];
-            const parsedFlows: Record<string, any[]> = {};
-
-            storiesData.results.forEach((item: any) => {
-              const storyId = item.slug || item.id;
-              let flowCards: any[] = [];
-              try {
-                if (item.body) {
-                  flowCards = typeof item.body === "string" ? JSON.parse(item.body) : item.body;
-                }
-              } catch (e) {
-                console.error(`Failed to parse flow body for story ${storyId}:`, e);
-              }
-
-              parsedStories.push({
-                id: storyId,
-                title: item.title,
-                subtitle: item.summary || item.metadata?.subtitle || "Civic explainer story",
-                duration: item.metadata?.duration || "2m 00s",
-                gradient: item.metadata?.gradient || "from-fuchsia-600 via-violet-600 to-indigo-600",
-                icon: item.metadata?.icon || "🔥",
-                action: item.metadata?.action || "Play Story"
-              });
-
-              parsedFlows[storyId] = flowCards;
-            });
-
-            setStories(parsedStories);
-            setStoryFlowsState({
-              ...parsedFlows,
-              "budget-trivia": []
-            });
-          }
+        const storiesData = await citizenApi.getStories();
+        const results = storiesData.results || [];
+        if (results.length > 0) {
+          const parsedStories: HubStory[] = [];
+          const parsedFlows: Record<string, any[]> = {};
+          results.forEach((item) => {
+            const { story, flow } = mapApiStory(item);
+            parsedStories.push(story);
+            parsedFlows[story.id] = flow;
+          });
+          setStories(parsedStories);
+          setStoryFlowsState({ ...parsedFlows, "budget-trivia": [] });
+        } else if (process.env.NODE_ENV === "development") {
+          // Dev-only: static stories.json when API returns zero stories (not on network failure).
+          const fallback = await import("@/constants/stories.json").then((m) => m.default);
+          const { stories: fbStories, flows } = mapStoriesJsonFallback(fallback);
+          setStories(fbStories);
+          setStoryFlowsState(flows);
         }
       } catch (err) {
         console.error("Failed to fetch stories from API:", err);
+        const message =
+          err instanceof Error ? err.message : "Could not load stories from the API.";
+        setContentError(message);
       }
 
       try {
-        const articlesResponse = await fetch(`${API_BASE_URL}/api/v1/content/articles/`);
-        if (articlesResponse.ok) {
-          const articlesData = await articlesResponse.json();
-          if (articlesData.results && articlesData.results.length > 0) {
-            const parsedArticles = articlesData.results.map((item: any) => ({
-              id: item.slug || item.id,
-              title: item.title,
-              readTime: item.metadata?.readTime || `${Math.ceil((item.body?.length || 1000) / 1000) + 3} min read`,
-              snippet: item.summary || item.metadata?.snippet || "Explore this BNSKE budget analysis article.",
-              body: item.body || "",
-              body_html: item.body_html || ""
-            }));
-            setArticles(parsedArticles);
-          }
+        const articlesData = await citizenApi.getArticles();
+        if (articlesData.results?.length) {
+          setArticles(articlesData.results.map((item) => mapApiArticle(item)));
         }
       } catch (err) {
         console.error("Failed to fetch articles from API:", err);
@@ -402,47 +393,24 @@ export default function Learn() {
       }
     };
 
-    fetchContent();
+    void fetchContent();
   }, []);
 
-  // Fetch trivia from backend
   useEffect(() => {
     const fetchTrivia = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/trivia/`);
-        if (!response.ok) throw new Error("Failed to fetch trivia");
-        const data = await response.json();
-        
-        const mappedTrivia = data.map((t: any) => ({
-          id: `trivia-${t.id}`,
-          title: t.category_display || "Budget Trivia",
-          subtitle: `Year: ${t.year || "Historical"}`,
-          emoji: "❓",
-          bg: "from-green-700 via-emerald-700 to-teal-900",
-          content: t.question,
-          facts: [
-            `✅ Answer: ${t.answer}`,
-            `ℹ️ Context: ${t.context || "No extra info"}`
-          ]
-        }));
-
-        // Add a final card to the trivia cards
-        mappedTrivia.push({
-          id: "trivia-complete",
-          title: "Trivia Complete! 🏆",
-          subtitle: "You're a budget expert!",
-          emoji: "🥳",
-          bg: "from-amber-500 to-orange-500",
-          content: "You've gone through the historical budget trivia. Keep exploring to learn more about Kenya's fiscal history!",
-          prompt: true
-        });
-
-        setTriviaCards(mappedTrivia);
+        const data = await citizenApi.getTriviaList();
+        const sets = data.results || [];
+        if (sets.length) {
+          setActiveTriviaId(sets[0].id);
+          setApiQuizQuestions(triviaToQuizQuestions(sets[0]));
+          setTriviaCards(triviaToBrowseCards(sets));
+        }
       } catch (err) {
         console.error("Error fetching trivia:", err);
       }
     };
-    fetchTrivia();
+    void fetchTrivia();
   }, []);
 
   const getGamificationId = () => {
@@ -456,7 +424,7 @@ export default function Learn() {
 
   const gamificationFetch = async (path: string, init?: RequestInit) => {
     const identifier = getGamificationId();
-    return fetch(`${API_BASE_URL}${path}`, {
+    return fetch(resolveAppUrl(path), {
       ...init,
       headers: {
         "Content-Type": "application/json",
@@ -623,34 +591,92 @@ export default function Learn() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [appState]);
 
+  const effectiveQuizQuestions =
+    apiQuizQuestions.length > 0
+      ? apiQuizQuestions
+      : quizQuestions.map((q, i) => ({
+          id: `local-${i}`,
+          question: q.question,
+          options: q.options,
+          correct: q.correct,
+          explanation: q.explanation,
+        }));
+
+  const loadActiveSurvey = async () => {
+    setSurveyLoading(true);
+    try {
+      const list = await citizenApi.getSurveys();
+      const first = list.results?.[0];
+      if (!first) {
+        toast.error("No active survey is available right now.");
+        return;
+      }
+      const detail = await citizenApi.getSurvey(first.id);
+      if (!detail.questions?.length) {
+        toast.error("This survey has no questions yet.");
+        return;
+      }
+      setActiveSurvey(detail);
+      setSurveyIndex(0);
+      setSurveyAnswers({});
+      setAppState("survey");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not load survey");
+    } finally {
+      setSurveyLoading(false);
+    }
+  };
+
+  const submitSurveyResponses = async () => {
+    if (!activeSurvey) return;
+    setSurveySubmitting(true);
+    try {
+      await citizenApi.submitSurvey(activeSurvey.id, surveyAnswers);
+      setAppState("survey-complete");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Survey submission failed");
+    } finally {
+      setSurveySubmitting(false);
+    }
+  };
+
   const startQuiz = () => {
     setAppState("quiz");
     setQuizIndex(0);
     setQuizScore(0);
     setQuizAnswer(null);
     setShowFeedback(false);
+    setQuizAnswersByQuestion({});
   };
 
   const handleQuizAnswer = (idx: number) => {
+    const q = effectiveQuizQuestions[quizIndex];
+    if (!q) return;
     setQuizAnswer(idx);
     setShowFeedback(true);
-    if (idx === quizQuestions[quizIndex].correct) {
+    setQuizAnswersByQuestion((prev) => ({ ...prev, [q.id]: idx }));
+    if (idx === q.correct) {
       setQuizScore((s) => s + 1);
     }
   };
 
   const handleNextQuestion = () => {
-    if (quizIndex < quizQuestions.length - 1) {
+    if (quizIndex < effectiveQuizQuestions.length - 1) {
       setQuizIndex((i) => i + 1);
       setQuizAnswer(null);
       setShowFeedback(false);
     } else {
+      if (activeTriviaId && getAccessToken()) {
+        void citizenApi
+          .submitTriviaAttempt(activeTriviaId, quizAnswersByQuestion)
+          .catch((err) => console.error("Trivia attempt failed:", err));
+      }
       void awardPoints({
         eventType: "quiz_complete",
         points: 20,
         objectId: selectedStoryId,
         idempotencyKey: `quiz_complete:${selectedStoryId}:${new Date().toISOString().slice(0, 10)}`,
-        metadata: { score: quizScore, total: quizQuestions.length },
+        metadata: { score: quizScore, total: effectiveQuizQuestions.length },
       });
       setAppState("complete");
     }
@@ -687,8 +713,9 @@ export default function Learn() {
     };
   };
 
-  const resultTitle = getTitle(quizScore, quizQuestions.length);
-  const finalPct = Math.round((quizScore / quizQuestions.length) * 100);
+  const resultTitle = getTitle(quizScore, effectiveQuizQuestions.length);
+  const finalPct = Math.round((quizScore / effectiveQuizQuestions.length) * 100);
+  const surveyQuestionList = activeSurvey?.questions ?? [];
   const surveyCompletedCount = Object.keys(surveyAnswers).length;
 
   if (appState === "complete") {
@@ -741,7 +768,7 @@ export default function Learn() {
 
           <div className="p-6 rounded-2xl bg-muted/30 border border-border backdrop-blur-sm mb-6">
             <div className="text-5xl font-bold text-foreground mb-2">
-              {quizScore}/{quizQuestions.length}
+              {quizScore}/{effectiveQuizQuestions.length}
             </div>
             <p className="text-sm text-foreground/50">questions correct</p>
             <div className="mt-4 h-3 bg-white/10 rounded-full overflow-hidden">
@@ -771,8 +798,8 @@ export default function Learn() {
   }
 
   if (appState === "quiz") {
-    const q = quizQuestions[quizIndex];
-    const progress = ((quizIndex + 1) / quizQuestions.length) * 100;
+    const q = effectiveQuizQuestions[quizIndex];
+    const progress = ((quizIndex + 1) / effectiveQuizQuestions.length) * 100;
 
     return (
       <section className="fixed inset-0 z-[100] bg-gradient-to-br from-purple-900 via-indigo-900 to-black flex flex-col overflow-hidden">
@@ -795,7 +822,7 @@ export default function Learn() {
               />
             </div>
             <div className="ml-2 px-2 py-1 rounded-full bg-white/20 text-xs font-medium text-white">
-              {quizIndex + 1}/{quizQuestions.length}
+              {quizIndex + 1}/{effectiveQuizQuestions.length}
             </div>
           </div>
           <button
@@ -929,7 +956,7 @@ export default function Learn() {
             Thanks for the feedback. This helps us improve future stories.
           </p>
           <div className="text-sm text-white/80 mb-6">
-            Responses submitted: {surveyCompletedCount}/{surveyQuestions.length}
+            Responses submitted: {surveyCompletedCount}/{surveyQuestionList.length}
           </div>
           <Button
             className="hidden md:inline-flex w-full h-11 bg-white text-gray-900 hover:bg-white/90"
@@ -946,10 +973,120 @@ export default function Learn() {
     );
   }
 
-  if (appState === "survey") {
-    const currentSurvey = surveyQuestions[surveyIndex];
-    const progress = ((surveyIndex + 1) / surveyQuestions.length) * 100;
-    const selected = surveyAnswers[surveyIndex];
+  if (appState === "survey" && activeSurvey) {
+    const surveyQuestionList = [...activeSurvey.questions].sort((a, b) => a.order - b.order);
+    const currentSurvey = surveyQuestionList[surveyIndex];
+    const progress = ((surveyIndex + 1) / surveyQuestionList.length) * 100;
+    const selected = currentSurvey ? surveyAnswers[currentSurvey.id] : undefined;
+
+    const setAnswer = (value: unknown) => {
+      if (!currentSurvey) return;
+      setSurveyAnswers((prev) => ({ ...prev, [currentSurvey.id]: value }));
+    };
+
+    const renderSurveyInput = (question: SurveyQuestionApi) => {
+      if (question.type === "text") {
+        return (
+          <textarea
+            value={typeof selected === "string" ? selected : ""}
+            onChange={(e) => setAnswer(e.target.value)}
+            className="w-full min-h-[100px] rounded-xl border border-white/20 bg-white/5 p-3 text-sm text-white"
+            placeholder="Your answer..."
+          />
+        );
+      }
+      if (question.type === "boolean") {
+        return (
+          <div className="grid grid-cols-2 gap-3">
+            {[true, false].map((val) => (
+              <button
+                key={String(val)}
+                type="button"
+                onClick={() => setAnswer(val)}
+                className={cn(
+                  "p-3 rounded-xl text-left border transition-colors",
+                  selected === val
+                    ? "border-cyan-300 bg-cyan-400/20 text-white"
+                    : "border-white/20 bg-white/5 text-white/90 hover:bg-white/10",
+                )}
+              >
+                {val ? "Yes" : "No"}
+              </button>
+            ))}
+          </div>
+        );
+      }
+      if (question.type === "rating") {
+        return (
+          <div className="flex flex-wrap gap-2 justify-center">
+            {[1, 2, 3, 4, 5].map((rating) => (
+              <button
+                key={rating}
+                type="button"
+                onClick={() => setAnswer(rating)}
+                className={cn(
+                  "size-11 rounded-full border font-semibold transition-colors",
+                  selected === rating
+                    ? "border-cyan-300 bg-cyan-400/20 text-white"
+                    : "border-white/20 bg-white/5 text-white/90",
+                )}
+              >
+                {rating}
+              </button>
+            ))}
+          </div>
+        );
+      }
+      if (question.type === "multiple") {
+        const picked = Array.isArray(selected) ? (selected as string[]) : [];
+        return (
+          <div className="space-y-3">
+            {(question.choices || []).map((option) => {
+              const isOn = picked.includes(option);
+              return (
+                <button
+                  key={option}
+                  type="button"
+                  onClick={() => {
+                    const next = isOn
+                      ? picked.filter((v) => v !== option)
+                      : [...picked, option];
+                    setAnswer(next);
+                  }}
+                  className={cn(
+                    "w-full p-3 rounded-xl text-left border transition-colors",
+                    isOn
+                      ? "border-cyan-300 bg-cyan-400/20 text-white"
+                      : "border-white/20 bg-white/5 text-white/90 hover:bg-white/10",
+                  )}
+                >
+                  {option}
+                </button>
+              );
+            })}
+          </div>
+        );
+      }
+      return (
+        <div className="space-y-3">
+          {(question.choices || []).map((option) => (
+            <button
+              key={option}
+              type="button"
+              onClick={() => setAnswer(option)}
+              className={cn(
+                "w-full p-3 rounded-xl text-left border transition-colors",
+                selected === option
+                  ? "border-cyan-300 bg-cyan-400/20 text-white"
+                  : "border-white/20 bg-white/5 text-white/90 hover:bg-white/10",
+              )}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+      );
+    };
 
     return (
       <section className="fixed inset-0 z-[100] bg-gradient-to-br from-slate-900 via-indigo-900 to-black flex flex-col overflow-hidden">
@@ -963,7 +1100,7 @@ export default function Learn() {
             />
           </div>
           <div className="ml-3 px-2 py-1 rounded-full bg-white/20 text-xs font-medium text-white">
-            {surveyIndex + 1}/{surveyQuestions.length}
+            {surveyIndex + 1}/{surveyQuestionList.length}
           </div>
           <button
             onClick={() => setAppState("hub")}
@@ -985,7 +1122,7 @@ export default function Learn() {
             <div className="text-xs uppercase tracking-wider text-cyan-300 font-semibold mb-2">
               Story Survey
             </div>
-            <h3 className="text-xl font-bold text-white mb-4">{currentSurvey.question}</h3>
+            <h3 className="text-xl font-bold text-white mb-4">{currentSurvey?.text}</h3>
             <div className="mb-6 flex justify-center">
               <Image
                 src="/images/survey/bnssurvey1.jpeg"
@@ -995,27 +1132,7 @@ export default function Learn() {
                 className="rounded-lg object-contain max-h-32"
               />
             </div>
-            <div className="space-y-3">
-              {currentSurvey.options.map((option, idx) => (
-                <button
-                  key={option}
-                  onClick={() =>
-                    setSurveyAnswers((prev) => ({
-                      ...prev,
-                      [surveyIndex]: idx,
-                    }))
-                  }
-                  className={cn(
-                    "w-full p-3 rounded-xl text-left border transition-colors",
-                    selected === idx
-                      ? "border-cyan-300 bg-cyan-400/20 text-white"
-                      : "border-white/20 bg-white/5 text-white/90 hover:bg-white/10",
-                  )}
-                >
-                  {option}
-                </button>
-              ))}
-            </div>
+            {currentSurvey && renderSurveyInput(currentSurvey)}
           </motion.div>
         </div>
 
@@ -1031,16 +1148,20 @@ export default function Learn() {
           </Button>
           <Button
             className="h-11 bg-white text-gray-900 hover:bg-white/90 disabled:opacity-40"
-            disabled={selected === undefined}
+            disabled={
+              selected === undefined ||
+              (Array.isArray(selected) && selected.length === 0 && currentSurvey?.is_required) ||
+              surveySubmitting
+            }
             onClick={() => {
-              if (surveyIndex < surveyQuestions.length - 1) {
+              if (surveyIndex < surveyQuestionList.length - 1) {
                 setSurveyIndex((v) => v + 1);
               } else {
-                setAppState("survey-complete");
+                void submitSurveyResponses();
               }
             }}
           >
-            {surveyIndex < surveyQuestions.length - 1 ? "Next" : "Finish Survey"}
+            {surveyIndex < surveyQuestionList.length - 1 ? "Next" : surveySubmitting ? "Submitting…" : "Finish Survey"}
             <ArrowRight className="size-4 ml-1" />
           </Button>
         </div>
@@ -1382,7 +1503,8 @@ export default function Learn() {
                     Learn budget stories faster, with visual explainers
                   </h1>
                   <p className="mt-2 max-w-2xl text-sm text-foreground/75 sm:text-base">
-                    Swipe story cards, open deep dives, and use practical citizen checklists to understand how public money decisions affect real services.
+                    {orgTagline ||
+                      "Swipe story cards, open deep dives, and use practical citizen checklists to understand how public money decisions affect real services."}
                   </p>
                   <div className="mt-4 flex flex-wrap items-center gap-2">
                     <span className="rounded-full border border-border bg-muted/30 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground/85">
@@ -1427,6 +1549,8 @@ export default function Learn() {
                         </div>
                       ))}
                     </div>
+                  ) : contentError && sortedHubStories.length === 0 ? (
+                    <p className="text-sm text-destructive px-2">{contentError}</p>
                   ) : (
                     sortedHubStories.map((story) => (
                       <motion.button
@@ -1751,13 +1875,10 @@ export default function Learn() {
                   <Button
                     size="lg"
                     className="h-11 px-6 rounded-xl text-sm font-medium"
-                    onClick={() => {
-                      setSurveyIndex(0);
-                      setSurveyAnswers({});
-                      setAppState("survey");
-                    }}
+                    disabled={surveyLoading}
+                    onClick={() => void loadActiveSurvey()}
                   >
-                    Start Survey <ArrowRight className="size-4 ml-2" />
+                    {surveyLoading ? "Loading…" : "Start Survey"} <ArrowRight className="size-4 ml-2" />
                   </Button>
                 </div>
               </div>
@@ -1908,7 +2029,7 @@ export default function Learn() {
               <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4 [scrollbar-width:thin]">
                 {activeArticle.body_html ? (
                   <div
-                    className="prose prose-sm prose-invert max-w-none text-foreground/85 space-y-4"
+                    className="notion-content prose dark:prose-invert max-w-none text-foreground/85"
                     dangerouslySetInnerHTML={{ __html: activeArticle.body_html }}
                   />
                 ) : (
