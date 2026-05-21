@@ -99,6 +99,35 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+
+  async rewrites() {
+    return [
+      {
+        source: "/api/v1/:path*",
+        destination: "https://bnske.budgetndiostory.org/api/v1/:path*",
+      },
+      {
+        source: "/api/trivia/:path*",
+        destination: "https://bnske.budgetndiostory.org/api/trivia/:path*",
+      },
+      {
+        source: "/api/gamification/:path*",
+        destination: "https://bnske.budgetndiostory.org/api/gamification/:path*",
+      },
+      {
+        source: "/api/newsletter/:path*",
+        destination: "https://bnske.budgetndiostory.org/api/newsletter/:path*",
+      },
+      {
+        source: "/api/forex/:path*",
+        destination: "https://bnske.budgetndiostory.org/api/forex/:path*",
+      },
+      {
+        source: "/api/hub/:path*",
+        destination: "https://bnske.budgetndiostory.org/api/hub/:path*",
+      },
+    ];
+  },
 };
 
 export default nextConfig;

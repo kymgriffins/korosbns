@@ -2,7 +2,7 @@
  * Centralized API configuration.
  *
  * In production the env var NEXT_PUBLIC_API_BASE_URL should be set to
- * "https://api.budgetndiostory.org".  The fallback below guarantees that even
+ * "https://bnske.budgetndiostory.org".  The fallback below guarantees that even
  * if the variable is missing, every fetch in the app targets the production
  * API rather than localhost.
  *
@@ -10,11 +10,24 @@
  *   NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8000
  */
 
-const PRODUCTION_API = "https://api.budgetndiostory.org";
-const DEFAULT_LOCAL_API = "http://127.0.0.1:8000";
+const PRODUCTION_API = "https://bnske.budgetndiostory.org";
 
-/** Base URL for the Django API, without a trailing slash. */
-export const API_BASE_URL = (
-  process.env.NEXT_PUBLIC_API_BASE_URL ||
-  (process.env.NODE_ENV === "development" ? DEFAULT_LOCAL_API : PRODUCTION_API)
+const envUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+const isLocal = envUrl && (
+  envUrl.includes("localhost") || 
+  envUrl.includes("127.0.0.1") || 
+  envUrl.includes("0.0.0.0") ||
+  envUrl.includes("::1")
+);
+
+const base = (
+  envUrl && !isLocal ? envUrl : PRODUCTION_API
 ).replace(/\/+$/, "");
+
+/** Base URL for the Django API, without a trailing slash.
+ * In the browser (client-side), we use relative paths (empty string) to route through
+ * the Next.js API proxy and bypass CORS restrictions.
+ */
+export const API_BASE_URL = typeof window !== "undefined" ? "" : base;
+
+
