@@ -4,7 +4,7 @@ DATABASES = {
         'NAME': 'budgetnd_db',
         'USER': 'budgetnd_dev',
         'PASSWORD': 'budgetndiostory',
-        'HOST': '127.0.0.1',
+        'HOST': 'localhost',
         'PORT': '5432',
 
     }

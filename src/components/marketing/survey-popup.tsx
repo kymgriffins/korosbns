@@ -12,15 +12,15 @@ export default function SurveyPopup() {
     const [isOpen, setIsOpen] = useState(false);
 
     const markSurveyHandled = () => {
-        sessionStorage.setItem(SURVEY_SEEN_KEY, "true");
-        sessionStorage.setItem(SURVEY_HANDLED_KEY, "true");
+        localStorage.setItem(SURVEY_SEEN_KEY, "true");
+        localStorage.setItem(SURVEY_HANDLED_KEY, "true");
         window.dispatchEvent(new CustomEvent(SURVEY_HANDLED_EVENT));
     };
 
     useEffect(() => {
         // Show popup after a short delay
         const timer = setTimeout(() => {
-            const hasSeenPopup = sessionStorage.getItem(SURVEY_SEEN_KEY);
+            const hasSeenPopup = localStorage.getItem(SURVEY_SEEN_KEY);
             if (!hasSeenPopup) {
                 setIsOpen(true);
             }

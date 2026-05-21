@@ -1,33 +1,40 @@
 "use client";
 
 import { cn } from "@/utils";
-import { ArrowRightIcon, MenuIcon, XIcon } from "lucide-react";
+import { MenuIcon, XIcon } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState, useRef } from 'react';
-import { usePathname } from "next/navigation";
-import Icons from "../global/icons";
-import Wrapper from "../global/wrapper";
-import { Button } from "../ui/button";
+import { useEffect, useState } from 'react';
+import { Routes } from "@/constants";
 import MobileMenu from "./mobile-menu";
-import { NAV_LINKS, Routes } from "@/constants";
-import { motion } from "motion/react";
-import { useIsMobile } from "@/hooks";
+import { Button } from "../ui/button";
 import Image from "next/image";
-import { ThemeToggle } from "./theme-toggle";
+import { useClickOutside } from "@/hooks";
 
 const Navbar = () => {
-
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    const ref = useClickOutside(() => setIsOpen(false));
 
     useEffect(() => {
-        if (isOpen) {
+        const isMobileDevice = () => window.innerWidth < 1024;
+        
+        if (isOpen && isMobileDevice()) {
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = '';
         }
 
+        const handleResize = () => {
+            if (!isMobileDevice()) {
+                document.body.style.overflow = '';
+            } else if (isOpen) {
+                document.body.style.overflow = 'hidden';
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
         return () => {
             document.body.style.overflow = '';
+            window.removeEventListener('resize', handleResize);
         };
     }, [isOpen]);
 
@@ -37,12 +44,18 @@ const Navbar = () => {
             <header
                 className={cn(
                     "fixed top-4 inset-x-0 mx-auto max-w-6xl px-2 md:px-12 z-100 transition-all duration-300 ease-in-out",
-                    isOpen ? "h-[calc(100dvh-2rem)]" : "h-14 md:h-16"
+                    isOpen ? "h-[calc(100dvh-2rem)] lg:h-16" : "h-14 md:h-16"
                 )}
             >
-                <div className="backdrop-blur-xl rounded-xl lg:rounded-full border border-border h-full flex flex-col overflow-hidden relative bg-background/50">
+                <div 
+                    ref={ref}
+                    className={cn(
+                        "backdrop-blur-xl rounded-xl lg:rounded-full border border-border h-full flex flex-col relative bg-background/50 transition-all duration-300",
+                        isOpen ? "overflow-hidden lg:overflow-visible" : "overflow-hidden"
+                    )}
+                >
                     <div className="flex items-center justify-between w-full px-4 min-h-14 md:min-h-16 shrink-0 pb-1">
-                        <div className="flex items-center flex-1 lg:flex-none">
+                        <div className="flex items-center flex-1">
                             <Link href={Routes.Home} className="flex items-center gap-2 group">
                                 <Image 
                                     src="/logo.svg" 
@@ -54,83 +67,9 @@ const Navbar = () => {
                             </Link>
                         </div>
 
-                        <div className="lg:flex items-center hidden gap-4 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                            {NAV_LINKS.map((item, index) => (
-                                <Link
-                                    key={index}
-                                    href={item.href}
-                                    className="relative px-6 py-2.5 group"
-                                >
-                                    <motion.span
-                                        className="relative z-10 text-sm font-medium text-foreground/70 transition-colors group-hover:text-primary inline-block"
-                                        whileHover={{ 
-                                            y: -2,
-                                            scale: 1.02,
-                                            textShadow: "0 0 8px rgba(0, 85, 255, 0.4)"
-                                        }}
-                                        transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                                    >
-                                        {item.label}
-                                    </motion.span>
-                                    
-                                    {/* Animated Background Pill */}
-                                    <motion.div
-                                        layoutId="nav-pill-active"
-                                        className="absolute inset-0 bg-primary/5 rounded-full border border-primary/10 opacity-0 group-hover:opacity-100 -z-10"
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        whileHover={{ 
-                                            opacity: 1, 
-                                            scale: 1,
-                                            boxShadow: [
-                                                "0 0 10px rgba(0, 85, 255, 0.1)",
-                                                "0 0 20px rgba(0, 85, 255, 0.2)",
-                                                "0 0 10px rgba(0, 85, 255, 0.1)"
-                                            ]
-                                        }}
-                                        transition={{ 
-                                            boxShadow: { repeat: Infinity, duration: 2 },
-                                            opacity: { duration: 0.2 }
-                                        }}
-                                    />
-
-                                    {/* Shimmering 'Comet' Flare */}
-                                    <motion.div
-                                        className="absolute inset-0 rounded-full overflow-hidden opacity-0 group-hover:opacity-100 pointer-events-none"
-                                        initial={{ opacity: 0 }}
-                                        whileHover={{ opacity: 1 }}
-                                    >
-                                        <motion.div 
-                                            className="absolute inset-0 w-1/2 h-full bg-linear-to-r from-transparent via-primary/20 to-transparent -skew-x-12"
-                                            animate={{ 
-                                                x: ["-100%", "200%"],
-                                            }}
-                                            transition={{ 
-                                                repeat: Infinity, 
-                                                duration: 1.5, 
-                                                ease: "easeInOut",
-                                            }}
-                                        />
-                                    </motion.div>
-
-                                    {/* Bottom Animated Bar */}
-                                    <motion.div
-                                        className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-[1.5px] bg-primary rounded-full"
-                                        initial={{ width: 0 }}
-                                        whileHover={{ width: "40%" }}
-                                        transition={{ 
-                                            type: "spring", 
-                                            stiffness: 200, 
-                                            damping: 15 
-                                        }}
-                                    />
-                                </Link>
-                            ))}
-                        </div>
-
-                        <div className="flex items-center gap-2 lg:gap-3">
-                            <ThemeToggle />
+                        <div className="flex items-center gap-2 md:gap-3">
                             <Link href={Routes.JoinUs}>
-                                <Button variant="white" className="hidden lg:flex">
+                                <Button variant="white" size="sm" className="h-9 px-4 rounded-lg font-medium">
                                     Join us
                                 </Button>
                             </Link>
@@ -138,9 +77,10 @@ const Navbar = () => {
                                 size="icon-sm"
                                 variant="ghost"
                                 onClick={() => setIsOpen((prev) => !prev)}
-                                className="lg:hidden"
+                                className="h-9 w-9 rounded-lg"
+                                aria-label="Toggle menu"
                             >
-                                {isOpen ? <XIcon className="size-4 duration-300" /> : <MenuIcon className="size-4 duration-300" />}
+                                {isOpen ? <XIcon className="size-5 duration-300" /> : <MenuIcon className="size-5 duration-300" />}
                             </Button>
                         </div>
                     </div>

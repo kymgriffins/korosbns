@@ -6,18 +6,13 @@ import { Input } from "@/components/ui/input";
 import { footerLinks } from "@/constants";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState } from "react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
 
-import { API_BASE_URL } from "@/lib/api-config";
-import { PRIMARY_ORG_SLUG } from "@/constants/org";
-import {
-  type OrgSiteManifest,
-  footerBlurbFromManifest,
-  normalizeSocialLinksForFooter,
-  orgDisplayNameFromManifest,
-} from "@/lib/org-site-manifest";
+import { socialLinks as defaultSocialLinks } from "@/constants/links";
+import { useOrg } from "@/contexts/org-context";
+import { citizenApi } from "@/lib/api-client";
 
 function integrationIconAsset(icon: string): string {
   const key =
@@ -30,74 +25,47 @@ function integrationIconAsset(icon: string): string {
 }
 
 const Footer = () => {
+  const { config, showNewsletter } = useOrg();
   const [email, setEmail] = useState<string>("");
-  const [siteManifest, setSiteManifest] = useState<OrgSiteManifest | null>(null);
 
-  useEffect(() => {
-    let alive = true;
-    void fetch(`/api/public/site/${PRIMARY_ORG_SLUG}`, {
-      headers: { Accept: "application/json" },
-      cache: "no-store",
-    })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        if (alive && data && typeof data === "object") {
-          setSiteManifest(data as OrgSiteManifest);
-        }
-      })
-      .catch(() => undefined);
-    return () => {
-      alive = false;
-    };
-  }, []);
+  const displaySocial = useMemo(() => {
+    const api = config.socials?.filter((s) => s.url && s.platform);
+    if (api?.length) {
+      return api.map((s) => ({
+        label: s.label?.trim() || s.platform,
+        href: s.url,
+        icon: s.platform === "twitter" ? "x" : s.platform,
+      }));
+    }
+    return defaultSocialLinks;
+  }, [config.socials]);
 
-  const displaySocial = useMemo(
-    () => normalizeSocialLinksForFooter(siteManifest),
-    [siteManifest],
-  );
-  const footerBlurb = footerBlurbFromManifest(siteManifest);
-  const organizationTitle = orgDisplayNameFromManifest(siteManifest);
+  const footerBlurb =
+    config.layout?.footer_note ||
+    config.tagline ||
+    config.mission ||
+    "Budget Ndio Story — civic fiscal literacy for Kenya.";
+  const organizationTitle = config.seo?.title || "Budget Ndio Story";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
 
-    const payload = {
-      email,
-      first_name: email.split("@")[0],
-      source: "website_footer",
-    };
-
-    console.log("Newsletter subscribe (footer) payload:", payload);
-
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/newsletter/subscribe/`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        },
-      );
-      const data = await response.json();
-      console.log(
-        "Newsletter subscribe (footer) response:",
-        response.status,
-        data,
-      );
-      if (response.ok) {
-        if (data.status === "already_subscribed") {
-          toast.info("You're already subscribed! 🎉");
-        } else {
-          toast.success("Thanks for subscribing! 🎉");
-        }
-        setEmail("");
+      const data = await citizenApi.subscribeNewsletter({
+        email,
+        name: email.split("@")[0],
+        source: "website_footer",
+      });
+      if (data.status === "already_subscribed") {
+        toast.info("You're already subscribed! 🎉");
       } else {
-        toast.error(data.message || "Failed to subscribe");
+        toast.success("Thanks for subscribing! 🎉");
       }
+      setEmail("");
     } catch (error) {
-      console.error("Newsletter subscribe (footer) error:", error);
-      toast.error("Network error. Try again.");
+      const msg = error instanceof Error ? error.message : "Failed to subscribe";
+      toast.error(msg.includes("403") ? "Newsletter signup is unavailable." : msg);
     }
   };
 
@@ -122,26 +90,28 @@ const Footer = () => {
             </Link>
             <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">{footerBlurb}</p>
 
-            <form onSubmit={handleSubmit} className="mt-6 w-full max-w-sm">
-              <p className="text-sm font-medium mb-3">Subscribe to the Story</p>
-              <div className="flex gap-2">
-                <Input
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="flex-1 h-10 text-sm bg-foreground/5 border-foreground/10 focus-visible:ring-0 focus-visible:ring-transparent rounded-full px-4"
-                />
-                <Button
-                  type="submit"
-                  size="sm"
-                  className="h-10 px-6 rounded-full"
-                >
-                  Subscribe
-                </Button>
-              </div>
-            </form>
+            {showNewsletter && (
+              <form onSubmit={handleSubmit} className="mt-6 w-full max-w-sm">
+                <p className="text-sm font-medium mb-3">Subscribe to the Story</p>
+                <div className="flex gap-2">
+                  <Input
+                    type="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="flex-1 h-10 text-sm bg-foreground/5 border-foreground/10 focus-visible:ring-0 focus-visible:ring-transparent rounded-full px-4"
+                  />
+                  <Button
+                    type="submit"
+                    size="sm"
+                    className="h-10 px-6 rounded-full"
+                  >
+                    Subscribe
+                  </Button>
+                </div>
+              </form>
+            )}
           </div>
 
           {/* Product Links */}
@@ -199,8 +169,8 @@ const Footer = () => {
             <p>
               © {new Date().getFullYear()} {organizationTitle}. All rights reserved.
             </p>
-            {siteManifest?.legal_footer_note ? (
-              <p className="text-[11px] text-muted-foreground/90">{siteManifest.legal_footer_note}</p>
+            {config.layout?.footer_note ? (
+              <p className="text-[11px] text-muted-foreground/90">{config.layout.footer_note}</p>
             ) : null}
           </div>
 

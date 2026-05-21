@@ -13,9 +13,27 @@ export const Routes = {
     Integrations: "/#integrations",
     Membership: "/#membership",
 
-    Dashboard: "/admin/dashboard",
     Learn: "/learn",
     LearnDoc: (doc: string) => `/learn/${doc}`,
     Challenges: "/challenges",
     Gallery: "/gallery",
+
+    Surveys: "/surveys",
+    Survey: (id: string) => `/surveys/${id}`,
+    Trivia: "/trivia",
+    TriviaSet: (id: string) => `/trivia/${id}`,
+    Articles: "/articles",
+    Article: (slug: string) => `/articles/${slug}`,
+    Knowledge: "/knowledge",
+    KnowledgeEntry: (id: string) => `/knowledge/${id}`,
+    Events: "/events",
+    Event: (id: string) => `/events/${id}`,
+
+    Login: "/auth/login",
+    Register: "/auth/register",
+    Verify: "/auth/verify",
+    Reset: "/auth/reset",
+    Invite: "/invite",
+    Account: "/account",
+    AccountNotifications: "/account/notifications",
 } as const;
