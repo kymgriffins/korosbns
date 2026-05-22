@@ -1,5 +1,5 @@
 import { buildApiUrl, networkErrorMessage } from "@/lib/api-url";
-import { extractApiErrorMessage, type ApiPayload } from "@/lib/api-errors";
+import { ApiRequestError, extractApiErrorMessage, type ApiPayload } from "@/lib/api-errors";
 import { apiFetchInit } from "@/lib/fetch-policy";
 import { logDebug, sanitizeToken } from "@/lib/debug-logs";
 
@@ -295,7 +295,7 @@ export async function apiFetch<T = unknown>(
       status: response.status,
       message,
     });
-    throw new Error(message);
+    throw new ApiRequestError(message, response.status);
   }
 
   logDebug("API", "Request success", {
@@ -325,7 +325,12 @@ export const citizenApi = {
     const last = body.last_name?.trim();
     if (first) payload.first_name = first;
     if (last) payload.last_name = last;
-    return apiFetch<AuthRegisterResponse>("/auth/register/", {
+    const path = "/auth/register/";
+    logDebug("API", "Register request", {
+      url: buildApiUrl(path),
+      email: payload.email,
+    });
+    return apiFetch<AuthRegisterResponse>(path, {
       method: "POST",
       body: JSON.stringify(payload),
     });
@@ -397,10 +402,13 @@ export const citizenApi = {
     apiFetch<Record<string, unknown>>(`/users/${id}/public/`),
 
   subscribeNewsletter: (body: { email: string; name?: string; source?: string }) =>
-    apiFetch<{ detail?: string; status?: string }>("/newsletter/subscribe/", {
-      method: "POST",
-      body: JSON.stringify(body),
-    }),
+    apiFetch<{ detail?: string; id?: string; email?: string; subscribed?: boolean }>(
+      "/newsletter/subscribe/",
+      {
+        method: "POST",
+        body: JSON.stringify(body),
+      },
+    ),
 
   getStories: () => apiFetch<ApiListResponse<Record<string, unknown>>>("/content/stories/"),
   getArticles: () => apiFetch<ApiListResponse<Record<string, unknown>>>("/content/articles/"),

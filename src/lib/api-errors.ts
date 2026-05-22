@@ -1,5 +1,15 @@
 export type ApiPayload = Record<string, unknown>;
 
+export class ApiRequestError extends Error {
+  readonly status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = "ApiRequestError";
+    this.status = status;
+  }
+}
+
 export function extractApiErrorMessage(
   payload: ApiPayload,
   fallback = "An unexpected error occurred.",
