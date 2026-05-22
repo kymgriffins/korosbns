@@ -1,6 +1,6 @@
 import Background from "@/components/global/background";
 import Hero from "@/components/marketing/hero";
-import StoriesPromoMarquee from "@/components/marketing/stories-promo-marquee";
+import ArticlesPromoMarquee from "@/components/marketing/articles-promo-marquee";
 import Workflow from "@/components/marketing/workflow";
 import Capibilities from "@/components/marketing/capibilities";
 import Disconnect from "@/components/marketing/disconnect";
@@ -56,7 +56,7 @@ const HomePage = () => {
         <div className="w-full min-h-dvh pt-6 lg:pt-8">
             <Background />
             <Hero />
-            <StoriesPromoMarquee />
+            <ArticlesPromoMarquee />
             <UpcomingProjects />
             <Disconnect />
             <Workflow />
