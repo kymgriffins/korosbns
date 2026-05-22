@@ -21,6 +21,12 @@ export type ArticleLearningContext = {
   lesson_title?: string;
   lesson_order?: number;
   section_label?: string;
+  section_index?: number;
+  section_total?: number;
+  prev_article_slug?: string;
+  prev_section_title?: string;
+  next_article_slug?: string;
+  next_section_title?: string;
 };
 
 export type HubArticle = {
@@ -95,6 +101,22 @@ export function mapApiArticle(item: Record<string, unknown>): HubArticle {
           typeof learningRaw.lesson_order === "number" ? learningRaw.lesson_order : undefined,
         section_label:
           learningRaw.section_label != null ? String(learningRaw.section_label) : undefined,
+        section_index:
+          typeof learningRaw.section_index === "number" ? learningRaw.section_index : undefined,
+        section_total:
+          typeof learningRaw.section_total === "number" ? learningRaw.section_total : undefined,
+        prev_article_slug:
+          learningRaw.prev_article_slug != null ? String(learningRaw.prev_article_slug) : undefined,
+        prev_section_title:
+          learningRaw.prev_section_title != null
+            ? String(learningRaw.prev_section_title)
+            : undefined,
+        next_article_slug:
+          learningRaw.next_article_slug != null ? String(learningRaw.next_article_slug) : undefined,
+        next_section_title:
+          learningRaw.next_section_title != null
+            ? String(learningRaw.next_section_title)
+            : undefined,
       }
     : undefined;
 

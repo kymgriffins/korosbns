@@ -145,19 +145,58 @@ export default async function ArticleReaderPage({ params }: Props) {
             </div>
           )}
 
-          <footer className="mt-16 border-t border-border pt-8">
-            <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
-              <div className="space-y-1">
-                <p className="text-sm font-semibold text-foreground">Keep reading</p>
-                <p className="text-xs text-muted-foreground">More budget explainers from the API.</p>
-              </div>
-              <Link
-                href={Routes.Articles}
-                className="inline-flex h-11 items-center gap-2 rounded-xl bg-foreground px-6 text-sm font-bold text-background transition-all hover:bg-foreground/90"
-              >
-                All articles <ArrowRight className="size-4" />
-              </Link>
+          <footer className="mt-16 border-t border-border pt-8 space-y-6">
+            {ctx?.section_total && ctx.section_total > 1 ? (
+              <p className="text-center text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Section {ctx.section_index ?? "—"} of {ctx.section_total} ·{" "}
+                {ctx.unit_abbreviation ?? ctx.unit_title}
+              </p>
+            ) : null}
+            <div className="grid gap-3 sm:grid-cols-2">
+              {ctx?.prev_article_slug ? (
+                <Link
+                  href={Routes.Article(ctx.prev_article_slug)}
+                  className="rounded-xl border border-border p-4 text-sm transition-colors hover:bg-muted/40"
+                >
+                  <span className="text-xs text-muted-foreground">Previous section</span>
+                  <p className="mt-1 font-semibold">{ctx.prev_section_title}</p>
+                </Link>
+              ) : (
+                <div />
+              )}
+              {ctx?.next_article_slug ? (
+                <Link
+                  href={Routes.Article(ctx.next_article_slug)}
+                  className="rounded-xl border border-border p-4 text-sm text-right transition-colors hover:bg-muted/40"
+                >
+                  <span className="text-xs text-muted-foreground">Next section</span>
+                  <p className="mt-1 font-semibold">{ctx.next_section_title}</p>
+                </Link>
+              ) : null}
             </div>
+            {ctx?.unit_slug && ctx.fiscal_year != null ? (
+              <div className="text-center">
+                <Link
+                  href={Routes.LearnUnitEdition(ctx.unit_slug, ctx.fiscal_year)}
+                  className="text-sm font-semibold text-primary hover:underline"
+                >
+                  Back to {ctx.edition_title ?? "edition"} overview
+                </Link>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
+                <div className="space-y-1">
+                  <p className="text-sm font-semibold text-foreground">Keep reading</p>
+                  <p className="text-xs text-muted-foreground">Standalone explainers only.</p>
+                </div>
+                <Link
+                  href={Routes.Learn}
+                  className="inline-flex h-11 items-center gap-2 rounded-xl bg-foreground px-6 text-sm font-bold text-background transition-all hover:bg-foreground/90"
+                >
+                  Learning modules <ArrowRight className="size-4" />
+                </Link>
+              </div>
+            )}
           </footer>
         </article>
       </div>

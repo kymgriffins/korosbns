@@ -36,8 +36,12 @@ export default async function ArticlesPage() {
         <div className="mb-8 space-y-2">
           <h1 className="text-3xl font-bold sm:text-4xl">Articles</h1>
           <p className="max-w-3xl text-sm text-muted-foreground sm:text-base">
-            Budget explainers and analysis — the same rich reading experience as our guided deep dives,
-            powered by the live content API.
+            Standalone budget explainers only. Chapters inside a learning module (e.g. BPS 2026 sections)
+            are read from{" "}
+            <Link href={Routes.Learn} className="text-primary hover:underline">
+              Learn → open a unit folder
+            </Link>
+            , not listed here.
           </p>
         </div>
 
@@ -49,7 +53,9 @@ export default async function ArticlesPage() {
 
         {!error && articles.length === 0 ? (
           <div className="rounded-2xl border border-border bg-muted/30 p-8 text-center">
-            <p className="text-muted-foreground">No published articles yet.</p>
+            <p className="text-muted-foreground">
+              No standalone articles yet. BPS and other course chapters live under Learn units.
+            </p>
             <Link href={Routes.Learn} className="mt-4 inline-block text-sm text-primary hover:underline">
               Browse the Learn hub →
             </Link>
