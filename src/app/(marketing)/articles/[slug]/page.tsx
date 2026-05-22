@@ -63,17 +63,36 @@ export default async function ArticleReaderPage({ params }: Props) {
 
   const placeholder = articlePlaceholderForSlug(slug);
   const heroSrc = article.heroImage || placeholder.src;
+  const ctx = article.learningContext;
+  const editionCrumb =
+    ctx?.unit_slug && ctx.fiscal_year != null
+      ? {
+          label: ctx.edition_title ?? `${ctx.unit_abbreviation ?? "Unit"} ${ctx.fiscal_year}`,
+          href: Routes.LearnUnitEdition(ctx.unit_slug, ctx.fiscal_year),
+        }
+      : null;
+  const breadcrumbItems = [
+    { label: "Home", href: Routes.Home },
+    { label: "Learn", href: Routes.Learn },
+    ...(ctx?.unit_slug
+      ? [
+          { label: "Units", href: Routes.LearnUnits },
+          {
+            label: ctx.unit_abbreviation ?? ctx.unit_title ?? "Unit",
+            href: editionCrumb?.href ?? Routes.LearnUnits,
+          },
+        ]
+      : [{ label: "Articles", href: Routes.Articles }]),
+    ...(editionCrumb ? [editionCrumb] : []),
+    {
+      label: ctx?.section_label ?? ctx?.lesson_title ?? article.title,
+    },
+  ];
 
   return (
     <section className="relative min-h-screen w-full overflow-hidden bg-background pt-4 sm:pt-6">
       <div className="mx-auto w-full max-w-3xl px-4 pb-24 sm:px-6">
-        <PageBreadcrumbs
-          items={[
-            { label: "Home", href: Routes.Home },
-            { label: "Articles", href: Routes.Articles },
-            { label: article.title },
-          ]}
-        />
+        <PageBreadcrumbs items={breadcrumbItems} />
 
         <div className="relative mb-8 h-48 overflow-hidden rounded-[24px] border border-border sm:h-56">
           <Image
