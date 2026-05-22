@@ -14,7 +14,30 @@ const learnDescription = metaDescription(
 export const metadata: Metadata = {
   title: "Learn Hub | Budget Ndio Story",
   description: learnDescription,
-  alternates: { canonical: "/learn" },
+  keywords: [
+    "Budget Ndio Story learn hub",
+    "Kenya budget explainer videos",
+    "youth budget literacy",
+    "public budget accountability Kenya",
+  ],
+  alternates: {
+    canonical: "/learn",
+  },
+  openGraph: {
+    title: "Learn Hub | Budget Ndio Story",
+    description:
+      "Articles, trivia, and explainers that make Kenya's budget understandable, actionable, and relevant for young people.",
+    url: "/learn",
+    type: "website",
+    images: ["/logo.svg"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Learn Hub | Budget Ndio Story",
+    description:
+      "Learn Kenya's budget through articles, trivia, and explainers designed for youth action.",
+    images: ["/logo.svg"],
+  },
 };
 
 async function LearnHubContent() {

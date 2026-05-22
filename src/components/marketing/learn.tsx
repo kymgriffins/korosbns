@@ -4,7 +4,6 @@ import { cn } from "@/utils";
 import Image from "next/image";
 import {
     ArrowRight,
-    BarChart3,
     BookOpen,
     CheckCircle,
     ChevronDown,
@@ -40,6 +39,7 @@ import {
   newsletterSubscribeErrorMessage,
   subscribeNewsletter,
 } from "@/lib/newsletter-subscribe";
+import { LEARN_STORIES_VISIBLE } from "@/constants/feature-flags";
 import {
   mapApiArticle,
   mapApiStory,
@@ -330,35 +330,36 @@ export default function Learn() {
     });
   }, []);
 
-  // Fetch stories and articles from BNSKE API
+  // Fetch stories (when enabled) and articles from BNSKE API
   useEffect(() => {
     const fetchContent = async () => {
       setLoadingContent(true);
-      try {
-        const storiesData = await citizenApi.getStories();
-        const results = storiesData.results || [];
-        if (results.length > 0) {
-          const parsedStories: HubStory[] = [];
-          const parsedFlows: Record<string, any[]> = {};
-          results.forEach((item) => {
-            const { story, flow } = mapApiStory(item);
-            parsedStories.push(story);
-            parsedFlows[story.id] = flow;
-          });
-          setStories(parsedStories);
-          setStoryFlowsState({ ...parsedFlows, "budget-trivia": [] });
-        } else if (process.env.NODE_ENV === "development") {
-          // Dev-only: static stories.json when API returns zero stories (not on network failure).
-          const fallback = await import("@/constants/stories.json").then((m) => m.default);
-          const { stories: fbStories, flows } = mapStoriesJsonFallback(fallback);
-          setStories(fbStories);
-          setStoryFlowsState(flows);
+      if (LEARN_STORIES_VISIBLE) {
+        try {
+          const storiesData = await citizenApi.getStories();
+          const results = storiesData.results || [];
+          if (results.length > 0) {
+            const parsedStories: HubStory[] = [];
+            const parsedFlows: Record<string, any[]> = {};
+            results.forEach((item) => {
+              const { story, flow } = mapApiStory(item);
+              parsedStories.push(story);
+              parsedFlows[story.id] = flow;
+            });
+            setStories(parsedStories);
+            setStoryFlowsState({ ...parsedFlows, "budget-trivia": [] });
+          } else if (process.env.NODE_ENV === "development") {
+            const fallback = await import("@/constants/stories.json").then((m) => m.default);
+            const { stories: fbStories, flows } = mapStoriesJsonFallback(fallback);
+            setStories(fbStories);
+            setStoryFlowsState(flows);
+          }
+        } catch (err) {
+          console.error("Failed to fetch stories from API:", err);
+          const message =
+            err instanceof Error ? err.message : "Could not load stories from the API.";
+          setContentError(message);
         }
-      } catch (err) {
-        console.error("Failed to fetch stories from API:", err);
-        const message =
-          err instanceof Error ? err.message : "Could not load stories from the API.";
-        setContentError(message);
       }
 
       try {
@@ -550,6 +551,7 @@ export default function Learn() {
   }, []);
 
   useEffect(() => {
+    if (!LEARN_STORIES_VISIBLE) return;
     const storyParam = searchParams.get("story");
     if (!storyParam) return;
 
@@ -1480,18 +1482,24 @@ export default function Learn() {
                   </span>
                 </div>
                   <h1 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">
-                    Learn budget stories faster, with visual explainers
+                    {LEARN_STORIES_VISIBLE
+                      ? "Learn budget stories faster, with visual explainers"
+                      : "Learn Kenya's budget with articles, trivia, and explainers"}
                   </h1>
                   <p className="mt-2 max-w-2xl text-sm text-foreground/75 sm:text-base">
                     {orgTagline ||
-                      "Swipe story cards, open deep dives, and use practical citizen checklists to understand how public money decisions affect real services."}
+                      (LEARN_STORIES_VISIBLE
+                        ? "Swipe story cards, open deep dives, and use practical citizen checklists to understand how public money decisions affect real services."
+                        : "Read articles, try budget trivia, and explore the document repository while we build transcript-powered story clips.")}
                   </p>
                   <div className="mt-4 flex flex-wrap items-center gap-2">
+                    {LEARN_STORIES_VISIBLE ? (
+                      <span className="rounded-full border border-border bg-muted/30 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground/85">
+                        4 story formats
+                      </span>
+                    ) : null}
                     <span className="rounded-full border border-border bg-muted/30 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground/85">
-                      4 story formats
-                    </span>
-                    <span className="rounded-full border border-white/20 bg-white/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-white/85">
-                      3 deep dives
+                      Articles
                     </span>
                     <span className="rounded-full border border-white/20 bg-white/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-white/85">
                       Quiz + survey
@@ -1501,83 +1509,85 @@ export default function Learn() {
               </div>
             </Container>
 
-            <Container animation="fadeUp" delay={0.04} className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold">Stories</h2>
-                <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground/55">
-                  Swipe horizontally
-                </span>
-              </div>
-              <div className="overflow-x-auto pb-2 [scrollbar-width:thin]">
-                <div className="flex gap-4 w-max pr-2">
-                  {loadingContent ? (
-                    <div className="flex gap-4">
-                      {[1, 2, 3].map((i) => (
-                        <div
-                          key={i}
-                          className="w-[290px] sm:w-[340px] h-[190px] rounded-[26px] border border-border p-5 bg-card/50 animate-pulse flex flex-col justify-between"
-                        >
-                          <div className="flex justify-between">
-                            <div className="w-10 h-10 rounded-xl bg-muted" />
-                            <div className="w-16 h-6 rounded-full bg-muted" />
-                          </div>
-                          <div className="space-y-2">
-                            <div className="h-6 w-3/4 bg-muted/40 rounded" />
-                            <div className="h-4 w-5/6 bg-muted/30 rounded" />
-                          </div>
-                          <div className="h-8 w-24 bg-muted/40 rounded-full" />
-                        </div>
-                      ))}
-                    </div>
-                  ) : contentError && sortedHubStories.length === 0 ? (
-                    <p className="text-sm text-destructive px-2">{contentError}</p>
-                  ) : (
-                    sortedHubStories.map((story) => (
-                      <motion.button
-                        key={story.id}
-                        whileHover={{ y: -3 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() => {
-                          handleStoryStart(story.id);
-                          router.push(`/learn?story=${story.id}`, { scroll: false });
-                        }}
-                        className={cn(
-                          "w-[290px] sm:w-[340px] text-left rounded-[26px] border border-border p-5 text-foreground bg-card",
-                        )}
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <span className="text-3xl">{story.icon}</span>
-                          <div className="flex flex-col items-end gap-1.5">
-                            <span
-                              className={cn(
-                                "text-[10px] font-semibold uppercase tracking-wider rounded-full px-2 py-1",
-                                watchedStories[story.id]
-                                  ? "bg-emerald-500/25 text-emerald-100"
-                                  : "bg-amber-500/25 text-amber-100",
-                              )}
-                            >
-                              {watchedStories[story.id] ? "Watched" : "New"}
-                            </span>
-                            <span className="text-[10px] font-semibold uppercase tracking-wider rounded-full bg-muted px-2 py-1">
-                              {story.duration}
-                            </span>
-                          </div>
-                        </div>
-                        <h3 className="text-lg font-bold mt-5 leading-tight">
-                          {story.title}
-                        </h3>
-                        <p className="text-sm text-white/80 mt-2">
-                          {story.subtitle}
-                        </p>
-                        <div className="mt-5 inline-flex items-center gap-2 text-xs font-semibold rounded-full bg-muted px-3 py-1.5">
-                          {story.action} <ArrowRight className="size-3.5" />
-                        </div>
-                      </motion.button>
-                    ))
-                  )}
+            {LEARN_STORIES_VISIBLE ? (
+              <Container animation="fadeUp" delay={0.04} className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-xl font-bold">Stories</h2>
+                  <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground/55">
+                    Swipe horizontally
+                  </span>
                 </div>
-              </div>
-            </Container>
+                <div className="overflow-x-auto pb-2 [scrollbar-width:thin]">
+                  <div className="flex gap-4 w-max pr-2">
+                    {loadingContent ? (
+                      <div className="flex gap-4">
+                        {[1, 2, 3].map((i) => (
+                          <div
+                            key={i}
+                            className="w-[290px] sm:w-[340px] h-[190px] rounded-[26px] border border-border p-5 bg-card/50 animate-pulse flex flex-col justify-between"
+                          >
+                            <div className="flex justify-between">
+                              <div className="w-10 h-10 rounded-xl bg-muted" />
+                              <div className="w-16 h-6 rounded-full bg-muted" />
+                            </div>
+                            <div className="space-y-2">
+                              <div className="h-6 w-3/4 bg-muted/40 rounded" />
+                              <div className="h-4 w-5/6 bg-muted/30 rounded" />
+                            </div>
+                            <div className="h-8 w-24 bg-muted/40 rounded-full" />
+                          </div>
+                        ))}
+                      </div>
+                    ) : contentError && sortedHubStories.length === 0 ? (
+                      <p className="text-sm text-destructive px-2">{contentError}</p>
+                    ) : (
+                      sortedHubStories.map((story) => (
+                        <motion.button
+                          key={story.id}
+                          whileHover={{ y: -3 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => {
+                            handleStoryStart(story.id);
+                            router.push(`/learn?story=${story.id}`, { scroll: false });
+                          }}
+                          className={cn(
+                            "w-[290px] sm:w-[340px] text-left rounded-[26px] border border-border p-5 text-foreground bg-card",
+                          )}
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <span className="text-3xl">{story.icon}</span>
+                            <div className="flex flex-col items-end gap-1.5">
+                              <span
+                                className={cn(
+                                  "text-[10px] font-semibold uppercase tracking-wider rounded-full px-2 py-1",
+                                  watchedStories[story.id]
+                                    ? "bg-emerald-500/25 text-emerald-100"
+                                    : "bg-amber-500/25 text-amber-100",
+                                )}
+                              >
+                                {watchedStories[story.id] ? "Watched" : "New"}
+                              </span>
+                              <span className="text-[10px] font-semibold uppercase tracking-wider rounded-full bg-muted px-2 py-1">
+                                {story.duration}
+                              </span>
+                            </div>
+                          </div>
+                          <h3 className="text-lg font-bold mt-5 leading-tight">
+                            {story.title}
+                          </h3>
+                          <p className="text-sm text-white/80 mt-2">
+                            {story.subtitle}
+                          </p>
+                          <div className="mt-5 inline-flex items-center gap-2 text-xs font-semibold rounded-full bg-muted px-3 py-1.5">
+                            {story.action} <ArrowRight className="size-3.5" />
+                          </div>
+                        </motion.button>
+                      ))
+                    )}
+                  </div>
+                </div>
+              </Container>
+            ) : null}
 
             {/* Articles Section */}
             <Container animation="fadeUp" delay={0.07} className="space-y-4 pt-4">
@@ -1688,26 +1698,6 @@ export default function Learn() {
                 </div>
               </Container>
             )}
-
-            <Container animation="fadeUp" delay={0.15} className="space-y-4">
-              <div className="space-y-1.5">
-                <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-foreground/80">
-                  <BarChart3 className="size-3.5" />
-                  Articles
-                </div>
-                <h2 className="text-xl font-bold">Budget explainers from the API</h2>
-                <p className="text-sm text-foreground/65">
-                  Long-form articles with the same rich reading layout as our guided deep dives — updated from the live content API.
-                </p>
-              </div>
-              <Link
-                href="/articles"
-                className="group inline-flex items-center gap-2 rounded-full border border-border bg-muted/30 px-4 py-2 text-sm font-semibold text-foreground transition-all hover:-translate-y-0.5 hover:bg-muted/50"
-              >
-                Browse all articles
-                <ArrowRight className="size-4" />
-              </Link>
-            </Container>
 
             <Container animation="fadeUp" delay={0.2} className="space-y-4">
               <h2 className="text-xl font-bold">Document Repository</h2>
