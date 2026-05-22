@@ -9,6 +9,7 @@ import MobileMenu from "./mobile-menu";
 import { Button } from "../ui/button";
 import Image from "next/image";
 import { useClickOutside } from "@/hooks";
+import { ThemeToggle } from "./theme-toggle";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -68,6 +69,7 @@ const Navbar = () => {
                         </div>
 
                         <div className="flex items-center gap-2 md:gap-3">
+                            <ThemeToggle />
                             <Link href={Routes.JoinUs}>
                                 <Button variant="white" size="sm" className="h-9 px-4 rounded-lg font-medium">
                                     Join us

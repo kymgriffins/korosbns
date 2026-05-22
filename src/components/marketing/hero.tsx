@@ -166,7 +166,7 @@ const Hero = () => {
                     transition={{ duration: 1, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
                     className={cn("mt-10 lg:mt-20 relative")}
                 >
-                    <div className="relative mx-auto max-w-6xl rounded-2xl md:rounded-[32px] border border-foreground/10 bg-foreground/5 backdrop-blur-lg p-2">
+                    <div className="relative z-30 mx-auto max-w-6xl rounded-2xl md:rounded-[32px] border border-foreground/10 bg-foreground/5 backdrop-blur-lg p-2">
                         <div className="absolute top-1/4 left-1/2 -z-10 w-4/5 h-1/3 -translate-x-1/2 -translate-y-1/2 bg-primary/20 blur-[10rem] opacity-50" />
 
                         <div className="rounded-lg md:rounded-[24px] border border-foreground/10 bg-background overflow-hidden">
