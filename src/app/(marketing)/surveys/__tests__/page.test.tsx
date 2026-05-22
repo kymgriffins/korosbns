@@ -35,7 +35,8 @@ describe("SurveysPage", () => {
     await waitFor(() => {
       expect(screen.getByText("National budget survey")).toBeInTheDocument();
     });
-    expect(screen.getByRole("link", { name: /take survey/i })).toHaveAttribute("href", "/surveys/s1");
+    const links = screen.getAllByRole("link", { name: /take survey/i });
+    expect(links.map((l) => l.getAttribute("href"))).toContain("/surveys/s1");
   });
 
   it("shows API error message on fetch failure", async () => {

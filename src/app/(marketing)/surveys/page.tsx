@@ -9,13 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Routes } from "@/constants/routes";
 import type { SurveyListItemApi } from "@/lib/api-client";
 import { contentLoadErrorMessage, loadSurveyList } from "@/lib/marketing-content";
-import { Loader2, X, ExternalLink } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 export default function SurveysPage() {
   const [surveys, setSurveys] = useState<SurveyListItemApi[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [activeIframeUrl, setActiveIframeUrl] = useState<string | null>(null);
 
   useEffect(() => {
     void loadSurveyList()
@@ -82,11 +81,14 @@ export default function SurveysPage() {
                 </div>
               </div>
               <div className="p-6 pt-2">
-                <Button
-                  onClick={() => setActiveIframeUrl("https://budgetndiostory.surveycto.com/collect/bns_nyouth_budget_v1")}
-                  className="w-full font-medium cursor-pointer"
-                >
-                  Take survey
+                <Button asChild className="w-full font-medium cursor-pointer">
+                  <a
+                    href="https://budgetndiostory.surveycto.com/collect/bns_nyouth_budget_v1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Take survey
+                  </a>
                 </Button>
               </div>
             </motion.div>
@@ -117,46 +119,6 @@ export default function SurveysPage() {
                 </Button>
               </motion.div>
             ))}
-          </div>
-        )}
-
-        {/* Modal Iframe Embed */}
-        {activeIframeUrl && (
-          <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 transition-all animate-in fade-in duration-300">
-            <div className="relative w-full max-w-5xl h-[85vh] bg-background border border-border rounded-2xl overflow-hidden shadow-2xl flex flex-col animate-in zoom-in-95 duration-300">
-              <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-muted/30">
-                <div>
-                  <h3 className="font-semibold text-base sm:text-lg">
-                    National Youth Budget Perception Pilot Survey
-                  </h3>
-                  <p className="text-xs text-muted-foreground">SurveyCTO secure external form</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button asChild variant="outline" size="sm" className="gap-2">
-                    <a href={activeIframeUrl} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="size-4" />
-                      <span className="hidden sm:inline">Open in new tab</span>
-                    </a>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setActiveIframeUrl(null)}
-                    className="rounded-full"
-                  >
-                    <X className="size-5" />
-                  </Button>
-                </div>
-              </div>
-              <div className="flex-1 w-full bg-white relative">
-                <iframe
-                  src={activeIframeUrl}
-                  className="w-full h-full border-none"
-                  title="SurveyCTO Form"
-                  allow="geolocation"
-                />
-              </div>
-            </div>
           </div>
         )}
       </div>
