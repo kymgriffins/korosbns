@@ -11,6 +11,18 @@ export type HubStory = {
   action: string;
 };
 
+export type ArticleLearningContext = {
+  unit_slug?: string;
+  unit_title?: string;
+  unit_abbreviation?: string;
+  edition_slug?: string;
+  edition_title?: string;
+  fiscal_year?: number | null;
+  lesson_title?: string;
+  lesson_order?: number;
+  section_label?: string;
+};
+
 export type HubArticle = {
   id: string;
   contentId?: string;
@@ -23,6 +35,7 @@ export type HubArticle = {
   sourceLabel?: string;
   updatedAt?: string;
   heroImage?: string | null;
+  learningContext?: ArticleLearningContext;
 };
 
 export type StoryFlowCard = Record<string, unknown>;
@@ -66,6 +79,25 @@ export function mapApiArticle(item: Record<string, unknown>): HubArticle {
     meta.image ||
     (typeof item.cover_image === "string" ? item.cover_image : null) ||
     null;
+  const learningRaw = item.learning_context as Record<string, unknown> | undefined;
+  const learningContext: ArticleLearningContext | undefined = learningRaw
+    ? {
+        unit_slug: learningRaw.unit_slug != null ? String(learningRaw.unit_slug) : undefined,
+        unit_title: learningRaw.unit_title != null ? String(learningRaw.unit_title) : undefined,
+        unit_abbreviation:
+          learningRaw.unit_abbreviation != null ? String(learningRaw.unit_abbreviation) : undefined,
+        edition_slug: learningRaw.edition_slug != null ? String(learningRaw.edition_slug) : undefined,
+        edition_title: learningRaw.edition_title != null ? String(learningRaw.edition_title) : undefined,
+        fiscal_year:
+          typeof learningRaw.fiscal_year === "number" ? learningRaw.fiscal_year : undefined,
+        lesson_title: learningRaw.lesson_title != null ? String(learningRaw.lesson_title) : undefined,
+        lesson_order:
+          typeof learningRaw.lesson_order === "number" ? learningRaw.lesson_order : undefined,
+        section_label:
+          learningRaw.section_label != null ? String(learningRaw.section_label) : undefined,
+      }
+    : undefined;
+
   return {
     id: String(item.slug || item.id),
     contentId: item.id != null ? String(item.id) : undefined,
@@ -83,6 +115,7 @@ export function mapApiArticle(item: Record<string, unknown>): HubArticle {
           ? item.published_at
           : undefined,
     heroImage: hero,
+    learningContext,
   };
 }
 

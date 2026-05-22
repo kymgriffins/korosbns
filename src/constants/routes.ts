@@ -15,6 +15,9 @@ export const Routes = {
 
     Learn: "/learn",
     LearnDoc: (doc: string) => `/learn/${doc}`,
+    LearnUnits: "/learn/units",
+    LearnUnitEdition: (unitSlug: string, year: number | string) =>
+        `/learn/units/${unitSlug}/${year}`,
     Challenges: "/challenges",
     Gallery: "/gallery",
 
