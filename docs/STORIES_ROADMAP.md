@@ -1,6 +1,6 @@
 # Stories & viral gem clips — team sidenote
 
-> **Status (ft-stories):** The **Stories** block on `/learn` is **hidden** with no public placeholder — citizens see articles/trivia/repository only. Team planning lives in this file, not in the UI. The **home page marquee** promotes **articles** (not stories) so links stay valid.
+> **Status (ft-stories):** The **Stories** block and the **“Browse all articles”** promo on `/learn` are **hidden** with no public placeholder. The **Articles & Insights** grid on Learn and `/articles` routes may still be live; home **marquee** promotes articles. Team planning lives in this file, not in the UI.
 
 ## Why we hid it
 

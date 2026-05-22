@@ -1700,26 +1700,6 @@ export default function Learn() {
               </Container>
             )}
 
-            <Container animation="fadeUp" delay={0.15} className="space-y-4">
-              <div className="space-y-1.5">
-                <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-foreground/80">
-                  <BarChart3 className="size-3.5" />
-                  Articles
-                </div>
-                <h2 className="text-xl font-bold">Budget explainers from the API</h2>
-                <p className="text-sm text-foreground/65">
-                  Long-form articles with the same rich reading layout as our guided deep dives — updated from the live content API.
-                </p>
-              </div>
-              <Link
-                href="/articles"
-                className="group inline-flex items-center gap-2 rounded-full border border-border bg-muted/30 px-4 py-2 text-sm font-semibold text-foreground transition-all hover:-translate-y-0.5 hover:bg-muted/50"
-              >
-                Browse all articles
-                <ArrowRight className="size-4" />
-              </Link>
-            </Container>
-
             <Container animation="fadeUp" delay={0.2} className="space-y-4">
               <h2 className="text-xl font-bold">Document Repository</h2>
               <Link
