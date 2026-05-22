@@ -9,12 +9,14 @@ import {
   HelpCircle,
   PlayCircle,
 } from "lucide-react";
+import { UnitDocumentsPanel } from "@/components/learn/unit-documents-panel";
 import { Routes } from "@/constants/routes";
 import {
   fetchLearningEditionByUnitYearServer,
   type LearningEditionDetail,
   type LearningLesson,
 } from "@/lib/learning-units";
+import { fetchUnitDocumentsServer } from "@/lib/unit-repository";
 
 type PageProps = {
   params: Promise<{ unitSlug: string; year: string }>;
@@ -64,7 +66,12 @@ export default async function LearnUnitEditionPage({ params }: PageProps) {
 
   if (!error && !course) notFound();
 
+  const unitAbbrev = course?.unit?.abbreviation;
+  const unitTitle = course?.unit?.title ?? "Learning unit";
+  const repo = await fetchUnitDocumentsServer(unitAbbrev, unitTitle);
+
   const lessons = course?.lessons ?? [];
+  const articleLessons = lessons.filter((l) => l.article_slug);
   const media = course?.media ?? [];
   const relatedDocs = course?.related_documents ?? [];
   const triviaLessons = lessons.filter((l) => l.trivia_id);
@@ -79,11 +86,11 @@ export default async function LearnUnitEditionPage({ params }: PageProps) {
 
       <div className="mx-auto w-full max-w-5xl px-4 pb-20 sm:px-6">
         <Link
-          href={Routes.LearnUnits}
+          href={Routes.Learn}
           className="mb-6 inline-flex items-center gap-2 text-sm text-foreground/60 transition-colors hover:text-primary"
         >
           <ArrowLeft className="size-4" />
-          All learning units
+          All learning modules
         </Link>
 
         {error ? (
@@ -118,7 +125,12 @@ export default async function LearnUnitEditionPage({ params }: PageProps) {
 
                   <div className="mt-4 rounded-2xl border border-white/10 bg-background/60 p-4">
                     <p className="text-xs font-semibold uppercase tracking-wider text-foreground/50">
-                      Chapters
+                      Sections in this edition
+                    </p>
+                    <p className="mt-1 text-xs text-foreground/55">
+                      One learning module — {articleLessons.length} readable section
+                      {articleLessons.length === 1 ? "" : "s"}. These do not appear as separate items on
+                      /articles.
                     </p>
                     {lessons.length === 0 ? (
                       <p className="mt-3 text-sm text-foreground/60">No lessons published for this edition yet.</p>
@@ -264,6 +276,12 @@ export default async function LearnUnitEditionPage({ params }: PageProps) {
                 </div>
               </div>
             ) : null}
+
+            <UnitDocumentsPanel
+              documents={repo.documents}
+              error={repo.error}
+              unitTitle={unitTitle}
+            />
 
             {relatedDocs.length > 0 ? (
               <div
