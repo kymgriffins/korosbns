@@ -4,7 +4,6 @@ import { cn } from "@/utils";
 import Image from "next/image";
 import {
     ArrowRight,
-    BarChart3,
     BookOpen,
     CheckCircle,
     ChevronDown,
