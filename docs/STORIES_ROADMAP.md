@@ -1,6 +1,6 @@
 # Stories & viral gem clips — team sidenote
 
-> **Status (ft-stories):** The **Stories** block on `/learn` is **hidden** until this pipeline is production-ready. The **home page marquee** promotes **articles** (not stories) so links stay valid. Articles, trivia, surveys, and document repository remain live.
+> **Status (ft-stories):** The **Stories** block and the **“Browse all articles”** promo on `/learn` are **hidden** with no public placeholder. The **Articles & Insights** grid on Learn and `/articles` routes may still be live; home **marquee** promotes articles. Team planning lives in this file, not in the UI.
 
 ## Why we hid it
 
@@ -65,6 +65,12 @@ The current Stories row is an MVP shell (API + swipe cards). We are replacing it
 | Vercel Next | $0 (hobby) |
 | OpenAI (≈500 videos × ~2K tokens) | $2–5 |
 | **Total** | **~$7–15** |
+
+## Where to find this later
+
+- **Repo path:** `korosbns/docs/STORIES_ROADMAP.md` (this file)
+- **Feature flag:** `src/constants/feature-flags.ts` (`LEARN_STORIES_VISIBLE`)
+- **Branch:** `ft-stories`
 
 ## Enabling the old Stories section (dev only)
 

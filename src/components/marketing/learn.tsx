@@ -4,7 +4,6 @@ import { cn } from "@/utils";
 import Image from "next/image";
 import {
     ArrowRight,
-    BarChart3,
     BookOpen,
     CheckCircle,
     ChevronDown,
@@ -1588,35 +1587,7 @@ export default function Learn() {
                   </div>
                 </div>
               </Container>
-            ) : (
-              <Container animation="fadeUp" delay={0.04} className="space-y-3">
-                <aside
-                  className="rounded-xl border border-dashed border-primary/35 bg-primary/5 px-4 py-4 sm:px-5"
-                  aria-label="Stories coming soon"
-                >
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-primary">
-                    Stories — in development
-                  </p>
-                  <p className="mt-2 text-sm text-foreground/75 leading-relaxed">
-                    We are building transcript-first &quot;gem clip&quot; highlights from budget and policy
-                    podcasts (timestamped YouTube embeds, no heavy video processing). This section stays
-                    hidden until that pipeline is ready for citizens.
-                  </p>
-                  {process.env.NODE_ENV === "development" ? (
-                    <p className="mt-3 text-xs text-muted-foreground border-t border-border/60 pt-3">
-                      <span className="font-semibold text-foreground/80">Team sidenote:</span> full
-                      architecture and sprint checklist in{" "}
-                      <code className="rounded bg-muted px-1 py-0.5">docs/STORIES_ROADMAP.md</code>.
-                      Preview legacy swipe cards with{" "}
-                      <code className="rounded bg-muted px-1 py-0.5">
-                        NEXT_PUBLIC_ENABLE_LEARN_STORIES=true
-                      </code>{" "}
-                      in <code className="rounded bg-muted px-1 py-0.5">.env.local</code>.
-                    </p>
-                  ) : null}
-                </aside>
-              </Container>
-            )}
+            ) : null}
 
             {/* Articles Section */}
             <Container animation="fadeUp" delay={0.07} className="space-y-4 pt-4">
@@ -1727,26 +1698,6 @@ export default function Learn() {
                 </div>
               </Container>
             )}
-
-            <Container animation="fadeUp" delay={0.15} className="space-y-4">
-              <div className="space-y-1.5">
-                <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-foreground/80">
-                  <BarChart3 className="size-3.5" />
-                  Articles
-                </div>
-                <h2 className="text-xl font-bold">Budget explainers from the API</h2>
-                <p className="text-sm text-foreground/65">
-                  Long-form articles with the same rich reading layout as our guided deep dives — updated from the live content API.
-                </p>
-              </div>
-              <Link
-                href="/articles"
-                className="group inline-flex items-center gap-2 rounded-full border border-border bg-muted/30 px-4 py-2 text-sm font-semibold text-foreground transition-all hover:-translate-y-0.5 hover:bg-muted/50"
-              >
-                Browse all articles
-                <ArrowRight className="size-4" />
-              </Link>
-            </Container>
 
             <Container animation="fadeUp" delay={0.2} className="space-y-4">
               <h2 className="text-xl font-bold">Document Repository</h2>
