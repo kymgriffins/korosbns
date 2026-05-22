@@ -39,4 +39,30 @@ if (!parsed.success) {
   throw new Error(`Invalid environment configuration: ${parsed.error.message}`);
 }
 
-export const env = parsed.data;
+const data = parsed.data;
+
+function assertApiVsSiteHosts() {
+  try {
+    const apiHost = new URL(data.NEXT_PUBLIC_API_BASE_URL).hostname;
+    const siteHost = new URL(data.NEXT_PUBLIC_SITE_URL).hostname;
+    if (apiHost === siteHost) {
+      throw new Error(
+        `NEXT_PUBLIC_API_BASE_URL must be the API host (e.g. bnske.budgetndiostory.org), not the citizen site (${siteHost}). Registration and login will fail.`,
+      );
+    }
+    if (!apiHost.includes("bnske") && !apiHost.includes("localhost")) {
+      console.warn(
+        `[env] NEXT_PUBLIC_API_BASE_URL host is "${apiHost}" — expected bnske.budgetndiostory.org or localhost for local dev.`,
+      );
+    }
+  } catch (err) {
+    if (err instanceof Error && err.message.includes("NEXT_PUBLIC_API_BASE_URL must")) {
+      throw err;
+    }
+    /* URL parse errors are already caught by zod */
+  }
+}
+
+assertApiVsSiteHosts();
+
+export const env = data;

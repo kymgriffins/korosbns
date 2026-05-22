@@ -30,13 +30,16 @@ import Wrapper from "../global/wrapper";
 import { Button } from "../ui/button";
 
 import { resolveAppUrl } from "@/lib/api-url";
-import { API_BASE_URL } from "@/lib/api-config";
 import {
   citizenApi,
   getAccessToken,
   type SurveyDetailApi,
   type SurveyQuestionApi,
 } from "@/lib/api-client";
+import {
+  newsletterSubscribeErrorMessage,
+  subscribeNewsletter,
+} from "@/lib/newsletter-subscribe";
 import {
   mapApiArticle,
   mapApiStory,
@@ -192,40 +195,20 @@ function NewsletterSignup() {
     if (!email) return;
     setLoading(true);
 
-    const payload = {
-      email,
-      first_name: email.split("@")[0],
-      source: "learn_page",
-    };
-
-    console.log("Newsletter subscribe (learn_page) payload:", payload);
-
     try {
-      const res = await fetch(
-        `${API_BASE_URL}/api/newsletter/subscribe/`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        },
-      );
-      const data = await res.json();
-      console.log(
-        "Newsletter subscribe (learn_page) response:",
-        res.status,
-        data,
-      );
-      if (
-        res.ok &&
-        (data.status === "success" || data.status === "already_subscribed")
-      ) {
-        setSubscribed(true);
+      const { alreadySubscribed } = await subscribeNewsletter({
+        email,
+        name: email.split("@")[0],
+        source: "learn_page",
+      });
+      setSubscribed(true);
+      if (alreadySubscribed) {
+        toast.info("You're already subscribed.");
       } else {
-        toast.error(data.message || "Failed to subscribe");
+        toast.success("You're subscribed. Check your inbox for updates.");
       }
     } catch (error) {
-      console.error("Newsletter subscribe (learn_page) error:", error);
-      toast.error("Network error");
+      toast.error(newsletterSubscribeErrorMessage(error));
     } finally {
       setLoading(false);
     }

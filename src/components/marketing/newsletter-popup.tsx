@@ -5,7 +5,10 @@ import { X } from "lucide-react";
 import { toast } from "sonner";
 
 import { useOrg } from "@/contexts/org-context";
-import { citizenApi } from "@/lib/api-client";
+import {
+  newsletterSubscribeErrorMessage,
+  subscribeNewsletter,
+} from "@/lib/newsletter-subscribe";
 
 const NEWSLETTER_SEEN_KEY = "hasSeenNewsletterPopup";
 const SURVEY_HANDLED_KEY = "surveyPopupHandled";
@@ -61,7 +64,7 @@ export default function NewsletterPopup() {
     setLoading(true);
 
     try {
-      const data = await citizenApi.subscribeNewsletter({
+      const { alreadySubscribed } = await subscribeNewsletter({
         email,
         name: email.split("@")[0],
         source: "homepage_popup",
@@ -69,13 +72,13 @@ export default function NewsletterPopup() {
       setSubscribed(true);
       setEmail("");
       sessionStorage.setItem(NEWSLETTER_SEEN_KEY, "true");
-      if (data.status === "already_subscribed") {
-        toast.info("Already subscribed. Welcome back!");
+      if (alreadySubscribed) {
+        toast.info("You're already subscribed.");
       } else {
-        toast.success("Newsletter subscription successful.");
+        toast.success("You're subscribed. Check your inbox for updates.");
       }
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Subscription failed.");
+      toast.error(newsletterSubscribeErrorMessage(err));
     } finally {
       setLoading(false);
     }

@@ -12,7 +12,10 @@ import { toast } from "sonner";
 
 import { socialLinks as defaultSocialLinks } from "@/constants/links";
 import { useOrg } from "@/contexts/org-context";
-import { citizenApi } from "@/lib/api-client";
+import {
+  newsletterSubscribeErrorMessage,
+  subscribeNewsletter,
+} from "@/lib/newsletter-subscribe";
 
 function integrationIconAsset(icon: string): string {
   const key =
@@ -52,20 +55,19 @@ const Footer = () => {
     if (!email) return;
 
     try {
-      const data = await citizenApi.subscribeNewsletter({
+      const { alreadySubscribed } = await subscribeNewsletter({
         email,
         name: email.split("@")[0],
         source: "website_footer",
       });
-      if (data.status === "already_subscribed") {
-        toast.info("You're already subscribed! 🎉");
+      if (alreadySubscribed) {
+        toast.info("You're already subscribed.");
       } else {
-        toast.success("Thanks for subscribing! 🎉");
+        toast.success("Thanks for subscribing!");
       }
       setEmail("");
     } catch (error) {
-      const msg = error instanceof Error ? error.message : "Failed to subscribe";
-      toast.error(msg.includes("403") ? "Newsletter signup is unavailable." : msg);
+      toast.error(newsletterSubscribeErrorMessage(error));
     }
   };
 

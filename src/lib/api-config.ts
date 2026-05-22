@@ -55,7 +55,7 @@ function browserApiBase(): string {
 
 /**
  * Base URL used in fetch calls.
- * Browser on localhost: empty (rewrites). Browser on deployed static: direct API.
+ * Browser on citizen site: empty (same-origin /api/v1 proxy). SSR: absolute API URL.
  */
 export const API_BASE_URL =
   typeof window !== "undefined" ? browserApiBase() : SERVER_API_BASE_URL;

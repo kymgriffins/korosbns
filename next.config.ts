@@ -150,7 +150,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/api/newsletter/:path*/",
-        destination: `${target}/api/newsletter/:path*/`,
+        destination: `${target}/api/v1/newsletter/:path*/`,
       },
       {
         source: "/api/forex/:path*/",
