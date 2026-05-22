@@ -4,7 +4,7 @@ import { metaDescription } from "@/utils/metadata";
 import { Suspense } from "react";
 
 const learnDescription = metaDescription(
-    "Explore Kenya's budget through Budget Ndio Story's learn hub: swipeable explainers and youth-friendly literacy built for civic engagement.",
+    "Explore Kenya's budget through Budget Ndio Story's learn hub: articles, trivia, surveys, and youth-friendly literacy built for civic engagement.",
 );
 
 export const metadata: Metadata = {
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     openGraph: {
         title: "Learn Hub | Budget Ndio Story",
         description:
-            "A story-first, swipeable learning journey that makes Kenya's budget understandable, actionable, and relevant for young people.",
+            "Articles, trivia, and explainers that make Kenya's budget understandable, actionable, and relevant for young people.",
         url: "/learn",
         type: "website",
         images: ["/logo.svg"],
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
         card: "summary_large_image",
         title: "Learn Hub | Budget Ndio Story",
         description:
-            "Learn Kenya's budget through enhanced social-style stories and explainers designed for youth action.",
+            "Learn Kenya's budget through articles, trivia, and explainers designed for youth action.",
         images: ["/logo.svg"],
     },
 };

@@ -50,13 +50,33 @@ vi.mock("@/lib/org-config", () => ({
   fetchPublicOrgConfig: vi.fn().mockResolvedValue({}),
 }));
 
+vi.mock("@/constants/feature-flags", () => ({
+  LEARN_STORIES_VISIBLE: true,
+}));
+
 vi.mock("@/lib/api-client", async (importOriginal) => {
   const mod = await importOriginal<typeof import("@/lib/api-client")>();
+  const { default: seed } = await import("@/constants/stories.json");
+  const { mapStoriesJsonFallback } = await import("@/lib/learn-content");
+  const { stories: seedStories, flows: seedFlows } = mapStoriesJsonFallback(seed);
+  const mockStories = seedStories.map((story) => ({
+    id: story.id,
+    slug: story.id,
+    title: story.title,
+    summary: story.subtitle,
+    metadata: {
+      duration: story.duration,
+      icon: story.icon,
+      gradient: story.gradient,
+      action: story.action,
+    },
+    body: JSON.stringify(seedFlows[story.id] || []),
+  }));
   return {
     ...mod,
     citizenApi: {
       ...mod.citizenApi,
-      getStories: vi.fn().mockResolvedValue({ results: apiStories }),
+      getStories: vi.fn().mockResolvedValue({ results: mockStories }),
       getArticles: vi.fn().mockResolvedValue({ results: [] }),
       getTriviaList: vi.fn().mockResolvedValue({ results: [] }),
     },
