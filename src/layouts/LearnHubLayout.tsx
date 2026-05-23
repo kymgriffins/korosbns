@@ -117,7 +117,7 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
 
       {/* 🖥️ Sidebar (Fixed Left, Desktop; Slide-out drawer on Mobile) */}
       <AnimatePresence>
-        {(sidebarOpen || window.innerWidth >= 1024) && (
+        {(sidebarOpen || (typeof window === "undefined" || window.innerWidth >= 1024)) && (
           <>
             {/* Backdrop overlay on mobile */}
             <motion.div
