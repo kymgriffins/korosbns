@@ -1,12 +1,11 @@
 import type { NextConfig } from "next";
-import { env } from "./src/env";
 
 const PRODUCTION_API = "https://bnske.budgetndiostory.org";
 
 function apiProxyTarget(): string {
   const raw =
-    env.API_PROXY_TARGET ??
-    env.NEXT_PUBLIC_API_BASE_URL ??
+    process.env.API_PROXY_TARGET ??
+    process.env.NEXT_PUBLIC_API_BASE_URL ??
     PRODUCTION_API;
   return raw.replace(/\/+$/, "");
 }
