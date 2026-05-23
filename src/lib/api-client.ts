@@ -29,6 +29,10 @@ export type SurveyListItemApi = {
   description?: string;
   allow_anonymous?: boolean;
   status?: string;
+  external_url?: string | null;
+  is_external?: boolean;
+  starts_at?: string | null;
+  ends_at?: string | null;
 };
 
 export type SurveyDetailApi = {
@@ -36,6 +40,8 @@ export type SurveyDetailApi = {
   title: string;
   description?: string;
   allow_anonymous: boolean;
+  external_url?: string | null;
+  is_external?: boolean;
   questions: SurveyQuestionApi[];
 };
 
@@ -409,6 +415,17 @@ export const citizenApi = {
         body: JSON.stringify(body),
       },
     ),
+
+  submitContact: (body: {
+    name: string;
+    email: string;
+    message: string;
+    source?: string;
+  }) =>
+    apiFetch<{ id?: string; detail?: string }>("/contact/", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
 
   getStories: () => apiFetch<ApiListResponse<Record<string, unknown>>>("/content/stories/"),
   getArticles: () => apiFetch<ApiListResponse<Record<string, unknown>>>("/content/articles/"),

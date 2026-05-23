@@ -3,11 +3,12 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { Loader2, ArrowLeft } from "lucide-react";
+import { ExternalLink, Loader2, ArrowLeft } from "lucide-react";
 import Wrapper from "@/components/global/wrapper";
 import { SurveyForm } from "@/components/citizen/survey-form";
 import { citizenApi, type SurveyDetailApi } from "@/lib/api-client";
 import { Routes } from "@/constants/routes";
+import { Button } from "@/ui/button";
 
 export default function SurveyDetailPage() {
   const params = useParams();
@@ -20,32 +21,54 @@ export default function SurveyDetailPage() {
     if (!id) return;
     void citizenApi
       .getSurvey(id)
-      .then(setSurvey)
+      .then((detail) => {
+        if (detail.is_external && detail.external_url) {
+          window.location.assign(detail.external_url);
+          return;
+        }
+        setSurvey(detail);
+      })
       .catch((err) => setError(err instanceof Error ? err.message : "Survey not found."))
       .finally(() => setLoading(false));
   }, [id]);
 
+  if (survey?.is_external && survey.external_url) {
+    return (
+      <Wrapper className="py-16">
+        <div className="mx-auto max-w-lg text-center">
+          <p className="mb-4 text-muted-foreground">Opening external survey…</p>
+          <Button asChild>
+            <a href={survey.external_url} target="_blank" rel="noopener noreferrer">
+              Continue to survey
+              <ExternalLink className="ml-2 size-4" aria-hidden />
+            </a>
+          </Button>
+        </div>
+      </Wrapper>
+    );
+  }
+
   return (
     <Wrapper className="py-16">
-      <div className="max-w-2xl mx-auto">
+      <div className="mx-auto max-w-2xl">
         <Link
           href={Routes.Surveys}
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-8"
+          className="mb-8 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
         >
-          <ArrowLeft className="size-4" />
+          <ArrowLeft className="size-4" aria-hidden />
           All surveys
         </Link>
         {loading && (
           <div className="flex justify-center py-16">
-            <Loader2 className="size-8 animate-spin" />
+            <Loader2 className="size-8 animate-spin" aria-hidden />
           </div>
         )}
         {error && <p className="text-destructive">{error}</p>}
         {survey && (
           <>
-            <h1 className="text-3xl font-bold mb-2">{survey.title}</h1>
+            <h1 className="mb-2 text-3xl font-bold">{survey.title}</h1>
             {survey.description ? (
-              <p className="text-muted-foreground mb-8">{survey.description}</p>
+              <p className="mb-8 text-muted-foreground">{survey.description}</p>
             ) : null}
             <SurveyForm survey={survey} />
           </>
