@@ -19,53 +19,11 @@ interface StoryCard {
 
 export const dynamicParams = true;
 export const revalidate = 3600; // ISR revalidate every hour
+export const fallback = 'blocking';
 
 export async function generateStaticParams() {
-  const slugs: { slug: string }[] = [];
-
-  // Fetch articles
-  try {
-    const articlesRes = await citizenApi.getArticles();
-    if (articlesRes && Array.isArray(articlesRes.results)) {
-      articlesRes.results.forEach((item: any) => {
-        if (item.slug || item.id) {
-          slugs.push({ slug: String(item.slug || item.id) });
-        }
-      });
-    }
-  } catch (err) {
-    console.error("Failed to fetch articles for static params", err);
-  }
-
-  // Fetch trivia
-  try {
-    const triviaRes = await citizenApi.getTriviaList();
-    if (triviaRes && Array.isArray(triviaRes.results)) {
-      triviaRes.results.forEach((item: any) => {
-        if (item.id) {
-          slugs.push({ slug: String(item.id) });
-        }
-      });
-    }
-  } catch (err) {
-    console.error("Failed to fetch trivia for static params", err);
-  }
-
-  // Fetch stories
-  try {
-    const storiesRes = await citizenApi.getStories();
-    if (storiesRes && Array.isArray(storiesRes.results)) {
-      storiesRes.results.forEach((item: any) => {
-        if (item.id) {
-          slugs.push({ slug: String(item.id) });
-        }
-      });
-    }
-  } catch (err) {
-    console.error("Failed to fetch stories for static params", err);
-  }
-
-  return slugs;
+  // Fetch from Django or return empty for fallback: 'blocking'
+  return []; 
 }
 
 export default async function UnifiedReaderPage(

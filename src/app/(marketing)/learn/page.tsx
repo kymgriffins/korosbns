@@ -7,6 +7,8 @@ import { fetchLearningUnitsServer } from "@/lib/learning-units";
 import { fetchPublicOrgConfig } from "@/lib/org-config";
 import { metaDescription } from "@/utils/metadata";
 
+export const revalidate = 3600; // Hourly ISR for Learn Hub index
+
 const learnDescription = metaDescription(
   "Explore Kenya's statutory budget documents as learning modules — units, fiscal-year editions, chapters, videos, and official files.",
 );
