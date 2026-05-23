@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { Loader2, Trophy } from "lucide-react";
 import Wrapper from "@/components/global/wrapper";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/ui/button";
 import { Routes } from "@/constants/routes";
 import { citizenApi, type TriviaSetApi } from "@/lib/api-client";
 

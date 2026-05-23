@@ -12,7 +12,7 @@ import type { MotionValue } from "motion";
 import Link from "next/link";
 import Container from "../global/container";
 import Wrapper from "../global/wrapper";
-import { Button } from "../ui/button";
+import { Button } from "@/ui/button";
 import { fetchDocumentsFromAPI, DocumentType } from "@/constants/documents";
 
 type LearnMode = 'video' | 'audio' | 'article' | 'story' | 'docs'

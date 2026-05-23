@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { BookOpen, X } from "lucide-react";
-import { Marquee } from "@/components/ui/marquee";
+import { Marquee } from "@/ui/marquee";
 import { Routes } from "@/constants/routes";
 import { buildApiUrl, resolveAppUrl } from "@/lib/api-url";
 import { mapApiArticle, type HubArticle } from "@/lib/learn-content";

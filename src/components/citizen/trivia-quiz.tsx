@@ -3,10 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/ui/button";
+import { Label } from "@/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/ui/radio-group";
+import { Checkbox } from "@/ui/checkbox";
 import { useAuth } from "@/contexts/auth-context";
 import { citizenApi, type TriviaSetApi } from "@/lib/api-client";
 

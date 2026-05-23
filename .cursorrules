@@ -1,0 +1,9 @@
+# AI Constitution - Strict Development Rules
+
+1. **ZERO INLINE STYLING**: Never use `style={{}}`. All styling must use utility classes or CSS modules referencing design tokens.
+2. **DESIGN TOKENS FIRST**: Colors, spacing, typography, radii, shadows, and z-index must map to a centralized token system (CSS variables or Tailwind config).
+3. **FRAMER MOTION STANDARDIZATION**: All animations use exported `variants` from `src/motion/variants.ts`. No inline `initial/animate/transition` props.
+4. **SSR/HYDRATION SAFE**: Use `useMotionValue`, `useReducedMotion`, and `layoutId` correctly. Never animate on mount without `AnimatePresence` or conditional rendering.
+5. **ACCESSIBILITY**: Respect `prefers-reduced-motion`. All interactive elements have visible `:focus-visible` states. Semantic HTML only.
+6. **COMPONENT ISOLATION**: Page layouts use `src/layouts/`. UI primitives use `src/ui/`. Motion wrappers use `src/motion/`.
+7. **OUTPUT FORMAT**: Return only file paths + code. No explanations unless explicitly requested. Validate against TypeScript strict mode.

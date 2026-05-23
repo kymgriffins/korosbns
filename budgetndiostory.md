@@ -1,7 +1,9 @@
 # Budget Ndio Story (BNS) Civic Platform
 
 ## Overview
-Budget Ndio Story (BNS) is a civic technology initiative and platform designed to empower citizens by making public finance, government budgets, and civic processes accessible, understandable, and engaging. The platform bridges the gap between complex public budget data and citizen awareness through interactive digital content, educational stories, and community feedback mechanisms.
+Budget Ndio Story (BNS) is a civic technology initiative and platform designed to empower citizens by making public finance, government budgets, and civic processes accessible, understandable, and engaging. The platform bridges the gap between complex public budget data and citizen awareness through interactive digital content, educational stories, and community feedback mechanisms. 
+
+BNS sources its data directly from official, verified public records (such as national open data portals, ministry of finance publications, and treasury reports) to ensure reliability and trust.
 
 ## Core Mission & Objectives
 The platform operates on the belief that transparent, understandable budgets lead to stronger citizen engagement and better governance. BNS accomplishes this through:
@@ -9,6 +11,7 @@ The platform operates on the belief that transparent, understandable budgets lea
 * **Interactive Civic Education**: Engaging citizens through gamified learning (Trivia) and step-by-step narratives (Stories).
 * **Two-Way Communication**: Gathering public feedback via user-friendly surveys and displaying aggregate results to foster community awareness.
 * **Community Connection**: Managing civic events and keeping citizens informed through automated, tailored email updates.
+* **Inclusivity & Accessibility**: Ensuring the platform is accessible to all citizens regardless of language, device capability, or network bandwidth.
 
 ---
 
@@ -47,6 +50,9 @@ The platform operates on the belief that transparent, understandable budgets lea
 * **Response Moderation**: Internal management grids to inspect survey responses and trivia statistics without needing database access.
 * **Audit Trails & Platform Governance**: Robust backend audit logs recording organizational modifications, cron-locking to ensure scheduler stability, and API rate-limiting to protect resources.
 
+### 7. Open Data API & Research Access
+* **Read-Only Civic API**: Exposes anonymized, aggregated survey statistics and budget summaries. This allows journalists, civic researchers, and non-governmental organizations to query public datasets for advocacy and report generation.
+
 ---
 
 ## Technical Design & How We Do It
@@ -61,7 +67,20 @@ To ensure longevity and allow the UI framework to change in the future, the citi
 * **Pure TypeScript Core**: The network adapters, authentication workflows, mapper functions, and validation checks are written in pure TypeScript. They contain no dependencies on React or Next.js.
 * **Adapter / UI Layers**: Light React components and hooks connect this pure TypeScript core to the Next.js router, pages, and browser storage APIs.
 
-### Comprehensive Test Parity
-The platform maintains strict quality assurance through automated tests:
-* **End-to-End Persona Testing (Playwright)**: Simulates real browser interactions for three personas: *Anonymous Visitor*, *New Citizen*, and *Returning Member*, ensuring critical navigation and engagement flows never break.
-* **Unit Testing**: Pytest validates backend API responses, serialization, and email triggers, while Vitest checks the frontend core business logic independently of browser environments.
+### Data Privacy & Security Compliance
+* **Encryption Standards**: All data is encrypted in transit using HTTPS (TLS 1.3) and at rest (database-level encryption).
+* **Compliance Alignment**: Complies with the Kenya Data Protection Act 2019 and global GDPR frameworks. We follow data minimization guidelines, only collecting basic credential details (emails/usernames), hashing passwords via Argon2/BCrypt, and strictly partitioning citizen identities from anonymous survey responses.
+
+### Accessibility & Inclusion Standards
+* **A11y Compliance**: Designed to align with WCAG 2.1 AA standards, supporting screen readers, semantic HTML, and high-contrast color choices.
+* **Localization Ready**: The architecture is translation-friendly, pre-configured to easily support Swahili, English, and other regional languages.
+* **Low-Bandwidth Optimization**: Features minimal initial bundle sizes, image compression pipelines, and aggressive static asset caching to ensure fast loading on 3G networks and mobile devices.
+
+### Infrastructure & Deployment Readiness
+* **Containerized Deployment**: Ready for hosting in managed cloud environments (e.g., AWS, GCP, or Dokku/Docker-based setups).
+* **Automated CI/CD Pipelines**: Integrates with continuous integration systems to automatically run TypeScript checks, Vitest core tests, Pytest backend tests, and build production artifacts before each release.
+
+### Measuring Impact (KPIs)
+* **Budget Literacy Growth**: Analytics comparing pre- and post-trivia assessment scores to track knowledge retention.
+* **Civic Engagement Rates**: Monitored through survey completion percentages and event check-in/attendance metrics.
+* **Communication Performance**: Tracking active newsletter subscriber growth, email open rates, and bounce metrics.

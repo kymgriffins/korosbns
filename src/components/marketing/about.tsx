@@ -3,7 +3,7 @@
 import { team } from '@/constants/team';
 import { motion } from 'motion/react';
 import Wrapper from '@/components/global/wrapper';
-import SectionBadge from '@/components/ui/section-badge';
+import SectionBadge from '@/ui/section-badge';
 import Image from 'next/image';
 import Link from 'next/link';
 import { IconBrandLinkedin, IconBrandX } from '@tabler/icons-react';

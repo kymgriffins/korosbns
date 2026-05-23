@@ -4,8 +4,8 @@ import React, { useEffect, useState } from "react";
 import { Coffee, MessageCircle, Info } from "lucide-react";
 import { CoffeeTableCard } from "@/components/cafe/CoffeeTableCard";
 import { motion } from "motion/react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/ui/button";
+import { Card, CardContent } from "@/ui/card";
 
 export default function CafeLandingPage() {
   const [rooms, setRooms] = useState<any[]>([]);

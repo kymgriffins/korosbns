@@ -1,8 +1,8 @@
 "use client";
 
 import Wrapper from "@/components/global/wrapper";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/ui/button";
+import { Input } from "@/ui/input";
 import { footerLinks } from "@/constants";
 import Image from "next/image";
 import Link from "next/link";

@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "motion/react";
 import Wrapper from "@/components/global/wrapper";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/ui/button";
 import { Routes } from "@/constants/routes";
 import type { SurveyListItemApi } from "@/lib/api-client";
 import { contentLoadErrorMessage, loadSurveyList } from "@/lib/marketing-content";

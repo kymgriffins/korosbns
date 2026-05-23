@@ -3,9 +3,10 @@
 import { useEffect } from 'react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
+import { scaleIn, float, orbitLeft, orbitRight, fadeInUp, fadeInUpDelay1, fadeInUpDelay2, fadeInUpDelay3, fadeInDelay5 } from '@/motion/variants';
 import { Home, Search, ArrowLeft, FileQuestion } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Particles } from '@/components/ui/particles';
+import { Button } from '@/ui/button';
+import { Particles } from '@/ui/particles';
 
 export default function NotFound() {
     useEffect(() => {
@@ -28,13 +29,13 @@ export default function NotFound() {
             {/* Ambient gradient orbs */}
             <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
                 <motion.div
-                    animate={{ scale: [1, 1.2, 1], rotate: [0, 180, 360] }}
-                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                    variants={orbitLeft}
+                    animate="animate"
                     className="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] bg-primary/10 blur-[150px] rounded-full"
                 />
                 <motion.div
-                    animate={{ scale: [1.2, 1, 1.2], rotate: [360, 180, 0] }}
-                    transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                    variants={orbitRight}
+                    animate="animate"
                     className="absolute bottom-[-20%] right-[-20%] w-[60%] h-[60%] bg-teal-500/10 blur-[150px] rounded-full"
                 />
             </div>
@@ -42,14 +43,14 @@ export default function NotFound() {
             <div className="max-w-2xl w-full text-center relative z-10">
                 {/* Floating icon */}
                 <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.6 }}
+                    variants={scaleIn}
+                    initial="hidden"
+                    animate="visible"
                     className="mb-6"
                 >
                     <motion.div
-                        animate={{ y: [0, -15, 0] }}
-                        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                        variants={float}
+                        animate="animate"
                         className="inline-block"
                     >
                         <FileQuestion className="size-28 md:size-36 text-primary/30" strokeWidth={1.5} />
@@ -58,9 +59,9 @@ export default function NotFound() {
 
                 {/* 404 text with gradient */}
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
+                    variants={fadeInUp}
+                    initial="hidden"
+                    animate="visible"
                     className="mb-8"
                 >
                     <div className="inline-block relative">
@@ -72,27 +73,27 @@ export default function NotFound() {
                 </motion.div>
 
                 <motion.h1
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.1 }}
+                    variants={fadeInUpDelay1}
+                    initial="hidden"
+                    animate="visible"
                     className="text-2xl md:text-4xl font-bold mb-4"
                 >
                     Page not found
                 </motion.h1>
 
                 <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.2 }}
+                    variants={fadeInUpDelay2}
+                    initial="hidden"
+                    animate="visible"
                     className="text-muted-foreground mb-10 leading-relaxed max-w-md mx-auto"
                 >
                     The page you&apos;re looking for seems to have vanished into the budget ether. Maybe it was reallocated to a different department?
                 </motion.p>
 
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.3 }}
+                    variants={fadeInUpDelay3}
+                    initial="hidden"
+                    animate="visible"
                     className="flex flex-col sm:flex-row gap-4 justify-center"
                 >
                     <Link href="/">
@@ -110,9 +111,9 @@ export default function NotFound() {
                 </motion.div>
 
                 <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 0.5 }}
+                    variants={fadeInDelay5}
+                    initial="hidden"
+                    animate="visible"
                     className="mt-12 pt-8 border-t border-foreground/10"
                 >
                     <p className="text-sm text-muted-foreground mb-3">Or go back to where you came from</p>

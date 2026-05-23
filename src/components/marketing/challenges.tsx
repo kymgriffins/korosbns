@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Wrapper from "@/components/global/wrapper";
-import SectionBadge from "@/components/ui/section-badge";
-import { Button } from "@/components/ui/button";
+import SectionBadge from "@/ui/section-badge";
+import { Button } from "@/ui/button";
 import { 
     Trophy, 
     Calendar, 

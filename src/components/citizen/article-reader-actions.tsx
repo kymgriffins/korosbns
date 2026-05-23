@@ -2,7 +2,7 @@
 
 import { Bookmark, Share2 } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/ui/button";
 import { citizenApi } from "@/lib/api-client";
 import { useAuth } from "@/contexts/auth-context";
 

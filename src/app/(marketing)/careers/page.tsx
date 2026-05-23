@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import Wrapper from "@/components/global/wrapper";
-import SectionBadge from "@/components/ui/section-badge";
+import SectionBadge from "@/ui/section-badge";
 import Link from "next/link";
 
 export const metadata: Metadata = {

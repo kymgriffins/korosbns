@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { ContentLayout } from "@/components/citizen/content-layout";
+import { ContentLayout } from "@/layouts/DashboardShell";
 import { AccountProfileForm } from "@/components/citizen/account-profile-form";
 import { Protected } from "@/components/citizen/protected";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/ui/button";
 import { Routes } from "@/constants/routes";
 
 export default function AccountPage() {

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import Wrapper from "@/components/global/wrapper";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/ui/button";
 import { 
     ArrowLeft, 
     Calendar, 
@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { Campaign } from "@/lib/campaign/types";
 import { cn } from "@/utils";
-import SectionBadge from "@/components/ui/section-badge";
+import SectionBadge from "@/ui/section-badge";
 
 const ChallengeDetailPage = () => {
     const params = useParams();

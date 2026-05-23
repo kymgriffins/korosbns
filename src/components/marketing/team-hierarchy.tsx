@@ -1,7 +1,7 @@
 "use client";
 
 import Wrapper from "@/components/global/wrapper";
-import SectionBadge from "@/components/ui/section-badge";
+import SectionBadge from "@/ui/section-badge";
 import { team } from "@/constants";
 import { getMemberUsername, type TeamMember } from "@/lib/team";
 import { motion } from "motion/react";

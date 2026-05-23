@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useEffect, useState } from 'react';
 import { Routes } from "@/constants";
 import MobileMenu from "./mobile-menu";
-import { Button } from "../ui/button";
+import { Button } from "@/ui/button";
 import Image from "next/image";
 import { useClickOutside } from "@/hooks";
 import { ThemeToggle } from "./theme-toggle";

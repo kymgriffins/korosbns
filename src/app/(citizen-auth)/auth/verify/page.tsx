@@ -4,8 +4,8 @@ import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { CheckCircle2, Loader2, XCircle } from "lucide-react";
-import { AuthShell } from "@/components/citizen/auth-shell";
-import { Button } from "@/components/ui/button";
+import { AuthShell } from "@/layouts/AuthShell";
+import { Button } from "@/ui/button";
 import { Routes } from "@/constants/routes";
 import { citizenApi } from "@/lib/api-client";
 

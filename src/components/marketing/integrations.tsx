@@ -8,8 +8,8 @@ import { motion } from 'motion/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Container from "@/components/global/container";
-import { Button } from "@/components/ui/button";
-import { Particles } from "@/components/ui/particles";
+import { Button } from "@/ui/button";
+import { Particles } from "@/ui/particles";
 
 const partnerMap = {
     SenMedia: {

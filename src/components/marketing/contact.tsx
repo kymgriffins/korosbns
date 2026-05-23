@@ -1,8 +1,8 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/ui/input";
+import { Label } from "@/ui/label";
+import { Textarea } from "@/ui/textarea";
 import { cn } from "@/utils";
 import {
     ArrowRight,
@@ -16,7 +16,7 @@ import Balancer from "react-wrap-balancer";
 import { toast } from "sonner";
 import Container from "../global/container";
 import Wrapper from "../global/wrapper";
-import { Button } from "../ui/button";
+import { Button } from "@/ui/button";
 
 // Compact X icon
 const XIcon = ({ className }: { className?: string }) => (

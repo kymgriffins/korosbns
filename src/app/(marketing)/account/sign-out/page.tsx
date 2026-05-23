@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ContentLayout } from "@/components/citizen/content-layout";
+import { ContentLayout } from "@/layouts/DashboardShell";
 import { FormStatus } from "@/components/citizen/form-status";
 import { Protected } from "@/components/citizen/protected";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/ui/button";
 import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
 

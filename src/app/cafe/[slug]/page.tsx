@@ -4,11 +4,11 @@ import React, { useEffect, useState, useRef, use } from "react";
 import { Coffee, Send, ChevronLeft, Info, Users, ShieldAlert } from "lucide-react";
 import { CafeChatBubble } from "@/components/cafe/CafeChatBubble";
 import { motion, AnimatePresence } from "motion/react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/ui/button";
+import { Input } from "@/ui/input";
+import { Card, CardContent } from "@/ui/card";
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/ui/badge";
 
 export default function CafeRoomPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);

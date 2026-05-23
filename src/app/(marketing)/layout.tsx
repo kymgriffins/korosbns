@@ -1,7 +1,7 @@
 "use client";
 
-import Footer from "@/components/marketing/footer";
-import Navbar from "@/components/marketing/navbar";
+import { Footer } from "@/layouts/Footer";
+import { Header as Navbar } from "@/layouts/Header";
 import { usePathname } from "next/navigation";
 
 const MarketingLayout = ({
