@@ -34,8 +34,8 @@ export function DashboardShell({
             <Image src="/logo.svg" alt="Budget Ndio Story" width={120} height={24} className="h-5 w-auto" />
           </Link>
           <nav className="flex items-center gap-3 text-sm">
-            <Link href={Routes.Articles} className="hidden sm:inline text-muted-foreground hover:text-foreground">
-              Articles
+            <Link href={Routes.Learn} className="hidden sm:inline text-muted-foreground hover:text-foreground">
+              Learn
             </Link>
             <Link href={Routes.Surveys} className="hidden sm:inline text-muted-foreground hover:text-foreground">
               Surveys

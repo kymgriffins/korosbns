@@ -10,14 +10,6 @@ export const NAV_LINKS = [
     href: Routes.Surveys,
   },
   {
-    label: "Trivia",
-    href: Routes.Trivia,
-  },
-  {
-    label: "Articles",
-    href: Routes.Articles,
-  },
-  {
     label: "Events",
     href: Routes.Events,
   },
@@ -36,14 +28,11 @@ export const footerLinks = {
     { label: "Stories", href: Routes.Learn },
     { label: "Explainers", href: Routes.Capabilities },
     { label: "Impact", href: "/impact" },
-    { label: "Challenges", href: Routes.Challenges },
     { label: "Get Involved", href: Routes.Membership },
   ],
   resources: [
     { label: "Budget Guides", href: Routes.Learn },
     { label: "Surveys", href: Routes.Surveys },
-    { label: "Trivia", href: Routes.Trivia },
-    { label: "Articles", href: Routes.Articles },
     { label: "Newsletter", href: "#newsletter" },
     { label: "Contact", href: Routes.Contact },
   ],

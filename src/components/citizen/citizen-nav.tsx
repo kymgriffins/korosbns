@@ -17,11 +17,11 @@ export function CitizenNav() {
           <Image src="/logo.svg" alt="Budget Ndio Story" width={120} height={24} className="h-5 w-auto" />
         </Link>
         <nav className="flex items-center gap-2 text-sm">
+          <Link href={Routes.Learn} className="hidden sm:inline text-muted-foreground hover:text-foreground">
+            Learn
+          </Link>
           <Link href={Routes.Surveys} className="hidden sm:inline text-muted-foreground hover:text-foreground">
             Surveys
-          </Link>
-          <Link href={Routes.Trivia} className="hidden sm:inline text-muted-foreground hover:text-foreground">
-            Trivia
           </Link>
           {!loading && (
             <Button asChild variant="outline" size="sm">
