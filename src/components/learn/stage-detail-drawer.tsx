@@ -8,9 +8,15 @@ import { Textarea } from "@/ui/textarea";
 import {
   Play, Pause, CheckCircle2, AlertCircle, Clock, ExternalLink,
   BookOpen, Trophy, ArrowRight, ArrowLeft, X, Sparkles, HelpCircle, RefreshCw,
-  Volume2, VolumeX, FileText, Search, DownloadCloud, Award, Lock, FileCheck
+  Volume2, VolumeX, FileText, Search, DownloadCloud, Award, Lock, FileCheck, Share2, History
 } from "lucide-react";
 import { cn } from "@/utils";
+import {
+  getDocumentsForStage,
+  GovernmentDocument,
+  CONSTITUTION_HISTORICAL_DOCS,
+  PARTICIPATION_TOOLKIT_DOCS
+} from "@/constants/documents-registry";
 
 // Types matching the updated stages step schema
 interface TriviaItem {
@@ -68,7 +74,7 @@ export function StageDetailDrawer({
   hasPrev,
   hasNext
 }: StageDetailDrawerProps) {
-  // Tabs Navigation: learn (Guided Journey) or documents (Tracker)
+  // Tabs Navigation: learn (Guided Journey) or documents (Repository)
   const [activeSubTab, setActiveSubTab] = useState<"learn" | "documents">("learn");
 
   // Step state (0: Overview, 1..N: Steps, N+1: Mastery)
@@ -97,13 +103,54 @@ export function StageDetailDrawer({
   const [reflectionText, setReflectionText] = useState<string>("");
 
   // Search inside transcript
-  const [transcriptSearch, setTranscriptSearch] = useState<string>("");
+  const [transcriptSearch, setTranscriptSearch] = useState<string>( "");
   const [showTranscript, setShowTranscript] = useState<boolean>(false);
+
+  // Document Repository states
+  const [selectedYear, setSelectedYear] = useState<number>(2026);
+  const [constitutionTab, setConstitutionTab] = useState<"current" | "timeline">("current");
+  const [liveRepoDocs, setLiveRepoDocs] = useState<any[]>([]);
+  const [apiLoading, setApiLoading] = useState<boolean>(false);
 
   // YouTube references
   const playerRef = useRef<any>(null);
   const videoTimerRef = useRef<any>(null);
   const iframeId = `yt-player-${stage.id}-${currentStep}`;
+
+  // Fetch live documents from API on mount
+  useEffect(() => {
+    const loadRepo = async () => {
+      setApiLoading(true);
+      try {
+        const res = await fetch("/api/docrepository");
+        if (res.ok) {
+          const data = await res.json();
+          if (data && Array.isArray(data.documents)) {
+            setLiveRepoDocs(data.documents);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load live doc repository:", err);
+      } finally {
+        setApiLoading(false);
+      }
+    };
+    loadRepo();
+  }, []);
+
+  // Initialize selectedYear from URL query parameters on load
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const yearParam = params.get("year");
+      if (yearParam) {
+        const yr = parseInt(yearParam, 10);
+        if (!isNaN(yr)) {
+          setSelectedYear(yr);
+        }
+      }
+    }
+  }, []);
 
   // Load state when stage.id changes
   useEffect(() => {
@@ -127,6 +174,13 @@ export function StageDetailDrawer({
     setReflectionText("");
     setTranscriptSearch("");
     setShowTranscript(false);
+
+    // Default selected year based on stage
+    if (stage.id === 1) {
+      setSelectedYear(2010);
+    } else {
+      setSelectedYear(2026);
+    }
   }, [stage.id]);
 
   // Load state when currentStep or stage.id changes
@@ -237,7 +291,6 @@ export function StageDetailDrawer({
       player = new (window as any).YT.Player(iframeId, {
         events: {
           onStateChange: (event: any) => {
-            // event.data: 1 = PLAYING, 2 = PAUSED, 0 = ENDED
             if (event.data === (window as any).YT.PlayerState.PLAYING) {
               startWatchTimer();
             } else {
@@ -479,6 +532,42 @@ export function StageDetailDrawer({
     return rawText.replace(/\[Selected County\]/g, profile.county || "your County");
   };
 
+  // Year Change update with URL shareability query parameters
+  const handleYearChange = (year: number) => {
+    setSelectedYear(year);
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      url.searchParams.set("year", year.toString());
+      url.searchParams.set("stage", stage.id.toString());
+      window.history.pushState({}, "", url.toString());
+    }
+    toast.info(`Filtered documents for year ${year}`);
+  };
+
+  // Copy share URL link to clipboard
+  const handleCopyShareLink = (pdfUrl: string) => {
+    navigator.clipboard.writeText(pdfUrl);
+    toast.success("Direct PDF URL copied to clipboard for sharing!");
+  };
+
+  // Request Document simulation
+  const handleRequestDocument = (docType: string, year: number) => {
+    toast.success(`Request for ${docType} (${year}) has been generated and queued for submission to the county assembly clerk.`);
+  };
+
+  // Fetch filtered documents from registry database (combining API + static fallbacks)
+  const currentStageDocs = getDocumentsForStage(
+    stage.id,
+    selectedYear,
+    profile.county || "",
+    liveRepoDocs
+  );
+
+  // Available year pills definition
+  const constitutionYears = [2010, 2005, 1997, 1991, 1982, 1969, 1964, 1963];
+  const standardYears = [2026, 2025, 2024, 2023, 2022, 2021, 2020];
+  const yearOptions = stage.id === 1 ? constitutionYears : standardYears;
+
   return (
     <div className="fixed inset-0 z-50 bg-background flex flex-col md:max-w-xl md:mx-auto md:border-x border-border shadow-2xl overflow-hidden">
       
@@ -517,7 +606,7 @@ export function StageDetailDrawer({
           className={`py-3 text-xs font-bold border-b-2 flex flex-col items-center gap-1 transition-all ${activeSubTab === "documents" ? 'border-primary text-primary' : 'border-transparent text-muted-foreground'}`}
         >
           <FileCheck className="size-4" />
-          <span>Documents (Tracker)</span>
+          <span>Documents (Repository)</span>
         </button>
       </div>
 
@@ -792,7 +881,6 @@ export function StageDetailDrawer({
             {currentStep === stage.steps.length + 1 && (
               <div className="flex flex-col items-center justify-center text-center space-y-6 py-6 animate-in zoom-in-95 duration-500">
                 <div className="relative">
-                  {/* Glowing halo */}
                   <div className="absolute inset-0 size-24 rounded-full bg-primary/25 blur-xl animate-ping mx-auto" />
                   <div className="size-24 rounded-full bg-card border border-primary/30 flex items-center justify-center text-5xl shadow-2xl relative mx-auto">
                     {stage.badge}
@@ -840,84 +928,284 @@ export function StageDetailDrawer({
           </div>
         ) : (
           <div className="space-y-5 animate-in fade-in duration-300">
-            {/* STATUTORY DOCUMENT TRACKER TAB */}
+            {/* STATUTORY DOCUMENTATION REPOSITORY TAB */}
+            
+            {/* Header info */}
             <div className="space-y-1">
-              <h3 className="font-bold text-sm">📄 Statutory Tracker</h3>
-              <p className="text-[11px] text-muted-foreground">Verify official sources, review historical archives, and subscribe to county comment windows.</p>
+              <h3 className="font-black text-sm flex items-center gap-1.5">
+                <FileCheck className="size-4.5 text-primary" /> Documents Repository
+              </h3>
+              <p className="text-[11px] text-muted-foreground leading-normal">
+                Access official statutory and planning records. Filter historical archives and download PDFs for offline analysis.
+              </p>
             </div>
 
-            <div className="p-4 border border-border bg-card rounded-xl space-y-4">
-              <div className="flex justify-between items-start border-b border-border pb-3">
-                <div>
-                  <h4 className="text-xs font-bold text-foreground truncate max-w-[200px] sm:max-w-sm">{stage.documentName}</h4>
-                  <p className="text-[9px] text-muted-foreground mt-0.5">Auditable Official Document</p>
-                </div>
-                <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${stage.status === 'Comment Open' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600' : 'bg-muted border-border text-muted-foreground'}`}>
-                  {stage.status}
-                </span>
+            {/* Document stage-specific warning/notice */}
+            {apiLoading && (
+              <div className="flex items-center justify-center py-4 gap-2 text-xs text-muted-foreground">
+                <div className="animate-spin size-4 border-2 border-primary border-t-transparent rounded-full" />
+                <span>Loading live API files...</span>
               </div>
+            )}
 
-              <div className="grid grid-cols-2 gap-4 text-xs">
-                <div>
-                  <span className="text-muted-foreground font-semibold">Official Link:</span>
-                  <a
-                    href={stage.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1 text-primary hover:underline font-bold mt-1"
-                  >
-                    Source Portal <ExternalLink className="size-3" />
-                  </a>
-                </div>
-                <div>
-                  <span className="text-muted-foreground font-semibold">Historical Archive:</span>
-                  <p className="font-bold text-foreground mt-1">{stage.archive} → 2026</p>
-                </div>
-              </div>
-
-              <div className="pt-2 flex flex-col gap-2">
-                <Button
-                  onClick={handleToggleTrackDoc}
-                  variant={isDocTracked ? "outline" : "default"}
-                  className="w-full rounded-xl h-11 font-bold gap-2"
-                >
-                  {isDocTracked ? (
-                    <>
-                      <CheckCircle2 className="size-4 text-primary" /> Stop Tracking Document
-                    </>
-                  ) : (
-                    <>
-                      <Clock className="size-4" /> Track This Document
-                    </>
+            {/* View toggler for Constitution (Stage 1) */}
+            {stage.id === 1 && (
+              <div className="grid grid-cols-2 gap-2 bg-muted/50 p-1 rounded-xl text-xs font-bold">
+                <button
+                  onClick={() => setConstitutionTab("current")}
+                  className={cn(
+                    "py-1.5 rounded-lg transition-all",
+                    constitutionTab === "current" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground"
                   )}
-                </Button>
-                <p className="text-[10px] text-muted-foreground text-center">
-                  Tracking adds this statutory template to your alert queue to notify you when your county opens comments.
-                </p>
-              </div>
-            </div>
-
-            {/* Custom local BPS PDF file embed for BPS Stage */}
-            {stage.id === 2 && (
-              <div className="p-4 border border-primary/20 bg-primary/5 rounded-xl space-y-3 animate-in zoom-in-95 duration-200">
-                <div className="flex items-center gap-2">
-                  <span className="text-xl">📄</span>
-                  <div>
-                    <h4 className="text-xs font-bold">2026 BPS Summary Document</h4>
-                    <p className="text-[10px] text-muted-foreground">Local PDF Document</p>
-                  </div>
-                </div>
-                <p className="text-[11px] text-muted-foreground">
-                  Read the official 2026 Budget Policy Statement Summary. This file contains division of revenue formulas, tax reform directions, and MSME Hustler Fund ceilings.
-                </p>
-                <a
-                  href="/BPS_2026_Summary.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex w-full items-center justify-center gap-2 px-4 h-11 rounded-xl bg-primary text-primary-foreground text-xs font-black shadow-xs hover:bg-primary/95 transition-all"
                 >
-                  <DownloadCloud className="size-4" /> Open BPS 2026 Summary PDF
-                </a>
+                  Current Document
+                </button>
+                <button
+                  onClick={() => setConstitutionTab("timeline")}
+                  className={cn(
+                    "py-1.5 rounded-lg transition-all",
+                    constitutionTab === "timeline" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground"
+                  )}
+                >
+                  <History className="inline size-3.5 mr-1" /> Historical Timeline
+                </button>
+              </div>
+            )}
+
+            {/* Render Year Selector (Pills) for current view / standard stages */}
+            {(stage.id !== 1 || constitutionTab === "current") && (
+              <div className="space-y-2">
+                <label className="text-[9px] font-black text-muted-foreground uppercase tracking-wider">Select Financial Year:</label>
+                <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
+                  {yearOptions.map((yr) => (
+                    <button
+                      key={yr}
+                      onClick={() => handleYearChange(yr)}
+                      className={cn(
+                        "px-3 py-1.5 rounded-xl border text-[11px] font-bold shrink-0 transition-all",
+                        selectedYear === yr
+                          ? "bg-primary border-primary text-primary-foreground shadow-sm"
+                          : "bg-card border-border text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      {yr === 2010 && stage.id === 1 ? "2010 (Current)" : yr}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Constitution Timeline View Special Case */}
+            {stage.id === 1 && constitutionTab === "timeline" ? (
+              <div className="space-y-5 animate-in fade-in duration-200">
+                <div className="p-3 bg-muted/20 border border-border rounded-xl text-[10px] text-muted-foreground leading-normal flex items-start gap-2">
+                  <History className="size-4 text-primary shrink-0 mt-0.5" />
+                  <span>
+                    Select a year on the timeline below to open its historical draft details, referendums context, and download PDFs.
+                  </span>
+                </div>
+
+                {/* Timeline UI */}
+                <div className="space-y-4 relative pl-6 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-border">
+                  {CONSTITUTION_HISTORICAL_DOCS.map((doc) => {
+                    const isDocSelected = selectedYear === doc.year;
+                    
+                    return (
+                      <div
+                        key={doc.id}
+                        onClick={() => handleYearChange(doc.year)}
+                        className={cn(
+                          "relative cursor-pointer transition-all p-3 rounded-xl border",
+                          isDocSelected
+                            ? "border-primary bg-primary/5 shadow-xs"
+                            : "border-border bg-card hover:bg-muted/40"
+                        )}
+                      >
+                        {/* Timeline Circle Dot */}
+                        <div className={cn(
+                          "absolute -left-[22px] top-[14px] size-3.5 rounded-full border-2 transition-all",
+                          isDocSelected
+                            ? "bg-primary border-primary scale-110"
+                            : "bg-background border-muted-foreground/40"
+                        )} />
+                        
+                        <div className="flex justify-between items-start">
+                          <h4 className="text-xs font-black text-foreground">{doc.title}</h4>
+                          <span className="text-[9px] bg-muted border border-border px-1.5 py-0.5 rounded-full font-bold text-muted-foreground">
+                            {doc.year}
+                          </span>
+                        </div>
+                        <p className="text-[10px] text-muted-foreground mt-1 leading-normal">
+                          {doc.historicalContext || doc.description}
+                        </p>
+                        
+                        {isDocSelected && (
+                          <div className="mt-3 pt-3 border-t border-border flex flex-wrap gap-2">
+                            {doc.isAvailable ? (
+                              <>
+                                <a
+                                  href={doc.pdfUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 text-[10px] bg-primary text-primary-foreground px-3 py-1.5 rounded-lg font-bold hover:bg-primary/95 transition-all"
+                                >
+                                  📄 View PDF
+                                </a>
+                                <a
+                                  href={`${doc.pdfUrl}?download=1`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 text-[10px] bg-muted border border-border text-foreground px-3 py-1.5 rounded-lg font-bold hover:bg-muted/80 transition-all"
+                                >
+                                  <DownloadCloud className="size-3" /> Download
+                                </a>
+                              </>
+                            ) : (
+                              <div className="flex-1 flex flex-col space-y-2">
+                                <span className="text-[9px] bg-amber-500/10 border border-amber-500/20 text-amber-600 font-bold px-2 py-1.5 rounded-lg text-center">
+                                  ⚠️ PDF Not Available (Archived)
+                                </span>
+                                <Button
+                                  size="xs"
+                                  onClick={() => handleRequestDocument(doc.title, doc.year)}
+                                  className="w-full text-[9px] font-bold"
+                                >
+                                  Request PDF Copy
+                                </Button>
+                              </div>
+                            )}
+                            <a
+                              href={doc.sourceUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 text-[10px] bg-muted border border-border text-foreground px-3 py-1.5 rounded-lg font-bold hover:bg-muted/70"
+                            >
+                              🔗 Source Portal
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              
+              /* STANDARD STAGES LIST & CARDS */
+              <div className="space-y-4">
+                
+                {/* Stage-level Track Document toggle */}
+                <div className="p-3.5 border border-border bg-card rounded-xl flex items-center justify-between gap-4">
+                  <div className="space-y-0.5">
+                    <h4 className="text-xs font-bold text-foreground">Alert Subscriptions</h4>
+                    <p className="text-[9px] text-muted-foreground">Subscribe to alerts when counties upload local updates.</p>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant={isDocTracked ? "outline" : "default"}
+                    onClick={handleToggleTrackDoc}
+                    className="font-bold shrink-0 text-xs h-9 rounded-xl px-3"
+                  >
+                    {isDocTracked ? "Tracking" : "Track Stage"}
+                  </Button>
+                </div>
+
+                {/* Documents List */}
+                {currentStageDocs.length > 0 ? (
+                  <div className="space-y-3.5">
+                    <div className="flex justify-between items-center text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                      <span>Auditable Documents ({currentStageDocs.length})</span>
+                      <span>{selectedYear}</span>
+                    </div>
+
+                    {currentStageDocs.map((doc) => (
+                      <div
+                        key={doc.id}
+                        className="p-4 border border-border bg-card rounded-xl space-y-3 shadow-xs animate-in slide-in-from-bottom-1 duration-200"
+                      >
+                        <div className="flex justify-between items-start gap-2">
+                          <div>
+                            <h4 className="text-xs font-black text-foreground truncate max-w-[200px] sm:max-w-xs">
+                              {doc.name.replace(/\.pdf$/i, "").replace(/[-_]/g, " ")}
+                            </h4>
+                            <p className="text-[9px] text-muted-foreground mt-0.5">
+                              {doc.issuingBody} · {doc.financialYear}
+                            </p>
+                          </div>
+                          {doc.isCurrent && (
+                            <span className="text-[8px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 font-black px-1.5 py-0.5 rounded-full uppercase tracking-wider shrink-0">
+                              Current
+                            </span>
+                          )}
+                        </div>
+
+                        <p className="text-[10px] text-muted-foreground leading-relaxed">
+                          {doc.description}
+                        </p>
+
+                        <div className="pt-2 border-t border-border flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-1.5">
+                            <a
+                              href={doc.pdfUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex h-8 px-2.5 items-center gap-1 rounded-lg bg-primary text-primary-foreground text-[10px] font-bold hover:bg-primary/95 transition-all shadow-xs"
+                            >
+                              📄 View
+                            </a>
+                            <a
+                              href={doc.pdfUrl}
+                              download={doc.name}
+                              className="inline-flex h-8 px-2.5 items-center gap-1 rounded-lg border border-border bg-muted/20 text-foreground text-[10px] font-bold hover:bg-muted/50 transition-all"
+                            >
+                              <DownloadCloud className="size-3" /> Get
+                            </a>
+                            <button
+                              onClick={() => handleCopyShareLink(doc.pdfUrl)}
+                              className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-muted/20 text-muted-foreground hover:text-foreground transition-all"
+                              title="Share Document Link"
+                            >
+                              <Share2 className="size-3.5" />
+                            </button>
+                          </div>
+                          <span className="text-[9px] font-mono text-muted-foreground shrink-0 uppercase">
+                            {doc.sizeBytes ? `${(doc.sizeBytes / 1024 / 1024).toFixed(1)} MB` : "PDF"}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  
+                  /* EMPTY STATE FALLBACK */
+                  <div className="p-6 border border-dashed border-border bg-muted/15 rounded-xl text-center space-y-4">
+                    <AlertCircle className="size-10 mx-auto text-muted-foreground/60" />
+                    <div>
+                      <h4 className="font-bold text-xs text-foreground">No stage documents found for year {selectedYear}</h4>
+                      <p className="text-[10px] text-muted-foreground max-w-xs mx-auto mt-1 leading-normal">
+                        The statutory document may not have been gazetted or uploaded for this financial year yet.
+                      </p>
+                    </div>
+                    <div className="flex flex-col gap-1.5 max-w-xs mx-auto">
+                      <Button
+                        size="sm"
+                        onClick={() => handleYearChange(2026)}
+                        className="rounded-xl text-xs font-bold"
+                      >
+                        Reset to Current Year (2026)
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleRequestDocument(stage.documentName, selectedYear)}
+                        className="rounded-xl text-xs font-bold"
+                      >
+                        Request Document from Authority
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
               </div>
             )}
 
