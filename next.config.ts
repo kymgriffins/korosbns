@@ -17,11 +17,12 @@ function contentSecurityPolicy(): string {
       : "";
   return [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.clarity.ms https://static.cloudflareinsights.com",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.youtube.com https://www.youtube-nocookie.com https://s.ytimg.com https://www.clarity.ms https://static.cloudflareinsights.com",
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob: https:",
     "font-src 'self' data: https:",
     `connect-src 'self' https://bnske.budgetndiostory.org https://*.budgetndiostory.org${localApiConnect}`,
+    "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://youtube.com https://youtube-nocookie.com",
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",

@@ -83,16 +83,11 @@ export function StageDetailDrawer({
   // Active delivery format
   const [activeFormat, setActiveFormat] = useState<"video" | "audio" | "text">("video");
 
-  // Video watch timer
-  const [videoTimer, setVideoTimer] = useState<number>(0);
-
   // Simulated audio player
   const [audioPlaying, setAudioPlaying] = useState<boolean>(false);
-  const [audioTimer, setAudioTimer] = useState<number>(0);
-  const audioIntervalRef = useRef<any>(null);
 
-  // Gating & completion flag for current step
-  const [contentConsumed, setContentConsumed] = useState<boolean>(false);
+  // Gating & completion flag for current step - unlocked by default
+  const [contentConsumed, setContentConsumed] = useState<boolean>(true);
 
   // Trivia Dialog state
   const [showTriviaDialog, setShowTriviaDialog] = useState<boolean>(false);
@@ -119,10 +114,7 @@ export function StageDetailDrawer({
     }
   }, []);
 
-  // YouTube references
-  const playerRef = useRef<any>(null);
-  const videoTimerRef = useRef<any>(null);
-  const iframeId = `yt-player-${stage.id}-${currentStep}`;
+  // YouTube references (none required, standard iframe works natively)
 
   // Fetch live documents from API on mount
   useEffect(() => {
@@ -169,10 +161,8 @@ export function StageDetailDrawer({
     
     // reset format and tracking states
     setActiveFormat("video");
-    setVideoTimer(0);
     setAudioPlaying(false);
-    setAudioTimer(0);
-    setContentConsumed(false);
+    setContentConsumed(true);
     setShowTriviaDialog(false);
     setActiveTriviaIdx(0);
     setSelectedTriviaAnswer(null);
@@ -193,22 +183,17 @@ export function StageDetailDrawer({
   // Load state when currentStep or stage.id changes
   useEffect(() => {
     if (currentStep < 1 || currentStep > stage.steps.length) {
-      setVideoTimer(0);
-      setAudioTimer(0);
       setAudioPlaying(false);
-      setContentConsumed(false);
+      setContentConsumed(true);
       return;
     }
 
     const step = stage.steps[currentStep - 1];
     
     // Check if trivia is already passed
-    const triviaPassed = localStorage.getItem(`stage_${stage.id}_step_${step.id}_trivia_passed`) === "true";
-    setContentConsumed(triviaPassed);
+    setContentConsumed(true);
     
     // Reset step states
-    setVideoTimer(0);
-    setAudioTimer(0);
     setAudioPlaying(false);
     setActiveTriviaIdx(0);
     setSelectedTriviaAnswer(null);
@@ -248,153 +233,7 @@ export function StageDetailDrawer({
     return () => clearInterval(interval);
   }, [triviaCooldown, stage.id, currentStep]);
 
-  // Simulated audio player ticking
-  useEffect(() => {
-    if (audioPlaying) {
-      audioIntervalRef.current = setInterval(() => {
-        setAudioTimer((prev) => {
-          if (prev >= 15) {
-            clearInterval(audioIntervalRef.current);
-            setAudioPlaying(false);
-            setContentConsumed(true);
-            toast.success("🎧 Simulated audio lesson completed! You can now take the step trivia.");
-            return 15;
-          }
-          return prev + 1;
-        });
-      }, 1000);
-    } else {
-      if (audioIntervalRef.current) {
-        clearInterval(audioIntervalRef.current);
-      }
-    }
-
-    return () => {
-      if (audioIntervalRef.current) {
-        clearInterval(audioIntervalRef.current);
-      }
-    };
-  }, [audioPlaying]);
-
-  // YouTube Iframe Player API loading and handling
-  useEffect(() => {
-    if (!origin) return;
-    if (activeSubTab !== "learn" || currentStep < 1 || currentStep > stage.steps.length) return;
-    const step = stage.steps[currentStep - 1];
-    if (activeFormat !== "video" || !step.youtubeId) return;
-
-    let player: any = null;
-
-    const initYtPlayer = () => {
-      try {
-        if (!(window as any).YT || !(window as any).YT.Player) return;
-        
-        if (!document.getElementById(iframeId)) {
-          setTimeout(initYtPlayer, 50);
-          return;
-        }
-
-        if (playerRef.current) {
-          try {
-            playerRef.current.destroy();
-          } catch (e) {
-            console.error("Error destroying player:", e);
-          }
-        }
-
-        player = new (window as any).YT.Player(iframeId, {
-          events: {
-            onStateChange: (event: any) => {
-              if (event.data === (window as any).YT.PlayerState.PLAYING) {
-                startWatchTimer();
-              } else {
-                stopWatchTimer();
-              }
-            }
-          }
-        });
-        playerRef.current = player;
-      } catch (err) {
-        console.error("Failed to bind YouTube player API:", err);
-      }
-    };
-
-    const loadYtScript = () => {
-      if ((window as any).YT && (window as any).YT.Player) {
-        initYtPlayer();
-        return;
-      }
-      if (document.getElementById("yt-iframe-api-script")) {
-        const checkYt = setInterval(() => {
-          if ((window as any).YT && (window as any).YT.Player) {
-            clearInterval(checkYt);
-            initYtPlayer();
-          }
-        }, 100);
-        return;
-      }
-      const tag = document.createElement("script");
-      tag.id = "yt-iframe-api-script";
-      tag.src = "https://www.youtube.com/iframe_api";
-      document.body.appendChild(tag);
-
-      (window as any).onYouTubeIframeAPIReady = () => {
-        initYtPlayer();
-      };
-    };
-
-    loadYtScript();
-
-    return () => {
-      stopWatchTimer();
-      if (playerRef.current) {
-        try {
-          playerRef.current.destroy();
-          playerRef.current = null;
-        } catch (e) {
-          console.error("Error destroying player on cleanup:", e);
-        }
-      }
-    };
-  }, [currentStep, activeFormat, activeSubTab, stage.id, origin]);
-
-  const startWatchTimer = () => {
-    if (videoTimerRef.current) return;
-    videoTimerRef.current = setInterval(() => {
-      setVideoTimer((prev) => {
-        if (prev >= 90) {
-          stopWatchTimer();
-          setContentConsumed(true);
-          toast.success("🎥 Video watch completed! You can now take the step trivia.");
-          return 90;
-        }
-        return prev + 1;
-      });
-    }, 1000);
-  };
-
-  const stopWatchTimer = () => {
-    if (videoTimerRef.current) {
-      clearInterval(videoTimerRef.current);
-      videoTimerRef.current = null;
-    }
-  };
-
-  // Skip timer and complete content for video
-  const handleCheatCompleteVideo = () => {
-    stopWatchTimer();
-    setVideoTimer(90);
-    setContentConsumed(true);
-    toast.success("⏩ Video watch completed (Debug Shortcut)!");
-  };
-
-  // Skip timer and complete content for audio
-  const handleCheatCompleteAudio = () => {
-    setAudioTimer(15);
-    setAudioPlaying(false);
-    setContentConsumed(true);
-    toast.success("⏩ Audio listen completed (Debug Shortcut)!");
-  };
+  // No timing logic needed as lessons are unlocked by default
 
   // Start Learning Button
   const handleStartLearning = () => {
@@ -727,29 +566,12 @@ export function StageDetailDrawer({
                     <div className="space-y-3">
                       <div className="relative aspect-video rounded-xl overflow-hidden bg-black">
                         <iframe
-                          id={iframeId}
                           className="w-full h-full border-0"
-                          src={`https://www.youtube-nocookie.com/embed/${stage.steps[currentStep - 1].youtubeId}?rel=0&modestbranding=1&enablejsapi=1${origin ? `&origin=${encodeURIComponent(origin)}` : ""}`}
+                          src={`https://www.youtube-nocookie.com/embed/${stage.steps[currentStep - 1].youtubeId}?rel=0&modestbranding=1`}
                           title="Budget Ndio Story Step Video"
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                           allowFullScreen
                         />
-                      </div>
-                      
-                      <div className="space-y-1.5">
-                        <div className="flex justify-between items-center text-xs font-semibold">
-                          <span className="text-muted-foreground">Watch requirement:</span>
-                          <span className={videoTimer >= 90 ? "text-primary font-bold" : "text-muted-foreground animate-pulse"}>
-                            {videoTimer}s / 90s
-                          </span>
-                        </div>
-                        <Progress value={(videoTimer / 90) * 100} className="h-1.5 rounded-full" />
-                      </div>
-
-                      <div className="flex justify-between items-center pt-1 border-t border-border">
-                        <Button size="xs" variant="outline" onClick={handleCheatCompleteVideo} className="text-[10px] text-muted-foreground font-semibold gap-1">
-                          ⏩ Complete Watch (Shortcut)
-                        </Button>
                       </div>
                     </div>
                   )}
@@ -766,26 +588,15 @@ export function StageDetailDrawer({
                           <p className="text-[10px] text-muted-foreground">Listen to this step's key takeaways</p>
                         </div>
                         
-                        <div className="w-full flex items-center gap-3">
+                        <div className="w-full flex items-center justify-center gap-3">
                           <Button
-                            size="icon-sm"
                             onClick={() => setAudioPlaying(!audioPlaying)}
-                            className="rounded-full shadow-xs shrink-0"
+                            className="rounded-xl shadow-xs shrink-0 font-bold text-xs gap-1.5"
                           >
                             {audioPlaying ? <Pause className="size-4" /> : <Play className="size-4 fill-current" />}
+                            <span>{audioPlaying ? "Pause Audio" : "Listen to Lesson"}</span>
                           </Button>
-                          <div className="flex-1 space-y-1">
-                            <Progress value={(audioTimer / 15) * 100} className="h-1.5 rounded-full" />
-                            <div className="flex justify-between text-[9px] text-muted-foreground font-mono">
-                              <span>0:{audioTimer.toString().padStart(2, '0')}</span>
-                              <span>0:15</span>
-                            </div>
-                          </div>
                         </div>
-
-                        <Button size="xs" variant="outline" onClick={handleCheatCompleteAudio} className="text-[10px] text-muted-foreground font-semibold gap-1">
-                          ⏩ Complete Audio (Shortcut)
-                        </Button>
                       </div>
 
                       {/* Searchable Transcript */}
@@ -825,17 +636,8 @@ export function StageDetailDrawer({
                   {/* TEXT FORMAT */}
                   {activeFormat === "text" && (
                     <div className="space-y-4">
-                      <div className="text-xs leading-relaxed text-foreground/90 whitespace-pre-wrap font-sans bg-muted/10 p-2 rounded-lg max-h-60 overflow-y-auto border border-border/40">
+                      <div className="text-xs leading-relaxed text-foreground/90 whitespace-pre-wrap font-sans bg-muted/10 p-3 rounded-lg max-h-60 overflow-y-auto border border-border/40">
                         {getPersonalizedText(stage.steps[currentStep - 1].text)}
-                      </div>
-                      <div className="border-t border-border pt-3 flex justify-end">
-                        <Button
-                          size="sm"
-                          onClick={() => setContentConsumed(true)}
-                          className="rounded-xl font-black text-xs gap-1"
-                        >
-                          I've Read This Chapter <CheckCircle2 className="size-3.5" />
-                        </Button>
                       </div>
                     </div>
                   )}
@@ -854,14 +656,14 @@ export function StageDetailDrawer({
                         You've unlocked this step's trivia gates and earned sovereigns. Tap the footer button to progress.
                       </p>
                     </div>
-                  ) : contentConsumed ? (
+                  ) : (
                     <div className="p-4 rounded-2xl border border-primary/20 bg-primary/5 space-y-3">
                       <div className="flex items-center gap-2">
                         <Trophy className="size-5 text-primary shrink-0" />
-                        <h4 className="text-xs font-bold text-foreground">Step Trivia Unlocked!</h4>
+                        <h4 className="text-xs font-bold text-foreground">Step Trivia Challenge</h4>
                       </div>
                       <p className="text-[10px] text-muted-foreground">
-                        Lesson materials consumed successfully. Take the short trivia check to unlock the next guided step.
+                        Take the short trivia check to unlock the next guided step.
                       </p>
                       <Button
                         onClick={() => {
@@ -875,16 +677,6 @@ export function StageDetailDrawer({
                       >
                         <Sparkles className="size-4" /> Start Step Trivia Challenge
                       </Button>
-                    </div>
-                  ) : (
-                    <div className="p-4 rounded-2xl border border-muted-foreground/15 bg-muted/20 flex items-start gap-3">
-                      <Lock className="size-5 text-muted-foreground mt-0.5 shrink-0" />
-                      <div className="space-y-1">
-                        <h4 className="text-xs font-bold text-muted-foreground">Lesson Gated</h4>
-                        <p className="text-[10px] text-muted-foreground leading-normal">
-                          Consume the step lesson material above using any format (Video/Audio/Text) to open the trivia challenge.
-                        </p>
-                      </div>
                     </div>
                   )}
                 </div>
