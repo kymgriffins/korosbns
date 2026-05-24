@@ -111,6 +111,13 @@ export function StageDetailDrawer({
   const [constitutionTab, setConstitutionTab] = useState<"current" | "timeline">("current");
   const [liveRepoDocs, setLiveRepoDocs] = useState<any[]>([]);
   const [apiLoading, setApiLoading] = useState<boolean>(false);
+  const [origin, setOrigin] = useState<string>("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setOrigin(window.location.origin);
+    }
+  }, []);
 
   // YouTube references
   const playerRef = useRef<any>(null);
@@ -271,6 +278,7 @@ export function StageDetailDrawer({
 
   // YouTube Iframe Player API loading and handling
   useEffect(() => {
+    if (!origin) return;
     if (activeSubTab !== "learn" || currentStep < 1 || currentStep > stage.steps.length) return;
     const step = stage.steps[currentStep - 1];
     if (activeFormat !== "video" || !step.youtubeId) return;
@@ -278,28 +286,37 @@ export function StageDetailDrawer({
     let player: any = null;
 
     const initYtPlayer = () => {
-      if (!(window as any).YT || !(window as any).YT.Player) return;
-      
-      if (playerRef.current) {
-        try {
-          playerRef.current.destroy();
-        } catch (e) {
-          console.error("Error destroying player:", e);
+      try {
+        if (!(window as any).YT || !(window as any).YT.Player) return;
+        
+        if (!document.getElementById(iframeId)) {
+          setTimeout(initYtPlayer, 50);
+          return;
         }
-      }
 
-      player = new (window as any).YT.Player(iframeId, {
-        events: {
-          onStateChange: (event: any) => {
-            if (event.data === (window as any).YT.PlayerState.PLAYING) {
-              startWatchTimer();
-            } else {
-              stopWatchTimer();
-            }
+        if (playerRef.current) {
+          try {
+            playerRef.current.destroy();
+          } catch (e) {
+            console.error("Error destroying player:", e);
           }
         }
-      });
-      playerRef.current = player;
+
+        player = new (window as any).YT.Player(iframeId, {
+          events: {
+            onStateChange: (event: any) => {
+              if (event.data === (window as any).YT.PlayerState.PLAYING) {
+                startWatchTimer();
+              } else {
+                stopWatchTimer();
+              }
+            }
+          }
+        });
+        playerRef.current = player;
+      } catch (err) {
+        console.error("Failed to bind YouTube player API:", err);
+      }
     };
 
     const loadYtScript = () => {
@@ -319,8 +336,7 @@ export function StageDetailDrawer({
       const tag = document.createElement("script");
       tag.id = "yt-iframe-api-script";
       tag.src = "https://www.youtube.com/iframe_api";
-      const firstScriptTag = document.getElementsByTagName("script")[0];
-      firstScriptTag?.parentNode?.insertBefore(tag, firstScriptTag);
+      document.body.appendChild(tag);
 
       (window as any).onYouTubeIframeAPIReady = () => {
         initYtPlayer();
@@ -340,7 +356,7 @@ export function StageDetailDrawer({
         }
       }
     };
-  }, [currentStep, activeFormat, activeSubTab, stage.id]);
+  }, [currentStep, activeFormat, activeSubTab, stage.id, origin]);
 
   const startWatchTimer = () => {
     if (videoTimerRef.current) return;
@@ -707,13 +723,13 @@ export function StageDetailDrawer({
                 <div className="p-4 border border-border bg-card rounded-2xl shadow-xs space-y-4">
                   
                   {/* VIDEO FORMAT */}
-                  {activeFormat === "video" && (
+                  {activeFormat === "video" && origin && (
                     <div className="space-y-3">
                       <div className="relative aspect-video rounded-xl overflow-hidden bg-black">
                         <iframe
                           id={iframeId}
                           className="w-full h-full"
-                          src={`https://www.youtube.com/embed/${stage.steps[currentStep - 1].youtubeId}?rel=0&modestbranding=1&enablejsapi=1`}
+                          src={`https://www.youtube.com/embed/${stage.steps[currentStep - 1].youtubeId}?rel=0&modestbranding=1&enablejsapi=1${origin ? `&origin=${encodeURIComponent(origin)}` : ""}`}
                           title="Budget Ndio Story Step Video"
                           frameBorder="0"
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
