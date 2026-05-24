@@ -172,10 +172,10 @@ const Hero = () => {
                         <div className="rounded-lg md:rounded-[24px] border border-foreground/10 bg-background overflow-hidden">
                             <div className="relative aspect-[16/10] w-full bg-black">
                                 <iframe
-                                    src="https://www.youtube.com/embed/Ed9lP0-komE?rel=0&modestbranding=1"
+                                    src="https://www.youtube-nocookie.com/embed/Ed9lP0-komE?rel=0&modestbranding=1"
                                     title="Budget Ndio Story overview"
-                                    className="absolute inset-0 w-full h-full"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    className="absolute inset-0 w-full h-full border-0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                     allowFullScreen
                                 />
                             </div>
