@@ -1,0 +1,23 @@
+{
+  "generated_by": "bootstrap_e2e_personas",
+  "apiBase": "http://127.0.0.1:8000",
+  "frontendBase": "http://localhost:3000",
+  "password": "E2eDemoPass123!",
+  "anonymous": {
+    "description": "No account \u2014 browse public content and anonymous surveys only"
+  },
+  "existingCitizen": {
+    "email": "citizen.existing@bns-e2e.test",
+    "password": "E2eDemoPass123!",
+    "firstName": "E2E",
+    "lastName": "Existing",
+    "displayName": "E2E Existing Citizen"
+  },
+  "newCitizen": {
+    "emailPrefix": "citizen.new",
+    "emailDomain": "bns-e2e.test",
+    "password": "E2eDemoPass123!",
+    "firstName": "E2E",
+    "lastName": "Newcomer"
+  }
+}

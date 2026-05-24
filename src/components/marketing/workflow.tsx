@@ -3,7 +3,7 @@
 import React from 'react';
 import { cn } from '@/utils';
 import Wrapper from '../global/wrapper';
-import SectionBadge from '../ui/section-badge';
+import SectionBadge from '@/ui/section-badge';
 import { motion } from 'motion/react';
 import { WORKFLOW_STEPS } from '@/constants/workflow';
 import Image from 'next/image';

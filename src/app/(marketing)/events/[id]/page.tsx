@@ -11,6 +11,7 @@ import {
   loadEventDetail,
   type HubEvent,
 } from "@/lib/citizen-content";
+import { formatInNairobi } from "@/lib/datetime";
 
 export default function EventDetailPage() {
   const params = useParams();
@@ -48,7 +49,7 @@ export default function EventDetailPage() {
             <h1 className="text-3xl lg:text-4xl font-bold">{event.title}</h1>
             {event.starts_at ? (
               <p className="text-muted-foreground mt-2">
-                {new Date(event.starts_at).toLocaleString()}
+                {formatInNairobi(event.starts_at)}
               </p>
             ) : null}
             {event.location ? (

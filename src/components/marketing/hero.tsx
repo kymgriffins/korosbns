@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Wrapper from '../global/wrapper';
-import { Button } from '../ui/button';
+import { Button } from '@/ui/button';
 import { ArrowRightIcon } from 'lucide-react';
 import { Routes } from '@/constants';
 import { team } from '@/constants/team';

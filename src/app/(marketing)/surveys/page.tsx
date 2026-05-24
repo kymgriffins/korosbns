@@ -1,125 +1,122 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { motion } from "motion/react";
+import { ExternalLink, Loader2 } from "lucide-react";
 import Wrapper from "@/components/global/wrapper";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/ui/button";
 import { Routes } from "@/constants/routes";
 import type { SurveyListItemApi } from "@/lib/api-client";
 import { contentLoadErrorMessage, loadSurveyList } from "@/lib/marketing-content";
-import { Loader2 } from "lucide-react";
+import { fadeInUp, staggerContainer } from "@/motion/variants";
+
+const SURVEY_POLL_MS = 60_000;
+
+function SurveyCard({ survey }: { survey: SurveyListItemApi }) {
+  const isExternal = survey.is_external && survey.external_url;
+  const cta = isExternal ? (
+    <Button asChild className="w-full">
+      <a
+        href={survey.external_url!}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Take survey
+        <ExternalLink className="ml-2 size-3.5" aria-hidden />
+      </a>
+    </Button>
+  ) : (
+    <Button asChild size="sm" className="w-full">
+      <Link href={Routes.Survey(survey.id)}>Take survey</Link>
+    </Button>
+  );
+
+  return (
+    <motion.article
+      variants={fadeInUp}
+      className="flex flex-col justify-between rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary/40"
+    >
+      <div>
+        <h3 className="mb-2 text-lg font-semibold">{survey.title}</h3>
+        {survey.description ? (
+          <p className="mb-4 line-clamp-3 text-sm text-muted-foreground">
+            {survey.description}
+          </p>
+        ) : null}
+        <p className="mb-4 text-xs text-muted-foreground">
+          {isExternal
+            ? "Hosted externally — opens in a new tab"
+            : survey.allow_anonymous === false
+              ? "Sign-in required to submit"
+              : "Anonymous submissions allowed"}
+        </p>
+      </div>
+      {cta}
+    </motion.article>
+  );
+}
 
 export default function SurveysPage() {
   const [surveys, setSurveys] = useState<SurveyListItemApi[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
+  const refresh = useCallback(() => {
     void loadSurveyList()
       .then(setSurveys)
       .catch((err) => setError(contentLoadErrorMessage(err, "surveys")))
       .finally(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    refresh();
+    const timer = window.setInterval(refresh, SURVEY_POLL_MS);
+    return () => window.clearInterval(timer);
+  }, [refresh]);
+
   return (
     <Wrapper className="py-16">
-      <div className="max-w-6xl mx-auto">
+      <div className="mx-auto max-w-6xl">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          className="mb-12 text-center"
+          variants={fadeInUp}
+          initial="hidden"
+          animate="visible"
         >
-          <h1 className="text-4xl lg:text-5xl font-bold mb-6">Budget Surveys</h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <h1 className="mb-6 text-4xl font-bold lg:text-5xl">Budget Surveys</h1>
+          <p className="mx-auto max-w-2xl text-xl text-muted-foreground">
             Share your views on the national budget. Active surveys from Budget Ndio Story.
           </p>
         </motion.div>
 
-        {loading && (
+        {loading && surveys.length === 0 && (
           <div className="flex justify-center py-16">
-            <Loader2 className="size-8 animate-spin text-primary" />
+            <Loader2 className="size-8 animate-spin text-primary" aria-label="Loading surveys" />
           </div>
         )}
 
         {error && (
-          <p className="text-center text-destructive py-8">{error}</p>
+          <p className="py-8 text-center text-destructive">{error}</p>
         )}
 
-        {!loading && !error && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Featured External Survey Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="group relative rounded-2xl border border-border bg-card overflow-hidden hover:border-primary/50 hover:shadow-lg transition-all duration-300 flex flex-col justify-between"
-            >
-              <div>
-                <div className="relative w-full aspect-[16/10] overflow-hidden bg-muted">
-                  <Image
-                    src="/images/survey/bnssurvey1.jpeg"
-                    alt="National Youth Budget Perception Pilot Survey"
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute top-3 left-3 bg-primary text-primary-foreground text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm">
-                    Featured
-                  </div>
-                </div>
-                <div className="p-6 pb-0">
-                  <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
-                    National Youth Budget Perception Pilot Survey
-                  </h3>
-                  <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
-                    Share your views on the national budget! Help us understand youth budget priorities and civic literacy in Kenya.
-                  </p>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground mb-4">
-                    <span className="inline-block size-2 rounded-full bg-green-500 animate-pulse" />
-                    <span>Open for submissions (External)</span>
-                  </div>
-                </div>
-              </div>
-              <div className="p-6 pt-2">
-                <Button asChild className="w-full font-medium cursor-pointer">
-                  <a
-                    href="https://budgetndiostory.surveycto.com/collect/bns_nyouth_budget_v1"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Take survey
-                  </a>
-                </Button>
-              </div>
-            </motion.div>
-
-            {surveys.map((survey, index) => (
-              <motion.div
-                key={survey.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: (index + 1) * 0.05 }}
-                className="rounded-xl border border-border bg-card p-6 hover:border-primary/40 transition-colors flex flex-col justify-between"
-              >
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">{survey.title}</h3>
-                  {survey.description ? (
-                    <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
-                      {survey.description}
-                    </p>
-                  ) : null}
-                  <p className="text-xs text-muted-foreground mb-4">
-                    {survey.allow_anonymous === false
-                      ? "Sign-in required to submit"
-                      : "Anonymous submissions allowed"}
-                  </p>
-                </div>
-                <Button asChild size="sm" className="w-full">
-                  <Link href={Routes.Survey(survey.id)}>Take survey</Link>
-                </Button>
-              </motion.div>
+        {!error && surveys.length > 0 && (
+          <motion.div
+            className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
+          >
+            {surveys.map((survey) => (
+              <SurveyCard key={survey.id} survey={survey} />
             ))}
-          </div>
+          </motion.div>
+        )}
+
+        {!loading && !error && surveys.length === 0 && (
+          <p className="py-12 text-center text-muted-foreground">
+            No active surveys right now. Check back soon.
+          </p>
         )}
       </div>
     </Wrapper>

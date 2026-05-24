@@ -2,7 +2,7 @@
 
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
-import { Button } from '../ui/button';
+import { Button } from '@/ui/button';
 import { ArrowRightIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Routes } from '@/constants';

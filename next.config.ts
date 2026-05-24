@@ -30,6 +30,7 @@ function contentSecurityPolicy(): string {
 
 const nextConfig: NextConfig = {
   /* config options here */
+  allowedDevOrigins: ['192.168.100.78', 'localhost', '127.0.0.1'],
   reactCompiler: true,
   trailingSlash: true,
 
@@ -132,6 +133,67 @@ const nextConfig: NextConfig = {
         ],
         destination: "https://budgetndiostory.org/:path*",
         permanent: true,
+      },
+      // Consolidated legacy routes redirecting to unified /learn
+      {
+        source: "/articles/:slug*",
+        destination: "/learn/:slug*",
+        permanent: false,
+      },
+      {
+        source: "/trivia/:slug*",
+        destination: "/learn/:slug*",
+        permanent: false,
+      },
+      {
+        source: "/knowledge/:slug*",
+        destination: "/learn/:slug*",
+        permanent: false,
+      },
+      {
+        source: "/learn/bps/:path*",
+        destination: "/learn/",
+        permanent: false,
+      },
+      {
+        source: "/learn/deep-dives/:slug*",
+        destination: "/learn/:slug*",
+        permanent: false,
+      },
+      {
+        source: "/learn/units/:path*",
+        destination: "/learn/",
+        permanent: false,
+      },
+      {
+        source: "/learn/repository/:path*",
+        destination: "/learn/",
+        permanent: false,
+      },
+      {
+        source: "/cafe/:path*",
+        destination: "/learn/",
+        permanent: false,
+      },
+      {
+        source: "/challenges/:path*",
+        destination: "/learn/",
+        permanent: false,
+      },
+      {
+        source: "/invite/:path*",
+        destination: "/auth/register/",
+        permanent: false,
+      },
+      {
+        source: "/test/:path*",
+        destination: "/learn/",
+        permanent: false,
+      },
+      {
+        source: "/users/:id*",
+        destination: "/learn/",
+        permanent: false,
       },
     ];
   },

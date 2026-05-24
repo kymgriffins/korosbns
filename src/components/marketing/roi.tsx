@@ -3,7 +3,7 @@
 import React from "react";
 import { motion } from "motion/react";
 import Wrapper from "../global/wrapper";
-import SectionBadge from "../ui/section-badge";
+import SectionBadge from "@/ui/section-badge";
 import { TrendingUp, ShieldCheck, Database, Landmark } from "lucide-react";
 import { cn } from "@/utils";
 

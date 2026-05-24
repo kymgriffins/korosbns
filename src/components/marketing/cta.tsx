@@ -2,7 +2,7 @@
 
 import Icons from '@/components/global/icons';
 import Wrapper from '@/components/global/wrapper';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/ui/button';
 import { Routes } from '@/constants';
 import { motion } from 'motion/react';
 import Link from 'next/link';

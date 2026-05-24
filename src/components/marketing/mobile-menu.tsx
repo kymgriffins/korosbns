@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
 import React from 'react';
 import { NAV_LINKS, Routes } from "@/constants";
-import { Button } from "../ui/button";
+import { Button } from "@/ui/button";
 import { useAuth } from "@/contexts/auth-context";
 import { 
     BookOpen, 

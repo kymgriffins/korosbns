@@ -1,7 +1,7 @@
 "use client";
 
 import Wrapper from "@/components/global/wrapper";
-import SectionBadge from "@/components/ui/section-badge";
+import SectionBadge from "@/ui/section-badge";
 import { motion } from "motion/react";
 import { ArrowRight, CalendarDays, Rocket, Users2 } from "lucide-react";
 import Link from "next/link";

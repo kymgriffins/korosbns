@@ -3,14 +3,14 @@
 import { team } from '@/constants/team';
 import { motion } from 'motion/react';
 import Wrapper from '@/components/global/wrapper';
-import SectionBadge from '@/components/ui/section-badge';
+import SectionBadge from '@/ui/section-badge';
 import Image from 'next/image';
 import Link from 'next/link';
 import { IconBrandLinkedin, IconBrandX } from '@tabler/icons-react';
-import { getMemberUsername } from '@/lib/team';
+import { slugifyName } from '@/lib/team';
 
 const TeamCard = ({ member, index }: { member: typeof team[0]; index: number }) => {
-    const username = getMemberUsername(member);
+    const username = slugifyName(member.name);
     
     return (
         <motion.div
@@ -203,16 +203,16 @@ const About = () => {
 
                         <div className="mt-8 flex flex-wrap items-center gap-3">
                             <Link
-                                href="/careers"
+                                href="/contact"
                                 className="inline-flex items-center justify-center rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary/90"
                             >
-                                See open positions
+                                Contact us to apply
                             </Link>
                             <Link
-                                href="/careers"
+                                href="/contact"
                                 className="inline-flex items-center justify-center rounded-xl border border-foreground/15 px-5 py-3 text-sm font-semibold transition-colors hover:border-primary/40 hover:text-primary"
                             >
-                                Go to careers page
+                                Go to contact page
                             </Link>
                         </div>
                     </div>

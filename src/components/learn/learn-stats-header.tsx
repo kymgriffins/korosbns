@@ -3,37 +3,15 @@
 import { BookOpen, Trophy } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getAccessToken } from "@/lib/api-client";
-import { resolveAppUrl } from "@/lib/api-url";
-
-type GamificationState = {
-  points: number;
-  level: number;
-  streak_days: number;
-};
+import { fetchGamificationMe, type GamificationState } from "@/lib/gamification";
 
 export function LearnStatsHeader({ tagline }: { tagline?: string | null }) {
   const [authenticated, setAuthenticated] = useState(false);
   const [gamification, setGamification] = useState<GamificationState | null>(null);
 
   useEffect(() => {
-    const token = getAccessToken();
-    setAuthenticated(Boolean(token));
-    if (!token) return;
-
-    const load = async () => {
-      try {
-        const res = await fetch(resolveAppUrl("/api/gamification/me/"), {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (res.ok) {
-          const data = (await res.json()) as GamificationState;
-          setGamification(data);
-        }
-      } catch {
-        /* optional */
-      }
-    };
-    void load();
+    setAuthenticated(Boolean(getAccessToken()));
+    void fetchGamificationMe().then(setGamification);
   }, []);
 
   return (

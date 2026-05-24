@@ -1,7 +1,7 @@
 "use client";
 
-import Footer from "@/components/marketing/footer";
-import Navbar from "@/components/marketing/navbar";
+import { Footer } from "@/layouts/Footer";
+import { Header as Navbar } from "@/layouts/Header";
 import { usePathname } from "next/navigation";
 
 const MarketingLayout = ({
@@ -12,15 +12,14 @@ const MarketingLayout = ({
 
     const pathname = usePathname();
     const isContactPage = pathname === "/contact";
-    const isLearnPage = pathname === "/learn";
-    const isLearnDocPage = pathname.startsWith("/learn/") && pathname !== "/learn";
+    const isLearnApp = pathname.startsWith("/learn");
     const isAccountPage = pathname.startsWith("/account");
     const showMarketingFooter =
-        !isContactPage && !isLearnPage && !isLearnDocPage && !isAccountPage;
+        !isContactPage && !isLearnApp && !isAccountPage;
 
     return (
-        <main className={`w-full relative ${isAccountPage ? "" : "pt-14 sm:pt-20"}`}>
-            {!isAccountPage && <Navbar />}
+        <main className={`w-full relative ${(isAccountPage || isLearnApp) ? "" : "pt-14 sm:pt-20"}`}>
+            {!isAccountPage && !isLearnApp && <Navbar />}
             {children}
             {showMarketingFooter && <Footer />}
         </main>

@@ -3,12 +3,12 @@
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
-import { AuthShell } from "@/components/citizen/auth-shell";
+import { AuthShell } from "@/layouts/AuthShell";
 import { FormStatus } from "@/components/citizen/form-status";
 import { GuestOnly } from "@/components/citizen/guest-only";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/ui/button";
+import { Input } from "@/ui/input";
+import { Label } from "@/ui/label";
 import { Routes } from "@/constants/routes";
 import { citizenApi } from "@/lib/api-client";
 

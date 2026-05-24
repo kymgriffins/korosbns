@@ -2,23 +2,22 @@ import { Metadata } from "next";
 import { team } from "@/constants/team";
 import {
   findMemberByParam,
-  getMemberAliases,
-  getMemberUsername,
+  slugifyName,
   type TeamMember,
 } from "@/lib/team";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { IconBrandLinkedin, IconBrandX } from "@tabler/icons-react";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { metaDescription } from "@/utils/metadata";
 
 type TeamMemberParams = { username: string };
 
 export function generateStaticParams() {
-  return team.flatMap((member) =>
-    getMemberAliases(member).map((username) => ({ username })),
-  );
+  return team.map((member) => ({
+    username: slugifyName(member.name),
+  }));
 }
 
 export async function generateMetadata({
@@ -128,7 +127,7 @@ const TeamMemberProfile = ({ member }: { member: typeof team[0] }) => {
 
         <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-4">
           {team.filter((m) => m.name !== member.name).slice(0, 3).map((m) => {
-            const mUsername = getMemberUsername(m);
+            const mUsername = slugifyName(m.name);
             return (
               <Link
                 key={m.name}
@@ -163,6 +162,11 @@ export default async function TeamMemberPage({
 
   if (!member) {
     notFound();
+  }
+
+  const canonicalUsername = slugifyName(member.name);
+  if (username !== canonicalUsername) {
+    redirect(`/team/${canonicalUsername}`);
   }
 
   return <TeamMemberProfile member={member} />;

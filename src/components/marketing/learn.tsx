@@ -26,7 +26,7 @@ import Balancer from "react-wrap-balancer";
 import { toast } from "sonner";
 import Container from "../global/container";
 import Wrapper from "../global/wrapper";
-import { Button } from "../ui/button";
+import { Button } from "@/ui/button";
 
 import { resolveAppUrl } from "@/lib/api-url";
 import {
@@ -1414,7 +1414,7 @@ export default function Learn() {
                     <Button
                       variant="outline"
                       className="w-full h-12 rounded-xl mt-3 border-border text-foreground hover:bg-muted/50"
-                      onClick={(e) => {
+                      onClick={(e: React.MouseEvent) => {
                         e.stopPropagation();
                         handleNext();
                       }}

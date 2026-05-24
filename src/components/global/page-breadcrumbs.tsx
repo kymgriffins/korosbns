@@ -7,7 +7,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+} from "@/ui/breadcrumb";
 
 export type BreadcrumbItemConfig = {
   label: string;

@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
-import { ContentLayout } from "@/components/citizen/content-layout";
+import { ContentLayout } from "@/layouts/DashboardShell";
 import { Protected } from "@/components/citizen/protected";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/ui/skeleton";
 import { Routes } from "@/constants/routes";
 import { citizenApi } from "@/lib/api-client";
 
