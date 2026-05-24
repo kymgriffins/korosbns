@@ -728,10 +728,9 @@ export function StageDetailDrawer({
                       <div className="relative aspect-video rounded-xl overflow-hidden bg-black">
                         <iframe
                           id={iframeId}
-                          className="w-full h-full"
-                          src={`https://www.youtube.com/embed/${stage.steps[currentStep - 1].youtubeId}?rel=0&modestbranding=1&enablejsapi=1${origin ? `&origin=${encodeURIComponent(origin)}` : ""}`}
+                          className="w-full h-full border-0"
+                          src={`https://www.youtube-nocookie.com/embed/${stage.steps[currentStep - 1].youtubeId}?rel=0&modestbranding=1&enablejsapi=1${origin ? `&origin=${encodeURIComponent(origin)}` : ""}`}
                           title="Budget Ndio Story Step Video"
-                          frameBorder="0"
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                           allowFullScreen
                         />

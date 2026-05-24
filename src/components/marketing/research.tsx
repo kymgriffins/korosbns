@@ -18,10 +18,10 @@ import { fetchDocumentsFromAPI, DocumentType } from "@/constants/documents";
 type LearnMode = 'video' | 'audio' | 'article' | 'story' | 'docs'
 
 const bpsVideos = [
-  { id: 'intro', title: 'Introduction to BPS', duration: '4:32', url: 'https://www.youtube.com/embed/Ed9lP0-komE' },
-  { id: 'pillars', title: 'BETA Agenda Pillars Explained', duration: '8:15', url: 'https://www.youtube.com/embed/wkPe3sWomoA' },
-  { id: 'numbers', title: 'Budget Numbers Deep Dive', duration: '6:48', url: 'https://www.youtube.com/embed/FkgRz4v2Llk' },
-  { id: 'risks', title: 'Fiscal Risks Analysis', duration: '5:22', url: 'https://www.youtube.com/embed/Ed9lP0-komE' },
+  { id: 'intro', title: 'Introduction to BPS', duration: '4:32', url: 'https://www.youtube-nocookie.com/embed/Ed9lP0-komE' },
+  { id: 'pillars', title: 'BETA Agenda Pillars Explained', duration: '8:15', url: 'https://www.youtube-nocookie.com/embed/wkPe3sWomoA' },
+  { id: 'numbers', title: 'Budget Numbers Deep Dive', duration: '6:48', url: 'https://www.youtube-nocookie.com/embed/FkgRz4v2Llk' },
+  { id: 'risks', title: 'Fiscal Risks Analysis', duration: '5:22', url: 'https://www.youtube-nocookie.com/embed/Ed9lP0-komE' },
 ]
 
 const budgetData = [
@@ -1082,8 +1082,8 @@ export default function Research() {
                 <div className="aspect-video rounded-2xl bg-black overflow-hidden relative">
                   <iframe
                     src={`${bpsVideos[currentVideo].url}?autoplay=0`}
-                    className="absolute inset-0 w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    className="absolute inset-0 w-full h-full border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
                   />
                 </div>

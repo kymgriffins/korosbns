@@ -39,13 +39,13 @@ const FALLBACK_ARTICLES: Record<string, DeepDiveArticle> = {
         <h3>📺 Video Briefing: Understanding the BPS</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 my-8">
           <div class="aspect-video overflow-hidden rounded-xl border border-white/10 bg-white/5">
-            <iframe class="w-full h-full" src="https://www.youtube.com/embed/Ed9lP0-komE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            <iframe class="w-full h-full border-0" src="https://www.youtube-nocookie.com/embed/Ed9lP0-komE" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
           </div>
           <div class="aspect-video overflow-hidden rounded-xl border border-white/10 bg-white/5">
-            <iframe class="w-full h-full" src="https://www.youtube.com/embed/wkPe3sWomoA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            <iframe class="w-full h-full border-0" src="https://www.youtube-nocookie.com/embed/wkPe3sWomoA" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
           </div>
           <div class="aspect-video overflow-hidden rounded-xl border border-white/10 bg-white/5">
-            <iframe class="w-full h-full" src="https://www.youtube.com/embed/FkgRz4v2Llk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            <iframe class="w-full h-full border-0" src="https://www.youtube-nocookie.com/embed/FkgRz4v2Llk" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
           </div>
         </div>
 
@@ -115,7 +115,7 @@ const FALLBACK_ARTICLES: Record<string, DeepDiveArticle> = {
 
         <h3>📺 Video Overview: The Approval Stage</h3>
         <div class="aspect-video overflow-hidden rounded-2xl border border-white/10 bg-white/5 my-8">
-          <iframe class="w-full h-full" src="https://www.youtube.com/embed/Ed9lP0-komE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          <iframe class="w-full h-full border-0" src="https://www.youtube-nocookie.com/embed/Ed9lP0-komE" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
         </div>
 
         <h3>1. Public Participation: The "Noise" Window</h3>
@@ -146,7 +146,7 @@ const FALLBACK_ARTICLES: Record<string, DeepDiveArticle> = {
 
         <h3>📺 Video Overview: Bringing the Budget to the Ground</h3>
         <div class="aspect-video overflow-hidden rounded-2xl border border-white/10 bg-white/5 my-8">
-          <iframe class="w-full h-full" src="https://www.youtube.com/embed/Ed9lP0-komE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          <iframe class="w-full h-full border-0" src="https://www.youtube-nocookie.com/embed/Ed9lP0-komE" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
         </div>
 
         <h3>1. The Absorption Rate Trap</h3>
@@ -176,7 +176,7 @@ const FALLBACK_ARTICLES: Record<string, DeepDiveArticle> = {
 
         <h3>📺 Video Overview: Accountability & Audit</h3>
         <div class="aspect-video overflow-hidden rounded-2xl border border-white/10 bg-white/5 my-8">
-          <iframe class="w-full h-full" src="https://www.youtube.com/embed/Ed9lP0-komE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          <iframe class="w-full h-full border-0" src="https://www.youtube-nocookie.com/embed/Ed9lP0-komE" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
         </div>
 
         <h3>1. The Auditor General's Report</h3>
