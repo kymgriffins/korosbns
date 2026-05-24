@@ -92,6 +92,7 @@ export function StageDetailDrawer({
   const [contentConsumed, setContentConsumed] = useState<boolean>(true);
 
   // Trivia inline state (no modal — renders below content automatically)
+  const [showTrivia, setShowTrivia] = useState<boolean>(false);
   const [activeTriviaIdx, setActiveTriviaIdx] = useState<number>(0);
   const [selectedTriviaAnswer, setSelectedTriviaAnswer] = useState<number | null>(null);
   const [triviaSubmitted, setTriviaSubmitted] = useState<boolean>(false);
@@ -166,6 +167,7 @@ export function StageDetailDrawer({
     setAudioPlaying(false);
     setContentConsumed(true);
     setActiveTriviaIdx(0);
+    setShowTrivia(false);
     setSelectedTriviaAnswer(null);
     setTriviaSubmitted(false);
     setTriviaCooldown(0);
@@ -197,6 +199,7 @@ export function StageDetailDrawer({
     
     // Reset step states
     setAudioPlaying(false);
+    setShowTrivia(false);
     setActiveTriviaIdx(0);
     setSelectedTriviaAnswer(null);
     setTriviaSubmitted(false);
@@ -720,7 +723,7 @@ export function StageDetailDrawer({
                         <p className="text-[10px] text-muted-foreground">You can retake this later. Tap Next to continue.</p>
                       </div>
                     </div>
-                  ) : (
+                  ) : showTrivia ? (
                     <div className="space-y-4 border border-border bg-card rounded-2xl p-4 shadow-xs animate-in fade-in slide-in-from-bottom-2 duration-300">
                       {/* Trivia header row */}
                       <div className="flex items-center justify-between">
@@ -906,7 +909,7 @@ export function StageDetailDrawer({
                         }
                       })()}
                     </div>
-                  )}
+                  ) : null}
                 </div>
 
               </div>
@@ -1272,11 +1275,18 @@ export function StageDetailDrawer({
                 <Button
                   size="sm"
                   onClick={() => {
+                    const step = stage.steps[currentStep - 1];
+                    const passed = isStepTriviaPassed(step.id);
+                    if (!passed && !triviaSkipped && !showTrivia) {
+                      setShowTrivia(true);
+                      toast.info("Let's test your understanding with a quick check! 📝");
+                      return;
+                    }
                     const nextVal = currentStep + 1;
                     setCurrentStep(nextVal);
                     localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
                   }}
-                  disabled={!isStepTriviaPassed(stage.steps[currentStep - 1].id) && !triviaSkipped}
+                  disabled={showTrivia && !isStepTriviaPassed(stage.steps[currentStep - 1].id) && !triviaSkipped}
                   className="rounded-xl flex-1 gap-1 text-xs"
                 >
                   Next <ArrowRight className="size-4" />

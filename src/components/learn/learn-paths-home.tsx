@@ -890,25 +890,18 @@ export function LearnPathsHome() {
                     onChange={(e) => {
                       const selected = STAGES_DATA.find(s => s.id === parseInt(e.target.value));
                       if (selected) {
-                        const isCompleted = profile.badges?.includes(selected.badge);
-                        const isActive = profile.stageProgress?.includes(selected.id);
-                        if (!isCompleted && !isActive) {
-                          toast.error(`Stage ${selected.id} is locked. Complete previous stages first.`);
-                          return;
-                        }
                         setSelectedStage(selected);
                       }
                     }}
                     className="w-full h-10 px-3 rounded-xl border border-input bg-card text-xs focus-visible:outline-none"
                   >
-                    <option value="">Select an unlocked stage...</option>
+                    <option value="">Select a stage...</option>
                     {STAGES_DATA.map((s) => {
                       const isCompleted = profile.badges?.includes(s.badge);
                       const isActive = profile.stageProgress?.includes(s.id);
-                      const locked = !isCompleted && !isActive;
                       return (
-                        <option key={s.id} value={s.id} disabled={locked}>
-                          Stage {s.id}: {s.documentName} {locked ? "🔒" : ""}
+                        <option key={s.id} value={s.id}>
+                          Stage {s.id}: {s.documentName} {isCompleted ? "✓" : isActive ? "▶" : ""}
                         </option>
                       );
                     })}
@@ -949,7 +942,6 @@ export function LearnPathsHome() {
                   {STAGES_DATA.map((stage) => {
                     const isCompleted = profile.badges?.includes(stage.badge);
                     const isActive = profile.stageProgress?.includes(stage.id);
-                    const isLocked = !isActive && !isCompleted;
                     const isStageCached = cachedStages.includes(stage.id);
                     const offlineDisabled = isOffline && !isStageCached;
 
@@ -957,15 +949,15 @@ export function LearnPathsHome() {
                       <div
                         key={stage.id}
                         onClick={() => {
-                          if (isLocked || offlineDisabled) return;
+                          if (offlineDisabled) return;
                           setSelectedStage(stage);
                         }}
-                        className={`relative flex items-center justify-between p-4 rounded-xl border transition-all ${
+                        className={`relative flex items-center justify-between p-4 rounded-xl border transition-all cursor-pointer ${
                           isCompleted
-                            ? "bg-primary/5 border-primary/20 hover:bg-primary/10 cursor-pointer"
+                            ? "bg-primary/5 border-primary/20 hover:bg-primary/10"
                             : isActive
-                            ? "bg-card border-foreground/35 hover:border-foreground cursor-pointer shadow-xs"
-                            : "bg-muted/30 border-border opacity-60 cursor-not-allowed"
+                            ? "bg-card border-foreground/35 hover:border-foreground shadow-xs"
+                            : "bg-muted/15 border-border hover:bg-muted/30"
                         } ${offlineDisabled ? "opacity-30 cursor-not-allowed" : ""}`}
                       >
                         <div className="flex items-center gap-4">
@@ -983,7 +975,6 @@ export function LearnPathsHome() {
                           <div>
                             <div className="flex items-center gap-1">
                               <h3 className="text-xs font-black uppercase tracking-tight">{stage.title}</h3>
-                              {isLocked && <span className="text-[10px]">🔒</span>}
                             </div>
                             <p className="text-[10px] text-muted-foreground truncate max-w-[150px] sm:max-w-xs">{stage.documentName}</p>
                             <div className="flex items-center gap-1.5 mt-1">
@@ -1000,7 +991,7 @@ export function LearnPathsHome() {
                         </div>
 
                         {/* Cache controls */}
-                        {!isLocked && (
+                        {!offlineDisabled && (
                           <button
                             onClick={(e) => handleToggleCache(stage.id, e)}
                             className={`p-2 rounded-lg border hover:bg-muted shrink-0 ${isStageCached ? 'border-blue-500/20 text-blue-600 bg-blue-500/5' : 'border-border text-muted-foreground'}`}
@@ -1307,7 +1298,6 @@ export function LearnPathsHome() {
                     {STAGES_DATA.map((stage) => {
                       const isCompleted = profile.badges?.includes(stage.badge);
                       const isActive = profile.stageProgress?.includes(stage.id);
-                      const isLocked = !isActive && !isCompleted;
                       const isStageCached = cachedStages.includes(stage.id);
                       const offlineDisabled = isOffline && !isStageCached;
 
@@ -1315,16 +1305,16 @@ export function LearnPathsHome() {
                         <div
                           key={stage.id}
                           onClick={() => {
-                            if (isLocked || offlineDisabled) return;
+                            if (offlineDisabled) return;
                             setSelectedStage(stage);
                           }}
                           className={cn(
-                            "relative flex flex-col justify-between p-5 rounded-2xl border transition-all select-none group",
+                            "relative flex flex-col justify-between p-5 rounded-2xl border transition-all select-none group cursor-pointer",
                             isCompleted
-                              ? "bg-primary/4 border-primary/15 hover:bg-primary/8 cursor-pointer shadow-xs"
+                              ? "bg-primary/4 border-primary/15 hover:bg-primary/8 shadow-xs"
                               : isActive
-                              ? "bg-card border-foreground/30 hover:border-foreground cursor-pointer shadow-sm"
-                              : "bg-muted/20 border-border opacity-50 cursor-not-allowed",
+                              ? "bg-card border-foreground/30 hover:border-foreground shadow-sm"
+                              : "bg-muted/10 border-border/80 hover:bg-muted/25",
                             offlineDisabled && "opacity-30 cursor-not-allowed"
                           )}
                         >
@@ -1337,16 +1327,17 @@ export function LearnPathsHome() {
                                     📶 Cached
                                   </span>
                                 )}
-                                {isLocked ? (
-                                  <span className="text-xs">🔒</span>
+                                {isCompleted ? (
+                                  <span className="text-[9px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 font-black uppercase tracking-wider px-2 py-0.5 rounded-full">
+                                    Completed
+                                  </span>
+                                ) : isActive ? (
+                                  <span className="text-[9px] bg-primary/10 border border-primary/20 text-primary font-black uppercase tracking-wider px-2 py-0.5 rounded-full">
+                                    Active
+                                  </span>
                                 ) : (
-                                  <span className={cn(
-                                    "text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border",
-                                    isCompleted 
-                                      ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-600" 
-                                      : "bg-primary/10 border-primary/20 text-primary"
-                                  )}>
-                                    {isCompleted ? "Completed" : "Active"}
+                                  <span className="text-[9px] bg-muted border border-border text-muted-foreground font-black uppercase tracking-wider px-2 py-0.5 rounded-full">
+                                    Available
                                   </span>
                                 )}
                               </div>
@@ -1361,7 +1352,7 @@ export function LearnPathsHome() {
 
                           <div className="mt-4 pt-3 border-t border-border/50 flex items-center justify-between">
                             <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">{stage.status}</span>
-                            {!isLocked && (
+                            {!offlineDisabled && (
                               <button
                                 onClick={(e) => handleToggleCache(stage.id, e)}
                                 className={cn(
