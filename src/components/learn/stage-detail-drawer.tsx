@@ -603,177 +603,181 @@ export function StageDetailDrawer({
                   </h3>
                 </div>
 
-                {/* Format Toggle Group */}
-                <div className="grid grid-cols-3 gap-2 bg-muted/60 p-1 rounded-xl">
-                  <button
-                    onClick={() => setActiveFormat("video")}
-                    className={cn(
-                      "py-2 text-[11px] font-black rounded-lg flex items-center justify-center gap-1.5 transition-all",
-                      activeFormat === "video" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
-                    )}
-                  >
-                    🎥 Video
-                  </button>
-                  <button
-                    onClick={() => setActiveFormat("audio")}
-                    className={cn(
-                      "py-2 text-[11px] font-black rounded-lg flex items-center justify-center gap-1.5 transition-all",
-                      activeFormat === "audio" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
-                    )}
-                  >
-                    🎧 Audio
-                  </button>
-                  <button
-                    onClick={() => setActiveFormat("text")}
-                    className={cn(
-                      "py-2 text-[11px] font-black rounded-lg flex items-center justify-center gap-1.5 transition-all",
-                      activeFormat === "text" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
-                    )}
-                  >
-                    📖 Text
-                  </button>
-                </div>
-
-                {/* Content Panel */}
-                <div className="p-4 border border-border bg-card rounded-2xl shadow-xs space-y-4">
-                  
-                  {/* VIDEO FORMAT */}
-                  {activeFormat === "video" && origin && (
-                    <div className="space-y-3">
-                      <div className="relative aspect-video rounded-xl overflow-hidden bg-black">
-                        <iframe
-                          className="w-full h-full border-0"
-                          src={`https://www.youtube-nocookie.com/embed/${stage.steps[currentStep - 1].youtubeId}?rel=0&modestbranding=1`}
-                          title="Budget Ndio Story Step Video"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                          allowFullScreen
-                        />
-                      </div>
+                {/* Format Toggle Group & Content Player (Hidden when taking trivia to avoid commotion) */}
+                {!showTrivia && (
+                  <>
+                    <div className="grid grid-cols-3 gap-2 bg-muted/60 p-1 rounded-xl">
+                      <button
+                        onClick={() => setActiveFormat("video")}
+                        className={cn(
+                          "py-2 text-[11px] font-black rounded-lg flex items-center justify-center gap-1.5 transition-all",
+                          activeFormat === "video" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
+                        )}
+                      >
+                        🎥 Video
+                      </button>
+                      <button
+                        onClick={() => setActiveFormat("audio")}
+                        className={cn(
+                          "py-2 text-[11px] font-black rounded-lg flex items-center justify-center gap-1.5 transition-all",
+                          activeFormat === "audio" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
+                        )}
+                      >
+                        🎧 Audio
+                      </button>
+                      <button
+                        onClick={() => setActiveFormat("text")}
+                        className={cn(
+                          "py-2 text-[11px] font-black rounded-lg flex items-center justify-center gap-1.5 transition-all",
+                          activeFormat === "text" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
+                        )}
+                      >
+                        📖 Text
+                      </button>
                     </div>
-                  )}
 
-                  {/* AUDIO FORMAT */}
-                  {activeFormat === "audio" && (
-                    <div className="space-y-4">
-                      <div className="p-4 rounded-xl bg-muted/30 border border-border flex flex-col items-center justify-center text-center space-y-3">
-                        <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center">
-                          <Volume2 className="size-6 text-primary" />
+                    {/* Content Panel */}
+                    <div className="p-4 border border-border bg-card rounded-2xl shadow-xs space-y-4">
+                      
+                      {/* VIDEO FORMAT */}
+                      {activeFormat === "video" && origin && (
+                        <div className="space-y-3">
+                          <div className="relative aspect-video rounded-xl overflow-hidden bg-black">
+                            <iframe
+                              className="w-full h-full border-0"
+                              src={`https://www.youtube-nocookie.com/embed/${stage.steps[currentStep - 1].youtubeId}?rel=0&modestbranding=1`}
+                              title="Budget Ndio Story Step Video"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                              allowFullScreen
+                            />
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-xs font-bold text-foreground">Podcast Audio Lesson</p>
-                          <p className="text-[10px] text-muted-foreground">Listen to this step's key takeaways</p>
-                        </div>
-                        
-                        <div className="w-full flex items-center justify-center gap-3">
-                          <Button
-                            onClick={() => setAudioPlaying(!audioPlaying)}
-                            className="rounded-xl shadow-xs shrink-0 font-bold text-xs gap-1.5"
-                          >
-                            {audioPlaying ? <Pause className="size-4" /> : <Play className="size-4 fill-current" />}
-                            <span>{audioPlaying ? "Pause Audio" : "Listen to Lesson"}</span>
-                          </Button>
-                        </div>
-                      </div>
+                      )}
 
-                      {/* Searchable Transcript */}
-                      <div className="border-t border-border pt-3 space-y-2">
-                        <button
-                          onClick={() => setShowTranscript(!showTranscript)}
-                          className="text-xs font-bold text-primary flex items-center gap-1 underline"
-                        >
-                          <FileText className="size-3.5" />
-                          <span>{showTranscript ? "Hide Searchable Transcript" : "Show Searchable Transcript"}</span>
-                        </button>
-
-                        {showTranscript && (
-                          <div className="space-y-2 border border-border bg-muted/20 p-3 rounded-xl animate-in fade-in duration-200">
-                            <div className="relative">
-                              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
-                              <input
-                                type="text"
-                                placeholder="Search transcript..."
-                                value={transcriptSearch}
-                                onChange={(e) => setTranscriptSearch(e.target.value)}
-                                className="w-full h-8 pl-8 pr-3 rounded-lg border border-border bg-card text-xs focus-visible:outline-none"
-                              />
+                      {/* AUDIO FORMAT */}
+                      {activeFormat === "audio" && (
+                        <div className="space-y-4">
+                          <div className="p-4 rounded-xl bg-muted/30 border border-border flex flex-col items-center justify-center text-center space-y-3">
+                            <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center">
+                              <Volume2 className="size-6 text-primary" />
                             </div>
-                            <div className="max-h-24 overflow-y-auto font-mono text-[10px] leading-relaxed whitespace-pre-wrap text-foreground/80 scrollbar-thin">
-                              {stage.steps[currentStep - 1].transcript
-                                .split("\n")
-                                .filter(line => line.toLowerCase().includes(transcriptSearch.toLowerCase()))
-                                .join("\n") || "No matching lines found."}
+                            <div>
+                              <p className="text-xs font-bold text-foreground">Podcast Audio Lesson</p>
+                              <p className="text-[10px] text-muted-foreground">Listen to this step's key takeaways</p>
+                            </div>
+                            
+                            <div className="w-full flex items-center justify-center gap-3">
+                              <Button
+                                onClick={() => setAudioPlaying(!audioPlaying)}
+                                className="rounded-xl shadow-xs shrink-0 font-bold text-xs gap-1.5"
+                              >
+                                {audioPlaying ? <Pause className="size-4" /> : <Play className="size-4 fill-current" />}
+                                <span>{audioPlaying ? "Pause Audio" : "Listen to Lesson"}</span>
+                              </Button>
                             </div>
                           </div>
-                        )}
-                      </div>
+
+                          {/* Searchable Transcript */}
+                          <div className="border-t border-border pt-3 space-y-2">
+                            <button
+                              onClick={() => setShowTranscript(!showTranscript)}
+                              className="text-xs font-bold text-primary flex items-center gap-1 underline"
+                            >
+                              <FileText className="size-3.5" />
+                              <span>{showTranscript ? "Hide Searchable Transcript" : "Show Searchable Transcript"}</span>
+                            </button>
+
+                            {showTranscript && (
+                              <div className="space-y-2 border border-border bg-muted/20 p-3 rounded-xl animate-in fade-in duration-200">
+                                <div className="relative">
+                                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
+                                  <input
+                                    type="text"
+                                    placeholder="Search transcript..."
+                                    value={transcriptSearch}
+                                    onChange={(e) => setTranscriptSearch(e.target.value)}
+                                    className="w-full h-8 pl-8 pr-3 rounded-lg border border-border bg-card text-xs focus-visible:outline-none"
+                                  />
+                                </div>
+                                <div className="max-h-24 overflow-y-auto font-mono text-[10px] leading-relaxed whitespace-pre-wrap text-foreground/80 scrollbar-thin">
+                                  {stage.steps[currentStep - 1].transcript
+                                    .split("\n")
+                                    .filter(line => line.toLowerCase().includes(transcriptSearch.toLowerCase()))
+                                    .join("\n") || "No matching lines found."}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* TEXT FORMAT */}
+                      {activeFormat === "text" && (
+                        <article className="
+                          /* Layout & Container */
+                          w-full max-w-none md:max-w-[720px] mx-auto px-4 py-6 md:px-8 md:py-8
+                          bg-white dark:bg-card/50 border border-gray-200 dark:border-border/50 rounded-2xl shadow-sm md:shadow-md
+                          
+                          /* Typography Core */
+                          prose prose-base prose-neutral dark:prose-invert max-w-none
+                          
+                          /* Paragraphs & Text */
+                          prose-p:text-gray-800 prose-p:dark:text-gray-300
+                          prose-p:leading-7 md:prose-p:leading-relaxed
+                          prose-p:my-3 md:prose-p:my-4
+                          
+                          /* Headings */
+                          prose-headings:text-gray-900 dark:prose-headings:text-white
+                          prose-headings:font-semibold
+                          
+                          /* Common */
+                          prose-strong:text-gray-900 dark:prose-strong:text-white
+                          prose-ul:my-3 md:prose-ul:my-4
+                          prose-li:my-1
+                        ">
+                          {getPersonalizedText(stage.steps[currentStep - 1].text)
+                            .split("\n\n")
+                            .map((para, pIdx) => (
+                              <p key={pIdx} className="whitespace-pre-wrap">
+                                {para}
+                              </p>
+                            ))}
+
+                          {/* Educational Takeaway Callout Box */}
+                          {(() => {
+                            const takeaway = getStepTakeaway(stage.id, stage.steps[currentStep - 1].id);
+                            if (!takeaway) return null;
+
+                            if (takeaway.type === "info") {
+                              return (
+                                <div className="mt-6 p-4 rounded-xl bg-blue-500/10 border-l-4 border-blue-500 dark:bg-blue-900/20 dark:border-blue-400 not-prose">
+                                  <p className="text-xs font-bold text-blue-700 dark:text-blue-300">
+                                    💡 {takeaway.title}
+                                  </p>
+                                  <p className="text-[11px] text-gray-700 dark:text-gray-300 mt-1 leading-normal">
+                                    {takeaway.text}
+                                  </p>
+                                </div>
+                              );
+                            } else {
+                              return (
+                                <div className="mt-6 p-4 rounded-xl bg-amber-500/10 border-l-4 border-amber-500 dark:bg-amber-900/20 dark:border-amber-400 not-prose">
+                                  <p className="text-xs font-bold text-amber-700 dark:text-amber-300">
+                                    ⚠️ {takeaway.title}
+                                  </p>
+                                  <p className="text-[11px] text-gray-700 dark:text-gray-300 mt-1 leading-normal">
+                                    {takeaway.text}
+                                  </p>
+                                </div>
+                              );
+                            }
+                          })()}
+                        </article>
+                      )}
+
                     </div>
-                  )}
-
-                  {/* TEXT FORMAT */}
-                  {activeFormat === "text" && (
-                    <article className="
-                      /* Layout & Container */
-                      w-full max-w-none md:max-w-[720px] mx-auto px-4 py-6 md:px-8 md:py-8
-                      bg-white dark:bg-card/50 border border-gray-200 dark:border-border/50 rounded-2xl shadow-sm md:shadow-md
-                      
-                      /* Typography Core */
-                      prose prose-base prose-neutral dark:prose-invert max-w-none
-                      
-                      /* Paragraphs & Text */
-                      prose-p:text-gray-800 prose-p:dark:text-gray-300
-                      prose-p:leading-7 md:prose-p:leading-relaxed
-                      prose-p:my-3 md:prose-p:my-4
-                      
-                      /* Headings */
-                      prose-headings:text-gray-900 dark:prose-headings:text-white
-                      prose-headings:font-semibold
-                      
-                      /* Common */
-                      prose-strong:text-gray-900 dark:prose-strong:text-white
-                      prose-ul:my-3 md:prose-ul:my-4
-                      prose-li:my-1
-                    ">
-                      {getPersonalizedText(stage.steps[currentStep - 1].text)
-                        .split("\n\n")
-                        .map((para, pIdx) => (
-                          <p key={pIdx} className="whitespace-pre-wrap">
-                            {para}
-                          </p>
-                        ))}
-
-                      {/* Educational Takeaway Callout Box */}
-                      {(() => {
-                        const takeaway = getStepTakeaway(stage.id, stage.steps[currentStep - 1].id);
-                        if (!takeaway) return null;
-
-                        if (takeaway.type === "info") {
-                          return (
-                            <div className="mt-6 p-4 rounded-xl bg-blue-500/10 border-l-4 border-blue-500 dark:bg-blue-900/20 dark:border-blue-400 not-prose">
-                              <p className="text-xs font-bold text-blue-700 dark:text-blue-300">
-                                💡 {takeaway.title}
-                              </p>
-                              <p className="text-[11px] text-gray-700 dark:text-gray-300 mt-1 leading-normal">
-                                {takeaway.text}
-                              </p>
-                            </div>
-                          );
-                        } else {
-                          return (
-                            <div className="mt-6 p-4 rounded-xl bg-amber-500/10 border-l-4 border-amber-500 dark:bg-amber-900/20 dark:border-amber-400 not-prose">
-                              <p className="text-xs font-bold text-amber-700 dark:text-amber-300">
-                                ⚠️ {takeaway.title}
-                              </p>
-                              <p className="text-[11px] text-gray-700 dark:text-gray-300 mt-1 leading-normal">
-                                {takeaway.text}
-                              </p>
-                            </div>
-                          );
-                        }
-                      })()}
-                    </article>
-                  )}
-
-                </div>
+                  </>
+                )}
 
                 {/* ─── INLINE TRIVIA (no modal, auto-rendered) ─── */}
                 <div className="mt-6 space-y-4">
@@ -1328,6 +1332,10 @@ export function StageDetailDrawer({
                 size="sm"
                 variant="outline"
                 onClick={() => {
+                  if (showTrivia) {
+                    setShowTrivia(false);
+                    return;
+                  }
                   const nextVal = currentStep - 1;
                   setCurrentStep(nextVal);
                   localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
