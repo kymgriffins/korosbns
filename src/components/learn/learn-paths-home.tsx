@@ -741,7 +741,7 @@ export function LearnPathsHome() {
   }
 
   return (
-    <div className="w-full max-w-md mx-auto flex flex-col bg-background min-h-screen relative pb-20">
+    <div className="w-full max-w-md md:max-w-2xl mx-auto flex flex-col bg-background min-h-screen relative pb-20">
       
       {/* 📡 Offline Simulator Banner (Low-Connectivity UX) */}
       <div className={`w-full py-1.5 px-4 text-xs font-bold flex items-center justify-between border-b transition-colors ${isOffline ? 'bg-amber-500/10 border-amber-500/20 text-amber-600' : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600'}`}>
@@ -768,26 +768,31 @@ export function LearnPathsHome() {
       )}
 
       {/* Profile Header Summary */}
-      <header className="p-4 border-b border-border bg-card flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-black text-sm">
+      <header className="px-4 py-3 border-b border-border bg-card flex justify-between items-center gap-3">
+        {/* Logo */}
+        <a href="/" className="shrink-0 flex items-center hover:opacity-80 transition-opacity" aria-label="Home">
+          <img src="/logo.svg" alt="Budget Ndio Story" className="h-7 w-auto" />
+        </a>
+
+        {/* User Info */}
+        <div className="flex items-center gap-2.5 flex-1 min-w-0">
+          <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-black text-xs shrink-0">
             {profile.breakName.charAt(0).toUpperCase()}
           </div>
-          <div>
-            <h1 className="text-sm font-black text-foreground">{profile.breakName}</h1>
-            <p className="text-[10px] text-muted-foreground">{profile.county} County · Level {Math.floor(profile.sovereigns / 100) + 1}</p>
+          <div className="min-w-0">
+            <h1 className="text-xs font-black text-foreground truncate">{profile.breakName}</h1>
+            <p className="text-[10px] text-muted-foreground truncate">{profile.county} · Lvl {Math.floor(profile.sovereigns / 100) + 1}</p>
           </div>
         </div>
 
-        {/* Sovereigns points */}
-        <div className="flex items-center gap-2">
-          <div className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-black flex items-center gap-1">
-            <Sparkles className="size-3.5 fill-primary" />
-            <span>{profile.sovereigns} SVG</span>
+        {/* Stats */}
+        <div className="flex items-center gap-1.5 shrink-0">
+          <div className="px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-black flex items-center gap-1">
+            <Sparkles className="size-3 fill-primary" />
+            <span>{profile.sovereigns}</span>
           </div>
-
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-500 text-xs font-bold" title={text.streak}>
-            <Flame className="size-3.5 fill-orange-500" />
+          <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-500 text-xs font-bold" title={text.streak}>
+            <Flame className="size-3 fill-orange-500" />
             <span>{profile.streakDays}d</span>
           </div>
         </div>
@@ -1223,14 +1228,13 @@ export function LearnPathsHome() {
         </AnimatePresence>
       </div>
 
-      {/* Detail stage drawer wrapper with sequential stage transitions */}
+      {/* Stage Detail — renders inline (absolute within relative container, not fixed viewport) */}
       {selectedStage && (
         <StageDetailDrawer
           stage={selectedStage}
           profile={profile}
           onClose={() => {
             setSelectedStage(null);
-            // Reload local profile state
             const stored = localStorage.getItem("bns_user_profile");
             if (stored) setProfile(JSON.parse(stored));
           }}
@@ -1264,7 +1268,7 @@ export function LearnPathsHome() {
         />
       )}
 
-      {/* Participation Alerts Drawer Modal */}
+      {/* Participation Alerts Drawer */}
       {showAlertDrawer && (
         <ParticipationAlertsDrawer
           profile={profile}

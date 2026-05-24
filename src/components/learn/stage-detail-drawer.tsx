@@ -89,12 +89,12 @@ export function StageDetailDrawer({
   // Gating & completion flag for current step - unlocked by default
   const [contentConsumed, setContentConsumed] = useState<boolean>(true);
 
-  // Trivia Dialog state
-  const [showTriviaDialog, setShowTriviaDialog] = useState<boolean>(false);
+  // Trivia inline state (no modal — renders below content automatically)
   const [activeTriviaIdx, setActiveTriviaIdx] = useState<number>(0);
   const [selectedTriviaAnswer, setSelectedTriviaAnswer] = useState<number | null>(null);
   const [triviaSubmitted, setTriviaSubmitted] = useState<boolean>(false);
   const [triviaCooldown, setTriviaCooldown] = useState<number>(0);
+  const [triviaSkipped, setTriviaSkipped] = useState<boolean>(false);
   const [reflectionText, setReflectionText] = useState<string>("");
 
   // Search inside transcript
@@ -163,11 +163,11 @@ export function StageDetailDrawer({
     setActiveFormat("video");
     setAudioPlaying(false);
     setContentConsumed(true);
-    setShowTriviaDialog(false);
     setActiveTriviaIdx(0);
     setSelectedTriviaAnswer(null);
     setTriviaSubmitted(false);
     setTriviaCooldown(0);
+    setTriviaSkipped(false);
     setReflectionText("");
     setTranscriptSearch("");
     setShowTranscript(false);
@@ -198,6 +198,7 @@ export function StageDetailDrawer({
     setActiveTriviaIdx(0);
     setSelectedTriviaAnswer(null);
     setTriviaSubmitted(false);
+    setTriviaSkipped(false);
     setReflectionText("");
     setShowTranscript(false);
     setTranscriptSearch("");
@@ -309,8 +310,7 @@ export function StageDetailDrawer({
     } else {
       localStorage.setItem(`stage_${stage.id}_step_${step.id}_trivia_passed`, "true");
       setContentConsumed(true);
-      setShowTriviaDialog(false);
-      toast.success("Step Trivia Passed! Next Step unlocked.");
+      toast.success("Step complete! Tap Next to continue. ⭐");
     }
   };
 
@@ -424,27 +424,42 @@ export function StageDetailDrawer({
   const yearOptions = stage.id === 1 ? constitutionYears : standardYears;
 
   return (
-    <div className="fixed inset-0 z-50 bg-background flex flex-col md:max-w-xl md:mx-auto md:border-x border-border shadow-2xl overflow-hidden">
-      
-      {/* Header */}
-      <header className="sticky top-0 z-10 w-full h-14 border-b border-border bg-background flex items-center justify-between px-4">
-        <div className="flex items-center gap-2.5">
-          <span className="text-xl flex items-center">{stage.badge}</span>
-          <div>
-            <div className="flex items-center gap-1.5">
-              <h2 className="text-xs font-black tracking-tight uppercase leading-none">{stage.title}</h2>
-              {isCached && (
-                <span className="text-[8px] bg-blue-500/10 border border-blue-500/20 text-blue-600 font-extrabold px-1 rounded-full flex items-center gap-0.5">
-                  📶 Cached
-                </span>
-              )}
+    <div className="absolute inset-0 z-20 bg-background flex flex-col overflow-hidden">
+          {/* Header */}
+      <header className="sticky top-0 z-10 w-full h-14 border-b border-border bg-background/95 backdrop-blur-sm flex items-center justify-between px-4 gap-3">
+        {/* Left: Logo (clickable → back) + breadcrumb */}
+        <div className="flex items-center gap-3 min-w-0">
+          <button
+            onClick={onClose}
+            aria-label="Back to Roadmap"
+            className="shrink-0 flex items-center hover:opacity-80 transition-opacity"
+          >
+            <img src="/logo.svg" alt="BNS" className="h-7 w-auto" />
+          </button>
+          <div className="hidden sm:flex items-center gap-1.5 border-l border-border pl-3 min-w-0">
+            <span className="text-base shrink-0">{stage.badge}</span>
+            <div className="min-w-0">
+              <h2 className="text-xs font-black tracking-tight uppercase leading-none truncate">{stage.title}</h2>
+              <p className="text-[10px] text-muted-foreground truncate">{stage.badgeName} Badge</p>
             </div>
-            <p className="text-[10px] text-muted-foreground mt-0.5">{stage.badgeName} Badge</p>
+          </div>
+          {/* Mobile: compact stage label */}
+          <div className="flex sm:hidden items-center gap-1.5 border-l border-border pl-2 min-w-0">
+            <span className="text-base shrink-0">{stage.badge}</span>
+            <h2 className="text-[11px] font-black uppercase tracking-tight truncate">{stage.title}</h2>
           </div>
         </div>
-        <Button size="icon-sm" variant="ghost" onClick={onClose} className="rounded-full">
-          <X className="size-5" />
-        </Button>
+        {/* Right: cache badge + close */}
+        <div className="flex items-center gap-2 shrink-0">
+          {isCached && (
+            <span className="hidden sm:flex text-[8px] bg-blue-500/10 border border-blue-500/20 text-blue-600 font-extrabold px-1.5 py-0.5 rounded-full items-center gap-0.5">
+              📦 Cached
+            </span>
+          )}
+          <Button size="icon-sm" variant="ghost" onClick={onClose} className="rounded-full">
+            <X className="size-5" />
+          </Button>
+        </div>
       </header>
 
       {/* Sub Tabs Navigation: Exactly Two Tabs */}
@@ -644,39 +659,209 @@ export function StageDetailDrawer({
 
                 </div>
 
-                {/* Gated Step Progress */}
-                <div className="mt-4">
+                {/* ─── INLINE TRIVIA (no modal, auto-rendered) ─── */}
+                <div className="mt-6 space-y-4">
                   {isStepTriviaPassed(stage.steps[currentStep - 1].id) ? (
-                    <div className="p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 text-emerald-700 dark:text-emerald-300 space-y-2">
-                      <div className="flex items-center gap-2">
-                        <CheckCircle2 className="size-5 text-emerald-600 shrink-0" />
-                        <h4 className="text-xs font-bold">Step Trivia Completed!</h4>
+                    <div className="p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 flex items-center gap-3">
+                      <CheckCircle2 className="size-5 text-emerald-600 shrink-0" />
+                      <div>
+                        <h4 className="text-xs font-bold text-emerald-700 dark:text-emerald-300">Step Complete!</h4>
+                        <p className="text-[10px] text-muted-foreground">Tap Next below to continue your journey.</p>
                       </div>
-                      <p className="text-[10px] text-muted-foreground">
-                        You've unlocked this step's trivia gates and earned sovereigns. Tap the footer button to progress.
-                      </p>
+                    </div>
+                  ) : triviaSkipped ? (
+                    <div className="p-4 rounded-2xl border border-amber-500/20 bg-amber-500/5 flex items-center gap-3">
+                      <HelpCircle className="size-5 text-amber-500 shrink-0" />
+                      <div>
+                        <h4 className="text-xs font-bold text-amber-700 dark:text-amber-300">Trivia Skipped</h4>
+                        <p className="text-[10px] text-muted-foreground">You can retake this later. Tap Next to continue.</p>
+                      </div>
                     </div>
                   ) : (
-                    <div className="p-4 rounded-2xl border border-primary/20 bg-primary/5 space-y-3">
-                      <div className="flex items-center gap-2">
-                        <Trophy className="size-5 text-primary shrink-0" />
-                        <h4 className="text-xs font-bold text-foreground">Step Trivia Challenge</h4>
+                    <div className="space-y-4 border border-border bg-card rounded-2xl p-4 shadow-xs animate-in fade-in slide-in-from-bottom-2 duration-300">
+                      {/* Trivia header row */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5 text-primary">
+                          <Sparkles className="size-4" />
+                          <span className="text-xs font-black uppercase tracking-wide">
+                            Quick Check {activeTriviaIdx + 1} of {stage.steps[currentStep - 1].trivia.length}
+                          </span>
+                        </div>
+                        <button
+                          onClick={() => setTriviaSkipped(true)}
+                          className="text-[10px] text-muted-foreground underline underline-offset-2 hover:text-foreground transition-colors"
+                        >
+                          Skip for now
+                        </button>
                       </div>
-                      <p className="text-[10px] text-muted-foreground">
-                        Take the short trivia check to unlock the next guided step.
-                      </p>
-                      <Button
-                        onClick={() => {
-                          setActiveTriviaIdx(0);
-                          setSelectedTriviaAnswer(null);
-                          setTriviaSubmitted(false);
-                          setReflectionText("");
-                          setShowTriviaDialog(true);
-                        }}
-                        className="w-full h-10 rounded-xl font-bold text-xs gap-1.5"
-                      >
-                        <Sparkles className="size-4" /> Start Step Trivia Challenge
-                      </Button>
+
+                      {/* Trivia question body */}
+                      {(() => {
+                        const step = stage.steps[currentStep - 1];
+                        const q = step.trivia[activeTriviaIdx];
+
+                        if (q.type === "multiple-choice") {
+                          return (
+                            <div className="space-y-3">
+                              <h4 className="text-sm font-black text-foreground leading-snug">{q.question}</h4>
+
+                              {triviaCooldown > 0 && (
+                                <div className="p-3 border border-destructive/20 bg-destructive/5 rounded-xl text-center space-y-1">
+                                  <Clock className="size-5 text-destructive mx-auto animate-pulse" />
+                                  <p className="text-[11px] font-bold text-destructive">Review cooldown</p>
+                                  <p className="text-[10px] text-muted-foreground">
+                                    {Math.floor(triviaCooldown / 60)}m {triviaCooldown % 60}s remaining
+                                  </p>
+                                  <Button size="xs" variant="outline" onClick={handleClearCooldown} className="text-[9px] gap-1 mt-1">
+                                    <RefreshCw className="size-3" /> Clear (Debug)
+                                  </Button>
+                                </div>
+                              )}
+
+                              <div className="grid gap-2">
+                                {q.options?.map((opt, idx) => {
+                                  const isSelected = selectedTriviaAnswer === idx;
+                                  const isCorrect = q.answer === idx;
+                                  let optStyle = "border-border bg-card hover:bg-muted/40";
+                                  if (isSelected) {
+                                    if (triviaSubmitted) {
+                                      optStyle = isCorrect
+                                        ? "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold"
+                                        : "border-destructive bg-destructive/10 text-destructive font-bold";
+                                    } else {
+                                      optStyle = "border-primary bg-primary/5 text-primary font-bold";
+                                    }
+                                  } else if (triviaSubmitted && isCorrect) {
+                                    optStyle = "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold";
+                                  }
+                                  return (
+                                    <button
+                                      key={idx}
+                                      onClick={() => handleAnswerMCQ(activeTriviaIdx, idx, q.answer!)}
+                                      disabled={triviaSubmitted || triviaCooldown > 0}
+                                      className={cn(
+                                        "w-full min-h-[44px] px-4 py-3 rounded-xl border text-xs font-semibold text-left transition-all active:scale-[0.99]",
+                                        optStyle
+                                      )}
+                                    >
+                                      {opt}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+
+                              {triviaSubmitted && (
+                                <div className={cn(
+                                  "p-3 rounded-xl border text-xs leading-normal animate-in zoom-in-95 duration-200",
+                                  selectedTriviaAnswer === q.answer
+                                    ? "border-emerald-500/20 bg-emerald-500/5 text-emerald-800 dark:text-emerald-200"
+                                    : "border-destructive/20 bg-destructive/5 text-destructive"
+                                )}>
+                                  <h5 className="font-bold flex items-center gap-1.5 mb-1">
+                                    {selectedTriviaAnswer === q.answer ? (
+                                      <><CheckCircle2 className="size-4 text-emerald-600" /> Correct!⭐</>
+                                    ) : (
+                                      <><AlertCircle className="size-4 text-destructive" /> Not quite—try again</>
+                                    )}
+                                  </h5>
+                                  <p>{q.explanation}</p>
+                                </div>
+                              )}
+
+                              {triviaSubmitted && (
+                                selectedTriviaAnswer === q.answer ? (
+                                  <Button
+                                    onClick={handleNextTriviaQuestion}
+                                    className="w-full h-10 rounded-xl font-bold text-xs gap-1.5"
+                                  >
+                                    {activeTriviaIdx < step.trivia.length - 1 ? (
+                                      <>Next Question <ArrowRight className="size-4" /></>
+                                    ) : (
+                                      <>Complete Check <CheckCircle2 className="size-4" /></>
+                                    )}
+                                  </Button>
+                                ) : (
+                                  <Button
+                                    onClick={() => { setSelectedTriviaAnswer(null); setTriviaSubmitted(false); }}
+                                    variant="outline"
+                                    className="w-full h-10 rounded-xl font-bold text-xs"
+                                    disabled={triviaCooldown > 0}
+                                  >
+                                    Try Again
+                                  </Button>
+                                )
+                              )}
+                            </div>
+                          );
+                        } else {
+                          return (
+                            <div className="space-y-3">
+                              <h4 className="text-sm font-black text-foreground leading-snug">{q.question}</h4>
+
+                              {q.options && q.options.length > 0 && (
+                                <div className="grid gap-2">
+                                  {q.options.map((opt, idx) => (
+                                    <button
+                                      key={idx}
+                                      onClick={() => setReflectionText(opt)}
+                                      className={cn(
+                                        "w-full min-h-[44px] px-4 py-3 rounded-xl border text-xs font-semibold text-left transition-all",
+                                        reflectionText === opt
+                                          ? "border-primary bg-primary/5 text-primary font-bold"
+                                          : "border-border bg-card hover:bg-muted/40"
+                                      )}
+                                      disabled={triviaSubmitted}
+                                    >
+                                      {opt}
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
+
+                              <div className="space-y-1.5">
+                                <label className="text-[10px] font-bold text-muted-foreground uppercase">Your Reflection:</label>
+                                <Textarea
+                                  placeholder={q.placeholder || "Enter your comment..."}
+                                  value={reflectionText}
+                                  onChange={(e) => setReflectionText(e.target.value)}
+                                  disabled={triviaSubmitted}
+                                  className="rounded-xl text-xs min-h-[80px]"
+                                />
+                              </div>
+
+                              {!triviaSubmitted && (
+                                <Button
+                                  onClick={() => handleSubmitReflection(activeTriviaIdx)}
+                                  className="w-full h-10 rounded-xl font-bold text-xs"
+                                >
+                                  Submit Reflection
+                                </Button>
+                              )}
+
+                              {triviaSubmitted && (
+                                <>
+                                  <div className="p-3 rounded-xl border border-emerald-500/20 bg-emerald-500/5 text-emerald-800 dark:text-emerald-200 text-xs">
+                                    <h5 className="font-bold flex items-center gap-1.5 mb-1">
+                                      <CheckCircle2 className="size-4 text-emerald-600" /> Reflection Logged
+                                    </h5>
+                                    <p>Your civic opinion has been recorded.</p>
+                                  </div>
+                                  <Button
+                                    onClick={handleNextTriviaQuestion}
+                                    className="w-full h-10 rounded-xl font-bold text-xs gap-1.5"
+                                  >
+                                    {activeTriviaIdx < step.trivia.length - 1 ? (
+                                      <>Next Question <ArrowRight className="size-4" /></>
+                                    ) : (
+                                      <>Complete Check <CheckCircle2 className="size-4" /></>
+                                    )}
+                                  </Button>
+                                </>
+                              )}
+                            </div>
+                          );
+                        }
+                      })()}
                     </div>
                   )}
                 </div>
@@ -1020,213 +1205,7 @@ export function StageDetailDrawer({
         )}
       </div>
 
-      {/* POPUP TRIVIA MODAL DIALOG */}
-      {showTriviaDialog && currentStep >= 1 && currentStep <= stage.steps.length && (
-        <div className="absolute inset-0 bg-background/95 backdrop-blur-sm z-50 flex flex-col p-4 overflow-y-auto animate-in slide-in-from-bottom duration-300">
-          
-          {/* Modal Header */}
-          <div className="flex justify-between items-center border-b border-border pb-3 mb-4">
-            <div className="flex items-center gap-1.5 text-primary">
-              <Trophy className="size-4.5" />
-              <span className="text-xs font-black uppercase">
-                Challenge {activeTriviaIdx + 1} of {stage.steps[currentStep - 1].trivia.length}
-              </span>
-            </div>
-            <Button
-              size="icon-sm"
-              variant="ghost"
-              onClick={() => setShowTriviaDialog(false)}
-              className="rounded-full"
-            >
-              <X className="size-5" />
-            </Button>
-          </div>
-
-          {/* Modal Content */}
-          <div className="flex-1 space-y-5">
-            {(() => {
-              const step = stage.steps[currentStep - 1];
-              const q = step.trivia[activeTriviaIdx];
-              
-              if (q.type === "multiple-choice") {
-                return (
-                  <div className="space-y-4">
-                    <h4 className="text-sm font-black text-foreground">{q.question}</h4>
-
-                    {/* Cooldown Timer Alert */}
-                    {triviaCooldown > 0 && (
-                      <div className="p-3 border border-destructive/20 bg-destructive/5 rounded-xl text-center space-y-2">
-                        <Clock className="size-5 text-destructive mx-auto animate-pulse" />
-                        <p className="text-[11px] font-bold text-destructive">Anti-guessing Cooldown Active</p>
-                        <p className="text-[10px] text-muted-foreground">Please review the chapter text. Lock releases in:</p>
-                        <div className="text-lg font-black text-destructive font-mono">
-                          {Math.floor(triviaCooldown / 60)}m {triviaCooldown % 60}s
-                        </div>
-                        <Button size="xs" variant="outline" onClick={handleClearCooldown} className="text-[9px] text-muted-foreground gap-1">
-                          <RefreshCw className="size-3" /> Clear Cooldown (Debug Bypass)
-                        </Button>
-                      </div>
-                    )}
-
-                    {/* MCQ Options */}
-                    <div className="grid gap-2">
-                      {q.options?.map((opt, idx) => {
-                        const isSelected = selectedTriviaAnswer === idx;
-                        const isCorrect = q.answer === idx;
-                        
-                        let optStyle = "border-border bg-card hover:bg-muted/40";
-                        if (isSelected) {
-                          if (triviaSubmitted) {
-                            optStyle = isCorrect
-                              ? "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold"
-                              : "border-destructive bg-destructive/10 text-destructive font-bold";
-                          } else {
-                            optStyle = "border-primary bg-primary/5 text-primary font-bold";
-                          }
-                        } else if (triviaSubmitted && isCorrect) {
-                          optStyle = "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold";
-                        }
-
-                        return (
-                          <button
-                            key={idx}
-                            onClick={() => handleAnswerMCQ(activeTriviaIdx, idx, q.answer!)}
-                            disabled={triviaSubmitted || triviaCooldown > 0}
-                            className={cn(
-                              "w-full min-h-[44px] px-4 py-3 rounded-xl border text-xs font-semibold text-left transition-all active:scale-[0.99]",
-                              optStyle
-                            )}
-                          >
-                            {opt}
-                          </button>
-                        );
-                      })}
-                    </div>
-
-                    {/* Explanatory Context Card */}
-                    {triviaSubmitted && (
-                      <div className={cn(
-                        "p-4 rounded-xl border text-xs leading-normal animate-in zoom-in-95 duration-200",
-                        selectedTriviaAnswer === q.answer
-                          ? "border-emerald-500/20 bg-emerald-500/5 text-emerald-800 dark:text-emerald-200"
-                          : "border-destructive/20 bg-destructive/5 text-destructive"
-                      )}>
-                        <h5 className="font-bold flex items-center gap-1.5 mb-1 text-xs">
-                          {selectedTriviaAnswer === q.answer ? (
-                            <>
-                              <CheckCircle2 className="size-4 text-emerald-600" /> Lesson Mastered!
-                            </>
-                          ) : (
-                            <>
-                              <AlertCircle className="size-4 text-destructive" /> Incorrect Choice
-                            </>
-                          )}
-                        </h5>
-                        <p>{q.explanation}</p>
-                      </div>
-                    )}
-                  </div>
-                );
-              } else {
-                
-                // REFLECTION QUESTION
-                return (
-                  <div className="space-y-4">
-                    <h4 className="text-sm font-black text-foreground">{q.question}</h4>
-
-                    {q.options && q.options.length > 0 && (
-                      <div className="grid gap-2">
-                        {q.options.map((opt, idx) => (
-                          <button
-                            key={idx}
-                            onClick={() => setReflectionText(opt)}
-                            className={cn(
-                              "w-full min-h-[44px] px-4 py-3 rounded-xl border text-xs font-semibold text-left transition-all active:scale-[0.99]",
-                              reflectionText === opt ? "border-primary bg-primary/5 text-primary font-bold" : "border-border bg-card"
-                            )}
-                            disabled={triviaSubmitted}
-                          >
-                            {opt}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-
-                    <div className="space-y-1.5">
-                      <label className="text-[10px] font-bold text-muted-foreground uppercase">Your Sentiment Reflection:</label>
-                      <Textarea
-                        placeholder={q.placeholder || "Enter your comment..."}
-                        value={reflectionText}
-                        onChange={(e) => setReflectionText(e.target.value)}
-                        disabled={triviaSubmitted}
-                        className="rounded-xl text-xs min-h-[80px]"
-                      />
-                    </div>
-
-                    {!triviaSubmitted && (
-                      <Button
-                        onClick={() => handleSubmitReflection(activeTriviaIdx)}
-                        className="w-full h-11 rounded-xl font-bold text-xs"
-                      >
-                        Submit Reflection
-                      </Button>
-                    )}
-
-                    {triviaSubmitted && (
-                      <div className="p-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5 text-emerald-800 dark:text-emerald-200 text-xs leading-normal animate-in zoom-in-95 duration-200">
-                        <h5 className="font-bold flex items-center gap-1.5 mb-1 text-xs">
-                          <CheckCircle2 className="size-4 text-emerald-600" /> Reflection Logged
-                        </h5>
-                        <p>Thank you! Your civic opinion has been recorded to generate hyper-local public memoranda feedback.</p>
-                      </div>
-                    )}
-                  </div>
-                );
-              }
-            })()}
-          </div>
-
-          {/* Modal Action Footer */}
-          <div className="border-t border-border pt-4 mt-6">
-            {triviaSubmitted ? (
-              selectedTriviaAnswer === stage.steps[currentStep - 1].trivia[activeTriviaIdx].answer ||
-              stage.steps[currentStep - 1].trivia[activeTriviaIdx].type === "reflection" ? (
-                <Button
-                  onClick={handleNextTriviaQuestion}
-                  className="w-full h-11 rounded-xl font-bold text-xs gap-1.5 text-primary-foreground bg-primary"
-                >
-                  {activeTriviaIdx < stage.steps[currentStep - 1].trivia.length - 1 ? (
-                    <>
-                      Next Challenge <ArrowRight className="size-4" />
-                    </>
-                  ) : (
-                    <>
-                      Complete Trivia Check <CheckCircle2 className="size-4" />
-                    </>
-                  )}
-                </Button>
-              ) : (
-                <Button
-                  onClick={() => {
-                    setSelectedTriviaAnswer(null);
-                    setTriviaSubmitted(false);
-                  }}
-                  variant="outline"
-                  className="w-full h-11 rounded-xl font-bold text-xs"
-                  disabled={triviaCooldown > 0}
-                >
-                  Try Challenge Again
-                </Button>
-              )
-            ) : (
-              <p className="text-[10px] text-muted-foreground text-center">
-                Answer this query correctly to unlock progress.
-              </p>
-            )}
-          </div>
-
-        </div>
-      )}
+      {/* Trivia is now inline — no modal overlay */}
 
       {/* 🧭 Sequential Navigation Footer (Mobile-First Journey Flow) */}
       {currentStep > 0 && (
@@ -1256,7 +1235,7 @@ export function StageDetailDrawer({
                 setCurrentStep(nextVal);
                 localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
               }}
-              disabled={!isStepTriviaPassed(stage.steps[currentStep - 1].id)}
+              disabled={!isStepTriviaPassed(stage.steps[currentStep - 1].id) && !triviaSkipped}
               className="rounded-xl flex-1 gap-1 text-xs"
             >
               Next <ArrowRight className="size-4" />

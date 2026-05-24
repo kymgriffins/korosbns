@@ -16,7 +16,7 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
         <SentryErrorBoundary>
           <AuthProvider>
             <TooltipProvider>
-              <Toaster />
+              <Toaster position="top-right" toastOptions={{ style: { marginTop: "0.25rem" } }} />
               {children}
               <DebugLogPanel />
             </TooltipProvider>
