@@ -55,6 +55,21 @@ interface Stage {
   steps: Step[];
 }
 
+const getStepTakeaway = (stageId: number, stepId: number): { type: "info" | "warning"; title: string; text: string } | null => {
+  if (stageId === 1) {
+    if (stepId === 1) return { type: "info", title: "Key Principle", text: "Article 201 mandates that the public finance system must promote an equitable society and be open to public participation." };
+    if (stepId === 2) return { type: "info", title: "Access to Info", text: "Article 35 gives you the right to access county budgets and plans. Transparency is a legal requirement, not a favor." };
+    if (stepId === 3) return { type: "warning", title: "Independent Watchdog", text: "The Controller of Budget (COB) must approve all withdrawals from public funds, preventing unauthorized spending." };
+  }
+  if (stageId === 2) {
+    if (stepId === 1) return { type: "info", title: "Critical Date", text: "By law, the Treasury must submit the BPS to Parliament by February 15th annually to guide the national budget." };
+    if (stepId === 2) return { type: "info", title: "BETA Pillars", text: "The 2026 BPS prioritizes Agriculture and MSMEs through Hustler Fund expansion and county-level training hubs." };
+    if (stepId === 3) return { type: "info", title: "UHC Target", text: "The Universal Health Coverage goal is to enroll 35 million Kenyans into the Social Health Authority (SHA)." };
+    if (stepId === 4) return { type: "warning", title: "Debt Ceiling Impact", text: "With over KES 1 Trillion in debt interest, development budgets are squeezed, requiring strict fiscal discipline." };
+  }
+  return null;
+};
+
 interface StageDetailDrawerProps {
   stage: Stage;
   profile: any;
@@ -696,11 +711,66 @@ export function StageDetailDrawer({
 
                   {/* TEXT FORMAT */}
                   {activeFormat === "text" && (
-                    <div className="space-y-4">
-                      <div className="text-xs leading-relaxed text-foreground/90 whitespace-pre-wrap font-sans bg-muted/10 p-3 rounded-lg max-h-60 overflow-y-auto border border-border/40">
-                        {getPersonalizedText(stage.steps[currentStep - 1].text)}
-                      </div>
-                    </div>
+                    <article className="
+                      /* Layout & Container */
+                      w-full max-w-none md:max-w-[720px] mx-auto px-4 py-6 md:px-8 md:py-8
+                      bg-white dark:bg-card/50 border border-gray-200 dark:border-border/50 rounded-2xl shadow-sm md:shadow-md
+                      
+                      /* Typography Core */
+                      prose prose-base prose-neutral dark:prose-invert max-w-none
+                      
+                      /* Paragraphs & Text */
+                      prose-p:text-gray-800 prose-p:dark:text-gray-300
+                      prose-p:leading-7 md:prose-p:leading-relaxed
+                      prose-p:my-3 md:prose-p:my-4
+                      
+                      /* Headings */
+                      prose-headings:text-gray-900 dark:prose-headings:text-white
+                      prose-headings:font-semibold
+                      
+                      /* Common */
+                      prose-strong:text-gray-900 dark:prose-strong:text-white
+                      prose-ul:my-3 md:prose-ul:my-4
+                      prose-li:my-1
+                    ">
+                      {getPersonalizedText(stage.steps[currentStep - 1].text)
+                        .split("\n\n")
+                        .map((para, pIdx) => (
+                          <p key={pIdx} className="whitespace-pre-wrap">
+                            {para}
+                          </p>
+                        ))}
+
+                      {/* Educational Takeaway Callout Box */}
+                      {(() => {
+                        const takeaway = getStepTakeaway(stage.id, stage.steps[currentStep - 1].id);
+                        if (!takeaway) return null;
+
+                        if (takeaway.type === "info") {
+                          return (
+                            <div className="mt-6 p-4 rounded-xl bg-blue-500/10 border-l-4 border-blue-500 dark:bg-blue-900/20 dark:border-blue-400 not-prose">
+                              <p className="text-xs font-bold text-blue-700 dark:text-blue-300">
+                                💡 {takeaway.title}
+                              </p>
+                              <p className="text-[11px] text-gray-700 dark:text-gray-300 mt-1 leading-normal">
+                                {takeaway.text}
+                              </p>
+                            </div>
+                          );
+                        } else {
+                          return (
+                            <div className="mt-6 p-4 rounded-xl bg-amber-500/10 border-l-4 border-amber-500 dark:bg-amber-900/20 dark:border-amber-400 not-prose">
+                              <p className="text-xs font-bold text-amber-700 dark:text-amber-300">
+                                ⚠️ {takeaway.title}
+                              </p>
+                              <p className="text-[11px] text-gray-700 dark:text-gray-300 mt-1 leading-normal">
+                                {takeaway.text}
+                              </p>
+                            </div>
+                          );
+                        }
+                      })()}
+                    </article>
                   )}
 
                 </div>
