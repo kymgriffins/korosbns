@@ -214,3 +214,13 @@
     bottom: 5.5rem !important;
   }
 }
+
+/* Ensure toasts do not block clicks to elements behind them */
+[data-sonner-toaster] {
+  pointer-events: none !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast] {
+  pointer-events: auto !important;
+}
+
