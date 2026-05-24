@@ -18,7 +18,6 @@ import {
 import { useLearn } from "@/contexts/learn-context";
 import { motion, AnimatePresence } from "motion/react";
 
-
 // Translations dictionary for Global Language Toggle (EN / SW / Sheng)
 const TRANSLATIONS = {
   EN: {
@@ -92,7 +91,7 @@ const TRANSLATIONS = {
   }
 };
 
-// 8 Stages Spec with Real YouTube Video IDs and 4 Chapters
+// 8 Stages Spec using the "One Journey, Two Tabs" step-based structure
 const STAGES_DATA = [
   {
     id: 1,
@@ -103,20 +102,66 @@ const STAGES_DATA = [
     archive: "2010",
     link: "https://kenyalaw.org",
     status: "Published" as const,
-    chapters: [
-      { title: "Public Finance Principles", content: "The Kenyan Constitution sets the foundational framework for public finance under Chapter Twelve. Article 201 details that there shall be openness, accountability, and public participation in financial matters. It requires that the public finance system promote an equitable society where the burden of taxation is shared fairly." },
-      { title: "Why it matters to [Selected County]", content: "In [Selected County], constitutional guidelines protect citizens from arbitrary tax increases and guarantee that the county assembly must invite residents to submit views on how resources are shared." },
-      { title: "Your participation window", content: "Public participation is mandated throughout the budget cycle. The main window opens during annual planning hearings in county sub-locations and wards." },
-      { title: "Key Citations", content: "Article 201 (principles of public finance), Article 228 (Controller of Budget), Article 35 (access to information)." }
+    credits: "Credits: BNS Team",
+    description: "Learn about the foundations of public finance in Kenya under Chapter Twelve of the Constitution, detailing transparency, equity, and citizen audit rights.",
+    expectations: [
+      "Decode your 5 core budget rights in Kenya.",
+      "Understand Article 201 principles of public finance.",
+      "Understand Article 35 guarantees for access to information.",
+      "Learn how to audit county financial allocations."
     ],
-    videos: [
-      { title: "Stage 1: Constitution — Part 1: Your 5 Budget Rights", duration: "2:30", parts: 1, youtubeId: "A_EXLueEMlk", transcript: "Hello citizens, welcome to Budget Ndio Story.\nToday we are looking at Chapter Twelve of the Kenyan Constitution.\nArticle 201 dictates that public finance shall be open and accountable.\nThis means you have the right to ask how county money is used.\nKeep watching to learn how to enforce your civic rights." },
-      { title: "Stage 1: Constitution — Part 2: Public Finance Mandates", duration: "3:12", parts: 2, youtubeId: "jLZe3iPSMfc", transcript: "In part 2, we dive deeper into Article 221.\nThis article details the national budget estimates process.\nThe National Treasury must submit estimates to Parliament by 30th April.\nCitizens have a right to review this and make representations." }
-    ],
-    questions: [
-      { question: "Which article of the Kenyan Constitution details the principles of public finance?", options: ["Article 201", "Article 217", "Article 221", "Article 35"], answer: 0 },
-      { question: "Article 35 of the Constitution guarantees citizens the right to what?", options: ["Access to information", "Free health care", "Equal wages", "Free primary education"], answer: 0 },
-      { question: "Who oversees the implementation of the national and county budgets?", options: ["Controller of Budget", "Central Bank Governor", "Senator", "County Governor"], answer: 0 }
+    steps: [
+      {
+        id: 1,
+        title: "1. Public Finance Principles",
+        youtubeId: "Ed9lP0-komE",
+        audioUrl: "/audio/stage1_step1.mp3",
+        transcript: "Hello citizens, welcome to Budget Ndio Story.\nToday we are looking at Chapter Twelve of the Kenyan Constitution.\nArticle 201 dictates that public finance shall be open and accountable.\nThis means you have the right to ask how county money is used.\nKeep watching to learn how to enforce your civic rights.",
+        text: "The Kenyan Constitution sets the foundational framework for public finance under Chapter Twelve. Article 201 details that there shall be openness, accountability, and public participation in financial matters. It requires that the public finance system promote an equitable society where the burden of taxation is shared fairly. All public money must be used in a prudent and responsible manner.",
+        trivia: [
+          {
+            type: "multiple-choice",
+            question: "Which article of the Kenyan Constitution details the principles of public finance?",
+            options: ["Article 201", "Article 217", "Article 221", "Article 35"],
+            answer: 0,
+            explanation: "Article 201 sets out the principles of public finance, including openness, accountability, and public participation."
+          }
+        ]
+      },
+      {
+        id: 2,
+        title: "2. Your Budget Rights",
+        youtubeId: "wkPe3sWomoA",
+        audioUrl: "/audio/stage1_step2.mp3",
+        transcript: "In part 2, we dive deeper into your rights.\nArticle 35 provides that every citizen has the right of access to information.\nThis includes county budgets, plans, and audits.\nIf your county hides budget papers, they violate the constitution.",
+        text: "Article 35 of the Constitution guarantees every citizen the right of access to information held by the state. In the context of budgeting, this means county governments are legally obligated to publish annual development plans, fiscal papers, and actual expenditure statements for citizen auditing. You do not need to be an expert to request these files.",
+        trivia: [
+          {
+            type: "multiple-choice",
+            question: "Article 35 of the Constitution guarantees citizens the right to what?",
+            options: ["Access to information", "Free health care", "Equal wages", "Free primary education"],
+            answer: 0,
+            explanation: "Article 35 guarantees the right of access to information, which is key for civic budget auditing."
+          }
+        ]
+      },
+      {
+        id: 3,
+        title: "3. Legal Citations & Auditing",
+        youtubeId: "FkgRz4v2Llk",
+        audioUrl: "/audio/stage1_step3.mp3",
+        transcript: "To finalize Stage 1, we look at the Controller of Budget.\nArticle 228 sets up this independent office to authorize withdrawals.\nNo county can withdraw funds without the COB's authorization.\nThis is a critical watchdog safeguard.",
+        text: "Under Chapter Twelve, key regulatory organs are established to monitor public spending. Article 228 sets up the office of the Controller of Budget (COB), which is tasked with authorizing withdrawals from public funds and reporting budget implementation progress to Parliament quarterly. This provides an audit trail for citizens to inspect.",
+        trivia: [
+          {
+            type: "multiple-choice",
+            question: "Who oversees the implementation of county and national budgets by authorizing withdrawals?",
+            options: ["Controller of Budget", "Central Bank Governor", "Senator", "County Governor"],
+            answer: 0,
+            explanation: "The Controller of Budget has the sole mandate to authorize withdrawals and submit quarterly implementation reports."
+          }
+        ]
+      }
     ]
   },
   {
@@ -128,20 +173,214 @@ const STAGES_DATA = [
     archive: "2015",
     link: "https://www.treasury.go.ke",
     status: "Published" as const,
-    chapters: [
-      { title: "Strategic Priorities", content: "The BPS outlines the broad strategic priorities and policy goals that guide the national budget for the upcoming fiscal year. Prepared by the National Treasury, it establishes spending ceilings for different sectors." },
-      { title: "Why it matters to [Selected County]", content: "BPS decisions directly impact the amount of money allocated to [Selected County] through the equitable share and conditional grants." },
-      { title: "Your participation window", content: "Parliament must seek views from the public within 14 days of the BPS being tabled, usually in February." },
-      { title: "Key Citations", content: "PFM Act Section 25 (Budget Policy Statement tabling and content guidelines)." }
+    credits: "Credits: Millicent Makini",
+    description: "Reflect on Kenya's 2026 Budget Policy Statement (BPS), exploring national priorities, expenditure ceilings, division of revenue, and fiscal risk factors.",
+    expectations: [
+      "Decode the Budget's Secret: Understand the purpose and timeline of the BPS.",
+      "Master the 5 Key Pillars: Explore the Bottom-Up economic priorities (BETA Agenda).",
+      "Track the Trillion-Shilling Debt: Analyse expenditures, interest payments, and borrowing.",
+      "Battle the Climate Risk: Understand fiscal risk factors.",
+      "Share Your Policy Opinion: Reflect and propose your own solutions."
     ],
-    videos: [
-      { title: "Stage 2: BPS — Part 1: What is the BPS?", duration: "2:15", parts: 1, youtubeId: "KeNCrx6krl0", transcript: "Today we talk about the Budget Policy Statement or BPS.\nThe National Treasury prepares the BPS to set spending ceilings.\nThese ceilings dictate how much each ministry gets.\nIf health is a priority, it is shown in the BPS sector ceilings." },
-      { title: "Stage 2: BPS — Part 2: Analyzing Expenditure Ceilings", duration: "3:45", parts: 2, youtubeId: "SfPwtqUFyj4", transcript: "The BPS also lays out the macro-fiscal framework.\nIt evaluates inflation, tax projections, and borrowing limits.\nCitizens must inspect whether allocations match national development goals." }
-    ],
-    questions: [
-      { question: "When is the BPS usually tabled in Parliament?", options: ["By 15th February", "By 30th April", "By 30th June", "By 1st January"], answer: 0 },
-      { question: "What is the main purpose of the Budget Policy Statement?", options: ["To set overall ceiling and expenditure priorities", "To collect taxes", "To auditing county expenditures", "To allocate funds directly to wards"], answer: 0 },
-      { question: "Who prepares the Budget Policy Statement?", options: ["National Treasury", "Controller of Budget", "Senate Committee", "Governor Council"], answer: 0 }
+    steps: [
+      {
+        id: 1,
+        title: "1. What is a Budget Policy Statement?",
+        youtubeId: "Ed9lP0-komE",
+        audioUrl: "/audio/stage2_step1.mp3",
+        transcript: "Let's explore the Budget Policy Statement.\nThe BPS outlines the broad strategic priorities and goals for the upcoming year.\nIt must be submitted to Parliament by 15th February in line with Section 25 of the PFM Act.\nIt establishes the expenditure ceilings for ministries and counties.",
+        text: "The Budget Policy Statement (BPS) is a government policy document that sets out the broad strategic priorities and policy goals that should guide the national and county governments in preparing their budgets for the next financial year and over the medium term. The document is submitted to Parliament by the 15th of February every year in line with section 25 of the Public Finance Management (PFM) Act and contains macroeconomic forecasts, proposed expenditure ceilings, transfers to county governments, and medium-term debt limits. Once approved, it forms the basis for the national budget presented by April 30th.",
+        trivia: [
+          {
+            type: "multiple-choice",
+            question: "What is the main purpose of the Budget Policy Statement (BPS)?",
+            options: [
+              "To collect taxes from citizens",
+              "To guide how national and county governments prepare their budgets",
+              "To replace the national development plan",
+              "To approve all government projects"
+            ],
+            answer: 1,
+            explanation: "The BPS guides budget preparation by outlining macroeconomic frameworks and sector expenditure ceilings."
+          },
+          {
+            type: "reflection",
+            question: "Before learning about the BPS, how often did you think about how national budgets affect your daily life?",
+            options: ["Very often", "Sometimes", "Rarely", "Never"],
+            placeholder: "What areas of your life do you think government budgets influence the most? (e.g. transport, health, tax rates...)"
+          },
+          {
+            type: "multiple-choice",
+            question: "By law, the Budget Policy Statement must be submitted to Parliament by:",
+            options: ["January 1", "February 15", "March 30", "April 30"],
+            answer: 1,
+            explanation: "Section 25 of the PFM Act mandates the Treasury to submit the BPS to Parliament by February 15th annually."
+          }
+        ]
+      },
+      {
+        id: 2,
+        title: "2. The 2026 BPS & Bottom-Up Pillars",
+        youtubeId: "wkPe3sWomoA",
+        audioUrl: "/audio/stage2_step2.mp3",
+        transcript: "The 2026 BPS theme is 'Consolidating Gains Under the Bottom-Up economic agenda'.\nIt focuses on five main focus areas, also known as the pillars.\nThese include Agriculture, MSMEs, Healthcare, Housing, and the Digital Superhighway.\nLet's analyze how these sectors are funded.",
+        text: "The theme of the BPS 2026 is, 'Consolidating Gains Under the Bottom-Up Economic Transformation Agenda for Inclusive and Sustainable Growth.' It seeks to accelerate development through focusing on Agriculture (crop diversification, fertilizer subsidies), and MSMEs (increasing credit access via Hustler Fund expansions and NYOTA linkages, setting up MSME hubs in all 47 counties for training).",
+        trivia: [
+          {
+            type: "multiple-choice",
+            question: "Which agenda guides the development priorities highlighted in the 2026 BPS?",
+            options: ["Vision 2030 Growth Plan", "Bottom-Up Economic Transformation Agenda (BETA)", "East African Development Strategy", "National Industrial Policy"],
+            answer: 1,
+            explanation: "The 2026 BPS consolidates gains under the Bottom-Up Economic Transformation Agenda (BETA)."
+          },
+          {
+            type: "reflection",
+            question: "If you were designing an economic strategy for Kenya, which sector would you prioritise first and why?",
+            options: ["Agriculture", "Small businesses (MSMEs)", "Healthcare", "Digital economy", "Infrastructure", "Education"],
+            placeholder: "Explain briefly why this sector holds the highest importance for you."
+          },
+          {
+            type: "multiple-choice",
+            question: "You are a farmer benefiting from fertilizer subsidies and improved irrigation. What would likely happen if these programmes succeed?",
+            options: ["Increased crop production", "Reduced food supply", "Higher unemployment in rural areas", "Less agricultural exports"],
+            answer: 0,
+            explanation: "Fertilizer subsidies and expanded irrigation are structured to boost food security by increasing crop production."
+          },
+          {
+            type: "multiple-choice",
+            question: "Many MSMEs struggle to access credit. Which BPS intervention aims to address this?",
+            options: [
+              "Expanding the Hustler Fund and credit guarantee scheme",
+              "Increasing business licensing fees",
+              "Limiting bank lending to small businesses",
+              "Increasing corporate tax"
+            ],
+            answer: 0,
+            explanation: "The BPS proposes increasing access to credit by expanding the Hustler Fund and MSME Credit Guarantee Schemes."
+          },
+          {
+            type: "reflection",
+            question: "Imagine you are a young entrepreneur starting a small business. Which support would make the biggest difference for you?",
+            options: ["Affordable loans", "Business mentorship", "Digital skills training", "Access to markets"],
+            placeholder: "Why does this specific support key benefit your business vision?"
+          }
+        ]
+      },
+      {
+        id: 3,
+        title: "3. Healthcare, Housing, and Digital Superhighway",
+        youtubeId: "FkgRz4v2Llk",
+        audioUrl: "/audio/stage2_step3.mp3",
+        transcript: "Next, we cover Universal Health Coverage, Housing, and Digital expansion.\nThe government targets expanding SHA enrolment to 35 million people.\nIt also plans infrastructure investments in electric vehicles and fiber cable.\nLet's evaluate the spending targets.",
+        text: "The BPS 2026 outlines UHC health targets (SHA enrollment of 35 million people, community health promoters support), Housing and Settlement (KMRC mortgage finance, affordable housing committees allocation), and Digital Superhighway (fiber cable expansion, public Wi-Fi hotspots, government services digitization). It also introduces a National Infrastructure Fund for long-term investments.",
+        trivia: [
+          {
+            type: "multiple-choice",
+            question: "When government spending is higher than its revenue, the difference is known as:",
+            options: ["Fiscal surplus", "Fiscal deficit", "Monetary balance", "Public investment"],
+            answer: 1,
+            explanation: "A fiscal deficit represents the gap between total government spending and total revenues, which must be financed through debt."
+          }
+        ]
+      },
+      {
+        id: 4,
+        title: "4. Recent Economic Developments",
+        youtubeId: "Ed9lP0-komE",
+        audioUrl: "/audio/stage2_step4.mp3",
+        transcript: "Kenya's economy grew by around 5% in 2025.\nHowever, revenue collection fell below targets, causing deficit pressure.\nTo manage this, the government plans domestic revenue tax reforms.\nLet's review the debt interest costs.",
+        text: "In 2025, Kenya's economy grew by around 5%, supported by services, agriculture, and industry. However, revenue collections fell below target, causing expenditure pressures. The government intends to implement domestic tax reforms and control recurrent spending to lower the deficit. GDP growth is projected at 5.3% in 2026/27.",
+        trivia: [
+          {
+            type: "multiple-choice",
+            question: "Interest payments on Kenya’s public debt are projected at over Ksh. 1 trillion. What challenge might this create?",
+            options: [
+              "Reduced funds for development and social services",
+              "Lower tax collection",
+              "Faster economic growth",
+              "Reduced public borrowing"
+            ],
+            answer: 0,
+            explanation: "Massive debt interest payments consume a huge portion of revenues, leaving fewer funds for essential social services like health and education."
+          },
+          {
+            type: "reflection",
+            question: "Why do you think citizens should understand government budgets, even if they are not economists?",
+            placeholder: "Write one or two reasons (e.g. keeping leaders accountable, checking development projects...)"
+          }
+        ]
+      },
+      {
+        id: 5,
+        title: "5. Budget Projections & County Allocations",
+        youtubeId: "wkPe3sWomoA",
+        audioUrl: "/audio/stage2_step5.mp3",
+        transcript: "For FY 2026/27, total revenue is projected at Ksh 3,588 Billion.\nTotal expenditure is projected at Ksh 4,737 Billion.\nThe allocation to county governments is proposed at Ksh 420 Billion.\nLet's inspect what county assemblies receive for service delivery.",
+        text: "Total revenue for FY 2026/27 is forecasted at Ksh. 3,588.1 billion, with expenditures at Ksh. 4,737.5 billion. The BPS proposes allocating Ksh. 420 billion to county governments (a Ksh. 5 billion increase from 2025/26). Additional allocations include Community Health Promoters (Ksh. 3.2B), CAIPs industrial parks (Ksh. 3.25B), and mineral royalties share.",
+        trivia: [
+          {
+            type: "multiple-choice",
+            question: "The BPS proposes allocating KES. 420 billion to county governments. What is the main purpose of this transfer?",
+            options: [
+              "Funding local development and public services",
+              "Repaying domestic loans",
+              "Supporting foreign investments",
+              "Honouring the constitution"
+            ],
+            answer: 0,
+            explanation: "County revenue allocations are mandated to fund local devolved services like county roads, hospitals, and agriculture."
+          }
+        ]
+      },
+      {
+        id: 6,
+        title: "6. Specific Fiscal Risks",
+        youtubeId: "FkgRz4v2Llk",
+        audioUrl: "/audio/stage2_step6.mp3",
+        transcript: "Every budget faces specific risks.\nThe BPS lists public debt pressure, State-Owned Enterprise liabilities, and climate disasters.\nDroughts and floods disrupt agriculture, which is the backbone of the economy.\nLet's discuss how we mitigate these risks.",
+        text: "The BPS identifies specific fiscal risks: 1) Public Debt Risk, 2) Contingent Liabilities (State-Owned Enterprise debts, government guarantees), 3) Macroeconomic shortfalls, 4) Climate Change Risks (droughts and floods affecting food security), and 5) Devolution Risks (county pending bills).",
+        trivia: [
+          {
+            type: "multiple-choice",
+            question: "Which of the following is identified as a major fiscal risk in the BPS?",
+            options: [
+              "Rising public debt and interest payments",
+              "Decreasing internet use",
+              "Reduced population growth",
+              "Lower rainfall every year"
+            ],
+            answer: 0,
+            explanation: "Rising public debt levels and high interest payment pressures are listed as top fiscal risks to budget implementation."
+          },
+          {
+            type: "reflection",
+            question: "The BPS identifies climate change risks such as droughts and floods. How might these affect Kenya’s economy and public finances?",
+            placeholder: "Think about impacts on agricultural productivity, infrastructure damage, and emergency relief costs."
+          }
+        ]
+      },
+      {
+        id: 7,
+        title: "7. Final Reflection & Policy Opinion",
+        youtubeId: "Ed9lP0-komE",
+        audioUrl: "/audio/stage2_step7.mp3",
+        transcript: "You have completed the Budget Policy Statement course!\nBefore we assent, Parliament wants one key strategic improvement.\nWhich sector would you strengthen most?\nSubmit your final opinion to earn your VertDecoder badge.",
+        text: "Congratulations! You have completed Module 002. As a civic champion, your feedback matters. Reflect on the entire BPS strategic directions and choose the area you believe deserves the highest resource focus.",
+        trivia: [
+          {
+            type: "reflection",
+            question: "Imagine Parliament asks for one key improvement before approving the BPS. Which area would you strengthen most?",
+            options: [
+              "Agriculture and food security",
+              "MSME development",
+              "Healthcare",
+              "Digital economy and youth innovation",
+              "Infrastructure investment"
+            ],
+            placeholder: "Explain your choice in 2–3 sentences (e.g. food security lowers cost of living...)"
+          }
+        ]
+      }
     ]
   },
   {
@@ -153,20 +392,31 @@ const STAGES_DATA = [
     archive: "2016",
     link: "https://www.treasury.go.ke",
     status: "Gazetted" as const,
-    chapters: [
-      { title: "National vs County Division", content: "The Division of Revenue Bill divides revenue raised nationally between the national government and county governments. This is key to fiscal decentralization." },
-      { title: "Why it matters to [Selected County]", content: "Sets the baseline funding for [Selected County]'s public services. If county allocations drop, local services face cuts." },
-      { title: "Your participation window", content: "Senate and National Assembly committee hearings take place in March." },
-      { title: "Key Citations", content: "Article 217 (Division of revenue allocation criteria), PFM Act Section 191." }
+    credits: "Credits: BNS Team",
+    description: "Analyze the Division of Revenue Bill (DoRB) dividing audited national taxes between the national administration and county assemblies.",
+    expectations: [
+      "Analyze the cake division ratio.",
+      "Understand Equitable Share vs Conditional Grants.",
+      "Track Senate mediation disputes."
     ],
-    videos: [
-      { title: "Stage 3: DoRB — Part 1: Dividing the Budget Cake", duration: "3:00", parts: 1, youtubeId: "Ed9lP0-komE", transcript: "Let us learn about the Division of Revenue Bill.\nThis bill divides the national revenue between national and county governments.\nBy law, counties must get at least 15% of national audited revenues.\nOften they get more, but disputes constantly happen." },
-      { title: "Stage 3: DoRB — Part 2: Equitable Share Guidelines", duration: "4:00", parts: 2, youtubeId: "A_EXLueEMlk", transcript: "We must distinguish between Equitable Share and Conditional Grants.\nEquitable share has no strings attached, counties spend on local priorities.\nConditional grants must be spent on specific projects, like referral hospitals." }
-    ],
-    questions: [
-      { question: "The Division of Revenue Bill divides revenue between which two levels of government?", options: ["National and County Governments", "Judiciary and Executive", "Senate and National Assembly", "County and Ward"], answer: 0 },
-      { question: "Which house of Parliament resolves county allocation disputes?", options: ["Senate", "National Assembly", "County Assemblies", "Supreme Court"], answer: 0 },
-      { question: "What is the minimum constitutional percentage of national revenue allocated to counties?", options: ["15%", "5%", "30%", "50%"], answer: 0 }
+    steps: [
+      {
+        id: 1,
+        title: "1. Cake Division Principles",
+        youtubeId: "Ed9lP0-komE",
+        audioUrl: "/audio/stage3_step1.mp3",
+        transcript: "Welcome to Division of Revenue analysis.\nThis bill divides the national revenueケーキ between national and county governments.\nBy law, counties must get at least 15% of national audited revenues.",
+        text: "The Division of Revenue Bill splits revenue raised nationally. Under Article 203 of the Constitution, several factors determine the share: national interest, public debt obligations, county needs, and developmental inequalities.",
+        trivia: [
+          {
+            type: "multiple-choice",
+            question: "The Division of Revenue Bill divides revenue between which two levels of government?",
+            options: ["National and County Governments", "Judiciary and Executive", "Senate and National Assembly", "County and Ward"],
+            answer: 0,
+            explanation: "The Division of Revenue Bill divides funds between national and county levels of government."
+          }
+        ]
+      }
     ]
   },
   {
@@ -178,20 +428,31 @@ const STAGES_DATA = [
     archive: "2018",
     link: "https://www.cog.go.ke",
     status: "Comment Open" as const,
-    chapters: [
-      { title: "County Sector Ceilings", content: "The county equivalent of the BPS, setting sector expenditure ceilings for county ministries such as health, agriculture, and infrastructure." },
-      { title: "Why it matters to [Selected County]", content: "Determines if agriculture, health, or roads gets more funding in [Selected County] for the upcoming fiscal year." },
-      { title: "Your participation window", content: "County Assembly comments open in late February or early March." },
-      { title: "Key Citations", content: "PFM Act Section 117 (County Fiscal Strategy Paper submission and ceilings guidelines)." }
+    credits: "Credits: BNS Team",
+    description: "Audit county expenditure ceilings and department allocations before appropriation acts legalize county withdrawals.",
+    expectations: [
+      "Understand county strategy papers.",
+      "Review sector expenditure limits.",
+      "Lobby county MCAs on local priorities."
     ],
-    videos: [
-      { title: "Stage 4: CFSP — Part 1: Sector Ceilings Explained", duration: "2:45", parts: 1, youtubeId: "jLZe3iPSMfc", transcript: "Welcome to County Fiscal Strategy Paper tutorial.\nThe CFSP aligns county priorities with BPS macro ceilings.\nEach department gets an expenditure limit.\nMCAs must approve these ceilings before detailed ministries budget drafts." },
-      { title: "Stage 4: CFSP — Part 2: Citizen Input on CFSP", duration: "3:30", parts: 2, youtubeId: "KeNCrx6krl0", transcript: "Public participation on CFSP is crucial.\nIt is the moment to object if administrative overheads are too high.\nYour county must publicize hearings at least 7 days in advance." }
-    ],
-    questions: [
-      { question: "When should the CFSP be submitted to the County Assembly?", options: ["By 28th February", "By 30th April", "By 15th June", "By 1st January"], answer: 0 },
-      { question: "Who prepares the County Fiscal Strategy Paper?", options: ["County Treasury", "Governor", "MCA representative", "Controller of Budget"], answer: 0 },
-      { question: "The CFSP aligns county budgets with which national document?", options: ["Budget Policy Statement", "County Integrated Plan", "Appropriations Bill", "Revenue Allocation Act"], answer: 0 }
+    steps: [
+      {
+        id: 1,
+        title: "1. County Ceilings",
+        youtubeId: "wkPe3sWomoA",
+        audioUrl: "/audio/stage4_step1.mp3",
+        transcript: "Welcome to CFSP ceilings analysis.\nCFSP aligns county sector plans with national guidelines.\nWe must inspect if county priorities match development goals.",
+        text: "The County Fiscal Strategy Paper sets out the framework for county budgeting. Sourced by County Treasuries, it specifies expenditure caps for local departments (Health, Roads, Agriculture) before the formal budget estimates are drafted.",
+        trivia: [
+          {
+            type: "multiple-choice",
+            question: "When should the CFSP be submitted to the County Assembly?",
+            options: ["By 28th February", "By 30th April", "By 15th June", "By 1st January"],
+            answer: 0,
+            explanation: "PFM Act Section 117 mandates County Treasuries to submit the CFSP to the Assembly by February 28th."
+          }
+        ]
+      }
     ]
   },
   {
@@ -203,20 +464,31 @@ const STAGES_DATA = [
     archive: "2019",
     link: "https://www.cog.go.ke",
     status: "Published" as const,
-    chapters: [
-      { title: "Master Planning vs Annual Slices", content: "The County Integrated Development Plan (CIDP) is a 5-year master plan. The Annual Development Plan (ADP) is the annual implementation slice." },
-      { title: "Why it matters to [Selected County]", content: "Projects like dams, markets, or hospitals in [Selected County] must be in the CIDP to receive funding." },
-      { title: "Your participation window", content: "Consultations take place in August/September every year at the ward level." },
-      { title: "Key Citations", content: "County Governments Act Section 108 (County Integrated Development Plan), PFM Act Section 104." }
+    credits: "Credits: BNS Team",
+    description: "Track county 5-year master plans (CIDP) and inspect the yearly execution slices (ADP) to ensure priority projects are funded.",
+    expectations: [
+      "Differentiate CIDP from ADP.",
+      "Verify local projects inclusion in plans.",
+      "Audit ward-level public development priorities."
     ],
-    videos: [
-      { title: "Stage 5: CIDP — Part 1: Five-Year Development Goals", duration: "3:15", parts: 1, youtubeId: "SfPwtqUFyj4", transcript: "Today we analyze the County Integrated Development Plan or CIDP.\nCIDPs last for five years and represent the governor's manifesto.\nIf a local school needs building, it must be captured in the CIDP first.\nWithout it, subsequent annual budgets cannot legalise allocations." },
-      { title: "Stage 5: CIDP — Part 2: Annual Development Plans", duration: "2:50", parts: 2, youtubeId: "Ed9lP0-komE", transcript: "Annual Development Plans act as the yearly implementation check.\nEach ADP is pulled from the 5-year CIDP.\nIt specifies which projects are scheduled for execution this specific year." }
-    ],
-    questions: [
-      { question: "How many years does a County Integrated Development Plan (CIDP) cover?", options: ["5 years", "1 year", "10 years", "3 years"], answer: 0 },
-      { question: "When is the ADP submitted to the County Assembly?", options: ["By 1st September", "By 30th June", "By 31st December", "By 15th February"], answer: 0 },
-      { question: "True or False: A project can receive county funding even if it is not in the CIDP.", options: ["False", "True"], answer: 0 }
+    steps: [
+      {
+        id: 1,
+        title: "1. 5-Year Planning",
+        youtubeId: "FkgRz4v2Llk",
+        audioUrl: "/audio/stage5_step1.mp3",
+        transcript: "Today we trace County Development Plans.\nCIDP is the 5-year master roadmap.\nNo project can get funding unless it sits in the CIDP.",
+        text: "The County Integrated Development Plan (CIDP) defines county development aspirations for five years. The Annual Development Plan (ADP) pulls from the CIDP to specify active projects scheduled for funding and execution in the upcoming fiscal year.",
+        trivia: [
+          {
+            type: "multiple-choice",
+            question: "How many years does a County Integrated Development Plan (CIDP) cover?",
+            options: ["5 years", "1 year", "10 years", "3 years"],
+            answer: 0,
+            explanation: "CIDPs are 5-year statutory master plans aligned with county election cycles."
+          }
+        ]
+      }
     ]
   },
   {
@@ -228,20 +500,36 @@ const STAGES_DATA = [
     archive: "2020",
     link: "https://kenyalaw.org",
     status: "Closed" as const,
-    chapters: [
-      { title: "Spending Authorization", content: "The legal act passed by the County Assembly authorizing the county executive to spend public funds from the County Revenue Fund." },
-      { title: "Why it matters to [Selected County]", content: "Legally locks in the budget allocations for [Selected County] projects and ministries." },
-      { title: "Your participation window", content: "County Assembly committee budget hearings take place in June." },
-      { title: "Key Citations", content: "Article 224 (county appropriation bills), PFM Act Section 129." }
+    credits: "Credits: BNS Team",
+    description: "Verify the legal authorization acts passed by assemblies that allow the executive to spend public funds.",
+    expectations: [
+      "Review appropriation acts.",
+      "Track supplementary budget changes.",
+      "Audit administrative overhead adjustments."
     ],
-    videos: [
-      { title: "Stage 6: Appropriation — Part 1: Legalizing the Budget", duration: "2:00", parts: 1, youtubeId: "A_EXLueEMlk", transcript: "Now we explore the County Appropriation Act.\nEven after MCAs review the budget, spending cannot start without this law.\nIt gives county ministries the legal power to withdraw funds.\nWithout it, county operations shut down on 1st July." },
-      { title: "Stage 6: Appropriation — Part 2: Supplementary Budgets", duration: "3:10", parts: 2, youtubeId: "jLZe3iPSMfc", transcript: "Supplementary budgets are introduced if emergency funds are needed.\nThey adjust allocations up to 10% without assembly approvals initially.\nWatchdog citizens must track if supplementals bypass priority sectors." }
-    ],
-    questions: [
-      { question: "What does the County Appropriation Act authorize?", options: ["Spending of public funds from the County Revenue Fund", "Introduction of new local taxes", "Appointment of county ministers", "Borrowing from international banks"], answer: 0 },
-      { question: "Who must assent to the County Appropriation Bill to make it law?", options: ["County Governor", "Speaker of Senate", "County Commissioner", "MCA Chairman"], answer: 0 },
-      { question: "What bill is introduced if a county needs to adjust expenditures mid-year?", options: ["Supplementary Appropriation Bill", "County Finance Bill", "Division of Revenue Bill", "Audit Correction Bill"], answer: 0 }
+    steps: [
+      {
+        id: 1,
+        title: "1. Appropriation Law",
+        youtubeId: "Ed9lP0-komE",
+        audioUrl: "/audio/stage6_step1.mp3",
+        transcript: "Welcome to Appropriation analysis.\nAppropriation acts give county ministries the legal power to spend.\nWithout it, operations freeze on 1st July.",
+        text: "The County Appropriation Act legalizes the county budget. It authorizes withdrawal of public monies from the County Revenue Fund for specific programs approved during public budget hearings.",
+        trivia: [
+          {
+            type: "multiple-choice",
+            question: "What does the County Appropriation Act authorize?",
+            options: [
+              "Spending of public funds from the County Revenue Fund",
+              "Introduction of new local taxes",
+              "Appointment of county ministers",
+              "Borrowing from international banks"
+            ],
+            answer: 0,
+            explanation: "The Appropriation Act legally authorizes expenditure of approved public budget funds."
+          }
+        ]
+      }
     ]
   },
   {
@@ -253,20 +541,31 @@ const STAGES_DATA = [
     archive: "2021",
     link: "https://cob.go.ke",
     status: "Published" as const,
-    chapters: [
-      { title: "Expenditure Auditing", content: "Quarterly reports detailing how much budget the national and county governments actually withdrew and spent." },
-      { title: "Why it matters to [Selected County]", content: "Exposes whether [Selected County] spent money on wages and administrative travel rather than development projects." },
-      { title: "Your participation window", content: "Published quarterly, useful for citizens to lobby county MCAs on delayed local projects." },
-      { title: "Key Citations", content: "Article 228(4) (Controller of Budget authorization mandates), Article 228(6) (quarterly implementation reporting)." }
+    credits: "Credits: BNS Team",
+    description: "Review implementation reports tracking county absorption rates and checking if development funds were diverted.",
+    expectations: [
+      "Inspect quarterly audit reports.",
+      "Understand budget absorption rates.",
+      "Expose administrative travel diversions."
     ],
-    videos: [
-      { title: "Stage 7: COB — Part 1: Tracking Expenditures", duration: "3:30", parts: 1, youtubeId: "KeNCrx6krl0", transcript: "Let us learn about Controller of Budget Reports.\nThe COB publishes quarterly implementation reports.\nThese documents trace actual spending against initial budgets.\nThey show if development money was diverted to administration." },
-      { title: "Stage 7: COB — Part 2: Absorption Rates", duration: "4:00", parts: 2, youtubeId: "SfPwtqUFyj4", transcript: "Absorption rate evaluates county budget performance.\nIf health department spent only 10% of its allocation by Q3, absorption is poor.\nThis indicates execution delays that hurt service delivery." }
-    ],
-    questions: [
-      { question: "How often does the Controller of Budget submit budget implementation reports?", options: ["Quarterly", "Annually", "Monthly", "Every two years"], answer: 0 },
-      { question: "What is the main role of the Controller of Budget?", options: ["To oversee budget implementation and authorize withdrawals", "To collect county taxes", "To draft the Finance Bill", "To represent MCAs in court"], answer: 0 },
-      { question: "What does a low absorption rate in development spending indicate?", options: ["County is slow in implementing development projects", "Tax collection is high", "Staff salaries are unpaid", "Auditing has failed"], answer: 0 }
+    steps: [
+      {
+        id: 1,
+        title: "1. Audit and Absorption",
+        youtubeId: "wkPe3sWomoA",
+        audioUrl: "/audio/stage7_step1.mp3",
+        transcript: "Let's review budget absorption rates.\nCOB reports verify if kaunti spent allocations.\nLow absorption means projects are delayed, hurting service.",
+        text: "The Controller of Budget submits quarterly reports tracking budget execution. Absorption rate measures the percentage of budgeted funds actually spent. Low development absorption implies slow project implementation.",
+        trivia: [
+          {
+            type: "multiple-choice",
+            question: "How often does the Controller of Budget submit budget implementation reports?",
+            options: ["Quarterly", "Annually", "Monthly", "Every two years"],
+            answer: 0,
+            explanation: "Article 228(6) mandates the Controller of Budget to submit budget reports every quarter."
+          }
+        ]
+      }
     ]
   },
   {
@@ -278,20 +577,31 @@ const STAGES_DATA = [
     archive: "2022",
     link: "https://www.parliament.go.ke",
     status: "Published" as const,
-    chapters: [
-      { title: "Advocacy and Townhalls", content: "Practical guidelines, methods, and templates for citizens to structure comments and engage county officials during budget hearings." },
-      { title: "Why it matters to [Selected County]", content: "Equips [Selected County] residents with the exact tools to submit written memoranda and lobby effectively." },
-      { title: "Your participation window", content: "Ongoing throughout the planning cycle, especially vital during ward townhalls." },
-      { title: "Key Citations", content: "Article 10 (national values including public participation), PFM Act Section 207 (public participation regulations)." }
+    credits: "Credits: BNS Team",
+    description: "Equip yourself with structured templates to submit written budget memoranda and drive changes in county plans.",
+    expectations: [
+      "Learn to draft written budget memoranda.",
+      "Verify county assembly consultation logs.",
+      "Mobilize citizen budget advocacy townhalls."
     ],
-    videos: [
-      { title: "Stage 8: Toolkit — Part 1: Advocacy Guidelines", duration: "2:30", parts: 1, youtubeId: "Ed9lP0-komE", transcript: "Welcome to the Public Participation Toolkit.\nTo lobby effectively, you must write a budget memorandum.\nA memorandum states observation, legal basis, and requested action.\nThis format forces budget assemblies to capture inputs in reports." },
-      { title: "Stage 8: Toolkit — Part 2: Mobilizing Communities", duration: "3:20", parts: 2, youtubeId: "A_EXLueEMlk", transcript: "Citizen mobilization at ward townhalls makes budget feedback impactful.\nEnsure you register attendance at county meetings.\nThe attendance sheet is a legal proof of consultation." }
-    ],
-    questions: [
-      { question: "Under Article 201, public participation in financial matters is:", options: ["Mandatory", "Optional", "Only for urban areas", "Gated by registration fee"], answer: 0 },
-      { question: "Which of these is a valid way for a citizen to submit feedback on a budget?", options: ["Written memorandum or attending town halls", "Submitting a secret letter", "Posting a complaint on personal blogs only", "Withholding local taxes"], answer: 0 },
-      { question: "True or False: County assemblies are legally required to publish public notice of budget hearings.", options: ["True", "False"], answer: 0 }
+    steps: [
+      {
+        id: 1,
+        title: "1. Advocacy Memoranda",
+        youtubeId: "FkgRz4v2Llk",
+        audioUrl: "/audio/stage8_step1.mp3",
+        transcript: "To finalize, learn to build budget memos.\nA memo structured with observation and action carries weight.\nUse our templates to submit comments to your county.",
+        text: "Written memoranda are the primary tools for formal public participation. Assemblies are legally required to compile public reviews and report how citizen feedback influenced the final budget laws.",
+        trivia: [
+          {
+            type: "multiple-choice",
+            question: "Under Article 201, public participation in financial matters is:",
+            options: ["Mandatory", "Optional", "Only for urban areas", "Gated by registration fee"],
+            answer: 0,
+            explanation: "Article 201 mandates public participation as an essential value in all public finance systems."
+          }
+        ]
+      }
     ]
   }
 ];
@@ -381,9 +691,11 @@ export function LearnPathsHome() {
         localStorage.removeItem(`stage_${i}_article`);
         localStorage.removeItem(`stage_${i}_quiz_attempts`);
         localStorage.removeItem(`stage_${i}_quiz_cooldown`);
-        for (let j = 0; j < 4; j++) {
+        localStorage.removeItem(`stage_${i}_current_step`); // clear step progress
+        for (let j = 0; j < 10; j++) {
           localStorage.removeItem(`stage_${i}_video_${j}`);
           localStorage.removeItem(`stage_${i}_chapter_${j}`);
+          localStorage.removeItem(`stage_${i}_step_${j}_trivia_passed`);
         }
       }
       setProfile(null);
@@ -927,11 +1239,27 @@ export function LearnPathsHome() {
           hasNext={selectedStage.id < STAGES_DATA.length}
           onPrevStage={() => {
             const prev = STAGES_DATA.find(s => s.id === selectedStage.id - 1);
-            if (prev) setSelectedStage(prev);
+            if (prev) {
+              const isCompleted = profile.badges?.includes(prev.badge);
+              const isActive = profile.stageProgress?.includes(prev.id);
+              if (!isCompleted && !isActive) {
+                toast.error(`Stage ${prev.id} is locked.`);
+                return;
+              }
+              setSelectedStage(prev);
+            }
           }}
           onNextStage={() => {
             const next = STAGES_DATA.find(s => s.id === selectedStage.id + 1);
-            if (next) setSelectedStage(next);
+            if (next) {
+              const isCompleted = profile.badges?.includes(next.badge);
+              const isActive = profile.stageProgress?.includes(next.id);
+              if (!isCompleted && !isActive) {
+                toast.error(`Stage ${next.id} is locked.`);
+                return;
+              }
+              setSelectedStage(next);
+            }
           }}
         />
       )}

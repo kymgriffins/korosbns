@@ -2,16 +2,35 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/ui/button";
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/ui/accordion";
 import { Progress } from "@/ui/progress";
 import { toast } from "sonner";
+import { Textarea } from "@/ui/textarea";
 import {
-  Play, CheckCircle2, AlertCircle, Clock, ExternalLink,
+  Play, Pause, CheckCircle2, AlertCircle, Clock, ExternalLink,
   BookOpen, Trophy, ArrowRight, ArrowLeft, X, Sparkles, HelpCircle, RefreshCw,
-  Volume2, VolumeX, FileText, Search, DownloadCloud
+  Volume2, VolumeX, FileText, Search, DownloadCloud, Award, Lock, FileCheck
 } from "lucide-react";
-
 import { cn } from "@/utils";
+
+// Types matching the updated stages step schema
+interface TriviaItem {
+  type: "multiple-choice" | "reflection";
+  question: string;
+  options?: string[];
+  answer?: number;
+  explanation?: string;
+  placeholder?: string;
+}
+
+interface Step {
+  id: number;
+  title: string;
+  youtubeId: string;
+  audioUrl: string;
+  transcript: string;
+  text: string;
+  trivia: TriviaItem[];
+}
 
 interface Stage {
   id: number;
@@ -22,22 +41,10 @@ interface Stage {
   archive: string;
   link: string;
   status: "Published" | "Gazetted" | "Comment Open" | "Closed";
-  chapters: {
-    title: string;
-    content: string;
-  }[];
-  videos: {
-    title: string;
-    duration: string;
-    parts: number;
-    youtubeId: string;
-    transcript: string;
-  }[];
-  questions: {
-    question: string;
-    options: string[];
-    answer: number;
-  }[];
+  credits?: string;
+  description: string;
+  expectations: string[];
+  steps: Step[];
 }
 
 interface StageDetailDrawerProps {
@@ -61,123 +68,173 @@ export function StageDetailDrawer({
   hasPrev,
   hasNext
 }: StageDetailDrawerProps) {
-  const [activeSubTab, setActiveSubTab] = useState<"video" | "article" | "quiz" | "tracker">("video");
-  
-  // Video status
-  const [playingVideoIdx, setPlayingVideoIdx] = useState<number | null>(null);
-  const [videoTimer, setVideoTimer] = useState(0); // tracks elapsed seconds watched
-  const [videosCompleted, setVideosCompleted] = useState<boolean[]>([]);
-  const [audioOnly, setAudioOnly] = useState(false);
-  const [transcriptSearch, setTranscriptSearch] = useState("");
-  const [showTranscript, setShowTranscript] = useState(false);
-  
-  // YouTube API Player reference
+  // Tabs Navigation: learn (Guided Journey) or documents (Tracker)
+  const [activeSubTab, setActiveSubTab] = useState<"learn" | "documents">("learn");
+
+  // Step state (0: Overview, 1..N: Steps, N+1: Mastery)
+  const [currentStep, setCurrentStep] = useState<number>(0);
+
+  // Active delivery format
+  const [activeFormat, setActiveFormat] = useState<"video" | "audio" | "text">("video");
+
+  // Video watch timer
+  const [videoTimer, setVideoTimer] = useState<number>(0);
+
+  // Simulated audio player
+  const [audioPlaying, setAudioPlaying] = useState<boolean>(false);
+  const [audioTimer, setAudioTimer] = useState<number>(0);
+  const audioIntervalRef = useRef<any>(null);
+
+  // Gating & completion flag for current step
+  const [contentConsumed, setContentConsumed] = useState<boolean>(false);
+
+  // Trivia Dialog state
+  const [showTriviaDialog, setShowTriviaDialog] = useState<boolean>(false);
+  const [activeTriviaIdx, setActiveTriviaIdx] = useState<number>(0);
+  const [selectedTriviaAnswer, setSelectedTriviaAnswer] = useState<number | null>(null);
+  const [triviaSubmitted, setTriviaSubmitted] = useState<boolean>(false);
+  const [triviaCooldown, setTriviaCooldown] = useState<number>(0);
+  const [reflectionText, setReflectionText] = useState<string>("");
+
+  // Search inside transcript
+  const [transcriptSearch, setTranscriptSearch] = useState<string>("");
+  const [showTranscript, setShowTranscript] = useState<boolean>(false);
+
+  // YouTube references
   const playerRef = useRef<any>(null);
-  const timerIntervalRef = useRef<any>(null);
-  const iframeId = `yt-player-${stage.id}`;
+  const videoTimerRef = useRef<any>(null);
+  const iframeId = `yt-player-${stage.id}-${currentStep}`;
 
-  // Article chapters read status
-  const [readChapters, setReadChapters] = useState<boolean[]>([]);
-  const [articleCompleted, setArticleCompleted] = useState(false);
-
-  // Trivia states
-  const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
-  const [quizSubmitted, setQuizSubmitted] = useState(false);
-  const [quizScore, setQuizScore] = useState(0);
-  const [cooldownRemaining, setCooldownRemaining] = useState(0); // in seconds
-  const [firstTry, setFirstTry] = useState(true);
-
-  // Initial load for stage status
+  // Load state when stage.id changes
   useEffect(() => {
-    // Reset states for current stage
-    setPlayingVideoIdx(null);
+    setActiveSubTab("learn");
+    
+    const storedStep = localStorage.getItem(`stage_${stage.id}_current_step`);
+    const initialStep = storedStep ? parseInt(storedStep, 10) : 0;
+    setCurrentStep(initialStep);
+    
+    // reset format and tracking states
+    setActiveFormat("video");
     setVideoTimer(0);
-    setAudioOnly(false);
-    setShowTranscript(false);
+    setAudioPlaying(false);
+    setAudioTimer(0);
+    setContentConsumed(false);
+    setShowTriviaDialog(false);
+    setActiveTriviaIdx(0);
+    setSelectedTriviaAnswer(null);
+    setTriviaSubmitted(false);
+    setTriviaCooldown(0);
+    setReflectionText("");
     setTranscriptSearch("");
-    setSelectedAnswers({});
-    setQuizSubmitted(false);
-    setQuizScore(0);
-    setActiveSubTab("video");
+    setShowTranscript(false);
+  }, [stage.id]);
 
-    const vCompleted = stage.videos.map((_, i) => {
-      return localStorage.getItem(`stage_${stage.id}_video_${i}`) === "true";
-    });
-    setVideosCompleted(vCompleted);
-
-    const cRead = stage.chapters.map((_, i) => {
-      return localStorage.getItem(`stage_${stage.id}_chapter_${i}`) === "true";
-    });
-    setReadChapters(cRead);
-    setArticleCompleted(localStorage.getItem(`stage_${stage.id}_article`) === "true");
-
-    const cooldownKey = `stage_${stage.id}_quiz_cooldown`;
-    const storedCooldown = localStorage.getItem(cooldownKey);
-    if (storedCooldown) {
-      const diff = Math.floor((parseInt(storedCooldown) - Date.now()) / 1000);
-      if (diff > 0) {
-        setCooldownRemaining(diff);
-      } else {
-        setCooldownRemaining(0);
-      }
-    } else {
-      setCooldownRemaining(0);
+  // Load state when currentStep or stage.id changes
+  useEffect(() => {
+    if (currentStep < 1 || currentStep > stage.steps.length) {
+      setVideoTimer(0);
+      setAudioTimer(0);
+      setAudioPlaying(false);
+      setContentConsumed(false);
+      return;
     }
 
-    const attemptsKey = `stage_${stage.id}_quiz_attempts`;
-    const attempts = parseInt(localStorage.getItem(attemptsKey) || "0");
-    setFirstTry(attempts === 0);
-  }, [stage.id, stage.videos, stage.chapters]);
+    const step = stage.steps[currentStep - 1];
+    
+    // Check if trivia is already passed
+    const triviaPassed = localStorage.getItem(`stage_${stage.id}_step_${step.id}_trivia_passed`) === "true";
+    setContentConsumed(triviaPassed);
+    
+    // Reset step states
+    setVideoTimer(0);
+    setAudioTimer(0);
+    setAudioPlaying(false);
+    setActiveTriviaIdx(0);
+    setSelectedTriviaAnswer(null);
+    setTriviaSubmitted(false);
+    setReflectionText("");
+    setShowTranscript(false);
+    setTranscriptSearch("");
+
+    // Check for cooldowns for this specific step's trivia questions
+    const cooldownKey = `stage_${stage.id}_step_${step.id}_cooldown`;
+    const storedCooldown = localStorage.getItem(cooldownKey);
+    if (storedCooldown) {
+      const diff = Math.floor((parseInt(storedCooldown, 10) - Date.now()) / 1000);
+      if (diff > 0) {
+        setTriviaCooldown(diff);
+      } else {
+        setTriviaCooldown(0);
+      }
+    } else {
+      setTriviaCooldown(0);
+    }
+  }, [currentStep, stage.id]);
 
   // Cooldown countdown timer
   useEffect(() => {
-    if (cooldownRemaining <= 0) return;
+    if (triviaCooldown <= 0) return;
     const interval = setInterval(() => {
-      setCooldownRemaining((prev) => {
+      setTriviaCooldown((prev) => {
         if (prev <= 1) {
-          localStorage.removeItem(`stage_${stage.id}_quiz_cooldown`);
+          const step = stage.steps[currentStep - 1];
+          localStorage.removeItem(`stage_${stage.id}_step_${step.id}_cooldown`);
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [cooldownRemaining, stage.id]);
+  }, [triviaCooldown, stage.id, currentStep]);
 
-  // Load YouTube Iframe API if not loaded
+  // Simulated audio player ticking
   useEffect(() => {
-    if (playingVideoIdx === null) return;
-
-    const loadYtScript = () => {
-      if (document.getElementById("yt-iframe-api-script")) {
-        initYtPlayer();
-        return;
+    if (audioPlaying) {
+      audioIntervalRef.current = setInterval(() => {
+        setAudioTimer((prev) => {
+          if (prev >= 15) {
+            clearInterval(audioIntervalRef.current);
+            setAudioPlaying(false);
+            setContentConsumed(true);
+            toast.success("🎧 Simulated audio lesson completed! You can now take the step trivia.");
+            return 15;
+          }
+          return prev + 1;
+        });
+      }, 1000);
+    } else {
+      if (audioIntervalRef.current) {
+        clearInterval(audioIntervalRef.current);
       }
-      const tag = document.createElement("script");
-      tag.id = "yt-iframe-api-script";
-      tag.src = "https://www.youtube.com/iframe_api";
-      const firstScriptTag = document.getElementsByTagName("script")[0];
-      firstScriptTag?.parentNode?.insertBefore(tag, firstScriptTag);
+    }
 
-      // Bind callback
-      (window as any).onYouTubeIframeAPIReady = () => {
-        initYtPlayer();
-      };
+    return () => {
+      if (audioIntervalRef.current) {
+        clearInterval(audioIntervalRef.current);
+      }
     };
+  }, [audioPlaying]);
+
+  // YouTube Iframe Player API loading and handling
+  useEffect(() => {
+    if (activeSubTab !== "learn" || currentStep < 1 || currentStep > stage.steps.length) return;
+    const step = stage.steps[currentStep - 1];
+    if (activeFormat !== "video" || !step.youtubeId) return;
+
+    let player: any = null;
 
     const initYtPlayer = () => {
-      if (!(window as any).YT) return;
+      if (!(window as any).YT || !(window as any).YT.Player) return;
       
-      // Cleanup previous player
       if (playerRef.current) {
         try {
           playerRef.current.destroy();
         } catch (e) {
-          console.error(e);
+          console.error("Error destroying player:", e);
         }
       }
 
-      playerRef.current = new (window as any).YT.Player(iframeId, {
+      player = new (window as any).YT.Player(iframeId, {
         events: {
           onStateChange: (event: any) => {
             // event.data: 1 = PLAYING, 2 = PAUSED, 0 = ENDED
@@ -189,25 +246,57 @@ export function StageDetailDrawer({
           }
         }
       });
+      playerRef.current = player;
+    };
+
+    const loadYtScript = () => {
+      if ((window as any).YT && (window as any).YT.Player) {
+        initYtPlayer();
+        return;
+      }
+      if (document.getElementById("yt-iframe-api-script")) {
+        const checkYt = setInterval(() => {
+          if ((window as any).YT && (window as any).YT.Player) {
+            clearInterval(checkYt);
+            initYtPlayer();
+          }
+        }, 100);
+        return;
+      }
+      const tag = document.createElement("script");
+      tag.id = "yt-iframe-api-script";
+      tag.src = "https://www.youtube.com/iframe_api";
+      const firstScriptTag = document.getElementsByTagName("script")[0];
+      firstScriptTag?.parentNode?.insertBefore(tag, firstScriptTag);
+
+      (window as any).onYouTubeIframeAPIReady = () => {
+        initYtPlayer();
+      };
     };
 
     loadYtScript();
 
     return () => {
       stopWatchTimer();
+      if (playerRef.current) {
+        try {
+          playerRef.current.destroy();
+          playerRef.current = null;
+        } catch (e) {
+          console.error("Error destroying player on cleanup:", e);
+        }
+      }
     };
-  }, [playingVideoIdx]);
+  }, [currentStep, activeFormat, activeSubTab, stage.id]);
 
   const startWatchTimer = () => {
-    if (timerIntervalRef.current) return;
-    timerIntervalRef.current = setInterval(() => {
+    if (videoTimerRef.current) return;
+    videoTimerRef.current = setInterval(() => {
       setVideoTimer((prev) => {
-        // Enforce 90 seconds watch time (for demonstration / testing, speed up to complete at 90s, with a cheat button)
         if (prev >= 90) {
           stopWatchTimer();
-          if (playingVideoIdx !== null) {
-            handleVideoComplete(playingVideoIdx);
-          }
+          setContentConsumed(true);
+          toast.success("🎥 Video watch completed! You can now take the step trivia.");
           return 90;
         }
         return prev + 1;
@@ -216,189 +305,153 @@ export function StageDetailDrawer({
   };
 
   const stopWatchTimer = () => {
-    if (timerIntervalRef.current) {
-      clearInterval(timerIntervalRef.current);
-      timerIntervalRef.current = null;
+    if (videoTimerRef.current) {
+      clearInterval(videoTimerRef.current);
+      videoTimerRef.current = null;
     }
   };
 
-  const handleStartVideo = (idx: number) => {
-    if (videosCompleted[idx]) {
-      toast.info("You've already completed this video!");
-      return;
-    }
-    setPlayingVideoIdx(idx);
-    setVideoTimer(0);
-  };
-
-  const handleVideoComplete = (idx: number) => {
-    setPlayingVideoIdx(null);
-    stopWatchTimer();
-    
-    const newCompleted = [...videosCompleted];
-    newCompleted[idx] = true;
-    setVideosCompleted(newCompleted);
-    localStorage.setItem(`stage_${stage.id}_video_${idx}`, "true");
-
-    // Earn Sovereigns
-    const earned = 10;
-    const newSovereigns = profile.sovereigns + earned;
-    
-    // Check all 4 formats completed bonus (+15 SVG)
-    let formatsBonus = 0;
-    const allVideosDone = newCompleted.every(Boolean);
-    const isDocTracked = profile.trackedDocs?.includes(stage.documentName);
-    const isQuizPassed = profile.badges?.includes(stage.badge);
-    const formatsBonusKey = `stage_${stage.id}_formats_bonus_earned`;
-    
-    if (allVideosDone && articleCompleted && isDocTracked && isQuizPassed && !localStorage.getItem(formatsBonusKey)) {
-      formatsBonus = 15;
-      localStorage.setItem(formatsBonusKey, "true");
-      toast.success("🔥 Stage Mastery: Completed all 4 formats! +15 Sovereigns Bonus!");
-    }
-
-    const updatedProfile = { 
-      ...profile, 
-      sovereigns: newSovereigns + formatsBonus 
-    };
-    onUpdateProfile(updatedProfile);
-    toast.success(`Video Completed! +10 Sovereigns (SVG) earned.`);
-  };
-
-  const handleChapterRead = (idx: number) => {
-    if (readChapters[idx]) return;
-    const newRead = [...readChapters];
-    newRead[idx] = true;
-    setReadChapters(newRead);
-    localStorage.setItem(`stage_${stage.id}_chapter_${idx}`, "true");
-
-    // If all 4 chapters are read, complete the article format
-    if (newRead.every(Boolean) && newRead.length === stage.chapters.length) {
-      setArticleCompleted(true);
-      localStorage.setItem(`stage_${stage.id}_article`, "true");
-      
-      const earned = 10;
-      let formatsBonus = 0;
-      const allVideosDone = videosCompleted.every(Boolean);
-      const isDocTracked = profile.trackedDocs?.includes(stage.documentName);
-      const isQuizPassed = profile.badges?.includes(stage.badge);
-      const formatsBonusKey = `stage_${stage.id}_formats_bonus_earned`;
-      
-      if (allVideosDone && isDocTracked && isQuizPassed && !localStorage.getItem(formatsBonusKey)) {
-        formatsBonus = 15;
-        localStorage.setItem(formatsBonusKey, "true");
-        toast.success("🔥 Stage Mastery: Completed all 4 formats! +15 Sovereigns Bonus!");
-      }
-
-      const updatedProfile = { 
-        ...profile, 
-        sovereigns: profile.sovereigns + earned + formatsBonus 
-      };
-      onUpdateProfile(updatedProfile);
-      toast.success(`Article Fully Read! +10 Sovereigns (SVG) earned.`);
-    }
-  };
-
-  const handleSelectAnswer = (qIdx: number, oIdx: number) => {
-    if (quizSubmitted || cooldownRemaining > 0) return;
-    setSelectedAnswers((prev) => ({ ...prev, [qIdx]: oIdx }));
-  };
-
-  const handleSubmitQuiz = () => {
-    if (Object.keys(selectedAnswers).length < stage.questions.length) {
-      toast.error("Please answer all questions before submitting.");
-      return;
-    }
-
-    let correctCount = 0;
-    stage.questions.forEach((q, idx) => {
-      if (selectedAnswers[idx] === q.answer) {
-        correctCount++;
-      }
-    });
-
-    setQuizScore(correctCount);
-    setQuizSubmitted(true);
-
-    const attemptsKey = `stage_${stage.id}_quiz_attempts`;
-    const attempts = parseInt(localStorage.getItem(attemptsKey) || "0") + 1;
-    localStorage.setItem(attemptsKey, attempts.toString());
-
-    if (correctCount === stage.questions.length) {
-      // 3/3 Mastery passed!
-      const firstTryBonus = firstTry ? 10 : 0;
-      const triviaPoints = 25 + firstTryBonus;
-      let newSovereigns = profile.sovereigns + triviaPoints;
-
-      // Add badge
-      const newBadges = profile.badges ? [...profile.badges] : [];
-      if (!newBadges.includes(stage.badge)) {
-        newBadges.push(stage.badge);
-      }
-
-      // Unlock next stage progress
-      const newProgress = [...profile.stageProgress];
-      const nextStageId = stage.id + 1;
-      if (nextStageId <= 8 && !newProgress.includes(nextStageId)) {
-        newProgress.push(nextStageId);
-      }
-
-      // Check all 8 stages complete bonus (+100 SVG)
-      let allStagesDoneBonus = 0;
-      if (newProgress.length === 8 && newBadges.length === 8 && !profile.allStagesBonusEarned) {
-        allStagesDoneBonus = 100;
-        toast.success("🎉 Champion! Completed all 8 stages: +100 Sovereigns Bonus!");
-      }
-
-      // Check all 4 formats completed bonus (+15 SVG)
-      const allVideosDone = videosCompleted.every(Boolean);
-      const isDocTracked = profile.trackedDocs?.includes(stage.documentName);
-      let formatsBonus = 0;
-      const formatsBonusKey = `stage_${stage.id}_formats_bonus_earned`;
-      if (allVideosDone && articleCompleted && isDocTracked && !localStorage.getItem(formatsBonusKey)) {
-        formatsBonus = 15;
-        localStorage.setItem(formatsBonusKey, "true");
-        toast.success("🔥 Stage Mastery: Completed all 4 formats! +15 Sovereigns Bonus!");
-      }
-
-      const updatedProfile = {
-        ...profile,
-        sovereigns: newSovereigns + allStagesDoneBonus + formatsBonus,
-        stageProgress: newProgress,
-        badges: newBadges,
-        allStagesBonusEarned: allStagesDoneBonus > 0 ? true : profile.allStagesBonusEarned
-      };
-
-      onUpdateProfile(updatedProfile);
-      toast.success(`Passed! Score: 3/3. Earned +${triviaPoints} SVG! ${stage.badge} Badge unlocked.`);
-    } else {
-      // Failed. Set 5 minute cooldown
-      const cooldownTime = Date.now() + 5 * 60 * 1000;
-      localStorage.setItem(`stage_${stage.id}_quiz_cooldown`, cooldownTime.toString());
-      setCooldownRemaining(300);
-      setFirstTry(false);
-      toast.error(`Score: ${correctCount}/3. Mastery requires 3/3. 5-minute cooldown activated.`);
-    }
-  };
-
-  const handleResetQuiz = () => {
-    setSelectedAnswers({});
-    setQuizSubmitted(false);
-    setQuizScore(0);
-  };
-
-  const handleResetCooldown = () => {
-    localStorage.removeItem(`stage_${stage.id}_quiz_cooldown`);
-    setCooldownRemaining(0);
-    toast.success("Cooldown cleared! (Prototype testing shortcut)");
-  };
-
+  // Skip timer and complete content for video
   const handleCheatCompleteVideo = () => {
-    if (playingVideoIdx !== null) {
-      handleVideoComplete(playingVideoIdx);
+    stopWatchTimer();
+    setVideoTimer(90);
+    setContentConsumed(true);
+    toast.success("⏩ Video watch completed (Debug Shortcut)!");
+  };
+
+  // Skip timer and complete content for audio
+  const handleCheatCompleteAudio = () => {
+    setAudioTimer(15);
+    setAudioPlaying(false);
+    setContentConsumed(true);
+    toast.success("⏩ Audio listen completed (Debug Shortcut)!");
+  };
+
+  // Start Learning Button
+  const handleStartLearning = () => {
+    setCurrentStep(1);
+    localStorage.setItem(`stage_${stage.id}_current_step`, "1");
+  };
+
+  // Check if a step's trivia is passed
+  const isStepTriviaPassed = (stepId: number) => {
+    return localStorage.getItem(`stage_${stage.id}_step_${stepId}_trivia_passed`) === "true";
+  };
+
+  // Submit MCQ Answer
+  const handleAnswerMCQ = (qIdx: number, selectedIdx: number, correctIdx: number) => {
+    if (triviaSubmitted || triviaCooldown > 0) return;
+    setSelectedTriviaAnswer(selectedIdx);
+    setTriviaSubmitted(true);
+
+    if (selectedIdx === correctIdx) {
+      const step = stage.steps[currentStep - 1];
+      const rewardKey = `stage_${stage.id}_step_${step.id}_trivia_${qIdx}_reward`;
+      if (!localStorage.getItem(rewardKey)) {
+        localStorage.setItem(rewardKey, "true");
+        const updated = {
+          ...profile,
+          sovereigns: profile.sovereigns + 5
+        };
+        onUpdateProfile(updated);
+        toast.success("Correct! +5 Sovereigns (SVG) awarded!");
+      } else {
+        toast.success("Correct!");
+      }
+    } else {
+      const step = stage.steps[currentStep - 1];
+      const cooldownTime = Date.now() + 5 * 60 * 1000;
+      localStorage.setItem(`stage_${stage.id}_step_${step.id}_cooldown`, cooldownTime.toString());
+      setTriviaCooldown(300);
+      toast.error("Incorrect answer! Cooldown locked for 5 minutes to review materials.");
     }
   };
 
+  // Submit Reflection Answer
+  const handleSubmitReflection = (qIdx: number) => {
+    if (reflectionText.trim().length < 10) {
+      toast.error("Please share a meaningful reflection (minimum 10 characters).");
+      return;
+    }
+    
+    setTriviaSubmitted(true);
+    const step = stage.steps[currentStep - 1];
+    const rewardKey = `stage_${stage.id}_step_${step.id}_trivia_${qIdx}_reward`;
+    if (!localStorage.getItem(rewardKey)) {
+      localStorage.setItem(rewardKey, "true");
+      const updated = {
+        ...profile,
+        sovereigns: profile.sovereigns + 5
+      };
+      onUpdateProfile(updated);
+      toast.success("Reflection submitted! +5 Sovereigns (SVG) awarded!");
+    } else {
+      toast.success("Reflection logged!");
+    }
+  };
+
+  // Proceed to next trivia question or complete step
+  const handleNextTriviaQuestion = () => {
+    const step = stage.steps[currentStep - 1];
+    if (activeTriviaIdx < step.trivia.length - 1) {
+      setActiveTriviaIdx((prev) => prev + 1);
+      setSelectedTriviaAnswer(null);
+      setTriviaSubmitted(false);
+      setReflectionText("");
+    } else {
+      localStorage.setItem(`stage_${stage.id}_step_${step.id}_trivia_passed`, "true");
+      setContentConsumed(true);
+      setShowTriviaDialog(false);
+      toast.success("Step Trivia Passed! Next Step unlocked.");
+    }
+  };
+
+  // Clear Cooldown (Debug Bypass)
+  const handleClearCooldown = () => {
+    const step = stage.steps[currentStep - 1];
+    localStorage.removeItem(`stage_${stage.id}_step_${step.id}_cooldown`);
+    setTriviaCooldown(0);
+    toast.success("Cooldown cleared (Debug Shortcut)!");
+  };
+
+  // Award mastery on Stage Completion screen
+  const masteryAwardedKey = `stage_${stage.id}_mastery_awarded`;
+  useEffect(() => {
+    if (currentStep === stage.steps.length + 1) {
+      if (!localStorage.getItem(masteryAwardedKey)) {
+        localStorage.setItem(masteryAwardedKey, "true");
+        
+        const newProgress = profile.stageProgress ? [...profile.stageProgress] : [1];
+        const nextStageId = stage.id + 1;
+        if (nextStageId <= 8 && !newProgress.includes(nextStageId)) {
+          newProgress.push(nextStageId);
+        }
+        
+        const newBadges = profile.badges ? [...profile.badges] : [];
+        if (!newBadges.includes(stage.badge)) {
+          newBadges.push(stage.badge);
+        }
+
+        let allStagesDoneBonus = 0;
+        if (newProgress.length === 8 && newBadges.length === 8 && !profile.allStagesBonusEarned) {
+          allStagesDoneBonus = 100;
+        }
+
+        const updatedProfile = {
+          ...profile,
+          sovereigns: profile.sovereigns + 25 + allStagesDoneBonus,
+          stageProgress: newProgress,
+          badges: newBadges,
+          allStagesBonusEarned: allStagesDoneBonus > 0 ? true : profile.allStagesBonusEarned
+        };
+        
+        onUpdateProfile(updatedProfile);
+        toast.success(`🎉 Stage Mastered! +25 Sovereigns (SVG) earned. ${stage.badge} Badge unlocked!`);
+      }
+    }
+  }, [currentStep, stage.id]);
+
+  // Track Document Toggle
   const handleToggleTrackDoc = () => {
     const tracked = profile.trackedDocs || [];
     let updatedTracked = [];
@@ -409,22 +462,6 @@ export function StageDetailDrawer({
     } else {
       updatedTracked = [...tracked, stage.documentName];
       toast.success(`Tracking ${stage.documentName}! You will receive alerts when counties upload files.`);
-
-      // Check all 4 formats completed bonus (+15 SVG)
-      const allVideosDone = videosCompleted.every(Boolean);
-      const formatsBonusKey = `stage_${stage.id}_formats_bonus_earned`;
-      const isQuizPassed = profile.badges?.includes(stage.badge);
-      if (allVideosDone && articleCompleted && isQuizPassed && !localStorage.getItem(formatsBonusKey)) {
-        const updatedProfile = {
-          ...profile,
-          trackedDocs: updatedTracked,
-          sovereigns: profile.sovereigns + 15
-        };
-        localStorage.setItem(formatsBonusKey, "true");
-        onUpdateProfile(updatedProfile);
-        toast.success("🔥 Stage Mastery: Completed all 4 formats! +15 Sovereigns Bonus!");
-        return;
-      }
     }
 
     onUpdateProfile({
@@ -435,20 +472,15 @@ export function StageDetailDrawer({
 
   const isDocTracked = profile.trackedDocs?.includes(stage.documentName);
   const isCached = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("bns_cached_stages") || "[]").includes(stage.id) : false;
-  
-  // Articles sequential read requirement: Trivia locks until all chapters read
-  const allChaptersRead = readChapters.length > 0 && readChapters.every(Boolean);
 
-  // Filtered transcript text search
-  const activeVideo = playingVideoIdx !== null ? stage.videos[playingVideoIdx] : null;
-  const filteredTranscript = activeVideo
-    ? activeVideo.transcript.split("\n").filter(line => 
-        line.toLowerCase().includes(transcriptSearch.toLowerCase())
-      ).join("\n")
-    : "";
+  // Personalize text with county
+  const getPersonalizedText = (rawText: string) => {
+    if (!rawText) return "";
+    return rawText.replace(/\[Selected County\]/g, profile.county || "your County");
+  };
 
   return (
-    <div className="fixed inset-0 z-50 bg-background flex flex-col md:max-w-xl md:mx-auto md:border-x border-border shadow-2xl">
+    <div className="fixed inset-0 z-50 bg-background flex flex-col md:max-w-xl md:mx-auto md:border-x border-border shadow-2xl overflow-hidden">
       
       {/* Header */}
       <header className="sticky top-0 z-10 w-full h-14 border-b border-border bg-background flex items-center justify-between px-4">
@@ -471,359 +503,344 @@ export function StageDetailDrawer({
         </Button>
       </header>
 
-      {/* Sub Tabs Navigation */}
-      <div className="grid grid-cols-4 border-b border-border bg-muted/30">
+      {/* Sub Tabs Navigation: Exactly Two Tabs */}
+      <div className="grid grid-cols-2 border-b border-border bg-muted/30">
         <button
-          onClick={() => setActiveSubTab("video")}
-          className={`py-3 text-xs font-bold border-b-2 flex flex-col items-center gap-1 ${activeSubTab === "video" ? 'border-primary text-primary' : 'border-transparent text-muted-foreground'}`}
-        >
-          <Play className="size-4" />
-          <span>Videos</span>
-        </button>
-        <button
-          onClick={() => setActiveSubTab("article")}
-          className={`py-3 text-xs font-bold border-b-2 flex flex-col items-center gap-1 ${activeSubTab === "article" ? 'border-primary text-primary' : 'border-transparent text-muted-foreground'}`}
+          onClick={() => setActiveSubTab("learn")}
+          className={`py-3 text-xs font-bold border-b-2 flex flex-col items-center gap-1 transition-all ${activeSubTab === "learn" ? 'border-primary text-primary' : 'border-transparent text-muted-foreground'}`}
         >
           <BookOpen className="size-4" />
-          <span>Article</span>
+          <span>Learn (Guided Journey)</span>
         </button>
         <button
-          onClick={() => setActiveSubTab("quiz")}
-          className={`py-3 text-xs font-bold border-b-2 flex flex-col items-center gap-1 ${activeSubTab === "quiz" ? 'border-primary text-primary' : 'border-transparent text-muted-foreground'}`}
-          title={!allChaptersRead ? "Chapters must be read first" : undefined}
+          onClick={() => setActiveSubTab("documents")}
+          className={`py-3 text-xs font-bold border-b-2 flex flex-col items-center gap-1 transition-all ${activeSubTab === "documents" ? 'border-primary text-primary' : 'border-transparent text-muted-foreground'}`}
         >
-          <Trophy className="size-4" />
-          <span>Trivia Gate</span>
-        </button>
-        <button
-          onClick={() => setActiveSubTab("tracker")}
-          className={`py-3 text-xs font-bold border-b-2 flex flex-col items-center gap-1 ${activeSubTab === "tracker" ? 'border-primary text-primary' : 'border-transparent text-muted-foreground'}`}
-        >
-          <Sparkles className="size-4" />
-          <span>Tracker</span>
+          <FileCheck className="size-4" />
+          <span>Documents (Tracker)</span>
         </button>
       </div>
 
       {/* Scrollable Content Area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-6 pb-24">
+      <div className="flex-1 overflow-y-auto p-4 space-y-6 pb-24 relative">
         
-        {/* TAB 1: REAL YOUTUBE PLAYER */}
-        {activeSubTab === "video" && (
-          <div className="space-y-4">
-            <div className="space-y-1">
-              <h3 className="font-bold text-sm">🎥 Real Video Playlist</h3>
-              <p className="text-[11px] text-muted-foreground">Watch our official channel budget guide lessons. Each video requires a 90-second min-watch time before completing.</p>
-            </div>
-
-            {playingVideoIdx !== null ? (
-              <div className="space-y-4 p-4 border border-border bg-card rounded-2xl shadow-xs">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-primary truncate max-w-[200px]">{stage.videos[playingVideoIdx].title}</span>
-                  <div className="flex items-center gap-2">
-                    {/* Audio Only Mode Toggle */}
-                    <button
-                      onClick={() => setAudioOnly(!audioOnly)}
-                      className={`p-1.5 rounded-lg border text-xs font-bold flex items-center gap-1 ${audioOnly ? 'bg-primary/10 border-primary/20 text-primary' : 'border-border text-muted-foreground'}`}
-                      title="Audio-only mode for low bandwidth"
-                    >
-                      {audioOnly ? <VolumeX className="size-4" /> : <Volume2 className="size-4" />}
-                      <span className="hidden sm:inline">Audio Only</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* 16:9 Responsive Video player */}
-                <div className={cn(
-                  "relative aspect-video rounded-xl overflow-hidden bg-black",
-                  audioOnly && "h-16 flex items-center justify-center bg-muted"
-                )}>
-                  {audioOnly ? (
-                    <div className="flex flex-col items-center justify-center p-4 text-center">
-                      <Volume2 className="size-6 text-primary animate-pulse" />
-                      <span className="text-[10px] text-muted-foreground mt-1">Audio-Only Mode Active (Bandwidth Saved)</span>
-                    </div>
-                  ) : (
-                    <iframe
-                      id={iframeId}
-                      className="w-full h-full"
-                      src={`https://www.youtube.com/embed/${stage.videos[playingVideoIdx].youtubeId}?rel=0&modestbranding=1&enablejsapi=1`}
-                      title="Budget Ndio Story YouTube player"
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      allowFullScreen
-                    />
-                  )}
-                </div>
-
-                {/* Min Watch Timer Progress */}
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center text-xs font-semibold">
-                    <span className="text-muted-foreground">Watch Duration required:</span>
-                    <span className={videoTimer >= 90 ? "text-primary font-bold" : "text-muted-foreground animate-pulse"}>
-                      {videoTimer}s / 90s
-                    </span>
-                  </div>
-                  <Progress value={(videoTimer / 90) * 100} className="h-2 rounded-full" />
-                </div>
-
-                {/* Review Shortcut Helper */}
-                <div className="flex flex-wrap gap-2 pt-2 justify-between">
-                  <Button size="xs" variant="outline" onClick={handleCheatCompleteVideo} className="gap-1 text-xs text-muted-foreground">
-                    ⏩ Complete Video (Shortcut)
-                  </Button>
-                  <Button size="xs" variant="ghost" onClick={() => setPlayingVideoIdx(null)} className="text-destructive font-semibold">
-                    Close Player
-                  </Button>
-                </div>
-
-                {/* Accessible Transcript section */}
-                <div className="border-t border-border pt-3 space-y-2">
-                  <button
-                    onClick={() => setShowTranscript(!showTranscript)}
-                    className="text-xs font-bold text-primary flex items-center gap-1 underline"
-                  >
-                    <FileText className="size-3.5" />
-                    <span>{showTranscript ? "Hide Searchable Transcript" : "Show Searchable Transcript"}</span>
-                  </button>
-
-                  {showTranscript && (
-                    <div className="space-y-2 border border-border/80 bg-muted/20 p-3 rounded-xl">
-                      <div className="relative">
-                        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
-                        <input
-                          type="text"
-                          placeholder="Search transcript lines..."
-                          value={transcriptSearch}
-                          onChange={(e) => setTranscriptSearch(e.target.value)}
-                          className="w-full h-8 pl-8 pr-3 rounded-lg border border-border bg-card text-xs focus-visible:outline-none"
-                        />
-                      </div>
-                      <div className="max-h-28 overflow-y-auto font-mono text-[10px] leading-relaxed whitespace-pre-wrap text-foreground/80 scrollbar-thin">
-                        {filteredTranscript || "No matching transcript lines found."}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div className="grid gap-3">
-                {stage.videos.map((video, idx) => (
-                  <div
-                    key={idx}
-                    className={`p-4 rounded-xl border flex items-center justify-between gap-4 transition-all ${videosCompleted[idx] ? 'bg-primary/5 border-primary/20' : 'bg-card border-border'}`}
-                  >
-                    <div className="space-y-1">
-                      <span className="text-[9px] uppercase font-black text-muted-foreground tracking-widest">Part {idx + 1}</span>
-                      <h4 className="text-sm font-bold truncate max-w-[200px] sm:max-w-xs">{video.title}</h4>
-                      <p className="text-xs text-muted-foreground flex items-center gap-1">
-                        <Clock className="size-3" /> {video.duration} min
-                      </p>
-                    </div>
-
-                    {videosCompleted[idx] ? (
-                      <span className="flex items-center gap-1 text-xs font-bold text-primary shrink-0">
-                        <CheckCircle2 className="size-4" /> Watched
-                      </span>
-                    ) : (
-                      <Button
-                        size="sm"
-                        onClick={() => handleStartVideo(idx)}
-                        className="rounded-xl font-bold shrink-0 gap-1.5"
-                      >
-                        <Play className="size-3.5 fill-current" /> Watch
-                      </Button>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* TAB 2: ARTICLE */}
-        {activeSubTab === "article" && (
-          <div className="space-y-4">
-            <div className="space-y-1">
-              <h3 className="font-bold text-sm">📝 BNS Explainer (Chapters)</h3>
-              <p className="text-[11px] text-muted-foreground">Read each chapter of our guide. All 4 chapters must be read to unlock the Trivia Gate.</p>
-            </div>
-
-            <Accordion type="single" collapsible className="w-full space-y-2 border-none">
-              {stage.chapters.map((ch, idx) => {
-                let contentText = ch.content;
-                if (idx === 1 && profile.county) {
-                  contentText = contentText.replace("[Selected County]", profile.county);
-                }
-
-                return (
-                  <AccordionItem
-                    key={idx}
-                    value={`ch-${idx}`}
-                    className="border border-border bg-card rounded-xl overflow-hidden px-4 py-0"
-                  >
-                    <AccordionTrigger
-                      onClick={() => handleChapterRead(idx)}
-                      className="hover:no-underline py-4 text-xs font-bold text-left flex justify-between"
-                    >
-                      <div className="flex items-center gap-2">
-                        {readChapters[idx] ? (
-                          <CheckCircle2 className="size-4 text-primary shrink-0" />
-                        ) : (
-                          <div className="size-4 rounded-full border-2 border-muted-foreground/30 shrink-0" />
-                        )}
-                        <span>Chapter {idx + 1}: {ch.title}</span>
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent className="text-xs leading-relaxed text-foreground/80 border-t border-border pt-4 pb-4">
-                      {contentText}
-                    </AccordionContent>
-                  </AccordionItem>
-                );
-              })}
-            </Accordion>
-
-            {articleCompleted && (
-              <div className="p-3 bg-primary/10 border border-primary/20 text-primary rounded-xl text-xs font-bold flex items-center gap-2">
-                <CheckCircle2 className="size-5" />
-                <span>You've completed reading the BNS Article chapters! +10 SVG awarded.</span>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* TAB 3: TRIVIA GATE */}
-        {activeSubTab === "quiz" && (
-          <div className="space-y-4">
+        {activeSubTab === "learn" ? (
+          <div className="space-y-6">
             
-            {/* sequential gate: read chapters first */}
-            {!allChaptersRead ? (
-              <div className="p-6 border border-border bg-card rounded-xl text-center space-y-4">
-                <AlertCircle className="size-12 mx-auto text-muted-foreground/60" />
-                <h4 className="font-bold text-sm">Trivia Gate Locked</h4>
-                <p className="text-xs text-muted-foreground max-w-xs mx-auto">
-                  You must read all 4 chapters of the stage's **BNS Article** before the Trivia Gate opens. Complete the reading first!
-                </p>
-                <Button size="sm" onClick={() => setActiveSubTab("article")} className="rounded-xl">
-                  Go to Article
+            {/* STEP 0: COURSE OVERVIEW */}
+            {currentStep === 0 && (
+              <div className="space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <div className="flex flex-col items-center justify-center text-center p-6 bg-card border border-border rounded-2xl space-y-4">
+                  <div className="size-16 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 shadow-xs relative">
+                    <span className="text-3xl">{stage.badge}</span>
+                    <Sparkles className="size-4 text-primary absolute -top-1 -right-1 fill-primary animate-pulse" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">{stage.credits || "Credits: BNS Team"}</span>
+                    <h3 className="font-black text-base text-foreground mt-1">{stage.title} Overview</h3>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {stage.description}
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-xl border border-border bg-card space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-primary flex items-center gap-1">
+                    <Trophy className="size-3.5" /> What to expect
+                  </h4>
+                  <ul className="space-y-2 text-xs">
+                    {stage.expectations.map((exp, idx) => (
+                      <li key={idx} className="flex items-start gap-2 text-foreground/80 leading-normal">
+                        <CheckCircle2 className="size-4 text-primary shrink-0 mt-0.5" />
+                        <span>{exp}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <Button
+                  onClick={handleStartLearning}
+                  className="w-full h-12 rounded-xl font-bold gap-2 text-sm text-primary-foreground bg-primary hover:bg-primary/95 transition-all shadow-md active:scale-[0.98]"
+                >
+                  Start Learning Course <ArrowRight className="size-4" />
                 </Button>
               </div>
-            ) : cooldownRemaining > 0 ? (
-              <div className="p-5 rounded-xl border border-destructive/20 bg-destructive/5 text-center space-y-3">
-                <Clock className="size-8 mx-auto text-destructive animate-pulse" />
-                <h4 className="font-bold text-sm text-destructive">Cooldown Lock active</h4>
-                <p className="text-xs text-muted-foreground">
-                  Mastery quiz failed. Cooldown active to encourage review.
-                </p>
-                <div className="text-2xl font-black text-destructive">
-                  {Math.floor(cooldownRemaining / 60)}m {cooldownRemaining % 60}s
-                </div>
-                <div className="pt-2 flex justify-center gap-2">
-                  <Button size="xs" variant="outline" onClick={handleResetCooldown} className="gap-1 text-xs text-muted-foreground">
-                    <RefreshCw className="size-3" /> Clear Cooldown (Debug)
-                  </Button>
-                </div>
-              </div>
-            ) : profile.badges?.includes(stage.badge) ? (
-              <div className="p-5 rounded-xl border border-primary/20 bg-primary/5 text-center space-y-3">
-                <Trophy className="size-12 mx-auto text-primary" />
-                <h4 className="font-bold text-base">Stage Mastered!</h4>
-                <p className="text-xs text-muted-foreground">
-                  You scored 3/3 and unlocked the **{stage.badgeName}** badge.
-                </p>
-                <div className="inline-flex items-center justify-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold">
-                  {stage.badge} Unlocked
-                </div>
-                <div className="pt-2">
-                  <Button size="sm" variant="outline" onClick={handleResetQuiz} className="rounded-xl font-bold">
-                    Re-Attempt Quiz
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-6">
-                <div className="space-y-1">
-                  <h3 className="font-bold text-sm flex items-center gap-1.5">
-                    <Trophy className="size-4.5 text-primary" /> Trivia Gate
+            )}
+
+            {/* STEP 1..N: GUIDED STEPS */}
+            {currentStep >= 1 && currentStep <= stage.steps.length && (
+              <div className="space-y-5 animate-in fade-in duration-300">
+                
+                {/* Step Progress and Header */}
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center text-xs font-bold">
+                    <span className="text-primary uppercase tracking-wider">Step {currentStep} of {stage.steps.length}</span>
+                    <span className="text-muted-foreground">{Math.round(((currentStep - 1) / stage.steps.length) * 100)}% Complete</span>
+                  </div>
+                  <Progress value={((currentStep - 1) / stage.steps.length) * 100} className="h-1.5 rounded-full" />
+                  <h3 className="text-sm font-black text-foreground mt-1">
+                    {stage.steps[currentStep - 1].title}
                   </h3>
-                  <p className="text-xs text-muted-foreground">Answer 3 questions to unlock the next stage. 3/3 score is required!</p>
                 </div>
 
-                {stage.questions.map((q, qIdx) => (
-                  <div key={qIdx} className="space-y-2.5 p-4 rounded-xl border border-border bg-card">
-                    <h4 className="text-xs font-bold flex gap-1.5">
-                      <span className="text-primary">{qIdx + 1}.</span>
-                      <span>{q.question}</span>
-                    </h4>
-                    <div className="grid gap-2">
-                      {q.options.map((opt, oIdx) => {
-                        const isSelected = selectedAnswers[qIdx] === oIdx;
-                        const isCorrect = q.answer === oIdx;
-                        
-                        let optionStyle = "border-border bg-muted/10";
-                        if (isSelected) {
-                          if (quizSubmitted) {
-                            optionStyle = isCorrect
-                              ? "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
-                              : "border-destructive bg-destructive/10 text-destructive";
-                          } else {
-                            optionStyle = "border-primary bg-primary/5 text-primary";
-                          }
-                        } else if (quizSubmitted && isCorrect) {
-                          optionStyle = "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300";
-                        }
-
-                        return (
-                          <button
-                            key={oIdx}
-                            type="button"
-                            onClick={() => handleSelectAnswer(qIdx, oIdx)}
-                            disabled={quizSubmitted}
-                            className={`w-full p-3 text-xs font-semibold text-left rounded-xl border transition-all hover:bg-muted/30 ${optionStyle}`}
-                          >
-                            {opt}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ))}
-
-                {quizSubmitted ? (
-                  <div className="p-4 rounded-xl border border-border bg-muted/40 space-y-3 text-xs">
-                    <div className="flex justify-between items-center font-bold">
-                      <span>Quiz Results:</span>
-                      <span className={quizScore === 3 ? "text-emerald-600" : "text-destructive"}>
-                        {quizScore} / 3 Correct
-                      </span>
-                    </div>
-                    {quizScore < 3 && (
-                      <p className="text-muted-foreground leading-relaxed">
-                        Mastery requires 3/3. Take this cooldown to review the article chapters and video links.
-                      </p>
+                {/* Format Toggle Group */}
+                <div className="grid grid-cols-3 gap-2 bg-muted/60 p-1 rounded-xl">
+                  <button
+                    onClick={() => setActiveFormat("video")}
+                    className={cn(
+                      "py-2 text-[11px] font-black rounded-lg flex items-center justify-center gap-1.5 transition-all",
+                      activeFormat === "video" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
                     )}
-                    {quizScore === 3 ? (
-                      <div className="pt-2 text-center text-emerald-600 font-bold">
-                        🎉 Passed! Score: 3/3. Badge unlocked.
+                  >
+                    🎥 Video
+                  </button>
+                  <button
+                    onClick={() => setActiveFormat("audio")}
+                    className={cn(
+                      "py-2 text-[11px] font-black rounded-lg flex items-center justify-center gap-1.5 transition-all",
+                      activeFormat === "audio" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    🎧 Audio
+                  </button>
+                  <button
+                    onClick={() => setActiveFormat("text")}
+                    className={cn(
+                      "py-2 text-[11px] font-black rounded-lg flex items-center justify-center gap-1.5 transition-all",
+                      activeFormat === "text" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    📖 Text
+                  </button>
+                </div>
+
+                {/* Content Panel */}
+                <div className="p-4 border border-border bg-card rounded-2xl shadow-xs space-y-4">
+                  
+                  {/* VIDEO FORMAT */}
+                  {activeFormat === "video" && (
+                    <div className="space-y-3">
+                      <div className="relative aspect-video rounded-xl overflow-hidden bg-black">
+                        <iframe
+                          id={iframeId}
+                          className="w-full h-full"
+                          src={`https://www.youtube.com/embed/${stage.steps[currentStep - 1].youtubeId}?rel=0&modestbranding=1&enablejsapi=1`}
+                          title="Budget Ndio Story Step Video"
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowFullScreen
+                        />
                       </div>
-                    ) : (
-                      <Button onClick={handleResetQuiz} variant="outline" className="w-full rounded-xl h-11 font-bold">
-                        Try again (after cooldown)
+                      
+                      <div className="space-y-1.5">
+                        <div className="flex justify-between items-center text-xs font-semibold">
+                          <span className="text-muted-foreground">Watch requirement:</span>
+                          <span className={videoTimer >= 90 ? "text-primary font-bold" : "text-muted-foreground animate-pulse"}>
+                            {videoTimer}s / 90s
+                          </span>
+                        </div>
+                        <Progress value={(videoTimer / 90) * 100} className="h-1.5 rounded-full" />
+                      </div>
+
+                      <div className="flex justify-between items-center pt-1 border-t border-border">
+                        <Button size="xs" variant="outline" onClick={handleCheatCompleteVideo} className="text-[10px] text-muted-foreground font-semibold gap-1">
+                          ⏩ Complete Watch (Shortcut)
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* AUDIO FORMAT */}
+                  {activeFormat === "audio" && (
+                    <div className="space-y-4">
+                      <div className="p-4 rounded-xl bg-muted/30 border border-border flex flex-col items-center justify-center text-center space-y-3">
+                        <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center">
+                          <Volume2 className="size-6 text-primary" />
+                        </div>
+                        <div>
+                          <p className="text-xs font-bold text-foreground">Podcast Audio Lesson</p>
+                          <p className="text-[10px] text-muted-foreground">Listen to this step's key takeaways</p>
+                        </div>
+                        
+                        <div className="w-full flex items-center gap-3">
+                          <Button
+                            size="icon-sm"
+                            onClick={() => setAudioPlaying(!audioPlaying)}
+                            className="rounded-full shadow-xs shrink-0"
+                          >
+                            {audioPlaying ? <Pause className="size-4" /> : <Play className="size-4 fill-current" />}
+                          </Button>
+                          <div className="flex-1 space-y-1">
+                            <Progress value={(audioTimer / 15) * 100} className="h-1.5 rounded-full" />
+                            <div className="flex justify-between text-[9px] text-muted-foreground font-mono">
+                              <span>0:{audioTimer.toString().padStart(2, '0')}</span>
+                              <span>0:15</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <Button size="xs" variant="outline" onClick={handleCheatCompleteAudio} className="text-[10px] text-muted-foreground font-semibold gap-1">
+                          ⏩ Complete Audio (Shortcut)
+                        </Button>
+                      </div>
+
+                      {/* Searchable Transcript */}
+                      <div className="border-t border-border pt-3 space-y-2">
+                        <button
+                          onClick={() => setShowTranscript(!showTranscript)}
+                          className="text-xs font-bold text-primary flex items-center gap-1 underline"
+                        >
+                          <FileText className="size-3.5" />
+                          <span>{showTranscript ? "Hide Searchable Transcript" : "Show Searchable Transcript"}</span>
+                        </button>
+
+                        {showTranscript && (
+                          <div className="space-y-2 border border-border bg-muted/20 p-3 rounded-xl animate-in fade-in duration-200">
+                            <div className="relative">
+                              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
+                              <input
+                                type="text"
+                                placeholder="Search transcript..."
+                                value={transcriptSearch}
+                                onChange={(e) => setTranscriptSearch(e.target.value)}
+                                className="w-full h-8 pl-8 pr-3 rounded-lg border border-border bg-card text-xs focus-visible:outline-none"
+                              />
+                            </div>
+                            <div className="max-h-24 overflow-y-auto font-mono text-[10px] leading-relaxed whitespace-pre-wrap text-foreground/80 scrollbar-thin">
+                              {stage.steps[currentStep - 1].transcript
+                                .split("\n")
+                                .filter(line => line.toLowerCase().includes(transcriptSearch.toLowerCase()))
+                                .join("\n") || "No matching lines found."}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TEXT FORMAT */}
+                  {activeFormat === "text" && (
+                    <div className="space-y-4">
+                      <div className="text-xs leading-relaxed text-foreground/90 whitespace-pre-wrap font-sans bg-muted/10 p-2 rounded-lg max-h-60 overflow-y-auto border border-border/40">
+                        {getPersonalizedText(stage.steps[currentStep - 1].text)}
+                      </div>
+                      <div className="border-t border-border pt-3 flex justify-end">
+                        <Button
+                          size="sm"
+                          onClick={() => setContentConsumed(true)}
+                          className="rounded-xl font-black text-xs gap-1"
+                        >
+                          I've Read This Chapter <CheckCircle2 className="size-3.5" />
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
+                </div>
+
+                {/* Gated Step Progress */}
+                <div className="mt-4">
+                  {isStepTriviaPassed(stage.steps[currentStep - 1].id) ? (
+                    <div className="p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 text-emerald-700 dark:text-emerald-300 space-y-2">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="size-5 text-emerald-600 shrink-0" />
+                        <h4 className="text-xs font-bold">Step Trivia Completed!</h4>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground">
+                        You've unlocked this step's trivia gates and earned sovereigns. Tap the footer button to progress.
+                      </p>
+                    </div>
+                  ) : contentConsumed ? (
+                    <div className="p-4 rounded-2xl border border-primary/20 bg-primary/5 space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Trophy className="size-5 text-primary shrink-0" />
+                        <h4 className="text-xs font-bold text-foreground">Step Trivia Unlocked!</h4>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground">
+                        Lesson materials consumed successfully. Take the short trivia check to unlock the next guided step.
+                      </p>
+                      <Button
+                        onClick={() => {
+                          setActiveTriviaIdx(0);
+                          setSelectedTriviaAnswer(null);
+                          setTriviaSubmitted(false);
+                          setReflectionText("");
+                          setShowTriviaDialog(true);
+                        }}
+                        className="w-full h-10 rounded-xl font-bold text-xs gap-1.5"
+                      >
+                        <Sparkles className="size-4" /> Start Step Trivia Challenge
                       </Button>
-                    )}
-                  </div>
-                ) : (
-                  <Button onClick={handleSubmitQuiz} className="w-full rounded-xl h-11 font-bold">
-                    Submit Trivia Attempt
-                  </Button>
-                )}
+                    </div>
+                  ) : (
+                    <div className="p-4 rounded-2xl border border-muted-foreground/15 bg-muted/20 flex items-start gap-3">
+                      <Lock className="size-5 text-muted-foreground mt-0.5 shrink-0" />
+                      <div className="space-y-1">
+                        <h4 className="text-xs font-bold text-muted-foreground">Lesson Gated</h4>
+                        <p className="text-[10px] text-muted-foreground leading-normal">
+                          Consume the step lesson material above using any format (Video/Audio/Text) to open the trivia challenge.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
               </div>
             )}
-          </div>
-        )}
 
-        {/* TAB 4: DOCUMENT TRACKER */}
-        {activeSubTab === "tracker" && (
-          <div className="space-y-4">
+            {/* STAGE MASTERY PAGE */}
+            {currentStep === stage.steps.length + 1 && (
+              <div className="flex flex-col items-center justify-center text-center space-y-6 py-6 animate-in zoom-in-95 duration-500">
+                <div className="relative">
+                  {/* Glowing halo */}
+                  <div className="absolute inset-0 size-24 rounded-full bg-primary/25 blur-xl animate-ping mx-auto" />
+                  <div className="size-24 rounded-full bg-card border border-primary/30 flex items-center justify-center text-5xl shadow-2xl relative mx-auto">
+                    {stage.badge}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 border border-primary/20 px-3 py-1 text-xs font-bold text-primary">
+                    <Award className="size-4 fill-primary" /> Badge Unlocked!
+                  </div>
+                  <h3 className="font-black text-xl text-foreground">Stage Mastered successfully!</h3>
+                  <p className="text-xs text-muted-foreground max-w-xs mx-auto">
+                    You've completed all guided steps for the **{stage.documentName}** course and earned the **{stage.badgeName}** credentials.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-xl border border-border bg-card w-full text-xs font-semibold grid grid-cols-2 gap-3 text-left">
+                  <div className="space-y-1">
+                    <span className="text-muted-foreground text-[10px]">REWARDS CREDITED:</span>
+                    <p className="text-primary font-bold flex items-center gap-1 text-sm">
+                      <Sparkles className="size-4 fill-primary" /> +25 SVG Points
+                    </p>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-muted-foreground text-[10px]">CREDENTIAL ID:</span>
+                    <p className="text-foreground font-mono text-[10px] mt-0.5">BNS-{stage.badgeName.toUpperCase()}-2026</p>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={() => {
+                    if (hasNext && onNextStage) {
+                      onNextStage();
+                    } else {
+                      onClose();
+                    }
+                  }}
+                  className="w-full h-12 rounded-xl font-bold text-sm text-primary-foreground bg-primary hover:bg-primary/95 transition-all shadow-md"
+                >
+                  {hasNext ? "Continue to Next Stage" : "Finish Journey"}
+                </Button>
+              </div>
+            )}
+
+          </div>
+        ) : (
+          <div className="space-y-5 animate-in fade-in duration-300">
+            {/* STATUTORY DOCUMENT TRACKER TAB */}
             <div className="space-y-1">
               <h3 className="font-bold text-sm">📄 Statutory Tracker</h3>
               <p className="text-[11px] text-muted-foreground">Verify official sources, review historical archives, and subscribe to county comment windows.</p>
@@ -879,35 +896,293 @@ export function StageDetailDrawer({
                 </p>
               </div>
             </div>
+
+            {/* Custom local BPS PDF file embed for BPS Stage */}
+            {stage.id === 2 && (
+              <div className="p-4 border border-primary/20 bg-primary/5 rounded-xl space-y-3 animate-in zoom-in-95 duration-200">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">📄</span>
+                  <div>
+                    <h4 className="text-xs font-bold">2026 BPS Summary Document</h4>
+                    <p className="text-[10px] text-muted-foreground">Local PDF Document</p>
+                  </div>
+                </div>
+                <p className="text-[11px] text-muted-foreground">
+                  Read the official 2026 Budget Policy Statement Summary. This file contains division of revenue formulas, tax reform directions, and MSME Hustler Fund ceilings.
+                </p>
+                <a
+                  href="/BPS_2026_Summary.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex w-full items-center justify-center gap-2 px-4 h-11 rounded-xl bg-primary text-primary-foreground text-xs font-black shadow-xs hover:bg-primary/95 transition-all"
+                >
+                  <DownloadCloud className="size-4" /> Open BPS 2026 Summary PDF
+                </a>
+              </div>
+            )}
+
           </div>
         )}
       </div>
 
+      {/* POPUP TRIVIA MODAL DIALOG */}
+      {showTriviaDialog && currentStep >= 1 && currentStep <= stage.steps.length && (
+        <div className="absolute inset-0 bg-background/95 backdrop-blur-sm z-50 flex flex-col p-4 overflow-y-auto animate-in slide-in-from-bottom duration-300">
+          
+          {/* Modal Header */}
+          <div className="flex justify-between items-center border-b border-border pb-3 mb-4">
+            <div className="flex items-center gap-1.5 text-primary">
+              <Trophy className="size-4.5" />
+              <span className="text-xs font-black uppercase">
+                Challenge {activeTriviaIdx + 1} of {stage.steps[currentStep - 1].trivia.length}
+              </span>
+            </div>
+            <Button
+              size="icon-sm"
+              variant="ghost"
+              onClick={() => setShowTriviaDialog(false)}
+              className="rounded-full"
+            >
+              <X className="size-5" />
+            </Button>
+          </div>
+
+          {/* Modal Content */}
+          <div className="flex-1 space-y-5">
+            {(() => {
+              const step = stage.steps[currentStep - 1];
+              const q = step.trivia[activeTriviaIdx];
+              
+              if (q.type === "multiple-choice") {
+                return (
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-black text-foreground">{q.question}</h4>
+
+                    {/* Cooldown Timer Alert */}
+                    {triviaCooldown > 0 && (
+                      <div className="p-3 border border-destructive/20 bg-destructive/5 rounded-xl text-center space-y-2">
+                        <Clock className="size-5 text-destructive mx-auto animate-pulse" />
+                        <p className="text-[11px] font-bold text-destructive">Anti-guessing Cooldown Active</p>
+                        <p className="text-[10px] text-muted-foreground">Please review the chapter text. Lock releases in:</p>
+                        <div className="text-lg font-black text-destructive font-mono">
+                          {Math.floor(triviaCooldown / 60)}m {triviaCooldown % 60}s
+                        </div>
+                        <Button size="xs" variant="outline" onClick={handleClearCooldown} className="text-[9px] text-muted-foreground gap-1">
+                          <RefreshCw className="size-3" /> Clear Cooldown (Debug Bypass)
+                        </Button>
+                      </div>
+                    )}
+
+                    {/* MCQ Options */}
+                    <div className="grid gap-2">
+                      {q.options?.map((opt, idx) => {
+                        const isSelected = selectedTriviaAnswer === idx;
+                        const isCorrect = q.answer === idx;
+                        
+                        let optStyle = "border-border bg-card hover:bg-muted/40";
+                        if (isSelected) {
+                          if (triviaSubmitted) {
+                            optStyle = isCorrect
+                              ? "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold"
+                              : "border-destructive bg-destructive/10 text-destructive font-bold";
+                          } else {
+                            optStyle = "border-primary bg-primary/5 text-primary font-bold";
+                          }
+                        } else if (triviaSubmitted && isCorrect) {
+                          optStyle = "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold";
+                        }
+
+                        return (
+                          <button
+                            key={idx}
+                            onClick={() => handleAnswerMCQ(activeTriviaIdx, idx, q.answer!)}
+                            disabled={triviaSubmitted || triviaCooldown > 0}
+                            className={cn(
+                              "w-full min-h-[44px] px-4 py-3 rounded-xl border text-xs font-semibold text-left transition-all active:scale-[0.99]",
+                              optStyle
+                            )}
+                          >
+                            {opt}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Explanatory Context Card */}
+                    {triviaSubmitted && (
+                      <div className={cn(
+                        "p-4 rounded-xl border text-xs leading-normal animate-in zoom-in-95 duration-200",
+                        selectedTriviaAnswer === q.answer
+                          ? "border-emerald-500/20 bg-emerald-500/5 text-emerald-800 dark:text-emerald-200"
+                          : "border-destructive/20 bg-destructive/5 text-destructive"
+                      )}>
+                        <h5 className="font-bold flex items-center gap-1.5 mb-1 text-xs">
+                          {selectedTriviaAnswer === q.answer ? (
+                            <>
+                              <CheckCircle2 className="size-4 text-emerald-600" /> Lesson Mastered!
+                            </>
+                          ) : (
+                            <>
+                              <AlertCircle className="size-4 text-destructive" /> Incorrect Choice
+                            </>
+                          )}
+                        </h5>
+                        <p>{q.explanation}</p>
+                      </div>
+                    )}
+                  </div>
+                );
+              } else {
+                
+                // REFLECTION QUESTION
+                return (
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-black text-foreground">{q.question}</h4>
+
+                    {q.options && q.options.length > 0 && (
+                      <div className="grid gap-2">
+                        {q.options.map((opt, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => setReflectionText(opt)}
+                            className={cn(
+                              "w-full min-h-[44px] px-4 py-3 rounded-xl border text-xs font-semibold text-left transition-all active:scale-[0.99]",
+                              reflectionText === opt ? "border-primary bg-primary/5 text-primary font-bold" : "border-border bg-card"
+                            )}
+                            disabled={triviaSubmitted}
+                          >
+                            {opt}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-bold text-muted-foreground uppercase">Your Sentiment Reflection:</label>
+                      <Textarea
+                        placeholder={q.placeholder || "Enter your comment..."}
+                        value={reflectionText}
+                        onChange={(e) => setReflectionText(e.target.value)}
+                        disabled={triviaSubmitted}
+                        className="rounded-xl text-xs min-h-[80px]"
+                      />
+                    </div>
+
+                    {!triviaSubmitted && (
+                      <Button
+                        onClick={() => handleSubmitReflection(activeTriviaIdx)}
+                        className="w-full h-11 rounded-xl font-bold text-xs"
+                      >
+                        Submit Reflection
+                      </Button>
+                    )}
+
+                    {triviaSubmitted && (
+                      <div className="p-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5 text-emerald-800 dark:text-emerald-200 text-xs leading-normal animate-in zoom-in-95 duration-200">
+                        <h5 className="font-bold flex items-center gap-1.5 mb-1 text-xs">
+                          <CheckCircle2 className="size-4 text-emerald-600" /> Reflection Logged
+                        </h5>
+                        <p>Thank you! Your civic opinion has been recorded to generate hyper-local public memoranda feedback.</p>
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+            })()}
+          </div>
+
+          {/* Modal Action Footer */}
+          <div className="border-t border-border pt-4 mt-6">
+            {triviaSubmitted ? (
+              selectedTriviaAnswer === stage.steps[currentStep - 1].trivia[activeTriviaIdx].answer ||
+              stage.steps[currentStep - 1].trivia[activeTriviaIdx].type === "reflection" ? (
+                <Button
+                  onClick={handleNextTriviaQuestion}
+                  className="w-full h-11 rounded-xl font-bold text-xs gap-1.5 text-primary-foreground bg-primary"
+                >
+                  {activeTriviaIdx < stage.steps[currentStep - 1].trivia.length - 1 ? (
+                    <>
+                      Next Challenge <ArrowRight className="size-4" />
+                    </>
+                  ) : (
+                    <>
+                      Complete Trivia Check <CheckCircle2 className="size-4" />
+                    </>
+                  )}
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => {
+                    setSelectedTriviaAnswer(null);
+                    setTriviaSubmitted(false);
+                  }}
+                  variant="outline"
+                  className="w-full h-11 rounded-xl font-bold text-xs"
+                  disabled={triviaCooldown > 0}
+                >
+                  Try Challenge Again
+                </Button>
+              )
+            ) : (
+              <p className="text-[10px] text-muted-foreground text-center">
+                Answer this query correctly to unlock progress.
+              </p>
+            )}
+          </div>
+
+        </div>
+      )}
+
       {/* 🧭 Sequential Navigation Footer (Mobile-First Journey Flow) */}
-      <footer className="sticky bottom-0 inset-x-0 h-16 border-t border-border bg-card flex items-center justify-between px-4 gap-2 z-10">
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={onPrevStage}
-          disabled={!hasPrev}
-          className="rounded-xl flex-1 gap-1"
-        >
-          <ArrowLeft className="size-4" /> Prev Stage
-        </Button>
+      {currentStep > 0 && (
+        <footer className="sticky bottom-0 inset-x-0 h-16 border-t border-border bg-card flex items-center justify-between px-4 gap-2 z-10">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => {
+              const nextVal = currentStep - 1;
+              setCurrentStep(nextVal);
+              localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
+            }}
+            className="rounded-xl flex-1 gap-1 text-xs"
+          >
+            <ArrowLeft className="size-4" /> Back
+          </Button>
 
-        <span className="text-[10px] font-black text-muted-foreground shrink-0 uppercase tracking-widest">
-          Stage {stage.id} / 8
-        </span>
+          <span className="text-[10px] font-black text-muted-foreground shrink-0 uppercase tracking-widest">
+            {currentStep > stage.steps.length ? "Mastery" : `Step ${currentStep} / ${stage.steps.length}`}
+          </span>
 
-        <Button
-          size="sm"
-          onClick={onNextStage}
-          disabled={!hasNext || !profile.badges?.includes(stage.badge)}
-          className="rounded-xl flex-1 gap-1"
-        >
-          Next Stage <ArrowRight className="size-4" />
-        </Button>
-      </footer>
+          {currentStep <= stage.steps.length ? (
+            <Button
+              size="sm"
+              onClick={() => {
+                const nextVal = currentStep + 1;
+                setCurrentStep(nextVal);
+                localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
+              }}
+              disabled={!isStepTriviaPassed(stage.steps[currentStep - 1].id)}
+              className="rounded-xl flex-1 gap-1 text-xs"
+            >
+              Next <ArrowRight className="size-4" />
+            </Button>
+          ) : (
+            <Button
+              size="sm"
+              onClick={() => {
+                if (hasNext && onNextStage) {
+                  onNextStage();
+                } else {
+                  onClose();
+                }
+              }}
+              className="rounded-xl flex-1 gap-1 text-xs"
+            >
+              Finish <CheckCircle2 className="size-4" />
+            </Button>
+          )}
+        </footer>
+      )}
     </div>
   );
 }
