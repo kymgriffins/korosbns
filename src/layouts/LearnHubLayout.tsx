@@ -92,45 +92,73 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
       )}>
         <div className="flex flex-col flex-1 p-4 overflow-y-auto">
           {/* Brand Logo & Collapse Toggle */}
-          <div className={cn("flex items-center mb-6", sidebarCollapsed ? "justify-center" : "justify-between")}>
-            {!sidebarCollapsed && (
-              <span className="text-sm font-heading font-black tracking-wider text-primary truncate">
-                BUDGET NDIO STORY
-              </span>
+          <div className={cn("flex items-center mb-8", sidebarCollapsed ? "justify-center" : "justify-between")}>
+            {sidebarCollapsed ? (
+              <img src="/logo.svg" alt="BNS" className="h-6 w-auto" />
+            ) : (
+              <img src="/logo.svg" alt="Budget Ndio Story" className="h-8 w-auto" />
             )}
-            <Button
-              size="icon-sm"
-              variant="ghost"
-              onClick={toggleSidebar}
-              className="rounded-xl h-8 w-8 hover:bg-muted"
-              aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            >
-              {sidebarCollapsed ? <ChevronRight className="size-4" /> : <ChevronLeft className="size-4" />}
-            </Button>
+            {!sidebarCollapsed && (
+              <Button
+                size="icon-sm"
+                variant="ghost"
+                onClick={toggleSidebar}
+                className="rounded-xl h-8 w-8 hover:bg-muted"
+                aria-label="Collapse sidebar"
+              >
+                <ChevronLeft className="size-4" />
+              </Button>
+            )}
+            {sidebarCollapsed && (
+              <button
+                onClick={toggleSidebar}
+                className="absolute -right-3 top-16 size-6 rounded-full bg-card border border-border flex items-center justify-center shadow-sm hover:bg-muted transition-colors"
+                aria-label="Expand sidebar"
+              >
+                <ChevronRight className="size-3" />
+              </button>
+            )}
           </div>
 
           {/* Navigation Links */}
-          <nav className="space-y-1" aria-label="Sidebar navigation">
+          <nav className="space-y-0.5" aria-label="Sidebar navigation">
+            {!sidebarCollapsed && (
+              <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 px-3 pb-2 pt-1">
+                Overview
+              </p>
+            )}
             {navItems.map((item) => {
               const active = activeTab === item.key;
+              const isFirstSettings = item.key === "profile";
               return (
-                <button
-                  key={item.key}
-                  onClick={() => handleTabChange(item.key)}
-                  className={cn(
-                    "w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200",
-                    active
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50",
-                    sidebarCollapsed ? "justify-center" : "justify-start gap-3"
+                <div key={item.key} className="space-y-1">
+                  {!sidebarCollapsed && isFirstSettings && (
+                    <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 px-3 pb-2 pt-4">
+                      Settings
+                    </p>
                   )}
-                  title={sidebarCollapsed ? item.label : undefined}
-                >
-                  {item.icon}
-                  {!sidebarCollapsed && <span>{item.label}</span>}
-                </button>
+                  <button
+                    onClick={() => handleTabChange(item.key)}
+                    className={cn(
+                      "w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200",
+                      active
+                        ? "bg-primary/10 text-primary"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50",
+                      sidebarCollapsed ? "justify-center" : "justify-start gap-3"
+                    )}
+                    title={sidebarCollapsed ? item.label : undefined}
+                    aria-current={active ? "page" : undefined}
+                  >
+                    {item.icon}
+                    {!sidebarCollapsed && <span>{item.label}</span>}
+                    {!sidebarCollapsed && active && (
+                      <span className="ml-auto size-1.5 rounded-full bg-primary" />
+                    )}
+                  </button>
+                </div>
               );
             })}
+
           </nav>
         </div>
 

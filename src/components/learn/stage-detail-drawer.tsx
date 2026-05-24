@@ -36,7 +36,9 @@ interface Step {
   transcript: string;
   text: string;
   trivia: TriviaItem[];
+  duration?: string;
 }
+
 
 interface Stage {
   id: number;
@@ -424,64 +426,105 @@ export function StageDetailDrawer({
   const yearOptions = stage.id === 1 ? constitutionYears : standardYears;
 
   return (
-    <div className="absolute inset-0 z-20 bg-background flex flex-col overflow-hidden">
-          {/* Header */}
-      <header className="sticky top-0 z-10 w-full h-14 border-b border-border bg-background/95 backdrop-blur-sm flex items-center justify-between px-4 gap-3">
-        {/* Left: Logo (clickable → back) + breadcrumb */}
-        <div className="flex items-center gap-3 min-w-0">
-          <button
-            onClick={onClose}
-            aria-label="Back to Roadmap"
-            className="shrink-0 flex items-center hover:opacity-80 transition-opacity"
-          >
+    <div className="absolute inset-0 z-20 bg-background flex flex-col overflow-hidden md:relative md:inset-auto md:z-auto md:h-full">
+          {/* ── Header ─────────────────────────────────────────────── */}
+      <header className="sticky top-0 z-10 w-full h-14 border-b border-border bg-background/95 backdrop-blur-sm flex items-center justify-between px-4 gap-3 shrink-0">
+        {/* Mobile header: logo back + stage label */}
+        <div className="flex md:hidden items-center gap-3 min-w-0">
+          <button onClick={onClose} aria-label="Back" className="shrink-0 flex items-center hover:opacity-80 transition-opacity">
             <img src="/logo.svg" alt="BNS" className="h-7 w-auto" />
           </button>
-          <div className="hidden sm:flex items-center gap-1.5 border-l border-border pl-3 min-w-0">
-            <span className="text-base shrink-0">{stage.badge}</span>
-            <div className="min-w-0">
-              <h2 className="text-xs font-black tracking-tight uppercase leading-none truncate">{stage.title}</h2>
-              <p className="text-[10px] text-muted-foreground truncate">{stage.badgeName} Badge</p>
-            </div>
-          </div>
-          {/* Mobile: compact stage label */}
-          <div className="flex sm:hidden items-center gap-1.5 border-l border-border pl-2 min-w-0">
+          <div className="flex items-center gap-1.5 border-l border-border pl-2 min-w-0">
             <span className="text-base shrink-0">{stage.badge}</span>
             <h2 className="text-[11px] font-black uppercase tracking-tight truncate">{stage.title}</h2>
           </div>
         </div>
-        {/* Right: cache badge + close */}
+        {/* Desktop header: breadcrumb navigation */}
+        <nav className="hidden md:flex items-center gap-1.5 text-sm min-w-0 flex-1">
+          <button
+            onClick={onClose}
+            className="text-muted-foreground hover:text-foreground transition-colors font-medium text-xs shrink-0"
+            aria-label="Back to Learn"
+          >
+            Learn
+          </button>
+          <span className="text-border text-xs shrink-0">/</span>
+          <span className="text-xs font-semibold text-foreground truncate">{stage.title}</span>
+          {currentStep > 0 && (
+            <>
+              <span className="text-border text-xs shrink-0">/</span>
+              <span className="text-xs font-semibold text-primary shrink-0">
+                Step {currentStep <= stage.steps.length ? currentStep : stage.steps.length} of {stage.steps.length}
+              </span>
+            </>
+          )}
+        </nav>
+        {/* Right controls */}
         <div className="flex items-center gap-2 shrink-0">
           {isCached && (
             <span className="hidden sm:flex text-[8px] bg-blue-500/10 border border-blue-500/20 text-blue-600 font-extrabold px-1.5 py-0.5 rounded-full items-center gap-0.5">
               📦 Cached
             </span>
           )}
-          <Button size="icon-sm" variant="ghost" onClick={onClose} className="rounded-full">
+          <Button size="icon-sm" variant="ghost" onClick={onClose} className="rounded-full md:hidden">
             <X className="size-5" />
+          </Button>
+          <Button size="icon-sm" variant="ghost" onClick={onClose} className="hidden md:flex rounded-full" title="Back to roadmap">
+            <X className="size-4" />
           </Button>
         </div>
       </header>
 
-      {/* Sub Tabs Navigation: Exactly Two Tabs */}
-      <div className="grid grid-cols-2 border-b border-border bg-muted/30">
-        <button
-          onClick={() => setActiveSubTab("learn")}
-          className={`py-3 text-xs font-bold border-b-2 flex flex-col items-center gap-1 transition-all ${activeSubTab === "learn" ? 'border-primary text-primary' : 'border-transparent text-muted-foreground'}`}
-        >
-          <BookOpen className="size-4" />
-          <span>Learn (Guided Journey)</span>
-        </button>
-        <button
-          onClick={() => setActiveSubTab("documents")}
-          className={`py-3 text-xs font-bold border-b-2 flex flex-col items-center gap-1 transition-all ${activeSubTab === "documents" ? 'border-primary text-primary' : 'border-transparent text-muted-foreground'}`}
-        >
-          <FileCheck className="size-4" />
-          <span>Documents (Repository)</span>
-        </button>
+      {/* Sub-tabs: pill style on desktop, grid on mobile */}
+      <div className="shrink-0 border-b border-border bg-muted/20">
+        {/* Mobile: two large grid tabs */}
+        <div className="grid grid-cols-2 md:hidden">
+          <button
+            onClick={() => setActiveSubTab("learn")}
+            className={`py-3 text-xs font-bold border-b-2 flex flex-col items-center gap-1 transition-all ${activeSubTab === "learn" ? 'border-primary text-primary' : 'border-transparent text-muted-foreground'}`}
+          >
+            <BookOpen className="size-4" />
+            <span>Learn</span>
+          </button>
+          <button
+            onClick={() => setActiveSubTab("documents")}
+            className={`py-3 text-xs font-bold border-b-2 flex flex-col items-center gap-1 transition-all ${activeSubTab === "documents" ? 'border-primary text-primary' : 'border-transparent text-muted-foreground'}`}
+          >
+            <FileCheck className="size-4" />
+            <span>Documents</span>
+          </button>
+        </div>
+        {/* Desktop: horizontal pill tabs */}
+        <div className="hidden md:flex items-center gap-1 px-6 py-2">
+          <button
+            onClick={() => setActiveSubTab("learn")}
+            className={cn(
+              "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all",
+              activeSubTab === "learn" ? "bg-primary text-primary-foreground shadow-xs" : "text-muted-foreground hover:bg-muted hover:text-foreground"
+            )}
+          >
+            <BookOpen className="size-3.5" /> Guided Journey
+          </button>
+          <button
+            onClick={() => setActiveSubTab("documents")}
+            className={cn(
+              "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all",
+              activeSubTab === "documents" ? "bg-primary text-primary-foreground shadow-xs" : "text-muted-foreground hover:bg-muted hover:text-foreground"
+            )}
+          >
+            <FileCheck className="size-3.5" /> Documents
+          </button>
+        </div>
       </div>
 
-      {/* Scrollable Content Area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-6 pb-24 relative">
+      {/* ── Desktop 2-panel body: content LEFT + steps sidebar RIGHT ── */}
+      <div className="flex-1 flex overflow-hidden">
+
+        {/* LEFT: Scrollable content + sticky footer */}
+        <div className="flex-1 flex flex-col overflow-hidden">
+
+          {/* Scrollable Content Area */}
+          <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 pb-24 md:pb-8 relative">
         
         {activeSubTab === "learn" ? (
           <div className="space-y-6">
@@ -1205,58 +1248,153 @@ export function StageDetailDrawer({
         )}
       </div>
 
-      {/* Trivia is now inline — no modal overlay */}
+          {/* ── Navigation Footer (sticky bottom of LEFT col) ── */}
+          {currentStep > 0 && (
+            <footer className="shrink-0 h-16 border-t border-border bg-card flex items-center justify-between px-4 gap-2 z-10">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  const nextVal = currentStep - 1;
+                  setCurrentStep(nextVal);
+                  localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
+                }}
+                className="rounded-xl flex-1 gap-1 text-xs"
+              >
+                <ArrowLeft className="size-4" /> Back
+              </Button>
 
-      {/* 🧭 Sequential Navigation Footer (Mobile-First Journey Flow) */}
-      {currentStep > 0 && (
-        <footer className="sticky bottom-0 inset-x-0 h-16 border-t border-border bg-card flex items-center justify-between px-4 gap-2 z-10">
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => {
-              const nextVal = currentStep - 1;
-              setCurrentStep(nextVal);
-              localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
-            }}
-            className="rounded-xl flex-1 gap-1 text-xs"
-          >
-            <ArrowLeft className="size-4" /> Back
-          </Button>
+              <span className="text-[10px] font-black text-muted-foreground shrink-0 uppercase tracking-widest">
+                {currentStep > stage.steps.length ? "Mastery" : `${currentStep} / ${stage.steps.length}`}
+              </span>
 
-          <span className="text-[10px] font-black text-muted-foreground shrink-0 uppercase tracking-widest">
-            {currentStep > stage.steps.length ? "Mastery" : `Step ${currentStep} / ${stage.steps.length}`}
-          </span>
-
-          {currentStep <= stage.steps.length ? (
-            <Button
-              size="sm"
-              onClick={() => {
-                const nextVal = currentStep + 1;
-                setCurrentStep(nextVal);
-                localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
-              }}
-              disabled={!isStepTriviaPassed(stage.steps[currentStep - 1].id) && !triviaSkipped}
-              className="rounded-xl flex-1 gap-1 text-xs"
-            >
-              Next <ArrowRight className="size-4" />
-            </Button>
-          ) : (
-            <Button
-              size="sm"
-              onClick={() => {
-                if (hasNext && onNextStage) {
-                  onNextStage();
-                } else {
-                  onClose();
-                }
-              }}
-              className="rounded-xl flex-1 gap-1 text-xs"
-            >
-              Finish <CheckCircle2 className="size-4" />
-            </Button>
+              {currentStep <= stage.steps.length ? (
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    const nextVal = currentStep + 1;
+                    setCurrentStep(nextVal);
+                    localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
+                  }}
+                  disabled={!isStepTriviaPassed(stage.steps[currentStep - 1].id) && !triviaSkipped}
+                  className="rounded-xl flex-1 gap-1 text-xs"
+                >
+                  Next <ArrowRight className="size-4" />
+                </Button>
+              ) : (
+                <Button
+                  size="sm"
+                  onClick={() => { if (hasNext && onNextStage) { onNextStage(); } else { onClose(); } }}
+                  className="rounded-xl flex-1 gap-1 text-xs"
+                >
+                  Finish <CheckCircle2 className="size-4" />
+                </Button>
+              )}
+            </footer>
           )}
-        </footer>
-      )}
+        </div>{/* end left col */}
+
+        {/* RIGHT: Steps sidebar — desktop only (Udemy-style Course Content) */}
+        <aside className="hidden md:flex flex-col w-72 shrink-0 border-l border-border bg-card/30 overflow-hidden">
+          {/* Sidebar header */}
+          <div className="sticky top-0 bg-card/80 backdrop-blur-sm border-b border-border px-4 py-3 z-10">
+            <h3 className="text-xs font-black uppercase tracking-widest text-foreground">Stage Content</h3>
+            <p className="text-[10px] text-muted-foreground mt-0.5">
+              {stage.steps.filter(s => isStepTriviaPassed(s.id)).length} / {stage.steps.length} steps complete
+            </p>
+          </div>
+
+          {/* Steps list */}
+          <div className="flex-1 overflow-y-auto">
+            {/* Step 0: Overview */}
+            <button
+              onClick={() => setCurrentStep(0)}
+              className={cn(
+                "w-full flex items-start gap-3 p-4 text-left border-b border-border/40 transition-all hover:bg-muted/30",
+                currentStep === 0
+                  ? "bg-gradient-to-r from-primary/8 to-transparent border-l-2 border-l-primary"
+                  : ""
+              )}
+            >
+              <div className={cn(
+                "size-6 rounded-full flex items-center justify-center text-[9px] font-black shrink-0 mt-0.5 border",
+                currentStep === 0
+                  ? "bg-primary border-primary text-primary-foreground"
+                  : "bg-muted border-border text-muted-foreground"
+              )}>
+                <BookOpen className="size-3" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className={cn("text-[11px] font-bold", currentStep === 0 ? "text-primary" : "text-foreground")}>Stage Overview</p>
+                <p className="text-[10px] text-muted-foreground">Introduction &amp; expectations</p>
+              </div>
+              {currentStep === 0 && <span className="size-1.5 rounded-full bg-primary animate-pulse shrink-0 mt-2" />}
+            </button>
+
+            {/* Content steps */}
+            {stage.steps.map((step, i) => {
+              const stepNum = i + 1;
+              const isComplete = isStepTriviaPassed(step.id);
+              const isActive = currentStep === stepNum;
+              const isLocked = stepNum > 1 && !isStepTriviaPassed(stage.steps[i - 1].id) && !isComplete;
+              return (
+                <button
+                  key={step.id}
+                  onClick={() => {
+                    if (!isLocked) {
+                      setCurrentStep(stepNum);
+                      setTriviaSkipped(false);
+                      localStorage.setItem(`stage_${stage.id}_current_step`, stepNum.toString());
+                    }
+                  }}
+                  disabled={isLocked}
+                  className={cn(
+                    "w-full flex items-start gap-3 p-4 text-left border-b border-border/40 transition-all",
+                    isActive
+                      ? "bg-gradient-to-r from-primary/8 to-transparent border-l-2 border-l-primary"
+                      : isLocked
+                        ? "opacity-40 cursor-not-allowed"
+                        : "hover:bg-muted/30"
+                  )}
+                  aria-current={isActive ? "step" : undefined}
+                >
+                  <div className={cn(
+                    "size-6 rounded-full flex items-center justify-center text-[9px] font-black shrink-0 mt-0.5 border transition-all",
+                    isComplete
+                      ? "bg-emerald-500 border-emerald-500 text-white"
+                      : isActive
+                        ? "bg-primary border-primary text-primary-foreground"
+                        : "bg-muted border-border text-muted-foreground"
+                  )}>
+                    {isComplete ? <CheckCircle2 className="size-3.5" /> : stepNum}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className={cn(
+                      "text-[11px] font-bold truncate",
+                      isActive ? "text-primary" : isComplete ? "text-emerald-700 dark:text-emerald-400" : "text-foreground"
+                    )}>{step.title}</p>
+                    <p className="text-[10px] text-muted-foreground">{step.duration || "~5 min read"}</p>
+                  </div>
+                  {isActive && <span className="size-1.5 rounded-full bg-primary animate-pulse shrink-0 mt-2" />}
+                  {isComplete && !isActive && <CheckCircle2 className="size-3.5 text-emerald-500 shrink-0 mt-1" />}
+                </button>
+              );
+            })}
+
+            {/* Completion state */}
+            {stage.steps.every(s => isStepTriviaPassed(s.id)) && (
+              <div className="p-4 text-center space-y-1">
+                <span className="text-2xl">🏆</span>
+                <p className="text-xs font-black text-emerald-600">{stage.badgeName} Badge Earned!</p>
+                <p className="text-[10px] text-muted-foreground">All steps complete</p>
+              </div>
+            )}
+          </div>
+        </aside>{/* end steps sidebar */}
+
+      </div>{/* end desktop 2-panel body */}
+
     </div>
   );
 }
+
