@@ -1,13 +1,17 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/ui/button";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/ui/accordion";
+import { Progress } from "@/ui/progress";
 import { toast } from "sonner";
 import {
   Play, CheckCircle2, AlertCircle, Clock, ExternalLink,
-  BookOpen, Trophy, ArrowRight, X, Sparkles, HelpCircle, RefreshCw
+  BookOpen, Trophy, ArrowRight, ArrowLeft, X, Sparkles, HelpCircle, RefreshCw,
+  Volume2, VolumeX, FileText, Search, DownloadCloud
 } from "lucide-react";
+
+import { cn } from "@/utils";
 
 interface Stage {
   id: number;
@@ -26,6 +30,8 @@ interface Stage {
     title: string;
     duration: string;
     parts: number;
+    youtubeId: string;
+    transcript: string;
   }[];
   questions: {
     question: string;
@@ -39,31 +45,40 @@ interface StageDetailDrawerProps {
   profile: any;
   onClose: () => void;
   onUpdateProfile: (updatedProfile: any) => void;
+  onPrevStage?: () => void;
+  onNextStage?: () => void;
+  hasPrev: boolean;
+  hasNext: boolean;
 }
 
-export function StageDetailDrawer({ stage, profile, onClose, onUpdateProfile }: StageDetailDrawerProps) {
+export function StageDetailDrawer({
+  stage,
+  profile,
+  onClose,
+  onUpdateProfile,
+  onPrevStage,
+  onNextStage,
+  hasPrev,
+  hasNext
+}: StageDetailDrawerProps) {
   const [activeSubTab, setActiveSubTab] = useState<"video" | "article" | "quiz" | "tracker">("video");
   
   // Video status
   const [playingVideoIdx, setPlayingVideoIdx] = useState<number | null>(null);
-  const [videoTimer, setVideoTimer] = useState(0);
-  const [videosCompleted, setVideosCompleted] = useState<boolean[]>(
-    stage.videos.map((_, i) => {
-      const stageKey = `stage_${stage.id}_video_${i}`;
-      return typeof window !== "undefined" ? localStorage.getItem(stageKey) === "true" : false;
-    })
-  );
+  const [videoTimer, setVideoTimer] = useState(0); // tracks elapsed seconds watched
+  const [videosCompleted, setVideosCompleted] = useState<boolean[]>([]);
+  const [audioOnly, setAudioOnly] = useState(false);
+  const [transcriptSearch, setTranscriptSearch] = useState("");
+  const [showTranscript, setShowTranscript] = useState(false);
   
+  // YouTube API Player reference
+  const playerRef = useRef<any>(null);
+  const timerIntervalRef = useRef<any>(null);
+  const iframeId = `yt-player-${stage.id}`;
+
   // Article chapters read status
-  const [readChapters, setReadChapters] = useState<boolean[]>(
-    stage.chapters.map((_, i) => {
-      const stageKey = `stage_${stage.id}_chapter_${i}`;
-      return typeof window !== "undefined" ? localStorage.getItem(stageKey) === "true" : false;
-    })
-  );
-  const [articleCompleted, setArticleCompleted] = useState(
-    typeof window !== "undefined" ? localStorage.getItem(`stage_${stage.id}_article`) === "true" : false
-  );
+  const [readChapters, setReadChapters] = useState<boolean[]>([]);
+  const [articleCompleted, setArticleCompleted] = useState(false);
 
   // Trivia states
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, number>>({});
@@ -72,23 +87,47 @@ export function StageDetailDrawer({ stage, profile, onClose, onUpdateProfile }: 
   const [cooldownRemaining, setCooldownRemaining] = useState(0); // in seconds
   const [firstTry, setFirstTry] = useState(true);
 
-  // Load cooldown and first-try status
+  // Initial load for stage status
   useEffect(() => {
+    // Reset states for current stage
+    setPlayingVideoIdx(null);
+    setVideoTimer(0);
+    setAudioOnly(false);
+    setShowTranscript(false);
+    setTranscriptSearch("");
+    setSelectedAnswers({});
+    setQuizSubmitted(false);
+    setQuizScore(0);
+    setActiveSubTab("video");
+
+    const vCompleted = stage.videos.map((_, i) => {
+      return localStorage.getItem(`stage_${stage.id}_video_${i}`) === "true";
+    });
+    setVideosCompleted(vCompleted);
+
+    const cRead = stage.chapters.map((_, i) => {
+      return localStorage.getItem(`stage_${stage.id}_chapter_${i}`) === "true";
+    });
+    setReadChapters(cRead);
+    setArticleCompleted(localStorage.getItem(`stage_${stage.id}_article`) === "true");
+
     const cooldownKey = `stage_${stage.id}_quiz_cooldown`;
     const storedCooldown = localStorage.getItem(cooldownKey);
     if (storedCooldown) {
       const diff = Math.floor((parseInt(storedCooldown) - Date.now()) / 1000);
       if (diff > 0) {
         setCooldownRemaining(diff);
+      } else {
+        setCooldownRemaining(0);
       }
+    } else {
+      setCooldownRemaining(0);
     }
 
     const attemptsKey = `stage_${stage.id}_quiz_attempts`;
     const attempts = parseInt(localStorage.getItem(attemptsKey) || "0");
-    if (attempts > 0) {
-      setFirstTry(false);
-    }
-  }, [stage.id]);
+    setFirstTry(attempts === 0);
+  }, [stage.id, stage.videos, stage.chapters]);
 
   // Cooldown countdown timer
   useEffect(() => {
@@ -105,22 +144,83 @@ export function StageDetailDrawer({ stage, profile, onClose, onUpdateProfile }: 
     return () => clearInterval(interval);
   }, [cooldownRemaining, stage.id]);
 
-  // Video play timer simulator
+  // Load YouTube Iframe API if not loaded
   useEffect(() => {
     if (playingVideoIdx === null) return;
-    const interval = setInterval(() => {
+
+    const loadYtScript = () => {
+      if (document.getElementById("yt-iframe-api-script")) {
+        initYtPlayer();
+        return;
+      }
+      const tag = document.createElement("script");
+      tag.id = "yt-iframe-api-script";
+      tag.src = "https://www.youtube.com/iframe_api";
+      const firstScriptTag = document.getElementsByTagName("script")[0];
+      firstScriptTag?.parentNode?.insertBefore(tag, firstScriptTag);
+
+      // Bind callback
+      (window as any).onYouTubeIframeAPIReady = () => {
+        initYtPlayer();
+      };
+    };
+
+    const initYtPlayer = () => {
+      if (!(window as any).YT) return;
+      
+      // Cleanup previous player
+      if (playerRef.current) {
+        try {
+          playerRef.current.destroy();
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      playerRef.current = new (window as any).YT.Player(iframeId, {
+        events: {
+          onStateChange: (event: any) => {
+            // event.data: 1 = PLAYING, 2 = PAUSED, 0 = ENDED
+            if (event.data === (window as any).YT.PlayerState.PLAYING) {
+              startWatchTimer();
+            } else {
+              stopWatchTimer();
+            }
+          }
+        }
+      });
+    };
+
+    loadYtScript();
+
+    return () => {
+      stopWatchTimer();
+    };
+  }, [playingVideoIdx]);
+
+  const startWatchTimer = () => {
+    if (timerIntervalRef.current) return;
+    timerIntervalRef.current = setInterval(() => {
       setVideoTimer((prev) => {
-        // Video completed at 5 seconds (simulated 90s for validation, fast for testing)
-        if (prev >= 5) {
-          clearInterval(interval);
-          handleVideoComplete(playingVideoIdx);
-          return 0;
+        // Enforce 90 seconds watch time (for demonstration / testing, speed up to complete at 90s, with a cheat button)
+        if (prev >= 90) {
+          stopWatchTimer();
+          if (playingVideoIdx !== null) {
+            handleVideoComplete(playingVideoIdx);
+          }
+          return 90;
         }
         return prev + 1;
       });
     }, 1000);
-    return () => clearInterval(interval);
-  }, [playingVideoIdx]);
+  };
+
+  const stopWatchTimer = () => {
+    if (timerIntervalRef.current) {
+      clearInterval(timerIntervalRef.current);
+      timerIntervalRef.current = null;
+    }
+  };
 
   const handleStartVideo = (idx: number) => {
     if (videosCompleted[idx]) {
@@ -129,11 +229,12 @@ export function StageDetailDrawer({ stage, profile, onClose, onUpdateProfile }: 
     }
     setPlayingVideoIdx(idx);
     setVideoTimer(0);
-    toast.success(`Playing: ${stage.videos[idx].title}. Watch for 5 seconds to earn Sovereigns.`);
   };
 
   const handleVideoComplete = (idx: number) => {
     setPlayingVideoIdx(null);
+    stopWatchTimer();
+    
     const newCompleted = [...videosCompleted];
     newCompleted[idx] = true;
     setVideosCompleted(newCompleted);
@@ -142,12 +243,26 @@ export function StageDetailDrawer({ stage, profile, onClose, onUpdateProfile }: 
     // Earn Sovereigns
     const earned = 10;
     const newSovereigns = profile.sovereigns + earned;
-    const updatedProfile = { ...profile, sovereigns: newSovereigns };
+    
+    // Check all 4 formats completed bonus (+15 SVG)
+    let formatsBonus = 0;
+    const allVideosDone = newCompleted.every(Boolean);
+    const isDocTracked = profile.trackedDocs?.includes(stage.documentName);
+    const isQuizPassed = profile.badges?.includes(stage.badge);
+    const formatsBonusKey = `stage_${stage.id}_formats_bonus_earned`;
+    
+    if (allVideosDone && articleCompleted && isDocTracked && isQuizPassed && !localStorage.getItem(formatsBonusKey)) {
+      formatsBonus = 15;
+      localStorage.setItem(formatsBonusKey, "true");
+      toast.success("🔥 Stage Mastery: Completed all 4 formats! +15 Sovereigns Bonus!");
+    }
+
+    const updatedProfile = { 
+      ...profile, 
+      sovereigns: newSovereigns + formatsBonus 
+    };
     onUpdateProfile(updatedProfile);
     toast.success(`Video Completed! +10 Sovereigns (SVG) earned.`);
-
-    // Check if all videos & articles are complete for Stage Bonus
-    checkStageFormatsBonus(newCompleted, articleCompleted);
   };
 
   const handleChapterRead = (idx: number) => {
@@ -157,29 +272,31 @@ export function StageDetailDrawer({ stage, profile, onClose, onUpdateProfile }: 
     setReadChapters(newRead);
     localStorage.setItem(`stage_${stage.id}_chapter_${idx}`, "true");
 
-    // If all chapters are read, complete the article format
-    if (newRead.every(Boolean)) {
+    // If all 4 chapters are read, complete the article format
+    if (newRead.every(Boolean) && newRead.length === stage.chapters.length) {
       setArticleCompleted(true);
       localStorage.setItem(`stage_${stage.id}_article`, "true");
       
       const earned = 10;
-      const newSovereigns = profile.sovereigns + earned;
-      const updatedProfile = { ...profile, sovereigns: newSovereigns };
+      let formatsBonus = 0;
+      const allVideosDone = videosCompleted.every(Boolean);
+      const isDocTracked = profile.trackedDocs?.includes(stage.documentName);
+      const isQuizPassed = profile.badges?.includes(stage.badge);
+      const formatsBonusKey = `stage_${stage.id}_formats_bonus_earned`;
+      
+      if (allVideosDone && isDocTracked && isQuizPassed && !localStorage.getItem(formatsBonusKey)) {
+        formatsBonus = 15;
+        localStorage.setItem(formatsBonusKey, "true");
+        toast.success("🔥 Stage Mastery: Completed all 4 formats! +15 Sovereigns Bonus!");
+      }
+
+      const updatedProfile = { 
+        ...profile, 
+        sovereigns: profile.sovereigns + earned + formatsBonus 
+      };
       onUpdateProfile(updatedProfile);
       toast.success(`Article Fully Read! +10 Sovereigns (SVG) earned.`);
-      
-      checkStageFormatsBonus(videosCompleted, true);
     }
-  };
-
-  const checkStageFormatsBonus = (completedVideos: boolean[], isArticleComplete: boolean) => {
-    // Stage formats = Videos (all) + Article + Quiz + Doc Tracker
-    // Currently check if Video + Article formats are complete (for bonus trigger later when quiz completes)
-    const videosAllDone = completedVideos.every(Boolean);
-    const isDocTracked = profile.trackedDocs?.includes(stage.documentName);
-    
-    // We award a bonus (+15 SVG) if they complete all 4 formats. 
-    // This is checked also on quiz completion and doc tracking.
   };
 
   const handleSelectAnswer = (qIdx: number, oIdx: number) => {
@@ -253,7 +370,6 @@ export function StageDetailDrawer({ stage, profile, onClose, onUpdateProfile }: 
       };
 
       onUpdateProfile(updatedProfile);
-      
       toast.success(`Passed! Score: 3/3. Earned +${triviaPoints} SVG! ${stage.badge} Badge unlocked.`);
     } else {
       // Failed. Set 5 minute cooldown
@@ -277,17 +393,21 @@ export function StageDetailDrawer({ stage, profile, onClose, onUpdateProfile }: 
     toast.success("Cooldown cleared! (Prototype testing shortcut)");
   };
 
+  const handleCheatCompleteVideo = () => {
+    if (playingVideoIdx !== null) {
+      handleVideoComplete(playingVideoIdx);
+    }
+  };
+
   const handleToggleTrackDoc = () => {
     const tracked = profile.trackedDocs || [];
     let updatedTracked = [];
-    let isTracking = false;
 
     if (tracked.includes(stage.documentName)) {
       updatedTracked = tracked.filter((d: string) => d !== stage.documentName);
       toast.info(`Stopped tracking ${stage.documentName}`);
     } else {
       updatedTracked = [...tracked, stage.documentName];
-      isTracking = true;
       toast.success(`Tracking ${stage.documentName}! You will receive alerts when counties upload files.`);
 
       // Check all 4 formats completed bonus (+15 SVG)
@@ -314,15 +434,35 @@ export function StageDetailDrawer({ stage, profile, onClose, onUpdateProfile }: 
   };
 
   const isDocTracked = profile.trackedDocs?.includes(stage.documentName);
+  const isCached = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("bns_cached_stages") || "[]").includes(stage.id) : false;
+  
+  // Articles sequential read requirement: Trivia locks until all chapters read
+  const allChaptersRead = readChapters.length > 0 && readChapters.every(Boolean);
+
+  // Filtered transcript text search
+  const activeVideo = playingVideoIdx !== null ? stage.videos[playingVideoIdx] : null;
+  const filteredTranscript = activeVideo
+    ? activeVideo.transcript.split("\n").filter(line => 
+        line.toLowerCase().includes(transcriptSearch.toLowerCase())
+      ).join("\n")
+    : "";
 
   return (
     <div className="fixed inset-0 z-50 bg-background flex flex-col md:max-w-xl md:mx-auto md:border-x border-border shadow-2xl">
-      {/* Drawer Header */}
+      
+      {/* Header */}
       <header className="sticky top-0 z-10 w-full h-14 border-b border-border bg-background flex items-center justify-between px-4">
-        <div className="flex items-center gap-2">
-          <span className="text-xl">{stage.badge}</span>
+        <div className="flex items-center gap-2.5">
+          <span className="text-xl flex items-center">{stage.badge}</span>
           <div>
-            <h2 className="text-sm font-bold tracking-tight uppercase leading-none">{stage.title}</h2>
+            <div className="flex items-center gap-1.5">
+              <h2 className="text-xs font-black tracking-tight uppercase leading-none">{stage.title}</h2>
+              {isCached && (
+                <span className="text-[8px] bg-blue-500/10 border border-blue-500/20 text-blue-600 font-extrabold px-1 rounded-full flex items-center gap-0.5">
+                  📶 Cached
+                </span>
+              )}
+            </div>
             <p className="text-[10px] text-muted-foreground mt-0.5">{stage.badgeName} Badge</p>
           </div>
         </div>
@@ -350,6 +490,7 @@ export function StageDetailDrawer({ stage, profile, onClose, onUpdateProfile }: 
         <button
           onClick={() => setActiveSubTab("quiz")}
           className={`py-3 text-xs font-bold border-b-2 flex flex-col items-center gap-1 ${activeSubTab === "quiz" ? 'border-primary text-primary' : 'border-transparent text-muted-foreground'}`}
+          title={!allChaptersRead ? "Chapters must be read first" : undefined}
         >
           <Trophy className="size-4" />
           <span>Trivia Gate</span>
@@ -364,61 +505,138 @@ export function StageDetailDrawer({ stage, profile, onClose, onUpdateProfile }: 
       </div>
 
       {/* Scrollable Content Area */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-6 pb-20">
+      <div className="flex-1 overflow-y-auto p-4 space-y-6 pb-24">
         
-        {/* TAB 1: VIDEOS */}
+        {/* TAB 1: REAL YOUTUBE PLAYER */}
         {activeSubTab === "video" && (
           <div className="space-y-4">
             <div className="space-y-1">
-              <h3 className="font-bold text-base">🎥 Stage Playlist</h3>
-              <p className="text-xs text-muted-foreground">Watch these short tutorials on public finance guidelines. Each completed video awards +10 SVG.</p>
+              <h3 className="font-bold text-sm">🎥 Real Video Playlist</h3>
+              <p className="text-[11px] text-muted-foreground">Watch our official channel budget guide lessons. Each video requires a 90-second min-watch time before completing.</p>
             </div>
 
-            {playingVideoIdx !== null && (
-              <div className="p-4 border border-primary/20 bg-primary/5 rounded-xl text-center space-y-3">
-                <AlertCircle className="size-8 mx-auto text-primary animate-pulse" />
-                <p className="text-sm font-semibold">Watching Video: {stage.videos[playingVideoIdx].title}</p>
-                <div className="h-2 w-full bg-muted rounded-full overflow-hidden max-w-xs mx-auto">
-                  <div className="h-full bg-primary transition-all duration-1000" style={{ width: `${(videoTimer / 5) * 100}%` }} />
-                </div>
-                <p className="text-xs text-muted-foreground">Simulating 90s watch time... ({videoTimer}s / 5s)</p>
-                <Button size="sm" variant="ghost" onClick={() => setPlayingVideoIdx(null)} className="text-destructive font-semibold">
-                  Cancel Playback
-                </Button>
-              </div>
-            )}
-
-            <div className="grid gap-3">
-              {stage.videos.map((video, idx) => (
-                <div
-                  key={idx}
-                  className={`p-4 rounded-xl border flex items-center justify-between gap-4 transition-all ${videosCompleted[idx] ? 'bg-primary/5 border-primary/20' : 'bg-card border-border'}`}
-                >
-                  <div className="space-y-1">
-                    <span className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest">Part {idx + 1}</span>
-                    <h4 className="text-sm font-bold">{video.title}</h4>
-                    <p className="text-xs text-muted-foreground flex items-center gap-1">
-                      <Clock className="size-3" /> {video.duration} min
-                    </p>
-                  </div>
-
-                  {videosCompleted[idx] ? (
-                    <span className="flex items-center gap-1 text-xs font-bold text-primary">
-                      <CheckCircle2 className="size-4" /> Completed
-                    </span>
-                  ) : (
-                    <Button
-                      size="sm"
-                      onClick={() => handleStartVideo(idx)}
-                      disabled={playingVideoIdx !== null}
-                      className="rounded-xl font-bold shrink-0 gap-1.5"
+            {playingVideoIdx !== null ? (
+              <div className="space-y-4 p-4 border border-border bg-card rounded-2xl shadow-xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-primary truncate max-w-[200px]">{stage.videos[playingVideoIdx].title}</span>
+                  <div className="flex items-center gap-2">
+                    {/* Audio Only Mode Toggle */}
+                    <button
+                      onClick={() => setAudioOnly(!audioOnly)}
+                      className={`p-1.5 rounded-lg border text-xs font-bold flex items-center gap-1 ${audioOnly ? 'bg-primary/10 border-primary/20 text-primary' : 'border-border text-muted-foreground'}`}
+                      title="Audio-only mode for low bandwidth"
                     >
-                      <Play className="size-3.5 fill-current" /> Play
-                    </Button>
+                      {audioOnly ? <VolumeX className="size-4" /> : <Volume2 className="size-4" />}
+                      <span className="hidden sm:inline">Audio Only</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* 16:9 Responsive Video player */}
+                <div className={cn(
+                  "relative aspect-video rounded-xl overflow-hidden bg-black",
+                  audioOnly && "h-16 flex items-center justify-center bg-muted"
+                )}>
+                  {audioOnly ? (
+                    <div className="flex flex-col items-center justify-center p-4 text-center">
+                      <Volume2 className="size-6 text-primary animate-pulse" />
+                      <span className="text-[10px] text-muted-foreground mt-1">Audio-Only Mode Active (Bandwidth Saved)</span>
+                    </div>
+                  ) : (
+                    <iframe
+                      id={iframeId}
+                      className="w-full h-full"
+                      src={`https://www.youtube.com/embed/${stage.videos[playingVideoIdx].youtubeId}?rel=0&modestbranding=1&enablejsapi=1`}
+                      title="Budget Ndio Story YouTube player"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                    />
                   )}
                 </div>
-              ))}
-            </div>
+
+                {/* Min Watch Timer Progress */}
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center text-xs font-semibold">
+                    <span className="text-muted-foreground">Watch Duration required:</span>
+                    <span className={videoTimer >= 90 ? "text-primary font-bold" : "text-muted-foreground animate-pulse"}>
+                      {videoTimer}s / 90s
+                    </span>
+                  </div>
+                  <Progress value={(videoTimer / 90) * 100} className="h-2 rounded-full" />
+                </div>
+
+                {/* Review Shortcut Helper */}
+                <div className="flex flex-wrap gap-2 pt-2 justify-between">
+                  <Button size="xs" variant="outline" onClick={handleCheatCompleteVideo} className="gap-1 text-xs text-muted-foreground">
+                    ⏩ Complete Video (Shortcut)
+                  </Button>
+                  <Button size="xs" variant="ghost" onClick={() => setPlayingVideoIdx(null)} className="text-destructive font-semibold">
+                    Close Player
+                  </Button>
+                </div>
+
+                {/* Accessible Transcript section */}
+                <div className="border-t border-border pt-3 space-y-2">
+                  <button
+                    onClick={() => setShowTranscript(!showTranscript)}
+                    className="text-xs font-bold text-primary flex items-center gap-1 underline"
+                  >
+                    <FileText className="size-3.5" />
+                    <span>{showTranscript ? "Hide Searchable Transcript" : "Show Searchable Transcript"}</span>
+                  </button>
+
+                  {showTranscript && (
+                    <div className="space-y-2 border border-border/80 bg-muted/20 p-3 rounded-xl">
+                      <div className="relative">
+                        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
+                        <input
+                          type="text"
+                          placeholder="Search transcript lines..."
+                          value={transcriptSearch}
+                          onChange={(e) => setTranscriptSearch(e.target.value)}
+                          className="w-full h-8 pl-8 pr-3 rounded-lg border border-border bg-card text-xs focus-visible:outline-none"
+                        />
+                      </div>
+                      <div className="max-h-28 overflow-y-auto font-mono text-[10px] leading-relaxed whitespace-pre-wrap text-foreground/80 scrollbar-thin">
+                        {filteredTranscript || "No matching transcript lines found."}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="grid gap-3">
+                {stage.videos.map((video, idx) => (
+                  <div
+                    key={idx}
+                    className={`p-4 rounded-xl border flex items-center justify-between gap-4 transition-all ${videosCompleted[idx] ? 'bg-primary/5 border-primary/20' : 'bg-card border-border'}`}
+                  >
+                    <div className="space-y-1">
+                      <span className="text-[9px] uppercase font-black text-muted-foreground tracking-widest">Part {idx + 1}</span>
+                      <h4 className="text-sm font-bold truncate max-w-[200px] sm:max-w-xs">{video.title}</h4>
+                      <p className="text-xs text-muted-foreground flex items-center gap-1">
+                        <Clock className="size-3" /> {video.duration} min
+                      </p>
+                    </div>
+
+                    {videosCompleted[idx] ? (
+                      <span className="flex items-center gap-1 text-xs font-bold text-primary shrink-0">
+                        <CheckCircle2 className="size-4" /> Watched
+                      </span>
+                    ) : (
+                      <Button
+                        size="sm"
+                        onClick={() => handleStartVideo(idx)}
+                        className="rounded-xl font-bold shrink-0 gap-1.5"
+                      >
+                        <Play className="size-3.5 fill-current" /> Watch
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
@@ -426,13 +644,12 @@ export function StageDetailDrawer({ stage, profile, onClose, onUpdateProfile }: 
         {activeSubTab === "article" && (
           <div className="space-y-4">
             <div className="space-y-1">
-              <h3 className="font-bold text-base">📝 BNS Explainer</h3>
-              <p className="text-xs text-muted-foreground">Read each chapter of our citizen-friendly guide. Read all chapters to earn +10 SVG.</p>
+              <h3 className="font-bold text-sm">📝 BNS Explainer (Chapters)</h3>
+              <p className="text-[11px] text-muted-foreground">Read each chapter of our guide. All 4 chapters must be read to unlock the Trivia Gate.</p>
             </div>
 
             <Accordion type="single" collapsible className="w-full space-y-2 border-none">
               {stage.chapters.map((ch, idx) => {
-                // County personalization
                 let contentText = ch.content;
                 if (idx === 1 && profile.county) {
                   contentText = contentText.replace("[Selected County]", profile.county);
@@ -446,7 +663,7 @@ export function StageDetailDrawer({ stage, profile, onClose, onUpdateProfile }: 
                   >
                     <AccordionTrigger
                       onClick={() => handleChapterRead(idx)}
-                      className="hover:no-underline py-4 text-sm font-bold text-left flex justify-between"
+                      className="hover:no-underline py-4 text-xs font-bold text-left flex justify-between"
                     >
                       <div className="flex items-center gap-2">
                         {readChapters[idx] ? (
@@ -457,7 +674,7 @@ export function StageDetailDrawer({ stage, profile, onClose, onUpdateProfile }: 
                         <span>Chapter {idx + 1}: {ch.title}</span>
                       </div>
                     </AccordionTrigger>
-                    <AccordionContent className="text-sm leading-relaxed text-foreground/80 border-t border-border pt-4 pb-4">
+                    <AccordionContent className="text-xs leading-relaxed text-foreground/80 border-t border-border pt-4 pb-4">
                       {contentText}
                     </AccordionContent>
                   </AccordionItem>
@@ -468,7 +685,7 @@ export function StageDetailDrawer({ stage, profile, onClose, onUpdateProfile }: 
             {articleCompleted && (
               <div className="p-3 bg-primary/10 border border-primary/20 text-primary rounded-xl text-xs font-bold flex items-center gap-2">
                 <CheckCircle2 className="size-5" />
-                <span>You've completed reading the BNS Article format! +10 SVG awarded.</span>
+                <span>You've completed reading the BNS Article chapters! +10 SVG awarded.</span>
               </div>
             )}
           </div>
@@ -477,25 +694,31 @@ export function StageDetailDrawer({ stage, profile, onClose, onUpdateProfile }: 
         {/* TAB 3: TRIVIA GATE */}
         {activeSubTab === "quiz" && (
           <div className="space-y-4">
-            <div className="space-y-1">
-              <h3 className="font-bold text-base flex items-center gap-1.5">
-                <Trophy className="size-5 text-primary" /> Trivia Gate
-              </h3>
-              <p className="text-xs text-muted-foreground">Answer 3 questions to unlock the next stage and win the badge. 100% score (3/3) is required!</p>
-            </div>
-
-            {cooldownRemaining > 0 ? (
+            
+            {/* sequential gate: read chapters first */}
+            {!allChaptersRead ? (
+              <div className="p-6 border border-border bg-card rounded-xl text-center space-y-4">
+                <AlertCircle className="size-12 mx-auto text-muted-foreground/60" />
+                <h4 className="font-bold text-sm">Trivia Gate Locked</h4>
+                <p className="text-xs text-muted-foreground max-w-xs mx-auto">
+                  You must read all 4 chapters of the stage's **BNS Article** before the Trivia Gate opens. Complete the reading first!
+                </p>
+                <Button size="sm" onClick={() => setActiveSubTab("article")} className="rounded-xl">
+                  Go to Article
+                </Button>
+              </div>
+            ) : cooldownRemaining > 0 ? (
               <div className="p-5 rounded-xl border border-destructive/20 bg-destructive/5 text-center space-y-3">
                 <Clock className="size-8 mx-auto text-destructive animate-pulse" />
-                <h4 className="font-bold text-sm text-destructive">Trivia Gate Locked</h4>
+                <h4 className="font-bold text-sm text-destructive">Cooldown Lock active</h4>
                 <p className="text-xs text-muted-foreground">
-                  You failed to secure 3/3 score. A cooldown is active to discourage random guessing.
+                  Mastery quiz failed. Cooldown active to encourage review.
                 </p>
-                <div className="text-2xl font-black tracking-tight text-destructive">
+                <div className="text-2xl font-black text-destructive">
                   {Math.floor(cooldownRemaining / 60)}m {cooldownRemaining % 60}s
                 </div>
-                <div className="pt-2">
-                  <Button size="xs" variant="outline" onClick={handleResetCooldown} className="gap-1.5 text-xs text-muted-foreground">
+                <div className="pt-2 flex justify-center gap-2">
+                  <Button size="xs" variant="outline" onClick={handleResetCooldown} className="gap-1 text-xs text-muted-foreground">
                     <RefreshCw className="size-3" /> Clear Cooldown (Debug)
                   </Button>
                 </div>
@@ -503,11 +726,11 @@ export function StageDetailDrawer({ stage, profile, onClose, onUpdateProfile }: 
             ) : profile.badges?.includes(stage.badge) ? (
               <div className="p-5 rounded-xl border border-primary/20 bg-primary/5 text-center space-y-3">
                 <Trophy className="size-12 mx-auto text-primary" />
-                <h4 className="font-bold text-lg">Stage Mastered!</h4>
+                <h4 className="font-bold text-base">Stage Mastered!</h4>
                 <p className="text-xs text-muted-foreground">
                   You scored 3/3 and unlocked the **{stage.badgeName}** badge.
                 </p>
-                <div className="inline-flex items-center justify-center gap-1 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold">
+                <div className="inline-flex items-center justify-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold">
                   {stage.badge} Unlocked
                 </div>
                 <div className="pt-2">
@@ -517,10 +740,17 @@ export function StageDetailDrawer({ stage, profile, onClose, onUpdateProfile }: 
                 </div>
               </div>
             ) : (
-              <div className="space-y-6 pt-2">
+              <div className="space-y-6">
+                <div className="space-y-1">
+                  <h3 className="font-bold text-sm flex items-center gap-1.5">
+                    <Trophy className="size-4.5 text-primary" /> Trivia Gate
+                  </h3>
+                  <p className="text-xs text-muted-foreground">Answer 3 questions to unlock the next stage. 3/3 score is required!</p>
+                </div>
+
                 {stage.questions.map((q, qIdx) => (
                   <div key={qIdx} className="space-y-2.5 p-4 rounded-xl border border-border bg-card">
-                    <h4 className="text-sm font-bold flex gap-1.5">
+                    <h4 className="text-xs font-bold flex gap-1.5">
                       <span className="text-primary">{qIdx + 1}.</span>
                       <span>{q.question}</span>
                     </h4>
@@ -548,7 +778,7 @@ export function StageDetailDrawer({ stage, profile, onClose, onUpdateProfile }: 
                             type="button"
                             onClick={() => handleSelectAnswer(qIdx, oIdx)}
                             disabled={quizSubmitted}
-                            className={`w-full p-3 text-xs font-medium text-left rounded-xl border transition-all hover:bg-muted/30 ${optionStyle}`}
+                            className={`w-full p-3 text-xs font-semibold text-left rounded-xl border transition-all hover:bg-muted/30 ${optionStyle}`}
                           >
                             {opt}
                           </button>
@@ -559,22 +789,22 @@ export function StageDetailDrawer({ stage, profile, onClose, onUpdateProfile }: 
                 ))}
 
                 {quizSubmitted ? (
-                  <div className="p-4 rounded-xl border border-border bg-muted/40 space-y-3">
-                    <div className="flex justify-between items-center text-sm font-bold">
+                  <div className="p-4 rounded-xl border border-border bg-muted/40 space-y-3 text-xs">
+                    <div className="flex justify-between items-center font-bold">
                       <span>Quiz Results:</span>
                       <span className={quizScore === 3 ? "text-emerald-600" : "text-destructive"}>
                         {quizScore} / 3 Correct
                       </span>
                     </div>
                     {quizScore < 3 && (
-                      <p className="text-xs text-muted-foreground">
-                        You didn't score 3/3. Take this time to review the article chapters and video links during the 5-minute cooldown.
+                      <p className="text-muted-foreground leading-relaxed">
+                        Mastery requires 3/3. Take this cooldown to review the article chapters and video links.
                       </p>
                     )}
                     {quizScore === 3 ? (
-                      <Button onClick={onClose} className="w-full rounded-xl h-11 font-bold">
-                        Continue to next stage
-                      </Button>
+                      <div className="pt-2 text-center text-emerald-600 font-bold">
+                        🎉 Passed! Score: 3/3. Badge unlocked.
+                      </div>
                     ) : (
                       <Button onClick={handleResetQuiz} variant="outline" className="w-full rounded-xl h-11 font-bold">
                         Try again (after cooldown)
@@ -595,17 +825,17 @@ export function StageDetailDrawer({ stage, profile, onClose, onUpdateProfile }: 
         {activeSubTab === "tracker" && (
           <div className="space-y-4">
             <div className="space-y-1">
-              <h3 className="font-bold text-base">📄 Government Document Tracker</h3>
-              <p className="text-xs text-muted-foreground">Verify official sources, review historical archives, and subscribe to county comment windows.</p>
+              <h3 className="font-bold text-sm">📄 Statutory Tracker</h3>
+              <p className="text-[11px] text-muted-foreground">Verify official sources, review historical archives, and subscribe to county comment windows.</p>
             </div>
 
-            <div className="p-5 border border-border bg-card rounded-xl space-y-4">
+            <div className="p-4 border border-border bg-card rounded-xl space-y-4">
               <div className="flex justify-between items-start border-b border-border pb-3">
                 <div>
-                  <h4 className="text-sm font-bold text-foreground truncate max-w-[200px] sm:max-w-sm">{stage.documentName}</h4>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">Auditable Official Gazette</p>
+                  <h4 className="text-xs font-bold text-foreground truncate max-w-[200px] sm:max-w-sm">{stage.documentName}</h4>
+                  <p className="text-[9px] text-muted-foreground mt-0.5">Auditable Official Document</p>
                 </div>
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${stage.status === 'Comment Open' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600' : stage.status === 'Gazetted' ? 'bg-blue-500/10 border-blue-500/20 text-blue-600' : 'bg-muted border-border text-muted-foreground'}`}>
+                <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${stage.status === 'Comment Open' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600' : 'bg-muted border-border text-muted-foreground'}`}>
                   {stage.status}
                 </span>
               </div>
@@ -652,6 +882,32 @@ export function StageDetailDrawer({ stage, profile, onClose, onUpdateProfile }: 
           </div>
         )}
       </div>
+
+      {/* 🧭 Sequential Navigation Footer (Mobile-First Journey Flow) */}
+      <footer className="sticky bottom-0 inset-x-0 h-16 border-t border-border bg-card flex items-center justify-between px-4 gap-2 z-10">
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={onPrevStage}
+          disabled={!hasPrev}
+          className="rounded-xl flex-1 gap-1"
+        >
+          <ArrowLeft className="size-4" /> Prev Stage
+        </Button>
+
+        <span className="text-[10px] font-black text-muted-foreground shrink-0 uppercase tracking-widest">
+          Stage {stage.id} / 8
+        </span>
+
+        <Button
+          size="sm"
+          onClick={onNextStage}
+          disabled={!hasNext || !profile.badges?.includes(stage.badge)}
+          className="rounded-xl flex-1 gap-1"
+        >
+          Next Stage <ArrowRight className="size-4" />
+        </Button>
+      </footer>
     </div>
   );
 }

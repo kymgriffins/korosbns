@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { fetchGamificationMe, type GamificationState } from "@/lib/gamification";
 import { useAuth } from "@/contexts/auth-context";
 
-export type LearnTab = "hub" | "search" | "leaderboard" | "profile" | "paths" | "documents" | "quests" | "settings";
+export type LearnTab = "home" | "learn" | "alerts" | "profile";
 
 interface ActiveModule {
   id: string;
@@ -18,6 +18,8 @@ interface LearnContextType {
   setActiveTab: (tab: LearnTab) => void;
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
+  sidebarCollapsed: boolean;
+  setSidebarCollapsed: (collapsed: boolean) => void;
   rightDrawerOpen: boolean;
   setRightDrawerOpen: (open: boolean) => void;
   gamification: GamificationState | null;
@@ -30,8 +32,9 @@ const LearnContext = createContext<LearnContextType | undefined>(undefined);
 
 export function LearnProvider({ children }: { children: React.ReactNode }) {
   const { isLoggedIn } = useAuth();
-  const [activeTab, setActiveTab] = useState<LearnTab>("hub");
+  const [activeTab, setActiveTab] = useState<LearnTab>("home");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [rightDrawerOpen, setRightDrawerOpen] = useState(false);
   const [gamification, setGamification] = useState<GamificationState | null>(null);
   const [activeModule, setActiveModule] = useState<ActiveModule | null>(null);
@@ -69,6 +72,8 @@ export function LearnProvider({ children }: { children: React.ReactNode }) {
         setActiveTab,
         sidebarOpen,
         setSidebarOpen,
+        sidebarCollapsed,
+        setSidebarCollapsed,
         rightDrawerOpen,
         setRightDrawerOpen,
         gamification,
