@@ -7,6 +7,8 @@ import {
   Bell, FileText, Send, CheckCircle2, ChevronRight, X,
   Copy, MessageSquare, AlertTriangle, Sparkles, RefreshCw
 } from "lucide-react";
+import { cn } from "@/utils";
+
 
 interface Alert {
   id: string;
@@ -152,7 +154,11 @@ Submitted By: Anonymized Citizen (${profile.pseudoName})
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-background flex flex-col md:max-w-xl md:mx-auto md:border-x border-border shadow-2xl">
+    <div className={cn(
+      "fixed inset-0 z-50 bg-background flex flex-col shadow-2xl md:max-w-xl md:mx-auto md:border-x border-border",
+      "md:relative md:inset-auto md:z-auto md:border-0 md:shadow-none md:max-w-none md:h-full"
+    )}>
+
       {/* Header */}
       <header className="sticky top-0 z-10 w-full h-14 border-b border-border bg-background flex items-center justify-between px-4">
         <div className="flex items-center gap-2">

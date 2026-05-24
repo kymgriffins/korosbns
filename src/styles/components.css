@@ -207,3 +207,10 @@
 .notion-content strong {
   @apply font-bold text-foreground;
 }
+
+/* Lift Toaster above sticky bottom navigation & drawer footers on mobile */
+@media (max-width: 768px) {
+  [data-sonner-toaster] {
+    bottom: 5.5rem !important;
+  }
+}
