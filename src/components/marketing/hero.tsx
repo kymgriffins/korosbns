@@ -169,7 +169,7 @@ export default function Hero() {
             <p className="text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               <Balancer>
                 Budget Ndio Story is a youth-led initiative turning complex
-                Kenyan budgets into clear, actionable stories for county
+                Kenyan budgets into clear, actionable stories for civic
                 engagement and democratic audit.
               </Balancer>
             </p>
