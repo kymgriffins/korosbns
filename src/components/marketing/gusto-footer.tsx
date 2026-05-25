@@ -41,10 +41,10 @@ const GustoFooter = () => {
                         <div className="space-y-6">
                             <h4 className="text-white/40 uppercase tracking-widest text-xs">Social</h4>
                             <ul className="space-y-4">
-                                <li><a href="#" className="text-xl hover:translate-x-2 transition-transform inline-block">Instagram</a></li>
-                                <li><a href="#" className="text-xl hover:translate-x-2 transition-transform inline-block">Twitter / X</a></li>
-                                <li><a href="#" className="text-xl hover:translate-x-2 transition-transform inline-block">YouTube</a></li>
-                                <li><a href="#" className="text-xl hover:translate-x-2 transition-transform inline-block">LinkedIn</a></li>
+                                <li><a href="https://instagram.com/budgetndiostory" target="_blank" rel="noopener noreferrer" className="text-xl hover:translate-x-2 transition-transform inline-block">Instagram</a></li>
+                                <li><a href="https://twitter.com/budgetndiostory" target="_blank" rel="noopener noreferrer" className="text-xl hover:translate-x-2 transition-transform inline-block">Twitter / X</a></li>
+                                <li><a href="https://youtube.com/@budgetndiostory" target="_blank" rel="noopener noreferrer" className="text-xl hover:translate-x-2 transition-transform inline-block">YouTube</a></li>
+                                <li><a href="https://linkedin.com/company/budgetndiostory" target="_blank" rel="noopener noreferrer" className="text-xl hover:translate-x-2 transition-transform inline-block">LinkedIn</a></li>
                             </ul>
                         </div>
                     </div>

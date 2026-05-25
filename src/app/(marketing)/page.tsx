@@ -2,7 +2,7 @@ import React from "react";
 import { Metadata } from "next";
 import { metaDescription } from "@/utils/metadata";
 import Background from "@/components/global/background";
-import LandingClient from "@/components/marketing/landing-client";
+import PremiumLandingClient from "@/components/marketing/premium-landing-client";
 
 const homeDescription = metaDescription(
   "Budget Ndio Story is a youth-led initiative in Kenya turning complex national budgets into clear narratives for democratic participation and fiscal literacy."
@@ -42,7 +42,7 @@ export default function HomePage() {
   return (
     <div className="w-full min-h-dvh pt-6 lg:pt-8 bg-black overflow-x-hidden">
       <Background />
-      <LandingClient />
+      <PremiumLandingClient />
     </div>
   );
 }

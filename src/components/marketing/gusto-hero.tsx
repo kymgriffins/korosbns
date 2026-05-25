@@ -23,23 +23,18 @@ const GustoHero = () => {
             ref={containerRef}
             className="relative h-screen w-full overflow-hidden flex items-center justify-center bg-black"
         >
-            {/* Background Video */}
+            {/* Background Image with overlay */}
             <motion.div 
                 style={{ y, scale }}
                 className="absolute inset-0 z-0"
             >
-                <div className="absolute inset-0 bg-zinc-900/40 z-10 mix-blend-multiply" />
-                <video
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    className="w-full h-full object-cover grayscale opacity-80"
-                >
-                    <source src="https://res.cloudinary.com/dn8lut2fc/video/upload/v1778496651/Untitled_design_maph6q.mp4" type="video/mp4" />
-                    {/* Fallback if video fails */}
-                    <div className="w-full h-full bg-zinc-900" />
-                </video>
+                <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black z-10" />
+                <div 
+                    className="w-full h-full bg-cover bg-center"
+                    style={{
+                        backgroundImage: "url('https://res.cloudinary.com/dn8lut2fc/image/upload/f_auto,q_auto,w_1920/v1/events/citizen-baraza')"
+                    }}
+                />
             </motion.div>
 
             {/* Content */}
@@ -62,9 +57,22 @@ const GustoHero = () => {
                     transition={{ duration: 0.8, delay: 0.4 }}
                     className="gusto-heading text-white mb-8"
                 >
-                    Bridging the gap between <br />
-                    <span className="text-primary italic font-serif">youth energy</span> & fiscal policy.
+                    Budget Ndio Story
                 </motion.h1>
+
+                {/* Stats row */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.5 }}
+                    className="flex flex-wrap items-center justify-center gap-6 md:gap-8 mb-12 text-white/80"
+                >
+                    <span className="text-sm md:text-base font-semibold">1,000+ Citizens</span>
+                    <span className="text-white/40">•</span>
+                    <span className="text-sm md:text-base font-semibold">47 Counties</span>
+                    <span className="text-white/40">•</span>
+                    <span className="text-sm md:text-base font-semibold">KES 2B+ Tracked</span>
+                </motion.div>
 
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -72,15 +80,15 @@ const GustoHero = () => {
                     transition={{ duration: 0.8, delay: 0.6 }}
                     className="flex flex-col md:flex-row items-center justify-center gap-6"
                 >
-                    <Link href="/learn">
+                    <Link href="/events">
                         <Button size="lg" className="rounded-full px-8 py-6 text-lg bg-white text-black hover:bg-white/90">
-                            Explore Stories
+                            Explore Events
                             <ArrowRightIcon className="ml-2 w-5 h-5" />
                         </Button>
                     </Link>
-                    <Link href="/research">
+                    <Link href="/about">
                         <Button size="lg" variant="outline" className="rounded-full px-8 py-6 text-lg border-white/20 text-white hover:bg-white/10">
-                            Dive into Data
+                            How We Work
                         </Button>
                     </Link>
                 </motion.div>
