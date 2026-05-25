@@ -176,14 +176,15 @@ export default function AlertsSimulator() {
             className="lg:col-span-5 space-y-6"
           >
             <span className="inline-block text-xs uppercase tracking-widest text-primary font-black">
-              Citizen Action
+              Civic Intelligence
             </span>
             <h2 className="text-3xl md:text-5xl font-black text-foreground tracking-tight leading-none">
-              Hyper-local alerts. <br />
-              Zero friction.
+              Actionable stories for <br />
+              civic engagement <br />
+              and democratic audit.
             </h2>
             <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-              We track budget data by sector and notify you when public participation windows open. Our system pulls relevant allocations, identifies gaps, and generates a structured memorandum you can submit to county assembly or national treasury with a single tap.
+              We translate dry budget allocations into sharp, sector-by-sector narratives that show you exactly where public money is falling short — and what you can do about it before the window closes.
             </p>
 
             <div className="space-y-3 pt-2">
