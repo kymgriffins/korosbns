@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { PlayIcon } from 'lucide-react';
 
-const GustoInteractiveVideo = () => {
+const LandingInteractiveVideo = () => {
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
     const [isHovering, setIsHovering] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
@@ -118,4 +118,4 @@ const GustoInteractiveVideo = () => {
     );
 };
 
-export default GustoInteractiveVideo;
+export default LandingInteractiveVideo;

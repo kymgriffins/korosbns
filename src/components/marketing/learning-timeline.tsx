@@ -69,7 +69,7 @@ const LearningTimeline = () => {
             transition={{ delay: 0.1 }}
             className="text-4xl md:text-6xl font-black mb-6"
           >
-            Your Journey to <span className="text-primary italic font-serif">Fiscal Literacy</span>
+            Your Journey to <span className="text-primary italic font-heading">Fiscal Literacy</span>
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}

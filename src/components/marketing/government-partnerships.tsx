@@ -25,7 +25,7 @@ const GovernmentPartnerships = () => {
               National Partnership
             </span>
             <h2 className="text-4xl md:text-5xl font-black mb-6">
-              Decoding the <span className="text-primary italic font-serif">Budget Policy Statement</span>
+              Decoding the <span className="text-primary italic font-heading">Budget Policy Statement</span>
             </h2>
             <p className="text-muted-foreground text-lg leading-relaxed mb-6">
               Working directly with the National Treasury and Parliament's Budget & Appropriations Committee, 
@@ -127,7 +127,7 @@ const GovernmentPartnerships = () => {
               County Partnership
             </span>
             <h2 className="text-4xl md:text-5xl font-black mb-6">
-              Amplifying <span className="text-primary italic font-serif">Citizen Voices</span> in County Budgets
+              Amplifying <span className="text-primary italic font-heading">Citizen Voices</span> in County Budgets
             </h2>
             <p className="text-muted-foreground text-lg leading-relaxed mb-6">
               We partner with 47 county governments to facilitate meaningful public participation in the 

@@ -37,13 +37,13 @@ const WhatWeDoSection = () => {
             style={{ y: y1 }}
             className="text-5xl md:text-7xl lg:text-8xl font-black leading-[1.1] mb-8"
           >
-            We turn <span className="text-primary italic font-serif">complex budgets</span>
+            We turn <span className="text-primary italic font-heading">complex budgets</span>
           </motion.h2>
           <motion.h2 
             style={{ y: y2 }}
             className="text-5xl md:text-7xl lg:text-8xl font-black leading-[1.1]"
           >
-            into <span className="text-primary italic font-serif">civic action</span>.
+            into <span className="text-primary italic font-heading">civic action</span>.
           </motion.h2>
         </div>
 

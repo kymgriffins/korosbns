@@ -11,7 +11,7 @@ interface CloudinaryImage {
     height: number;
 }
 
-const GustoCloudinaryGallery = () => {
+const CloudinaryGallery = () => {
     const [images, setImages] = useState<CloudinaryImage[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -39,7 +39,7 @@ const GustoCloudinaryGallery = () => {
         <section className="py-24 md:py-48 bg-black overflow-hidden">
             <div className="max-w-[1400px] mx-auto px-8 md:px-16 mb-16 md:mb-24">
                 <span className="text-white/40 uppercase tracking-[0.3em] text-xs mb-4 block">Visual Impact</span>
-                <h2 className="gusto-subheading text-white max-w-2xl">Documenting the <span className="italic font-serif text-primary">Movement</span> in the field.</h2>
+                <h2 className="gusto-subheading text-white max-w-2xl">Documenting the <span className="italic font-heading text-primary">Movement</span> in the field.</h2>
             </div>
 
             <div className="flex flex-nowrap gap-8 md:gap-12 px-8 md:px-16 overflow-x-auto no-scrollbar py-10">
@@ -81,4 +81,4 @@ const GalleryItem = ({ image, index }: { image: CloudinaryImage; index: number }
     );
 };
 
-export default GustoCloudinaryGallery;
+export default CloudinaryGallery;

@@ -34,17 +34,17 @@
   letter-spacing: 0.1em;
 }
 
-/* Typography styles for Studio Gusto layout */
+/* Typography styles for premium landing layout */
 .gusto-heading {
-  @apply text-[clamp(2.5rem,8vw,8rem)] font-bold tracking-[-0.04em] leading-[0.95] text-balance;
+  @apply text-[clamp(2rem,6vw,4.5rem)] font-black tracking-[-0.03em] leading-[1.05] text-balance;
 }
 
 .gusto-subheading {
-  @apply text-[clamp(1.2rem,3vw,2rem)] font-medium tracking-tight leading-tight text-balance;
+  @apply text-[clamp(1.25rem,2.5vw,2.25rem)] font-bold tracking-tight leading-tight text-balance;
 }
 
 .gusto-text {
-  @apply text-lg md:text-xl text-foreground/80 leading-relaxed;
+  @apply text-base md:text-lg text-foreground/80 leading-relaxed;
 }
 
 /* Button flairs and elements */

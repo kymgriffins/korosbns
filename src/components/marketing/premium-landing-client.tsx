@@ -2,11 +2,11 @@
 
 import React from "react";
 import dynamic from "next/dynamic";
-import GustoHero from "@/components/marketing/gusto-hero";
+import LandingHero from "@/components/marketing/landing-hero";
 
 // Lazy-load below-the-fold sections
-const GustoCloudinaryGallery = dynamic(
-  () => import("@/components/marketing/gusto-cloudinary-gallery"),
+const CloudinaryGallery = dynamic(
+  () => import("@/components/marketing/cloudinary-gallery"),
   {
     ssr: false,
     loading: () => <div className="h-screen w-full bg-black animate-pulse" />,
@@ -21,8 +21,8 @@ const PartnersMarquee = dynamic(
   }
 );
 
-const GustoTeamSection = dynamic(
-  () => import("@/components/marketing/gusto-team-section"),
+const LandingTeam = dynamic(
+  () => import("@/components/marketing/landing-team"),
   {
     ssr: false,
     loading: () => <div className="h-screen w-full bg-background animate-pulse" />,
@@ -61,8 +61,8 @@ const AlertsSimulator = dynamic(
   }
 );
 
-const GustoFooter = dynamic(
-  () => import("@/components/marketing/gusto-footer"),
+const LandingFooter = dynamic(
+  () => import("@/components/marketing/landing-footer"),
   { ssr: false }
 );
 
@@ -80,12 +80,12 @@ export default function PremiumLandingClient() {
   return (
     <>
       {/* PHASE 1: Visual Transformation */}
-      <GustoHero />
-      <GustoCloudinaryGallery />
+      <LandingHero />
+      <CloudinaryGallery />
       <PartnersMarquee />
       
       {/* PHASE 2: Human Layer */}
-      <GustoTeamSection />
+      <LandingTeam />
       
       {/* PHASE 3: Credibility Architecture */}
       <LearningTimeline />
@@ -94,7 +94,7 @@ export default function PremiumLandingClient() {
       
       {/* Existing Components */}
       <AlertsSimulator />
-      <GustoFooter />
+      <LandingFooter />
       
       {/* Popups */}
       <SurveyPopup />
