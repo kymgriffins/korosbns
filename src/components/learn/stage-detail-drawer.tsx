@@ -6,7 +6,7 @@ import { Progress } from "@/ui/progress";
 import { toast } from "sonner";
 import { Textarea } from "@/ui/textarea";
 import {
-  Play, Pause, CheckCircle2, AlertCircle, Clock, ExternalLink,
+  CheckCircle2, AlertCircle, Clock, ExternalLink,
   BookOpen, Trophy, ArrowRight, ArrowLeft, X, Sparkles, HelpCircle, RefreshCw,
   Volume2, VolumeX, FileText, Search, DownloadCloud, Award, Lock, FileCheck, Share2, History
 } from "lucide-react";
@@ -98,10 +98,9 @@ export function StageDetailDrawer({
   const [currentStep, setCurrentStep] = useState<number>(0);
 
   // Active delivery format
-  const [activeFormat, setActiveFormat] = useState<"video" | "audio" | "text">("video");
+  const [activeFormat, setActiveFormat] = useState<"video" | "text">("video");
 
-  // Simulated audio player
-  const [audioPlaying, setAudioPlaying] = useState<boolean>(false);
+  // Audio player removed — no audio files available
 
   // Gating & completion flag for current step - unlocked by default
   const [contentConsumed, setContentConsumed] = useState<boolean>(true);
@@ -179,7 +178,6 @@ export function StageDetailDrawer({
     
     // reset format and tracking states
     setActiveFormat("video");
-    setAudioPlaying(false);
     setContentConsumed(true);
     setActiveTriviaIdx(0);
     setShowTrivia(false);
@@ -202,18 +200,14 @@ export function StageDetailDrawer({
   // Load state when currentStep or stage.id changes
   useEffect(() => {
     if (currentStep < 1 || currentStep > stage.steps.length) {
-      setAudioPlaying(false);
       setContentConsumed(true);
       return;
     }
 
     const step = stage.steps[currentStep - 1];
     
-    // Check if trivia is already passed
     setContentConsumed(true);
     
-    // Reset step states
-    setAudioPlaying(false);
     setShowTrivia(false);
     setActiveTriviaIdx(0);
     setSelectedTriviaAnswer(null);
@@ -606,7 +600,7 @@ export function StageDetailDrawer({
                 {/* Format Toggle Group & Content Player (Hidden when taking trivia to avoid commotion) */}
                 {!showTrivia && (
                   <>
-                    <div className="grid grid-cols-3 gap-2 bg-muted/60 p-1 rounded-xl">
+                    <div className="grid grid-cols-2 gap-2 bg-muted/60 p-1 rounded-xl">
                       <button
                         onClick={() => setActiveFormat("video")}
                         className={cn(
@@ -615,15 +609,6 @@ export function StageDetailDrawer({
                         )}
                       >
                         🎥 Video
-                      </button>
-                      <button
-                        onClick={() => setActiveFormat("audio")}
-                        className={cn(
-                          "py-2 text-[11px] font-black rounded-lg flex items-center justify-center gap-1.5 transition-all",
-                          activeFormat === "audio" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
-                        )}
-                      >
-                        🎧 Audio
                       </button>
                       <button
                         onClick={() => setActiveFormat("text")}
@@ -650,63 +635,6 @@ export function StageDetailDrawer({
                               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                               allowFullScreen
                             />
-                          </div>
-                        </div>
-                      )}
-
-                      {/* AUDIO FORMAT */}
-                      {activeFormat === "audio" && (
-                        <div className="space-y-4">
-                          <div className="p-4 rounded-xl bg-muted/30 border border-border flex flex-col items-center justify-center text-center space-y-3">
-                            <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center">
-                              <Volume2 className="size-6 text-primary" />
-                            </div>
-                            <div>
-                              <p className="text-xs font-bold text-foreground">Podcast Audio Lesson</p>
-                              <p className="text-[10px] text-muted-foreground">Listen to this step's key takeaways</p>
-                            </div>
-                            
-                            <div className="w-full flex items-center justify-center gap-3">
-                              <Button
-                                onClick={() => setAudioPlaying(!audioPlaying)}
-                                className="rounded-xl shadow-xs shrink-0 font-bold text-xs gap-1.5"
-                              >
-                                {audioPlaying ? <Pause className="size-4" /> : <Play className="size-4 fill-current" />}
-                                <span>{audioPlaying ? "Pause Audio" : "Listen to Lesson"}</span>
-                              </Button>
-                            </div>
-                          </div>
-
-                          {/* Searchable Transcript */}
-                          <div className="border-t border-border pt-3 space-y-2">
-                            <button
-                              onClick={() => setShowTranscript(!showTranscript)}
-                              className="text-xs font-bold text-primary flex items-center gap-1 underline"
-                            >
-                              <FileText className="size-3.5" />
-                              <span>{showTranscript ? "Hide Searchable Transcript" : "Show Searchable Transcript"}</span>
-                            </button>
-
-                            {showTranscript && (
-                              <div className="space-y-2 border border-border bg-muted/20 p-3 rounded-xl animate-in fade-in duration-200">
-                                <div className="relative">
-                                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
-                                  <input
-                                    type="text"
-                                    placeholder="Search transcript..."
-                                    value={transcriptSearch}
-                                    onChange={(e) => setTranscriptSearch(e.target.value)}
-                                    className="w-full h-8 pl-8 pr-3 rounded-lg border border-border bg-card text-xs focus-visible:outline-none"
-                                  />
-                                </div>
-                                <div className="max-h-24 overflow-y-auto font-mono text-[10px] leading-relaxed whitespace-pre-wrap text-foreground/80 scrollbar-thin">
-                                  {stage.steps[currentStep - 1].transcript
-                                    .split("\n")
-                                    .filter(line => line.toLowerCase().includes(transcriptSearch.toLowerCase()))
-                                    .join("\n") || "No matching lines found."}
-                                </div>
-                              </div>
-                            )}
                           </div>
                         </div>
                       )}
