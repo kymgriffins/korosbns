@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
 import { Checkbox } from "@/ui/checkbox";
 import { Shield, ArrowRight, Edit3, RefreshCw, Sparkles } from "lucide-react";
+import { FemaleBitmoji, MaleBitmoji, type Gender } from "./bitmoji-avatar";
 
 const PATRIOTIC_WORDS = [
   "halisi", "daima", "mzalendo", "huruma", "amani", "umoja",
@@ -23,40 +24,6 @@ function generateName(word: string): string {
     ? String(Math.floor(Math.random() * 9000) + 1000)
     : Math.random().toString(36).substr(2, 4);
   return `mkenya${word}${suffix}`;
-}
-
-type Gender = "female" | "male";
-
-function FemaleBitmoji({ selected }: { selected: boolean }) {
-  return (
-    <svg viewBox="0 0 80 80" className="size-16 md:size-20">
-      <circle cx="40" cy="30" r="18" fill={selected ? "#ec4899" : "#f9a8d4"} />
-      <circle cx="40" cy="22" r="14" fill={selected ? "#fdf2f8" : "#fce7f3"} />
-      <circle cx="35" cy="20" r="1.5" fill="#1f2937" />
-      <circle cx="45" cy="20" r="1.5" fill="#1f2937" />
-      <path d="M35 27 Q40 32 45 27" stroke="#1f2937" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-      <path d="M33 14 Q40 10 47 14" stroke={selected ? "#ec4899" : "#f472b6"} strokeWidth="2" fill="none" strokeLinecap="round" />
-      <rect x="37" y="28" width="6" height="3" rx="1.5" fill="#ec4899" />
-      <path d="M40 48 L40 70" stroke={selected ? "#ec4899" : "#f9a8d4"} strokeWidth="3" strokeLinecap="round" />
-      <path d="M32 54 L40 58 L48 54" stroke={selected ? "#ec4899" : "#f9a8d4"} strokeWidth="2.5" fill="none" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function MaleBitmoji({ selected }: { selected: boolean }) {
-  return (
-    <svg viewBox="0 0 80 80" className="size-16 md:size-20">
-      <circle cx="40" cy="30" r="18" fill={selected ? "#3b82f6" : "#93c5fd"} />
-      <circle cx="40" cy="22" r="14" fill={selected ? "#eff6ff" : "#dbeafe"} />
-      <circle cx="35" cy="20" r="1.5" fill="#1f2937" />
-      <circle cx="45" cy="20" r="1.5" fill="#1f2937" />
-      <path d="M35 27 Q40 32 45 27" stroke="#1f2937" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-      <path d="M33 12 Q40 8 47 12" stroke={selected ? "#3b82f6" : "#60a5fa"} strokeWidth="2.5" fill="none" strokeLinecap="round" />
-      <rect x="37" y="28" width="6" height="3" rx="1.5" fill="#3b82f6" />
-      <path d="M40 48 L40 70" stroke={selected ? "#3b82f6" : "#93c5fd"} strokeWidth="3" strokeLinecap="round" />
-      <path d="M32 54 L40 58 L48 54" stroke={selected ? "#3b82f6" : "#93c5fd"} strokeWidth="2.5" fill="none" strokeLinecap="round" />
-    </svg>
-  );
 }
 
 interface AnonymousIdentityPickerProps {
@@ -161,7 +128,7 @@ export function AnonymousIdentityPicker({ onComplete }: AnonymousIdentityPickerP
                 : "border-border bg-muted/20 hover:bg-muted/40 hover:border-muted-foreground/30"
             }`}
           >
-            <FemaleBitmoji selected={gender === "female"} />
+            <FemaleBitmoji selected={gender === "female"} className="size-16 md:size-20" />
             <span className={`text-xs font-bold ${gender === "female" ? "text-pink-500" : "text-muted-foreground"}`}>
               Female
             </span>
@@ -175,7 +142,7 @@ export function AnonymousIdentityPicker({ onComplete }: AnonymousIdentityPickerP
                 : "border-border bg-muted/20 hover:bg-muted/40 hover:border-muted-foreground/30"
             }`}
           >
-            <MaleBitmoji selected={gender === "male"} />
+            <MaleBitmoji selected={gender === "male"} className="size-16 md:size-20" />
             <span className={`text-xs font-bold ${gender === "male" ? "text-blue-500" : "text-muted-foreground"}`}>
               Male
             </span>

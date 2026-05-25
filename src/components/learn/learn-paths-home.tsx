@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { OnboardingWizard } from "./onboarding-wizard";
 import { AnonymousIdentityPicker } from "./anonymous-identity-picker";
+import { BitmojiAvatar } from "./bitmoji-avatar";
 import { StageDetailDrawer } from "./stage-detail-drawer";
 import { ParticipationAlertsDrawer } from "./participation-alerts-drawer";
 import { Button } from "@/ui/button";
@@ -780,9 +781,7 @@ export function LearnPathsHome() {
 
           {/* User Info */}
           <div className="flex items-center gap-2.5 flex-1 min-w-0">
-            <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-black text-xs shrink-0">
-              {profile.breakName.charAt(0).toUpperCase()}
-            </div>
+            <BitmojiAvatar gender={profile.gender} size="sm" className="shrink-0" />
             <div className="min-w-0">
               <h1 className="text-xs font-black text-foreground truncate">{profile.breakName}</h1>
               <p className="text-[10px] text-muted-foreground truncate">{profile.county} · Lvl {Math.floor(profile.sovereigns / 100) + 1}</p>
@@ -1091,9 +1090,7 @@ export function LearnPathsHome() {
                 {/* Profile Card */}
                 <div className="p-4 rounded-2xl border border-border bg-card space-y-4 shadow-xs">
                   <div className="flex items-center gap-3">
-                    <div className="size-12 rounded-full bg-primary/10 text-primary flex items-center justify-center text-lg font-black">
-                      {profile.breakName.charAt(0).toUpperCase()}
-                    </div>
+                    <BitmojiAvatar gender={profile.gender} size="md" />
                     <div>
                       <h3 className="text-xs font-black text-foreground">{profile.breakName}</h3>
                       <p className="text-[10px] text-muted-foreground font-bold leading-none mt-1">{profile.county} · Lvl {Math.floor(profile.sovereigns / 100) + 1}</p>
@@ -1463,9 +1460,7 @@ export function LearnPathsHome() {
                   {/* Profile Details Card */}
                   <div className="p-6 border border-border bg-card rounded-2xl space-y-4 shadow-sm flex items-center justify-between gap-6">
                     <div className="flex items-center gap-4">
-                      <div className="size-16 rounded-full bg-primary/10 text-primary flex items-center justify-center text-2xl font-black border border-primary/20 shadow-xs">
-                        {profile.breakName.charAt(0).toUpperCase()}
-                      </div>
+                      <BitmojiAvatar gender={profile.gender} size="lg" className="border border-primary/20 shadow-xs rounded-full" />
                       <div>
                         <h3 className="text-base font-black text-foreground">{profile.breakName}</h3>
                         <p className="text-xs text-muted-foreground mt-0.5 font-bold">{profile.county} · Lvl {Math.floor(profile.sovereigns / 100) + 1}</p>
@@ -1592,7 +1587,8 @@ export function LearnPathsHome() {
             <aside className="w-80 border-l border-border bg-card/25 p-6 flex flex-col gap-6 overflow-y-auto select-none">
               <div>
                 <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Good Morning</p>
-                <h3 className="text-base font-black text-foreground flex items-center gap-1.5 mt-0.5">
+                <h3 className="text-base font-black text-foreground flex items-center gap-2 mt-0.5">
+                  <BitmojiAvatar gender={profile.gender} size="sm" />
                   {profile.breakName} 🔥
                 </h3>
               </div>
