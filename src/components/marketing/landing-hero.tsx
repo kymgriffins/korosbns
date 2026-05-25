@@ -94,7 +94,12 @@ export default function LandingHero() {
               muted
               loop
               playsInline
-              preload="auto"
+              preload="metadata"
+              onLoadedData={() => console.log('✅ Hero video loaded successfully')}
+              onError={(e) => {
+                console.error('❌ Hero video error:', e);
+                console.error('URL attempted:', CLOUDINARY_HERO_LANDING_VIDEO_MP4);
+              }}
               className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
               src={CLOUDINARY_HERO_LANDING_VIDEO_MP4}
             />

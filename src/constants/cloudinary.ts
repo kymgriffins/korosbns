@@ -4,7 +4,7 @@ export const CLOUDINARY_HERO_BARAZA =
 
 /** Hero landing background video — MP4 only (reliable cross-browser playback). */
 export const CLOUDINARY_HERO_LANDING_VIDEO_MP4 =
-  "https://res.cloudinary.com/dn8lut2fc/video/upload/v1778496651/Untitled_design_maph6q.mp4";
+  "https://res.cloudinary.com/dn8lut2fc/video/upload/f_auto,q_auto/Untitled_design_maph6q.mp4";
 
 export const CLOUDINARY_PARTNERSHIPS = {
   nationalTreasuryWorkshop:

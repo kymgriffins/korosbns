@@ -97,9 +97,9 @@ export default function Hero() {
   const contentY = useTransform(scrollYProgress, [0, 1], [0, -50]);
 
   const videoWebm =
-    "https://res.cloudinary.com/dn8lut2fc/video/upload/f_webm,q_auto/v1778496651/Untitled_design_maph6q.webm";
+    "https://res.cloudinary.com/dn8lut2fc/video/upload/f_webm,q_auto/Untitled_design_maph6q.webm";
   const videoMp4 =
-    "https://res.cloudinary.com/dn8lut2fc/video/upload/q_auto/v1778496651/Untitled_design_maph6q.mp4";
+    "https://res.cloudinary.com/dn8lut2fc/video/upload/f_auto,q_auto/Untitled_design_maph6q.mp4";
 
   return (
     <section
