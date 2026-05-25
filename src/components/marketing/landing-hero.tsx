@@ -74,15 +74,28 @@ export default function LandingHero() {
         >
           <motion.div
             variants={fadeInUp}
-            className="relative aspect-video w-full min-h-[12rem] overflow-hidden rounded-2xl border border-border/60 md:rounded-3xl"
+            className="relative aspect-video w-full min-h-[12rem] overflow-hidden rounded-2xl border border-border/60 md:rounded-3xl group cursor-pointer"
+            onClick={() => window.open('https://www.youtube.com/@BudgetNdioStory', '_blank')}
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.3 }}
           >
+            {/* Hover overlay */}
+            <div className="absolute inset-0 z-10 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center gap-2">
+                <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center">
+                  <ArrowRight className="w-8 h-8 text-black" />
+                </div>
+                <span className="text-white text-sm font-bold">Watch on YouTube</span>
+              </div>
+            </div>
+            
             <video
               autoPlay
               muted
               loop
               playsInline
               preload="auto"
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
               src={CLOUDINARY_HERO_LANDING_VIDEO_MP4}
             />
           </motion.div>
