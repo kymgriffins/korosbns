@@ -102,7 +102,7 @@ export default function NotFound() {
                             Back to Home
                         </Button>
                     </Link>
-                    <Link href="/research">
+                    <Link href="/learn">
                         <Button size="lg" variant="outline" className="gap-2 min-w-[160px]">
                             <Search className="size-4" />
                             Browse Research

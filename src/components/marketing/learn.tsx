@@ -1702,7 +1702,7 @@ export default function Learn() {
             <Container animation="fadeUp" delay={0.2} className="space-y-4">
               <h2 className="text-xl font-bold">Document Repository</h2>
               <Link
-                href="/learn/repository"
+                href="/learn/documents"
                 className="group block rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-6 hover:border-primary/30 transition-all overflow-hidden"
               >
                 <motion.div whileHover={{ y: -2 }} className="relative">
@@ -1831,10 +1831,10 @@ export default function Learn() {
                 >
                   Email
                 </a>
-                <a href="#" className="hover:text-foreground">
+                <a href="/privacy" className="hover:text-foreground">
                   Privacy
                 </a>
-                <a href="#" className="hover:text-foreground">
+                <a href="/terms" className="hover:text-foreground">
                   Terms
                 </a>
               </div>

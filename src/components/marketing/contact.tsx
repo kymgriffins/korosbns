@@ -387,7 +387,7 @@ export default function Contact() {
               Email
             </a>
             <a
-              href="#"
+              href="/privacy"
               className="group inline-flex items-center gap-1.5 hover:text-foreground transition-colors"
             >
               <motion.span
@@ -399,7 +399,7 @@ export default function Contact() {
               Privacy
             </a>
             <a
-              href="#"
+              href="/terms"
               className="group inline-flex items-center gap-1.5 hover:text-foreground transition-colors"
             >
               <motion.span

@@ -188,7 +188,7 @@ export default function Hero() {
                 Start Learning Path <ArrowRight className="size-4" />
               </Button>
             </Link>
-            <Link href="/research" className="w-full sm:w-auto">
+            <Link href="/learn" className="w-full sm:w-auto">
               <Button
                 size="lg"
                 variant="outline"

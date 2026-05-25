@@ -230,8 +230,8 @@ export default function DocumentViewer({ document }: DocumentViewerProps) {
                         <p className="text-[10px] font-medium">© 2026 Budget Ndio Story.</p>
                         <div className="flex items-center gap-4 text-[9px] font-medium uppercase tracking-wider">
                             <a href="mailto:info@budgetndiostory.com" className="hover:text-foreground transition-colors">Email</a>
-                            <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
-                            <a href="#" className="hover:text-foreground transition-colors">Terms</a>
+                            <a href="/privacy" className="hover:text-foreground transition-colors">Privacy</a>
+                            <a href="/terms" className="hover:text-foreground transition-colors">Terms</a>
                         </div>
                     </Container>
                 </div>

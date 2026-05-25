@@ -224,8 +224,8 @@ export default function FAQ() {
               <p className="text-[10px] font-medium">© 2026 Budget Ndio Story.</p>
               <div className="flex items-center gap-4 text-[9px] font-medium uppercase tracking-wider">
                 <a href="mailto:info@budgetndiostory.com" className="hover:text-foreground">Email</a>
-                <a href="#" className="hover:text-foreground">Privacy</a>
-                <a href="#" className="hover:text-foreground">Terms</a>
+                <a href="/privacy" className="hover:text-foreground">Privacy</a>
+                <a href="/terms" className="hover:text-foreground">Terms</a>
               </div>
             </div>
           </div>

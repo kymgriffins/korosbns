@@ -29,7 +29,7 @@ const stories: StoryItem[] = [
         readTime: "5 min read",
         views: "45.2k",
         image: "/images/project.svg",
-        href: "/stories/education-budget-2026"
+        href: "/learn"
     },
     {
         id: 2,
@@ -39,7 +39,7 @@ const stories: StoryItem[] = [
         readTime: "7 min read",
         views: "38.7k",
         image: "/images/client.svg",
-        href: "/stories/healthcare-funding-2026"
+        href: "/learn"
     },
     {
         id: 3,
@@ -49,7 +49,7 @@ const stories: StoryItem[] = [
         readTime: "6 min read",
         views: "29.1k",
         image: "/images/invoices.svg",
-        href: "/stories/county-budgets-guide"
+        href: "/learn"
     },
     {
         id: 4,
@@ -59,7 +59,7 @@ const stories: StoryItem[] = [
         readTime: "8 min read",
         views: "52.3k",
         visual: "budget-vs-debt",
-        href: "/stories/debt-deficit-explained"
+        href: "/learn"
     },
     {
         id: 5,
@@ -69,7 +69,7 @@ const stories: StoryItem[] = [
         readTime: "6 min read",
         views: "41.8k",
         image: "/images/blob.svg",
-        href: "/stories/beta-pillars-breakdown"
+        href: "/learn"
     },
     {
         id: 6,
@@ -79,7 +79,7 @@ const stories: StoryItem[] = [
         readTime: "5 min read",
         views: "33.4k",
         image: "/images/project.svg",
-        href: "/stories/fiscal-risks-2026"
+        href: "/learn"
     }
 ];
 
