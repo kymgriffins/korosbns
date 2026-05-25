@@ -36,10 +36,10 @@ export default function NotFoundPage() {
             Learn Hub
           </Link>
           <Link
-            href="/research"
+            href="/learn"
             className="rounded-full border border-white/20 px-5 py-2.5 text-sm font-semibold hover:bg-white/5"
           >
-            Research
+            Learn
           </Link>
         </div>
       </div>

@@ -29,7 +29,7 @@ const projects = [
         timeline: "National Scale",
         summary: "A shared desk connecting youth, journalists, and experts to verify fiscal claims with evidence.",
         tags: ["Fact-checking", "Open civic data", "Evidence-based"],
-        href: "/challenges",
+        href: "/learn/quests",
         cta: "Join challenge loop",
     },
 ];
@@ -143,7 +143,7 @@ const UpcomingProjects = () => {
                             </p>
                         </div>
                         <Link
-                            href="/challenges"
+                            href="/learn/quests"
                             className="inline-flex items-center justify-center px-8 py-4 border-2 border-foreground/10 rounded-2xl font-bold transition-all hover:bg-foreground/5 hover:border-primary/30"
                         >
                             Join challenge loop

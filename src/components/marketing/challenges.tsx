@@ -297,10 +297,10 @@ const Challenges = () => {
                                                     {campaign.metrics.submissions} Submissions
                                                 </span>
                                             </div>
-                                            <Link href={`/challenges/${campaign.slug}`} className="text-xs font-bold text-primary flex items-center gap-1 group/link">
+                                            <span className="text-xs font-bold text-muted-foreground flex items-center gap-1">
                                                 {activeTab === "completed" ? "View Winners" : "View Details"}
-                                                <ArrowRight className="size-3 group-hover/link:translate-x-1 transition-transform" />
-                                            </Link>
+                                                <ArrowRight className="size-3" />
+                                            </span>
                                         </div>
                                     </div>
                                 </motion.article>

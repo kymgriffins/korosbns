@@ -148,7 +148,7 @@ const Gallery = () => {
                     >
                         <span>More moments are being added daily</span>
                         <div className="w-1 h-1 rounded-full bg-primary" />
-                        <a href="/gallery" className="text-primary font-semibold hover:underline">
+                        <a href="/about" className="text-primary font-semibold hover:underline">
                             View full gallery
                         </a>
                     </motion.div>

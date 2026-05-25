@@ -231,11 +231,9 @@ const Capibilities = () => {
                                 <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
                                     {stats[1]?.description}
                                 </p>
-                                <Link href="#">
-                                    <Button size="sm" variant="outline" className="mt-2">
-                                        {stats[1]?.button?.text}
-                                    </Button>
-                                </Link>
+                                <Button size="sm" variant="outline" className="mt-2" disabled>
+                                    {stats[1]?.button?.text}
+                                </Button>
                             </div>
                         </motion.div>
                     </motion.div>

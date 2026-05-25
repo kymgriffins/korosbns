@@ -38,12 +38,6 @@ const GovernmentPartnerships = () => {
               projections, and spending priorities — empowering Kenyans to understand where
               their taxes go.
             </p>
-            <Link href="/partnerships/national">
-              <Button size="lg" className="gap-2 rounded-full px-6 py-5 text-sm font-bold">
-                View Partnership Details
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
           </motion.div>
 
           <motion.div

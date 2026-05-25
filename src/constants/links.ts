@@ -27,21 +27,21 @@ export const footerLinks = {
   product: [
     { label: "Stories", href: Routes.Learn },
     { label: "Explainers", href: Routes.Capabilities },
-    { label: "Impact", href: "/impact" },
-    { label: "Get Involved", href: Routes.Membership },
+    { label: "Impact", href: "/about" },
+    { label: "Get Involved", href: "/about" },
   ],
   resources: [
     { label: "Budget Guides", href: Routes.Learn },
     { label: "Surveys", href: Routes.Surveys },
-    { label: "Newsletter", href: "#newsletter" },
+    { label: "Newsletter", href: "/" },
     { label: "Contact", href: Routes.Contact },
   ],
   company: [
     { label: "About BNS", href: "/about" },
     { label: "Team", href: "/about" },
     { label: "Careers", href: Routes.Careers },
-    { label: "Media", href: "/media" },
-    { label: "Partners", href: "/partners" },
+    { label: "Media", href: "/about" },
+    { label: "Partners", href: "/about" },
   ],
 };
 

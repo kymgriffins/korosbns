@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import { X } from "lucide-react";
+import { Mail, Sparkles, Inbox } from "lucide-react";
 import { toast } from "sonner";
 
 import { useOrg } from "@/contexts/org-context";
@@ -10,10 +10,20 @@ import {
   subscribeNewsletter,
 } from "@/lib/newsletter-subscribe";
 
+import { Button } from "@/ui/button";
+import { Input } from "@/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/ui/dialog";
+import { Alert, AlertDescription } from "@/ui/alert";
+
 const NEWSLETTER_SEEN_KEY = "hasSeenNewsletterPopup";
-const SURVEY_HANDLED_KEY = "surveyPopupHandled";
-const SURVEY_HANDLED_EVENT = "bns:survey-popup-handled";
-const NEWSLETTER_DELAY_MS = 12_000;
+const NEWSLETTER_DELAY_MS = 10_000;
 
 export default function NewsletterPopup() {
   const { showNewsletter } = useOrg();
@@ -27,30 +37,13 @@ export default function NewsletterPopup() {
     const hasSeenPopup = sessionStorage.getItem(NEWSLETTER_SEEN_KEY);
     if (hasSeenPopup) return;
 
-    let timer: ReturnType<typeof setTimeout> | null = null;
+    const timer = setTimeout(() => {
+      if (!sessionStorage.getItem(NEWSLETTER_SEEN_KEY)) {
+        setIsOpen(true);
+      }
+    }, NEWSLETTER_DELAY_MS);
 
-    const startNewsletterTimer = () => {
-      if (timer) return;
-      timer = setTimeout(() => {
-        if (!sessionStorage.getItem(NEWSLETTER_SEEN_KEY)) {
-          setIsOpen(true);
-        }
-      }, NEWSLETTER_DELAY_MS);
-    };
-
-    if (
-      localStorage.getItem(SURVEY_HANDLED_KEY) === "true" ||
-      sessionStorage.getItem(SURVEY_HANDLED_KEY) === "true"
-    ) {
-      startNewsletterTimer();
-    } else {
-      window.addEventListener(SURVEY_HANDLED_EVENT, startNewsletterTimer, { once: true });
-    }
-
-    return () => {
-      if (timer) clearTimeout(timer);
-      window.removeEventListener(SURVEY_HANDLED_EVENT, startNewsletterTimer);
-    };
+    return () => clearTimeout(timer);
   }, [showNewsletter]);
 
   const dismiss = () => {
@@ -73,9 +66,9 @@ export default function NewsletterPopup() {
       setEmail("");
       sessionStorage.setItem(NEWSLETTER_SEEN_KEY, "true");
       if (alreadySubscribed) {
-        toast.info("You're already subscribed. Check your inbox (and check your Spam/Junk folder if you do not see our emails)!");
+        toast.info("You're already subscribed. Check your inbox (and Spam/Junk folder)!");
       } else {
-        toast.success("You're subscribed. Check your inbox (and check your Spam/Junk folder if you do not see it in a few minutes)!");
+        toast.success("You're subscribed! Check your inbox (and Spam/Junk folder).");
       }
     } catch (err) {
       toast.error(newsletterSubscribeErrorMessage(err));
@@ -84,55 +77,62 @@ export default function NewsletterPopup() {
     }
   };
 
-  if (!showNewsletter || !isOpen) return null;
+  if (!showNewsletter) return null;
 
   return (
-    <div className="fixed bottom-4 right-2 left-2 sm:right-4 sm:left-auto z-[200] w-auto sm:w-[92vw] sm:max-w-md">
-      <div className="relative w-full rounded-2xl border border-border bg-background p-5 text-foreground shadow-2xl animate-in fade-in slide-in-from-bottom duration-300">
-        <button
-          onClick={dismiss}
-          className="absolute right-3 top-3 rounded-full p-2 text-white/80 transition hover:bg-black/35 hover:text-white"
-          aria-label="Close newsletter popup"
-        >
-          <X size={18} />
-        </button>
-        <p className="mb-2 text-xs font-semibold tracking-wide text-primary">NEWSLETTER</p>
-        <h3 className="mb-2 text-xl font-semibold">Get budget updates in your inbox</h3>
-        <p className="mb-4 text-sm text-muted-foreground">
-          Subscribe for explainers, stories, and policy highlights from Budget Ndio Story.
-        </p>
+    <Dialog open={isOpen} onOpenChange={(open) => { if (!open) dismiss(); }}>
+      <DialogContent className="sm:max-w-md" showCloseButton={false}>
+        <DialogHeader>
+          <div className="mx-auto sm:mx-0 size-10 rounded-full bg-primary/10 flex items-center justify-center mb-1">
+            <Mail className="size-5 text-primary" />
+          </div>
+          <DialogTitle className="text-center sm:text-left">Get budget updates in your inbox</DialogTitle>
+          <DialogDescription className="text-center sm:text-left">
+            Subscribe for explainers, stories, and policy highlights from Budget Ndio Story.
+          </DialogDescription>
+        </DialogHeader>
 
         {subscribed ? (
-          <p className="rounded-xl bg-emerald-500/20 px-3 py-2 text-sm text-emerald-200">
-            You are subscribed. Thank you for joining us. Check your inbox (and check your Spam/Junk folder if you do not receive it in a few minutes)!
-          </p>
+          <div className="space-y-4 py-2">
+            <Alert variant="default" className="border-emerald-500/30 bg-emerald-500/5">
+              <Sparkles className="size-4 text-emerald-600" />
+              <AlertDescription className="text-emerald-800 dark:text-emerald-200">
+                <span className="font-semibold">You&apos;re subscribed!</span> Keep an eye on your inbox for our latest updates.
+              </AlertDescription>
+            </Alert>
+            <Alert variant="default" className="border-amber-500/30 bg-amber-500/5">
+              <Inbox className="size-4 text-amber-600" />
+              <AlertDescription className="text-amber-800 dark:text-amber-200">
+                <span className="font-semibold">Don&apos;t see our email?</span> Check your <strong>Spam</strong> or <strong>Junk</strong> folder — sometimes our messages land there. Mark us as &ldquo;Not Spam&rdquo; so you never miss an update.
+              </AlertDescription>
+            </Alert>
+            <DialogFooter className="sm:justify-center pt-1">
+              <Button onClick={dismiss} className="w-full sm:w-auto">
+                Got it
+              </Button>
+            </DialogFooter>
+          </div>
         ) : (
-          <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-2">
-            <input
+          <form onSubmit={handleSubscribe} className="space-y-4 py-2">
+            <Input
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               placeholder="you@example.com"
               required
-              className="h-11 min-w-0 flex-1 rounded-xl border border-border bg-foreground/5 px-3 text-sm outline-none placeholder:text-muted-foreground focus:border-primary"
+              autoFocus
             />
-            <button
-              type="button"
-              onClick={dismiss}
-              className="h-11 rounded-xl border border-border bg-foreground/5 px-4 text-sm font-medium text-foreground transition hover:bg-foreground/10 w-full sm:w-auto"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="h-11 rounded-xl bg-primary px-4 text-sm font-semibold text-white transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-70 w-full sm:w-auto"
-            >
-              {loading ? "..." : "Join"}
-            </button>
+            <DialogFooter className="sm:justify-between gap-2">
+              <Button type="button" variant="outline" onClick={dismiss} className="w-full sm:w-auto">
+                Not now
+              </Button>
+              <Button type="submit" disabled={loading} className="w-full sm:w-auto gap-1.5">
+                {loading ? "Subscribing…" : <><Mail className="size-4" /> Join</>}
+              </Button>
+            </DialogFooter>
           </form>
         )}
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

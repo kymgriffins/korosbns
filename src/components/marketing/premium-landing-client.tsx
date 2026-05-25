@@ -68,11 +68,6 @@ const AlertsSimulator = dynamic(
   }
 );
 
-const SurveyPopup = dynamic(
-  () => import("@/components/marketing/survey-popup"),
-  { ssr: false }
-);
-
 const NewsletterPopup = dynamic(
   () => import("@/components/marketing/newsletter-popup"),
   { ssr: false }
@@ -90,7 +85,6 @@ export default function PremiumLandingClient() {
       <GovernmentPartnerships />
       <WhatWeDoSection />
       <AlertsSimulator />
-      <SurveyPopup />
       <NewsletterPopup />
     </>
   );

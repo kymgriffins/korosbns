@@ -3,8 +3,7 @@
 import React, { useRef } from "react";
 import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
 import {
-  Shield, Scale, Landmark, Link, CalendarRange,
-  Gavel, FileClock, ShieldCheck, ArrowRight
+  Shield, Scale, Building2, ArrowRight
 } from "lucide-react";
 import { Button } from "@/ui/button";
 import { ease } from "@/motion/variants";
@@ -40,57 +39,12 @@ const STAGES: StageCard[] = [
   },
   {
     id: 3,
-    title: "3. Division of Revenue",
-    badge: "🏛️",
-    badgeName: "CountyCart",
-    description: "Inspect the Division of Revenue Bill (DoRB) dividing audited national taxes between levels.",
-    icon: Landmark,
+    title: "3. Infrastructure Fund",
+    badge: "🏗️",
+    badgeName: "InfraFund",
+    description: "Explore Kenya's National Infrastructure Fund for long-term investments in transport, energy, water, and digital infrastructure.",
+    icon: Building2,
     colorClass: "from-blue-500/10 to-blue-600/5 border-blue-500/20 text-blue-500",
-  },
-  {
-    id: 4,
-    title: "4. County Fiscal Strategy",
-    badge: "🔗",
-    badgeName: "ChainStrat",
-    description: "Audit county expenditure ceilings and department allocations before appropriation.",
-    icon: Link,
-    colorClass: "from-teal-500/10 to-teal-600/5 border-teal-500/20 text-teal-500",
-  },
-  {
-    id: 5,
-    title: "5. CIDP + ADP",
-    badge: "📅",
-    badgeName: "AppropNative",
-    description: "Track county 5-year master plans (CIDP) and inspect the yearly execution slices (ADP).",
-    icon: CalendarRange,
-    colorClass: "from-emerald-500/10 to-emerald-600/5 border-emerald-500/20 text-emerald-500",
-  },
-  {
-    id: 6,
-    title: "6. Appropriation Bill",
-    badge: "🔨",
-    badgeName: "Watchdog",
-    description: "Verify the legal authorization acts passed by assemblies that allow county spending.",
-    icon: Gavel,
-    colorClass: "from-indigo-500/10 to-indigo-600/5 border-indigo-500/20 text-indigo-500",
-  },
-  {
-    id: 7,
-    title: "7. COB Reports",
-    badge: "📊",
-    badgeName: "PartReady",
-    description: "Review implementation reports tracking county absorption rates and overhead spending.",
-    icon: FileClock,
-    colorClass: "from-violet-500/10 to-violet-600/5 border-violet-500/20 text-violet-500",
-  },
-  {
-    id: 8,
-    title: "8. Participation Toolkit",
-    badge: "🗺️",
-    badgeName: "Cartographer",
-    description: "Equip yourself with structured templates to submit written budget memoranda.",
-    icon: ShieldCheck,
-    colorClass: "from-fuchsia-500/10 to-fuchsia-600/5 border-fuchsia-500/20 text-fuchsia-500",
   },
 ];
 

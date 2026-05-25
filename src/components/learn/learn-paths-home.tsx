@@ -18,7 +18,7 @@ import {
   Home, HelpCircle, ChevronRight, Layers, Globe, FileCheck, Award
 } from "lucide-react";
 import { cn } from "@/utils";
-import { useLearn } from "@/contexts/learn-context";
+import { useLearn, type ActiveLesson } from "@/contexts/learn-context";
 import { motion, AnimatePresence } from "motion/react";
 
 // Translations dictionary for Global Language Toggle (EN / SW / Sheng)
@@ -104,7 +104,7 @@ const STAGES_DATA = [
     documentName: "Constitution of Kenya 2010",
     archive: "2010",
     link: "https://kenyalaw.org",
-    status: "Published" as const,
+    status: "Published",
     credits: "Credits: BNS Team",
     description: "Learn about the foundations of public finance in Kenya under Chapter Twelve of the Constitution, detailing transparency, equity, and citizen audit rights.",
     expectations: [
@@ -175,7 +175,7 @@ const STAGES_DATA = [
     documentName: "Budget Policy Statement (BPS)",
     archive: "2015",
     link: "https://www.treasury.go.ke",
-    status: "Published" as const,
+    status: "Published",
     credits: "Credits: Millicent Makini",
     description: "Reflect on Kenya's 2026 Budget Policy Statement (BPS), exploring national priorities, expenditure ceilings, division of revenue, and fiscal risk factors.",
     expectations: [
@@ -388,220 +388,91 @@ const STAGES_DATA = [
   },
   {
     id: 3,
-    title: "Stage 3: Division of Revenue Bill",
-    badge: "🏛️",
-    badgeName: "CountyCart",
-    documentName: "Division of Revenue Bill",
-    archive: "2016",
+    title: "Stage 3: Infrastructure Fund",
+    badge: "🏗️",
+    badgeName: "InfraFund",
+    documentName: "National Infrastructure Fund Reports",
+    archive: "2026",
     link: "https://www.treasury.go.ke",
-    status: "Gazetted" as const,
+    status: "Published",
     credits: "Credits: BNS Team",
-    description: "Analyze the Division of Revenue Bill (DoRB) dividing audited national taxes between the national administration and county assemblies.",
+    description: "Explore Kenya's National Infrastructure Fund for long-term investments in transport, energy, water, and digital infrastructure, and understand how infrastructure spending drives economic growth.",
     expectations: [
-      "Analyze the cake division ratio.",
-      "Understand Equitable Share vs Conditional Grants.",
-      "Track Senate mediation disputes."
+      "Understand the purpose and scope of the National Infrastructure Fund.",
+      "Analyze infrastructure spending priorities across transport, energy, and water.",
+      "Learn how infrastructure investments connect to county development.",
+      "Evaluate the impact of infrastructure on economic growth and service delivery."
     ],
     steps: [
       {
         id: 1,
-        title: "1. Cake Division Principles",
+        title: "1. What is the National Infrastructure Fund?",
         youtubeId: "Ed9lP0-komE",
         audioUrl: "/audio/stage3_step1.mp3",
-        transcript: "Welcome to Division of Revenue analysis.\nThis bill divides the national revenueケーキ between national and county governments.\nBy law, counties must get at least 15% of national audited revenues.",
-        text: "The Division of Revenue Bill splits revenue raised nationally. Under Article 203 of the Constitution, several factors determine the share: national interest, public debt obligations, county needs, and developmental inequalities.",
+        transcript: "Let's explore the National Infrastructure Fund.\nThis fund was established to finance long-term capital projects.\nIt covers transport corridors, energy plants, water systems, and digital infrastructure.\nUnderstanding this fund helps you track county development projects.",
+        text: "The National Infrastructure Fund is a dedicated financing mechanism established to support long-term capital investments in Kenya's infrastructure. It prioritizes projects in transport (roads, railways, ports), energy (power generation, rural electrification), water and sanitation (dams, piped water), and digital infrastructure (fiber optic expansion, public Wi-Fi). The fund is capitalised through annual budget allocations, development partner contributions, and infrastructure bonds. County governments access portions of the fund for devolved infrastructure projects such as county roads, water schemes, and markets.",
         trivia: [
           {
             type: "multiple-choice",
-            question: "The Division of Revenue Bill divides revenue between which two levels of government?",
-            options: ["National and County Governments", "Judiciary and Executive", "Senate and National Assembly", "County and Ward"],
-            answer: 0,
-            explanation: "The Division of Revenue Bill divides funds between national and county levels of government."
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 4,
-    title: "Stage 4: County Fiscal Strategy Paper",
-    badge: "🔗",
-    badgeName: "ChainStrat",
-    documentName: "County Fiscal Strategy Paper (CFSP)",
-    archive: "2018",
-    link: "https://www.cog.go.ke",
-    status: "Comment Open" as const,
-    credits: "Credits: BNS Team",
-    description: "Audit county expenditure ceilings and department allocations before appropriation acts legalize county withdrawals.",
-    expectations: [
-      "Understand county strategy papers.",
-      "Review sector expenditure limits.",
-      "Lobby county MCAs on local priorities."
-    ],
-    steps: [
-      {
-        id: 1,
-        title: "1. County Ceilings",
-        youtubeId: "wkPe3sWomoA",
-        audioUrl: "/audio/stage4_step1.mp3",
-        transcript: "Welcome to CFSP ceilings analysis.\nCFSP aligns county sector plans with national guidelines.\nWe must inspect if county priorities match development goals.",
-        text: "The County Fiscal Strategy Paper sets out the framework for county budgeting. Sourced by County Treasuries, it specifies expenditure caps for local departments (Health, Roads, Agriculture) before the formal budget estimates are drafted.",
-        trivia: [
-          {
-            type: "multiple-choice",
-            question: "When should the CFSP be submitted to the County Assembly?",
-            options: ["By 28th February", "By 30th April", "By 15th June", "By 1st January"],
-            answer: 0,
-            explanation: "PFM Act Section 117 mandates County Treasuries to submit the CFSP to the Assembly by February 28th."
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 5,
-    title: "Stage 5: CIDP + Annual Development Plan",
-    badge: "💰",
-    badgeName: "AppropNative",
-    documentName: "Annual Development Plan (ADP)",
-    archive: "2019",
-    link: "https://www.cog.go.ke",
-    status: "Published" as const,
-    credits: "Credits: BNS Team",
-    description: "Track county 5-year master plans (CIDP) and inspect the yearly execution slices (ADP) to ensure priority projects are funded.",
-    expectations: [
-      "Differentiate CIDP from ADP.",
-      "Verify local projects inclusion in plans.",
-      "Audit ward-level public development priorities."
-    ],
-    steps: [
-      {
-        id: 1,
-        title: "1. 5-Year Planning",
-        youtubeId: "FkgRz4v2Llk",
-        audioUrl: "/audio/stage5_step1.mp3",
-        transcript: "Today we trace County Development Plans.\nCIDP is the 5-year master roadmap.\nNo project can get funding unless it sits in the CIDP.",
-        text: "The County Integrated Development Plan (CIDP) defines county development aspirations for five years. The Annual Development Plan (ADP) pulls from the CIDP to specify active projects scheduled for funding and execution in the upcoming fiscal year.",
-        trivia: [
-          {
-            type: "multiple-choice",
-            question: "How many years does a County Integrated Development Plan (CIDP) cover?",
-            options: ["5 years", "1 year", "10 years", "3 years"],
-            answer: 0,
-            explanation: "CIDPs are 5-year statutory master plans aligned with county election cycles."
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: 6,
-    title: "Stage 6: County Appropriation Bill",
-    badge: "👁️",
-    badgeName: "Watchdog",
-    documentName: "County Appropriation Act",
-    archive: "2020",
-    link: "https://kenyalaw.org",
-    status: "Closed" as const,
-    credits: "Credits: BNS Team",
-    description: "Verify the legal authorization acts passed by assemblies that allow the executive to spend public funds.",
-    expectations: [
-      "Review appropriation acts.",
-      "Track supplementary budget changes.",
-      "Audit administrative overhead adjustments."
-    ],
-    steps: [
-      {
-        id: 1,
-        title: "1. Appropriation Law",
-        youtubeId: "Ed9lP0-komE",
-        audioUrl: "/audio/stage6_step1.mp3",
-        transcript: "Welcome to Appropriation analysis.\nAppropriation acts give county ministries the legal power to spend.\nWithout it, operations freeze on 1st July.",
-        text: "The County Appropriation Act legalizes the county budget. It authorizes withdrawal of public monies from the County Revenue Fund for specific programs approved during public budget hearings.",
-        trivia: [
-          {
-            type: "multiple-choice",
-            question: "What does the County Appropriation Act authorize?",
+            question: "What is the primary purpose of the National Infrastructure Fund?",
             options: [
-              "Spending of public funds from the County Revenue Fund",
-              "Introduction of new local taxes",
-              "Appointment of county ministers",
-              "Borrowing from international banks"
+              "To finance long-term capital infrastructure projects",
+              "To pay government salaries",
+              "To service public debt",
+              "To fund recurrent expenditure"
             ],
             answer: 0,
-            explanation: "The Appropriation Act legally authorizes expenditure of approved public budget funds."
+            explanation: "The National Infrastructure Fund is designed to finance long-term capital investments in transport, energy, water, and digital infrastructure."
           }
         ]
-      }
-    ]
-  },
-  {
-    id: 7,
-    title: "Stage 7: Controller of Budget Reports",
-    badge: "📣",
-    badgeName: "PartReady",
-    documentName: "COB Implementation Reports",
-    archive: "2021",
-    link: "https://cob.go.ke",
-    status: "Published" as const,
-    credits: "Credits: BNS Team",
-    description: "Review implementation reports tracking county absorption rates and checking if development funds were diverted.",
-    expectations: [
-      "Inspect quarterly audit reports.",
-      "Understand budget absorption rates.",
-      "Expose administrative travel diversions."
-    ],
-    steps: [
+      },
       {
-        id: 1,
-        title: "1. Audit and Absorption",
+        id: 2,
+        title: "2. Infrastructure Spending Priorities",
         youtubeId: "wkPe3sWomoA",
-        audioUrl: "/audio/stage7_step1.mp3",
-        transcript: "Let's review budget absorption rates.\nCOB reports verify if kaunti spent allocations.\nLow absorption means projects are delayed, hurting service.",
-        text: "The Controller of Budget submits quarterly reports tracking budget execution. Absorption rate measures the percentage of budgeted funds actually spent. Low development absorption implies slow project implementation.",
+        audioUrl: "/audio/stage3_step2.mp3",
+        transcript: "Let's examine how infrastructure funds are allocated.\nTransport gets the largest share for roads and railways.\nEnergy follows with investments in renewable power.\nWater and sanitation are critical for county development.",
+        text: "Infrastructure spending is prioritised based on national development plans and county needs. Transport infrastructure receives the largest allocation, focusing on upgrading major highways, maintaining rural access roads, and expanding the Standard Gauge Railway. Energy sector investments target geothermal, solar, and wind power to increase the national grid capacity. Water and sanitation projects aim to increase access to clean water in both urban and rural areas, with county governments implementing piped water schemes and borehole drilling programs funded through the infrastructure budget.",
         trivia: [
           {
             type: "multiple-choice",
-            question: "How often does the Controller of Budget submit budget implementation reports?",
-            options: ["Quarterly", "Annually", "Monthly", "Every two years"],
+            question: "Which sector typically receives the largest share of infrastructure funding?",
+            options: ["Transport infrastructure", "Digital infrastructure", "Water and sanitation", "Energy"],
             answer: 0,
-            explanation: "Article 228(6) mandates the Controller of Budget to submit budget reports every quarter."
+            explanation: "Transport infrastructure receives the highest allocation to fund roads, railways, and port upgrades across the country."
+          },
+          {
+            type: "reflection",
+            question: "Think about the infrastructure in your county. Which project would make the biggest difference to your community?",
+            options: ["Road construction", "Water supply", "Electricity connection", "Market construction", "Internet access"],
+            placeholder: "Describe how this infrastructure project would improve daily life in your area."
           }
         ]
-      }
-    ]
-  },
-  {
-    id: 8,
-    title: "Stage 8: Public Participation Toolkit",
-    badge: "🗺️",
-    badgeName: "Cartographer",
-    documentName: "Public Participation Guidelines",
-    archive: "2022",
-    link: "https://www.parliament.go.ke",
-    status: "Published" as const,
-    credits: "Credits: BNS Team",
-    description: "Equip yourself with structured templates to submit written budget memoranda and drive changes in county plans.",
-    expectations: [
-      "Learn to draft written budget memoranda.",
-      "Verify county assembly consultation logs.",
-      "Mobilize citizen budget advocacy townhalls."
-    ],
-    steps: [
+      },
       {
-        id: 1,
-        title: "1. Advocacy Memoranda",
+        id: 3,
+        title: "3. Infrastructure & County Development",
         youtubeId: "FkgRz4v2Llk",
-        audioUrl: "/audio/stage8_step1.mp3",
-        transcript: "To finalize, learn to build budget memos.\nA memo structured with observation and action carries weight.\nUse our templates to submit comments to your county.",
-        text: "Written memoranda are the primary tools for formal public participation. Assemblies are legally required to compile public reviews and report how citizen feedback influenced the final budget laws.",
+        audioUrl: "/audio/stage3_step3.mp3",
+        transcript: "Infrastructure drives county economic growth.\nBetter roads mean farmers can transport goods to markets.\nReliable electricity attracts businesses and creates jobs.\nWater projects improve health and reduce poverty.",
+        text: "Infrastructure investment is a key driver of county-level economic development. Improved road networks reduce transport costs for farmers and businesses, enabling access to wider markets. Reliable electricity supply attracts manufacturing and service industries, creating local employment opportunities. Water infrastructure projects reduce the burden of water collection, improve public health outcomes, and support agricultural productivity. When citizens understand infrastructure budgets, they can advocate for equitable distribution of projects across wards and hold county governments accountable for timely project completion.",
         trivia: [
           {
             type: "multiple-choice",
-            question: "Under Article 201, public participation in financial matters is:",
-            options: ["Mandatory", "Optional", "Only for urban areas", "Gated by registration fee"],
+            question: "How does road infrastructure improvement directly benefit farmers in counties?",
+            options: [
+              "Reduces transport costs to access wider markets",
+              "Increases the cost of farm inputs",
+              "Limits access to urban areas",
+              "Reduces agricultural productivity"
+            ],
             answer: 0,
-            explanation: "Article 201 mandates public participation as an essential value in all public finance systems."
+            explanation: "Better roads lower transport costs, allowing farmers to reach larger markets and earn better prices for their produce."
+          },
+          {
+            type: "reflection",
+            question: "Having learned about infrastructure funding, what would you ask your county government about their infrastructure spending?",
+            placeholder: "Think about specific projects in your ward or sub-county that need attention."
           }
         ]
       }
@@ -612,12 +483,34 @@ const STAGES_DATA = [
 export function LearnPathsHome() {
   const [profile, setProfile] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
-  const { activeTab, setActiveTab } = useLearn();
+  const { activeTab, setActiveTab, setActiveLesson } = useLearn();
 
-  // Selected Stage for Detail Drawer
   const [selectedStage, setSelectedStage] = useState<any | null>(null);
-
   const [cachedStages, setCachedStages] = useState<number[]>([]);
+
+  // Sync selectedStage ↔ activeLesson for sidebar curriculum rail
+  useEffect(() => {
+    if (selectedStage) {
+      const completedStepIds: number[] = [];
+      for (const step of selectedStage.steps) {
+        const key = `stage_${selectedStage.id}_step_${step.id}_trivia_passed`;
+        if (localStorage.getItem(key) === "true") {
+          completedStepIds.push(step.id);
+        }
+      }
+      setActiveLesson({
+        stageId: selectedStage.id,
+        stageTitle: selectedStage.title,
+        stageBadge: selectedStage.badge,
+        currentStep: 0,
+        totalSteps: selectedStage.steps.length,
+        completedStepIds,
+        stepTitles: selectedStage.steps.map((s: any) => ({ id: s.id, title: s.title })),
+      });
+    } else {
+      setActiveLesson(null);
+    }
+  }, [selectedStage, setActiveLesson]);
 
   // Load profile on mount
   useEffect(() => {
@@ -685,7 +578,7 @@ export function LearnPathsHome() {
     if (window.confirm("Reset all progress? This wipes profile & statistics.")) {
       localStorage.removeItem("bns_user_profile");
       localStorage.removeItem("bns_cached_stages");
-      for (let i = 1; i <= 8; i++) {
+      for (let i = 1; i <= 3; i++) {
         localStorage.removeItem(`stage_${i}_article`);
         localStorage.removeItem(`stage_${i}_quiz_attempts`);
         localStorage.removeItem(`stage_${i}_quiz_cooldown`);
@@ -741,7 +634,7 @@ export function LearnPathsHome() {
   return (
     <div className="w-full bg-background min-h-screen flex flex-col">
       {/* 📱 MOBILE VIEW (Guarded by md:hidden) */}
-      <div className="w-full max-w-md mx-auto flex flex-col md:hidden relative pb-20 min-h-screen bg-background">
+      <div className="w-full flex flex-col md:hidden relative pb-14 min-h-screen bg-background">
         
         {/* Global Sheng translation warning banner */}
         {profile.language === "SH" && (
@@ -938,7 +831,7 @@ export function LearnPathsHome() {
                             </div>
                             <p className="text-[10px] text-muted-foreground truncate max-w-[150px] sm:max-w-xs">{stage.documentName}</p>
                             <div className="flex items-center gap-1.5 mt-1">
-                              <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full border ${stage.status === 'Comment Open' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600' : 'bg-muted border-border text-muted-foreground'}`}>
+                              <span className={cn("text-[9px] font-bold px-1.5 py-0.5 rounded-full border", stage.status === "Comment Open" ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-600" : "bg-muted border-border text-muted-foreground")}>
                                 {stage.status}
                               </span>
                               {isStageCached && (
@@ -1088,7 +981,7 @@ export function LearnPathsHome() {
       <div className="hidden md:flex flex-1 w-full bg-background overflow-hidden h-screen">
         
         {selectedStage ? (
-          /* A) Stage Selected View: 2-panel Stage Detail */
+          /* A) Stage Selected View: full-width Stage Detail (stats panel hidden) */
           <div className="flex-1 flex flex-col h-full overflow-hidden">
             <StageDetailDrawer
               stage={selectedStage}
