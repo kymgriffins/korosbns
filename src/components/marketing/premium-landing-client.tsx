@@ -4,12 +4,19 @@ import React from "react";
 import dynamic from "next/dynamic";
 import LandingHero from "@/components/marketing/landing-hero";
 
-// Lazy-load below-the-fold sections
 const CloudinaryGallery = dynamic(
   () => import("@/components/marketing/cloudinary-gallery"),
   {
     ssr: false,
-    loading: () => <div className="h-screen w-full bg-black animate-pulse" />,
+    loading: () => <div className="h-96 w-full bg-muted animate-pulse" />,
+  }
+);
+
+const LandingYoutube = dynamic(
+  () => import("@/components/marketing/landing-youtube"),
+  {
+    ssr: false,
+    loading: () => <div className="h-64 w-full bg-muted animate-pulse" />,
   }
 );
 
@@ -17,7 +24,7 @@ const PartnersMarquee = dynamic(
   () => import("@/components/marketing/partners-marquee"),
   {
     ssr: false,
-    loading: () => <div className="h-64 w-full bg-black animate-pulse" />,
+    loading: () => <div className="h-32 w-full bg-muted animate-pulse" />,
   }
 );
 
@@ -33,7 +40,7 @@ const KenyaFinanceTimeline = dynamic(
   () => import("@/components/marketing/kenya-finance-timeline"),
   {
     ssr: false,
-    loading: () => <div className="h-screen w-full bg-black animate-pulse" />,
+    loading: () => <div className="h-screen w-full bg-muted animate-pulse" />,
   }
 );
 
@@ -41,7 +48,7 @@ const GovernmentPartnerships = dynamic(
   () => import("@/components/marketing/government-partnerships"),
   {
     ssr: false,
-    loading: () => <div className="h-screen w-full bg-background animate-pulse" />,
+    loading: () => <div className="h-96 w-full bg-background animate-pulse" />,
   }
 );
 
@@ -49,7 +56,7 @@ const WhatWeDoSection = dynamic(
   () => import("@/components/marketing/what-we-do-section"),
   {
     ssr: false,
-    loading: () => <div className="h-screen w-full bg-black animate-pulse" />,
+    loading: () => <div className="h-96 w-full bg-background animate-pulse" />,
   }
 );
 
@@ -57,13 +64,8 @@ const AlertsSimulator = dynamic(
   () => import("@/components/marketing/alerts-simulator"),
   {
     ssr: false,
-    loading: () => <div className="h-[600px] w-full bg-black animate-pulse" />,
+    loading: () => <div className="h-[600px] w-full bg-muted animate-pulse" />,
   }
-);
-
-const LandingFooter = dynamic(
-  () => import("@/components/marketing/landing-footer"),
-  { ssr: false }
 );
 
 const SurveyPopup = dynamic(
@@ -79,24 +81,15 @@ const NewsletterPopup = dynamic(
 export default function PremiumLandingClient() {
   return (
     <>
-      {/* PHASE 1: Visual Transformation */}
       <LandingHero />
       <CloudinaryGallery />
+      <LandingYoutube />
       <PartnersMarquee />
-      
-      {/* PHASE 2: Human Layer */}
       <LandingTeam />
-      
-      {/* PHASE 3: Credibility Architecture */}
       <KenyaFinanceTimeline />
       <GovernmentPartnerships />
       <WhatWeDoSection />
-      
-      {/* Existing Components */}
       <AlertsSimulator />
-      <LandingFooter />
-      
-      {/* Popups */}
       <SurveyPopup />
       <NewsletterPopup />
     </>

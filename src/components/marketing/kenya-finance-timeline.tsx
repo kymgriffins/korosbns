@@ -103,7 +103,7 @@ const economicIndicators = [
 
 export default function KenyaFinanceTimeline() {
   return (
-    <section className="py-24 md:py-36 bg-black text-white relative overflow-hidden border-t border-white/5">
+    <section className="py-20 md:py-32 bg-background text-foreground relative overflow-x-clip border-t border-border/40">
       {/* Glow Effect */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4/5 h-1/2 bg-primary/5 blur-[120px] rounded-full pointer-events-none -z-10" />
 
@@ -117,7 +117,7 @@ export default function KenyaFinanceTimeline() {
           <h2 className="gusto-heading mb-6">
             Legislative Tracker & <span className="italic font-heading text-primary">Context</span>.
           </h2>
-          <p className="text-white/60 text-sm md:text-base leading-relaxed">
+          <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
             Real-time tracking of the legislative process and economic context surrounding the proposed tax reforms.
           </p>
         </div>
@@ -133,10 +133,10 @@ export default function KenyaFinanceTimeline() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.08 }}
-                className="p-5 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md hover:border-primary/30 transition-all flex flex-col justify-between"
+                className="p-5 rounded-2xl border border-border bg-card hover:border-primary/30 transition-all flex flex-col justify-between min-w-0"
               >
                 <div>
-                  <span className="text-xs text-white/50 block mb-2">{indicator.label}</span>
+                  <span className="text-xs text-muted-foreground block mb-2">{indicator.label}</span>
                   <span className="text-2xl md:text-3xl font-black tracking-tight">{indicator.value}</span>
                 </div>
                 <div className="flex items-center gap-1.5 mt-4">
@@ -151,14 +151,11 @@ export default function KenyaFinanceTimeline() {
         </div>
 
         {/* Timeline container */}
-        <div className="relative max-w-5xl mx-auto mb-24">
-          {/* Vertical line - desktop */}
+        <div className="relative max-w-5xl mx-auto mb-24 w-full min-w-0 px-1">
           <div className="hidden md:block absolute left-1/2 top-2 bottom-2 w-0.5 bg-gradient-to-b from-primary/10 via-primary/30 to-primary/10 -translate-x-1/2" />
-          
-          {/* Vertical line - mobile */}
-          <div className="md:hidden absolute left-5 top-2 bottom-2 w-0.5 bg-gradient-to-b from-primary/10 via-primary/30 to-primary/10" />
+          <div className="md:hidden absolute left-4 top-2 bottom-2 w-0.5 bg-gradient-to-b from-primary/10 via-primary/30 to-primary/10" />
 
-          <div className="space-y-12 md:space-y-16">
+          <div className="space-y-10 md:space-y-16">
             {financeBillTimeline.map((item, index) => {
               const isCompleted = item.status === 'completed';
               const isRunning = item.status === 'running';
@@ -170,12 +167,11 @@ export default function KenyaFinanceTimeline() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-80px" }}
                   transition={{ duration: 0.6, delay: index * 0.05 }}
-                  className={`relative flex flex-col md:flex-row items-start gap-8 ${
+                  className={`relative flex flex-col md:flex-row items-start gap-6 md:gap-8 min-w-0 w-full ${
                     index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
                   }`}
                 >
-                  {/* Timeline Status Icon */}
-                  <div className="absolute left-5 md:left-1/2 w-8 h-8 rounded-full -translate-x-1/2 md:translate-x-[-16px] z-10 flex items-center justify-center bg-black border border-white/20">
+                  <div className="absolute left-4 md:left-1/2 w-8 h-8 rounded-full -translate-x-1/2 md:-translate-x-4 z-10 flex items-center justify-center bg-background border border-border">
                     {isCompleted ? (
                       <span className="flex size-6 items-center justify-center rounded-full bg-green-500/20 border border-green-500 text-green-500">
                         <Check className="w-3.5 h-3.5" />
@@ -185,16 +181,16 @@ export default function KenyaFinanceTimeline() {
                         <Loader2 className="w-3.5 h-3.5 animate-spin" />
                       </span>
                     ) : (
-                      <span className="flex size-6 items-center justify-center rounded-full bg-zinc-900 border border-white/10 text-white/40">
+                      <span className="flex size-6 items-center justify-center rounded-full bg-muted border border-border text-muted-foreground">
                         <Circle className="w-2.5 h-2.5 fill-current" />
                       </span>
                     )}
                   </div>
 
                   {/* Content card */}
-                  <div className={`flex-1 ml-12 md:ml-0 ${index % 2 === 0 ? 'md:pr-12' : 'md:pl-12'} w-full`}>
-                    <div className={`bg-cardbox border rounded-3xl p-6 md:p-8 hover:border-primary/20 transition-all duration-300 ${
-                      isRunning ? 'border-primary/30 shadow-lg shadow-primary/5' : 'border-white/10'
+                  <div className={`flex-1 min-w-0 pl-12 md:pl-0 w-full max-w-full ${index % 2 === 0 ? 'md:pr-10' : 'md:pl-10'}`}>
+                    <div className={`bg-card border rounded-2xl md:rounded-3xl p-5 md:p-7 hover:border-primary/20 transition-all duration-300 ${
+                      isRunning ? 'border-primary/30' : 'border-border'
                     }`}>
                       <div className="flex justify-between items-start gap-4 mb-3">
                         <span className="text-xs font-bold text-primary flex items-center gap-1.5 uppercase tracking-widest">
@@ -213,11 +209,11 @@ export default function KenyaFinanceTimeline() {
                         {item.title}
                       </h3>
                       
-                      <p className="text-white/70 text-sm md:text-base leading-relaxed mb-4">
+                      <p className="text-muted-foreground text-sm md:text-base leading-relaxed mb-4">
                         {item.description}
                       </p>
                       
-                      <div className="text-xs text-white/40 border-t border-white/5 pt-4">
+                      <div className="text-xs text-muted-foreground border-t border-border/60 pt-4">
                         {item.details}
                       </div>
                     </div>
@@ -243,7 +239,7 @@ export default function KenyaFinanceTimeline() {
           </div>
           <div>
             <h3 className="font-bold text-yellow-500 text-lg mb-2">Key Proposals in Finance Bill 2026:</h3>
-            <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-sm text-white/70">
+            <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">
                 <span className="size-1.5 rounded-full bg-yellow-500" />
                 Rental income tax increase: 7.5% → 10%

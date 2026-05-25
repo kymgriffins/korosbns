@@ -36,13 +36,13 @@ const CloudinaryGallery = () => {
     if (loading) return <div className="h-96 flex items-center justify-center">Loading Gallery...</div>;
 
     return (
-        <section className="py-24 md:py-48 bg-black overflow-hidden">
-            <div className="max-w-[1400px] mx-auto px-8 md:px-16 mb-16 md:mb-24">
-                <span className="text-white/40 uppercase tracking-[0.3em] text-xs mb-4 block">Visual Impact</span>
-                <h2 className="gusto-subheading text-white max-w-2xl">Documenting the <span className="italic font-heading text-primary">Movement</span> in the field.</h2>
+        <section className="py-20 md:py-36 bg-background overflow-x-hidden border-b border-border/40">
+            <div className="max-w-[1400px] mx-auto px-6 md:px-16 mb-12 md:mb-16">
+                <span className="text-muted-foreground uppercase tracking-[0.3em] text-xs mb-4 block">Visual Impact</span>
+                <h2 className="gusto-subheading text-foreground max-w-2xl">Documenting the <span className="italic font-heading text-primary">Movement</span> in the field.</h2>
             </div>
 
-            <div className="flex flex-nowrap gap-8 md:gap-12 px-8 md:px-16 overflow-x-auto no-scrollbar py-10">
+            <div className="flex flex-nowrap gap-6 md:gap-10 px-6 md:px-16 overflow-x-auto no-scrollbar py-8 max-w-full">
                 {images.map((image, i) => (
                     <GalleryItem key={i} image={image} index={i} />
                 ))}
@@ -74,8 +74,8 @@ const GalleryItem = ({ image, index }: { image: CloudinaryImage; index: number }
                 className="object-cover transition-transform duration-700 hover:scale-110"
                 sizes="(max-width: 768px) 300px, 450px"
             />
-            <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-500 flex items-end p-8">
-                <p className="text-white text-sm tracking-widest uppercase">{image.alt}</p>
+            <div className="absolute inset-0 bg-linear-to-t from-background/80 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+                <p className="text-foreground text-sm tracking-widest uppercase">{image.alt}</p>
             </div>
         </motion.div>
     );

@@ -50,28 +50,16 @@ export default function LandingTeam() {
                     ))}
                 </div>
 
-                {/* ── MOBILE STACKING CARDS LAYOUT (Visible on mobile only) ── */}
-                <div className="flex md:hidden flex-col relative w-full pt-4">
+                <div className="flex md:hidden flex-col gap-6 w-full">
                     {team.map((member, i) => (
-                        <div 
+                        <motion.div
                             key={member.name}
-                            className="sticky w-full"
-                            style={{
-                                top: `calc(90px + ${i * 18}px)`,
-                                paddingBottom: "24px" // space between stacks
-                            }}
+                            initial={{ opacity: 0, y: 24 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, margin: "-40px" }}
+                            transition={{ duration: 0.5, delay: i * 0.05 }}
+                            className="w-full bg-card border border-border rounded-3xl p-5 shadow-md flex flex-col gap-4"
                         >
-                            <motion.div 
-                                initial={{ opacity: 0, scale: 0.95, y: 30 }}
-                                whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                                viewport={{ once: true, margin: "-40px" }}
-                                transition={{ duration: 0.5, ease: "easeOut" }}
-                                className="w-full bg-card border border-border/80 rounded-3xl p-5 shadow-2xl flex flex-col gap-4 bg-cardbox"
-                                style={{
-                                    // slight shadow variance to separate layered stack
-                                    boxShadow: `0 20px 40px -15px rgba(0, 0, 0, ${0.2 + i * 0.05})`
-                                }}
-                            >
                                 <div className="relative aspect-[4/3] w-full rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 border border-border/20">
                                     <Image
                                         src={member.image}
@@ -88,8 +76,7 @@ export default function LandingTeam() {
                                         {member.description}
                                     </p>
                                 </div>
-                            </motion.div>
-                        </div>
+                        </motion.div>
                     ))}
                 </div>
 
