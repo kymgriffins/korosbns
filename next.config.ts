@@ -22,6 +22,7 @@ function contentSecurityPolicy(): string {
     "img-src 'self' data: blob: https:",
     "font-src 'self' data: https:",
     `connect-src 'self' https://bnske.budgetndiostory.org https://*.budgetndiostory.org${localApiConnect}`,
+    "media-src 'self' https://res.cloudinary.com blob: data:",
     "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://youtube.com https://youtube-nocookie.com",
     "frame-ancestors 'none'",
     "base-uri 'self'",
