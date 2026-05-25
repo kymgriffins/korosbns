@@ -16,12 +16,7 @@ import { Button } from "@/ui/button";
 const ALL_STAGES = [
   { id: 1, badge: "🛡️", title: "Constitution" },
   { id: 2, badge: "⚖️", title: "Budget Policy Statement" },
-  { id: 3, badge: "🏛️", title: "Division of Revenue Bill" },
-  { id: 4, badge: "🔗", title: "County Fiscal Strategy Paper" },
-  { id: 5, badge: "💰", title: "CIDP + Annual Development Plan" },
-  { id: 6, badge: "👁️", title: "County Appropriation Bill" },
-  { id: 7, badge: "📣", title: "Controller of Budget Reports" },
-  { id: 8, badge: "🗺️", title: "Public Participation Toolkit" },
+  { id: 3, badge: "🏗️", title: "Infrastructure Fund" },
 ];
 
 function LearnAppShell({ children }: { children: React.ReactNode }) {

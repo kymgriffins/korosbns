@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'motion/react';
-import { BookOpen, FileText, Users, Scale } from 'lucide-react';
+import { BookOpen, FileText, Building2, Scale } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/ui/button';
 
@@ -30,18 +30,11 @@ const modules: LearningModule[] = [
     color: "text-purple-500"
   },
   {
-    icon: <Users className="w-8 h-8" />,
-    title: "Public Participation",
-    description: "Your voice matters. Learn how to engage in county budget forums, submit memoranda, and track outcomes.",
-    href: "/learn/participation",
+    icon: <Building2 className="w-8 h-8" />,
+    title: "Infrastructure Fund",
+    description: "Explore Kenya's National Infrastructure Fund for long-term investments in transport, energy, water, and digital infrastructure.",
+    href: "/learn/infrastructure",
     color: "text-green-500"
-  },
-  {
-    icon: <BookOpen className="w-8 h-8" />,
-    title: "Accountability & Oversight",
-    description: "Following the money: Tools and frameworks for tracking budget execution and demanding transparency.",
-    href: "/learn/accountability",
-    color: "text-orange-500"
   },
 ];
 
