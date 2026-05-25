@@ -2,17 +2,19 @@
 
 import React, { useEffect, useState } from "react";
 import { OnboardingWizard } from "./onboarding-wizard";
+import { AnonymousIdentityPicker } from "./anonymous-identity-picker";
+import { BitmojiAvatar } from "./bitmoji-avatar";
 import { StageDetailDrawer } from "./stage-detail-drawer";
-import { ParticipationAlertsDrawer } from "./participation-alerts-drawer";
+
 import { Button } from "@/ui/button";
 import { Progress } from "@/ui/progress";
 import { Label } from "@/ui/label";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/ui/accordion";
 import { toast } from "sonner";
 import {
-  Play, Flame, Trophy, User, Sparkles, BookOpen, AlertTriangle,
+  Flame, Trophy, User, Sparkles, BookOpen, AlertTriangle,
   ArrowRight, ShieldCheck, MapPin, Calendar, CheckCircle2,
-  Bell, Volume2, Shield, Settings, Wifi, WifiOff, DownloadCloud, Copy, Send, MessageSquare,
+  Volume2, Shield, Settings, DownloadCloud, Copy, Send, MessageSquare,
   Home, HelpCircle, ChevronRight, Layers, Globe, FileCheck, Award
 } from "lucide-react";
 import { cn } from "@/utils";
@@ -615,12 +617,7 @@ export function LearnPathsHome() {
   // Selected Stage for Detail Drawer
   const [selectedStage, setSelectedStage] = useState<any | null>(null);
 
-  // Offline Simulation State
-  const [isOffline, setIsOffline] = useState(false);
   const [cachedStages, setCachedStages] = useState<number[]>([]);
-
-  // Participation Alert State
-  const [showAlertDrawer, setShowAlertDrawer] = useState(false);
 
   // Load profile on mount
   useEffect(() => {
@@ -732,11 +729,11 @@ export function LearnPathsHome() {
     );
   }
 
-  // If user is not onboarded, render OnboardingWizard (Module 1)
+  // If user is not onboarded, render AnonymousIdentityPicker
   if (!profile) {
     return (
       <div className="flex-1 flex items-center justify-center p-4 bg-muted/20">
-        <OnboardingWizard onComplete={handleOnboardingComplete} />
+        <AnonymousIdentityPicker onComplete={handleOnboardingComplete} />
       </div>
     );
   }
@@ -746,23 +743,6 @@ export function LearnPathsHome() {
       {/* 📱 MOBILE VIEW (Guarded by md:hidden) */}
       <div className="w-full max-w-md mx-auto flex flex-col md:hidden relative pb-20 min-h-screen bg-background">
         
-        {/* 📡 Offline Simulator Banner (Low-Connectivity UX) */}
-        <div className={`w-full py-1.5 px-4 text-xs font-bold flex items-center justify-between border-b transition-colors ${isOffline ? 'bg-amber-500/10 border-amber-500/20 text-amber-600' : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600'}`}>
-          <div className="flex items-center gap-1.5">
-            {isOffline ? <WifiOff className="size-4 animate-pulse" /> : <Wifi className="size-4" />}
-            <span>{isOffline ? "Offline Sim Active" : "Online Mode"}</span>
-          </div>
-          <button
-            onClick={() => {
-              setIsOffline(!isOffline);
-              toast.info(`Switched to ${!isOffline ? "Offline Sim" : "Online Mode"}`);
-            }}
-            className="underline text-[10px] font-extrabold uppercase hover:text-foreground/80"
-          >
-            Toggle Sim
-          </button>
-        </div>
-
         {/* Global Sheng translation warning banner */}
         {profile.language === "SH" && (
           <div className="w-full py-1 px-4 text-[10px] font-semibold bg-amber-500/15 border-b border-amber-500/20 text-amber-600 text-center">
@@ -779,9 +759,7 @@ export function LearnPathsHome() {
 
           {/* User Info */}
           <div className="flex items-center gap-2.5 flex-1 min-w-0">
-            <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-black text-xs shrink-0">
-              {profile.breakName.charAt(0).toUpperCase()}
-            </div>
+            <BitmojiAvatar gender={profile.gender} size="sm" className="shrink-0" />
             <div className="min-w-0">
               <h1 className="text-xs font-black text-foreground truncate">{profile.breakName}</h1>
               <p className="text-[10px] text-muted-foreground truncate">{profile.county} · Lvl {Math.floor(profile.sovereigns / 100) + 1}</p>
@@ -826,24 +804,6 @@ export function LearnPathsHome() {
                   </div>
                   <Progress value={((profile.badges?.length || 0) / 8) * 100} className="h-2 rounded-full" />
                   <p className="text-[10px] text-muted-foreground">Unlock all 8 badges by completing the trivia gates.</p>
-                </div>
-
-                {/* Hyper-local Participation Alert Callout */}
-                <div className="p-4 rounded-xl border border-primary/25 bg-primary/5 flex items-start justify-between gap-4">
-                  <div className="space-y-1">
-                    <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/20 px-2 py-0.5 text-[9px] font-extrabold uppercase text-primary">
-                      <Bell className="size-3" /> Participation Alert
-                    </div>
-                    <h3 className="text-xs font-bold">Memorandum Open for {profile.county}!</h3>
-                    <p className="text-[10px] text-muted-foreground leading-normal">Submit citizen feedback on the CFSP document to represent your community.</p>
-                  </div>
-                  <Button
-                    size="sm"
-                    onClick={() => setShowAlertDrawer(true)}
-                    className="rounded-xl font-bold shrink-0 text-xs gap-1"
-                  >
-                    Draft <ArrowRight className="size-3.5" />
-                  </Button>
                 </div>
 
                 {/* Current Active Stage Card */}
@@ -943,7 +903,7 @@ export function LearnPathsHome() {
                     const isCompleted = profile.badges?.includes(stage.badge);
                     const isActive = profile.stageProgress?.includes(stage.id);
                     const isStageCached = cachedStages.includes(stage.id);
-                    const offlineDisabled = isOffline && !isStageCached;
+                    const offlineDisabled = false;
 
                     return (
                       <div
@@ -1019,32 +979,6 @@ export function LearnPathsHome() {
                   <p className="text-xs text-muted-foreground">{text.alertsSubtitle}</p>
                 </div>
 
-                {/* Notification card matching county */}
-                <div className="p-5 border border-border bg-card rounded-2xl space-y-4 shadow-xs">
-                  <div className="flex justify-between items-start border-b border-border pb-3">
-                    <div>
-                      <h3 className="text-xs font-bold text-foreground">CFSP Comment Window Open</h3>
-                      <p className="text-[10px] text-muted-foreground mt-0.5">{profile.county} County Assembly</p>
-                    </div>
-                    <span className="text-[8px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 font-bold px-2 py-0.5 rounded-full">
-                      Comment Open
-                    </span>
-                  </div>
-
-                  <p className="text-xs text-muted-foreground leading-normal">
-                    🚨 **County Fiscal Strategy Paper (CFSP) 2026/27** is open for comments. Act now to submit observation comments.
-                  </p>
-
-                  <div className="pt-2">
-                    <Button
-                      onClick={() => setShowAlertDrawer(true)}
-                      className="w-full rounded-xl font-bold gap-1.5 h-10 text-xs"
-                    >
-                      Review → Draft → Submit
-                    </Button>
-                  </div>
-                </div>
-
                 {/* Submissions History Log */}
                 <div className="space-y-3.5">
                   <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Logged Submissions</h3>
@@ -1067,7 +1001,7 @@ export function LearnPathsHome() {
                     </div>
                   ) : (
                     <p className="text-xs text-muted-foreground text-center py-6 border border-dashed border-border rounded-xl">
-                      No commentaries submitted yet. Tap the alert card above to draft one!
+                      No commentaries submitted yet.
                     </p>
                   )}
                 </div>
@@ -1090,9 +1024,7 @@ export function LearnPathsHome() {
                 {/* Profile Card */}
                 <div className="p-4 rounded-2xl border border-border bg-card space-y-4 shadow-xs">
                   <div className="flex items-center gap-3">
-                    <div className="size-12 rounded-full bg-primary/10 text-primary flex items-center justify-center text-lg font-black">
-                      {profile.breakName.charAt(0).toUpperCase()}
-                    </div>
+                    <BitmojiAvatar gender={profile.gender} size="md" />
                     <div>
                       <h3 className="text-xs font-black text-foreground">{profile.breakName}</h3>
                       <p className="text-[10px] text-muted-foreground font-bold leading-none mt-1">{profile.county} · Lvl {Math.floor(profile.sovereigns / 100) + 1}</p>
@@ -1146,21 +1078,6 @@ export function LearnPathsHome() {
                   setSelectedStage(next);
                 }
               }}
-            />
-          </div>
-        )}
-
-        {/* Mobile Participation Alerts Drawer (only rendered on mobile) */}
-        {showAlertDrawer && (
-          <div className="md:hidden">
-            <ParticipationAlertsDrawer
-              profile={profile}
-              onClose={() => {
-                setShowAlertDrawer(false);
-                const stored = localStorage.getItem("bns_user_profile");
-                if (stored) setProfile(JSON.parse(stored));
-              }}
-              onUpdateProfile={handleUpdateProfile}
             />
           </div>
         )}
@@ -1299,7 +1216,7 @@ export function LearnPathsHome() {
                       const isCompleted = profile.badges?.includes(stage.badge);
                       const isActive = profile.stageProgress?.includes(stage.id);
                       const isStageCached = cachedStages.includes(stage.id);
-                      const offlineDisabled = isOffline && !isStageCached;
+                      const offlineDisabled = false;
 
                       return (
                         <div
@@ -1374,80 +1291,38 @@ export function LearnPathsHome() {
 
               {/* Tab: Alerts */}
               {activeTab === "alerts" && (
-                <div className="max-w-3xl mx-auto h-full flex flex-col overflow-hidden">
-                  {showAlertDrawer ? (
-                    <div className="flex-1 overflow-hidden h-full">
-                      <ParticipationAlertsDrawer
-                        profile={profile}
-                        onClose={() => {
-                          setShowAlertDrawer(false);
-                          const stored = localStorage.getItem("bns_user_profile");
-                          if (stored) setProfile(JSON.parse(stored));
-                        }}
-                        onUpdateProfile={handleUpdateProfile}
-                      />
-                    </div>
-                  ) : (
-                    <div className="space-y-6">
-                      <div className="space-y-1">
-                        <h2 className="text-xl font-black uppercase tracking-tight">{text.alertsTitle}</h2>
-                        <p className="text-xs text-muted-foreground">{text.alertsSubtitle}</p>
-                      </div>
+                <div className="space-y-6 max-w-3xl mx-auto">
+                  <div className="space-y-1">
+                    <h2 className="text-xl font-black uppercase tracking-tight">{text.alertsTitle}</h2>
+                    <p className="text-xs text-muted-foreground">{text.alertsSubtitle}</p>
+                  </div>
 
-                      {/* Active Alert Card */}
-                      <div className="p-6 border border-border bg-card rounded-2xl space-y-4 shadow-sm">
-                        <div className="flex justify-between items-start border-b border-border pb-3">
-                          <div>
-                            <h3 className="text-sm font-black text-foreground">CFSP Comment Window Open</h3>
-                            <p className="text-[10px] text-muted-foreground mt-0.5 font-bold">{profile.county} County Assembly</p>
+                  {/* Logged Submissions */}
+                  <div className="space-y-4">
+                    <h3 className="text-xs font-black text-muted-foreground uppercase tracking-widest">Logged Submissions</h3>
+                    {profile.participationLogs?.length > 0 ? (
+                      <div className="grid grid-cols-2 gap-4">
+                        {profile.participationLogs.map((log: any, idx: number) => (
+                          <div key={idx} className="p-4 rounded-xl border border-border bg-card space-y-3 text-xs shadow-xs">
+                            <div className="flex justify-between items-start">
+                              <h4 className="font-bold text-foreground truncate max-w-[180px]">{log.documentName}</h4>
+                              <span className="text-[9px] bg-primary/10 border border-primary/20 text-primary font-bold px-2 py-0.5 rounded-full uppercase">
+                                {log.method}
+                              </span>
+                            </div>
+                            <p className="text-[10px] text-muted-foreground font-semibold">Submitted: {new Date(log.dateSubmitted).toLocaleString()}</p>
+                            <div className="bg-muted/30 p-3 rounded-lg border border-border/50 font-mono text-[9px] leading-relaxed whitespace-pre-wrap truncate max-h-24">
+                              {log.draftText}
+                            </div>
                           </div>
-                          <span className="text-[9px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
-                            Comment Open
-                          </span>
-                        </div>
-
-                        <p className="text-xs text-muted-foreground leading-relaxed">
-                          🚨 The **County Fiscal Strategy Paper (CFSP) 2026/27** is officially open for comments. Act now to submit observation comments directly to the assembly.
-                        </p>
-
-                        <div className="pt-2">
-                          <Button
-                            onClick={() => setShowAlertDrawer(true)}
-                            className="rounded-xl font-bold h-11 text-xs gap-1.5"
-                          >
-                            Draft Budget Memorandum <ArrowRight className="size-4" />
-                          </Button>
-                        </div>
+                        ))}
                       </div>
-
-                      {/* Logged Submissions */}
-                      <div className="space-y-4">
-                        <h3 className="text-xs font-black text-muted-foreground uppercase tracking-widest">Logged Submissions</h3>
-                        {profile.participationLogs?.length > 0 ? (
-                          <div className="grid grid-cols-2 gap-4">
-                            {profile.participationLogs.map((log: any, idx: number) => (
-                              <div key={idx} className="p-4 rounded-xl border border-border bg-card space-y-3 text-xs shadow-xs">
-                                <div className="flex justify-between items-start">
-                                  <h4 className="font-bold text-foreground truncate max-w-[180px]">{log.documentName}</h4>
-                                  <span className="text-[9px] bg-primary/10 border border-primary/20 text-primary font-bold px-2 py-0.5 rounded-full uppercase">
-                                    {log.method}
-                                  </span>
-                                </div>
-                                <p className="text-[10px] text-muted-foreground font-semibold">Submitted: {new Date(log.dateSubmitted).toLocaleString()}</p>
-                                <div className="bg-muted/30 p-3 rounded-lg border border-border/50 font-mono text-[9px] leading-relaxed whitespace-pre-wrap truncate max-h-24">
-                                  {log.draftText}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <p className="text-xs text-muted-foreground text-center py-8 border border-dashed border-border rounded-xl">
-                            No commentaries submitted yet. Tap the alert card above to draft one!
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  )}
+                    ) : (
+                      <p className="text-xs text-muted-foreground text-center py-8 border border-dashed border-border rounded-xl">
+                        No commentaries submitted yet.
+                      </p>
+                    )}
+                  </div>
                 </div>
               )}
 
@@ -1462,9 +1337,7 @@ export function LearnPathsHome() {
                   {/* Profile Details Card */}
                   <div className="p-6 border border-border bg-card rounded-2xl space-y-4 shadow-sm flex items-center justify-between gap-6">
                     <div className="flex items-center gap-4">
-                      <div className="size-16 rounded-full bg-primary/10 text-primary flex items-center justify-center text-2xl font-black border border-primary/20 shadow-xs">
-                        {profile.breakName.charAt(0).toUpperCase()}
-                      </div>
+                      <BitmojiAvatar gender={profile.gender} size="lg" className="border border-primary/20 shadow-xs rounded-full" />
                       <div>
                         <h3 className="text-base font-black text-foreground">{profile.breakName}</h3>
                         <p className="text-xs text-muted-foreground mt-0.5 font-bold">{profile.county} · Lvl {Math.floor(profile.sovereigns / 100) + 1}</p>
@@ -1591,7 +1464,8 @@ export function LearnPathsHome() {
             <aside className="w-80 border-l border-border bg-card/25 p-6 flex flex-col gap-6 overflow-y-auto select-none">
               <div>
                 <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Good Morning</p>
-                <h3 className="text-base font-black text-foreground flex items-center gap-1.5 mt-0.5">
+                <h3 className="text-base font-black text-foreground flex items-center gap-2 mt-0.5">
+                  <BitmojiAvatar gender={profile.gender} size="sm" />
                   {profile.breakName} 🔥
                 </h3>
               </div>

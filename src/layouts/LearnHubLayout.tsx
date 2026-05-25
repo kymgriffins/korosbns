@@ -1,11 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Suspense, useState, useEffect } from "react";
 import { 
-  Menu, Search, Trophy, User, Flame, X, ChevronRight, ChevronLeft,
-  BookOpen, Sparkles, Settings, Bell, Home, HelpCircle
+  Trophy, User, ChevronRight, ChevronLeft,
+  BookOpen, Bell, Home
 } from "lucide-react";
 import { Routes } from "@/constants/routes";
 import { cn } from "@/utils";
@@ -63,29 +62,8 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row relative overflow-hidden">
       
-      {/* 📱 Mobile Top Bar (No hamburger menu as per Mobile-First Directive) */}
-      <header className="sticky top-0 z-40 w-full h-14 md:hidden border-b border-border bg-background/85 backdrop-blur-md flex items-center justify-between px-4">
-        <Link href={Routes.Home} className="flex items-center gap-2">
-          <span className="font-heading font-black text-sm tracking-widest text-primary">BUDGET NDIO STORY</span>
-        </Link>
-
-        {/* Mini Streak & Profile */}
-        <div className="flex items-center gap-2.5">
-          <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-500 text-xs font-bold">
-            <Flame className="size-3.5 fill-orange-500" />
-            <span>{streak}d</span>
-          </div>
-
-          <button 
-            onClick={() => handleTabChange("profile")}
-            className="relative size-8 flex items-center justify-center rounded-full border border-primary/20 bg-primary/5 text-primary text-[10px] font-bold"
-          >
-            {level}
-          </button>
-        </div>
-      </header>
-
-      {/* 🖥️ Desktop Collapsible Sidebar (Left) */}
+      {/* 🖥️ Desktop Collapsible Sidebar (Left) — only visible after server login */}
+      {isLoggedIn && (
       <aside className={cn(
         "hidden md:flex flex-col justify-between border-r border-border bg-card sticky top-0 h-screen transition-all duration-300",
         sidebarCollapsed ? "w-16" : "w-64"
@@ -185,6 +163,7 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
           </button>
         </div>
       </aside>
+      )}
 
       {/* 🚀 Main Content Canvas */}
       <main className="flex-1 min-h-[calc(100vh-3.5rem)] md:min-h-screen pb-16 md:pb-0 flex flex-col">

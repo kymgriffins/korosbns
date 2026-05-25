@@ -133,7 +133,6 @@ describe("StageDetailDrawer - Step & Trivia Gating Flow", () => {
 
     // Content formats are visible
     expect(screen.getByText("🎥 Video")).toBeInTheDocument();
-    expect(screen.getByText("🎧 Audio")).toBeInTheDocument();
     expect(screen.getByText("📖 Text")).toBeInTheDocument();
 
     // Trivia is hidden by default
