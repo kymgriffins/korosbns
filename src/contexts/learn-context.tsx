@@ -13,6 +13,16 @@ interface ActiveModule {
   progress: number;
 }
 
+export interface ActiveLesson {
+  stageId: number;
+  stageTitle: string;
+  stageBadge: string;
+  currentStep: number;
+  totalSteps: number;
+  completedStepIds: number[];
+  stepTitles: { id: number; title: string }[];
+}
+
 interface LearnContextType {
   activeTab: LearnTab;
   setActiveTab: (tab: LearnTab) => void;
@@ -26,6 +36,8 @@ interface LearnContextType {
   refreshGamification: () => Promise<void>;
   activeModule: ActiveModule | null;
   setActiveModule: (module: ActiveModule | null) => void;
+  activeLesson: ActiveLesson | null;
+  setActiveLesson: (lesson: ActiveLesson | null) => void;
 }
 
 const LearnContext = createContext<LearnContextType | undefined>(undefined);
@@ -38,6 +50,7 @@ export function LearnProvider({ children }: { children: React.ReactNode }) {
   const [rightDrawerOpen, setRightDrawerOpen] = useState(false);
   const [gamification, setGamification] = useState<GamificationState | null>(null);
   const [activeModule, setActiveModule] = useState<ActiveModule | null>(null);
+  const [activeLesson, setActiveLesson] = useState<ActiveLesson | null>(null);
 
   const refreshGamification = async () => {
     if (!isLoggedIn) return;
@@ -52,7 +65,6 @@ export function LearnProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (isLoggedIn) {
       void refreshGamification();
-      // Set a mock active module for the resume hero card
       setActiveModule({
         id: "national-estimates-2024-25",
         title: "National Estimates (2024/25)",
@@ -80,6 +92,8 @@ export function LearnProvider({ children }: { children: React.ReactNode }) {
         refreshGamification,
         activeModule,
         setActiveModule,
+        activeLesson,
+        setActiveLesson,
       }}
     >
       {children}

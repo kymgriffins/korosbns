@@ -18,7 +18,7 @@ import {
   Home, HelpCircle, ChevronRight, Layers, Globe, FileCheck, Award
 } from "lucide-react";
 import { cn } from "@/utils";
-import { useLearn } from "@/contexts/learn-context";
+import { useLearn, type ActiveLesson } from "@/contexts/learn-context";
 import { motion, AnimatePresence } from "motion/react";
 
 // Translations dictionary for Global Language Toggle (EN / SW / Sheng)
@@ -612,12 +612,34 @@ const STAGES_DATA = [
 export function LearnPathsHome() {
   const [profile, setProfile] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
-  const { activeTab, setActiveTab } = useLearn();
+  const { activeTab, setActiveTab, setActiveLesson } = useLearn();
 
-  // Selected Stage for Detail Drawer
   const [selectedStage, setSelectedStage] = useState<any | null>(null);
-
   const [cachedStages, setCachedStages] = useState<number[]>([]);
+
+  // Sync selectedStage ↔ activeLesson for sidebar curriculum rail
+  useEffect(() => {
+    if (selectedStage) {
+      const completedStepIds: number[] = [];
+      for (const step of selectedStage.steps) {
+        const key = `stage_${selectedStage.id}_step_${step.id}_trivia_passed`;
+        if (localStorage.getItem(key) === "true") {
+          completedStepIds.push(step.id);
+        }
+      }
+      setActiveLesson({
+        stageId: selectedStage.id,
+        stageTitle: selectedStage.title,
+        stageBadge: selectedStage.badge,
+        currentStep: 0,
+        totalSteps: selectedStage.steps.length,
+        completedStepIds,
+        stepTitles: selectedStage.steps.map((s: any) => ({ id: s.id, title: s.title })),
+      });
+    } else {
+      setActiveLesson(null);
+    }
+  }, [selectedStage, setActiveLesson]);
 
   // Load profile on mount
   useEffect(() => {
@@ -741,7 +763,7 @@ export function LearnPathsHome() {
   return (
     <div className="w-full bg-background min-h-screen flex flex-col">
       {/* 📱 MOBILE VIEW (Guarded by md:hidden) */}
-      <div className="w-full max-w-md mx-auto flex flex-col md:hidden relative pb-20 min-h-screen bg-background">
+      <div className="w-full flex flex-col md:hidden relative pb-14 min-h-screen bg-background">
         
         {/* Global Sheng translation warning banner */}
         {profile.language === "SH" && (
@@ -1088,7 +1110,7 @@ export function LearnPathsHome() {
       <div className="hidden md:flex flex-1 w-full bg-background overflow-hidden h-screen">
         
         {selectedStage ? (
-          /* A) Stage Selected View: 2-panel Stage Detail */
+          /* A) Stage Selected View: full-width Stage Detail (stats panel hidden) */
           <div className="flex-1 flex flex-col h-full overflow-hidden">
             <StageDetailDrawer
               stage={selectedStage}
