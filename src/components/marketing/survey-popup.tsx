@@ -8,24 +8,25 @@ const SURVEY_SEEN_KEY = "hasSeenSurveyPopup";
 const SURVEY_HANDLED_KEY = "surveyPopupHandled";
 const SURVEY_HANDLED_EVENT = "bns:survey-popup-handled";
 
+const SURVEY_URL = "https://budgetndiostory.surveycto.com/collect/bns_nyouth_budget_v1?caseid=";
+
 export default function SurveyPopup() {
     const [isOpen, setIsOpen] = useState(false);
 
-    const markSurveyHandled = () => {
+    const close = () => {
         localStorage.setItem(SURVEY_SEEN_KEY, "true");
         localStorage.setItem(SURVEY_HANDLED_KEY, "true");
         window.dispatchEvent(new CustomEvent(SURVEY_HANDLED_EVENT));
+        setIsOpen(false);
     };
 
     useEffect(() => {
-        // Show popup after a short delay
         const timer = setTimeout(() => {
             const hasSeenPopup = localStorage.getItem(SURVEY_SEEN_KEY);
             if (!hasSeenPopup) {
                 setIsOpen(true);
             }
         }, 3000);
-
         return () => clearTimeout(timer);
     }, []);
 
@@ -33,55 +34,33 @@ export default function SurveyPopup() {
 
     return (
         <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/75 backdrop-blur-sm p-4 transition-opacity duration-300">
-            <button
-                onClick={() => {
-                    markSurveyHandled();
-                    setIsOpen(false);
-                }}
-                className="absolute top-4 right-4 z-[210] p-2 bg-black/50 hover:bg-black/70 rounded-full text-white/80 hover:text-white transition-colors"
-                aria-label="Close survey popup"
-            >
-                <X size={20} />
-            </button>
             <div className="relative w-full max-w-md bg-background rounded-2xl overflow-hidden shadow-2xl border border-border animate-in fade-in zoom-in-95 duration-300">
-                <div className="relative w-full aspect-[2/3] max-h-[85vh] flex flex-col items-center justify-center text-white overflow-hidden bg-black">
-                    <a
-                        href="https://budgetndiostory.surveycto.com/collect/bns_nyouth_budget_v1?caseid="
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="relative w-full h-full block group"
-                        onClick={() => {
-                            markSurveyHandled();
-                            setIsOpen(false);
-                        }}
-                    >
-                        <Image
-                            src="/images/survey/bnssurvey1.jpeg"
-                            alt="National Youth Budget Perception Pilot Survey"
-                            fill
-                            className="object-contain group-hover:scale-[1.02] transition-transform duration-500"
-                            priority
-                        />
-                    </a>
+                <button
+                    onClick={close}
+                    className="absolute top-3 right-3 z-10 p-1.5 bg-black/50 hover:bg-black/70 rounded-full text-white/80 hover:text-white transition-colors"
+                    aria-label="Close"
+                >
+                    <X size={18} />
+                </button>
+                <div className="relative w-full aspect-[3/4] max-h-[75vh] bg-gradient-to-b from-gray-900 to-black">
+                    <Image
+                        src="/images/survey/bnssurvey1.jpeg"
+                        alt="National Youth Budget Perception Pilot Survey"
+                        fill
+                        sizes="(max-width: 448px) 100vw, 448px"
+                        className="object-contain"
+                        priority
+                    />
                 </div>
                 <div className="flex items-center justify-end gap-2 p-3 bg-foreground/5 border-t border-border">
-                    <button
-                        onClick={() => {
-                            markSurveyHandled();
-                            setIsOpen(false);
-                        }}
-                        className="h-10 rounded-lg px-4 text-sm font-medium text-foreground/80 bg-foreground/5 hover:bg-foreground/10 transition-colors"
-                    >
+                    <button onClick={close} className="h-10 rounded-lg px-4 text-sm font-medium text-foreground/80 bg-foreground/5 hover:bg-foreground/10 transition-colors">
                         Cancel
                     </button>
                     <a
-                        href="https://budgetndiostory.surveycto.com/collect/bns_nyouth_budget_v1?caseid="
+                        href={SURVEY_URL}
                         target="_blank"
                         rel="noopener noreferrer"
-                        onClick={() => {
-                            markSurveyHandled();
-                            setIsOpen(false);
-                        }}
+                        onClick={close}
                         className="h-10 rounded-lg px-4 text-sm font-semibold text-white bg-primary hover:bg-primary/90 transition-colors inline-flex items-center"
                     >
                         Take survey
