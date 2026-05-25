@@ -6,18 +6,80 @@ import { Bell, Sparkles, Send, CheckCircle2, AlertTriangle, ArrowRight, UserChec
 import { Button } from "@/ui/button";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 
+interface SectorData {
+  label: string;
+  allocation: string;
+  observation: string;
+  action: string;
+}
+
+const SECTORS: Record<string, SectorData> = {
+  "Agriculture": {
+    label: "Agriculture & Food Security",
+    allocation: "KES 52.4B",
+    observation: "Only 32% of the KES 52.4B agriculture allocation reaches smallholder farmers directly — the rest goes to administrative overhead and fertiliser subsidies with limited last-mile tracking.",
+    action: "Mandate county-level publication of beneficiary lists for all fertiliser and seed distribution programmes within 14 days of disbursement.",
+  },
+  "MSMEs": {
+    label: "MSME Development",
+    allocation: "KES 18.7B",
+    observation: "The KES 18.7B MSME allocation lacks a transparent disbursement schedule — only 12% of registered MSME hubs have received any operational funding since gazettement.",
+    action: "Publish a quarterly MSME fund disbursement dashboard with ward-level breakdowns and establish a direct complaint channel for delayed payments.",
+  },
+  "Healthcare": {
+    label: "Universal Health Coverage",
+    allocation: "KES 47.3B",
+    observation: "KES 47.3B is allocated to SHA rollout but 40% is flagged for administrative contracts rather than frontline facility upgrades or community health promoter stipends.",
+    action: "Ring-fence at least 60% of the SHA allocation for direct facility improvements and cap administrative contracting at 15% per county.",
+  },
+  "Housing": {
+    label: "Housing & Settlement",
+    allocation: "KES 31.2B",
+    observation: "The affordable housing programme reports only 8,000 units completed against a target of 200,000 — that's 4% delivery with KES 31.2B spent.",
+    action: "Publish a per-county housing completion tracker with photographic evidence and independent audit reports before additional tranches are released.",
+  },
+  "Digital": {
+    label: "Digital Superhighway",
+    allocation: "KES 15.8B",
+    observation: "KES 15.8B for digital infrastructure — only 12% of planned public Wi-Fi hotspots are operational in counties outside Nairobi and Mombasa.",
+    action: "Mandate quarterly connectivity audits for all 47 counties with public dashboard showing active vs planned hotspots per ward.",
+  },
+  "Roads": {
+    label: "Roads & Infrastructure",
+    allocation: "KES 178.6B",
+    observation: "KES 178.6B road budget — 60% is consumed by debt repayments and design fees, leaving only 40% for actual tarmacking and maintenance on the ground.",
+    action: "Require a per-kilometre cost breakdown for all road projects over KES 100M and publish a delayed-project tracker updated weekly.",
+  },
+  "Education": {
+    label: "Education",
+    allocation: "KES 628.6B",
+    observation: "KES 628.6B education budget — capitation per learner has not increased in 3 years despite 18% cumulative inflation, squeezing school operations.",
+    action: "Index capitation rates to inflation annually and mandate school-level financial transparency portals for all capitation recipients.",
+  },
+  "Water": {
+    label: "Water & Sanitation",
+    allocation: "KES 26.4B",
+    observation: "KES 26.4B water allocation — 45% of rural water projects remain incomplete beyond their scheduled completion date with no penalty clauses invoked.",
+    action: "Enforce penalty clauses on all water contracts exceeding deadline by 6+ months and publish a national water project completion tracker.",
+  },
+};
+
+const sectorKeys = Object.keys(SECTORS);
+
 export default function AlertsSimulator() {
   const [step, setStep] = useState<"alert" | "typing" | "done">("alert");
-  const [county, setCounty] = useState("Nairobi");
+  const [sector, setSector] = useState(sectorKeys[0]);
   const shouldReduceMotion = useReducedMotion();
 
+  const sd = SECTORS[sector];
   const mockText = `PUBLIC PARTICIPATION BUDGET MEMORANDUM
-County: Nairobi County
-Document: CFSP FY 2026/27
+Sector: ${sd.label}
+Allocation: ${sd.allocation}
+Document: BPS 2026/27 — Sectoral Ceilings
 
-[Observation]: The proposed KES 450M allocation for Governor's office upgrades exceeds dispensary supplies by 10x.
-[Legal Basis]: Section 107 of PFM Act 2012 requires minimum 30% development spending and Article 201 mandates prudent resource use.
-[Action]: Reallocate KES 200M to purchase local dispensary medical supplies.`;
+[Observation]: ${sd.observation}
+[Legal Basis]: Section 25 of PFM Act 2012 mandates public participation in budget-making; Article 201(a) requires openness and accountability in public finance.
+[Action]: ${sd.action}`;
 
   // Typing animation simulation state
   const [typedText, setTypedText] = useState("");
@@ -44,8 +106,6 @@ Document: CFSP FY 2026/27
     setTypedText("");
     setStep("alert");
   };
-
-  const countiesList = ["Nairobi", "Mombasa", "Kisumu", "Nakuru", "Kiambu"];
 
   return (
     <section className="relative w-full py-24 bg-background border-b border-border overflow-hidden">
@@ -74,26 +134,26 @@ Document: CFSP FY 2026/27
               Zero friction.
             </h2>
             <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
-              We track county portals and notify you when budget doors open. Our system matches your county, pulls relevant data, and generates a structured memorandum. You can submit it directly to your county assembly with a single tap.
+              We track budget data by sector and notify you when public participation windows open. Our system pulls relevant allocations, identifies gaps, and generates a structured memorandum you can submit to county assembly or national treasury with a single tap.
             </p>
 
-            {/* County Switcher */}
+            {/* Sector Switcher */}
             <div className="space-y-3 pt-2">
               <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-extrabold">
-                Select county to simulate:
+                Select a sector to simulate:
               </span>
               <div className="flex flex-wrap gap-2">
-                {countiesList.map((c) => (
+                {sectorKeys.map((s) => (
                   <button
-                    key={c}
-                    onClick={() => { setCounty(c); handleRestart(); }}
+                    key={s}
+                    onClick={() => { setSector(s); handleRestart(); }}
                     className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all border ${
-                      county === c
+                      sector === s
                         ? "bg-primary border-primary text-primary-foreground shadow-md shadow-primary/20"
                         : "bg-card border-border text-muted-foreground hover:border-foreground/30"
                     }`}
                   >
-                    {c}
+                    {SECTORS[s].label}
                   </button>
                 ))}
               </div>
@@ -150,23 +210,23 @@ Document: CFSP FY 2026/27
                             <div className="p-1 rounded-md bg-rose-500/20">
                               <Bell className="size-4 text-rose-500 animate-bounce" />
                             </div>
-                            <span className="text-xs font-black uppercase tracking-wider">County Alert</span>
+                            <span className="text-xs font-black uppercase tracking-wider">Sector Alert</span>
                           </div>
                           <div className="space-y-1">
-                            <h4 className="text-sm font-black text-foreground">{county} County Alert</h4>
+                            <h4 className="text-sm font-black text-foreground">{sd.label} — Budget Alert</h4>
                             <p className="text-[10px] text-muted-foreground">
-                              Proposed County Fiscal Strategy Paper (CFSP) has open comments for 3 more days.
+                              Public participation on {sd.label} budget ceilings is open for 3 more days.
                             </p>
                           </div>
                         </div>
                         <div className="p-3.5 bg-muted/40 border border-border rounded-2xl space-y-2.5 text-[11px]">
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">Document Type</span>
-                            <span className="font-bold text-foreground">CFSP 2026/27</span>
+                            <span className="text-muted-foreground">Allocation</span>
+                            <span className="font-bold text-foreground">{sd.allocation}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">Target Segment</span>
-                            <span className="font-bold text-foreground">Development Caps</span>
+                            <span className="text-muted-foreground">Document</span>
+                            <span className="font-bold text-foreground">BPS 2026/27</span>
                           </div>
                         </div>
                       </div>
@@ -223,7 +283,7 @@ Document: CFSP FY 2026/27
                             Memorandum Submitted!
                           </h4>
                           <p className="text-[11px] text-muted-foreground">
-                            The document has been securely forwarded to the {county} County Assembly public participation registry.
+                            The memorandum has been securely forwarded to the responsible oversight committee for the {sd.label} sector.
                           </p>
                         </div>
                       </div>
