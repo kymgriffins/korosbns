@@ -4,7 +4,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import Container from '../global/container';
 
-const GustoArticleSection = () => {
+const LandingArticleSection = () => {
     return (
         <section className="py-24 md:py-48 bg-white text-black overflow-hidden">
             <div className="max-w-[1400px] mx-auto px-8 md:px-16">
@@ -16,7 +16,7 @@ const GustoArticleSection = () => {
                         transition={{ duration: 0.8 }}
                     >
                         <span className="text-primary font-bold uppercase tracking-widest text-sm mb-6 block">What we do</span>
-                        <h2 className="gusto-heading mb-8">Translating numbers into <span className="italic font-serif text-primary">narratives</span>.</h2>
+                        <h2 className="gusto-heading mb-8">Translating numbers into <span className="italic font-heading text-primary">narratives</span>.</h2>
                     </motion.div>
 
                     <motion.div
@@ -49,4 +49,4 @@ const GustoArticleSection = () => {
     );
 };
 
-export default GustoArticleSection;
+export default LandingArticleSection;

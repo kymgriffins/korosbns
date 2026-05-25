@@ -1,3 +1,6 @@
+// Cloudinary base URL for other images if needed
+const CLOUDINARY_BASE = "https://res.cloudinary.com/dn8lut2fc/image/upload";
+
 export const team = [
     {
         name: "Movine Omondi",
@@ -20,7 +23,7 @@ export const team = [
     },
     {
         name: "Shem Odhiambo Ojunga",
-        role: "Director Media.",
+        role: "Director Media",
         image: "/images/avatars/team/Shem Odhiambo Ojunga.jpeg",
         description: "Award-winning digital strategist specializing in viral civic content that meets youth where they are.",
         bio: "Shem is an award-winning digital strategist who has shaped how civic content goes viral in Kenya. As Director of Media, he oversees all content production across TikTok, Instagram, YouTube, and podcasts. His expertise lies in transforming dense budget data into snackable, shareable stories that resonate with young audiences across platforms.",
@@ -42,6 +45,7 @@ export const team = [
         role: "Director Partnerships",
         image: "/images/avatars/team/James Mutinda.jpeg",
         description: "Connecting BNS with global and local partners to scale our institutional legacy and democratic stability.",
+        bio: "James leads strategic partnerships and institutional relationships for BNS, connecting the organization with global and local partners to scale impact. His work focuses on building sustainable collaborations that amplify BNS's mission of fiscal transparency and youth civic engagement across Kenya and beyond.",
         socials: {}
     },
     {
@@ -49,6 +53,7 @@ export const team = [
         role: "Board Advisor",
         image: "/images/avatars/team/Millicent Makina.jpeg",
         description: "Guiding our governance and ensuring our mission aligns with long-term civic impact goals.",
+        bio: "Millicent serves as a Board Advisor, providing strategic governance oversight and ensuring BNS's mission aligns with long-term civic impact goals. Her expertise in organizational development and civic engagement helps guide the organization's strategic direction and institutional growth.",
         socials: {}
     },
 ];

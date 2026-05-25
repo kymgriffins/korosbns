@@ -61,9 +61,9 @@ export function Footer() {
         source: "website_footer",
       });
       if (alreadySubscribed) {
-        toast.info("You're already subscribed.");
+        toast.info("You're already subscribed. Check your inbox (and check your Spam/Junk folder if you do not see our emails)!");
       } else {
-        toast.success("Thanks for subscribing!");
+        toast.success("Thanks for subscribing! Check your inbox (and check your Spam/Junk folder if you do not receive it in a few minutes)!");
       }
       setEmail("");
     } catch (error) {

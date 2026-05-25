@@ -3,7 +3,7 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
 
-const GustoMotionText = () => {
+const LandingMotionText = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const { scrollYProgress } = useScroll({
         target: containerRef,
@@ -44,7 +44,7 @@ const GustoMotionText = () => {
                                         <motion.span
                                             key={i}
                                             style={{ opacity, x, filter }}
-                                            className={`gusto-heading inline-block text-[10vw] md:text-[8vw] leading-[0.9] tracking-tighter ${isHighlight ? 'text-primary italic font-serif' : 'text-foreground'}`}
+                                            className={`gusto-heading inline-block text-[10vw] md:text-[8vw] leading-[0.9] tracking-tighter ${isHighlight ? 'text-primary italic font-heading' : 'text-foreground'}`}
                                         >
                                             {word}
                                         </motion.span>
@@ -91,4 +91,4 @@ const GustoMotionText = () => {
     );
 };
 
-export default GustoMotionText;
+export default LandingMotionText;

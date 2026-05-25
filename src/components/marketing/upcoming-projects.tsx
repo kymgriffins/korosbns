@@ -41,7 +41,7 @@ const UpcomingProjects = () => {
                 <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
                     <div className="max-w-4xl">
                         <span className="text-primary font-bold uppercase tracking-widest text-sm mb-6 block">The Engagement</span>
-                        <h2 className="gusto-heading">From Online Outrage to <span className="italic font-serif text-primary">Offline Action</span>.</h2>
+                        <h2 className="gusto-heading">From Online Outrage to <span className="italic font-heading text-primary">Offline Action</span>.</h2>
                     </div>
                     <p className="gusto-text max-w-sm mb-4">
                         Building permanent spaces for direct dialogue and peer-to-peer education across the country.

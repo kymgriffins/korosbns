@@ -1,0 +1,158 @@
+"use client";
+
+import React from "react";
+import { motion } from "motion/react";
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/ui/button";
+import { ArrowRight } from "lucide-react";
+import { slideInLeft, slideInRight } from "@/motion/variants";
+import { CLOUDINARY_PARTNERSHIPS } from "@/constants/cloudinary";
+import { SectionShell } from "@/layouts/section-shell";
+
+const GovernmentPartnerships = () => {
+  return (
+    <SectionShell className="overflow-hidden border-t border-border/40 bg-background">
+      <div className="space-y-16 md:space-y-20">
+        <div className="grid items-center gap-8 md:grid-cols-2 md:gap-12">
+          <motion.div
+            variants={slideInLeft}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            <span className="mb-4 block text-xs font-bold uppercase tracking-widest text-primary">
+              National Partnership
+            </span>
+            <h2 className="mb-4 text-2xl font-black text-foreground md:text-4xl">
+              Decoding the{" "}
+              <span className="font-heading italic text-primary">Budget Policy Statement</span>
+            </h2>
+            <p className="mb-4 text-base leading-relaxed text-muted-foreground">
+              Working directly with the National Treasury and Parliament&apos;s Budget &
+              Appropriations Committee, we translate the annual Budget Policy Statement into
+              accessible narratives for citizens.
+            </p>
+            <p className="mb-6 text-base leading-relaxed text-muted-foreground">
+              Our workshops and explainer series break down fiscal frameworks, revenue
+              projections, and spending priorities — empowering Kenyans to understand where
+              their taxes go.
+            </p>
+            <Link href="/partnerships/national">
+              <Button size="lg" className="gap-2 rounded-full px-6 py-5 text-sm font-bold">
+                View Partnership Details
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+          </motion.div>
+
+          <motion.div
+            variants={slideInRight}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid max-w-md grid-cols-2 gap-3 md:ml-auto md:max-w-none"
+          >
+            <div className="relative aspect-[4/5] overflow-hidden rounded-xl border border-border">
+              <Image
+                src={CLOUDINARY_PARTNERSHIPS.nationalTreasuryWorkshop}
+                alt="National Treasury workshop"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 40vw, 200px"
+              />
+            </div>
+            <div className="relative mt-6 aspect-[4/5] overflow-hidden rounded-xl border border-border">
+              <Image
+                src={CLOUDINARY_PARTNERSHIPS.bpsSession}
+                alt="Budget Policy Statement session"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 40vw, 200px"
+              />
+            </div>
+            <div className="relative -mt-6 aspect-[4/5] overflow-hidden rounded-xl border border-border">
+              <Image
+                src={CLOUDINARY_PARTNERSHIPS.parliamentEngagement}
+                alt="Parliament engagement"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 40vw, 200px"
+              />
+            </div>
+            <div className="relative aspect-[4/5] overflow-hidden rounded-xl border border-border">
+              <Image
+                src={CLOUDINARY_PARTNERSHIPS.fiscalFramework}
+                alt="Fiscal framework discussion"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 40vw, 200px"
+              />
+            </div>
+          </motion.div>
+        </div>
+
+        <div className="grid items-center gap-8 md:grid-cols-2 md:gap-12">
+          <motion.div
+            variants={slideInLeft}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="relative order-2 max-h-[280px] aspect-video overflow-hidden rounded-2xl border border-border md:order-1 md:max-h-none"
+          >
+            <Image
+              src={CLOUDINARY_PARTNERSHIPS.countyAssemblyHearing}
+              alt="County assembly public hearing"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
+            <div className="absolute bottom-4 left-4 right-4">
+              <p className="text-xs font-semibold uppercase tracking-widest text-foreground">
+                County Assembly • Public Participation Forum
+              </p>
+            </div>
+          </motion.div>
+
+          <motion.div
+            variants={slideInRight}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="order-1 md:order-2"
+          >
+            <span className="mb-4 block text-xs font-bold uppercase tracking-widest text-primary">
+              County Partnership
+            </span>
+            <h2 className="mb-4 text-2xl font-black text-foreground md:text-4xl">
+              Amplifying{" "}
+              <span className="font-heading italic text-primary">Citizen Voices</span> in
+              County Budgets
+            </h2>
+            <p className="mb-4 text-base leading-relaxed text-muted-foreground">
+              We partner with county governments to facilitate meaningful public participation
+              in the County Fiscal Strategy Paper (CFSP) and annual budget-making process.
+            </p>
+            <p className="mb-6 text-base leading-relaxed text-muted-foreground">
+              Through barazas, campus forums, and digital platforms, we ensure citizens can
+              submit memoranda, track budget allocations, and hold county assemblies accountable.
+            </p>
+            <Link href="/partnerships/county">
+              <Button
+                size="lg"
+                variant="outline"
+                className="gap-2 rounded-full px-6 py-5 text-sm font-bold"
+              >
+                Explore County Work
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+          </motion.div>
+        </div>
+      </div>
+    </SectionShell>
+  );
+};
+
+export default GovernmentPartnerships;
