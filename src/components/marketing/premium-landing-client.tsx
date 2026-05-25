@@ -29,14 +29,6 @@ const LandingTeam = dynamic(
   }
 );
 
-const LearningTimeline = dynamic(
-  () => import("@/components/marketing/learning-timeline"),
-  {
-    ssr: false,
-    loading: () => <div className="h-screen w-full bg-background animate-pulse" />,
-  }
-);
-
 const KenyaFinanceTimeline = dynamic(
   () => import("@/components/marketing/kenya-finance-timeline"),
   {
@@ -96,7 +88,6 @@ export default function PremiumLandingClient() {
       <LandingTeam />
       
       {/* PHASE 3: Credibility Architecture */}
-      <LearningTimeline />
       <KenyaFinanceTimeline />
       <GovernmentPartnerships />
       <WhatWeDoSection />
