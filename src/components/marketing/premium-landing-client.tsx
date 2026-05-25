@@ -37,6 +37,14 @@ const LearningTimeline = dynamic(
   }
 );
 
+const KenyaFinanceTimeline = dynamic(
+  () => import("@/components/marketing/kenya-finance-timeline"),
+  {
+    ssr: false,
+    loading: () => <div className="h-screen w-full bg-black animate-pulse" />,
+  }
+);
+
 const GovernmentPartnerships = dynamic(
   () => import("@/components/marketing/government-partnerships"),
   {
@@ -89,6 +97,7 @@ export default function PremiumLandingClient() {
       
       {/* PHASE 3: Credibility Architecture */}
       <LearningTimeline />
+      <KenyaFinanceTimeline />
       <GovernmentPartnerships />
       <WhatWeDoSection />
       
