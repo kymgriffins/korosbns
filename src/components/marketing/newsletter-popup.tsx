@@ -73,9 +73,9 @@ export default function NewsletterPopup() {
       setEmail("");
       sessionStorage.setItem(NEWSLETTER_SEEN_KEY, "true");
       if (alreadySubscribed) {
-        toast.info("You're already subscribed.");
+        toast.info("You're already subscribed. Check your inbox (and check your Spam/Junk folder if you do not see our emails)!");
       } else {
-        toast.success("You're subscribed. Check your inbox for updates.");
+        toast.success("You're subscribed. Check your inbox (and check your Spam/Junk folder if you do not see it in a few minutes)!");
       }
     } catch (err) {
       toast.error(newsletterSubscribeErrorMessage(err));
@@ -104,7 +104,7 @@ export default function NewsletterPopup() {
 
         {subscribed ? (
           <p className="rounded-xl bg-emerald-500/20 px-3 py-2 text-sm text-emerald-200">
-            You are subscribed. Thank you for joining us.
+            You are subscribed. Thank you for joining us. Check your inbox (and check your Spam/Junk folder if you do not receive it in a few minutes)!
           </p>
         ) : (
           <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-2">

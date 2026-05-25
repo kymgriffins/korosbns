@@ -1,8 +1,16 @@
+// Cloudinary base URL for team images
+const CLOUDINARY_BASE = "https://res.cloudinary.com/dn8lut2fc/image/upload";
+
+// Cloudinary transformation presets
+const getTeamImageUrl = (publicId: string, transform = "c_fill,g_face,h_800,w_600,q_auto,f_auto") => {
+  return `${CLOUDINARY_BASE}/${transform}/${publicId}`;
+};
+
 export const team = [
     {
         name: "Movine Omondi",
         role: "Executive Director",
-        image: "/images/avatars/team/Movine Omondi_HeadShot.jpg",
+        image: getTeamImageUrl("v1748177600/team/movine-omondi"),
         description: "10+ years in public policy and youth advocacy. Former advisor to key civic bodies, leading our holistic strategy.",
         bio: "With over a decade of experience in public policy and youth advocacy, Movine has been at the forefront of transforming how young Kenyans engage with fiscal governance. As Executive Director, she provides strategic leadership across all BNS programs and partnerships. Previously an advisor to key civic bodies, she brings deep expertise in coalition-building and policy translation.",
         socials: {
@@ -13,15 +21,15 @@ export const team = [
     {
         name: "Peculiar Koros",
         role: "Director ICT",
-        image: "/images/avatars/team/Koros.jpeg",
+        image: getTeamImageUrl("v1748177600/team/peculiar-koros"),
         description: "Certified researcher with a 100% clean audit record, ensuring our data is rigorous and beyond anecdotes.",
         bio: "Peculiar leads BNS's data infrastructure and technological innovation, ensuring that all fiscal analysis meets rigorous research standards. A certified researcher with an impeccable audit record, she bridges technical data pipelines with civic storytelling. Her work ensures that BNS's digital platforms are secure, scalable, and data-driven.",
         socials: {}
     },
     {
         name: "Shem Odhiambo Ojunga",
-        role: "Director Media.",
-        image: "/images/avatars/team/Shem Odhiambo Ojunga.jpeg",
+        role: "Director Media",
+        image: getTeamImageUrl("v1748177600/team/shem-ojunga"),
         description: "Award-winning digital strategist specializing in viral civic content that meets youth where they are.",
         bio: "Shem is an award-winning digital strategist who has shaped how civic content goes viral in Kenya. As Director of Media, he oversees all content production across TikTok, Instagram, YouTube, and podcasts. His expertise lies in transforming dense budget data into snackable, shareable stories that resonate with young audiences across platforms.",
         socials: {
@@ -32,7 +40,7 @@ export const team = [
     {
         name: "Nelly Maina",
         role: "Lead Podcast Host",
-        image: "/images/avatars/team/Nelly Maina.jpg",
+        image: getTeamImageUrl("v1748177600/team/nelly-maina"),
         description: "The voice of 'Budget Mtaani', breaking down complex fiscal policies into relatable street slang.",
         bio: "Nelly is the charismatic voice behind Budget Mtaani podcast, where she translates complex fiscal policies into relatable street slang. As Lead Podcast Host, she brings fiscal literacy to life through storytelling, humor, and authentic Kenyan youth culture. Her episodes consistently rank among top podcasts in the civic education category.",
         socials: {}
@@ -40,15 +48,17 @@ export const team = [
     {
         name: "James Maingi Mutinda",
         role: "Director Partnerships",
-        image: "/images/avatars/team/James Mutinda.jpeg",
+        image: getTeamImageUrl("v1748177600/team/james-mutinda"),
         description: "Connecting BNS with global and local partners to scale our institutional legacy and democratic stability.",
+        bio: "James leads strategic partnerships and institutional relationships for BNS, connecting the organization with global and local partners to scale impact. His work focuses on building sustainable collaborations that amplify BNS's mission of fiscal transparency and youth civic engagement across Kenya and beyond.",
         socials: {}
     },
     {
         name: "Millicent Makina",
         role: "Board Advisor",
-        image: "/images/avatars/team/Millicent Makina.jpeg",
+        image: getTeamImageUrl("v1748177600/team/millicent-makina"),
         description: "Guiding our governance and ensuring our mission aligns with long-term civic impact goals.",
+        bio: "Millicent serves as a Board Advisor, providing strategic governance oversight and ensuring BNS's mission aligns with long-term civic impact goals. Her expertise in organizational development and civic engagement helps guide the organization's strategic direction and institutional growth.",
         socials: {}
     },
 ];
