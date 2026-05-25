@@ -166,7 +166,9 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
   );
 };
 
-const TeamSection = () => {
+const TeamSection = ({ teamData }: { teamData?: TeamMember[] }) => {
+  const membersList = teamData || team;
+
   return (
     <section id="team" className="relative w-full py-16 lg:py-24 bg-background overflow-hidden">
       {/* Ambient background */}
@@ -218,7 +220,7 @@ const TeamSection = () => {
 
         {/* Team grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-7xl mx-auto">
-          {team.map((member, index) => (
+          {membersList.map((member, index) => (
             <TeamCard key={member.name} member={member} index={index} />
           ))}
         </div>

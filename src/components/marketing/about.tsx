@@ -6,8 +6,9 @@ import SectionBadge from '@/ui/section-badge';
 import Link from 'next/link';
 import { ease } from '@/motion/variants';
 import TeamSection from './team-section';
+import { TeamMember } from '@/lib/team';
 
-const About = () => {
+const About = ({ teamData }: { teamData?: TeamMember[] }) => {
     const openCallRoles = [
         "Podcast hosts",
         "Storytellers",
@@ -76,7 +77,7 @@ const About = () => {
             </Wrapper>
 
             {/* Team Section - Full width */}
-            <TeamSection />
+            <TeamSection teamData={teamData} />
 
             <Wrapper className="relative z-10">
                 <motion.div

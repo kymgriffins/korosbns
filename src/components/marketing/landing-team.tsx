@@ -5,8 +5,11 @@ import { motion } from "motion/react";
 import { team } from "@/constants/team";
 import Image from "next/image";
 import { SectionHeader, SectionShell } from "@/layouts/section-shell";
+import { TeamMember } from "@/lib/team";
 
-export default function LandingTeam() {
+export default function LandingTeam({ teamData }: { teamData?: TeamMember[] }) {
+  const membersList = teamData || team;
+
   return (
     <SectionShell
       spacing="loose"
@@ -24,7 +27,7 @@ export default function LandingTeam() {
       />
 
       <div className="hidden gap-x-8 gap-y-16 md:grid md:grid-cols-2 lg:grid-cols-3">
-        {team.map((member, i) => (
+        {membersList.map((member, i) => (
           <motion.div
             key={member.name}
             initial={{ opacity: 0, y: 30 }}
@@ -54,7 +57,7 @@ export default function LandingTeam() {
       </div>
 
       <div className="flex w-full flex-col gap-6 md:hidden">
-        {team.map((member, i) => (
+        {membersList.map((member, i) => (
           <motion.div
             key={member.name}
             initial={{ opacity: 0, y: 24 }}

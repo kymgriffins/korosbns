@@ -38,11 +38,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function HomePage() {
+import { fetchTeamMembers } from "@/lib/team";
+
+export default async function HomePage() {
+  const teamData = await fetchTeamMembers();
   return (
     <div className="w-full min-h-dvh bg-background overflow-x-hidden">
       <Background />
-      <PremiumLandingClient />
+      <PremiumLandingClient teamData={teamData} />
     </div>
   );
 }

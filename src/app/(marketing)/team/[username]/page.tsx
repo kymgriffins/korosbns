@@ -3,6 +3,7 @@ import { team } from "@/constants/team";
 import {
   findMemberByParam,
   slugifyName,
+  fetchTeamMembers,
   type TeamMember,
 } from "@/lib/team";
 import Image from "next/image";
@@ -14,8 +15,9 @@ import { metaDescription } from "@/utils/metadata";
 
 type TeamMemberParams = { username: string };
 
-export function generateStaticParams() {
-  return team.map((member) => ({
+export async function generateStaticParams() {
+  const teamList = await fetchTeamMembers();
+  return teamList.map((member) => ({
     username: slugifyName(member.name),
   }));
 }
@@ -26,7 +28,8 @@ export async function generateMetadata({
   params: Promise<TeamMemberParams>;
 }): Promise<Metadata> {
   const { username } = await params;
-  const member = findMemberByParam(username);
+  const teamList = await fetchTeamMembers();
+  const member = findMemberByParam(username, teamList);
 
   if (!member) {
     return { title: "Team Member Not Found" };
@@ -46,7 +49,7 @@ export async function generateMetadata({
   };
 }
 
-const TeamMemberProfile = ({ member }: { member: typeof team[0] }) => {
+const TeamMemberProfile = ({ member, teamList }: { member: TeamMember; teamList: TeamMember[] }) => {
   return (
     <div className="min-h-screen bg-background">
       <div className="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
@@ -126,7 +129,7 @@ const TeamMemberProfile = ({ member }: { member: typeof team[0] }) => {
         </div>
 
         <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-4">
-          {team.filter((m) => m.name !== member.name).slice(0, 3).map((m) => {
+          {teamList.filter((m) => m.name !== member.name).slice(0, 3).map((m) => {
             const mUsername = slugifyName(m.name);
             return (
               <Link
@@ -158,7 +161,8 @@ export default async function TeamMemberPage({
   params: Promise<TeamMemberParams>;
 }) {
   const { username } = await params;
-  const member = findMemberByParam(username);
+  const teamList = await fetchTeamMembers();
+  const member = findMemberByParam(username, teamList);
 
   if (!member) {
     notFound();
@@ -169,5 +173,5 @@ export default async function TeamMemberPage({
     redirect(`/team/${canonicalUsername}`);
   }
 
-  return <TeamMemberProfile member={member} />;
+  return <TeamMemberProfile member={member} teamList={teamList} />;
 }

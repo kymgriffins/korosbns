@@ -78,14 +78,16 @@ const NewsletterPopup = dynamic(
   { ssr: false }
 );
 
-export default function PremiumLandingClient() {
+import { TeamMember } from "@/lib/team";
+
+export default function PremiumLandingClient({ teamData }: { teamData?: TeamMember[] }) {
   return (
     <>
       <LandingHero />
       <CloudinaryGallery />
       <LandingYoutube />
       <PartnersMarquee />
-      <LandingTeam />
+      <LandingTeam teamData={teamData} />
       <KenyaFinanceTimeline />
       <GovernmentPartnerships />
       <WhatWeDoSection />
