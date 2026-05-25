@@ -2,11 +2,12 @@
 
 import React, { useRef } from "react";
 import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
-import { 
-  Shield, Scale, Landmark, Link, CalendarRange, 
-  Gavel, FileClock, ShieldCheck, ArrowRight 
+import {
+  Shield, Scale, Landmark, Link, CalendarRange,
+  Gavel, FileClock, ShieldCheck, ArrowRight
 } from "lucide-react";
 import { Button } from "@/ui/button";
+import { ease } from "@/motion/variants";
 
 interface StageCard {
   id: number;
@@ -98,6 +99,7 @@ export default function HorizontalCycleSlider() {
   const trackRef = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
 
+
   // Scroll tracking for vertical section scroll mapping to horizontal x offset
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -111,62 +113,76 @@ export default function HorizontalCycleSlider() {
   return (
     <section
       ref={containerRef}
-      className="relative w-full bg-zinc-950 border-b border-zinc-900 overflow-visible md:h-[300vh]"
+      className="relative w-full bg-background border-b border-border overflow-visible md:h-[300vh]"
     >
       {/* Sticky Frame for Desktop */}
       <div className="md:sticky md:top-0 md:h-screen w-full flex flex-col justify-center overflow-hidden py-16 md:py-0">
-        
+
         {/* Section Header */}
         <div className="max-w-7xl mx-auto px-6 md:px-12 w-full mb-10 md:mb-16">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div className="space-y-3">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: [0.19, 1, 0.22, 1] }}
+              className="space-y-3"
+            >
               <span className="text-xs uppercase tracking-widest text-primary font-black">
                 The Learning Path
               </span>
-              <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-none">
+              <h2 className="text-3xl md:text-5xl font-black text-foreground tracking-tight leading-none">
                 The 8-Stage Budget Cycle
               </h2>
-              <p className="text-sm md:text-base text-zinc-400 max-w-xl leading-relaxed">
+              <p className="text-sm md:text-base text-muted-foreground max-w-xl leading-relaxed">
                 Step-by-step interactive courses covering statutory policies from constitutionality to hyper-local memorandum submission.
               </p>
-            </div>
-            <a href="/learn" className="shrink-0">
-              <Button className="rounded-full px-6 gap-2 bg-white text-black hover:bg-zinc-200">
-                Start Learning Now <ArrowRight className="size-4" />
-              </Button>
-            </a>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1, ease: [0.19, 1, 0.22, 1] }}
+              className="shrink-0"
+            >
+              <a href="/learn">
+                <Button className="rounded-full px-6 gap-2 bg-foreground text-background hover:bg-foreground/90">
+                  Start Learning Now <ArrowRight className="size-4" />
+                </Button>
+              </a>
+            </motion.div>
           </div>
         </div>
 
-        {/* MOBILE HORIZONTAL LIST (Simple Snap Scroll to avoid touch jank) */}
+        {/* MOBILE HORIZONTAL LIST */}
         <div className="md:hidden flex w-full overflow-x-auto snap-x snap-mandatory gap-6 px-6 pb-6 scrollbar-none">
           {STAGES.map((stage) => {
             const Icon = stage.icon;
             return (
               <div
                 key={stage.id}
-                className="snap-center shrink-0 w-[280px] rounded-2xl border border-zinc-800 bg-zinc-900/40 p-6 flex flex-col justify-between h-[300px]"
+                className="snap-center shrink-0 w-[280px] rounded-2xl border border-border bg-card/40 p-6 flex flex-col justify-between h-[300px]"
               >
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <span className="text-2xl">{stage.badge}</span>
-                    <div className={`p-2 rounded-lg bg-zinc-900 border ${stage.colorClass.split(" ").slice(2).join(" ")}`}>
+                    <div className={`p-2 rounded-lg bg-card border ${stage.colorClass.split(" ").slice(2).join(" ")}`}>
                       <Icon className="size-5" />
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <h3 className="text-lg font-black text-white leading-tight">
+                    <h3 className="text-lg font-black text-foreground leading-tight">
                       {stage.title}
                     </h3>
-                    <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">
+                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                       Badge: {stage.badgeName}
                     </span>
                   </div>
-                  <p className="text-xs text-zinc-400 leading-relaxed">
+                  <p className="text-xs text-muted-foreground leading-relaxed">
                     {stage.description}
                   </p>
                 </div>
-                <div className="flex items-center gap-1.5 text-xs text-primary font-bold pt-4 border-t border-zinc-800/60">
+                <div className="flex items-center gap-1.5 text-xs text-primary font-bold pt-4 border-t border-border/60">
                   <span>Explore Stage {stage.id}</span>
                   <ArrowRight className="size-3.5" />
                 </div>
@@ -175,7 +191,7 @@ export default function HorizontalCycleSlider() {
           })}
         </div>
 
-        {/* DESKTOP HORIZONTAL SLIDER (Vertical Scroll Link) */}
+        {/* DESKTOP HORIZONTAL SLIDER */}
         <div className="hidden md:block w-full overflow-visible relative">
           <motion.div
             ref={trackRef}
@@ -187,34 +203,36 @@ export default function HorizontalCycleSlider() {
               return (
                 <div
                   key={stage.id}
-                  className="w-[380px] shrink-0 rounded-3xl border border-zinc-800/80 bg-zinc-900/20 p-8 flex flex-col justify-between h-[360px] backdrop-blur-xs hover:border-primary/30 transition-all duration-300 group"
+                  className="w-[380px] shrink-0 rounded-3xl border border-border/80 bg-card/20 p-8 flex flex-col justify-between h-[360px] backdrop-blur-xs hover:border-primary/30 transition-all duration-300 group"
                 >
                   <div className="space-y-6">
                     <div className="flex items-center justify-between">
                       <span className="text-3xl">{stage.badge}</span>
-                      <div className={`p-3 rounded-xl bg-zinc-950/80 border ${stage.colorClass.split(" ").slice(2).join(" ")}`}>
+                      <div className={`p-3 rounded-xl bg-card border ${stage.colorClass.split(" ").slice(2).join(" ")}`}>
                         <Icon className="size-6" />
                       </div>
                     </div>
-                    
+
                     <div className="space-y-1.5">
-                      <h3 className="text-xl font-black text-white tracking-tight leading-tight">
+                      <h3 className="text-xl font-black text-foreground tracking-tight leading-tight">
                         {stage.title}
                       </h3>
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[10px] font-extrabold text-zinc-500 uppercase tracking-widest bg-zinc-950 px-2 py-0.5 rounded border border-zinc-800">
+                        <span className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest bg-card px-2 py-0.5 rounded border border-border">
                           {stage.badgeName}
                         </span>
                       </div>
                     </div>
 
-                    <p className="text-xs text-zinc-400 leading-relaxed">
+                    <p className="text-xs text-muted-foreground leading-relaxed">
                       {stage.description}
                     </p>
                   </div>
 
-                  <div className="flex items-center justify-between text-xs font-bold pt-4 border-t border-zinc-800/40">
-                    <span className="text-zinc-500 group-hover:text-primary transition-colors">Course Stage 0{stage.id}</span>
+                  <div className="flex items-center justify-between text-xs font-bold pt-4 border-t border-border/40">
+                    <span className="text-muted-foreground group-hover:text-primary transition-colors">
+                      Course Stage 0{stage.id}
+                    </span>
                     <span className="text-primary opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
                       Start <ArrowRight className="size-3.5" />
                     </span>
@@ -224,7 +242,6 @@ export default function HorizontalCycleSlider() {
             })}
           </motion.div>
         </div>
-
       </div>
     </section>
   );

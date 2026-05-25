@@ -47,7 +47,7 @@ Document: CFSP FY 2026/27
   const countiesList = ["Nairobi", "Mombasa", "Kisumu", "Nakuru", "Kiambu"];
 
   return (
-    <section className="relative w-full py-24 bg-black border-b border-zinc-900 overflow-hidden">
+    <section className="relative w-full py-24 bg-background border-b border-border overflow-hidden">
       {/* Ambient background glows */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 w-full h-full opacity-5 blur-[120px] pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-[35vw] h-[35vw] bg-primary rounded-full" />
@@ -56,37 +56,40 @@ Document: CFSP FY 2026/27
 
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          
+
           {/* Left Text Column */}
-          <div className="lg:col-span-5 space-y-6">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease: [0.19, 1, 0.22, 1] }}
+            className="lg:col-span-5 space-y-6"
+          >
             <span className="inline-block text-xs uppercase tracking-widest text-primary font-black">
               Citizen Action
             </span>
-            <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-none">
+            <h2 className="text-3xl md:text-5xl font-black text-foreground tracking-tight leading-none">
               Hyper-local alerts. <br />
               Zero friction.
             </h2>
-            <p className="text-sm md:text-base text-zinc-400 leading-relaxed">
+            <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
               We track county portals and notify you when budget doors open. Our system matches your county, pulls relevant data, and generates a structured memorandum. You can submit it directly to your county assembly with a single tap.
             </p>
 
-            {/* County Switcher Selector */}
+            {/* County Switcher */}
             <div className="space-y-3 pt-2">
-              <span className="text-[10px] uppercase tracking-widest text-zinc-500 font-extrabold">
+              <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-extrabold">
                 Select county to simulate:
               </span>
               <div className="flex flex-wrap gap-2">
                 {countiesList.map((c) => (
                   <button
                     key={c}
-                    onClick={() => {
-                      setCounty(c);
-                      handleRestart();
-                    }}
+                    onClick={() => { setCounty(c); handleRestart(); }}
                     className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all border ${
                       county === c
-                        ? "bg-primary border-primary text-white shadow-md shadow-primary/20"
-                        : "bg-zinc-950 border-zinc-800 text-zinc-400 hover:border-zinc-700"
+                        ? "bg-primary border-primary text-primary-foreground shadow-md shadow-primary/20"
+                        : "bg-card border-border text-muted-foreground hover:border-foreground/30"
                     }`}
                   >
                     {c}
@@ -102,20 +105,26 @@ Document: CFSP FY 2026/27
                 </Button>
               </a>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Right Column: Premium Mockup Phone Screen */}
-          <div className="lg:col-span-7 flex justify-center items-center">
-            <div className="relative w-full max-w-[340px] h-[580px] rounded-[40px] border-[6px] border-zinc-800 bg-zinc-950 p-3 shadow-2xl flex flex-col justify-between overflow-hidden">
-              
+          {/* Right Column: Phone Mockup */}
+          <motion.div
+            initial={{ opacity: 0, y: 32, scale: 0.97 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, ease: [0.19, 1, 0.22, 1], delay: 0.1 }}
+            className="lg:col-span-7 flex justify-center items-center"
+          >
+            <div className="relative w-full max-w-[340px] h-[580px] rounded-[40px] border-[6px] border-border bg-card p-3 shadow-2xl flex flex-col justify-between overflow-hidden">
+
               {/* Phone Camera Notch */}
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-5 bg-zinc-800 rounded-b-xl z-25 flex items-center justify-center">
-                <div className="size-2 bg-zinc-950 rounded-full mr-2" />
-                <div className="w-8 h-1 bg-zinc-900 rounded-full" />
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-5 bg-muted rounded-b-xl z-25 flex items-center justify-center">
+                <div className="size-2 bg-card rounded-full mr-2" />
+                <div className="w-8 h-1 bg-muted-foreground/20 rounded-full" />
               </div>
 
               {/* Status Header */}
-              <div className="flex justify-between items-center px-4 pt-1 pb-3 text-[10px] text-zinc-500 font-bold border-b border-zinc-900">
+              <div className="flex justify-between items-center px-4 pt-1 pb-3 text-[10px] text-muted-foreground font-bold border-b border-border">
                 <span>9:41 AM</span>
                 <span className="text-[9px] bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-1.5 py-0.5 rounded">
                   📶 DPA 2019 Secured
@@ -124,7 +133,6 @@ Document: CFSP FY 2026/27
 
               {/* App Body */}
               <div className="flex-1 py-4 flex flex-col justify-between relative overflow-hidden">
-                
                 <AnimatePresence mode="wait">
                   {step === "alert" && (
                     <motion.div
@@ -136,7 +144,6 @@ Document: CFSP FY 2026/27
                       className="flex-1 flex flex-col justify-between"
                     >
                       <div className="space-y-4">
-                        {/* Alert Banner Card */}
                         <div className="p-4 rounded-2xl border border-rose-500/20 bg-rose-500/5 text-rose-300 space-y-3">
                           <div className="flex items-center gap-2">
                             <div className="p-1 rounded-md bg-rose-500/20">
@@ -145,27 +152,23 @@ Document: CFSP FY 2026/27
                             <span className="text-xs font-black uppercase tracking-wider">County Alert</span>
                           </div>
                           <div className="space-y-1">
-                            <h4 className="text-sm font-black text-white">{county} County Alert</h4>
-                            <p className="text-[10px] text-zinc-400">
+                            <h4 className="text-sm font-black text-foreground">{county} County Alert</h4>
+                            <p className="text-[10px] text-muted-foreground">
                               Proposed County Fiscal Strategy Paper (CFSP) has open comments for 3 more days.
                             </p>
                           </div>
                         </div>
-
-                        {/* Metadata grid */}
-                        <div className="p-3.5 bg-zinc-900/40 border border-zinc-900 rounded-2xl space-y-2.5 text-[11px]">
+                        <div className="p-3.5 bg-muted/40 border border-border rounded-2xl space-y-2.5 text-[11px]">
                           <div className="flex justify-between">
-                            <span className="text-zinc-500">Document Type</span>
-                            <span className="font-bold text-zinc-300">CFSP 2026/27</span>
+                            <span className="text-muted-foreground">Document Type</span>
+                            <span className="font-bold text-foreground">CFSP 2026/27</span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-zinc-500">Target Segment</span>
-                            <span className="font-bold text-zinc-300">Development Caps</span>
+                            <span className="text-muted-foreground">Target Segment</span>
+                            <span className="font-bold text-foreground">Development Caps</span>
                           </div>
                         </div>
                       </div>
-
-                      {/* Trigger Button */}
                       <Button
                         onClick={() => setStep("typing")}
                         className="w-full rounded-xl py-5 font-bold gap-2 text-xs"
@@ -187,16 +190,15 @@ Document: CFSP FY 2026/27
                         <span className="text-[9px] uppercase tracking-widest font-black text-primary">
                           Drafting Memorandum
                         </span>
-                        <div className="flex items-center gap-1.5 text-[10px] text-zinc-400 font-semibold mb-2">
+                        <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground font-semibold mb-2">
                           <span className="size-1.5 bg-primary rounded-full animate-ping" />
                           <span>AI generator drafting text...</span>
                         </div>
-                        <div className="w-full rounded-xl border border-zinc-900 bg-zinc-950 p-3 h-[300px] overflow-y-auto font-mono text-[9px] leading-relaxed text-zinc-300 whitespace-pre-wrap">
+                        <div className="w-full rounded-xl border border-border bg-card p-3 h-[300px] overflow-y-auto font-mono text-[9px] leading-relaxed text-foreground/80 whitespace-pre-wrap">
                           {typedText}
                           <span className="inline-block w-1.5 h-3 bg-primary animate-pulse ml-0.5" />
                         </div>
                       </div>
-
                       <Button disabled className="w-full rounded-xl text-xs">
                         Generating...
                       </Button>
@@ -216,15 +218,14 @@ Document: CFSP FY 2026/27
                           <CheckCircle2 className="size-8 text-emerald-500 animate-pulse" />
                         </div>
                         <div className="space-y-1.5 px-4">
-                          <h4 className="text-sm font-black text-white uppercase tracking-tight">
+                          <h4 className="text-sm font-black text-foreground uppercase tracking-tight">
                             Memorandum Submitted!
                           </h4>
-                          <p className="text-[11px] text-zinc-400">
-                            The document has been securely forwarded to the **{county} County Assembly public participation registry**.
+                          <p className="text-[11px] text-muted-foreground">
+                            The document has been securely forwarded to the {county} County Assembly public participation registry.
                           </p>
                         </div>
                       </div>
-
                       <div className="space-y-2">
                         <div className="p-3 bg-emerald-500/5 border border-emerald-500/10 rounded-xl text-center text-[10px] text-emerald-500 font-bold flex items-center justify-center gap-1.5">
                           <UserCheck className="size-3.5" />
@@ -233,7 +234,7 @@ Document: CFSP FY 2026/27
                         <Button
                           onClick={handleRestart}
                           variant="outline"
-                          className="w-full rounded-xl text-xs border-zinc-800 text-zinc-400"
+                          className="w-full rounded-xl text-xs border-border text-muted-foreground"
                         >
                           Restart Simulator
                         </Button>
@@ -241,12 +242,9 @@ Document: CFSP FY 2026/27
                     </motion.div>
                   )}
                 </AnimatePresence>
-
               </div>
-
             </div>
-          </div>
-
+          </motion.div>
         </div>
       </div>
     </section>
