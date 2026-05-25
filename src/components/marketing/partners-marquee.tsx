@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { Marquee } from "@/ui/marquee";
+import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 
 interface Partner {
   name: string;
@@ -34,10 +35,10 @@ function PartnerLogo({ partner }: { partner: Partner }) {
       href={partner.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex shrink-0 items-center justify-center px-6 md:px-10 group"
+      className="group flex shrink-0 items-center justify-center px-6 md:px-10"
       aria-label={`Visit ${partner.name} website`}
     >
-      <div className="relative w-28 h-14 md:w-40 md:h-20 grayscale group-hover:grayscale-0 opacity-50 group-hover:opacity-100 transition-all duration-500 group-hover:scale-105">
+      <div className="relative h-14 w-28 opacity-50 grayscale transition-all duration-500 group-hover:scale-105 group-hover:opacity-100 group-hover:grayscale-0 md:h-20 md:w-40">
         <Image
           src={partner.logo}
           alt={`${partner.name} logo`}
@@ -52,18 +53,18 @@ function PartnerLogo({ partner }: { partner: Partner }) {
 
 export default function PartnersMarquee() {
   return (
-    <section className="py-12 md:py-20 bg-background border-y border-border/40 overflow-hidden">
-      <div className="max-w-[1400px] mx-auto px-6 md:px-16 mb-8">
-        <span className="text-muted-foreground uppercase tracking-[0.3em] text-xs block text-center font-bold">
+    <section className="overflow-hidden border-y border-border/40 bg-background py-12 md:py-20">
+      <div className={`${SECTION_SHELL_INNER} mb-8`}>
+        <span className="block text-center text-xs font-bold uppercase tracking-[0.3em] text-muted-foreground">
           Trusted By Leading Institutions
         </span>
       </div>
 
       <div className="relative">
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 md:w-32 bg-gradient-to-r from-background to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 md:w-32 bg-gradient-to-l from-background to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-background to-transparent md:w-32" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-background to-transparent md:w-32" />
 
-        <Marquee pauseOnHover className="[--gap:2rem] md:[--gap:3rem] [--duration:28s]">
+        <Marquee pauseOnHover className="[--duration:28s] [--gap:2rem] md:[--gap:3rem]">
           {partners.map((partner) => (
             <PartnerLogo key={partner.name} partner={partner} />
           ))}

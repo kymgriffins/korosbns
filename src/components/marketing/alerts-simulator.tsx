@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { Bell, Sparkles, Send, CheckCircle2, AlertTriangle, ArrowRight, UserCheck } from "lucide-react";
 import { Button } from "@/ui/button";
+import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 
 export default function AlertsSimulator() {
   const [step, setStep] = useState<"alert" | "typing" | "done">("alert");
@@ -54,7 +55,7 @@ Document: CFSP FY 2026/27
         <div className="absolute bottom-1/4 right-1/4 w-[40vw] h-[40vw] bg-teal-500 rounded-full" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
+      <div className={`${SECTION_SHELL_INNER} max-w-7xl`}>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
 
           {/* Left Text Column */}

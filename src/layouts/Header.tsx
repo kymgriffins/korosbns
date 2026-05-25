@@ -50,7 +50,7 @@ export function Header() {
       >
         <div
           ref={ref}
-          className="mx-auto max-w-[1400px] h-14 md:h-16 px-4 md:px-12 flex items-center justify-between"
+          className="mx-auto flex h-14 max-w-[1400px] items-center justify-between px-6 md:h-16 md:px-16"
         >
           <div className="flex items-center flex-1 min-w-0">
             <Link href={Routes.Home} className="flex items-center gap-2 group shrink-0">
