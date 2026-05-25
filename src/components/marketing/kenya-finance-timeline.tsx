@@ -94,6 +94,11 @@ const financeBillTimeline: TimelineItem[] = [
   }
 ];
 
+/** Reached = completed or in progress; pending stages stay muted. */
+function isTimelineReached(status: TimelineItem["status"]): boolean {
+  return status === "completed" || status === "running";
+}
+
 const economicIndicators = [
   { label: "GDP Growth 2025", value: "4.6%", trend: "stable", trendIcon: Minus, trendColor: "text-zinc-400" },
   { label: "GDP Forecast 2026", value: "4.9-5.3%", trend: "up", trendIcon: TrendingUp, trendColor: "text-green-500" },
@@ -159,6 +164,7 @@ export default function KenyaFinanceTimeline() {
             {financeBillTimeline.map((item, index) => {
               const isCompleted = item.status === 'completed';
               const isRunning = item.status === 'running';
+              const isReached = isTimelineReached(item.status);
               
               return (
                 <motion.div
@@ -189,31 +195,55 @@ export default function KenyaFinanceTimeline() {
 
                   {/* Content card */}
                   <div className={`flex-1 min-w-0 pl-12 md:pl-0 w-full max-w-full ${index % 2 === 0 ? 'md:pr-10' : 'md:pl-10'}`}>
-                    <div className={`bg-card border rounded-2xl md:rounded-3xl p-5 md:p-7 hover:border-primary/20 transition-all duration-300 ${
-                      isRunning ? 'border-primary/30' : 'border-border'
-                    }`}>
+                    <div
+                      className={`rounded-2xl border bg-card p-5 transition-all duration-300 md:rounded-3xl md:p-7 ${
+                        isRunning
+                          ? "border-primary/30 hover:border-primary/40"
+                          : isReached
+                            ? "border-border hover:border-primary/20"
+                            : "border-muted bg-card/60 opacity-60 hover:border-muted"
+                      }`}
+                    >
                       <div className="flex justify-between items-start gap-4 mb-3">
-                        <span className="text-xs font-bold text-primary flex items-center gap-1.5 uppercase tracking-widest">
+                        <span
+                          className={`flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest ${
+                            isReached ? "text-primary" : "text-muted-foreground"
+                          }`}
+                        >
                           <CalendarDays className="w-3.5 h-3.5" />
                           {item.date}
                         </span>
-                        {item.impact && (
+                        {item.impact && isReached && (
                           <Badge variant="outline" className="border-primary/30 text-primary text-[9px] uppercase tracking-wider font-bold">
                             {item.impact}
                           </Badge>
                         )}
                       </div>
                       
-                      <h3 className="text-xl md:text-2xl font-bold mb-3 tracking-tight flex items-center gap-2">
-                        <span className="text-xl">{item.icon}</span>
+                      <h3
+                        className={`mb-3 flex items-center gap-2 text-xl font-bold tracking-tight md:text-2xl ${
+                          isReached ? "text-foreground" : "text-muted-foreground"
+                        }`}
+                      >
+                        <span className={`text-xl ${isReached ? "" : "opacity-50"}`}>{item.icon}</span>
                         {item.title}
                       </h3>
                       
-                      <p className="text-muted-foreground text-sm md:text-base leading-relaxed mb-4">
+                      <p
+                        className={`mb-4 text-sm leading-relaxed md:text-base ${
+                          isReached ? "text-muted-foreground" : "text-muted-foreground/80"
+                        }`}
+                      >
                         {item.description}
                       </p>
                       
-                      <div className="text-xs text-muted-foreground border-t border-border/60 pt-4">
+                      <div
+                        className={`border-t pt-4 text-xs ${
+                          isReached
+                            ? "border-border/60 text-muted-foreground"
+                            : "border-muted text-muted-foreground/70"
+                        }`}
+                      >
                         {item.details}
                       </div>
                     </div>

@@ -2,6 +2,12 @@
 export const CLOUDINARY_HERO_BARAZA =
   "https://res.cloudinary.com/dn8lut2fc/image/upload/f_auto,q_auto,w_1920/v1/events/citizen-baraza";
 
+export const CLOUDINARY_HERO_LANDING_VIDEO_MP4 =
+  "https://res.cloudinary.com/dn8lut2fc/video/upload/v1778496651/Untitled_design_maph6q.mp4";
+
+export const CLOUDINARY_HERO_LANDING_VIDEO_WEBM =
+  "https://res.cloudinary.com/dn8lut2fc/video/upload/f_webm,q_auto/v1778496651/Untitled_design_maph6q.webm";
+
 export const CLOUDINARY_PARTNERSHIPS = {
   nationalTreasuryWorkshop:
     "https://res.cloudinary.com/dn8lut2fc/image/upload/f_auto,q_auto/v1/partnerships/national-treasury-workshop",
