@@ -85,7 +85,8 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      {/* 🖥️ Desktop Collapsible Sidebar (Left) */}
+      {/* 🖥️ Desktop Collapsible Sidebar (Left) — only visible after server login */}
+      {isLoggedIn && (
       <aside className={cn(
         "hidden md:flex flex-col justify-between border-r border-border bg-card sticky top-0 h-screen transition-all duration-300",
         sidebarCollapsed ? "w-16" : "w-64"
@@ -185,6 +186,7 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
           </button>
         </div>
       </aside>
+      )}
 
       {/* 🚀 Main Content Canvas */}
       <main className="flex-1 min-h-[calc(100vh-3.5rem)] md:min-h-screen pb-16 md:pb-0 flex flex-col">

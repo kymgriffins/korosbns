@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { OnboardingWizard } from "./onboarding-wizard";
+import { AnonymousIdentityPicker } from "./anonymous-identity-picker";
 import { StageDetailDrawer } from "./stage-detail-drawer";
 import { ParticipationAlertsDrawer } from "./participation-alerts-drawer";
 import { Button } from "@/ui/button";
@@ -732,11 +733,11 @@ export function LearnPathsHome() {
     );
   }
 
-  // If user is not onboarded, render OnboardingWizard (Module 1)
+  // If user is not onboarded, render AnonymousIdentityPicker
   if (!profile) {
     return (
       <div className="flex-1 flex items-center justify-center p-4 bg-muted/20">
-        <OnboardingWizard onComplete={handleOnboardingComplete} />
+        <AnonymousIdentityPicker onComplete={handleOnboardingComplete} />
       </div>
     );
   }
