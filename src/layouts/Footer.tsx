@@ -3,7 +3,6 @@
 import Wrapper from "@/components/global/wrapper";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
-import { footerLinks } from "@/constants";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useMemo, useState } from "react";
@@ -26,6 +25,25 @@ function integrationIconAsset(icon: string): string {
         : icon;
   return `/icons/integrations/${key}.svg`;
 }
+
+// Lean footer links with only working pages
+const footerLinks = {
+  product: [
+    { label: "Stories", href: "/learn" },
+    { label: "Explainers", href: "/about" },
+    { label: "Events", href: "/events" },
+  ],
+  resources: [
+    { label: "Budget Guides", href: "/learn" },
+    { label: "Surveys", href: "/surveys" },
+    { label: "FAQ", href: "/faq" },
+    { label: "Contact", href: "/contact" },
+  ],
+  company: [
+    { label: "About", href: "/about" },
+    { label: "Team", href: "/about" },
+  ],
+};
 
 export function Footer() {
   const { config, showNewsletter } = useOrg();
@@ -76,40 +94,44 @@ export function Footer() {
       <div className="absolute top-0 inset-x-0 h-px bg-linear-to-r from-foreground/0 via-foreground/20 to-foreground/0" />
       <div className="absolute top-0 inset-x-0 w-1/2 mx-auto h-4 bg-foreground/40 blur-[4rem]" />
 
-      <Wrapper className="py-16 flex flex-col">
+      <Wrapper className="py-12 lg:py-16 flex flex-col">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12 w-full max-w-6xl mx-auto mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 w-full max-w-6xl mx-auto mb-10">
           {/* Brand Column */}
-          <div className="lg:col-span-2 flex flex-col items-start text-left">
-            <Link href="/" className="inline-block group mb-4">
+          <div className="flex flex-col items-start text-left">
+            <Link href="/" className="inline-block group mb-3">
               <Image
                 src="/logo.svg"
                 alt={organizationTitle}
-                width={160}
-                height={32}
-                className="h-6 lg:h-7 w-auto transition-all group-hover:brightness-110"
+                width={140}
+                height={28}
+                className="h-6 w-auto transition-opacity group-hover:opacity-80"
               />
             </Link>
-            <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">{footerBlurb}</p>
+            <p className="text-sm text-muted-foreground max-w-xs leading-relaxed">
+              {footerBlurb}
+            </p>
 
             {showNewsletter && (
-              <form onSubmit={handleSubmit} className="mt-6 w-full max-w-sm">
-                <p className="text-sm font-medium mb-3">Subscribe to the Story</p>
+              <form onSubmit={handleSubmit} className="mt-5 w-full max-w-sm">
+                <p className="text-xs font-medium mb-2 text-foreground/70">
+                  Subscribe to updates
+                </p>
                 <div className="flex gap-2">
                   <Input
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder="Your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="flex-1 h-10 text-sm bg-foreground/5 border-foreground/10 focus-visible:ring-0 focus-visible:ring-transparent rounded-full px-4"
+                    className="flex-1 h-9 text-sm bg-background border-border/60 focus-visible:ring-1 focus-visible:ring-primary rounded-lg px-3"
                   />
                   <Button
                     type="submit"
                     size="sm"
-                    className="h-10 px-6 rounded-full"
+                    className="h-9 px-4 rounded-lg text-sm"
                   >
-                    Subscribe
+                    Join
                   </Button>
                 </div>
               </form>
@@ -117,15 +139,15 @@ export function Footer() {
           </div>
 
           {/* Product Links */}
-          <div className="flex flex-col gap-3">
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground/60">
+          <div className="flex flex-col gap-2.5">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-foreground/50 mb-1">
               Product
             </h4>
             {footerLinks.product.map((link, idx) => (
               <Link
                 key={idx}
                 href={link.href}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors duration-150"
               >
                 {link.label}
               </Link>
@@ -133,15 +155,15 @@ export function Footer() {
           </div>
 
           {/* Resources Links */}
-          <div className="flex flex-col gap-3">
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground/60">
+          <div className="flex flex-col gap-2.5">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-foreground/50 mb-1">
               Resources
             </h4>
             {footerLinks.resources.map((link, idx) => (
               <Link
                 key={idx}
                 href={link.href}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors duration-150"
               >
                 {link.label}
               </Link>
@@ -149,15 +171,15 @@ export function Footer() {
           </div>
 
           {/* Company Links */}
-          <div className="flex flex-col gap-3">
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-foreground/60">
+          <div className="flex flex-col gap-2.5">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-foreground/50 mb-1">
               Company
             </h4>
             {footerLinks.company.map((link, idx) => (
               <Link
                 key={idx}
                 href={link.href}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors duration-150"
               >
                 {link.label}
               </Link>
@@ -166,69 +188,49 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-foreground/5 w-full max-w-6xl mx-auto">
-          <div className="text-center sm:text-left text-xs text-muted-foreground space-y-0.5">
-            <p>
-              © {new Date().getFullYear()} {organizationTitle}. All rights reserved.
-            </p>
-            {config.layout?.footer_note ? (
-              <p className="text-[11px] text-muted-foreground/90">{config.layout.footer_note}</p>
-            ) : null}
-          </div>
-
-          <div className="flex items-center gap-4">
-            {displaySocial.map((social, index) => (
+        <div className="flex flex-col gap-4 pt-6 border-t border-border/40 w-full max-w-6xl mx-auto">
+          {/* Social Icons Row */}
+          <div className="flex items-center justify-center gap-3">
+            {displaySocial.map((social) => (
               <Link
                 key={`${social.label}-${social.href}`}
                 href={social.href}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={social.label}
-                className="group relative size-10 flex items-center justify-center rounded-full bg-foreground/5 hover:bg-foreground/10 transition-colors overflow-hidden border border-foreground/10"
+                className="group relative size-9 flex items-center justify-center rounded-full bg-muted/50 hover:bg-primary/10 border border-border/60 hover:border-primary/30 transition-all duration-200"
               >
-                <motion.span
-                  aria-hidden
-                  className="absolute inset-0 rounded-full border border-primary/25"
-                  animate={{ rotate: 360 }}
-                  transition={{
-                    duration: 12 + index * 1.2,
-                    repeat: Infinity,
-                    ease: "linear",
-                  }}
+                <Image
+                  src={integrationIconAsset(String(social.icon))}
+                  alt={social.label}
+                  width={18}
+                  height={18}
+                  className="size-[18px] opacity-70 group-hover:opacity-100 transition-opacity"
                 />
-                <motion.span
-                  aria-hidden
-                  className="absolute -top-1 -right-1 size-2 rounded-full bg-primary/70 blur-[1px]"
-                  animate={{ opacity: [0.2, 0.9, 0.2], scale: [0.8, 1.2, 0.8] }}
-                  transition={{ duration: 2.8, repeat: Infinity, delay: index * 0.08 }}
-                />
-                <motion.div whileHover={{ y: -1.5, scale: 1.06 }} transition={{ duration: 0.2 }}>
-                  <Image
-                    src={integrationIconAsset(String(social.icon))}
-                    alt={social.label}
-                    width={20}
-                    height={20}
-                    className={social.icon === "x" ? "size-4" : "size-5"}
-                  />
-                </motion.div>
               </Link>
             ))}
           </div>
 
-          <div className="flex items-center gap-4 text-xs text-muted-foreground">
-            <Link
-              href="/privacy"
-              className="hover:text-foreground transition-colors"
-            >
-              Privacy
-            </Link>
-            <span>•</span>
-            <Link
-              href="/terms"
-              className="hover:text-foreground transition-colors"
-            >
-              Terms
-            </Link>
+          {/* Copyright & Legal Row */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
+            <p className="text-center sm:text-left">
+              © {new Date().getFullYear()} {organizationTitle}. All rights reserved.
+            </p>
+            <div className="flex items-center gap-3">
+              <Link
+                href="/privacy"
+                className="hover:text-foreground transition-colors"
+              >
+                Privacy
+              </Link>
+              <span className="text-border">•</span>
+              <Link
+                href="/terms"
+                className="hover:text-foreground transition-colors"
+              >
+                Terms
+              </Link>
+            </div>
           </div>
         </div>
       </Wrapper>
