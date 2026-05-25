@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@/ui/button";
 import { Progress } from "@/ui/progress";
 import { toast } from "sonner";
 import { Textarea } from "@/ui/textarea";
 import {
-  Play, Pause, CheckCircle2, AlertCircle, Clock, ExternalLink,
-  BookOpen, Trophy, ArrowRight, ArrowLeft, X, Sparkles, HelpCircle, RefreshCw,
+  Play, Pause, CheckCircle2, AlertCircle, ExternalLink,
+  BookOpen, Trophy, ArrowRight, ArrowLeft, X, Sparkles, HelpCircle,
   Volume2, VolumeX, FileText, Search, DownloadCloud, Award, Lock, FileCheck, Share2, History
 } from "lucide-react";
 import { cn } from "@/utils";
@@ -98,10 +98,11 @@ export function StageDetailDrawer({
   const [activeTriviaIdx, setActiveTriviaIdx] = useState<number>(0);
   const [selectedTriviaAnswer, setSelectedTriviaAnswer] = useState<number | null>(null);
   const [triviaSubmitted, setTriviaSubmitted] = useState<boolean>(false);
-  const [triviaCooldown, setTriviaCooldown] = useState<number>(0);
   const [triviaSkipped, setTriviaSkipped] = useState<boolean>(false);
   const [reflectionText, setReflectionText] = useState<string>("");
+  const [selectedReflectionOption, setSelectedReflectionOption] = useState<string>("");
   const [transcriptSearch, setTranscriptSearch] = useState<string>("");
+  const autoAdvanceRef = useRef<NodeJS.Timeout | null>(null);
   const [showTranscript, setShowTranscript] = useState<boolean>(false);
   const [selectedYear, setSelectedYear] = useState<number>(2026);
   const [constitutionTab, setConstitutionTab] = useState<"current" | "timeline">("current");
@@ -160,7 +161,6 @@ export function StageDetailDrawer({
     setShowTrivia(false);
     setSelectedTriviaAnswer(null);
     setTriviaSubmitted(false);
-    setTriviaCooldown(0);
     setTriviaSkipped(false);
     setReflectionText("");
     setTranscriptSearch("");
@@ -187,36 +187,16 @@ export function StageDetailDrawer({
     setTriviaSubmitted(false);
     setTriviaSkipped(false);
     setReflectionText("");
+    setSelectedReflectionOption("");
     setShowTranscript(false);
     setTranscriptSearch("");
-    const cooldownKey = `stage_${stage.id}_step_${step.id}_cooldown`;
-    const storedCooldown = localStorage.getItem(cooldownKey);
-    if (storedCooldown) {
-      const diff = Math.floor((parseInt(storedCooldown, 10) - Date.now()) / 1000);
-      if (diff > 0) {
-        setTriviaCooldown(diff);
-      } else {
-        setTriviaCooldown(0);
-      }
-    } else {
-      setTriviaCooldown(0);
-    }
   }, [currentStep, stage.id]);
 
   useEffect(() => {
-    if (triviaCooldown <= 0) return;
-    const interval = setInterval(() => {
-      setTriviaCooldown((prev) => {
-        if (prev <= 1) {
-          const step = stage.steps[currentStep - 1];
-          localStorage.removeItem(`stage_${stage.id}_step_${step.id}_cooldown`);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [triviaCooldown, stage.id, currentStep]);
+    return () => {
+      if (autoAdvanceRef.current) clearTimeout(autoAdvanceRef.current);
+    };
+  }, []);
 
   const handleStartLearning = () => {
     setCurrentStep(1);
@@ -228,7 +208,7 @@ export function StageDetailDrawer({
   };
 
   const handleAnswerMCQ = (qIdx: number, selectedIdx: number, correctIdx: number) => {
-    if (triviaSubmitted || triviaCooldown > 0) return;
+    if (triviaSubmitted) return;
     setSelectedTriviaAnswer(selectedIdx);
     setTriviaSubmitted(true);
     if (selectedIdx === correctIdx) {
@@ -238,22 +218,20 @@ export function StageDetailDrawer({
         localStorage.setItem(rewardKey, "true");
         const updated = { ...profile, sovereigns: profile.sovereigns + 5 };
         onUpdateProfile(updated);
-        toast.success("Correct! +5 Sovereigns (SVG) awarded!");
+        toast.success("Correct! +5 Sovereigns awarded!");
       } else {
         toast.success("Correct!");
       }
+      autoAdvanceRef.current = setTimeout(() => handleNextTriviaQuestion(), 1500);
     } else {
-      const step = stage.steps[currentStep - 1];
-      const cooldownTime = Date.now() + 5 * 60 * 1000;
-      localStorage.setItem(`stage_${stage.id}_step_${step.id}_cooldown`, cooldownTime.toString());
-      setTriviaCooldown(300);
-      toast.error("Incorrect answer! Cooldown locked for 5 minutes to review materials.");
+      toast.error("Not quite—try again.");
     }
   };
 
   const handleSubmitReflection = (qIdx: number) => {
-    if (reflectionText.trim().length < 10) {
-      toast.error("Please share a meaningful reflection (minimum 10 characters).");
+    const text = selectedReflectionOption || reflectionText.trim();
+    if (!text) {
+      toast.error("Please share a meaningful reflection.");
       return;
     }
     setTriviaSubmitted(true);
@@ -263,32 +241,34 @@ export function StageDetailDrawer({
       localStorage.setItem(rewardKey, "true");
       const updated = { ...profile, sovereigns: profile.sovereigns + 5 };
       onUpdateProfile(updated);
-      toast.success("Reflection submitted! +5 Sovereigns (SVG) awarded!");
+      toast.success("Reflection submitted! +5 Sovereigns awarded!");
     } else {
       toast.success("Reflection logged!");
     }
+    autoAdvanceRef.current = setTimeout(() => handleNextTriviaQuestion(), 1500);
   };
 
-  const handleNextTriviaQuestion = () => {
+  const handleNextTriviaQuestion = useCallback(() => {
     const step = stage.steps[currentStep - 1];
     if (activeTriviaIdx < step.trivia.length - 1) {
       setActiveTriviaIdx((prev) => prev + 1);
       setSelectedTriviaAnswer(null);
       setTriviaSubmitted(false);
       setReflectionText("");
+      setSelectedReflectionOption("");
     } else {
       localStorage.setItem(`stage_${stage.id}_step_${step.id}_trivia_passed`, "true");
       setContentConsumed(true);
-      toast.success("Step complete! Tap Next to continue. ⭐");
+      toast.success("Step complete! ⭐");
+      autoAdvanceRef.current = setTimeout(() => {
+        setCurrentStep((prev) => {
+          const nextVal = prev + 1;
+          localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
+          return nextVal;
+        });
+      }, 2000);
     }
-  };
-
-  const handleClearCooldown = () => {
-    const step = stage.steps[currentStep - 1];
-    localStorage.removeItem(`stage_${stage.id}_step_${step.id}_cooldown`);
-    setTriviaCooldown(0);
-    toast.success("Cooldown cleared (Debug Shortcut)!");
-  };
+  }, [activeTriviaIdx, currentStep, stage.id, stage.steps]);
 
   const masteryAwardedKey = `stage_${stage.id}_mastery_awarded`;
   useEffect(() => {
@@ -672,16 +652,7 @@ export function StageDetailDrawer({
                           return (
                             <div className="space-y-3">
                               <h4 className="text-sm font-black text-foreground leading-snug">{q.question}</h4>
-                              {triviaCooldown > 0 && (
-                                <div className="p-3 border border-destructive/20 bg-destructive/5 rounded-xl text-center space-y-1">
-                                  <Clock className="size-5 text-destructive mx-auto animate-pulse" />
-                                  <p className="text-[11px] font-bold text-destructive">Review cooldown</p>
-                                  <p className="text-[10px] text-muted-foreground">{Math.floor(triviaCooldown / 60)}m {triviaCooldown % 60}s remaining</p>
-                                  <Button size="xs" variant="outline" onClick={handleClearCooldown} className="text-[9px] gap-1 mt-1">
-                                    <RefreshCw className="size-3" /> Clear (Debug)
-                                  </Button>
-                                </div>
-                              )}
+
                               <div className="grid gap-2">
                                 {q.options?.map((opt, idx) => {
                                   const isSelected = selectedTriviaAnswer === idx;
@@ -702,7 +673,7 @@ export function StageDetailDrawer({
                                     <button
                                       key={idx}
                                       onClick={() => handleAnswerMCQ(activeTriviaIdx, idx, q.answer!)}
-                                      disabled={triviaSubmitted || triviaCooldown > 0}
+                                      disabled={triviaSubmitted}
                                       className={cn("w-full min-h-[44px] px-4 py-3 rounded-xl border text-xs font-semibold text-left transition-all active:scale-[0.99]", optStyle)}
                                     >
                                       {opt}
@@ -728,7 +699,7 @@ export function StageDetailDrawer({
                                     {activeTriviaIdx < step.trivia.length - 1 ? <>Next Question <ArrowRight className="size-4" /></> : <>Complete Check <CheckCircle2 className="size-4" /></>}
                                   </Button>
                                 ) : (
-                                  <Button onClick={() => { setSelectedTriviaAnswer(null); setTriviaSubmitted(false); }} variant="outline" className="w-full h-10 rounded-xl font-bold text-xs" disabled={triviaCooldown > 0}>
+                                  <Button onClick={() => { setSelectedTriviaAnswer(null); setTriviaSubmitted(false); }} variant="outline" className="w-full h-10 rounded-xl font-bold text-xs">
                                     Try Again
                                   </Button>
                                 )
@@ -744,9 +715,9 @@ export function StageDetailDrawer({
                                   {q.options.map((opt, idx) => (
                                     <button
                                       key={idx}
-                                      onClick={() => setReflectionText(opt)}
+                                      onClick={() => setSelectedReflectionOption(opt)}
                                       className={cn("w-full min-h-[44px] px-4 py-3 rounded-xl border text-xs font-semibold text-left transition-all",
-                                        reflectionText === opt ? "border-primary bg-primary/5 text-primary font-bold" : "border-border bg-card hover:bg-muted/40"
+                                        selectedReflectionOption === opt ? "border-primary bg-primary/5 text-primary font-bold" : "border-border bg-card hover:bg-muted/40"
                                       )}
                                       disabled={triviaSubmitted}
                                     >
@@ -759,8 +730,8 @@ export function StageDetailDrawer({
                                 <label className="text-[10px] font-bold text-muted-foreground uppercase">Your Reflection:</label>
                                 <Textarea
                                   placeholder={q.placeholder || "Enter your comment..."}
-                                  value={reflectionText}
-                                  onChange={(e) => setReflectionText(e.target.value)}
+                                  value={selectedReflectionOption || reflectionText}
+                                  onChange={(e) => { setReflectionText(e.target.value); setSelectedReflectionOption(""); }}
                                   disabled={triviaSubmitted}
                                   className="rounded-xl text-xs min-h-[80px]"
                                 />
@@ -1011,10 +982,10 @@ export function StageDetailDrawer({
             size="sm"
             variant="outline"
             onClick={() => {
-              if (showTrivia) { setShowTrivia(false); return; }
               const nextVal = currentStep - 1;
               setCurrentStep(nextVal);
               localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
+              setShowTrivia(true);
             }}
             className="rounded-xl gap-1 text-xs min-w-[100px]"
           >
@@ -1032,18 +1003,10 @@ export function StageDetailDrawer({
             <Button
               size="sm"
               onClick={() => {
-                const step = stage.steps[currentStep - 1];
-                const passed = isStepTriviaPassed(step.id);
-                if (!passed && !triviaSkipped && !showTrivia) {
-                  setShowTrivia(true);
-                  toast.info("Let's test your understanding with a quick check! 📝");
-                  return;
-                }
                 const nextVal = currentStep + 1;
                 setCurrentStep(nextVal);
                 localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
               }}
-              disabled={showTrivia && !isStepTriviaPassed(stage.steps[currentStep - 1].id) && !triviaSkipped}
               className="rounded-xl gap-1 text-xs min-w-[100px]"
             >
               Continue <ArrowRight className="size-4" />
