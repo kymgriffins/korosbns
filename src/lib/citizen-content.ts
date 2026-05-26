@@ -15,6 +15,14 @@ export type EventGalleryLink = {
   label: string;
 };
 
+export type EventSponsor = {
+  name: string;
+  logo_url?: string;
+  website_url?: string;
+  tier?: string;
+  description?: string;
+};
+
 export type HubEvent = {
   id: string;
   title: string;
@@ -22,6 +30,7 @@ export type HubEvent = {
   location: string;
   location_url?: string;
   galleries?: EventGalleryLink[];
+  sponsors?: EventSponsor[];
   snippet: string;
   body: string;
   body_html: string;
@@ -52,16 +61,44 @@ export function mapApiEvent(item: Record<string, unknown>): HubEvent {
     url: String(g.url || ""),
     label: String(g.label || "Gallery"),
   }));
+
+  const rawSponsors = (item.sponsors || []) as Record<string, unknown>[];
+  const sponsors: EventSponsor[] = rawSponsors.map((s) => ({
+    name: String(s.name || ""),
+    logo_url: s.logo_url ? String(s.logo_url) : undefined,
+    website_url: s.website_url ? String(s.website_url) : undefined,
+    tier: s.tier ? String(s.tier) : undefined,
+    description: s.description ? String(s.description) : undefined,
+  }));
+
+  const title = String(item.title || "Event");
+  const snippet = String(item.summary || meta.snippet || "");
+  const body = String(item.description || item.body || "");
+  const bodyHtml = String(item.body_html || "");
+  const textToCheck = (title + " " + snippet + " " + body + " " + bodyHtml).toLowerCase();
+
+  // If no sponsors mapped from backend, but keyword Tisa is found, inject Tisa as lead sponsor.
+  if (sponsors.length === 0 && textToCheck.includes("tisa")) {
+    sponsors.push({
+      name: "Tisa (The Institute for Social Accountability)",
+      logo_url: "https://www.tisa.or.ke/wp-content/themes/tisa/images/logo.png",
+      website_url: "https://tisa.or.ke",
+      tier: "Lead Sponsor",
+      description: "Promoting citizen oversight and social accountability in public resource management in Kenya."
+    });
+  }
+
   return {
     id: String(item.id),
-    title: String(item.title || "Event"),
+    title,
     starts_at: String(item.starts_at || meta.starts_at || ""),
     location: String(item.location || meta.location || ""),
     location_url: String(item.location_url || meta.location_url || ""),
     galleries: galleries.length ? galleries : undefined,
-    snippet: String(item.summary || meta.snippet || ""),
-    body: String(item.description || item.body || ""),
-    body_html: String(item.body_html || ""),
+    sponsors: sponsors.length ? sponsors : undefined,
+    snippet,
+    body,
+    body_html: bodyHtml,
   };
 }
 
