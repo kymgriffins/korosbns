@@ -67,8 +67,10 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
   /* If an active lesson is set, we'll render a curriculum rail */
   const showCurriculum = !!activeLesson;
 
+  const lessonOpen = !!activeLesson;
+
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row relative overflow-x-hidden pb-14 md:pb-0">
+    <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row relative overflow-x-hidden">
       
       {/* 🖥️ Desktop Sidebar — dual-mode (nav / curriculum rail) 320px */}
       {isLoggedIn && (
@@ -268,40 +270,56 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
       </aside>
       )}
 
-      {/* 🚀 Main Content Canvas */}
-      <main className="flex-1 overflow-y-auto pb-14 md:pb-0 flex flex-col">
-        {children}
-      </main>
+      {/* 🚀 Main Content Canvas — viewport-locked on mobile; main is sole scroll region */}
+      <div className="flex-1 flex flex-col min-h-0 h-dvh md:h-auto overflow-hidden">
+        <main
+          className={cn(
+            "flex-1 min-h-0 overflow-y-auto flex flex-col",
+            !lessonOpen && "pb-14 md:pb-0"
+          )}
+        >
+          {children}
+        </main>
 
-      {/* 📱 Mobile Fixed Bottom Navigation — h-14 (56px) */}
-      <nav className="fixed inset-x-0 bottom-0 h-14 w-full bg-background/95 backdrop-blur-md border-t border-border z-50 flex items-center justify-around px-2 md:hidden">
-        {navItems.map((item) => {
-          const active = activeTab === item.key;
-          return (
-            <button
-              key={item.key}
-              onClick={() => handleTabChange(item.key)}
-              className="flex flex-col items-center justify-center flex-1 h-full py-1 text-center group"
-            >
-              <div className={cn(
-                "p-1 rounded-xl transition-all duration-200",
-                active 
-                  ? "bg-primary/10 text-primary scale-105" 
-                  : "text-muted-foreground group-hover:text-foreground"
-              )}>
-                {item.icon}
-              </div>
-              <span className={cn(
-                "text-[9px] font-semibold mt-0.5 tracking-tight transition-colors",
-                active ? "text-primary" : "text-muted-foreground"
-              )}>
-                {item.label}
-              </span>
-            </button>
-          );
-        })}
-      </nav>
-      
+        {/* 📱 Mobile fixed tab bar (hidden during lesson) — z-40 below lesson overlay z-50 */}
+        {!lessonOpen && (
+          <nav
+            className="fixed bottom-0 inset-x-0 z-40 flex h-14 w-full items-center justify-around border-t border-border bg-background/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden"
+            aria-label="Learn hub navigation"
+          >
+            {navItems.map((item) => {
+              const active = activeTab === item.key;
+              return (
+                <button
+                  key={item.key}
+                  onClick={() => handleTabChange(item.key)}
+                  className="group flex h-full flex-1 flex-col items-center justify-center py-1 text-center"
+                >
+                  <div
+                    className={cn(
+                      "rounded-xl p-1 transition-all duration-200",
+                      active
+                        ? "scale-105 bg-primary/10 text-primary"
+                        : "text-muted-foreground group-hover:text-foreground"
+                    )}
+                  >
+                    {item.icon}
+                  </div>
+                  <span
+                    className={cn(
+                      "mt-0.5 text-[9px] font-semibold tracking-tight transition-colors",
+                      active ? "text-primary" : "text-muted-foreground"
+                    )}
+                  >
+                    {item.label}
+                  </span>
+                </button>
+              );
+            })}
+          </nav>
+        )}
+      </div>
+
     </div>
   );
 }

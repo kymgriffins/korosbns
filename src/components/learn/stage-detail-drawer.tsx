@@ -370,7 +370,7 @@ export function StageDetailDrawer({
   };
 
   return (
-    <div className="absolute inset-0 z-20 bg-background flex flex-col overflow-hidden md:relative md:inset-auto md:z-auto md:h-full">
+    <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-background md:relative md:inset-auto md:z-auto md:h-full">
 
       {/* ── Compressed Header (48px) with inline sub-tab pills ── */}
       <header className="sticky top-0 z-10 w-full h-12 border-b border-border bg-background/95 backdrop-blur-sm flex items-center justify-between px-4 gap-2 shrink-0">
@@ -939,53 +939,80 @@ export function StageDetailDrawer({
 
       </div>
 
-      {/* ── Centered Navigation Footer with Progress Dots ── */}
-      {currentStep > 0 && (
-        <footer className="shrink-0 h-14 border-t border-border bg-card flex items-center justify-center gap-4 px-4 z-10">
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => {
-              const nextVal = currentStep - 1;
-              setCurrentStep(nextVal);
-              localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
-              setShowTrivia(true);
-            }}
-            className="rounded-xl gap-1 text-xs min-w-[100px]"
-          >
-            <ArrowLeft className="size-4" /> Previous
-          </Button>
-
-          <div className="flex flex-col items-center gap-0.5">
-            {progressDots()}
-            <span className="text-[9px] font-semibold text-muted-foreground">
-              {currentStep > stage.steps.length ? "Mastery" : `${currentStep} / ${stage.steps.length}`}
-            </span>
-          </div>
-
-          {currentStep <= stage.steps.length ? (
+      {/* ── Navigation footer: Back + Start on overview (step 0); Prev/Next on steps ── */}
+      <footer className="z-10 flex h-14 shrink-0 items-center justify-center gap-4 border-t border-border bg-card px-4">
+        {currentStep === 0 ? (
+          <>
             <Button
               size="sm"
+              variant="outline"
+              onClick={onClose}
+              className="min-w-[100px] gap-1 rounded-xl text-xs"
+            >
+              <ArrowLeft className="size-4" /> Back
+            </Button>
+            <span className="text-[9px] font-semibold text-muted-foreground">Overview</span>
+            <Button
+              size="sm"
+              onClick={handleStartLearning}
+              className="min-w-[100px] gap-1 rounded-xl text-xs"
+            >
+              Start <ArrowRight className="size-4" />
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button
+              size="sm"
+              variant="outline"
               onClick={() => {
-                const nextVal = currentStep + 1;
+                const nextVal = currentStep - 1;
                 setCurrentStep(nextVal);
                 localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
+                setShowTrivia(false);
               }}
-              className="rounded-xl gap-1 text-xs min-w-[100px]"
+              className="min-w-[100px] gap-1 rounded-xl text-xs"
             >
-              Continue <ArrowRight className="size-4" />
+              <ArrowLeft className="size-4" /> Previous
             </Button>
-          ) : (
-            <Button
-              size="sm"
-              onClick={() => { if (hasNext && onNextStage) { onNextStage(); } else { onClose(); } }}
-              className="rounded-xl gap-1 text-xs min-w-[100px]"
-            >
-              Finish <CheckCircle2 className="size-4" />
-            </Button>
-          )}
-        </footer>
-      )}
+
+            <div className="flex flex-col items-center gap-0.5">
+              {progressDots()}
+              <span className="text-[9px] font-semibold text-muted-foreground">
+                {currentStep > stage.steps.length ? "Mastery" : `${currentStep} / ${stage.steps.length}`}
+              </span>
+            </div>
+
+            {currentStep <= stage.steps.length ? (
+              <Button
+                size="sm"
+                onClick={() => {
+                  const nextVal = currentStep + 1;
+                  setCurrentStep(nextVal);
+                  localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
+                }}
+                className="min-w-[100px] gap-1 rounded-xl text-xs"
+              >
+                Continue <ArrowRight className="size-4" />
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                onClick={() => {
+                  if (hasNext && onNextStage) {
+                    onNextStage();
+                  } else {
+                    onClose();
+                  }
+                }}
+                className="min-w-[100px] gap-1 rounded-xl text-xs"
+              >
+                Finish <CheckCircle2 className="size-4" />
+              </Button>
+            )}
+          </>
+        )}
+      </footer>
 
     </div>
   );

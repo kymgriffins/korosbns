@@ -372,17 +372,18 @@ export function LearnPathsHome() {
   return (
     <div className="w-full bg-background min-h-screen flex flex-col">
       {/* 📱 MOBILE VIEW (Guarded by md:hidden) */}
-      <div className="w-full flex flex-col md:hidden relative pb-14 min-h-screen bg-background">
+      <div className="flex w-full min-h-0 flex-1 flex-col bg-background md:hidden">
         
         {/* Global Sheng translation warning banner */}
-        {profile.language === "SH" && (
+        {!selectedStage && profile.language === "SH" && (
           <div className="w-full py-1 px-4 text-[10px] font-semibold bg-amber-500/15 border-b border-amber-500/20 text-amber-600 text-center">
             {text.shengComingSoon}
           </div>
         )}
 
-        {/* Profile Header Summary */}
-        <header className="sticky top-0 z-30 px-4 py-3 border-b border-border bg-card/95 backdrop-blur-md flex justify-between items-center gap-3">
+        {/* Profile Header Summary — hidden while lesson is open */}
+        {!selectedStage && (
+        <header className="sticky top-0 z-30 px-4 py-3 border-b border-border bg-card/95 backdrop-blur-md flex justify-between items-center gap-3 shrink-0">
           {/* Logo */}
           <a href="/" className="shrink-0 flex items-center hover:opacity-80 transition-opacity" aria-label="Home">
             <img src="/logo.svg" alt="Budget Ndio Story" className="h-7 w-auto" />
@@ -409,9 +410,11 @@ export function LearnPathsHome() {
             </div>
           </div>
         </header>
+        )}
 
-        {/* Content Area */}
-        <div className="flex-1 p-4 overflow-y-auto">
+        {/* Dashboard tabs — scroll inside layout main when no lesson */}
+        {!selectedStage ? (
+        <div className="flex-1 min-h-0 p-4">
           <AnimatePresence mode="wait">
             
             {/* TAB 1: CIVIC DASHBOARD (HOME) */}
@@ -674,10 +677,9 @@ export function LearnPathsHome() {
 
           </AnimatePresence>
         </div>
-
-        {/* Mobile Stage Detail Drawer (only rendered on mobile) */}
-        {selectedStage && (
-          <div className="md:hidden">
+        ) : (
+          /* Full-screen lesson layer on mobile (above tab bar z-40) */
+          <div className="fixed inset-0 z-50 flex flex-col bg-background">
             <StageDetailDrawer
               stage={selectedStage}
               profile={profile}
