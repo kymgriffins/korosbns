@@ -33,6 +33,8 @@ export type SurveyListItemApi = {
   is_external?: boolean;
   starts_at?: string | null;
   ends_at?: string | null;
+  image?: string;
+  image_url?: string;
 };
 
 export type SurveyDetailApi = {
@@ -43,6 +45,8 @@ export type SurveyDetailApi = {
   external_url?: string | null;
   is_external?: boolean;
   questions: SurveyQuestionApi[];
+  image?: string;
+  image_url?: string;
 };
 
 export type TriviaQuestionApi = {

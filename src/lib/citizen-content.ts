@@ -34,6 +34,8 @@ export type HubEvent = {
   snippet: string;
   body: string;
   body_html: string;
+  image?: string;
+  image_url?: string;
 };
 
 function listFromPayload(data: {
@@ -88,6 +90,8 @@ export function mapApiEvent(item: Record<string, unknown>): HubEvent {
     });
   }
 
+  const imageUrl = item.image_url || item.image || meta.image_url || meta.image || undefined;
+
   return {
     id: String(item.id),
     title,
@@ -99,6 +103,8 @@ export function mapApiEvent(item: Record<string, unknown>): HubEvent {
     snippet,
     body,
     body_html: bodyHtml,
+    image: imageUrl ? String(imageUrl) : undefined,
+    image_url: imageUrl ? String(imageUrl) : undefined,
   };
 }
 
