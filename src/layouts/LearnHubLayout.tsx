@@ -68,7 +68,7 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
   const showCurriculum = !!activeLesson;
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row relative overflow-hidden">
+    <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row relative overflow-x-hidden">
       
       {/* 🖥️ Desktop Sidebar — dual-mode (nav / curriculum rail) 320px */}
       {isLoggedIn && (
@@ -268,13 +268,12 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
       </aside>
       )}
 
-      {/* 🚀 Main Content Canvas */}
-      <main className="flex-1 min-h-[calc(100dvh-56px)] md:min-h-dvh pb-[72px] md:pb-0 flex flex-col">
-        {children}
-      </main>
-
-      {/* 📱 Mobile Fixed Bottom Navigation — h-14 (56px) */}
-      <nav className="fixed bottom-0 inset-x-0 h-14 bg-background/95 backdrop-blur-md border-t border-border z-40 flex items-center justify-around px-2 md:hidden">
+      {/* 🚀 Main Content Canvas + Sticky Mobile Nav */}
+      <div className="flex-1 flex flex-col min-h-0 md:min-h-dvh">
+        <main className="flex-1 overflow-y-auto pb-16 md:pb-0 flex flex-col">
+          {children}
+        </main>
+        <nav className="sticky bottom-0 h-14 bg-background/95 backdrop-blur-md border-t border-border z-40 flex items-center justify-around px-2 md:hidden">
         {navItems.map((item) => {
           const active = activeTab === item.key;
           return (
@@ -301,6 +300,7 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
           );
         })}
       </nav>
+      </div>
       
     </div>
   );
