@@ -382,7 +382,7 @@ export function LearnPathsHome() {
         )}
 
         {/* Profile Header Summary */}
-        <header className="px-4 py-3 border-b border-border bg-card flex justify-between items-center gap-3">
+        <header className="sticky top-0 z-30 px-4 py-3 border-b border-border bg-card/95 backdrop-blur-md flex justify-between items-center gap-3">
           {/* Logo */}
           <a href="/" className="shrink-0 flex items-center hover:opacity-80 transition-opacity" aria-label="Home">
             <img src="/logo.svg" alt="Budget Ndio Story" className="h-7 w-auto" />
