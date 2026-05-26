@@ -68,7 +68,7 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
   const showCurriculum = !!activeLesson;
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row relative overflow-x-hidden">
+    <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row relative overflow-x-hidden pb-14 md:pb-0">
       
       {/* 🖥️ Desktop Sidebar — dual-mode (nav / curriculum rail) 320px */}
       {isLoggedIn && (
@@ -269,12 +269,12 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
       )}
 
       {/* 🚀 Main Content Canvas */}
-      <main className="flex-1 min-h-screen pb-16 md:pb-0 flex flex-col">
+      <main className="flex-1 overflow-y-auto pb-14 md:pb-0 flex flex-col">
         {children}
       </main>
 
       {/* 📱 Mobile Fixed Bottom Navigation — h-14 (56px) */}
-      <nav className="fixed bottom-0 inset-x-0 h-14 bg-background/95 backdrop-blur-md border-t border-border z-40 flex items-center justify-around px-2 md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 h-14 w-full bg-background/95 backdrop-blur-md border-t border-border z-50 flex items-center justify-around px-2 md:hidden">
         {navItems.map((item) => {
           const active = activeTab === item.key;
           return (
