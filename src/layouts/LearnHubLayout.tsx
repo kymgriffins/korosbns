@@ -269,7 +269,7 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
       )}
 
       {/* 🚀 Main Content Canvas */}
-      <main className="flex-1 min-h-[calc(100vh-3.5rem)] md:min-h-screen pb-16 md:pb-0 flex flex-col">
+      <main className="flex-1 min-h-[calc(100dvh-56px)] md:min-h-dvh pb-[72px] md:pb-0 flex flex-col">
         {children}
       </main>
 

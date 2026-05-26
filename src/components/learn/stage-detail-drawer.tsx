@@ -8,7 +8,7 @@ import { Textarea } from "@/ui/textarea";
 import {
   Play, Pause, CheckCircle2, AlertCircle, ExternalLink,
   BookOpen, Trophy, ArrowRight, ArrowLeft, X, Sparkles, HelpCircle,
-  Volume2, VolumeX, FileText, Search, DownloadCloud, Award, Lock, FileCheck, Share2, History
+  FileText, Search, DownloadCloud, Award, Lock, FileCheck, Share2, History
 } from "lucide-react";
 import { cn } from "@/utils";
 import {
@@ -80,8 +80,7 @@ export function StageDetailDrawer({
 }: StageDetailDrawerProps) {
   const [activeSubTab, setActiveSubTab] = useState<"learn" | "documents">("learn");
   const [currentStep, setCurrentStep] = useState<number>(0);
-  const [activeFormat, setActiveFormat] = useState<"video" | "audio" | "text">("video");
-  const [audioPlaying, setAudioPlaying] = useState<boolean>(false);
+  const [activeFormat, setActiveFormat] = useState<"video" | "text">("video");
   const [contentConsumed, setContentConsumed] = useState<boolean>(true);
   const [showTrivia, setShowTrivia] = useState<boolean>(false);
   const [activeTriviaIdx, setActiveTriviaIdx] = useState<number>(0);
@@ -144,7 +143,6 @@ export function StageDetailDrawer({
     const initialStep = storedStep ? parseInt(storedStep, 10) : 0;
     setCurrentStep(initialStep);
     setActiveFormat("video");
-    setAudioPlaying(false);
     setContentConsumed(true);
     setActiveTriviaIdx(0);
     setShowTrivia(false);
@@ -163,13 +161,11 @@ export function StageDetailDrawer({
 
   useEffect(() => {
     if (currentStep < 1 || currentStep > stage.steps.length) {
-      setAudioPlaying(false);
       setContentConsumed(true);
       return;
     }
     const step = stage.steps[currentStep - 1];
     setContentConsumed(true);
-    setAudioPlaying(false);
     setShowTrivia(false);
     setActiveTriviaIdx(0);
     setSelectedTriviaAnswer(null);
@@ -350,8 +346,6 @@ export function StageDetailDrawer({
   const standardYears = [2026, 2025, 2024, 2023, 2022, 2021, 2020];
   const yearOptions = stage.id === 1 ? constitutionYears : standardYears;
 
-  const hasAudio = currentStep >= 1 && currentStep <= stage.steps.length && !!stage.steps[currentStep - 1].audioUrl;
-
   /* Progress dots helper */
   const totalSteps = stage.steps.length;
   const progressDots = () => {
@@ -500,7 +494,7 @@ export function StageDetailDrawer({
                 </div>
                 <Progress value={((currentStep - 1) / stage.steps.length) * 100} className="h-1.5 rounded-full" />
 
-                {/* Format Toggle: Watch / Listen / Read pill */}
+                {/* Format Toggle: Watch / Read pill */}
                 {!showTrivia && (
                   <div className="inline-flex items-center gap-0.5 p-0.5 bg-muted/60 rounded-lg">
                     <button
@@ -511,19 +505,6 @@ export function StageDetailDrawer({
                       )}
                     >
                       🎥 Watch
-                    </button>
-                    <button
-                      onClick={() => {
-                        if (hasAudio) setActiveFormat("audio");
-                        else toast.info("Audio not available for this step.");
-                      }}
-                      className={cn(
-                        "px-3 py-1.5 rounded-md text-xs font-semibold transition-all flex items-center gap-1.5",
-                        activeFormat === "audio" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground",
-                        !hasAudio && "opacity-40 cursor-not-allowed"
-                      )}
-                    >
-                      🎧 Listen
                     </button>
                     <button
                       onClick={() => setActiveFormat("text")}
@@ -552,29 +533,6 @@ export function StageDetailDrawer({
                             allowFullScreen
                           />
                         </div>
-                      </div>
-                    )}
-
-                    {/* AUDIO FORMAT */}
-                    {activeFormat === "audio" && (
-                      <div className="max-w-md mx-auto p-6 rounded-xl bg-muted/20 border border-border flex flex-col items-center text-center space-y-3">
-                        <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center">
-                          <Volume2 className="size-6 text-primary" />
-                        </div>
-                        <div>
-                          <p className="text-xs font-bold text-foreground">Audio Lesson</p>
-                          <p className="text-[10px] text-muted-foreground">Listen to key takeaways for this step</p>
-                        </div>
-                        <audio
-                          key={`${stage.id}-${currentStep}`}
-                          src={stage.steps[currentStep - 1]?.audioUrl}
-                          preload="none"
-                          controls
-                          className="w-full max-w-xs rounded-xl"
-                          onPlay={() => setAudioPlaying(true)}
-                          onPause={() => setAudioPlaying(false)}
-                          onEnded={() => setAudioPlaying(false)}
-                        />
                       </div>
                     )}
 
