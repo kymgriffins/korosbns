@@ -20,6 +20,9 @@ import {
 import { cn } from "@/utils";
 import { useLearn, type ActiveLesson } from "@/contexts/learn-context";
 import { motion, AnimatePresence } from "motion/react";
+import Link from "next/link";
+import { Routes } from "@/constants/routes";
+import { useAuth } from "@/contexts/auth-context";
 
 // Translations dictionary for Global Language Toggle (EN / SW / Sheng)
 const TRANSLATIONS = {
@@ -481,6 +484,8 @@ const STAGES_DATA = [
 ];
 
 export function LearnPathsHome() {
+  const { isLoggedIn, user: authUser } = useAuth();
+  const [wantsAnonymous, setWantsAnonymous] = useState(false);
   const [profile, setProfile] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const { activeTab, setActiveTab, setActiveLesson } = useLearn();
@@ -512,23 +517,86 @@ export function LearnPathsHome() {
     }
   }, [selectedStage, setActiveLesson]);
 
-  // Load profile on mount
+  // Load profile on mount or auth state change
   useEffect(() => {
-    const stored = localStorage.getItem("bns_user_profile");
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      const streakDays = checkStreak(parsed);
-      const updated = { ...parsed, streakDays, lastActive: Date.now() };
+    // If authenticated, sync bns_user_profile with auth data
+    if (isLoggedIn && authUser) {
+      const stored = localStorage.getItem("bns_user_profile");
+      let currentProfile: any = null;
+      if (stored) {
+        try {
+          currentProfile = JSON.parse(stored);
+        } catch {
+          currentProfile = null;
+        }
+      }
+      
+      // Auto-bridge authenticated user to progress profile if missing or mismatched
+      if (!currentProfile || currentProfile.userId !== authUser.id) {
+        const onboardingData = localStorage.getItem("bns_onboarding_profile");
+        let preferences: any = {};
+        if (onboardingData) {
+          try {
+            preferences = JSON.parse(onboardingData);
+          } catch {
+            preferences = {};
+          }
+        }
+        
+        currentProfile = {
+          userId: authUser.id || `user_${Math.random().toString(36).substr(2, 9)}`,
+          breakName: authUser.display_name || `${authUser.first_name || ""} ${authUser.last_name || ""}`.trim() || authUser.email || "Citizen",
+          pseudoName: authUser.display_name || `citizen_${String(authUser.id || "").slice(0, 5)}`,
+          county: authUser.location || preferences.county || "Kenya",
+          ward: preferences.ward || "",
+          language: "EN" as const,
+          notifications: true,
+          whatsappFallback: false,
+          phone: "",
+          consentGranted: true,
+          consentTimestamp: new Date().toISOString(),
+          sovereigns: currentProfile?.sovereigns || 0,
+          stageProgress: currentProfile?.stageProgress || [1],
+          streakDays: currentProfile?.streakDays || 0,
+          lastActive: Date.now(),
+          trackedDocs: currentProfile?.trackedDocs || [],
+          badges: currentProfile?.badges || []
+        };
+        localStorage.setItem("bns_user_profile", JSON.stringify(currentProfile));
+      }
+      
+      const streakDays = checkStreak(currentProfile);
+      const updated = { ...currentProfile, streakDays, lastActive: Date.now() };
       setProfile(updated);
       localStorage.setItem("bns_user_profile", JSON.stringify(updated));
+    } else {
+      // If not logged in, load anonymous profile
+      const stored = localStorage.getItem("bns_user_profile");
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          const streakDays = checkStreak(parsed);
+          const updated = { ...parsed, streakDays, lastActive: Date.now() };
+          setProfile(updated);
+          localStorage.setItem("bns_user_profile", JSON.stringify(updated));
+        } catch {
+          setProfile(null);
+        }
+      } else {
+        setProfile(null);
+      }
     }
     
     const storedCache = localStorage.getItem("bns_cached_stages");
     if (storedCache) {
-      setCachedStages(JSON.parse(storedCache));
+      try {
+        setCachedStages(JSON.parse(storedCache));
+      } catch {
+        setCachedStages([]);
+      }
     }
     setLoading(false);
-  }, []);
+  }, [isLoggedIn, authUser]);
 
   const checkStreak = (userProfile: any) => {
     if (!userProfile.lastActive) return 0;
@@ -622,8 +690,48 @@ export function LearnPathsHome() {
     );
   }
 
-  // If user is not onboarded, render AnonymousIdentityPicker
+  // If user is not onboarded, ask if they want to register or continue as anonymous guest
   if (!profile) {
+    if (!wantsAnonymous) {
+      return (
+        <div className="flex-1 flex items-center justify-center p-4 bg-muted/20 min-h-[70vh]">
+          <div className="w-full max-w-md p-6 bg-card border border-border rounded-2xl shadow-xl space-y-6 text-center">
+            <div className="space-y-2">
+              <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mx-auto">
+                <Sparkles className="size-6" />
+              </div>
+              <h2 className="text-xl font-bold tracking-tight">Citizen Learn Hub</h2>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Welcome! Track Kenya's public finance, follow projects in your county, and take trivia gates to earn badges.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <Button asChild className="w-full rounded-xl h-11 font-bold">
+                <Link href={Routes.JoinUs}>Sign Up / Join Movement</Link>
+              </Button>
+              <div className="flex items-center gap-2 my-2">
+                <div className="h-px bg-border flex-1" />
+                <span className="text-[10px] text-muted-foreground uppercase font-bold">or</span>
+                <div className="h-px bg-border flex-1" />
+              </div>
+              <Button 
+                onClick={() => setWantsAnonymous(true)} 
+                variant="outline" 
+                className="w-full rounded-xl h-11 font-bold border-border/85 bg-transparent"
+              >
+                Continue as Anonymous User
+              </Button>
+            </div>
+            
+            <p className="text-[10px] text-muted-foreground leading-relaxed">
+              We never lock citizens out. Anonymous progress is stored locally on this device, but won't sync across other browsers.
+            </p>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="flex-1 flex items-center justify-center p-4 bg-muted/20">
         <AnonymousIdentityPicker onComplete={handleOnboardingComplete} />
