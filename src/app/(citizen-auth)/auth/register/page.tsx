@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { AuthShell } from "@/layouts/AuthShell";
 import { FormStatus } from "@/components/citizen/form-status";
@@ -11,26 +11,146 @@ import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
 import { Routes } from "@/constants/routes";
 import { citizenApi } from "@/lib/api-client";
+import { 
+  Heart, 
+  BookOpen, 
+  Home, 
+  Sprout, 
+  Milestone, 
+  Cpu, 
+  ArrowRight, 
+  ArrowLeft, 
+  Check,
+  ShieldAlert,
+  Lock,
+  Mail,
+  User,
+  Building
+} from "lucide-react";
+
+const COUNTIES = [
+  "Mombasa", "Kwale", "Kilifi", "Tana River", "Lamu", "Taita Taveta",
+  "Garissa", "Wajir", "Mandera", "Marsabit", "Isiolo", "Meru",
+  "Tharaka-Nithi", "Embu", "Kitui", "Machakos", "Makueni", "Nyandarua",
+  "Nyeri", "Kirinyaga", "Murang'a", "Kiambu", "Turkana", "West Pokot",
+  "Samburu", "Trans Nzoia", "Uasin Gishu", "Elgeyo-Marakwet", "Nandi",
+  "Baringo", "Laikipia", "Nakuru", "Narok", "Kajiado", "Kericho",
+  "Bomet", "Kakamega", "Vihiga", "Bungoma", "Busia", "Siaya",
+  "Kisumu", "Homa Bay", "Migori", "Kisii", "Nyamira", "Nairobi"
+].sort();
+
+interface PriorityOption {
+  id: string;
+  label: string;
+  context: string;
+  icon: any;
+}
+
+const PRIORITIES: PriorityOption[] = [
+  { id: "Healthcare", label: "Healthcare", context: "Hospitals, NHIF access, medicines", icon: Heart },
+  { id: "Education", label: "Education", context: "Schools, bursaries, CBC support", icon: BookOpen },
+  { id: "Affordable Housing", label: "Affordable Housing", context: "Rent, urban planning, settlements", icon: Home },
+  { id: "Agriculture & Food", label: "Agriculture & Food", context: "Fertilizer, farming, food prices", icon: Sprout },
+  { id: "Infrastructure", label: "Infrastructure", context: "Roads, clean water, electricity", icon: Milestone },
+  { id: "Jobs & Digital Economy", label: "Jobs & Digital Economy", context: "Youth employment, internet access", icon: Cpu },
+];
 
 export default function RegisterPage() {
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-    first_name: "",
-    last_name: "",
-  });
+  const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [formError, setFormError] = useState("");
 
+  // Step 1: Priorities (Multi-select)
+  const [selectedPriorities, setSelectedPriorities] = useState<string[]>([]);
+
+  // Step 2: Location
+  const [county, setCounty] = useState("");
+  const [ward, setWard] = useState("");
+
+  // Step 3: Identity
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+
+  // Step 4: Security
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  // Live Password Validation States
+  const hasMinLength = password.length >= 10;
+  const hasNumber = /\d/.test(password);
+  const hasUppercase = /[A-Z]/.test(password);
+
+  const togglePriority = (id: string) => {
+    setSelectedPriorities((prev) => {
+      if (prev.includes(id)) {
+        return prev.filter((item) => item !== id);
+      }
+      if (prev.length >= 3) {
+        toast.warning("Please limit priorities to your top 3 main issues.");
+        return prev;
+      }
+      return [...prev, id];
+    });
+  };
+
+  const handleNext = () => {
+    setFormError("");
+    if (step === 1) {
+      if (selectedPriorities.length === 0) {
+        setFormError("Please select at least 1 budget priority.");
+        return;
+      }
+      setStep(2);
+    } else if (step === 2) {
+      if (!county) {
+        setFormError("Please select your county.");
+        return;
+      }
+      setStep(3);
+    } else if (step === 3) {
+      if (!firstName.trim() || !lastName.trim()) {
+        setFormError("Please fill in both first and last names.");
+        return;
+      }
+      setStep(4);
+    }
+  };
+
+  const handleBack = () => {
+    setFormError("");
+    setStep((prev) => Math.max(1, prev - 1));
+  };
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setFormError("");
+
+    if (!hasMinLength || !hasNumber || !hasUppercase) {
+      setFormError("Password does not meet the secure criteria.");
+      return;
+    }
+
+    setLoading(true);
     try {
-      await citizenApi.register(form);
+      await citizenApi.register({
+        email: email.trim(),
+        password,
+        first_name: firstName.trim(),
+        last_name: lastName.trim(),
+      });
+
+      // Save onboarding choices locally
+      const profile = {
+        priorities: selectedPriorities,
+        county,
+        ward: ward.trim() || undefined,
+        onboardingCompleted: true,
+      };
+      localStorage.setItem("bns_onboarding_profile", JSON.stringify(profile));
+
       setSent(true);
-      toast.success("Check your email to verify your account.");
+      toast.success("Registration complete! Check your email.");
     } catch (err) {
       const message = err instanceof Error ? err.message : "Registration failed.";
       setFormError(message);
@@ -43,10 +163,15 @@ export default function RegisterPage() {
   if (sent) {
     return (
       <GuestOnly>
-        <AuthShell title="Check your email" description={`We sent a verification link to ${form.email}.`}>
-          <Button asChild className="w-full">
-            <Link href={Routes.Login}>Back to sign in</Link>
-          </Button>
+        <AuthShell title="Verify your email" description={`We sent a verification link to ${email}.`}>
+          <div className="text-center space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Please click the link in your email to activate your account and access your personalized citizen dashboard.
+            </p>
+            <Button asChild className="w-full h-11 rounded-xl font-bold">
+              <Link href={Routes.Login}>Go to Sign In</Link>
+            </Button>
+          </div>
         </AuthShell>
       </GuestOnly>
     );
@@ -54,63 +179,247 @@ export default function RegisterPage() {
 
   return (
     <GuestOnly>
-    <AuthShell title="Create account" description="Join Budget Ndio Story as a citizen member.">
-      <FormStatus message={formError} variant="error" />
-      <form onSubmit={onSubmit} className="space-y-4">
-        <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-2">
-            <Label htmlFor="first_name">First name</Label>
-            <Input
-              id="first_name"
-              autoComplete="given-name"
-              value={form.first_name}
-              onChange={(e) => setForm((f) => ({ ...f, first_name: e.target.value }))}
-            />
+      <div className="w-full max-w-md mx-auto">
+        <AuthShell
+          title={
+            step === 1 ? "What matters most?" :
+            step === 2 ? "Where do you live?" :
+            step === 3 ? "Tell us about yourself" :
+            "Secure your account"
+          }
+          description={
+            step === 1 ? "Which issues should public funds prioritize in your community?" :
+            step === 2 ? "We customize your dashboard metrics based on where you live." :
+            step === 3 ? "Used to represent your voice in citizen panels." :
+            "Complete registration and begin tracking your budget."
+          }
+        >
+          {/* Custom progress indicators */}
+          <div className="mb-6 space-y-2">
+            <div className="flex justify-between items-center text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+              <span>Citizen Onboarding</span>
+              <span>Step {step} of 4</span>
+            </div>
+            <div className="h-1 w-full bg-muted rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-primary transition-all duration-300"
+                style={{ width: `${(step / 4) * 100}%` }}
+              />
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="last_name">Last name</Label>
-            <Input
-              id="last_name"
-              autoComplete="family-name"
-              value={form.last_name}
-              onChange={(e) => setForm((f) => ({ ...f, last_name: e.target.value }))}
-            />
-          </div>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            autoComplete="email"
-            required
-            value={form.email}
-            onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
-          <Input
-            id="password"
-            type="password"
-            autoComplete="new-password"
-            required
-            minLength={10}
-            value={form.password}
-            onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
-          />
-        </div>
-        <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? "Creating…" : "Create account"}
-        </Button>
-      </form>
-      <p className="mt-6 text-center text-sm text-muted-foreground">
-        Already have an account?{" "}
-        <Link href={Routes.Login} className="text-primary hover:underline">
-          Sign in
-        </Link>
-      </p>
-    </AuthShell>
+
+          <FormStatus message={formError} variant="error" />
+
+          {/* STEP 1: Priorities */}
+          {step === 1 && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 gap-2.5">
+                {PRIORITIES.map((option) => {
+                  const Icon = option.icon;
+                  const isSelected = selectedPriorities.includes(option.id);
+                  return (
+                    <button
+                      key={option.id}
+                      type="button"
+                      onClick={() => togglePriority(option.id)}
+                      className={`flex items-center gap-3 p-3.5 rounded-xl border text-left transition-all ${
+                        isSelected 
+                          ? "border-primary bg-primary/5 text-primary shadow-xs" 
+                          : "border-border/60 hover:border-border hover:bg-muted/30"
+                      }`}
+                    >
+                      <div className={`p-2 rounded-lg ${isSelected ? 'bg-primary/15' : 'bg-muted'} shrink-0`}>
+                        <Icon className="size-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold">{option.label}</p>
+                        <p className="text-xs text-muted-foreground truncate">{option.context}</p>
+                      </div>
+                      {isSelected && <Check className="size-4 shrink-0" />}
+                    </button>
+                  );
+                })}
+              </div>
+              
+              <div className="pt-2">
+                <Button onClick={handleNext} className="w-full rounded-xl h-11 font-bold gap-2">
+                  <span>Continue</span>
+                  <ArrowRight className="size-4" />
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 2: Location */}
+          {step === 2 && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="county" className="text-sm font-bold flex items-center gap-1.5">
+                  <Building className="size-4 text-muted-foreground" />
+                  Select County <span className="text-destructive">*</span>
+                </Label>
+                <select
+                  id="county"
+                  value={county}
+                  onChange={(e) => setCounty(e.target.value)}
+                  className="w-full h-11 px-3.5 rounded-xl border border-input bg-card text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <option value="">Search or select county</option>
+                  {COUNTIES.map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="ward" className="text-sm font-bold">Ward or local area <span className="text-xs text-muted-foreground font-normal">(Optional)</span></Label>
+                <Input
+                  id="ward"
+                  placeholder="e.g. Kilimani, Roysambu"
+                  value={ward}
+                  onChange={(e) => setWard(e.target.value)}
+                  className="rounded-xl h-11"
+                />
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <Button onClick={handleBack} variant="outline" className="flex-1 rounded-xl h-11 font-bold gap-1.5">
+                  <ArrowLeft className="size-4" />
+                  Back
+                </Button>
+                <Button onClick={handleNext} className="flex-1 rounded-xl h-11 font-bold gap-1.5">
+                  Continue
+                  <ArrowRight className="size-4" />
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 3: Identity */}
+          {step === 3 && (
+            <div className="space-y-4">
+              <div className="space-y-3">
+                <div className="space-y-2">
+                  <Label htmlFor="firstName" className="text-sm font-bold flex items-center gap-1.5">
+                    <User className="size-4 text-muted-foreground" />
+                    First name <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="firstName"
+                    required
+                    autoComplete="given-name"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    className="rounded-xl h-11"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="lastName" className="text-sm font-bold">Last name <span className="text-destructive">*</span></Label>
+                  <Input
+                    id="lastName"
+                    required
+                    autoComplete="family-name"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    className="rounded-xl h-11"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <Button onClick={handleBack} variant="outline" className="flex-1 rounded-xl h-11 font-bold gap-1.5">
+                  <ArrowLeft className="size-4" />
+                  Back
+                </Button>
+                <Button onClick={handleNext} className="flex-1 rounded-xl h-11 font-bold gap-1.5">
+                  Continue
+                  <ArrowRight className="size-4" />
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 4: Credentials */}
+          {step === 4 && (
+            <form onSubmit={onSubmit} className="space-y-4">
+              <div className="space-y-3">
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-sm font-bold flex items-center gap-1.5">
+                    <Mail className="size-4 text-muted-foreground" />
+                    Email address <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    required
+                    autoComplete="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="rounded-xl h-11"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="password" className="text-sm font-bold flex items-center gap-1.5">
+                    <Lock className="size-4 text-muted-foreground" />
+                    Password <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    required
+                    autoComplete="new-password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="rounded-xl h-11"
+                  />
+                  
+                  {/* Live Validation Rules */}
+                  <div className="p-3 bg-muted/30 border border-border/60 rounded-xl space-y-1.5 text-xs">
+                    <p className="font-semibold text-muted-foreground mb-1">Password requirements:</p>
+                    <div className="flex items-center gap-2">
+                      <div className={`size-4 rounded-full flex items-center justify-center text-[10px] ${hasMinLength ? 'bg-emerald-500/10 text-emerald-500' : 'bg-muted text-muted-foreground'}`}>
+                        <Check className="size-3" />
+                      </div>
+                      <span className={hasMinLength ? 'text-emerald-500' : 'text-muted-foreground'}>At least 10 characters</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className={`size-4 rounded-full flex items-center justify-center text-[10px] ${hasNumber ? 'bg-emerald-500/10 text-emerald-500' : 'bg-muted text-muted-foreground'}`}>
+                        <Check className="size-3" />
+                      </div>
+                      <span className={hasNumber ? 'text-emerald-500' : 'text-muted-foreground'}>At least one number</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className={`size-4 rounded-full flex items-center justify-center text-[10px] ${hasUppercase ? 'bg-emerald-500/10 text-emerald-500' : 'bg-muted text-muted-foreground'}`}>
+                        <Check className="size-3" />
+                      </div>
+                      <span className={hasUppercase ? 'text-emerald-500' : 'text-muted-foreground'}>At least one uppercase letter</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <Button type="button" onClick={handleBack} variant="outline" className="flex-1 rounded-xl h-11 font-bold gap-1.5" disabled={loading}>
+                  <ArrowLeft className="size-4" />
+                  Back
+                </Button>
+                <Button type="submit" className="flex-1 rounded-xl h-11 font-bold gap-1.5" disabled={loading}>
+                  {loading ? "Creating Account…" : "Join Movement"}
+                </Button>
+              </div>
+            </form>
+          )}
+
+          <p className="mt-6 text-center text-xs text-muted-foreground">
+            Already have an account?{" "}
+            <Link href={Routes.Login} className="text-primary hover:underline font-bold">
+              Sign in
+            </Link>
+          </p>
+        </AuthShell>
+      </div>
     </GuestOnly>
   );
 }
