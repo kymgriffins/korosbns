@@ -181,10 +181,16 @@ export default function EventDetailPage() {
               >
                 <div className="absolute top-0 right-0 w-24 h-24 bg-linear-to-bl from-primary/5 to-transparent -z-10" />
                 
-                <h3 className="text-lg font-bold flex items-center gap-2 mb-2">
-                  <Sparkles className="size-5 text-primary" />
-                  Community Connect
-                </h3>
+                <div className="flex items-center gap-3 mb-4">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="https://res.cloudinary.com/dn8lut2fc/image/upload/v1779284830/logo_d9hbsp.svg"
+                    alt="Budget Ndio Story"
+                    className="h-8 object-contain"
+                  />
+                  <div className="h-6 w-px bg-border/80" />
+                  <span className="text-xs font-bold uppercase tracking-wider text-primary">Community Hub</span>
+                </div>
                 
                 <p className="text-xs text-muted-foreground leading-relaxed mb-4">
                   Identify yourself in the photos or just attended? Enter your email to connect with fellow citizens and receive shared event updates.
