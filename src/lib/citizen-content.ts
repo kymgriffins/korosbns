@@ -81,7 +81,7 @@ export function mapApiEvent(item: Record<string, unknown>): HubEvent {
   if (sponsors.length === 0 && textToCheck.includes("tisa")) {
     sponsors.push({
       name: "Tisa (The Institute for Social Accountability)",
-      logo_url: "https://www.tisa.or.ke/wp-content/themes/tisa/images/logo.png",
+      logo_url: "https://newtisa.tisa.co.ke/wp-content/uploads/2025/03/New-TISA-logo.svg",
       website_url: "https://tisa.or.ke",
       tier: "Lead Sponsor",
       description: "Promoting citizen oversight and social accountability in public resource management in Kenya."
