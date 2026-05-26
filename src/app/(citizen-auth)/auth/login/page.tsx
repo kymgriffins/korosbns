@@ -12,6 +12,7 @@ import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
 import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
+import { citizenApi } from "@/lib/api-client";
 
 function LoginForm() {
   const { login } = useAuth();
@@ -21,6 +22,7 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState("");
+  const [resending, setResending] = useState(false);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,6 +37,22 @@ function LoginForm() {
       toast.error(message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    if (!email.trim()) {
+      toast.error("Enter your email address first.");
+      return;
+    }
+    setResending(true);
+    try {
+      await citizenApi.resendVerification(email.trim());
+      toast.success("If that email exists, we sent a new verification link.");
+    } catch {
+      toast.error("Failed to resend verification email.");
+    } finally {
+      setResending(false);
     }
   };
 
@@ -75,6 +93,16 @@ function LoginForm() {
         <Link href={Routes.Reset} className="text-primary hover:underline">
           Forgot password?
         </Link>
+      </p>
+      <p className="mt-2 text-center text-sm text-muted-foreground">
+        <button
+          type="button"
+          onClick={handleResendVerification}
+          disabled={resending}
+          className="text-primary hover:underline text-sm"
+        >
+          {resending ? "Sending…" : "Resend verification email"}
+        </button>
       </p>
       <p className="mt-2 text-center text-sm text-muted-foreground">
         No account?{" "}

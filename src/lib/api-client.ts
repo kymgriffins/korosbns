@@ -131,6 +131,19 @@ export type UserProfileApi = {
   event_toggles?: Record<string, boolean>;
   digest_frequency?: string;
   social_links?: SocialLinkApi[];
+  metadata?: Record<string, unknown>;
+  county?: string;
+  ward?: string;
+  budget_priorities?: string[];
+  language_preference?: string;
+  break_name?: string;
+  pseudo_name?: string;
+  phone_number?: string;
+  notifications_enabled?: boolean;
+  whatsapp_fallback?: boolean;
+  dpa_consent_granted?: boolean;
+  dpa_consent_timestamp?: string;
+  onboarding_completed_at?: string;
 };
 
 export type AuthLoginResponse = { access: string; refresh: string };
@@ -377,6 +390,19 @@ export const citizenApi = {
     apiFetch<{ detail: string }>("/auth/password-reset/confirm/", {
       method: "POST",
       body: JSON.stringify({ token, password }),
+    }),
+
+  changePassword: (current_password: string, new_password: string) =>
+    apiFetch<{ detail: string }>("/auth/password/change/", {
+      method: "POST",
+      auth: true,
+      body: JSON.stringify({ current_password, new_password }),
+    }),
+
+  resendVerification: (email: string) =>
+    apiFetch<{ detail: string }>("/auth/verify/resend/", {
+      method: "POST",
+      body: JSON.stringify({ email }),
     }),
 
   acceptInvitation: (token: string) =>
