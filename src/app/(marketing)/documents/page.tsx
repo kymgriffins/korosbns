@@ -1,47 +1,61 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ExternalLink, FileText, Calendar, Loader2, Bookmark } from "lucide-react";
+import { ExternalLink, FileText, Calendar, Loader2 } from "lucide-react";
 import type { LearnHubItem } from "@/lib/learn-hub";
 import { learnHubApi } from "@/lib/learn-hub";
 import { cn } from "@/utils";
 
-type DocCategory = {
-  id: string;
-  label: string;
-  icon: string;
+const KNOWN_FAMILIES: Record<string, { label: string; icon: string }> = {
+  constitution:                { label: "Constitution", icon: "🛡️" },
+  budget_policy_statement:     { label: "Budget Policy Statement", icon: "⚖️" },
+  division_of_revenue_bill:    { label: "Division of Revenue Bill", icon: "💰" },
+  finance_bill:                { label: "Finance Bill", icon: "🏛️" },
+  county_allocation_of_revenue:{ label: "County Allocation of Revenue", icon: "🏗️" },
+  cfsp:                        { label: "CFSP", icon: "📋" },
+  cidp:                        { label: "CIDP", icon: "🗺️" },
+  adp:                         { label: "ADP", icon: "📊" },
+  cfa:                         { label: "CFA", icon: "📑" },
+  crop:                        { label: "CROP", icon: "📑" },
+  cbr:                         { label: "CBR", icon: "📈" },
+  brop:                        { label: "BROP", icon: "📉" },
 };
 
-const CATEGORIES: DocCategory[] = [
-  { id: "all", label: "All Documents", icon: "📄" },
-  { id: "budget_policy_statement", label: "Budget Policy Statement", icon: "⚖️" },
-  { id: "division_of_revenue_bill", label: "Division of Revenue Bill", icon: "💰" },
-  { id: "finance_bill", label: "Finance Bill", icon: "🏛️" },
-  { id: "county_allocation", label: "County Allocation", icon: "🏗️" },
-  { id: "cfsp", label: "CFSP", icon: "📋" },
-  { id: "cidp", label: "CIDP", icon: "🗺️" },
-  { id: "adp", label: "ADP", icon: "📊" },
-  { id: "cfa_crop", label: "CFA / CROP", icon: "📑" },
-  { id: "cbr", label: "CBR", icon: "📈" },
-  { id: "brop", label: "BROP", icon: "📉" },
-  { id: "constitution", label: "Constitution", icon: "🛡️" },
-];
+function normalizeFamilyId(raw: string): string {
+  return raw.toLowerCase().replace(/[^a-z0-9_]/g, "_").replace(/_+/g, "_").replace(/^_|_$/g, "");
+}
 
-function categorizeDoc(doc: LearnHubItem): string {
+function docFamilyId(doc: LearnHubItem): string {
+  const tag = doc.tags?.[0];
+  const raw = tag?.name ?? tag?.slug ?? "";
+  if (raw) return normalizeFamilyId(raw);
+
   const title = doc.title.toLowerCase();
-  const tags = doc.tags?.map((t) => (t.name ?? t.slug ?? "").toLowerCase()) ?? [];
+  for (const key of Object.keys(KNOWN_FAMILIES)) {
+    if (title.includes(key.replace(/_/g, " ")) || title.includes(key)) return key;
+  }
+  return normalizeFamilyId(doc.title.split(" ").slice(0, 3).join("_"));
+}
 
-  if (tags.some((t) => t.includes("constitution")) || title.includes("constitution")) return "constitution";
-  if (tags.some((t) => t.includes("budget_policy")) || title.includes("budget policy")) return "budget_policy_statement";
-  if (tags.some((t) => t.includes("finance_bill")) || title.includes("finance bill")) return "finance_bill";
-  if (tags.some((t) => t.includes("division_of_revenue")) || title.includes("division of revenue")) return "division_of_revenue_bill";
-  if (tags.some((t) => t.includes("cfsp")) || title.includes("cfsp")) return "cfsp";
-  if (tags.some((t) => t.includes("cidp")) || title.includes("cidp")) return "cidp";
-  if (tags.some((t) => t.includes("adp")) || title.includes("adp")) return "adp";
-  if (tags.some((t) => t.includes("cfa") || t.includes("crop")) || title.includes("cfa") || title.includes("crop")) return "cfa_crop";
-  if (tags.some((t) => t.includes("cbr")) || title.includes("cbr")) return "cbr";
-  if (tags.some((t) => t.includes("brop")) || title.includes("brop")) return "brop";
-  return "county_allocation";
+function useDocCategories(items: LearnHubItem[]) {
+  return useMemo(() => {
+    const seen = new Map<string, number>();
+    for (const doc of items) {
+      const id = docFamilyId(doc);
+      seen.set(id, (seen.get(id) ?? 0) + 1);
+    }
+    const cats = [{ id: "all", label: "All Documents", icon: "📄", count: items.length }];
+    for (const [id, count] of seen) {
+      const known = KNOWN_FAMILIES[id];
+      cats.push({
+        id,
+        label: known?.label ?? id.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+        icon: known?.icon ?? "📄",
+        count,
+      });
+    }
+    return cats;
+  }, [items]);
 }
 
 export default function DocumentsPage() {
@@ -61,6 +75,8 @@ export default function DocumentsPage() {
 
   useEffect(() => { void load(); }, [load]);
 
+  const categories = useDocCategories(items);
+
   const years = useMemo(() => {
     const y = new Set<number>();
     items.forEach((i) => { if (i.fiscal_year) y.add(i.fiscal_year); });
@@ -70,9 +86,9 @@ export default function DocumentsPage() {
   const categorized = useMemo(() => {
     const map = new Map<string, LearnHubItem[]>();
     for (const doc of items) {
-      const cat = categorizeDoc(doc);
-      if (!map.has(cat)) map.set(cat, []);
-      map.get(cat)!.push(doc);
+      const id = docFamilyId(doc);
+      if (!map.has(id)) map.set(id, []);
+      map.get(id)!.push(doc);
     }
     return map;
   }, [items]);
@@ -82,12 +98,6 @@ export default function DocumentsPage() {
     if (yearFilter) docs = docs.filter((d) => d.fiscal_year === yearFilter);
     return docs;
   }, [items, categorized, activeCategory, yearFilter]);
-
-  const categoryCounts = useMemo(() => {
-    const counts: Record<string, number> = { all: items.length };
-    for (const [cat, docs] of categorized) counts[cat] = docs.length;
-    return counts;
-  }, [items, categorized]);
 
   return (
     <div className="min-h-dvh bg-background">
@@ -109,7 +119,7 @@ export default function DocumentsPage() {
 
         {/* Category Pills */}
         <div className="mb-8 flex flex-wrap gap-2">
-          {CATEGORIES.filter((c) => c.id === "all" || (categorized.get(c.id)?.length ?? 0) > 0).map((cat) => (
+          {categories.map((cat) => (
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
@@ -126,7 +136,7 @@ export default function DocumentsPage() {
                 "ml-1 rounded-full px-1.5 py-0.5 text-[10px] font-bold",
                 activeCategory === cat.id ? "bg-primary-foreground/20 text-primary-foreground" : "bg-muted text-muted-foreground"
               )}>
-                {categoryCounts[cat.id] ?? 0}
+                {cat.count}
               </span>
             </button>
           ))}
@@ -183,14 +193,14 @@ export default function DocumentsPage() {
 }
 
 function DocumentCard({ doc }: { doc: LearnHubItem }) {
-  const cat = CATEGORIES.find((c) => c.id === categorizeDoc(doc));
+  const cat = KNOWN_FAMILIES[docFamilyId(doc)];
   const yearLabel = doc.fiscal_year ? `FY ${doc.fiscal_year - 1}/${String(doc.fiscal_year).slice(-2)}` : null;
 
   return (
     <div className="group flex flex-col rounded-2xl border border-border bg-card p-5 transition-all hover:border-primary/40 hover:shadow-sm">
       <div className="flex items-start gap-3">
         <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-lg">
-          {cat?.icon ?? "📄"}
+          {KNOWN_FAMILIES[docFamilyId(doc)]?.icon ?? "📄"}
         </div>
         <div className="min-w-0 flex-1">
           <h3 className="text-sm font-semibold leading-snug">{doc.title}</h3>
@@ -207,9 +217,9 @@ function DocumentCard({ doc }: { doc: LearnHubItem }) {
             {yearLabel}
           </span>
         )}
-        {cat && cat.id !== "all" && (
+        {KNOWN_FAMILIES[docFamilyId(doc)] && (
           <span className="rounded-full bg-primary/5 px-2 py-0.5 text-[10px] font-semibold text-primary">
-            {cat.label}
+            {KNOWN_FAMILIES[docFamilyId(doc)]!.label}
           </span>
         )}
       </div>
