@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { CheckCircle2, Loader2, XCircle } from "lucide-react";
 import { AuthShell } from "@/layouts/AuthShell";
 import { Button } from "@/ui/button";
@@ -11,6 +11,7 @@ import { citizenApi } from "@/lib/api-client";
 
 function VerifyContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const token = searchParams.get("token");
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
   const [message, setMessage] = useState("Verifying your email…");
@@ -26,12 +27,16 @@ function VerifyContent() {
       .then((data) => {
         setStatus("success");
         setMessage(data.detail || "Email verified.");
+        // Auto-redirect to login after brief delay
+        setTimeout(() => {
+          router.push(Routes.Login);
+        }, 2000);
       })
       .catch((err) => {
         setStatus("error");
         setMessage(err instanceof Error ? err.message : "Verification failed.");
       });
-  }, [token]);
+  }, [token, router]);
 
   return (
     <AuthShell title="Email verification">

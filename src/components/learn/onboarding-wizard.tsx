@@ -6,6 +6,8 @@ import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
 import { Checkbox } from "@/ui/checkbox";
 import { Flame, Bell, Shield, ArrowRight, ArrowLeft } from "lucide-react";
+import { citizenApi } from "@/lib/api-client";
+import { useAuth } from "@/contexts/auth-context";
 
 // List of all 47 Kenyan Counties
 const COUNTIES = [
@@ -24,6 +26,7 @@ interface OnboardingWizardProps {
 }
 
 export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
+  const { isLoggedIn } = useAuth();
   const [step, setStep] = useState(1);
   const [breakName, setBreakName] = useState("");
   const [pseudoName, setPseudoName] = useState("");
@@ -99,6 +102,29 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
 
     // Save to localStorage
     localStorage.setItem("bns_user_profile", JSON.stringify(profile));
+
+    // Persist to backend if logged in
+    if (isLoggedIn) {
+      citizenApi.patchMe({
+        display_name: breakName.trim(),
+        location: county,
+        metadata: {
+          county,
+          ward: ward.trim() || "",
+          break_name: breakName.trim(),
+          pseudo_name: pseudoName.trim(),
+          language,
+          notifications_enabled: notifications,
+          whatsapp_fallback: whatsappFallback,
+          phone: phone.trim() || "",
+          dpa_consent: consent,
+          dpa_consent_timestamp: new Date().toISOString(),
+          onboarding_completed_at: new Date().toISOString(),
+        },
+      }).catch(() => {
+        // Backend metadata field may not be fully exposed yet
+      });
+    }
     
     // Complete wizard
     onComplete(profile);

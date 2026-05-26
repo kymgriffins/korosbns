@@ -1,10 +1,42 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+const protectedPaths = [
+  "/account",
+  "/learn/profile",
+  "/learn/quests",
+];
+
+const authPaths = [
+  "/auth/login",
+  "/auth/register",
+  "/auth/reset",
+  "/auth/verify",
+];
+
 export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const token = request.cookies.get("access_token")?.value
+    ?? request.headers.get("authorization")?.replace("Bearer ", "");
+
+  const isProtected = protectedPaths.some((p) => pathname === p || pathname.startsWith(p + "/"));
+  const isAuthPage = authPaths.some((p) => pathname === p || pathname.startsWith(p + "/"));
+
+  if (isProtected && !token) {
+    const loginUrl = new URL("/auth/login", request.url);
+    loginUrl.searchParams.set("next", pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  if (isAuthPage && token) {
+    return NextResponse.redirect(new URL("/account", request.url));
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: [],
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico|logo.svg|sitemap.xml|robots.txt).*)",
+  ],
 };

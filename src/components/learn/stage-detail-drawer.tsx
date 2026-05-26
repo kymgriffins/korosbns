@@ -17,6 +17,8 @@ import {
   CONSTITUTION_HISTORICAL_DOCS,
   PARTICIPATION_TOOLKIT_DOCS
 } from "@/constants/documents-registry";
+import { getStageTakeaway } from "@/constants/stages-data";
+import { learnHubApi } from "@/lib/learn-hub";
 
 interface TriviaItem {
   type: "multiple-choice" | "reflection";
@@ -53,20 +55,7 @@ interface Stage {
   steps: Step[];
 }
 
-const getStepTakeaway = (stageId: number, stepId: number): { type: "info" | "warning"; title: string; text: string } | null => {
-  if (stageId === 1) {
-    if (stepId === 1) return { type: "info", title: "Key Principle", text: "Article 201 mandates that the public finance system must promote an equitable society and be open to public participation." };
-    if (stepId === 2) return { type: "info", title: "Access to Info", text: "Article 35 gives you the right to access county budgets and plans. Transparency is a legal requirement, not a favor." };
-    if (stepId === 3) return { type: "warning", title: "Independent Watchdog", text: "The Controller of Budget (COB) must approve all withdrawals from public funds, preventing unauthorized spending." };
-  }
-  if (stageId === 2) {
-    if (stepId === 1) return { type: "info", title: "Critical Date", text: "By law, the Treasury must submit the BPS to Parliament by February 15th annually to guide the national budget." };
-    if (stepId === 2) return { type: "info", title: "BETA Pillars", text: "The 2026 BPS prioritizes Agriculture and MSMEs through Hustler Fund expansion and county-level training hubs." };
-    if (stepId === 3) return { type: "info", title: "UHC Target", text: "The Universal Health Coverage goal is to enroll 35 million Kenyans into the Social Health Authority (SHA)." };
-    if (stepId === 4) return { type: "warning", title: "Debt Ceiling Impact", text: "With over KES 1 Trillion in debt interest, development budgets are squeezed, requiring strict fiscal discipline." };
-  }
-  return null;
-};
+// getStageTakeaway imported from @/constants/stages-data
 
 interface StageDetailDrawerProps {
   stage: Stage;
@@ -260,6 +249,12 @@ export function StageDetailDrawer({
       localStorage.setItem(`stage_${stage.id}_step_${step.id}_trivia_passed`, "true");
       setContentConsumed(true);
       toast.success("Step complete! ⭐");
+      // Sync step progress to backend
+      learnHubApi.markProgress({
+        content_type: "article",
+        content_id: `stage-${stage.id}-step-${step.id}`,
+        progress_percent: Math.round((currentStep / stage.steps.length) * 100),
+      }).catch(() => {});
       autoAdvanceRef.current = setTimeout(() => {
         setCurrentStep((prev) => {
           const nextVal = prev + 1;
@@ -296,6 +291,14 @@ export function StageDetailDrawer({
           allStagesBonusEarned: allStagesDoneBonus > 0 ? true : profile.allStagesBonusEarned
         };
         onUpdateProfile(updatedProfile);
+
+        // Sync stage mastery to backend
+        learnHubApi.markProgress({
+          content_type: "path",
+          content_id: `stage-${stage.id}`,
+          progress_percent: 100,
+        }).catch(() => {});
+
         toast.success(`🎉 Stage Mastered! +25 Sovereigns (SVG) earned. ${stage.badge} Badge unlocked!`);
       }
     }
@@ -562,13 +565,16 @@ export function StageDetailDrawer({
                           <p className="text-xs font-bold text-foreground">Audio Lesson</p>
                           <p className="text-[10px] text-muted-foreground">Listen to key takeaways for this step</p>
                         </div>
-                        <Button
-                          onClick={() => setAudioPlaying(!audioPlaying)}
-                          className="rounded-xl shadow-xs font-bold text-xs gap-1.5"
-                        >
-                          {audioPlaying ? <Pause className="size-4" /> : <Play className="size-4 fill-current" />}
-                          <span>{audioPlaying ? "Pause" : "Play Audio"}</span>
-                        </Button>
+                        <audio
+                          key={`${stage.id}-${currentStep}`}
+                          src={stage.steps[currentStep - 1]?.audioUrl}
+                          preload="none"
+                          controls
+                          className="w-full max-w-xs rounded-xl"
+                          onPlay={() => setAudioPlaying(true)}
+                          onPause={() => setAudioPlaying(false)}
+                          onEnded={() => setAudioPlaying(false)}
+                        />
                       </div>
                     )}
 
@@ -590,7 +596,7 @@ export function StageDetailDrawer({
                           ))}
 
                         {(() => {
-                          const takeaway = getStepTakeaway(stage.id, stage.steps[currentStep - 1].id);
+                          const takeaway = getStageTakeaway(stage.id, stage.steps[currentStep - 1].id);
                           if (!takeaway) return null;
                           if (takeaway.type === "info") {
                             return (

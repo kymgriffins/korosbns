@@ -18,9 +18,14 @@ export default function AccountPage() {
           { label: "Account" },
         ]}
         actions={
-          <Button type="button" variant="outline" size="sm" asChild>
-            <Link href={Routes.AccountSignOut}>Sign out</Link>
-          </Button>
+          <div className="flex gap-2">
+            <Button type="button" variant="outline" size="sm" asChild>
+              <Link href="/account/password">Change Password</Link>
+            </Button>
+            <Button type="button" variant="outline" size="sm" asChild>
+              <Link href={Routes.AccountSignOut}>Sign out</Link>
+            </Button>
+          </div>
         }
       >
         <AccountProfileForm />

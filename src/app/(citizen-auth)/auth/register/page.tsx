@@ -133,14 +133,14 @@ export default function RegisterPage() {
 
     setLoading(true);
     try {
-      await citizenApi.register({
+      const result = await citizenApi.register({
         email: email.trim(),
         password,
         first_name: firstName.trim(),
         last_name: lastName.trim(),
       });
 
-      // Save onboarding choices locally
+      // Save onboarding choices locally for later sync when user verifies email
       const profile = {
         priorities: selectedPriorities,
         county,
@@ -148,6 +148,9 @@ export default function RegisterPage() {
         onboardingCompleted: true,
       };
       localStorage.setItem("bns_onboarding_profile", JSON.stringify(profile));
+
+      // NOTE: Onboarding data saved to localStorage only - will be synced to
+      // backend after user verifies email and logs in (see learn-paths-home.tsx).
 
       setSent(true);
       toast.success("Registration complete! Check your email.");
