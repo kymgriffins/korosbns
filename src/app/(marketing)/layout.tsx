@@ -18,10 +18,12 @@ const MarketingLayout = ({
   const isAccountPage = pathname.startsWith("/account");
   const showMarketingFooter = !isContactPage && !isLearnApp && !isAccountPage;
 
+  const showMarketingChrome = !isAccountPage && !isLearnApp;
+
   return (
     <main
       className={`w-full relative ${
-        isAccountPage || isLearnApp ? "" : "pt-14 sm:pt-20"
+        showMarketingChrome ? "pt-12 md:pt-16 lg:pt-20" : ""
       }`}
     >
       {!isAccountPage && !isLearnApp && <Navbar />}
@@ -33,6 +35,7 @@ const MarketingLayout = ({
           animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           exit={{ opacity: 0, y: -10, filter: "blur(4px)" }}
           transition={{ duration: 0.38, ease: ease.expo }}
+          className={isLearnApp ? "h-dvh overflow-hidden md:h-auto md:overflow-visible" : undefined}
         >
           {children}
         </motion.div>

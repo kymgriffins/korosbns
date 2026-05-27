@@ -8,7 +8,7 @@ import { Textarea } from "@/ui/textarea";
 import {
   Play, Pause, CheckCircle2, AlertCircle, ExternalLink,
   BookOpen, Trophy, ArrowRight, ArrowLeft, X, Sparkles, HelpCircle,
-  Volume2, VolumeX, FileText, Search, DownloadCloud, Award, Lock, FileCheck, Share2, History
+  FileText, Search, DownloadCloud, Award, Lock, FileCheck, Share2, History
 } from "lucide-react";
 import { cn } from "@/utils";
 import {
@@ -80,8 +80,7 @@ export function StageDetailDrawer({
 }: StageDetailDrawerProps) {
   const [activeSubTab, setActiveSubTab] = useState<"learn" | "documents">("learn");
   const [currentStep, setCurrentStep] = useState<number>(0);
-  const [activeFormat, setActiveFormat] = useState<"video" | "audio" | "text">("video");
-  const [audioPlaying, setAudioPlaying] = useState<boolean>(false);
+  const [activeFormat, setActiveFormat] = useState<"video" | "text">("video");
   const [contentConsumed, setContentConsumed] = useState<boolean>(true);
   const [showTrivia, setShowTrivia] = useState<boolean>(false);
   const [activeTriviaIdx, setActiveTriviaIdx] = useState<number>(0);
@@ -144,7 +143,6 @@ export function StageDetailDrawer({
     const initialStep = storedStep ? parseInt(storedStep, 10) : 0;
     setCurrentStep(initialStep);
     setActiveFormat("video");
-    setAudioPlaying(false);
     setContentConsumed(true);
     setActiveTriviaIdx(0);
     setShowTrivia(false);
@@ -163,13 +161,11 @@ export function StageDetailDrawer({
 
   useEffect(() => {
     if (currentStep < 1 || currentStep > stage.steps.length) {
-      setAudioPlaying(false);
       setContentConsumed(true);
       return;
     }
     const step = stage.steps[currentStep - 1];
     setContentConsumed(true);
-    setAudioPlaying(false);
     setShowTrivia(false);
     setActiveTriviaIdx(0);
     setSelectedTriviaAnswer(null);
@@ -350,8 +346,6 @@ export function StageDetailDrawer({
   const standardYears = [2026, 2025, 2024, 2023, 2022, 2021, 2020];
   const yearOptions = stage.id === 1 ? constitutionYears : standardYears;
 
-  const hasAudio = currentStep >= 1 && currentStep <= stage.steps.length && !!stage.steps[currentStep - 1].audioUrl;
-
   /* Progress dots helper */
   const totalSteps = stage.steps.length;
   const progressDots = () => {
@@ -376,7 +370,7 @@ export function StageDetailDrawer({
   };
 
   return (
-    <div className="absolute inset-0 z-20 bg-background flex flex-col overflow-hidden md:relative md:inset-auto md:z-auto md:h-full">
+    <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-background md:relative md:inset-auto md:z-auto md:h-full">
 
       {/* ── Compressed Header (48px) with inline sub-tab pills ── */}
       <header className="sticky top-0 z-10 w-full h-12 border-b border-border bg-background/95 backdrop-blur-sm flex items-center justify-between px-4 gap-2 shrink-0">
@@ -500,7 +494,7 @@ export function StageDetailDrawer({
                 </div>
                 <Progress value={((currentStep - 1) / stage.steps.length) * 100} className="h-1.5 rounded-full" />
 
-                {/* Format Toggle: Watch / Listen / Read pill */}
+                {/* Format Toggle: Watch / Read pill */}
                 {!showTrivia && (
                   <div className="inline-flex items-center gap-0.5 p-0.5 bg-muted/60 rounded-lg">
                     <button
@@ -511,19 +505,6 @@ export function StageDetailDrawer({
                       )}
                     >
                       🎥 Watch
-                    </button>
-                    <button
-                      onClick={() => {
-                        if (hasAudio) setActiveFormat("audio");
-                        else toast.info("Audio not available for this step.");
-                      }}
-                      className={cn(
-                        "px-3 py-1.5 rounded-md text-xs font-semibold transition-all flex items-center gap-1.5",
-                        activeFormat === "audio" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground",
-                        !hasAudio && "opacity-40 cursor-not-allowed"
-                      )}
-                    >
-                      🎧 Listen
                     </button>
                     <button
                       onClick={() => setActiveFormat("text")}
@@ -552,29 +533,6 @@ export function StageDetailDrawer({
                             allowFullScreen
                           />
                         </div>
-                      </div>
-                    )}
-
-                    {/* AUDIO FORMAT */}
-                    {activeFormat === "audio" && (
-                      <div className="max-w-md mx-auto p-6 rounded-xl bg-muted/20 border border-border flex flex-col items-center text-center space-y-3">
-                        <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center">
-                          <Volume2 className="size-6 text-primary" />
-                        </div>
-                        <div>
-                          <p className="text-xs font-bold text-foreground">Audio Lesson</p>
-                          <p className="text-[10px] text-muted-foreground">Listen to key takeaways for this step</p>
-                        </div>
-                        <audio
-                          key={`${stage.id}-${currentStep}`}
-                          src={stage.steps[currentStep - 1]?.audioUrl}
-                          preload="none"
-                          controls
-                          className="w-full max-w-xs rounded-xl"
-                          onPlay={() => setAudioPlaying(true)}
-                          onPause={() => setAudioPlaying(false)}
-                          onEnded={() => setAudioPlaying(false)}
-                        />
                       </div>
                     )}
 
@@ -981,53 +939,80 @@ export function StageDetailDrawer({
 
       </div>
 
-      {/* ── Centered Navigation Footer with Progress Dots ── */}
-      {currentStep > 0 && (
-        <footer className="shrink-0 h-14 border-t border-border bg-card flex items-center justify-center gap-4 px-4 z-10">
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => {
-              const nextVal = currentStep - 1;
-              setCurrentStep(nextVal);
-              localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
-              setShowTrivia(true);
-            }}
-            className="rounded-xl gap-1 text-xs min-w-[100px]"
-          >
-            <ArrowLeft className="size-4" /> Previous
-          </Button>
-
-          <div className="flex flex-col items-center gap-0.5">
-            {progressDots()}
-            <span className="text-[9px] font-semibold text-muted-foreground">
-              {currentStep > stage.steps.length ? "Mastery" : `${currentStep} / ${stage.steps.length}`}
-            </span>
-          </div>
-
-          {currentStep <= stage.steps.length ? (
+      {/* ── Navigation footer: Back + Start on overview (step 0); Prev/Next on steps ── */}
+      <footer className="z-10 flex h-14 shrink-0 items-center justify-center gap-4 border-t border-border bg-card px-4">
+        {currentStep === 0 ? (
+          <>
             <Button
               size="sm"
+              variant="outline"
+              onClick={onClose}
+              className="min-w-[100px] gap-1 rounded-xl text-xs"
+            >
+              <ArrowLeft className="size-4" /> Back
+            </Button>
+            <span className="text-[9px] font-semibold text-muted-foreground">Overview</span>
+            <Button
+              size="sm"
+              onClick={handleStartLearning}
+              className="min-w-[100px] gap-1 rounded-xl text-xs"
+            >
+              Start <ArrowRight className="size-4" />
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button
+              size="sm"
+              variant="outline"
               onClick={() => {
-                const nextVal = currentStep + 1;
+                const nextVal = currentStep - 1;
                 setCurrentStep(nextVal);
                 localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
+                setShowTrivia(false);
               }}
-              className="rounded-xl gap-1 text-xs min-w-[100px]"
+              className="min-w-[100px] gap-1 rounded-xl text-xs"
             >
-              Continue <ArrowRight className="size-4" />
+              <ArrowLeft className="size-4" /> Previous
             </Button>
-          ) : (
-            <Button
-              size="sm"
-              onClick={() => { if (hasNext && onNextStage) { onNextStage(); } else { onClose(); } }}
-              className="rounded-xl gap-1 text-xs min-w-[100px]"
-            >
-              Finish <CheckCircle2 className="size-4" />
-            </Button>
-          )}
-        </footer>
-      )}
+
+            <div className="flex flex-col items-center gap-0.5">
+              {progressDots()}
+              <span className="text-[9px] font-semibold text-muted-foreground">
+                {currentStep > stage.steps.length ? "Mastery" : `${currentStep} / ${stage.steps.length}`}
+              </span>
+            </div>
+
+            {currentStep <= stage.steps.length ? (
+              <Button
+                size="sm"
+                onClick={() => {
+                  const nextVal = currentStep + 1;
+                  setCurrentStep(nextVal);
+                  localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
+                }}
+                className="min-w-[100px] gap-1 rounded-xl text-xs"
+              >
+                Continue <ArrowRight className="size-4" />
+              </Button>
+            ) : (
+              <Button
+                size="sm"
+                onClick={() => {
+                  if (hasNext && onNextStage) {
+                    onNextStage();
+                  } else {
+                    onClose();
+                  }
+                }}
+                className="min-w-[100px] gap-1 rounded-xl text-xs"
+              >
+                Finish <CheckCircle2 className="size-4" />
+              </Button>
+            )}
+          </>
+        )}
+      </footer>
 
     </div>
   );

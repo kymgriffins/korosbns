@@ -20,22 +20,22 @@ export function Header() {
     const isMobileDevice = () => window.innerWidth < 1024;
 
     if (isOpen && isMobileDevice()) {
-      document.body.style.overflow = "hidden";
+      document.body.classList.add("overflow-hidden");
     } else {
-      document.body.style.overflow = "";
+      document.body.classList.remove("overflow-hidden");
     }
 
     const handleResize = () => {
       if (!isMobileDevice()) {
-        document.body.style.overflow = "";
+        document.body.classList.remove("overflow-hidden");
       } else if (isOpen) {
-        document.body.style.overflow = "hidden";
+        document.body.classList.add("overflow-hidden");
       }
     };
 
     window.addEventListener("resize", handleResize);
     return () => {
-      document.body.style.overflow = "";
+      document.body.classList.remove("overflow-hidden");
       window.removeEventListener("resize", handleResize);
     };
   }, [isOpen]);
@@ -50,10 +50,10 @@ export function Header() {
       >
         <div
           ref={ref}
-          className="mx-auto flex h-14 max-w-[1400px] items-center justify-between px-6 md:h-16 md:px-16"
+          className="mx-auto flex h-12 max-w-[1400px] items-center justify-between px-4 md:h-16 md:px-16 lg:px-6"
         >
-          <div className="flex items-center flex-1 min-w-0">
-            <Link href={Routes.Home} className="flex items-center gap-2 group shrink-0">
+          <div className="flex min-w-0 flex-1 items-center">
+            <Link href={Routes.Home} className="group flex shrink-0 items-center gap-2">
               <motion.div
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.97 }}
@@ -64,15 +64,15 @@ export function Header() {
                   alt="Budget Ndio Story"
                   width={140}
                   height={28}
-                  className="w-auto h-5 lg:h-6 transition-all group-hover:brightness-110"
+                  className="h-5 w-auto transition-all group-hover:brightness-110 lg:h-6"
                 />
               </motion.div>
             </Link>
           </div>
 
-          <div className="flex items-center gap-2 md:gap-3 shrink-0">
+          <div className="flex shrink-0 items-center gap-2 md:gap-3">
             <ThemeToggle />
-            <Link href={Routes.JoinUs}>
+            <Link href={Routes.JoinUs} className="hidden sm:block">
               <Button variant="white" size="sm" className="h-9 px-4 font-medium">
                 Join us
               </Button>
@@ -85,7 +85,7 @@ export function Header() {
                 size="icon-sm"
                 variant="ghost"
                 onClick={() => setIsOpen((prev) => !prev)}
-                className="h-9 w-9 relative overflow-hidden"
+                className="relative h-9 w-9 overflow-hidden"
                 aria-label="Toggle menu"
               >
                 <AnimatePresence mode="wait" initial={false}>

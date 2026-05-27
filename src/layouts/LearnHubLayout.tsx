@@ -1,17 +1,16 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { Suspense, useState, useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { 
-  Trophy, User, ChevronRight, ChevronLeft,
+  User, ChevronRight, ChevronLeft,
   BookOpen, Bell, Home, CheckCircle2, ArrowLeft
 } from "lucide-react";
-import { Routes } from "@/constants/routes";
 import { cn } from "@/utils";
 import { LearnProvider, useLearn, type LearnTab } from "@/contexts/learn-context";
 import { useAuth } from "@/contexts/auth-context";
-import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/ui/button";
+import { LearnMobileNav } from "@/layouts/LearnMobileNav";
 
 const ALL_STAGES = [
   { id: 1, badge: "🛡️", title: "Constitution" },
@@ -39,16 +38,32 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
     }
   }, [setSidebarCollapsed]);
 
+  useEffect(() => {
+    const isMobileDevice = () => window.innerWidth < 768;
+
+    const lockBody = () => {
+      if (isMobileDevice()) {
+        document.body.classList.add("overflow-hidden");
+      } else {
+        document.body.classList.remove("overflow-hidden");
+      }
+    };
+
+    lockBody();
+    window.addEventListener("resize", lockBody);
+    return () => {
+      document.body.classList.remove("overflow-hidden");
+      window.removeEventListener("resize", lockBody);
+    };
+  }, []);
+
   const toggleSidebar = () => {
     const nextState = !sidebarCollapsed;
     setSidebarCollapsed(nextState);
     localStorage.setItem("bns_sidebar_collapsed", nextState ? "true" : "false");
   };
 
-  const streak = gamification?.streak_days ?? 0;
   const level = gamification?.level ?? 1;
-  const points = gamification?.points ?? 0;
-  const ringPercent = Math.min(100, points % 100);
 
   const navItems: { key: LearnTab; label: string; icon: React.ReactNode }[] = [
     { key: "home", label: "Home", icon: <Home className="size-5" /> },
@@ -68,7 +83,7 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
   const showCurriculum = !!activeLesson;
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row relative overflow-hidden">
+    <div className="h-dvh md:min-h-screen md:h-auto bg-background text-foreground flex flex-col md:flex-row relative overflow-hidden md:overflow-x-hidden">
       
       {/* 🖥️ Desktop Sidebar — dual-mode (nav / curriculum rail) 320px */}
       {isLoggedIn && (
@@ -268,40 +283,16 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
       </aside>
       )}
 
-      {/* 🚀 Main Content Canvas */}
-      <main className="flex-1 min-h-[calc(100vh-3.5rem)] md:min-h-screen pb-16 md:pb-0 flex flex-col">
-        {children}
-      </main>
+      {/* Main content canvas — viewport-locked on mobile; no page scroll */}
+      <div className="flex-1 flex flex-col min-h-0 h-full md:h-auto overflow-hidden">
+        <main className="flex-1 min-h-0 overflow-hidden flex flex-col">
+          {children}
+        </main>
 
-      {/* 📱 Mobile Fixed Bottom Navigation — h-14 (56px) */}
-      <nav className="fixed bottom-0 inset-x-0 h-14 bg-background/95 backdrop-blur-md border-t border-border z-40 flex items-center justify-around px-2 md:hidden">
-        {navItems.map((item) => {
-          const active = activeTab === item.key;
-          return (
-            <button
-              key={item.key}
-              onClick={() => handleTabChange(item.key)}
-              className="flex flex-col items-center justify-center flex-1 h-full py-1 text-center group"
-            >
-              <div className={cn(
-                "p-1 rounded-xl transition-all duration-200",
-                active 
-                  ? "bg-primary/10 text-primary scale-105" 
-                  : "text-muted-foreground group-hover:text-foreground"
-              )}>
-                {item.icon}
-              </div>
-              <span className={cn(
-                "text-[9px] font-semibold mt-0.5 tracking-tight transition-colors",
-                active ? "text-primary" : "text-muted-foreground"
-              )}>
-                {item.label}
-              </span>
-            </button>
-          );
-        })}
-      </nav>
-      
+        {/* Learn hub mobile bottom nav — always visible, in-flow */}
+        <LearnMobileNav />
+      </div>
+
     </div>
   );
 }
