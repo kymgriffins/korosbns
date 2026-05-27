@@ -8,15 +8,15 @@ export const CLOUDINARY_HERO_LANDING_VIDEO_MP4 =
 
 export const CLOUDINARY_PARTNERSHIPS = {
   nationalTreasuryWorkshop:
-    "https://res.cloudinary.com/dn8lut2fc/image/upload/f_auto,q_auto/v1/partnerships/national-treasury-workshop",
+    "/images/towwnhallmay/129A3863.jpg",
   bpsSession:
-    "https://res.cloudinary.com/dn8lut2fc/image/upload/f_auto,q_auto/v1/partnerships/bps-session",
+    "/images/towwnhallmay/129A3912.jpg",
   parliamentEngagement:
-    "https://res.cloudinary.com/dn8lut2fc/image/upload/f_auto,q_auto/v1/partnerships/parliament-engagement",
+    "/images/towwnhallmay/129A3923.jpg",
   fiscalFramework:
-    "https://res.cloudinary.com/dn8lut2fc/image/upload/f_auto,q_auto/v1/partnerships/fiscal-framework",
+    "/images/towwnhallmay/129A4056.jpg",
   countyAssemblyHearing:
-    "https://res.cloudinary.com/dn8lut2fc/image/upload/f_auto,q_auto/v1/partnerships/county-assembly-hearing",
+    "/images/towwnhallmay/129A4094.jpg",
 } as const;
 
 export const LANDING_YOUTUBE_EMBED =
