@@ -8,7 +8,7 @@ import { Textarea } from "@/ui/textarea";
 import {
   Play, Pause, CheckCircle2, AlertCircle, ExternalLink,
   BookOpen, Trophy, ArrowRight, ArrowLeft, X, Sparkles, HelpCircle,
-  FileText, Search, DownloadCloud, Award, Lock, FileCheck, Share2, History
+  FileText, Search, DownloadCloud, Award, Lock, FileCheck, Share2, History, Volume2, MessageSquare, Send
 } from "lucide-react";
 import { cn } from "@/utils";
 import {
@@ -75,7 +75,7 @@ export function StageDetailDrawer({
 }: StageDetailDrawerProps) {
   const [activeSubTab, setActiveSubTab] = useState<"learn" | "documents">("learn");
   const [currentStep, setCurrentStep] = useState<number>(0);
-  const [activeFormat, setActiveFormat] = useState<"video" | "text">("video");
+  const [activeFormat, setActiveFormat] = useState<"video" | "audio" | "text" | "trivia" | "discuss">("video");
   const [contentConsumed, setContentConsumed] = useState<boolean>(true);
   const [showTrivia, setShowTrivia] = useState<boolean>(false);
   const [activeTriviaIdx, setActiveTriviaIdx] = useState<number>(0);
@@ -85,7 +85,6 @@ export function StageDetailDrawer({
   const [reflectionText, setReflectionText] = useState<string>("");
   const [selectedReflectionOption, setSelectedReflectionOption] = useState<string>("");
   const [transcriptSearch, setTranscriptSearch] = useState<string>("");
-  const autoAdvanceRef = useRef<NodeJS.Timeout | null>(null);
   const [showTranscript, setShowTranscript] = useState<boolean>(false);
   const [selectedYear, setSelectedYear] = useState<number>(2026);
   const [constitutionTab, setConstitutionTab] = useState<"current" | "timeline">("current");
@@ -93,6 +92,67 @@ export function StageDetailDrawer({
   const [apiLoading, setApiLoading] = useState<boolean>(false);
   const [origin, setOrigin] = useState<string>("");
   const [stageStats, setStageStats] = useState<{ total_users: number; avg_trivia_score: number | null } | null>(null);
+  
+  // Forum State
+  const [forumThreads, setForumThreads] = useState<any[]>([]);
+  const [activeThread, setActiveThread] = useState<any | null>(null);
+  const [newThreadTitle, setNewThreadTitle] = useState("");
+  const [newPostContent, setNewPostContent] = useState("");
+  const [forumLoading, setForumLoading] = useState(false);
+  
+  const autoAdvanceRef = useRef<NodeJS.Timeout | null>(null);
+
+  const loadForumThreads = async (chapterId: string) => {
+    setForumLoading(true);
+    try {
+      const res = await learnHubApi.getForumThreads(chapterId);
+      setForumThreads(res.results || []);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setForumLoading(false);
+    }
+  };
+
+  const loadThreadDetail = async (threadId: string) => {
+    setForumLoading(true);
+    try {
+      const res = await learnHubApi.getForumThread(threadId);
+      setActiveThread(res);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setForumLoading(false);
+    }
+  };
+
+  const handleCreateThread = async (chapterId: string) => {
+    if (!newThreadTitle.trim()) return;
+    try {
+      await learnHubApi.createForumThread({
+        title: newThreadTitle,
+        civic_module: stage.id,
+        civic_chapter: chapterId,
+      });
+      setNewThreadTitle("");
+      loadForumThreads(chapterId);
+      toast.success("Discussion started!");
+    } catch (err) {
+      toast.error("Failed to start discussion.");
+    }
+  };
+
+  const handleCreatePost = async () => {
+    if (!newPostContent.trim() || !activeThread) return;
+    try {
+      await learnHubApi.createForumPost(activeThread.id, newPostContent);
+      setNewPostContent("");
+      loadThreadDetail(activeThread.id);
+      toast.success("Reply posted!");
+    } catch (err) {
+      toast.error("Failed to post reply.");
+    }
+  };
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -142,7 +202,16 @@ export function StageDetailDrawer({
     const storedStep = localStorage.getItem(`stage_${stage.order}_current_step`);
     const initialStep = storedStep ? parseInt(storedStep, 10) : 0;
     setCurrentStep(initialStep);
-    setActiveFormat("video");
+    
+    if (initialStep > 0 && stage.steps[initialStep - 1]) {
+      const st = stage.steps[initialStep - 1];
+      if (st.youtubeId) setActiveFormat("video");
+      else if (st.audioUrl) setActiveFormat("audio");
+      else setActiveFormat("text");
+    } else {
+      setActiveFormat("text");
+    }
+    
     setContentConsumed(true);
     setActiveTriviaIdx(0);
     setShowTrivia(false);
@@ -165,8 +234,15 @@ export function StageDetailDrawer({
       return;
     }
     const step = stage.steps[currentStep - 1];
+    if (step.youtubeId) {
+      setActiveFormat("video");
+    } else if (step.audioUrl) {
+      setActiveFormat("audio");
+    } else {
+      setActiveFormat("text");
+    }
     setContentConsumed(true);
-    setShowTrivia(false);
+    setShowTrivia(true);
     setActiveTriviaIdx(0);
     setSelectedTriviaAnswer(null);
     setTriviaSubmitted(false);
@@ -175,6 +251,10 @@ export function StageDetailDrawer({
     setSelectedReflectionOption("");
     setShowTranscript(false);
     setTranscriptSearch("");
+    setActiveThread(null);
+    if (step.id) {
+      loadForumThreads(step.id);
+    }
   }, [currentStep, stage.order]);
 
   useEffect(() => {
@@ -245,12 +325,13 @@ export function StageDetailDrawer({
       localStorage.setItem(`stage_${stage.order}_step_${step.id}_trivia_passed`, "true");
       setContentConsumed(true);
       toast.success("Step complete! ⭐");
-      // Sync step progress to backend
+      // Sync step progress and unlock next chapter on backend
       learnHubApi.markProgress({
         content_type: "article",
         content_id: `stage-${stage.order}-step-${step.id}`,
         progress_percent: Math.round((currentStep / stage.steps.length) * 100),
       }).catch(() => {});
+      learnHubApi.completeChapter(step.id).catch(() => {});
       autoAdvanceRef.current = setTimeout(() => {
         setCurrentStep((prev) => {
           const nextVal = prev + 1;
@@ -509,32 +590,64 @@ export function StageDetailDrawer({
                 </div>
                 <Progress value={((currentStep - 1) / stage.steps.length) * 100} className="h-1.5 rounded-full" />
 
-                {/* Format Toggle: Watch / Read pill */}
-                {!showTrivia && (
-                  <div className="inline-flex items-center gap-0.5 p-0.5 bg-muted/60 rounded-lg">
+                {/* Format Toggle: Watch / Read / Listen / Trivia pill */}
+                <div className="inline-flex items-center gap-0.5 p-0.5 bg-muted/60 rounded-lg overflow-x-auto">
+                  {stage.steps[currentStep - 1].youtubeId && (
                     <button
                       onClick={() => setActiveFormat("video")}
                       className={cn(
-                        "px-3 py-1.5 rounded-md text-xs font-semibold transition-all flex items-center gap-1.5",
+                        "px-3 py-1.5 rounded-md text-xs font-semibold transition-all flex items-center gap-1.5 whitespace-nowrap",
                         activeFormat === "video" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
                       )}
                     >
                       🎥 Watch
                     </button>
+                  )}
+                  {stage.steps[currentStep - 1].audioUrl && (
                     <button
-                      onClick={() => setActiveFormat("text")}
+                      onClick={() => setActiveFormat("audio")}
                       className={cn(
-                        "px-3 py-1.5 rounded-md text-xs font-semibold transition-all flex items-center gap-1.5",
-                        activeFormat === "text" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
+                        "px-3 py-1.5 rounded-md text-xs font-semibold transition-all flex items-center gap-1.5 whitespace-nowrap",
+                        activeFormat === "audio" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
                       )}
                     >
-                      📖 Read
+                      🎧 Listen
                     </button>
-                  </div>
-                )}
+                  )}
+                  <button
+                    onClick={() => setActiveFormat("text")}
+                    className={cn(
+                      "px-3 py-1.5 rounded-md text-xs font-semibold transition-all flex items-center gap-1.5 whitespace-nowrap",
+                      activeFormat === "text" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    📖 Read
+                  </button>
+                  {stage.steps[currentStep - 1].trivia && stage.steps[currentStep - 1].trivia.length > 0 && (
+                    <button
+                      onClick={() => { setActiveFormat("trivia"); setShowTrivia(true); }}
+                      className={cn(
+                        "px-3 py-1.5 rounded-md text-xs font-semibold transition-all flex items-center gap-1.5 whitespace-nowrap",
+                        activeFormat === "trivia" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground",
+                        isStepTriviaPassed(stage.steps[currentStep - 1].id) && activeFormat !== "trivia" && "text-emerald-500"
+                      )}
+                    >
+                      💡 Check Knowledge {isStepTriviaPassed(stage.steps[currentStep - 1].id) && <CheckCircle2 className="size-3.5 inline" />}
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setActiveFormat("discuss")}
+                    className={cn(
+                      "px-3 py-1.5 rounded-md text-xs font-semibold transition-all flex items-center gap-1.5 whitespace-nowrap",
+                      activeFormat === "discuss" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    💬 Discuss
+                  </button>
+                </div>
 
-                {/* Content Area — no card wrapper, 78% max for video */}
-                {!showTrivia && (
+                {/* Content Area */}
+                {activeFormat !== "trivia" && activeFormat !== "discuss" && (
                   <>
                     {/* VIDEO FORMAT */}
                     {activeFormat === "video" && origin && (
@@ -590,13 +703,32 @@ export function StageDetailDrawer({
                         })()}
                       </article>
                     )}
+
+                    {/* AUDIO FORMAT */}
+                    {activeFormat === "audio" && stage.steps[currentStep - 1].audioUrl && (
+                      <div className="w-full max-w-md mx-auto p-6 rounded-2xl bg-card border border-border flex flex-col items-center space-y-4 shadow-sm">
+                        <div className="size-16 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                           <Volume2 className="size-8" />
+                        </div>
+                        <h4 className="text-sm font-bold text-foreground">Audio Lesson</h4>
+                        <audio 
+                          controls 
+                          className="w-full" 
+                          src={stage.steps[currentStep - 1].audioUrl}
+                          controlsList="nodownload"
+                        >
+                          Your browser does not support the audio element.
+                        </audio>
+                      </div>
+                    )}
                   </>
                 )}
 
-                {/* INLINE TRIVIA */}
-                <div className="space-y-4">
-                  {isStepTriviaPassed(stage.steps[currentStep - 1].id) ? (
-                    <div className="p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 flex items-center gap-3">
+                {/* SEPARATE TRIVIA FORMAT */}
+                {activeFormat === "trivia" && (
+                  <div className="space-y-4 max-w-2xl mx-auto">
+                    {isStepTriviaPassed(stage.steps[currentStep - 1].id) ? (
+                      <div className="p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 flex items-center gap-3">
                       <CheckCircle2 className="size-5 text-emerald-600 shrink-0" />
                       <div>
                         <h4 className="text-xs font-bold text-emerald-700 dark:text-emerald-300">Step Complete!</h4>
@@ -739,7 +871,80 @@ export function StageDetailDrawer({
                     </div>
                   ) : null}
                 </div>
+                )}
 
+                {/* DISCUSS FORMAT */}
+                {activeFormat === "discuss" && (
+                  <div className="space-y-4 max-w-2xl mx-auto w-full">
+                    {!activeThread ? (
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-black text-sm">Community Discussion</h4>
+                        </div>
+                        <div className="flex gap-2">
+                          <input 
+                            value={newThreadTitle} 
+                            onChange={(e) => setNewThreadTitle(e.target.value)} 
+                            placeholder="Start a new discussion..." 
+                            className="flex-1 h-10 px-3 rounded-xl border bg-card text-xs" 
+                          />
+                          <Button size="sm" className="h-10 rounded-xl" onClick={() => handleCreateThread(stage.steps[currentStep - 1].id)}>Post</Button>
+                        </div>
+                        {forumLoading ? (
+                          <p className="text-xs text-muted-foreground text-center py-4">Loading discussions...</p>
+                        ) : forumThreads.length > 0 ? (
+                          <div className="space-y-2">
+                            {forumThreads.map(thread => (
+                              <button key={thread.id} onClick={() => loadThreadDetail(thread.id)} className="w-full text-left p-4 rounded-xl border bg-card hover:bg-muted/50 transition-colors">
+                                <h5 className="font-bold text-sm text-foreground">{thread.title}</h5>
+                                <div className="flex items-center gap-2 mt-2 text-[10px] text-muted-foreground font-semibold">
+                                  <span className="flex items-center justify-center size-5 rounded-full bg-primary/10 text-primary">{thread.author_initials}</span>
+                                  <span>{thread.author_name}</span>
+                                  <span>•</span>
+                                  <span>{thread.posts_count} replies</span>
+                                </div>
+                              </button>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="text-center py-8 border border-dashed rounded-xl border-border bg-muted/10">
+                            <MessageSquare className="size-8 mx-auto text-muted-foreground/50 mb-2" />
+                            <p className="text-xs text-muted-foreground">No discussions yet. Be the first to start one!</p>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-2">
+                          <button onClick={() => setActiveThread(null)} className="text-xs font-bold text-muted-foreground hover:text-foreground">← Back</button>
+                        </div>
+                        <h4 className="font-black text-lg leading-tight">{activeThread.title}</h4>
+                        <div className="space-y-3">
+                          {activeThread.posts?.map((post: any) => (
+                            <div key={post.id} className="p-4 rounded-xl border bg-card space-y-2">
+                              <div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground">
+                                <span className="flex items-center justify-center size-5 rounded-full bg-primary/10 text-primary">{post.author_initials}</span>
+                                <span>{post.author_name}</span>
+                                <span>•</span>
+                                <span>{new Date(post.created_at).toLocaleDateString()}</span>
+                              </div>
+                              <p className="text-xs leading-relaxed text-foreground whitespace-pre-wrap">{post.content}</p>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="pt-4 border-t border-border space-y-2">
+                          <Textarea 
+                            value={newPostContent} 
+                            onChange={(e) => setNewPostContent(e.target.value)} 
+                            placeholder="Write your reply..." 
+                            className="min-h-[80px] text-xs rounded-xl"
+                          />
+                          <Button onClick={handleCreatePost} className="w-full h-10 rounded-xl text-xs font-bold gap-1.5"><Send className="size-3.5" /> Reply to Thread</Button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 
