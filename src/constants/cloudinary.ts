@@ -8,7 +8,7 @@ export const CLOUDINARY_HERO_LANDING_VIDEO_MP4 =
 
 export const CLOUDINARY_PARTNERSHIPS = {
   nationalTreasuryWorkshop:
-    "/images/towwnhallmay/129A3863.jpg",
+    "/images/towwnhallmay/theman.jpg",
   bpsSession:
     "/images/towwnhallmay/129A3912.jpg",
   parliamentEngagement:
