@@ -19,6 +19,7 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { ease } from "@/motion/variants";
+import Button01 from "@/components/shadcn-space/button/button-01";
 
 interface Props {
   isOpen: boolean;
@@ -219,14 +220,8 @@ function MobileOverlay({ isOpen, setIsOpen }: Props) {
                 }}
                 className="pt-4 border-t border-border/40 mt-4"
               >
-                <Link href={Routes.JoinUs} onClick={() => setIsOpen(false)}>
-                  <Button
-                    size="default"
-                    variant="white"
-                    className="w-full h-12 rounded-2xl font-semibold text-base shadow-md"
-                  >
-                    Join us
-                  </Button>
+                <Link href={Routes.Learn} onClick={() => setIsOpen(false)}>
+                  <Button01 className="w-full justify-center" />
                 </Link>
               </motion.div>
             </div>

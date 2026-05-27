@@ -7,6 +7,7 @@ import { motion } from 'motion/react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ease } from '@/motion/variants';
+import Button17 from '@/components/shadcn-space/button/button-17';
 
 const Cta = () => {
     return (
@@ -98,14 +99,10 @@ const Cta = () => {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.6, delay: 0.45, ease: ease.expo }}
-                                whileHover={{ scale: 1.04 }}
-                                whileTap={{ scale: 0.97 }}
                                 className="mt-6"
                             >
                                 <Link href="/learn">
-                                    <Button size="lg" className="text-base">
-                                        Start Learning
-                                    </Button>
+                                    <Button17 label="Start Learning" className="h-10 px-6" />
                                 </Link>
                             </motion.div>
                         </div>

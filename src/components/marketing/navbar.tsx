@@ -12,6 +12,7 @@ import { useClickOutside } from "@/hooks";
 import { ThemeToggle } from "./theme-toggle";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "motion/react";
 import { navbarEnter } from "@/motion/variants";
+import Button01 from "@/components/shadcn-space/button/button-01";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -97,14 +98,8 @@ const Navbar = () => {
             {/* Right controls */}
             <div className="flex items-center gap-2 md:gap-3">
               <ThemeToggle />
-              <Link href={Routes.JoinUs}>
-                <Button
-                  variant="white"
-                  size="sm"
-                  className="h-9 px-4 rounded-lg font-medium"
-                >
-                  Join us
-                </Button>
+              <Link href={Routes.Learn}>
+                <Button01 compact />
               </Link>
               <motion.div
                 whileTap={{ scale: 0.92 }}

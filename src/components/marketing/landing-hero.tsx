@@ -11,6 +11,8 @@ import {
 } from "@/motion/variants";
 import { CLOUDINARY_HERO_LANDING_VIDEO_MP4 } from "@/constants/cloudinary";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
+import Button17 from "@/components/shadcn-space/button/button-17";
+import Button16 from "@/components/shadcn-space/button/button-16";
 
 export default function LandingHero() {
   return (
@@ -44,23 +46,10 @@ export default function LandingHero() {
             </p>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
               <Link href="/events" className="w-full sm:w-auto">
-                <Button
-                  size="lg"
-                  variant="white"
-                  className="w-full gap-2 rounded-full px-8 py-6 text-base font-bold sm:w-auto"
-                >
-                  Explore Events
-                  <ArrowRight className="size-5" />
-                </Button>
+                <Button17 label="Explore Events" className="w-full sm:w-auto h-10 px-6" />
               </Link>
               <Link href="/about" className="w-full sm:w-auto">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="w-full rounded-full px-8 py-6 text-base font-bold sm:w-auto"
-                >
-                  How We Work
-                </Button>
+                <Button16 label="How We Work" className="w-full sm:w-auto h-10 px-6" />
               </Link>
             </div>
           </motion.div>

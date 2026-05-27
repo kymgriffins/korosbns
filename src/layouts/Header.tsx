@@ -11,6 +11,7 @@ import { useClickOutside } from "@/hooks";
 import { ThemeToggle } from "@/components/marketing/theme-toggle";
 import { motion, AnimatePresence } from "motion/react";
 import { navbarEnter } from "@/motion/variants";
+import Button01 from "@/components/shadcn-space/button/button-01";
 
 export function Header() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -72,10 +73,8 @@ export function Header() {
 
           <div className="flex shrink-0 items-center gap-2 md:gap-3">
             <ThemeToggle />
-            <Link href={Routes.JoinUs} className="hidden sm:block">
-              <Button variant="white" size="sm" className="h-9 px-4 font-medium">
-                Join us
-              </Button>
+            <Link href={Routes.Learn} className="hidden sm:block">
+              <Button01 />
             </Link>
             <motion.div
               whileTap={{ scale: 0.92 }}

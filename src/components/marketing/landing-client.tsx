@@ -34,6 +34,11 @@ const ArticlesPromoMarquee = dynamic(
   { ssr: false }
 );
 
+const XTimelineMarquee = dynamic(
+  () => import("@/components/shadcn-space/marquee/marquee-01"),
+  { ssr: false }
+);
+
 const Cta = dynamic(
   () => import("@/components/marketing/cta"),
   { ssr: false }
@@ -52,6 +57,7 @@ export default function LandingClient() {
       <FramerStickyScroll />
       <HorizontalCycleSlider />
       <AlertsSimulator />
+      <XTimelineMarquee />
       <Cta />
       <NewsletterPopup />
     </>

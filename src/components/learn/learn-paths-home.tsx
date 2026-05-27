@@ -25,6 +25,7 @@ import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
 import { STAGES_DATA, type StageData } from "@/constants/stages-data";
 import { citizenApi } from "@/lib/api-client";
+import { AnimatedCounter } from "@/components/shadcn-space/card/card-04";
 
 // Translations dictionary for Global Language Toggle (EN / SW / Sheng)
 const TRANSLATIONS = {
@@ -401,16 +402,16 @@ export function LearnPathsHome() {
                     <h1 className="text-xs font-black text-foreground truncate">{profile.breakName}</h1>
                     <p className="text-[10px] text-muted-foreground truncate">{profile.county} · Lvl {Math.floor(profile.sovereigns / 100) + 1}</p>
                   </div>
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    <div className="px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-black flex items-center gap-1">
-                      <Sparkles className="size-3 fill-primary" />
-                      <span>{profile.sovereigns}</span>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <div className="px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-black flex items-center gap-1">
+                        <Sparkles className="size-3 fill-primary" />
+                        <span><AnimatedCounter value={profile.sovereigns} /></span>
+                      </div>
+                      <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-500 text-xs font-bold" title={text.streak}>
+                        <Flame className="size-3 fill-orange-500" />
+                        <span><AnimatedCounter value={profile.streakDays} suffix="d" /></span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-500 text-xs font-bold" title={text.streak}>
-                      <Flame className="size-3 fill-orange-500" />
-                      <span>{profile.streakDays}d</span>
-                    </div>
-                  </div>
                 </div>
 
                 <div className="space-y-1">
@@ -775,7 +776,9 @@ export function LearnPathsHome() {
                     <div className="p-5 border border-border bg-card rounded-2xl space-y-3.5 shadow-xs">
                       <h3 className="text-xs font-black uppercase text-muted-foreground tracking-wider">Overall Progress</h3>
                       <div className="flex justify-between items-baseline">
-                        <span className="text-3xl font-black text-foreground">{profile.badges?.length || 0} / 8</span>
+                        <span className="text-3xl font-black text-foreground">
+                    <AnimatedCounter value={profile.badges?.length || 0} /> / 8
+                  </span>
                         <span className="text-[10px] text-muted-foreground font-semibold">STAGES MASTERED</span>
                       </div>
                       <Progress value={((profile.badges?.length || 0) / 8) * 100} className="h-2 rounded-full" />
@@ -1113,12 +1116,16 @@ export function LearnPathsHome() {
               <div className="grid grid-cols-2 gap-3">
                 <div className="p-3 bg-orange-500/8 border border-orange-500/15 rounded-xl text-center">
                   <Flame className="size-5 fill-orange-500 text-orange-500 mx-auto" />
-                  <span className="block text-sm font-black text-orange-600 mt-1">{profile.streakDays} Days</span>
+                  <span className="block text-sm font-black text-orange-600 mt-1">
+                    <AnimatedCounter value={profile.streakDays} suffix=" Days" />
+                  </span>
                   <span className="text-[8px] font-black text-orange-500/80 uppercase tracking-wider mt-0.5">Streak</span>
                 </div>
                 <div className="p-3 bg-primary/8 border border-primary/15 rounded-xl text-center">
                   <Sparkles className="size-5 fill-primary text-primary mx-auto" />
-                  <span className="block text-sm font-black text-primary mt-1">{profile.sovereigns} SVG</span>
+                  <span className="block text-sm font-black text-primary mt-1">
+                    <AnimatedCounter value={profile.sovereigns} suffix=" SVG" />
+                  </span>
                   <span className="text-[8px] font-black text-primary/80 uppercase tracking-wider mt-0.5">Sovereigns</span>
                 </div>
               </div>

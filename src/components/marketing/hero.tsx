@@ -9,9 +9,11 @@ import {
   useReducedMotion,
 } from "motion/react";
 import { Button } from "@/ui/button";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import Balancer from "react-wrap-balancer";
 import { ease } from "@/motion/variants";
+import Button17 from "@/components/shadcn-space/button/button-17";
+import Button16 from "@/components/shadcn-space/button/button-16";
 
 const badges = [
   { text: "Budget Stories 🎭", top: "15%", left: "5%" },
@@ -181,21 +183,10 @@ export default function Hero() {
             className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2"
           >
             <Link href="/learn" className="w-full sm:w-auto">
-              <Button
-                size="lg"
-                className="w-full sm:w-auto rounded-full px-8 py-6 text-base font-bold gap-2"
-              >
-                Start Learning Path <ArrowRight className="size-4" />
-              </Button>
+              <Button17 label="Start Learning Path" className="w-full sm:w-auto h-10 px-6" />
             </Link>
             <Link href="/learn" className="w-full sm:w-auto">
-              <Button
-                size="lg"
-                variant="outline"
-                className="w-full sm:w-auto rounded-full px-8 py-6 text-base font-bold border-border text-foreground/80 hover:bg-foreground/5"
-              >
-                Dive into Data
-              </Button>
+              <Button16 label="Dive into Data" className="w-full sm:w-auto h-10 px-6" />
             </Link>
           </motion.div>
 
