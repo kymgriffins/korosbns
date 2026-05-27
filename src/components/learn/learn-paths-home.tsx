@@ -370,9 +370,9 @@ export function LearnPathsHome() {
   }
 
   return (
-    <div className="w-full bg-background min-h-screen flex flex-col">
-      {/* 📱 MOBILE VIEW (Guarded by md:hidden) */}
-      <div className="flex w-full min-h-0 flex-1 flex-col bg-background md:hidden">
+    <div className="w-full h-full min-h-0 bg-background flex flex-col overflow-hidden">
+      {/* MOBILE VIEW (Guarded by md:hidden) */}
+      <div className="relative flex flex-1 min-h-0 flex-col overflow-hidden bg-background md:hidden">
         
         {/* Global Sheng translation warning banner */}
         {!selectedStage && profile.language === "SH" && (
@@ -381,9 +381,9 @@ export function LearnPathsHome() {
           </div>
         )}
 
-        {/* Dashboard tabs — scroll inside layout main when no lesson */}
+        {/* Hub tabs — sole scroll region when no lesson is open */}
         {!selectedStage ? (
-        <div className="flex-1 min-h-0 p-4">
+        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4">
           <AnimatePresence mode="wait">
             
             {/* TAB 1: CIVIC DASHBOARD (HOME) */}
@@ -666,8 +666,8 @@ export function LearnPathsHome() {
           </AnimatePresence>
         </div>
         ) : (
-          /* Lesson layer on mobile — clamped above the always-visible bottom nav */
-          <div className="fixed inset-x-0 top-0 bottom-[calc(var(--mobile-nav-height)+env(safe-area-inset-bottom))] z-50 flex flex-col bg-background">
+          /* Lesson layer — fills bounded panel above embedded bottom nav */
+          <div className="absolute inset-0 z-10 flex flex-col overflow-hidden bg-background">
             <StageDetailDrawer
               stage={selectedStage}
               profile={profile}

@@ -38,6 +38,25 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
     }
   }, [setSidebarCollapsed]);
 
+  useEffect(() => {
+    const isMobileDevice = () => window.innerWidth < 768;
+
+    const lockBody = () => {
+      if (isMobileDevice()) {
+        document.body.classList.add("overflow-hidden");
+      } else {
+        document.body.classList.remove("overflow-hidden");
+      }
+    };
+
+    lockBody();
+    window.addEventListener("resize", lockBody);
+    return () => {
+      document.body.classList.remove("overflow-hidden");
+      window.removeEventListener("resize", lockBody);
+    };
+  }, []);
+
   const toggleSidebar = () => {
     const nextState = !sidebarCollapsed;
     setSidebarCollapsed(nextState);
@@ -64,7 +83,7 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
   const showCurriculum = !!activeLesson;
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row relative overflow-x-hidden">
+    <div className="h-dvh md:min-h-screen md:h-auto bg-background text-foreground flex flex-col md:flex-row relative overflow-hidden md:overflow-x-hidden">
       
       {/* 🖥️ Desktop Sidebar — dual-mode (nav / curriculum rail) 320px */}
       {isLoggedIn && (
@@ -264,13 +283,13 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
       </aside>
       )}
 
-      {/* 🚀 Main Content Canvas — viewport-locked on mobile; main is sole scroll region */}
-      <div className="flex-1 flex flex-col min-h-0 h-dvh md:h-auto overflow-hidden">
-        <main className="flex-1 min-h-0 overflow-y-auto flex flex-col pb-mobile-nav md:pb-0">
+      {/* Main content canvas — viewport-locked on mobile; no page scroll */}
+      <div className="flex-1 flex flex-col min-h-0 h-full md:h-auto overflow-hidden">
+        <main className="flex-1 min-h-0 overflow-hidden flex flex-col">
           {children}
         </main>
 
-        {/* 📱 Learn hub mobile bottom nav — always visible */}
+        {/* Learn hub mobile bottom nav — always visible, in-flow */}
         <LearnMobileNav />
       </div>
 

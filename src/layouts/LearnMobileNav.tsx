@@ -35,5 +35,11 @@ export function LearnMobileNav() {
     };
   });
 
-  return <MobileBottomNav items={items} ariaLabel="Learning hub navigation" />;
+  return (
+    <MobileBottomNav
+      items={items}
+      ariaLabel="Learning hub navigation"
+      placement="embedded"
+    />
+  );
 }

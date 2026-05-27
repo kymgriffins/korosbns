@@ -23,9 +23,16 @@ type MobileBottomNavProps = {
   items: MobileBottomNavItem[];
   ariaLabel: string;
   className?: string;
+  /** fixed = viewport overlay; embedded = in-flow flex sibling (learn shell) */
+  placement?: "fixed" | "embedded";
 };
 
-export function MobileBottomNav({ items, ariaLabel, className }: MobileBottomNavProps) {
+export function MobileBottomNav({
+  items,
+  ariaLabel,
+  className,
+  placement = "fixed",
+}: MobileBottomNavProps) {
   const prefersReducedMotion = useReducedMotion();
 
   return (
@@ -34,7 +41,10 @@ export function MobileBottomNav({ items, ariaLabel, className }: MobileBottomNav
       initial={prefersReducedMotion ? false : "hidden"}
       animate={prefersReducedMotion ? undefined : "visible"}
       className={cn(
-        "fixed bottom-0 inset-x-0 z-40 flex h-[var(--mobile-nav-height)] w-full items-center justify-around border-t border-border bg-background/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden",
+        "flex h-[var(--mobile-nav-height)] w-full items-center justify-around border-t border-border bg-background/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden",
+        placement === "fixed"
+          ? "fixed bottom-0 inset-x-0 z-40"
+          : "relative shrink-0",
         className
       )}
       aria-label={ariaLabel}
