@@ -7,13 +7,14 @@ interface Avatar05Props {
   fallback?: string;
   badge?: string | number;
   className?: string;
+  size?: "default" | "sm" | "lg";
 }
 
-export default function Avatar05({ src, fallback = "U", badge, className }: Avatar05Props) {
+export default function Avatar05({ src, fallback = "U", badge, className, size }: Avatar05Props) {
   return (
     <div className={className}>
       <div className="relative w-fit">
-        <Avatar>
+        <Avatar size={size}>
           {src ? (
             <AvatarImage alt="user" src={src} />
           ) : null}

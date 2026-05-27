@@ -21,6 +21,8 @@ import {
 import { ease } from "@/motion/variants";
 import Button01 from "@/components/shadcn-space/button/button-01";
 
+import Avatar05 from "@/components/shadcn-space/avatar/avatar-05";
+
 interface Props {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -45,7 +47,7 @@ function DesktopDropdown({
   isOpen,
   setIsOpen,
 }: Props) {
-  const { isLoggedIn, loading: authLoading } = useAuth();
+  const { isLoggedIn, user, loading: authLoading } = useAuth();
 
   return (
     <AnimatePresence>
@@ -99,7 +101,12 @@ function DesktopDropdown({
                   >
                     <span className="flex items-center gap-3">
                       {isLoggedIn ? (
-                        <User className="size-5 text-primary/80 group-hover:text-primary transition-colors" />
+                        <Avatar05
+                          src={user?.avatar_url || undefined}
+                          fallback={(user?.display_name || "U").charAt(0).toUpperCase()}
+                          size="sm"
+                          className="size-5"
+                        />
                       ) : (
                         <LogIn className="size-5 text-primary/80 group-hover:text-primary transition-colors" />
                       )}
@@ -119,7 +126,7 @@ function DesktopDropdown({
 
 // ─── Mobile full-screen overlay ───────────────────────────────────────────────
 function MobileOverlay({ isOpen, setIsOpen }: Props) {
-  const { isLoggedIn, loading: authLoading } = useAuth();
+  const { isLoggedIn, user, loading: authLoading } = useAuth();
 
   return (
     <AnimatePresence>
@@ -197,7 +204,12 @@ function MobileOverlay({ isOpen, setIsOpen }: Props) {
                     >
                       <span className="flex items-center gap-3">
                         {isLoggedIn ? (
-                          <User className="size-5 text-primary" />
+                          <Avatar05
+                            src={user?.avatar_url || undefined}
+                            fallback={(user?.display_name || "U").charAt(0).toUpperCase()}
+                            size="sm"
+                            className="size-5"
+                          />
                         ) : (
                           <LogIn className="size-5 text-primary" />
                         )}

@@ -25,7 +25,7 @@ import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
 import { STAGES_DATA, type StageData } from "@/constants/stages-data";
 import { citizenApi } from "@/lib/api-client";
-import { AnimatedCounter } from "@/components/shadcn-space/card/card-04";
+import WelcomeCard, { AnimatedCounter } from "@/components/shadcn-space/card/card-04";
 
 // Translations dictionary for Global Language Toggle (EN / SW / Sheng)
 const TRANSLATIONS = {
@@ -755,21 +755,12 @@ export function LearnPathsHome() {
               {/* Tab: Home */}
               {activeTab === "home" && (
                 <div className="space-y-6 max-w-4xl mx-auto">
-                  {/* Premium Hero Banner */}
-                  <div className="relative p-6 md:p-8 rounded-2xl bg-gradient-to-r from-primary to-primary/80 text-primary-foreground space-y-3 overflow-hidden shadow-sm">
-                    <div className="absolute right-0 bottom-0 top-0 opacity-10 flex items-center justify-center p-8 pointer-events-none select-none">
-                      <Sparkles className="size-48" />
-                    </div>
-                    <span className="text-[10px] font-black uppercase tracking-widest bg-white/20 px-3 py-1 rounded-full text-white">Kenya Civic Journey</span>
-                    <h2 className="text-2xl md:text-3xl font-black leading-tight max-w-xl">Master Your Civic Budget Rights &amp; Power</h2>
-                    <p className="text-xs text-white/80 max-w-md">Learn where your taxes go, how budgets are formed, and draft your own comments to hold leaders accountable.</p>
-                    <Button 
-                      onClick={() => setActiveTab("learn")}
-                      className="bg-white text-primary hover:bg-white/95 rounded-xl font-bold text-xs px-5 h-10 mt-2 shadow-sm"
-                    >
-                      Explore Learning Map
-                    </Button>
-                  </div>
+                  {/* Premium Welcome Card */}
+                  <WelcomeCard
+                    name={profile.breakName}
+                    sovereigns={profile.sovereigns}
+                    streak={profile.streakDays}
+                  />
 
                   <div className="grid grid-cols-2 gap-4">
                     {/* Progress Card */}

@@ -8,13 +8,41 @@ export default function XTimelineMarquee() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://platform.twitter.com/widgets.js";
-    script.async = true;
-    document.body.appendChild(script);
+    let isMounted = true;
+    const scriptId = "twitter-wjs";
+    let script = document.getElementById(scriptId) as HTMLScriptElement;
+
+    if (!script) {
+      script = document.createElement("script");
+      script.id = scriptId;
+      script.src = "https://platform.twitter.com/widgets.js";
+      script.async = true;
+      document.body.appendChild(script);
+    }
+
+    const loadTimeline = () => {
+      if (isMounted && (window as any).twttr && (window as any).twttr.widgets) {
+        (window as any).twttr.widgets.load(containerRef.current);
+      }
+    };
+
+    script.addEventListener("load", loadTimeline);
+    
+    // In case the script is already loaded/cached by the browser
+    loadTimeline();
+
+    // Polling check to handle fast page transitions or caching
+    const interval = setInterval(() => {
+      if ((window as any).twttr && (window as any).twttr.widgets) {
+        loadTimeline();
+        clearInterval(interval);
+      }
+    }, 500);
+
     return () => {
-      const existing = document.querySelector('script[src="https://platform.twitter.com/widgets.js"]');
-      if (existing) existing.remove();
+      isMounted = false;
+      clearInterval(interval);
+      script.removeEventListener("load", loadTimeline);
     };
   }, []);
 

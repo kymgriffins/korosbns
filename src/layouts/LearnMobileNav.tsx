@@ -7,7 +7,7 @@ import {
   type MobileBottomNavItem,
 } from "@/ui/mobile-bottom-nav";
 import { useAuth } from "@/contexts/auth-context";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Avatar05 from "@/components/shadcn-space/avatar/avatar-05";
 
 type LearnNavEntry = {
   key: LearnTab;
@@ -35,14 +35,12 @@ export function LearnMobileNav() {
       active,
       ariaCurrent: active ? "page" : undefined,
       icon: key === "profile" && isLoggedIn ? (
-        <Avatar className="size-5">
-          {user?.avatar_url ? (
-            <AvatarImage src={user.avatar_url} alt={user.display_name || "User"} />
-          ) : null}
-          <AvatarFallback className="text-[10px]">
-            {(user?.display_name || "U").charAt(0).toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
+        <Avatar05
+          src={user?.avatar_url || undefined}
+          fallback={(user?.display_name || "U").charAt(0).toUpperCase()}
+          size="sm"
+          className="size-5"
+        />
       ) : (
         <Icon className="size-5" aria-hidden />
       ),
