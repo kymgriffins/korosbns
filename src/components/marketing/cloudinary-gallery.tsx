@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { motion, useScroll, useTransform } from "motion/react";
 import Image from "next/image";
 import { SectionHeader, SectionShell } from "@/layouts/section-shell";
+import { Marquee } from "@/ui/marquee";
 
 interface CloudinaryImage {
   src: string;
@@ -57,46 +57,33 @@ const CloudinaryGallery = () => {
         }
       />
 
-      <div className="no-scrollbar -mx-6 flex max-w-full flex-nowrap gap-6 overflow-x-auto py-8 md:-mx-16 md:gap-10 md:px-0">
-        {images.map((image, i) => (
-          <GalleryItem key={i} image={image} index={i} />
-        ))}
+      <div className="py-4">
+        <Marquee pauseOnHover className="py-4 [--duration:40s] [--gap:1.5rem]">
+          {images.map((image, i) => (
+            <GalleryItem key={i} image={image} index={i} />
+          ))}
+        </Marquee>
       </div>
     </SectionShell>
   );
 };
 
 const GalleryItem = ({ image, index }: { image: CloudinaryImage; index: number }) => {
-  const ref = React.useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1, 0.8]);
-  const rotate = useTransform(
-    scrollYProgress,
-    [0, 1],
-    [index % 2 === 0 ? -5 : 5, index % 2 === 0 ? 5 : -5]
-  );
-
   return (
-    <motion.div
-      ref={ref}
-      style={{ scale, rotate }}
-      className="relative aspect-[4/5] w-[300px] flex-shrink-0 overflow-hidden rounded-3xl shadow-2xl md:w-[450px]"
+    <div
+      className="relative aspect-[4/5] w-[260px] flex-shrink-0 overflow-hidden rounded-3xl border border-border bg-card shadow-lg md:w-[350px] transition-transform duration-500 hover:scale-[1.02]"
     >
       <Image
         src={image.src}
         alt={image.alt}
         fill
-        className="object-cover transition-transform duration-700 hover:scale-110"
-        sizes="(max-width: 768px) 300px, 450px"
+        className="object-cover transition-transform duration-700 hover:scale-105"
+        sizes="(max-width: 768px) 260px, 350px"
       />
-      <div className="absolute inset-0 flex items-end bg-linear-to-t from-background/80 to-transparent p-6 opacity-0 transition-opacity duration-500 hover:opacity-100">
-        <p className="text-sm uppercase tracking-widest text-foreground">{image.alt}</p>
+      <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/85 via-black/35 to-transparent p-6 opacity-0 transition-opacity duration-300 hover:opacity-100">
+        <p className="text-sm font-semibold uppercase tracking-widest text-white">{image.alt}</p>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
