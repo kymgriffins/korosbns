@@ -12,6 +12,7 @@ import { LearnProvider, useLearn, type LearnTab } from "@/contexts/learn-context
 import { useAuth } from "@/contexts/auth-context";
 import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/ui/button";
+import { MobileBottomNav, type MobileBottomNavItem } from "@/ui/mobile-bottom-nav";
 
 const ALL_STAGES = [
   { id: 1, badge: "🛡️", title: "Constitution" },
@@ -68,6 +69,15 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
   const showCurriculum = !!activeLesson;
 
   const lessonOpen = !!activeLesson;
+
+  const bottomNavItems: MobileBottomNavItem[] = navItems.map((item) => ({
+    id: item.key,
+    label: item.label,
+    icon: item.icon,
+    onClick: () => handleTabChange(item.key),
+    active: activeTab === item.key,
+    ariaCurrent: activeTab === item.key ? "page" : undefined,
+  }));
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row relative overflow-x-hidden">
@@ -275,7 +285,7 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
         <main
           className={cn(
             "flex-1 min-h-0 overflow-y-auto flex flex-col",
-            !lessonOpen && "pb-14 md:pb-0"
+            !lessonOpen && "pb-mobile-nav md:pb-0"
           )}
         >
           {children}
@@ -283,40 +293,7 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
 
         {/* 📱 Mobile fixed tab bar (hidden during lesson) — z-40 below lesson overlay z-50 */}
         {!lessonOpen && (
-          <nav
-            className="fixed bottom-0 inset-x-0 z-40 flex h-14 w-full items-center justify-around border-t border-border bg-background/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden"
-            aria-label="Learn hub navigation"
-          >
-            {navItems.map((item) => {
-              const active = activeTab === item.key;
-              return (
-                <button
-                  key={item.key}
-                  onClick={() => handleTabChange(item.key)}
-                  className="group flex h-full flex-1 flex-col items-center justify-center py-1 text-center"
-                >
-                  <div
-                    className={cn(
-                      "rounded-xl p-1 transition-all duration-200",
-                      active
-                        ? "scale-105 bg-primary/10 text-primary"
-                        : "text-muted-foreground group-hover:text-foreground"
-                    )}
-                  >
-                    {item.icon}
-                  </div>
-                  <span
-                    className={cn(
-                      "mt-0.5 text-[9px] font-semibold tracking-tight transition-colors",
-                      active ? "text-primary" : "text-muted-foreground"
-                    )}
-                  >
-                    {item.label}
-                  </span>
-                </button>
-              );
-            })}
-          </nav>
+          <MobileBottomNav items={bottomNavItems} ariaLabel="Learn hub navigation" />
         )}
       </div>
 

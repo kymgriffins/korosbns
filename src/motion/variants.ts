@@ -173,6 +173,15 @@ export const navbarEnter: Variants = {
   },
 };
 
+export const navBottomEnter: Variants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.45, ease: ease.expo, delay: 0.08 },
+  },
+};
+
 export const navMenuSlide: Variants = {
   hidden: { opacity: 0, y: -8, scale: 0.97 },
   visible: {

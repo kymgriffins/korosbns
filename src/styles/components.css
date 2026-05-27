@@ -208,10 +208,15 @@
   @apply font-bold text-foreground;
 }
 
-/* Lift Toaster above sticky bottom navigation & drawer footers on mobile */
-@media (max-width: 768px) {
+/* Mobile fixed bottom navigation — content clearance + safe area */
+.pb-mobile-nav {
+  padding-bottom: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom, 0px));
+}
+
+/* Lift Toaster above fixed bottom navigation & drawer footers on mobile */
+@media (max-width: 1023px) {
   [data-sonner-toaster] {
-    bottom: 5.5rem !important;
+    bottom: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom, 0px) + 0.5rem) !important;
   }
 }
 

@@ -18,10 +18,12 @@ const MarketingLayout = ({
   const isAccountPage = pathname.startsWith("/account");
   const showMarketingFooter = !isContactPage && !isLearnApp && !isAccountPage;
 
+  const showMarketingChrome = !isAccountPage && !isLearnApp;
+
   return (
     <main
       className={`w-full relative ${
-        isAccountPage || isLearnApp ? "" : "pt-14 sm:pt-20"
+        showMarketingChrome ? "pt-12 md:pt-16 lg:pt-20 pb-mobile-nav lg:pb-0" : ""
       }`}
     >
       {!isAccountPage && !isLearnApp && <Navbar />}
