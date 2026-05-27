@@ -5,9 +5,17 @@ import { base, handwriting, heading } from "@/constants";
 import "@/styles/globals.css";
 import { cn, generateMetadata } from "@/utils";
 import { Analytics } from "@vercel/analytics/next";
+import type { Viewport } from "next";
 import Script from "next/script";
 
 export const metadata = generateMetadata();
+
+export const viewport: Viewport = {
+  themeColor: "#020817",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL || "https://app.budgetndiostory.org";
@@ -44,19 +52,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={cn(
-          "min-h-dvh bg-background text-foreground font-base antialiased overflow-x-hidden",
-          base.variable,
-          heading.variable,
-          handwriting.variable,
-        )}
-      >
+      <head>
         <link rel="preconnect" href="https://res.cloudinary.com" />
         <link rel="preconnect" href="https://i.ytimg.com" />
         <link rel="dns-prefetch" href="https://res.cloudinary.com" />
         <link rel="dns-prefetch" href="https://bnske.budgetndiostory.org" />
-        <meta name="theme-color" content="#020817" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -82,6 +82,15 @@ export default function RootLayout({
             }),
           }}
         />
+      </head>
+      <body
+        className={cn(
+          "min-h-dvh bg-background text-foreground font-base antialiased overflow-x-hidden",
+          base.variable,
+          heading.variable,
+          handwriting.variable,
+        )}
+      >
         <Providers>
           <LoadingScreen />
           <FlareCursor />
