@@ -15,6 +15,8 @@ const SURVEY_POLL_MS = 60_000;
 
 function SurveyCard({ survey }: { survey: SurveyListItemApi }) {
   const isExternal = survey.is_external && survey.external_url;
+  const imageUrl = survey.image_url || survey.image;
+
   const cta = isExternal ? (
     <Button asChild className="w-full">
       <a
@@ -35,24 +37,36 @@ function SurveyCard({ survey }: { survey: SurveyListItemApi }) {
   return (
     <motion.article
       variants={fadeInUp}
-      className="flex flex-col justify-between rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary/40"
+      className="flex flex-col justify-between rounded-xl border border-border bg-card transition-colors hover:border-primary/40 overflow-hidden group"
     >
-      <div>
-        <h3 className="mb-2 text-lg font-semibold">{survey.title}</h3>
-        {survey.description ? (
-          <p className="mb-4 line-clamp-3 text-sm text-muted-foreground">
-            {survey.description}
+      {imageUrl && (
+        <div className="relative w-full h-40 overflow-hidden bg-muted border-b border-border/40">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={imageUrl}
+            alt={survey.title}
+            className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
+          />
+        </div>
+      )}
+      <div className="p-6 flex flex-col justify-between flex-1">
+        <div>
+          <h3 className="mb-2 text-lg font-semibold">{survey.title}</h3>
+          {survey.description ? (
+            <p className="mb-4 line-clamp-3 text-sm text-muted-foreground">
+              {survey.description}
+            </p>
+          ) : null}
+          <p className="mb-4 text-xs text-muted-foreground">
+            {isExternal
+              ? "Hosted externally — opens in a new tab"
+              : survey.allow_anonymous === false
+                ? "Sign-in required to submit"
+                : "Anonymous submissions allowed"}
           </p>
-        ) : null}
-        <p className="mb-4 text-xs text-muted-foreground">
-          {isExternal
-            ? "Hosted externally — opens in a new tab"
-            : survey.allow_anonymous === false
-              ? "Sign-in required to submit"
-              : "Anonymous submissions allowed"}
-        </p>
+        </div>
+        {cta}
       </div>
-      {cta}
     </motion.article>
   );
 }

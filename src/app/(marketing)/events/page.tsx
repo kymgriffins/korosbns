@@ -161,77 +161,152 @@ export default function EventsPage() {
                 >
                   <Link
                     href={Routes.Event(event.id)}
-                    className="group relative block overflow-hidden rounded-2xl border border-border/80 bg-cardbox/40 p-6 backdrop-blur-xs transition-all hover:border-primary/50 hover:bg-cardbox/60 hover:shadow-lg hover:shadow-primary/5"
+                    className="group relative block overflow-hidden rounded-2xl border border-border/80 bg-cardbox/40 transition-all hover:border-primary/50 hover:bg-cardbox/60 hover:shadow-lg hover:shadow-primary/5"
                   >
-                    <div className="flex flex-col sm:flex-row gap-6 items-start">
-                      {/* Date Badge component */}
-                      {day && month ? (
-                        <div className="flex sm:flex-col items-center justify-center size-16 sm:size-20 shrink-0 rounded-xl bg-primary/10 border border-primary/20 text-primary font-bold">
-                          <span className="text-2xl sm:text-3xl leading-none">{day}</span>
-                          <span className="text-xs tracking-wider mt-0.5 sm:mt-1">{month}</span>
-                          <span className="hidden sm:inline text-[10px] opacity-70 font-normal">{year}</span>
-                        </div>
-                      ) : (
-                        <div className="flex items-center justify-center size-16 sm:size-20 shrink-0 rounded-xl bg-muted border border-border text-muted-foreground">
-                          <Calendar className="size-8" />
-                        </div>
-                      )}
-
-                      {/* Content details */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex flex-wrap items-center gap-2 mb-2">
-                          <Badge
-                            variant={status === "Upcoming" ? "default" : "secondary"}
-                            className="text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5"
-                          >
-                            {status}
-                          </Badge>
-                          {event.sponsors && event.sponsors.length > 0 && (
-                            <Badge variant="outline" className="text-[10px] font-semibold border-primary/20 text-primary flex items-center gap-1">
-                              <Building2 className="size-3" />
-                              <span>Sponsored</span>
-                            </Badge>
-                          )}
-                        </div>
-
-                        <h2 className="text-xl md:text-2xl font-bold group-hover:text-primary transition-colors line-clamp-1">
-                          {event.title}
-                        </h2>
-
-                        <div className="flex flex-wrap gap-4 mt-3 text-sm text-muted-foreground">
-                          {event.starts_at && (
-                            <span className="flex items-center gap-1.5">
-                              <Calendar className="size-4 shrink-0" />
-                              {formatInNairobi(event.starts_at)}
-                            </span>
-                          )}
-                          {event.location && (
-                            <span className="flex items-center gap-1.5 line-clamp-1">
-                              <MapPin className="size-4 shrink-0" />
-                              {event.location}
-                            </span>
-                          )}
-                        </div>
-
-                        <p className="mt-4 text-muted-foreground line-clamp-2 leading-relaxed">
-                          {event.snippet}
-                        </p>
-
-                        {/* Sponsors list indicator */}
-                        {event.sponsors && event.sponsors.length > 0 && (
-                          <div className="mt-4 pt-4 border-t border-border/40 flex items-center gap-2">
-                            <span className="text-xs text-muted-foreground">Partners:</span>
-                            <div className="flex flex-wrap gap-2">
-                              {event.sponsors.map((s, sIdx) => (
-                                <span key={sIdx} className="text-xs font-semibold px-2 py-0.5 rounded bg-muted/60 border border-border/80">
-                                  {s.name}
-                                </span>
-                              ))}
+                    {event.image_url ? (
+                      <div>
+                        {/* Cover Image */}
+                        <div className="relative w-full h-48 sm:h-56 overflow-hidden bg-muted border-b border-border/40">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={event.image_url}
+                            alt={event.title}
+                            className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
+                          />
+                          {/* Floated Date Badge */}
+                          {day && month && (
+                            <div className="absolute top-4 left-4 flex flex-col items-center justify-center size-14 rounded-xl bg-background/90 backdrop-blur-md text-primary font-black shadow-md border border-border/50">
+                              <span className="text-xl leading-none">{day}</span>
+                              <span className="text-[9px] tracking-wider mt-0.5">{month}</span>
                             </div>
+                          )}
+                        </div>
+
+                        {/* Content */}
+                        <div className="p-6">
+                          <div className="flex flex-wrap items-center gap-2 mb-2">
+                            <Badge
+                              variant={status === "Upcoming" ? "default" : "secondary"}
+                              className="text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5"
+                            >
+                              {status}
+                            </Badge>
+                            {event.sponsors && event.sponsors.length > 0 && (
+                              <Badge variant="outline" className="text-[10px] font-semibold border-primary/20 text-primary flex items-center gap-1">
+                                <Building2 className="size-3" />
+                                <span>Sponsored</span>
+                              </Badge>
+                            )}
+                          </div>
+
+                          <h2 className="text-xl md:text-2xl font-bold group-hover:text-primary transition-colors line-clamp-1">
+                            {event.title}
+                          </h2>
+
+                          <div className="flex flex-wrap gap-4 mt-3 text-sm text-muted-foreground">
+                            {event.starts_at && (
+                              <span className="flex items-center gap-1.5">
+                                <Calendar className="size-4 shrink-0" />
+                                {formatInNairobi(event.starts_at)}
+                              </span>
+                            )}
+                            {event.location && (
+                              <span className="flex items-center gap-1.5 line-clamp-1">
+                                <MapPin className="size-4 shrink-0" />
+                                {event.location}
+                              </span>
+                            )}
+                          </div>
+
+                          <p className="mt-4 text-muted-foreground line-clamp-2 leading-relaxed">
+                            {event.snippet}
+                          </p>
+
+                          {event.sponsors && event.sponsors.length > 0 && (
+                            <div className="mt-4 pt-4 border-t border-border/40 flex items-center gap-2">
+                              <span className="text-xs text-muted-foreground">Partners:</span>
+                              <div className="flex flex-wrap gap-2">
+                                {event.sponsors.map((s, sIdx) => (
+                                  <span key={sIdx} className="text-xs font-semibold px-2 py-0.5 rounded bg-muted/60 border border-border/80">
+                                    {s.name}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="p-6 flex flex-col sm:flex-row gap-6 items-start">
+                        {/* Date Badge component */}
+                        {day && month ? (
+                          <div className="flex sm:flex-col items-center justify-center size-16 sm:size-20 shrink-0 rounded-xl bg-primary/10 border border-primary/20 text-primary font-bold">
+                            <span className="text-2xl sm:text-3xl leading-none">{day}</span>
+                            <span className="text-xs tracking-wider mt-0.5 sm:mt-1">{month}</span>
+                            <span className="hidden sm:inline text-[10px] opacity-70 font-normal">{year}</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center justify-center size-16 sm:size-20 shrink-0 rounded-xl bg-muted border border-border text-muted-foreground">
+                            <Calendar className="size-8" />
                           </div>
                         )}
+
+                        {/* Content details */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex flex-wrap items-center gap-2 mb-2">
+                            <Badge
+                              variant={status === "Upcoming" ? "default" : "secondary"}
+                              className="text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5"
+                            >
+                              {status}
+                            </Badge>
+                            {event.sponsors && event.sponsors.length > 0 && (
+                              <Badge variant="outline" className="text-[10px] font-semibold border-primary/20 text-primary flex items-center gap-1">
+                                <Building2 className="size-3" />
+                                <span>Sponsored</span>
+                              </Badge>
+                            )}
+                          </div>
+
+                          <h2 className="text-xl md:text-2xl font-bold group-hover:text-primary transition-colors line-clamp-1">
+                            {event.title}
+                          </h2>
+
+                          <div className="flex flex-wrap gap-4 mt-3 text-sm text-muted-foreground">
+                            {event.starts_at && (
+                              <span className="flex items-center gap-1.5">
+                                <Calendar className="size-4 shrink-0" />
+                                {formatInNairobi(event.starts_at)}
+                              </span>
+                            )}
+                            {event.location && (
+                              <span className="flex items-center gap-1.5 line-clamp-1">
+                                <MapPin className="size-4 shrink-0" />
+                                {event.location}
+                              </span>
+                            )}
+                          </div>
+
+                          <p className="mt-4 text-muted-foreground line-clamp-2 leading-relaxed">
+                            {event.snippet}
+                          </p>
+
+                          {/* Sponsors list indicator */}
+                          {event.sponsors && event.sponsors.length > 0 && (
+                            <div className="mt-4 pt-4 border-t border-border/40 flex items-center gap-2">
+                              <span className="text-xs text-muted-foreground">Partners:</span>
+                              <div className="flex flex-wrap gap-2">
+                                {event.sponsors.map((s, sIdx) => (
+                                  <span key={sIdx} className="text-xs font-semibold px-2 py-0.5 rounded bg-muted/60 border border-border/80">
+                                    {s.name}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </Link>
                 </motion.div>
               );

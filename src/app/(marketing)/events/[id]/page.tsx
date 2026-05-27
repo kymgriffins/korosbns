@@ -93,6 +93,22 @@ export default function EventDetailPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* Left Column: Event Body Content */}
             <div className="lg:col-span-8 space-y-8">
+              {event.image_url && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4 }}
+                  className="relative w-full h-64 sm:h-80 overflow-hidden rounded-2xl bg-muted border border-border/40 shadow-sm"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={event.image_url}
+                    alt={event.title}
+                    className="w-full h-full object-cover"
+                  />
+                </motion.div>
+              )}
+
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}

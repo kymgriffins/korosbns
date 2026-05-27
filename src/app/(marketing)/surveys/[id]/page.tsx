@@ -66,6 +66,16 @@ export default function SurveyDetailPage() {
         {error && <p className="text-destructive">{error}</p>}
         {survey && (
           <>
+            {(survey.image_url || survey.image) && (
+              <div className="relative w-full h-56 sm:h-72 overflow-hidden rounded-2xl bg-muted border border-border/40 shadow-xs mb-8">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={survey.image_url || survey.image}
+                  alt={survey.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
             <h1 className="mb-2 text-3xl font-bold">{survey.title}</h1>
             {survey.description ? (
               <p className="mb-8 text-muted-foreground">{survey.description}</p>
