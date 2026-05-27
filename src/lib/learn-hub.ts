@@ -98,12 +98,37 @@ export type LearningStageApi = {
   steps: StageStepApi[];
 };
 
+export type ForumPost = {
+  id: string;
+  content: string;
+  upvotes: number;
+  author_name: string;
+  author_initials: string;
+  created_at: string;
+};
+
+export type ForumThread = {
+  id: string;
+  title: string;
+  civic_module: string | null;
+  civic_chapter: string | null;
+  posts_count: number;
+  author_name: string;
+  author_initials: string;
+  created_at: string;
+};
+
+export type ForumThreadDetail = ForumThread & {
+  posts: ForumPost[];
+};
+
 export type LearnProfileResponse = {
   gamification: {
     points: number;
     level: number;
     streak_days: number;
     badges: Array<{ slug: string; name: string; description?: string; icon?: string }>;
+    certificates: Array<{ id: string; civic_module: string; module_title: string; module_slug: string; issued_at: string; certificate_url: string }>;
     recent_progress: Array<{
       content_type: string;
       content_id: string;
@@ -152,8 +177,8 @@ export const learnHubApi = {
   documents: (filters?: LearnListFilters) => fetchList("documents", filters),
   paths: (filters?: LearnListFilters) => fetchList("paths", filters),
   quests: (filters?: LearnListFilters) => fetchList("quests", filters),
-  stages: () => apiFetch<{ results: LearningStageApi[] }>("/content/learn/stages/"),
-  stage: (slug: string) => apiFetch<LearningStageApi>(`/content/learn/stages/${slug}/`),
+  stages: () => apiFetch<{ results: LearningStageApi[] }>("/content/civic-modules/"),
+  stage: (slug: string) => apiFetch<LearningStageApi>(`/content/civic-modules/${slug}/`),
   leaderboard: (limit = 20) =>
     apiFetch<{ results: LeaderboardEntry[] }>(`/gamification/leaderboard/?limit=${limit}`),
   stageLeaderboard: (slug: string) =>
@@ -179,6 +204,40 @@ export const learnHubApi = {
     });
     if (!res.ok) throw new Error("Could not save progress");
     return res.json();
+  },
+  completeChapter: async (chapterId: string) => {
+    const res = await fetch(buildApiUrl(`/content/civic-chapters/${chapterId}/complete/`), {
+      method: "POST",
+      headers: gamificationHeaders(),
+    });
+    if (!res.ok) throw new Error("Could not complete chapter");
+    return res.json();
+  },
+  getForumThreads: (chapterId?: string) => {
+    let url = "/engagement/forum-threads/";
+    if (chapterId) url += `?chapter_id=${chapterId}`;
+    return apiFetch<{ results: ForumThread[] }>(url);
+  },
+  createForumThread: async (body: { title: string; civic_module?: string; civic_chapter?: string }) => {
+    const res = await fetch(buildApiUrl("/engagement/forum-threads/"), {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...gamificationHeaders() },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) throw new Error("Could not create thread");
+    return res.json() as Promise<ForumThread>;
+  },
+  getForumThread: (threadId: string) => {
+    return apiFetch<ForumThreadDetail>(`/engagement/forum-threads/${threadId}/`);
+  },
+  createForumPost: async (threadId: string, content: string) => {
+    const res = await fetch(buildApiUrl(`/engagement/forum-threads/${threadId}/posts/`), {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...gamificationHeaders() },
+      body: JSON.stringify({ content }),
+    });
+    if (!res.ok) throw new Error("Could not create post");
+    return res.json() as Promise<ForumPost>;
   },
 };
 

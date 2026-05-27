@@ -115,6 +115,7 @@ export function LearnPathsHome() {
   const [cachedStages, setCachedStages] = useState<number[]>([]);
   const [leaderboardData, setLeaderboardData] = useState<{ rank: number; name: string | null; points: number; level: number; badge_count: number }[]>([]);
   const [stageStats, setStageStats] = useState<Record<string, { total_users: number; avg_trivia_score: number | null }>>({});
+  const [backendProfile, setBackendProfile] = useState<any | null>(null);
 
   // Sync selectedStage ↔ activeLesson for sidebar curriculum rail
   useEffect(() => {
@@ -231,12 +232,18 @@ export function LearnPathsHome() {
     setLoading(false);
   }, [isLoggedIn, authUser]);
 
-  // Fetch global leaderboard
+  // Fetch global leaderboard and backend profile
   useEffect(() => {
     learnHubApi.leaderboard(10).then((res: { results: { rank: number; name: string | null; points: number; level: number; badge_count: number }[] }) => {
       setLeaderboardData(res.results || []);
     }).catch(() => {});
-  }, []);
+
+    if (isLoggedIn) {
+      learnHubApi.profile().then((res) => {
+        setBackendProfile(res);
+      }).catch(() => {});
+    }
+  }, [isLoggedIn]);
 
   // Fetch per-stage stats when stages load
   useEffect(() => {
@@ -557,7 +564,6 @@ export function LearnPathsHome() {
                       <div
                         key={stage.id}
                         onClick={() => {
-                          if (offlineDisabled) return;
                           setSelectedStage(stage);
                         }}
                         className={`relative flex items-center justify-between p-4 rounded-xl border transition-all cursor-pointer ${
@@ -566,7 +572,7 @@ export function LearnPathsHome() {
                             : isActive
                             ? "bg-card border-foreground/35 hover:border-foreground shadow-xs"
                             : "bg-muted/15 border-border hover:bg-muted/30"
-                        } ${offlineDisabled ? "opacity-30 cursor-not-allowed" : ""}`}
+                        }`}
                       >
                         <div className="flex items-center gap-4">
                           {/* Circle Timeline Index */}
@@ -686,6 +692,29 @@ export function LearnPathsHome() {
                     Reset All Progress
                   </Button>
                 </div>
+
+                {/* Certificates */}
+                {backendProfile?.gamification?.certificates && backendProfile.gamification.certificates.length > 0 && (
+                  <div className="p-4 border border-border bg-card rounded-2xl space-y-3 shadow-xs">
+                    <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Digital Certificates</h3>
+                    <div className="grid grid-cols-1 gap-3">
+                      {backendProfile.gamification.certificates.map((cert: any) => (
+                        <div key={cert.id} className="p-3 rounded-xl border border-primary/20 bg-primary/5 space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Award className="size-4 text-primary" />
+                            <h4 className="font-bold text-xs text-foreground leading-tight">{cert.module_title}</h4>
+                          </div>
+                          <p className="text-[10px] text-muted-foreground font-semibold">Issued: {new Date(cert.issued_at).toLocaleDateString()}</p>
+                          {cert.certificate_url && (
+                            <Button asChild variant="outline" size="sm" className="w-full text-[10px] font-bold h-7 rounded-lg border-primary/20 text-primary hover:bg-primary/10 mt-1">
+                              <a href={cert.certificate_url} target="_blank" rel="noopener noreferrer">View Certificate</a>
+                            </Button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </motion.div>
             )}
 
@@ -705,12 +734,6 @@ export function LearnPathsHome() {
                 const idx = STAGES_DATA.indexOf(selectedStage);
                 const prev = STAGES_DATA[idx - 1];
                 if (prev) {
-                  const isCompleted = profile.badges?.includes(prev.badge);
-                  const isActive = profile.stageProgress?.includes(prev.order);
-                  if (!isCompleted && !isActive) {
-                    toast.error(`Stage ${prev.order} is locked.`);
-                    return;
-                  }
                   setSelectedStage(prev);
                 }
               }}
@@ -718,12 +741,6 @@ export function LearnPathsHome() {
                 const idx = STAGES_DATA.indexOf(selectedStage);
                 const next = STAGES_DATA[idx + 1];
                 if (next) {
-                  const isCompleted = profile.badges?.includes(next.badge);
-                  const isActive = profile.stageProgress?.includes(next.order);
-                  if (!isCompleted && !isActive) {
-                    toast.error(`Stage ${next.order} is locked.`);
-                    return;
-                  }
                   setSelectedStage(next);
                 }
               }}
@@ -750,12 +767,6 @@ export function LearnPathsHome() {
                 const idx = STAGES_DATA.indexOf(selectedStage);
                 const prev = STAGES_DATA[idx - 1];
                 if (prev) {
-                  const isCompleted = profile.badges?.includes(prev.badge);
-                  const isActive = profile.stageProgress?.includes(prev.order);
-                  if (!isCompleted && !isActive) {
-                    toast.error(`Stage ${prev.order} is locked.`);
-                    return;
-                  }
                   setSelectedStage(prev);
                 }
               }}
@@ -763,12 +774,6 @@ export function LearnPathsHome() {
                 const idx = STAGES_DATA.indexOf(selectedStage);
                 const next = STAGES_DATA[idx + 1];
                 if (next) {
-                  const isCompleted = profile.badges?.includes(next.badge);
-                  const isActive = profile.stageProgress?.includes(next.order);
-                  if (!isCompleted && !isActive) {
-                    toast.error(`Stage ${next.order} is locked.`);
-                    return;
-                  }
                   setSelectedStage(next);
                 }
               }}
@@ -873,7 +878,6 @@ export function LearnPathsHome() {
                         <div
                           key={stage.id}
                           onClick={() => {
-                            if (offlineDisabled) return;
                             setSelectedStage(stage);
                           }}
                           className={cn(
@@ -882,8 +886,7 @@ export function LearnPathsHome() {
                               ? "bg-primary/4 border-primary/15 hover:bg-primary/8 shadow-xs"
                               : isActive
                               ? "bg-card border-foreground/30 hover:border-foreground shadow-sm"
-                              : "bg-muted/10 border-border/80 hover:bg-muted/25",
-                            offlineDisabled && "opacity-30 cursor-not-allowed"
+                              : "bg-muted/10 border-border/80 hover:bg-muted/25"
                           )}
                         >
                           <div className="space-y-3">
@@ -1050,6 +1053,29 @@ export function LearnPathsHome() {
                     })}
                   </div>
                   </div>
+
+                  {/* Certificates */}
+                  {backendProfile?.gamification?.certificates && backendProfile.gamification.certificates.length > 0 && (
+                    <div className="p-6 border border-border bg-card rounded-2xl space-y-4 shadow-sm">
+                      <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Digital Certificates</h3>
+                      <div className="grid grid-cols-2 gap-4">
+                        {backendProfile.gamification.certificates.map((cert: any) => (
+                          <div key={cert.id} className="p-4 rounded-xl border border-primary/20 bg-primary/5 space-y-3">
+                            <div className="flex items-center gap-2">
+                              <Award className="size-5 text-primary" />
+                              <h4 className="font-bold text-xs text-foreground leading-tight">{cert.module_title}</h4>
+                            </div>
+                            <p className="text-[10px] text-muted-foreground font-semibold">Issued: {new Date(cert.issued_at).toLocaleDateString()}</p>
+                            {cert.certificate_url && (
+                              <Button asChild variant="outline" size="sm" className="w-full text-xs font-bold h-8 rounded-lg border-primary/20 text-primary hover:bg-primary/10">
+                                <a href={cert.certificate_url} target="_blank" rel="noopener noreferrer">View Certificate</a>
+                              </Button>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
                   {/* Global Settings & Language Selector */}
                   <div className="p-6 border border-border bg-card rounded-2xl space-y-4 shadow-sm">
