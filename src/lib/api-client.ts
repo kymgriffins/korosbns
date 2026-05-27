@@ -522,6 +522,19 @@ export const citizenApi = {
       method: "POST",
       body: JSON.stringify(body),
     }),
+
+  getTeamMembers: (config?: RequestInit) =>
+    apiFetch<{
+      name: string;
+      role: string;
+      image: string;
+      description: string;
+      bio?: string;
+      socials?: Record<string, string>;
+    }[]>("/org/team/public/", {
+      ...config,
+      next: { revalidate: 3600, ...(config as any)?.next },
+    } as any),
 };
 
 export function wrapNotionContent(html: string): string {

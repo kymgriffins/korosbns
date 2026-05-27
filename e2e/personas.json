@@ -1,6 +1,6 @@
 {
   "generated_by": "bootstrap_e2e_personas",
-  "apiBase": "http://127.0.0.1:8000",
+  "apiBase": "http://localhost:8000",
   "frontendBase": "http://localhost:3000",
   "password": "E2eDemoPass123!",
   "anonymous": {

@@ -7,12 +7,14 @@ export function apiFetchInit(
 ): RequestInit {
   const normalized = (method ?? "GET").toUpperCase();
   const isMutation = ["POST", "PUT", "PATCH", "DELETE"].includes(normalized);
+  
+  const hasCustomCache = init?.cache !== undefined || (init as any)?.next?.revalidate !== undefined;
+  
   return {
-    cache: API_FETCH_CACHE,
+    cache: hasCustomCache ? init?.cache : API_FETCH_CACHE,
     ...init,
     headers: {
-      "Cache-Control": "no-cache",
-      Pragma: "no-cache",
+      ...(hasCustomCache ? {} : { "Cache-Control": "no-cache", Pragma: "no-cache" }),
       ...(init?.headers as Record<string, string> | undefined),
     },
   };

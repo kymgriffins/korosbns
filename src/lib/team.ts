@@ -1,6 +1,19 @@
 import { team } from "@/constants/team";
+import { citizenApi } from "./api-client";
 
-export type TeamMember = (typeof team)[number];
+export interface TeamMember {
+    name: string;
+    role: string;
+    image: string;
+    description: string;
+    bio?: string;
+    socials?: {
+        linkedin?: string;
+        x?: string;
+        instagram?: string;
+        email?: string;
+    };
+}
 
 export const slugifyName = (name: string) =>
     name
@@ -33,7 +46,33 @@ export const getMemberAliases = (member: TeamMember) => {
     return [...aliases];
 };
 
-export const findMemberByParam = (rawParam: string) => {
+export const findMemberByParam = (rawParam: string, customTeam?: TeamMember[]) => {
     const param = normalizeHandle(rawParam);
-    return team.find((member) => getMemberAliases(member).includes(param));
+    const list = customTeam || team;
+    return list.find((member) => getMemberAliases(member).includes(param));
 };
+
+export async function fetchTeamMembers(): Promise<TeamMember[]> {
+    try {
+        const apiTeam = await citizenApi.getTeamMembers();
+        if (apiTeam && apiTeam.length > 0) {
+            return apiTeam.map((m) => ({
+                name: m.name,
+                role: m.role,
+                image: m.image || "https://res.cloudinary.com/dn8lut2fc/image/upload/v1778676957/Movine_Omondi_HeadShot_ulwyu8.jpg",
+                description: m.description || "",
+                bio: m.bio || m.description || "",
+                socials: {
+                    linkedin: m.socials?.linkedin || "",
+                    x: m.socials?.x || "",
+                    instagram: m.socials?.instagram || "",
+                    email: m.socials?.email || "",
+                },
+            }));
+        }
+        return team;
+    } catch (error) {
+        console.error("Failed to fetch team members, falling back to local constants:", error);
+        return team;
+    }
+}
