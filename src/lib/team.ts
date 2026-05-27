@@ -56,7 +56,7 @@ export async function fetchTeamMembers(): Promise<TeamMember[]> {
     try {
         const apiTeam = await citizenApi.getTeamMembers();
         if (apiTeam && apiTeam.length > 0) {
-            return apiTeam.map((m) => ({
+            const mapped = apiTeam.map((m) => ({
                 name: m.name,
                 role: m.role,
                 image: m.image || "https://res.cloudinary.com/dn8lut2fc/image/upload/v1778676957/Movine_Omondi_HeadShot_ulwyu8.jpg",
@@ -69,6 +69,19 @@ export async function fetchTeamMembers(): Promise<TeamMember[]> {
                     email: m.socials?.email || "",
                 },
             }));
+
+            const getOrderIndex = (name: string): number => {
+                const lowercaseName = name.toLowerCase();
+                if (lowercaseName.includes("millicent")) return 0;
+                if (lowercaseName.includes("movine")) return 1;
+                if (lowercaseName.includes("james")) return 2;
+                if (lowercaseName.includes("shem")) return 3;
+                if (lowercaseName.includes("peculiar")) return 4;
+                if (lowercaseName.includes("nelly")) return 5;
+                return 999;
+            };
+
+            return mapped.sort((a, b) => getOrderIndex(a.name) - getOrderIndex(b.name));
         }
         return team;
     } catch (error) {

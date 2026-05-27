@@ -41,7 +41,7 @@ export default function LandingTeam({ teamData }: { teamData?: TeamMember[] }) {
                 src={member.image}
                 alt={member.name}
                 fill
-                className="object-cover transition-transform duration-700 group-hover:scale-104"
+                className="object-cover object-top transition-transform duration-700 group-hover:scale-104"
                 sizes="(max-width: 1024px) 50vw, 33vw"
               />
             </div>

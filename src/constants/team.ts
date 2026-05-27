@@ -14,17 +14,6 @@ export const team = [
         }
     },
     {
-        name: "James Maingi Mutinda",
-        role: "Director Partnerships",
-        image: "https://res.cloudinary.com/dn8lut2fc/image/upload/v1778676956/James_Mutinda_f2g7us.jpg",
-        description: "Connecting BNS with global and local partners to scale our institutional legacy and democratic stability.",
-        bio: "Connecting BNS with global and local partners to scale our institutional legacy and democratic stability.",
-        socials: {
-            linkedin: "https://linkedin.com/in/jamesmutinda",
-            x: "https://x.com/jamesmutinda"
-        }
-    },
-    {
         name: "Movine Omondi",
         role: "Executive Director",
         image: "https://res.cloudinary.com/dn8lut2fc/image/upload/v1778676957/Movine_Omondi_HeadShot_ulwyu8.jpg",
@@ -33,6 +22,17 @@ export const team = [
         socials: {
             linkedin: "https://www.linkedin.com/in/movine-omondi",
             x: "https://x.com/Movineomondi"
+        }
+    },
+    {
+        name: "James Maingi Mutinda",
+        role: "Director Partnerships",
+        image: "https://res.cloudinary.com/dn8lut2fc/image/upload/v1778676956/James_Mutinda_f2g7us.jpg",
+        description: "Connecting BNS with global and local partners to scale our institutional legacy and democratic stability.",
+        bio: "Connecting BNS with global and local partners to scale our institutional legacy and democratic stability.",
+        socials: {
+            linkedin: "https://linkedin.com/in/jamesmutinda",
+            x: "https://x.com/jamesmutinda"
         }
     },
     {
