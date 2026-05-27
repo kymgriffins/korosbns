@@ -5,7 +5,6 @@ import { OnboardingWizard } from "./onboarding-wizard";
 import { AnonymousIdentityPicker } from "./anonymous-identity-picker";
 import { BitmojiAvatar } from "./bitmoji-avatar";
 import { StageDetailDrawer } from "./stage-detail-drawer";
-import { LearnHubSectionTabs } from "./learn-hub-section-tabs";
 
 import { Button } from "@/ui/button";
 import { Progress } from "@/ui/progress";
@@ -382,39 +381,6 @@ export function LearnPathsHome() {
           </div>
         )}
 
-        {/* Profile Header Summary — hidden while lesson is open */}
-        {!selectedStage && (
-        <header className="sticky top-0 z-30 px-4 py-3 border-b border-border bg-card/95 backdrop-blur-md flex justify-between items-center gap-3 shrink-0">
-          {/* Logo */}
-          <a href="/" className="shrink-0 flex items-center hover:opacity-80 transition-opacity" aria-label="Home">
-            <img src="/logo.svg" alt="Budget Ndio Story" className="h-7 w-auto" />
-          </a>
-
-          {/* User Info */}
-          <div className="flex items-center gap-2.5 flex-1 min-w-0">
-            <BitmojiAvatar gender={profile.gender} size="sm" className="shrink-0" />
-            <div className="min-w-0">
-              <h1 className="text-xs font-black text-foreground truncate">{profile.breakName}</h1>
-              <p className="text-[10px] text-muted-foreground truncate">{profile.county} · Lvl {Math.floor(profile.sovereigns / 100) + 1}</p>
-            </div>
-          </div>
-
-          {/* Stats */}
-          <div className="flex items-center gap-1.5 shrink-0">
-            <div className="px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-black flex items-center gap-1">
-              <Sparkles className="size-3 fill-primary" />
-              <span>{profile.sovereigns}</span>
-            </div>
-            <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-500 text-xs font-bold" title={text.streak}>
-              <Flame className="size-3 fill-orange-500" />
-              <span>{profile.streakDays}d</span>
-            </div>
-          </div>
-        </header>
-        )}
-
-        {!selectedStage && <LearnHubSectionTabs />}
-
         {/* Dashboard tabs — scroll inside layout main when no lesson */}
         {!selectedStage ? (
         <div className="flex-1 min-h-0 p-4">
@@ -428,6 +394,25 @@ export function LearnPathsHome() {
                 exit={{ opacity: 0, y: -10 }}
                 className="space-y-6"
               >
+                {/* User stat row (replaces former sticky top bar) */}
+                <div className="flex items-center gap-3 p-3 rounded-2xl border border-border bg-card shadow-xs">
+                  <BitmojiAvatar gender={profile.gender} size="sm" className="shrink-0" />
+                  <div className="min-w-0 flex-1">
+                    <h1 className="text-xs font-black text-foreground truncate">{profile.breakName}</h1>
+                    <p className="text-[10px] text-muted-foreground truncate">{profile.county} · Lvl {Math.floor(profile.sovereigns / 100) + 1}</p>
+                  </div>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <div className="px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-black flex items-center gap-1">
+                      <Sparkles className="size-3 fill-primary" />
+                      <span>{profile.sovereigns}</span>
+                    </div>
+                    <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-500 text-xs font-bold" title={text.streak}>
+                      <Flame className="size-3 fill-orange-500" />
+                      <span>{profile.streakDays}d</span>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="space-y-1">
                   <h2 className="text-lg font-black uppercase tracking-tight">{text.dashboardTitle}</h2>
                   <p className="text-xs text-muted-foreground">{text.dashboardSubtitle}</p>
@@ -681,8 +666,8 @@ export function LearnPathsHome() {
           </AnimatePresence>
         </div>
         ) : (
-          /* Full-screen lesson layer on mobile (above tab bar z-40) */
-          <div className="fixed inset-0 z-50 flex flex-col bg-background">
+          /* Lesson layer on mobile — clamped above the always-visible bottom nav */
+          <div className="fixed inset-x-0 top-0 bottom-[calc(var(--mobile-nav-height)+env(safe-area-inset-bottom))] z-50 flex flex-col bg-background">
             <StageDetailDrawer
               stage={selectedStage}
               profile={profile}

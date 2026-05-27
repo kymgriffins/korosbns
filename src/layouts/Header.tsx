@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Routes } from "@/constants";
 import MobileMenu from "@/components/marketing/mobile-menu";
-import { MarketingMobileNav } from "@/layouts/MarketingMobileNav";
 import { Button } from "@/ui/button";
 import Image from "next/image";
 import { useClickOutside } from "@/hooks";
@@ -81,7 +80,6 @@ export function Header() {
             <motion.div
               whileTap={{ scale: 0.92 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
-              className="hidden lg:block"
             >
               <Button
                 size="icon-sm"
@@ -122,11 +120,6 @@ export function Header() {
       </motion.header>
 
       <MobileMenu isOpen={isOpen} setIsOpen={setIsOpen} />
-      <MarketingMobileNav
-        menuOpen={isOpen}
-        onMenuToggle={() => setIsOpen((prev) => !prev)}
-        onMenuClose={() => setIsOpen(false)}
-      />
     </div>
   );
 }

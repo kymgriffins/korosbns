@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { Suspense, useState, useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { 
   User, ChevronRight, ChevronLeft,
   BookOpen, Bell, Home, CheckCircle2, ArrowLeft
@@ -10,8 +10,7 @@ import { cn } from "@/utils";
 import { LearnProvider, useLearn, type LearnTab } from "@/contexts/learn-context";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/ui/button";
-import { MarketingMobileNav } from "@/layouts/MarketingMobileNav";
-import MobileMenu from "@/components/marketing/mobile-menu";
+import { LearnMobileNav } from "@/layouts/LearnMobileNav";
 
 const ALL_STAGES = [
   { id: 1, badge: "🛡️", title: "Constitution" },
@@ -31,7 +30,6 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
     gamification,
     activeLesson,
   } = useLearn();
-  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem("bns_sidebar_collapsed");
@@ -39,30 +37,6 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
       setSidebarCollapsed(true);
     }
   }, [setSidebarCollapsed]);
-
-  useEffect(() => {
-    const isMobileDevice = () => window.innerWidth < 1024;
-
-    if (menuOpen && isMobileDevice()) {
-      document.body.classList.add("overflow-hidden");
-    } else {
-      document.body.classList.remove("overflow-hidden");
-    }
-
-    const handleResize = () => {
-      if (!isMobileDevice()) {
-        document.body.classList.remove("overflow-hidden");
-      } else if (menuOpen) {
-        document.body.classList.add("overflow-hidden");
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => {
-      document.body.classList.remove("overflow-hidden");
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [menuOpen]);
 
   const toggleSidebar = () => {
     const nextState = !sidebarCollapsed;
@@ -88,8 +62,6 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
 
   /* If an active lesson is set, we'll render a curriculum rail */
   const showCurriculum = !!activeLesson;
-
-  const lessonOpen = !!activeLesson;
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row relative overflow-x-hidden">
@@ -294,26 +266,12 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
 
       {/* 🚀 Main Content Canvas — viewport-locked on mobile; main is sole scroll region */}
       <div className="flex-1 flex flex-col min-h-0 h-dvh md:h-auto overflow-hidden">
-        <main
-          className={cn(
-            "flex-1 min-h-0 overflow-y-auto flex flex-col",
-            !lessonOpen && "pb-mobile-nav md:pb-0"
-          )}
-        >
+        <main className="flex-1 min-h-0 overflow-y-auto flex flex-col pb-mobile-nav md:pb-0">
           {children}
         </main>
 
-        {/* 📱 Site-wide marketing bottom nav (hidden during lesson) */}
-        {!lessonOpen && (
-          <>
-            <MobileMenu isOpen={menuOpen} setIsOpen={setMenuOpen} />
-            <MarketingMobileNav
-              menuOpen={menuOpen}
-              onMenuToggle={() => setMenuOpen((prev) => !prev)}
-              onMenuClose={() => setMenuOpen(false)}
-            />
-          </>
-        )}
+        {/* 📱 Learn hub mobile bottom nav — always visible */}
+        <LearnMobileNav />
       </div>
 
     </div>

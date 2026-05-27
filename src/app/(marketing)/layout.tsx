@@ -23,7 +23,7 @@ const MarketingLayout = ({
   return (
     <main
       className={`w-full relative ${
-        showMarketingChrome ? "pt-12 md:pt-16 lg:pt-20 pb-mobile-nav lg:pb-0" : ""
+        showMarketingChrome ? "pt-12 md:pt-16 lg:pt-20" : ""
       }`}
     >
       {!isAccountPage && !isLearnApp && <Navbar />}
