@@ -39,6 +39,49 @@ export type LearnHubSummary = {
   trending: LearnHubItem[];
 };
 
+export type StageTrivia = {
+  type: "multiple-choice" | "reflection";
+  question: string;
+  options?: string[];
+  answer?: number;
+  explanation?: string;
+};
+
+export type StageTakeaway = {
+  type: "info" | "warning" | "tip";
+  title: string;
+  text: string;
+};
+
+export type StageStepApi = {
+  id: string;
+  title: string;
+  order: number;
+  youtube_url: string;
+  audio_url: string;
+  transcript: string;
+  text: string;
+  takeaways: StageTakeaway[];
+  trivia: StageTrivia[];
+};
+
+export type LearningStageApi = {
+  id: string;
+  title: string;
+  slug: string;
+  badge_icon: string;
+  badge_name: string;
+  document_name: string;
+  archive: string;
+  link: string;
+  status: string;
+  credits: string;
+  description: string;
+  expectations: string[];
+  order: number;
+  steps: StageStepApi[];
+};
+
 export type LearnProfileResponse = {
   gamification: {
     points: number;
@@ -93,6 +136,8 @@ export const learnHubApi = {
   documents: (filters?: LearnListFilters) => fetchList("documents", filters),
   paths: (filters?: LearnListFilters) => fetchList("paths", filters),
   quests: (filters?: LearnListFilters) => fetchList("quests", filters),
+  stages: () => apiFetch<{ results: LearningStageApi[] }>("/content/learn/stages/"),
+  stage: (slug: string) => apiFetch<LearningStageApi>(`/content/learn/stages/${slug}/`),
   profile: async (): Promise<LearnProfileResponse> => {
     const res = await fetch(buildApiUrl("/content/learn/profile/"), {
       headers: gamificationHeaders(),

@@ -1,5 +1,3 @@
-import docRepoDump from "./docrepository-dump.json";
-
 export interface GovernmentDocument {
   id: string;
   stageId: number;
@@ -335,11 +333,11 @@ export function getDocumentsForStage(
 
   const folders = STAGE_FOLDER_MAP[stageId] || [];
   
-  // Use live data if available, else fall back to local dump
-  const sourceDocs = liveRepoDocs && liveRepoDocs.length > 0 ? liveRepoDocs : docRepoDump.documents;
+  // Return empty if no live repository data
+  if (!liveRepoDocs || liveRepoDocs.length === 0) return [];
 
   // Filter repo documents
-  const matchedDocs = sourceDocs.filter((doc: any) => {
+  const matchedDocs = liveRepoDocs.filter((doc: any) => {
     const inFolder = folders.includes(doc.folder);
     if (!inFolder) return false;
 
@@ -372,7 +370,7 @@ export function getDocumentsForStage(
   });
 
   // If we filtered for county and got nothing, return all matched docs for that year as fallback references
-  const finalMatched = matchedDocs.length > 0 ? matchedDocs : sourceDocs.filter((doc: any) => {
+  const finalMatched = matchedDocs.length > 0 ? matchedDocs : liveRepoDocs.filter((doc: any) => {
     return folders.includes(doc.folder) && matchesFinancialYear(doc.name, year);
   });
 

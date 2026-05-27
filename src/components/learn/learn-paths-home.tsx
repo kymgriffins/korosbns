@@ -23,7 +23,7 @@ import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
 import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
-import { STAGES_DATA, type StageData } from "@/constants/stages-data";
+import { useStages, type StageData } from "@/lib/use-stages";
 import { citizenApi } from "@/lib/api-client";
 
 // Translations dictionary for Global Language Toggle (EN / SW / Sheng)
@@ -103,6 +103,8 @@ const TRANSLATIONS = {
 
 export function LearnPathsHome() {
   const { isLoggedIn, user: authUser } = useAuth();
+  const { data: apiStages, isLoading: stagesLoading } = useStages();
+  const STAGES_DATA = apiStages || [];
   const [wantsAnonymous, setWantsAnonymous] = useState(false);
   const [profile, setProfile] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
@@ -299,20 +301,15 @@ export function LearnPathsHome() {
   const langKey = (profile?.language as "EN" | "SW" | "SH") || "EN";
   const text = TRANSLATIONS[langKey];
 
-  // Leaderboard assembly sorting
-  const leaderboard = [
-    { name: "BudgetBreaker_Nairobi", svg: 850, stages: 8 },
-    { name: "SovereignSeeker_Mombasa", svg: 720, stages: 6 },
-    { name: "GavanaWatch_Kisumu", svg: 640, stages: 5 },
-    { name: profile?.pseudoName || "You", svg: profile?.sovereigns || 0, stages: profile?.badges?.length || 0, isUser: true },
-    { name: "MCA_Whisperer_Nakuru", svg: 310, stages: 3 },
-    { name: "CitizenZero_Kiambu", svg: 150, stages: 1 }
-  ].sort((a, b) => b.svg - a.svg).map((item, idx) => ({ ...item, rank: idx + 1 }));
+  // Leaderboard — only user entry (full leaderboard from API when signed in)
+  const leaderboard = profile ? [
+    { name: profile.pseudoName || profile.breakName || "You", svg: profile.sovereigns || 0, stages: profile.badges?.length || 0, isUser: true, rank: 1 }
+  ] : [];
 
   const currentStageNum = profile ? (profile.stageProgress ? Math.max(...profile.stageProgress) : 1) : 1;
-  const currentStage = STAGES_DATA.find(s => s.id === currentStageNum) || STAGES_DATA[0];
+  const currentStage = STAGES_DATA.find(s => s.order === currentStageNum) || STAGES_DATA[0];
 
-  if (loading) {
+  if (loading || stagesLoading) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center min-h-[50vh]">
         <div className="animate-spin size-8 border-4 border-primary border-t-transparent rounded-full" />
@@ -470,7 +467,7 @@ export function LearnPathsHome() {
                   <select
                     id="stageSelect"
                     onChange={(e) => {
-                      const selected = STAGES_DATA.find(s => s.id === parseInt(e.target.value));
+                      const selected = STAGES_DATA.find(s => s.order === parseInt(e.target.value));
                       if (selected) {
                         setSelectedStage(selected);
                       }
@@ -480,10 +477,10 @@ export function LearnPathsHome() {
                     <option value="">Select a stage...</option>
                     {STAGES_DATA.map((s) => {
                       const isCompleted = profile.badges?.includes(s.badge);
-                      const isActive = profile.stageProgress?.includes(s.id);
+                      const isActive = profile.stageProgress?.includes(s.order);
                       return (
-                        <option key={s.id} value={s.id}>
-                          Stage {s.id}: {s.documentName} {isCompleted ? "✓" : isActive ? "▶" : ""}
+                        <option key={s.id} value={s.order}>
+                          Stage {s.order}: {s.documentName} {isCompleted ? "✓" : isActive ? "▶" : ""}
                         </option>
                       );
                     })}
@@ -503,7 +500,7 @@ export function LearnPathsHome() {
                       <div className="grid grid-cols-2 gap-2">
                         {STAGES_DATA.map((s) => {
                           const done = profile.badges?.includes(s.badge);
-                          const active = profile.stageProgress?.includes(s.id);
+                          const active = profile.stageProgress?.includes(s.order);
                           return (
                             <div key={s.id} className={`p-2 rounded-lg border text-xs flex items-center gap-2 ${done ? 'border-primary/20 bg-primary/5' : active ? 'border-foreground/30 bg-card' : 'border-border opacity-40 bg-muted/20'}`}>
                               <span className="text-base">{s.badge}</span>
@@ -523,8 +520,8 @@ export function LearnPathsHome() {
                 <div className="space-y-3 relative before:absolute before:left-6 before:top-4 before:bottom-4 before:w-0.5 before:bg-border">
                   {STAGES_DATA.map((stage) => {
                     const isCompleted = profile.badges?.includes(stage.badge);
-                    const isActive = profile.stageProgress?.includes(stage.id);
-                    const isStageCached = cachedStages.includes(stage.id);
+                    const isActive = profile.stageProgress?.includes(stage.order);
+                    const isStageCached = cachedStages.includes(stage.order);
                     const offlineDisabled = false;
 
                     return (
@@ -551,7 +548,7 @@ export function LearnPathsHome() {
                               ? "bg-card border-foreground text-foreground"
                               : "bg-muted border-border text-muted-foreground"
                           }`}>
-                            {isCompleted ? stage.badge : stage.id}
+                            {isCompleted ? stage.badge : stage.order}
                           </div>
 
                           <div>
@@ -560,7 +557,7 @@ export function LearnPathsHome() {
                             </div>
                             <p className="text-[10px] text-muted-foreground truncate max-w-[150px] sm:max-w-xs">{stage.documentName}</p>
                             <div className="flex items-center gap-1.5 mt-1">
-                              <span className={cn("text-[9px] font-bold px-1.5 py-0.5 rounded-full border", stage.status === "Comment Open" ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-600" : "bg-muted border-border text-muted-foreground")}>
+                              <span className={cn("text-[9px] font-bold px-1.5 py-0.5 rounded-full border", "bg-muted border-border text-muted-foreground")}>
                                 {stage.status}
                               </span>
                               {isStageCached && (
@@ -575,7 +572,7 @@ export function LearnPathsHome() {
                         {/* Cache controls */}
                         {!offlineDisabled && (
                           <button
-                            onClick={(e) => handleToggleCache(stage.id, e)}
+                            onClick={(e) => handleToggleCache(stage.order, e)}
                             className={`p-2 rounded-lg border hover:bg-muted shrink-0 ${isStageCached ? 'border-blue-500/20 text-blue-600 bg-blue-500/5' : 'border-border text-muted-foreground'}`}
                           >
                             <DownloadCloud className="size-4" />
@@ -673,10 +670,11 @@ export function LearnPathsHome() {
               profile={profile}
               onUpdateProfile={handleUpdateProfile}
               onClose={() => setSelectedStage(null)}
-              hasNext={selectedStage.id < 8}
-              hasPrev={selectedStage.id > 1}
+              hasNext={STAGES_DATA.indexOf(selectedStage) < STAGES_DATA.length - 1}
+              hasPrev={STAGES_DATA.indexOf(selectedStage) > 0}
               onPrevStage={() => {
-                const prev = STAGES_DATA.find(s => s.id === selectedStage.id - 1);
+                const idx = STAGES_DATA.indexOf(selectedStage);
+                const prev = STAGES_DATA[idx - 1];
                 if (prev) {
                   const isCompleted = profile.badges?.includes(prev.badge);
                   const isActive = profile.stageProgress?.includes(prev.id);
@@ -688,7 +686,8 @@ export function LearnPathsHome() {
                 }
               }}
               onNextStage={() => {
-                const next = STAGES_DATA.find(s => s.id === selectedStage.id + 1);
+                const idx = STAGES_DATA.indexOf(selectedStage);
+                const next = STAGES_DATA[idx + 1];
                 if (next) {
                   const isCompleted = profile.badges?.includes(next.badge);
                   const isActive = profile.stageProgress?.includes(next.id);
@@ -716,10 +715,11 @@ export function LearnPathsHome() {
               profile={profile}
               onUpdateProfile={handleUpdateProfile}
               onClose={() => setSelectedStage(null)}
-              hasNext={selectedStage.id < 8}
-              hasPrev={selectedStage.id > 1}
+              hasNext={STAGES_DATA.indexOf(selectedStage) < STAGES_DATA.length - 1}
+              hasPrev={STAGES_DATA.indexOf(selectedStage) > 0}
               onPrevStage={() => {
-                const prev = STAGES_DATA.find(s => s.id === selectedStage.id - 1);
+                const idx = STAGES_DATA.indexOf(selectedStage);
+                const prev = STAGES_DATA[idx - 1];
                 if (prev) {
                   const isCompleted = profile.badges?.includes(prev.badge);
                   const isActive = profile.stageProgress?.includes(prev.id);
@@ -731,7 +731,8 @@ export function LearnPathsHome() {
                 }
               }}
               onNextStage={() => {
-                const next = STAGES_DATA.find(s => s.id === selectedStage.id + 1);
+                const idx = STAGES_DATA.indexOf(selectedStage);
+                const next = STAGES_DATA[idx + 1];
                 if (next) {
                   const isCompleted = profile.badges?.includes(next.badge);
                   const isActive = profile.stageProgress?.includes(next.id);
@@ -835,8 +836,8 @@ export function LearnPathsHome() {
                   <div className="grid grid-cols-2 gap-4">
                     {STAGES_DATA.map((stage) => {
                       const isCompleted = profile.badges?.includes(stage.badge);
-                      const isActive = profile.stageProgress?.includes(stage.id);
-                      const isStageCached = cachedStages.includes(stage.id);
+                      const isActive = profile.stageProgress?.includes(stage.order);
+                      const isStageCached = cachedStages.includes(stage.order);
                       const offlineDisabled = false;
 
                       return (
@@ -892,7 +893,7 @@ export function LearnPathsHome() {
                             <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">{stage.status}</span>
                             {!offlineDisabled && (
                               <button
-                                onClick={(e) => handleToggleCache(stage.id, e)}
+                                onClick={(e) => handleToggleCache(stage.order, e)}
                                 className={cn(
                                   "p-1.5 rounded-lg border hover:bg-muted transition-colors",
                                   isStageCached ? "border-blue-500/20 text-blue-600 bg-blue-500/5" : "border-border text-muted-foreground"
@@ -998,21 +999,21 @@ export function LearnPathsHome() {
 
                   {/* Unlocked Badges */}
                   <div className="p-6 border border-border bg-card rounded-2xl space-y-4 shadow-sm">
-                    <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Unlocked Badges ({profile.badges?.length || 0}/8)</h3>
-                    <div className="grid grid-cols-4 gap-2">
-                      {STAGES_DATA.map((stage) => {
-                        const unlocked = profile.badges?.includes(stage.badge);
-                        return (
-                          <div
-                            key={stage.id}
-                            className={`p-2.5 rounded-xl border text-center space-y-1 shadow-xs ${unlocked ? 'bg-primary/5 border-primary/20' : 'bg-muted/10 border-border opacity-40'}`}
-                          >
-                            <div className="text-xl flex justify-center">{stage.badge}</div>
-                            <p className="text-[9px] font-bold truncate">{stage.badgeName}</p>
-                          </div>
-                        );
-                      })}
-                    </div>
+                  <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Unlocked Badges ({profile.badges?.length || 0}/{STAGES_DATA.length})</h3>
+                  <div className="grid grid-cols-4 gap-2">
+                    {STAGES_DATA.map((stage) => {
+                      const unlocked = profile.badges?.includes(stage.badge);
+                      return (
+                        <div
+                          key={stage.id}
+                          className={`p-2.5 rounded-xl border text-center space-y-1 shadow-xs ${unlocked ? 'bg-primary/5 border-primary/20' : 'bg-muted/10 border-border opacity-40'}`}
+                        >
+                          <div className="text-xl flex justify-center">{stage.badge}</div>
+                          <p className="text-[9px] font-bold truncate">{stage.badgeName}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
                   </div>
 
                   {/* Global Settings & Language Selector */}

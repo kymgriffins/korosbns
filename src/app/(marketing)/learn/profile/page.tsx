@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Loader2, Trophy } from "lucide-react";
 import { Routes } from "@/constants/routes";
+import { useAuth } from "@/contexts/auth-context";
 import { learnHubApi, type LearnProfileResponse } from "@/lib/learn-hub";
 import { MotionPage } from "@/motion/wrappers";
 import { fadeInUp } from "@/motion/variants";
@@ -11,6 +12,7 @@ import { motion } from "motion/react";
 import { Button } from "@/ui/button";
 
 export default function LearnProfilePage() {
+  const { user } = useAuth();
   const [data, setData] = useState<LearnProfileResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -22,13 +24,16 @@ export default function LearnProfilePage() {
   }, []);
 
   const g = data?.gamification;
+  const displayName = user?.display_name || [user?.first_name, user?.last_name].filter(Boolean).join(" ") || user?.email?.split("@")[0] || null;
 
   return (
     <MotionPage>
       <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
-        <h1 className="text-2xl font-bold">Learner profile</h1>
+        <h1 className="text-2xl font-bold">
+          {displayName ? `${displayName}'s profile` : "Learner profile"}
+        </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Your XP, streaks, badges, and recent progress on Budget Ndio Story.
+          {displayName ? `Welcome back, ${displayName}. ` : ""}Your XP, streaks, badges, and recent progress on Budget Ndio Story.
         </p>
 
         {loading ? (

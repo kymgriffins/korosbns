@@ -13,7 +13,6 @@ import { TriviaQuiz } from "@/components/citizen/trivia-quiz";
 import { ArticleReaderActions } from "@/components/citizen/article-reader-actions";
 import { citizenApi, type TriviaSetApi } from "@/lib/api-client";
 import { Routes } from "@/constants/routes";
-import { articlePlaceholderForSlug } from "@/lib/article-placeholders";
 import { scaleIn, fadeInUp, fadeInUpDelay1, fadeInUpDelay2, fadeInUpDelay3 } from "@/motion/variants";
 
 type ReaderMode = "loading" | "error" | "article" | "story" | "trivia";
@@ -380,8 +379,7 @@ export default function UnifiedReaderClientPage({
   }
 
   if (mode === "article" && article) {
-    const placeholder = articlePlaceholderForSlug(slug);
-    const heroSrc = article.heroImage || placeholder.src;
+    const heroSrc = article.heroImage;
     const ctx = article.learningContext;
     const editionCrumb =
       ctx?.unit_slug && ctx.fiscal_year != null
@@ -420,15 +418,17 @@ export default function UnifiedReaderClientPage({
             animate="visible"
             className="relative mb-8 h-48 overflow-hidden rounded-[24px] border border-border sm:h-56"
           >
-            <Image
-              src={heroSrc}
-              alt=""
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 672px"
-              priority
-            />
-            <div className={`absolute inset-0 bg-gradient-to-br ${placeholder.accent}`} />
+            {heroSrc ? (
+              <Image
+                src={heroSrc}
+                alt=""
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 672px"
+                priority
+              />
+            ) : null}
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20" />
             <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(8,8,12,0.75)_20%,transparent_70%)]" />
           </motion.div>
 

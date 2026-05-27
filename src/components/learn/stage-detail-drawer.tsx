@@ -17,45 +17,40 @@ import {
   CONSTITUTION_HISTORICAL_DOCS,
   PARTICIPATION_TOOLKIT_DOCS
 } from "@/constants/documents-registry";
-import { getStageTakeaway } from "@/constants/stages-data";
 import { learnHubApi } from "@/lib/learn-hub";
+import type { StageTakeaway, StageTrivia } from "@/lib/learn-hub";
 
-interface TriviaItem {
-  type: "multiple-choice" | "reflection";
-  question: string;
-  options?: string[];
-  answer?: number;
-  explanation?: string;
+interface TriviaItem extends StageTrivia {
   placeholder?: string;
 }
 
 interface Step {
-  id: number;
+  id: string;
   title: string;
   youtubeId: string;
   audioUrl: string;
   transcript: string;
   text: string;
   trivia: TriviaItem[];
+  takeaways: StageTakeaway[];
   duration?: string;
 }
 
 interface Stage {
-  id: number;
+  id: string;
   title: string;
   badge: string;
   badgeName: string;
   documentName: string;
   archive: string;
   link: string;
-  status: "Published" | "Gazetted" | "Comment Open" | "Closed";
+  status: string;
   credits?: string;
   description: string;
   expectations: string[];
+  order: number;
   steps: Step[];
 }
-
-// getStageTakeaway imported from @/constants/stages-data
 
 interface StageDetailDrawerProps {
   stage: Stage;
@@ -139,7 +134,7 @@ export function StageDetailDrawer({
 
   useEffect(() => {
     setActiveSubTab("learn");
-    const storedStep = localStorage.getItem(`stage_${stage.id}_current_step`);
+    const storedStep = localStorage.getItem(`stage_${stage.order}_current_step`);
     const initialStep = storedStep ? parseInt(storedStep, 10) : 0;
     setCurrentStep(initialStep);
     setActiveFormat("video");
@@ -152,12 +147,12 @@ export function StageDetailDrawer({
     setReflectionText("");
     setTranscriptSearch("");
     setShowTranscript(false);
-    if (stage.id === 1) {
+    if (stage.order === 1) {
       setSelectedYear(2010);
     } else {
       setSelectedYear(2026);
     }
-  }, [stage.id]);
+  }, [stage.order]);
 
   useEffect(() => {
     if (currentStep < 1 || currentStep > stage.steps.length) {
@@ -175,7 +170,7 @@ export function StageDetailDrawer({
     setSelectedReflectionOption("");
     setShowTranscript(false);
     setTranscriptSearch("");
-  }, [currentStep, stage.id]);
+  }, [currentStep, stage.order]);
 
   useEffect(() => {
     return () => {
@@ -185,11 +180,11 @@ export function StageDetailDrawer({
 
   const handleStartLearning = () => {
     setCurrentStep(1);
-    localStorage.setItem(`stage_${stage.id}_current_step`, "1");
+    localStorage.setItem(`stage_${stage.order}_current_step`, "1");
   };
 
-  const isStepTriviaPassed = (stepId: number) => {
-    return localStorage.getItem(`stage_${stage.id}_step_${stepId}_trivia_passed`) === "true";
+  const isStepTriviaPassed = (stepId: string) => {
+    return localStorage.getItem(`stage_${stage.order}_step_${stepId}_trivia_passed`) === "true";
   };
 
   const handleAnswerMCQ = (qIdx: number, selectedIdx: number, correctIdx: number) => {
@@ -198,7 +193,7 @@ export function StageDetailDrawer({
     setTriviaSubmitted(true);
     if (selectedIdx === correctIdx) {
       const step = stage.steps[currentStep - 1];
-      const rewardKey = `stage_${stage.id}_step_${step.id}_trivia_${qIdx}_reward`;
+      const rewardKey = `stage_${stage.order}_step_${step.id}_trivia_${qIdx}_reward`;
       if (!localStorage.getItem(rewardKey)) {
         localStorage.setItem(rewardKey, "true");
         const updated = { ...profile, sovereigns: profile.sovereigns + 5 };
@@ -221,7 +216,7 @@ export function StageDetailDrawer({
     }
     setTriviaSubmitted(true);
     const step = stage.steps[currentStep - 1];
-    const rewardKey = `stage_${stage.id}_step_${step.id}_trivia_${qIdx}_reward`;
+    const rewardKey = `stage_${stage.order}_step_${step.id}_trivia_${qIdx}_reward`;
     if (!localStorage.getItem(rewardKey)) {
       localStorage.setItem(rewardKey, "true");
       const updated = { ...profile, sovereigns: profile.sovereigns + 5 };
@@ -242,32 +237,32 @@ export function StageDetailDrawer({
       setReflectionText("");
       setSelectedReflectionOption("");
     } else {
-      localStorage.setItem(`stage_${stage.id}_step_${step.id}_trivia_passed`, "true");
+      localStorage.setItem(`stage_${stage.order}_step_${step.id}_trivia_passed`, "true");
       setContentConsumed(true);
       toast.success("Step complete! ⭐");
       // Sync step progress to backend
       learnHubApi.markProgress({
         content_type: "article",
-        content_id: `stage-${stage.id}-step-${step.id}`,
+        content_id: `stage-${stage.order}-step-${step.id}`,
         progress_percent: Math.round((currentStep / stage.steps.length) * 100),
       }).catch(() => {});
       autoAdvanceRef.current = setTimeout(() => {
         setCurrentStep((prev) => {
           const nextVal = prev + 1;
-          localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
+          localStorage.setItem(`stage_${stage.order}_current_step`, nextVal.toString());
           return nextVal;
         });
       }, 2000);
     }
-  }, [activeTriviaIdx, currentStep, stage.id, stage.steps]);
+  }, [activeTriviaIdx, currentStep, stage.order, stage.steps]);
 
-  const masteryAwardedKey = `stage_${stage.id}_mastery_awarded`;
+  const masteryAwardedKey = `stage_${stage.order}_mastery_awarded`;
   useEffect(() => {
     if (currentStep === stage.steps.length + 1) {
       if (!localStorage.getItem(masteryAwardedKey)) {
         localStorage.setItem(masteryAwardedKey, "true");
         const newProgress = profile.stageProgress ? [...profile.stageProgress] : [1];
-        const nextStageId = stage.id + 1;
+        const nextStageId = stage.order + 1;
         if (nextStageId <= 8 && !newProgress.includes(nextStageId)) {
           newProgress.push(nextStageId);
         }
@@ -291,14 +286,14 @@ export function StageDetailDrawer({
         // Sync stage mastery to backend
         learnHubApi.markProgress({
           content_type: "path",
-          content_id: `stage-${stage.id}`,
+          content_id: `stage-${stage.order}`,
           progress_percent: 100,
         }).catch(() => {});
 
         toast.success(`🎉 Stage Mastered! +25 Sovereigns (SVG) earned. ${stage.badge} Badge unlocked!`);
       }
     }
-  }, [currentStep, stage.id]);
+  }, [currentStep, stage.order]);
 
   const handleToggleTrackDoc = () => {
     const tracked = profile.trackedDocs || [];
@@ -314,7 +309,7 @@ export function StageDetailDrawer({
   };
 
   const isDocTracked = profile.trackedDocs?.includes(stage.documentName);
-  const isCached = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("bns_cached_stages") || "[]").includes(stage.id) : false;
+  const isCached = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("bns_cached_stages") || "[]").includes(stage.order) : false;
 
   const getPersonalizedText = (rawText: string) => {
     if (!rawText) return "";
@@ -326,7 +321,7 @@ export function StageDetailDrawer({
     if (typeof window !== "undefined") {
       const url = new URL(window.location.href);
       url.searchParams.set("year", year.toString());
-      url.searchParams.set("stage", stage.id.toString());
+      url.searchParams.set("stage", stage.order.toString());
       window.history.pushState({}, "", url.toString());
     }
     toast.info(`Filtered documents for year ${year}`);
@@ -341,10 +336,10 @@ export function StageDetailDrawer({
     toast.success(`Request for ${docType} (${year}) has been generated and queued for submission to the county assembly clerk.`);
   };
 
-  const currentStageDocs = getDocumentsForStage(stage.id, selectedYear, profile.county || "", liveRepoDocs);
+  const currentStageDocs = getDocumentsForStage(stage.order, selectedYear, profile.county || "", liveRepoDocs);
   const constitutionYears = [2010, 2005, 1997, 1991, 1982, 1969, 1964, 1963];
   const standardYears = [2026, 2025, 2024, 2023, 2022, 2021, 2020];
-  const yearOptions = stage.id === 1 ? constitutionYears : standardYears;
+  const yearOptions = stage.order === 1 ? constitutionYears : standardYears;
 
   /* Progress dots helper */
   const totalSteps = stage.steps.length;
@@ -554,7 +549,8 @@ export function StageDetailDrawer({
                           ))}
 
                         {(() => {
-                          const takeaway = getStageTakeaway(stage.id, stage.steps[currentStep - 1].id);
+                          const step = stage.steps[currentStep - 1];
+                          const takeaway = step?.takeaways?.[0] || null;
                           if (!takeaway) return null;
                           if (takeaway.type === "info") {
                             return (
@@ -784,7 +780,7 @@ export function StageDetailDrawer({
               </div>
             )}
 
-            {stage.id === 1 && (
+            {stage.order === 1 && (
               <div className="grid grid-cols-2 gap-2 bg-muted/50 p-1 rounded-xl text-xs font-bold">
                 <button
                   onClick={() => setConstitutionTab("current")}
@@ -801,7 +797,7 @@ export function StageDetailDrawer({
               </div>
             )}
 
-            {(stage.id !== 1 || constitutionTab === "current") && (
+            {(stage.order !== 1 || constitutionTab === "current") && (
               <div className="space-y-2">
                 <label className="text-[9px] font-black text-muted-foreground uppercase tracking-wider">Select Financial Year:</label>
                 <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
@@ -813,14 +809,14 @@ export function StageDetailDrawer({
                         selectedYear === yr ? "bg-primary border-primary text-primary-foreground shadow-sm" : "bg-card border-border text-muted-foreground hover:text-foreground"
                       )}
                     >
-                      {yr === 2010 && stage.id === 1 ? "2010 (Current)" : yr}
+                      {yr === 2010 && stage.order === 1 ? "2010 (Current)" : yr}
                     </button>
                   ))}
                 </div>
               </div>
             )}
 
-            {stage.id === 1 && constitutionTab === "timeline" ? (
+            {stage.order === 1 && constitutionTab === "timeline" ? (
               <div className="space-y-5 animate-in fade-in duration-200">
                 <div className="p-3 bg-muted/20 border border-border rounded-xl text-[10px] text-muted-foreground leading-normal flex items-start gap-2">
                   <History className="size-4 text-primary shrink-0 mt-0.5" />
@@ -968,7 +964,7 @@ export function StageDetailDrawer({
               onClick={() => {
                 const nextVal = currentStep - 1;
                 setCurrentStep(nextVal);
-                localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
+                localStorage.setItem(`stage_${stage.order}_current_step`, nextVal.toString());
                 setShowTrivia(false);
               }}
               className="min-w-[100px] gap-1 rounded-xl text-xs"
@@ -989,7 +985,7 @@ export function StageDetailDrawer({
                 onClick={() => {
                   const nextVal = currentStep + 1;
                   setCurrentStep(nextVal);
-                  localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
+                  localStorage.setItem(`stage_${stage.order}_current_step`, nextVal.toString());
                 }}
                 className="min-w-[100px] gap-1 rounded-xl text-xs"
               >

@@ -2,25 +2,25 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Routes } from "@/constants/routes";
-import { articlePlaceholderForIndex } from "@/lib/article-placeholders";
 import type { HubArticle } from "@/lib/learn-content";
 
 export function ArticleCard({ article, index }: { article: HubArticle; index: number }) {
-  const placeholder = articlePlaceholderForIndex(index);
-  const imageSrc = article.heroImage || placeholder.src;
+  const imageSrc = article.heroImage;
 
   return (
     <Link href={Routes.Article(article.id)} className="group block">
       <div className="relative overflow-hidden rounded-[24px] border border-border bg-card shadow-[0_12px_40px_rgba(0,0,0,0.12)]">
         <div className="relative m-2 h-44 overflow-hidden rounded-[22px] bg-muted">
-          <Image
-            src={imageSrc}
-            alt=""
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-          />
-          <div className={`absolute inset-0 bg-gradient-to-br ${placeholder.accent}`} />
+          {imageSrc ? (
+            <Image
+              src={imageSrc}
+              alt=""
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+            />
+          ) : null}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20" />
           <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(8,8,12,0.72)_18%,rgba(8,8,12,0.16)_72%)]" />
           <div className="absolute right-3 top-3 rounded-full bg-background p-2 text-foreground shadow-md">
             <ArrowRight className="size-3.5" />

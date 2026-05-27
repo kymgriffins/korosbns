@@ -9,19 +9,17 @@ import {
 import { cn } from "@/utils";
 import { LearnProvider, useLearn, type LearnTab } from "@/contexts/learn-context";
 import { useAuth } from "@/contexts/auth-context";
+import { useStages } from "@/lib/use-stages";
 import { Button } from "@/ui/button";
 import { LearnMobileNav } from "@/layouts/LearnMobileNav";
-
-const ALL_STAGES = [
-  { id: 1, badge: "🛡️", title: "Constitution" },
-  { id: 2, badge: "⚖️", title: "Budget Policy Statement" },
-  { id: 3, badge: "🏗️", title: "Infrastructure Fund" },
-];
 
 function LearnAppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const { isLoggedIn, user } = useAuth();
+  const { data: stages } = useStages();
+
+  const sortedStages = (stages ?? []).sort((a, b) => a.order - b.order);
   const {
     activeTab,
     setActiveTab,
@@ -159,8 +157,8 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
                 All Stages
               </p>
               <div className="space-y-0.5">
-                {ALL_STAGES.map((s) => {
-                  const isCurrent = s.id === activeLesson.stageId;
+                {sortedStages.map((s) => {
+                  const isCurrent = s.order === activeLesson.stageId;
                   return (
                     <div
                       key={s.id}
