@@ -118,13 +118,13 @@ export function LearnPathsHome() {
     if (selectedStage) {
       const completedStepIds: number[] = [];
       for (const step of selectedStage.steps) {
-        const key = `stage_${selectedStage.id}_step_${step.id}_trivia_passed`;
+        const key = `stage_${selectedStage.order}_step_${step.id}_trivia_passed`;
         if (localStorage.getItem(key) === "true") {
           completedStepIds.push(step.id);
         }
       }
       setActiveLesson({
-        stageId: selectedStage.id,
+        stageId: selectedStage.order,
         stageTitle: selectedStage.title,
         stageBadge: selectedStage.badge,
         currentStep: 0,
@@ -429,7 +429,7 @@ export function LearnPathsHome() {
                 <div className="p-4 border border-border bg-card rounded-2xl space-y-3 shadow-xs">
                   <div className="flex justify-between items-center">
                     <span className="text-[10px] uppercase font-bold text-muted-foreground">Current Stage</span>
-                    <span className="text-[11px] text-primary font-bold">Stage {currentStage.id}</span>
+                    <span className="text-[11px] text-primary font-bold">Stage {currentStage.order}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="text-3xl">{currentStage.badge}</span>
@@ -677,9 +677,9 @@ export function LearnPathsHome() {
                 const prev = STAGES_DATA[idx - 1];
                 if (prev) {
                   const isCompleted = profile.badges?.includes(prev.badge);
-                  const isActive = profile.stageProgress?.includes(prev.id);
+                  const isActive = profile.stageProgress?.includes(prev.order);
                   if (!isCompleted && !isActive) {
-                    toast.error(`Stage ${prev.id} is locked.`);
+                    toast.error(`Stage ${prev.order} is locked.`);
                     return;
                   }
                   setSelectedStage(prev);
@@ -690,9 +690,9 @@ export function LearnPathsHome() {
                 const next = STAGES_DATA[idx + 1];
                 if (next) {
                   const isCompleted = profile.badges?.includes(next.badge);
-                  const isActive = profile.stageProgress?.includes(next.id);
+                  const isActive = profile.stageProgress?.includes(next.order);
                   if (!isCompleted && !isActive) {
-                    toast.error(`Stage ${next.id} is locked.`);
+                    toast.error(`Stage ${next.order} is locked.`);
                     return;
                   }
                   setSelectedStage(next);
@@ -722,9 +722,9 @@ export function LearnPathsHome() {
                 const prev = STAGES_DATA[idx - 1];
                 if (prev) {
                   const isCompleted = profile.badges?.includes(prev.badge);
-                  const isActive = profile.stageProgress?.includes(prev.id);
+                  const isActive = profile.stageProgress?.includes(prev.order);
                   if (!isCompleted && !isActive) {
-                    toast.error(`Stage ${prev.id} is locked.`);
+                    toast.error(`Stage ${prev.order} is locked.`);
                     return;
                   }
                   setSelectedStage(prev);
@@ -735,9 +735,9 @@ export function LearnPathsHome() {
                 const next = STAGES_DATA[idx + 1];
                 if (next) {
                   const isCompleted = profile.badges?.includes(next.badge);
-                  const isActive = profile.stageProgress?.includes(next.id);
+                  const isActive = profile.stageProgress?.includes(next.order);
                   if (!isCompleted && !isActive) {
-                    toast.error(`Stage ${next.id} is locked.`);
+                    toast.error(`Stage ${next.order} is locked.`);
                     return;
                   }
                   setSelectedStage(next);
