@@ -5,6 +5,7 @@ import { OnboardingWizard } from "./onboarding-wizard";
 import { AnonymousIdentityPicker } from "./anonymous-identity-picker";
 import { BitmojiAvatar } from "./bitmoji-avatar";
 import { StageDetailDrawer } from "./stage-detail-drawer";
+import { LearnHubSectionTabs } from "./learn-hub-section-tabs";
 
 import { Button } from "@/ui/button";
 import { Progress } from "@/ui/progress";
@@ -411,6 +412,8 @@ export function LearnPathsHome() {
           </div>
         </header>
         )}
+
+        {!selectedStage && <LearnHubSectionTabs />}
 
         {/* Dashboard tabs — scroll inside layout main when no lesson */}
         {!selectedStage ? (

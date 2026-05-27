@@ -3,16 +3,15 @@
 import { usePathname, useRouter } from "next/navigation";
 import { Suspense, useState, useEffect } from "react";
 import { 
-  Trophy, User, ChevronRight, ChevronLeft,
+  User, ChevronRight, ChevronLeft,
   BookOpen, Bell, Home, CheckCircle2, ArrowLeft
 } from "lucide-react";
-import { Routes } from "@/constants/routes";
 import { cn } from "@/utils";
 import { LearnProvider, useLearn, type LearnTab } from "@/contexts/learn-context";
 import { useAuth } from "@/contexts/auth-context";
-import { motion, AnimatePresence } from "motion/react";
 import { Button } from "@/ui/button";
-import { MobileBottomNav, type MobileBottomNavItem } from "@/ui/mobile-bottom-nav";
+import { MarketingMobileNav } from "@/layouts/MarketingMobileNav";
+import MobileMenu from "@/components/marketing/mobile-menu";
 
 const ALL_STAGES = [
   { id: 1, badge: "🛡️", title: "Constitution" },
@@ -32,6 +31,7 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
     gamification,
     activeLesson,
   } = useLearn();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem("bns_sidebar_collapsed");
@@ -40,16 +40,37 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
     }
   }, [setSidebarCollapsed]);
 
+  useEffect(() => {
+    const isMobileDevice = () => window.innerWidth < 1024;
+
+    if (menuOpen && isMobileDevice()) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+
+    const handleResize = () => {
+      if (!isMobileDevice()) {
+        document.body.classList.remove("overflow-hidden");
+      } else if (menuOpen) {
+        document.body.classList.add("overflow-hidden");
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      document.body.classList.remove("overflow-hidden");
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [menuOpen]);
+
   const toggleSidebar = () => {
     const nextState = !sidebarCollapsed;
     setSidebarCollapsed(nextState);
     localStorage.setItem("bns_sidebar_collapsed", nextState ? "true" : "false");
   };
 
-  const streak = gamification?.streak_days ?? 0;
   const level = gamification?.level ?? 1;
-  const points = gamification?.points ?? 0;
-  const ringPercent = Math.min(100, points % 100);
 
   const navItems: { key: LearnTab; label: string; icon: React.ReactNode }[] = [
     { key: "home", label: "Home", icon: <Home className="size-5" /> },
@@ -69,15 +90,6 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
   const showCurriculum = !!activeLesson;
 
   const lessonOpen = !!activeLesson;
-
-  const bottomNavItems: MobileBottomNavItem[] = navItems.map((item) => ({
-    id: item.key,
-    label: item.label,
-    icon: item.icon,
-    onClick: () => handleTabChange(item.key),
-    active: activeTab === item.key,
-    ariaCurrent: activeTab === item.key ? "page" : undefined,
-  }));
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row relative overflow-x-hidden">
@@ -291,9 +303,16 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
           {children}
         </main>
 
-        {/* 📱 Mobile fixed tab bar (hidden during lesson) — z-40 below lesson overlay z-50 */}
+        {/* 📱 Site-wide marketing bottom nav (hidden during lesson) */}
         {!lessonOpen && (
-          <MobileBottomNav items={bottomNavItems} ariaLabel="Learn hub navigation" />
+          <>
+            <MobileMenu isOpen={menuOpen} setIsOpen={setMenuOpen} />
+            <MarketingMobileNav
+              menuOpen={menuOpen}
+              onMenuToggle={() => setMenuOpen((prev) => !prev)}
+              onMenuClose={() => setMenuOpen(false)}
+            />
+          </>
         )}
       </div>
 
