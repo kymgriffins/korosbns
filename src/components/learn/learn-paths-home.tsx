@@ -103,7 +103,7 @@ const TRANSLATIONS = {
 
 export function LearnPathsHome() {
   const { isLoggedIn, user: authUser } = useAuth();
-  const { data: apiStages, isLoading: stagesLoading } = useStages();
+  const { data: apiStages, isLoading: stagesLoading, isError: stagesError } = useStages();
   const STAGES_DATA = apiStages || [];
   const [wantsAnonymous, setWantsAnonymous] = useState(false);
   const [profile, setProfile] = useState<any | null>(null);
@@ -307,8 +307,6 @@ export function LearnPathsHome() {
   ] : [];
 
   const currentStageNum = profile ? (profile.stageProgress ? Math.max(...profile.stageProgress) : 1) : 1;
-  const currentStage = STAGES_DATA.find(s => s.order === currentStageNum) || STAGES_DATA[0];
-
   if (loading || stagesLoading) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center min-h-[50vh]">
@@ -316,6 +314,21 @@ export function LearnPathsHome() {
       </div>
     );
   }
+
+  if (stagesError || STAGES_DATA.length === 0) {
+    return (
+      <div className="flex-1 flex items-center justify-center p-4 bg-muted/20 min-h-[70vh]">
+        <div className="text-center space-y-4 max-w-sm">
+          <p className="text-muted-foreground text-sm">Could not load content.</p>
+          <Button onClick={() => window.location.reload()} variant="outline" className="rounded-xl font-bold">
+            Retry
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  const currentStage = STAGES_DATA.find(s => s.order === currentStageNum) || STAGES_DATA[0];
 
   // If user is not onboarded, ask if they want to register or continue as anonymous guest
   if (!profile) {
