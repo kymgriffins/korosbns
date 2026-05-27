@@ -1,4 +1,6 @@
+import type { Metadata } from "next";
 import { citizenApi } from "@/lib/api-client";
+import { metaDescription } from "@/utils/metadata";
 import UnifiedReaderClientPage from "./client-page";
 
 interface StoryCard {
@@ -20,6 +22,48 @@ interface StoryCard {
 export const dynamicParams = true;
 export const revalidate = 3600; // ISR revalidate every hour
 export const fallback = 'blocking';
+
+export async function generateMetadata(
+  props: { params: Promise<{ slug: string }> }
+): Promise<Metadata> {
+  const { slug } = await props.params;
+  try {
+    const artData = await citizenApi.getArticle(slug);
+    if (artData && artData.title) {
+      return {
+        title: `${artData.title as string} | Budget Ndio Story`,
+        description: metaDescription(
+          (artData.summary as string) || `In-depth explainer on Kenya's ${slug.replace(/-/g, " ")} covering budget, Finance Bill, and fiscal policy.`
+        ),
+        alternates: { canonical: `/learn/${slug}` },
+        openGraph: {
+          title: `${artData.title as string} | Budget Ndio Story`,
+          description: (artData.summary as string) || `Kenya budget explainer: ${slug.replace(/-/g, " ")}`,
+          url: `/learn/${slug}`,
+        },
+      };
+    }
+  } catch {
+    /* fallback */
+  }
+  try {
+    const trivData = await citizenApi.getTrivia(slug);
+    if (trivData && trivData.title) {
+      return {
+        title: `${trivData.title as string} | Budget Trivia | Budget Ndio Story`,
+        description: metaDescription(`Interactive trivia on Kenya's budget and Finance Bill. Test your knowledge of public finance.`),
+        alternates: { canonical: `/learn/${slug}` },
+      };
+    }
+  } catch {
+    /* fallback */
+  }
+  return {
+    title: `Learn: ${slug.replace(/-/g, " ")} | Budget Ndio Story`,
+    description: metaDescription(`Budget literacy content on ${slug.replace(/-/g, " ")} — Kenya's Finance Bill, fiscal policy, and public finance explained.`),
+    alternates: { canonical: `/learn/${slug}` },
+  };
+}
 
 export async function generateStaticParams() {
   // Fetch from Django or return empty for fallback: 'blocking'

@@ -52,6 +52,11 @@ export default function RootLayout({
           handwriting.variable,
         )}
       >
+        <link rel="preconnect" href="https://res.cloudinary.com" />
+        <link rel="preconnect" href="https://i.ytimg.com" />
+        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+        <link rel="dns-prefetch" href="https://bnske.budgetndiostory.org" />
+        <meta name="theme-color" content="#020817" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -61,6 +66,21 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": siteUrl },
+                { "@type": "ListItem", "position": 2, "name": "Learn", "item": `${siteUrl}/learn` },
+                { "@type": "ListItem", "position": 3, "name": "About", "item": `${siteUrl}/about` },
+                { "@type": "ListItem", "position": 4, "name": "FAQ", "item": `${siteUrl}/faq` },
+              ],
+            }),
+          }}
         />
         <Providers>
           <LoadingScreen />

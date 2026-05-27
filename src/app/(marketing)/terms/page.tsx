@@ -3,7 +3,8 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
     title: "Terms of Service | Budget Ndio Story",
-    description: "Terms of service for using Budget Ndio Story website and services.",
+    description: "Terms of service for using Budget Ndio Story website, budget literacy content, and civic engagement platform.",
+    alternates: { canonical: "/terms" },
 };
 
 export default function TermsPage() {

@@ -34,10 +34,25 @@ export function metaDescription(
   return cut.trimEnd();
 }
 
+export function defaultMetadata(path: string = "/"): Metadata {
+  return {
+    alternates: { canonical: canonicalUrl(path) },
+    openGraph: { url: canonicalUrl(path) },
+  };
+}
+
+const siteUrlObj = new URL(siteUrl);
+
+export function canonicalUrl(path: string): string {
+  const normalized = path.startsWith("/") ? path : `/${path}`;
+  return new URL(normalized, siteUrl).toString();
+}
+
 export const generateMetadata = ({
   title = `${appName} | Youth-Led Budget Literacy in Kenya`,
   description = DEFAULT_META_DESCRIPTION,
   image = "/logo.svg",
+  path = "/",
   icons = [
     {
       rel: "apple-touch-icon",
@@ -53,14 +68,16 @@ export const generateMetadata = ({
   title?: string;
   description?: string;
   image?: string | null;
+  path?: string;
   icons?: Metadata["icons"];
   noIndex?: boolean;
 } = {}): Metadata => {
   const normalizedDescription = metaDescription(description);
+  const canonical = canonicalUrl(path);
   return {
     title,
     description: normalizedDescription,
-    metadataBase: new URL(siteUrl),
+    metadataBase: siteUrlObj,
     applicationName: appName,
     keywords: [
       "Budget Ndio Story",
@@ -70,14 +87,21 @@ export const generateMetadata = ({
       "public finance Kenya",
       "county budget transparency",
       "fiscal policy explainers",
+      "Finance Bill 2026 Kenya",
+      "Appropriation Bill Kenya",
+      "Kenya parliamentary budget process",
+      "National Assembly budget debate",
+      "Kenya Division of Revenue Bill",
+      "County Allocation of Revenue Bill",
+      "Kenya fiscal responsibility",
+      "budget tracking Kenya",
+      "public participation budget Kenya",
     ],
-    alternates: {
-      canonical: "/",
-    },
+    alternates: { canonical },
     openGraph: {
       type: "website",
       locale: "en_KE",
-      url: siteUrl,
+      url: canonical,
       siteName: appName,
       title,
       description: normalizedDescription,
@@ -101,6 +125,7 @@ export const generateMetadata = ({
     category: "Civic Education",
     other: {
       "msvalidate.01": "907A93A128DFE576C08F0D8843996E83",
+      "google-site-verification": "",
     },
     icons,
     robots: noIndex

@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import DayNightSwitch from "@/components/marketing/day-night-switch";
 import RetroTvCard from "@/components/marketing/retro-tv-card";
+
+export const metadata: Metadata = {
+  title: "Page Not Found | Budget Ndio Story",
+  description: "The requested page could not be found. Browse budget literacy content on Kenya's Finance Bill, Appropriation Bill, and public finance.",
+  robots: { index: false },
+};
 
 export default function NotFoundPage() {
   return (

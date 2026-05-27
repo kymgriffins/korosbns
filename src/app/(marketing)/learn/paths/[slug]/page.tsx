@@ -1,11 +1,39 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, BookOpen } from "lucide-react";
 import { fetchLearningEditionServer } from "@/lib/learning-units";
 import { Routes } from "@/constants/routes";
+import { metaDescription } from "@/utils/metadata";
 import { Button } from "@/ui/button";
 
 export const revalidate = 3600;
+
+export async function generateMetadata(
+  props: { params: Promise<{ slug: string }> }
+): Promise<Metadata> {
+  const { slug } = await props.params;
+  const edition = await fetchLearningEditionServer(slug).catch(() => null);
+  if (edition) {
+    return {
+      title: `${edition.title} | Learning Path | Budget Ndio Story`,
+      description: metaDescription(
+        edition.summary || `Structured learning path on Kenya's budget process, Finance Bill, and fiscal policy.`
+      ),
+      alternates: { canonical: `/learn/paths/${slug}` },
+      openGraph: {
+        title: `${edition.title} | Budget Ndio Story`,
+        description: edition.summary || `Learn about Kenya's budget in this structured learning path.`,
+        url: `/learn/paths/${slug}`,
+      },
+    };
+  }
+  return {
+    title: `Learning Path | Budget Ndio Story`,
+    description: metaDescription(`Structured budget literacy content on Kenya's Finance Bill, Appropriation Bill, and parliamentary budget process.`),
+    alternates: { canonical: `/learn/paths/${slug}` },
+  };
+}
 
 export default async function LearnPathDetailPage({
   params,

@@ -3,7 +3,14 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
     title: "Contact | Budget Ndio Story",
-    description: "Get in touch with the Budget Ndio Story team. Send us a message or follow us on social media.",
+    description: "Get in touch with the Budget Ndio Story team. Share your views on Kenya's Finance Bill, Appropriation Bill, or parliamentary budget process.",
+    keywords: ["contact Budget Ndio Story", "Kenya budget questions", "Finance Bill inquiry", "public participation budget", "civic engagement Kenya"],
+    alternates: { canonical: "/contact" },
+    openGraph: {
+        title: "Contact | Budget Ndio Story",
+        description: "Reach out to the Budget Ndio Story team about Kenya's budget, Finance Bill, and civic education initiatives.",
+        url: "/contact",
+    },
 };
 
 export default function ContactPage() {

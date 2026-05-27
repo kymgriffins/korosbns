@@ -31,6 +31,15 @@ export function buildPageMetadata({
     title,
     description: normalizedDescription,
     metadataBase: new URL(siteUrl),
+    keywords: [
+      "Finance Bill Kenya",
+      "Appropriation Bill",
+      "Kenya budget process",
+      "parliamentary budget Kenya",
+      "National Assembly finance",
+      "Budget Ndio Story",
+      "Kenya fiscal policy",
+    ],
     alternates: { canonical },
     openGraph: {
       type: "article",

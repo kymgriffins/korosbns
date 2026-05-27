@@ -3,7 +3,8 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
     title: "Privacy Policy | Budget Ndio Story",
-    description: "Privacy policy for Budget Ndio Story users and visitors.",
+    description: "Privacy policy for Budget Ndio Story users and visitors engaging with Kenya budget content, Finance Bill explainers, and civic education resources.",
+    alternates: { canonical: "/privacy" },
 };
 
 export default function PrivacyPage() {

@@ -8,9 +8,22 @@ const learnDescription = metaDescription(
 );
 
 export const metadata: Metadata = {
-  title: "Learn Hub | Budget Ndio Story",
+  title: "Learn Hub — Budget, Finance Bill & Fiscal Policy | Budget Ndio Story",
   description: learnDescription,
+  keywords: [
+    "Kenya budget learning",
+    "Finance Bill explained",
+    "Appropriation Bill guide",
+    "budget literacy hub Kenya",
+    "fiscal policy education",
+    "public finance learning paths",
+  ],
   alternates: { canonical: "/learn" },
+  openGraph: {
+    title: "Learn Hub — Budget, Finance Bill & Fiscal Policy | Budget Ndio Story",
+    description: "Gamified learning hub with videos, articles, stories, and quests on Kenya's budget, Finance Bill, and parliamentary fiscal process.",
+    url: "/learn",
+  },
 };
 
 export const revalidate = 3600;

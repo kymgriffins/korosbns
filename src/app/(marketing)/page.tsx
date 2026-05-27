@@ -9,7 +9,7 @@ const homeDescription = metaDescription(
 );
 
 export const metadata: Metadata = {
-  title: "Budget Ndio Story | Bridging Youth Energy & Fiscal Policy",
+  title: "Budget Ndio Story | Kenya Budget, Finance Bill & Fiscal Policy Explained",
   description: homeDescription,
   keywords: [
     "Budget Ndio Story",
@@ -17,14 +17,19 @@ export const metadata: Metadata = {
     "budget transparency Kenya",
     "fiscal literacy",
     "youth fiscal policy",
+    "Finance Bill 2026 Kenya",
+    "Appropriation Bill Kenya",
+    "Kenya parliamentary budget",
+    "Budget Policy Statement",
+    "public participation budget Kenya",
   ],
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "Budget Ndio Story | Bridging Youth Energy & Fiscal Policy",
+    title: "Budget Ndio Story | Kenya Budget, Finance Bill & Fiscal Policy Explained",
     description:
-      "Translating Numbers into Narratives. Meeting youth where they are through investigative series, podcasts, and digital explainers.",
+      "Translating Numbers into Narratives. Making Kenya's budget, Finance Bill, and parliamentary fiscal decisions understandable for every citizen.",
     url: "/",
     type: "website",
     images: ["/logo.svg"],
@@ -33,7 +38,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Budget Ndio Story",
     description:
-      "A youth-led Kenyan initiative turning budgets into actionable civic knowledge.",
+      "A youth-led Kenyan initiative turning budgets into actionable civic knowledge about the Finance Bill, Appropriation Bill, and public finance.",
     images: ["/logo.svg"],
   },
 };
