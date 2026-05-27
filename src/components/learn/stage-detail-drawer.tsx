@@ -92,12 +92,17 @@ export function StageDetailDrawer({
   const [liveRepoDocs, setLiveRepoDocs] = useState<any[]>([]);
   const [apiLoading, setApiLoading] = useState<boolean>(false);
   const [origin, setOrigin] = useState<string>("");
+  const [stageStats, setStageStats] = useState<{ total_users: number; avg_trivia_score: number | null } | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       setOrigin(window.location.origin);
     }
   }, []);
+
+  useEffect(() => {
+    learnHubApi.stageLeaderboard(stage.id).then(setStageStats).catch(() => {});
+  }, [stage.id]);
 
   useEffect(() => {
     const loadRepo = async () => {
@@ -451,6 +456,21 @@ export function StageDetailDrawer({
                   </div>
                   <p className="text-xs text-muted-foreground leading-relaxed">{stage.description}</p>
                 </div>
+
+                {stageStats && (
+                  <div className="flex items-center justify-center gap-6 text-xs text-muted-foreground p-3 bg-muted/20 rounded-xl border border-border/50">
+                    <div className="text-center">
+                      <p className="font-black text-foreground text-sm">{stageStats.total_users}</p>
+                      <p className="text-[10px] font-semibold">Learners</p>
+                    </div>
+                    {stageStats.avg_trivia_score != null && (
+                      <div className="text-center">
+                        <p className="font-black text-foreground text-sm">{stageStats.avg_trivia_score}</p>
+                        <p className="text-[10px] font-semibold">Avg Score</p>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 <div className="p-4 rounded-xl border border-border bg-card space-y-3">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-primary flex items-center gap-1">

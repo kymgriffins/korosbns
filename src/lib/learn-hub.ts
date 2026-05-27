@@ -3,6 +3,22 @@ import { buildApiUrl } from "@/lib/api-url";
 import { gamificationHeaders } from "@/lib/gamification";
 import type { LearningUnitSummary } from "@/lib/learning-units";
 
+export type LeaderboardEntry = {
+  rank: number;
+  name: string | null;
+  points: number;
+  level: number;
+  streak_days: number;
+  badge_count: number;
+};
+
+export type StageLeaderboardStats = {
+  stage_slug: string;
+  stage_title: string;
+  total_users: number;
+  avg_trivia_score: number | null;
+};
+
 export type LearnContentType =
   | "video"
   | "article"
@@ -138,6 +154,10 @@ export const learnHubApi = {
   quests: (filters?: LearnListFilters) => fetchList("quests", filters),
   stages: () => apiFetch<{ results: LearningStageApi[] }>("/content/learn/stages/"),
   stage: (slug: string) => apiFetch<LearningStageApi>(`/content/learn/stages/${slug}/`),
+  leaderboard: (limit = 20) =>
+    apiFetch<{ results: LeaderboardEntry[] }>(`/gamification/leaderboard/?limit=${limit}`),
+  stageLeaderboard: (slug: string) =>
+    apiFetch<StageLeaderboardStats>(`/content/learn/stages/${slug}/leaderboard/`),
   profile: async (): Promise<LearnProfileResponse> => {
     const res = await fetch(buildApiUrl("/content/learn/profile/"), {
       headers: gamificationHeaders(),

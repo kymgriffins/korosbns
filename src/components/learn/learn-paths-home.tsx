@@ -24,6 +24,7 @@ import Link from "next/link";
 import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
 import { useStages, type StageData } from "@/lib/use-stages";
+import { learnHubApi } from "@/lib/learn-hub";
 import { citizenApi } from "@/lib/api-client";
 
 // Translations dictionary for Global Language Toggle (EN / SW / Sheng)
@@ -112,6 +113,8 @@ export function LearnPathsHome() {
 
   const [selectedStage, setSelectedStage] = useState<any | null>(null);
   const [cachedStages, setCachedStages] = useState<number[]>([]);
+  const [leaderboardData, setLeaderboardData] = useState<{ rank: number; name: string | null; points: number; level: number; badge_count: number }[]>([]);
+  const [stageStats, setStageStats] = useState<Record<string, { total_users: number; avg_trivia_score: number | null }>>({});
 
   // Sync selectedStage ↔ activeLesson for sidebar curriculum rail
   useEffect(() => {
@@ -228,6 +231,24 @@ export function LearnPathsHome() {
     setLoading(false);
   }, [isLoggedIn, authUser]);
 
+  // Fetch global leaderboard
+  useEffect(() => {
+    learnHubApi.leaderboard(10).then((res: { results: { rank: number; name: string | null; points: number; level: number; badge_count: number }[] }) => {
+      setLeaderboardData(res.results || []);
+    }).catch(() => {});
+  }, []);
+
+  // Fetch per-stage stats when stages load
+  useEffect(() => {
+    if (!STAGES_DATA.length) return;
+    const slugs = STAGES_DATA.map((s: any) => s.id);
+    slugs.forEach((slug: string) => {
+      learnHubApi.stageLeaderboard(slug).then((stats: { total_users: number; avg_trivia_score: number | null }) => {
+        setStageStats(prev => ({ ...prev, [slug]: stats }));
+      }).catch(() => {});
+    });
+  }, [apiStages]);
+
   const checkStreak = (userProfile: any) => {
     if (!userProfile.lastActive) return 0;
     const lastActiveDate = new Date(userProfile.lastActive);
@@ -300,11 +321,6 @@ export function LearnPathsHome() {
   // Get localized text matching user language setting
   const langKey = (profile?.language as "EN" | "SW" | "SH") || "EN";
   const text = TRANSLATIONS[langKey];
-
-  // Leaderboard — only user entry (full leaderboard from API when signed in)
-  const leaderboard = profile ? [
-    { name: profile.pseudoName || profile.breakName || "You", svg: profile.sovereigns || 0, stages: profile.badges?.length || 0, isUser: true, rank: 1 }
-  ] : [];
 
   const currentStageNum = profile ? (profile.stageProgress ? Math.max(...profile.stageProgress) : 1) : 1;
   if (loading || stagesLoading) {
@@ -817,21 +833,21 @@ export function LearnPathsHome() {
                   <div className="p-5 border border-border bg-card rounded-2xl space-y-4 shadow-xs">
                     <h3 className="text-xs font-black uppercase text-muted-foreground tracking-wider">Civic Leaderboard</h3>
                     <div className="space-y-2">
-                      {leaderboard.slice(0, 3).map((item) => (
-                        <div key={item.name} className={cn(
-                          "flex items-center justify-between p-3 rounded-xl border text-xs",
-                          item.isUser ? "bg-primary/5 border-primary/20" : "bg-muted/10 border-border/50"
-                        )}>
+                      {leaderboardData.slice(0, 5).map((item) => (
+                        <div key={item.rank} className="flex items-center justify-between p-3 rounded-xl border text-xs bg-muted/10 border-border/50">
                           <div className="flex items-center gap-3">
                             <span className="font-black text-muted-foreground w-4">{item.rank}</span>
-                            <span className={cn("font-bold text-xs", item.isUser ? "text-primary text-xs" : "text-foreground text-xs")}>{item.name}</span>
+                            <span className="font-bold text-xs text-foreground">{item.name || "Anonymous"}</span>
                           </div>
                           <div className="flex items-center gap-4 text-muted-foreground font-semibold">
-                            <span>{item.stages} Badges</span>
-                            <span className="text-foreground font-bold">{item.svg} SVG</span>
+                            <span>Lv.{item.level}</span>
+                            <span className="text-foreground font-bold">{item.points} pts</span>
                           </div>
                         </div>
                       ))}
+                      {leaderboardData.length === 0 && (
+                        <p className="text-xs text-muted-foreground text-center py-4">No data yet — be the first learner!</p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -899,6 +915,12 @@ export function LearnPathsHome() {
                               <h3 className="text-xs font-black uppercase tracking-tight">{stage.title}</h3>
                               <p className="text-[10px] text-muted-foreground mt-0.5 font-bold leading-normal">{stage.documentName}</p>
                               <p className="text-[10px] text-muted-foreground mt-1.5 leading-relaxed line-clamp-2">{stage.description}</p>
+                              {stageStats[stage.id] && (
+                                <p className="text-[9px] text-muted-foreground/60 mt-2 font-semibold">
+                                  {stageStats[stage.id].total_users} learner{stageStats[stage.id].total_users !== 1 ? "s" : ""}
+                                  {stageStats[stage.id].avg_trivia_score != null && ` · Avg ${stageStats[stage.id].avg_trivia_score}/10`}
+                                </p>
+                              )}
                             </div>
                           </div>
 
