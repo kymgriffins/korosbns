@@ -85,8 +85,20 @@ export default function SurveysPage() {
 
   useEffect(() => {
     refresh();
-    const timer = window.setInterval(refresh, SURVEY_POLL_MS);
-    return () => window.clearInterval(timer);
+    let timer = window.setInterval(refresh, SURVEY_POLL_MS);
+    const onVisible = () => {
+      if (document.visibilityState === "hidden") {
+        window.clearInterval(timer);
+      } else {
+        refresh();
+        timer = window.setInterval(refresh, SURVEY_POLL_MS);
+      }
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
   }, [refresh]);
 
   return (

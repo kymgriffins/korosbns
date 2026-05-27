@@ -1,16 +1,16 @@
 "use client";
 
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createContext,
-  useCallback,
   useContext,
-  useEffect,
   useMemo,
-  useState,
   type ReactNode,
 } from "react";
 import bnsConfig from "@/constants/bnsConfig.json";
 import { citizenApi, type OrgConfigApi } from "@/lib/api-client";
+
+const ORG_CONFIG_KEY = ["org", "config"];
 
 function staticFallback(): OrgConfigApi {
   return {
@@ -42,55 +42,30 @@ type OrgContextValue = {
 const OrgContext = createContext<OrgContextValue | null>(null);
 
 export function OrgProvider({ children }: { children: ReactNode }) {
-  const [config, setConfig] = useState<OrgConfigApi>(staticFallback);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
 
-  const refreshConfig = useCallback(async () => {
-    try {
-      const data = await citizenApi.getOrgConfig();
-      setConfig(data);
-    } catch {
-      /* keep last good config */
-    }
-  }, []);
+  const { data, isLoading } = useQuery({
+    queryKey: ORG_CONFIG_KEY,
+    queryFn: () => citizenApi.getOrgConfig(),
+    staleTime: 1000 * 60 * 30,
+    retry: 1,
+  });
 
-  useEffect(() => {
-    let alive = true;
-    void (async () => {
-      setLoading(true);
-      try {
-        const data = await citizenApi.getOrgConfig();
-        if (alive) setConfig(data);
-      } catch {
-        if (alive) setConfig(staticFallback());
-      } finally {
-        if (alive) setLoading(false);
-      }
-    })();
-    return () => {
-      alive = false;
-    };
-  }, []);
+  const config = data ?? staticFallback();
 
-  useEffect(() => {
-    const onVisible = () => {
-      if (document.visibilityState === "visible") {
-        void refreshConfig();
-      }
-    };
-    document.addEventListener("visibilitychange", onVisible);
-    return () => document.removeEventListener("visibilitychange", onVisible);
-  }, [refreshConfig]);
+  const refreshConfig = async () => {
+    await queryClient.invalidateQueries({ queryKey: ORG_CONFIG_KEY });
+  };
 
   const value = useMemo(
     () => ({
       config,
-      loading,
+      loading: isLoading,
       showNewsletter: config.layout?.show_newsletter_signup !== false,
       showPartners: config.layout?.show_partner_carousel !== false,
       refreshConfig,
     }),
-    [config, loading, refreshConfig],
+    [config, isLoading, refreshConfig],
   );
 
   return <OrgContext.Provider value={value}>{children}</OrgContext.Provider>;

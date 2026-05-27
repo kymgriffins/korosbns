@@ -1,12 +1,11 @@
 "use client";
 
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
-  useState,
   type ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
@@ -14,11 +13,12 @@ import {
   citizenApi,
   clearAuthTokens,
   getAccessToken,
-  getTokenStorageMode,
   setAuthTokens,
   type UserProfileApi,
 } from "@/lib/api-client";
-import { logDebug, sanitizeToken } from "@/lib/debug-logs";
+import { logDebug } from "@/lib/debug-logs";
+
+const USER_PROFILE_KEY = ["auth", "me"];
 
 type AuthContextValue = {
   user: UserProfileApi | null;
@@ -31,92 +31,44 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-function normalizeProfile(
-  profile: UserProfileApi,
-  previous?: UserProfileApi | null,
-): UserProfileApi {
+function normalizeProfile(profile: UserProfileApi): UserProfileApi {
   return {
     ...profile,
-    email: profile.email ?? previous?.email,
-    avatar_url: profile.avatar_url ?? profile.avatar ?? previous?.avatar_url ?? null,
-    social_links: profile.social_links ?? previous?.social_links,
+    avatar_url: profile.avatar_url ?? profile.avatar ?? null,
   };
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
-  const [user, setUser] = useState<UserProfileApi | null>(null);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
+  const hasToken = Boolean(getAccessToken());
+
+  const { data: user, isLoading } = useQuery({
+    queryKey: USER_PROFILE_KEY,
+    queryFn: async () => {
+      const profile = await citizenApi.getMe();
+      return normalizeProfile(profile);
+    },
+    enabled: hasToken,
+    staleTime: 1000 * 60 * 5,
+    retry: false,
+  });
 
   const refreshUser = useCallback(async () => {
-    if (!getAccessToken()) {
-      logDebug("Auth", "Skipping refreshUser without access token");
-      setUser(null);
-      return;
-    }
-    try {
-      logDebug("Auth", "Refreshing authenticated user profile");
-      const profile = await citizenApi.getMe();
-      setUser((prev) => {
-        const merged = normalizeProfile(profile, prev);
-        logDebug("Auth", "User profile refreshed", { email: merged.email });
-        return merged;
-      });
-    } catch {
-      logDebug("Auth", "Refresh user failed; clearing tokens");
-      clearAuthTokens();
-      setUser(null);
-    }
-  }, []);
-
-  useEffect(() => {
-    let alive = true;
-    void (async () => {
-      if (!getAccessToken()) {
-        if (alive) {
-          logDebug("Auth", "No token at startup; user unauthenticated");
-          setUser(null);
-          setLoading(false);
-        }
-        return;
-      }
-      try {
-        logDebug("Auth", "Hydrating auth state from token", {
-          token: sanitizeToken(getAccessToken()),
-          storage: getTokenStorageMode(),
-        });
-        const profile = await citizenApi.getMe();
-        if (alive) setUser(normalizeProfile(profile));
-        logDebug("Auth", "Auth hydration complete", { email: profile.email });
-      } catch {
-        logDebug("Auth", "Auth hydration failed; token cleared");
-        clearAuthTokens();
-        if (alive) setUser(null);
-      } finally {
-        if (alive) setLoading(false);
-      }
-    })();
-    return () => {
-      alive = false;
-    };
-  }, []);
+    await queryClient.invalidateQueries({ queryKey: USER_PROFILE_KEY });
+  }, [queryClient]);
 
   const login = useCallback(
     async (email: string, password: string, redirectTo = "/account") => {
       logDebug("Auth", "Login requested", { email, redirectTo });
       const tokens = await citizenApi.login(email, password);
       setAuthTokens(tokens.access, tokens.refresh);
-      logDebug("Auth", "Login token stored", {
-        access: sanitizeToken(tokens.access),
-        refresh: sanitizeToken(tokens.refresh),
-        storage: getTokenStorageMode(),
-      });
-      const profile = await citizenApi.getMe();
-      setUser(normalizeProfile({ ...profile, email: profile.email ?? email }));
+      logDebug("Auth", "Login token stored");
+      await queryClient.invalidateQueries({ queryKey: USER_PROFILE_KEY });
       logDebug("Auth", "Login completed", { email, redirectTo });
       router.push(redirectTo);
     },
-    [router],
+    [router, queryClient],
   );
 
   const logout = useCallback(async () => {
@@ -124,25 +76,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await citizenApi.logout();
     } catch {
-      /* still clear locally */
       logDebug("Auth", "Server logout failed; clearing local tokens anyway");
     }
     clearAuthTokens();
-    setUser(null);
+    queryClient.setQueryData(USER_PROFILE_KEY, null);
     logDebug("Auth", "Logout completed");
     router.push("/auth/login");
-  }, [router]);
+  }, [router, queryClient]);
 
   const value = useMemo(
     () => ({
-      user,
-      loading,
+      user: user ?? null,
+      loading: hasToken && isLoading,
       isLoggedIn: Boolean(user),
       login,
       logout,
       refreshUser,
     }),
-    [user, loading, login, logout, refreshUser],
+    [user, hasToken, isLoading, login, logout, refreshUser],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
