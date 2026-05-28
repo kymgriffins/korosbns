@@ -27,6 +27,7 @@ import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
 import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
+import { useCivicModules } from "@/hooks/use-stages";
 import { STAGES_DATA, type StageData } from "@/constants/stages-data";
 import { citizenApi } from "@/lib/api-client";
 
@@ -107,6 +108,22 @@ const TRANSLATIONS = {
 
 export function LearnPathsHome() {
   const { isLoggedIn, user: authUser } = useAuth();
+  const apiModules = useCivicModules();
+  const apiStages: StageData[] = (apiModules.data?.results ?? []).map((m, i) => ({
+    id: m.order || i + 1,
+    title: m.title,
+    badge: m.badge,
+    badgeName: m.badgeName,
+    documentName: m.documentName,
+    archive: "",
+    link: m.slug,
+    status: m.status || "Open",
+    credits: m.credits || "",
+    description: m.description,
+    expectations: m.expectations || [],
+    steps: [],
+  }));
+  const stages = apiStages.length > 0 ? apiStages : STAGES_DATA;
   const [wantsAnonymous, setWantsAnonymous] = useState(false);
   const [profile, setProfile] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
@@ -314,7 +331,7 @@ export function LearnPathsHome() {
   ].sort((a, b) => b.svg - a.svg).map((item, idx) => ({ ...item, rank: idx + 1 }));
 
   const currentStageNum = profile ? (profile.stageProgress ? Math.max(...profile.stageProgress) : 1) : 1;
-  const currentStage = STAGES_DATA.find(s => s.id === currentStageNum) || STAGES_DATA[0];
+  const currentStage = stages.find(s => s.id === currentStageNum) || stages[0];
 
   if (loading) {
     return (
@@ -405,7 +422,7 @@ export function LearnPathsHome() {
               <StageRoadmap
                 text={text}
                 profile={profile}
-                stages={STAGES_DATA}
+                stages={stages}
                 cachedStages={cachedStages}
                 onSelectStage={setSelectedStage}
                 onToggleCache={handleToggleCache}
@@ -500,7 +517,7 @@ export function LearnPathsHome() {
               hasNext={selectedStage.id < 8}
               hasPrev={selectedStage.id > 1}
               onPrevStage={() => {
-                const prev = STAGES_DATA.find(s => s.id === selectedStage.id - 1);
+                const prev = stages.find(s => s.id === selectedStage.id - 1);
                 if (prev) {
                   const isCompleted = profile.badges?.includes(prev.badge);
                   const isActive = profile.stageProgress?.includes(prev.id);
@@ -512,7 +529,7 @@ export function LearnPathsHome() {
                 }
               }}
               onNextStage={() => {
-                const next = STAGES_DATA.find(s => s.id === selectedStage.id + 1);
+                const next = stages.find(s => s.id === selectedStage.id + 1);
                 if (next) {
                   const isCompleted = profile.badges?.includes(next.badge);
                   const isActive = profile.stageProgress?.includes(next.id);
@@ -543,7 +560,7 @@ export function LearnPathsHome() {
               hasNext={selectedStage.id < 8}
               hasPrev={selectedStage.id > 1}
               onPrevStage={() => {
-                const prev = STAGES_DATA.find(s => s.id === selectedStage.id - 1);
+                const prev = stages.find(s => s.id === selectedStage.id - 1);
                 if (prev) {
                   const isCompleted = profile.badges?.includes(prev.badge);
                   const isActive = profile.stageProgress?.includes(prev.id);
@@ -555,7 +572,7 @@ export function LearnPathsHome() {
                 }
               }}
               onNextStage={() => {
-                const next = STAGES_DATA.find(s => s.id === selectedStage.id + 1);
+                const next = stages.find(s => s.id === selectedStage.id + 1);
                 if (next) {
                   const isCompleted = profile.badges?.includes(next.badge);
                   const isActive = profile.stageProgress?.includes(next.id);
@@ -657,7 +674,7 @@ export function LearnPathsHome() {
 
                   {/* Premium Cards Grid */}
                   <div className="grid grid-cols-2 gap-4">
-                    {STAGES_DATA.map((stage) => {
+                    {stages.map((stage) => {
                       const isCompleted = profile.badges?.includes(stage.badge);
                       const isActive = profile.stageProgress?.includes(stage.id);
                       const isStageCached = cachedStages.includes(stage.id);
@@ -824,7 +841,7 @@ export function LearnPathsHome() {
                   <div className="p-6 border border-border bg-card rounded-2xl space-y-4 shadow-sm">
                     <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Unlocked Badges ({profile.badges?.length || 0}/8)</h3>
                     <div className="grid grid-cols-4 gap-2">
-                      {STAGES_DATA.map((stage) => {
+                      {stages.map((stage) => {
                         const unlocked = profile.badges?.includes(stage.badge);
                         return (
                           <div
