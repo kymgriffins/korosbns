@@ -2,6 +2,7 @@
 
 import { BitmojiAvatar } from "./bitmoji-avatar";
 import { Sparkles, Flame } from "lucide-react";
+import { useLearn } from "@/contexts/learn-context";
 
 export function LearnStatsSidebar({
   profile,
@@ -14,6 +15,7 @@ export function LearnStatsSidebar({
     badges?: string[];
   };
 }) {
+  const { totalStages } = useLearn();
   return (
     <aside className="w-80 border-l border-border bg-card/25 p-6 flex flex-col gap-6 overflow-y-auto select-none">
       <div>
@@ -33,19 +35,19 @@ export function LearnStatsSidebar({
               className="stroke-primary fill-none transition-all duration-500"
               strokeWidth="6"
               strokeDasharray="289"
-              strokeDashoffset={289 - (289 * (profile.badges?.length || 0)) / 8}
+              strokeDashoffset={totalStages ? 289 - (289 * (profile.badges?.length || 0)) / totalStages : 289}
               strokeLinecap="round"
             />
           </svg>
           <div className="absolute flex flex-col items-center justify-center text-center">
             <span className="text-xl font-black leading-none">
-              {Math.round(((profile.badges?.length || 0) / 8) * 100)}%
+              {totalStages ? Math.round(((profile.badges?.length || 0) / totalStages) * 100) : 0}%
             </span>
             <span className="text-[8px] font-bold text-muted-foreground uppercase mt-0.5 tracking-wider">Progress</span>
           </div>
         </div>
         <p className="text-[10px] text-muted-foreground font-medium text-center">
-          Master all 8 stages to unlock your Citizen Certificate.
+          Master all {totalStages} stages to unlock your Citizen Certificate.
         </p>
       </div>
 

@@ -16,12 +16,6 @@ import { ThemeToggle } from "@/components/marketing/theme-toggle";
 import { LearnMobileNav } from "@/layouts/LearnMobileNav";
 import { Routes } from "@/constants/routes";
 
-const ALL_STAGES = [
-  { id: 1, badge: "🛡️", title: "Constitution" },
-  { id: 2, badge: "⚖️", title: "Budget Policy Statement" },
-  { id: 3, badge: "🏗️", title: "Infrastructure Fund" },
-];
-
 function LearnAppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -33,6 +27,7 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
     setSidebarCollapsed,
     gamification,
     activeLesson,
+    civicModules,
   } = useLearn();
 
   useEffect(() => {
@@ -157,14 +152,14 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
 
             <div className="border-t border-border p-3">
               <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 mb-2 px-1">
-                All Stages
+                All Modules ({civicModules.length})
               </p>
               <div className="space-y-0.5">
-                {ALL_STAGES.map((s) => {
-                  const isCurrent = s.id === activeLesson.stageId;
+                {civicModules.map((mod) => {
+                  const isCurrent = mod.slug === activeLesson.stageId;
                   return (
                     <div
-                      key={s.id}
+                      key={mod.slug}
                       className={cn(
                         "flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs",
                         isCurrent
@@ -172,8 +167,8 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
                           : "text-muted-foreground"
                       )}
                     >
-                      <span className="text-sm">{s.badge}</span>
-                      <span className="truncate text-[11px]">{isCurrent ? s.title : s.title}</span>
+                      <span className="text-sm">{mod.badge}</span>
+                      <span className="truncate text-[11px]">{mod.title}</span>
                       {isCurrent && <span className="ml-auto size-1.5 rounded-full bg-primary" />}
                     </div>
                   );

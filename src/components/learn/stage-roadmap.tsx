@@ -15,16 +15,12 @@ export function StageRoadmap({
   text,
   profile,
   stages,
-  cachedStages,
   onSelectStage,
-  onToggleCache,
 }: {
   text: { roadmapTitle: string; roadmapSubtitle: string; quickJump: string };
   profile: Profile;
   stages: StageCardData[];
-  cachedStages: number[];
   onSelectStage: (s: StageCardData) => void;
-  onToggleCache: (stageId: number, e: React.MouseEvent) => void;
 }) {
   return (
     <motion.div
@@ -108,9 +104,7 @@ export function StageRoadmap({
               stage={stage}
               isCompleted={!!completed}
               isActive={!!active}
-              isCached={cachedStages.includes(stage.id)}
               onSelect={() => onSelectStage(stage)}
-              onToggleCache={(e) => onToggleCache(stage.id, e)}
             />
           );
         })}

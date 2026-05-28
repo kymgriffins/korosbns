@@ -13,6 +13,8 @@ import {
   getDocumentsForStage,
 } from "@/constants/documents-registry";
 import { learnHubApi } from "@/lib/learn-hub";
+import { useLearn } from "@/contexts/learn-context";
+import { readProgress, writeProgress } from "@/lib/module-progress";
 import type { CivicModule, ChapterStep } from "@/types/learn";
 
 interface StageDetailDrawerProps {
@@ -36,6 +38,7 @@ export function StageDetailDrawer({
   hasPrev,
   hasNext
 }: StageDetailDrawerProps) {
+  const { totalStages, updateCurrentStep } = useLearn();
   const [activeSubTab, setActiveSubTab] = useState<"learn" | "documents">("learn");
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [activeFormat, setActiveFormat] = useState<"video" | "text">("video");
@@ -97,8 +100,8 @@ export function StageDetailDrawer({
 
   useEffect(() => {
     setActiveSubTab("learn");
-    const storedStep = localStorage.getItem(`stage_${stage.order}_current_step`);
-    const initialStep = storedStep ? parseInt(storedStep, 10) : 0;
+    const moduleProgress = readProgress(stage.slug, stage.order);
+    const initialStep = moduleProgress.currentStep;
     setCurrentStep(initialStep);
     setActiveFormat("video");
     setContentConsumed(true);
@@ -143,11 +146,12 @@ export function StageDetailDrawer({
 
   const handleStartLearning = () => {
     setCurrentStep(1);
-    localStorage.setItem(`stage_${stage.order}_current_step`, "1");
+    const p = { ...readProgress(stage.slug, stage.order), currentStep: 1 };
+    writeProgress(stage.slug, p);
   };
 
   const isStepTriviaPassed = (stepId: number) => {
-    return localStorage.getItem(`stage_${stage.order}_step_${stepId}_trivia_passed`) === "true";
+    return readProgress(stage.slug, stage.order).stepsCompleted[stepId] === true;
   };
 
   const handleAnswerMCQ = (qIdx: number, selectedIdx: number, correctIdx: number) => {
@@ -156,9 +160,10 @@ export function StageDetailDrawer({
     setTriviaSubmitted(true);
     if (selectedIdx === correctIdx) {
       const step = stage.steps[currentStep - 1];
-      const rewardKey = `stage_${stage.order}_step_${step.order}_trivia_${qIdx}_reward`;
-      if (!localStorage.getItem(rewardKey)) {
-        localStorage.setItem(rewardKey, "true");
+      const rewardTag = `${step.order}_${qIdx}`;
+      const p = readProgress(stage.slug, stage.order);
+      if (!p.triviaRewards.includes(rewardTag)) {
+        writeProgress(stage.slug, { ...p, triviaRewards: [...p.triviaRewards, rewardTag] });
         const updated = { ...profile, sovereigns: profile.sovereigns + 5 };
         onUpdateProfile(updated);
         toast.success("Correct! +5 Sovereigns awarded!");
@@ -179,9 +184,10 @@ export function StageDetailDrawer({
     }
     setTriviaSubmitted(true);
     const step = stage.steps[currentStep - 1];
-    const rewardKey = `stage_${stage.order}_step_${step.order}_trivia_${qIdx}_reward`;
-    if (!localStorage.getItem(rewardKey)) {
-      localStorage.setItem(rewardKey, "true");
+    const rewardTag = `${step.order}_${qIdx}`;
+    const p = readProgress(stage.slug, stage.order);
+    if (!p.triviaRewards.includes(rewardTag)) {
+      writeProgress(stage.slug, { ...p, triviaRewards: [...p.triviaRewards, rewardTag] });
       const updated = { ...profile, sovereigns: profile.sovereigns + 5 };
       onUpdateProfile(updated);
       toast.success("Reflection submitted! +5 Sovereigns awarded!");
@@ -190,6 +196,11 @@ export function StageDetailDrawer({
     }
     autoAdvanceRef.current = setTimeout(() => handleNextTriviaQuestion(), 1500);
   };
+
+  // Sync currentStep back to context so sidebar curriculum rail stays in sync
+  useEffect(() => {
+    updateCurrentStep(currentStep);
+  }, [currentStep, updateCurrentStep]);
 
   const handleNextTriviaQuestion = useCallback(() => {
     const step = stage.steps[currentStep - 1];
@@ -200,7 +211,8 @@ export function StageDetailDrawer({
       setReflectionText("");
       setSelectedReflectionOption("");
     } else {
-      localStorage.setItem(`stage_${stage.order}_step_${step.order}_trivia_passed`, "true");
+      const p = readProgress(stage.slug, stage.order);
+      writeProgress(stage.slug, { ...p, stepsCompleted: { ...p.stepsCompleted, [step.order]: true }, currentStep: currentStep + 1 });
       setContentConsumed(true);
       toast.success("Step complete! ⭐");
       // Sync step progress to backend
@@ -210,23 +222,19 @@ export function StageDetailDrawer({
         progress_percent: Math.round((currentStep / stage.steps.length) * 100),
       }).catch(() => {});
       autoAdvanceRef.current = setTimeout(() => {
-        setCurrentStep((prev) => {
-          const nextVal = prev + 1;
-          localStorage.setItem(`stage_${stage.order}_current_step`, nextVal.toString());
-          return nextVal;
-        });
+        setCurrentStep((prev) => prev + 1);
       }, 2000);
     }
   }, [activeTriviaIdx, currentStep, stage.order, stage.steps]);
 
-  const masteryAwardedKey = `stage_${stage.order}_mastery_awarded`;
   useEffect(() => {
     if (currentStep === stage.steps.length + 1) {
-      if (!localStorage.getItem(masteryAwardedKey)) {
-        localStorage.setItem(masteryAwardedKey, "true");
+      const p = readProgress(stage.slug, stage.order);
+      if (!p.masteryAwarded) {
+        writeProgress(stage.slug, { ...p, masteryAwarded: true });
         const newProgress = profile.stageProgress ? [...profile.stageProgress] : [1];
         const nextStageId = stage.order + 1;
-        if (nextStageId <= 8 && !newProgress.includes(nextStageId)) {
+        if (nextStageId <= totalStages && !newProgress.includes(nextStageId)) {
           newProgress.push(nextStageId);
         }
         const newBadges = profile.badges ? [...profile.badges] : [];
@@ -234,7 +242,7 @@ export function StageDetailDrawer({
           newBadges.push(stage.badge);
         }
         let allStagesDoneBonus = 0;
-        if (newProgress.length === 8 && newBadges.length === 8 && !profile.allStagesBonusEarned) {
+        if (newProgress.length >= totalStages && newBadges.length >= totalStages && !profile.allStagesBonusEarned) {
           allStagesDoneBonus = 100;
         }
         const updatedProfile = {
@@ -272,7 +280,7 @@ export function StageDetailDrawer({
   };
 
   const isDocTracked = profile.trackedDocs?.includes(stage.documentName);
-  const isCached = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("bns_cached_stages") || "[]").includes(stage.order) : false;
+  const isCached = stage.steps.length > 0;
 
   const getPersonalizedText = (rawText: string) => {
     if (!rawText) return "";
@@ -309,14 +317,16 @@ export function StageDetailDrawer({
   const handlePrevStep = () => {
     const nextVal = currentStep - 1;
     setCurrentStep(nextVal);
-    localStorage.setItem(`stage_${stage.order}_current_step`, nextVal.toString());
+    const p = readProgress(stage.slug, stage.order);
+    writeProgress(stage.slug, { ...p, currentStep: nextVal });
     setShowTrivia(false);
   };
 
   const handleNextStep = () => {
     const nextVal = currentStep + 1;
     setCurrentStep(nextVal);
-    localStorage.setItem(`stage_${stage.order}_current_step`, nextVal.toString());
+    const p = readProgress(stage.slug, stage.order);
+    writeProgress(stage.slug, { ...p, currentStep: nextVal });
   };
 
   return (
@@ -330,6 +340,7 @@ export function StageDetailDrawer({
         onSubTabChange={setActiveSubTab}
         isCached={isCached}
         onClose={onClose}
+        author={stage.author}
       />
 
       {/* ── Body: full-width scrollable content ── */}
@@ -344,6 +355,7 @@ export function StageDetailDrawer({
                 badge={stage.badge}
                 title={stage.title}
                 credits={stage.credits}
+                author={stage.author}
                 description={stage.description}
                 expectations={stage.expectations}
                 onStartLearning={handleStartLearning}
@@ -355,7 +367,6 @@ export function StageDetailDrawer({
               <div className="space-y-5 animate-in fade-in duration-300">
                 <StepContent
                   step={stage.steps[currentStep - 1]}
-                  stageId={stage.order}
                   currentStep={currentStep}
                   totalSteps={totalSteps}
                   activeFormat={activeFormat}

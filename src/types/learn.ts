@@ -31,6 +31,13 @@ export type ChapterStep = {
   is_locked: boolean;
 };
 
+export type CivicModuleAuthor = {
+  name: string;
+  image: string;
+  role: string;
+  bio: string;
+};
+
 export type CivicModule = {
   id: string;
   title: string;
@@ -47,6 +54,7 @@ export type CivicModule = {
   image_url?: string;
   order: number;
   steps: ChapterStep[];
+  author?: CivicModuleAuthor;
 };
 
 export type LearnContentType =

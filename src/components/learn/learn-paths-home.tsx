@@ -15,7 +15,7 @@ import { Label } from "@/ui/label";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/ui/accordion";
 import { toast } from "sonner";
 import {
-  Sparkles, Flame, BookOpen, DownloadCloud,
+  Sparkles, Flame, BookOpen,
   ArrowRight, ShieldCheck, MapPin, Calendar, CheckCircle2,
   Volume2, Shield, Settings, Copy, Send, MessageSquare,
   Home, HelpCircle, ChevronRight, Globe, FileCheck, Award,
@@ -27,9 +27,9 @@ import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
 import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
-import { useCivicModules } from "@/hooks/use-stages";
-import { STAGES_DATA } from "@/constants/stages-data";
 import { citizenApi } from "@/lib/api-client";
+import { learnHubApi } from "@/lib/learn-hub";
+import { readProgress, clearAllModuleProgress } from "@/lib/module-progress";
 import type { CivicModule, ChapterStep } from "@/types/learn";
 
 // Translations dictionary for Global Language Toggle (EN / SW / Sheng)
@@ -41,7 +41,7 @@ const TRANSLATIONS = {
     sovereigns: "Sovereigns",
     streak: "Active Streak",
     roadmapTitle: "Map of the Budget Cycle",
-    roadmapSubtitle: "Complete the 8 sequential stages to earn certificates & badges.",
+    roadmapSubtitle: "Complete the stages to earn certificates & badges.",
     alertsTitle: "Participation Alerts",
     alertsSubtitle: "Hyper-local alerts matching your county and tracked documents.",
     profileTitle: "Citizen Profile",
@@ -105,64 +105,32 @@ const TRANSLATIONS = {
   }
 };
 
-// STAGES_DATA imported from @/constants/stages-data
 
 export function LearnPathsHome() {
   const { isLoggedIn, user: authUser } = useAuth();
-  const apiModules = useCivicModules();
-  const stages: CivicModule[] = apiModules.data?.results?.length
-    ? apiModules.data.results
-    : STAGES_DATA.map(s => ({
-        id: String(s.id),
-        title: s.title,
-        slug: s.link,
-        badge: s.badge,
-        badgeName: s.badgeName,
-        documentName: s.documentName,
-        archive: s.archive,
-        link: s.link,
-        status: s.status,
-        credits: s.credits || "",
-        description: s.description,
-        expectations: s.expectations || [],
-        image_url: undefined,
-        order: s.id,
-        steps: s.steps.map((step) => ({
-          id: String(step.id),
-          title: step.title,
-          order: step.id,
-          youtube_url: step.youtubeId,
-          audio_url: step.audioUrl,
-          transcript: step.transcript,
-          text: step.text,
-          takeaways: [],
-          trivia: step.trivia,
-          is_completed: false,
-          is_locked: false,
-        })),
-      }));
+  const { civicModules, fetchCivicModules, activeLesson, setActiveLesson, updateCurrentStep, activeTab, setActiveTab, totalStages, modulesLoading } = useLearn();
+  const stages = civicModules;
   const [wantsAnonymous, setWantsAnonymous] = useState(false);
   const [profile, setProfile] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
-  const { activeTab, setActiveTab, setActiveLesson } = useLearn();
 
   const [selectedStage, setSelectedStage] = useState<CivicModule | null>(null);
-  const [cachedStages, setCachedStages] = useState<number[]>([]);
 
   // Sync selectedStage ↔ activeLesson for sidebar curriculum rail
   useEffect(() => {
     if (selectedStage) {
       const completedStepIds: number[] = [];
+      const p = readProgress(selectedStage.slug, selectedStage.order);
       for (const step of selectedStage.steps) {
-        const key = `stage_${selectedStage.order}_step_${step.order}_trivia_passed`;
-        if (localStorage.getItem(key) === "true") {
+        if (p.stepsCompleted[step.order]) {
           completedStepIds.push(step.order);
         }
       }
       setActiveLesson({
-        stageId: selectedStage.order,
+        stageId: selectedStage.slug,
         stageTitle: selectedStage.title,
         stageBadge: selectedStage.badge,
+        stageOrder: selectedStage.order,
         currentStep: 0,
         totalSteps: selectedStage.steps.length,
         completedStepIds,
@@ -252,15 +220,6 @@ export function LearnPathsHome() {
         setProfile(null);
       }
     }
-    
-    const storedCache = localStorage.getItem("bns_cached_stages");
-    if (storedCache) {
-      try {
-        setCachedStages(JSON.parse(storedCache));
-      } catch {
-        setCachedStages([]);
-      }
-    }
     setLoading(false);
   }, [isLoggedIn, authUser]);
 
@@ -294,20 +253,6 @@ export function LearnPathsHome() {
     localStorage.setItem("bns_user_profile", JSON.stringify(updated));
   };
 
-  const handleToggleCache = (stageId: number, e: React.MouseEvent) => {
-    e.stopPropagation();
-    let newCached = [...cachedStages];
-    if (newCached.includes(stageId)) {
-      newCached = newCached.filter(id => id !== stageId);
-      toast.info("Removed stage from local cache.");
-    } else {
-      newCached.push(stageId);
-      toast.success("Stage cached offline successfully!");
-    }
-    setCachedStages(newCached);
-    localStorage.setItem("bns_cached_stages", JSON.stringify(newCached));
-  };
-
   const stageCardData = (stage: CivicModule) => ({
     id: stage.order,
     title: stage.title,
@@ -320,22 +265,8 @@ export function LearnPathsHome() {
   const handleResetProgress = () => {
     if (window.confirm("Reset all progress? This wipes profile & statistics.")) {
       localStorage.removeItem("bns_user_profile");
-      localStorage.removeItem("bns_cached_stages");
-      for (let i = 1; i <= 8; i++) {
-        localStorage.removeItem(`stage_${i}_article`);
-        localStorage.removeItem(`stage_${i}_quiz_attempts`);
-        localStorage.removeItem(`stage_${i}_quiz_cooldown`);
-        localStorage.removeItem(`stage_${i}_current_step`);
-        localStorage.removeItem(`stage_${i}_mastery_awarded`);
-        for (let j = 0; j < 10; j++) {
-          localStorage.removeItem(`stage_${i}_video_${j}`);
-          localStorage.removeItem(`stage_${i}_chapter_${j}`);
-          localStorage.removeItem(`stage_${i}_step_${j}_trivia_passed`);
-          localStorage.removeItem(`stage_${i}_step_${j}_trivia_${j}_reward`);
-        }
-      }
+      clearAllModuleProgress(stages);
       setProfile(null);
-      setCachedStages([]);
       setSelectedStage(null);
       setActiveTab("home");
       toast.success("All profiles wiped.");
@@ -348,21 +279,29 @@ export function LearnPathsHome() {
 
   // Leaderboard assembly sorting
   const leaderboard = [
-    { name: "BudgetBreaker_Nairobi", svg: 850, stages: 8 },
-    { name: "SovereignSeeker_Mombasa", svg: 720, stages: 6 },
-    { name: "GavanaWatch_Kisumu", svg: 640, stages: 5 },
+    { name: "BudgetBreaker_Nairobi", svg: 850, stages: totalStages },
+    { name: "SovereignSeeker_Mombasa", svg: 720, stages: Math.max(1, totalStages - 2) },
+    { name: "GavanaWatch_Kisumu", svg: 640, stages: Math.max(1, totalStages - 3) },
     { name: profile?.pseudoName || "You", svg: profile?.sovereigns || 0, stages: profile?.badges?.length || 0, isUser: true },
-    { name: "MCA_Whisperer_Nakuru", svg: 310, stages: 3 },
+    { name: "MCA_Whisperer_Nakuru", svg: 310, stages: Math.max(1, totalStages - 5) },
     { name: "CitizenZero_Kiambu", svg: 150, stages: 1 }
   ].sort((a, b) => b.svg - a.svg).map((item, idx) => ({ ...item, rank: idx + 1 }));
 
   const currentStageNum = profile ? (profile.stageProgress ? Math.max(...profile.stageProgress) : 1) : 1;
   const currentStage = stages.find(s => s.order === currentStageNum) || stages[0];
 
-  if (loading) {
+  if (loading || modulesLoading) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center min-h-[50vh]">
         <div className="animate-spin size-8 border-4 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  if (!stages.length) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center min-h-[50vh] gap-3 p-6 text-center">
+        <p className="text-muted-foreground">No learning modules available yet.</p>
       </div>
     );
   }
@@ -449,12 +388,10 @@ export function LearnPathsHome() {
                 text={text}
                 profile={profile}
                 stages={stages.map(stageCardData)}
-                cachedStages={cachedStages}
                 onSelectStage={(s) => {
                   const full = stages.find(m => m.order === s.id);
                   if (full) setSelectedStage(full);
                 }}
-                onToggleCache={handleToggleCache}
               />
             )}
 
@@ -538,32 +475,34 @@ export function LearnPathsHome() {
         ) : (
           /* Lesson layer — fills bounded panel above embedded bottom nav */
           <div className="absolute inset-0 z-10 flex flex-col overflow-hidden bg-background">
-            <StageDetailDrawer
+            <StageDetailDrawer key={selectedStage.slug}
               stage={selectedStage}
               profile={profile}
               onUpdateProfile={handleUpdateProfile}
               onClose={() => setSelectedStage(null)}
-              hasNext={selectedStage.order < 8}
-              hasPrev={selectedStage.order > 1}
+              hasNext={stages.findIndex(s => s.slug === selectedStage.slug) < stages.length - 1}
+              hasPrev={stages.findIndex(s => s.slug === selectedStage.slug) > 0}
               onPrevStage={() => {
-                const prev = stages.find(s => s.order === selectedStage.order - 1);
+                const idx = stages.findIndex(s => s.slug === selectedStage.slug);
+                const prev = stages[idx - 1];
                 if (prev) {
                   const isCompleted = profile.badges?.includes(prev.badge);
                   const isActive = profile.stageProgress?.includes(prev.order);
                   if (!isCompleted && !isActive) {
-                    toast.error(`Stage ${prev.order} is locked.`);
+                    toast.error(`Stage ${prev.title} is locked.`);
                     return;
                   }
                   setSelectedStage(prev);
                 }
               }}
               onNextStage={() => {
-                const next = stages.find(s => s.order === selectedStage.order + 1);
+                const idx = stages.findIndex(s => s.slug === selectedStage.slug);
+                const next = stages[idx + 1];
                 if (next) {
                   const isCompleted = profile.badges?.includes(next.badge);
                   const isActive = profile.stageProgress?.includes(next.order);
                   if (!isCompleted && !isActive) {
-                    toast.error(`Stage ${next.order} is locked.`);
+                    toast.error(`Stage ${next.title} is locked.`);
                     return;
                   }
                   setSelectedStage(next);
@@ -581,32 +520,34 @@ export function LearnPathsHome() {
         {selectedStage ? (
           /* A) Stage Selected View: full-width Stage Detail (stats panel hidden) */
           <div className="flex-1 flex flex-col h-full overflow-hidden">
-            <StageDetailDrawer
+            <StageDetailDrawer key={selectedStage.slug}
               stage={selectedStage}
               profile={profile}
               onUpdateProfile={handleUpdateProfile}
               onClose={() => setSelectedStage(null)}
-              hasNext={selectedStage.order < 8}
-              hasPrev={selectedStage.order > 1}
+              hasNext={stages.findIndex(s => s.slug === selectedStage.slug) < stages.length - 1}
+              hasPrev={stages.findIndex(s => s.slug === selectedStage.slug) > 0}
               onPrevStage={() => {
-                const prev = stages.find(s => s.order === selectedStage.order - 1);
+                const idx = stages.findIndex(s => s.slug === selectedStage.slug);
+                const prev = stages[idx - 1];
                 if (prev) {
                   const isCompleted = profile.badges?.includes(prev.badge);
                   const isActive = profile.stageProgress?.includes(prev.order);
                   if (!isCompleted && !isActive) {
-                    toast.error(`Stage ${prev.order} is locked.`);
+                    toast.error(`Stage ${prev.title} is locked.`);
                     return;
                   }
                   setSelectedStage(prev);
                 }
               }}
               onNextStage={() => {
-                const next = stages.find(s => s.order === selectedStage.order + 1);
+                const idx = stages.findIndex(s => s.slug === selectedStage.slug);
+                const next = stages[idx + 1];
                 if (next) {
                   const isCompleted = profile.badges?.includes(next.badge);
                   const isActive = profile.stageProgress?.includes(next.order);
                   if (!isCompleted && !isActive) {
-                    toast.error(`Stage ${next.order} is locked.`);
+                    toast.error(`Stage ${next.title} is locked.`);
                     return;
                   }
                   setSelectedStage(next);
@@ -645,10 +586,10 @@ export function LearnPathsHome() {
                     <div className="p-5 border border-border bg-card rounded-2xl space-y-3.5 shadow-xs">
                       <h3 className="text-xs font-black uppercase text-muted-foreground tracking-wider">Overall Progress</h3>
                       <div className="flex justify-between items-baseline">
-                        <span className="text-3xl font-black text-foreground">{profile.badges?.length || 0} / 8</span>
+                        <span className="text-3xl font-black text-foreground">{profile.badges?.length || 0} / {stages.length}</span>
                         <span className="text-[10px] text-muted-foreground font-semibold">STAGES MASTERED</span>
                       </div>
-                      <Progress value={((profile.badges?.length || 0) / 8) * 100} className="h-2 rounded-full" />
+                      <Progress value={stages.length ? ((profile.badges?.length || 0) / stages.length) * 100 : 0} className="h-2 rounded-full" />
                     </div>
 
                     {/* Active Stage Resumer */}
@@ -706,35 +647,24 @@ export function LearnPathsHome() {
                     {stages.map((stage) => {
                       const isCompleted = profile.badges?.includes(stage.badge);
                       const isActive = profile.stageProgress?.includes(stage.order);
-                      const isStageCached = cachedStages.includes(stage.order);
-                      const offlineDisabled = false;
 
                       return (
                         <div
                           key={stage.order}
-                          onClick={() => {
-                            if (offlineDisabled) return;
-                            setSelectedStage(stage);
-                          }}
+                          onClick={() => setSelectedStage(stage)}
                           className={cn(
                             "relative flex flex-col justify-between p-5 rounded-2xl border transition-all select-none group cursor-pointer",
                             isCompleted
                               ? "bg-primary/4 border-primary/15 hover:bg-primary/8 shadow-xs"
                               : isActive
                               ? "bg-card border-foreground/30 hover:border-foreground shadow-sm"
-                              : "bg-muted/10 border-border/80 hover:bg-muted/25",
-                            offlineDisabled && "opacity-30 cursor-not-allowed"
+                              : "bg-muted/10 border-border/80 hover:bg-muted/25"
                           )}
                         >
                           <div className="space-y-3">
                             <div className="flex justify-between items-start">
                               <span className="text-2xl p-2 rounded-xl bg-card border border-border/60 shadow-2xs group-hover:scale-105 transition-transform duration-200">{stage.badge}</span>
                               <div className="flex items-center gap-1.5">
-                                {isStageCached && (
-                                  <span className="text-[9px] bg-blue-500/10 border border-blue-500/20 text-blue-600 font-bold px-1.5 py-0.5 rounded-full">
-                                    📶 Cached
-                                  </span>
-                                )}
                                 {isCompleted ? (
                                   <span className="text-[9px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 font-black uppercase tracking-wider px-2 py-0.5 rounded-full">
                                     Completed
@@ -760,18 +690,6 @@ export function LearnPathsHome() {
 
                           <div className="mt-4 pt-3 border-t border-border/50 flex items-center justify-between">
                             <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">{stage.status}</span>
-                            {!offlineDisabled && (
-                              <button
-                                onClick={(e) => handleToggleCache(stage.order, e)}
-                                className={cn(
-                                  "p-1.5 rounded-lg border hover:bg-muted transition-colors",
-                                  isStageCached ? "border-blue-500/20 text-blue-600 bg-blue-500/5" : "border-border text-muted-foreground"
-                                )}
-                                title="Cache Stage Offline"
-                              >
-                                <DownloadCloud className="size-3.5" />
-                              </button>
-                            )}
                           </div>
                         </div>
                       );
@@ -868,7 +786,7 @@ export function LearnPathsHome() {
 
                   {/* Unlocked Badges */}
                   <div className="p-6 border border-border bg-card rounded-2xl space-y-4 shadow-sm">
-                    <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Unlocked Badges ({profile.badges?.length || 0}/8)</h3>
+                    <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Unlocked Badges ({profile.badges?.length || 0}/{stages.length})</h3>
                     <div className="grid grid-cols-4 gap-2">
                       {stages.map((stage) => {
                         const unlocked = profile.badges?.includes(stage.badge);

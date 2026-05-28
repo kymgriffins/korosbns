@@ -1,12 +1,15 @@
 "use client";
 
+import Image from "next/image";
 import { Button } from "@/ui/button";
 import { motion } from "motion/react";
+import type { CivicModuleAuthor } from "@/types/learn";
 
 interface CourseOverviewProps {
   badge: string;
   title: string;
   credits?: string;
+  author?: CivicModuleAuthor;
   description: string;
   expectations: string[];
   onStartLearning: () => void;
@@ -16,6 +19,7 @@ export function CourseOverview({
   badge,
   title,
   credits,
+  author,
   description,
   expectations,
   onStartLearning,
@@ -33,6 +37,23 @@ export function CourseOverview({
           <p className="text-xs font-medium text-muted-foreground">{credits}</p>
         )}
       </div>
+
+      {author && (
+        <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-card border border-border shadow-xs">
+          <Image
+            src={author.image}
+            alt={author.name}
+            width={36}
+            height={36}
+            className="size-9 rounded-full object-cover ring-2 ring-border"
+          />
+          <div className="text-left">
+            <p className="text-xs font-black leading-tight">{author.name}</p>
+            <p className="text-[10px] text-muted-foreground">{author.role}</p>
+          </div>
+        </div>
+      )}
+
       <p className="text-sm text-muted-foreground max-w-lg leading-relaxed">{description}</p>
 
       {expectations.length > 0 && (

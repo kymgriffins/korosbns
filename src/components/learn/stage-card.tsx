@@ -1,7 +1,6 @@
 "use client";
 
 import { cn } from "@/utils";
-import { DownloadCloud } from "lucide-react";
 
 export type StageCardData = {
   id: number;
@@ -16,16 +15,12 @@ export function StageCard({
   stage,
   isCompleted,
   isActive,
-  isCached,
   onSelect,
-  onToggleCache,
 }: {
   stage: StageCardData;
   isCompleted: boolean;
   isActive: boolean;
-  isCached: boolean;
   onSelect: () => void;
-  onToggleCache: (e: React.MouseEvent) => void;
 }) {
   return (
     <div
@@ -63,25 +58,9 @@ export function StageCard({
             )}>
               {stage.status}
             </span>
-            {isCached && (
-              <span className="text-[9px] bg-blue-500/10 border border-blue-500/20 text-blue-600 font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
-                📶 Cached
-              </span>
-            )}
           </div>
         </div>
       </div>
-      <button
-        onClick={onToggleCache}
-        className={cn(
-          "p-2 rounded-lg border hover:bg-muted shrink-0",
-          isCached
-            ? "border-blue-500/20 text-blue-600 bg-blue-500/5"
-            : "border-border text-muted-foreground",
-        )}
-      >
-        <DownloadCloud className="size-4" />
-      </button>
     </div>
   );
 }

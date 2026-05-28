@@ -1,5 +1,8 @@
 "use client";
 
+import Image from "next/image";
+import type { CivicModuleAuthor } from "@/types/learn";
+
 interface DrawerHeaderProps {
   title: string;
   badge: string;
@@ -8,6 +11,7 @@ interface DrawerHeaderProps {
   onSubTabChange: (tab: "learn" | "documents") => void;
   isCached: boolean;
   onClose: () => void;
+  author?: CivicModuleAuthor;
 }
 
 export function DrawerHeader({
@@ -18,6 +22,7 @@ export function DrawerHeader({
   onSubTabChange,
   isCached,
   onClose,
+  author,
 }: DrawerHeaderProps) {
   return (
     <div className="flex items-center justify-between px-4 md:px-6 h-12 border-b border-border shrink-0 bg-background/80 backdrop-blur-xs z-20">
@@ -32,6 +37,21 @@ export function DrawerHeader({
       </div>
 
       <div className="flex items-center gap-2 shrink-0">
+        {author && (
+          <div className="hidden md:flex items-center gap-1.5 px-2 py-1 rounded-lg bg-muted/40 border border-border/50">
+            <Image
+              src={author.image}
+              alt={author.name}
+              width={16}
+              height={16}
+              className="size-4 rounded-full object-cover"
+            />
+            <span className="text-[8px] font-bold text-muted-foreground truncate max-w-[90px]">
+              {author.name}
+            </span>
+          </div>
+        )}
+
         <div className="flex rounded-lg border border-border bg-card p-0.5">
           <button
             onClick={() => onSubTabChange("learn")}
@@ -54,12 +74,6 @@ export function DrawerHeader({
             Documents
           </button>
         </div>
-
-        {isCached && (
-          <span className="text-[10px] bg-blue-500/10 border border-blue-500/20 text-blue-600 font-bold px-2 py-0.5 rounded-full hidden md:inline">
-            📶 Cached
-          </span>
-        )}
 
         <button
           onClick={onClose}

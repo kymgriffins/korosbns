@@ -16,10 +16,6 @@ vi.mock("@/ui/progress", () => ({
   ),
 }));
 
-vi.mock("@/constants/stages-data", () => ({
-  getStageTakeaway: vi.fn(() => null),
-}));
-
 vi.mock("@/constants/documents-registry", () => ({
   CONSTITUTION_HISTORICAL_DOCS: [
     {
@@ -259,7 +255,7 @@ describe("StepContent", () => {
   it("renders step title and progress", () => {
     render(
       <StepContent
-        step={step} stageId={1} currentStep={1} totalSteps={5}
+        step={step} currentStep={1} totalSteps={5}
         activeFormat="text" showTrivia={false} origin="http://localhost"
         getPersonalizedText={(t) => t} onFormatChange={vi.fn()}
       />
@@ -272,7 +268,7 @@ describe("StepContent", () => {
   it("renders Watch/Read toggle", () => {
     render(
       <StepContent
-        step={step} stageId={1} currentStep={1} totalSteps={5}
+        step={step} currentStep={1} totalSteps={5}
         activeFormat="text" showTrivia={false} origin="http://localhost"
         getPersonalizedText={(t) => t} onFormatChange={vi.fn()}
       />
@@ -284,7 +280,7 @@ describe("StepContent", () => {
   it("renders video when activeFormat is video and origin is set", () => {
     render(
       <StepContent
-        step={step} stageId={1} currentStep={1} totalSteps={5}
+        step={step} currentStep={1} totalSteps={5}
         activeFormat="video" showTrivia={false} origin="http://localhost"
         getPersonalizedText={(t) => t} onFormatChange={vi.fn()}
       />
@@ -297,7 +293,7 @@ describe("StepContent", () => {
   it("renders text content when activeFormat is text", () => {
     render(
       <StepContent
-        step={step} stageId={1} currentStep={1} totalSteps={5}
+        step={step} currentStep={1} totalSteps={5}
         activeFormat="text" showTrivia={false} origin="http://localhost"
         getPersonalizedText={(t) => t} onFormatChange={vi.fn()}
       />
@@ -308,7 +304,7 @@ describe("StepContent", () => {
   it("hides content when showTrivia is true", () => {
     render(
       <StepContent
-        step={step} stageId={1} currentStep={1} totalSteps={5}
+        step={step} currentStep={1} totalSteps={5}
         activeFormat="text" showTrivia={true} origin="http://localhost"
         getPersonalizedText={(t) => t} onFormatChange={vi.fn()}
       />

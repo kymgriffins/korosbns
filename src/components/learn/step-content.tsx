@@ -2,12 +2,10 @@
 
 import { Progress } from "@/ui/progress";
 import { cn } from "@/utils";
-import { getStageTakeaway } from "@/constants/stages-data";
-import type { ChapterStep } from "@/types/learn";
+import type { ChapterStep, StageTakeaway } from "@/types/learn";
 
 interface StepContentProps {
   step: ChapterStep;
-  stageId: number;
   currentStep: number;
   totalSteps: number;
   activeFormat: "video" | "text";
@@ -19,7 +17,6 @@ interface StepContentProps {
 
 export function StepContent({
   step,
-  stageId,
   currentStep,
   totalSteps,
   activeFormat,
@@ -98,19 +95,20 @@ export function StepContent({
                 ))}
 
               {(() => {
-                const takeaway = getStageTakeaway(stageId, step.order);
+                const takeaway: StageTakeaway | undefined = step.takeaways?.[0];
                 if (!takeaway) return null;
-                if (takeaway.type === "info") {
-                  return (
-                    <div className="mt-6 p-4 rounded-xl bg-blue-500/10 border-l-4 border-blue-500 dark:bg-blue-900/20 dark:border-blue-400 not-prose">
-                      <p className="text-xs font-bold text-blue-700 dark:text-blue-300">💡 {takeaway.title}</p>
-                      <p className="text-[11px] text-gray-700 dark:text-gray-300 mt-1 leading-normal">{takeaway.text}</p>
-                    </div>
-                  );
-                }
+                const isInfo = takeaway.type === "info" || takeaway.type === "tip";
                 return (
-                  <div className="mt-6 p-4 rounded-xl bg-amber-500/10 border-l-4 border-amber-500 dark:bg-amber-900/20 dark:border-amber-400 not-prose">
-                    <p className="text-xs font-bold text-amber-700 dark:text-amber-300">⚠️ {takeaway.title}</p>
+                  <div className={cn(
+                    "mt-6 p-4 rounded-xl border-l-4 not-prose",
+                    isInfo
+                      ? "bg-blue-500/10 border-blue-500 dark:bg-blue-900/20 dark:border-blue-400"
+                      : "bg-amber-500/10 border-amber-500 dark:bg-amber-900/20 dark:border-amber-400"
+                  )}>
+                    <p className={cn(
+                      "text-xs font-bold",
+                      isInfo ? "text-blue-700 dark:text-blue-300" : "text-amber-700 dark:text-amber-300"
+                    )}>{isInfo ? "💡" : "⚠️"} {takeaway.title}</p>
                     <p className="text-[11px] text-gray-700 dark:text-gray-300 mt-1 leading-normal">{takeaway.text}</p>
                   </div>
                 );
