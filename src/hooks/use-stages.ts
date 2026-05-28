@@ -59,3 +59,24 @@ export function useMarkProgress() {
     },
   });
 }
+
+export function useBatchMarkProgress() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (items: Array<{
+      content_type: string;
+      content_id: string;
+      progress_percent?: number;
+    }>) =>
+      apiFetch<{
+        items: ProgressRow[];
+        gamification: Record<string, unknown>;
+      }>("/learn/progress/batch/", {
+        method: "POST",
+        body: JSON.stringify({ items }),
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["progress"] });
+    },
+  });
+}
