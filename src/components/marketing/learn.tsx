@@ -43,7 +43,6 @@ import { LEARN_STORIES_VISIBLE } from "@/constants/feature-flags";
 import {
   mapApiArticle,
   mapApiStory,
-  mapStoriesJsonFallback,
   triviaToBrowseCards,
   triviaToQuizQuestions,
   type HubArticle,
@@ -349,10 +348,8 @@ export default function Learn() {
             setStories(parsedStories);
             setStoryFlowsState({ ...parsedFlows, "budget-trivia": [] });
           } else if (process.env.NODE_ENV === "development") {
-            const fallback = await import("@/constants/stories.json").then((m) => m.default);
-            const { stories: fbStories, flows } = mapStoriesJsonFallback(fallback);
-            setStories(fbStories);
-            setStoryFlowsState(flows);
+            setStories([]);
+            setStoryFlowsState({});
           }
         } catch (err) {
           console.error("Failed to fetch stories from API:", err);
