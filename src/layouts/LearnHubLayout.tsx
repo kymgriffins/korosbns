@@ -6,7 +6,7 @@ import { Suspense, useEffect, useState } from "react";
 import { 
   User, ChevronRight, ChevronLeft, ChevronDown,
   BookOpen, Bell, Home, LayoutDashboard, CheckCircle2, ArrowLeft, ExternalLink,
-  Settings, LogOut, KeyRound, Palette
+  Settings, LogOut, KeyRound, Palette, LogIn
 } from "lucide-react";
 import { cn } from "@/utils";
 import { LearnProvider, useLearn, type LearnTab } from "@/contexts/learn-context";
@@ -91,7 +91,6 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
     <div className="h-dvh md:min-h-screen bg-background text-foreground overflow-hidden">
       
       {/* 🖥️ Desktop Sidebar — fixed, independent of main flow */}
-      {isLoggedIn && (
       <aside className={cn(
         "hidden md:flex flex-col fixed left-0 top-0 h-screen z-30 border-r border-border bg-card overflow-hidden transition-all duration-300",
         sidebarCollapsed ? "w-16" : "w-80"
@@ -258,27 +257,39 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
                               <User className="size-4" />
                               <span>Learner Profile</span>
                             </button>
-                            <Link
-                              href={Routes.Account}
-                              className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200"
-                            >
-                              <Settings className="size-4" />
-                              <span>Account Settings</span>
-                            </Link>
-                            <Link
-                              href={Routes.AccountPassword}
-                              className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200"
-                            >
-                              <KeyRound className="size-4" />
-                              <span>Change Password</span>
-                            </Link>
-                            <Link
-                              href={Routes.AccountSignOut}
-                              className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200"
-                            >
-                              <LogOut className="size-4" />
-                              <span>Sign Out</span>
-                            </Link>
+                            {isLoggedIn ? (
+                              <>
+                                <Link
+                                  href={Routes.Account}
+                                  className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200"
+                                >
+                                  <Settings className="size-4" />
+                                  <span>Account Settings</span>
+                                </Link>
+                                <Link
+                                  href={Routes.AccountPassword}
+                                  className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200"
+                                >
+                                  <KeyRound className="size-4" />
+                                  <span>Change Password</span>
+                                </Link>
+                                <Link
+                                  href={Routes.AccountSignOut}
+                                  className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200"
+                                >
+                                  <LogOut className="size-4" />
+                                  <span>Sign Out</span>
+                                </Link>
+                              </>
+                            ) : (
+                              <Link
+                                href={Routes.Login}
+                                className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-primary hover:text-primary/80 hover:bg-primary/[0.06] transition-all duration-200"
+                              >
+                                <LogIn className="size-4" />
+                                <span>Sign In</span>
+                              </Link>
+                            )}
                             <div className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-muted-foreground">
                               <Palette className="size-4" />
                               <span className="flex-1">Theme</span>
@@ -322,12 +333,19 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
                 >
                   <User className="size-4" />
                 </button>
+                {!isLoggedIn && (
+                  <Link href={Routes.Login} className="size-8 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary/20 transition-colors" title="Sign In">
+                    <LogIn className="size-4" />
+                  </Link>
+                )}
                 <Link href={"/"} className="size-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors" title="Main site">
                   <Home className="size-4" />
                 </Link>
-                <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">
-                  {level}
-                </div>
+                {isLoggedIn && (
+                  <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">
+                    {level}
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -346,13 +364,12 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
           </div>
         )}
       </aside>
-      )}
 
       {/* Main content — single flow, sidebar offset applied via responsive margin */}
       <div className="flex flex-col h-dvh md:min-h-dvh">
         <main className={cn(
           "flex-1 overflow-y-auto",
-          isLoggedIn ? (sidebarCollapsed ? "md:ml-16" : "md:ml-80") : ""
+          sidebarCollapsed ? "md:ml-16" : "md:ml-80"
         )}>
           {children}
         </main>
