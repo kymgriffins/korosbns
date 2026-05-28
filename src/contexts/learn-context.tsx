@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { fetchGamificationMe, type GamificationState } from "@/lib/gamification";
 import { useAuth } from "@/contexts/auth-context";
 
-export type LearnTab = "home" | "learn" | "alerts" | "profile";
+export type LearnTab = "home" | "learn" | "alerts" | "profile" | "settings";
 
 interface ActiveModule {
   id: string;

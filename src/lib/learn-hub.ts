@@ -1,6 +1,7 @@
 import { apiFetch } from "@/lib/api-client";
 import { buildApiUrl } from "@/lib/api-url";
 import { gamificationHeaders } from "@/lib/gamification";
+import type { CivicModuleApi } from "@/lib/civic-stages";
 import type { LearningUnitSummary } from "@/lib/learning-units";
 
 export type LeaderboardEntry = {
@@ -127,13 +128,32 @@ export type LearnProfileResponse = {
     points: number;
     level: number;
     streak_days: number;
+<<<<<<< Updated upstream
     badges: Array<{ slug: string; name: string; description?: string; icon?: string }>;
     certificates: Array<{ id: string; civic_module: string; module_title: string; module_slug: string; issued_at: string; certificate_url: string }>;
+=======
+    badges: Array<{
+      slug: string;
+      name: string;
+      description?: string;
+      icon?: string;
+      awarded_at?: string;
+    }>;
+    certificates?: Array<{
+      id: string;
+      module_title: string;
+      module_slug: string;
+      issued_at: string;
+      certificate_url?: string;
+    }>;
+>>>>>>> Stashed changes
     recent_progress: Array<{
       content_type: string;
       content_id: string;
       completed_at: string;
+      progress_percent?: number;
     }>;
+    total_progress?: number;
   } | null;
   progress: Array<{
     content_type: string;
@@ -193,7 +213,7 @@ export const learnHubApi = {
     return (await res.json()) as LearnProfileResponse;
   },
   markProgress: async (body: {
-    content_type: LearnContentType;
+    content_type: LearnContentType | "lesson";
     content_id: string;
     progress_percent?: number;
   }) => {
@@ -202,7 +222,45 @@ export const learnHubApi = {
       headers: gamificationHeaders(),
       body: JSON.stringify(body),
     });
-    if (!res.ok) throw new Error("Could not save progress");
+    if (!res.ok) {
+      const detail = await res.text().catch(() => "");
+      throw new Error(detail || "Could not save progress");
+    }
+    return res.json();
+  },
+  civicModules: () =>
+    apiFetch<{ results: CivicModuleApi[] }>("/content/civic-modules/", { auth: true }),
+  civicModule: (slug: string) =>
+    apiFetch<CivicModuleApi>(`/content/civic-modules/${slug}/`, { auth: true }),
+  completeChapter: async (chapterId: string) => {
+    const res = await fetch(buildApiUrl(`/content/civic-chapters/${chapterId}/complete/`), {
+      method: "POST",
+      headers: gamificationHeaders(),
+    });
+    if (!res.ok) {
+      const payload = await res.json().catch(() => ({}));
+      throw new Error(
+        typeof payload.detail === "string" ? payload.detail : "Could not complete chapter",
+      );
+    }
+    return res.json() as Promise<{
+      detail: string;
+      module_completed: boolean;
+      certificate_id?: string | null;
+    }>;
+  },
+  submitTriviaAttempt: async (triviaId: string, answers: Record<string, number>) => {
+    const res = await fetch(buildApiUrl(`/engagement/trivia/${triviaId}/attempt/`), {
+      method: "POST",
+      headers: gamificationHeaders(),
+      body: JSON.stringify({ answers, leaderboard_opt_in: false }),
+    });
+    if (!res.ok) {
+      const payload = await res.json().catch(() => ({}));
+      throw new Error(
+        typeof payload.detail === "string" ? payload.detail : "Could not submit trivia attempt",
+      );
+    }
     return res.json();
   },
   completeChapter: async (chapterId: string) => {

@@ -5,7 +5,10 @@ import { OnboardingWizard } from "./onboarding-wizard";
 import { AnonymousIdentityPicker } from "./anonymous-identity-picker";
 import { BitmojiAvatar } from "./bitmoji-avatar";
 import { StageDetailDrawer } from "./stage-detail-drawer";
+import { RegistrationDialog } from "./registration-dialog";
+import { ThemeToggle } from "@/components/marketing/theme-toggle";
 
+import Link from "next/link";
 import { Button } from "@/ui/button";
 import { Progress } from "@/ui/progress";
 import { Label } from "@/ui/label";
@@ -15,28 +18,32 @@ import {
   Flame, Sparkles, BookOpen,
   ArrowRight, ShieldCheck, MapPin, Calendar, CheckCircle2,
   Volume2, Shield, Settings, DownloadCloud, Copy, Send, MessageSquare,
-  Home, HelpCircle, ChevronRight, Layers, Globe, FileCheck, Award
+  Home, HelpCircle, ChevronRight, Layers, Globe, FileCheck, Award, LogIn
 } from "lucide-react";
 import { cn } from "@/utils";
 import { useLearn, type ActiveLesson } from "@/contexts/learn-context";
 import { motion, AnimatePresence } from "motion/react";
-import Link from "next/link";
-import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
+<<<<<<< Updated upstream
 import { useStages, type StageData } from "@/lib/use-stages";
 import { learnHubApi } from "@/lib/learn-hub";
+=======
+import type { StageData } from "@/constants/stages-data";
+>>>>>>> Stashed changes
 import { citizenApi } from "@/lib/api-client";
+import { fetchGamificationMe, fetchLeaderboard, type LeaderboardRow } from "@/lib/gamification";
+import { useStages } from "@/hooks/use-stages";
 
 // Translations dictionary for Global Language Toggle (EN / SW / Sheng)
 const TRANSLATIONS = {
   EN: {
     dashboardTitle: "Civic Dashboard",
     dashboardSubtitle: "Track your budget learning journey and active county alerts.",
-    stagesMastered: "Stages Mastered",
+    modulesMastered: "Modules Completed",
     sovereigns: "Sovereigns",
     streak: "Active Streak",
     roadmapTitle: "Map of the Budget Cycle",
-    roadmapSubtitle: "Complete the 8 sequential stages to earn certificates & badges.",
+    roadmapSubtitle: "Complete modules and chapters to earn certificates and badges.",
     alertsTitle: "Participation Alerts",
     alertsSubtitle: "Hyper-local alerts matching your county and tracked documents.",
     profileTitle: "Citizen Profile",
@@ -46,7 +53,7 @@ const TRANSLATIONS = {
     resetBtn: "Reset All Progress",
     trackBtn: "Tracked Documents",
     cachedBadge: "📶 Cached",
-    quickJump: "Quick Jump to Stage",
+    quickJump: "Quick Jump to Module",
     cacheAll: "Offline Cache",
     consentText: "DPA 2019 Consent Verified",
     streakDays: "Day Streak",
@@ -55,7 +62,7 @@ const TRANSLATIONS = {
   SW: {
     dashboardTitle: "Mpanilio wa Uraia",
     dashboardSubtitle: "Fuatilia safari yako ya masomo ya bajeti na alerts za kaunti.",
-    stagesMastered: "Hatua Zilizokamilika",
+    modulesMastered: "Moduli Zilizokamilika",
     sovereigns: "Sovereigns (SVG)",
     streak: "Mfululizo wa Siku",
     roadmapTitle: "Ramani ya Mzunguko wa Bajeti",
@@ -78,7 +85,7 @@ const TRANSLATIONS = {
   SH: {
     dashboardTitle: "Dashboard ya Mraia",
     dashboardSubtitle: "Fuatilia maworks zako za bajeti na alert za kaunti.",
-    stagesMastered: "Ma-stage Umewai",
+    modulesMastered: "Moduli Umewai",
     sovereigns: "Sovereigns (SVG)",
     streak: "Streak ya Siku",
     roadmapTitle: "Mchoro ya Budget Cycle",
@@ -92,7 +99,7 @@ const TRANSLATIONS = {
     resetBtn: "Futa Maendeleo Yote [Sheng coming soon]",
     trackBtn: "Ma-doc Unafuatilia",
     cachedBadge: "📶 Imehifadhiwa [Sheng coming soon]",
-    quickJump: "Rukia Stage Haraka [Sheng coming soon]",
+    quickJump: "Rukia Moduli Haraka [Sheng coming soon]",
     cacheAll: "Hifadhi Nje ya Mtandao [Sheng coming soon]",
     consentText: "Idhini ya DPA 2019 [Sheng coming soon]",
     streakDays: "Streak ya Siku",
@@ -100,12 +107,14 @@ const TRANSLATIONS = {
   }
 };
 
-// STAGES_DATA imported from @/constants/stages-data
-
 export function LearnPathsHome() {
   const { isLoggedIn, user: authUser } = useAuth();
+<<<<<<< Updated upstream
   const { data: apiStages, isLoading: stagesLoading, isError: stagesError } = useStages();
   const STAGES_DATA = apiStages || [];
+=======
+  const { stages: stagesData, loading: stagesLoading, error: stagesError } = useStages();
+>>>>>>> Stashed changes
   const [wantsAnonymous, setWantsAnonymous] = useState(false);
   const [profile, setProfile] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
@@ -113,9 +122,15 @@ export function LearnPathsHome() {
 
   const [selectedStage, setSelectedStage] = useState<any | null>(null);
   const [cachedStages, setCachedStages] = useState<number[]>([]);
+<<<<<<< Updated upstream
   const [leaderboardData, setLeaderboardData] = useState<{ rank: number; name: string | null; points: number; level: number; badge_count: number }[]>([]);
   const [stageStats, setStageStats] = useState<Record<string, { total_users: number; avg_trivia_score: number | null }>>({});
   const [backendProfile, setBackendProfile] = useState<any | null>(null);
+=======
+  const [leaderboard, setLeaderboard] = useState<LeaderboardRow[]>([]);
+  const [leaderboardLoading, setLeaderboardLoading] = useState(true);
+  const [showRegistration, setShowRegistration] = useState(false);
+>>>>>>> Stashed changes
 
   // Sync selectedStage ↔ activeLesson for sidebar curriculum rail
   useEffect(() => {
@@ -232,6 +247,7 @@ export function LearnPathsHome() {
     setLoading(false);
   }, [isLoggedIn, authUser]);
 
+<<<<<<< Updated upstream
   // Fetch global leaderboard and backend profile
   useEffect(() => {
     learnHubApi.leaderboard(10).then((res: { results: { rank: number; name: string | null; points: number; level: number; badge_count: number }[] }) => {
@@ -255,6 +271,43 @@ export function LearnPathsHome() {
       }).catch(() => {});
     });
   }, [apiStages]);
+=======
+  useEffect(() => {
+    if (!profile) return;
+    void fetchGamificationMe().then((gamification) => {
+      if (!gamification) return;
+      const updated = {
+        ...profile,
+        sovereigns: gamification.points,
+        streakDays: gamification.streak_days,
+        badges: gamification.badges?.map((badge) => badge.icon || badge.slug) ?? profile.badges,
+      };
+      setProfile(updated);
+      localStorage.setItem("bns_user_profile", JSON.stringify(updated));
+    });
+  }, [profile?.userId]);
+
+  useEffect(() => {
+    setLeaderboardLoading(true);
+    void fetchLeaderboard(20).then((rows) => {
+      if (profile) {
+        const youIndex = rows.findIndex((r) => r.name === null || (profile.pseudoName && r.name === profile.pseudoName));
+        if (youIndex === -1) {
+          rows.push({
+            rank: rows.length + 1,
+            name: profile.pseudoName || "You",
+            points: profile.sovereigns || 0,
+            level: Math.floor((profile.sovereigns || 0) / 100) + 1,
+            streak_days: profile.streakDays || 0,
+            badge_count: profile.badges?.length || 0,
+          });
+        }
+      }
+      setLeaderboard(rows.sort((a, b) => b.points - a.points).map((r, i) => ({ ...r, rank: i + 1 })));
+      setLeaderboardLoading(false);
+    });
+  }, [profile?.userId, profile?.sovereigns]);
+>>>>>>> Stashed changes
 
   const checkStreak = (userProfile: any) => {
     if (!userProfile.lastActive) return 0;
@@ -329,7 +382,17 @@ export function LearnPathsHome() {
   const langKey = (profile?.language as "EN" | "SW" | "SH") || "EN";
   const text = TRANSLATIONS[langKey];
 
+<<<<<<< Updated upstream
   const currentStageNum = profile ? (profile.stageProgress ? Math.max(...profile.stageProgress) : 1) : 1;
+=======
+  const isUserRow = (name: string | null) => profile?.pseudoName && name === profile.pseudoName;
+
+  const totalModules = Math.max(stagesData.length, 1);
+  const modulesCompleted = profile?.badges?.length ?? 0;
+  const currentStageNum = profile ? (profile.stageProgress ? Math.max(...profile.stageProgress) : 1) : 1;
+  const currentStage = stagesData.find(s => s.id === currentStageNum) || stagesData[0];
+
+>>>>>>> Stashed changes
   if (loading || stagesLoading) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center min-h-[50vh]">
@@ -357,47 +420,76 @@ export function LearnPathsHome() {
   if (!profile) {
     if (!wantsAnonymous) {
       return (
-        <div className="flex-1 flex items-center justify-center p-4 bg-muted/20 min-h-[70vh]">
-          <div className="w-full max-w-md p-6 bg-card border border-border rounded-2xl shadow-xl space-y-6 text-center">
-            <div className="space-y-2">
-              <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mx-auto">
-                <Sparkles className="size-6" />
+        <>
+          <div className="flex-1 flex items-center justify-center p-4 bg-muted/20 min-h-[70vh]">
+            <div className="w-full max-w-md p-6 bg-card border border-border rounded-2xl shadow-xl space-y-6 text-center">
+              <div className="space-y-2">
+                <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mx-auto">
+                  <Sparkles className="size-6" />
+                </div>
+                <h2 className="text-xl font-bold tracking-tight">Citizen Learn Hub</h2>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Welcome! Track Kenya's public finance, follow projects in your county, and take trivia gates to earn badges.
+                </p>
               </div>
-              <h2 className="text-xl font-bold tracking-tight">Citizen Learn Hub</h2>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Welcome! Track Kenya's public finance, follow projects in your county, and take trivia gates to earn badges.
+
+              <div className="space-y-3">
+                <Button onClick={() => setShowRegistration(true)} className="w-full rounded-xl h-11 font-bold">
+                  Sign Up / Join Movement
+                </Button>
+                <Link href="/auth/login" className="block">
+                  <Button variant="outline" className="w-full rounded-xl h-11 font-bold border-border/85">
+                    <LogIn className="size-4 mr-2" />
+                    Sign In
+                  </Button>
+                </Link>
+                <div className="flex items-center gap-2 my-2">
+                  <div className="h-px bg-border flex-1" />
+                  <span className="text-[10px] text-muted-foreground uppercase font-bold">or</span>
+                  <div className="h-px bg-border flex-1" />
+                </div>
+                <Button 
+                  onClick={() => setWantsAnonymous(true)} 
+                  variant="outline" 
+                  className="w-full rounded-xl h-11 font-bold border-border/85 bg-transparent"
+                >
+                  Continue as Anonymous User
+                </Button>
+              </div>
+              
+              <p className="text-[10px] text-muted-foreground leading-relaxed">
+                We never lock citizens out. Anonymous progress is stored locally on this device, but won't sync across other browsers.
               </p>
             </div>
-
-            <div className="space-y-3">
-              <Button asChild className="w-full rounded-xl h-11 font-bold">
-                <Link href={Routes.JoinUs}>Sign Up / Join Movement</Link>
-              </Button>
-              <div className="flex items-center gap-2 my-2">
-                <div className="h-px bg-border flex-1" />
-                <span className="text-[10px] text-muted-foreground uppercase font-bold">or</span>
-                <div className="h-px bg-border flex-1" />
-              </div>
-              <Button 
-                onClick={() => setWantsAnonymous(true)} 
-                variant="outline" 
-                className="w-full rounded-xl h-11 font-bold border-border/85 bg-transparent"
-              >
-                Continue as Anonymous User
-              </Button>
-            </div>
-            
-            <p className="text-[10px] text-muted-foreground leading-relaxed">
-              We never lock citizens out. Anonymous progress is stored locally on this device, but won't sync across other browsers.
-            </p>
           </div>
-        </div>
+          <RegistrationDialog open={showRegistration} onOpenChange={setShowRegistration} />
+        </>
       );
     }
 
     return (
-      <div className="flex-1 flex items-center justify-center p-4 bg-muted/20">
-        <AnonymousIdentityPicker onComplete={handleOnboardingComplete} />
+      <>
+        <div className="flex-1 flex items-center justify-center p-4 bg-muted/20">
+          <AnonymousIdentityPicker onComplete={handleOnboardingComplete} />
+        </div>
+        <RegistrationDialog open={showRegistration} onOpenChange={setShowRegistration} />
+      </>
+    );
+  }
+
+  if (stagesData.length === 0) {
+    return (
+      <div className="flex-1 flex items-center justify-center p-6 min-h-[50vh]">
+        <div className="max-w-md text-center space-y-3">
+          <BookOpen className="size-10 text-muted-foreground mx-auto" />
+          <h2 className="text-lg font-bold">No learning modules yet</h2>
+          <p className="text-sm text-muted-foreground">
+            Published civic modules from the admin portal will appear here. Publish at least one module with chapters to populate the Learn Hub.
+          </p>
+          {stagesError ? (
+            <p className="text-xs text-destructive">Could not load modules: {stagesError}</p>
+          ) : null}
+        </div>
       </div>
     );
   }
@@ -455,10 +547,10 @@ export function LearnPathsHome() {
                 <div className="p-4 rounded-2xl border border-border bg-card space-y-3 shadow-xs">
                   <div className="flex justify-between items-center text-xs font-bold text-foreground">
                     <span>Progress to Citizen Expert</span>
-                    <span className="text-primary">{profile.badges?.length || 0} / 8 Stages Mastered</span>
+                    <span className="text-primary">{modulesCompleted} / {totalModules} {text.modulesMastered}</span>
                   </div>
-                  <Progress value={((profile.badges?.length || 0) / 8) * 100} className="h-2 rounded-full" />
-                  <p className="text-[10px] text-muted-foreground">Unlock all 8 badges by completing the trivia gates.</p>
+                  <Progress value={(modulesCompleted / totalModules) * 100} className="h-2 rounded-full" />
+                  <p className="text-[10px] text-muted-foreground">Complete all module chapters to unlock badges.</p>
                 </div>
 
                 {/* Current Active Stage Card */}
@@ -503,15 +595,19 @@ export function LearnPathsHome() {
                   <select
                     id="stageSelect"
                     onChange={(e) => {
+<<<<<<< Updated upstream
                       const selected = STAGES_DATA.find(s => s.order === parseInt(e.target.value));
+=======
+                      const selected = stagesData.find(s => s.id === parseInt(e.target.value));
+>>>>>>> Stashed changes
                       if (selected) {
                         setSelectedStage(selected);
                       }
                     }}
                     className="w-full h-10 px-3 rounded-xl border border-input bg-card text-xs focus-visible:outline-none"
                   >
-                    <option value="">Select a stage...</option>
-                    {STAGES_DATA.map((s) => {
+                    <option value="">Select a module...</option>
+                    {stagesData.map((s) => {
                       const isCompleted = profile.badges?.includes(s.badge);
                       const isActive = profile.stageProgress?.includes(s.order);
                       return (
@@ -534,7 +630,7 @@ export function LearnPathsHome() {
                     </AccordionTrigger>
                     <AccordionContent className="border-t border-border pt-3 pb-3">
                       <div className="grid grid-cols-2 gap-2">
-                        {STAGES_DATA.map((s) => {
+                        {stagesData.map((s) => {
                           const done = profile.badges?.includes(s.badge);
                           const active = profile.stageProgress?.includes(s.order);
                           return (
@@ -554,7 +650,7 @@ export function LearnPathsHome() {
 
                 {/* Vertical Visual Timeline (Roadmap) */}
                 <div className="space-y-3 relative before:absolute before:left-6 before:top-4 before:bottom-4 before:w-0.5 before:bg-border">
-                  {STAGES_DATA.map((stage) => {
+                  {stagesData.map((stage) => {
                     const isCompleted = profile.badges?.includes(stage.badge);
                     const isActive = profile.stageProgress?.includes(stage.order);
                     const isStageCached = cachedStages.includes(stage.order);
@@ -662,6 +758,68 @@ export function LearnPathsHome() {
               </motion.div>
             )}
 
+            {/* TAB 5: SETTINGS (Mobile) */}
+            {activeTab === "settings" && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="space-y-6"
+              >
+                <div className="space-y-1">
+                  <h2 className="text-lg font-black uppercase tracking-tight">{text.settingsTitle}</h2>
+                  <p className="text-xs text-muted-foreground">Customise your app experience.</p>
+                </div>
+
+                {/* Theme */}
+                <div className="p-4 rounded-2xl border border-border bg-card space-y-3 shadow-xs">
+                  <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Appearance</h3>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-bold text-sm">Theme</h4>
+                      <p className="text-[10px] text-muted-foreground">Light, dark, or system.</p>
+                    </div>
+                    <ThemeToggle />
+                  </div>
+                </div>
+
+                {/* Language */}
+                <div className="p-4 rounded-2xl border border-border bg-card space-y-3 shadow-xs">
+                  <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">{text.language}</h3>
+                  <div className="grid grid-cols-3 gap-2 bg-muted p-1 rounded-xl text-xs">
+                    <button onClick={() => handleUpdateProfile({ ...profile, language: "EN" })}
+                      className={`py-2 font-bold rounded-lg ${profile.language === "EN" ? 'bg-background text-foreground shadow-xs' : 'text-muted-foreground'}`}>English</button>
+                    <button onClick={() => handleUpdateProfile({ ...profile, language: "SW" })}
+                      className={`py-2 font-bold rounded-lg ${profile.language === "SW" ? 'bg-background text-foreground shadow-xs' : 'text-muted-foreground'}`}>Kiswahili</button>
+                    <button onClick={() => handleUpdateProfile({ ...profile, language: "SH" })}
+                      className={`py-2 font-bold rounded-lg ${profile.language === "SH" ? 'bg-background text-foreground shadow-xs' : 'text-muted-foreground'}`}>Sheng</button>
+                  </div>
+                </div>
+
+                {/* Notifications */}
+                <div className="p-4 rounded-2xl border border-border bg-card space-y-3 shadow-xs">
+                  <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Notifications</h3>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold">Push Notifications</span>
+                    <input type="checkbox" checked={profile.notifications}
+                      onChange={(e) => handleUpdateProfile({ ...profile, notifications: e.target.checked })}
+                      className="size-4" />
+                  </div>
+                  <div className="flex items-center justify-between pt-2 border-t border-border">
+                    <span className="text-xs font-bold">SMS / WhatsApp fallback</span>
+                    <input type="checkbox" checked={profile.whatsappFallback}
+                      onChange={(e) => handleUpdateProfile({ ...profile, whatsappFallback: e.target.checked })}
+                      className="size-4" />
+                  </div>
+                </div>
+
+                {/* Reset */}
+                <Button onClick={handleResetProgress} variant="outline" className="w-full rounded-xl border-destructive/20 text-destructive hover:bg-destructive/5 font-bold h-11">
+                  Reset All Progress
+                </Button>
+              </motion.div>
+            )}
+
             {/* TAB 4: CITIZEN PROFILE & SETTINGS */}
             {activeTab === "profile" && (
               <motion.div
@@ -685,6 +843,13 @@ export function LearnPathsHome() {
                     </div>
                   </div>
 
+                  {isLoggedIn && (
+                    <Link href="/account" className="block">
+                      <Button variant="outline" className="w-full rounded-xl font-bold text-xs h-10 border-border/85">
+                        Edit Profile
+                      </Button>
+                    </Link>
+                  )}
                   <Button
                     onClick={handleResetProgress}
                     className="w-full rounded-xl font-bold bg-destructive text-destructive-foreground hover:bg-destructive/95 transition-all text-xs h-10"
@@ -731,15 +896,23 @@ export function LearnPathsHome() {
               hasNext={STAGES_DATA.indexOf(selectedStage) < STAGES_DATA.length - 1}
               hasPrev={STAGES_DATA.indexOf(selectedStage) > 0}
               onPrevStage={() => {
+<<<<<<< Updated upstream
                 const idx = STAGES_DATA.indexOf(selectedStage);
                 const prev = STAGES_DATA[idx - 1];
+=======
+                const prev = stagesData.find(s => s.id === selectedStage.id - 1);
+>>>>>>> Stashed changes
                 if (prev) {
                   setSelectedStage(prev);
                 }
               }}
               onNextStage={() => {
+<<<<<<< Updated upstream
                 const idx = STAGES_DATA.indexOf(selectedStage);
                 const next = STAGES_DATA[idx + 1];
+=======
+                const next = stagesData.find(s => s.id === selectedStage.id + 1);
+>>>>>>> Stashed changes
                 if (next) {
                   setSelectedStage(next);
                 }
@@ -764,15 +937,23 @@ export function LearnPathsHome() {
               hasNext={STAGES_DATA.indexOf(selectedStage) < STAGES_DATA.length - 1}
               hasPrev={STAGES_DATA.indexOf(selectedStage) > 0}
               onPrevStage={() => {
+<<<<<<< Updated upstream
                 const idx = STAGES_DATA.indexOf(selectedStage);
                 const prev = STAGES_DATA[idx - 1];
+=======
+                const prev = stagesData.find(s => s.id === selectedStage.id - 1);
+>>>>>>> Stashed changes
                 if (prev) {
                   setSelectedStage(prev);
                 }
               }}
               onNextStage={() => {
+<<<<<<< Updated upstream
                 const idx = STAGES_DATA.indexOf(selectedStage);
                 const next = STAGES_DATA[idx + 1];
+=======
+                const next = stagesData.find(s => s.id === selectedStage.id + 1);
+>>>>>>> Stashed changes
                 if (next) {
                   setSelectedStage(next);
                 }
@@ -837,7 +1018,11 @@ export function LearnPathsHome() {
                   {/* Leaderboard */}
                   <div className="p-5 border border-border bg-card rounded-2xl space-y-4 shadow-xs">
                     <h3 className="text-xs font-black uppercase text-muted-foreground tracking-wider">Civic Leaderboard</h3>
+                    {leaderboardLoading ? (
+                      <p className="text-xs text-muted-foreground text-center py-4">Loading...</p>
+                    ) : (
                     <div className="space-y-2">
+<<<<<<< Updated upstream
                       {leaderboardData.slice(0, 5).map((item) => (
                         <div key={item.rank} className="flex items-center justify-between p-3 rounded-xl border text-xs bg-muted/10 border-border/50">
                           <div className="flex items-center gap-3">
@@ -846,6 +1031,19 @@ export function LearnPathsHome() {
                           </div>
                           <div className="flex items-center gap-4 text-muted-foreground font-semibold">
                             <span>Lv.{item.level}</span>
+=======
+                      {leaderboard.slice(0, 5).map((item) => (
+                        <div key={item.name ?? item.rank} className={cn(
+                          "flex items-center justify-between p-3 rounded-xl border text-xs",
+                          isUserRow(item.name) ? "bg-primary/5 border-primary/20" : "bg-muted/10 border-border/50"
+                        )}>
+                          <div className="flex items-center gap-3">
+                            <span className="font-black text-muted-foreground w-4">{item.rank}</span>
+                            <span className={cn("font-bold text-xs", isUserRow(item.name) ? "text-primary" : "text-foreground")}>{item.name ?? "Anonymous"}</span>
+                          </div>
+                          <div className="flex items-center gap-4 text-muted-foreground font-semibold">
+                            <span>{item.badge_count} Badges</span>
+>>>>>>> Stashed changes
                             <span className="text-foreground font-bold">{item.points} pts</span>
                           </div>
                         </div>
@@ -854,6 +1052,7 @@ export function LearnPathsHome() {
                         <p className="text-xs text-muted-foreground text-center py-4">No data yet — be the first learner!</p>
                       )}
                     </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -868,7 +1067,7 @@ export function LearnPathsHome() {
 
                   {/* Premium Cards Grid */}
                   <div className="grid grid-cols-2 gap-4">
-                    {STAGES_DATA.map((stage) => {
+                    {stagesData.map((stage) => {
                       const isCompleted = profile.badges?.includes(stage.badge);
                       const isActive = profile.stageProgress?.includes(stage.order);
                       const isStageCached = cachedStages.includes(stage.order);
@@ -986,6 +1185,72 @@ export function LearnPathsHome() {
                 </div>
               )}
 
+              {/* Tab: Settings */}
+              {activeTab === "settings" && (
+                <div className="space-y-6 max-w-3xl mx-auto">
+                  <div className="space-y-1">
+                    <h2 className="text-xl font-black uppercase tracking-tight">{text.settingsTitle}</h2>
+                    <p className="text-xs text-muted-foreground">Customise your app experience and manage preferences.</p>
+                  </div>
+
+                  {/* Theme */}
+                  <div className="p-6 border border-border bg-card rounded-2xl space-y-4 shadow-sm">
+                    <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Appearance</h3>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-bold text-sm">Theme</h4>
+                        <p className="text-xs text-muted-foreground">Switch between light, dark, or system theme.</p>
+                      </div>
+                      <ThemeToggle />
+                    </div>
+                  </div>
+
+                  {/* Language */}
+                  <div className="p-6 border border-border bg-card rounded-2xl space-y-4 shadow-sm">
+                    <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">{text.language}</h3>
+                    <div className="grid grid-cols-3 gap-2 bg-muted p-1 rounded-xl text-xs">
+                      <button onClick={() => handleUpdateProfile({ ...profile, language: "EN" })}
+                        className={`py-2 font-bold rounded-lg ${profile.language === "EN" ? 'bg-background text-foreground shadow-xs' : 'text-muted-foreground'}`}>English</button>
+                      <button onClick={() => handleUpdateProfile({ ...profile, language: "SW" })}
+                        className={`py-2 font-bold rounded-lg ${profile.language === "SW" ? 'bg-background text-foreground shadow-xs' : 'text-muted-foreground'}`}>Kiswahili</button>
+                      <button onClick={() => handleUpdateProfile({ ...profile, language: "SH" })}
+                        className={`py-2 font-bold rounded-lg ${profile.language === "SH" ? 'bg-background text-foreground shadow-xs' : 'text-muted-foreground'}`}>Sheng</button>
+                    </div>
+                  </div>
+
+                  {/* Notifications */}
+                  <div className="p-6 border border-border bg-card rounded-2xl space-y-4 shadow-sm">
+                    <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Notifications</h3>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-bold text-sm">Push Notifications</h4>
+                        <p className="text-xs text-muted-foreground">Receive open comment alerts.</p>
+                      </div>
+                      <input type="checkbox" checked={profile.notifications}
+                        onChange={(e) => handleUpdateProfile({ ...profile, notifications: e.target.checked })}
+                        className="size-4" />
+                    </div>
+                    <div className="flex items-center justify-between pt-2 border-t border-border">
+                      <div>
+                        <h4 className="font-bold text-sm">SMS / WhatsApp fallback</h4>
+                        <p className="text-xs text-muted-foreground">Alert fallback if push notifications fail.</p>
+                      </div>
+                      <input type="checkbox" checked={profile.whatsappFallback}
+                        onChange={(e) => handleUpdateProfile({ ...profile, whatsappFallback: e.target.checked })}
+                        className="size-4" />
+                    </div>
+                  </div>
+
+                  {/* Reset */}
+                  <div className="p-6 border border-border bg-card rounded-2xl shadow-sm">
+                    <Button onClick={handleResetProgress} variant="outline" className="w-full rounded-xl border-destructive/20 text-destructive hover:bg-destructive/5 font-bold h-11">
+                      Reset All Progress
+                    </Button>
+                    <p className="text-[10px] text-muted-foreground text-center mt-2">This will wipe all local progress and profile data.</p>
+                  </div>
+                </div>
+              )}
+
               {/* Tab: Profile */}
               {activeTab === "profile" && (
                 <div className="space-y-6 max-w-3xl mx-auto">
@@ -1003,9 +1268,18 @@ export function LearnPathsHome() {
                         <p className="text-xs text-muted-foreground mt-0.5 font-bold">{profile.county} · Lvl {Math.floor(profile.sovereigns / 100) + 1}</p>
                       </div>
                     </div>
-                    <Button onClick={handleResetProgress} variant="outline" className="rounded-xl border-destructive/20 text-destructive hover:bg-destructive/5 font-bold text-xs h-10 px-4">
-                      Reset All Progress
-                    </Button>
+                    <div className="flex gap-2">
+                      {isLoggedIn && (
+                        <Link href="/account">
+                          <Button variant="outline" className="rounded-xl font-bold text-xs h-10 px-4">
+                            Edit Profile
+                          </Button>
+                        </Link>
+                      )}
+                      <Button onClick={handleResetProgress} variant="outline" className="rounded-xl border-destructive/20 text-destructive hover:bg-destructive/5 font-bold text-xs h-10 px-4">
+                        Reset All Progress
+                      </Button>
+                    </div>
                   </div>
                   
                   {/* Account Information */}
@@ -1037,6 +1311,7 @@ export function LearnPathsHome() {
 
                   {/* Unlocked Badges */}
                   <div className="p-6 border border-border bg-card rounded-2xl space-y-4 shadow-sm">
+<<<<<<< Updated upstream
                   <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Unlocked Badges ({profile.badges?.length || 0}/{STAGES_DATA.length})</h3>
                   <div className="grid grid-cols-4 gap-2">
                     {STAGES_DATA.map((stage) => {
@@ -1051,6 +1326,23 @@ export function LearnPathsHome() {
                         </div>
                       );
                     })}
+=======
+                    <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Unlocked Badges ({profile.badges?.length || 0}/8)</h3>
+                    <div className="grid grid-cols-4 gap-2">
+                      {stagesData.map((stage) => {
+                        const unlocked = profile.badges?.includes(stage.badge);
+                        return (
+                          <div
+                            key={stage.id}
+                            className={`p-2.5 rounded-xl border text-center space-y-1 shadow-xs ${unlocked ? 'bg-primary/5 border-primary/20' : 'bg-muted/10 border-border opacity-40'}`}
+                          >
+                            <div className="text-xl flex justify-center">{stage.badge}</div>
+                            <p className="text-[9px] font-bold truncate">{stage.badgeName}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
+>>>>>>> Stashed changes
                   </div>
                   </div>
 
@@ -1077,65 +1369,16 @@ export function LearnPathsHome() {
                     </div>
                   )}
 
-                  {/* Global Settings & Language Selector */}
-                  <div className="p-6 border border-border bg-card rounded-2xl space-y-4 shadow-sm">
-                    <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">{text.settingsTitle}</h3>
-                    <div className="space-y-4">
-                      {/* Language Selection */}
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-bold">
-                          <Globe className="size-4" />
-                          <span>{text.language}</span>
-                        </div>
-                        <div className="grid grid-cols-3 gap-2 bg-muted p-1 rounded-xl text-xs">
-                          <button
-                            onClick={() => handleUpdateProfile({ ...profile, language: "EN" })}
-                            className={`py-1.5 font-bold rounded-lg ${profile.language === "EN" ? 'bg-background text-foreground shadow-xs' : 'text-muted-foreground'}`}
-                          >
-                            English
-                          </button>
-                          <button
-                            onClick={() => handleUpdateProfile({ ...profile, language: "SW" })}
-                            className={`py-1.5 font-bold rounded-lg ${profile.language === "SW" ? 'bg-background text-foreground shadow-xs' : 'text-muted-foreground'}`}
-                          >
-                            Kiswahili
-                          </button>
-                          <button
-                            onClick={() => handleUpdateProfile({ ...profile, language: "SH" })}
-                            className={`py-1.5 font-bold rounded-lg ${profile.language === "SH" ? 'bg-background text-foreground shadow-xs' : 'text-muted-foreground'}`}
-                          >
-                            Sheng
-                          </button>
-                        </div>
+                  {/* Link to Settings */}
+                  <div className="p-6 border border-border bg-card rounded-2xl shadow-sm">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">{text.settingsTitle}</h3>
+                        <p className="text-xs text-muted-foreground mt-1">Language, theme, notifications and more.</p>
                       </div>
-
-                      {/* Notifications Toggle */}
-                      <div className="flex items-center justify-between text-xs border-t border-border pt-3">
-                        <div>
-                          <h4 className="font-bold">Push Notifications</h4>
-                          <p className="text-[10px] text-muted-foreground">Receive open comment alerts.</p>
-                        </div>
-                        <input
-                          type="checkbox"
-                          checked={profile.notifications}
-                          onChange={(e) => handleUpdateProfile({ ...profile, notifications: e.target.checked })}
-                          className="size-4"
-                        />
-                      </div>
-
-                      {/* WhatsApp Fallback Toggle */}
-                      <div className="flex items-center justify-between text-xs border-t border-border pt-3">
-                        <div>
-                          <h4 className="font-bold">SMS / WhatsApp alerts fallback</h4>
-                          <p className="text-[10px] text-muted-foreground">Alert fallback if push notifications fail.</p>
-                        </div>
-                        <input
-                          type="checkbox"
-                          checked={profile.whatsappFallback}
-                          onChange={(e) => handleUpdateProfile({ ...profile, whatsappFallback: e.target.checked })}
-                          className="size-4"
-                        />
-                      </div>
+                      <Button onClick={() => setActiveTab("settings")} variant="outline" className="rounded-xl font-bold text-xs h-10 px-4">
+                        Open Settings
+                      </Button>
                     </div>
                   </div>
                 </div>

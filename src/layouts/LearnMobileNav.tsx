@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, BookOpen, Home, User } from "lucide-react";
+import { Bell, BookOpen, Home, Settings, User } from "lucide-react";
 import { useLearn, type LearnTab } from "@/contexts/learn-context";
 import {
   MobileBottomNav,
@@ -18,6 +18,7 @@ const LEARN_NAV_ITEMS: LearnNavEntry[] = [
   { key: "learn", label: "Learn", Icon: BookOpen },
   { key: "alerts", label: "Alerts", Icon: Bell },
   { key: "profile", label: "Profile", Icon: User },
+  { key: "settings", label: "Settings", Icon: Settings },
 ];
 
 export function LearnMobileNav() {

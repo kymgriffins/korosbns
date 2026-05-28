@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 
-const protectedPaths = ["/account", "/learn/profile", "/learn/quests"];
+const protectedPaths = ["/account", "/learn/quests"];
 const authPaths = ["/auth/login", "/auth/register", "/auth/reset", "/auth/verify"];
 
 function isProtected(pathname: string): boolean {
@@ -31,9 +31,9 @@ describe("Middleware - protected routes", () => {
     expect(result.redirect).toContain("next=%2Faccount");
   });
 
-  it("redirects unauthenticated users from /learn/profile", () => {
+  it("allows unauthenticated users on /learn/profile", () => {
     const result = middlewareLogic("/learn/profile", null);
-    expect(result.redirect).toContain("/auth/login");
+    expect(result.next).toBe(true);
   });
 
   it("redirects unauthenticated users from /learn/quests", () => {

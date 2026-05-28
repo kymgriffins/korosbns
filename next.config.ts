@@ -184,7 +184,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/invite/:path*",
-        destination: "/auth/register/",
+        destination: "/learn/",
         permanent: false,
       },
       {
@@ -224,8 +224,8 @@ const nextConfig: NextConfig = {
         destination: `${target}/api/hub/:path*/`,
       },
       {
-        source: "/api/public/:path*/",
-        destination: `${target}/api/public/:path*/`,
+        source: "/api/analytics/:path*/",
+        destination: `${target}/api/analytics/:path*/`,
       },
     ];
   },

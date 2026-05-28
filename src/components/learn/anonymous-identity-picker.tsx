@@ -1,38 +1,30 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
 import { Checkbox } from "@/ui/checkbox";
 import { Shield, ArrowRight, Edit3, RefreshCw, Sparkles } from "lucide-react";
 import { FemaleBitmoji, MaleBitmoji, type Gender } from "./bitmoji-avatar";
-
-const PATRIOTIC_WORDS = [
-  "halisi", "daima", "mzalendo", "huruma", "amani", "umoja",
-  "saba", "azimio", "uhuru", "harambee", "nyayo", "ishara",
-  "mwangaza", "nuru", "fahari", "heshima", "taifa", "shujaa",
-];
-
-function pickTwo(words: string[]): [string, string] {
-  const shuffled = [...words].sort(() => Math.random() - 0.5);
-  return [shuffled[0], shuffled[1]];
-}
-
-function generateName(word: string): string {
-  const suffix = Math.random() > 0.5
-    ? String(Math.floor(Math.random() * 9000) + 1000)
-    : Math.random().toString(36).substr(2, 4);
-  return `mkenya${word}${suffix}`;
-}
+import {
+  createRotatedIdentitySuggestions,
+  recordRotatedIdentitySuggestions,
+  recordSelectedIdentity,
+  type AvatarGender,
+} from "@/lib/anonymous-identity";
+import { trackAnalytics } from "@/lib/gamification";
 
 interface AnonymousIdentityPickerProps {
   onComplete: (profile: any) => void;
 }
 
 export function AnonymousIdentityPicker({ onComplete }: AnonymousIdentityPickerProps) {
+  const initial = useMemo(() => createRotatedIdentitySuggestions(), []);
+  const [rotationState, setRotationState] = useState(initial.state);
+  const [avatarOrder, setAvatarOrder] = useState<AvatarGender[]>(initial.avatarOrder);
   const [gender, setGender] = useState<Gender | null>(null);
-  const [suggestions, setSuggestions] = useState<[string, string]>(pickTwo(PATRIOTIC_WORDS).map(generateName) as [string, string]);
+  const [suggestions, setSuggestions] = useState<[string, string]>(initial.names);
   const [selected, setSelected] = useState<string | null>(null);
   const [craftMode, setCraftMode] = useState(false);
   const [customName, setCustomName] = useState("");
@@ -43,7 +35,6 @@ export function AnonymousIdentityPicker({ onComplete }: AnonymousIdentityPickerP
     setGender(g);
     setSelected(null);
     setError("");
-    setSuggestions(pickTwo(PATRIOTIC_WORDS).map(generateName) as [string, string]);
   };
 
   const handleSelect = (name: string) => {
@@ -54,7 +45,11 @@ export function AnonymousIdentityPicker({ onComplete }: AnonymousIdentityPickerP
   };
 
   const handleRefresh = () => {
-    setSuggestions(pickTwo(PATRIOTIC_WORDS).map(generateName) as [string, string]);
+    const rotated = createRotatedIdentitySuggestions();
+    const nextState = recordRotatedIdentitySuggestions(rotationState, suggestions);
+    setRotationState(nextState);
+    setSuggestions(rotated.names);
+    setAvatarOrder(rotated.avatarOrder);
     setSelected(null);
     setError("");
   };
@@ -74,8 +69,10 @@ export function AnonymousIdentityPicker({ onComplete }: AnonymousIdentityPickerP
       return;
     }
 
+    recordSelectedIdentity(finalName);
+
     const profile = {
-      userId: `anon_${Math.random().toString(36).substr(2, 9)}`,
+      userId: `anon_${Math.random().toString(36).slice(2, 11)}`,
       breakName: finalName,
       pseudoName: finalName,
       gender,
@@ -97,8 +94,51 @@ export function AnonymousIdentityPicker({ onComplete }: AnonymousIdentityPickerP
     };
 
     localStorage.setItem("bns_user_profile", JSON.stringify(profile));
+    void trackAnalytics("anonymous_onboarding_complete", {
+      pseudo_name: finalName,
+      gender,
+      consent_granted: true,
+    });
     onComplete(profile);
   };
+
+  const avatarCards = avatarOrder.map((option) => ({
+    option,
+    node:
+      option === "female" ? (
+        <button
+          key="female"
+          type="button"
+          onClick={() => handleGenderSelect("female")}
+          className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${
+            gender === "female"
+              ? "border-pink-400 bg-pink-500/10 shadow-md"
+              : "border-border bg-muted/20 hover:bg-muted/40 hover:border-muted-foreground/30"
+          }`}
+        >
+          <FemaleBitmoji selected={gender === "female"} className="size-16 md:size-20" />
+          <span className={`text-xs font-bold ${gender === "female" ? "text-pink-500" : "text-muted-foreground"}`}>
+            Female
+          </span>
+        </button>
+      ) : (
+        <button
+          key="male"
+          type="button"
+          onClick={() => handleGenderSelect("male")}
+          className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${
+            gender === "male"
+              ? "border-blue-400 bg-blue-500/10 shadow-md"
+              : "border-border bg-muted/20 hover:bg-muted/40 hover:border-muted-foreground/30"
+          }`}
+        >
+          <MaleBitmoji selected={gender === "male"} className="size-16 md:size-20" />
+          <span className={`text-xs font-bold ${gender === "male" ? "text-blue-500" : "text-muted-foreground"}`}>
+            Male
+          </span>
+        </button>
+      ),
+  }));
 
   return (
     <div className="w-full max-w-md mx-auto p-6 bg-card border border-border rounded-2xl shadow-xl space-y-6">
@@ -115,42 +155,13 @@ export function AnonymousIdentityPicker({ onComplete }: AnonymousIdentityPickerP
         </div>
       )}
 
-      {/* Bitmoji Selection */}
       <div className="space-y-2">
         <Label className="text-sm font-semibold">Choose your avatar</Label>
         <div className="grid grid-cols-2 gap-3">
-          <button
-            type="button"
-            onClick={() => handleGenderSelect("female")}
-            className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${
-              gender === "female"
-                ? "border-pink-400 bg-pink-500/10 shadow-md"
-                : "border-border bg-muted/20 hover:bg-muted/40 hover:border-muted-foreground/30"
-            }`}
-          >
-            <FemaleBitmoji selected={gender === "female"} className="size-16 md:size-20" />
-            <span className={`text-xs font-bold ${gender === "female" ? "text-pink-500" : "text-muted-foreground"}`}>
-              Female
-            </span>
-          </button>
-          <button
-            type="button"
-            onClick={() => handleGenderSelect("male")}
-            className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${
-              gender === "male"
-                ? "border-blue-400 bg-blue-500/10 shadow-md"
-                : "border-border bg-muted/20 hover:bg-muted/40 hover:border-muted-foreground/30"
-            }`}
-          >
-            <MaleBitmoji selected={gender === "male"} className="size-16 md:size-20" />
-            <span className={`text-xs font-bold ${gender === "male" ? "text-blue-500" : "text-muted-foreground"}`}>
-              Male
-            </span>
-          </button>
+          {avatarCards.map((card) => card.node)}
         </div>
       </div>
 
-      {/* Name Selection */}
       {gender && !craftMode && (
         <div className="space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
           <div className="flex items-center justify-between">
@@ -212,7 +223,6 @@ export function AnonymousIdentityPicker({ onComplete }: AnonymousIdentityPickerP
         </div>
       )}
 
-      {/* DPA Consent */}
       {gender && (
         <div className="flex items-start gap-3 p-3 rounded-xl bg-primary/5 border border-primary/10">
           <Checkbox
@@ -243,7 +253,7 @@ export function AnonymousIdentityPicker({ onComplete }: AnonymousIdentityPickerP
       )}
 
       <p className="text-[10px] text-muted-foreground text-center">
-        Your identity stays on this device. No sign-up required.
+        Your identity stays on this device. Progress syncs anonymously for engagement metrics.
       </p>
     </div>
   );

@@ -11,9 +11,15 @@ const optionalUrl = z.preprocess((val) => (val === "" ? undefined : val), z.stri
 const defaultUrl = (defaultVal: string) =>
   z.preprocess((val) => (val === "" ? undefined : val), z.string().url().default(defaultVal));
 
+/** Local Next dev should talk to local Django by default; production builds use BNSKE. */
+const DEFAULT_API_BASE_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://bnske.budgetndiostory.org"
+    : "http://localhost:8000";
+
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
-  NEXT_PUBLIC_API_BASE_URL: defaultUrl("https://bnske.budgetndiostory.org"),
+  NEXT_PUBLIC_API_BASE_URL: defaultUrl(DEFAULT_API_BASE_URL),
   API_PROXY_TARGET: optionalUrl,
   NEXT_PUBLIC_SITE_URL: defaultUrl("https://budgetndiostory.org"),
   NEXT_PUBLIC_DEFAULT_ORG_SLUG: z.string().min(1).default("bns-default"),

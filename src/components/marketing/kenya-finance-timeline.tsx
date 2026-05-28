@@ -340,7 +340,7 @@ export default function KenyaFinanceTimeline() {
           <ul className="grid grid-cols-1 gap-x-8 gap-y-2 text-sm text-muted-foreground md:grid-cols-2">
             <li className="flex items-center gap-2">
               <span className="size-1.5 rounded-full bg-yellow-500" />
-              Rental income tax increase: 7.5% → 10% ✅ TRUE
+              Rental income tax increase: 7.5% → 10% ❌ FALSE — rate remains at 7.5%
             </li>
             <li className="flex items-center gap-2">
               <span className="size-1.5 rounded-full bg-yellow-500" />

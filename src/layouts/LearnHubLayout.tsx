@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Suspense, useEffect } from "react";
 import { 
   User, ChevronRight, ChevronLeft,
-  BookOpen, Bell, Home, CheckCircle2, ArrowLeft
+  BookOpen, Bell, Home, Settings, CheckCircle2, ArrowLeft
 } from "lucide-react";
 import { cn } from "@/utils";
 import { LearnProvider, useLearn, type LearnTab } from "@/contexts/learn-context";
@@ -12,6 +12,11 @@ import { useAuth } from "@/contexts/auth-context";
 import { useStages } from "@/lib/use-stages";
 import { Button } from "@/ui/button";
 import { LearnMobileNav } from "@/layouts/LearnMobileNav";
+<<<<<<< Updated upstream
+=======
+import { useStages } from "@/hooks/use-stages";
+import { captureReferralFromUrl, claimReferral } from "@/lib/referral";
+>>>>>>> Stashed changes
 
 function LearnAppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -28,6 +33,7 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
     gamification,
     activeLesson,
   } = useLearn();
+  const { stages: allModules } = useStages();
 
   useEffect(() => {
     const stored = localStorage.getItem("bns_sidebar_collapsed");
@@ -35,6 +41,11 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
       setSidebarCollapsed(true);
     }
   }, [setSidebarCollapsed]);
+
+  useEffect(() => {
+    captureReferralFromUrl();
+    void claimReferral();
+  }, []);
 
   useEffect(() => {
     const isMobileDevice = () => window.innerWidth < 768;
@@ -68,6 +79,7 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
     { key: "learn", label: "Learn", icon: <BookOpen className="size-5" /> },
     { key: "alerts", label: "Alerts", icon: <Bell className="size-5" /> },
     { key: "profile", label: "Profile", icon: <User className="size-5" /> },
+    { key: "settings", label: "Settings", icon: <Settings className="size-5" /> },
   ];
 
   const handleTabChange = (tab: LearnTab) => {
@@ -105,7 +117,7 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
               </button>
             </div>
 
-            {/* Active stage header */}
+            {/* Active module header */}
             <div className="p-4 border-b border-border bg-primary/5">
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-lg">{activeLesson.stageBadge}</span>
@@ -151,17 +163,22 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
               })}
             </nav>
 
-            {/* All stages compact list */}
+            {/* All modules compact list */}
             <div className="border-t border-border p-3">
               <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 mb-2 px-1">
-                All Stages
+                All Modules
               </p>
               <div className="space-y-0.5">
+<<<<<<< Updated upstream
                 {sortedStages.map((s) => {
                   const isCurrent = s.order === activeLesson.stageId;
+=======
+                {allModules.map((mod) => {
+                  const isCurrent = mod.id === activeLesson.stageId;
+>>>>>>> Stashed changes
                   return (
                     <div
-                      key={s.id}
+                      key={mod.id}
                       className={cn(
                         "flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs",
                         isCurrent
@@ -169,8 +186,8 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
                           : "text-muted-foreground"
                       )}
                     >
-                      <span className="text-sm">{s.badge}</span>
-                      <span className="truncate text-[11px]">{isCurrent ? s.title : s.title}</span>
+                      <span className="text-sm">{mod.badge}</span>
+                      <span className="truncate text-[11px]">{mod.title}</span>
                       {isCurrent && <span className="ml-auto size-1.5 rounded-full bg-primary" />}
                     </div>
                   );
@@ -214,7 +231,7 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
               )}
               {navItems.map((item) => {
                 const active = activeTab === item.key;
-                const isFirstSettings = item.key === "profile";
+                const isFirstSettings = item.key === "profile" || item.key === "settings";
                 return (
                   <div key={item.key} className="space-y-1">
                     {!sidebarCollapsed && isFirstSettings && (

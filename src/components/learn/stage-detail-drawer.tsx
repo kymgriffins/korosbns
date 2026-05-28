@@ -17,15 +17,37 @@ import {
   CONSTITUTION_HISTORICAL_DOCS,
   PARTICIPATION_TOOLKIT_DOCS
 } from "@/constants/documents-registry";
+<<<<<<< Updated upstream
+=======
+import { getStepTakeaway } from "@/lib/civic-fallback";
+import { postGamificationEvent } from "@/lib/gamification";
+>>>>>>> Stashed changes
 import { learnHubApi } from "@/lib/learn-hub";
 import type { StageTakeaway, StageTrivia } from "@/lib/learn-hub";
 
+<<<<<<< Updated upstream
 interface TriviaItem extends StageTrivia {
+=======
+interface TriviaItem {
+  id?: string;
+  type: "multiple-choice" | "reflection";
+  question: string;
+  options?: string[];
+  answer?: number;
+  explanation?: string;
+>>>>>>> Stashed changes
   placeholder?: string;
 }
 
 interface Step {
+<<<<<<< Updated upstream
   id: string;
+=======
+  id: number;
+  chapterId?: string;
+  triviaId?: string | null;
+  takeaways?: Array<{ type: "info" | "warning"; title: string; text: string }>;
+>>>>>>> Stashed changes
   title: string;
   youtubeId: string;
   audioUrl: string;
@@ -37,7 +59,12 @@ interface Step {
 }
 
 interface Stage {
+<<<<<<< Updated upstream
   id: string;
+=======
+  id: number;
+  moduleId?: string;
+>>>>>>> Stashed changes
   title: string;
   badge: string;
   badgeName: string;
@@ -84,6 +111,7 @@ export function StageDetailDrawer({
   const [triviaSkipped, setTriviaSkipped] = useState<boolean>(false);
   const [reflectionText, setReflectionText] = useState<string>("");
   const [selectedReflectionOption, setSelectedReflectionOption] = useState<string>("");
+  const [triviaAnswersByQuestion, setTriviaAnswersByQuestion] = useState<Record<string, number>>({});
   const [transcriptSearch, setTranscriptSearch] = useState<string>("");
   const [showTranscript, setShowTranscript] = useState<boolean>(false);
   const [selectedYear, setSelectedYear] = useState<number>(2026);
@@ -91,6 +119,7 @@ export function StageDetailDrawer({
   const [liveRepoDocs, setLiveRepoDocs] = useState<any[]>([]);
   const [apiLoading, setApiLoading] = useState<boolean>(false);
   const [origin, setOrigin] = useState<string>("");
+<<<<<<< Updated upstream
   const [stageStats, setStageStats] = useState<{ total_users: number; avg_trivia_score: number | null } | null>(null);
   
   // Forum State
@@ -153,6 +182,24 @@ export function StageDetailDrawer({
       toast.error("Failed to post reply.");
     }
   };
+=======
+  const [serverProgress, setServerProgress] = useState<
+    Array<{ content_type: string; content_id: string; progress_percent: number }>
+  >([]);
+
+  const refreshServerProgress = useCallback(async () => {
+    try {
+      const profileData = await learnHubApi.profile();
+      setServerProgress(profileData.progress ?? []);
+    } catch {
+      /* profile may be empty for fresh guests */
+    }
+  }, []);
+
+  useEffect(() => {
+    void refreshServerProgress();
+  }, [stage.id, refreshServerProgress]);
+>>>>>>> Stashed changes
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -249,6 +296,7 @@ export function StageDetailDrawer({
     setTriviaSkipped(false);
     setReflectionText("");
     setSelectedReflectionOption("");
+    setTriviaAnswersByQuestion({});
     setShowTranscript(false);
     setTranscriptSearch("");
     setActiveThread(null);
@@ -268,12 +316,96 @@ export function StageDetailDrawer({
     localStorage.setItem(`stage_${stage.order}_current_step`, "1");
   };
 
+<<<<<<< Updated upstream
   const isStepTriviaPassed = (stepId: string) => {
     return localStorage.getItem(`stage_${stage.order}_step_${stepId}_trivia_passed`) === "true";
+=======
+  const isStepTriviaPassed = (step: Step & { chapterId?: string; triviaId?: string | null }) => {
+    if (step.chapterId) {
+      const chapterDone = serverProgress.some(
+        (row) =>
+          row.content_type === "lesson" &&
+          row.content_id === step.chapterId &&
+          row.progress_percent >= 100,
+      );
+      if (chapterDone) return true;
+    }
+    if (step.triviaId) {
+      const triviaDone = serverProgress.some(
+        (row) =>
+          row.content_type === "quest" &&
+          row.content_id === step.triviaId &&
+          row.progress_percent >= 100,
+      );
+      if (triviaDone) return true;
+    }
+    return localStorage.getItem(`stage_${stage.id}_step_${step.id}_trivia_passed`) === "true";
+  };
+
+  const syncStepCompletion = async (step: Step & { chapterId?: string; triviaId?: string | null }) => {
+    try {
+      if (step.triviaId) {
+        await learnHubApi.markProgress({
+          content_type: "quest",
+          content_id: step.triviaId,
+          progress_percent: 100,
+        });
+      }
+      if (step.chapterId) {
+        const result = await learnHubApi.completeChapter(step.chapterId);
+        if (result.module_completed) {
+          toast.success("Module completed! Certificate unlocked.");
+        }
+      } else {
+        await learnHubApi.markProgress({
+          content_type: "path",
+          content_id: `stage-${stage.id}-step-${step.id}`,
+          progress_percent: Math.round((currentStep / stage.steps.length) * 100),
+        });
+      }
+      await refreshServerProgress();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not save progress to server.");
+      throw err;
+    }
+  };
+
+  const recordTriviaAnswer = (qIdx: number, selectedIdx: number) => {
+    const step = stage.steps[currentStep - 1];
+    const q = step.trivia[qIdx];
+    const questionKey = q?.id ?? `inline-${qIdx}`;
+    setTriviaAnswersByQuestion((prev) => ({ ...prev, [questionKey]: selectedIdx }));
+  };
+
+  const submitServerTriviaIfReady = async (
+    step: Step & { chapterId?: string; triviaId?: string | null },
+    answers: Record<string, number>,
+  ) => {
+    if (!step.triviaId || Object.keys(answers).length === 0) {
+      return;
+    }
+    const serverQuestionIds = step.trivia.filter((q) => q.id).map((q) => q.id as string);
+    if (serverQuestionIds.length === 0) {
+      return;
+    }
+    const payload = Object.fromEntries(
+      Object.entries(answers).filter(([key]) => serverQuestionIds.includes(key)),
+    );
+    if (Object.keys(payload).length !== serverQuestionIds.length) {
+      return;
+    }
+    try {
+      await learnHubApi.submitTriviaAttempt(step.triviaId, payload);
+      await refreshServerProgress();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not submit trivia to server.");
+    }
+>>>>>>> Stashed changes
   };
 
   const handleAnswerMCQ = (qIdx: number, selectedIdx: number, correctIdx: number) => {
     if (triviaSubmitted) return;
+    recordTriviaAnswer(qIdx, selectedIdx);
     setSelectedTriviaAnswer(selectedIdx);
     setTriviaSubmitted(true);
     if (selectedIdx === correctIdx) {
@@ -281,9 +413,16 @@ export function StageDetailDrawer({
       const rewardKey = `stage_${stage.order}_step_${step.id}_trivia_${qIdx}_reward`;
       if (!localStorage.getItem(rewardKey)) {
         localStorage.setItem(rewardKey, "true");
-        const updated = { ...profile, sovereigns: profile.sovereigns + 5 };
-        onUpdateProfile(updated);
-        toast.success("Correct! +5 Sovereigns awarded!");
+        void postGamificationEvent({
+          event_type: "lesson_complete",
+          object_id: step.chapterId ?? `stage-${stage.id}-step-${step.id}`,
+          idempotency_key: `trivia-mcq:${stage.id}:${step.id}:${qIdx}`,
+        }).then((state) => {
+          if (state) {
+            onUpdateProfile({ ...profile, sovereigns: state.points });
+          }
+        });
+        toast.success("Correct! XP awarded from server rules.");
       } else {
         toast.success("Correct!");
       }
@@ -299,14 +438,30 @@ export function StageDetailDrawer({
       toast.error("Please share a meaningful reflection.");
       return;
     }
-    setTriviaSubmitted(true);
     const step = stage.steps[currentStep - 1];
+<<<<<<< Updated upstream
     const rewardKey = `stage_${stage.order}_step_${step.id}_trivia_${qIdx}_reward`;
+=======
+    const q = step.trivia[qIdx];
+    const optionIdx = q?.options?.length
+      ? Math.max(0, q.options.indexOf(selectedReflectionOption))
+      : 0;
+    recordTriviaAnswer(qIdx, optionIdx >= 0 ? optionIdx : 0);
+    setTriviaSubmitted(true);
+    const rewardKey = `stage_${stage.id}_step_${step.id}_trivia_${qIdx}_reward`;
+>>>>>>> Stashed changes
     if (!localStorage.getItem(rewardKey)) {
       localStorage.setItem(rewardKey, "true");
-      const updated = { ...profile, sovereigns: profile.sovereigns + 5 };
-      onUpdateProfile(updated);
-      toast.success("Reflection submitted! +5 Sovereigns awarded!");
+      void postGamificationEvent({
+        event_type: "lesson_complete",
+        object_id: step.chapterId ?? `stage-${stage.id}-step-${step.id}`,
+        idempotency_key: `trivia-reflect:${stage.id}:${step.id}:${qIdx}`,
+      }).then((state) => {
+        if (state) {
+          onUpdateProfile({ ...profile, sovereigns: state.points });
+        }
+      });
+      toast.success("Reflection submitted! XP synced.");
     } else {
       toast.success("Reflection logged!");
     }
@@ -324,6 +479,7 @@ export function StageDetailDrawer({
     } else {
       localStorage.setItem(`stage_${stage.order}_step_${step.id}_trivia_passed`, "true");
       setContentConsumed(true);
+<<<<<<< Updated upstream
       toast.success("Step complete! ⭐");
       // Sync step progress and unlock next chapter on backend
       learnHubApi.markProgress({
@@ -332,6 +488,13 @@ export function StageDetailDrawer({
         progress_percent: Math.round((currentStep / stage.steps.length) * 100),
       }).catch(() => {});
       learnHubApi.completeChapter(step.id).catch(() => {});
+=======
+      toast.success("Chapter check complete! ⭐");
+      void (async () => {
+        await submitServerTriviaIfReady(step, triviaAnswersByQuestion);
+        await syncStepCompletion(step);
+      })().catch(() => {});
+>>>>>>> Stashed changes
       autoAdvanceRef.current = setTimeout(() => {
         setCurrentStep((prev) => {
           const nextVal = prev + 1;
@@ -340,7 +503,11 @@ export function StageDetailDrawer({
         });
       }, 2000);
     }
+<<<<<<< Updated upstream
   }, [activeTriviaIdx, currentStep, stage.order, stage.steps]);
+=======
+  }, [activeTriviaIdx, currentStep, stage.id, stage.steps, triviaAnswersByQuestion]);
+>>>>>>> Stashed changes
 
   const masteryAwardedKey = `stage_${stage.order}_mastery_awarded`;
   useEffect(() => {
@@ -362,19 +529,31 @@ export function StageDetailDrawer({
         }
         const updatedProfile = {
           ...profile,
-          sovereigns: profile.sovereigns + 25 + allStagesDoneBonus,
+          sovereigns: profile.sovereigns + allStagesDoneBonus,
           stageProgress: newProgress,
           badges: newBadges,
           allStagesBonusEarned: allStagesDoneBonus > 0 ? true : profile.allStagesBonusEarned
         };
         onUpdateProfile(updatedProfile);
 
+        void postGamificationEvent({
+          event_type: "path_complete",
+          object_id: stage.moduleId ?? `stage-${stage.id}`,
+          idempotency_key: `path_complete:${stage.id}`,
+        }).then((state) => {
+          if (state) {
+            onUpdateProfile({ ...updatedProfile, sovereigns: state.points });
+          }
+        });
+
         // Sync stage mastery to backend
         learnHubApi.markProgress({
           content_type: "path",
           content_id: `stage-${stage.order}`,
           progress_percent: 100,
-        }).catch(() => {});
+        }).catch((err) => {
+          toast.error(err instanceof Error ? err.message : "Could not sync stage mastery.");
+        });
 
         toast.success(`🎉 Stage Mastered! +25 Sovereigns (SVG) earned. ${stage.badge} Badge unlocked!`);
       }
@@ -683,7 +862,11 @@ export function StageDetailDrawer({
 
                         {(() => {
                           const step = stage.steps[currentStep - 1];
+<<<<<<< Updated upstream
                           const takeaway = step?.takeaways?.[0] || null;
+=======
+                          const takeaway = getStepTakeaway(stage.id, step.id, step.takeaways);
+>>>>>>> Stashed changes
                           if (!takeaway) return null;
                           if (takeaway.type === "info") {
                             return (
@@ -724,11 +907,18 @@ export function StageDetailDrawer({
                   </>
                 )}
 
+<<<<<<< Updated upstream
                 {/* SEPARATE TRIVIA FORMAT */}
                 {activeFormat === "trivia" && (
                   <div className="space-y-4 max-w-2xl mx-auto">
                     {isStepTriviaPassed(stage.steps[currentStep - 1].id) ? (
                       <div className="p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 flex items-center gap-3">
+=======
+                {/* INLINE TRIVIA */}
+                <div className="space-y-4">
+                  {isStepTriviaPassed(stage.steps[currentStep - 1]) ? (
+                    <div className="p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 flex items-center gap-3">
+>>>>>>> Stashed changes
                       <CheckCircle2 className="size-5 text-emerald-600 shrink-0" />
                       <div>
                         <h4 className="text-xs font-bold text-emerald-700 dark:text-emerald-300">Step Complete!</h4>
