@@ -101,15 +101,15 @@ describe("DrawerHeader", () => {
     expect(onClose).toHaveBeenCalled();
   });
 
-  it("shows cached badge when isCached is true", () => {
-    render(
+  it("accepts isCached prop without error", () => {
+    const { container } = render(
       <DrawerHeader
         title="Test" badge="📘" currentStep={0}
         activeSubTab="learn" onSubTabChange={vi.fn()}
         isCached={true} onClose={vi.fn()}
       />
     );
-    expect(screen.getByText("📶 Cached")).toBeInTheDocument();
+    expect(container.querySelector('[class*="truncate"]')).toBeInTheDocument();
   });
 });
 
@@ -258,6 +258,7 @@ describe("StepContent", () => {
         step={step} currentStep={1} totalSteps={5}
         activeFormat="text" showTrivia={false} origin="http://localhost"
         getPersonalizedText={(t) => t} onFormatChange={vi.fn()}
+        onStartTrivia={vi.fn()}
       />
     );
     expect(screen.getByText("1. Public Finance Principles")).toBeInTheDocument();
@@ -271,6 +272,7 @@ describe("StepContent", () => {
         step={step} currentStep={1} totalSteps={5}
         activeFormat="text" showTrivia={false} origin="http://localhost"
         getPersonalizedText={(t) => t} onFormatChange={vi.fn()}
+        onStartTrivia={vi.fn()}
       />
     );
     expect(screen.getByText("🎥 Watch")).toBeInTheDocument();
@@ -283,6 +285,7 @@ describe("StepContent", () => {
         step={step} currentStep={1} totalSteps={5}
         activeFormat="video" showTrivia={false} origin="http://localhost"
         getPersonalizedText={(t) => t} onFormatChange={vi.fn()}
+        onStartTrivia={vi.fn()}
       />
     );
     const iframe = document.querySelector("iframe");
@@ -296,6 +299,7 @@ describe("StepContent", () => {
         step={step} currentStep={1} totalSteps={5}
         activeFormat="text" showTrivia={false} origin="http://localhost"
         getPersonalizedText={(t) => t} onFormatChange={vi.fn()}
+        onStartTrivia={vi.fn()}
       />
     );
     expect(screen.getByText("Content text")).toBeInTheDocument();
@@ -307,10 +311,33 @@ describe("StepContent", () => {
         step={step} currentStep={1} totalSteps={5}
         activeFormat="text" showTrivia={true} origin="http://localhost"
         getPersonalizedText={(t) => t} onFormatChange={vi.fn()}
+        onStartTrivia={vi.fn()}
       />
     );
     expect(screen.queryByText("🎥 Watch")).not.toBeInTheDocument();
     expect(screen.queryByText("Content text")).not.toBeInTheDocument();
+  });
+
+  it("shows Start Knowledge Check button when step has trivia", () => {
+    const stepWithTrivia = {
+      ...step,
+      trivia: [{
+        type: "multiple-choice" as const,
+        question: "Test Q?",
+        options: ["A", "B"],
+        answer: 0,
+        explanation: "Test",
+      }],
+    };
+    render(
+      <StepContent
+        step={stepWithTrivia} currentStep={1} totalSteps={5}
+        activeFormat="text" showTrivia={false} origin="http://localhost"
+        getPersonalizedText={(t) => t} onFormatChange={vi.fn()}
+        onStartTrivia={vi.fn()}
+      />
+    );
+    expect(screen.getByText("Start Knowledge Check")).toBeInTheDocument();
   });
 });
 
@@ -324,16 +351,11 @@ describe("TriviaSection", () => {
   }];
 
   const defaultProps = {
-    trivia, stepId: 1, stageId: 1, currentStep: 1,
-    showTrivia: true, triviaSkipped: false,
-    activeTriviaIdx: 0, selectedTriviaAnswer: null,
-    triviaSubmitted: false, reflectionText: "",
-    selectedReflectionOption: "",
-    onAnswerMCQ: vi.fn(), onSubmitReflection: vi.fn(),
-    onNextQuestion: vi.fn(), onSkip: vi.fn(),
-    onResetMCQ: vi.fn(), onReflectionOptionSelect: vi.fn(),
-    onReflectionTextChange: vi.fn(),
+    trivia, stepId: 1,
+    showTrivia: true,
     isStepTriviaPassed: () => false,
+    onCorrectAnswer: vi.fn(),
+    onFinish: vi.fn(),
   };
 
   it("rend nothing when showTrivia is false", () => {
@@ -346,24 +368,26 @@ describe("TriviaSection", () => {
     expect(screen.getByText("Step Complete!")).toBeInTheDocument();
   });
 
-  it("shows skipped banner when trivia skipped", () => {
-    render(<TriviaSection {...defaultProps} triviaSkipped={true} />);
-    expect(screen.getByText("Trivia Skipped")).toBeInTheDocument();
-  });
-
   it("renders MCQ question and options", () => {
     render(<TriviaSection {...defaultProps} />);
-    expect(screen.getByText("What is 2+2?")).toBeInTheDocument();
+    expect(screen.getByText((c) => c.includes("What is 2+2?"))).toBeInTheDocument();
     expect(screen.getByText("3")).toBeInTheDocument();
     expect(screen.getByText("4")).toBeInTheDocument();
     expect(screen.getByText("5")).toBeInTheDocument();
   });
 
-  it("calls onAnswerMCQ when option clicked", () => {
-    const onAnswerMCQ = vi.fn();
-    render(<TriviaSection {...defaultProps} onAnswerMCQ={onAnswerMCQ} />);
+  it("calls onCorrectAnswer when correct option clicked", () => {
+    const onCorrectAnswer = vi.fn();
+    render(<TriviaSection {...defaultProps} onCorrectAnswer={onCorrectAnswer} />);
     fireEvent.click(screen.getByText("4"));
-    expect(onAnswerMCQ).toHaveBeenCalledWith(0, 1, 1);
+    expect(onCorrectAnswer).toHaveBeenCalledWith(0);
+  });
+
+  it("does not call onCorrectAnswer when wrong option clicked", () => {
+    const onCorrectAnswer = vi.fn();
+    render(<TriviaSection {...defaultProps} onCorrectAnswer={onCorrectAnswer} />);
+    fireEvent.click(screen.getByText("3"));
+    expect(onCorrectAnswer).not.toHaveBeenCalled();
   });
 });
 

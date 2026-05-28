@@ -1,7 +1,9 @@
 "use client";
 
+import { Button } from "@/ui/button";
 import { Progress } from "@/ui/progress";
 import { cn } from "@/utils";
+import { Sparkles } from "lucide-react";
 import type { ChapterStep, StageTakeaway } from "@/types/learn";
 
 interface StepContentProps {
@@ -13,6 +15,7 @@ interface StepContentProps {
   origin: string;
   getPersonalizedText: (text: string) => string;
   onFormatChange: (format: "video" | "text") => void;
+  onStartTrivia: () => void;
 }
 
 export function StepContent({
@@ -24,6 +27,7 @@ export function StepContent({
   origin,
   getPersonalizedText,
   onFormatChange,
+  onStartTrivia,
 }: StepContentProps) {
   return (
     <div className="space-y-5 animate-in fade-in duration-300">
@@ -114,6 +118,14 @@ export function StepContent({
                 );
               })()}
             </article>
+          )}
+
+          {step.trivia.length > 0 && (
+            <div className="flex justify-center pt-4 not-prose">
+              <Button onClick={onStartTrivia} className="h-12 rounded-xl font-bold text-sm gap-2">
+                <Sparkles className="size-5" /> Start Knowledge Check
+              </Button>
+            </div>
           )}
         </>
       )}

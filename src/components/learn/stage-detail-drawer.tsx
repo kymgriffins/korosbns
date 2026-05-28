@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { DrawerHeader } from "./drawer-header";
 import { CourseOverview } from "./course-overview";
@@ -15,7 +15,7 @@ import {
 import { learnHubApi } from "@/lib/learn-hub";
 import { useLearn } from "@/contexts/learn-context";
 import { readProgress, writeProgress } from "@/lib/module-progress";
-import type { CivicModule, ChapterStep } from "@/types/learn";
+import type { CivicModule } from "@/types/learn";
 
 interface StageDetailDrawerProps {
   stage: CivicModule;
@@ -44,14 +44,8 @@ export function StageDetailDrawer({
   const [activeFormat, setActiveFormat] = useState<"video" | "text">("video");
   const [contentConsumed, setContentConsumed] = useState<boolean>(true);
   const [showTrivia, setShowTrivia] = useState<boolean>(false);
-  const [activeTriviaIdx, setActiveTriviaIdx] = useState<number>(0);
-  const [selectedTriviaAnswer, setSelectedTriviaAnswer] = useState<number | null>(null);
-  const [triviaSubmitted, setTriviaSubmitted] = useState<boolean>(false);
-  const [triviaSkipped, setTriviaSkipped] = useState<boolean>(false);
-  const [reflectionText, setReflectionText] = useState<string>("");
-  const [selectedReflectionOption, setSelectedReflectionOption] = useState<string>("");
   const [transcriptSearch, setTranscriptSearch] = useState<string>("");
-  const autoAdvanceRef = useRef<NodeJS.Timeout | null>(null);
+
   const [showTranscript, setShowTranscript] = useState<boolean>(false);
   const [selectedYear, setSelectedYear] = useState<number>(2026);
   const [constitutionTab, setConstitutionTab] = useState<"current" | "timeline">("current");
@@ -105,12 +99,6 @@ export function StageDetailDrawer({
     setCurrentStep(initialStep);
     setActiveFormat("video");
     setContentConsumed(true);
-    setActiveTriviaIdx(0);
-    setShowTrivia(false);
-    setSelectedTriviaAnswer(null);
-    setTriviaSubmitted(false);
-    setTriviaSkipped(false);
-    setReflectionText("");
     setTranscriptSearch("");
     setShowTranscript(false);
     if (stage.order === 1) {
@@ -125,24 +113,11 @@ export function StageDetailDrawer({
       setContentConsumed(true);
       return;
     }
-    const step = stage.steps[currentStep - 1];
     setContentConsumed(true);
     setShowTrivia(false);
-    setActiveTriviaIdx(0);
-    setSelectedTriviaAnswer(null);
-    setTriviaSubmitted(false);
-    setTriviaSkipped(false);
-    setReflectionText("");
-    setSelectedReflectionOption("");
     setShowTranscript(false);
     setTranscriptSearch("");
   }, [currentStep, stage.order]);
-
-  useEffect(() => {
-    return () => {
-      if (autoAdvanceRef.current) clearTimeout(autoAdvanceRef.current);
-    };
-  }, []);
 
   const handleStartLearning = () => {
     setCurrentStep(1);
@@ -154,35 +129,7 @@ export function StageDetailDrawer({
     return readProgress(stage.slug, stage.order).stepsCompleted[stepId] === true;
   };
 
-  const handleAnswerMCQ = (qIdx: number, selectedIdx: number, correctIdx: number) => {
-    if (triviaSubmitted) return;
-    setSelectedTriviaAnswer(selectedIdx);
-    setTriviaSubmitted(true);
-    if (selectedIdx === correctIdx) {
-      const step = stage.steps[currentStep - 1];
-      const rewardTag = `${step.order}_${qIdx}`;
-      const p = readProgress(stage.slug, stage.order);
-      if (!p.triviaRewards.includes(rewardTag)) {
-        writeProgress(stage.slug, { ...p, triviaRewards: [...p.triviaRewards, rewardTag] });
-        const updated = { ...profile, sovereigns: profile.sovereigns + 5 };
-        onUpdateProfile(updated);
-        toast.success("Correct! +5 Sovereigns awarded!");
-      } else {
-        toast.success("Correct!");
-      }
-      autoAdvanceRef.current = setTimeout(() => handleNextTriviaQuestion(), 1500);
-    } else {
-      toast.error("Not quite—try again.");
-    }
-  };
-
-  const handleSubmitReflection = (qIdx: number) => {
-    const text = selectedReflectionOption || reflectionText.trim();
-    if (!text) {
-      toast.error("Please share a meaningful reflection.");
-      return;
-    }
-    setTriviaSubmitted(true);
+  const handleCorrectAnswer = (qIdx: number) => {
     const step = stage.steps[currentStep - 1];
     const rewardTag = `${step.order}_${qIdx}`;
     const p = readProgress(stage.slug, stage.order);
@@ -190,42 +137,30 @@ export function StageDetailDrawer({
       writeProgress(stage.slug, { ...p, triviaRewards: [...p.triviaRewards, rewardTag] });
       const updated = { ...profile, sovereigns: profile.sovereigns + 5 };
       onUpdateProfile(updated);
-      toast.success("Reflection submitted! +5 Sovereigns awarded!");
+      toast.success("Correct! +5 Sovereigns awarded!");
     } else {
-      toast.success("Reflection logged!");
+      toast.success("Correct!");
     }
-    autoAdvanceRef.current = setTimeout(() => handleNextTriviaQuestion(), 1500);
+  };
+
+  const handleFinishTrivia = () => {
+    const step = stage.steps[currentStep - 1];
+    const p = readProgress(stage.slug, stage.order);
+    writeProgress(stage.slug, { ...p, stepsCompleted: { ...p.stepsCompleted, [step.order]: true }, currentStep: currentStep + 1 });
+    setContentConsumed(true);
+    toast.success("Knowledge Check complete! \u2B50");
+    learnHubApi.markProgress({
+      content_type: "article",
+      content_id: `stage-${stage.order}-step-${step.order}`,
+      progress_percent: Math.round((currentStep / stage.steps.length) * 100),
+    }).catch(() => {});
+    setCurrentStep((prev) => prev + 1);
   };
 
   // Sync currentStep back to context so sidebar curriculum rail stays in sync
   useEffect(() => {
     updateCurrentStep(currentStep);
   }, [currentStep, updateCurrentStep]);
-
-  const handleNextTriviaQuestion = useCallback(() => {
-    const step = stage.steps[currentStep - 1];
-    if (activeTriviaIdx < step.trivia.length - 1) {
-      setActiveTriviaIdx((prev) => prev + 1);
-      setSelectedTriviaAnswer(null);
-      setTriviaSubmitted(false);
-      setReflectionText("");
-      setSelectedReflectionOption("");
-    } else {
-      const p = readProgress(stage.slug, stage.order);
-      writeProgress(stage.slug, { ...p, stepsCompleted: { ...p.stepsCompleted, [step.order]: true }, currentStep: currentStep + 1 });
-      setContentConsumed(true);
-      toast.success("Step complete! ⭐");
-      // Sync step progress to backend
-      learnHubApi.markProgress({
-        content_type: "article",
-        content_id: `stage-${stage.order}-step-${step.order}`,
-        progress_percent: Math.round((currentStep / stage.steps.length) * 100),
-      }).catch(() => {});
-      autoAdvanceRef.current = setTimeout(() => {
-        setCurrentStep((prev) => prev + 1);
-      }, 2000);
-    }
-  }, [activeTriviaIdx, currentStep, stage.order, stage.steps]);
 
   useEffect(() => {
     if (currentStep === stage.steps.length + 1) {
@@ -374,28 +309,17 @@ export function StageDetailDrawer({
                   origin={origin}
                   getPersonalizedText={getPersonalizedText}
                   onFormatChange={setActiveFormat}
+                  onStartTrivia={() => setShowTrivia(true)}
                 />
 
                 <TriviaSection
+                  key={currentStep}
                   trivia={stage.steps[currentStep - 1].trivia}
                   stepId={stage.steps[currentStep - 1].order}
-                  stageId={stage.order}
-                  currentStep={currentStep}
                   showTrivia={showTrivia}
-                  triviaSkipped={triviaSkipped}
-                  activeTriviaIdx={activeTriviaIdx}
-                  selectedTriviaAnswer={selectedTriviaAnswer}
-                  triviaSubmitted={triviaSubmitted}
-                  reflectionText={reflectionText}
-                  selectedReflectionOption={selectedReflectionOption}
-                  onAnswerMCQ={handleAnswerMCQ}
-                  onSubmitReflection={handleSubmitReflection}
-                  onNextQuestion={handleNextTriviaQuestion}
-                  onSkip={() => setTriviaSkipped(true)}
-                  onResetMCQ={() => { setSelectedTriviaAnswer(null); setTriviaSubmitted(false); }}
-                  onReflectionOptionSelect={setSelectedReflectionOption}
-                  onReflectionTextChange={setReflectionText}
                   isStepTriviaPassed={isStepTriviaPassed}
+                  onCorrectAnswer={handleCorrectAnswer}
+                  onFinish={handleFinishTrivia}
                 />
               </div>
             )}
