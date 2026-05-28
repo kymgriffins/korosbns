@@ -4,7 +4,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { LearnContentGrid } from "@/components/learn/learn-content-grid";
 import { LearnSidebar } from "@/components/learn/learn-sidebar";
-import type { LearnContentType, LearnHubItem, LearnHubSummary } from "@/lib/learn-hub";
+import type { LearnContentType } from "@/types/learn";
+import type { LearnHubItem, LearnHubSummary } from "@/lib/learn-hub";
 import { learnHubApi } from "@/lib/learn-hub";
 import { trackAnalytics } from "@/lib/gamification";
 

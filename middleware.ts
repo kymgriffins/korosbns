@@ -14,6 +14,8 @@ const authPaths = [
   "/auth/verify",
 ];
 
+const DEVICE_COOKIE = "bns_gid";
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const token = request.cookies.get("access_token")?.value
@@ -32,7 +34,19 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/account", request.url));
   }
 
-  return NextResponse.next();
+  const response = NextResponse.next();
+  const existingDeviceId = request.cookies.get(DEVICE_COOKIE)?.value;
+  if (!existingDeviceId) {
+    const deviceId = crypto.randomUUID();
+    response.cookies.set(DEVICE_COOKIE, deviceId, {
+      maxAge: 31536000,
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+    });
+  }
+
+  return response;
 }
 
 export const config = {
