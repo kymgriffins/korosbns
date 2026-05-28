@@ -24,7 +24,8 @@ import { cn } from "@/utils";
 import { useLearn, type ActiveLesson } from "@/contexts/learn-context";
 import { motion, AnimatePresence } from "motion/react";
 import { useAuth } from "@/contexts/auth-context";
-import { useStages, type StageData } from "@/lib/use-stages";
+import { useStages } from "@/hooks/use-stages";
+import type { StageData } from "@/constants/stages-data";
 import { learnHubApi } from "@/lib/learn-hub";
 import { citizenApi } from "@/lib/api-client";
 import { fetchGamificationMe, fetchLeaderboard, type LeaderboardRow } from "@/lib/gamification";
@@ -104,8 +105,8 @@ const TRANSLATIONS = {
 
 export function LearnPathsHome() {
   const { isLoggedIn, user: authUser } = useAuth();
-  const { data: apiStages, isLoading: stagesLoading, isError: stagesError } = useStages();
-  const STAGES_DATA = apiStages || [];
+  const { stages: stagesData, loading: stagesLoading, error: stagesError } = useStages();
+  const STAGES_DATA = stagesData || [];
   const [wantsAnonymous, setWantsAnonymous] = useState(false);
   const [profile, setProfile] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
@@ -113,22 +114,24 @@ export function LearnPathsHome() {
 
   const [selectedStage, setSelectedStage] = useState<any | null>(null);
   const [cachedStages, setCachedStages] = useState<number[]>([]);
-  const [leaderboardData, setLeaderboardData] = useState<{ rank: number; name: string | null; points: number; level: number; badge_count: number }[]>([]);
   const [stageStats, setStageStats] = useState<Record<string, { total_users: number; avg_trivia_score: number | null }>>({});
   const [backendProfile, setBackendProfile] = useState<any | null>(null);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardRow[]>([]);
+  const [leaderboardLoading, setLeaderboardLoading] = useState(true);
+  const [showRegistration, setShowRegistration] = useState(false);
 
   // Sync selectedStage ↔ activeLesson for sidebar curriculum rail
   useEffect(() => {
     if (selectedStage) {
       const completedStepIds: number[] = [];
       for (const step of selectedStage.steps) {
-        const key = `stage_${selectedStage.order}_step_${step.id}_trivia_passed`;
+        const key = `stage_${selectedStage.id}_step_${step.id}_trivia_passed`;
         if (localStorage.getItem(key) === "true") {
           completedStepIds.push(step.id);
         }
       }
       setActiveLesson({
-        stageId: selectedStage.order,
+        stageId: selectedStage.id,
         stageTitle: selectedStage.title,
         stageBadge: selectedStage.badge,
         currentStep: 0,
@@ -232,12 +235,8 @@ export function LearnPathsHome() {
     setLoading(false);
   }, [isLoggedIn, authUser]);
 
-  // Fetch global leaderboard and backend profile
+  // Fetch backend profile
   useEffect(() => {
-    learnHubApi.leaderboard(10).then((res: { results: { rank: number; name: string | null; points: number; level: number; badge_count: number }[] }) => {
-      setLeaderboardData(res.results || []);
-    }).catch(() => {});
-
     if (isLoggedIn) {
       learnHubApi.profile().then((res) => {
         setBackendProfile(res);
@@ -254,7 +253,43 @@ export function LearnPathsHome() {
         setStageStats(prev => ({ ...prev, [slug]: stats }));
       }).catch(() => {});
     });
-  }, [apiStages]);
+  }, [stagesData]);
+
+  useEffect(() => {
+    if (!profile) return;
+    void fetchGamificationMe().then((gamification) => {
+      if (!gamification) return;
+      const updated = {
+        ...profile,
+        sovereigns: gamification.points,
+        streakDays: gamification.streak_days,
+        badges: gamification.badges?.map((badge) => badge.icon || badge.slug) ?? profile.badges,
+      };
+      setProfile(updated);
+      localStorage.setItem("bns_user_profile", JSON.stringify(updated));
+    });
+  }, [profile?.userId]);
+
+  useEffect(() => {
+    setLeaderboardLoading(true);
+    void fetchLeaderboard(20).then((rows) => {
+      if (profile) {
+        const youIndex = rows.findIndex((r) => r.name === null || (profile.pseudoName && r.name === profile.pseudoName));
+        if (youIndex === -1) {
+          rows.push({
+            rank: rows.length + 1,
+            name: profile.pseudoName || "You",
+            points: profile.sovereigns || 0,
+            level: Math.floor((profile.sovereigns || 0) / 100) + 1,
+            streak_days: profile.streakDays || 0,
+            badge_count: profile.badges?.length || 0,
+          });
+        }
+      }
+      setLeaderboard(rows.sort((a, b) => b.points - a.points).map((r, i) => ({ ...r, rank: i + 1 })));
+      setLeaderboardLoading(false);
+    });
+  }, [profile?.userId, profile?.sovereigns]);
 
   const checkStreak = (userProfile: any) => {
     if (!userProfile.lastActive) return 0;
@@ -329,8 +364,34 @@ export function LearnPathsHome() {
   const langKey = (profile?.language as "EN" | "SW" | "SH") || "EN";
   const text = TRANSLATIONS[langKey];
 
+  const isUserRow = (name: string | null) => profile?.pseudoName && name === profile.pseudoName;
+
+  const totalModules = Math.max(stagesData.length, 1);
+  const modulesCompleted = profile?.badges?.length ?? 0;
   const currentStageNum = profile ? (profile.stageProgress ? Math.max(...profile.stageProgress) : 1) : 1;
-  const currentStage = STAGES_DATA.find(s => s.order === currentStageNum) || STAGES_DATA[0];
+
+  if (loading || stagesLoading) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center min-h-[50vh]">
+        <div className="animate-spin size-8 border-4 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  if (stagesError || STAGES_DATA.length === 0) {
+    return (
+      <div className="flex-1 flex items-center justify-center p-4 bg-muted/20 min-h-[70vh]">
+        <div className="text-center space-y-4 max-w-sm">
+          <p className="text-muted-foreground text-sm">Could not load content.</p>
+          <Button onClick={() => window.location.reload()} variant="outline" className="rounded-xl font-bold">
+            Retry
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  const currentStage = STAGES_DATA.find(s => s.id === currentStageNum) || STAGES_DATA[0];
 
   // If user is not onboarded, ask if they want to register or continue as anonymous guest
   if (!profile) {
@@ -473,7 +534,7 @@ export function LearnPathsHome() {
                 <div className="p-4 border border-border bg-card rounded-2xl space-y-3 shadow-xs">
                   <div className="flex justify-between items-center">
                     <span className="text-[10px] uppercase font-bold text-muted-foreground">Current Stage</span>
-                    <span className="text-[11px] text-primary font-bold">Stage {currentStage.order}</span>
+                    <span className="text-[11px] text-primary font-bold">Stage {currentStage.id}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="text-3xl">{currentStage.badge}</span>
@@ -511,7 +572,7 @@ export function LearnPathsHome() {
                   <select
                     id="stageSelect"
                     onChange={(e) => {
-                      const selected = STAGES_DATA.find(s => s.order === parseInt(e.target.value));
+                      const selected = STAGES_DATA.find(s => s.id === parseInt(e.target.value));
                       if (selected) {
                         setSelectedStage(selected);
                       }
@@ -521,10 +582,10 @@ export function LearnPathsHome() {
                     <option value="">Select a module...</option>
                     {stagesData.map((s) => {
                       const isCompleted = profile.badges?.includes(s.badge);
-                      const isActive = profile.stageProgress?.includes(s.order);
+                      const isActive = profile.stageProgress?.includes(s.id);
                       return (
-                        <option key={s.id} value={s.order}>
-                          Stage {s.order}: {s.documentName} {isCompleted ? "✓" : isActive ? "▶" : ""}
+                        <option key={s.id} value={s.id}>
+                          Stage {s.id}: {s.documentName} {isCompleted ? "✓" : isActive ? "▶" : ""}
                         </option>
                       );
                     })}
@@ -544,7 +605,7 @@ export function LearnPathsHome() {
                       <div className="grid grid-cols-2 gap-2">
                         {stagesData.map((s) => {
                           const done = profile.badges?.includes(s.badge);
-                          const active = profile.stageProgress?.includes(s.order);
+                          const active = profile.stageProgress?.includes(s.id);
                           return (
                             <div key={s.id} className={`p-2 rounded-lg border text-xs flex items-center gap-2 ${done ? 'border-primary/20 bg-primary/5' : active ? 'border-foreground/30 bg-card' : 'border-border opacity-40 bg-muted/20'}`}>
                               <span className="text-base">{s.badge}</span>
@@ -564,8 +625,8 @@ export function LearnPathsHome() {
                 <div className="space-y-3 relative before:absolute before:left-6 before:top-4 before:bottom-4 before:w-0.5 before:bg-border">
                   {stagesData.map((stage) => {
                     const isCompleted = profile.badges?.includes(stage.badge);
-                    const isActive = profile.stageProgress?.includes(stage.order);
-                    const isStageCached = cachedStages.includes(stage.order);
+                    const isActive = profile.stageProgress?.includes(stage.id);
+                    const isStageCached = cachedStages.includes(stage.id);
                     const offlineDisabled = false;
 
                     return (
@@ -591,7 +652,7 @@ export function LearnPathsHome() {
                               ? "bg-card border-foreground text-foreground"
                               : "bg-muted border-border text-muted-foreground"
                           }`}>
-                            {isCompleted ? stage.badge : stage.order}
+                            {isCompleted ? stage.badge : stage.id}
                           </div>
 
                           <div>
@@ -615,7 +676,7 @@ export function LearnPathsHome() {
                         {/* Cache controls */}
                         {!offlineDisabled && (
                           <button
-                            onClick={(e) => handleToggleCache(stage.order, e)}
+                            onClick={(e) => handleToggleCache(stage.id, e)}
                             className={`p-2 rounded-lg border hover:bg-muted shrink-0 ${isStageCached ? 'border-blue-500/20 text-blue-600 bg-blue-500/5' : 'border-border text-muted-foreground'}`}
                           >
                             <DownloadCloud className="size-4" />
@@ -808,15 +869,13 @@ export function LearnPathsHome() {
               hasNext={STAGES_DATA.indexOf(selectedStage) < STAGES_DATA.length - 1}
               hasPrev={STAGES_DATA.indexOf(selectedStage) > 0}
               onPrevStage={() => {
-                const idx = STAGES_DATA.indexOf(selectedStage);
-                const prev = STAGES_DATA[idx - 1];
+                const prev = STAGES_DATA.find(s => s.id === selectedStage.id - 1);
                 if (prev) {
                   setSelectedStage(prev);
                 }
               }}
               onNextStage={() => {
-                const idx = STAGES_DATA.indexOf(selectedStage);
-                const next = STAGES_DATA[idx + 1];
+                const next = STAGES_DATA.find(s => s.id === selectedStage.id + 1);
                 if (next) {
                   setSelectedStage(next);
                 }
@@ -841,15 +900,13 @@ export function LearnPathsHome() {
               hasNext={STAGES_DATA.indexOf(selectedStage) < STAGES_DATA.length - 1}
               hasPrev={STAGES_DATA.indexOf(selectedStage) > 0}
               onPrevStage={() => {
-                const idx = STAGES_DATA.indexOf(selectedStage);
-                const prev = STAGES_DATA[idx - 1];
+                const prev = STAGES_DATA.find(s => s.id === selectedStage.id - 1);
                 if (prev) {
                   setSelectedStage(prev);
                 }
               }}
               onNextStage={() => {
-                const idx = STAGES_DATA.indexOf(selectedStage);
-                const next = STAGES_DATA[idx + 1];
+                const next = STAGES_DATA.find(s => s.id === selectedStage.id + 1);
                 if (next) {
                   setSelectedStage(next);
                 }
@@ -918,19 +975,22 @@ export function LearnPathsHome() {
                       <p className="text-xs text-muted-foreground text-center py-4">Loading...</p>
                     ) : (
                     <div className="space-y-2">
-                      {leaderboardData.slice(0, 5).map((item) => (
-                        <div key={item.rank} className="flex items-center justify-between p-3 rounded-xl border text-xs bg-muted/10 border-border/50">
+                      {leaderboard.slice(0, 5).map((item) => (
+                        <div key={item.name ?? item.rank} className={cn(
+                          "flex items-center justify-between p-3 rounded-xl border text-xs",
+                          isUserRow(item.name) ? "bg-primary/5 border-primary/20" : "bg-muted/10 border-border/50"
+                        )}>
                           <div className="flex items-center gap-3">
                             <span className="font-black text-muted-foreground w-4">{item.rank}</span>
-                            <span className="font-bold text-xs text-foreground">{item.name || "Anonymous"}</span>
+                            <span className={cn("font-bold text-xs", isUserRow(item.name) ? "text-primary" : "text-foreground")}>{item.name ?? "Anonymous"}</span>
                           </div>
                           <div className="flex items-center gap-4 text-muted-foreground font-semibold">
-                            <span>Lv.{item.level}</span>
+                            <span>{item.badge_count} Badges</span>
                             <span className="text-foreground font-bold">{item.points} pts</span>
                           </div>
                         </div>
                       ))}
-                      {leaderboardData.length === 0 && (
+                      {leaderboard.length === 0 && (
                         <p className="text-xs text-muted-foreground text-center py-4">No data yet — be the first learner!</p>
                       )}
                     </div>
@@ -951,8 +1011,8 @@ export function LearnPathsHome() {
                   <div className="grid grid-cols-2 gap-4">
                     {stagesData.map((stage) => {
                       const isCompleted = profile.badges?.includes(stage.badge);
-                      const isActive = profile.stageProgress?.includes(stage.order);
-                      const isStageCached = cachedStages.includes(stage.order);
+                      const isActive = profile.stageProgress?.includes(stage.id);
+                      const isStageCached = cachedStages.includes(stage.id);
                       const offlineDisabled = false;
 
                       return (
@@ -1012,7 +1072,7 @@ export function LearnPathsHome() {
                             <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">{stage.status}</span>
                             {!offlineDisabled && (
                               <button
-                                onClick={(e) => handleToggleCache(stage.order, e)}
+                                onClick={(e) => handleToggleCache(stage.id, e)}
                                 className={cn(
                                   "p-1.5 rounded-lg border hover:bg-muted transition-colors",
                                   isStageCached ? "border-blue-500/20 text-blue-600 bg-blue-500/5" : "border-border text-muted-foreground"
@@ -1193,20 +1253,20 @@ export function LearnPathsHome() {
 
                   {/* Unlocked Badges */}
                   <div className="p-6 border border-border bg-card rounded-2xl space-y-4 shadow-sm">
-                  <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Unlocked Badges ({profile.badges?.length || 0}/{STAGES_DATA.length})</h3>
-                  <div className="grid grid-cols-4 gap-2">
-                    {STAGES_DATA.map((stage) => {
-                      const unlocked = profile.badges?.includes(stage.badge);
-                      return (
-                        <div
-                          key={stage.id}
-                          className={`p-2.5 rounded-xl border text-center space-y-1 shadow-xs ${unlocked ? 'bg-primary/5 border-primary/20' : 'bg-muted/10 border-border opacity-40'}`}
-                        >
-                          <div className="text-xl flex justify-center">{stage.badge}</div>
-                          <p className="text-[9px] font-bold truncate">{stage.badgeName}</p>
-                        </div>
-                      );
-                    })}
+                    <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Unlocked Badges ({profile.badges?.length || 0}/{STAGES_DATA.length})</h3>
+                    <div className="grid grid-cols-4 gap-2">
+                      {STAGES_DATA.map((stage) => {
+                        const unlocked = profile.badges?.includes(stage.badge);
+                        return (
+                          <div
+                            key={stage.id}
+                            className={`p-2.5 rounded-xl border text-center space-y-1 shadow-xs ${unlocked ? 'bg-primary/5 border-primary/20' : 'bg-muted/10 border-border opacity-40'}`}
+                          >
+                            <div className="text-xl flex justify-center">{stage.badge}</div>
+                            <p className="text-[9px] font-bold truncate">{stage.badgeName}</p>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
 

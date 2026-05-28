@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
+import { useLearn } from "@/contexts/learn-context";
+import { getGamificationDeviceId } from "@/lib/gamification";
 import { learnHubApi, type LearnProfileResponse } from "@/lib/learn-hub";
 import { useStages } from "@/hooks/use-stages";
 import { MotionPage } from "@/motion/wrappers";
@@ -24,6 +26,8 @@ import { Progress } from "@/ui/progress";
 
 export default function LearnProfilePage() {
   const { user } = useAuth();
+  const { gamification: liveGamification } = useLearn();
+  const { stages } = useStages();
   const [data, setData] = useState<LearnProfileResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -34,18 +38,56 @@ export default function LearnProfilePage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const g = data?.gamification;
+  const g = data?.gamification ?? liveGamification;
+  const badges = g?.badges ?? [];
+  const certificates = data?.gamification?.certificates ?? [];
+  const progress = data?.progress ?? [];
+  const deviceId = typeof window !== "undefined" ? getGamificationDeviceId() : "";
   const displayName = user?.display_name || [user?.first_name, user?.last_name].filter(Boolean).join(" ") || user?.email?.split("@")[0] || null;
+
+  const civicProgress = useMemo(() => {
+    const completedLessonIds = new Set(
+      progress
+        .filter((p) => p.content_type === "lesson" && p.progress_percent >= 100)
+        .map((p) => p.content_id),
+    );
+    return stages.map((stage) => {
+      const total = stage.steps.length;
+      const done = stage.steps.filter(
+        (s) => s.chapterId && completedLessonIds.has(s.chapterId),
+      ).length;
+      return {
+        id: stage.id,
+        title: stage.title,
+        badge: stage.badge,
+        percent: total ? Math.round((done / total) * 100) : 0,
+        done,
+        total,
+      };
+    });
+  }, [stages, progress]);
+
+  const xpToNext = g ? (g.level * 100) - g.points : 0;
 
   return (
     <MotionPage>
-      <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
-        <h1 className="text-2xl font-bold">
-          {displayName ? `${displayName}'s profile` : "Learner profile"}
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {displayName ? `Welcome back, ${displayName}. ` : ""}Your XP, streaks, badges, and recent progress on Budget Ndio Story.
-        </p>
+      <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">
+              {displayName ? `${displayName}'s civic journey` : "Your civic journey"}
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {displayName ? `Welcome back, ${displayName}. ` : ""}Progress, XP, streaks, badges, and certificates — synced from the server when you learn.
+            </p>
+          </div>
+          {!loading && (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground">
+              <User className="size-3.5" aria-hidden />
+              {displayName ? displayName : deviceId ? "Anonymous learner" : "Guest"}
+            </span>
+          )}
+        </div>
 
         {loading ? (
           <div className="flex justify-center py-16">

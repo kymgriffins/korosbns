@@ -19,7 +19,7 @@ export interface StepData {
   id: number;
   chapterId?: string;
   triviaId?: string | null;
-  takeaways?: Array<{ type: "info" | "warning"; title: string; text: string }>;
+  takeaways?: Array<{ type: "info" | "warning" | "tip"; title: string; text: string }>;
   isCompleted?: boolean;
   isLocked?: boolean;
   title: string;

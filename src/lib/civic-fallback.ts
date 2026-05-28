@@ -5,7 +5,7 @@ export const USE_LOCAL_CIVIC_FALLBACK =
   process.env.NEXT_PUBLIC_CIVIC_FALLBACK === "true";
 
 export type StepTakeaway = {
-  type: "info" | "warning";
+  type: "info" | "warning" | "tip";
   title: string;
   text: string;
 };

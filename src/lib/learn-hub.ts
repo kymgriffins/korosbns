@@ -137,6 +137,7 @@ export type LearnProfileResponse = {
     }>;
     certificates?: Array<{
       id: string;
+      civic_module?: string;
       module_title: string;
       module_slug: string;
       issued_at: string;
@@ -256,14 +257,6 @@ export const learnHubApi = {
         typeof payload.detail === "string" ? payload.detail : "Could not submit trivia attempt",
       );
     }
-    return res.json();
-  },
-  completeChapter: async (chapterId: string) => {
-    const res = await fetch(buildApiUrl(`/content/civic-chapters/${chapterId}/complete/`), {
-      method: "POST",
-      headers: gamificationHeaders(),
-    });
-    if (!res.ok) throw new Error("Could not complete chapter");
     return res.json();
   },
   getForumThreads: (chapterId?: string) => {

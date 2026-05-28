@@ -17,27 +17,34 @@ import {
   CONSTITUTION_HISTORICAL_DOCS,
   PARTICIPATION_TOOLKIT_DOCS
 } from "@/constants/documents-registry";
+import { getStepTakeaway } from "@/lib/civic-fallback";
+import { postGamificationEvent } from "@/lib/gamification";
 import { learnHubApi } from "@/lib/learn-hub";
 import type { StageTakeaway, StageTrivia } from "@/lib/learn-hub";
 
 interface TriviaItem extends StageTrivia {
+  id?: string;
   placeholder?: string;
 }
 
 interface Step {
-  id: string;
+  id: number;
+  chapterId?: string;
+  triviaId?: string | null;
   title: string;
   youtubeId: string;
   audioUrl: string;
   transcript: string;
   text: string;
   trivia: TriviaItem[];
-  takeaways: StageTakeaway[];
+  takeaways?: StageTakeaway[];
   duration?: string;
 }
 
 interface Stage {
-  id: string;
+  id: number;
+  slug?: string;
+  moduleId?: string;
   title: string;
   badge: string;
   badgeName: string;
@@ -48,7 +55,6 @@ interface Stage {
   credits?: string;
   description: string;
   expectations: string[];
-  order: number;
   steps: Step[];
 }
 
@@ -132,7 +138,7 @@ export function StageDetailDrawer({
     try {
       await learnHubApi.createForumThread({
         title: newThreadTitle,
-        civic_module: stage.id,
+        civic_module: String(stage.id),
         civic_chapter: chapterId,
       });
       setNewThreadTitle("");
@@ -154,6 +160,7 @@ export function StageDetailDrawer({
       toast.error("Failed to post reply.");
     }
   };
+
   const [serverProgress, setServerProgress] = useState<
     Array<{ content_type: string; content_id: string; progress_percent: number }>
   >([]);
@@ -178,8 +185,8 @@ export function StageDetailDrawer({
   }, []);
 
   useEffect(() => {
-    learnHubApi.stageLeaderboard(stage.id).then(setStageStats).catch(() => {});
-  }, [stage.id]);
+    learnHubApi.stageLeaderboard(stage.slug || stage.id.toString()).then(setStageStats).catch(() => {});
+  }, [stage.id, stage.slug]);
 
   useEffect(() => {
     const loadRepo = async () => {
@@ -216,7 +223,7 @@ export function StageDetailDrawer({
 
   useEffect(() => {
     setActiveSubTab("learn");
-    const storedStep = localStorage.getItem(`stage_${stage.order}_current_step`);
+    const storedStep = localStorage.getItem(`stage_${stage.id}_current_step`);
     const initialStep = storedStep ? parseInt(storedStep, 10) : 0;
     setCurrentStep(initialStep);
     
@@ -238,12 +245,12 @@ export function StageDetailDrawer({
     setReflectionText("");
     setTranscriptSearch("");
     setShowTranscript(false);
-    if (stage.order === 1) {
+    if (stage.id === 1) {
       setSelectedYear(2010);
     } else {
       setSelectedYear(2026);
     }
-  }, [stage.order]);
+  }, [stage.id]);
 
   useEffect(() => {
     if (currentStep < 1 || currentStep > stage.steps.length) {
@@ -270,10 +277,9 @@ export function StageDetailDrawer({
     setShowTranscript(false);
     setTranscriptSearch("");
     setActiveThread(null);
-    if (step.id) {
-      loadForumThreads(step.id);
-    }
-  }, [currentStep, stage.order]);
+    const chapterId = step.chapterId || `stage-${stage.id}-step-${step.id}`;
+    loadForumThreads(chapterId);
+  }, [currentStep, stage.id]);
 
   useEffect(() => {
     return () => {
@@ -283,11 +289,9 @@ export function StageDetailDrawer({
 
   const handleStartLearning = () => {
     setCurrentStep(1);
-    localStorage.setItem(`stage_${stage.order}_current_step`, "1");
+    localStorage.setItem(`stage_${stage.id}_current_step`, "1");
   };
 
-  const isStepTriviaPassed = (stepId: string) => {
-    return localStorage.getItem(`stage_${stage.order}_step_${stepId}_trivia_passed`) === "true";
   const isStepTriviaPassed = (step: Step & { chapterId?: string; triviaId?: string | null }) => {
     if (step.chapterId) {
       const chapterDone = serverProgress.some(
@@ -377,7 +381,7 @@ export function StageDetailDrawer({
     setTriviaSubmitted(true);
     if (selectedIdx === correctIdx) {
       const step = stage.steps[currentStep - 1];
-      const rewardKey = `stage_${stage.order}_step_${step.id}_trivia_${qIdx}_reward`;
+      const rewardKey = `stage_${stage.id}_step_${step.id}_trivia_${qIdx}_reward`;
       if (!localStorage.getItem(rewardKey)) {
         localStorage.setItem(rewardKey, "true");
         void postGamificationEvent({
@@ -406,7 +410,6 @@ export function StageDetailDrawer({
       return;
     }
     const step = stage.steps[currentStep - 1];
-    const rewardKey = `stage_${stage.order}_step_${step.id}_trivia_${qIdx}_reward`;
     const q = step.trivia[qIdx];
     const optionIdx = q?.options?.length
       ? Math.max(0, q.options.indexOf(selectedReflectionOption))
@@ -441,16 +444,8 @@ export function StageDetailDrawer({
       setReflectionText("");
       setSelectedReflectionOption("");
     } else {
-      localStorage.setItem(`stage_${stage.order}_step_${step.id}_trivia_passed`, "true");
+      localStorage.setItem(`stage_${stage.id}_step_${step.id}_trivia_passed`, "true");
       setContentConsumed(true);
-      toast.success("Step complete! ⭐");
-      // Sync step progress and unlock next chapter on backend
-      learnHubApi.markProgress({
-        content_type: "article",
-        content_id: `stage-${stage.order}-step-${step.id}`,
-        progress_percent: Math.round((currentStep / stage.steps.length) * 100),
-      }).catch(() => {});
-      learnHubApi.completeChapter(step.id).catch(() => {});
       toast.success("Chapter check complete! ⭐");
       void (async () => {
         await submitServerTriviaIfReady(step, triviaAnswersByQuestion);
@@ -459,20 +454,20 @@ export function StageDetailDrawer({
       autoAdvanceRef.current = setTimeout(() => {
         setCurrentStep((prev) => {
           const nextVal = prev + 1;
-          localStorage.setItem(`stage_${stage.order}_current_step`, nextVal.toString());
+          localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
           return nextVal;
         });
       }, 2000);
     }
-  }, [activeTriviaIdx, currentStep, stage.order, stage.steps]);
+  }, [activeTriviaIdx, currentStep, stage.id, stage.steps, triviaAnswersByQuestion]);
 
-  const masteryAwardedKey = `stage_${stage.order}_mastery_awarded`;
+  const masteryAwardedKey = `stage_${stage.id}_mastery_awarded`;
   useEffect(() => {
     if (currentStep === stage.steps.length + 1) {
       if (!localStorage.getItem(masteryAwardedKey)) {
         localStorage.setItem(masteryAwardedKey, "true");
         const newProgress = profile.stageProgress ? [...profile.stageProgress] : [1];
-        const nextStageId = stage.order + 1;
+        const nextStageId = stage.id + 1;
         if (nextStageId <= 8 && !newProgress.includes(nextStageId)) {
           newProgress.push(nextStageId);
         }
@@ -506,7 +501,7 @@ export function StageDetailDrawer({
         // Sync stage mastery to backend
         learnHubApi.markProgress({
           content_type: "path",
-          content_id: `stage-${stage.order}`,
+          content_id: `stage-${stage.id}`,
           progress_percent: 100,
         }).catch((err) => {
           toast.error(err instanceof Error ? err.message : "Could not sync stage mastery.");
@@ -515,7 +510,7 @@ export function StageDetailDrawer({
         toast.success(`🎉 Stage Mastered! +25 Sovereigns (SVG) earned. ${stage.badge} Badge unlocked!`);
       }
     }
-  }, [currentStep, stage.order]);
+  }, [currentStep, stage.id]);
 
   const handleToggleTrackDoc = () => {
     const tracked = profile.trackedDocs || [];
@@ -531,7 +526,7 @@ export function StageDetailDrawer({
   };
 
   const isDocTracked = profile.trackedDocs?.includes(stage.documentName);
-  const isCached = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("bns_cached_stages") || "[]").includes(stage.order) : false;
+  const isCached = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("bns_cached_stages") || "[]").includes(stage.id) : false;
 
   const getPersonalizedText = (rawText: string) => {
     if (!rawText) return "";
@@ -543,7 +538,7 @@ export function StageDetailDrawer({
     if (typeof window !== "undefined") {
       const url = new URL(window.location.href);
       url.searchParams.set("year", year.toString());
-      url.searchParams.set("stage", stage.order.toString());
+      url.searchParams.set("stage", stage.id.toString());
       window.history.pushState({}, "", url.toString());
     }
     toast.info(`Filtered documents for year ${year}`);
@@ -558,10 +553,10 @@ export function StageDetailDrawer({
     toast.success(`Request for ${docType} (${year}) has been generated and queued for submission to the county assembly clerk.`);
   };
 
-  const currentStageDocs = getDocumentsForStage(stage.order, selectedYear, profile.county || "", liveRepoDocs);
+  const currentStageDocs = getDocumentsForStage(stage.id, selectedYear, profile.county || "", liveRepoDocs);
   const constitutionYears = [2010, 2005, 1997, 1991, 1982, 1969, 1964, 1963];
   const standardYears = [2026, 2025, 2024, 2023, 2022, 2021, 2020];
-  const yearOptions = stage.order === 1 ? constitutionYears : standardYears;
+  const yearOptions = stage.id === 1 ? constitutionYears : standardYears;
 
   /* Progress dots helper */
   const totalSteps = stage.steps.length;
@@ -765,10 +760,10 @@ export function StageDetailDrawer({
                       className={cn(
                         "px-3 py-1.5 rounded-md text-xs font-semibold transition-all flex items-center gap-1.5 whitespace-nowrap",
                         activeFormat === "trivia" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground",
-                        isStepTriviaPassed(stage.steps[currentStep - 1].id) && activeFormat !== "trivia" && "text-emerald-500"
+                        isStepTriviaPassed(stage.steps[currentStep - 1]) && activeFormat !== "trivia" && "text-emerald-500"
                       )}
                     >
-                      💡 Check Knowledge {isStepTriviaPassed(stage.steps[currentStep - 1].id) && <CheckCircle2 className="size-3.5 inline" />}
+                      💡 Check Knowledge {isStepTriviaPassed(stage.steps[currentStep - 1]) && <CheckCircle2 className="size-3.5 inline" />}
                     </button>
                   )}
                   <button
@@ -819,9 +814,9 @@ export function StageDetailDrawer({
 
                         {(() => {
                           const step = stage.steps[currentStep - 1];
-                          const takeaway = step?.takeaways?.[0] || null;
+                          const takeaway = getStepTakeaway(stage.id, step.id, step.takeaways);
                           if (!takeaway) return null;
-                          if (takeaway.type === "info") {
+                          if (takeaway.type === "info" || takeaway.type === "tip") {
                             return (
                               <div className="mt-6 p-4 rounded-xl bg-blue-500/10 border-l-4 border-blue-500 dark:bg-blue-900/20 dark:border-blue-400 not-prose">
                                 <p className="text-xs font-bold text-blue-700 dark:text-blue-300">💡 {takeaway.title}</p>
@@ -1009,7 +1004,6 @@ export function StageDetailDrawer({
                 </div>
                 )}
 
-                {/* DISCUSS FORMAT */}
                 {activeFormat === "discuss" && (
                   <div className="space-y-4 max-w-2xl mx-auto w-full">
                     {!activeThread ? (
@@ -1024,7 +1018,11 @@ export function StageDetailDrawer({
                             placeholder="Start a new discussion..." 
                             className="flex-1 h-10 px-3 rounded-xl border bg-card text-xs" 
                           />
-                          <Button size="sm" className="h-10 rounded-xl" onClick={() => handleCreateThread(stage.steps[currentStep - 1].id)}>Post</Button>
+                          <Button size="sm" className="h-10 rounded-xl" onClick={() => {
+                            const step = stage.steps[currentStep - 1];
+                            const chapterId = step.chapterId || `stage-${stage.id}-step-${step.id}`;
+                            handleCreateThread(chapterId);
+                          }}>Post</Button>
                         </div>
                         {forumLoading ? (
                           <p className="text-xs text-muted-foreground text-center py-4">Loading discussions...</p>
@@ -1141,7 +1139,7 @@ export function StageDetailDrawer({
               </div>
             )}
 
-            {stage.order === 1 && (
+            {stage.id === 1 && (
               <div className="grid grid-cols-2 gap-2 bg-muted/50 p-1 rounded-xl text-xs font-bold">
                 <button
                   onClick={() => setConstitutionTab("current")}
@@ -1158,7 +1156,7 @@ export function StageDetailDrawer({
               </div>
             )}
 
-            {(stage.order !== 1 || constitutionTab === "current") && (
+            {(stage.id !== 1 || constitutionTab === "current") && (
               <div className="space-y-2">
                 <label className="text-[9px] font-black text-muted-foreground uppercase tracking-wider">Select Financial Year:</label>
                 <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
@@ -1170,14 +1168,14 @@ export function StageDetailDrawer({
                         selectedYear === yr ? "bg-primary border-primary text-primary-foreground shadow-sm" : "bg-card border-border text-muted-foreground hover:text-foreground"
                       )}
                     >
-                      {yr === 2010 && stage.order === 1 ? "2010 (Current)" : yr}
+                      {yr === 2010 && stage.id === 1 ? "2010 (Current)" : yr}
                     </button>
                   ))}
                 </div>
               </div>
             )}
 
-            {stage.order === 1 && constitutionTab === "timeline" ? (
+            {stage.id === 1 && constitutionTab === "timeline" ? (
               <div className="space-y-5 animate-in fade-in duration-200">
                 <div className="p-3 bg-muted/20 border border-border rounded-xl text-[10px] text-muted-foreground leading-normal flex items-start gap-2">
                   <History className="size-4 text-primary shrink-0 mt-0.5" />
@@ -1325,7 +1323,7 @@ export function StageDetailDrawer({
               onClick={() => {
                 const nextVal = currentStep - 1;
                 setCurrentStep(nextVal);
-                localStorage.setItem(`stage_${stage.order}_current_step`, nextVal.toString());
+                localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
                 setShowTrivia(false);
               }}
               className="min-w-[100px] gap-1 rounded-xl text-xs"
@@ -1346,7 +1344,7 @@ export function StageDetailDrawer({
                 onClick={() => {
                   const nextVal = currentStep + 1;
                   setCurrentStep(nextVal);
-                  localStorage.setItem(`stage_${stage.order}_current_step`, nextVal.toString());
+                  localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
                 }}
                 className="min-w-[100px] gap-1 rounded-xl text-xs"
               >
