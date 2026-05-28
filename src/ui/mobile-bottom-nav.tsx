@@ -15,6 +15,7 @@ export type MobileBottomNavItem = {
   /** Called when a link item is activated (e.g. close overflow menu) */
   onNavigate?: () => void;
   active?: boolean;
+  prominent?: boolean;
   ariaCurrent?: "page" | undefined;
   ariaExpanded?: boolean;
 };
@@ -50,11 +51,30 @@ export function MobileBottomNav({
       aria-label={ariaLabel}
     >
       {items.map((item) => {
-        const content = (
+        const content = item.prominent ? (
           <>
             <div
               className={cn(
-                "rounded-xl p-1 transition-all duration-200",
+                "-mt-5 flex size-12 items-center justify-center rounded-full border-4 border-background bg-primary text-primary-foreground shadow-lg transition-all duration-200",
+                item.active && "scale-105"
+              )}
+            >
+              {item.icon}
+            </div>
+            <span
+              className={cn(
+                "mt-0.5 text-[9px] font-semibold tracking-tight transition-colors",
+                item.active ? "text-primary" : "text-muted-foreground"
+              )}
+            >
+              {item.label}
+            </span>
+          </>
+        ) : (
+          <>
+            <div
+              className={cn(
+                "rounded-xl p-1.5 transition-all duration-200",
                 item.active
                   ? "scale-105 bg-primary/10 text-primary"
                   : "text-muted-foreground group-hover:text-foreground"
@@ -73,8 +93,9 @@ export function MobileBottomNav({
           </>
         );
 
-        const itemClass =
-          "group flex h-full flex-1 flex-col items-center justify-center py-1 text-center";
+        const itemClass = item.prominent
+          ? "group flex h-full flex-1 flex-col items-center justify-center py-0 text-center relative"
+          : "group flex h-full flex-1 flex-col items-center justify-center py-1 text-center";
 
         if (item.href) {
           return (

@@ -59,7 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [queryClient]);
 
   const login = useCallback(
-    async (email: string, password: string, redirectTo = "/account") => {
+    async (email: string, password: string, redirectTo = "/learn") => {
       logDebug("Auth", "Login requested", { email, redirectTo });
       const tokens = await citizenApi.login(email, password);
       setAuthTokens(tokens.access, tokens.refresh);

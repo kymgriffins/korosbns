@@ -13,44 +13,10 @@ import {
   getDocumentsForStage,
 } from "@/constants/documents-registry";
 import { learnHubApi } from "@/lib/learn-hub";
-
-interface TriviaItem {
-  type: "multiple-choice" | "reflection";
-  question: string;
-  options?: string[];
-  answer?: number;
-  explanation?: string;
-  placeholder?: string;
-}
-
-interface Step {
-  id: number;
-  title: string;
-  youtubeId: string;
-  audioUrl: string;
-  transcript: string;
-  text: string;
-  trivia: TriviaItem[];
-  duration?: string;
-}
-
-interface Stage {
-  id: number;
-  title: string;
-  badge: string;
-  badgeName: string;
-  documentName: string;
-  archive: string;
-  link: string;
-  status: "Published" | "Gazetted" | "Comment Open" | "Closed";
-  credits?: string;
-  description: string;
-  expectations: string[];
-  steps: Step[];
-}
+import type { CivicModule, ChapterStep } from "@/types/learn";
 
 interface StageDetailDrawerProps {
-  stage: Stage;
+  stage: CivicModule;
   profile: any;
   onClose: () => void;
   onUpdateProfile: (updatedProfile: any) => void;
@@ -131,7 +97,7 @@ export function StageDetailDrawer({
 
   useEffect(() => {
     setActiveSubTab("learn");
-    const storedStep = localStorage.getItem(`stage_${stage.id}_current_step`);
+    const storedStep = localStorage.getItem(`stage_${stage.order}_current_step`);
     const initialStep = storedStep ? parseInt(storedStep, 10) : 0;
     setCurrentStep(initialStep);
     setActiveFormat("video");
@@ -144,12 +110,12 @@ export function StageDetailDrawer({
     setReflectionText("");
     setTranscriptSearch("");
     setShowTranscript(false);
-    if (stage.id === 1) {
+    if (stage.order === 1) {
       setSelectedYear(2010);
     } else {
       setSelectedYear(2026);
     }
-  }, [stage.id]);
+  }, [stage.order]);
 
   useEffect(() => {
     if (currentStep < 1 || currentStep > stage.steps.length) {
@@ -167,7 +133,7 @@ export function StageDetailDrawer({
     setSelectedReflectionOption("");
     setShowTranscript(false);
     setTranscriptSearch("");
-  }, [currentStep, stage.id]);
+  }, [currentStep, stage.order]);
 
   useEffect(() => {
     return () => {
@@ -177,11 +143,11 @@ export function StageDetailDrawer({
 
   const handleStartLearning = () => {
     setCurrentStep(1);
-    localStorage.setItem(`stage_${stage.id}_current_step`, "1");
+    localStorage.setItem(`stage_${stage.order}_current_step`, "1");
   };
 
   const isStepTriviaPassed = (stepId: number) => {
-    return localStorage.getItem(`stage_${stage.id}_step_${stepId}_trivia_passed`) === "true";
+    return localStorage.getItem(`stage_${stage.order}_step_${stepId}_trivia_passed`) === "true";
   };
 
   const handleAnswerMCQ = (qIdx: number, selectedIdx: number, correctIdx: number) => {
@@ -190,7 +156,7 @@ export function StageDetailDrawer({
     setTriviaSubmitted(true);
     if (selectedIdx === correctIdx) {
       const step = stage.steps[currentStep - 1];
-      const rewardKey = `stage_${stage.id}_step_${step.id}_trivia_${qIdx}_reward`;
+      const rewardKey = `stage_${stage.order}_step_${step.order}_trivia_${qIdx}_reward`;
       if (!localStorage.getItem(rewardKey)) {
         localStorage.setItem(rewardKey, "true");
         const updated = { ...profile, sovereigns: profile.sovereigns + 5 };
@@ -213,7 +179,7 @@ export function StageDetailDrawer({
     }
     setTriviaSubmitted(true);
     const step = stage.steps[currentStep - 1];
-    const rewardKey = `stage_${stage.id}_step_${step.id}_trivia_${qIdx}_reward`;
+    const rewardKey = `stage_${stage.order}_step_${step.order}_trivia_${qIdx}_reward`;
     if (!localStorage.getItem(rewardKey)) {
       localStorage.setItem(rewardKey, "true");
       const updated = { ...profile, sovereigns: profile.sovereigns + 5 };
@@ -234,32 +200,32 @@ export function StageDetailDrawer({
       setReflectionText("");
       setSelectedReflectionOption("");
     } else {
-      localStorage.setItem(`stage_${stage.id}_step_${step.id}_trivia_passed`, "true");
+      localStorage.setItem(`stage_${stage.order}_step_${step.order}_trivia_passed`, "true");
       setContentConsumed(true);
       toast.success("Step complete! ⭐");
       // Sync step progress to backend
       learnHubApi.markProgress({
         content_type: "article",
-        content_id: `stage-${stage.id}-step-${step.id}`,
+        content_id: `stage-${stage.order}-step-${step.order}`,
         progress_percent: Math.round((currentStep / stage.steps.length) * 100),
       }).catch(() => {});
       autoAdvanceRef.current = setTimeout(() => {
         setCurrentStep((prev) => {
           const nextVal = prev + 1;
-          localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
+          localStorage.setItem(`stage_${stage.order}_current_step`, nextVal.toString());
           return nextVal;
         });
       }, 2000);
     }
-  }, [activeTriviaIdx, currentStep, stage.id, stage.steps]);
+  }, [activeTriviaIdx, currentStep, stage.order, stage.steps]);
 
-  const masteryAwardedKey = `stage_${stage.id}_mastery_awarded`;
+  const masteryAwardedKey = `stage_${stage.order}_mastery_awarded`;
   useEffect(() => {
     if (currentStep === stage.steps.length + 1) {
       if (!localStorage.getItem(masteryAwardedKey)) {
         localStorage.setItem(masteryAwardedKey, "true");
         const newProgress = profile.stageProgress ? [...profile.stageProgress] : [1];
-        const nextStageId = stage.id + 1;
+        const nextStageId = stage.order + 1;
         if (nextStageId <= 8 && !newProgress.includes(nextStageId)) {
           newProgress.push(nextStageId);
         }
@@ -283,14 +249,14 @@ export function StageDetailDrawer({
         // Sync stage mastery to backend
         learnHubApi.markProgress({
           content_type: "path",
-          content_id: `stage-${stage.id}`,
+          content_id: `stage-${stage.order}`,
           progress_percent: 100,
         }).catch(() => {});
 
         toast.success(`🎉 Stage Mastered! +25 Sovereigns (SVG) earned. ${stage.badge} Badge unlocked!`);
       }
     }
-  }, [currentStep, stage.id]);
+  }, [currentStep, stage.order]);
 
   const handleToggleTrackDoc = () => {
     const tracked = profile.trackedDocs || [];
@@ -306,7 +272,7 @@ export function StageDetailDrawer({
   };
 
   const isDocTracked = profile.trackedDocs?.includes(stage.documentName);
-  const isCached = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("bns_cached_stages") || "[]").includes(stage.id) : false;
+  const isCached = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("bns_cached_stages") || "[]").includes(stage.order) : false;
 
   const getPersonalizedText = (rawText: string) => {
     if (!rawText) return "";
@@ -318,7 +284,7 @@ export function StageDetailDrawer({
     if (typeof window !== "undefined") {
       const url = new URL(window.location.href);
       url.searchParams.set("year", year.toString());
-      url.searchParams.set("stage", stage.id.toString());
+      url.searchParams.set("stage", stage.order.toString());
       window.history.pushState({}, "", url.toString());
     }
     toast.info(`Filtered documents for year ${year}`);
@@ -333,24 +299,24 @@ export function StageDetailDrawer({
     toast.success(`Request for ${docType} (${year}) has been generated and queued for submission to the county assembly clerk.`);
   };
 
-  const currentStageDocs = getDocumentsForStage(stage.id, selectedYear, profile.county || "", liveRepoDocs);
+  const currentStageDocs = getDocumentsForStage(stage.order, selectedYear, profile.county || "", liveRepoDocs);
   const constitutionYears = [2010, 2005, 1997, 1991, 1982, 1969, 1964, 1963];
   const standardYears = [2026, 2025, 2024, 2023, 2022, 2021, 2020];
-  const yearOptions = stage.id === 1 ? constitutionYears : standardYears;
+  const yearOptions = stage.order === 1 ? constitutionYears : standardYears;
 
   const totalSteps = stage.steps.length;
 
   const handlePrevStep = () => {
     const nextVal = currentStep - 1;
     setCurrentStep(nextVal);
-    localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
+    localStorage.setItem(`stage_${stage.order}_current_step`, nextVal.toString());
     setShowTrivia(false);
   };
 
   const handleNextStep = () => {
     const nextVal = currentStep + 1;
     setCurrentStep(nextVal);
-    localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
+    localStorage.setItem(`stage_${stage.order}_current_step`, nextVal.toString());
   };
 
   return (
@@ -389,7 +355,7 @@ export function StageDetailDrawer({
               <div className="space-y-5 animate-in fade-in duration-300">
                 <StepContent
                   step={stage.steps[currentStep - 1]}
-                  stageId={stage.id}
+                  stageId={stage.order}
                   currentStep={currentStep}
                   totalSteps={totalSteps}
                   activeFormat={activeFormat}
@@ -401,8 +367,8 @@ export function StageDetailDrawer({
 
                 <TriviaSection
                   trivia={stage.steps[currentStep - 1].trivia}
-                  stepId={stage.steps[currentStep - 1].id}
-                  stageId={stage.id}
+                  stepId={stage.steps[currentStep - 1].order}
+                  stageId={stage.order}
                   currentStep={currentStep}
                   showTrivia={showTrivia}
                   triviaSkipped={triviaSkipped}
@@ -438,7 +404,7 @@ export function StageDetailDrawer({
           </div>
         ) : (
           <DocumentsTab
-            stageId={stage.id}
+            stageId={stage.order}
             documentName={stage.documentName}
             selectedYear={selectedYear}
             constitutionTab={constitutionTab}

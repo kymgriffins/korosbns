@@ -92,17 +92,17 @@ function DesktopDropdown({
                   className="w-full"
                 >
                   <Link
-                    href={isLoggedIn ? Routes.Account : Routes.Login}
+                    href={isLoggedIn ? Routes.Learn : Routes.Login}
                     onClick={() => setIsOpen(false)}
                     className="group flex items-center justify-between w-full px-3 py-2.5 text-sm text-primary hover:text-primary/80 font-semibold rounded-xl hover:bg-primary/[0.06] transition-all duration-200"
                   >
                     <span className="flex items-center gap-3">
                       {isLoggedIn ? (
-                        <User className="size-5 text-primary/80 group-hover:text-primary transition-colors" />
+                        <BookOpen className="size-5 text-primary/80 group-hover:text-primary transition-colors" />
                       ) : (
                         <LogIn className="size-5 text-primary/80 group-hover:text-primary transition-colors" />
                       )}
-                      {isLoggedIn ? "Account Dashboard" : "Sign in to account"}
+                      {isLoggedIn ? "Go to Learn Hub" : "Sign in to account"}
                     </span>
                     <ArrowUpRight className="size-3.5 text-primary opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" />
                   </Link>
@@ -118,7 +118,7 @@ function DesktopDropdown({
 
 // ─── Mobile full-screen overlay ───────────────────────────────────────────────
 function MobileOverlay({ isOpen, setIsOpen }: Props) {
-  const { isLoggedIn, loading: authLoading } = useAuth();
+  const { isLoggedIn, loading: authLoading, user } = useAuth();
 
   return (
     <AnimatePresence>
@@ -191,16 +191,16 @@ function MobileOverlay({ isOpen, setIsOpen }: Props) {
                     className="w-full border-t border-border/40 pt-2 mt-2"
                   >
                     <Link
-                      href={isLoggedIn ? Routes.Account : Routes.Login}
-                      className="group flex items-center justify-between w-full px-4 py-3.5 text-base font-semibold rounded-2xl text-primary hover:bg-primary/[0.06] active:scale-[0.98] transition-all duration-200"
-                    >
-                      <span className="flex items-center gap-3">
-                        {isLoggedIn ? (
-                          <User className="size-5 text-primary" />
-                        ) : (
-                          <LogIn className="size-5 text-primary" />
-                        )}
-                        {isLoggedIn ? "Account Dashboard" : "Sign in to your account"}
+                    href={isLoggedIn ? Routes.Learn : Routes.Login}
+                    className="group flex items-center justify-between w-full px-4 py-3.5 text-base font-semibold rounded-2xl text-primary hover:bg-primary/[0.06] active:scale-[0.98] transition-all duration-200"
+                  >
+                    <span className="flex items-center gap-3">
+                      {isLoggedIn ? (
+                        <BookOpen className="size-5 text-primary" />
+                      ) : (
+                        <LogIn className="size-5 text-primary" />
+                      )}
+                      {isLoggedIn ? "Go to Learn Hub" : "Sign in to your account"}
                       </span>
                       <ArrowUpRight className="size-4 text-primary opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
                     </Link>
@@ -219,13 +219,22 @@ function MobileOverlay({ isOpen, setIsOpen }: Props) {
                 }}
                 className="pt-4 border-t border-border/40 mt-4"
               >
-                <Link href={Routes.JoinUs} onClick={() => setIsOpen(false)}>
+                <Link href={isLoggedIn ? Routes.Learn : Routes.JoinUs} onClick={() => setIsOpen(false)}>
                   <Button
                     size="default"
                     variant="white"
-                    className="w-full h-12 rounded-2xl font-semibold text-base shadow-md"
+                    className="w-full h-12 rounded-2xl font-semibold text-base shadow-md gap-2"
                   >
-                    Join us
+                    {isLoggedIn ? (
+                      <>
+                        <span className="flex size-6 items-center justify-center rounded-full bg-primary/20 text-xs font-bold text-primary shrink-0">
+                          {user?.email?.charAt(0).toUpperCase() ?? "?"}
+                        </span>
+                        Continue Learning
+                      </>
+                    ) : (
+                      "Join us"
+                    )}
                   </Button>
                 </Link>
               </motion.div>

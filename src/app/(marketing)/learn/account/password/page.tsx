@@ -9,6 +9,7 @@ import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
 import { citizenApi } from "@/lib/api-client";
+import { Routes } from "@/constants/routes";
 
 export default function PasswordChangePage() {
   const router = useRouter();
@@ -40,7 +41,7 @@ export default function PasswordChangePage() {
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
-      router.push("/account");
+      router.push(Routes.Account);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to change password.");
     } finally {
@@ -55,7 +56,7 @@ export default function PasswordChangePage() {
         description="Update your account password."
         breadcrumbs={[
           { label: "Home", href: "/" },
-          { label: "Account", href: "/account" },
+          { label: "Account", href: Routes.Account },
           { label: "Change Password" },
         ]}
       >

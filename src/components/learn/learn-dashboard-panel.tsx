@@ -7,6 +7,7 @@ import { Progress } from "@/ui/progress";
 import { BitmojiAvatar } from "./bitmoji-avatar";
 import { Sparkles } from "lucide-react";
 import { Flame } from "lucide-react";
+import type { CivicModule } from "@/types/learn";
 
 type TranslationText = {
   dashboardTitle: string;
@@ -24,15 +25,6 @@ type Profile = {
   gender: string;
 };
 
-type StageData = {
-  id: number;
-  title: string;
-  badge: string;
-  documentName: string;
-  badgeName: string;
-  status: string;
-};
-
 export function LearnDashboardPanel({
   text,
   profile,
@@ -41,8 +33,8 @@ export function LearnDashboardPanel({
 }: {
   text: TranslationText;
   profile: Profile;
-  currentStage: StageData;
-  onSelectStage: (s: StageData) => void;
+  currentStage: CivicModule;
+  onSelectStage: (s: CivicModule) => void;
 }) {
   return (
     <motion.div
@@ -86,7 +78,7 @@ export function LearnDashboardPanel({
       <div className="p-4 border border-border bg-card rounded-2xl space-y-3 shadow-xs">
         <div className="flex justify-between items-center">
           <span className="text-[10px] uppercase font-bold text-muted-foreground">Current Stage</span>
-          <span className="text-[11px] text-primary font-bold">Stage {currentStage.id}</span>
+          <span className="text-[11px] text-primary font-bold">Stage {currentStage.order}</span>
         </div>
         <div className="flex items-center gap-3">
           <span className="text-3xl">{currentStage.badge}</span>

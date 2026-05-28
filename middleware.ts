@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const protectedPaths = [
-  "/account",
+  "/learn/account",
   "/learn/profile",
   "/learn/quests",
 ];
@@ -31,7 +31,7 @@ export function middleware(request: NextRequest) {
   }
 
   if (isAuthPage && token) {
-    return NextResponse.redirect(new URL("/account", request.url));
+    return NextResponse.redirect(new URL("/learn", request.url));
   }
 
   const response = NextResponse.next();

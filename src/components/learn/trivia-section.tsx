@@ -4,18 +4,10 @@ import { Button } from "@/ui/button";
 import { Textarea } from "@/ui/textarea";
 import { CheckCircle2, AlertCircle, Sparkles, HelpCircle, ArrowRight } from "lucide-react";
 import { cn } from "@/utils";
-
-interface TriviaItem {
-  type: "multiple-choice" | "reflection";
-  question: string;
-  options?: string[];
-  answer?: number;
-  explanation?: string;
-  placeholder?: string;
-}
+import type { StageTrivia } from "@/types/learn";
 
 interface TriviaSectionProps {
-  trivia: TriviaItem[];
+  trivia: StageTrivia[];
   stepId: number;
   stageId: number;
   currentStep: number;

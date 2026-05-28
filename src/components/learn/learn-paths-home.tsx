@@ -28,8 +28,9 @@ import Link from "next/link";
 import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
 import { useCivicModules } from "@/hooks/use-stages";
-import { STAGES_DATA, type StageData } from "@/constants/stages-data";
+import { STAGES_DATA } from "@/constants/stages-data";
 import { citizenApi } from "@/lib/api-client";
+import type { CivicModule, ChapterStep } from "@/types/learn";
 
 // Translations dictionary for Global Language Toggle (EN / SW / Sheng)
 const TRANSLATIONS = {
@@ -109,36 +110,43 @@ const TRANSLATIONS = {
 export function LearnPathsHome() {
   const { isLoggedIn, user: authUser } = useAuth();
   const apiModules = useCivicModules();
-  const apiStages: StageData[] = (apiModules.data?.results ?? []).map((m, i) => ({
-    id: m.order || i + 1,
-    title: m.title,
-    badge: m.badge,
-    badgeName: m.badgeName,
-    documentName: m.documentName,
-    archive: m.archive || "",
-    link: m.slug,
-    status: m.status || "Open",
-    credits: m.credits || "",
-    description: m.description,
-    expectations: m.expectations || [],
-    steps: (m.steps || []).map((s) => ({
-      id: parseInt(s.id, 10) || 0,
-      title: s.title,
-      youtubeId: s.youtube_url,
-      audioUrl: s.audio_url,
-      transcript: s.transcript,
-      text: s.text,
-      trivia: s.trivia,
-      duration: undefined,
-    })),
-  }));
-  const stages = apiStages.length > 0 ? apiStages : STAGES_DATA;
+  const stages: CivicModule[] = apiModules.data?.results?.length
+    ? apiModules.data.results
+    : STAGES_DATA.map(s => ({
+        id: String(s.id),
+        title: s.title,
+        slug: s.link,
+        badge: s.badge,
+        badgeName: s.badgeName,
+        documentName: s.documentName,
+        archive: s.archive,
+        link: s.link,
+        status: s.status,
+        credits: s.credits || "",
+        description: s.description,
+        expectations: s.expectations || [],
+        image_url: undefined,
+        order: s.id,
+        steps: s.steps.map((step) => ({
+          id: String(step.id),
+          title: step.title,
+          order: step.id,
+          youtube_url: step.youtubeId,
+          audio_url: step.audioUrl,
+          transcript: step.transcript,
+          text: step.text,
+          takeaways: [],
+          trivia: step.trivia,
+          is_completed: false,
+          is_locked: false,
+        })),
+      }));
   const [wantsAnonymous, setWantsAnonymous] = useState(false);
   const [profile, setProfile] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const { activeTab, setActiveTab, setActiveLesson } = useLearn();
 
-  const [selectedStage, setSelectedStage] = useState<any | null>(null);
+  const [selectedStage, setSelectedStage] = useState<CivicModule | null>(null);
   const [cachedStages, setCachedStages] = useState<number[]>([]);
 
   // Sync selectedStage ↔ activeLesson for sidebar curriculum rail
@@ -146,19 +154,19 @@ export function LearnPathsHome() {
     if (selectedStage) {
       const completedStepIds: number[] = [];
       for (const step of selectedStage.steps) {
-        const key = `stage_${selectedStage.id}_step_${step.id}_trivia_passed`;
+        const key = `stage_${selectedStage.order}_step_${step.order}_trivia_passed`;
         if (localStorage.getItem(key) === "true") {
-          completedStepIds.push(step.id);
+          completedStepIds.push(step.order);
         }
       }
       setActiveLesson({
-        stageId: selectedStage.id,
+        stageId: selectedStage.order,
         stageTitle: selectedStage.title,
         stageBadge: selectedStage.badge,
         currentStep: 0,
         totalSteps: selectedStage.steps.length,
         completedStepIds,
-        stepTitles: selectedStage.steps.map((s: any) => ({ id: s.id, title: s.title })),
+        stepTitles: selectedStage.steps.map((s) => ({ id: s.order, title: s.title })),
       });
     } else {
       setActiveLesson(null);
@@ -300,6 +308,15 @@ export function LearnPathsHome() {
     localStorage.setItem("bns_cached_stages", JSON.stringify(newCached));
   };
 
+  const stageCardData = (stage: CivicModule) => ({
+    id: stage.order,
+    title: stage.title,
+    badge: stage.badge,
+    badgeName: stage.badgeName,
+    documentName: stage.documentName,
+    status: stage.status,
+  });
+
   const handleResetProgress = () => {
     if (window.confirm("Reset all progress? This wipes profile & statistics.")) {
       localStorage.removeItem("bns_user_profile");
@@ -340,7 +357,7 @@ export function LearnPathsHome() {
   ].sort((a, b) => b.svg - a.svg).map((item, idx) => ({ ...item, rank: idx + 1 }));
 
   const currentStageNum = profile ? (profile.stageProgress ? Math.max(...profile.stageProgress) : 1) : 1;
-  const currentStage = stages.find(s => s.id === currentStageNum) || stages[0];
+  const currentStage = stages.find(s => s.order === currentStageNum) || stages[0];
 
   if (loading) {
     return (
@@ -431,9 +448,12 @@ export function LearnPathsHome() {
               <StageRoadmap
                 text={text}
                 profile={profile}
-                stages={stages}
+                stages={stages.map(stageCardData)}
                 cachedStages={cachedStages}
-                onSelectStage={setSelectedStage}
+                onSelectStage={(s) => {
+                  const full = stages.find(m => m.order === s.id);
+                  if (full) setSelectedStage(full);
+                }}
                 onToggleCache={handleToggleCache}
               />
             )}
@@ -523,27 +543,27 @@ export function LearnPathsHome() {
               profile={profile}
               onUpdateProfile={handleUpdateProfile}
               onClose={() => setSelectedStage(null)}
-              hasNext={selectedStage.id < 8}
-              hasPrev={selectedStage.id > 1}
+              hasNext={selectedStage.order < 8}
+              hasPrev={selectedStage.order > 1}
               onPrevStage={() => {
-                const prev = stages.find(s => s.id === selectedStage.id - 1);
+                const prev = stages.find(s => s.order === selectedStage.order - 1);
                 if (prev) {
                   const isCompleted = profile.badges?.includes(prev.badge);
-                  const isActive = profile.stageProgress?.includes(prev.id);
+                  const isActive = profile.stageProgress?.includes(prev.order);
                   if (!isCompleted && !isActive) {
-                    toast.error(`Stage ${prev.id} is locked.`);
+                    toast.error(`Stage ${prev.order} is locked.`);
                     return;
                   }
                   setSelectedStage(prev);
                 }
               }}
               onNextStage={() => {
-                const next = stages.find(s => s.id === selectedStage.id + 1);
+                const next = stages.find(s => s.order === selectedStage.order + 1);
                 if (next) {
                   const isCompleted = profile.badges?.includes(next.badge);
-                  const isActive = profile.stageProgress?.includes(next.id);
+                  const isActive = profile.stageProgress?.includes(next.order);
                   if (!isCompleted && !isActive) {
-                    toast.error(`Stage ${next.id} is locked.`);
+                    toast.error(`Stage ${next.order} is locked.`);
                     return;
                   }
                   setSelectedStage(next);
@@ -566,27 +586,27 @@ export function LearnPathsHome() {
               profile={profile}
               onUpdateProfile={handleUpdateProfile}
               onClose={() => setSelectedStage(null)}
-              hasNext={selectedStage.id < 8}
-              hasPrev={selectedStage.id > 1}
+              hasNext={selectedStage.order < 8}
+              hasPrev={selectedStage.order > 1}
               onPrevStage={() => {
-                const prev = stages.find(s => s.id === selectedStage.id - 1);
+                const prev = stages.find(s => s.order === selectedStage.order - 1);
                 if (prev) {
                   const isCompleted = profile.badges?.includes(prev.badge);
-                  const isActive = profile.stageProgress?.includes(prev.id);
+                  const isActive = profile.stageProgress?.includes(prev.order);
                   if (!isCompleted && !isActive) {
-                    toast.error(`Stage ${prev.id} is locked.`);
+                    toast.error(`Stage ${prev.order} is locked.`);
                     return;
                   }
                   setSelectedStage(prev);
                 }
               }}
               onNextStage={() => {
-                const next = stages.find(s => s.id === selectedStage.id + 1);
+                const next = stages.find(s => s.order === selectedStage.order + 1);
                 if (next) {
                   const isCompleted = profile.badges?.includes(next.badge);
-                  const isActive = profile.stageProgress?.includes(next.id);
+                  const isActive = profile.stageProgress?.includes(next.order);
                   if (!isCompleted && !isActive) {
-                    toast.error(`Stage ${next.id} is locked.`);
+                    toast.error(`Stage ${next.order} is locked.`);
                     return;
                   }
                   setSelectedStage(next);
@@ -685,13 +705,13 @@ export function LearnPathsHome() {
                   <div className="grid grid-cols-2 gap-4">
                     {stages.map((stage) => {
                       const isCompleted = profile.badges?.includes(stage.badge);
-                      const isActive = profile.stageProgress?.includes(stage.id);
-                      const isStageCached = cachedStages.includes(stage.id);
+                      const isActive = profile.stageProgress?.includes(stage.order);
+                      const isStageCached = cachedStages.includes(stage.order);
                       const offlineDisabled = false;
 
                       return (
                         <div
-                          key={stage.id}
+                          key={stage.order}
                           onClick={() => {
                             if (offlineDisabled) return;
                             setSelectedStage(stage);
@@ -742,7 +762,7 @@ export function LearnPathsHome() {
                             <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">{stage.status}</span>
                             {!offlineDisabled && (
                               <button
-                                onClick={(e) => handleToggleCache(stage.id, e)}
+                                onClick={(e) => handleToggleCache(stage.order, e)}
                                 className={cn(
                                   "p-1.5 rounded-lg border hover:bg-muted transition-colors",
                                   isStageCached ? "border-blue-500/20 text-blue-600 bg-blue-500/5" : "border-border text-muted-foreground"

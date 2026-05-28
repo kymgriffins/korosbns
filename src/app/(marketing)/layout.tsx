@@ -15,10 +15,9 @@ const MarketingLayout = ({
   const pathname = usePathname();
   const isContactPage = pathname === "/contact";
   const isLearnApp = pathname.startsWith("/learn");
-  const isAccountPage = pathname.startsWith("/account");
-  const showMarketingFooter = !isContactPage && !isLearnApp && !isAccountPage;
+  const showMarketingFooter = !isContactPage && !isLearnApp;
 
-  const showMarketingChrome = !isAccountPage && !isLearnApp;
+  const showMarketingChrome = !isLearnApp;
 
   return (
     <main
@@ -26,7 +25,7 @@ const MarketingLayout = ({
         showMarketingChrome ? "pt-12 md:pt-16 lg:pt-20" : ""
       }`}
     >
-      {!isAccountPage && !isLearnApp && <Navbar />}
+      {!isLearnApp && <Navbar />}
 
       <AnimatePresence mode="wait" initial={false}>
         <motion.div

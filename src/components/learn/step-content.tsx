@@ -3,14 +3,10 @@
 import { Progress } from "@/ui/progress";
 import { cn } from "@/utils";
 import { getStageTakeaway } from "@/constants/stages-data";
+import type { ChapterStep } from "@/types/learn";
 
 interface StepContentProps {
-  step: {
-    id: number;
-    title: string;
-    youtubeId: string;
-    text: string;
-  };
+  step: ChapterStep;
   stageId: number;
   currentStep: number;
   totalSteps: number;
@@ -76,7 +72,7 @@ export function StepContent({
               <div className="relative aspect-video rounded-xl overflow-hidden bg-black shadow-sm">
                 <iframe
                   className="w-full h-full border-0"
-                  src={`https://www.youtube-nocookie.com/embed/${step.youtubeId}?rel=0&modestbranding=1`}
+                  src={`https://www.youtube-nocookie.com/embed/${step.youtube_url}?rel=0&modestbranding=1`}
                   title="Budget Ndio Story Step Video"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
@@ -102,7 +98,7 @@ export function StepContent({
                 ))}
 
               {(() => {
-                const takeaway = getStageTakeaway(stageId, step.id);
+                const takeaway = getStageTakeaway(stageId, step.order);
                 if (!takeaway) return null;
                 if (takeaway.type === "info") {
                   return (

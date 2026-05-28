@@ -8,11 +8,13 @@ import MobileMenu from "@/components/marketing/mobile-menu";
 import { Button } from "@/ui/button";
 import Image from "next/image";
 import { useClickOutside } from "@/hooks";
+import { useAuth } from "@/contexts/auth-context";
 import { ThemeToggle } from "@/components/marketing/theme-toggle";
 import { motion, AnimatePresence } from "motion/react";
 import { navbarEnter } from "@/motion/variants";
 
 export function Header() {
+  const { isLoggedIn, loading: authLoading, user } = useAuth();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const ref = useClickOutside(() => setIsOpen(false));
 
@@ -72,11 +74,22 @@ export function Header() {
 
           <div className="flex shrink-0 items-center gap-2 md:gap-3">
             <ThemeToggle />
-            <Link href={Routes.JoinUs} className="hidden sm:block">
-              <Button variant="white" size="sm" className="h-9 px-4 font-medium">
-                Join us
-              </Button>
-            </Link>
+            {!authLoading && (
+              <Link href={isLoggedIn ? Routes.Learn : Routes.JoinUs} className="hidden sm:block">
+                <Button variant="white" size="sm" className="h-9 px-4 font-medium gap-2">
+                  {isLoggedIn ? (
+                    <>
+                      <span className="flex size-5 items-center justify-center rounded-full bg-primary/20 text-[10px] font-bold text-primary shrink-0">
+                        {user?.email?.charAt(0).toUpperCase() ?? "?"}
+                      </span>
+                      Continue Learning
+                    </>
+                  ) : (
+                    "Join us"
+                  )}
+                </Button>
+              </Link>
+            )}
             <motion.div
               whileTap={{ scale: 0.92 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}

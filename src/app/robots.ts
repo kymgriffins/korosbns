@@ -9,18 +9,18 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/account/", "/api/", "/auth/"],
+        disallow: ["/learn/account/", "/api/", "/auth/"],
       },
       {
         userAgent: "bingbot",
         allow: "/",
-        disallow: ["/account/", "/api/", "/auth/"],
+        disallow: ["/learn/account/", "/api/", "/auth/"],
         crawlDelay: 1,
       },
       {
         userAgent: "MicrosoftStartApp",
         allow: "/",
-        disallow: ["/account/", "/api/", "/auth/"],
+        disallow: ["/learn/account/", "/api/", "/auth/"],
         crawlDelay: 1,
       },
       {
