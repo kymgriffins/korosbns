@@ -24,15 +24,10 @@ import { cn } from "@/utils";
 import { useLearn, type ActiveLesson } from "@/contexts/learn-context";
 import { motion, AnimatePresence } from "motion/react";
 import { useAuth } from "@/contexts/auth-context";
-<<<<<<< Updated upstream
 import { useStages, type StageData } from "@/lib/use-stages";
 import { learnHubApi } from "@/lib/learn-hub";
-=======
-import type { StageData } from "@/constants/stages-data";
->>>>>>> Stashed changes
 import { citizenApi } from "@/lib/api-client";
 import { fetchGamificationMe, fetchLeaderboard, type LeaderboardRow } from "@/lib/gamification";
-import { useStages } from "@/hooks/use-stages";
 
 // Translations dictionary for Global Language Toggle (EN / SW / Sheng)
 const TRANSLATIONS = {
@@ -109,12 +104,8 @@ const TRANSLATIONS = {
 
 export function LearnPathsHome() {
   const { isLoggedIn, user: authUser } = useAuth();
-<<<<<<< Updated upstream
   const { data: apiStages, isLoading: stagesLoading, isError: stagesError } = useStages();
   const STAGES_DATA = apiStages || [];
-=======
-  const { stages: stagesData, loading: stagesLoading, error: stagesError } = useStages();
->>>>>>> Stashed changes
   const [wantsAnonymous, setWantsAnonymous] = useState(false);
   const [profile, setProfile] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
@@ -122,15 +113,9 @@ export function LearnPathsHome() {
 
   const [selectedStage, setSelectedStage] = useState<any | null>(null);
   const [cachedStages, setCachedStages] = useState<number[]>([]);
-<<<<<<< Updated upstream
   const [leaderboardData, setLeaderboardData] = useState<{ rank: number; name: string | null; points: number; level: number; badge_count: number }[]>([]);
   const [stageStats, setStageStats] = useState<Record<string, { total_users: number; avg_trivia_score: number | null }>>({});
   const [backendProfile, setBackendProfile] = useState<any | null>(null);
-=======
-  const [leaderboard, setLeaderboard] = useState<LeaderboardRow[]>([]);
-  const [leaderboardLoading, setLeaderboardLoading] = useState(true);
-  const [showRegistration, setShowRegistration] = useState(false);
->>>>>>> Stashed changes
 
   // Sync selectedStage ↔ activeLesson for sidebar curriculum rail
   useEffect(() => {
@@ -247,7 +232,6 @@ export function LearnPathsHome() {
     setLoading(false);
   }, [isLoggedIn, authUser]);
 
-<<<<<<< Updated upstream
   // Fetch global leaderboard and backend profile
   useEffect(() => {
     learnHubApi.leaderboard(10).then((res: { results: { rank: number; name: string | null; points: number; level: number; badge_count: number }[] }) => {
@@ -271,43 +255,6 @@ export function LearnPathsHome() {
       }).catch(() => {});
     });
   }, [apiStages]);
-=======
-  useEffect(() => {
-    if (!profile) return;
-    void fetchGamificationMe().then((gamification) => {
-      if (!gamification) return;
-      const updated = {
-        ...profile,
-        sovereigns: gamification.points,
-        streakDays: gamification.streak_days,
-        badges: gamification.badges?.map((badge) => badge.icon || badge.slug) ?? profile.badges,
-      };
-      setProfile(updated);
-      localStorage.setItem("bns_user_profile", JSON.stringify(updated));
-    });
-  }, [profile?.userId]);
-
-  useEffect(() => {
-    setLeaderboardLoading(true);
-    void fetchLeaderboard(20).then((rows) => {
-      if (profile) {
-        const youIndex = rows.findIndex((r) => r.name === null || (profile.pseudoName && r.name === profile.pseudoName));
-        if (youIndex === -1) {
-          rows.push({
-            rank: rows.length + 1,
-            name: profile.pseudoName || "You",
-            points: profile.sovereigns || 0,
-            level: Math.floor((profile.sovereigns || 0) / 100) + 1,
-            streak_days: profile.streakDays || 0,
-            badge_count: profile.badges?.length || 0,
-          });
-        }
-      }
-      setLeaderboard(rows.sort((a, b) => b.points - a.points).map((r, i) => ({ ...r, rank: i + 1 })));
-      setLeaderboardLoading(false);
-    });
-  }, [profile?.userId, profile?.sovereigns]);
->>>>>>> Stashed changes
 
   const checkStreak = (userProfile: any) => {
     if (!userProfile.lastActive) return 0;
@@ -382,38 +329,7 @@ export function LearnPathsHome() {
   const langKey = (profile?.language as "EN" | "SW" | "SH") || "EN";
   const text = TRANSLATIONS[langKey];
 
-<<<<<<< Updated upstream
   const currentStageNum = profile ? (profile.stageProgress ? Math.max(...profile.stageProgress) : 1) : 1;
-=======
-  const isUserRow = (name: string | null) => profile?.pseudoName && name === profile.pseudoName;
-
-  const totalModules = Math.max(stagesData.length, 1);
-  const modulesCompleted = profile?.badges?.length ?? 0;
-  const currentStageNum = profile ? (profile.stageProgress ? Math.max(...profile.stageProgress) : 1) : 1;
-  const currentStage = stagesData.find(s => s.id === currentStageNum) || stagesData[0];
-
->>>>>>> Stashed changes
-  if (loading || stagesLoading) {
-    return (
-      <div className="flex-1 flex flex-col items-center justify-center min-h-[50vh]">
-        <div className="animate-spin size-8 border-4 border-primary border-t-transparent rounded-full" />
-      </div>
-    );
-  }
-
-  if (stagesError || STAGES_DATA.length === 0) {
-    return (
-      <div className="flex-1 flex items-center justify-center p-4 bg-muted/20 min-h-[70vh]">
-        <div className="text-center space-y-4 max-w-sm">
-          <p className="text-muted-foreground text-sm">Could not load content.</p>
-          <Button onClick={() => window.location.reload()} variant="outline" className="rounded-xl font-bold">
-            Retry
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
   const currentStage = STAGES_DATA.find(s => s.order === currentStageNum) || STAGES_DATA[0];
 
   // If user is not onboarded, ask if they want to register or continue as anonymous guest
@@ -595,11 +511,7 @@ export function LearnPathsHome() {
                   <select
                     id="stageSelect"
                     onChange={(e) => {
-<<<<<<< Updated upstream
                       const selected = STAGES_DATA.find(s => s.order === parseInt(e.target.value));
-=======
-                      const selected = stagesData.find(s => s.id === parseInt(e.target.value));
->>>>>>> Stashed changes
                       if (selected) {
                         setSelectedStage(selected);
                       }
@@ -896,23 +808,15 @@ export function LearnPathsHome() {
               hasNext={STAGES_DATA.indexOf(selectedStage) < STAGES_DATA.length - 1}
               hasPrev={STAGES_DATA.indexOf(selectedStage) > 0}
               onPrevStage={() => {
-<<<<<<< Updated upstream
                 const idx = STAGES_DATA.indexOf(selectedStage);
                 const prev = STAGES_DATA[idx - 1];
-=======
-                const prev = stagesData.find(s => s.id === selectedStage.id - 1);
->>>>>>> Stashed changes
                 if (prev) {
                   setSelectedStage(prev);
                 }
               }}
               onNextStage={() => {
-<<<<<<< Updated upstream
                 const idx = STAGES_DATA.indexOf(selectedStage);
                 const next = STAGES_DATA[idx + 1];
-=======
-                const next = stagesData.find(s => s.id === selectedStage.id + 1);
->>>>>>> Stashed changes
                 if (next) {
                   setSelectedStage(next);
                 }
@@ -937,23 +841,15 @@ export function LearnPathsHome() {
               hasNext={STAGES_DATA.indexOf(selectedStage) < STAGES_DATA.length - 1}
               hasPrev={STAGES_DATA.indexOf(selectedStage) > 0}
               onPrevStage={() => {
-<<<<<<< Updated upstream
                 const idx = STAGES_DATA.indexOf(selectedStage);
                 const prev = STAGES_DATA[idx - 1];
-=======
-                const prev = stagesData.find(s => s.id === selectedStage.id - 1);
->>>>>>> Stashed changes
                 if (prev) {
                   setSelectedStage(prev);
                 }
               }}
               onNextStage={() => {
-<<<<<<< Updated upstream
                 const idx = STAGES_DATA.indexOf(selectedStage);
                 const next = STAGES_DATA[idx + 1];
-=======
-                const next = stagesData.find(s => s.id === selectedStage.id + 1);
->>>>>>> Stashed changes
                 if (next) {
                   setSelectedStage(next);
                 }
@@ -1022,7 +918,6 @@ export function LearnPathsHome() {
                       <p className="text-xs text-muted-foreground text-center py-4">Loading...</p>
                     ) : (
                     <div className="space-y-2">
-<<<<<<< Updated upstream
                       {leaderboardData.slice(0, 5).map((item) => (
                         <div key={item.rank} className="flex items-center justify-between p-3 rounded-xl border text-xs bg-muted/10 border-border/50">
                           <div className="flex items-center gap-3">
@@ -1031,19 +926,6 @@ export function LearnPathsHome() {
                           </div>
                           <div className="flex items-center gap-4 text-muted-foreground font-semibold">
                             <span>Lv.{item.level}</span>
-=======
-                      {leaderboard.slice(0, 5).map((item) => (
-                        <div key={item.name ?? item.rank} className={cn(
-                          "flex items-center justify-between p-3 rounded-xl border text-xs",
-                          isUserRow(item.name) ? "bg-primary/5 border-primary/20" : "bg-muted/10 border-border/50"
-                        )}>
-                          <div className="flex items-center gap-3">
-                            <span className="font-black text-muted-foreground w-4">{item.rank}</span>
-                            <span className={cn("font-bold text-xs", isUserRow(item.name) ? "text-primary" : "text-foreground")}>{item.name ?? "Anonymous"}</span>
-                          </div>
-                          <div className="flex items-center gap-4 text-muted-foreground font-semibold">
-                            <span>{item.badge_count} Badges</span>
->>>>>>> Stashed changes
                             <span className="text-foreground font-bold">{item.points} pts</span>
                           </div>
                         </div>
@@ -1311,7 +1193,6 @@ export function LearnPathsHome() {
 
                   {/* Unlocked Badges */}
                   <div className="p-6 border border-border bg-card rounded-2xl space-y-4 shadow-sm">
-<<<<<<< Updated upstream
                   <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Unlocked Badges ({profile.badges?.length || 0}/{STAGES_DATA.length})</h3>
                   <div className="grid grid-cols-4 gap-2">
                     {STAGES_DATA.map((stage) => {
@@ -1326,24 +1207,7 @@ export function LearnPathsHome() {
                         </div>
                       );
                     })}
-=======
-                    <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Unlocked Badges ({profile.badges?.length || 0}/8)</h3>
-                    <div className="grid grid-cols-4 gap-2">
-                      {stagesData.map((stage) => {
-                        const unlocked = profile.badges?.includes(stage.badge);
-                        return (
-                          <div
-                            key={stage.id}
-                            className={`p-2.5 rounded-xl border text-center space-y-1 shadow-xs ${unlocked ? 'bg-primary/5 border-primary/20' : 'bg-muted/10 border-border opacity-40'}`}
-                          >
-                            <div className="text-xl flex justify-center">{stage.badge}</div>
-                            <p className="text-[9px] font-bold truncate">{stage.badgeName}</p>
-                          </div>
-                        );
-                      })}
                     </div>
->>>>>>> Stashed changes
-                  </div>
                   </div>
 
                   {/* Certificates */}

@@ -128,10 +128,6 @@ export type LearnProfileResponse = {
     points: number;
     level: number;
     streak_days: number;
-<<<<<<< Updated upstream
-    badges: Array<{ slug: string; name: string; description?: string; icon?: string }>;
-    certificates: Array<{ id: string; civic_module: string; module_title: string; module_slug: string; issued_at: string; certificate_url: string }>;
-=======
     badges: Array<{
       slug: string;
       name: string;
@@ -146,7 +142,6 @@ export type LearnProfileResponse = {
       issued_at: string;
       certificate_url?: string;
     }>;
->>>>>>> Stashed changes
     recent_progress: Array<{
       content_type: string;
       content_id: string;

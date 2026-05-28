@@ -17,37 +17,15 @@ import {
   CONSTITUTION_HISTORICAL_DOCS,
   PARTICIPATION_TOOLKIT_DOCS
 } from "@/constants/documents-registry";
-<<<<<<< Updated upstream
-=======
-import { getStepTakeaway } from "@/lib/civic-fallback";
-import { postGamificationEvent } from "@/lib/gamification";
->>>>>>> Stashed changes
 import { learnHubApi } from "@/lib/learn-hub";
 import type { StageTakeaway, StageTrivia } from "@/lib/learn-hub";
 
-<<<<<<< Updated upstream
 interface TriviaItem extends StageTrivia {
-=======
-interface TriviaItem {
-  id?: string;
-  type: "multiple-choice" | "reflection";
-  question: string;
-  options?: string[];
-  answer?: number;
-  explanation?: string;
->>>>>>> Stashed changes
   placeholder?: string;
 }
 
 interface Step {
-<<<<<<< Updated upstream
   id: string;
-=======
-  id: number;
-  chapterId?: string;
-  triviaId?: string | null;
-  takeaways?: Array<{ type: "info" | "warning"; title: string; text: string }>;
->>>>>>> Stashed changes
   title: string;
   youtubeId: string;
   audioUrl: string;
@@ -59,12 +37,7 @@ interface Step {
 }
 
 interface Stage {
-<<<<<<< Updated upstream
   id: string;
-=======
-  id: number;
-  moduleId?: string;
->>>>>>> Stashed changes
   title: string;
   badge: string;
   badgeName: string;
@@ -119,7 +92,6 @@ export function StageDetailDrawer({
   const [liveRepoDocs, setLiveRepoDocs] = useState<any[]>([]);
   const [apiLoading, setApiLoading] = useState<boolean>(false);
   const [origin, setOrigin] = useState<string>("");
-<<<<<<< Updated upstream
   const [stageStats, setStageStats] = useState<{ total_users: number; avg_trivia_score: number | null } | null>(null);
   
   // Forum State
@@ -182,7 +154,6 @@ export function StageDetailDrawer({
       toast.error("Failed to post reply.");
     }
   };
-=======
   const [serverProgress, setServerProgress] = useState<
     Array<{ content_type: string; content_id: string; progress_percent: number }>
   >([]);
@@ -199,7 +170,6 @@ export function StageDetailDrawer({
   useEffect(() => {
     void refreshServerProgress();
   }, [stage.id, refreshServerProgress]);
->>>>>>> Stashed changes
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -316,10 +286,8 @@ export function StageDetailDrawer({
     localStorage.setItem(`stage_${stage.order}_current_step`, "1");
   };
 
-<<<<<<< Updated upstream
   const isStepTriviaPassed = (stepId: string) => {
     return localStorage.getItem(`stage_${stage.order}_step_${stepId}_trivia_passed`) === "true";
-=======
   const isStepTriviaPassed = (step: Step & { chapterId?: string; triviaId?: string | null }) => {
     if (step.chapterId) {
       const chapterDone = serverProgress.some(
@@ -400,7 +368,6 @@ export function StageDetailDrawer({
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Could not submit trivia to server.");
     }
->>>>>>> Stashed changes
   };
 
   const handleAnswerMCQ = (qIdx: number, selectedIdx: number, correctIdx: number) => {
@@ -439,9 +406,7 @@ export function StageDetailDrawer({
       return;
     }
     const step = stage.steps[currentStep - 1];
-<<<<<<< Updated upstream
     const rewardKey = `stage_${stage.order}_step_${step.id}_trivia_${qIdx}_reward`;
-=======
     const q = step.trivia[qIdx];
     const optionIdx = q?.options?.length
       ? Math.max(0, q.options.indexOf(selectedReflectionOption))
@@ -449,7 +414,6 @@ export function StageDetailDrawer({
     recordTriviaAnswer(qIdx, optionIdx >= 0 ? optionIdx : 0);
     setTriviaSubmitted(true);
     const rewardKey = `stage_${stage.id}_step_${step.id}_trivia_${qIdx}_reward`;
->>>>>>> Stashed changes
     if (!localStorage.getItem(rewardKey)) {
       localStorage.setItem(rewardKey, "true");
       void postGamificationEvent({
@@ -479,7 +443,6 @@ export function StageDetailDrawer({
     } else {
       localStorage.setItem(`stage_${stage.order}_step_${step.id}_trivia_passed`, "true");
       setContentConsumed(true);
-<<<<<<< Updated upstream
       toast.success("Step complete! ⭐");
       // Sync step progress and unlock next chapter on backend
       learnHubApi.markProgress({
@@ -488,13 +451,11 @@ export function StageDetailDrawer({
         progress_percent: Math.round((currentStep / stage.steps.length) * 100),
       }).catch(() => {});
       learnHubApi.completeChapter(step.id).catch(() => {});
-=======
       toast.success("Chapter check complete! ⭐");
       void (async () => {
         await submitServerTriviaIfReady(step, triviaAnswersByQuestion);
         await syncStepCompletion(step);
       })().catch(() => {});
->>>>>>> Stashed changes
       autoAdvanceRef.current = setTimeout(() => {
         setCurrentStep((prev) => {
           const nextVal = prev + 1;
@@ -503,11 +464,7 @@ export function StageDetailDrawer({
         });
       }, 2000);
     }
-<<<<<<< Updated upstream
   }, [activeTriviaIdx, currentStep, stage.order, stage.steps]);
-=======
-  }, [activeTriviaIdx, currentStep, stage.id, stage.steps, triviaAnswersByQuestion]);
->>>>>>> Stashed changes
 
   const masteryAwardedKey = `stage_${stage.order}_mastery_awarded`;
   useEffect(() => {
@@ -862,11 +819,7 @@ export function StageDetailDrawer({
 
                         {(() => {
                           const step = stage.steps[currentStep - 1];
-<<<<<<< Updated upstream
                           const takeaway = step?.takeaways?.[0] || null;
-=======
-                          const takeaway = getStepTakeaway(stage.id, step.id, step.takeaways);
->>>>>>> Stashed changes
                           if (!takeaway) return null;
                           if (takeaway.type === "info") {
                             return (
@@ -907,18 +860,11 @@ export function StageDetailDrawer({
                   </>
                 )}
 
-<<<<<<< Updated upstream
-                {/* SEPARATE TRIVIA FORMAT */}
-                {activeFormat === "trivia" && (
-                  <div className="space-y-4 max-w-2xl mx-auto">
-                    {isStepTriviaPassed(stage.steps[currentStep - 1].id) ? (
-                      <div className="p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 flex items-center gap-3">
-=======
                 {/* INLINE TRIVIA */}
-                <div className="space-y-4">
-                  {isStepTriviaPassed(stage.steps[currentStep - 1]) ? (
+                {activeFormat === "trivia" && (
+                  <div className="space-y-4">
+                    {isStepTriviaPassed(stage.steps[currentStep - 1]) ? (
                     <div className="p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 flex items-center gap-3">
->>>>>>> Stashed changes
                       <CheckCircle2 className="size-5 text-emerald-600 shrink-0" />
                       <div>
                         <h4 className="text-xs font-bold text-emerald-700 dark:text-emerald-300">Step Complete!</h4>

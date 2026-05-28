@@ -12,11 +12,6 @@ import { useAuth } from "@/contexts/auth-context";
 import { useStages } from "@/lib/use-stages";
 import { Button } from "@/ui/button";
 import { LearnMobileNav } from "@/layouts/LearnMobileNav";
-<<<<<<< Updated upstream
-=======
-import { useStages } from "@/hooks/use-stages";
-import { captureReferralFromUrl, claimReferral } from "@/lib/referral";
->>>>>>> Stashed changes
 
 function LearnAppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -169,13 +164,8 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
                 All Modules
               </p>
               <div className="space-y-0.5">
-<<<<<<< Updated upstream
                 {sortedStages.map((s) => {
                   const isCurrent = s.order === activeLesson.stageId;
-=======
-                {allModules.map((mod) => {
-                  const isCurrent = mod.id === activeLesson.stageId;
->>>>>>> Stashed changes
                   return (
                     <div
                       key={mod.id}
