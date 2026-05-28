@@ -49,8 +49,6 @@ interface Stage {
   steps: Step[];
 }
 
-// getStageTakeaway imported from @/constants/stages-data
-
 interface StageDetailDrawerProps {
   stage: Stage;
   profile: any;

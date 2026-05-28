@@ -115,13 +115,22 @@ export function LearnPathsHome() {
     badge: m.badge,
     badgeName: m.badgeName,
     documentName: m.documentName,
-    archive: "",
+    archive: m.archive || "",
     link: m.slug,
     status: m.status || "Open",
     credits: m.credits || "",
     description: m.description,
     expectations: m.expectations || [],
-    steps: [],
+    steps: (m.steps || []).map((s) => ({
+      id: parseInt(s.id, 10) || 0,
+      title: s.title,
+      youtubeId: s.youtube_url,
+      audioUrl: s.audio_url,
+      transcript: s.transcript,
+      text: s.text,
+      trivia: s.trivia,
+      duration: undefined,
+    })),
   }));
   const stages = apiStages.length > 0 ? apiStages : STAGES_DATA;
   const [wantsAnonymous, setWantsAnonymous] = useState(false);
