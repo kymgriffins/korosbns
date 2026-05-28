@@ -9,22 +9,17 @@ import {
 import { cn } from "@/utils";
 import { LearnProvider, useLearn, type LearnTab } from "@/contexts/learn-context";
 import { useAuth } from "@/contexts/auth-context";
-import { useStages } from "@/lib/use-stages";
 import { Button } from "@/ui/button";
 import { LearnMobileNav } from "@/layouts/LearnMobileNav";
-<<<<<<< Updated upstream
-=======
 import { useStages } from "@/hooks/use-stages";
 import { captureReferralFromUrl, claimReferral } from "@/lib/referral";
->>>>>>> Stashed changes
 
 function LearnAppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const { isLoggedIn, user } = useAuth();
-  const { data: stages } = useStages();
+  const { stages: allModules } = useStages();
 
-  const sortedStages = (stages ?? []).sort((a, b) => a.order - b.order);
   const {
     activeTab,
     setActiveTab,
@@ -33,7 +28,6 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
     gamification,
     activeLesson,
   } = useLearn();
-  const { stages: allModules } = useStages();
 
   useEffect(() => {
     const stored = localStorage.getItem("bns_sidebar_collapsed");
@@ -169,13 +163,8 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
                 All Modules
               </p>
               <div className="space-y-0.5">
-<<<<<<< Updated upstream
-                {sortedStages.map((s) => {
-                  const isCurrent = s.order === activeLesson.stageId;
-=======
                 {allModules.map((mod) => {
                   const isCurrent = mod.id === activeLesson.stageId;
->>>>>>> Stashed changes
                   return (
                     <div
                       key={mod.id}

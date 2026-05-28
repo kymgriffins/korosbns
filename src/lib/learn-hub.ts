@@ -128,10 +128,6 @@ export type LearnProfileResponse = {
     points: number;
     level: number;
     streak_days: number;
-<<<<<<< Updated upstream
-    badges: Array<{ slug: string; name: string; description?: string; icon?: string }>;
-    certificates: Array<{ id: string; civic_module: string; module_title: string; module_slug: string; issued_at: string; certificate_url: string }>;
-=======
     badges: Array<{
       slug: string;
       name: string;
@@ -141,12 +137,12 @@ export type LearnProfileResponse = {
     }>;
     certificates?: Array<{
       id: string;
+      civic_module?: string;
       module_title: string;
       module_slug: string;
       issued_at: string;
       certificate_url?: string;
     }>;
->>>>>>> Stashed changes
     recent_progress: Array<{
       content_type: string;
       content_id: string;
@@ -261,14 +257,6 @@ export const learnHubApi = {
         typeof payload.detail === "string" ? payload.detail : "Could not submit trivia attempt",
       );
     }
-    return res.json();
-  },
-  completeChapter: async (chapterId: string) => {
-    const res = await fetch(buildApiUrl(`/content/civic-chapters/${chapterId}/complete/`), {
-      method: "POST",
-      headers: gamificationHeaders(),
-    });
-    if (!res.ok) throw new Error("Could not complete chapter");
     return res.json();
   },
   getForumThreads: (chapterId?: string) => {
