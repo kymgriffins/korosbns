@@ -29,11 +29,13 @@ export function LearnDashboardPanel({
   text,
   profile,
   currentStage,
+  totalStages,
   onSelectStage,
 }: {
   text: TranslationText;
   profile: Profile;
   currentStage: CivicModule;
+  totalStages: number;
   onSelectStage: (s: CivicModule) => void;
 }) {
   return (
@@ -69,10 +71,10 @@ export function LearnDashboardPanel({
       <div className="p-4 rounded-2xl border border-border bg-card space-y-3 shadow-xs">
         <div className="flex justify-between items-center text-xs font-bold text-foreground">
           <span>Progress to Citizen Expert</span>
-          <span className="text-primary">{profile.badges?.length || 0} / 8 Stages Mastered</span>
+          <span className="text-primary">{profile.badges?.length || 0} / {totalStages} Stages Mastered</span>
         </div>
-        <Progress value={((profile.badges?.length || 0) / 8) * 100} className="h-2 rounded-full" />
-        <p className="text-[10px] text-muted-foreground">Unlock all 8 badges by completing the trivia gates.</p>
+        <Progress value={totalStages > 0 ? ((profile.badges?.length || 0) / totalStages) * 100 : 0} className="h-2 rounded-full" />
+        <p className="text-[10px] text-muted-foreground">Unlock all {totalStages} badges by completing the trivia gates.</p>
       </div>
 
       <div className="p-4 border border-border bg-card rounded-2xl space-y-3 shadow-xs">

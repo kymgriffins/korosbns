@@ -149,11 +149,7 @@ export function StageDetailDrawer({
     writeProgress(stage.slug, { ...p, stepsCompleted: { ...p.stepsCompleted, [step.order]: true }, currentStep: currentStep + 1 });
     setContentConsumed(true);
     toast.success("Knowledge Check complete! \u2B50");
-    learnHubApi.markProgress({
-      content_type: "article",
-      content_id: `stage-${stage.order}-step-${step.order}`,
-      progress_percent: Math.round((currentStep / stage.steps.length) * 100),
-    }).catch(() => {});
+    learnHubApi.completeChapter(step.id).catch(() => {});
     setCurrentStep((prev) => prev + 1);
   };
 
@@ -189,10 +185,10 @@ export function StageDetailDrawer({
         };
         onUpdateProfile(updatedProfile);
 
-        // Sync stage mastery to backend
+        // Sync stage mastery to backend with real module UUID
         learnHubApi.markProgress({
           content_type: "path",
-          content_id: `stage-${stage.order}`,
+          content_id: stage.id,
           progress_percent: 100,
         }).catch(() => {});
 

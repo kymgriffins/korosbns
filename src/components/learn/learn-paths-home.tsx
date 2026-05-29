@@ -378,6 +378,7 @@ export function LearnPathsHome() {
                 text={text}
                 profile={profile}
                 currentStage={currentStage}
+                totalStages={totalStages}
                 onSelectStage={setSelectedStage}
               />
             )}

@@ -29,6 +29,12 @@ export type ChapterStep = {
   trivia: StageTrivia[];
   is_completed: boolean;
   is_locked: boolean;
+  learning_outcomes?: LearningOutcome[];
+};
+
+export type LearningOutcome = {
+  id: string;
+  description: string;
 };
 
 export type CivicModuleAuthor = {
