@@ -106,6 +106,9 @@ export default function RootLayout({
         y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
     })(window, document, "clarity", "script", "wugt5any7z");`}
         </Script>
+        <Script id="register-sw" strategy="afterInteractive">
+          {`if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('/sw.js')})}`}
+        </Script>
       </body>
     </html>
   );
