@@ -39,7 +39,7 @@ export default function LandingHero() {
           <motion.div variants={fadeInUp} className="flex flex-col gap-6 lg:gap-8">
             <p className="max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
               Budget Ndio Story is a youth-led initiative in Kenya turning complex
-              national budgets into clear, actionable stories for county engagement
+              national budgets into clear, actionable stories for civic engagement
               and democratic audit.
             </p>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
