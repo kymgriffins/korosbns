@@ -32,7 +32,7 @@ export default function LandingFooter() {
                             <h4 className="text-white/40 uppercase tracking-widest text-[10px] font-bold">Explore</h4>
                             <ul className="space-y-4">
                                 <li><Link href="/learn" className="text-base md:text-lg hover:text-primary transition-colors inline-block">Stories</Link></li>
-                                <li><Link href="/learn" className="text-base md:text-lg hover:text-primary transition-colors inline-block">Research</Link></li>
+                                <li><Link href="/learn" className="text-base md:text-lg hover:text-primary transition-colors inline-block">Learn</Link></li>
                                 <li><Link href="/about" className="text-base md:text-lg hover:text-primary transition-colors inline-block">About</Link></li>
                                 <li><Link href="/contact" className="text-base md:text-lg hover:text-primary transition-colors inline-block">Contact</Link></li>
                             </ul>

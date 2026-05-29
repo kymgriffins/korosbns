@@ -237,7 +237,6 @@ export const ORG_SEED: OrgSeed = {
       { label: "Partners", href: "/partners" },
       { label: "Media", href: "/media" },
       { label: "Impact", href: "/impact" },
-      { label: "Research", href: "/research" },
     ],
     footerSections: footerLinks,
   },
