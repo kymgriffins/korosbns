@@ -1,6 +1,7 @@
 import FlareCursor from "@/components/global/flare-cursor";
 import LoadingScreen from "@/components/global/loading-screen";
 import Providers from "@/components/global/providers";
+import WhatsAppSupport from "@/components/global/whatsapp-support";
 import { base, handwriting, heading } from "@/constants";
 import "@/styles/globals.css";
 import { cn, generateMetadata } from "@/utils";
@@ -94,6 +95,7 @@ export default function RootLayout({
         <Providers>
           <LoadingScreen />
           <FlareCursor />
+          <WhatsAppSupport />
           {children}
         </Providers>
         <Analytics />
