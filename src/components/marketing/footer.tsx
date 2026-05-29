@@ -9,6 +9,15 @@ import Link from "next/link";
 import React, { useMemo, useState } from "react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
+import {
+  IconBrandX,
+  IconBrandLinkedin,
+  IconBrandWhatsapp,
+  IconBrandYoutube,
+  IconBrandTiktok,
+  IconBrandInstagram,
+  IconBrandFacebook,
+} from "@tabler/icons-react";
 
 import { socialLinks as defaultSocialLinks } from "@/constants/links";
 import { useOrg } from "@/contexts/org-context";
@@ -17,15 +26,16 @@ import {
   subscribeNewsletter,
 } from "@/lib/newsletter-subscribe";
 
-function integrationIconAsset(icon: string): string {
-  const key =
-    icon === "x" || icon === "twitter"
-      ? "social-x"
-      : icon === "link" || !icon
-        ? "layers"
-        : icon;
-  return `/icons/integrations/${key}.svg`;
-}
+const socialIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  x: IconBrandX,
+  twitter: IconBrandX,
+  linkedin: IconBrandLinkedin,
+  whatsapp: IconBrandWhatsapp,
+  youtube: IconBrandYoutube,
+  tiktok: IconBrandTiktok,
+  instagram: IconBrandInstagram,
+  facebook: IconBrandFacebook,
+};
 
 const Footer = () => {
   const { config, showNewsletter } = useOrg();
@@ -203,13 +213,20 @@ const Footer = () => {
                   transition={{ duration: 2.8, repeat: Infinity, delay: index * 0.08 }}
                 />
                 <motion.div whileHover={{ y: -1.5, scale: 1.06 }} transition={{ duration: 0.2 }}>
-                  <Image
-                    src={integrationIconAsset(String(social.icon))}
-                    alt={social.label}
-                    width={20}
-                    height={20}
-                    className={social.icon === "x" ? "size-4" : "size-5"}
-                  />
+                  {(() => {
+                    const Icon = socialIconMap[social.icon as string];
+                    return Icon ? (
+                      <Icon className="size-5 text-foreground/70 group-hover:text-foreground transition-colors" />
+                    ) : (
+                      <Image
+                        src={`/icons/integrations/${social.icon as string}.svg`}
+                        alt={social.label}
+                        width={20}
+                        height={20}
+                        className="size-5"
+                      />
+                    );
+                  })()}
                 </motion.div>
               </Link>
             ))}
