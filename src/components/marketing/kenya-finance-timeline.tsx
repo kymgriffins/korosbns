@@ -340,19 +340,19 @@ export default function KenyaFinanceTimeline() {
           <ul className="grid grid-cols-1 gap-x-8 gap-y-2 text-sm text-muted-foreground md:grid-cols-2">
             <li className="flex items-center gap-2">
               <span className="size-1.5 rounded-full bg-yellow-500" />
-              Rental income tax increase: 7.5% → 10% ✅ TRUE
+              Rental income tax: rate remains at 7.5%
             </li>
             <li className="flex items-center gap-2">
               <span className="size-1.5 rounded-full bg-yellow-500" />
-              Excise duty adjustments on tobacco products ✅ TRUE
+              Excise duty adjustments on tobacco products
             </li>
             <li className="flex items-center gap-2">
               <span className="size-1.5 rounded-full bg-yellow-500" />
-              Enhanced digital service tax enforcement ✅ TRUE
+              Enhanced digital service tax enforcement
             </li>
             <li className="flex items-center gap-2">
               <span className="size-1.5 rounded-full bg-yellow-500" />
-              Aggressive tax compliance tracking desk ✅ TRUE (as pre-filled tax returns &amp; enhanced compliance powers)
+              Aggressive tax compliance tracking desk (as pre-filled tax returns &amp; enhanced compliance powers)
             </li>
           </ul>
         </div>
