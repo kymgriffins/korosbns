@@ -44,7 +44,8 @@ export const Routes = {
     Verify: "/auth/verify",
     Reset: "/auth/reset",
     Invite: "/auth/register",
-    Account: "/account",
-    AccountNotifications: "/account/notifications",
-    AccountSignOut: "/account/sign-out",
+    Account: "/learn/account",
+    AccountPassword: "/learn/account/password",
+    AccountNotifications: "/learn/account/notifications",
+    AccountSignOut: "/learn/account/sign-out",
 } as const;

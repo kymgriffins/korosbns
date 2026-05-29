@@ -1,79 +1,64 @@
-import { getAccessToken } from "@/lib/api-client";
-import { resolveAppUrl } from "@/lib/api-url";
+import { apiFetch } from "@/lib/api-client";
+import type { ApiListResponse } from "@/types/api";
+import type { GamificationState, LeaderboardEntry, ChallengeData, ReferralData } from "@/types/gamification";
+import type { CertificateData } from "@/types/learn";
 
-const GAMIFICATION_ID_STORAGE_KEY = "bns_gamification_id";
+export type { GamificationState, LeaderboardEntry, ChallengeData, CertificateData, ReferralData };
 
-export type GamificationState = {
-  points: number;
-  level: number;
-  streak_days: number;
-  badges?: Array<{ slug: string; name: string; icon?: string }>;
-};
-
-export function getGamificationDeviceId(): string {
-  if (typeof window === "undefined") return "";
-  const existing = window.localStorage.getItem(GAMIFICATION_ID_STORAGE_KEY);
-  if (existing) return existing;
-  const generated = `device-${crypto.randomUUID()}`;
-  window.localStorage.setItem(GAMIFICATION_ID_STORAGE_KEY, generated);
-  return generated;
+export function fetchGamificationMe(): Promise<GamificationState | null> {
+  return apiFetch<GamificationState>("/gamification/me/").catch(() => null);
 }
 
-export function gamificationHeaders(): HeadersInit {
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-    "X-Gamification-Id": getGamificationDeviceId(),
-  };
-  const token = getAccessToken();
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
-  return headers;
-}
-
-export async function fetchGamificationMe(): Promise<GamificationState | null> {
-  try {
-    const res = await fetch(resolveAppUrl("/api/gamification/me/"), {
-      headers: gamificationHeaders(),
-    });
-    if (!res.ok) return null;
-    return (await res.json()) as GamificationState;
-  } catch {
-    return null;
-  }
-}
-
-export async function postGamificationEvent(body: {
+export function postGamificationEvent(body: {
   event_type: string;
   points?: number;
   object_id?: string;
   idempotency_key: string;
   metadata?: Record<string, unknown>;
 }): Promise<GamificationState | null> {
-  try {
-    const res = await fetch(resolveAppUrl("/api/gamification/events/"), {
-      method: "POST",
-      headers: gamificationHeaders(),
-      body: JSON.stringify(body),
-    });
-    if (!res.ok) return null;
-    return (await res.json()) as GamificationState;
-  } catch {
-    return null;
-  }
+  return apiFetch<GamificationState>("/gamification/events/", {
+    method: "POST",
+    body: JSON.stringify(body),
+  }).catch(() => null);
 }
 
-export async function trackAnalytics(
+export function fetchLeaderboard(limit = 20): Promise<LeaderboardEntry[]> {
+  return apiFetch<ApiListResponse<LeaderboardEntry>>(`/gamification/leaderboard/?limit=${limit}`)
+    .then((res) => res.results ?? [])
+    .catch(() => []);
+}
+
+export function fetchChallenges(): Promise<ChallengeData[]> {
+  return apiFetch<ApiListResponse<ChallengeData>>("/gamification/challenges/")
+    .then((res) => res.results ?? [])
+    .catch(() => []);
+}
+
+export function submitChallenge(challengeId: string): Promise<{ points_awarded: number } | null> {
+  return apiFetch<{ points_awarded: number }>(`/gamification/challenges/${challengeId}/submit/`, {
+    method: "POST",
+  }).catch(() => null);
+}
+
+export function fetchCertificates(): Promise<CertificateData[]> {
+  return apiFetch<ApiListResponse<CertificateData>>("/gamification/certificates/")
+    .then((res) => res.results ?? [])
+    .catch(() => []);
+}
+
+export function issueCertificate(civicModuleId: string): Promise<CertificateData | null> {
+  return apiFetch<CertificateData>("/gamification/certificates/issue/", {
+    method: "POST",
+    body: JSON.stringify({ civic_module_id: civicModuleId }),
+  }).catch(() => null);
+}
+
+export function trackAnalytics(
   eventName: string,
   payload?: Record<string, unknown>,
 ): Promise<void> {
-  try {
-    await fetch(resolveAppUrl("/api/analytics/events/"), {
-      method: "POST",
-      headers: gamificationHeaders(),
-      body: JSON.stringify({ event_name: eventName, payload: payload ?? {} }),
-    });
-  } catch {
-    /* optional */
-  }
+  return apiFetch<void>("/analytics/events/", {
+    method: "POST",
+    body: JSON.stringify({ event_name: eventName, payload: payload ?? {} }),
+  }).catch(() => undefined);
 }

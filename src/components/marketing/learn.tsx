@@ -43,7 +43,6 @@ import { LEARN_STORIES_VISIBLE } from "@/constants/feature-flags";
 import {
   mapApiArticle,
   mapApiStory,
-  mapStoriesJsonFallback,
   triviaToBrowseCards,
   triviaToQuizQuestions,
   type HubArticle,
@@ -269,7 +268,7 @@ function NewsletterSignup() {
 
 type AppState = "hub" | "article" | "quiz" | "complete" | "survey" | "survey-complete";
 const STORY_WATCHED_STORAGE_KEY = "bns_story_watched";
-const GAMIFICATION_ID_STORAGE_KEY = "bns_gamification_id";
+
 
 type GamificationState = {
   points: number;
@@ -349,10 +348,8 @@ export default function Learn() {
             setStories(parsedStories);
             setStoryFlowsState({ ...parsedFlows, "budget-trivia": [] });
           } else if (process.env.NODE_ENV === "development") {
-            const fallback = await import("@/constants/stories.json").then((m) => m.default);
-            const { stories: fbStories, flows } = mapStoriesJsonFallback(fallback);
-            setStories(fbStories);
-            setStoryFlowsState(flows);
+            setStories([]);
+            setStoryFlowsState({});
           }
         } catch (err) {
           console.error("Failed to fetch stories from API:", err);
@@ -394,24 +391,14 @@ export default function Learn() {
     void fetchTrivia();
   }, []);
 
-  const getGamificationId = () => {
-    if (typeof window === "undefined") return "guest";
-    const existing = window.localStorage.getItem(GAMIFICATION_ID_STORAGE_KEY);
-    if (existing) return existing;
-    const generated = `device-${crypto.randomUUID()}`;
-    window.localStorage.setItem(GAMIFICATION_ID_STORAGE_KEY, generated);
-    return generated;
-  };
-
   const gamificationFetch = async (path: string, init?: RequestInit) => {
-    const identifier = getGamificationId();
     return fetch(resolveAppUrl(path), {
       ...init,
       headers: {
         "Content-Type": "application/json",
-        "X-Gamification-Id": identifier,
         ...(init?.headers || {}),
       },
+      credentials: "include",
     });
   };
 

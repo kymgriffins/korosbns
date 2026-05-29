@@ -1,22 +1,18 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { fetchGamificationMe, type GamificationState } from "@/lib/gamification";
+import { learnHubApi } from "@/lib/learn-hub";
+import type { CivicModule } from "@/types/learn";
 import { useAuth } from "@/contexts/auth-context";
 
 export type LearnTab = "home" | "learn" | "alerts" | "profile";
 
-interface ActiveModule {
-  id: string;
-  title: string;
-  category?: string;
-  progress: number;
-}
-
 export interface ActiveLesson {
-  stageId: number;
+  stageId: string;
   stageTitle: string;
   stageBadge: string;
+  stageOrder: number;
   currentStep: number;
   totalSteps: number;
   completedStepIds: number[];
@@ -34,10 +30,13 @@ interface LearnContextType {
   setRightDrawerOpen: (open: boolean) => void;
   gamification: GamificationState | null;
   refreshGamification: () => Promise<void>;
-  activeModule: ActiveModule | null;
-  setActiveModule: (module: ActiveModule | null) => void;
   activeLesson: ActiveLesson | null;
   setActiveLesson: (lesson: ActiveLesson | null) => void;
+  civicModules: CivicModule[];
+  fetchCivicModules: () => Promise<void>;
+  updateCurrentStep: (step: number) => void;
+  totalStages: number;
+  modulesLoading: boolean;
 }
 
 const LearnContext = createContext<LearnContextType | undefined>(undefined);
@@ -49,10 +48,13 @@ export function LearnProvider({ children }: { children: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [rightDrawerOpen, setRightDrawerOpen] = useState(false);
   const [gamification, setGamification] = useState<GamificationState | null>(null);
-  const [activeModule, setActiveModule] = useState<ActiveModule | null>(null);
   const [activeLesson, setActiveLesson] = useState<ActiveLesson | null>(null);
+  const [civicModules, setCivicModules] = useState<CivicModule[]>([]);
+  const [modulesLoading, setModulesLoading] = useState(true);
 
-  const refreshGamification = async () => {
+  const totalStages = civicModules.length;
+
+  const refreshGamification = useCallback(async () => {
     if (!isLoggedIn) return;
     try {
       const state = await fetchGamificationMe();
@@ -60,22 +62,37 @@ export function LearnProvider({ children }: { children: React.ReactNode }) {
     } catch (err) {
       console.error("Failed to fetch gamification state", err);
     }
-  };
+  }, [isLoggedIn]);
+
+  const fetchCivicModules = useCallback(async () => {
+    setModulesLoading(true);
+    try {
+      const data = await learnHubApi.stages();
+      if (data?.results?.length) {
+        setCivicModules(data.results);
+      }
+    } catch (err) {
+      console.error("Failed to fetch civic modules", err);
+    } finally {
+      setModulesLoading(false);
+    }
+  }, []);
+
+  const updateCurrentStep = useCallback((step: number) => {
+    setActiveLesson((prev) => prev ? { ...prev, currentStep: step } : prev);
+  }, []);
 
   useEffect(() => {
     if (isLoggedIn) {
       void refreshGamification();
-      setActiveModule({
-        id: "national-estimates-2024-25",
-        title: "National Estimates (2024/25)",
-        category: "Budget Estimates",
-        progress: 40,
-      });
     } else {
       setGamification(null);
-      setActiveModule(null);
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, refreshGamification]);
+
+  useEffect(() => {
+    void fetchCivicModules();
+  }, [fetchCivicModules]);
 
   return (
     <LearnContext.Provider
@@ -90,10 +107,13 @@ export function LearnProvider({ children }: { children: React.ReactNode }) {
         setRightDrawerOpen,
         gamification,
         refreshGamification,
-        activeModule,
-        setActiveModule,
         activeLesson,
         setActiveLesson,
+        civicModules,
+        fetchCivicModules,
+        updateCurrentStep,
+        totalStages,
+        modulesLoading,
       }}
     >
       {children}

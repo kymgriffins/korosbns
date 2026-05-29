@@ -1,22 +1,20 @@
 "use client";
 
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { 
-  User, ChevronRight, ChevronLeft,
-  BookOpen, Bell, Home, CheckCircle2, ArrowLeft
+  User, ChevronRight, ChevronLeft, ChevronDown,
+  BookOpen, Bell, Home, LayoutDashboard, CheckCircle2, ArrowLeft, ExternalLink,
+  Settings, LogOut, KeyRound, Palette, LogIn
 } from "lucide-react";
 import { cn } from "@/utils";
 import { LearnProvider, useLearn, type LearnTab } from "@/contexts/learn-context";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/ui/button";
+import { ThemeToggle } from "@/components/marketing/theme-toggle";
 import { LearnMobileNav } from "@/layouts/LearnMobileNav";
-
-const ALL_STAGES = [
-  { id: 1, badge: "🛡️", title: "Constitution" },
-  { id: 2, badge: "⚖️", title: "Budget Policy Statement" },
-  { id: 3, badge: "🏗️", title: "Infrastructure Fund" },
-];
+import { Routes } from "@/constants/routes";
 
 function LearnAppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -29,6 +27,7 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
     setSidebarCollapsed,
     gamification,
     activeLesson,
+    civicModules,
   } = useLearn();
 
   useEffect(() => {
@@ -64,9 +63,10 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
   };
 
   const level = gamification?.level ?? 1;
+  const [profileOpen, setProfileOpen] = useState(false);
 
   const navItems: { key: LearnTab; label: string; icon: React.ReactNode }[] = [
-    { key: "home", label: "Home", icon: <Home className="size-5" /> },
+    { key: "home", label: "Dashboard", icon: <LayoutDashboard className="size-5" /> },
     { key: "learn", label: "Learn", icon: <BookOpen className="size-5" /> },
     { key: "alerts", label: "Alerts", icon: <Bell className="size-5" /> },
     { key: "profile", label: "Profile", icon: <User className="size-5" /> },
@@ -83,13 +83,12 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
   const showCurriculum = !!activeLesson;
 
   return (
-    <div className="h-dvh md:min-h-screen md:h-auto bg-background text-foreground flex flex-col md:flex-row relative overflow-hidden md:overflow-x-hidden">
+    <div className="h-dvh md:min-h-screen bg-background text-foreground overflow-hidden">
       
-      {/* 🖥️ Desktop Sidebar — dual-mode (nav / curriculum rail) 320px */}
-      {isLoggedIn && (
+      {/* 🖥️ Desktop Sidebar — fixed, independent of main flow */}
       <aside className={cn(
-        "hidden md:flex flex-col border-r border-border bg-card sticky top-0 h-screen transition-all duration-300",
-        "w-80"
+        "hidden md:flex flex-col fixed left-0 top-0 h-screen z-30 border-r border-border bg-card overflow-hidden transition-all duration-300",
+        sidebarCollapsed ? "w-16" : "w-80"
       )}>
         {showCurriculum ? (
           /* ── CURRICULUM RAIL MODE ── */
@@ -117,8 +116,6 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
                 {activeLesson.completedStepIds.length} / {activeLesson.totalSteps} steps completed
               </p>
             </div>
-
-            {/* Step list */}
 
             <nav className="flex-1 overflow-y-auto p-2 space-y-0.5" aria-label="Curriculum steps">
               {activeLesson.stepTitles.map((step, i) => {
@@ -153,17 +150,16 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
               })}
             </nav>
 
-            {/* All stages compact list */}
             <div className="border-t border-border p-3">
               <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 mb-2 px-1">
-                All Stages
+                All Modules ({civicModules.length})
               </p>
               <div className="space-y-0.5">
-                {ALL_STAGES.map((s) => {
-                  const isCurrent = s.id === activeLesson.stageId;
+                {civicModules.map((mod) => {
+                  const isCurrent = mod.slug === activeLesson.stageId;
                   return (
                     <div
-                      key={s.id}
+                      key={mod.slug}
                       className={cn(
                         "flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs",
                         isCurrent
@@ -171,8 +167,8 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
                           : "text-muted-foreground"
                       )}
                     >
-                      <span className="text-sm">{s.badge}</span>
-                      <span className="truncate text-[11px]">{isCurrent ? s.title : s.title}</span>
+                      <span className="text-sm">{mod.badge}</span>
+                      <span className="truncate text-[11px]">{mod.title}</span>
                       {isCurrent && <span className="ml-auto size-1.5 rounded-full bg-primary" />}
                     </div>
                   );
@@ -182,10 +178,12 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
           </div>
         ) : (
           /* ── DASHBOARD NAV MODE ── */
-          <div className="flex flex-col flex-1 p-4 overflow-y-auto">
+          <div className="flex flex-col flex-1 p-4 overflow-hidden">
             {/* Brand Logo & Toggle */}
             <div className="flex items-center justify-between mb-8">
-              <img src="/logo.svg" alt="Budget Ndio Story" className="h-8 w-auto" />
+              <Link href={"/"} className="hover:opacity-80 transition-opacity">
+                <img src="/logo.svg" alt="Budget Ndio Story" className="h-8 w-auto" />
+              </Link>
               {!sidebarCollapsed && (
                 <Button
                   size="icon-sm"
@@ -216,80 +214,160 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
               )}
               {navItems.map((item) => {
                 const active = activeTab === item.key;
-                const isFirstSettings = item.key === "profile";
+                const isProfile = item.key === "profile";
                 return (
                   <div key={item.key} className="space-y-1">
-                    {!sidebarCollapsed && isFirstSettings && (
+                    {!sidebarCollapsed && isProfile && (
                       <p className="text-[9px] font-black uppercase tracking-widest text-muted-foreground/60 px-3 pb-2 pt-4">
                         Settings
                       </p>
                     )}
-                    <button
-                      onClick={() => handleTabChange(item.key)}
-                      className={cn(
-                        "w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200",
-                        active
-                          ? "bg-primary/10 text-primary"
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted/50",
-                        sidebarCollapsed ? "justify-center" : "justify-start gap-3"
-                      )}
-                      title={sidebarCollapsed ? item.label : undefined}
-                      aria-current={active ? "page" : undefined}
-                    >
-                      {item.icon}
-                      {!sidebarCollapsed && <span>{item.label}</span>}
-                      {!sidebarCollapsed && active && (
-                        <span className="ml-auto size-1.5 rounded-full bg-primary" />
-                      )}
-                    </button>
+                    {isProfile && !sidebarCollapsed ? (
+                      <>
+                        <button
+                          onClick={() => setProfileOpen((p) => !p)}
+                          className={cn(
+                            "w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200",
+                            profileOpen
+                              ? "bg-primary/10 text-primary"
+                              : "text-muted-foreground hover:text-foreground hover:bg-muted/50",
+                            "justify-start gap-3"
+                          )}
+                        >
+                          {item.icon}
+                          <span>{item.label}</span>
+                          <ChevronDown className={cn("size-4 ml-auto transition-transform duration-200", profileOpen && "rotate-180")} />
+                        </button>
+                        {profileOpen && (
+                          <div className="ml-2 space-y-0.5 border-l-2 border-border pl-3">
+                            <button
+                              onClick={() => handleTabChange("profile")}
+                              className={cn(
+                                "w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200",
+                                activeTab === "profile"
+                                  ? "bg-primary/10 text-primary"
+                                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                              )}
+                            >
+                              <User className="size-4" />
+                              <span>Learner Profile</span>
+                            </button>
+                            {isLoggedIn ? (
+                              <>
+                                <Link
+                                  href={Routes.Account}
+                                  className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200"
+                                >
+                                  <Settings className="size-4" />
+                                  <span>Account Settings</span>
+                                </Link>
+                                <Link
+                                  href={Routes.AccountPassword}
+                                  className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200"
+                                >
+                                  <KeyRound className="size-4" />
+                                  <span>Change Password</span>
+                                </Link>
+                                <Link
+                                  href={Routes.AccountSignOut}
+                                  className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all duration-200"
+                                >
+                                  <LogOut className="size-4" />
+                                  <span>Sign Out</span>
+                                </Link>
+                              </>
+                            ) : (
+                              <Link
+                                href={Routes.Login}
+                                className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-primary hover:text-primary/80 hover:bg-primary/[0.06] transition-all duration-200"
+                              >
+                                <LogIn className="size-4" />
+                                <span>Sign In</span>
+                              </Link>
+                            )}
+                            <div className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-muted-foreground">
+                              <Palette className="size-4" />
+                              <span className="flex-1">Theme</span>
+                              <ThemeToggle />
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          if (isProfile) setProfileOpen((p) => !p);
+                          else handleTabChange(item.key);
+                        }}
+                        className={cn(
+                          "w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200",
+                          active
+                            ? "bg-primary/10 text-primary"
+                            : "text-muted-foreground hover:text-foreground hover:bg-muted/50",
+                          sidebarCollapsed ? "justify-center" : "justify-start gap-3"
+                        )}
+                        title={sidebarCollapsed ? item.label : undefined}
+                        aria-current={active ? "page" : undefined}
+                      >
+                        {item.icon}
+                        {!sidebarCollapsed && <span>{item.label}</span>}
+                      </button>
+                    )}
                   </div>
                 );
               })}
             </nav>
 
-            {/* Collapsed bottom badge */}
+            {/* Collapsed bottom */}
             {sidebarCollapsed && (
-              <div className="mt-auto flex justify-center">
-                <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">
-                  {level}
-                </div>
+              <div className="mt-auto flex flex-col items-center gap-3">
+                <button
+                  onClick={() => setProfileOpen((p) => !p)}
+                  className="size-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors"
+                  title="Profile menu"
+                >
+                  <User className="size-4" />
+                </button>
+                {!isLoggedIn && (
+                  <Link href={Routes.Login} className="size-8 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary/20 transition-colors" title="Sign In">
+                    <LogIn className="size-4" />
+                  </Link>
+                )}
+                <Link href={"/"} className="size-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors" title="Main site">
+                  <Home className="size-4" />
+                </Link>
+                {isLoggedIn && (
+                  <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs">
+                    {level}
+                  </div>
+                )}
               </div>
             )}
           </div>
         )}
 
-        {/* Desktop Profile Area (only in nav mode) */}
+        {/* Sidebar bottom — simple link to main site */}
         {!showCurriculum && !sidebarCollapsed && (
-          <div className="p-4 border-t border-border">
-            <button 
-              onClick={() => handleTabChange("profile")}
-              className={cn(
-                "w-full flex items-center p-2 rounded-xl hover:bg-muted text-left transition-colors",
-                "gap-3"
-              )}
+          <div className="border-t border-border shrink-0 p-3">
+            <Link
+              href={"/"}
+              className="flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
             >
-              <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-xs">
-                {isLoggedIn && user ? user.email?.charAt(0).toUpperCase() : "B"}
-              </div>
-              <div className="truncate">
-                <p className="text-xs font-semibold truncate">
-                  {isLoggedIn && user ? (user.display_name || user.email?.split("@")[0]) : "Citizen Profile"}
-                </p>
-                <p className="text-[10px] text-muted-foreground">View progress</p>
-              </div>
-            </button>
+              <ExternalLink className="size-3.5" />
+              Main site
+            </Link>
           </div>
         )}
       </aside>
-      )}
 
-      {/* Main content canvas — viewport-locked on mobile; no page scroll */}
-      <div className="flex-1 flex flex-col min-h-0 h-full md:h-auto overflow-hidden">
-        <main className="flex-1 min-h-0 overflow-hidden flex flex-col">
+      {/* Main content — single flow, sidebar offset applied via responsive margin */}
+      <div className="flex flex-col h-dvh md:min-h-dvh">
+        <main className={cn(
+          "flex-1 overflow-y-auto",
+          sidebarCollapsed ? "md:ml-16" : "md:ml-80"
+        )}>
           {children}
         </main>
-
-        {/* Learn hub mobile bottom nav — always visible, in-flow */}
         <LearnMobileNav />
       </div>
 

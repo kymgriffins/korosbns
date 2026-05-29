@@ -54,6 +54,10 @@
     {
       "name": "CIDP 2010-2026",
       "path": "CIDP 2010-2026"
+    },
+    {
+      "name": "From The Team",
+      "path": "From The Team"
     }
   ],
   "documents": [
@@ -1124,10 +1128,16 @@
       "folder": "CIDP 2010-2026",
       "size": 3341050,
       "url": "/docrepository/CIDP%202010-2026/Nairobi-CIDP-2018-2022_0.pdf"
+    },
+    {
+      "name": "BPS 2026 Summary From The Team.pdf",
+      "folder": "From The Team",
+      "size": 0,
+      "url": "/BPS_2026_Summary_From_The_Team.pdf"
     }
   ],
   "stats": {
-    "folders": 13,
-    "documents": 178
+    "folders": 14,
+    "documents": 179
   }
 }

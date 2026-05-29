@@ -237,18 +237,9 @@ function defaultCredentials(
   path: string,
   method: string | undefined,
   explicit?: RequestCredentials,
-): RequestCredentials | undefined {
+): RequestCredentials {
   if (explicit) return explicit;
-  if (path.includes("/engagement/surveys/") && method === "POST") return "include";
-  try {
-    const apiOrigin = new URL(buildApiUrl("/")).origin;
-    if (typeof window !== "undefined" && window.location.origin !== apiOrigin) {
-      return "omit";
-    }
-  } catch {
-    /* fall through */
-  }
-  return "same-origin";
+  return "include";
 }
 
 export async function apiFetch<T = unknown>(

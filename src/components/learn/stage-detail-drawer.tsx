@@ -1,64 +1,24 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { Button } from "@/ui/button";
-import { Progress } from "@/ui/progress";
+import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { Textarea } from "@/ui/textarea";
-import {
-  Play, Pause, CheckCircle2, AlertCircle, ExternalLink,
-  BookOpen, Trophy, ArrowRight, ArrowLeft, X, Sparkles, HelpCircle,
-  FileText, Search, DownloadCloud, Award, Lock, FileCheck, Share2, History
-} from "lucide-react";
-import { cn } from "@/utils";
+import { DrawerHeader } from "./drawer-header";
+import { CourseOverview } from "./course-overview";
+import { MasteryPage } from "./mastery-page";
+import { NavigationFooter } from "./navigation-footer";
+import { TriviaSection } from "./trivia-section";
+import { DocumentsTab } from "./documents-tab";
+import { StepContent } from "./step-content";
 import {
   getDocumentsForStage,
-  GovernmentDocument,
-  CONSTITUTION_HISTORICAL_DOCS,
-  PARTICIPATION_TOOLKIT_DOCS
 } from "@/constants/documents-registry";
-import { getStageTakeaway } from "@/constants/stages-data";
 import { learnHubApi } from "@/lib/learn-hub";
-
-interface TriviaItem {
-  type: "multiple-choice" | "reflection";
-  question: string;
-  options?: string[];
-  answer?: number;
-  explanation?: string;
-  placeholder?: string;
-}
-
-interface Step {
-  id: number;
-  title: string;
-  youtubeId: string;
-  audioUrl: string;
-  transcript: string;
-  text: string;
-  trivia: TriviaItem[];
-  duration?: string;
-}
-
-interface Stage {
-  id: number;
-  title: string;
-  badge: string;
-  badgeName: string;
-  documentName: string;
-  archive: string;
-  link: string;
-  status: "Published" | "Gazetted" | "Comment Open" | "Closed";
-  credits?: string;
-  description: string;
-  expectations: string[];
-  steps: Step[];
-}
-
-// getStageTakeaway imported from @/constants/stages-data
+import { useLearn } from "@/contexts/learn-context";
+import { readProgress, writeProgress } from "@/lib/module-progress";
+import type { CivicModule } from "@/types/learn";
 
 interface StageDetailDrawerProps {
-  stage: Stage;
+  stage: CivicModule;
   profile: any;
   onClose: () => void;
   onUpdateProfile: (updatedProfile: any) => void;
@@ -78,19 +38,14 @@ export function StageDetailDrawer({
   hasPrev,
   hasNext
 }: StageDetailDrawerProps) {
+  const { totalStages, updateCurrentStep } = useLearn();
   const [activeSubTab, setActiveSubTab] = useState<"learn" | "documents">("learn");
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [activeFormat, setActiveFormat] = useState<"video" | "text">("video");
   const [contentConsumed, setContentConsumed] = useState<boolean>(true);
   const [showTrivia, setShowTrivia] = useState<boolean>(false);
-  const [activeTriviaIdx, setActiveTriviaIdx] = useState<number>(0);
-  const [selectedTriviaAnswer, setSelectedTriviaAnswer] = useState<number | null>(null);
-  const [triviaSubmitted, setTriviaSubmitted] = useState<boolean>(false);
-  const [triviaSkipped, setTriviaSkipped] = useState<boolean>(false);
-  const [reflectionText, setReflectionText] = useState<string>("");
-  const [selectedReflectionOption, setSelectedReflectionOption] = useState<string>("");
   const [transcriptSearch, setTranscriptSearch] = useState<string>("");
-  const autoAdvanceRef = useRef<NodeJS.Timeout | null>(null);
+
   const [showTranscript, setShowTranscript] = useState<boolean>(false);
   const [selectedYear, setSelectedYear] = useState<number>(2026);
   const [constitutionTab, setConstitutionTab] = useState<"current" | "timeline">("current");
@@ -139,136 +94,82 @@ export function StageDetailDrawer({
 
   useEffect(() => {
     setActiveSubTab("learn");
-    const storedStep = localStorage.getItem(`stage_${stage.id}_current_step`);
-    const initialStep = storedStep ? parseInt(storedStep, 10) : 0;
+    const moduleProgress = readProgress(stage.slug, stage.order);
+    const initialStep = moduleProgress.currentStep;
     setCurrentStep(initialStep);
     setActiveFormat("video");
     setContentConsumed(true);
-    setActiveTriviaIdx(0);
-    setShowTrivia(false);
-    setSelectedTriviaAnswer(null);
-    setTriviaSubmitted(false);
-    setTriviaSkipped(false);
-    setReflectionText("");
     setTranscriptSearch("");
     setShowTranscript(false);
-    if (stage.id === 1) {
+    if (stage.order === 1) {
       setSelectedYear(2010);
     } else {
       setSelectedYear(2026);
     }
-  }, [stage.id]);
+  }, [stage.order]);
 
   useEffect(() => {
     if (currentStep < 1 || currentStep > stage.steps.length) {
       setContentConsumed(true);
       return;
     }
-    const step = stage.steps[currentStep - 1];
     setContentConsumed(true);
     setShowTrivia(false);
-    setActiveTriviaIdx(0);
-    setSelectedTriviaAnswer(null);
-    setTriviaSubmitted(false);
-    setTriviaSkipped(false);
-    setReflectionText("");
-    setSelectedReflectionOption("");
     setShowTranscript(false);
     setTranscriptSearch("");
-  }, [currentStep, stage.id]);
-
-  useEffect(() => {
-    return () => {
-      if (autoAdvanceRef.current) clearTimeout(autoAdvanceRef.current);
-    };
-  }, []);
+  }, [currentStep, stage.order]);
 
   const handleStartLearning = () => {
     setCurrentStep(1);
-    localStorage.setItem(`stage_${stage.id}_current_step`, "1");
+    const p = { ...readProgress(stage.slug, stage.order), currentStep: 1 };
+    writeProgress(stage.slug, p);
   };
 
   const isStepTriviaPassed = (stepId: number) => {
-    return localStorage.getItem(`stage_${stage.id}_step_${stepId}_trivia_passed`) === "true";
+    return readProgress(stage.slug, stage.order).stepsCompleted[stepId] === true;
   };
 
-  const handleAnswerMCQ = (qIdx: number, selectedIdx: number, correctIdx: number) => {
-    if (triviaSubmitted) return;
-    setSelectedTriviaAnswer(selectedIdx);
-    setTriviaSubmitted(true);
-    if (selectedIdx === correctIdx) {
-      const step = stage.steps[currentStep - 1];
-      const rewardKey = `stage_${stage.id}_step_${step.id}_trivia_${qIdx}_reward`;
-      if (!localStorage.getItem(rewardKey)) {
-        localStorage.setItem(rewardKey, "true");
-        const updated = { ...profile, sovereigns: profile.sovereigns + 5 };
-        onUpdateProfile(updated);
-        toast.success("Correct! +5 Sovereigns awarded!");
-      } else {
-        toast.success("Correct!");
-      }
-      autoAdvanceRef.current = setTimeout(() => handleNextTriviaQuestion(), 1500);
-    } else {
-      toast.error("Not quite—try again.");
-    }
-  };
-
-  const handleSubmitReflection = (qIdx: number) => {
-    const text = selectedReflectionOption || reflectionText.trim();
-    if (!text) {
-      toast.error("Please share a meaningful reflection.");
-      return;
-    }
-    setTriviaSubmitted(true);
+  const handleCorrectAnswer = (qIdx: number) => {
     const step = stage.steps[currentStep - 1];
-    const rewardKey = `stage_${stage.id}_step_${step.id}_trivia_${qIdx}_reward`;
-    if (!localStorage.getItem(rewardKey)) {
-      localStorage.setItem(rewardKey, "true");
+    const rewardTag = `${step.order}_${qIdx}`;
+    const p = readProgress(stage.slug, stage.order);
+    if (!p.triviaRewards.includes(rewardTag)) {
+      writeProgress(stage.slug, { ...p, triviaRewards: [...p.triviaRewards, rewardTag] });
       const updated = { ...profile, sovereigns: profile.sovereigns + 5 };
       onUpdateProfile(updated);
-      toast.success("Reflection submitted! +5 Sovereigns awarded!");
+      toast.success("Correct! +5 Sovereigns awarded!");
     } else {
-      toast.success("Reflection logged!");
+      toast.success("Correct!");
     }
-    autoAdvanceRef.current = setTimeout(() => handleNextTriviaQuestion(), 1500);
   };
 
-  const handleNextTriviaQuestion = useCallback(() => {
+  const handleFinishTrivia = () => {
     const step = stage.steps[currentStep - 1];
-    if (activeTriviaIdx < step.trivia.length - 1) {
-      setActiveTriviaIdx((prev) => prev + 1);
-      setSelectedTriviaAnswer(null);
-      setTriviaSubmitted(false);
-      setReflectionText("");
-      setSelectedReflectionOption("");
-    } else {
-      localStorage.setItem(`stage_${stage.id}_step_${step.id}_trivia_passed`, "true");
-      setContentConsumed(true);
-      toast.success("Step complete! ⭐");
-      // Sync step progress to backend
-      learnHubApi.markProgress({
-        content_type: "article",
-        content_id: `stage-${stage.id}-step-${step.id}`,
-        progress_percent: Math.round((currentStep / stage.steps.length) * 100),
-      }).catch(() => {});
-      autoAdvanceRef.current = setTimeout(() => {
-        setCurrentStep((prev) => {
-          const nextVal = prev + 1;
-          localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
-          return nextVal;
-        });
-      }, 2000);
-    }
-  }, [activeTriviaIdx, currentStep, stage.id, stage.steps]);
+    const p = readProgress(stage.slug, stage.order);
+    writeProgress(stage.slug, { ...p, stepsCompleted: { ...p.stepsCompleted, [step.order]: true }, currentStep: currentStep + 1 });
+    setContentConsumed(true);
+    toast.success("Knowledge Check complete! \u2B50");
+    learnHubApi.markProgress({
+      content_type: "article",
+      content_id: `stage-${stage.order}-step-${step.order}`,
+      progress_percent: Math.round((currentStep / stage.steps.length) * 100),
+    }).catch(() => {});
+    setCurrentStep((prev) => prev + 1);
+  };
 
-  const masteryAwardedKey = `stage_${stage.id}_mastery_awarded`;
+  // Sync currentStep back to context so sidebar curriculum rail stays in sync
+  useEffect(() => {
+    updateCurrentStep(currentStep);
+  }, [currentStep, updateCurrentStep]);
+
   useEffect(() => {
     if (currentStep === stage.steps.length + 1) {
-      if (!localStorage.getItem(masteryAwardedKey)) {
-        localStorage.setItem(masteryAwardedKey, "true");
+      const p = readProgress(stage.slug, stage.order);
+      if (!p.masteryAwarded) {
+        writeProgress(stage.slug, { ...p, masteryAwarded: true });
         const newProgress = profile.stageProgress ? [...profile.stageProgress] : [1];
-        const nextStageId = stage.id + 1;
-        if (nextStageId <= 8 && !newProgress.includes(nextStageId)) {
+        const nextStageId = stage.order + 1;
+        if (nextStageId <= totalStages && !newProgress.includes(nextStageId)) {
           newProgress.push(nextStageId);
         }
         const newBadges = profile.badges ? [...profile.badges] : [];
@@ -276,7 +177,7 @@ export function StageDetailDrawer({
           newBadges.push(stage.badge);
         }
         let allStagesDoneBonus = 0;
-        if (newProgress.length === 8 && newBadges.length === 8 && !profile.allStagesBonusEarned) {
+        if (newProgress.length >= totalStages && newBadges.length >= totalStages && !profile.allStagesBonusEarned) {
           allStagesDoneBonus = 100;
         }
         const updatedProfile = {
@@ -291,14 +192,14 @@ export function StageDetailDrawer({
         // Sync stage mastery to backend
         learnHubApi.markProgress({
           content_type: "path",
-          content_id: `stage-${stage.id}`,
+          content_id: `stage-${stage.order}`,
           progress_percent: 100,
         }).catch(() => {});
 
         toast.success(`🎉 Stage Mastered! +25 Sovereigns (SVG) earned. ${stage.badge} Badge unlocked!`);
       }
     }
-  }, [currentStep, stage.id]);
+  }, [currentStep, stage.order]);
 
   const handleToggleTrackDoc = () => {
     const tracked = profile.trackedDocs || [];
@@ -314,7 +215,7 @@ export function StageDetailDrawer({
   };
 
   const isDocTracked = profile.trackedDocs?.includes(stage.documentName);
-  const isCached = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("bns_cached_stages") || "[]").includes(stage.id) : false;
+  const isCached = stage.steps.length > 0;
 
   const getPersonalizedText = (rawText: string) => {
     if (!rawText) return "";
@@ -326,7 +227,7 @@ export function StageDetailDrawer({
     if (typeof window !== "undefined") {
       const url = new URL(window.location.href);
       url.searchParams.set("year", year.toString());
-      url.searchParams.set("stage", stage.id.toString());
+      url.searchParams.set("stage", stage.order.toString());
       window.history.pushState({}, "", url.toString());
     }
     toast.info(`Filtered documents for year ${year}`);
@@ -341,100 +242,41 @@ export function StageDetailDrawer({
     toast.success(`Request for ${docType} (${year}) has been generated and queued for submission to the county assembly clerk.`);
   };
 
-  const currentStageDocs = getDocumentsForStage(stage.id, selectedYear, profile.county || "", liveRepoDocs);
+  const currentStageDocs = getDocumentsForStage(stage.order, selectedYear, profile.county || "", liveRepoDocs);
   const constitutionYears = [2010, 2005, 1997, 1991, 1982, 1969, 1964, 1963];
   const standardYears = [2026, 2025, 2024, 2023, 2022, 2021, 2020];
-  const yearOptions = stage.id === 1 ? constitutionYears : standardYears;
+  const yearOptions = stage.order === 1 ? constitutionYears : standardYears;
 
-  /* Progress dots helper */
   const totalSteps = stage.steps.length;
-  const progressDots = () => {
-    if (currentStep < 1 || currentStep > totalSteps) return null;
-    return (
-      <div className="flex items-center gap-1.5">
-        {Array.from({ length: totalSteps }, (_, i) => (
-          <div
-            key={i}
-            className={cn(
-              "size-2 rounded-full transition-all duration-300",
-              i + 1 === currentStep
-                ? "bg-primary scale-125"
-                : i + 1 < currentStep
-                  ? "bg-emerald-500"
-                  : "bg-muted-foreground/20"
-            )}
-          />
-        ))}
-      </div>
-    );
+
+  const handlePrevStep = () => {
+    const nextVal = currentStep - 1;
+    setCurrentStep(nextVal);
+    const p = readProgress(stage.slug, stage.order);
+    writeProgress(stage.slug, { ...p, currentStep: nextVal });
+    setShowTrivia(false);
+  };
+
+  const handleNextStep = () => {
+    const nextVal = currentStep + 1;
+    setCurrentStep(nextVal);
+    const p = readProgress(stage.slug, stage.order);
+    writeProgress(stage.slug, { ...p, currentStep: nextVal });
   };
 
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-background md:relative md:inset-auto md:z-auto md:h-full">
 
-      {/* ── Compressed Header (48px) with inline sub-tab pills ── */}
-      <header className="sticky top-0 z-10 w-full h-12 border-b border-border bg-background/95 backdrop-blur-sm flex items-center justify-between px-4 gap-2 shrink-0">
-        {/* Left: breadcrumb (desktop) / back + logo (mobile) */}
-        <div className="flex items-center gap-2 min-w-0">
-          {/* Mobile back */}
-          <button onClick={onClose} className="md:hidden shrink-0 flex items-center hover:opacity-80 transition-opacity" aria-label="Back">
-            <img src="/logo.svg" alt="BNS" className="h-6 w-auto" />
-          </button>
-          {/* Desktop breadcrumb */}
-          <nav className="hidden md:flex items-center gap-1.5 text-xs">
-            <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors font-medium shrink-0">
-              Learn
-            </button>
-            <span className="text-border">/</span>
-            <span className="font-semibold text-foreground truncate max-w-[200px]">{stage.title}</span>
-            {currentStep > 0 && (
-              <>
-                <span className="text-border">/</span>
-                <span className="text-primary font-semibold shrink-0">
-                  Step {Math.min(currentStep, stage.steps.length)} of {stage.steps.length}
-                </span>
-              </>
-            )}
-          </nav>
-          {/* Mobile stage title */}
-          <div className="md:hidden flex items-center gap-1.5 min-w-0 border-l border-border pl-2">
-            <span className="text-sm shrink-0">{stage.badge}</span>
-            <h2 className="text-[10px] font-black uppercase tracking-tight truncate">{stage.title}</h2>
-          </div>
-        </div>
-
-        {/* Right: sub-tab pills + close */}
-        <div className="flex items-center gap-2 shrink-0">
-          <div className="flex items-center gap-0.5 p-0.5 bg-muted/60 rounded-lg">
-            <button
-              onClick={() => setActiveSubTab("learn")}
-              className={cn(
-                "px-2.5 py-1 rounded-md text-[10px] font-bold transition-all",
-                activeSubTab === "learn" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              Guided Journey
-            </button>
-            <button
-              onClick={() => setActiveSubTab("documents")}
-              className={cn(
-                "px-2.5 py-1 rounded-md text-[10px] font-bold transition-all",
-                activeSubTab === "documents" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              Documents
-            </button>
-          </div>
-          {isCached && (
-            <span className="hidden sm:flex text-[8px] bg-blue-500/10 border border-blue-500/20 text-blue-600 font-extrabold px-1.5 py-0.5 rounded-full">
-              📦 Cached
-            </span>
-          )}
-          <Button size="icon-sm" variant="ghost" onClick={onClose} className="rounded-full" title="Close">
-            <X className="size-4" />
-          </Button>
-        </div>
-      </header>
+      <DrawerHeader
+        title={stage.title}
+        badge={stage.badge}
+        currentStep={currentStep}
+        activeSubTab={activeSubTab}
+        onSubTabChange={setActiveSubTab}
+        isCached={isCached}
+        onClose={onClose}
+        author={stage.author}
+      />
 
       {/* ── Body: full-width scrollable content ── */}
       <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
@@ -444,575 +286,89 @@ export function StageDetailDrawer({
 
             {/* STEP 0: COURSE OVERVIEW */}
             {currentStep === 0 && (
-              <div className="space-y-5 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                <div className="flex flex-col items-center justify-center text-center p-6 bg-card border border-border rounded-2xl space-y-4">
-                  <div className="size-16 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 shadow-xs relative">
-                    <span className="text-3xl">{stage.badge}</span>
-                    <Sparkles className="size-4 text-primary absolute -top-1 -right-1 fill-primary animate-pulse" />
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">{stage.credits || "Credits: BNS Team"}</span>
-                    <h3 className="font-black text-base text-foreground mt-1">{stage.title} Overview</h3>
-                  </div>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{stage.description}</p>
-                </div>
-
-                <div className="p-4 rounded-xl border border-border bg-card space-y-3">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-primary flex items-center gap-1">
-                    <Trophy className="size-3.5" /> What to expect
-                  </h4>
-                  <ul className="space-y-2 text-xs">
-                    {stage.expectations.map((exp, idx) => (
-                      <li key={idx} className="flex items-start gap-2 text-foreground/80 leading-normal">
-                        <CheckCircle2 className="size-4 text-primary shrink-0 mt-0.5" />
-                        <span>{exp}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <Button onClick={handleStartLearning} className="w-full h-12 rounded-xl font-bold gap-2 text-sm bg-primary hover:bg-primary/95 transition-all shadow-md active:scale-[0.98]">
-                  Start Learning Course <ArrowRight className="size-4" />
-                </Button>
-              </div>
+              <CourseOverview
+                badge={stage.badge}
+                title={stage.title}
+                credits={stage.credits}
+                author={stage.author}
+                description={stage.description}
+                expectations={stage.expectations}
+                onStartLearning={handleStartLearning}
+              />
             )}
 
             {/* STEP 1..N: GUIDED STEPS */}
             {currentStep >= 1 && currentStep <= stage.steps.length && (
               <div className="space-y-5 animate-in fade-in duration-300">
+                <StepContent
+                  step={stage.steps[currentStep - 1]}
+                  currentStep={currentStep}
+                  totalSteps={totalSteps}
+                  activeFormat={activeFormat}
+                  showTrivia={showTrivia}
+                  origin={origin}
+                  getPersonalizedText={getPersonalizedText}
+                  onFormatChange={setActiveFormat}
+                  onStartTrivia={() => setShowTrivia(true)}
+                />
 
-                {/* Step Progress Header */}
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <p className="text-xs font-semibold text-muted-foreground">
-                      Step {currentStep} of {stage.steps.length} · ~3 min remaining
-                    </p>
-                    <h3 className="text-base font-black text-foreground">
-                      {stage.steps[currentStep - 1].title}
-                    </h3>
-                  </div>
-                </div>
-                <Progress value={((currentStep - 1) / stage.steps.length) * 100} className="h-1.5 rounded-full" />
-
-                {/* Format Toggle: Watch / Read pill */}
-                {!showTrivia && (
-                  <div className="inline-flex items-center gap-0.5 p-0.5 bg-muted/60 rounded-lg">
-                    <button
-                      onClick={() => setActiveFormat("video")}
-                      className={cn(
-                        "px-3 py-1.5 rounded-md text-xs font-semibold transition-all flex items-center gap-1.5",
-                        activeFormat === "video" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
-                      )}
-                    >
-                      🎥 Watch
-                    </button>
-                    <button
-                      onClick={() => setActiveFormat("text")}
-                      className={cn(
-                        "px-3 py-1.5 rounded-md text-xs font-semibold transition-all flex items-center gap-1.5",
-                        activeFormat === "text" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
-                      )}
-                    >
-                      📖 Read
-                    </button>
-                  </div>
-                )}
-
-                {/* Content Area — no card wrapper, 78% max for video */}
-                {!showTrivia && (
-                  <>
-                    {/* VIDEO FORMAT */}
-                    {activeFormat === "video" && origin && (
-                      <div className="max-w-[78%] mx-auto">
-                        <div className="relative aspect-video rounded-xl overflow-hidden bg-black shadow-sm">
-                          <iframe
-                            className="w-full h-full border-0"
-                            src={`https://www.youtube-nocookie.com/embed/${stage.steps[currentStep - 1].youtubeId}?rel=0&modestbranding=1`}
-                            title="Budget Ndio Story Step Video"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                            allowFullScreen
-                          />
-                        </div>
-                      </div>
-                    )}
-
-                    {/* TEXT FORMAT */}
-                    {activeFormat === "text" && (
-                      <article className="
-                        w-full max-w-none mx-auto px-4 py-6 md:px-8 md:py-8
-                        prose prose-base prose-neutral dark:prose-invert max-w-none
-                        prose-p:text-gray-800 prose-p:dark:text-gray-300
-                        prose-p:leading-7 md:prose-p:leading-relaxed prose-p:my-3 md:prose-p:my-4
-                        prose-headings:text-gray-900 dark:prose-headings:text-white prose-headings:font-semibold
-                        prose-strong:text-gray-900 dark:prose-strong:text-white
-                        prose-ul:my-3 md:prose-ul:my-4 prose-li:my-1
-                      ">
-                        {getPersonalizedText(stage.steps[currentStep - 1].text)
-                          .split("\n\n")
-                          .map((para, pIdx) => (
-                            <p key={pIdx} className="whitespace-pre-wrap">{para}</p>
-                          ))}
-
-                        {(() => {
-                          const takeaway = getStageTakeaway(stage.id, stage.steps[currentStep - 1].id);
-                          if (!takeaway) return null;
-                          if (takeaway.type === "info") {
-                            return (
-                              <div className="mt-6 p-4 rounded-xl bg-blue-500/10 border-l-4 border-blue-500 dark:bg-blue-900/20 dark:border-blue-400 not-prose">
-                                <p className="text-xs font-bold text-blue-700 dark:text-blue-300">💡 {takeaway.title}</p>
-                                <p className="text-[11px] text-gray-700 dark:text-gray-300 mt-1 leading-normal">{takeaway.text}</p>
-                              </div>
-                            );
-                          } else {
-                            return (
-                              <div className="mt-6 p-4 rounded-xl bg-amber-500/10 border-l-4 border-amber-500 dark:bg-amber-900/20 dark:border-amber-400 not-prose">
-                                <p className="text-xs font-bold text-amber-700 dark:text-amber-300">⚠️ {takeaway.title}</p>
-                                <p className="text-[11px] text-gray-700 dark:text-gray-300 mt-1 leading-normal">{takeaway.text}</p>
-                              </div>
-                            );
-                          }
-                        })()}
-                      </article>
-                    )}
-                  </>
-                )}
-
-                {/* INLINE TRIVIA */}
-                <div className="space-y-4">
-                  {isStepTriviaPassed(stage.steps[currentStep - 1].id) ? (
-                    <div className="p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 flex items-center gap-3">
-                      <CheckCircle2 className="size-5 text-emerald-600 shrink-0" />
-                      <div>
-                        <h4 className="text-xs font-bold text-emerald-700 dark:text-emerald-300">Step Complete!</h4>
-                        <p className="text-[10px] text-muted-foreground">Tap Next below to continue your journey.</p>
-                      </div>
-                    </div>
-                  ) : triviaSkipped ? (
-                    <div className="p-4 rounded-2xl border border-amber-500/20 bg-amber-500/5 flex items-center gap-3">
-                      <HelpCircle className="size-5 text-amber-500 shrink-0" />
-                      <div>
-                        <h4 className="text-xs font-bold text-amber-700 dark:text-amber-300">Trivia Skipped</h4>
-                        <p className="text-[10px] text-muted-foreground">You can retake this later. Tap Next to continue.</p>
-                      </div>
-                    </div>
-                  ) : showTrivia ? (
-                    <div className="space-y-4 border border-border bg-card rounded-2xl p-4 shadow-xs animate-in fade-in slide-in-from-bottom-2 duration-300">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1.5 text-primary">
-                          <Sparkles className="size-4" />
-                          <span className="text-xs font-black uppercase tracking-wide">
-                            Quick Check {activeTriviaIdx + 1} of {stage.steps[currentStep - 1].trivia.length}
-                          </span>
-                        </div>
-                        <button onClick={() => setTriviaSkipped(true)} className="text-[10px] text-muted-foreground underline underline-offset-2 hover:text-foreground transition-colors">
-                          Skip for now
-                        </button>
-                      </div>
-
-                      {(() => {
-                        const step = stage.steps[currentStep - 1];
-                        const q = step.trivia[activeTriviaIdx];
-                        if (q.type === "multiple-choice") {
-                          return (
-                            <div className="space-y-3">
-                              <h4 className="text-sm font-black text-foreground leading-snug">{q.question}</h4>
-
-                              <div className="grid gap-2">
-                                {q.options?.map((opt, idx) => {
-                                  const isSelected = selectedTriviaAnswer === idx;
-                                  const isCorrect = q.answer === idx;
-                                  let optStyle = "border-border bg-card hover:bg-muted/40";
-                                  if (isSelected) {
-                                    if (triviaSubmitted) {
-                                      optStyle = isCorrect
-                                        ? "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold"
-                                        : "border-destructive bg-destructive/10 text-destructive font-bold";
-                                    } else {
-                                      optStyle = "border-primary bg-primary/5 text-primary font-bold";
-                                    }
-                                  } else if (triviaSubmitted && isCorrect) {
-                                    optStyle = "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold";
-                                  }
-                                  return (
-                                    <button
-                                      key={idx}
-                                      onClick={() => handleAnswerMCQ(activeTriviaIdx, idx, q.answer!)}
-                                      disabled={triviaSubmitted}
-                                      className={cn("w-full min-h-[44px] px-4 py-3 rounded-xl border text-xs font-semibold text-left transition-all active:scale-[0.99]", optStyle)}
-                                    >
-                                      {opt}
-                                    </button>
-                                  );
-                                })}
-                              </div>
-                              {triviaSubmitted && (
-                                <div className={cn("p-3 rounded-xl border text-xs leading-normal animate-in zoom-in-95 duration-200",
-                                  selectedTriviaAnswer === q.answer
-                                    ? "border-emerald-500/20 bg-emerald-500/5 text-emerald-800 dark:text-emerald-200"
-                                    : "border-destructive/20 bg-destructive/5 text-destructive"
-                                )}>
-                                  <h5 className="font-bold flex items-center gap-1.5 mb-1">
-                                    {selectedTriviaAnswer === q.answer ? <><CheckCircle2 className="size-4 text-emerald-600" /> Correct!⭐</> : <><AlertCircle className="size-4 text-destructive" /> Not quite—try again</>}
-                                  </h5>
-                                  <p>{q.explanation}</p>
-                                </div>
-                              )}
-                              {triviaSubmitted && (
-                                selectedTriviaAnswer === q.answer ? (
-                                  <Button onClick={handleNextTriviaQuestion} className="w-full h-10 rounded-xl font-bold text-xs gap-1.5">
-                                    {activeTriviaIdx < step.trivia.length - 1 ? <>Next Question <ArrowRight className="size-4" /></> : <>Complete Check <CheckCircle2 className="size-4" /></>}
-                                  </Button>
-                                ) : (
-                                  <Button onClick={() => { setSelectedTriviaAnswer(null); setTriviaSubmitted(false); }} variant="outline" className="w-full h-10 rounded-xl font-bold text-xs">
-                                    Try Again
-                                  </Button>
-                                )
-                              )}
-                            </div>
-                          );
-                        } else {
-                          return (
-                            <div className="space-y-3">
-                              <h4 className="text-sm font-black text-foreground leading-snug">{q.question}</h4>
-                              {q.options && q.options.length > 0 && (
-                                <div className="grid gap-2">
-                                  {q.options.map((opt, idx) => (
-                                    <button
-                                      key={idx}
-                                      onClick={() => setSelectedReflectionOption(opt)}
-                                      className={cn("w-full min-h-[44px] px-4 py-3 rounded-xl border text-xs font-semibold text-left transition-all",
-                                        selectedReflectionOption === opt ? "border-primary bg-primary/5 text-primary font-bold" : "border-border bg-card hover:bg-muted/40"
-                                      )}
-                                      disabled={triviaSubmitted}
-                                    >
-                                      {opt}
-                                    </button>
-                                  ))}
-                                </div>
-                              )}
-                              <div className="space-y-1.5">
-                                <label className="text-[10px] font-bold text-muted-foreground uppercase">Your Reflection:</label>
-                                <Textarea
-                                  placeholder={q.placeholder || "Enter your comment..."}
-                                  value={selectedReflectionOption || reflectionText}
-                                  onChange={(e) => { setReflectionText(e.target.value); setSelectedReflectionOption(""); }}
-                                  disabled={triviaSubmitted}
-                                  className="rounded-xl text-xs min-h-[80px]"
-                                />
-                              </div>
-                              {!triviaSubmitted && (
-                                <Button onClick={() => handleSubmitReflection(activeTriviaIdx)} className="w-full h-10 rounded-xl font-bold text-xs">
-                                  Submit Reflection
-                                </Button>
-                              )}
-                              {triviaSubmitted && (
-                                <>
-                                  <div className="p-3 rounded-xl border border-emerald-500/20 bg-emerald-500/5 text-emerald-800 dark:text-emerald-200 text-xs">
-                                    <h5 className="font-bold flex items-center gap-1.5 mb-1"><CheckCircle2 className="size-4 text-emerald-600" /> Reflection Logged</h5>
-                                    <p>Your civic opinion has been recorded.</p>
-                                  </div>
-                                  <Button onClick={handleNextTriviaQuestion} className="w-full h-10 rounded-xl font-bold text-xs gap-1.5">
-                                    {activeTriviaIdx < step.trivia.length - 1 ? <>Next Question <ArrowRight className="size-4" /></> : <>Complete Check <CheckCircle2 className="size-4" /></>}
-                                  </Button>
-                                </>
-                              )}
-                            </div>
-                          );
-                        }
-                      })()}
-                    </div>
-                  ) : null}
-                </div>
-
+                <TriviaSection
+                  key={currentStep}
+                  trivia={stage.steps[currentStep - 1].trivia}
+                  stepId={stage.steps[currentStep - 1].order}
+                  showTrivia={showTrivia}
+                  isStepTriviaPassed={isStepTriviaPassed}
+                  onCorrectAnswer={handleCorrectAnswer}
+                  onFinish={handleFinishTrivia}
+                />
               </div>
             )}
 
             {/* STAGE MASTERY PAGE */}
             {currentStep === stage.steps.length + 1 && (
-              <div className="flex flex-col items-center justify-center text-center space-y-6 py-6 animate-in zoom-in-95 duration-500">
-                <div className="relative">
-                  <div className="absolute inset-0 size-24 rounded-full bg-primary/25 blur-xl animate-ping mx-auto" />
-                  <div className="size-24 rounded-full bg-card border border-primary/30 flex items-center justify-center text-5xl shadow-2xl relative mx-auto">
-                    {stage.badge}
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 border border-primary/20 px-3 py-1 text-xs font-bold text-primary">
-                    <Award className="size-4 fill-primary" /> Badge Unlocked!
-                  </div>
-                  <h3 className="font-black text-xl text-foreground">Stage Mastered successfully!</h3>
-                  <p className="text-xs text-muted-foreground max-w-xs mx-auto">
-                    You've completed all guided steps for the **{stage.documentName}** course and earned the **{stage.badgeName}** credentials.
-                  </p>
-                </div>
-                <div className="p-4 rounded-xl border border-border bg-card w-full text-xs font-semibold grid grid-cols-2 gap-3 text-left">
-                  <div className="space-y-1">
-                    <span className="text-muted-foreground text-[10px]">REWARDS CREDITED:</span>
-                    <p className="text-primary font-bold flex items-center gap-1 text-sm"><Sparkles className="size-4 fill-primary" /> +25 SVG Points</p>
-                  </div>
-                  <div className="space-y-1">
-                    <span className="text-muted-foreground text-[10px]">CREDENTIAL ID:</span>
-                    <p className="text-foreground font-mono text-[10px] mt-0.5">BNS-{stage.badgeName.toUpperCase()}-2026</p>
-                  </div>
-                </div>
-                <Button
-                  onClick={() => { if (hasNext && onNextStage) { onNextStage(); } else { onClose(); } }}
-                  className="w-full h-12 rounded-xl font-bold text-sm bg-primary hover:bg-primary/95 transition-all shadow-md"
-                >
-                  {hasNext ? "Continue to Next Stage" : "Finish Journey"}
-                </Button>
-              </div>
+              <MasteryPage
+                badge={stage.badge}
+                badgeName={stage.badgeName}
+                title={stage.documentName || "Stage Mastered"}
+                hasNext={hasNext}
+                onNextStage={onNextStage}
+                onClose={onClose}
+              />
             )}
 
           </div>
         ) : (
-          /* ── DOCUMENTS TAB ── */
-          <div className="space-y-5 max-w-4xl mx-auto animate-in fade-in duration-300">
-            <div className="space-y-1">
-              <h3 className="font-black text-sm flex items-center gap-1.5">
-                <FileCheck className="size-4.5 text-primary" /> Documents Repository
-              </h3>
-              <p className="text-[11px] text-muted-foreground leading-normal">
-                Access official statutory and planning records. Filter historical archives and download PDFs for offline analysis.
-              </p>
-            </div>
-
-            {apiLoading && (
-              <div className="flex items-center justify-center py-4 gap-2 text-xs text-muted-foreground">
-                <div className="animate-spin size-4 border-2 border-primary border-t-transparent rounded-full" />
-                <span>Loading live API files...</span>
-              </div>
-            )}
-
-            {stage.id === 1 && (
-              <div className="grid grid-cols-2 gap-2 bg-muted/50 p-1 rounded-xl text-xs font-bold">
-                <button
-                  onClick={() => setConstitutionTab("current")}
-                  className={cn("py-1.5 rounded-lg transition-all", constitutionTab === "current" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground")}
-                >
-                  Current Document
-                </button>
-                <button
-                  onClick={() => setConstitutionTab("timeline")}
-                  className={cn("py-1.5 rounded-lg transition-all", constitutionTab === "timeline" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground")}
-                >
-                  <History className="inline size-3.5 mr-1" /> Historical Timeline
-                </button>
-              </div>
-            )}
-
-            {(stage.id !== 1 || constitutionTab === "current") && (
-              <div className="space-y-2">
-                <label className="text-[9px] font-black text-muted-foreground uppercase tracking-wider">Select Financial Year:</label>
-                <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
-                  {yearOptions.map((yr) => (
-                    <button
-                      key={yr}
-                      onClick={() => handleYearChange(yr)}
-                      className={cn("px-3 py-1.5 rounded-xl border text-[11px] font-bold shrink-0 transition-all",
-                        selectedYear === yr ? "bg-primary border-primary text-primary-foreground shadow-sm" : "bg-card border-border text-muted-foreground hover:text-foreground"
-                      )}
-                    >
-                      {yr === 2010 && stage.id === 1 ? "2010 (Current)" : yr}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {stage.id === 1 && constitutionTab === "timeline" ? (
-              <div className="space-y-5 animate-in fade-in duration-200">
-                <div className="p-3 bg-muted/20 border border-border rounded-xl text-[10px] text-muted-foreground leading-normal flex items-start gap-2">
-                  <History className="size-4 text-primary shrink-0 mt-0.5" />
-                  <span>Select a year on the timeline below to open its historical draft details, referendums context, and download PDFs.</span>
-                </div>
-                <div className="space-y-4 relative pl-6 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-border">
-                  {CONSTITUTION_HISTORICAL_DOCS.map((doc) => {
-                    const isDocSelected = selectedYear === doc.year;
-                    return (
-                      <div
-                        key={doc.id}
-                        onClick={() => handleYearChange(doc.year)}
-                        className={cn("relative cursor-pointer transition-all p-3 rounded-xl border",
-                          isDocSelected ? "border-primary bg-primary/5 shadow-xs" : "border-border bg-card hover:bg-muted/40"
-                        )}
-                      >
-                        <div className={cn("absolute -left-[22px] top-[14px] size-3.5 rounded-full border-2 transition-all",
-                          isDocSelected ? "bg-primary border-primary scale-110" : "bg-background border-muted-foreground/40"
-                        )} />
-                        <div className="flex justify-between items-start">
-                          <h4 className="text-xs font-black text-foreground">{doc.title}</h4>
-                          <span className="text-[9px] bg-muted border border-border px-1.5 py-0.5 rounded-full font-bold text-muted-foreground">{doc.year}</span>
-                        </div>
-                        <p className="text-[10px] text-muted-foreground mt-1 leading-normal">{doc.historicalContext || doc.description}</p>
-                        {isDocSelected && (
-                          <div className="mt-3 pt-3 border-t border-border flex flex-wrap gap-2">
-                            {doc.isAvailable ? (
-                              <>
-                                <a href={doc.pdfUrl} target="_blank" rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-1 text-[10px] bg-primary text-primary-foreground px-3 py-1.5 rounded-lg font-bold hover:bg-primary/95 transition-all">📄 View PDF</a>
-                                <a href={`${doc.pdfUrl}?download=1`} target="_blank" rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-1 text-[10px] bg-muted border border-border text-foreground px-3 py-1.5 rounded-lg font-bold hover:bg-muted/80 transition-all">
-                                  <DownloadCloud className="size-3" /> Download
-                                </a>
-                              </>
-                            ) : (
-                              <div className="flex-1 flex flex-col space-y-2">
-                                <span className="text-[9px] bg-amber-500/10 border border-amber-500/20 text-amber-600 font-bold px-2 py-1.5 rounded-lg text-center">⚠️ PDF Not Available (Archived)</span>
-                                <Button size="xs" onClick={() => handleRequestDocument(doc.title, doc.year)} className="w-full text-[9px] font-bold">Request PDF Copy</Button>
-                              </div>
-                            )}
-                            <a href={doc.sourceUrl} target="_blank" rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 text-[10px] bg-muted border border-border text-foreground px-3 py-1.5 rounded-lg font-bold hover:bg-muted/70">🔗 Source Portal</a>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <div className="p-3.5 border border-border bg-card rounded-xl flex items-center justify-between gap-4">
-                  <div className="space-y-0.5">
-                    <h4 className="text-xs font-bold text-foreground">Alert Subscriptions</h4>
-                    <p className="text-[9px] text-muted-foreground">Subscribe to alerts when counties upload local updates.</p>
-                  </div>
-                  <Button size="sm" variant={isDocTracked ? "outline" : "default"} onClick={handleToggleTrackDoc} className="font-bold shrink-0 text-xs h-9 rounded-xl px-3">
-                    {isDocTracked ? "Tracking" : "Track Stage"}
-                  </Button>
-                </div>
-
-                {currentStageDocs.length > 0 ? (
-                  <div className="space-y-3.5">
-                    <div className="flex justify-between items-center text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-                      <span>Auditable Documents ({currentStageDocs.length})</span>
-                      <span>{selectedYear}</span>
-                    </div>
-                    {currentStageDocs.map((doc) => (
-                      <div key={doc.id} className="p-4 border border-border bg-card rounded-xl space-y-3 shadow-xs animate-in slide-in-from-bottom-1 duration-200">
-                        <div className="flex justify-between items-start gap-2">
-                          <div>
-                            <h4 className="text-xs font-black text-foreground truncate max-w-[200px] sm:max-w-xs">{doc.name.replace(/\.pdf$/i, "").replace(/[-_]/g, " ")}</h4>
-                            <p className="text-[9px] text-muted-foreground mt-0.5">{doc.issuingBody} · {doc.financialYear}</p>
-                          </div>
-                          {doc.isCurrent && <span className="text-[8px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 font-black px-1.5 py-0.5 rounded-full uppercase tracking-wider shrink-0">Current</span>}
-                        </div>
-                        <p className="text-[10px] text-muted-foreground leading-relaxed">{doc.description}</p>
-                        <div className="pt-2 border-t border-border flex items-center justify-between gap-2">
-                          <div className="flex items-center gap-1.5">
-                            <a href={doc.pdfUrl} target="_blank" rel="noopener noreferrer"
-                              className="inline-flex h-8 px-2.5 items-center gap-1 rounded-lg bg-primary text-primary-foreground text-[10px] font-bold hover:bg-primary/95 transition-all shadow-xs">📄 View</a>
-                            <a href={doc.pdfUrl} download={doc.name}
-                              className="inline-flex h-8 px-2.5 items-center gap-1 rounded-lg border border-border bg-muted/20 text-foreground text-[10px] font-bold hover:bg-muted/50 transition-all">
-                              <DownloadCloud className="size-3" /> Get
-                            </a>
-                            <button onClick={() => handleCopyShareLink(doc.pdfUrl)}
-                              className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-muted/20 text-muted-foreground hover:text-foreground transition-all" title="Share Document Link">
-                              <Share2 className="size-3.5" />
-                            </button>
-                          </div>
-                          <span className="text-[9px] font-mono text-muted-foreground shrink-0 uppercase">
-                            {doc.sizeBytes ? `${(doc.sizeBytes / 1024 / 1024).toFixed(1)} MB` : "PDF"}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="p-6 border border-dashed border-border bg-muted/15 rounded-xl text-center space-y-4">
-                    <AlertCircle className="size-10 mx-auto text-muted-foreground/60" />
-                    <div>
-                      <h4 className="font-bold text-xs text-foreground">No stage documents found for year {selectedYear}</h4>
-                      <p className="text-[10px] text-muted-foreground max-w-xs mx-auto mt-1 leading-normal">The statutory document may not have been gazetted or uploaded for this financial year yet.</p>
-                    </div>
-                    <div className="flex flex-col gap-1.5 max-w-xs mx-auto">
-                      <Button size="sm" onClick={() => handleYearChange(2026)} className="rounded-xl text-xs font-bold">Reset to Current Year (2026)</Button>
-                      <Button size="sm" variant="outline" onClick={() => handleRequestDocument(stage.documentName, selectedYear)} className="rounded-xl text-xs font-bold">Request Document from Authority</Button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+          <DocumentsTab
+            stageId={stage.order}
+            documentName={stage.documentName}
+            selectedYear={selectedYear}
+            constitutionTab={constitutionTab}
+            apiLoading={apiLoading}
+            currentStageDocs={currentStageDocs}
+            yearOptions={yearOptions}
+            isDocTracked={isDocTracked}
+            onYearChange={handleYearChange}
+            onConstitutionTabChange={setConstitutionTab}
+            onToggleTrackDoc={handleToggleTrackDoc}
+            onCopyShareLink={handleCopyShareLink}
+            onRequestDocument={handleRequestDocument}
+          />
         )}
 
       </div>
 
-      {/* ── Navigation footer: Back + Start on overview (step 0); Prev/Next on steps ── */}
-      <footer className="z-10 flex h-14 shrink-0 items-center justify-center gap-4 border-t border-border bg-card px-4">
-        {currentStep === 0 ? (
-          <>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={onClose}
-              className="min-w-[100px] gap-1 rounded-xl text-xs"
-            >
-              <ArrowLeft className="size-4" /> Back
-            </Button>
-            <span className="text-[9px] font-semibold text-muted-foreground">Overview</span>
-            <Button
-              size="sm"
-              onClick={handleStartLearning}
-              className="min-w-[100px] gap-1 rounded-xl text-xs"
-            >
-              Start <ArrowRight className="size-4" />
-            </Button>
-          </>
-        ) : (
-          <>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => {
-                const nextVal = currentStep - 1;
-                setCurrentStep(nextVal);
-                localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
-                setShowTrivia(false);
-              }}
-              className="min-w-[100px] gap-1 rounded-xl text-xs"
-            >
-              <ArrowLeft className="size-4" /> Previous
-            </Button>
-
-            <div className="flex flex-col items-center gap-0.5">
-              {progressDots()}
-              <span className="text-[9px] font-semibold text-muted-foreground">
-                {currentStep > stage.steps.length ? "Mastery" : `${currentStep} / ${stage.steps.length}`}
-              </span>
-            </div>
-
-            {currentStep <= stage.steps.length ? (
-              <Button
-                size="sm"
-                onClick={() => {
-                  const nextVal = currentStep + 1;
-                  setCurrentStep(nextVal);
-                  localStorage.setItem(`stage_${stage.id}_current_step`, nextVal.toString());
-                }}
-                className="min-w-[100px] gap-1 rounded-xl text-xs"
-              >
-                Continue <ArrowRight className="size-4" />
-              </Button>
-            ) : (
-              <Button
-                size="sm"
-                onClick={() => {
-                  if (hasNext && onNextStage) {
-                    onNextStage();
-                  } else {
-                    onClose();
-                  }
-                }}
-                className="min-w-[100px] gap-1 rounded-xl text-xs"
-              >
-                Finish <CheckCircle2 className="size-4" />
-              </Button>
-            )}
-          </>
-        )}
-      </footer>
+      <NavigationFooter
+        currentStep={currentStep}
+        totalSteps={totalSteps}
+        hasNext={currentStep <= totalSteps}
+        hasPrev={currentStep > 0}
+        onClose={onClose}
+        onPrevStep={handlePrevStep}
+        onNextStep={handleNextStep}
+        onStartLearning={handleStartLearning}
+        onPrevStage={onPrevStage}
+        onNextStage={onNextStage}
+      />
 
     </div>
   );

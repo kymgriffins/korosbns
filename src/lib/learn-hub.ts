@@ -1,19 +1,11 @@
 import { apiFetch } from "@/lib/api-client";
-import { buildApiUrl } from "@/lib/api-url";
-import { gamificationHeaders } from "@/lib/gamification";
+import type { CivicModule } from "@/types/learn";
+import type { ApiListResponse } from "@/types/api";
 import type { LearningUnitSummary } from "@/lib/learning-units";
-
-export type LearnContentType =
-  | "video"
-  | "article"
-  | "story"
-  | "document"
-  | "path"
-  | "quest";
 
 export type LearnHubItem = {
   id: string;
-  content_type: LearnContentType;
+  content_type: "video" | "article" | "story" | "document" | "path" | "quest";
   title: string;
   summary?: string;
   slug?: string;
@@ -29,11 +21,6 @@ export type LearnHubItem = {
   path_slug?: string;
 };
 
-export type LearnHubListResponse = {
-  count: number;
-  results: LearnHubItem[];
-};
-
 export type LearnHubSummary = {
   counts: Record<string, number>;
   trending: LearnHubItem[];
@@ -44,12 +31,28 @@ export type LearnProfileResponse = {
     points: number;
     level: number;
     streak_days: number;
-    badges: Array<{ slug: string; name: string; description?: string; icon?: string }>;
+    badges: Array<{
+      slug: string;
+      name: string;
+      description?: string;
+      icon?: string;
+      awarded_at?: string;
+    }>;
+    certificates?: Array<{
+      id: string;
+      civic_module?: string;
+      module_title: string;
+      module_slug: string;
+      issued_at: string;
+      certificate_url?: string;
+    }>;
     recent_progress: Array<{
       content_type: string;
       content_id: string;
       completed_at: string;
+      progress_percent?: number;
     }>;
+    total_progress?: number;
   } | null;
   progress: Array<{
     content_type: string;
@@ -78,7 +81,7 @@ function filtersToQuery(filters?: LearnListFilters): string {
 }
 
 function fetchList(segment: string, filters?: LearnListFilters) {
-  return apiFetch<LearnHubListResponse>(
+  return apiFetch<ApiListResponse<LearnHubItem>>(
     `/content/learn/${segment}/${filtersToQuery(filters)}`,
   );
 }
@@ -93,28 +96,58 @@ export const learnHubApi = {
   documents: (filters?: LearnListFilters) => fetchList("documents", filters),
   paths: (filters?: LearnListFilters) => fetchList("paths", filters),
   quests: (filters?: LearnListFilters) => fetchList("quests", filters),
-  profile: async (): Promise<LearnProfileResponse> => {
-    const res = await fetch(buildApiUrl("/content/learn/profile/"), {
-      headers: gamificationHeaders(),
-    });
-    if (!res.ok) {
-      return { gamification: null, progress: [] };
-    }
-    return (await res.json()) as LearnProfileResponse;
-  },
-  markProgress: async (body: {
-    content_type: LearnContentType;
+  stages: () => apiFetch<ApiListResponse<CivicModule>>("/content/civic-modules/"),
+  stage: (slug: string) => apiFetch<CivicModule>(`/content/civic-modules/${slug}/`),
+  leaderboard: (limit = 20) =>
+    apiFetch<ApiListResponse<LeaderboardEntry>>(`/gamification/leaderboard/?limit=${limit}`),
+  stageLeaderboard: (slug: string) =>
+    apiFetch<StageLeaderboardStats>(`/content/learn/stages/${slug}/leaderboard/`),
+  profile: () =>
+    apiFetch<LearnProfileResponse>("/content/learn/profile/"),
+  markProgress: (body: {
+    content_type: string;
     content_id: string;
     progress_percent?: number;
-  }) => {
-    const res = await fetch(buildApiUrl("/content/learn/progress/"), {
+  }) =>
+    apiFetch("/content/learn/progress/", {
       method: "POST",
-      headers: gamificationHeaders(),
       body: JSON.stringify(body),
-    });
-    if (!res.ok) throw new Error("Could not save progress");
-    return res.json();
+    }),
+  civicModules: () =>
+    apiFetch<ApiListResponse<CivicModule>>("/content/civic-modules/"),
+  civicModule: (slug: string) =>
+    apiFetch<CivicModule>(`/content/civic-modules/${slug}/`),
+  completeChapter: (chapterId: string) =>
+    apiFetch<{
+      detail: string;
+      module_completed: boolean;
+      certificate_id?: string | null;
+    }>(`/content/civic-chapters/${chapterId}/complete/`, { method: "POST" }),
+  submitTriviaAttempt: (triviaId: string, answers: Record<string, number>) =>
+    apiFetch<{ score: number; streak_count?: number; completed_at?: string }>(
+      `/engagement/trivia/${triviaId}/attempt/`,
+      {
+        method: "POST",
+        body: JSON.stringify({ answers, leaderboard_opt_in: false }),
+      },
+    ),
+  getForumThreads: (chapterId?: string) => {
+    let url = "/engagement/forum-threads/";
+    if (chapterId) url += `?chapter_id=${chapterId}`;
+    return apiFetch<ApiListResponse<ForumThread>>(url);
   },
+  createForumThread: (body: { title: string; civic_module?: string; civic_chapter?: string }) =>
+    apiFetch<ForumThread>("/engagement/forum-threads/", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+  getForumThread: (threadId: string) =>
+    apiFetch<ForumThreadDetail>(`/engagement/forum-threads/${threadId}/`),
+  createForumPost: (threadId: string, content: string) =>
+    apiFetch<ForumPost>(`/engagement/forum-threads/${threadId}/posts/`, {
+      method: "POST",
+      body: JSON.stringify({ content }),
+    }),
 };
 
 export function learnItemHref(item: LearnHubItem): string {
@@ -138,3 +171,43 @@ export function learnItemHref(item: LearnHubItem): string {
 export function isExternalLearnHref(href: string): boolean {
   return href.startsWith("http://") || href.startsWith("https://");
 }
+
+type LeaderboardEntry = {
+  rank: number;
+  name: string | null;
+  points: number;
+  level: number;
+  streak_days: number;
+  badge_count: number;
+};
+
+type StageLeaderboardStats = {
+  stage_slug: string;
+  stage_title: string;
+  total_users: number;
+  avg_trivia_score: number | null;
+};
+
+type ForumPost = {
+  id: string;
+  content: string;
+  upvotes: number;
+  author_name: string;
+  author_initials: string;
+  created_at: string;
+};
+
+type ForumThread = {
+  id: string;
+  title: string;
+  civic_module: string | null;
+  civic_chapter: string | null;
+  posts_count: number;
+  author_name: string;
+  author_initials: string;
+  created_at: string;
+};
+
+type ForumThreadDetail = ForumThread & {
+  posts: ForumPost[];
+};

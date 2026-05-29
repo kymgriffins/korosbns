@@ -23,6 +23,8 @@ export interface GovernmentDocument {
 
 // Stage map to folder names in the API repository
 export const STAGE_FOLDER_MAP: Record<number, string[]> = {
+  0: ["From The Team"],
+  1: ["Constitution"],
   2: ["BPS 2010-2026"],
   3: ["FB 2010-2026", "ERE 2010-2026"],
   4: ["CFSP 2010-2026"],
@@ -189,6 +191,28 @@ export const CONSTITUTION_HISTORICAL_DOCS: GovernmentDocument[] = [
   },
 ];
 
+// Stage 0: From The Team static files
+export function getFromTheTeamDocs(): GovernmentDocument[] {
+  return [{
+    id: "fromtheteam-bps-2026-summary",
+    stageId: 0,
+    name: "BPS 2026 Summary From The Team.pdf",
+    title: "BPS 2026 Summary — From The Team",
+    folder: "From The Team",
+    financialYear: "FY 2025/26",
+    year: 2026,
+    type: "fromtheteam",
+    pdfUrl: "/BPS_2026_Summary_From_The_Team.pdf",
+    sourceUrl: "https://budgetndiostory.org",
+    sizeBytes: 0,
+    datePublished: "2026-01-15",
+    issuingBody: "Millicent Makina, Board Advisor",
+    description: "A citizen-friendly summary of the Budget Policy Statement 2026 prepared under the guidance of Millicent Makina, Board Advisor at Budget Ndio Story. Covers revenue targets, spending priorities, and the BETA agenda in plain language.",
+    isCurrent: true,
+    isAvailable: true,
+  }];
+}
+
 // Stage 8: Participation Toolkit static mock files
 export const PARTICIPATION_TOOLKIT_DOCS: GovernmentDocument[] = [
   {
@@ -270,6 +294,7 @@ export function inferIssuingBody(folderName: string, docName: string): string {
   const normalizedFolder = folderName.toUpperCase();
   const normalizedName = docName.toUpperCase();
 
+  if (normalizedFolder.includes("FROM THE TEAM")) return "Millicent Makina, Board Advisor";
   if (normalizedFolder.includes("BPS")) return "National Treasury";
   if (normalizedFolder.includes("CBR")) return "Controller of Budget";
   if (normalizedFolder.includes("BROP")) return "National Treasury";
@@ -298,6 +323,8 @@ export function inferIssuingBody(folderName: string, docName: string): string {
 // Generate plain-language summaries based on type
 export function generatePlainDescription(docName: string, stageId: number): string {
   switch (stageId) {
+    case 0:
+      return "A citizen-friendly summary of the Budget Policy Statement prepared by the Budget Ndio Story team.";
     case 2:
       return "Sets out Kenya's macroeconomic projections and sector expenditure ceilings for the upcoming budget preparation.";
     case 3:
@@ -324,6 +351,11 @@ export function getDocumentsForStage(
   selectedCounty: string,
   liveRepoDocs?: any[]
 ): GovernmentDocument[] {
+  // Stage 0 special case — From The Team
+  if (stageId === 0) {
+    return getFromTheTeamDocs();
+  }
+
   // Stage 1 special case
   if (stageId === 1) {
     return CONSTITUTION_HISTORICAL_DOCS;

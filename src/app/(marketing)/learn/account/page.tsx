@@ -15,12 +15,13 @@ export default function AccountPage() {
         description="Manage your public profile, avatar, and social links."
         breadcrumbs={[
           { label: "Home", href: Routes.Home },
+          { label: "Learn", href: Routes.Learn },
           { label: "Account" },
         ]}
         actions={
           <div className="flex gap-2">
             <Button type="button" variant="outline" size="sm" asChild>
-              <Link href="/account/password">Change Password</Link>
+              <Link href={Routes.AccountPassword}>Change Password</Link>
             </Button>
             <Button type="button" variant="outline" size="sm" asChild>
               <Link href={Routes.AccountSignOut}>Sign out</Link>

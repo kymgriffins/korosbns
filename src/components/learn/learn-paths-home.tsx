@@ -5,6 +5,9 @@ import { OnboardingWizard } from "./onboarding-wizard";
 import { AnonymousIdentityPicker } from "./anonymous-identity-picker";
 import { BitmojiAvatar } from "./bitmoji-avatar";
 import { StageDetailDrawer } from "./stage-detail-drawer";
+import { LearnDashboardPanel } from "./learn-dashboard-panel";
+import { StageRoadmap } from "./stage-roadmap";
+import { LearnStatsSidebar } from "./learn-stats-sidebar";
 
 import { Button } from "@/ui/button";
 import { Progress } from "@/ui/progress";
@@ -12,10 +15,11 @@ import { Label } from "@/ui/label";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/ui/accordion";
 import { toast } from "sonner";
 import {
-  Flame, Sparkles, BookOpen,
+  Sparkles, Flame, BookOpen,
   ArrowRight, ShieldCheck, MapPin, Calendar, CheckCircle2,
-  Volume2, Shield, Settings, DownloadCloud, Copy, Send, MessageSquare,
-  Home, HelpCircle, ChevronRight, Layers, Globe, FileCheck, Award
+  Volume2, Shield, Settings, Copy, Send, MessageSquare,
+  Home, HelpCircle, ChevronRight, Globe, FileCheck, Award,
+  Layers, ShieldAlert, Trash2, FileText
 } from "lucide-react";
 import { cn } from "@/utils";
 import { useLearn, type ActiveLesson } from "@/contexts/learn-context";
@@ -23,8 +27,10 @@ import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
 import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
-import { STAGES_DATA, type StageData } from "@/constants/stages-data";
 import { citizenApi } from "@/lib/api-client";
+import { learnHubApi } from "@/lib/learn-hub";
+import { readProgress, clearAllModuleProgress } from "@/lib/module-progress";
+import type { CivicModule, ChapterStep } from "@/types/learn";
 
 // Translations dictionary for Global Language Toggle (EN / SW / Sheng)
 const TRANSLATIONS = {
@@ -35,7 +41,7 @@ const TRANSLATIONS = {
     sovereigns: "Sovereigns",
     streak: "Active Streak",
     roadmapTitle: "Map of the Budget Cycle",
-    roadmapSubtitle: "Complete the 8 sequential stages to earn certificates & badges.",
+    roadmapSubtitle: "Complete the stages to earn certificates & badges.",
     alertsTitle: "Participation Alerts",
     alertsSubtitle: "Hyper-local alerts matching your county and tracked documents.",
     profileTitle: "Citizen Profile",
@@ -99,36 +105,36 @@ const TRANSLATIONS = {
   }
 };
 
-// STAGES_DATA imported from @/constants/stages-data
 
 export function LearnPathsHome() {
   const { isLoggedIn, user: authUser } = useAuth();
+  const { civicModules, fetchCivicModules, activeLesson, setActiveLesson, updateCurrentStep, activeTab, setActiveTab, totalStages, modulesLoading } = useLearn();
+  const stages = civicModules;
   const [wantsAnonymous, setWantsAnonymous] = useState(false);
   const [profile, setProfile] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
-  const { activeTab, setActiveTab, setActiveLesson } = useLearn();
 
-  const [selectedStage, setSelectedStage] = useState<any | null>(null);
-  const [cachedStages, setCachedStages] = useState<number[]>([]);
+  const [selectedStage, setSelectedStage] = useState<CivicModule | null>(null);
 
   // Sync selectedStage ↔ activeLesson for sidebar curriculum rail
   useEffect(() => {
     if (selectedStage) {
       const completedStepIds: number[] = [];
+      const p = readProgress(selectedStage.slug, selectedStage.order);
       for (const step of selectedStage.steps) {
-        const key = `stage_${selectedStage.id}_step_${step.id}_trivia_passed`;
-        if (localStorage.getItem(key) === "true") {
-          completedStepIds.push(step.id);
+        if (p.stepsCompleted[step.order]) {
+          completedStepIds.push(step.order);
         }
       }
       setActiveLesson({
-        stageId: selectedStage.id,
+        stageId: selectedStage.slug,
         stageTitle: selectedStage.title,
         stageBadge: selectedStage.badge,
+        stageOrder: selectedStage.order,
         currentStep: 0,
         totalSteps: selectedStage.steps.length,
         completedStepIds,
-        stepTitles: selectedStage.steps.map((s: any) => ({ id: s.id, title: s.title })),
+        stepTitles: selectedStage.steps.map((s) => ({ id: s.order, title: s.title })),
       });
     } else {
       setActiveLesson(null);
@@ -214,15 +220,6 @@ export function LearnPathsHome() {
         setProfile(null);
       }
     }
-    
-    const storedCache = localStorage.getItem("bns_cached_stages");
-    if (storedCache) {
-      try {
-        setCachedStages(JSON.parse(storedCache));
-      } catch {
-        setCachedStages([]);
-      }
-    }
     setLoading(false);
   }, [isLoggedIn, authUser]);
 
@@ -256,39 +253,20 @@ export function LearnPathsHome() {
     localStorage.setItem("bns_user_profile", JSON.stringify(updated));
   };
 
-  const handleToggleCache = (stageId: number, e: React.MouseEvent) => {
-    e.stopPropagation();
-    let newCached = [...cachedStages];
-    if (newCached.includes(stageId)) {
-      newCached = newCached.filter(id => id !== stageId);
-      toast.info("Removed stage from local cache.");
-    } else {
-      newCached.push(stageId);
-      toast.success("Stage cached offline successfully!");
-    }
-    setCachedStages(newCached);
-    localStorage.setItem("bns_cached_stages", JSON.stringify(newCached));
-  };
+  const stageCardData = (stage: CivicModule) => ({
+    id: stage.order,
+    title: stage.title,
+    badge: stage.badge,
+    badgeName: stage.badgeName,
+    documentName: stage.documentName,
+    status: stage.status,
+  });
 
   const handleResetProgress = () => {
     if (window.confirm("Reset all progress? This wipes profile & statistics.")) {
       localStorage.removeItem("bns_user_profile");
-      localStorage.removeItem("bns_cached_stages");
-      for (let i = 1; i <= 8; i++) {
-        localStorage.removeItem(`stage_${i}_article`);
-        localStorage.removeItem(`stage_${i}_quiz_attempts`);
-        localStorage.removeItem(`stage_${i}_quiz_cooldown`);
-        localStorage.removeItem(`stage_${i}_current_step`);
-        localStorage.removeItem(`stage_${i}_mastery_awarded`);
-        for (let j = 0; j < 10; j++) {
-          localStorage.removeItem(`stage_${i}_video_${j}`);
-          localStorage.removeItem(`stage_${i}_chapter_${j}`);
-          localStorage.removeItem(`stage_${i}_step_${j}_trivia_passed`);
-          localStorage.removeItem(`stage_${i}_step_${j}_trivia_${j}_reward`);
-        }
-      }
+      clearAllModuleProgress(stages);
       setProfile(null);
-      setCachedStages([]);
       setSelectedStage(null);
       setActiveTab("home");
       toast.success("All profiles wiped.");
@@ -301,21 +279,29 @@ export function LearnPathsHome() {
 
   // Leaderboard assembly sorting
   const leaderboard = [
-    { name: "BudgetBreaker_Nairobi", svg: 850, stages: 8 },
-    { name: "SovereignSeeker_Mombasa", svg: 720, stages: 6 },
-    { name: "GavanaWatch_Kisumu", svg: 640, stages: 5 },
+    { name: "BudgetBreaker_Nairobi", svg: 850, stages: totalStages },
+    { name: "SovereignSeeker_Mombasa", svg: 720, stages: Math.max(1, totalStages - 2) },
+    { name: "GavanaWatch_Kisumu", svg: 640, stages: Math.max(1, totalStages - 3) },
     { name: profile?.pseudoName || "You", svg: profile?.sovereigns || 0, stages: profile?.badges?.length || 0, isUser: true },
-    { name: "MCA_Whisperer_Nakuru", svg: 310, stages: 3 },
+    { name: "MCA_Whisperer_Nakuru", svg: 310, stages: Math.max(1, totalStages - 5) },
     { name: "CitizenZero_Kiambu", svg: 150, stages: 1 }
   ].sort((a, b) => b.svg - a.svg).map((item, idx) => ({ ...item, rank: idx + 1 }));
 
   const currentStageNum = profile ? (profile.stageProgress ? Math.max(...profile.stageProgress) : 1) : 1;
-  const currentStage = STAGES_DATA.find(s => s.id === currentStageNum) || STAGES_DATA[0];
+  const currentStage = stages.find(s => s.order === currentStageNum) || stages[0];
 
-  if (loading) {
+  if (loading || modulesLoading) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center min-h-[50vh]">
         <div className="animate-spin size-8 border-4 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  if (!stages.length) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center min-h-[50vh] gap-3 p-6 text-center">
+        <p className="text-muted-foreground">No learning modules available yet.</p>
       </div>
     );
   }
@@ -388,204 +374,25 @@ export function LearnPathsHome() {
             
             {/* TAB 1: CIVIC DASHBOARD (HOME) */}
             {activeTab === "home" && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="space-y-6"
-              >
-                {/* User stat row (replaces former sticky top bar) */}
-                <div className="flex items-center gap-3 p-3 rounded-2xl border border-border bg-card shadow-xs">
-                  <BitmojiAvatar gender={profile.gender} size="sm" className="shrink-0" />
-                  <div className="min-w-0 flex-1">
-                    <h1 className="text-xs font-black text-foreground truncate">{profile.breakName}</h1>
-                    <p className="text-[10px] text-muted-foreground truncate">{profile.county} · Lvl {Math.floor(profile.sovereigns / 100) + 1}</p>
-                  </div>
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    <div className="px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-black flex items-center gap-1">
-                      <Sparkles className="size-3 fill-primary" />
-                      <span>{profile.sovereigns}</span>
-                    </div>
-                    <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-500 text-xs font-bold" title={text.streak}>
-                      <Flame className="size-3 fill-orange-500" />
-                      <span>{profile.streakDays}d</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <h2 className="text-lg font-black uppercase tracking-tight">{text.dashboardTitle}</h2>
-                  <p className="text-xs text-muted-foreground">{text.dashboardSubtitle}</p>
-                </div>
-
-                {/* Progress Tracker Card */}
-                <div className="p-4 rounded-2xl border border-border bg-card space-y-3 shadow-xs">
-                  <div className="flex justify-between items-center text-xs font-bold text-foreground">
-                    <span>Progress to Citizen Expert</span>
-                    <span className="text-primary">{profile.badges?.length || 0} / 8 Stages Mastered</span>
-                  </div>
-                  <Progress value={((profile.badges?.length || 0) / 8) * 100} className="h-2 rounded-full" />
-                  <p className="text-[10px] text-muted-foreground">Unlock all 8 badges by completing the trivia gates.</p>
-                </div>
-
-                {/* Current Active Stage Card */}
-                <div className="p-4 border border-border bg-card rounded-2xl space-y-3 shadow-xs">
-                  <div className="flex justify-between items-center">
-                    <span className="text-[10px] uppercase font-bold text-muted-foreground">Current Stage</span>
-                    <span className="text-[11px] text-primary font-bold">Stage {currentStage.id}</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-3xl">{currentStage.badge}</span>
-                    <div>
-                      <h4 className="text-sm font-black uppercase leading-tight">{currentStage.title}</h4>
-                      <p className="text-xs text-muted-foreground mt-0.5">{currentStage.documentName}</p>
-                    </div>
-                  </div>
-                  <Button
-                    onClick={() => setSelectedStage(currentStage)}
-                    className="w-full rounded-xl mt-2 font-bold"
-                  >
-                    Resume Learning
-                  </Button>
-                </div>
-              </motion.div>
+              <LearnDashboardPanel
+                text={text}
+                profile={profile}
+                currentStage={currentStage}
+                onSelectStage={setSelectedStage}
+              />
             )}
 
             {/* TAB 2: ROADMAP (LEARN) */}
             {activeTab === "learn" && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="space-y-6"
-              >
-                <div className="space-y-1">
-                  <h2 className="text-lg font-black uppercase tracking-tight">{text.roadmapTitle}</h2>
-                  <p className="text-xs text-muted-foreground">{text.roadmapSubtitle}</p>
-                </div>
-
-                {/* Desktop Quick-Jump Stage Selector */}
-                <div className="space-y-2">
-                  <Label htmlFor="stageSelect" className="text-xs font-bold text-muted-foreground">{text.quickJump}</Label>
-                  <select
-                    id="stageSelect"
-                    onChange={(e) => {
-                      const selected = STAGES_DATA.find(s => s.id === parseInt(e.target.value));
-                      if (selected) {
-                        setSelectedStage(selected);
-                      }
-                    }}
-                    className="w-full h-10 px-3 rounded-xl border border-input bg-card text-xs focus-visible:outline-none"
-                  >
-                    <option value="">Select a stage...</option>
-                    {STAGES_DATA.map((s) => {
-                      const isCompleted = profile.badges?.includes(s.badge);
-                      const isActive = profile.stageProgress?.includes(s.id);
-                      return (
-                        <option key={s.id} value={s.id}>
-                          Stage {s.id}: {s.documentName} {isCompleted ? "✓" : isActive ? "▶" : ""}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </div>
-
-                {/* Accordion Map Overview */}
-                <Accordion type="single" collapsible className="w-full space-y-2 border-none">
-                  <AccordionItem value="map-overview" className="border border-border bg-card rounded-xl overflow-hidden px-4">
-                    <AccordionTrigger className="hover:no-underline py-3 text-xs font-bold flex items-center justify-between text-muted-foreground">
-                      <div className="flex items-center gap-1.5 text-foreground">
-                        <Layers className="size-4 text-primary" />
-                        <span>Overview: Map of the Budget Cycle</span>
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent className="border-t border-border pt-3 pb-3">
-                      <div className="grid grid-cols-2 gap-2">
-                        {STAGES_DATA.map((s) => {
-                          const done = profile.badges?.includes(s.badge);
-                          const active = profile.stageProgress?.includes(s.id);
-                          return (
-                            <div key={s.id} className={`p-2 rounded-lg border text-xs flex items-center gap-2 ${done ? 'border-primary/20 bg-primary/5' : active ? 'border-foreground/30 bg-card' : 'border-border opacity-40 bg-muted/20'}`}>
-                              <span className="text-base">{s.badge}</span>
-                              <div className="truncate">
-                                <p className="font-bold truncate text-[10px] leading-tight">{s.badgeName}</p>
-                                <p className="text-[9px] text-muted-foreground truncate">{s.documentName}</p>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-
-                {/* Vertical Visual Timeline (Roadmap) */}
-                <div className="space-y-3 relative before:absolute before:left-6 before:top-4 before:bottom-4 before:w-0.5 before:bg-border">
-                  {STAGES_DATA.map((stage) => {
-                    const isCompleted = profile.badges?.includes(stage.badge);
-                    const isActive = profile.stageProgress?.includes(stage.id);
-                    const isStageCached = cachedStages.includes(stage.id);
-                    const offlineDisabled = false;
-
-                    return (
-                      <div
-                        key={stage.id}
-                        onClick={() => {
-                          if (offlineDisabled) return;
-                          setSelectedStage(stage);
-                        }}
-                        className={`relative flex items-center justify-between p-4 rounded-xl border transition-all cursor-pointer ${
-                          isCompleted
-                            ? "bg-primary/5 border-primary/20 hover:bg-primary/10"
-                            : isActive
-                            ? "bg-card border-foreground/35 hover:border-foreground shadow-xs"
-                            : "bg-muted/15 border-border hover:bg-muted/30"
-                        } ${offlineDisabled ? "opacity-30 cursor-not-allowed" : ""}`}
-                      >
-                        <div className="flex items-center gap-4">
-                          {/* Circle Timeline Index */}
-                          <div className={`size-10 rounded-full flex items-center justify-center font-bold text-xs shrink-0 border z-10 ${
-                            isCompleted
-                              ? "bg-primary border-primary text-primary-foreground"
-                              : isActive
-                              ? "bg-card border-foreground text-foreground"
-                              : "bg-muted border-border text-muted-foreground"
-                          }`}>
-                            {isCompleted ? stage.badge : stage.id}
-                          </div>
-
-                          <div>
-                            <div className="flex items-center gap-1">
-                              <h3 className="text-xs font-black uppercase tracking-tight">{stage.title}</h3>
-                            </div>
-                            <p className="text-[10px] text-muted-foreground truncate max-w-[150px] sm:max-w-xs">{stage.documentName}</p>
-                            <div className="flex items-center gap-1.5 mt-1">
-                              <span className={cn("text-[9px] font-bold px-1.5 py-0.5 rounded-full border", stage.status === "Comment Open" ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-600" : "bg-muted border-border text-muted-foreground")}>
-                                {stage.status}
-                              </span>
-                              {isStageCached && (
-                                <span className="text-[9px] bg-blue-500/10 border border-blue-500/20 text-blue-600 font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
-                                  📶 Cached
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Cache controls */}
-                        {!offlineDisabled && (
-                          <button
-                            onClick={(e) => handleToggleCache(stage.id, e)}
-                            className={`p-2 rounded-lg border hover:bg-muted shrink-0 ${isStageCached ? 'border-blue-500/20 text-blue-600 bg-blue-500/5' : 'border-border text-muted-foreground'}`}
-                          >
-                            <DownloadCloud className="size-4" />
-                          </button>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </motion.div>
+              <StageRoadmap
+                text={text}
+                profile={profile}
+                stages={stages.map(stageCardData)}
+                onSelectStage={(s) => {
+                  const full = stages.find(m => m.order === s.id);
+                  if (full) setSelectedStage(full);
+                }}
+              />
             )}
 
             {/* TAB 3: PARTICIPATION ALERTS */}
@@ -668,32 +475,34 @@ export function LearnPathsHome() {
         ) : (
           /* Lesson layer — fills bounded panel above embedded bottom nav */
           <div className="absolute inset-0 z-10 flex flex-col overflow-hidden bg-background">
-            <StageDetailDrawer
+            <StageDetailDrawer key={selectedStage.slug}
               stage={selectedStage}
               profile={profile}
               onUpdateProfile={handleUpdateProfile}
               onClose={() => setSelectedStage(null)}
-              hasNext={selectedStage.id < 8}
-              hasPrev={selectedStage.id > 1}
+              hasNext={stages.findIndex(s => s.slug === selectedStage.slug) < stages.length - 1}
+              hasPrev={stages.findIndex(s => s.slug === selectedStage.slug) > 0}
               onPrevStage={() => {
-                const prev = STAGES_DATA.find(s => s.id === selectedStage.id - 1);
+                const idx = stages.findIndex(s => s.slug === selectedStage.slug);
+                const prev = stages[idx - 1];
                 if (prev) {
                   const isCompleted = profile.badges?.includes(prev.badge);
-                  const isActive = profile.stageProgress?.includes(prev.id);
+                  const isActive = profile.stageProgress?.includes(prev.order);
                   if (!isCompleted && !isActive) {
-                    toast.error(`Stage ${prev.id} is locked.`);
+                    toast.error(`Stage ${prev.title} is locked.`);
                     return;
                   }
                   setSelectedStage(prev);
                 }
               }}
               onNextStage={() => {
-                const next = STAGES_DATA.find(s => s.id === selectedStage.id + 1);
+                const idx = stages.findIndex(s => s.slug === selectedStage.slug);
+                const next = stages[idx + 1];
                 if (next) {
                   const isCompleted = profile.badges?.includes(next.badge);
-                  const isActive = profile.stageProgress?.includes(next.id);
+                  const isActive = profile.stageProgress?.includes(next.order);
                   if (!isCompleted && !isActive) {
-                    toast.error(`Stage ${next.id} is locked.`);
+                    toast.error(`Stage ${next.title} is locked.`);
                     return;
                   }
                   setSelectedStage(next);
@@ -711,32 +520,34 @@ export function LearnPathsHome() {
         {selectedStage ? (
           /* A) Stage Selected View: full-width Stage Detail (stats panel hidden) */
           <div className="flex-1 flex flex-col h-full overflow-hidden">
-            <StageDetailDrawer
+            <StageDetailDrawer key={selectedStage.slug}
               stage={selectedStage}
               profile={profile}
               onUpdateProfile={handleUpdateProfile}
               onClose={() => setSelectedStage(null)}
-              hasNext={selectedStage.id < 8}
-              hasPrev={selectedStage.id > 1}
+              hasNext={stages.findIndex(s => s.slug === selectedStage.slug) < stages.length - 1}
+              hasPrev={stages.findIndex(s => s.slug === selectedStage.slug) > 0}
               onPrevStage={() => {
-                const prev = STAGES_DATA.find(s => s.id === selectedStage.id - 1);
+                const idx = stages.findIndex(s => s.slug === selectedStage.slug);
+                const prev = stages[idx - 1];
                 if (prev) {
                   const isCompleted = profile.badges?.includes(prev.badge);
-                  const isActive = profile.stageProgress?.includes(prev.id);
+                  const isActive = profile.stageProgress?.includes(prev.order);
                   if (!isCompleted && !isActive) {
-                    toast.error(`Stage ${prev.id} is locked.`);
+                    toast.error(`Stage ${prev.title} is locked.`);
                     return;
                   }
                   setSelectedStage(prev);
                 }
               }}
               onNextStage={() => {
-                const next = STAGES_DATA.find(s => s.id === selectedStage.id + 1);
+                const idx = stages.findIndex(s => s.slug === selectedStage.slug);
+                const next = stages[idx + 1];
                 if (next) {
                   const isCompleted = profile.badges?.includes(next.badge);
-                  const isActive = profile.stageProgress?.includes(next.id);
+                  const isActive = profile.stageProgress?.includes(next.order);
                   if (!isCompleted && !isActive) {
-                    toast.error(`Stage ${next.id} is locked.`);
+                    toast.error(`Stage ${next.title} is locked.`);
                     return;
                   }
                   setSelectedStage(next);
@@ -775,10 +586,10 @@ export function LearnPathsHome() {
                     <div className="p-5 border border-border bg-card rounded-2xl space-y-3.5 shadow-xs">
                       <h3 className="text-xs font-black uppercase text-muted-foreground tracking-wider">Overall Progress</h3>
                       <div className="flex justify-between items-baseline">
-                        <span className="text-3xl font-black text-foreground">{profile.badges?.length || 0} / 8</span>
+                        <span className="text-3xl font-black text-foreground">{profile.badges?.length || 0} / {stages.length}</span>
                         <span className="text-[10px] text-muted-foreground font-semibold">STAGES MASTERED</span>
                       </div>
-                      <Progress value={((profile.badges?.length || 0) / 8) * 100} className="h-2 rounded-full" />
+                      <Progress value={stages.length ? ((profile.badges?.length || 0) / stages.length) * 100 : 0} className="h-2 rounded-full" />
                     </div>
 
                     {/* Active Stage Resumer */}
@@ -833,38 +644,27 @@ export function LearnPathsHome() {
 
                   {/* Premium Cards Grid */}
                   <div className="grid grid-cols-2 gap-4">
-                    {STAGES_DATA.map((stage) => {
+                    {stages.map((stage) => {
                       const isCompleted = profile.badges?.includes(stage.badge);
-                      const isActive = profile.stageProgress?.includes(stage.id);
-                      const isStageCached = cachedStages.includes(stage.id);
-                      const offlineDisabled = false;
+                      const isActive = profile.stageProgress?.includes(stage.order);
 
                       return (
                         <div
-                          key={stage.id}
-                          onClick={() => {
-                            if (offlineDisabled) return;
-                            setSelectedStage(stage);
-                          }}
+                          key={stage.order}
+                          onClick={() => setSelectedStage(stage)}
                           className={cn(
                             "relative flex flex-col justify-between p-5 rounded-2xl border transition-all select-none group cursor-pointer",
                             isCompleted
                               ? "bg-primary/4 border-primary/15 hover:bg-primary/8 shadow-xs"
                               : isActive
                               ? "bg-card border-foreground/30 hover:border-foreground shadow-sm"
-                              : "bg-muted/10 border-border/80 hover:bg-muted/25",
-                            offlineDisabled && "opacity-30 cursor-not-allowed"
+                              : "bg-muted/10 border-border/80 hover:bg-muted/25"
                           )}
                         >
                           <div className="space-y-3">
                             <div className="flex justify-between items-start">
                               <span className="text-2xl p-2 rounded-xl bg-card border border-border/60 shadow-2xs group-hover:scale-105 transition-transform duration-200">{stage.badge}</span>
                               <div className="flex items-center gap-1.5">
-                                {isStageCached && (
-                                  <span className="text-[9px] bg-blue-500/10 border border-blue-500/20 text-blue-600 font-bold px-1.5 py-0.5 rounded-full">
-                                    📶 Cached
-                                  </span>
-                                )}
                                 {isCompleted ? (
                                   <span className="text-[9px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 font-black uppercase tracking-wider px-2 py-0.5 rounded-full">
                                     Completed
@@ -890,18 +690,6 @@ export function LearnPathsHome() {
 
                           <div className="mt-4 pt-3 border-t border-border/50 flex items-center justify-between">
                             <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">{stage.status}</span>
-                            {!offlineDisabled && (
-                              <button
-                                onClick={(e) => handleToggleCache(stage.id, e)}
-                                className={cn(
-                                  "p-1.5 rounded-lg border hover:bg-muted transition-colors",
-                                  isStageCached ? "border-blue-500/20 text-blue-600 bg-blue-500/5" : "border-border text-muted-foreground"
-                                )}
-                                title="Cache Stage Offline"
-                              >
-                                <DownloadCloud className="size-3.5" />
-                              </button>
-                            )}
                           </div>
                         </div>
                       );
@@ -998,9 +786,9 @@ export function LearnPathsHome() {
 
                   {/* Unlocked Badges */}
                   <div className="p-6 border border-border bg-card rounded-2xl space-y-4 shadow-sm">
-                    <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Unlocked Badges ({profile.badges?.length || 0}/8)</h3>
+                    <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Unlocked Badges ({profile.badges?.length || 0}/{stages.length})</h3>
                     <div className="grid grid-cols-4 gap-2">
-                      {STAGES_DATA.map((stage) => {
+                      {stages.map((stage) => {
                         const unlocked = profile.badges?.includes(stage.badge);
                         return (
                           <div
@@ -1082,61 +870,7 @@ export function LearnPathsHome() {
             </div>
 
             {/* Right: Persistent Stats Panel */}
-            <aside className="w-80 border-l border-border bg-card/25 p-6 flex flex-col gap-6 overflow-y-auto select-none">
-              <div>
-                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Good Morning</p>
-                <h3 className="text-base font-black text-foreground flex items-center gap-2 mt-0.5">
-                  <BitmojiAvatar gender={profile.gender} size="sm" />
-                  {profile.breakName} 🔥
-                </h3>
-              </div>
-
-              {/* Donut progress ring */}
-              <div className="flex flex-col items-center justify-center p-4 border border-border bg-card/40 rounded-2xl gap-3">
-                <div className="relative size-28 flex items-center justify-center">
-                  <svg className="size-full -rotate-90">
-                    <circle cx="56" cy="56" r="46" className="stroke-muted fill-none" strokeWidth="6" />
-                    <circle cx="56" cy="56" r="46" className="stroke-primary fill-none transition-all duration-500" strokeWidth="6"
-                      strokeDasharray="289"
-                      strokeDashoffset={289 - (289 * (profile.badges?.length || 0)) / 8}
-                      strokeLinecap="round" />
-                  </svg>
-                  <div className="absolute flex flex-col items-center justify-center text-center">
-                    <span className="text-xl font-black leading-none">{Math.round(((profile.badges?.length || 0) / 8) * 100)}%</span>
-                    <span className="text-[8px] font-bold text-muted-foreground uppercase mt-0.5 tracking-wider">Progress</span>
-                  </div>
-                </div>
-                <p className="text-[10px] text-muted-foreground font-medium text-center">Master all 8 stages to unlock your Citizen Certificate.</p>
-              </div>
-
-              {/* Stats Counters Grid */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 bg-orange-500/8 border border-orange-500/15 rounded-xl text-center">
-                  <Flame className="size-5 fill-orange-500 text-orange-500 mx-auto" />
-                  <span className="block text-sm font-black text-orange-600 mt-1">{profile.streakDays} Days</span>
-                  <span className="text-[8px] font-black text-orange-500/80 uppercase tracking-wider mt-0.5">Streak</span>
-                </div>
-                <div className="p-3 bg-primary/8 border border-primary/15 rounded-xl text-center">
-                  <Sparkles className="size-5 fill-primary text-primary mx-auto" />
-                  <span className="block text-sm font-black text-primary mt-1">{profile.sovereigns} SVG</span>
-                  <span className="text-[8px] font-black text-primary/80 uppercase tracking-wider mt-0.5">Sovereigns</span>
-                </div>
-              </div>
-
-              {/* Badges Box */}
-              <div className="space-y-2.5">
-                <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Unlocked Badges ({profile.badges?.length || 0})</h4>
-                {profile.badges?.length > 0 ? (
-                  <div className="flex flex-wrap gap-2">
-                    {profile.badges.map((b: string, i: number) => (
-                      <span key={i} className="text-xl p-2 rounded-xl bg-card border border-border shadow-2xs" title={b}>{b}</span>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-[10px] text-muted-foreground italic bg-muted/20 p-3 rounded-lg text-center border border-border/50">No badges unlocked yet. Start learning to earn badges!</p>
-                )}
-              </div>
-            </aside>
+            <LearnStatsSidebar profile={profile} />
           </div>
         )}
       </div>

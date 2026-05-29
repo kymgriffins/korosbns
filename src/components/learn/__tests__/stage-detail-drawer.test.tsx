@@ -82,7 +82,7 @@ describe("StageDetailDrawer", () => {
         hasPrev={false} hasNext={false}
       />
     );
-    expect(screen.getByText("Stage 1: Constitution Overview")).toBeInTheDocument();
+    expect(screen.getAllByText("Stage 1: Constitution")[0]).toBeInTheDocument();
     expect(screen.getByText("Start Learning Course")).toBeInTheDocument();
   });
 
@@ -129,7 +129,7 @@ describe("StageDetailDrawer", () => {
     await waitFor(() => { expect(screen.getByText("🎥 Watch")).toBeInTheDocument(); });
     fireEvent.click(screen.getByText("Continue"));
     await waitFor(() => { expect(screen.getByText("2. Budget Cycle Overview")).toBeInTheDocument(); });
-    fireEvent.click(screen.getByText("Previous"));
+    fireEvent.click(screen.getByText((content) => content.includes("Previous")));
     await waitFor(() => {
       expect(screen.getByText("1. Public Finance Principles")).toBeInTheDocument();
     });

@@ -9,11 +9,13 @@ import MobileMenu from "./mobile-menu";
 import { Button } from "@/ui/button";
 import Image from "next/image";
 import { useClickOutside } from "@/hooks";
+import { useAuth } from "@/contexts/auth-context";
 import { ThemeToggle } from "./theme-toggle";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "motion/react";
 import { navbarEnter } from "@/motion/variants";
 
 const Navbar = () => {
+  const { isLoggedIn, loading: authLoading, user } = useAuth();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [scrolled, setScrolled] = useState(false);
   const ref = useClickOutside(() => setIsOpen(false));
@@ -97,15 +99,26 @@ const Navbar = () => {
             {/* Right controls */}
             <div className="flex items-center gap-2 md:gap-3">
               <ThemeToggle />
-              <Link href={Routes.JoinUs}>
-                <Button
-                  variant="white"
-                  size="sm"
-                  className="h-9 px-4 rounded-lg font-medium"
-                >
-                  Join us
-                </Button>
-              </Link>
+              {!authLoading && (
+                <Link href={isLoggedIn ? Routes.Learn : Routes.JoinUs}>
+                  <Button
+                    variant="white"
+                    size="sm"
+                    className="h-9 px-4 rounded-lg font-medium gap-2"
+                  >
+                    {isLoggedIn ? (
+                      <>
+                        <span className="flex size-5 items-center justify-center rounded-full bg-primary/20 text-[10px] font-bold text-primary shrink-0">
+                          {user?.email?.charAt(0).toUpperCase() ?? "?"}
+                        </span>
+                        Continue Learning
+                      </>
+                    ) : (
+                      "Join us"
+                    )}
+                  </Button>
+                </Link>
+              )}
               <motion.div
                 whileTap={{ scale: 0.92 }}
                 transition={{ type: "spring", stiffness: 400, damping: 25 }}
