@@ -17,7 +17,7 @@ import { citizenApi } from "@/lib/api-client";
 function LoginForm() {
   const { login } = useAuth();
   const searchParams = useSearchParams();
-  const next = searchParams.get("next") || Routes.Account;
+  const next = searchParams.get("next") || Routes.Learn;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
