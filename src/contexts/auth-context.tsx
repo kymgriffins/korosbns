@@ -6,6 +6,7 @@ import {
   useCallback,
   useContext,
   useMemo,
+  useState,
   type ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
@@ -41,7 +42,7 @@ function normalizeProfile(profile: UserProfileApi): UserProfileApi {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const hasToken = Boolean(getAccessToken());
+  const [hasToken, setHasToken] = useState(() => Boolean(getAccessToken()));
 
   const { data: user, isLoading } = useQuery({
     queryKey: USER_PROFILE_KEY,
@@ -63,8 +64,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       logDebug("Auth", "Login requested", { email, redirectTo });
       const tokens = await citizenApi.login(email, password);
       setAuthTokens(tokens.access, tokens.refresh);
+      setHasToken(true);
       logDebug("Auth", "Login token stored");
-      await queryClient.invalidateQueries({ queryKey: USER_PROFILE_KEY });
+      await queryClient.refetchQueries({ queryKey: USER_PROFILE_KEY });
       logDebug("Auth", "Login completed", { email, redirectTo });
       router.push(redirectTo);
     },
@@ -79,6 +81,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       logDebug("Auth", "Server logout failed; clearing local tokens anyway");
     }
     clearAuthTokens();
+    setHasToken(false);
     queryClient.setQueryData(USER_PROFILE_KEY, null);
     logDebug("Auth", "Logout completed");
     router.push("/auth/login");

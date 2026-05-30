@@ -111,7 +111,7 @@ const Navbar = () => {
                         <span className="flex size-5 items-center justify-center rounded-full bg-primary/20 text-[10px] font-bold text-primary shrink-0">
                           {user?.email?.charAt(0).toUpperCase() ?? "?"}
                         </span>
-                        Continue Learning
+                        Welcome back, {user?.first_name ?? user?.email ?? "Citizen"}
                       </>
                     ) : (
                       "Join us"

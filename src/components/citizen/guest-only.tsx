@@ -9,7 +9,7 @@ import { useAuth } from "@/contexts/auth-context";
 /** Redirects authenticated users away from login/register. */
 export function GuestOnly({
   children,
-  redirectTo = Routes.Account,
+  redirectTo = Routes.Learn,
 }: {
   children: React.ReactNode;
   redirectTo?: string;
