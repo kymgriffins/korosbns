@@ -86,10 +86,7 @@ export default function RegisterPage() {
       if (prev.includes(id)) {
         return prev.filter((item) => item !== id);
       }
-      if (prev.length >= 3) {
-        toast.warning("Please limit priorities to your top 3 main issues.");
-        return prev;
-      }
+
       return [...prev, id];
     });
   };

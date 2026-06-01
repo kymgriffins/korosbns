@@ -8,6 +8,7 @@ import { MasteryPage } from "./mastery-page";
 import { NavigationFooter } from "./navigation-footer";
 import { TriviaSection } from "./trivia-section";
 import { DocumentsTab } from "./documents-tab";
+import { ModuleForum } from "@/components/forum/module-forum";
 import { StepContent } from "./step-content";
 import {
   getDocumentsForStage,
@@ -16,6 +17,7 @@ import { learnHubApi } from "@/lib/learn-hub";
 import { useLearn } from "@/contexts/learn-context";
 import { readProgress, writeProgress } from "@/lib/module-progress";
 import type { CivicModule } from "@/types/learn";
+import type { DrawerSubTab } from "./drawer-header";
 
 interface StageDetailDrawerProps {
   stage: CivicModule;
@@ -39,7 +41,7 @@ export function StageDetailDrawer({
   hasNext
 }: StageDetailDrawerProps) {
   const { totalStages, updateCurrentStep } = useLearn();
-  const [activeSubTab, setActiveSubTab] = useState<"learn" | "documents">("learn");
+  const [activeSubTab, setActiveSubTab] = useState<DrawerSubTab>("learn");
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [activeFormat, setActiveFormat] = useState<"video" | "text">("video");
   const [contentConsumed, setContentConsumed] = useState<boolean>(true);
@@ -333,7 +335,7 @@ export function StageDetailDrawer({
             )}
 
           </div>
-        ) : (
+        ) : activeSubTab === "documents" ? (
           <DocumentsTab
             stageId={stage.order}
             documentName={stage.documentName}
@@ -349,6 +351,16 @@ export function StageDetailDrawer({
             onCopyShareLink={handleCopyShareLink}
             onRequestDocument={handleRequestDocument}
           />
+        ) : (
+          <div className="max-w-4xl mx-auto w-full">
+            <div className="space-y-1 mb-4">
+              <h3 className="text-sm font-black uppercase tracking-tight">Module Discussion</h3>
+              <p className="text-xs text-muted-foreground">
+                Discuss topics related to {stage.title}
+              </p>
+            </div>
+            <ModuleForum moduleId={stage.id} />
+          </div>
         )}
 
       </div>
