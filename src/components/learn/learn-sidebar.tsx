@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Flame, TrendingUp } from "lucide-react";
+import { Flame, TrendingUp, MessageSquare } from "lucide-react";
 import { motion } from "motion/react";
 import { Routes } from "@/constants/routes";
 import type { LearnHubItem } from "@/lib/learn-hub";
@@ -106,6 +106,24 @@ export function LearnSidebar({ continueItems = [], dailyQuest, trending = [] }: 
         </ul>
         <Link href={Routes.LearnArticles} className="mt-3 inline-block text-xs font-semibold text-primary">
           Browse all articles
+        </Link>
+      </motion.section>
+
+      <motion.section
+        variants={fadeInUp}
+        initial={reduced ? false : "hidden"}
+        animate="visible"
+        className="rounded-2xl border border-border bg-card p-4"
+      >
+        <h2 className="flex items-center gap-2 text-sm font-bold">
+          <MessageSquare className="size-4 text-primary" aria-hidden />
+          Community
+        </h2>
+        <p className="mt-2 text-xs text-muted-foreground">
+          Join the discussion about Kenya's budget and public finance.
+        </p>
+        <Link href={Routes.LearnForum} className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-primary">
+          Visit Forum
         </Link>
       </motion.section>
     </aside>

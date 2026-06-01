@@ -3,13 +3,15 @@ import { apiFetch } from "@/lib/api-client";
 import type { ForumThread, ForumThreadDetail, ForumPost } from "@/types/learn";
 import type { ApiListResponse } from "@/types/api";
 
-export function useForumThreads(chapterId?: string) {
+export function useForumThreads(filters?: { chapterId?: string; moduleId?: string }) {
+  const params = new URLSearchParams();
+  if (filters?.chapterId) params.set("chapter_id", filters.chapterId);
+  if (filters?.moduleId) params.set("module_id", filters.moduleId);
+  const qs = params.toString();
   return useQuery({
-    queryKey: ["forum", "threads", chapterId],
+    queryKey: ["forum", "threads", filters],
     queryFn: () => {
-      const path = chapterId
-        ? `/engagement/forum-threads/?chapter_id=${chapterId}`
-        : "/engagement/forum-threads/";
+      const path = qs ? `/engagement/forum-threads/?${qs}` : "/engagement/forum-threads/";
       return apiFetch<ApiListResponse<ForumThread>>(path);
     },
     staleTime: 1000 * 60,

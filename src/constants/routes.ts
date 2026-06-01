@@ -20,6 +20,7 @@ export const Routes = {
     LearnDocuments: "/learn/documents",
     LearnPaths: "/learn",
     LearnPath: (slug: string) => `/learn/paths/${slug}`,
+    LearnForum: "/learn/forum",
     LearnQuests: "/learn/quests",
     LearnProfile: "/learn/profile",
     LearnDoc: (doc: string) => `/learn/${doc}`,

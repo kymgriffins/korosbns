@@ -3,12 +3,14 @@
 import Image from "next/image";
 import type { CivicModuleAuthor } from "@/types/learn";
 
+export type DrawerSubTab = "learn" | "documents" | "forum";
+
 interface DrawerHeaderProps {
   title: string;
   badge: string;
   currentStep: number;
-  activeSubTab: "learn" | "documents";
-  onSubTabChange: (tab: "learn" | "documents") => void;
+  activeSubTab: DrawerSubTab;
+  onSubTabChange: (tab: DrawerSubTab) => void;
   isCached: boolean;
   onClose: () => void;
   author?: CivicModuleAuthor;
@@ -72,6 +74,16 @@ export function DrawerHeader({
             }`}
           >
             Documents
+          </button>
+          <button
+            onClick={() => onSubTabChange("forum")}
+            className={`px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all ${
+              activeSubTab === "forum"
+                ? "bg-primary text-primary-foreground shadow-xs"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            Forum
           </button>
         </div>
 

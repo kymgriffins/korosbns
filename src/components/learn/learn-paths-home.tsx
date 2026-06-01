@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { OnboardingWizard } from "./onboarding-wizard";
 import { AnonymousIdentityPicker } from "./anonymous-identity-picker";
 import { BitmojiAvatar } from "./bitmoji-avatar";
@@ -19,7 +19,7 @@ import {
   ArrowRight, ShieldCheck, MapPin, Calendar, CheckCircle2,
   Volume2, Shield, Settings, Copy, Send, MessageSquare,
   Home, HelpCircle, ChevronRight, Globe, FileCheck, Award,
-  Layers, ShieldAlert, Trash2, FileText
+  Layers, ShieldAlert, Trash2, FileText, Users
 } from "lucide-react";
 import { cn } from "@/utils";
 import { useLearn, type ActiveLesson } from "@/contexts/learn-context";
@@ -30,6 +30,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { citizenApi } from "@/lib/api-client";
 import { learnHubApi } from "@/lib/learn-hub";
 import { readProgress, clearAllModuleProgress } from "@/lib/module-progress";
+import { useLeaderboard } from "@/hooks/use-gamification";
 import type { CivicModule, ChapterStep } from "@/types/learn";
 
 // Translations dictionary for Global Language Toggle (EN / SW / Sheng)
@@ -277,15 +278,31 @@ export function LearnPathsHome() {
   const langKey = (profile?.language as "EN" | "SW" | "SH") || "EN";
   const text = TRANSLATIONS[langKey];
 
-  // Leaderboard assembly sorting
-  const leaderboard = [
-    { name: "BudgetBreaker_Nairobi", svg: 850, stages: totalStages },
-    { name: "SovereignSeeker_Mombasa", svg: 720, stages: Math.max(1, totalStages - 2) },
-    { name: "GavanaWatch_Kisumu", svg: 640, stages: Math.max(1, totalStages - 3) },
-    { name: profile?.pseudoName || "You", svg: profile?.sovereigns || 0, stages: profile?.badges?.length || 0, isUser: true },
-    { name: "MCA_Whisperer_Nakuru", svg: 310, stages: Math.max(1, totalStages - 5) },
-    { name: "CitizenZero_Kiambu", svg: 150, stages: 1 }
-  ].sort((a, b) => b.svg - a.svg).map((item, idx) => ({ ...item, rank: idx + 1 }));
+  const { data: leaderboardData } = useLeaderboard(20);
+  const leaderboard = useMemo(() => {
+    const entries = (leaderboardData?.results ?? [])
+      .filter((e) => {
+        const name = (e.name ?? "").trim().toLowerCase();
+        return name && name !== "none" && name !== "true";
+      })
+      .map((e) => ({
+        name: e.name ?? "Anonymous",
+        svg: e.points,
+        stages: e.badge_count,
+        rank: e.rank,
+        isUser: profile?.pseudoName?.toLowerCase() === (e.name ?? "").toLowerCase(),
+      }));
+    if (!entries.some((e) => e.isUser) && profile?.pseudoName) {
+      entries.push({
+        name: profile.pseudoName,
+        svg: profile.sovereigns ?? 0,
+        stages: profile.badges?.length ?? 0,
+        rank: entries.length + 1,
+        isUser: true,
+      });
+    }
+    return entries.sort((a, b) => b.svg - a.svg).map((item, idx) => ({ ...item, rank: idx + 1 }));
+  }, [leaderboardData, profile]);
 
   const currentStageNum = profile ? (profile.stageProgress ? Math.max(...profile.stageProgress) : 1) : 1;
   const currentStage = stages.find(s => s.order === currentStageNum) || stages[0];
@@ -610,6 +627,27 @@ export function LearnPathsHome() {
                       </Button>
                     </div>
                   </div>
+
+                  {/* Community Forum */}
+                  <Link
+                    href={Routes.LearnForum}
+                    className="block p-5 border border-border bg-card rounded-2xl space-y-3 shadow-xs hover:bg-muted/30 transition-colors group"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2.5">
+                        <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                          <Users className="size-5 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-black uppercase tracking-tight">Community Forum</h3>
+                          <p className="text-[10px] text-muted-foreground font-semibold">
+                            Discuss budget topics with fellow citizens
+                          </p>
+                        </div>
+                      </div>
+                      <ArrowRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                    </div>
+                  </Link>
 
                   {/* Leaderboard */}
                   <div className="p-5 border border-border bg-card rounded-2xl space-y-4 shadow-xs">
