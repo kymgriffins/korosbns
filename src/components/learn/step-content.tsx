@@ -5,6 +5,7 @@ import { Progress } from "@/ui/progress";
 import { cn } from "@/utils";
 import { Sparkles } from "lucide-react";
 import type { ChapterStep, StageTakeaway } from "@/types/learn";
+import { stripHtml } from "@/lib/sanitize";
 
 interface StepContentProps {
   step: ChapterStep;
@@ -92,7 +93,7 @@ export function StepContent({
               prose-strong:text-gray-900 dark:prose-strong:text-white
               prose-ul:my-3 md:prose-ul:my-4 prose-li:my-1
             ">
-              {getPersonalizedText(step.text)
+              {stripHtml(getPersonalizedText(step.text))
                 .split("\n\n")
                 .map((para, pIdx) => (
                   <p key={pIdx} className="whitespace-pre-wrap">{para}</p>
@@ -113,7 +114,7 @@ export function StepContent({
                       "text-xs font-bold",
                       isInfo ? "text-blue-700 dark:text-blue-300" : "text-amber-700 dark:text-amber-300"
                     )}>{isInfo ? "💡" : "⚠️"} {takeaway.title}</p>
-                    <p className="text-[11px] text-gray-700 dark:text-gray-300 mt-1 leading-normal">{takeaway.text}</p>
+                    <p className="text-[11px] text-gray-700 dark:text-gray-300 mt-1 leading-normal">{stripHtml(takeaway.text)}</p>
                   </div>
                 );
               })()}

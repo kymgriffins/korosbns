@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { Routes } from "@/constants/routes";
 import { articlePlaceholderForIndex } from "@/lib/article-placeholders";
 import type { HubArticle } from "@/lib/learn-content";
+import { stripHtml } from "@/lib/sanitize";
 
 export function ArticleCard({ article, index }: { article: HubArticle; index: number }) {
   const placeholder = articlePlaceholderForIndex(index);
@@ -34,7 +35,7 @@ export function ArticleCard({ article, index }: { article: HubArticle; index: nu
             {article.title}
           </h2>
           <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
-            {article.snippet}
+            {stripHtml(article.snippet)}
           </p>
         </div>
       </div>

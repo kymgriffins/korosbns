@@ -52,6 +52,7 @@ export type SurveyDetailApi = {
 export type TriviaQuestionApi = {
   id: string;
   question_text: string;
+  question_type: "multiple_choice" | "reflection";
   options: string[];
   order: number;
   correct_index?: number;

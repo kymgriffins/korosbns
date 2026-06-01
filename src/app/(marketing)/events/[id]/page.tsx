@@ -17,6 +17,7 @@ import {
   type HubEvent,
 } from "@/lib/citizen-content";
 import { formatInNairobi } from "@/lib/datetime";
+import { sanitizeHtml, stripHtml } from "@/lib/sanitize";
 
 export default function EventDetailPage() {
   const params = useParams();
@@ -176,11 +177,11 @@ export default function EventDetailPage() {
                 {event.body_html ? (
                   <div
                     className="notion-content-wrapper"
-                    dangerouslySetInnerHTML={{ __html: event.body_html }}
+                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(event.body_html) }}
                   />
                 ) : (
                   <div className="whitespace-pre-wrap leading-relaxed text-muted-foreground">
-                    {event.body || event.snippet}
+                    {stripHtml(event.body || event.snippet)}
                   </div>
                 )}
               </motion.div>
