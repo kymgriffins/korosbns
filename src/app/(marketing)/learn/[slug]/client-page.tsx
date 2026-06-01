@@ -14,6 +14,7 @@ import { ArticleReaderActions } from "@/components/citizen/article-reader-action
 import { citizenApi, type TriviaSetApi } from "@/lib/api-client";
 import { Routes } from "@/constants/routes";
 import { articlePlaceholderForSlug } from "@/lib/article-placeholders";
+import { sanitizeHtml, stripHtml } from "@/lib/sanitize";
 import { scaleIn, fadeInUp, fadeInUpDelay1, fadeInUpDelay2, fadeInUpDelay3 } from "@/motion/variants";
 
 type ReaderMode = "loading" | "error" | "article" | "story" | "trivia";
@@ -462,11 +463,11 @@ export default function UnifiedReaderClientPage({
             {article.body_html ? (
               <div
                 className="notion-content prose dark:prose-invert max-w-none"
-                dangerouslySetInnerHTML={{ __html: article.body_html }}
+                dangerouslySetInnerHTML={{ __html: sanitizeHtml(article.body_html) }}
               />
             ) : (
               <div className="prose dark:prose-invert max-w-none whitespace-pre-wrap">
-                {article.body || article.snippet}
+                {stripHtml(article.body || article.snippet)}
               </div>
             )}
 

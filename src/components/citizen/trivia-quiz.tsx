@@ -123,9 +123,16 @@ export function TriviaQuiz({ trivia }: { trivia: TriviaSetApi }) {
     <form onSubmit={handleSubmit} className="space-y-8">
       {questions.map((q, idx) => (
         <div key={q.id} className="space-y-3 rounded-xl border border-border p-6">
-          <p className="font-medium">
-            {idx + 1}. {q.question_text}
-          </p>
+          <div className="flex items-start justify-between gap-2">
+            <p className="font-medium">
+              {idx + 1}. {q.question_text}
+            </p>
+            {q.question_type === "reflection" && (
+              <span className="shrink-0 rounded-full bg-amber-100 px-2.5 py-0.5 text-[10px] font-bold text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+                Reflection
+              </span>
+            )}
+          </div>
           <RadioGroup
             value={answers[q.id] !== undefined ? String(answers[q.id]) : ""}
             onValueChange={(v) => setChoice(q.id, Number(v))}

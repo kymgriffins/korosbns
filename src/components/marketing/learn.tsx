@@ -40,6 +40,7 @@ import {
   subscribeNewsletter,
 } from "@/lib/newsletter-subscribe";
 import { LEARN_STORIES_VISIBLE } from "@/constants/feature-flags";
+import { sanitizeHtml, stripHtml } from "@/lib/sanitize";
 import {
   mapApiArticle,
   mapApiStory,
@@ -1624,7 +1625,7 @@ export default function Learn() {
                           {article.title}
                         </h3>
                         <p className="text-xs text-foreground/60 leading-relaxed line-clamp-3">
-                          {article.snippet}
+                          {stripHtml(article.snippet)}
                         </p>
                       </div>
                       <div className="mt-4 flex items-center gap-1.5 text-xs font-semibold text-primary">
@@ -1949,11 +1950,11 @@ export default function Learn() {
                 {activeArticle.body_html ? (
                   <div
                     className="notion-content prose dark:prose-invert max-w-none text-foreground/85"
-                    dangerouslySetInnerHTML={{ __html: activeArticle.body_html }}
+                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(activeArticle.body_html) }}
                   />
                 ) : (
                   <div className="text-foreground/85 leading-relaxed whitespace-pre-wrap space-y-4 text-sm sm:text-base">
-                    {activeArticle.body || activeArticle.snippet}
+                    {stripHtml(activeArticle.body || activeArticle.snippet)}
                   </div>
                 )}
               </div>

@@ -63,7 +63,7 @@ export function TriviaSection({
     if (prev?.submitted) return;
 
     const q = trivia[globalIdx];
-    const isCorrect = q.answer === selectedIdx;
+    const isCorrect = q.type === "reflection" ? true : q.answer === selectedIdx;
 
     setQuestionStates((s) => ({
       ...s,
@@ -105,24 +105,34 @@ export function TriviaSection({
 
         return (
           <div key={globalIdx} className="space-y-3 pb-4 border-b border-border last:border-b-0 last:pb-0">
-            <h4 className="text-sm font-black text-foreground leading-snug">
-              {startIdx + batchLocalIdx + 1}. {q.question}
-            </h4>
+            <div className="flex items-start justify-between gap-2">
+              <h4 className="text-sm font-black text-foreground leading-snug">
+                {startIdx + batchLocalIdx + 1}. {q.question}
+              </h4>
+              {q.type === "reflection" && (
+                <span className="shrink-0 rounded-full bg-amber-100 px-2.5 py-0.5 text-[10px] font-bold text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+                  Reflection
+                </span>
+              )}
+            </div>
 
             <div className="grid gap-2">
               {q.options?.map((opt, optIdx) => {
                 const isSelected = state?.selected === optIdx;
-                const isCorrectOpt = q.answer === optIdx;
+                const isReflection = q.type === "reflection";
+                const isCorrectOpt = isReflection ? true : q.answer === optIdx;
                 let optStyle = "border-border bg-card hover:bg-muted/40";
 
                 if (state?.submitted) {
                   if (isSelected) {
-                    optStyle = isCorrectOpt
-                      ? "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold"
-                      : "border-destructive bg-destructive/10 text-destructive font-bold";
-                  } else if (isCorrectOpt) {
+                    optStyle = isReflection
+                      ? "border-amber-500 bg-amber-500/10 text-amber-700 dark:text-amber-300 font-bold"
+                      : isCorrectOpt
+                        ? "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold"
+                        : "border-destructive bg-destructive/10 text-destructive font-bold";
+                  } else if (isCorrectOpt && !isReflection) {
                     optStyle = "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold";
-                  } else {
+                  } else if (state?.submitted) {
                     optStyle = "border-border bg-card opacity-50";
                   }
                 } else if (isSelected) {
@@ -149,13 +159,17 @@ export function TriviaSection({
               <div
                 className={cn(
                   "p-3 rounded-xl border text-xs leading-normal animate-in zoom-in-95 duration-200",
-                  state.isCorrect
-                    ? "border-emerald-500/20 bg-emerald-500/5 text-emerald-800 dark:text-emerald-200"
-                    : "border-destructive/20 bg-destructive/5 text-destructive"
+                  q.type === "reflection"
+                    ? "border-amber-500/20 bg-amber-500/5 text-amber-800 dark:text-amber-200"
+                    : state.isCorrect
+                      ? "border-emerald-500/20 bg-emerald-500/5 text-emerald-800 dark:text-emerald-200"
+                      : "border-destructive/20 bg-destructive/5 text-destructive"
                 )}
               >
                 <h5 className="font-bold flex items-center gap-1.5 mb-1">
-                  {state.isCorrect ? (
+                  {q.type === "reflection" ? (
+                    <>Reflection recorded</>
+                  ) : state.isCorrect ? (
                     <>
                       <CheckCircle2 className="size-4 text-emerald-600" /> Correct!
                     </>
@@ -165,11 +179,11 @@ export function TriviaSection({
                     </>
                   )}
                 </h5>
-                <p>{q.explanation}</p>
+                {q.explanation && <p>{q.explanation}</p>}
               </div>
             )}
 
-            {state?.submitted && !state.isCorrect && (
+            {state?.submitted && !state.isCorrect && q.type !== "reflection" && (
               <Button
                 onClick={() => handleRetry(globalIdx)}
                 variant="outline"
