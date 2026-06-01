@@ -121,10 +121,10 @@ export function StepContent({
             </article>
           )}
 
-          {step.trivia.length > 0 && (
+          {activeFormat === "text" && step.trivia.length > 0 && (
             <div className="flex justify-center pt-4 not-prose">
               <Button onClick={onStartTrivia} className="h-12 rounded-xl font-bold text-sm gap-2">
-                <Sparkles className="size-5" /> Start Knowledge Check
+                <Sparkles className="size-5" /> {currentStep === totalSteps ? "Check your Understanding" : "Start Knowledge Check"}
               </Button>
             </div>
           )}
