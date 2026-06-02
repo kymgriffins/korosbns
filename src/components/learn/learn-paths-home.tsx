@@ -8,6 +8,7 @@ import { StageDetailDrawer } from "./stage-detail-drawer";
 import { LearnDashboardPanel } from "./learn-dashboard-panel";
 import { StageRoadmap } from "./stage-roadmap";
 import { LearnDesktopDashboard } from "./learn-desktop-dashboard";
+import { LearnModulesView } from "./learn-modules-view";
 
 import { Button } from "@/ui/button";
 import { Progress } from "@/ui/progress";
@@ -684,71 +685,18 @@ export function LearnPathsHome() {
                   stages={stages}
                   currentStage={currentStage}
                   onSelectStage={setSelectedStage}
+                  onNavigateToCurriculum={() => setActiveTab("learn")}
                 />
               )}
 
-              {/* Tab: Learn (Roadmap) */}
+              {/* Tab: Learn (Modules) */}
               {activeTab === "learn" && (
-                <div className="space-y-6 max-w-4xl mx-auto">
-                  <div className="space-y-1">
-                    <h2 className="text-xl font-black uppercase tracking-tight">{text.roadmapTitle}</h2>
-                    <p className="text-xs text-muted-foreground">{text.roadmapSubtitle}</p>
-                  </div>
-
-                  {/* Premium Cards Grid */}
-                  <div className="grid grid-cols-2 gap-4">
-                    {stages.map((stage) => {
-                      const isCompleted = profile.badges?.includes(stage.badge);
-                      const isActive = profile.stageProgress?.includes(stage.order);
-
-                      return (
-                        <div
-                          key={stage.order}
-                          onClick={() => setSelectedStage(stage)}
-                          className={cn(
-                            "relative flex flex-col justify-between p-5 rounded-2xl border transition-all select-none group cursor-pointer",
-                            isCompleted
-                              ? "bg-primary/4 border-primary/15 hover:bg-primary/8 shadow-xs"
-                              : isActive
-                              ? "bg-card border-foreground/30 hover:border-foreground shadow-sm"
-                              : "bg-muted/10 border-border/80 hover:bg-muted/25"
-                          )}
-                        >
-                          <div className="space-y-3">
-                            <div className="flex justify-between items-start">
-                              <span className="text-2xl p-2 rounded-xl bg-card border border-border/60 shadow-2xs group-hover:scale-105 transition-transform duration-200">{stage.badge}</span>
-                              <div className="flex items-center gap-1.5">
-                                {isCompleted ? (
-                                  <span className="text-[9px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 font-black uppercase tracking-wider px-2 py-0.5 rounded-full">
-                                    Completed
-                                  </span>
-                                ) : isActive ? (
-                                  <span className="text-[9px] bg-primary/10 border border-primary/20 text-primary font-black uppercase tracking-wider px-2 py-0.5 rounded-full">
-                                    Active
-                                  </span>
-                                ) : (
-                                  <span className="text-[9px] bg-muted border border-border text-muted-foreground font-black uppercase tracking-wider px-2 py-0.5 rounded-full">
-                                    Available
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                            
-                            <div>
-                              <h3 className="text-xs font-black uppercase tracking-tight">{stage.title}</h3>
-                              <p className="text-[10px] text-muted-foreground mt-0.5 font-bold leading-normal">{stage.documentName}</p>
-                              <p className="text-[10px] text-muted-foreground mt-1.5 leading-relaxed line-clamp-2">{stage.description}</p>
-                            </div>
-                          </div>
-
-                          <div className="mt-4 pt-3 border-t border-border/50 flex items-center justify-between">
-                            <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">{stage.status}</span>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
+                <LearnModulesView
+                  profile={profile}
+                  stages={stages}
+                  currentStage={currentStage}
+                  onSelectStage={setSelectedStage}
+                />
               )}
 
               {/* Desktop Tab: Alerts — keeps its own tab on desktop */}
