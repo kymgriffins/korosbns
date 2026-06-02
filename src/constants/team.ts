@@ -50,8 +50,8 @@ export const team = [
         name: "Peculiar Koros",
         role: "Director ICT",
         image: "https://res.cloudinary.com/dn8lut2fc/image/upload/v1778676958/Koros_opdklh.jpg",
-        description: "Certified researcher with a 100% clean audit record, ensuring our data is rigorous and beyond anecdotes.",
-        bio: "Peculiar leads BNS's data infrastructure and technological innovation, ensuring that all fiscal analysis meets rigorous research standards. A certified researcher with an impeccable audit record.",
+        description: "Heads the IT department, driving BNS's technology infrastructure and digital innovation to power transparent civic engagement.",
+        bio: "Peculiar leads BNS's IT department, overseeing the technology infrastructure and digital systems that power the organisation's platforms and data pipelines. He drives innovation that keeps BNS at the forefront of civic-tech in Kenya.",
         socials: {
             linkedin: "https://linkedin.com/in/peculiarkoros",
             x: "https://x.com/peculiarkoros"
