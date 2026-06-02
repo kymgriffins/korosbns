@@ -73,7 +73,7 @@ function LearnSidebar() {
       {showCurriculum ? (
         <>
           <SidebarHeader>
-            <div className="p-2 border-b border-border">
+            <div className="p-2 border-b border-border flex items-center justify-between">
               <SidebarMenuButton
                 onClick={() => {
                   /* Clear active lesson — handled by learn-paths-home through onClose */
@@ -81,9 +81,15 @@ function LearnSidebar() {
                 className="text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
               >
                 <ArrowLeft className="size-4" />
-                <span>Back to Dashboard</span>
+                {!isCollapsed && <span>Back to Dashboard</span>}
               </SidebarMenuButton>
+              {!isCollapsed && <SidebarTrigger className="-mr-1" />}
             </div>
+            {isCollapsed && (
+              <div className="flex justify-center mt-2">
+                 <SidebarTrigger />
+              </div>
+            )}
             {!isCollapsed && (
               <div className="p-2 border-b border-border bg-primary/5 rounded-md mt-2 mx-2">
                 <div className="flex items-center gap-2 mb-1">
@@ -163,7 +169,13 @@ function LearnSidebar() {
               <Link href={"/"} className="flex items-center gap-2 hover:opacity-80 transition-opacity overflow-hidden">
                 <img src="/logo.svg" alt="Budget Ndio Story" className="h-8 w-auto shrink-0" />
               </Link>
+              {!isCollapsed && <SidebarTrigger className="-mr-1" />}
             </div>
+            {isCollapsed && (
+              <div className="flex justify-center mt-2">
+                 <SidebarTrigger />
+              </div>
+            )}
           </SidebarHeader>
 
           <SidebarContent>
@@ -321,10 +333,6 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
             <SidebarTrigger className="-ml-1" />
             <div className="font-semibold">Learning Hub</div>
           </header>
-          
-          <div className="hidden md:block absolute top-4 left-4 z-50">
-            <SidebarTrigger className="bg-background/80 backdrop-blur-sm border shadow-sm" />
-          </div>
           
           <main className="flex-1 overflow-y-auto">
             {children}
