@@ -1,4 +1,4 @@
-const INDEXNOW_KEY = "dc1e3799620a4105aca3eff6e2ee570e";
+const INDEXNOW_KEY = "0bcd5d6f742043f9b7f8f004ab5424dc";
 const HOST = "budgetndiostory.org";
 const KEY_LOCATION = `https://${HOST}/${INDEXNOW_KEY}.txt`;
 
