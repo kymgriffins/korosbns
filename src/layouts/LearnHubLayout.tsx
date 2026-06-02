@@ -65,104 +65,8 @@ function LearnSidebar() {
     { key: "documents", label: "Documents", icon: <FileText className="size-5" /> },
   ];
 
-  /* If an active lesson is set, we'll render a curriculum rail */
-  const showCurriculum = !!activeLesson;
-
   return (
     <Sidebar collapsible="icon">
-      {showCurriculum ? (
-        <>
-          <SidebarHeader>
-            <div className="p-2 border-b border-border flex items-center justify-between">
-              <SidebarMenuButton
-                onClick={() => {
-                  /* Clear active lesson — handled by learn-paths-home through onClose */
-                }}
-                className="text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <ArrowLeft className="size-4" />
-                {!isCollapsed && <span>Back to Dashboard</span>}
-              </SidebarMenuButton>
-              {!isCollapsed && <SidebarTrigger className="-mr-1" />}
-            </div>
-            {isCollapsed && (
-              <div className="flex justify-center mt-2">
-                 <SidebarTrigger />
-              </div>
-            )}
-            {!isCollapsed && (
-              <div className="p-2 border-b border-border bg-primary/5 rounded-md mt-2 mx-2">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-lg">{activeLesson.stageBadge}</span>
-                  <h3 className="text-xs font-black uppercase leading-tight">{activeLesson.stageTitle}</h3>
-                </div>
-                <p className="text-[10px] text-muted-foreground">
-                  {activeLesson.completedStepIds.length} / {activeLesson.totalSteps} steps completed
-                </p>
-              </div>
-            )}
-          </SidebarHeader>
-
-          <SidebarContent>
-            <SidebarGroup>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {activeLesson.stepTitles.map((step, i) => {
-                    const stepNum = i + 1;
-                    const isComplete = activeLesson.completedStepIds.includes(step.id);
-                    const isActive = activeLesson.currentStep === stepNum;
-                    return (
-                      <SidebarMenuItem key={step.id}>
-                        <SidebarMenuButton
-                          isActive={isActive}
-                          tooltip={step.title}
-                          className={cn(
-                            "h-auto py-2",
-                            isActive && "bg-primary/10 text-primary font-bold",
-                            isComplete && !isActive && "text-muted-foreground/60"
-                          )}
-                        >
-                          <div className={cn(
-                            "size-5 rounded-full flex items-center justify-center text-[8px] font-bold shrink-0 border",
-                            isComplete
-                              ? "bg-emerald-500 border-emerald-500 text-white"
-                              : isActive
-                                ? "bg-primary border-primary text-primary-foreground"
-                                : "bg-muted border-border text-muted-foreground"
-                          )}>
-                            {isComplete ? <CheckCircle2 className="size-3" /> : stepNum}
-                          </div>
-                          <span>{step.title}</span>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    );
-                  })}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-
-            <SidebarGroup>
-              <SidebarGroupLabel>All Modules ({civicModules.length})</SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {civicModules.map((mod) => {
-                    const isCurrent = mod.slug === activeLesson.stageId;
-                    return (
-                      <SidebarMenuItem key={mod.slug}>
-                        <SidebarMenuButton isActive={isCurrent} tooltip={mod.title}>
-                          <span className="text-sm">{mod.badge}</span>
-                          <span className="truncate text-[11px]">{mod.title}</span>
-                          {isCurrent && <span className="ml-auto size-1.5 rounded-full bg-primary" />}
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    );
-                  })}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          </SidebarContent>
-        </>
-      ) : (
         <>
           <SidebarHeader>
             <div className="flex items-center justify-between p-2">
@@ -316,7 +220,6 @@ function LearnSidebar() {
             )}
           </SidebarFooter>
         </>
-      )}
     </Sidebar>
   );
 }

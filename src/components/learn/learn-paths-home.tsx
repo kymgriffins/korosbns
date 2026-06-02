@@ -684,7 +684,6 @@ export function LearnPathsHome() {
                   stages={stages}
                   currentStage={currentStage}
                   onSelectStage={setSelectedStage}
-                  onNavigateToCurriculum={() => setActiveTab("learn")}
                 />
               )}
 

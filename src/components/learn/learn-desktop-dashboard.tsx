@@ -2,26 +2,17 @@
 
 import React, { useMemo } from "react";
 import { motion } from "motion/react";
-import { Sparkles, Flame, Award, ArrowUpRight, Clock, Users, PlayCircle, BookOpen } from "lucide-react";
+import { PlayCircle, Bookmark, CheckCircle2 } from "lucide-react";
 import { Button } from "@/ui/button";
-import { Progress } from "@/ui/progress";
 import { BitmojiAvatar } from "./bitmoji-avatar";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/ui/chart";
-import { Bar, BarChart, CartesianGrid, XAxis, PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import type { CivicModule } from "@/types/learn";
-import Link from "next/link";
-import { Routes } from "@/constants/routes";
+import { readProgress } from "@/lib/module-progress";
 
 interface LearnDesktopDashboardProps {
   profile: any;
   stages: CivicModule[];
   currentStage: CivicModule;
   onSelectStage: (stage: CivicModule) => void;
-  onNavigateToCurriculum: () => void;
 }
 
 export function LearnDesktopDashboard({
@@ -29,259 +20,179 @@ export function LearnDesktopDashboard({
   stages,
   currentStage,
   onSelectStage,
-  onNavigateToCurriculum,
 }: LearnDesktopDashboardProps) {
-  // Mock daily analytics data (S M T W T F S)
-  const chartData = useMemo(() => [
-    { day: "S", xp: 0 },
-    { day: "M", xp: 120 },
-    { day: "T", xp: 80 },
-    { day: "W", xp: 300 },
-    { day: "T", xp: 50 },
-    { day: "F", xp: 200 },
-    { day: "S", xp: profile.sovereigns > 0 ? 150 : 0 },
-  ], [profile.sovereigns]);
-
-  const chartConfig = {
-    xp: {
-      label: "XP Earned",
-      color: "var(--primary)",
-    },
-  };
-
-  const totalBadges = profile.badges?.length || 0;
-  const progressPercentage = stages.length > 0 ? (totalBadges / stages.length) * 100 : 0;
   
-  const doughnutData = [
-    { name: "Completed", value: progressPercentage, fill: "var(--primary)" },
-    { name: "Remaining", value: 100 - progressPercentage, fill: "hsl(var(--muted))" },
+  // Categorize stages for the colored cards (first 3)
+  const dashboardCards = stages.slice(0, 3).map((stage, idx) => {
+    const p = readProgress(stage.slug, stage.order);
+    const completedCount = Object.keys(p.stepsCompleted).length;
+    const total = stage.steps.length;
+    
+    // Assign specific colors to match the mockup: Blue, Orange, Dark
+    const colors = [
+      "bg-[#2563EB] text-white", // Blue
+      "bg-[#F97316] text-white", // Orange
+      "bg-[#171717] text-white", // Dark
+    ];
+    
+    return {
+      stage,
+      completedCount,
+      total,
+      colorClass: colors[idx % colors.length],
+      tag: stage.badgeName || "Civic Basics",
+    };
+  });
+
+  // Next Lessons list
+  const nextLessons = [
+    { title: "Introduction to County Budgets", subtitle: "Foundations of civic participation", teacher: "Alex Chen", duration: "20 min" },
+    { title: "Reading the MTEF Document", subtitle: "Understanding priorities", teacher: "Mia Roberts", duration: "25 min" },
+    { title: "Public Participation Forums", subtitle: "How to engage effectively", teacher: "Priya Kapoor", duration: "22 min" },
+    { title: "Drafting a Memorandum", subtitle: "Crafting written submissions", teacher: "Samuel Wright", duration: "28 min" },
   ];
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto p-2 pb-10">
-      {/* Header Info */}
-      <div className="space-y-1">
-        <h2 className="text-2xl font-black tracking-tight">Dashboard</h2>
-        <p className="text-sm text-muted-foreground">Track your civic learning journey and master the budget cycle.</p>
-      </div>
-
-      {/* 4-Card Summary Grid */}
-      <div className="grid grid-cols-4 gap-4">
-        {/* Primary XP Card */}
-        <div className="p-5 rounded-3xl bg-primary text-primary-foreground shadow-sm relative overflow-hidden flex flex-col justify-between h-36">
-          <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none translate-x-4 translate-y-4">
-            <Sparkles className="size-32" />
-          </div>
-          <div className="flex justify-between items-start">
-            <span className="text-sm font-semibold">Total Sovereigns</span>
-            <div className="size-8 rounded-full bg-white/20 flex items-center justify-center">
-              <ArrowUpRight className="size-4" />
-            </div>
-          </div>
-          <div className="space-y-1">
-            <div className="text-4xl font-black">{profile.sovereigns || 0}</div>
-            <div className="text-xs font-medium bg-white/20 inline-flex px-2 py-0.5 rounded-sm items-center gap-1">
-              <Sparkles className="size-3" /> Level {Math.floor((profile.sovereigns || 0) / 100) + 1}
-            </div>
-          </div>
-        </div>
-
-        {/* Badges Earned */}
-        <div className="p-5 rounded-3xl bg-card border border-border shadow-xs flex flex-col justify-between h-36">
-          <div className="flex justify-between items-start">
-            <span className="text-sm font-semibold text-muted-foreground">Badges Earned</span>
-            <div className="size-8 rounded-full border border-border flex items-center justify-center text-muted-foreground">
-              <ArrowUpRight className="size-4" />
-            </div>
-          </div>
-          <div className="space-y-1">
-            <div className="text-4xl font-black">{totalBadges}</div>
-            <div className="text-xs font-medium text-emerald-600 bg-emerald-500/10 inline-flex px-2 py-0.5 rounded-sm items-center gap-1">
-              <Award className="size-3" /> of {stages.length} Available
-            </div>
-          </div>
-        </div>
-
-        {/* Current Streak */}
-        <div className="p-5 rounded-3xl bg-card border border-border shadow-xs flex flex-col justify-between h-36">
-          <div className="flex justify-between items-start">
-            <span className="text-sm font-semibold text-muted-foreground">Active Streak</span>
-            <div className="size-8 rounded-full border border-border flex items-center justify-center text-muted-foreground">
-              <ArrowUpRight className="size-4" />
-            </div>
-          </div>
-          <div className="space-y-1">
-            <div className="text-4xl font-black">{profile.streakDays || 0}</div>
-            <div className="text-xs font-medium text-orange-600 bg-orange-500/10 inline-flex px-2 py-0.5 rounded-sm items-center gap-1">
-              <Flame className="size-3" /> Days in a row
-            </div>
-          </div>
-        </div>
-
-        {/* Modules Completed */}
-        <div className="p-5 rounded-3xl bg-card border border-border shadow-xs flex flex-col justify-between h-36">
-          <div className="flex justify-between items-start">
-            <span className="text-sm font-semibold text-muted-foreground">Modules Read</span>
-            <div className="size-8 rounded-full border border-border flex items-center justify-center text-muted-foreground">
-              <ArrowUpRight className="size-4" />
-            </div>
-          </div>
-          <div className="space-y-1">
-            <div className="text-4xl font-black">{profile.stageProgress?.length || 0}</div>
-            <div className="text-xs font-medium text-blue-600 bg-blue-500/10 inline-flex px-2 py-0.5 rounded-sm items-center gap-1">
-              <BookOpen className="size-3" /> Sections read
-            </div>
-          </div>
+    <div className="space-y-8 max-w-[1200px] mx-auto p-2 pb-10">
+      
+      {/* Header and Filters */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-3xl font-black tracking-tight">My modules</h2>
+        <div className="flex items-center gap-2">
+          {["All modules", "County", "National", "Audit"].map((filter, i) => (
+            <button 
+              key={filter} 
+              className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
+                i === 0 
+                  ? "bg-[#2563EB] text-white" 
+                  : "bg-transparent border border-border hover:bg-muted text-foreground"
+              }`}
+            >
+              {filter}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Middle Row: Analytics & Next Module */}
-      <div className="grid grid-cols-[1fr_320px] gap-4">
-        
-        {/* Activity Analytics (Bar Chart) */}
-        <div className="p-6 rounded-3xl bg-card border border-border shadow-xs space-y-6 flex flex-col">
-          <div className="flex justify-between items-start">
-            <div className="space-y-1">
-              <h3 className="text-base font-black">Activity Analytics</h3>
-              <p className="text-xs text-muted-foreground">Daily XP earned this week</p>
+      {/* 3 Colored Course Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {dashboardCards.map((card, idx) => (
+          <div 
+            key={idx} 
+            className={`p-6 rounded-[2rem] shadow-sm flex flex-col justify-between min-h-[220px] relative overflow-hidden transition-transform hover:scale-[1.02] ${card.colorClass}`}
+          >
+            <div className="flex justify-between items-start">
+              <span className="px-3 py-1 bg-black/20 rounded-full text-[10px] font-black uppercase tracking-wider">
+                {card.tag}
+              </span>
+              <Bookmark className="size-5 opacity-80" />
             </div>
-          </div>
-          <div className="flex-1 min-h-[200px]">
-            <ChartContainer config={chartConfig} className="w-full h-full max-h-[220px]">
-              <BarChart accessibilityLayer data={chartData} margin={{ top: 10, right: 0, left: 0, bottom: 0 }}>
-                <CartesianGrid vertical={false} strokeDasharray="3 3" />
-                <XAxis 
-                  dataKey="day" 
-                  tickLine={false}
-                  tickMargin={10}
-                  axisLine={false}
-                  className="text-xs font-bold"
+            
+            <div className="mt-4 mb-8">
+              <h3 className="text-2xl font-black leading-tight max-w-[90%]">{card.stage.title}</h3>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="flex justify-between text-xs font-bold opacity-90">
+                <span>Progress</span>
+                <span>{card.completedCount}/{card.total} lessons</span>
+              </div>
+              <div className="h-1.5 bg-black/20 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-white rounded-full" 
+                  style={{ width: `${card.total > 0 ? (card.completedCount / card.total) * 100 : 0}%` }}
                 />
-                <ChartTooltip content={<ChartTooltipContent hideIndicator />} cursor={false} />
-                <Bar 
-                  dataKey="xp" 
-                  fill="var(--color-xp)" 
-                  radius={[10, 10, 10, 10]} 
-                  barSize={32}
-                />
-              </BarChart>
-            </ChartContainer>
-          </div>
-        </div>
-
-        {/* Reminders / Upcoming */}
-        <div className="p-6 rounded-3xl bg-card border border-border shadow-xs flex flex-col">
-          <div className="space-y-1 mb-6">
-            <h3 className="text-base font-black">Next Module</h3>
-            <p className="text-xs text-muted-foreground">Resume where you left off</p>
-          </div>
-          <div className="flex-1 flex flex-col justify-center items-center text-center space-y-4 mb-4">
-            <div className="size-16 rounded-2xl bg-primary/10 flex items-center justify-center text-3xl">
-              {currentStage.badge}
-            </div>
-            <div>
-              <h4 className="text-sm font-black">{currentStage.title}</h4>
-              <p className="text-xs text-muted-foreground line-clamp-2 mt-1">{currentStage.documentName}</p>
-            </div>
-          </div>
-          <Button onClick={() => onSelectStage(currentStage)} className="w-full rounded-xl font-bold h-12">
-            <PlayCircle className="size-5 mr-2" /> Start Module
-          </Button>
-        </div>
-      </div>
-
-      {/* Bottom Row: Community, Radial Progress, Streak Tracker */}
-      <div className="grid grid-cols-[1fr_300px_300px] gap-4">
-        
-        {/* Top Learners / Community */}
-        <div className="p-6 rounded-3xl bg-card border border-border shadow-xs space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-base font-black">Top Citizens</h3>
-            <Link href={Routes.LearnForum} className="text-xs font-bold text-primary hover:underline">View Forum</Link>
-          </div>
-          <div className="space-y-3">
-            {[
-              { name: "Alexandra D.", detail: "Working on County Allocations", status: "Completed", color: "bg-emerald-500/10 text-emerald-600" },
-              { name: "Edwin A.", detail: "Working on MTEF Basics", status: "In Progress", color: "bg-amber-500/10 text-amber-600" },
-              { name: "Isaac O.", detail: "Working on Public Participation", status: "Pending", color: "bg-rose-500/10 text-rose-600" }
-            ].map((usr, i) => (
-              <div key={i} className="flex items-center justify-between p-2 hover:bg-muted/50 rounded-xl transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className="size-10 rounded-full bg-muted flex items-center justify-center overflow-hidden border border-border">
-                     <BitmojiAvatar gender={i % 2 === 0 ? "female" : "male"} size="sm" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold">{usr.name}</h4>
-                    <p className="text-xs text-muted-foreground">{usr.detail}</p>
-                  </div>
+              </div>
+              <div className="flex items-center justify-between pt-2">
+                <div className="flex -space-x-2">
+                  <div className="size-8 rounded-full border-2 border-transparent overflow-hidden bg-muted"><BitmojiAvatar gender="female" size="sm" /></div>
+                  <div className="size-8 rounded-full border-2 border-transparent overflow-hidden bg-muted"><BitmojiAvatar gender="male" size="sm" /></div>
+                  <div className="size-8 rounded-full border-2 border-transparent overflow-hidden bg-muted"><BitmojiAvatar gender="female" size="sm" /></div>
+                  <div className="size-8 rounded-full border-2 border-transparent bg-black/20 flex items-center justify-center text-[10px] font-bold">+110</div>
                 </div>
-                <div className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${usr.color}`}>
-                  {usr.status}
+                <Button 
+                  onClick={() => onSelectStage(card.stage)}
+                  className="rounded-full bg-[#CEFF00] hover:bg-[#b5e600] text-black font-bold px-6 border-none"
+                >
+                  Continue
+                </Button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Bottom Grid: Next Lessons & Recommendation */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8">
+        
+        {/* Next Lessons List */}
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-black">My next lessons</h3>
+            <button className="text-sm font-bold text-orange-500 hover:underline">View all lessons</button>
+          </div>
+          
+          <div className="space-y-0">
+            {/* Table Header */}
+            <div className="grid grid-cols-[1fr_150px_80px] gap-4 px-4 pb-2 text-xs font-semibold text-muted-foreground border-b border-border">
+              <div>Lesson</div>
+              <div>Facilitator</div>
+              <div className="text-right">Duration</div>
+            </div>
+            
+            {/* List Items */}
+            {nextLessons.map((lesson, i) => (
+              <div key={i} className="grid grid-cols-[1fr_150px_80px] gap-4 items-center p-4 border-b border-border hover:bg-muted/30 transition-colors cursor-pointer rounded-xl">
+                <div>
+                  <h4 className="font-bold text-sm">{lesson.title}</h4>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">{lesson.subtitle}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="size-6 rounded-full bg-muted overflow-hidden shrink-0">
+                     <BitmojiAvatar gender={i % 2 === 0 ? "male" : "female"} size="sm" />
+                  </div>
+                  <span className="text-xs font-semibold">{lesson.teacher}</span>
+                </div>
+                <div className="text-right text-xs font-bold text-muted-foreground">
+                  {lesson.duration}
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Progress Radial */}
-        <div className="p-6 rounded-3xl bg-card border border-border shadow-xs flex flex-col justify-between">
-          <h3 className="text-base font-black">Curriculum Progress</h3>
-          <div className="relative flex-1 flex items-center justify-center min-h-[160px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={doughnutData}
-                  innerRadius={60}
-                  outerRadius={80}
-                  startAngle={90}
-                  endAngle={-270}
-                  dataKey="value"
-                  stroke="none"
-                  cornerRadius={10}
-                >
-                  {doughnutData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.fill} />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <span className="text-3xl font-black">{Math.round(progressPercentage)}%</span>
-              <span className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">Mastered</span>
-            </div>
-          </div>
-          <div className="flex justify-center gap-4 text-xs font-semibold">
-            <div className="flex items-center gap-1.5"><div className="size-2 rounded-full bg-primary" /> Mastered</div>
-            <div className="flex items-center gap-1.5"><div className="size-2 rounded-full bg-muted" /> Remaining</div>
-          </div>
-        </div>
-
-        {/* Streak Dark Card */}
-        <div className="p-6 rounded-3xl bg-[#0f172a] text-white shadow-xs relative overflow-hidden flex flex-col justify-between">
-          <div className="absolute inset-0 opacity-20 pointer-events-none bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary via-transparent to-transparent" />
-          
-          <div className="space-y-1 relative z-10">
-            <h3 className="text-sm font-bold text-white/80">Daily Goal Tracker</h3>
-            <p className="text-xs text-white/60">Keep your streak alive</p>
+        {/* Lime Green Recommendation Card */}
+        <div className="bg-[#CEFF00] text-black p-8 rounded-[2rem] shadow-sm flex flex-col relative overflow-hidden">
+          <div className="space-y-1 mb-6">
+            <p className="text-sm font-semibold opacity-80">New module matching your interests</p>
+            <span className="inline-block px-3 py-1 bg-black text-white rounded-full text-[10px] font-black uppercase tracking-wider mt-2">
+              Civic Engagement
+            </span>
           </div>
           
-          <div className="relative z-10 flex flex-col items-center py-4">
-            <div className="text-5xl font-black font-mono tracking-tighter drop-shadow-lg">
-              {profile.streakDays > 0 ? "00:00:00" : "24:00:00"}
+          <h3 className="text-4xl font-black leading-none mb-auto">
+            Advanced Public Participation Tactics
+          </h3>
+          
+          <div className="mt-8 space-y-4">
+            <div className="space-y-2">
+              <p className="text-xs font-semibold opacity-80">They are already studying</p>
+              <div className="flex -space-x-2">
+                <div className="size-10 rounded-full border-2 border-[#CEFF00] overflow-hidden bg-white"><BitmojiAvatar gender="female" size="sm" /></div>
+                <div className="size-10 rounded-full border-2 border-[#CEFF00] overflow-hidden bg-white"><BitmojiAvatar gender="male" size="sm" /></div>
+                <div className="size-10 rounded-full border-2 border-[#CEFF00] overflow-hidden bg-white"><BitmojiAvatar gender="female" size="sm" /></div>
+                <div className="size-10 rounded-full border-2 border-[#CEFF00] bg-white text-black flex items-center justify-center text-xs font-bold shadow-sm">+100</div>
+              </div>
             </div>
-            <p className="text-[10px] uppercase tracking-widest text-white/50 mt-2 font-bold">
-              {profile.streakDays > 0 ? "Goal met today!" : "Time left to earn XP"}
-            </p>
-          </div>
-
-          <div className="flex gap-2 relative z-10">
-             <Button className="flex-1 bg-white/10 hover:bg-white/20 text-white border-none" onClick={onNavigateToCurriculum}>
-               Earn XP Now
-             </Button>
+            
+            <Button className="w-full rounded-full bg-[#F97316] hover:bg-[#ea580c] text-white font-bold h-12 border-none shadow-md">
+              More details
+            </Button>
           </div>
         </div>
 
       </div>
+
     </div>
   );
 }

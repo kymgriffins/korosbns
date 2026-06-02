@@ -2,22 +2,16 @@
 
 import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { DrawerHeader } from "./drawer-header";
-import { CourseOverview } from "./course-overview";
-import { MasteryPage } from "./mastery-page";
-import { NavigationFooter } from "./navigation-footer";
-import { TriviaSection } from "./trivia-section";
-import { DocumentsTab } from "./documents-tab";
-import { ModuleForum } from "@/components/forum/module-forum";
-import { StepContent } from "./step-content";
-import {
-  getDocumentsForStage,
-} from "@/constants/documents-registry";
+import { ChevronLeft, PlayCircle, CheckCircle2, ChevronDown } from "lucide-react";
+import { Button } from "@/ui/button";
 import { learnHubApi } from "@/lib/learn-hub";
 import { useLearn } from "@/contexts/learn-context";
 import { readProgress, writeProgress } from "@/lib/module-progress";
 import type { CivicModule } from "@/types/learn";
-import type { DrawerSubTab } from "./drawer-header";
+
+import { StepContent } from "./step-content";
+import { TriviaSection } from "./trivia-section";
+import { MasteryPage } from "./mastery-page";
 
 interface StageDetailDrawerProps {
   stage: CivicModule;
@@ -40,92 +34,18 @@ export function StageDetailDrawer({
   hasPrev,
   hasNext
 }: StageDetailDrawerProps) {
-  const { totalStages, updateCurrentStep } = useLearn();
-  const [activeSubTab, setActiveSubTab] = useState<DrawerSubTab>("learn");
+  const { totalStages } = useLearn();
   const [currentStep, setCurrentStep] = useState<number>(0);
-  const [activeFormat, setActiveFormat] = useState<"video" | "text">("video");
-  const [contentConsumed, setContentConsumed] = useState<boolean>(true);
+  const [activeTab, setActiveTab] = useState<"description" | "materials" | "task">("description");
   const [showTrivia, setShowTrivia] = useState<boolean>(false);
-  const [transcriptSearch, setTranscriptSearch] = useState<string>("");
-
-  const [showTranscript, setShowTranscript] = useState<boolean>(false);
-  const [selectedYear, setSelectedYear] = useState<number>(2026);
-  const [constitutionTab, setConstitutionTab] = useState<"current" | "timeline">("current");
-  const [liveRepoDocs, setLiveRepoDocs] = useState<any[]>([]);
-  const [apiLoading, setApiLoading] = useState<boolean>(false);
-  const [origin, setOrigin] = useState<string>("");
+  const [expandedStep, setExpandedStep] = useState<number | null>(null);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setOrigin(window.location.origin);
-    }
-  }, []);
-
-  useEffect(() => {
-    const loadRepo = async () => {
-      setApiLoading(true);
-      try {
-        const res = await fetch("/api/docrepository");
-        if (res.ok) {
-          const data = await res.json();
-          if (data && Array.isArray(data.documents)) {
-            setLiveRepoDocs(data.documents);
-          }
-        }
-      } catch (err) {
-        console.error("Failed to load live doc repository:", err);
-      } finally {
-        setApiLoading(false);
-      }
-    };
-    loadRepo();
-  }, []);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const yearParam = params.get("year");
-      if (yearParam) {
-        const yr = parseInt(yearParam, 10);
-        if (!isNaN(yr)) {
-          setSelectedYear(yr);
-        }
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    setActiveSubTab("learn");
     const moduleProgress = readProgress(stage.slug, stage.order);
-    const initialStep = moduleProgress.currentStep;
+    const initialStep = moduleProgress.currentStep || 1;
     setCurrentStep(initialStep);
-    setActiveFormat("video");
-    setContentConsumed(true);
-    setTranscriptSearch("");
-    setShowTranscript(false);
-    if (stage.order === 1) {
-      setSelectedYear(2010);
-    } else {
-      setSelectedYear(2026);
-    }
-  }, [stage.order]);
-
-  useEffect(() => {
-    if (currentStep < 1 || currentStep > stage.steps.length) {
-      setContentConsumed(true);
-      return;
-    }
-    setContentConsumed(true);
-    setShowTrivia(false);
-    setShowTranscript(false);
-    setTranscriptSearch("");
-  }, [currentStep, stage.order]);
-
-  const handleStartLearning = () => {
-    setCurrentStep(1);
-    const p = { ...readProgress(stage.slug, stage.order), currentStep: 1 };
-    writeProgress(stage.slug, p);
-  };
+    setExpandedStep(initialStep);
+  }, [stage.slug, stage.order]);
 
   const isStepTriviaPassed = (stepId: number) => {
     return readProgress(stage.slug, stage.order).stepsCompleted[stepId] === true;
@@ -149,16 +69,12 @@ export function StageDetailDrawer({
     const step = stage.steps[currentStep - 1];
     const p = readProgress(stage.slug, stage.order);
     writeProgress(stage.slug, { ...p, stepsCompleted: { ...p.stepsCompleted, [step.order]: true }, currentStep: currentStep + 1 });
-    setContentConsumed(true);
     toast.success("Knowledge Check complete! \u2B50");
     learnHubApi.completeChapter(step.id).catch(() => {});
     setCurrentStep((prev) => prev + 1);
+    setExpandedStep((prev) => (prev ? prev + 1 : null));
+    setShowTrivia(false);
   };
-
-  // Sync currentStep back to context so sidebar curriculum rail stays in sync
-  useEffect(() => {
-    updateCurrentStep(currentStep);
-  }, [currentStep, updateCurrentStep]);
 
   useEffect(() => {
     if (currentStep === stage.steps.length + 1) {
@@ -174,20 +90,13 @@ export function StageDetailDrawer({
         if (!newBadges.includes(stage.badge)) {
           newBadges.push(stage.badge);
         }
-        let allStagesDoneBonus = 0;
-        if (newProgress.length >= totalStages && newBadges.length >= totalStages && !profile.allStagesBonusEarned) {
-          allStagesDoneBonus = 100;
-        }
         const updatedProfile = {
           ...profile,
-          sovereigns: profile.sovereigns + 25 + allStagesDoneBonus,
+          sovereigns: profile.sovereigns + 25,
           stageProgress: newProgress,
           badges: newBadges,
-          allStagesBonusEarned: allStagesDoneBonus > 0 ? true : profile.allStagesBonusEarned
         };
         onUpdateProfile(updatedProfile);
-
-        // Sync stage mastery to backend with real module UUID
         learnHubApi.markProgress({
           content_type: "path",
           content_id: stage.id,
@@ -199,184 +108,223 @@ export function StageDetailDrawer({
     }
   }, [currentStep, stage.order]);
 
-  const handleToggleTrackDoc = () => {
-    const tracked = profile.trackedDocs || [];
-    let updatedTracked = [];
-    if (tracked.includes(stage.documentName)) {
-      updatedTracked = tracked.filter((d: string) => d !== stage.documentName);
-      toast.info(`Stopped tracking ${stage.documentName}`);
-    } else {
-      updatedTracked = [...tracked, stage.documentName];
-      toast.success(`Tracking ${stage.documentName}! You will receive alerts when counties upload files.`);
-    }
-    onUpdateProfile({ ...profile, trackedDocs: updatedTracked });
-  };
-
-  const isDocTracked = profile.trackedDocs?.includes(stage.documentName);
-  const isCached = stage.steps.length > 0;
-
-  const getPersonalizedText = (rawText: string) => {
-    if (!rawText) return "";
-    return rawText.replace(/\[Selected County\]/g, profile.county || "your County");
-  };
-
-  const handleYearChange = (year: number) => {
-    setSelectedYear(year);
-    if (typeof window !== "undefined") {
-      const url = new URL(window.location.href);
-      url.searchParams.set("year", year.toString());
-      url.searchParams.set("stage", stage.order.toString());
-      window.history.pushState({}, "", url.toString());
-    }
-    toast.info(`Filtered documents for year ${year}`);
-  };
-
-  const handleCopyShareLink = (pdfUrl: string) => {
-    navigator.clipboard.writeText(pdfUrl);
-    toast.success("Direct PDF URL copied to clipboard for sharing!");
-  };
-
-  const handleRequestDocument = (docType: string, year: number) => {
-    toast.success(`Request for ${docType} (${year}) has been generated and queued for submission to the county assembly clerk.`);
-  };
-
-  const currentStageDocs = getDocumentsForStage(stage.order, selectedYear, profile.county || "", liveRepoDocs);
-  const constitutionYears = [2010, 2005, 1997, 1991, 1982, 1969, 1964, 1963];
-  const standardYears = [2026, 2025, 2024, 2023, 2022, 2021, 2020];
-  const yearOptions = stage.order === 1 ? constitutionYears : standardYears;
-
-  const totalSteps = stage.steps.length;
-
-  const handlePrevStep = () => {
-    const nextVal = currentStep - 1;
-    setCurrentStep(nextVal);
-    const p = readProgress(stage.slug, stage.order);
-    writeProgress(stage.slug, { ...p, currentStep: nextVal });
+  const selectStep = (stepNum: number) => {
+    setCurrentStep(stepNum);
+    setExpandedStep(stepNum);
     setShowTrivia(false);
   };
 
-  const handleNextStep = () => {
-    const nextVal = currentStep + 1;
-    setCurrentStep(nextVal);
-    const p = readProgress(stage.slug, stage.order);
-    writeProgress(stage.slug, { ...p, currentStep: nextVal });
-  };
+  const isMastery = currentStep > stage.steps.length;
 
   return (
-    <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden bg-background md:relative md:inset-auto md:z-auto md:h-full">
-
-      <DrawerHeader
-        title={stage.title}
-        badge={stage.badge}
-        currentStep={currentStep}
-        activeSubTab={activeSubTab}
-        onSubTabChange={setActiveSubTab}
-        isCached={isCached}
-        onClose={onClose}
-        author={stage.author}
-      />
-
-      {/* ── Body: full-width scrollable content ── */}
-      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
-
-        {activeSubTab === "learn" ? (
-          <div className="space-y-6 max-w-4xl mx-auto">
-
-            {/* STEP 0: COURSE OVERVIEW */}
-            {currentStep === 0 && (
-              <CourseOverview
-                badge={stage.badge}
-                title={stage.title}
-                credits={stage.credits}
-                author={stage.author}
-                description={stage.description}
-                expectations={stage.expectations}
-                onStartLearning={handleStartLearning}
-              />
-            )}
-
-            {/* STEP 1..N: GUIDED STEPS */}
-            {currentStep >= 1 && currentStep <= stage.steps.length && (
-              <div className="space-y-5 animate-in fade-in duration-300">
-                <StepContent
-                  step={stage.steps[currentStep - 1]}
-                  currentStep={currentStep}
-                  totalSteps={totalSteps}
-                  activeFormat={activeFormat}
-                  showTrivia={showTrivia}
-                  origin={origin}
-                  getPersonalizedText={getPersonalizedText}
-                  onFormatChange={setActiveFormat}
-                  onStartTrivia={() => setShowTrivia(true)}
-                />
-
-                <TriviaSection
-                  key={currentStep}
-                  trivia={stage.steps[currentStep - 1].trivia}
-                  stepId={stage.steps[currentStep - 1].order}
-                  showTrivia={showTrivia}
-                  isStepTriviaPassed={isStepTriviaPassed}
-                  onCorrectAnswer={handleCorrectAnswer}
-                  onFinish={handleFinishTrivia}
-                />
-              </div>
-            )}
-
-            {/* STAGE MASTERY PAGE */}
-            {currentStep === stage.steps.length + 1 && (
-              <MasteryPage
-                badge={stage.badge}
-                badgeName={stage.badgeName}
-                title={stage.documentName || "Stage Mastered"}
-                hasNext={hasNext}
-                onNextStage={onNextStage}
-                onClose={onClose}
-              />
-            )}
-
+    <div className="flex flex-col h-full overflow-hidden bg-background">
+      
+      {/* Breadcrumb Header */}
+      <div className="px-6 md:px-10 py-5 border-b border-border flex flex-col md:flex-row md:justify-between md:items-center shrink-0 gap-4">
+        <div className="space-y-1">
+          <p className="text-xs text-muted-foreground font-semibold">My modules / {stage.badgeName} / {stage.title}</p>
+          <div className="flex items-center gap-2">
+            <button onClick={onClose} className="p-1.5 hover:bg-muted rounded-lg transition-colors -ml-1.5">
+              <ChevronLeft className="size-5" />
+            </button>
+            <h2 className="text-2xl font-black tracking-tight">{stage.title}</h2>
           </div>
-        ) : activeSubTab === "documents" ? (
-          <DocumentsTab
-            stageId={stage.order}
-            documentName={stage.documentName}
-            selectedYear={selectedYear}
-            constitutionTab={constitutionTab}
-            apiLoading={apiLoading}
-            currentStageDocs={currentStageDocs}
-            yearOptions={yearOptions}
-            isDocTracked={isDocTracked}
-            onYearChange={handleYearChange}
-            onConstitutionTabChange={setConstitutionTab}
-            onToggleTrackDoc={handleToggleTrackDoc}
-            onCopyShareLink={handleCopyShareLink}
-            onRequestDocument={handleRequestDocument}
-          />
-        ) : (
-          <div className="max-w-4xl mx-auto w-full">
-            <div className="space-y-1 mb-4">
-              <h3 className="text-sm font-black uppercase tracking-tight">Module Discussion</h3>
-              <p className="text-xs text-muted-foreground">
-                Discuss topics related to {stage.title}
-              </p>
-            </div>
-            <ModuleForum moduleId={stage.id} />
-          </div>
-        )}
-
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="px-3 py-1 bg-[#F97316] text-white text-xs font-black rounded-full flex items-center gap-1.5 shadow-sm">
+            {stage.steps.length} lessons
+          </span>
+          <span className="px-3 py-1 bg-[#F97316]/10 text-[#F97316] border border-[#F97316]/20 text-xs font-black rounded-full flex items-center gap-1.5 shadow-sm">
+            4h 5min
+          </span>
+          <span className="px-3 py-1 bg-[#F97316] text-white text-xs font-black rounded-full flex items-center gap-1.5 shadow-sm">
+            ★ 4.9 (142 reviews)
+          </span>
+        </div>
       </div>
 
-      <NavigationFooter
-        currentStep={currentStep}
-        totalSteps={totalSteps}
-        hasNext={currentStep <= totalSteps}
-        hasPrev={currentStep > 0}
-        onClose={onClose}
-        onPrevStep={handlePrevStep}
-        onNextStep={handleNextStep}
-        onStartLearning={handleStartLearning}
-        onPrevStage={onPrevStage}
-        onNextStage={onNextStage}
-      />
+      {/* Two-Column Content Area */}
+      <div className="flex flex-1 overflow-hidden flex-col md:flex-row">
+        
+        {/* Left Column: Content */}
+        <div className="flex-1 overflow-y-auto p-6 md:p-10">
+          {isMastery ? (
+             <MasteryPage
+               badge={stage.badge}
+               badgeName={stage.badgeName}
+               title={stage.documentName || "Stage Mastered"}
+               hasNext={hasNext}
+               onNextStage={onNextStage}
+               onClose={onClose}
+             />
+          ) : (
+            <div className="max-w-4xl mx-auto space-y-6">
+              
+              {/* Video Player Placeholder */}
+              <div className="w-full aspect-video bg-muted rounded-3xl flex items-center justify-center relative overflow-hidden shadow-sm">
+                <img 
+                  src={`https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=1200&auto=format&fit=crop`} 
+                  alt="Lesson" 
+                  className="absolute inset-0 w-full h-full object-cover opacity-90" 
+                />
+                <div className="absolute inset-0 bg-black/10 mix-blend-multiply" />
+                <button className="relative z-10 size-16 bg-[#CEFF00] rounded-2xl flex items-center justify-center hover:scale-105 transition-transform shadow-lg">
+                  <PlayCircle className="size-8 text-black fill-black" />
+                </button>
+              </div>
+
+              {/* Tabs */}
+              <div className="flex items-center gap-2 border-b border-border pb-4">
+                {[
+                  { id: "description", label: "Description" },
+                  { id: "materials", label: "Materials" },
+                  { id: "task", label: "Home task" }
+                ].map((tab) => (
+                  <button 
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id as any)}
+                    className={`px-5 py-2 rounded-full text-xs font-bold transition-colors shadow-sm ${
+                      activeTab === tab.id 
+                        ? "bg-[#2563EB] text-white border-transparent" 
+                        : "bg-background border border-border hover:bg-muted text-foreground"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+                <button className="ml-auto text-xs font-bold text-orange-500 hover:underline">
+                  Share lesson
+                </button>
+              </div>
+
+              {/* Tab Content Area */}
+              <div className="animate-in fade-in duration-300">
+                {activeTab === "description" && currentStep > 0 && (
+                  <div className="space-y-6">
+                    <p className="text-sm leading-relaxed text-foreground/80">
+                      {stage.description}
+                    </p>
+                    <div className="mt-8">
+                      <StepContent
+                        step={stage.steps[currentStep - 1]}
+                        currentStep={currentStep}
+                        totalSteps={stage.steps.length}
+                        activeFormat="text"
+                        showTrivia={showTrivia}
+                        origin=""
+                        getPersonalizedText={(txt) => txt}
+                        onFormatChange={() => {}}
+                        onStartTrivia={() => setShowTrivia(true)}
+                      />
+                    </div>
+                  </div>
+                )}
+                {activeTab === "task" && currentStep > 0 && (
+                  <div className="pt-4">
+                    {!showTrivia ? (
+                      <Button onClick={() => setShowTrivia(true)} className="rounded-full bg-[#CEFF00] text-black font-bold border-none hover:bg-[#b5e600]">
+                        Start Knowledge Check
+                      </Button>
+                    ) : (
+                      <TriviaSection
+                        trivia={stage.steps[currentStep - 1].trivia}
+                        stepId={stage.steps[currentStep - 1].order}
+                        showTrivia={showTrivia}
+                        isStepTriviaPassed={isStepTriviaPassed}
+                        onCorrectAnswer={handleCorrectAnswer}
+                        onFinish={handleFinishTrivia}
+                      />
+                    )}
+                  </div>
+                )}
+                {activeTab === "materials" && (
+                  <div className="py-8 text-center text-muted-foreground text-sm font-semibold">
+                    No extra materials attached to this lesson.
+                  </div>
+                )}
+              </div>
+
+            </div>
+          )}
+        </div>
+
+        {/* Right Column: Curriculum Accordion */}
+        <div className="w-full md:w-[380px] bg-muted/30 border-l border-border flex flex-col shrink-0">
+          <div className="p-6 border-b border-border bg-card/50">
+            <h3 className="font-black text-sm uppercase tracking-widest text-muted-foreground">Curriculum</h3>
+          </div>
+          <div className="flex-1 overflow-y-auto">
+            {stage.steps.map((step, idx) => {
+              const stepNum = idx + 1;
+              const isExpanded = expandedStep === stepNum;
+              const isPassed = isStepTriviaPassed(step.order);
+              const isCurrent = currentStep === stepNum;
+
+              return (
+                <div key={step.id} className="border-b border-border/50">
+                  <button 
+                    onClick={() => setExpandedStep(isExpanded ? null : stepNum)}
+                    className={`w-full flex items-center justify-between p-5 transition-colors hover:bg-muted/50 ${isCurrent ? 'bg-primary/5' : ''}`}
+                  >
+                    <div className="flex items-center gap-3 text-left">
+                      <div className={`size-6 rounded-full flex items-center justify-center text-[10px] font-black shrink-0 ${
+                        isPassed 
+                          ? "bg-emerald-500 text-white" 
+                          : isCurrent
+                            ? "bg-[#2563EB] text-white"
+                            : "bg-muted text-muted-foreground"
+                      }`}>
+                        {isPassed ? <CheckCircle2 className="size-4" /> : stepNum}
+                      </div>
+                      <span className={`text-sm font-bold ${isCurrent ? 'text-primary' : 'text-foreground'}`}>
+                        {step.title}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
+                      <span>15 min</span>
+                      <ChevronDown className={`size-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                    </div>
+                  </button>
+                  
+                  {isExpanded && (
+                    <div className="px-5 pb-5 pt-2 bg-muted/10 space-y-1">
+                      {/* Sub-items mock */}
+                      <button 
+                        onClick={() => selectStep(stepNum)}
+                        className="w-full flex items-center justify-between py-2 px-3 rounded-lg hover:bg-muted/50 transition-colors text-left group"
+                      >
+                        <div className="flex items-center gap-3">
+                          <PlayCircle className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                          <span className="text-xs font-semibold text-foreground/80 group-hover:text-foreground">
+                            Reading & Comprehension
+                          </span>
+                        </div>
+                        <span className="text-[10px] font-bold text-muted-foreground">10 min</span>
+                      </button>
+                      <button 
+                        onClick={() => {
+                          selectStep(stepNum);
+                          setActiveTab("task");
+                          setShowTrivia(true);
+                        }}
+                        className="w-full flex items-center justify-between py-2 px-3 rounded-lg hover:bg-muted/50 transition-colors text-left group"
+                      >
+                        <div className="flex items-center gap-3">
+                          <CheckCircle2 className="size-4 text-muted-foreground group-hover:text-orange-500 transition-colors" />
+                          <span className="text-xs font-semibold text-foreground/80 group-hover:text-foreground">
+                            Knowledge Check
+                          </span>
+                        </div>
+                        <span className="text-[10px] font-bold text-muted-foreground">5 min</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
 
     </div>
   );
