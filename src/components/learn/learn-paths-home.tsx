@@ -7,7 +7,6 @@ import { BitmojiAvatar } from "./bitmoji-avatar";
 import { StageDetailDrawer } from "./stage-detail-drawer";
 import { LearnDashboardPanel } from "./learn-dashboard-panel";
 import { StageRoadmap } from "./stage-roadmap";
-import { LearnStatsSidebar } from "./learn-stats-sidebar";
 import { LearnDesktopDashboard } from "./learn-desktop-dashboard";
 
 import { Button } from "@/ui/button";
@@ -672,8 +671,8 @@ export function LearnPathsHome() {
             />
           </div>
         ) : (
-          /* B) No Stage Selected View: Tab Content + Stats Panel */
-          <div className="flex-1 grid grid-cols-[1fr_320px] h-full overflow-hidden">
+          /* B) No Stage Selected View: Tab Content */
+          <div className="flex-1 flex flex-col h-full overflow-hidden">
             
             {/* Left: Tab Content (scrollable) */}
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
@@ -942,9 +941,6 @@ export function LearnPathsHome() {
               )}
 
             </div>
-
-            {/* Right: Persistent Stats Panel */}
-            <LearnStatsSidebar profile={profile} />
           </div>
         )}
       </div>
