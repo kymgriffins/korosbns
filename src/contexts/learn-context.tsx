@@ -6,7 +6,7 @@ import { learnHubApi } from "@/lib/learn-hub";
 import type { CivicModule } from "@/types/learn";
 import { useAuth } from "@/contexts/auth-context";
 
-export type LearnTab = "home" | "learn" | "alerts" | "profile";
+export type LearnTab = "home" | "learn" | "alerts" | "documents" | "profile";
 
 export interface ActiveLesson {
   stageId: string;

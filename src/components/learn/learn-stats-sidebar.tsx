@@ -16,10 +16,12 @@ export function LearnStatsSidebar({
   };
 }) {
   const { totalStages } = useLearn();
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? "Good Morning" : hour < 17 ? "Good Afternoon" : "Good Evening";
   return (
     <aside className="w-80 border-l border-border bg-card/25 p-6 flex flex-col gap-6 overflow-y-auto select-none">
       <div>
-        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Good Morning</p>
+        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{greeting}</p>
         <h3 className="text-base font-black text-foreground flex items-center gap-2 mt-0.5">
           <BitmojiAvatar gender={profile.gender as "male" | "female"} size="sm" />
           {profile.breakName} 🔥

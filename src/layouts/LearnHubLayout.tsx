@@ -4,9 +4,9 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { 
-  User, ChevronRight, ChevronLeft, ChevronDown,
+  ChevronRight, ChevronLeft, ChevronDown,
   BookOpen, Bell, Home, LayoutDashboard, CheckCircle2, ArrowLeft, ExternalLink,
-  Settings, LogOut, KeyRound, Palette, LogIn
+  Settings, LogOut, KeyRound, Palette, LogIn, User, FileText
 } from "lucide-react";
 import { cn } from "@/utils";
 import { LearnProvider, useLearn, type LearnTab } from "@/contexts/learn-context";
@@ -15,6 +15,7 @@ import { Button } from "@/ui/button";
 import { ThemeToggle } from "@/components/marketing/theme-toggle";
 import { LearnMobileNav } from "@/layouts/LearnMobileNav";
 import { Routes } from "@/constants/routes";
+import { Avatar, AvatarFallback } from "@/ui/avatar";
 
 function LearnAppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -69,6 +70,7 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
     { key: "home", label: "Dashboard", icon: <LayoutDashboard className="size-5" /> },
     { key: "learn", label: "Learn", icon: <BookOpen className="size-5" /> },
     { key: "alerts", label: "Alerts", icon: <Bell className="size-5" /> },
+    { key: "documents", label: "Documents", icon: <FileText className="size-5" /> },
     { key: "profile", label: "Profile", icon: <User className="size-5" /> },
   ];
 
@@ -323,17 +325,21 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
               <div className="mt-auto flex flex-col items-center gap-3">
                 <button
                   onClick={() => setProfileOpen((p) => !p)}
-                  className="size-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors"
+                  className="rounded-full hover:ring-2 hover:ring-primary/40 transition-all"
                   title="Profile menu"
                 >
-                  <User className="size-4" />
+                  <Avatar>
+                    <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-black">
+                      {user?.first_name?.[0] ?? user?.email?.[0]?.toUpperCase() ?? "?"}
+                    </AvatarFallback>
+                  </Avatar>
                 </button>
                 {!isLoggedIn && (
                   <Link href={Routes.Login} className="size-8 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary/20 transition-colors" title="Sign In">
                     <LogIn className="size-4" />
                   </Link>
                 )}
-                <Link href={"/"} className="size-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors" title="Main site">
+                <Link href="/" target="_blank" rel="noopener noreferrer" className="size-8 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary/10 hover:text-primary transition-colors" title="Main site">
                   <Home className="size-4" />
                 </Link>
                 {isLoggedIn && (
@@ -346,11 +352,13 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
           </div>
         )}
 
-        {/* Sidebar bottom — simple link to main site */}
+        {/* Sidebar bottom — link to main site, opens in new tab */}
         {!showCurriculum && !sidebarCollapsed && (
           <div className="border-t border-border shrink-0 p-3">
             <Link
-              href={"/"}
+              href="/"
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
             >
               <ExternalLink className="size-3.5" />
@@ -388,3 +396,4 @@ export default function LearnHubLayout({ children }: { children: React.ReactNode
     </LearnProvider>
   );
 }
+

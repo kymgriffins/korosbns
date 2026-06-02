@@ -19,7 +19,7 @@ import {
   ArrowRight, ShieldCheck, MapPin, Calendar, CheckCircle2,
   Volume2, Shield, Settings, Copy, Send, MessageSquare,
   Home, HelpCircle, ChevronRight, Globe, FileCheck, Award,
-  Layers, ShieldAlert, Trash2, FileText, Users
+  Layers, ShieldAlert, Trash2, FileText, Users, Bell
 } from "lucide-react";
 import { cn } from "@/utils";
 import { useLearn, type ActiveLesson } from "@/contexts/learn-context";
@@ -413,22 +413,36 @@ export function LearnPathsHome() {
               />
             )}
 
-            {/* TAB 3: PARTICIPATION ALERTS */}
-            {activeTab === "alerts" && (
+            {/* TAB 3: DOCUMENTS — submission history & tracked docs */}
+            {activeTab === "documents" && (
               <motion.div
+                key="documents"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 className="space-y-5"
               >
                 <div className="space-y-1">
-                  <h2 className="text-lg font-black uppercase tracking-tight">{text.alertsTitle}</h2>
-                  <p className="text-xs text-muted-foreground">{text.alertsSubtitle}</p>
+                  <h2 className="text-lg font-black uppercase tracking-tight">Documents</h2>
+                  <p className="text-xs text-muted-foreground">Your tracked budget documents and submitted commentaries.</p>
                 </div>
+
+                {/* Tracked documents placeholder */}
+                {profile.trackedDocs?.length > 0 && (
+                  <div className="space-y-2">
+                    <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Tracked Documents</h3>
+                    {profile.trackedDocs.map((doc: any, idx: number) => (
+                      <div key={idx} className="flex items-center gap-3 p-3 rounded-xl border border-border bg-card text-xs shadow-xs">
+                        <FileCheck className="size-4 text-primary shrink-0" />
+                        <span className="font-bold text-foreground truncate">{typeof doc === "string" ? doc : doc.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
 
                 {/* Submissions History Log */}
                 <div className="space-y-3.5">
-                  <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Logged Submissions</h3>
+                  <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Submitted Commentaries</h3>
                   {profile.participationLogs?.length > 0 ? (
                     <div className="space-y-2.5">
                       {profile.participationLogs.map((log: any, idx: number) => (
@@ -447,44 +461,127 @@ export function LearnPathsHome() {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-xs text-muted-foreground text-center py-6 border border-dashed border-border rounded-xl">
-                      No commentaries submitted yet.
-                    </p>
+                    <div className="text-center py-10 border border-dashed border-border rounded-2xl space-y-2">
+                      <FileText className="size-8 text-muted-foreground/40 mx-auto" />
+                      <p className="text-xs text-muted-foreground">No submissions yet.</p>
+                      <p className="text-[10px] text-muted-foreground/60">Complete a learning stage and draft a memorandum to get started.</p>
+                    </div>
                   )}
                 </div>
               </motion.div>
             )}
 
-            {/* TAB 4: CITIZEN PROFILE & SETTINGS */}
+            {/* TAB 4: CITIZEN PROFILE — richly populated */}
             {activeTab === "profile" && (
               <motion.div
+                key="profile"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="space-y-6"
+                className="space-y-4 pb-4"
               >
-                <div className="space-y-1">
-                  <h2 className="text-lg font-black uppercase tracking-tight">{text.profileTitle}</h2>
-                  <p className="text-xs text-muted-foreground">{text.profileSubtitle}</p>
-                </div>
-
-                {/* Profile Card */}
-                <div className="p-4 rounded-2xl border border-border bg-card space-y-4 shadow-xs">
-                  <div className="flex items-center gap-3">
-                    <BitmojiAvatar gender={profile.gender} size="md" />
-                    <div>
-                      <h3 className="text-xs font-black text-foreground">{profile.breakName}</h3>
-                      <p className="text-[10px] text-muted-foreground font-bold leading-none mt-1">{profile.county} · Lvl {Math.floor(profile.sovereigns / 100) + 1}</p>
+                {/* Hero ID Card */}
+                <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-primary/90 via-primary/80 to-primary/60 p-5 text-primary-foreground shadow-lg">
+                  <div className="absolute inset-0 opacity-10 pointer-events-none select-none flex items-center justify-end pr-4">
+                    <Award className="size-24" />
+                  </div>
+                  <div className="flex items-center gap-4 relative">
+                    <div className="relative">
+                      <BitmojiAvatar gender={profile.gender} size="lg" className="rounded-full border-2 border-white/30 shadow-md" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-[9px] font-black uppercase tracking-widest text-white/70 mb-0.5">Citizen Champion</p>
+                      <h2 className="text-base font-black text-white leading-tight truncate">{profile.breakName}</h2>
+                      <p className="text-[10px] text-white/80 font-semibold mt-0.5 truncate">{profile.county}{profile.ward ? ` · ${profile.ward}` : ""}</p>
+                    </div>
+                    <div className="ml-auto shrink-0 bg-white/20 border border-white/30 rounded-xl px-3 py-2 text-center">
+                      <p className="text-lg font-black text-white leading-none">{Math.floor((profile.sovereigns || 0) / 100) + 1}</p>
+                      <p className="text-[8px] font-black text-white/80 uppercase tracking-wider">Level</p>
                     </div>
                   </div>
-
-                  <Button
-                    onClick={handleResetProgress}
-                    className="w-full rounded-xl font-bold bg-destructive text-destructive-foreground hover:bg-destructive/95 transition-all text-xs h-10"
-                  >
-                    Reset All Progress
-                  </Button>
+                  {/* XP bar */}
+                  <div className="mt-4 relative">
+                    <div className="flex justify-between text-[9px] text-white/70 font-bold mb-1">
+                      <span>{profile.sovereigns || 0} XP</span>
+                      <span>{(Math.floor((profile.sovereigns || 0) / 100) + 1) * 100} XP to next level</span>
+                    </div>
+                    <div className="h-1.5 rounded-full bg-white/20 overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-white/90 transition-all duration-700"
+                        style={{ width: `${((profile.sovereigns || 0) % 100)}%` }}
+                      />
+                    </div>
+                  </div>
                 </div>
+
+                {/* Stats row */}
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="p-3 rounded-2xl border border-orange-500/20 bg-orange-500/8 text-center space-y-1">
+                    <Flame className="size-4 fill-orange-500 text-orange-500 mx-auto" />
+                    <p className="text-sm font-black text-orange-600">{profile.streakDays || 0}</p>
+                    <p className="text-[8px] font-black text-orange-500/80 uppercase tracking-wider">Day Streak</p>
+                  </div>
+                  <div className="p-3 rounded-2xl border border-primary/20 bg-primary/8 text-center space-y-1">
+                    <Sparkles className="size-4 fill-primary text-primary mx-auto" />
+                    <p className="text-sm font-black text-primary">{profile.sovereigns || 0}</p>
+                    <p className="text-[8px] font-black text-primary/80 uppercase tracking-wider">Sovereigns</p>
+                  </div>
+                  <div className="p-3 rounded-2xl border border-emerald-500/20 bg-emerald-500/8 text-center space-y-1">
+                    <Award className="size-4 text-emerald-600 mx-auto" />
+                    <p className="text-sm font-black text-emerald-600">{profile.badges?.length || 0}</p>
+                    <p className="text-[8px] font-black text-emerald-600/80 uppercase tracking-wider">Badges</p>
+                  </div>
+                </div>
+
+                {/* Badge showcase */}
+                <div className="p-4 rounded-2xl border border-border bg-card space-y-3 shadow-xs">
+                  <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Badge Collection ({profile.badges?.length || 0}/{stages.length})</h3>
+                  <div className="grid grid-cols-4 gap-1.5">
+                    {stages.map((stage) => {
+                      const unlocked = profile.badges?.includes(stage.badge);
+                      return (
+                        <div key={stage.slug} className={`p-2 rounded-xl border text-center space-y-0.5 transition-all ${
+                          unlocked
+                            ? "bg-primary/5 border-primary/20 shadow-xs"
+                            : "bg-muted/20 border-border opacity-35 grayscale"
+                        }`}>
+                          <div className="text-xl flex justify-center">{stage.badge}</div>
+                          <p className="text-[8px] font-bold truncate leading-tight">{stage.badgeName}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Language settings */}
+                <div className="p-4 rounded-2xl border border-border bg-card space-y-3 shadow-xs">
+                  <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
+                    <Globe className="size-3.5" /> Language
+                  </h3>
+                  <div className="grid grid-cols-3 gap-2 bg-muted p-1 rounded-xl text-xs">
+                    {(["EN", "SW", "SH"] as const).map((lang) => (
+                      <button
+                        key={lang}
+                        onClick={() => handleUpdateProfile({ ...profile, language: lang })}
+                        className={`py-1.5 font-bold rounded-lg transition-all ${
+                          profile.language === lang
+                            ? "bg-background text-foreground shadow-xs"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        {lang === "EN" ? "English" : lang === "SW" ? "Kiswahili" : "Sheng"}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Danger zone */}
+                <button
+                  onClick={handleResetProgress}
+                  className="w-full py-2.5 rounded-xl text-xs font-bold border border-destructive/20 text-destructive hover:bg-destructive/5 transition-colors"
+                >
+                  Reset All Progress
+                </button>
               </motion.div>
             )}
 
@@ -737,15 +834,13 @@ export function LearnPathsHome() {
                 </div>
               )}
 
-              {/* Tab: Alerts */}
+              {/* Desktop Tab: Alerts — keeps its own tab on desktop */}
               {activeTab === "alerts" && (
                 <div className="space-y-6 max-w-3xl mx-auto">
                   <div className="space-y-1">
                     <h2 className="text-xl font-black uppercase tracking-tight">{text.alertsTitle}</h2>
                     <p className="text-xs text-muted-foreground">{text.alertsSubtitle}</p>
                   </div>
-
-                  {/* Logged Submissions */}
                   <div className="space-y-4">
                     <h3 className="text-xs font-black text-muted-foreground uppercase tracking-widest">Logged Submissions</h3>
                     {profile.participationLogs?.length > 0 ? (
@@ -754,153 +849,174 @@ export function LearnPathsHome() {
                           <div key={idx} className="p-4 rounded-xl border border-border bg-card space-y-3 text-xs shadow-xs">
                             <div className="flex justify-between items-start">
                               <h4 className="font-bold text-foreground truncate max-w-[180px]">{log.documentName}</h4>
-                              <span className="text-[9px] bg-primary/10 border border-primary/20 text-primary font-bold px-2 py-0.5 rounded-full uppercase">
-                                {log.method}
-                              </span>
+                              <span className="text-[9px] bg-primary/10 border border-primary/20 text-primary font-bold px-2 py-0.5 rounded-full uppercase">{log.method}</span>
                             </div>
                             <p className="text-[10px] text-muted-foreground font-semibold">Submitted: {new Date(log.dateSubmitted).toLocaleString()}</p>
-                            <div className="bg-muted/30 p-3 rounded-lg border border-border/50 font-mono text-[9px] leading-relaxed whitespace-pre-wrap truncate max-h-24">
-                              {log.draftText}
-                            </div>
+                            <div className="bg-muted/30 p-3 rounded-lg border border-border/50 font-mono text-[9px] leading-relaxed whitespace-pre-wrap truncate max-h-24">{log.draftText}</div>
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <p className="text-xs text-muted-foreground text-center py-8 border border-dashed border-border rounded-xl">
-                        No commentaries submitted yet.
-                      </p>
+                      <div className="text-center py-12 border border-dashed border-border rounded-2xl space-y-3">
+                        <Bell className="size-8 text-muted-foreground/30 mx-auto" />
+                        <p className="text-sm text-muted-foreground">No commentaries submitted yet.</p>
+                        <p className="text-xs text-muted-foreground/60">Complete a learning stage to draft and submit a memorandum.</p>
+                      </div>
                     )}
                   </div>
                 </div>
               )}
 
-              {/* Tab: Profile */}
-              {activeTab === "profile" && (
+              {/* Desktop Tab: Documents */}
+              {activeTab === "documents" && (
                 <div className="space-y-6 max-w-3xl mx-auto">
                   <div className="space-y-1">
-                    <h2 className="text-xl font-black uppercase tracking-tight">{text.profileTitle}</h2>
-                    <p className="text-xs text-muted-foreground">{text.profileSubtitle}</p>
+                    <h2 className="text-xl font-black uppercase tracking-tight">Documents</h2>
+                    <p className="text-xs text-muted-foreground">Budget documents you are tracking and your submitted commentaries.</p>
                   </div>
-
-                  {/* Profile Details Card */}
-                  <div className="p-6 border border-border bg-card rounded-2xl space-y-4 shadow-sm flex items-center justify-between gap-6">
-                    <div className="flex items-center gap-4">
-                      <BitmojiAvatar gender={profile.gender} size="lg" className="border border-primary/20 shadow-xs rounded-full" />
-                      <div>
-                        <h3 className="text-base font-black text-foreground">{profile.breakName}</h3>
-                        <p className="text-xs text-muted-foreground mt-0.5 font-bold">{profile.county} · Lvl {Math.floor(profile.sovereigns / 100) + 1}</p>
-                      </div>
-                    </div>
-                    <Button onClick={handleResetProgress} variant="outline" className="rounded-xl border-destructive/20 text-destructive hover:bg-destructive/5 font-bold text-xs h-10 px-4">
-                      Reset All Progress
-                    </Button>
-                  </div>
-                  
-                  {/* Account Information */}
-                  <div className="p-6 border border-border bg-card rounded-2xl space-y-4 shadow-sm">
-                    <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Account Information</h3>
-                    <div className="grid grid-cols-2 gap-4 text-xs">
-                      <div>
-                        <span className="text-muted-foreground font-semibold">County:</span>
-                        <p className="font-bold text-foreground mt-0.5">{profile.county}</p>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground font-semibold">Ward:</span>
-                        <p className="font-bold text-foreground mt-0.5">{profile.ward || "Not Specified"}</p>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground font-semibold">Language:</span>
-                        <p className="font-bold text-foreground mt-0.5">{profile.language === 'SW' ? 'Kiswahili' : profile.language === 'SH' ? 'Sheng' : 'English'}</p>
-                      </div>
-                      <div>
-                        <span className="text-muted-foreground font-semibold">Phone:</span>
-                        <p className="font-bold text-foreground mt-0.5">{profile.phone || "Not Linked"}</p>
-                      </div>
-                    </div>
-                    <div className="border-t border-border pt-3 text-[9px] text-muted-foreground flex items-center gap-1.5 justify-center">
-                      <ShieldCheck className="size-4 text-emerald-600" />
-                      <span>{text.consentText} ({new Date(profile.consentTimestamp).toLocaleDateString()})</span>
-                    </div>
-                  </div>
-
-                  {/* Unlocked Badges */}
-                  <div className="p-6 border border-border bg-card rounded-2xl space-y-4 shadow-sm">
-                    <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Unlocked Badges ({profile.badges?.length || 0}/{stages.length})</h3>
-                    <div className="grid grid-cols-4 gap-2">
-                      {stages.map((stage) => {
-                        const unlocked = profile.badges?.includes(stage.badge);
-                        return (
-                          <div
-                            key={stage.id}
-                            className={`p-2.5 rounded-xl border text-center space-y-1 shadow-xs ${unlocked ? 'bg-primary/5 border-primary/20' : 'bg-muted/10 border-border opacity-40'}`}
-                          >
-                            <div className="text-xl flex justify-center">{stage.badge}</div>
-                            <p className="text-[9px] font-bold truncate">{stage.badgeName}</p>
+                  {profile.trackedDocs?.length > 0 && (
+                    <div className="space-y-3">
+                      <h3 className="text-xs font-black text-muted-foreground uppercase tracking-widest">Tracked Documents</h3>
+                      <div className="grid grid-cols-2 gap-3">
+                        {profile.trackedDocs.map((doc: any, idx: number) => (
+                          <div key={idx} className="flex items-center gap-3 p-4 rounded-xl border border-border bg-card text-xs shadow-xs">
+                            <FileCheck className="size-4 text-primary shrink-0" />
+                            <span className="font-bold text-foreground truncate">{typeof doc === "string" ? doc : doc.name}</span>
                           </div>
-                        );
-                      })}
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  <div className="text-center py-12 border border-dashed border-border rounded-2xl space-y-3">
+                    <FileText className="size-8 text-muted-foreground/30 mx-auto" />
+                    <p className="text-sm text-muted-foreground">No documents tracked yet.</p>
+                    <p className="text-xs text-muted-foreground/60">Track budget documents during a learning stage to see them here.</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Desktop Tab: Profile — rich Citizen ID card */}
+              {activeTab === "profile" && (
+                <div className="space-y-6 max-w-3xl mx-auto">
+                  {/* Hero gradient card */}
+                  <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/90 via-primary/80 to-primary/60 p-8 text-primary-foreground shadow-lg">
+                    <div className="absolute inset-0 opacity-10 pointer-events-none select-none flex items-center justify-end pr-8">
+                      <Award className="size-36" />
+                    </div>
+                    <div className="flex items-center gap-6 relative">
+                      <BitmojiAvatar gender={profile.gender} size="xl" className="rounded-full border-2 border-white/30 shadow-xl" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[9px] font-black uppercase tracking-widest text-white/70 mb-1">Citizen Champion</p>
+                        <h2 className="text-2xl font-black text-white leading-tight">{profile.breakName}</h2>
+                        <p className="text-sm text-white/80 font-semibold mt-1">{profile.county}{profile.ward ? ` · ${profile.ward}` : ""}</p>
+                        {/* XP progress bar */}
+                        <div className="mt-3">
+                          <div className="flex justify-between text-[10px] text-white/70 font-bold mb-1">
+                            <span>{profile.sovereigns || 0} XP earned</span>
+                            <span>Level {Math.floor((profile.sovereigns || 0) / 100) + 1}</span>
+                          </div>
+                          <div className="h-2 rounded-full bg-white/20 overflow-hidden">
+                            <div
+                              className="h-full rounded-full bg-white/90 transition-all duration-700"
+                              style={{ width: `${((profile.sovereigns || 0) % 100)}%` }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="bg-white/20 border border-white/30 rounded-2xl px-4 py-3 text-center shrink-0">
+                        <p className="text-2xl font-black text-white">{Math.floor((profile.sovereigns || 0) / 100) + 1}</p>
+                        <p className="text-[9px] font-black text-white/70 uppercase tracking-wider">Level</p>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Global Settings & Language Selector */}
-                  <div className="p-6 border border-border bg-card rounded-2xl space-y-4 shadow-sm">
-                    <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">{text.settingsTitle}</h3>
-                    <div className="space-y-4">
-                      {/* Language Selection */}
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-bold">
-                          <Globe className="size-4" />
-                          <span>{text.language}</span>
-                        </div>
-                        <div className="grid grid-cols-3 gap-2 bg-muted p-1 rounded-xl text-xs">
-                          <button
-                            onClick={() => handleUpdateProfile({ ...profile, language: "EN" })}
-                            className={`py-1.5 font-bold rounded-lg ${profile.language === "EN" ? 'bg-background text-foreground shadow-xs' : 'text-muted-foreground'}`}
-                          >
-                            English
-                          </button>
-                          <button
-                            onClick={() => handleUpdateProfile({ ...profile, language: "SW" })}
-                            className={`py-1.5 font-bold rounded-lg ${profile.language === "SW" ? 'bg-background text-foreground shadow-xs' : 'text-muted-foreground'}`}
-                          >
-                            Kiswahili
-                          </button>
-                          <button
-                            onClick={() => handleUpdateProfile({ ...profile, language: "SH" })}
-                            className={`py-1.5 font-bold rounded-lg ${profile.language === "SH" ? 'bg-background text-foreground shadow-xs' : 'text-muted-foreground'}`}
-                          >
-                            Sheng
-                          </button>
-                        </div>
-                      </div>
+                  {/* Stats row */}
+                  <div className="grid grid-cols-4 gap-3">
+                    <div className="p-4 rounded-2xl border border-orange-500/20 bg-orange-500/8 text-center space-y-1.5">
+                      <Flame className="size-5 fill-orange-500 text-orange-500 mx-auto" />
+                      <p className="text-xl font-black text-orange-600">{profile.streakDays || 0}</p>
+                      <p className="text-[9px] font-black text-orange-500/80 uppercase tracking-wider">Day Streak</p>
+                    </div>
+                    <div className="p-4 rounded-2xl border border-primary/20 bg-primary/8 text-center space-y-1.5">
+                      <Sparkles className="size-5 fill-primary text-primary mx-auto" />
+                      <p className="text-xl font-black text-primary">{profile.sovereigns || 0}</p>
+                      <p className="text-[9px] font-black text-primary/80 uppercase tracking-wider">Sovereigns</p>
+                    </div>
+                    <div className="p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/8 text-center space-y-1.5">
+                      <Award className="size-5 text-emerald-600 mx-auto" />
+                      <p className="text-xl font-black text-emerald-600">{profile.badges?.length || 0}</p>
+                      <p className="text-[9px] font-black text-emerald-600/80 uppercase tracking-wider">Badges</p>
+                    </div>
+                    <div className="p-4 rounded-2xl border border-sky-500/20 bg-sky-500/8 text-center space-y-1.5">
+                      <MapPin className="size-5 text-sky-600 mx-auto" />
+                      <p className="text-xl font-black text-sky-600">{profile.stageProgress?.length || 0}</p>
+                      <p className="text-[9px] font-black text-sky-600/80 uppercase tracking-wider">Stages Active</p>
+                    </div>
+                  </div>
 
-                      {/* Notifications Toggle */}
-                      <div className="flex items-center justify-between text-xs border-t border-border pt-3">
-                        <div>
-                          <h4 className="font-bold">Push Notifications</h4>
-                          <p className="text-[10px] text-muted-foreground">Receive open comment alerts.</p>
-                        </div>
-                        <input
-                          type="checkbox"
-                          checked={profile.notifications}
-                          onChange={(e) => handleUpdateProfile({ ...profile, notifications: e.target.checked })}
-                          className="size-4"
-                        />
+                  {/* Account info + Badge grid side by side */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-5 border border-border bg-card rounded-2xl space-y-3 shadow-sm">
+                      <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Account Details</h3>
+                      <div className="space-y-2 text-xs">
+                        {[{label:"County",value:profile.county},{label:"Ward",value:profile.ward||"Not specified"},{label:"Language",value:profile.language==="SW"?"Kiswahili":profile.language==="SH"?"Sheng":"English"},{label:"Phone",value:profile.phone||"Not linked"}].map(({label,value})=>(
+                          <div key={label} className="flex justify-between items-center border-b border-border/30 pb-1.5 last:border-0">
+                            <span className="text-muted-foreground font-semibold">{label}</span>
+                            <span className="font-bold text-foreground">{value}</span>
+                          </div>
+                        ))}
                       </div>
+                      <div className="text-[9px] text-muted-foreground flex items-center gap-1.5 pt-1">
+                        <ShieldCheck className="size-3.5 text-emerald-600" />
+                        <span>DPA 2019 Consent Verified</span>
+                      </div>
+                    </div>
+                    <div className="p-5 border border-border bg-card rounded-2xl space-y-3 shadow-sm">
+                      <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Badge Collection ({profile.badges?.length||0}/{stages.length})</h3>
+                      <div className="grid grid-cols-4 gap-1.5">
+                        {stages.map((stage)=>{
+                          const unlocked=profile.badges?.includes(stage.badge);
+                          return(
+                            <div key={stage.slug} className={`p-1.5 rounded-xl border text-center space-y-0.5 ${
+                              unlocked?"bg-primary/5 border-primary/20 shadow-xs":"bg-muted/20 border-border opacity-35 grayscale"
+                            }`}>
+                              <div className="text-lg flex justify-center">{stage.badge}</div>
+                              <p className="text-[8px] font-bold truncate">{stage.badgeName}</p>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
 
-                      {/* WhatsApp Fallback Toggle */}
-                      <div className="flex items-center justify-between text-xs border-t border-border pt-3">
-                        <div>
-                          <h4 className="font-bold">SMS / WhatsApp alerts fallback</h4>
-                          <p className="text-[10px] text-muted-foreground">Alert fallback if push notifications fail.</p>
-                        </div>
-                        <input
-                          type="checkbox"
-                          checked={profile.whatsappFallback}
-                          onChange={(e) => handleUpdateProfile({ ...profile, whatsappFallback: e.target.checked })}
-                          className="size-4"
-                        />
+                  {/* Settings */}
+                  <div className="p-5 border border-border bg-card rounded-2xl space-y-4 shadow-sm">
+                    <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{text.settingsTitle}</h3>
+                    <div className="space-y-2">
+                      <p className="text-[10px] text-muted-foreground font-bold flex items-center gap-1.5"><Globe className="size-3.5" /> {text.language}</p>
+                      <div className="grid grid-cols-3 gap-2 bg-muted p-1 rounded-xl text-xs">
+                        {(["EN","SW","SH"] as const).map((lang)=>(
+                          <button key={lang} onClick={()=>handleUpdateProfile({...profile,language:lang})}
+                            className={`py-1.5 font-bold rounded-lg transition-all ${profile.language===lang?"bg-background text-foreground shadow-xs":"text-muted-foreground hover:text-foreground"}`}>
+                            {lang==="EN"?"English":lang==="SW"?"Kiswahili":"Sheng"}
+                          </button>
+                        ))}
                       </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 border-t border-border pt-4">
+                      <div className="flex items-center justify-between text-xs">
+                        <div><h4 className="font-bold">Push Notifications</h4><p className="text-[10px] text-muted-foreground">Open comment alerts.</p></div>
+                        <input type="checkbox" checked={profile.notifications} onChange={(e)=>handleUpdateProfile({...profile,notifications:e.target.checked})} className="size-4" />
+                      </div>
+                      <div className="flex items-center justify-between text-xs">
+                        <div><h4 className="font-bold">WhatsApp Fallback</h4><p className="text-[10px] text-muted-foreground">SMS fallback if push fails.</p></div>
+                        <input type="checkbox" checked={profile.whatsappFallback} onChange={(e)=>handleUpdateProfile({...profile,whatsappFallback:e.target.checked})} className="size-4" />
+                      </div>
+                    </div>
+                    <div className="border-t border-border pt-4">
+                      <Button onClick={handleResetProgress} variant="outline" className="rounded-xl border-destructive/20 text-destructive hover:bg-destructive/5 font-bold text-xs h-9 px-4">
+                        Reset All Progress
+                      </Button>
                     </div>
                   </div>
                 </div>
