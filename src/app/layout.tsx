@@ -19,7 +19,7 @@ export const viewport: Viewport = {
 };
 
 const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://app.budgetndiostory.org";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://budgetndiostory.org";
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
