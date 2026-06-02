@@ -58,10 +58,10 @@ function LearnSidebar() {
     }
   };
 
-  const navItems: { key: LearnTab; label: string; icon: React.ReactNode }[] = [
+  const navItems: { key: LearnTab; label: string; icon: React.ReactNode; badge?: string }[] = [
     { key: "home", label: "Dashboard", icon: <LayoutDashboard className="size-5" /> },
-    { key: "learn", label: "Learn", icon: <BookOpen className="size-5" /> },
-    { key: "alerts", label: "Alerts", icon: <Bell className="size-5" /> },
+    { key: "learn", label: "Modules", icon: <CheckCircle2 className="size-5" />, badge: "3" },
+    { key: "alerts", label: "Alerts", icon: <Bell className="size-5" />, badge: "12+" },
     { key: "documents", label: "Documents", icon: <FileText className="size-5" /> },
   ];
 
@@ -180,7 +180,7 @@ function LearnSidebar() {
 
           <SidebarContent>
             <SidebarGroup>
-              <SidebarGroupLabel>Overview</SidebarGroupLabel>
+              <SidebarGroupLabel className="text-[10px] font-black tracking-widest text-muted-foreground uppercase mb-1">Menu</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
                   {navItems.map((item) => (
@@ -189,9 +189,15 @@ function LearnSidebar() {
                         isActive={activeTab === item.key}
                         onClick={() => handleTabChange(item.key)}
                         tooltip={item.label}
+                        className="py-5 rounded-xl transition-all"
                       >
                         {item.icon}
-                        <span>{item.label}</span>
+                        <span className="font-semibold text-[13px]">{item.label}</span>
+                        {item.badge && !isCollapsed && (
+                          <span className="ml-auto flex h-5 px-1.5 items-center justify-center rounded-full bg-primary text-[10px] font-black text-primary-foreground shadow-sm">
+                            {item.badge}
+                          </span>
+                        )}
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   ))}
@@ -202,9 +208,10 @@ function LearnSidebar() {
                       isActive={activeTab === "profile"}
                       onClick={() => handleTabChange("profile")}
                       tooltip="Profile"
+                      className="py-5 rounded-xl transition-all"
                     >
                       <User className="size-5" />
-                      <span>Learner Profile</span>
+                      <span className="font-semibold text-[13px]">Community Profile</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </SidebarMenu>
@@ -213,7 +220,7 @@ function LearnSidebar() {
 
             {/* Quick links & Settings group */}
             <SidebarGroup>
-              <SidebarGroupLabel>Settings</SidebarGroupLabel>
+              <SidebarGroupLabel className="text-[10px] font-black tracking-widest text-muted-foreground uppercase mt-4 mb-1">General</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
                   {isLoggedIn ? (
@@ -280,7 +287,21 @@ function LearnSidebar() {
                 )}
               </div>
             ) : (
-              <div className="p-2">
+              <div className="p-2 space-y-4">
+                {/* Mobile App Callout Card */}
+                <div className="relative overflow-hidden rounded-2xl bg-primary text-primary-foreground p-5 shadow-sm">
+                  <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none translate-x-4 translate-y-4">
+                    <svg className="size-24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14.5c-2.49 0-4.5-2.01-4.5-4.5S9.51 7.5 12 7.5s4.5 2.01 4.5 4.5-2.01 4.5-4.5 4.5z"/></svg>
+                  </div>
+                  <div className="relative z-10 space-y-2">
+                    <h4 className="font-black text-sm">Get the BNS App</h4>
+                    <p className="text-[10px] text-white/80 font-medium">Follow budgets on the go and never miss a civic alert.</p>
+                    <button className="mt-2 w-full rounded-xl bg-white text-primary text-xs font-bold py-2 shadow-sm hover:bg-white/90 transition-colors">
+                      Download Now
+                    </button>
+                  </div>
+                </div>
+
                 <SidebarMenu>
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild tooltip="Main Site">
