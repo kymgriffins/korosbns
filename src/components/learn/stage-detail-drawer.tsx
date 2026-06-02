@@ -116,6 +116,21 @@ export function StageDetailDrawer({
 
   const isMastery = currentStep > stage.steps.length;
 
+  const currentStepObj = currentStep > 0 && !isMastery ? stage.steps[currentStep - 1] : null;
+  let videoUrl = currentStepObj?.youtube_url || null;
+
+  // Local override for BPS module videos provided by user
+  if (stage.slug === "budget-policy-statement" && !videoUrl && currentStepObj) {
+    if (currentStep === 1) videoUrl = "https://www.youtube.com/embed/Ed9lP0-komE";
+    else if (currentStep === 2) videoUrl = "https://www.youtube.com/embed/wkPe3sWomoA";
+    else if (currentStep === 3) videoUrl = "https://www.youtube.com/embed/FkgRz4v2Llk";
+  } else if (videoUrl && !videoUrl.includes("embed/")) {
+    const videoIdMatch = videoUrl.match(/(?:youtu\.be\/|v=)([^&?]+)/);
+    if (videoIdMatch) {
+      videoUrl = `https://www.youtube.com/embed/${videoIdMatch[1]}`;
+    }
+  }
+
   return (
     <div className="flex flex-col h-full overflow-hidden bg-background">
       
@@ -160,18 +175,30 @@ export function StageDetailDrawer({
           ) : (
             <div className="max-w-4xl mx-auto space-y-6">
               
-              {/* Video Player Placeholder */}
-              <div className="w-full aspect-video bg-muted rounded-3xl flex items-center justify-center relative overflow-hidden shadow-sm">
-                <img 
-                  src={`https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=1200&auto=format&fit=crop`} 
-                  alt="Lesson" 
-                  className="absolute inset-0 w-full h-full object-cover opacity-90" 
-                />
-                <div className="absolute inset-0 bg-black/10 mix-blend-multiply" />
-                <button className="relative z-10 size-16 bg-[#CEFF00] rounded-2xl flex items-center justify-center hover:scale-105 transition-transform shadow-lg">
-                  <PlayCircle className="size-8 text-black fill-black" />
-                </button>
-              </div>
+              {/* Video Player */}
+              {videoUrl ? (
+                <div className="w-full aspect-video bg-black rounded-3xl overflow-hidden shadow-sm">
+                  <iframe 
+                    src={videoUrl} 
+                    title={`${currentStepObj?.title || stage.title} Lesson Video`} 
+                    className="w-full h-full border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                    allowFullScreen 
+                  />
+                </div>
+              ) : (
+                <div className="w-full aspect-video bg-muted rounded-3xl flex items-center justify-center relative overflow-hidden shadow-sm">
+                  <img 
+                    src={`https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=1200&auto=format&fit=crop`} 
+                    alt="Lesson" 
+                    className="absolute inset-0 w-full h-full object-cover opacity-90" 
+                  />
+                  <div className="absolute inset-0 bg-black/10 mix-blend-multiply" />
+                  <button className="relative z-10 size-16 bg-[#CEFF00] rounded-2xl flex items-center justify-center hover:scale-105 transition-transform shadow-lg">
+                    <PlayCircle className="size-8 text-black fill-black" />
+                  </button>
+                </div>
+              )}
 
               {/* Tabs */}
               <div className="flex items-center gap-2 border-b border-border pb-4">
@@ -201,10 +228,15 @@ export function StageDetailDrawer({
               <div className="animate-in fade-in duration-300">
                 {activeTab === "description" && currentStep > 0 && (
                   <div className="space-y-6">
-                    <p className="text-sm leading-relaxed text-foreground/80">
-                      {stage.description}
-                    </p>
-                    <div className="mt-8">
+                    {/* Article Header */}
+                    <div className="space-y-2 border-b border-border pb-6">
+                      <h3 className="text-2xl font-black">{currentStepObj?.title || stage.title}</h3>
+                      <p className="text-sm leading-relaxed text-muted-foreground font-medium">
+                        {stage.description}
+                      </p>
+                    </div>
+                    {/* Article Content */}
+                    <div className="prose prose-sm md:prose-base dark:prose-invert max-w-none prose-headings:font-black prose-p:leading-relaxed">
                       <StepContent
                         step={stage.steps[currentStep - 1]}
                         currentStep={currentStep}
