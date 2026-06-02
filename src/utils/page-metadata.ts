@@ -1,14 +1,10 @@
 import type { Metadata } from "next";
-import { metaDescription } from "@/utils/metadata";
+import { metaDescription, canonicalUrl } from "@/utils/metadata";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL || "https://app.budgetndiostory.org";
 const appName = process.env.NEXT_PUBLIC_APP_NAME || "Budget Ndio Story";
 
-export function canonicalUrl(path: string): string {
-  const normalized = path.startsWith("/") ? path : `/${path}`;
-  return new URL(normalized, siteUrl).toString();
-}
 
 export function buildPageMetadata({
   title,

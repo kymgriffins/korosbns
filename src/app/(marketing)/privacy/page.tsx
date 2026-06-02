@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { Metadata } from "next";
+import { canonicalUrl } from "@/utils/metadata";
 
 export const metadata: Metadata = {
     title: "Privacy Policy | Budget Ndio Story",
     description: "Privacy policy for Budget Ndio Story users and visitors engaging with Kenya budget content, Finance Bill explainers, and civic education resources.",
-    alternates: { canonical: "/privacy" },
+    alternates: { canonical: canonicalUrl("/privacy") },
 };
 
 export default function PrivacyPage() {

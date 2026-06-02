@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { canonicalUrl } from "@/utils/metadata";
 
 export const metadata: Metadata = {
   title: "Official Budget Documents & PDFs | Budget Ndio Story",
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
     "County Allocation of Revenue Act",
     "official budget documents Kenya",
   ],
-  alternates: { canonical: "/learn/documents" },
+  alternates: { canonical: canonicalUrl("/learn/documents") },
   openGraph: {
     title: "Official Budget Documents & PDFs | Budget Ndio Story",
     description:

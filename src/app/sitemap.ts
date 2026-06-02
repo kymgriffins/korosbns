@@ -1,9 +1,12 @@
 import { MetadataRoute } from "next";
+import { citizenApi } from "@/lib/api-client";
+import { team } from "@/constants/team";
+import { slugifyName } from "@/lib/team";
+import { canonicalUrl } from "@/utils/metadata";
 
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://app.budgetndiostory.org";
+export const dynamic = "force-dynamic";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const routes = [
     { path: "", priority: 1.0, frequency: "weekly" as const },
     { path: "/about", priority: 0.8, frequency: "monthly" as const },
@@ -16,16 +19,71 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/learn/stories", priority: 0.7, frequency: "weekly" as const },
     { path: "/learn/videos", priority: 0.7, frequency: "weekly" as const },
     { path: "/learn/documents", priority: 0.7, frequency: "weekly" as const },
-    { path: "/learn/quests", priority: 0.6, frequency: "weekly" as const },
-    { path: "/learn/profile", priority: 0.3, frequency: "monthly" as const },
     { path: "/events", priority: 0.8, frequency: "weekly" as const },
     { path: "/surveys", priority: 0.6, frequency: "weekly" as const },
+    { path: "/insights", priority: 0.8, frequency: "weekly" as const },
   ];
 
-  return routes.map((route) => ({
-    url: `${siteUrl}${route.path}`,
+  const sitemapEntries: MetadataRoute.Sitemap = routes.map((route) => ({
+    url: canonicalUrl(route.path),
     lastModified: new Date(),
     changeFrequency: route.frequency,
     priority: route.priority,
   }));
+
+  // Add static team profile pages from constants
+  try {
+    team.forEach((member) => {
+      sitemapEntries.push({
+        url: canonicalUrl(`/team/${slugifyName(member.name)}`),
+        lastModified: new Date(),
+        changeFrequency: "monthly",
+        priority: 0.5,
+      });
+    });
+  } catch (err) {
+    console.error("Sitemap: Failed to load team paths", err);
+  }
+
+  // Add dynamic articles from CMS
+  try {
+    const articlesRes = await citizenApi.getArticles();
+    if (articlesRes && Array.isArray(articlesRes.results)) {
+      articlesRes.results.forEach((article: any) => {
+        if (article.slug) {
+          sitemapEntries.push({
+            url: canonicalUrl(`/learn/${article.slug}`),
+            lastModified: article.published_at ? new Date(article.published_at) : new Date(),
+            changeFrequency: "weekly",
+            priority: 0.7,
+          });
+        }
+      });
+    }
+  } catch (err) {
+    console.error("Sitemap: Failed to fetch articles from API", err);
+  }
+
+  // Add dynamic stories from CMS
+  try {
+    const storiesRes = await citizenApi.getStories();
+    if (storiesRes && Array.isArray(storiesRes.results)) {
+      storiesRes.results.forEach((story: any) => {
+        const slug = story.slug || story.id;
+        if (slug) {
+          sitemapEntries.push({
+            url: canonicalUrl(`/learn/${slug}`),
+            lastModified: story.published_at ? new Date(story.published_at) : new Date(),
+            changeFrequency: "weekly",
+            priority: 0.7,
+          });
+        }
+      });
+    }
+  } catch (err) {
+    console.error("Sitemap: Failed to fetch stories from API", err);
+  }
+
+  return sitemapEntries;
 }
+

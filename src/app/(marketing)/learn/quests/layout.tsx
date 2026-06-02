@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { canonicalUrl } from "@/utils/metadata";
 
 export const metadata: Metadata = {
   title: "Budget Trivia & Learning Quests | Budget Ndio Story",
@@ -11,7 +12,8 @@ export const metadata: Metadata = {
     "budget learning quests",
     "interactive budget literacy",
   ],
-  alternates: { canonical: "/learn/quests" },
+  alternates: { canonical: canonicalUrl("/learn/quests") },
+  robots: { index: false, follow: false },
   openGraph: {
     title: "Budget Trivia & Learning Quests | Budget Ndio Story",
     description:

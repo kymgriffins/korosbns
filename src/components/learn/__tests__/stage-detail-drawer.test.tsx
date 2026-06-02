@@ -7,6 +7,14 @@ vi.mock("sonner", () => ({
   toast: { success: vi.fn(), error: vi.fn(), info: vi.fn() },
 }));
 
+vi.mock("@/contexts/learn-context", () => ({
+  useLearn: () => ({
+    totalStages: 8,
+    updateCurrentStep: vi.fn(),
+  }),
+}));
+
+
 if (typeof window !== "undefined" && !window.matchMedia) {
   window.matchMedia = vi.fn().mockImplementation((query) => ({
     matches: false, media: query, onchange: null, addListener: vi.fn(),

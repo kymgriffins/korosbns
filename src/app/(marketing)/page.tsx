@@ -1,6 +1,6 @@
 import React from "react";
 import { Metadata } from "next";
-import { metaDescription } from "@/utils/metadata";
+import { metaDescription, canonicalUrl } from "@/utils/metadata";
 import Background from "@/components/global/background";
 import PremiumLandingClient from "@/components/marketing/premium-landing-client";
 
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     "public participation budget Kenya",
   ],
   alternates: {
-    canonical: "/",
+    canonical: canonicalUrl("/"),
   },
   openGraph: {
     title: "Budget Ndio Story | Kenya Budget, Finance Bill & Fiscal Policy Explained",

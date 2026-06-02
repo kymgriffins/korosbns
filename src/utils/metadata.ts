@@ -45,8 +45,18 @@ const siteUrlObj = new URL(siteUrl);
 
 export function canonicalUrl(path: string): string {
   const normalized = path.startsWith("/") ? path : `/${path}`;
-  return new URL(normalized, siteUrl).toString();
+  const lastSegment = normalized.split("/").pop() || "";
+  const hasExtension = lastSegment.includes(".");
+  const endsWithSlash = normalized.endsWith("/");
+  const isApi = normalized.startsWith("/api");
+
+  let formattedPath = normalized;
+  if (!endsWithSlash && !hasExtension && !isApi) {
+    formattedPath = `${normalized}/`;
+  }
+  return new URL(formattedPath, siteUrl).toString();
 }
+
 
 export const generateMetadata = ({
   title = `${appName} | Youth-Led Budget Literacy in Kenya`,

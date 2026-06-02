@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { citizenApi } from "@/lib/api-client";
-import { metaDescription } from "@/utils/metadata";
+import { metaDescription, canonicalUrl } from "@/utils/metadata";
 import UnifiedReaderClientPage from "./client-page";
 
 interface StoryCard {
@@ -35,11 +35,11 @@ export async function generateMetadata(
         description: metaDescription(
           (artData.summary as string) || `In-depth explainer on Kenya's ${slug.replace(/-/g, " ")} covering budget, Finance Bill, and fiscal policy.`
         ),
-        alternates: { canonical: `/learn/${slug}` },
+        alternates: { canonical: canonicalUrl(`/learn/${slug}`) },
         openGraph: {
           title: `${artData.title as string} | Budget Ndio Story`,
           description: (artData.summary as string) || `Kenya budget explainer: ${slug.replace(/-/g, " ")}`,
-          url: `/learn/${slug}`,
+          url: canonicalUrl(`/learn/${slug}`),
         },
       };
     }
@@ -52,7 +52,7 @@ export async function generateMetadata(
       return {
         title: `${trivData.title as string} | Budget Trivia | Budget Ndio Story`,
         description: metaDescription(`Interactive trivia on Kenya's budget and Finance Bill. Test your knowledge of public finance.`),
-        alternates: { canonical: `/learn/${slug}` },
+        alternates: { canonical: canonicalUrl(`/learn/${slug}`) },
       };
     }
   } catch {
@@ -61,7 +61,7 @@ export async function generateMetadata(
   return {
     title: `Learn: ${slug.replace(/-/g, " ")} | Budget Ndio Story`,
     description: metaDescription(`Budget literacy content on ${slug.replace(/-/g, " ")} — Kenya's Finance Bill, fiscal policy, and public finance explained.`),
-    alternates: { canonical: `/learn/${slug}` },
+    alternates: { canonical: canonicalUrl(`/learn/${slug}`) },
   };
 }
 

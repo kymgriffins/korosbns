@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, BookOpen } from "lucide-react";
 import { fetchLearningEditionServer } from "@/lib/learning-units";
 import { Routes } from "@/constants/routes";
-import { metaDescription } from "@/utils/metadata";
+import { metaDescription, canonicalUrl } from "@/utils/metadata";
 import { Button } from "@/ui/button";
 
 export const revalidate = 3600;
@@ -20,18 +20,18 @@ export async function generateMetadata(
       description: metaDescription(
         edition.summary || `Structured learning path on Kenya's budget process, Finance Bill, and fiscal policy.`
       ),
-      alternates: { canonical: `/learn/paths/${slug}` },
+      alternates: { canonical: canonicalUrl(`/learn/paths/${slug}`) },
       openGraph: {
         title: `${edition.title} | Budget Ndio Story`,
         description: edition.summary || `Learn about Kenya's budget in this structured learning path.`,
-        url: `/learn/paths/${slug}`,
+        url: canonicalUrl(`/learn/paths/${slug}`),
       },
     };
   }
   return {
     title: `Learning Path | Budget Ndio Story`,
     description: metaDescription(`Structured budget literacy content on Kenya's Finance Bill, Appropriation Bill, and parliamentary budget process.`),
-    alternates: { canonical: `/learn/paths/${slug}` },
+    alternates: { canonical: canonicalUrl(`/learn/paths/${slug}`) },
   };
 }
 

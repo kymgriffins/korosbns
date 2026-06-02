@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { LearnPathsHome } from "@/components/learn/learn-paths-home";
-import { metaDescription } from "@/utils/metadata";
+import { metaDescription, canonicalUrl } from "@/utils/metadata";
 
 const learnDescription = metaDescription(
   "Gamified Learn Hub — videos, articles, stories, official documents, learning paths, and quests for Kenya's budget.",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     "fiscal policy education",
     "public finance learning paths",
   ],
-  alternates: { canonical: "/learn" },
+  alternates: { canonical: canonicalUrl("/learn") },
   openGraph: {
     title: "Learn Hub — Budget, Finance Bill & Fiscal Policy | Budget Ndio Story",
     description: "Gamified learning hub with videos, articles, stories, and quests on Kenya's budget, Finance Bill, and parliamentary fiscal process.",
