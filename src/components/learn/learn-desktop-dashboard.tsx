@@ -201,9 +201,9 @@ export function LearnDesktopDashboard({
           </div>
           <div className="space-y-3">
             {[
-              { name: "Alexandra D.", detail: "Working on County Allocations", status: "Completed", color: "bg-emerald-500/10 text-emerald-600" },
-              { name: "Edwin A.", detail: "Working on MTEF Basics", status: "In Progress", color: "bg-amber-500/10 text-amber-600" },
-              { name: "Isaac O.", detail: "Working on Public Participation", status: "Pending", color: "bg-rose-500/10 text-rose-600" }
+              { name: "Millicent Makina", detail: "Working on County Allocations", status: "Completed", color: "bg-emerald-500/10 text-emerald-600" },
+              { name: "Movine Omondi", detail: "Working on MTEF Basics", status: "In Progress", color: "bg-amber-500/10 text-amber-600" },
+              { name: "Shem Odhiambo", detail: "Working on Public Participation", status: "Pending", color: "bg-rose-500/10 text-rose-600" }
             ].map((usr, i) => (
               <div key={i} className="flex items-center justify-between p-2 hover:bg-muted/50 rounded-xl transition-colors">
                 <div className="flex items-center gap-3">

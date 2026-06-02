@@ -5,7 +5,7 @@ import { Progress } from "@/ui/progress";
 import { cn } from "@/utils";
 import { Sparkles } from "lucide-react";
 import type { ChapterStep, StageTakeaway } from "@/types/learn";
-import { stripHtml } from "@/lib/sanitize";
+import { stripHtml, sanitizeHtml } from "@/lib/sanitize";
 
 interface StepContentProps {
   step: ChapterStep;
@@ -84,20 +84,22 @@ export function StepContent({
           )}
 
           {activeFormat === "text" && (
-            <article className="
-              w-full max-w-none mx-auto px-4 py-6 md:px-8 md:py-8
-              prose prose-base prose-neutral dark:prose-invert max-w-none
-              prose-p:text-gray-800 prose-p:dark:text-gray-300
-              prose-p:leading-7 md:prose-p:leading-relaxed prose-p:my-3 md:prose-p:my-4
-              prose-headings:text-gray-900 dark:prose-headings:text-white prose-headings:font-semibold
-              prose-strong:text-gray-900 dark:prose-strong:text-white
-              prose-ul:my-3 md:prose-ul:my-4 prose-li:my-1
-            ">
-              {stripHtml(getPersonalizedText(step.text))
-                .split("\n\n")
-                .map((para, pIdx) => (
-                  <p key={pIdx} className="whitespace-pre-wrap">{para}</p>
-                ))}
+            <div className="w-full max-w-none mx-auto px-4 py-6 md:px-8 md:py-8">
+              <article 
+                className="
+                  text-foreground leading-relaxed
+                  [&>p]:mb-5 [&>p]:text-gray-800 dark:[&>p]:text-gray-200
+                  [&>h1]:text-2xl [&>h1]:font-black [&>h1]:mb-4 [&>h1]:mt-8
+                  [&>h2]:text-xl [&>h2]:font-bold [&>h2]:mb-3 [&>h2]:mt-6
+                  [&>h3]:text-lg [&>h3]:font-bold [&>h3]:mb-2 [&>h3]:mt-4
+                  [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:mb-5 [&>ul]:space-y-2
+                  [&>ol]:list-decimal [&>ol]:pl-5 [&>ol]:mb-5 [&>ol]:space-y-2
+                  [&>blockquote]:border-l-4 [&>blockquote]:border-primary [&>blockquote]:pl-4 [&>blockquote]:italic [&>blockquote]:my-5
+                  [&>strong]:font-bold [&>b]:font-bold
+                  [&>a]:text-primary [&>a]:underline hover:[&>a]:text-primary/80
+                "
+                dangerouslySetInnerHTML={{ __html: sanitizeHtml(getPersonalizedText(step.text)) }}
+              />
 
               {(() => {
                 const takeaway: StageTakeaway | undefined = step.takeaways?.[0];
@@ -105,20 +107,20 @@ export function StepContent({
                 const isInfo = takeaway.type === "info" || takeaway.type === "tip";
                 return (
                   <div className={cn(
-                    "mt-6 p-4 rounded-xl border-l-4 not-prose",
+                    "mt-8 p-5 rounded-2xl border-l-4 shadow-sm",
                     isInfo
-                      ? "bg-blue-500/10 border-blue-500 dark:bg-blue-900/20 dark:border-blue-400"
-                      : "bg-amber-500/10 border-amber-500 dark:bg-amber-900/20 dark:border-amber-400"
+                      ? "bg-blue-50/80 border-blue-500 dark:bg-blue-900/20 dark:border-blue-400"
+                      : "bg-amber-50/80 border-amber-500 dark:bg-amber-900/20 dark:border-amber-400"
                   )}>
                     <p className={cn(
-                      "text-xs font-bold",
+                      "text-sm font-bold flex items-center gap-2",
                       isInfo ? "text-blue-700 dark:text-blue-300" : "text-amber-700 dark:text-amber-300"
                     )}>{isInfo ? "💡" : "⚠️"} {takeaway.title}</p>
-                    <p className="text-[11px] text-gray-700 dark:text-gray-300 mt-1 leading-normal">{stripHtml(takeaway.text)}</p>
+                    <p className="text-[13px] text-gray-700 dark:text-gray-300 mt-2 leading-relaxed">{stripHtml(takeaway.text)}</p>
                   </div>
                 );
               })()}
-            </article>
+            </div>
           )}
 
           {activeFormat === "text" && step.trivia.length > 0 && (

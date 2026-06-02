@@ -187,16 +187,14 @@ export function StageDetailDrawer({
                   />
                 </div>
               ) : (
-                <div className="w-full aspect-video bg-muted rounded-3xl flex items-center justify-center relative overflow-hidden shadow-sm">
-                  <img 
-                    src={`https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=1200&auto=format&fit=crop`} 
-                    alt="Lesson" 
-                    className="absolute inset-0 w-full h-full object-cover opacity-90" 
-                  />
-                  <div className="absolute inset-0 bg-black/10 mix-blend-multiply" />
-                  <button className="relative z-10 size-16 bg-[#CEFF00] rounded-2xl flex items-center justify-center hover:scale-105 transition-transform shadow-lg">
-                    <PlayCircle className="size-8 text-black fill-black" />
-                  </button>
+                <div className="w-full aspect-video bg-[#0f172a] rounded-3xl flex flex-col items-center justify-center relative overflow-hidden shadow-sm">
+                  <div className="absolute inset-0 opacity-20 pointer-events-none bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary via-transparent to-transparent" />
+                  <div className="z-10 flex flex-col items-center space-y-4">
+                    <div className="size-16 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10">
+                      <PlayCircle className="size-8 text-white/40" />
+                    </div>
+                    <p className="text-white/60 font-bold text-sm tracking-wide">Video coming soon</p>
+                  </div>
                 </div>
               )}
 
