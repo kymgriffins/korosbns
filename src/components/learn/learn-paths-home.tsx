@@ -8,6 +8,7 @@ import { StageDetailDrawer } from "./stage-detail-drawer";
 import { LearnDashboardPanel } from "./learn-dashboard-panel";
 import { StageRoadmap } from "./stage-roadmap";
 import { LearnStatsSidebar } from "./learn-stats-sidebar";
+import { LearnDesktopDashboard } from "./learn-desktop-dashboard";
 
 import { Button } from "@/ui/button";
 import { Progress } from "@/ui/progress";
@@ -679,95 +680,13 @@ export function LearnPathsHome() {
               
               {/* Tab: Home */}
               {activeTab === "home" && (
-                <div className="space-y-6 max-w-4xl mx-auto">
-                  {/* Premium Hero Banner */}
-                  <div className="relative p-6 md:p-8 rounded-2xl bg-gradient-to-r from-primary to-primary/80 text-primary-foreground space-y-3 overflow-hidden shadow-sm">
-                    <div className="absolute right-0 bottom-0 top-0 opacity-10 flex items-center justify-center p-8 pointer-events-none select-none">
-                      <Sparkles className="size-48" />
-                    </div>
-                    <span className="text-[10px] font-black uppercase tracking-widest bg-white/20 px-3 py-1 rounded-full text-white">Kenya Civic Journey</span>
-                    <h2 className="text-2xl md:text-3xl font-black leading-tight max-w-xl">Master Your Civic Budget Rights &amp; Power</h2>
-                    <p className="text-xs text-white/80 max-w-md">Learn where your taxes go, how budgets are formed, and draft your own comments to hold leaders accountable.</p>
-                    <Button 
-                      onClick={() => setActiveTab("learn")}
-                      className="bg-white text-primary hover:bg-white/95 rounded-xl font-bold text-xs px-5 h-10 mt-2 shadow-sm"
-                    >
-                      Explore Learning Map
-                    </Button>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    {/* Progress Card */}
-                    <div className="p-5 border border-border bg-card rounded-2xl space-y-3.5 shadow-xs">
-                      <h3 className="text-xs font-black uppercase text-muted-foreground tracking-wider">Overall Progress</h3>
-                      <div className="flex justify-between items-baseline">
-                        <span className="text-3xl font-black text-foreground">{profile.badges?.length || 0} / {stages.length}</span>
-                        <span className="text-[10px] text-muted-foreground font-semibold">STAGES MASTERED</span>
-                      </div>
-                      <Progress value={stages.length ? ((profile.badges?.length || 0) / stages.length) * 100 : 0} className="h-2 rounded-full" />
-                    </div>
-
-                    {/* Active Stage Resumer */}
-                    <div className="p-5 border border-border bg-card rounded-2xl space-y-3.5 shadow-xs flex flex-col justify-between">
-                      <div className="space-y-1">
-                        <span className="text-[10px] font-black uppercase text-muted-foreground tracking-wider">Active Stage</span>
-                        <h4 className="text-sm font-bold text-foreground leading-tight flex items-center gap-1.5 mt-1">
-                          <span className="text-lg">{currentStage.badge}</span>
-                          {currentStage.title}
-                        </h4>
-                      </div>
-                      <Button
-                        onClick={() => setSelectedStage(currentStage)}
-                        className="w-full rounded-xl font-bold mt-2 text-xs"
-                      >
-                        Resume Learning
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Community Forum */}
-                  <Link
-                    href={Routes.LearnForum}
-                    className="block p-5 border border-border bg-card rounded-2xl space-y-3 shadow-xs hover:bg-muted/30 transition-colors group"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                          <Users className="size-5 text-primary" />
-                        </div>
-                        <div>
-                          <h3 className="text-sm font-black uppercase tracking-tight">Community Forum</h3>
-                          <p className="text-[10px] text-muted-foreground font-semibold">
-                            Discuss budget topics with fellow citizens
-                          </p>
-                        </div>
-                      </div>
-                      <ArrowRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                    </div>
-                  </Link>
-
-                  {/* Leaderboard */}
-                  <div className="p-5 border border-border bg-card rounded-2xl space-y-4 shadow-xs">
-                    <h3 className="text-xs font-black uppercase text-muted-foreground tracking-wider">Civic Leaderboard</h3>
-                    <div className="space-y-2">
-                      {leaderboard.slice(0, 3).map((item) => (
-                        <div key={item.name} className={cn(
-                          "flex items-center justify-between p-3 rounded-xl border text-xs",
-                          item.isUser ? "bg-primary/5 border-primary/20" : "bg-muted/10 border-border/50"
-                        )}>
-                          <div className="flex items-center gap-3">
-                            <span className="font-black text-muted-foreground w-4">{item.rank}</span>
-                            <span className={cn("font-bold text-xs", item.isUser ? "text-primary text-xs" : "text-foreground text-xs")}>{item.name}</span>
-                          </div>
-                          <div className="flex items-center gap-4 text-muted-foreground font-semibold">
-                            <span>{item.stages} Badges</span>
-                            <span className="text-foreground font-bold">{item.svg} SVG</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+                <LearnDesktopDashboard 
+                  profile={profile}
+                  stages={stages}
+                  currentStage={currentStage}
+                  onSelectStage={setSelectedStage}
+                  onNavigateToCurriculum={() => setActiveTab("learn")}
+                />
               )}
 
               {/* Tab: Learn (Roadmap) */}
