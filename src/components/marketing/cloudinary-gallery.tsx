@@ -55,6 +55,7 @@ const CloudinaryGallery = () => {
             <span className="font-heading italic text-primary">Movement</span> in the field.
           </>
         }
+        description="Explore moments from our civic workshops, townhalls, and community engagements across the country as we empower citizens to take action."
       />
 
       <div className="py-4">
