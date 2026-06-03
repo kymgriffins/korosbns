@@ -405,15 +405,20 @@ export function LearnPathsHome() {
 
             {/* TAB 2: ROADMAP (LEARN) */}
             {activeTab === "learn" && (
-              <StageRoadmap
-                text={text}
-                profile={profile}
-                stages={stages.map(stageCardData)}
-                onSelectStage={(s) => {
-                  const full = stages.find(m => m.order === s.id);
-                  if (full) setSelectedStage(full);
-                }}
-              />
+              <motion.div
+                key="learn"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="-m-4 h-[calc(100dvh-120px)]"
+              >
+                <LearnModulesView
+                  profile={profile}
+                  stages={stages}
+                  currentStage={currentStage}
+                  onSelectStage={setSelectedStage}
+                />
+              </motion.div>
             )}
 
             {/* TAB 3: DOCUMENTS — submission history & tracked docs */}
@@ -653,12 +658,14 @@ export function LearnPathsHome() {
 
               {/* Tab: Learn (Modules) */}
               {activeTab === "learn" && (
-                <LearnModulesView
-                  profile={profile}
-                  stages={stages}
-                  currentStage={currentStage}
-                  onSelectStage={setSelectedStage}
-                />
+                <div className="-m-6 h-[calc(100vh-3.5rem)]">
+                  <LearnModulesView
+                    profile={profile}
+                    stages={stages}
+                    currentStage={currentStage}
+                    onSelectStage={setSelectedStage}
+                  />
+                </div>
               )}
 
               {/* Desktop Tab: Alerts — keeps its own tab on desktop */}
