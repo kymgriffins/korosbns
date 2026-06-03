@@ -76,7 +76,11 @@ export function LearnDashboardPanel({
       className="space-y-4 pb-20"
     >
       <div className="flex items-center gap-3 p-3 rounded-3xl border border-border bg-card shadow-xs">
-        <BitmojiAvatar gender={profile.gender as "male" | "female"} size="sm" />
+        {profile.avatar_url ? (
+          <img src={profile.avatar_url} alt="" className="size-8 rounded-full object-cover" />
+        ) : (
+          <BitmojiAvatar gender={profile.gender as "male" | "female"} size="sm" />
+        )}
         <div className="min-w-0 flex-1">
           <h1 className="text-xs font-black text-foreground truncate">{profile.breakName}</h1>
           <p className="text-[10px] text-muted-foreground truncate">{profile.county} · Lvl {Math.floor((profile.sovereigns || 0) / 100) + 1}</p>

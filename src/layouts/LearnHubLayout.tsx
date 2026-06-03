@@ -180,9 +180,13 @@ function LearnSidebar() {
             {isCollapsed ? (
               <div className="flex flex-col items-center gap-3 py-2">
                 <Avatar className="size-8">
-                  <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-black">
-                    {user?.first_name?.[0] ?? user?.email?.[0]?.toUpperCase() ?? "?"}
-                  </AvatarFallback>
+                  {user?.avatar_url ? (
+                    <img src={user.avatar_url} alt="" className="size-full rounded-full object-cover" />
+                  ) : (
+                    <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-black">
+                      {user?.first_name?.[0] ?? user?.email?.[0]?.toUpperCase() ?? "?"}
+                    </AvatarFallback>
+                  )}
                 </Avatar>
                 {isLoggedIn && (
                   <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs" title="Level">

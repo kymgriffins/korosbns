@@ -173,6 +173,7 @@ export function LearnPathsHome() {
           userId: authUser.id || `user_${Math.random().toString(36).substr(2, 9)}`,
           breakName: authUser.break_name || authUser.display_name || `${authUser.first_name || ""} ${authUser.last_name || ""}`.trim() || authUser.email || "Citizen",
           pseudoName: authUser.pseudo_name || authUser.display_name || `citizen_${String(authUser.id || "").slice(0, 5)}`,
+          avatar_url: authUser.avatar_url || authUser.avatar || null,
           county: authUser.county || authUser.location || preferences.county || "Kenya",
           ward: authUser.ward || preferences.ward || "",
           language: authUser.language_preference || "EN" as const,
@@ -488,7 +489,11 @@ export function LearnPathsHome() {
                   </div>
                   <div className="flex items-center gap-4 relative">
                     <div className="relative">
-                      <BitmojiAvatar gender={profile.gender} size="lg" className="rounded-full border-2 border-white/30 shadow-md" />
+                      {profile.avatar_url ? (
+                        <img src={profile.avatar_url} alt="" className="size-16 rounded-full border-2 border-white/30 shadow-md object-cover" />
+                      ) : (
+                        <BitmojiAvatar gender={profile.gender} size="lg" className="rounded-full border-2 border-white/30 shadow-md" />
+                      )}
                     </div>
                     <div className="min-w-0">
                       <p className="text-[9px] font-black uppercase tracking-widest text-white/70 mb-0.5">Citizen Champion</p>
@@ -770,7 +775,11 @@ export function LearnPathsHome() {
                       <Award className="size-36" />
                     </div>
                     <div className="flex items-center gap-6 relative">
-                      <BitmojiAvatar gender={profile.gender} size="xl" className="rounded-full border-2 border-white/30 shadow-xl" />
+                      {profile.avatar_url ? (
+                        <img src={profile.avatar_url} alt="" className="size-20 rounded-full border-2 border-white/30 shadow-xl object-cover" />
+                      ) : (
+                        <BitmojiAvatar gender={profile.gender} size="xl" className="rounded-full border-2 border-white/30 shadow-xl" />
+                      )}
                       <div className="flex-1 min-w-0">
                         <p className="text-[9px] font-black uppercase tracking-widest text-white/70 mb-1">Citizen Champion</p>
                         <h2 className="text-2xl font-black text-white leading-tight">{profile.breakName}</h2>

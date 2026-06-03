@@ -5,6 +5,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -44,7 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
   const [hasToken, setHasToken] = useState(() => Boolean(getAccessToken()));
 
-  const { data: user, isLoading } = useQuery({
+  const { data: user, isLoading, isError } = useQuery({
     queryKey: USER_PROFILE_KEY,
     queryFn: async () => {
       const profile = await citizenApi.getMe();
@@ -54,6 +55,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     staleTime: 1000 * 60 * 5,
     retry: false,
   });
+
+  // Clear stale tokens when the API rejects them
+  useEffect(() => {
+    if (isError && hasToken) {
+      logDebug("Auth", "Token rejected by server; clearing");
+      clearAuthTokens();
+      setHasToken(false);
+    }
+  }, [isError, hasToken]);
 
   const refreshUser = useCallback(async () => {
     await queryClient.invalidateQueries({ queryKey: USER_PROFILE_KEY });
@@ -91,12 +101,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     () => ({
       user: user ?? null,
       loading: hasToken && isLoading,
-      isLoggedIn: Boolean(user),
+      isLoggedIn: Boolean(user) && !isError,
       login,
       logout,
       refreshUser,
     }),
-    [user, hasToken, isLoading, login, logout, refreshUser],
+    [user, hasToken, isLoading, isError, login, logout, refreshUser],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

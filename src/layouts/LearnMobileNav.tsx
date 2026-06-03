@@ -37,12 +37,7 @@ export function LearnMobileNav() {
 
   // Derive initials for avatar
   const initials = profile?.breakName
-    ? profile.breakName
-        .split(" ")
-        .map((p: string) => p[0] ?? "")
-        .join("")
-        .slice(0, 2)
-        .toUpperCase()
+    ? profile.breakName.split(" ").map(p => p[0] ?? "").join("").slice(0, 2).toUpperCase()
     : "?";
 
   // Count alerts from participation logs
@@ -58,15 +53,19 @@ export function LearnMobileNav() {
             : ""
         }
       >
-        <AvatarFallback
-          className={
-            activeTab === "profile"
-              ? "bg-primary text-primary-foreground text-[10px] font-black"
-              : "bg-muted text-muted-foreground text-[10px] font-black"
-          }
-        >
-          {initials}
-        </AvatarFallback>
+        {profile?.avatar_url ? (
+          <img src={profile.avatar_url} alt="" className="size-full rounded-full object-cover" />
+        ) : (
+          <AvatarFallback
+            className={
+              activeTab === "profile"
+                ? "bg-primary text-primary-foreground text-[10px] font-black"
+                : "bg-muted text-muted-foreground text-[10px] font-black"
+            }
+          >
+            {initials}
+          </AvatarFallback>
+        )}
       </Avatar>
       {hasAlerts && (
         <span className="absolute -top-0.5 -right-0.5 size-3.5 rounded-full bg-red-500 border-2 border-background flex items-center justify-center">
