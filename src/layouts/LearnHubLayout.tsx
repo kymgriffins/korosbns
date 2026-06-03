@@ -259,8 +259,8 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
         
         {/* Main content */}
         <div className="flex flex-col flex-1 h-dvh md:min-h-dvh min-w-0 overflow-hidden">
-          {/* Header with sidebar trigger - only shown when needed or can float over content */}
-          <header className="flex h-14 items-center gap-4 border-b border-border bg-background px-4 md:hidden">
+          {/* Header with sidebar trigger - muted for now (change 'hidden' back to 'flex' to restore) */}
+          <header className="hidden h-14 items-center gap-4 border-b border-border bg-background px-4 md:hidden">
             <SidebarTrigger className="-ml-1" />
             <div className="font-semibold">Learning Hub</div>
           </header>
