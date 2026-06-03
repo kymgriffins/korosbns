@@ -5,9 +5,8 @@ import { OnboardingWizard } from "./onboarding-wizard";
 import { AnonymousIdentityPicker } from "./anonymous-identity-picker";
 import { BitmojiAvatar } from "./bitmoji-avatar";
 import { StageDetailDrawer } from "./stage-detail-drawer";
-import { LearnDashboardPanel } from "./learn-dashboard-panel";
+import { LearnDashboardView } from "./learn-dashboard-view";
 import { StageRoadmap } from "./stage-roadmap";
-import { LearnDesktopDashboard } from "./learn-desktop-dashboard";
 import { LearnModulesView } from "./learn-modules-view";
 import { LearnDocumentsView } from "./learn-documents-view";
 
@@ -394,12 +393,13 @@ export function LearnPathsHome() {
             
             {/* TAB 1: CIVIC DASHBOARD (HOME) */}
             {activeTab === "home" && (
-              <LearnDashboardPanel
-                text={text}
+              <LearnDashboardView
                 profile={profile}
+                stages={stages}
                 currentStage={currentStage}
-                totalStages={totalStages}
                 onSelectStage={setSelectedStage}
+                onNavigateToCurriculum={() => setActiveTab("learn")}
+                leaderboard={leaderboardData?.results}
               />
             )}
 
@@ -646,14 +646,16 @@ export function LearnPathsHome() {
               
               {/* Tab: Home */}
               {activeTab === "home" && (
-                <LearnDesktopDashboard 
-                  profile={profile}
-                  stages={stages}
-                  currentStage={currentStage}
-                  onSelectStage={setSelectedStage}
-                  onNavigateToCurriculum={() => setActiveTab("learn")}
-                  leaderboard={leaderboardData?.results}
-                />
+                <div className="-m-6 h-[calc(100vh-3.5rem)] overflow-y-auto custom-scrollbar">
+                  <LearnDashboardView 
+                    profile={profile}
+                    stages={stages}
+                    currentStage={currentStage}
+                    onSelectStage={setSelectedStage}
+                    onNavigateToCurriculum={() => setActiveTab("learn")}
+                    leaderboard={leaderboardData?.results}
+                  />
+                </div>
               )}
 
               {/* Tab: Learn (Modules) */}
