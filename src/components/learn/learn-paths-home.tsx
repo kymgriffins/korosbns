@@ -686,6 +686,7 @@ export function LearnPathsHome() {
                   currentStage={currentStage}
                   onSelectStage={setSelectedStage}
                   onNavigateToCurriculum={() => setActiveTab("learn")}
+                  leaderboard={leaderboardData?.results}
                 />
               )}
 

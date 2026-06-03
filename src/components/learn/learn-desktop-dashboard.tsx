@@ -13,6 +13,7 @@ import {
 } from "@/ui/chart";
 import { Bar, BarChart, CartesianGrid, XAxis, PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import type { CivicModule } from "@/types/learn";
+import type { LeaderboardEntry } from "@/types/gamification";
 import Link from "next/link";
 import { Routes } from "@/constants/routes";
 
@@ -22,6 +23,7 @@ interface LearnDesktopDashboardProps {
   currentStage: CivicModule;
   onSelectStage: (stage: CivicModule) => void;
   onNavigateToCurriculum: () => void;
+  leaderboard?: LeaderboardEntry[];
 }
 
 export function LearnDesktopDashboard({
@@ -30,6 +32,7 @@ export function LearnDesktopDashboard({
   currentStage,
   onSelectStage,
   onNavigateToCurriculum,
+  leaderboard,
 }: LearnDesktopDashboardProps) {
   // Mock daily analytics data (S M T W T F S)
   const chartData = useMemo(() => [
@@ -200,26 +203,38 @@ export function LearnDesktopDashboard({
             <Link href={Routes.LearnForum} className="text-xs font-bold text-primary hover:underline">View Forum</Link>
           </div>
           <div className="space-y-3">
-            {[
-              { name: "Millicent Makina", detail: "Working on County Allocations", status: "Completed", color: "bg-emerald-500/10 text-emerald-600" },
-              { name: "Movine Omondi", detail: "Working on MTEF Basics", status: "In Progress", color: "bg-amber-500/10 text-amber-600" },
-              { name: "Shem Odhiambo", detail: "Working on Public Participation", status: "Pending", color: "bg-rose-500/10 text-rose-600" }
-            ].map((usr, i) => (
-              <div key={i} className="flex items-center justify-between p-2 hover:bg-muted/50 rounded-xl transition-colors">
-                <div className="flex items-center gap-3">
-                  <div className="size-10 rounded-full bg-muted flex items-center justify-center overflow-hidden border border-border">
-                     <BitmojiAvatar gender={i % 2 === 0 ? "female" : "male"} size="sm" />
+            {(leaderboard ?? []).length > 0 ? (
+              leaderboard!.map((entry, i) => (
+                <div key={entry.name ?? i} className="flex items-center justify-between p-2 hover:bg-muted/50 rounded-xl transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="size-10 rounded-full bg-muted flex items-center justify-center overflow-hidden border border-border">
+                      {entry.avatar_url ? (
+                        <img src={entry.avatar_url} alt={entry.name ?? ""} className="size-full object-cover" />
+                      ) : (
+                        <BitmojiAvatar gender={i % 2 === 0 ? "female" : "male"} size="sm" />
+                      )}
+                    </div>
+                    <div>
+                      <h4 className="text-sm font-bold">{entry.name ?? "Anonymous"}</h4>
+                      <p className="text-xs text-muted-foreground">
+                        {entry.rank ? `${entry.points} Sovereigns` : "Not yet started"}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-sm font-bold">{usr.name}</h4>
-                    <p className="text-xs text-muted-foreground">{usr.detail}</p>
+                  <div className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${
+                    entry.rank
+                      ? "bg-emerald-500/10 text-emerald-600"
+                      : "bg-muted text-muted-foreground"
+                  }`}>
+                    {entry.rank ? `#${entry.rank}` : "—"}
                   </div>
                 </div>
-                <div className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${usr.color}`}>
-                  {usr.status}
-                </div>
+              ))
+            ) : (
+              <div className="text-center py-6 text-xs text-muted-foreground">
+                No citizens yet. Start learning to appear here!
               </div>
-            ))}
+            )}
           </div>
         </div>
 

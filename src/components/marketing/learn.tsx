@@ -86,7 +86,7 @@ const faqItems = [
 const moduleInfo = {
   module: "Module 002",
   title: "Reflecting on Kenya's 2026 Budget Policy Statement (BPS)",
-  credits: "Millicent Makini",
+  credits: "Millicent Makina",
 };
 
 // Sourced dynamically from BNSKE API

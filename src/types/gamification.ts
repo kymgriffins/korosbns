@@ -11,12 +11,13 @@ export type GamificationState = {
 };
 
 export type LeaderboardEntry = {
-  rank: number;
+  rank: number | null;
   name: string | null;
   points: number;
   level: number;
   streak_days: number;
   badge_count: number;
+  avatar_url?: string | null;
 };
 
 export type ChallengeData = {
