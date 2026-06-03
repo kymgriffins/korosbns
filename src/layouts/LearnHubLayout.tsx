@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
-import { 
-  ChevronRight, ChevronLeft, ChevronDown,
+import {
+  ChevronRight, ChevronLeft, ChevronDown, X,
   BookOpen, Bell, Home, LayoutDashboard, CheckCircle2, ArrowLeft, ExternalLink,
   Settings, LogOut, KeyRound, Palette, LogIn, User, FileText
 } from "lucide-react";
@@ -47,9 +47,7 @@ function LearnSidebar() {
   const { state, isMobile, setOpenMobile } = useSidebar();
   const isCollapsed = state === "collapsed";
   const level = gamification?.level ?? 1;
-
-  // Mute the sidebar entirely on mobile. Toggle this back when needed.
-  if (isMobile) return null;
+  const [showAppCard, setShowAppCard] = useState(true);
 
   const handleTabChange = (tab: LearnTab) => {
     setActiveTab(tab);
@@ -200,18 +198,26 @@ function LearnSidebar() {
             ) : (
               <div className="p-2 space-y-4">
                 {/* Mobile App Callout Card */}
-                <div className="relative overflow-hidden rounded-2xl bg-primary text-primary-foreground p-5 shadow-sm">
-                  <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none translate-x-4 translate-y-4">
-                    <svg className="size-24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14.5c-2.49 0-4.5-2.01-4.5-4.5S9.51 7.5 12 7.5s4.5 2.01 4.5 4.5-2.01 4.5-4.5 4.5z"/></svg>
-                  </div>
-                  <div className="relative z-10 space-y-2">
-                    <h4 className="font-black text-sm">Get the BNS App</h4>
-                    <p className="text-[10px] text-white/80 font-medium">Follow budgets on the go and never miss a civic alert.</p>
-                    <button className="mt-2 w-full rounded-xl bg-white text-primary text-xs font-bold py-2 shadow-sm hover:bg-white/90 transition-colors">
-                      Download Now
+                {showAppCard && (
+                  <div className="relative overflow-hidden rounded-2xl bg-primary text-primary-foreground p-5 shadow-sm">
+                    <button
+                      onClick={() => setShowAppCard(false)}
+                      className="absolute top-2 right-2 size-6 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors z-20"
+                    >
+                      <X className="size-3.5" />
                     </button>
+                    <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none translate-x-4 translate-y-4">
+                      <svg className="size-24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14.5c-2.49 0-4.5-2.01-4.5-4.5S9.51 7.5 12 7.5s4.5 2.01 4.5 4.5-2.01 4.5-4.5 4.5z"/></svg>
+                    </div>
+                    <div className="relative z-10 space-y-2">
+                      <h4 className="font-black text-sm">Get the BNS App</h4>
+                      <p className="text-[10px] text-white/80 font-medium">Follow budgets on the go and never miss a civic alert.</p>
+                      <button className="mt-2 w-full rounded-xl bg-white text-primary text-xs font-bold py-2 shadow-sm hover:bg-white/90 transition-colors">
+                        Download Now
+                      </button>
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <SidebarMenu>
                   <SidebarMenuItem>
