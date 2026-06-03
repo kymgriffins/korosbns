@@ -48,6 +48,9 @@ function LearnSidebar() {
   const isCollapsed = state === "collapsed";
   const level = gamification?.level ?? 1;
 
+  // Mute the sidebar entirely on mobile. Toggle this back when needed.
+  if (isMobile) return null;
+
   const handleTabChange = (tab: LearnTab) => {
     setActiveTab(tab);
     if (isMobile) {
