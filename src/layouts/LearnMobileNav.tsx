@@ -13,6 +13,7 @@ type StoredProfile = {
   breakName?: string;
   gender?: string;
   participationLogs?: unknown[];
+  avatar_url?: string | null;
 };
 
 export function LearnMobileNav() {

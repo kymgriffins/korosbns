@@ -9,6 +9,7 @@ import { LearnDashboardPanel } from "./learn-dashboard-panel";
 import { StageRoadmap } from "./stage-roadmap";
 import { LearnDesktopDashboard } from "./learn-desktop-dashboard";
 import { LearnModulesView } from "./learn-modules-view";
+import { LearnDocumentsView } from "./learn-documents-view";
 
 import { Button } from "@/ui/button";
 import { Progress } from "@/ui/progress";
@@ -422,54 +423,9 @@ export function LearnPathsHome() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="space-y-5"
+                className="-m-4 h-[calc(100dvh-120px)]"
               >
-                <div className="space-y-1">
-                  <h2 className="text-lg font-black uppercase tracking-tight">Documents</h2>
-                  <p className="text-xs text-muted-foreground">Your tracked budget documents and submitted commentaries.</p>
-                </div>
-
-                {/* Tracked documents placeholder */}
-                {profile.trackedDocs?.length > 0 && (
-                  <div className="space-y-2">
-                    <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Tracked Documents</h3>
-                    {profile.trackedDocs.map((doc: any, idx: number) => (
-                      <div key={idx} className="flex items-center gap-3 p-3 rounded-xl border border-border bg-card text-xs shadow-xs">
-                        <FileCheck className="size-4 text-primary shrink-0" />
-                        <span className="font-bold text-foreground truncate">{typeof doc === "string" ? doc : doc.name}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* Submissions History Log */}
-                <div className="space-y-3.5">
-                  <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Submitted Commentaries</h3>
-                  {profile.participationLogs?.length > 0 ? (
-                    <div className="space-y-2.5">
-                      {profile.participationLogs.map((log: any, idx: number) => (
-                        <div key={idx} className="p-4 rounded-xl border border-border bg-card space-y-2 text-xs shadow-xs">
-                          <div className="flex justify-between items-start">
-                            <h4 className="font-bold text-foreground leading-none">{log.documentName}</h4>
-                            <span className="text-[9px] bg-primary/10 border border-primary/20 text-primary font-bold px-2 py-0.5 rounded-full">
-                              {log.method}
-                            </span>
-                          </div>
-                          <p className="text-[10px] text-muted-foreground font-semibold">Submitted: {new Date(log.dateSubmitted).toLocaleString()}</p>
-                          <div className="bg-muted/30 p-2.5 rounded-lg border border-border/50 font-mono text-[9px] leading-relaxed whitespace-pre-wrap truncate max-h-24">
-                            {log.draftText}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-10 border border-dashed border-border rounded-2xl space-y-2">
-                      <FileText className="size-8 text-muted-foreground/40 mx-auto" />
-                      <p className="text-xs text-muted-foreground">No submissions yet.</p>
-                      <p className="text-[10px] text-muted-foreground/60">Complete a learning stage and draft a memorandum to get started.</p>
-                    </div>
-                  )}
-                </div>
+                <LearnDocumentsView profile={profile} />
               </motion.div>
             )}
 
@@ -740,29 +696,8 @@ export function LearnPathsHome() {
 
               {/* Desktop Tab: Documents */}
               {activeTab === "documents" && (
-                <div className="space-y-6 max-w-3xl mx-auto">
-                  <div className="space-y-1">
-                    <h2 className="text-xl font-black uppercase tracking-tight">Documents</h2>
-                    <p className="text-xs text-muted-foreground">Budget documents you are tracking and your submitted commentaries.</p>
-                  </div>
-                  {profile.trackedDocs?.length > 0 && (
-                    <div className="space-y-3">
-                      <h3 className="text-xs font-black text-muted-foreground uppercase tracking-widest">Tracked Documents</h3>
-                      <div className="grid grid-cols-2 gap-3">
-                        {profile.trackedDocs.map((doc: any, idx: number) => (
-                          <div key={idx} className="flex items-center gap-3 p-4 rounded-xl border border-border bg-card text-xs shadow-xs">
-                            <FileCheck className="size-4 text-primary shrink-0" />
-                            <span className="font-bold text-foreground truncate">{typeof doc === "string" ? doc : doc.name}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  <div className="text-center py-12 border border-dashed border-border rounded-2xl space-y-3">
-                    <FileText className="size-8 text-muted-foreground/30 mx-auto" />
-                    <p className="text-sm text-muted-foreground">No documents tracked yet.</p>
-                    <p className="text-xs text-muted-foreground/60">Track budget documents during a learning stage to see them here.</p>
-                  </div>
+                <div className="-m-6 h-[calc(100vh-3.5rem)]">
+                  <LearnDocumentsView profile={profile} />
                 </div>
               )}
 

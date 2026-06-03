@@ -28,6 +28,7 @@ type Profile = {
   badges?: string[];
   stageProgress?: number[];
   gender: string;
+  avatar_url?: string | null;
 };
 
 export function LearnDashboardPanel({
