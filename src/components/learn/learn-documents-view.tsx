@@ -2,12 +2,13 @@
 
 import React, { useState } from "react";
 import { 
-  Search, Upload, Folder, FileText, FileImage, 
-  MoreHorizontal, ChevronRight, Activity, Cloud, PieChart,
-  Bell, FileCheck, Users, ShieldAlert, Award
+  Search, Folder, FileText, FileImage, 
+  MoreHorizontal, ChevronRight, PieChart,
+  Bell, FileCheck, Users, ShieldAlert, Award, Database, CheckCircle2
 } from "lucide-react";
 import { cn } from "@/utils";
 import { BitmojiAvatar } from "./bitmoji-avatar";
+import { team } from "@/constants/team";
 
 export function LearnDocumentsView({ profile }: { profile: any }) {
   const [activeFileTab, setActiveFileTab] = useState<"all" | "tracked" | "commentaries" | "images">("all");
@@ -43,12 +44,12 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
       icon: <FileText className="size-4 text-primary" />,
       category: "commentaries"
     })),
-    // Dummy placeholders if list is short to match design density
+    // Authentic Kenyan budget dummy data
     {
       id: "dummy-1",
-      name: "Q4 2025 Financial Report",
+      name: "Nairobi County FY 25/26 Draft Budget",
       type: "County Reports",
-      owner: "John Mitchell",
+      owner: team[2].name,
       modified: "2026-01-15",
       size: "2.4 MB",
       icon: <Folder className="size-4 text-amber-500" />,
@@ -56,13 +57,13 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
     },
     {
       id: "dummy-2",
-      name: "Urban Penthouse - Exterior",
-      type: "Images",
-      owner: "Mike Chen",
+      name: "Auditor General Report 2024",
+      type: "Audit Reports",
+      owner: team[1].name,
       modified: "2026-01-14",
-      size: "45.2 MB",
-      icon: <FileImage className="size-4 text-indigo-500" />,
-      category: "images"
+      size: "15.2 MB",
+      icon: <FileText className="size-4 text-indigo-500" />,
+      category: "all"
     }
   ];
 
@@ -76,11 +77,11 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
       <header className="flex items-center justify-between px-6 py-4 bg-white dark:bg-card border-b border-border shadow-sm shrink-0 z-10">
         <div className="flex items-center gap-3">
           <div className="bg-primary/10 p-2 rounded-xl">
-            <Folder className="size-5 text-primary" />
+            <Database className="size-5 text-primary" />
           </div>
           <div>
-            <h1 className="font-bold text-lg leading-tight">Civic Documents</h1>
-            <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-semibold">Manage your tracked budget documents</p>
+            <h1 className="font-bold text-lg leading-tight">Budget Data Repository</h1>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-semibold">Access public civic data and reports</p>
           </div>
         </div>
 
@@ -89,27 +90,23 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
             <input 
               type="text" 
-              placeholder="Search Documents..." 
+              placeholder="Search Repository..." 
               className="pl-9 pr-4 py-2 bg-muted/50 border border-border rounded-xl text-sm w-64 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
             />
           </div>
-          <button className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-xl text-sm font-bold hover:bg-primary/90 transition-all shadow-sm">
-            <Upload className="size-4" />
-            <span>Upload Files</span>
-          </button>
           
           {/* User Profile snippet from design */}
-          <div className="flex items-center gap-3 ml-4 pl-4 border-l border-border">
+          <div className="flex items-center gap-3 ml-2 md:ml-4 md:pl-4 md:border-l border-border">
             {profile?.avatar_url ? (
                <img src={profile.avatar_url} alt="" className="size-9 rounded-full border border-border object-cover" />
             ) : (
-               <BitmojiAvatar gender={profile?.gender} size="sm" className="rounded-full border border-border" />
+               <BitmojiAvatar gender={profile?.gender as any} size="sm" className="rounded-full border border-border" />
             )}
             <div className="hidden lg:block text-sm">
               <p className="font-bold leading-none">{profile?.breakName || "Citizen"}</p>
               <p className="text-[10px] text-muted-foreground">{profile?.county || "Kenya"}</p>
             </div>
-            <ChevronRight className="size-4 text-muted-foreground ml-2" />
+            <ChevronRight className="size-4 text-muted-foreground hidden lg:block ml-2" />
           </div>
         </div>
       </header>
@@ -122,7 +119,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
           {/* Folders Section */}
           <section className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-black uppercase tracking-widest text-muted-foreground">Folders</h2>
+              <h2 className="text-sm font-black uppercase tracking-widest text-muted-foreground">Collections</h2>
               <button className="text-xs font-bold text-primary hover:underline">View All</button>
             </div>
             
@@ -134,7 +131,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                   </div>
                   <div>
                     <h3 className="font-bold text-sm text-foreground">{folder.name}</h3>
-                    <p className="text-xs text-muted-foreground">{folder.count} files</p>
+                    <p className="text-xs text-muted-foreground">{folder.count} documents</p>
                   </div>
                 </div>
               ))}
@@ -144,14 +141,13 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
           {/* Files Section */}
           <section className="space-y-4 flex-1">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <h2 className="text-sm font-black uppercase tracking-widest text-muted-foreground">Files</h2>
+              <h2 className="text-sm font-black uppercase tracking-widest text-muted-foreground">Documents</h2>
               
               <div className="flex items-center gap-1 bg-muted/30 p-1 rounded-xl">
                 {[
-                  { id: "all", label: "All Files" },
+                  { id: "all", label: "All Docs" },
                   { id: "tracked", label: "Tracked" },
-                  { id: "commentaries", label: "Commentaries" },
-                  { id: "images", label: "Images" }
+                  { id: "commentaries", label: "My Drafts" },
                 ].map(tab => (
                   <button 
                     key={tab.id}
@@ -175,8 +171,8 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                   <thead className="bg-muted/30 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
                     <tr>
                       <th className="px-6 py-4">Name</th>
-                      <th className="px-6 py-4">Owner</th>
-                      <th className="px-6 py-4">Modified</th>
+                      <th className="px-6 py-4">Author</th>
+                      <th className="px-6 py-4">Published</th>
                       <th className="px-6 py-4">Size</th>
                       <th className="px-6 py-4 text-center">Actions</th>
                     </tr>
@@ -210,7 +206,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                       <tr>
                         <td colSpan={5} className="px-6 py-12 text-center text-muted-foreground">
                           <FileText className="size-8 mx-auto mb-2 opacity-20" />
-                          <p className="text-sm font-semibold">No files found in this category.</p>
+                          <p className="text-sm font-semibold">No documents found in this category.</p>
                         </td>
                       </tr>
                     )}
@@ -222,29 +218,28 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
 
         </div>
 
-        {/* Right Sidebar (Storage & Stats) */}
+        {/* Right Sidebar (Repository Stats) */}
         <aside className="w-80 bg-white dark:bg-card border-l border-border p-6 overflow-y-auto hidden xl:block space-y-8 shrink-0">
           
-          {/* Storage Alert */}
+          {/* Status Alert */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-rose-500">
-              <Cloud className="size-5" />
-              <span className="text-sm font-bold">Storage</span>
+            <div className="flex items-center gap-2 text-emerald-500">
+              <Database className="size-5" />
+              <span className="text-sm font-bold">System Status</span>
             </div>
-            <button className="text-[10px] uppercase tracking-widest font-bold text-primary bg-primary/10 px-2 py-1 rounded-md">
-              Upgrade
-            </button>
+            <div className="flex items-center gap-1 text-[10px] uppercase tracking-widest font-bold text-emerald-600 bg-emerald-500/10 px-2 py-1 rounded-md">
+              <CheckCircle2 className="size-3" />
+              Online
+            </div>
           </div>
-          <p className="text-[10px] text-muted-foreground font-semibold -mt-6">Your storage is almost full</p>
           
-          {/* Storage Chart */}
-          <div className="flex items-center gap-6 justify-center">
-            {/* Simple CSS Doughnut Chart representation */}
+          {/* Repository Chart */}
+          <div className="flex items-center gap-6 justify-center mt-2">
             <div className="relative size-24 shrink-0 rounded-full bg-muted flex items-center justify-center">
                <div className="absolute inset-0 rounded-full bg-[conic-gradient(var(--tw-gradient-stops))] from-primary via-emerald-400 to-amber-400 p-2" style={{ clipPath: 'circle(50%)' }}>
                  <div className="w-full h-full bg-white dark:bg-card rounded-full flex flex-col items-center justify-center">
-                    <span className="text-lg font-black leading-none">234 GB</span>
-                    <span className="text-[8px] text-muted-foreground uppercase font-bold tracking-widest">of 500 GB</span>
+                    <span className="text-xl font-black leading-none">3.2k</span>
+                    <span className="text-[8px] text-muted-foreground uppercase font-bold tracking-widest">Docs Indexed</span>
                  </div>
                </div>
             </div>
@@ -252,55 +247,52 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
             <div className="space-y-3 text-xs font-semibold">
               <div className="flex items-center gap-2">
                 <div className="size-2.5 rounded-full bg-primary" />
-                <span>Documents</span>
+                <span>Counties</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="size-2.5 rounded-full bg-emerald-400" />
-                <span>Images</span>
+                <span>National</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="size-2.5 rounded-full bg-amber-400" />
-                <span>Videos</span>
+                <span>Audits</span>
               </div>
             </div>
           </div>
 
-          {/* Quick Stats */}
+          {/* Repository Stats */}
           <div className="space-y-4 pt-4 border-t border-border/50">
-            <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground">Quick Stats</h3>
+            <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground">Repository Stats</h3>
             
             <div className="space-y-3">
               <div>
                 <div className="flex justify-between text-xs font-bold mb-1">
-                  <span>Total Files</span>
-                  <span className="text-muted-foreground">342 files</span>
+                  <span>County Budgets</span>
+                  <span className="text-muted-foreground">1,240 docs</span>
                 </div>
                 <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
                    <div className="h-full bg-primary w-[70%]" />
                 </div>
-                <p className="text-[9px] text-muted-foreground mt-1 font-semibold">24 GB of 500 GB used</p>
               </div>
 
               <div>
                 <div className="flex justify-between text-xs font-bold mb-1">
-                  <span>Folders</span>
-                  <span className="text-muted-foreground">12 files</span>
+                  <span>National Reports</span>
+                  <span className="text-muted-foreground">850 docs</span>
                 </div>
                 <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
-                   <div className="h-full bg-emerald-400 w-[30%]" />
+                   <div className="h-full bg-emerald-400 w-[50%]" />
                 </div>
-                <p className="text-[9px] text-muted-foreground mt-1 font-semibold">16 GB of 500 GB used</p>
               </div>
 
               <div>
                 <div className="flex justify-between text-xs font-bold mb-1">
-                  <span>Shared</span>
-                  <span className="text-muted-foreground">18 files</span>
+                  <span>Audit Findings</span>
+                  <span className="text-muted-foreground">420 docs</span>
                 </div>
                 <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
-                   <div className="h-full bg-amber-400 w-[45%]" />
+                   <div className="h-full bg-amber-400 w-[30%]" />
                 </div>
-                <p className="text-[9px] text-muted-foreground mt-1 font-semibold">12 GB of 500 GB used</p>
               </div>
             </div>
           </div>
@@ -308,19 +300,19 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
           {/* Recent Activity */}
           <div className="space-y-4 pt-4 border-t border-border/50">
             <div className="flex justify-between items-center">
-               <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground">Recent Activity</h3>
+               <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground">Recent Publications</h3>
                <button className="text-[10px] font-bold text-primary hover:underline uppercase">View All</button>
             </div>
             
             <div className="space-y-4">
                {[
-                 { name: "Sarah Johnson", time: "2 hours ago", action: "Created Marketing Strategy Document", avatar: profile?.avatar_url },
-                 { name: "David Smith", time: "3 hours ago", action: "Reviewed Financial Report Q3", avatar: null },
-                 { name: "Emily Davis", time: "4 hours ago", action: "Completed User Research Analysis", avatar: null }
+                 { name: team[2].name, time: "2 hours ago", action: "Published Nairobi FY 25/26 Draft", avatar: team[2].image },
+                 { name: team[1].name, time: "4 hours ago", action: "Uploaded OAG Report summary", avatar: team[1].image },
+                 { name: team[4].name, time: "5 hours ago", action: "Indexed Kisumu Public Participation Forums", avatar: team[4].image }
                ].map((act, i) => (
                  <div key={i} className="flex gap-3">
                     {act.avatar ? (
-                       <img src={act.avatar} alt="" className="size-7 rounded-full object-cover shrink-0" />
+                       <img src={act.avatar} alt="" className="size-7 rounded-full object-cover shrink-0 border border-border shadow-xs" />
                     ) : (
                        <div className="size-7 rounded-full bg-muted flex items-center justify-center text-[10px] font-bold shrink-0">
                          {act.name.charAt(0)}
