@@ -66,7 +66,7 @@ function LearnSidebar() {
   ];
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" className="hidden md:flex">
         <>
           <SidebarHeader>
             <div className="flex items-center justify-between p-2">
