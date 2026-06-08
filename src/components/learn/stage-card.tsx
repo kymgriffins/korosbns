@@ -11,12 +11,7 @@ export type StageCardData = {
   status: string;
 };
 
-export function StageCard({
-  stage,
-  isCompleted,
-  isActive,
-  onSelect,
-}: {
+export function StageCard({ stage, isCompleted, isActive, onSelect }: {
   stage: StageCardData;
   isCompleted: boolean;
   isActive: boolean;
@@ -25,41 +20,30 @@ export function StageCard({
   return (
     <div
       onClick={onSelect}
-      className={`relative flex items-center justify-between p-4 rounded-xl border transition-all cursor-pointer ${
-        isCompleted
-          ? "bg-primary/5 border-primary/20 hover:bg-primary/10"
-          : isActive
-          ? "bg-card border-foreground/35 hover:border-foreground shadow-xs"
-          : "bg-muted/15 border-border hover:bg-muted/30"
-      }`}
+      className={cn(
+        "relative flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all",
+        isCompleted ? "bg-primary/5 shadow-xs hover:bg-primary/8" :
+        isActive ? "bg-card shadow-xs hover:bg-accent/30" :
+        "bg-muted/15 hover:bg-muted/30"
+      )}
     >
-      <div className="flex items-center gap-4">
-        <div className={cn(
-          "size-10 rounded-full flex items-center justify-center font-bold text-xs shrink-0 border z-10",
-          isCompleted
-            ? "bg-primary border-primary text-primary-foreground"
-            : isActive
-            ? "bg-card border-foreground text-foreground"
-            : "bg-muted border-border text-muted-foreground",
+      <div className={cn(
+        "size-9 rounded-full flex items-center justify-center font-bold text-xs shrink-0",
+        isCompleted ? "bg-primary text-primary-foreground" :
+        isActive ? "bg-muted/50 text-foreground" :
+        "bg-muted/30 text-muted-foreground"
+      )}>
+        {isCompleted ? stage.badge : stage.id}
+      </div>
+      <div className="min-w-0 flex-1">
+        <h3 className="text-xs font-bold truncate">{stage.title}</h3>
+        <p className="text-[9px] text-muted-foreground truncate">{stage.documentName}</p>
+        <span className={cn(
+          "text-[8px] font-semibold px-1 py-0.5 rounded inline-block mt-0.5",
+          stage.status === "Comment Open" ? "bg-emerald-500/10 text-emerald-600" : "bg-muted/30 text-muted-foreground"
         )}>
-          {isCompleted ? stage.badge : stage.id}
-        </div>
-        <div>
-          <div className="flex items-center gap-1">
-            <h3 className="text-xs font-black uppercase tracking-tight">{stage.title}</h3>
-          </div>
-          <p className="text-[10px] text-muted-foreground truncate max-w-[150px] sm:max-w-xs">{stage.documentName}</p>
-          <div className="flex items-center gap-1.5 mt-1">
-            <span className={cn(
-              "text-[9px] font-bold px-1.5 py-0.5 rounded-full border",
-              stage.status === "Comment Open"
-                ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-600"
-                : "bg-muted border-border text-muted-foreground",
-            )}>
-              {stage.status}
-            </span>
-          </div>
-        </div>
+          {stage.status}
+        </span>
       </div>
     </div>
   );
