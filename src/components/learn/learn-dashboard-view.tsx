@@ -89,17 +89,17 @@ export function LearnDashboardView({
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-3 bg-black/20 backdrop-blur rounded-xl px-3 py-2 border border-white/10">
-            <div className="text-right">
-              <p className="text-[9px] text-white/60 font-bold uppercase tracking-wider">SVG</p>
-              <p className="text-lg font-black tabular-nums text-amber-300">{profile.sovereigns || 0}</p>
+          <div className="flex items-stretch gap-2 md:gap-3 bg-black/20 backdrop-blur rounded-xl px-2 md:px-3 py-1.5 md:py-2 border border-white/10">
+            <div className="text-center min-w-0">
+              <p className="text-[8px] md:text-[9px] text-white/60 font-bold uppercase tracking-wider">SVG</p>
+              <p className="text-sm md:text-lg font-black tabular-nums text-amber-300 leading-tight">{profile.sovereigns || 0}</p>
             </div>
-            <div className="h-6 w-px bg-white/15" />
-            <div>
-              <p className="text-[9px] text-white/60 font-bold uppercase tracking-wider">Streak</p>
-              <div className="flex items-center gap-1">
-                <Flame className="size-4 text-orange-400" fill="currentColor" />
-                <span className="text-lg font-black tabular-nums">{profile.streakDays || 0}</span>
+            <div className="w-px bg-white/15 self-stretch" />
+            <div className="text-center min-w-0">
+              <p className="text-[8px] md:text-[9px] text-white/60 font-bold uppercase tracking-wider">Streak</p>
+              <div className="flex items-center justify-center gap-0.5">
+                <Flame className="size-3 md:size-4 text-orange-400 shrink-0" fill="currentColor" />
+                <span className="text-sm md:text-lg font-black tabular-nums leading-tight">{profile.streakDays || 0}</span>
               </div>
             </div>
           </div>
