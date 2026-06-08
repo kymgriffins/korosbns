@@ -16,83 +16,38 @@ interface DrawerHeaderProps {
   author?: CivicModuleAuthor;
 }
 
-export function DrawerHeader({
-  title,
-  badge,
-  currentStep,
-  activeSubTab,
-  onSubTabChange,
-  isCached,
-  onClose,
-  author,
-}: DrawerHeaderProps) {
+export function DrawerHeader({ title, badge, currentStep, activeSubTab, onSubTabChange, isCached, onClose, author }: DrawerHeaderProps) {
   return (
-    <div className="flex items-center justify-between px-4 md:px-6 h-12 border-b border-border shrink-0 bg-background/80 backdrop-blur-xs z-20">
+    <div className="flex items-center justify-between px-4 md:px-5 h-11 border-b border-border/30 shrink-0 bg-background/60 backdrop-blur z-20">
       <div className="flex items-center gap-2 min-w-0">
-        <span className="hidden md:inline text-[10px] font-bold text-muted-foreground uppercase tracking-wider truncate">
-          {title}
-        </span>
-        <span className="md:hidden text-xs font-black truncate flex items-center gap-1.5">
-          <span className="text-base">{badge}</span>
+        <span className="hidden md:inline text-[9px] font-semibold text-muted-foreground uppercase tracking-wider truncate">{title}</span>
+        <span className="md:hidden text-xs font-bold truncate flex items-center gap-1.5">
+          <span className="text-sm">{badge}</span>
           <span className="truncate">{title}</span>
         </span>
       </div>
 
       <div className="flex items-center gap-2 shrink-0">
         {author && (
-          <div className="hidden md:flex items-center gap-1.5 px-2 py-1 rounded-lg bg-muted/40 border border-border/50">
-            <Image
-              src={author.image}
-              alt={author.name}
-              width={16}
-              height={16}
-              className="size-4 rounded-full object-cover"
-            />
-            <span className="text-[8px] font-bold text-muted-foreground truncate max-w-[90px]">
-              {author.name}
-            </span>
+          <div className="hidden md:flex items-center gap-1.5 px-2 py-1 rounded-lg bg-muted/30">
+            <Image src={author.image} alt={author.name} width={14} height={14} className="size-3.5 rounded-full object-cover" />
+            <span className="text-[8px] font-semibold text-muted-foreground truncate max-w-[80px]">{author.name}</span>
           </div>
         )}
 
-        <div className="flex rounded-lg border border-border bg-card p-0.5">
-          <button
-            onClick={() => onSubTabChange("learn")}
-            className={`px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all ${
-              activeSubTab === "learn"
-                ? "bg-primary text-primary-foreground shadow-xs"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            Guided Journey
-          </button>
-          <button
-            onClick={() => onSubTabChange("documents")}
-            className={`px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all ${
-              activeSubTab === "documents"
-                ? "bg-primary text-primary-foreground shadow-xs"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            Documents
-          </button>
-          <button
-            onClick={() => onSubTabChange("forum")}
-            className={`px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all ${
-              activeSubTab === "forum"
-                ? "bg-primary text-primary-foreground shadow-xs"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            Forum
-          </button>
+        <div className="flex rounded-lg bg-muted/30 p-0.5">
+          {(["learn", "documents", "forum"] as const).map((tab) => (
+            <button key={tab} onClick={() => onSubTabChange(tab)}
+              className={`px-2.5 py-1 rounded-md text-[9px] font-bold uppercase tracking-wider transition-all ${
+                activeSubTab === tab ? "bg-card text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
+              }`}>
+              {tab === "learn" ? "Journey" : tab === "documents" ? "Docs" : "Forum"}
+            </button>
+          ))}
         </div>
 
-        <button
-          onClick={onClose}
-          className="size-7 flex items-center justify-center rounded-lg border border-border hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
-          aria-label="Close"
-        >
-          ✕
+        <button onClick={onClose} className="size-6 flex items-center justify-center rounded-lg hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-colors" aria-label="Close">
+          <span className="text-xs">\u2715</span>
         </button>
       </div>
     </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, Trophy } from "lucide-react";
+import { BookOpen, Trophy, Zap, Flame } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getAccessToken } from "@/lib/api-client";
 import { fetchGamificationMe, type GamificationState } from "@/lib/gamification";
@@ -15,34 +15,29 @@ export function LearnStatsHeader({ tagline }: { tagline?: string | null }) {
   }, []);
 
   return (
-    <div className="relative overflow-hidden rounded-3xl border border-border bg-card p-5 sm:p-6">
+    <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary/5 via-primary/3 to-transparent p-4 md:p-5 shadow-xs">
       <div className="relative z-10">
-        <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-foreground/80">
-          <BookOpen className="size-3.5" />
-          Learn Hub
+        <div className="inline-flex items-center gap-1.5 rounded-full bg-muted/40 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">
+          <BookOpen className="size-3" /> Learn Hub
         </div>
 
-        {authenticated ? (
-          <div className="mt-2 flex flex-wrap gap-2">
-            <span className="inline-flex items-center gap-1 rounded-full border border-border bg-muted/30 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground/80">
-              <Trophy className="size-3.5" />
-              {gamification?.points ?? 0} points
+        {authenticated && (
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            <span className="inline-flex items-center gap-1 rounded-full bg-muted/30 px-2 py-0.5 text-[9px] font-semibold text-muted-foreground">
+              <Trophy className="size-3" /> {gamification?.points ?? 0} pts
             </span>
-            <span className="inline-flex items-center gap-1 rounded-full border border-border bg-muted/30 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground/80">
-              Lv {gamification?.level ?? 1}
+            <span className="inline-flex items-center gap-1 rounded-full bg-muted/30 px-2 py-0.5 text-[9px] font-semibold text-muted-foreground">
+              <Zap className="size-3" /> Lv {gamification?.level ?? 1}
             </span>
-            <span className="inline-flex items-center gap-1 rounded-full border border-border bg-muted/30 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground/80">
-              {gamification?.streak_days ?? 0} day streak
+            <span className="inline-flex items-center gap-1 rounded-full bg-muted/30 px-2 py-0.5 text-[9px] font-semibold text-muted-foreground">
+              <Flame className="size-3" /> {gamification?.streak_days ?? 0}d streak
             </span>
           </div>
-        ) : null}
+        )}
 
-        <h1 className="mt-3 text-2xl font-bold tracking-tight sm:text-3xl">
-          Learn Kenya&apos;s budget by document
-        </h1>
-        <p className="mt-2 max-w-2xl text-sm text-foreground/75 sm:text-base">
-          {tagline ??
-            "Open a learning unit (BPS, BROP, CFSP, and more). Each folder holds fiscal-year editions with chapters, videos, official documents, and quizzes — not a flat list of random articles."}
+        <h1 className="mt-2.5 text-xl font-bold tracking-tight md:text-2xl">Learn Kenya&apos;s budget by document</h1>
+        <p className="mt-1.5 max-w-2xl text-xs text-muted-foreground/80 md:text-sm">
+          {tagline ?? "Open a learning unit (BPS, BROP, CFSP, and more). Each folder holds fiscal-year editions with chapters, videos, official documents, and quizzes."}
         </p>
       </div>
     </div>

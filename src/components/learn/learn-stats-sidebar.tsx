@@ -4,84 +4,61 @@ import { BitmojiAvatar } from "./bitmoji-avatar";
 import { Sparkles, Flame } from "lucide-react";
 import { useLearn } from "@/contexts/learn-context";
 
-export function LearnStatsSidebar({
-  profile,
-}: {
-  profile: {
-    breakName: string;
-    gender: string;
-    sovereigns: number;
-    streakDays: number;
-    badges?: string[];
-  };
+export function LearnStatsSidebar({ profile }: {
+  profile: { breakName: string; gender: string; sovereigns: number; streakDays: number; badges?: string[]; };
 }) {
   const { totalStages } = useLearn();
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good Morning" : hour < 17 ? "Good Afternoon" : "Good Evening";
+
   return (
-    <aside className="w-80 border-l border-border bg-card/25 p-6 flex flex-col gap-6 overflow-y-auto select-none">
+    <aside className="w-72 border-l border-border/30 bg-card/10 p-4 flex flex-col gap-4 overflow-y-auto">
       <div>
-        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{greeting}</p>
-        <h3 className="text-base font-black text-foreground flex items-center gap-2 mt-0.5">
+        <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">{greeting}</p>
+        <h3 className="text-sm font-black flex items-center gap-2 mt-0.5">
           <BitmojiAvatar gender={profile.gender as "male" | "female"} size="sm" />
-          {profile.breakName} 🔥
+          {profile.breakName}
         </h3>
       </div>
 
-      <div className="flex flex-col items-center justify-center p-4 border border-border bg-card/40 rounded-2xl gap-3">
-        <div className="relative size-28 flex items-center justify-center">
+      <div className="flex flex-col items-center p-3 bg-card/30 rounded-xl gap-2 shadow-xs">
+        <div className="relative size-24 flex items-center justify-center">
           <svg className="size-full -rotate-90">
-            <circle cx="56" cy="56" r="46" className="stroke-muted fill-none" strokeWidth="6" />
-            <circle
-              cx="56" cy="56" r="46"
-              className="stroke-primary fill-none transition-all duration-500"
-              strokeWidth="6"
-              strokeDasharray="289"
-              strokeDashoffset={totalStages ? 289 - (289 * (profile.badges?.length || 0)) / totalStages : 289}
-              strokeLinecap="round"
-            />
+            <circle cx="48" cy="48" r="38" className="stroke-muted/30 fill-none" strokeWidth="5" />
+            <circle cx="48" cy="48" r="38" className="stroke-primary fill-none transition-all duration-500" strokeWidth="5"
+              strokeDasharray="239" strokeDashoffset={totalStages ? 239 - (239 * (profile.badges?.length || 0)) / totalStages : 239} strokeLinecap="round" />
           </svg>
-          <div className="absolute flex flex-col items-center justify-center text-center">
-            <span className="text-xl font-black leading-none">
-              {totalStages ? Math.round(((profile.badges?.length || 0) / totalStages) * 100) : 0}%
-            </span>
-            <span className="text-[8px] font-bold text-muted-foreground uppercase mt-0.5 tracking-wider">Progress</span>
+          <div className="absolute flex flex-col items-center justify-center">
+            <span className="text-lg font-black">{totalStages ? Math.round(((profile.badges?.length || 0) / totalStages) * 100) : 0}%</span>
+            <span className="text-[7px] font-bold text-muted-foreground uppercase tracking-wider">Progress</span>
           </div>
         </div>
-        <p className="text-[10px] text-muted-foreground font-medium text-center">
-          Master all {totalStages} stages to unlock your Citizen Certificate.
-        </p>
+        <p className="text-[9px] text-muted-foreground text-center">Master all {totalStages} stages for your Citizen Certificate.</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        <div className="p-3 bg-orange-500/8 border border-orange-500/15 rounded-xl text-center">
-          <Flame className="size-5 fill-orange-500 text-orange-500 mx-auto" />
-          <span className="block text-sm font-black text-orange-600 mt-1">{profile.streakDays} Days</span>
-          <span className="text-[8px] font-black text-orange-500/80 uppercase tracking-wider mt-0.5">Streak</span>
+      <div className="grid grid-cols-2 gap-2">
+        <div className="p-2.5 bg-orange-500/5 rounded-xl text-center shadow-xs">
+          <Flame className="size-4 fill-orange-500 text-orange-500 mx-auto" />
+          <span className="block text-sm font-black text-orange-600 mt-0.5">{profile.streakDays}d</span>
+          <span className="text-[7px] font-bold text-orange-500/70 uppercase tracking-wider">Streak</span>
         </div>
-        <div className="p-3 bg-primary/8 border border-primary/15 rounded-xl text-center">
-          <Sparkles className="size-5 fill-primary text-primary mx-auto" />
-          <span className="block text-sm font-black text-primary mt-1">{profile.sovereigns} SVG</span>
-          <span className="text-[8px] font-black text-primary/80 uppercase tracking-wider mt-0.5">Sovereigns</span>
+        <div className="p-2.5 bg-primary/5 rounded-xl text-center shadow-xs">
+          <Sparkles className="size-4 fill-primary text-primary mx-auto" />
+          <span className="block text-sm font-black text-primary mt-0.5">{profile.sovereigns}</span>
+          <span className="text-[7px] font-bold text-primary/70 uppercase tracking-wider">SVG</span>
         </div>
       </div>
 
-      <div className="space-y-2.5">
-        <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-          Unlocked Badges ({profile.badges?.length || 0})
-        </h4>
+      <div className="space-y-2">
+        <h4 className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Badges ({profile.badges?.length || 0})</h4>
         {profile.badges?.length ? (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5">
             {profile.badges.map((b, i) => (
-              <span key={i} className="text-xl p-2 rounded-xl bg-card border border-border shadow-2xs" title={b}>
-                {b}
-              </span>
+              <span key={i} className="text-base p-1.5 rounded-lg bg-card shadow-xs border-0">{b}</span>
             ))}
           </div>
         ) : (
-          <p className="text-[10px] text-muted-foreground italic bg-muted/20 p-3 rounded-lg text-center border border-border/50">
-            No badges unlocked yet. Start learning to earn badges!
-          </p>
+          <p className="text-[9px] text-muted-foreground italic bg-muted/10 p-2 rounded-lg text-center">No badges yet. Start learning!</p>
         )}
       </div>
     </aside>

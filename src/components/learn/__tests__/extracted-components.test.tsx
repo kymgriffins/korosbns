@@ -71,8 +71,8 @@ describe("DrawerHeader", () => {
         isCached={false} onClose={vi.fn()}
       />
     );
-    expect(screen.getByText("Guided Journey")).toBeInTheDocument();
-    expect(screen.getByText("Documents")).toBeInTheDocument();
+    expect(screen.getByText("Journey")).toBeInTheDocument();
+    expect(screen.getByText("Docs")).toBeInTheDocument();
   });
 
   it("calls onSubTabChange when Documents is clicked", () => {
@@ -84,7 +84,7 @@ describe("DrawerHeader", () => {
         isCached={false} onClose={vi.fn()}
       />
     );
-    fireEvent.click(screen.getByText("Documents"));
+    fireEvent.click(screen.getByText("Docs"));
     expect(onSubTabChange).toHaveBeenCalledWith("documents");
   });
 
@@ -142,7 +142,7 @@ describe("CourseOverview", () => {
   it("calls onStartLearning when button clicked", () => {
     const onStartLearning = vi.fn();
     render(<CourseOverview {...defaultProps} onStartLearning={onStartLearning} />);
-    fireEvent.click(screen.getByText("Start Learning Course"));
+    fireEvent.click(screen.getByText("Start Course"));
     expect(onStartLearning).toHaveBeenCalled();
   });
 });
@@ -150,8 +150,8 @@ describe("CourseOverview", () => {
 describe("ProgressDots", () => {
   it("renders correct number of dot elements", () => {
     const { container } = render(<ProgressDots currentStep={2} totalSteps={5} />);
-    const dots = container.querySelectorAll(".size-2");
-    expect(dots.length).toBe(5);
+    const dots = container.querySelector(".flex")?.children;
+    expect(dots?.length).toBe(5);
   });
 });
 
@@ -166,19 +166,19 @@ describe("NavigationFooter", () => {
   it("renders Back and Start Course on step 0", () => {
     render(<NavigationFooter {...baseProps} />);
     expect(screen.getByText("Overview")).toBeInTheDocument();
-    expect(screen.getByText("Start Course")).toBeInTheDocument();
+    expect(screen.getByText("Start")).toBeInTheDocument();
   });
 
-  it("calls onStartLearning when Start Course clicked", () => {
+  it("calls onStartLearning when Start clicked", () => {
     const onStartLearning = vi.fn();
     render(<NavigationFooter {...baseProps} onStartLearning={onStartLearning} />);
-    fireEvent.click(screen.getByText("Start Course"));
+    fireEvent.click(screen.getByText("Start"));
     expect(onStartLearning).toHaveBeenCalled();
   });
 
   it("renders Previous and Continue on mid steps", () => {
     render(<NavigationFooter {...baseProps} currentStep={3} hasPrev={true} />);
-    expect(screen.getByText((c) => c.includes("Previous"))).toBeInTheDocument();
+    expect(screen.getByText((c) => c.includes("Prev"))).toBeInTheDocument();
     expect(screen.getByText((c) => c.includes("Continue"))).toBeInTheDocument();
   });
 
@@ -213,15 +213,15 @@ describe("MasteryPage", () => {
     render(
       <MasteryPage badge="🛡️" badgeName="DocNative" title="Mastered" hasNext={true} onClose={vi.fn()} onNextStage={vi.fn()} />
     );
-    expect(screen.getByText("Continue to Next Stage")).toBeInTheDocument();
+    expect(screen.getByText("Next Stage")).toBeInTheDocument();
   });
 
-  it("calls onNextStage when Continue clicked", () => {
+  it("calls onNextStage when Next Stage clicked", () => {
     const onNextStage = vi.fn();
     render(
       <MasteryPage badge="🛡️" badgeName="DocNative" title="Mastered" hasNext={true} onClose={vi.fn()} onNextStage={onNextStage} />
     );
-    fireEvent.click(screen.getByText("Continue to Next Stage"));
+    fireEvent.click(screen.getByText("Next Stage"));
     expect(onNextStage).toHaveBeenCalled();
   });
 
@@ -262,7 +262,7 @@ describe("StepContent", () => {
       />
     );
     expect(screen.getByText("1. Public Finance Principles")).toBeInTheDocument();
-    expect(screen.getByText("Step 1 of 5 · ~3 min remaining")).toBeInTheDocument();
+    expect(screen.getByText("Step 1 of 5 · ~3 min")).toBeInTheDocument();
     expect(screen.getByTestId("progress")).toBeInTheDocument();
   });
 
@@ -275,8 +275,8 @@ describe("StepContent", () => {
         onStartTrivia={vi.fn()}
       />
     );
-    expect(screen.getByText("🎥 Watch")).toBeInTheDocument();
-    expect(screen.getByText("📖 Read")).toBeInTheDocument();
+    expect(screen.getByText("Watch")).toBeInTheDocument();
+    expect(screen.getByText("Read")).toBeInTheDocument();
   });
 
   it("renders video when activeFormat is video and origin is set", () => {
@@ -314,7 +314,7 @@ describe("StepContent", () => {
         onStartTrivia={vi.fn()}
       />
     );
-    expect(screen.queryByText("🎥 Watch")).not.toBeInTheDocument();
+    expect(screen.queryByText("Watch")).not.toBeInTheDocument();
     expect(screen.queryByText("Content text")).not.toBeInTheDocument();
   });
 
@@ -337,7 +337,7 @@ describe("StepContent", () => {
         onStartTrivia={vi.fn()}
       />
     );
-    expect(screen.getByText("Start Knowledge Check")).toBeInTheDocument();
+    expect(screen.getByText("Knowledge Check")).toBeInTheDocument();
   });
 });
 
@@ -409,7 +409,7 @@ describe("DocumentsTab", () => {
 
   it("shows loading spinner when apiLoading", () => {
     render(<DocumentsTab {...defaultProps} apiLoading={true} />);
-    expect(screen.getByText("Loading live API files...")).toBeInTheDocument();
+    expect(screen.getByText("Loading...")).toBeInTheDocument();
   });
 
   it("shows year selector buttons", () => {
@@ -420,6 +420,6 @@ describe("DocumentsTab", () => {
 
   it("shows no documents state", () => {
     render(<DocumentsTab {...defaultProps} />);
-    expect(screen.getByText(/No stage documents found for year/)).toBeInTheDocument();
+    expect(screen.getByText(/No documents for/)).toBeInTheDocument();
   });
 });

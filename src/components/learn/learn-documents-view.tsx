@@ -1,17 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { 
-  Search, Folder, FileText, FileImage, 
-  MoreHorizontal, ChevronRight, PieChart,
-  Bell, FileCheck, Users, ShieldAlert, Award, Database, CheckCircle2
-} from "lucide-react";
+import { Search, Folder, FileText, MoreHorizontal, ChevronRight, Database, CheckCircle2, Bell } from "lucide-react";
 import { cn } from "@/utils";
 import { BitmojiAvatar } from "./bitmoji-avatar";
 import { team } from "@/constants/team";
 
 export function LearnDocumentsView({ profile }: { profile: any }) {
-  const [activeFileTab, setActiveFileTab] = useState<"all" | "tracked" | "commentaries" | "images">("all");
+  const [activeFileTab, setActiveFileTab] = useState<"all" | "tracked" | "commentaries">("all");
 
   const folders = [
     { name: "Tracked Budgets", count: 24 },
@@ -22,191 +18,135 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
     { name: "Policy Guidelines", count: 45 },
   ];
 
-  // Map the user's data to the files list
   const allFiles = [
     ...(profile?.trackedDocs || []).map((doc: any, i: number) => ({
-      id: `tracked-${i}`,
-      name: typeof doc === "string" ? doc : doc.name,
-      type: "Tracked Doc",
-      owner: "System",
-      modified: new Date().toLocaleDateString(),
-      size: "1.2 MB",
-      icon: <FileCheck className="size-4 text-emerald-500" />,
-      category: "tracked"
+      id: `tracked-${i}`, name: typeof doc === "string" ? doc : doc.name,
+      type: "Tracked Doc", owner: "System", modified: new Date().toLocaleDateString(),
+      size: "1.2 MB", icon: <CheckCircle2 className="size-3.5 text-emerald-500" />, category: "tracked"
     })),
     ...(profile?.participationLogs || []).map((log: any, i: number) => ({
-      id: `log-${i}`,
-      name: log.documentName || "Draft Memorandum",
-      type: "Commentary",
-      owner: profile?.breakName || "Citizen",
+      id: `log-${i}`, name: log.documentName || "Draft Memorandum",
+      type: "Commentary", owner: profile?.breakName || "Citizen",
       modified: new Date(log.dateSubmitted).toLocaleDateString(),
-      size: "245 KB",
-      icon: <FileText className="size-4 text-primary" />,
-      category: "commentaries"
+      size: "245 KB", icon: <FileText className="size-3.5 text-primary" />, category: "commentaries"
     })),
-    // Authentic Kenyan budget dummy data
-    {
-      id: "dummy-1",
-      name: "Nairobi County FY 25/26 Draft Budget",
-      type: "County Reports",
-      owner: team[2].name,
-      modified: "2026-01-15",
-      size: "2.4 MB",
-      icon: <Folder className="size-4 text-amber-500" />,
-      category: "all"
-    },
-    {
-      id: "dummy-2",
-      name: "Auditor General Report 2024",
-      type: "Audit Reports",
-      owner: team[1].name,
-      modified: "2026-01-14",
-      size: "15.2 MB",
-      icon: <FileText className="size-4 text-indigo-500" />,
-      category: "all"
-    }
+    { id: "dummy-1", name: "Nairobi County FY 25/26 Draft Budget", type: "County Reports", owner: team[2]?.name || "Admin", modified: "2026-01-15", size: "2.4 MB", icon: <Folder className="size-3.5 text-amber-500" />, category: "all" },
+    { id: "dummy-2", name: "Auditor General Report 2024", type: "Audit Reports", owner: team[1]?.name || "Admin", modified: "2026-01-14", size: "15.2 MB", icon: <FileText className="size-3.5 text-indigo-500" />, category: "all" },
   ];
 
-  const filteredFiles = activeFileTab === "all" 
-    ? allFiles 
-    : allFiles.filter(f => f.category === activeFileTab);
+  const filteredFiles = activeFileTab === "all" ? allFiles : allFiles.filter(f => f.category === activeFileTab);
 
   return (
-    <div className="flex flex-col h-full bg-[#f8fafc] dark:bg-background overflow-hidden text-foreground">
-      {/* Top Header */}
-      <header className="flex items-center justify-between px-6 py-4 bg-white dark:bg-card border-b border-border shadow-sm shrink-0 z-10">
-        <div className="flex items-center gap-3">
-          <div className="bg-primary/10 p-2 rounded-xl">
-            <Database className="size-5 text-primary" />
+    <div className="flex flex-col h-full bg-background overflow-hidden">
+      <header className="flex items-center justify-between px-4 md:px-5 py-3 border-b border-border/50 shrink-0 gap-3">
+        <div className="flex items-center gap-2.5">
+          <div className="bg-primary/8 p-1.5 rounded-lg">
+            <Database className="size-4 text-primary" />
           </div>
           <div>
-            <h1 className="font-bold text-lg leading-tight">Budget Data Repository</h1>
-            <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-semibold">Access public civic data and reports</p>
+            <h1 className="font-bold text-sm leading-tight">Data Repository</h1>
+            <p className="text-[9px] text-muted-foreground font-semibold">Access public civic data</p>
           </div>
         </div>
-
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <div className="relative hidden md:block">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-            <input 
-              type="text" 
-              placeholder="Search Repository..." 
-              className="pl-9 pr-4 py-2 bg-muted/50 border border-border rounded-xl text-sm w-64 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
-            />
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
+            <input type="text" placeholder="Search..." className="pl-8 pr-3 py-1.5 bg-muted/40 border-0 rounded-lg text-xs w-44 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all" />
           </div>
-          
-          {/* User Profile snippet from design */}
-          <div className="flex items-center gap-3 ml-2 md:ml-4 md:pl-4 md:border-l border-border">
+          <div className="flex items-center gap-2 ml-2 md:ml-3 md:pl-3 md:border-l border-border/50">
             {profile?.avatar_url ? (
-               <img src={profile.avatar_url} alt="" className="size-9 rounded-full border border-border object-cover" />
+              <img src={profile.avatar_url} alt="" className="size-7 rounded-full object-cover" />
             ) : (
-               <BitmojiAvatar gender={profile?.gender as any} size="sm" className="rounded-full border border-border" />
+              <BitmojiAvatar gender={profile?.gender} size="sm" className="shrink-0" />
             )}
-            <div className="hidden lg:block text-sm">
+            <div className="hidden lg:block text-xs">
               <p className="font-bold leading-none">{profile?.breakName || "Citizen"}</p>
-              <p className="text-[10px] text-muted-foreground">{profile?.county || "Kenya"}</p>
+              <p className="text-[9px] text-muted-foreground">{profile?.county || "Kenya"}</p>
             </div>
-            <ChevronRight className="size-4 text-muted-foreground hidden lg:block ml-2" />
           </div>
         </div>
       </header>
 
-      {/* Main Grid Layout */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Left/Center Content */}
-        <div className="flex-1 flex flex-col min-w-0 overflow-y-auto p-6 space-y-8">
-          
-          {/* Folders Section */}
-          <section className="space-y-4">
+        <div className="flex-1 flex flex-col min-w-0 overflow-y-auto p-3 md:p-4 space-y-5">
+          <section className="space-y-3">
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-black uppercase tracking-widest text-muted-foreground">Collections</h2>
-              <button className="text-xs font-bold text-primary hover:underline">View All</button>
+              <h2 className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Collections</h2>
+              <button className="text-[10px] font-semibold text-primary/70 hover:text-primary">View All</button>
             </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
               {folders.map((folder, idx) => (
-                <div key={idx} className="bg-white dark:bg-card border border-border p-4 rounded-2xl flex items-center gap-4 hover:shadow-md transition-all cursor-pointer group">
-                  <div className="bg-muted/50 p-3 rounded-xl group-hover:bg-primary/10 transition-colors">
-                    <Folder className="size-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                <div key={idx} className="bg-card shadow-xs rounded-xl p-3 flex items-center gap-3 hover:shadow-sm transition-all cursor-pointer group">
+                  <div className="bg-muted/30 p-2 rounded-lg group-hover:bg-primary/10 transition-colors">
+                    <Folder className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-sm text-foreground">{folder.name}</h3>
-                    <p className="text-xs text-muted-foreground">{folder.count} documents</p>
+                    <h3 className="font-bold text-xs">{folder.name}</h3>
+                    <p className="text-[10px] text-muted-foreground">{folder.count} documents</p>
                   </div>
                 </div>
               ))}
             </div>
           </section>
 
-          {/* Files Section */}
-          <section className="space-y-4 flex-1">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <h2 className="text-sm font-black uppercase tracking-widest text-muted-foreground">Documents</h2>
-              
-              <div className="flex items-center gap-1 bg-muted/30 p-1 rounded-xl">
+          <section className="space-y-3 flex-1">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <h2 className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Documents</h2>
+              <div className="flex items-center gap-1 bg-muted/20 p-0.5 rounded-lg">
                 {[
-                  { id: "all", label: "All Docs" },
+                  { id: "all", label: "All" },
                   { id: "tracked", label: "Tracked" },
                   { id: "commentaries", label: "My Drafts" },
                 ].map(tab => (
-                  <button 
-                    key={tab.id}
-                    onClick={() => setActiveFileTab(tab.id as any)}
-                    className={cn(
-                      "px-4 py-1.5 rounded-lg text-xs font-bold transition-all",
-                      activeFileTab === tab.id 
-                        ? "bg-white dark:bg-card text-primary shadow-sm border border-border/50" 
-                        : "text-muted-foreground hover:text-foreground"
-                    )}
-                  >
+                  <button key={tab.id} onClick={() => setActiveFileTab(tab.id as any)}
+                    className={cn("px-3 py-1 rounded-md text-[10px] font-bold transition-all",
+                      activeFileTab === tab.id ? "bg-card shadow-xs text-foreground" : "text-muted-foreground hover:text-foreground"
+                    )}>
                     {tab.label}
                   </button>
                 ))}
               </div>
             </div>
 
-            <div className="bg-white dark:bg-card border border-border rounded-2xl overflow-hidden shadow-sm flex flex-col">
+            <div className="bg-card shadow-xs rounded-xl overflow-hidden">
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse min-w-[600px]">
-                  <thead className="bg-muted/30 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                    <tr>
-                      <th className="px-6 py-4">Name</th>
-                      <th className="px-6 py-4">Author</th>
-                      <th className="px-6 py-4">Published</th>
-                      <th className="px-6 py-4">Size</th>
-                      <th className="px-6 py-4 text-center">Actions</th>
+                <table className="w-full text-left border-collapse min-w-[500px]">
+                  <thead>
+                    <tr className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
+                      <th className="px-4 py-3">Name</th>
+                      <th className="px-4 py-3">Author</th>
+                      <th className="px-4 py-3">Date</th>
+                      <th className="px-4 py-3">Size</th>
+                      <th className="px-4 py-3 text-center"></th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-border text-sm">
+                  <tbody className="divide-y divide-border/30 text-xs">
                     {filteredFiles.map((file) => (
-                      <tr key={file.id} className="hover:bg-muted/10 transition-colors group">
-                        <td className="px-6 py-3">
-                          <div className="flex items-center gap-3">
-                            <div className="bg-muted/50 p-2 rounded-lg">
-                              {file.icon}
-                            </div>
+                      <tr key={file.id} className="hover:bg-muted/20 transition-colors group">
+                        <td className="px-4 py-2.5">
+                          <div className="flex items-center gap-2.5">
+                            <div className="bg-muted/30 p-1.5 rounded-lg">{file.icon}</div>
                             <div>
-                              <p className="font-bold text-foreground line-clamp-1">{file.name}</p>
-                              <p className="text-[10px] text-muted-foreground">{file.type}</p>
+                              <p className="font-bold text-foreground text-[11px] line-clamp-1">{file.name}</p>
+                              <p className="text-[9px] text-muted-foreground">{file.type}</p>
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-3 font-medium text-muted-foreground">{file.owner}</td>
-                        <td className="px-6 py-3 font-medium text-muted-foreground">{file.modified}</td>
-                        <td className="px-6 py-3 font-medium text-muted-foreground">{file.size}</td>
-                        <td className="px-6 py-3 text-center">
-                          <button className="p-2 hover:bg-muted rounded-lg text-muted-foreground transition-colors">
-                            <MoreHorizontal className="size-4" />
+                        <td className="px-4 py-2.5 text-muted-foreground text-[10px]">{file.owner}</td>
+                        <td className="px-4 py-2.5 text-muted-foreground text-[10px]">{file.modified}</td>
+                        <td className="px-4 py-2.5 text-muted-foreground text-[10px]">{file.size}</td>
+                        <td className="px-4 py-2.5 text-center">
+                          <button className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground transition-colors">
+                            <MoreHorizontal className="size-3.5" />
                           </button>
                         </td>
                       </tr>
                     ))}
-                    
                     {filteredFiles.length === 0 && (
                       <tr>
-                        <td colSpan={5} className="px-6 py-12 text-center text-muted-foreground">
-                          <FileText className="size-8 mx-auto mb-2 opacity-20" />
-                          <p className="text-sm font-semibold">No documents found in this category.</p>
+                        <td colSpan={5} className="px-4 py-10 text-center text-muted-foreground">
+                          <FileText className="size-6 mx-auto mb-1.5 opacity-20" />
+                          <p className="text-xs font-semibold">No documents in this category.</p>
                         </td>
                       </tr>
                     )}
@@ -215,118 +155,60 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
               </div>
             </div>
           </section>
-
         </div>
 
-        {/* Right Sidebar (Repository Stats) */}
-        <aside className="w-80 bg-white dark:bg-card border-l border-border p-6 overflow-y-auto hidden xl:block space-y-8 shrink-0">
-          
-          {/* Status Alert */}
+        <aside className="w-72 border-l border-border/50 p-4 overflow-y-auto hidden xl:block space-y-5 shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-emerald-500">
-              <Database className="size-5" />
-              <span className="text-sm font-bold">System Status</span>
+              <Database className="size-4" />
+              <span className="text-xs font-bold">Status</span>
             </div>
-            <div className="flex items-center gap-1 text-[10px] uppercase tracking-widest font-bold text-emerald-600 bg-emerald-500/10 px-2 py-1 rounded-md">
-              <CheckCircle2 className="size-3" />
-              Online
-            </div>
-          </div>
-          
-          {/* Repository Chart */}
-          <div className="flex items-center gap-6 justify-center mt-2">
-            <div className="relative size-24 shrink-0 rounded-full bg-muted flex items-center justify-center">
-               <div className="absolute inset-0 rounded-full bg-[conic-gradient(var(--tw-gradient-stops))] from-primary via-emerald-400 to-amber-400 p-2" style={{ clipPath: 'circle(50%)' }}>
-                 <div className="w-full h-full bg-white dark:bg-card rounded-full flex flex-col items-center justify-center">
-                    <span className="text-xl font-black leading-none">3.2k</span>
-                    <span className="text-[8px] text-muted-foreground uppercase font-bold tracking-widest">Docs Indexed</span>
-                 </div>
-               </div>
-            </div>
-            
-            <div className="space-y-3 text-xs font-semibold">
-              <div className="flex items-center gap-2">
-                <div className="size-2.5 rounded-full bg-primary" />
-                <span>Counties</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="size-2.5 rounded-full bg-emerald-400" />
-                <span>National</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="size-2.5 rounded-full bg-amber-400" />
-                <span>Audits</span>
-              </div>
+            <div className="flex items-center gap-1 text-[9px] font-bold text-emerald-600 bg-emerald-500/10 px-1.5 py-0.5 rounded">
+              <CheckCircle2 className="size-2.5" /> Online
             </div>
           </div>
 
-          {/* Repository Stats */}
-          <div className="space-y-4 pt-4 border-t border-border/50">
-            <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground">Repository Stats</h3>
-            
+          <div className="space-y-3">
+            <h3 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Repository Stats</h3>
+            <div className="space-y-2">
+              {[
+                { label: "County Budgets", value: "1,240 docs", pct: 70, color: "bg-primary" },
+                { label: "National Reports", value: "850 docs", pct: 50, color: "bg-emerald-400" },
+                { label: "Audit Findings", value: "420 docs", pct: 30, color: "bg-amber-400" },
+              ].map((stat) => (
+                <div key={stat.label}>
+                  <div className="flex justify-between text-[10px] font-semibold mb-0.5">
+                    <span>{stat.label}</span>
+                    <span className="text-muted-foreground">{stat.value}</span>
+                  </div>
+                  <div className="h-1 bg-muted/50 rounded-full overflow-hidden">
+                    <div className={`h-full ${stat.color} rounded-full`} style={{ width: `${stat.pct}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="space-y-3 pt-3 border-t border-border/30">
+            <h3 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Recent Activity</h3>
             <div className="space-y-3">
-              <div>
-                <div className="flex justify-between text-xs font-bold mb-1">
-                  <span>County Budgets</span>
-                  <span className="text-muted-foreground">1,240 docs</span>
+              {[
+                { name: team[2]?.name || "Admin", time: "2h ago", action: "Published Nairobi FY 25/26 Draft" },
+                { name: team[1]?.name || "Admin", time: "4h ago", action: "Uploaded OAG Report summary" },
+                { name: team[4]?.name || "Admin", time: "5h ago", action: "Indexed Kisumu Forums" },
+              ].map((act, i) => (
+                <div key={i} className="flex gap-2.5">
+                  <div className="size-6 rounded-full bg-muted flex items-center justify-center text-[9px] font-bold shrink-0">
+                    {act.name.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="text-[11px] font-bold leading-tight">{act.name} <span className="font-normal text-muted-foreground ml-1">{act.time}</span></p>
+                    <p className="text-[9px] text-muted-foreground">{act.action}</p>
+                  </div>
                 </div>
-                <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
-                   <div className="h-full bg-primary w-[70%]" />
-                </div>
-              </div>
-
-              <div>
-                <div className="flex justify-between text-xs font-bold mb-1">
-                  <span>National Reports</span>
-                  <span className="text-muted-foreground">850 docs</span>
-                </div>
-                <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
-                   <div className="h-full bg-emerald-400 w-[50%]" />
-                </div>
-              </div>
-
-              <div>
-                <div className="flex justify-between text-xs font-bold mb-1">
-                  <span>Audit Findings</span>
-                  <span className="text-muted-foreground">420 docs</span>
-                </div>
-                <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
-                   <div className="h-full bg-amber-400 w-[30%]" />
-                </div>
-              </div>
+              ))}
             </div>
           </div>
-
-          {/* Recent Activity */}
-          <div className="space-y-4 pt-4 border-t border-border/50">
-            <div className="flex justify-between items-center">
-               <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground">Recent Publications</h3>
-               <button className="text-[10px] font-bold text-primary hover:underline uppercase">View All</button>
-            </div>
-            
-            <div className="space-y-4">
-               {[
-                 { name: team[2].name, time: "2 hours ago", action: "Published Nairobi FY 25/26 Draft", avatar: team[2].image },
-                 { name: team[1].name, time: "4 hours ago", action: "Uploaded OAG Report summary", avatar: team[1].image },
-                 { name: team[4].name, time: "5 hours ago", action: "Indexed Kisumu Public Participation Forums", avatar: team[4].image }
-               ].map((act, i) => (
-                 <div key={i} className="flex gap-3">
-                    {act.avatar ? (
-                       <img src={act.avatar} alt="" className="size-7 rounded-full object-cover shrink-0 border border-border shadow-xs" />
-                    ) : (
-                       <div className="size-7 rounded-full bg-muted flex items-center justify-center text-[10px] font-bold shrink-0">
-                         {act.name.charAt(0)}
-                       </div>
-                    )}
-                    <div className="space-y-0.5">
-                       <p className="text-xs font-bold leading-none">{act.name} <span className="font-normal text-muted-foreground ml-1">{act.time}</span></p>
-                       <p className="text-[10px] text-muted-foreground leading-tight">{act.action}</p>
-                    </div>
-                 </div>
-               ))}
-            </div>
-          </div>
-
         </aside>
       </div>
     </div>
