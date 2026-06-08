@@ -16,7 +16,7 @@ vi.mock("@/contexts/learn-context", () => ({
 
 if (typeof window !== "undefined" && !window.matchMedia) {
   window.matchMedia = vi.fn().mockImplementation((query) => ({
-    matches: false, media: query, onchange: null, addListener: vi.fn(),
+    matches: query.includes("min-width: 768"), media: query, onchange: null, addListener: vi.fn(),
     removeListener: vi.fn(), addEventListener: vi.fn(), removeEventListener: vi.fn(), dispatchEvent: vi.fn(),
   }));
 }
@@ -105,7 +105,7 @@ describe("StageDetailDrawer", () => {
     expect(screen.getByText("4h 5min")).toBeInTheDocument();
   });
 
-  it("renders Description tab as active by default", () => {
+  it("renders Read tab as active by default", () => {
     render(
       <StageDetailDrawer
         stage={mockStage} profile={mockProfile}
@@ -113,12 +113,13 @@ describe("StageDetailDrawer", () => {
         hasPrev={false} hasNext={false}
       />
     );
-    expect(screen.getByText("Description")).toBeInTheDocument();
-    expect(screen.getByText("Materials")).toBeInTheDocument();
-    expect(screen.getByText("Home task")).toBeInTheDocument();
+    const tabs = screen.getAllByText("Read");
+    expect(tabs.length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText("Watch").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText("Quiz").length).toBeGreaterThanOrEqual(1);
   });
 
-  it("shows video placeholder when no youtube_url is provided", () => {
+  it("shows video placeholder when on Watch tab", () => {
     render(
       <StageDetailDrawer
         stage={mockStage} profile={mockProfile}
@@ -126,10 +127,11 @@ describe("StageDetailDrawer", () => {
         hasPrev={false} hasNext={false}
       />
     );
+    fireEvent.click(screen.getAllByText("Watch")[0]);
     expect(screen.getByText("Video coming soon")).toBeInTheDocument();
   });
 
-  it("switches to Home task tab and shows Start Knowledge Check button", () => {
+  it("switches to Quiz tab and shows Start Knowledge Check button", () => {
     render(
       <StageDetailDrawer
         stage={mockStage} profile={mockProfile}
@@ -137,7 +139,7 @@ describe("StageDetailDrawer", () => {
         hasPrev={false} hasNext={false}
       />
     );
-    fireEvent.click(screen.getByText("Home task"));
+    fireEvent.click(screen.getAllByText("Quiz")[0]);
     expect(screen.getByText("Start Knowledge Check")).toBeInTheDocument();
   });
 

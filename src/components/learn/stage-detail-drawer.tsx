@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { ChevronLeft, PlayCircle, CheckCircle2, ChevronDown, Clock, BookOpen, Star } from "lucide-react";
+import { ChevronLeft, PlayCircle, CheckCircle2, ChevronDown, Clock, BookOpen, Star, BookOpenText, Video, Brain } from "lucide-react";
 import { Button } from "@/ui/button";
 import { learnHubApi } from "@/lib/learn-hub";
 import { useLearn } from "@/contexts/learn-context";
@@ -29,7 +29,7 @@ export function StageDetailDrawer({
 }: StageDetailDrawerProps) {
   const { totalStages } = useLearn();
   const [currentStep, setCurrentStep] = useState<number>(0);
-  const [activeTab, setActiveTab] = useState<"description" | "materials" | "task">("description");
+  const [activeTab, setActiveTab] = useState<"read" | "watch" | "quiz">("read");
   const [showTrivia, setShowTrivia] = useState<boolean>(false);
   const [expandedStep, setExpandedStep] = useState<number | null>(null);
 
@@ -152,37 +152,42 @@ export function StageDetailDrawer({
             <MasteryPage badge={stage.badge} badgeName={stage.badgeName} title={stage.documentName || "Stage Mastered"} hasNext={hasNext} onNextStage={onNextStage} onClose={onClose} />
           ) : (
             <div className="max-w-3xl mx-auto space-y-3">
-              {videoUrl ? (
-                <div className="w-full aspect-video bg-black rounded-xl overflow-hidden shadow-xs">
-                  <iframe src={videoUrl} title={`${currentStepObj?.title || stage.title} Lesson`} className="w-full h-full border-0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
-                </div>
-              ) : (
-                <div className="w-full aspect-video bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl flex flex-col items-center justify-center shadow-xs">
-                  <div className="size-10 rounded-lg bg-muted/30 flex items-center justify-center">
-                    <PlayCircle className="size-5 text-muted-foreground/40" />
-                  </div>
-                  <p className="text-xs text-muted-foreground/60 font-semibold mt-2">Video coming soon</p>
-                </div>
-              )}
-
-              <div className="flex items-center gap-1 border-b border-border/30 pb-2.5 overflow-x-auto scrollbar-hide">
+              <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
                 {[
-                  { id: "description", label: "Description" },
-                  { id: "materials", label: "Materials" },
-                  { id: "task", label: "Home task" }
+                  { id: "read", label: "Read", icon: BookOpenText },
+                  { id: "watch", label: "Watch", icon: Video },
+                  { id: "quiz", label: "Quiz", icon: Brain }
                 ].map((tab) => (
                   <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
-                    className={`px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all whitespace-nowrap ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all whitespace-nowrap ${
                       activeTab === tab.id ? "bg-primary text-primary-foreground shadow-xs" : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
                     }`}>
+                    <tab.icon className="size-3.5" />
                     {tab.label}
                   </button>
                 ))}
-                <button className="ml-auto text-[10px] font-semibold text-primary/60 hover:text-primary shrink-0">Share</button>
+                <span className="ml-auto text-[9px] text-muted-foreground font-semibold shrink-0">
+                  Step {currentStep} of {stage.steps.length}
+                </span>
               </div>
 
               <div className="animate-in fade-in duration-200">
-                {activeTab === "description" && currentStep > 0 && (
+                {activeTab === "watch" && (
+                  videoUrl ? (
+                    <div className="w-full aspect-video bg-black rounded-xl overflow-hidden shadow-xs">
+                      <iframe src={videoUrl} title={`${currentStepObj?.title || stage.title} Lesson`} className="w-full h-full border-0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                    </div>
+                  ) : (
+                    <div className="w-full aspect-video bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl flex flex-col items-center justify-center shadow-xs">
+                      <div className="size-10 rounded-lg bg-muted/30 flex items-center justify-center">
+                        <PlayCircle className="size-5 text-muted-foreground/40" />
+                      </div>
+                      <p className="text-xs text-muted-foreground/60 font-semibold mt-2">Video coming soon</p>
+                    </div>
+                  )
+                )}
+
+                {activeTab === "read" && currentStep > 0 && (
                   <div className="space-y-3">
                     <div className="space-y-1 pb-3 border-b border-border/30">
                       <h3 className="text-base font-black">{currentStepObj?.title || stage.title}</h3>
@@ -203,12 +208,19 @@ export function StageDetailDrawer({
                     </div>
                   </div>
                 )}
-                {activeTab === "task" && currentStep > 0 && (
+
+                {activeTab === "quiz" && currentStep > 0 && (
                   <div className="pt-2">
                     {!showTrivia ? (
-                      <Button onClick={() => setShowTrivia(true)} size="sm" className="rounded-lg text-xs font-bold">
-                        Start Knowledge Check
-                      </Button>
+                      <div className="space-y-3">
+                        <div className="space-y-1 pb-3 border-b border-border/30">
+                          <h3 className="text-base font-black">Knowledge Check</h3>
+                          <p className="text-xs text-muted-foreground">Test what you learned in this step.</p>
+                        </div>
+                        <Button onClick={() => setShowTrivia(true)} size="sm" className="rounded-lg text-xs font-bold">
+                          Start Knowledge Check
+                        </Button>
+                      </div>
                     ) : (
                       <TriviaSection
                         trivia={stage.steps[currentStep - 1].trivia}
@@ -221,17 +233,12 @@ export function StageDetailDrawer({
                     )}
                   </div>
                 )}
-                {activeTab === "materials" && (
-                  <div className="py-6 text-center text-muted-foreground text-xs font-semibold">
-                    No extra materials attached.
-                  </div>
-                )}
               </div>
             </div>
           )}
         </div>
 
-        <div className="w-full md:w-[260px] bg-muted/10 border-l border-border/30 flex flex-col shrink-0 max-md:max-h-[35vh]">
+        <div className="hidden md:flex md:w-[260px] bg-muted/10 border-l border-border/30 flex-col shrink-0">
           <div className="p-3 border-b border-border/30">
             <h3 className="font-bold text-[9px] uppercase tracking-wider text-muted-foreground">Curriculum</h3>
           </div>
@@ -270,7 +277,7 @@ export function StageDetailDrawer({
                         </div>
                         <span className="text-[8px] text-muted-foreground font-semibold shrink-0">10 min</span>
                       </button>
-                      <button onClick={() => { selectStep(stepNum); setActiveTab("task"); setShowTrivia(true); }}
+                      <button onClick={() => { selectStep(stepNum); setActiveTab("quiz"); setShowTrivia(true); }}
                         className="w-full flex items-center justify-between py-1 px-2 rounded-lg hover:bg-muted/30 transition-colors text-left group">
                         <div className="flex items-center gap-1.5 min-w-0">
                           <CheckCircle2 className="size-3 text-muted-foreground group-hover:text-amber-500 transition-colors shrink-0" />
