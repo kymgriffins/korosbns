@@ -135,25 +135,25 @@ export function StageDetailDrawer({
     <div className="flex flex-col h-full overflow-hidden bg-background">
       
       {/* Breadcrumb Header */}
-      <div className="px-6 md:px-10 py-5 border-b border-border flex flex-col md:flex-row md:justify-between md:items-center shrink-0 gap-4">
-        <div className="space-y-1">
-          <p className="text-xs text-muted-foreground font-semibold">My modules / {stage.badgeName} / {stage.title}</p>
-          <div className="flex items-center gap-2">
-            <button onClick={onClose} className="p-1.5 hover:bg-muted rounded-lg transition-colors -ml-1.5">
-              <ChevronLeft className="size-5" />
+      <div className="px-4 md:px-6 lg:px-8 py-3 border-b border-border flex flex-col md:flex-row md:justify-between md:items-center shrink-0 gap-3">
+        <div className="min-w-0">
+          <div className="flex items-center gap-1.5">
+            <button onClick={onClose} className="p-1 hover:bg-muted rounded-lg transition-colors -ml-1">
+              <ChevronLeft className="size-4" />
             </button>
-            <h2 className="text-2xl font-black tracking-tight">{stage.title}</h2>
+            <p className="text-[10px] text-muted-foreground font-semibold truncate">My modules / {stage.badgeName} / {stage.title}</p>
           </div>
+          <h2 className="text-lg md:text-xl font-black tracking-tight mt-0.5">{stage.title}</h2>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <span className="px-3 py-1 bg-[#F97316] text-white text-xs font-black rounded-full flex items-center gap-1.5 shadow-sm">
+        <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
+          <span className="px-2 py-0.5 bg-[#F97316] text-white text-[10px] font-black rounded-full flex items-center gap-1 shadow-sm">
             {stage.steps.length} lessons
           </span>
-          <span className="px-3 py-1 bg-[#F97316]/10 text-[#F97316] border border-[#F97316]/20 text-xs font-black rounded-full flex items-center gap-1.5 shadow-sm">
+          <span className="px-2 py-0.5 bg-[#F97316]/10 text-[#F97316] border border-[#F97316]/20 text-[10px] font-black rounded-full flex items-center gap-1 shadow-sm">
             4h 5min
           </span>
-          <span className="px-3 py-1 bg-[#F97316] text-white text-xs font-black rounded-full flex items-center gap-1.5 shadow-sm">
-            ★ 4.9 (142 reviews)
+          <span className="px-2 py-0.5 bg-[#F97316] text-white text-[10px] font-black rounded-full flex items-center gap-1 shadow-sm">
+            ★ 4.9 (142)
           </span>
         </div>
       </div>
@@ -162,7 +162,7 @@ export function StageDetailDrawer({
       <div className="flex flex-1 overflow-hidden flex-col md:flex-row">
         
         {/* Left Column: Content */}
-        <div className="flex-1 overflow-y-auto p-6 md:p-10">
+        <div className="flex-1 min-w-0 overflow-y-auto p-4 md:p-6 lg:p-8">
           {isMastery ? (
              <MasteryPage
                badge={stage.badge}
@@ -173,7 +173,7 @@ export function StageDetailDrawer({
                onClose={onClose}
              />
           ) : (
-            <div className="max-w-4xl mx-auto space-y-6">
+            <div className="max-w-3xl mx-auto space-y-4">
               
               {/* Video Player */}
               {videoUrl ? (
@@ -187,19 +187,19 @@ export function StageDetailDrawer({
                   />
                 </div>
               ) : (
-                <div className="w-full aspect-video bg-[#0f172a] rounded-3xl flex flex-col items-center justify-center relative overflow-hidden shadow-sm">
+                <div className="w-full aspect-video bg-[#0f172a] rounded-2xl flex flex-col items-center justify-center relative overflow-hidden shadow-sm">
                   <div className="absolute inset-0 opacity-20 pointer-events-none bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary via-transparent to-transparent" />
-                  <div className="z-10 flex flex-col items-center space-y-4">
-                    <div className="size-16 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10">
-                      <PlayCircle className="size-8 text-white/40" />
+                  <div className="z-10 flex flex-col items-center space-y-2">
+                    <div className="size-12 rounded-xl bg-white/5 flex items-center justify-center border border-white/10">
+                      <PlayCircle className="size-6 text-white/40" />
                     </div>
-                    <p className="text-white/60 font-bold text-sm tracking-wide">Video coming soon</p>
+                    <p className="text-white/50 font-bold text-xs tracking-wide">Video coming soon</p>
                   </div>
                 </div>
               )}
 
               {/* Tabs */}
-              <div className="flex items-center gap-2 border-b border-border pb-4">
+              <div className="flex items-center gap-1.5 border-b border-border pb-3 overflow-x-auto scrollbar-hide">
                 {[
                   { id: "description", label: "Description" },
                   { id: "materials", label: "Materials" },
@@ -208,7 +208,7 @@ export function StageDetailDrawer({
                   <button 
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id as any)}
-                    className={`px-5 py-2 rounded-full text-xs font-bold transition-colors shadow-sm ${
+                    className={`px-3.5 py-1.5 rounded-full text-[10px] font-bold transition-colors shadow-sm whitespace-nowrap ${
                       activeTab === tab.id 
                         ? "bg-[#2563EB] text-white border-transparent" 
                         : "bg-background border border-border hover:bg-muted text-foreground"
@@ -217,7 +217,7 @@ export function StageDetailDrawer({
                     {tab.label}
                   </button>
                 ))}
-                <button className="ml-auto text-xs font-bold text-orange-500 hover:underline">
+                <button className="ml-auto text-[10px] font-bold text-orange-500 hover:underline shrink-0">
                   Share lesson
                 </button>
               </div>
@@ -225,16 +225,16 @@ export function StageDetailDrawer({
               {/* Tab Content Area */}
               <div className="animate-in fade-in duration-300">
                 {activeTab === "description" && currentStep > 0 && (
-                  <div className="space-y-6">
+                  <div className="space-y-4">
                     {/* Article Header */}
-                    <div className="space-y-2 border-b border-border pb-6">
-                      <h3 className="text-2xl font-black">{currentStepObj?.title || stage.title}</h3>
-                      <p className="text-sm leading-relaxed text-muted-foreground font-medium">
+                    <div className="space-y-1.5 border-b border-border pb-4">
+                      <h3 className="text-xl font-black">{currentStepObj?.title || stage.title}</h3>
+                      <p className="text-sm text-muted-foreground font-medium">
                         {stage.description}
                       </p>
                     </div>
                     {/* Article Content */}
-                    <div className="prose prose-sm md:prose-base dark:prose-invert max-w-none prose-headings:font-black prose-p:leading-relaxed">
+                    <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:font-black prose-p:leading-relaxed">
                       <StepContent
                         step={stage.steps[currentStep - 1]}
                         currentStep={currentStep}
@@ -252,7 +252,7 @@ export function StageDetailDrawer({
                 {activeTab === "task" && currentStep > 0 && (
                   <div className="pt-4">
                     {!showTrivia ? (
-                      <Button onClick={() => setShowTrivia(true)} className="rounded-full bg-[#CEFF00] text-black font-bold border-none hover:bg-[#b5e600]">
+                      <Button onClick={() => setShowTrivia(true)} className="rounded-full bg-[#CEFF00] text-black font-bold border-none hover:bg-[#b5e600] text-xs h-9 px-5">
                         Start Knowledge Check
                       </Button>
                     ) : (
@@ -279,9 +279,9 @@ export function StageDetailDrawer({
         </div>
 
         {/* Right Column: Curriculum Accordion */}
-        <div className="w-full md:w-[380px] bg-muted/30 border-l border-border flex flex-col shrink-0">
-          <div className="p-6 border-b border-border bg-card/50">
-            <h3 className="font-black text-sm uppercase tracking-widest text-muted-foreground">Curriculum</h3>
+        <div className="w-full md:w-[280px] bg-muted/30 border-l border-border flex flex-col shrink-0 max-md:max-h-[40vh]">
+          <div className="p-4 border-b border-border bg-card/50">
+            <h3 className="font-black text-[10px] uppercase tracking-widest text-muted-foreground">Curriculum</h3>
           </div>
           <div className="flex-1 overflow-y-auto">
             {stage.steps.map((step, idx) => {
@@ -294,42 +294,41 @@ export function StageDetailDrawer({
                 <div key={step.id} className="border-b border-border/50">
                   <button 
                     onClick={() => setExpandedStep(isExpanded ? null : stepNum)}
-                    className={`w-full flex items-center justify-between p-5 transition-colors hover:bg-muted/50 ${isCurrent ? 'bg-primary/5' : ''}`}
+                    className={`w-full flex items-center justify-between p-3 transition-colors hover:bg-muted/50 ${isCurrent ? 'bg-primary/5' : ''}`}
                   >
-                    <div className="flex items-center gap-3 text-left">
-                      <div className={`size-6 rounded-full flex items-center justify-center text-[10px] font-black shrink-0 ${
+                    <div className="flex items-center gap-2.5 text-left min-w-0">
+                      <div className={`size-5 rounded-full flex items-center justify-center text-[9px] font-black shrink-0 ${
                         isPassed 
                           ? "bg-emerald-500 text-white" 
                           : isCurrent
                             ? "bg-[#2563EB] text-white"
                             : "bg-muted text-muted-foreground"
                       }`}>
-                        {isPassed ? <CheckCircle2 className="size-4" /> : stepNum}
+                        {isPassed ? <CheckCircle2 className="size-3.5" /> : stepNum}
                       </div>
-                      <span className={`text-sm font-bold ${isCurrent ? 'text-primary' : 'text-foreground'}`}>
+                      <span className={`text-xs font-bold truncate ${isCurrent ? 'text-primary' : 'text-foreground'}`}>
                         {step.title}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground">
+                    <div className="flex items-center gap-1.5 text-[10px] font-semibold text-muted-foreground shrink-0">
                       <span>15 min</span>
-                      <ChevronDown className={`size-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                      <ChevronDown className={`size-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
                     </div>
                   </button>
                   
                   {isExpanded && (
-                    <div className="px-5 pb-5 pt-2 bg-muted/10 space-y-1">
-                      {/* Sub-items mock */}
+                    <div className="px-3 pb-3 pt-1 bg-muted/10 space-y-0.5">
                       <button 
                         onClick={() => selectStep(stepNum)}
-                        className="w-full flex items-center justify-between py-2 px-3 rounded-lg hover:bg-muted/50 transition-colors text-left group"
+                        className="w-full flex items-center justify-between py-1.5 px-2.5 rounded-lg hover:bg-muted/50 transition-colors text-left group"
                       >
-                        <div className="flex items-center gap-3">
-                          <PlayCircle className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                          <span className="text-xs font-semibold text-foreground/80 group-hover:text-foreground">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <PlayCircle className="size-3.5 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
+                          <span className="text-[10px] font-semibold text-foreground/80 group-hover:text-foreground truncate">
                             Reading & Comprehension
                           </span>
                         </div>
-                        <span className="text-[10px] font-bold text-muted-foreground">10 min</span>
+                        <span className="text-[9px] font-bold text-muted-foreground shrink-0">10 min</span>
                       </button>
                       <button 
                         onClick={() => {
@@ -337,15 +336,15 @@ export function StageDetailDrawer({
                           setActiveTab("task");
                           setShowTrivia(true);
                         }}
-                        className="w-full flex items-center justify-between py-2 px-3 rounded-lg hover:bg-muted/50 transition-colors text-left group"
+                        className="w-full flex items-center justify-between py-1.5 px-2.5 rounded-lg hover:bg-muted/50 transition-colors text-left group"
                       >
-                        <div className="flex items-center gap-3">
-                          <CheckCircle2 className="size-4 text-muted-foreground group-hover:text-orange-500 transition-colors" />
-                          <span className="text-xs font-semibold text-foreground/80 group-hover:text-foreground">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <CheckCircle2 className="size-3.5 text-muted-foreground group-hover:text-orange-500 transition-colors shrink-0" />
+                          <span className="text-[10px] font-semibold text-foreground/80 group-hover:text-foreground truncate">
                             Knowledge Check
                           </span>
                         </div>
-                        <span className="text-[10px] font-bold text-muted-foreground">5 min</span>
+                        <span className="text-[9px] font-bold text-muted-foreground shrink-0">5 min</span>
                       </button>
                     </div>
                   )}

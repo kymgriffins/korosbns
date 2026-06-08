@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import { StageDetailDrawer } from "../stage-detail-drawer";
 
@@ -13,7 +13,6 @@ vi.mock("@/contexts/learn-context", () => ({
     updateCurrentStep: vi.fn(),
   }),
 }));
-
 
 if (typeof window !== "undefined" && !window.matchMedia) {
   window.matchMedia = vi.fn().mockImplementation((query) => ({
@@ -30,7 +29,7 @@ const mockStage: any = {
   expectations: ["Decode your 5 core budget rights in Kenya."],
   steps: [
     {
-      id: 1, title: "1. Public Finance Principles", youtubeId: "Ed9lP0-komE",
+      id: 1, title: "1. Public Finance Principles", order: 1, youtubeId: "Ed9lP0-komE",
       audioUrl: "/audio/stage1_step1.mp3", transcript: "Hello citizens, welcome to Budget Ndio Story...",
       text: "The Kenyan Constitution sets the foundational framework for public finance under Chapter Twelve.",
       trivia: [{
@@ -41,7 +40,7 @@ const mockStage: any = {
       }],
     },
     {
-      id: 2, title: "2. Budget Cycle Overview", youtubeId: "abc123",
+      id: 2, title: "2. Budget Cycle Overview", order: 2, youtubeId: "abc123",
       audioUrl: "/audio/stage1_step2.mp3", transcript: "Step 2 transcript...",
       text: "The budget cycle has four main phases.",
       trivia: [{
@@ -82,7 +81,7 @@ describe("StageDetailDrawer", () => {
     localStorage.clear();
   });
 
-  it("renders Stage Overview initially", () => {
+  it("renders the stage title and breadcrumb", () => {
     render(
       <StageDetailDrawer
         stage={mockStage} profile={mockProfile}
@@ -91,10 +90,10 @@ describe("StageDetailDrawer", () => {
       />
     );
     expect(screen.getAllByText("Stage 1: Constitution")[0]).toBeInTheDocument();
-    expect(screen.getByText("Start Learning Course")).toBeInTheDocument();
+    expect(screen.getByText("DocNative", { exact: false })).toBeInTheDocument();
   });
 
-  it("transitions to Step 1 and shows content formats", async () => {
+  it("shows the lesson count and duration badges", () => {
     render(
       <StageDetailDrawer
         stage={mockStage} profile={mockProfile}
@@ -102,14 +101,11 @@ describe("StageDetailDrawer", () => {
         hasPrev={false} hasNext={false}
       />
     );
-    fireEvent.click(screen.getByText("Start Learning Course"));
-    await waitFor(() => {
-      expect(screen.getByText("🎥 Watch")).toBeInTheDocument();
-    });
-    expect(screen.getByText("📖 Read")).toBeInTheDocument();
+    expect(screen.getByText(/2 lessons/)).toBeInTheDocument();
+    expect(screen.getByText("4h 5min")).toBeInTheDocument();
   });
 
-  it("advances to step 2 on Continue click", async () => {
+  it("renders Description tab as active by default", () => {
     render(
       <StageDetailDrawer
         stage={mockStage} profile={mockProfile}
@@ -117,15 +113,12 @@ describe("StageDetailDrawer", () => {
         hasPrev={false} hasNext={false}
       />
     );
-    fireEvent.click(screen.getByText("Start Learning Course"));
-    await waitFor(() => { expect(screen.getByText("🎥 Watch")).toBeInTheDocument(); });
-    fireEvent.click(screen.getByText("Continue"));
-    await waitFor(() => {
-      expect(screen.getByText("2. Budget Cycle Overview")).toBeInTheDocument();
-    });
+    expect(screen.getByText("Description")).toBeInTheDocument();
+    expect(screen.getByText("Materials")).toBeInTheDocument();
+    expect(screen.getByText("Home task")).toBeInTheDocument();
   });
 
-  it("goes back to step 1 on Previous click", async () => {
+  it("shows video placeholder when no youtube_url is provided", () => {
     render(
       <StageDetailDrawer
         stage={mockStage} profile={mockProfile}
@@ -133,13 +126,43 @@ describe("StageDetailDrawer", () => {
         hasPrev={false} hasNext={false}
       />
     );
-    fireEvent.click(screen.getByText("Start Learning Course"));
-    await waitFor(() => { expect(screen.getByText("🎥 Watch")).toBeInTheDocument(); });
-    fireEvent.click(screen.getByText("Continue"));
-    await waitFor(() => { expect(screen.getByText("2. Budget Cycle Overview")).toBeInTheDocument(); });
-    fireEvent.click(screen.getByText((content) => content.includes("Previous")));
-    await waitFor(() => {
-      expect(screen.getByText("1. Public Finance Principles")).toBeInTheDocument();
-    });
+    expect(screen.getByText("Video coming soon")).toBeInTheDocument();
+  });
+
+  it("switches to Home task tab and shows Start Knowledge Check button", () => {
+    render(
+      <StageDetailDrawer
+        stage={mockStage} profile={mockProfile}
+        onClose={mockOnClose} onUpdateProfile={mockOnUpdateProfile}
+        hasPrev={false} hasNext={false}
+      />
+    );
+    fireEvent.click(screen.getByText("Home task"));
+    expect(screen.getByText("Start Knowledge Check")).toBeInTheDocument();
+  });
+
+  it("shows curriculum sidebar with step titles", () => {
+    render(
+      <StageDetailDrawer
+        stage={mockStage} profile={mockProfile}
+        onClose={mockOnClose} onUpdateProfile={mockOnUpdateProfile}
+        hasPrev={false} hasNext={false}
+      />
+    );
+    expect(screen.getAllByText("1. Public Finance Principles", { exact: false }).length).toBeGreaterThan(0);
+    expect(screen.getAllByText("2. Budget Cycle Overview", { exact: false }).length).toBeGreaterThan(0);
+  });
+
+  it("calls onClose when back button is clicked", () => {
+    render(
+      <StageDetailDrawer
+        stage={mockStage} profile={mockProfile}
+        onClose={mockOnClose} onUpdateProfile={mockOnUpdateProfile}
+        hasPrev={false} hasNext={false}
+      />
+    );
+    const backButton = document.querySelector("button .lucide-chevron-left")?.closest("button");
+    if (backButton) fireEvent.click(backButton);
+    expect(mockOnClose).toHaveBeenCalled();
   });
 });
