@@ -71,8 +71,8 @@ export function LearnDashboardView({
     >
       <motion.div variants={itemVars} className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-primary/90 to-blue-600 text-white p-4 md:p-6 shadow-sm">
         <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.07] mix-blend-overlay pointer-events-none" />
-        <div className="relative z-10 md:flex md:items-center md:justify-between md:gap-4 space-y-2 md:space-y-0">
-          <div className="flex items-center gap-3">
+        <div className="relative z-10 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3 min-w-0">
             <div className="size-12 md:size-14 rounded-full bg-white/20 backdrop-blur border-2 border-white/30 flex items-center justify-center shadow-inner overflow-hidden shrink-0">
               {profile.avatar_url ? (
                 <img src={profile.avatar_url} alt="" className="size-full object-cover" />
@@ -89,19 +89,9 @@ export function LearnDashboardView({
               </p>
             </div>
           </div>
-          <div className="flex items-stretch gap-2 md:gap-3 bg-black/20 backdrop-blur rounded-xl px-3 py-2 border border-white/10 self-start md:self-auto">
-            <div className="text-center min-w-0">
-              <p className="text-[9px] text-white/60 font-bold uppercase tracking-wider">SVG</p>
-              <p className="text-sm md:text-lg font-black tabular-nums text-amber-300 leading-tight">{profile.sovereigns || 0}</p>
-            </div>
-            <div className="w-px bg-white/15 self-stretch" />
-            <div className="text-center min-w-0">
-              <p className="text-[9px] text-white/60 font-bold uppercase tracking-wider">Streak</p>
-              <div className="flex items-center justify-center gap-0.5">
-                <Flame className="size-3.5 md:size-4 text-orange-400 shrink-0" fill="currentColor" />
-                <span className="text-sm md:text-lg font-black tabular-nums leading-tight">{profile.streakDays || 0}</span>
-              </div>
-            </div>
+          <div className="flex items-center gap-1.5 bg-black/20 backdrop-blur rounded-xl px-2.5 py-1.5 border border-white/10 shrink-0">
+            <Flame className="size-3.5 md:size-4 text-orange-400" fill="currentColor" />
+            <span className="text-sm md:text-lg font-black tabular-nums leading-tight text-white">{profile.streakDays || 0}</span>
           </div>
         </div>
       </motion.div>
