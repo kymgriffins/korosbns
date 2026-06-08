@@ -9,6 +9,7 @@ import { AuthProvider } from "@/contexts/auth-context";
 import { OrgProvider } from "@/contexts/org-context";
 import SentryErrorBoundary from "@/components/error/error-boundary";
 import { DebugLogPanel } from "@/components/debug/debug-log-panel";
+import { PostHogProvider } from "@/components/global/posthog-provider";
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
   const [queryClient] = useState(
@@ -30,13 +31,15 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         <OrgProvider>
           <SentryErrorBoundary>
-            <AuthProvider>
-              <TooltipProvider>
-                <Toaster position="top-right" toastOptions={{ style: { marginTop: "0.25rem" } }} />
-                {children}
-                <DebugLogPanel />
-              </TooltipProvider>
-            </AuthProvider>
+              <AuthProvider>
+                <TooltipProvider>
+                  <PostHogProvider>
+                    <Toaster position="top-right" toastOptions={{ style: { marginTop: "0.25rem" } }} />
+                    {children}
+                    <DebugLogPanel />
+                  </PostHogProvider>
+                </TooltipProvider>
+              </AuthProvider>
           </SentryErrorBoundary>
         </OrgProvider>
       </ThemeProvider>
