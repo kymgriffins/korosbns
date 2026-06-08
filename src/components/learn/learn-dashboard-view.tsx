@@ -89,7 +89,7 @@ export function LearnDashboardView({
               </p>
             </div>
           </div>
-          <div className="flex items-stretch gap-2 md:gap-3 bg-black/20 backdrop-blur rounded-xl px-2 md:px-3 py-1.5 md:py-2 border border-white/10">
+          <div className="flex items-stretch gap-2 md:gap-3 bg-black/20 backdrop-blur rounded-xl px-2 md:px-3 py-1.5 md:py-2 border border-white/10 mr-1 md:mr-0">
             <div className="text-center min-w-0">
               <p className="text-[8px] md:text-[9px] text-white/60 font-bold uppercase tracking-wider">SVG</p>
               <p className="text-sm md:text-lg font-black tabular-nums text-amber-300 leading-tight">{profile.sovereigns || 0}</p>
