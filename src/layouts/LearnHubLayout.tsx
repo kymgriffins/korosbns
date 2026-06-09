@@ -55,6 +55,28 @@ function LearnSidebar() {
     { key: "documents", label: "Documents", icon: <FileText className="size-4" /> },
   ];
 
+  if (!isLoggedIn) {
+    return (
+      <aside className="hidden md:flex w-[240px] shrink-0 border-r border-border/30 bg-background flex-col items-center justify-center p-6 gap-4">
+        <div className="size-14 rounded-full bg-muted/30 flex items-center justify-center">
+          <LogIn className="size-6 text-muted-foreground/40" />
+        </div>
+        <div className="text-center space-y-1">
+          <h3 className="font-bold text-sm">Sign in to track progress</h3>
+          <p className="text-[10px] text-muted-foreground leading-relaxed">
+            Sign in to earn badges, track streaks, and get certificates.
+          </p>
+        </div>
+        <Link href={Routes.Login} className="w-full rounded-lg bg-primary text-primary-foreground text-xs font-bold py-2.5 text-center hover:bg-primary/90 transition-colors">
+          Sign In
+        </Link>
+        <Link href={Routes.Register} className="w-full rounded-lg border border-border text-xs font-bold py-2.5 text-center hover:bg-muted/30 transition-colors">
+          Create Account
+        </Link>
+      </aside>
+    );
+  }
+
   return (
     <Sidebar collapsible="icon" className="hidden md:flex">
       <SidebarHeader>
