@@ -362,7 +362,7 @@ export function LearnPathsHome() {
 
             <div className="space-y-3">
               <Button asChild className="w-full rounded-xl h-11 font-bold">
-                <Link href={Routes.JoinUs}>Sign Up / Join Movement</Link>
+                <Link href={Routes.JoinUs}>Join the Movement</Link>
               </Button>
               <div className="flex items-center gap-2 my-2">
                 <div className="h-px bg-border flex-1" />
@@ -379,7 +379,8 @@ export function LearnPathsHome() {
             </div>
             
             <p className="text-[10px] text-muted-foreground leading-relaxed">
-              We never lock citizens out. Anonymous progress is stored locally on this device, but won't sync across other browsers.
+              <Link href={Routes.Login} className="text-primary font-bold hover:underline">Already a user? Login</Link>
+              <span className="block mt-1.5">Anonymous progress is stored locally on this device, but won't sync across other browsers.</span>
             </p>
           </div>
         </div>
