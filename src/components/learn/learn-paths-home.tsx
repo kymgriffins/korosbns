@@ -226,6 +226,25 @@ export function LearnPathsHome() {
     setLoading(false);
   }, [isLoggedIn, authUser]);
 
+  useEffect(() => {
+    if (!profile || loading) return;
+    const today = new Date().toDateString();
+    const lastShown = sessionStorage.getItem("bns_streak_toast");
+    if (profile.streakDays > 0 && lastShown !== today) {
+      const timer = setTimeout(() => {
+        if (profile.streakDays >= 7) {
+          toast("Inferno Streak! 🔥", { description: `${profile.streakDays}-day streak! You're unstoppable.`, duration: 5000 });
+        } else if (profile.streakDays >= 3) {
+          toast("Hot Streak! 🔥", { description: `${profile.streakDays}-day streak! Keep showing up.`, duration: 5000 });
+        } else {
+          toast(`${profile.streakDays}-day streak!`, { description: "Come back tomorrow to keep it alive.", duration: 4000 });
+        }
+        sessionStorage.setItem("bns_streak_toast", today);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [profile, loading]);
+
   const checkStreak = (userProfile: any) => {
     if (!userProfile.lastActive) return 0;
     const lastActiveDate = new Date(userProfile.lastActive);

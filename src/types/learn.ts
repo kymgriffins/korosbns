@@ -42,6 +42,13 @@ export type CivicModuleAuthor = {
   image: string;
   role: string;
   bio: string;
+  slug?: string;
+  intro_video_url?: string;
+  socials?: {
+    linkedin?: string;
+    x?: string;
+    website?: string;
+  };
 };
 
 export type CivicModule = {
