@@ -188,6 +188,8 @@ function LearnSidebar() {
 }
 
 function LearnAppShell({ children }: { children: React.ReactNode }) {
+  const { isLoggedIn } = useAuth();
+
   useEffect(() => {
     const isMobileDevice = () => window.innerWidth < 768;
     const lockBody = () => {
@@ -201,6 +203,14 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
       window.removeEventListener("resize", lockBody);
     };
   }, []);
+
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-4">
+        {children}
+      </div>
+    );
+  }
 
   return (
     <div className="h-dvh md:min-h-screen bg-background text-foreground overflow-hidden">
