@@ -226,6 +226,25 @@ export function LearnPathsHome() {
     setLoading(false);
   }, [isLoggedIn, authUser]);
 
+  useEffect(() => {
+    if (!profile || loading) return;
+    const today = new Date().toDateString();
+    const lastShown = sessionStorage.getItem("bns_streak_toast");
+    if (profile.streakDays > 0 && lastShown !== today) {
+      const timer = setTimeout(() => {
+        if (profile.streakDays >= 7) {
+          toast("Inferno Streak! 🔥", { description: `${profile.streakDays}-day streak! You're unstoppable.`, duration: 5000 });
+        } else if (profile.streakDays >= 3) {
+          toast("Hot Streak! 🔥", { description: `${profile.streakDays}-day streak! Keep showing up.`, duration: 5000 });
+        } else {
+          toast(`${profile.streakDays}-day streak!`, { description: "Come back tomorrow to keep it alive.", duration: 4000 });
+        }
+        sessionStorage.setItem("bns_streak_toast", today);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [profile, loading]);
+
   const checkStreak = (userProfile: any) => {
     if (!userProfile.lastActive) return 0;
     const lastActiveDate = new Date(userProfile.lastActive);
@@ -317,14 +336,6 @@ export function LearnPathsHome() {
     );
   }
 
-  if (!stages.length) {
-    return (
-      <div className="flex-1 flex flex-col items-center justify-center min-h-[50vh] gap-3 p-6 text-center">
-        <p className="text-muted-foreground">No learning modules available yet.</p>
-      </div>
-    );
-  }
-
   // If user is not onboarded, ask if they want to register or continue as anonymous guest
   if (!profile) {
     if (!wantsAnonymous) {
@@ -343,7 +354,7 @@ export function LearnPathsHome() {
 
             <div className="space-y-3">
               <Button asChild className="w-full rounded-xl h-11 font-bold">
-                <Link href={Routes.JoinUs}>Sign Up / Join Movement</Link>
+                <Link href={Routes.JoinUs}>Join the Movement</Link>
               </Button>
               <div className="flex items-center gap-2 my-2">
                 <div className="h-px bg-border flex-1" />
@@ -360,7 +371,8 @@ export function LearnPathsHome() {
             </div>
             
             <p className="text-[10px] text-muted-foreground leading-relaxed">
-              We never lock citizens out. Anonymous progress is stored locally on this device, but won't sync across other browsers.
+              <Link href={Routes.Login} className="text-primary font-bold hover:underline">Already a user? Login</Link>
+              <span className="block mt-1.5">Anonymous progress is stored locally on this device, but won't sync across other browsers.</span>
             </p>
           </div>
         </div>
@@ -370,6 +382,14 @@ export function LearnPathsHome() {
     return (
       <div className="flex-1 flex items-center justify-center p-4 bg-muted/20">
         <AnonymousIdentityPicker onComplete={handleOnboardingComplete} />
+      </div>
+    );
+  }
+
+  if (!stages.length) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center min-h-[50vh] gap-3 p-6 text-center">
+        <p className="text-muted-foreground">No learning modules available yet.</p>
       </div>
     );
   }
