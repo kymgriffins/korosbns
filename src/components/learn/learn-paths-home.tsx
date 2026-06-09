@@ -336,14 +336,6 @@ export function LearnPathsHome() {
     );
   }
 
-  if (!stages.length) {
-    return (
-      <div className="flex-1 flex flex-col items-center justify-center min-h-[50vh] gap-3 p-6 text-center">
-        <p className="text-muted-foreground">No learning modules available yet.</p>
-      </div>
-    );
-  }
-
   // If user is not onboarded, ask if they want to register or continue as anonymous guest
   if (!profile) {
     if (!wantsAnonymous) {
@@ -390,6 +382,14 @@ export function LearnPathsHome() {
     return (
       <div className="flex-1 flex items-center justify-center p-4 bg-muted/20">
         <AnonymousIdentityPicker onComplete={handleOnboardingComplete} />
+      </div>
+    );
+  }
+
+  if (!stages.length) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center min-h-[50vh] gap-3 p-6 text-center">
+        <p className="text-muted-foreground">No learning modules available yet.</p>
       </div>
     );
   }
