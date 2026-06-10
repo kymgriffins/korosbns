@@ -10,6 +10,7 @@ import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
 import { Routes } from "@/constants/routes";
+import { COUNTIES } from "@/constants/counties";
 import { citizenApi } from "@/lib/api-client";
 import { 
   Heart, 
@@ -27,17 +28,6 @@ import {
   User,
   Building
 } from "lucide-react";
-
-const COUNTIES = [
-  "Mombasa", "Kwale", "Kilifi", "Tana River", "Lamu", "Taita Taveta",
-  "Garissa", "Wajir", "Mandera", "Marsabit", "Isiolo", "Meru",
-  "Tharaka-Nithi", "Embu", "Kitui", "Machakos", "Makueni", "Nyandarua",
-  "Nyeri", "Kirinyaga", "Murang'a", "Kiambu", "Turkana", "West Pokot",
-  "Samburu", "Trans Nzoia", "Uasin Gishu", "Elgeyo-Marakwet", "Nandi",
-  "Baringo", "Laikipia", "Nakuru", "Narok", "Kajiado", "Kericho",
-  "Bomet", "Kakamega", "Vihiga", "Bungoma", "Busia", "Siaya",
-  "Kisumu", "Homa Bay", "Migori", "Kisii", "Nyamira", "Nairobi"
-].sort();
 
 interface PriorityOption {
   id: string;

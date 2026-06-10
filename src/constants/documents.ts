@@ -113,7 +113,7 @@ function parseYearsFromFolderName(folderName: string): string[] {
   return [];
 }
 
-function extractPrefixFromFolderName(folderName: string): string | null {
+export function extractPrefixFromFolderName(folderName: string): string | null {
   // Extract the prefix (e.g., "PBB", "BROP", "APP ACT") from folder name
   const normalized = folderName.replace(/\/+$/, "").trim();
   const match = normalized.match(/^(.+?)\s+\d{4}-\d{4}/);
