@@ -182,7 +182,31 @@ function getDocumentInfoFromFolder(
 export function transformRepositoryData(repositoryData: any): DocumentType[] {
   const documents: DocumentType[] = [];
 
-  if (!repositoryData?.folders || !repositoryData?.documents) {
+  // Support both formats: { folders, documents } (old) and { path, items, count } (new route handler)
+  let folders: any[];
+  let docs: any[];
+
+  if (Array.isArray(repositoryData.items) && !Array.isArray(repositoryData.folders)) {
+    // New format: { path, items, count } — split items by is_directory
+    folders = repositoryData.items.filter((i: any) => i.is_directory);
+    docs = repositoryData.items.filter((i: any) => !i.is_directory).map((item: any) => {
+      // Derive parent folder path from item path
+      const parts = item.path.split("/").filter(Boolean);
+      parts.pop();
+      const folder = parts.join("/");
+      return {
+        name: item.name,
+        folder,
+        url: `/api/docrepository?path=${encodeURIComponent(item.path)}`,
+        size: item.size,
+        modified: item.modified,
+      };
+    });
+  } else if (Array.isArray(repositoryData.folders) && Array.isArray(repositoryData.documents)) {
+    // Old format: { folders, documents }
+    folders = repositoryData.folders;
+    docs = repositoryData.documents;
+  } else {
     return documents;
   }
 
@@ -196,14 +220,14 @@ export function transformRepositoryData(repositoryData: any): DocumentType[] {
     return `${viewUrl}${separator}download=1`;
   };
 
-  for (const folder of repositoryData.folders) {
+  for (const folder of folders) {
     const docInfo = getDocumentInfoFromFolder(folder.name);
 
     const years = parseYearsFromFolderName(folder.name);
     const normalizedFolderPath = normalizeFolderPath(folder.path || "");
 
     // Filter documents that belong to this folder
-    const folderFiles = repositoryData.documents
+    const folderFiles = docs
       .filter((doc: any) => {
         const normalizedDocFolder = normalizeFolderPath(doc.folder || "");
         return (
@@ -306,7 +330,7 @@ async function fetchDocumentsFromApiOnce(): Promise<FetchDocumentsResult> {
       };
     }
 
-    if (!data || !Array.isArray(data.folders) || !Array.isArray(data.documents)) {
+    if (!data || (!Array.isArray(data.items) && (!Array.isArray(data.folders) || !Array.isArray(data.documents)))) {
       console.error("Document repository API returned invalid payload:", data);
       return {
         documents: [],
