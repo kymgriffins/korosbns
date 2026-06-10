@@ -1,4 +1,5 @@
-import { apiFetch } from "@/lib/api-client";
+import { apiFetch, getAccessToken } from "@/lib/api-client";
+import { API_BASE_URL } from "@/lib/api-config";
 
 export type DocRepositoryItem = {
   name: string;
@@ -45,8 +46,13 @@ export const docrepository = {
 
   /** Fetch file content as a Blob (for client-side download). */
   async download(filePath: string): Promise<Blob> {
-    const res = await repoFetch<Response>(`/files/${encodeURIComponent(filePath)}`, {});
-    return res.blob ? res.blob() : new Response(res).blob();
+    const base = API_BASE_URL.replace(/\/+$/, "");
+    const token = getAccessToken();
+    const res = await fetch(`${base}/docrepository/files/${encodeURIComponent(filePath)}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    if (!res.ok) throw new Error(`Download failed: ${res.status}`);
+    return res.blob();
   },
 
   /** Create a new folder. */
