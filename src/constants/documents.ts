@@ -185,9 +185,10 @@ export function transformRepositoryData(repositoryData: any): DocumentType[] {
   // Support both formats: { folders, documents } (old) and { path, items, count } (new route handler)
   let folders: any[];
   let docs: any[];
+  let links: any[] = [];
 
   if (Array.isArray(repositoryData.items) && !Array.isArray(repositoryData.folders)) {
-    // New format: { path, items, count } — split items by is_directory
+    // New format: { path, items, count, links } — split items by is_directory
     folders = repositoryData.items.filter((i: any) => i.is_directory);
     docs = repositoryData.items.filter((i: any) => !i.is_directory).map((item: any) => {
       // Derive parent folder path from item path
@@ -202,6 +203,19 @@ export function transformRepositoryData(repositoryData: any): DocumentType[] {
         modified: item.modified,
       };
     });
+    // Collect links from the response
+    if (Array.isArray(repositoryData.links)) {
+      links = repositoryData.links.map((link: any) => ({
+        id: link.id,
+        title: link.title,
+        url: `/api/docrepository/link/${encodeURIComponent(link.id)}?mode=view`,
+        downloadUrl: `/api/docrepository/link/${encodeURIComponent(link.id)}?mode=download`,
+        folder: link.folder_path || "",
+        size: 0,
+        modified: 0,
+        isLink: true,
+      }));
+    }
   } else if (Array.isArray(repositoryData.folders) && Array.isArray(repositoryData.documents)) {
     // Old format: { folders, documents }
     folders = repositoryData.folders;
@@ -246,17 +260,59 @@ export function transformRepositoryData(repositoryData: any): DocumentType[] {
         };
       });
 
-    if (folderFiles.length > 0) {
+    // Filter links that belong to this folder
+    const folderLinks = links
+      .filter((link: any) => {
+        const normalizedLinkFolder = normalizeFolderPath(link.folder || "");
+        return (
+          normalizedLinkFolder === normalizedFolderPath ||
+          normalizedLinkFolder.startsWith(`${normalizedFolderPath}/`)
+        );
+      })
+      .map((link: any) => ({
+        name: link.title,
+        size: link.size,
+        url: link.url,
+        downloadUrl: link.downloadUrl,
+        modified: link.modified || 0,
+      }));
+
+    const allFiles = [...folderFiles, ...folderLinks];
+
+    if (allFiles.length > 0) {
       documents.push({
         id: docInfo.id,
         title: docInfo.title,
         fullName: docInfo.fullName,
         description: docInfo.description,
         years,
-        files: folderFiles,
+        files: allFiles,
         folderName: folder.name,
       });
     }
+  }
+
+  // Handle root-level links (folder_path = "")
+  const rootLinks = links
+    .filter((link: any) => !link.folder || normalizeFolderPath(link.folder) === "")
+    .map((link: any) => ({
+      name: link.title,
+      size: link.size,
+      url: link.url,
+      downloadUrl: link.downloadUrl,
+      modified: link.modified || 0,
+    }));
+
+  if (rootLinks.length > 0) {
+    documents.push({
+      id: "external-links",
+      title: "External Links",
+      fullName: "External Links",
+      description: "External document links and resources",
+      years: [],
+      files: rootLinks,
+      folderName: "External Links",
+    });
   }
 
   return documents;
