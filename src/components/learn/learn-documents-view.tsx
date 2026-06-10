@@ -1,23 +1,83 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { Search, Folder, FileText, MoreHorizontal, Database, CheckCircle2, ArrowLeft, Download, ExternalLink, Loader2 } from "lucide-react";
+import {
+  Search, Folder, FileText, Database, ArrowLeft, Download, ExternalLink, Loader2,
+  Filter, X, Calendar, Building2, FileType, LayoutGrid, List, ChevronLeft, ChevronRight,
+  BarChart3, BookOpen, ArrowUpDown
+} from "lucide-react";
 import { cn } from "@/utils";
 import { BitmojiAvatar } from "./bitmoji-avatar";
-import { fetchDocumentsFromAPI, type DocumentType, type DocumentFile } from "@/constants/documents";
+import { fetchDocumentsFromAPI, type DocumentType, type DocumentFile, extractPrefixFromFolderName } from "@/constants/documents";
+import { COUNTIES } from "@/constants/counties";
 
 type TabFilter = "all" | "tracked" | "commentaries";
+type SortKey = "name-asc" | "name-desc" | "size-desc" | "size-asc" | "date-desc" | "date-asc";
+type ViewMode = "card" | "table";
+
+const SORT_OPTIONS: { value: SortKey; label: string }[] = [
+  { value: "name-asc", label: "Name (A-Z)" },
+  { value: "name-desc", label: "Name (Z-A)" },
+  { value: "size-desc", label: "Size (Largest)" },
+  { value: "size-asc", label: "Size (Smallest)" },
+  { value: "date-desc", label: "Date (Newest)" },
+  { value: "date-asc", label: "Date (Oldest)" },
+];
+
+const ITEMS_PER_PAGE = 20;
+
+function extractYearFromName(name: string): number | null {
+  const match = name.match(/\b(20\d{2})\b/);
+  if (match) return parseInt(match[1], 10);
+  const fyMatch = name.match(/(?:^|\s)FY\s*(\d{4})[-/](\d{2,4})/i);
+  if (fyMatch) return parseInt(fyMatch[2].length === 2 ? `20${fyMatch[2]}` : fyMatch[2], 10);
+  return null;
+}
+
+function extractCountyFromName(name: string, folderName: string): string | null {
+  const combined = `${name} ${folderName}`;
+  for (const county of COUNTIES) {
+    if (combined.toLowerCase().includes(county.toLowerCase())) {
+      return county;
+    }
+  }
+  return null;
+}
 
 function formatBytes(bytes: number): string {
-  if (bytes === 0) return "—";
+  if (bytes === 0) return "\u2014";
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
 function formatDate(timestamp: number): string {
-  if (!timestamp) return "—";
+  if (!timestamp) return "\u2014";
   return new Date(timestamp * 1000).toLocaleDateString();
+}
+
+type FlatFile = {
+  id: string;
+  name: string;
+  size: number;
+  url: string;
+  downloadUrl: string;
+  modified: number;
+  folderName: string;
+  docType: string | null;
+  year: number | null;
+  county: string | null;
+};
+
+function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }) {
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-semibold text-primary">
+      {label}
+      <button onClick={onRemove} className="ml-0.5 rounded-full p-0.5 hover:bg-primary/20 transition-colors">
+        <X className="size-2.5" />
+      </button>
+    </span>
+  );
 }
 
 export function LearnDocumentsView({ profile }: { profile: any }) {
@@ -27,6 +87,13 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
   const [selectedFolder, setSelectedFolder] = useState<DocumentType | null>(null);
   const [activeTab, setActiveTab] = useState<TabFilter>("all");
   const [searchQuery, setSearchQuery] = useState("");
+
+  const [selectedType, setSelectedType] = useState("");
+  const [selectedYear, setSelectedYear] = useState<number | null>(null);
+  const [selectedCounty, setSelectedCounty] = useState("");
+  const [sortKey, setSortKey] = useState<SortKey>("name-asc");
+  const [viewMode, setViewMode] = useState<ViewMode>("table");
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     let cancelled = false;
@@ -40,6 +107,8 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
     });
     return () => { cancelled = true; };
   }, []);
+
+  useEffect(() => { setPage(1); }, [selectedType, selectedYear, selectedCounty, searchQuery, sortKey, activeTab, selectedFolder]);
 
   const trackedFiles: DocumentFile[] = useMemo(() => {
     return (profile?.trackedDocs || []).map((doc: any, i: number) => ({
@@ -61,6 +130,73 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
     }));
   }, [profile?.participationLogs]);
 
+  const allDocTypes = useMemo(() => {
+    const types = new Set<string>();
+    for (const doc of documents) {
+      const prefix = extractPrefixFromFolderName(doc.folderName);
+      if (prefix) types.add(prefix);
+    }
+    return Array.from(types).sort();
+  }, [documents]);
+
+  const allYears = useMemo(() => {
+    const years = new Set<number>();
+    for (const doc of documents) {
+      for (const f of doc.files) {
+        const y = extractYearFromName(f.name);
+        if (y) years.add(y);
+      }
+    }
+    return Array.from(years).sort((a, b) => b - a);
+  }, [documents]);
+
+  const allCounties = useMemo(() => {
+    const counties = new Set<string>();
+    for (const doc of documents) {
+      for (const f of doc.files) {
+        const c = extractCountyFromName(f.name, doc.folderName);
+        if (c) counties.add(c);
+      }
+    }
+    return Array.from(counties).sort();
+  }, [documents]);
+
+  const flatFiles = useMemo(() => {
+    const files: FlatFile[] = [];
+    for (const doc of documents) {
+      const typeLabel = extractPrefixFromFolderName(doc.folderName);
+      for (const f of doc.files) {
+        files.push({
+          id: `${doc.id}-${f.name}`,
+          name: f.name,
+          size: f.size,
+          url: f.url,
+          downloadUrl: f.downloadUrl,
+          modified: f.modified,
+          folderName: doc.fullName,
+          docType: typeLabel || doc.title,
+          year: extractYearFromName(f.name),
+          county: extractCountyFromName(f.name, doc.folderName),
+        });
+      }
+    }
+    return files;
+  }, [documents]);
+
+  const stats = useMemo(() => {
+    const byType = new Map<string, number>();
+    const byCounty = new Map<string, number>();
+    const byYear = new Map<number, number>();
+
+    for (const f of flatFiles) {
+      if (f.docType) byType.set(f.docType, (byType.get(f.docType) ?? 0) + 1);
+      if (f.county) byCounty.set(f.county, (byCounty.get(f.county) ?? 0) + 1);
+      if (f.year) byYear.set(f.year, (byYear.get(f.year) ?? 0) + 1);
+    }
+
+    return { total: flatFiles.length, byType, byCounty, byYear };
+  }, [flatFiles]);
+
   const filteredDocs = useMemo(() => {
     if (!searchQuery.trim()) return documents;
     const q = searchQuery.toLowerCase();
@@ -74,10 +210,78 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
 
   const folderFiles = useMemo(() => {
     if (!selectedFolder) return [];
-    if (!searchQuery.trim()) return selectedFolder.files;
-    const q = searchQuery.toLowerCase();
-    return selectedFolder.files.filter((f) => f.name.toLowerCase().includes(q));
-  }, [selectedFolder, searchQuery]);
+    let files = selectedFolder.files;
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      files = files.filter((f) => f.name.toLowerCase().includes(q));
+    }
+    files.sort((a, b) => {
+      switch (sortKey) {
+        case "name-asc": return a.name.localeCompare(b.name);
+        case "name-desc": return b.name.localeCompare(a.name);
+        case "size-desc": return b.size - a.size;
+        case "size-asc": return a.size - b.size;
+        case "date-desc": return b.modified - a.modified;
+        case "date-asc": return a.modified - b.modified;
+        default: return 0;
+      }
+    });
+    return files;
+  }, [selectedFolder, searchQuery, sortKey]);
+
+  const filteredFiles = useMemo(() => {
+    let files = flatFiles;
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      files = files.filter((f) =>
+        f.name.toLowerCase().includes(q) ||
+        (f.docType && f.docType.toLowerCase().includes(q)) ||
+        (f.county && f.county.toLowerCase().includes(q)) ||
+        (f.folderName && f.folderName.toLowerCase().includes(q))
+      );
+    }
+
+    if (selectedType) {
+      files = files.filter((f) => f.docType?.toLowerCase().includes(selectedType.toLowerCase()));
+    }
+    if (selectedYear) {
+      files = files.filter((f) => f.year === selectedYear);
+    }
+    if (selectedCounty) {
+      files = files.filter((f) => f.county?.toLowerCase() === selectedCounty.toLowerCase());
+    }
+
+    files.sort((a, b) => {
+      switch (sortKey) {
+        case "name-asc": return a.name.localeCompare(b.name);
+        case "name-desc": return b.name.localeCompare(a.name);
+        case "size-desc": return b.size - a.size;
+        case "size-asc": return a.size - b.size;
+        case "date-desc": return b.modified - a.modified;
+        case "date-asc": return a.modified - b.modified;
+        default: return 0;
+      }
+    });
+
+    return files;
+  }, [flatFiles, searchQuery, selectedType, selectedYear, selectedCounty, sortKey]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredFiles.length / ITEMS_PER_PAGE));
+  const safePage = Math.min(page, totalPages);
+  const paginatedFiles = useMemo(() => {
+    const start = (safePage - 1) * ITEMS_PER_PAGE;
+    return filteredFiles.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredFiles, safePage]);
+
+  const hasActiveFilters = selectedType || selectedYear !== null || selectedCounty || searchQuery.trim();
+
+  const clearAllFilters = () => {
+    setSelectedType("");
+    setSelectedYear(null);
+    setSelectedCounty("");
+    setSearchQuery("");
+  };
 
   if (loading) {
     return (
@@ -113,12 +317,12 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
           )}
           <div className="min-w-0">
             <h1 className="font-bold text-sm leading-tight truncate">
-              {selectedFolder ? selectedFolder.fullName : "Data Repository"}
+              {selectedFolder ? selectedFolder.fullName : "Document Hub"}
             </h1>
             <p className="text-[10px] text-muted-foreground font-semibold">
               {selectedFolder
                 ? `${folderFiles.length} file${folderFiles.length !== 1 ? "s" : ""}`
-                : `${documents.length} collections`
+                : `${stats.total} documents, ${documents.length} collections`
               }
             </p>
           </div>
@@ -169,33 +373,328 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
 
             {activeTab === "all" && (
               <>
-                {/* Folder grid */}
-                <section className="space-y-3">
-                  <h2 className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Collections</h2>
-                  <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                    {filteredDocs.map((doc) => (
+                {/* Stats bar */}
+                {stats.total > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    <div className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5">
+                      <FileText className="size-3.5 text-primary" />
+                      <span className="text-xs font-semibold">{stats.total} files</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5">
+                      <BarChart3 className="size-3.5 text-primary" />
+                      <span className="text-xs font-semibold">{stats.byType.size} types</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5">
+                      <Building2 className="size-3.5 text-blue-500" />
+                      <span className="text-xs font-semibold">{stats.byCounty.size} counties</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5">
+                      <Calendar className="size-3.5 text-muted-foreground" />
+                      <span className="text-xs font-semibold">{stats.byYear.size} fiscal years</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5">
+                      <Folder className="size-3.5 text-muted-foreground" />
+                      <span className="text-xs font-semibold">{documents.length} collections</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Filters + Sort + View toggle */}
+                <div className="flex flex-wrap items-center gap-2">
+                  <div className="flex items-center gap-2 flex-1 min-w-0">
+                    <Filter className="size-4 text-muted-foreground shrink-0" />
+                    <select
+                      value={selectedType}
+                      onChange={(e) => setSelectedType(e.target.value)}
+                      className="rounded-lg border border-border bg-card px-2.5 py-1.5 text-[11px] font-semibold focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    >
+                      <option value="">All Types</option>
+                      {allDocTypes.map((t) => (
+                        <option key={t} value={t}>{t} ({stats.byType.get(t) ?? 0})</option>
+                      ))}
+                    </select>
+                    <select
+                      value={selectedYear ?? ""}
+                      onChange={(e) => setSelectedYear(e.target.value ? parseInt(e.target.value, 10) : null)}
+                      className="rounded-lg border border-border bg-card px-2.5 py-1.5 text-[11px] font-semibold focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    >
+                      <option value="">All Years</option>
+                      {allYears.map((y) => (
+                        <option key={y} value={y}>FY {y - 1}/{String(y).slice(-2)} ({stats.byYear.get(y) ?? 0})</option>
+                      ))}
+                    </select>
+                    <select
+                      value={selectedCounty}
+                      onChange={(e) => setSelectedCounty(e.target.value)}
+                      className="rounded-lg border border-border bg-card px-2.5 py-1.5 text-[11px] font-semibold focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    >
+                      <option value="">All Counties</option>
+                      {allCounties.map((c) => (
+                        <option key={c} value={c}>{c} ({stats.byCounty.get(c) ?? 0})</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="flex items-center gap-1">
+                    <select
+                      value={sortKey}
+                      onChange={(e) => setSortKey(e.target.value as SortKey)}
+                      className="rounded-lg border border-border bg-card px-2.5 py-1.5 text-[11px] font-semibold focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    >
+                      {SORT_OPTIONS.map((opt) => (
+                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                      ))}
+                    </select>
+                    <div className="flex items-center border border-border rounded-lg overflow-hidden">
                       <button
-                        key={doc.id}
-                        onClick={() => setSelectedFolder(doc)}
-                        className="bg-card shadow-xs rounded-xl p-3 flex items-center gap-3 hover:shadow-sm transition-all cursor-pointer group text-left focus-visible:ring-2 focus-visible:ring-primary/50"
+                        onClick={() => setViewMode("card")}
+                        className={cn("p-1.5 transition-colors", viewMode === "card" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground")}
+                        title="Card view"
                       >
-                        <div className="bg-muted/30 p-2 rounded-lg group-hover:bg-primary/10 transition-colors shrink-0">
-                          <Folder className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                        </div>
-                        <div className="min-w-0">
-                          <h3 className="font-bold text-xs truncate">{doc.title}</h3>
-                          <p className="text-[10px] text-muted-foreground">{doc.files.length} file{doc.files.length !== 1 ? "s" : ""}</p>
-                        </div>
+                        <LayoutGrid className="size-3.5" />
                       </button>
-                    ))}
-                    {filteredDocs.length === 0 && (
-                      <div className="col-span-full text-center py-8">
-                        <Folder className="size-8 mx-auto mb-2 text-muted-foreground/20" />
-                        <p className="text-xs font-semibold text-muted-foreground">No collections found.</p>
+                      <button
+                        onClick={() => setViewMode("table")}
+                        className={cn("p-1.5 transition-colors", viewMode === "table" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground")}
+                        title="Table view"
+                      >
+                        <List className="size-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Active filter chips */}
+                <div className="flex flex-wrap items-center gap-1.5 min-h-[28px]">
+                  {selectedType && (
+                    <FilterChip label={`Type: ${selectedType}`} onRemove={() => setSelectedType("")} />
+                  )}
+                  {selectedYear && (
+                    <FilterChip label={`FY ${selectedYear - 1}/${String(selectedYear).slice(-2)}`} onRemove={() => setSelectedYear(null)} />
+                  )}
+                  {selectedCounty && (
+                    <FilterChip label={`County: ${selectedCounty}`} onRemove={() => setSelectedCounty("")} />
+                  )}
+                  {searchQuery.trim() && (
+                    <FilterChip label={`Search: "${searchQuery}"`} onRemove={() => setSearchQuery("")} />
+                  )}
+                  {hasActiveFilters && (
+                    <button onClick={clearAllFilters} className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold text-muted-foreground hover:text-foreground transition-colors">
+                      <X className="size-2.5" />
+                      Clear all
+                    </button>
+                  )}
+                </div>
+
+                {/* Collection grid + Flat listing */}
+                {hasActiveFilters ? (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs text-muted-foreground">
+                        {filteredFiles.length} file{filteredFiles.length !== 1 ? "s" : ""}
+                        {filteredFiles.length !== stats.total && (
+                          <span className="text-muted-foreground/60"> (filtered from {stats.total})</span>
+                        )}
+                      </p>
+                      {totalPages > 1 && (
+                        <p className="text-xs text-muted-foreground">Page {safePage} of {totalPages}</p>
+                      )}
+                    </div>
+
+                    {viewMode === "card" ? (
+                      <div className="space-y-2">
+                        {paginatedFiles.map((file) => (
+                          <div key={file.id} className="flex items-start gap-3 rounded-xl border border-border bg-card p-3 transition-colors hover:border-primary/40">
+                            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                              <FileText className="size-4 text-primary" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-start justify-between gap-2">
+                                <div>
+                                  <p className="text-xs font-semibold truncate max-w-[250px]">{file.name}</p>
+                                  <p className="text-[10px] text-muted-foreground mt-0.5">{file.folderName}</p>
+                                </div>
+                                <div className="flex items-center gap-1 shrink-0">
+                                  {file.url && file.url !== "#" && (
+                                    <a href={file.url} target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors" title="Open">
+                                      <ExternalLink className="size-3.5" />
+                                    </a>
+                                  )}
+                                  {file.downloadUrl && file.downloadUrl !== "#" && (
+                                    <a href={file.downloadUrl} className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors" title="Download">
+                                      <Download className="size-3.5" />
+                                    </a>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                                {file.docType && (
+                                  <span className="inline-flex items-center gap-1 rounded-full bg-primary/5 px-2 py-0.5 text-[9px] font-semibold text-primary">
+                                    <FileType className="size-2.5" />
+                                    {file.docType}
+                                  </span>
+                                )}
+                                {file.year && (
+                                  <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[9px] font-semibold text-muted-foreground">
+                                    <Calendar className="size-2.5" />
+                                    FY {file.year - 1}/{String(file.year).slice(-2)}
+                                  </span>
+                                )}
+                                {file.county && (
+                                  <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/5 px-2 py-0.5 text-[9px] font-semibold text-blue-600">
+                                    <Building2 className="size-2.5" />
+                                    {file.county}
+                                  </span>
+                                )}
+                                {file.size > 0 && (
+                                  <span className="text-[9px] font-medium text-muted-foreground">{formatBytes(file.size)}</span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="bg-card shadow-xs rounded-xl overflow-hidden">
+                        <table className="w-full text-left border-collapse">
+                          <thead>
+                            <tr className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                              <th className="px-3 py-2.5">Name</th>
+                              <th className="px-3 py-2.5 hidden sm:table-cell">Type</th>
+                              <th className="px-3 py-2.5 hidden md:table-cell">County</th>
+                              <th className="px-3 py-2.5 hidden md:table-cell">Year</th>
+                              <th className="px-3 py-2.5 hidden lg:table-cell">Size</th>
+                              <th className="px-3 py-2.5 text-right">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-border/30 text-xs">
+                            {paginatedFiles.map((file) => (
+                              <tr key={file.id} className="hover:bg-muted/20 transition-colors">
+                                <td className="px-3 py-2">
+                                  <div className="flex items-center gap-2 min-w-0">
+                                    <FileText className="size-3.5 shrink-0 text-primary" />
+                                    <div className="min-w-0">
+                                      <p className="font-semibold text-[11px] truncate max-w-[180px]">{file.name}</p>
+                                      <p className="text-[9px] text-muted-foreground truncate max-w-[180px]">{file.folderName}</p>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="px-3 py-2 hidden sm:table-cell">
+                                  {file.docType && (
+                                    <span className="inline-flex items-center rounded-full bg-primary/5 px-2 py-0.5 text-[9px] font-semibold text-primary">{file.docType}</span>
+                                  )}
+                                </td>
+                                <td className="px-3 py-2 hidden md:table-cell text-muted-foreground text-[10px]">{file.county}</td>
+                                <td className="px-3 py-2 hidden md:table-cell text-muted-foreground text-[10px]">
+                                  {file.year ? `FY ${file.year - 1}/${String(file.year).slice(-2)}` : ""}
+                                </td>
+                                <td className="px-3 py-2 hidden lg:table-cell text-muted-foreground text-[10px]">{formatBytes(file.size)}</td>
+                                <td className="px-3 py-2 text-right">
+                                  <div className="flex items-center justify-end gap-1">
+                                    {file.url && file.url !== "#" && (
+                                      <a href={file.url} target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors" title="Open">
+                                        <ExternalLink className="size-3.5" />
+                                      </a>
+                                    )}
+                                    {file.downloadUrl && file.downloadUrl !== "#" && (
+                                      <a href={file.downloadUrl} className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors" title="Download">
+                                        <Download className="size-3.5" />
+                                      </a>
+                                    )}
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
                       </div>
                     )}
-                  </div>
-                </section>
+
+                    {/* Pagination */}
+                    {totalPages > 1 && (
+                      <div className="flex items-center justify-center gap-2 pt-2">
+                        <button
+                          onClick={() => setPage((p) => Math.max(1, p - 1))}
+                          disabled={safePage <= 1}
+                          className={cn("inline-flex items-center gap-1 rounded-lg border border-border px-3 py-1.5 text-xs font-semibold transition-colors", safePage <= 1 ? "opacity-40 cursor-not-allowed" : "hover:bg-muted")}
+                        >
+                          <ChevronLeft className="size-3" />
+                          Previous
+                        </button>
+                        <div className="flex items-center gap-1">
+                          {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
+                            let pageNum: number;
+                            if (totalPages <= 7) {
+                              pageNum = i + 1;
+                            } else if (safePage <= 4) {
+                              pageNum = i + 1;
+                            } else if (safePage >= totalPages - 3) {
+                              pageNum = totalPages - 6 + i;
+                            } else {
+                              pageNum = safePage - 3 + i;
+                            }
+                            return (
+                              <button
+                                key={pageNum}
+                                onClick={() => setPage(pageNum)}
+                                className={cn("size-7 rounded-lg text-xs font-semibold transition-colors", safePage === pageNum ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted")}
+                              >
+                                {pageNum}
+                              </button>
+                            );
+                          })}
+                        </div>
+                        <button
+                          onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                          disabled={safePage >= totalPages}
+                          className={cn("inline-flex items-center gap-1 rounded-lg border border-border px-3 py-1.5 text-xs font-semibold transition-colors", safePage >= totalPages ? "opacity-40 cursor-not-allowed" : "hover:bg-muted")}
+                        >
+                          Next
+                          <ChevronRight className="size-3" />
+                        </button>
+                      </div>
+                    )}
+
+                    {filteredFiles.length === 0 && (
+                      <div className="text-center py-12">
+                        <BookOpen className="size-10 mx-auto text-muted-foreground/30" />
+                        <p className="mt-3 text-sm font-semibold text-foreground">No documents found</p>
+                        <p className="mt-1 text-xs text-muted-foreground">Try adjusting your filters or search query.</p>
+                        <button onClick={clearAllFilters} className="mt-4 text-xs font-semibold text-primary hover:underline">Clear all filters</button>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {/* Folder grid — default view when no filters active */}
+                    <section className="space-y-3">
+                      <h2 className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Collections</h2>
+                      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                        {filteredDocs.map((doc) => (
+                          <button
+                            key={doc.id}
+                            onClick={() => setSelectedFolder(doc)}
+                            className="bg-card shadow-xs rounded-xl p-3 flex items-center gap-3 hover:shadow-sm transition-all cursor-pointer group text-left focus-visible:ring-2 focus-visible:ring-primary/50"
+                          >
+                            <div className="bg-muted/30 p-2 rounded-lg group-hover:bg-primary/10 transition-colors shrink-0">
+                              <Folder className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                            </div>
+                            <div className="min-w-0">
+                              <h3 className="font-bold text-xs truncate">{doc.title}</h3>
+                              <p className="text-[10px] text-muted-foreground">{doc.files.length} file{doc.files.length !== 1 ? "s" : ""}</p>
+                            </div>
+                          </button>
+                        ))}
+                        {filteredDocs.length === 0 && (
+                          <div className="col-span-full text-center py-8">
+                            <Folder className="size-8 mx-auto mb-2 text-muted-foreground/20" />
+                            <p className="text-xs font-semibold text-muted-foreground">No collections found.</p>
+                          </div>
+                        )}
+                      </div>
+                    </section>
+                  </>
+                )}
               </>
             )}
 
@@ -224,10 +723,22 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
         ) : (
           /* Folder contents */
           <section className="space-y-3">
-            <div className="flex items-center gap-2">
-              <h2 className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{selectedFolder.fullName}</h2>
-              <span className="text-[10px] text-muted-foreground/60">·</span>
-              <p className="text-[10px] text-muted-foreground">{selectedFolder.description}</p>
+            {/* Sort inside folder view */}
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <h2 className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">{selectedFolder.fullName}</h2>
+                <span className="text-[10px] text-muted-foreground/60">·</span>
+                <p className="text-[10px] text-muted-foreground">{selectedFolder.description}</p>
+              </div>
+              <select
+                value={sortKey}
+                onChange={(e) => setSortKey(e.target.value as SortKey)}
+                className="rounded-lg border border-border bg-card px-2 py-1 text-[10px] font-semibold focus:outline-none focus:ring-2 focus:ring-primary/30"
+              >
+                {SORT_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
             </div>
             {folderFiles.length > 0 ? (
               <FileList files={folderFiles} />
@@ -244,13 +755,13 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
 function FileList({ files }: { files: DocumentFile[] }) {
   return (
     <>
-      {/* Desktop: table */}
       <div className="hidden md:block bg-card shadow-xs rounded-xl overflow-hidden">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
               <th className="px-4 py-3">Name</th>
               <th className="px-4 py-3">Size</th>
+              <th className="px-4 py-3">Modified</th>
               <th className="px-4 py-3 text-right">Actions</th>
             </tr>
           </thead>
@@ -266,25 +777,16 @@ function FileList({ files }: { files: DocumentFile[] }) {
                   </div>
                 </td>
                 <td className="px-4 py-2.5 text-muted-foreground text-[10px]">{formatBytes(file.size)}</td>
+                <td className="px-4 py-2.5 text-muted-foreground text-[10px]">{formatDate(file.modified)}</td>
                 <td className="px-4 py-2.5 text-right">
                   <div className="flex items-center justify-end gap-1">
                     {file.url && file.url !== "#" && (
-                      <a
-                        href={file.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary/50"
-                        title="Open"
-                      >
+                      <a href={file.url} target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary/50" title="Open">
                         <ExternalLink className="size-3.5" />
                       </a>
                     )}
                     {file.downloadUrl && file.downloadUrl !== "#" && (
-                      <a
-                        href={file.downloadUrl}
-                        className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary/50"
-                        title="Download"
-                      >
+                      <a href={file.downloadUrl} className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary/50" title="Download">
                         <Download className="size-3.5" />
                       </a>
                     )}
@@ -296,7 +798,6 @@ function FileList({ files }: { files: DocumentFile[] }) {
         </table>
       </div>
 
-      {/* Mobile: card list */}
       <div className="md:hidden space-y-2">
         {files.map((file, idx) => (
           <div key={idx} className="bg-card shadow-xs rounded-xl p-3 flex items-center gap-3">
@@ -309,20 +810,12 @@ function FileList({ files }: { files: DocumentFile[] }) {
             </div>
             <div className="flex items-center gap-1 shrink-0">
               {file.url && file.url !== "#" && (
-                <a
-                  href={file.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary/50"
-                >
+                <a href={file.url} target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors">
                   <ExternalLink className="size-3.5" />
                 </a>
               )}
               {file.downloadUrl && file.downloadUrl !== "#" && (
-                <a
-                  href={file.downloadUrl}
-                  className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary/50"
-                >
+                <a href={file.downloadUrl} className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors">
                   <Download className="size-3.5" />
                 </a>
               )}
