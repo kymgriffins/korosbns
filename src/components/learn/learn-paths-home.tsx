@@ -99,6 +99,11 @@ const TRANSLATIONS = {
   }
 };
 
+function saveProfile(profile: any) {
+  localStorage.setItem("bns_user_profile", JSON.stringify(profile));
+  window.dispatchEvent(new Event("bns-profile-updated"));
+}
+
 
 export function LearnPathsHome() {
   const { isLoggedIn, user: authUser } = useAuth();
@@ -177,7 +182,7 @@ export function LearnPathsHome() {
           trackedDocs: currentProfile?.trackedDocs || [],
           badges: currentProfile?.badges || []
         };
-        localStorage.setItem("bns_user_profile", JSON.stringify(currentProfile));
+        saveProfile(currentProfile);
 
         if (preferences.county || preferences.priorities) {
           citizenApi.patchMe({
@@ -192,7 +197,7 @@ export function LearnPathsHome() {
       const streakDays = checkStreak(currentProfile);
       const updated = { ...currentProfile, streakDays, lastActive: Date.now() };
       setProfile(updated);
-      localStorage.setItem("bns_user_profile", JSON.stringify(updated));
+      saveProfile(updated);
     } else {
       const stored = localStorage.getItem("bns_user_profile");
       if (stored) {
@@ -201,7 +206,7 @@ export function LearnPathsHome() {
           const streakDays = checkStreak(parsed);
           const updated = { ...parsed, streakDays, lastActive: Date.now() };
           setProfile(updated);
-          localStorage.setItem("bns_user_profile", JSON.stringify(updated));
+          saveProfile(updated);
         } catch {
           setProfile(null);
         }
@@ -239,7 +244,7 @@ export function LearnPathsHome() {
 
   const handleUpdateProfile = (updated: any) => {
     setProfile(updated);
-    localStorage.setItem("bns_user_profile", JSON.stringify(updated));
+    saveProfile(updated);
   };
 
   const handleResetProgress = () => {

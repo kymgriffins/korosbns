@@ -187,7 +187,26 @@ function LearnSidebar() {
 }
 
 function LearnAppShell({ children }: { children: React.ReactNode }) {
+  const [hasProfile, setHasProfile] = useState(false);
+
   useEffect(() => {
+    const checkProfile = () => {
+      try {
+        const raw = localStorage.getItem("bns_user_profile");
+        setHasProfile(!!raw && JSON.parse(raw)?.breakName);
+      } catch {
+        setHasProfile(false);
+      }
+    };
+    checkProfile();
+
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "bns_user_profile") checkProfile();
+    };
+    const onProfileUpdate = () => checkProfile();
+    window.addEventListener("storage", onStorage);
+    window.addEventListener("bns-profile-updated", onProfileUpdate);
+
     const isMobileDevice = () => window.innerWidth < 768;
     const lockBody = () => {
       if (isMobileDevice()) document.body.classList.add("overflow-hidden");
@@ -198,8 +217,18 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
     return () => {
       document.body.classList.remove("overflow-hidden");
       window.removeEventListener("resize", lockBody);
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("bns-profile-updated", onProfileUpdate);
     };
   }, []);
+
+  if (!hasProfile) {
+    return (
+      <div className="min-h-dvh bg-background text-foreground overflow-hidden">
+        <main className="min-h-dvh">{children}</main>
+      </div>
+    );
+  }
 
   return (
     <div className="h-dvh md:min-h-screen bg-background text-foreground overflow-hidden">

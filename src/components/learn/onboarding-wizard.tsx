@@ -72,6 +72,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
     };
 
     localStorage.setItem("bns_user_profile", JSON.stringify(profile));
+    window.dispatchEvent(new Event("bns-profile-updated"));
     if (isLoggedIn) {
       citizenApi.patchMe({
         display_name: breakName.trim(), location: county,

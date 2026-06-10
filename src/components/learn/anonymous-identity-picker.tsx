@@ -62,6 +62,7 @@ export function AnonymousIdentityPicker({ onComplete }: AnonymousIdentityPickerP
     };
 
     localStorage.setItem("bns_user_profile", JSON.stringify(profile));
+    window.dispatchEvent(new Event("bns-profile-updated"));
     onComplete(profile);
   };
 
