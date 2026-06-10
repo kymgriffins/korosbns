@@ -138,7 +138,7 @@ function FolderCard({
 function FileCard({ item }: { item: RepoItem }) {
   const download = () => {
     const a = document.createElement("a");
-    a.href = `/api/docrepository?path=${encodeURIComponent(item.path)}`;
+    a.href = `/api/docrepository/?path=${encodeURIComponent(item.path)}`;
     a.download = item.name;
     a.target = "_blank";
     a.rel = "noopener noreferrer";
@@ -148,7 +148,7 @@ function FileCard({ item }: { item: RepoItem }) {
   };
 
   const view = () => {
-    window.open(`/api/docrepository?path=${encodeURIComponent(item.path)}`, "_blank");
+    window.open(`/api/docrepository/?path=${encodeURIComponent(item.path)}`, "_blank");
   };
 
   return (
@@ -264,7 +264,7 @@ function DocumentsPageContent() {
     setError("");
     try {
       const qs = path ? `?path=${encodeURIComponent(path)}` : "";
-      const res = await fetch(`/api/docrepository${qs}`);
+      const res = await fetch(`/api/docrepository/${qs}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data: RepoListResponse = await res.json();
       setItems(data.items || []);

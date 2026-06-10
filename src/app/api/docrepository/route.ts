@@ -17,7 +17,15 @@ function authHeaders(req: NextRequest) {
 /** GET /api/docrepository?path=...  – list files (public) */
 export async function GET(req: NextRequest) {
   const sp = req.nextUrl.searchParams;
-  const path = sp.get("path") || "";
+  const queryPath = sp.get("path") || "";
+
+  // Also support path from URL pathname (e.g. /api/docrepository/link/<uuid>)
+  const pathname = req.nextUrl.pathname;
+  const repoPrefix = "/api/docrepository/";
+  const pathFromUrl = pathname.startsWith(repoPrefix)
+    ? decodeURIComponent(pathname.slice(repoPrefix.length).replace(/\/$/, ""))
+    : "";
+  const path = queryPath || pathFromUrl;
 
   // Link proxy: /api/docrepository/link/<uuid>?mode=view|download
   const linkMatch = path.match(/^link\/([0-9a-f-]{36})$/i);
