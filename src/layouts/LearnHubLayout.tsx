@@ -58,10 +58,6 @@ function LearnSidebar() {
     { key: "documents", label: "Documents", icon: <FileText className="size-4" /> },
   ];
 
-  if (!isLoggedIn) {
-    return null;
-  }
-
   return (
     <Sidebar collapsible="icon" className="hidden md:flex">
       <SidebarHeader>
