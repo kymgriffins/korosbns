@@ -3,7 +3,7 @@
 import { Button } from "@/ui/button";
 import { Progress } from "@/ui/progress";
 import { cn } from "@/utils";
-import { Sparkles, Play, BookOpen, Lightbulb, AlertTriangle } from "lucide-react";
+import { Sparkles, Lightbulb, AlertTriangle } from "lucide-react";
 import type { ChapterStep, StageTakeaway } from "@/types/learn";
 import { stripHtml, sanitizeHtml } from "@/lib/sanitize";
 
@@ -29,21 +29,6 @@ export function StepContent({ step, currentStep, totalSteps, activeFormat, showT
         </div>
       </div>
       <Progress value={((currentStep - 1) / totalSteps) * 100} className="h-1 rounded-full" />
-
-      {!showTrivia && (
-        <div className="inline-flex items-center p-0.5 bg-muted/40 rounded-lg">
-          <button onClick={() => onFormatChange("video")}
-            className={cn("px-3 py-1.5 rounded-md text-[10px] font-semibold transition-all flex items-center gap-1.5",
-              activeFormat === "video" ? "bg-card text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground")}>
-            <Play className="size-3" /> Watch
-          </button>
-          <button onClick={() => onFormatChange("text")}
-            className={cn("px-3 py-1.5 rounded-md text-[10px] font-semibold transition-all flex items-center gap-1.5",
-              activeFormat === "text" ? "bg-card text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground")}>
-            <BookOpen className="size-3" /> Read
-          </button>
-        </div>
-      )}
 
       {!showTrivia && (
         <>
