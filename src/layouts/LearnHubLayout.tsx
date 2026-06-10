@@ -224,8 +224,8 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
 
   if (!hasProfile) {
     return (
-      <div className="min-h-dvh bg-background text-foreground overflow-hidden">
-        <main className="min-h-dvh">{children}</main>
+      <div className="min-h-dvh bg-background text-foreground overflow-hidden flex items-center justify-center">
+        <main className="w-full">{children}</main>
       </div>
     );
   }
