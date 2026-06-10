@@ -14,14 +14,42 @@ function authHeaders(req: NextRequest) {
   return headers;
 }
 
-/** GET /api/docrepository  – list files */
+/** GET /api/docrepository?path=...  – list files (public) */
 export async function GET(req: NextRequest) {
   const sp = req.nextUrl.searchParams;
   const path = sp.get("path") || "";
-  const url = backendUrl(`files/${path ? `?path=${encodeURIComponent(path)}` : ""}`);
 
+  // If a specific file path is requested (has extension), proxy as file download
+  if (path && /\.\w+$/.test(path.split("/").pop() || "")) {
+    try {
+      const res = await fetch(backendUrl(`files/${encodeURIComponent(path)}`), {
+        headers: authHeaders(req),
+      });
+      if (!res.ok) {
+        return NextResponse.json({ detail: "Not found" }, { status: res.status });
+      }
+      const contentType = res.headers.get("content-type") || "application/octet-stream";
+      const body = await res.arrayBuffer();
+      return new NextResponse(body, {
+        status: 200,
+        headers: {
+          "Content-Type": contentType,
+          "Content-Disposition": `inline; filename="${path.split("/").pop()}"`,
+          "Cache-Control": "public, max-age=3600",
+        },
+      });
+    } catch {
+      return NextResponse.json({ detail: "Upstream unavailable" }, { status: 502 });
+    }
+  }
+
+  // Directory listing
+  const qs = path ? `?path=${encodeURIComponent(path)}` : "";
   try {
-    const res = await fetch(url, { headers: authHeaders(req), cache: "no-store" });
+    const res = await fetch(backendUrl(`files/${qs}`), {
+      headers: authHeaders(req),
+      cache: "no-store",
+    });
     const data = await res.json();
     return NextResponse.json(data, { status: res.status });
   } catch {
@@ -32,7 +60,7 @@ export async function GET(req: NextRequest) {
   }
 }
 
-/** POST /api/docrepository  – upload file, create folder, or delete */
+/** POST /api/docrepository  – upload file or create folder (auth required) */
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
@@ -71,7 +99,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-/** DELETE /api/docrepository  – delete file or folder */
+/** DELETE /api/docrepository  – delete file or folder (auth required) */
 export async function DELETE(req: NextRequest) {
   try {
     const body = await req.json();
