@@ -22,6 +22,7 @@ export const Routes = {
     LearnPaths: "/learn",
     LearnPath: (slug: string) => `/learn/paths/${slug}`,
     LearnForum: "/learn/forum",
+    LearnAuthor: (slug: string) => `/learn/authors/${slug}`,
     LearnQuests: "/learn/quests",
     LearnProfile: "/learn/profile",
     LearnDoc: (doc: string) => `/learn/${doc}`,

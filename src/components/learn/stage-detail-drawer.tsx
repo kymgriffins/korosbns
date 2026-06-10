@@ -40,6 +40,8 @@ export function StageDetailDrawer({
   const [activeTab, setActiveTab] = useState<"read" | "watch" | "quiz">("read");
   const [showTrivia, setShowTrivia] = useState<boolean>(false);
   const [expandedStep, setExpandedStep] = useState<number | null>(null);
+  const [certificateId, setCertificateId] = useState<string | null>(null);
+  const [certificateUrl, setCertificateUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const moduleProgress = readProgress(stage.slug, stage.order);
@@ -103,6 +105,16 @@ export function StageDetailDrawer({
         };
         onUpdateProfile(updatedProfile);
         learnHubApi.markProgress({ content_type: "path", content_id: stage.id, progress_percent: 100 }).catch(() => {});
+        const lastStep = stage.steps[stage.steps.length - 1];
+        if (lastStep) {
+          learnHubApi.completeChapter(lastStep.id).then((res) => {
+            if (res.certificate_id) {
+              setCertificateId(res.certificate_id);
+              const profileCertUrl = `/api/v1/content/learn/certificates/${res.certificate_id}/download/`;
+              setCertificateUrl(profileCertUrl);
+            }
+          }).catch(() => {});
+        }
         toast.success(`Mastered! +25 SVG. ${stage.badge} Badge unlocked!`);
       }
     }
@@ -155,7 +167,7 @@ export function StageDetailDrawer({
       <div className="flex flex-1 overflow-hidden flex-col md:flex-row">
         <div className="flex-1 min-w-0 overflow-y-auto p-3 md:p-4 lg:p-5">
           {isMastery ? (
-            <MasteryPage badge={stage.badge} badgeName={stage.badgeName} title={stage.documentName || "Stage Mastered"} hasNext={hasNext} onNextStage={onNextStage} onClose={onClose} />
+            <MasteryPage badge={stage.badge} badgeName={stage.badgeName} title={stage.documentName || "Stage Mastered"} hasNext={hasNext} onNextStage={onNextStage} onClose={onClose} certificateUrl={certificateUrl} certificateId={certificateId} />
           ) : (
             <div className="max-w-3xl mx-auto space-y-3">
               <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">

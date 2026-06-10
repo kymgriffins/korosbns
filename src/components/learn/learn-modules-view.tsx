@@ -1,10 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import { motion } from "motion/react";
-import { Search, BookOpen, User } from "lucide-react";
+import { Search, BookOpen, ExternalLink } from "lucide-react";
 import { Button } from "@/ui/button";
 import { BitmojiAvatar } from "./bitmoji-avatar";
+import { Routes } from "@/constants/routes";
+import { getAuthorSlug } from "@/lib/learn-authors";
 import type { CivicModule } from "@/types/learn";
 import { readProgress } from "@/lib/module-progress";
 
@@ -151,12 +155,30 @@ export function LearnModulesView({ profile, stages, currentStage, onSelectStage 
 
                   <div className="flex items-center justify-between pt-2 border-t border-border/30 mt-auto">
                     <div className="flex items-center gap-1.5 min-w-0">
-                      <div className="size-5 rounded-full bg-muted flex items-center justify-center shrink-0">
-                        <User className="size-2.5 text-muted-foreground" />
-                      </div>
-                      <span className="text-[10px] font-semibold text-muted-foreground truncate">
-                        {stage.author?.name || stage.credits || "BNS Team"}
-                      </span>
+                      {stage.author ? (
+                        <Link href={Routes.LearnAuthor(getAuthorSlug(stage.author))} className="flex items-center gap-1.5 min-w-0 group" onClick={(e) => e.stopPropagation()}>
+                          {stage.author.image ? (
+                            <Image src={stage.author.image} alt={stage.author.name} width={18} height={18} className="size-[18px] rounded-full object-cover shrink-0" />
+                          ) : (
+                            <div className="size-[18px] rounded-full bg-muted flex items-center justify-center shrink-0">
+                              <span className="text-[8px] font-bold text-muted-foreground">{stage.author.name[0]}</span>
+                            </div>
+                          )}
+                          <span className="text-[10px] font-semibold text-muted-foreground group-hover:text-primary transition-colors truncate">
+                            {stage.author.name}
+                          </span>
+                          <ExternalLink className="size-2 text-muted-foreground/40 group-hover:text-primary transition-colors shrink-0" />
+                        </Link>
+                      ) : (
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <div className="size-[18px] rounded-full bg-muted flex items-center justify-center shrink-0">
+                            <span className="text-[8px] font-bold text-muted-foreground">{(stage.credits || "BNS")[0]}</span>
+                          </div>
+                          <span className="text-[10px] font-semibold text-muted-foreground truncate">
+                            {stage.credits || "BNS Team"}
+                          </span>
+                        </div>
+                      )}
                     </div>
                     <Button size="sm" className="rounded-lg h-6 px-2.5 text-[10px] font-bold shrink-0"
                       onClick={(e) => { e.stopPropagation(); onSelectStage(stage); }}>

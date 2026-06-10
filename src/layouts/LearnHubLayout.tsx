@@ -58,6 +58,10 @@ function LearnSidebar() {
     { key: "documents", label: "Documents", icon: <FileText className="size-4" /> },
   ];
 
+  if (!isLoggedIn) {
+    return null;
+  }
+
   return (
     <Sidebar collapsible="icon" className="hidden md:flex">
       <SidebarHeader>
@@ -187,6 +191,7 @@ function LearnSidebar() {
 }
 
 function LearnAppShell({ children }: { children: React.ReactNode }) {
+  const { isLoggedIn } = useAuth();
   const [hasProfile, setHasProfile] = useState(false);
 
   useEffect(() => {
@@ -222,7 +227,7 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  if (!hasProfile) {
+  if (!isLoggedIn && !hasProfile) {
     return (
       <div className="min-h-dvh bg-background text-foreground overflow-hidden flex items-center justify-center">
         <main className="w-full">{children}</main>
