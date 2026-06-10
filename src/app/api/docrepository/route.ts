@@ -60,22 +60,28 @@ export async function GET(req: NextRequest) {
   // If a specific file path is requested (has extension), proxy as file download
   if (path && /\.\w+$/.test(path.split("/").pop() || "")) {
     try {
-      const res = await fetch(backendUrl(`files/${encodeURIComponent(path)}`), {
+      // Encode each path segment individually so slashes are preserved as path separators
+      const encodedSegments = path.split("/").map(encodeURIComponent).join("/");
+      // Pass download param through to Django backend
+      const downloadParam = sp.get("download");
+      const qs = downloadParam ? `?download=${encodeURIComponent(downloadParam)}` : "";
+      const res = await fetch(backendUrl(`files/${encodedSegments}${qs}`), {
         headers: authHeaders(req),
       });
       if (!res.ok) {
         return NextResponse.json({ detail: "Not found" }, { status: res.status });
       }
       const contentType = res.headers.get("content-type") || "application/octet-stream";
+      const contentDisposition = res.headers.get("content-disposition") || `inline; filename="${path.split("/").pop()}"`;
+      const contentLength = res.headers.get("content-length");
       const body = await res.arrayBuffer();
-      return new NextResponse(body, {
-        status: 200,
-        headers: {
-          "Content-Type": contentType,
-          "Content-Disposition": `inline; filename="${path.split("/").pop()}"`,
-          "Cache-Control": "public, max-age=3600",
-        },
-      });
+      const headers: Record<string, string> = {
+        "Content-Type": contentType,
+        "Content-Disposition": contentDisposition,
+        "Cache-Control": "public, max-age=3600",
+      };
+      if (contentLength) headers["Content-Length"] = contentLength;
+      return new NextResponse(body, { status: 200, headers });
     } catch {
       return NextResponse.json({ detail: "Upstream unavailable" }, { status: 502 });
     }

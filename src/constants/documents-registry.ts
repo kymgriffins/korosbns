@@ -411,11 +411,22 @@ export function getDocumentsForStage(
   return finalMatched.map((doc: any, index: number) => {
     const isCurrent = year === 2026;
     const sizeBytes = doc.size || 0;
-    
-    // Replace spaces and special characters for URLs
-    const fullUrl = doc.url.startsWith("http") 
-      ? doc.url 
-      : `https://api.budgetndiostory.org${doc.url}`;
+
+    // Build the correct URL for viewing the PDF.
+    // Dump URLs look like "/docrepository/PBB 2010-2026/file.pdf" — the raw file
+    // path relative to the repository root.  We need to route through the
+    // Next.js API proxy at /api/docrepository which forwards to Django's
+    // /api/v1/docrepository/files/<path> endpoint.
+    let fullUrl: string;
+    if (doc.url.startsWith("http")) {
+      fullUrl = doc.url;
+    } else {
+      // Strip leading "/docrepository/" prefix if present to get the bare file path
+      const filePath = doc.url
+        .replace(/^\/docrepository\//i, "")
+        .replace(/^\/api\/v1\/docrepository\/files\//i, "");
+      fullUrl = `/api/docrepository?path=${encodeURIComponent(decodeURIComponent(filePath))}`;
+    }
 
     // Clean up filename for pretty title
     const prettyTitle = doc.name
