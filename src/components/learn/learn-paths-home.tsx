@@ -1,29 +1,22 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { OnboardingWizard } from "./onboarding-wizard";
 import { AnonymousIdentityPicker } from "./anonymous-identity-picker";
-import { BitmojiAvatar } from "./bitmoji-avatar";
 import { StageDetailDrawer } from "./stage-detail-drawer";
 import { LearnDashboardView } from "./learn-dashboard-view";
-import { StageRoadmap } from "./stage-roadmap";
 import { LearnModulesView } from "./learn-modules-view";
 import { LearnDocumentsView } from "./learn-documents-view";
+import { ProfileView } from "./profile-view";
+import { AlertsView } from "./alerts-view";
+import { DashboardSkeleton } from "./dashboard-skeleton";
 
 import { Button } from "@/ui/button";
-import { Progress } from "@/ui/progress";
-import { Label } from "@/ui/label";
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/ui/accordion";
 import { toast } from "sonner";
 import {
-  Sparkles, Flame, BookOpen,
-  ArrowRight, ShieldCheck, MapPin, Calendar, CheckCircle2,
-  Volume2, Shield, Settings, Copy, Send, MessageSquare,
-  Home, HelpCircle, ChevronRight, Globe, FileCheck, Award,
-  Layers, ShieldAlert, Trash2, FileText, Users, Bell
+  Sparkles, ShieldAlert
 } from "lucide-react";
-import { cn } from "@/utils";
-import { useLearn, type ActiveLesson } from "@/contexts/learn-context";
+import { useLearn } from "@/contexts/learn-context";
 import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
 import { Routes } from "@/constants/routes";
@@ -32,9 +25,8 @@ import { citizenApi } from "@/lib/api-client";
 import { learnHubApi } from "@/lib/learn-hub";
 import { readProgress, clearAllModuleProgress } from "@/lib/module-progress";
 import { useLeaderboard } from "@/hooks/use-gamification";
-import type { CivicModule, ChapterStep } from "@/types/learn";
+import type { CivicModule } from "@/types/learn";
 
-// Translations dictionary for Global Language Toggle (EN / SW / Sheng)
 const TRANSLATIONS = {
   EN: {
     dashboardTitle: "Civic Dashboard",
@@ -110,7 +102,7 @@ const TRANSLATIONS = {
 
 export function LearnPathsHome() {
   const { isLoggedIn, user: authUser } = useAuth();
-  const { civicModules, fetchCivicModules, activeLesson, setActiveLesson, updateCurrentStep, activeTab, setActiveTab, totalStages, modulesLoading } = useLearn();
+  const { civicModules, fetchCivicModules, activeLesson, setActiveLesson, updateCurrentStep, activeTab, setActiveTab, totalStages, modulesLoading, modulesError, refreshModules } = useLearn();
   const stages = civicModules;
   const [wantsAnonymous, setWantsAnonymous] = useState(false);
   const [profile, setProfile] = useState<any | null>(null);
@@ -118,7 +110,6 @@ export function LearnPathsHome() {
 
   const [selectedStage, setSelectedStage] = useState<CivicModule | null>(null);
 
-  // Sync selectedStage ↔ activeLesson for sidebar curriculum rail
   useEffect(() => {
     if (selectedStage) {
       const completedStepIds: number[] = [];
@@ -143,9 +134,7 @@ export function LearnPathsHome() {
     }
   }, [selectedStage, setActiveLesson]);
 
-  // Load profile on mount or auth state change
   useEffect(() => {
-    // If authenticated, sync bns_user_profile with auth data
     if (isLoggedIn && authUser) {
       const stored = localStorage.getItem("bns_user_profile");
       let currentProfile: any = null;
@@ -157,7 +146,6 @@ export function LearnPathsHome() {
         }
       }
       
-      // Auto-bridge authenticated user to progress profile if missing or mismatched
       if (!currentProfile || currentProfile.userId !== authUser.id) {
         const onboardingData = localStorage.getItem("bns_onboarding_profile");
         let preferences: any = {};
@@ -191,7 +179,6 @@ export function LearnPathsHome() {
         };
         localStorage.setItem("bns_user_profile", JSON.stringify(currentProfile));
 
-        // Sync stored onboarding data to backend if available
         if (preferences.county || preferences.priorities) {
           citizenApi.patchMe({
             county: preferences.county || authUser.county || "",
@@ -207,7 +194,6 @@ export function LearnPathsHome() {
       setProfile(updated);
       localStorage.setItem("bns_user_profile", JSON.stringify(updated));
     } else {
-      // If not logged in, load anonymous profile
       const stored = localStorage.getItem("bns_user_profile");
       if (stored) {
         try {
@@ -256,15 +242,6 @@ export function LearnPathsHome() {
     localStorage.setItem("bns_user_profile", JSON.stringify(updated));
   };
 
-  const stageCardData = (stage: CivicModule) => ({
-    id: stage.order,
-    title: stage.title,
-    badge: stage.badge,
-    badgeName: stage.badgeName,
-    documentName: stage.documentName,
-    status: stage.status,
-  });
-
   const handleResetProgress = () => {
     if (window.confirm("Reset all progress? This wipes profile & statistics.")) {
       localStorage.removeItem("bns_user_profile");
@@ -276,7 +253,6 @@ export function LearnPathsHome() {
     }
   };
 
-  // Get localized text matching user language setting
   const langKey = (profile?.language as "EN" | "SW" | "SH") || "EN";
   const text = TRANSLATIONS[langKey];
 
@@ -309,10 +285,51 @@ export function LearnPathsHome() {
   const currentStageNum = profile ? (profile.stageProgress ? Math.max(...profile.stageProgress) : 1) : 1;
   const currentStage = stages.find(s => s.order === currentStageNum) || stages[0];
 
+  const handlePrevStage = () => {
+    if (!selectedStage) return;
+    const idx = stages.findIndex(s => s.slug === selectedStage.slug);
+    const prev = stages[idx - 1];
+    if (prev) {
+      const isCompleted = profile.badges?.includes(prev.badge);
+      const isActive = profile.stageProgress?.includes(prev.order);
+      if (!isCompleted && !isActive) {
+        toast.error(`Stage ${prev.title} is locked.`);
+        return;
+      }
+      setSelectedStage(prev);
+    }
+  };
+
+  const handleNextStage = () => {
+    if (!selectedStage) return;
+    const idx = stages.findIndex(s => s.slug === selectedStage.slug);
+    const next = stages[idx + 1];
+    if (next) {
+      const isCompleted = profile.badges?.includes(next.badge);
+      const isActive = profile.stageProgress?.includes(next.order);
+      if (!isCompleted && !isActive) {
+        toast.error(`Stage ${next.title} is locked.`);
+        return;
+      }
+      setSelectedStage(next);
+    }
+  };
+
   if (loading || modulesLoading) {
+    return <DashboardSkeleton />;
+  }
+
+  if (modulesError) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center min-h-[50vh]">
-        <div className="animate-spin size-8 border-4 border-primary border-t-transparent rounded-full" />
+      <div className="flex-1 flex flex-col items-center justify-center min-h-[50vh] gap-3 p-6 text-center">
+        <div className="size-12 rounded-full bg-destructive/10 flex items-center justify-center text-destructive mx-auto">
+          <ShieldAlert className="size-6" />
+        </div>
+        <p className="text-sm font-bold text-foreground">Failed to load modules</p>
+        <p className="text-xs text-muted-foreground max-w-xs">{modulesError}</p>
+        <Button onClick={refreshModules} variant="outline" size="sm" className="mt-2 rounded-lg text-xs font-bold">
+          Try Again
+        </Button>
       </div>
     );
   }
@@ -320,12 +337,11 @@ export function LearnPathsHome() {
   if (!stages.length) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center min-h-[50vh] gap-3 p-6 text-center">
-        <p className="text-muted-foreground">No learning modules available yet.</p>
+        <p className="text-sm text-muted-foreground">No learning modules available yet.</p>
       </div>
     );
   }
 
-  // If user is not onboarded, ask if they want to register or continue as anonymous guest
   if (!profile) {
     if (!wantsAnonymous) {
       return (
@@ -342,7 +358,7 @@ export function LearnPathsHome() {
             </div>
 
             <div className="space-y-3">
-              <Button asChild className="w-full rounded-xl h-11 font-bold">
+              <Button asChild className="w-full rounded-xl h-11 font-bold focus-visible:ring-2 focus-visible:ring-primary/50">
                 <Link href={Routes.JoinUs}>Sign Up / Join Movement</Link>
               </Button>
               <div className="flex items-center gap-2 my-2">
@@ -353,7 +369,7 @@ export function LearnPathsHome() {
               <Button 
                 onClick={() => setWantsAnonymous(true)} 
                 variant="outline" 
-                className="w-full rounded-xl h-11 font-bold border-border/85 bg-transparent"
+                className="w-full rounded-xl h-11 font-bold border-border/85 bg-transparent focus-visible:ring-2 focus-visible:ring-primary/50"
               >
                 Continue as Anonymous User
               </Button>
@@ -376,41 +392,56 @@ export function LearnPathsHome() {
 
   return (
     <div className="w-full h-full min-h-0 bg-background flex flex-col overflow-hidden">
-      {/* MOBILE VIEW (Guarded by md:hidden) */}
-      <div className="relative flex flex-1 min-h-0 flex-col overflow-hidden bg-background md:hidden">
-        
-        {/* Global Sheng translation warning banner */}
-        {!selectedStage && profile.language === "SH" && (
-          <div className="w-full py-1 px-4 text-[10px] font-semibold bg-amber-500/15 border-b border-amber-500/20 text-amber-600 text-center">
-            {text.shengComingSoon}
-          </div>
-        )}
+      {/* Sheng translation warning banner */}
+      {!selectedStage && profile.language === "SH" && (
+        <div className="w-full py-1 px-4 text-[10px] font-semibold bg-amber-500/15 border-b border-amber-500/20 text-amber-600 text-center">
+          {text.shengComingSoon}
+        </div>
+      )}
 
-        {/* Hub tabs — sole scroll region when no lesson is open */}
-        {!selectedStage ? (
-        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4">
+      {/* Lesson layer — when stage is selected, it fills the view */}
+      {selectedStage ? (
+        <div className="absolute inset-0 z-10 flex flex-col overflow-hidden bg-background md:relative md:inset-auto">
+          <StageDetailDrawer key={selectedStage.slug}
+            stage={selectedStage}
+            profile={profile}
+            onUpdateProfile={handleUpdateProfile}
+            onClose={() => setSelectedStage(null)}
+            hasNext={stages.findIndex(s => s.slug === selectedStage.slug) < stages.length - 1}
+            hasPrev={stages.findIndex(s => s.slug === selectedStage.slug) > 0}
+            onPrevStage={handlePrevStage}
+            onNextStage={handleNextStage}
+          />
+        </div>
+      ) : (
+        /* Tab Content — single responsive layout */
+        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 md:p-6">
           <AnimatePresence mode="wait">
-            
-            {/* TAB 1: CIVIC DASHBOARD (HOME) */}
             {activeTab === "home" && (
-              <LearnDashboardView
-                profile={profile}
-                stages={stages}
-                currentStage={currentStage}
-                onSelectStage={setSelectedStage}
-                onNavigateToCurriculum={() => setActiveTab("learn")}
-                leaderboard={leaderboardData?.results}
-              />
+              <motion.div
+                key="home"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+              >
+                <LearnDashboardView
+                  profile={profile}
+                  stages={stages}
+                  currentStage={currentStage}
+                  onSelectStage={setSelectedStage}
+                  onNavigateToCurriculum={() => setActiveTab("learn")}
+                  leaderboard={leaderboardData?.results}
+                />
+              </motion.div>
             )}
 
-            {/* TAB 2: ROADMAP (LEARN) */}
             {activeTab === "learn" && (
               <motion.div
                 key="learn"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="-m-4 h-[calc(100dvh-120px)]"
+                className="h-[calc(100dvh-120px)] md:h-auto"
               >
                 <LearnModulesView
                   profile={profile}
@@ -421,431 +452,48 @@ export function LearnPathsHome() {
               </motion.div>
             )}
 
-            {/* TAB 3: DOCUMENTS — submission history & tracked docs */}
+            {activeTab === "alerts" && (
+              <motion.div
+                key="alerts"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+              >
+                <AlertsView profile={profile} />
+              </motion.div>
+            )}
+
             {activeTab === "documents" && (
               <motion.div
                 key="documents"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="-m-4 h-[calc(100dvh-120px)]"
+                className="h-[calc(100dvh-120px)] md:h-auto"
               >
                 <LearnDocumentsView profile={profile} />
               </motion.div>
             )}
 
-            {/* TAB 4: CITIZEN PROFILE — richly populated */}
             {activeTab === "profile" && (
               <motion.div
                 key="profile"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="space-y-4 pb-4"
+                className="space-y-4 pb-4 md:pb-0"
               >
-                {/* Hero ID Card */}
-                <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-primary/90 via-primary/80 to-primary/60 p-5 text-primary-foreground shadow-lg">
-                  <div className="absolute inset-0 opacity-10 pointer-events-none select-none flex items-center justify-end pr-4">
-                    <Award className="size-24" />
-                  </div>
-                  <div className="flex items-center gap-4 relative">
-                    <div className="relative">
-                      {profile.avatar_url ? (
-                        <img src={profile.avatar_url} alt="" className="size-16 rounded-full border-2 border-white/30 shadow-md object-cover" />
-                      ) : (
-                        <BitmojiAvatar gender={profile.gender} size="lg" className="rounded-full border-2 border-white/30 shadow-md" />
-                      )}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-[9px] font-black uppercase tracking-widest text-white/70 mb-0.5">Citizen Champion</p>
-                      <h2 className="text-base font-black text-white leading-tight truncate">{profile.breakName}</h2>
-                      <p className="text-[10px] text-white/80 font-semibold mt-0.5 truncate">{profile.county}{profile.ward ? ` · ${profile.ward}` : ""}</p>
-                    </div>
-                    <div className="ml-auto shrink-0 bg-white/20 border border-white/30 rounded-xl px-3 py-2 text-center">
-                      <p className="text-lg font-black text-white leading-none">{Math.floor((profile.sovereigns || 0) / 100) + 1}</p>
-                      <p className="text-[8px] font-black text-white/80 uppercase tracking-wider">Level</p>
-                    </div>
-                  </div>
-                  {/* XP bar */}
-                  <div className="mt-4 relative">
-                    <div className="flex justify-between text-[9px] text-white/70 font-bold mb-1">
-                      <span>{profile.sovereigns || 0} XP</span>
-                      <span>{(Math.floor((profile.sovereigns || 0) / 100) + 1) * 100} XP to next level</span>
-                    </div>
-                    <div className="h-1.5 rounded-full bg-white/20 overflow-hidden">
-                      <div
-                        className="h-full rounded-full bg-white/90 transition-all duration-700"
-                        style={{ width: `${((profile.sovereigns || 0) % 100)}%` }}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Stats row */}
-                <div className="grid grid-cols-3 gap-2">
-                  <div className="p-3 rounded-2xl border border-orange-500/20 bg-orange-500/8 text-center space-y-1">
-                    <Flame className="size-4 fill-orange-500 text-orange-500 mx-auto" />
-                    <p className="text-sm font-black text-orange-600">{profile.streakDays || 0}</p>
-                    <p className="text-[8px] font-black text-orange-500/80 uppercase tracking-wider">Day Streak</p>
-                  </div>
-                  <div className="p-3 rounded-2xl border border-primary/20 bg-primary/8 text-center space-y-1">
-                    <Sparkles className="size-4 fill-primary text-primary mx-auto" />
-                    <p className="text-sm font-black text-primary">{profile.sovereigns || 0}</p>
-                    <p className="text-[8px] font-black text-primary/80 uppercase tracking-wider">Sovereigns</p>
-                  </div>
-                  <div className="p-3 rounded-2xl border border-emerald-500/20 bg-emerald-500/8 text-center space-y-1">
-                    <Award className="size-4 text-emerald-600 mx-auto" />
-                    <p className="text-sm font-black text-emerald-600">{profile.badges?.length || 0}</p>
-                    <p className="text-[8px] font-black text-emerald-600/80 uppercase tracking-wider">Badges</p>
-                  </div>
-                </div>
-
-                {/* Badge showcase */}
-                <div className="p-4 rounded-2xl border border-border bg-card space-y-3 shadow-xs">
-                  <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Badge Collection ({profile.badges?.length || 0}/{stages.length})</h3>
-                  <div className="grid grid-cols-4 gap-1.5">
-                    {stages.map((stage) => {
-                      const unlocked = profile.badges?.includes(stage.badge);
-                      return (
-                        <div key={stage.slug} className={`p-2 rounded-xl border text-center space-y-0.5 transition-all ${
-                          unlocked
-                            ? "bg-primary/5 border-primary/20 shadow-xs"
-                            : "bg-muted/20 border-border opacity-35 grayscale"
-                        }`}>
-                          <div className="text-xl flex justify-center">{stage.badge}</div>
-                          <p className="text-[8px] font-bold truncate leading-tight">{stage.badgeName}</p>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Language settings */}
-                <div className="p-4 rounded-2xl border border-border bg-card space-y-3 shadow-xs">
-                  <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
-                    <Globe className="size-3.5" /> Language
-                  </h3>
-                  <div className="grid grid-cols-3 gap-2 bg-muted p-1 rounded-xl text-xs">
-                    {(["EN", "SW", "SH"] as const).map((lang) => (
-                      <button
-                        key={lang}
-                        onClick={() => handleUpdateProfile({ ...profile, language: lang })}
-                        className={`py-1.5 font-bold rounded-lg transition-all ${
-                          profile.language === lang
-                            ? "bg-background text-foreground shadow-xs"
-                            : "text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        {lang === "EN" ? "English" : lang === "SW" ? "Kiswahili" : "Sheng"}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Danger zone */}
-                <button
-                  onClick={handleResetProgress}
-                  className="w-full py-2.5 rounded-xl text-xs font-bold border border-destructive/20 text-destructive hover:bg-destructive/5 transition-colors"
-                >
-                  Reset All Progress
-                </button>
+                <ProfileView
+                  profile={profile}
+                  stages={stages}
+                  onResetProgress={handleResetProgress}
+                  onUpdateProfile={handleUpdateProfile}
+                />
               </motion.div>
             )}
-
           </AnimatePresence>
         </div>
-        ) : (
-          /* Lesson layer — fills bounded panel above embedded bottom nav */
-          <div className="absolute inset-0 z-10 flex flex-col overflow-hidden bg-background">
-            <StageDetailDrawer key={selectedStage.slug}
-              stage={selectedStage}
-              profile={profile}
-              onUpdateProfile={handleUpdateProfile}
-              onClose={() => setSelectedStage(null)}
-              hasNext={stages.findIndex(s => s.slug === selectedStage.slug) < stages.length - 1}
-              hasPrev={stages.findIndex(s => s.slug === selectedStage.slug) > 0}
-              onPrevStage={() => {
-                const idx = stages.findIndex(s => s.slug === selectedStage.slug);
-                const prev = stages[idx - 1];
-                if (prev) {
-                  const isCompleted = profile.badges?.includes(prev.badge);
-                  const isActive = profile.stageProgress?.includes(prev.order);
-                  if (!isCompleted && !isActive) {
-                    toast.error(`Stage ${prev.title} is locked.`);
-                    return;
-                  }
-                  setSelectedStage(prev);
-                }
-              }}
-              onNextStage={() => {
-                const idx = stages.findIndex(s => s.slug === selectedStage.slug);
-                const next = stages[idx + 1];
-                if (next) {
-                  const isCompleted = profile.badges?.includes(next.badge);
-                  const isActive = profile.stageProgress?.includes(next.order);
-                  if (!isCompleted && !isActive) {
-                    toast.error(`Stage ${next.title} is locked.`);
-                    return;
-                  }
-                  setSelectedStage(next);
-                }
-              }}
-            />
-          </div>
-        )}
-
-      </div>
-
-      {/* 🖥️ DESKTOP VIEW (Guarded by hidden md:flex) */}
-      <div className="hidden md:flex flex-1 w-full bg-background overflow-hidden h-screen">
-        
-        {selectedStage ? (
-          /* A) Stage Selected View: full-width Stage Detail (stats panel hidden) */
-          <div className="flex-1 flex flex-col h-full overflow-hidden">
-            <StageDetailDrawer key={selectedStage.slug}
-              stage={selectedStage}
-              profile={profile}
-              onUpdateProfile={handleUpdateProfile}
-              onClose={() => setSelectedStage(null)}
-              hasNext={stages.findIndex(s => s.slug === selectedStage.slug) < stages.length - 1}
-              hasPrev={stages.findIndex(s => s.slug === selectedStage.slug) > 0}
-              onPrevStage={() => {
-                const idx = stages.findIndex(s => s.slug === selectedStage.slug);
-                const prev = stages[idx - 1];
-                if (prev) {
-                  const isCompleted = profile.badges?.includes(prev.badge);
-                  const isActive = profile.stageProgress?.includes(prev.order);
-                  if (!isCompleted && !isActive) {
-                    toast.error(`Stage ${prev.title} is locked.`);
-                    return;
-                  }
-                  setSelectedStage(prev);
-                }
-              }}
-              onNextStage={() => {
-                const idx = stages.findIndex(s => s.slug === selectedStage.slug);
-                const next = stages[idx + 1];
-                if (next) {
-                  const isCompleted = profile.badges?.includes(next.badge);
-                  const isActive = profile.stageProgress?.includes(next.order);
-                  if (!isCompleted && !isActive) {
-                    toast.error(`Stage ${next.title} is locked.`);
-                    return;
-                  }
-                  setSelectedStage(next);
-                }
-              }}
-            />
-          </div>
-        ) : (
-          /* B) No Stage Selected View: Tab Content */
-          <div className="flex-1 flex flex-col h-full overflow-hidden">
-            
-            {/* Left: Tab Content (scrollable) */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-6">
-              
-              {/* Tab: Home */}
-              {activeTab === "home" && (
-                <div className="-m-6 h-[calc(100vh-3.5rem)] overflow-y-auto custom-scrollbar">
-                  <LearnDashboardView 
-                    profile={profile}
-                    stages={stages}
-                    currentStage={currentStage}
-                    onSelectStage={setSelectedStage}
-                    onNavigateToCurriculum={() => setActiveTab("learn")}
-                    leaderboard={leaderboardData?.results}
-                  />
-                </div>
-              )}
-
-              {/* Tab: Learn (Modules) */}
-              {activeTab === "learn" && (
-                <div className="-m-6 h-[calc(100vh-3.5rem)]">
-                  <LearnModulesView
-                    profile={profile}
-                    stages={stages}
-                    currentStage={currentStage}
-                    onSelectStage={setSelectedStage}
-                  />
-                </div>
-              )}
-
-              {/* Desktop Tab: Alerts — keeps its own tab on desktop */}
-              {activeTab === "alerts" && (
-                <div className="space-y-6 max-w-3xl mx-auto">
-                  <div className="space-y-1">
-                    <h2 className="text-xl font-black uppercase tracking-tight">{text.alertsTitle}</h2>
-                    <p className="text-xs text-muted-foreground">{text.alertsSubtitle}</p>
-                  </div>
-                  <div className="space-y-4">
-                    <h3 className="text-xs font-black text-muted-foreground uppercase tracking-widest">Logged Submissions</h3>
-                    {profile.participationLogs?.length > 0 ? (
-                      <div className="grid grid-cols-2 gap-4">
-                        {profile.participationLogs.map((log: any, idx: number) => (
-                          <div key={idx} className="p-4 rounded-xl border border-border bg-card space-y-3 text-xs shadow-xs">
-                            <div className="flex justify-between items-start">
-                              <h4 className="font-bold text-foreground truncate max-w-[180px]">{log.documentName}</h4>
-                              <span className="text-[9px] bg-primary/10 border border-primary/20 text-primary font-bold px-2 py-0.5 rounded-full uppercase">{log.method}</span>
-                            </div>
-                            <p className="text-[10px] text-muted-foreground font-semibold">Submitted: {new Date(log.dateSubmitted).toLocaleString()}</p>
-                            <div className="bg-muted/30 p-3 rounded-lg border border-border/50 font-mono text-[9px] leading-relaxed whitespace-pre-wrap truncate max-h-24">{log.draftText}</div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="text-center py-12 border border-dashed border-border rounded-2xl space-y-3">
-                        <Bell className="size-8 text-muted-foreground/30 mx-auto" />
-                        <p className="text-sm text-muted-foreground">No commentaries submitted yet.</p>
-                        <p className="text-xs text-muted-foreground/60">Complete a learning stage to draft and submit a memorandum.</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Desktop Tab: Documents */}
-              {activeTab === "documents" && (
-                <div className="-m-6 h-[calc(100vh-3.5rem)]">
-                  <LearnDocumentsView profile={profile} />
-                </div>
-              )}
-
-              {/* Desktop Tab: Profile — rich Citizen ID card */}
-              {activeTab === "profile" && (
-                <div className="space-y-6 max-w-3xl mx-auto">
-                  {/* Hero gradient card */}
-                  <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/90 via-primary/80 to-primary/60 p-8 text-primary-foreground shadow-lg">
-                    <div className="absolute inset-0 opacity-10 pointer-events-none select-none flex items-center justify-end pr-8">
-                      <Award className="size-36" />
-                    </div>
-                    <div className="flex items-center gap-6 relative">
-                      {profile.avatar_url ? (
-                        <img src={profile.avatar_url} alt="" className="size-20 rounded-full border-2 border-white/30 shadow-xl object-cover" />
-                      ) : (
-                        <BitmojiAvatar gender={profile.gender} size="xl" className="rounded-full border-2 border-white/30 shadow-xl" />
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[9px] font-black uppercase tracking-widest text-white/70 mb-1">Citizen Champion</p>
-                        <h2 className="text-2xl font-black text-white leading-tight">{profile.breakName}</h2>
-                        <p className="text-sm text-white/80 font-semibold mt-1">{profile.county}{profile.ward ? ` · ${profile.ward}` : ""}</p>
-                        {/* XP progress bar */}
-                        <div className="mt-3">
-                          <div className="flex justify-between text-[10px] text-white/70 font-bold mb-1">
-                            <span>{profile.sovereigns || 0} XP earned</span>
-                            <span>Level {Math.floor((profile.sovereigns || 0) / 100) + 1}</span>
-                          </div>
-                          <div className="h-2 rounded-full bg-white/20 overflow-hidden">
-                            <div
-                              className="h-full rounded-full bg-white/90 transition-all duration-700"
-                              style={{ width: `${((profile.sovereigns || 0) % 100)}%` }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="bg-white/20 border border-white/30 rounded-2xl px-4 py-3 text-center shrink-0">
-                        <p className="text-2xl font-black text-white">{Math.floor((profile.sovereigns || 0) / 100) + 1}</p>
-                        <p className="text-[9px] font-black text-white/70 uppercase tracking-wider">Level</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Stats row */}
-                  <div className="grid grid-cols-4 gap-3">
-                    <div className="p-4 rounded-2xl border border-orange-500/20 bg-orange-500/8 text-center space-y-1.5">
-                      <Flame className="size-5 fill-orange-500 text-orange-500 mx-auto" />
-                      <p className="text-xl font-black text-orange-600">{profile.streakDays || 0}</p>
-                      <p className="text-[9px] font-black text-orange-500/80 uppercase tracking-wider">Day Streak</p>
-                    </div>
-                    <div className="p-4 rounded-2xl border border-primary/20 bg-primary/8 text-center space-y-1.5">
-                      <Sparkles className="size-5 fill-primary text-primary mx-auto" />
-                      <p className="text-xl font-black text-primary">{profile.sovereigns || 0}</p>
-                      <p className="text-[9px] font-black text-primary/80 uppercase tracking-wider">Sovereigns</p>
-                    </div>
-                    <div className="p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/8 text-center space-y-1.5">
-                      <Award className="size-5 text-emerald-600 mx-auto" />
-                      <p className="text-xl font-black text-emerald-600">{profile.badges?.length || 0}</p>
-                      <p className="text-[9px] font-black text-emerald-600/80 uppercase tracking-wider">Badges</p>
-                    </div>
-                    <div className="p-4 rounded-2xl border border-sky-500/20 bg-sky-500/8 text-center space-y-1.5">
-                      <MapPin className="size-5 text-sky-600 mx-auto" />
-                      <p className="text-xl font-black text-sky-600">{profile.stageProgress?.length || 0}</p>
-                      <p className="text-[9px] font-black text-sky-600/80 uppercase tracking-wider">Stages Active</p>
-                    </div>
-                  </div>
-
-                  {/* Account info + Badge grid side by side */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="p-5 border border-border bg-card rounded-2xl space-y-3 shadow-sm">
-                      <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Account Details</h3>
-                      <div className="space-y-2 text-xs">
-                        {[{label:"County",value:profile.county},{label:"Ward",value:profile.ward||"Not specified"},{label:"Language",value:profile.language==="SW"?"Kiswahili":profile.language==="SH"?"Sheng":"English"},{label:"Phone",value:profile.phone||"Not linked"}].map(({label,value})=>(
-                          <div key={label} className="flex justify-between items-center border-b border-border/30 pb-1.5 last:border-0">
-                            <span className="text-muted-foreground font-semibold">{label}</span>
-                            <span className="font-bold text-foreground">{value}</span>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="text-[9px] text-muted-foreground flex items-center gap-1.5 pt-1">
-                        <ShieldCheck className="size-3.5 text-emerald-600" />
-                        <span>DPA 2019 Consent Verified</span>
-                      </div>
-                    </div>
-                    <div className="p-5 border border-border bg-card rounded-2xl space-y-3 shadow-sm">
-                      <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Badge Collection ({profile.badges?.length||0}/{stages.length})</h3>
-                      <div className="grid grid-cols-4 gap-1.5">
-                        {stages.map((stage)=>{
-                          const unlocked=profile.badges?.includes(stage.badge);
-                          return(
-                            <div key={stage.slug} className={`p-1.5 rounded-xl border text-center space-y-0.5 ${
-                              unlocked?"bg-primary/5 border-primary/20 shadow-xs":"bg-muted/20 border-border opacity-35 grayscale"
-                            }`}>
-                              <div className="text-lg flex justify-center">{stage.badge}</div>
-                              <p className="text-[8px] font-bold truncate">{stage.badgeName}</p>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Settings */}
-                  <div className="p-5 border border-border bg-card rounded-2xl space-y-4 shadow-sm">
-                    <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{text.settingsTitle}</h3>
-                    <div className="space-y-2">
-                      <p className="text-[10px] text-muted-foreground font-bold flex items-center gap-1.5"><Globe className="size-3.5" /> {text.language}</p>
-                      <div className="grid grid-cols-3 gap-2 bg-muted p-1 rounded-xl text-xs">
-                        {(["EN","SW","SH"] as const).map((lang)=>(
-                          <button key={lang} onClick={()=>handleUpdateProfile({...profile,language:lang})}
-                            className={`py-1.5 font-bold rounded-lg transition-all ${profile.language===lang?"bg-background text-foreground shadow-xs":"text-muted-foreground hover:text-foreground"}`}>
-                            {lang==="EN"?"English":lang==="SW"?"Kiswahili":"Sheng"}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 border-t border-border pt-4">
-                      <div className="flex items-center justify-between text-xs">
-                        <div><h4 className="font-bold">Push Notifications</h4><p className="text-[10px] text-muted-foreground">Open comment alerts.</p></div>
-                        <input type="checkbox" checked={profile.notifications} onChange={(e)=>handleUpdateProfile({...profile,notifications:e.target.checked})} className="size-4" />
-                      </div>
-                      <div className="flex items-center justify-between text-xs">
-                        <div><h4 className="font-bold">WhatsApp Fallback</h4><p className="text-[10px] text-muted-foreground">SMS fallback if push fails.</p></div>
-                        <input type="checkbox" checked={profile.whatsappFallback} onChange={(e)=>handleUpdateProfile({...profile,whatsappFallback:e.target.checked})} className="size-4" />
-                      </div>
-                    </div>
-                    <div className="border-t border-border pt-4">
-                      <Button onClick={handleResetProgress} variant="outline" className="rounded-xl border-destructive/20 text-destructive hover:bg-destructive/5 font-bold text-xs h-9 px-4">
-                        Reset All Progress
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-            </div>
-          </div>
-        )}
-      </div>
-
+      )}
     </div>
   );
 }

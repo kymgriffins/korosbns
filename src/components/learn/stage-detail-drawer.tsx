@@ -13,6 +13,14 @@ import { StepContent } from "./step-content";
 import { TriviaSection } from "./trivia-section";
 import { MasteryPage } from "./mastery-page";
 
+const FALLBACK_VIDEO_URLS: Record<string, Record<number, string>> = {
+  "budget-policy-statement": {
+    1: "https://www.youtube.com/embed/Ed9lP0-komE",
+    2: "https://www.youtube.com/embed/wkPe3sWomoA",
+    3: "https://www.youtube.com/embed/FkgRz4v2Llk",
+  },
+};
+
 interface StageDetailDrawerProps {
   stage: CivicModule;
   profile: any;
@@ -110,10 +118,8 @@ export function StageDetailDrawer({
   const currentStepObj = currentStep > 0 && !isMastery ? stage.steps[currentStep - 1] : null;
   let videoUrl = currentStepObj?.youtube_url || null;
 
-  if (stage.slug === "budget-policy-statement" && !videoUrl && currentStepObj) {
-    if (currentStep === 1) videoUrl = "https://www.youtube.com/embed/Ed9lP0-komE";
-    else if (currentStep === 2) videoUrl = "https://www.youtube.com/embed/wkPe3sWomoA";
-    else if (currentStep === 3) videoUrl = "https://www.youtube.com/embed/FkgRz4v2Llk";
+  if (!videoUrl && FALLBACK_VIDEO_URLS[stage.slug]?.[currentStep]) {
+    videoUrl = FALLBACK_VIDEO_URLS[stage.slug][currentStep];
   } else if (videoUrl && !videoUrl.includes("embed/")) {
     const videoIdMatch = videoUrl.match(/(?:youtu\.be\/|v=)([^&?]+)/);
     if (videoIdMatch) {
@@ -129,18 +135,18 @@ export function StageDetailDrawer({
             <ChevronLeft className="size-4" />
           </button>
           <div className="min-w-0">
-            <p className="text-[9px] text-muted-foreground font-semibold truncate">{stage.badgeName} / {stage.title}</p>
+            <p className="text-[10px] text-muted-foreground font-semibold truncate">{stage.badgeName} / {stage.title}</p>
             <h2 className="text-sm font-black tracking-tight truncate">{stage.title}</h2>
           </div>
         </div>
         <div className="flex items-center gap-1.5 shrink-0">
-          <span className="px-2 py-0.5 bg-primary/10 text-primary text-[9px] font-bold rounded flex items-center gap-1">
+          <span className="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded flex items-center gap-1">
             <BookOpen className="size-3" /> {stage.steps.length} lessons
           </span>
-          <span className="px-2 py-0.5 bg-muted/40 text-muted-foreground text-[9px] font-bold rounded flex items-center gap-1">
+          <span className="px-2 py-0.5 bg-muted/40 text-muted-foreground text-[10px] font-bold rounded flex items-center gap-1">
             <Clock className="size-3" /> 4h 5min
           </span>
-          <span className="px-2 py-0.5 bg-amber-500/10 text-amber-600 text-[9px] font-bold rounded flex items-center gap-1">
+          <span className="px-2 py-0.5 bg-amber-500/10 text-amber-600 text-[10px] font-bold rounded flex items-center gap-1">
             <Star className="size-3" /> 4.9
           </span>
         </div>
@@ -166,7 +172,7 @@ export function StageDetailDrawer({
                     {tab.label}
                   </button>
                 ))}
-                <span className="ml-auto text-[9px] text-muted-foreground font-semibold shrink-0">
+                <span className="ml-auto text-[10px] text-muted-foreground font-semibold shrink-0">
                   Step {currentStep} of {stage.steps.length}
                 </span>
               </div>
@@ -240,7 +246,7 @@ export function StageDetailDrawer({
 
         <div className="hidden md:flex md:w-[260px] bg-muted/10 border-l border-border/30 flex-col shrink-0">
           <div className="p-3 border-b border-border/30">
-            <h3 className="font-bold text-[9px] uppercase tracking-wider text-muted-foreground">Curriculum</h3>
+            <h3 className="font-bold text-[10px] uppercase tracking-wider text-muted-foreground">Curriculum</h3>
           </div>
           <div className="flex-1 overflow-y-auto">
             {stage.steps.map((step, idx) => {
@@ -256,7 +262,7 @@ export function StageDetailDrawer({
                     className={`w-full flex items-center justify-between p-2.5 transition-colors hover:bg-muted/30 ${isCurrent ? 'bg-primary/5' : ''}`}
                   >
                     <div className="flex items-center gap-2 text-left min-w-0">
-                      <div className={`size-4.5 rounded-full flex items-center justify-center text-[8px] font-bold shrink-0 ${
+                      <div className={`size-4.5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0 ${
                         isPassed ? "bg-emerald-500 text-white" :
                         isCurrent ? "bg-primary text-white" :
                         "bg-muted/50 text-muted-foreground"
@@ -273,17 +279,17 @@ export function StageDetailDrawer({
                         className="w-full flex items-center justify-between py-1 px-2 rounded-lg hover:bg-muted/30 transition-colors text-left group">
                         <div className="flex items-center gap-1.5 min-w-0">
                           <PlayCircle className="size-3 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
-                          <span className="text-[9px] font-semibold text-foreground/70 group-hover:text-foreground truncate">Reading</span>
+                          <span className="text-[10px] font-semibold text-foreground/70 group-hover:text-foreground truncate">Reading</span>
                         </div>
-                        <span className="text-[8px] text-muted-foreground font-semibold shrink-0">10 min</span>
+                        <span className="text-[10px] text-muted-foreground font-semibold shrink-0">10 min</span>
                       </button>
                       <button onClick={() => { selectStep(stepNum); setActiveTab("quiz"); setShowTrivia(true); }}
                         className="w-full flex items-center justify-between py-1 px-2 rounded-lg hover:bg-muted/30 transition-colors text-left group">
                         <div className="flex items-center gap-1.5 min-w-0">
                           <CheckCircle2 className="size-3 text-muted-foreground group-hover:text-amber-500 transition-colors shrink-0" />
-                          <span className="text-[9px] font-semibold text-foreground/70 group-hover:text-foreground truncate">Quiz</span>
+                          <span className="text-[10px] font-semibold text-foreground/70 group-hover:text-foreground truncate">Quiz</span>
                         </div>
-                        <span className="text-[8px] text-muted-foreground font-semibold shrink-0">5 min</span>
+                        <span className="text-[10px] text-muted-foreground font-semibold shrink-0">5 min</span>
                       </button>
                     </div>
                   )}

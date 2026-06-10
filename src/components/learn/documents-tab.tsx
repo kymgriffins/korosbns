@@ -51,7 +51,7 @@ export function DocumentsTab({ stageId, documentName, selectedYear, constitution
 
       {(stageId !== 1 || constitutionTab === "current") && (
         <div className="space-y-1.5">
-          <label className="text-[8px] font-bold text-muted-foreground uppercase tracking-wider">Financial Year:</label>
+          <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Financial Year:</label>
           <div className="flex gap-1.5 overflow-x-auto pb-0.5 scrollbar-thin">
             {yearOptions.map((yr) => (
               <button key={yr} onClick={() => onYearChange(yr)}
@@ -83,25 +83,25 @@ export function DocumentsTab({ stageId, documentName, selectedYear, constitution
                   )} />
                   <div className="flex justify-between items-start">
                     <h4 className="text-xs font-bold">{doc.title}</h4>
-                    <span className="text-[8px] bg-muted/30 px-1.5 py-0.5 rounded font-semibold text-muted-foreground">{doc.year}</span>
+                    <span className="text-[10px] bg-muted/30 px-1.5 py-0.5 rounded font-semibold text-muted-foreground">{doc.year}</span>
                   </div>
-                  <p className="text-[9px] text-muted-foreground mt-1">{doc.historicalContext || doc.description}</p>
+                  <p className="text-[10px] text-muted-foreground mt-1">{doc.historicalContext || doc.description}</p>
                   {isDocSelected && (
                     <div className="mt-2.5 pt-2.5 border-t border-border/30 flex flex-wrap gap-1.5">
                       {doc.isAvailable ? (
                         <>
-                          <a href={doc.pdfUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[9px] bg-primary text-primary-foreground px-2.5 py-1.5 rounded-lg font-bold hover:bg-primary/95 transition-all">\uD83D\uDCC4 View</a>
-                          <a href={`${doc.pdfUrl}?download=1`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[9px] bg-muted/30 text-foreground px-2.5 py-1.5 rounded-lg font-bold hover:bg-muted/50 transition-all">
+                          <a href={doc.pdfUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[10px] bg-primary text-primary-foreground px-2.5 py-1.5 rounded-lg font-bold hover:bg-primary/95 transition-all">\uD83D\uDCC4 View</a>
+                          <a href={`${doc.pdfUrl}?download=1`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[10px] bg-muted/30 text-foreground px-2.5 py-1.5 rounded-lg font-bold hover:bg-muted/50 transition-all">
                             <DownloadCloud className="size-2.5" /> Download
                           </a>
                         </>
                       ) : (
                         <div className="flex-1 flex flex-col space-y-1.5">
-                          <span className="text-[8px] bg-amber-500/10 text-amber-600 font-bold px-2 py-1 rounded text-center">PDF Archived</span>
-                          <Button size="xs" onClick={() => onRequestDocument(doc.title, doc.year)} className="text-[8px] font-bold h-6 rounded-lg">Request Copy</Button>
+                          <span className="text-[10px] bg-amber-500/10 text-amber-600 font-bold px-2 py-1 rounded text-center">PDF Archived</span>
+                          <Button size="xs" onClick={() => onRequestDocument(doc.title, doc.year)} className="text-[10px] font-bold h-6 rounded-lg">Request Copy</Button>
                         </div>
                       )}
-                      <a href={doc.sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[9px] bg-muted/30 text-foreground px-2.5 py-1.5 rounded-lg font-bold hover:bg-muted/50">\uD83D\uDD17 Source</a>
+                      <a href={doc.sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-[10px] bg-muted/30 text-foreground px-2.5 py-1.5 rounded-lg font-bold hover:bg-muted/50">\uD83D\uDD17 Source</a>
                     </div>
                   )}
                 </div>
@@ -114,16 +114,16 @@ export function DocumentsTab({ stageId, documentName, selectedYear, constitution
           <div className="p-3 bg-card shadow-xs rounded-xl flex items-center justify-between gap-3">
             <div className="space-y-0.5">
               <h4 className="text-xs font-bold">Alert Subscriptions</h4>
-              <p className="text-[9px] text-muted-foreground">Get notified when counties upload updates.</p>
+              <p className="text-[10px] text-muted-foreground">Get notified when counties upload updates.</p>
             </div>
-            <Button size="sm" variant={isDocTracked ? "outline" : "default"} onClick={onToggleTrackDoc} className="font-bold text-[9px] h-7 rounded-lg px-2.5">
+            <Button size="sm" variant={isDocTracked ? "outline" : "default"} onClick={onToggleTrackDoc} className="font-bold text-[10px] h-7 rounded-lg px-2.5">
               {isDocTracked ? "Tracking" : "Track"}
             </Button>
           </div>
 
           {currentStageDocs.length > 0 ? (
             <div className="space-y-2.5">
-              <div className="flex justify-between items-center text-[9px] font-bold text-muted-foreground uppercase tracking-wider">
+              <div className="flex justify-between items-center text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                 <span>Documents ({currentStageDocs.length})</span>
                 <span>{selectedYear}</span>
               </div>
@@ -132,22 +132,22 @@ export function DocumentsTab({ stageId, documentName, selectedYear, constitution
                   <div className="flex justify-between items-start gap-2">
                     <div>
                       <h4 className="text-xs font-bold truncate max-w-[200px]">{doc.name.replace(/\.pdf$/i, "").replace(/[-_]/g, " ")}</h4>
-                      <p className="text-[8px] text-muted-foreground mt-0.5">{doc.issuingBody} · {doc.financialYear}</p>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">{doc.issuingBody} · {doc.financialYear}</p>
                     </div>
                     {doc.isCurrent && <span className="text-[7px] bg-emerald-500/10 text-emerald-600 font-bold px-1 py-0.5 rounded uppercase tracking-wider shrink-0">Current</span>}
                   </div>
-                  <p className="text-[9px] text-muted-foreground leading-relaxed">{doc.description}</p>
+                  <p className="text-[10px] text-muted-foreground leading-relaxed">{doc.description}</p>
                   <div className="pt-2 border-t border-border/30 flex items-center justify-between gap-2">
                     <div className="flex items-center gap-1">
-                      <a href={doc.pdfUrl} target="_blank" rel="noopener noreferrer" className="inline-flex h-7 px-2 items-center gap-1 rounded-lg bg-primary text-primary-foreground text-[9px] font-bold hover:bg-primary/95 transition-all shadow-xs">\uD83D\uDCC4 View</a>
-                      <a href={doc.pdfUrl} download={doc.name} className="inline-flex h-7 px-2 items-center gap-1 rounded-lg bg-muted/30 text-foreground text-[9px] font-bold hover:bg-muted/50 transition-all">
+                      <a href={doc.pdfUrl} target="_blank" rel="noopener noreferrer" className="inline-flex h-7 px-2 items-center gap-1 rounded-lg bg-primary text-primary-foreground text-[10px] font-bold hover:bg-primary/95 transition-all shadow-xs">\uD83D\uDCC4 View</a>
+                      <a href={doc.pdfUrl} download={doc.name} className="inline-flex h-7 px-2 items-center gap-1 rounded-lg bg-muted/30 text-foreground text-[10px] font-bold hover:bg-muted/50 transition-all">
                         <DownloadCloud className="size-2.5" /> Get
                       </a>
                       <button onClick={() => onCopyShareLink(doc.pdfUrl)} className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-muted/30 text-muted-foreground hover:text-foreground transition-all" title="Share">
                         <Share2 className="size-3" />
                       </button>
                     </div>
-                    <span className="text-[8px] font-mono text-muted-foreground uppercase">{doc.sizeBytes ? `${(doc.sizeBytes / 1024 / 1024).toFixed(1)} MB` : "PDF"}</span>
+                    <span className="text-[10px] font-mono text-muted-foreground uppercase">{doc.sizeBytes ? `${(doc.sizeBytes / 1024 / 1024).toFixed(1)} MB` : "PDF"}</span>
                   </div>
                 </div>
               ))}
@@ -157,11 +157,11 @@ export function DocumentsTab({ stageId, documentName, selectedYear, constitution
               <FileText className="size-8 mx-auto text-muted-foreground/40" />
               <div>
                 <h4 className="font-bold text-xs">No documents for {selectedYear}</h4>
-                <p className="text-[9px] text-muted-foreground mt-1">Not yet gazetted or uploaded for this year.</p>
+                <p className="text-[10px] text-muted-foreground mt-1">Not yet gazetted or uploaded for this year.</p>
               </div>
               <div className="flex gap-1.5 justify-center">
-                <Button size="sm" onClick={() => onYearChange(2026)} className="rounded-lg text-[9px] font-bold h-7">Reset to 2026</Button>
-                <Button size="sm" variant="outline" onClick={() => onRequestDocument(documentName, selectedYear)} className="rounded-lg text-[9px] font-bold h-7">Request</Button>
+                <Button size="sm" onClick={() => onYearChange(2026)} className="rounded-lg text-[10px] font-bold h-7">Reset to 2026</Button>
+                <Button size="sm" variant="outline" onClick={() => onRequestDocument(documentName, selectedYear)} className="rounded-lg text-[10px] font-bold h-7">Request</Button>
               </div>
             </div>
           )}

@@ -295,7 +295,7 @@ Submitted By: Anonymized Citizen (${profile.pseudoName})
                     <h4 className="text-sm font-bold">Pathway A: Official County Portal</h4>
                     <p className="text-xs text-muted-foreground">Upload directly onto the county public finance feedback system.</p>
                   </div>
-                  <span className="text-[9px] bg-emerald-500/10 text-emerald-600 font-bold px-2 py-0.5 rounded-full">Recommended</span>
+                  <span className="text-[10px] bg-emerald-500/10 text-emerald-600 font-bold px-2 py-0.5 rounded-full">Recommended</span>
                 </div>
                 <div className="flex gap-2 pt-1">
                   <Button onClick={handleCopyToClipboard} variant="outline" size="sm" className="rounded-xl flex-1 gap-1">

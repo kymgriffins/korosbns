@@ -37,6 +37,8 @@ interface LearnContextType {
   updateCurrentStep: (step: number) => void;
   totalStages: number;
   modulesLoading: boolean;
+  modulesError: string | null;
+  refreshModules: () => Promise<void>;
 }
 
 const LearnContext = createContext<LearnContextType | undefined>(undefined);
@@ -51,6 +53,7 @@ export function LearnProvider({ children }: { children: React.ReactNode }) {
   const [activeLesson, setActiveLesson] = useState<ActiveLesson | null>(null);
   const [civicModules, setCivicModules] = useState<CivicModule[]>([]);
   const [modulesLoading, setModulesLoading] = useState(true);
+  const [modulesError, setModulesError] = useState<string | null>(null);
 
   const totalStages = civicModules.length;
 
@@ -66,17 +69,24 @@ export function LearnProvider({ children }: { children: React.ReactNode }) {
 
   const fetchCivicModules = useCallback(async () => {
     setModulesLoading(true);
+    setModulesError(null);
     try {
       const data = await learnHubApi.stages();
       if (data?.results?.length) {
         setCivicModules(data.results);
       }
     } catch (err) {
+      const message = err instanceof Error ? err.message : "Failed to load learning modules";
+      setModulesError(message);
       console.error("Failed to fetch civic modules", err);
     } finally {
       setModulesLoading(false);
     }
   }, []);
+
+  const refreshModules = useCallback(async () => {
+    await fetchCivicModules();
+  }, [fetchCivicModules]);
 
   const updateCurrentStep = useCallback((step: number) => {
     setActiveLesson((prev) => prev ? { ...prev, currentStep: step } : prev);
@@ -114,6 +124,8 @@ export function LearnProvider({ children }: { children: React.ReactNode }) {
         updateCurrentStep,
         totalStages,
         modulesLoading,
+        modulesError,
+        refreshModules,
       }}
     >
       {children}

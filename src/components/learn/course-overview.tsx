@@ -29,7 +29,7 @@ export function CourseOverview({ badge, title, credits, author, description, exp
           <Image src={author.image} alt={author.name} width={32} height={32} className="size-8 rounded-full object-cover" />
           <div className="text-left">
             <p className="text-xs font-bold leading-tight">{author.name}</p>
-            <p className="text-[9px] text-muted-foreground">{author.role}</p>
+            <p className="text-[10px] text-muted-foreground">{author.role}</p>
           </div>
         </div>
       )}
@@ -38,7 +38,7 @@ export function CourseOverview({ badge, title, credits, author, description, exp
 
       {expectations.length > 0 && (
         <div className="text-left w-full max-w-md space-y-2 bg-muted/20 p-3.5 rounded-xl">
-          <p className="text-[9px] uppercase font-bold text-muted-foreground tracking-wider">What to expect</p>
+          <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-wider">What to expect</p>
           <ul className="space-y-1">
             {expectations.map((exp, i) => (
               <li key={i} className="text-[11px] flex items-start gap-2">

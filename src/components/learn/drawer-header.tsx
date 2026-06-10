@@ -20,7 +20,7 @@ export function DrawerHeader({ title, badge, currentStep, activeSubTab, onSubTab
   return (
     <div className="flex items-center justify-between px-4 md:px-5 h-11 border-b border-border/30 shrink-0 bg-background/60 backdrop-blur z-20">
       <div className="flex items-center gap-2 min-w-0">
-        <span className="hidden md:inline text-[9px] font-semibold text-muted-foreground uppercase tracking-wider truncate">{title}</span>
+        <span className="hidden md:inline text-[10px] font-semibold text-muted-foreground uppercase tracking-wider truncate">{title}</span>
         <span className="md:hidden text-xs font-bold truncate flex items-center gap-1.5">
           <span className="text-sm">{badge}</span>
           <span className="truncate">{title}</span>
@@ -31,14 +31,14 @@ export function DrawerHeader({ title, badge, currentStep, activeSubTab, onSubTab
         {author && (
           <div className="hidden md:flex items-center gap-1.5 px-2 py-1 rounded-lg bg-muted/30">
             <Image src={author.image} alt={author.name} width={14} height={14} className="size-3.5 rounded-full object-cover" />
-            <span className="text-[8px] font-semibold text-muted-foreground truncate max-w-[80px]">{author.name}</span>
+            <span className="text-[10px] font-semibold text-muted-foreground truncate max-w-[80px]">{author.name}</span>
           </div>
         )}
 
         <div className="flex rounded-lg bg-muted/30 p-0.5">
           {(["learn", "documents", "forum"] as const).map((tab) => (
             <button key={tab} onClick={() => onSubTabChange(tab)}
-              className={`px-2.5 py-1 rounded-md text-[9px] font-bold uppercase tracking-wider transition-all ${
+              className={`px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all ${
                 activeSubTab === tab ? "bg-card text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
               }`}>
               {tab === "learn" ? "Journey" : tab === "documents" ? "Docs" : "Forum"}

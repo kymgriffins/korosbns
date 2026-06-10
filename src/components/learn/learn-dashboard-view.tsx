@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { motion, type Variants } from "motion/react";
-import { Sparkles, Flame, Award, BookOpen, PlayCircle, Trophy, Activity, Target, ChevronRight } from "lucide-react";
+import { Flame, Award, BookOpen, PlayCircle, Trophy, Activity, Target } from "lucide-react";
 import { Button } from "@/ui/button";
 import { BitmojiAvatar } from "./bitmoji-avatar";
 import {
@@ -127,7 +127,7 @@ export function LearnDashboardView({
                   {currentStage.badge}
                 </div>
                 <div className="min-w-0">
-                  <p className="text-[9px] font-bold uppercase text-primary tracking-wider">Next Up</p>
+                  <p className="text-[10px] font-bold uppercase text-primary tracking-wider">Next Up</p>
                   <h3 className="text-sm font-black truncate">{currentStage.title}</h3>
                   <p className="text-[10px] text-muted-foreground truncate">{currentStage.documentName}</p>
                 </div>
@@ -143,13 +143,13 @@ export function LearnDashboardView({
               <h3 className="text-xs font-bold flex items-center gap-1.5">
                 <Activity className="size-3.5 text-primary" /> Activity
               </h3>
-              <span className="text-[9px] text-muted-foreground font-semibold">This week</span>
+              <span className="text-[10px] text-muted-foreground font-semibold">This week</span>
             </div>
             <div className="h-[120px]">
               <ChartContainer config={chartConfig} className="w-full h-full">
                 <BarChart data={chartData} margin={{ top: 5, right: 0, left: 0, bottom: 0 }}>
                   <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.3} />
-                  <XAxis dataKey="day" tickLine={false} tickMargin={4} axisLine={false} className="text-[9px] font-bold" />
+                  <XAxis dataKey="day" tickLine={false} tickMargin={4} axisLine={false} className="text-[10px] font-bold" />
                   <ChartTooltip content={<ChartTooltipContent hideIndicator className="bg-card shadow-md text-xs border-0" />} cursor={{ fill: 'var(--muted)', opacity: 0.2 }} />
                   <Bar dataKey="xp" fill="var(--color-xp)" radius={[3, 3, 0, 0]} barSize={24} />
                 </BarChart>
@@ -161,7 +161,7 @@ export function LearnDashboardView({
         <div className="space-y-3">
           <motion.div variants={itemVars} className="bg-card shadow-xs rounded-xl p-3">
             <h3 className="text-xs font-bold mb-2">Progress</h3>
-            <div className="relative flex items-center justify-center h-[100px]">
+            <div className="relative flex items-center justify-center h-[100px]" role="img" aria-label={`Overall progress: ${Math.round(progressPercentage)}%`}>
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie data={doughnutData} innerRadius={34} outerRadius={46} startAngle={90} endAngle={-270} dataKey="value" stroke="none" cornerRadius={6}>
@@ -173,7 +173,7 @@ export function LearnDashboardView({
                 <span className="text-lg font-black">{Math.round(progressPercentage)}%</span>
               </div>
             </div>
-            <div className="flex justify-center gap-3 text-[9px] font-semibold mt-1">
+            <div className="flex justify-center gap-3 text-[10px] font-semibold mt-1">
               <div className="flex items-center gap-1"><div className="size-1.5 rounded-full bg-primary" /> Done</div>
               <div className="flex items-center gap-1"><div className="size-1.5 rounded-full bg-muted-foreground/20" /> Left</div>
             </div>
@@ -184,7 +184,7 @@ export function LearnDashboardView({
               <h3 className="text-xs font-bold flex items-center gap-1.5">
                 <Trophy className="size-3.5 text-amber-500" /> Top Citizens
               </h3>
-              <Link href={Routes.LearnForum} className="text-[9px] font-bold text-primary/70 hover:text-primary uppercase tracking-wider">All</Link>
+              <Link href={Routes.LearnForum} className="text-[10px] font-bold text-primary/70 hover:text-primary uppercase tracking-wider">All</Link>
             </div>
             <div className="space-y-1 max-h-[200px] overflow-y-auto">
               {(leaderboard ?? []).length > 0 ? (
@@ -200,11 +200,11 @@ export function LearnDashboardView({
                       </div>
                       <div className="min-w-0">
                         <p className="text-[11px] font-bold truncate">{entry.name ?? "Anonymous"}</p>
-                        <p className="text-[8px] text-muted-foreground">{entry.points} SVG</p>
+                        <p className="text-[10px] text-muted-foreground">{entry.points} SVG</p>
                       </div>
                     </div>
                     <div className={cn(
-                      "px-1.5 py-0.5 rounded text-[9px] font-black",
+                      "px-1.5 py-0.5 rounded text-[10px] font-black",
                       entry.rank === 1 ? "bg-amber-500/15 text-amber-600" :
                       entry.rank === 2 ? "bg-slate-300/20 text-slate-500" :
                       entry.rank === 3 ? "bg-orange-500/10 text-orange-600" :

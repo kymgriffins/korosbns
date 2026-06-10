@@ -85,7 +85,7 @@ export function TriviaSection({ trivia, stepId, showTrivia, isStepTriviaPassed, 
             <div className="flex items-start justify-between gap-2">
               <h4 className="text-xs font-bold leading-snug">{startIdx + batchLocalIdx + 1}. {q.question}</h4>
               {q.type === "reflection" && (
-                <span className="shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-[9px] font-bold text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">Reflection</span>
+                <span className="shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">Reflection</span>
               )}
             </div>
 

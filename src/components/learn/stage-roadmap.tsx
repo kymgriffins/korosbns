@@ -58,7 +58,7 @@ export function StageRoadmap({ text, profile, stages, onSelectStage }: {
                   }`}>
                     <span className="text-sm">{s.badge}</span>
                     <div className="truncate">
-                      <p className="font-bold truncate text-[9px]">{s.badgeName || s.title}</p>
+                      <p className="font-bold truncate text-[10px]">{s.badgeName || s.title}</p>
                     </div>
                   </div>
                 );
@@ -73,7 +73,14 @@ export function StageRoadmap({ text, profile, stages, onSelectStage }: {
           const completed = profile.badges?.includes(stage.badge);
           const active = profile.stageProgress?.includes(stage.id);
           return (
-            <StageCard key={stage.id} stage={stage} isCompleted={!!completed} isActive={!!active} onSelect={() => onSelectStage(stage)} />
+            <StageCard
+              key={stage.id}
+              stage={stage}
+              isCompleted={!!completed}
+              isActive={!!active}
+              isLocked={!completed && !active}
+              onSelect={() => onSelectStage(stage)}
+            />
           );
         })}
       </div>

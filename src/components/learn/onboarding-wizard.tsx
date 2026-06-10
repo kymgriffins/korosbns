@@ -116,7 +116,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label className="text-xs font-semibold">Phone <span className="text-muted-foreground font-normal">(Optional)</span></Label>
-              <span className="text-[9px] text-amber-600 bg-amber-500/10 px-1.5 py-0.5 rounded font-bold">Leaderboard Eligible</span>
+              <span className="text-[10px] text-amber-600 bg-amber-500/10 px-1.5 py-0.5 rounded font-bold">Leaderboard Eligible</span>
             </div>
             <Input type="tel" placeholder="e.g. 0712345678" value={phone} onChange={(e) => setPhone(e.target.value)} className="rounded-lg h-10 text-sm" />
             <p className="text-[10px] text-muted-foreground">For prize eligibility & verification.</p>
@@ -190,7 +190,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
                 <Checkbox id="whatsappFallback" checked={whatsappFallback} onCheckedChange={(checked) => setWhatsappFallback(checked === true)} className="mt-0.5" />
                 <div>
                   <Label htmlFor="whatsappFallback" className="text-[11px] font-semibold cursor-pointer">SMS / WhatsApp fallback</Label>
-                  <p className="text-[9px] text-muted-foreground">If push notifications fail.</p>
+                  <p className="text-[10px] text-muted-foreground">If push notifications fail.</p>
                 </div>
               </div>
             )}

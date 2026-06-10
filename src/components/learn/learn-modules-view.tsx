@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "motion/react";
-import { Search, BookOpen, User, Filter } from "lucide-react";
+import { Search, BookOpen, User } from "lucide-react";
 import { Button } from "@/ui/button";
 import { BitmojiAvatar } from "./bitmoji-avatar";
 import type { CivicModule } from "@/types/learn";
@@ -59,7 +59,7 @@ export function LearnModulesView({ profile, stages, currentStage, onSelectStage 
           </div>
           <div className="min-w-0">
             <h1 className="font-bold text-sm leading-tight truncate">Civic Modules</h1>
-            <p className="text-[9px] text-muted-foreground font-semibold">Master the budget process</p>
+            <p className="text-[10px] text-muted-foreground font-semibold">Master the budget process</p>
           </div>
         </div>
         <div className="flex items-center gap-2 shrink-0">
@@ -117,7 +117,7 @@ export function LearnModulesView({ profile, stages, currentStage, onSelectStage 
                 >
                   <div className="flex items-start justify-between mb-2">
                     <span className="text-xl">{stage.badge || "\uD83D\uDCD8"}</span>
-                    <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider ${
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
                       isCompleted ? "bg-emerald-500/10 text-emerald-600" :
                       isInProgress ? "bg-amber-500/10 text-amber-600" :
                       "bg-muted/40 text-muted-foreground"
@@ -131,12 +131,20 @@ export function LearnModulesView({ profile, stages, currentStage, onSelectStage 
 
                   {total > 0 && (
                     <div className="space-y-1 mb-2.5">
-                      <div className="flex justify-between text-[9px] font-semibold text-muted-foreground">
+                      <div className="flex justify-between text-[10px] font-semibold text-muted-foreground">
                         <span>{completedCount}/{total} steps</span>
                         <span>{Math.round((completedCount / total) * 100)}%</span>
                       </div>
                       <div className="h-1 bg-muted/60 rounded-full overflow-hidden">
-                        <div className="h-full bg-primary rounded-full transition-all duration-500" style={{ width: `${(completedCount / total) * 100}%` }} />
+                        <div
+                          className="h-full bg-primary rounded-full transition-all duration-500"
+                          style={{ width: `${(completedCount / total) * 100}%` }}
+                          role="progressbar"
+                          aria-valuenow={Math.round((completedCount / total) * 100)}
+                          aria-valuemin={0}
+                          aria-valuemax={100}
+                          aria-label={`${stage.title}: ${completedCount} of ${total} steps completed`}
+                        />
                       </div>
                     </div>
                   )}
@@ -146,11 +154,11 @@ export function LearnModulesView({ profile, stages, currentStage, onSelectStage 
                       <div className="size-5 rounded-full bg-muted flex items-center justify-center shrink-0">
                         <User className="size-2.5 text-muted-foreground" />
                       </div>
-                      <span className="text-[9px] font-semibold text-muted-foreground truncate">
+                      <span className="text-[10px] font-semibold text-muted-foreground truncate">
                         {stage.author?.name || stage.credits || "BNS Team"}
                       </span>
                     </div>
-                    <Button size="sm" className="rounded-lg h-6 px-2.5 text-[9px] font-bold shrink-0"
+                    <Button size="sm" className="rounded-lg h-6 px-2.5 text-[10px] font-bold shrink-0"
                       onClick={(e) => { e.stopPropagation(); onSelectStage(stage); }}>
                       {isCompleted ? "Review" : isInProgress ? "Continue" : "Start"}
                     </Button>

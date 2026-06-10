@@ -48,10 +48,13 @@ function LearnSidebar() {
     if (pathname !== "/learn") router.push("/learn");
   };
 
+  const moduleCount = civicModules.length;
+  const alertCount = 0;
+
   const navItems: { key: LearnTab; label: string; icon: React.ReactNode; badge?: string }[] = [
     { key: "home", label: "Dashboard", icon: <LayoutDashboard className="size-4" /> },
-    { key: "learn", label: "Modules", icon: <CheckCircle2 className="size-4" />, badge: "3" },
-    { key: "alerts", label: "Alerts", icon: <Bell className="size-4" />, badge: "12+" },
+    { key: "learn", label: "Modules", icon: <CheckCircle2 className="size-4" />, badge: moduleCount > 0 ? String(moduleCount) : undefined },
+    { key: "alerts", label: "Alerts", icon: <Bell className="size-4" />, badge: alertCount > 0 ? String(alertCount) : undefined },
     { key: "documents", label: "Documents", icon: <FileText className="size-4" /> },
   ];
 
@@ -69,7 +72,7 @@ function LearnSidebar() {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-[9px] font-bold tracking-wider text-muted-foreground uppercase mb-0.5">Menu</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase mb-0.5">Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {navItems.map((item) => (
@@ -78,7 +81,7 @@ function LearnSidebar() {
                     {item.icon}
                     <span className="font-semibold text-xs">{item.label}</span>
                     {item.badge && !isCollapsed && (
-                      <span className="ml-auto flex h-4.5 px-1 items-center justify-center rounded-full bg-primary text-[9px] font-bold text-primary-foreground shadow-xs">{item.badge}</span>
+                      <span className="ml-auto flex h-4.5 px-1 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow-xs">{item.badge}</span>
                     )}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -94,7 +97,7 @@ function LearnSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel className="text-[9px] font-bold tracking-wider text-muted-foreground uppercase mt-3 mb-0.5">General</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase mt-3 mb-0.5">General</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {isLoggedIn ? (
@@ -141,7 +144,7 @@ function LearnSidebar() {
               {user?.avatar_url ? (
                 <img src={user.avatar_url} alt="" className="size-full rounded-full object-cover" />
               ) : (
-                <AvatarFallback className="bg-primary/10 text-primary text-[9px] font-bold">
+                <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-bold">
                   {user?.first_name?.[0] ?? user?.email?.[0]?.toUpperCase() ?? "?"}
                 </AvatarFallback>
               )}
@@ -160,8 +163,8 @@ function LearnSidebar() {
                 </button>
                 <div className="relative z-10 space-y-1.5">
                   <h4 className="font-bold text-xs">Get the BNS App</h4>
-                  <p className="text-[9px] text-white/80">Follow budgets on the go.</p>
-                  <button className="mt-1.5 w-full rounded-lg bg-white text-primary text-[10px] font-bold py-1.5 shadow-xs hover:bg-white/90 transition-colors">Download</button>
+                  <p className="text-[10px] text-white/80">Follow budgets on the go.</p>
+                  <button className="mt-1.5 w-full rounded-lg bg-white text-primary text-[11px] font-bold py-1.5 shadow-xs hover:bg-white/90 transition-colors">Download</button>
                 </div>
               </div>
             )}
@@ -203,7 +206,7 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
       <SidebarProvider>
         <LearnSidebar />
         <div className="flex flex-col flex-1 h-dvh md:min-h-dvh min-w-0 overflow-hidden">
-          <header className="hidden h-12 items-center gap-4 border-b border-border/30 bg-background px-4 md:hidden">
+          <header className="flex h-12 items-center gap-4 border-b border-border/30 bg-background px-4 md:hidden">
             <SidebarTrigger className="-ml-1" />
             <div className="font-semibold text-sm">Learning Hub</div>
           </header>

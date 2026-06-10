@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
-import { Search, Folder, FileText, MoreHorizontal, ChevronRight, Database, CheckCircle2, Bell } from "lucide-react";
+import { useState } from "react";
+import { Search, Folder, FileText, MoreHorizontal, Database, CheckCircle2 } from "lucide-react";
 import { cn } from "@/utils";
 import { BitmojiAvatar } from "./bitmoji-avatar";
-import { team } from "@/constants/team";
 
 export function LearnDocumentsView({ profile }: { profile: any }) {
   const [activeFileTab, setActiveFileTab] = useState<"all" | "tracked" | "commentaries">("all");
@@ -30,8 +29,6 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
       modified: new Date(log.dateSubmitted).toLocaleDateString(),
       size: "245 KB", icon: <FileText className="size-3.5 text-primary" />, category: "commentaries"
     })),
-    { id: "dummy-1", name: "Nairobi County FY 25/26 Draft Budget", type: "County Reports", owner: team[2]?.name || "Admin", modified: "2026-01-15", size: "2.4 MB", icon: <Folder className="size-3.5 text-amber-500" />, category: "all" },
-    { id: "dummy-2", name: "Auditor General Report 2024", type: "Audit Reports", owner: team[1]?.name || "Admin", modified: "2026-01-14", size: "15.2 MB", icon: <FileText className="size-3.5 text-indigo-500" />, category: "all" },
   ];
 
   const filteredFiles = activeFileTab === "all" ? allFiles : allFiles.filter(f => f.category === activeFileTab);
@@ -45,7 +42,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
           </div>
           <div>
             <h1 className="font-bold text-sm leading-tight">Data Repository</h1>
-            <p className="text-[9px] text-muted-foreground font-semibold">Access public civic data</p>
+            <p className="text-[10px] text-muted-foreground font-semibold">Access public civic data</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -61,7 +58,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
             )}
             <div className="hidden lg:block text-xs">
               <p className="font-bold leading-none">{profile?.breakName || "Citizen"}</p>
-              <p className="text-[9px] text-muted-foreground">{profile?.county || "Kenya"}</p>
+              <p className="text-[10px] text-muted-foreground">{profile?.county || "Kenya"}</p>
             </div>
           </div>
         </div>
@@ -112,7 +109,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse min-w-[500px]">
                   <thead>
-                    <tr className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
+                    <tr className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                       <th className="px-4 py-3">Name</th>
                       <th className="px-4 py-3">Author</th>
                       <th className="px-4 py-3">Date</th>
@@ -128,7 +125,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                             <div className="bg-muted/30 p-1.5 rounded-lg">{file.icon}</div>
                             <div>
                               <p className="font-bold text-foreground text-[11px] line-clamp-1">{file.name}</p>
-                              <p className="text-[9px] text-muted-foreground">{file.type}</p>
+                              <p className="text-[10px] text-muted-foreground">{file.type}</p>
                             </div>
                           </div>
                         </td>
@@ -163,7 +160,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
               <Database className="size-4" />
               <span className="text-xs font-bold">Status</span>
             </div>
-            <div className="flex items-center gap-1 text-[9px] font-bold text-emerald-600 bg-emerald-500/10 px-1.5 py-0.5 rounded">
+            <div className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-500/10 px-1.5 py-0.5 rounded">
               <CheckCircle2 className="size-2.5" /> Online
             </div>
           </div>
@@ -191,22 +188,8 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
 
           <div className="space-y-3 pt-3 border-t border-border/30">
             <h3 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Recent Activity</h3>
-            <div className="space-y-3">
-              {[
-                { name: team[2]?.name || "Admin", time: "2h ago", action: "Published Nairobi FY 25/26 Draft" },
-                { name: team[1]?.name || "Admin", time: "4h ago", action: "Uploaded OAG Report summary" },
-                { name: team[4]?.name || "Admin", time: "5h ago", action: "Indexed Kisumu Forums" },
-              ].map((act, i) => (
-                <div key={i} className="flex gap-2.5">
-                  <div className="size-6 rounded-full bg-muted flex items-center justify-center text-[9px] font-bold shrink-0">
-                    {act.name.charAt(0)}
-                  </div>
-                  <div>
-                    <p className="text-[11px] font-bold leading-tight">{act.name} <span className="font-normal text-muted-foreground ml-1">{act.time}</span></p>
-                    <p className="text-[9px] text-muted-foreground">{act.action}</p>
-                  </div>
-                </div>
-              ))}
+            <div className="text-center py-4">
+              <p className="text-[10px] text-muted-foreground/60">No recent activity yet.</p>
             </div>
           </div>
         </aside>

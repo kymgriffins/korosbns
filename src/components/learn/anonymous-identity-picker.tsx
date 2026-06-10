@@ -140,7 +140,7 @@ export function AnonymousIdentityPicker({ onComplete }: AnonymousIdentityPickerP
             <Label htmlFor="consent" className="text-[11px] font-bold cursor-pointer flex items-center gap-1">
               <Shield className="size-3 text-primary" /> Data Protection Consent (DPA 2019)
             </Label>
-            <p className="text-[9px] text-muted-foreground leading-relaxed">
+            <p className="text-[10px] text-muted-foreground leading-relaxed">
               I consent to anonymized analytics per Kenya&apos;s Data Protection Act, 2019.
             </p>
           </div>
@@ -154,7 +154,7 @@ export function AnonymousIdentityPicker({ onComplete }: AnonymousIdentityPickerP
         </Button>
       )}
 
-      <p className="text-[9px] text-muted-foreground text-center">Your identity stays on this device. No sign-up.</p>
+      <p className="text-[10px] text-muted-foreground text-center">Your identity stays on this device. No sign-up.</p>
     </div>
   );
 }
