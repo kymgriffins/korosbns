@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import {
   Search, Folder, FileText, Database, ArrowLeft, Download, ExternalLink, Loader2,
-  Filter, X, Calendar, Building2, FileType, LayoutGrid, List, ChevronLeft, ChevronRight,
+  Filter, X, Calendar, Building2, LayoutGrid, List, ChevronLeft, ChevronRight,
   BarChart3, BookOpen
 } from "lucide-react";
 import { cn } from "@/utils";
@@ -89,7 +89,6 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
   const [searchQuery, setSearchQuery] = useState("");
 
   // These only apply inside a folder view
-  const [selectedType, setSelectedType] = useState("");
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [selectedCounty, setSelectedCounty] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("name-asc");
@@ -109,7 +108,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
     return () => { cancelled = true; };
   }, []);
 
-  useEffect(() => { setPage(1); }, [selectedType, selectedYear, selectedCounty, searchQuery, sortKey]);
+  useEffect(() => { setPage(1); }, [selectedYear, selectedCounty, searchQuery, sortKey]);
 
   const trackedFiles: DocumentFile[] = useMemo(() => {
     return (profile?.trackedDocs || []).map((doc: any, i: number) => ({
@@ -182,14 +181,6 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
     return files;
   }, [selectedFolder]);
 
-  const folderDocTypes = useMemo(() => {
-    const types = new Set<string>();
-    for (const f of currentFolderFlatFiles) {
-      if (f.docType) types.add(f.docType);
-    }
-    return Array.from(types).sort();
-  }, [currentFolderFlatFiles]);
-
   const folderYears = useMemo(() => {
     const years = new Set<number>();
     for (const f of currentFolderFlatFiles) {
@@ -207,15 +198,13 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
   }, [currentFolderFlatFiles]);
 
   const folderStats = useMemo(() => {
-    const byType = new Map<string, number>();
     const byCounty = new Map<string, number>();
     const byYear = new Map<number, number>();
     for (const f of currentFolderFlatFiles) {
-      if (f.docType) byType.set(f.docType, (byType.get(f.docType) ?? 0) + 1);
       if (f.county) byCounty.set(f.county, (byCounty.get(f.county) ?? 0) + 1);
       if (f.year) byYear.set(f.year, (byYear.get(f.year) ?? 0) + 1);
     }
-    return { total: currentFolderFlatFiles.length, byType, byCounty, byYear };
+    return { total: currentFolderFlatFiles.length, byCounty, byYear };
   }, [currentFolderFlatFiles]);
 
   const filteredFiles = useMemo(() => {
@@ -230,9 +219,6 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
       );
     }
 
-    if (selectedType) {
-      files = files.filter((f) => f.docType?.toLowerCase().includes(selectedType.toLowerCase()));
-    }
     if (selectedYear) {
       files = files.filter((f) => f.year === selectedYear);
     }
@@ -253,7 +239,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
     });
 
     return files;
-  }, [currentFolderFlatFiles, searchQuery, selectedType, selectedYear, selectedCounty, sortKey]);
+  }, [currentFolderFlatFiles, searchQuery, selectedYear, selectedCounty, sortKey]);
 
   const totalPages = Math.max(1, Math.ceil(filteredFiles.length / ITEMS_PER_PAGE));
   const safePage = Math.min(page, totalPages);
@@ -262,10 +248,9 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
     return filteredFiles.slice(start, start + ITEMS_PER_PAGE);
   }, [filteredFiles, safePage]);
 
-  const hasActiveFilters = selectedType || selectedYear !== null || selectedCounty || searchQuery.trim();
+  const hasActiveFilters = selectedYear !== null || selectedCounty || searchQuery.trim();
 
   const clearAllFilters = () => {
-    setSelectedType("");
     setSelectedYear(null);
     setSelectedCounty("");
     setSearchQuery("");
@@ -425,10 +410,6 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                   <span className="text-xs font-semibold">{folderStats.total} files</span>
                 </div>
                 <div className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5">
-                  <BarChart3 className="size-3.5 text-primary" />
-                  <span className="text-xs font-semibold">{folderStats.byType.size} types</span>
-                </div>
-                <div className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5">
                   <Building2 className="size-3.5 text-blue-500" />
                   <span className="text-xs font-semibold">{folderStats.byCounty.size} counties</span>
                 </div>
@@ -443,16 +424,6 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
             <div className="flex flex-wrap items-center gap-2">
               <div className="flex items-center gap-2 flex-1 min-w-0">
                 <Filter className="size-4 text-muted-foreground shrink-0" />
-                <select
-                  value={selectedType}
-                  onChange={(e) => setSelectedType(e.target.value)}
-                  className="rounded-lg border border-border bg-card px-2.5 py-1.5 text-[11px] font-semibold focus:outline-none focus:ring-2 focus:ring-primary/30"
-                >
-                  <option value="">All Types</option>
-                  {folderDocTypes.map((t) => (
-                    <option key={t} value={t}>{t} ({folderStats.byType.get(t) ?? 0})</option>
-                  ))}
-                </select>
                 {folderYears.length > 0 && (
                   <select
                     value={selectedYear ?? ""}
@@ -510,9 +481,6 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
 
             {/* Filter chips */}
             <div className="flex flex-wrap items-center gap-1.5 min-h-[28px]">
-              {selectedType && (
-                <FilterChip label={`Type: ${selectedType}`} onRemove={() => setSelectedType("")} />
-              )}
               {selectedYear && (
                 <FilterChip label={`FY ${selectedYear - 1}/${String(selectedYear).slice(-2)}`} onRemove={() => setSelectedYear(null)} />
               )}
@@ -552,7 +520,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                 <button onClick={clearAllFilters} className="mt-4 text-xs font-semibold text-primary hover:underline">Clear all filters</button>
               </div>
             ) : viewMode === "card" ? (
-              <div className="space-y-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {paginatedFiles.map((file) => (
                   <div key={file.id} className="flex items-start gap-3 rounded-xl border border-border bg-card p-3 transition-colors hover:border-primary/40">
                     <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
@@ -577,12 +545,6 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                         </div>
                       </div>
                       <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                        {file.docType && (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-primary/5 px-2 py-0.5 text-[9px] font-semibold text-primary">
-                            <FileType className="size-2.5" />
-                            {file.docType}
-                          </span>
-                        )}
                         {file.year && (
                           <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[9px] font-semibold text-muted-foreground">
                             <Calendar className="size-2.5" />
@@ -609,7 +571,6 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                   <thead>
                     <tr className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                       <th className="px-3 py-2.5">Name</th>
-                      <th className="px-3 py-2.5 hidden sm:table-cell">Type</th>
                       <th className="px-3 py-2.5 hidden md:table-cell">County</th>
                       <th className="px-3 py-2.5 hidden md:table-cell">Year</th>
                       <th className="px-3 py-2.5 hidden lg:table-cell">Size</th>
@@ -624,11 +585,6 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                             <FileText className="size-3.5 shrink-0 text-primary" />
                             <p className="font-semibold text-[11px] truncate max-w-[180px] lg:max-w-[280px]">{file.name}</p>
                           </div>
-                        </td>
-                        <td className="px-3 py-2 hidden sm:table-cell">
-                          {file.docType && (
-                            <span className="inline-flex items-center rounded-full bg-primary/5 px-2 py-0.5 text-[9px] font-semibold text-primary">{file.docType}</span>
-                          )}
                         </td>
                         <td className="px-3 py-2 hidden md:table-cell text-muted-foreground text-[10px]">{file.county}</td>
                         <td className="px-3 py-2 hidden md:table-cell text-muted-foreground text-[10px]">
