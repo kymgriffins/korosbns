@@ -13,6 +13,8 @@ import {
   File,
   Image,
   FileCode,
+  ExternalLink,
+  Eye,
 } from "lucide-react";
 import { cn } from "@/utils";
 
@@ -25,10 +27,21 @@ type RepoItem = {
   mime_type?: string;
 };
 
+type RepoLink = {
+  id: string;
+  title: string;
+  url: string;
+  description: string;
+  mime_type: string;
+  order: number;
+};
+
 type RepoListResponse = {
   path: string;
   items: RepoItem[];
   count: number;
+  links: RepoLink[];
+  link_count: number;
 };
 
 function formatSize(bytes: number | null): string {
@@ -134,6 +147,10 @@ function FileCard({ item }: { item: RepoItem }) {
     document.body.removeChild(a);
   };
 
+  const view = () => {
+    window.open(`/api/docrepository?path=${encodeURIComponent(item.path)}`, "_blank");
+  };
+
   return (
     <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/40 hover:shadow-sm">
       <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
@@ -155,14 +172,78 @@ function FileCard({ item }: { item: RepoItem }) {
           )}
         </div>
       </div>
-      <button
-        onClick={download}
-        className="flex shrink-0 items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-muted"
-        title="Download"
-      >
-        <Download className="size-3.5" />
-        <span className="hidden sm:inline">Download</span>
-      </button>
+      <div className="flex items-center gap-1.5 shrink-0">
+        <button
+          onClick={view}
+          className="flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-muted"
+          title="View"
+        >
+          <Eye className="size-3.5" />
+          <span className="hidden sm:inline">View</span>
+        </button>
+        <button
+          onClick={download}
+          className="flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-muted"
+          title="Download"
+        >
+          <Download className="size-3.5" />
+          <span className="hidden sm:inline">Download</span>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function LinkCard({ link }: { link: RepoLink }) {
+  const viewLink = () => {
+    window.open(`/api/docrepository/link/${encodeURIComponent(link.id)}?mode=view`, "_blank");
+  };
+
+  const downloadLink = () => {
+    window.open(`/api/docrepository/link/${encodeURIComponent(link.id)}?mode=download`, "_blank");
+  };
+
+  const isPdf = link.mime_type?.includes("pdf");
+
+  return (
+    <div className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/40 hover:shadow-sm">
+      <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-blue-500/10">
+        {isPdf ? (
+          <FileText className="size-5 text-red-500" />
+        ) : (
+          <ExternalLink className="size-5 text-blue-500" />
+        )}
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-semibold truncate">{link.title}</p>
+        <div className="flex items-center gap-2 mt-0.5 text-xs text-muted-foreground">
+          <span className="truncate max-w-[200px]">{link.mime_type?.split("/").pop()?.toUpperCase() || "LINK"}</span>
+          {link.description && (
+            <>
+              <span>·</span>
+              <span className="truncate max-w-[200px]">{link.description}</span>
+            </>
+          )}
+        </div>
+      </div>
+      <div className="flex items-center gap-1.5 shrink-0">
+        <button
+          onClick={viewLink}
+          className="flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-muted"
+          title="View"
+        >
+          <Eye className="size-3.5" />
+          <span className="hidden sm:inline">View</span>
+        </button>
+        <button
+          onClick={downloadLink}
+          className="flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-semibold transition-colors hover:bg-muted"
+          title="Download"
+        >
+          <Download className="size-3.5" />
+          <span className="hidden sm:inline">Download</span>
+        </button>
+      </div>
     </div>
   );
 }
@@ -173,6 +254,7 @@ function DocumentsPageContent() {
 
   const [currentPath, setCurrentPath] = useState(initialPath);
   const [items, setItems] = useState<RepoItem[]>([]);
+  const [links, setLinks] = useState<RepoLink[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -186,10 +268,12 @@ function DocumentsPageContent() {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data: RepoListResponse = await res.json();
       setItems(data.items || []);
+      setLinks(data.links || []);
       setCurrentPath(data.path || "");
     } catch {
       setError("Could not load documents. Please try again.");
       setItems([]);
+      setLinks([]);
     } finally {
       setLoading(false);
     }
@@ -213,6 +297,12 @@ function DocumentsPageContent() {
         i.name.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : null;
+  const filteredLinks = searchQuery
+    ? links.filter((l) =>
+        l.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        l.description.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : links;
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
@@ -243,7 +333,7 @@ function DocumentsPageContent() {
       <Breadcrumbs path={currentPath} onNavigate={navigate} />
 
       {/* Search */}
-      {items.length > 5 && (
+      {(items.length > 5 || links.length > 3) && (
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <input
@@ -272,23 +362,28 @@ function DocumentsPageContent() {
       ) : filtered !== null ? (
         /* Search results */
         <div className="space-y-2">
-          {filtered.length === 0 ? (
+          {filtered.length === 0 && filteredLinks.length === 0 ? (
             <EmptyState message="No files match your search." />
           ) : (
-            filtered.map((item) =>
-              item.is_directory ? (
-                <FolderCard
-                  key={item.path}
-                  item={item}
-                  onNavigate={navigate}
-                />
-              ) : (
-                <FileCard key={item.path} item={item} />
-              )
-            )
+            <>
+              {filtered.map((item) =>
+                item.is_directory ? (
+                  <FolderCard
+                    key={item.path}
+                    item={item}
+                    onNavigate={navigate}
+                  />
+                ) : (
+                  <FileCard key={item.path} item={item} />
+                )
+              )}
+              {filteredLinks.map((link) => (
+                <LinkCard key={link.id} link={link} />
+              ))}
+            </>
           )}
         </div>
-      ) : items.length === 0 ? (
+      ) : items.length === 0 && links.length === 0 ? (
         <EmptyState
           message={
             currentPath
@@ -325,6 +420,20 @@ function DocumentsPageContent() {
               <div className="space-y-2">
                 {files.map((item) => (
                   <FileCard key={item.path} item={item} />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Links */}
+          {filteredLinks.length > 0 && (
+            <section>
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+                Links ({filteredLinks.length})
+              </h2>
+              <div className="space-y-2">
+                {filteredLinks.map((link) => (
+                  <LinkCard key={link.id} link={link} />
                 ))}
               </div>
             </section>

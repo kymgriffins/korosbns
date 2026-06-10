@@ -19,6 +19,36 @@ export async function GET(req: NextRequest) {
   const sp = req.nextUrl.searchParams;
   const path = sp.get("path") || "";
 
+  // Link proxy: /api/docrepository/link/<uuid>?mode=view|download
+  const linkMatch = path.match(/^link\/([0-9a-f-]{36})$/i);
+  if (linkMatch) {
+    const linkId = linkMatch[1];
+    const mode = sp.get("mode") || "view";
+    try {
+      const res = await fetch(
+        backendUrl(`links/${linkId}/proxy/?mode=${encodeURIComponent(mode)}`),
+        { headers: authHeaders(req) },
+      );
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        return NextResponse.json(body, { status: res.status });
+      }
+      const contentType = res.headers.get("content-type") || "application/pdf";
+      const contentDisposition = res.headers.get("content-disposition") || `inline; filename="document.pdf"`;
+      const body = await res.arrayBuffer();
+      return new NextResponse(body, {
+        status: 200,
+        headers: {
+          "Content-Type": contentType,
+          "Content-Disposition": contentDisposition,
+          "Cache-Control": "public, max-age=3600",
+        },
+      });
+    } catch {
+      return NextResponse.json({ detail: "Upstream unavailable" }, { status: 502 });
+    }
+  }
+
   // If a specific file path is requested (has extension), proxy as file download
   if (path && /\.\w+$/.test(path.split("/").pop() || "")) {
     try {

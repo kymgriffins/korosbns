@@ -10,10 +10,21 @@ export type DocRepositoryItem = {
   mime_type?: string;
 };
 
+export type DocRepositoryLink = {
+  id: string;
+  title: string;
+  url: string;
+  description: string;
+  mime_type: string;
+  order: number;
+};
+
 export type DocRepositoryListResponse = {
   path: string;
   items: DocRepositoryItem[];
   count: number;
+  links: DocRepositoryLink[];
+  link_count: number;
 };
 
 async function repoFetch<T>(path: string, init?: RequestInit): Promise<T> {
@@ -76,5 +87,16 @@ export const docrepository = {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ path: folderPath }),
     });
+  },
+
+  /** List external links pinned to a folder. */
+  async listLinks(folder = ""): Promise<{ links: DocRepositoryLink[]; count: number }> {
+    const qs = folder ? `?folder=${encodeURIComponent(folder)}` : "";
+    return repoFetch(`/links/${qs}`);
+  },
+
+  /** Get the proxy URL for viewing/downloading an external link. */
+  proxyLinkUrl(linkId: string, mode: "view" | "download" = "view"): string {
+    return `/api/docrepository/link/${encodeURIComponent(linkId)}?mode=${mode}`;
   },
 };
