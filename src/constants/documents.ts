@@ -394,6 +394,40 @@ async function fetchDocumentsFromApiOnce(): Promise<FetchDocumentsResult> {
           "The document repository is temporarily unavailable. Please try again later.",
       };
     }
+
+    // If using new format with items, recursively fetch subfolder contents
+    if (Array.isArray(data.items) && !Array.isArray(data.folders)) {
+      const dirs = data.items.filter((i: any) => i.is_directory);
+      const allItems = [...data.items];
+
+      // Fetch each subfolder's contents (limited depth to avoid excessive requests)
+      const fetchSubfolder = async (dirPath: string, depth = 0) => {
+        if (depth > 2) return;
+        const endpoint = endpoints[0];
+        try {
+          const subRes = await fetch(
+            `${endpoint}?path=${encodeURIComponent(dirPath)}`,
+            { cache: "no-store" },
+          );
+          if (!subRes.ok) return;
+          const subData = await subRes.json();
+          if (Array.isArray(subData.items)) {
+            for (const item of subData.items) {
+              allItems.push(item);
+              if (item.is_directory) {
+                await fetchSubfolder(item.path, depth + 1);
+              }
+            }
+          }
+        } catch {
+          // Skip failed subfolders silently
+        }
+      };
+
+      await Promise.all(dirs.map((d: any) => fetchSubfolder(d.path)));
+      data.items = allItems;
+    }
+
     return {
       documents: transformRepositoryData(data),
     };
