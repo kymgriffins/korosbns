@@ -47,18 +47,21 @@ export type LearningOutcome = {
   description: string;
 };
 
+export type CivicModuleSocials = {
+  linkedin?: string;
+  x?: string;
+  website?: string;
+  [platform: string]: string | undefined;
+};
+
 export type CivicModuleAuthor = {
   name: string;
+  slug: string;
   image: string;
   role: string;
   bio: string;
-  slug?: string;
   intro_video_url?: string;
-  socials?: {
-    linkedin?: string;
-    x?: string;
-    website?: string;
-  };
+  socials?: CivicModuleSocials;
 };
 
 export type CivicModule = {
@@ -77,7 +80,7 @@ export type CivicModule = {
   image_url?: string;
   order: number;
   steps: ChapterStep[];
-  author?: CivicModuleAuthor;
+  author?: CivicModuleAuthor | null;
 };
 
 export type LearnContentType =

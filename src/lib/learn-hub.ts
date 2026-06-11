@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api-client";
-import type { CivicModule } from "@/types/learn";
+import type { CivicModule, CivicModuleAuthor } from "@/types/learn";
 import type { ApiListResponse } from "@/types/api";
 import type { LearningUnitSummary } from "@/lib/learning-units";
 
@@ -148,6 +148,23 @@ export const learnHubApi = {
       method: "POST",
       body: JSON.stringify({ content }),
     }),
+  // Dedicated author endpoints (no more client-side filtering)
+  authors: () =>
+    apiFetch<ApiListResponse<CivicModuleAuthor>>("/content/authors/"),
+  author: (slug: string) =>
+    apiFetch<{ author: CivicModuleAuthor; modules: CivicModule[] }>(
+      `/content/authors/${slug}/`,
+    ),
+  // Module analytics (daily/weekly)
+  moduleAnalytics: (params?: { period?: string; module_slug?: string }) => {
+    const q = new URLSearchParams();
+    if (params?.period) q.set("period", params.period);
+    if (params?.module_slug) q.set("module_slug", params.module_slug);
+    const qs = q.toString();
+    return apiFetch<ModuleAnalyticsResponse>(
+      `/content/analytics/modules/${qs ? `?${qs}` : ""}`,
+    );
+  },
 };
 
 export function learnItemHref(item: LearnHubItem): string {
@@ -210,4 +227,12 @@ type ForumThread = {
 
 type ForumThreadDetail = ForumThread & {
   posts: ForumPost[];
+};
+
+export type ModuleAnalyticsResponse = {
+  period: string;
+  completions_over_time: Array<{ period: string | null; count: number }>;
+  top_modules: Array<{ slug: string; title: string; completions: number }>;
+  event_summary_last_30d: Record<string, number>;
+  total_modules_published: number;
 };
