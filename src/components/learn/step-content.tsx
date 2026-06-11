@@ -31,15 +31,23 @@ function resolveYoutubeId(input: string): string {
   return m ? m[1] : input;
 }
 
-function parseVideoEntries(videos?: ChapterVideo[], youtubeUrl?: string): ChapterVideo[] {
+function parseVideoEntries(videos?: ChapterVideo[], youtubeUrl?: string, youtubeUrls?: string[]): ChapterVideo[] {
   if (videos?.length) return videos;
+  if (youtubeUrls?.length) {
+    return youtubeUrls.map((url) => ({
+      order: 1,
+      role: "lecture",
+      title: "Video",
+      youtube_video_id: resolveYoutubeId(url),
+    }));
+  }
   if (!youtubeUrl) return [];
-  const parts = youtubeUrl.split(/[,|\n]+/).map((s) => s.trim()).filter(Boolean);
-  return parts.map((url) => ({
+  return [{
     order: 1,
     role: "lecture",
-    youtube_video_id: resolveYoutubeId(url),
-  }));
+    title: "Video",
+    youtube_video_id: resolveYoutubeId(youtubeUrl),
+  }];
 }
 
 function videoEmbedUrl(idOrUrl: string): string {
@@ -63,8 +71,8 @@ function VideoDots({ count, active }: { count: number; active: number }) {
   );
 }
 
-function VideoPlayer({ videos, youtubeUrl, title }: { videos?: ChapterVideo[]; youtubeUrl: string; title: string }) {
-  const resolved = parseVideoEntries(videos, youtubeUrl);
+function VideoPlayer({ videos, youtubeUrl, youtubeUrls, title }: { videos?: ChapterVideo[]; youtubeUrl: string; youtubeUrls?: string[]; title: string }) {
+  const resolved = parseVideoEntries(videos, youtubeUrl, youtubeUrls);
   const [idx, setIdx] = useState(0);
   const showNav = resolved.length > 1;
 
@@ -134,6 +142,7 @@ export function StepContent({ step, currentStep, totalSteps, activeFormat, showT
               <VideoPlayer
                 videos={step.videos}
                 youtubeUrl={step.youtube_url}
+                youtubeUrls={step.youtube_urls}
                 title={`${step.title} Lesson`}
               />
             </div>

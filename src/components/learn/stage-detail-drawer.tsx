@@ -134,13 +134,21 @@ export function StageDetailDrawer({
   function parseStepVideos(step: ChapterStep | null): ChapterVideo[] {
     if (!step) return [];
     if (step.videos && step.videos.length > 0) return step.videos;
+    if (step.youtube_urls && step.youtube_urls.length > 0) {
+      return step.youtube_urls.map((url) => ({
+        order: 1,
+        role: "lecture",
+        title: "Video",
+        youtube_video_id: resolveYoutubeId(url),
+      }));
+    }
     if (!step.youtube_url) return [];
-    const parts = step.youtube_url.split(/[,|\n]+/).map((s) => s.trim()).filter(Boolean);
-    return parts.map((url) => ({
+    return [{
       order: 1,
       role: "lecture",
-      youtube_video_id: resolveYoutubeId(url),
-    }));
+      title: "Video",
+      youtube_video_id: resolveYoutubeId(step.youtube_url),
+    }];
   }
 
   const stepVideos = parseStepVideos(currentStepObj);
