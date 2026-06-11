@@ -7,7 +7,7 @@ import { Button } from "@/ui/button";
 import { learnHubApi } from "@/lib/learn-hub";
 import { useLearn } from "@/contexts/learn-context";
 import { readProgress, writeProgress } from "@/lib/module-progress";
-import type { CivicModule, ChapterVideo } from "@/types/learn";
+import type { CivicModule, ChapterStep, ChapterVideo } from "@/types/learn";
 
 import { StepContent } from "./step-content";
 import { TriviaSection } from "./trivia-section";
@@ -121,12 +121,6 @@ export function StageDetailDrawer({
   const isMastery = currentStep > stage.steps.length;
   const currentStepObj = currentStep > 0 && !isMastery ? stage.steps[currentStep - 1] : null;
 
-  const stepVideos: ChapterVideo[] = currentStepObj?.videos?.length
-    ? currentStepObj.videos
-    : currentStepObj?.youtube_url
-      ? [{ order: 1, role: "lecture", title: "Lecture", youtube_video_id: resolveYoutubeId(currentStepObj.youtube_url) ?? undefined }] as ChapterVideo[]
-      : [];
-
   function resolveYoutubeId(input: string): string | undefined {
     if (!input) return undefined;
     if (input.includes("embed/")) {
@@ -137,12 +131,27 @@ export function StageDetailDrawer({
     return m ? m[1] : input;
   }
 
+  function parseStepVideos(step: ChapterStep | null): ChapterVideo[] {
+    if (!step) return [];
+    if (step.videos && step.videos.length > 0) return step.videos;
+    if (!step.youtube_url) return [];
+    const parts = step.youtube_url.split(/[,|\n]+/).map((s) => s.trim()).filter(Boolean);
+    return parts.map((url) => ({
+      order: 1,
+      role: "lecture",
+      youtube_video_id: resolveYoutubeId(url),
+    }));
+  }
+
+  const stepVideos = parseStepVideos(currentStepObj);
+
   function videoEmbedUrl(idOrUrl: string): string {
     const id = resolveYoutubeId(idOrUrl);
     return id ? `https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1` : idOrUrl;
   }
 
   const [activeVideoIdx, setActiveVideoIdx] = useState(0);
+  const showNav = stepVideos.length > 1;
   const currentVideoUrl = stepVideos.length > 0 ? videoEmbedUrl(stepVideos[activeVideoIdx]?.youtube_video_id || stepVideos[activeVideoIdx]?.url || "") : null;
 
   return (
@@ -202,9 +211,9 @@ export function StageDetailDrawer({
                       <div className="flex items-center justify-between gap-2">
                         <div className="text-[10px] font-semibold text-muted-foreground">
                           {stepVideos[activeVideoIdx]?.title || stepVideos[activeVideoIdx]?.role || `Video ${activeVideoIdx + 1}`}
-                          {stepVideos.length > 1 && <span> · {activeVideoIdx + 1} of {stepVideos.length}</span>}
+                          {showNav && <span> · {activeVideoIdx + 1} of {stepVideos.length}</span>}
                         </div>
-                        {stepVideos.length > 1 && (
+                        {showNav && (
                           <div className="flex items-center gap-1">
                             <button
                               onClick={() => setActiveVideoIdx((p) => Math.max(0, p - 1))}
@@ -226,6 +235,18 @@ export function StageDetailDrawer({
                       <div className="w-full aspect-video bg-black rounded-xl overflow-hidden shadow-xs">
                         <iframe src={currentVideoUrl} title={`${currentStepObj?.title || stage.title} Lesson`} className="w-full h-full border-0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
                       </div>
+                      {showNav && (
+                        <div className="flex items-center justify-center gap-1.5 py-1">
+                          {Array.from({ length: stepVideos.length }, (_, i) => (
+                            <span
+                              key={i}
+                              className={`block rounded-full transition-all duration-200 ${
+                                i === activeVideoIdx ? "bg-primary w-5 h-1.5" : "bg-muted-foreground/25 w-1.5 h-1.5"
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <div className="w-full aspect-video bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl flex flex-col items-center justify-center shadow-xs">

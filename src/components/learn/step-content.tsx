@@ -31,18 +31,42 @@ function resolveYoutubeId(input: string): string {
   return m ? m[1] : input;
 }
 
+function parseVideoEntries(videos?: ChapterVideo[], youtubeUrl?: string): ChapterVideo[] {
+  if (videos?.length) return videos;
+  if (!youtubeUrl) return [];
+  const parts = youtubeUrl.split(/[,|\n]+/).map((s) => s.trim()).filter(Boolean);
+  return parts.map((url) => ({
+    order: 1,
+    role: "lecture",
+    youtube_video_id: resolveYoutubeId(url),
+  }));
+}
+
 function videoEmbedUrl(idOrUrl: string): string {
   const id = resolveYoutubeId(idOrUrl);
   return `https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1`;
 }
 
+function VideoDots({ count, active }: { count: number; active: number }) {
+  if (count <= 1) return null;
+  return (
+    <div className="flex items-center justify-center gap-1.5 py-2">
+      {Array.from({ length }, (_, i) => (
+        <span
+          key={i}
+          className={`block rounded-full transition-all duration-200 ${
+            i === active ? "bg-primary w-5 h-1.5" : "bg-muted-foreground/25 w-1.5 h-1.5"
+          }`}
+        />
+      ))}
+    </div>
+  );
+}
+
 function VideoPlayer({ videos, youtubeUrl, title }: { videos?: ChapterVideo[]; youtubeUrl: string; title: string }) {
-  const resolved = videos?.length
-    ? videos
-    : youtubeUrl
-      ? [{ order: 1, role: "lecture", youtube_video_id: resolveYoutubeId(youtubeUrl) }]
-      : [];
+  const resolved = parseVideoEntries(videos, youtubeUrl);
   const [idx, setIdx] = useState(0);
+  const showNav = resolved.length > 1;
 
   if (!resolved.length) {
     return (
@@ -63,9 +87,9 @@ function VideoPlayer({ videos, youtubeUrl, title }: { videos?: ChapterVideo[]; y
       <div className="flex items-center justify-between gap-2">
         <div className="text-[10px] font-semibold text-muted-foreground">
           {current?.title || current?.role || `Video ${idx + 1}`}
-          {resolved.length > 1 && <span> · {idx + 1} of {resolved.length}</span>}
+          {showNav && <span> · {idx + 1} of {resolved.length}</span>}
         </div>
-        {resolved.length > 1 && (
+        {showNav && (
           <div className="flex items-center gap-1">
             <button
               onClick={() => setIdx((p) => Math.max(0, p - 1))}
@@ -87,6 +111,7 @@ function VideoPlayer({ videos, youtubeUrl, title }: { videos?: ChapterVideo[]; y
       <div className="relative aspect-video rounded-xl overflow-hidden bg-black shadow-xs">
         <iframe className="w-full h-full border-0" src={src} title={title} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />
       </div>
+      <VideoDots count={resolved.length} active={idx} />
     </div>
   );
 }
