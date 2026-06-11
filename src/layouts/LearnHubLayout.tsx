@@ -6,7 +6,8 @@ import { Suspense, useEffect, useState } from "react";
 import {
   ChevronRight, ChevronLeft, ChevronDown, X,
   BookOpen, Bell, Home, LayoutDashboard, CheckCircle2, ArrowLeft, ExternalLink,
-  Settings, LogOut, KeyRound, Palette, LogIn, User, FileText
+  Settings, LogOut, KeyRound, Palette, LogIn, User, FileText,
+  MessagesSquare, HelpCircle, Calendar
 } from "lucide-react";
 import { cn } from "@/utils";
 import { LearnProvider, useLearn, type LearnTab } from "@/contexts/learn-context";
@@ -102,6 +103,11 @@ function LearnSidebar() {
                   <span className="font-semibold text-xs">Community Profile</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Forums">
+                  <Link href={Routes.LearnForum}><MessagesSquare className="size-4" /><span className="font-semibold text-xs">Forums</span></Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -136,6 +142,11 @@ function LearnSidebar() {
                 </SidebarMenuItem>
               )}
               <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Help Center" className="focus-visible:ring-2 focus-visible:ring-ring">
+                  <Link href="/help"><HelpCircle className="size-4" /><span>Help Center</span></Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
                 <div className="flex items-center gap-3 px-2 py-1.5 text-xs font-medium text-muted-foreground w-full group-data-[collapsible=icon]:justify-center">
                   <Palette className="size-4 shrink-0" />
                   {!isCollapsed && <span className="flex-1 text-left">Theme</span>}
@@ -166,7 +177,7 @@ function LearnSidebar() {
         ) : (
           <div className="p-2 space-y-3">
             {showAppCard && (
-              <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary via-primary/90 to-blue-600 text-primary-foreground p-4 shadow-xs">
+              <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-emerald-500 via-emerald-500/90 to-teal-600 text-white p-4 shadow-xs">
                 <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.07] mix-blend-overlay pointer-events-none" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none" />
                 <button onClick={() => setShowAppCard(false)}
@@ -174,9 +185,18 @@ function LearnSidebar() {
                   <X className="size-3" />
                 </button>
                 <div className="relative z-10 space-y-1.5">
-                  <h4 className="font-bold text-xs">Get the BNS App</h4>
-                  <p className="text-[10px] text-white/80">Follow budgets on the go.</p>
-                  <button className="mt-1.5 w-full rounded-lg bg-white text-primary text-[11px] font-bold py-1.5 shadow-xs hover:bg-white/90 transition-colors focus-visible:ring-2 focus-visible:ring-white/50">Download</button>
+                  <div className="flex items-center gap-2">
+                    <Calendar className="size-4" />
+                    <h4 className="font-bold text-xs">Upcoming Events</h4>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-[10px] text-white/80">Public Participation Hearings</p>
+                    <p className="text-[9px] text-white/60">Nairobi · Jun 15, 2026</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-[10px] text-white/80">County Budget Workshop</p>
+                    <p className="text-[9px] text-white/60">Virtual · Jun 20, 2026</p>
+                  </div>
                 </div>
               </div>
             )}
