@@ -28,8 +28,16 @@ export type ArticleLearningContext = {
   next_section_title?: string;
 };
 
+export type ArticleAuthor = {
+  name?: string;
+  image?: string;
+  role?: string;
+  slug?: string;
+};
+
 export type HubArticle = {
   id: string;
+  slug?: string;
   contentId?: string;
   title: string;
   readTime: string;
@@ -39,7 +47,9 @@ export type HubArticle = {
   category?: string;
   sourceLabel?: string;
   updatedAt?: string;
+  publishedAt?: string;
   heroImage?: string | null;
+  author?: ArticleAuthor | null;
   learningContext?: ArticleLearningContext;
 };
 
@@ -84,6 +94,15 @@ export function mapApiArticle(item: Record<string, unknown>): HubArticle {
     meta.image ||
     (typeof item.cover_image === "string" ? item.cover_image : null) ||
     null;
+  const authorRaw = item.author as Record<string, unknown> | null | undefined;
+  const author: ArticleAuthor | null = authorRaw
+    ? {
+        name: authorRaw.name != null ? String(authorRaw.name) : undefined,
+        image: authorRaw.image != null ? String(authorRaw.image) : undefined,
+        role: authorRaw.role != null ? String(authorRaw.role) : undefined,
+        slug: authorRaw.slug != null ? String(authorRaw.slug) : undefined,
+      }
+    : null;
   const learningRaw = item.learning_context as Record<string, unknown> | undefined;
   const learningContext: ArticleLearningContext | undefined = learningRaw
     ? {
@@ -121,6 +140,7 @@ export function mapApiArticle(item: Record<string, unknown>): HubArticle {
 
   return {
     id: String(item.slug || item.id),
+    slug: typeof item.slug === "string" ? item.slug : undefined,
     contentId: item.id != null ? String(item.id) : undefined,
     title: String(item.title || "Article"),
     readTime: meta.readTime || `${Math.ceil(plainLen / 1000) + 3} min read`,
@@ -135,7 +155,10 @@ export function mapApiArticle(item: Record<string, unknown>): HubArticle {
         : typeof item.published_at === "string"
           ? item.published_at
           : undefined,
+    publishedAt:
+      typeof item.published_at === "string" ? item.published_at : undefined,
     heroImage: hero,
+    author,
     learningContext,
   };
 }

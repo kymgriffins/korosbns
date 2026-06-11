@@ -19,6 +19,13 @@ import { scaleIn, fadeInUp, fadeInUpDelay1, fadeInUpDelay2, fadeInUpDelay3 } fro
 
 type ReaderMode = "loading" | "error" | "article" | "story" | "trivia";
 
+interface ArticleAuthor {
+  name?: string;
+  image?: string;
+  role?: string;
+  slug?: string;
+}
+
 interface ArticleData {
   id: string;
   title: string;
@@ -30,6 +37,8 @@ interface ArticleData {
   sourceLabel?: string;
   readTime?: string;
   updatedAt?: string;
+  publishedAt?: string;
+  author?: ArticleAuthor | null;
   learningContext?: {
     unit_slug?: string;
     fiscal_year?: number;
@@ -433,30 +442,58 @@ export default function UnifiedReaderClientPage({
             <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(8,8,12,0.75)_20%,transparent_70%)]" />
           </motion.div>
 
-          <article className="space-y-8">
-            <header className="space-y-4">
-              <div className="flex items-start justify-between gap-4">
-                <div className="space-y-3">
-                  <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-primary">
-                    {article.category || "Article"} · {article.sourceLabel || "BNSKE"}
+            <article className="space-y-8">
+                <header className="space-y-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="space-y-3 flex-1 min-w-0">
+                      <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-primary">
+                        {article.category || "Article"} · {article.sourceLabel || "BNSKE"}
+                      </div>
+                      <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+                        {article.title}
+                      </h1>
+                      <p className="text-xl leading-relaxed text-muted-foreground">{article.snippet}</p>
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                        {article.author?.name ? (
+                          <span className="flex items-center gap-1.5">
+                            {article.author.image ? (
+                              <Image
+                                src={article.author.image}
+                                alt={article.author.name}
+                                width={20}
+                                height={20}
+                                className="size-5 rounded-full object-cover"
+                              />
+                            ) : (
+                              <span className="size-5 rounded-full bg-muted flex items-center justify-center text-[9px] font-bold text-muted-foreground">
+                                {article.author.name[0]}
+                              </span>
+                            )}
+                            {article.author.slug ? (
+                              <Link href={Routes.LearnAuthor(article.author.slug)} className="font-semibold hover:text-primary transition-colors">
+                                {article.author.name}
+                              </Link>
+                            ) : (
+                              <span className="font-semibold">{article.author.name}</span>
+                            )}
+                            {article.author.role ? <span className="text-muted-foreground/60">· {article.author.role}</span> : null}
+                          </span>
+                        ) : null}
+                        <span>{article.readTime}</span>
+                        {article.publishedAt ? (
+                          <span>{new Date(article.publishedAt).toLocaleDateString("en-KE", { year: "numeric", month: "long", day: "numeric" })}</span>
+                        ) : null}
+                        {article.updatedAt ? (
+                          <span className="text-xs text-muted-foreground/60">Updated {new Date(article.updatedAt).toLocaleDateString()}</span>
+                        ) : null}
+                      </div>
+                    </div>
+                    <ArticleReaderActions
+                      slug={slug}
+                      contentId={article.id || slug}
+                    />
                   </div>
-                  <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-                    {article.title}
-                  </h1>
-                  <p className="text-xl leading-relaxed text-muted-foreground">{article.snippet}</p>
-                  <p className="text-sm text-muted-foreground">{article.readTime}</p>
-                  {article.updatedAt ? (
-                    <p className="text-xs font-medium text-muted-foreground/80">
-                      Last updated {new Date(article.updatedAt).toLocaleDateString()}
-                    </p>
-                  ) : null}
-                </div>
-                <ArticleReaderActions
-                  slug={slug}
-                  contentId={article.id || slug}
-                />
-              </div>
-            </header>
+                </header>
 
             <hr className="border-border" />
 
