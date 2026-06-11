@@ -62,7 +62,7 @@ function LearnSidebar() {
     <Sidebar collapsible="icon" className="hidden md:flex">
       <SidebarHeader>
         <div className="flex items-center justify-between p-2">
-          <Link href={"/"} className="flex items-center gap-2 hover:opacity-80 transition-opacity overflow-hidden">
+          <Link href={"/"} className="flex items-center gap-2 hover:opacity-80 transition-opacity overflow-hidden group">
             <img src="/logo.svg" alt="BNS" className="h-7 w-auto shrink-0" />
           </Link>
           {!isCollapsed && <SidebarTrigger className="-mr-1" />}
@@ -72,22 +72,32 @@ function LearnSidebar() {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase mb-0.5">Menu</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-[10px] font-bold tracking-wider text-sidebar-foreground/50 uppercase mb-0.5">Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {navItems.map((item) => (
                 <SidebarMenuItem key={item.key}>
-                  <SidebarMenuButton isActive={activeTab === item.key} onClick={() => handleTabChange(item.key)} tooltip={item.label} className="py-4 rounded-lg transition-all">
+                  <SidebarMenuButton
+                    isActive={activeTab === item.key}
+                    onClick={() => handleTabChange(item.key)}
+                    tooltip={item.label}
+                    className="py-4 rounded-lg transition-all data-[active=true]:ring-1 data-[active=true]:ring-sidebar-ring/30"
+                  >
                     {item.icon}
                     <span className="font-semibold text-xs">{item.label}</span>
                     {item.badge && !isCollapsed && (
-                      <span className="ml-auto flex h-4.5 px-1 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow-xs">{item.badge}</span>
+                      <span className="ml-auto flex h-4.5 px-1 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow-xs ring-1 ring-primary/20">{item.badge}</span>
                     )}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
               <SidebarMenuItem>
-                <SidebarMenuButton isActive={activeTab === "profile"} onClick={() => handleTabChange("profile")} tooltip="Profile" className="py-4 rounded-lg transition-all">
+                <SidebarMenuButton
+                  isActive={activeTab === "profile"}
+                  onClick={() => handleTabChange("profile")}
+                  tooltip="Profile"
+                  className="py-4 rounded-lg transition-all data-[active=true]:ring-1 data-[active=true]:ring-sidebar-ring/30"
+                >
                   <User className="size-4" />
                   <span className="font-semibold text-xs">Community Profile</span>
                 </SidebarMenuButton>
@@ -97,7 +107,7 @@ function LearnSidebar() {
         </SidebarGroup>
 
         <SidebarGroup>
-          <SidebarGroupLabel className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase mt-3 mb-0.5">General</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-[10px] font-bold tracking-wider text-sidebar-foreground/50 uppercase mt-3 mb-0.5">General</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {isLoggedIn ? (
@@ -140,7 +150,7 @@ function LearnSidebar() {
       <SidebarFooter>
         {isCollapsed ? (
           <div className="flex flex-col items-center gap-2 py-2">
-            <Avatar className="size-7">
+            <Avatar className="size-7 ring-1 ring-sidebar-border/40">
               {user?.avatar_url ? (
                 <img src={user.avatar_url} alt="" className="size-full rounded-full object-cover" />
               ) : (
@@ -150,21 +160,23 @@ function LearnSidebar() {
               )}
             </Avatar>
             {isLoggedIn && (
-              <div className="size-7 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-[10px]" title="Level">{level}</div>
+              <div className="size-7 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-[10px] ring-1 ring-primary/20" title="Level">{level}</div>
             )}
           </div>
         ) : (
           <div className="p-2 space-y-3">
             {showAppCard && (
-              <div className="relative overflow-hidden rounded-xl bg-primary text-primary-foreground p-4 shadow-xs">
+              <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary via-primary/90 to-blue-600 text-primary-foreground p-4 shadow-xs">
+                <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.07] mix-blend-overlay pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none" />
                 <button onClick={() => setShowAppCard(false)}
-                  className="absolute top-1.5 right-1.5 size-5 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors z-20">
+                  className="absolute top-1.5 right-1.5 size-5 rounded-full bg-white/20 backdrop-blur flex items-center justify-center hover:bg-white/30 transition-colors z-20 focus-visible:ring-2 focus-visible:ring-white/50">
                   <X className="size-3" />
                 </button>
                 <div className="relative z-10 space-y-1.5">
                   <h4 className="font-bold text-xs">Get the BNS App</h4>
                   <p className="text-[10px] text-white/80">Follow budgets on the go.</p>
-                  <button className="mt-1.5 w-full rounded-lg bg-white text-primary text-[11px] font-bold py-1.5 shadow-xs hover:bg-white/90 transition-colors">Download</button>
+                  <button className="mt-1.5 w-full rounded-lg bg-white text-primary text-[11px] font-bold py-1.5 shadow-xs hover:bg-white/90 transition-colors focus-visible:ring-2 focus-visible:ring-white/50">Download</button>
                 </div>
               </div>
             )}
