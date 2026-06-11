@@ -266,7 +266,7 @@ export function StageDetailDrawer({
                       </div>
                     ) : (
                       <TriviaSection
-                        trivia={stage.steps[currentStep - 1].trivia}
+                        trivia={stage.steps[currentStep - 1]?.trivia ?? []}
                         stepId={stage.steps[currentStep - 1].order}
                         showTrivia={showTrivia}
                         isStepTriviaPassed={isStepTriviaPassed}

@@ -34,7 +34,7 @@ export type ChapterStep = {
   transcript: string;
   text: string;
   takeaways: StageTakeaway[];
-  trivia: StageTrivia[];
+  trivia?: StageTrivia[];
   is_completed: boolean;
   is_locked: boolean;
   learning_outcomes?: LearningOutcome[];

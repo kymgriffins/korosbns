@@ -140,7 +140,7 @@ export function StepContent({ step, currentStep, totalSteps, activeFormat, showT
             </div>
           )}
 
-          {activeFormat === "text" && step.trivia.length > 0 && (
+          {activeFormat === "text" && (step.trivia?.length ?? 0) > 0 && (
             <div className="flex justify-center pt-2">
               <Button onClick={onStartTrivia} size="sm" className="rounded-lg font-bold text-xs gap-1.5">
                 <Sparkles className="size-3.5" /> {currentStep === totalSteps ? "Check Understanding" : "Knowledge Check"}
