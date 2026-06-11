@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { toast } from "sonner";
-import { ChevronLeft, PlayCircle, CheckCircle2, ChevronDown, Clock, BookOpen, Star, BookOpenText, Video, Brain } from "lucide-react";
+import { ChevronLeft, ChevronRight, PlayCircle, CheckCircle2, ChevronDown, Clock, BookOpen, Star, BookOpenText, Video, Brain } from "lucide-react";
 import { Button } from "@/ui/button";
 import { learnHubApi } from "@/lib/learn-hub";
 import { useLearn } from "@/contexts/learn-context";
@@ -199,23 +199,30 @@ export function StageDetailDrawer({
                 {activeTab === "watch" && (
                   currentVideoUrl ? (
                     <div className="space-y-2">
-                      {stepVideos.length > 1 && (
-                        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide pb-1">
-                          {stepVideos.map((v, idx) => (
-                            <button
-                              key={idx}
-                              onClick={() => setActiveVideoIdx(idx)}
-                              className={`px-2.5 py-1 rounded-lg text-[10px] font-bold whitespace-nowrap transition-all ${
-                                activeVideoIdx === idx
-                                  ? "bg-primary text-primary-foreground shadow-xs"
-                                  : "bg-muted/40 text-muted-foreground hover:text-foreground"
-                              }`}
-                            >
-                              {v.title || v.role || `Video ${idx + 1}`}
-                            </button>
-                          ))}
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="text-[10px] font-semibold text-muted-foreground">
+                          {stepVideos[activeVideoIdx]?.title || stepVideos[activeVideoIdx]?.role || `Video ${activeVideoIdx + 1}`}
+                          {stepVideos.length > 1 && <span> · {activeVideoIdx + 1} of {stepVideos.length}</span>}
                         </div>
-                      )}
+                        {stepVideos.length > 1 && (
+                          <div className="flex items-center gap-1">
+                            <button
+                              onClick={() => setActiveVideoIdx((p) => Math.max(0, p - 1))}
+                              disabled={activeVideoIdx === 0}
+                              className="size-6 flex items-center justify-center rounded-md bg-muted/40 hover:bg-muted/60 transition-colors disabled:opacity-30 disabled:pointer-events-none"
+                            >
+                              <ChevronLeft className="size-3.5" />
+                            </button>
+                            <button
+                              onClick={() => setActiveVideoIdx((p) => Math.min(stepVideos.length - 1, p + 1))}
+                              disabled={activeVideoIdx === stepVideos.length - 1}
+                              className="size-6 flex items-center justify-center rounded-md bg-muted/40 hover:bg-muted/60 transition-colors disabled:opacity-30 disabled:pointer-events-none"
+                            >
+                              <ChevronRight className="size-3.5" />
+                            </button>
+                          </div>
+                        )}
+                      </div>
                       <div className="w-full aspect-video bg-black rounded-xl overflow-hidden shadow-xs">
                         <iframe src={currentVideoUrl} title={`${currentStepObj?.title || stage.title} Lesson`} className="w-full h-full border-0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
                       </div>

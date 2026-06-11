@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/ui/button";
 import { Progress } from "@/ui/progress";
 import { cn } from "@/utils";
-import { Sparkles, Lightbulb, AlertTriangle } from "lucide-react";
+import { Sparkles, Lightbulb, AlertTriangle, ChevronLeft, ChevronRight } from "lucide-react";
 import type { ChapterStep, StageTakeaway, ChapterVideo } from "@/types/learn";
 import { stripHtml } from "@/lib/sanitize";
 import { renderContent } from "@/lib/render-content";
@@ -55,27 +55,35 @@ function VideoPlayer({ videos, youtubeUrl, title }: { videos?: ChapterVideo[]; y
     );
   }
 
-  const src = videoEmbedUrl(resolved[idx]?.youtube_video_id || resolved[idx]?.url || "");
+  const current = resolved[idx];
+  const src = videoEmbedUrl(current?.youtube_video_id || current?.url || "");
 
   return (
     <div className="space-y-2">
-      {resolved.length > 1 && (
-        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide pb-1">
-          {resolved.map((v, i) => (
-            <button
-              key={i}
-              onClick={() => setIdx(i)}
-              className={`px-2.5 py-1 rounded-lg text-[10px] font-bold whitespace-nowrap transition-all ${
-                idx === i
-                  ? "bg-primary text-primary-foreground shadow-xs"
-                  : "bg-muted/40 text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {v.title || v.role || `Video ${i + 1}`}
-            </button>
-          ))}
+      <div className="flex items-center justify-between gap-2">
+        <div className="text-[10px] font-semibold text-muted-foreground">
+          {current?.title || current?.role || `Video ${idx + 1}`}
+          {resolved.length > 1 && <span> · {idx + 1} of {resolved.length}</span>}
         </div>
-      )}
+        {resolved.length > 1 && (
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setIdx((p) => Math.max(0, p - 1))}
+              disabled={idx === 0}
+              className="size-6 flex items-center justify-center rounded-md bg-muted/40 hover:bg-muted/60 transition-colors disabled:opacity-30 disabled:pointer-events-none"
+            >
+              <ChevronLeft className="size-3.5" />
+            </button>
+            <button
+              onClick={() => setIdx((p) => Math.min(resolved.length - 1, p + 1))}
+              disabled={idx === resolved.length - 1}
+              className="size-6 flex items-center justify-center rounded-md bg-muted/40 hover:bg-muted/60 transition-colors disabled:opacity-30 disabled:pointer-events-none"
+            >
+              <ChevronRight className="size-3.5" />
+            </button>
+          </div>
+        )}
+      </div>
       <div className="relative aspect-video rounded-xl overflow-hidden bg-black shadow-xs">
         <iframe className="w-full h-full border-0" src={src} title={title} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />
       </div>
