@@ -7,7 +7,7 @@ import {
   ChevronRight, ChevronLeft, ChevronDown, X,
   BookOpen, Bell, Home, LayoutDashboard, CheckCircle2, ArrowLeft, ExternalLink,
   Settings, LogOut, KeyRound, Palette, LogIn, User, FileText,
-  MessagesSquare, HelpCircle, Calendar
+  MessagesSquare, HelpCircle, Calendar, ListChecks
 } from "lucide-react";
 import { cn } from "@/utils";
 import { LearnProvider, useLearn, type LearnTab } from "@/contexts/learn-context";
@@ -16,6 +16,9 @@ import { ThemeToggle } from "@/components/marketing/theme-toggle";
 import { LearnMobileNav } from "@/layouts/LearnMobileNav";
 import { Routes } from "@/constants/routes";
 import { Avatar, AvatarFallback } from "@/ui/avatar";
+import type { SurveyListItemApi } from "@/lib/api-client";
+import { loadEventList, type HubEvent } from "@/lib/citizen-content";
+import { loadSurveyList } from "@/lib/marketing-content";
 import {
   Sidebar,
   SidebarContent,
@@ -42,6 +45,28 @@ function LearnSidebar() {
   const isCollapsed = state === "collapsed";
   const level = gamification?.level ?? 1;
   const [showAppCard, setShowAppCard] = useState(true);
+  const [events, setEvents] = useState<HubEvent[]>([]);
+  const [surveys, setSurveys] = useState<SurveyListItemApi[]>([]);
+  const [feedLoading, setFeedLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function load() {
+      try {
+        const [eventList, surveyList] = await Promise.all([
+          loadEventList().catch(() => [] as HubEvent[]),
+          loadSurveyList().catch(() => [] as SurveyListItemApi[]),
+        ]);
+        if (cancelled) return;
+        setEvents(eventList);
+        setSurveys(surveyList);
+      } finally {
+        if (!cancelled) setFeedLoading(false);
+      }
+    }
+    load();
+    return () => { cancelled = true; };
+  }, []);
 
   const handleTabChange = (tab: LearnTab) => {
     setActiveTab(tab);
@@ -104,8 +129,14 @@ function LearnSidebar() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Forums">
-                  <Link href={Routes.LearnForum}><MessagesSquare className="size-4" /><span className="font-semibold text-xs">Forums</span></Link>
+                <SidebarMenuButton
+                  isActive={activeTab === "forum"}
+                  onClick={() => handleTabChange("forum")}
+                  tooltip="Forums"
+                  className="py-4 rounded-lg transition-all data-[active=true]:ring-1 data-[active=true]:ring-sidebar-ring/30"
+                >
+                  <MessagesSquare className="size-4" />
+                  <span className="font-semibold text-xs">Forums</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -176,27 +207,51 @@ function LearnSidebar() {
           </div>
         ) : (
           <div className="p-2 space-y-3">
-            {showAppCard && (
-              <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-emerald-500 via-emerald-500/90 to-teal-600 text-white p-4 shadow-xs">
+            {showAppCard && !feedLoading && (
+              <Link
+                href={events.length > 0 ? Routes.Events : Routes.Surveys}
+                className="relative block overflow-hidden rounded-xl bg-gradient-to-br from-emerald-500 via-emerald-500/90 to-teal-600 text-white p-4 shadow-xs group"
+              >
                 <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.07] mix-blend-overlay pointer-events-none" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none" />
-                <button onClick={() => setShowAppCard(false)}
+                <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowAppCard(false); }}
                   className="absolute top-1.5 right-1.5 size-5 rounded-full bg-white/20 backdrop-blur flex items-center justify-center hover:bg-white/30 transition-colors z-20 focus-visible:ring-2 focus-visible:ring-white/50">
                   <X className="size-3" />
                 </button>
                 <div className="relative z-10 space-y-1.5">
                   <div className="flex items-center gap-2">
-                    <Calendar className="size-4" />
-                    <h4 className="font-bold text-xs">Upcoming Events</h4>
+                    {events.length > 0 ? <Calendar className="size-4" /> : <ListChecks className="size-4" />}
+                    <h4 className="font-bold text-xs">{events.length > 0 ? "Upcoming Events" : "Active Surveys"}</h4>
                   </div>
-                  <div className="space-y-1">
-                    <p className="text-[10px] text-white/80">Public Participation Hearings</p>
-                    <p className="text-[9px] text-white/60">Nairobi · Jun 15, 2026</p>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-[10px] text-white/80">County Budget Workshop</p>
-                    <p className="text-[9px] text-white/60">Virtual · Jun 20, 2026</p>
-                  </div>
+                  {events.length > 0 ? (
+                    events.slice(0, 2).map((ev) => (
+                      <div key={ev.id} className="space-y-0.5">
+                        <p className="text-[10px] text-white/80">{ev.title}</p>
+                        <p className="text-[9px] text-white/60">{ev.location} · {new Date(ev.starts_at).toLocaleDateString("en-KE", { month: "short", day: "numeric", year: "numeric" })}</p>
+                      </div>
+                    ))
+                  ) : surveys.length > 0 ? (
+                    surveys.slice(0, 2).map((sv) => (
+                      <div key={sv.id} className="space-y-0.5">
+                        <p className="text-[10px] text-white/80">{sv.title}</p>
+                        {sv.description && <p className="text-[9px] text-white/60 line-clamp-1">{sv.description}</p>}
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-[10px] text-white/60">No upcoming content yet.</p>
+                  )}
+                </div>
+              </Link>
+            )}
+            {showAppCard && feedLoading && (
+              <div className="rounded-xl bg-muted/50 p-4 animate-pulse">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="size-4 rounded bg-muted-foreground/20" />
+                  <div className="h-3 w-24 rounded bg-muted-foreground/20" />
+                </div>
+                <div className="space-y-2">
+                  <div className="h-3 w-full rounded bg-muted-foreground/20" />
+                  <div className="h-2 w-2/3 rounded bg-muted-foreground/20" />
                 </div>
               </div>
             )}

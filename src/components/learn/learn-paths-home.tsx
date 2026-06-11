@@ -9,6 +9,7 @@ import { LearnModulesView } from "./learn-modules-view";
 import { LearnDocumentsView } from "./learn-documents-view";
 import { ProfileView } from "./profile-view";
 import { AlertsView } from "./alerts-view";
+import { ForumView } from "./forum-view";
 import { DashboardSkeleton } from "./dashboard-skeleton";
 
 import { Button } from "@/ui/button";
@@ -457,6 +458,7 @@ export function LearnPathsHome() {
                   currentStage={currentStage}
                   onSelectStage={setSelectedStage}
                   onNavigateToCurriculum={() => setActiveTab("learn")}
+                  onNavigateToForum={() => setActiveTab("forum")}
                   leaderboard={leaderboardData?.results}
                 />
               </motion.div>
@@ -502,6 +504,18 @@ export function LearnPathsHome() {
                 className="h-[calc(100dvh-120px)] md:h-auto"
               >
                 <LearnDocumentsView profile={profile} />
+              </motion.div>
+            )}
+
+            {activeTab === "forum" && (
+              <motion.div
+                key="forum"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+              >
+                <ForumView />
               </motion.div>
             )}
 

@@ -23,6 +23,7 @@ interface LearnDashboardViewProps {
   currentStage: CivicModule;
   onSelectStage: (stage: CivicModule) => void;
   onNavigateToCurriculum: () => void;
+  onNavigateToForum?: () => void;
   leaderboard?: LeaderboardEntry[];
 }
 
@@ -39,47 +40,19 @@ const itemVars: Variants = {
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 280, damping: 22 } }
 };
 
-const articles = [
-  {
-    title: "Kenya's FY 2025/26 Budget Breakdown",
-    excerpt: "Deep dive into the revenue allocations, sector priorities, and fiscal projections shaping the next financial year.",
-    image: "/articles/budget-breakdown.jpg",
-    category: "Budget Analysis",
-    readTime: "8 min",
-    slug: "budget-breakdown-2025",
-    author: "Catherine Wanjiku",
-    date: "Jun 8, 2026"
-  },
-  {
-    title: "How County Governments Spend Your Taxes",
-    excerpt: "An investigative look at devolved fund utilization, procurement trends, and citizen oversight mechanisms across Kenya's 47 counties.",
-    image: "/articles/county-spending.jpg",
-    category: "County Finance",
-    readTime: "12 min",
-    slug: "county-spending-taxes",
-    author: "James Ochieng",
-    date: "Jun 5, 2026"
-  },
-  {
-    title: "Understanding the Finance Bill 2026",
-    excerpt: "A clause-by-clause guide to the proposed tax measures, exemptions, and their impact on households and businesses.",
-    image: "/articles/finance-bill.jpg",
-    category: "Finance Bill",
-    readTime: "6 min",
-    slug: "finance-bill-2026-guide",
-    author: "Faith Muthoni",
-    date: "Jun 2, 2026"
-  }
-];
-
-const storyItems = [
-  { name: "Budget Cycle", emoji: "\uD83D\uDCC8", gradient: "from-purple-500 to-pink-500" },
-  { name: "Tax 101", emoji: "\uD83D\uDCB0", gradient: "from-blue-500 to-cyan-500" },
-  { name: "County Funds", emoji: "\uD83C\uDFDB\uFE0F", gradient: "from-emerald-500 to-teal-500" },
-  { name: "Debt Watch", emoji: "\uD83D\uDCC9", gradient: "from-orange-500 to-red-500" },
-  { name: "PPIP Act", emoji: "\uD83D\uDCDD", gradient: "from-indigo-500 to-violet-500" },
-  { name: "Senate Budget", emoji: "\uD83C\uDFDB\uFE0F", gradient: "from-rose-500 to-pink-500" },
-];
+const gradientRing = (i: number) => {
+  const palettes = [
+    "from-purple-500 to-pink-500",
+    "from-blue-500 to-cyan-500",
+    "from-emerald-500 to-teal-500",
+    "from-orange-500 to-red-500",
+    "from-indigo-500 to-violet-500",
+    "from-rose-500 to-pink-500",
+    "from-amber-500 to-orange-500",
+    "from-sky-500 to-indigo-500",
+  ];
+  return palettes[i % palettes.length];
+};
 
 const quests = [
   { title: "Daily Trivia", desc: "Answer 5 budget questions", xp: 50, icon: Zap, color: "text-amber-500", bg: "bg-amber-500/10" },
@@ -88,7 +61,7 @@ const quests = [
 ];
 
 export function LearnDashboardView({
-  profile, stages, currentStage, onSelectStage, onNavigateToCurriculum, leaderboard,
+  profile, stages, currentStage, onSelectStage, onNavigateToCurriculum, onNavigateToForum, leaderboard,
 }: LearnDashboardViewProps) {
   const chartData = useMemo(() => [
     { day: "S", xp: 0 },
@@ -199,7 +172,7 @@ export function LearnDashboardView({
             </div>
           </motion.div>
 
-          {/* Articles overview — 3 story-format cards */}
+          {/* Articles overview — one card per learning module */}
           <motion.div variants={itemVars} className="space-y-2">
             <div className="flex items-center justify-between">
               <h2 className="text-xs font-bold flex items-center gap-1.5 text-foreground/80">
@@ -213,34 +186,34 @@ export function LearnDashboardView({
               </Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-              {articles.map((article, i) => (
+              {stages.map((stage, i) => (
                 <Link
-                  key={article.slug}
-                  href={`${Routes.Learn}/${article.slug}`}
+                  key={stage.slug}
+                  href={`${Routes.Learn}/${stage.slug}`}
                   className="group bg-card shadow-xs rounded-xl overflow-hidden ring-1 ring-border/40 hover:shadow-md hover:ring-primary/20 transition-all"
                 >
                   <div className="aspect-[16/9] bg-gradient-to-br from-muted to-muted/50 relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                     <div className="absolute bottom-2 left-2">
                       <span className="inline-flex px-1.5 py-0.5 rounded text-[9px] font-bold bg-white/20 backdrop-blur text-white ring-1 ring-white/20">
-                        {article.category}
+                        {stage.badgeName || stage.badge}
                       </span>
                     </div>
                     <div className="absolute top-2 right-2 flex items-center gap-1 bg-black/30 backdrop-blur rounded-full px-1.5 py-0.5 text-[9px] text-white/80">
                       <Clock className="size-2.5" />
-                      {article.readTime}
+                      {stage.steps?.length || 0} steps
                     </div>
                   </div>
                   <div className="p-2.5 space-y-1.5">
                     <h3 className="text-[11px] font-bold leading-tight group-hover:text-primary transition-colors line-clamp-2">
-                      {article.title}
+                      {stage.title}
                     </h3>
                     <p className="text-[10px] text-muted-foreground line-clamp-2 leading-relaxed">
-                      {article.excerpt}
+                      {stage.description}
                     </p>
                     <div className="flex items-center justify-between pt-1">
-                      <span className="text-[9px] text-muted-foreground/60">{article.author}</span>
-                      <span className="text-[9px] text-muted-foreground/60">{article.date}</span>
+                      <span className="text-[9px] text-muted-foreground/60">{stage.author?.name ?? stage.archive ?? "Budget Ndio Story"}</span>
+                      <span className="text-[9px] text-muted-foreground/60">{stage.status}</span>
                     </div>
                   </div>
                 </Link>
@@ -248,28 +221,29 @@ export function LearnDashboardView({
             </div>
           </motion.div>
 
-          {/* Stories UI — Instagram-like */}
+          {/* Stories UI — Instagram-like, one per module */}
           <motion.div variants={itemVars} className="space-y-2">
             <h2 className="text-xs font-bold flex items-center gap-1.5 text-foreground/80">
               <CircleUser className="size-3.5 text-primary" /> Stories
             </h2>
             <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
-              {storyItems.map((story, i) => (
+              {stages.map((stage, i) => (
                 <button
-                  key={story.name}
+                  key={stage.slug}
+                  onClick={() => onSelectStage(stage)}
                   className="flex flex-col items-center gap-1 shrink-0 group focus-visible:ring-2 focus-visible:ring-ring rounded-lg p-1"
                 >
                   <div className={cn(
                     "size-14 rounded-full p-[2px] bg-gradient-to-br",
-                    story.gradient,
+                    gradientRing(i),
                     "group-hover:scale-105 transition-transform"
                   )}>
                     <div className="size-full rounded-full bg-card flex items-center justify-center text-xl">
-                      {story.emoji}
+                      {stage.badge}
                     </div>
                   </div>
                   <span className="text-[9px] font-semibold text-muted-foreground truncate max-w-14 text-center">
-                    {story.name}
+                    {stage.badgeName || stage.title}
                   </span>
                 </button>
               ))}
@@ -285,9 +259,9 @@ export function LearnDashboardView({
                 <h3 className="text-xs font-bold flex items-center gap-1.5">
                   <Trophy className="size-3.5 text-amber-500" /> Top Citizens
                 </h3>
-                <Link href={Routes.LearnForum} className="text-[10px] font-bold text-primary/70 hover:text-primary uppercase tracking-wider focus-visible:ring-2 focus-visible:ring-ring rounded">
+                <button onClick={onNavigateToForum} className="text-[10px] font-bold text-primary/70 hover:text-primary uppercase tracking-wider focus-visible:ring-2 focus-visible:ring-ring rounded">
                   All
-                </Link>
+                </button>
               </div>
               <div className="space-y-0.5 max-h-[260px] overflow-y-auto">
                 {leaderboardEntries.length > 0 ? (
