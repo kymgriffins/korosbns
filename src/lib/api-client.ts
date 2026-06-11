@@ -449,6 +449,16 @@ export const citizenApi = {
       body: JSON.stringify(body),
     }),
 
+  getTeamMembers: () =>
+    apiFetch<Array<{
+      name: string;
+      role: string;
+      image: string;
+      description?: string;
+      bio?: string;
+      socials?: { linkedin?: string; x?: string; website?: string };
+    }>>("/org/team/public/"),
+
   getStories: () => apiFetch<ApiListResponse<Record<string, unknown>>>("/content/stories/"),
   getArticles: () => apiFetch<ApiListResponse<Record<string, unknown>>>("/content/articles/"),
   getArticle: (slug: string) =>
