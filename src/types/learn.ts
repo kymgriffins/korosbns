@@ -15,6 +15,14 @@ export type StageTakeaway = {
   text: string;
 };
 
+export type ChapterVideo = {
+  order: number;
+  role: string;
+  title?: string;
+  url?: string;
+  youtube_video_id?: string;
+};
+
 export type ChapterStep = {
   id: string;
   chapterId?: string;
@@ -30,6 +38,7 @@ export type ChapterStep = {
   is_completed: boolean;
   is_locked: boolean;
   learning_outcomes?: LearningOutcome[];
+  videos?: ChapterVideo[];
 };
 
 export type LearningOutcome = {

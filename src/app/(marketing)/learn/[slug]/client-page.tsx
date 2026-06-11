@@ -14,7 +14,7 @@ import { ArticleReaderActions } from "@/components/citizen/article-reader-action
 import { citizenApi, type TriviaSetApi } from "@/lib/api-client";
 import { Routes } from "@/constants/routes";
 import { articlePlaceholderForSlug } from "@/lib/article-placeholders";
-import { sanitizeHtml, stripHtml } from "@/lib/sanitize";
+import { renderContent } from "@/lib/render-content";
 import { scaleIn, fadeInUp, fadeInUpDelay1, fadeInUpDelay2, fadeInUpDelay3 } from "@/motion/variants";
 
 type ReaderMode = "loading" | "error" | "article" | "story" | "trivia";
@@ -460,16 +460,9 @@ export default function UnifiedReaderClientPage({
 
             <hr className="border-border" />
 
-            {article.body_html ? (
-              <div
-                className="notion-content prose dark:prose-invert max-w-none"
-                dangerouslySetInnerHTML={{ __html: sanitizeHtml(article.body_html) }}
-              />
-            ) : (
-              <div className="prose dark:prose-invert max-w-none whitespace-pre-wrap">
-                {stripHtml(article.body || article.snippet)}
-              </div>
-            )}
+            <div className="max-w-none">
+              {renderContent(article.body_html || article.body || article.snippet)}
+            </div>
 
             <footer className="mt-16 border-t border-border pt-8 space-y-6">
               {ctx?.section_total && ctx.section_total > 1 ? (

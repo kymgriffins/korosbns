@@ -39,7 +39,12 @@ export function LearnTabPage({
     setLoading(true);
     return LIST_FETCHERS[listKey]({ search: q || undefined })
       .then((data) => setItems(data.results))
-      .catch(() => setError("Could not load content."))
+      .catch((err) => {
+        const msg =
+          err instanceof Error ? err.message : "Could not load content.";
+        setError(msg);
+        console.error(`[LearnTabPage] Failed to load ${listKey}:`, err);
+      })
       .finally(() => setLoading(false));
   }, [listKey, q]);
 

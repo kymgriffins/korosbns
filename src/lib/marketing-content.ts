@@ -18,5 +18,6 @@ export function contentLoadErrorMessage(err: unknown, resource: string): string 
   if (err instanceof Error && err.message.trim()) {
     return err.message;
   }
-  return `Could not load ${resource}.`;
+  console.error(`[MarketingContent] Failed to load ${resource}:`, err);
+  return `Could not load ${resource}. Please try again later.`;
 }

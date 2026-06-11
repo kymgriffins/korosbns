@@ -1,5 +1,4 @@
 import type { TriviaSetApi } from "@/lib/api-client";
-import { wrapNotionContent } from "@/lib/api-client";
 
 export type HubStory = {
   id: string;
@@ -78,7 +77,7 @@ export function mapApiStory(item: Record<string, unknown>): {
 
 export function mapApiArticle(item: Record<string, unknown>): HubArticle {
   const meta = (item.metadata || {}) as Record<string, string>;
-  const bodyHtml = wrapNotionContent(String(item.body_html || ""));
+  const bodyHtml = String(item.body_html || item.body || "");
   const plainLen = String(item.body || item.summary || "").length;
   const hero =
     meta.hero_image ||

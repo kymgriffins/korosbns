@@ -7,19 +7,11 @@ import { Button } from "@/ui/button";
 import { learnHubApi } from "@/lib/learn-hub";
 import { useLearn } from "@/contexts/learn-context";
 import { readProgress, writeProgress } from "@/lib/module-progress";
-import type { CivicModule } from "@/types/learn";
+import type { CivicModule, ChapterVideo } from "@/types/learn";
 
 import { StepContent } from "./step-content";
 import { TriviaSection } from "./trivia-section";
 import { MasteryPage } from "./mastery-page";
-
-const FALLBACK_VIDEO_URLS: Record<string, Record<number, string>> = {
-  "budget-policy-statement": {
-    1: "https://www.youtube.com/embed/Ed9lP0-komE",
-    2: "https://www.youtube.com/embed/wkPe3sWomoA",
-    3: "https://www.youtube.com/embed/FkgRz4v2Llk",
-  },
-};
 
 interface StageDetailDrawerProps {
   stage: CivicModule;
@@ -128,16 +120,30 @@ export function StageDetailDrawer({
 
   const isMastery = currentStep > stage.steps.length;
   const currentStepObj = currentStep > 0 && !isMastery ? stage.steps[currentStep - 1] : null;
-  let videoUrl = currentStepObj?.youtube_url || null;
 
-  if (!videoUrl && FALLBACK_VIDEO_URLS[stage.slug]?.[currentStep]) {
-    videoUrl = FALLBACK_VIDEO_URLS[stage.slug][currentStep];
-  } else if (videoUrl && !videoUrl.includes("embed/")) {
-    const videoIdMatch = videoUrl.match(/(?:youtu\.be\/|v=)([^&?]+)/);
-    if (videoIdMatch) {
-      videoUrl = `https://www.youtube.com/embed/${videoIdMatch[1]}`;
+  const stepVideos: ChapterVideo[] = currentStepObj?.videos?.length
+    ? currentStepObj.videos
+    : currentStepObj?.youtube_url
+      ? [{ order: 1, role: "lecture", title: "Lecture", youtube_video_id: resolveYoutubeId(currentStepObj.youtube_url) ?? undefined }] as ChapterVideo[]
+      : [];
+
+  function resolveYoutubeId(input: string): string | undefined {
+    if (!input) return undefined;
+    if (input.includes("embed/")) {
+      const m = input.match(/embed\/([^/?]+)/);
+      return m ? m[1] : input;
     }
+    const m = input.match(/(?:youtu\.be\/|v=)([^&?]+)/);
+    return m ? m[1] : input;
   }
+
+  function videoEmbedUrl(idOrUrl: string): string {
+    const id = resolveYoutubeId(idOrUrl);
+    return id ? `https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1` : idOrUrl;
+  }
+
+  const [activeVideoIdx, setActiveVideoIdx] = useState(0);
+  const currentVideoUrl = stepVideos.length > 0 ? videoEmbedUrl(stepVideos[activeVideoIdx]?.youtube_video_id || stepVideos[activeVideoIdx]?.url || "") : null;
 
   return (
     <div className="flex flex-col h-full overflow-hidden bg-background">
@@ -191,9 +197,28 @@ export function StageDetailDrawer({
 
               <div className="animate-in fade-in duration-200">
                 {activeTab === "watch" && (
-                  videoUrl ? (
-                    <div className="w-full aspect-video bg-black rounded-xl overflow-hidden shadow-xs">
-                      <iframe src={videoUrl} title={`${currentStepObj?.title || stage.title} Lesson`} className="w-full h-full border-0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                  currentVideoUrl ? (
+                    <div className="space-y-2">
+                      {stepVideos.length > 1 && (
+                        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide pb-1">
+                          {stepVideos.map((v, idx) => (
+                            <button
+                              key={idx}
+                              onClick={() => setActiveVideoIdx(idx)}
+                              className={`px-2.5 py-1 rounded-lg text-[10px] font-bold whitespace-nowrap transition-all ${
+                                activeVideoIdx === idx
+                                  ? "bg-primary text-primary-foreground shadow-xs"
+                                  : "bg-muted/40 text-muted-foreground hover:text-foreground"
+                              }`}
+                            >
+                              {v.title || v.role || `Video ${idx + 1}`}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                      <div className="w-full aspect-video bg-black rounded-xl overflow-hidden shadow-xs">
+                        <iframe src={currentVideoUrl} title={`${currentStepObj?.title || stage.title} Lesson`} className="w-full h-full border-0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                      </div>
                     </div>
                   ) : (
                     <div className="w-full aspect-video bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl flex flex-col items-center justify-center shadow-xs">

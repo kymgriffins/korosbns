@@ -1,11 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/ui/button";
 import { Progress } from "@/ui/progress";
 import { cn } from "@/utils";
 import { Sparkles, Lightbulb, AlertTriangle } from "lucide-react";
-import type { ChapterStep, StageTakeaway } from "@/types/learn";
-import { stripHtml, sanitizeHtml } from "@/lib/sanitize";
+import type { ChapterStep, StageTakeaway, ChapterVideo } from "@/types/learn";
+import { stripHtml } from "@/lib/sanitize";
+import { renderContent } from "@/lib/render-content";
 
 interface StepContentProps {
   step: ChapterStep;
@@ -17,6 +19,68 @@ interface StepContentProps {
   getPersonalizedText: (text: string) => string;
   onFormatChange: (format: "video" | "text") => void;
   onStartTrivia: () => void;
+}
+
+function resolveYoutubeId(input: string): string {
+  if (!input) return "";
+  if (input.includes("embed/")) {
+    const m = input.match(/embed\/([^/?]+)/);
+    return m ? m[1] : input;
+  }
+  const m = input.match(/(?:youtu\.be\/|v=)([^&?]+)/);
+  return m ? m[1] : input;
+}
+
+function videoEmbedUrl(idOrUrl: string): string {
+  const id = resolveYoutubeId(idOrUrl);
+  return `https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1`;
+}
+
+function VideoPlayer({ videos, youtubeUrl, title }: { videos?: ChapterVideo[]; youtubeUrl: string; title: string }) {
+  const resolved = videos?.length
+    ? videos
+    : youtubeUrl
+      ? [{ order: 1, role: "lecture", youtube_video_id: resolveYoutubeId(youtubeUrl) }]
+      : [];
+  const [idx, setIdx] = useState(0);
+
+  if (!resolved.length) {
+    return (
+      <div className="w-full aspect-video bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl flex flex-col items-center justify-center shadow-xs">
+        <div className="size-10 rounded-lg bg-muted/30 flex items-center justify-center">
+          <Sparkles className="size-5 text-muted-foreground/40" />
+        </div>
+        <p className="text-xs text-muted-foreground/60 font-semibold mt-2">Video coming soon</p>
+      </div>
+    );
+  }
+
+  const src = videoEmbedUrl(resolved[idx]?.youtube_video_id || resolved[idx]?.url || "");
+
+  return (
+    <div className="space-y-2">
+      {resolved.length > 1 && (
+        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide pb-1">
+          {resolved.map((v, i) => (
+            <button
+              key={i}
+              onClick={() => setIdx(i)}
+              className={`px-2.5 py-1 rounded-lg text-[10px] font-bold whitespace-nowrap transition-all ${
+                idx === i
+                  ? "bg-primary text-primary-foreground shadow-xs"
+                  : "bg-muted/40 text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {v.title || v.role || `Video ${i + 1}`}
+            </button>
+          ))}
+        </div>
+      )}
+      <div className="relative aspect-video rounded-xl overflow-hidden bg-black shadow-xs">
+        <iframe className="w-full h-full border-0" src={src} title={title} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />
+      </div>
+    </div>
+  );
 }
 
 export function StepContent({ step, currentStep, totalSteps, activeFormat, showTrivia, origin, getPersonalizedText, onFormatChange, onStartTrivia }: StepContentProps) {
@@ -34,9 +98,11 @@ export function StepContent({ step, currentStep, totalSteps, activeFormat, showT
         <>
           {activeFormat === "video" && origin && (
             <div className="max-w-[78%] mx-auto">
-              <div className="relative aspect-video rounded-xl overflow-hidden bg-black shadow-xs">
-                <iframe className="w-full h-full border-0" src={`https://www.youtube-nocookie.com/embed/${step.youtube_url}?rel=0&modestbranding=1`} title="Lesson Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />
-              </div>
+              <VideoPlayer
+                videos={step.videos}
+                youtubeUrl={step.youtube_url}
+                title={`${step.title} Lesson`}
+              />
             </div>
           )}
 
@@ -52,7 +118,9 @@ export function StepContent({ step, currentStep, totalSteps, activeFormat, showT
                 [&>ol]:list-decimal [&>ol]:pl-5 [&>ol]:mb-4 [&>ol]:space-y-1.5
                 [&>blockquote]:border-l-4 [&>blockquote]:border-primary [&>blockquote]:pl-4 [&>blockquote]:italic [&>blockquote]:my-4
                 [&>a]:text-primary [&>a]:underline hover:[&>a]:text-primary/80
-              " dangerouslySetInnerHTML={{ __html: sanitizeHtml(getPersonalizedText(step.text)) }} />
+              ">
+                {renderContent(getPersonalizedText(step.text))}
+              </article>
 
               {(() => {
                 const takeaway: StageTakeaway | undefined = step.takeaways?.[0];

@@ -72,7 +72,9 @@ export async function fetchLearningUnitsServer(): Promise<LearningUnitSummary[]>
     next: { revalidate: SERVER_CONTENT_REVALIDATE_SECONDS },
   });
   if (!response.ok) {
-    throw new Error(`Could not load learning units (${response.status}).`);
+    const detail = `Could not load learning units (${response.status}).`;
+    console.error(`[LearningUnits] ${detail}`, { status: response.status, statusText: response.statusText });
+    throw new Error(detail);
   }
   const data = (await response.json()) as { results?: LearningUnitSummary[] };
   return data.results ?? [];
@@ -86,7 +88,9 @@ export async function fetchLearningEditionServer(
   });
   if (response.status === 404) return null;
   if (!response.ok) {
-    throw new Error(`Could not load edition (${response.status}).`);
+    const detail = `Could not load edition (${response.status}).`;
+    console.error(`[LearningUnits] ${detail}`, { slug, status: response.status, statusText: response.statusText });
+    throw new Error(detail);
   }
   return (await response.json()) as LearningEditionDetail;
 }
