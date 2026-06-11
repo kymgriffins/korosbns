@@ -3,9 +3,9 @@
 import { useMemo } from "react";
 import { motion, type Variants } from "motion/react";
 import {
-  Flame, Award, BookOpen, PlayCircle, Trophy, Target,
+  Flame, Award, BookOpen, Trophy, Target,
   Newspaper, ArrowRight, CircleUser, Zap, TrendingUp,
-  Users, Star, Clock, ChevronRight, Video
+  Users, Star, ChevronRight, Video
 } from "lucide-react";
 import { Button } from "@/ui/button";
 import { BitmojiAvatar } from "./bitmoji-avatar";

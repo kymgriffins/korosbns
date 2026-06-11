@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import {
   ChevronRight, ChevronLeft, ChevronDown, X,
   BookOpen, Bell, Home, LayoutDashboard, CheckCircle2, ArrowLeft, ExternalLink,
@@ -48,6 +48,11 @@ function LearnSidebar() {
   const [events, setEvents] = useState<HubEvent[]>([]);
   const [surveys, setSurveys] = useState<SurveyListItemApi[]>([]);
   const [feedLoading, setFeedLoading] = useState(true);
+
+  const upcomingEvents = useMemo(() =>
+    events.filter((ev) => ev.starts_at && new Date(ev.starts_at) >= new Date(new Date().toDateString())),
+    [events]
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -209,7 +214,7 @@ function LearnSidebar() {
           <div className="p-2 space-y-3">
             {showAppCard && !feedLoading && (
               <Link
-                href={events.length > 0 ? Routes.Events : Routes.Surveys}
+                href={upcomingEvents.length > 0 ? Routes.Events : Routes.Surveys}
                 className="relative block overflow-hidden rounded-xl bg-gradient-to-br from-emerald-500 via-emerald-500/90 to-teal-600 text-white p-4 shadow-xs group"
               >
                 <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.07] mix-blend-overlay pointer-events-none" />
@@ -220,11 +225,11 @@ function LearnSidebar() {
                 </button>
                 <div className="relative z-10 space-y-1.5">
                   <div className="flex items-center gap-2">
-                    {events.length > 0 ? <Calendar className="size-4" /> : <ListChecks className="size-4" />}
-                    <h4 className="font-bold text-xs">{events.length > 0 ? "Upcoming Events" : "Active Surveys"}</h4>
+                    {upcomingEvents.length > 0 ? <Calendar className="size-4" /> : <ListChecks className="size-4" />}
+                    <h4 className="font-bold text-xs">{upcomingEvents.length > 0 ? "Upcoming Events" : "Active Surveys"}</h4>
                   </div>
-                  {events.length > 0 ? (
-                    events.slice(0, 2).map((ev) => (
+                  {upcomingEvents.length > 0 ? (
+                    upcomingEvents.slice(0, 2).map((ev) => (
                       <div key={ev.id} className="space-y-0.5">
                         <p className="text-[10px] text-white/80">{ev.title}</p>
                         <p className="text-[9px] text-white/60">{ev.location} · {new Date(ev.starts_at).toLocaleDateString("en-KE", { month: "short", day: "numeric", year: "numeric" })}</p>
