@@ -1,5 +1,4 @@
 import type { CivicModule, CivicModuleAuthor } from "@/types/learn";
-import { team } from "@/constants/team";
 import { learnHubApi } from "./learn-hub";
 
 function slugify(name: string): string {
@@ -8,23 +7,6 @@ function slugify(name: string): string {
     .replace(/\./g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
-}
-
-export function enrichAuthorWithTeamData(author: CivicModuleAuthor): CivicModuleAuthor {
-  const teamMember = team.find(
-    (t) => t.name.toLowerCase() === author.name.toLowerCase()
-  );
-  if (!teamMember) return author;
-  return {
-    ...author,
-    image: author.image || teamMember.image,
-    bio: author.bio || teamMember.bio,
-    role: author.role || teamMember.role,
-    socials: {
-      linkedin: teamMember.socials?.linkedin,
-      x: teamMember.socials?.x,
-    },
-  };
 }
 
 export function getAuthorSlug(author: CivicModuleAuthor): string {
@@ -38,12 +20,11 @@ export async function fetchAllAuthors(): Promise<CivicModuleAuthor[]> {
   const authors: CivicModuleAuthor[] = [];
   for (const mod of modules) {
     if (mod.author) {
-      const enriched = enrichAuthorWithTeamData(mod.author);
-      const key = enriched.name.toLowerCase();
+      const key = mod.author.name.toLowerCase();
       if (!seen.has(key)) {
         seen.add(key);
-        enriched.slug = getAuthorSlug(enriched);
-        authors.push(enriched);
+        mod.author.slug = getAuthorSlug(mod.author);
+        authors.push(mod.author);
       }
     }
   }
@@ -60,15 +41,14 @@ export async function fetchAuthorBySlug(slug: string): Promise<{
   );
   for (const mod of modules) {
     if (mod.author) {
-      const enriched = enrichAuthorWithTeamData(mod.author);
-      const authorSlug = getAuthorSlug(enriched);
+      const authorSlug = getAuthorSlug(mod.author);
       if (authorSlug === slug) {
         const authorModules = modules.filter(
           (m: CivicModule) =>
             m.author &&
-            m.author.name.toLowerCase() === enriched.name.toLowerCase()
+            m.author.name.toLowerCase() === mod.author!.name.toLowerCase()
         );
-        return { author: enriched, modules: authorModules };
+        return { author: mod.author, modules: authorModules };
       }
     }
   }

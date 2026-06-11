@@ -169,16 +169,16 @@ export function LearnModulesView({ profile, stages, currentStage, onSelectStage 
                           </span>
                           <ExternalLink className="size-2 text-muted-foreground/40 group-hover:text-primary transition-colors shrink-0" />
                         </Link>
-                      ) : (
+                      ) : stage.credits ? (
                         <div className="flex items-center gap-1.5 min-w-0">
                           <div className="size-[18px] rounded-full bg-muted flex items-center justify-center shrink-0">
-                            <span className="text-[8px] font-bold text-muted-foreground">{(stage.credits || "BNS")[0]}</span>
+                            <span className="text-[8px] font-bold text-muted-foreground">{stage.credits[0]}</span>
                           </div>
                           <span className="text-[10px] font-semibold text-muted-foreground truncate">
-                            {stage.credits || "BNS Team"}
+                            {stage.credits}
                           </span>
                         </div>
-                      )}
+                      ) : null}
                     </div>
                     <Button size="sm" className="rounded-lg h-6 px-2.5 text-[10px] font-bold shrink-0"
                       onClick={(e) => { e.stopPropagation(); onSelectStage(stage); }}>
