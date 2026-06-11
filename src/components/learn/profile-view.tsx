@@ -1,10 +1,11 @@
 "use client";
 
-import React from "react";
-import { Flame, Sparkles, Award, Globe, ShieldCheck, Trash2 } from "lucide-react";
-import { Button } from "@/ui/button";
+import React, { useMemo } from "react";
+import { Flame, Sparkles, Award, Globe, Activity, TrendingUp } from "lucide-react";
 import { Switch } from "@/ui/switch";
 import { BitmojiAvatar } from "./bitmoji-avatar";
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/ui/chart";
 import type { CivicModule } from "@/types/learn";
 
 interface ProfileViewProps {
@@ -15,6 +16,18 @@ interface ProfileViewProps {
 }
 
 export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile }: ProfileViewProps) {
+  const chartData = useMemo(() => [
+    { day: "Mon", xp: 120 },
+    { day: "Tue", xp: 80 },
+    { day: "Wed", xp: 300 },
+    { day: "Thu", xp: 50 },
+    { day: "Fri", xp: 200 },
+    { day: "Sat", xp: profile.sovereigns > 0 ? 150 : 0 },
+    { day: "Sun", xp: 0 },
+  ], [profile.sovereigns]);
+
+  const chartConfig = { xp: { label: "XP Earned", color: "var(--primary)" } };
+
   return (
     <div className="space-y-4 md:space-y-6 max-w-3xl mx-auto">
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/90 via-primary/80 to-primary/60 p-5 md:p-8 text-primary-foreground shadow-lg">
@@ -98,6 +111,26 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
               </div>
             );
           })}
+        </div>
+      </div>
+
+      {/* Activity chart */}
+      <div className="p-4 md:p-5 border border-border bg-card rounded-2xl space-y-3 shadow-xs md:shadow-sm">
+        <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
+          <Activity className="size-3.5" /> Weekly Activity
+        </h3>
+        <div className="h-[120px]">
+          <ChartContainer config={chartConfig} className="w-full h-full">
+            <BarChart data={chartData} margin={{ top: 8, right: 4, left: -12, bottom: 0 }}>
+              <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.2} />
+              <XAxis dataKey="day" tickLine={false} tickMargin={4} axisLine={false} tick={{ fontSize: 10, fontWeight: 600 }} />
+              <ChartTooltip
+                content={<ChartTooltipContent hideIndicator className="bg-card shadow-md text-xs border-0 rounded-lg" />}
+                cursor={{ fill: "var(--muted)", opacity: 0.15 }}
+              />
+              <Bar dataKey="xp" fill="var(--color-xp)" radius={[4, 4, 0, 0]} barSize={22} />
+            </BarChart>
+          </ChartContainer>
         </div>
       </div>
 
