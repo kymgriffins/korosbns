@@ -76,6 +76,12 @@ export function StageDetailDrawer({
   };
 
   useEffect(() => {
+    if (activeTab === "quiz" && !((stage.steps[currentStep - 1]?.trivia?.length ?? 0) > 0)) {
+      setActiveTab("read");
+    }
+  }, [currentStep, activeTab]);
+
+  useEffect(() => {
     if (currentStep === stage.steps.length + 1) {
       const p = readProgress(stage.slug, stage.order);
       if (!p.masteryAwarded) {
@@ -116,10 +122,15 @@ export function StageDetailDrawer({
     setCurrentStep(stepNum);
     setExpandedStep(stepNum);
     setShowTrivia(false);
+    const nextStep = stage.steps[stepNum - 1];
+    if (activeTab === "quiz" && !((nextStep?.trivia?.length ?? 0) > 0)) {
+      setActiveTab("read");
+    }
   };
 
   const isMastery = currentStep > stage.steps.length;
   const currentStepObj = currentStep > 0 && !isMastery ? stage.steps[currentStep - 1] : null;
+  const hasQuiz = (currentStepObj?.trivia?.length ?? 0) > 0;
 
   function resolveYoutubeId(input: string): string | undefined {
     if (!input) return undefined;
@@ -197,7 +208,7 @@ export function StageDetailDrawer({
                 {[
                   { id: "read", label: "Read", icon: BookOpenText },
                   { id: "watch", label: "Watch", icon: Video },
-                  { id: "quiz", label: "Quiz", icon: Brain }
+                  ...(hasQuiz ? [{ id: "quiz", label: "Quiz", icon: Brain }] : []),
                 ].map((tab) => (
                   <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all whitespace-nowrap ${
