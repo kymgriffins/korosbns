@@ -21,17 +21,19 @@ export function AlertsView({ profile }: AlertsViewProps) {
               <div key={idx} className="p-4 rounded-xl border border-border bg-card space-y-3 text-xs shadow-xs">
                 <div className="flex justify-between items-start gap-2">
                   <h4 className="font-bold text-foreground truncate">{log.documentName}</h4>
-                  <span className="text-[10px] bg-primary/10 border border-primary/20 text-primary font-bold px-2 py-0.5 rounded-full uppercase shrink-0">{log.method}</span>
+                  <span className="text-[10px] bg-primary/10 ring-1 ring-primary/20 text-primary font-bold px-2 py-0.5 rounded-full uppercase shrink-0">{log.method}</span>
                 </div>
                 <p className="text-[10px] text-muted-foreground font-semibold">Submitted: {new Date(log.dateSubmitted).toLocaleString()}</p>
-                <div className="bg-muted/30 p-3 rounded-lg border border-border/50 font-mono text-[10px] leading-relaxed whitespace-pre-wrap truncate max-h-24">{log.draftText}</div>
+                <div className="bg-muted/30 p-3 rounded-lg ring-1 ring-border/50 font-mono text-[10px] leading-relaxed whitespace-pre-wrap truncate max-h-24">{log.draftText}</div>
               </div>
             ))}
           </div>
         ) : (
           <div className="text-center py-12 border border-dashed border-border rounded-2xl space-y-3">
-            <Bell className="size-8 text-muted-foreground/30 mx-auto" />
-            <p className="text-sm text-muted-foreground">No commentaries submitted yet.</p>
+            <div className="size-12 rounded-full bg-muted/30 flex items-center justify-center mx-auto ring-1 ring-border/30">
+              <Bell className="size-5 text-muted-foreground/40" />
+            </div>
+            <p className="text-sm font-bold text-muted-foreground">No commentaries submitted yet.</p>
             <p className="text-[10px] text-muted-foreground/60">Complete a learning stage to draft and submit a memorandum.</p>
           </div>
         )}

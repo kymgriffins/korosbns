@@ -189,6 +189,7 @@ function LearnSidebar() {
 function LearnAppShell({ children }: { children: React.ReactNode }) {
   const { isLoggedIn } = useAuth();
   const [hasProfile, setHasProfile] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const checkProfile = () => {
@@ -223,6 +224,14 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
+  useEffect(() => {
+    const main = document.querySelector("main");
+    if (!main) return;
+    const onScroll = () => setScrolled(main.scrollTop > 10);
+    main.addEventListener("scroll", onScroll, { passive: true });
+    return () => main.removeEventListener("scroll", onScroll);
+  }, []);
+
   if (!isLoggedIn && !hasProfile) {
     return (
       <div className="min-h-dvh bg-background text-foreground overflow-hidden flex items-center justify-center">
@@ -236,7 +245,13 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
       <SidebarProvider>
         <LearnSidebar />
         <div className="flex flex-col flex-1 h-dvh md:min-h-dvh min-w-0 overflow-hidden">
-          <header className="flex h-12 items-center gap-4 border-b border-border/30 bg-background px-4 md:hidden">
+          <header
+            className={`flex h-12 items-center gap-4 border-b px-4 md:hidden sticky top-0 z-20 transition-all duration-200 ${
+              scrolled
+                ? "bg-background/80 backdrop-blur-lg shadow-xs border-border/50"
+                : "bg-background border-border/30"
+            }`}
+          >
             <SidebarTrigger className="-ml-1" />
             <div className="font-semibold text-sm">Learning Hub</div>
           </header>

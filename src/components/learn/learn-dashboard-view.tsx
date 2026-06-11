@@ -71,6 +71,7 @@ export function LearnDashboardView({
     >
       <motion.div variants={itemVars} className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-primary/90 to-blue-600 text-white p-4 md:p-6 shadow-sm">
         <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.07] mix-blend-overlay pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none" />
         <div className="relative z-10 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
             <div className="size-12 md:size-14 rounded-full bg-white/20 backdrop-blur border-2 border-white/30 flex items-center justify-center shadow-inner overflow-hidden shrink-0">
@@ -103,7 +104,7 @@ export function LearnDashboardView({
           { label: "Daily Goal", value: profile.streakDays > 0 ? "Goal Met" : "24:00:00", suffix: "", icon: Target, color: profile.streakDays > 0 ? "text-emerald-600" : "text-orange-500", bg: "bg-purple-500/8" },
           { label: "Rank", value: leaderboard?.find(l => l.name === profile.breakName)?.rank ? `#${leaderboard?.find(l => l.name === profile.breakName)?.rank}` : "\u2014", suffix: "", icon: Trophy, color: "text-amber-600", bg: "bg-amber-500/8" },
         ].map((stat) => (
-          <div key={stat.label} className="bg-card shadow-xs rounded-xl p-3 flex items-center justify-between gap-2">
+          <div key={stat.label} className="bg-card shadow-xs rounded-xl p-3 flex items-center justify-between gap-2 ring-1 ring-border/40">
             <div>
               <p className="text-[10px] font-semibold text-muted-foreground">{stat.label}</p>
               <div className="flex items-baseline gap-0.5">
@@ -111,7 +112,7 @@ export function LearnDashboardView({
                 {stat.suffix && <span className="text-[10px] text-muted-foreground font-semibold">{stat.suffix}</span>}
               </div>
             </div>
-            <div className={cn("size-8 rounded-lg flex items-center justify-center shrink-0", stat.bg)}>
+            <div className={cn("size-8 rounded-lg flex items-center justify-center shrink-0 ring-1 ring-black/[0.02]", stat.bg)}>
               <stat.icon className={cn("size-4", stat.color)} />
             </div>
           </div>
@@ -120,10 +121,10 @@ export function LearnDashboardView({
 
       <div className="grid grid-cols-1 md:grid-cols-[1fr_260px] gap-3">
         <div className="space-y-3">
-          <motion.div variants={itemVars} className="bg-gradient-to-r from-primary/10 via-indigo-500/10 to-blue-500/10 rounded-xl p-0.5 shadow-xs">
+          <motion.div variants={itemVars} className="relative rounded-xl p-[1px] bg-gradient-to-r from-primary/15 via-primary/10 to-blue-500/15 shadow-xs">
             <div className="bg-card rounded-[calc(0.75rem-1px)] p-3 flex items-center justify-between gap-3">
               <div className="flex items-center gap-3 min-w-0">
-                <div className="size-10 shrink-0 rounded-lg bg-primary/10 flex items-center justify-center text-xl">
+                <div className="size-10 shrink-0 rounded-lg bg-primary/10 flex items-center justify-center text-xl ring-1 ring-primary/20">
                   {currentStage.badge}
                 </div>
                 <div className="min-w-0">
@@ -132,13 +133,13 @@ export function LearnDashboardView({
                   <p className="text-[10px] text-muted-foreground truncate">{currentStage.documentName}</p>
                 </div>
               </div>
-              <Button onClick={() => onSelectStage(currentStage)} size="sm" className="rounded-lg h-8 px-3 font-bold text-xs shrink-0">
+              <Button onClick={() => onSelectStage(currentStage)} size="sm" className="rounded-lg h-8 px-3 font-bold text-xs shrink-0 focus-visible:ring-2 focus-visible:ring-ring">
                 <PlayCircle className="size-3.5 mr-1" /> Start
               </Button>
             </div>
           </motion.div>
 
-          <motion.div variants={itemVars} className="bg-card shadow-xs rounded-xl p-3">
+          <motion.div variants={itemVars} className="bg-card shadow-xs rounded-xl p-3 ring-1 ring-border/40">
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-xs font-bold flex items-center gap-1.5">
                 <Activity className="size-3.5 text-primary" /> Activity
@@ -159,7 +160,7 @@ export function LearnDashboardView({
         </div>
 
         <div className="space-y-3">
-          <motion.div variants={itemVars} className="bg-card shadow-xs rounded-xl p-3">
+          <motion.div variants={itemVars} className="bg-card shadow-xs rounded-xl p-3 ring-1 ring-border/40">
             <h3 className="text-xs font-bold mb-2">Progress</h3>
             <div className="relative flex items-center justify-center h-[100px]" role="img" aria-label={`Overall progress: ${Math.round(progressPercentage)}%`}>
               <ResponsiveContainer width="100%" height="100%">
@@ -179,19 +180,19 @@ export function LearnDashboardView({
             </div>
           </motion.div>
 
-          <motion.div variants={itemVars} className="bg-card shadow-xs rounded-xl p-3 flex-1">
+          <motion.div variants={itemVars} className="bg-card shadow-xs rounded-xl p-3 flex-1 ring-1 ring-border/40">
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-xs font-bold flex items-center gap-1.5">
                 <Trophy className="size-3.5 text-amber-500" /> Top Citizens
               </h3>
-              <Link href={Routes.LearnForum} className="text-[10px] font-bold text-primary/70 hover:text-primary uppercase tracking-wider">All</Link>
+              <Link href={Routes.LearnForum} className="text-[10px] font-bold text-primary/70 hover:text-primary uppercase tracking-wider focus-visible:ring-2 focus-visible:ring-ring">All</Link>
             </div>
             <div className="space-y-1 max-h-[200px] overflow-y-auto">
               {(leaderboard ?? []).length > 0 ? (
                 leaderboard!.slice(0, 5).map((entry, i) => (
                   <div key={entry.name ?? i} className="flex items-center justify-between py-1.5 px-2 rounded-lg hover:bg-muted/40 transition-colors">
                     <div className="flex items-center gap-2 min-w-0">
-                      <div className="size-6 rounded-full bg-muted flex items-center justify-center overflow-hidden shrink-0">
+                      <div className="size-6 rounded-full bg-muted flex items-center justify-center overflow-hidden shrink-0 ring-1 ring-border/40">
                         {entry.avatar_url ? (
                           <img src={entry.avatar_url} alt={entry.name ?? ""} className="size-full object-cover" />
                         ) : (

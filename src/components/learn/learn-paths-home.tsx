@@ -14,7 +14,7 @@ import { DashboardSkeleton } from "./dashboard-skeleton";
 import { Button } from "@/ui/button";
 import { toast } from "sonner";
 import {
-  Sparkles, ShieldAlert
+  Sparkles, ShieldAlert, BookOpen
 } from "lucide-react";
 import { useLearn } from "@/contexts/learn-context";
 import { motion, AnimatePresence } from "motion/react";
@@ -351,21 +351,21 @@ export function LearnPathsHome() {
         </div>
         <p className="text-sm font-bold text-foreground">Failed to load modules</p>
         <p className="text-xs text-muted-foreground max-w-xs">{modulesError}</p>
-        <Button onClick={refreshModules} variant="outline" size="sm" className="mt-2 rounded-lg text-xs font-bold">
+        <Button onClick={refreshModules} variant="outline" size="sm" className="mt-2 rounded-lg text-xs font-bold focus-visible:ring-2 focus-visible:ring-ring">
           Try Again
         </Button>
       </div>
     );
   }
 
-  // If user is not onboarded, ask if they want to register or continue as anonymous guest
   if (!profile) {
     if (!wantsAnonymous) {
       return (
-        <div className="flex-1 flex items-center justify-center p-4 bg-muted/20 min-h-[70vh]">
-          <div className="w-full max-w-md p-6 bg-card border border-border rounded-2xl shadow-xl space-y-6 text-center">
-            <div className="space-y-2">
-              <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mx-auto">
+        <div className="flex-1 flex items-center justify-center p-4 min-h-[70vh]">
+          <div className="w-full max-w-md p-6 md:p-8 bg-card border border-border rounded-2xl shadow-lg space-y-6 text-center relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.03] to-transparent pointer-events-none" />
+            <div className="relative space-y-2">
+              <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mx-auto ring-1 ring-primary/20">
                 <Sparkles className="size-6" />
               </div>
               <h2 className="text-xl font-bold tracking-tight">Citizen Learn Hub</h2>
@@ -374,8 +374,8 @@ export function LearnPathsHome() {
               </p>
             </div>
 
-            <div className="space-y-3">
-              <Button asChild className="w-full rounded-xl h-11 font-bold focus-visible:ring-2 focus-visible:ring-primary/50">
+            <div className="relative space-y-3">
+              <Button asChild className="w-full rounded-xl h-11 font-bold focus-visible:ring-2 focus-visible:ring-ring">
                 <Link href={Routes.JoinUs}>Join the Movement</Link>
               </Button>
               <div className="flex items-center gap-2 my-2">
@@ -383,17 +383,17 @@ export function LearnPathsHome() {
                 <span className="text-[10px] text-muted-foreground uppercase font-bold">or</span>
                 <div className="h-px bg-border flex-1" />
               </div>
-              <Button 
-                onClick={() => setWantsAnonymous(true)} 
-                variant="outline" 
-                className="w-full rounded-xl h-11 font-bold border-border/85 bg-transparent focus-visible:ring-2 focus-visible:ring-primary/50"
+              <Button
+                onClick={() => setWantsAnonymous(true)}
+                variant="outline"
+                className="w-full rounded-xl h-11 font-bold"
               >
                 Continue as Anonymous User
               </Button>
             </div>
-            
-            <p className="text-[10px] text-muted-foreground leading-relaxed">
-              <Link href={Routes.Login} className="text-primary font-bold hover:underline">Already a user? Login</Link>
+
+            <p className="relative text-[10px] text-muted-foreground leading-relaxed">
+              <Link href={Routes.Login} className="text-primary font-bold hover:underline focus-visible:ring-2 focus-visible:ring-ring">Already a user? Login</Link>
               <span className="block mt-1.5">Anonymous progress is stored locally on this device, but won't sync across other browsers.</span>
             </p>
           </div>
@@ -402,7 +402,7 @@ export function LearnPathsHome() {
     }
 
     return (
-      <div className="flex-1 flex items-center justify-center p-4 bg-muted/20">
+      <div className="flex-1 flex items-center justify-center p-4">
         <AnonymousIdentityPicker onComplete={handleOnboardingComplete} />
       </div>
     );
@@ -411,21 +411,22 @@ export function LearnPathsHome() {
   if (!stages.length) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center min-h-[50vh] gap-3 p-6 text-center">
-        <p className="text-muted-foreground">No learning modules available yet.</p>
+        <div className="size-12 rounded-full bg-muted/30 flex items-center justify-center text-muted-foreground mx-auto">
+          <BookOpen className="size-6" />
+        </div>
+        <p className="text-sm font-bold text-muted-foreground">No learning modules available yet.</p>
       </div>
     );
   }
 
   return (
     <div className="w-full h-full min-h-0 bg-background flex flex-col overflow-hidden">
-      {/* Sheng translation warning banner */}
       {!selectedStage && profile.language === "SH" && (
         <div className="w-full py-1 px-4 text-[10px] font-semibold bg-amber-500/15 border-b border-amber-500/20 text-amber-600 text-center">
           {text.shengComingSoon}
         </div>
       )}
 
-      {/* Lesson layer — when stage is selected, it fills the view */}
       {selectedStage ? (
         <div className="absolute inset-0 z-10 flex flex-col overflow-hidden bg-background md:relative md:inset-auto">
           <StageDetailDrawer key={selectedStage.slug}
@@ -440,7 +441,6 @@ export function LearnPathsHome() {
           />
         </div>
       ) : (
-        /* Tab Content — single responsive layout */
         <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 md:p-6">
           <AnimatePresence mode="wait">
             {activeTab === "home" && (
@@ -449,6 +449,7 @@ export function LearnPathsHome() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
               >
                 <LearnDashboardView
                   profile={profile}
@@ -467,6 +468,7 @@ export function LearnPathsHome() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
                 className="h-[calc(100dvh-120px)] md:h-auto"
               >
                 <LearnModulesView
@@ -484,6 +486,7 @@ export function LearnPathsHome() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
               >
                 <AlertsView profile={profile} />
               </motion.div>
@@ -495,6 +498,7 @@ export function LearnPathsHome() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
                 className="h-[calc(100dvh-120px)] md:h-auto"
               >
                 <LearnDocumentsView profile={profile} />
@@ -507,6 +511,7 @@ export function LearnPathsHome() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
                 className="space-y-4 pb-4 md:pb-0"
               >
                 <ProfileView
