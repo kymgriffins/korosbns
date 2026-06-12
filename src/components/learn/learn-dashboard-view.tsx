@@ -178,10 +178,10 @@ export function LearnDashboardView({
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
               {stages.slice(0, 6).map((stage, i) => (
-                <Link
+                <button
                   key={stage.slug}
-                  href={`${Routes.Learn}/${stage.slug}`}
-                  className="group bg-card rounded-xl overflow-hidden ring-1 ring-border/40 hover:shadow-sm hover:ring-primary/20 transition-all"
+                  onClick={() => onSelectStage(stage)}
+                  className="group bg-card rounded-xl overflow-hidden ring-1 ring-border/40 hover:shadow-sm hover:ring-primary/20 transition-all text-left w-full cursor-pointer focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <div className="aspect-video bg-gradient-to-br from-muted to-muted/50 relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
@@ -207,7 +207,7 @@ export function LearnDashboardView({
                       <span className="text-[8px] text-muted-foreground/60">{stage.status}</span>
                     </div>
                   </div>
-                </Link>
+                </button>
               ))}
             </div>
           </motion.div>
