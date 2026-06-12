@@ -1,4 +1,5 @@
 import { buildApiUrl } from "@/lib/api-url";
+import { sendEmail } from "@/lib/services/email-sender";
 
 const CLAIMED_BY = "nextjs-citizen-app";
 
@@ -16,7 +17,6 @@ export type EmailHook = {
 };
 
 function getApiKey(): string | null {
-  if (typeof process === "undefined") return null;
   return process.env.EMAIL_HOOK_API_KEY || null;
 }
 
@@ -66,33 +66,19 @@ export async function markFailed(id: string, errorMessage?: string): Promise<boo
   return resp.ok;
 }
 
-export async function sendEmailViaApp(hook: EmailHook): Promise<boolean> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-  const resp = await fetch(`${baseUrl}/api/email/send`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      to: hook.recipient,
-      subject: hook.subject,
-      html: hook.body_html || undefined,
-      text: hook.body_text,
-      from: hook.from_email,
-    }),
-  });
-  return resp.ok;
-}
-
 export async function processHook(hook: EmailHook): Promise<void> {
   const claimed = await claimHook(hook.id);
   if (!claimed) return;
 
   try {
-    const sent = await sendEmailViaApp(hook);
-    if (sent) {
-      await markSent(hook.id);
-    } else {
-      await markFailed(hook.id, "sendEmailViaApp returned non-ok");
-    }
+    await sendEmail({
+      to: hook.recipient,
+      subject: hook.subject,
+      html: hook.body_html || undefined,
+      text: hook.body_text,
+      from: hook.from_email,
+    });
+    await markSent(hook.id);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     await markFailed(hook.id, message);
