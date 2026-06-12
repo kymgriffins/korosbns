@@ -10,6 +10,7 @@ import { OrgProvider } from "@/contexts/org-context";
 import SentryErrorBoundary from "@/components/error/error-boundary";
 import { DebugLogPanel } from "@/components/debug/debug-log-panel";
 import { PostHogProvider } from "@/components/global/posthog-provider";
+import { EmailHookPoller } from "@/components/global/email-hook-poller";
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
   const [queryClient] = useState(
@@ -36,6 +37,7 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
                   <PostHogProvider>
                     <Toaster position="top-right" toastOptions={{ style: { marginTop: "0.25rem" } }} />
                     {children}
+                    <EmailHookPoller />
                     <DebugLogPanel />
                   </PostHogProvider>
                 </TooltipProvider>
