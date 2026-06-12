@@ -3,8 +3,8 @@
 import { Bookmark, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/ui/button";
-import { citizenApi } from "@/lib/api-client";
 import { useAuth } from "@/contexts/auth-context";
+import { useToggleBookmark, useRecordShare } from "@/hooks/use-profile";
 
 export function ArticleReaderActions({
   slug,
@@ -14,6 +14,8 @@ export function ArticleReaderActions({
   contentId: string;
 }) {
   const { isLoggedIn } = useAuth();
+  const { mutateAsync: toggleBookmarkApi } = useToggleBookmark();
+  const { mutateAsync: recordShare } = useRecordShare();
 
   const toggleBookmark = async () => {
     if (!contentId || !isLoggedIn) {
@@ -21,7 +23,7 @@ export function ArticleReaderActions({
       return;
     }
     try {
-      await citizenApi.toggleBookmark("article", contentId);
+      await toggleBookmarkApi({ contentType: "article", contentId });
       toast.success("Bookmark updated");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Bookmark failed");
@@ -35,7 +37,7 @@ export function ArticleReaderActions({
         ? window.location.href
         : `${process.env.NEXT_PUBLIC_SITE_URL || ""}/articles/${slug}`;
     try {
-      await citizenApi.recordShare({
+      await recordShare({
         content_type: "article",
         content_id: contentId,
         channel: "copy_link",

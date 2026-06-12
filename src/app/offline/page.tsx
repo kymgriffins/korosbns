@@ -1,20 +1,13 @@
 export default function OfflinePage() {
   return (
-    <div style={{ padding: "4rem 2rem", textAlign: "center", maxWidth: 480, margin: "0 auto" }}>
-      <h1 style={{ fontSize: "2rem", marginBottom: "1rem" }}>You&apos;re offline</h1>
-      <p style={{ color: "#666", marginBottom: "1.5rem" }}>
+    <div className="p-8 text-center max-w-[480px] mx-auto">
+      <h1 className="text-2xl mb-4">You&apos;re offline</h1>
+      <p className="text-muted-foreground mb-6">
         Some content may still be available from cache. Connect to the internet to access the latest.
       </p>
       <a
         href="/learn"
-        style={{
-          display: "inline-block",
-          padding: "0.75rem 1.5rem",
-          background: "#0070f3",
-          color: "#fff",
-          borderRadius: 8,
-          textDecoration: "none",
-        }}
+        className="inline-block px-6 py-3 bg-blue-600 text-white no-underline rounded-lg font-semibold"
       >
         Browse cached content
       </a>

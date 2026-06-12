@@ -11,7 +11,7 @@ import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
 import { Routes } from "@/constants/routes";
 import { COUNTIES } from "@/constants/counties";
-import { citizenApi } from "@/lib/api-client";
+import { useRegister } from "@/hooks/use-auth-actions";
 import { 
   Heart, 
   BookOpen, 
@@ -50,6 +50,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [formError, setFormError] = useState("");
+  const registerMutation = useRegister();
 
   // Step 1: Priorities (Multi-select)
   const [selectedPriorities, setSelectedPriorities] = useState<string[]>([]);
@@ -120,7 +121,7 @@ export default function RegisterPage() {
 
     setLoading(true);
     try {
-      const result = await citizenApi.register({
+      const result = await registerMutation.mutateAsync({
         email: email.trim(),
         password,
         first_name: firstName.trim(),
@@ -192,8 +193,8 @@ export default function RegisterPage() {
             </div>
             <div className="h-1 w-full bg-muted rounded-full overflow-hidden">
               <div 
-                className="h-full bg-primary transition-all duration-300"
-                style={{ width: `${(step / 4) * 100}%` }}
+                className="h-full bg-primary transition-all duration-300 w-[var(--progress)]"
+                style={{ "--progress": `${(step / 4) * 100}%` } as React.CSSProperties}
               />
             </div>
           </div>

@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import Container from "../global/container";
 import Wrapper from "../global/wrapper";
 import { Button } from "@/ui/button";
+import { useMutation } from "@tanstack/react-query";
 
 // Compact X icon
 const XIcon = ({ className }: { className?: string }) => (
@@ -84,7 +85,6 @@ const socials = [
 ];
 
 export default function Contact() {
-  const [isSending, setIsSending] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -110,20 +110,14 @@ export default function Contact() {
     damping: 30,
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.name || !formData.email || !formData.message) {
-      toast.error("Please fill in all fields");
-      return;
-    }
-    setIsSending(true);
-    try {
-      const response = await fetch("/api/contact", {
+  const submitMutation = useMutation({
+    mutationFn: (body: { name: string; email: string; message: string }) =>
+      fetch("/api/contact", {
         method: "POST",
-        body: JSON.stringify(formData),
+        body: JSON.stringify(body),
         headers: { "Content-Type": "application/json" },
-      });
-      const data = await response.json();
+      }).then((r) => r.json()),
+    onSuccess: (data) => {
       if (data.success) {
         toast.success("Message sent! We'll reply within 48 hours.");
         setFormData({ name: "", email: "", message: "" });
@@ -131,11 +125,19 @@ export default function Contact() {
       } else {
         toast.error("Something went wrong. Try again.");
       }
-    } catch {
+    },
+    onError: () => {
       toast.error("Network error. Check your connection.");
-    } finally {
-      setIsSending(false);
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.name || !formData.email || !formData.message) {
+      toast.error("Please fill in all fields");
+      return;
     }
+    submitMutation.mutate(formData);
   };
 
   return (
@@ -341,14 +343,14 @@ export default function Contact() {
                       type="submit"
                       size="sm"
                       className="flex-1 h-10 text-sm rounded-lg font-medium"
-                      disabled={isSending}
+                      disabled={submitMutation.isPending}
                     >
-                      {isSending ? (
+                      {submitMutation.isPending ? (
                         <span className="animate-spin mr-2">◌</span>
                       ) : (
                         <Send className="mr-2 size-3.5" />
                       )}
-                      {isSending ? "Sending..." : "Send message"}
+                      {submitMutation.isPending ? "Sending..." : "Send message"}
                     </Button>
                     <Button
                       type="button"

@@ -30,11 +30,14 @@ import { Button } from "@/ui/button";
 
 import { resolveAppUrl } from "@/lib/api-url";
 import {
-  citizenApi,
   getAccessToken,
   type SurveyDetailApi,
   type SurveyQuestionApi,
 } from "@/lib/api-client";
+import { useStories, useArticles, useTriviaList } from "@/hooks/use-content";
+import { useSurveys, useSurvey, useSubmitSurvey } from "@/hooks/use-surveys";
+import { useYouTubeVideos } from "@/hooks/use-marketing";
+import { useSubmitTriviaAttempt } from "@/hooks/use-profile";
 import {
   newsletterSubscribeErrorMessage,
   subscribeNewsletter,
@@ -315,14 +318,15 @@ export default function Learn() {
   const [gamification, setGamification] = useState<GamificationState | null>(null);
   const [youtubeVideos, setYoutubeVideos] = useState<any[]>([]);
 
-  useEffect(() => {
-    fetch(resolveAppUrl("/api/youtube"))
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.videos) setYoutubeVideos(data.videos);
-      })
-      .catch((err) => console.error("Failed to load YouTube videos:", err));
-  }, []);
+  const { data: storiesData, isLoading: storiesLoading, error: storiesError } = useStories();
+  const { data: articlesData, isLoading: articlesLoading } = useArticles();
+  const { data: triviaData, isLoading: triviaLoading } = useTriviaList();
+  const { data: youtubeData } = useYouTubeVideos();
+  const { data: surveysList } = useSurveys();
+  const surveyId = surveysList?.[0]?.id;
+  const { data: surveyDetail } = useSurvey(surveyId, !!surveyId);
+  const submitSurveyMutation = useSubmitSurvey();
+  const submitTriviaAttemptMutation = useSubmitTriviaAttempt();
 
   useEffect(() => {
     void fetchPublicOrgConfig().then((cfg) => {
@@ -330,67 +334,58 @@ export default function Learn() {
     });
   }, []);
 
-  // Fetch stories (when enabled) and articles from BNSKE API
   useEffect(() => {
-    const fetchContent = async () => {
-      setLoadingContent(true);
-      if (LEARN_STORIES_VISIBLE) {
-        try {
-          const storiesData = await citizenApi.getStories();
-          const results = storiesData.results || [];
-          if (results.length > 0) {
-            const parsedStories: HubStory[] = [];
-            const parsedFlows: Record<string, any[]> = {};
-            results.forEach((item) => {
-              const { story, flow } = mapApiStory(item);
-              parsedStories.push(story);
-              parsedFlows[story.id] = flow;
-            });
-            setStories(parsedStories);
-            setStoryFlowsState({ ...parsedFlows, "budget-trivia": [] });
-          } else if (process.env.NODE_ENV === "development") {
-            setStories([]);
-            setStoryFlowsState({});
-          }
-        } catch (err) {
-          console.error("Failed to fetch stories from API:", err);
-          const message =
-            err instanceof Error ? err.message : "Could not load stories from the API.";
-          setContentError(message);
-        }
-      }
-
-      try {
-        const articlesData = await citizenApi.getArticles();
-        if (articlesData.results?.length) {
-          setArticles(articlesData.results.map((item) => mapApiArticle(item)));
-        }
-      } catch (err) {
-        console.error("Failed to fetch articles from API:", err);
-      } finally {
-        setLoadingContent(false);
-      }
-    };
-
-    void fetchContent();
-  }, []);
+    if (youtubeData?.videos) {
+      setYoutubeVideos(youtubeData.videos);
+    }
+  }, [youtubeData]);
 
   useEffect(() => {
-    const fetchTrivia = async () => {
-      try {
-        const data = await citizenApi.getTriviaList();
-        const sets = data.results || [];
-        if (sets.length) {
-          setActiveTriviaId(sets[0].id);
-          setApiQuizQuestions(triviaToQuizQuestions(sets[0]));
-          setTriviaCards(triviaToBrowseCards(sets));
-        }
-      } catch (err) {
-        console.error("Error fetching trivia:", err);
-      }
-    };
-    void fetchTrivia();
-  }, []);
+    if (!LEARN_STORIES_VISIBLE) return;
+    if (!storiesData) return;
+    const results = storiesData.results || [];
+    if (results.length > 0) {
+      const parsedStories: HubStory[] = [];
+      const parsedFlows: Record<string, any[]> = {};
+      results.forEach((item) => {
+        const { story, flow } = mapApiStory(item);
+        parsedStories.push(story);
+        parsedFlows[story.id] = flow;
+      });
+      setStories(parsedStories);
+      setStoryFlowsState({ ...parsedFlows, "budget-trivia": [] });
+    } else if (process.env.NODE_ENV === "development") {
+      setStories([]);
+      setStoryFlowsState({});
+    }
+  }, [storiesData]);
+
+  useEffect(() => {
+    if (articlesData?.results?.length) {
+      setArticles(articlesData.results.map((item) => mapApiArticle(item)));
+    }
+  }, [articlesData]);
+
+  useEffect(() => {
+    if (storiesError) {
+      const message = storiesError instanceof Error ? storiesError.message : "Could not load stories from the API.";
+      setContentError(message);
+    }
+  }, [storiesError]);
+
+  useEffect(() => {
+    setLoadingContent(storiesLoading || articlesLoading || triviaLoading);
+  }, [storiesLoading, articlesLoading, triviaLoading]);
+
+  useEffect(() => {
+    if (!triviaData) return;
+    const sets = triviaData.results || [];
+    if (sets.length) {
+      setActiveTriviaId(sets[0].id);
+      setApiQuizQuestions(triviaToQuizQuestions(sets[0]));
+      setTriviaCards(triviaToBrowseCards(sets));
+    }
+  }, [triviaData]);
 
   const gamificationFetch = async (path: string, init?: RequestInit) => {
     return fetch(resolveAppUrl(path), {
@@ -572,36 +567,25 @@ export default function Learn() {
           explanation: q.explanation,
         }));
 
-  const loadActiveSurvey = async () => {
+  const loadActiveSurvey = () => {
     setSurveyLoading(true);
-    try {
-      const list = await citizenApi.getSurveys();
-      const first = list.results?.[0];
-      if (!first) {
-        toast.error("No active survey is available right now.");
-        return;
-      }
-      const detail = await citizenApi.getSurvey(first.id);
-      if (!detail.questions?.length) {
-        toast.error("This survey has no questions yet.");
-        return;
-      }
-      setActiveSurvey(detail);
-      setSurveyIndex(0);
-      setSurveyAnswers({});
-      setAppState("survey");
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Could not load survey");
-    } finally {
+    if (!surveyDetail?.questions?.length) {
+      toast.error(surveyId ? "This survey has no questions yet." : "No active survey is available right now.");
       setSurveyLoading(false);
+      return;
     }
+    setActiveSurvey(surveyDetail);
+    setSurveyIndex(0);
+    setSurveyAnswers({});
+    setAppState("survey");
+    setSurveyLoading(false);
   };
 
   const submitSurveyResponses = async () => {
-    if (!activeSurvey) return;
+    if (!activeSurvey || !submitSurveyMutation) return;
     setSurveySubmitting(true);
     try {
-      await citizenApi.submitSurvey(activeSurvey.id, surveyAnswers);
+      await submitSurveyMutation.mutateAsync({ id: activeSurvey.id, answers: surveyAnswers });
       setAppState("survey-complete");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Survey submission failed");
@@ -637,9 +621,10 @@ export default function Learn() {
       setShowFeedback(false);
     } else {
       if (activeTriviaId && getAccessToken()) {
-        void citizenApi
-          .submitTriviaAttempt(activeTriviaId, quizAnswersByQuestion)
-          .catch((err) => console.error("Trivia attempt failed:", err));
+        submitTriviaAttemptMutation.mutate({
+          id: activeTriviaId,
+          answers: quizAnswersByQuestion,
+        });
       }
       void awardPoints({
         eventType: "quiz_complete",

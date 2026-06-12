@@ -6,7 +6,7 @@ import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
 import { Checkbox } from "@/ui/checkbox";
 import { Flame, Bell, Shield, ArrowRight, ArrowLeft, Sparkles } from "lucide-react";
-import { citizenApi } from "@/lib/api-client";
+import { useUpdateProfile } from "@/hooks/use-profile";
 import { useAuth } from "@/contexts/auth-context";
 import { COUNTIES } from "@/constants/counties";
 
@@ -14,6 +14,7 @@ interface OnboardingWizardProps { onComplete: (profile: any) => void; }
 
 export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
   const { isLoggedIn } = useAuth();
+  const updateProfileMutation = useUpdateProfile();
   const [step, setStep] = useState(1);
   const [breakName, setBreakName] = useState("");
   const [pseudoName, setPseudoName] = useState("");
@@ -64,10 +65,10 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
     localStorage.setItem("bns_user_profile", JSON.stringify(profile));
     window.dispatchEvent(new Event("bns-profile-updated"));
     if (isLoggedIn) {
-      citizenApi.patchMe({
+      updateProfileMutation.mutate({
         display_name: breakName.trim(), location: county,
         metadata: { county, ward: ward.trim() || "", break_name: breakName.trim(), pseudo_name: pseudoName.trim(), language, notifications_enabled: notifications, whatsapp_fallback: whatsappFallback, phone: phone.trim() || "", dpa_consent: consent, dpa_consent_timestamp: new Date().toISOString(), onboarding_completed_at: new Date().toISOString() },
-      }).catch(() => {});
+      });
     }
     onComplete(profile);
   };

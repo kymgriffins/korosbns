@@ -7,7 +7,7 @@ import { CheckCircle2, Loader2, XCircle } from "lucide-react";
 import { AuthShell } from "@/layouts/AuthShell";
 import { Button } from "@/ui/button";
 import { Routes } from "@/constants/routes";
-import { citizenApi } from "@/lib/api-client";
+import { useVerifyEmail } from "@/hooks/use-auth-actions";
 
 function VerifyContent() {
   const searchParams = useSearchParams();
@@ -15,6 +15,7 @@ function VerifyContent() {
   const token = searchParams.get("token");
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
   const [message, setMessage] = useState("Verifying your email…");
+  const verifyMutation = useVerifyEmail();
 
   useEffect(() => {
     if (!token) {
@@ -22,12 +23,11 @@ function VerifyContent() {
       setMessage("Missing verification token.");
       return;
     }
-    void citizenApi
-      .verifyEmail(token)
+    void verifyMutation
+      .mutateAsync(token)
       .then((data) => {
         setStatus("success");
         setMessage(data.detail || "Email verified.");
-        // Auto-redirect to login after brief delay
         setTimeout(() => {
           router.push(Routes.Login);
         }, 2000);

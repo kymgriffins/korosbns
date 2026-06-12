@@ -265,11 +265,7 @@ export default function AlertsSimulator() {
                 />
 
                 {/* Pattern overlay */}
-                <div className="absolute inset-0 opacity-10"
-                  style={{
-                    backgroundImage: `radial-gradient(circle at 25% 25%, rgba(255,255,255,0.3) 0%, transparent 50%), 
-                                      radial-gradient(circle at 75% 75%, rgba(255,255,255,0.2) 0%, transparent 50%)`,
-                  }}
+                <div className="absolute inset-0 opacity-10 [background-image:radial-gradient(circle_at_25%_25%,rgba(255,255,255,0.3)_0%,transparent_50%),radial-gradient(circle_at_75%_75%,rgba(255,255,255,0.2)_0%,transparent_50%)]"
                 />
 
                 {/* Slide content */}

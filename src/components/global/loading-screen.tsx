@@ -81,17 +81,12 @@ const LoadingScreen = () => {
     return (
         <div
             ref={overlayRef}
-            className="fixed inset-0 z-[10000] bg-background flex items-center justify-center overflow-hidden"
-            style={{ willChange: 'transform', opacity: 1 }}
+            className="fixed inset-0 z-[10000] bg-background flex items-center justify-center overflow-hidden [will-change:transform] opacity-100"
         >
             <div className="relative z-10 flex flex-col items-center gap-4">
                 <div
                     ref={logoRef}
-                    style={{
-                        willChange: 'transform, opacity, filter',
-                        opacity: 0,
-                    }}
-                    className="flex justify-center"
+                    className="flex justify-center [will-change:transform,opacity,filter] opacity-0"
                 >
                     <Image
                         src="/logo.svg"
@@ -105,20 +100,11 @@ const LoadingScreen = () => {
 
                 <div
                     ref={progressBarRef}
-                    className="w-32 md:w-48 h-1 bg-foreground/10 rounded-full overflow-hidden mt-4 backdrop-blur-sm"
-                    style={{
-                        willChange: 'transform, opacity',
-                        opacity: 0,
-                    }}
+                    className="w-32 md:w-48 h-1 bg-foreground/10 rounded-full overflow-hidden mt-4 backdrop-blur-sm [will-change:transform,opacity] opacity-0"
                 >
                     <div
                         ref={progressFillRef}
-                        className="h-full bg-primary rounded-full"
-                        style={{
-                            willChange: 'transform',
-                            transform: 'scaleX(0)',
-                            transformOrigin: 'left'
-                        }}
+                        className="h-full bg-primary rounded-full [will-change:transform] scale-x-0 origin-left"
                     />
                 </div>
             </div>

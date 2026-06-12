@@ -93,10 +93,8 @@ const Workflow = () => {
 
                             {index < WORKFLOW_STEPS.length - 1 && (
                                 <motion.div
-                                    className="hidden md:flex absolute top-1/2 -translate-y-1/2"
-                                    style={{
-                                        left: `calc(${(index + 1) * 33.333}% + ${index === 0 ? '-1.5rem' : '0.5rem'})`
-                                    }}
+                                    className="hidden md:flex absolute top-1/2 -translate-y-1/2 left-[var(--wf-left)]"
+                                    style={{ "--wf-left": `calc(${(index + 1) * 33.333}% + ${index === 0 ? '-1.5rem' : '0.5rem'})` } as React.CSSProperties}
                                     initial={{ opacity: 0, x: -10 }}
                                     whileInView={{ opacity: 1, x: 0 }}
                                     viewport={{ once: true }}

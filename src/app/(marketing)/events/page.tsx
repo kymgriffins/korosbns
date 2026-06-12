@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { Loader2, Search, Calendar, MapPin, Sparkles, Building2 } from "lucide-react";
 import Wrapper from "@/components/global/wrapper";
@@ -8,11 +8,7 @@ import { Routes } from "@/constants/routes";
 import { Badge } from "@/ui/badge";
 import { Input } from "@/ui/input";
 import { motion } from "motion/react";
-import {
-  contentLoadErrorMessage,
-  loadEventList,
-  type HubEvent,
-} from "@/lib/citizen-content";
+import { useEvents } from "@/hooks/use-events";
 
 import { formatInNairobi } from "@/lib/datetime";
 
@@ -41,18 +37,9 @@ function parseDateParts(iso: string) {
 }
 
 export default function EventsPage() {
-  const [events, setEvents] = useState<HubEvent[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const { data: events = [], isLoading, error } = useEvents();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<"all" | "upcoming" | "past">("all");
-
-  useEffect(() => {
-    void loadEventList()
-      .then(setEvents)
-      .catch((err) => setError(contentLoadErrorMessage(err, "events")))
-      .finally(() => setLoading(false));
-  }, []);
 
   const filteredEvents = events.filter((event) => {
     const matchesSearch =
@@ -132,7 +119,7 @@ export default function EventsPage() {
           </div>
         </div>
 
-        {loading && (
+        {isLoading && (
           <div className="flex flex-col items-center justify-center py-24 gap-4">
             <Loader2 className="size-10 animate-spin text-primary" />
             <p className="text-muted-foreground text-sm">Loading events...</p>
@@ -141,12 +128,12 @@ export default function EventsPage() {
 
         {error && (
           <div className="p-4 rounded-xl border border-destructive/20 bg-destructive/5 text-destructive text-center">
-            {error}
+            {error?.message ?? "An error occurred"}
           </div>
         )}
 
         {/* Events Grid */}
-        {!loading && !error && (
+        {!isLoading && !error && (
           <div className="grid gap-6">
             {filteredEvents.map((event, idx) => {
               const status = getEventStatus(event.starts_at);
@@ -314,7 +301,7 @@ export default function EventsPage() {
           </div>
         )}
 
-        {!loading && !error && filteredEvents.length === 0 && (
+        {!isLoading && !error && filteredEvents.length === 0 && (
           <div className="text-center py-20 bg-cardbox/20 rounded-2xl border border-dashed border-border/80">
             <Calendar className="size-12 mx-auto text-muted-foreground/60 mb-4" />
             <h3 className="text-lg font-semibold mb-1">No events found</h3>

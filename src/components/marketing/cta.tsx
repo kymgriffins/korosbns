@@ -21,23 +21,13 @@ const Cta = () => {
                         className="relative rounded-3xl overflow-visible z-0"
                     >
                         {/* Grid background */}
-                        <div className="absolute inset-0 -z-20"
-                            style={{
-                                backgroundImage: `
-                                    linear-gradient(rgba(128, 128, 128, 0.08) 1px, transparent 1px),
-                                    linear-gradient(90deg, rgba(128, 128, 128, 0.08) 1px, transparent 1px)
-                                `,
-                                backgroundSize: '48px 48px'
-                            }}
+                        <div
+                            className="absolute inset-0 -z-20 [background-image:linear-gradient(rgba(128,128,128,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(128,128,128,0.08)_1px,transparent_1px)] [background-size:48px_48px]"
                         />
 
                         {/* Radial mask */}
                         <div
-                            className="absolute inset-0 -z-10 bg-background"
-                            style={{
-                                maskImage: 'radial-gradient(ellipse 70% 50% at 50% 50%, transparent 40%, white 70%)',
-                                WebkitMaskImage: 'radial-gradient(ellipse 70% 50% at 50% 50%, transparent 40%, white 70%)'
-                            }}
+                            className="absolute inset-0 -z-10 bg-background [mask-image:radial-gradient(ellipse_70%_50%_at_50%_50%,transparent_40%,white_70%)] [-webkit-mask-image:radial-gradient(ellipse_70%_50%_at_50%_50%,transparent_40%,white_70%)]"
                         />
 
                         {/* Ambient glow */}

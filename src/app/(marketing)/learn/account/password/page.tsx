@@ -8,7 +8,7 @@ import { Protected } from "@/components/citizen/protected";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
-import { citizenApi } from "@/lib/api-client";
+import { useChangePassword } from "@/hooks/use-auth-actions";
 import { Routes } from "@/constants/routes";
 
 export default function PasswordChangePage() {
@@ -17,6 +17,7 @@ export default function PasswordChangePage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const changePasswordMutation = useChangePassword();
 
   const hasMinLength = newPassword.length >= 10;
   const hasNumber = /\d/.test(newPassword);
@@ -36,7 +37,7 @@ export default function PasswordChangePage() {
     }
     setLoading(true);
     try {
-      await citizenApi.changePassword(currentPassword, newPassword);
+      await changePasswordMutation.mutateAsync({ currentPassword, newPassword });
       toast.success("Password changed successfully.");
       setCurrentPassword("");
       setNewPassword("");

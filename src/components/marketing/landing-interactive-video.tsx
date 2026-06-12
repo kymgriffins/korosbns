@@ -40,13 +40,10 @@ const LandingInteractiveVideo = () => {
                             exit={{ scale: 0, opacity: 0 }}
                             transition={{ type: "spring", stiffness: 250, damping: 25 }}
                             style={{
-                                position: 'fixed',
                                 left: mousePos.x,
                                 top: mousePos.y,
-                                x: '-50%',
-                                y: '-50%',
                             }}
-                            className="z-50 pointer-events-none w-32 h-32 bg-white rounded-full flex flex-col items-center justify-center mix-blend-difference"
+                            className="fixed -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none w-32 h-32 bg-white rounded-full flex flex-col items-center justify-center mix-blend-difference"
                         >
                             <PlayIcon className="w-8 h-8 text-black fill-black" />
                             <span className="text-black text-[10px] font-bold tracking-widest mt-2 uppercase">Play</span>

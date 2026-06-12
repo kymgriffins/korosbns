@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { citizenApi } from "@/lib/api-client";
 import { metaDescription, canonicalUrl } from "@/utils/metadata";
+import { fetchArticleBySlug, fetchTrivia, resolveContentSlug } from "@/lib/services/content-service";
 import UnifiedReaderClientPage from "./client-page";
 
 interface StoryCard {
@@ -27,37 +27,33 @@ export async function generateMetadata(
   props: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
   const { slug } = await props.params;
-  try {
-    const artData = await citizenApi.getArticle(slug);
-    if (artData && artData.title) {
-      return {
+  const resolved = await resolveContentSlug(slug);
+
+  if (resolved?.type === "article") {
+    const artData = resolved.data;
+    return {
+      title: `${artData.title as string} | Budget Ndio Story`,
+      description: metaDescription(
+        (artData.summary as string) || `In-depth explainer on Kenya's ${slug.replace(/-/g, " ")} covering budget, Finance Bill, and fiscal policy.`
+      ),
+      alternates: { canonical: canonicalUrl(`/learn/${slug}`) },
+      openGraph: {
         title: `${artData.title as string} | Budget Ndio Story`,
-        description: metaDescription(
-          (artData.summary as string) || `In-depth explainer on Kenya's ${slug.replace(/-/g, " ")} covering budget, Finance Bill, and fiscal policy.`
-        ),
-        alternates: { canonical: canonicalUrl(`/learn/${slug}`) },
-        openGraph: {
-          title: `${artData.title as string} | Budget Ndio Story`,
-          description: (artData.summary as string) || `Kenya budget explainer: ${slug.replace(/-/g, " ")}`,
-          url: canonicalUrl(`/learn/${slug}`),
-        },
-      };
-    }
-  } catch {
-    /* fallback */
+        description: (artData.summary as string) || `Kenya budget explainer: ${slug.replace(/-/g, " ")}`,
+        url: canonicalUrl(`/learn/${slug}`),
+      },
+    };
   }
-  try {
-    const trivData = await citizenApi.getTrivia(slug);
-    if (trivData && trivData.title) {
-      return {
-        title: `${trivData.title as string} | Budget Trivia | Budget Ndio Story`,
-        description: metaDescription(`Interactive trivia on Kenya's budget and Finance Bill. Test your knowledge of public finance.`),
-        alternates: { canonical: canonicalUrl(`/learn/${slug}`) },
-      };
-    }
-  } catch {
-    /* fallback */
+
+  if (resolved?.type === "trivia") {
+    const trivData = resolved.data;
+    return {
+      title: `${trivData.title as string} | Budget Trivia | Budget Ndio Story`,
+      description: metaDescription(`Interactive trivia on Kenya's budget and Finance Bill. Test your knowledge of public finance.`),
+      alternates: { canonical: canonicalUrl(`/learn/${slug}`) },
+    };
   }
+
   return {
     title: `Learn: ${slug.replace(/-/g, " ")} | Budget Ndio Story`,
     description: metaDescription(`Budget literacy content on ${slug.replace(/-/g, " ")} — Kenya's Finance Bill, fiscal policy, and public finance explained.`),
@@ -80,63 +76,37 @@ export default async function UnifiedReaderPage(
   let initialTrivia: any = null;
   let initialStory: any = null;
 
-  // 1. Try Article
-  try {
-    const artData = await citizenApi.getArticle(slug);
-    if (artData && artData.id) {
-      initialArticle = artData;
-      initialMode = "article";
-    }
-  } catch {
-    // Fall through
-  }
+  const resolved = await resolveContentSlug(slug);
 
-  // 2. Try Trivia
-  if (initialMode === "loading") {
+  if (resolved?.type === "article") {
+    initialArticle = resolved.data;
+    initialMode = "article";
+  } else if (resolved?.type === "trivia") {
+    initialTrivia = resolved.data;
+    initialMode = "trivia";
+  } else if (resolved?.type === "story") {
+    const foundStory = resolved.data;
+    let parsedCards: StoryCard[] = [];
     try {
-      const trivData = await citizenApi.getTrivia(slug);
-      if (trivData && trivData.id) {
-        initialTrivia = trivData;
-        initialMode = "trivia";
-      }
+      parsedCards = typeof foundStory.body === "string" 
+        ? JSON.parse(foundStory.body) 
+        : (foundStory.body as StoryCard[] || []);
     } catch {
-      // Fall through
+      parsedCards = [];
     }
-  }
 
-  // 3. Try Story
-  if (initialMode === "loading") {
-    try {
-      const storiesRes = await citizenApi.getStories();
-      const foundStory = storiesRes.results.find((s) => s.id === slug);
-      if (foundStory) {
-        let parsedCards: StoryCard[] = [];
-        try {
-          parsedCards = typeof foundStory.body === "string" 
-            ? JSON.parse(foundStory.body) 
-            : (foundStory.body as StoryCard[] || []);
-        } catch {
-          parsedCards = [];
-        }
-
-        const metadata = (foundStory.metadata as Record<string, string>) || {};
-        
-        initialStory = {
-          id: foundStory.id,
-          title: foundStory.title,
-          subtitle: foundStory.summary,
-          icon: metadata.icon || "📖",
-          duration: metadata.duration || "2 min",
-          cards: parsedCards
-        };
-        initialMode = "story";
-      }
-    } catch {
-      // Fall through
-    }
-  }
-
-  if (initialMode === "loading") {
+    const metadata = (foundStory.metadata as Record<string, string>) || {};
+    
+    initialStory = {
+      id: foundStory.id,
+      title: foundStory.title,
+      subtitle: foundStory.summary,
+      icon: metadata.icon || "📖",
+      duration: metadata.duration || "2 min",
+      cards: parsedCards
+    };
+    initialMode = "story";
+  } else {
     initialMode = "error";
   }
 

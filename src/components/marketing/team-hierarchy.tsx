@@ -216,8 +216,7 @@ const TeamCarousel = ({ members }: { members: TeamMember[] }) => {
                         hasDraggedRef.current = false;
                     }
                 }}
-                className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-                style={{ cursor: isDragging ? "grabbing" : "default" }}
+                className={isDragging ? "cursor-grabbing flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden" : "cursor-default flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"}
             >
                 {members.map((member) => (
                     <TeamTile key={member.name} member={member} />

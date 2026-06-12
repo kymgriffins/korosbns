@@ -120,8 +120,7 @@ const Integrations = () => {
 
                     <div
                         role="presentation"
-                        className="bg-linear-to-b border-foreground/5 absolute inset-16 z-10 aspect-square scale-90 animate-spin items-center justify-center rounded-full border-t from-primary/15 to-transparent to-25% opacity-0 duration-[3.5s] group-hover:opacity-100"
-                        style={{ animationDirection: 'reverse' }}
+                        className="bg-linear-to-b border-foreground/5 absolute inset-16 z-10 aspect-square scale-90 animate-spin items-center justify-center rounded-full border-t from-primary/15 to-transparent to-25% opacity-0 duration-[3.5s] group-hover:opacity-100 [animation-direction:reverse]"
                     />
 
                     <motion.div

@@ -18,6 +18,7 @@ import { Textarea } from "@/ui/textarea";
 import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
 import { citizenApi, type SocialLinkApi } from "@/lib/api-client";
+import { useUpdateProfile, useUpsertSocialLink, useDeleteSocialLink } from "@/hooks/use-profile";
 
 const SOCIAL_PLATFORMS = [
   "linkedin",
@@ -39,6 +40,9 @@ const VISIBILITY_OPTIONS = [
 
 export function AccountProfileForm() {
   const { user, refreshUser } = useAuth();
+  const { mutateAsync: updateProfile } = useUpdateProfile();
+  const { mutateAsync: upsertSocialLink } = useUpsertSocialLink();
+  const { mutateAsync: deleteSocialLink } = useDeleteSocialLink();
   const [status, setStatus] = useState("");
   const [statusVariant, setStatusVariant] = useState<"success" | "error" | "info">("info");
   const [saving, setSaving] = useState(false);
@@ -91,7 +95,7 @@ export function AccountProfileForm() {
     setSaving(true);
     setStatus("");
     try {
-      await citizenApi.patchMe({
+      await updateProfile({
         display_name: form.display_name,
         bio: form.bio,
         headline: form.headline,
@@ -124,7 +128,7 @@ export function AccountProfileForm() {
     setSocialSaving(true);
     setStatus("");
     try {
-      const link = await citizenApi.upsertSocialLink({
+      const link = await upsertSocialLink({
         platform: newLink.platform,
         url: newLink.url.trim(),
         visibility: newLink.visibility,
@@ -149,7 +153,7 @@ export function AccountProfileForm() {
   const removeSocialLink = async (platform: string) => {
     setSocialSaving(true);
     try {
-      await citizenApi.deleteSocialLink(platform);
+      await deleteSocialLink(platform);
       setSocialLinks((prev) => prev.filter((l) => l.platform !== platform));
       setStatus(`Removed ${platform} link.`);
       setStatusVariant("success");
