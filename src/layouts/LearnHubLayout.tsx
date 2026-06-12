@@ -301,16 +301,9 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
     window.addEventListener("storage", onStorage);
     window.addEventListener("bns-profile-updated", onProfileUpdate);
 
-    const isMobileDevice = () => window.innerWidth < 768;
-    const lockBody = () => {
-      if (isMobileDevice()) document.body.classList.add("overflow-hidden");
-      else document.body.classList.remove("overflow-hidden");
-    };
-    lockBody();
-    window.addEventListener("resize", lockBody);
+    document.body.classList.add("overflow-hidden");
     return () => {
       document.body.classList.remove("overflow-hidden");
-      window.removeEventListener("resize", lockBody);
       window.removeEventListener("storage", onStorage);
       window.removeEventListener("bns-profile-updated", onProfileUpdate);
     };

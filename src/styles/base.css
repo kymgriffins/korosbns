@@ -90,9 +90,7 @@
   body {
     @apply min-h-svh w-full bg-background text-foreground;
   }
-  body[data-scroll-locked] {
-    overflow: unset !important;
-  }
+
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
@@ -106,9 +104,12 @@
   }
 }
 
+html {
+  overscroll-behavior: none;
+}
+
 html,
 body {
-  overscroll-behavior: none;
   scroll-behavior: smooth;
 }
 
