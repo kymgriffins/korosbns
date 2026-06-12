@@ -1,24 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
+
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import { ContentLayout } from "@/layouts/DashboardShell";
 import { Protected } from "@/components/citizen/protected";
 import { Skeleton } from "@/ui/skeleton";
 import { Routes } from "@/constants/routes";
-import { citizenApi } from "@/lib/api-client";
+import { useNotifications } from "@/hooks/use-profile";
 
 function NotificationsList() {
-  const [items, setItems] = useState<Record<string, unknown>[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading } = useNotifications();
 
-  useEffect(() => {
-    void citizenApi
-      .getNotifications()
-      .then((d) => setItems(d.results || []))
-      .finally(() => setLoading(false));
-  }, []);
+  const items = (data?.results || []) as Record<string, unknown>[];
+  const loading = isLoading;
 
   return (
     <ContentLayout

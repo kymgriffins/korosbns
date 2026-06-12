@@ -34,7 +34,7 @@ const LandingMotionText = () => {
                                     // eslint-disable-next-line react-hooks/rules-of-hooks
                                     const opacity = useTransform(scrollYProgress, [start * 0.5, start * 0.5 + 0.1], [0.05, 1]);
                                     // eslint-disable-next-line react-hooks/rules-of-hooks
-                                    const x = useTransform(scrollYProgress, [start * 0.5, start * 0.5 + 0.1], [-40, 0]);
+                                    const x = useTransform(scrollYProgress, [start * 0.5, start * 0.5 + 0.1], ["-40px", "0px"]);
                                     // eslint-disable-next-line react-hooks/rules-of-hooks
                                     const filter = useTransform(scrollYProgress, [start * 0.5, start * 0.5 + 0.1], ["blur(10px)", "blur(0px)"]);
 
@@ -43,8 +43,8 @@ const LandingMotionText = () => {
                                     return (
                                         <motion.span
                                             key={i}
-                                            style={{ opacity, x, filter }}
-                                            className={`gusto-heading inline-block text-[10vw] md:text-[8vw] leading-[0.9] tracking-tighter ${isHighlight ? 'text-primary italic font-heading' : 'text-foreground'}`}
+                                            style={{ "--motion-opacity": opacity, "--motion-x": x, "--motion-filter": filter } as React.CSSProperties}
+                                            className={`gusto-heading inline-block text-[10vw] md:text-[8vw] leading-[0.9] tracking-tighter opacity-[var(--motion-opacity)] translate-x-[var(--motion-x)] [filter:var(--motion-filter)] ${isHighlight ? 'text-primary italic font-heading' : 'text-foreground'}`}
                                         >
                                             {word}
                                         </motion.span>

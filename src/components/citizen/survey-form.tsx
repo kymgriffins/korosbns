@@ -11,10 +11,10 @@ import { RadioGroup, RadioGroupItem } from "@/ui/radio-group";
 import { Checkbox } from "@/ui/checkbox";
 import { useAuth } from "@/contexts/auth-context";
 import {
-  citizenApi,
   type SurveyDetailApi,
   type SurveyQuestionApi,
 } from "@/lib/api-client";
+import { useSubmitSurvey } from "@/hooks/use-surveys";
 
 function QuestionField({
   q,
@@ -104,6 +104,7 @@ function QuestionField({
 
 export function SurveyForm({ survey }: { survey: SurveyDetailApi }) {
   const { isLoggedIn } = useAuth();
+  const { mutateAsync: submitSurvey } = useSubmitSurvey();
   const [answers, setAnswers] = useState<Record<string, unknown>>({});
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
@@ -128,7 +129,7 @@ export function SurveyForm({ survey }: { survey: SurveyDetailApi }) {
     }
     setSubmitting(true);
     try {
-      const result = await citizenApi.submitSurvey(survey.id, answers);
+      const result = await submitSurvey({ id: survey.id, answers });
       setDone(true);
       toast.success("Survey submitted. Thank you!");
       if (result.response_id) {

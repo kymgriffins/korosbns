@@ -195,7 +195,7 @@ export default function FramerStickyScroll() {
 
           <div className="my-auto relative flex justify-center items-center z-10 h-32">
             <motion.div
-              style={{ rotate: -8, y: 10, x: -15 }}
+              initial={{ rotate: -8, y: 10, x: -15 }}
               className="absolute w-28 h-36 bg-muted border border-border rounded-lg p-2 opacity-40 shadow-md flex flex-col gap-1.5"
             >
               <div className="h-2 w-1/2 bg-border rounded" />
@@ -204,7 +204,7 @@ export default function FramerStickyScroll() {
               <div className="h-1.5 w-full bg-border/60 rounded" />
             </motion.div>
             <motion.div
-              style={{ rotate: 4, y: -5, x: 15 }}
+              initial={{ rotate: 4, y: -5, x: 15 }}
               className="absolute w-28 h-36 bg-muted border border-border rounded-lg p-2 opacity-70 shadow-md flex flex-col gap-1.5"
             >
               <div className="h-2 w-2/3 bg-border rounded" />
@@ -213,7 +213,7 @@ export default function FramerStickyScroll() {
               <div className="h-1.5 w-full bg-border/80 rounded" />
             </motion.div>
             <motion.div
-              style={{ y: 0 }}
+              initial={{ y: 0 }}
               className="absolute w-32 h-44 bg-card border-2 border-primary rounded-xl p-2.5 shadow-2xl flex flex-col justify-between"
             >
               <div className="h-1 w-8 bg-border rounded-full mx-auto mb-1.5" />

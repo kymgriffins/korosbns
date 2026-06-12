@@ -327,8 +327,8 @@ export function LearnDashboardView({
             </div>
             <div className="h-2 bg-muted/60 rounded-full overflow-hidden">
               <div
-                className="h-full bg-primary rounded-full transition-all duration-700"
-                style={{ width: `${(profile.sovereigns || 0) % 100}%` }}
+                className="h-full bg-primary rounded-full transition-all duration-700 w-[var(--progress)]"
+                style={{ "--progress": `${(profile.sovereigns || 0) % 100}%` } as React.CSSProperties}
               />
             </div>
           </motion.div>

@@ -141,8 +141,8 @@ export function LearnModulesView({ profile, stages, currentStage, onSelectStage 
                       </div>
                       <div className="h-1 bg-muted/60 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-primary rounded-full transition-all duration-500"
-                          style={{ width: `${(completedCount / total) * 100}%` }}
+                          className="h-full bg-primary rounded-full transition-all duration-500 w-[var(--progress)]"
+                          style={{ "--progress": `${(completedCount / total) * 100}%` } as React.CSSProperties}
                           role="progressbar"
                           aria-valuenow={Math.round((completedCount / total) * 100)}
                           aria-valuemin={0}

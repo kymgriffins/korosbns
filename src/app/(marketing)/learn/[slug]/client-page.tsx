@@ -11,7 +11,8 @@ import { Button } from "@/ui/button";
 import { PageBreadcrumbs } from "@/components/global/page-breadcrumbs";
 import { TriviaQuiz } from "@/components/citizen/trivia-quiz";
 import { ArticleReaderActions } from "@/components/citizen/article-reader-actions";
-import { citizenApi, type TriviaSetApi } from "@/lib/api-client";
+import type { TriviaSetApi } from "@/lib/api-client";
+import { useContentForSlug } from "@/hooks/use-content";
 import { Routes } from "@/constants/routes";
 import { articlePlaceholderForSlug } from "@/lib/article-placeholders";
 import { renderContent } from "@/lib/render-content";
@@ -106,84 +107,48 @@ export default function UnifiedReaderClientPage({
   // Story slide state
   const [slideIndex, setSlideIndex] = useState(0);
 
+  const hasInitialData = initialMode !== "loading" && (!!initialArticle || !!initialTrivia || !!initialStory);
+  const { data, isLoading } = useContentForSlug(slug as string, !hasInitialData);
+
   useEffect(() => {
-    // If data was pre-loaded on server, bypass initial client fetch
-    if (initialMode !== "loading" && (initialArticle || initialTrivia || initialStory)) {
+    if (hasInitialData || isLoading) return;
+
+    if (!data) {
+      setMode("error");
+      setErrorMsg("Content not found. Return to the Learn Hub to try another module.");
       return;
     }
 
-    if (!slug) return;
-
-    let isMounted = true;
-
-    async function loadContent() {
-      // 1. Try Article
+    if (data.type === "article") {
+      setArticle(data.data as unknown as ArticleData);
+      setMode("article");
+    } else if (data.type === "trivia") {
+      setTrivia(data.data as TriviaSetApi);
+      setMode("trivia");
+    } else if (data.type === "story") {
+      const foundStory = data.data as any;
+      let parsedCards: StoryCard[] = [];
       try {
-        const artData = await citizenApi.getArticle(slug);
-        if (artData && isMounted) {
-          setArticle(artData as unknown as ArticleData);
-          setMode("article");
-          return;
-        }
+        parsedCards = typeof foundStory.body === "string" 
+          ? JSON.parse(foundStory.body) 
+          : (foundStory.body as StoryCard[] || []);
       } catch {
-        // Fall through to next check
+        parsedCards = [];
       }
 
-      // 2. Try Trivia
-      try {
-        const trivData = await citizenApi.getTrivia(slug);
-        if (trivData && isMounted) {
-          setTrivia(trivData);
-          setMode("trivia");
-          return;
-        }
-      } catch {
-        // Fall through to next check
-      }
-
-      // 3. Try Story
-      try {
-        const storiesRes = await citizenApi.getStories();
-        const foundStory = storiesRes.results.find((s) => s.id === slug);
-        if (foundStory && isMounted) {
-          let parsedCards: StoryCard[] = [];
-          try {
-            parsedCards = typeof foundStory.body === "string" 
-              ? JSON.parse(foundStory.body) 
-              : (foundStory.body as StoryCard[] || []);
-          } catch {
-            parsedCards = [];
-          }
-
-          const metadata = (foundStory.metadata as Record<string, string>) || {};
-          
-          setStory({
-            id: foundStory.id as string,
-            title: foundStory.title as string,
-            subtitle: foundStory.summary as string,
-            icon: metadata.icon || "📖",
-            duration: metadata.duration || "2 min",
-            cards: parsedCards
-          });
-          setMode("story");
-          return;
-        }
-      } catch {
-        // Fall through to next check
-      }
-
-      if (isMounted) {
-        setMode("error");
-        setErrorMsg("Content not found. Return to the Learn Hub to try another module.");
-      }
+      const metadata = (foundStory.metadata as Record<string, string>) || {};
+      
+      setStory({
+        id: foundStory.id as string,
+        title: foundStory.title as string,
+        subtitle: foundStory.summary as string,
+        icon: metadata.icon || "📖",
+        duration: metadata.duration || "2 min",
+        cards: parsedCards
+      });
+      setMode("story");
     }
-
-    loadContent();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [slug, initialMode, initialArticle, initialTrivia, initialStory]);
+  }, [data, isLoading, hasInitialData]);
 
   if (mode === "loading") {
     return (

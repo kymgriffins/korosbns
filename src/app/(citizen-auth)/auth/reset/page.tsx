@@ -9,7 +9,7 @@ import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
 import { Routes } from "@/constants/routes";
-import { citizenApi } from "@/lib/api-client";
+import { useRequestPasswordReset, useConfirmPasswordReset } from "@/hooks/use-auth-actions";
 
 function ResetContent() {
   const searchParams = useSearchParams();
@@ -19,12 +19,14 @@ function ResetContent() {
   const [loading, setLoading] = useState(false);
   const [requested, setRequested] = useState(false);
   const [done, setDone] = useState(false);
+  const requestResetMutation = useRequestPasswordReset();
+  const confirmResetMutation = useConfirmPasswordReset();
 
   const requestReset = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await citizenApi.requestPasswordReset(email);
+      await requestResetMutation.mutateAsync(email);
       setRequested(true);
       toast.success("If that email exists, we sent a reset link.");
     } catch (err) {
@@ -39,7 +41,7 @@ function ResetContent() {
     if (!token) return;
     setLoading(true);
     try {
-      await citizenApi.confirmPasswordReset(token, password);
+      await confirmResetMutation.mutateAsync({ token, password });
       setDone(true);
       toast.success("Password updated. You can sign in now.");
     } catch (err) {

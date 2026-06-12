@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ArrowLeft, ExternalLink, Loader2, Calendar, MapPin, Sparkles, Send, Mail, CheckCircle2, Image as ImageIcon, Building2 } from "lucide-react";
@@ -11,33 +11,19 @@ import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { toast } from "sonner";
 import { motion } from "motion/react";
-import {
-  contentLoadErrorMessage,
-  loadEventDetail,
-  type HubEvent,
-} from "@/lib/citizen-content";
+import { useEvent } from "@/hooks/use-events";
 import { formatInNairobi } from "@/lib/datetime";
 import { sanitizeHtml, stripHtml } from "@/lib/sanitize";
 
 export default function EventDetailPage() {
   const params = useParams();
   const id = String(params.id || "");
-  const [event, setEvent] = useState<HubEvent | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const { data: event, isLoading, error } = useEvent(id);
   
   // Community Email Form State
   const [email, setEmail] = useState("");
   const [submittingEmail, setSubmittingEmail] = useState(false);
   const [emailRegistered, setEmailRegistered] = useState(false);
-
-  useEffect(() => {
-    if (!id) return;
-    void loadEventDetail(id)
-      .then(setEvent)
-      .catch((err) => setError(contentLoadErrorMessage(err, "event")))
-      .finally(() => setLoading(false));
-  }, [id]);
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,7 +63,7 @@ export default function EventDetailPage() {
           Back to all events
         </Link>
 
-        {loading && (
+        {isLoading && (
           <div className="flex flex-col items-center justify-center py-24 gap-4">
             <Loader2 className="size-10 animate-spin text-primary" />
             <p className="text-muted-foreground text-sm">Loading event details...</p>
@@ -86,7 +72,7 @@ export default function EventDetailPage() {
 
         {error && (
           <div className="p-4 rounded-xl border border-destructive/20 bg-destructive/5 text-destructive text-center">
-            {error}
+            {error?.message ?? "An error occurred"}
           </div>
         )}
 

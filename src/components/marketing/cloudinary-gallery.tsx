@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Image from "next/image";
 import { SectionHeader, SectionShell } from "@/layouts/section-shell";
 import { Marquee } from "@/ui/marquee";
+import { useCohortImages } from "@/hooks/use-marketing";
 
 interface CloudinaryImage {
   src: string;
@@ -13,26 +14,9 @@ interface CloudinaryImage {
 }
 
 const CloudinaryGallery = () => {
-  const [images, setImages] = useState<CloudinaryImage[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchImages = async () => {
-      try {
-        const res = await fetch("/api/images/cohort");
-        const data = await res.json();
-        if (data.images) {
-          setImages(data.images);
-        }
-      } catch (error) {
-        console.error("Failed to fetch cohort images:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchImages();
-  }, []);
+  const { data, isLoading } = useCohortImages();
+  const images: CloudinaryImage[] = data?.images ?? [];
+  const loading = isLoading;
 
   if (loading) {
     return (

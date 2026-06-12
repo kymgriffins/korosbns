@@ -8,10 +8,14 @@ import { Label } from "@/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/ui/radio-group";
 import { Checkbox } from "@/ui/checkbox";
 import { useAuth } from "@/contexts/auth-context";
-import { citizenApi, type TriviaSetApi } from "@/lib/api-client";
+import type { TriviaSetApi } from "@/lib/api-client";
+import { useTriviaLeaderboard } from "@/hooks/use-content";
+import { useSubmitTriviaAttempt } from "@/hooks/use-profile";
 
 export function TriviaQuiz({ trivia }: { trivia: TriviaSetApi }) {
   const { isLoggedIn } = useAuth();
+  const { refetch: refetchLeaderboard } = useTriviaLeaderboard(trivia.id);
+  const { mutateAsync: submitTrivia } = useSubmitTriviaAttempt();
   const questions = (trivia.questions || []).slice().sort((a, b) => a.order - b.order);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [leaderboardOptIn, setLeaderboardOptIn] = useState(false);
@@ -27,8 +31,8 @@ export function TriviaQuiz({ trivia }: { trivia: TriviaSetApi }) {
 
   const loadLeaderboard = async () => {
     try {
-      const data = await citizenApi.getTriviaLeaderboard(trivia.id);
-      setLeaderboard(data.results || []);
+      const { data } = await refetchLeaderboard();
+      setLeaderboard(data?.results || []);
     } catch {
       setLeaderboard([]);
     }
@@ -48,7 +52,7 @@ export function TriviaQuiz({ trivia }: { trivia: TriviaSetApi }) {
     }
     setSubmitting(true);
     try {
-      const res = await citizenApi.submitTriviaAttempt(trivia.id, answers, leaderboardOptIn);
+      const res = await submitTrivia({ id: trivia.id, answers, leaderboardOptIn });
       setResult(res);
       toast.success(`Score: ${res.score}`);
       void loadLeaderboard();

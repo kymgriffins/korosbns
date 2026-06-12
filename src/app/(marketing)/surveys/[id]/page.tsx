@@ -1,36 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ExternalLink, Loader2, ArrowLeft } from "lucide-react";
 import Wrapper from "@/components/global/wrapper";
 import { SurveyForm } from "@/components/citizen/survey-form";
-import { citizenApi, type SurveyDetailApi } from "@/lib/api-client";
+import { useSurvey } from "@/hooks/use-surveys";
 import { Routes } from "@/constants/routes";
 import { Button } from "@/ui/button";
 
 export default function SurveyDetailPage() {
   const params = useParams();
   const id = String(params.id || "");
-  const [survey, setSurvey] = useState<SurveyDetailApi | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const { data: survey, isLoading, error } = useSurvey(id);
 
   useEffect(() => {
-    if (!id) return;
-    void citizenApi
-      .getSurvey(id)
-      .then((detail) => {
-        if (detail.is_external && detail.external_url) {
-          window.location.assign(detail.external_url);
-          return;
-        }
-        setSurvey(detail);
-      })
-      .catch((err) => setError(err instanceof Error ? err.message : "Survey not found."))
-      .finally(() => setLoading(false));
-  }, [id]);
+    if (survey?.is_external && survey?.external_url) {
+      window.location.assign(survey.external_url);
+    }
+  }, [survey]);
 
   if (survey?.is_external && survey.external_url) {
     return (
@@ -58,12 +47,12 @@ export default function SurveyDetailPage() {
           <ArrowLeft className="size-4" aria-hidden />
           All surveys
         </Link>
-        {loading && (
+        {isLoading && (
           <div className="flex justify-center py-16">
             <Loader2 className="size-8 animate-spin" aria-hidden />
           </div>
         )}
-        {error && <p className="text-destructive">{error}</p>}
+        {error && <p className="text-destructive">{error?.message ?? "Survey not found."}</p>}
         {survey && (
           <>
             {(survey.image_url || survey.image) && (

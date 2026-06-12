@@ -12,7 +12,7 @@ import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
 import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
-import { citizenApi } from "@/lib/api-client";
+import { useResendVerification } from "@/hooks/use-auth-actions";
 
 function LoginForm() {
   const { login } = useAuth();
@@ -23,6 +23,7 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState("");
   const [resending, setResending] = useState(false);
+  const resendMutation = useResendVerification();
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,7 +48,7 @@ function LoginForm() {
     }
     setResending(true);
     try {
-      await citizenApi.resendVerification(email.trim());
+      await resendMutation.mutateAsync(email.trim());
       toast.success("If that email exists, we sent a new verification link.");
     } catch {
       toast.error("Failed to resend verification email.");

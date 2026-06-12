@@ -1,6 +1,5 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { ExternalLink, Loader2 } from "lucide-react";
@@ -8,10 +7,8 @@ import Wrapper from "@/components/global/wrapper";
 import { Button } from "@/ui/button";
 import { Routes } from "@/constants/routes";
 import type { SurveyListItemApi } from "@/lib/api-client";
-import { contentLoadErrorMessage, loadSurveyList } from "@/lib/marketing-content";
+import { useSurveys } from "@/hooks/use-surveys";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
-
-const SURVEY_POLL_MS = 60_000;
 
 function SurveyCard({ survey }: { survey: SurveyListItemApi }) {
   const isExternal = survey.is_external && survey.external_url;
@@ -72,34 +69,7 @@ function SurveyCard({ survey }: { survey: SurveyListItemApi }) {
 }
 
 export default function SurveysPage() {
-  const [surveys, setSurveys] = useState<SurveyListItemApi[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  const refresh = useCallback(() => {
-    void loadSurveyList()
-      .then(setSurveys)
-      .catch((err) => setError(contentLoadErrorMessage(err, "surveys")))
-      .finally(() => setLoading(false));
-  }, []);
-
-  useEffect(() => {
-    refresh();
-    let timer = window.setInterval(refresh, SURVEY_POLL_MS);
-    const onVisible = () => {
-      if (document.visibilityState === "hidden") {
-        window.clearInterval(timer);
-      } else {
-        refresh();
-        timer = window.setInterval(refresh, SURVEY_POLL_MS);
-      }
-    };
-    document.addEventListener("visibilitychange", onVisible);
-    return () => {
-      window.clearInterval(timer);
-      document.removeEventListener("visibilitychange", onVisible);
-    };
-  }, [refresh]);
+  const { data: surveys = [], isLoading, error } = useSurveys();
 
   return (
     <Wrapper className="py-16">
@@ -116,14 +86,14 @@ export default function SurveysPage() {
           </p>
         </motion.div>
 
-        {loading && surveys.length === 0 && (
+        {isLoading && surveys.length === 0 && (
           <div className="flex justify-center py-16">
             <Loader2 className="size-8 animate-spin text-primary" aria-label="Loading surveys" />
           </div>
         )}
 
         {error && (
-          <p className="py-8 text-center text-destructive">{error}</p>
+          <p className="py-8 text-center text-destructive">{error?.message ?? "An error occurred"}</p>
         )}
 
         {!error && surveys.length > 0 && (
@@ -139,7 +109,7 @@ export default function SurveysPage() {
           </motion.div>
         )}
 
-        {!loading && !error && surveys.length === 0 && (
+        {!isLoading && !error && surveys.length === 0 && (
           <p className="py-12 text-center text-muted-foreground">
             No active surveys right now. Check back soon.
           </p>

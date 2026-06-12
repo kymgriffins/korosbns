@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Wrapper from "@/components/global/wrapper";
 import SectionBadge from "@/ui/section-badge";
@@ -21,29 +21,13 @@ import {
 import Link from "next/link";
 import { Campaign } from "@/lib/campaign/types";
 import { cn } from "@/utils";
+import { useCampaigns } from "@/hooks/use-marketing";
 
 const Challenges = () => {
-    const [campaigns, setCampaigns] = useState<Campaign[]>([]);
-    const [loading, setLoading] = useState(true);
+    const { data, isLoading } = useCampaigns();
+    const campaigns: Campaign[] = data?.success ? data.data : [];
+    const loading = isLoading;
     const [activeTab, setActiveTab] = useState<"active" | "upcoming" | "completed">("active");
-
-    useEffect(() => {
-        const fetchCampaigns = async () => {
-            try {
-                const res = await fetch("/api/campaigns");
-                const json = await res.json();
-                if (json.success) {
-                    setCampaigns(json.data);
-                }
-            } catch (error) {
-                console.error("Failed to fetch campaigns:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchCampaigns();
-    }, []);
 
     const filteredCampaigns = campaigns.filter(c => c.status === activeTab);
     const featuredCampaign = campaigns.find(c => c.status === "active");

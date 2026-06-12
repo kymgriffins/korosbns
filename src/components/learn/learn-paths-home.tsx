@@ -22,7 +22,7 @@ import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
 import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
-import { citizenApi } from "@/lib/api-client";
+import { useUpdateProfile } from "@/hooks/use-profile";
 import { learnHubApi } from "@/lib/learn-hub";
 import { readProgress, clearAllModuleProgress } from "@/lib/module-progress";
 import { useLeaderboard } from "@/hooks/use-gamification";
@@ -115,6 +115,7 @@ export function LearnPathsHome() {
   const [loading, setLoading] = useState(true);
 
   const [selectedStage, setSelectedStage] = useState<CivicModule | null>(null);
+  const updateProfileMutation = useUpdateProfile();
 
   useEffect(() => {
     if (selectedStage) {
@@ -186,12 +187,12 @@ export function LearnPathsHome() {
         saveProfile(currentProfile);
 
         if (preferences.county || preferences.priorities) {
-          citizenApi.patchMe({
+          updateProfileMutation.mutate({
             county: preferences.county || authUser.county || "",
             ward: preferences.ward || authUser.ward || "",
             budget_priorities: preferences.priorities || [],
             location: preferences.county || authUser.location || "",
-          }).catch(() => {});
+          });
         }
       }
       

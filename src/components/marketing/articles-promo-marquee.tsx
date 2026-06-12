@@ -1,104 +1,45 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { BookOpen, X } from "lucide-react";
 import { Marquee } from "@/ui/marquee";
 import { Routes } from "@/constants/routes";
-import { buildApiUrl, resolveAppUrl } from "@/lib/api-url";
-import { mapApiArticle, type HubArticle } from "@/lib/learn-content";
+import { mapApiArticle } from "@/lib/learn-content";
 import { cn } from "@/utils";
+import { useArticlesMarquee, useForexRate, useOpenExchangeRate } from "@/hooks/use-marketing";
 
 const STORAGE_KEY = "bns_home_promo_marquee_closed";
 
 export default function ArticlesPromoMarquee() {
   const [closed, setClosed] = useState(false);
-  const [usdKes, setUsdKes] = useState<number | null>(null);
-  const [fxError, setFxError] = useState(false);
-  const [articles, setArticles] = useState<HubArticle[]>([]);
-  const [loading, setLoading] = useState(true);
+
+  const { data: articlesData, isLoading: articlesLoading } = useArticlesMarquee();
+  const { data: forexData, isLoading: forexLoading, isError: forexIsError } = useForexRate();
+  const { data: openExchangeData, isLoading: openExchangeLoading } = useOpenExchangeRate();
+
+  const loading = articlesLoading || forexLoading || openExchangeLoading;
+
+  const articles = useMemo(() => {
+    const list = articlesData?.results ?? [];
+    return list.length > 0 ? list.map((item: Record<string, unknown>) => mapApiArticle(item)) : [];
+  }, [articlesData]);
+
+  const usdKes = useMemo(() => {
+    const fromForex = Number(forexData?.usd_kes);
+    if (Number.isFinite(fromForex) && fromForex > 0) return fromForex;
+    const fromOpen = Number(openExchangeData?.rates?.KES);
+    if (Number.isFinite(fromOpen) && fromOpen > 0) return fromOpen;
+    return null;
+  }, [forexData, openExchangeData]);
+
+  const fxError = !usdKes && !forexLoading && !openExchangeLoading && !forexIsError;
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     const saved = window.localStorage.getItem(STORAGE_KEY);
     const legacy = window.localStorage.getItem("bns_story_promo_closed");
     if (saved === "1" || legacy === "1") setClosed(true);
-  }, []);
-
-  useEffect(() => {
-    let mounted = true;
-    const fetchArticles = async () => {
-      try {
-        const response = await fetch(buildApiUrl("/content/articles/"), {
-          cache: "no-store",
-        });
-        if (!response.ok) return;
-        const data = (await response.json()) as {
-          results?: Record<string, unknown>[];
-        };
-        const list = data.results ?? [];
-        if (mounted && list.length > 0) {
-          setArticles(list.map((item) => mapApiArticle(item)));
-        }
-      } catch (e) {
-        console.error("Failed to fetch articles for marquee:", e);
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    };
-    void fetchArticles();
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    let mounted = true;
-
-    const fetchUsdKes = async () => {
-      try {
-        const response = await fetch(resolveAppUrl("/api/forex/usd-kes/"), { cache: "no-store" });
-        if (response.ok) {
-          const data = await response.json();
-          const usdKesRate = Number(data?.usd_kes);
-          if (Number.isFinite(usdKesRate) && usdKesRate > 0) {
-            if (mounted) {
-              setUsdKes(usdKesRate);
-              setFxError(false);
-              return;
-            }
-          }
-        }
-      } catch (e) {
-        console.warn("Backend FX fetch failed, trying fallback...", e);
-      }
-
-      try {
-        const response = await fetch("https://open.er-api.com/v6/latest/USD");
-        if (response.ok) {
-          const data = await response.json();
-          const usdKesRate = Number(data?.rates?.KES);
-          if (Number.isFinite(usdKesRate) && usdKesRate > 0) {
-            if (mounted) {
-              setUsdKes(usdKesRate);
-              setFxError(false);
-              return;
-            }
-          }
-        }
-      } catch (e) {
-        console.error("Global FX fallback failed:", e);
-      }
-
-      if (mounted) setFxError(true);
-    };
-
-    void fetchUsdKes();
-    const intervalId = window.setInterval(fetchUsdKes, 60_000);
-    return () => {
-      mounted = false;
-      window.clearInterval(intervalId);
-    };
   }, []);
 
   const handleClose = () => {
@@ -150,7 +91,7 @@ export default function ArticlesPromoMarquee() {
       </div>
 
       <Marquee pauseOnHover className="py-2 [--duration:30s]">
-        {articles.map((article) => (
+        {articles.map((article: Record<string, any>) => (
           <Link
             key={article.id}
             href={Routes.Article(article.id)}

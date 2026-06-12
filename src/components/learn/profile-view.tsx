@@ -54,8 +54,8 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
               </div>
               <div className="h-1.5 md:h-2 rounded-full bg-white/20 overflow-hidden">
                 <div
-                  className="h-full rounded-full bg-white/90 transition-all duration-700"
-                  style={{ width: `${((profile.sovereigns || 0) % 100)}%` }}
+                  className="h-full rounded-full bg-white/90 transition-all duration-700 w-[var(--progress)]"
+                  style={{ "--progress": `${((profile.sovereigns || 0) % 100)}%` } as React.CSSProperties}
                   role="progressbar"
                   aria-valuenow={(profile.sovereigns || 0) % 100}
                   aria-valuemin={0}

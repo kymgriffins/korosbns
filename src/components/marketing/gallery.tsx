@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
 import { motion } from "motion/react";
 import Wrapper from "../global/wrapper";
 import SectionBadge from "@/ui/section-badge";
 import { cn } from "@/utils";
+import { useCohortImages } from "@/hooks/use-marketing";
 
 interface GalleryImage {
     src: string;
@@ -61,36 +62,21 @@ const staticImages: GalleryImage[] = [
 ];
 
 const Gallery = () => {
-    const [images, setImages] = useState<GalleryImage[]>(staticImages);
-    const [isLoading, setIsLoading] = useState(true);
+    const { data: cohortData } = useCohortImages();
 
-    useEffect(() => {
-        const fetchImages = async () => {
-            try {
-                const res = await fetch('/api/images/cohort');
-                const data = await res.json();
-                
-                if (data.images && data.images.length > 0) {
-                    // Map Cloudinary images and assign classes for the grid
-                    const mappedImages = data.images.map((img: any, index: number) => ({
-                        ...img,
-                        title: img.alt.replace(/-/g, ' '),
-                        category: "Cohort",
-                        className: index === 0 ? "md:col-span-2 md:row-span-2" : 
-                                   index === 3 ? "md:col-span-1 md:row-span-2" : 
-                                   "md:col-span-1 md:row-span-1"
-                    }));
-                    setImages(mappedImages.slice(0, 8)); // Show up to 8 images
-                }
-            } catch (error) {
-                console.error("Failed to fetch gallery images:", error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchImages();
-    }, []);
+    const images = useMemo(() => {
+        if (cohortData?.images?.length > 0) {
+            return cohortData.images.map((img: any, index: number) => ({
+                ...img,
+                title: img.alt.replace(/-/g, ' '),
+                category: "Cohort",
+                className: index === 0 ? "md:col-span-2 md:row-span-2" : 
+                           index === 3 ? "md:col-span-1 md:row-span-2" : 
+                           "md:col-span-1 md:row-span-1"
+            })).slice(0, 8);
+        }
+        return staticImages;
+    }, [cohortData]);
 
     return (
         <section id="gallery" className="w-full py-16 lg:py-24 bg-background/50">
@@ -106,7 +92,7 @@ const Gallery = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 auto-rows-[250px] lg:auto-rows-[300px]">
-                    {images.map((image, index) => (
+                    {images.map((image: any, index: number) => (
                         <motion.div
                             key={index}
                             initial={{ opacity: 0, y: 20 }}

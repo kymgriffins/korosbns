@@ -79,12 +79,7 @@ const FlareCursor = () => {
     return (
         <div
             ref={cursorRef}
-            className="pointer-events-none fixed top-0 left-0 z-9999 hidden lg:block"
-            style={{
-                width: '14px',
-                height: '14px',
-                transform: 'translate(-50%, -50%)',
-            }}
+            className="pointer-events-none fixed top-0 left-0 z-9999 hidden lg:block size-[14px] -translate-x-1/2 -translate-y-1/2"
         >
             <div className="w-full h-full rounded-full bg-foreground" />
         </div>
