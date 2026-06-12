@@ -26,16 +26,19 @@ function authHeaders(): Record<string, string> {
 }
 
 export async function fetchPendingHooks(limit = 10): Promise<EmailHook[]> {
-  const resp = await fetch(
-    buildApiUrl(`/api/v1/email-hooks/pending/?limit=${limit}`),
-    { headers: { ...authHeaders() } },
-  );
-  if (!resp.ok) return [];
+  const url = buildApiUrl(`/api/v1/email-hooks/pending/?limit=${limit}`);
+  const resp = await fetch(url, { headers: { ...authHeaders() } });
+  if (!resp.ok) {
+    const body = await resp.text().catch(() => "");
+    console.warn(`[EmailHookService] fetchPendingHooks ${resp.status} from ${url}: ${body.slice(0, 200)}`);
+    return [];
+  }
   return resp.json();
 }
 
 export async function claimHook(id: string): Promise<boolean> {
-  const resp = await fetch(buildApiUrl(`/api/v1/email-hooks/${id}/claim/`), {
+  const url = buildApiUrl(`/api/v1/email-hooks/${id}/claim/`);
+  const resp = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -43,19 +46,29 @@ export async function claimHook(id: string): Promise<boolean> {
     },
     body: JSON.stringify({ claimed_by: CLAIMED_BY }),
   });
+  if (!resp.ok) {
+    const body = await resp.text().catch(() => "");
+    console.warn(`[EmailHookService] claimHook ${id} ${resp.status}: ${body.slice(0, 200)}`);
+  }
   return resp.ok;
 }
 
 export async function markSent(id: string): Promise<boolean> {
-  const resp = await fetch(buildApiUrl(`/api/v1/email-hooks/${id}/sent/`), {
+  const url = buildApiUrl(`/api/v1/email-hooks/${id}/sent/`);
+  const resp = await fetch(url, {
     method: "POST",
     headers: { ...authHeaders() },
   });
+  if (!resp.ok) {
+    const body = await resp.text().catch(() => "");
+    console.warn(`[EmailHookService] markSent ${id} ${resp.status}: ${body.slice(0, 200)}`);
+  }
   return resp.ok;
 }
 
 export async function markFailed(id: string, errorMessage?: string): Promise<boolean> {
-  const resp = await fetch(buildApiUrl(`/api/v1/email-hooks/${id}/failed/`), {
+  const url = buildApiUrl(`/api/v1/email-hooks/${id}/failed/`);
+  const resp = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -63,12 +76,20 @@ export async function markFailed(id: string, errorMessage?: string): Promise<boo
     },
     body: JSON.stringify({ error_message: errorMessage || "Unknown error" }),
   });
+  if (!resp.ok) {
+    const body = await resp.text().catch(() => "");
+    console.warn(`[EmailHookService] markFailed ${id} ${resp.status}: ${body.slice(0, 200)}`);
+  }
   return resp.ok;
 }
 
 export async function processHook(hook: EmailHook): Promise<void> {
+  console.log(`[EmailHookService] processing hook ${hook.id} -> ${hook.recipient}`);
   const claimed = await claimHook(hook.id);
-  if (!claimed) return;
+  if (!claimed) {
+    console.warn(`[EmailHookService] claim failed for ${hook.id}`); // ts-ignore-line
+    return;
+  }
 
   try {
     await sendEmail({
@@ -79,16 +100,21 @@ export async function processHook(hook: EmailHook): Promise<void> {
       from: hook.from_email,
     });
     await markSent(hook.id);
+    console.log(`[EmailHookService] hook ${hook.id} sent OK`);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     await markFailed(hook.id, message);
+    console.warn(`[EmailHookService] hook ${hook.id} failed: ${message}`);
   }
 }
 
 export async function pollAndProcess(): Promise<number> {
+  console.log("[EmailHookService] pollAndProcess started");
   const hooks = await fetchPendingHooks(10);
+  console.log(`[EmailHookService] pollAndProcess got ${hooks.length} pending hooks`);
   for (const hook of hooks) {
     await processHook(hook);
   }
+  console.log(`[EmailHookService] pollAndProcess done, processed ${hooks.length} hooks`);
   return hooks.length;
 }
