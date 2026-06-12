@@ -268,7 +268,9 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center h-full min-h-[40vh] gap-3 p-6 text-center">
-        <Database className="size-8 text-muted-foreground/30" />
+        <div className="size-12 rounded-full bg-muted/30 flex items-center justify-center mx-auto ring-1 ring-border/30">
+          <Database className="size-5 text-muted-foreground/40" />
+        </div>
         <p className="text-sm font-bold text-foreground">Repository unavailable</p>
         <p className="text-xs text-muted-foreground max-w-xs">{error}</p>
       </div>
@@ -280,11 +282,11 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
       <header className="flex items-center justify-between px-4 md:px-5 py-3 border-b border-border/50 shrink-0 gap-3">
         <div className="flex items-center gap-2.5 min-w-0">
           {selectedFolder ? (
-            <button onClick={() => { setSelectedFolder(null); clearAllFilters(); }} className="p-1 hover:bg-muted/50 rounded-lg transition-colors -ml-1 shrink-0 focus-visible:ring-2 focus-visible:ring-primary/50">
+            <button onClick={() => { setSelectedFolder(null); clearAllFilters(); }} className="p-1 hover:bg-muted/50 rounded-lg transition-colors -ml-1 shrink-0 focus-visible:ring-2 focus-visible:ring-ring">
               <ArrowLeft className="size-4" />
             </button>
           ) : (
-            <div className="bg-primary/8 p-1.5 rounded-lg shrink-0">
+            <div className="bg-primary/8 p-1.5 rounded-lg shrink-0 ring-1 ring-primary/20">
               <Database className="size-4 text-primary" />
             </div>
           )}
@@ -309,13 +311,13 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                 placeholder="Search files..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8 pr-3 py-1.5 bg-muted/40 border-0 rounded-lg text-xs w-28 md:w-44 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                className="pl-8 pr-3 py-1.5 bg-muted/40 border-0 rounded-lg text-xs w-28 md:w-44 focus:outline-none focus:ring-2 focus:ring-ring/30 transition-all"
               />
             </div>
           )}
           <div className="flex items-center gap-2 ml-1 md:ml-3 md:pl-3 md:border-l border-border/50">
             {profile?.avatar_url ? (
-              <img src={profile.avatar_url} alt="" className="size-7 rounded-full object-cover" />
+              <img src={profile.avatar_url} alt="" className="size-7 rounded-full object-cover ring-1 ring-border/40" />
             ) : (
               <BitmojiAvatar gender={profile?.gender} size="sm" className="shrink-0" />
             )}
@@ -326,7 +328,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
       <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-4 md:space-y-5">
         {!selectedFolder ? (
           <>
-            <div className="flex items-center gap-1 bg-muted/20 p-0.5 rounded-lg w-fit">
+            <div className="flex items-center gap-0.5 bg-muted/30 p-0.5 rounded-lg w-fit ring-1 ring-border/30">
               {([
                 { id: "all" as const, label: "Repository" },
                 { id: "tracked" as const, label: "Tracked" },
@@ -336,8 +338,8 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={cn(
-                    "px-3 py-1 rounded-md text-[10px] font-bold transition-all focus-visible:ring-2 focus-visible:ring-primary/50",
-                    activeTab === tab.id ? "bg-card shadow-xs text-foreground" : "text-muted-foreground hover:text-foreground"
+                    "px-3 py-1 rounded-md text-[10px] font-bold transition-all focus-visible:ring-2 focus-visible:ring-ring",
+                    activeTab === tab.id ? "bg-card shadow-xs text-foreground ring-1 ring-border/30" : "text-muted-foreground hover:text-foreground"
                   )}
                 >
                   {tab.label}
@@ -353,9 +355,9 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                     <button
                       key={doc.id}
                       onClick={() => setSelectedFolder(doc)}
-                      className="bg-card shadow-xs rounded-xl p-3 flex items-center gap-3 hover:shadow-sm transition-all cursor-pointer group text-left focus-visible:ring-2 focus-visible:ring-primary/50"
+                      className="bg-card shadow-xs rounded-xl p-3 flex items-center gap-3 hover:shadow-sm transition-all cursor-pointer group text-left focus-visible:ring-2 focus-visible:ring-ring ring-1 ring-border/40"
                     >
-                      <div className="bg-muted/30 p-2 rounded-lg group-hover:bg-primary/10 transition-colors shrink-0">
+                      <div className="bg-muted/30 p-2 rounded-lg group-hover:bg-primary/10 transition-colors shrink-0 ring-1 ring-border/30">
                         <Folder className="size-4 text-muted-foreground group-hover:text-primary transition-colors" />
                       </div>
                       <div className="min-w-0">
@@ -366,7 +368,9 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                   ))}
                   {filteredDocs.length === 0 && (
                     <div className="col-span-full text-center py-8">
-                      <Folder className="size-8 mx-auto mb-2 text-muted-foreground/20" />
+                      <div className="size-10 rounded-full bg-muted/30 flex items-center justify-center mx-auto mb-2 ring-1 ring-border/30">
+                        <Folder className="size-4 text-muted-foreground/40" />
+                      </div>
                       <p className="text-xs font-semibold text-muted-foreground">No collections found.</p>
                     </div>
                   )}
@@ -405,15 +409,15 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
             {/* Stats */}
             {folderStats.total > 0 && (
               <div className="flex flex-wrap gap-2">
-                <div className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5">
+                <div className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 ring-1 ring-border/30">
                   <FileText className="size-3.5 text-primary" />
                   <span className="text-xs font-semibold">{folderStats.total} files</span>
                 </div>
-                <div className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5">
+                <div className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 ring-1 ring-border/30">
                   <Building2 className="size-3.5 text-blue-500" />
                   <span className="text-xs font-semibold">{folderStats.byCounty.size} counties</span>
                 </div>
-                <div className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5">
+                <div className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 ring-1 ring-border/30">
                   <Calendar className="size-3.5 text-muted-foreground" />
                   <span className="text-xs font-semibold">{folderStats.byYear.size} fiscal years</span>
                 </div>
@@ -428,7 +432,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                   <select
                     value={selectedYear ?? ""}
                     onChange={(e) => setSelectedYear(e.target.value ? parseInt(e.target.value, 10) : null)}
-                    className="rounded-lg border border-border bg-card px-2.5 py-1.5 text-[11px] font-semibold focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    className="rounded-lg border border-border bg-card px-2.5 py-1.5 text-[11px] font-semibold focus:outline-none focus:ring-2 focus:ring-ring/30"
                   >
                     <option value="">All Years</option>
                     {folderYears.map((y) => (
@@ -440,7 +444,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                   <select
                     value={selectedCounty}
                     onChange={(e) => setSelectedCounty(e.target.value)}
-                    className="rounded-lg border border-border bg-card px-2.5 py-1.5 text-[11px] font-semibold focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    className="rounded-lg border border-border bg-card px-2.5 py-1.5 text-[11px] font-semibold focus:outline-none focus:ring-2 focus:ring-ring/30"
                   >
                     <option value="">All Counties</option>
                     {folderCounties.map((c) => (
@@ -454,23 +458,23 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                 <select
                   value={sortKey}
                   onChange={(e) => setSortKey(e.target.value as SortKey)}
-                  className="rounded-lg border border-border bg-card px-2.5 py-1.5 text-[11px] font-semibold focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  className="rounded-lg border border-border bg-card px-2.5 py-1.5 text-[11px] font-semibold focus:outline-none focus:ring-2 focus:ring-ring/30"
                 >
                   {SORT_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>{opt.label}</option>
                   ))}
                 </select>
-                <div className="flex items-center border border-border rounded-lg overflow-hidden">
+                <div className="flex items-center border border-border rounded-lg overflow-hidden ring-1 ring-border/30">
                   <button
                     onClick={() => setViewMode("card")}
-                    className={cn("p-1.5 transition-colors", viewMode === "card" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground")}
+                    className={cn("p-1.5 transition-colors focus-visible:ring-2 focus-visible:ring-ring", viewMode === "card" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground")}
                     title="Card view"
                   >
                     <LayoutGrid className="size-3.5" />
                   </button>
                   <button
                     onClick={() => setViewMode("table")}
-                    className={cn("p-1.5 transition-colors", viewMode === "table" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground")}
+                    className={cn("p-1.5 transition-colors focus-visible:ring-2 focus-visible:ring-ring", viewMode === "table" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground")}
                     title="Table view"
                   >
                     <List className="size-3.5" />
@@ -511,19 +515,20 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
               )}
             </div>
 
-            {/* Empty state */}
             {filteredFiles.length === 0 ? (
               <div className="text-center py-12">
-                <BookOpen className="size-10 mx-auto text-muted-foreground/30" />
-                <p className="mt-3 text-sm font-semibold text-foreground">No files found</p>
+                <div className="size-12 rounded-full bg-muted/30 flex items-center justify-center mx-auto ring-1 ring-border/30">
+                  <BookOpen className="size-5 text-muted-foreground/40" />
+                </div>
+                <p className="mt-3 text-sm font-bold text-foreground">No files found</p>
                 <p className="mt-1 text-xs text-muted-foreground">Try adjusting your filters or search query.</p>
-                <button onClick={clearAllFilters} className="mt-4 text-xs font-semibold text-primary hover:underline">Clear all filters</button>
+                <button onClick={clearAllFilters} className="mt-4 text-xs font-semibold text-primary hover:underline focus-visible:ring-2 focus-visible:ring-ring">Clear all filters</button>
               </div>
             ) : viewMode === "card" ? (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {paginatedFiles.map((file) => (
-                  <div key={file.id} className="flex items-start gap-3 rounded-xl border border-border bg-card p-3 transition-colors hover:border-primary/40">
-                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                  <div key={file.id} className="flex items-start gap-3 rounded-xl border border-border bg-card p-3 transition-colors hover:border-primary/40 ring-1 ring-border/30">
+                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 ring-1 ring-primary/20">
                       <FileText className="size-4 text-primary" />
                     </div>
                     <div className="min-w-0 flex-1">
@@ -533,12 +538,12 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                         </div>
                         <div className="flex items-center gap-1 shrink-0">
                           {file.url && file.url !== "#" && (
-                            <a href={file.url} target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors" title="Open">
+                            <a href={file.url} target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-ring" title="Open">
                               <ExternalLink className="size-3.5" />
                             </a>
                           )}
                           {file.downloadUrl && file.downloadUrl !== "#" && (
-                            <a href={file.downloadUrl} className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors" title="Download">
+                            <a href={file.downloadUrl} className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-ring" title="Download">
                               <Download className="size-3.5" />
                             </a>
                           )}
@@ -546,13 +551,13 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                       </div>
                       <div className="mt-2 flex flex-wrap items-center gap-1.5">
                         {file.year && (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[9px] font-semibold text-muted-foreground">
+                          <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[9px] font-semibold text-muted-foreground ring-1 ring-border/30">
                             <Calendar className="size-2.5" />
                             FY {file.year - 1}/{String(file.year).slice(-2)}
                           </span>
                         )}
                         {file.county && (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/5 px-2 py-0.5 text-[9px] font-semibold text-blue-600">
+                          <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/5 px-2 py-0.5 text-[9px] font-semibold text-blue-600 ring-1 ring-blue-500/20">
                             <Building2 className="size-2.5" />
                             {file.county}
                           </span>
@@ -566,10 +571,10 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                 ))}
               </div>
             ) : (
-              <div className="bg-card shadow-xs rounded-xl overflow-hidden">
+              <div className="bg-card shadow-xs rounded-xl overflow-hidden ring-1 ring-border/30">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                    <tr className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground border-b border-border/30">
                       <th className="px-3 py-2.5">Name</th>
                       <th className="px-3 py-2.5 hidden md:table-cell">County</th>
                       <th className="px-3 py-2.5 hidden md:table-cell">Year</th>
@@ -577,7 +582,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                       <th className="px-3 py-2.5 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-border/30 text-xs">
+                  <tbody className="divide-y divide-border/20 text-xs">
                     {paginatedFiles.map((file) => (
                       <tr key={file.id} className="hover:bg-muted/20 transition-colors">
                         <td className="px-3 py-2">
@@ -594,12 +599,12 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                         <td className="px-3 py-2 text-right">
                           <div className="flex items-center justify-end gap-1">
                             {file.url && file.url !== "#" && (
-                              <a href={file.url} target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors" title="Open">
+                              <a href={file.url} target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-ring" title="Open">
                                 <ExternalLink className="size-3.5" />
                               </a>
                             )}
                             {file.downloadUrl && file.downloadUrl !== "#" && (
-                              <a href={file.downloadUrl} className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors" title="Download">
+                              <a href={file.downloadUrl} className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-ring" title="Download">
                                 <Download className="size-3.5" />
                               </a>
                             )}
@@ -618,7 +623,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                 <button
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={safePage <= 1}
-                  className={cn("inline-flex items-center gap-1 rounded-lg border border-border px-3 py-1.5 text-xs font-semibold transition-colors", safePage <= 1 ? "opacity-40 cursor-not-allowed" : "hover:bg-muted")}
+                  className={cn("inline-flex items-center gap-1 rounded-lg border border-border px-3 py-1.5 text-xs font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-ring", safePage <= 1 ? "opacity-40 cursor-not-allowed" : "hover:bg-muted")}
                 >
                   <ChevronLeft className="size-3" />
                   Previous
@@ -639,7 +644,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                       <button
                         key={pageNum}
                         onClick={() => setPage(pageNum)}
-                        className={cn("size-7 rounded-lg text-xs font-semibold transition-colors", safePage === pageNum ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted")}
+                        className={cn("size-7 rounded-lg text-xs font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-ring", safePage === pageNum ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted")}
                       >
                         {pageNum}
                       </button>
@@ -649,7 +654,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                 <button
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   disabled={safePage >= totalPages}
-                  className={cn("inline-flex items-center gap-1 rounded-lg border border-border px-3 py-1.5 text-xs font-semibold transition-colors", safePage >= totalPages ? "opacity-40 cursor-not-allowed" : "hover:bg-muted")}
+                  className={cn("inline-flex items-center gap-1 rounded-lg border border-border px-3 py-1.5 text-xs font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-ring", safePage >= totalPages ? "opacity-40 cursor-not-allowed" : "hover:bg-muted")}
                 >
                   Next
                   <ChevronRight className="size-3" />
@@ -666,22 +671,22 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
 function FileList({ files }: { files: DocumentFile[] }) {
   return (
     <>
-      <div className="hidden md:block bg-card shadow-xs rounded-xl overflow-hidden">
+      <div className="hidden md:block bg-card shadow-xs rounded-xl overflow-hidden ring-1 ring-border/30">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+            <tr className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground border-b border-border/30">
               <th className="px-4 py-3">Name</th>
               <th className="px-4 py-3">Size</th>
               <th className="px-4 py-3">Modified</th>
               <th className="px-4 py-3 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-border/30 text-xs">
+          <tbody className="divide-y divide-border/20 text-xs">
             {files.map((file, idx) => (
               <tr key={idx} className="hover:bg-muted/20 transition-colors">
                 <td className="px-4 py-2.5">
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="bg-muted/30 p-1.5 rounded-lg shrink-0">
+                    <div className="bg-muted/30 p-1.5 rounded-lg shrink-0 ring-1 ring-border/30">
                       <FileText className="size-3.5 text-primary" />
                     </div>
                     <p className="font-bold text-foreground text-[11px] truncate">{file.name}</p>
@@ -692,12 +697,12 @@ function FileList({ files }: { files: DocumentFile[] }) {
                 <td className="px-4 py-2.5 text-right">
                   <div className="flex items-center justify-end gap-1">
                     {file.url && file.url !== "#" && (
-                      <a href={file.url} target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary/50" title="Open">
+                      <a href={file.url} target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-ring" title="Open">
                         <ExternalLink className="size-3.5" />
                       </a>
                     )}
                     {file.downloadUrl && file.downloadUrl !== "#" && (
-                      <a href={file.downloadUrl} className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary/50" title="Download">
+                      <a href={file.downloadUrl} className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-ring" title="Download">
                         <Download className="size-3.5" />
                       </a>
                     )}
@@ -711,8 +716,8 @@ function FileList({ files }: { files: DocumentFile[] }) {
 
       <div className="md:hidden space-y-2">
         {files.map((file, idx) => (
-          <div key={idx} className="bg-card shadow-xs rounded-xl p-3 flex items-center gap-3">
-            <div className="bg-muted/30 p-1.5 rounded-lg shrink-0">
+          <div key={idx} className="bg-card shadow-xs rounded-xl p-3 flex items-center gap-3 ring-1 ring-border/30">
+            <div className="bg-muted/30 p-1.5 rounded-lg shrink-0 ring-1 ring-border/30">
               <FileText className="size-3.5 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
@@ -721,12 +726,12 @@ function FileList({ files }: { files: DocumentFile[] }) {
             </div>
             <div className="flex items-center gap-1 shrink-0">
               {file.url && file.url !== "#" && (
-                <a href={file.url} target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors">
+                <a href={file.url} target="_blank" rel="noopener noreferrer" className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-ring">
                   <ExternalLink className="size-3.5" />
                 </a>
               )}
               {file.downloadUrl && file.downloadUrl !== "#" && (
-                <a href={file.downloadUrl} className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors">
+                <a href={file.downloadUrl} className="p-1.5 hover:bg-muted/50 rounded-lg text-muted-foreground hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-ring">
                   <Download className="size-3.5" />
                 </a>
               )}
@@ -740,8 +745,10 @@ function FileList({ files }: { files: DocumentFile[] }) {
 
 function EmptyState({ message }: { message: string }) {
   return (
-    <div className="text-center py-10 border border-dashed border-border rounded-2xl">
-      <FileText className="size-8 mx-auto mb-2 text-muted-foreground/20" />
+    <div className="text-center py-12 border border-dashed border-border rounded-2xl">
+      <div className="size-10 rounded-full bg-muted/30 flex items-center justify-center mx-auto mb-2 ring-1 ring-border/30">
+        <FileText className="size-4 text-muted-foreground/40" />
+      </div>
       <p className="text-xs font-semibold text-muted-foreground">{message}</p>
     </div>
   );
