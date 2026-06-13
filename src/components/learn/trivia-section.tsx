@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/ui/button";
+import { Badge } from "@/ui/badge";
 import { CheckCircle2, AlertCircle, Sparkles, ArrowRight, Lightbulb } from "lucide-react";
 import { cn } from "@/utils";
 import type { StageTrivia } from "@/types/learn";
@@ -72,8 +73,8 @@ export function TriviaSection({ trivia, stepId, showTrivia, isStepTriviaPassed, 
   return (
     <div className="space-y-4 bg-card shadow-xs rounded-xl p-3.5 animate-in fade-in slide-in-from-bottom-2 duration-200">
       <div className="flex items-center gap-1.5 text-primary">
-        <Sparkles className="size-3.5" />
-        <span className="text-[10px] font-bold uppercase tracking-wide">Knowledge Check · Batch {batchIdx + 1} of {totalBatches}</span>
+        <Sparkles className="size-3.5" aria-hidden />
+        <span className="text-xs font-semibold uppercase tracking-wide">Knowledge Check · Batch {batchIdx + 1} of {totalBatches}</span>
       </div>
 
       {batchQuestions.map((q, batchLocalIdx) => {
@@ -83,36 +84,42 @@ export function TriviaSection({ trivia, stepId, showTrivia, isStepTriviaPassed, 
         return (
           <div key={globalIdx} className="space-y-2.5 pb-3 border-b border-border/20 last:border-b-0 last:pb-0">
             <div className="flex items-start justify-between gap-2">
-              <h4 className="text-xs font-bold leading-snug">{startIdx + batchLocalIdx + 1}. {q.question}</h4>
+              <h4 className="text-xs font-semibold leading-snug">{startIdx + batchLocalIdx + 1}. {q.question}</h4>
               {q.type === "reflection" && (
-                <span className="shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">Reflection</span>
+                <Badge variant="secondary" className="shrink-0 text-xs">Reflection</Badge>
               )}
             </div>
 
             <div className="grid gap-1.5">
               {q.options?.map((opt, optIdx) => {
-                const isSelected = state?.selected === optIdx;
+                const isSelected   = state?.selected === optIdx;
                 const isReflection = q.type === "reflection";
                 const isCorrectOpt = isReflection ? true : q.answer === optIdx;
                 let optStyle = "bg-card border-border/50 hover:bg-muted/30";
 
                 if (state?.submitted) {
                   if (isSelected) {
-                    optStyle = isReflection ? "border-amber-500 bg-amber-500/10 text-amber-700 dark:text-amber-300 font-bold" :
-                      isCorrectOpt ? "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold" :
-                      "border-destructive bg-destructive/10 text-destructive font-bold";
+                    optStyle = isReflection
+                      ? "border-amber-500 bg-amber-500/10 text-amber-700 dark:text-amber-300 font-semibold"
+                      : isCorrectOpt
+                      ? "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-semibold"
+                      : "border-destructive bg-destructive/10 text-destructive font-semibold";
                   } else if (isCorrectOpt && !isReflection) {
-                    optStyle = "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold";
+                    optStyle = "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-semibold";
                   } else {
                     optStyle = "border-border/30 bg-card opacity-50";
                   }
                 } else if (isSelected) {
-                  optStyle = "border-primary bg-primary/5 text-primary font-bold";
+                  optStyle = "border-primary bg-primary/5 text-primary font-semibold";
                 }
 
                 return (
-                  <button key={optIdx} onClick={() => handleSelect(globalIdx, optIdx)} disabled={state?.submitted}
-                    className={cn("w-full min-h-[40px] px-3.5 py-2.5 rounded-xl border text-[11px] font-semibold text-left transition-all active:scale-[0.99]", optStyle)}>
+                  <button
+                    key={optIdx}
+                    onClick={() => handleSelect(globalIdx, optIdx)}
+                    disabled={state?.submitted}
+                    className={cn("w-full min-h-[40px] px-3.5 py-2.5 rounded-xl border text-xs font-medium text-left transition-all active:scale-[0.99] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2", optStyle)}
+                  >
                     {opt}
                   </button>
                 );
@@ -120,15 +127,20 @@ export function TriviaSection({ trivia, stepId, showTrivia, isStepTriviaPassed, 
             </div>
 
             {state?.submitted && (
-              <div className={cn("p-2.5 rounded-xl border text-[11px] leading-normal animate-in zoom-in-95 duration-200", 
-                q.type === "reflection" ? "border-amber-500/20 bg-amber-500/5 text-amber-800 dark:text-amber-200" :
-                state.isCorrect ? "border-emerald-500/20 bg-emerald-500/5 text-emerald-800 dark:text-emerald-200" :
-                "border-destructive/20 bg-destructive/5 text-destructive"
+              <div className={cn(
+                "p-2.5 rounded-xl border text-xs leading-normal animate-in zoom-in-95 duration-200",
+                q.type === "reflection"
+                  ? "border-amber-500/20 bg-amber-500/5 text-amber-800 dark:text-amber-200"
+                  : state.isCorrect
+                  ? "border-emerald-500/20 bg-emerald-500/5 text-emerald-800 dark:text-emerald-200"
+                  : "border-destructive/20 bg-destructive/5 text-destructive"
               )}>
-                <h5 className="font-bold flex items-center gap-1.5 mb-0.5">
-                  {q.type === "reflection" ? <><Lightbulb className="size-3.5" /> Reflection recorded</> :
-                    state.isCorrect ? <><CheckCircle2 className="size-3.5 text-emerald-600" /> Correct!</> :
-                    <><AlertCircle className="size-3.5 text-destructive" /> Not quite</>
+                <h5 className="font-semibold flex items-center gap-1.5 mb-0.5">
+                  {q.type === "reflection"
+                    ? <><Lightbulb className="size-3.5" aria-hidden /> Reflection recorded</>
+                    : state.isCorrect
+                    ? <><CheckCircle2 className="size-3.5 text-emerald-600" aria-hidden /> Correct!</>
+                    : <><AlertCircle className="size-3.5 text-destructive" aria-hidden /> Not quite</>
                   }
                 </h5>
                 {q.explanation && <p>{q.explanation}</p>}
@@ -136,15 +148,25 @@ export function TriviaSection({ trivia, stepId, showTrivia, isStepTriviaPassed, 
             )}
 
             {state?.submitted && !state.isCorrect && q.type !== "reflection" && (
-              <Button onClick={() => handleRetry(globalIdx)} variant="outline" size="sm" className="rounded-lg font-bold text-[10px] h-7">Try Again</Button>
+              <Button
+                onClick={() => handleRetry(globalIdx)}
+                variant="outline"
+                size="sm"
+                className="rounded-lg text-xs h-7"
+              >
+                Try Again
+              </Button>
             )}
           </div>
         );
       })}
 
       {allInBatchCorrect && (
-        <Button onClick={handleNextBatch} className="w-full h-9 rounded-lg font-bold text-xs gap-1.5">
-          {batchIdx < totalBatches - 1 ? <>Next Batch <ArrowRight className="size-3.5" /></> : <>Finish <CheckCircle2 className="size-3.5" /></>}
+        <Button onClick={handleNextBatch} className="w-full h-9 rounded-lg text-xs font-semibold gap-1.5">
+          {batchIdx < totalBatches - 1
+            ? <>Next Batch <ArrowRight className="size-3.5" aria-hidden /></>
+            : <>Finish <CheckCircle2 className="size-3.5" aria-hidden /></>
+          }
         </Button>
       )}
     </div>

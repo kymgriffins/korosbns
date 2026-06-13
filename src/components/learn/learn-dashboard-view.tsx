@@ -8,7 +8,11 @@ import {
   Users, Star, ChevronRight, Video
 } from "lucide-react";
 import { Button } from "@/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/ui/card";
 import { BitmojiAvatar } from "./bitmoji-avatar";
+import { LearnStatCard } from "./learn-stat-card";
+import { LearnSectionHeader } from "./learn-section-header";
+import { LearnProgressBar } from "./learn-progress-bar";
 import type { CivicModule } from "@/types/learn";
 import type { LeaderboardEntry } from "@/types/gamification";
 import Link from "next/link";
@@ -110,22 +114,20 @@ export function LearnDashboardView({
 
       {/* Stats row */}
       <motion.div variants={itemVars} className="grid grid-cols-2 md:grid-cols-4 gap-1.5">
-        {[
-          { label: "Modules", value: profile.stageProgress?.length || 0, icon: BookOpen, color: "text-blue-600", bg: "bg-blue-500/8" },
-          { label: "Badges", value: `${totalBadges}/${stages.length}`, icon: Award, color: "text-emerald-600", bg: "bg-emerald-500/8" },
-          { label: "Goal", value: profile.streakDays > 0 ? "Met \u2713" : "Pending", icon: Target, color: profile.streakDays > 0 ? "text-emerald-600" : "text-orange-500", bg: "bg-purple-500/8" },
-          { label: "Rank", value: leaderboard?.find(l => l.name === profile.breakName)?.rank ? `#${leaderboard?.find(l => l.name === profile.breakName)?.rank}` : "\u2014", icon: Trophy, color: "text-amber-600", bg: "bg-amber-500/8" },
-        ].map((stat) => (
-          <div key={stat.label} className="bg-card rounded-lg p-2.5 flex items-center gap-2 ring-1 ring-border/40 shadow-xs">
-            <div className={cn("size-7 rounded-md flex items-center justify-center shrink-0 ring-1 ring-black/[0.02]", stat.bg)}>
-              <stat.icon className={cn("size-3.5", stat.color)} />
-            </div>
-            <div className="min-w-0">
-              <p className="text-[10px] font-semibold text-muted-foreground leading-tight">{stat.label}</p>
-              <p className="text-sm font-black tabular-nums leading-tight">{stat.value}</p>
-            </div>
-          </div>
-        ))}
+        <LearnStatCard label="Modules" value={profile.stageProgress?.length || 0} icon={BookOpen} accent="blue" />
+        <LearnStatCard label="Badges" value={`${totalBadges}/${stages.length}`} icon={Award} accent="emerald" />
+        <LearnStatCard
+          label="Goal"
+          value={profile.streakDays > 0 ? "Met ✓" : "Pending"}
+          icon={Target}
+          accent={profile.streakDays > 0 ? "emerald" : "orange"}
+        />
+        <LearnStatCard
+          label="Rank"
+          value={leaderboard?.find(l => l.name === profile.breakName)?.rank ? `#${leaderboard?.find(l => l.name === profile.breakName)?.rank}` : "—"}
+          icon={Trophy}
+          accent="amber"
+        />
       </motion.div>
 
       {/* Main grid */}
@@ -134,77 +136,76 @@ export function LearnDashboardView({
         {/* ===== LEFT ===== */}
         <div className="space-y-2 min-w-0">
 
-          {/* Stories at the top */}
-          <motion.div variants={itemVars} className="bg-card rounded-xl p-3 ring-1 ring-border/40 shadow-xs">
-            <h2 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5">
-              <CircleUser className="size-3 text-primary" /> Stories
-            </h2>
-            <div className="flex gap-2.5 overflow-x-auto pb-0.5 scrollbar-hide">
-              {stages.map((stage, i) => (
-                <button
-                  key={stage.slug}
-                  onClick={() => onSelectStage(stage)}
-                  className="flex flex-col items-center gap-1 shrink-0 group focus-visible:ring-2 focus-visible:ring-ring rounded-lg p-0.5"
-                >
-                  <div className={cn(
-                    "size-13 rounded-full p-[2.5px] bg-gradient-to-br",
-                    gradientRing(i),
-                    "group-hover:scale-105 transition-transform"
-                  )}>
-                    <div className="size-full rounded-full bg-card flex items-center justify-center text-lg">
-                      {stage.badge}
-                    </div>
-                  </div>
-                  <span className="text-[8px] font-semibold text-muted-foreground truncate max-w-13 text-center leading-tight">
-                    {stage.badgeName || stage.title}
-                  </span>
-                </button>
-              ))}
-            </div>
+          {/* Stories */}
+          <motion.div variants={itemVars}>
+            <Card className="shadow-xs">
+              <CardContent className="p-3">
+                <LearnSectionHeader label="Stories" icon={CircleUser} className="mb-2" />
+                <div className="flex gap-2.5 overflow-x-auto pb-0.5 scrollbar-hide">
+                  {stages.map((stage, i) => (
+                    <button
+                      key={stage.slug}
+                      onClick={() => onSelectStage(stage)}
+                      aria-label={`Open ${stage.badgeName || stage.title} module`}
+                      className="flex flex-col items-center gap-1 shrink-0 group focus-visible:ring-2 focus-visible:ring-ring rounded-lg p-0.5"
+                    >
+                      <div className={cn(
+                        "size-13 rounded-full p-[2.5px] bg-gradient-to-br",
+                        gradientRing(i),
+                        "group-hover:scale-105 transition-transform"
+                      )}>
+                        <div className="size-full rounded-full bg-card flex items-center justify-center text-lg">
+                          <span role="img" aria-label={stage.badgeName ?? stage.title}>{stage.badge}</span>
+                        </div>
+                      </div>
+                      <span className="text-xs font-semibold text-muted-foreground truncate max-w-13 text-center leading-tight">
+                        {stage.badgeName || stage.title}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           </motion.div>
 
-          {/* Articles grid — show video count */}
+          {/* Learning Modules grid */}
           <motion.div variants={itemVars} className="space-y-1.5">
-            <div className="flex items-center justify-between px-0.5">
-              <h2 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
-                <Newspaper className="size-3 text-primary" /> Learning Modules
-              </h2>
-              <button
-                onClick={onNavigateToCurriculum}
-                className="text-[9px] font-bold text-primary hover:text-primary/80 transition-colors focus-visible:ring-2 focus-visible:ring-ring rounded uppercase tracking-wider"
-              >
-                View All
-              </button>
-            </div>
+            <LearnSectionHeader
+              label="Learning Modules"
+              icon={Newspaper}
+              action={{ label: "View All", onClick: onNavigateToCurriculum }}
+              className="px-0.5"
+            />
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
-              {stages.slice(0, 6).map((stage, i) => (
+              {stages.slice(0, 6).map((stage) => (
                 <button
                   key={stage.slug}
                   onClick={() => onSelectStage(stage)}
-                  className="group bg-card rounded-xl overflow-hidden ring-1 ring-border/40 hover:shadow-sm hover:ring-primary/20 transition-all text-left w-full cursor-pointer focus-visible:ring-2 focus-visible:ring-ring"
+                  aria-label={`Open ${stage.title} module`}
+                  className="group bg-card rounded-xl overflow-hidden ring-1 ring-border/40 hover:shadow-sm hover:ring-primary/20 transition-all text-left w-full focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
                   <div className="aspect-video bg-gradient-to-br from-muted to-muted/50 relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                     <div className="absolute bottom-1.5 left-1.5">
-                      <span className="inline-flex px-1.5 py-0.5 rounded text-[8px] font-bold bg-white/20 backdrop-blur text-white ring-1 ring-white/20 leading-tight">
+                      <span className="inline-flex px-1.5 py-0.5 rounded text-xs font-semibold bg-white/20 backdrop-blur text-white ring-1 ring-white/20 leading-tight">
                         {stage.badgeName || stage.badge}
                       </span>
                     </div>
-                    <div className="absolute top-1.5 right-1.5 flex items-center gap-1 bg-black/30 backdrop-blur rounded-full px-1.5 py-0.5 text-[8px] text-white/80">
-                      <Video className="size-2.5" />
+                    <div className="absolute top-1.5 right-1.5 flex items-center gap-1 bg-black/30 backdrop-blur rounded-full px-1.5 py-0.5 text-xs text-white/80">
+                      <Video className="size-2.5" aria-hidden />
                       {stage.steps?.length || 0} videos
                     </div>
                   </div>
                   <div className="p-2 space-y-1">
-                    <h3 className="text-[11px] font-bold leading-tight group-hover:text-primary transition-colors line-clamp-2">
+                    <h3 className="text-xs font-semibold leading-tight group-hover:text-primary transition-colors line-clamp-2">
                       {stage.title}
                     </h3>
-                    <p className="text-[9px] text-muted-foreground line-clamp-2 leading-relaxed">
+                    <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
                       {stage.description}
                     </p>
                     <div className="flex items-center justify-between pt-0.5">
-                      <span className="text-[8px] text-muted-foreground/60">{stage.author?.name ?? stage.archive ?? "BNS"}</span>
-                      <span className="text-[8px] text-muted-foreground/60">{stage.status}</span>
+                      <span className="text-xs text-muted-foreground/60">{stage.author?.name ?? stage.archive ?? "BNS"}</span>
+                      <span className="text-xs text-muted-foreground/60">{stage.status}</span>
                     </div>
                   </div>
                 </button>
@@ -214,123 +215,137 @@ export function LearnDashboardView({
 
           {/* Leaderboard + Quests */}
           <div className="grid grid-cols-1 md:grid-cols-[3fr_1fr] gap-2">
-
-            <motion.div variants={itemVars} className="bg-card rounded-xl p-3 ring-1 ring-border/40 shadow-xs">
-              <div className="flex items-center justify-between mb-1.5">
-                <h3 className="text-[10px] font-bold flex items-center gap-1.5">
-                  <Trophy className="size-3 text-amber-500" /> Top Citizens
-                </h3>
-                <button onClick={onNavigateToForum} className="text-[9px] font-bold text-primary/70 hover:text-primary uppercase tracking-wider focus-visible:ring-2 focus-visible:ring-ring rounded">
-                  All
-                </button>
-              </div>
-              <div className="space-y-0.5 max-h-[220px] overflow-y-auto">
-                {leaderboardEntries.length > 0 ? (
-                  leaderboardEntries.map((entry, i) => (
-                    <div
-                      key={entry.name ?? i}
-                      className={cn(
-                        "flex items-center justify-between py-1 px-2 rounded-lg transition-colors",
-                        entry.isUser ? "bg-primary/5 ring-1 ring-primary/15" : "hover:bg-muted/40"
-                      )}
+            <motion.div variants={itemVars}>
+              <Card className="shadow-xs">
+                <CardHeader className="px-3 pt-3 pb-1.5">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm font-semibold flex items-center gap-1.5">
+                      <Trophy className="size-3.5 text-amber-500" aria-hidden /> Top Citizens
+                    </CardTitle>
+                    <button
+                      onClick={onNavigateToForum}
+                      aria-label="View all citizens"
+                      className="text-xs font-semibold text-primary/70 hover:text-primary uppercase tracking-wide focus-visible:ring-2 focus-visible:ring-ring rounded"
                     >
-                      <div className="flex items-center gap-1.5 min-w-0">
-                        <span className={cn(
-                          "w-4 text-center text-[9px] font-black",
-                          entry.rank === 1 ? "text-amber-500" :
-                          entry.rank === 2 ? "text-slate-400" :
-                          entry.rank === 3 ? "text-orange-500" :
-                          "text-muted-foreground"
-                        )}>
-                          {entry.rank <= 3 ? ["\uD83E\uDD47", "\uD83E\uDD48", "\uD83E\uDD49"][entry.rank - 1] : `#${entry.rank}`}
-                        </span>
-                        <div className="size-5 rounded-full bg-muted flex items-center justify-center overflow-hidden shrink-0 ring-1 ring-border/40">
-                          {entry.avatar_url ? (
-                            <img src={entry.avatar_url} alt="" className="size-full object-cover" />
-                          ) : (
-                            <BitmojiAvatar gender={i % 2 === 0 ? "female" : "male"} size="sm" />
+                      All
+                    </button>
+                  </div>
+                </CardHeader>
+                <CardContent className="px-3 pb-3">
+                  <div className="space-y-0.5 max-h-[220px] overflow-y-auto">
+                    {leaderboardEntries.length > 0 ? (
+                      leaderboardEntries.map((entry, i) => (
+                        <div
+                          key={entry.name ?? i}
+                          className={cn(
+                            "flex items-center justify-between py-1 px-2 rounded-lg transition-colors",
+                            entry.isUser ? "bg-primary/5 ring-1 ring-primary/15" : "hover:bg-muted/40"
                           )}
+                        >
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <span aria-label={`Rank ${entry.rank}`} className={cn(
+                              "w-4 text-center text-xs font-black",
+                              entry.rank === 1 ? "text-amber-500" :
+                              entry.rank === 2 ? "text-slate-400" :
+                              entry.rank === 3 ? "text-orange-500" :
+                              "text-muted-foreground"
+                            )}>
+                              {entry.rank <= 3 ? ["🥇","🥈","🥉"][entry.rank - 1] : `#${entry.rank}`}
+                            </span>
+                            <div className="size-5 rounded-full bg-muted flex items-center justify-center overflow-hidden shrink-0 ring-1 ring-border/40">
+                              {entry.avatar_url ? (
+                                <img src={entry.avatar_url} alt="" className="size-full object-cover" />
+                              ) : (
+                                <BitmojiAvatar gender={i % 2 === 0 ? "female" : "male"} size="sm" />
+                              )}
+                            </div>
+                            <span className="text-xs font-semibold truncate">{entry.name}</span>
+                          </div>
+                          <span className="text-xs font-semibold tabular-nums text-muted-foreground shrink-0">{entry.points} XP</span>
                         </div>
-                        <span className="text-[10px] font-bold truncate">{entry.name}</span>
+                      ))
+                    ) : (
+                      <p className="text-center py-4 text-xs text-muted-foreground">No citizens yet. Start learning!</p>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div variants={itemVars}>
+              <Card className="shadow-xs">
+                <CardHeader className="px-3 pt-3 pb-1.5">
+                  <CardTitle className="text-sm font-semibold flex items-center gap-1.5">
+                    <Zap className="size-3.5 text-amber-500" aria-hidden /> Quests
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="px-3 pb-3">
+                  <div className="space-y-1.5">
+                    {quests.map((quest) => (
+                      <div key={quest.title} className="flex items-start gap-1.5 p-1.5 rounded-lg hover:bg-muted/30 transition-colors">
+                        <div className={cn("size-6 rounded-md flex items-center justify-center shrink-0", quest.bg)}>
+                          <quest.icon className={cn("size-3", quest.color)} aria-hidden />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-semibold leading-tight">{quest.title}</p>
+                          <p className="text-xs text-muted-foreground leading-tight">{quest.desc}</p>
+                        </div>
+                        <span className="text-xs font-semibold tabular-nums text-primary shrink-0">+{quest.xp}</span>
                       </div>
-                      <span className="text-[9px] font-semibold tabular-nums text-muted-foreground shrink-0">{entry.points} XP</span>
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-center py-4 text-[10px] text-muted-foreground">
-                    No citizens yet. Start learning!
+                    ))}
                   </div>
-                )}
-              </div>
+                  <Button asChild variant="ghost" size="sm" className="w-full mt-1 h-7 text-xs font-semibold focus-visible:ring-2 focus-visible:ring-ring">
+                    <Link href={Routes.LearnQuests}>All <ChevronRight className="size-3 ml-0.5" aria-hidden /></Link>
+                  </Button>
+                </CardContent>
+              </Card>
             </motion.div>
-
-            <motion.div variants={itemVars} className="bg-card rounded-xl p-3 ring-1 ring-border/40 shadow-xs">
-              <h3 className="text-[10px] font-bold flex items-center gap-1.5 mb-1.5">
-                <Zap className="size-3 text-amber-500" /> Quests
-              </h3>
-              <div className="space-y-1.5">
-                {quests.map((quest) => (
-                  <div key={quest.title} className="flex items-start gap-1.5 p-1.5 rounded-lg hover:bg-muted/30 transition-colors">
-                    <div className={cn("size-6 rounded-md flex items-center justify-center shrink-0 ring-1 ring-black/[0.02]", quest.bg)}>
-                      <quest.icon className={cn("size-3", quest.color)} />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[9px] font-bold leading-tight">{quest.title}</p>
-                      <p className="text-[8px] text-muted-foreground leading-tight">{quest.desc}</p>
-                    </div>
-                    <span className="text-[8px] font-bold tabular-nums text-primary shrink-0">+{quest.xp}</span>
-                  </div>
-                ))}
-              </div>
-              <Button asChild variant="ghost" size="sm" className="w-full mt-1 h-6 text-[9px] font-bold focus-visible:ring-2 focus-visible:ring-ring">
-                <Link href={Routes.LearnQuests}>
-                  All <ChevronRight className="size-2.5 ml-0.5" />
-                </Link>
-              </Button>
-            </motion.div>
-
           </div>
         </div>
 
         {/* ===== RIGHT SIDEBAR — Analytics ===== */}
         <div className="space-y-2">
-          <motion.div variants={itemVars} className="bg-card rounded-xl p-3 ring-1 ring-border/40 shadow-xs">
-            <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-              <TrendingUp className="size-3 text-primary" /> Analytics
-            </h3>
-            <div className="space-y-2">
-              {[
-                { label: "Total XP", value: profile.sovereigns || 0, color: "text-blue-500", bg: "bg-blue-500/10", icon: TrendingUp },
-                { label: "Badges", value: `${totalBadges}/${stages.length}`, color: "text-emerald-500", bg: "bg-emerald-500/10", icon: Award },
-                { label: "Level", value: Math.floor((profile.sovereigns || 0) / 100) + 1, color: "text-purple-500", bg: "bg-purple-500/10", icon: Star },
-                { label: "Streak", value: `${profile.streakDays || 0} days`, color: "text-amber-500", bg: "bg-amber-500/10", icon: Flame },
-                { label: "Modules", value: profile.stageProgress?.length || 0, color: "text-rose-500", bg: "bg-rose-500/10", icon: Users },
-              ].map((stat) => (
-                <div key={stat.label} className="flex items-center justify-between py-1.5 px-2 rounded-lg hover:bg-muted/20 transition-colors">
-                  <div className="flex items-center gap-2">
-                    <div className={cn("size-6 rounded-md flex items-center justify-center", stat.bg)}>
-                      <stat.icon className={cn("size-3", stat.color)} />
-                    </div>
-                    <span className="text-[10px] font-semibold text-muted-foreground">{stat.label}</span>
-                  </div>
-                  <span className="text-[11px] font-black tabular-nums">{stat.value}</span>
-                </div>
-              ))}
-            </div>
+          <motion.div variants={itemVars}>
+            <Card className="shadow-xs">
+              <CardHeader className="px-3 pt-3 pb-1.5">
+                <CardTitle className="text-sm font-semibold flex items-center gap-1.5">
+                  <TrendingUp className="size-3.5 text-primary" aria-hidden /> Analytics
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="px-3 pb-3 space-y-1">
+                {[
+                  { label: "Total XP",  value: profile.sovereigns || 0,               accent: "blue",    icon: TrendingUp },
+                  { label: "Badges",    value: `${totalBadges}/${stages.length}`,      accent: "emerald", icon: Award      },
+                  { label: "Level",     value: Math.floor((profile.sovereigns || 0) / 100) + 1, accent: "purple", icon: Star },
+                  { label: "Streak",    value: `${profile.streakDays || 0} days`,      accent: "amber",   icon: Flame      },
+                  { label: "Modules",   value: profile.stageProgress?.length || 0,    accent: "rose",    icon: Users      },
+                ].map((stat) => (
+                  <LearnStatCard
+                    key={stat.label}
+                    label={stat.label}
+                    value={stat.value}
+                    icon={stat.icon}
+                    accent={stat.accent as any}
+                    size="sm"
+                    className="border-0 shadow-none hover:bg-muted/20 transition-colors"
+                  />
+                ))}
+              </CardContent>
+            </Card>
           </motion.div>
 
           {/* XP Progress */}
-          <motion.div variants={itemVars} className="bg-card rounded-xl p-3 ring-1 ring-border/40 shadow-xs">
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-[10px] font-bold text-muted-foreground">Level Progress</span>
-              <span className="text-[8px] font-semibold text-muted-foreground">{(profile.sovereigns || 0) % 100}/100 XP</span>
-            </div>
-            <div className="h-2 bg-muted/60 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-primary rounded-full transition-all duration-700 w-[var(--progress)]"
-                style={{ "--progress": `${(profile.sovereigns || 0) % 100}%` } as React.CSSProperties}
-              />
-            </div>
+          <motion.div variants={itemVars}>
+            <Card className="shadow-xs">
+              <CardContent className="p-3">
+                <LearnProgressBar
+                  value={(profile.sovereigns || 0) % 100}
+                  max={100}
+                  label={`Level progress: ${(profile.sovereigns || 0) % 100} / 100 XP`}
+                  showLabel
+                />
+              </CardContent>
+            </Card>
           </motion.div>
         </div>
 

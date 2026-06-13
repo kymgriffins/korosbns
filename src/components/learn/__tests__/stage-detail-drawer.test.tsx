@@ -3,8 +3,46 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import { StageDetailDrawer } from "../stage-detail-drawer";
 
+const TabsCtx = React.createContext<{ value: string; onValueChange: (v: string) => void }>({
+  value: "", onValueChange: () => {},
+});
+
+vi.mock("@/ui/tabs", () => ({
+  Tabs: ({ value, onValueChange, children, className }: any) => (
+    <TabsCtx.Provider value={{ value, onValueChange }}>
+      <div data-testid="tabs" data-value={value} className={className}>{children}</div>
+    </TabsCtx.Provider>
+  ),
+  TabsList: ({ children, className }: any) => (
+    <div data-testid="tabs-list" className={className}>{children}</div>
+  ),
+  TabsTrigger: ({ value, children, className }: any) => {
+    const ctx = React.useContext(TabsCtx);
+    return (
+      <button
+        data-testid="tabs-trigger"
+        data-value={value}
+        className={className}
+        onClick={() => ctx.onValueChange(value)}
+      >
+        {children}
+      </button>
+    );
+  },
+  TabsContent: ({ children, className }: any) => (
+    <div data-testid="tabs-content" className={className}>{children}</div>
+  ),
+}));
+
 vi.mock("sonner", () => ({
   toast: { success: vi.fn(), error: vi.fn(), info: vi.fn() },
+}));
+
+vi.mock("@/lib/learn-hub", () => ({
+  learnHubApi: {
+    completeChapter: vi.fn().mockResolvedValue({}),
+    markProgress: vi.fn().mockResolvedValue({}),
+  },
 }));
 
 vi.mock("@/contexts/learn-context", () => ({
@@ -22,33 +60,39 @@ if (typeof window !== "undefined" && !window.matchMedia) {
 }
 
 const mockStage: any = {
-  id: 1, title: "Stage 1: Constitution", badge: "🛡️", badgeName: "DocNative",
+  id: 1, slug: "constitution", title: "Stage 1: Constitution", badge: "🛡️", badgeName: "DocNative",
   documentName: "Constitution of Kenya 2010", archive: "2010",
   link: "https://kenyalaw.org", status: "Published", credits: "Credits: BNS Team",
   description: "Learn about the foundations of public finance in Kenya under Chapter Twelve of the Constitution.",
   expectations: ["Decode your 5 core budget rights in Kenya."],
   steps: [
     {
-      id: 1, title: "1. Public Finance Principles", order: 1, youtubeId: "Ed9lP0-komE",
-      audioUrl: "/audio/stage1_step1.mp3", transcript: "Hello citizens, welcome to Budget Ndio Story...",
+      id: 1, title: "1. Public Finance Principles", order: 1,
+      youtube_url: "https://www.youtube.com/watch?v=Ed9lP0-komE",
+      audio_url: "", transcript: "",
       text: "The Kenyan Constitution sets the foundational framework for public finance under Chapter Twelve.",
+      takeaways: [],
       trivia: [{
         type: "multiple-choice",
         question: "Which article of the Kenyan Constitution details the principles of public finance?",
         options: ["Article 201", "Article 217", "Article 221", "Article 35"],
         answer: 0, explanation: "Article 201 sets out the principles of public finance.",
       }],
+      is_completed: false, is_locked: false,
     },
     {
-      id: 2, title: "2. Budget Cycle Overview", order: 2, youtubeId: "abc123",
-      audioUrl: "/audio/stage1_step2.mp3", transcript: "Step 2 transcript...",
+      id: 2, title: "2. Budget Cycle Overview", order: 2,
+      youtube_url: "",
+      audio_url: "", transcript: "",
       text: "The budget cycle has four main phases.",
+      takeaways: [],
       trivia: [{
         type: "multiple-choice",
         question: "How many phases are in the budget cycle?",
         options: ["Three", "Four", "Five", "Six"],
         answer: 1, explanation: "The budget cycle has four phases.",
       }],
+      is_completed: false, is_locked: false,
     },
   ],
 };
@@ -119,7 +163,7 @@ describe("StageDetailDrawer", () => {
     expect(screen.getAllByText("Quiz").length).toBeGreaterThanOrEqual(1);
   });
 
-  it("shows video placeholder when on Watch tab", () => {
+  it("shows video player when on Watch tab", () => {
     render(
       <StageDetailDrawer
         stage={mockStage} profile={mockProfile}
@@ -128,7 +172,9 @@ describe("StageDetailDrawer", () => {
       />
     );
     fireEvent.click(screen.getAllByText("Watch")[0]);
-    expect(screen.getByText("Video coming soon")).toBeInTheDocument();
+    const iframe = document.querySelector("iframe");
+    expect(iframe).toBeInTheDocument();
+    expect(iframe?.src).toContain("youtube-nocookie.com");
   });
 
   it("switches to Quiz tab and shows Start Knowledge Check button", () => {

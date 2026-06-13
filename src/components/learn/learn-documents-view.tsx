@@ -2,12 +2,13 @@
 
 import { useState, useEffect, useMemo } from "react";
 import {
-  Search, Folder, FileText, Database, ArrowLeft, Download, ExternalLink, Loader2,
-  Filter, X, Calendar, Building2, LayoutGrid, List, ChevronLeft, ChevronRight,
-  BarChart3, BookOpen
+  Search, Folder, FileText, Database, ArrowLeft, ChevronLeft, ChevronRight, Download, ExternalLink, Loader2,
+  Filter, X, Calendar, Building2, LayoutGrid, List, BookOpen
 } from "lucide-react";
 import { cn } from "@/utils";
 import { BitmojiAvatar } from "./bitmoji-avatar";
+import { Input } from "@/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/ui/select";
 import { fetchDocumentsFromAPI, type DocumentType, type DocumentFile, extractPrefixFromFolderName } from "@/constants/documents";
 import { COUNTIES } from "@/constants/counties";
 
@@ -305,13 +306,14 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
         <div className="flex items-center gap-2 shrink-0">
           {selectedFolder && (
             <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder="Search files..."
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" aria-hidden />
+              <Input
+                type="search"
+                placeholder="Search files…"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8 pr-3 py-1.5 bg-muted/40 border-0 rounded-lg text-xs w-28 md:w-44 focus:outline-none focus:ring-2 focus:ring-ring/30 transition-all"
+                className="pl-8 h-8 w-28 md:w-44 text-xs bg-muted/40 border-0"
+                aria-label="Search files"
               />
             </div>
           )}
@@ -429,55 +431,67 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
               <div className="flex items-center gap-2 flex-1 min-w-0">
                 <Filter className="size-4 text-muted-foreground shrink-0" />
                 {folderYears.length > 0 && (
-                  <select
-                    value={selectedYear ?? ""}
-                    onChange={(e) => setSelectedYear(e.target.value ? parseInt(e.target.value, 10) : null)}
-                    className="rounded-lg border border-border bg-card px-2.5 py-1.5 text-[11px] font-semibold focus:outline-none focus:ring-2 focus:ring-ring/30"
+                  <Select
+                    value={selectedYear ? String(selectedYear) : "all"}
+                    onValueChange={(v) => setSelectedYear(v === "all" ? null : parseInt(v, 10))}
                   >
-                    <option value="">All Years</option>
-                    {folderYears.map((y) => (
-                      <option key={y} value={y}>FY {y - 1}/{String(y).slice(-2)} ({folderStats.byYear.get(y) ?? 0})</option>
-                    ))}
-                  </select>
+                    <SelectTrigger className="h-8 text-xs w-auto">
+                      <SelectValue placeholder="All Years" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all" className="text-xs">All Years</SelectItem>
+                      {folderYears.map((y) => (
+                        <SelectItem key={y} value={String(y)} className="text-xs">
+                          FY {y - 1}/{String(y).slice(-2)} ({folderStats.byYear.get(y) ?? 0})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 )}
                 {folderCounties.length > 0 && (
-                  <select
-                    value={selectedCounty}
-                    onChange={(e) => setSelectedCounty(e.target.value)}
-                    className="rounded-lg border border-border bg-card px-2.5 py-1.5 text-[11px] font-semibold focus:outline-none focus:ring-2 focus:ring-ring/30"
-                  >
-                    <option value="">All Counties</option>
-                    {folderCounties.map((c) => (
-                      <option key={c} value={c}>{c} ({folderStats.byCounty.get(c) ?? 0})</option>
-                    ))}
-                  </select>
+                  <Select value={selectedCounty || "all"} onValueChange={(v) => setSelectedCounty(v === "all" ? "" : v)}>
+                    <SelectTrigger className="h-8 text-xs w-auto">
+                      <SelectValue placeholder="All Counties" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all" className="text-xs">All Counties</SelectItem>
+                      {folderCounties.map((c) => (
+                        <SelectItem key={c} value={c} className="text-xs">
+                          {c} ({folderStats.byCounty.get(c) ?? 0})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 )}
               </div>
 
               <div className="flex items-center gap-1">
-                <select
-                  value={sortKey}
-                  onChange={(e) => setSortKey(e.target.value as SortKey)}
-                  className="rounded-lg border border-border bg-card px-2.5 py-1.5 text-[11px] font-semibold focus:outline-none focus:ring-2 focus:ring-ring/30"
-                >
+              <Select value={sortKey} onValueChange={(v) => setSortKey(v as SortKey)}>
+                <SelectTrigger className="h-8 text-xs w-auto">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
                   {SORT_OPTIONS.map((opt) => (
-                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    <SelectItem key={opt.value} value={opt.value} className="text-xs">{opt.label}</SelectItem>
                   ))}
-                </select>
+                </SelectContent>
+              </Select>
                 <div className="flex items-center border border-border rounded-lg overflow-hidden ring-1 ring-border/30">
                   <button
                     onClick={() => setViewMode("card")}
+                    aria-label="Card view"
+                    aria-pressed={viewMode === "card"}
                     className={cn("p-1.5 transition-colors focus-visible:ring-2 focus-visible:ring-ring", viewMode === "card" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground")}
-                    title="Card view"
                   >
-                    <LayoutGrid className="size-3.5" />
+                    <LayoutGrid className="size-3.5" aria-hidden />
                   </button>
                   <button
                     onClick={() => setViewMode("table")}
+                    aria-label="Table view"
+                    aria-pressed={viewMode === "table"}
                     className={cn("p-1.5 transition-colors focus-visible:ring-2 focus-visible:ring-ring", viewMode === "table" ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground")}
-                    title="Table view"
                   >
-                    <List className="size-3.5" />
+                    <List className="size-3.5" aria-hidden />
                   </button>
                 </div>
               </div>

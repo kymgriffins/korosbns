@@ -7,9 +7,11 @@ import { useForumThreads } from "@/hooks/use-forum";
 import { ForumThreadCard } from "@/components/forum/forum-thread-card";
 import { ForumThreadDetail } from "@/components/forum/forum-thread-detail";
 import { CreateThreadDialog } from "@/components/forum/create-thread-dialog";
+import { Button } from "@/ui/button";
+import { LearnEmptyState } from "@/components/learn/learn-empty-state";
 import { useAuth } from "@/contexts/auth-context";
-import Link from "next/link";
 import { Routes } from "@/constants/routes";
+import Link from "next/link";
 
 export function ForumView() {
   const { isLoggedIn } = useAuth();

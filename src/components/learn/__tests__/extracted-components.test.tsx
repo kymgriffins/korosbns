@@ -266,19 +266,6 @@ describe("StepContent", () => {
     expect(screen.getByTestId("progress")).toBeInTheDocument();
   });
 
-  it("renders Watch/Read toggle", () => {
-    render(
-      <StepContent
-        step={step} currentStep={1} totalSteps={5}
-        activeFormat="text" showTrivia={false} origin="http://localhost"
-        getPersonalizedText={(t) => t} onFormatChange={vi.fn()}
-        onStartTrivia={vi.fn()}
-      />
-    );
-    expect(screen.getByText("Watch")).toBeInTheDocument();
-    expect(screen.getByText("Read")).toBeInTheDocument();
-  });
-
   it("renders video when activeFormat is video and origin is set", () => {
     render(
       <StepContent
