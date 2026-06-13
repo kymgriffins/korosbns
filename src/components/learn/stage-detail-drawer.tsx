@@ -235,53 +235,50 @@ export function StageDetailDrawer({
                     )}
                   </TabsList>
                 </Tabs>
-                <span className="text-xs text-muted-foreground font-medium shrink-0">
-                  Step {currentStep} of {stage.steps.length}
-                </span>
               </div>
 
               <div className="animate-in fade-in duration-200">
                 {activeTab === "watch" && (
                   currentVideoUrl ? (
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between gap-2">
-                        <p className="text-xs font-medium text-muted-foreground">
-                          {stepVideos[activeVideoIdx]?.title || stepVideos[activeVideoIdx]?.role || `Video ${activeVideoIdx + 1}`}
-                          {showNav && <span> · {activeVideoIdx + 1} of {stepVideos.length}</span>}
-                        </p>
-                        {showNav && (
-                          <div className="flex items-center gap-1">
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              className="size-6"
-                              onClick={() => setActiveVideoIdx((p) => Math.max(0, p - 1))}
-                              disabled={activeVideoIdx === 0}
-                              aria-label="Previous video"
-                            >
-                              <ChevronLeft className="size-3.5" aria-hidden />
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="icon"
-                              className="size-6"
-                              onClick={() => setActiveVideoIdx((p) => Math.min(stepVideos.length - 1, p + 1))}
-                              disabled={activeVideoIdx === stepVideos.length - 1}
-                              aria-label="Next video"
-                            >
-                              <ChevronRight className="size-3.5" aria-hidden />
-                            </Button>
-                          </div>
-                        )}
-                      </div>
+                    <div className="space-y-3">
                       <div className="w-full aspect-video bg-black rounded-xl overflow-hidden shadow-xs">
                         <iframe src={currentVideoUrl} title={`${currentStepObj?.title || stage.title} Lesson`} className="w-full h-full border-0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
                       </div>
-                      {showNav && (
-                        <div className="flex items-center justify-center gap-1.5 py-1" aria-hidden>
-                          {Array.from({ length: stepVideos.length }, (_, i) => (
-                            <span key={i} className={`block rounded-full transition-all duration-200 ${i === activeVideoIdx ? "bg-primary w-5 h-1.5" : "bg-muted-foreground/25 w-1.5 h-1.5"}`} />
-                          ))}
+                      {stepVideos.length > 1 && (
+                        <div className="flex items-center justify-between gap-2 pt-1">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-8 text-xs gap-1"
+                            onClick={() => setActiveVideoIdx((p) => Math.max(0, p - 1))}
+                            disabled={activeVideoIdx === 0}
+                          >
+                            <ChevronLeft className="size-3.5" aria-hidden /> Previous
+                          </Button>
+                          <div className="flex items-center gap-1.5">
+                            {stepVideos.map((_, i) => (
+                              <button
+                                key={i}
+                                onClick={() => setActiveVideoIdx(i)}
+                                className={`size-7 rounded-md text-[11px] font-semibold transition-all ${
+                                  i === activeVideoIdx
+                                    ? "bg-primary text-primary-foreground shadow-xs"
+                                    : "bg-muted/40 text-muted-foreground hover:bg-muted/70"
+                                }`}
+                              >
+                                {i + 1}
+                              </button>
+                            ))}
+                          </div>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-8 text-xs gap-1"
+                            onClick={() => setActiveVideoIdx((p) => Math.min(stepVideos.length - 1, p + 1))}
+                            disabled={activeVideoIdx === stepVideos.length - 1}
+                          >
+                            Next <ChevronRight className="size-3.5" aria-hidden />
+                          </Button>
                         </div>
                       )}
                     </div>

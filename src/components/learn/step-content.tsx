@@ -126,7 +126,24 @@ function VideoPlayer({ videos, youtubeUrl, youtubeUrls, title }: { videos?: Chap
   );
 }
 
+function splitIntoPages(text: string, paragraphsPerPage = 4): string[] {
+  const blocks = text.split(/\n\s*\n/).filter(Boolean);
+  if (blocks.length <= paragraphsPerPage) return [text];
+  const pages: string[] = [];
+  for (let i = 0; i < blocks.length; i += paragraphsPerPage) {
+    pages.push(blocks.slice(i, i + paragraphsPerPage).join("\n\n"));
+  }
+  return pages;
+}
+
 export function StepContent({ step, currentStep, totalSteps, activeFormat, showTrivia, origin, getPersonalizedText, onFormatChange, onStartTrivia }: StepContentProps) {
+  const [textPage, setTextPage] = useState(0);
+
+  const rawText = getPersonalizedText(step.text);
+  const pages = splitIntoPages(rawText);
+  const totalPages = pages.length;
+  const currentPage = Math.min(textPage, totalPages - 1);
+
   return (
     <div className="space-y-4 animate-in fade-in duration-200">
       <div className="space-y-0.5">
@@ -169,8 +186,34 @@ export function StepContent({ step, currentStep, totalSteps, activeFormat, showT
                 [&>blockquote]:border-l-4 [&>blockquote]:border-primary [&>blockquote]:pl-4 [&>blockquote]:italic [&>blockquote]:my-4
                 [&>a]:text-primary [&>a]:underline hover:[&>a]:text-primary/80
               ">
-                {renderContent(getPersonalizedText(step.text))}
+                {renderContent(pages[currentPage] || rawText)}
               </article>
+
+              {totalPages > 1 && (
+                <div className="flex items-center justify-between gap-2 mt-6 pt-4 border-t border-border/30">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 text-xs gap-1"
+                    onClick={() => setTextPage((p) => Math.max(0, p - 1))}
+                    disabled={currentPage === 0}
+                  >
+                    <ChevronLeft className="size-3.5" /> Previous
+                  </Button>
+                  <span className="text-[11px] font-medium text-muted-foreground">
+                    Page {currentPage + 1} of {totalPages}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 text-xs gap-1"
+                    onClick={() => setTextPage((p) => Math.min(totalPages - 1, p + 1))}
+                    disabled={currentPage === totalPages - 1}
+                  >
+                    Next <ChevronRight className="size-3.5" />
+                  </Button>
+                </div>
+              )}
 
               {(() => {
                 const takeaway: StageTakeaway | undefined = step.takeaways?.[0];

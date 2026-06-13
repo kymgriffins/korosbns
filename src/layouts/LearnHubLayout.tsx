@@ -6,7 +6,7 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import {
   Bell, LayoutDashboard, CheckCircle2, ExternalLink,
   Settings, LogOut, KeyRound, Palette, LogIn, User, FileText,
-  MessagesSquare, HelpCircle,
+  MessagesSquare,
 } from "lucide-react";
 import { LearnProvider, useLearn, type LearnTab } from "@/contexts/learn-context";
 import { useAuth } from "@/contexts/auth-context";
@@ -175,11 +175,6 @@ function LearnSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )}
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Help Center">
-                  <Link href="/help"><HelpCircle className="size-4" /><span>Help Center</span></Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
               <SidebarMenuItem>
                 <div className="flex items-center gap-3 px-2 py-1.5 text-xs font-medium text-muted-foreground w-full group-data-[collapsible=icon]:justify-center">
                   <Palette className="size-4 shrink-0" aria-hidden />
