@@ -5,6 +5,9 @@ import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
 import { Checkbox } from "@/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/ui/select";
+import { Card, CardContent } from "@/ui/card";
+import { LearnProgressBar } from "@/components/learn/learn-progress-bar";
 import { Flame, Bell, Shield, ArrowRight, ArrowLeft, Sparkles } from "lucide-react";
 import { useUpdateProfile } from "@/hooks/use-profile";
 import { useAuth } from "@/contexts/auth-context";
@@ -76,13 +79,15 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
   return (
     <div className="w-full max-w-md mx-auto p-5 bg-card shadow-sm rounded-xl space-y-5">
       <div className="space-y-1.5">
-        <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+        <div className="flex justify-between items-center text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           <span>Profile Setup</span>
           <span>Step {step} of 3</span>
         </div>
-        <div className="h-1 bg-muted/50 rounded-full overflow-hidden">
-          <div className={`h-full bg-primary transition-all duration-300 ${step === 1 ? 'w-1/3' : step === 2 ? 'w-2/3' : 'w-full'}`} />
-        </div>
+        <LearnProgressBar
+          value={step}
+          max={3}
+          label={`Onboarding step ${step} of 3`}
+        />
       </div>
 
       {error && (
@@ -126,12 +131,17 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
             <p className="text-xs text-muted-foreground">Helps target the right budget details for your county.</p>
           </div>
           <div className="space-y-2">
-            <Label className="text-xs font-semibold">County <span className="text-destructive">*</span></Label>
-            <select value={county} onChange={(e) => setCounty(e.target.value)}
-              className="w-full h-10 px-3 rounded-lg border-0 bg-muted/40 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20">
-              <option value="">Select your county</option>
-              {COUNTIES.map((c) => (<option key={c} value={c}>{c}</option>))}
-            </select>
+            <Label htmlFor="county-select" className="text-xs font-semibold">County <span className="text-destructive">*</span></Label>
+            <Select value={county} onValueChange={setCounty}>
+              <SelectTrigger id="county-select" className="h-10 text-sm">
+                <SelectValue placeholder="Select your county" />
+              </SelectTrigger>
+              <SelectContent>
+                {COUNTIES.map((c) => (
+                  <SelectItem key={c} value={c} className="text-sm">{c}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           <div className="space-y-2">
             <Label className="text-xs font-semibold">Ward <span className="text-muted-foreground font-normal">(Optional)</span></Label>

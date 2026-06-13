@@ -58,8 +58,8 @@ function videoEmbedUrl(idOrUrl: string): string {
 function VideoDots({ count, active }: { count: number; active: number }) {
   if (count <= 1) return null;
   return (
-    <div className="flex items-center justify-center gap-1.5 py-2">
-      {Array.from({ length }, (_, i) => (
+    <div className="flex items-center justify-center gap-1.5 py-2" aria-hidden>
+      {Array.from({ length: count }, (_, i) => (
         <span
           key={i}
           className={`block rounded-full transition-all duration-200 ${
@@ -102,16 +102,18 @@ function VideoPlayer({ videos, youtubeUrl, youtubeUrls, title }: { videos?: Chap
             <button
               onClick={() => setIdx((p) => Math.max(0, p - 1))}
               disabled={idx === 0}
-              className="size-6 flex items-center justify-center rounded-md bg-muted/40 hover:bg-muted/60 transition-colors disabled:opacity-30 disabled:pointer-events-none"
+              aria-label="Previous video"
+              className="size-6 flex items-center justify-center rounded-md bg-muted/40 hover:bg-muted/60 transition-colors disabled:opacity-30 disabled:pointer-events-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <ChevronLeft className="size-3.5" />
+              <ChevronLeft className="size-3.5" aria-hidden />
             </button>
             <button
               onClick={() => setIdx((p) => Math.min(resolved.length - 1, p + 1))}
               disabled={idx === resolved.length - 1}
-              className="size-6 flex items-center justify-center rounded-md bg-muted/40 hover:bg-muted/60 transition-colors disabled:opacity-30 disabled:pointer-events-none"
+              aria-label="Next video"
+              className="size-6 flex items-center justify-center rounded-md bg-muted/40 hover:bg-muted/60 transition-colors disabled:opacity-30 disabled:pointer-events-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <ChevronRight className="size-3.5" />
+              <ChevronRight className="size-3.5" aria-hidden />
             </button>
           </div>
         )}
@@ -127,13 +129,19 @@ function VideoPlayer({ videos, youtubeUrl, youtubeUrls, title }: { videos?: Chap
 export function StepContent({ step, currentStep, totalSteps, activeFormat, showTrivia, origin, getPersonalizedText, onFormatChange, onStartTrivia }: StepContentProps) {
   return (
     <div className="space-y-4 animate-in fade-in duration-200">
-      <div className="flex items-center justify-between">
-        <div className="space-y-0.5">
-          <p className="text-[10px] font-semibold text-muted-foreground">Step {currentStep} of {totalSteps} · ~3 min</p>
-          <h3 className="text-sm font-black">{step.title}</h3>
+      <div className="space-y-0.5">
+          <p className="text-xs font-medium text-muted-foreground">Step {currentStep} of {totalSteps} · ~3 min</p>
+          <h3 className="text-sm font-semibold">{step.title}</h3>
         </div>
-      </div>
-      <Progress value={((currentStep - 1) / totalSteps) * 100} className="h-1 rounded-full" />
+      <Progress
+        value={((currentStep - 1) / totalSteps) * 100}
+        className="h-1.5 rounded-full"
+        role="progressbar"
+        aria-valuenow={Math.round(((currentStep - 1) / totalSteps) * 100)}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label={`Step ${currentStep} of ${totalSteps}`}
+      />
 
       {!showTrivia && (
         <>

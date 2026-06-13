@@ -13,10 +13,11 @@ import { ForumView } from "./forum-view";
 import { DashboardSkeleton } from "./dashboard-skeleton";
 
 import { Button } from "@/ui/button";
+import { Card, CardContent } from "@/ui/card";
+import { Alert, AlertDescription } from "@/ui/alert";
+import { Separator } from "@/ui/separator";
 import { toast } from "sonner";
-import {
-  Sparkles, ShieldAlert, BookOpen
-} from "lucide-react";
+import { Sparkles, ShieldAlert, BookOpen } from "lucide-react";
 import { useLearn } from "@/contexts/learn-context";
 import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
@@ -347,13 +348,15 @@ export function LearnPathsHome() {
 
   if (modulesError) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center min-h-[50vh] gap-3 p-6 text-center">
-        <div className="size-12 rounded-full bg-destructive/10 flex items-center justify-center text-destructive mx-auto">
-          <ShieldAlert className="size-6" />
-        </div>
-        <p className="text-sm font-bold text-foreground">Failed to load modules</p>
-        <p className="text-xs text-muted-foreground max-w-xs">{modulesError}</p>
-        <Button onClick={refreshModules} variant="outline" size="sm" className="mt-2 rounded-lg text-xs font-bold focus-visible:ring-2 focus-visible:ring-ring">
+      <div className="flex-1 flex flex-col items-center justify-center min-h-[50vh] gap-3 p-6">
+        <Alert variant="destructive" className="max-w-sm">
+          <ShieldAlert className="size-4" />
+          <AlertDescription>
+            <p className="font-semibold">Failed to load modules</p>
+            <p className="text-xs mt-1">{modulesError}</p>
+          </AlertDescription>
+        </Alert>
+        <Button onClick={refreshModules} variant="outline" size="sm" className="rounded-lg text-xs font-semibold focus-visible:ring-2 focus-visible:ring-ring">
           Try Again
         </Button>
       </div>
@@ -364,41 +367,47 @@ export function LearnPathsHome() {
     if (!wantsAnonymous) {
       return (
         <div className="flex-1 flex items-center justify-center p-4 min-h-[70vh]">
-          <div className="w-full max-w-md p-6 md:p-8 bg-card border border-border rounded-2xl shadow-lg space-y-6 text-center relative overflow-hidden">
+          <Card className="w-full max-w-md shadow-lg overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.03] to-transparent pointer-events-none" />
-            <div className="relative space-y-2">
-              <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mx-auto ring-1 ring-primary/20">
-                <Sparkles className="size-6" />
+            <CardContent className="p-6 md:p-8 space-y-6 text-center relative">
+              <div className="space-y-2">
+                <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mx-auto ring-1 ring-primary/20">
+                  <Sparkles className="size-6" aria-hidden />
+                </div>
+                <h2 className="text-xl font-bold tracking-tight">Citizen Learn Hub</h2>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Welcome! Track Kenya's public finance, follow projects in your county, and take trivia gates to earn badges.
+                </p>
               </div>
-              <h2 className="text-xl font-bold tracking-tight">Citizen Learn Hub</h2>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Welcome! Track Kenya's public finance, follow projects in your county, and take trivia gates to earn badges.
+
+              <div className="space-y-3">
+                <Button asChild className="w-full rounded-xl h-11 font-semibold focus-visible:ring-2 focus-visible:ring-ring">
+                  <Link href={Routes.JoinUs}>Join the Movement</Link>
+                </Button>
+                <div className="flex items-center gap-2">
+                  <Separator className="flex-1" />
+                  <span className="text-xs text-muted-foreground uppercase font-semibold">or</span>
+                  <Separator className="flex-1" />
+                </div>
+                <Button
+                  onClick={() => setWantsAnonymous(true)}
+                  variant="outline"
+                  className="w-full rounded-xl h-11 font-semibold"
+                >
+                  Continue as Anonymous User
+                </Button>
+              </div>
+
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                <Link href={Routes.Login} className="text-primary font-semibold hover:underline focus-visible:ring-2 focus-visible:ring-ring">
+                  Already a user? Login
+                </Link>
+                <span className="block mt-1.5">
+                  Anonymous progress is stored locally and won't sync across browsers.
+                </span>
               </p>
-            </div>
-
-            <div className="relative space-y-3">
-              <Button asChild className="w-full rounded-xl h-11 font-bold focus-visible:ring-2 focus-visible:ring-ring">
-                <Link href={Routes.JoinUs}>Join the Movement</Link>
-              </Button>
-              <div className="flex items-center gap-2 my-2">
-                <div className="h-px bg-border flex-1" />
-                <span className="text-[10px] text-muted-foreground uppercase font-bold">or</span>
-                <div className="h-px bg-border flex-1" />
-              </div>
-              <Button
-                onClick={() => setWantsAnonymous(true)}
-                variant="outline"
-                className="w-full rounded-xl h-11 font-bold"
-              >
-                Continue as Anonymous User
-              </Button>
-            </div>
-
-            <p className="relative text-[10px] text-muted-foreground leading-relaxed">
-              <Link href={Routes.Login} className="text-primary font-bold hover:underline focus-visible:ring-2 focus-visible:ring-ring">Already a user? Login</Link>
-              <span className="block mt-1.5">Anonymous progress is stored locally on this device, but won't sync across other browsers.</span>
-            </p>
-          </div>
+            </CardContent>
+          </Card>
         </div>
       );
     }
