@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import {
-  Search, Folder, FileText, Database, ArrowLeft, Download, ExternalLink, Loader2,
+  Search, Folder, FileText, Database, ArrowLeft, ChevronLeft, ChevronRight, Download, ExternalLink, Loader2,
   Filter, X, Calendar, Building2, LayoutGrid, List, BookOpen
 } from "lucide-react";
 import { cn } from "@/utils";

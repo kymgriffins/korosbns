@@ -10,6 +10,7 @@ import { CreateThreadDialog } from "@/components/forum/create-thread-dialog";
 import { Button } from "@/ui/button";
 import { LearnEmptyState } from "@/components/learn/learn-empty-state";
 import { useAuth } from "@/contexts/auth-context";
+import { Routes } from "@/constants/routes";
 import Link from "next/link";
 
 export function ForumView() {
