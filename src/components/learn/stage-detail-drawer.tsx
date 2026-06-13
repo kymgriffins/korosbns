@@ -314,7 +314,7 @@ export function StageDetailDrawer({
                   </div>
                 )}
 
-                {activeTab === "quiz" && currentStep > 0 && (
+                {activeTab === "quiz" && currentStep > 0 && hasQuiz && (
                   <div className="pt-2">
                     {!showTrivia ? (
                       <div className="space-y-3">
