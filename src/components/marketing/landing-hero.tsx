@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/ui/button";
+import { Routes } from "@/constants/routes";
 import {
   fadeInUp,
   staggerContainer,
@@ -40,23 +41,32 @@ export default function LandingHero() {
             <p className="max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
               Budget Ndio Story is a youth-led initiative in Kenya turning complex
               national budgets into clear, actionable stories for civic engagement
-              and democratic audit.
+              and democratic audit. <strong className="text-foreground">FY2026/27 Budget: KES 4.82 trillion</strong> — Education KES 781.4B, Health KES 175.5B, Infrastructure KES 230B.
             </p>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <Link href="/events" className="w-full sm:w-auto">
+              <Link href={Routes.BudgetNews} className="w-full sm:w-auto">
                 <Button
                   size="lg"
                   variant="white"
                   className="w-full gap-2 rounded-full px-8 py-6 text-base font-bold sm:w-auto"
                 >
-                  Explore Events
+                  Budget News FY2026/27
                   <ArrowRight className="size-5" />
+                </Button>
+              </Link>
+              <Link href="/learn" className="w-full sm:w-auto">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="w-full rounded-full px-8 py-6 text-base font-bold sm:w-auto"
+                >
+                  Explore Budget Breakdown
                 </Button>
               </Link>
               <Link href="/about" className="w-full sm:w-auto">
                 <Button
                   size="lg"
-                  variant="outline"
+                  variant="ghost"
                   className="w-full rounded-full px-8 py-6 text-base font-bold sm:w-auto"
                 >
                   How We Work
@@ -94,10 +104,8 @@ export default function LandingHero() {
               muted
               loop
               playsInline
-              onLoadedData={() => console.log('✅ Hero video loaded successfully')}
               onError={(e) => {
-                console.error('❌ Hero video error:', e);
-                console.error('URL attempted:', CLOUDINARY_HERO_LANDING_VIDEO_MP4);
+                console.warn('Hero video failed to load:', e);
               }}
               className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
             >

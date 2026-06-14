@@ -66,20 +66,26 @@ export function useKnowledgeEntry(id: string) {
 export function useContentForSlug(slug: string, enabled = true) {
   return useQuery({
     queryKey: ["content-by-slug", slug],
-    queryFn: async (): Promise<{ type: "article" | "trivia" | "story"; data: any } | null> => {
+    queryFn: async (): Promise<{ type: "article" | "trivia" | "story"; data: Record<string, unknown> } | null> => {
       try {
         const artData = await citizenApi.getArticle(slug);
-        if (artData && Object.keys(artData).length > 0) return { type: "article", data: artData };
-      } catch { }
+        if (artData && Object.keys(artData).length > 0) return { type: "article", data: artData as Record<string, unknown> };
+      } catch {
+        // Content type not found, try next
+      }
       try {
         const trivData = await citizenApi.getTrivia(slug);
-        if (trivData && Object.keys(trivData).length > 0) return { type: "trivia", data: trivData };
-      } catch { }
+        if (trivData && Object.keys(trivData).length > 0) return { type: "trivia", data: trivData as Record<string, unknown> };
+      } catch {
+        // Content type not found, try next
+      }
       try {
         const storiesRes = await citizenApi.getStories();
-        const match = (storiesRes as any)?.results?.find((s: any) => s.id === slug);
+        const match = (storiesRes as { results?: Record<string, unknown>[] })?.results?.find((s) => s.id === slug);
         if (match) return { type: "story", data: match };
-      } catch { }
+      } catch {
+        // Content type not found
+      }
       return null;
     },
     enabled: !!slug && enabled,

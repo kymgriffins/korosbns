@@ -26,86 +26,139 @@ interface TimelineItem {
   impact?: string;
 }
 
-const financeBillTimeline: TimelineItem[] = [
+const budgetCycleTimeline: TimelineItem[] = [
   {
     id: 1,
-    date: "Apr 30, 2026",
-    title: "Finance Bill Published",
-    description: "Kenya's Finance Bill 2026 released with proposed tax reforms",
+    date: "Aug 30, 2025",
+    title: "MTEF Budget Circular Issued",
+    description: "Treasury issued spending ceilings to all MDAs for FY2026/27",
     status: "completed",
-    icon: "📄",
-    details: "Published by National Treasury with amendments to tax laws",
+    icon: "📋",
+    details: "Sector Working Groups began reviewing bids against strategic priorities under BETA",
   },
   {
     id: 2,
-    date: "May 5, 2026",
-    title: "Submitted to National Assembly",
-    description: "Bill submitted to Parliament for first reading",
+    date: "Feb 15, 2026",
+    title: "BPS 2026 Tabled in Parliament",
+    description: "Budget Policy Statement submitted by Cabinet Secretary John Mbadi",
     status: "completed",
     icon: "🏛️",
-    details: "Cabinet submission completed successfully",
+    details: "Theme: 'Consolidating Gains Under BETA for Inclusive and Sustainable Growth'. Projected revenue KES 3.3T, expenditure KES 4.2T",
+    impact: "Policy Blueprint",
   },
   {
     id: 3,
-    date: "May 10, 2026",
-    title: "Public Participation Opened",
-    description: "National Assembly opens public participation period",
+    date: "Mar 10, 2026",
+    title: "BPS Approved by Parliament",
+    description: "National Assembly approved BPS 2026 setting sector spending ceilings",
     status: "completed",
-    icon: "📢",
-    details: "Citizens can submit written feedback and concerns",
-    impact: "Active Engagement",
+    icon: "✅",
+    details: "MPs approved with amendments. County allocation set at KES 420B equitable share",
+    impact: "Approved",
   },
   {
     id: 4,
-    date: "Current Stage",
-    title: "Committee Review Stage",
-    description: "Bill under review by National Assembly committees",
-    status: "running",
-    icon: "🔄",
-    details: "Stakeholder engagements and hearings ongoing",
-    impact: "Ongoing Feedback",
+    date: "Apr 30, 2026",
+    title: "Budget Estimates Published",
+    description: "Detailed revenue & expenditure estimates tabled: KES 4.78 trillion budget",
+    status: "completed",
+    icon: "📊",
+    details: "Total budget KES 4.78T. Education KES 781.4B, Security KES 308.6B, Health KES 175.5B, Infrastructure KES 230B",
   },
   {
     id: 5,
-    date: "Jun-Jul 2026",
-    title: "National Assembly Debate",
-    description: "Second and third reading in National Assembly",
-    status: "pending",
-    icon: "🗳️",
-    details: "Expected voting and parliamentary amendments",
+    date: "May–Jun 2026",
+    title: "Budget & Committee Review",
+    description: "Budget and Appropriations Committee review with public participation",
+    status: "completed",
+    icon: "📢",
+    details: "Public hearings held across counties. Civil society submitted memoranda on sector allocations",
+    impact: "Public Input",
   },
   {
     id: 6,
-    date: "Aug 2026",
-    title: "Senate Review",
-    description: "Bill proceeds to Senate for consideration",
-    status: "pending",
-    icon: "🏛️",
-    details: "Senate debate and approval required",
+    date: "Jun 2, 2026",
+    title: "Parliament Approves Budget",
+    description: "National Assembly approved FY2026/27 expenditure estimates",
+    status: "completed",
+    icon: "🗳️",
+    details: "MPs approved KES 4.78T budget. Health KES 175.5B, Education KES 781.4B prioritized",
+    impact: "Approved",
   },
   {
     id: 7,
-    date: "Sep 2026",
-    title: "Presidential Assent",
-    description: "Bill presented to President for signing",
-    status: "pending",
-    icon: "✍️",
-    details: "Becomes Finance Act 2026 upon presidential assent",
+    date: "Jun 11, 2026",
+    title: "Budget Reading: CS Mbadi Presents KES 4.82T Budget",
+    description: "CS John Mbadi delivers Budget Statement — KES 4.82 trillion expenditure, KES 1.15 trillion deficit",
+    status: "completed",
+    icon: "🎤",
+    details: "Theme: 'Sustaining BETA for Resilient and Inclusive Growth amid Global Uncertainty'. Revenue KES 3.63T, ordinary KES 2.99T. Deficit at 5.5% of GDP, financed through KES 1.03T domestic + KES 116B external borrowing. Debt interest: KES 1.2T.",
+    impact: "Key Milestone",
   },
   {
     id: 8,
-    date: "Jan 1, 2027",
-    title: "Implementation",
-    description: "Finance Act 2026 comes into effect",
+    date: "Jun–Jul 2026",
+    title: "Finance Bill 2026 Debate",
+    description: "Second and third reading of Finance Bill in National Assembly",
+    status: "running",
+    icon: "🔄",
+    details: "Tax proposals under debate: digital services tax, excise adjustments, VAT amendments",
+    impact: "Ongoing Debate",
+  },
+  {
+    id: 9,
+    date: "Jul 1, 2026",
+    title: "FY 2026/27 Begins",
+    description: "New financial year starts under interim spending authority",
     status: "pending",
     icon: "🚀",
-    details: "New tax measures and economic reforms take effect",
+    details: "Government operates on provisional authority until Appropriation Act is signed",
+  },
+  {
+    id: 10,
+    date: "Aug 2026",
+    title: "Appropriation Act Signed",
+    description: "Budget becomes law upon Presidential assent",
+    status: "pending",
+    icon: "✍️",
+    details: "Final legal authority for all government spending in FY2026/27",
   },
 ];
 
 function isTimelineReached(status: TimelineItem["status"]): boolean {
   return status === "completed" || status === "running";
 }
+
+const budgetHighlights = [
+  {
+    label: "Total Budget FY2026/27",
+    value: "KES 4.82T",
+    trend: "up",
+    trendIcon: TrendingUp,
+    trendColor: "text-primary",
+  },
+  {
+    label: "Total Revenue",
+    value: "KES 3.63T",
+    trend: "stable",
+    trendIcon: Minus,
+    trendColor: "text-zinc-400",
+  },
+  {
+    label: "Fiscal Deficit",
+    value: "KES 1.15T",
+    trend: "down",
+    trendIcon: TrendingDown,
+    trendColor: "text-amber-500",
+  },
+  {
+    label: "Domestic Borrowing",
+    value: "KES 1.03T",
+    trend: "up",
+    trendIcon: TrendingUp,
+    trendColor: "text-orange-500",
+  },
+];
 
 const economicIndicators = [
   {
@@ -213,18 +266,74 @@ export default function KenyaFinanceTimeline() {
     <SectionShell className="relative overflow-x-clip border-t border-border/40 bg-background text-foreground">
       <div className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-1/2 w-4/5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/5 blur-[120px]" />
 
+      {/* Hero banner: Budget Reading — Mbadi 4.8T, 1.15T Deficit */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="mx-auto mb-8 max-w-5xl overflow-hidden rounded-3xl border border-primary/30 bg-gradient-to-br from-primary/10 via-primary/5 to-background p-6 text-center md:p-10"
+      >
+        <div className="mb-2 inline-block rounded-full bg-primary/20 px-4 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-primary">
+          Budget Reading — June 11, 2026
+        </div>
+        <h2 className="mb-3 text-2xl font-black tracking-tight md:text-4xl">
+          CS John Mbadi Presents KES 4.82 Trillion Budget
+        </h2>
+        <p className="mx-auto mb-5 max-w-2xl text-sm text-muted-foreground md:text-base">
+          Revenue KES 3.63 trillion · Deficit KES 1.15 trillion · Debt interest KES 1.2 trillion
+        </p>
+        <div className="mx-auto flex max-w-md flex-wrap items-center justify-center gap-3">
+          <span className="rounded-lg border border-primary/20 bg-primary/10 px-4 py-2 text-sm font-bold text-primary">KES 4.82T Total Budget</span>
+          <span className="rounded-lg border border-amber-500/20 bg-amber-500/10 px-4 py-2 text-sm font-bold text-amber-500">KES 1.15T Deficit</span>
+          <span className="rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm font-bold text-red-500">KES 1.2T Debt Interest</span>
+        </div>
+      </motion.div>
+
       <SectionHeader
-        eyebrow="Finance Bill 2026"
+        eyebrow="FY 2026/27 Budget Cycle"
         title={
           <>
-            Legislative Tracker &{" "}
-            <span className="font-heading italic text-primary">Context</span>.
+            Budget Tracker &{" "}
+            <span className="font-heading italic text-primary">Allocations</span>.
           </>
         }
-        description="Real-time tracking of the legislative process and economic context surrounding the proposed tax reforms."
+        description="Complete tracking of Kenya's FY2026/27 budget cycle from formulation through implementation, with verified sector-by-sector allocations."
       />
 
-      <div className="mx-auto mb-12 grid max-w-6xl grid-cols-2 gap-4 md:mb-16 md:grid-cols-4 md:gap-6">
+      <div className="mx-auto mb-4 grid max-w-6xl grid-cols-2 gap-3 md:mb-8 md:grid-cols-4 md:gap-4">
+        {budgetHighlights.map((indicator, index) => {
+          const Icon = indicator.trendIcon;
+          return (
+            <motion.div
+              key={indicator.label}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.08 }}
+              className="flex min-w-0 flex-col justify-between rounded-2xl border border-border bg-card p-4 transition-all hover:border-primary/30 md:p-5"
+            >
+              <div>
+                <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-muted-foreground md:text-xs">
+                  {indicator.label}
+                </span>
+                <span className="text-lg font-black tracking-tight md:text-2xl">
+                  {indicator.value}
+                </span>
+              </div>
+              <div className="mt-3 flex items-center gap-1.5">
+                <Icon className={`h-3.5 w-3.5 ${indicator.trendColor}`} />
+                <span
+                  className={`text-[9px] font-bold uppercase tracking-wider ${indicator.trendColor}`}
+                >
+                  {indicator.trend}
+                </span>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+
+      <div className="mx-auto mb-8 grid max-w-6xl grid-cols-2 gap-3 md:mb-12 md:grid-cols-4 md:gap-4">
         {economicIndicators.map((indicator, index) => {
           const Icon = indicator.trendIcon;
           return (
@@ -234,20 +343,20 @@ export default function KenyaFinanceTimeline() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.08 }}
-              className="flex min-w-0 flex-col justify-between rounded-2xl border border-border bg-card p-5 transition-all hover:border-primary/30"
+              className="flex min-w-0 flex-col justify-between rounded-2xl border border-border bg-card/80 p-4 transition-all hover:border-primary/30 md:p-5"
             >
               <div>
-                <span className="mb-2 block text-xs text-muted-foreground">
+                <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-muted-foreground md:text-xs">
                   {indicator.label}
                 </span>
-                <span className="text-2xl font-black tracking-tight md:text-3xl">
+                <span className="text-lg font-black tracking-tight md:text-2xl">
                   {indicator.value}
                 </span>
               </div>
-              <div className="mt-4 flex items-center gap-1.5">
-                <Icon className={`h-4 w-4 ${indicator.trendColor}`} />
+              <div className="mt-3 flex items-center gap-1.5">
+                <Icon className={`h-3.5 w-3.5 ${indicator.trendColor}`} />
                 <span
-                  className={`text-[10px] font-bold uppercase tracking-wider ${indicator.trendColor}`}
+                  className={`text-[9px] font-bold uppercase tracking-wider ${indicator.trendColor}`}
                 >
                   {indicator.trend}
                 </span>
@@ -262,7 +371,7 @@ export default function KenyaFinanceTimeline() {
         <div className="absolute bottom-2 left-4 top-2 w-0.5 bg-gradient-to-b from-primary/10 via-primary/30 to-primary/10 md:hidden" />
 
         <div className="space-y-8 md:space-y-12">
-          {financeBillTimeline.map((item, index) => {
+          {budgetCycleTimeline.map((item, index) => {
             const isCompleted = item.status === "completed";
             const isRunning = item.status === "running";
             const isReached = isTimelineReached(item.status);
@@ -328,33 +437,63 @@ export default function KenyaFinanceTimeline() {
         initial={{ opacity: 0, scale: 0.98 }}
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true }}
-        className="mx-auto flex max-w-4xl flex-col items-start gap-5 rounded-3xl border border-yellow-500/20 bg-yellow-500/5 p-6 md:flex-row md:p-8"
+        className="mx-auto flex max-w-5xl flex-col gap-6 rounded-3xl border border-primary/20 bg-primary/5 p-6 md:p-8"
       >
-        <div className="rounded-2xl border border-yellow-500/20 bg-yellow-500/10 p-3 text-yellow-500">
-          <AlertTriangle className="h-6 w-6" />
-        </div>
-        <div>
-          <h3 className="mb-2 text-lg font-bold text-yellow-500">
-            Key Proposals in Finance Bill 2026:
-          </h3>
-          <ul className="grid grid-cols-1 gap-x-8 gap-y-2 text-sm text-muted-foreground md:grid-cols-2">
-            <li className="flex items-center gap-2">
-              <span className="size-1.5 rounded-full bg-yellow-500" />
-              Rental income tax: rate remains at 7.5%
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="size-1.5 rounded-full bg-yellow-500" />
-              Excise duty adjustments on tobacco products
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="size-1.5 rounded-full bg-yellow-500" />
-              Enhanced digital service tax enforcement
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="size-1.5 rounded-full bg-yellow-500" />
-              Aggressive tax compliance tracking desk (as pre-filled tax returns &amp; enhanced compliance powers)
-            </li>
-          </ul>
+        <div className="flex items-start gap-4">
+          <div className="rounded-2xl border border-primary/20 bg-primary/10 p-3 text-primary shrink-0">
+            <TrendingUp className="h-6 w-6" />
+          </div>
+          <div className="w-full">
+            <h3 className="mb-3 text-lg font-bold text-primary">
+              FY 2026/27 Sector Budget Allocations (KES)
+            </h3>
+            <div className="grid grid-cols-1 gap-x-8 gap-y-2.5 text-sm text-muted-foreground md:grid-cols-2">
+              <div className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-2">
+                <span className="font-semibold text-foreground">Education</span>
+                <span className="font-mono font-bold text-primary">KES 781.4B</span>
+              </div>
+              <div className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-2">
+                <span className="font-semibold text-foreground">Governance, Justice &amp; Order</span>
+                <span className="font-mono font-bold text-primary">KES 353.3B</span>
+              </div>
+              <div className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-2">
+                <span className="font-semibold text-foreground">National Security</span>
+                <span className="font-mono font-bold text-primary">KES 308.6B</span>
+              </div>
+              <div className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-2">
+                <span className="font-semibold text-foreground">Infrastructure &amp; Roads</span>
+                <span className="font-mono font-bold text-primary">KES 230B</span>
+              </div>
+              <div className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-2">
+                <span className="font-semibold text-foreground">Health (UHC)</span>
+                <span className="font-mono font-bold text-primary">KES 175.5B</span>
+              </div>
+              <div className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-2">
+                <span className="font-semibold text-foreground">Housing &amp; Urban Dev</span>
+                <span className="font-mono font-bold text-primary">KES 135.8B</span>
+              </div>
+              <div className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-2">
+                <span className="font-semibold text-foreground">Agriculture &amp; Rural Dev</span>
+                <span className="font-mono font-bold text-primary">KES 106.8B</span>
+              </div>
+              <div className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-2">
+                <span className="font-semibold text-foreground">County Governments</span>
+                <span className="font-mono font-bold text-primary">KES 502B</span>
+              </div>
+            </div>
+            <p className="mt-3 text-xs text-muted-foreground/70">
+              Source: National Treasury Budget Statement, June 2026 &bull; Parliament approval June 2, 2026
+            </p>
+            <div className="mt-4">
+              <a
+                href="/budgetnews"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
+              >
+                View Full Budget News Analysis
+                <TrendingUp className="size-4" />
+              </a>
+            </div>
+          </div>
         </div>
       </motion.div>
     </SectionShell>

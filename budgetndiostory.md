@@ -5,6 +5,28 @@ Budget Ndio Story (BNS) is a civic technology initiative and platform designed t
 
 BNS sources its data directly from official, verified public records (such as national open data portals, ministry of finance publications, and treasury reports) to ensure reliability and trust.
 
+## FY2026/27 Budget Coverage (Current)
+Kenya's FY2026/27 budget totals **KES 4.82 trillion** (parliament-approved June 2026). BNS covers the full sector-by-sector breakdown:
+- **Education:** KES 781.4B (largest allocation — TSC KES 421.9B, HELB KES 56.7B, Free Secondary KES 54.6B)
+- **Governance, Justice & Law:** KES 353.3B (includes IEBC 2027 election preparations)
+- **National Security:** KES 308.6B (KDF, NPS, NIS, Prisons)
+- **Roads & Infrastructure:** KES 230B (construction KES 48.1B, rehabilitation KES 64B, maintenance KES 118B)
+- **Health (UHC):** KES 175.5B (Primary Healthcare Fund KES 19.1B, Global Fund KES 18.5B)
+- **Housing & Urban Dev:** KES 135.8B (affordable housing KES 50B, social housing KES 20.9B)
+- **Agriculture & Rural Dev:** KES 106.8B (fertilizer subsidy KES 18B, value chains KES 4.6B)
+- **County Governments:** KES 502B total (equitable share KES 428B + conditional grants KES 74B)
+- **Social Protection:** Cash transfers KES 35.4B, NYS KES 12.5B, NYOTA KES 4.7B
+- **Water & Sanitation:** KES 47B
+- **Energy & ICT:** Rural electricity KES 16.3B, Digital Acceleration KES 5.3B
+- **Climate & Environment:** Forest conservation KES 14B, FLLoCA KES 8.9B
+- **Revenue:** KES 3,630.5B (ordinary KES 2,985.7B, A-i-A KES 644.8B, grants KES 43.6B)
+- **Fiscal Deficit:** KES 1,146.2B (domestic borrowing KES 1,030.1B, external KES 116.2B)
+- **Debt Interest:** KES 1,203.1B
+- **GDP Growth Target:** 5.3% for 2026 and 2027
+- **Deficit Reduction Target:** 5.5% → 3.3% of GDP by FY2028/29
+
+Sources: National Treasury Budget Statement (June 11, 2026), Parliament Budget Estimates (June 2, 2026), KPMG Kenya Budget Brief (June 2026), People Daily, Hivileo.
+
 ## Core Mission & Objectives
 The platform operates on the belief that transparent, understandable budgets lead to stronger citizen engagement and better governance. BNS accomplishes this through:
 * **Democratizing Budget Data**: Translating dense budget sheets and policies into structured, readable articles and visual timelines.

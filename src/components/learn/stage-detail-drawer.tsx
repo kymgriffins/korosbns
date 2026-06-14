@@ -69,7 +69,9 @@ export function StageDetailDrawer({
       currentStep: currentStep + 1
     });
     toast.success("Knowledge Check complete!");
-    learnHubApi.completeChapter(step.id).catch(() => {});
+    learnHubApi.completeChapter(step.id).catch(() => {
+      console.warn("Failed to record chapter completion on server");
+    });
     setCurrentStep((prev) => prev + 1);
     setExpandedStep((prev) => (prev ? prev + 1 : null));
     setShowTrivia(false);
@@ -102,7 +104,9 @@ export function StageDetailDrawer({
           badges: newBadges,
         };
         onUpdateProfile(updatedProfile);
-        learnHubApi.markProgress({ content_type: "path", content_id: stage.id, progress_percent: 100 }).catch(() => {});
+        learnHubApi.markProgress({ content_type: "path", content_id: stage.id, progress_percent: 100 }).catch(() => {
+          console.warn("Failed to mark progress on server");
+        });
         const lastStep = stage.steps[stage.steps.length - 1];
         if (lastStep) {
           learnHubApi.completeChapter(lastStep.id).then((res) => {
@@ -111,7 +115,9 @@ export function StageDetailDrawer({
               const profileCertUrl = `/api/v1/content/learn/certificates/${res.certificate_id}/download/`;
               setCertificateUrl(profileCertUrl);
             }
-          }).catch(() => {});
+          }).catch(() => {
+            console.warn("Failed to complete chapter on server");
+          });
         }
         toast.success(`Mastered! +25 SVG. ${stage.badge} Badge unlocked!`);
       }
