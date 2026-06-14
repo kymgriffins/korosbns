@@ -41,7 +41,7 @@ export default function LandingHero() {
             <p className="max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
               Budget Ndio Story is a youth-led initiative in Kenya turning complex
               national budgets into clear, actionable stories for civic engagement
-              and democratic audit. <strong className="text-foreground">FY2026/27 Budget: KES 4.82 trillion</strong> — Education KES 781.4B, Health KES 175.5B, Infrastructure KES 230B.
+              and democratic audit.
             </p>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
               <Link href={Routes.BudgetNews} className="w-full sm:w-auto">
@@ -50,26 +50,8 @@ export default function LandingHero() {
                   variant="white"
                   className="w-full gap-2 rounded-full px-8 py-6 text-base font-bold sm:w-auto"
                 >
-                  Budget News FY2026/27
+                  Explore Budget News
                   <ArrowRight className="size-5" />
-                </Button>
-              </Link>
-              <Link href="/learn" className="w-full sm:w-auto">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="w-full rounded-full px-8 py-6 text-base font-bold sm:w-auto"
-                >
-                  Explore Budget Breakdown
-                </Button>
-              </Link>
-              <Link href="/about" className="w-full sm:w-auto">
-                <Button
-                  size="lg"
-                  variant="ghost"
-                  className="w-full rounded-full px-8 py-6 text-base font-bold sm:w-auto"
-                >
-                  How We Work
                 </Button>
               </Link>
             </div>
