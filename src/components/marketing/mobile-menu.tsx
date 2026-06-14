@@ -17,6 +17,7 @@ import {
   User,
   LogIn,
   ArrowUpRight,
+  Newspaper,
 } from "lucide-react";
 import { ease } from "@/motion/variants";
 
@@ -28,8 +29,9 @@ interface Props {
 const getIcon = (label: string) => {
   const cls = "size-5 text-muted-foreground group-hover:text-primary transition-colors duration-200";
   switch (label.toLowerCase()) {
-    case "learn":      return <BookOpen className={cls} />;
-    case "surveys":    return <ClipboardList className={cls} />;
+    case "learn":        return <BookOpen className={cls} />;
+    case "budget news":  return <Newspaper className={cls} />;
+    case "surveys":      return <ClipboardList className={cls} />;
     case "trivia":     return <HelpCircle className={cls} />;
     case "articles":   return <FileText className={cls} />;
     case "events":     return <Calendar className={cls} />;

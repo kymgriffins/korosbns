@@ -39,6 +39,10 @@ export const Routes = {
     Article: (slug: string) => `/learn/${slug}`,
     Knowledge: "/learn",
     KnowledgeEntry: (id: string) => `/learn/${id}`,
+    BudgetNews: "/budgetnews",
+    BudgetNewsModule: (slug: string) => `/budgetnews/${slug}`,
+    BudgetNewsChapter: (slug: string, chapterSlug: string) => `/budgetnews/${slug}/${chapterSlug}`,
+
     Events: "/events",
     Event: (id: string) => `/events/${id}`,
 

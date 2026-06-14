@@ -5,6 +5,8 @@ type RequestConfig = RequestInit & {
   auth?: boolean;
 };
 
+type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue };
+
 async function request<T>(url: string, config: RequestConfig = {}): Promise<T> {
   const path = url.startsWith("/api/v1") ? url.replace("/api/v1", "") : url;
   return apiFetch<T>(path, { ...config, auth: true });
@@ -12,11 +14,11 @@ async function request<T>(url: string, config: RequestConfig = {}): Promise<T> {
 
 export const api = {
   get: <T>(url: string, config?: RequestConfig) => request<T>(url, { ...config, method: 'GET' }),
-  post: <T>(url: string, data?: any, config?: RequestConfig) => 
+  post: <T>(url: string, data?: JsonValue, config?: RequestConfig) =>
     request<T>(url, { ...config, method: 'POST', body: data ? JSON.stringify(data) : undefined }),
-  put: <T>(url: string, data?: any, config?: RequestConfig) => 
+  put: <T>(url: string, data?: JsonValue, config?: RequestConfig) =>
     request<T>(url, { ...config, method: 'PUT', body: data ? JSON.stringify(data) : undefined }),
-  patch: <T>(url: string, data?: any, config?: RequestConfig) => 
+  patch: <T>(url: string, data?: JsonValue, config?: RequestConfig) =>
     request<T>(url, { ...config, method: 'PATCH', body: data ? JSON.stringify(data) : undefined }),
   delete: <T>(url: string, config?: RequestConfig) => request<T>(url, { ...config, method: 'DELETE' }),
 };

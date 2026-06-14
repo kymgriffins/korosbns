@@ -41,7 +41,7 @@ export function ParticipationAlertsDrawer({ profile, onClose, onUpdateProfile }:
     openDate: "2026-05-20",
     closeDate: "2026-06-03", // 10 days from now (current time is May 24, 2026)
     portalLink: `https://www.${profile.county.toLowerCase()}.go.ke/budget-comments`,
-    whatsappGroup: "+254712345678" // County rep WhatsApp
+    whatsappGroup: "" // Set via org config in production
   };
 
   // Observations, legal bases, and actions pool for the AI generator
@@ -127,7 +127,8 @@ Submitted By: Anonymized Citizen (${profile.pseudoName})
   const handleWhatsAppSubmit = () => {
     // Prefill whatsapp link
     const text = encodeURIComponent(draftContent);
-    const url = `https://wa.me/254712345678?text=${text}`;
+    const waNumber = alert.whatsappGroup.replace(/[^0-9]/g, "");
+    const url = waNumber ? `https://wa.me/${waNumber}?text=${text}` : "#";
     window.open(url, "_blank");
     toast.success("Opened WhatsApp forward!");
     recordParticipation();

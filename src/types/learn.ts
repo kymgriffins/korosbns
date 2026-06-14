@@ -32,6 +32,7 @@ export type ChapterStep = {
   youtube_url: string;
   youtube_urls?: string[];
   audio_url: string;
+  image_urls?: string[];
   transcript: string;
   text: string;
   takeaways: StageTakeaway[];
@@ -40,6 +41,7 @@ export type ChapterStep = {
   is_locked: boolean;
   learning_outcomes?: LearningOutcome[];
   videos?: ChapterVideo[];
+  article_slug?: string | null;
 };
 
 export type LearningOutcome = {
@@ -81,6 +83,7 @@ export type CivicModule = {
   order: number;
   steps: ChapterStep[];
   author?: CivicModuleAuthor | null;
+  is_financial_year_analysis?: boolean;
 };
 
 export type LearnContentType =

@@ -4,24 +4,28 @@ import { LearnPathsHome } from "@/components/learn/learn-paths-home";
 import { metaDescription, canonicalUrl } from "@/utils/metadata";
 
 const learnDescription = metaDescription(
-  "Gamified Learn Hub — videos, articles, stories, official documents, learning paths, and quests for Kenya's budget.",
+  "Learn Hub — Kenya FY2026/27 budget sector-by-sector breakdown. Education KES 781.4B, Health KES 175.5B, Infrastructure KES 230B, Agriculture KES 106.8B, Housing KES 135.8B. Gamified learning with videos, articles, and quests.",
 );
 
 export const metadata: Metadata = {
-  title: "Learn Hub — Budget, Finance Bill & Fiscal Policy | Budget Ndio Story",
+  title: "Learn Hub — FY2026/27 Budget Sector Breakdown | Budget Ndio Story",
   description: learnDescription,
   keywords: [
     "Kenya budget learning",
+    "FY2026/27 budget breakdown",
+    "Kenya education budget 781 billion",
+    "Kenya health budget allocations",
     "Finance Bill explained",
     "Appropriation Bill guide",
     "budget literacy hub Kenya",
     "fiscal policy education",
     "public finance learning paths",
+    "Kenya budget sector by sector",
   ],
   alternates: { canonical: canonicalUrl("/learn") },
   openGraph: {
-    title: "Learn Hub — Budget, Finance Bill & Fiscal Policy | Budget Ndio Story",
-    description: "Gamified learning hub with videos, articles, stories, and quests on Kenya's budget, Finance Bill, and parliamentary fiscal process.",
+    title: "Learn Hub — FY2026/27 Kenya Budget Sector Breakdown | Budget Ndio Story",
+    description: "Complete FY2026/27 budget breakdown: Education KES 781.4B, Health KES 175.5B, Security KES 308.6B, Infrastructure KES 230B, Agriculture KES 106.8B, Housing KES 135.8B. Learn through interactive modules and quizzes.",
     url: "/learn",
   },
 };

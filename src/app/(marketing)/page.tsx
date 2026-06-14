@@ -5,40 +5,47 @@ import Background from "@/components/global/background";
 import PremiumLandingClient from "@/components/marketing/premium-landing-client";
 
 const homeDescription = metaDescription(
-  "Budget Ndio Story is a youth-led initiative in Kenya turning complex national budgets into clear narratives for democratic participation and fiscal literacy."
+  "Budget Ndio Story is a youth-led initiative in Kenya turning complex national budgets into clear narratives for democratic participation and fiscal literacy. FY2026/27 budget breakdown: Education KES 781.4B, Health KES 175.5B, Infrastructure KES 230B, Agriculture KES 106.8B — all verified from official National Treasury and Parliament data."
 );
 
 export const metadata: Metadata = {
-  title: "Budget Ndio Story | Kenya Budget, Finance Bill & Fiscal Policy Explained",
+  title: "Budget Ndio Story | Kenya FY2026/27 Budget Breakdown & Allocations by Sector",
   description: homeDescription,
   keywords: [
+    "Kenya budget 2026/27",
+    "FY2026/27 Kenya budget allocations",
+    "Kenya education budget 781 billion",
+    "Kenya health budget 175 billion",
+    "Kenya infrastructure budget 230 billion",
     "Budget Ndio Story",
     "youth-led civic engagement Kenya",
     "budget transparency Kenya",
     "fiscal literacy",
-    "youth fiscal policy",
     "Finance Bill 2026 Kenya",
     "Appropriation Bill Kenya",
-    "Kenya parliamentary budget",
-    "Budget Policy Statement",
+    "Budget Policy Statement 2026",
     "public participation budget Kenya",
+    "Kenya national budget sector allocation",
+    "KES 4.78 trillion budget Kenya",
+    "John Mbadi budget 2026/27",
+    "BETA agenda budget allocation",
   ],
   alternates: {
     canonical: canonicalUrl("/"),
   },
   openGraph: {
-    title: "Budget Ndio Story | Kenya Budget, Finance Bill & Fiscal Policy Explained",
+    title: "Budget Ndio Story | Kenya FY2026/27 Budget — KES 4.82 Trillion Sector Breakdown",
     description:
-      "Translating Numbers into Narratives. Making Kenya's budget, Finance Bill, and parliamentary fiscal decisions understandable for every citizen.",
+      "Complete Kenya FY2026/27 budget tracker: Education KES 781.4B, Health KES 175.5B, Security KES 308.6B, Infrastructure KES 230B, Agriculture KES 106.8B, Housing KES 135.8B. Verified from National Treasury and Parliament. Translating Numbers into Narratives.",
     url: "/",
     type: "website",
     images: ["/logo.svg"],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Budget Ndio Story",
+    title: "Budget Ndio Story | FY2026/27 Kenya Budget Breakdown",
     description:
-      "A youth-led Kenyan initiative turning budgets into actionable civic knowledge about the Finance Bill, Appropriation Bill, and public finance.",
+      "KES 4.82 trillion budget breakdown: Education KES 781.4B, Health KES 175.5B, Infrastructure KES 230B, Agriculture KES 106.8B, Housing KES 135.8B, Security KES 308.6B. Verified from official National Treasury and Parliament data.",
     images: ["/logo.svg"],
   },
 };

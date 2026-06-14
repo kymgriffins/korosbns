@@ -150,6 +150,16 @@ export function StepContent({ step, currentStep, totalSteps, activeFormat, showT
 
           {activeFormat === "text" && (
             <div className="w-full max-w-none mx-auto px-4 py-4 md:px-6 md:py-6">
+              {step.image_urls?.[0] && (
+                <div className="mb-6 rounded-xl overflow-hidden border border-border shadow-xs">
+                  <img
+                    src={step.image_urls[0]}
+                    alt={`${step.title} cover image`}
+                    className="w-full h-auto object-contain"
+                  />
+                </div>
+              )}
+
               <article className="
                 text-foreground leading-relaxed text-[13px]
                 [&>p]:mb-4 [&>p]:text-gray-800 dark:[&>p]:text-gray-200

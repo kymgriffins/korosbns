@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/ui/button";
+import { Routes } from "@/constants/routes";
 import {
   fadeInUp,
   staggerContainer,
@@ -43,23 +44,14 @@ export default function LandingHero() {
               and democratic audit.
             </p>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <Link href="/events" className="w-full sm:w-auto">
+              <Link href={Routes.BudgetNews} className="w-full sm:w-auto">
                 <Button
                   size="lg"
                   variant="white"
                   className="w-full gap-2 rounded-full px-8 py-6 text-base font-bold sm:w-auto"
                 >
-                  Explore Events
+                  Explore Budget News
                   <ArrowRight className="size-5" />
-                </Button>
-              </Link>
-              <Link href="/about" className="w-full sm:w-auto">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="w-full rounded-full px-8 py-6 text-base font-bold sm:w-auto"
-                >
-                  How We Work
                 </Button>
               </Link>
             </div>
@@ -94,10 +86,8 @@ export default function LandingHero() {
               muted
               loop
               playsInline
-              onLoadedData={() => console.log('✅ Hero video loaded successfully')}
               onError={(e) => {
-                console.error('❌ Hero video error:', e);
-                console.error('URL attempted:', CLOUDINARY_HERO_LANDING_VIDEO_MP4);
+                console.warn('Hero video failed to load:', e);
               }}
               className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
             >

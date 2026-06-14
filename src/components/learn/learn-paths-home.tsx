@@ -89,14 +89,14 @@ const TRANSLATIONS = {
     profileSubtitle: "Check heshima zako na list ya memoranda umetuma.",
     settingsTitle: "Settings za App",
     language: "Lugha ya App",
-    resetBtn: "Futa Maendeleo Yote [Sheng coming soon]",
+    resetBtn: "Futa Maendeleo Yote",
     trackBtn: "Ma-doc Unafuatilia",
-    cachedBadge: "📶 Imehifadhiwa [Sheng coming soon]",
-    quickJump: "Rukia Stage Haraka [Sheng coming soon]",
-    cacheAll: "Hifadhi Nje ya Mtandao [Sheng coming soon]",
-    consentText: "Idhini ya DPA 2019 [Sheng coming soon]",
+    cachedBadge: "📶 Imehifadhiwa",
+    quickJump: "Rukia Stage Haraka",
+    cacheAll: "Hifadhi Nje ya Mtandao",
+    consentText: "Idhini ya DPA 2019",
     streakDays: "Streak ya Siku",
-    shengComingSoon: "[Sheng translation coming soon]"
+    shengComingSoon: "Tafsiri ya Sheng inakuja hivi karibuni"
   }
 };
 

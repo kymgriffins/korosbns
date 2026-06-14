@@ -65,8 +65,8 @@ const Gallery = () => {
     const { data: cohortData } = useCohortImages();
 
     const images = useMemo(() => {
-        if (cohortData?.images?.length > 0) {
-            return cohortData.images.map((img: any, index: number) => ({
+        if (cohortData?.images && cohortData.images.length > 0) {
+            return cohortData.images.map((img, index: number) => ({
                 ...img,
                 title: img.alt.replace(/-/g, ' '),
                 category: "Cohort",

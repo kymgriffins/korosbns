@@ -6,6 +6,10 @@ export const NAV_LINKS = [
     href: Routes.Learn,
   },
   {
+    label: "Budget News",
+    href: Routes.BudgetNews,
+  },
+  {
     label: "Surveys",
     href: Routes.Surveys,
   },
@@ -31,6 +35,7 @@ export const footerLinks = {
     { label: "Get Involved", href: "/about" },
   ],
   resources: [
+    { label: "Budget News", href: Routes.BudgetNews },
     { label: "Budget Guides", href: Routes.Learn },
     { label: "Documents", href: Routes.Documents },
     { label: "Surveys", href: Routes.Surveys },

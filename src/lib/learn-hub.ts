@@ -117,6 +117,10 @@ export const learnHubApi = {
     apiFetch<ApiListResponse<CivicModule>>("/content/civic-modules/"),
   civicModule: (slug: string) =>
     apiFetch<CivicModule>(`/content/civic-modules/${slug}/`),
+  budgetNewsModules: () =>
+    apiFetch<ApiListResponse<CivicModule>>("/content/civic-modules/?is_financial_year_analysis=true"),
+  budgetNewsModule: (slug: string) =>
+    apiFetch<CivicModule>(`/content/civic-modules/${slug}/`),
   completeChapter: (chapterId: string) =>
     apiFetch<{
       detail: string;

@@ -3,7 +3,7 @@
 import posthog from "posthog-js";
 import { PostHogProvider as PHProvider, usePostHog } from "posthog-js/react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, Suspense } from "react";
+import { useEffect, Suspense, useState } from "react";
 
 function PostHogPageView() {
   const pathname = usePathname();
@@ -23,17 +23,23 @@ function PostHogPageView() {
 }
 
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
-  useEffect(() => {
-    posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-      api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+  const [phClient] = useState(() => {
+    const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+    const host = process.env.NEXT_PUBLIC_POSTHOG_HOST;
+    if (!key) return null;
+    posthog.init(key, {
+      api_host: host,
       person_profiles: "identified_only",
       capture_pageview: false,
       capture_pageleave: true,
     });
-  }, []);
+    return posthog;
+  });
+
+  if (!phClient) return <>{children}</>;
 
   return (
-    <PHProvider client={posthog}>
+    <PHProvider client={phClient}>
       <Suspense fallback={null}>
         <PostHogPageView />
       </Suspense>

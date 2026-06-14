@@ -69,7 +69,9 @@ export function StageDetailDrawer({
       currentStep: currentStep + 1
     });
     toast.success("Knowledge Check complete!");
-    learnHubApi.completeChapter(step.id).catch(() => {});
+    learnHubApi.completeChapter(step.id).catch(() => {
+      console.warn("Failed to record chapter completion on server");
+    });
     setCurrentStep((prev) => prev + 1);
     setExpandedStep((prev) => (prev ? prev + 1 : null));
     setShowTrivia(false);
@@ -102,7 +104,9 @@ export function StageDetailDrawer({
           badges: newBadges,
         };
         onUpdateProfile(updatedProfile);
-        learnHubApi.markProgress({ content_type: "path", content_id: stage.id, progress_percent: 100 }).catch(() => {});
+        learnHubApi.markProgress({ content_type: "path", content_id: stage.id, progress_percent: 100 }).catch(() => {
+          console.warn("Failed to mark progress on server");
+        });
         const lastStep = stage.steps[stage.steps.length - 1];
         if (lastStep) {
           learnHubApi.completeChapter(lastStep.id).then((res) => {
@@ -111,7 +115,9 @@ export function StageDetailDrawer({
               const profileCertUrl = `/api/v1/content/learn/certificates/${res.certificate_id}/download/`;
               setCertificateUrl(profileCertUrl);
             }
-          }).catch(() => {});
+          }).catch(() => {
+            console.warn("Failed to complete chapter on server");
+          });
         }
         toast.success(`Mastered! +25 SVG. ${stage.badge} Badge unlocked!`);
       }
@@ -367,14 +373,16 @@ export function StageDetailDrawer({
                         </div>
                         <span className="text-[10px] text-muted-foreground font-semibold shrink-0">10 min</span>
                       </button>
-                      <button onClick={() => { selectStep(stepNum); setActiveTab("quiz"); setShowTrivia(true); }}
-                        className="w-full flex items-center justify-between py-1 px-2 rounded-lg hover:bg-muted/30 transition-colors text-left group">
-                        <div className="flex items-center gap-1.5 min-w-0">
-                          <CheckCircle2 className="size-3 text-muted-foreground group-hover:text-amber-500 transition-colors shrink-0" />
-                          <span className="text-[10px] font-semibold text-foreground/70 group-hover:text-foreground truncate">Quiz</span>
-                        </div>
-                        <span className="text-[10px] text-muted-foreground font-semibold shrink-0">5 min</span>
-                      </button>
+                      {(step.trivia?.length ?? 0) > 0 && (
+                        <button onClick={() => { selectStep(stepNum); setActiveTab("quiz"); setShowTrivia(true); }}
+                          className="w-full flex items-center justify-between py-1 px-2 rounded-lg hover:bg-muted/30 transition-colors text-left group">
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <CheckCircle2 className="size-3 text-muted-foreground group-hover:text-amber-500 transition-colors shrink-0" />
+                            <span className="text-[10px] font-semibold text-foreground/70 group-hover:text-foreground truncate">Quiz</span>
+                          </div>
+                          <span className="text-[10px] text-muted-foreground font-semibold shrink-0">5 min</span>
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>
