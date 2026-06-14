@@ -32,6 +32,7 @@ export type ChapterStep = {
   youtube_url: string;
   youtube_urls?: string[];
   audio_url: string;
+  image_urls?: string[];
   transcript: string;
   text: string;
   takeaways: StageTakeaway[];
