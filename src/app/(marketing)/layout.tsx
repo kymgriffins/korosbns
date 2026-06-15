@@ -13,9 +13,13 @@ const MarketingLayout = ({
   children: React.ReactNode;
 }) => {
   const pathname = usePathname();
-  const isContactPage = pathname === "/contact";
   const isLearnApp = pathname.startsWith("/learn");
-  const showMarketingFooter = !isContactPage && !isLearnApp;
+  const isAppPage = isLearnApp ||
+    pathname === "/contact" ||
+    pathname.startsWith("/surveys") ||
+    pathname.startsWith("/events") ||
+    pathname.startsWith("/budgetnews");
+  const showMarketingFooter = !isAppPage;
 
   const showMarketingChrome = !isLearnApp;
 
