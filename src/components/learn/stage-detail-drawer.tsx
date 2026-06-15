@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight, PlayCircle, CheckCircle2, ChevronDown, Clock
 import { Button } from "@/ui/button";
 import { learnHubApi } from "@/lib/learn-hub";
 import { useLearn } from "@/contexts/learn-context";
+import { useSidebar } from "@/ui/sidebar";
 import { readProgress, writeProgress } from "@/lib/module-progress";
 import type { CivicModule, ChapterStep, ChapterVideo } from "@/types/learn";
 
@@ -28,6 +29,7 @@ export function StageDetailDrawer({
   stage, profile, onClose, onUpdateProfile, onPrevStage, onNextStage, hasPrev, hasNext
 }: StageDetailDrawerProps) {
   const { totalStages } = useLearn();
+  const { setOpen: setSidebarOpen, open: sidebarOpen } = useSidebar();
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [activeTab, setActiveTab] = useState<"read" | "watch" | "quiz">("read");
   const [showTrivia, setShowTrivia] = useState<boolean>(false);
@@ -41,6 +43,11 @@ export function StageDetailDrawer({
     setCurrentStep(initialStep);
     setExpandedStep(initialStep);
   }, [stage.slug, stage.order]);
+
+  useEffect(() => {
+    setSidebarOpen(false);
+    return () => setSidebarOpen(true);
+  }, []);
 
   const isStepTriviaPassed = (stepId: number) => {
     return readProgress(stage.slug, stage.order).stepsCompleted[stepId] === true;

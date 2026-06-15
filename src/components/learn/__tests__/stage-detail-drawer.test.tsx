@@ -14,6 +14,10 @@ vi.mock("@/contexts/learn-context", () => ({
   }),
 }));
 
+vi.mock("@/ui/sidebar", () => ({
+  useSidebar: () => ({ open: true, setOpen: vi.fn() }),
+}));
+
 if (typeof window !== "undefined" && !window.matchMedia) {
   window.matchMedia = vi.fn().mockImplementation((query) => ({
     matches: query.includes("min-width: 768"), media: query, onchange: null, addListener: vi.fn(),
