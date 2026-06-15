@@ -25,7 +25,7 @@ export const SERVER_API_BASE_URL = normalizeBase(env.NEXT_PUBLIC_API_BASE_URL);
 function isLocalApiTarget(base: string): boolean {
   try {
     const host = new URL(base).hostname;
-    return host === "localhost" ;
+    return host === "localhost" || host === "127.0.0.1";
   } catch {
     return false;
   }

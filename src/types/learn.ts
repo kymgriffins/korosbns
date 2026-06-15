@@ -31,17 +31,19 @@ export type ChapterStep = {
   order: number;
   youtube_url: string;
   youtube_urls?: string[];
-  audio_url: string;
   image_urls?: string[];
+  audio_url: string;
   transcript: string;
   text: string;
+  article_slug?: string | null;
+  article_summary?: string;
+  report?: Record<string, unknown>;
   takeaways: StageTakeaway[];
   trivia?: StageTrivia[];
   is_completed: boolean;
   is_locked: boolean;
   learning_outcomes?: LearningOutcome[];
   videos?: ChapterVideo[];
-  article_slug?: string | null;
 };
 
 export type LearningOutcome = {
@@ -81,9 +83,10 @@ export type CivicModule = {
   expectations: string[];
   image_url?: string;
   order: number;
+  is_financial_year_analysis?: boolean;
+  metadata?: Record<string, unknown>;
   steps: ChapterStep[];
   author?: CivicModuleAuthor | null;
-  is_financial_year_analysis?: boolean;
 };
 
 export type LearnContentType =

@@ -48,12 +48,12 @@ const faqItems = [
   },
   { 
     q: "What is the fiscal deficit?", 
-    a: "When government spending is higher than revenue, that's a fiscal deficit. Kenya's 2026/27 deficit is around KES 1.15 trillion, financed through borrowing.",
+    a: "When government spending exceeds revenue, that's a fiscal deficit. Kenya's FY2026/27 deficit is KES 1,146.2 billion (5.5% of GDP) — up from KES 933.3 billion in FY2025/26 — financed through borrowing.",
     category: 'debt'
   },
   { 
     q: "How much goes to county governments?", 
-    a: "In 2026/27, counties get KES 420 billion through the equitable share. This funds local services like roads, health, water, and markets in all 47 counties.",
+    a: "In FY2026/27, Parliament approved KES 428 billion equitable share to counties (KES 415B in FY2025/26). Total county allocation is KES 502 billion including conditional grants. This funds local services like roads, health, water, and markets in all 47 counties.",
     category: 'counties'
   },
   { 

@@ -78,7 +78,7 @@ const faqItems = [
   },
   {
     q: "How much goes to county governments?",
-    a: "In 2026/27, counties get KES 420 billion through the equitable share. This funds local services like roads, health, water, and markets in all 47 counties.",
+    a: "In 2026/27, Parliament approved KES 428 billion equitable share to counties (total county allocation KES 502 billion). This funds local services like roads, health, water, and markets in all 47 counties.",
   },
   {
     q: "What are the main fiscal risks?",
@@ -134,7 +134,7 @@ const quizQuestions = [
     options: ["KES 200B", "KES 320B", "KES 420B", "KES 500B"],
     correct: 2,
     explanation:
-      "KES 420 billion is allocated to county governments for devolved services like roads, health, water, and markets.",
+      "KES 428 billion equitable share (KES 502B total) is allocated to county governments for devolved services like roads, health, water, and markets.",
   },
 ];
 

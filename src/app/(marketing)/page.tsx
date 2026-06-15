@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     "Budget Policy Statement 2026",
     "public participation budget Kenya",
     "Kenya national budget sector allocation",
-    "KES 4.78 trillion budget Kenya",
+    "KES 4.82 trillion budget Kenya",
     "John Mbadi budget 2026/27",
     "BETA agenda budget allocation",
   ],

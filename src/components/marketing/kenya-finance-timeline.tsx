@@ -60,10 +60,10 @@ const budgetCycleTimeline: TimelineItem[] = [
     id: 4,
     date: "Apr 30, 2026",
     title: "Budget Estimates Published",
-    description: "Detailed revenue & expenditure estimates tabled: KES 4.78 trillion budget",
+    description: "Detailed revenue & expenditure estimates tabled: KES 4.82 trillion budget",
     status: "completed",
     icon: "📊",
-    details: "Total budget KES 4.78T. Education KES 781.4B, Security KES 308.6B, Health KES 175.5B, Infrastructure KES 230B",
+    details: "Total budget KES 4.82T. Education KES 781.4B, Security KES 308.6B, Health KES 175.5B, Infrastructure KES 230B",
   },
   {
     id: 5,
@@ -82,7 +82,7 @@ const budgetCycleTimeline: TimelineItem[] = [
     description: "National Assembly approved FY2026/27 expenditure estimates",
     status: "completed",
     icon: "🗳️",
-    details: "MPs approved KES 4.78T budget. Health KES 175.5B, Education KES 781.4B prioritized",
+    details: "MPs approved KES 4.82T budget. Health KES 175.5B, Education KES 781.4B prioritized",
     impact: "Approved",
   },
   {

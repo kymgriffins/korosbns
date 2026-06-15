@@ -8,6 +8,12 @@ import { Routes } from "@/constants/routes";
 import { learnHubApi } from "@/lib/learn-hub";
 import type { CivicModule } from "@/types/learn";
 import { BudgetNewsErrorBoundary } from "../error-boundary";
+import { resolveReportProfile } from "@/lib/budget-report-data";
+import {
+  BudgetModuleReportOverview,
+  BudgetReportHero,
+  BudgetReportToc,
+} from "@/components/budget-news/report-blocks";
 
 function DetailContent({ slug }: { slug: string }) {
   const [mod, setMod] = useState<CivicModule | null>(null);
@@ -58,10 +64,13 @@ function DetailContent({ slug }: { slug: string }) {
   }
 
   const chapters = mod.steps || [];
+  const report = resolveReportProfile(mod.metadata);
+  const fiscalYear = report?.fiscal_year ?? "2026/27";
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
+      <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:grid lg:grid-cols-[minmax(0,1fr)_220px] lg:gap-10">
+        <div>
         <Link
           href={Routes.BudgetNews}
           className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -70,18 +79,24 @@ function DetailContent({ slug }: { slug: string }) {
           Back to Budget News
         </Link>
 
-        <div>
-          <div className="flex items-center gap-2.5 mb-3">
-            <span className="text-xs font-semibold uppercase tracking-wider text-primary bg-primary/8 px-2.5 py-1 rounded-full ring-1 ring-primary/20">
-              FY Analysis
-            </span>
-            <span className="text-xs text-muted-foreground">2026/27</span>
+        {report ? (
+          <BudgetReportHero title={mod.title} description={mod.description} report={report} />
+        ) : (
+          <div className="mb-8">
+            <div className="flex items-center gap-2.5 mb-3">
+              <span className="text-xs font-semibold uppercase tracking-wider text-primary bg-primary/8 px-2.5 py-1 rounded-full ring-1 ring-primary/20">
+                FY Analysis
+              </span>
+              <span className="text-xs text-muted-foreground">{fiscalYear}</span>
+            </div>
+            <h1 className="text-3xl sm:text-4xl font-bold mb-4">{mod.title}</h1>
+            <p className="text-muted-foreground leading-relaxed mb-8 max-w-3xl">
+              {mod.description}
+            </p>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold mb-4">{mod.title}</h1>
-          <p className="text-muted-foreground leading-relaxed mb-8 max-w-3xl">
-            {mod.description}
-          </p>
-        </div>
+        )}
+
+        {report ? <BudgetModuleReportOverview report={report} /> : null}
 
         <section>
           <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground mb-5">
@@ -130,7 +145,7 @@ function DetailContent({ slug }: { slug: string }) {
           </div>
         </section>
 
-        <div className="mt-12 text-center">
+        <div className="mt-12 text-center lg:hidden">
           <Button asChild variant="outline">
             <Link href={Routes.BudgetNews}>
               <ArrowLeft className="size-4 mr-2" />
@@ -138,6 +153,13 @@ function DetailContent({ slug }: { slug: string }) {
             </Link>
           </Button>
         </div>
+        </div>
+
+        {chapters.length > 0 && (
+          <aside className="hidden lg:block">
+            <BudgetReportToc chapters={chapters} slug={slug} />
+          </aside>
+        )}
       </div>
     </div>
   );

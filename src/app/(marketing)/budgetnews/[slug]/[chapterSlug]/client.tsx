@@ -8,6 +8,12 @@ import { Routes } from "@/constants/routes";
 import { learnHubApi } from "@/lib/learn-hub";
 import type { CivicModule, ChapterStep } from "@/types/learn";
 import { BudgetNewsErrorBoundary } from "../../error-boundary";
+import { resolveChapterReport } from "@/lib/budget-report-data";
+import {
+  BudgetArticleBody,
+  BudgetChapterReportBlocks,
+  BudgetReportToc,
+} from "@/components/budget-news/report-blocks";
 
 function ChapterContent({
   slug,
@@ -84,13 +90,14 @@ function ChapterContent({
     );
   }
 
-  const paragraphs = chapter.text
-    ? chapter.text.split("\n\n").filter(Boolean)
-    : [];
+  const chapterReport = resolveChapterReport(chapter.report);
+  const fiscalYear =
+    (mod.metadata?.report as { fiscal_year?: string } | undefined)?.fiscal_year ?? "2026/27";
 
   return (
     <div className="min-h-screen bg-background">
-      <article className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+      <article className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:grid lg:grid-cols-[minmax(0,1fr)_220px] lg:gap-10">
+        <div>
         <Link
           href={Routes.BudgetNewsModule(slug)}
           className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -100,13 +107,13 @@ function ChapterContent({
         </Link>
 
         <div>
-          <div className="flex items-center gap-2.5 mb-4">
+          <div className="flex flex-wrap items-center gap-2.5 mb-4">
             <span className="text-xs font-semibold uppercase tracking-wider text-primary bg-primary/8 px-2.5 py-1 rounded-full ring-1 ring-primary/20">
               Sector Analysis
             </span>
             <span className="text-xs text-muted-foreground flex items-center gap-1">
               <Calendar className="size-3" />
-              FY2026/27
+              FY{fiscalYear}
             </span>
             <span className="text-xs text-muted-foreground">
               Chapter {chapter.order} of {mod.steps?.length || 0}
@@ -115,41 +122,9 @@ function ChapterContent({
 
           <h1 className="text-3xl sm:text-4xl font-bold mb-6">{chapter.title}</h1>
 
-          <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none">
-            {paragraphs.map((para, i) => {
-              const isHeading =
-                para.match(/^[A-Z\s]{3,}:/) || para.startsWith("WHAT THIS MEANS FOR YOU");
-              const isBulletList = para.includes("\n- ") || para.includes("\n• ");
+          <BudgetChapterReportBlocks report={chapterReport} />
 
-              if (isHeading) {
-                return (
-                  <h2 key={i} className="text-lg font-bold mt-8 mb-3 text-foreground">
-                    {para}
-                  </h2>
-                );
-              }
-
-              if (isBulletList) {
-                const lines = para
-                  .split("\n")
-                  .map((l) => l.replace(/^[-•]\s*/, ""))
-                  .filter(Boolean);
-                return (
-                  <ul key={i} className="list-disc pl-5 space-y-1.5 mb-4 text-muted-foreground">
-                    {lines.map((line, j) => (
-                      <li key={j}>{line}</li>
-                    ))}
-                  </ul>
-                );
-              }
-
-              return (
-                <p key={i} className="text-muted-foreground leading-relaxed mb-4">
-                  {para}
-                </p>
-              );
-            })}
-          </div>
+          <BudgetArticleBody text={chapter.text || ""} imageUrls={chapter.image_urls} />
         </div>
 
         <nav className="mt-12 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-8 border-t border-border/60">
@@ -189,6 +164,17 @@ function ChapterContent({
             )}
           </div>
         </nav>
+        </div>
+
+        {(mod.steps?.length ?? 0) > 0 && (
+          <aside className="hidden lg:block">
+            <BudgetReportToc
+              chapters={mod.steps}
+              slug={slug}
+              activeSlug={chapterSlug}
+            />
+          </aside>
+        )}
       </article>
     </div>
   );

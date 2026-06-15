@@ -209,35 +209,36 @@ const toHtml = (content: string) => {
 
 export async function fetchDeepDiveArticle(slug: string): Promise<DeepDiveArticle> {
   const fallback = FALLBACK_ARTICLES[slug];
-  if (!fallback) {
-    // If slug is not in fallbacks, return a dummy or error.
-    return {
-      slug, title: "Not Found", summary: "Article not found", sourceLabel: "Unknown", html: "<p>Content not found.</p>"
-    };
-  }
-
-  // For now, always use fallbacks for these 4 new ones to ensure "Notion" quality.
-  if (Object.keys(FALLBACK_ARTICLES).includes(slug)) {
-    return fallback;
-  }
 
   try {
     const response = await fetch(`${API_BASE_URL}/api/deep-dives/${slug}/`, {
       next: { revalidate: 60 },
     });
-    if (!response.ok) return fallback;
-    const data = await response.json();
-    return {
-      slug,
-      title: String(data.title || fallback.title),
-      summary: String(data.summary || fallback.summary),
-      sourceLabel: String(data.source_doc_type || fallback.sourceLabel),
-      html: toHtml(String(data.content_html || fallback.html)),
-      updatedAt: typeof data.updated_at === "string" ? data.updated_at : undefined,
-    };
+    if (response.ok) {
+      const data = await response.json();
+      return {
+        slug,
+        title: String(data.title || fallback?.title || slug),
+        summary: String(data.summary || fallback?.summary || ""),
+        sourceLabel: String(data.source_doc_type || fallback?.sourceLabel || "Learn"),
+        html: toHtml(String(data.content_html || fallback?.html || "")),
+        updatedAt: typeof data.updated_at === "string" ? data.updated_at : undefined,
+        category: typeof data.category === "string" ? data.category : fallback?.category,
+      };
+    }
   } catch {
-    return fallback;
+    /* use curated fallback only when API is unreachable */
   }
+
+  if (fallback) return fallback;
+
+  return {
+    slug,
+    title: "Not Found",
+    summary: "Article not found",
+    sourceLabel: "Unknown",
+    html: "<p>Content not found.</p>",
+  };
 }
 
 export const deepDiveCards = [

@@ -50,7 +50,9 @@ function assertApiVsSiteHosts() {
         `NEXT_PUBLIC_API_BASE_URL must be the API host (e.g. bnske.budgetndiostory.org), not the citizen site (${siteHost}). Registration and login will fail.`,
       );
     }
-    if (!apiHost.includes("bnske") && !apiHost.includes("localhost")) {
+    const isLocalApi =
+      apiHost === "localhost" || apiHost === "127.0.0.1" || apiHost.includes("bnske");
+    if (!isLocalApi) {
       console.warn(
         `[env] NEXT_PUBLIC_API_BASE_URL host is "${apiHost}" — expected bnske.budgetndiostory.org or localhost for local dev.`,
       );
