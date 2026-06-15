@@ -18,6 +18,7 @@ import {
   LogIn,
   ArrowUpRight,
   Newspaper,
+  XIcon,
 } from "lucide-react";
 import { ease } from "@/motion/variants";
 
@@ -41,7 +42,7 @@ const getIcon = (label: string) => {
   }
 };
 
-// ─── Desktop full-page overlay ────────────────────────────────────────────────
+// ─── Desktop side panel (half page, slides from right) ────────────────────────
 function DesktopOverlay({
   isOpen,
   setIsOpen,
@@ -57,28 +58,39 @@ function DesktopOverlay({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="hidden lg:block fixed inset-0 z-[98] bg-background/80 backdrop-blur-sm"
+            transition={{ duration: 0.3 }}
+            className="hidden lg:block fixed inset-0 z-[98] bg-black/40 backdrop-blur-md"
             onClick={() => setIsOpen(false)}
           />
           <motion.div
             key="desktop-panel"
-            initial={{ opacity: 0, scale: 0.96, y: -12 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: -12 }}
-            transition={{ duration: 0.3, ease: ease.out }}
-            className="hidden lg:flex fixed top-20 inset-x-0 mx-auto max-w-2xl z-[99] flex-col bg-background border border-border/60 rounded-3xl shadow-2xl shadow-black/20 p-3 max-h-[70vh] overflow-hidden"
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ duration: 0.35, ease: ease.expo }}
+            className="hidden lg:flex fixed top-0 right-0 bottom-0 w-1/2 z-[99] flex-col bg-background border-l border-border/60 shadow-2xl shadow-black/20"
           >
-            <div className="flex-1 overflow-y-auto px-2 py-2">
+            <div className="flex items-center justify-between px-6 h-16 shrink-0 border-b border-border/40">
+              <span className="text-sm font-semibold text-muted-foreground">Navigation</span>
+              <Button
+                size="icon-sm"
+                variant="ghost"
+                onClick={() => setIsOpen(false)}
+                className="h-8 w-8 rounded-lg"
+              >
+                <XIcon className="size-4" />
+              </Button>
+            </div>
+            <div className="flex-1 overflow-y-auto px-4 py-6">
               <ul className="flex flex-col space-y-1">
                 {NAV_LINKS.map((item, index) => (
                   <motion.li
                     key={index}
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
                     transition={{
-                      delay: 0.04 + index * 0.05,
-                      duration: 0.3,
+                      delay: 0.05 + index * 0.06,
+                      duration: 0.35,
                       ease: ease.expo,
                     }}
                     onClick={() => setIsOpen(false)}
@@ -98,11 +110,11 @@ function DesktopOverlay({
                 ))}
                 {!authLoading && (
                   <motion.li
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
                     transition={{
-                      delay: 0.04 + NAV_LINKS.length * 0.05,
-                      duration: 0.3,
+                      delay: 0.05 + NAV_LINKS.length * 0.06,
+                      duration: 0.35,
                       ease: ease.expo,
                     }}
                     onClick={() => setIsOpen(false)}
@@ -126,11 +138,11 @@ function DesktopOverlay({
                 )}
               </ul>
               <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
                 transition={{
-                  delay: 0.04 + (NAV_LINKS.length + 1) * 0.05,
-                  duration: 0.3,
+                  delay: 0.05 + (NAV_LINKS.length + 1) * 0.06,
+                  duration: 0.35,
                   ease: ease.expo,
                 }}
                 className="pt-4 border-t border-border/40 mt-4"
