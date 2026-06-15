@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, ChevronLeft, ChevronRight, Calendar } from "lucide-react";
 import { Button } from "@/ui/button";
-import { Routes } from "@/constants/routes";
+import { budgetNewsChapterPath, budgetNewsModulePath, Routes } from "@/constants/routes";
 import { learnHubApi } from "@/lib/learn-hub";
 import type { CivicModule, ChapterStep } from "@/types/learn";
 import { BudgetNewsErrorBoundary } from "../../error-boundary";
@@ -99,7 +99,7 @@ function ChapterContent({
       <article className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:grid lg:grid-cols-[minmax(0,1fr)_220px] lg:gap-10">
         <div>
         <Link
-          href={Routes.BudgetNewsModule(slug)}
+          href={budgetNewsModulePath(slug)}
           className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="size-4" />
@@ -132,7 +132,7 @@ function ChapterContent({
             {prevChapter ? (
               <Button asChild variant="outline" className="w-full sm:w-auto">
                 <Link
-                  href={Routes.BudgetNewsChapter(slug, prevChapter.article_slug!)}
+                  href={budgetNewsChapterPath(slug, prevChapter.article_slug!)}
                   className="gap-2"
                 >
                   <ChevronLeft className="size-4" />
@@ -147,7 +147,7 @@ function ChapterContent({
             {nextChapter ? (
               <Button asChild variant="outline" className="w-full sm:w-auto">
                 <Link
-                  href={Routes.BudgetNewsChapter(slug, nextChapter.article_slug!)}
+                  href={budgetNewsChapterPath(slug, nextChapter.article_slug!)}
                   className="gap-2"
                 >
                   {nextChapter.title}
@@ -156,7 +156,7 @@ function ChapterContent({
               </Button>
             ) : (
               <Button asChild variant="default" className="w-full sm:w-auto">
-                <Link href={Routes.BudgetNewsModule(slug)}>
+                <Link href={budgetNewsModulePath(slug)}>
                   Read all chapters
                   <ArrowLeft className="size-4 ml-2 rotate-180" />
                 </Link>

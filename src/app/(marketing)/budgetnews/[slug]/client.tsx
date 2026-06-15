@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, BookOpen, ChevronRight } from "lucide-react";
 import { Button } from "@/ui/button";
-import { Routes } from "@/constants/routes";
+import { budgetNewsChapterPath, Routes } from "@/constants/routes";
 import { learnHubApi } from "@/lib/learn-hub";
 import type { CivicModule } from "@/types/learn";
 import { BudgetNewsErrorBoundary } from "../error-boundary";
@@ -109,7 +109,7 @@ function DetailContent({ slug }: { slug: string }) {
               <div key={chapter.id}>
                 {chapter.article_slug ? (
                   <Link
-                    href={Routes.BudgetNewsChapter(slug, chapter.article_slug)}
+                    href={budgetNewsChapterPath(slug, chapter.article_slug)}
                     className="block group"
                   >
                     <div className="flex items-center gap-4 rounded-xl border border-border/60 bg-card p-5 hover:bg-accent/30 hover:border-primary/30 transition-all duration-200">

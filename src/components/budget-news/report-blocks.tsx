@@ -38,6 +38,7 @@ import type {
 import { formatKesBillions, formatKesTrillions, percentChange } from "@/lib/budget-format";
 import { filterRealImageUrls, parseArticleBlocks } from "@/lib/budget-report-data";
 import type { ChapterReportData } from "@/types/budget-report";
+import { budgetNewsChapterPath } from "@/constants/routes";
 
 const SECTOR_COLORS = [
   "hsl(221 83% 53%)",
@@ -438,7 +439,7 @@ export function BudgetReportToc({
       </p>
       {chapters.map((ch) => {
         if (!ch.article_slug) return null;
-        const href = `/budgetnews/${slug}/${ch.article_slug}`;
+        const href = budgetNewsChapterPath(slug, ch.article_slug);
         const isActive = ch.article_slug === activeSlug;
         return (
           <a

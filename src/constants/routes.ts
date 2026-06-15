@@ -1,3 +1,11 @@
+export function budgetNewsModulePath(slug: string) {
+    return `/budgetnews/${slug}`;
+}
+
+export function budgetNewsChapterPath(slug: string, chapterSlug: string) {
+    return `/budgetnews/${slug}/${chapterSlug}`;
+}
+
 export const Routes = {
     Home: "/",
     
@@ -40,8 +48,8 @@ export const Routes = {
     Knowledge: "/learn",
     KnowledgeEntry: (id: string) => `/learn/${id}`,
     BudgetNews: "/budgetnews",
-    BudgetNewsModule: (slug: string) => `/budgetnews/${slug}`,
-    BudgetNewsChapter: (slug: string, chapterSlug: string) => `/budgetnews/${slug}/${chapterSlug}`,
+    BudgetNewsModule: budgetNewsModulePath,
+    BudgetNewsChapter: budgetNewsChapterPath,
 
     Events: "/events",
     Event: (id: string) => `/events/${id}`,

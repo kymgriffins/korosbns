@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Newspaper, BookOpen, ChevronRight, Calendar, BarChart3 } from "lucide-react";
-import { Routes } from "@/constants/routes";
+import { budgetNewsModulePath } from "@/constants/routes";
 import { learnHubApi } from "@/lib/learn-hub";
 import type { CivicModule } from "@/types/learn";
 import { BudgetNewsErrorBoundary } from "./error-boundary";
@@ -91,7 +91,7 @@ function BudgetNewsContent() {
 
 function BudgetNewsCard({ module: mod }: { module: CivicModule }) {
   const chapterCount = mod.steps?.length || 0;
-  const href = Routes.BudgetNewsModule(mod.slug);
+  const href = budgetNewsModulePath(mod.slug);
 
   return (
     <Link href={href} className="block group">
