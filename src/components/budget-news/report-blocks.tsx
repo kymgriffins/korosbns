@@ -1,6 +1,6 @@
 "use client";
 
-import { TrendingDown, TrendingUp, Minus, Info, AlertTriangle, Sparkles } from "lucide-react";
+import { TrendingDown, TrendingUp, Minus, Info, AlertTriangle, Sparkles, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { cn } from "@/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/ui/card";
 import { Badge } from "@/ui/badge";
@@ -27,6 +27,8 @@ import {
   PieChart,
   XAxis,
   YAxis,
+  LabelList,
+  Label,
 } from "recharts";
 import type {
   BudgetCallout,
@@ -35,7 +37,7 @@ import type {
   BudgetKpi,
   BudgetReportProfile,
 } from "@/types/budget-report";
-import { formatKesBillions, formatKesTrillions, percentChange } from "@/lib/budget-format";
+import { formatKesBillions, formatKesTrillions, percentChange, shareOfTotal } from "@/lib/budget-format";
 import { filterRealImageUrls, parseArticleBlocks } from "@/lib/budget-report-data";
 import type { ChapterReportData } from "@/types/budget-report";
 import { budgetNewsChapterPath } from "@/constants/routes";
@@ -51,39 +53,56 @@ const SECTOR_COLORS = [
   "hsl(173 80% 40%)",
 ];
 
+
+
+// ── KPI Grid ──
+
 export function BudgetKpiGrid({ kpis }: { kpis: BudgetKpi[] }) {
+  const maxValue = Math.max(...kpis.map((k) => k.value), 1);
   return (
     <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
       {kpis.map((kpi) => (
-        <BudgetKpiCard key={kpi.key} kpi={kpi} />
+        <BudgetKpiCard key={kpi.key} kpi={kpi} scale={kpi.value / maxValue} />
       ))}
     </div>
   );
 }
 
-function BudgetKpiCard({ kpi }: { kpi: BudgetKpi }) {
+function BudgetKpiCard({ kpi, scale }: { kpi: BudgetKpi; scale: number }) {
   const display =
     kpi.suffix === "trillion-scale"
       ? formatKesTrillions(kpi.value)
       : formatKesBillions(kpi.value);
 
-  const TrendIcon =
-    kpi.trend === "up" ? TrendingUp : kpi.trend === "down" ? TrendingDown : Minus;
+  const isUp = kpi.trend === "up";
+  const isDown = kpi.trend === "down";
+  const TrendIcon = isUp ? TrendingUp : isDown ? TrendingDown : Minus;
 
   return (
-    <Card className="border-border/60 bg-card/80 backdrop-blur-sm py-4 gap-3 shadow-sm">
+    <Card className="border-border/60 bg-card/80 backdrop-blur-sm py-4 gap-3 shadow-sm group hover:shadow-md transition-shadow duration-300">
       <CardHeader className="px-4 pb-0">
         <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
           {kpi.label}
         </CardTitle>
       </CardHeader>
-      <CardContent className="px-4">
+      <CardContent className="px-4 space-y-2.5">
         <p className="text-xl sm:text-2xl font-bold tabular-nums tracking-tight">{display}</p>
-        <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+        <div className="h-1.5 w-full bg-muted-foreground/10 rounded-full overflow-hidden">
+          <div
+            className="h-full rounded-full transition-all duration-700 ease-out"
+            style={{
+              width: `${Math.max(scale * 100, 8)}%`,
+              backgroundColor: isUp ? "hsl(142 76% 36%)" : isDown ? "hsl(24 95% 53%)" : "hsl(221 83% 53%)",
+            }}
+          />
+        </div>
+        <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
           {kpi.previous != null && (
             <span className="inline-flex items-center gap-1">
-              <TrendIcon className={cn("size-3", kpi.trend === "up" && "text-amber-600", kpi.trend === "down" && "text-emerald-600")} />
-              {percentChange(kpi.value, kpi.previous)} vs prior FY
+              <TrendIcon className={cn("size-3.5", isUp && "text-emerald-600", isDown && "text-amber-600")} />
+              <span className={cn("font-semibold", isUp && "text-emerald-600", isDown && "text-amber-600")}>
+                {percentChange(kpi.value, kpi.previous)}
+              </span>
             </span>
           )}
           {kpi.suffix && kpi.suffix !== "trillion-scale" && (
@@ -91,20 +110,29 @@ function BudgetKpiCard({ kpi }: { kpi: BudgetKpi }) {
           )}
         </div>
         {kpi.description && (
-          <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">{kpi.description}</p>
+          <p className="text-[11px] leading-relaxed text-muted-foreground">{kpi.description}</p>
         )}
       </CardContent>
     </Card>
   );
 }
 
-export function BudgetCalloutCard({ callout }: { callout: BudgetCallout }) {
+// ── Callout Card ──
+
+export function BudgetCalloutCard({ callout, index = 0 }: { callout: BudgetCallout; index?: number }) {
   const Icon =
     callout.type === "warning"
       ? AlertTriangle
       : callout.type === "trend"
         ? Sparkles
         : Info;
+
+  const iconColors = {
+    info: "text-sky-600 dark:text-sky-400",
+    warning: "text-amber-600 dark:text-amber-400",
+    success: "text-emerald-600 dark:text-emerald-400",
+    trend: "text-violet-600 dark:text-violet-400",
+  };
 
   const styles = {
     info: "border-sky-500/30 bg-sky-500/5",
@@ -114,9 +142,12 @@ export function BudgetCalloutCard({ callout }: { callout: BudgetCallout }) {
   };
 
   return (
-    <div className={cn("rounded-xl border p-4 sm:p-5", styles[callout.type])}>
+    <div
+      className={cn("rounded-xl border p-4 sm:p-5 animate-in fade-in slide-in-from-bottom-2 duration-500", styles[callout.type])}
+      style={{ animationDelay: `${index * 100}ms` }}
+    >
       <div className="flex gap-3">
-        <Icon className="size-5 shrink-0 text-primary mt-0.5" />
+        <Icon className={cn("size-5 shrink-0 mt-0.5", iconColors[callout.type])} />
         <div>
           <p className="font-semibold text-sm mb-1">{callout.title}</p>
           <p className="text-sm text-muted-foreground leading-relaxed">{callout.text}</p>
@@ -126,36 +157,78 @@ export function BudgetCalloutCard({ callout }: { callout: BudgetCallout }) {
   );
 }
 
+// ── Comparison Table ──
+
 export function BudgetComparisonTable({ rows }: { rows: BudgetComparisonRow[] }) {
+  const maxChange = Math.max(...rows.map((r) => {
+    const m = r.change.match(/[+-]?\d+(\.\d+)?/);
+    return m ? Math.abs(parseFloat(m[0])) : 0;
+  }), 1);
+
   return (
     <div className="rounded-xl border border-border/60 overflow-hidden">
-      <Table>
-        <TableHeader>
-          <TableRow className="bg-muted/40 hover:bg-muted/40">
-            <TableHead className="font-semibold">Item</TableHead>
-            <TableHead className="text-right font-semibold">FY2025/26</TableHead>
-            <TableHead className="text-right font-semibold">FY2026/27</TableHead>
-            <TableHead className="text-right font-semibold">Change</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.label} className={row.highlight ? "bg-primary/5" : undefined}>
-              <TableCell className="font-medium whitespace-nowrap">{row.label}</TableCell>
-              <TableCell className="text-right tabular-nums text-muted-foreground">{row.fy2025}</TableCell>
-              <TableCell className="text-right tabular-nums font-medium">{row.fy2026}</TableCell>
-              <TableCell className="text-right tabular-nums">
-                <span className={row.change.startsWith("+") && row.highlight ? "text-amber-700 dark:text-amber-400" : ""}>
-                  {row.change}
-                </span>
-              </TableCell>
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-muted/40 hover:bg-muted/40">
+              <TableHead className="font-semibold">Item</TableHead>
+              <TableHead className="text-right font-semibold whitespace-nowrap">FY2025/26</TableHead>
+              <TableHead className="text-right font-semibold whitespace-nowrap">FY2026/27</TableHead>
+              <TableHead className="text-right font-semibold whitespace-nowrap">Change</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {rows.map((row) => {
+              const changeMatch = row.change.match(/[+-]?\d+(\.\d+)?/);
+              const changeVal = changeMatch ? parseFloat(changeMatch[0]) : 0;
+              const isPositive = changeVal > 0;
+              const barWidth = Math.min(Math.abs(changeVal) / maxChange * 100, 100);
+              return (
+                <TableRow
+                  key={row.label}
+                  className={cn(
+                    row.highlight ? "bg-primary/5" : undefined,
+                    "transition-colors"
+                  )}
+                >
+                  <TableCell className="font-medium whitespace-nowrap">{row.label}</TableCell>
+                  <TableCell className="text-right tabular-nums text-muted-foreground">{row.fy2025}</TableCell>
+                  <TableCell className="text-right tabular-nums font-medium">{row.fy2026}</TableCell>
+                  <TableCell className="text-right tabular-nums min-w-[140px]">
+                    <div className="flex items-center justify-end gap-2">
+                      <div className="hidden sm:block w-16 h-2 bg-muted-foreground/10 rounded-full overflow-hidden">
+                        <div
+                          className={cn(
+                            "h-full rounded-full transition-all duration-700 ease-out",
+                            isPositive ? "bg-emerald-500/60" : "bg-amber-500/60"
+                          )}
+                          style={{ width: `${barWidth}%`, marginLeft: isPositive ? 0 : "auto" }}
+                        />
+                      </div>
+                      <span
+                        className={cn(
+                          "font-semibold whitespace-nowrap",
+                          row.change.startsWith("+") && row.highlight && "text-amber-700 dark:text-amber-400",
+                          isPositive && !row.highlight && "text-emerald-700 dark:text-emerald-400",
+                          !isPositive && changeVal !== 0 && "text-amber-700 dark:text-amber-400"
+                        )}
+                      >
+                        {isPositive ? <ArrowUpRight className="size-3 inline -mt-0.5" /> : changeVal !== 0 ? <ArrowDownRight className="size-3 inline -mt-0.5" /> : null}
+                        {row.change}
+                      </span>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }
+
+// ── Bar Chart ──
 
 export function BudgetBarChart({ config }: { config: BudgetChartConfig }) {
   const chartConfig: ChartConfig = Object.fromEntries(
@@ -165,18 +238,27 @@ export function BudgetBarChart({ config }: { config: BudgetChartConfig }) {
     ]),
   );
 
+  const total = config.data.reduce((s, d) => s + d.value, 0);
+
   return (
-    <Card className="border-border/60 py-4 gap-2">
+    <Card className="border-border/60 py-4 gap-2 group/chart">
       <CardHeader className="px-4 pb-0">
-        <CardTitle className="text-base">{config.title}</CardTitle>
-        {config.subtitle && (
-          <p className="text-xs text-muted-foreground">{config.subtitle}</p>
-        )}
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="text-base">{config.title}</CardTitle>
+            {config.subtitle && (
+              <p className="text-xs text-muted-foreground">{config.subtitle}</p>
+            )}
+          </div>
+          {config.valueLabel && (
+            <Badge variant="outline" className="text-[10px] font-normal">{config.valueLabel}</Badge>
+          )}
+        </div>
       </CardHeader>
       <CardContent className="px-2 sm:px-4">
         <ChartContainer config={chartConfig} className="h-[220px] sm:h-[280px] w-full aspect-auto">
-          <BarChart data={config.data} margin={{ left: 0, right: 8, top: 8, bottom: 0 }}>
-            <CartesianGrid vertical={false} strokeDasharray="3 3" />
+          <BarChart data={config.data} margin={{ left: 0, right: 8, top: 20, bottom: 0 }}>
+            <CartesianGrid vertical={false} strokeDasharray="3 3" strokeOpacity={0.4} />
             <XAxis
               dataKey="name"
               tickLine={false}
@@ -188,22 +270,55 @@ export function BudgetBarChart({ config }: { config: BudgetChartConfig }) {
               tick={{ fontSize: 10 }}
             />
             <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 10 }} width={40} />
-            <ChartTooltip content={<ChartTooltipContent />} />
+            <ChartTooltip
+              cursor={{ fill: "hsl(var(--muted-foreground) / 0.08)" }}
+              content={
+                <ChartTooltipContent
+                  formatter={(value: any) => `${formatKesBillions(Number(value), { prefix: false })}`}
+                />
+              }
+            />
             <Bar
               dataKey="value"
               radius={[4, 4, 0, 0]}
               isAnimationActive={true}
               animationDuration={800}
               animationEasing="ease-out"
+              animationBegin={0}
             >
               {config.data.map((entry, index) => (
-                <Cell key={entry.name} fill={entry.fill ?? SECTOR_COLORS[index % SECTOR_COLORS.length]} />
+                <Cell
+                  key={entry.name}
+                  fill={entry.fill ?? SECTOR_COLORS[index % SECTOR_COLORS.length]}
+                  className="transition-opacity duration-200 group-hover/chart:opacity-80 hover:!opacity-100"
+                />
               ))}
+              <LabelList
+                dataKey="value"
+                position="top"
+                fontSize={10}
+                formatter={(v: any) => `${Number(v).toFixed(1)}`}
+                fill="hsl(var(--muted-foreground))"
+                className="tabular-nums"
+              />
             </Bar>
           </BarChart>
         </ChartContainer>
       </CardContent>
     </Card>
+  );
+}
+
+// ── Pie Chart ──
+
+function PieCenterLabel({ total, label }: { total: number; label: string }) {
+  return (
+    <text textAnchor="middle" dominantBaseline="middle" className="fill-foreground">
+      <tspan x={0} dy={-6} className="fill-muted-foreground text-[10px]">{label}</tspan>
+      <tspan x={0} dy={18} className="font-bold text-sm tabular-nums">
+        {total.toFixed(1)}B
+      </tspan>
+    </text>
   );
 }
 
@@ -214,6 +329,8 @@ export function BudgetPieChart({ config }: { config: BudgetChartConfig }) {
       { label: d.name, color: d.fill ?? SECTOR_COLORS[i % SECTOR_COLORS.length] },
     ]),
   );
+
+  const total = config.data.reduce((s, d) => s + d.value, 0);
 
   return (
     <Card className="border-border/60 py-4 gap-2">
@@ -226,35 +343,57 @@ export function BudgetPieChart({ config }: { config: BudgetChartConfig }) {
       <CardContent className="px-4">
         <ChartContainer config={chartConfig} className="h-[220px] sm:h-[260px] w-full aspect-auto">
           <PieChart>
-            <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+            <ChartTooltip
+              content={
+                <ChartTooltipContent
+                  hideLabel
+                  formatter={(value: any, name: any) => [
+                    `${formatKesBillions(Number(value), { prefix: false })} (${shareOfTotal(Number(value), total)})`,
+                    String(name),
+                  ]}
+                />
+              }
+            />
             <Pie
               data={config.data}
               dataKey="value"
               nameKey="name"
+              cx="50%"
+              cy="50%"
               innerRadius="45%"
               outerRadius="80%"
               paddingAngle={2}
               isAnimationActive={true}
-              animationDuration={800}
+              animationDuration={1000}
               animationEasing="ease-out"
             >
               {config.data.map((entry, index) => (
-                <Cell key={entry.name} fill={entry.fill ?? SECTOR_COLORS[index % SECTOR_COLORS.length]} />
+                <Cell
+                  key={entry.name}
+                  fill={entry.fill ?? SECTOR_COLORS[index % SECTOR_COLORS.length]}
+                  className="transition-opacity duration-200 hover:opacity-80"
+                  stroke="transparent"
+                />
               ))}
+              <Label content={<PieCenterLabel total={total} label="Total" />} position="center" />
             </Pie>
           </PieChart>
         </ChartContainer>
-        <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-          {config.data.map((d, i) => (
-            <div key={d.name} className="flex items-center gap-2">
-              <span
-                className="size-2.5 rounded-full shrink-0"
-                style={{ background: d.fill ?? SECTOR_COLORS[i % SECTOR_COLORS.length] }}
-              />
-              <span className="truncate text-muted-foreground">{d.name}</span>
-              <span className="ml-auto tabular-nums font-medium">{d.value}B</span>
-            </div>
-          ))}
+        <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+          {config.data.map((d, i) => {
+            const pct = shareOfTotal(d.value, total);
+            return (
+              <div key={d.name} className="flex items-center gap-2 group">
+                <span
+                  className="size-2.5 rounded-full shrink-0 transition-transform duration-200 group-hover:scale-125"
+                  style={{ background: d.fill ?? SECTOR_COLORS[i % SECTOR_COLORS.length] }}
+                />
+                <span className="truncate text-muted-foreground flex-1">{d.name}</span>
+                <span className="tabular-nums font-medium text-foreground">{d.value.toFixed(1)}B</span>
+                <span className="tabular-nums text-muted-foreground/60 w-10 text-right">{pct}</span>
+              </div>
+            );
+          })}
         </div>
       </CardContent>
     </Card>
@@ -275,7 +414,7 @@ export function BudgetReportHero({
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent pointer-events-none" />
       <div className="relative">
         <div className="flex flex-wrap items-center gap-2 mb-4">
-          <Badge className="bg-primary/90">FY{report.fiscal_year} Report</Badge>
+          <Badge className="bg-primary/90 text-primary-foreground">FY{report.fiscal_year} Report</Badge>
           {report.approved_date && (
             <span className="text-xs text-muted-foreground">
               Approved {new Date(report.approved_date).toLocaleDateString("en-KE", { day: "numeric", month: "short", year: "numeric" })}
@@ -325,29 +464,45 @@ export function BudgetModuleReportOverview({ report }: { report: BudgetReportPro
     : null;
 
   return (
-    <div className="space-y-6 mb-10">
+    <div className="space-y-8 mb-10">
       {report.executive_summary && (
-        <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-3xl">
-          {report.executive_summary}
-        </p>
-      )}
-      {report.kpis?.length ? <BudgetKpiGrid kpis={report.kpis} /> : null}
-      {(sectorChart || revenueChart || expenditureChart) && (
-        <div className="grid gap-4 lg:grid-cols-2">
-          {sectorChart && <BudgetBarChart config={sectorChart} />}
-          {revenueChart && <BudgetPieChart config={revenueChart} />}
-          {expenditureChart && <BudgetPieChart config={expenditureChart} />}
+        <div className="rounded-xl bg-gradient-to-r from-primary/5 to-transparent border border-primary/10 p-4 sm:p-6">
+          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+            {report.executive_summary}
+          </p>
         </div>
+      )}
+      {report.kpis?.length ? (
+        <section>
+          <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Key Indicators</h4>
+          <BudgetKpiGrid kpis={report.kpis} />
+        </section>
+      ) : null}
+      {(sectorChart || revenueChart || expenditureChart) && (
+        <section>
+          <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Charts</h4>
+          <div className="grid gap-4 lg:grid-cols-2">
+            {sectorChart && <BudgetBarChart config={sectorChart} />}
+            {revenueChart && <BudgetPieChart config={revenueChart} />}
+            {expenditureChart && <BudgetPieChart config={expenditureChart} />}
+          </div>
+        </section>
       )}
       {report.comparison_rows?.length ? (
-        <BudgetComparisonTable rows={report.comparison_rows} />
+        <section>
+          <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Year-over-Year Comparison</h4>
+          <BudgetComparisonTable rows={report.comparison_rows} />
+        </section>
       ) : null}
       {report.highlights?.length ? (
-        <div className="grid gap-3 sm:grid-cols-2">
-          {report.highlights.map((callout) => (
-            <BudgetCalloutCard key={callout.title} callout={callout} />
-          ))}
-        </div>
+        <section>
+          <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Key Takeaways</h4>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {report.highlights.map((callout, i) => (
+              <BudgetCalloutCard key={callout.title} callout={callout} index={i} />
+            ))}
+          </div>
+        </section>
       ) : null}
     </div>
   );
@@ -357,8 +512,13 @@ export function BudgetChapterReportBlocks({ report }: { report: ChapterReportDat
   const chart = report.chart;
 
   return (
-    <div className="space-y-6 mb-8">
-      {report.kpis?.length ? <BudgetKpiGrid kpis={report.kpis} /> : null}
+    <div className="space-y-6 mb-6">
+      {report.kpis?.length ? (
+        <div>
+          <h5 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Sector KPIs</h5>
+          <BudgetKpiGrid kpis={report.kpis} />
+        </div>
+      ) : null}
       {chart?.data?.length ? (
         chart.type === "pie" ? (
           <BudgetPieChart config={chart} />
@@ -367,12 +527,15 @@ export function BudgetChapterReportBlocks({ report }: { report: ChapterReportDat
         )
       ) : null}
       {report.comparison_rows?.length ? (
-        <BudgetComparisonTable rows={report.comparison_rows} />
+        <div>
+          <h5 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Year-over-Year</h5>
+          <BudgetComparisonTable rows={report.comparison_rows} />
+        </div>
       ) : null}
       {report.callouts?.length ? (
         <div className="grid gap-3">
-          {report.callouts.map((callout) => (
-            <BudgetCalloutCard key={callout.title} callout={callout} />
+          {report.callouts.map((callout, i) => (
+            <BudgetCalloutCard key={callout.title} callout={callout} index={i} />
           ))}
         </div>
       ) : null}

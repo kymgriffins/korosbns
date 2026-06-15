@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { toast } from "sonner";
 import { ChevronLeft, ChevronRight, PlayCircle, CheckCircle2, ChevronDown, Clock, BookOpen, Star, BookOpenText, Video, Brain, Loader2 } from "lucide-react";
+import { Badge } from "@/ui/badge";
 import { Button } from "@/ui/button";
 import { learnHubApi } from "@/lib/learn-hub";
 import { useLearn } from "@/contexts/learn-context";
@@ -380,7 +381,14 @@ export function StageDetailDrawer({
                 {activeTab === "read" && currentStep > 0 && (
                   <div className="space-y-3">
                     <div className="space-y-1 pb-3 border-b border-border/30">
-                      <h3 className="text-base font-black">{currentStepObj?.title || stage.title}</h3>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h3 className="text-base font-black">{currentStepObj?.title || stage.title}</h3>
+                        {isBudgetModule && currentStepObj?.budget_entity_name && (
+                          <Badge variant="outline" className="text-[10px] font-normal border-primary/30 text-primary">
+                            Sector: {currentStepObj.budget_entity_name}
+                          </Badge>
+                        )}
+                      </div>
                       <p className="text-xs text-muted-foreground">{stage.description}</p>
                     </div>
 
