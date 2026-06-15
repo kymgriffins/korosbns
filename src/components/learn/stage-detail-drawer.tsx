@@ -482,6 +482,31 @@ export function StageDetailDrawer({
                 </span>
               </div>
 
+              {/* Mobile step dots — tap to jump between chapters */}
+              <div className="md:hidden flex items-center gap-1.5 overflow-x-auto scrollbar-hide pb-1 -mx-1 px-1">
+                {stage.steps.map((step, idx) => {
+                  const stepNum = idx + 1;
+                  const isCurrent = currentStep === stepNum;
+                  const isPassed = isStepTriviaPassed(step.order);
+                  return (
+                    <button
+                      key={step.id}
+                      onClick={() => selectStep(stepNum)}
+                      className={`shrink-0 size-7 rounded-full flex items-center justify-center text-[10px] font-bold transition-all duration-200 ${
+                        isCurrent
+                          ? "bg-primary text-primary-foreground shadow-xs scale-110"
+                          : isPassed
+                            ? "bg-emerald-500/15 text-emerald-600 border border-emerald-500/30"
+                            : "bg-muted/40 text-muted-foreground border border-border/40"
+                      }`}
+                      title={step.title}
+                    >
+                      {isPassed ? <CheckCircle2 className="size-3.5" /> : stepNum}
+                    </button>
+                  );
+                })}
+              </div>
+
               <div className="animate-in fade-in duration-200">
                 {activeTab === "watch" && (
                   currentVideoUrl ? (
@@ -617,6 +642,35 @@ export function StageDetailDrawer({
                         onFinish={handleFinishTrivia}
                       />
                     )}
+                  </div>
+                )}
+
+                {/* Prev / Next step navigation */}
+                {!isMastery && (
+                  <div className="flex items-center justify-between gap-2 pt-4 border-t border-border/20 mt-8 pb-4">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => selectStep(currentStep - 1)}
+                      disabled={currentStep <= 1}
+                      className="rounded-lg text-xs font-bold gap-1"
+                    >
+                      <ChevronLeft className="size-3.5" />
+                      Previous
+                    </Button>
+                    <span className="text-[10px] text-muted-foreground font-semibold">
+                      Step {currentStep} of {stage.steps.length}
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => selectStep(currentStep + 1)}
+                      disabled={currentStep >= stage.steps.length}
+                      className="rounded-lg text-xs font-bold gap-1"
+                    >
+                      Next
+                      <ChevronRight className="size-3.5" />
+                    </Button>
                   </div>
                 )}
               </div>
