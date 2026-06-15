@@ -203,7 +203,7 @@ export default function RegisterPage() {
           {/* STEP 1: Priorities */}
           {step === 1 && (
             <div className="space-y-4">
-              <div className="grid grid-cols-1 gap-2.5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                 {PRIORITIES.map((option) => {
                   const Icon = option.icon;
                   const isSelected = selectedPriorities.includes(option.id);
