@@ -203,7 +203,7 @@ export default function RegisterPage() {
           {/* STEP 1: Priorities */}
           {step === 1 && (
             <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
                 {PRIORITIES.map((option) => {
                   const Icon = option.icon;
                   const isSelected = selectedPriorities.includes(option.id);
@@ -212,20 +212,24 @@ export default function RegisterPage() {
                       key={option.id}
                       type="button"
                       onClick={() => togglePriority(option.id)}
-                      className={`flex items-center gap-3 p-3.5 rounded-xl border text-left transition-all ${
+                      className={`relative flex flex-col items-center gap-1.5 p-3 rounded-xl border text-center transition-all ${
                         isSelected 
-                          ? "border-primary bg-primary/5 text-primary shadow-xs" 
+                          ? "border-primary bg-primary/5 text-primary shadow-xs ring-1 ring-primary/20" 
                           : "border-border/60 hover:border-border hover:bg-muted/30"
                       }`}
                     >
-                      <div className={`p-2 rounded-lg ${isSelected ? 'bg-primary/15' : 'bg-muted'} shrink-0`}>
-                        <Icon className="size-4" />
+                      <div className={`p-2 rounded-lg ${isSelected ? 'bg-primary/15' : 'bg-muted'}`}>
+                        <Icon className="size-5" />
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-bold">{option.label}</p>
-                        <p className="text-xs text-muted-foreground truncate">{option.context}</p>
+                      <div className="min-w-0">
+                        <p className="text-xs font-bold leading-tight">{option.label}</p>
+                        <p className="text-[10px] text-muted-foreground leading-tight mt-0.5">{option.context}</p>
                       </div>
-                      {isSelected && <Check className="size-4 shrink-0" />}
+                      {isSelected && (
+                        <span className="absolute top-1.5 right-1.5 size-4 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
+                          <Check className="size-3" />
+                        </span>
+                      )}
                     </button>
                   );
                 })}
