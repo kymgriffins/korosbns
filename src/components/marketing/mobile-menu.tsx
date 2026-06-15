@@ -1,6 +1,5 @@
 "use client";
 
-import { cn } from "@/utils";
 import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
 import React from "react";
@@ -14,7 +13,6 @@ import {
   FileText,
   Calendar,
   Mail,
-  User,
   LogIn,
   ArrowUpRight,
   Newspaper,
@@ -33,42 +31,41 @@ const getIcon = (label: string) => {
     case "learn":        return <BookOpen className={cls} />;
     case "budget news":  return <Newspaper className={cls} />;
     case "surveys":      return <ClipboardList className={cls} />;
-    case "trivia":     return <HelpCircle className={cls} />;
-    case "articles":   return <FileText className={cls} />;
-    case "events":     return <Calendar className={cls} />;
-    case "faq":        return <HelpCircle className={cls} />;
-    case "contact":    return <Mail className={cls} />;
-    default:           return null;
+    case "trivia":       return <HelpCircle className={cls} />;
+    case "articles":     return <FileText className={cls} />;
+    case "events":       return <Calendar className={cls} />;
+    case "faq":          return <HelpCircle className={cls} />;
+    case "contact":      return <Mail className={cls} />;
+    default:             return null;
   }
 };
 
-// ─── Desktop side panel (half page, slides from right) ────────────────────────
-function DesktopOverlay({
-  isOpen,
-  setIsOpen,
-}: Props) {
+function MenuPanel({ isOpen, setIsOpen }: Props) {
   const { isLoggedIn, loading: authLoading, user } = useAuth();
 
   return (
     <AnimatePresence>
       {isOpen && (
         <>
+          {/* Backdrop — same for all screen sizes */}
           <motion.div
-            key="desktop-backdrop"
+            key="backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="hidden lg:block fixed inset-0 z-[98] bg-black/40 backdrop-blur-md"
+            className="fixed inset-0 z-[98] bg-black/40 backdrop-blur-md"
             onClick={() => setIsOpen(false)}
           />
+
+          {/* Desktop: right-side panel */}
           <motion.div
             key="desktop-panel"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ duration: 0.35, ease: ease.expo }}
-            className="hidden lg:flex fixed top-0 right-0 bottom-0 w-1/2 z-[99] flex-col bg-background border-l border-border/60 shadow-2xl shadow-black/20"
+            className="fixed top-0 right-0 bottom-0 w-1/2 z-[99] hidden lg:flex flex-col bg-background border-l border-border/60 shadow-2xl shadow-black/20"
           >
             <div className="flex items-center justify-between px-6 h-16 shrink-0 border-b border-border/40">
               <span className="text-sm font-semibold text-muted-foreground">Navigation</span>
@@ -168,46 +165,19 @@ function DesktopOverlay({
               </motion.div>
             </div>
           </motion.div>
-        </>
-      )}
-    </AnimatePresence>
-  );
-}
 
-// ─── Mobile full-screen overlay ───────────────────────────────────────────────
-function MobileOverlay({ isOpen, setIsOpen }: Props) {
-  const { isLoggedIn, loading: authLoading, user } = useAuth();
-
-  return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          {/* Backdrop */}
+          {/* Mobile: bottom sheet */}
           <motion.div
-            key="backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="lg:hidden fixed inset-0 z-[98] bg-background/60 backdrop-blur-sm"
-            onClick={() => setIsOpen(false)}
-          />
-
-          {/* Slide-up sheet */}
-          <motion.div
-            key="sheet"
-            initial={{ opacity: 0, y: "100%" }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: "100%" }}
+            key="mobile-panel"
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
             transition={{ duration: 0.38, ease: ease.expo }}
-            className="lg:hidden fixed bottom-0 inset-x-0 z-[99] bg-background border-t border-border/60 rounded-t-3xl shadow-2xl shadow-black/30 flex flex-col max-h-[85dvh] overflow-hidden"
+            className="fixed bottom-0 inset-x-0 z-[99] lg:hidden bg-background border-t border-border/60 rounded-t-3xl shadow-2xl shadow-black/30 flex flex-col max-h-[85dvh] overflow-hidden"
           >
-            {/* Handle */}
             <div className="flex justify-center pt-3 pb-1 shrink-0">
               <div className="w-10 h-1 rounded-full bg-foreground/20" />
             </div>
-
-            {/* Nav items */}
             <div className="flex-1 overflow-y-auto px-4 pb-6 pt-2">
               <ul className="flex flex-col space-y-1">
                 {NAV_LINKS.map((item, index) => (
@@ -235,7 +205,6 @@ function MobileOverlay({ isOpen, setIsOpen }: Props) {
                     </Link>
                   </motion.li>
                 ))}
-
                 {!authLoading && (
                   <motion.li
                     initial={{ opacity: 0, y: 16 }}
@@ -249,24 +218,22 @@ function MobileOverlay({ isOpen, setIsOpen }: Props) {
                     className="w-full border-t border-border/40 pt-2 mt-2"
                   >
                     <Link
-                    href={isLoggedIn ? Routes.Learn : Routes.Login}
-                    className="group flex items-center justify-between w-full px-4 py-3.5 text-base font-semibold rounded-2xl text-primary hover:bg-primary/[0.06] active:scale-[0.98] transition-all duration-200"
-                  >
-                    <span className="flex items-center gap-3">
-                      {isLoggedIn ? (
-                        <BookOpen className="size-5 text-primary" />
-                      ) : (
-                        <LogIn className="size-5 text-primary" />
-                      )}
-                      {isLoggedIn ? "Go to Learn Hub" : "Sign in to your account"}
+                      href={isLoggedIn ? Routes.Learn : Routes.Login}
+                      className="group flex items-center justify-between w-full px-4 py-3.5 text-base font-semibold rounded-2xl text-primary hover:bg-primary/[0.06] active:scale-[0.98] transition-all duration-200"
+                    >
+                      <span className="flex items-center gap-3">
+                        {isLoggedIn ? (
+                          <BookOpen className="size-5 text-primary" />
+                        ) : (
+                          <LogIn className="size-5 text-primary" />
+                        )}
+                        {isLoggedIn ? "Go to Learn Hub" : "Sign in to your account"}
                       </span>
                       <ArrowUpRight className="size-4 text-primary opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
                     </Link>
                   </motion.li>
                 )}
               </ul>
-
-              {/* CTA */}
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -304,14 +271,4 @@ function MobileOverlay({ isOpen, setIsOpen }: Props) {
   );
 }
 
-// ─── Combined export ──────────────────────────────────────────────────────────
-const MobileMenu = ({ isOpen, setIsOpen }: Props) => {
-  return (
-    <>
-      <DesktopOverlay isOpen={isOpen} setIsOpen={setIsOpen} />
-      <MobileOverlay isOpen={isOpen} setIsOpen={setIsOpen} />
-    </>
-  );
-};
-
-export default MobileMenu;
+export default MenuPanel;

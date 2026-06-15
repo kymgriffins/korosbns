@@ -131,9 +131,10 @@ export function Header() {
             </motion.div>
           </div>
 
-          <MobileMenu isOpen={isOpen} setIsOpen={setIsOpen} />
         </div>
       </motion.header>
+
+      <MobileMenu isOpen={isOpen} setIsOpen={setIsOpen} />
     </div>
   );
 }
