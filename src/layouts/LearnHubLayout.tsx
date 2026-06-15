@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import {
   ChevronRight, ChevronLeft, ChevronDown, X,
@@ -72,6 +73,17 @@ function LearnSidebar() {
     load();
     return () => { cancelled = true; };
   }, []);
+
+  // Re-fetch user profile and gamification when profile updates in-app
+  const queryClient = useQueryClient();
+  useEffect(() => {
+    const onProfileUpdate = () => {
+      queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
+      void refreshGamification();
+    };
+    window.addEventListener("bns-profile-updated", onProfileUpdate);
+    return () => window.removeEventListener("bns-profile-updated", onProfileUpdate);
+  }, [queryClient, refreshGamification]);
 
   const handleTabChange = (tab: LearnTab) => {
     setActiveTab(tab);

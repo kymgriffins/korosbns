@@ -31,9 +31,12 @@ export function LearnMobileNav() {
       }
     };
     read();
-    // Re-read when localStorage changes (same tab via custom event)
     window.addEventListener("storage", read);
-    return () => window.removeEventListener("storage", read);
+    window.addEventListener("bns-profile-updated", read);
+    return () => {
+      window.removeEventListener("storage", read);
+      window.removeEventListener("bns-profile-updated", read);
+    };
   }, []);
 
   // Derive initials for avatar
