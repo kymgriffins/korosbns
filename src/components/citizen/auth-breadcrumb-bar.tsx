@@ -20,8 +20,8 @@ export function AuthBreadcrumbBar() {
 
   return (
     <header className="border-b border-border/60 bg-background/95 backdrop-blur-md">
-      <div className="mx-auto max-w-lg px-4 py-4">
-        <Link href={Routes.Home} className="mb-4 inline-flex items-center gap-2">
+      <div className="flex items-center justify-between px-4 md:px-8 py-3">
+        <Link href={Routes.Home} className="inline-flex items-center gap-2">
           <Image src="/logo.svg" alt="Budget Ndio Story" width={140} height={28} className="h-6 w-auto" />
         </Link>
         <PageBreadcrumbs

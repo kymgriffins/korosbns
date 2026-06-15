@@ -170,8 +170,7 @@ export default function RegisterPage() {
 
   return (
     <GuestOnly>
-      <div className="w-full max-w-md mx-auto">
-        <AuthShell
+      <AuthShell
           title={
             step === 1 ? "What matters most?" :
             step === 2 ? "Where do you live?" :
@@ -410,7 +409,6 @@ export default function RegisterPage() {
             </Link>
           </p>
         </AuthShell>
-      </div>
-    </GuestOnly>
+      </GuestOnly>
   );
 }
