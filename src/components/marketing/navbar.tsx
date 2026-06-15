@@ -159,11 +159,9 @@ const Navbar = () => {
               </motion.div>
             </div>
           </div>
+          <MobileMenu isOpen={isOpen} setIsOpen={setIsOpen} />
         </div>
       </motion.header>
-
-      {/* Mobile full-screen overlay menu */}
-      <MobileMenu isOpen={isOpen} setIsOpen={setIsOpen} />
     </div>
   );
 };
