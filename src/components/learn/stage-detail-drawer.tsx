@@ -1,14 +1,34 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { toast } from "sonner";
-import { ChevronLeft, ChevronRight, PlayCircle, CheckCircle2, ChevronDown, Clock, BookOpen, Star, BookOpenText, Video, Brain } from "lucide-react";
+import { ChevronLeft, ChevronRight, PlayCircle, CheckCircle2, ChevronDown, Clock, BookOpen, Star, BookOpenText, Video, Brain, Loader2 } from "lucide-react";
 import { Button } from "@/ui/button";
 import { learnHubApi } from "@/lib/learn-hub";
 import { useLearn } from "@/contexts/learn-context";
 import { useSidebar } from "@/ui/sidebar";
 import { readProgress, writeProgress } from "@/lib/module-progress";
 import type { CivicModule, ChapterStep, ChapterVideo } from "@/types/learn";
+import {
+  fetchBudgetAllocations,
+  fetchBudgetKpis,
+  fetchBudgetHighlights,
+  allocationsToChartPoints,
+  kpiRawToKpi,
+  allocationToComparisonRows,
+  highlightRawToCallout,
+  type BudgetAllocation,
+  type BudgetKpiRaw,
+  type BudgetHighlightRaw,
+} from "@/lib/budget-api";
+import {
+  BudgetModuleReportOverview,
+  BudgetChapterReportBlocks,
+} from "@/components/budget-news/report-blocks";
+import type {
+  BudgetReportProfile,
+  ChapterReportData,
+} from "@/types/budget-report";
 
 import { StepContent } from "./step-content";
 import { TriviaSection } from "./trivia-section";
@@ -36,6 +56,73 @@ export function StageDetailDrawer({
   const [expandedStep, setExpandedStep] = useState<number | null>(null);
   const [certificateId, setCertificateId] = useState<string | null>(null);
   const [certificateUrl, setCertificateUrl] = useState<string | null>(null);
+
+  // ── Budget data (for financial_year_analysis modules) ──
+  const [budgetAllocations, setBudgetAllocations] = useState<BudgetAllocation[] | null>(null);
+  const [budgetKpis, setBudgetKpis] = useState<BudgetKpiRaw[] | null>(null);
+  const [budgetHighlights, setBudgetHighlights] = useState<BudgetHighlightRaw[] | null>(null);
+  const [budgetLoading, setBudgetLoading] = useState(false);
+
+  const isBudgetModule = stage.is_financial_year_analysis === true;
+
+  useEffect(() => {
+    if (!isBudgetModule || !stage.fiscal_year_id) return;
+    let cancelled = false;
+    setBudgetLoading(true);
+    async function loadBudget() {
+      try {
+        const [allocations, kpis, highlights] = await Promise.all([
+          fetchBudgetAllocations({ fiscal_year: stage.fiscal_year_id! }),
+          fetchBudgetKpis({ fiscal_year: stage.fiscal_year_id! }),
+          fetchBudgetHighlights({ fiscal_year: stage.fiscal_year_id! }),
+        ]);
+        if (cancelled) return;
+        setBudgetAllocations(allocations);
+        setBudgetKpis(kpis);
+        setBudgetHighlights(highlights);
+      } catch {
+        // silently fail — fall back to JSON metadata
+      } finally {
+        if (!cancelled) setBudgetLoading(false);
+      }
+    }
+    loadBudget();
+    return () => { cancelled = true; };
+  }, [isBudgetModule, stage.fiscal_year_id]);
+
+  const budgetReportProfile = useMemo<BudgetReportProfile | null>(() => {
+    if (!budgetAllocations) return null;
+    const approved = budgetAllocations.filter((a) => a.allocation_type === "approved");
+    const proposed = budgetAllocations.filter((a) => a.allocation_type === "proposed");
+    const sectorChart = allocationsToChartPoints(approved, "approved");
+    const comparisonRows = allocationToComparisonRows(budgetAllocations);
+    const kpis = budgetKpis?.map(kpiRawToKpi);
+    const highlights = budgetHighlights?.map(highlightRawToCallout);
+    return {
+      fiscal_year: stage.fiscal_year_label || String(stage.fiscal_year_id),
+      kpis,
+      sector_chart: sectorChart,
+      comparison_rows: comparisonRows,
+      highlights,
+    };
+  }, [budgetAllocations, budgetKpis, budgetHighlights, stage.fiscal_year_label, stage.fiscal_year_id]);
+
+  function getChapterReport(step: ChapterStep | null): ChapterReportData | null {
+    if (!step?.budget_entity_id || !budgetAllocations) return null;
+    const entityAllocs = budgetAllocations.filter((a) => a.entity === step.budget_entity_id);
+    const entityKpis = budgetKpis?.filter((k) => k.entity === step.budget_entity_id).map(kpiRawToKpi);
+    const entityHighlights = budgetHighlights?.filter((h) => h.entity === step.budget_entity_id).map(highlightRawToCallout);
+    const approvedPoints = allocationsToChartPoints(entityAllocs, "approved");
+    const comparisonRows = allocationToComparisonRows(entityAllocs);
+    return {
+      kpis: entityKpis,
+      chart: approvedPoints.length
+        ? { type: "bar", title: step.budget_entity_name || "Sector Allocation", data: approvedPoints, valueLabel: "KES Bn" }
+        : undefined,
+      comparison_rows: comparisonRows,
+      callouts: entityHighlights,
+    };
+  }
 
   useEffect(() => {
     const moduleProgress = readProgress(stage.slug, stage.order);
@@ -296,6 +383,32 @@ export function StageDetailDrawer({
                       <h3 className="text-base font-black">{currentStepObj?.title || stage.title}</h3>
                       <p className="text-xs text-muted-foreground">{stage.description}</p>
                     </div>
+
+                    {isBudgetModule && budgetLoading && (
+                      <div className="space-y-6 py-6">
+                        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+                          {[1, 2, 3, 4].map((i) => (
+                            <div key={i} className="rounded-xl border border-border/60 bg-card/80 p-4 space-y-3 animate-pulse">
+                              <div className="h-3 w-20 bg-muted-foreground/10 rounded" />
+                              <div className="h-6 w-24 bg-muted-foreground/10 rounded" />
+                              <div className="h-3 w-32 bg-muted-foreground/10 rounded" />
+                            </div>
+                          ))}
+                        </div>
+                        <div className="h-[220px] sm:h-[280px] rounded-xl border border-border/60 bg-card/80 animate-pulse flex items-center justify-center">
+                          <Loader2 className="size-5 animate-spin text-muted-foreground/40" />
+                        </div>
+                      </div>
+                    )}
+
+                    {isBudgetModule && !budgetLoading && budgetReportProfile && currentStep === 1 && (
+                      <BudgetModuleReportOverview report={budgetReportProfile} />
+                    )}
+
+                    {isBudgetModule && !budgetLoading && getChapterReport(currentStepObj) && (
+                      <BudgetChapterReportBlocks report={getChapterReport(currentStepObj)!} />
+                    )}
+
                     <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:font-black prose-p:leading-relaxed">
                       <StepContent
                         step={stage.steps[currentStep - 1]}

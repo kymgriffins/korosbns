@@ -189,7 +189,13 @@ export function BudgetBarChart({ config }: { config: BudgetChartConfig }) {
             />
             <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 10 }} width={40} />
             <ChartTooltip content={<ChartTooltipContent />} />
-            <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+            <Bar
+              dataKey="value"
+              radius={[4, 4, 0, 0]}
+              isAnimationActive={true}
+              animationDuration={800}
+              animationEasing="ease-out"
+            >
               {config.data.map((entry, index) => (
                 <Cell key={entry.name} fill={entry.fill ?? SECTOR_COLORS[index % SECTOR_COLORS.length]} />
               ))}
@@ -228,6 +234,9 @@ export function BudgetPieChart({ config }: { config: BudgetChartConfig }) {
               innerRadius="45%"
               outerRadius="80%"
               paddingAngle={2}
+              isAnimationActive={true}
+              animationDuration={800}
+              animationEasing="ease-out"
             >
               {config.data.map((entry, index) => (
                 <Cell key={entry.name} fill={entry.fill ?? SECTOR_COLORS[index % SECTOR_COLORS.length]} />

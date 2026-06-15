@@ -44,6 +44,8 @@ export type ChapterStep = {
   is_locked: boolean;
   learning_outcomes?: LearningOutcome[];
   videos?: ChapterVideo[];
+  budget_entity_id?: string | null;
+  budget_entity_name?: string | null;
 };
 
 export type LearningOutcome = {
@@ -84,6 +86,8 @@ export type CivicModule = {
   image_url?: string;
   order: number;
   is_financial_year_analysis?: boolean;
+  fiscal_year_id?: string | null;
+  fiscal_year_label?: string | null;
   metadata?: Record<string, unknown>;
   steps: ChapterStep[];
   author?: CivicModuleAuthor | null;
