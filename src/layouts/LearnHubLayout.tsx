@@ -40,11 +40,12 @@ import {
 function LearnSidebar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { isLoggedIn, user } = useAuth();
-  const { activeTab, setActiveTab, gamification, activeLesson, civicModules } = useLearn();
+  const { isLoggedIn, loading: userLoading, user } = useAuth();
+  const { activeTab, setActiveTab, gamification, refreshGamification, activeLesson, civicModules } = useLearn();
   const { state, isMobile, setOpenMobile } = useSidebar();
   const isCollapsed = state === "collapsed";
   const level = gamification?.level ?? 1;
+  const noUserYet = userLoading && !user;
   const [showAppCard, setShowAppCard] = useState(true);
   const [events, setEvents] = useState<HubEvent[]>([]);
   const [surveys, setSurveys] = useState<SurveyListItemApi[]>([]);
@@ -209,17 +210,26 @@ function LearnSidebar() {
       <SidebarFooter>
         {isCollapsed ? (
           <div className="flex flex-col items-center gap-2 py-2">
-            <Avatar className="size-7 ring-1 ring-sidebar-border/40">
-              {user?.avatar_url ? (
-                <img src={user.avatar_url} alt="" className="size-full rounded-full object-cover" />
-              ) : (
-                <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-bold">
-                  {user?.first_name?.[0] ?? user?.email?.[0]?.toUpperCase() ?? "?"}
-                </AvatarFallback>
-              )}
-            </Avatar>
-            {isLoggedIn && (
-              <div className="size-7 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-[10px] ring-1 ring-primary/20" title="Level">{level}</div>
+            {noUserYet ? (
+              <div className="flex flex-col items-center gap-2">
+                <div className="size-7 rounded-full bg-muted animate-pulse" />
+                <div className="size-7 rounded-full bg-muted animate-pulse" />
+              </div>
+            ) : (
+              <>
+                <Avatar className="size-7 ring-1 ring-sidebar-border/40">
+                  {user?.avatar_url ? (
+                    <img src={user.avatar_url} alt="" className="size-full rounded-full object-cover" />
+                  ) : (
+                    <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-bold">
+                      {user?.first_name?.[0] ?? user?.email?.[0]?.toUpperCase() ?? "?"}
+                    </AvatarFallback>
+                  )}
+                </Avatar>
+                {isLoggedIn && (
+                  <div className="size-7 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-[10px] ring-1 ring-primary/20" title="Level">{level}</div>
+                )}
+              </>
             )}
           </div>
         ) : (
