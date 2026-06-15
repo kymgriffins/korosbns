@@ -3,8 +3,7 @@
 import { MenuIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
-import { NAV_LINKS, Routes } from "@/constants";
+import { Routes } from "@/constants";
 import MobileMenu from "@/components/marketing/mobile-menu";
 import { Button } from "@/ui/button";
 import Image from "next/image";
@@ -13,15 +12,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { ThemeToggle } from "@/components/marketing/theme-toggle";
 import { motion, AnimatePresence } from "motion/react";
 import { navbarEnter } from "@/motion/variants";
-import { cn } from "@/utils";
-
-function isActiveNav(pathname: string, href: string) {
-  if (href === "/") return pathname === "/";
-  return pathname === href || pathname.startsWith(`${href}/`);
-}
-
 export function Header() {
-  const pathname = usePathname();
   const { isLoggedIn, loading: authLoading, user } = useAuth();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const ref = useClickOutside(() => setIsOpen(false));
@@ -80,25 +71,7 @@ export function Header() {
             </Link>
           </div>
 
-          <nav
-            className="hidden lg:flex min-w-0 flex-1 items-center justify-center gap-0.5"
-            aria-label="Main navigation"
-          >
-            {NAV_LINKS.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "whitespace-nowrap rounded-lg px-2.5 py-1.5 text-sm font-medium transition-colors xl:px-3",
-                  isActiveNav(pathname, item.href)
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:bg-foreground/[0.04] hover:text-foreground"
-                )}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
+          <div className="hidden lg:block flex-1" />
 
           <div className="flex shrink-0 items-center gap-2 md:gap-3">
             <ThemeToggle />
@@ -119,7 +92,6 @@ export function Header() {
               </Link>
             )}
             <motion.div
-              className="lg:hidden"
               whileTap={{ scale: 0.92 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
             >
