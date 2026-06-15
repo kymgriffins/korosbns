@@ -29,11 +29,13 @@ export async function generateMetadata(
       description: `Kenya FY2026/27 budget analysis: ${chapterSlug.replace(/-/g, " ")}.`,
       url: canonicalUrl(`/budgetnews/${slug}/${chapterSlug}`),
       type: "article",
+      images: [{ url: "/logo.svg", width: 1200, height: 630 }],
     },
     twitter: {
       card: "summary_large_image",
       title: `${title} | Budget Ndio Story`,
       description: `Kenya FY2026/27 budget: ${chapterSlug.replace(/-/g, " ")}.`,
+      images: ["/logo.svg"],
     },
   };
 }

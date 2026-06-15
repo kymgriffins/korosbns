@@ -17,7 +17,15 @@ export const metadata: Metadata = {
     title: "Budget Explainers & Video Series | Budget Ndio Story",
     description:
       "Video explainers on Kenya's Finance Bill, budget process, parliamentary debates, and how public funds are allocated.",
-    url: "/learn/videos",
+    url: canonicalUrl("/learn/videos"),
+    images: [{ url: "/logo.svg", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Budget Explainers & Video Series | Budget Ndio Story",
+    description:
+      "Video explainers on Kenya's Finance Bill, budget process, parliamentary debates, and how public funds are allocated.",
+    images: ["/logo.svg"],
   },
 };
 

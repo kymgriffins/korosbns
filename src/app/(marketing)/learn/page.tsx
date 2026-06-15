@@ -26,7 +26,14 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Learn Hub — FY2026/27 Kenya Budget Sector Breakdown | Budget Ndio Story",
     description: "Complete FY2026/27 budget breakdown: Education KES 781.4B, Health KES 175.5B, Security KES 308.6B, Infrastructure KES 230B, Agriculture KES 106.8B, Housing KES 135.8B. Learn through interactive modules and quizzes.",
-    url: "/learn",
+    url: canonicalUrl("/learn"),
+    images: [{ url: "/logo.svg", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Learn Hub — FY2026/27 Kenya Budget Sector Breakdown | Budget Ndio Story",
+    description: "Education KES 781.4B, Health KES 175.5B, Security KES 308.6B, Infrastructure KES 230B. Interactive budget learning with videos, articles, and quests.",
+    images: ["/logo.svg"],
   },
 };
 

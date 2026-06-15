@@ -18,7 +18,15 @@ export const metadata: Metadata = {
     title: "Budget Trivia & Learning Quests | Budget Ndio Story",
     description:
       "Interactive trivia and quests to test your knowledge of Kenya's budget process, Finance Bill, and public finance.",
-    url: "/learn/quests",
+    url: canonicalUrl("/learn/quests"),
+    images: [{ url: "/logo.svg", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Budget Trivia & Learning Quests | Budget Ndio Story",
+    description:
+      "Interactive trivia and quests to test your knowledge of Kenya's budget process, Finance Bill, and public finance.",
+    images: ["/logo.svg"],
   },
 };
 

@@ -28,6 +28,13 @@ export async function generateMetadata(
       title: `${title} | Budget Ndio Story`,
       description: `Financial year analysis of Kenya's ${slug.replace(/-/g, " ")}.`,
       url: canonicalUrl(`/budgetnews/${slug}`),
+      images: [{ url: "/logo.svg", width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | Budget Ndio Story`,
+      description: `Financial year analysis of Kenya's ${slug.replace(/-/g, " ")}.`,
+      images: ["/logo.svg"],
     },
   };
 }

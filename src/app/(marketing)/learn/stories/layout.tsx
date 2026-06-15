@@ -17,7 +17,15 @@ export const metadata: Metadata = {
     title: "Civic Stories & Budget Narratives | Budget Ndio Story",
     description:
       "Swipeable civic explainers making Kenya's budget, Finance Bill, and parliamentary decisions understandable at a glance.",
-    url: "/learn/stories",
+    url: canonicalUrl("/learn/stories"),
+    images: [{ url: "/logo.svg", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Civic Stories & Budget Narratives | Budget Ndio Story",
+    description:
+      "Swipeable civic explainers making Kenya's budget, Finance Bill, and parliamentary decisions understandable at a glance.",
+    images: ["/logo.svg"],
   },
 };
 

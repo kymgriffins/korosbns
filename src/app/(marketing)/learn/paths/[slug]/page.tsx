@@ -14,24 +14,48 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await props.params;
   const edition = await fetchLearningEditionServer(slug).catch(() => null);
+  const canonical = canonicalUrl(`/learn/paths/${slug}`);
+  const ogImage = { url: "/logo.svg", width: 1200, height: 630 };
+
   if (edition) {
+    const edTitle = `${edition.title} | Learning Path | Budget Ndio Story`;
+    const edDesc = edition.summary || `Structured learning path on Kenya's budget process, Finance Bill, and fiscal policy.`;
     return {
-      title: `${edition.title} | Learning Path | Budget Ndio Story`,
-      description: metaDescription(
-        edition.summary || `Structured learning path on Kenya's budget process, Finance Bill, and fiscal policy.`
-      ),
-      alternates: { canonical: canonicalUrl(`/learn/paths/${slug}`) },
+      title: edTitle,
+      description: metaDescription(edDesc),
+      alternates: { canonical },
       openGraph: {
         title: `${edition.title} | Budget Ndio Story`,
-        description: edition.summary || `Learn about Kenya's budget in this structured learning path.`,
-        url: canonicalUrl(`/learn/paths/${slug}`),
+        description: edDesc,
+        url: canonical,
+        images: [ogImage],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: edTitle,
+        description: edDesc,
+        images: ["/logo.svg"],
       },
     };
   }
+  const fbTitle = `Learning Path | Budget Ndio Story`;
+  const fbDesc = `Structured budget literacy content on Kenya's Finance Bill, Appropriation Bill, and parliamentary budget process.`;
   return {
-    title: `Learning Path | Budget Ndio Story`,
-    description: metaDescription(`Structured budget literacy content on Kenya's Finance Bill, Appropriation Bill, and parliamentary budget process.`),
-    alternates: { canonical: canonicalUrl(`/learn/paths/${slug}`) },
+    title: fbTitle,
+    description: metaDescription(fbDesc),
+    alternates: { canonical },
+    openGraph: {
+      title: fbTitle,
+      description: fbDesc,
+      url: canonical,
+      images: [ogImage],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: fbTitle,
+      description: fbDesc,
+      images: ["/logo.svg"],
+    },
   };
 }
 
