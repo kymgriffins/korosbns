@@ -229,6 +229,14 @@ function LearnSidebar() {
                 {isLoggedIn && (
                   <div className="size-7 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-[10px] ring-1 ring-primary/20" title="Level">{level}</div>
                 )}
+                <Link
+                  href="/"
+                  aria-label="Back to main site"
+                  title="Back to main site"
+                  className="mt-1 inline-flex size-7 items-center justify-center rounded-lg text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <ArrowLeft className="size-4" />
+                </Link>
               </>
             )}
           </div>
@@ -285,11 +293,19 @@ function LearnSidebar() {
 
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Main Site">
-                  <Link href="/" target="_blank" rel="noopener noreferrer">
-                    <ExternalLink className="size-4" />
-                    <span>Main site</span>
+                <SidebarMenuButton asChild tooltip="Back to main site">
+                  <Link href="/">
+                    <ArrowLeft className="size-4" />
+                    <span>Back to main site</span>
                   </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Open Learn Hub in new tab">
+                  <a href="/learn" target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="size-4" />
+                    <span>Open in new tab</span>
+                  </a>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -353,14 +369,36 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
         <LearnSidebar />
         <div className="flex flex-col flex-1 h-dvh md:min-h-dvh min-w-0 overflow-hidden">
           <header
-            className={`flex h-12 items-center gap-4 border-b px-4 md:hidden sticky top-0 z-20 transition-all duration-200 ${
+            className={`flex h-12 items-center justify-between gap-2 border-b px-3 md:hidden sticky top-0 z-20 transition-all duration-200 ${
               scrolled
                 ? "bg-background/80 backdrop-blur-lg shadow-xs border-border/50"
                 : "bg-background border-border/30"
             }`}
           >
-            <SidebarTrigger className="-ml-1" />
-            <div className="font-semibold text-sm">Learning Hub</div>
+            <Link href="/learn" className="flex items-center gap-2 min-w-0">
+              <img src="/logo.svg" alt="BNS" className="h-6 w-auto shrink-0" />
+              <span className="font-semibold text-sm truncate">Learning Hub</span>
+            </Link>
+            <div className="flex items-center gap-1">
+              <a
+                href="/learn"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open Learning Hub in a new tab"
+                className="inline-flex size-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <ExternalLink className="size-4" />
+              </a>
+              <ThemeToggle />
+              <Link
+                href="/"
+                aria-label="Back to main site"
+                className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-primary/10 px-2.5 text-xs font-bold text-primary ring-1 ring-primary/20 transition-colors hover:bg-primary/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <ArrowLeft className="size-3.5" />
+                Main site
+              </Link>
+            </div>
           </header>
           <main className="flex-1 overflow-y-auto">{children}</main>
           <div className="md:hidden"><LearnMobileNav /></div>

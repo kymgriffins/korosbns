@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BookOpen, FileText, Home, LayoutDashboard } from "lucide-react";
+import { Bell, BookOpen, FileText, LayoutDashboard } from "lucide-react";
 import { useLearn, type LearnTab } from "@/contexts/learn-context";
 import {
   MobileBottomNav,
@@ -83,18 +83,20 @@ export function LearnMobileNav() {
 
   const items: MobileBottomNavItem[] = [
     {
-      id: "site-home",
-      label: "Home",
-      href: "/",
-      icon: <Home className="size-5" aria-hidden />,
-    },
-    {
       id: "home",
       label: "Dashboard",
       onClick: () => setActiveTab("home"),
       active: activeTab === "home",
       ariaCurrent: activeTab === "home" ? "page" : undefined,
       icon: <LayoutDashboard className="size-5" aria-hidden />,
+    },
+    {
+      id: "documents",
+      label: "Documents",
+      onClick: () => setActiveTab("documents"),
+      active: activeTab === "documents",
+      ariaCurrent: activeTab === "documents" ? "page" : undefined,
+      icon: <FileText className="size-5" aria-hidden />,
     },
     {
       id: "learn",
@@ -106,12 +108,12 @@ export function LearnMobileNav() {
       icon: <BookOpen className="size-5" aria-hidden />,
     },
     {
-      id: "documents",
-      label: "Documents",
-      onClick: () => setActiveTab("documents"),
-      active: activeTab === "documents",
-      ariaCurrent: activeTab === "documents" ? "page" : undefined,
-      icon: <FileText className="size-5" aria-hidden />,
+      id: "alerts",
+      label: "Alerts",
+      onClick: () => setActiveTab("alerts"),
+      active: activeTab === "alerts",
+      ariaCurrent: activeTab === "alerts" ? "page" : undefined,
+      icon: <Bell className="size-5" aria-hidden />,
     },
     {
       id: "profile",
