@@ -13,7 +13,7 @@ import { Routes } from "@/constants/routes";
 
 export function ForumView() {
   const { isLoggedIn } = useAuth();
-  const { data, isLoading } = useForumThreads({});
+  const { data, isLoading, isError, error } = useForumThreads({});
   const [search, setSearch] = useState("");
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
 
@@ -76,6 +76,13 @@ export function ForumView() {
       {isLoading ? (
         <div className="flex items-center justify-center py-16">
           <Loader2 className="size-6 animate-spin text-muted-foreground" />
+        </div>
+      ) : isError ? (
+        <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-destructive/30 bg-destructive/5 px-6 py-12 text-center">
+          <p className="text-sm font-bold text-destructive">Could not load conversations</p>
+          <p className="text-xs text-muted-foreground max-w-md">
+            {error instanceof Error ? error.message : "An unexpected error occurred. Please try again later."}
+          </p>
         </div>
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border bg-muted/15 px-6 py-16 text-center">

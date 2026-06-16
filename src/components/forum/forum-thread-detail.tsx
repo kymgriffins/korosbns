@@ -16,7 +16,7 @@ export function ForumThreadDetail({
   threadId: string;
   onBack: () => void;
 }) {
-  const { data, isLoading } = useForumThread(threadId);
+  const { data, isLoading, isError, error } = useForumThread(threadId);
   const createPost = useCreateForumPost();
   const { isLoggedIn, user } = useAuth();
 
@@ -48,6 +48,12 @@ export function ForumThreadDetail({
       {isLoading ? (
         <div className="flex flex-1 items-center justify-center">
           <Loader2 className="size-5 animate-spin text-muted-foreground" />
+        </div>
+      ) : isError ? (
+        <div className="flex flex-1 items-center justify-center">
+          <p className="text-xs text-destructive font-semibold">
+            {error instanceof Error ? error.message : "Could not load thread."}
+          </p>
         </div>
       ) : thread ? (
         <div className="flex-1 space-y-4 overflow-y-auto pb-4 [scrollbar-width:thin]">

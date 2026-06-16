@@ -13,6 +13,9 @@ import {
   BudgetArticleBody,
   BudgetChapterReportBlocks,
   BudgetReportToc,
+  getArticleHeadings,
+  ArticleSectionToc,
+  MobileArticleToc,
 } from "@/components/budget-news/report-blocks";
 
 function ChapterContent({
@@ -93,6 +96,7 @@ function ChapterContent({
   const chapterReport = resolveChapterReport(chapter.report);
   const fiscalYear =
     (mod.metadata?.report as { fiscal_year?: string } | undefined)?.fiscal_year ?? "2026/27";
+  const articleHeadings = getArticleHeadings(chapter.text || "");
 
   return (
     <div className="min-h-screen bg-background">
@@ -123,6 +127,8 @@ function ChapterContent({
           <h1 className="text-3xl sm:text-4xl font-bold mb-6">{chapter.title}</h1>
 
           <BudgetChapterReportBlocks report={chapterReport} />
+
+          <MobileArticleToc headings={articleHeadings} />
 
           <BudgetArticleBody text={chapter.text || ""} imageUrls={chapter.image_urls} />
         </div>
@@ -166,13 +172,18 @@ function ChapterContent({
         </nav>
         </div>
 
-        {(mod.steps?.length ?? 0) > 0 && (
-          <aside className="hidden lg:block">
-            <BudgetReportToc
-              chapters={mod.steps}
-              slug={slug}
-              activeSlug={chapterSlug}
-            />
+        {((mod.steps?.length ?? 0) > 0 || articleHeadings.length > 0) && (
+          <aside className="hidden space-y-8 lg:block">
+            {articleHeadings.length > 0 ? (
+              <ArticleSectionToc headings={articleHeadings} />
+            ) : null}
+            {(mod.steps?.length ?? 0) > 0 ? (
+              <BudgetReportToc
+                chapters={mod.steps}
+                slug={slug}
+                activeSlug={chapterSlug}
+              />
+            ) : null}
           </aside>
         )}
       </article>

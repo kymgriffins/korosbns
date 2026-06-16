@@ -13,6 +13,8 @@ import {
   BudgetModuleReportOverview,
   BudgetReportHero,
   BudgetReportToc,
+  ReportSectionToc,
+  MobileSectionToc,
 } from "@/components/budget-news/report-blocks";
 
 function DetailContent({ slug }: { slug: string }) {
@@ -96,6 +98,8 @@ function DetailContent({ slug }: { slug: string }) {
           </div>
         )}
 
+        <MobileSectionToc />
+
         {report ? <BudgetModuleReportOverview report={report} /> : null}
 
         <section>
@@ -155,9 +159,10 @@ function DetailContent({ slug }: { slug: string }) {
         </div>
         </div>
 
-        {chapters.length > 0 && (
-          <aside className="hidden lg:block">
-            <BudgetReportToc chapters={chapters} slug={slug} />
+        {(chapters.length > 0 || report) && (
+          <aside className="hidden space-y-8 lg:block">
+            {report ? <ReportSectionToc /> : null}
+            {chapters.length > 0 ? <BudgetReportToc chapters={chapters} slug={slug} /> : null}
           </aside>
         )}
       </div>

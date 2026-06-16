@@ -13,7 +13,7 @@ import { Routes } from "@/constants/routes";
 
 export function ModuleForum({ moduleId }: { moduleId: string }) {
   const { isLoggedIn } = useAuth();
-  const { data, isLoading } = useForumThreads({ moduleId });
+  const { data, isLoading, isError, error } = useForumThreads({ moduleId });
   const [search, setSearch] = useState("");
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
 
@@ -66,6 +66,13 @@ export function ModuleForum({ moduleId }: { moduleId: string }) {
       {isLoading ? (
         <div className="flex items-center justify-center py-8">
           <Loader2 className="size-5 animate-spin text-muted-foreground" />
+        </div>
+      ) : isError ? (
+        <div className="flex flex-col items-center justify-center rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-8 text-center">
+          <p className="text-xs font-bold text-destructive">Could not load discussions</p>
+          <p className="text-[10px] text-muted-foreground mt-1 max-w-sm">
+            {error instanceof Error ? error.message : "An unexpected error occurred."}
+          </p>
         </div>
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-8 gap-1.5 text-center">

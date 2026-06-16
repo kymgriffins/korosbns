@@ -1,6 +1,6 @@
 "use client";
 
-import { TrendingDown, TrendingUp, Minus, Info, AlertTriangle, Sparkles, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { TrendingDown, TrendingUp, Minus, Info, AlertTriangle, Sparkles, ArrowUpRight, ArrowDownRight, ChevronDown, ListTree } from "lucide-react";
 import { cn } from "@/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/ui/card";
 import { Badge } from "@/ui/badge";
@@ -30,6 +30,11 @@ import {
   LabelList,
   Label,
 } from "recharts";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/ui/collapsible";
 import type {
   BudgetCallout,
   BudgetChartConfig,
@@ -476,20 +481,20 @@ export function BudgetModuleReportOverview({ report }: { report: BudgetReportPro
   return (
     <div className="space-y-8 mb-10">
       {report.executive_summary && (
-        <div className="rounded-xl bg-gradient-to-r from-primary/5 to-transparent border border-primary/10 p-4 sm:p-6">
+        <div id="report-executive-summary" className="rounded-xl bg-gradient-to-r from-primary/5 to-transparent border border-primary/10 p-4 sm:p-6">
           <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
             {report.executive_summary}
           </p>
         </div>
       )}
       {report.kpis?.length ? (
-        <section>
+        <section id="report-kpis">
           <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Key Indicators</h4>
           <BudgetKpiGrid kpis={report.kpis} />
         </section>
       ) : null}
       {(sectorChart || revenueChart || expenditureChart) && (
-        <section>
+        <section id="report-charts">
           <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Charts</h4>
           <div className="grid gap-4 lg:grid-cols-2">
             {sectorChart && <BudgetBarChart config={sectorChart} />}
@@ -499,13 +504,13 @@ export function BudgetModuleReportOverview({ report }: { report: BudgetReportPro
         </section>
       )}
       {report.comparison_rows?.length ? (
-        <section>
+        <section id="report-comparison">
           <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Year-over-Year Comparison</h4>
           <BudgetComparisonTable rows={report.comparison_rows} />
         </section>
       ) : null}
       {report.highlights?.length ? (
-        <section>
+        <section id="report-takeaways">
           <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Key Takeaways</h4>
           <div className="grid gap-3 sm:grid-cols-2">
             {report.highlights.map((callout, i) => (
@@ -619,6 +624,121 @@ export function BudgetArticleBody({ text, imageUrls }: { text: string; imageUrls
         </figure>
       ))}
     </div>
+  );
+}
+
+const REPORT_SECTIONS = [
+  { id: "report-executive-summary", label: "Executive Summary" },
+  { id: "report-kpis", label: "Key Indicators" },
+  { id: "report-charts", label: "Charts" },
+  { id: "report-comparison", label: "Year-over-Year" },
+  { id: "report-takeaways", label: "Key Takeaways" },
+] as const;
+
+export function ReportSectionToc() {
+  return (
+    <nav className="sticky top-20 space-y-1" aria-label="Report sections">
+      <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3 px-3">
+        On this page
+      </p>
+      {REPORT_SECTIONS.map((sec) => (
+        <a
+          key={sec.id}
+          href={`#${sec.id}`}
+          className="block rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-muted/60 hover:text-foreground transition-colors"
+        >
+          {sec.label}
+        </a>
+      ))}
+    </nav>
+  );
+}
+
+export function MobileSectionToc() {
+  return (
+    <Collapsible className="lg:hidden mb-6 rounded-xl border border-border/60 bg-card">
+      <CollapsibleTrigger className="flex w-full items-center justify-between px-4 py-3 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors [&[data-state=open]>svg]:rotate-180">
+        <span className="flex items-center gap-2">
+          <ListTree className="size-4" />
+          Jump to section
+        </span>
+        <ChevronDown className="size-4 transition-transform duration-200" />
+      </CollapsibleTrigger>
+      <CollapsibleContent className="border-t border-border/60 px-4 pb-3 pt-2 space-y-1">
+        {(REPORT_SECTIONS as readonly { id: string; label: string }[]).map((sec) => (
+          <a
+            key={sec.id}
+            href={`#${sec.id}`}
+            className="block rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-muted/60 hover:text-foreground transition-colors"
+          >
+            {sec.label}
+          </a>
+        ))}
+      </CollapsibleContent>
+    </Collapsible>
+  );
+}
+
+export type ArticleHeading = { id: string; label: string };
+
+export function getArticleHeadings(text: string): ArticleHeading[] {
+  const blocks = parseArticleBlocks(text);
+  return blocks
+    .filter((b): b is { type: "heading"; content: string } => b.type === "heading")
+    .map((b) => ({
+      id: b.content.toLowerCase().replace(/\s+/g, "-"),
+      label: b.content,
+    }));
+}
+
+export function ArticleSectionToc({ headings, activeId }: { headings: ArticleHeading[]; activeId?: string }) {
+  if (!headings.length) return null;
+  return (
+    <nav className="sticky top-20 space-y-1" aria-label="Article sections">
+      <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3 px-3">
+        In this article
+      </p>
+      {headings.map((h) => (
+        <a
+          key={h.id}
+          href={`#${h.id}`}
+          className={cn(
+            "block rounded-lg px-3 py-2 text-sm transition-colors",
+            h.id === activeId
+              ? "bg-primary/10 text-primary font-medium"
+              : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
+          )}
+        >
+          {h.label}
+        </a>
+      ))}
+    </nav>
+  );
+}
+
+export function MobileArticleToc({ headings }: { headings: ArticleHeading[] }) {
+  if (!headings.length) return null;
+  return (
+    <Collapsible className="lg:hidden mb-6 rounded-xl border border-border/60 bg-card">
+      <CollapsibleTrigger className="flex w-full items-center justify-between px-4 py-3 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors [&[data-state=open]>svg]:rotate-180">
+        <span className="flex items-center gap-2">
+          <ListTree className="size-4" />
+          On this page
+        </span>
+        <ChevronDown className="size-4 transition-transform duration-200" />
+      </CollapsibleTrigger>
+      <CollapsibleContent className="border-t border-border/60 px-4 pb-3 pt-2 space-y-1">
+        {headings.map((h) => (
+          <a
+            key={h.id}
+            href={`#${h.id}`}
+            className="block rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-muted/60 hover:text-foreground transition-colors"
+          >
+            {h.label}
+          </a>
+        ))}
+      </CollapsibleContent>
+    </Collapsible>
   );
 }
 
