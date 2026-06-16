@@ -120,8 +120,8 @@ export function LearnModulesView({ profile, stages, currentStage, onSelectStage 
                   onClick={() => onSelectStage(stage)}
                 >
                   {stage.image_url ? (
-                    <div className="relative aspect-video w-full -mx-0.5 -mt-0.5 mb-2.5 overflow-hidden rounded-lg ring-1 ring-border/20">
-                      <img src={stage.image_url} alt="" className="w-full h-full object-cover" />
+                    <div className="relative aspect-video w-full -mx-0.5 -mt-0.5 mb-2.5 overflow-hidden rounded-lg ring-1 ring-border/20 bg-muted">
+                      <img src={stage.image_url} alt="" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     </div>
                   ) : null}
                   <div className="flex items-start justify-between mb-2">

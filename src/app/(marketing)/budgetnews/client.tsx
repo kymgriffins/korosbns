@@ -98,11 +98,11 @@ function BudgetNewsCard({ module: mod }: { module: CivicModule }) {
       <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-card hover:bg-accent/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5">
         <div className="flex flex-col sm:flex-row">
           {mod.image_url ? (
-            <div className="relative w-full sm:w-48 lg:w-56 shrink-0 aspect-video sm:aspect-auto sm:min-h-[180px] overflow-hidden">
+            <div className="relative w-full sm:w-48 lg:w-56 shrink-0 aspect-video overflow-hidden bg-muted">
               <img
                 src={mod.image_url}
                 alt=""
-                className="absolute inset-0 w-full h-full object-cover sm:group-hover:scale-105 transition-transform duration-500"
+                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
             </div>
           ) : null}
