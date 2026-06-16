@@ -119,6 +119,11 @@ export function LearnModulesView({ profile, stages, currentStage, onSelectStage 
                   className="group bg-card shadow-xs hover:shadow-sm rounded-xl p-3.5 cursor-pointer hover:bg-accent/30 transition-all flex flex-col ring-1 ring-border/40"
                   onClick={() => onSelectStage(stage)}
                 >
+                  {stage.image_url ? (
+                    <div className="relative aspect-video w-full -mx-0.5 -mt-0.5 mb-2.5 overflow-hidden rounded-lg ring-1 ring-border/20">
+                      <img src={stage.image_url} alt="" className="w-full h-full object-cover" />
+                    </div>
+                  ) : null}
                   <div className="flex items-start justify-between mb-2">
                     <span className="text-xl">{stage.badge || "\uD83D\uDCD8"}</span>
                     <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${

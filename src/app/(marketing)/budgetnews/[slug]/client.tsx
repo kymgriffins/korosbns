@@ -80,7 +80,7 @@ function DetailContent({ slug }: { slug: string }) {
         </Link>
 
         {report ? (
-          <BudgetReportHero title={mod.title} description={mod.description} report={report} />
+          <BudgetReportHero title={mod.title} description={mod.description} report={report} imageUrl={mod.image_url} />
         ) : (
           <div className="mb-8">
             <div className="flex items-center gap-2.5 mb-3">

@@ -150,13 +150,17 @@ export function StepContent({ step, currentStep, totalSteps, activeFormat, showT
 
           {activeFormat === "text" && (
             <div className="w-full max-w-none mx-auto px-4 py-4 md:px-6 md:py-6">
-              {step.image_urls?.[0] && (
-                <div className="mb-6 rounded-xl overflow-hidden border border-border shadow-xs">
-                  <img
-                    src={step.image_urls[0]}
-                    alt={`${step.title} cover image`}
-                    className="w-full h-auto object-contain"
-                  />
+              {step.image_urls && step.image_urls.length > 0 && (
+                <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {step.image_urls.map((url, i) => (
+                    <div key={i} className="rounded-xl overflow-hidden border border-border shadow-xs">
+                      <img
+                        src={url}
+                        alt={`${step.title} image ${i + 1}`}
+                        className="w-full h-auto object-contain"
+                      />
+                    </div>
+                  ))}
                 </div>
               )}
 

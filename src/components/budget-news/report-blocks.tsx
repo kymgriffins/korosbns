@@ -404,14 +404,21 @@ export function BudgetReportHero({
   title,
   description,
   report,
+  imageUrl,
 }: {
   title: string;
   description: string;
   report: BudgetReportProfile;
+  imageUrl?: string;
 }) {
   return (
     <section className="relative overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-br from-primary/8 via-background to-violet-500/5 p-6 sm:p-10">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent pointer-events-none" />
+      {imageUrl && (
+        <div className="absolute inset-0 opacity-[0.07] pointer-events-none">
+          <img src={imageUrl} alt="" className="w-full h-full object-cover" />
+        </div>
+      )}
       <div className="relative">
         <div className="flex flex-wrap items-center gap-2 mb-4">
           <Badge className="bg-primary/90 text-primary-foreground">FY{report.fiscal_year} Report</Badge>
