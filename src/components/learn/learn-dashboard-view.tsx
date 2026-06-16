@@ -147,12 +147,19 @@ export function LearnDashboardView({
                   className="flex flex-col items-center gap-1 shrink-0 group focus-visible:ring-2 focus-visible:ring-ring rounded-lg p-0.5"
                 >
                   <div className={cn(
-                    "size-13 rounded-full p-[2.5px] bg-gradient-to-br",
-                    gradientRing(i),
+                    "size-13 rounded-full p-[2.5px] bg-gradient-to-br overflow-hidden",
+                    stage.image_url ? "" : gradientRing(i),
                     "group-hover:scale-105 transition-transform"
                   )}>
-                    <div className="size-full rounded-full bg-card flex items-center justify-center text-lg">
-                      {stage.badge}
+                    <div className={cn(
+                      "size-full rounded-full flex items-center justify-center overflow-hidden",
+                      stage.image_url ? "bg-card" : "bg-card"
+                    )}>
+                      {stage.image_url ? (
+                        <img src={stage.image_url} alt="" className="size-full object-cover" />
+                      ) : (
+                        <span className="text-lg">{stage.badge}</span>
+                      )}
                     </div>
                   </div>
                   <span className="text-[8px] font-semibold text-muted-foreground truncate max-w-13 text-center leading-tight">
