@@ -1,11 +1,23 @@
 "use client";
 
-import React, { useMemo } from "react";
-import { Flame, Sparkles, Award, Globe, Activity, TrendingUp } from "lucide-react";
+import React, { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { toast } from "sonner";
+import {
+  Flame, Sparkles, Award, Globe, Star, Trophy, Lock, Check,
+  Pencil, KeyRound, Bell, LogOut, ChevronDown, ShieldCheck, Loader2, LogIn,
+} from "lucide-react";
 import { Switch } from "@/ui/switch";
+import { Button } from "@/ui/button";
+import { Input } from "@/ui/input";
+import { Label } from "@/ui/label";
 import { BitmojiAvatar } from "./bitmoji-avatar";
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/ui/chart";
+import { cn } from "@/utils";
+import { Routes } from "@/constants/routes";
+import { useAuth } from "@/contexts/auth-context";
+import { useGamificationMe } from "@/hooks/use-gamification";
+import { useUpdateProfile } from "@/hooks/use-profile";
+import { useChangePassword } from "@/hooks/use-auth-actions";
 import type { CivicModule } from "@/types/learn";
 
 interface ProfileViewProps {
@@ -15,166 +27,417 @@ interface ProfileViewProps {
   onUpdateProfile: (updated: any) => void;
 }
 
-export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile }: ProfileViewProps) {
-  const chartData = useMemo(() => [
-    { day: "Mon", xp: 120 },
-    { day: "Tue", xp: 80 },
-    { day: "Wed", xp: 300 },
-    { day: "Thu", xp: 50 },
-    { day: "Fri", xp: 200 },
-    { day: "Sat", xp: profile.sovereigns > 0 ? 150 : 0 },
-    { day: "Sun", xp: 0 },
-  ], [profile.sovereigns]);
+function SectionCard({
+  title, icon, children, className,
+}: { title?: string; icon?: React.ReactNode; children: React.ReactNode; className?: string }) {
+  return (
+    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-5 shadow-xs ring-1 ring-border/40", className)}>
+      {title && (
+        <h3 className="mb-3 flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+          {icon}
+          {title}
+        </h3>
+      )}
+      {children}
+    </div>
+  );
+}
 
-  const chartConfig = { xp: { label: "XP Earned", color: "var(--primary)" } };
+export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile }: ProfileViewProps) {
+  const { user, isLoggedIn, logout } = useAuth();
+  const { data: gamification } = useGamificationMe();
+  const { mutateAsync: updateProfile, isPending: savingProfile } = useUpdateProfile();
+  const { mutateAsync: changePassword, isPending: changingPassword } = useChangePassword();
+
+  const points = gamification?.points ?? profile.sovereigns ?? 0;
+  const level = gamification?.level ?? Math.floor(points / 100) + 1;
+  const streak = gamification?.streak_days ?? profile.streakDays ?? 0;
+  const earnedBadges = gamification?.badges ?? [];
+  const xpIntoLevel = points % 100;
+
+  const displayName =
+    user?.display_name || user?.break_name || profile.breakName || "Citizen";
+  const county = user?.county || profile.county || "Kenya";
+  const ward = user?.ward || profile.ward || "";
+  const avatarUrl = user?.avatar_url || user?.avatar || profile.avatar_url || null;
+
+  const moduleBadges = useMemo(
+    () =>
+      stages.map((stage) => ({
+        key: stage.slug,
+        emoji: stage.badge,
+        name: stage.badgeName || stage.title,
+        unlocked: Boolean(profile.badges?.includes(stage.badge)),
+      })),
+    [stages, profile.badges],
+  );
+  const moduleEarned = moduleBadges.filter((b) => b.unlocked).length;
+
+  // ── Edit profile ──
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [form, setForm] = useState({
+    display_name: "",
+    first_name: "",
+    last_name: "",
+    county: "",
+    ward: "",
+  });
+  useEffect(() => {
+    setForm({
+      display_name: user?.display_name || profile.breakName || "",
+      first_name: user?.first_name || "",
+      last_name: user?.last_name || "",
+      county: user?.county || profile.county || "",
+      ward: user?.ward || profile.ward || "",
+    });
+  }, [user, profile.breakName, profile.county, profile.ward]);
+
+  const saveProfileDetails = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await updateProfile({
+        display_name: form.display_name,
+        first_name: form.first_name,
+        last_name: form.last_name,
+        county: form.county,
+        ward: form.ward,
+        location: form.county,
+      });
+      onUpdateProfile({ ...profile, breakName: form.display_name || profile.breakName, county: form.county, ward: form.ward });
+      window.dispatchEvent(new Event("bns-profile-updated"));
+      toast.success("Profile updated");
+      setEditingProfile(false);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not update profile");
+    }
+  };
+
+  // ── Notifications ──
+  const notificationsEnabled = user?.notifications_enabled ?? profile.notifications ?? true;
+  const whatsappFallback = user?.whatsapp_fallback ?? profile.whatsappFallback ?? false;
+
+  const toggleNotificationSetting = async (
+    key: "notifications_enabled" | "whatsapp_fallback",
+    value: boolean,
+  ) => {
+    const localKey = key === "notifications_enabled" ? "notifications" : "whatsappFallback";
+    onUpdateProfile({ ...profile, [localKey]: value });
+    if (!isLoggedIn) return;
+    try {
+      await updateProfile({ [key]: value });
+      toast.success("Preference saved");
+    } catch {
+      toast.error("Could not save preference");
+    }
+  };
+
+  // ── Password ──
+  const [pw, setPw] = useState({ current: "", next: "", confirm: "" });
+  const [showPwForm, setShowPwForm] = useState(false);
+  const submitPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (pw.next.length < 8) {
+      toast.error("New password must be at least 8 characters");
+      return;
+    }
+    if (pw.next !== pw.confirm) {
+      toast.error("Passwords do not match");
+      return;
+    }
+    try {
+      await changePassword({ currentPassword: pw.current, newPassword: pw.next });
+      toast.success("Password changed");
+      setPw({ current: "", next: "", confirm: "" });
+      setShowPwForm(false);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Could not change password");
+    }
+  };
 
   return (
-    <div className="space-y-4 md:space-y-6 max-w-3xl mx-auto">
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/90 via-primary/80 to-primary/60 p-5 md:p-8 text-primary-foreground shadow-lg">
-        <div className="absolute inset-0 opacity-10 pointer-events-none select-none flex items-center justify-end pr-4 md:pr-8">
-          <Award className="size-24 md:size-36" />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none" />
-        <div className="flex items-center gap-4 md:gap-6 relative">
+    <div className="space-y-4 md:space-y-5 max-w-3xl mx-auto">
+      {/* Hero */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/90 via-primary/80 to-primary/60 p-5 md:p-7 text-primary-foreground shadow-lg">
+        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.07] mix-blend-overlay pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/15 to-transparent pointer-events-none" />
+        <div className="relative flex items-center gap-4 md:gap-5">
           <div className="relative shrink-0">
-            {profile.avatar_url ? (
-              <img src={profile.avatar_url} alt="" className="size-16 md:size-20 rounded-full border-2 border-white/30 shadow-md md:shadow-xl object-cover" />
+            {avatarUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={avatarUrl} alt="" className="size-16 md:size-20 rounded-full border-2 border-white/30 object-cover shadow-md" />
             ) : (
-              <BitmojiAvatar gender={profile.gender} size="xl" className="rounded-full border-2 border-white/30 shadow-md md:shadow-xl" />
+              <BitmojiAvatar gender={profile.gender} size="xl" className="rounded-full border-2 border-white/30 shadow-md" />
             )}
+            <span className="absolute -bottom-1 -right-1 flex h-6 min-w-6 items-center justify-center rounded-full border-2 border-primary bg-white px-1 text-[10px] font-black text-primary shadow">
+              {level}
+            </span>
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[10px] md:text-[10px] font-black uppercase tracking-widest text-white/70 mb-0.5 md:mb-1">Citizen Champion</p>
-            <h2 className="text-base md:text-2xl font-black text-white leading-tight truncate">{profile.breakName}</h2>
-            <p className="text-[10px] md:text-sm text-white/80 font-semibold mt-0.5 md:mt-1 truncate">{profile.county}{profile.ward ? ` · ${profile.ward}` : ""}</p>
+          <div className="min-w-0 flex-1">
+            <p className="mb-0.5 text-[10px] font-black uppercase tracking-widest text-white/70">Citizen Champion</p>
+            <h2 className="truncate text-lg font-black leading-tight text-white md:text-2xl">{displayName}</h2>
+            <p className="mt-0.5 truncate text-[11px] font-semibold text-white/80 md:text-sm">
+              {county}{ward ? ` · ${ward}` : ""}
+            </p>
             <div className="mt-2 md:mt-3">
-              <div className="flex justify-between text-[10px] text-white/70 font-bold mb-1">
-                <span>{profile.sovereigns || 0} XP earned</span>
-                <span>Level {Math.floor((profile.sovereigns || 0) / 100) + 1}</span>
+              <div className="mb-1 flex justify-between text-[10px] font-bold text-white/70">
+                <span>{points} XP</span>
+                <span>{xpIntoLevel}/100 to Lv.{level + 1}</span>
               </div>
-              <div className="h-1.5 md:h-2 rounded-full bg-white/20 overflow-hidden">
+              <div className="h-1.5 overflow-hidden rounded-full bg-white/20 md:h-2">
                 <div
                   className="h-full rounded-full bg-white/90 transition-all duration-700 w-[var(--progress)]"
-                  style={{ "--progress": `${((profile.sovereigns || 0) % 100)}%` } as React.CSSProperties}
+                  style={{ "--progress": `${xpIntoLevel}%` } as React.CSSProperties}
                   role="progressbar"
-                  aria-valuenow={(profile.sovereigns || 0) % 100}
+                  aria-valuenow={xpIntoLevel}
                   aria-valuemin={0}
                   aria-valuemax={100}
-                  aria-label={`XP progress: ${(profile.sovereigns || 0) % 100}%`}
+                  aria-label={`XP progress: ${xpIntoLevel}%`}
                 />
               </div>
             </div>
           </div>
-          <div className="bg-white/20 backdrop-blur border border-white/30 rounded-xl md:rounded-2xl px-3 md:px-4 py-2 md:py-3 text-center shrink-0">
-            <p className="text-lg md:text-2xl font-black text-white leading-none">{Math.floor((profile.sovereigns || 0) / 100) + 1}</p>
-            <p className="text-[10px] md:text-[10px] font-black text-white/80 uppercase tracking-wider">Level</p>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-4 gap-2 md:gap-3">
+        {[
+          { label: "XP", value: points, icon: Sparkles, color: "text-primary", bg: "bg-primary/8 border-primary/20" },
+          { label: "Streak", value: streak, icon: Flame, color: "text-orange-500", bg: "bg-orange-500/8 border-orange-500/20" },
+          { label: "Badges", value: earnedBadges.length + moduleEarned, icon: Award, color: "text-emerald-600", bg: "bg-emerald-500/8 border-emerald-500/20" },
+          { label: "Level", value: level, icon: Star, color: "text-amber-500", bg: "bg-amber-500/8 border-amber-500/20" },
+        ].map((s) => (
+          <div key={s.label} className={cn("space-y-1 rounded-2xl border p-3 text-center", s.bg)}>
+            <s.icon className={cn("mx-auto size-4 md:size-5", s.color)} />
+            <p className={cn("text-sm font-black tabular-nums md:text-xl", s.color)}>{s.value}</p>
+            <p className="text-[9px] font-black uppercase tracking-wider text-muted-foreground">{s.label}</p>
           </div>
-        </div>
+        ))}
       </div>
 
-      <div className="grid grid-cols-3 md:grid-cols-4 gap-2 md:gap-3">
-        <div className="p-3 md:p-4 rounded-2xl border border-orange-500/20 bg-orange-500/8 text-center space-y-1">
-          <Flame className="size-4 md:size-5 fill-orange-500 text-orange-500 mx-auto" />
-          <p className="text-sm md:text-xl font-black text-orange-600">{profile.streakDays || 0}</p>
-          <p className="text-[10px] font-black text-orange-500/80 uppercase tracking-wider">Day Streak</p>
-        </div>
-        <div className="p-3 md:p-4 rounded-2xl border border-primary/20 bg-primary/8 text-center space-y-1">
-          <Sparkles className="size-4 md:size-5 fill-primary text-primary mx-auto" />
-          <p className="text-sm md:text-xl font-black text-primary">{profile.sovereigns || 0}</p>
-          <p className="text-[10px] font-black text-primary/80 uppercase tracking-wider">Sovereigns</p>
-        </div>
-        <div className="p-3 md:p-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/8 text-center space-y-1">
-          <Award className="size-4 md:size-5 text-emerald-600 mx-auto" />
-          <p className="text-sm md:text-xl font-black text-emerald-600">{profile.badges?.length || 0}</p>
-          <p className="text-[10px] font-black text-emerald-600/80 uppercase tracking-wider">Badges</p>
-        </div>
-        <div className="hidden md:block p-4 rounded-2xl border border-sky-500/20 bg-sky-500/8 text-center space-y-1.5">
-          <div className="size-5 text-sky-600 mx-auto" />
-          <p className="text-xl font-black text-sky-600">{profile.stageProgress?.length || 0}</p>
-          <p className="text-[10px] font-black text-sky-600/80 uppercase tracking-wider">Stages Active</p>
-        </div>
-      </div>
-
-      <div className="p-4 md:p-5 border border-border bg-card rounded-2xl space-y-3 shadow-xs md:shadow-sm">
-        <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Badge Collection ({profile.badges?.length || 0}/{stages.length})</h3>
-        <div className="grid grid-cols-4 gap-1.5 md:gap-2">
-          {stages.map((stage) => {
-            const unlocked = profile.badges?.includes(stage.badge);
-            return (
-              <div key={stage.slug} className={`p-1.5 md:p-2 rounded-xl text-center space-y-0.5 transition-all ${
-                unlocked
-                  ? "bg-primary/5 ring-1 ring-primary/20 shadow-xs"
-                  : "bg-muted/20 ring-1 ring-border/30 opacity-35 grayscale"
-              }`}>
-                <div className="text-lg md:text-xl flex justify-center">{stage.badge}</div>
-                <p className="text-[10px] font-bold truncate leading-tight">{stage.badgeName}</p>
+      {/* Earned achievement badges (real gamification data) */}
+      {earnedBadges.length > 0 && (
+        <SectionCard title={`Achievements (${earnedBadges.length})`} icon={<Trophy className="size-3" />}>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+            {earnedBadges.map((badge) => (
+              <div key={badge.slug} className="flex items-center gap-2.5 rounded-xl border border-amber-500/20 bg-gradient-to-br from-amber-500/8 to-transparent p-2.5">
+                <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-amber-500/15 text-lg ring-1 ring-amber-500/25">
+                  {badge.icon || "🏅"}
+                </div>
+                <div className="min-w-0">
+                  <p className="truncate text-[11px] font-bold leading-tight">{badge.name}</p>
+                  {badge.awarded_at && (
+                    <p className="text-[9px] text-muted-foreground">
+                      {new Date(badge.awarded_at).toLocaleDateString("en-KE", { month: "short", day: "numeric", year: "numeric" })}
+                    </p>
+                  )}
+                </div>
               </div>
-            );
-          })}
-        </div>
-      </div>
+            ))}
+          </div>
+        </SectionCard>
+      )}
 
-      {/* Activity chart */}
-      <div className="p-4 md:p-5 border border-border bg-card rounded-2xl space-y-3 shadow-xs md:shadow-sm">
-        <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
-          <Activity className="size-3.5" /> Weekly Activity
-        </h3>
-        <div className="h-[120px]">
-          <ChartContainer config={chartConfig} className="w-full h-full">
-            <BarChart data={chartData} margin={{ top: 8, right: 4, left: -12, bottom: 0 }}>
-              <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.2} />
-              <XAxis dataKey="day" tickLine={false} tickMargin={4} axisLine={false} tick={{ fontSize: 10, fontWeight: 600 }} />
-              <ChartTooltip
-                content={<ChartTooltipContent hideIndicator className="bg-card shadow-md text-xs border-0 rounded-lg" />}
-                cursor={{ fill: "var(--muted)", opacity: 0.15 }}
-              />
-              <Bar dataKey="xp" fill="var(--color-xp)" radius={[4, 4, 0, 0]} barSize={22} />
-            </BarChart>
-          </ChartContainer>
+      {/* Module mastery badges (earned vs locked) */}
+      <SectionCard title={`Module Badges (${moduleEarned}/${moduleBadges.length})`} icon={<Award className="size-3" />}>
+        <div className="grid grid-cols-4 gap-1.5 sm:grid-cols-5 md:gap-2">
+          {moduleBadges.map((b) => (
+            <div
+              key={b.key}
+              title={b.unlocked ? `${b.name} — earned` : `${b.name} — locked`}
+              className={cn(
+                "relative flex flex-col items-center gap-1 rounded-xl p-2 text-center transition-all",
+                b.unlocked
+                  ? "bg-primary/5 ring-1 ring-primary/20 shadow-xs"
+                  : "bg-muted/20 opacity-60 ring-1 ring-border/30",
+              )}
+            >
+              <div className={cn("text-xl md:text-2xl", !b.unlocked && "grayscale")}>{b.emoji}</div>
+              <p className="line-clamp-1 text-[9px] font-bold leading-tight">{b.name}</p>
+              <span
+                className={cn(
+                  "absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full text-white shadow",
+                  b.unlocked ? "bg-emerald-500" : "bg-muted-foreground/40",
+                )}
+              >
+                {b.unlocked ? <Check className="size-2.5" /> : <Lock className="size-2.5" />}
+              </span>
+            </div>
+          ))}
         </div>
-      </div>
+      </SectionCard>
 
-      <div className="p-4 md:p-5 border border-border bg-card rounded-2xl space-y-3 shadow-xs md:shadow-sm">
-        <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest flex items-center gap-1.5">
-          <Globe className="size-3.5" /> Language
-        </h3>
-        <div className="grid grid-cols-3 gap-2 bg-muted p-1 rounded-xl text-xs">
+      {isLoggedIn ? (
+        <>
+          {/* Account details */}
+          <SectionCard>
+            <div className="flex items-center justify-between">
+              <h3 className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                <ShieldCheck className="size-3" /> Account details
+              </h3>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => setEditingProfile((v) => !v)}
+                className="h-7 gap-1 rounded-lg text-[11px] font-bold"
+              >
+                <Pencil className="size-3" /> {editingProfile ? "Cancel" : "Edit"}
+              </Button>
+            </div>
+
+            {editingProfile ? (
+              <form onSubmit={saveProfileDetails} className="mt-3 grid gap-3 sm:grid-cols-2">
+                <div className="space-y-1.5 sm:col-span-2">
+                  <Label htmlFor="p_display" className="text-xs">Display name</Label>
+                  <Input id="p_display" value={form.display_name} onChange={(e) => setForm((f) => ({ ...f, display_name: e.target.value }))} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="p_first" className="text-xs">First name</Label>
+                  <Input id="p_first" value={form.first_name} onChange={(e) => setForm((f) => ({ ...f, first_name: e.target.value }))} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="p_last" className="text-xs">Last name</Label>
+                  <Input id="p_last" value={form.last_name} onChange={(e) => setForm((f) => ({ ...f, last_name: e.target.value }))} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="p_county" className="text-xs">County</Label>
+                  <Input id="p_county" value={form.county} onChange={(e) => setForm((f) => ({ ...f, county: e.target.value }))} />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="p_ward" className="text-xs">Ward</Label>
+                  <Input id="p_ward" value={form.ward} onChange={(e) => setForm((f) => ({ ...f, ward: e.target.value }))} />
+                </div>
+                <div className="sm:col-span-2">
+                  <Button type="submit" size="sm" disabled={savingProfile} className="rounded-lg text-xs font-bold">
+                    {savingProfile ? <><Loader2 className="size-3.5 animate-spin" /> Saving…</> : "Save changes"}
+                  </Button>
+                </div>
+              </form>
+            ) : (
+              <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2.5 text-xs">
+                <div><dt className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Name</dt><dd className="font-semibold">{user?.display_name || displayName}</dd></div>
+                <div><dt className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Email</dt><dd className="truncate font-semibold">{user?.email || "—"}</dd></div>
+                <div><dt className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">County</dt><dd className="font-semibold">{county}</dd></div>
+                <div><dt className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Ward</dt><dd className="font-semibold">{ward || "—"}</dd></div>
+              </dl>
+            )}
+          </SectionCard>
+
+          {/* Notifications */}
+          <SectionCard title="Notifications" icon={<Bell className="size-3" />}>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h4 className="text-xs font-bold">Push notifications</h4>
+                  <p className="text-[10px] text-muted-foreground">Comment alerts and reminders.</p>
+                </div>
+                <Switch checked={notificationsEnabled} onCheckedChange={(c) => void toggleNotificationSetting("notifications_enabled", c)} />
+              </div>
+              <div className="flex items-center justify-between gap-3 border-t border-border/40 pt-3">
+                <div>
+                  <h4 className="text-xs font-bold">WhatsApp fallback</h4>
+                  <p className="text-[10px] text-muted-foreground">SMS/WhatsApp if push fails.</p>
+                </div>
+                <Switch checked={whatsappFallback} onCheckedChange={(c) => void toggleNotificationSetting("whatsapp_fallback", c)} />
+              </div>
+            </div>
+          </SectionCard>
+
+          {/* Password */}
+          <SectionCard>
+            <button
+              type="button"
+              onClick={() => setShowPwForm((v) => !v)}
+              className="flex w-full items-center justify-between text-left focus-visible:outline-none"
+            >
+              <h3 className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                <KeyRound className="size-3" /> Change password
+              </h3>
+              <ChevronDown className={cn("size-4 text-muted-foreground transition-transform", showPwForm && "rotate-180")} />
+            </button>
+            {showPwForm && (
+              <form onSubmit={submitPassword} className="mt-3 space-y-3">
+                <div className="space-y-1.5">
+                  <Label htmlFor="pw_current" className="text-xs">Current password</Label>
+                  <Input id="pw_current" type="password" autoComplete="current-password" value={pw.current} onChange={(e) => setPw((p) => ({ ...p, current: e.target.value }))} required />
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="pw_new" className="text-xs">New password</Label>
+                    <Input id="pw_new" type="password" autoComplete="new-password" value={pw.next} onChange={(e) => setPw((p) => ({ ...p, next: e.target.value }))} required />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="pw_confirm" className="text-xs">Confirm new</Label>
+                    <Input id="pw_confirm" type="password" autoComplete="new-password" value={pw.confirm} onChange={(e) => setPw((p) => ({ ...p, confirm: e.target.value }))} required />
+                  </div>
+                </div>
+                <Button type="submit" size="sm" disabled={changingPassword} className="rounded-lg text-xs font-bold">
+                  {changingPassword ? <><Loader2 className="size-3.5 animate-spin" /> Updating…</> : "Update password"}
+                </Button>
+              </form>
+            )}
+          </SectionCard>
+        </>
+      ) : (
+        <SectionCard className="border-primary/20 bg-primary/[0.03]">
+          <div className="flex flex-col items-center gap-3 py-2 text-center">
+            <div className="flex size-11 items-center justify-center rounded-full bg-primary/10 text-primary ring-1 ring-primary/20">
+              <LogIn className="size-5" />
+            </div>
+            <div>
+              <h3 className="text-sm font-black">Sign in to manage your account</h3>
+              <p className="mt-1 text-xs text-muted-foreground">Sync progress across devices, edit your details, and secure your badges.</p>
+            </div>
+            <div className="flex gap-2">
+              <Button asChild size="sm" className="rounded-lg text-xs font-bold">
+                <Link href={Routes.Login}>Sign in</Link>
+              </Button>
+              <Button asChild size="sm" variant="outline" className="rounded-lg text-xs font-bold">
+                <Link href={Routes.JoinUs}>Create account</Link>
+              </Button>
+            </div>
+          </div>
+        </SectionCard>
+      )}
+
+      {/* Language */}
+      <SectionCard title="Language" icon={<Globe className="size-3" />}>
+        <div className="grid grid-cols-3 gap-2 rounded-xl bg-muted p-1 text-xs">
           {(["EN", "SW", "SH"] as const).map((lang) => (
             <button
               key={lang}
               onClick={() => onUpdateProfile({ ...profile, language: lang })}
-              className={`py-1.5 font-bold rounded-lg transition-all focus-visible:ring-2 focus-visible:ring-ring ${
-                profile.language === lang
-                  ? "bg-background text-foreground shadow-xs"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
+              className={cn(
+                "rounded-lg py-1.5 font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                profile.language === lang ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground",
+              )}
             >
               {lang === "EN" ? "English" : lang === "SW" ? "Kiswahili" : "Sheng"}
             </button>
           ))}
         </div>
-      </div>
+      </SectionCard>
 
-      <div className="hidden md:block p-5 border border-border bg-card rounded-2xl space-y-4 shadow-sm">
-        <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">App Settings</h3>
-        <div className="grid grid-cols-2 gap-4 border-t border-border pt-4">
-          <div className="flex items-center justify-between text-xs">
-            <div><h4 className="font-bold">Push Notifications</h4><p className="text-[10px] text-muted-foreground">Open comment alerts.</p></div>
-            <Switch checked={profile.notifications} onCheckedChange={(checked) => onUpdateProfile({ ...profile, notifications: checked })} />
-          </div>
-          <div className="flex items-center justify-between text-xs">
-            <div><h4 className="font-bold">WhatsApp Fallback</h4><p className="text-[10px] text-muted-foreground">SMS fallback if push fails.</p></div>
-            <Switch checked={profile.whatsappFallback} onCheckedChange={(checked) => onUpdateProfile({ ...profile, whatsappFallback: checked })} />
-          </div>
-        </div>
+      {/* Actions */}
+      <div className="flex flex-col gap-2 sm:flex-row">
+        {isLoggedIn && (
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => void logout()}
+            className="flex-1 gap-1.5 rounded-xl text-xs font-bold"
+          >
+            <LogOut className="size-3.5" /> Sign out
+          </Button>
+        )}
+        <button
+          onClick={onResetProgress}
+          className="flex-1 rounded-xl border border-destructive/20 py-2.5 text-xs font-bold text-destructive transition-colors hover:bg-destructive/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          Reset local progress
+        </button>
       </div>
-
-      <button
-        onClick={onResetProgress}
-        className="w-full py-2.5 rounded-xl text-xs font-bold border border-destructive/20 text-destructive hover:bg-destructive/5 transition-colors focus-visible:ring-2 focus-visible:ring-ring"
-      >
-        Reset All Progress
-      </button>
     </div>
   );
 }

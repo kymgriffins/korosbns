@@ -49,6 +49,7 @@ export function useUpdateProfile() {
     mutationFn: (body: Partial<UserProfileApi>) => citizenApi.patchMe(body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["me"] });
+      queryClient.invalidateQueries({ queryKey: ["auth", "me"] });
     },
   });
 }
