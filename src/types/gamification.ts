@@ -10,6 +10,40 @@ export type GamificationState = {
   total_progress: number;
 };
 
+export type BadgeState = "earned" | "in_progress" | "locked";
+
+export type BadgeTier = "none" | "bronze" | "silver" | "gold" | "platinum";
+
+export type BadgeProgress = {
+  current: number;
+  target: number;
+  percent: number;
+};
+
+export type BadgeCatalogEntry = {
+  id: string;
+  slug: string;
+  name: string;
+  description?: string;
+  icon?: string;
+  tier: BadgeTier;
+  family: string;
+  condition_type: string;
+  state: BadgeState;
+  progress: BadgeProgress;
+  earned_at: string | null;
+};
+
+export type BadgeCatalogResponse = {
+  results: BadgeCatalogEntry[];
+  summary: {
+    earned: number;
+    in_progress: number;
+    locked: number;
+    total: number;
+  };
+};
+
 export type LeaderboardEntry = {
   rank: number | null;
   name: string | null;

@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api-client";
-import type { GamificationState, LeaderboardEntry, ChallengeData, ReferralData } from "@/types/gamification";
+import type { GamificationState, LeaderboardEntry, ChallengeData, ReferralData, BadgeCatalogResponse } from "@/types/gamification";
 import type { CertificateData } from "@/types/learn";
 import type { ApiListResponse } from "@/types/api";
 
@@ -8,6 +8,15 @@ export function useGamificationMe() {
   return useQuery({
     queryKey: ["gamification", "me"],
     queryFn: () => apiFetch<GamificationState>("/gamification/me/"),
+    staleTime: 1000 * 30,
+    retry: false,
+  });
+}
+
+export function useBadgeCatalog() {
+  return useQuery({
+    queryKey: ["gamification", "badges"],
+    queryFn: () => apiFetch<BadgeCatalogResponse>("/gamification/badges/"),
     staleTime: 1000 * 30,
     retry: false,
   });

@@ -15,10 +15,11 @@ import { BitmojiAvatar } from "./bitmoji-avatar";
 import { cn } from "@/utils";
 import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
-import { useGamificationMe } from "@/hooks/use-gamification";
+import { useGamificationMe, useBadgeCatalog } from "@/hooks/use-gamification";
 import { useUpdateProfile } from "@/hooks/use-profile";
 import { useChangePassword } from "@/hooks/use-auth-actions";
 import type { CivicModule } from "@/types/learn";
+import type { BadgeCatalogEntry, BadgeTier } from "@/types/gamification";
 
 interface ProfileViewProps {
   profile: any;
@@ -43,9 +44,92 @@ function SectionCard({
   );
 }
 
+const TIER_STYLES: Record<BadgeTier, { label: string; chip: string }> = {
+  none: { label: "", chip: "bg-primary/10 text-primary ring-primary/20" },
+  bronze: { label: "Bronze", chip: "bg-orange-500/12 text-orange-700 ring-orange-500/25" },
+  silver: { label: "Silver", chip: "bg-slate-400/15 text-slate-600 ring-slate-400/30" },
+  gold: { label: "Gold", chip: "bg-amber-400/15 text-amber-700 ring-amber-400/30" },
+  platinum: { label: "Platinum", chip: "bg-cyan-500/12 text-cyan-700 ring-cyan-500/25" },
+};
+
+function CatalogBadgeCard({ badge }: { badge: BadgeCatalogEntry }) {
+  const tier = TIER_STYLES[badge.tier] ?? TIER_STYLES.none;
+  const isEarned = badge.state === "earned";
+  const isLocked = badge.state === "locked";
+  const percent = Math.max(0, Math.min(100, badge.progress?.percent ?? 0));
+
+  return (
+    <div
+      title={`${badge.name} — ${badge.state.replace("_", " ")}`}
+      className={cn(
+        "relative flex flex-col gap-2 rounded-xl border p-3 transition-all",
+        isEarned
+          ? "border-emerald-500/25 bg-gradient-to-br from-emerald-500/8 to-transparent shadow-xs"
+          : isLocked
+            ? "border-border/40 bg-muted/20 opacity-70"
+            : "border-primary/20 bg-primary/[0.04]",
+      )}
+    >
+      <div className="flex items-start gap-2.5">
+        <div
+          className={cn(
+            "flex size-9 shrink-0 items-center justify-center rounded-full text-lg ring-1",
+            isEarned ? "bg-emerald-500/15 ring-emerald-500/25" : "bg-muted ring-border/40",
+            isLocked && "grayscale",
+          )}
+        >
+          {badge.icon || "🏅"}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-[11px] font-bold leading-tight">{badge.name}</p>
+          {tier.label && (
+            <span className={cn("mt-0.5 inline-block rounded-full px-1.5 py-px text-[8px] font-black uppercase tracking-wider ring-1", tier.chip)}>
+              {tier.label}
+            </span>
+          )}
+        </div>
+        <span
+          className={cn(
+            "flex size-4 shrink-0 items-center justify-center rounded-full text-white shadow",
+            isEarned ? "bg-emerald-500" : "bg-muted-foreground/40",
+          )}
+        >
+          {isEarned ? <Check className="size-2.5" /> : <Lock className="size-2.5" />}
+        </span>
+      </div>
+
+      {isEarned ? (
+        badge.earned_at && (
+          <p className="text-[9px] text-muted-foreground">
+            Earned {new Date(badge.earned_at).toLocaleDateString("en-KE", { month: "short", day: "numeric", year: "numeric" })}
+          </p>
+        )
+      ) : (
+        <div className="space-y-1">
+          <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+            <div
+              className={cn("h-full rounded-full transition-all duration-700 w-[var(--p)]", isLocked ? "bg-muted-foreground/40" : "bg-primary")}
+              style={{ "--p": `${percent}%` } as React.CSSProperties}
+              role="progressbar"
+              aria-valuenow={percent}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label={`${badge.name} progress: ${percent}%`}
+            />
+          </div>
+          <p className="text-[9px] font-semibold text-muted-foreground tabular-nums">
+            {badge.progress?.current ?? 0}/{badge.progress?.target ?? 0}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile }: ProfileViewProps) {
   const { user, isLoggedIn, logout } = useAuth();
   const { data: gamification } = useGamificationMe();
+  const { data: badgeCatalog } = useBadgeCatalog();
   const { mutateAsync: updateProfile, isPending: savingProfile } = useUpdateProfile();
   const { mutateAsync: changePassword, isPending: changingPassword } = useChangePassword();
 
@@ -61,6 +145,17 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
   const ward = user?.ward || profile.ward || "";
   const avatarUrl = user?.avatar_url || user?.avatar || profile.avatar_url || null;
 
+  // Server-driven badge catalog (earned / in_progress / locked + tiers + progress).
+  const catalog = badgeCatalog?.results ?? [];
+  const hasCatalog = catalog.length > 0;
+  const catalogEarned = useMemo(() => catalog.filter((b) => b.state === "earned"), [catalog]);
+  const catalogInProgress = useMemo(
+    () => catalog.filter((b) => b.state === "in_progress"),
+    [catalog],
+  );
+  const catalogLocked = useMemo(() => catalog.filter((b) => b.state === "locked"), [catalog]);
+
+  // Fallback: client-side module-mastery derivation when the catalog endpoint is empty.
   const moduleBadges = useMemo(
     () =>
       stages.map((stage) => ({
@@ -72,6 +167,10 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
     [stages, profile.badges],
   );
   const moduleEarned = moduleBadges.filter((b) => b.unlocked).length;
+
+  const badgeStatCount = hasCatalog
+    ? badgeCatalog?.summary?.earned ?? catalogEarned.length
+    : earnedBadges.length + moduleEarned;
 
   // ── Edit profile ──
   const [editingProfile, setEditingProfile] = useState(false);
@@ -204,7 +303,7 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
         {[
           { label: "XP", value: points, icon: Sparkles, color: "text-primary", bg: "bg-primary/8 border-primary/20" },
           { label: "Streak", value: streak, icon: Flame, color: "text-orange-500", bg: "bg-orange-500/8 border-orange-500/20" },
-          { label: "Badges", value: earnedBadges.length + moduleEarned, icon: Award, color: "text-emerald-600", bg: "bg-emerald-500/8 border-emerald-500/20" },
+          { label: "Badges", value: badgeStatCount, icon: Award, color: "text-emerald-600", bg: "bg-emerald-500/8 border-emerald-500/20" },
           { label: "Level", value: level, icon: Star, color: "text-amber-500", bg: "bg-amber-500/8 border-amber-500/20" },
         ].map((s) => (
           <div key={s.label} className={cn("space-y-1 rounded-2xl border p-3 text-center", s.bg)}>
@@ -215,57 +314,96 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
         ))}
       </div>
 
-      {/* Earned achievement badges (real gamification data) */}
-      {earnedBadges.length > 0 && (
-        <SectionCard title={`Achievements (${earnedBadges.length})`} icon={<Trophy className="size-3" />}>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-            {earnedBadges.map((badge) => (
-              <div key={badge.slug} className="flex items-center gap-2.5 rounded-xl border border-amber-500/20 bg-gradient-to-br from-amber-500/8 to-transparent p-2.5">
-                <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-amber-500/15 text-lg ring-1 ring-amber-500/25">
-                  {badge.icon || "🏅"}
-                </div>
-                <div className="min-w-0">
-                  <p className="truncate text-[11px] font-bold leading-tight">{badge.name}</p>
-                  {badge.awarded_at && (
-                    <p className="text-[9px] text-muted-foreground">
-                      {new Date(badge.awarded_at).toLocaleDateString("en-KE", { month: "short", day: "numeric", year: "numeric" })}
-                    </p>
-                  )}
-                </div>
+      {hasCatalog ? (
+        <>
+          {/* Earned achievements (server-driven) */}
+          {catalogEarned.length > 0 && (
+            <SectionCard title={`Achievements (${catalogEarned.length})`} icon={<Trophy className="size-3" />}>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {catalogEarned.map((badge) => (
+                  <CatalogBadgeCard key={badge.slug} badge={badge} />
+                ))}
               </div>
-            ))}
-          </div>
-        </SectionCard>
-      )}
+            </SectionCard>
+          )}
 
-      {/* Module mastery badges (earned vs locked) */}
-      <SectionCard title={`Module Badges (${moduleEarned}/${moduleBadges.length})`} icon={<Award className="size-3" />}>
-        <div className="grid grid-cols-4 gap-1.5 sm:grid-cols-5 md:gap-2">
-          {moduleBadges.map((b) => (
-            <div
-              key={b.key}
-              title={b.unlocked ? `${b.name} — earned` : `${b.name} — locked`}
-              className={cn(
-                "relative flex flex-col items-center gap-1 rounded-xl p-2 text-center transition-all",
-                b.unlocked
-                  ? "bg-primary/5 ring-1 ring-primary/20 shadow-xs"
-                  : "bg-muted/20 opacity-60 ring-1 ring-border/30",
-              )}
-            >
-              <div className={cn("text-xl md:text-2xl", !b.unlocked && "grayscale")}>{b.emoji}</div>
-              <p className="line-clamp-1 text-[9px] font-bold leading-tight">{b.name}</p>
-              <span
-                className={cn(
-                  "absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full text-white shadow",
-                  b.unlocked ? "bg-emerald-500" : "bg-muted-foreground/40",
-                )}
-              >
-                {b.unlocked ? <Check className="size-2.5" /> : <Lock className="size-2.5" />}
-              </span>
+          {/* In progress (server-driven progress bars) */}
+          {catalogInProgress.length > 0 && (
+            <SectionCard title={`In Progress (${catalogInProgress.length})`} icon={<Sparkles className="size-3" />}>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {catalogInProgress.map((badge) => (
+                  <CatalogBadgeCard key={badge.slug} badge={badge} />
+                ))}
+              </div>
+            </SectionCard>
+          )}
+
+          {/* Locked badges to discover */}
+          {catalogLocked.length > 0 && (
+            <SectionCard title={`Locked (${catalogLocked.length})`} icon={<Lock className="size-3" />}>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {catalogLocked.map((badge) => (
+                  <CatalogBadgeCard key={badge.slug} badge={badge} />
+                ))}
+              </div>
+            </SectionCard>
+          )}
+        </>
+      ) : (
+        <>
+          {/* Fallback: earned achievement badges from /me */}
+          {earnedBadges.length > 0 && (
+            <SectionCard title={`Achievements (${earnedBadges.length})`} icon={<Trophy className="size-3" />}>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {earnedBadges.map((badge) => (
+                  <div key={badge.slug} className="flex items-center gap-2.5 rounded-xl border border-amber-500/20 bg-gradient-to-br from-amber-500/8 to-transparent p-2.5">
+                    <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-amber-500/15 text-lg ring-1 ring-amber-500/25">
+                      {badge.icon || "🏅"}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="truncate text-[11px] font-bold leading-tight">{badge.name}</p>
+                      {badge.awarded_at && (
+                        <p className="text-[9px] text-muted-foreground">
+                          {new Date(badge.awarded_at).toLocaleDateString("en-KE", { month: "short", day: "numeric", year: "numeric" })}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </SectionCard>
+          )}
+
+          {/* Fallback: client-side module mastery badges (earned vs locked) */}
+          <SectionCard title={`Module Badges (${moduleEarned}/${moduleBadges.length})`} icon={<Award className="size-3" />}>
+            <div className="grid grid-cols-4 gap-1.5 sm:grid-cols-5 md:gap-2">
+              {moduleBadges.map((b) => (
+                <div
+                  key={b.key}
+                  title={b.unlocked ? `${b.name} — earned` : `${b.name} — locked`}
+                  className={cn(
+                    "relative flex flex-col items-center gap-1 rounded-xl p-2 text-center transition-all",
+                    b.unlocked
+                      ? "bg-primary/5 ring-1 ring-primary/20 shadow-xs"
+                      : "bg-muted/20 opacity-60 ring-1 ring-border/30",
+                  )}
+                >
+                  <div className={cn("text-xl md:text-2xl", !b.unlocked && "grayscale")}>{b.emoji}</div>
+                  <p className="line-clamp-1 text-[9px] font-bold leading-tight">{b.name}</p>
+                  <span
+                    className={cn(
+                      "absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full text-white shadow",
+                      b.unlocked ? "bg-emerald-500" : "bg-muted-foreground/40",
+                    )}
+                  >
+                    {b.unlocked ? <Check className="size-2.5" /> : <Lock className="size-2.5" />}
+                  </span>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </SectionCard>
+          </SectionCard>
+        </>
+      )}
 
       {isLoggedIn ? (
         <>
