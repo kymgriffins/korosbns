@@ -97,16 +97,6 @@ const budgetCycleTimeline: TimelineItem[] = [
   },
   {
     id: 8,
-    date: "Jun–Jul 2026",
-    title: "Finance Bill 2026 Debate",
-    description: "Second and third reading of Finance Bill in National Assembly",
-    status: "running",
-    icon: "🔄",
-    details: "Tax proposals under debate: digital services tax, excise adjustments, VAT amendments",
-    impact: "Ongoing Debate",
-  },
-  {
-    id: 9,
     date: "Jul 1, 2026",
     title: "FY 2026/27 Begins",
     description: "New financial year starts under interim spending authority",
@@ -115,7 +105,7 @@ const budgetCycleTimeline: TimelineItem[] = [
     details: "Government operates on provisional authority until Appropriation Act is signed",
   },
   {
-    id: 10,
+    id: 9,
     date: "Aug 2026",
     title: "Appropriation Act Signed",
     description: "Budget becomes law upon Presidential assent",
