@@ -183,7 +183,12 @@ export function LearnDashboardView({
                   onClick={() => onSelectStage(stage)}
                   className="group bg-card rounded-xl overflow-hidden ring-1 ring-border/40 hover:shadow-sm hover:ring-primary/20 transition-all text-left w-full cursor-pointer focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  <div className="aspect-video bg-gradient-to-br from-muted to-muted/50 relative overflow-hidden">
+                  <div className="aspect-video relative overflow-hidden bg-muted">
+                    {stage.image_url ? (
+                      <img src={stage.image_url} alt="" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-br from-muted to-muted/50" />
+                    )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                     <div className="absolute bottom-1.5 left-1.5">
                       <span className="inline-flex px-1.5 py-0.5 rounded text-[8px] font-bold bg-white/20 backdrop-blur text-white ring-1 ring-white/20 leading-tight">
