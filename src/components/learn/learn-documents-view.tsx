@@ -8,7 +8,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/utils";
 import { BitmojiAvatar } from "./bitmoji-avatar";
-import { fetchDocumentsFromAPI, type DocumentType, type DocumentFile, extractPrefixFromFolderName } from "@/constants/documents";
+import { type DocumentType, type DocumentFile, extractPrefixFromFolderName } from "@/constants/documents";
+import { useLearnDocuments } from "@/hooks/use-documents";
 import { COUNTIES } from "@/constants/counties";
 
 type TabFilter = "all" | "tracked" | "commentaries";
@@ -81,9 +82,10 @@ function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }
 }
 
 export function LearnDocumentsView({ profile }: { profile: any }) {
-  const [documents, setDocuments] = useState<DocumentType[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data, isLoading, isError } = useLearnDocuments();
+  const documents = data?.documents ?? [];
+  const loading = isLoading;
+  const error = data?.error ?? (isError ? "The document repository is temporarily unavailable. Please try again later." : null);
   const [selectedFolder, setSelectedFolder] = useState<DocumentType | null>(null);
   const [activeTab, setActiveTab] = useState<TabFilter>("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -94,19 +96,6 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
   const [sortKey, setSortKey] = useState<SortKey>("name-asc");
   const [viewMode, setViewMode] = useState<ViewMode>("table");
   const [page, setPage] = useState(1);
-
-  useEffect(() => {
-    let cancelled = false;
-    fetchDocumentsFromAPI().then((result) => {
-      if (cancelled) return;
-      if (result.error) {
-        setError(result.error);
-      }
-      setDocuments(result.documents);
-      setLoading(false);
-    });
-    return () => { cancelled = true; };
-  }, []);
 
   useEffect(() => { setPage(1); }, [selectedYear, selectedCounty, searchQuery, sortKey]);
 
