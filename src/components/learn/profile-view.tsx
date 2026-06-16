@@ -5,19 +5,22 @@ import Link from "next/link";
 import { toast } from "sonner";
 import {
   Flame, Sparkles, Award, Globe, Star, Trophy, Lock, Check,
-  Pencil, KeyRound, Bell, LogOut, ChevronDown, ShieldCheck, Loader2, LogIn,
+  Pencil, KeyRound, Bell, LogOut, ChevronDown, ShieldCheck, Loader2, LogIn, Download, ExternalLink,
 } from "lucide-react";
 import { Switch } from "@/ui/switch";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
 import { BitmojiAvatar } from "./bitmoji-avatar";
+import { ProfileAvatarEditor } from "./profile-avatar-editor";
 import { cn } from "@/utils";
 import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
-import { useGamificationMe, useBadgeCatalog } from "@/hooks/use-gamification";
+import { useGamificationMe, useBadgeCatalog, useCertificates } from "@/hooks/use-gamification";
 import { useUpdateProfile } from "@/hooks/use-profile";
 import { useChangePassword } from "@/hooks/use-auth-actions";
+import { certificateDownloadHrefFromRecord } from "@/lib/certificate-url";
+import type { Gender } from "./bitmoji-avatar";
 import type { CivicModule } from "@/types/learn";
 import type { BadgeCatalogEntry, BadgeTier } from "@/types/gamification";
 
@@ -130,6 +133,7 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
   const { user, isLoggedIn, logout } = useAuth();
   const { data: gamification } = useGamificationMe();
   const { data: badgeCatalog } = useBadgeCatalog();
+  const { data: certificatesData } = useCertificates();
   const { mutateAsync: updateProfile, isPending: savingProfile } = useUpdateProfile();
   const { mutateAsync: changePassword, isPending: changingPassword } = useChangePassword();
 
@@ -144,6 +148,7 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
   const county = user?.county || profile.county || "Kenya";
   const ward = user?.ward || profile.ward || "";
   const avatarUrl = user?.avatar_url || user?.avatar || profile.avatar_url || null;
+  const certificates = certificatesData?.results ?? gamification?.certificates ?? [];
 
   // Server-driven badge catalog (earned / in_progress / locked + tiers + progress).
   const catalog = badgeCatalog?.results ?? [];
@@ -174,6 +179,11 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
 
   // ── Edit profile ──
   const [editingProfile, setEditingProfile] = useState(false);
+  const [localAvatarUrl, setLocalAvatarUrl] = useState<string | null>(avatarUrl);
+  const [localGender, setLocalGender] = useState<Gender | null>((profile.gender as Gender) ?? null);
+  useEffect(() => {
+    setLocalAvatarUrl(avatarUrl);
+  }, [avatarUrl]);
   const [form, setForm] = useState({
     display_name: "",
     first_name: "",
@@ -261,7 +271,19 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
         <div className="absolute inset-0 bg-gradient-to-t from-black/15 to-transparent pointer-events-none" />
         <div className="relative flex items-center gap-4 md:gap-5">
           <div className="relative shrink-0">
-            {avatarUrl ? (
+            {isLoggedIn ? (
+              <ProfileAvatarEditor
+                avatarUrl={localAvatarUrl}
+                gender={localGender}
+                size="xl"
+                onAvatarUrlChange={setLocalAvatarUrl}
+                onGenderChange={(g) => {
+                  setLocalGender(g);
+                  onUpdateProfile({ ...profile, gender: g });
+                }}
+                onSaved={() => window.dispatchEvent(new Event("bns-profile-updated"))}
+              />
+            ) : avatarUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={avatarUrl} alt="" className="size-16 md:size-20 rounded-full border-2 border-white/30 object-cover shadow-md" />
             ) : (
@@ -403,6 +425,34 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
             </div>
           </SectionCard>
         </>
+      )}
+
+      {certificates.length > 0 && (
+        <SectionCard title={`Certificates (${certificates.length})`} icon={<Award className="size-3" />}>
+          <div className="space-y-2">
+            {certificates.map((cert) => (
+              <a
+                key={cert.id}
+                href={certificateDownloadHrefFromRecord(cert)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 rounded-xl border border-border/50 bg-muted/10 p-3 transition-colors hover:border-primary/30 hover:bg-primary/[0.04]"
+              >
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-lg ring-1 ring-emerald-500/20">
+                  📜
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-xs font-bold">{cert.civic_module_title ?? "Module"}</p>
+                  <p className="text-[10px] text-muted-foreground">
+                    Issued {new Date(cert.issued_at).toLocaleDateString("en-KE", { month: "short", day: "numeric", year: "numeric" })}
+                  </p>
+                </div>
+                <Download className="size-4 shrink-0 text-primary" />
+                <ExternalLink className="size-3.5 shrink-0 text-muted-foreground/50" />
+              </a>
+            ))}
+          </div>
+        </SectionCard>
       )}
 
       {isLoggedIn ? (

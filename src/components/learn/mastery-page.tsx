@@ -40,7 +40,7 @@ export function MasteryPage({ badge, badgeName, title, hasNext, onNextStage, onC
           <Download className="size-4 text-primary group-hover:scale-110 transition-transform" />
           <div className="text-left">
             <p className="text-xs font-bold group-hover:text-primary transition-colors">Download Certificate</p>
-            <p className="text-[9px] text-muted-foreground">PDF — BNS Certified</p>
+            <p className="text-[9px] text-muted-foreground">Printable certificate — BNS Certified</p>
           </div>
           <ExternalLink className="size-3.5 text-muted-foreground/40 group-hover:text-primary transition-colors" />
         </a>

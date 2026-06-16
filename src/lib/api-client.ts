@@ -250,7 +250,7 @@ export async function apiFetch<T = unknown>(
   const { params, auth = false, credentials, _retry, ...init } = config;
   const headers = new Headers(init.headers);
   if (!headers.has("Accept")) headers.set("Accept", "application/json");
-  if (init.body && !headers.has("Content-Type")) {
+  if (init.body && !headers.has("Content-Type") && !(init.body instanceof FormData)) {
     headers.set("Content-Type", "application/json");
   }
 
@@ -410,6 +410,15 @@ export const citizenApi = {
       auth: true,
       body: JSON.stringify(body),
     }),
+  patchMeAvatar: (file: File) => {
+    const form = new FormData();
+    form.append("avatar", file);
+    return apiFetch<UserProfileApi>("/users/me/", {
+      method: "PATCH",
+      auth: true,
+      body: form,
+    });
+  },
 
   getSocialLinks: () =>
     apiFetch<SocialLinkApi[]>("/users/me/social-links/", { auth: true }),

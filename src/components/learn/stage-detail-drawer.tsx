@@ -9,7 +9,9 @@ import { learnHubApi } from "@/lib/learn-hub";
 import { useLearn } from "@/contexts/learn-context";
 import { useSidebar } from "@/ui/sidebar";
 import { readProgress, writeProgress } from "@/lib/module-progress";
-import type { CivicModule, ChapterStep, ChapterVideo, StageTrivia } from "@/types/learn";
+import { triviaForStep } from "@/lib/learn-trivia";
+import { certificateDownloadHref } from "@/lib/certificate-url";
+import type { CivicModule, ChapterStep, ChapterVideo } from "@/types/learn";
 import {
   fetchBudgetAllocations,
   fetchBudgetKpis,
@@ -331,7 +333,7 @@ export function StageDetailDrawer({
   };
 
   useEffect(() => {
-    if (activeTab === "quiz" && triviaForStep(stage.steps[currentStep - 1], currentStep - 1).length === 0) {
+    if (activeTab === "quiz" && triviaForStep(stage, stage.steps[currentStep - 1], currentStep - 1).length === 0) {
       setActiveTab("read");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -366,8 +368,7 @@ export function StageDetailDrawer({
           learnHubApi.completeChapter(lastStep.id).then((res) => {
             if (res.certificate_id) {
               setCertificateId(res.certificate_id);
-              const profileCertUrl = `/api/v1/content/learn/certificates/${res.certificate_id}/download/`;
-              setCertificateUrl(profileCertUrl);
+              setCertificateUrl(certificateDownloadHref(res.certificate_id));
             }
           }).catch(() => {
             console.warn("Failed to complete chapter on server");
@@ -383,24 +384,14 @@ export function StageDetailDrawer({
     setExpandedStep(stepNum);
     setShowTrivia(false);
     const nextStep = stage.steps[stepNum - 1];
-    if (activeTab === "quiz" && triviaForStep(nextStep, stepNum - 1).length === 0) {
+    if (activeTab === "quiz" && triviaForStep(stage, nextStep, stepNum - 1).length === 0) {
       setActiveTab("read");
     }
   };
 
-  // The civic-modules API nests trivia at the MODULE level (stage.trivia), not per
-  // chapter. Prefer per-step trivia when present (future-proof), otherwise surface
-  // the module assessment on the final chapter so quizzes reliably render.
-  const moduleTrivia = stage.trivia ?? [];
-  const triviaForStep = (step: ChapterStep | null | undefined, idx: number): StageTrivia[] => {
-    if (step?.trivia?.length) return step.trivia;
-    const isLast = idx === stage.steps.length - 1;
-    return isLast ? moduleTrivia : [];
-  };
-
   const isMastery = currentStep > stage.steps.length;
   const currentStepObj = currentStep > 0 && !isMastery ? stage.steps[currentStep - 1] : null;
-  const currentStepTrivia = triviaForStep(currentStepObj, currentStep - 1);
+  const currentStepTrivia = triviaForStep(stage, currentStepObj, currentStep - 1);
   const hasQuiz = currentStepTrivia.length > 0;
 
   function resolveYoutubeId(input: string): string | undefined {
@@ -730,7 +721,7 @@ export function StageDetailDrawer({
                         </div>
                         <span className="text-[10px] text-muted-foreground font-semibold shrink-0">10 min</span>
                       </button>
-                      {triviaForStep(step, idx).length > 0 && (
+                      {triviaForStep(stage, step, idx).length > 0 && (
                         <button onClick={() => { selectStep(stepNum); setActiveTab("quiz"); setShowTrivia(true); }}
                           className="w-full flex items-center justify-between py-1 px-2 rounded-lg hover:bg-muted/30 transition-colors text-left group">
                           <div className="flex items-center gap-1.5 min-w-0">

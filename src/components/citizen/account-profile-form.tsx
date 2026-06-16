@@ -19,6 +19,7 @@ import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
 import { citizenApi, type SocialLinkApi } from "@/lib/api-client";
 import { useUpdateProfile, useUpsertSocialLink, useDeleteSocialLink } from "@/hooks/use-profile";
+import { ProfileAvatarEditor } from "@/components/learn/profile-avatar-editor";
 
 const SOCIAL_PLATFORMS = [
   "linkedin",
@@ -178,35 +179,19 @@ export function AccountProfileForm() {
         </div>
 
         <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
-          <div className="shrink-0">
-            {form.avatar_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={form.avatar_url}
-                alt=""
-                className="size-24 rounded-full object-cover ring-2 ring-primary/20"
-              />
-            ) : (
-              <div className="flex size-24 items-center justify-center rounded-full bg-primary/10 text-2xl font-bold text-primary">
-                {(form.display_name || "B").charAt(0).toUpperCase()}
-              </div>
-            )}
-          </div>
-          <div className="flex-1 space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="avatar_url">Avatar image URL</Label>
-              <Input
-                id="avatar_url"
-                type="url"
-                autoComplete="url"
-                placeholder="https://…"
-                value={form.avatar_url}
-                onChange={(e) => setForm((f) => ({ ...f, avatar_url: e.target.value }))}
-              />
-              <p className="text-xs text-muted-foreground">
-                Paste a public image URL for now — direct uploads will arrive with the next API release.
-              </p>
-            </div>
+          <ProfileAvatarEditor
+            avatarUrl={form.avatar_url || null}
+            size="lg"
+            onAvatarUrlChange={(url) => setForm((f) => ({ ...f, avatar_url: url ?? "" }))}
+            onSaved={async () => {
+              await refreshUser();
+            }}
+          />
+          <div className="flex-1 space-y-2">
+            <p className="text-sm font-medium">Profile photo</p>
+            <p className="text-xs text-muted-foreground">
+              Upload a photo or choose a bitmoji avatar. Images are stored securely on your profile.
+            </p>
           </div>
         </div>
 
