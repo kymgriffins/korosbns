@@ -99,19 +99,10 @@ const budgetCycleTimeline: TimelineItem[] = [
     id: 8,
     date: "Jul 1, 2026",
     title: "FY 2026/27 Begins",
-    description: "New financial year starts under interim spending authority",
-    status: "pending",
+    description: "New financial year starts under approved budget estimates",
+    status: "running",
     icon: "🚀",
-    details: "Government operates on provisional authority until Appropriation Act is signed",
-  },
-  {
-    id: 9,
-    date: "Aug 2026",
-    title: "Appropriation Act Signed",
-    description: "Budget becomes law upon Presidential assent",
-    status: "pending",
-    icon: "✍️",
-    details: "Final legal authority for all government spending in FY2026/27",
+    details: "Government transitions to FY2026/27 spending under Parliament-approved estimates from the June budget cycle",
   },
 ];
 
