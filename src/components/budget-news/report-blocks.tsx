@@ -41,6 +41,7 @@ import { formatKesBillions, formatKesTrillions, percentChange, shareOfTotal } fr
 import { filterRealImageUrls, parseArticleBlocks } from "@/lib/budget-report-data";
 import type { ChapterReportData } from "@/types/budget-report";
 import { budgetNewsChapterPath } from "@/constants/routes";
+import { HarmonizedImage } from "@/components/ui/harmonized-image";
 
 const SECTOR_COLORS = [
   "hsl(221 83% 53%)",
@@ -416,7 +417,7 @@ export function BudgetReportHero({
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent pointer-events-none" />
       {imageUrl && (
         <div className="absolute inset-0 opacity-[0.07] pointer-events-none">
-          <img src={imageUrl} alt="" className="w-full h-full object-cover" />
+          <HarmonizedImage src={imageUrl} alt="" className="h-full w-full rounded-none border-0" fallbackLabel="" />
         </div>
       )}
       <div className="relative">
@@ -576,11 +577,12 @@ export function BudgetArticleBody({ text, imageUrls }: { text: string; imageUrls
         if (block.type === "image") {
           return (
             <figure key={i} className="my-6 not-prose">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <HarmonizedImage
                 src={block.src}
                 alt={block.alt}
-                className="w-full rounded-xl border border-border/60 object-cover max-h-[400px]"
+                aspectClassName="aspect-[16/10]"
+                className="w-full rounded-xl"
+                fallbackLabel="Inline image"
               />
               {block.alt && block.alt !== "Chart" && (
                 <figcaption className="mt-2 text-center text-xs text-muted-foreground">{block.alt}</figcaption>
@@ -594,8 +596,7 @@ export function BudgetArticleBody({ text, imageUrls }: { text: string; imageUrls
       })}
       {realImages.map((url, i) => (
         <figure key={`img-${i}`} className="my-6 not-prose">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={url} alt="" className="w-full rounded-xl border border-border/60 object-cover max-h-[400px]" />
+          <HarmonizedImage src={url} alt="" aspectClassName="aspect-[16/10]" className="w-full rounded-xl" fallbackLabel="Inline image" />
         </figure>
       ))}
     </div>

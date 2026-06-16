@@ -7,6 +7,7 @@ import { budgetNewsModulePath } from "@/constants/routes";
 import { learnHubApi } from "@/lib/learn-hub";
 import type { CivicModule } from "@/types/learn";
 import { BudgetNewsErrorBoundary } from "./error-boundary";
+import { HarmonizedImage } from "@/components/ui/harmonized-image";
 
 function BudgetNewsContent() {
   const [modules, setModules] = useState<CivicModule[]>([]);
@@ -97,15 +98,15 @@ function BudgetNewsCard({ module: mod }: { module: CivicModule }) {
     <Link href={href} className="block group">
       <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-card hover:bg-accent/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5">
         <div className="flex flex-col sm:flex-row">
-          {mod.image_url ? (
-            <div className="relative w-full sm:w-48 lg:w-56 shrink-0 aspect-video overflow-hidden bg-muted">
-              <img
-                src={mod.image_url}
-                alt=""
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-          ) : null}
+          <div className="w-full sm:w-48 lg:w-56 shrink-0">
+            <HarmonizedImage
+              src={mod.image_url}
+              alt={mod.title}
+              className="h-full rounded-none border-0 border-r border-border/60"
+              fallbackLabel="Module cover"
+              imageClassName="group-hover:scale-105"
+            />
+          </div>
           <div className="flex-1 p-6 sm:p-8">
             <div className="flex items-start justify-between gap-4 h-full">
               <div className="flex-1 min-w-0">

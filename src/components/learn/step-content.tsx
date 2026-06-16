@@ -8,6 +8,7 @@ import { Sparkles, Lightbulb, AlertTriangle, ChevronLeft, ChevronRight } from "l
 import type { ChapterStep, StageTakeaway, ChapterVideo } from "@/types/learn";
 import { stripHtml } from "@/lib/sanitize";
 import { renderContent } from "@/lib/render-content";
+import { HarmonizedImage } from "@/components/ui/harmonized-image";
 
 interface StepContentProps {
   step: ChapterStep;
@@ -153,13 +154,15 @@ export function StepContent({ step, currentStep, totalSteps, activeFormat, showT
               {step.image_urls && step.image_urls.length > 0 && (
                 <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {step.image_urls.map((url, i) => (
-                    <div key={i} className="rounded-xl overflow-hidden border border-border shadow-xs">
-                      <img
-                        src={url}
-                        alt={`${step.title} image ${i + 1}`}
-                        className="w-full h-auto object-contain"
-                      />
-                    </div>
+                    <HarmonizedImage
+                      key={i}
+                      src={url}
+                      alt={`${step.title} image ${i + 1}`}
+                      aspectClassName="aspect-[4/3]"
+                      className="rounded-xl shadow-xs"
+                      imageClassName="object-contain bg-muted/40"
+                      fallbackLabel="Lesson image"
+                    />
                   ))}
                 </div>
               )}

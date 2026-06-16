@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { ExternalLink, Loader2 } from "lucide-react";
 import { motion } from "motion/react";
@@ -9,6 +8,7 @@ import { isExternalLearnHref, learnItemHref } from "@/lib/learn-hub";
 import { staggerContainer, fadeInUp } from "@/motion/variants";
 import { useReducedMotionSafe } from "@/motion/hooks";
 import { Button } from "@/ui/button";
+import { HarmonizedImage } from "@/components/ui/harmonized-image";
 
 export function LearnContentGrid({
   items,
@@ -57,17 +57,7 @@ function LearnContentCard({ item }: { item: LearnHubItem }) {
 
   const body = (
     <>
-      {item.thumbnail_url ? (
-        <div className="relative aspect-video w-full bg-muted">
-          <Image
-            src={item.thumbnail_url}
-            alt=""
-            fill
-            className="object-cover"
-            sizes="(max-width: 640px) 100vw, 320px"
-          />
-        </div>
-      ) : null}
+      <HarmonizedImage src={item.thumbnail_url} alt={item.title} className="rounded-none border-0" fallbackLabel="Thumbnail" />
       <div className="flex flex-1 flex-col p-4">
         <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
           {item.content_type}

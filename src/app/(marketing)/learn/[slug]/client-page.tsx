@@ -17,6 +17,7 @@ import { Routes } from "@/constants/routes";
 import { articlePlaceholderForSlug } from "@/lib/article-placeholders";
 import { renderContent } from "@/lib/render-content";
 import { scaleIn, fadeInUp, fadeInUpDelay1, fadeInUpDelay2, fadeInUpDelay3 } from "@/motion/variants";
+import { HarmonizedImage } from "@/components/ui/harmonized-image";
 
 type ReaderMode = "loading" | "error" | "article" | "story" | "trivia";
 
@@ -395,14 +396,7 @@ export default function UnifiedReaderClientPage({
             animate="visible"
             className="relative mb-8 h-48 overflow-hidden rounded-[24px] border border-border sm:h-56"
           >
-            <Image
-              src={heroSrc}
-              alt=""
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 672px"
-              priority
-            />
+            <HarmonizedImage src={heroSrc} alt={article.title} className="h-full rounded-none border-0" fallbackLabel="Article cover" />
             <div className={`absolute inset-0 bg-gradient-to-br ${placeholder.accent}`} />
             <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(8,8,12,0.75)_20%,transparent_70%)]" />
           </motion.div>
