@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { BookOpen, FileText, LayoutDashboard, MessagesSquare } from "lucide-react";
 import { useLearn } from "@/contexts/learn-context";
+import { learnTabToHref } from "@/lib/learn-nav";
 import {
   MobileBottomNav,
   type MobileBottomNavItem,
@@ -17,7 +18,7 @@ type StoredProfile = {
 };
 
 export function LearnMobileNav() {
-  const { activeTab, setActiveTab } = useLearn();
+  const { activeTab } = useLearn();
   const [profile, setProfile] = useState<StoredProfile | null>(null);
 
   useEffect(() => {
@@ -70,7 +71,7 @@ export function LearnMobileNav() {
     {
       id: "home",
       label: "Dashboard",
-      onClick: () => setActiveTab("home"),
+      href: learnTabToHref("home"),
       active: activeTab === "home",
       ariaCurrent: activeTab === "home" ? "page" : undefined,
       icon: <LayoutDashboard className="size-5" aria-hidden />,
@@ -78,7 +79,7 @@ export function LearnMobileNav() {
     {
       id: "documents",
       label: "Documents",
-      onClick: () => setActiveTab("documents"),
+      href: learnTabToHref("documents"),
       active: activeTab === "documents",
       ariaCurrent: activeTab === "documents" ? "page" : undefined,
       icon: <FileText className="size-5" aria-hidden />,
@@ -86,7 +87,7 @@ export function LearnMobileNav() {
     {
       id: "learn",
       label: "Learn",
-      onClick: () => setActiveTab("learn"),
+      href: learnTabToHref("learn"),
       active: activeTab === "learn",
       prominent: true,
       ariaCurrent: activeTab === "learn" ? "page" : undefined,
@@ -95,7 +96,7 @@ export function LearnMobileNav() {
     {
       id: "forum",
       label: "Forums",
-      onClick: () => setActiveTab("forum"),
+      href: learnTabToHref("forum"),
       active: activeTab === "forum",
       ariaCurrent: activeTab === "forum" ? "page" : undefined,
       icon: <MessagesSquare className="size-5" aria-hidden />,
@@ -103,7 +104,7 @@ export function LearnMobileNav() {
     {
       id: "profile",
       label: "Profile",
-      onClick: () => setActiveTab("profile"),
+      href: learnTabToHref("profile"),
       active: activeTab === "profile",
       ariaCurrent: activeTab === "profile" ? "page" : undefined,
       icon: profileIcon,

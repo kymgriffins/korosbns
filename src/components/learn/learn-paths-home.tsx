@@ -20,10 +20,12 @@ import {
 import { useLearn } from "@/contexts/learn-context";
 import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
 import { useUpdateProfile } from "@/hooks/use-profile";
 import { learnHubApi } from "@/lib/learn-hub";
+import { learnTabToHref } from "@/lib/learn-nav";
 import { readProgress, clearAllModuleProgress } from "@/lib/module-progress";
 import { useLeaderboard } from "@/hooks/use-gamification";
 import type { CivicModule } from "@/types/learn";
@@ -107,6 +109,7 @@ function saveProfile(profile: any) {
 
 
 export function LearnPathsHome() {
+  const router = useRouter();
   const { isLoggedIn, user: authUser } = useAuth();
   const { civicModules, fetchCivicModules, activeLesson, setActiveLesson, updateCurrentStep, activeTab, setActiveTab, totalStages, modulesLoading, modulesError, refreshModules } = useLearn();
   const stages = civicModules;
@@ -140,6 +143,10 @@ export function LearnPathsHome() {
       setActiveLesson(null);
     }
   }, [selectedStage, setActiveLesson]);
+
+  useEffect(() => {
+    setSelectedStage(null);
+  }, [activeTab]);
 
   useEffect(() => {
     if (isLoggedIn && authUser) {
@@ -458,8 +465,8 @@ export function LearnPathsHome() {
                   stages={stages}
                   currentStage={currentStage}
                   onSelectStage={setSelectedStage}
-                  onNavigateToCurriculum={() => setActiveTab("learn")}
-                  onNavigateToForum={() => setActiveTab("forum")}
+                  onNavigateToCurriculum={() => router.push(learnTabToHref("learn"))}
+                  onNavigateToForum={() => router.push(learnTabToHref("forum"))}
                   leaderboard={leaderboardData?.results}
                 />
               </motion.div>

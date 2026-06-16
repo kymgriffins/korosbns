@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import {
@@ -12,6 +11,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/utils";
 import { LearnProvider, useLearn, type LearnTab } from "@/contexts/learn-context";
+import { LearnTabSync } from "@/components/learn/learn-tab-sync";
+import { learnTabToHref } from "@/lib/learn-nav";
 import { useAuth } from "@/contexts/auth-context";
 import { ThemeToggle } from "@/components/marketing/theme-toggle";
 import { LearnMobileNav } from "@/layouts/LearnMobileNav";
@@ -38,8 +39,6 @@ import {
 } from "@/ui/sidebar";
 
 function LearnSidebar() {
-  const pathname = usePathname();
-  const router = useRouter();
   const { isLoggedIn, loading: userLoading, user } = useAuth();
   const { activeTab, setActiveTab, gamification, refreshGamification, activeLesson, civicModules } = useLearn();
   const { state, isMobile, setOpenMobile } = useSidebar();
@@ -89,7 +88,6 @@ function LearnSidebar() {
   const handleTabChange = (tab: LearnTab) => {
     setActiveTab(tab);
     if (isMobile) setOpenMobile(false);
-    if (pathname !== "/learn") router.push("/learn");
   };
 
   const moduleCount = civicModules.length;
@@ -122,39 +120,45 @@ function LearnSidebar() {
               {navItems.map((item) => (
                 <SidebarMenuItem key={item.key}>
                   <SidebarMenuButton
+                    asChild
                     isActive={activeTab === item.key}
-                    onClick={() => handleTabChange(item.key)}
                     tooltip={item.label}
                     className="py-4 rounded-lg transition-all data-[active=true]:ring-1 data-[active=true]:ring-sidebar-ring/30"
                   >
-                    {item.icon}
-                    <span className="font-semibold text-xs">{item.label}</span>
-                    {item.badge && !isCollapsed && (
-                      <span className="ml-auto flex h-4.5 px-1 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow-xs ring-1 ring-primary/20">{item.badge}</span>
-                    )}
+                    <Link href={learnTabToHref(item.key)} onClick={() => handleTabChange(item.key)}>
+                      {item.icon}
+                      <span className="font-semibold text-xs">{item.label}</span>
+                      {item.badge && !isCollapsed && (
+                        <span className="ml-auto flex h-4.5 px-1 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow-xs ring-1 ring-primary/20">{item.badge}</span>
+                      )}
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
               <SidebarMenuItem>
                 <SidebarMenuButton
+                  asChild
                   isActive={activeTab === "profile"}
-                  onClick={() => handleTabChange("profile")}
                   tooltip="Profile"
                   className="py-4 rounded-lg transition-all data-[active=true]:ring-1 data-[active=true]:ring-sidebar-ring/30"
                 >
-                  <User className="size-4" />
-                  <span className="font-semibold text-xs">Community Profile</span>
+                  <Link href={learnTabToHref("profile")} onClick={() => handleTabChange("profile")}>
+                    <User className="size-4" />
+                    <span className="font-semibold text-xs">Community Profile</span>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton
+                  asChild
                   isActive={activeTab === "forum"}
-                  onClick={() => handleTabChange("forum")}
                   tooltip="Forums"
                   className="py-4 rounded-lg transition-all data-[active=true]:ring-1 data-[active=true]:ring-sidebar-ring/30"
                 >
-                  <MessagesSquare className="size-4" />
-                  <span className="font-semibold text-xs">Forums</span>
+                  <Link href={learnTabToHref("forum")} onClick={() => handleTabChange("forum")}>
+                    <MessagesSquare className="size-4" />
+                    <span className="font-semibold text-xs">Forums</span>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -416,6 +420,7 @@ export default function LearnHubLayout({ children }: { children: React.ReactNode
           <div className="animate-spin size-6 border-2 border-primary border-t-transparent rounded-full" />
         </div>
       }>
+        <LearnTabSync />
         <LearnAppShell>{children}</LearnAppShell>
       </Suspense>
     </LearnProvider>
