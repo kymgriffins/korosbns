@@ -53,14 +53,6 @@ const KenyaFinanceTimeline = dynamic(
   }
 );
 
-const GovernmentPartnerships = dynamic(
-  () => import("@/components/marketing/government-partnerships"),
-  {
-    ssr: false,
-    loading: () => <div className="h-96 w-full bg-background animate-pulse" />,
-  }
-);
-
 const WhatWeDoSection = dynamic(
   () => import("@/components/marketing/what-we-do-section"),
   {
@@ -90,7 +82,6 @@ export default function PremiumLandingClient() {
       <KenyaFinanceTimeline />
       <AlertsSimulator />
       <CloudinaryGallery />
-      <GovernmentPartnerships />
       <LandingYoutube />
       <WhatWeDoSection />
       <LandingTeam />

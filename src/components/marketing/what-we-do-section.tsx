@@ -3,10 +3,37 @@
 import React from "react";
 import { motion } from "motion/react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/ui/button";
 import { ArrowRight } from "lucide-react";
-import { fadeInUp, staggerFast } from "@/motion/variants";
+import { fadeInUp, staggerFast, slideInRight } from "@/motion/variants";
 import { SectionHeader, SectionShell } from "@/layouts/section-shell";
+import { CLOUDINARY_PARTNERSHIPS } from "@/constants/cloudinary";
+
+const STEPS = [
+  {
+    number: "01",
+    title: "Decode",
+    body: "We break down the Budget Policy Statement, County Fiscal Strategy Papers, and appropriations bills into clear, accessible narratives.",
+  },
+  {
+    number: "02",
+    title: "Engage",
+    body: "Through campus forums, barazas, and digital platforms, we create spaces for citizens to participate in budget-making processes.",
+  },
+  {
+    number: "03",
+    title: "Track",
+    body: "We monitor budget execution, flag discrepancies, and equip citizens with tools to demand accountability from their representatives.",
+  },
+];
+
+const PARTNERSHIP_IMAGES = [
+  { src: CLOUDINARY_PARTNERSHIPS.nationalTreasuryWorkshop, alt: "National Treasury workshop", offset: "" },
+  { src: CLOUDINARY_PARTNERSHIPS.bpsSession, alt: "Budget Policy Statement session", offset: "mt-6" },
+  { src: CLOUDINARY_PARTNERSHIPS.parliamentEngagement, alt: "Parliament engagement", offset: "-mt-6" },
+  { src: CLOUDINARY_PARTNERSHIPS.fiscalFramework, alt: "Fiscal framework discussion", offset: "" },
+];
 
 const WhatWeDoSection = () => {
   return (
@@ -27,37 +54,50 @@ const WhatWeDoSection = () => {
           description="Decode national and county fiscal documents, create spaces for participation, and equip citizens to track execution and demand accountability."
         />
 
-        <motion.div
-          variants={staggerFast}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-60px" }}
-          className="mb-12 grid gap-10 md:mb-14 md:grid-cols-3 md:gap-14"
-        >
-          <motion.div variants={fadeInUp}>
-            <h3 className="mb-4 text-xl font-bold text-primary md:text-2xl">01. Decode</h3>
-            <p className="leading-relaxed text-muted-foreground">
-              We break down the Budget Policy Statement, County Fiscal Strategy Papers,
-              and appropriations bills into clear, accessible narratives.
-            </p>
+        <div className="mb-12 grid items-center gap-10 md:mb-14 md:grid-cols-2 md:gap-14">
+          <motion.div
+            variants={staggerFast}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-60px" }}
+            className="flex flex-col gap-8"
+          >
+            {STEPS.map((step) => (
+              <motion.div key={step.number} variants={fadeInUp} className="flex gap-4">
+                <span className="shrink-0 font-mono text-2xl font-black tracking-tight text-primary/30 md:text-3xl">
+                  {step.number}
+                </span>
+                <div>
+                  <h3 className="mb-2 text-xl font-bold text-primary md:text-2xl">{step.title}</h3>
+                  <p className="leading-relaxed text-muted-foreground">{step.body}</p>
+                </div>
+              </motion.div>
+            ))}
           </motion.div>
 
-          <motion.div variants={fadeInUp}>
-            <h3 className="mb-4 text-xl font-bold text-primary md:text-2xl">02. Engage</h3>
-            <p className="leading-relaxed text-muted-foreground">
-              Through campus forums, barazas, and digital platforms, we create spaces
-              for citizens to participate in budget-making processes.
-            </p>
+          <motion.div
+            variants={slideInRight}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid w-full max-w-md grid-cols-2 gap-3 sm:mx-auto md:max-w-none"
+          >
+            {PARTNERSHIP_IMAGES.map((image) => (
+              <div
+                key={image.src}
+                className={`relative aspect-[4/5] w-full overflow-hidden rounded-xl border border-border ${image.offset}`}
+              >
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 45vw, 25vw"
+                />
+              </div>
+            ))}
           </motion.div>
-
-          <motion.div variants={fadeInUp}>
-            <h3 className="mb-4 text-xl font-bold text-primary md:text-2xl">03. Track</h3>
-            <p className="leading-relaxed text-muted-foreground">
-              We monitor budget execution, flag discrepancies, and equip citizens
-              with tools to demand accountability from their representatives.
-            </p>
-          </motion.div>
-        </motion.div>
+        </div>
 
         <motion.div
           variants={fadeInUp}
