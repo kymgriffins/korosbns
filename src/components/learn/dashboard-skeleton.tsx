@@ -2,35 +2,28 @@
 
 export function DashboardSkeleton() {
   return (
-    <div className="space-y-2 max-w-6xl mx-auto p-3 md:p-4 pb-20 animate-pulse">
+    <div className="space-y-3 max-w-6xl mx-auto p-3 md:p-5 pb-24 animate-pulse">
       {/* Hero */}
-      <div className="bg-card rounded-xl p-3 ring-1 ring-border/20 h-14 flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="size-9 rounded-full bg-muted/40 shrink-0" />
-          <div className="space-y-1.5">
-            <div className="h-3 bg-muted/30 rounded w-24" />
-            <div className="h-2 bg-muted/20 rounded w-16" />
-          </div>
-        </div>
-        <div className="h-6 w-14 bg-muted/30 rounded-lg" />
-      </div>
+      <div className="bg-muted/30 rounded-2xl p-4 md:p-5 h-28" />
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="bg-card rounded-lg p-2.5 flex items-center gap-2 ring-1 ring-border/20 h-12">
-            <div className="size-7 rounded-md bg-muted/30 shrink-0" />
+          <div key={i} className="bg-card rounded-xl p-3 flex items-center gap-2.5 ring-1 ring-border/20 h-14">
+            <div className="size-9 rounded-lg bg-muted/30 shrink-0" />
             <div className="space-y-1">
-              <div className="h-2 bg-muted/30 rounded w-10" />
-              <div className="h-3 bg-muted/20 rounded w-6" />
+              <div className="h-2 bg-muted/30 rounded w-12" />
+              <div className="h-3 bg-muted/20 rounded w-8" />
             </div>
           </div>
         ))}
       </div>
 
       {/* Main grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-[1fr_240px] gap-2">
-        <div className="space-y-2">
+      <div className="grid grid-cols-1 xl:grid-cols-[1fr_300px] gap-3">
+        <div className="space-y-3">
+          {/* Continue */}
+          <div className="bg-card rounded-2xl p-3 ring-1 ring-border/20 h-28" />
           {/* Stories */}
           <div className="bg-card rounded-xl p-3 ring-1 ring-border/20">
             <div className="h-2.5 bg-muted/30 rounded w-14 mb-2" />
@@ -44,9 +37,9 @@ export function DashboardSkeleton() {
             </div>
           </div>
 
-          {/* Articles */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
-            {Array.from({ length: 3 }).map((_, i) => (
+          {/* Modules */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="bg-card rounded-xl overflow-hidden ring-1 ring-border/20">
                 <div className="aspect-video bg-muted/30" />
                 <div className="p-2 space-y-1.5">

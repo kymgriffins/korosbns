@@ -3,14 +3,15 @@
 import { useMemo } from "react";
 import { motion, type Variants } from "motion/react";
 import {
-  Flame, Award, BookOpen, Trophy, Target,
-  Newspaper, ArrowRight, CircleUser, Zap, TrendingUp,
-  Users, Star, ChevronRight, Video
+  Flame, Award, BookOpen, Trophy, Zap, ArrowRight,
+  ChevronRight, Play, Sparkles, Crown, CircleUser, Newspaper,
 } from "lucide-react";
 import { Button } from "@/ui/button";
 import { BitmojiAvatar } from "./bitmoji-avatar";
 import type { CivicModule } from "@/types/learn";
 import type { LeaderboardEntry } from "@/types/gamification";
+import { useGamificationMe } from "@/hooks/use-gamification";
+import { readProgress } from "@/lib/module-progress";
 import Link from "next/link";
 import { Routes } from "@/constants/routes";
 import { cn } from "@/utils";
@@ -27,15 +28,12 @@ interface LearnDashboardViewProps {
 
 const containerVars: Variants = {
   hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.05 }
-  }
+  show: { opacity: 1, transition: { staggerChildren: 0.05 } },
 };
 
 const itemVars: Variants = {
   hidden: { opacity: 0, y: 12 },
-  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } },
 };
 
 const gradientRing = (i: number) => {
@@ -61,108 +59,177 @@ const quests = [
 export function LearnDashboardView({
   profile, stages, currentStage, onSelectStage, onNavigateToCurriculum, onNavigateToForum, leaderboard,
 }: LearnDashboardViewProps) {
-  const totalBadges = profile.badges?.length || 0;
+  const { data: gamification } = useGamificationMe();
+
+  const points = gamification?.points ?? profile.sovereigns ?? 0;
+  const level = gamification?.level ?? Math.floor(points / 100) + 1;
+  const streak = gamification?.streak_days ?? profile.streakDays ?? 0;
+  const earnedBadges = gamification?.badges?.length ?? profile.badges?.length ?? 0;
+  const xpIntoLevel = points % 100;
+
+  const userRank = leaderboard?.find((l) => l.name === profile.breakName)?.rank ?? null;
+
+  // Resume target: progress within the current stage.
+  const resume = useMemo(() => {
+    if (!currentStage) return null;
+    const p = readProgress(currentStage.slug, currentStage.order);
+    const total = currentStage.steps?.length || 0;
+    const completed = total ? Object.values(p.stepsCompleted ?? {}).filter(Boolean).length : 0;
+    const pct = total ? Math.round((completed / total) * 100) : 0;
+    return { total, completed, pct, currentStep: p.currentStep || 1 };
+  }, [currentStage]);
 
   const leaderboardEntries = useMemo(() => {
-    const entries = (leaderboard ?? []).slice(0, 8).map((entry, i) => ({
+    return (leaderboard ?? []).slice(0, 8).map((entry, i) => ({
       name: entry.name ?? "Anonymous",
       points: entry.points,
       rank: entry.rank ?? i + 1,
       isUser: profile?.breakName?.toLowerCase() === (entry.name ?? "").toLowerCase(),
       avatar_url: entry.avatar_url,
     }));
-    return entries;
   }, [leaderboard, profile]);
+
+  const statTiles = [
+    { label: "Total XP", value: points, icon: Sparkles, color: "text-primary", bg: "bg-primary/8 ring-primary/15" },
+    { label: "Day streak", value: streak, icon: Flame, color: "text-orange-500", bg: "bg-orange-500/8 ring-orange-500/15" },
+    { label: "Badges", value: `${earnedBadges}`, icon: Award, color: "text-emerald-600", bg: "bg-emerald-500/8 ring-emerald-500/15" },
+    { label: "Rank", value: userRank ? `#${userRank}` : "—", icon: Trophy, color: "text-amber-600", bg: "bg-amber-500/8 ring-amber-500/15" },
+  ];
 
   return (
     <motion.div
       variants={containerVars}
       initial="hidden"
       animate="show"
-      className="space-y-2 max-w-6xl mx-auto p-3 md:p-4 pb-20"
+      className="mx-auto max-w-6xl space-y-3 p-3 md:p-5 pb-24"
     >
-      {/* Hero — compact card */}
-      <motion.div variants={itemVars} className="bg-card rounded-xl p-3 ring-1 ring-border/40 shadow-xs flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div className="size-9 rounded-full bg-muted flex items-center justify-center overflow-hidden shrink-0 ring-1 ring-border/40">
-            {profile.avatar_url ? (
-              <img src={profile.avatar_url} alt="" className="size-full object-cover" />
-            ) : (
-              <BitmojiAvatar gender={profile.gender as "male" | "female"} size="sm" />
-            )}
-          </div>
-          <div className="min-w-0">
-            <div className="flex items-center gap-1.5">
-              <h1 className="text-sm font-black truncate">{profile.breakName || "Citizen"}</h1>
-              <span className="size-1 rounded-full bg-muted-foreground/30 shrink-0" />
-              <span className="text-[10px] font-semibold text-muted-foreground truncate">{profile.county || "Kenya"}</span>
+      {/* Hero */}
+      <motion.div
+        variants={itemVars}
+        className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/90 via-primary/80 to-primary/65 p-4 text-primary-foreground shadow-md md:p-5"
+      >
+        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.07] mix-blend-overlay pointer-events-none" />
+        <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="relative shrink-0">
+              <div className="size-12 overflow-hidden rounded-full bg-white/15 ring-2 ring-white/30">
+                {profile.avatar_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={profile.avatar_url} alt="" className="size-full object-cover" />
+                ) : (
+                  <BitmojiAvatar gender={profile.gender as "male" | "female"} size="md" />
+                )}
+              </div>
+              <span className="absolute -bottom-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full border-2 border-primary bg-white px-1 text-[10px] font-black text-primary">
+                {level}
+              </span>
             </div>
-            <p className="text-[10px] text-muted-foreground/70 font-medium">
-              Lv.{Math.floor((profile.sovereigns || 0) / 100) + 1} &middot; {profile.sovereigns || 0} XP
-            </p>
+            <div className="min-w-0">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-white/70">Welcome back</p>
+              <h1 className="truncate text-lg font-black leading-tight md:text-xl">{profile.breakName || "Citizen"}</h1>
+              <p className="truncate text-[11px] font-semibold text-white/75">{profile.county || "Kenya"}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-1.5 rounded-xl bg-white/15 px-3 py-2 ring-1 ring-white/20">
+              <Flame className="size-4 text-amber-300" fill="currentColor" />
+              <span className="text-sm font-black tabular-nums">{streak}</span>
+              <span className="text-[10px] font-bold text-white/70">days</span>
+            </div>
           </div>
         </div>
-        <div className="flex items-center gap-1.5 bg-amber-500/10 rounded-lg px-2 py-1 ring-1 ring-amber-500/20 shrink-0">
-          <Flame className="size-3 text-amber-500" fill="currentColor" />
-          <span className="text-xs font-black tabular-nums text-amber-600">{profile.streakDays || 0}</span>
+        <div className="relative mt-4">
+          <div className="mb-1 flex justify-between text-[10px] font-bold text-white/75">
+            <span>{points} XP</span>
+            <span>{xpIntoLevel}/100 to Level {level + 1}</span>
+          </div>
+          <div className="h-2 overflow-hidden rounded-full bg-white/20">
+            <div
+              className="h-full rounded-full bg-white transition-all duration-700 w-[var(--progress)]"
+              style={{ "--progress": `${xpIntoLevel}%` } as React.CSSProperties}
+            />
+          </div>
         </div>
       </motion.div>
 
-      {/* Stats row */}
-      <motion.div variants={itemVars} className="grid grid-cols-2 md:grid-cols-4 gap-1.5">
-        {[
-          { label: "Modules", value: profile.stageProgress?.length || 0, icon: BookOpen, color: "text-blue-600", bg: "bg-blue-500/8" },
-          { label: "Badges", value: `${totalBadges}/${stages.length}`, icon: Award, color: "text-emerald-600", bg: "bg-emerald-500/8" },
-          { label: "Goal", value: profile.streakDays > 0 ? "Met \u2713" : "Pending", icon: Target, color: profile.streakDays > 0 ? "text-emerald-600" : "text-orange-500", bg: "bg-purple-500/8" },
-          { label: "Rank", value: leaderboard?.find(l => l.name === profile.breakName)?.rank ? `#${leaderboard?.find(l => l.name === profile.breakName)?.rank}` : "\u2014", icon: Trophy, color: "text-amber-600", bg: "bg-amber-500/8" },
-        ].map((stat) => (
-          <div key={stat.label} className="bg-card rounded-lg p-2.5 flex items-center gap-2 ring-1 ring-border/40 shadow-xs">
-            <div className={cn("size-7 rounded-md flex items-center justify-center shrink-0 ring-1 ring-black/[0.02]", stat.bg)}>
-              <stat.icon className={cn("size-3.5", stat.color)} />
+      {/* Stats */}
+      <motion.div variants={itemVars} className="grid grid-cols-2 gap-2 md:grid-cols-4">
+        {statTiles.map((stat) => (
+          <div key={stat.label} className={cn("flex items-center gap-2.5 rounded-xl bg-card p-3 shadow-xs ring-1", stat.bg)}>
+            <div className={cn("flex size-9 shrink-0 items-center justify-center rounded-lg bg-background/60", stat.color)}>
+              <stat.icon className="size-4" />
             </div>
             <div className="min-w-0">
-              <p className="text-[10px] font-semibold text-muted-foreground leading-tight">{stat.label}</p>
-              <p className="text-sm font-black tabular-nums leading-tight">{stat.value}</p>
+              <p className="text-[10px] font-semibold leading-tight text-muted-foreground">{stat.label}</p>
+              <p className="text-base font-black leading-tight tabular-nums">{stat.value}</p>
             </div>
           </div>
         ))}
       </motion.div>
 
-      {/* Main grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-[1fr_240px] gap-2">
-
+      <div className="grid grid-cols-1 gap-3 xl:grid-cols-[1fr_300px]">
         {/* ===== LEFT ===== */}
-        <div className="space-y-2 min-w-0">
+        <div className="min-w-0 space-y-3">
+          {/* Continue learning */}
+          {currentStage && resume && (
+            <motion.button
+              variants={itemVars}
+              onClick={() => onSelectStage(currentStage)}
+              className="group relative flex w-full items-stretch gap-3 overflow-hidden rounded-2xl bg-card p-3 text-left shadow-xs ring-1 ring-border/40 transition-all hover:shadow-md hover:ring-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <div className="relative aspect-square w-24 shrink-0 overflow-hidden rounded-xl bg-muted sm:w-28">
+                {currentStage.image_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={currentStage.image_url} alt="" className="size-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                ) : (
+                  <div className="flex size-full items-center justify-center bg-gradient-to-br from-primary/15 to-primary/5 text-3xl">{currentStage.badge}</div>
+                )}
+              </div>
+              <div className="flex min-w-0 flex-1 flex-col justify-between py-0.5">
+                <div className="space-y-1">
+                  <p className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-primary">
+                    <Play className="size-3" fill="currentColor" /> {resume.pct > 0 ? "Continue learning" : "Start learning"}
+                  </p>
+                  <h3 className="line-clamp-1 text-sm font-black">{currentStage.title}</h3>
+                  <p className="line-clamp-2 text-[11px] leading-snug text-muted-foreground">{currentStage.description}</p>
+                </div>
+                <div className="mt-2 space-y-1">
+                  <div className="flex items-center justify-between text-[10px] font-semibold text-muted-foreground">
+                    <span>{resume.completed}/{resume.total} chapters</span>
+                    <span>{resume.pct}%</span>
+                  </div>
+                  <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+                    <div className="h-full rounded-full bg-primary transition-all w-[var(--p)]" style={{ "--p": `${resume.pct}%` } as React.CSSProperties} />
+                  </div>
+                </div>
+              </div>
+              <ArrowRight className="size-4 shrink-0 self-center text-muted-foreground/40 transition-all group-hover:translate-x-0.5 group-hover:text-primary" />
+            </motion.button>
+          )}
 
-          {/* Stories at the top */}
-          <motion.div variants={itemVars} className="bg-card rounded-xl p-3 ring-1 ring-border/40 shadow-xs">
-            <h2 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5">
-              <CircleUser className="size-3 text-primary" /> Stories
+          {/* Stories strip */}
+          <motion.div variants={itemVars} className="rounded-2xl bg-card p-3 shadow-xs ring-1 ring-border/40">
+            <h2 className="mb-2 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+              <CircleUser className="size-3 text-primary" /> Jump to a module
             </h2>
-            <div className="flex gap-2.5 overflow-x-auto pb-0.5 scrollbar-hide">
+            <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
               {stages.map((stage, i) => (
                 <button
                   key={stage.slug}
                   onClick={() => onSelectStage(stage)}
-                  className="flex flex-col items-center gap-1 shrink-0 group focus-visible:ring-2 focus-visible:ring-ring rounded-lg p-0.5"
+                  className="group flex shrink-0 flex-col items-center gap-1 rounded-lg p-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  <div className={cn(
-                    "size-13 rounded-full p-[2.5px] bg-gradient-to-br overflow-hidden",
-                    stage.image_url ? "" : gradientRing(i),
-                    "group-hover:scale-105 transition-transform"
-                  )}>
-                    <div className={cn(
-                      "size-full rounded-full flex items-center justify-center overflow-hidden",
-                      stage.image_url ? "bg-card" : "bg-card"
-                    )}>
+                  <div className={cn("size-14 overflow-hidden rounded-full bg-gradient-to-br p-[2.5px] transition-transform group-hover:scale-105", stage.image_url ? "from-border to-border" : gradientRing(i))}>
+                    <div className="flex size-full items-center justify-center overflow-hidden rounded-full bg-card">
                       {stage.image_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
                         <img src={stage.image_url} alt="" className="size-full object-cover" />
                       ) : (
                         <span className="text-lg">{stage.badge}</span>
                       )}
                     </div>
                   </div>
-                  <span className="text-[8px] font-semibold text-muted-foreground truncate max-w-13 text-center leading-tight">
+                  <span className="max-w-14 truncate text-center text-[9px] font-semibold leading-tight text-muted-foreground">
                     {stage.badgeName || stage.title}
                   </span>
                 </button>
@@ -170,182 +237,127 @@ export function LearnDashboardView({
             </div>
           </motion.div>
 
-          {/* Articles grid — show video count */}
-          <motion.div variants={itemVars} className="space-y-1.5">
+          {/* Modules grid */}
+          <motion.div variants={itemVars} className="space-y-2">
             <div className="flex items-center justify-between px-0.5">
-              <h2 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+              <h2 className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                 <Newspaper className="size-3 text-primary" /> Learning Modules
               </h2>
               <button
                 onClick={onNavigateToCurriculum}
-                className="text-[9px] font-bold text-primary hover:text-primary/80 transition-colors focus-visible:ring-2 focus-visible:ring-ring rounded uppercase tracking-wider"
+                className="rounded text-[10px] font-bold uppercase tracking-wider text-primary transition-colors hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
-                View All
+                View all
               </button>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5">
-              {stages.slice(0, 6).map((stage, i) => (
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {stages.slice(0, 6).map((stage) => (
                 <button
                   key={stage.slug}
                   onClick={() => onSelectStage(stage)}
-                  className="group bg-card rounded-xl overflow-hidden ring-1 ring-border/40 hover:shadow-sm hover:ring-primary/20 transition-all text-left w-full cursor-pointer focus-visible:ring-2 focus-visible:ring-ring"
+                  className="group flex w-full cursor-pointer flex-col overflow-hidden rounded-xl bg-card text-left ring-1 ring-border/40 shadow-xs transition-all hover:-translate-y-0.5 hover:shadow-md hover:ring-primary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  <div className="aspect-video relative overflow-hidden bg-muted">
+                  <div className="relative aspect-video overflow-hidden bg-muted">
                     {stage.image_url ? (
-                      <img src={stage.image_url} alt="" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={stage.image_url} alt="" className="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-105" />
                     ) : (
-                      <div className="absolute inset-0 bg-gradient-to-br from-muted to-muted/50" />
+                      <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/10 to-muted text-2xl">{stage.badge}</div>
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                    <div className="absolute bottom-1.5 left-1.5">
-                      <span className="inline-flex px-1.5 py-0.5 rounded text-[8px] font-bold bg-white/20 backdrop-blur text-white ring-1 ring-white/20 leading-tight">
-                        {stage.badgeName || stage.badge}
-                      </span>
-                    </div>
-                    <div className="absolute top-1.5 right-1.5 flex items-center gap-1 bg-black/30 backdrop-blur rounded-full px-1.5 py-0.5 text-[8px] text-white/80">
-                      <Video className="size-2.5" />
-                      {stage.steps?.length || 0} videos
-                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
+                    <span className="absolute bottom-1.5 left-1.5 inline-flex rounded px-1.5 py-0.5 text-[9px] font-bold leading-tight text-white ring-1 ring-white/20 backdrop-blur bg-white/15">
+                      {stage.badgeName || stage.badge}
+                    </span>
+                    <span className="absolute right-1.5 top-1.5 inline-flex items-center gap-1 rounded-full bg-black/35 px-1.5 py-0.5 text-[9px] font-semibold text-white/90 backdrop-blur">
+                      <BookOpen className="size-2.5" /> {stage.steps?.length || 0}
+                    </span>
                   </div>
-                  <div className="p-2 space-y-1">
-                    <h3 className="text-[11px] font-bold leading-tight group-hover:text-primary transition-colors line-clamp-2">
-                      {stage.title}
-                    </h3>
-                    <p className="text-[9px] text-muted-foreground line-clamp-2 leading-relaxed">
-                      {stage.description}
-                    </p>
-                    <div className="flex items-center justify-between pt-0.5">
-                      <span className="text-[8px] text-muted-foreground/60">{stage.author?.name ?? stage.archive ?? "BNS"}</span>
-                      <span className="text-[8px] text-muted-foreground/60">{stage.status}</span>
-                    </div>
+                  <div className="space-y-1 p-2.5">
+                    <h3 className="line-clamp-2 text-xs font-bold leading-tight transition-colors group-hover:text-primary">{stage.title}</h3>
+                    <p className="line-clamp-2 text-[10px] leading-relaxed text-muted-foreground">{stage.description}</p>
                   </div>
                 </button>
               ))}
             </div>
           </motion.div>
-
-          {/* Leaderboard + Quests */}
-          <div className="grid grid-cols-1 md:grid-cols-[3fr_1fr] gap-2">
-
-            <motion.div variants={itemVars} className="bg-card rounded-xl p-3 ring-1 ring-border/40 shadow-xs">
-              <div className="flex items-center justify-between mb-1.5">
-                <h3 className="text-[10px] font-bold flex items-center gap-1.5">
-                  <Trophy className="size-3 text-amber-500" /> Top Citizens
-                </h3>
-                <button onClick={onNavigateToForum} className="text-[9px] font-bold text-primary/70 hover:text-primary uppercase tracking-wider focus-visible:ring-2 focus-visible:ring-ring rounded">
-                  All
-                </button>
-              </div>
-              <div className="space-y-0.5 max-h-[220px] overflow-y-auto">
-                {leaderboardEntries.length > 0 ? (
-                  leaderboardEntries.map((entry, i) => (
-                    <div
-                      key={entry.name ?? i}
-                      className={cn(
-                        "flex items-center justify-between py-1 px-2 rounded-lg transition-colors",
-                        entry.isUser ? "bg-primary/5 ring-1 ring-primary/15" : "hover:bg-muted/40"
-                      )}
-                    >
-                      <div className="flex items-center gap-1.5 min-w-0">
-                        <span className={cn(
-                          "w-4 text-center text-[9px] font-black",
-                          entry.rank === 1 ? "text-amber-500" :
-                          entry.rank === 2 ? "text-slate-400" :
-                          entry.rank === 3 ? "text-orange-500" :
-                          "text-muted-foreground"
-                        )}>
-                          {entry.rank <= 3 ? ["\uD83E\uDD47", "\uD83E\uDD48", "\uD83E\uDD49"][entry.rank - 1] : `#${entry.rank}`}
-                        </span>
-                        <div className="size-5 rounded-full bg-muted flex items-center justify-center overflow-hidden shrink-0 ring-1 ring-border/40">
-                          {entry.avatar_url ? (
-                            <img src={entry.avatar_url} alt="" className="size-full object-cover" />
-                          ) : (
-                            <BitmojiAvatar gender={i % 2 === 0 ? "female" : "male"} size="sm" />
-                          )}
-                        </div>
-                        <span className="text-[10px] font-bold truncate">{entry.name}</span>
-                      </div>
-                      <span className="text-[9px] font-semibold tabular-nums text-muted-foreground shrink-0">{entry.points} XP</span>
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-center py-4 text-[10px] text-muted-foreground">
-                    No citizens yet. Start learning!
-                  </div>
-                )}
-              </div>
-            </motion.div>
-
-            <motion.div variants={itemVars} className="bg-card rounded-xl p-3 ring-1 ring-border/40 shadow-xs">
-              <h3 className="text-[10px] font-bold flex items-center gap-1.5 mb-1.5">
-                <Zap className="size-3 text-amber-500" /> Quests
-              </h3>
-              <div className="space-y-1.5">
-                {quests.map((quest) => (
-                  <div key={quest.title} className="flex items-start gap-1.5 p-1.5 rounded-lg hover:bg-muted/30 transition-colors">
-                    <div className={cn("size-6 rounded-md flex items-center justify-center shrink-0 ring-1 ring-black/[0.02]", quest.bg)}>
-                      <quest.icon className={cn("size-3", quest.color)} />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[9px] font-bold leading-tight">{quest.title}</p>
-                      <p className="text-[8px] text-muted-foreground leading-tight">{quest.desc}</p>
-                    </div>
-                    <span className="text-[8px] font-bold tabular-nums text-primary shrink-0">+{quest.xp}</span>
-                  </div>
-                ))}
-              </div>
-              <Button asChild variant="ghost" size="sm" className="w-full mt-1 h-6 text-[9px] font-bold focus-visible:ring-2 focus-visible:ring-ring">
-                <Link href={Routes.LearnQuests}>
-                  All <ChevronRight className="size-2.5 ml-0.5" />
-                </Link>
-              </Button>
-            </motion.div>
-
-          </div>
         </div>
 
-        {/* ===== RIGHT SIDEBAR — Analytics ===== */}
-        <div className="space-y-2">
-          <motion.div variants={itemVars} className="bg-card rounded-xl p-3 ring-1 ring-border/40 shadow-xs">
-            <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-              <TrendingUp className="size-3 text-primary" /> Analytics
-            </h3>
-            <div className="space-y-2">
-              {[
-                { label: "Total XP", value: profile.sovereigns || 0, color: "text-blue-500", bg: "bg-blue-500/10", icon: TrendingUp },
-                { label: "Badges", value: `${totalBadges}/${stages.length}`, color: "text-emerald-500", bg: "bg-emerald-500/10", icon: Award },
-                { label: "Level", value: Math.floor((profile.sovereigns || 0) / 100) + 1, color: "text-purple-500", bg: "bg-purple-500/10", icon: Star },
-                { label: "Streak", value: `${profile.streakDays || 0} days`, color: "text-amber-500", bg: "bg-amber-500/10", icon: Flame },
-                { label: "Modules", value: profile.stageProgress?.length || 0, color: "text-rose-500", bg: "bg-rose-500/10", icon: Users },
-              ].map((stat) => (
-                <div key={stat.label} className="flex items-center justify-between py-1.5 px-2 rounded-lg hover:bg-muted/20 transition-colors">
-                  <div className="flex items-center gap-2">
-                    <div className={cn("size-6 rounded-md flex items-center justify-center", stat.bg)}>
-                      <stat.icon className={cn("size-3", stat.color)} />
+        {/* ===== RIGHT ===== */}
+        <div className="space-y-3">
+          {/* Leaderboard */}
+          <motion.div variants={itemVars} className="rounded-2xl bg-card p-3.5 shadow-xs ring-1 ring-border/40">
+            <div className="mb-2 flex items-center justify-between">
+              <h3 className="flex items-center gap-1.5 text-[11px] font-bold">
+                <Crown className="size-3.5 text-amber-500" /> Top Citizens
+              </h3>
+              {onNavigateToForum && (
+                <button onClick={onNavigateToForum} className="rounded text-[10px] font-bold uppercase tracking-wider text-primary/70 transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                  Forum
+                </button>
+              )}
+            </div>
+            <div className="space-y-0.5">
+              {leaderboardEntries.length > 0 ? (
+                leaderboardEntries.map((entry, i) => (
+                  <div
+                    key={entry.name ?? i}
+                    className={cn(
+                      "flex items-center justify-between rounded-lg px-2 py-1.5 transition-colors",
+                      entry.isUser ? "bg-primary/5 ring-1 ring-primary/15" : "hover:bg-muted/40",
+                    )}
+                  >
+                    <div className="flex min-w-0 items-center gap-2">
+                      <span className={cn(
+                        "w-5 text-center text-[11px] font-black",
+                        entry.rank === 1 ? "text-amber-500" : entry.rank === 2 ? "text-slate-400" : entry.rank === 3 ? "text-orange-500" : "text-muted-foreground",
+                      )}>
+                        {entry.rank <= 3 ? ["🥇", "🥈", "🥉"][entry.rank - 1] : entry.rank}
+                      </span>
+                      <div className="size-6 shrink-0 overflow-hidden rounded-full bg-muted ring-1 ring-border/40">
+                        {entry.avatar_url ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={entry.avatar_url} alt="" className="size-full object-cover" />
+                        ) : (
+                          <BitmojiAvatar gender={i % 2 === 0 ? "female" : "male"} size="sm" />
+                        )}
+                      </div>
+                      <span className="truncate text-[11px] font-bold">{entry.name}</span>
                     </div>
-                    <span className="text-[10px] font-semibold text-muted-foreground">{stat.label}</span>
+                    <span className="shrink-0 text-[10px] font-semibold tabular-nums text-muted-foreground">{entry.points} XP</span>
                   </div>
-                  <span className="text-[11px] font-black tabular-nums">{stat.value}</span>
+                ))
+              ) : (
+                <div className="py-5 text-center text-[11px] text-muted-foreground">No citizens yet. Start learning!</div>
+              )}
+            </div>
+          </motion.div>
+
+          {/* Daily quests */}
+          <motion.div variants={itemVars} className="rounded-2xl bg-card p-3.5 shadow-xs ring-1 ring-border/40">
+            <h3 className="mb-2 flex items-center gap-1.5 text-[11px] font-bold">
+              <Zap className="size-3.5 text-amber-500" /> Daily Quests
+            </h3>
+            <div className="space-y-1.5">
+              {quests.map((quest) => (
+                <div key={quest.title} className="flex items-center gap-2 rounded-lg p-1.5 transition-colors hover:bg-muted/30">
+                  <div className={cn("flex size-7 shrink-0 items-center justify-center rounded-lg", quest.bg)}>
+                    <quest.icon className={cn("size-3.5", quest.color)} />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[11px] font-bold leading-tight">{quest.title}</p>
+                    <p className="text-[9px] leading-tight text-muted-foreground">{quest.desc}</p>
+                  </div>
+                  <span className="shrink-0 text-[10px] font-bold tabular-nums text-primary">+{quest.xp}</span>
                 </div>
               ))}
             </div>
-          </motion.div>
-
-          {/* XP Progress */}
-          <motion.div variants={itemVars} className="bg-card rounded-xl p-3 ring-1 ring-border/40 shadow-xs">
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-[10px] font-bold text-muted-foreground">Level Progress</span>
-              <span className="text-[8px] font-semibold text-muted-foreground">{(profile.sovereigns || 0) % 100}/100 XP</span>
-            </div>
-            <div className="h-2 bg-muted/60 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-primary rounded-full transition-all duration-700 w-[var(--progress)]"
-                style={{ "--progress": `${(profile.sovereigns || 0) % 100}%` } as React.CSSProperties}
-              />
-            </div>
+            <Button asChild variant="ghost" size="sm" className="mt-1.5 h-7 w-full text-[10px] font-bold focus-visible:ring-2 focus-visible:ring-ring">
+              <Link href={Routes.LearnQuests}>
+                All quests <ChevronRight className="ml-0.5 size-3" />
+              </Link>
+            </Button>
           </motion.div>
         </div>
-
       </div>
     </motion.div>
   );
