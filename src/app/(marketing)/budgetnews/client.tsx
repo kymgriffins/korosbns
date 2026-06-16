@@ -37,9 +37,9 @@ function BudgetNewsContent() {
           <div className="h-9 w-56 bg-muted rounded-lg sm:h-10 sm:w-72" />
           <div className="h-4 w-full max-w-md bg-muted rounded sm:h-5 sm:max-w-96" />
           <div className="overflow-hidden rounded-2xl border border-border/40">
-            <div className="grid grid-cols-1 sm:grid-cols-[12rem_minmax(0,1fr)]">
-              <div className="aspect-[16/10] bg-muted sm:aspect-[4/3]" />
-              <div className="space-y-3 p-4 sm:p-6">
+            <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,1.65fr)_minmax(0,1fr)] lg:grid-cols-[minmax(0,1.85fr)_minmax(0,1fr)]">
+              <div className="aspect-[16/10] bg-muted sm:aspect-[16/10] lg:aspect-[5/3]" />
+              <div className="min-w-0 space-y-3 p-4 sm:p-6 lg:p-8">
                 <div className="h-4 w-24 bg-muted rounded-full" />
                 <div className="h-6 w-full bg-muted rounded" />
                 <div className="h-4 w-full bg-muted rounded" />
@@ -48,9 +48,9 @@ function BudgetNewsContent() {
             </div>
           </div>
           <div className="overflow-hidden rounded-2xl border border-border/40">
-            <div className="grid grid-cols-1 sm:grid-cols-[12rem_minmax(0,1fr)]">
-              <div className="aspect-[16/10] bg-muted sm:aspect-[4/3]" />
-              <div className="space-y-3 p-4 sm:p-6">
+            <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,1.65fr)_minmax(0,1fr)] lg:grid-cols-[minmax(0,1.85fr)_minmax(0,1fr)]">
+              <div className="aspect-[16/10] bg-muted sm:aspect-[16/10] lg:aspect-[5/3]" />
+              <div className="min-w-0 space-y-3 p-4 sm:p-6 lg:p-8">
                 <div className="h-4 w-24 bg-muted rounded-full" />
                 <div className="h-6 w-full bg-muted rounded" />
                 <div className="h-4 w-full bg-muted rounded" />
@@ -116,19 +116,19 @@ function BudgetNewsCard({ module: mod }: { module: CivicModule }) {
   return (
     <Link href={href} className="block group">
       <article className="relative overflow-hidden rounded-2xl border border-border/60 bg-card transition-all duration-300 hover:bg-accent/30 hover:shadow-lg hover:shadow-primary/5">
-        <div className="grid grid-cols-1 sm:grid-cols-[12rem_minmax(0,1fr)] lg:grid-cols-[14rem_minmax(0,1fr)]">
+        <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,1.65fr)_minmax(0,1fr)] lg:grid-cols-[minmax(0,1.85fr)_minmax(0,1fr)]">
           <div className="relative min-w-0 overflow-hidden sm:border-r sm:border-border/60">
             <HarmonizedImage
               src={mod.image_url}
               alt={mod.title}
-              aspectClassName="aspect-[16/10] sm:aspect-[4/3]"
-              className="w-full rounded-none border-0"
+              aspectClassName="aspect-[16/10] sm:aspect-[16/10] lg:aspect-[5/3]"
+              className="h-full w-full rounded-none border-0"
               fallbackLabel="Module cover"
               imageClassName="group-hover:scale-105"
             />
           </div>
           <div className="flex min-w-0 flex-col justify-center p-4 sm:p-6 lg:p-8">
-            <div className="flex items-start justify-between gap-3 sm:gap-4">
+            <div className="flex min-w-0 items-start justify-between gap-3 sm:gap-4">
               <div className="min-w-0 flex-1">
                 <div className="mb-2.5 flex flex-wrap items-center gap-2 sm:mb-3 sm:gap-2.5">
                   <span className="text-[11px] font-semibold uppercase tracking-wider text-primary bg-primary/8 px-2.5 py-1 rounded-full ring-1 ring-primary/20 sm:text-xs">
@@ -139,7 +139,7 @@ function BudgetNewsCard({ module: mod }: { module: CivicModule }) {
                     2026/27
                   </span>
                 </div>
-                <h2 className="mb-2 text-lg font-bold leading-snug transition-colors group-hover:text-primary sm:mb-3 sm:text-xl lg:text-2xl">
+                <h2 className="mb-2 line-clamp-3 text-lg font-bold leading-snug transition-colors group-hover:text-primary sm:mb-3 sm:text-xl lg:line-clamp-none lg:text-2xl">
                   {mod.title}
                 </h2>
                 <p className="mb-3 line-clamp-3 text-sm leading-relaxed text-muted-foreground sm:mb-4">
