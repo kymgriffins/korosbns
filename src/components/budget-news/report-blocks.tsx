@@ -39,6 +39,8 @@ import type {
 } from "@/types/budget-report";
 import { formatKesBillions, formatKesTrillions, percentChange, shareOfTotal } from "@/lib/budget-format";
 import { filterRealImageUrls, parseArticleBlocks } from "@/lib/budget-report-data";
+import { isEditorJsBody } from "@/lib/editorjs";
+import { renderArticleBody } from "@/lib/render-content";
 import type { ChapterReportData } from "@/types/budget-report";
 import { budgetNewsChapterPath } from "@/constants/routes";
 import { HarmonizedImage } from "@/components/ui/harmonized-image";
@@ -551,9 +553,26 @@ export function BudgetChapterReportBlocks({ report }: { report: ChapterReportDat
   );
 }
 
+const HAS_HTML = /<[a-z][\s\S]*>/i;
+
 export function BudgetArticleBody({ text, imageUrls }: { text: string; imageUrls?: string[] }) {
-  const blocks = parseArticleBlocks(text);
   const realImages = filterRealImageUrls(imageUrls);
+  const trimmed = text?.trim() ?? "";
+
+  if (trimmed && (isEditorJsBody(trimmed) || HAS_HTML.test(trimmed))) {
+    return (
+      <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none">
+        {renderArticleBody(trimmed, null)}
+        {realImages.map((url, i) => (
+          <figure key={`img-${i}`} className="my-6 not-prose">
+            <HarmonizedImage src={url} alt="" aspectClassName="aspect-[16/10]" className="w-full rounded-xl" fallbackLabel="Inline image" />
+          </figure>
+        ))}
+      </div>
+    );
+  }
+
+  const blocks = parseArticleBlocks(text);
 
   return (
     <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none">

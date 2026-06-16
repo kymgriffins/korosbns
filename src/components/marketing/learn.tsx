@@ -44,6 +44,7 @@ import {
 } from "@/lib/newsletter-subscribe";
 import { LEARN_STORIES_VISIBLE } from "@/constants/feature-flags";
 import { sanitizeHtml, stripHtml } from "@/lib/sanitize";
+import { renderArticleBody } from "@/lib/render-content";
 import {
   mapApiArticle,
   mapApiStory,
@@ -1932,14 +1933,9 @@ export default function Learn() {
 
               {/* Content body */}
               <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4 [scrollbar-width:thin]">
-                {activeArticle.body_html ? (
-                  <div
-                    className="notion-content prose dark:prose-invert max-w-none text-foreground/85"
-                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(activeArticle.body_html) }}
-                  />
-                ) : (
+                {renderArticleBody(activeArticle.body_html, activeArticle.body, activeArticle.snippet) ?? (
                   <div className="text-foreground/85 leading-relaxed whitespace-pre-wrap space-y-4 text-sm sm:text-base">
-                    {stripHtml(activeArticle.body || activeArticle.snippet)}
+                    {stripHtml(activeArticle.snippet || "")}
                   </div>
                 )}
               </div>

@@ -1,5 +1,6 @@
 import React from "react";
 import { marked } from "marked";
+import { editorBlocksToHtml, parseEditorJsBody, resolveArticleBodyHtml } from "@/lib/editorjs";
 import { sanitizeHtml } from "@/lib/sanitize";
 
 marked.use({ gfm: true, breaks: true });
@@ -25,6 +26,13 @@ function renderMarkdownInTextNodes(html: string): string {
 function toHtml(content: string): string {
   const trimmed = (content || "").trim();
   if (!trimmed) return "";
+
+  const editorParsed = parseEditorJsBody(trimmed);
+  if (editorParsed) {
+    if (!editorParsed.blocks.length) return "";
+    return sanitizeHtml(editorBlocksToHtml(editorParsed.blocks));
+  }
+
   if (HAS_HTML.test(trimmed)) {
     const withMd = renderMarkdownInTextNodes(trimmed);
     return sanitizeHtml(withMd);
@@ -46,6 +54,24 @@ export function renderContent(content: string): React.ReactNode {
   return <div className={CLS} dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
+export function renderArticleBody(
+  bodyHtml?: string | null,
+  body?: string | null,
+  fallback?: string | null,
+): React.ReactNode {
+  const resolved = resolveArticleBodyHtml(bodyHtml, body) || (fallback || "").trim();
+  if (!resolved) return null;
+  return renderContent(resolved);
+}
+
 export function renderContentHtml(content: string): string {
   return toHtml(content);
+}
+
+export function resolveArticleContentHtml(
+  bodyHtml?: string | null,
+  body?: string | null,
+  fallback?: string | null,
+): string {
+  return toHtml(resolveArticleBodyHtml(bodyHtml, body) || (fallback || "").trim());
 }

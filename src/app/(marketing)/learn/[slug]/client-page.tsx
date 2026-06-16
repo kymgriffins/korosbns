@@ -15,7 +15,7 @@ import type { TriviaSetApi } from "@/lib/api-client";
 import { useContentForSlug } from "@/hooks/use-content";
 import { Routes } from "@/constants/routes";
 import { articlePlaceholderForSlug } from "@/lib/article-placeholders";
-import { renderContent } from "@/lib/render-content";
+import { renderArticleBody } from "@/lib/render-content";
 import { scaleIn, fadeInUp, fadeInUpDelay1, fadeInUpDelay2, fadeInUpDelay3 } from "@/motion/variants";
 import { HarmonizedImage } from "@/components/ui/harmonized-image";
 
@@ -482,7 +482,7 @@ export default function UnifiedReaderClientPage({
             <hr className="border-border" />
 
             <div className="max-w-none">
-              {renderContent(article.body_html || article.body || article.snippet)}
+              {renderArticleBody(article.body_html, article.body, article.snippet)}
             </div>
 
             <footer className="mt-16 border-t border-border pt-8 space-y-6">

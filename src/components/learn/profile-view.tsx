@@ -130,7 +130,7 @@ function CatalogBadgeCard({ badge }: { badge: BadgeCatalogEntry }) {
 }
 
 export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile }: ProfileViewProps) {
-  const { user, isLoggedIn, logout } = useAuth();
+  const { user, isLoggedIn, loading: authLoading, logout } = useAuth();
   const { data: gamification } = useGamificationMe();
   const { data: badgeCatalog } = useBadgeCatalog();
   const { data: certificatesData } = useCertificates();
@@ -266,28 +266,51 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
   return (
     <div className="space-y-4 md:space-y-5 max-w-3xl mx-auto">
       {/* Hero */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/90 via-primary/80 to-primary/60 p-5 md:p-7 text-primary-foreground shadow-lg">
-        <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.07] mix-blend-overlay pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/15 to-transparent pointer-events-none" />
+      <div className="relative overflow-visible rounded-2xl bg-gradient-to-br from-primary/90 via-primary/80 to-primary/60 p-5 md:p-7 text-primary-foreground shadow-lg">
+        <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl">
+          <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.07] mix-blend-overlay" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/15 to-transparent" />
+        </div>
         <div className="relative flex items-center gap-4 md:gap-5">
-          <div className="relative shrink-0">
-            {isLoggedIn ? (
+          <div className="relative shrink-0 z-10">
+            {authLoading ? (
+              <div className="flex size-16 md:size-20 items-center justify-center rounded-full border-2 border-white/30 bg-white/10">
+                <Loader2 className="size-6 animate-spin text-white/80" />
+              </div>
+            ) : isLoggedIn ? (
               <ProfileAvatarEditor
                 avatarUrl={localAvatarUrl}
                 gender={localGender}
                 size="xl"
-                onAvatarUrlChange={setLocalAvatarUrl}
+                onAvatarUrlChange={(url) => {
+                  setLocalAvatarUrl(url);
+                  onUpdateProfile({ ...profile, avatar_url: url });
+                }}
                 onGenderChange={(g) => {
                   setLocalGender(g);
                   onUpdateProfile({ ...profile, gender: g });
                 }}
-                onSaved={() => window.dispatchEvent(new Event("bns-profile-updated"))}
+                onSaved={(url) => {
+                  onUpdateProfile({ ...profile, avatar_url: url });
+                  window.dispatchEvent(new Event("bns-profile-updated"));
+                }}
               />
-            ) : avatarUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={avatarUrl} alt="" className="size-16 md:size-20 rounded-full border-2 border-white/30 object-cover shadow-md" />
             ) : (
-              <BitmojiAvatar gender={profile.gender} size="xl" className="rounded-full border-2 border-white/30 shadow-md" />
+              <Link
+                href={Routes.Login}
+                className="group relative block rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+                aria-label="Sign in to change profile photo"
+              >
+                {avatarUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={avatarUrl} alt="" className="size-16 md:size-20 rounded-full border-2 border-white/30 object-cover shadow-md" />
+                ) : (
+                  <BitmojiAvatar gender={profile.gender} size="xl" className="rounded-full border-2 border-white/30 shadow-md" />
+                )}
+                <span className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40">
+                  <LogIn className="size-5 text-white" />
+                </span>
+              </Link>
             )}
             <span className="absolute -bottom-1 -right-1 flex h-6 min-w-6 items-center justify-center rounded-full border-2 border-primary bg-white px-1 text-[10px] font-black text-primary shadow">
               {level}
@@ -299,6 +322,15 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
             <p className="mt-0.5 truncate text-[11px] font-semibold text-white/80 md:text-sm">
               {county}{ward ? ` · ${ward}` : ""}
             </p>
+            {!isLoggedIn && !authLoading && (
+              <Link
+                href={Routes.Login}
+                className="mt-2 inline-flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-1 text-[10px] font-bold text-white hover:bg-white/25 transition-colors"
+              >
+                <LogIn className="size-3" />
+                Sign in to update photo
+              </Link>
+            )}
             <div className="mt-2 md:mt-3">
               <div className="mb-1 flex justify-between text-[10px] font-bold text-white/70">
                 <span>{points} XP</span>

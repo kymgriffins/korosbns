@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Search, MessageSquare, Loader2 } from "lucide-react";
+import { Loader2, MessageSquarePlus, MessagesSquare, Search } from "lucide-react";
 import { Input } from "@/ui/input";
 import { useForumThreads } from "@/hooks/use-forum";
 import { ForumThreadCard } from "@/components/forum/forum-thread-card";
@@ -25,28 +25,29 @@ export function ForumView() {
     return threads.filter(
       (t) =>
         t.title.toLowerCase().includes(q) ||
-        t.author_name.toLowerCase().includes(q)
+        t.author_name.toLowerCase().includes(q),
     );
   }, [threads, search]);
 
   if (selectedThreadId) {
     return (
-      <div className="flex flex-col">
-        <ForumThreadDetail
-          threadId={selectedThreadId}
-          onBack={() => setSelectedThreadId(null)}
-        />
-      </div>
+      <ForumThreadDetail
+        threadId={selectedThreadId}
+        onBack={() => setSelectedThreadId(null)}
+      />
     );
   }
 
   return (
     <div className="flex flex-col">
-      <div className="flex items-center justify-between mb-4">
+      <div className="mb-4 flex items-start justify-between gap-3">
         <div>
-          <h1 className="text-lg font-black uppercase tracking-tight">Community Forum</h1>
-          <p className="text-xs text-muted-foreground font-semibold mt-0.5">
-            Discuss budget topics with fellow citizens
+          <div className="mb-1 flex items-center gap-2">
+            <MessagesSquare className="size-5 text-primary" />
+            <h1 className="text-lg font-black tracking-tight">Community Forums</h1>
+          </div>
+          <p className="text-xs font-semibold text-muted-foreground">
+            Civic learning discussions — ask questions, share insights, learn together.
           </p>
         </div>
         {isLoggedIn ? (
@@ -54,21 +55,21 @@ export function ForumView() {
         ) : (
           <Link
             href={Routes.Login}
-            className="inline-flex items-center gap-1.5 rounded-xl text-xs font-bold h-9 px-4 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+            className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-xl bg-primary px-4 text-xs font-bold text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            <MessageSquare className="size-4" />
-            Sign In to Post
+            <MessageSquarePlus className="size-4" />
+            Sign in to post
           </Link>
         )}
       </div>
 
       <div className="relative mb-4">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search threads..."
-          className="pl-9 text-sm h-10 rounded-xl"
+          placeholder="Search conversations…"
+          className="h-10 rounded-xl pl-9 text-sm"
         />
       </div>
 
@@ -77,14 +78,21 @@ export function ForumView() {
           <Loader2 className="size-6 animate-spin text-muted-foreground" />
         </div>
       ) : filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-2 py-16 text-center">
-          <MessageSquare className="size-10 text-muted-foreground/40" />
-          <p className="text-sm text-muted-foreground font-semibold">
-            {search ? "No threads match your search." : "No threads yet."}
-          </p>
-          {!search && isLoggedIn && (
-            <p className="text-xs text-muted-foreground">Start a discussion!</p>
-          )}
+        <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border bg-muted/15 px-6 py-16 text-center">
+          <div className="flex size-14 items-center justify-center rounded-full bg-primary/10">
+            <MessagesSquare className="size-7 text-primary/70" />
+          </div>
+          <div>
+            <p className="text-sm font-bold text-foreground">
+              {search ? "No conversations match your search" : "No conversations yet"}
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {search
+                ? "Try a different keyword or browse all threads."
+                : "Be the first to start a civic budget discussion."}
+            </p>
+          </div>
+          {!search && isLoggedIn && <CreateThreadDialog />}
         </div>
       ) : (
         <div className="space-y-2 pb-4">

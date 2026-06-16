@@ -1,3 +1,5 @@
+"use client";
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api-client";
 import type { ForumThread, ForumThreadDetail, ForumPost } from "@/types/learn";
@@ -32,6 +34,7 @@ export function useCreateForumThread() {
     mutationFn: (body: { title: string; civic_module?: string; civic_chapter?: string }) =>
       apiFetch<ForumThread>("/engagement/forum-threads/", {
         method: "POST",
+        auth: true,
         body: JSON.stringify(body),
       }),
     onSuccess: () => {
@@ -46,6 +49,7 @@ export function useCreateForumPost() {
     mutationFn: ({ threadId, content }: { threadId: string; content: string }) =>
       apiFetch<ForumPost>(`/engagement/forum-threads/${threadId}/posts/`, {
         method: "POST",
+        auth: true,
         body: JSON.stringify({ content }),
       }),
     onSuccess: () => {

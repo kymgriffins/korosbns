@@ -1,8 +1,21 @@
 "use client";
 
-import { MessageSquare, ChevronRight } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import { cn } from "@/utils";
 import type { ForumThread } from "@/types/learn";
+
+function formatRelativeTime(iso: string): string {
+  const date = new Date(iso);
+  const diffMs = Date.now() - date.getTime();
+  const mins = Math.floor(diffMs / 60000);
+  if (mins < 1) return "Just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 7) return `${days}d ago`;
+  return date.toLocaleDateString("en-KE", { month: "short", day: "numeric" });
+}
 
 export function ForumThreadCard({
   thread,
@@ -15,35 +28,38 @@ export function ForumThreadCard({
 }) {
   return (
     <button
+      type="button"
       onClick={onSelect}
       className={cn(
-        "w-full text-left p-4 rounded-xl border transition-all",
+        "flex w-full items-center gap-3 rounded-2xl border px-3 py-3 text-left transition-all",
         selected
-          ? "bg-primary/5 border-primary/30 shadow-xs"
-          : "bg-card border-border hover:border-primary/20 hover:bg-muted/30"
+          ? "border-primary/30 bg-primary/5 shadow-xs"
+          : "border-border/70 bg-card hover:border-primary/20 hover:bg-muted/30",
       )}
     >
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex-1 min-w-0">
-          <h3 className="text-sm font-bold leading-snug truncate">{thread.title}</h3>
-          <div className="flex items-center gap-2 mt-1.5 text-[10px] text-muted-foreground font-semibold">
-            <span>{thread.author_name}</span>
-            <span className="size-0.5 rounded-full bg-muted-foreground/40" />
-            <span>{new Date(thread.created_at).toLocaleDateString()}</span>
-            {thread.civic_module && (
-              <>
-                <span className="size-0.5 rounded-full bg-muted-foreground/40" />
-                <span className="truncate">{thread.civic_module}</span>
-              </>
-            )}
-          </div>
+      <div
+        className={cn(
+          "flex size-11 shrink-0 items-center justify-center rounded-full text-xs font-black",
+          selected ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary",
+        )}
+        aria-hidden
+      >
+        {thread.author_initials || thread.author_name.slice(0, 2).toUpperCase()}
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="truncate text-sm font-bold leading-snug text-foreground">{thread.title}</h3>
+          <span className="shrink-0 text-[10px] font-semibold text-muted-foreground">
+            {formatRelativeTime(thread.created_at)}
+          </span>
         </div>
-        <div className="flex items-center gap-1.5 shrink-0">
-          <div className="flex items-center gap-1 text-xs text-muted-foreground font-bold">
-            <MessageSquare className="size-3.5" />
-            <span>{thread.posts_count}</span>
-          </div>
-          <ChevronRight className={cn("size-4 text-muted-foreground transition-transform", selected && "rotate-90")} />
+        <div className="mt-1 flex items-center gap-2 text-[10px] font-semibold text-muted-foreground">
+          <span className="truncate">{thread.author_name}</span>
+          <span className="size-0.5 rounded-full bg-muted-foreground/40" />
+          <span className="inline-flex items-center gap-1">
+            <MessageSquare className="size-3" />
+            {thread.posts_count}
+          </span>
         </div>
       </div>
     </button>

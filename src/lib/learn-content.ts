@@ -1,4 +1,5 @@
 import type { TriviaSetApi } from "@/lib/api-client";
+import { resolveArticleBodyHtml } from "@/lib/editorjs";
 
 export type HubStory = {
   id: string;
@@ -87,7 +88,10 @@ export function mapApiStory(item: Record<string, unknown>): {
 
 export function mapApiArticle(item: Record<string, unknown>): HubArticle {
   const meta = (item.metadata || {}) as Record<string, string>;
-  const bodyHtml = String(item.body_html || item.body || "");
+  const bodyHtml = resolveArticleBodyHtml(
+    item.body_html != null ? String(item.body_html) : "",
+    item.body != null ? String(item.body) : "",
+  );
   const plainLen = String(item.body || item.summary || "").length;
   const hero =
     meta.hero_image ||

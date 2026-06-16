@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Bell, BookOpen, FileText, LayoutDashboard } from "lucide-react";
-import { useLearn, type LearnTab } from "@/contexts/learn-context";
+import { BookOpen, FileText, LayoutDashboard, MessagesSquare } from "lucide-react";
+import { useLearn } from "@/contexts/learn-context";
 import {
   MobileBottomNav,
   type MobileBottomNavItem,
@@ -20,7 +20,6 @@ export function LearnMobileNav() {
   const { activeTab, setActiveTab } = useLearn();
   const [profile, setProfile] = useState<StoredProfile | null>(null);
 
-  // Read profile from localStorage (updated by learn-paths-home)
   useEffect(() => {
     const read = () => {
       try {
@@ -39,46 +38,32 @@ export function LearnMobileNav() {
     };
   }, []);
 
-  // Derive initials for avatar
   const initials = profile?.breakName
     ? profile.breakName.split(" ").map(p => p[0] ?? "").join("").slice(0, 2).toUpperCase()
     : "?";
 
-  // Count alerts from participation logs
-  const alertCount = (profile?.participationLogs ?? []).length;
-  const hasAlerts = alertCount > 0;
-
   const profileIcon = (
-    <span className="relative inline-flex">
-      <Avatar
-        className={
-          activeTab === "profile"
-            ? "ring-2 ring-primary ring-offset-1 ring-offset-background"
-            : ""
-        }
-      >
-        {profile?.avatar_url ? (
-          <img src={profile.avatar_url} alt="" className="size-full rounded-full object-cover" />
-        ) : (
-          <AvatarFallback
-            className={
-              activeTab === "profile"
-                ? "bg-primary text-primary-foreground text-[10px] font-black"
-                : "bg-muted text-muted-foreground text-[10px] font-black"
-            }
-          >
-            {initials}
-          </AvatarFallback>
-        )}
-      </Avatar>
-      {hasAlerts && (
-        <span className="absolute -top-0.5 -right-0.5 size-3.5 rounded-full bg-red-500 border-2 border-background flex items-center justify-center">
-          <span className="text-[7px] font-black text-white leading-none">
-            {alertCount > 9 ? "9+" : alertCount}
-          </span>
-        </span>
+    <Avatar
+      className={
+        activeTab === "profile"
+          ? "ring-2 ring-primary ring-offset-1 ring-offset-background"
+          : ""
+      }
+    >
+      {profile?.avatar_url ? (
+        <img src={profile.avatar_url} alt="" className="size-full rounded-full object-cover" />
+      ) : (
+        <AvatarFallback
+          className={
+            activeTab === "profile"
+              ? "bg-primary text-primary-foreground text-[10px] font-black"
+              : "bg-muted text-muted-foreground text-[10px] font-black"
+          }
+        >
+          {initials}
+        </AvatarFallback>
       )}
-    </span>
+    </Avatar>
   );
 
   const items: MobileBottomNavItem[] = [
@@ -108,12 +93,12 @@ export function LearnMobileNav() {
       icon: <BookOpen className="size-5" aria-hidden />,
     },
     {
-      id: "alerts",
-      label: "Alerts",
-      onClick: () => setActiveTab("alerts"),
-      active: activeTab === "alerts",
-      ariaCurrent: activeTab === "alerts" ? "page" : undefined,
-      icon: <Bell className="size-5" aria-hidden />,
+      id: "forum",
+      label: "Forums",
+      onClick: () => setActiveTab("forum"),
+      active: activeTab === "forum",
+      ariaCurrent: activeTab === "forum" ? "page" : undefined,
+      icon: <MessagesSquare className="size-5" aria-hidden />,
     },
     {
       id: "profile",
