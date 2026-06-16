@@ -45,7 +45,7 @@ const GovernmentPartnerships = () => {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            className="grid max-w-md grid-cols-2 gap-3 md:ml-auto md:max-w-none"
+            className="grid w-full max-w-md grid-cols-2 gap-3 md:max-w-none"
           >
             <div className="relative aspect-[4/5] overflow-hidden rounded-xl border border-border">
               <Image
@@ -53,7 +53,7 @@ const GovernmentPartnerships = () => {
                 alt="National Treasury workshop"
                 fill
                 className="object-cover"
-                sizes="(max-width: 768px) 40vw, 200px"
+                sizes="(max-width: 768px) 45vw, 300px"
               />
             </div>
             <div className="relative mt-6 aspect-[4/5] overflow-hidden rounded-xl border border-border">
@@ -62,7 +62,7 @@ const GovernmentPartnerships = () => {
                 alt="Budget Policy Statement session"
                 fill
                 className="object-cover"
-                sizes="(max-width: 768px) 40vw, 200px"
+                sizes="(max-width: 768px) 45vw, 300px"
               />
             </div>
             <div className="relative -mt-6 aspect-[4/5] overflow-hidden rounded-xl border border-border">
@@ -71,7 +71,7 @@ const GovernmentPartnerships = () => {
                 alt="Parliament engagement"
                 fill
                 className="object-cover"
-                sizes="(max-width: 768px) 40vw, 200px"
+                sizes="(max-width: 768px) 45vw, 300px"
               />
             </div>
             <div className="relative aspect-[4/5] overflow-hidden rounded-xl border border-border">
@@ -80,7 +80,7 @@ const GovernmentPartnerships = () => {
                 alt="Fiscal framework discussion"
                 fill
                 className="object-cover"
-                sizes="(max-width: 768px) 40vw, 200px"
+                sizes="(max-width: 768px) 45vw, 300px"
               />
             </div>
           </motion.div>

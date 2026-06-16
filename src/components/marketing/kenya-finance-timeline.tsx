@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { motion } from "motion/react";
 import { Badge } from "@/ui/badge";
 import {
@@ -212,6 +213,21 @@ export default function KenyaFinanceTimeline() {
             {formatKesBillions(1501.3)} Debt Service
           </span>
         </div>
+
+        <figure className="mx-auto mt-5 max-w-3xl md:mt-7">
+          <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl border border-primary/20 shadow-sm sm:aspect-[2/1]">
+            <Image
+              src="https://pbs.twimg.com/media/HKhWiDKXkAANe71?format=jpg&name=large"
+              alt="CS John Mbadi presenting the FY2026/27 Budget"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 768px"
+            />
+          </div>
+          <figcaption className="mt-2 text-[11px] text-muted-foreground/70">
+            CS John Mbadi presents the FY2026/27 Budget in Parliament, 11 June 2026.
+          </figcaption>
+        </figure>
       </motion.div>
 
       <SectionHeader
