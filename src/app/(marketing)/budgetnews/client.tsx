@@ -96,38 +96,49 @@ function BudgetNewsCard({ module: mod }: { module: CivicModule }) {
   return (
     <Link href={href} className="block group">
       <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-card hover:bg-accent/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5">
-        <div className="p-6 sm:p-8">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2.5 mb-3">
-                <span className="text-xs font-semibold uppercase tracking-wider text-primary bg-primary/8 px-2.5 py-1 rounded-full ring-1 ring-primary/20">
-                  FY Analysis
-                </span>
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Calendar className="size-3" />
-                  2026/27
-                </span>
-              </div>
-              <h2 className="text-xl sm:text-2xl font-bold group-hover:text-primary transition-colors mb-3">
-                {mod.title}
-              </h2>
-              <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3 mb-4">
-                {mod.description}
-              </p>
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1.5">
-                  <BookOpen className="size-3.5" />
-                  {chapterCount} {chapterCount === 1 ? "chapter" : "chapters"}
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <BarChart3 className="size-3.5" />
-                  Sector analysis
-                </span>
-              </div>
+        <div className="flex flex-col sm:flex-row">
+          {mod.image_url ? (
+            <div className="relative w-full sm:w-48 lg:w-56 shrink-0 aspect-video sm:aspect-auto sm:min-h-[180px] overflow-hidden">
+              <img
+                src={mod.image_url}
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover sm:group-hover:scale-105 transition-transform duration-500"
+              />
             </div>
-            <div className="shrink-0 self-center">
-              <div className="size-10 rounded-full border border-border/60 bg-background flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all duration-300">
-                <ChevronRight className="size-5" />
+          ) : null}
+          <div className="flex-1 p-6 sm:p-8">
+            <div className="flex items-start justify-between gap-4 h-full">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2.5 mb-3">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-primary bg-primary/8 px-2.5 py-1 rounded-full ring-1 ring-primary/20">
+                    FY Analysis
+                  </span>
+                  <span className="text-xs text-muted-foreground flex items-center gap-1">
+                    <Calendar className="size-3" />
+                    2026/27
+                  </span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-bold group-hover:text-primary transition-colors mb-3">
+                  {mod.title}
+                </h2>
+                <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3 mb-4">
+                  {mod.description}
+                </p>
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1.5">
+                    <BookOpen className="size-3.5" />
+                    {chapterCount} {chapterCount === 1 ? "chapter" : "chapters"}
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <BarChart3 className="size-3.5" />
+                    Sector analysis
+                  </span>
+                </div>
+              </div>
+              <div className="shrink-0 self-center">
+                <div className="size-10 rounded-full border border-border/60 bg-background flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all duration-300">
+                  <ChevronRight className="size-5" />
+                </div>
               </div>
             </div>
           </div>
