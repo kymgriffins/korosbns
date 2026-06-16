@@ -90,11 +90,11 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
                       duration: 0.35,
                       ease: ease.expo,
                     }}
-                    onClick={() => setIsOpen(false)}
                     className="w-full"
                   >
                     <Link
                       href={item.href}
+                      onClick={() => setIsOpen(false)}
                       className="group flex items-center justify-between w-full px-4 py-3.5 text-base font-medium rounded-2xl text-foreground hover:text-primary hover:bg-foreground/[0.04] active:scale-[0.98] transition-all duration-200"
                     >
                       <span className="flex items-center gap-3">
@@ -114,11 +114,11 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
                       duration: 0.35,
                       ease: ease.expo,
                     }}
-                    onClick={() => setIsOpen(false)}
                     className="w-full border-t border-border/40 pt-2 mt-2"
                   >
                     <Link
                       href={isLoggedIn ? Routes.Learn : Routes.Login}
+                      onClick={() => setIsOpen(false)}
                       className="group flex items-center justify-between w-full px-4 py-3.5 text-base font-semibold rounded-2xl text-primary hover:bg-primary/[0.06] active:scale-[0.98] transition-all duration-200"
                     >
                       <span className="flex items-center gap-3">
@@ -190,11 +190,11 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
                       duration: 0.3,
                       ease: ease.expo,
                     }}
-                    onClick={() => setIsOpen(false)}
                     className="w-full"
                   >
                     <Link
                       href={item.href}
+                      onClick={() => setIsOpen(false)}
                       className="group flex items-center justify-between w-full px-4 py-3.5 text-base font-medium rounded-2xl text-foreground hover:text-primary hover:bg-foreground/[0.04] active:scale-[0.98] transition-all duration-200"
                     >
                       <span className="flex items-center gap-3">
@@ -214,11 +214,11 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
                       duration: 0.3,
                       ease: ease.expo,
                     }}
-                    onClick={() => setIsOpen(false)}
                     className="w-full border-t border-border/40 pt-2 mt-2"
                   >
                     <Link
                       href={isLoggedIn ? Routes.Learn : Routes.Login}
+                      onClick={() => setIsOpen(false)}
                       className="group flex items-center justify-between w-full px-4 py-3.5 text-base font-semibold rounded-2xl text-primary hover:bg-primary/[0.06] active:scale-[0.98] transition-all duration-200"
                     >
                       <span className="flex items-center gap-3">
