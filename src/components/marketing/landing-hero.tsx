@@ -2,16 +2,21 @@
 
 import Link from "next/link";
 import { motion } from "motion/react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Play } from "lucide-react";
 import { Button } from "@/ui/button";
 import { Routes } from "@/constants/routes";
-import {
-  fadeInUp,
-  staggerContainer,
-  staggerFast,
-} from "@/motion/variants";
+import { fadeInUp, staggerContainer, staggerFast } from "@/motion/variants";
 import { CLOUDINARY_HERO_LANDING_VIDEO_MP4 } from "@/constants/cloudinary";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
+
+const YOUTUBE_CHANNEL_URL = "https://www.youtube.com/@BudgetNdioStory";
+
+const CREDIBILITY_STATS = [
+  { value: "47", label: "Counties covered" },
+  { value: "100+", label: "Budget documents decoded" },
+  { value: "25K+", label: "Citizens reached" },
+  { value: "60+", label: "Campus & community forums" },
+];
 
 export default function LandingHero() {
   return (
@@ -54,6 +59,16 @@ export default function LandingHero() {
                   <ArrowRight className="size-5" />
                 </Button>
               </Link>
+              <Link href="#how-budget-is-made" className="w-full sm:w-auto">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="w-full gap-2 rounded-full px-8 py-6 text-base font-bold sm:w-auto"
+                >
+                  See how the budget is made
+                  <ArrowRight className="size-5" />
+                </Button>
+              </Link>
             </div>
           </motion.div>
         </motion.div>
@@ -64,37 +79,64 @@ export default function LandingHero() {
           animate="visible"
           className="w-full pb-12 md:pb-16"
         >
-          <motion.div
+          <motion.a
             variants={fadeInUp}
-            className="relative aspect-video w-full min-h-[12rem] overflow-hidden rounded-2xl border border-border/60 md:rounded-3xl group cursor-pointer"
-            onClick={() => window.open('https://www.youtube.com/@BudgetNdioStory', '_blank')}
+            href={YOUTUBE_CHANNEL_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Watch Budget Ndio Story on YouTube (opens in a new tab)"
+            className="group relative block aspect-video min-h-[12rem] w-full cursor-pointer overflow-hidden rounded-2xl border border-border/60 transition-shadow duration-300 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background md:rounded-3xl"
             whileHover={{ scale: 1.02 }}
             transition={{ duration: 0.3 }}
           >
-            {/* Hover overlay */}
-            <div className="absolute inset-0 z-10 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
-              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center gap-2">
-                <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center">
-                  <ArrowRight className="w-8 h-8 text-black" />
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/0 transition-colors duration-300 group-hover:bg-black/20 group-focus-visible:bg-black/20">
+              <div className="flex flex-col items-center gap-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
+                <div className="flex size-16 items-center justify-center rounded-full bg-white/90 shadow-lg">
+                  <Play className="size-7 fill-black text-black" />
                 </div>
-                <span className="text-white text-sm font-bold">Watch on YouTube</span>
+                <span className="text-sm font-bold text-white">Watch on YouTube</span>
               </div>
             </div>
-            
+
             <video
               autoPlay
               muted
               loop
               playsInline
+              aria-hidden="true"
+              tabIndex={-1}
               onError={(e) => {
-                console.warn('Hero video failed to load:', e);
+                console.warn("Hero video failed to load:", e);
               }}
-              className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             >
               <source src={CLOUDINARY_HERO_LANDING_VIDEO_MP4} type="video/mp4" />
             </video>
-          </motion.div>
+          </motion.a>
         </motion.div>
+
+        <motion.dl
+          variants={staggerFast}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-60px" }}
+          className="mb-12 grid grid-cols-2 gap-px overflow-hidden rounded-3xl border border-border/60 bg-border/60 md:mb-16 md:grid-cols-4"
+        >
+          {CREDIBILITY_STATS.map((stat) => (
+            <motion.div
+              key={stat.label}
+              variants={fadeInUp}
+              className="flex flex-col gap-1 bg-background p-5 md:p-7"
+            >
+              <dt className="order-2 text-xs font-medium text-muted-foreground md:text-sm">
+                {stat.label}
+              </dt>
+              <dd className="order-1 text-3xl font-black tracking-tight text-foreground md:text-4xl">
+                {stat.value}
+              </dd>
+            </motion.div>
+          ))}
+        </motion.dl>
       </div>
     </section>
   );

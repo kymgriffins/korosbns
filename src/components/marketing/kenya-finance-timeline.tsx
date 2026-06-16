@@ -11,201 +11,72 @@ import {
   TrendingDown,
   Minus,
   CalendarDays,
-  AlertTriangle,
+  ClipboardList,
+  FileText,
+  CheckCircle2,
+  BarChart3,
+  Megaphone,
+  Mic,
+  Scale,
+  Rocket,
+  FileSignature,
+  type LucideIcon,
 } from "lucide-react";
 import { SectionHeader, SectionShell } from "@/layouts/section-shell";
+import {
+  budgetHighlights,
+  budgetMilestones,
+  economicIndicators,
+  sectorAllocations,
+  formatKesBillions,
+  BUDGET_SOURCE,
+  type BudgetMilestone,
+  type MilestoneIcon,
+  type Trend,
+} from "@/constants/budget-data";
+import { Routes } from "@/constants/routes";
 
-interface TimelineItem {
-  id: number;
-  date: string;
-  title: string;
-  description: string;
-  status: "completed" | "running" | "pending";
-  icon: string;
-  details: string;
-  impact?: string;
+const MILESTONE_ICONS: Record<MilestoneIcon, LucideIcon> = {
+  circular: ClipboardList,
+  policy: FileText,
+  approve: CheckCircle2,
+  estimates: BarChart3,
+  participation: Megaphone,
+  vote: CheckCircle2,
+  reading: Mic,
+  "finance-bill": Scale,
+  "fiscal-year": Rocket,
+  appropriation: FileSignature,
+};
+
+function trendMeta(trend: Trend): { Icon: LucideIcon; color: string } {
+  switch (trend) {
+    case "up":
+      return { Icon: TrendingUp, color: "text-emerald-500" };
+    case "down":
+      return { Icon: TrendingDown, color: "text-amber-500" };
+    default:
+      return { Icon: Minus, color: "text-muted-foreground" };
+  }
 }
 
-const budgetCycleTimeline: TimelineItem[] = [
-  {
-    id: 1,
-    date: "Aug 30, 2025",
-    title: "MTEF Budget Circular Issued",
-    description: "Treasury issued spending ceilings to all MDAs for FY2026/27",
-    status: "completed",
-    icon: "📋",
-    details: "Sector Working Groups began reviewing bids against strategic priorities under BETA",
-  },
-  {
-    id: 2,
-    date: "Feb 15, 2026",
-    title: "BPS 2026 Tabled in Parliament",
-    description: "Budget Policy Statement submitted by Cabinet Secretary John Mbadi",
-    status: "completed",
-    icon: "🏛️",
-    details: "Theme: 'Consolidating Gains Under BETA for Inclusive and Sustainable Growth'. Projected revenue KES 3.3T, expenditure KES 4.2T",
-    impact: "Policy Blueprint",
-  },
-  {
-    id: 3,
-    date: "Mar 10, 2026",
-    title: "BPS Approved by Parliament",
-    description: "National Assembly approved BPS 2026 setting sector spending ceilings",
-    status: "completed",
-    icon: "✅",
-    details: "MPs approved with amendments. County allocation set at KES 420B equitable share",
-    impact: "Approved",
-  },
-  {
-    id: 4,
-    date: "Apr 30, 2026",
-    title: "Budget Estimates Published",
-    description: "Detailed revenue & expenditure estimates tabled: KES 4.82 trillion budget",
-    status: "completed",
-    icon: "📊",
-    details: "Total budget KES 4.82T. Education KES 781.4B, Security KES 308.6B, Health KES 175.5B, Infrastructure KES 230B",
-  },
-  {
-    id: 5,
-    date: "May–Jun 2026",
-    title: "Budget & Committee Review",
-    description: "Budget and Appropriations Committee review with public participation",
-    status: "completed",
-    icon: "📢",
-    details: "Public hearings held across counties. Civil society submitted memoranda on sector allocations",
-    impact: "Public Input",
-  },
-  {
-    id: 6,
-    date: "Jun 2, 2026",
-    title: "Parliament Approves Budget",
-    description: "National Assembly approved FY2026/27 expenditure estimates",
-    status: "completed",
-    icon: "🗳️",
-    details: "MPs approved KES 4.82T budget. Health KES 175.5B, Education KES 781.4B prioritized",
-    impact: "Approved",
-  },
-  {
-    id: 7,
-    date: "Jun 11, 2026",
-    title: "Budget Reading: CS Mbadi Presents KES 4.82T Budget",
-    description: "CS John Mbadi delivers Budget Statement — KES 4.82 trillion expenditure, KES 1.15 trillion deficit",
-    status: "completed",
-    icon: "🎤",
-    details: "Theme: 'Sustaining BETA for Resilient and Inclusive Growth amid Global Uncertainty'. Revenue KES 3.63T, ordinary KES 2.99T. Deficit at 5.5% of GDP, financed through KES 1.03T domestic + KES 116B external borrowing. Debt interest: KES 1.2T.",
-    impact: "Key Milestone",
-  },
-  {
-    id: 8,
-    date: "Jun–Jul 2026",
-    title: "Finance Bill 2026 Debate",
-    description: "Second and third reading of Finance Bill in National Assembly",
-    status: "running",
-    icon: "🔄",
-    details: "Tax proposals under debate: digital services tax, excise adjustments, VAT amendments",
-    impact: "Ongoing Debate",
-  },
-  {
-    id: 9,
-    date: "Jul 1, 2026",
-    title: "FY 2026/27 Begins",
-    description: "New financial year starts under interim spending authority",
-    status: "pending",
-    icon: "🚀",
-    details: "Government operates on provisional authority until Appropriation Act is signed",
-  },
-  {
-    id: 10,
-    date: "Aug 2026",
-    title: "Appropriation Act Signed",
-    description: "Budget becomes law upon Presidential assent",
-    status: "pending",
-    icon: "✍️",
-    details: "Final legal authority for all government spending in FY2026/27",
-  },
-];
-
-function isTimelineReached(status: TimelineItem["status"]): boolean {
+function isTimelineReached(status: BudgetMilestone["status"]): boolean {
   return status === "completed" || status === "running";
 }
-
-const budgetHighlights = [
-  {
-    label: "Total Budget FY2026/27",
-    value: "KES 4.82T",
-    trend: "up",
-    trendIcon: TrendingUp,
-    trendColor: "text-primary",
-  },
-  {
-    label: "Total Revenue",
-    value: "KES 3.63T",
-    trend: "stable",
-    trendIcon: Minus,
-    trendColor: "text-zinc-400",
-  },
-  {
-    label: "Fiscal Deficit",
-    value: "KES 1.15T",
-    trend: "down",
-    trendIcon: TrendingDown,
-    trendColor: "text-amber-500",
-  },
-  {
-    label: "Domestic Borrowing",
-    value: "KES 1.03T",
-    trend: "up",
-    trendIcon: TrendingUp,
-    trendColor: "text-orange-500",
-  },
-];
-
-const economicIndicators = [
-  {
-    label: "GDP Growth 2025",
-    value: "4.6%",
-    trend: "stable",
-    trendIcon: Minus,
-    trendColor: "text-zinc-400",
-  },
-  {
-    label: "GDP Forecast 2026",
-    value: "4.9-5.3%",
-    trend: "up",
-    trendIcon: TrendingUp,
-    trendColor: "text-green-500",
-  },
-  {
-    label: "Inflation Rate",
-    value: "4.6%",
-    trend: "down",
-    trendIcon: TrendingDown,
-    trendColor: "text-green-500",
-  },
-  {
-    label: "Central Bank Rate",
-    value: "9.5%",
-    trend: "stable",
-    trendIcon: Minus,
-    trendColor: "text-zinc-400",
-  },
-];
 
 function TimelineCard({
   item,
   isReached,
-  isCompleted,
-  isRunning,
 }: {
-  item: TimelineItem;
+  item: BudgetMilestone;
   isReached: boolean;
-  isCompleted: boolean;
   isRunning: boolean;
 }) {
+  const Icon = MILESTONE_ICONS[item.icon];
   return (
     <div
       className={`rounded-2xl border bg-card p-5 transition-all duration-300 md:rounded-3xl md:p-7 ${
-        isRunning
+        item.status === "running"
           ? "border-primary/30 hover:border-primary/40"
           : isReached
             ? "border-border hover:border-primary/20"
@@ -232,11 +103,19 @@ function TimelineCard({
       </div>
 
       <h3
-        className={`mb-3 flex items-center gap-2 text-xl font-bold tracking-tight md:text-2xl ${
+        className={`mb-3 flex items-center gap-2.5 text-xl font-bold tracking-tight md:text-2xl ${
           isReached ? "text-foreground" : "text-muted-foreground"
         }`}
       >
-        <span className={`text-xl ${isReached ? "" : "opacity-50"}`}>{item.icon}</span>
+        <span
+          className={`flex size-9 shrink-0 items-center justify-center rounded-xl border ${
+            isReached
+              ? "border-primary/20 bg-primary/10 text-primary"
+              : "border-border bg-muted/40 text-muted-foreground"
+          }`}
+        >
+          <Icon className="size-4" />
+        </span>
         {item.title}
       </h3>
 
@@ -249,7 +128,7 @@ function TimelineCard({
       </p>
 
       <div
-        className={`border-t pt-4 text-xs ${
+        className={`border-t pt-4 text-xs leading-relaxed ${
           isReached
             ? "border-border/60 text-muted-foreground"
             : "border-muted text-muted-foreground/70"
@@ -263,10 +142,12 @@ function TimelineCard({
 
 export default function KenyaFinanceTimeline() {
   return (
-    <SectionShell className="relative overflow-x-clip border-t border-border/40 bg-background text-foreground">
+    <SectionShell
+      id="budget-tracker"
+      className="relative overflow-x-clip border-t border-border/40 bg-background text-foreground scroll-mt-24"
+    >
       <div className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-1/2 w-4/5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/5 blur-[120px]" />
 
-      {/* Hero banner: Budget Reading — Mbadi 4.8T, 1.15T Deficit */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -274,18 +155,25 @@ export default function KenyaFinanceTimeline() {
         className="mx-auto mb-8 max-w-5xl overflow-hidden rounded-3xl border border-primary/30 bg-gradient-to-br from-primary/10 via-primary/5 to-background p-6 text-center md:p-10"
       >
         <div className="mb-2 inline-block rounded-full bg-primary/20 px-4 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-primary">
-          Budget Reading — June 11, 2026
+          Budget Statement — June 11, 2026
         </div>
         <h2 className="mb-3 text-2xl font-black tracking-tight md:text-4xl">
-          CS John Mbadi Presents KES 4.82 Trillion Budget
+          CS John Mbadi Reads a {formatKesBillions(4820.4)} Budget
         </h2>
         <p className="mx-auto mb-5 max-w-2xl text-sm text-muted-foreground md:text-base">
-          Revenue KES 3.63 trillion · Deficit KES 1.15 trillion · Debt interest KES 1.2 trillion
+          Revenue {formatKesBillions(3630.5)} · Deficit {formatKesBillions(1146.2)} (5.5% of GDP) ·
+          Interest &amp; pensions {formatKesBillions(1501.3)}
         </p>
         <div className="mx-auto flex max-w-md flex-wrap items-center justify-center gap-3">
-          <span className="rounded-lg border border-primary/20 bg-primary/10 px-4 py-2 text-sm font-bold text-primary">KES 4.82T Total Budget</span>
-          <span className="rounded-lg border border-amber-500/20 bg-amber-500/10 px-4 py-2 text-sm font-bold text-amber-500">KES 1.15T Deficit</span>
-          <span className="rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm font-bold text-red-500">KES 1.2T Debt Interest</span>
+          <span className="rounded-lg border border-primary/20 bg-primary/10 px-4 py-2 text-sm font-bold text-primary">
+            {formatKesBillions(4820.4)} Total Budget
+          </span>
+          <span className="rounded-lg border border-amber-500/20 bg-amber-500/10 px-4 py-2 text-sm font-bold text-amber-500">
+            {formatKesBillions(1146.2)} Deficit
+          </span>
+          <span className="rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm font-bold text-red-500">
+            {formatKesBillions(1501.3)} Debt Service
+          </span>
         </div>
       </motion.div>
 
@@ -297,12 +185,12 @@ export default function KenyaFinanceTimeline() {
             <span className="font-heading italic text-primary">Allocations</span>.
           </>
         }
-        description="Complete tracking of Kenya's FY2026/27 budget cycle from formulation through implementation, with verified sector-by-sector allocations."
+        description="Tracking Kenya's live FY2026/27 budget cycle from formulation through implementation, with verified sector-by-sector allocations."
       />
 
       <div className="mx-auto mb-4 grid max-w-6xl grid-cols-2 gap-3 md:mb-8 md:grid-cols-4 md:gap-4">
         {budgetHighlights.map((indicator, index) => {
-          const Icon = indicator.trendIcon;
+          const { Icon, color } = trendMeta(indicator.trend);
           return (
             <motion.div
               key={indicator.label}
@@ -321,10 +209,8 @@ export default function KenyaFinanceTimeline() {
                 </span>
               </div>
               <div className="mt-3 flex items-center gap-1.5">
-                <Icon className={`h-3.5 w-3.5 ${indicator.trendColor}`} />
-                <span
-                  className={`text-[9px] font-bold uppercase tracking-wider ${indicator.trendColor}`}
-                >
+                <Icon className={`h-3.5 w-3.5 ${color}`} />
+                <span className={`text-[9px] font-bold uppercase tracking-wider ${color}`}>
                   {indicator.trend}
                 </span>
               </div>
@@ -335,7 +221,7 @@ export default function KenyaFinanceTimeline() {
 
       <div className="mx-auto mb-8 grid max-w-6xl grid-cols-2 gap-3 md:mb-12 md:grid-cols-4 md:gap-4">
         {economicIndicators.map((indicator, index) => {
-          const Icon = indicator.trendIcon;
+          const { Icon, color } = trendMeta(indicator.trend);
           return (
             <motion.div
               key={indicator.label}
@@ -354,10 +240,8 @@ export default function KenyaFinanceTimeline() {
                 </span>
               </div>
               <div className="mt-3 flex items-center gap-1.5">
-                <Icon className={`h-3.5 w-3.5 ${indicator.trendColor}`} />
-                <span
-                  className={`text-[9px] font-bold uppercase tracking-wider ${indicator.trendColor}`}
-                >
+                <Icon className={`h-3.5 w-3.5 ${color}`} />
+                <span className={`text-[9px] font-bold uppercase tracking-wider ${color}`}>
                   {indicator.trend}
                 </span>
               </div>
@@ -371,7 +255,7 @@ export default function KenyaFinanceTimeline() {
         <div className="absolute bottom-2 left-4 top-2 w-0.5 bg-gradient-to-b from-primary/10 via-primary/30 to-primary/10 md:hidden" />
 
         <div className="space-y-8 md:space-y-12">
-          {budgetCycleTimeline.map((item, index) => {
+          {budgetMilestones.map((item, index) => {
             const isCompleted = item.status === "completed";
             const isRunning = item.status === "running";
             const isReached = isTimelineReached(item.status);
@@ -405,12 +289,7 @@ export default function KenyaFinanceTimeline() {
                 {isLeft ? (
                   <>
                     <div className="min-w-0 max-w-full pl-12 md:col-start-1 md:pr-6 md:pl-0">
-                      <TimelineCard
-                        item={item}
-                        isReached={isReached}
-                        isCompleted={isCompleted}
-                        isRunning={isRunning}
-                      />
+                      <TimelineCard item={item} isReached={isReached} isRunning={isRunning} />
                     </div>
                     <div className="hidden md:block" aria-hidden />
                   </>
@@ -418,12 +297,7 @@ export default function KenyaFinanceTimeline() {
                   <>
                     <div className="hidden md:block" aria-hidden />
                     <div className="min-w-0 max-w-full pl-12 md:col-start-2 md:pl-6">
-                      <TimelineCard
-                        item={item}
-                        isReached={isReached}
-                        isCompleted={isCompleted}
-                        isRunning={isRunning}
-                      />
+                      <TimelineCard item={item} isReached={isReached} isRunning={isRunning} />
                     </div>
                   </>
                 )}
@@ -445,49 +319,29 @@ export default function KenyaFinanceTimeline() {
           </div>
           <div className="w-full">
             <h3 className="mb-3 text-lg font-bold text-primary">
-              FY 2026/27 Sector Budget Allocations (KES)
+              FY 2026/27 Sector Allocations — selected sectors (KES)
             </h3>
             <div className="grid grid-cols-1 gap-x-8 gap-y-2.5 text-sm text-muted-foreground md:grid-cols-2">
-              <div className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-2">
-                <span className="font-semibold text-foreground">Education</span>
-                <span className="font-mono font-bold text-primary">KES 781.4B</span>
-              </div>
-              <div className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-2">
-                <span className="font-semibold text-foreground">Governance, Justice &amp; Order</span>
-                <span className="font-mono font-bold text-primary">KES 353.3B</span>
-              </div>
-              <div className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-2">
-                <span className="font-semibold text-foreground">National Security</span>
-                <span className="font-mono font-bold text-primary">KES 308.6B</span>
-              </div>
-              <div className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-2">
-                <span className="font-semibold text-foreground">Infrastructure &amp; Roads</span>
-                <span className="font-mono font-bold text-primary">KES 230B</span>
-              </div>
-              <div className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-2">
-                <span className="font-semibold text-foreground">Health (UHC)</span>
-                <span className="font-mono font-bold text-primary">KES 175.5B</span>
-              </div>
-              <div className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-2">
-                <span className="font-semibold text-foreground">Housing &amp; Urban Dev</span>
-                <span className="font-mono font-bold text-primary">KES 135.8B</span>
-              </div>
-              <div className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-2">
-                <span className="font-semibold text-foreground">Agriculture &amp; Rural Dev</span>
-                <span className="font-mono font-bold text-primary">KES 106.8B</span>
-              </div>
-              <div className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-2">
-                <span className="font-semibold text-foreground">County Governments</span>
-                <span className="font-mono font-bold text-primary">KES 502B</span>
-              </div>
+              {sectorAllocations.map((sector) => (
+                <div
+                  key={sector.key}
+                  className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-2"
+                >
+                  <span className="font-semibold text-foreground">{sector.label}</span>
+                  <span className="font-mono font-bold text-primary">
+                    {formatKesBillions(sector.allocationBillions)}
+                  </span>
+                </div>
+              ))}
             </div>
             <p className="mt-3 text-xs text-muted-foreground/70">
-              Source: National Treasury Budget Statement, June 2026 &bull; Parliament approval June 2, 2026
+              Source: {BUDGET_SOURCE.label}. Figures are selected ministerial sector ceilings and
+              do not sum to total expenditure.
             </p>
             <div className="mt-4">
               <a
-                href="/budgetnews"
-                className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
+                href={Routes.BudgetNews}
+                className="inline-flex items-center gap-2 text-sm font-semibold text-primary transition-colors hover:text-primary/80"
               >
                 View Full Budget News Analysis
                 <TrendingUp className="size-4" />

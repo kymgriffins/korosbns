@@ -8,6 +8,17 @@ import Link from "next/link";
 import React, { useMemo, useState } from "react";
 import { motion } from "motion/react";
 import { toast } from "sonner";
+import {
+  IconBrandX,
+  IconBrandLinkedin,
+  IconBrandWhatsapp,
+  IconBrandYoutube,
+  IconBrandTiktok,
+  IconBrandInstagram,
+  IconBrandFacebook,
+  IconWorld,
+  type IconProps,
+} from "@tabler/icons-react";
 
 import { socialLinks as defaultSocialLinks } from "@/constants/links";
 import { useOrg } from "@/contexts/org-context";
@@ -16,14 +27,21 @@ import {
   subscribeNewsletter,
 } from "@/lib/newsletter-subscribe";
 
-function integrationIconAsset(icon: string): string {
-  const key =
-    icon === "x" || icon === "twitter"
-      ? "social-x"
-      : icon === "link" || !icon
-        ? "layers"
-        : icon;
-  return `/icons/integrations/${key}.svg`;
+type SocialIcon = React.ComponentType<IconProps>;
+
+const SOCIAL_ICONS: Record<string, SocialIcon> = {
+  x: IconBrandX,
+  twitter: IconBrandX,
+  linkedin: IconBrandLinkedin,
+  whatsapp: IconBrandWhatsapp,
+  youtube: IconBrandYoutube,
+  tiktok: IconBrandTiktok,
+  instagram: IconBrandInstagram,
+  facebook: IconBrandFacebook,
+};
+
+function socialIcon(icon: string): SocialIcon {
+  return SOCIAL_ICONS[icon?.toLowerCase()] ?? IconWorld;
 }
 
 // Lean footer links with only working pages
@@ -190,25 +208,22 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="flex flex-col gap-4 pt-6 border-t border-border/40 w-full max-w-6xl mx-auto">
           {/* Social Icons Row */}
-          <div className="flex items-center justify-center gap-3">
-            {displaySocial.map((social) => (
-              <Link
-                key={`${social.label}-${social.href}`}
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={social.label}
-                className="group relative size-9 flex items-center justify-center rounded-full bg-muted/50 hover:bg-primary/10 border border-border/60 hover:border-primary/30 transition-all duration-200"
-              >
-                <Image
-                  src={integrationIconAsset(String(social.icon))}
-                  alt={social.label}
-                  width={18}
-                  height={18}
-                  className="size-[18px] opacity-70 group-hover:opacity-100 transition-opacity"
-                />
-              </Link>
-            ))}
+          <div className="flex items-center justify-center gap-2.5">
+            {displaySocial.map((social) => {
+              const Icon = socialIcon(String(social.icon));
+              return (
+                <Link
+                  key={`${social.label}-${social.href}`}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${social.label} (opens in a new tab)`}
+                  className="group flex size-9 items-center justify-center rounded-full border border-border/60 bg-muted/40 text-muted-foreground transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:bg-primary/10 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                >
+                  <Icon className="size-[18px]" stroke={1.75} aria-hidden />
+                </Link>
+              );
+            })}
           </div>
 
           {/* Copyright & Legal Row */}

@@ -4,6 +4,14 @@ import React from "react";
 import dynamic from "next/dynamic";
 import LandingHero from "@/components/marketing/landing-hero";
 
+const BudgetProcessStepper = dynamic(
+  () => import("@/components/marketing/budget-process-stepper"),
+  {
+    ssr: false,
+    loading: () => <div className="h-96 w-full bg-background animate-pulse" />,
+  }
+);
+
 const CloudinaryGallery = dynamic(
   () => import("@/components/marketing/cloudinary-gallery"),
   {
@@ -77,14 +85,15 @@ export default function PremiumLandingClient() {
   return (
     <>
       <LandingHero />
-      <CloudinaryGallery />
-      <LandingYoutube />
-      <PartnersMarquee />
-      <LandingTeam />
+      <BudgetProcessStepper />
       <KenyaFinanceTimeline />
-      <GovernmentPartnerships />
-      <WhatWeDoSection />
       <AlertsSimulator />
+      <CloudinaryGallery />
+      <GovernmentPartnerships />
+      <LandingYoutube />
+      <WhatWeDoSection />
+      <LandingTeam />
+      <PartnersMarquee />
       <NewsletterPopup />
     </>
   );

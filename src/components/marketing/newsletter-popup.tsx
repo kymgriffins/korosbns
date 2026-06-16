@@ -23,7 +23,7 @@ import {
 import { Alert, AlertDescription } from "@/ui/alert";
 
 const NEWSLETTER_SEEN_KEY = "hasSeenNewsletterPopup";
-const NEWSLETTER_DELAY_MS = 10_000;
+const SCROLL_TRIGGER_RATIO = 0.5;
 
 export default function NewsletterPopup() {
   const { showNewsletter } = useOrg();
@@ -34,16 +34,36 @@ export default function NewsletterPopup() {
 
   useEffect(() => {
     if (!showNewsletter) return;
-    const hasSeenPopup = sessionStorage.getItem(NEWSLETTER_SEEN_KEY);
-    if (hasSeenPopup) return;
+    if (sessionStorage.getItem(NEWSLETTER_SEEN_KEY)) return;
 
-    const timer = setTimeout(() => {
-      if (!sessionStorage.getItem(NEWSLETTER_SEEN_KEY)) {
-        setIsOpen(true);
-      }
-    }, NEWSLETTER_DELAY_MS);
+    let triggered = false;
 
-    return () => clearTimeout(timer);
+    const trigger = () => {
+      if (triggered || sessionStorage.getItem(NEWSLETTER_SEEN_KEY)) return;
+      triggered = true;
+      setIsOpen(true);
+      cleanup();
+    };
+
+    const handleScroll = () => {
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      if (scrollable <= 0) return;
+      if (window.scrollY / scrollable >= SCROLL_TRIGGER_RATIO) trigger();
+    };
+
+    const handleExitIntent = (event: MouseEvent) => {
+      if (event.clientY <= 0) trigger();
+    };
+
+    const cleanup = () => {
+      window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("mouseout", handleExitIntent);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    document.addEventListener("mouseout", handleExitIntent);
+
+    return cleanup;
   }, [showNewsletter]);
 
   const dismiss = () => {

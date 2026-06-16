@@ -29,8 +29,8 @@ const GovernmentPartnerships = () => {
               <span className="font-heading italic text-primary">Budget Policy Statement</span>
             </h2>
             <p className="mb-4 text-base leading-relaxed text-muted-foreground">
-              Working directly with the National Treasury and Parliament&apos;s Budget &
-              Appropriations Committee, we translate the annual Budget Policy Statement into
+              We track and decode the outputs of the National Treasury and Parliament&apos;s Budget &
+              Appropriations Committee, translating the annual Budget Policy Statement into
               accessible narratives for citizens.
             </p>
             <p className="mb-6 text-base leading-relaxed text-muted-foreground">
