@@ -2,8 +2,10 @@
 
 import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React from "react";
 import { NAV_LINKS, Routes } from "@/constants";
+import { cn } from "@/utils";
 import { Button } from "@/ui/button";
 import { useAuth } from "@/contexts/auth-context";
 import {
@@ -25,6 +27,11 @@ interface Props {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+function isActiveNav(pathname: string, href: string) {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 const getIcon = (label: string) => {
   const cls = "size-5 text-muted-foreground group-hover:text-primary transition-colors duration-200";
   switch (label.toLowerCase()) {
@@ -41,6 +48,7 @@ const getIcon = (label: string) => {
 };
 
 function MenuPanel({ isOpen, setIsOpen }: Props) {
+  const pathname = usePathname();
   const { isLoggedIn, loading: authLoading, user } = useAuth();
 
   return (
@@ -58,14 +66,14 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
             onClick={() => setIsOpen(false)}
           />
 
-          {/* Desktop: right-side panel */}
+          {/* Desktop: right-side nav panel */}
           <motion.div
             key="desktop-panel"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ duration: 0.35, ease: ease.expo }}
-            className="fixed top-0 right-0 bottom-0 w-1/2 z-[99] hidden lg:flex flex-col bg-background border-l border-border/60 shadow-2xl shadow-black/20"
+            className="fixed top-0 right-0 bottom-0 z-[99] hidden lg:flex w-full min-w-[320px] max-w-md flex-col bg-background border-l border-border/60 shadow-2xl shadow-black/20"
           >
             <div className="flex items-center justify-between px-6 h-16 shrink-0 border-b border-border/40">
               <span className="text-sm font-semibold text-muted-foreground">Navigation</span>
@@ -95,7 +103,12 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
                     <Link
                       href={item.href}
                       onClick={() => setIsOpen(false)}
-                      className="group flex items-center justify-between w-full px-4 py-3.5 text-base font-medium rounded-2xl text-foreground hover:text-primary hover:bg-foreground/[0.04] active:scale-[0.98] transition-all duration-200"
+                      className={cn(
+                        "group flex items-center justify-between w-full px-4 py-3.5 text-base font-medium rounded-2xl active:scale-[0.98] transition-all duration-200",
+                        isActiveNav(pathname, item.href)
+                          ? "bg-primary/10 text-primary"
+                          : "text-foreground hover:text-primary hover:bg-foreground/[0.04]"
+                      )}
                     >
                       <span className="flex items-center gap-3">
                         {getIcon(item.label)}
@@ -195,7 +208,12 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
                     <Link
                       href={item.href}
                       onClick={() => setIsOpen(false)}
-                      className="group flex items-center justify-between w-full px-4 py-3.5 text-base font-medium rounded-2xl text-foreground hover:text-primary hover:bg-foreground/[0.04] active:scale-[0.98] transition-all duration-200"
+                      className={cn(
+                        "group flex items-center justify-between w-full px-4 py-3.5 text-base font-medium rounded-2xl active:scale-[0.98] transition-all duration-200",
+                        isActiveNav(pathname, item.href)
+                          ? "bg-primary/10 text-primary"
+                          : "text-foreground hover:text-primary hover:bg-foreground/[0.04]"
+                      )}
                     >
                       <span className="flex items-center gap-3">
                         {getIcon(item.label)}
