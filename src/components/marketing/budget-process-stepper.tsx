@@ -105,7 +105,7 @@ function StageCard({ stage }: { stage: ProcessStage }) {
     <Link
       href={Routes.Learn}
       aria-label={`Stage ${stage.id}: ${stage.title} — learn more`}
-      className={`group relative flex h-full flex-col gap-4 rounded-3xl border bg-card p-6 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 md:p-7 ${
+      className={`group relative flex h-full flex-col gap-3 rounded-3xl border bg-card p-5 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 md:gap-4 md:p-7 ${
         isCurrent
           ? "border-primary/40 shadow-lg shadow-primary/5"
           : "border-border hover:border-primary/30 hover:shadow-md"
@@ -121,7 +121,7 @@ function StageCard({ stage }: { stage: ProcessStage }) {
         >
           <Icon className="size-5" />
         </span>
-        <span className="font-mono text-3xl font-black tracking-tight text-muted-foreground/25 transition-colors group-hover:text-muted-foreground/40">
+        <span className="font-mono text-2xl font-black tracking-tight text-muted-foreground/25 transition-colors group-hover:text-muted-foreground/40 md:text-3xl">
           {String(stage.id).padStart(2, "0")}
         </span>
       </div>
@@ -144,7 +144,7 @@ function StageCard({ stage }: { stage: ProcessStage }) {
         <p className="text-sm leading-relaxed text-muted-foreground">{stage.description}</p>
       </div>
 
-      <span className="mt-auto inline-flex items-center gap-1.5 pt-2 text-xs font-semibold text-muted-foreground transition-colors group-hover:text-primary">
+      <span className="mt-auto hidden items-center gap-1.5 pt-2 text-xs font-semibold text-muted-foreground transition-colors group-hover:text-primary sm:inline-flex">
         Explore on the Learn Hub
         <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
       </span>
@@ -190,15 +190,15 @@ export default function BudgetProcessStepper() {
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mt-10 flex flex-col items-center justify-between gap-5 rounded-3xl border border-primary/20 bg-primary/5 p-6 text-center md:flex-row md:text-left md:p-8"
+          className="mt-8 flex flex-col items-center justify-between gap-5 rounded-3xl border border-primary/20 bg-primary/5 p-5 text-center md:mt-10 md:flex-row md:text-left md:p-8"
         >
           <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
             <span className="font-semibold text-foreground">Right now</span>, Kenya is at stage 5 —
             the FY2026/27 estimates have been approved and the Budget Statement read. Follow the live
             cycle below, or learn each stage in depth.
           </p>
-          <Link href={Routes.Learn} className="shrink-0">
-            <Button size="lg" className="gap-2 rounded-full px-7">
+          <Link href={Routes.Learn} className="w-full shrink-0 md:w-auto">
+            <Button size="lg" className="w-full gap-2 rounded-full px-7 md:w-auto">
               Start the Learn Hub
               <ArrowRight className="size-4" />
             </Button>

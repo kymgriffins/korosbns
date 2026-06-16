@@ -115,7 +115,7 @@ export default function AlertsSimulator() {
       </div>
 
       <div className={`${SECTION_SHELL_INNER} max-w-7xl`}>
-        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
+        <div className="grid grid-cols-1 items-center gap-10 md:gap-12 lg:grid-cols-12">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -126,9 +126,9 @@ export default function AlertsSimulator() {
             <span className="inline-block text-xs font-black uppercase tracking-widest text-primary">
               Where the Money Goes
             </span>
-            <h2 className="text-3xl font-black leading-none tracking-tight text-foreground md:text-5xl">
-              From allocations to <br />
-              accountability — <br />
+            <h2 className="text-2xl font-black leading-tight tracking-tight text-foreground sm:text-3xl sm:leading-none md:text-5xl">
+              From allocations to <br className="hidden sm:block" />
+              accountability — <br className="hidden sm:block" />
               sector by sector.
             </h2>
             <p className="text-sm leading-relaxed text-muted-foreground md:text-base">
@@ -164,8 +164,8 @@ export default function AlertsSimulator() {
             </p>
 
             <div className="pt-2">
-              <a href={Routes.Learn}>
-                <Button size="lg" className="gap-2 rounded-full px-6">
+              <a href={Routes.Learn} className="block w-full sm:inline-block sm:w-auto">
+                <Button size="lg" className="w-full gap-2 rounded-full px-6 sm:w-auto">
                   Learn to track the budget <ArrowRight className="size-4" />
                 </Button>
               </a>
@@ -179,7 +179,7 @@ export default function AlertsSimulator() {
             transition={{ duration: 0.7, ease: [0.19, 1, 0.22, 1], delay: 0.1 }}
             className="flex items-center justify-center lg:col-span-7"
           >
-            <div className="relative h-[580px] w-full max-w-[340px] overflow-hidden rounded-[40px] border-[6px] border-border bg-black p-3 shadow-2xl">
+            <div className="relative h-[480px] w-full max-w-[270px] overflow-hidden rounded-[36px] border-4 border-border bg-black p-2.5 shadow-2xl sm:h-[580px] sm:max-w-[340px] sm:rounded-[40px] sm:border-[6px] sm:p-3">
               <div className="absolute top-0 left-1/2 z-30 flex h-5 w-28 -translate-x-1/2 items-center justify-center rounded-b-xl bg-black">
                 <div className="mr-2 size-2 rounded-full bg-card" />
                 <div className="h-1 w-8 rounded-full bg-muted-foreground/20" />

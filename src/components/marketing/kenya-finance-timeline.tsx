@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "motion/react";
 import { Badge } from "@/ui/badge";
 import {
@@ -11,6 +11,7 @@ import {
   TrendingDown,
   Minus,
   CalendarDays,
+  ChevronDown,
   ClipboardList,
   FileText,
   CheckCircle2,
@@ -49,6 +50,9 @@ const MILESTONE_ICONS: Record<MilestoneIcon, LucideIcon> = {
   appropriation: FileSignature,
 };
 
+const LATEST_MILESTONE_ID = 6;
+const MOBILE_SECTOR_PREVIEW = 4;
+
 function trendMeta(trend: Trend): { Icon: LucideIcon; color: string } {
   switch (trend) {
     case "up":
@@ -64,18 +68,43 @@ function isTimelineReached(status: BudgetMilestone["status"]): boolean {
   return status === "completed" || status === "running";
 }
 
+function KpiTile({
+  label,
+  value,
+  trend,
+}: {
+  label: string;
+  value: string;
+  trend: Trend;
+}) {
+  const { Icon, color } = trendMeta(trend);
+  return (
+    <div className="flex min-w-[44%] snap-start flex-col justify-between rounded-2xl border border-border bg-card p-4 transition-all hover:border-primary/30 md:min-w-0 md:p-5">
+      <div>
+        <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-muted-foreground md:text-xs">
+          {label}
+        </span>
+        <span className="text-lg font-black tracking-tight md:text-2xl">{value}</span>
+      </div>
+      <div className="mt-3 flex items-center gap-1.5">
+        <Icon className={`h-3.5 w-3.5 ${color}`} />
+        <span className={`text-[9px] font-bold uppercase tracking-wider ${color}`}>{trend}</span>
+      </div>
+    </div>
+  );
+}
+
 function TimelineCard({
   item,
   isReached,
 }: {
   item: BudgetMilestone;
   isReached: boolean;
-  isRunning: boolean;
 }) {
   const Icon = MILESTONE_ICONS[item.icon];
   return (
     <div
-      className={`rounded-2xl border bg-card p-5 transition-all duration-300 md:rounded-3xl md:p-7 ${
+      className={`rounded-2xl border bg-card p-4 transition-all duration-300 md:rounded-3xl md:p-7 ${
         item.status === "running"
           ? "border-primary/30 hover:border-primary/40"
           : isReached
@@ -85,7 +114,7 @@ function TimelineCard({
     >
       <div className="mb-3 flex items-start justify-between gap-4">
         <span
-          className={`flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest ${
+          className={`flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest md:text-xs ${
             isReached ? "text-primary" : "text-muted-foreground"
           }`}
         >
@@ -103,12 +132,12 @@ function TimelineCard({
       </div>
 
       <h3
-        className={`mb-3 flex items-center gap-2.5 text-xl font-bold tracking-tight md:text-2xl ${
+        className={`mb-2.5 flex items-center gap-2.5 text-base font-bold tracking-tight md:mb-3 md:text-2xl ${
           isReached ? "text-foreground" : "text-muted-foreground"
         }`}
       >
         <span
-          className={`flex size-9 shrink-0 items-center justify-center rounded-xl border ${
+          className={`flex size-8 shrink-0 items-center justify-center rounded-xl border md:size-9 ${
             isReached
               ? "border-primary/20 bg-primary/10 text-primary"
               : "border-border bg-muted/40 text-muted-foreground"
@@ -120,7 +149,7 @@ function TimelineCard({
       </h3>
 
       <p
-        className={`mb-4 text-sm leading-relaxed md:text-base ${
+        className={`mb-3 text-sm leading-relaxed md:mb-4 md:text-base ${
           isReached ? "text-muted-foreground" : "text-muted-foreground/80"
         }`}
       >
@@ -128,7 +157,7 @@ function TimelineCard({
       </p>
 
       <div
-        className={`border-t pt-4 text-xs leading-relaxed ${
+        className={`border-t pt-3 text-xs leading-relaxed md:pt-4 ${
           isReached
             ? "border-border/60 text-muted-foreground"
             : "border-muted text-muted-foreground/70"
@@ -141,6 +170,14 @@ function TimelineCard({
 }
 
 export default function KenyaFinanceTimeline() {
+  const [showAllMilestones, setShowAllMilestones] = useState(false);
+  const [showAllSectors, setShowAllSectors] = useState(false);
+
+  const hiddenMilestoneCount = budgetMilestones.filter(
+    (m) => m.status === "completed" && m.id !== LATEST_MILESTONE_ID
+  ).length;
+  const hiddenSectorCount = Math.max(0, sectorAllocations.length - MOBILE_SECTOR_PREVIEW);
+
   return (
     <SectionShell
       id="budget-tracker"
@@ -152,19 +189,19 @@ export default function KenyaFinanceTimeline() {
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="mx-auto mb-8 max-w-5xl overflow-hidden rounded-3xl border border-primary/30 bg-gradient-to-br from-primary/10 via-primary/5 to-background p-6 text-center md:p-10"
+        className="mx-auto mb-8 max-w-5xl overflow-hidden rounded-3xl border border-primary/30 bg-gradient-to-br from-primary/10 via-primary/5 to-background p-5 text-center md:p-10"
       >
-        <div className="mb-2 inline-block rounded-full bg-primary/20 px-4 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-primary">
+        <div className="mb-2 inline-block rounded-full bg-primary/20 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-primary md:px-4 md:text-[11px]">
           Budget Statement — June 11, 2026
         </div>
-        <h2 className="mb-3 text-2xl font-black tracking-tight md:text-4xl">
+        <h2 className="mb-3 text-xl font-black tracking-tight md:text-4xl">
           CS John Mbadi Reads a {formatKesBillions(4820.4)} Budget
         </h2>
-        <p className="mx-auto mb-5 max-w-2xl text-sm text-muted-foreground md:text-base">
+        <p className="mx-auto mb-0 max-w-2xl text-xs text-muted-foreground md:mb-5 md:text-base">
           Revenue {formatKesBillions(3630.5)} · Deficit {formatKesBillions(1146.2)} (5.5% of GDP) ·
           Interest &amp; pensions {formatKesBillions(1501.3)}
         </p>
-        <div className="mx-auto flex max-w-md flex-wrap items-center justify-center gap-3">
+        <div className="mx-auto hidden max-w-md flex-wrap items-center justify-center gap-3 md:flex">
           <span className="rounded-lg border border-primary/20 bg-primary/10 px-4 py-2 text-sm font-bold text-primary">
             {formatKesBillions(4820.4)} Total Budget
           </span>
@@ -188,78 +225,50 @@ export default function KenyaFinanceTimeline() {
         description="Tracking Kenya's live FY2026/27 budget cycle from formulation through implementation, with verified sector-by-sector allocations."
       />
 
-      <div className="mx-auto mb-4 grid max-w-6xl grid-cols-2 gap-3 md:mb-8 md:grid-cols-4 md:gap-4">
-        {budgetHighlights.map((indicator, index) => {
-          const { Icon, color } = trendMeta(indicator.trend);
-          return (
-            <motion.div
+      <div className="mx-auto mb-3 max-w-6xl md:mb-8">
+        <span className="mb-2 block text-[10px] font-bold uppercase tracking-widest text-muted-foreground md:hidden">
+          Headline figures · swipe →
+        </span>
+        <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] md:grid md:grid-cols-4 md:gap-4 md:overflow-visible md:pb-0 [&::-webkit-scrollbar]:hidden">
+          {budgetHighlights.map((indicator) => (
+            <KpiTile
               key={indicator.label}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.08 }}
-              className="flex min-w-0 flex-col justify-between rounded-2xl border border-border bg-card p-4 transition-all hover:border-primary/30 md:p-5"
-            >
-              <div>
-                <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-muted-foreground md:text-xs">
-                  {indicator.label}
-                </span>
-                <span className="text-lg font-black tracking-tight md:text-2xl">
-                  {indicator.value}
-                </span>
-              </div>
-              <div className="mt-3 flex items-center gap-1.5">
-                <Icon className={`h-3.5 w-3.5 ${color}`} />
-                <span className={`text-[9px] font-bold uppercase tracking-wider ${color}`}>
-                  {indicator.trend}
-                </span>
-              </div>
-            </motion.div>
-          );
-        })}
+              label={indicator.label}
+              value={indicator.value}
+              trend={indicator.trend}
+            />
+          ))}
+        </div>
       </div>
 
-      <div className="mx-auto mb-8 grid max-w-6xl grid-cols-2 gap-3 md:mb-12 md:grid-cols-4 md:gap-4">
-        {economicIndicators.map((indicator, index) => {
-          const { Icon, color } = trendMeta(indicator.trend);
-          return (
-            <motion.div
+      <div className="mx-auto mb-8 max-w-6xl md:mb-12">
+        <span className="mb-2 block text-[10px] font-bold uppercase tracking-widest text-muted-foreground md:hidden">
+          Economic indicators · swipe →
+        </span>
+        <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] md:grid md:grid-cols-4 md:gap-4 md:overflow-visible md:pb-0 [&::-webkit-scrollbar]:hidden">
+          {economicIndicators.map((indicator) => (
+            <KpiTile
               key={indicator.label}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.08 }}
-              className="flex min-w-0 flex-col justify-between rounded-2xl border border-border bg-card/80 p-4 transition-all hover:border-primary/30 md:p-5"
-            >
-              <div>
-                <span className="mb-1.5 block text-[10px] font-bold uppercase tracking-wider text-muted-foreground md:text-xs">
-                  {indicator.label}
-                </span>
-                <span className="text-lg font-black tracking-tight md:text-2xl">
-                  {indicator.value}
-                </span>
-              </div>
-              <div className="mt-3 flex items-center gap-1.5">
-                <Icon className={`h-3.5 w-3.5 ${color}`} />
-                <span className={`text-[9px] font-bold uppercase tracking-wider ${color}`}>
-                  {indicator.trend}
-                </span>
-              </div>
-            </motion.div>
-          );
-        })}
+              label={indicator.label}
+              value={indicator.value}
+              trend={indicator.trend}
+            />
+          ))}
+        </div>
       </div>
 
-      <div className="relative mx-auto mb-12 w-full min-w-0 max-w-5xl px-1 md:mb-16">
+      <div className="relative mx-auto mb-6 w-full min-w-0 max-w-5xl px-1 md:mb-16">
         <div className="absolute bottom-2 left-4 top-2 hidden w-0.5 bg-gradient-to-b from-primary/10 via-primary/30 to-primary/10 md:left-1/2 md:block md:-translate-x-1/2" />
         <div className="absolute bottom-2 left-4 top-2 w-0.5 bg-gradient-to-b from-primary/10 via-primary/30 to-primary/10 md:hidden" />
 
-        <div className="space-y-8 md:space-y-12">
+        <div className="space-y-6 md:space-y-12">
           {budgetMilestones.map((item, index) => {
             const isCompleted = item.status === "completed";
             const isRunning = item.status === "running";
             const isReached = isTimelineReached(item.status);
             const isLeft = index % 2 === 0;
+            const hideOnMobile =
+              !showAllMilestones && isCompleted && item.id !== LATEST_MILESTONE_ID;
 
             return (
               <motion.div
@@ -268,7 +277,9 @@ export default function KenyaFinanceTimeline() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ duration: 0.6, delay: index * 0.05 }}
-                className="relative grid min-w-0 w-full gap-6 md:grid-cols-2 md:gap-x-12"
+                className={`relative min-w-0 w-full gap-6 md:grid md:grid-cols-2 md:gap-x-12 ${
+                  hideOnMobile ? "hidden md:grid" : "grid"
+                }`}
               >
                 <div className="absolute left-4 z-10 flex h-8 w-8 -translate-x-1/2 items-center justify-center rounded-full border border-border bg-background md:left-1/2 md:-translate-x-4">
                   {isCompleted ? (
@@ -289,7 +300,7 @@ export default function KenyaFinanceTimeline() {
                 {isLeft ? (
                   <>
                     <div className="min-w-0 max-w-full pl-12 md:col-start-1 md:pr-6 md:pl-0">
-                      <TimelineCard item={item} isReached={isReached} isRunning={isRunning} />
+                      <TimelineCard item={item} isReached={isReached} />
                     </div>
                     <div className="hidden md:block" aria-hidden />
                   </>
@@ -297,7 +308,7 @@ export default function KenyaFinanceTimeline() {
                   <>
                     <div className="hidden md:block" aria-hidden />
                     <div className="min-w-0 max-w-full pl-12 md:col-start-2 md:pl-6">
-                      <TimelineCard item={item} isReached={isReached} isRunning={isRunning} />
+                      <TimelineCard item={item} isReached={isReached} />
                     </div>
                   </>
                 )}
@@ -305,35 +316,69 @@ export default function KenyaFinanceTimeline() {
             );
           })}
         </div>
+
+        {hiddenMilestoneCount > 0 ? (
+          <div className="mt-6 flex justify-center md:hidden">
+            <button
+              onClick={() => setShowAllMilestones((v) => !v)}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2.5 text-xs font-bold text-foreground transition-colors hover:border-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+            >
+              {showAllMilestones
+                ? "Show fewer milestones"
+                : `Show ${hiddenMilestoneCount} earlier milestones`}
+              <ChevronDown
+                className={`size-4 transition-transform ${showAllMilestones ? "rotate-180" : ""}`}
+              />
+            </button>
+          </div>
+        ) : null}
       </div>
 
       <motion.div
         initial={{ opacity: 0, scale: 0.98 }}
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true }}
-        className="mx-auto flex max-w-5xl flex-col gap-6 rounded-3xl border border-primary/20 bg-primary/5 p-6 md:p-8"
+        className="mx-auto flex max-w-5xl flex-col gap-6 rounded-3xl border border-primary/20 bg-primary/5 p-5 md:p-8"
       >
         <div className="flex items-start gap-4">
-          <div className="rounded-2xl border border-primary/20 bg-primary/10 p-3 text-primary shrink-0">
+          <div className="hidden rounded-2xl border border-primary/20 bg-primary/10 p-3 text-primary shrink-0 sm:block">
             <TrendingUp className="h-6 w-6" />
           </div>
           <div className="w-full">
-            <h3 className="mb-3 text-lg font-bold text-primary">
+            <h3 className="mb-3 text-base font-bold text-primary md:text-lg">
               FY 2026/27 Sector Allocations — selected sectors (KES)
             </h3>
             <div className="grid grid-cols-1 gap-x-8 gap-y-2.5 text-sm text-muted-foreground md:grid-cols-2">
-              {sectorAllocations.map((sector) => (
-                <div
-                  key={sector.key}
-                  className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-2"
-                >
-                  <span className="font-semibold text-foreground">{sector.label}</span>
-                  <span className="font-mono font-bold text-primary">
-                    {formatKesBillions(sector.allocationBillions)}
-                  </span>
-                </div>
-              ))}
+              {sectorAllocations.map((sector, index) => {
+                const hideOnMobile = !showAllSectors && index >= MOBILE_SECTOR_PREVIEW;
+                return (
+                  <div
+                    key={sector.key}
+                    className={`items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-2 ${
+                      hideOnMobile ? "hidden md:flex" : "flex"
+                    }`}
+                  >
+                    <span className="font-semibold text-foreground">{sector.label}</span>
+                    <span className="font-mono font-bold text-primary">
+                      {formatKesBillions(sector.allocationBillions)}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
+
+            {hiddenSectorCount > 0 ? (
+              <button
+                onClick={() => setShowAllSectors((v) => !v)}
+                className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-primary transition-colors hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 md:hidden"
+              >
+                {showAllSectors ? "Show fewer sectors" : `View all ${sectorAllocations.length} sectors`}
+                <ChevronDown
+                  className={`size-3.5 transition-transform ${showAllSectors ? "rotate-180" : ""}`}
+                />
+              </button>
+            ) : null}
+
             <p className="mt-3 text-xs text-muted-foreground/70">
               Source: {BUDGET_SOURCE.label}. Figures are selected ministerial sector ceilings and
               do not sum to total expenditure.

@@ -64,23 +64,23 @@ const WhatWeDoSection = () => {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          className="flex flex-col items-center justify-center gap-4 sm:flex-row"
+          className="flex w-full flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4"
         >
-          <Link href="/about">
+          <Link href="/about" className="w-full sm:w-auto">
             <Button
               size="lg"
               variant="white"
-              className="gap-2 rounded-full px-10 py-7 text-lg font-bold"
+              className="w-full gap-2 rounded-full px-8 py-6 text-base font-bold sm:w-auto md:px-10 md:py-7 md:text-lg"
             >
               Start Your Journey
               <ArrowRight className="h-5 w-5" />
             </Button>
           </Link>
-          <Link href="/events">
+          <Link href="/events" className="w-full sm:w-auto">
             <Button
               size="lg"
               variant="outline"
-              className="gap-2 rounded-full px-10 py-7 text-lg font-bold"
+              className="w-full gap-2 rounded-full px-8 py-6 text-base font-bold sm:w-auto md:px-10 md:py-7 md:text-lg"
             >
               View All Events
               <ArrowRight className="h-5 w-5" />
