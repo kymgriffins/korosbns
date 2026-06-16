@@ -83,6 +83,30 @@ interface StoryData {
   cards: StoryCard[];
 }
 
+// The API returns raw article records (summary, body_html, metadata.hero_image,
+// published_at, learning_context). Map them into the shape the reader consumes so
+// each article surfaces its own hero image and metadata.
+function normalizeArticle(raw: unknown): ArticleData {
+  const r = (raw ?? {}) as Record<string, any>;
+  const meta = (r.metadata ?? {}) as Record<string, any>;
+  const readMinutes = meta.read_minutes ?? r.read_minutes;
+  return {
+    id: r.id ?? "",
+    title: r.title ?? "",
+    snippet: r.snippet ?? r.summary ?? "",
+    body: r.body,
+    body_html: r.body_html,
+    heroImage: r.heroImage ?? meta.hero_image ?? r.cover_image_url ?? r.image_url ?? undefined,
+    category: r.category ?? meta.category ?? (typeof r.format === "string" ? r.format : undefined),
+    sourceLabel: r.sourceLabel ?? meta.source_label ?? undefined,
+    readTime: r.readTime ?? (readMinutes ? `${readMinutes} min read` : undefined),
+    publishedAt: r.publishedAt ?? r.published_at ?? undefined,
+    updatedAt: r.updatedAt ?? r.updated_at ?? meta.updated_at ?? undefined,
+    author: (r.author ?? null) as ArticleAuthor | null,
+    learningContext: r.learningContext ?? r.learning_context ?? undefined,
+  };
+}
+
 export default function UnifiedReaderClientPage({
   initialMode = "loading",
   initialArticle = null,
@@ -90,7 +114,7 @@ export default function UnifiedReaderClientPage({
   initialStory = null,
 }: {
   initialMode?: ReaderMode;
-  initialArticle?: ArticleData | null;
+  initialArticle?: ArticleData | Record<string, unknown> | null;
   initialTrivia?: TriviaSetApi | null;
   initialStory?: StoryData | null;
 }) {
@@ -101,7 +125,7 @@ export default function UnifiedReaderClientPage({
   const [errorMsg, setErrorMsg] = useState("");
   
   // Data states
-  const [article, setArticle] = useState<ArticleData | null>(initialArticle);
+  const [article, setArticle] = useState<ArticleData | null>(initialArticle ? normalizeArticle(initialArticle) : null);
   const [trivia, setTrivia] = useState<TriviaSetApi | null>(initialTrivia);
   const [story, setStory] = useState<StoryData | null>(initialStory);
   
@@ -121,7 +145,7 @@ export default function UnifiedReaderClientPage({
     }
 
     if (data.type === "article") {
-      setArticle(data.data as unknown as ArticleData);
+      setArticle(normalizeArticle(data.data));
       setMode("article");
     } else if (data.type === "trivia") {
       setTrivia(data.data as TriviaSetApi);
@@ -357,6 +381,7 @@ export default function UnifiedReaderClientPage({
 
   if (mode === "article" && article) {
     const placeholder = articlePlaceholderForSlug(slug);
+    const hasHero = Boolean(article.heroImage);
     const heroSrc = article.heroImage || placeholder.src;
     const ctx = article.learningContext;
     const editionCrumb =
@@ -396,9 +421,9 @@ export default function UnifiedReaderClientPage({
             animate="visible"
             className="relative mb-8 h-48 overflow-hidden rounded-[24px] border border-border sm:h-56"
           >
-            <HarmonizedImage src={heroSrc} alt={article.title} className="h-full rounded-none border-0" fallbackLabel="Article cover" />
-            <div className={`absolute inset-0 bg-gradient-to-br ${placeholder.accent}`} />
-            <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(8,8,12,0.75)_20%,transparent_70%)]" />
+            <HarmonizedImage src={heroSrc} alt={article.title} className="h-full rounded-none border-0" imageClassName="object-cover" fallbackLabel="Article cover" />
+            {!hasHero && <div className={`absolute inset-0 bg-gradient-to-br ${placeholder.accent}`} />}
+            <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(8,8,12,0.45)_10%,transparent_55%)]" />
           </motion.div>
 
             <article className="space-y-8">
