@@ -9,7 +9,7 @@ import { learnHubApi } from "@/lib/learn-hub";
 import { useLearn } from "@/contexts/learn-context";
 import { useSidebar } from "@/ui/sidebar";
 import { readProgress, writeProgress } from "@/lib/module-progress";
-import type { CivicModule, ChapterStep, ChapterVideo } from "@/types/learn";
+import type { CivicModule, ChapterStep, ChapterVideo, StageTrivia } from "@/types/learn";
 import {
   fetchBudgetAllocations,
   fetchBudgetKpis,
@@ -331,9 +331,10 @@ export function StageDetailDrawer({
   };
 
   useEffect(() => {
-    if (activeTab === "quiz" && !((stage.steps[currentStep - 1]?.trivia?.length ?? 0) > 0)) {
+    if (activeTab === "quiz" && triviaForStep(stage.steps[currentStep - 1], currentStep - 1).length === 0) {
       setActiveTab("read");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStep, activeTab]);
 
   useEffect(() => {
@@ -382,14 +383,25 @@ export function StageDetailDrawer({
     setExpandedStep(stepNum);
     setShowTrivia(false);
     const nextStep = stage.steps[stepNum - 1];
-    if (activeTab === "quiz" && !((nextStep?.trivia?.length ?? 0) > 0)) {
+    if (activeTab === "quiz" && triviaForStep(nextStep, stepNum - 1).length === 0) {
       setActiveTab("read");
     }
   };
 
+  // The civic-modules API nests trivia at the MODULE level (stage.trivia), not per
+  // chapter. Prefer per-step trivia when present (future-proof), otherwise surface
+  // the module assessment on the final chapter so quizzes reliably render.
+  const moduleTrivia = stage.trivia ?? [];
+  const triviaForStep = (step: ChapterStep | null | undefined, idx: number): StageTrivia[] => {
+    if (step?.trivia?.length) return step.trivia;
+    const isLast = idx === stage.steps.length - 1;
+    return isLast ? moduleTrivia : [];
+  };
+
   const isMastery = currentStep > stage.steps.length;
   const currentStepObj = currentStep > 0 && !isMastery ? stage.steps[currentStep - 1] : null;
-  const hasQuiz = (currentStepObj?.trivia?.length ?? 0) > 0;
+  const currentStepTrivia = triviaForStep(currentStepObj, currentStep - 1);
+  const hasQuiz = currentStepTrivia.length > 0;
 
   function resolveYoutubeId(input: string): string | undefined {
     if (!input) return undefined;
@@ -608,9 +620,10 @@ export function StageDetailDrawer({
                         activeFormat="text"
                         showTrivia={showTrivia}
                         origin=""
+                        hasTrivia={hasQuiz}
                         getPersonalizedText={(txt) => txt}
                         onFormatChange={() => {}}
-                        onStartTrivia={() => setShowTrivia(true)}
+                        onStartTrivia={() => { setActiveTab("quiz"); setShowTrivia(true); }}
                       />
                     </div>
 
@@ -634,7 +647,7 @@ export function StageDetailDrawer({
                       </div>
                     ) : (
                       <TriviaSection
-                        trivia={stage.steps[currentStep - 1]?.trivia ?? []}
+                        trivia={currentStepTrivia}
                         stepId={stage.steps[currentStep - 1].order}
                         showTrivia={showTrivia}
                         isStepTriviaPassed={isStepTriviaPassed}
@@ -717,7 +730,7 @@ export function StageDetailDrawer({
                         </div>
                         <span className="text-[10px] text-muted-foreground font-semibold shrink-0">10 min</span>
                       </button>
-                      {(step.trivia?.length ?? 0) > 0 && (
+                      {triviaForStep(step, idx).length > 0 && (
                         <button onClick={() => { selectStep(stepNum); setActiveTab("quiz"); setShowTrivia(true); }}
                           className="w-full flex items-center justify-between py-1 px-2 rounded-lg hover:bg-muted/30 transition-colors text-left group">
                           <div className="flex items-center gap-1.5 min-w-0">

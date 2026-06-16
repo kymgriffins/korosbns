@@ -91,6 +91,8 @@ export type CivicModule = {
   metadata?: Record<string, unknown>;
   steps: ChapterStep[];
   author?: CivicModuleAuthor | null;
+  trivia?: StageTrivia[];
+  trivia_id?: string | null;
 };
 
 export type LearnContentType =

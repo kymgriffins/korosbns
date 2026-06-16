@@ -17,6 +17,7 @@ interface StepContentProps {
   activeFormat: "video" | "text";
   showTrivia: boolean;
   origin: string;
+  hasTrivia?: boolean;
   getPersonalizedText: (text: string) => string;
   onFormatChange: (format: "video" | "text") => void;
   onStartTrivia: () => void;
@@ -125,7 +126,8 @@ function VideoPlayer({ videos, youtubeUrl, youtubeUrls, title }: { videos?: Chap
   );
 }
 
-export function StepContent({ step, currentStep, totalSteps, activeFormat, showTrivia, origin, getPersonalizedText, onFormatChange, onStartTrivia }: StepContentProps) {
+export function StepContent({ step, currentStep, totalSteps, activeFormat, showTrivia, origin, hasTrivia, getPersonalizedText, onFormatChange, onStartTrivia }: StepContentProps) {
+  const showTriviaCta = hasTrivia ?? (step.trivia?.length ?? 0) > 0;
   return (
     <div className="space-y-4 animate-in fade-in duration-200">
       <div className="flex items-center justify-between">
@@ -199,7 +201,7 @@ export function StepContent({ step, currentStep, totalSteps, activeFormat, showT
             </div>
           )}
 
-          {activeFormat === "text" && (step.trivia?.length ?? 0) > 0 && (
+          {activeFormat === "text" && showTriviaCta && (
             <div className="flex justify-center pt-2">
               <Button onClick={onStartTrivia} size="sm" className="rounded-lg font-bold text-xs gap-1.5">
                 <Sparkles className="size-3.5" /> {currentStep === totalSteps ? "Check Understanding" : "Knowledge Check"}
