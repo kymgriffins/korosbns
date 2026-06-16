@@ -112,7 +112,7 @@ export function TriviaSection({ trivia, stepId, showTrivia, isStepTriviaPassed, 
 
                 return (
                   <button key={optIdx} onClick={() => handleSelect(globalIdx, optIdx)} disabled={state?.submitted}
-                    className={cn("w-full min-h-[40px] px-3.5 py-2.5 rounded-xl border text-[11px] font-semibold text-left transition-all active:scale-[0.99]", optStyle)}>
+                    className={cn("w-full min-h-11 px-3.5 py-2.5 rounded-xl border text-xs font-semibold text-left transition-all active:scale-[0.99]", optStyle)}>
                     {opt}
                   </button>
                 );

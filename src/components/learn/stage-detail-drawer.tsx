@@ -460,10 +460,10 @@ export function StageDetailDrawer({
           <span className="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded flex items-center gap-1">
             <BookOpen className="size-3" /> {stage.steps.length} lessons
           </span>
-          <span className="px-2 py-0.5 bg-muted/40 text-muted-foreground text-[10px] font-bold rounded flex items-center gap-1">
+          <span className="hidden sm:flex px-2 py-0.5 bg-muted/40 text-muted-foreground text-[10px] font-bold rounded items-center gap-1">
             <Clock className="size-3" /> 4h 5min
           </span>
-          <span className="px-2 py-0.5 bg-amber-500/10 text-amber-600 text-[10px] font-bold rounded flex items-center gap-1">
+          <span className="hidden sm:flex px-2 py-0.5 bg-amber-500/10 text-amber-600 text-[10px] font-bold rounded items-center gap-1">
             <Star className="size-3" /> 4.9
           </span>
         </div>
