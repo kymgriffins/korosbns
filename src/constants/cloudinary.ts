@@ -21,3 +21,7 @@ export const CLOUDINARY_PARTNERSHIPS = {
 
 export const LANDING_YOUTUBE_EMBED =
   "https://www.youtube-nocookie.com/embed/Ed9lP0-komE?rel=0&modestbranding=1";
+
+/** County budget social reel — vertical TikTok-style clip for the landing page. */
+export const CLOUDINARY_COUNTY_BUDGET_SOCIAL_VIDEO =
+  "https://res.cloudinary.com/dn8lut2fc/video/upload/v1781717049/county_budget_socials_new_chdopa.mp4";
