@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import {
-  ChevronRight, ChevronLeft, ChevronDown, X,
-  BookOpen, Bell, Home, LayoutDashboard, ArrowLeft, ExternalLink,
+  ChevronDown, X,
+  BookOpen, LayoutDashboard, ArrowLeft, ExternalLink,
   Settings, LogOut, Lock, Palette, LogIn, User, FileText,
   MessagesSquare, Calendar, ListChecks
 } from "lucide-react";
@@ -95,11 +95,6 @@ function LearnSidebar() {
     if (isMobile) setOpenMobile(false);
   };
 
-  const handleModuleClick = (slug: string) => {
-    setActiveTab("learn");
-    if (isMobile) setOpenMobile(false);
-  };
-
   const moduleCount = civicModules.length;
 
   const primaryItems: { key: LearnTab; label: string; icon: React.ReactNode; badge?: string }[] = [
@@ -137,18 +132,13 @@ function LearnSidebar() {
                             isActive={activeTab === item.key}
                             tooltip={item.label}
                             className="py-4 rounded-lg transition-all data-[active=true]:ring-1 data-[active=true]:ring-sidebar-ring/30"
+                            onClick={() => handleTabChange(item.key)}
                           >
-                            <Link
-                              href={learnTabToHref(item.key)}
-                              onClick={(e) => { e.stopPropagation(); handleTabChange(item.key); }}
-                              className="flex items-center gap-2 [&>svg:first-child]:shrink-0"
-                            >
-                              {item.icon}
-                              <span className="font-semibold text-xs">{item.label}</span>
-                              {item.badge && !isCollapsed && (
-                                <span className="ml-auto flex h-4.5 px-1 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow-xs ring-1 ring-primary/20">{item.badge}</span>
-                              )}
-                            </Link>
+                            {item.icon}
+                            <span className="font-semibold text-xs">{item.label}</span>
+                            {item.badge && !isCollapsed && (
+                              <span className="ml-auto flex h-4.5 px-1 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow-xs ring-1 ring-primary/20">{item.badge}</span>
+                            )}
                             {!isCollapsed && <ChevronDown className="ml-auto size-3 shrink-0 transition-transform group-data-[state=open]/collapsible:rotate-180" />}
                           </SidebarMenuButton>
                         </CollapsibleTrigger>
