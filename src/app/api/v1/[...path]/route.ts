@@ -14,12 +14,16 @@ async function proxyRequest(request: Request, context: RouteContext): Promise<Re
   const upstream = new URL(`${target}/api/v1/${segment}/`);
   upstream.search = incoming.search;
 
+  // Mirror the original request's credentials so the upstream receives cookies
+  const cookie = request.headers.get("cookie");
+
   const headers = new Headers();
   const contentType = request.headers.get("content-type");
   if (contentType) headers.set("Content-Type", contentType);
   headers.set("Accept", request.headers.get("accept") || "application/json");
   const authorization = request.headers.get("authorization");
   if (authorization) headers.set("Authorization", authorization);
+  if (cookie) headers.set("Cookie", cookie);
 
   const method = request.method.toUpperCase();
   const hasBody = method !== "GET" && method !== "HEAD";
@@ -44,6 +48,11 @@ async function proxyRequest(request: Request, context: RouteContext): Promise<Re
   const outHeaders = new Headers();
   const upstreamType = upstreamResponse.headers.get("content-type");
   if (upstreamType) outHeaders.set("Content-Type", upstreamType);
+
+  // Diagnostic: log first 200 chars of login response body
+  if (segment === "auth/login" || segment.startsWith("auth/")) {
+    console.log("[API Proxy] upstream status:", upstreamResponse.status, "body preview:", responseBody.slice(0, 200));
+  }
 
   return new Response(responseBody, {
     status: upstreamResponse.status,

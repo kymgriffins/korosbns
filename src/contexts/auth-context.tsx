@@ -101,7 +101,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const raw = await citizenApi.login(email, password);
       const tokens = normalizeLoginResponse(raw as Record<string, unknown>);
       if (!tokens?.access) {
-        logDebug("Auth", "Login response missing access token", { rawKeys: Object.keys(raw as object) });
+        const rawRecord = raw as Record<string, unknown>;
+        logDebug("Auth", "Login response missing access token", {
+          rawKeys: Object.keys(rawRecord),
+          hasAccess: "access" in rawRecord,
+          hasAccessToken: "access_token" in rawRecord,
+          hasToken: "token" in rawRecord,
+          accessType: typeof rawRecord.access,
+          statusCode: (rawRecord as any).status,
+        });
         throw new Error("Login response missing access token.");
       }
       setAuthTokens(tokens.access, tokens.refresh);
