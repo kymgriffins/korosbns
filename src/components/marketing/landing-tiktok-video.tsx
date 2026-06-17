@@ -180,9 +180,6 @@ export default function LandingTikTokVideo() {
               )}
 
               <div className="absolute right-3 bottom-24 z-20 flex flex-col items-center gap-5">
-                <div className="size-10 overflow-hidden rounded-full border-2 border-white bg-background">
-                  <Image src="/logo.svg" alt="BNS" width={36} height={36} className="size-full object-contain p-1" />
-                </div>
                 <button
                   type="button"
                   aria-label="Like"
@@ -220,13 +217,9 @@ export default function LandingTikTokVideo() {
                   </span>
                   <span className="text-[10px] font-medium">Share</span>
                 </button>
-                <div
-                  className={cn(
-                    "mt-1 size-9 animate-spin rounded-full border-2 border-white/30 bg-gradient-to-br from-primary to-purple-500",
-                    isPlaying ? "[animation-duration:3s]" : "animate-none"
-                  )}
-                  aria-hidden
-                />
+                <div className="size-10 overflow-hidden rounded-full border-2 border-white bg-background">
+                  <Image src="/logo.svg" alt="BNS" width={36} height={36} className="size-full object-contain p-1" />
+                </div>
               </div>
 
               <div className="absolute right-14 bottom-4 left-4 z-20 space-y-2 text-white">
