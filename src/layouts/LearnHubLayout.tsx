@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import {
-  ChevronDown, X,
+  ChevronDown, ChevronRight, X,
   BookOpen, LayoutDashboard, ArrowLeft, ExternalLink,
-  LogOut, Palette, LogIn, User, FileText,
+  LogOut, Palette, LogIn, User, FileText, Settings,
   MessagesSquare, Calendar, ListChecks
 } from "lucide-react";
 import { cn } from "@/utils";
@@ -19,6 +19,7 @@ import { ThemeToggle } from "@/components/marketing/theme-toggle";
 import { LearnMobileNav } from "@/layouts/LearnMobileNav";
 import { Routes } from "@/constants/routes";
 import { Avatar, AvatarFallback } from "@/ui/avatar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/ui/popover";
 import type { SurveyListItemApi } from "@/lib/api-client";
 import { loadEventList, type HubEvent } from "@/lib/citizen-content";
 import { loadSurveyList } from "@/lib/marketing-content";
@@ -43,6 +44,79 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/ui/sidebar";
+
+function UserPopover({
+  isLoggedIn, user, level, handleTabChange, children,
+}: {
+  isLoggedIn: boolean;
+  user: any;
+  level: number;
+  handleTabChange: (tab: LearnTab) => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        {children}
+      </PopoverTrigger>
+      <PopoverContent align="end" side="top" className="w-56 rounded-xl border-border/60 p-2 shadow-lg ring-1 ring-border/40">
+        <div className="space-y-1">
+          {isLoggedIn ? (
+            <>
+              <div className="flex items-center gap-3 px-2 py-2 border-b border-border/30 mb-1">
+                <Avatar className="size-8 ring-1 ring-sidebar-border/40 shrink-0">
+                  {user?.avatar_url ? (
+                    <img src={user.avatar_url} alt="" className="size-full rounded-full object-cover" />
+                  ) : (
+                    <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
+                      {user?.first_name?.[0] ?? user?.email?.[0]?.toUpperCase() ?? "?"}
+                    </AvatarFallback>
+                  )}
+                </Avatar>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-xs font-bold">{user?.display_name || user?.first_name || "User"}</p>
+                  <p className="truncate text-[10px] text-muted-foreground">Level {level}</p>
+                </div>
+              </div>
+              <PopoverItem href={learnTabToHref("profile")} onClick={() => handleTabChange("profile")}>
+                <User className="size-3.5" /> View Profile
+              </PopoverItem>
+              <PopoverItem href={Routes.Account}>
+                <Settings className="size-3.5" /> Account Settings
+              </PopoverItem>
+              <div className="flex items-center gap-3 px-2 py-1.5 text-xs font-medium text-muted-foreground rounded-lg hover:bg-sidebar-accent transition-colors">
+                <Palette className="size-3.5 shrink-0" />
+                <span className="flex-1">Theme</span>
+                <ThemeToggle />
+              </div>
+              <div className="border-t border-border/30 pt-1 mt-1">
+                <PopoverItem href={Routes.AccountSignOut}>
+                  <LogOut className="size-3.5" /> Sign Out
+                </PopoverItem>
+              </div>
+            </>
+          ) : (
+            <PopoverItem href={Routes.Login}>
+              <LogIn className="size-3.5" /> Sign In
+            </PopoverItem>
+          )}
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
+function PopoverItem({ href, onClick, children }: { href: string; onClick?: () => void; children: React.ReactNode }) {
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      className="flex items-center gap-3 rounded-lg px-2 py-1.5 text-xs font-medium text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+    >
+      {children}
+    </Link>
+  );
+}
 
 function LearnSidebar() {
   const { isLoggedIn, loading: userLoading, user } = useAuth();
@@ -189,34 +263,6 @@ function LearnSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-[10px] font-bold tracking-wider text-sidebar-foreground/50 uppercase mt-3 mb-0.5">General</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {isLoggedIn ? (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip="Sign Out">
-                    <Link href={Routes.AccountSignOut}><LogOut className="size-4" /><span>Sign Out</span></Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ) : (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild tooltip="Sign In" className="text-primary hover:text-primary">
-                    <Link href={Routes.Login}><LogIn className="size-4" /><span>Sign In</span></Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-              <SidebarMenuItem>
-                <div className="flex items-center gap-3 px-2 py-1.5 text-xs font-medium text-muted-foreground w-full group-data-[collapsible=icon]:justify-center">
-                  <Palette className="size-4 shrink-0" />
-                  {!isCollapsed && <span className="flex-1 text-left">Theme</span>}
-                  {!isCollapsed && <ThemeToggle />}
-                </div>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
       </SidebarContent>
 
       <SidebarFooter>
@@ -228,32 +274,57 @@ function LearnSidebar() {
                 <div className="size-7 rounded-full bg-muted animate-pulse" />
               </div>
             ) : (
-              <>
-                <Avatar className="size-7 ring-1 ring-sidebar-border/40">
-                  {user?.avatar_url ? (
-                    <img src={user.avatar_url} alt="" className="size-full rounded-full object-cover" />
-                  ) : (
-                    <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-bold">
-                      {user?.first_name?.[0] ?? user?.email?.[0]?.toUpperCase() ?? "?"}
-                    </AvatarFallback>
+              <UserPopover isLoggedIn={isLoggedIn} user={user} level={level} handleTabChange={handleTabChange}>
+                <div className="flex flex-col items-center gap-2">
+                  <Avatar className="size-7 ring-1 ring-sidebar-border/40 cursor-pointer">
+                    {user?.avatar_url ? (
+                      <img src={user.avatar_url} alt="" className="size-full rounded-full object-cover" />
+                    ) : (
+                      <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-bold">
+                        {user?.first_name?.[0] ?? user?.email?.[0]?.toUpperCase() ?? "?"}
+                      </AvatarFallback>
+                    )}
+                  </Avatar>
+                  {isLoggedIn && (
+                    <div className="size-7 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-[10px] ring-1 ring-primary/20" title="Level">{level}</div>
                   )}
-                </Avatar>
-                {isLoggedIn && (
-                  <div className="size-7 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-[10px] ring-1 ring-primary/20" title="Level">{level}</div>
-                )}
-                <Link
-                  href="/"
-                  aria-label="Back to main site"
-                  title="Back to main site"
-                  className="mt-1 inline-flex size-7 items-center justify-center rounded-lg text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  <ArrowLeft className="size-4" />
-                </Link>
-              </>
+                </div>
+              </UserPopover>
             )}
+            <Link
+              href="/"
+              aria-label="Back to main site"
+              title="Back to main site"
+              className="mt-1 inline-flex size-7 items-center justify-center rounded-lg text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <ArrowLeft className="size-4" />
+            </Link>
           </div>
         ) : (
           <div className="p-2 space-y-1.5">
+            {!noUserYet && (
+              <UserPopover isLoggedIn={isLoggedIn} user={user} level={level} handleTabChange={handleTabChange}>
+                <button
+                  type="button"
+                  className="flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <Avatar className="size-8 ring-1 ring-sidebar-border/40 shrink-0">
+                    {user?.avatar_url ? (
+                      <img src={user.avatar_url} alt="" className="size-full rounded-full object-cover" />
+                    ) : (
+                      <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-bold">
+                        {user?.first_name?.[0] ?? user?.email?.[0]?.toUpperCase() ?? "?"}
+                      </AvatarFallback>
+                    )}
+                  </Avatar>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-xs font-bold">{user?.display_name || user?.first_name || "User"}</p>
+                    <p className="truncate text-[10px] text-muted-foreground">Level {level}</p>
+                  </div>
+                  <ChevronRight className="size-3.5 text-muted-foreground shrink-0" />
+                </button>
+              </UserPopover>
+            )}
             {showAppCard && !feedLoading && (
               <Link
                 href={upcomingEvents.length > 0 ? Routes.Events : Routes.Surveys}
