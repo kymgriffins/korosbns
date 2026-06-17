@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const protectedPaths = [
-  "/learn",
+  "/learn/account",
+  "/learn/forum",
+  "/learn/profile",
+  "/learn/quests",
 ];
 
 const authPaths = [

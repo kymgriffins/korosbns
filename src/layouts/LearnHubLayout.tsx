@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import {
@@ -411,6 +412,28 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
   );
 }
 
+function AuthGuard({ children }: { children: React.ReactNode }) {
+  const { isLoggedIn, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !isLoggedIn) {
+      router.replace(`/auth/login?next=${encodeURIComponent(window.location.pathname)}`);
+    }
+  }, [loading, isLoggedIn, router]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin size-6 border-2 border-primary border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  if (!isLoggedIn) return null;
+  return <>{children}</>;
+}
+
 export default function LearnHubLayout({ children }: { children: React.ReactNode }) {
   return (
     <LearnProvider>
@@ -419,8 +442,10 @@ export default function LearnHubLayout({ children }: { children: React.ReactNode
           <div className="animate-spin size-6 border-2 border-primary border-t-transparent rounded-full" />
         </div>
       }>
-        <LearnTabSync />
-        <LearnAppShell>{children}</LearnAppShell>
+        <AuthGuard>
+          <LearnTabSync />
+          <LearnAppShell>{children}</LearnAppShell>
+        </AuthGuard>
       </Suspense>
     </LearnProvider>
   );
