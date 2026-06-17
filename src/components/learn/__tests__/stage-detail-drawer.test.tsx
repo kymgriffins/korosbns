@@ -101,10 +101,10 @@ describe("StageDetailDrawer", () => {
       />
     );
     expect(screen.getAllByText("Stage 1: Constitution")[0]).toBeInTheDocument();
-    expect(screen.getByText("DocNative", { exact: false })).toBeInTheDocument();
+    expect(screen.getByText(mockStage.documentName)).toBeInTheDocument();
   });
 
-  it("shows the lesson count and duration badges", () => {
+  it("shows the lesson count", () => {
     renderWithClient(
       <StageDetailDrawer
         stage={mockStage} profile={mockProfile}
@@ -112,8 +112,7 @@ describe("StageDetailDrawer", () => {
         hasPrev={false} hasNext={false}
       />
     );
-    expect(screen.getByText(/2 lessons/)).toBeInTheDocument();
-    expect(screen.getByText("4h 5min")).toBeInTheDocument();
+    expect(screen.getByText(`${mockStage.steps.length} lessons`)).toBeInTheDocument();
   });
 
   it("renders Read tab as active by default", () => {

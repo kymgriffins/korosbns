@@ -229,6 +229,15 @@ function removeTokenCookie(): void {
     // Cookies unavailable — ignore.
   }
 }
+function dispatchAuthChanged(): void {
+  if (typeof window === "undefined" || typeof window.dispatchEvent !== "function") return;
+  try {
+    window.dispatchEvent(new CustomEvent("bns-auth-changed"));
+  } catch {
+    // Non-browser environment (jsdom, SSR) — ignore.
+  }
+}
+
 export function setAuthTokens(access: string, refresh?: string): void {
   if (typeof window === "undefined") return;
   if (!access || typeof access !== "string") {
@@ -241,6 +250,7 @@ export function setAuthTokens(access: string, refresh?: string): void {
   if (refresh && typeof refresh === "string") {
     window.localStorage.setItem(REFRESH_KEY, refresh);
   }
+  dispatchAuthChanged();
 }
 
 export function clearAuthTokens(): void {
@@ -250,37 +260,50 @@ export function clearAuthTokens(): void {
   window.localStorage.removeItem(REFRESH_KEY);
   window.localStorage.removeItem(STORAGE_MODE_KEY);
   removeTokenCookie();
+  dispatchAuthChanged();
 }
 
 export function isAuthenticated(): boolean {
   return Boolean(getAccessToken());
 }
 
+let refreshPromise: Promise<string | null> | null = null;
+
 async function refreshAccessToken(): Promise<string | null> {
-  const refresh = getRefreshToken();
-  if (!refresh) return null;
-  logDebug("Auth", "Refreshing access token", { refresh: sanitizeToken(refresh) });
+  if (refreshPromise) return refreshPromise;
 
-  const response = await fetch(buildApiUrl("/auth/token/refresh/"), {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify({ refresh }),
-  });
+  refreshPromise = (async (): Promise<string | null> => {
+    const refresh = getRefreshToken();
+    if (!refresh) return null;
+    logDebug("Auth", "Refreshing access token", { refresh: sanitizeToken(refresh) });
 
-  if (!response.ok) {
-    logDebug("Auth", "Refresh token rejected by API", { status: response.status });
-    clearAuthTokens();
+    const response = await fetch(buildApiUrl("/auth/token/refresh/"), {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify({ refresh }),
+    });
+
+    if (!response.ok) {
+      logDebug("Auth", "Refresh token rejected by API", { status: response.status });
+      clearAuthTokens();
+      return null;
+    }
+
+    const data = (await response.json()) as { access?: string };
+    if (data?.access && typeof data.access === "string") {
+      setAuthTokens(data.access);
+      logDebug("Auth", "Access token refreshed", { access: sanitizeToken(data.access) });
+      return data.access;
+    }
+    logDebug("Auth", "Refresh response had no access token");
     return null;
-  }
+  })();
 
-  const data = (await response.json()) as { access?: string };
-  if (data?.access && typeof data.access === "string") {
-    setAuthTokens(data.access);
-    logDebug("Auth", "Access token refreshed", { access: sanitizeToken(data.access) });
-    return data.access;
+  try {
+    return await refreshPromise;
+  } finally {
+    refreshPromise = null;
   }
-  logDebug("Auth", "Refresh response had no access token");
-  return null;
 }
 
 function defaultCredentials(
