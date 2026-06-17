@@ -258,25 +258,7 @@ export function LearnPathsHome() {
     : 1;
   const currentStage = stages.find(s => s.order === currentStageNum) || stages[0];
 
-  const isStageAccessibleByServer = (stage: CivicModule): boolean => {
-    if (stage.is_locked !== undefined) return !stage.is_locked;
-    return true;
-  };
-
-  const isStageAccessible = (stage: CivicModule): boolean => {
-    if (!effectiveProfile) return isStageAccessibleByServer(stage);
-    if (isStageAccessibleByServer(stage)) return true;
-    return !!(
-      effectiveProfile.stageProgress?.includes(stage.order) ||
-      effectiveProfile.badges?.includes(stage.badge)
-    );
-  };
-
   const handleSelectStage = (stage: CivicModule) => {
-    if (stage.is_locked === true) {
-      toast.error(`Stage ${stage.title} is locked.`);
-      return;
-    }
     setSelectedStage(stage);
   };
 
@@ -285,10 +267,6 @@ export function LearnPathsHome() {
     const idx = stages.findIndex(s => s.slug === selectedStage.slug);
     const prev = stages[idx - 1];
     if (prev) {
-      if (!isStageAccessible(prev)) {
-        toast.error(`Stage ${prev.title} is locked.`);
-        return;
-      }
       setSelectedStage(prev);
     }
   };
@@ -298,10 +276,6 @@ export function LearnPathsHome() {
     const idx = stages.findIndex(s => s.slug === selectedStage.slug);
     const next = stages[idx + 1];
     if (next) {
-      if (!isStageAccessible(next)) {
-        toast.error(`Stage ${next.title} is locked.`);
-        return;
-      }
       setSelectedStage(next);
     }
   };
