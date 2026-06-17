@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, BookOpen, ChevronRight } from "lucide-react";
+import { ArrowLeft, BookOpen, ChevronRight, ChevronLeft } from "lucide-react";
 import { Button } from "@/ui/button";
-import { budgetNewsChapterPath, Routes } from "@/constants/routes";
+import { budgetNewsChapterPath, budgetNewsModulePath, Routes } from "@/constants/routes";
 import { learnHubApi } from "@/lib/learn-hub";
 import type { CivicModule } from "@/types/learn";
+import type { BudgetNewsYear } from "@/lib/learn-hub";
 import { BudgetNewsErrorBoundary } from "../error-boundary";
 import { resolveReportProfile } from "@/lib/budget-report-data";
 import {
@@ -19,6 +20,7 @@ import {
 
 function DetailContent({ slug }: { slug: string }) {
   const [mod, setMod] = useState<CivicModule | null>(null);
+  const [years, setYears] = useState<BudgetNewsYear[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,8 +28,14 @@ function DetailContent({ slug }: { slug: string }) {
     let cancelled = false;
     async function load() {
       try {
-        const data = await learnHubApi.budgetNewsModule(slug);
-        if (!cancelled) setMod(data);
+        const [modData, yearsData] = await Promise.all([
+          learnHubApi.budgetNewsModule(slug),
+          learnHubApi.budgetNewsYears(),
+        ]);
+        if (!cancelled) {
+          setMod(modData);
+          setYears(yearsData.results || []);
+        }
       } catch (err) {
         if (!cancelled) setError(err instanceof Error ? err.message : "Failed to load");
       } finally {
@@ -67,102 +75,180 @@ function DetailContent({ slug }: { slug: string }) {
 
   const chapters = mod.steps || [];
   const report = resolveReportProfile(mod.metadata);
-  const fiscalYear = report?.fiscal_year ?? "2026/27";
+
+  const currentYearIndex = years.findIndex((y) => y.module_slug === slug);
+  const prevYear = currentYearIndex > 0 ? years[currentYearIndex - 1] : null;
+  const nextYear = currentYearIndex < years.length - 1 ? years[currentYearIndex + 1] : null;
 
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:grid lg:grid-cols-[minmax(0,1fr)_220px] lg:gap-10">
         <div>
-        <Link
-          href={Routes.BudgetNews}
-          className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <ArrowLeft className="size-4" />
-          Back to Budget News
-        </Link>
+          <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+            <Link
+              href={Routes.BudgetNews}
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ArrowLeft className="size-4" />
+              Back to Budget News
+            </Link>
 
-        {report ? (
-          <BudgetReportHero title={mod.title} description={mod.description} report={report} imageUrl={mod.image_url} />
-        ) : (
-          <div className="mb-8">
-            <div className="flex items-center gap-2.5 mb-3">
-              <span className="text-xs font-semibold uppercase tracking-wider text-primary bg-primary/8 px-2.5 py-1 rounded-full ring-1 ring-primary/20">
-                FY Analysis
-              </span>
-              <span className="text-xs text-muted-foreground">{fiscalYear}</span>
+            {years.length > 1 && (
+              <div className="flex items-center gap-1.5">
+                {prevYear ? (
+                  <Button asChild variant="ghost" size="sm" className="gap-1 text-xs">
+                    <Link href={budgetNewsModulePath(prevYear.module_slug)}>
+                      <ChevronLeft className="size-3.5" />
+                      {prevYear.label}
+                    </Link>
+                  </Button>
+                ) : (
+                  <span className="text-xs text-muted-foreground/40 px-2" />
+                )}
+
+                <span className="text-xs font-semibold text-primary bg-primary/8 px-3 py-1 rounded-full">
+                  {mod.fiscal_year_label || ""}
+                </span>
+
+                {nextYear ? (
+                  <Button asChild variant="ghost" size="sm" className="gap-1 text-xs">
+                    <Link href={budgetNewsModulePath(nextYear.module_slug)}>
+                      {nextYear.label}
+                      <ChevronRight className="size-3.5" />
+                    </Link>
+                  </Button>
+                ) : (
+                  <span className="text-xs text-muted-foreground/40 px-2" />
+                )}
+              </div>
+            )}
+          </div>
+
+          {report ? (
+            <BudgetReportHero title={mod.title} description={mod.description} report={report} imageUrl={mod.image_url} />
+          ) : (
+            <div className="mb-8">
+              <div className="flex items-center gap-2.5 mb-3">
+                <span className="text-xs font-semibold uppercase tracking-wider text-primary bg-primary/8 px-2.5 py-1 rounded-full ring-1 ring-primary/20">
+                  FY Analysis
+                </span>
+                <span className="text-xs text-muted-foreground">{mod.fiscal_year_label || ""}</span>
+              </div>
+              <h1 className="text-3xl sm:text-4xl font-bold mb-4">{mod.title}</h1>
+              <p className="text-muted-foreground leading-relaxed mb-8 max-w-3xl">
+                {mod.description}
+              </p>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-bold mb-4">{mod.title}</h1>
-            <p className="text-muted-foreground leading-relaxed mb-8 max-w-3xl">
-              {mod.description}
-            </p>
-          </div>
-        )}
+          )}
 
-        <MobileSectionToc />
+          <MobileSectionToc />
 
-        {report ? <BudgetModuleReportOverview report={report} /> : null}
+          {report ? <BudgetModuleReportOverview report={report} /> : null}
 
-        <section>
-          <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground mb-5">
-            <BookOpen className="size-4" />
-            {chapters.length} {chapters.length === 1 ? "Chapter" : "Chapters"}
-          </div>
+          <section className="mt-10">
+            <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground mb-5">
+              <BookOpen className="size-4" />
+              {chapters.length} {chapters.length === 1 ? "Chapter" : "Chapters"}
+            </div>
 
-          <div className="space-y-3">
-            {chapters.map((chapter, index) => (
-              <div key={chapter.id}>
-                {chapter.article_slug ? (
-                  <Link
-                    href={budgetNewsChapterPath(slug, chapter.article_slug)}
-                    className="block group"
-                  >
-                    <div className="flex items-center gap-4 rounded-xl border border-border/60 bg-card p-5 hover:bg-accent/30 hover:border-primary/30 transition-all duration-200">
-                      <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-sm font-bold text-primary group-hover:bg-primary/15 transition-colors">
+            <div className="space-y-3">
+              {chapters.map((chapter) => (
+                <div key={chapter.id}>
+                  {chapter.article_slug ? (
+                    <Link
+                      href={budgetNewsChapterPath(slug, chapter.article_slug)}
+                      className="block group"
+                    >
+                      <div className="flex items-center gap-4 rounded-xl border border-border/60 bg-card p-5 hover:bg-accent/30 hover:border-primary/30 transition-all duration-200">
+                        <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-sm font-bold text-primary group-hover:bg-primary/15 transition-colors">
+                          {chapter.order}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold group-hover:text-primary transition-colors">
+                            {chapter.title}
+                          </h3>
+                          <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
+                            Read the full sector analysis
+                          </p>
+                        </div>
+                        <ChevronRight className="size-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all shrink-0" />
+                      </div>
+                    </Link>
+                  ) : (
+                    <div className="flex items-center gap-4 rounded-xl border border-border/60 bg-card p-5 opacity-60">
+                      <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted text-sm font-bold text-muted-foreground">
                         {chapter.order}
                       </span>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold group-hover:text-primary transition-colors">
-                          {chapter.title}
-                        </h3>
-                        <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
-                          Read the full sector analysis
+                        <h3 className="font-semibold">{chapter.title}</h3>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          Coming soon
                         </p>
                       </div>
-                      <ChevronRight className="size-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all shrink-0" />
                     </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {prevYear && (
+            <div className="mt-10 border-t border-border/40 pt-6">
+              <div className="flex items-center justify-between">
+                <Button asChild variant="outline" size="sm">
+                  <Link href={budgetNewsModulePath(prevYear.module_slug)}>
+                    <ChevronLeft className="size-4 mr-1" />
+                    {prevYear.label} Budget
                   </Link>
-                ) : (
-                  <div className="flex items-center gap-4 rounded-xl border border-border/60 bg-card p-5 opacity-60">
-                    <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted text-sm font-bold text-muted-foreground">
-                      {chapter.order}
-                    </span>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold">{chapter.title}</h3>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        Coming soon
-                      </p>
-                    </div>
-                  </div>
+                </Button>
+                {nextYear && (
+                  <Button asChild variant="outline" size="sm">
+                    <Link href={budgetNewsModulePath(nextYear.module_slug)}>
+                      {nextYear.label} Budget
+                      <ChevronRight className="size-4 ml-1" />
+                    </Link>
+                  </Button>
                 )}
               </div>
-            ))}
-          </div>
-        </section>
+            </div>
+          )}
 
-        <div className="mt-12 text-center lg:hidden">
-          <Button asChild variant="outline">
-            <Link href={Routes.BudgetNews}>
-              <ArrowLeft className="size-4 mr-2" />
-              All Budget News
-            </Link>
-          </Button>
-        </div>
+          <div className="mt-12 text-center lg:hidden">
+            <Button asChild variant="outline">
+              <Link href={Routes.BudgetNews}>
+                <ArrowLeft className="size-4 mr-2" />
+                All Budget News
+              </Link>
+            </Button>
+          </div>
         </div>
 
         {(chapters.length > 0 || report) && (
           <aside className="hidden space-y-8 lg:block">
             {report ? <ReportSectionToc /> : null}
             {chapters.length > 0 ? <BudgetReportToc chapters={chapters} slug={slug} /> : null}
+            {years.length > 1 && (
+              <div>
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+                  Other Fiscal Years
+                </h4>
+                <div className="space-y-1">
+                  {years.map((year) => (
+                    <Link
+                      key={year.label}
+                      href={budgetNewsModulePath(year.module_slug)}
+                      className={`block rounded-lg px-3 py-2 text-xs transition-colors ${
+                        year.module_slug === slug
+                          ? "bg-primary/10 text-primary font-medium"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      }`}
+                    >
+                      {year.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </aside>
         )}
       </div>

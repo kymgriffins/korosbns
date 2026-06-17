@@ -94,8 +94,9 @@ function ChapterContent({
   }
 
   const chapterReport = resolveChapterReport(chapter.report);
-  const fiscalYear =
-    (mod.metadata?.report as { fiscal_year?: string } | undefined)?.fiscal_year ?? "2026/27";
+  const reportProfile = mod.metadata?.report as { fiscal_year?: string; fiscal_year_previous?: string } | undefined;
+  const fiscalYear = reportProfile?.fiscal_year ?? "2026/27";
+  const fiscalYearPrevious = reportProfile?.fiscal_year_previous;
   const articleHeadings = getArticleHeadings(chapter.text || "");
 
   return (
@@ -126,7 +127,11 @@ function ChapterContent({
 
           <h1 className="text-3xl sm:text-4xl font-bold mb-6">{chapter.title}</h1>
 
-          <BudgetChapterReportBlocks report={chapterReport} />
+          <BudgetChapterReportBlocks
+            report={chapterReport}
+            previousLabel={fiscalYearPrevious ? `FY${fiscalYearPrevious}` : undefined}
+            currentLabel={`FY${fiscalYear}`}
+          />
 
           <MobileArticleToc headings={articleHeadings} />
 

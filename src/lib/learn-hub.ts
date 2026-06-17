@@ -116,10 +116,14 @@ export const learnHubApi = {
     }),
   civicModules: () => learnHubApi.stages(),
   civicModule: (slug: string) => learnHubApi.stage(slug),
-  budgetNewsModules: () =>
-    apiFetch<ApiListResponse<CivicModule>>("/content/civic-modules/?is_financial_year_analysis=true"),
+  budgetNewsModules: (params?: { fiscal_year_label?: string | null }) => {
+    const q = params?.fiscal_year_label ? `?is_financial_year_analysis=true&fiscal_year_label=${encodeURIComponent(params.fiscal_year_label)}` : "?is_financial_year_analysis=true";
+    return apiFetch<ApiListResponse<CivicModule>>(`/content/civic-modules/${q}`);
+  },
   budgetNewsModule: (slug: string) =>
     apiFetch<CivicModule>(`/content/civic-modules/${slug}/`),
+  budgetNewsYears: () =>
+    apiFetch<ApiListResponse<BudgetNewsYear>>("/content/civic-modules/years/"),
   completeChapter: (chapterId: string) =>
     apiFetch<{
       detail: string;
@@ -233,6 +237,20 @@ type ForumThread = {
 
 type ForumThreadDetail = ForumThread & {
   posts: ForumPost[];
+};
+
+export type BudgetNewsYear = {
+  fiscal_year_id: string;
+  label: string;
+  fiscal_year_num: number;
+  is_current: boolean;
+  module_slug: string;
+  module_title: string;
+  chapter_count: number;
+  prev_module_slug: string | null;
+  prev_module_label: string | null;
+  next_module_slug: string | null;
+  next_module_label: string | null;
 };
 
 export type ModuleAnalyticsResponse = {

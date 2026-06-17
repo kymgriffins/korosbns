@@ -87,7 +87,7 @@ function BudgetKpiCard({ kpi, scale }: { kpi: BudgetKpi; scale: number }) {
   const TrendIcon = isUp ? TrendingUp : isDown ? TrendingDown : Minus;
 
   return (
-    <Card className="border-border/60 bg-card/80 backdrop-blur-sm py-4 gap-3 shadow-sm group hover:shadow-md transition-shadow duration-300">
+    <Card className="border-border/60 bg-card/80 backdrop-blur-sm py-4 gap-3 shadow-sm group hover:shadow-md hover:border-primary/20 transition-all duration-300">
       <CardHeader className="px-4 pb-0">
         <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
           {kpi.label}
@@ -106,7 +106,7 @@ function BudgetKpiCard({ kpi, scale }: { kpi: BudgetKpi; scale: number }) {
         </div>
         <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
           {kpi.previous != null && (
-            <span className="inline-flex items-center gap-1">
+            <span className="inline-flex items-center gap-1 bg-muted/60 rounded-md px-1.5 py-0.5">
               <TrendIcon className={cn("size-3.5", isUp && "text-emerald-600", isDown && "text-amber-600")} />
               <span className={cn("font-semibold", isUp && "text-emerald-600", isDown && "text-amber-600")}>
                 {percentChange(kpi.value, kpi.previous)}
@@ -118,7 +118,7 @@ function BudgetKpiCard({ kpi, scale }: { kpi: BudgetKpi; scale: number }) {
           )}
         </div>
         {kpi.description && (
-          <p className="text-[11px] leading-relaxed text-muted-foreground">{kpi.description}</p>
+          <p className="text-[11px] leading-relaxed text-muted-foreground/80">{kpi.description}</p>
         )}
       </CardContent>
     </Card>
@@ -167,7 +167,7 @@ export function BudgetCalloutCard({ callout, index = 0 }: { callout: BudgetCallo
 
 // ── Comparison Table ──
 
-export function BudgetComparisonTable({ rows }: { rows: BudgetComparisonRow[] }) {
+export function BudgetComparisonTable({ rows, previousLabel, currentLabel }: { rows: BudgetComparisonRow[]; previousLabel?: string; currentLabel?: string }) {
   const maxChange = Math.max(...rows.map((r) => {
     const m = r.change.match(/[+-]?\d+(\.\d+)?/);
     return m ? Math.abs(parseFloat(m[0])) : 0;
@@ -180,8 +180,8 @@ export function BudgetComparisonTable({ rows }: { rows: BudgetComparisonRow[] })
           <TableHeader>
             <TableRow className="bg-muted/40 hover:bg-muted/40">
               <TableHead className="font-semibold">Item</TableHead>
-              <TableHead className="text-right font-semibold whitespace-nowrap">FY2025/26</TableHead>
-              <TableHead className="text-right font-semibold whitespace-nowrap">FY2026/27</TableHead>
+              <TableHead className="text-right font-semibold whitespace-nowrap">{previousLabel || "Previous"}</TableHead>
+              <TableHead className="text-right font-semibold whitespace-nowrap">{currentLabel || "Current"}</TableHead>
               <TableHead className="text-right font-semibold whitespace-nowrap">Change</TableHead>
             </TableRow>
           </TableHeader>
@@ -249,7 +249,7 @@ export function BudgetBarChart({ config }: { config: BudgetChartConfig }) {
   const total = config.data.reduce((s, d) => s + d.value, 0);
 
   return (
-    <Card className="border-border/60 py-4 gap-2 group/chart">
+    <Card className="border-border/60 py-4 gap-2 group/chart hover:border-primary/20 transition-colors duration-300">
       <CardHeader className="px-4 pb-0">
         <div className="flex items-center justify-between">
           <div>
@@ -264,41 +264,57 @@ export function BudgetBarChart({ config }: { config: BudgetChartConfig }) {
         </div>
       </CardHeader>
       <CardContent className="px-2 sm:px-4">
-        <ChartContainer config={chartConfig} className="h-[220px] sm:h-[280px] w-full aspect-auto">
-          <BarChart data={config.data} margin={{ left: 0, right: 8, top: 20, bottom: 0 }}>
-            <CartesianGrid vertical={false} strokeDasharray="3 3" strokeOpacity={0.4} />
+        <ChartContainer config={chartConfig} className="h-[220px] sm:h-[300px] w-full aspect-auto">
+          <BarChart data={config.data} margin={{ left: 0, right: 8, top: 20, bottom: 4 }}>
+            <CartesianGrid vertical={false} strokeDasharray="3 3" strokeOpacity={0.3} />
             <XAxis
               dataKey="name"
               tickLine={false}
               axisLine={false}
               interval={0}
-              angle={-35}
+              angle={-30}
               textAnchor="end"
-              height={70}
-              tick={{ fontSize: 10 }}
+              height={60}
+              tick={{ fontSize: 11, fontWeight: 500 }}
             />
-            <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 10 }} width={40} />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tick={{ fontSize: 10 }}
+              width={45}
+              tickFormatter={(v: number) => `${v.toFixed(0)}B`}
+            />
             <ChartTooltip
-              cursor={{ fill: "hsl(var(--muted-foreground) / 0.08)" }}
+              cursor={{ fill: "hsl(var(--muted-foreground) / 0.06)" }}
               content={
                 <ChartTooltipContent
                   formatter={(value: any) => `${formatKesBillions(Number(value), { prefix: false })}`}
                 />
               }
             />
+            <defs>
+              {config.data.map((entry, i) => (
+                <linearGradient key={entry.name} id={`bar-grad-${i}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={entry.fill ?? SECTOR_COLORS[i % SECTOR_COLORS.length]} stopOpacity={0.9} />
+                  <stop offset="100%" stopColor={entry.fill ?? SECTOR_COLORS[i % SECTOR_COLORS.length]} stopOpacity={0.5} />
+                </linearGradient>
+              ))}
+            </defs>
             <Bar
               dataKey="value"
-              radius={[4, 4, 0, 0]}
+              radius={[6, 6, 0, 0]}
               isAnimationActive={true}
               animationDuration={800}
               animationEasing="ease-out"
-              animationBegin={0}
+              maxBarSize={52}
             >
               {config.data.map((entry, index) => (
                 <Cell
                   key={entry.name}
-                  fill={entry.fill ?? SECTOR_COLORS[index % SECTOR_COLORS.length]}
-                  className="transition-opacity duration-200 group-hover/chart:opacity-80 hover:!opacity-100"
+                  fill={`url(#bar-grad-${index})`}
+                  stroke={entry.fill ?? SECTOR_COLORS[index % SECTOR_COLORS.length]}
+                  strokeWidth={0.5}
+                  className="transition-opacity duration-200 hover:opacity-80"
                 />
               ))}
               <LabelList
@@ -307,7 +323,7 @@ export function BudgetBarChart({ config }: { config: BudgetChartConfig }) {
                 fontSize={10}
                 formatter={(v: any) => `${Number(v).toFixed(1)}`}
                 fill="hsl(var(--muted-foreground))"
-                className="tabular-nums"
+                className="tabular-nums font-medium"
               />
             </Bar>
           </BarChart>
@@ -322,8 +338,8 @@ export function BudgetBarChart({ config }: { config: BudgetChartConfig }) {
 function PieCenterLabel({ total, label }: { total: number; label: string }) {
   return (
     <text textAnchor="middle" dominantBaseline="middle" className="fill-foreground">
-      <tspan x={0} dy={-6} className="fill-muted-foreground text-[10px]">{label}</tspan>
-      <tspan x={0} dy={18} className="font-bold text-sm tabular-nums">
+      <tspan x={0} dy={-6} className="fill-muted-foreground text-[10px] font-medium">{label}</tspan>
+      <tspan x={0} dy={20} className="font-bold text-base tabular-nums fill-foreground">
         {total.toFixed(1)}B
       </tspan>
     </text>
@@ -341,7 +357,7 @@ export function BudgetPieChart({ config }: { config: BudgetChartConfig }) {
   const total = config.data.reduce((s, d) => s + d.value, 0);
 
   return (
-    <Card className="border-border/60 py-4 gap-2">
+    <Card className="border-border/60 py-4 gap-2 hover:border-primary/20 transition-colors duration-300">
       <CardHeader className="px-4 pb-0">
         <CardTitle className="text-base">{config.title}</CardTitle>
         {config.subtitle && (
@@ -349,7 +365,7 @@ export function BudgetPieChart({ config }: { config: BudgetChartConfig }) {
         )}
       </CardHeader>
       <CardContent className="px-4">
-        <ChartContainer config={chartConfig} className="h-[220px] sm:h-[260px] w-full aspect-auto">
+        <ChartContainer config={chartConfig} className="h-[240px] sm:h-[280px] w-full aspect-auto">
           <PieChart>
             <ChartTooltip
               content={
@@ -362,15 +378,24 @@ export function BudgetPieChart({ config }: { config: BudgetChartConfig }) {
                 />
               }
             />
+            <defs>
+              {config.data.map((entry, i) => (
+                <radialGradient key={entry.name} id={`pie-grad-${i}`} cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stopColor={entry.fill ?? SECTOR_COLORS[i % SECTOR_COLORS.length]} stopOpacity={0.85} />
+                  <stop offset="100%" stopColor={entry.fill ?? SECTOR_COLORS[i % SECTOR_COLORS.length]} stopOpacity={0.6} />
+                </radialGradient>
+              ))}
+            </defs>
             <Pie
               data={config.data}
               dataKey="value"
               nameKey="name"
               cx="50%"
               cy="50%"
-              innerRadius="45%"
-              outerRadius="80%"
-              paddingAngle={2}
+              innerRadius="42%"
+              outerRadius="78%"
+              paddingAngle={3}
+              cornerRadius={4}
               isAnimationActive={true}
               animationDuration={1000}
               animationEasing="ease-out"
@@ -378,16 +403,17 @@ export function BudgetPieChart({ config }: { config: BudgetChartConfig }) {
               {config.data.map((entry, index) => (
                 <Cell
                   key={entry.name}
-                  fill={entry.fill ?? SECTOR_COLORS[index % SECTOR_COLORS.length]}
-                  className="transition-opacity duration-200 hover:opacity-80"
-                  stroke="transparent"
+                  fill={`url(#pie-grad-${index})`}
+                  stroke={entry.fill ?? SECTOR_COLORS[index % SECTOR_COLORS.length]}
+                  strokeWidth={0.5}
+                  className="transition-all duration-200 hover:opacity-80 hover:brightness-110"
                 />
               ))}
               <Label content={<PieCenterLabel total={total} label="Total" />} position="center" />
             </Pie>
           </PieChart>
         </ChartContainer>
-        <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+        <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2.5 text-xs">
           {config.data.map((d, i) => {
             const pct = shareOfTotal(d.value, total);
             return (
@@ -397,8 +423,8 @@ export function BudgetPieChart({ config }: { config: BudgetChartConfig }) {
                   style={{ background: d.fill ?? SECTOR_COLORS[i % SECTOR_COLORS.length] }}
                 />
                 <span className="truncate text-muted-foreground flex-1">{d.name}</span>
-                <span className="tabular-nums font-medium text-foreground">{d.value.toFixed(1)}B</span>
-                <span className="tabular-nums text-muted-foreground/60 w-10 text-right">{pct}</span>
+                <span className="tabular-nums font-semibold text-foreground">{d.value.toFixed(1)}B</span>
+                <span className="tabular-nums text-muted-foreground/60 min-w-[3rem] text-right">{pct}</span>
               </div>
             );
           })}
@@ -506,7 +532,11 @@ export function BudgetModuleReportOverview({ report }: { report: BudgetReportPro
       {report.comparison_rows?.length ? (
         <section id="report-comparison">
           <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Year-over-Year Comparison</h4>
-          <BudgetComparisonTable rows={report.comparison_rows} />
+          <BudgetComparisonTable
+            rows={report.comparison_rows}
+            previousLabel={report.fiscal_year_previous ? `FY${report.fiscal_year_previous}` : undefined}
+            currentLabel={`FY${report.fiscal_year}`}
+          />
         </section>
       ) : null}
       {report.highlights?.length ? (
@@ -523,7 +553,7 @@ export function BudgetModuleReportOverview({ report }: { report: BudgetReportPro
   );
 }
 
-export function BudgetChapterReportBlocks({ report }: { report: ChapterReportData }) {
+export function BudgetChapterReportBlocks({ report, previousLabel, currentLabel }: { report: ChapterReportData; previousLabel?: string; currentLabel?: string }) {
   const chart = report.chart;
 
   return (
@@ -544,7 +574,7 @@ export function BudgetChapterReportBlocks({ report }: { report: ChapterReportDat
       {report.comparison_rows?.length ? (
         <div>
           <h5 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Year-over-Year</h5>
-          <BudgetComparisonTable rows={report.comparison_rows} />
+          <BudgetComparisonTable rows={report.comparison_rows} previousLabel={previousLabel} currentLabel={currentLabel} />
         </div>
       ) : null}
       {report.callouts?.length ? (
