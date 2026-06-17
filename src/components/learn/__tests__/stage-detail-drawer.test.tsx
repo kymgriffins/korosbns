@@ -1,7 +1,14 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StageDetailDrawer } from "../stage-detail-drawer";
+
+const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+
+function renderWithClient(ui: React.ReactElement) {
+  return render(<QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>);
+}
 
 vi.mock("sonner", () => ({
   toast: { success: vi.fn(), error: vi.fn(), info: vi.fn() },
@@ -86,7 +93,7 @@ describe("StageDetailDrawer", () => {
   });
 
   it("renders the stage title and breadcrumb", () => {
-    render(
+    renderWithClient(
       <StageDetailDrawer
         stage={mockStage} profile={mockProfile}
         onClose={mockOnClose} onUpdateProfile={mockOnUpdateProfile}
@@ -98,7 +105,7 @@ describe("StageDetailDrawer", () => {
   });
 
   it("shows the lesson count and duration badges", () => {
-    render(
+    renderWithClient(
       <StageDetailDrawer
         stage={mockStage} profile={mockProfile}
         onClose={mockOnClose} onUpdateProfile={mockOnUpdateProfile}
@@ -110,7 +117,7 @@ describe("StageDetailDrawer", () => {
   });
 
   it("renders Read tab as active by default", () => {
-    render(
+    renderWithClient(
       <StageDetailDrawer
         stage={mockStage} profile={mockProfile}
         onClose={mockOnClose} onUpdateProfile={mockOnUpdateProfile}
@@ -124,7 +131,7 @@ describe("StageDetailDrawer", () => {
   });
 
   it("shows video placeholder when on Watch tab", () => {
-    render(
+    renderWithClient(
       <StageDetailDrawer
         stage={mockStage} profile={mockProfile}
         onClose={mockOnClose} onUpdateProfile={mockOnUpdateProfile}
@@ -136,7 +143,7 @@ describe("StageDetailDrawer", () => {
   });
 
   it("switches to Quiz tab and shows Start Knowledge Check button", () => {
-    render(
+    renderWithClient(
       <StageDetailDrawer
         stage={mockStage} profile={mockProfile}
         onClose={mockOnClose} onUpdateProfile={mockOnUpdateProfile}
@@ -148,7 +155,7 @@ describe("StageDetailDrawer", () => {
   });
 
   it("shows curriculum sidebar with step titles", () => {
-    render(
+    renderWithClient(
       <StageDetailDrawer
         stage={mockStage} profile={mockProfile}
         onClose={mockOnClose} onUpdateProfile={mockOnUpdateProfile}
@@ -160,7 +167,7 @@ describe("StageDetailDrawer", () => {
   });
 
   it("calls onClose when back button is clicked", () => {
-    render(
+    renderWithClient(
       <StageDetailDrawer
         stage={mockStage} profile={mockProfile}
         onClose={mockOnClose} onUpdateProfile={mockOnUpdateProfile}
