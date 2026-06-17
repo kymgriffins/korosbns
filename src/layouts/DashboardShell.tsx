@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { MapPin } from "lucide-react";
 import { PageBreadcrumbs, type BreadcrumbItemConfig } from "@/components/global/page-breadcrumbs";
 import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
@@ -72,6 +73,15 @@ export function DashboardShell({
                 Signed in as
               </p>
               <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{title}</h1>
+              {user?.headline ? (
+                <p className="mt-0.5 text-sm text-muted-foreground">{user.headline}</p>
+              ) : null}
+              {user?.location ? (
+                <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
+                  <MapPin className="size-3" aria-hidden />
+                  {user.location}
+                </p>
+              ) : null}
               {description ? (
                 <p className="mt-1 text-sm text-muted-foreground">{description}</p>
               ) : null}

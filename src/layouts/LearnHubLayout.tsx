@@ -381,7 +381,6 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
           >
             <Link href="/learn" className="flex items-center gap-2 min-w-0">
               <img src="/logo.svg" alt="BNS" className="h-6 w-auto shrink-0" />
-              <span className="font-semibold text-sm truncate">Learning Hub</span>
             </Link>
             <div className="flex items-center gap-1">
               <a

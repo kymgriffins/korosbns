@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { KeyRound, LogOut } from "lucide-react";
 import { ContentLayout } from "@/layouts/DashboardShell";
 import { AccountProfileForm } from "@/components/citizen/account-profile-form";
 import { Protected } from "@/components/citizen/protected";
@@ -11,20 +12,26 @@ export default function AccountPage() {
   return (
     <Protected>
       <ContentLayout
-        title="Profile & settings"
-        description="Manage your public profile, avatar, and social links."
+        title="My Profile"
+        description="Manage your public profile, bio, avatar, and social links."
         breadcrumbs={[
           { label: "Home", href: Routes.Home },
-          { label: "Learn", href: Routes.Learn },
-          { label: "Account" },
+          { label: "Dashboard", href: Routes.Learn },
+          { label: "My Profile" },
         ]}
         actions={
           <div className="flex gap-2">
             <Button type="button" variant="outline" size="sm" asChild>
-              <Link href={Routes.AccountPassword}>Change Password</Link>
+              <Link href={Routes.AccountPassword}>
+                <KeyRound className="mr-1.5 size-3.5" aria-hidden />
+                Password
+              </Link>
             </Button>
             <Button type="button" variant="outline" size="sm" asChild>
-              <Link href={Routes.AccountSignOut}>Sign out</Link>
+              <Link href={Routes.AccountSignOut}>
+                <LogOut className="mr-1.5 size-3.5" aria-hidden />
+                Sign out
+              </Link>
             </Button>
           </div>
         }

@@ -44,7 +44,7 @@ export function ForumThreadCard({
         )}
         aria-hidden
       >
-        {thread.author_initials || thread.author_name.slice(0, 2).toUpperCase()}
+        {thread.author_initials || (thread.author_name?.slice(0, 2).toUpperCase() ?? "?")}
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-2">

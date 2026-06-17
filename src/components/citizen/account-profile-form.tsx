@@ -172,9 +172,9 @@ export function AccountProfileForm() {
 
       <form onSubmit={saveProfile} className="space-y-8 rounded-2xl border border-border bg-card p-6 sm:p-8">
         <div>
-          <h2 className="text-lg font-semibold">Profile</h2>
+          <h2 className="text-lg font-semibold">Public profile</h2>
           <p className="text-sm text-muted-foreground">
-            Update how other citizens see you on Budget Ndio Story.
+            Your photo, bio, and social links help other citizens recognise you.
           </p>
         </div>
 
@@ -248,6 +248,7 @@ export function AccountProfileForm() {
               value={form.bio}
               onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
               rows={4}
+              placeholder="Tell the community a bit about yourself — your interests, what brought you here, or why budgets matter to you."
             />
           </div>
         </div>
@@ -318,7 +319,7 @@ export function AccountProfileForm() {
       <section className="rounded-2xl border border-border bg-card p-6 sm:p-8">
         <h2 className="text-lg font-semibold">Social links</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Add links to your public profiles. One link per platform.
+          Connect your social media profiles so others can follow you. One link per platform.
         </p>
 
         {socialLinks.length > 0 ? (
@@ -326,14 +327,19 @@ export function AccountProfileForm() {
             {socialLinks.map((link) => (
               <li
                 key={link.platform}
-                className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border px-3 py-2 text-sm"
+                className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-border bg-card/50 px-3 py-2.5 text-sm"
               >
-                <span className="font-medium capitalize">{link.platform}</span>
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex size-7 items-center justify-center rounded-full bg-primary/10 text-xs font-bold uppercase text-primary">
+                    {link.platform.charAt(0)}
+                  </span>
+                  <span className="font-medium capitalize">{link.platform}</span>
+                </div>
                 <a
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="truncate text-primary hover:underline max-w-[200px] sm:max-w-md"
+                  className="truncate text-primary hover:underline max-w-[180px] sm:max-w-md"
                 >
                   {link.url}
                 </a>
@@ -343,6 +349,7 @@ export function AccountProfileForm() {
                   size="sm"
                   disabled={socialSaving}
                   onClick={() => void removeSocialLink(link.platform)}
+                  className="text-muted-foreground hover:text-destructive"
                 >
                   Remove
                 </Button>
@@ -350,7 +357,12 @@ export function AccountProfileForm() {
             ))}
           </ul>
         ) : (
-          <p className="mt-4 text-sm text-muted-foreground">No social links yet.</p>
+          <div className="mt-4 rounded-lg border border-dashed border-border bg-card/30 p-6 text-center">
+            <p className="text-sm text-muted-foreground">No social links added yet.</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Add your Twitter/X, LinkedIn, Instagram, or other profiles below.
+            </p>
+          </div>
         )}
 
         <form onSubmit={addSocialLink} className="mt-6 grid gap-3 sm:grid-cols-3">
@@ -366,14 +378,14 @@ export function AccountProfileForm() {
               <SelectContent>
                 {SOCIAL_PLATFORMS.map((p) => (
                   <SelectItem key={p} value={p}>
-                    {p}
+                    {p.charAt(0).toUpperCase() + p.slice(1)}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
           <div className="space-y-2 sm:col-span-2">
-            <Label htmlFor="social_url">URL</Label>
+            <Label htmlFor="social_url">Profile URL</Label>
             <Input
               id="social_url"
               type="url"
@@ -381,7 +393,7 @@ export function AccountProfileForm() {
               required
               value={newLink.url}
               onChange={(e) => setNewLink((f) => ({ ...f, url: e.target.value }))}
-              placeholder="https://"
+              placeholder="https://linkedin.com/in/yourname"
             />
           </div>
           <Button type="submit" className="sm:col-span-3" disabled={socialSaving}>
@@ -390,8 +402,14 @@ export function AccountProfileForm() {
         </form>
       </section>
 
-      <div className="flex flex-wrap gap-3 text-sm">
-        <Link href={Routes.AccountNotifications} className="text-primary hover:underline">
+      <div className="flex flex-wrap gap-6 rounded-2xl border border-border bg-card p-4 text-sm sm:p-6">
+        <Link href={Routes.LearnProfile} className="text-primary hover:underline">
+          View my public profile →
+        </Link>
+        <Link href={Routes.AccountPassword} className="text-muted-foreground hover:text-foreground">
+          Change password →
+        </Link>
+        <Link href={Routes.AccountNotifications} className="text-muted-foreground hover:text-foreground">
           Notification history →
         </Link>
         <Link href={Routes.AccountSignOut} className="text-muted-foreground hover:text-foreground">

@@ -32,11 +32,11 @@ export function ForumPostItem({
         )}
         aria-hidden
       >
-        {post.author_initials}
+        {post.author_initials ?? "?"}
       </div>
       <div className={cn("flex max-w-[85%] flex-col gap-1", isOwn ? "items-end" : "items-start")}>
         <div className={cn("flex items-center gap-2 text-[10px] font-semibold text-muted-foreground", isOwn && "flex-row-reverse")}>
-          <span>{post.author_name}</span>
+          <span>{post.author_name ?? "Anonymous"}</span>
           <span className="size-0.5 rounded-full bg-muted-foreground/40" />
           <time dateTime={post.created_at}>{formatMessageTime(post.created_at)}</time>
         </div>

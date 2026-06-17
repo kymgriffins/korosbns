@@ -85,39 +85,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   function clearUserData(): void {
-  if (typeof window === "undefined") return;
-  const userKeys = [
-    "bns_user_profile",
-    "bns_onboarding_profile",
-    "bns_story_watched",
-  ];
-  for (const key of userKeys) {
-    window.localStorage.removeItem(key);
-  }
-  for (let i = window.localStorage.length - 1; i >= 0; i--) {
-    const key = window.localStorage.key(i);
-    if (!key) continue;
-    if (key.startsWith("bns_module_") || key.startsWith("stage_")) {
+    if (typeof window === "undefined") return;
+    const userKeys = [
+      "bns_user_profile",
+      "bns_onboarding_profile",
+      "bns_story_watched",
+    ];
+    for (const key of userKeys) {
       window.localStorage.removeItem(key);
     }
+    for (let i = window.localStorage.length - 1; i >= 0; i--) {
+      const key = window.localStorage.key(i);
+      if (!key) continue;
+      if (key.startsWith("bns_module_") || key.startsWith("stage_")) {
+        window.localStorage.removeItem(key);
+      }
+    }
+    window.sessionStorage.removeItem("bns_streak_toast");
   }
-  window.sessionStorage.removeItem("bns_streak_toast");
-}
 
 const logout = useCallback(async () => {
   logDebug("Auth", "Logout requested");
-  try {
-    await citizenApi.logout();
-  } catch {
-    logDebug("Auth", "Server logout failed; clearing local tokens anyway");
-  }
   clearAuthTokens();
   clearUserData();
   setHasToken(false);
   queryClient.clear();
-  logDebug("Auth", "Logout completed");
-  router.push("/auth/login");
-}, [router, queryClient]);
+  try {
+    await citizenApi.logout();
+  } catch {
+    logDebug("Auth", "Server logout failed; already cleared local tokens");
+  }
+  logDebug("Auth", "Logout completed — hard navigating");
+  window.location.href = "/auth/login";
+}, [queryClient]);
 
   const value = useMemo(
     () => ({
