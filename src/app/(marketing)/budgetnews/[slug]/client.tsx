@@ -8,6 +8,7 @@ import { budgetNewsChapterPath, budgetNewsModulePath, Routes } from "@/constants
 import { learnHubApi } from "@/lib/learn-hub";
 import type { CivicModule } from "@/types/learn";
 import type { BudgetNewsYear } from "@/lib/learn-hub";
+import { YearTabs } from "@/components/budget-news/year-tabs";
 import { BudgetNewsErrorBoundary } from "../error-boundary";
 import { resolveReportProfile } from "@/lib/budget-report-data";
 import {
@@ -67,6 +68,7 @@ function DetailContent({ slug }: { slug: string }) {
   const report = resolveReportProfile(mod.metadata);
 
   const currentYearIndex = years.findIndex((y) => y.module_slug === slug);
+  const currentYear = currentYearIndex >= 0 ? years[currentYearIndex] : null;
   const prevYear = currentYearIndex > 0 ? years[currentYearIndex - 1] : null;
   const nextYear = currentYearIndex < years.length - 1 ? years[currentYearIndex + 1] : null;
 
@@ -74,7 +76,7 @@ function DetailContent({ slug }: { slug: string }) {
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:grid lg:grid-cols-[minmax(0,1fr)_220px] lg:gap-10">
         <div>
-          <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
             <Link
               href={Routes.BudgetNews}
               className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -82,36 +84,17 @@ function DetailContent({ slug }: { slug: string }) {
               <ArrowLeft className="size-4" />
               Back to Budget News
             </Link>
+          </div>
 
-            {years.length > 1 && (
-              <div className="flex items-center gap-1.5">
-                {prevYear ? (
-                  <Button asChild variant="ghost" size="sm" className="gap-1 text-xs">
-                    <Link href={budgetNewsModulePath(prevYear.module_slug)}>
-                      <ChevronLeft className="size-3.5" />
-                      {prevYear.label}
-                    </Link>
-                  </Button>
-                ) : (
-                  <span className="text-xs text-muted-foreground/40 px-2" />
-                )}
-
-                <span className="text-xs font-semibold text-primary bg-primary/8 px-3 py-1 rounded-full">
-                  {mod.fiscal_year_label || ""}
-                </span>
-
-                {nextYear ? (
-                  <Button asChild variant="ghost" size="sm" className="gap-1 text-xs">
-                    <Link href={budgetNewsModulePath(nextYear.module_slug)}>
-                      {nextYear.label}
-                      <ChevronRight className="size-3.5" />
-                    </Link>
-                  </Button>
-                ) : (
-                  <span className="text-xs text-muted-foreground/40 px-2" />
-                )}
-              </div>
-            )}
+          <div className="mb-6">
+            <YearTabs
+              years={years}
+              selectedLabel={currentYear?.label ?? null}
+              onSelect={(label) => {
+                const target = years.find((y) => y.label === label);
+                if (target) window.location.href = budgetNewsModulePath(target.module_slug);
+              }}
+            />
           </div>
 
           {report ? (
@@ -138,7 +121,7 @@ function DetailContent({ slug }: { slug: string }) {
           <section className="mt-10">
             <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground mb-5">
               <BookOpen className="size-4" />
-              {chapters.length} {chapters.length === 1 ? "Chapter" : "Chapters"}
+              {chapters.length > 0 ? `${chapters.length} ${chapters.length === 1 ? "Chapter" : "Chapters"}` : "No chapters yet"}
             </div>
 
             <div className="space-y-3">

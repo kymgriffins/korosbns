@@ -5,8 +5,9 @@ import { ArrowLeft, ChevronLeft, ChevronRight, Calendar } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/ui/button";
 import { budgetNewsChapterPath, budgetNewsModulePath, Routes } from "@/constants/routes";
-import { learnHubApi } from "@/lib/learn-hub";
+import { learnHubApi, type BudgetNewsYear } from "@/lib/learn-hub";
 import type { ChapterStep } from "@/types/learn";
+import { YearTabs } from "@/components/budget-news/year-tabs";
 import { BudgetNewsErrorBoundary } from "../../error-boundary";
 import { resolveChapterReport } from "@/lib/budget-report-data";
 import {
@@ -70,6 +71,17 @@ function ChapterContent({
     );
   }
 
+  const { data: yearsData } = useQuery({
+    queryKey: ["budget-news", "years"],
+    queryFn: () => learnHubApi.budgetNewsYears(),
+    staleTime: 1000 * 60 * 10,
+    gcTime: 1000 * 60 * 30,
+    select: (data) => data.results || [],
+  });
+
+  const years: BudgetNewsYear[] = yearsData || [];
+  const currentYearEntry = years.find((y) => y.module_slug === slug);
+
   const chapterReport = resolveChapterReport(chapter.report);
   const reportProfile = mod.metadata?.report as { fiscal_year?: string; fiscal_year_previous?: string } | undefined;
   const fiscalYear = reportProfile?.fiscal_year ?? "2026/27";
@@ -82,11 +94,22 @@ function ChapterContent({
         <div>
         <Link
           href={budgetNewsModulePath(slug)}
-          className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          className="mb-4 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="size-4" />
           Back to {mod.title}
         </Link>
+
+        <div className="mb-6">
+          <YearTabs
+            years={years}
+            selectedLabel={currentYearEntry?.label ?? null}
+            onSelect={(label) => {
+              const target = years.find((y) => y.label === label);
+              if (target) window.location.href = budgetNewsModulePath(target.module_slug);
+            }}
+          />
+        </div>
 
         <div>
           <div className="flex flex-wrap items-center gap-2.5 mb-4">
@@ -98,7 +121,7 @@ function ChapterContent({
               FY{fiscalYear}
             </span>
             <span className="text-xs text-muted-foreground">
-              Chapter {chapter.order} of {mod.steps?.length || 0}
+              Chapter {chapter.order}{mod.steps?.length ? ` of ${mod.steps.length}` : ""}
             </span>
           </div>
 

@@ -195,7 +195,7 @@ export function LearnDashboardView({
                 </div>
                 <div className="mt-2 space-y-1">
                   <div className="flex items-center justify-between text-[10px] font-semibold text-muted-foreground">
-                    <span>{resume.completed}/{resume.total} chapters</span>
+                    <span>{resume.total > 0 ? `${resume.completed}/${resume.total} chapters` : "No chapters"}</span>
                     <span>{resume.pct}%</span>
                   </div>
                   <div className="h-1.5 overflow-hidden rounded-full bg-muted">
@@ -268,9 +268,11 @@ export function LearnDashboardView({
                     <span className="absolute bottom-1.5 left-1.5 inline-flex rounded px-1.5 py-0.5 text-[9px] font-bold leading-tight text-white ring-1 ring-white/20 backdrop-blur bg-white/15">
                       {stage.badgeName || stage.badge}
                     </span>
-                    <span className="absolute right-1.5 top-1.5 inline-flex items-center gap-1 rounded-full bg-black/35 px-1.5 py-0.5 text-[9px] font-semibold text-white/90 backdrop-blur">
-                      <BookOpen className="size-2.5" /> {stage.steps?.length || 0}
-                    </span>
+                    {stage.steps?.length ? (
+                      <span className="absolute right-1.5 top-1.5 inline-flex items-center gap-1 rounded-full bg-black/35 px-1.5 py-0.5 text-[9px] font-semibold text-white/90 backdrop-blur">
+                        <BookOpen className="size-2.5" /> {stage.steps.length}
+                      </span>
+                    ) : null}
                   </div>
                   <div className="space-y-1 p-2.5">
                     <h3 className="line-clamp-2 text-xs font-bold leading-tight transition-colors group-hover:text-primary">{stage.title}</h3>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Newspaper, BookOpen, ChevronRight, Calendar, BarChart3, TrendingUp, TrendingDown, Settings } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -8,6 +8,7 @@ import { budgetNewsModulePath } from "@/constants/routes";
 import { learnHubApi } from "@/lib/learn-hub";
 import type { CivicModule } from "@/types/learn";
 import type { BudgetNewsYear } from "@/lib/learn-hub";
+import { YearTabs } from "@/components/budget-news/year-tabs";
 import { BudgetNewsErrorBoundary } from "./error-boundary";
 
 const YEARS_KEY = ["budget-news", "years"] as const;
@@ -143,34 +144,7 @@ function BudgetNewsContent() {
   );
 }
 
-function YearTabs({ years, selectedLabel, onSelect }: { years: BudgetNewsYear[]; selectedLabel: string | null; onSelect: (label: string) => void }) {
-  return (
-    <div className="flex flex-wrap items-center gap-2">
-      {years.map((year) => (
-        <button
-          key={year.label}
-          onClick={() => onSelect(year.label)}
-          className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-200 ${
-            selectedLabel === year.label
-              ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
-              : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground border border-border/40"
-          }`}
-        >
-          {year.is_current && (
-            <span className="relative flex size-2">
-              <span className={`absolute inline-flex h-full w-full animate-ping rounded-full opacity-75 ${selectedLabel === year.label ? "bg-primary-foreground/60" : "bg-primary/40"}`} />
-              <span className={`relative inline-flex size-2 rounded-full ${selectedLabel === year.label ? "bg-primary-foreground" : "bg-primary"}`} />
-            </span>
-          )}
-          {year.label}
-          <span className={`text-[10px] ${selectedLabel === year.label ? "text-primary-foreground/70" : "text-muted-foreground/60"}`}>
-            {year.chapter_count}
-          </span>
-        </button>
-      ))}
-    </div>
-  );
-}
+
 
 function BudgetNewsCard({ module: mod, selectedYear }: { module: CivicModule; selectedYear?: BudgetNewsYear | null }) {
   const chapterCount = mod.steps?.length || 0;
@@ -221,7 +195,7 @@ function BudgetNewsCard({ module: mod, selectedYear }: { module: CivicModule; se
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px] text-muted-foreground sm:text-xs">
             <span className="flex items-center gap-1.5">
               <BookOpen className="size-3.5 shrink-0" />
-              {chapterCount} {chapterCount === 1 ? "chapter" : "chapters"}
+              {chapterCount > 0 ? `${chapterCount} ${chapterCount === 1 ? "chapter" : "chapters"}` : "Coming soon"}
             </span>
             <span className="flex items-center gap-1.5">
               <BarChart3 className="size-3.5 shrink-0" />
