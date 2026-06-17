@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, ChevronLeft, ChevronRight, Calendar } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/ui/button";
 import { budgetNewsChapterPath, budgetNewsModulePath, Routes } from "@/constants/routes";
 import { learnHubApi } from "@/lib/learn-hub";
-import type { CivicModule, ChapterStep } from "@/types/learn";
+import type { ChapterStep } from "@/types/learn";
 import { BudgetNewsErrorBoundary } from "../../error-boundary";
 import { resolveChapterReport } from "@/lib/budget-report-data";
 import {
@@ -25,43 +25,20 @@ function ChapterContent({
   slug: string;
   chapterSlug: string;
 }) {
-  const [mod, setMod] = useState<CivicModule | null>(null);
-  const [chapter, setChapter] = useState<ChapterStep | null>(null);
-  const [prevChapter, setPrevChapter] = useState<ChapterStep | null>(null);
-  const [nextChapter, setNextChapter] = useState<ChapterStep | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: mod, isLoading, error } = useQuery({
+    queryKey: ["budget-news", "module", slug],
+    queryFn: () => learnHubApi.budgetNewsModule(slug),
+    staleTime: 1000 * 60 * 10,
+    gcTime: 1000 * 60 * 30,
+  });
 
-  useEffect(() => {
-    let cancelled = false;
-    async function load() {
-      try {
-        const data = await learnHubApi.budgetNewsModule(slug);
-        if (cancelled) return;
+  const chapters = (mod?.steps || []) as ChapterStep[];
+  const idx = chapters.findIndex((c) => c.article_slug === chapterSlug);
+  const chapter = idx >= 0 ? chapters[idx] : null;
+  const prevChapter = idx > 0 ? chapters[idx - 1] : null;
+  const nextChapter = idx < chapters.length - 1 ? chapters[idx + 1] : null;
 
-        const chapters = data.steps || [];
-        const idx = chapters.findIndex((c) => c.article_slug === chapterSlug);
-
-        if (idx === -1) {
-          setError("Chapter not found");
-          return;
-        }
-
-        setMod(data);
-        setChapter(chapters[idx]);
-        setPrevChapter(idx > 0 ? chapters[idx - 1] : null);
-        setNextChapter(idx < chapters.length - 1 ? chapters[idx + 1] : null);
-      } catch (err) {
-        if (!cancelled) setError(err instanceof Error ? err.message : "Failed to load");
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-    load();
-    return () => { cancelled = true; };
-  }, [slug, chapterSlug]);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
         <div className="animate-pulse space-y-6">
@@ -88,7 +65,7 @@ function ChapterContent({
           <ArrowLeft className="size-4" />
           Back to Budget News
         </Link>
-        <p className="text-destructive mt-4">{error || "Chapter not found"}</p>
+        <p className="text-destructive mt-4">{error ? (error as Error).message : "Chapter not found"}</p>
       </div>
     );
   }

@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, BookOpen, ChevronRight, ChevronLeft } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/ui/button";
 import { budgetNewsChapterPath, budgetNewsModulePath, Routes } from "@/constants/routes";
 import { learnHubApi } from "@/lib/learn-hub";
@@ -19,34 +19,24 @@ import {
 } from "@/components/budget-news/report-blocks";
 
 function DetailContent({ slug }: { slug: string }) {
-  const [mod, setMod] = useState<CivicModule | null>(null);
-  const [years, setYears] = useState<BudgetNewsYear[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: mod, isLoading: modLoading, error: modError } = useQuery({
+    queryKey: ["budget-news", "module", slug],
+    queryFn: () => learnHubApi.budgetNewsModule(slug),
+    staleTime: 1000 * 60 * 10,
+    gcTime: 1000 * 60 * 30,
+  });
 
-  useEffect(() => {
-    let cancelled = false;
-    async function load() {
-      try {
-        const [modData, yearsData] = await Promise.all([
-          learnHubApi.budgetNewsModule(slug),
-          learnHubApi.budgetNewsYears(),
-        ]);
-        if (!cancelled) {
-          setMod(modData);
-          setYears(yearsData.results || []);
-        }
-      } catch (err) {
-        if (!cancelled) setError(err instanceof Error ? err.message : "Failed to load");
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-    load();
-    return () => { cancelled = true; };
-  }, [slug]);
+  const { data: yearsData } = useQuery({
+    queryKey: ["budget-news", "years"],
+    queryFn: () => learnHubApi.budgetNewsYears(),
+    staleTime: 1000 * 60 * 10,
+    gcTime: 1000 * 60 * 30,
+    select: (data) => data.results || [],
+  });
 
-  if (loading) {
+  const years: BudgetNewsYear[] = yearsData || [];
+
+  if (modLoading) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
         <div className="animate-pulse space-y-6">
@@ -61,14 +51,14 @@ function DetailContent({ slug }: { slug: string }) {
     );
   }
 
-  if (error || !mod) {
+  if (modError || !mod) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
         <Link href={Routes.BudgetNews} className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
           <ArrowLeft className="size-4" />
           Back to Budget News
         </Link>
-        <p className="text-destructive mt-4">{error || "Module not found"}</p>
+        <p className="text-destructive mt-4">{modError ? (modError as Error).message : "Module not found"}</p>
       </div>
     );
   }

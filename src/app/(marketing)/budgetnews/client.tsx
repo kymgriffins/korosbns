@@ -3,63 +3,50 @@
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { Newspaper, BookOpen, ChevronRight, Calendar, BarChart3, TrendingUp, TrendingDown } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { budgetNewsModulePath } from "@/constants/routes";
 import { learnHubApi } from "@/lib/learn-hub";
 import type { CivicModule } from "@/types/learn";
 import type { BudgetNewsYear } from "@/lib/learn-hub";
 import { BudgetNewsErrorBoundary } from "./error-boundary";
 
+const YEARS_KEY = ["budget-news", "years"] as const;
+
 function BudgetNewsContent() {
-  const [years, setYears] = useState<BudgetNewsYear[]>([]);
   const [selectedLabel, setSelectedLabel] = useState<string | null>(null);
-  const [modules, setModules] = useState<CivicModule[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadingModule, setLoadingModule] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+
+  const [initialized, setInitialized] = useState(false);
+
+  const { data: yearsData, isLoading: yearsLoading, error: yearsError } = useQuery({
+    queryKey: YEARS_KEY,
+    queryFn: () => learnHubApi.budgetNewsYears(),
+    staleTime: 1000 * 60 * 10,
+    gcTime: 1000 * 60 * 30,
+    select: (data) => data.results || [],
+  });
+
+  const years = yearsData || [];
 
   useEffect(() => {
-    let cancelled = false;
-    async function loadYears() {
-      try {
-        const data = await learnHubApi.budgetNewsYears();
-        if (!cancelled) {
-          setYears(data.results || []);
-          if (data.results?.length) {
-            const current = data.results.find((y) => y.is_current);
-            setSelectedLabel((current || data.results[0]).label);
-          }
-        }
-      } catch (err) {
-        if (!cancelled) setError(err instanceof Error ? err.message : "Failed to load");
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
+    if (!initialized && years.length > 0) {
+      const current = years.find((y: BudgetNewsYear) => y.is_current);
+      setSelectedLabel((current || years[0]).label);
+      setInitialized(true);
     }
-    loadYears();
-    return () => { cancelled = true; };
-  }, []);
+  }, [years, initialized]);
 
-  useEffect(() => {
-    if (!selectedLabel) return;
-    let cancelled = false;
-    async function loadModules() {
-      setLoadingModule(true);
-      try {
-        const data = await learnHubApi.budgetNewsModules({ fiscal_year_label: selectedLabel ?? undefined });
-        if (!cancelled) setModules(data.results || []);
-      } catch {
-        if (!cancelled) setModules([]);
-      } finally {
-        if (!cancelled) setLoadingModule(false);
-      }
-    }
-    loadModules();
-    return () => { cancelled = true; };
-  }, [selectedLabel]);
+  const { data: modules = [], isLoading: modulesLoading } = useQuery({
+    queryKey: [...YEARS_KEY, "modules", selectedLabel],
+    queryFn: () => learnHubApi.budgetNewsModules({ fiscal_year_label: selectedLabel ?? undefined }),
+    enabled: !!selectedLabel,
+    staleTime: 1000 * 60 * 10,
+    gcTime: 1000 * 60 * 30,
+    select: (data) => data.results || [],
+  });
 
-  const selectedYear = years.find((y) => y.label === selectedLabel);
+  const selectedYear = years.find((y: BudgetNewsYear) => y.label === selectedLabel);
 
-  if (loading) {
+  if (yearsLoading) {
     return (
       <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-12">
         <div className="animate-pulse space-y-6">
@@ -84,10 +71,10 @@ function BudgetNewsContent() {
     );
   }
 
-  if (error) {
+  if (yearsError) {
     return (
       <div className="mx-auto max-w-5xl px-4 py-12 sm:px-6">
-        <p className="text-destructive">{error}</p>
+        <p className="text-destructive">{(yearsError as Error).message}</p>
       </div>
     );
   }
@@ -122,7 +109,7 @@ function BudgetNewsContent() {
 
         <YearTabs years={years} selectedLabel={selectedLabel} onSelect={(label) => setSelectedLabel(label)} />
 
-        {loadingModule ? (
+        {modulesLoading ? (
           <div className="space-y-4 mt-6">
             <div className="animate-pulse overflow-hidden rounded-2xl border border-border/40">
               <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,1.65fr)_minmax(0,1fr)]">
@@ -137,7 +124,7 @@ function BudgetNewsContent() {
           </div>
         ) : (
           <div className="space-y-6 mt-6">
-            {modules.map((mod) => (
+            {modules.map((mod: CivicModule) => (
               <BudgetNewsCard key={mod.id} module={mod} selectedYear={selectedYear} />
             ))}
           </div>
