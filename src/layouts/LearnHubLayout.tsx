@@ -382,7 +382,7 @@ function LearnSidebar() {
 }
 
 function LearnAppShell({ children }: { children: React.ReactNode }) {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, loading: authLoading } = useAuth();
   const { civicModules } = useLearn();
   const [hasProfile, setHasProfile] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -422,7 +422,9 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
     return () => main.removeEventListener("scroll", onScroll);
   }, []);
 
-  if (!isLoggedIn && !hasProfile && !canBrowseModules) {
+  // Don't collapse to bare fallback while auth is still resolving — sidebar
+  // should always render (its noUserYet skeleton handles the loading state).
+  if (!authLoading && !isLoggedIn && !hasProfile && !canBrowseModules) {
     return (
       <div className="min-h-dvh bg-background text-foreground overflow-hidden flex items-center justify-center">
         <main className="w-full">{children}</main>
