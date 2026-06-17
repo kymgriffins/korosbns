@@ -66,6 +66,7 @@ export default function RegisterPage() {
   // Step 4: Security
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   // Live Password Validation States
   const hasMinLength = password.length >= 10;
@@ -116,6 +117,11 @@ export default function RegisterPage() {
 
     if (!hasMinLength || !hasNumber || !hasUppercase) {
       setFormError("Password does not meet the secure criteria.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setFormError("Passwords do not match.");
       return;
     }
 
@@ -391,6 +397,28 @@ export default function RegisterPage() {
                       <span className={hasUppercase ? 'text-emerald-500' : 'text-muted-foreground'}>At least one uppercase letter</span>
                     </div>
                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword" className="text-sm font-bold flex items-center gap-1.5">
+                    <Lock className="size-4 text-muted-foreground" />
+                    Confirm password <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="confirmPassword"
+                    type="password"
+                    required
+                    autoComplete="new-password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="rounded-xl h-11"
+                  />
+                  {confirmPassword && password !== confirmPassword && (
+                    <p className="text-xs text-destructive flex items-center gap-1.5 mt-1">
+                      <ShieldAlert className="size-3" />
+                      Passwords do not match
+                    </p>
+                  )}
                 </div>
               </div>
 
