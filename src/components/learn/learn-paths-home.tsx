@@ -41,7 +41,7 @@ function saveProfile(profile: any) {
 
 export function LearnPathsHome() {
   const router = useRouter();
-  const { isLoggedIn, user: authUser } = useAuth();
+  const { isLoggedIn, user: authUser, loading: authLoading } = useAuth();
   const { civicModules, fetchCivicModules, activeLesson, setActiveLesson, updateCurrentStep, activeTab, setActiveTab, totalStages, modulesLoading, modulesError, refreshModules } = useLearn();
   const stages = civicModules;
   const [wantsAnonymous, setWantsAnonymous] = useState(false);
@@ -80,6 +80,8 @@ export function LearnPathsHome() {
   }, [activeTab]);
 
   useEffect(() => {
+    if (authLoading) return;
+
     if (isLoggedIn && authUser) {
       const stored = localStorage.getItem("bns_user_profile");
       let currentProfile: any = null;
@@ -132,6 +134,7 @@ export function LearnPathsHome() {
             location: preferences.county || authUser.location || "",
           });
         }
+        localStorage.removeItem("bns_onboarding_profile");
       }
       
       const streakDays = checkStreak(currentProfile);
@@ -155,7 +158,7 @@ export function LearnPathsHome() {
       }
     }
     setLoading(false);
-  }, [isLoggedIn, authUser]);
+  }, [isLoggedIn, authUser, authLoading]);
 
   useEffect(() => {
     if (!profile || loading) return;
@@ -303,7 +306,9 @@ export function LearnPathsHome() {
     }
   };
 
-  if (loading || modulesLoading) {
+  const waitingForLoggedInProfile = isLoggedIn && !profile;
+
+  if (authLoading || loading || modulesLoading || waitingForLoggedInProfile) {
     return <DashboardSkeleton />;
   }
 
@@ -322,7 +327,7 @@ export function LearnPathsHome() {
     );
   }
 
-  const showOnboardingGate = !profile && !canBrowseWithoutProfile;
+  const showOnboardingGate = !isLoggedIn && !profile && !canBrowseWithoutProfile;
 
   if (showOnboardingGate) {
     if (!wantsAnonymous) {
@@ -375,7 +380,7 @@ export function LearnPathsHome() {
   }
 
   if (!effectiveProfile) {
-    return null;
+    return <DashboardSkeleton />;
   }
 
   const activeProfile = effectiveProfile;

@@ -94,7 +94,7 @@ export function LearnProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     void fetchCivicModules();
-  }, [fetchCivicModules]);
+  }, [isLoggedIn, fetchCivicModules]);
 
   return (
     <LearnContext.Provider

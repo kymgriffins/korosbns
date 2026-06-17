@@ -89,7 +89,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async (email: string, password: string, redirectTo = DEFAULT_POST_LOGIN_PATH) => {
       const safeRedirect = sanitizeRedirectPath(redirectTo);
       logDebug("Auth", "Login requested", { redirectTo: safeRedirect });
-      clearUserData();
+      clearUserData({ keepOnboarding: true });
       const tokens = await citizenApi.login(email, password);
       setAuthTokens(tokens.access, tokens.refresh);
       setHasToken(true);
@@ -101,13 +101,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [router, queryClient],
   );
 
-  function clearUserData(): void {
+  function clearUserData(options?: { keepOnboarding?: boolean }): void {
     if (typeof window === "undefined") return;
-    const userKeys = [
-      "bns_user_profile",
-      "bns_onboarding_profile",
-      "bns_story_watched",
-    ];
+    const userKeys = options?.keepOnboarding
+      ? ["bns_user_profile", "bns_story_watched"]
+      : ["bns_user_profile", "bns_onboarding_profile", "bns_story_watched"];
     for (const key of userKeys) {
       window.localStorage.removeItem(key);
     }
@@ -119,22 +117,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     }
     window.sessionStorage.removeItem("bns_streak_toast");
+    window.dispatchEvent(new Event("bns-profile-updated"));
   }
 
-const logout = useCallback(async () => {
-  logDebug("Auth", "Logout requested");
-  clearAuthTokens();
-  clearUserData();
-  setHasToken(false);
-  queryClient.clear();
-  try {
-    await citizenApi.logout();
-  } catch {
-    logDebug("Auth", "Server logout failed; already cleared local tokens");
-  }
-  logDebug("Auth", "Logout completed — navigating");
-  router.push("/auth/login");
-}, [queryClient, router]);
+  const logout = useCallback(async () => {
+    logDebug("Auth", "Logout requested");
+    try {
+      await citizenApi.logout();
+    } catch {
+      logDebug("Auth", "Server logout failed; clearing local tokens anyway");
+    }
+    clearAuthTokens();
+    clearUserData();
+    setHasToken(false);
+    queryClient.clear();
+    logDebug("Auth", "Logout completed — navigating");
+    router.push("/auth/login");
+  }, [queryClient, router]);
 
   const value = useMemo(
     () => ({

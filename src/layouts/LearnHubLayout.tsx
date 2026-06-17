@@ -383,8 +383,10 @@ function LearnSidebar() {
 
 function LearnAppShell({ children }: { children: React.ReactNode }) {
   const { isLoggedIn } = useAuth();
+  const { civicModules } = useLearn();
   const [hasProfile, setHasProfile] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const canBrowseModules = civicModules.length > 0;
 
   useEffect(() => {
     const checkProfile = () => {
@@ -420,7 +422,7 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
     return () => main.removeEventListener("scroll", onScroll);
   }, []);
 
-  if (!isLoggedIn && !hasProfile) {
+  if (!isLoggedIn && !hasProfile && !canBrowseModules) {
     return (
       <div className="min-h-dvh bg-background text-foreground overflow-hidden flex items-center justify-center">
         <main className="w-full">{children}</main>
