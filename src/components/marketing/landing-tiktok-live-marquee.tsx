@@ -110,7 +110,13 @@ function TikTokLiveError({ onRetry }: { onRetry: () => void }) {
   );
 }
 
-export function LandingTikTokLiveMarquee() {
+const DEFAULT_PROFILE = "@budget.ndio.story";
+
+export function LandingTikTokLiveMarquee({
+  profile = DEFAULT_PROFILE,
+}: {
+  profile?: string;
+} = {}) {
   const [videos, setVideos] = useState<TikTokOembedResult[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -121,7 +127,7 @@ export function LandingTikTokLiveMarquee() {
     setError(false);
     retryKey.current += 1;
 
-    fetch("/api/tiktok/live")
+    fetch(`/api/tiktok/live${profile ? `?profile=${encodeURIComponent(profile)}` : ""}`)
       .then((res) => {
         if (!res.ok) throw new Error("Failed");
         return res.json() as Promise<TikTokLiveFeedResponse>;
