@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { Newspaper, BookOpen, ChevronRight, Calendar, BarChart3, TrendingUp, TrendingDown } from "lucide-react";
+import { Newspaper, BookOpen, ChevronRight, Calendar, BarChart3, TrendingUp, TrendingDown, Settings } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { budgetNewsModulePath } from "@/constants/routes";
 import { learnHubApi } from "@/lib/learn-hub";
@@ -85,9 +85,18 @@ function BudgetNewsContent() {
         <div className="text-center py-16">
           <Newspaper className="mx-auto size-12 text-muted-foreground/40 mb-4" />
           <h2 className="text-xl font-semibold mb-2">No Budget News Yet</h2>
-          <p className="text-muted-foreground text-sm max-w-md mx-auto">
+          <p className="text-muted-foreground text-sm max-w-md mx-auto mb-6">
             Financial year analyses will appear here once published. Check back after the next budget reading.
           </p>
+          <a
+            href="https://bnske.budgetndiostory.org/admin/content/civicmodule/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-card px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors"
+          >
+            <Settings className="size-3.5" />
+            Manage in Admin Panel
+          </a>
         </div>
       </div>
     );
