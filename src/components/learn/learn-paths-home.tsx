@@ -29,78 +29,7 @@ import { learnTabToHref } from "@/lib/learn-nav";
 import { readProgress, clearAllModuleProgress } from "@/lib/module-progress";
 import { useLeaderboard } from "@/hooks/use-gamification";
 import type { CivicModule } from "@/types/learn";
-
-const TRANSLATIONS = {
-  EN: {
-    dashboardTitle: "Civic Dashboard",
-    dashboardSubtitle: "Track your budget learning journey and active county alerts.",
-    stagesMastered: "Stages Mastered",
-    sovereigns: "Sovereigns",
-    streak: "Active Streak",
-    roadmapTitle: "Map of the Budget Cycle",
-    roadmapSubtitle: "Complete the stages to earn certificates & badges.",
-    alertsTitle: "Participation Alerts",
-    alertsSubtitle: "Hyper-local alerts matching your county and tracked documents.",
-    profileTitle: "Citizen Profile",
-    profileSubtitle: "Review your public credentials and participation logs.",
-    settingsTitle: "App Settings",
-    language: "App Language",
-    resetBtn: "Reset All Progress",
-    trackBtn: "Tracked Documents",
-    cachedBadge: "📶 Cached",
-    quickJump: "Quick Jump to Stage",
-    cacheAll: "Offline Cache",
-    consentText: "DPA 2019 Consent Verified",
-    streakDays: "Day Streak",
-    shengComingSoon: ""
-  },
-  SW: {
-    dashboardTitle: "Mpanilio wa Uraia",
-    dashboardSubtitle: "Fuatilia safari yako ya masomo ya bajeti na alerts za kaunti.",
-    stagesMastered: "Hatua Zilizokamilika",
-    sovereigns: "Sovereigns (SVG)",
-    streak: "Mfululizo wa Siku",
-    roadmapTitle: "Ramani ya Mzunguko wa Bajeti",
-    roadmapSubtitle: "Kamilisha hatua zote 8 ili upate tuzo na beji.",
-    alertsTitle: "Taarifa za Ushiriki",
-    alertsSubtitle: "Taarifa za ushiriki kulingana na kaunti yako na hati unazofuatilia.",
-    profileTitle: "Wasifu wa Mwananchi",
-    profileSubtitle: "Angalia historia yako ya ushiriki na beji zako.",
-    settingsTitle: "Mipangilio",
-    language: "Lugha ya Programu",
-    resetBtn: "Futa Maendeleo Yote",
-    trackBtn: "Hati Zinazofuatiliwa",
-    cachedBadge: "📶 Imehifadhiwa",
-    quickJump: "Rukia Haraka Hatua",
-    cacheAll: "Hifadhi Nje ya Mtandao",
-    consentText: "Idhini ya DPA 2019 Imethibitishwa",
-    streakDays: "Mfululizo wa Siku",
-    shengComingSoon: ""
-  },
-  SH: {
-    dashboardTitle: "Dashboard ya Mraia",
-    dashboardSubtitle: "Fuatilia maworks zako za bajeti na alert za kaunti.",
-    stagesMastered: "Ma-stage Umewai",
-    sovereigns: "Sovereigns (SVG)",
-    streak: "Streak ya Siku",
-    roadmapTitle: "Mchoro ya Budget Cycle",
-    roadmapSubtitle: "Maliza ma-stage zote 8 upate ma-badge na heshima.",
-    alertsTitle: "Alerts za Ushiriki",
-    alertsSubtitle: "Alerts za county yako na mambo za bajeti zenye unafuatilia.",
-    profileTitle: "Profile ya Raia",
-    profileSubtitle: "Check heshima zako na list ya memoranda umetuma.",
-    settingsTitle: "Settings za App",
-    language: "Lugha ya App",
-    resetBtn: "Futa Maendeleo Yote",
-    trackBtn: "Ma-doc Unafuatilia",
-    cachedBadge: "📶 Imehifadhiwa",
-    quickJump: "Rukia Stage Haraka",
-    cacheAll: "Hifadhi Nje ya Mtandao",
-    consentText: "Idhini ya DPA 2019",
-    streakDays: "Streak ya Siku",
-    shengComingSoon: "Tafsiri ya Sheng inakuja hivi karibuni"
-  }
-};
+import { TRANSLATIONS } from "@/constants/learn-translations";
 
 function saveProfile(profile: any) {
   localStorage.setItem("bns_user_profile", JSON.stringify(profile));
@@ -318,14 +247,30 @@ export function LearnPathsHome() {
   const currentStageNum = profile ? (profile.stageProgress ? Math.max(...profile.stageProgress) : 1) : 1;
   const currentStage = stages.find(s => s.order === currentStageNum) || stages[0];
 
+  const isStageAccessibleByServer = (stage: CivicModule): boolean => {
+    if (stage.is_locked !== undefined) return !stage.is_locked;
+    return true;
+  };
+
+  const isStageAccessible = (stage: CivicModule): boolean => {
+    if (isStageAccessibleByServer(stage)) return true;
+    return !!(profile.stageProgress?.includes(stage.order) || profile.badges?.includes(stage.badge));
+  };
+
+  const handleSelectStage = (stage: CivicModule) => {
+    if (stage.is_locked === true) {
+      toast.error(`Stage ${stage.title} is locked.`);
+      return;
+    }
+    setSelectedStage(stage);
+  };
+
   const handlePrevStage = () => {
     if (!selectedStage) return;
     const idx = stages.findIndex(s => s.slug === selectedStage.slug);
     const prev = stages[idx - 1];
     if (prev) {
-      const isCompleted = profile.badges?.includes(prev.badge);
-      const isActive = profile.stageProgress?.includes(prev.order);
-      if (!isCompleted && !isActive) {
+      if (!isStageAccessible(prev)) {
         toast.error(`Stage ${prev.title} is locked.`);
         return;
       }
@@ -338,9 +283,7 @@ export function LearnPathsHome() {
     const idx = stages.findIndex(s => s.slug === selectedStage.slug);
     const next = stages[idx + 1];
     if (next) {
-      const isCompleted = profile.badges?.includes(next.badge);
-      const isActive = profile.stageProgress?.includes(next.order);
-      if (!isCompleted && !isActive) {
+      if (!isStageAccessible(next)) {
         toast.error(`Stage ${next.title} is locked.`);
         return;
       }
@@ -464,7 +407,7 @@ export function LearnPathsHome() {
                   profile={profile}
                   stages={stages}
                   currentStage={currentStage}
-                  onSelectStage={setSelectedStage}
+                  onSelectStage={handleSelectStage}
                   onNavigateToCurriculum={() => router.push(learnTabToHref("learn"))}
                   onNavigateToForum={() => router.push(learnTabToHref("forum"))}
                   leaderboard={leaderboardData?.results}
@@ -479,13 +422,12 @@ export function LearnPathsHome() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.15, ease: "easeOut" }}
-                className="h-[calc(100dvh-120px)] md:h-auto"
               >
                 <LearnModulesView
                   profile={profile}
                   stages={stages}
                   currentStage={currentStage}
-                  onSelectStage={setSelectedStage}
+                  onSelectStage={handleSelectStage}
                 />
               </motion.div>
             )}

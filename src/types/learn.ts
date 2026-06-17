@@ -40,6 +40,7 @@ export type ChapterStep = {
   report?: Record<string, unknown>;
   takeaways: StageTakeaway[];
   trivia?: StageTrivia[];
+  estimated_minutes?: number;
   is_completed: boolean;
   is_locked: boolean;
   learning_outcomes?: LearningOutcome[];
@@ -89,6 +90,7 @@ export type CivicModule = {
   fiscal_year_id?: string | null;
   fiscal_year_label?: string | null;
   metadata?: Record<string, unknown>;
+  is_locked?: boolean;
   steps: ChapterStep[];
   author?: CivicModuleAuthor | null;
   trivia?: StageTrivia[];

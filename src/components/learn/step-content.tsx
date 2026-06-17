@@ -9,6 +9,8 @@ import type { ChapterStep, StageTakeaway, ChapterVideo } from "@/types/learn";
 import { stripHtml } from "@/lib/sanitize";
 import { renderContent } from "@/lib/render-content";
 import { HarmonizedImage } from "@/components/ui/harmonized-image";
+import { resolveYoutubeId, videoEmbedUrl } from "@/lib/learn-video";
+import { YouTubePlayer } from "./youtube-player";
 
 interface StepContentProps {
   step: ChapterStep;
@@ -21,16 +23,6 @@ interface StepContentProps {
   getPersonalizedText: (text: string) => string;
   onFormatChange: (format: "video" | "text") => void;
   onStartTrivia: () => void;
-}
-
-function resolveYoutubeId(input: string): string {
-  if (!input) return "";
-  if (input.includes("embed/")) {
-    const m = input.match(/embed\/([^/?]+)/);
-    return m ? m[1] : input;
-  }
-  const m = input.match(/(?:youtu\.be\/|v=)([^&?]+)/);
-  return m ? m[1] : input;
 }
 
 function parseVideoEntries(videos?: ChapterVideo[], youtubeUrl?: string, youtubeUrls?: string[]): ChapterVideo[] {
@@ -50,11 +42,6 @@ function parseVideoEntries(videos?: ChapterVideo[], youtubeUrl?: string, youtube
     title: "Video",
     youtube_video_id: resolveYoutubeId(youtubeUrl),
   }];
-}
-
-function videoEmbedUrl(idOrUrl: string): string {
-  const id = resolveYoutubeId(idOrUrl);
-  return `https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1`;
 }
 
 function VideoDots({ count, active }: { count: number; active: number }) {
@@ -118,9 +105,10 @@ function VideoPlayer({ videos, youtubeUrl, youtubeUrls, title }: { videos?: Chap
           </div>
         )}
       </div>
-      <div className="relative aspect-video rounded-xl overflow-hidden bg-black shadow-xs">
-        <iframe className="w-full h-full border-0" src={src} title={title} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen />
-      </div>
+      <YouTubePlayer
+        videoId={current?.youtube_video_id || current?.url || ""}
+        title={title}
+      />
       <VideoDots count={resolved.length} active={idx} />
     </div>
   );
@@ -132,7 +120,7 @@ export function StepContent({ step, currentStep, totalSteps, activeFormat, showT
     <div className="space-y-4 animate-in fade-in duration-200">
       <div className="flex items-center justify-between">
         <div className="space-y-0.5">
-          <p className="text-[10px] font-semibold text-muted-foreground">Step {currentStep} of {totalSteps} · ~3 min</p>
+          <p className="text-[10px] font-semibold text-muted-foreground">Step {currentStep} of {totalSteps} · ~{step.estimated_minutes ?? 3} min</p>
           <h3 className="text-sm font-black">{step.title}</h3>
         </div>
       </div>

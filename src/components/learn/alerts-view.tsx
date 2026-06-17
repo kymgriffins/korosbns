@@ -1,18 +1,69 @@
 "use client";
 
-import { Bell } from "lucide-react";
+import { Bell, Loader2, CheckCircle2, FileText, MessageSquare } from "lucide-react";
+import { useGamificationMe } from "@/hooks/use-gamification";
 
 interface AlertsViewProps {
   profile: any;
 }
 
+function progressIcon(contentType: string) {
+  switch (contentType) {
+    case "lesson": return <CheckCircle2 className="size-3.5 text-emerald-500" />;
+    case "document": return <FileText className="size-3.5 text-blue-500" />;
+    case "path": return <MessageSquare className="size-3.5 text-amber-500" />;
+    default: return <CheckCircle2 className="size-3.5 text-muted-foreground" />;
+  }
+}
+
 export function AlertsView({ profile }: AlertsViewProps) {
+  const { data: gamification, isLoading: gamificationLoading } = useGamificationMe();
+
   return (
     <div className="space-y-4 md:space-y-6 max-w-3xl mx-auto">
       <div className="space-y-1">
         <h2 className="text-xl font-black uppercase tracking-tight">Participation Alerts</h2>
         <p className="text-xs text-muted-foreground">Hyper-local alerts matching your county and tracked documents.</p>
       </div>
+
+      {gamification && !gamificationLoading && (
+        <div className="space-y-4">
+          <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Recent Activity</h3>
+          {gamification.recent_progress.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {gamification.recent_progress.slice(0, 6).map((item, idx) => (
+                <div key={idx} className="p-4 rounded-xl border border-border bg-card space-y-2 text-xs shadow-xs">
+                  <div className="flex items-center gap-2">
+                    {progressIcon(item.content_type)}
+                    <span className="font-bold text-foreground capitalize">{item.content_type}</span>
+                    <span className="ml-auto text-[10px] text-muted-foreground font-semibold">
+                      {new Date(item.completed_at).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground">
+                    {item.progress_percent}% complete
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 border border-dashed border-border rounded-2xl space-y-2">
+              <div className="size-10 rounded-full bg-muted/30 flex items-center justify-center mx-auto ring-1 ring-border/30">
+                <Bell className="size-4 text-muted-foreground/40" />
+              </div>
+              <p className="text-sm font-bold text-muted-foreground">No recent activity.</p>
+              <p className="text-[10px] text-muted-foreground/60">Complete a learning module to see progress here.</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {gamificationLoading && (
+        <div className="flex items-center justify-center py-8">
+          <Loader2 className="size-5 animate-spin text-muted-foreground" />
+        </div>
+      )}
+
       <div className="space-y-4">
         <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Logged Submissions</h3>
         {profile.participationLogs?.length > 0 ? (
