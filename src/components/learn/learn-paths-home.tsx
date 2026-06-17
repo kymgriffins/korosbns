@@ -25,7 +25,7 @@ import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
 import { useUpdateProfile } from "@/hooks/use-profile";
 import { learnHubApi } from "@/lib/learn-hub";
-import { createGuestBrowseProfile, type LearnHubProfile } from "@/lib/learn-data";
+import { createGuestBrowseProfile, type LearnHubLanguage, type LearnHubProfile } from "@/lib/learn-data";
 import { learnTabToHref } from "@/lib/learn-nav";
 import { readProgress, clearAllModuleProgress } from "@/lib/module-progress";
 import { useLeaderboard } from "@/hooks/use-gamification";
@@ -217,12 +217,12 @@ export function LearnPathsHome() {
     }
   };
 
-  const langKey = (profile?.language as "EN" | "SW" | "SH") || "EN";
-  const text = TRANSLATIONS[langKey];
-
   const canBrowseWithoutProfile = stages.length > 0;
   const effectiveProfile: LearnHubProfile | null =
     profile ?? (canBrowseWithoutProfile ? createGuestBrowseProfile() : null);
+
+  const langKey = (effectiveProfile?.language ?? profile?.language ?? "EN") as LearnHubLanguage;
+  const text = TRANSLATIONS[langKey];
 
   const { data: leaderboardData } = useLeaderboard(20);
   const leaderboard = useMemo(() => {

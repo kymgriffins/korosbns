@@ -51,30 +51,50 @@ export async function fetchLearnSummaryWithRetry(
 }
 
 /** Minimal profile for read-only hub browsing before onboarding. */
-export function createGuestBrowseProfile() {
+export type LearnHubLanguage = "EN" | "SW" | "SH";
+
+export type LearnHubProfile = {
+  userId: string;
+  breakName: string;
+  pseudoName: string;
+  county: string;
+  ward: string;
+  language: LearnHubLanguage;
+  notifications: boolean;
+  whatsappFallback: boolean;
+  phone: string;
+  consentGranted: boolean;
+  consentTimestamp: string | null;
+  sovereigns: number;
+  stageProgress: number[];
+  streakDays: number;
+  lastActive: number;
+  trackedDocs: string[];
+  badges: string[];
+  isGuestBrowse?: boolean;
+  avatar_url?: string | null;
+  participationLogs?: unknown[];
+};
+
+export function createGuestBrowseProfile(): LearnHubProfile {
   return {
     userId: "guest_browse",
     breakName: "Guest",
     pseudoName: "guest",
     county: "Kenya",
     ward: "",
-    language: "EN" as const,
+    language: "EN",
     notifications: false,
     whatsappFallback: false,
     phone: "",
     consentGranted: false,
-    consentTimestamp: null as string | null,
+    consentTimestamp: null,
     sovereigns: 0,
     stageProgress: [1],
     streakDays: 0,
     lastActive: Date.now(),
-    trackedDocs: [] as string[],
-    badges: [] as string[],
-    isGuestBrowse: true as const,
+    trackedDocs: [],
+    badges: [],
+    isGuestBrowse: true,
   };
 }
-
-export type LearnHubProfile = ReturnType<typeof createGuestBrowseProfile> & {
-  isGuestBrowse?: boolean;
-  avatar_url?: string | null;
-};
