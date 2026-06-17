@@ -44,7 +44,7 @@ export const AUTH_PAGE_PREFIXES = [
   ...AUTH_ALWAYS_ACCESSIBLE_PREFIXES,
 ] as const;
 
-export const ACCESS_TOKEN_COOKIE = "access_token";
+export const ACCESS_TOKEN_COOKIE = "bns_at";
 
 export function pathMatchesPrefix(pathname: string, prefix: string): boolean {
   return pathname === prefix || pathname.startsWith(`${prefix}/`);

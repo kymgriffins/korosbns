@@ -2,13 +2,13 @@ import { buildApiUrl, networkErrorMessage } from "@/lib/api-url";
 import { ApiRequestError, extractApiErrorMessage, type ApiPayload } from "@/lib/api-errors";
 import { apiFetchInit } from "@/lib/fetch-policy";
 import { logDebug, sanitizeToken } from "@/lib/debug-logs";
+import { ACCESS_TOKEN_COOKIE } from "@/lib/auth-policy";
 
 export { buildApiUrl };
 
 const ACCESS_KEY = "access_token";
 const REFRESH_KEY = "refresh_token";
 const STORAGE_MODE_KEY = "bns_token_storage_mode";
-const COOKIE_KEY = "access_token";
 
 export type ApiListResponse<T> = {
   count?: number;
@@ -195,7 +195,7 @@ function syncTokenCookie(access: string): void {
   try {
     const maxAge = 60 * 60 * 24; // 24h — aligns with typical access token lifetime
     const secure = process.env.NODE_ENV === "production";
-    document.cookie = `${COOKIE_KEY}=${access}; Path=/; SameSite=Lax; Max-Age=${maxAge}${secure ? "; Secure" : ""}`;
+    document.cookie = `${ACCESS_TOKEN_COOKIE}=${access}; Path=/; SameSite=Lax; Max-Age=${maxAge}${secure ? "; Secure" : ""}`;
   } catch {
     // Cookies unavailable (SSR, non-browser environment) — ignore.
   }
@@ -203,7 +203,7 @@ function syncTokenCookie(access: string): void {
 
 function removeTokenCookie(): void {
   try {
-    document.cookie = `${COOKIE_KEY}=; Path=/; SameSite=Lax; Max-Age=0`;
+    document.cookie = `${ACCESS_TOKEN_COOKIE}=; Path=/; SameSite=Lax; Max-Age=0`;
   } catch {
     // Cookies unavailable — ignore.
   }
