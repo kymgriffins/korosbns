@@ -6,9 +6,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import {
   ChevronRight, ChevronLeft, ChevronDown, X,
-  BookOpen, Bell, Home, LayoutDashboard, CheckCircle2, ArrowLeft, ExternalLink,
-  Settings, LogOut, KeyRound, Palette, LogIn, User, FileText,
-  MessagesSquare, HelpCircle, Calendar, ListChecks
+  BookOpen, Bell, Home, LayoutDashboard, ArrowLeft, ExternalLink,
+  Settings, LogOut, Lock, Palette, LogIn, User, FileText,
+  MessagesSquare, Calendar, ListChecks
 } from "lucide-react";
 import { cn } from "@/utils";
 import { LearnProvider, useLearn, type LearnTab } from "@/contexts/learn-context";
@@ -23,6 +23,9 @@ import type { SurveyListItemApi } from "@/lib/api-client";
 import { loadEventList, type HubEvent } from "@/lib/citizen-content";
 import { loadSurveyList } from "@/lib/marketing-content";
 import {
+  Collapsible, CollapsibleContent, CollapsibleTrigger,
+} from "@/ui/collapsible";
+import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
@@ -34,6 +37,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
   SidebarProvider,
   SidebarTrigger,
   useSidebar,
@@ -75,7 +80,6 @@ function LearnSidebar() {
     return () => { cancelled = true; };
   }, []);
 
-  // Re-fetch user profile and gamification when profile updates in-app
   const queryClient = useQueryClient();
   useEffect(() => {
     const onProfileUpdate = () => {
@@ -91,14 +95,19 @@ function LearnSidebar() {
     if (isMobile) setOpenMobile(false);
   };
 
-  const moduleCount = civicModules.length;
-  const alertCount = 0;
+  const handleModuleClick = (slug: string) => {
+    setActiveTab("learn");
+    if (isMobile) setOpenMobile(false);
+  };
 
-  const navItems: { key: LearnTab; label: string; icon: React.ReactNode; badge?: string }[] = [
+  const moduleCount = civicModules.length;
+
+  const primaryItems: { key: LearnTab; label: string; icon: React.ReactNode; badge?: string }[] = [
     { key: "home", label: "Dashboard", icon: <LayoutDashboard className="size-4" /> },
-    { key: "learn", label: "Modules", icon: <CheckCircle2 className="size-4" />, badge: moduleCount > 0 ? String(moduleCount) : undefined },
-    { key: "alerts", label: "Alerts", icon: <Bell className="size-4" />, badge: alertCount > 0 ? String(alertCount) : undefined },
+    { key: "learn", label: "Modules", icon: <BookOpen className="size-4" />, badge: moduleCount > 0 ? String(moduleCount) : undefined },
     { key: "documents", label: "Documents", icon: <FileText className="size-4" /> },
+    { key: "profile", label: "Profile", icon: <User className="size-4" /> },
+    { key: "forum", label: "Forums", icon: <MessagesSquare className="size-4" /> },
   ];
 
   return (
@@ -118,50 +127,75 @@ function LearnSidebar() {
           <SidebarGroupLabel className="text-[10px] font-bold tracking-wider text-sidebar-foreground/50 uppercase mb-0.5">Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map((item) => (
-                <SidebarMenuItem key={item.key}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={activeTab === item.key}
-                    tooltip={item.label}
-                    className="py-4 rounded-lg transition-all data-[active=true]:ring-1 data-[active=true]:ring-sidebar-ring/30"
-                  >
-                    <Link href={learnTabToHref(item.key)} onClick={() => handleTabChange(item.key)}>
-                      {item.icon}
-                      <span className="font-semibold text-xs">{item.label}</span>
-                      {item.badge && !isCollapsed && (
-                        <span className="ml-auto flex h-4.5 px-1 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow-xs ring-1 ring-primary/20">{item.badge}</span>
-                      )}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive={activeTab === "profile"}
-                  tooltip="Profile"
-                  className="py-4 rounded-lg transition-all data-[active=true]:ring-1 data-[active=true]:ring-sidebar-ring/30"
-                >
-                  <Link href={learnTabToHref("profile")} onClick={() => handleTabChange("profile")}>
-                    <User className="size-4" />
-                    <span className="font-semibold text-xs">Community Profile</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive={activeTab === "forum"}
-                  tooltip="Forums"
-                  className="py-4 rounded-lg transition-all data-[active=true]:ring-1 data-[active=true]:ring-sidebar-ring/30"
-                >
-                  <Link href={learnTabToHref("forum")} onClick={() => handleTabChange("forum")}>
-                    <MessagesSquare className="size-4" />
-                    <span className="font-semibold text-xs">Forums</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              {primaryItems.map((item) => {
+                if (item.key === "learn") {
+                  return (
+                    <Collapsible key={item.key} defaultOpen className="group/collapsible">
+                      <SidebarMenuItem>
+                        <CollapsibleTrigger asChild>
+                          <SidebarMenuButton
+                            isActive={activeTab === item.key}
+                            tooltip={item.label}
+                            className="py-4 rounded-lg transition-all data-[active=true]:ring-1 data-[active=true]:ring-sidebar-ring/30"
+                          >
+                            <Link
+                              href={learnTabToHref(item.key)}
+                              onClick={(e) => { e.stopPropagation(); handleTabChange(item.key); }}
+                              className="flex items-center gap-2 [&>svg:first-child]:shrink-0"
+                            >
+                              {item.icon}
+                              <span className="font-semibold text-xs">{item.label}</span>
+                              {item.badge && !isCollapsed && (
+                                <span className="ml-auto flex h-4.5 px-1 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow-xs ring-1 ring-primary/20">{item.badge}</span>
+                              )}
+                            </Link>
+                            {!isCollapsed && <ChevronDown className="ml-auto size-3 shrink-0 transition-transform group-data-[state=open]/collapsible:rotate-180" />}
+                          </SidebarMenuButton>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent>
+                          <SidebarMenuSub>
+                            {civicModules.map((m) => (
+                              <SidebarMenuSubItem key={m.id}>
+                                <SidebarMenuSubButton
+                                  asChild
+                                  isActive={activeLesson?.stageId === m.slug}
+                                >
+                                  <Link
+                                    href={`${Routes.Learn}?tab=modules`}
+                                    onClick={() => handleModuleClick(m.slug)}
+                                    className="flex items-center gap-2"
+                                  >
+                                    <span className="text-sm leading-none">{m.badge}</span>
+                                    <span className="truncate text-xs font-medium">{m.badgeName || m.title}</span>
+                                  </Link>
+                                </SidebarMenuSubButton>
+                              </SidebarMenuSubItem>
+                            ))}
+                          </SidebarMenuSub>
+                        </CollapsibleContent>
+                      </SidebarMenuItem>
+                    </Collapsible>
+                  );
+                }
+                return (
+                  <SidebarMenuItem key={item.key}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={activeTab === item.key}
+                      tooltip={item.label}
+                      className="py-4 rounded-lg transition-all data-[active=true]:ring-1 data-[active=true]:ring-sidebar-ring/30"
+                    >
+                      <Link href={learnTabToHref(item.key)} onClick={() => handleTabChange(item.key)}>
+                        {item.icon}
+                        <span className="font-semibold text-xs">{item.label}</span>
+                        {item.badge && !isCollapsed && (
+                          <span className="ml-auto flex h-4.5 px-1 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow-xs ring-1 ring-primary/20">{item.badge}</span>
+                        )}
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -179,7 +213,7 @@ function LearnSidebar() {
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton asChild tooltip="Password">
-                      <Link href={Routes.AccountPassword}><KeyRound className="size-4" /><span>Change Password</span></Link>
+                      <Link href={Routes.AccountPassword}><Lock className="size-4" /><span>Change Password</span></Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
@@ -195,11 +229,6 @@ function LearnSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               )}
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Help Center" className="focus-visible:ring-2 focus-visible:ring-ring">
-                  <Link href="/help"><HelpCircle className="size-4" /><span>Help Center</span></Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
               <SidebarMenuItem>
                 <div className="flex items-center gap-3 px-2 py-1.5 text-xs font-medium text-muted-foreground w-full group-data-[collapsible=icon]:justify-center">
                   <Palette className="size-4 shrink-0" />
@@ -246,52 +275,43 @@ function LearnSidebar() {
             )}
           </div>
         ) : (
-          <div className="p-2 space-y-3">
+          <div className="p-2 space-y-1.5">
             {showAppCard && !feedLoading && (
               <Link
                 href={upcomingEvents.length > 0 ? Routes.Events : Routes.Surveys}
-                className="relative block overflow-hidden rounded-xl bg-gradient-to-br from-emerald-500 via-emerald-500/90 to-teal-600 text-white p-4 shadow-xs group"
+                className="relative flex items-start gap-3 rounded-lg bg-gradient-to-r from-emerald-500/10 to-teal-500/10 p-3 text-sm ring-1 ring-emerald-500/20 hover:from-emerald-500/15 hover:to-teal-500/15 transition-all group"
               >
-                <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.07] mix-blend-overlay pointer-events-none" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none" />
                 <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowAppCard(false); }}
-                  className="absolute top-1.5 right-1.5 size-5 rounded-full bg-white/20 backdrop-blur flex items-center justify-center hover:bg-white/30 transition-colors z-20 focus-visible:ring-2 focus-visible:ring-white/50">
-                  <X className="size-3" />
+                  className="absolute top-1.5 right-1.5 size-4 rounded-full bg-muted-foreground/10 flex items-center justify-center hover:bg-muted-foreground/20 transition-colors z-10">
+                  <X className="size-2.5" />
                 </button>
-                <div className="relative z-10 space-y-1.5">
-                  <div className="flex items-center gap-2">
-                    {upcomingEvents.length > 0 ? <Calendar className="size-4" /> : <ListChecks className="size-4" />}
-                    <h4 className="font-bold text-xs">{upcomingEvents.length > 0 ? "Upcoming Events" : "Active Surveys"}</h4>
-                  </div>
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+                  {upcomingEvents.length > 0 ? <Calendar className="size-4" /> : <ListChecks className="size-4" />}
+                </div>
+                <div className="min-w-0 flex-1 pr-4">
+                  <p className="text-[11px] font-bold text-emerald-700 dark:text-emerald-300">
+                    {upcomingEvents.length > 0 ? "Upcoming Events" : "Active Surveys"}
+                  </p>
                   {upcomingEvents.length > 0 ? (
                     upcomingEvents.slice(0, 2).map((ev) => (
-                      <div key={ev.id} className="space-y-0.5">
-                        <p className="text-[10px] text-white/80">{ev.title}</p>
-                        <p className="text-[9px] text-white/60">{ev.location} · {new Date(ev.starts_at).toLocaleDateString("en-KE", { month: "short", day: "numeric", year: "numeric" })}</p>
-                      </div>
+                      <p key={ev.id} className="text-[10px] text-muted-foreground truncate">{ev.title}</p>
                     ))
                   ) : surveys.length > 0 ? (
                     surveys.slice(0, 2).map((sv) => (
-                      <div key={sv.id} className="space-y-0.5">
-                        <p className="text-[10px] text-white/80">{sv.title}</p>
-                        {sv.description && <p className="text-[9px] text-white/60 line-clamp-1">{sv.description}</p>}
-                      </div>
+                      <p key={sv.id} className="text-[10px] text-muted-foreground truncate">{sv.title}</p>
                     ))
                   ) : (
-                    <p className="text-[10px] text-white/60">No upcoming content yet.</p>
+                    <p className="text-[10px] text-muted-foreground">No upcoming content</p>
                   )}
                 </div>
               </Link>
             )}
             {showAppCard && feedLoading && (
-              <div className="rounded-xl bg-muted/50 p-4 animate-pulse">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="size-4 rounded bg-muted-foreground/20" />
-                  <div className="h-3 w-24 rounded bg-muted-foreground/20" />
-                </div>
-                <div className="space-y-2">
-                  <div className="h-3 w-full rounded bg-muted-foreground/20" />
-                  <div className="h-2 w-2/3 rounded bg-muted-foreground/20" />
+              <div className="flex items-center gap-3 rounded-lg bg-muted/30 p-3 animate-pulse">
+                <div className="size-8 rounded-full bg-muted-foreground/10" />
+                <div className="flex-1 space-y-1.5">
+                  <div className="h-2.5 w-24 rounded bg-muted-foreground/10" />
+                  <div className="h-2 w-32 rounded bg-muted-foreground/10" />
                 </div>
               </div>
             )}
@@ -303,14 +323,6 @@ function LearnSidebar() {
                     <ArrowLeft className="size-4" />
                     <span>Back to main site</span>
                   </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Open Learn Hub in new tab">
-                  <a href="/learn" target="_blank" rel="noopener noreferrer">
-                    <ExternalLink className="size-4" />
-                    <span>Open in new tab</span>
-                  </a>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
