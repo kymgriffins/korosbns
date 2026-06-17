@@ -16,6 +16,7 @@ import {
 import { toast } from "sonner";
 import { cn } from "@/utils";
 import { getTikTokVideo, likeTikTokVideo } from "@/lib/tiktok-service";
+import { LandingTikTokLiveMarquee } from "@/components/marketing/landing-tiktok-live-marquee";
 import type { TikTokVideoDetailApi } from "@/lib/api-client";
 
 const TIKTOK_PROFILE = "https://www.tiktok.com/@budget.ndio.story";
@@ -222,6 +223,12 @@ export default function TikTokVideoPage({ params }: { params: Promise<{ uuid: st
             >
               {isPlaying ? <Pause className="size-4" /> : <Play className="size-4 fill-white" />}
             </button>
+          </div>
+        </div>
+
+        <div className="mt-12 w-full max-w-3xl">
+          <div className="border-t border-white/10 pt-8">
+            <LandingTikTokLiveMarquee />
           </div>
         </div>
       </div>
