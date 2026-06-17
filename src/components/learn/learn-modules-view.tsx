@@ -23,11 +23,18 @@ interface LearnModulesViewProps {
 
 export function LearnModulesView({ profile, stages, currentStage, onSelectStage, onRefresh }: LearnModulesViewProps) {
   const [activeTab, setActiveTab] = useState<"all" | "in-progress" | "completed">("all");
+  const [contentFilter, setContentFilter] = useState<"all" | "budget" | "civic">("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [refreshing, setRefreshing] = useState(false);
 
+  const contentFiltered = useMemo(() => {
+    if (contentFilter === "budget") return stages.filter((s) => s.is_financial_year_analysis);
+    if (contentFilter === "civic") return stages.filter((s) => !s.is_financial_year_analysis);
+    return stages;
+  }, [stages, contentFilter]);
+
   const moduleProgress = useMemo(() => {
-    return stages.map((stage) => {
+    return contentFiltered.map((stage) => {
       const p = readProgress(stage.slug, stage.order);
       const completedCount = Object.keys(p.stepsCompleted).length;
       const total = stage.steps.length;
@@ -35,7 +42,7 @@ export function LearnModulesView({ profile, stages, currentStage, onSelectStage,
       const isInProgress = completedCount > 0 && !isCompleted;
       return { stage, completedCount, total, isCompleted, isInProgress };
     });
-  }, [stages]);
+  }, [contentFiltered]);
 
   const filteredModules = useMemo(() => {
     let list = moduleProgress;
@@ -116,6 +123,26 @@ export function LearnModulesView({ profile, stages, currentStage, onSelectStage,
                 }`}
               >
                 {tab.label}{tab.count > 0 ? ` (${tab.count})` : ""}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-hide border-t border-border/20 pt-2.5 mt-0.5">
+            {[
+              { key: "all", label: "All" },
+              { key: "budget", label: "Budget Data" },
+              { key: "civic", label: "Civic Modules" },
+            ].map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setContentFilter(tab.key as any)}
+                className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all shrink-0 focus-visible:ring-2 focus-visible:ring-ring ${
+                  contentFilter === tab.key
+                    ? "bg-primary/15 text-primary ring-1 ring-primary/30"
+                    : "text-muted-foreground/60 hover:text-foreground"
+                }`}
+              >
+                {tab.label}
               </button>
             ))}
           </div>
