@@ -477,7 +477,7 @@ export function LearnPathsHome() {
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.15, ease: "easeOut" }}
               >
-                <AlertsView profile={profile} />
+                <AlertsView profile={activeProfile} />
               </motion.div>
             )}
 
@@ -490,7 +490,7 @@ export function LearnPathsHome() {
                 transition={{ duration: 0.15, ease: "easeOut" }}
                 className="h-[calc(100dvh-120px)] md:h-auto"
               >
-                <LearnDocumentsView profile={profile} />
+                <LearnDocumentsView profile={activeProfile} />
               </motion.div>
             )}
 
