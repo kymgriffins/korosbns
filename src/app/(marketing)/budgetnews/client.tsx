@@ -90,13 +90,13 @@ function BudgetNewsContent() {
             Financial year analyses will appear here once published. Check back after the next budget reading.
           </p>
           <a
-            href="https://bnske.budgetndiostory.org/admin/content/civicmodule/"
+            href="https://bnske.budgetndiostory.org/admin/ke-budget/"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-card px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors"
           >
             <Settings className="size-3.5" />
-            Manage in Admin Panel
+            Manage Budget in Admin
           </a>
         </div>
       </div>
@@ -117,7 +117,18 @@ function BudgetNewsContent() {
           sector allocations, revenue, and fiscal outlook across all fiscal years.
         </p>
 
-        <YearTabs years={years} selectedLabel={selectedLabel} onSelect={(label) => setSelectedLabel(label)} />
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+          <YearTabs years={years} selectedLabel={selectedLabel} onSelect={(label) => setSelectedLabel(label)} />
+          <a
+            href="https://bnske.budgetndiostory.org/admin/ke-budget/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-card px-3 py-1.5 text-[11px] font-medium text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors shrink-0"
+          >
+            <Settings className="size-3" />
+            Manage Budget
+          </a>
+        </div>
 
         {modulesLoading ? (
           <div className="space-y-4 mt-6">

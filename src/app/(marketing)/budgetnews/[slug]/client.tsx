@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, BookOpen, ChevronRight, ChevronLeft } from "lucide-react";
+import { ArrowLeft, BookOpen, ChevronRight, ChevronLeft, Settings } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/ui/button";
 import { budgetNewsChapterPath, budgetNewsModulePath, Routes } from "@/constants/routes";
@@ -86,7 +86,7 @@ function DetailContent({ slug }: { slug: string }) {
             </Link>
           </div>
 
-          <div className="mb-6">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
             <YearTabs
               years={years}
               selectedLabel={currentYear?.label ?? null}
@@ -95,6 +95,15 @@ function DetailContent({ slug }: { slug: string }) {
                 if (target) window.location.href = budgetNewsModulePath(target.module_slug);
               }}
             />
+            <a
+              href="https://bnske.budgetndiostory.org/admin/ke-budget/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-card px-3 py-1.5 text-[11px] font-medium text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors shrink-0"
+            >
+              <Settings className="size-3" />
+              Manage Budget
+            </a>
           </div>
 
           {report ? (
