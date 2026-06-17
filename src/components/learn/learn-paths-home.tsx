@@ -451,14 +451,14 @@ export function LearnPathsHome() {
         </div>
       ) : (
         <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 md:p-6">
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="popLayout">
             {activeTab === "home" && (
               <motion.div
                 key="home"
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.15, ease: "easeOut" }}
               >
                 <LearnDashboardView
                   profile={profile}
@@ -475,10 +475,10 @@ export function LearnPathsHome() {
             {activeTab === "learn" && (
               <motion.div
                 key="learn"
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.15, ease: "easeOut" }}
                 className="h-[calc(100dvh-120px)] md:h-auto"
               >
                 <LearnModulesView
@@ -493,10 +493,10 @@ export function LearnPathsHome() {
             {activeTab === "alerts" && (
               <motion.div
                 key="alerts"
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.15, ease: "easeOut" }}
               >
                 <AlertsView profile={profile} />
               </motion.div>
@@ -505,10 +505,10 @@ export function LearnPathsHome() {
             {activeTab === "documents" && (
               <motion.div
                 key="documents"
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.15, ease: "easeOut" }}
                 className="h-[calc(100dvh-120px)] md:h-auto"
               >
                 <LearnDocumentsView profile={profile} />
@@ -518,10 +518,10 @@ export function LearnPathsHome() {
             {activeTab === "forum" && (
               <motion.div
                 key="forum"
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.15, ease: "easeOut" }}
               >
                 <ForumView />
               </motion.div>
@@ -530,10 +530,10 @@ export function LearnPathsHome() {
             {activeTab === "profile" && (
               <motion.div
                 key="profile"
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.15, ease: "easeOut" }}
                 className="space-y-4 pb-4 md:pb-0"
               >
                 <ProfileView

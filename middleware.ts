@@ -3,8 +3,6 @@ import type { NextRequest } from "next/server";
 
 const protectedPaths = [
   "/learn/account",
-  "/learn/forum",
-  "/learn/profile",
   "/learn/quests",
 ];
 

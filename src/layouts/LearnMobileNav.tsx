@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { BookOpen, FileText, LayoutDashboard, MessagesSquare } from "lucide-react";
-import { useLearn } from "@/contexts/learn-context";
+import { useLearn, type LearnTab } from "@/contexts/learn-context";
 import { learnTabToHref } from "@/lib/learn-nav";
 import {
   MobileBottomNav,
@@ -18,7 +18,8 @@ type StoredProfile = {
 };
 
 export function LearnMobileNav() {
-  const { activeTab } = useLearn();
+  const { activeTab, setActiveTab } = useLearn();
+  const onNav = (tab: LearnTab) => () => setActiveTab(tab);
   const [profile, setProfile] = useState<StoredProfile | null>(null);
 
   useEffect(() => {
@@ -75,6 +76,7 @@ export function LearnMobileNav() {
       active: activeTab === "home",
       ariaCurrent: activeTab === "home" ? "page" : undefined,
       icon: <LayoutDashboard className="size-5" aria-hidden />,
+      onNavigate: onNav("home"),
     },
     {
       id: "documents",
@@ -83,6 +85,7 @@ export function LearnMobileNav() {
       active: activeTab === "documents",
       ariaCurrent: activeTab === "documents" ? "page" : undefined,
       icon: <FileText className="size-5" aria-hidden />,
+      onNavigate: onNav("documents"),
     },
     {
       id: "learn",
@@ -92,6 +95,7 @@ export function LearnMobileNav() {
       prominent: true,
       ariaCurrent: activeTab === "learn" ? "page" : undefined,
       icon: <BookOpen className="size-5" aria-hidden />,
+      onNavigate: onNav("learn"),
     },
     {
       id: "forum",
@@ -100,6 +104,7 @@ export function LearnMobileNav() {
       active: activeTab === "forum",
       ariaCurrent: activeTab === "forum" ? "page" : undefined,
       icon: <MessagesSquare className="size-5" aria-hidden />,
+      onNavigate: onNav("forum"),
     },
     {
       id: "profile",
@@ -108,6 +113,7 @@ export function LearnMobileNav() {
       active: activeTab === "profile",
       ariaCurrent: activeTab === "profile" ? "page" : undefined,
       icon: profileIcon,
+      onNavigate: onNav("profile"),
     },
   ];
 
