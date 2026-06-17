@@ -25,6 +25,7 @@ import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
 import { useUpdateProfile } from "@/hooks/use-profile";
 import { learnHubApi } from "@/lib/learn-hub";
+import { createGuestBrowseProfile, type LearnHubProfile } from "@/lib/learn-data";
 import { learnTabToHref } from "@/lib/learn-nav";
 import { readProgress, clearAllModuleProgress } from "@/lib/module-progress";
 import { useLeaderboard } from "@/hooks/use-gamification";
@@ -112,7 +113,7 @@ export function LearnPathsHome() {
           notifications: authUser.notifications_enabled ?? true,
           whatsappFallback: authUser.whatsapp_fallback ?? false,
           phone: authUser.phone_number || "",
-          consentGranted: authUser.dpa_consent_granted ?? true,
+          consentGranted: authUser.dpa_consent_granted ?? false,
           consentTimestamp: authUser.dpa_consent_timestamp || new Date().toISOString(),
           sovereigns: currentProfile?.sovereigns || 0,
           stageProgress: currentProfile?.stageProgress || [1],
@@ -219,6 +220,10 @@ export function LearnPathsHome() {
   const langKey = (profile?.language as "EN" | "SW" | "SH") || "EN";
   const text = TRANSLATIONS[langKey];
 
+  const canBrowseWithoutProfile = stages.length > 0;
+  const effectiveProfile: LearnHubProfile | null =
+    profile ?? (canBrowseWithoutProfile ? createGuestBrowseProfile() : null);
+
   const { data: leaderboardData } = useLeaderboard(20);
   const leaderboard = useMemo(() => {
     const entries = (leaderboardData?.results ?? [])
@@ -231,21 +236,23 @@ export function LearnPathsHome() {
         svg: e.points,
         stages: e.badge_count,
         rank: e.rank,
-        isUser: profile?.pseudoName?.toLowerCase() === (e.name ?? "").toLowerCase(),
+        isUser: effectiveProfile?.pseudoName?.toLowerCase() === (e.name ?? "").toLowerCase(),
       }));
-    if (!entries.some((e) => e.isUser) && profile?.pseudoName) {
+    if (!entries.some((e) => e.isUser) && effectiveProfile?.pseudoName && !effectiveProfile.isGuestBrowse) {
       entries.push({
-        name: profile.pseudoName,
-        svg: profile.sovereigns ?? 0,
-        stages: profile.badges?.length ?? 0,
+        name: effectiveProfile.pseudoName,
+        svg: effectiveProfile.sovereigns ?? 0,
+        stages: effectiveProfile.badges?.length ?? 0,
         rank: entries.length + 1,
         isUser: true,
       });
     }
     return entries.sort((a, b) => b.svg - a.svg).map((item, idx) => ({ ...item, rank: idx + 1 }));
-  }, [leaderboardData, profile]);
+  }, [leaderboardData, effectiveProfile]);
 
-  const currentStageNum = profile ? (profile.stageProgress ? Math.max(...profile.stageProgress) : 1) : 1;
+  const currentStageNum = effectiveProfile
+    ? (effectiveProfile.stageProgress ? Math.max(...effectiveProfile.stageProgress) : 1)
+    : 1;
   const currentStage = stages.find(s => s.order === currentStageNum) || stages[0];
 
   const isStageAccessibleByServer = (stage: CivicModule): boolean => {
@@ -254,8 +261,12 @@ export function LearnPathsHome() {
   };
 
   const isStageAccessible = (stage: CivicModule): boolean => {
+    if (!effectiveProfile) return isStageAccessibleByServer(stage);
     if (isStageAccessibleByServer(stage)) return true;
-    return !!(profile.stageProgress?.includes(stage.order) || profile.badges?.includes(stage.badge));
+    return !!(
+      effectiveProfile.stageProgress?.includes(stage.order) ||
+      effectiveProfile.badges?.includes(stage.badge)
+    );
   };
 
   const handleSelectStage = (stage: CivicModule) => {
@@ -311,7 +322,9 @@ export function LearnPathsHome() {
     );
   }
 
-  if (!profile) {
+  const showOnboardingGate = !profile && !canBrowseWithoutProfile;
+
+  if (showOnboardingGate) {
     if (!wantsAnonymous) {
       return (
         <div className="flex-1 flex items-center justify-center p-4 min-h-[70vh]">
@@ -361,6 +374,13 @@ export function LearnPathsHome() {
     );
   }
 
+  if (!effectiveProfile) {
+    return null;
+  }
+
+  const activeProfile = effectiveProfile;
+  const showGuestBanner = !profile && canBrowseWithoutProfile && !wantsAnonymous;
+
   if (!stages.length) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center min-h-[50vh] gap-3 p-6 text-center">
@@ -374,7 +394,23 @@ export function LearnPathsHome() {
 
   return (
     <div className="w-full h-full min-h-0 bg-background flex flex-col overflow-hidden">
-      {!selectedStage && profile.language === "SH" && (
+      {showGuestBanner && (
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-primary/20 bg-primary/5 px-4 py-2 text-xs">
+          <span className="text-muted-foreground">
+            Browse modules from our live catalog. Save progress by continuing anonymously or signing in.
+          </span>
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" variant="outline" className="h-8 rounded-lg text-xs font-bold" onClick={() => setWantsAnonymous(true)}>
+              Continue as guest
+            </Button>
+            <Button size="sm" className="h-8 rounded-lg text-xs font-bold" asChild>
+              <Link href={Routes.Login}>Sign in</Link>
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {!selectedStage && activeProfile.language === "SH" && (
         <div className="w-full py-1 px-4 text-[10px] font-semibold bg-amber-500/15 border-b border-amber-500/20 text-amber-600 text-center">
           {text.shengComingSoon}
         </div>
@@ -384,7 +420,7 @@ export function LearnPathsHome() {
         <div className="absolute inset-0 z-10 flex flex-col overflow-hidden bg-background md:relative md:inset-auto">
           <StageDetailDrawer key={selectedStage.slug}
             stage={selectedStage}
-            profile={profile}
+            profile={activeProfile}
             onUpdateProfile={handleUpdateProfile}
             onClose={() => setSelectedStage(null)}
             hasNext={stages.findIndex(s => s.slug === selectedStage.slug) < stages.length - 1}
@@ -405,7 +441,7 @@ export function LearnPathsHome() {
                 transition={{ duration: 0.15, ease: "easeOut" }}
               >
                 <LearnDashboardView
-                  profile={profile}
+                  profile={activeProfile}
                   stages={stages}
                   currentStage={currentStage}
                   onSelectStage={handleSelectStage}
@@ -425,7 +461,7 @@ export function LearnPathsHome() {
                 transition={{ duration: 0.15, ease: "easeOut" }}
               >
                 <LearnModulesView
-                  profile={profile}
+                  profile={activeProfile}
                   stages={stages}
                   currentStage={currentStage}
                   onSelectStage={handleSelectStage}
@@ -480,7 +516,7 @@ export function LearnPathsHome() {
                 className="space-y-4 pb-4 md:pb-0"
               >
                 <ProfileView
-                  profile={profile}
+                  profile={activeProfile}
                   stages={stages}
                   onResetProgress={handleResetProgress}
                   onUpdateProfile={handleUpdateProfile}

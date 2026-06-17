@@ -3,15 +3,20 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { buildLoginUrl } from "@/lib/auth-policy";
 import { useAuth } from "@/contexts/auth-context";
 
+/**
+ * Client-side guard for routes listed in LEARN_PROTECTED_PATH_PREFIXES.
+ * Middleware performs the first redirect; this validates the session via /users/me/.
+ */
 export function Protected({ children }: { children: React.ReactNode }) {
   const { isLoggedIn, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
     if (!loading && !isLoggedIn) {
-      router.replace(`/auth/login?next=${encodeURIComponent(window.location.pathname)}`);
+      router.replace(buildLoginUrl(window.location.pathname));
     }
   }, [loading, isLoggedIn, router]);
 

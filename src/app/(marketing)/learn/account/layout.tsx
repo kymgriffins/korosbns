@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { canonicalUrl } from "@/utils/metadata";
+import { AccountProtectedGate } from "./account-protected-gate";
 
 export const metadata: Metadata = {
   title: "Account Settings — Budget Ndio Story",
@@ -9,5 +10,5 @@ export const metadata: Metadata = {
 };
 
 export default function LearnAccountLayout({ children }: { children: React.ReactNode }) {
-  return children;
+  return <AccountProtectedGate>{children}</AccountProtectedGate>;
 }

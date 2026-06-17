@@ -3,25 +3,26 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
-import { Routes } from "@/constants/routes";
+import { DEFAULT_POST_LOGIN_PATH, sanitizeRedirectPath } from "@/lib/auth-policy";
 import { useAuth } from "@/contexts/auth-context";
 
 /** Redirects authenticated users away from login/register. */
 export function GuestOnly({
   children,
-  redirectTo = Routes.Learn,
+  redirectTo = DEFAULT_POST_LOGIN_PATH,
 }: {
   children: React.ReactNode;
   redirectTo?: string;
 }) {
   const { isLoggedIn, loading } = useAuth();
   const router = useRouter();
+  const safeRedirect = sanitizeRedirectPath(redirectTo);
 
   useEffect(() => {
     if (!loading && isLoggedIn) {
-      router.replace(redirectTo);
+      router.replace(safeRedirect);
     }
-  }, [loading, isLoggedIn, router, redirectTo]);
+  }, [loading, isLoggedIn, router, safeRedirect]);
 
   if (loading) {
     return (

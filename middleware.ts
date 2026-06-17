@@ -1,36 +1,21 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-
-const protectedPaths = [
-  "/learn/account",
-  "/learn/quests",
-];
-
-const authPaths = [
-  "/auth/login",
-  "/auth/register",
-  "/auth/reset",
-  "/auth/verify",
-];
+import { ACCESS_TOKEN_COOKIE } from "@/lib/auth-policy";
+import { evaluateAuthMiddleware } from "@/lib/auth-middleware";
 
 const DEVICE_COOKIE = "bns_gid";
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const token = request.cookies.get("access_token")?.value
-    ?? request.headers.get("authorization")?.replace("Bearer ", "");
+  const token =
+    request.cookies.get(ACCESS_TOKEN_COOKIE)?.value ??
+    request.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ??
+    null;
 
-  const isProtected = protectedPaths.some((p) => pathname === p || pathname.startsWith(p + "/"));
-  const isAuthPage = authPaths.some((p) => pathname === p || pathname.startsWith(p + "/"));
+  const decision = evaluateAuthMiddleware(pathname, token);
 
-  if (isProtected && !token) {
-    const loginUrl = new URL("/auth/login", request.url);
-    loginUrl.searchParams.set("next", pathname);
-    return NextResponse.redirect(loginUrl);
-  }
-
-  if (isAuthPage && token) {
-    return NextResponse.redirect(new URL("/learn", request.url));
+  if (decision.action === "redirect") {
+    return NextResponse.redirect(new URL(decision.location, request.url));
   }
 
   const response = NextResponse.next();

@@ -18,6 +18,7 @@ import {
   setAuthTokens,
   type UserProfileApi,
 } from "@/lib/api-client";
+import { DEFAULT_POST_LOGIN_PATH, sanitizeRedirectPath } from "@/lib/auth-policy";
 import { logDebug } from "@/lib/debug-logs";
 
 const USER_PROFILE_KEY = ["auth", "me"];
@@ -85,16 +86,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [queryClient]);
 
   const login = useCallback(
-    async (email: string, password: string, redirectTo = "/learn") => {
-      logDebug("Auth", "Login requested", { email, redirectTo });
+    async (email: string, password: string, redirectTo = DEFAULT_POST_LOGIN_PATH) => {
+      const safeRedirect = sanitizeRedirectPath(redirectTo);
+      logDebug("Auth", "Login requested", { redirectTo: safeRedirect });
       clearUserData();
       const tokens = await citizenApi.login(email, password);
       setAuthTokens(tokens.access, tokens.refresh);
       setHasToken(true);
       logDebug("Auth", "Login token stored");
       await queryClient.refetchQueries({ queryKey: USER_PROFILE_KEY });
-      logDebug("Auth", "Login completed", { email, redirectTo });
-      router.push(redirectTo);
+      logDebug("Auth", "Login completed", { redirectTo: safeRedirect });
+      router.push(safeRedirect);
     },
     [router, queryClient],
   );

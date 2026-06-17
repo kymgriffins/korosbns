@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { canonicalUrl } from "@/utils/metadata";
+import { QuestsProtectedGate } from "./quests-protected-gate";
 
 export const metadata: Metadata = {
   title: "Budget Trivia & Learning Quests | Budget Ndio Story",
@@ -30,10 +31,6 @@ export const metadata: Metadata = {
   },
 };
 
-export default function LearnQuestsLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return children;
+export default function LearnQuestsLayout({ children }: { children: React.ReactNode }) {
+  return <QuestsProtectedGate>{children}</QuestsProtectedGate>;
 }

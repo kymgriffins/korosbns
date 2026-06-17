@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { fetchGamificationMe, type GamificationState } from "@/lib/gamification";
-import { learnHubApi } from "@/lib/learn-hub";
+import { fetchCivicModulesWithRetry } from "@/lib/learn-data";
 import type { CivicModule } from "@/types/learn";
 import { useAuth } from "@/contexts/auth-context";
 
@@ -65,13 +65,12 @@ export function LearnProvider({ children }: { children: React.ReactNode }) {
     setModulesLoading(true);
     setModulesError(null);
     try {
-      const data = await learnHubApi.stages();
-      if (data?.results?.length) {
-        setCivicModules(data.results);
-      }
+      const results = await fetchCivicModulesWithRetry();
+      setCivicModules(results);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to load learning modules";
       setModulesError(message);
+      setCivicModules([]);
     } finally {
       setModulesLoading(false);
     }

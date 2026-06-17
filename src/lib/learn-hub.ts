@@ -103,7 +103,7 @@ export const learnHubApi = {
   stageLeaderboard: (slug: string) =>
     apiFetch<StageLeaderboardStats>(`/content/learn/stages/${slug}/leaderboard/`),
   profile: () =>
-    apiFetch<LearnProfileResponse>("/content/learn/profile/"),
+    apiFetch<LearnProfileResponse>("/content/learn/profile/", { auth: true }),
   markProgress: (body: {
     content_type: string;
     content_id: string;
@@ -111,6 +111,7 @@ export const learnHubApi = {
   }) =>
     apiFetch("/content/learn/progress/", {
       method: "POST",
+      auth: true,
       body: JSON.stringify(body),
     }),
   civicModules: () => learnHubApi.stages(),
@@ -124,12 +125,13 @@ export const learnHubApi = {
       detail: string;
       module_completed: boolean;
       certificate_id?: string | null;
-    }>(`/content/civic-chapters/${chapterId}/complete/`, { method: "POST" }),
+    }>(`/content/civic-chapters/${chapterId}/complete/`, { method: "POST", auth: true }),
   submitTriviaAttempt: (triviaId: string, answers: Record<string, number>) =>
     apiFetch<{ score: number; streak_count?: number; completed_at?: string }>(
       `/engagement/trivia/${triviaId}/attempt/`,
       {
         method: "POST",
+        auth: true,
         body: JSON.stringify({ answers, leaderboard_opt_in: false }),
       },
     ),
@@ -141,6 +143,7 @@ export const learnHubApi = {
   createForumThread: (body: { title: string; civic_module?: string; civic_chapter?: string }) =>
     apiFetch<ForumThread>("/engagement/forum-threads/", {
       method: "POST",
+      auth: true,
       body: JSON.stringify(body),
     }),
   getForumThread: (threadId: string) =>
@@ -148,6 +151,7 @@ export const learnHubApi = {
   createForumPost: (threadId: string, content: string) =>
     apiFetch<ForumPost>(`/engagement/forum-threads/${threadId}/posts/`, {
       method: "POST",
+      auth: true,
       body: JSON.stringify({ content }),
     }),
   // Dedicated author endpoints (no more client-side filtering)

@@ -6,7 +6,7 @@ import type { CertificateData } from "@/types/learn";
 export type { GamificationState, LeaderboardEntry, ChallengeData, CertificateData, ReferralData };
 
 export function fetchGamificationMe(): Promise<GamificationState | null> {
-  return apiFetch<GamificationState>("/gamification/me/").catch(() => null);
+  return apiFetch<GamificationState>("/gamification/me/", { auth: true }).catch(() => null);
 }
 
 export function postGamificationEvent(body: {
@@ -18,6 +18,7 @@ export function postGamificationEvent(body: {
 }): Promise<GamificationState | null> {
   return apiFetch<GamificationState>("/gamification/events/", {
     method: "POST",
+    auth: true,
     body: JSON.stringify(body),
   }).catch(() => null);
 }
@@ -37,11 +38,12 @@ export function fetchChallenges(): Promise<ChallengeData[]> {
 export function submitChallenge(challengeId: string): Promise<{ points_awarded: number } | null> {
   return apiFetch<{ points_awarded: number }>(`/gamification/challenges/${challengeId}/submit/`, {
     method: "POST",
+    auth: true,
   }).catch(() => null);
 }
 
 export function fetchCertificates(): Promise<CertificateData[]> {
-  return apiFetch<ApiListResponse<CertificateData>>("/gamification/certificates/")
+  return apiFetch<ApiListResponse<CertificateData>>("/gamification/certificates/", { auth: true })
     .then((res) => res.results ?? [])
     .catch(() => []);
 }
@@ -49,6 +51,7 @@ export function fetchCertificates(): Promise<CertificateData[]> {
 export function issueCertificate(civicModuleId: string): Promise<CertificateData | null> {
   return apiFetch<CertificateData>("/gamification/certificates/issue/", {
     method: "POST",
+    auth: true,
     body: JSON.stringify({ civic_module_id: civicModuleId }),
   }).catch(() => null);
 }

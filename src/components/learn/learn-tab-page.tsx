@@ -5,8 +5,8 @@ import { useSearchParams } from "next/navigation";
 import { LearnContentGrid } from "@/components/learn/learn-content-grid";
 import { LearnSidebar } from "@/components/learn/learn-sidebar";
 import type { LearnContentType } from "@/types/learn";
-import type { LearnHubItem, LearnHubSummary } from "@/lib/learn-hub";
-import { learnHubApi } from "@/lib/learn-hub";
+import { learnHubApi, type LearnHubItem, type LearnHubSummary } from "@/lib/learn-hub";
+import { fetchLearnSummaryWithRetry } from "@/lib/learn-data";
 import { trackAnalytics } from "@/lib/gamification";
 
 const LIST_FETCHERS = {
@@ -38,7 +38,7 @@ export function LearnTabPage({
   const load = useCallback(() => {
     setLoading(true);
     return LIST_FETCHERS[listKey]({ search: q || undefined })
-      .then((data) => setItems(data.results))
+      .then((data) => setItems(data.results ?? []))
       .catch((err) => {
         const msg =
           err instanceof Error ? err.message : "Could not load content.";
@@ -79,7 +79,9 @@ export function LearnTabPage({
 export function useLearnSummary() {
   const [summary, setSummary] = useState<LearnHubSummary | null>(null);
   useEffect(() => {
-    void learnHubApi.summary().then(setSummary).catch(() => setSummary(null));
+    void fetchLearnSummaryWithRetry()
+      .then(setSummary)
+      .catch(() => setSummary(null));
   }, []);
   return summary;
 }

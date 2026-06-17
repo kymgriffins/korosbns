@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ContentLayout } from "@/layouts/DashboardShell";
-import { Protected } from "@/components/citizen/protected";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
@@ -51,8 +50,7 @@ export default function PasswordChangePage() {
   };
 
   return (
-    <Protected>
-      <ContentLayout
+    <ContentLayout
         title="Change Password"
         description="Update your account password."
         breadcrumbs={[
@@ -136,6 +134,5 @@ export default function PasswordChangePage() {
           </form>
         </div>
       </ContentLayout>
-    </Protected>
   );
 }

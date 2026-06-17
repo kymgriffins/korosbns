@@ -7,7 +7,7 @@ import type { ApiListResponse } from "@/types/api";
 export function useGamificationMe() {
   return useQuery({
     queryKey: ["gamification", "me"],
-    queryFn: () => apiFetch<GamificationState>("/gamification/me/"),
+    queryFn: () => apiFetch<GamificationState>("/gamification/me/", { auth: true }),
     staleTime: 1000 * 30,
     retry: false,
   });
@@ -42,6 +42,7 @@ export function useRecordEvent() {
     }) =>
       apiFetch<GamificationState>("/gamification/events/", {
         method: "POST",
+        auth: true,
         body: JSON.stringify(body),
       }),
     onSuccess: () => {
@@ -64,6 +65,7 @@ export function useSubmitChallenge() {
     mutationFn: (challengeId: string) =>
       apiFetch<{ points_awarded: number }>(`/gamification/challenges/${challengeId}/submit/`, {
         method: "POST",
+        auth: true,
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["challenges"] });
@@ -75,7 +77,7 @@ export function useSubmitChallenge() {
 export function useCertificates() {
   return useQuery({
     queryKey: ["certificates"],
-    queryFn: () => apiFetch<ApiListResponse<CertificateData>>("/gamification/certificates/"),
+    queryFn: () => apiFetch<ApiListResponse<CertificateData>>("/gamification/certificates/", { auth: true }),
     staleTime: 1000 * 60 * 5,
   });
 }
@@ -86,6 +88,7 @@ export function useIssueCertificate() {
     mutationFn: (civicModuleId: string) =>
       apiFetch<CertificateData>("/gamification/certificates/issue/", {
         method: "POST",
+        auth: true,
         body: JSON.stringify({ civic_module_id: civicModuleId }),
       }),
     onSuccess: () => {
@@ -97,7 +100,7 @@ export function useIssueCertificate() {
 export function useReferralMe() {
   return useQuery({
     queryKey: ["referral", "me"],
-    queryFn: () => apiFetch<ReferralData>("/gamification/referrals/me/"),
+    queryFn: () => apiFetch<ReferralData>("/gamification/referrals/me/", { auth: true }),
     staleTime: 1000 * 60 * 5,
   });
 }
@@ -108,6 +111,7 @@ export function useClaimReferral() {
     mutationFn: (referralCode: string) =>
       apiFetch<{ referrer_points: number }>("/gamification/referrals/claim/", {
         method: "POST",
+        auth: true,
         body: JSON.stringify({ referral_code: referralCode }),
       }),
     onSuccess: () => {

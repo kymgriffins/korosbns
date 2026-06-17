@@ -4,14 +4,12 @@ import Link from "next/link";
 import { KeyRound, LogOut } from "lucide-react";
 import { ContentLayout } from "@/layouts/DashboardShell";
 import { AccountProfileForm } from "@/components/citizen/account-profile-form";
-import { Protected } from "@/components/citizen/protected";
 import { Button } from "@/ui/button";
 import { Routes } from "@/constants/routes";
 
 export default function AccountPage() {
   return (
-    <Protected>
-      <ContentLayout
+    <ContentLayout
         title="My Profile"
         description="Manage your public profile, bio, avatar, and social links."
         breadcrumbs={[
@@ -38,6 +36,5 @@ export default function AccountPage() {
       >
         <AccountProfileForm />
       </ContentLayout>
-    </Protected>
   );
 }

@@ -11,13 +11,14 @@ import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
 import { Routes } from "@/constants/routes";
+import { sanitizeRedirectPath } from "@/lib/auth-policy";
 import { useAuth } from "@/contexts/auth-context";
 import { useResendVerification } from "@/hooks/use-auth-actions";
 
 function LoginForm() {
   const { login } = useAuth();
   const searchParams = useSearchParams();
-  const next = searchParams.get("next") || Routes.Learn;
+  const next = sanitizeRedirectPath(searchParams.get("next"), Routes.Learn);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);

@@ -4,7 +4,6 @@
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import { ContentLayout } from "@/layouts/DashboardShell";
-import { Protected } from "@/components/citizen/protected";
 import { Skeleton } from "@/ui/skeleton";
 import { Routes } from "@/constants/routes";
 import { useNotifications } from "@/hooks/use-profile";
@@ -54,9 +53,5 @@ function NotificationsList() {
 }
 
 export default function NotificationsPage() {
-  return (
-    <Protected>
-      <NotificationsList />
-    </Protected>
-  );
+  return <NotificationsList />;
 }
