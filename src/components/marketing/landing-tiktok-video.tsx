@@ -16,9 +16,11 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
-import { CLOUDINARY_COUNTY_BUDGET_SOCIAL_VIDEO } from "@/constants/cloudinary";
 import { SectionHeader, SectionShell } from "@/layouts/section-shell";
 import { cn } from "@/utils";
+import { Marquee } from "@/ui/marquee";
+import { getFeaturedTikTokVideos, likeTikTokVideo } from "@/lib/tiktok-service";
+import type { TikTokVideoApi } from "@/lib/api-client";
 
 const TIKTOK_PROFILE = "https://www.tiktok.com/@budget.ndio.story";
 
@@ -29,7 +31,26 @@ export default function LandingTikTokVideo() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isInView, setIsInView] = useState(false);
   const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(142);
+  const [likeCount, setLikeCount] = useState(0);
+  const [video, setVideo] = useState<TikTokVideoApi | null>(null);
+  const [videos, setVideos] = useState<TikTokVideoApi[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    getFeaturedTikTokVideos()
+      .then((data) => {
+        if (cancelled) return;
+        setVideos(data);
+        if (data.length > 0) {
+          setVideo(data[0]);
+          setLikeCount(data[0].like_count);
+        }
+      })
+      .catch(() => toast.error("Could not load TikTok videos"))
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, []);
 
   useEffect(() => {
     const node = phoneRef.current;
@@ -44,45 +65,59 @@ export default function LandingTikTokVideo() {
   }, []);
 
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+    const node = videoRef.current;
+    if (!node) return;
 
     if (isInView) {
-      void video.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+      void node.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
     } else {
-      video.pause();
+      node.pause();
       setIsPlaying(false);
     }
   }, [isInView]);
 
   const toggleMute = useCallback(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.muted = !video.muted;
-    setIsMuted(video.muted);
+    const node = videoRef.current;
+    if (!node) return;
+    node.muted = !node.muted;
+    setIsMuted(node.muted);
   }, []);
 
   const togglePlay = useCallback(() => {
-    const video = videoRef.current;
-    if (!video) return;
+    const node = videoRef.current;
+    if (!node) return;
 
-    if (video.paused) {
-      void video.play().then(() => setIsPlaying(true));
+    if (node.paused) {
+      void node.play().then(() => setIsPlaying(true));
     } else {
-      video.pause();
+      node.pause();
       setIsPlaying(false);
     }
   }, []);
 
-  const handleLike = useCallback((e: React.MouseEvent) => {
+  const handleLike = useCallback(async (e: React.MouseEvent) => {
     e.stopPropagation();
-    setLiked((prev) => !prev);
-    setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
-  }, [liked]);
+    if (!video) return;
+
+    const newLiked = !liked;
+    const newCount = newLiked ? likeCount + 1 : Math.max(0, likeCount - 1);
+    setLiked(newLiked);
+    setLikeCount(newCount);
+
+    try {
+      const result = await likeTikTokVideo(video.id, newLiked ? "like" : "unlike");
+      setLikeCount(result.like_count);
+    } catch {
+      setLiked(!newLiked);
+      setLikeCount(likeCount);
+      toast.error("Could not update like");
+    }
+  }, [video, liked, likeCount]);
 
   const handleShare = useCallback(async (e: React.MouseEvent) => {
     e.stopPropagation();
-    const url = typeof window !== "undefined" ? window.location.href : "";
+    if (!video) return;
+    const url = `${window.location.origin}/tiktok/${video.id}`;
     if (navigator.share) {
       try {
         await navigator.share({ title: "Budget Ndio Story", url });
@@ -96,9 +131,17 @@ export default function LandingTikTokVideo() {
         toast.error("Could not copy link");
       }
     }
+  }, [video]);
+
+  const switchVideo = useCallback((v: TikTokVideoApi) => {
+    setVideo(v);
+    setLikeCount(v.like_count);
+    setLiked(false);
   }, []);
 
   const formatCount = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)}K` : String(n));
+
+  if (loading) return null;
 
   return (
     <SectionShell className="border-y border-border/40 bg-background">
@@ -150,126 +193,202 @@ export default function LandingTikTokVideo() {
             className="relative w-[min(100%,300px)] sm:w-[340px] lg:w-[min(100%,380px)] xl:w-[420px]"
           >
             <div className="relative aspect-[9/16] overflow-hidden rounded-[2rem] border-[3px] border-foreground/10 bg-black shadow-2xl shadow-black/30 ring-1 ring-white/10">
-              <video
-                ref={videoRef}
-                src={CLOUDINARY_COUNTY_BUDGET_SOCIAL_VIDEO}
-                className="absolute inset-0 h-full w-full object-cover"
-                loop
-                muted
-                playsInline
-                preload="metadata"
-                onClick={togglePlay}
-                onPlay={() => setIsPlaying(true)}
-                onPause={() => setIsPlaying(false)}
-                aria-label="County budget social video"
-              />
+              {video ? (
+                <>
+                  <video
+                    ref={videoRef}
+                    key={video.id}
+                    src={video.video_url}
+                    className="absolute inset-0 h-full w-full object-cover"
+                    loop
+                    muted
+                    playsInline
+                    preload="metadata"
+                    onClick={togglePlay}
+                    onPlay={() => setIsPlaying(true)}
+                    onPause={() => setIsPlaying(false)}
+                    aria-label="County budget social video"
+                  />
 
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/20" />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/20" />
 
-              {!isPlaying && (
-                <button
-                  type="button"
-                  onClick={togglePlay}
-                  className="absolute inset-0 z-10 flex items-center justify-center"
-                  aria-label="Play video"
-                >
-                  <span className="flex size-16 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
-                    <Play className="size-8 fill-white text-white" />
-                  </span>
-                </button>
-              )}
+                  {!isPlaying && (
+                    <button
+                      type="button"
+                      onClick={togglePlay}
+                      className="absolute inset-0 z-10 flex items-center justify-center"
+                      aria-label="Play video"
+                    >
+                      <span className="flex size-16 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
+                        <Play className="size-8 fill-white text-white" />
+                      </span>
+                    </button>
+                  )}
 
-              <div className="absolute right-3 bottom-24 z-20 flex flex-col items-center gap-5">
-                <button
-                  type="button"
-                  aria-label="Like"
-                  className="pointer-events-auto flex flex-col items-center gap-1 text-white/90 transition-transform hover:scale-105"
-                  onClick={handleLike}
-                >
-                  <span className="flex size-10 items-center justify-center rounded-full bg-black/25 backdrop-blur-sm">
-                    <Heart
-                      className={cn("size-5 transition-colors", liked && "fill-red-500 text-red-500")}
-                      strokeWidth={1.75}
-                    />
-                  </span>
-                  <span className="text-[10px] font-medium">{formatCount(likeCount)}</span>
-                </button>
-                <a
-                  href={TIKTOK_PROFILE}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="pointer-events-auto flex flex-col items-center gap-1 text-white/90 transition-transform hover:scale-105 no-underline"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <span className="flex size-10 items-center justify-center rounded-full bg-black/25 backdrop-blur-sm">
-                    <MessageCircle className="size-5" strokeWidth={1.75} />
-                  </span>
-                  <span className="text-[10px] font-medium">Comment</span>
-                </a>
-                <button
-                  type="button"
-                  aria-label="Share"
-                  className="pointer-events-auto flex flex-col items-center gap-1 text-white/90 transition-transform hover:scale-105"
-                  onClick={handleShare}
-                >
-                  <span className="flex size-10 items-center justify-center rounded-full bg-black/25 backdrop-blur-sm">
-                    <Share2 className="size-5" strokeWidth={1.75} />
-                  </span>
-                  <span className="text-[10px] font-medium">Share</span>
-                </button>
-                <div className="size-10 overflow-hidden rounded-full border-2 border-white bg-background">
-                  <Image src="/logo.svg" alt="BNS" width={36} height={36} className="size-full object-contain p-1" />
+                  <div className="absolute right-3 bottom-24 z-20 flex flex-col items-center gap-5">
+                    <button
+                      type="button"
+                      aria-label="Like"
+                      className="pointer-events-auto flex flex-col items-center gap-1 text-white/90 transition-transform hover:scale-105"
+                      onClick={handleLike}
+                    >
+                      <span className="flex size-10 items-center justify-center rounded-full bg-black/25 backdrop-blur-sm">
+                        <Heart
+                          className={cn("size-5 transition-colors", liked && "fill-red-500 text-red-500")}
+                          strokeWidth={1.75}
+                        />
+                      </span>
+                      <span className="text-[10px] font-medium">{formatCount(likeCount)}</span>
+                    </button>
+                    <a
+                      href={TIKTOK_PROFILE}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="pointer-events-auto flex flex-col items-center gap-1 text-white/90 transition-transform hover:scale-105 no-underline"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <span className="flex size-10 items-center justify-center rounded-full bg-black/25 backdrop-blur-sm">
+                        <MessageCircle className="size-5" strokeWidth={1.75} />
+                      </span>
+                      <span className="text-[10px] font-medium">Comment</span>
+                    </a>
+                    <button
+                      type="button"
+                      aria-label="Share"
+                      className="pointer-events-auto flex flex-col items-center gap-1 text-white/90 transition-transform hover:scale-105"
+                      onClick={handleShare}
+                    >
+                      <span className="flex size-10 items-center justify-center rounded-full bg-black/25 backdrop-blur-sm">
+                        <Share2 className="size-5" strokeWidth={1.75} />
+                      </span>
+                      <span className="text-[10px] font-medium">Share</span>
+                    </button>
+                    <div className="size-10 overflow-hidden rounded-full border-2 border-white bg-background">
+                      <Image src="/logo.svg" alt="BNS" width={36} height={36} className="size-full object-contain p-1" />
+                    </div>
+                  </div>
+
+                  <div className="absolute right-14 bottom-4 left-4 z-20 space-y-2 text-white">
+                    <p className="text-sm font-bold">@budget.ndio.story</p>
+                    <p className="text-xs leading-relaxed text-white/90">
+                      {video.caption}
+                    </p>
+                    <p className="flex items-center gap-1.5 text-xs text-white/70">
+                      <Music2 className="size-3.5 shrink-0" />
+                      <span className="truncate">Original audio · Budget Ndio Story</span>
+                    </p>
+                  </div>
+
+                  <div className="absolute top-3 right-3 z-20 flex gap-2">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleMute();
+                      }}
+                      className="pointer-events-auto flex size-9 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-colors hover:bg-black/60"
+                      aria-label={isMuted ? "Unmute video" : "Mute video"}
+                    >
+                      {isMuted ? (
+                        <VolumeX className="size-4" />
+                      ) : (
+                        <Volume2 className="size-4" />
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        togglePlay();
+                      }}
+                      className="pointer-events-auto flex size-9 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-colors hover:bg-black/60"
+                      aria-label={isPlaying ? "Pause video" : "Play video"}
+                    >
+                      {isPlaying ? (
+                        <Pause className="size-4" />
+                      ) : (
+                        <Play className="size-4 fill-white" />
+                      )}
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div className="flex h-full items-center justify-center text-white/60 text-sm">
+                  No videos available
                 </div>
-              </div>
-
-              <div className="absolute right-14 bottom-4 left-4 z-20 space-y-2 text-white">
-                <p className="text-sm font-bold">@budget.ndio.story</p>
-                <p className="text-xs leading-relaxed text-white/90">
-                  County budgets explained in under a minute — follow the money where
-                  you live.
-                </p>
-                <p className="flex items-center gap-1.5 text-xs text-white/70">
-                  <Music2 className="size-3.5 shrink-0" />
-                  <span className="truncate">Original audio · Budget Ndio Story</span>
-                </p>
-              </div>
-
-              <div className="absolute top-3 right-3 z-20 flex gap-2">
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleMute();
-                  }}
-                  className="pointer-events-auto flex size-9 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-colors hover:bg-black/60"
-                  aria-label={isMuted ? "Unmute video" : "Mute video"}
-                >
-                  {isMuted ? (
-                    <VolumeX className="size-4" />
-                  ) : (
-                    <Volume2 className="size-4" />
-                  )}
-                </button>
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    togglePlay();
-                  }}
-                  className="pointer-events-auto flex size-9 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-colors hover:bg-black/60"
-                  aria-label={isPlaying ? "Pause video" : "Play video"}
-                >
-                  {isPlaying ? (
-                    <Pause className="size-4" />
-                  ) : (
-                    <Play className="size-4 fill-white" />
-                  )}
-                </button>
-              </div>
+              )}
             </div>
+
+            {videos.length > 1 && (
+              <div className="mt-4 flex justify-center gap-2">
+                {videos.map((v) => (
+                  <button
+                    key={v.id}
+                    type="button"
+                    onClick={() => switchVideo(v)}
+                    className={cn(
+                      "size-2 rounded-full transition-all",
+                      video?.id === v.id
+                        ? "w-6 bg-primary"
+                        : "bg-foreground/20 hover:bg-foreground/40"
+                    )}
+                    aria-label={`Switch to ${v.caption}`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </motion.div>
       </motion.div>
+
+      {videos.length > 1 && (
+        <TikTokMarquee videos={videos} formatCount={formatCount} />
+      )}
     </SectionShell>
+  );
+}
+
+function TikTokMarquee({
+  videos,
+  formatCount,
+}: {
+  videos: TikTokVideoApi[];
+  formatCount: (n: number) => string;
+}) {
+  return (
+    <div className="mt-14 overflow-hidden">
+      <p className="mb-5 text-center text-xs font-semibold uppercase tracking-widest text-foreground/40">
+        As seen on TikTok
+      </p>
+      <Marquee pauseOnHover repeat={Math.max(2, Math.ceil(8 / videos.length))}>
+        {videos.map((v) => (
+          <a
+            key={v.id}
+            href={`/tiktok/${v.id}`}
+            className="group relative aspect-[9/16] w-[140px] shrink-0 overflow-hidden rounded-xl border border-border/40 bg-black sm:w-[160px]"
+          >
+            {v.cover_image_url ? (
+              <Image
+                src={v.cover_image_url}
+                alt={v.caption}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                sizes="160px"
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center text-white/40 text-xs p-2 text-center">
+                {v.caption}
+              </div>
+            )}
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-2 pt-8">
+              <div className="flex items-center gap-1.5 text-white/90">
+                <Heart className="size-3" strokeWidth={2} />
+                <span className="text-[10px] font-medium">{formatCount(v.like_count)}</span>
+              </div>
+            </div>
+          </a>
+        ))}
+      </Marquee>
+    </div>
   );
 }

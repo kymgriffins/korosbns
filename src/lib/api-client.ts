@@ -75,6 +75,23 @@ export type TriviaLeaderboardRow = {
   completed_at?: string;
 };
 
+export type TikTokVideoApi = {
+  id: string;
+  video_url: string;
+  cover_image_url: string;
+  embed_html: string;
+  caption: string;
+  like_count: number;
+  tiktok_like_count: number;
+  tiktok_comment_count: number;
+  tiktok_share_count: number;
+  tiktok_play_count: number;
+};
+
+export type TikTokVideoDetailApi = TikTokVideoApi & {
+  tiktok_url: string;
+};
+
 export type OrgConfigApi = {
   tagline?: string;
   mission?: string;
@@ -593,6 +610,18 @@ export const citizenApi = {
     apiFetch<ApiListResponse<Record<string, unknown>>>("/engagement/notifications/", {
       auth: true,
       params: status ? { status } : undefined,
+    }),
+
+  getTikTokFeatured: () =>
+    apiFetch<TikTokVideoApi[]>("/content/tiktok/featured/"),
+
+  getTikTokVideo: (id: string) =>
+    apiFetch<TikTokVideoDetailApi>(`/content/tiktok/${id}/`),
+
+  likeTikTokVideo: (id: string, action: "like" | "unlike") =>
+    apiFetch<{ like_count: number }>(`/content/tiktok/${id}/like/`, {
+      method: "POST",
+      body: JSON.stringify({ action }),
     }),
 
   recordShare: (body: {
