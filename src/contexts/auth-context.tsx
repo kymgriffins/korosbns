@@ -74,19 +74,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [isError, hasToken, error]);
 
-  // Sync auth state across tabs when localStorage changes
+  // Sync auth state across tabs and same-tab custom events
   useEffect(() => {
-    const handleStorage = (e: StorageEvent) => {
-      if (e.key === "access_token" || e.key === "refresh_token" || e.key === "bns_token_storage_mode") {
-        const stillHasToken = Boolean(getAccessToken());
-        setHasToken(stillHasToken);
-        if (!stillHasToken) {
-          queryClient.clear();
-        }
+    const checkToken = () => {
+      const stillHasToken = Boolean(getAccessToken());
+      setHasToken(stillHasToken);
+      if (!stillHasToken) {
+        queryClient.clear();
       }
     };
+
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === "access_token" || e.key === "refresh_token" || e.key === "bns_token_storage_mode") {
+        checkToken();
+      }
+    };
+
     window.addEventListener("storage", handleStorage);
-    return () => window.removeEventListener("storage", handleStorage);
+    window.addEventListener("bns-auth-changed", checkToken);
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+      window.removeEventListener("bns-auth-changed", checkToken);
+    };
   }, [queryClient]);
 
   const refreshUser = useCallback(async () => {

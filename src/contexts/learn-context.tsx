@@ -34,6 +34,7 @@ interface LearnContextType {
   totalStages: number;
   modulesLoading: boolean;
   modulesError: string | null;
+  modulesCached: boolean;
   refreshModules: () => Promise<void>;
 }
 
@@ -50,23 +51,31 @@ export function LearnProvider({ children }: { children: React.ReactNode }) {
   const [modulesError, setModulesError] = useState<string | null>(null);
 
   const totalStages = civicModules.length;
+  const [modulesCached, setModulesCached] = useState(false);
+  const [gamificationCached, setGamificationCached] = useState(false);
 
-  const refreshGamification = useCallback(async () => {
+  const refreshGamification = useCallback(async (force = false) => {
     if (!isLoggedIn) return;
+    if (!force && gamificationCached) return;
     try {
       const state = await fetchGamificationMe();
-      if (state) setGamification(state);
+      if (state) {
+        setGamification(state);
+        setGamificationCached(true);
+      }
     } catch {
       // gamification fetch failed silently
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, gamificationCached]);
 
-  const fetchCivicModules = useCallback(async () => {
+  const fetchCivicModules = useCallback(async (force = false) => {
+    if (!force && modulesCached) return;
     setModulesLoading(true);
     setModulesError(null);
     try {
       const results = await fetchCivicModulesWithRetry();
       setCivicModules(results);
+      setModulesCached(true);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to load learning modules";
       setModulesError(message);
@@ -74,10 +83,11 @@ export function LearnProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setModulesLoading(false);
     }
-  }, []);
+  }, [modulesCached]);
 
   const refreshModules = useCallback(async () => {
-    await fetchCivicModules();
+    setModulesCached(false);
+    await fetchCivicModules(true);
   }, [fetchCivicModules]);
 
   const updateCurrentStep = useCallback((step: number) => {
@@ -89,11 +99,12 @@ export function LearnProvider({ children }: { children: React.ReactNode }) {
       void refreshGamification();
     } else {
       setGamification(null);
+      setGamificationCached(false);
     }
   }, [isLoggedIn, refreshGamification]);
 
   useEffect(() => {
-    void fetchCivicModules();
+    void fetchCivicModules(true);
   }, [isLoggedIn, fetchCivicModules]);
 
   return (
@@ -113,6 +124,7 @@ export function LearnProvider({ children }: { children: React.ReactNode }) {
         totalStages,
         modulesLoading,
         modulesError,
+        modulesCached,
         refreshModules,
       }}
     >

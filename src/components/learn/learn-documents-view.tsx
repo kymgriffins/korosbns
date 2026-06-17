@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Search, Folder, FileText, Database, ArrowLeft, Download, ExternalLink, Loader2,
   Filter, X, Calendar, Building2, LayoutGrid, List, ChevronLeft, ChevronRight,
-  BarChart3, BookOpen
+  RefreshCw, BarChart3, BookOpen
 } from "lucide-react";
 import { cn } from "@/utils";
 import { BitmojiAvatar } from "./bitmoji-avatar";
@@ -82,7 +83,9 @@ function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }
 }
 
 export function LearnDocumentsView({ profile }: { profile: any }) {
+  const queryClient = useQueryClient();
   const { data, isLoading, isError } = useLearnDocuments();
+  const [refreshing, setRefreshing] = useState(false);
   const documents = data?.documents ?? [];
   const loading = isLoading;
   const error = data?.error ?? (isError ? "The document repository is temporarily unavailable. Please try again later." : null);
@@ -305,6 +308,14 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
             </div>
           )}
           <div className="flex items-center gap-2 ml-1 md:ml-3 md:pl-3 md:border-l border-border/50">
+            <button
+              onClick={async () => { setRefreshing(true); try { await queryClient.invalidateQueries({ queryKey: ["learn-documents"] }); } finally { setRefreshing(false); } }}
+              disabled={refreshing}
+              className="p-1.5 hover:bg-muted/50 rounded-lg transition-colors text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+              title="Refresh documents"
+            >
+              <RefreshCw className={`size-4 ${refreshing ? "animate-spin" : ""}`} />
+            </button>
             {profile?.avatar_url ? (
               <img src={profile.avatar_url} alt="" className="size-7 rounded-full object-cover ring-1 ring-border/40" />
             ) : (

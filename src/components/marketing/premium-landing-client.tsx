@@ -12,6 +12,14 @@ const CloudinaryGallery = dynamic(
   }
 );
 
+const LandingTikTokVideo = dynamic(
+  () => import("@/components/marketing/landing-tiktok-video"),
+  {
+    ssr: false,
+    loading: () => <div className="h-[640px] w-full bg-muted animate-pulse" />,
+  }
+);
+
 const LandingYoutube = dynamic(
   () => import("@/components/marketing/landing-youtube"),
   {
@@ -78,6 +86,7 @@ export default function PremiumLandingClient() {
     <>
       <LandingHero />
       <CloudinaryGallery />
+      <LandingTikTokVideo />
       <LandingYoutube />
       <PartnersMarquee />
       <LandingTeam />

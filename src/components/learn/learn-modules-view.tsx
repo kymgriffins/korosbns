@@ -4,7 +4,7 @@ import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { Search, BookOpen, ExternalLink } from "lucide-react";
+import { RefreshCw, Search, BookOpen, ExternalLink } from "lucide-react";
 import { Button } from "@/ui/button";
 import { BitmojiAvatar } from "./bitmoji-avatar";
 import { Routes } from "@/constants/routes";
@@ -18,11 +18,13 @@ interface LearnModulesViewProps {
   stages: CivicModule[];
   currentStage: CivicModule;
   onSelectStage: (stage: CivicModule) => void;
+  onRefresh?: () => Promise<void>;
 }
 
-export function LearnModulesView({ profile, stages, currentStage, onSelectStage }: LearnModulesViewProps) {
+export function LearnModulesView({ profile, stages, currentStage, onSelectStage, onRefresh }: LearnModulesViewProps) {
   const [activeTab, setActiveTab] = useState<"all" | "in-progress" | "completed">("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
 
   const moduleProgress = useMemo(() => {
     return stages.map((stage) => {
@@ -78,6 +80,16 @@ export function LearnModulesView({ profile, stages, currentStage, onSelectStage 
               className="pl-8 pr-3 py-1.5 bg-muted/40 border-0 rounded-lg text-xs w-36 focus:outline-none focus:ring-2 focus:ring-ring/30 transition-all"
             />
           </div>
+          {onRefresh && (
+            <button
+              onClick={async () => { setRefreshing(true); try { await onRefresh(); } finally { setRefreshing(false); } }}
+              disabled={refreshing}
+              className="p-1.5 hover:bg-muted/50 rounded-lg transition-colors text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+              title="Refresh modules"
+            >
+              <RefreshCw className={`size-4 ${refreshing ? "animate-spin" : ""}`} />
+            </button>
+          )}
           {profile?.avatar_url ? (
             <img src={profile.avatar_url} alt="" className="size-7 rounded-full object-cover shrink-0 ring-1 ring-border/40" />
           ) : (

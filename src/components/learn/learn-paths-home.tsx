@@ -470,6 +470,7 @@ export function LearnPathsHome() {
                   stages={stages}
                   currentStage={currentStage}
                   onSelectStage={handleSelectStage}
+                  onRefresh={refreshModules}
                 />
               </motion.div>
             )}

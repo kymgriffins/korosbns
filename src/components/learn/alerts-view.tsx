@@ -1,6 +1,8 @@
 "use client";
 
-import { Bell, Loader2, CheckCircle2, FileText, MessageSquare } from "lucide-react";
+import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Bell, Loader2, CheckCircle2, FileText, MessageSquare, RefreshCw } from "lucide-react";
 import { useGamificationMe } from "@/hooks/use-gamification";
 import { safeArray, safeLen, safeMap } from "@/lib/safe-data";
 
@@ -18,13 +20,25 @@ function progressIcon(contentType: string) {
 }
 
 export function AlertsView({ profile }: AlertsViewProps) {
+  const queryClient = useQueryClient();
   const { data: gamification, isLoading: gamificationLoading } = useGamificationMe();
+  const [refreshing, setRefreshing] = useState(false);
 
   return (
     <div className="space-y-4 md:space-y-6 max-w-3xl mx-auto">
-      <div className="space-y-1">
-        <h2 className="text-xl font-black uppercase tracking-tight">Participation Alerts</h2>
-        <p className="text-xs text-muted-foreground">Hyper-local alerts matching your county and tracked documents.</p>
+      <div className="flex items-start justify-between gap-3">
+        <div className="space-y-1">
+          <h2 className="text-xl font-black uppercase tracking-tight">Participation Alerts</h2>
+          <p className="text-xs text-muted-foreground">Hyper-local alerts matching your county and tracked documents.</p>
+        </div>
+        <button
+          onClick={async () => { setRefreshing(true); try { await queryClient.invalidateQueries({ queryKey: ["gamification", "me"] }); } finally { setRefreshing(false); } }}
+          disabled={refreshing}
+          className="p-1.5 hover:bg-muted/50 rounded-lg transition-colors text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring shrink-0 mt-1"
+          title="Refresh activity"
+        >
+          <RefreshCw className={`size-4 ${refreshing ? "animate-spin" : ""}`} />
+        </button>
       </div>
 
       {gamification && !gamificationLoading && (

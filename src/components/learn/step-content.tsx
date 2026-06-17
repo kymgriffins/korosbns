@@ -48,7 +48,7 @@ function VideoDots({ count, active }: { count: number; active: number }) {
   if (count <= 1) return null;
   return (
     <div className="flex items-center justify-center gap-1.5 py-2">
-      {Array.from({ length }, (_, i) => (
+      {Array.from({ length: count }, (_, i) => (
         <span
           key={i}
           className={`block rounded-full transition-all duration-200 ${

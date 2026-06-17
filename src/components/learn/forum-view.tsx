@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Loader2, MessageSquarePlus, MessagesSquare, Search } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Loader2, MessageSquarePlus, MessagesSquare, RefreshCw, Search } from "lucide-react";
 import { Input } from "@/ui/input";
 import { useForumThreads } from "@/hooks/use-forum";
 import { ForumThreadCard } from "@/components/forum/forum-thread-card";
@@ -13,9 +14,11 @@ import { Routes } from "@/constants/routes";
 
 export function ForumView() {
   const { isLoggedIn } = useAuth();
+  const queryClient = useQueryClient();
   const { data, isLoading, isError, error } = useForumThreads({});
   const [search, setSearch] = useState("");
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   const threads = data?.results ?? [];
 
@@ -50,17 +53,27 @@ export function ForumView() {
             Civic learning discussions — ask questions, share insights, learn together.
           </p>
         </div>
-        {isLoggedIn ? (
-          <CreateThreadDialog />
-        ) : (
-          <Link
-            href={Routes.Login}
-            className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-xl bg-primary px-4 text-xs font-bold text-primary-foreground transition-colors hover:bg-primary/90"
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            onClick={async () => { setRefreshing(true); try { await queryClient.invalidateQueries({ queryKey: ["forum", "threads"] }); } finally { setRefreshing(false); } }}
+            disabled={refreshing}
+            className="p-2 hover:bg-muted/50 rounded-xl transition-colors text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+            title="Refresh threads"
           >
-            <MessageSquarePlus className="size-4" />
-            Sign in to post
-          </Link>
-        )}
+            <RefreshCw className={`size-4 ${refreshing ? "animate-spin" : ""}`} />
+          </button>
+          {isLoggedIn ? (
+            <CreateThreadDialog />
+          ) : (
+            <Link
+              href={Routes.Login}
+              className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-xl bg-primary px-4 text-xs font-bold text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              <MessageSquarePlus className="size-4" />
+              Sign in to post
+            </Link>
+          )}
+        </div>
       </div>
 
       <div className="relative mb-4">
