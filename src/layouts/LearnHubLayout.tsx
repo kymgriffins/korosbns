@@ -152,7 +152,7 @@ function LearnSidebar() {
                                 >
                                   <Link
                                     href={`${Routes.Learn}?tab=modules`}
-                                    onClick={() => handleModuleClick(m.slug)}
+                                    onClick={() => { if (isMobile) setOpenMobile(false); }}
                                     className="flex items-center gap-2"
                                   >
                                     <span className="text-sm leading-none">{m.badge}</span>
