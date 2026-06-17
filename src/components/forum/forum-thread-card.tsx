@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { MessageSquare } from "lucide-react";
 import { cn } from "@/utils";
 import type { ForumThread } from "@/types/learn";
@@ -37,15 +38,24 @@ export function ForumThreadCard({
           : "border-border/70 bg-card hover:border-primary/20 hover:bg-muted/30",
       )}
     >
-      <div
-        className={cn(
-          "flex size-11 shrink-0 items-center justify-center rounded-full text-xs font-black",
-          selected ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary",
-        )}
-        aria-hidden
-      >
-        {thread.author_initials || (thread.author_name?.slice(0, 2).toUpperCase() ?? "?")}
-      </div>
+      {thread.author_avatar ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={thread.author_avatar}
+          alt=""
+          className="size-11 shrink-0 rounded-full object-cover ring-2 ring-border"
+        />
+      ) : (
+        <div
+          className={cn(
+            "flex size-11 shrink-0 items-center justify-center rounded-full text-xs font-black",
+            selected ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary",
+          )}
+          aria-hidden
+        >
+          {thread.author_initials || (thread.author_name?.slice(0, 2).toUpperCase() ?? "?")}
+        </div>
+      )}
       <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-2">
           <h3 className="truncate text-sm font-bold leading-snug text-foreground">{thread.title}</h3>
@@ -54,7 +64,17 @@ export function ForumThreadCard({
           </span>
         </div>
         <div className="mt-1 flex items-center gap-2 text-[10px] font-semibold text-muted-foreground">
-          <span className="truncate">{thread.author_name}</span>
+          {thread.author_id ? (
+            <Link
+              href={`/learn/users/${thread.author_id}`}
+              onClick={(e) => e.stopPropagation()}
+              className="truncate text-primary hover:underline"
+            >
+              {thread.author_name}
+            </Link>
+          ) : (
+            <span className="truncate">{thread.author_name}</span>
+          )}
           <span className="size-0.5 rounded-full bg-muted-foreground/40" />
           <span className="inline-flex items-center gap-1">
             <MessageSquare className="size-3" />

@@ -172,6 +172,8 @@ export type ForumPost = {
   upvotes: number;
   author_name: string;
   author_initials: string;
+  author_id: string | null;
+  author_avatar: string | null;
   created_at: string;
 };
 
@@ -183,6 +185,8 @@ export type ForumThread = {
   posts_count: number;
   author_name: string;
   author_initials: string;
+  author_id: string | null;
+  author_avatar: string | null;
   created_at: string;
 };
 

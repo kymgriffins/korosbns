@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { cn } from "@/utils";
 import type { ForumPost } from "@/types/learn";
 
@@ -25,18 +26,33 @@ export function ForumPostItem({
 }) {
   return (
     <div className={cn("flex gap-2", isOwn ? "flex-row-reverse" : "flex-row")}>
-      <div
-        className={cn(
-          "flex size-8 shrink-0 items-center justify-center rounded-full text-[10px] font-black",
-          isOwn ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground",
-        )}
-        aria-hidden
-      >
-        {post.author_initials ?? "?"}
-      </div>
+      {post.author_avatar ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={post.author_avatar}
+          alt=""
+          className="size-8 shrink-0 rounded-full object-cover ring-1 ring-border"
+        />
+      ) : (
+        <div
+          className={cn(
+            "flex size-8 shrink-0 items-center justify-center rounded-full text-[10px] font-black",
+            isOwn ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground",
+          )}
+          aria-hidden
+        >
+          {post.author_initials ?? "?"}
+        </div>
+      )}
       <div className={cn("flex max-w-[85%] flex-col gap-1", isOwn ? "items-end" : "items-start")}>
         <div className={cn("flex items-center gap-2 text-[10px] font-semibold text-muted-foreground", isOwn && "flex-row-reverse")}>
-          <span>{post.author_name ?? "Anonymous"}</span>
+          {post.author_id ? (
+            <Link href={`/learn/users/${post.author_id}`} className="text-primary hover:underline">
+              {post.author_name ?? "Anonymous"}
+            </Link>
+          ) : (
+            <span>{post.author_name ?? "Anonymous"}</span>
+          )}
           <span className="size-0.5 rounded-full bg-muted-foreground/40" />
           <time dateTime={post.created_at}>{formatMessageTime(post.created_at)}</time>
         </div>
