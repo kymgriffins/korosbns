@@ -106,7 +106,7 @@ function LearnSidebar() {
       <SidebarHeader>
         <div className="flex items-center justify-between p-2">
           <Link href={"/"} className="flex items-center gap-2 hover:opacity-80 transition-opacity overflow-hidden group">
-            <img src="/logo.svg" alt="BNS" className="h-7 w-auto shrink-0" />
+            <img src="/logo.svg" alt="BNS" className="h-7 w-auto shrink-0" width={108} height={28} />
           </Link>
           {!isCollapsed && <SidebarTrigger className="-mr-1" />}
         </div>

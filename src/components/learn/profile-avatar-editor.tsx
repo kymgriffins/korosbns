@@ -63,6 +63,7 @@ export function ProfileAvatarEditor({
       setOpen(false);
     } catch (err) {
       setPreviewUrl(null);
+      URL.revokeObjectURL(objectUrl);
       toast.error(err instanceof Error ? err.message : "Could not upload photo");
     } finally {
       setUploading(false);

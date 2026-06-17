@@ -1,18 +1,18 @@
 "use client";
 
 import { BookOpen, Trophy, Zap, Flame } from "lucide-react";
-import { useEffect, useState } from "react";
-import { getAccessToken } from "@/lib/api-client";
-import { fetchGamificationMe, type GamificationState } from "@/lib/gamification";
+import { useQuery } from "@tanstack/react-query";
+import { fetchGamificationMe } from "@/lib/gamification";
+import { isAuthenticated } from "@/lib/api-client";
 
 export function LearnStatsHeader({ tagline }: { tagline?: string | null }) {
-  const [authenticated, setAuthenticated] = useState(false);
-  const [gamification, setGamification] = useState<GamificationState | null>(null);
-
-  useEffect(() => {
-    setAuthenticated(Boolean(getAccessToken()));
-    void fetchGamificationMe().then(setGamification);
-  }, []);
+  const authenticated = isAuthenticated();
+  const { data: gamification } = useQuery({
+    queryKey: ["gamification", "me"],
+    queryFn: fetchGamificationMe,
+    enabled: authenticated,
+    staleTime: 1000 * 60 * 5,
+  });
 
   return (
     <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-primary/5 via-primary/3 to-transparent p-4 md:p-5 shadow-xs">

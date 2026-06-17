@@ -76,8 +76,8 @@ function LearnContentCard({ item }: { item: LearnHubItem }) {
               </a>
             </Button>
           ) : (
-            <Button variant="secondary" size="sm" className="w-full">
-              Open
+            <Button variant="secondary" size="sm" className="w-full" asChild>
+              <Link href={href}>Open</Link>
             </Button>
           )}
         </div>

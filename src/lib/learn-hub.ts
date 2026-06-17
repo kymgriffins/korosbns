@@ -113,10 +113,8 @@ export const learnHubApi = {
       method: "POST",
       body: JSON.stringify(body),
     }),
-  civicModules: () =>
-    apiFetch<ApiListResponse<CivicModule>>("/content/civic-modules/"),
-  civicModule: (slug: string) =>
-    apiFetch<CivicModule>(`/content/civic-modules/${slug}/`),
+  civicModules: () => learnHubApi.stages(),
+  civicModule: (slug: string) => learnHubApi.stage(slug),
   budgetNewsModules: () =>
     apiFetch<ApiListResponse<CivicModule>>("/content/civic-modules/?is_financial_year_analysis=true"),
   budgetNewsModule: (slug: string) =>

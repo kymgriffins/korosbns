@@ -28,20 +28,21 @@ interface ParticipationAlertsDrawerProps {
 
 export function ParticipationAlertsDrawer({ profile, onClose, onUpdateProfile }: ParticipationAlertsDrawerProps) {
   const [step, setStep] = useState<"review" | "draft" | "submit" | "completed">("review");
-  const [aiFailed, setAiFailed] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
   const [draftContent, setDraftContent] = useState("");
   const [participationLog, setParticipationLog] = useState<any[]>([]);
 
   // Sample alert targeted to the user's county
+  // Sanitize county for URL use
+  const safeCounty = (profile.county || "").toLowerCase().replace(/[^a-z0-9-]/g, "").replace(/--+/g, "-").replace(/^-|-$/g, "");
   const alert: Alert = {
-    id: `alert_${profile.county.toLowerCase()}_cfsp`,
+    id: `alert_${safeCounty || "county"}_cfsp`,
     documentName: "County Fiscal Strategy Paper (CFSP) 2026/27",
     county: profile.county,
     openDate: "2026-05-20",
-    closeDate: "2026-06-03", // 10 days from now (current time is May 24, 2026)
-    portalLink: `https://www.${profile.county.toLowerCase()}.go.ke/budget-comments`,
-    whatsappGroup: "" // Set via org config in production
+    closeDate: "2026-06-03",
+    portalLink: safeCounty ? `https://www.${safeCounty}.go.ke/budget-comments` : "",
+    whatsappGroup: ""
   };
 
   // Observations, legal bases, and actions pool for the AI generator
@@ -73,22 +74,15 @@ Document: ${alert.documentName}
 [Legal Basis]: Article 201 of the Kenyan Constitution requires public finance to promote an equitable society and prudent utilization of public funds.
 [Action]: Reallocate recurrent administrative expenditure to county health and water infrastructure.`;
 
-  // Simulate AI generation
+  // Template-based draft generator
   const handleGenerateAIDraft = () => {
     setAiLoading(true);
-    setAiFailed(false);
     setTimeout(() => {
-      // 20% chance of mock AI failure to demonstrate fallback
-      if (Math.random() < 0.2) {
-        setAiFailed(true);
-        setDraftContent(staticTemplate);
-        toast.error("AI Draft Generator failed to connect. Falling back to static template.");
-      } else {
-        const obs = aiObservations[Math.floor(Math.random() * aiObservations.length)];
-        const leg = aiLegalBases[Math.floor(Math.random() * aiLegalBases.length)];
-        const act = aiActions[Math.floor(Math.random() * aiActions.length)];
-        
-        const text = `PUBLIC PARTICIPATION BUDGET MEMORANDUM
+      const obs = aiObservations[Math.floor(Math.random() * aiObservations.length)];
+      const leg = aiLegalBases[Math.floor(Math.random() * aiLegalBases.length)];
+      const act = aiActions[Math.floor(Math.random() * aiActions.length)];
+      
+      const text = `PUBLIC PARTICIPATION BUDGET MEMORANDUM
 
 County: ${profile.county}
 Document: ${alert.documentName}
@@ -100,49 +94,49 @@ Submitted By: Anonymized Citizen (${profile.pseudoName})
 
 [Action]: ${act}`;
 
-        setDraftContent(text);
-        toast.success("AI Budget Draft generated successfully!");
-      }
+      setDraftContent(text);
+      toast.success("Budget draft generated successfully!");
       setAiLoading(false);
       setStep("draft");
-    }, 1200);
+    }, 800);
   };
 
-  const handleCopyToClipboard = () => {
-    navigator.clipboard.writeText(draftContent);
-    toast.success("Draft copied to clipboard!");
+  const handleCopyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(draftContent);
+      toast.success("Draft copied to clipboard!");
+    } catch {
+      toast.error("Could not copy to clipboard. Please select and copy manually.");
+    }
   };
 
   const handleSubmitPortal = () => {
-    // Simulate portal submit
     toast.loading("Uploading memorandum to county portal...");
     setTimeout(() => {
       toast.dismiss();
       toast.success("Memorandum successfully submitted to the County Portal!");
-      recordParticipation();
+      recordParticipation("Portal");
       setStep("completed");
     }, 1500);
   };
 
   const handleWhatsAppSubmit = () => {
-    // Prefill whatsapp link
     const text = encodeURIComponent(draftContent);
     const waNumber = alert.whatsappGroup.replace(/[^0-9]/g, "");
     const url = waNumber ? `https://wa.me/${waNumber}?text=${text}` : "#";
-    window.open(url, "_blank");
+    if (url !== "#") window.open(url, "_blank");
     toast.success("Opened WhatsApp forward!");
-    recordParticipation();
+    recordParticipation("WhatsApp");
     setStep("completed");
   };
 
-  const recordParticipation = () => {
-    // Log in user profile tracked actions
+  const recordParticipation = (method: "Portal" | "WhatsApp") => {
     const logItem = {
       alertId: alert.id,
       documentName: alert.documentName,
       county: alert.county,
       dateSubmitted: new Date().toISOString(),
-      method: step === "draft" ? "Portal" : "WhatsApp",
+      method,
       draftText: draftContent
     };
 
@@ -247,13 +241,6 @@ Submitted By: Anonymized Citizen (${profile.pseudoName})
               <h3 className="font-bold text-base">✏️ Customize Budget Comment</h3>
               <p className="text-xs text-muted-foreground">Verify and edit the AI-generated memorandum prior to submitting. Feel free to refine the content.</p>
             </div>
-
-            {aiFailed && (
-              <div className="p-3 border border-destructive/20 bg-destructive/5 rounded-xl text-xs text-destructive flex items-center gap-2">
-                <AlertTriangle className="size-4" />
-                <span>AI Server offline. Static template loaded below.</span>
-              </div>
-            )}
 
             <div className="space-y-2">
               <textarea

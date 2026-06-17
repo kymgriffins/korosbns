@@ -325,7 +325,7 @@ export function StageDetailDrawer({
     });
     toast.success("Knowledge Check complete!");
     learnHubApi.completeChapter(step.id).catch(() => {
-      console.warn("Failed to record chapter completion on server");
+      // server recording failed silently
     });
     setCurrentStep((prev) => prev + 1);
     setExpandedStep((prev) => (prev ? prev + 1 : null));
@@ -361,7 +361,7 @@ export function StageDetailDrawer({
         };
         onUpdateProfile(updatedProfile);
         learnHubApi.markProgress({ content_type: "path", content_id: stage.id, progress_percent: 100 }).catch(() => {
-          console.warn("Failed to mark progress on server");
+          // server progress marking failed silently
         });
         const lastStep = stage.steps[stage.steps.length - 1];
         if (lastStep) {
@@ -371,13 +371,13 @@ export function StageDetailDrawer({
               setCertificateUrl(certificateDownloadHref(res.certificate_id));
             }
           }).catch(() => {
-            console.warn("Failed to complete chapter on server");
+            // server chapter completion failed silently
           });
         }
         toast.success(`Mastered! +25 SVG. ${stage.badge} Badge unlocked!`);
       }
     }
-  }, [currentStep, stage.order]);
+  }, [currentStep, stage.steps.length]);
 
   const selectStep = (stepNum: number) => {
     setCurrentStep(stepNum);
@@ -451,12 +451,11 @@ export function StageDetailDrawer({
           <span className="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded flex items-center gap-1">
             <BookOpen className="size-3" /> {stage.steps.length} lessons
           </span>
-          <span className="hidden sm:flex px-2 py-0.5 bg-muted/40 text-muted-foreground text-[10px] font-bold rounded items-center gap-1">
-            <Clock className="size-3" /> 4h 5min
-          </span>
-          <span className="hidden sm:flex px-2 py-0.5 bg-amber-500/10 text-amber-600 text-[10px] font-bold rounded items-center gap-1">
-            <Star className="size-3" /> 4.9
-          </span>
+          {stage.documentName && (
+            <span className="hidden sm:flex px-2 py-0.5 bg-muted/40 text-muted-foreground text-[10px] font-bold rounded items-center gap-1">
+              <BookOpenText className="size-3" /> {stage.documentName}
+            </span>
+          )}
         </div>
       </div>
 

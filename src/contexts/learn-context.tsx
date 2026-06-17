@@ -22,10 +22,6 @@ export interface ActiveLesson {
 interface LearnContextType {
   activeTab: LearnTab;
   setActiveTab: (tab: LearnTab) => void;
-  sidebarOpen: boolean;
-  setSidebarOpen: (open: boolean) => void;
-  sidebarCollapsed: boolean;
-  setSidebarCollapsed: (collapsed: boolean) => void;
   rightDrawerOpen: boolean;
   setRightDrawerOpen: (open: boolean) => void;
   gamification: GamificationState | null;
@@ -46,8 +42,6 @@ const LearnContext = createContext<LearnContextType | undefined>(undefined);
 export function LearnProvider({ children }: { children: React.ReactNode }) {
   const { isLoggedIn } = useAuth();
   const [activeTab, setActiveTab] = useState<LearnTab>("home");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [rightDrawerOpen, setRightDrawerOpen] = useState(false);
   const [gamification, setGamification] = useState<GamificationState | null>(null);
   const [activeLesson, setActiveLesson] = useState<ActiveLesson | null>(null);
@@ -62,8 +56,8 @@ export function LearnProvider({ children }: { children: React.ReactNode }) {
     try {
       const state = await fetchGamificationMe();
       if (state) setGamification(state);
-    } catch (err) {
-      console.error("Failed to fetch gamification state", err);
+    } catch {
+      // gamification fetch failed silently
     }
   }, [isLoggedIn]);
 
@@ -78,7 +72,6 @@ export function LearnProvider({ children }: { children: React.ReactNode }) {
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to load learning modules";
       setModulesError(message);
-      console.error("Failed to fetch civic modules", err);
     } finally {
       setModulesLoading(false);
     }
@@ -109,10 +102,6 @@ export function LearnProvider({ children }: { children: React.ReactNode }) {
       value={{
         activeTab,
         setActiveTab,
-        sidebarOpen,
-        setSidebarOpen,
-        sidebarCollapsed,
-        setSidebarCollapsed,
         rightDrawerOpen,
         setRightDrawerOpen,
         gamification,
