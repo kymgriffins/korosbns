@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "motion/react";
 import {
   Heart,
@@ -13,6 +14,7 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-react";
+import { toast } from "sonner";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
 import { CLOUDINARY_COUNTY_BUDGET_SOCIAL_VIDEO } from "@/constants/cloudinary";
 import { SectionHeader, SectionShell } from "@/layouts/section-shell";
@@ -20,18 +22,14 @@ import { cn } from "@/utils";
 
 const TIKTOK_PROFILE = "https://www.tiktok.com/@budget.ndio.story";
 
-const SIDE_ACTIONS = [
-  { icon: Heart, label: "Like" },
-  { icon: MessageCircle, label: "Comment" },
-  { icon: Share2, label: "Share" },
-] as const;
-
 export default function LandingTikTokVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const phoneRef = useRef<HTMLDivElement>(null);
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isInView, setIsInView] = useState(false);
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(142);
 
   useEffect(() => {
     const node = phoneRef.current;
@@ -75,6 +73,32 @@ export default function LandingTikTokVideo() {
       setIsPlaying(false);
     }
   }, []);
+
+  const handleLike = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setLiked((prev) => !prev);
+    setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
+  }, [liked]);
+
+  const handleShare = useCallback(async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const url = typeof window !== "undefined" ? window.location.href : "";
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: "Budget Ndio Story", url });
+      } catch {
+      }
+    } else if (navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(url);
+        toast.success("Link copied");
+      } catch {
+        toast.error("Could not copy link");
+      }
+    }
+  }, []);
+
+  const formatCount = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)}K` : String(n));
 
   return (
     <SectionShell className="border-y border-border/40 bg-background">
@@ -156,25 +180,46 @@ export default function LandingTikTokVideo() {
               )}
 
               <div className="absolute right-3 bottom-24 z-20 flex flex-col items-center gap-5">
-                <div className="size-10 overflow-hidden rounded-full border-2 border-white bg-primary/80">
-                  <span className="flex size-full items-center justify-center text-[10px] font-bold text-white">
-                    BNS
-                  </span>
+                <div className="size-10 overflow-hidden rounded-full border-2 border-white bg-background">
+                  <Image src="/logo.svg" alt="BNS" width={36} height={36} className="size-full object-contain p-1" />
                 </div>
-                {SIDE_ACTIONS.map(({ icon: Icon, label }) => (
-                  <button
-                    key={label}
-                    type="button"
-                    aria-label={label}
-                    className="pointer-events-auto flex flex-col items-center gap-1 text-white/90 transition-transform hover:scale-105"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <span className="flex size-10 items-center justify-center rounded-full bg-black/25 backdrop-blur-sm">
-                      <Icon className="size-5" strokeWidth={1.75} />
-                    </span>
-                    <span className="text-[10px] font-medium">{label}</span>
-                  </button>
-                ))}
+                <button
+                  type="button"
+                  aria-label="Like"
+                  className="pointer-events-auto flex flex-col items-center gap-1 text-white/90 transition-transform hover:scale-105"
+                  onClick={handleLike}
+                >
+                  <span className="flex size-10 items-center justify-center rounded-full bg-black/25 backdrop-blur-sm">
+                    <Heart
+                      className={cn("size-5 transition-colors", liked && "fill-red-500 text-red-500")}
+                      strokeWidth={1.75}
+                    />
+                  </span>
+                  <span className="text-[10px] font-medium">{formatCount(likeCount)}</span>
+                </button>
+                <a
+                  href={TIKTOK_PROFILE}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="pointer-events-auto flex flex-col items-center gap-1 text-white/90 transition-transform hover:scale-105 no-underline"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <span className="flex size-10 items-center justify-center rounded-full bg-black/25 backdrop-blur-sm">
+                    <MessageCircle className="size-5" strokeWidth={1.75} />
+                  </span>
+                  <span className="text-[10px] font-medium">Comment</span>
+                </a>
+                <button
+                  type="button"
+                  aria-label="Share"
+                  className="pointer-events-auto flex flex-col items-center gap-1 text-white/90 transition-transform hover:scale-105"
+                  onClick={handleShare}
+                >
+                  <span className="flex size-10 items-center justify-center rounded-full bg-black/25 backdrop-blur-sm">
+                    <Share2 className="size-5" strokeWidth={1.75} />
+                  </span>
+                  <span className="text-[10px] font-medium">Share</span>
+                </button>
                 <div
                   className={cn(
                     "mt-1 size-9 animate-spin rounded-full border-2 border-white/30 bg-gradient-to-br from-primary to-purple-500",
