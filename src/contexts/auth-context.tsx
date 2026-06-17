@@ -16,6 +16,7 @@ import {
   citizenApi,
   clearAuthTokens,
   getAccessToken,
+  normalizeLoginResponse,
   setAuthTokens,
   type UserProfileApi,
 } from "@/lib/api-client";
@@ -97,9 +98,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const safeRedirect = sanitizeRedirectPath(redirectTo);
       logDebug("Auth", "Login requested", { redirectTo: safeRedirect });
       clearUserData({ keepOnboarding: true });
-      const tokens = await citizenApi.login(email, password);
-      if (!tokens?.access || typeof tokens.access !== "string") {
-        throw new Error("Login response missing access token. Check backend response format.");
+      const raw = await citizenApi.login(email, password);
+      const tokens = normalizeLoginResponse(raw as Record<string, unknown>);
+      if (!tokens?.access) {
+        logDebug("Auth", "Login response missing access token", { rawKeys: Object.keys(raw as object) });
+        throw new Error("Login response missing access token.");
       }
       setAuthTokens(tokens.access, tokens.refresh);
       logDebug("Auth", "Login token stored");

@@ -148,7 +148,28 @@ export type UserProfileApi = {
   onboarding_completed_at?: string;
 };
 
-export type AuthLoginResponse = { access: string; refresh: string };
+export type AuthLoginResponse = {
+  access: string;
+  refresh: string;
+  /** Accept alternative field names from various backends */
+  access_token?: string;
+  token?: string;
+  refresh_token?: string;
+};
+
+/** Normalize a login response regardless of field naming convention. */
+export function normalizeLoginResponse(
+  raw: Record<string, unknown>,
+): { access: string; refresh?: string } | null {
+  const access = (raw.access ?? raw.access_token ?? raw.token) as string | undefined;
+  if (typeof access === "string" && access.length > 0) {
+    return {
+      access,
+      refresh: (raw.refresh ?? raw.refresh_token) as string | undefined,
+    };
+  }
+  return null;
+}
 export type AuthRegisterResponse = {
   user: { id: string; email: string };
   detail: string;
