@@ -210,10 +210,16 @@ function removeTokenCookie(): void {
 }
 export function setAuthTokens(access: string, refresh?: string): void {
   if (typeof window === "undefined") return;
+  if (!access || typeof access !== "string") {
+    logDebug("Auth", "setAuthTokens called with invalid access token", { access });
+    return;
+  }
   window.sessionStorage.setItem(ACCESS_KEY, access);
   window.localStorage.setItem(STORAGE_MODE_KEY, "hybrid");
   syncTokenCookie(access);
-  if (refresh) window.localStorage.setItem(REFRESH_KEY, refresh);
+  if (refresh && typeof refresh === "string") {
+    window.localStorage.setItem(REFRESH_KEY, refresh);
+  }
 }
 
 export function clearAuthTokens(): void {
@@ -247,7 +253,7 @@ async function refreshAccessToken(): Promise<string | null> {
   }
 
   const data = (await response.json()) as { access?: string };
-  if (data.access) {
+  if (data?.access && typeof data.access === "string") {
     setAuthTokens(data.access);
     logDebug("Auth", "Access token refreshed", { access: sanitizeToken(data.access) });
     return data.access;

@@ -91,6 +91,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       logDebug("Auth", "Login requested", { redirectTo: safeRedirect });
       clearUserData({ keepOnboarding: true });
       const tokens = await citizenApi.login(email, password);
+      if (!tokens?.access || typeof tokens.access !== "string") {
+        throw new Error("Login response missing access token. Check backend response format.");
+      }
       setAuthTokens(tokens.access, tokens.refresh);
       setHasToken(true);
       logDebug("Auth", "Login token stored");
