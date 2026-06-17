@@ -7,7 +7,7 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import {
   ChevronDown, X,
   BookOpen, LayoutDashboard, ArrowLeft, ExternalLink,
-  Settings, LogOut, Lock, Palette, LogIn, User, FileText,
+  LogOut, Palette, LogIn, User, FileText,
   MessagesSquare, Calendar, ListChecks
 } from "lucide-react";
 import { cn } from "@/utils";
@@ -195,23 +195,11 @@ function LearnSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {isLoggedIn ? (
-                <>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild tooltip="Account">
-                      <Link href={Routes.Account}><Settings className="size-4" /><span>Account Settings</span></Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild tooltip="Password">
-                      <Link href={Routes.AccountPassword}><Lock className="size-4" /><span>Change Password</span></Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild tooltip="Sign Out">
-                      <Link href={Routes.AccountSignOut}><LogOut className="size-4" /><span>Sign Out</span></Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild tooltip="Sign Out">
+                    <Link href={Routes.AccountSignOut}><LogOut className="size-4" /><span>Sign Out</span></Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
               ) : (
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild tooltip="Sign In" className="text-primary hover:text-primary">
