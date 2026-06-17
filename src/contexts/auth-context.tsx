@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
+import { ApiRequestError } from "@/lib/api-errors";
 import {
   citizenApi,
   clearAuthTokens,
@@ -46,7 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
   const [hasToken, setHasToken] = useState(() => Boolean(getAccessToken()));
 
-  const { data: user, isLoading, isError } = useQuery({
+  const { data: user, isLoading, isError, isSuccess, error } = useQuery({
     queryKey: USER_PROFILE_KEY,
     queryFn: async () => {
       const profile = await citizenApi.getMe();
@@ -54,17 +55,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
     enabled: hasToken,
     staleTime: 1000 * 60 * 5,
-    retry: false,
   });
 
-  // Clear stale tokens when the API rejects them
+  // Clear tokens only on 401 — transient errors (network, 5xx) must NOT wipe the session
   useEffect(() => {
     if (isError && hasToken) {
-      logDebug("Auth", "Token rejected by server; clearing");
-      clearAuthTokens();
-      setHasToken(false);
+      const is401 = error instanceof ApiRequestError && error.status === 401;
+      if (is401) {
+        logDebug("Auth", "Token rejected by server (401); clearing");
+        clearAuthTokens();
+        setHasToken(false);
+      } else {
+        logDebug("Auth", "Profile query failed with non-401 error; keeping tokens", {
+          error: error instanceof ApiRequestError ? error.status : "network",
+        });
+      }
     }
-  }, [isError, hasToken]);
+  }, [isError, hasToken, error]);
 
   // Sync auth state across tabs when localStorage changes
   useEffect(() => {
@@ -95,9 +102,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error("Login response missing access token. Check backend response format.");
       }
       setAuthTokens(tokens.access, tokens.refresh);
-      setHasToken(true);
       logDebug("Auth", "Login token stored");
-      await queryClient.refetchQueries({ queryKey: USER_PROFILE_KEY });
+      // Fetch profile synchronously before enabling the useQuery to avoid a
+      // double-fetch race (useQuery fires on enabled=true, and a separate
+      // refetchQueries would create a second parallel fetch).
+      const profile = await citizenApi.getMe();
+      queryClient.setQueryData(USER_PROFILE_KEY, normalizeProfile(profile));
+      setHasToken(true);
       logDebug("Auth", "Login completed", { redirectTo: safeRedirect });
       router.push(safeRedirect);
     },
@@ -142,7 +153,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     () => ({
       user: user ?? null,
       loading: hasToken && isLoading,
-      isLoggedIn: Boolean(user) && !isError,
+      isLoggedIn: hasToken && (isSuccess || Boolean(user)),
       login,
       logout,
       refreshUser,
