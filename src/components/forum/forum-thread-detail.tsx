@@ -2,6 +2,7 @@
 
 import { ArrowLeft, Loader2, Users } from "lucide-react";
 import { useForumThread, useCreateForumPost } from "@/hooks/use-forum";
+import { safeArray, safeLen } from "@/lib/safe-data";
 import { ForumPostItem } from "./forum-post-item";
 import { ForumPostComposer } from "./forum-post-composer";
 import { Button } from "@/ui/button";
@@ -39,7 +40,7 @@ export function ForumThreadDetail({
             <h2 className="truncate text-sm font-bold">{thread.title}</h2>
             <p className="flex items-center gap-1 text-[10px] font-semibold text-muted-foreground">
               <Users className="size-3" />
-              {thread.author_name} started this · {thread.posts.length} message{thread.posts.length !== 1 ? "s" : ""}
+              {thread.author_name} started this · {thread.posts?.length ?? 0} message{(thread.posts?.length ?? 0) !== 1 ? "s" : ""}
             </p>
           </div>
         )}
@@ -57,13 +58,13 @@ export function ForumThreadDetail({
         </div>
       ) : thread ? (
         <div className="flex-1 space-y-4 overflow-y-auto pb-4 [scrollbar-width:thin]">
-          {thread.posts.length === 0 ? (
+          {safeLen(thread.posts) === 0 ? (
             <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
               <p className="text-sm font-semibold text-muted-foreground">No replies yet</p>
               <p className="text-xs text-muted-foreground">Start the conversation with a thoughtful question or insight.</p>
             </div>
           ) : (
-            thread.posts.map((post) => (
+            safeArray(thread.posts).map((post) => (
               <ForumPostItem
                 key={post.id}
                 post={post}

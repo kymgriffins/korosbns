@@ -30,6 +30,7 @@ import { readProgress, clearAllModuleProgress } from "@/lib/module-progress";
 import { useLeaderboard } from "@/hooks/use-gamification";
 import type { CivicModule } from "@/types/learn";
 import { TRANSLATIONS } from "@/constants/learn-translations";
+import { safeArray, safeLen, safeMap } from "@/lib/safe-data";
 
 function saveProfile(profile: any) {
   localStorage.setItem("bns_user_profile", JSON.stringify(profile));
@@ -53,7 +54,7 @@ export function LearnPathsHome() {
     if (selectedStage) {
       const completedStepIds: number[] = [];
       const p = readProgress(selectedStage.slug, selectedStage.order);
-      for (const step of selectedStage.steps) {
+      for (const step of safeArray(selectedStage.steps)) {
         if (p.stepsCompleted[step.order]) {
           completedStepIds.push(step.order);
         }
@@ -64,9 +65,9 @@ export function LearnPathsHome() {
         stageBadge: selectedStage.badge,
         stageOrder: selectedStage.order,
         currentStep: 0,
-        totalSteps: selectedStage.steps.length,
+        totalSteps: safeLen(selectedStage.steps),
         completedStepIds,
-        stepTitles: selectedStage.steps.map((s) => ({ id: s.order, title: s.title })),
+        stepTitles: safeMap(selectedStage.steps, (s) => ({ id: s.order, title: s.title })),
       });
     } else {
       setActiveLesson(null);

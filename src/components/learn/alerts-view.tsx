@@ -2,6 +2,7 @@
 
 import { Bell, Loader2, CheckCircle2, FileText, MessageSquare } from "lucide-react";
 import { useGamificationMe } from "@/hooks/use-gamification";
+import { safeArray, safeLen, safeMap } from "@/lib/safe-data";
 
 interface AlertsViewProps {
   profile: any;
@@ -29,9 +30,9 @@ export function AlertsView({ profile }: AlertsViewProps) {
       {gamification && !gamificationLoading && (
         <div className="space-y-4">
           <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Recent Activity</h3>
-          {gamification.recent_progress.length > 0 ? (
+          {safeLen(gamification.recent_progress) > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {gamification.recent_progress.slice(0, 6).map((item, idx) => (
+              {safeMap(safeArray(gamification.recent_progress).slice(0, 6), (item, idx) => (
                 <div key={idx} className="p-4 rounded-xl border border-border bg-card space-y-2 text-xs shadow-xs">
                   <div className="flex items-center gap-2">
                     {progressIcon(item.content_type)}
