@@ -83,35 +83,12 @@ export default function LandingTikTokVideo() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-80px" }}
-        className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-16"
+        className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16"
       >
-        <div>
-          <SectionHeader
-            eyebrow="Short-form civic media"
-            title={
-              <>
-                County budgets,{" "}
-                <span className="font-heading italic text-primary">TikTok</span>{" "}
-                style.
-              </>
-            }
-            description="Snackable explainers that meet youth where they scroll — turning county fiscal data into stories anyone can share."
-            className="mb-0 md:mb-0"
-          />
-
-          <motion.div variants={fadeInUp} className="mt-8 flex flex-wrap gap-4">
-            <Link
-              href={TIKTOK_PROFILE}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-semibold transition-colors hover:bg-muted"
-            >
-              Follow @budget.ndio.story
-            </Link>
-          </motion.div>
-        </div>
-
-        <motion.div variants={fadeInUp} className="flex justify-center lg:justify-end">
+        <motion.div
+          variants={fadeInUp}
+          className="order-2 flex flex-col items-center gap-6 lg:order-1 lg:items-start"
+        >
           <div
             ref={phoneRef}
             className="relative w-[min(100%,280px)] sm:w-[300px]"
@@ -220,6 +197,38 @@ export default function LandingTikTokVideo() {
                 </button>
               </div>
             </div>
+          </div>
+
+          <p className="max-w-xs text-center text-sm leading-relaxed text-foreground/60 sm:max-w-sm lg:text-left">
+            Snackable explainers that meet youth where they scroll — turning county
+            fiscal data into stories anyone can share.
+          </p>
+        </motion.div>
+
+        <motion.div
+          variants={fadeInUp}
+          className="order-1 flex flex-col justify-center lg:order-2"
+        >
+          <SectionHeader
+            eyebrow="Short-form civic media"
+            title={
+              <>
+                County budgets,{" "}
+                <span className="font-heading italic text-primary">made to scroll</span>.
+              </>
+            }
+            className="mb-0 md:mb-0"
+          />
+
+          <div className="mt-8 flex flex-wrap gap-4 lg:mt-10">
+            <Link
+              href={TIKTOK_PROFILE}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-semibold transition-colors hover:bg-muted"
+            >
+              Follow @budget.ndio.story
+            </Link>
           </div>
         </motion.div>
       </motion.div>
