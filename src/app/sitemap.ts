@@ -23,6 +23,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/events", priority: 0.8, frequency: "weekly" as const },
     { path: "/surveys", priority: 0.6, frequency: "weekly" as const },
     { path: "/insights", priority: 0.8, frequency: "weekly" as const },
+    { path: "/bns-project", priority: 0.8, frequency: "monthly" as const },
+    { path: "/bns-studio", priority: 0.7, frequency: "monthly" as const },
+    { path: "/analytics", priority: 0.6, frequency: "weekly" as const },
+    { path: "/security", priority: 0.5, frequency: "monthly" as const },
+    { path: "/weekly-notes", priority: 0.7, frequency: "weekly" as const },
+    { path: "/weekly-notes/manage", priority: 0.3, frequency: "monthly" as const },
+    { path: "/weekly-notes/audit", priority: 0.3, frequency: "monthly" as const },
+    { path: "/security", priority: 0.4, frequency: "yearly" as const },
+    { path: "/analytics", priority: 0.5, frequency: "weekly" as const },
+    { path: "/bns-project", priority: 0.6, frequency: "monthly" as const },
   ];
 
   const sitemapEntries: MetadataRoute.Sitemap = routes.map((route) => ({

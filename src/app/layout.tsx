@@ -46,6 +46,27 @@ const websiteSchema = {
     "A youth-led civic platform in Kenya making national and county budgets understandable and actionable.",
 };
 
+const studioSchema = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  name: "BNS Studio",
+  parentOrganization: {
+    "@type": "Organization",
+    name: "Budget Ndio Story",
+  },
+  description:
+    "Professional videography, photography, studio rental, and post-production services in Kenya.",
+  url: `${siteUrl}/bns-studio`,
+  telephone: "+254700000000",
+  email: "studio@budgetndiostory.org",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Nairobi",
+    addressCountry: "KE",
+  },
+  priceRange: "KES 5,000 - 100,000",
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -67,6 +88,10 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(studioSchema) }}
         />
         <script
           type="application/ld+json"

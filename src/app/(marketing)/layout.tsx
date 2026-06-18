@@ -6,6 +6,7 @@ import { Header as Navbar } from "@/layouts/Header";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { ease } from "@/motion/variants";
+import { SocialsSection } from "@/components/marketing/socials-section";
 
 const MarketingLayout = ({
   children,
@@ -44,7 +45,12 @@ const MarketingLayout = ({
         </motion.div>
       </AnimatePresence>
 
-      {showMarketingFooter && <Footer />}
+      {showMarketingFooter && (
+        <>
+          <SocialsSection />
+          <Footer />
+        </>
+      )}
     </main>
   );
 };

@@ -5,7 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import {
   ChevronDown, ChevronRight, X,
-  BookOpen, LayoutDashboard, ArrowLeft, ExternalLink,
+  BookOpen, LayoutDashboard, ExternalLink,
   LogOut, Palette, LogIn, User, FileText, Settings,
   MessagesSquare, Calendar, ListChecks
 } from "lucide-react";
@@ -290,14 +290,7 @@ function LearnSidebar() {
                 </div>
               </UserPopover>
             )}
-            <Link
-              href="/"
-              aria-label="Back to main site"
-              title="Back to main site"
-              className="mt-1 inline-flex size-7 items-center justify-center rounded-lg text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <ArrowLeft className="size-4" />
-            </Link>
+
           </div>
         ) : (
           <div className="p-2 space-y-1.5">
@@ -364,16 +357,6 @@ function LearnSidebar() {
               </div>
             )}
 
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Back to main site">
-                  <Link href="/">
-                    <ArrowLeft className="size-4" />
-                    <span>Back to main site</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
           </div>
         )}
       </SidebarFooter>
@@ -444,7 +427,7 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
                 : "bg-background border-border/30"
             }`}
           >
-            <Link href="/learn" className="flex items-center gap-2 min-w-0">
+            <Link href="/" className="flex items-center gap-2 min-w-0">
               <img src="/logo.svg" alt="BNS" className="h-6 w-auto shrink-0" />
             </Link>
             <div className="flex items-center gap-1">
@@ -458,14 +441,6 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
                 <ExternalLink className="size-4" />
               </a>
               <ThemeToggle />
-              <Link
-                href="/"
-                aria-label="Back to main site"
-                className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-primary/10 px-2.5 text-xs font-bold text-primary ring-1 ring-primary/20 transition-colors hover:bg-primary/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                <ArrowLeft className="size-3.5" />
-                Main site
-              </Link>
             </div>
           </header>
           <main className="flex-1 overflow-y-auto">{children}</main>

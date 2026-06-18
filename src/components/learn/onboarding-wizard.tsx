@@ -5,7 +5,7 @@ import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
 import { Checkbox } from "@/ui/checkbox";
-import { Flame, Bell, Shield, ArrowRight, ArrowLeft, Sparkles } from "lucide-react";
+import { Flame, Bell, Shield, ArrowRight, ArrowLeft, Sparkles, GraduationCap } from "lucide-react";
 import { useUpdateProfile } from "@/hooks/use-profile";
 import { useAuth } from "@/contexts/auth-context";
 import { COUNTIES } from "@/constants/counties";
@@ -24,6 +24,9 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
   const [notifications, setNotifications] = useState(true);
   const [whatsappFallback, setWhatsappFallback] = useState(false);
   const [phone, setPhone] = useState("");
+  const [educationLevel, setEducationLevel] = useState("");
+  const [ageRange, setAgeRange] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
   const [consent, setConsent] = useState(false);
   const [error, setError] = useState("");
 
@@ -43,6 +46,9 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
     } else if (step === 2) {
       if (!county) { setError("County is required."); return; }
       setStep(3);
+    } else if (step === 3) {
+      if (!educationLevel) { setError("Education level is required."); return; }
+      setStep(4);
     }
   };
 
@@ -57,6 +63,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
       userId: `user_${Math.random().toString(36).substr(2, 9)}`,
       breakName: breakName.trim(), pseudoName: pseudoName.trim(),
       county, ward: ward.trim() || undefined, language,
+      educationLevel, ageRange, dateOfBirth,
       notifications, whatsappFallback, phone: phone.trim() || undefined,
       consentGranted: true, consentTimestamp: new Date().toISOString(),
       sovereigns: 0, stageProgress: [1], streakDays: 0, lastActive: Date.now(), trackedDocs: [] as string[]
@@ -67,7 +74,15 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
     if (isLoggedIn) {
       updateProfileMutation.mutate({
         display_name: breakName.trim(), location: county,
-        metadata: { county, ward: ward.trim() || "", break_name: breakName.trim(), pseudo_name: pseudoName.trim(), language, notifications_enabled: notifications, whatsapp_fallback: whatsappFallback, phone: phone.trim() || "", dpa_consent: consent, dpa_consent_timestamp: new Date().toISOString(), onboarding_completed_at: new Date().toISOString() },
+        metadata: {
+          county, ward: ward.trim() || "",
+          break_name: breakName.trim(), pseudo_name: pseudoName.trim(),
+          language, education_level: educationLevel, age_range: ageRange, date_of_birth: dateOfBirth,
+          notifications_enabled: notifications, whatsapp_fallback: whatsappFallback,
+          phone: phone.trim() || "", dpa_consent: consent,
+          dpa_consent_timestamp: new Date().toISOString(),
+          onboarding_completed_at: new Date().toISOString(),
+        },
       });
     }
     onComplete(profile);
@@ -78,10 +93,10 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
       <div className="space-y-1.5">
         <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
           <span>Profile Setup</span>
-          <span>Step {step} of 3</span>
+          <span>Step {step} of 4</span>
         </div>
         <div className="h-1 bg-muted/50 rounded-full overflow-hidden">
-          <div className={`h-full bg-primary transition-all duration-300 ${step === 1 ? 'w-1/3' : step === 2 ? 'w-2/3' : 'w-full'}`} />
+          <div className={`h-full bg-primary transition-all duration-300 ${step === 1 ? 'w-1/4' : step === 2 ? 'w-2/4' : step === 3 ? 'w-3/4' : 'w-full'}`} />
         </div>
       </div>
 
@@ -161,6 +176,72 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
       )}
 
       {step === 3 && (
+        <div className="space-y-3.5">
+          <div className="space-y-1">
+            <h2 className="text-lg font-bold tracking-tight">About You</h2>
+            <p className="text-xs text-muted-foreground">Help us tailor content to your needs.</p>
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-xs font-semibold">
+              <GraduationCap className="size-3.5 inline mr-1" />
+              Education Level <span className="text-destructive">*</span>
+            </Label>
+            <select
+              value={educationLevel}
+              onChange={(e) => setEducationLevel(e.target.value)}
+              className="w-full h-10 px-3 rounded-lg border-0 bg-muted/40 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+            >
+              <option value="">Select your education level</option>
+              <option value="primary">Primary School</option>
+              <option value="secondary">Secondary School</option>
+              <option value="diploma">Diploma / Certificate</option>
+              <option value="undergraduate">Undergraduate Degree</option>
+              <option value="postgraduate">Postgraduate Degree</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-xs font-semibold">Age Range <span className="text-destructive">*</span></Label>
+            <select
+              value={ageRange}
+              onChange={(e) => setAgeRange(e.target.value)}
+              className="w-full h-10 px-3 rounded-lg border-0 bg-muted/40 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+            >
+              <option value="">Select your age range</option>
+              <option value="under_18">Under 18</option>
+              <option value="18_25">18 - 25</option>
+              <option value="26_35">26 - 35</option>
+              <option value="36_50">36 - 50</option>
+              <option value="over_50">Over 50</option>
+            </select>
+          </div>
+
+          <div className="space-y-2">
+            <Label className="text-xs font-semibold">
+              Date of Birth <span className="text-muted-foreground font-normal">(Optional)</span>
+            </Label>
+            <Input
+              type="date"
+              value={dateOfBirth}
+              onChange={(e) => setDateOfBirth(e.target.value)}
+              className="rounded-lg h-10 text-sm"
+            />
+          </div>
+
+          <div className="flex gap-2 pt-2">
+            <Button onClick={handleBack} variant="outline" className="flex-1 rounded-lg h-10 font-bold text-xs gap-1.5">
+              <ArrowLeft className="size-3.5" /> Back
+            </Button>
+            <Button onClick={handleNext} className="flex-1 rounded-lg h-10 font-bold text-xs gap-1.5">
+              Continue <ArrowRight className="size-3.5" />
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {step === 4 && (
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1">
             <h2 className="text-lg font-bold tracking-tight">Consent & Alerts</h2>

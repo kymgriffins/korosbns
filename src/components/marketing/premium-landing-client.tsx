@@ -76,6 +76,14 @@ const AlertsSimulator = dynamic(
   }
 );
 
+const BNSStudioSection = dynamic(
+  () => import("@/components/marketing/bns-studio-section").then((m) => ({ default: m.BNSStudioSection })),
+  {
+    ssr: false,
+    loading: () => <div className="h-96 w-full bg-muted animate-pulse" />,
+  }
+);
+
 const NewsletterPopup = dynamic(
   () => import("@/components/marketing/newsletter-popup"),
   { ssr: false }
@@ -94,6 +102,7 @@ export default function PremiumLandingClient() {
       <GovernmentPartnerships />
       <WhatWeDoSection />
       <AlertsSimulator />
+      <BNSStudioSection />
       <NewsletterPopup />
     </>
   );

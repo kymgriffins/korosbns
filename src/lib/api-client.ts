@@ -3,8 +3,26 @@ import { ApiRequestError, extractApiErrorMessage, type ApiPayload } from "@/lib/
 import { apiFetchInit } from "@/lib/fetch-policy";
 import { logDebug, sanitizeToken } from "@/lib/debug-logs";
 import { ACCESS_TOKEN_COOKIE } from "@/lib/auth-policy";
+import type {
+  WeeklyNoteApi,
+  WeeklyNoteCreateApi,
+  AnalyticsSummaryApi,
+  StudioServiceApi,
+  StudioPortfolioItemApi,
+  StudioTestimonialApi,
+  StudioBookingApi,
+} from "@/types/notes";
 
 export { buildApiUrl };
+export type {
+  WeeklyNoteApi,
+  WeeklyNoteCreateApi,
+  AnalyticsSummaryApi,
+  StudioServiceApi,
+  StudioPortfolioItemApi,
+  StudioTestimonialApi,
+  StudioBookingApi,
+};
 
 const ACCESS_KEY = "access_token";
 const REFRESH_KEY = "refresh_token";
@@ -631,6 +649,43 @@ export const citizenApi = {
     target_url?: string;
   }) =>
     apiFetch<Record<string, unknown>>("/engagement/share/", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+
+  getWeeklyNotes: () => apiFetch<ApiListResponse<WeeklyNoteApi>>("/notes/public/"),
+  getMyNotes: () => apiFetch<ApiListResponse<WeeklyNoteApi>>("/notes/", { auth: true }),
+  createWeeklyNote: (body: WeeklyNoteCreateApi) =>
+    apiFetch<WeeklyNoteApi>("/notes/", {
+      method: "POST",
+      auth: true,
+      body: JSON.stringify(body),
+    }),
+  updateWeeklyNote: (id: string, body: Partial<WeeklyNoteCreateApi>) =>
+    apiFetch<WeeklyNoteApi>(`/notes/${id}/`, {
+      method: "PATCH",
+      auth: true,
+      body: JSON.stringify(body),
+    }),
+  auditWeeklyNote: (id: string, action: string, comment: string) =>
+    apiFetch<WeeklyNoteApi>(`/notes/${id}/audit/`, {
+      method: "POST",
+      auth: true,
+      body: JSON.stringify({ action, comment }),
+    }),
+  publishWeeklyNote: (id: string) =>
+    apiFetch<WeeklyNoteApi>(`/notes/${id}/publish/`, {
+      method: "POST",
+      auth: true,
+    }),
+
+  getAnalyticsSummary: () => apiFetch<AnalyticsSummaryApi>("/analytics/summary/"),
+
+  getStudioServices: () => apiFetch<StudioServiceApi[]>("/studio/services/"),
+  getStudioPortfolio: () => apiFetch<StudioPortfolioItemApi[]>("/studio/portfolio/"),
+  getStudioTestimonials: () => apiFetch<StudioTestimonialApi[]>("/studio/testimonials/"),
+  submitStudioBooking: (body: StudioBookingApi) =>
+    apiFetch<{ id: string }>("/studio/booking/", {
       method: "POST",
       body: JSON.stringify(body),
     }),

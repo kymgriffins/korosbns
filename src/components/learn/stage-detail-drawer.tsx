@@ -207,7 +207,7 @@ export function StageDetailDrawer({
   const currentStepTrivia = triviaForStep(stage, currentStepObj, currentStep - 1);
   const hasQuiz = currentStepTrivia.length > 0;
 
-  function parseStepVideos(step: ChapterStep | null): ChapterVideo[] {
+  function parseStepVideos(step: ChapterStep | null, allSteps?: ChapterStep[]): ChapterVideo[] {
     if (!step) return [];
     if (step.videos && step.videos.length > 0) return step.videos;
     if (step.youtube_urls && step.youtube_urls.length > 0) {
@@ -218,16 +218,24 @@ export function StageDetailDrawer({
         youtube_video_id: resolveYoutubeId(url),
       }));
     }
-    if (!step.youtube_url) return [];
-    return [{
+    if (step.youtube_url) return [{
       order: 1,
       role: "lecture",
       title: "Video",
       youtube_video_id: resolveYoutubeId(step.youtube_url),
     }];
+    // Cascade: search sibling steps for module-level videos
+    if (allSteps) {
+      for (const other of allSteps) {
+        if (other.order === step.order) continue;
+        const fallback = parseStepVideos(other);
+        if (fallback.length > 0) return fallback;
+      }
+    }
+    return [];
   }
 
-  const stepVideos = parseStepVideos(currentStepObj);
+  const stepVideos = parseStepVideos(currentStepObj, currentStepObj ? stage.steps : undefined);
 
   const [activeVideoIdx, setActiveVideoIdx] = useState(0);
   const showNav = stepVideos.length > 1;

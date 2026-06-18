@@ -106,11 +106,11 @@ const SECTORS: Record<string, SectorData> = {
   Education: {
     label: "Education",
     shortLabel: "Education",
-    allocation: "KES 628.6B",
+    allocation: "KES 784.5B",
     color: "from-indigo-800 via-indigo-600 to-blue-400",
     icon: BookOpen,
     slides: [
-      { title: "Budget Allocation", value: "KES 628.6B", body: "Total education sector budget", accent: "Education fund" },
+      { title: "Budget Allocation", value: "KES 784.5B", body: "Total education sector budget", accent: "Education fund" },
       { title: "The Gap", value: "18%", body: "Capitation per learner frozen for 3 years despite 18% cumulative inflation — schools squeezed", accent: "Inflation erosion" },
       { title: "Your Action", value: "Index capitation", body: "Push for inflation-indexed capitation rates and school-level financial transparency portals for all recipients", accent: "Right to education" },
     ],

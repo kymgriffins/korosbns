@@ -37,7 +37,7 @@ export function CurriculumSidebar({
           return (
             <div key={step.id} className="border-b border-border/20">
               <button
-                onClick={() => setExpandedStep(isExpanded ? null : stepNum)}
+                onClick={() => { selectStep(stepNum); setExpandedStep(isExpanded ? null : stepNum); }}
                 className={`w-full flex items-center justify-between p-2.5 transition-colors hover:bg-muted/30 ${isCurrent ? 'bg-primary/5' : ''}`}
               >
                 <div className="flex items-center gap-2 text-left min-w-0">
