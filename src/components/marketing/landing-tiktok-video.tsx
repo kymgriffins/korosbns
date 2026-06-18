@@ -20,7 +20,7 @@ import { SectionHeader, SectionShell } from "@/layouts/section-shell";
 import { cn } from "@/utils";
 import { Marquee } from "@/ui/marquee";
 import { getFeaturedTikTokVideos, likeTikTokVideo } from "@/lib/tiktok-service";
-import { LandingTikTokLiveMarquee } from "@/components/marketing/landing-tiktok-live-marquee";
+// import { LandingTikTokLiveMarquee } from "@/components/marketing/landing-tiktok-live-marquee";
 import type { TikTokVideoApi } from "@/lib/api-client";
 
 const TIKTOK_PROFILE = "https://www.tiktok.com/@budget.ndio.story";
@@ -346,7 +346,7 @@ export default function LandingTikTokVideo() {
         <TikTokMarquee videos={videos} formatCount={formatCount} />
       )}
 
-      <LandingTikTokLiveMarquee />
+      {/* <LandingTikTokLiveMarquee /> */}
     </SectionShell>
   );
 }
