@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, ChevronLeft, ChevronRight, Calendar, Settings } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, Calendar, ChevronDown, ListTree } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/ui/button";
 import { budgetNewsChapterPath, budgetNewsModulePath, Routes } from "@/constants/routes";
@@ -18,6 +18,7 @@ import {
   ArticleSectionToc,
   MobileArticleToc,
 } from "@/components/budget-news/report-blocks";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/ui/collapsible";
 
 function ChapterContent({
   slug,
@@ -90,8 +91,21 @@ function ChapterContent({
 
   return (
     <div className="min-h-screen bg-background">
-      <article className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:grid lg:grid-cols-[minmax(0,1fr)_220px] lg:gap-10">
-        <div>
+      <article className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:grid lg:grid-cols-[200px_minmax(0,1fr)_180px] lg:gap-6 xl:gap-8">
+
+        <aside className="hidden lg:block">
+          <div className="sticky top-20">
+            {(mod.steps?.length ?? 0) > 0 ? (
+              <BudgetReportToc
+                chapters={mod.steps}
+                slug={slug}
+                activeSlug={chapterSlug}
+              />
+            ) : null}
+          </div>
+        </aside>
+
+        <div className="min-w-0">
         <Link
           href={budgetNewsModulePath(slug)}
           className="mb-4 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -99,6 +113,39 @@ function ChapterContent({
           <ArrowLeft className="size-4" />
           Back to {mod.title}
         </Link>
+
+        {/* Mobile chapter selector */}
+        {(mod.steps?.length ?? 0) > 0 && (
+          <Collapsible className="lg:hidden mb-6 rounded-xl border border-border/60 bg-card">
+            <CollapsibleTrigger className="flex w-full items-center justify-between px-4 py-3 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors [&[data-state=open]>svg]:rotate-180">
+              <span className="flex items-center gap-2">
+                <ListTree className="size-4" />
+                {chapter.title}
+              </span>
+              <ChevronDown className="size-4 transition-transform duration-200" />
+            </CollapsibleTrigger>
+            <CollapsibleContent className="border-t border-border/60 px-4 pb-3 pt-2 space-y-1">
+              {mod.steps.map((ch) => {
+                if (!ch.article_slug) return null;
+                const isActive = ch.article_slug === chapterSlug;
+                return (
+                  <Link
+                    key={ch.article_slug}
+                    href={budgetNewsChapterPath(slug, ch.article_slug)}
+                    className={`block rounded-lg px-3 py-2 text-sm transition-colors ${
+                      isActive
+                        ? "bg-primary/10 text-primary font-medium"
+                        : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+                    }`}
+                  >
+                    <span className="text-[10px] text-muted-foreground mr-2">{ch.order}.</span>
+                    {ch.title}
+                  </Link>
+                );
+              })}
+            </CollapsibleContent>
+          </Collapsible>
+        )}
 
         <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
           <YearTabs
@@ -109,15 +156,6 @@ function ChapterContent({
               if (target) window.location.href = budgetNewsModulePath(target.module_slug);
             }}
           />
-          <a
-            href="https://bnske.budgetndiostory.org/admin/ke-budget/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-card px-3 py-1.5 text-[11px] font-medium text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors shrink-0"
-          >
-            <Settings className="size-3" />
-            Manage Budget
-          </a>
         </div>
 
         <div>
@@ -186,18 +224,11 @@ function ChapterContent({
         </nav>
         </div>
 
-        {((mod.steps?.length ?? 0) > 0 || articleHeadings.length > 0) && (
-          <aside className="hidden space-y-8 lg:block">
-            {articleHeadings.length > 0 ? (
+        {articleHeadings.length > 0 && (
+          <aside className="hidden xl:block">
+            <div className="sticky top-20">
               <ArticleSectionToc headings={articleHeadings} />
-            ) : null}
-            {(mod.steps?.length ?? 0) > 0 ? (
-              <BudgetReportToc
-                chapters={mod.steps}
-                slug={slug}
-                activeSlug={chapterSlug}
-              />
-            ) : null}
+            </div>
           </aside>
         )}
       </article>
