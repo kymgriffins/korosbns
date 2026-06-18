@@ -5,8 +5,7 @@ import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useMemo, useState } from "react";
-import { motion } from "motion/react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { socialLinks as defaultSocialLinks } from "@/constants/links";
@@ -15,16 +14,7 @@ import {
   newsletterSubscribeErrorMessage,
   subscribeNewsletter,
 } from "@/lib/newsletter-subscribe";
-
-function integrationIconAsset(icon: string): string {
-  const key =
-    icon === "x" || icon === "twitter"
-      ? "social-x"
-      : icon === "link" || !icon
-        ? "layers"
-        : icon;
-  return `/icons/integrations/${key}.svg`;
-}
+import { socialIconComponents } from "@/components/ui/social-icons";
 
 // Lean footer links with only working pages
 const footerLinks = {
@@ -191,24 +181,27 @@ export function Footer() {
         <div className="flex flex-col gap-4 pt-6 border-t border-border/40 w-full max-w-6xl mx-auto">
           {/* Social Icons Row */}
           <div className="flex items-center justify-center gap-3">
-            {displaySocial.map((social) => (
-              <Link
-                key={`${social.label}-${social.href}`}
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={social.label}
-                className="group relative size-9 flex items-center justify-center rounded-full bg-muted/50 hover:bg-primary/10 border border-border/60 hover:border-primary/30 transition-all duration-200"
-              >
-                <Image
-                  src={integrationIconAsset(String(social.icon))}
-                  alt={social.label}
-                  width={18}
-                  height={18}
-                  className="size-[18px] opacity-70 group-hover:opacity-100 transition-opacity"
-                />
-              </Link>
-            ))}
+            {displaySocial.map((social) => {
+              const Icon = socialIconComponents[social.icon as string];
+              return (
+                <Link
+                  key={`${social.label}-${social.href}`}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.label}
+                  className="group relative size-9 flex items-center justify-center rounded-full bg-muted/50 hover:bg-primary/10 border border-border/60 hover:border-primary/30 transition-all duration-200"
+                >
+                  {Icon ? (
+                    <Icon className="size-[18px] opacity-70 group-hover:opacity-100 transition-opacity" />
+                  ) : (
+                    <span className="text-xs font-bold text-muted-foreground group-hover:text-primary transition-colors">
+                      {social.label[0]}
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
           </div>
 
           {/* Copyright & Legal Row */}

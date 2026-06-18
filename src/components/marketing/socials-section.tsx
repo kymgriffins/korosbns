@@ -4,34 +4,41 @@ import { motion } from "motion/react";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
 import Link from "next/link";
 import { useOrg } from "@/contexts/org-context";
-import { Hash, Camera, Briefcase, Music4, Play, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
+import {
+  XIcon,
+  InstagramIcon,
+  LinkedInIcon,
+  YouTubeIcon,
+  TikTokIcon,
+} from "@/components/ui/social-icons";
 
 const platformDefaults: Record<
   string,
   { icon: React.ReactNode; color: string; handle: string }
 > = {
   x: {
-    icon: <Hash className="size-5" />,
+    icon: <XIcon className="size-5" />,
     color: "hover:bg-black/10 dark:hover:bg-white/10",
     handle: "@BudgetNdioStory",
   },
   instagram: {
-    icon: <Camera className="size-5" />,
+    icon: <InstagramIcon className="size-5" />,
     color: "hover:bg-pink-500/10",
     handle: "@budgetndiostory",
   },
   linkedin: {
-    icon: <Briefcase className="size-5" />,
+    icon: <LinkedInIcon className="size-5" />,
     color: "hover:bg-blue-600/10",
     handle: "Budget Ndio Story",
   },
   youtube: {
-    icon: <Play className="size-5" />,
+    icon: <YouTubeIcon className="size-5" />,
     color: "hover:bg-red-600/10",
     handle: "@BudgetNdioStory",
   },
   tiktok: {
-    icon: <Music4 className="size-5" />,
+    icon: <TikTokIcon className="size-5" />,
     color: "hover:bg-purple-500/10",
     handle: "@budget.ndio.story",
   },
@@ -106,8 +113,8 @@ export function SocialsSection() {
                     {platform.handle}
                   </div>
                 </div>
-                <span className="text-xs text-primary font-medium group-hover:underline">
-                  Follow &rarr;
+                <span className="text-xs text-primary font-medium group-hover:underline inline-flex items-center gap-1">
+                  Follow <ExternalLink className="size-3" />
                 </span>
               </Link>
             </motion.div>
