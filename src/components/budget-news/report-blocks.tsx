@@ -446,14 +446,13 @@ export function BudgetReportHero({
   imageUrl?: string;
 }) {
   return (
-    <section className="relative overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-br from-primary/8 via-background to-violet-500/5 p-6 sm:p-10">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent pointer-events-none" />
+    <section className="overflow-hidden rounded-2xl border border-border/60 bg-card">
       {imageUrl && (
-        <div className="absolute inset-0 opacity-[0.07] pointer-events-none">
-          <HarmonizedImage src={imageUrl} alt="" className="h-full w-full rounded-none border-0" fallbackLabel="" />
+        <div className="relative aspect-[21/9] overflow-hidden bg-muted sm:aspect-[3/1]">
+          <HarmonizedImage src={imageUrl} alt="" className="h-full w-full rounded-none border-0" imageClassName="object-cover" fallbackLabel="" />
         </div>
       )}
-      <div className="relative">
+      <div className="p-6 sm:p-10">
         <div className="flex flex-wrap items-center gap-2 mb-4">
           <Badge className="bg-primary/90 text-primary-foreground">FY{report.fiscal_year} Report</Badge>
           {report.approved_date && (

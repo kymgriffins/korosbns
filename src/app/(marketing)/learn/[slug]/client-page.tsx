@@ -423,7 +423,6 @@ export default function UnifiedReaderClientPage({
           >
             <HarmonizedImage src={heroSrc} alt={article.title} className="h-full rounded-none border-0" imageClassName="object-cover" fallbackLabel="Article cover" />
             {!hasHero && <div className={`absolute inset-0 bg-gradient-to-br ${placeholder.accent}`} />}
-            <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(8,8,12,0.45)_10%,transparent_55%)]" />
           </motion.div>
 
             <article className="space-y-8">

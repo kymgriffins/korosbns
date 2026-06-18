@@ -264,17 +264,18 @@ export function LearnDashboardView({
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/10 to-muted text-2xl">{stage.badge}</div>
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
-                    <span className="absolute bottom-1.5 left-1.5 inline-flex rounded px-1.5 py-0.5 text-[9px] font-bold leading-tight text-white ring-1 ring-white/20 backdrop-blur bg-white/15">
-                      {stage.badgeName || stage.badge}
-                    </span>
-                    {stage.steps?.length ? (
-                      <span className="absolute right-1.5 top-1.5 inline-flex items-center gap-1 rounded-full bg-black/35 px-1.5 py-0.5 text-[9px] font-semibold text-white/90 backdrop-blur">
-                        <BookOpen className="size-2.5" /> {stage.steps.length}
-                      </span>
-                    ) : null}
                   </div>
                   <div className="space-y-1 p-2.5">
+                    <div className="flex items-center justify-between">
+                      <span className="inline-flex rounded px-1.5 py-0.5 text-[9px] font-bold text-muted-foreground bg-muted/60">
+                        {stage.badgeName || stage.badge}
+                      </span>
+                      {stage.steps?.length ? (
+                        <span className="inline-flex items-center gap-1 text-[9px] font-semibold text-muted-foreground">
+                          <BookOpen className="size-2.5" /> {stage.steps.length}
+                        </span>
+                      ) : null}
+                    </div>
                     <h3 className="line-clamp-2 text-xs font-bold leading-tight transition-colors group-hover:text-primary">{stage.title}</h3>
                     <p className="line-clamp-2 text-[10px] leading-relaxed text-muted-foreground">{stage.description}</p>
                   </div>
