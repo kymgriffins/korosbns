@@ -31,6 +31,7 @@ export default function LandingTikTokVideo() {
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isInView, setIsInView] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [video, setVideo] = useState<TikTokVideoApi | null>(null);
@@ -65,17 +66,20 @@ export default function LandingTikTokVideo() {
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
+  const attemptPlay = useCallback(() => {
     const node = videoRef.current;
-    if (!node) return;
-
+    if (!node || !isReady) return;
     if (isInView) {
       void node.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
     } else {
       node.pause();
       setIsPlaying(false);
     }
-  }, [isInView]);
+  }, [isInView, isReady]);
+
+  useEffect(() => {
+    attemptPlay();
+  }, [attemptPlay]);
 
   const toggleMute = useCallback(() => {
     const node = videoRef.current;
@@ -135,6 +139,14 @@ export default function LandingTikTokVideo() {
   }, [video]);
 
   const switchVideo = useCallback((v: TikTokVideoApi) => {
+    const node = videoRef.current;
+    if (node) {
+      setIsReady(false);
+      setIsPlaying(false);
+      node.pause();
+      node.src = v.video_url;
+      node.load();
+    }
     setVideo(v);
     setLikeCount(v.like_count);
     setLiked(false);
@@ -198,16 +210,17 @@ export default function LandingTikTokVideo() {
                 <>
                   <video
                     ref={videoRef}
-                    key={video.id}
                     src={video.video_url}
                     className="absolute inset-0 h-full w-full object-cover"
                     loop
                     muted
                     playsInline
-                    preload="metadata"
+                    preload="auto"
                     onClick={togglePlay}
                     onPlay={() => setIsPlaying(true)}
                     onPause={() => setIsPlaying(false)}
+                    onCanPlay={() => { setIsReady(true); }}
+                    onError={() => { setIsReady(false); }}
                     aria-label="County budget social video"
                   />
 

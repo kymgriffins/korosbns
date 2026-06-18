@@ -29,6 +29,7 @@ export default function TikTokVideoPage({ params }: { params: Promise<{ uuid: st
   const [notFound, setNotFound] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
 
@@ -49,9 +50,9 @@ export default function TikTokVideoPage({ params }: { params: Promise<{ uuid: st
 
   useEffect(() => {
     const node = videoRef.current;
-    if (!node || !video) return;
+    if (!node || !video || !isReady) return;
     void node.play().then(() => setIsPlaying(true)).catch(() => {});
-  }, [video]);
+  }, [video, isReady]);
 
   const toggleMute = () => {
     const node = videoRef.current;
@@ -133,10 +134,11 @@ export default function TikTokVideoPage({ params }: { params: Promise<{ uuid: st
             loop
             muted
             playsInline
-            preload="metadata"
+            preload="auto"
             onClick={togglePlay}
             onPlay={() => setIsPlaying(true)}
             onPause={() => setIsPlaying(false)}
+            onCanPlay={() => setIsReady(true)}
             aria-label="TikTok video"
           />
 
