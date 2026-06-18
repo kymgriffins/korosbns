@@ -43,7 +43,9 @@ export type StudioPortfolioItemApi = {
   id: string;
   title: string;
   category: string;
+  media_type: "image" | "video";
   image_url: string;
+  video_url?: string;
   thumbnail_url?: string;
   description?: string;
 };

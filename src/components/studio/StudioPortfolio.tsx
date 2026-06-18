@@ -3,13 +3,15 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
-import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, Play } from "lucide-react";
 
 type PortfolioItem = {
   id: string;
   title: string;
   category: string;
+  media_type: "image" | "video";
   image_url: string;
+  video_url?: string;
   description?: string;
 };
 
@@ -20,20 +22,25 @@ const defaultItems: PortfolioItem[] = [
     id: "1",
     title: "Budget Breakdown 2026",
     category: "Videography",
+    media_type: "video",
     image_url: "/placeholder.svg",
+    video_url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     description: "Animated explainer breaking down the FY2026/27 budget allocations.",
   },
   {
     id: "2",
     title: "County Legislative Process",
     category: "Videography",
+    media_type: "video",
     image_url: "/placeholder.svg",
+    video_url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     description: "Documentary on how county assemblies process budgets.",
   },
   {
     id: "3",
     title: "Youth Civic Engagement",
     category: "Photography",
+    media_type: "image",
     image_url: "/placeholder.svg",
     description: "Photo series capturing youth participation in public forums.",
   },
@@ -41,21 +48,27 @@ const defaultItems: PortfolioItem[] = [
     id: "4",
     title: "Finance Bill Town Hall",
     category: "Events",
+    media_type: "video",
     image_url: "/placeholder.svg",
+    video_url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     description: "Coverage of public participation forums on the Finance Bill.",
   },
   {
     id: "5",
     title: "BNS Brand Documentary",
     category: "Brand",
+    media_type: "video",
     image_url: "/placeholder.svg",
+    video_url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     description: "Brand film showcasing the Budget Ndio Story mission and impact.",
   },
   {
     id: "6",
     title: "Parliamentary Proceedings",
     category: "Videography",
+    media_type: "video",
     image_url: "/placeholder.svg",
+    video_url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     description: "Coverage of National Assembly budget committee sessions.",
   },
 ];
@@ -136,8 +149,30 @@ export function StudioPortfolio({ items }: Props) {
                 className="group relative aspect-video rounded-xl overflow-hidden border border-border/60 bg-card cursor-pointer"
                 onClick={() => setLightbox(item)}
               >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-10" />
-                <div className="absolute bottom-0 left-0 right-0 p-4 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
+                {item.media_type === "video" && item.video_url ? (
+                  <>
+                    <iframe
+                      src={item.video_url}
+                      className="absolute inset-0 size-full pointer-events-none"
+                      title={item.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-black/20 z-10" />
+                    <div className="absolute inset-0 flex items-center justify-center z-20">
+                      <div className="size-14 rounded-full bg-white/20 backdrop-blur flex items-center justify-center group-hover:bg-white/30 transition-colors">
+                        <Play className="size-6 text-white ml-0.5" />
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div
+                    className="absolute inset-0 bg-cover bg-center"
+                    style={{ backgroundImage: `url(${item.image_url})` }}
+                  />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-30" />
+                <div className="absolute bottom-0 left-0 right-0 p-4 z-40 opacity-0 group-hover:opacity-100 transition-opacity">
                   <h3 className="text-white font-semibold text-sm">
                     {item.title}
                   </h3>
@@ -163,10 +198,26 @@ export function StudioPortfolio({ items }: Props) {
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.9 }}
-              className="relative max-w-3xl w-full rounded-xl overflow-hidden bg-card"
+              className="relative max-w-4xl w-full rounded-xl overflow-hidden bg-card"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="aspect-video bg-muted" />
+              <div className="aspect-video bg-muted">
+                {lightbox.media_type === "video" && lightbox.video_url ? (
+                  <iframe
+                    src={lightbox.video_url}
+                    className="size-full"
+                    title={lightbox.title}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                ) : (
+                  <img
+                    src={lightbox.image_url}
+                    alt={lightbox.title}
+                    className="size-full object-cover"
+                  />
+                )}
+              </div>
               <div className="p-5">
                 <h3 className="font-semibold text-lg">{lightbox.title}</h3>
                 <span className="text-xs text-muted-foreground">
