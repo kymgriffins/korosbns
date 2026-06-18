@@ -12,8 +12,13 @@ type PortfolioItem = {
   media_type: "image" | "video";
   image_url: string;
   video_url?: string;
+  video_platform?: "youtube" | "vimeo" | "cloudinary" | "other";
   description?: string;
 };
+
+function isEmbedPlatform(platform?: string) {
+  return platform === "youtube" || platform === "vimeo" || platform === "other" || !platform;
+}
 
 const categories = ["All", "Videography", "Photography", "Events", "Brand"];
 
@@ -151,13 +156,23 @@ export function StudioPortfolio({ items }: Props) {
               >
                 {item.media_type === "video" && item.video_url ? (
                   <>
-                    <iframe
-                      src={item.video_url}
-                      className="absolute inset-0 size-full pointer-events-none"
-                      title={item.title}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      loading="lazy"
-                    />
+                    {isEmbedPlatform(item.video_platform) ? (
+                      <iframe
+                        src={item.video_url}
+                        className="absolute inset-0 size-full pointer-events-none"
+                        title={item.title}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <video
+                        src={item.video_url}
+                        className="absolute inset-0 size-full pointer-events-none object-cover"
+                        muted
+                        loop
+                        playsInline
+                      />
+                    )}
                     <div className="absolute inset-0 bg-black/20 z-10" />
                     <div className="absolute inset-0 flex items-center justify-center z-20">
                       <div className="size-14 rounded-full bg-white/20 backdrop-blur flex items-center justify-center group-hover:bg-white/30 transition-colors">
@@ -203,13 +218,23 @@ export function StudioPortfolio({ items }: Props) {
             >
               <div className="aspect-video bg-muted">
                 {lightbox.media_type === "video" && lightbox.video_url ? (
-                  <iframe
-                    src={lightbox.video_url}
-                    className="size-full"
-                    title={lightbox.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
+                  isEmbedPlatform(lightbox.video_platform) ? (
+                    <iframe
+                      src={lightbox.video_url}
+                      className="size-full"
+                      title={lightbox.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <video
+                      src={lightbox.video_url}
+                      className="size-full"
+                      controls
+                      autoPlay
+                      playsInline
+                    />
+                  )
                 ) : (
                   <img
                     src={lightbox.image_url}

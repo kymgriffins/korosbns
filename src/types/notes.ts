@@ -46,6 +46,7 @@ export type StudioPortfolioItemApi = {
   media_type: "image" | "video";
   image_url: string;
   video_url?: string;
+  video_platform?: "youtube" | "vimeo" | "cloudinary" | "other";
   thumbnail_url?: string;
   description?: string;
 };

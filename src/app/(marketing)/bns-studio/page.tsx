@@ -30,7 +30,7 @@ async function fetchJson<T>(path: string): Promise<T | null> {
 }
 
 type ApiService = { id: string; title: string; description: string; icon: string; price: string; order: number };
-type ApiPortfolio = { id: string; title: string; description: string; media_type: string; image_url: string; video_url: string; category: string; order: number };
+type ApiPortfolio = { id: string; title: string; description: string; media_type: string; image_url: string; video_url: string; video_platform: string; category: string; order: number };
 type ApiTestimonial = { id: string; client_name: string; client_role: string; content: string; rating: number; image_url: string; order: number };
 
 const defaultFeatures: Record<string, string[]> = {
@@ -61,6 +61,7 @@ export default async function BNSStudioPage() {
     media_type: p.media_type === "video" ? "video" as const : "image" as const,
     image_url: p.image_url,
     video_url: p.video_url || undefined,
+    video_platform: (p.video_platform || "youtube") as "youtube" | "vimeo" | "cloudinary" | "other",
     description: p.description,
   }));
 
