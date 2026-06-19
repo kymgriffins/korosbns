@@ -54,7 +54,7 @@
 
 /* Default theme styles (used when no data-theme-preset is set or when 'default' is selected).
 These serve as the fallback; there is no separate default.css file. */
-:root {
+[data-budgethub-theme] {
   --radius: 0.625rem;
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -93,7 +93,8 @@ These serve as the fallback; there is no separate default.css file. */
   --foreground: oklch(0.145 0 0);
 }
 
-.dark {
+.dark [data-budgethub-theme],
+[data-budgethub-theme].dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
