@@ -1,12 +1,26 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { runMicrofrontendsMiddleware } from "@vercel/microfrontends/next/middleware";
 import { ACCESS_TOKEN_COOKIE } from "@/lib/auth-policy";
 import { evaluateAuthMiddleware } from "@/lib/auth-middleware";
 
 const DEVICE_COOKIE = "bns_gid";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
+  const mfeResponse = await runMicrofrontendsMiddleware({
+    request,
+    flagValues: {},
+  });
+  if (mfeResponse) {
+    return mfeResponse;
+  }
+
   const { pathname } = request.nextUrl;
+
+  if (pathname === "/budgethub" || pathname.startsWith("/budgethub/")) {
+    return NextResponse.next();
+  }
+
   const token =
     request.cookies.get(ACCESS_TOKEN_COOKIE)?.value ??
     request.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ??
@@ -36,5 +50,6 @@ export function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     "/((?!api|_next/static|_next/image|favicon.ico|logo.svg|sitemap.xml|robots.txt).*)",
+    "/.well-known/vercel/microfrontends/client-config",
   ],
 };

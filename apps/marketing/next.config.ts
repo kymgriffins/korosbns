@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withMicrofrontends } from "@vercel/microfrontends/next/config";
 
 const PRODUCTION_API = "https://bnske.budgetndiostory.org";
 
@@ -10,13 +11,15 @@ function apiProxyTarget(): string {
   return raw.replace(/\/+$/, "");
 }
 
-function budgethubProxyTarget(): string {
-  // Production routing is handled by vercel.json / Vercel microfrontends.
-  if (process.env.VERCEL) {
-    return "";
+function budgethubProxyTarget(): string | null {
+  const raw = process.env.BUDGETHUB_URL?.trim();
+  if (raw) {
+    return raw.replace(/\/+$/, "");
   }
-  const raw = process.env.BUDGETHUB_URL ?? "http://localhost:3002";
-  return raw.replace(/\/+$/, "");
+  if (process.env.VERCEL) {
+    return null;
+  }
+  return "http://localhost:3002";
 }
 
 function contentSecurityPolicy(): string {
@@ -257,4 +260,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withMicrofrontends(nextConfig);

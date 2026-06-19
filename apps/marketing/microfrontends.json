@@ -1,23 +1,21 @@
 {
-  "$schema": "https://turborepo.dev/microfrontends/schema.json",
+  "$schema": "https://openapi.vercel.sh/microfrontends.json",
   "options": {
     "localProxyPort": 3024
   },
   "applications": {
-    "marketing": {
+    "budgetndiostory": {
       "packageName": "@korosbns/marketing",
       "development": {
-        "local": {
-          "port": 3000
-        }
+        "local": 3000,
+        "fallback": "https://budgetndiostory.org"
       }
     },
-    "budgethub": {
+    "budgetndiostory-budgethub": {
       "packageName": "@korosbns/budgethub",
       "development": {
-        "local": {
-          "port": 3002
-        }
+        "local": 3002,
+        "fallback": "https://budgetndiostory.org"
       },
       "routing": [
         {
