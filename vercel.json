@@ -9,5 +9,15 @@
       "use": "@vercel/next"
     }
   ],
+  "routes": [
+    {
+      "src": "/budgethub(?:/(.*))?",
+      "dest": "/budgethub/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
   "buildCommand": "turbo build"
 }
