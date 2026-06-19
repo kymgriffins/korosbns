@@ -43,6 +43,7 @@ import type {
   BudgetReportProfile,
 } from "@/types/budget-report";
 import { formatKesBillions, formatKesTrillions, percentChange, shareOfTotal } from "@/lib/budget-format";
+import NumberFlow from "@number-flow/react";
 import { filterRealImageUrls, parseArticleBlocks } from "@/lib/budget-report-data";
 import { isEditorJsBody } from "@/lib/editorjs";
 import { renderArticleBody } from "@/lib/render-content";
@@ -69,18 +70,23 @@ export function BudgetKpiGrid({ kpis }: { kpis: BudgetKpi[] }) {
   const maxValue = Math.max(...kpis.map((k) => k.value), 1);
   return (
     <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-      {kpis.map((kpi) => (
-        <BudgetKpiCard key={kpi.key} kpi={kpi} scale={kpi.value / maxValue} />
+      {kpis.map((kpi, idx) => (
+        <div
+          key={kpi.key}
+          className="animate-in fade-in slide-in-from-bottom-4 duration-700"
+          style={{ animationDelay: `${idx * 100}ms`, animationFillMode: "both" }}
+        >
+          <BudgetKpiCard kpi={kpi} scale={kpi.value / maxValue} index={idx} />
+        </div>
       ))}
     </div>
   );
 }
 
-function BudgetKpiCard({ kpi, scale }: { kpi: BudgetKpi; scale: number }) {
-  const display =
-    kpi.suffix === "trillion-scale"
-      ? formatKesTrillions(kpi.value)
-      : formatKesBillions(kpi.value);
+function BudgetKpiCard({ kpi, scale, index = 0 }: { kpi: BudgetKpi; scale: number; index?: number }) {
+  const isTrillion = kpi.suffix === "trillion-scale";
+  const numericValue = kpi.value;
+  const displayValue = isTrillion ? numericValue / 1000 : numericValue;
 
   const isUp = kpi.trend === "up";
   const isDown = kpi.trend === "down";
@@ -94,7 +100,15 @@ function BudgetKpiCard({ kpi, scale }: { kpi: BudgetKpi; scale: number }) {
         </CardTitle>
       </CardHeader>
       <CardContent className="px-4 space-y-2.5">
-        <p className="text-xl sm:text-2xl font-bold tabular-nums tracking-tight">{display}</p>
+        <p className="text-xl sm:text-2xl font-bold tabular-nums tracking-tight">
+          <NumberFlow
+            value={displayValue}
+            format={{ notation: isTrillion ? "compact" : "compact", maximumFractionDigits: 1 }}
+            suffix={isTrillion ? "T" : "B"}
+            locales="en-KE"
+            willChange
+          />
+        </p>
         <div className="h-1.5 w-full bg-muted-foreground/10 rounded-full overflow-hidden">
           <div
             className="h-full rounded-full transition-all duration-700 ease-out"
@@ -300,32 +314,32 @@ export function BudgetBarChart({ config }: { config: BudgetChartConfig }) {
                 </linearGradient>
               ))}
             </defs>
-            <Bar
-              dataKey="value"
-              radius={[6, 6, 0, 0]}
-              isAnimationActive={true}
-              animationDuration={800}
-              animationEasing="ease-out"
-              maxBarSize={52}
-            >
-              {config.data.map((entry, index) => (
-                <Cell
-                  key={entry.name}
-                  fill={`url(#bar-grad-${index})`}
-                  stroke={entry.fill ?? SECTOR_COLORS[index % SECTOR_COLORS.length]}
-                  strokeWidth={0.5}
-                  className="transition-opacity duration-200 hover:opacity-80"
-                />
-              ))}
-              <LabelList
+            {config.data.map((entry, idx) => (
+              <Bar
+                key={entry.name}
                 dataKey="value"
-                position="top"
-                fontSize={10}
-                formatter={(v: any) => `${Number(v).toFixed(1)}`}
-                fill="hsl(var(--muted-foreground))"
-                className="tabular-nums font-medium"
-              />
-            </Bar>
+                data={[config.data[idx]]}
+                radius={[6, 6, 0, 0]}
+                isAnimationActive={true}
+                animationDuration={500}
+                animationBegin={idx * 100}
+                animationEasing="ease-out"
+                maxBarSize={52}
+                fill={`url(#bar-grad-${idx})`}
+                stroke={entry.fill ?? SECTOR_COLORS[idx % SECTOR_COLORS.length]}
+                strokeWidth={0.5}
+                className="transition-all duration-200 hover:opacity-80 hover:brightness-110"
+              >
+                <LabelList
+                  dataKey="value"
+                  position="top"
+                  fontSize={10}
+                  formatter={(v: any) => `${Number(v).toFixed(1)}`}
+                  fill="hsl(var(--muted-foreground))"
+                  className="tabular-nums font-medium"
+                />
+              </Bar>
+            ))}
           </BarChart>
         </ChartContainer>
       </CardContent>
