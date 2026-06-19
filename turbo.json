@@ -5,7 +5,28 @@
     "build": {
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**"],
-      "env": ["NEXT_PUBLIC_*", "SENTRY_*", "NODE_ENV"]
+      "env": [
+        "NEXT_PUBLIC_*",
+        "SENTRY_*",
+        "NODE_ENV",
+        "YOUTUBE_CHANNEL_ID",
+        "YOUTUBE_URL",
+        "TASKS_API_URL",
+        "TASKS_API_UPDATE_URL",
+        "DJANGO_AUTH_LOGIN_URL",
+        "DJANGO_AUTH_REGISTER_URL",
+        "DJANGO_AUTH_LOGOUT_URL",
+        "DJANGO_AUTH_REFRESH_URL",
+        "DJANGO_AUTH_PROFILE_URL",
+        "DJANGO_ADMIN_MODELS_URL",
+        "DEPLOY_WEBHOOK_TOKEN",
+        "CLOUDINARY_API_KEY",
+        "CLOUDINARY_API_SECRET",
+        "CLOUDINARY_CLOUD_NAME",
+        "CLOUDINARY_URL",
+        "API_PROXY_TARGET",
+        "EMAIL_HOOK_API_KEY"
+      ]
     },
     "dev": {
       "cache": false,
