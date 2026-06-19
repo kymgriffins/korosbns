@@ -1,4 +1,3 @@
 {
-  "buildCommand": "turbo build --filter=@korosbns/marketing && cp -r apps/marketing/.next .next",
-  "framework": "nextjs"
+  "buildCommand": "rm -rf .next && turbo build --filter=@korosbns/marketing && mv apps/marketing/.next .next"
 }
