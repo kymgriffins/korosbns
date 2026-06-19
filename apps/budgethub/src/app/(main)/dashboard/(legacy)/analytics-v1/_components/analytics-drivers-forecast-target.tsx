@@ -76,12 +76,12 @@ export function DriversForecastTarget() {
             <YAxis yAxisId="pipeline" hide domain={[pipelineMin, pipelineMax]} />
             <ChartTooltip
               cursor={false}
-              content={(props) => (
+              content={(props: any) => (
                 <ChartTooltipContent
                   active={props.active}
                   label={props.label}
                   className="w-48"
-                  payload={(props.payload ?? []).map((item) => ({
+                  payload={(props.payload ?? []).map((item: any) => ({
                     ...item,
                     value: typeof item.value === "number" ? `${item.value.toFixed(1)}%` : item.value,
                   }))}
@@ -110,7 +110,7 @@ export function DriversForecastTarget() {
               strokeWidth={0}
               stroke="var(--color-weightedPipeline)"
               isAnimationActive={false}
-              dot={({ payload, ...props }) => (
+              dot={({ payload, ...props }: any) => (
                 <Dot
                   key={`${payload.period}-weighted-pipeline`}
                   cx={props.cx}

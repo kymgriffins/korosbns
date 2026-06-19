@@ -3,7 +3,11 @@
     {
       "src": "apps/marketing/package.json",
       "use": "@vercel/next"
+    },
+    {
+      "src": "apps/budgethub/package.json",
+      "use": "@vercel/next"
     }
   ],
-  "buildCommand": "turbo build --filter=@korosbns/marketing"
+  "buildCommand": "turbo build"
 }
