@@ -1,0 +1,29 @@
+{
+  "$schema": "https://turborepo.dev/microfrontends/schema.json",
+  "options": {
+    "localProxyPort": 3024
+  },
+  "applications": {
+    "marketing": {
+      "packageName": "@korosbns/marketing",
+      "development": {
+        "local": {
+          "port": 3000
+        }
+      }
+    },
+    "budgethub": {
+      "packageName": "@korosbns/budgethub",
+      "development": {
+        "local": {
+          "port": 3002
+        }
+      },
+      "routing": [
+        {
+          "paths": ["/budgethub", "/budgethub/:path*"]
+        }
+      ]
+    }
+  }
+}

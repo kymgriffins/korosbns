@@ -46,5 +46,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# npm lockfiles (pnpm-only monorepo)
+package-lock.json
+
 # others
 .cursor/

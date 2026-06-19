@@ -10,6 +10,15 @@ function apiProxyTarget(): string {
   return raw.replace(/\/+$/, "");
 }
 
+function budgethubProxyTarget(): string {
+  // Production routing is handled by vercel.json / Vercel microfrontends.
+  if (process.env.VERCEL) {
+    return "";
+  }
+  const raw = process.env.BUDGETHUB_URL ?? "http://localhost:3002";
+  return raw.replace(/\/+$/, "");
+}
+
 function contentSecurityPolicy(): string {
   const localApiConnect =
     process.env.NODE_ENV === "development"
@@ -202,7 +211,24 @@ const nextConfig: NextConfig = {
 
   async rewrites() {
     const target = apiProxyTarget();
+    const budgethub = budgethubProxyTarget();
     return [
+      ...(budgethub
+        ? [
+            {
+              source: "/budgethub",
+              destination: `${budgethub}/budgethub`,
+            },
+            {
+              source: "/budgethub/",
+              destination: `${budgethub}/budgethub/`,
+            },
+            {
+              source: "/budgethub/:path*",
+              destination: `${budgethub}/budgethub/:path*`,
+            },
+          ]
+        : []),
       {
         source: "/api/v1/:path*/",
         destination: `${target}/api/v1/:path*/`,

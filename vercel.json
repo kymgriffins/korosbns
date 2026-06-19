@@ -1,3 +1,27 @@
 {
-  "buildCommand": "turbo build"
+  "buildCommand": "turbo build --filter=@korosbns/marketing --filter=@korosbns/budgethub",
+  "installCommand": "pnpm install",
+  "builds": [
+    {
+      "src": "apps/marketing/package.json",
+      "use": "@vercel/next"
+    },
+    {
+      "src": "apps/budgethub/package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/budgethub(?:/(.*))?$",
+      "dest": "apps/budgethub"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "apps/marketing"
+    }
+  ]
 }
