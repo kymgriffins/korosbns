@@ -32,9 +32,10 @@ function contentSecurityPolicy(): string {
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: ['192.168.100.78', 'localhost', '127.0.0.1'],
-  reactCompiler: true,
-  turbopack: false,
   trailingSlash: true,
+  experimental: {
+    turbo: false,
+  },
 
   compress: true,
   poweredByHeader: false,
