@@ -18,7 +18,7 @@ export default function DayNightSwitch() {
         <span className="star star--6" />
       </label>
 
-      <style jsx>{`
+      <style>{`
         .toggleWrapper {
           position: relative;
           overflow: hidden;

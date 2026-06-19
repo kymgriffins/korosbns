@@ -1816,7 +1816,7 @@ export default function Learn() {
           </div>
         </div>
       </Wrapper>
-      <style jsx>{`
+      <style>{`
         .lr-folder {
           position: absolute;
           width: 190px;

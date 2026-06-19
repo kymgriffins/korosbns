@@ -54,7 +54,7 @@ export default function RetroTvCard() {
         <div className="text_4043">4</div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         .main_wrapper {
           display: flex;
           align-items: center;
