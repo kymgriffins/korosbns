@@ -4,7 +4,7 @@ import Providers from "@/components/global/providers";
 import WhatsAppSupport from "@/components/global/whatsapp-support";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
-import "@/app/globals.css";
+import "@/styles/globals.css";
 import { fontVars } from "@/lib/fonts/registry";
 import { PREFERENCE_DEFAULTS } from "@/lib/preferences/preferences-config";
 import { ThemeBootScript } from "@/scripts/theme-boot";
