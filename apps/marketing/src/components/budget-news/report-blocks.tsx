@@ -314,32 +314,33 @@ export function BudgetBarChart({ config }: { config: BudgetChartConfig }) {
                 </linearGradient>
               ))}
             </defs>
-            {config.data.map((entry, idx) => (
-              <Bar
-                key={entry.name}
-                dataKey="value"
-                data={[config.data[idx]]}
-                radius={[6, 6, 0, 0]}
-                isAnimationActive={true}
-                animationDuration={500}
-                animationBegin={idx * 100}
-                animationEasing="ease-out"
-                maxBarSize={52}
-                fill={`url(#bar-grad-${idx})`}
-                stroke={entry.fill ?? SECTOR_COLORS[idx % SECTOR_COLORS.length]}
-                strokeWidth={0.5}
-                className="transition-all duration-200 hover:opacity-80 hover:brightness-110"
-              >
-                <LabelList
-                  dataKey="value"
-                  position="top"
-                  fontSize={10}
-                  formatter={(v: any) => `${Number(v).toFixed(1)}`}
-                  fill="hsl(var(--muted-foreground))"
-                  className="tabular-nums font-medium"
+            <Bar
+              dataKey="value"
+              radius={[6, 6, 0, 0]}
+              isAnimationActive={true}
+              animationDuration={800}
+              animationBegin={300}
+              animationEasing="ease-out"
+              maxBarSize={52}
+            >
+              {config.data.map((entry, index) => (
+                <Cell
+                  key={entry.name}
+                  fill={`url(#bar-grad-${index})`}
+                  stroke={entry.fill ?? SECTOR_COLORS[index % SECTOR_COLORS.length]}
+                  strokeWidth={0.5}
+                  className="transition-all duration-200 hover:opacity-80 hover:brightness-110"
                 />
-              </Bar>
-            ))}
+              ))}
+              <LabelList
+                dataKey="value"
+                position="top"
+                fontSize={10}
+                formatter={(v: any) => `${Number(v).toFixed(1)}`}
+                fill="hsl(var(--muted-foreground))"
+                className="tabular-nums font-medium"
+              />
+            </Bar>
           </BarChart>
         </ChartContainer>
       </CardContent>
