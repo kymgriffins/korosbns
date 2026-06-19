@@ -45,3 +45,9 @@ next-env.d.ts
 
 # others
 .cursor/
+
+# turbo
+.turbo/
+
+# npm lockfiles (pnpm workspace)
+package-lock.json
