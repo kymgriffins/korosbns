@@ -1,15 +1,9 @@
-import type { Metadata } from "next";
-import { metaDescription, canonicalUrl } from "@/utils/metadata";
-import { LearnDocumentsPageClient } from "./client-page";
+import DocumentsClientPage from "./client-page";
 
-export const metadata: Metadata = {
-  title: "Budget Documents | Learn Hub | Budget Ndio Story",
-  description: metaDescription(
-    "Browse Kenya budget documents, Finance Bills, and county fiscal reports in the Learn Hub document repository.",
-  ),
-  alternates: { canonical: canonicalUrl("/documents") },
+export const metadata = {
+  title: "Budget Documents | Budget Ndio Story",
 };
 
-export default function LearnDocumentsPage() {
-  return <LearnDocumentsPageClient />;
+export default function DocumentsPage() {
+  return <DocumentsClientPage />;
 }

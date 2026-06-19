@@ -1,7 +1,12 @@
 "use client";
 
-import { Protected } from "@/components/citizen/protected";
+import { useAuth } from "@/contexts/auth-context";
 
 export function QuestsProtectedGate({ children }: { children: React.ReactNode }) {
-  return <Protected>{children}</Protected>;
+  const { isLoggedIn, loading } = useAuth();
+
+  if (loading) return <div>Loading...</div>;
+  if (!isLoggedIn) return <div>Please sign in to access quests.</div>;
+
+  return <>{children}</>;
 }
