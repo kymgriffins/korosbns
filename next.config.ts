@@ -197,6 +197,11 @@ const nextConfig: NextConfig = {
         destination: "/learn/",
         permanent: false,
       },
+      {
+        source: "/budgethub/dashboard",
+        destination: "/budgethub/dashboard/default",
+        permanent: false,
+      },
     ];
   },
 
