@@ -1,0 +1,268 @@
+/* Custom Scrollbar — only applied via .scrollbar-hide class, not globally */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* Focus-visible indicators for interactive elements */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+[role="button"]:focus-visible,
+[role="tab"]:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: var(--radius);
+}
+
+/* Custom Cursor */
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 150px;
+  height: 150px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: difference;
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.custom-cursor.active {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.custom-cursor span {
+  color: black;
+  font-weight: 600;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Typography styles for premium landing layout */
+.gusto-heading {
+  @apply text-[clamp(2rem,6vw,4.5rem)] font-black tracking-[-0.03em] leading-[1.05] text-balance;
+}
+
+.gusto-subheading {
+  @apply text-[clamp(1.25rem,2.5vw,2.25rem)] font-bold tracking-tight leading-tight text-balance;
+}
+
+.gusto-text {
+  @apply text-base md:text-lg text-foreground/80 leading-relaxed;
+}
+
+/* Button flairs and elements */
+.button__flair {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  transform: scale(0);
+  transform-origin: 0 0;
+  will-change: transform;
+  background: hsl(var(--foreground));
+  mix-blend-mode: difference;
+  border-radius: 100px;
+}
+
+.button__label {
+  position: relative;
+  text-align: center;
+  z-index: 10;
+  transition: color 50ms ease-in-out;
+}
+
+.title {
+  @apply text-3xl md:text-4xl font-medium bg-linear-to-r from-foreground to-foreground/70 text-transparent bg-clip-text text-balance text-center leading-tight;
+}
+
+.desc {
+  @apply text-base md:text-lg text-muted-foreground text-balance text-center max-w-lg mx-auto;
+}
+
+/* Rotating Borders */
+@keyframes rotate-border {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.rotating-border {
+  position: relative;
+}
+
+.rotating-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: conic-gradient(from 0deg,
+      transparent 0%,
+      hsl(var(--primary)) 50%,
+      transparent 100%);
+  border-radius: inherit;
+  animation: rotate-border 3s linear infinite;
+  z-index: -1;
+}
+
+.rotating-border::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: hsl(var(--background) / 0.05);
+  border-radius: inherit;
+  z-index: -1;
+}
+
+/* Bento grid */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .bento-grid {
+    grid-template-columns: repeat(12, 1fr);
+  }
+}
+
+.bento-card {
+  @apply relative overflow-hidden rounded-[2.5rem] border border-foreground/10 bg-cardbox transition-all duration-500 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/5;
+}
+
+.bento-card-glass {
+  @apply backdrop-blur-xl bg-white/5 border-white/10;
+}
+
+/* Glowing/Minimal badges */
+.badge-glow {
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  box-shadow:
+    0 0 20px rgba(0, 85, 255, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.badge-minimal {
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Notion inspired elements */
+.notion-content {
+  @apply space-y-6 text-foreground/90 leading-relaxed;
+}
+
+.notion-content h3 {
+  @apply text-xl font-bold mt-10 mb-4 border-b border-white/5 pb-2 text-foreground;
+}
+
+.notion-content p {
+  @apply mb-4;
+}
+
+.notion-callout {
+  @apply my-8 flex gap-4 rounded-2xl border p-5 backdrop-blur-sm transition-all hover:shadow-lg;
+}
+
+.notion-table {
+  @apply my-8 w-full border-collapse overflow-hidden rounded-2xl border border-white/10 bg-white/5;
+}
+
+.notion-table th {
+  @apply bg-white/10 px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-foreground/70;
+}
+
+.notion-table td {
+  @apply border-t border-white/5 px-4 py-3 text-sm text-foreground/80;
+}
+
+.notion-table tr:hover {
+  @apply bg-white/[0.03];
+}
+
+.notion-cta {
+  @apply my-10 rounded-3xl bg-gradient-to-br from-primary/20 to-teal-500/20 border border-primary/30 p-8 shadow-xl;
+}
+
+.notion-cta h4 {
+  @apply text-lg font-bold mb-3 text-primary flex items-center gap-2;
+}
+
+.notion-cta p {
+  @apply text-sm text-foreground/70 mb-0 leading-relaxed;
+}
+
+.notion-cta a {
+  @apply text-primary underline underline-offset-4 hover:text-primary/80 transition-colors font-medium;
+}
+
+.notion-content ul {
+  @apply list-disc list-outside ml-6 space-y-2 mb-6;
+}
+
+.notion-content li {
+  @apply text-foreground/80;
+}
+
+.notion-content strong {
+  @apply font-bold text-foreground;
+}
+
+/* CollapsibleContent animations */
+.CollapsibleContent {
+  overflow: hidden;
+}
+.CollapsibleContent[data-state="open"] {
+  animation: slideDown 300ms ease-out;
+}
+.CollapsibleContent[data-state="closed"] {
+  animation: slideUp 300ms ease-out;
+}
+
+@keyframes slideDown {
+  from { height: 0; }
+  to { height: var(--radix-collapsible-content-height); }
+}
+
+@keyframes slideUp {
+  from { height: var(--radix-collapsible-content-height); }
+  to { height: 0; }
+}
+
+/* Mobile fixed bottom navigation — content clearance + safe area */
+.pb-mobile-nav {
+  padding-bottom: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom, 0px));
+}
+
+/* Lift Toaster above fixed bottom navigation & drawer footers on mobile */
+@media (max-width: 1023px) {
+  [data-sonner-toaster] {
+    bottom: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom, 0px) + 0.5rem) !important;
+  }
+}
+
+/* Ensure toasts do not block clicks to elements behind them */
+[data-sonner-toaster] {
+  pointer-events: none !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast] {
+  pointer-events: auto !important;
+}

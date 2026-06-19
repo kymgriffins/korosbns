@@ -1,0 +1,109 @@
+"use client";
+
+import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Bell, Loader2, CheckCircle2, FileText, MessageSquare, RefreshCw } from "lucide-react";
+import { useGamificationMe } from "@/hooks/use-gamification";
+import { safeArray, safeLen, safeMap } from "@/lib/safe-data";
+
+interface AlertsViewProps {
+  profile: any;
+}
+
+function progressIcon(contentType: string) {
+  switch (contentType) {
+    case "lesson": return <CheckCircle2 className="size-3.5 text-emerald-500" />;
+    case "document": return <FileText className="size-3.5 text-blue-500" />;
+    case "path": return <MessageSquare className="size-3.5 text-amber-500" />;
+    default: return <CheckCircle2 className="size-3.5 text-muted-foreground" />;
+  }
+}
+
+export function AlertsView({ profile }: AlertsViewProps) {
+  const queryClient = useQueryClient();
+  const { data: gamification, isLoading: gamificationLoading } = useGamificationMe();
+  const [refreshing, setRefreshing] = useState(false);
+
+  return (
+    <div className="space-y-4 md:space-y-6 max-w-3xl mx-auto">
+      <div className="flex items-start justify-between gap-3">
+        <div className="space-y-1">
+          <h2 className="text-xl font-black uppercase tracking-tight">Participation Alerts</h2>
+          <p className="text-xs text-muted-foreground">Hyper-local alerts matching your county and tracked documents.</p>
+        </div>
+        <button
+          onClick={async () => { setRefreshing(true); try { await queryClient.invalidateQueries({ queryKey: ["gamification", "me"] }); } finally { setRefreshing(false); } }}
+          disabled={refreshing}
+          className="p-1.5 hover:bg-muted/50 rounded-lg transition-colors text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring shrink-0 mt-1"
+          title="Refresh activity"
+        >
+          <RefreshCw className={`size-4 ${refreshing ? "animate-spin" : ""}`} />
+        </button>
+      </div>
+
+      {gamification && !gamificationLoading && (
+        <div className="space-y-4">
+          <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Recent Activity</h3>
+          {safeLen(gamification.recent_progress) > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {safeMap(safeArray(gamification.recent_progress).slice(0, 6), (item, idx) => (
+                <div key={idx} className="p-4 rounded-xl border border-border bg-card space-y-2 text-xs shadow-xs">
+                  <div className="flex items-center gap-2">
+                    {progressIcon(item.content_type)}
+                    <span className="font-bold text-foreground capitalize">{item.content_type}</span>
+                    <span className="ml-auto text-[10px] text-muted-foreground font-semibold">
+                      {new Date(item.completed_at).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground">
+                    {item.progress_percent}% complete
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 border border-dashed border-border rounded-2xl space-y-2">
+              <div className="size-10 rounded-full bg-muted/30 flex items-center justify-center mx-auto ring-1 ring-border/30">
+                <Bell className="size-4 text-muted-foreground/40" />
+              </div>
+              <p className="text-sm font-bold text-muted-foreground">No recent activity.</p>
+              <p className="text-[10px] text-muted-foreground/60">Complete a learning module to see progress here.</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {gamificationLoading && (
+        <div className="flex items-center justify-center py-8">
+          <Loader2 className="size-5 animate-spin text-muted-foreground" />
+        </div>
+      )}
+
+      <div className="space-y-4">
+        <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Logged Submissions</h3>
+        {profile.participationLogs?.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {profile.participationLogs.map((log: any, idx: number) => (
+              <div key={idx} className="p-4 rounded-xl border border-border bg-card space-y-3 text-xs shadow-xs">
+                <div className="flex justify-between items-start gap-2">
+                  <h4 className="font-bold text-foreground truncate">{log.documentName}</h4>
+                  <span className="text-[10px] bg-primary/10 ring-1 ring-primary/20 text-primary font-bold px-2 py-0.5 rounded-full uppercase shrink-0">{log.method}</span>
+                </div>
+                <p className="text-[10px] text-muted-foreground font-semibold">Submitted: {new Date(log.dateSubmitted).toLocaleString()}</p>
+                <div className="bg-muted/30 p-3 rounded-lg ring-1 ring-border/50 font-mono text-[10px] leading-relaxed whitespace-pre-wrap truncate max-h-24">{log.draftText}</div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12 border border-dashed border-border rounded-2xl space-y-3">
+            <div className="size-12 rounded-full bg-muted/30 flex items-center justify-center mx-auto ring-1 ring-border/30">
+              <Bell className="size-5 text-muted-foreground/40" />
+            </div>
+            <p className="text-sm font-bold text-muted-foreground">No commentaries submitted yet.</p>
+            <p className="text-[10px] text-muted-foreground/60">Complete a learning stage to draft and submit a memorandum.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,10 @@
+{
+  "name": "@korosbns/config",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/index.js",
+  "scripts": {
+    "lint": "echo 'config lint ok'",
+    "clean": "rm -rf node_modules"
+  }
+}
