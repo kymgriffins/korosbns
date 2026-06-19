@@ -9,6 +9,7 @@
         "NEXT_PUBLIC_*",
         "SENTRY_*",
         "NODE_ENV",
+        "TURBOPACK",
         "YOUTUBE_CHANNEL_ID",
         "YOUTUBE_URL",
         "TASKS_API_URL",
