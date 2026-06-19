@@ -1,0 +1,6 @@
+{
+  "rootDirectory": "apps/marketing",
+  "buildCommand": "cd ../.. && turbo build --filter=@korosbns/marketing",
+  "installCommand": "cd ../.. && pnpm install",
+  "framework": "nextjs"
+}
