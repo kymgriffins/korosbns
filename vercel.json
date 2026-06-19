@@ -1,4 +1,5 @@
 {
-  "buildCommand": "turbo build --filter=@korosbns/marketing --filter=@korosbns/budgethub",
-  "installCommand": "pnpm install"
+  "rootDirectory": "apps/marketing",
+  "buildCommand": "cd ../.. && turbo build --filter=@korosbns/marketing",
+  "installCommand": "cd ../.. && pnpm install"
 }
