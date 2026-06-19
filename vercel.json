@@ -1,3 +1,9 @@
 {
-  "buildCommand": "rm -rf .next && turbo build --filter=@korosbns/marketing && mv apps/marketing/.next .next"
+  "builds": [
+    {
+      "src": "apps/marketing/package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "buildCommand": "turbo build --filter=@korosbns/marketing"
 }
