@@ -5,7 +5,5 @@
       "use": "@vercel/next"
     }
   ],
-  "buildCommand": "turbo build --filter=@korosbns/marketing",
-  "nodeVersion": "22.x",
-  "corepack": true
+  "buildCommand": "turbo build --filter=@korosbns/marketing"
 }
