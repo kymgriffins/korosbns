@@ -2,6 +2,7 @@
 const nextConfig = {
   basePath: "/budgethub",
   trailingSlash: true,
+  reactCompiler: true,
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
