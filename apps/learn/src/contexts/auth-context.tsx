@@ -10,7 +10,7 @@ import {
 } from "react";
 
 type AuthContextValue = {
-  user: null;
+  user: Record<string, unknown> | null;
   loading: boolean;
   isLoggedIn: boolean;
   login: (email: string, password: string) => Promise<void>;
@@ -20,10 +20,14 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user] = useState<Record<string, unknown> | null>({
+    display_name: "Guest",
+    email: "guest@example.com",
+  });
   const [loading] = useState(false);
 
   const login = useCallback(async (_email: string, _password: string) => {
-    throw new Error("Auth not implemented");
+    // Auth not wired yet — UI bypass for development
   }, []);
 
   const logout = useCallback(async () => {
@@ -31,8 +35,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ user: null, loading, isLoggedIn: false, login, logout }),
-    [loading, login, logout],
+    () => ({ user, loading, isLoggedIn: true, login, logout }),
+    [user, loading, login, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
