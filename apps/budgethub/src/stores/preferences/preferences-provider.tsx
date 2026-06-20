@@ -50,6 +50,9 @@ export const PreferencesStoreProvider = ({
   font,
   contentLayout,
   navbarStyle,
+  sidebarVariant,
+  sidebarCollapsible,
+  isSynced: initialSynced = false,
 }: {
   children: React.ReactNode;
   themeMode: PreferencesState["themeMode"];
@@ -57,6 +60,9 @@ export const PreferencesStoreProvider = ({
   font: PreferencesState["font"];
   contentLayout: PreferencesState["contentLayout"];
   navbarStyle: PreferencesState["navbarStyle"];
+  sidebarVariant?: PreferencesState["sidebarVariant"];
+  sidebarCollapsible?: PreferencesState["sidebarCollapsible"];
+  isSynced?: boolean;
 }) => {
   const [store] = useState<StoreApi<PreferencesState>>(() =>
     createPreferencesStore({
@@ -65,12 +71,17 @@ export const PreferencesStoreProvider = ({
       font,
       contentLayout,
       navbarStyle,
+      sidebarVariant,
+      sidebarCollapsible,
+      isSynced: initialSynced,
     }),
   );
 
   const domSnapshotRef = useRef<Partial<PreferencesState> | null>(null);
 
   useEffect(() => {
+    if (initialSynced) return;
+
     const domState = readDomState();
     domSnapshotRef.current = domState;
 
@@ -79,7 +90,7 @@ export const PreferencesStoreProvider = ({
       ...domState,
       isSynced: true,
     }));
-  }, [store]);
+  }, [store, initialSynced]);
 
   useEffect(() => {
     let unsubscribeMedia: (() => void) | undefined;
