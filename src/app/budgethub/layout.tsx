@@ -2,7 +2,6 @@ import "@/app/globals.css";
 
 import { cookies } from "next/headers";
 
-import { NextThemesSync } from "@/components/budgethub/next-themes-sync";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { type FontKey, fontRegistry, fontVars } from "@/lib/fonts/registry";
@@ -82,7 +81,11 @@ export default async function BudgethubLayout({ children }: { children: React.Re
             "');",
         }}
       />
-      <div data-budgethub-theme className={fontVars}>
+      <div
+        data-budgethub-theme
+        className={fontVars}
+        style={{ fontFamily: "var(--font-sans), system-ui, sans-serif" as React.CSSProperties["fontFamily"] }}
+      >
         <TooltipProvider>
           <PreferencesStoreProvider
             themeMode={theme_mode}
@@ -94,7 +97,6 @@ export default async function BudgethubLayout({ children }: { children: React.Re
             sidebarCollapsible={sidebar_collapsible}
             isSynced={true}
           >
-            <NextThemesSync />
             {children}
             <Toaster />
           </PreferencesStoreProvider>

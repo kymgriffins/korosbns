@@ -91,7 +91,6 @@ These serve as the fallback; there is no separate default.css file. */
   --font-mono: var(--font-geist-mono);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
-  font-family: var(--font-sans), system-ui, sans-serif;
 }
 
 .dark [data-budgethub-theme],
