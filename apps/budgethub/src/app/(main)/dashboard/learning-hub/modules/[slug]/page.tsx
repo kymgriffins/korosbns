@@ -129,15 +129,12 @@ export default function ModuleDetailPage() {
     if (step.videos?.length && step.videos[0]?.youtube_video_id) {
       return `https://www.youtube.com/embed/${step.videos[0].youtube_video_id}`;
     }
-    if (step.youtube_video_id) {
-      return `https://www.youtube.com/embed/${step.youtube_video_id}`;
+    if (step.youtube_urls?.length) {
+      const match = step.youtube_urls[0].match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
+      return match ? `https://www.youtube.com/embed/${match[1]}` : null;
     }
     if (step.youtube_url) {
       const match = step.youtube_url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
-      return match ? `https://www.youtube.com/embed/${match[1]}` : null;
-    }
-    if (step.youtube_urls?.length) {
-      const match = step.youtube_urls[0].match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
       return match ? `https://www.youtube.com/embed/${match[1]}` : null;
     }
     return null;

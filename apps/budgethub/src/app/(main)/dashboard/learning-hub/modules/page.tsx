@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { BookOpen, GraduationCap, Info, RefreshCw, Trophy, Users } from "lucide-react";
+import { BookOpen, GraduationCap, Info, RefreshCw, Search, Trophy, Users, X } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,9 @@ import type { CivicModule } from "@/types/learn";
 export default function ModulesPage() {
   const [modules, setModules] = useState<CivicModule[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterBadge, setFilterBadge] = useState<string | null>(null);
+  const [filterAuthor, setFilterAuthor] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -34,6 +37,21 @@ export default function ModulesPage() {
 
   const totalSteps = modules.reduce((sum, m) => sum + (m.steps?.length ?? 0), 0);
   const authors = new Set(modules.map((m) => m.author?.slug).filter(Boolean));
+  const badges = new Set(modules.map((m) => m.badgeName).filter((b): b is string => !!b));
+
+  const filteredModules = useMemo(() => {
+    return modules.filter((mod) => {
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        if (!mod.title.toLowerCase().includes(q) && !mod.description?.toLowerCase().includes(q)) {
+          return false;
+        }
+      }
+      if (filterBadge && mod.badgeName !== filterBadge) return false;
+      if (filterAuthor && mod.author?.slug !== filterAuthor) return false;
+      return true;
+    });
+  }, [modules, searchQuery, filterBadge, filterAuthor]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -146,6 +164,55 @@ export default function ModulesPage() {
         </section>
       )}
 
+      {/* Search and filters */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="Search modules..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="h-10 w-full rounded-lg border bg-background pl-9 pr-8 text-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring"
+          />
+          {searchQuery && (
+            <button onClick={() => setSearchQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+              <X className="size-3.5" />
+            </button>
+          )}
+        </div>
+        <div className="flex gap-1.5 overflow-x-auto">
+          {["All", ...badges].map((badge) => (
+            <button
+              key={badge}
+              onClick={() => setFilterBadge(badge === "All" ? null : badge)}
+              className={cn(
+                "shrink-0 rounded-lg px-3 py-1.5 text-[11px] font-medium transition-all",
+                filterBadge === badge || (badge === "All" && !filterBadge)
+                  ? "bg-primary text-primary-foreground shadow-xs"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground",
+              )}
+            >
+              {badge === "All" ? "All" : badge}
+            </button>
+          ))}
+        </div>
+        {authors.size > 1 && (
+          <select
+            value={filterAuthor ?? ""}
+            onChange={(e) => setFilterAuthor(e.target.value || null)}
+            className="h-10 rounded-lg border bg-background px-3 text-sm outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <option value="">All authors</option>
+            {[...authors].map((slug) => (
+              <option key={slug} value={slug}>
+                {modules.find((m) => m.author?.slug === slug)?.author?.name ?? slug}
+              </option>
+            ))}
+          </select>
+        )}
+      </div>
+
       {loading ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, i) => (
@@ -160,16 +227,19 @@ export default function ModulesPage() {
             </Card>
           ))}
         </div>
-      ) : modules.length === 0 ? (
+      ) : filteredModules.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center gap-2 py-12">
-            <BookOpen className="size-8 text-muted-foreground" />
-            <p className="text-sm text-muted-foreground">No modules available yet.</p>
+            <Search className="size-8 text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">No modules match your filters.</p>
+            <Button variant="outline" size="sm" onClick={() => { setSearchQuery(""); setFilterBadge(null); setFilterAuthor(null); }}>
+              Clear filters
+            </Button>
           </CardContent>
         </Card>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {modules.map((mod) => (
+          {filteredModules.map((mod) => (
             <a
               key={mod.id}
               href={`/dashboard/learning-hub/modules/${mod.slug}`}
