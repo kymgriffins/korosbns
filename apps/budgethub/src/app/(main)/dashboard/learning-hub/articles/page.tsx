@@ -11,8 +11,6 @@ import { cn } from "@/lib/utils";
 import { learnHubApi } from "@/lib/learn-hub";
 import type { LearnHubItem } from "@/lib/learn-hub";
 
-import { LearningHubCard } from "../_components/learning-hub-card";
-
 export default function ArticlesPage() {
   const [items, setItems] = useState<LearnHubItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,9 +48,12 @@ export default function ArticlesPage() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, i) => (
             <Card key={i}>
-              <CardContent className="p-4">
-                <Skeleton className="h-4 w-3/4" />
-                <Skeleton className="mt-2 h-3 w-full" />
+              <CardContent className="p-0">
+                <Skeleton className="aspect-video w-full rounded-t-xl" />
+                <div className="p-4">
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="mt-2 h-3 w-full" />
+                </div>
               </CardContent>
             </Card>
           ))}
@@ -67,15 +68,51 @@ export default function ArticlesPage() {
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((item) => (
-            <LearningHubCard
+            <a
               key={item.id}
-              title={item.title}
-              description={item.summary}
-              href={item.url ?? `/dashboard/learning-hub/articles`}
-              icon={<Newspaper className="size-4" />}
-              badge={item.difficulty ?? undefined}
-              meta={item.published_at ? new Date(item.published_at).toLocaleDateString() : undefined}
-            />
+              href={item.url ?? "#"}
+              target={item.url?.startsWith("http") ? "_blank" : undefined}
+              rel={item.url?.startsWith("http") ? "noreferrer" : undefined}
+              className="group flex flex-col overflow-hidden rounded-xl border bg-card transition-colors hover:border-primary/40"
+            >
+              {item.thumbnail_url ? (
+                <div className="aspect-video w-full overflow-hidden bg-muted">
+                  <img
+                    src={item.thumbnail_url}
+                    alt={item.title}
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                </div>
+              ) : (
+                <div className="flex aspect-video w-full items-center justify-center bg-gradient-to-br from-emerald-500/10 to-emerald-500/5">
+                  <Newspaper className="size-10 text-emerald-400/40" />
+                </div>
+              )}
+              <div className="flex flex-1 flex-col p-4">
+                <div className="flex items-center gap-2">
+                  {item.difficulty && (
+                    <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-medium uppercase leading-none text-secondary-foreground">
+                      {item.difficulty}
+                    </span>
+                  )}
+                  {item.published_at && (
+                    <span className="text-[10px] text-muted-foreground">
+                      {new Date(item.published_at).toLocaleDateString()}
+                    </span>
+                  )}
+                </div>
+                <h3 className="mt-2 line-clamp-2 text-sm font-semibold leading-tight">{item.title}</h3>
+                {item.summary && (
+                  <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{item.summary}</p>
+                )}
+                <div className="mt-auto pt-3">
+                  <span className="text-[11px] font-medium text-primary hover:underline">
+                    Read article
+                  </span>
+                </div>
+              </div>
+            </a>
           ))}
         </div>
       )}

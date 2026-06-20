@@ -21,6 +21,7 @@ import {
   Server,
   ShoppingBag,
   SquareArrowUpRight,
+  TrendingUp,
   Users,
 } from "lucide-react";
 
@@ -232,6 +233,12 @@ export const sidebarItems: NavGroup[] = [
         title: "Stories",
         url: "/dashboard/learning-hub/stories",
         icon: BookOpen,
+      },
+      {
+        id: "lh-analytics",
+        title: "Analytics",
+        url: "/dashboard/learning-hub/analytics",
+        icon: TrendingUp,
       },
       {
         id: "lh-documents",
