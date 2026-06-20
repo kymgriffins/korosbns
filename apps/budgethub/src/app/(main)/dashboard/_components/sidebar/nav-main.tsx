@@ -84,23 +84,26 @@ function hasSubItems(item: NavMainItem): item is NavMainParentItem {
 export function NavMain({ items }: NavMainProps) {
   const path = usePathname();
 
+  // Extract base prefix (e.g. "/budgethub") from the current path
   const routeBase = path.match(/^(\/[^/]+)?\/(?:dashboard|auth|chat|mail|unauthorized)/)?.at(1) ?? "";
   const getFullUrl = (url: string) => `${routeBase}${url}`;
+  // Strip base prefix for path comparisons so item URLs like "/dashboard/default" work unchanged
+  const localPath = (routeBase ? path.slice(routeBase.length) : path).replace(/\/$/, "");
 
   const isItemActive = (item: NavMainItem) => {
     if (hasSubItems(item)) {
-      return item.subItems.some((sub) => path.startsWith(getFullUrl(sub.url)));
+      return item.subItems.some((sub) => localPath.startsWith(sub.url));
     }
 
-    return path === getFullUrl(item.url);
+    return localPath === item.url;
   };
 
   const isSubItemActive = (url: string) => {
-    return path === getFullUrl(url);
+    return localPath === url;
   };
 
   const isSubmenuOpen = (item: NavMainParentItem) => {
-    return item.subItems.some((sub) => path.startsWith(getFullUrl(sub.url)));
+    return item.subItems.some((sub) => localPath.startsWith(sub.url));
   };
 
   return (
