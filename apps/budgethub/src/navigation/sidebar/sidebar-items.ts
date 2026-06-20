@@ -1,7 +1,10 @@
 import {
   Banknote,
+  BookOpen,
   Calendar,
   ChartBar,
+  FileText,
+  Film,
   Fingerprint,
   Forklift,
   Gauge,
@@ -13,6 +16,7 @@ import {
   type LucideIcon,
   Mail,
   MessageSquare,
+  Newspaper,
   ReceiptText,
   Server,
   ShoppingBag,
@@ -197,6 +201,48 @@ export const sidebarItems: NavGroup[] = [
   },
   {
     id: 4,
+    label: "Learning Hub",
+    items: [
+      {
+        id: "lh-overview",
+        title: "Overview",
+        url: "/dashboard/learning-hub",
+        icon: LayoutDashboard,
+      },
+      {
+        id: "lh-modules",
+        title: "Modules",
+        url: "/dashboard/learning-hub/modules",
+        icon: BookOpen,
+      },
+      {
+        id: "lh-articles",
+        title: "Articles",
+        url: "/dashboard/learning-hub/articles",
+        icon: Newspaper,
+      },
+      {
+        id: "lh-videos",
+        title: "Videos",
+        url: "/dashboard/learning-hub/videos",
+        icon: Film,
+      },
+      {
+        id: "lh-stories",
+        title: "Stories",
+        url: "/dashboard/learning-hub/stories",
+        icon: BookOpen,
+      },
+      {
+        id: "lh-documents",
+        title: "Documents",
+        url: "/dashboard/learning-hub/documents",
+        icon: FileText,
+      },
+    ],
+  },
+  {
+    id: 5,
     label: "Misc",
     items: [
       {
