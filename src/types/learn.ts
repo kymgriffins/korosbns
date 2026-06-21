@@ -139,16 +139,16 @@ export type GamificationPayload = {
   level: number;
   streak_days: number;
   badges: BadgeData[];
-  certificates: CertificateData[];
+  certificates?: CertificateData[];
   recent_progress: ProgressRow[];
-  total_progress: number;
+  total_progress?: number;
 };
 
 export type ProgressRow = {
   content_type: string;
   content_id: string;
   completed_at: string;
-  progress_percent: number;
+  progress_percent?: number;
 };
 
 export type BadgeData = {
@@ -161,9 +161,12 @@ export type BadgeData = {
 
 export type CertificateData = {
   id: string;
+  civic_module?: string;
   civic_module_id?: string;
   civic_module_title?: string;
   civic_module_slug?: string;
+  module_title: string;
+  module_slug: string;
   issued_at: string;
   certificate_url?: string;
 };

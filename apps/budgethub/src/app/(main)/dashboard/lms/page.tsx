@@ -14,7 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { learnHubApi } from "@/lib/learn-hub";
 import type { CivicModule, LearnHubItem } from "@/types/learn";
-import { LearningHubCard } from "../../learning-hub/_components/learning-hub-card";
+import { LearningHubCard } from "../learning-hub/_components/learning-hub-card";
 
 const chartDays = 30;
 const endDate = endOfToday();

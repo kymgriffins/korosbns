@@ -32,8 +32,8 @@ export default function ProgressPage() {
   const gamification = profile?.gamification;
   const progressPieData = useMemo(() => {
     const total = profile?.progress?.length ?? 0;
-    const completed = profile?.progress?.filter((p) => p.progress_percent >= 100).length ?? 0;
-    const inProgress = profile?.progress?.filter((p) => p.progress_percent > 0 && p.progress_percent < 100).length ?? 0;
+    const completed = profile?.progress?.filter((p) => (p.progress_percent ?? 0) >= 100).length ?? 0;
+    const inProgress = profile?.progress?.filter((p) => (p.progress_percent ?? 0) > 0 && (p.progress_percent ?? 0) < 100).length ?? 0;
     const notStarted = Math.max(0, total - completed - inProgress);
     return [{ name: "Completed", value: completed }, { name: "In Progress", value: inProgress }, { name: "Not Started", value: notStarted }];
   }, [profile]);
@@ -149,9 +149,9 @@ export default function ProgressPage() {
                           <div className="flex size-8 items-center justify-center rounded-full bg-muted"><BookOpen className="size-4 text-muted-foreground" /></div>
                           <div className="flex-1 min-w-0">
                             <p className="truncate text-sm font-medium capitalize">{p.content_type.replace(/_/g, " ")}</p>
-                            <p className="text-xs text-muted-foreground">{p.progress_percent >= 100 ? "Completed" : `${Math.round(p.progress_percent)}% complete`} · {format(new Date(p.completed_at), "MMM d, yyyy")}</p>
+                            <p className="text-xs text-muted-foreground">{(p.progress_percent ?? 0) >= 100 ? "Completed" : `${Math.round(p.progress_percent ?? 0)}% complete`} · {format(new Date(p.completed_at), "MMM d, yyyy")}</p>
                           </div>
-                          <Badge variant={p.progress_percent >= 100 ? "default" : "secondary"} className="shrink-0 text-[10px]">{p.progress_percent >= 100 ? "Done" : `${Math.round(p.progress_percent)}%`}</Badge>
+                           <Badge variant={(p.progress_percent ?? 0) >= 100 ? "default" : "secondary"} className="shrink-0 text-[10px]">{(p.progress_percent ?? 0) >= 100 ? "Done" : `${Math.round(p.progress_percent ?? 0)}%`}</Badge>
                         </div>
                       ))}
                     </div>
