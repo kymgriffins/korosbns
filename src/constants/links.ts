@@ -6,6 +6,10 @@ export const NAV_LINKS = [
     href: Routes.Learn,
   },
   {
+    label: "Budget Hub",
+    href: Routes.BudgetHub,
+  },
+  {
     label: "Surveys",
     href: Routes.Surveys,
   },
