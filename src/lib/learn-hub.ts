@@ -3,6 +3,19 @@ import type { CivicModule, CivicModuleAuthor } from "@/types/learn";
 import type { ApiListResponse } from "@/types/api";
 import type { LearningUnitSummary } from "@/lib/learning-units";
 
+const FALLBACK_ORIGIN = "https://bnske.budgetndiostory.org";
+
+async function apiFetchWithFallback<T>(path: string): Promise<T> {
+  try {
+    return await apiFetch<T>(path);
+  } catch {
+    const url = `${FALLBACK_ORIGIN}/api/v1${path.startsWith("/") ? path : `/${path}`}`;
+    const res = await fetch(url, { headers: { Accept: "application/json" } });
+    if (!res.ok) throw new Error(`Fallback API ${res.status}`);
+    return res.json() as Promise<T>;
+  }
+}
+
 export type LearnHubItem = {
   id: string;
   content_type: "video" | "article" | "story" | "document" | "path" | "quest";
@@ -81,27 +94,27 @@ function filtersToQuery(filters?: LearnListFilters): string {
 }
 
 function fetchList(segment: string, filters?: LearnListFilters) {
-  return apiFetch<ApiListResponse<LearnHubItem>>(
+  return apiFetchWithFallback<ApiListResponse<LearnHubItem>>(
     `/content/learn/${segment}/${filtersToQuery(filters)}`,
   );
 }
 
 export const learnHubApi = {
   units: () =>
-    apiFetch<{ results: LearningUnitSummary[] }>("/content/units/"),
-  summary: () => apiFetch<LearnHubSummary>("/content/learn/"),
+    apiFetchWithFallback<{ results: LearningUnitSummary[] }>("/content/units/"),
+  summary: () => apiFetchWithFallback<LearnHubSummary>("/content/learn/"),
   videos: (filters?: LearnListFilters) => fetchList("videos", filters),
   articles: (filters?: LearnListFilters) => fetchList("articles", filters),
   stories: (filters?: LearnListFilters) => fetchList("stories", filters),
   documents: (filters?: LearnListFilters) => fetchList("documents", filters),
   paths: (filters?: LearnListFilters) => fetchList("paths", filters),
   quests: (filters?: LearnListFilters) => fetchList("quests", filters),
-  stages: () => apiFetch<ApiListResponse<CivicModule>>("/content/civic-modules/"),
-  stage: (slug: string) => apiFetch<CivicModule>(`/content/civic-modules/${slug}/`),
+  stages: () => apiFetchWithFallback<ApiListResponse<CivicModule>>("/content/civic-modules/"),
+  stage: (slug: string) => apiFetchWithFallback<CivicModule>(`/content/civic-modules/${slug}/`),
   leaderboard: (limit = 20) =>
-    apiFetch<ApiListResponse<LeaderboardEntry>>(`/gamification/leaderboard/?limit=${limit}`),
+    apiFetchWithFallback<ApiListResponse<LeaderboardEntry>>(`/gamification/leaderboard/?limit=${limit}`),
   stageLeaderboard: (slug: string) =>
-    apiFetch<StageLeaderboardStats>(`/content/learn/stages/${slug}/leaderboard/`),
+    apiFetchWithFallback<StageLeaderboardStats>(`/content/learn/stages/${slug}/leaderboard/`),
   profile: () =>
     apiFetch<LearnProfileResponse>("/content/learn/profile/", { auth: true }),
   markProgress: (body: {
@@ -118,12 +131,12 @@ export const learnHubApi = {
   civicModule: (slug: string) => learnHubApi.stage(slug),
   budgetNewsModules: (params?: { fiscal_year_label?: string | null }) => {
     const q = params?.fiscal_year_label ? `?is_financial_year_analysis=true&fiscal_year_label=${encodeURIComponent(params.fiscal_year_label)}` : "?is_financial_year_analysis=true";
-    return apiFetch<ApiListResponse<CivicModule>>(`/content/civic-modules/${q}`);
+    return apiFetchWithFallback<ApiListResponse<CivicModule>>(`/content/civic-modules/${q}`);
   },
   budgetNewsModule: (slug: string) =>
-    apiFetch<CivicModule>(`/content/civic-modules/${slug}/`),
+    apiFetchWithFallback<CivicModule>(`/content/civic-modules/${slug}/`),
   budgetNewsYears: () =>
-    apiFetch<ApiListResponse<BudgetNewsYear>>("/content/civic-modules/years/"),
+    apiFetchWithFallback<ApiListResponse<BudgetNewsYear>>("/content/civic-modules/years/"),
   completeChapter: (chapterId: string) =>
     apiFetch<{
       detail: string;
@@ -142,7 +155,7 @@ export const learnHubApi = {
   getForumThreads: (chapterId?: string) => {
     let url = "/engagement/forum-threads/";
     if (chapterId) url += `?chapter_id=${chapterId}`;
-    return apiFetch<ApiListResponse<ForumThread>>(url);
+    return apiFetchWithFallback<ApiListResponse<ForumThread>>(url);
   },
   createForumThread: (body: { title: string; civic_module?: string; civic_chapter?: string }) =>
     apiFetch<ForumThread>("/engagement/forum-threads/", {
@@ -151,7 +164,7 @@ export const learnHubApi = {
       body: JSON.stringify(body),
     }),
   getForumThread: (threadId: string) =>
-    apiFetch<ForumThreadDetail>(`/engagement/forum-threads/${threadId}/`),
+    apiFetchWithFallback<ForumThreadDetail>(`/engagement/forum-threads/${threadId}/`),
   createForumPost: (threadId: string, content: string) =>
     apiFetch<ForumPost>(`/engagement/forum-threads/${threadId}/posts/`, {
       method: "POST",
@@ -160,9 +173,9 @@ export const learnHubApi = {
     }),
   // Dedicated author endpoints (no more client-side filtering)
   authors: () =>
-    apiFetch<ApiListResponse<CivicModuleAuthor>>("/content/authors/"),
+    apiFetchWithFallback<ApiListResponse<CivicModuleAuthor>>("/content/authors/"),
   author: (slug: string) =>
-    apiFetch<{ author: CivicModuleAuthor; modules: CivicModule[] }>(
+    apiFetchWithFallback<{ author: CivicModuleAuthor; modules: CivicModule[] }>(
       `/content/authors/${slug}/`,
     ),
   // Module analytics (daily/weekly)
@@ -171,7 +184,7 @@ export const learnHubApi = {
     if (params?.period) q.set("period", params.period);
     if (params?.module_slug) q.set("module_slug", params.module_slug);
     const qs = q.toString();
-    return apiFetch<ModuleAnalyticsResponse>(
+    return apiFetchWithFallback<ModuleAnalyticsResponse>(
       `/content/analytics/modules/${qs ? `?${qs}` : ""}`,
     );
   },
