@@ -217,7 +217,7 @@ export default function LearningHubPage() {
           <h2 className="text-lg font-semibold tracking-tight">Modules</h2>
           {modules.length > 6 && (
             <Button variant="ghost" size="sm" asChild>
-              <a href="/dashboard/learning-hub/modules">View all</a>
+              <a href="/budgethub/dashboard/learning-hub/modules">View all</a>
             </Button>
           )}
         </div>

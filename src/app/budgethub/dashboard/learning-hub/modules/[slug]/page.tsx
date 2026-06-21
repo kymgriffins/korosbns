@@ -158,7 +158,7 @@ export default function ModuleDetailPage() {
       <div className="flex flex-col items-center gap-4 py-24">
         <p className="text-muted-foreground">Module not found.</p>
         <Button asChild variant="outline" size="sm">
-          <Link href="/dashboard/learning-hub/modules">Back to Modules</Link>
+          <Link href="/budgethub/dashboard/learning-hub/modules">Back to Modules</Link>
         </Button>
       </div>
     );
@@ -170,7 +170,7 @@ export default function ModuleDetailPage() {
         <BookOpen className="size-12 text-muted-foreground/40" />
         <p className="text-muted-foreground">This module has no steps yet.</p>
         <Button asChild variant="outline" size="sm">
-          <Link href="/dashboard/learning-hub/modules">Back to Modules</Link>
+          <Link href="/budgethub/dashboard/learning-hub/modules">Back to Modules</Link>
         </Button>
       </div>
     );
@@ -184,14 +184,14 @@ export default function ModuleDetailPage() {
       {/* Header bar */}
       <div className="flex shrink-0 items-center gap-3 border-b px-4 py-2.5 md:px-6">
         <Button asChild variant="ghost" size="icon-xs">
-          <Link href="/dashboard/learning-hub/modules">
+          <Link href="/budgethub/dashboard/learning-hub/modules">
             <ChevronLeft className="size-4" />
           </Link>
         </Button>
         <Separator orientation="vertical" className="h-5" />
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
-            <Link href="/dashboard/learning-hub/modules" className="hover:text-foreground">
+            <Link href="/budgethub/dashboard/learning-hub/modules" className="hover:text-foreground">
               Modules
             </Link>
             <span>/</span>
@@ -240,7 +240,7 @@ export default function ModuleDetailPage() {
                 )}
                 <div className="flex gap-2 pt-2">
                   <Button asChild variant="outline" size="sm">
-                    <Link href="/dashboard/learning-hub/modules">Back to Modules</Link>
+                    <Link href="/budgethub/dashboard/learning-hub/modules">Back to Modules</Link>
                   </Button>
                 </div>
               </div>

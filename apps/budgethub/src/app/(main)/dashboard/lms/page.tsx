@@ -196,7 +196,7 @@ export default function LMSPage() {
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold tracking-tight">Popular Modules</h2>
-          {modules.length > 6 && <Button variant="ghost" size="sm" asChild><a href="/dashboard/lms/courses">View all</a></Button>}
+          {modules.length > 6 && <Button variant="ghost" size="sm" asChild><a href="/budgethub/dashboard/lms/courses">View all</a></Button>}
         </div>
         {loading ? (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

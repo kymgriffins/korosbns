@@ -96,7 +96,7 @@ export default function CertificatesPage() {
               <Award className="size-12 text-muted-foreground/30" />
               <p className="text-lg font-medium">No certificates yet</p>
               <p className="text-sm text-muted-foreground">{searchQuery ? "No certificates match your search." : "Complete modules and pass quizzes to earn certificates."}</p>
-              {!searchQuery && <Button variant="outline" size="sm" asChild className="mt-2"><a href="/dashboard/lms/courses">Browse courses</a></Button>}
+              {!searchQuery && <Button variant="outline" size="sm" asChild className="mt-2"><a href="/budgethub/dashboard/lms/courses">Browse courses</a></Button>}
             </CardContent></Card>
           ) : (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
