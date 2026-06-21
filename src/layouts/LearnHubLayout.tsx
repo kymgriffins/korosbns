@@ -7,7 +7,7 @@ import {
   ChevronDown, ChevronRight, X,
   BookOpen, LayoutDashboard, ExternalLink,
   LogOut, Palette, LogIn, User, FileText, Settings,
-  MessagesSquare, Calendar, ListChecks
+  MessagesSquare, Calendar, ListChecks, TrendingUp
 } from "lucide-react";
 import { cn } from "@/utils";
 import { LearnProvider, useLearn, type LearnTab } from "@/contexts/learn-context";
@@ -259,6 +259,22 @@ function LearnSidebar() {
                   </SidebarMenuItem>
                 );
               })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-[10px] font-bold tracking-wider text-sidebar-foreground/50 uppercase mb-0.5">Insights</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Analytics" className="py-4 rounded-lg">
+                  <Link href="/learn/analytics" onClick={() => { if (isMobile) setOpenMobile(false); }}>
+                    <TrendingUp className="size-4" />
+                    <span className="font-semibold text-xs">Analytics</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

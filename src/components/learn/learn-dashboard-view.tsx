@@ -1,10 +1,12 @@
 "use client";
 
 import { useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { motion, type Variants } from "motion/react";
 import {
   Flame, Award, BookOpen, Trophy, Zap, ArrowRight,
   ChevronRight, Play, Sparkles, Crown, CircleUser, Newspaper,
+  MessageSquare, BrainCircuit, ListChecks, Quote,
 } from "lucide-react";
 import { Button } from "@/ui/button";
 import { BitmojiAvatar } from "./bitmoji-avatar";
@@ -56,9 +58,27 @@ const quests = [
   { title: "Streak Boost", desc: "3-day streak bonus", xp: 100, icon: Flame, color: "text-orange-500", bg: "bg-orange-500/10" },
 ];
 
+const QUOTES = [
+  { text: "A budget is telling your money where to go instead of wondering where it went.", author: "Dave Ramsey" },
+  { text: "The art of taxation consists in plucking the goose as to obtain the largest amount of feathers with the least possible amount of hissing.", author: "Jean-Baptiste Colbert" },
+  { text: "The budget is not just a collection of numbers, but an expression of our values and aspirations.", author: "Jack Lew" },
+  { text: "Annual income twenty pounds, annual expenditure nineteen nineteen and six, result happiness. Annual income twenty pounds, annual expenditure twenty pounds ought and six, result misery.", author: "Charles Dickens" },
+  { text: "The best way to teach your kids about money is to not have any.", author: "Dave Chappelle" },
+  { text: "Do not save what is left after spending, but spend what is left after saving.", author: "Warren Buffett" },
+  { text: "In the private sector, if you don't balance your budget, you go bankrupt. In government, if you don't balance your budget, you get reelected.", author: "P. J. O'Rourke" },
+  { text: "Balancing the budget is like protecting your virtue. You have to learn to say no.", author: "Ronald Reagan" },
+  { text: "The taxpayer: that's someone who works for the federal government but doesn't have to take the civil service examination.", author: "Ronald Reagan" },
+  { text: "Governments don't have any money — they only have the money they take from you.", author: "Thomas Sowell" },
+  { text: "The most important budgeting is the budgeting of your time and energy.", author: "Brian Tracy" },
+  { text: "A budget doesn't limit your freedom; it gives you freedom.", author: "Unknown" },
+];
+
+const quoteOfDay = QUOTES[new Date().getDate() % QUOTES.length];
+
 export function LearnDashboardView({
   profile, stages, currentStage, onSelectStage, onNavigateToCurriculum, onNavigateToForum, leaderboard,
 }: LearnDashboardViewProps) {
+  const router = useRouter();
   const { data: gamification } = useGamificationMe();
 
   const points = gamification?.points ?? profile.sovereigns ?? 0;
@@ -167,6 +187,39 @@ export function LearnDashboardView({
         ))}
       </motion.div>
 
+      {/* Quick Actions & Quote */}
+      <motion.div variants={itemVars} className="grid grid-cols-1 gap-2 sm:grid-cols-[1fr_auto]">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <Button asChild variant="default" size="sm" className="h-8 rounded-lg text-xs font-bold px-3">
+            <Link href={currentStage ? `/learn/modules/${currentStage.slug}` : Routes.Learn}>
+              <Play className="mr-1 size-3" fill="currentColor" /> Start Learning
+            </Link>
+          </Button>
+          <Button asChild variant="outline" size="sm" className="h-8 rounded-lg text-xs font-bold px-3">
+            <Link href="/learn/analytics">
+              <BrainCircuit className="mr-1 size-3" /> View Analytics
+            </Link>
+          </Button>
+          <Button asChild variant="outline" size="sm" className="h-8 rounded-lg text-xs font-bold px-3">
+            <Link href={Routes.LearnForum}>
+              <MessageSquare className="mr-1 size-3" /> Discussions
+            </Link>
+          </Button>
+          <Button asChild variant="outline" size="sm" className="h-8 rounded-lg text-xs font-bold px-3">
+            <Link href={Routes.LearnQuests}>
+              <ListChecks className="mr-1 size-3" /> Quests
+            </Link>
+          </Button>
+        </div>
+        <div className="flex items-center gap-2 rounded-xl bg-card px-3 py-2 ring-1 ring-border/40 sm:max-w-[260px]">
+          <Quote className="size-3 shrink-0 text-primary/40" />
+          <p className="text-[10px] leading-tight text-muted-foreground">
+            &ldquo;{quoteOfDay.text}&rdquo;
+            <span className="block text-[9px] text-muted-foreground/60">&mdash; {quoteOfDay.author}</span>
+          </p>
+        </div>
+      </motion.div>
+
       <div className="grid grid-cols-1 gap-3 xl:grid-cols-[1fr_300px]">
         {/* ===== LEFT ===== */}
         <div className="min-w-0 space-y-3">
@@ -174,7 +227,7 @@ export function LearnDashboardView({
           {currentStage && resume && (
             <motion.button
               variants={itemVars}
-              onClick={() => onSelectStage(currentStage)}
+              onClick={() => router.push(`/learn/modules/${currentStage.slug}`)}
               className="group relative flex w-full items-stretch gap-3 overflow-hidden rounded-2xl bg-card p-3 text-left shadow-xs ring-1 ring-border/40 transition-all hover:shadow-md hover:ring-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <div className="relative aspect-square w-24 shrink-0 overflow-hidden rounded-xl bg-muted sm:w-28">
@@ -216,7 +269,7 @@ export function LearnDashboardView({
               {stages.map((stage, i) => (
                 <button
                   key={stage.slug}
-                  onClick={() => onSelectStage(stage)}
+                  onClick={() => router.push(`/learn/modules/${stage.slug}`)}
                   className="group flex shrink-0 flex-col items-center gap-1 rounded-lg p-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <div className={cn("size-14 overflow-hidden rounded-full bg-gradient-to-br p-[2.5px] transition-transform group-hover:scale-105", stage.image_url ? "from-border to-border" : gradientRing(i))}>
@@ -254,7 +307,7 @@ export function LearnDashboardView({
               {stages.slice(0, 6).map((stage) => (
                 <button
                   key={stage.slug}
-                  onClick={() => onSelectStage(stage)}
+                  onClick={() => router.push(`/learn/modules/${stage.slug}`)}
                   className="group flex w-full cursor-pointer flex-col overflow-hidden rounded-xl bg-card text-left ring-1 ring-border/40 shadow-xs transition-all hover:-translate-y-0.5 hover:shadow-md hover:ring-primary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <div className="relative aspect-video overflow-hidden bg-muted">
