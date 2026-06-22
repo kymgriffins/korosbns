@@ -67,6 +67,7 @@ export type AssignableUser = {
   last_name: string;
   display_name?: string;
   role: string;
+  team?: string | null;
 };
 
 const TEAM_OPTIONS = ["MEDIA", "ICT", "MANAGERIAL"] as const;

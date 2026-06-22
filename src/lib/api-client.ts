@@ -1,5 +1,5 @@
 import { buildApiUrl, networkErrorMessage } from "@/lib/api-url";
-import { ApiRequestError, extractApiErrorMessage, type ApiPayload } from "@/lib/api-errors";
+import { ApiRequestError, extractApiErrorMessage, extractFieldErrors, type ApiPayload } from "@/lib/api-errors";
 import { apiFetchInit } from "@/lib/fetch-policy";
 import { logDebug, sanitizeToken } from "@/lib/debug-logs";
 import { ACCESS_TOKEN_COOKIE } from "@/lib/auth-policy";
@@ -405,6 +405,7 @@ export async function apiFetch<T = unknown>(
 
   if (!response.ok) {
     const payload = (await response.json().catch(() => ({}))) as ApiPayload;
+    const fieldErrors = extractFieldErrors(payload);
     const message = extractApiErrorMessage(
       payload,
       response.status === 429
@@ -416,8 +417,9 @@ export async function apiFetch<T = unknown>(
       method: init.method ?? "GET",
       status: response.status,
       message,
+      fieldErrors,
     });
-    throw new ApiRequestError(message, response.status);
+    throw new ApiRequestError(message, response.status, fieldErrors);
   }
 
   logDebug("API", "Request success", {

@@ -2,12 +2,26 @@ export type ApiPayload = Record<string, unknown>;
 
 export class ApiRequestError extends Error {
   readonly status: number;
+  readonly fields?: Record<string, string[]>;
 
-  constructor(message: string, status: number) {
+  constructor(message: string, status: number, fields?: Record<string, string[]>) {
     super(message);
     this.name = "ApiRequestError";
     this.status = status;
+    this.fields = fields;
   }
+}
+
+export function extractFieldErrors(payload: ApiPayload): Record<string, string[]> | undefined {
+  if (!payload || typeof payload !== "object") return undefined;
+  const fields: Record<string, string[]> = {};
+  for (const [key, value] of Object.entries(payload)) {
+    if (key === "detail" || key === "non_field_errors") continue;
+    if (Array.isArray(value) && value.length > 0 && typeof value[0] === "string") {
+      fields[key] = value as string[];
+    }
+  }
+  return Object.keys(fields).length > 0 ? fields : undefined;
 }
 
 export function extractApiErrorMessage(
@@ -31,6 +45,12 @@ export function extractApiErrorMessage(
     if (typeof first === "string" && first.trim()) {
       return first;
     }
+  }
+
+  const fieldErrors = extractFieldErrors(payload);
+  if (fieldErrors) {
+    const entries = Object.entries(fieldErrors);
+    return `${entries.length} field(s) failed validation.`;
   }
 
   for (const value of Object.values(payload)) {

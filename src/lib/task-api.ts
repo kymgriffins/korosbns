@@ -54,7 +54,7 @@ function buildBody(payload: TaskCreatePayload): Record<string, unknown> {
   if (payload.assigned_team !== undefined) body.assigned_team = payload.assigned_team;
   if (payload.progress !== undefined) body.progress = payload.progress;
   if (payload.due_label !== undefined) body.due_label = payload.due_label;
-  body.hue = payload.hue ?? autoHue(payload.assigned_team) ?? null;
+  body.hue = autoHue(payload.assigned_team) ?? null;
   return body;
 }
 
@@ -122,5 +122,17 @@ export const taskApi = {
     return res.results.filter(
       (u) => u.role !== "citizen" && u.role !== "Citizen",
     );
+  },
+
+  getTeams: async (): Promise<string[]> => {
+    try {
+      const res = await apiFetch<{ results: { name: string }[] }>("/teams/", { auth: true });
+      if (Array.isArray(res.results)) {
+        return res.results.map((t) => t.name);
+      }
+    } catch {
+      // fallback below
+    }
+    return ["MEDIA", "ICT", "MANAGERIAL"];
   },
 };

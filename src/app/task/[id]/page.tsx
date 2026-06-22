@@ -17,7 +17,7 @@ import { Skeleton } from "@/ui/skeleton";
 
 import { taskApi } from "@/lib/task-api";
 import type { TaskDetail } from "@/types/tasks";
-import { TEAM_HUES } from "@/types/tasks";
+import { autoHue } from "@/types/tasks";
 import { TaskForm } from "../_components/task-form";
 
 const STATUS_STYLES: Record<string, { bg: string; label: string }> = {
@@ -84,7 +84,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
   if (!task) return null;
 
   const statusStyle = STATUS_STYLES[task.status] ?? STATUS_STYLES.draft;
-  const hue = task.hue ?? TEAM_HUES[task.assigned_team ?? ""];
+  const hue = task.hue ?? autoHue(task.assigned_team);
   const doneCount = task.checklist?.filter((c) => c.checked).length ?? 0;
   const totalItems = task.checklist?.length ?? 0;
 
