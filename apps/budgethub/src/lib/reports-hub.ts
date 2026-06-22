@@ -60,3 +60,16 @@ export async function fetchReportData(_slug: string, year?: string): Promise<Rep
 
   return { fiscalYears, entities, allocations, kpis, highlights, selectedYear: targetYear };
 }
+
+export async function fetchAllYearsData(): Promise<{
+  fiscalYears: BudgetFiscalYear[];
+  entities: BudgetEntity[];
+  byYear: Record<string, ReportPageData>;
+}> {
+  const first = await fetchReportData("budget-overview");
+  const byYear: Record<string, ReportPageData> = { [first.selectedYear]: first };
+  const otherYears = first.fiscalYears.filter((y) => y.id !== first.selectedYear);
+  const results = await Promise.all(otherYears.map((y) => fetchReportData("budget-overview", y.id)));
+  for (const r of results) byYear[r.selectedYear] = r;
+  return { fiscalYears: first.fiscalYears, entities: first.entities, byYear };
+}
