@@ -168,15 +168,6 @@ export default function ReportsPage() {
             onBack={handleBack}
             selectedYearLabel={selectedYearLabel}
           />
-        ) : selectedCounty ? (
-          <CountyProfile
-            county={selectedCounty}
-            allocations={approved}
-            entities={entities}
-            onBack={handleBack}
-            onSelectConstituency={setSelectedConstituency}
-            selectedYearLabel={selectedYearLabel}
-          />
         ) : tab === "national" ? (
           <NationalContent
             kpis={kpis} sectorBreakdown={sectorBreakdown} highlights={highlights}
@@ -184,12 +175,14 @@ export default function ReportsPage() {
             r={r} deficit={deficit} ordinary={ordinary}
           />
         ) : (
-          <CountyList
+          <CountySelector
             countyBreakdown={countyBreakdown}
-            totalCounty={totalCounty}
-            totalBudget={totalBudget}
+            selectedCounty={selectedCounty}
+            allocations={approved}
+            entities={entities}
             selectedYearLabel={selectedYearLabel}
-            onSelectCounty={(c: { id: string; name: string; allocation: number }) => setSelectedCounty(c)}
+            onSelectCounty={(c: { id: string; name: string; allocation: number } | null) => setSelectedCounty(c)}
+            onSelectConstituency={setSelectedConstituency}
           />
         )}
       </div>
@@ -385,130 +378,46 @@ function NationalContent({ kpis, sectorBreakdown, highlights, totalBudget, selec
   );
 }
 
-// ─── County List ───
-function CountyList({ countyBreakdown, totalCounty, totalBudget, selectedYearLabel, onSelectCounty }: any) {
-  const envelope = schema.tier_2_county_devolution_envelope;
-  const totalCountyActual = countyBreakdown.reduce((s: number, c: any) => s + c.value * 1e8, 0);
+// ─── County Selector (dropdown + profile) ───
+function CountySelector({ countyBreakdown, selectedCounty, allocations, entities, selectedYearLabel, onSelectCounty, onSelectConstituency }: any) {
+  const matchingCounty = selectedCounty ? countyBreakdown.find((c: any) => c.id === selectedCounty.id) : null;
 
   return (
-    <div className="space-y-8">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
-        <Card className="border-border/60 shadow-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Total Devolution</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold tabular-nums">{formatKesBillions((envelope?.total_devolution_allocation ?? totalCounty) / 1e9)}</p>
-            <p className="text-[10px] text-muted-foreground">{envelope?.national_budget_share_pct ?? ((totalCounty / totalBudget) * 100).toFixed(1)}% of national</p>
-          </CardContent>
-        </Card>
-        <Card className="border-border/60 shadow-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Equitable Share</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold tabular-nums">{formatKesBillions((envelope?.funding_split?.unconditional_equitable_share ?? totalCounty * 0.85) / 1e9)}</p>
-            <p className="text-[10px] text-muted-foreground">Unconditional</p>
-          </CardContent>
-        </Card>
-        <Card className="border-border/60 shadow-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Conditional</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold tabular-nums">{formatKesBillions((envelope?.funding_split?.additional_national_conditional_allocations ?? totalCounty * 0.1) / 1e9)}</p>
-            <p className="text-[10px] text-muted-foreground">National + partner grants</p>
-          </CardContent>
-        </Card>
-        <Card className="border-border/60 shadow-sm">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Counties</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold tabular-nums">{COUNTIES.length}</p>
-            <p className="text-[10px] text-muted-foreground">Click any county to view profile</p>
-          </CardContent>
-        </Card>
+    <div className="space-y-6">
+      <div className="flex items-center gap-3">
+        <Building2 className="size-5 text-primary shrink-0" />
+        <select
+          value={selectedCounty?.id ?? ""}
+          onChange={(e) => {
+            const found = countyBreakdown.find((c: any) => c.id === e.target.value);
+            onSelectCounty(found ? { id: found.id, name: found.name, allocation: found.value * 1e8 } : null);
+          }}
+          className="flex-1 rounded-lg border bg-background px-3 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40"
+        >
+          <option value="">Select a county...</option>
+          {countyBreakdown.map((c: any) => (
+            <option key={c.id} value={c.id}>{c.name}</option>
+          ))}
+        </select>
       </div>
 
-      {envelope?.conditional_allocation_breakdown?.length > 0 && (
-        <Card className="border-border/60 shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-sm flex items-center gap-2"><FileText className="size-4 text-primary" />Conditional Allocations</CardTitle>
-            <CardDescription>National conditional grants to county governments</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {envelope.conditional_allocation_breakdown.map((item: any, i: number) => (
-                <div key={i} className="flex items-center justify-between text-xs">
-                  <span className="font-medium">{item.item}</span>
-                  <span className="tabular-nums text-muted-foreground">{formatKesBillions(item.amount / 1e9)}</span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+      {selectedCounty && matchingCounty && (
+        <CountyProfile
+          county={selectedCounty}
+          allocations={allocations}
+          entities={entities}
+          onBack={() => onSelectCounty(null)}
+          onSelectConstituency={onSelectConstituency}
+          selectedYearLabel={selectedYearLabel}
+        />
       )}
 
-      <Card className="border-border/60 shadow-sm">
-        <CardHeader>
-          <CardTitle className="text-sm flex items-center gap-2"><TrendingUp className="size-4 text-primary" />Top 10 Counties</CardTitle>
-          <CardDescription>Largest approved county budgets for {selectedYearLabel}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {countyBreakdown.length === 0 ? <EmptyState /> : (
-            <ResponsiveContainer width="100%" height={360}>
-              <BarChart data={countyBreakdown.slice(0, 10)} layout="vertical" margin={{ left: 0, right: 30, top: 0, bottom: 0 }}>
-                <CartesianGrid horizontal={false} strokeOpacity={0.3} />
-                <XAxis type="number" tickFormatter={((v: number) => `${v}B`) as any} tickLine={false} axisLine={false} tick={{ fontSize: 10 }} />
-                <YAxis type="category" dataKey="name" width={110} tickLine={false} axisLine={false} tick={{ fontSize: 10 }} />
-                <Tooltip formatter={formatKesBillions as any} />
-                <Bar dataKey="value" radius={[0, 4, 4, 0]} maxBarSize={18} fill="hsl(199 89% 48%)">
-                  <LabelList dataKey="value" position="right" formatter={((v: number) => `${v}B`) as any} className="text-[10px] tabular-nums" />
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          )}
-        </CardContent>
-      </Card>
-
-      <Card className="border-border/60 shadow-sm">
-        <CardHeader>
-          <CardTitle className="text-sm">All 47 Counties</CardTitle>
-          <CardDescription>Click any county to view its budget profile, constituencies, and wards</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto max-h-[500px] overflow-y-auto">
-            <table className="w-full text-xs">
-              <thead className="sticky top-0 bg-card">
-                <tr className="border-b text-muted-foreground">
-                  <th className="py-2 pr-4 text-left font-medium">#</th>
-                  <th className="py-2 pr-4 text-left font-medium">County</th>
-                  <th className="py-2 px-4 text-right font-medium">Allocation (KES)</th>
-                  <th className="py-2 pl-4 text-right font-medium">Share</th>
-                </tr>
-              </thead>
-              <tbody>
-                {countyBreakdown.map((c: any, i: number) => (
-                  <tr key={c.name} onClick={() => onSelectCounty({ id: c.id, name: c.name, allocation: c.value * 1e8 })}
-                    className="border-b last:border-0 hover:bg-muted/50 cursor-pointer transition-colors"
-                  >
-                    <td className="py-2 pr-4 text-muted-foreground tabular-nums">{i + 1}</td>
-                    <td className="py-2 pr-4 font-medium flex items-center gap-1">
-                      {c.name}
-                      <ChevronRight className="size-3 text-muted-foreground shrink-0" />
-                    </td>
-                    <td className="py-2 px-4 text-right tabular-nums">{formatKesBillions(c.value)}</td>
-                    <td className="py-2 pl-4 text-right tabular-nums text-muted-foreground">
-                      {totalCountyActual > 0 ? `${((c.value * 1e8 / totalCountyActual) * 100).toFixed(1)}%` : "—"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
+      {!selectedCounty && (
+        <div className="flex flex-col items-center gap-3 py-16 text-muted-foreground">
+          <Building2 className="size-12 text-muted-foreground/20" />
+          <p className="text-sm">Select a county above to view its budget profile</p>
+        </div>
+      )}
     </div>
   );
 }
