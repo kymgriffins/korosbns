@@ -50,7 +50,7 @@ export function BudgethubMobileNav() {
     <MobileBottomNav
       items={items}
       ariaLabel="Budgethub navigation"
-      placement="embedded"
+      placement="fixed"
     />
   );
 }
