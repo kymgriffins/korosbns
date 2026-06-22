@@ -12,6 +12,15 @@ import {
   type BudgetEntity,
   type BudgetHighlightRaw,
 } from "@/lib/budget-api";
+import {
+  mockFetchBudgetFiscalYears,
+  mockFetchBudgetAllocations,
+  mockFetchBudgetKpis,
+  mockFetchBudgetEntities,
+  mockFetchBudgetHighlights,
+} from "@/lib/mock-budget-data";
+
+const USE_MOCK = true;
 
 export type ReportCategory =
   | "national"
@@ -105,10 +114,13 @@ export interface ReportPageData {
 }
 
 export async function fetchReportData(slug: string, year?: string): Promise<ReportPageData> {
-  const [yearsRes, entitiesRes] = await Promise.all([
-    fetchBudgetFiscalYears(),
-    fetchBudgetEntities(),
-  ]);
+  const fyFn = USE_MOCK ? mockFetchBudgetFiscalYears : fetchBudgetFiscalYears;
+  const entFn = USE_MOCK ? mockFetchBudgetEntities : fetchBudgetEntities;
+  const allocFn = USE_MOCK ? mockFetchBudgetAllocations : fetchBudgetAllocations;
+  const kpiFn = USE_MOCK ? mockFetchBudgetKpis : fetchBudgetKpis;
+  const hlFn = USE_MOCK ? mockFetchBudgetHighlights : fetchBudgetHighlights;
+
+  const [yearsRes, entitiesRes] = await Promise.all([fyFn(), entFn()]);
 
   const fiscalYears = yearsRes;
   const entities = entitiesRes;
@@ -119,9 +131,9 @@ export async function fetchReportData(slug: string, year?: string): Promise<Repo
 
   if (targetYear) {
     const [allocRes, kpiRes, hlRes] = await Promise.all([
-      fetchBudgetAllocations({ fiscal_year: targetYear }),
-      fetchBudgetKpis({ fiscal_year: targetYear }),
-      fetchBudgetHighlights({ fiscal_year: targetYear }),
+      allocFn({ fiscal_year: targetYear }),
+      kpiFn({ fiscal_year: targetYear }),
+      hlFn({ fiscal_year: targetYear }),
     ]);
     allocations = allocRes;
     kpis = kpiRes;
