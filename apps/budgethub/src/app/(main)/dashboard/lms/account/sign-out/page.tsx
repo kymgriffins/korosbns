@@ -6,17 +6,21 @@ import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAuth } from "@/contexts/auth-context";
 
 export default function SignOutPage() {
+  const { logout } = useAuth();
   const router = useRouter();
   const [signingOut, setSigningOut] = useState(false);
 
-  const handleSignOut = useCallback(() => {
+  const handleSignOut = useCallback(async () => {
     setSigningOut(true);
-    setTimeout(() => {
-      router.push("/budgethub");
-    }, 1000);
-  }, [router]);
+    try {
+      await logout();
+    } catch {
+      router.push("/budgethub/auth/login");
+    }
+  }, [logout, router]);
 
   return (
     <div className="flex min-h-[50vh] items-center justify-center">
