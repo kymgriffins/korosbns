@@ -3,12 +3,15 @@
 import { usePathname } from "next/navigation";
 import { BookOpen, FileBarChart, FileText, LayoutDashboard } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { rootUser } from "@/data/users";
+import { useAuth } from "@/contexts/auth-context";
 import { getInitials } from "@/lib/utils";
 import { MobileBottomNav, isMobileNavActive, type MobileBottomNavItem } from "@/ui/mobile-bottom-nav";
 
 export function BudgethubMobileNav() {
   const pathname = usePathname();
+  const { user: authUser } = useAuth();
+  const avatarUrl = authUser?.avatar_url || authUser?.avatar || "";
+  const displayName = authUser?.display_name || [authUser?.first_name, authUser?.last_name].filter(Boolean).join(" ") || "User";
 
   const items: MobileBottomNavItem[] = [
     {
@@ -40,8 +43,8 @@ export function BudgethubMobileNav() {
       active: pathname.startsWith("/budgethub/dashboard/lms/profile"),
       icon: (
         <Avatar className="size-5">
-          <AvatarImage src={rootUser.avatar} alt={rootUser.name} />
-          <AvatarFallback className="text-[8px]">{getInitials(rootUser.name)}</AvatarFallback>
+          <AvatarImage src={avatarUrl} alt={displayName} />
+          <AvatarFallback className="text-[8px]">{getInitials(displayName)}</AvatarFallback>
         </Avatar>
       ),
     },

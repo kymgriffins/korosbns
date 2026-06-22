@@ -16,7 +16,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { rootUser } from "@/data/users";
+import { useAuth } from "@/contexts/auth-context";
 import { sidebarItems } from "@/navigation/sidebar/sidebar-items";
 import { usePreferencesStore } from "@/stores/preferences/preferences-provider";
 
@@ -78,6 +78,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   // Show only LMS group; other groups remain in sidebar-items.ts untouched
   const lmsItems = sidebarItems.filter((g) => g.id === 4);
 
+  const { user: authUser } = useAuth();
+  const sidebarUser = {
+    name: authUser?.display_name || [authUser?.first_name, authUser?.last_name].filter(Boolean).join(" ") || "User",
+    email: authUser?.email || "",
+    avatar: authUser?.avatar_url || authUser?.avatar || "",
+  };
+
   return (
     <Sidebar {...props} variant={variant} collapsible={collapsible}>
       <SidebarHeader>
@@ -99,7 +106,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarFooter>
         <SidebarSupportCard />
-        <NavUser user={rootUser} />
+        <NavUser user={sidebarUser} />
       </SidebarFooter>
     </Sidebar>
   );

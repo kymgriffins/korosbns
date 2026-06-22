@@ -228,14 +228,11 @@ export const sidebarItems: NavGroup[] = [
       {
         id: "lms-progress",
         title: "Progress",
-        url: "/dashboard/lms/progress",
         icon: TrendingUp,
-      },
-      {
-        id: "lms-certificates",
-        title: "Certificates",
-        url: "/dashboard/lms/certificates",
-        icon: Medal,
+        subItems: [
+          { id: "lms-progress-overview", title: "Progress", url: "/dashboard/lms/progress", icon: TrendingUp },
+          { id: "lms-certificates", title: "Certificates", url: "/dashboard/lms/certificates", icon: Medal },
+        ],
       },
       {
         id: "lms-documents",

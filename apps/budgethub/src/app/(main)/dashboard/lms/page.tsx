@@ -1,41 +1,161 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-
-import { addHours, endOfToday, format, parseISO, subHours } from "date-fns";
-import { ArrowRight, BookOpen, FileText, Film, GraduationCap, Loader2, Newspaper, RefreshCw, Trophy, TrendingUp, Users } from "lucide-react";
-import { Area, CartesianGrid, ComposedChart, Line, XAxis } from "recharts";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
+import { BookOpen, ExternalLink, FileText, Film, GraduationCap, Loader2, Newspaper, RefreshCw, Trophy, TrendingUp, Users } from "lucide-react";
+import { motion } from "motion/react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { type ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { learnHubApi } from "@/lib/learn-hub";
 import type { CivicModule, LearnHubItem } from "@/types/learn";
-import { LearningHubCard } from "../learning-hub/_components/learning-hub-card";
 
-const chartDays = 30;
-const endDate = endOfToday();
-const startDate = subHours(endDate, chartDays * 24);
+const TYPE_ICONS: Record<string, typeof BookOpen> = {
+  video: Film,
+  article: Newspaper,
+  story: GraduationCap,
+  document: FileText,
+  path: BookOpen,
+};
 
-const chartData = Array.from({ length: chartDays }, (_, i) => {
-  const base = Math.round(40 + Math.random() * 60);
-  const trend = Math.sin(i / 5) * 15 + (i / chartDays) * 10;
-  return {
-    date: format(addHours(startDate, i * 24), "yyyy-MM-dd"),
-    completions: Math.max(0, Math.round(base + trend)),
-    enrollments: Math.max(0, Math.round(base * 0.6 + trend * 0.5)),
-    activeUsers: Math.max(0, Math.round(base * 0.8 + Math.sin(i / 3) * 10)),
-  };
-});
+const TYPE_GRADIENTS: Record<string, string> = {
+  video: "from-purple-500/10 to-purple-500/5",
+  article: "from-emerald-500/10 to-emerald-500/5",
+  story: "from-amber-500/10 to-amber-500/5",
+  document: "from-rose-500/10 to-rose-500/5",
+  path: "from-blue-500/10 to-blue-500/5",
+};
 
-const chartConfig = {
-  completions: { label: "Completions", color: "var(--chart-1)" },
-  enrollments: { label: "Enrollments", color: "var(--chart-2)" },
-  activeUsers: { label: "Active Users", color: "var(--chart-3)" },
-} satisfies ChartConfig;
+function ContentCard({ item }: { item: LearnHubItem }) {
+  const Icon = TYPE_ICONS[item.content_type] ?? BookOpen;
+  const gradient = TYPE_GRADIENTS[item.content_type] ?? "from-primary/10 to-primary/5";
+
+  const href =
+    item.content_type === "article" || item.content_type === "story"
+      ? `/budgethub/dashboard/lms/courses`
+      : "#";
+
+  const external = href.startsWith("http://") || href.startsWith("https://");
+
+  return (
+    <article className="group flex h-full flex-col overflow-hidden rounded-xl border bg-card transition-colors hover:border-primary/40">
+      {item.thumbnail_url ? (
+        <div className="aspect-video w-full overflow-hidden bg-muted">
+          <img
+            src={item.thumbnail_url}
+            alt={item.title}
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            loading="lazy"
+          />
+        </div>
+      ) : (
+        <div className={cn("flex aspect-video w-full items-center justify-center bg-gradient-to-br", gradient)}>
+          <Icon className="size-10 text-muted-foreground/40" />
+        </div>
+      )}
+      <div className="flex flex-1 flex-col p-4">
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+            {item.content_type}
+          </span>
+          {item.difficulty && (
+            <Badge variant="secondary" className="text-[10px] uppercase leading-none px-1.5 py-0.5">
+              {item.difficulty}
+            </Badge>
+          )}
+          {item.published_at && (
+            <span className="ml-auto text-[10px] text-muted-foreground">
+              {new Date(item.published_at).toLocaleDateString()}
+            </span>
+          )}
+        </div>
+        <h3 className="mt-2 line-clamp-2 text-sm font-semibold leading-tight">{item.title}</h3>
+        {item.summary ? (
+          <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{item.summary}</p>
+        ) : null}
+        {item.tags?.length ? (
+          <div className="mt-2 flex flex-wrap gap-1">
+            {item.tags.slice(0, 3).map((tag) => (
+              <span
+                key={tag.slug}
+                className="rounded-full bg-secondary px-2 py-0.5 text-[10px] text-secondary-foreground"
+              >
+                {tag.name}
+              </span>
+            ))}
+          </div>
+        ) : null}
+        <div className="mt-auto pt-3">
+          {external ? (
+            <Button variant="outline" size="sm" className="w-full text-xs font-bold rounded-lg" asChild>
+              <a href={href} target="_blank" rel="noopener noreferrer">
+                Open
+                <ExternalLink className="ml-1.5 size-3" aria-hidden />
+              </a>
+            </Button>
+          ) : (
+            <Button variant="outline" size="sm" className="w-full text-xs font-bold rounded-lg" asChild>
+              <Link href={href}>
+                {item.content_type === "video" ? "Watch" : item.content_type === "article" ? "Read" : "Open"}
+              </Link>
+            </Button>
+          )}
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function ModuleCard({ mod }: { mod: CivicModule }) {
+  return (
+    <Link
+      href={`/budgethub/dashboard/lms/courses/${mod.slug}`}
+      className="group flex h-full flex-col overflow-hidden rounded-xl border bg-card transition-colors hover:border-primary/40"
+    >
+      {mod.image_url ? (
+        <div className="aspect-video w-full overflow-hidden bg-muted">
+          <img
+            src={mod.image_url}
+            alt={mod.title}
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            loading="lazy"
+          />
+        </div>
+      ) : (
+        <div className="flex aspect-video w-full items-center justify-center bg-gradient-to-br from-blue-500/10 to-blue-500/5">
+          <BookOpen className="size-10 text-muted-foreground/40" />
+        </div>
+      )}
+      <div className="flex flex-1 flex-col p-4">
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+            Module
+          </span>
+          {mod.badgeName && (
+            <Badge variant="secondary" className="text-[10px] uppercase leading-none px-1.5 py-0.5">
+              {mod.badgeName}
+            </Badge>
+          )}
+          <span className="ml-auto text-[10px] text-muted-foreground">
+            {mod.steps?.length ?? 0} steps
+          </span>
+        </div>
+        <h3 className="mt-2 line-clamp-2 text-sm font-semibold leading-tight">{mod.title}</h3>
+        {mod.description ? (
+          <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{mod.description}</p>
+        ) : null}
+        <div className="mt-auto pt-3">
+          <Button variant="outline" size="sm" className="w-full text-xs font-bold rounded-lg">
+            Explore
+          </Button>
+        </div>
+      </div>
+    </Link>
+  );
+}
 
 export default function LMSPage() {
   const [counts, setCounts] = useState<Record<string, number> | null>(null);
@@ -66,10 +186,11 @@ export default function LMSPage() {
     { label: "Engagement", value: `${Math.round((publishedModules / Math.max(modules.length, 1)) * 100)}%`, icon: TrendingUp, color: "text-amber-500", bg: "bg-amber-500/10", change: "publish rate", trend: "+5.2%", trendUp: true },
   ];
 
+  const trendingContent = useMemo(() => trending.slice(0, 6), [trending]);
   const popularModules = useMemo(() => [...modules].sort((a, b) => (b.steps?.length ?? 0) - (a.steps?.length ?? 0)).slice(0, 6), [modules]);
 
   return (
-    <div className="@container/main flex flex-col gap-4 md:gap-6">
+    <div className="@container/main flex flex-col gap-6 md:gap-8">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">LMS Overview</h1>
@@ -109,112 +230,84 @@ export default function LMSPage() {
         </div>
       )}
 
-      <Card className="@container/card shadow-xs">
-        <CardHeader>
-          <CardTitle className="leading-none">Learner Activity</CardTitle>
-          <CardDescription><span className="@[540px]/card:block hidden">Daily completions, enrollments, and active users over the last 30 days</span><span className="@[540px]/card:hidden">Last 30 days activity</span></CardDescription>
-          <CardAction className="flex items-center gap-2"><Button variant="outline" size="sm">View report</Button></CardAction>
-        </CardHeader>
-        <CardContent>
-          <ChartContainer config={chartConfig} className="aspect-auto h-72 w-full">
-            <ComposedChart data={chartData} margin={{ top: 0 }}>
-              <defs>
-                {(["completions", "enrollments", "activeUsers"] as const).map((key) => (
-                  <linearGradient key={key} id={`fill${key.charAt(0).toUpperCase() + key.slice(1)}`} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={`var(--color-${key})`} stopOpacity={0.3} />
-                    <stop offset="95%" stopColor={`var(--color-${key})`} stopOpacity={0.02} />
-                  </linearGradient>
-                ))}
-              </defs>
-              <CartesianGrid vertical={false} strokeOpacity={0.5} />
-              <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} minTickGap={48}
-                tickFormatter={(value) => parseISO(value).toLocaleDateString("en-US", { month: "short", day: "numeric" })} />
-              <ChartTooltip cursor={false} content={<ChartTooltipContent className="w-56" indicator="line" labelFormatter={(value) => format(parseISO(value), "d MMMM yyyy")} />} />
-              <ChartLegend verticalAlign="top" content={<ChartLegendContent className="mb-4 justify-end" />} />
-              <Area dataKey="completions" type="natural" fill="url(#fillCompletions)" stroke="var(--color-completions)" strokeWidth={1.5} dot={false} fillOpacity={1} />
-              <Line dataKey="enrollments" type="natural" stroke="var(--color-enrollments)" strokeWidth={1.5} dot={false} />
-              <Line dataKey="activeUsers" type="natural" stroke="var(--color-activeUsers)" strokeWidth={1.5} strokeDasharray="4 4" dot={false} />
-            </ComposedChart>
-          </ChartContainer>
-        </CardContent>
-      </Card>
-
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <Card className="@container/card shadow-xs lg:col-span-1">
-          <CardHeader><CardTitle className="leading-none">Content Distribution</CardTitle><CardDescription>Breakdown by content type</CardDescription></CardHeader>
-          <CardContent>
-            {loading ? <Skeleton className="h-48 w-full" /> : (
-              <div className="space-y-4">
-                {[
-                  { label: "Modules", value: modules.length, color: "bg-blue-500", icon: BookOpen, max: Math.max(totalContent, 1) },
-                  { label: "Articles", value: counts?.articles ?? 0, color: "bg-emerald-500", icon: Newspaper, max: Math.max(totalContent, 1) },
-                  { label: "Videos", value: counts?.videos ?? 0, color: "bg-purple-500", icon: Film, max: Math.max(totalContent, 1) },
-                  { label: "Stories", value: counts?.stories ?? 0, color: "bg-amber-500", icon: GraduationCap, max: Math.max(totalContent, 1) },
-                  { label: "Documents", value: counts?.documents ?? 0, color: "bg-rose-500", icon: FileText, max: Math.max(totalContent, 1) },
-                ].map((item) => (
-                  <div key={item.label} className="flex items-center gap-3">
-                    <item.icon className="size-4 shrink-0 text-muted-foreground" />
-                    <span className="w-20 text-sm text-muted-foreground">{item.label}</span>
-                    <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-muted">
-                      <div className={cn("h-full rounded-full transition-all duration-700 ease-out", item.color)} style={{ width: `${(item.value / item.max) * 100}%` }} />
-                    </div>
-                    <span className="w-10 text-right text-sm font-medium tabular-nums">{item.value}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-        <Card className="@container/card shadow-xs lg:col-span-2">
-          <CardHeader><CardTitle className="leading-none">Trending Content</CardTitle><CardDescription>Most popular content across the platform</CardDescription></CardHeader>
-          <CardContent>
-            {loading ? (
-              <div className="space-y-3">{Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-12 w-full" />)}</div>
-            ) : trending.length === 0 ? (
-              <p className="py-8 text-center text-sm text-muted-foreground">No trending content yet.</p>
-            ) : (
-              <div className="space-y-2">
-                {trending.slice(0, 5).map((item, idx) => (
-                  <div key={item.id} className="flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-muted/50">
-                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium tabular-nums">{idx + 1}</span>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium">{item.title}</p>
-                      <p className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <Badge variant="outline" className="rounded-full px-1.5 py-0 text-[10px]">{item.content_type}</Badge>
-                        {item.published_at && <span>{new Date(item.published_at).toLocaleDateString()}</span>}
-                      </p>
-                    </div>
-                    <ArrowRight className="size-4 shrink-0 text-muted-foreground" />
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="space-y-3">
+      <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold tracking-tight">Popular Modules</h2>
-          {modules.length > 6 && <Button variant="ghost" size="sm" asChild><a href="/budgethub/dashboard/lms/courses">View all</a></Button>}
+          <div>
+            <h2 className="text-lg font-semibold tracking-tight">Trending Content</h2>
+            <p className="text-sm text-muted-foreground">Most popular content across the platform</p>
+          </div>
+        </div>
+        {loading ? (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Card key={i}><CardContent className="p-0"><Skeleton className="aspect-video w-full rounded-t-xl" /><div className="p-4 space-y-2"><Skeleton className="h-4 w-3/4" /><Skeleton className="h-3 w-full" /><Skeleton className="h-3 w-1/2" /></div></CardContent></Card>
+            ))}
+          </div>
+        ) : trendingContent.length === 0 ? (
+          <Card><CardContent className="flex flex-col items-center gap-2 py-12"><Newspaper className="size-8 text-muted-foreground" /><p className="text-sm text-muted-foreground">No trending content yet.</p></CardContent></Card>
+        ) : (
+          <motion.div
+            className="grid grid-cols-1 gap-4 sm:grid-cols-2"
+            initial="hidden"
+            animate="visible"
+            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.05 } } }}
+          >
+            {trendingContent.map((item) => (
+              <motion.div
+                key={item.id}
+                variants={{
+                  hidden: { opacity: 0, y: 24, filter: "blur(4px)" },
+                  visible: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.6, ease: [0.19, 1, 0.22, 1] } },
+                }}
+              >
+                <ContentCard item={item} />
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+      </section>
+
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-lg font-semibold tracking-tight">Popular Modules</h2>
+            <p className="text-sm text-muted-foreground">Top modules by number of learning steps</p>
+          </div>
+          {modules.length > 6 && (
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/budgethub/dashboard/lms/courses">View all</Link>
+            </Button>
+          )}
         </div>
         {loading ? (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 6 }).map((_, i) => (
-              <Card key={i}><CardHeader><Skeleton className="h-4 w-3/4" /></CardHeader><CardContent><Skeleton className="h-3 w-full" /></CardContent></Card>
+              <Card key={i}><CardContent className="p-0"><Skeleton className="aspect-video w-full rounded-t-xl" /><div className="p-4 space-y-2"><Skeleton className="h-4 w-3/4" /><Skeleton className="h-3 w-full" /></div></CardContent></Card>
             ))}
           </div>
         ) : popularModules.length === 0 ? (
           <Card><CardContent className="flex flex-col items-center gap-2 py-12"><BookOpen className="size-8 text-muted-foreground" /><p className="text-sm text-muted-foreground">No modules available yet.</p></CardContent></Card>
         ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <motion.div
+            className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
+            initial="hidden"
+            animate="visible"
+            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.05 } } }}
+          >
             {popularModules.map((mod) => (
-              <LearningHubCard key={mod.id} title={mod.title} description={mod.description} href={`/dashboard/lms/courses/${mod.slug}`}
-                icon={<BookOpen className="size-4" />} badge={mod.badgeName} meta={`${mod.steps?.length ?? 0} steps`} />
+              <motion.div
+                key={mod.id}
+                variants={{
+                  hidden: { opacity: 0, y: 24, filter: "blur(4px)" },
+                  visible: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.6, ease: [0.19, 1, 0.22, 1] } },
+                }}
+              >
+                <ModuleCard mod={mod} />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
-      </div>
+      </section>
     </div>
   );
 }
