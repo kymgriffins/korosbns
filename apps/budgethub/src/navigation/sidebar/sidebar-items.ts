@@ -21,9 +21,11 @@ import {
   Newspaper,
   ReceiptText,
   Server,
+  Settings,
   ShoppingBag,
   SquareArrowUpRight,
   TrendingUp,
+  User,
   Users,
 } from "lucide-react";
 
@@ -235,6 +237,18 @@ export const sidebarItems: NavGroup[] = [
         title: "Certificates",
         url: "/dashboard/lms/certificates",
         icon: Medal,
+      },
+      {
+        id: "lms-profile",
+        title: "Profile",
+        url: "/dashboard/lms/profile",
+        icon: User,
+      },
+      {
+        id: "lms-account",
+        title: "Settings",
+        url: "/dashboard/lms/account",
+        icon: Settings,
       },
     ],
   },

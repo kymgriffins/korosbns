@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { BookOpen, LayoutDashboard, Medal, TrendingUp } from "lucide-react";
+import { BookOpen, LayoutDashboard, Settings, TrendingUp, User } from "lucide-react";
 import { MobileBottomNav, isMobileNavActive, type MobileBottomNavItem } from "@/ui/mobile-bottom-nav";
 
 export function BudgethubMobileNav() {
@@ -27,15 +27,22 @@ export function BudgethubMobileNav() {
       label: "Progress",
       href: "/budgethub/dashboard/lms/progress",
       prominent: true,
-      active: pathname.startsWith("/budgethub/dashboard/lms/progress"),
+      active: pathname.startsWith("/budgethub/dashboard/lms/progress") || pathname.startsWith("/budgethub/dashboard/lms/certificates"),
       icon: <TrendingUp className="size-5" aria-hidden />,
     },
     {
-      id: "certificates",
-      label: "Badges",
-      href: "/budgethub/dashboard/lms/certificates",
-      active: pathname.startsWith("/budgethub/dashboard/lms/certificates"),
-      icon: <Medal className="size-5" aria-hidden />,
+      id: "profile",
+      label: "Profile",
+      href: "/budgethub/dashboard/lms/profile",
+      active: pathname.startsWith("/budgethub/dashboard/lms/profile"),
+      icon: <User className="size-5" aria-hidden />,
+    },
+    {
+      id: "account",
+      label: "Settings",
+      href: "/budgethub/dashboard/lms/account",
+      active: pathname.startsWith("/budgethub/dashboard/lms/account"),
+      icon: <Settings className="size-5" aria-hidden />,
     },
   ];
 
