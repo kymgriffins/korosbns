@@ -75,8 +75,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const variant = isSynced ? sidebarVariant : props.variant;
   const collapsible = isSynced ? sidebarCollapsible : props.collapsible;
 
-  // Show only LMS group; other groups remain in sidebar-items.ts untouched
-  const lmsItems = sidebarItems.filter((g) => g.id === 4);
+  // Show all groups except LMS (id: 4)
+  const adminItems = sidebarItems.filter((g) => g.id !== 4);
 
   const { user: authUser } = useAuth();
   const sidebarUser = {
@@ -91,7 +91,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link prefetch={false} href="/budgethub/dashboard/lms">
+              <Link prefetch={false} href="/dashboard/default">
                 <Image src="/logo.svg" alt="BNS" width={28} height={28} className="size-7 shrink-0" />
                 <span className="font-semibold text-base">Budget Ndio Story</span>
               </Link>
@@ -100,7 +100,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={lmsItems} />
+        <NavMain items={adminItems} />
         {/* <NavDocuments items={data.documents} /> */}
         {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>

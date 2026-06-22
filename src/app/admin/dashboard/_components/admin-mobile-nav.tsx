@@ -1,13 +1,13 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { BookOpen, FileBarChart, FileText, LayoutDashboard } from "lucide-react";
+import { LayoutDashboard, Users, Settings } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/contexts/auth-context";
 import { getInitials } from "@/lib/utils";
 import { MobileBottomNav, isMobileNavActive, type MobileBottomNavItem } from "@/ui/mobile-bottom-nav";
 
-export function BudgethubMobileNav() {
+export function AdminMobileNav() {
   const pathname = usePathname();
   const { user: authUser } = useAuth();
   const avatarUrl = authUser?.avatar_url || authUser?.avatar || "";
@@ -15,32 +15,24 @@ export function BudgethubMobileNav() {
 
   const items: MobileBottomNavItem[] = [
     {
-      id: "overview",
+      id: "dashboard",
       label: "Dashboard",
-      href: "/budgethub/dashboard/lms",
-      active: isMobileNavActive(pathname, "/budgethub/dashboard/lms", ["/budgethub/dashboard"]),
+      href: "/dashboard/default",
+      active: isMobileNavActive(pathname, "/dashboard/default", ["/dashboard"]),
       icon: <LayoutDashboard className="size-5" aria-hidden />,
     },
     {
-      id: "documents",
-      label: "Documents",
-      href: "/budgethub/dashboard/lms/documents",
-      active: pathname.startsWith("/budgethub/dashboard/lms/documents"),
-      icon: <FileText className="size-5" aria-hidden />,
-    },
-    {
-      id: "courses",
-      label: "Courses",
-      href: "/budgethub/dashboard/lms/courses",
-      prominent: true,
-      active: pathname.startsWith("/budgethub/dashboard/lms/courses"),
-      icon: <BookOpen className="size-5" aria-hidden />,
+      id: "users",
+      label: "Users",
+      href: "/dashboard/users",
+      active: pathname.startsWith("/dashboard/users"),
+      icon: <Users className="size-5" aria-hidden />,
     },
     {
       id: "profile",
       label: "Profile",
-      href: "/budgethub/dashboard/lms/profile",
-      active: pathname.startsWith("/budgethub/dashboard/lms/profile"),
+      href: "/dashboard/default",
+      active: pathname.startsWith("/dashboard/default"),
       icon: (
         <Avatar className="size-5">
           <AvatarImage src={avatarUrl} alt={displayName} />
@@ -49,18 +41,18 @@ export function BudgethubMobileNav() {
       ),
     },
     {
-      id: "reports",
-      label: "Reports",
-      href: "/budgethub/reports",
-      active: pathname.startsWith("/budgethub/reports"),
-      icon: <FileBarChart className="size-5" aria-hidden />,
+      id: "settings",
+      label: "Settings",
+      href: "#",
+      active: false,
+      icon: <Settings className="size-5" aria-hidden />,
     },
   ];
 
   return (
     <MobileBottomNav
       items={items}
-      ariaLabel="Budgethub navigation"
+      ariaLabel="Admin navigation"
       placement="fixed"
     />
   );
