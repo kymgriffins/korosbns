@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import Link from "next/link";
 import { BookOpen, GraduationCap, Info, RefreshCw, Search, Trophy, Users, X } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, XAxis, YAxis } from "recharts";
 
@@ -183,7 +184,7 @@ export default function CoursesPage() {
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filteredModules.map((mod) => (
-            <a key={mod.id} href={`/budgethub/dashboard/lms/courses/${mod.slug}`}
+            <Link key={mod.id} href={`/budgethub/dashboard/lms/courses/${mod.slug}`}
               className="group flex flex-col overflow-hidden rounded-xl border bg-card transition-all hover:border-primary/40 hover:shadow-md">
               {mod.image_url ? (
                 <div className="aspect-video w-full overflow-hidden bg-muted">
@@ -205,7 +206,7 @@ export default function CoursesPage() {
                   {mod.is_financial_year_analysis && <span>Budget Analysis</span>}
                 </div>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       )}

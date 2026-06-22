@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import {
   BookOpen,
@@ -13,7 +13,6 @@ import {
   FileText,
   Image as ImageIcon,
   Loader2,
-  PlayCircle,
   Video as VideoIcon,
 } from "lucide-react";
 import Link from "next/link";
@@ -28,6 +27,7 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { learnHubApi } from "@/lib/learn-hub";
+import { renderContent } from "@/lib/render-content";
 import { useSidebar } from "@/components/ui/sidebar";
 import type { ChapterStep, CivicModule, StageTrivia } from "@/types/learn";
 
@@ -90,7 +90,7 @@ export default function CourseDetailPage() {
   const [mod, setMod] = useState<CivicModule | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentStep, setCurrentStep] = useState(1);
-  const [activeTab, setActiveTab] = useState<"read" | "watch" | "quiz" | "articles">("read");
+  const [activeTab, setActiveTab] = useState<"read" | "quiz" | "articles">("read");
   const [showTrivia, setShowTrivia] = useState(false);
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
   const [certificateId, setCertificateId] = useState<string | null>(null);
@@ -135,6 +135,12 @@ export default function CourseDetailPage() {
     [mod, completedSteps],
   );
   const progressPercent = mod?.steps?.length ? Math.round((completedCount / mod.steps.length) * 100) : 0;
+
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+  }, [currentStep]);
 
   const handleSelectStep = (stepNum: number) => {
     setCurrentStep(stepNum);
@@ -239,7 +245,7 @@ export default function CourseDetailPage() {
 
       {/* Main content */}
       <div className="flex flex-1 overflow-hidden">
-        <ScrollArea className="flex-1">
+        <ScrollArea className="flex-1" viewportRef={scrollRef}>
           <div className="mx-auto max-w-3xl p-4 md:p-6 lg:p-8">
             {isMastery ? (
               /* Completion view */
@@ -297,7 +303,6 @@ export default function CourseDetailPage() {
                 <div className="flex items-center gap-1 flex-wrap">
                   {[
                     { id: "read" as const, label: "Read", icon: BookOpenText },
-                    ...(videoUrls.length > 0 || primaryVideoUrl ? [{ id: "watch" as const, label: "Watch", icon: VideoIcon }] : []),
                     ...(hasQuiz ? [{ id: "quiz" as const, label: "Quiz", icon: Brain }] : []),
                     ...(hasArticle ? [{ id: "articles" as const, label: "Article", icon: FileText }] : []),
                   ].map((tab) => (
@@ -311,45 +316,6 @@ export default function CourseDetailPage() {
                     </button>
                   ))}
                 </div>
-
-                {/* Watch tab */}
-                {activeTab === "watch" && (
-                  <div className="space-y-3">
-                    {videoUrls.length > 0 ? (
-                      <>
-                        {videoUrls.length > 1 && (
-                          <div className="flex items-center gap-1.5 overflow-x-auto">
-                            {videoUrls.map((v, i) => (
-                              <button key={i} onClick={() => setSelectedVideoIdx(i)}
-                                className={cn(
-                                  "shrink-0 rounded-lg px-2.5 py-1 text-[10px] font-medium transition-all",
-                                  i === selectedVideoIdx ? "bg-primary text-primary-foreground shadow-xs" : "bg-muted text-muted-foreground hover:bg-muted/80",
-                                )}>
-                                {v.label}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                        <div className="aspect-video w-full overflow-hidden rounded-xl bg-black">
-                          <iframe src={videoUrls[selectedVideoIdx]?.url} title={currentStepObj?.title ?? "Video"}
-                            className="h-full w-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
-                        </div>
-                      </>
-                    ) : primaryVideoUrl ? (
-                      <div className="aspect-video w-full overflow-hidden rounded-xl bg-black">
-                        <iframe src={primaryVideoUrl} title={currentStepObj?.title ?? "Video"}
-                          className="h-full w-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
-                      </div>
-                    ) : (
-                      <div className="flex aspect-video w-full flex-col items-center justify-center rounded-xl bg-gradient-to-br from-primary/5 to-primary/10">
-                        <div className="flex size-10 items-center justify-center rounded-lg bg-muted/30">
-                          <PlayCircle className="size-5 text-muted-foreground/40" />
-                        </div>
-                        <p className="mt-2 text-xs font-semibold text-muted-foreground/60">Video coming soon</p>
-                      </div>
-                    )}
-                  </div>
-                )}
 
                 {/* Read tab */}
                 {activeTab === "read" && currentStepObj && (
@@ -398,10 +364,34 @@ export default function CourseDetailPage() {
 
                     {/* Main content */}
                     <div className="prose prose-sm max-w-none dark:prose-invert prose-headings:font-bold prose-p:leading-relaxed">
-                      {currentStepObj.text.split("\n").map((line, i) => (
-                        line.trim() ? <p key={i}>{line}</p> : <br key={i} />
-                      ))}
+                      {renderContent(currentStepObj.text)}
                     </div>
+
+                    {/* Videos - inline with step indicator dots */}
+                    {(videoUrls.length > 0 || primaryVideoUrl) && (
+                      <div className="space-y-3 pt-2">
+                        <div className="flex items-center gap-2">
+                          <VideoIcon className="size-4 text-primary" />
+                          <span className="text-xs font-semibold text-muted-foreground">Video</span>
+                          {videoUrls.length > 1 && (
+                            <div className="flex items-center gap-1">
+                              {videoUrls.map((_, i) => (
+                                <span key={i} onClick={() => setSelectedVideoIdx(i)}
+                                  className={cn(
+                                    "block cursor-pointer rounded-full transition-all duration-200",
+                                    i === selectedVideoIdx ? "bg-primary w-4 h-1.5" : "bg-muted-foreground/25 w-1.5 h-1.5 hover:bg-muted-foreground/40",
+                                  )} />
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                        <div className="aspect-video w-full overflow-hidden rounded-xl bg-black">
+                          <iframe src={videoUrls.length > 0 ? videoUrls[selectedVideoIdx]?.url : (primaryVideoUrl ?? undefined)}
+                            title={currentStepObj?.title ?? "Video"}
+                            className="h-full w-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                        </div>
+                      </div>
+                    )}
 
                     {/* Key Takeaways */}
                     {currentStepObj.takeaways && currentStepObj.takeaways.length > 0 && (
