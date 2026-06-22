@@ -1,9 +1,11 @@
 "use client";
 
 import type { BudgetSchema, NationalSector, WardProject } from "@/lib/budget-schema";
+import { API_BASE_URL } from "@/lib/api-config";
 import budgetJson from "@/data/budget-fy2026-27.json";
 
 const schema = budgetJson as unknown as BudgetSchema;
+const V2_BUDGET_OVERVIEW_URL = `${API_BASE_URL}/api/v2/budget/overview/`;
 
 export interface FiscalYearMeta {
   id: string;
@@ -96,7 +98,22 @@ function scaleBudgetSchema(base: BudgetSchema, fyId: string): BudgetSchema {
 
 export async function fetchBudgetOverview(fyId?: string): Promise<BudgetSchema> {
   const target = fyId ?? "fy2026";
-  return Promise.resolve(scaleBudgetSchema(schema, target));
+
+  try {
+    const res = await fetch(V2_BUDGET_OVERVIEW_URL, {
+      method: "GET",
+      headers: { Accept: "application/json" },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (res.ok) {
+      const liveData = (await res.json()) as BudgetSchema;
+      return scaleBudgetSchema(liveData, target);
+    }
+  } catch {
+    // API unreachable — fall through to static JSON
+  }
+
+  return scaleBudgetSchema(schema, target);
 }
 
 export async function fetchAllYearsData(): Promise<Record<string, BudgetSchema>> {

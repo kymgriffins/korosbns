@@ -105,7 +105,7 @@ export function CountiesTab({ currentData, allYears, fiscalYears, selectedYear }
 
   const selectedYearLabel = fiscalYears.find((y) => y.id === selectedYear)?.label ?? "FY";
 
-  if (selectedCountyId && selectedCounty && !compareId) {
+  if (selectedCountyId && selectedCounty && !compareId && viewMode !== "compare" && viewMode !== "heatmap") {
     return (
       <CountyProfile
         county={selectedCounty}
