@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { BookOpen, FileText, LayoutDashboard, MessageSquare, User } from "lucide-react";
+import { BookOpen, FileBarChart, FileText, LayoutDashboard, User } from "lucide-react";
 import { MobileBottomNav, isMobileNavActive, type MobileBottomNavItem } from "@/ui/mobile-bottom-nav";
 
 export function BudgethubMobileNav() {
@@ -38,11 +38,11 @@ export function BudgethubMobileNav() {
       icon: <User className="size-5" aria-hidden />,
     },
     {
-      id: "forum",
-      label: "Forum",
-      href: "/budgethub/dashboard/lms/forum",
-      active: pathname.startsWith("/budgethub/dashboard/lms/forum"),
-      icon: <MessageSquare className="size-5" aria-hidden />,
+      id: "reports",
+      label: "Reports",
+      href: "/budgethub/reports",
+      active: pathname.startsWith("/budgethub/reports"),
+      icon: <FileBarChart className="size-5" aria-hidden />,
     },
   ];
 

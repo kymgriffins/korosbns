@@ -4,6 +4,7 @@ import {
   Calendar,
   ChartBar,
   ChartLine,
+  FileBarChart,
   FileText,
   Film,
   Fingerprint,
@@ -247,6 +248,13 @@ export const sidebarItems: NavGroup[] = [
         title: "Forum",
         url: "/dashboard/lms/forum",
         icon: MessageSquare,
+      },
+      {
+        id: "lms-reports",
+        title: "Reports",
+        url: "/reports",
+        icon: FileBarChart,
+        badge: "new",
       },
 
     ],
