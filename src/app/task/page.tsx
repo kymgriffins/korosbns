@@ -17,17 +17,22 @@ import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-
 import { format } from "date-fns";
 import {
   Calendar,
+  CalendarDays,
   CheckCircle2,
   Circle,
   CircleDot,
+  Clock,
+  Hash,
   Loader2,
   MoreHorizontal,
   Plus,
   Search,
   Trash2,
   User,
+  Users,
   X,
   Pencil,
+  Palette,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -37,6 +42,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/ui/card";
 import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
 import { Textarea } from "@/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -54,16 +66,37 @@ import {
 import { Skeleton } from "@/ui/skeleton";
 
 import { taskApi } from "@/lib/task-api";
-import type { Task, TaskStatus, TaskColumn } from "@/types/tasks";
+import type { Task, TaskStatus, TaskColumn, TaskCreatePayload } from "@/types/tasks";
 import { useAuth } from "@/contexts/auth-context";
 
-const COLUMN_CONFIG: Record<TaskStatus, { title: string; icon: any; color: string }> = {
+const COLUMNS: TaskStatus[] = ["draft", "audited", "published"];
+
+const COLUMN_META: Record<TaskStatus, { title: string; icon: any; color: string }> = {
   draft: { title: "To Do", icon: Circle, color: "border-t-amber-500" },
   audited: { title: "In Progress", icon: CircleDot, color: "border-t-blue-500" },
   published: { title: "Done", icon: CheckCircle2, color: "border-t-emerald-500" },
 };
 
-const COLUMNS: TaskStatus[] = ["draft", "audited", "published"];
+const STATUS_STYLES: Record<string, { bg: string; text: string }> = {
+  draft: { bg: "#f59e0b", text: "#f59e0b" },
+  audited: { bg: "#3b82f6", text: "#3b82f6" },
+  published: { bg: "#10b981", text: "#10b981" },
+};
+
+function defaultCreatePayload(): TaskCreatePayload {
+  return {
+    week_label: format(new Date(), "'Week' w 'of' MMM yyyy"),
+    title: "",
+    content: "",
+    status: "draft",
+    due_date: null,
+    assignee: null,
+    assignee_name: null,
+    assigned_team: null,
+    hue: undefined,
+    due_label: undefined,
+  };
+}
 
 function TaskCard({
   task,
@@ -92,18 +125,47 @@ function TaskCard({
     transition,
   };
 
+  const statusStyle = STATUS_STYLES[task.status];
+
   return (
     <div
       ref={setNodeRef}
       style={style}
       {...attributes}
       {...listeners}
-      className={`group rounded-lg border bg-card p-3 shadow-xs transition-all hover:shadow-sm ${
+      className={`group rounded-xl border border-border/60 bg-card/80 backdrop-blur-sm p-3.5 shadow-xs transition-all duration-200 hover:shadow-md hover:border-primary/20 ${
         isDragging || isSortDragging ? "opacity-50 shadow-lg" : ""
-      }`}
+      } ${task.hue ? "" : ""}`}
     >
-      <div className="mb-2 flex items-start justify-between gap-2">
-        <h4 className="flex-1 text-sm font-medium leading-tight">{task.title}</h4>
+      {task.hue && (
+        <div className="absolute inset-0 rounded-xl opacity-[0.04] pointer-events-none"
+          style={{ backgroundColor: task.hue }}
+        />
+      )}
+
+      <div className="flex items-start justify-between gap-2 relative">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <span
+              className="size-2 rounded-full shrink-0"
+              style={{ backgroundColor: statusStyle.bg }}
+            />
+            <span className="text-[10px] font-medium uppercase tracking-wider"
+              style={{ color: statusStyle.text }}>
+              {task.status}
+            </span>
+            {task.due_label && (
+              <span className="text-[9px] text-muted-foreground truncate">
+                · {task.due_label}
+              </span>
+            )}
+          </div>
+          <h4 className="text-sm font-semibold leading-snug truncate">{task.title}</h4>
+          {task.week_label && (
+            <p className="text-[10px] text-muted-foreground mt-0.5">{task.week_label}</p>
+          )}
+        </div>
+
         {canManage && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -130,10 +192,12 @@ function TaskCard({
       </div>
 
       {task.content && (
-        <p className="mb-3 line-clamp-2 text-xs text-muted-foreground">{task.content}</p>
+        <p className="mt-2 line-clamp-2 text-[11px] text-muted-foreground leading-relaxed">
+          {task.content}
+        </p>
       )}
 
-      <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
+      <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-muted-foreground">
         <span className="flex items-center gap-1">
           <User className="size-3" />
           {task.author_name}
@@ -142,6 +206,24 @@ function TaskCard({
           <Calendar className="size-3" />
           {format(new Date(task.created_at), "MMM d")}
         </span>
+        {task.due_date && (
+          <span className="flex items-center gap-1">
+            <CalendarDays className="size-3" />
+            {format(new Date(task.due_date), "MMM d")}
+          </span>
+        )}
+        {task.assignee_name && (
+          <span className="flex items-center gap-1">
+            <Users className="size-3" />
+            {task.assignee_name}
+          </span>
+        )}
+        {task.section_count != null && (
+          <span className="flex items-center gap-1">
+            <Hash className="size-3" />
+            {task.section_count}
+          </span>
+        )}
       </div>
     </div>
   );
@@ -151,7 +233,7 @@ function ColumnSkeleton() {
   return (
     <div className="flex flex-col gap-3">
       {Array.from({ length: 3 }).map((_, i) => (
-        <Skeleton key={i} className="h-24 w-full rounded-lg" />
+        <Skeleton key={i} className="h-28 w-full rounded-xl" />
       ))}
     </div>
   );
@@ -165,12 +247,10 @@ export default function TaskPage() {
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [activeTask, setActiveTask] = useState<Task | null>(null);
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [formMode, setFormMode] = useState<"create" | "edit">("create");
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [saving, setSaving] = useState(false);
-  const [formTitle, setFormTitle] = useState("");
-  const [formContent, setFormContent] = useState("");
+  const [form, setForm] = useState<TaskCreatePayload>(defaultCreatePayload());
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -198,7 +278,14 @@ export default function TaskPage() {
   const filteredTasks = useMemo(
     () =>
       tasks.filter((t) =>
-        search ? t.title.toLowerCase().includes(search.toLowerCase()) || (t.content ?? "").toLowerCase().includes(search.toLowerCase()) : true,
+        search
+          ? t.title.toLowerCase().includes(search.toLowerCase()) ||
+            (t.content ?? "").toLowerCase().includes(search.toLowerCase()) ||
+            (t.assignee_name ?? "").toLowerCase().includes(search.toLowerCase()) ||
+            (t.team_name ?? "").toLowerCase().includes(search.toLowerCase()) ||
+            (t.author_name ?? "").toLowerCase().includes(search.toLowerCase()) ||
+            (t.week_label ?? "").toLowerCase().includes(search.toLowerCase())
+          : true,
       ),
     [tasks, search],
   );
@@ -207,7 +294,7 @@ export default function TaskPage() {
     () =>
       COLUMNS.map((status) => ({
         id: status,
-        title: COLUMN_CONFIG[status].title,
+        title: COLUMN_META[status].title,
         items: filteredTasks.filter((t) => t.status === status),
       })),
     [filteredTasks],
@@ -237,11 +324,9 @@ export default function TaskPage() {
     const activeTask_ = getTaskById(activeId);
     if (!activeTask_) return;
 
-    // Determine target status from the column the item was dropped on
     const overColumn = columns.find((c) => c.id === overId || c.items.some((i) => i.id === overId));
     if (!overColumn || overColumn.id === activeTask_.status) return;
 
-    // Optimistic update
     setTasks((prev) => prev.map((t) => (t.id === activeId ? { ...t, status: overColumn.id } : t)));
 
     try {
@@ -250,7 +335,6 @@ export default function TaskPage() {
       } else if (overColumn.id === "audited") {
         await taskApi.audit(activeId, "approved", "Moved to in progress");
       } else {
-        // Revert — you can't go back via API, so we'd just re-fetch
         await fetchTasks();
         return;
       }
@@ -266,9 +350,8 @@ export default function TaskPage() {
       toast.error("Sign in to create tasks");
       return;
     }
-    setFormMode("create");
-    setFormTitle("");
-    setFormContent("");
+    setEditingTask(null);
+    setForm(defaultCreatePayload());
     setDialogOpen(true);
   }
 
@@ -277,45 +360,48 @@ export default function TaskPage() {
       toast.error("Sign in to edit tasks");
       return;
     }
-    setFormMode("edit");
-    setSelectedTask(task);
-    setFormTitle(task.title);
-    setFormContent(task.content ?? "");
-    // Fetch full detail to get content if not present in list
+    setEditingTask(task);
+    setForm({
+      week_label: task.week_label,
+      title: task.title,
+      content: task.content ?? "",
+      status: task.status,
+      due_date: task.due_date ?? null,
+      assignee: task.assignee ?? null,
+      assignee_name: task.assignee_name ?? null,
+      assigned_team: task.assigned_team ?? null,
+      hue: task.hue ?? null,
+      due_label: task.due_label ?? null,
+    });
     if (!task.content) {
       try {
         const detail = await taskApi.get(task.id);
-        setFormContent(detail.content ?? "");
-        setSelectedTask(detail);
+        setForm((prev) => ({
+          ...prev,
+          content: detail.content,
+        }));
       } catch {
-        // Fall back to list data
+        // fall back to list data
       }
     }
     setDialogOpen(true);
   }
 
   async function handleSave() {
-    if (!formTitle.trim()) {
+    if (!form.title.trim()) {
       toast.error("Title is required");
       return;
     }
     setSaving(true);
     try {
-      if (formMode === "create") {
-        const created = await taskApi.create({
-          week_label: format(new Date(), "'Week' w 'of' MMM yyyy"),
-          title: formTitle.trim(),
-          content: formContent.trim(),
-        });
-        setTasks((prev) => [...prev, created]);
-        toast.success("Task created");
-      } else if (selectedTask) {
-        const updated = await taskApi.update(selectedTask.id, {
-          title: formTitle.trim(),
-          content: formContent.trim(),
-        });
+      if (editingTask) {
+        const updated = await taskApi.update(editingTask.id, form);
         setTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
         toast.success("Task updated");
+      } else {
+        const created = await taskApi.create(form);
+        setTasks((prev) => [...prev, created]);
+        toast.success("Task created");
       }
       setDialogOpen(false);
     } catch (err) {
@@ -339,10 +425,16 @@ export default function TaskPage() {
     }
   }
 
+  function updateField<K extends keyof TaskCreatePayload>(key: K, value: TaskCreatePayload[K]) {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  }
+
+  const totalCount = tasks.length;
+
   if (loading) {
     return (
-      <div className="mx-auto max-w-7xl p-6">
-        <div className="mb-6 flex items-center justify-between">
+      <div className="mx-auto max-w-7xl p-6 space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+        <div className="flex items-center justify-between">
           <div>
             <Skeleton className="mb-2 h-8 w-48" />
             <Skeleton className="h-4 w-72" />
@@ -350,7 +442,8 @@ export default function TaskPage() {
         </div>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {COLUMNS.map((c) => (
-            <Card key={c}>
+            <Card key={c}
+              className="border-border/60 bg-card/80 backdrop-blur-sm shadow-sm">
               <CardHeader>
                 <Skeleton className="h-5 w-24" />
               </CardHeader>
@@ -365,12 +458,13 @@ export default function TaskPage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl p-4 md:p-6">
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="mx-auto max-w-7xl p-4 md:p-6 space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Task Board</h1>
           <p className="text-sm text-muted-foreground">
-            {tasks.length} task{tasks.length !== 1 ? "s" : ""} across {COLUMNS.length} stages
+            {totalCount} task{totalCount !== 1 ? "s" : ""} across {COLUMNS.length} stages
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -378,7 +472,7 @@ export default function TaskPage() {
             <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search tasks..."
-              className="w-56 pl-8"
+              className="w-56 pl-8 rounded-lg bg-background text-xs font-medium focus:outline-none focus:ring-2 focus:ring-primary/20"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -405,7 +499,7 @@ export default function TaskPage() {
       </div>
 
       {error && (
-        <div className="mb-6 rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
+        <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
           {error}
           <Button variant="ghost" size="xs" onClick={fetchTasks} className="ml-3">
             Retry
@@ -421,29 +515,35 @@ export default function TaskPage() {
       >
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {columns.map((column) => {
-            const config = COLUMN_CONFIG[column.id];
-            const Icon = config.icon;
+            const meta = COLUMN_META[column.id];
+            const Icon = meta.icon;
             return (
-              <Card key={column.id} className={`border-t-2 ${config.color}`}>
-                <CardHeader className="pb-3">
+              <Card
+                key={column.id}
+                className={`border-border/60 bg-card/80 backdrop-blur-sm shadow-sm border-t-2 ${meta.color} flex flex-col`}
+              >
+                <CardHeader className="pb-3 shrink-0">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Icon className="size-4 text-muted-foreground" />
                       <CardTitle className="text-sm font-medium">{column.title}</CardTitle>
                     </div>
-                    <Badge variant="secondary" className="text-[11px]">
+                    <Badge variant="secondary" className="text-[10px] font-medium tabular-nums rounded-full px-2 py-0.5">
                       {column.items.length}
                     </Badge>
                   </div>
                 </CardHeader>
-                <CardContent className="min-h-[200px]">
+                <CardContent className="p-3 pt-0 overflow-hidden flex-1">
                   <SortableContext
                     items={column.items.map((t) => t.id)}
                     strategy={verticalListSortingStrategy}
                   >
-                    <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-3 max-h-[calc(100vh-16rem)] overflow-y-auto pr-1
+                      scrollbar-thin scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent">
                       {column.items.length === 0 && (
-                        <p className="py-8 text-center text-xs text-muted-foreground">No tasks</p>
+                        <div className="flex flex-col items-center gap-2 py-12 text-muted-foreground">
+                          <p className="text-xs">No tasks</p>
+                        </div>
                       )}
                       {column.items.map((task) => (
                         <TaskCard
@@ -464,7 +564,7 @@ export default function TaskPage() {
 
         <DragOverlay>
           {activeTask && (
-            <div className="w-80 opacity-90">
+            <div className="w-72 opacity-90">
               <TaskCard task={activeTask} onEdit={openEdit} onDelete={handleDelete} isDragging canManage={isLoggedIn} />
             </div>
           )}
@@ -472,35 +572,145 @@ export default function TaskPage() {
       </DndContext>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{formMode === "create" ? "New Task" : "Edit Task"}</DialogTitle>
+            <DialogTitle>{editingTask ? "Edit Task" : "New Task"}</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
+          <div className="space-y-5 py-2">
+
             <div className="space-y-2">
-              <Label htmlFor="task-title">Title</Label>
+              <Label htmlFor="task-title">Title *</Label>
               <Input
                 id="task-title"
-                value={formTitle}
-                onChange={(e) => setFormTitle(e.target.value)}
+                value={form.title}
+                onChange={(e) => updateField("title", e.target.value)}
                 placeholder="What needs to be done?"
+                className="rounded-lg bg-background text-sm"
                 autoFocus
               />
             </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="task-week-label">Week Label</Label>
+                <Input
+                  id="task-week-label"
+                  value={form.week_label}
+                  onChange={(e) => updateField("week_label", e.target.value)}
+                  className="rounded-lg bg-background text-sm"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="task-status">Status</Label>
+                <Select
+                  value={form.status ?? "draft"}
+                  onValueChange={(v: TaskStatus) => updateField("status", v)}
+                >
+                  <SelectTrigger id="task-status" className="rounded-lg bg-background text-sm">
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="draft">Draft</SelectItem>
+                    <SelectItem value="audited">Audited</SelectItem>
+                    <SelectItem value="published">Published</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="task-content">Description</Label>
               <Textarea
                 id="task-content"
-                value={formContent}
-                onChange={(e) => setFormContent(e.target.value)}
+                value={form.content}
+                onChange={(e) => updateField("content", e.target.value)}
                 placeholder="Add details, requirements, or notes..."
-                rows={8}
-                className="min-h-[200px] resize-y"
+                rows={6}
+                className="min-h-[120px] resize-y rounded-lg bg-background text-sm"
               />
-              <p className="text-xs text-muted-foreground">
-                Supports markdown formatting
-              </p>
+              <p className="text-xs text-muted-foreground">Supports markdown formatting</p>
             </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="task-due-date">Due Date</Label>
+                <Input
+                  id="task-due-date"
+                  type="date"
+                  value={form.due_date ?? ""}
+                  onChange={(e) => updateField("due_date", e.target.value || null)}
+                  className="rounded-lg bg-background text-sm"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="task-due-label">Due Label</Label>
+                <Input
+                  id="task-due-label"
+                  value={form.due_label ?? ""}
+                  onChange={(e) => updateField("due_label", e.target.value || null)}
+                  placeholder="e.g. End of sprint"
+                  className="rounded-lg bg-background text-sm"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="task-assignee">Assignee (email)</Label>
+                <Input
+                  id="task-assignee"
+                  value={form.assignee ?? ""}
+                  onChange={(e) => updateField("assignee", e.target.value || null)}
+                  placeholder="user@example.com"
+                  className="rounded-lg bg-background text-sm"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="task-assignee-name">Assignee Name</Label>
+                <Input
+                  id="task-assignee-name"
+                  value={form.assignee_name ?? ""}
+                  onChange={(e) => updateField("assignee_name", e.target.value || null)}
+                  placeholder="Display name"
+                  className="rounded-lg bg-background text-sm"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="task-assigned-team">Assigned Team</Label>
+                <Input
+                  id="task-assigned-team"
+                  value={form.assigned_team ?? ""}
+                  onChange={(e) => updateField("assigned_team", e.target.value || null)}
+                  placeholder="Team slug or ID"
+                  className="rounded-lg bg-background text-sm"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="task-hue" className="flex items-center gap-1.5">
+                  <Palette className="size-3.5" />
+                  Hue / Color
+                </Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="task-hue"
+                    value={form.hue ?? ""}
+                    onChange={(e) => updateField("hue", e.target.value || null)}
+                    placeholder="#ff6b35"
+                    className="rounded-lg bg-background text-sm font-mono flex-1"
+                  />
+                  {form.hue && (
+                    <div
+                      className="size-9 rounded-lg border shrink-0"
+                      style={{ backgroundColor: form.hue }}
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)} disabled={saving}>
@@ -508,7 +718,7 @@ export default function TaskPage() {
             </Button>
             <Button onClick={handleSave} disabled={saving}>
               {saving && <Loader2 className="mr-1.5 size-4 animate-spin" />}
-              {formMode === "create" ? "Create Task" : "Save Changes"}
+              {editingTask ? "Save Changes" : "Create Task"}
             </Button>
           </DialogFooter>
         </DialogContent>

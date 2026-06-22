@@ -1,6 +1,6 @@
 import { citizenApi, apiFetch } from "@/lib/api-client";
-import type { WeeklyNoteApi, WeeklyNoteDetailApi, WeeklyNoteCreateApi } from "@/types/notes";
-import type { Task, TaskCreatePayload, TaskUpdatePayload } from "@/types/tasks";
+import type { WeeklyNoteApi, WeeklyNoteDetailApi } from "@/types/notes";
+import type { Task, TaskDetail, TaskCreatePayload, TaskUpdatePayload } from "@/types/tasks";
 
 function mapNoteToTask(note: WeeklyNoteApi): Task {
   return {
@@ -12,7 +12,43 @@ function mapNoteToTask(note: WeeklyNoteApi): Task {
     author_name: note.author_name,
     created_at: note.created_at,
     updated_at: note.updated_at,
+    due_date: note.due_date,
+    assignee: note.assignee,
+    assignee_name: note.assignee_name,
+    assigned_team: note.assigned_team,
+    team_name: note.team_name,
+    hue: note.hue,
+    due_label: note.due_label,
+    section_count: note.section_count,
   };
+}
+
+function mapDetailToTask(detail: WeeklyNoteDetailApi): TaskDetail {
+  return {
+    ...mapNoteToTask(detail),
+    content: detail.content,
+    sections: detail.sections,
+    audit_trails: detail.audit_trails,
+    author_team: detail.author_team,
+    team: detail.team,
+    assignee_email: detail.assignee_email,
+    assignee_avatar: detail.assignee_avatar,
+  };
+}
+
+function buildBody(payload: TaskCreatePayload): Record<string, unknown> {
+  const body: Record<string, unknown> = {};
+  body.week_label = payload.week_label;
+  body.title = payload.title;
+  body.content = payload.content;
+  if (payload.status) body.status = payload.status;
+  if (payload.due_date !== undefined) body.due_date = payload.due_date;
+  if (payload.assignee !== undefined) body.assignee = payload.assignee;
+  if (payload.assignee_name !== undefined) body.assignee_name = payload.assignee_name;
+  if (payload.assigned_team !== undefined) body.assigned_team = payload.assigned_team;
+  if (payload.hue !== undefined) body.hue = payload.hue;
+  if (payload.due_label !== undefined) body.due_label = payload.due_label;
+  return body;
 }
 
 export const taskApi = {
@@ -21,36 +57,20 @@ export const taskApi = {
     return notes.map(mapNoteToTask);
   },
 
-  get: async (id: string): Promise<Task> => {
+  get: async (id: string): Promise<TaskDetail> => {
     const res = await apiFetch<WeeklyNoteDetailApi>(`/notes/${id}/`, { auth: true });
-    return {
-      id: res.id,
-      week_label: res.week_label,
-      title: res.title,
-      content: res.content ?? "",
-      status: res.status as Task["status"],
-      author_name: res.author_name,
-      created_at: res.created_at,
-      updated_at: res.updated_at,
-    };
+    return mapDetailToTask(res);
   },
 
   create: async (payload: TaskCreatePayload): Promise<Task> => {
-    const body: WeeklyNoteCreateApi = {
-      week_label: payload.week_label,
-      title: payload.title,
-      content: payload.content,
-    };
-    const note = await citizenApi.createWeeklyNote(body);
+    const body = buildBody(payload);
+    const note = await citizenApi.createWeeklyNote(body as any);
     return mapNoteToTask(note);
   },
 
   update: async (id: string, payload: TaskUpdatePayload): Promise<Task> => {
-    const body: Partial<WeeklyNoteCreateApi> = {};
-    if (payload.week_label !== undefined) body.week_label = payload.week_label;
-    if (payload.title !== undefined) body.title = payload.title;
-    if (payload.content !== undefined) body.content = payload.content;
-    const note = await citizenApi.updateWeeklyNote(id, body);
+    const body = buildBody(payload as TaskCreatePayload);
+    const note = await citizenApi.updateWeeklyNote(id, body as any);
     return mapNoteToTask(note);
   },
 
