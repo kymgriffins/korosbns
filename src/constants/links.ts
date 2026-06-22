@@ -14,6 +14,10 @@ export const NAV_LINKS = [
     href: Routes.Surveys,
   },
   {
+    label: "Reports",
+    href: Routes.Reports,
+  },
+  {
     label: "Events",
     href: Routes.Events,
   },
