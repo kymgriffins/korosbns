@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { usePathname } from "next/navigation";
 import {
   closestCorners,
   DndContext,
@@ -155,6 +156,7 @@ function ColumnSkeleton() {
 
 export default function TaskPage() {
   const { isLoggedIn } = useAuth();
+  const pathname = usePathname();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -353,7 +355,7 @@ export default function TaskPage() {
             <h2 className="mb-2 text-lg font-semibold">Authentication Required</h2>
             <p className="mb-6 text-sm text-muted-foreground">Sign in to manage your tasks.</p>
             <Button asChild>
-              <a href="/auth/login?next=/task">Sign In</a>
+              <a href={`/auth/login?next=${encodeURIComponent(pathname)}`}>Sign In</a>
             </Button>
           </CardContent>
         </Card>
