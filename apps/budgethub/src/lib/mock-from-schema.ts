@@ -33,17 +33,73 @@ function buildNationalEntities(): BudgetEntity[] {
 }
 
 // ─── Build County Entities ───
-function buildCountyEntities(): BudgetEntity[] {
-  return COUNTIES.map((name, i) => ({
-    id: `county-${String(i + 1).padStart(2, "0")}`,
-    type: "county" as const,
-    code: `CG-${String(i + 1).padStart(2, "0")}`,
-    name: `${name} County Government`,
-    parent: null,
-    gfs_code: `C${String(i + 1).padStart(3, "0")}`,
-    is_active: true,
-    sort_order: 100 + i,
-  }));
+const CONSTITUENCY_NAMES: Record<string, string[]> = {};
+function buildConstituencyNames(countyName: string, count: number): string[] {
+  const key = countyName.toLowerCase();
+  if (!CONSTITUENCY_NAMES[key]) {
+    const prefixes = ["Central", "North", "South", "East", "West", "Town", "Rural", "North East", "South West", "Coastal"];
+    CONSTITUENCY_NAMES[key] = Array.from({ length: count }, (_, i) => `${countyName} ${prefixes[i % prefixes.length]}`);
+  }
+  return CONSTITUENCY_NAMES[key];
+}
+
+const WARD_PREFIXES = ["Upper", "Lower", "Central", "North", "South", "East", "West", "Inner", "Outer", "New"];
+
+function buildCountyEntities(): { entities: BudgetEntity[]; constituencyIds: string[]; wardIds: string[] } {
+  const entities: BudgetEntity[] = [];
+  const allConstituencyIds: string[] = [];
+  const allWardIds: string[] = [];
+
+  COUNTIES.forEach((name, i) => {
+    const countyId = `county-${String(i + 1).padStart(2, "0")}`;
+    entities.push({
+      id: countyId,
+      type: "county" as const,
+      code: `CG-${String(i + 1).padStart(2, "0")}`,
+      name: `${name} County Government`,
+      parent: null,
+      gfs_code: `C${String(i + 1).padStart(3, "0")}`,
+      is_active: true,
+      sort_order: 100 + i,
+    });
+
+    // Constituencies (6-10 per county)
+    const numConst = 6 + (i % 5);
+    const constNames = buildConstituencyNames(name, numConst);
+    for (let ci = 0; ci < numConst; ci++) {
+      const constId = `const-${String(i + 1).padStart(2, "0")}-${String(ci + 1).padStart(2, "0")}`;
+      allConstituencyIds.push(constId);
+      entities.push({
+        id: constId,
+        type: "constituency" as const,
+        code: `CONST-${String(i + 1).padStart(2, "0")}-${String(ci + 1).padStart(2, "0")}`,
+        name: constNames[ci],
+        parent: countyId,
+        gfs_code: `CN${String(i + 1).padStart(3, "0")}${String(ci + 1).padStart(2, "0")}`,
+        is_active: true,
+        sort_order: 1000 + i * 10 + ci,
+      });
+
+      // Wards (4-6 per constituency)
+      const numWards = 4 + ((i + ci) % 3);
+      for (let wi = 0; wi < numWards; wi++) {
+        const wardId = `ward-${String(i + 1).padStart(2, "0")}-${String(ci + 1).padStart(2, "0")}-${String(wi + 1).padStart(2, "0")}`;
+        allWardIds.push(wardId);
+        entities.push({
+          id: wardId,
+          type: "ward" as const,
+          code: `WARD-${String(i + 1).padStart(2, "0")}-${String(ci + 1).padStart(2, "0")}-${String(wi + 1).padStart(2, "0")}`,
+          name: `${WARD_PREFIXES[wi % WARD_PREFIXES.length]} ${constNames[ci]} Ward`,
+          parent: constId,
+          gfs_code: `WD${String(i + 1).padStart(3, "0")}${String(ci + 1).padStart(2, "0")}${String(wi + 1).padStart(2, "0")}`,
+          is_active: true,
+          sort_order: 100000 + i * 1000 + ci * 10 + wi,
+        });
+      }
+    }
+  });
+
+  return { entities, constituencyIds: allConstituencyIds, wardIds: allWardIds };
 }
 
 // ─── Build National Allocations (real schema data) ───
@@ -66,30 +122,80 @@ function buildNationalAllocations(fiscalYearId: string): BudgetAllocation[] {
   );
 }
 
-// ─── Build County Allocations (pro-rated from schema envelope) ───
-function buildCountyAllocations(fiscalYearId: string): BudgetAllocation[] {
+// ─── Build County + Constituency + Ward Allocations ───
+function buildCountyAllocations(fiscalYearId: string, constIds: string[], wardIds: string[]): BudgetAllocation[] {
   const FISCAL_YEAR_LABEL = FISCAL_YEARS.find((y) => y.id === fiscalYearId)?.label ?? "";
   const envelope = schema.tier_2_county_devolution_envelope;
   const totalDevolution = envelope.total_devolution_allocation;
+  const result: BudgetAllocation[] = [];
 
-  return COUNTIES.map((name, i) => {
+  COUNTIES.forEach((name, i) => {
     const isNairobi = name === "Nairobi";
     const weight = isNairobi ? 0.065 : 0.035 + (i % 7) * 0.008;
-    const amount = Math.round(totalDevolution * weight);
+    const countyAmount = Math.round(totalDevolution * weight);
+    const countyId = `county-${String(i + 1).padStart(2, "0")}`;
 
-    return {
+    // County-level allocation
+    result.push({
       id: `county-alloc-${fiscalYearId}-${String(i + 1).padStart(2, "0")}`,
       fiscal_year: fiscalYearId,
       fiscal_year_label: FISCAL_YEAR_LABEL,
-      entity: `county-${String(i + 1).padStart(2, "0")}`,
+      entity: countyId,
       entity_name: `${name} County Government`,
       entity_type: "county" as const,
       allocation_type: "approved" as const,
-      amount: String(amount),
-      amount_previous: String(Math.round(amount * (0.92 + (i % 5) * 0.02))),
+      amount: String(countyAmount),
+      amount_previous: String(Math.round(countyAmount * (0.92 + (i % 5) * 0.02))),
       notes: "",
-    };
+    });
+
+    // Constituency-level allocations (split county allocation across constituencies)
+    const numConst = 6 + (i % 5);
+    const constAmt = Math.round(countyAmount * 0.6 / numConst); // 60% to constituencies
+    for (let ci = 0; ci < numConst; ci++) {
+      const constId = `const-${String(i + 1).padStart(2, "0")}-${String(ci + 1).padStart(2, "0")}`;
+      const ciWeight = 1 + ((ci % 3) * 0.1);
+      const amount = Math.round(constAmt * ciWeight);
+      result.push({
+        id: `const-alloc-${fiscalYearId}-${String(i + 1).padStart(2, "0")}-${String(ci + 1).padStart(2, "0")}`,
+        fiscal_year: fiscalYearId,
+        fiscal_year_label: FISCAL_YEAR_LABEL,
+        entity: constId,
+        entity_name: `${name} Constituency - ${name} ${["Central","North","South","East","West","Town","Rural","North East","South West","Coastal"][ci % 10]}`,
+        entity_type: "constituency" as const,
+        allocation_type: "approved" as const,
+        amount: String(amount),
+        amount_previous: String(Math.round(amount * 0.95)),
+        notes: "",
+      });
+    }
+
+    // Ward-level allocations (split constituency allocation across wards)
+    for (let ci = 0; ci < numConst; ci++) {
+      const constId = `const-${String(i + 1).padStart(2, "0")}-${String(ci + 1).padStart(2, "0")}`;
+      const numWards = 4 + ((i + ci) % 3);
+      const constAlloc = result.find((a) => a.entity === constId);
+      const baseWardAmt = constAlloc ? Math.round(Number(constAlloc.amount) * 0.7 / numWards) : 0;
+      for (let wi = 0; wi < numWards; wi++) {
+        const wardId = `ward-${String(i + 1).padStart(2, "0")}-${String(ci + 1).padStart(2, "0")}-${String(wi + 1).padStart(2, "0")}`;
+        const wiWeight = 1 + ((wi % 3) * 0.05);
+        result.push({
+          id: `ward-alloc-${fiscalYearId}-${String(i + 1).padStart(2, "0")}-${String(ci + 1).padStart(2, "0")}-${String(wi + 1).padStart(2, "0")}`,
+          fiscal_year: fiscalYearId,
+          fiscal_year_label: FISCAL_YEAR_LABEL,
+          entity: wardId,
+          entity_name: `${WARD_PREFIXES[wi % WARD_PREFIXES.length]} ${name} Constituency ${["Central","North","South","East","West","Town","Rural","North East","South West","Coastal"][ci % 10]} Ward`,
+          entity_type: "ward" as const,
+          allocation_type: "approved" as const,
+          amount: String(baseWardAmt * wiWeight),
+          amount_previous: null,
+          notes: "",
+        });
+      }
+    }
   });
+
+  return result;
 }
 
 // ─── Build KPIs (from schema macro modules) ───
@@ -250,6 +356,8 @@ function buildHighlights(fiscalYearId: string): BudgetHighlightRaw[] {
 
 // ─── Caches ───
 let cachedEntities: BudgetEntity[] | null = null;
+let cachedConstituencyIds: string[] = [];
+let cachedWardIds: string[] = [];
 const allocCache: Record<string, BudgetAllocation[]> = {};
 const kpiCache: Record<string, BudgetKpiRaw[]> = {};
 
@@ -257,12 +365,15 @@ function ensureData(fiscalYearId: string) {
   if (allocCache[fiscalYearId]) return;
 
   if (!cachedEntities) {
-    cachedEntities = [...buildNationalEntities(), ...buildCountyEntities()];
+    const buildResult = buildCountyEntities();
+    cachedEntities = [...buildNationalEntities(), ...buildResult.entities];
+    cachedConstituencyIds = buildResult.constituencyIds;
+    cachedWardIds = buildResult.wardIds;
   }
 
   allocCache[fiscalYearId] = [
     ...buildNationalAllocations(fiscalYearId),
-    ...buildCountyAllocations(fiscalYearId),
+    ...buildCountyAllocations(fiscalYearId, cachedConstituencyIds, cachedWardIds),
   ];
   kpiCache[fiscalYearId] = buildKpis(fiscalYearId);
 }
@@ -276,7 +387,12 @@ export function schemaFetchFiscalYears(): Promise<BudgetFiscalYear[]> {
 }
 
 export function schemaFetchEntities(): Promise<BudgetEntity[]> {
-  if (!cachedEntities) cachedEntities = [...buildNationalEntities(), ...buildCountyEntities()];
+  if (!cachedEntities) {
+    const countyResult = buildCountyEntities();
+    cachedEntities = [...buildNationalEntities(), ...countyResult.entities];
+    cachedConstituencyIds = countyResult.constituencyIds;
+    cachedWardIds = countyResult.wardIds;
+  }
   return Promise.resolve(cachedEntities);
 }
 

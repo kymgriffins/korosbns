@@ -2,20 +2,19 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  ArrowLeft,
   ArrowUpRight,
-  Banknote,
   BookOpen,
   Building2,
+  ChevronRight,
   FileText,
-  Globe,
   Landmark,
   Loader2,
+  MapPin,
   PieChart as PieChartIcon,
   RefreshCw,
   Scale,
-  Shield,
   TrendingUp,
-  User,
   Users,
 } from "lucide-react";
 import {
@@ -36,7 +35,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { formatKesBillions, formatKesTrillions, shareOfTotal } from "@/lib/budget-format";
+import { formatKesBillions, formatKesTrillions } from "@/lib/budget-format";
 import { fetchReportData, type ReportPageData } from "@/lib/reports-hub";
 import { KpiCard, TrendIndicator, SECTOR_COLORS } from "@/components/reports/shared";
 import { COUNTIES } from "@/constants/counties";
@@ -49,6 +48,8 @@ export default function ReportsPage() {
   const [loading, setLoading] = useState(true);
   const [selectedYear, setSelectedYear] = useState("");
   const [tab, setTab] = useState<"national" | "counties">("national");
+  const [selectedCounty, setSelectedCounty] = useState<{ id: string; name: string; allocation: number } | null>(null);
+  const [selectedConstituency, setSelectedConstituency] = useState<{ id: string; name: string } | null>(null);
 
   const fetchData = useCallback(async (year?: string) => {
     setLoading(true);
@@ -78,12 +79,6 @@ export default function ReportsPage() {
   const countyAllocs = approved.filter((a) => countyEntityIds.includes(a.entity));
   const totalCounty = countyAllocs.reduce((s, a) => s + Number(a.amount), 0);
 
-  const revKpi = (key: string) => kpis.find((k) => k.key === key);
-  const rev = (key: string) => {
-    const k = revKpi(key);
-    return k ? Number(k.value) : 0;
-  };
-
   const sectorBreakdown = useMemo(() => {
     const map: Record<string, number> = {};
     for (const a of nationalAllocs) {
@@ -99,10 +94,23 @@ export default function ReportsPage() {
     const map: Record<string, number> = {};
     for (const a of countyAllocs) map[a.entity_name] = (map[a.entity_name] || 0) + Number(a.amount);
     return Object.entries(map).map(([name, value]) => ({
+      id: countyEntityIds[COUNTIES.findIndex((c) => `${c} County Government` === name)] ?? "",
       name: name.replace(" County Government", ""),
       value: Math.round(value / 1e8) / 10,
     })).sort((a, b) => b.value - a.value);
-  }, [countyAllocs]);
+  }, [countyAllocs, countyEntityIds]);
+
+  const revKpi = (key: string) => kpis.find((k) => k.key === key);
+  const rv = (key: string) => { const k = revKpi(key); return k ? Number(k.value) : 0; };
+
+  const handleBack = useCallback(() => {
+    if (selectedConstituency) setSelectedConstituency(null);
+    else setSelectedCounty(null);
+  }, [selectedConstituency]);
+
+  const r = (key: string) => rv(key);
+  const deficit = r("fiscal_deficit");
+  const ordinary = r("ordinary_revenue");
 
   return (
     <div className="min-h-screen bg-background">
@@ -118,7 +126,7 @@ export default function ReportsPage() {
             {fiscalYears.length > 0 && (
               <div className="flex items-center gap-1 rounded-lg border bg-background p-0.5">
                 {fiscalYears.map((fy) => (
-                  <button key={fy.id} onClick={() => { setSelectedYear(fy.id); fetchData(fy.id); }}
+                  <button key={fy.id} onClick={() => { setSelectedYear(fy.id); fetchData(fy.id); setSelectedCounty(null); setSelectedConstituency(null); }}
                     className={cn("rounded-md px-2.5 py-1 text-[10px] font-bold whitespace-nowrap transition-all",
                       selectedYear === fy.id ? "bg-primary text-primary-foreground shadow-xs" : "text-muted-foreground hover:text-foreground"
                     )} >
@@ -135,30 +143,53 @@ export default function ReportsPage() {
       </div>
 
       <div className="mx-auto max-w-screen-xl px-4 py-6 md:px-6">
-        <div className="flex items-center gap-2 mb-6">
-          <button onClick={() => setTab("national")} className={cn(
-            "flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all",
-            tab === "national" ? "bg-primary text-primary-foreground shadow-xs" : "bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80"
-          )}>
-            <Landmark className="size-4" /> National
-          </button>
-          <button onClick={() => setTab("counties")} className={cn(
-            "flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all",
-            tab === "counties" ? "bg-primary text-primary-foreground shadow-xs" : "bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80"
-          )}>
-            <Building2 className="size-4" /> Counties
-          </button>
-        </div>
+        {!selectedCounty && !selectedConstituency && (
+          <div className="flex items-center gap-2 mb-6">
+            <button onClick={() => setTab("national")} className={cn(
+              "flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all",
+              tab === "national" ? "bg-primary text-primary-foreground shadow-xs" : "bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80"
+            )}>
+              <Landmark className="size-4" /> National
+            </button>
+            <button onClick={() => setTab("counties")} className={cn(
+              "flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all",
+              tab === "counties" ? "bg-primary text-primary-foreground shadow-xs" : "bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80"
+            )}>
+              <Building2 className="size-4" /> Counties
+            </button>
+          </div>
+        )}
 
-        {loading ? <LoadingSkeleton /> : tab === "national" ? (
+        {loading ? <LoadingSkeleton /> : selectedConstituency ? (
+          <WardView
+            constituency={selectedConstituency}
+            allocations={approved}
+            entities={entities}
+            onBack={handleBack}
+            selectedYearLabel={selectedYearLabel}
+          />
+        ) : selectedCounty ? (
+          <CountyProfile
+            county={selectedCounty}
+            allocations={approved}
+            entities={entities}
+            onBack={handleBack}
+            onSelectConstituency={setSelectedConstituency}
+            selectedYearLabel={selectedYearLabel}
+          />
+        ) : tab === "national" ? (
           <NationalContent
             kpis={kpis} sectorBreakdown={sectorBreakdown} highlights={highlights}
             totalBudget={totalBudget} selectedYearLabel={selectedYearLabel}
+            r={r} deficit={deficit} ordinary={ordinary}
           />
         ) : (
-          <CountyContent
-            countyBreakdown={countyBreakdown} totalCounty={totalCounty}
-            totalBudget={totalBudget} selectedYearLabel={selectedYearLabel}
+          <CountyList
+            countyBreakdown={countyBreakdown}
+            totalCounty={totalCounty}
+            totalBudget={totalBudget}
+            selectedYearLabel={selectedYearLabel}
+            onSelectCounty={(c: { id: string; name: string; allocation: number }) => setSelectedCounty(c)}
           />
         )}
       </div>
@@ -167,7 +198,7 @@ export default function ReportsPage() {
         <div className="mx-auto max-w-screen-xl px-4 py-6 text-center text-xs text-muted-foreground">
           <Landmark className="size-4 mx-auto mb-1" />
           <p>Kenya National Budget Data — {selectedYearLabel}</p>
-          <p className="mt-0.5">Presented by {schema.metadata?.presented_by ?? "National Treasury"} · Theme: {schema.metadata?.theme?.split(" for ")[0] ?? ""}</p>
+          <p className="mt-0.5">Presented by {schema.metadata?.presented_by ?? "National Treasury"}</p>
         </div>
       </footer>
     </div>
@@ -189,22 +220,18 @@ function LoadingSkeleton() {
   );
 }
 
-function NationalContent({ kpis, sectorBreakdown, highlights, totalBudget, selectedYearLabel }: any) {
-  const r = (key: string) => { const k = kpis.find((x: any) => x.key === key); return k ? Number(k.value) : 0; };
-
+// ─── National ───
+function NationalContent({ kpis, sectorBreakdown, highlights, totalBudget, selectedYearLabel, r, deficit, ordinary }: any) {
   const revenueStreams = useMemo(() => [
-    { name: "Ordinary Revenue (KRA)", value: r("ordinary_revenue") / 1e9, fill: "hsl(221 83% 53%)" },
+    { name: "Ordinary Revenue (KRA)", value: r("appropriations_in_aid") ? (r("total_revenue") - r("appropriations_in_aid") - r("grants")) / 1e9 : r("ordinary_revenue") / 1e9, fill: "hsl(221 83% 53%)" },
     { name: "Appropriations-in-Aid", value: r("appropriations_in_aid") / 1e9, fill: "hsl(142 76% 36%)" },
     { name: "External Grants", value: r("grants") / 1e9, fill: "hsl(47 95% 48%)" },
-  ].filter((d) => d.value > 0), [kpis]);
+  ].filter((d) => d.value > 0), [kpis, r]);
 
-  const deficit = r("fiscal_deficit");
   const interest = r("interest_obligation");
-  const ordinary = r("ordinary_revenue");
 
   return (
     <div className="space-y-8">
-      {/* Theme Banner */}
       <Card className="border-border/60 shadow-sm bg-gradient-to-r from-primary/5 via-primary/3 to-transparent">
         <CardContent className="p-5">
           <div className="flex items-start gap-3">
@@ -220,7 +247,6 @@ function NationalContent({ kpis, sectorBreakdown, highlights, totalBudget, selec
         </CardContent>
       </Card>
 
-      {/* KPI Grid */}
       <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <KpiCard label="Total Revenue" value={formatKesTrillions(r("total_revenue") / 1e12)} subtitle={selectedYearLabel} />
         <KpiCard label="Ordinary Revenue" value={formatKesBillions(ordinary / 1e9)} subtitle="KRA collections" />
@@ -228,7 +254,6 @@ function NationalContent({ kpis, sectorBreakdown, highlights, totalBudget, selec
         <KpiCard label="Fiscal Deficit" value={formatKesBillions(deficit / 1e9)} trend={-((deficit / r("total_revenue")) * 100)} subtitle={`${(deficit / r("total_revenue") * 100).toFixed(1)}% of revenue`} />
       </div>
 
-      {/* Revenue Breakdown + Sector Allocation */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Card className="border-border/60 shadow-sm">
           <CardHeader>
@@ -271,7 +296,7 @@ function NationalContent({ kpis, sectorBreakdown, highlights, totalBudget, selec
               <ResponsiveContainer width="100%" height={320}>
                 <BarChart data={sectorBreakdown} layout="vertical" margin={{ left: 0, right: 20, top: 0, bottom: 0 }}>
                   <CartesianGrid horizontal={false} strokeOpacity={0.3} />
-                  <XAxis type="number" tickFormatter={(v: number) => `${v}B`} tickLine={false} axisLine={false} tick={{ fontSize: 10 }} />
+                  <XAxis type="number" tickFormatter={((v: number) => `${v}B`) as any} tickLine={false} axisLine={false} tick={{ fontSize: 10 }} />
                   <YAxis type="category" dataKey="name" width={110} tickLine={false} axisLine={false} tick={{ fontSize: 9 }} />
                   <Tooltip formatter={formatKesBillions as any} />
                   <Bar dataKey="value" radius={[0, 4, 4, 0]} maxBarSize={16}>
@@ -285,7 +310,6 @@ function NationalContent({ kpis, sectorBreakdown, highlights, totalBudget, selec
         </Card>
       </div>
 
-      {/* Debt & Borrowing */}
       <Card className="border-border/60 shadow-sm">
         <CardHeader>
           <CardTitle className="text-sm flex items-center gap-2"><Scale className="size-4 text-primary" />Debt & Financing</CardTitle>
@@ -309,8 +333,6 @@ function NationalContent({ kpis, sectorBreakdown, highlights, totalBudget, selec
               <p className="text-xs text-muted-foreground">Target FY {selectedYearLabel.slice(-5)}</p>
             </div>
           </div>
-
-          {/* Systemic Risks */}
           {schema.macro_modules?.debt_portfolio?.systemic_risks?.length > 0 && (
             <div className="mt-4 space-y-2">
               <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Systemic Risks</p>
@@ -325,12 +347,10 @@ function NationalContent({ kpis, sectorBreakdown, highlights, totalBudget, selec
         </CardContent>
       </Card>
 
-      {/* Highlights */}
       {highlights.length > 0 && (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {highlights.map((hl: any) => (
-            <Card key={hl.id} className={cn(
-              "border-l-4 shadow-sm",
+            <Card key={hl.id} className={cn("border-l-4 shadow-sm",
               hl.type === "success" && "border-l-emerald-500",
               hl.type === "warning" && "border-l-amber-500",
               hl.type === "trend" && "border-l-blue-500",
@@ -352,7 +372,6 @@ function NationalContent({ kpis, sectorBreakdown, highlights, totalBudget, selec
         </div>
       )}
 
-      {/* Source Documents Link */}
       <Card className="border-border/60 shadow-sm">
         <CardContent className="p-4">
           <a href="/budgethub/dashboard/lms/documents" className="flex items-center gap-3 text-sm font-medium text-primary hover:underline">
@@ -366,13 +385,13 @@ function NationalContent({ kpis, sectorBreakdown, highlights, totalBudget, selec
   );
 }
 
-function CountyContent({ countyBreakdown, totalCounty, totalBudget, selectedYearLabel }: any) {
+// ─── County List ───
+function CountyList({ countyBreakdown, totalCounty, totalBudget, selectedYearLabel, onSelectCounty }: any) {
   const envelope = schema.tier_2_county_devolution_envelope;
-  const totalCountyActual = countyBreakdown.reduce((s: number, c: any) => s + c.value, 0) * 1e8;
+  const totalCountyActual = countyBreakdown.reduce((s: number, c: any) => s + c.value * 1e8, 0);
 
   return (
     <div className="space-y-8">
-      {/* Funding Split */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
         <Card className="border-border/60 shadow-sm">
           <CardHeader className="pb-2">
@@ -394,7 +413,7 @@ function CountyContent({ countyBreakdown, totalCounty, totalBudget, selectedYear
         </Card>
         <Card className="border-border/60 shadow-sm">
           <CardHeader className="pb-2">
-            <CardTitle className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Conditional Allocations</CardTitle>
+            <CardTitle className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Conditional</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold tabular-nums">{formatKesBillions((envelope?.funding_split?.additional_national_conditional_allocations ?? totalCounty * 0.1) / 1e9)}</p>
@@ -406,17 +425,16 @@ function CountyContent({ countyBreakdown, totalCounty, totalBudget, selectedYear
             <CardTitle className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Counties</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold tabular-nums">47</p>
-            <p className="text-[10px] text-muted-foreground">+ {COUNTIES.length} counties</p>
+            <p className="text-2xl font-bold tabular-nums">{COUNTIES.length}</p>
+            <p className="text-[10px] text-muted-foreground">Click any county to view profile</p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Conditional Allocation Breakdown */}
       {envelope?.conditional_allocation_breakdown?.length > 0 && (
         <Card className="border-border/60 shadow-sm">
           <CardHeader>
-            <CardTitle className="text-sm flex items-center gap-2"><FileText className="size-4 text-primary" />Conditional Allocations Breakdown</CardTitle>
+            <CardTitle className="text-sm flex items-center gap-2"><FileText className="size-4 text-primary" />Conditional Allocations</CardTitle>
             <CardDescription>National conditional grants to county governments</CardDescription>
           </CardHeader>
           <CardContent>
@@ -432,18 +450,17 @@ function CountyContent({ countyBreakdown, totalCounty, totalBudget, selectedYear
         </Card>
       )}
 
-      {/* Top 10 Counties */}
       <Card className="border-border/60 shadow-sm">
         <CardHeader>
-          <CardTitle className="text-sm flex items-center gap-2"><TrendingUp className="size-4 text-primary" />Top 10 Counties by Allocation</CardTitle>
-          <CardDescription>Counties with the largest approved budgets for {selectedYearLabel}</CardDescription>
+          <CardTitle className="text-sm flex items-center gap-2"><TrendingUp className="size-4 text-primary" />Top 10 Counties</CardTitle>
+          <CardDescription>Largest approved county budgets for {selectedYearLabel}</CardDescription>
         </CardHeader>
         <CardContent>
           {countyBreakdown.length === 0 ? <EmptyState /> : (
             <ResponsiveContainer width="100%" height={360}>
               <BarChart data={countyBreakdown.slice(0, 10)} layout="vertical" margin={{ left: 0, right: 30, top: 0, bottom: 0 }}>
                 <CartesianGrid horizontal={false} strokeOpacity={0.3} />
-                <XAxis type="number" tickFormatter={(v: number) => `${v}B`} tickLine={false} axisLine={false} tick={{ fontSize: 10 }} />
+                <XAxis type="number" tickFormatter={((v: number) => `${v}B`) as any} tickLine={false} axisLine={false} tick={{ fontSize: 10 }} />
                 <YAxis type="category" dataKey="name" width={110} tickLine={false} axisLine={false} tick={{ fontSize: 10 }} />
                 <Tooltip formatter={formatKesBillions as any} />
                 <Bar dataKey="value" radius={[0, 4, 4, 0]} maxBarSize={18} fill="hsl(199 89% 48%)">
@@ -455,11 +472,10 @@ function CountyContent({ countyBreakdown, totalCounty, totalBudget, selectedYear
         </CardContent>
       </Card>
 
-      {/* All 47 Counties Table */}
       <Card className="border-border/60 shadow-sm">
         <CardHeader>
           <CardTitle className="text-sm">All 47 Counties</CardTitle>
-          <CardDescription>Full county budget allocations for {selectedYearLabel}</CardDescription>
+          <CardDescription>Click any county to view its budget profile, constituencies, and wards</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto max-h-[500px] overflow-y-auto">
@@ -474,9 +490,14 @@ function CountyContent({ countyBreakdown, totalCounty, totalBudget, selectedYear
               </thead>
               <tbody>
                 {countyBreakdown.map((c: any, i: number) => (
-                  <tr key={c.name} className="border-b last:border-0 hover:bg-muted/30">
+                  <tr key={c.name} onClick={() => onSelectCounty({ id: c.id, name: c.name, allocation: c.value * 1e8 })}
+                    className="border-b last:border-0 hover:bg-muted/50 cursor-pointer transition-colors"
+                  >
                     <td className="py-2 pr-4 text-muted-foreground tabular-nums">{i + 1}</td>
-                    <td className="py-2 pr-4 font-medium">{c.name}</td>
+                    <td className="py-2 pr-4 font-medium flex items-center gap-1">
+                      {c.name}
+                      <ChevronRight className="size-3 text-muted-foreground shrink-0" />
+                    </td>
                     <td className="py-2 px-4 text-right tabular-nums">{formatKesBillions(c.value)}</td>
                     <td className="py-2 pl-4 text-right tabular-nums text-muted-foreground">
                       {totalCountyActual > 0 ? `${((c.value * 1e8 / totalCountyActual) * 100).toFixed(1)}%` : "—"}
@@ -486,6 +507,187 @@ function CountyContent({ countyBreakdown, totalCounty, totalBudget, selectedYear
               </tbody>
             </table>
           </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+// ─── County Profile (sectors + constituencies) ───
+function CountyProfile({ county, allocations, entities, onBack, onSelectConstituency, selectedYearLabel }: any) {
+  const countyAllocs = allocations.filter((a: any) => a.entity_type === "county" && a.entity === county.id);
+  const countyTotal = countyAllocs.reduce((s: number, a: any) => s + Number(a.amount), 0);
+
+  const constituencyEntities = entities.filter((e: any) => e.type === "constituency" && e.parent === county.id);
+  const constituencyAllocs = allocations.filter((a: any) => a.entity_type === "constituency" && a.entity.startsWith(`const-${county.id.split("-")[1]}`));
+  const totalConstituency = constituencyAllocs.reduce((s: number, a: any) => s + Number(a.amount), 0);
+
+  const constWithAllocs = constituencyEntities.map((e: any) => {
+    const alloc = constituencyAllocs.filter((a: any) => a.entity === e.id);
+    return { ...e, totalAlloc: alloc.reduce((s: number, a: any) => s + Number(a.amount), 0) };
+  }).sort((a: any, b: any) => b.totalAlloc - a.totalAlloc);
+
+  // Sector breakdown for county (using entity_name categories)
+  const sectorMap: Record<string, number> = {};
+  for (const a of countyAllocs) {
+    const parts = a.entity_name.split(" - ");
+    const sector = parts.length > 1 ? parts[0] : a.entity_name;
+    sectorMap[sector] = (sectorMap[sector] || 0) + Number(a.amount);
+  }
+  const countySectors = Object.entries(sectorMap).map(([name, value], i) => ({
+    name, value: Math.round(value / 1e8) / 10, fill: SECTOR_COLORS[i % SECTOR_COLORS.length],
+  })).sort((a: any, b: any) => b.value - a.value);
+
+  return (
+    <div className="space-y-8">
+      <button onClick={onBack} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
+        <ArrowLeft className="size-3.5" />
+        Back to all counties
+      </button>
+
+      <div className="flex items-center gap-3">
+        <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/5">
+          <MapPin className="size-5 text-primary" />
+        </div>
+        <div>
+          <h2 className="text-lg font-bold">{county.name} County</h2>
+          <p className="text-xs text-muted-foreground">Budget profile for {selectedYearLabel}</p>
+        </div>
+        <div className="ml-auto text-right">
+          <p className="text-lg font-bold tabular-nums">{formatKesBillions(countyTotal / 1e9)}</p>
+          <p className="text-[10px] text-muted-foreground">Total Allocation</p>
+        </div>
+      </div>
+
+      {countySectors.length > 0 && (
+        <Card className="border-border/60 shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-sm flex items-center gap-2"><TrendingUp className="size-4 text-primary" />Sector Allocations</CardTitle>
+            <CardDescription>Budget breakdown by sector for {county.name} County</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {countySectors.map((s: any, i: number) => (
+                <div key={i} className="space-y-1">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-medium">{s.name}</span>
+                    <span className="tabular-nums text-muted-foreground">{formatKesBillions(s.value)}</span>
+                  </div>
+                  <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+                    <div className="h-full rounded-full transition-all" style={{ width: `${(s.value * 1e8 / countyTotal) * 100}%`, backgroundColor: s.fill }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Constituencies */}
+      {constWithAllocs.length > 0 && (
+        <Card className="border-border/60 shadow-sm">
+          <CardHeader>
+            <CardTitle className="text-sm flex items-center gap-2"><Users className="size-4 text-primary" />Constituencies</CardTitle>
+            <CardDescription>{constWithAllocs.length} constituencies in {county.name} County</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="border-b text-muted-foreground">
+                    <th className="py-2 pr-4 text-left font-medium">Constituency</th>
+                    <th className="py-2 px-4 text-right font-medium">Allocation (KES)</th>
+                    <th className="py-2 pl-4 text-right font-medium">Share</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {constWithAllocs.map((c: any) => (
+                    <tr key={c.id} onClick={() => onSelectConstituency({ id: c.id, name: c.name })}
+                      className="border-b last:border-0 hover:bg-muted/50 cursor-pointer transition-colors"
+                    >
+                      <td className="py-2.5 pr-4 font-medium flex items-center gap-1">
+                        {c.name}
+                        <ChevronRight className="size-3 text-muted-foreground shrink-0" />
+                      </td>
+                      <td className="py-2.5 px-4 text-right tabular-nums">{formatKesBillions(c.totalAlloc / 1e9)}</td>
+                      <td className="py-2.5 pl-4 text-right tabular-nums text-muted-foreground">
+                        {totalConstituency > 0 ? `${((c.totalAlloc / totalConstituency) * 100).toFixed(1)}%` : "—"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
+
+// ─── Ward View ───
+function WardView({ constituency, allocations, entities, onBack, selectedYearLabel }: any) {
+  const wardEntities = entities.filter((e: any) => e.type === "ward" && e.parent === constituency.id);
+  const constPrefix = constituency.id.split("-").slice(0, 3).join("-");
+  const wardAllocs = allocations.filter((a: any) => a.entity_type === "ward" && a.entity.startsWith(constPrefix));
+  const totalWards = wardAllocs.reduce((s: number, a: any) => s + Number(a.amount), 0);
+
+  const wardsWithAllocs = wardEntities.map((e: any) => {
+    const alloc = wardAllocs.filter((a: any) => a.entity === e.id);
+    return { ...e, totalAlloc: alloc.reduce((s: number, a: any) => s + Number(a.amount), 0) };
+  }).sort((a: any, b: any) => b.totalAlloc - a.totalAlloc);
+
+  return (
+    <div className="space-y-6">
+      <button onClick={onBack} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
+        <ArrowLeft className="size-3.5" />
+        Back to county profile
+      </button>
+
+      <div className="flex items-center gap-3">
+        <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-500/5">
+          <MapPin className="size-5 text-amber-600" />
+        </div>
+        <div>
+          <h2 className="text-lg font-bold">{constituency.name}</h2>
+          <p className="text-xs text-muted-foreground">Ward-level budget breakdown for {selectedYearLabel}</p>
+        </div>
+        <div className="ml-auto text-right">
+          <p className="text-lg font-bold tabular-nums">{formatKesBillions(totalWards / 1e9)}</p>
+          <p className="text-[10px] text-muted-foreground">Total Ward Allocation</p>
+        </div>
+      </div>
+
+      <Card className="border-border/60 shadow-sm">
+        <CardHeader>
+          <CardTitle className="text-sm flex items-center gap-2"><MapPin className="size-4 text-primary" />Wards</CardTitle>
+          <CardDescription>{wardsWithAllocs.length} wards in {constituency.name}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {wardsWithAllocs.length === 0 ? <EmptyState /> : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="border-b text-muted-foreground">
+                    <th className="py-2 pr-4 text-left font-medium">Ward</th>
+                    <th className="py-2 px-4 text-right font-medium">Allocation (KES)</th>
+                    <th className="py-2 pl-4 text-right font-medium">Share</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {wardsWithAllocs.map((w: any) => (
+                    <tr key={w.id} className="border-b last:border-0 hover:bg-muted/30 transition-colors">
+                      <td className="py-2.5 pr-4 font-medium">{w.name}</td>
+                      <td className="py-2.5 px-4 text-right tabular-nums">{formatKesBillions(w.totalAlloc / 1e9)}</td>
+                      <td className="py-2.5 pl-4 text-right tabular-nums text-muted-foreground">
+                        {totalWards > 0 ? `${((w.totalAlloc / totalWards) * 100).toFixed(1)}%` : "—"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
