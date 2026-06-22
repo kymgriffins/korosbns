@@ -218,27 +218,27 @@ export default function CourseDetailPage() {
   return (
     <div data-content-padding="false" className="flex h-[calc(100vh-var(--dashboard-header-height,3rem))] flex-col overflow-hidden">
       {/* Header bar */}
-      <div className="flex shrink-0 items-center gap-3 border-b px-4 py-2.5 md:px-6">
-        <Button asChild variant="ghost" size="icon-xs">
+      <div className="flex shrink-0 items-center gap-2 border-b px-3 py-2 md:gap-3 md:px-6 md:py-2.5">
+        <Button asChild variant="ghost" size="icon-xs" className="size-8 shrink-0">
           <Link href="/budgethub/dashboard/lms/courses"><ChevronLeft className="size-4" /></Link>
         </Button>
-        <Separator orientation="vertical" className="h-5" />
+        <Separator orientation="vertical" className="hidden h-5 sm:block" />
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
-            <Link href="/budgethub/dashboard/lms/courses" className="hover:text-foreground">Courses</Link>
-            <span>/</span>
-            <span className="truncate text-foreground">{mod.title}</span>
+          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground md:gap-2">
+            <Link href="/budgethub/dashboard/lms/courses" className="hidden hover:text-foreground sm:inline">Courses</Link>
+            <span className="hidden sm:inline">/</span>
+            <span className="truncate text-xs font-medium text-foreground md:text-[11px] md:font-normal">{mod.title}</span>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 md:gap-2">
           {mod.badgeName && (
-            <Badge variant="outline" className="text-[10px]"><BookOpen className="size-3" />{mod.badgeName}</Badge>
+            <Badge variant="outline" className="hidden text-[10px] sm:flex"><BookOpen className="size-3" />{mod.badgeName}</Badge>
           )}
-          <Badge variant="secondary" className="text-[10px]">{mod.steps.length} steps</Badge>
-          <Badge variant={mod.status === "published" ? "default" : "outline"} className="text-[10px] capitalize">{mod.status}</Badge>
+          <Badge variant="secondary" className="text-[9px] md:text-[10px]">{mod.steps.length}</Badge>
+          <Badge variant={mod.status === "published" ? "default" : "outline"} className="hidden text-[10px] capitalize sm:inline-flex">{mod.status}</Badge>
           <div className="hidden items-center gap-1.5 sm:flex">
-            <Progress value={progressPercent} className="h-1.5 w-20" />
-            <span className="text-[11px] tabular-nums text-muted-foreground">{completedCount}/{mod.steps.length}</span>
+            <Progress value={progressPercent} className="h-1.5 w-16 md:w-20" />
+            <span className="text-[10px] tabular-nums text-muted-foreground md:text-[11px]">{completedCount}/{mod.steps.length}</span>
           </div>
         </div>
       </div>
@@ -288,7 +288,7 @@ export default function CourseDetailPage() {
                     return (
                       <button key={step.id} onClick={() => handleSelectStep(stepNum)}
                         className={cn(
-                          "flex size-7 shrink-0 items-center justify-center rounded-full text-[10px] font-bold transition-all",
+                          "flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-bold transition-all md:size-7 md:text-[10px]",
                           isCurrent && "scale-110 bg-primary text-primary-foreground shadow-xs",
                           !isCurrent && passed && "border border-emerald-500/30 bg-emerald-500/15 text-emerald-600",
                           !isCurrent && !passed && "border border-border/40 bg-muted/40 text-muted-foreground",
@@ -483,32 +483,32 @@ export default function CourseDetailPage() {
                 {/* Step navigation */}
                 <Separator />
                 <div className="flex items-center justify-between gap-2 pb-4">
-                  <Button variant="outline" size="sm"
+                  <Button variant="outline"
                     onClick={() => handleSelectStep(Math.max(1, currentStep - 1))}
                     disabled={currentStep <= 1}
-                    className="gap-1 rounded-lg text-xs font-bold">
-                    <ChevronLeft className="size-3.5" /> Previous
+                    className="min-h-10 gap-1 rounded-lg text-xs font-bold md:min-h-0 md:size-sm">
+                    <ChevronLeft className="size-4 md:size-3.5" /> <span className="hidden sm:inline">Previous</span><span className="sm:hidden">Prev</span>
                   </Button>
 
                   {currentStep < mod.steps.length ? (
                     currentStepObj && isStepPassed(currentStepObj.order) ? (
-                      <Button variant="outline" size="sm"
+                      <Button variant="outline"
                         onClick={() => handleSelectStep(currentStep + 1)}
-                        className="gap-1 rounded-lg text-xs font-bold">
-                        Next <ChevronRight className="size-3.5" />
+                        className="min-h-10 gap-1 rounded-lg text-xs font-bold md:min-h-0 md:size-sm">
+                        <span className="sm:hidden">Next</span><span className="hidden sm:inline">Next</span> <ChevronRight className="size-4 md:size-3.5" />
                       </Button>
                     ) : (
-                      <Button size="sm" onClick={handleStepComplete} className="gap-1 rounded-lg text-xs font-bold">
-                        <CheckCircle2 className="size-3.5" /> Complete & Continue
+                      <Button onClick={handleStepComplete} className="min-h-10 gap-1 rounded-lg text-xs font-bold md:min-h-0 md:size-sm">
+                        <CheckCircle2 className="size-4 md:size-3.5" /> Continue
                       </Button>
                     )
                   ) : currentStep === mod.steps.length && !isStepPassed(mod.steps.length) ? (
-                    <Button size="sm" onClick={handleFinishModule} className="gap-1 rounded-lg text-xs font-bold">
-                      <CheckCircle2 className="size-3.5" /> Finish Course
+                    <Button onClick={handleFinishModule} className="min-h-10 gap-1 rounded-lg text-xs font-bold md:min-h-0 md:size-sm">
+                      <CheckCircle2 className="size-4 md:size-3.5" /> Finish
                     </Button>
                   ) : currentStep === mod.steps.length + 1 ? null : (
-                    <Button size="sm" onClick={handleFinishModule} className="gap-1 rounded-lg text-xs font-bold">
-                      <CheckCircle2 className="size-3.5" /> Finish Course
+                    <Button onClick={handleFinishModule} className="min-h-10 gap-1 rounded-lg text-xs font-bold md:min-h-0 md:size-sm">
+                      <CheckCircle2 className="size-4 md:size-3.5" /> Finish
                     </Button>
                   )}
                 </div>
