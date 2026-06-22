@@ -25,6 +25,7 @@ import { Progress } from "@/ui/progress";
 import { Separator } from "@/ui/separator";
 import { cn } from "@/utils";
 import { learnHubApi } from "@/lib/learn-hub";
+import { useSidebar } from "@/ui/sidebar";
 import { readProgress, writeProgress } from "@/lib/module-progress";
 import { triviaForStep } from "@/lib/learn-trivia";
 import { certificateDownloadHref } from "@/lib/certificate-url";
@@ -79,6 +80,12 @@ export function ModuleDetailView() {
   const [certificateId, setCertificateId] = useState<string | null>(null);
   const [certificateUrl, setCertificateUrl] = useState<string | null>(null);
   const [activeVideoIdx, setActiveVideoIdx] = useState(0);
+  const { setOpen: setSidebarOpen } = useSidebar();
+
+  useEffect(() => {
+    setSidebarOpen(false);
+    return () => setSidebarOpen(true);
+  }, [setSidebarOpen]);
 
   const fetchModule = useCallback(async () => {
     setLoading(true);
