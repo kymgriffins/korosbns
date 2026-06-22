@@ -252,7 +252,7 @@ export const sidebarItems: NavGroup[] = [
       {
         id: "lms-reports",
         title: "Reports",
-        url: "/reports",
+        url: "/budgethub/reports",
         icon: FileBarChart,
         badge: "new",
       },
