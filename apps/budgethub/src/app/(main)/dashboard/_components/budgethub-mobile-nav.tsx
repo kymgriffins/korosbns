@@ -1,7 +1,10 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { BookOpen, FileBarChart, FileText, LayoutDashboard, User } from "lucide-react";
+import { BookOpen, FileBarChart, FileText, LayoutDashboard } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { rootUser } from "@/data/users";
+import { getInitials } from "@/lib/utils";
 import { MobileBottomNav, isMobileNavActive, type MobileBottomNavItem } from "@/ui/mobile-bottom-nav";
 
 export function BudgethubMobileNav() {
@@ -35,7 +38,12 @@ export function BudgethubMobileNav() {
       label: "Profile",
       href: "/budgethub/dashboard/lms/profile",
       active: pathname.startsWith("/budgethub/dashboard/lms/profile"),
-      icon: <User className="size-5" aria-hidden />,
+      icon: (
+        <Avatar className="size-5">
+          <AvatarImage src={rootUser.avatar} alt={rootUser.name} />
+          <AvatarFallback className="text-[8px]">{getInitials(rootUser.name)}</AvatarFallback>
+        </Avatar>
+      ),
     },
     {
       id: "reports",
