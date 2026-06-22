@@ -28,7 +28,6 @@ import {
   User,
   X,
   Pencil,
-  AlertCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -71,11 +70,13 @@ function TaskCard({
   onEdit,
   onDelete,
   isDragging,
+  canManage,
 }: {
   task: Task;
   onEdit: (t: Task) => void;
   onDelete: (id: string) => void;
   isDragging?: boolean;
+  canManage: boolean;
 }) {
   const {
     attributes,
@@ -103,27 +104,29 @@ function TaskCard({
     >
       <div className="mb-2 flex items-start justify-between gap-2">
         <h4 className="flex-1 text-sm font-medium leading-tight">{task.title}</h4>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon-xs" className="-mr-1.5 -mt-1 shrink-0 opacity-0 group-hover:opacity-100">
-              <MoreHorizontal className="size-3.5" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-36">
-            <DropdownMenuItem onClick={() => onEdit(task)}>
-              <Pencil className="mr-2 size-3.5" />
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="text-destructive focus:text-destructive"
-              onClick={() => onDelete(task.id)}
-            >
-              <Trash2 className="mr-2 size-3.5" />
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {canManage && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon-xs" className="-mr-1.5 -mt-1 shrink-0 opacity-0 group-hover:opacity-100">
+                <MoreHorizontal className="size-3.5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-36">
+              <DropdownMenuItem onClick={() => onEdit(task)}>
+                <Pencil className="mr-2 size-3.5" />
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="text-destructive focus:text-destructive"
+                onClick={() => onDelete(task.id)}
+              >
+                <Trash2 className="mr-2 size-3.5" />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
 
       {task.content && (
@@ -189,9 +192,8 @@ export default function TaskPage() {
   }, []);
 
   useEffect(() => {
-    if (isLoggedIn) fetchTasks();
-    else setLoading(false);
-  }, [isLoggedIn, fetchTasks]);
+    fetchTasks();
+  }, [fetchTasks]);
 
   const filteredTasks = useMemo(
     () =>
@@ -222,6 +224,10 @@ export default function TaskPage() {
 
   async function handleDragEnd(event: DragEndEvent) {
     setActiveTask(null);
+    if (!isLoggedIn) {
+      toast.error("Sign in to move tasks");
+      return;
+    }
     const { active, over } = event;
     if (!over) return;
 
@@ -256,6 +262,10 @@ export default function TaskPage() {
   }
 
   function openCreate() {
+    if (!isLoggedIn) {
+      toast.error("Sign in to create tasks");
+      return;
+    }
     setFormMode("create");
     setFormTitle("");
     setFormContent("");
@@ -263,6 +273,10 @@ export default function TaskPage() {
   }
 
   async function openEdit(task: Task) {
+    if (!isLoggedIn) {
+      toast.error("Sign in to edit tasks");
+      return;
+    }
     setFormMode("edit");
     setSelectedTask(task);
     setFormTitle(task.title);
@@ -312,6 +326,10 @@ export default function TaskPage() {
   }
 
   async function handleDelete(id: string) {
+    if (!isLoggedIn) {
+      toast.error("Sign in to delete tasks");
+      return;
+    }
     try {
       await taskApi.delete(id);
       setTasks((prev) => prev.filter((t) => t.id !== id));
@@ -346,23 +364,6 @@ export default function TaskPage() {
     );
   }
 
-  if (!isLoggedIn) {
-    return (
-      <div className="mx-auto flex min-h-[60vh] max-w-md items-center justify-center p-6">
-        <Card className="w-full text-center">
-          <CardContent className="py-12">
-            <AlertCircle className="mx-auto mb-4 size-12 text-muted-foreground" />
-            <h2 className="mb-2 text-lg font-semibold">Authentication Required</h2>
-            <p className="mb-6 text-sm text-muted-foreground">Sign in to manage your tasks.</p>
-            <Button asChild>
-              <a href={`/auth/login?next=${encodeURIComponent(pathname)}`}>Sign In</a>
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
   return (
     <div className="mx-auto max-w-7xl p-4 md:p-6">
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -390,10 +391,16 @@ export default function TaskPage() {
               </button>
             )}
           </div>
-          <Button onClick={openCreate}>
-            <Plus className="mr-1.5 size-4" />
-            New Task
-          </Button>
+          {isLoggedIn ? (
+            <Button onClick={openCreate}>
+              <Plus className="mr-1.5 size-4" />
+              New Task
+            </Button>
+          ) : (
+            <Button asChild variant="outline">
+              <a href={`/auth/login?next=${encodeURIComponent(pathname)}`}>Sign in to manage</a>
+            </Button>
+          )}
         </div>
       </div>
 
@@ -444,6 +451,7 @@ export default function TaskPage() {
                           task={task}
                           onEdit={openEdit}
                           onDelete={handleDelete}
+                          canManage={isLoggedIn}
                         />
                       ))}
                     </div>
@@ -457,7 +465,7 @@ export default function TaskPage() {
         <DragOverlay>
           {activeTask && (
             <div className="w-80 opacity-90">
-              <TaskCard task={activeTask} onEdit={openEdit} onDelete={handleDelete} isDragging />
+              <TaskCard task={activeTask} onEdit={openEdit} onDelete={handleDelete} isDragging canManage={isLoggedIn} />
             </div>
           )}
         </DragOverlay>

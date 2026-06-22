@@ -17,14 +17,8 @@ function mapNoteToTask(note: WeeklyNoteApi): Task {
 
 export const taskApi = {
   list: async (): Promise<Task[]> => {
-    const res = await citizenApi.getMyNotes();
-    if (!Array.isArray(res.results)) return [];
-    return res.results.map(mapNoteToTask);
-  },
-
-  getPublic: async (): Promise<Task[]> => {
-    const res = await citizenApi.getWeeklyNotes();
-    return res.map(mapNoteToTask);
+    const notes = await citizenApi.getWeeklyNotes();
+    return notes.map(mapNoteToTask);
   },
 
   get: async (id: string): Promise<Task> => {
