@@ -242,6 +242,12 @@ export const sidebarItems: NavGroup[] = [
         url: "/dashboard/lms/documents",
         icon: FileText,
       },
+      {
+        id: "lms-forum",
+        title: "Forum",
+        url: "/dashboard/lms/forum",
+        icon: MessageSquare,
+      },
 
     ],
   },

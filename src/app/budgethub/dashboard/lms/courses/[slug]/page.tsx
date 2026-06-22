@@ -13,6 +13,9 @@ import {
   FileText,
   Image as ImageIcon,
   Loader2,
+  Lock,
+  MessageSquare,
+  Pencil,
   Video as VideoIcon,
 } from "lucide-react";
 import Link from "next/link";
@@ -27,6 +30,7 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { learnHubApi } from "@/lib/learn-hub";
+import { CourseForum } from "./course-forum";
 import { renderContent } from "@/lib/render-content";
 import { useSidebar } from "@/components/ui/sidebar";
 import type { ChapterStep, CivicModule, StageTrivia } from "@/types/learn";
@@ -90,13 +94,15 @@ export default function CourseDetailPage() {
   const [mod, setMod] = useState<CivicModule | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentStep, setCurrentStep] = useState(1);
-  const [activeTab, setActiveTab] = useState<"read" | "quiz" | "articles">("read");
+  const [activeTab, setActiveTab] = useState<"read" | "quiz" | "articles" | "forum">("read");
   const [showTrivia, setShowTrivia] = useState(false);
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
   const [certificateId, setCertificateId] = useState<string | null>(null);
   const [certificateUrl, setCertificateUrl] = useState<string | null>(null);
   const [selectedVideoIdx, setSelectedVideoIdx] = useState(0);
   const [selectedImageIdx, setSelectedImageIdx] = useState(0);
+  const [noteText, setNoteText] = useState<string>("");
+  const [noteVisibility, setNoteVisibility] = useState<"private" | "public">("private");
   const { setOpen: setSidebarOpen } = useSidebar();
 
   useEffect(() => {
@@ -305,6 +311,7 @@ export default function CourseDetailPage() {
                     { id: "read" as const, label: "Read", icon: BookOpenText },
                     ...(hasQuiz ? [{ id: "quiz" as const, label: "Quiz", icon: Brain }] : []),
                     ...(hasArticle ? [{ id: "articles" as const, label: "Article", icon: FileText }] : []),
+                    { id: "forum" as const, label: "Forum", icon: MessageSquare },
                   ].map((tab) => (
                     <button key={tab.id} onClick={() => setActiveTab(tab.id)}
                       className={cn(
@@ -439,6 +446,41 @@ export default function CourseDetailPage() {
                         </div>
                       </details>
                     )}
+
+                    {/* Notes */}
+                    <details className="rounded-lg border bg-card">
+                      <summary className="flex items-center gap-2 cursor-pointer px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground">
+                        <Pencil className="size-3.5" />
+                        Notes
+                      </summary>
+                      <div className="border-t px-4 py-3 space-y-3">
+                        <textarea
+                          value={noteText}
+                          onChange={(e) => setNoteText(e.target.value)}
+                          placeholder="Write your notes for this step..."
+                          rows={4}
+                          className="w-full rounded-lg border bg-background p-3 text-sm outline-none ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring resize-y min-h-[80px]"
+                        />
+                        <div className="flex items-center justify-between gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setNoteVisibility(noteVisibility === "private" ? "public" : "private")}
+                            className={cn(
+                              "inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-[10px] font-bold transition-all",
+                              noteVisibility === "private"
+                                ? "bg-amber-500/10 text-amber-600"
+                                : "bg-emerald-500/10 text-emerald-600"
+                            )}
+                          >
+                            {noteVisibility === "private" ? <Lock className="size-3" /> : <MessageSquare className="size-3" />}
+                            {noteVisibility === "private" ? "Private" : "Public"}
+                          </button>
+                          <span className="text-[10px] text-muted-foreground">
+                            {noteVisibility === "private" ? "Only visible to you" : "Shared with all learners"}
+                          </span>
+                        </div>
+                      </div>
+                    </details>
                   </div>
                 )}
 
@@ -478,6 +520,11 @@ export default function CourseDetailPage() {
                       </div>
                     )}
                   </div>
+                )}
+
+                {/* Forum tab */}
+                {activeTab === "forum" && mod && (
+                  <CourseForum moduleId={mod.id} />
                 )}
 
                 {/* Step navigation */}

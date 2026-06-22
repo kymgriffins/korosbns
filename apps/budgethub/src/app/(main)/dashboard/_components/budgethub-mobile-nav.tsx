@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { BookOpen, FileText, LayoutDashboard, Settings, User } from "lucide-react";
+import { BookOpen, FileText, LayoutDashboard, MessageSquare, User } from "lucide-react";
 import { MobileBottomNav, isMobileNavActive, type MobileBottomNavItem } from "@/ui/mobile-bottom-nav";
 
 export function BudgethubMobileNav() {
@@ -16,19 +16,19 @@ export function BudgethubMobileNav() {
       icon: <LayoutDashboard className="size-5" aria-hidden />,
     },
     {
+      id: "documents",
+      label: "Documents",
+      href: "/budgethub/dashboard/lms/documents",
+      active: pathname.startsWith("/budgethub/dashboard/lms/documents"),
+      icon: <FileText className="size-5" aria-hidden />,
+    },
+    {
       id: "courses",
       label: "Courses",
       href: "/budgethub/dashboard/lms/courses",
       prominent: true,
       active: pathname.startsWith("/budgethub/dashboard/lms/courses"),
       icon: <BookOpen className="size-5" aria-hidden />,
-    },
-    {
-      id: "documents",
-      label: "Documents",
-      href: "/budgethub/dashboard/lms/documents",
-      active: pathname.startsWith("/budgethub/dashboard/lms/documents"),
-      icon: <FileText className="size-5" aria-hidden />,
     },
     {
       id: "profile",
@@ -38,11 +38,11 @@ export function BudgethubMobileNav() {
       icon: <User className="size-5" aria-hidden />,
     },
     {
-      id: "account",
-      label: "Settings",
-      href: "/budgethub/dashboard/lms/account",
-      active: pathname.startsWith("/budgethub/dashboard/lms/account"),
-      icon: <Settings className="size-5" aria-hidden />,
+      id: "forum",
+      label: "Forum",
+      href: "/budgethub/dashboard/lms/forum",
+      active: pathname.startsWith("/budgethub/dashboard/lms/forum"),
+      icon: <MessageSquare className="size-5" aria-hidden />,
     },
   ];
 
