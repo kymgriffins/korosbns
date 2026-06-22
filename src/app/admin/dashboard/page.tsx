@@ -9,6 +9,7 @@ import {
   GraduationCap,
   Layers,
   MessageSquare,
+  Notebook,
   Users,
   Video,
   File,
@@ -83,6 +84,7 @@ const quickLinks = [
   { title: "Authors", href: "/dashboard/authors", icon: PenSquare, description: "Manage content authors" },
   { title: "Budget Data", href: "/dashboard/budget-data", icon: Landmark, description: "Upload and manage budget records" },
   { title: "Forum", href: "/dashboard/forum", icon: MessageSquare, description: "Moderate forum threads" },
+  { title: "Notes", href: "/dashboard/notes", icon: Notebook, description: "Manage weekly notes and audits" },
 ];
 
 export default function AdminDashboardPage() {

@@ -191,3 +191,58 @@ export type AdminRole = {
   user_count: number;
   created_at: string;
 };
+
+export type AdminNote = {
+  id: string;
+  title: string;
+  content?: string;
+  author_name?: string;
+  status: "draft" | "published" | "archived";
+  is_public: boolean;
+  audit_notes?: string;
+  published_at?: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export const adminNotesApi = {
+  list: (params?: { page?: number; search?: string; status?: string }) => {
+    const q = new URLSearchParams();
+    if (params?.page) q.set("page", String(params.page));
+    if (params?.search) q.set("search", params.search);
+    if (params?.status) q.set("status", params.status);
+    const qs = q.toString();
+    return adminFetch<ApiListResponse<AdminNote>>(`/notes/${qs ? `?${qs}` : ""}`);
+  },
+  get: (id: string) => adminFetch<AdminNote>(`/notes/${id}/`),
+  create: (data: Partial<AdminNote>) =>
+    adminFetch<AdminNote>("/notes/", { method: "POST", body: JSON.stringify(data) }),
+  update: (id: string, data: Partial<AdminNote>) =>
+    adminFetch<AdminNote>(`/notes/${id}/`, { method: "PATCH", body: JSON.stringify(data) }),
+  delete: (id: string) =>
+    adminFetch<void>(`/notes/${id}/`, { method: "DELETE" }),
+  audit: (id: string, notes: string) =>
+    adminFetch<AdminNote>(`/notes/${id}/audit/`, { method: "POST", body: JSON.stringify({ audit_notes: notes }) }),
+  publish: (id: string) =>
+    adminFetch<AdminNote>(`/notes/${id}/publish/`, { method: "POST" }),
+};
+
+export type AdminAnalyticsSummary = {
+  total_users: number;
+  total_content: number;
+  total_modules: number;
+  total_articles: number;
+  total_videos: number;
+  total_stories: number;
+  total_documents: number;
+  active_forum_threads: number;
+  total_notes: number;
+  recent_signups: number;
+  engagement_rate: number;
+  period?: string;
+};
+
+export const adminAnalyticsApi = {
+  summary: () => adminFetch<AdminAnalyticsSummary>("/analytics/summary/"),
+  dashboard: () => adminFetch<AdminAnalyticsSummary>("/analytics/dashboard/"),
+};

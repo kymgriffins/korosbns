@@ -92,8 +92,9 @@ export const sidebarItems: NavGroup[] = [
       {
         id: "analytics",
         title: "Analytics",
-        url: "/dashboard/analytics",
+        url: "/admin/dashboard/analytics",
         icon: Gauge,
+        newTab: true,
       },
       {
         id: "productivity",
@@ -222,8 +223,9 @@ export const sidebarItems: NavGroup[] = [
       {
         id: "lms-analytics",
         title: "Analytics",
-        url: "/dashboard/lms/analytics",
+        url: "/admin/dashboard/analytics",
         icon: ChartLine,
+        newTab: true,
       },
       {
         id: "lms-progress",
