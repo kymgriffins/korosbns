@@ -50,7 +50,7 @@ export function WeeklyNoteTimeline({ notes }: Props) {
             <h3 className="font-semibold mb-2">{note.title}</h3>
             <div
               className="prose prose-sm dark:prose-invert max-w-none line-clamp-3 text-muted-foreground"
-              dangerouslySetInnerHTML={{ __html: note.content }}
+              dangerouslySetInnerHTML={{ __html: note.content ?? "" }}
             />
             <div className="mt-3 text-xs text-muted-foreground">
               By {note.author_name}

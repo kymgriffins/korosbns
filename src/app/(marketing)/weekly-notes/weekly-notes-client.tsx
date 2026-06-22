@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
 import { WeeklyNoteTimeline } from "@/components/notes/WeeklyNoteTimeline";
-import { citizenApi, type ApiListResponse, type WeeklyNoteApi } from "@/lib/api-client";
+import { citizenApi, type WeeklyNoteApi } from "@/lib/api-client";
 import { Calendar, Loader2 } from "lucide-react";
 
 export function WeeklyNotesClient() {
@@ -14,8 +14,8 @@ export function WeeklyNotesClient() {
   useEffect(() => {
     citizenApi
       .getWeeklyNotes()
-      .then((res: ApiListResponse<WeeklyNoteApi>) => {
-        setNotes(res.results || []);
+      .then((res: WeeklyNoteApi[]) => {
+        setNotes(res || []);
       })
       .catch(() => {})
       .finally(() => setLoading(false));

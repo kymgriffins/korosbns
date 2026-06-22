@@ -25,7 +25,7 @@ export function WeeklyNotesList({ notes, onAudit, showStatusFilter = true }: Pro
       const matchesSearch =
         !search ||
         note.title.toLowerCase().includes(search.toLowerCase()) ||
-        note.content.toLowerCase().includes(search.toLowerCase());
+        (note.content ?? "").toLowerCase().includes(search.toLowerCase());
       const matchesStatus =
         statusFilter === "all" || note.status === statusFilter;
       return matchesSearch && matchesStatus;

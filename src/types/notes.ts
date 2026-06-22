@@ -2,11 +2,51 @@ export type WeeklyNoteApi = {
   id: string;
   week_label: string;
   title: string;
-  content: string;
+  content?: string;
   status: string;
   author_name: string;
   created_at: string;
   updated_at: string;
+  due_date?: string | null;
+  assignee?: string | null;
+  assignee_name?: string | null;
+  assigned_team?: string | null;
+  team_name?: string | null;
+  hue?: string;
+  due_label?: string;
+  section_count?: number;
+};
+
+export type WeeklyNoteDetailApi = WeeklyNoteApi & {
+  content: string;
+  sections: NoteSectionApi[];
+  audit_trails: NoteAuditTrailApi[];
+  author_team?: string | null;
+  team?: string | null;
+  assignee_email?: string | null;
+  assignee_avatar?: string | null;
+};
+
+export type NoteSectionApi = {
+  id: string;
+  note: string;
+  heading: string;
+  section_type: string;
+  content: Record<string, unknown>;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+};
+
+export type NoteAuditTrailApi = {
+  id: string;
+  note: string;
+  auditor: string;
+  auditor_email: string;
+  auditor_name: string;
+  action: string;
+  comment: string;
+  created_at: string;
 };
 
 export type WeeklyNoteCreateApi = {

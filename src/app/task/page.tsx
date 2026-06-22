@@ -194,7 +194,7 @@ export default function TaskPage() {
   const filteredTasks = useMemo(
     () =>
       tasks.filter((t) =>
-        search ? t.title.toLowerCase().includes(search.toLowerCase()) || t.content.toLowerCase().includes(search.toLowerCase()) : true,
+        search ? t.title.toLowerCase().includes(search.toLowerCase()) || (t.content ?? "").toLowerCase().includes(search.toLowerCase()) : true,
       ),
     [tasks, search],
   );
@@ -260,11 +260,21 @@ export default function TaskPage() {
     setDialogOpen(true);
   }
 
-  function openEdit(task: Task) {
+  async function openEdit(task: Task) {
     setFormMode("edit");
     setSelectedTask(task);
     setFormTitle(task.title);
-    setFormContent(task.content);
+    setFormContent(task.content ?? "");
+    // Fetch full detail to get content if not present in list
+    if (!task.content) {
+      try {
+        const detail = await taskApi.get(task.id);
+        setFormContent(detail.content ?? "");
+        setSelectedTask(detail);
+      } catch {
+        // Fall back to list data
+      }
+    }
     setDialogOpen(true);
   }
 

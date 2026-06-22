@@ -4,7 +4,7 @@ export type Task = {
   id: string;
   week_label: string;
   title: string;
-  content: string;
+  content?: string;
   status: TaskStatus;
   author_name: string;
   created_at: string;

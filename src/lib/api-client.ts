@@ -653,7 +653,7 @@ export const citizenApi = {
       body: JSON.stringify(body),
     }),
 
-  getWeeklyNotes: () => apiFetch<ApiListResponse<WeeklyNoteApi>>("/notes/public/"),
+  getWeeklyNotes: () => apiFetch<WeeklyNoteApi[]>("/notes/public/"),
   getMyNotes: () => apiFetch<ApiListResponse<WeeklyNoteApi>>("/notes/", { auth: true }),
   createWeeklyNote: (body: WeeklyNoteCreateApi) =>
     apiFetch<WeeklyNoteApi>("/notes/", {

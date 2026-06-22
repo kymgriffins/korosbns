@@ -1,5 +1,5 @@
 import { citizenApi, apiFetch } from "@/lib/api-client";
-import type { WeeklyNoteApi, WeeklyNoteCreateApi } from "@/types/notes";
+import type { WeeklyNoteApi, WeeklyNoteDetailApi, WeeklyNoteCreateApi } from "@/types/notes";
 import type { Task, TaskCreatePayload, TaskUpdatePayload } from "@/types/tasks";
 
 function mapNoteToTask(note: WeeklyNoteApi): Task {
@@ -23,14 +23,21 @@ export const taskApi = {
 
   getPublic: async (): Promise<Task[]> => {
     const res = await citizenApi.getWeeklyNotes();
-    return res.results.map(mapNoteToTask);
+    return res.map(mapNoteToTask);
   },
 
   get: async (id: string): Promise<Task> => {
-    const notes = await citizenApi.getMyNotes();
-    const note = notes.results.find((n) => n.id === id);
-    if (!note) throw new Error("Task not found");
-    return mapNoteToTask(note);
+    const res = await apiFetch<WeeklyNoteDetailApi>(`/notes/${id}/`, { auth: true });
+    return {
+      id: res.id,
+      week_label: res.week_label,
+      title: res.title,
+      content: res.content ?? "",
+      status: res.status as Task["status"],
+      author_name: res.author_name,
+      created_at: res.created_at,
+      updated_at: res.updated_at,
+    };
   },
 
   create: async (payload: TaskCreatePayload): Promise<Task> => {

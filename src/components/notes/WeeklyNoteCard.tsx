@@ -37,7 +37,7 @@ export function WeeklyNoteCard({ note, onAudit }: Props) {
       <CardContent>
         <div
           className="prose prose-sm dark:prose-invert max-w-none line-clamp-3"
-          dangerouslySetInnerHTML={{ __html: note.content }}
+          dangerouslySetInnerHTML={{ __html: note.content ?? "" }}
         />
       </CardContent>
       <CardFooter className="flex items-center justify-between text-xs text-muted-foreground">
