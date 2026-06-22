@@ -13,12 +13,12 @@ import {
   type BudgetHighlightRaw,
 } from "@/lib/budget-api";
 import {
-  mockFetchBudgetFiscalYears,
-  mockFetchBudgetAllocations,
-  mockFetchBudgetKpis,
-  mockFetchBudgetEntities,
-  mockFetchBudgetHighlights,
-} from "@/lib/mock-budget-data";
+  schemaFetchFiscalYears,
+  schemaFetchAllocations,
+  schemaFetchKpis,
+  schemaFetchEntities,
+  schemaFetchHighlights,
+} from "@/lib/mock-from-schema";
 
 const USE_MOCK = true;
 
@@ -32,11 +32,11 @@ export interface ReportPageData {
 }
 
 export async function fetchReportData(_slug: string, year?: string): Promise<ReportPageData> {
-  const fyFn = USE_MOCK ? mockFetchBudgetFiscalYears : fetchBudgetFiscalYears;
-  const entFn = USE_MOCK ? mockFetchBudgetEntities : fetchBudgetEntities;
-  const allocFn = USE_MOCK ? mockFetchBudgetAllocations : fetchBudgetAllocations;
-  const kpiFn = USE_MOCK ? mockFetchBudgetKpis : fetchBudgetKpis;
-  const hlFn = USE_MOCK ? mockFetchBudgetHighlights : fetchBudgetHighlights;
+  const fyFn = USE_MOCK ? schemaFetchFiscalYears : fetchBudgetFiscalYears;
+  const entFn = USE_MOCK ? schemaFetchEntities : fetchBudgetEntities;
+  const allocFn = USE_MOCK ? schemaFetchAllocations : fetchBudgetAllocations;
+  const kpiFn = USE_MOCK ? schemaFetchKpis : fetchBudgetKpis;
+  const hlFn = USE_MOCK ? schemaFetchHighlights : fetchBudgetHighlights;
 
   const [yearsRes, entitiesRes] = await Promise.all([fyFn(), entFn()]);
 
