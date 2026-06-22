@@ -2,36 +2,42 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  Building2,
-  Landmark,
-  Loader2,
-  RefreshCw,
+  Building2, Hammer, Landmark, LayoutDashboard, Loader2, PieChart, RefreshCw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { fetchAllYearsData, type ReportPageData } from "@/lib/reports-hub";
-import { NationalView } from "@/components/reports/national-view";
-import { CountyView } from "@/components/reports/county-view";
+import { fetchReportData } from "@/lib/reports-hub";
+import type { BudgetSchema } from "@/lib/budget-schema";
+import type { FiscalYearMeta } from "@/lib/reports-api";
+import { OverviewTab } from "@/components/reports/overview-tab";
+import { SectorsTab } from "@/components/reports/sectors-tab";
+import { CountiesTab } from "@/components/reports/counties-tab";
+import { ProjectsTab } from "@/components/reports/projects-tab";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { BudgetFiscalYear } from "@/lib/budget-api";
-import budgetJson from "@/data/budget-fy2026-27.json";
 
-const schema = budgetJson as any;
+type TabId = "overview" | "sectors" | "counties" | "projects";
+
+const TABS: { id: TabId; label: string; icon: typeof Landmark }[] = [
+  { id: "overview", label: "Overview", icon: LayoutDashboard },
+  { id: "sectors", label: "Sectors", icon: PieChart },
+  { id: "counties", label: "Counties", icon: Building2 },
+  { id: "projects", label: "Projects", icon: Hammer },
+];
 
 export default function ReportsPage() {
-  const [byYear, setByYear] = useState<Record<string, ReportPageData>>({});
-  const [fiscalYears, setFiscalYears] = useState<BudgetFiscalYear[]>([]);
+  const [allYears, setAllYears] = useState<Record<string, BudgetSchema>>({});
+  const [fiscalYears, setFiscalYears] = useState<FiscalYearMeta[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedYear, setSelectedYear] = useState("");
-  const [tab, setTab] = useState<"national" | "counties">("national");
+  const [tab, setTab] = useState<TabId>("overview");
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
     try {
-      const result = await fetchAllYearsData();
+      const result = await fetchReportData();
       setFiscalYears(result.fiscalYears);
-      setByYear(result.byYear);
-      setSelectedYear(result.fiscalYears.find((y) => y.is_current)?.id || result.fiscalYears[0]?.id || "");
+      setAllYears(result.allYears);
+      setSelectedYear(result.selectedYear);
     } catch {
     } finally {
       setLoading(false);
@@ -46,9 +52,11 @@ export default function ReportsPage() {
     return m;
   }, [fiscalYears]);
 
+  const currentData = allYears[selectedYear];
+
   return (
     <div className="min-h-screen bg-background">
-      {/* ─── Sticky Header ─── */}
+      {/* Sticky Header */}
       <div className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-40">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3 md:px-6">
           <div className="flex items-center gap-3">
@@ -91,48 +99,78 @@ export default function ReportsPage() {
             </Button>
           </div>
         </div>
+
+        {/* Tab Navigation */}
+        <div className="mx-auto max-w-5xl px-4 md:px-6 pb-0">
+          <div className="flex items-center gap-1 -mb-px">
+            {TABS.map((t) => {
+              const Icon = t.icon;
+              return (
+                <button key={t.id} onClick={() => setTab(t.id)}
+                  className={cn(
+                    "flex items-center gap-1.5 px-4 py-2.5 text-xs font-medium border-b-2 transition-all",
+                    tab === t.id
+                      ? "border-primary text-foreground"
+                      : "border-transparent text-muted-foreground hover:text-foreground hover:border-muted-foreground/30",
+                  )}
+                >
+                  <Icon className="size-3.5" />
+                  {t.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
-      {/* ─── Content ─── */}
+      {/* Content */}
       <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-12">
-        {loading ? (
+        {loading || !currentData ? (
           <LoadingSkeleton />
         ) : (
           <>
-            <div className="flex items-center gap-2 mb-8">
-              <button onClick={() => setTab("national")}
-                className={cn("flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all",
-                  tab === "national"
-                    ? "bg-primary text-primary-foreground shadow-xs"
-                    : "bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80")}
-              >
-                <Landmark className="size-4" /> National
-              </button>
-              <button onClick={() => setTab("counties")}
-                className={cn("flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all",
-                  tab === "counties"
-                    ? "bg-primary text-primary-foreground shadow-xs"
-                    : "bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80")}
-              >
-                <Building2 className="size-4" /> Counties
-              </button>
-            </div>
-
-            {tab === "national" ? (
-              <NationalView byYear={byYear} selectedYear={selectedYear} fiscalYears={fiscalYears} schema={schema} />
-            ) : (
-              <CountyView byYear={byYear} selectedYear={selectedYear} fiscalYears={fiscalYears} />
+            {tab === "overview" && (
+              <OverviewTab
+                currentData={currentData}
+                allYears={allYears}
+                fiscalYears={fiscalYears}
+                selectedYear={selectedYear}
+              />
+            )}
+            {tab === "sectors" && (
+              <SectorsTab
+                currentData={currentData}
+                allYears={allYears}
+                fiscalYears={fiscalYears}
+                selectedYear={selectedYear}
+              />
+            )}
+            {tab === "counties" && (
+              <CountiesTab
+                currentData={currentData}
+                allYears={allYears}
+                fiscalYears={fiscalYears}
+                selectedYear={selectedYear}
+              />
+            )}
+            {tab === "projects" && (
+              <ProjectsTab
+                currentData={currentData}
+                allYears={allYears}
+                fiscalYears={fiscalYears}
+                selectedYear={selectedYear}
+              />
             )}
           </>
         )}
       </div>
 
-      {/* ─── Footer ─── */}
+      {/* Footer */}
       <footer className="border-t bg-card/30 mt-12">
         <div className="mx-auto max-w-5xl px-4 py-6 text-center text-xs text-muted-foreground">
           <Landmark className="size-4 mx-auto mb-1" />
           <p>Kenya National Budget Data — {fiscalYears.find((y) => y.id === selectedYear)?.label ?? "FY"}</p>
-          <p className="mt-0.5">Presented by {schema.metadata?.presented_by ?? "National Treasury"}</p>
+          <p className="mt-0.5">Presented by {currentData?.metadata?.presented_by ?? "National Treasury"}</p>
         </div>
       </footer>
     </div>

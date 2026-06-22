@@ -1,75 +1,16 @@
 "use client";
 
-import {
-  fetchBudgetFiscalYears,
-  fetchBudgetAllocations,
-  fetchBudgetKpis,
-  fetchBudgetEntities,
-  fetchBudgetHighlights,
-  type BudgetFiscalYear,
-  type BudgetAllocation,
-  type BudgetKpiRaw,
-  type BudgetEntity,
-  type BudgetHighlightRaw,
-} from "@/lib/budget-api";
-import {
-  schemaFetchFiscalYears,
-  schemaFetchAllocations,
-  schemaFetchKpis,
-  schemaFetchEntities,
-  schemaFetchHighlights,
-} from "@/lib/mock-from-schema";
+import type { BudgetSchema } from "@/lib/budget-schema";
+import { fetchAllYearsData, FISCAL_YEARS, type FiscalYearMeta } from "@/lib/reports-api";
 
-const USE_MOCK = true;
+export type { FiscalYearMeta };
 
-export interface ReportPageData {
-  fiscalYears: BudgetFiscalYear[];
-  allocations: BudgetAllocation[];
-  kpis: BudgetKpiRaw[];
-  entities: BudgetEntity[];
-  highlights: BudgetHighlightRaw[];
+export async function fetchReportData(): Promise<{
+  allYears: Record<string, BudgetSchema>;
+  fiscalYears: FiscalYearMeta[];
   selectedYear: string;
-}
-
-export async function fetchReportData(_slug: string, year?: string): Promise<ReportPageData> {
-  const fyFn = USE_MOCK ? schemaFetchFiscalYears : fetchBudgetFiscalYears;
-  const entFn = USE_MOCK ? schemaFetchEntities : fetchBudgetEntities;
-  const allocFn = USE_MOCK ? schemaFetchAllocations : fetchBudgetAllocations;
-  const kpiFn = USE_MOCK ? schemaFetchKpis : fetchBudgetKpis;
-  const hlFn = USE_MOCK ? schemaFetchHighlights : fetchBudgetHighlights;
-
-  const [yearsRes, entitiesRes] = await Promise.all([fyFn(), entFn()]);
-
-  const fiscalYears = yearsRes;
-  const entities = entitiesRes;
-  const targetYear = year || yearsRes.find((y) => y.is_current)?.id || yearsRes[0]?.id || "";
-  let allocations: BudgetAllocation[] = [];
-  let kpis: BudgetKpiRaw[] = [];
-  let highlights: BudgetHighlightRaw[] = [];
-
-  if (targetYear) {
-    const [allocRes, kpiRes, hlRes] = await Promise.all([
-      allocFn({ fiscal_year: targetYear }),
-      kpiFn({ fiscal_year: targetYear }),
-      hlFn({ fiscal_year: targetYear }),
-    ]);
-    allocations = allocRes;
-    kpis = kpiRes;
-    highlights = hlRes;
-  }
-
-  return { fiscalYears, entities, allocations, kpis, highlights, selectedYear: targetYear };
-}
-
-export async function fetchAllYearsData(): Promise<{
-  fiscalYears: BudgetFiscalYear[];
-  entities: BudgetEntity[];
-  byYear: Record<string, ReportPageData>;
 }> {
-  const first = await fetchReportData("budget-overview");
-  const byYear: Record<string, ReportPageData> = { [first.selectedYear]: first };
-  const otherYears = first.fiscalYears.filter((y) => y.id !== first.selectedYear);
-  const results = await Promise.all(otherYears.map((y) => fetchReportData("budget-overview", y.id)));
-  for (const r of results) byYear[r.selectedYear] = r;
-  return { fiscalYears: first.fiscalYears, entities: first.entities, byYear };
+  const allYears = await fetchAllYearsData();
+  const currentYear = FISCAL_YEARS.find((y) => y.is_current)?.id ?? FISCAL_YEARS[0]?.id ?? "fy2026";
+  return { allYears, fiscalYears: FISCAL_YEARS, selectedYear: currentYear };
 }
