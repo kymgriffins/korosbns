@@ -49,7 +49,7 @@ export default function LandingTikTokVideo() {
           setLikeCount(data[0].like_count);
         }
       })
-      .catch(() => toast.error("Could not load TikTok videos"))
+      .catch(() => {})
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
   }, []);
@@ -154,7 +154,7 @@ export default function LandingTikTokVideo() {
 
   const formatCount = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)}K` : String(n));
 
-  if (loading) return null;
+  if (loading || videos.length === 0) return null;
 
   return (
     <SectionShell className="border-y border-border/40 bg-background">
