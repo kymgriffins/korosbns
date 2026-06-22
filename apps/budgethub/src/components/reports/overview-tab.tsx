@@ -47,9 +47,22 @@ export function OverviewTab({ currentData, allYears, fiscalYears, selectedYear }
       return { label: fy.label.replace("FY ", ""), revenue: Math.round(d.macro_modules.revenue_engine.total_projected_revenue / 1e8) / 10 };
     }), [allYears, fiscalYears]);
 
+  const shortSectorName = (name: string) => {
+    const map: Record<string, string> = {
+      "Governance, Justice, Law & Order": "Govt, Justice & Order",
+      "Social Protection, Youth, Water & Climate Infrastructure Cluster": "Social Protection & Climate",
+      "Energy, ICT & Digital Economy Cluster": "Energy, ICT & Digital",
+      "Infrastructure & Roads": "Infrastructure & Roads",
+      "Housing & Urban Development": "Housing & Urban Dev",
+      "Agriculture & Rural Development": "Agriculture & Rural Dev",
+    };
+    return map[name] ?? name;
+  };
+
   const sectorData = useMemo(() =>
     tier_1_national_sectors.map((s) => ({
-      name: s.name,
+      name: shortSectorName(s.name),
+      fullName: s.name,
       allocation: s.total_allocation,
       share: s.national_budget_share_pct,
     })).sort((a, b) => b.allocation - a.allocation),
@@ -62,7 +75,7 @@ export function OverviewTab({ currentData, allYears, fiscalYears, selectedYear }
       return {
         label: fy.label.replace("FY ", ""),
         ...Object.fromEntries(
-          d.tier_1_national_sectors.map((s) => [s.name, Math.round(s.total_allocation / 1e8) / 10]),
+          d.tier_1_national_sectors.map((s) => [shortSectorName(s.name), Math.round(s.total_allocation / 1e8) / 10]),
         ),
       };
     }).filter(Boolean) as Record<string, string | number>[];
@@ -100,7 +113,7 @@ export function OverviewTab({ currentData, allYears, fiscalYears, selectedYear }
       </Card>
 
       <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-        <KpiCard label="Total Revenue" value={formatKesTrillions(totalRev / 1e12)} trend={8.1} subtitle={selectedLabel} />
+        <KpiCard label="Total Revenue" value={formatKesTrillions(totalRev / 1e9)} trend={8.1} subtitle={selectedLabel} />
         <KpiCard label="Ordinary Revenue" value={formatKesBillions(ordinaryRev / 1e9)} trend={7.2} subtitle="KRA collections" />
         <KpiCard label="Interest Obligation" value={formatKesBillions(interest / 1e9)} trend={-5.2} subtitle="Debt service cost" />
         <KpiCard label="Fiscal Deficit" value={formatKesBillions(deficit / 1e9)} trend={-deficitPct} subtitle={`${deficitPct}% of GDP`} />
@@ -129,7 +142,7 @@ export function OverviewTab({ currentData, allYears, fiscalYears, selectedYear }
                       isAnimationActive={true} animationDuration={1000} animationEasing="ease-out"
                     >
                       {revenueStreams.map((e, i) => (<Cell key={i} fill={e.fill} />))}
-                      <Label value={formatKesTrillions(totalRev / 1e12)} position="center" className="text-base font-bold" />
+                      <Label value={formatKesTrillions(totalRev / 1e9)} position="center" className="text-base font-bold" />
                     </Pie>
                     <Tooltip formatter={(v: any) => formatKesBillions(v)} />
                   </RechartPie>
@@ -187,11 +200,11 @@ export function OverviewTab({ currentData, allYears, fiscalYears, selectedYear }
           <CardDescription>National budget distribution across sectors ({selectedLabel})</CardDescription>
         </CardHeader>
         <CardContent>
-          <ResponsiveContainer width="100%" height={320}>
-            <BarChart data={sectorData} layout="vertical" margin={{ left: 140, right: 80, top: 8, bottom: 8 }}>
+          <ResponsiveContainer width="100%" height={360}>
+            <BarChart data={sectorData} layout="vertical" margin={{ left: 180, right: 80, top: 8, bottom: 8 }}>
               <CartesianGrid horizontal={false} strokeOpacity={0.2} />
               <XAxis type="number" tick={{ fontSize: 10 }} tickFormatter={(v: number) => `${(v / 1e9).toFixed(0)}B`} />
-              <YAxis type="category" dataKey="name" tick={{ fontSize: 10 }} width={140} tickLine={false} axisLine={false} />
+              <YAxis type="category" dataKey="name" tick={{ fontSize: 10 }} width={180} tickLine={false} axisLine={false} />
               <Tooltip formatter={(v: any) => formatKesBillions(v / 1e9)} />
               <Bar dataKey="allocation" radius={[0, 6, 6, 0]} maxBarSize={24}
                 isAnimationActive={true} animationDuration={1000} animationEasing="ease-out">
@@ -223,7 +236,7 @@ export function OverviewTab({ currentData, allYears, fiscalYears, selectedYear }
                 <YAxis tick={{ fontSize: 10 }} tickFormatter={(v: number) => `${v}B`} />
                 <Tooltip formatter={(v: any) => `${v.toFixed(1)}B`} />
                 {tier_1_national_sectors.map((s, i) => (
-                  <Bar key={s.sector_code} dataKey={s.name} stackId="a" radius={[0, 0, 0, 0]}
+                  <Bar key={s.sector_code} dataKey={shortSectorName(s.name)} stackId="a" radius={[0, 0, 0, 0]}
                     fill={sectorColors[i % sectorColors.length]} fillOpacity={0.85}
                     isAnimationActive={true} animationDuration={800} animationEasing="ease-out"
                   />
@@ -234,7 +247,7 @@ export function OverviewTab({ currentData, allYears, fiscalYears, selectedYear }
               {tier_1_national_sectors.map((s, i) => (
                 <div key={s.sector_code} className="flex items-center gap-1.5 text-xs">
                   <span className="size-2.5 rounded-full" style={{ backgroundColor: sectorColors[i % sectorColors.length] }} />
-                  <span className="text-muted-foreground">{s.name}</span>
+                  <span className="text-muted-foreground">{shortSectorName(s.name)}</span>
                 </div>
               ))}
             </div>
