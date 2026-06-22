@@ -28,6 +28,7 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { learnHubApi } from "@/lib/learn-hub";
+import { useSidebar } from "@/components/ui/sidebar";
 import type { ChapterStep, CivicModule, StageTrivia } from "@/types/learn";
 
 function triviaForStep(stage: CivicModule, step: ChapterStep | undefined | null, stepIdx: number): StageTrivia[] {
@@ -96,6 +97,12 @@ export default function CourseDetailPage() {
   const [certificateUrl, setCertificateUrl] = useState<string | null>(null);
   const [selectedVideoIdx, setSelectedVideoIdx] = useState(0);
   const [selectedImageIdx, setSelectedImageIdx] = useState(0);
+  const { setOpen: setSidebarOpen } = useSidebar();
+
+  useEffect(() => {
+    setSidebarOpen(false);
+    return () => setSidebarOpen(true);
+  }, [setSidebarOpen]);
 
   const fetchData = useCallback(async () => {
     setLoading(true);

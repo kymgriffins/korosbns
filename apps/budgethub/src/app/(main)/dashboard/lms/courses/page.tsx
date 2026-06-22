@@ -183,7 +183,7 @@ export default function CoursesPage() {
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filteredModules.map((mod) => (
-            <a key={mod.id} href={`/dashboard/lms/courses/${mod.slug}`}
+            <a key={mod.id} href={`/budgethub/dashboard/lms/courses/${mod.slug}`}
               className="group flex flex-col overflow-hidden rounded-xl border bg-card transition-all hover:border-primary/40 hover:shadow-md">
               {mod.image_url ? (
                 <div className="aspect-video w-full overflow-hidden bg-muted">

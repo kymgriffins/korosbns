@@ -28,7 +28,7 @@ export const Routes = {
     LearnDocuments: "/learn/documents",
     Documents: "/learn/documents",
     LearnPaths: "/learn",
-    LearnPath: (slug: string) => `/learn/modules/${slug}`,
+    LearnPath: (slug: string) => `/learn/paths/${slug}`,
     LearnForum: "/learn/forum",
     LearnAuthor: (slug: string) => `/learn/authors/${slug}`,
     LearnQuests: "/learn/quests",

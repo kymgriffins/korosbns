@@ -183,7 +183,7 @@ export function learnItemHref(item: LearnHubItem): string {
     case "story":
       return `/learn/${item.slug || item.id}`;
     case "path":
-      return `/learn/modules/${item.slug || item.id}`;
+      return `/learn/paths/${item.slug || item.id}`;
     case "quest":
       return `/learn/${item.id}`;
     case "video":
