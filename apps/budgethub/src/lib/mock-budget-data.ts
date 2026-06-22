@@ -35,9 +35,9 @@ function randFloat(min: number, max: number, decimals = 2): number {
 
 // ─── Fiscal Years ───
 const FISCAL_YEARS: BudgetFiscalYear[] = [
-  { id: "fy2023", fiscal_year: 2023, label: "FY 2023/24", starts_at: "2023-07-01", ends_at: "2024-06-30", is_current: false },
   { id: "fy2024", fiscal_year: 2024, label: "FY 2024/25", starts_at: "2024-07-01", ends_at: "2025-06-30", is_current: false },
-  { id: "fy2025", fiscal_year: 2025, label: "FY 2025/26", starts_at: "2025-07-01", ends_at: "2026-06-30", is_current: true },
+  { id: "fy2025", fiscal_year: 2025, label: "FY 2025/26", starts_at: "2025-07-01", ends_at: "2026-06-30", is_current: false },
+  { id: "fy2026", fiscal_year: 2026, label: "FY 2026/27", starts_at: "2026-07-01", ends_at: "2027-06-30", is_current: true },
 ];
 
 // ─── National Sectors ───
