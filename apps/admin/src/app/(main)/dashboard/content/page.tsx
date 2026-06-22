@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Pencil, Trash2 } from "lucide-react";
+import { ExternalLink, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -89,7 +89,13 @@ export default function AdminContentPage() {
     { key: "actions", header: "", className: "w-24", cell: (c) => (
       <div className="flex items-center gap-1">
         <Button variant="ghost" size="icon-sm" onClick={() => openEdit(c)}><Pencil className="size-3.5" /></Button>
-        <Button variant="ghost" size="icon-sm" onClick={() => handleDelete(c.id)} className="text-destructive hover:text-destructive"><Trash2 className="size-3.5" /></Button>
+        {activeTab === "articles" ? (
+          <Button variant="ghost" size="icon-sm" asChild className="text-primary hover:text-primary">
+            <a href={`/learn/${c.slug}`} target="_blank" rel="noopener noreferrer"><ExternalLink className="size-3.5" /><span className="sr-only">Read</span></a>
+          </Button>
+        ) : (
+          <Button variant="ghost" size="icon-sm" onClick={() => handleDelete(c.id)} className="text-destructive hover:text-destructive"><Trash2 className="size-3.5" /></Button>
+        )}
       </div>
     )},
   ];

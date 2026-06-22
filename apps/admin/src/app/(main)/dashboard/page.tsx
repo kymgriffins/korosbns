@@ -7,7 +7,6 @@ import {
   ChevronRight,
   FileText,
   GraduationCap,
-  Layers,
   MessageSquare,
   Notebook,
   Users,

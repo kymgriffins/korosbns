@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ArrowLeft, ExternalLink, Loader2, Calendar, MapPin, Sparkles, Send, Mail, CheckCircle2, Image as ImageIcon, Building2 } from "lucide-react";
+import { ArrowLeft, ExternalLink, Loader2, Calendar, MapPin, Sparkles, Send, Mail, CheckCircle2, Building2 } from "lucide-react";
 import Wrapper from "@/components/global/wrapper";
 import { Routes } from "@/constants/routes";
 import { Badge } from "@/ui/badge";
@@ -137,17 +137,6 @@ export default function EventDetailPage() {
                       <div>
                         <p className="text-xs text-muted-foreground font-medium">LOCATION</p>
                         <p className="text-sm font-semibold mt-0.5">{event.location}</p>
-                        {event.location_url && (
-                          <a
-                            href={event.location_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-xs text-primary hover:underline mt-1"
-                          >
-                            Get directions
-                            <ExternalLink className="size-3" />
-                          </a>
-                        )}
                       </div>
                     </div>
                   )}
@@ -236,52 +225,7 @@ export default function EventDetailPage() {
                 )}
               </motion.div>
 
-              {/* Shared Memories / Google Photos / Drive Section */}
-              {((event.galleries && event.galleries.length > 0) || event.location_url) && (
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.4, delay: 0.25 }}
-                  className="rounded-2xl border border-border/80 bg-cardbox/40 p-6 backdrop-blur-xs"
-                >
-                  <h3 className="text-lg font-bold flex items-center gap-2 mb-4">
-                    <ImageIcon className="size-5 text-primary" />
-                    Shared Memories
-                  </h3>
-                  <p className="text-xs text-muted-foreground leading-relaxed mb-4">
-                    Explore media galleries and shared materials from Google Photos or Google Drive.
-                  </p>
 
-                  <div className="space-y-2">
-                    {event.galleries && event.galleries.length > 0 ? (
-                      event.galleries.map((gallery, idx) => (
-                        <a
-                          key={gallery.id || idx}
-                          href={gallery.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-between p-3 rounded-xl border border-border/60 bg-cardbox/60 hover:border-primary/40 hover:bg-cardbox transition-colors text-sm font-semibold group"
-                        >
-                          <span className="truncate pr-2">{gallery.label || "Event Gallery"}</span>
-                          <ExternalLink className="size-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
-                        </a>
-                      ))
-                    ) : (
-                      event.location_url && (
-                        <a
-                          href={event.location_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-between p-3 rounded-xl border border-border/60 bg-cardbox/60 hover:border-primary/40 hover:bg-cardbox transition-colors text-sm font-semibold group"
-                        >
-                          <span>Event Materials & Drive</span>
-                          <ExternalLink className="size-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
-                        </a>
-                      )
-                    )}
-                  </div>
-                </motion.div>
-              )}
 
               {/* Sponsors Section */}
               {event.sponsors && event.sponsors.length > 0 && (
