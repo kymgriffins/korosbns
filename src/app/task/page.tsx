@@ -22,6 +22,7 @@ import {
   CheckCircle2,
   Circle,
   CircleDot,
+  Download,
   Hash,
   MoreHorizontal,
   Plus,
@@ -48,6 +49,7 @@ import {
 import { Skeleton } from "@/ui/skeleton";
 
 import { taskApi } from "@/lib/task-api";
+import { exportTasksAsCsv, exportTasksAsJson } from "@/lib/export-utils";
 import type { Task, TaskStatus, TaskColumn } from "@/types/tasks";
 import { useAuth } from "@/contexts/auth-context";
 
@@ -316,6 +318,45 @@ export default function TaskPage() {
     }
   }
 
+  const EXPORT_COLUMNS = [
+    { key: "id" as const, label: "ID" },
+    { key: "title" as const, label: "Title" },
+    { key: "status" as const, label: "Status" },
+    { key: "week_label" as const, label: "Week" },
+    { key: "author_name" as const, label: "Author" },
+    { key: "assignee" as const, label: "Assignee" },
+    { key: "assigned_team" as const, label: "Team" },
+    { key: "due_date" as const, label: "Due Date" },
+    { key: "due_label" as const, label: "Due Label" },
+    { key: "progress" as const, label: "Progress" },
+    { key: "created_at" as const, label: "Created" },
+    { key: "updated_at" as const, label: "Updated" },
+  ];
+
+  function handleExportCsv() {
+    const data = filteredTasks.map((t) => ({
+      id: t.id,
+      title: t.title,
+      status: t.status,
+      week_label: t.week_label,
+      author_name: t.author_name,
+      assignee: t.assignee ?? "",
+      assigned_team: t.assigned_team ?? "",
+      due_date: t.due_date ?? "",
+      due_label: t.due_label ?? "",
+      progress: t.progress ?? "",
+      created_at: t.created_at,
+      updated_at: t.updated_at,
+    }));
+    exportTasksAsCsv(data, EXPORT_COLUMNS, `tasks-${format(new Date(), "yyyy-MM-dd")}.csv`);
+    toast.success(`Exported ${data.length} tasks as CSV`);
+  }
+
+  function handleExportJson() {
+    exportTasksAsJson(filteredTasks, `tasks-${format(new Date(), "yyyy-MM-dd")}.json`);
+    toast.success(`Exported ${filteredTasks.length} tasks as JSON`);
+  }
+
   const totalCount = tasks.length;
 
   if (loading) {
@@ -372,6 +413,23 @@ export default function TaskPage() {
               </button>
             )}
           </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon" disabled={totalCount === 0}>
+                <Download className="size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-40">
+              <DropdownMenuItem onSelect={handleExportCsv} disabled={totalCount === 0}>
+                <Download className="mr-2 size-3.5" />
+                Export CSV
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={handleExportJson} disabled={totalCount === 0}>
+                <Download className="mr-2 size-3.5" />
+                Export JSON
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           {isLoggedIn ? (
             <Link href="/task/new">
               <Button>
