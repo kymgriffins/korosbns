@@ -12,6 +12,7 @@ import {
   BookOpen,
   ClipboardList,
   HelpCircle,
+  FileBarChart,
   FileText,
   Calendar,
   Mail,
@@ -39,6 +40,7 @@ const getIcon = (label: string) => {
     case "budget hub":   return <Newspaper className={cls} />;
     case "budget news":  return <Newspaper className={cls} />;
     case "surveys":      return <ClipboardList className={cls} />;
+    case "reports":      return <FileBarChart className={cls} />;
     case "trivia":       return <HelpCircle className={cls} />;
     case "articles":     return <FileText className={cls} />;
     case "events":       return <Calendar className={cls} />;

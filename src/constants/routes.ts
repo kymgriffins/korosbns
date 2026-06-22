@@ -48,6 +48,7 @@ export const Routes = {
     Knowledge: "/learn",
     KnowledgeEntry: (id: string) => `/learn/${id}`,
     BudgetHub: "/budgethub",
+  Reports: "/reports",
     BudgetNews: "/budgetnews",
     BudgetNewsModule: budgetNewsModulePath,
     BudgetNewsChapter: budgetNewsChapterPath,
