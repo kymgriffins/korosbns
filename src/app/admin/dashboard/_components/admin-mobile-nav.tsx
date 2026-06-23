@@ -17,22 +17,22 @@ export function AdminMobileNav() {
     {
       id: "dashboard",
       label: "Dashboard",
-      href: "/dashboard/default",
-      active: isMobileNavActive(pathname, "/dashboard/default", ["/dashboard"]),
+      href: "/dashboard",
+      active: isMobileNavActive(pathname, "/dashboard", ["/dashboard"]),
       icon: <LayoutDashboard className="size-5" aria-hidden />,
     },
     {
-      id: "users",
-      label: "Users",
-      href: "/dashboard/users",
-      active: pathname.startsWith("/dashboard/users"),
+      id: "tasks",
+      label: "Tasks",
+      href: "/dashboard/task",
+      active: pathname.startsWith("/dashboard/task"),
       icon: <Users className="size-5" aria-hidden />,
     },
     {
       id: "profile",
       label: "Profile",
-      href: "/dashboard/default",
-      active: pathname.startsWith("/dashboard/default"),
+      href: "/dashboard",
+      active: pathname === "/dashboard",
       icon: (
         <Avatar className="size-5">
           <AvatarImage src={avatarUrl} alt={displayName} />

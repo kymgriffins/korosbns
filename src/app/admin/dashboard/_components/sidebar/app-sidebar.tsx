@@ -74,8 +74,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const variant = isSynced ? sidebarVariant : props.variant;
   const collapsible = isSynced ? sidebarCollapsible : props.collapsible;
 
-  // Show all groups except LMS (id: 4)
-  const adminItems = sidebarItems.filter((g) => g.id !== 4);
+  const adminItems = sidebarItems;
 
   return (
     <Sidebar {...props} variant={variant} collapsible={collapsible}>
@@ -83,7 +82,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <Link prefetch={false} href="/dashboard/default">
+              <Link prefetch={false} href="/dashboard">
                 <Image src="/logo.svg" alt="BNS" width={28} height={28} className="size-7 shrink-0" />
                 <span className="font-semibold text-base">Budget Ndio Story</span>
               </Link>

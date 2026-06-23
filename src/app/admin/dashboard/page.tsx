@@ -60,7 +60,7 @@ function StatCard({
           {loading ? (
             <Skeleton className="h-8 w-20" />
           ) : (
-            <div className="text-2xl font-bold">{value.toLocaleString()}</div>
+            <div className="text-2xl font-bold">{(value ?? 0).toLocaleString()}</div>
           )}
         </CardContent>
       </Card>
@@ -76,13 +76,13 @@ const contentTypes = [
 ];
 
 const quickLinks = [
+  { title: "Analytics", href: "/dashboard/analytics", icon: FileText, description: "Platform analytics and insights" },
+  { title: "Task Board", href: "/dashboard/task", icon: ListTodo, description: "Kanban board for task management" },
+  { title: "Task Report", href: "/dashboard/task/report", icon: FileText, description: "Weekly task report and breakdown" },
   { title: "Users", href: "/dashboard/users/crud", icon: Users, description: "Manage users and permissions" },
-  { title: "Roles", href: "/dashboard/roles/crud", icon: Building2, description: "Manage roles and permissions" },
   { title: "Content", href: "/dashboard/content", icon: FileText, description: "Manage articles, videos, stories" },
   { title: "Modules", href: "/dashboard/modules", icon: GraduationCap, description: "Manage civic modules" },
-  { title: "Authors", href: "/dashboard/authors", icon: PenSquare, description: "Manage content authors" },
   { title: "Budget Data", href: "/dashboard/budget-data", icon: Landmark, description: "Upload and manage budget records" },
-  { title: "Forum", href: "/dashboard/forum", icon: MessageSquare, description: "Moderate forum threads" },
   { title: "Notes", href: "/dashboard/notes", icon: Notebook, description: "Manage weekly notes and audits" },
 ];
 
@@ -110,7 +110,7 @@ export default function AdminDashboardPage() {
 
         const contentResults = await Promise.allSettled(
           contentTypes.map((ct) =>
-            adminContentApi.list(ct.id, { page: 1 }).then((res) => ({ type: ct.id, count: res.count }))
+            adminContentApi.list(ct.id, { page: 1 }).then((res) => ({ type: ct.id, count: res.count ?? 0 }))
           )
         );
         for (const result of contentResults) {
@@ -121,10 +121,10 @@ export default function AdminDashboardPage() {
         }
 
         setStats({
-          totalUsers: usersRes.status === "fulfilled" ? usersRes.value.count : 0,
+          totalUsers: usersRes.status === "fulfilled" ? (usersRes.value.count ?? 0) : 0,
           totalContent,
-          totalModules: modulesRes.status === "fulfilled" ? modulesRes.value.count : 0,
-          activeForumThreads: forumRes.status === "fulfilled" ? forumRes.value.count : 0,
+          totalModules: modulesRes.status === "fulfilled" ? (modulesRes.value.count ?? 0) : 0,
+          activeForumThreads: forumRes.status === "fulfilled" ? (forumRes.value.count ?? 0) : 0,
           contentByType,
         });
       } catch {
