@@ -1,25 +1,47 @@
-import { format, isToday, isYesterday, subDays } from "date-fns";
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
+
+import { format, isToday, isYesterday } from "date-fns";
 import { BookOpen, FileText } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const today = new Date();
+import { taskApi } from "@/lib/task-api";
+import type { Task } from "@/types/tasks";
 
-function formatNoteDate(date: Date) {
-  if (isToday(date)) return "Today";
-  if (isYesterday(date)) return "Yesterday";
-  return format(date, "MMM d");
+function formatNoteDate(date: string | Date) {
+  const d = new Date(date);
+  if (isToday(d)) return "Today";
+  if (isYesterday(d)) return "Yesterday";
+  return format(d, "MMM d");
 }
 
-const recentNotes = [
-  { title: "Design principles that scale", date: formatNoteDate(today), icon: FileText },
-  { title: `Content ideas – ${format(today, "MMMM")}`, date: formatNoteDate(subDays(today, 1)), icon: FileText },
-  { title: "Lessons from the week", date: formatNoteDate(subDays(today, 4)), icon: FileText },
-  { title: "Books I’m Reading", date: formatNoteDate(subDays(today, 5)), icon: BookOpen },
-] as const;
-
 export function RecentNotesCard() {
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchRecent = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await taskApi.listAll();
+      const sorted = [...data]
+        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+        .slice(0, 4);
+      setTasks(sorted);
+    } catch {
+      // silently fail
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchRecent();
+  }, [fetchRecent]);
+
   return (
     <Card className="shadow-xs">
       <CardHeader>
@@ -31,15 +53,29 @@ export function RecentNotesCard() {
         </CardAction>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        {recentNotes.map((note) => (
-          <div key={note.title} className="flex items-start gap-4">
-            <note.icon className="size-5 text-muted-foreground" />
-            <div className="min-w-0">
-              <div className="truncate font-medium text-sm leading-none">{note.title}</div>
-              <div className="text-muted-foreground text-xs">{note.date}</div>
+        {loading ? (
+          Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="flex items-start gap-4">
+              <Skeleton className="size-5" />
+              <div className="flex-1">
+                <Skeleton className="h-4 w-3/4 mb-1" />
+                <Skeleton className="h-3 w-16" />
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : tasks.length === 0 ? (
+          <p className="text-sm text-muted-foreground py-4 text-center">No recent tasks.</p>
+        ) : (
+          tasks.map((task) => (
+            <div key={task.id} className="flex items-start gap-4">
+              <FileText className="size-5 text-muted-foreground" />
+              <div className="min-w-0">
+                <div className="truncate font-medium text-sm leading-none">{task.title}</div>
+                <div className="text-muted-foreground text-xs">{formatNoteDate(task.created_at)}</div>
+              </div>
+            </div>
+          ))
+        )}
       </CardContent>
     </Card>
   );

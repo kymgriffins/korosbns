@@ -1,3 +1,7 @@
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
+
 import { CalendarPanel } from "./_components/calendar-panel";
 import { FocusCard } from "./_components/focus-card";
 import { ProjectsSection } from "./_components/projects-section";
@@ -8,13 +12,24 @@ import { SummaryCards } from "./_components/summary-cards";
 import { TasksSection } from "./_components/tasks-section";
 import { WeeklySummaryCard } from "./_components/weekly-summary-card";
 
+import { citizenApi } from "@/lib/api-client";
+
 export default function Page() {
+  const [userName, setUserName] = useState("there");
+
+  useEffect(() => {
+    citizenApi.getMe().then((profile) => {
+      const name = profile.first_name || profile.display_name || "there";
+      setUserName(name);
+    }).catch(() => {});
+  }, []);
+
   return (
     <div className="grid gap-6 lg:grid-cols-12">
       <section className="lg:col-span-9">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">
-            <h1 className="text-3xl text-foreground leading-none tracking-tight">Good morning, Arham.</h1>
+            <h1 className="text-3xl text-foreground leading-none tracking-tight">Good morning, {userName}.</h1>
             <p className="text-lg text-muted-foreground leading-none">
               Let&apos;s make today productive and meaningful.
             </p>

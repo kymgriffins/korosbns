@@ -1,31 +1,55 @@
 "use client";
 
-import * as React from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { Calendar1, Plus } from "lucide-react";
+import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 
-type Task = {
-  title: string;
-  tag: string;
-  time: string;
-  checked: boolean;
-};
-
-const tasks: Task[] = [
-  { title: "Finalize Q2 roadmap", tag: "Work", time: "10:00 AM", checked: false },
-  { title: "Review design system updates", tag: "Design", time: "11:30 AM", checked: true },
-  { title: "Reply to important emails", tag: "Admin", time: "2:00 PM", checked: false },
-  { title: "Plan creator content for this week", tag: "Content", time: "4:30 PM", checked: false },
-  { title: "Prepare weekly team sync notes", tag: "Planning", time: "6:00 PM", checked: false },
-];
+import { taskApi } from "@/lib/task-api";
+import type { Task } from "@/types/tasks";
 
 export function TasksSection() {
-  const [items, setItems] = React.useState(tasks);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchTasks = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await taskApi.listAll();
+      setTasks(data.slice(0, 6));
+    } catch {
+      toast.error("Failed to load tasks");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
+
+  if (loading) {
+    return (
+      <section className="flex flex-col gap-2">
+        <Skeleton className="h-7 w-20" />
+        <div className="rounded-xl border bg-background shadow-xs">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="flex items-center gap-2 p-4">
+              <Skeleton className="size-4" />
+              <Skeleton className="h-4 flex-1" />
+              <Skeleton className="h-4 w-16" />
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="flex flex-col gap-2">
@@ -53,33 +77,47 @@ export function TasksSection() {
 
       <div className="overflow-hidden rounded-xl border bg-background shadow-xs">
         <div className="divide-y">
-          {items.map((task) => (
-            <div key={task.title} className="flex items-center gap-2 p-4">
-              <Checkbox
-                checked={task.checked}
-                aria-label={task.title}
-                onCheckedChange={(checked) => {
-                  setItems((current) =>
-                    current.map((item) => (item.title === task.title ? { ...item, checked: checked === true } : item)),
-                  );
-                }}
-              />
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                  <div className="flex min-w-0 flex-col gap-2 lg:flex-row lg:items-center lg:gap-4">
-                    <span className="truncate text-sm">{task.title}</span>
-                    <Badge variant="outline" className="px-3 py-1 font-normal">
-                      {task.tag}
-                    </Badge>
-                  </div>
-                  <div className="flex shrink-0 items-center gap-3 text-muted-foreground text-sm">
-                    <span>{task.time}</span>
-                    <Calendar1 className="size-4" />
+          {tasks.length === 0 ? (
+            <p className="p-4 text-center text-sm text-muted-foreground">No tasks yet.</p>
+          ) : (
+            tasks.map((task) => (
+              <div key={task.id} className="flex items-center gap-2 p-4">
+                <Checkbox
+                  checked={task.status === "published"}
+                  aria-label={task.title}
+                  onCheckedChange={async (checked) => {
+                    try {
+                      if (checked) {
+                        await taskApi.publish(task.id);
+                      } else {
+                        await taskApi.update(task.id, { status: "draft" });
+                      }
+                      fetchTasks();
+                    } catch {
+                      toast.error("Failed to update task");
+                    }
+                  }}
+                />
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="flex min-w-0 flex-col gap-2 lg:flex-row lg:items-center lg:gap-4">
+                      <span className="truncate text-sm">{task.title}</span>
+                      {task.tag && (
+                        <Badge variant="outline" className="px-3 py-1 font-normal">
+                          {task.tag}
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="flex shrink-0 items-center gap-3 text-muted-foreground text-sm">
+                      {task.scheduled_time && <span>{task.scheduled_time}</span>}
+                      {task.due_date && <span>{task.due_date}</span>}
+                      <Calendar1 className="size-4" />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </section>

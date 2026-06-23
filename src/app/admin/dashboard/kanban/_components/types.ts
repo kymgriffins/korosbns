@@ -14,9 +14,12 @@ export type TaskTeam =
   | "Platform"
   | "Product"
   | "QA"
-  | "Security";
+  | "Security"
+  | "MEDIA"
+  | "ICT"
+  | "MANAGERIAL";
 
-export type TaskPriority = "High" | "Medium" | "Low";
+export type TaskPriority = "High" | "Medium" | "Low" | "high" | "medium" | "low" | "urgent";
 
 export type TaskInsightLabel = "Attachments" | "Comments" | "Documents";
 

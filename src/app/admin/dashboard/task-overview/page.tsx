@@ -32,6 +32,21 @@ const STATUS_META: Record<TaskStatus, { title: string; icon: typeof Circle; colo
   published: { title: "Done", icon: CheckCircle2, color: "text-emerald-500", bg: "bg-emerald-500/10" },
 };
 
+const PRIORITY_META: Record<string, { label: string; color: string }> = {
+  urgent: { label: "Urgent", color: "text-red-600 border-red-300 bg-red-50 dark:bg-red-950" },
+  high: { label: "High", color: "text-orange-600 border-orange-300 bg-orange-50 dark:bg-orange-950" },
+  medium: { label: "Med", color: "text-amber-600 border-amber-300 bg-amber-50 dark:bg-amber-950" },
+  low: { label: "Low", color: "text-gray-600 border-gray-300 bg-gray-50 dark:bg-gray-950" },
+};
+
+const KANBAN_META: Record<string, { label: string; color: string }> = {
+  ideas: { label: "Ideas", color: "text-purple-600 border-purple-300 bg-purple-50 dark:bg-purple-950" },
+  planned: { label: "Planned", color: "text-blue-600 border-blue-300 bg-blue-50 dark:bg-blue-950" },
+  building: { label: "Building", color: "text-orange-600 border-orange-300 bg-orange-50 dark:bg-orange-950" },
+  qa: { label: "QA", color: "text-yellow-600 border-yellow-300 bg-yellow-50 dark:bg-yellow-950" },
+  shipped: { label: "Shipped", color: "text-green-600 border-green-300 bg-green-50 dark:bg-green-950" },
+};
+
 function safeFormat(date: string | Date | null | undefined, fmt: string): string {
   if (!date) return "";
   try {
@@ -76,6 +91,8 @@ function StatCard({
 function TaskRow({ task }: { task: Task }) {
   const meta = STATUS_META[task.status];
   const Icon = meta.icon;
+  const priority = task.priority ? PRIORITY_META[task.priority.toLowerCase()] : null;
+  const kanban = task.kanban_column ? KANBAN_META[task.kanban_column] : null;
 
   return (
     <Link
@@ -107,9 +124,21 @@ function TaskRow({ task }: { task: Task }) {
           )}
         </div>
       </div>
-      <Badge variant="outline" className={`text-[9px] font-medium ${meta.color} border-current/20 shrink-0`}>
-        {meta.title}
-      </Badge>
+      <div className="flex items-center gap-1.5 shrink-0">
+        {priority && (
+          <Badge variant="outline" className={`text-[9px] font-medium ${priority.color} shrink-0`}>
+            {priority.label}
+          </Badge>
+        )}
+        {kanban && (
+          <Badge variant="outline" className={`text-[9px] font-medium ${kanban.color} shrink-0`}>
+            {kanban.label}
+          </Badge>
+        )}
+        <Badge variant="outline" className={`text-[9px] font-medium ${meta.color} border-current/20 shrink-0`}>
+          {meta.title}
+        </Badge>
+      </div>
     </Link>
   );
 }

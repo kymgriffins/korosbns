@@ -1,14 +1,64 @@
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
+
 import { ArrowRight, Clock3, Focus, TrendingUp } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const summaryCards = [
-  { title: "Today", value: "4", description: "tasks scheduled", icon: Clock3 },
-  { title: "This Week", value: "68%", description: "progress", icon: TrendingUp },
-  { title: "Focus", value: "Deep Work", description: "2 hours remaining", icon: Focus },
-] as const;
+import { taskApi } from "@/lib/task-api";
+
+type SummaryData = {
+  todayTasks: number;
+  weekProgress: number;
+  focusStatus: string;
+};
 
 export function SummaryCards() {
+  const [data, setData] = useState<SummaryData>({ todayTasks: 0, weekProgress: 0, focusStatus: "Ready" });
+  const [loading, setLoading] = useState(true);
+
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const [tasks, goalSummary, focusSession] = await Promise.allSettled([
+        taskApi.listAll(),
+        taskApi.getGoalSummary(),
+        taskApi.getActiveFocusSession(),
+      ]);
+
+      const allTasks = tasks.status === "fulfilled" ? tasks.value : [];
+      const today = new Date().toISOString().split("T")[0];
+      const todayTasks = allTasks.filter(
+        (t) => t.due_date === today && t.status !== "published",
+      ).length;
+
+      const weekProgress = goalSummary.status === "fulfilled" ? goalSummary.value.completion_rate : 0;
+      const focusActive = focusSession.status === "fulfilled" && focusSession.value.active;
+
+      setData({
+        todayTasks: todayTasks || allTasks.filter((t) => t.status === "draft").length,
+        weekProgress,
+        focusStatus: focusActive ? "In Progress" : "Deep Work",
+      });
+    } catch {
+      // keep defaults
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const summaryCards = [
+    { title: "Today", value: String(data.todayTasks), description: "tasks scheduled", icon: Clock3 },
+    { title: "This Week", value: `${data.weekProgress}%`, description: "progress", icon: TrendingUp },
+    { title: "Focus", value: data.focusStatus, description: "2 hours remaining", icon: Focus },
+  ];
+
   return (
     <div className="grid gap-4 md:grid-cols-3">
       {summaryCards.map((item) => (
@@ -25,7 +75,11 @@ export function SummaryCards() {
           </CardHeader>
           <CardContent>
             <div className="flex flex-col gap-2">
-              <div className="text-2xl leading-none tracking-tight">{item.value}</div>
+              {loading ? (
+                <Skeleton className="h-7 w-16" />
+              ) : (
+                <div className="text-2xl leading-none tracking-tight">{item.value}</div>
+              )}
               <div className="flex items-center justify-between">
                 <p className="text-muted-foreground tabular-nums leading-none">{item.description}</p>
                 <ArrowRight className="size-4 text-muted-foreground" />

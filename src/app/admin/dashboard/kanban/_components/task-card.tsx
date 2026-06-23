@@ -48,6 +48,13 @@ const priorityBadgeConfig: Record<
   },
 };
 
+function normalizePriority(p: string): "High" | "Medium" | "Low" {
+  const lower = p.toLowerCase();
+  if (lower === "high" || lower === "urgent") return "High";
+  if (lower === "low") return "Low";
+  return "Medium";
+}
+
 export function TaskCard({
   task,
   columnId,
@@ -60,7 +67,8 @@ export function TaskCard({
   const isDone = columnId === "shipped";
   const showBuildingDetails = columnId === "building" && typeof task.progress === "number";
   const owner = task.owner;
-  const PriorityIcon = priorityBadgeConfig[task.priority].icon;
+  const normalized = normalizePriority(String(task.priority));
+  const PriorityIcon = priorityBadgeConfig[normalized].icon;
 
   return (
     <article
@@ -73,14 +81,14 @@ export function TaskCard({
         <div className="flex items-center justify-between gap-3">
           <h3 className="min-w-0 truncate font-medium text-sm leading-none">{task.title}</h3>
           <Badge
-            variant={priorityBadgeConfig[task.priority].variant}
+            variant={priorityBadgeConfig[normalized].variant}
             className={cn(
               "shrink-0 rounded-md border-transparent px-2 font-medium",
-              priorityBadgeConfig[task.priority].className,
+              priorityBadgeConfig[normalized].className,
             )}
           >
             <PriorityIcon data-icon="inline-start" />
-            {task.priority}
+            {normalized}
           </Badge>
         </div>
         <p className="line-clamp-2 text-muted-foreground text-sm leading-5">{task.description}</p>

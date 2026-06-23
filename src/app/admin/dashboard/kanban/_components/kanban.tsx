@@ -54,9 +54,10 @@ import { findColumnId, findTask } from "./utils";
 
 interface KanbanProps {
   initialBoard: BoardState;
+  onColumnChange?: (taskId: string, newColumn: string) => void;
 }
 
-export function Kanban({ initialBoard }: KanbanProps) {
+export function Kanban({ initialBoard, onColumnChange }: KanbanProps) {
   const [board, setBoard] = React.useState<BoardState>(initialBoard);
   const [columnOrder, setColumnOrder] = React.useState<ColumnId[]>(columnIds);
   const [activeTask, setActiveTask] = React.useState<Task | null>(null);
@@ -156,16 +157,37 @@ export function Kanban({ initialBoard }: KanbanProps) {
     setBoard((currentBoard) => {
       const activeColumnId = findColumnId(currentBoard, activeId);
       const overColumnId = findColumnId(currentBoard, overId);
-      if (!activeColumnId || !overColumnId || activeColumnId !== overColumnId) return currentBoard;
+      if (!activeColumnId || !overColumnId) return currentBoard;
 
-      const columnTasks = currentBoard[activeColumnId];
-      const activeIndex = columnTasks.findIndex((task) => task.id === activeId);
-      const overIndex = columnTasks.findIndex((task) => task.id === overId);
-      if (activeIndex === -1 || overIndex === -1 || activeIndex === overIndex) return currentBoard;
+      if (activeColumnId === overColumnId) {
+        const columnTasks = currentBoard[activeColumnId];
+        const activeIndex = columnTasks.findIndex((task) => task.id === activeId);
+        const overIndex = columnTasks.findIndex((task) => task.id === overId);
+        if (activeIndex === -1 || overIndex === -1 || activeIndex === overIndex) return currentBoard;
+
+        return {
+          ...currentBoard,
+          [activeColumnId]: arrayMove(columnTasks, activeIndex, overIndex),
+        };
+      }
+
+      const activeItems = currentBoard[activeColumnId];
+      const overItems = currentBoard[overColumnId];
+      const activeIndex = activeItems.findIndex((task) => task.id === activeId);
+      if (activeIndex === -1) return currentBoard;
+
+      const overIndex = overItems.findIndex((task) => task.id === overId);
+      const nextIndex = overIndex >= 0 ? overIndex : overItems.length;
+      const activeItem = activeItems[activeIndex];
+
+      if (onColumnChange) {
+        onColumnChange(activeId, overColumnId);
+      }
 
       return {
         ...currentBoard,
-        [activeColumnId]: arrayMove(columnTasks, activeIndex, overIndex),
+        [activeColumnId]: activeItems.filter((task) => task.id !== activeId),
+        [overColumnId]: [...overItems.slice(0, nextIndex), activeItem, ...overItems.slice(nextIndex)],
       };
     });
   }
