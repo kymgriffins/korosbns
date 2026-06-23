@@ -20,6 +20,9 @@ export const tagTones: Record<TaskTeam, string> = {
   Product: "bg-orange-500/10 text-orange-700 dark:text-orange-300",
   QA: "bg-red-500/10 text-red-700 dark:text-red-300",
   Security: "bg-violet-500/10 text-violet-700 dark:text-violet-300",
+  MEDIA: "bg-blue-500/10 text-blue-700 dark:text-blue-300",
+  ICT: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+  MANAGERIAL: "bg-purple-500/10 text-purple-700 dark:text-purple-300",
 };
 
 export const taskOwners = {

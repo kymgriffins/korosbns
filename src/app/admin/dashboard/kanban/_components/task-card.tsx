@@ -36,7 +36,17 @@ const priorityBadgeConfig: Record<
     variant: "destructive",
     className: "border-transparent",
   },
+  high: {
+    icon: Flame,
+    variant: "destructive",
+    className: "border-transparent",
+  },
   Low: {
+    icon: Minus,
+    variant: "secondary",
+    className: "bg-slate-500/10 text-slate-700 dark:bg-slate-500/15 dark:text-slate-300",
+  },
+  low: {
     icon: Minus,
     variant: "secondary",
     className: "bg-slate-500/10 text-slate-700 dark:bg-slate-500/15 dark:text-slate-300",
@@ -45,6 +55,16 @@ const priorityBadgeConfig: Record<
     icon: ArrowUpRight,
     variant: "secondary",
     className: "bg-amber-500/10 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300",
+  },
+  medium: {
+    icon: ArrowUpRight,
+    variant: "secondary",
+    className: "bg-amber-500/10 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300",
+  },
+  urgent: {
+    icon: Flame,
+    variant: "destructive",
+    className: "border-transparent",
   },
 };
 
