@@ -3,6 +3,7 @@
 import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { RefreshCw, Search, BookOpen, ExternalLink } from "lucide-react";
 import { Button } from "@/ui/button";
@@ -22,6 +23,7 @@ interface LearnModulesViewProps {
 }
 
 export function LearnModulesView({ profile, stages, currentStage, onSelectStage, onRefresh }: LearnModulesViewProps) {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<"all" | "in-progress" | "completed">("all");
   const [contentFilter, setContentFilter] = useState<"all" | "budget" | "civic">("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -150,15 +152,15 @@ export function LearnModulesView({ profile, stages, currentStage, onSelectStage,
           {filteredModules.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2.5">
               {filteredModules.map(({ stage, completedCount, total, isCompleted, isInProgress }, idx) => (
-                <motion.div
-                  key={stage.id}
-                  layout
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.03 }}
-                  className="group bg-card shadow-xs hover:shadow-sm rounded-xl p-3.5 cursor-pointer hover:bg-accent/30 transition-all flex flex-col ring-1 ring-border/40"
-                  onClick={() => onSelectStage(stage)}
-                >
+                  <motion.div
+                    key={stage.id}
+                    layout
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.03 }}
+                    className="group bg-card shadow-xs hover:shadow-sm rounded-xl p-3.5 cursor-pointer hover:bg-accent/30 transition-all flex flex-col ring-1 ring-border/40"
+                    onClick={() => router.push(`/learn/modules/${stage.slug}`)}
+                  >
                   <HarmonizedImage
                     src={stage.image_url}
                     alt={stage.title}
@@ -228,7 +230,7 @@ export function LearnModulesView({ profile, stages, currentStage, onSelectStage,
                       ) : null}
                     </div>
                     <Button size="sm" className="rounded-lg h-6 px-2.5 text-[10px] font-bold shrink-0 focus-visible:ring-2 focus-visible:ring-ring"
-                      onClick={(e) => { e.stopPropagation(); onSelectStage(stage); }}>
+                      onClick={(e) => { e.stopPropagation(); router.push(`/learn/modules/${stage.slug}`); }}>
                       {isCompleted ? "Review" : isInProgress ? "Continue" : "Start"}
                     </Button>
                   </div>

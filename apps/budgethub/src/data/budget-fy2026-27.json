@@ -1,0 +1,282 @@
+{
+  "$schema": "https://api.budgetndiostory.org/schemas/v1/pfm-sdk-blueprint.json",
+  "metadata": {
+    "sdk_version": "1.0.0-beta",
+    "fiscal_year": "2026/27",
+    "base_currency": "KES",
+    "unit_scale": "RAW_INTEGER",
+    "theme": "Sustaining the Bottom-Up Economic Transformation Agenda (BETA) for Resilient and Inclusive Growth amid Global Uncertainty",
+    "presented_by": "John Mbadi",
+    "presented_date": "2026-06-11",
+    "approved_date": "2026-06-02",
+    "provenance_level": 1,
+    "source_verbatim": "budget_fy2026_27.json"
+  },
+  "stakeholder_ledger": {
+    "allocators": [
+      { "code": "NT", "name": "National Treasury" },
+      { "code": "NA", "name": "National Assembly (Parliament)" }
+    ],
+    "oversight": [
+      { "code": "COB", "name": "Controller of Budget" },
+      { "code": "OAG", "name": "Office of the Auditor General" }
+    ],
+    "implementers": [
+      { "code": "MDAs", "name": "Ministries, Departments, and Agencies" },
+      { "code": "CEG", "name": "County Executive Governments" }
+    ]
+  },
+  "macro_modules": {
+    "revenue_engine": {
+      "total_projected_revenue": 3630500000000,
+      "streams": [
+        {
+          "type": "ORDINARY_REVENUE",
+          "amount": 2985700000000,
+          "sub_streams": [
+            { "name": "Income Tax (PAYE & Corporate)", "is_automated_kra": true },
+            { "name": "Value Added Tax (VAT)", "standard_rate_pct": 16.0 },
+            { "name": "Excise Duty", "targets": ["fuel", "alcohol", "tobacco"] },
+            { "name": "Customs Duty", "targets": ["imports"] },
+            { "name": "Rental Income Tax", "fixed_rate_pct": 7.5 }
+          ]
+        },
+        {
+          "type": "APPROPRIATIONS_IN_AID_AIA",
+          "amount": 644800000000,
+          "description": "Fees and service charges retained directly by collecting MDAs"
+        },
+        {
+          "type": "GRANTS",
+          "amount": 43600000000,
+          "description": "External development partner funding including Global Fund co-financing"
+        }
+      ]
+    },
+    "debt_portfolio": {
+      "total_interest_service_obligation": 1203100000000,
+      "fiscal_deficit_gap": 1146200000000,
+      "deficit_gdp_ratio_pct": 5.5,
+      "target_deficit_fy2028_29_pct": 3.3,
+      "financing_plan": {
+        "domestic_borrowing_target": 1030100000000,
+        "external_borrowing_target": 116200000000
+      },
+      "systemic_risks": [
+        "Private sector credit crowding out via heavy domestic borrowing",
+        "Exchange rate depreciation impacts on external debt servicing",
+        "State-Owned Enterprise contingent liabilities (Kenya Airways, KPLC, KPC)"
+      ]
+    }
+  },
+  "tier_1_national_sectors": [
+    {
+      "sector_code": "SEC-EDU",
+      "name": "Education",
+      "total_allocation": 784500000000,
+      "national_budget_share_pct": 16.3,
+      "expenditure_type_split": {
+        "recurrent": 784500000000,
+        "development": 0
+      },
+      "beta_alignment_tags": ["Human Capital Development"],
+      "sub_vote_breakdown": [
+        { "vote_head": "Teachers Service Commission (TSC) Salaries", "amount": 421900000000, "share_of_vote_pct": 54.0 },
+        { "vote_head": "Higher Education Loans Board (HELB)", "amount": 56700000000 },
+        { "vote_head": "Free Day Secondary Education Capitation", "amount": 54600000000 },
+        { "vote_head": "Junior Secondary School (JSS) CBC Transition Funding", "amount": 30000000000 },
+        { "vote_head": "Free Primary Education Capitation", "amount": 7000000000 },
+        { "vote_head": "Intern Teacher Conversion (Permanent & Pensionable)", "amount": 4900000000, "beneficiaries_count": 20000 },
+        { "vote_head": "School Feeding Programme", "amount": 3000000000 },
+        { "vote_head": "TVET Infrastructure Construction & Equipping", "amount": 1400000000 }
+      ]
+    },
+    {
+      "sector_code": "SEC-GJLO",
+      "name": "Governance, Justice, Law & Order",
+      "total_allocation": 353300000000,
+      "national_budget_share_pct": 7.3,
+      "beta_alignment_tags": ["Constitutionalism & Public Accountability"],
+      "sub_vote_breakdown": [
+        { "vote_head": "Independent Electoral and Boundaries Commission (IEBC) 2027 Election Prep", "amount": 125000000000, "note": "Front-loaded funding for voter registration and biometric kits" },
+        { "vote_head": "Judiciary Court Operations & Expansion", "amount": 95000000000 },
+        { "vote_head": "Ethics and Anti-Corruption Commission (EACC) Enforcement", "amount": 65000000000 },
+        { "vote_head": "Office of the Director of Public Prosecutions (ODPP)", "amount": 50000000000 },
+        { "vote_head": "Witness Protection Agency & Auxiliaries", "amount": 18300000000 }
+      ]
+    },
+    {
+      "sector_code": "SEC-SEC",
+      "name": "National Security",
+      "total_allocation": 308600000000,
+      "national_budget_share_pct": 6.4,
+      "beta_alignment_tags": ["National Safety & Border Control"],
+      "sub_vote_breakdown": [
+        { "vote_head": "Kenya Defence Forces (KDF) Modernization & Peacekeeping", "amount": 140000000000 },
+        { "vote_head": "National Police Service (NPS) Operations & Equipment", "amount": 100000000000 },
+        { "vote_head": "National Intelligence Service (NIS) Operations", "amount": 45000000000 },
+        { "vote_head": "Kenya Prisons Service Correctional Facilities", "amount": 20000000000 },
+        { "vote_head": "Public Sector Salary Review Phase 1 Loading (Cross-Apparatus)", "amount": 47800000000 },
+        { "vote_head": "Nyumba Kumi Community Policing Infrastructure", "amount": 3600000000 }
+      ]
+    },
+    {
+      "sector_code": "SEC-INF",
+      "name": "Infrastructure & Roads",
+      "total_allocation": 230000000000,
+      "national_budget_share_pct": 4.8,
+      "beta_alignment_tags": ["Infrastructure Enabler Pillar"],
+      "sub_vote_breakdown": [
+        { "vote_head": "Kenya Roads Board Managed Classified Road Maintenance", "amount": 118000000000, "share_of_vote_pct": 51.0, "asset_preservation_focus": true },
+        { "vote_head": "Existing Road Network Network Rehabilitation", "amount": 64000000000 },
+        { "vote_head": "New Road, Bridge, and Highway Construction", "amount": 48100000000 },
+        { "vote_head": "Kenya Urban Programme Infrastructure Dev", "amount": 1860000000 },
+        { "vote_head": "Kenya Informal Settlements Improvement Project (KISIP) Upgrades", "amount": 2700000000 }
+      ]
+    },
+    {
+      "sector_code": "SEC-HEA",
+      "name": "Health",
+      "total_allocation": 175500000000,
+      "national_budget_share_pct": 3.6,
+      "beta_alignment_tags": ["Healthcare Pillar (Universal Health Coverage)"],
+      "sub_vote_breakdown": [
+        { "vote_head": "National Referral Hospitals (KNH, MTRH, KUTRRH Operations)", "amount": 42400000000 },
+        { "vote_head": "Primary Healthcare Fund Grassroots Dispensary Upgrades", "amount": 19100000000, "uhc_anchor_status": true },
+        { "vote_head": "Global Fund HIV/AIDS, Malaria & TB Co-Financing", "amount": 18500000000 },
+        { "vote_head": "Universal Health Coverage (UHC) Worker Transition Allocations", "amount": 8938000000 },
+        { "vote_head": "Kenya Medical Supplies Agency (KEMSA) Drugs Procurement", "amount": 5200000000 },
+        { "vote_head": "Routine Vaccines & Outbreak Response Immunization", "amount": 4600000000 },
+        { "vote_head": "Medical Graduate Internships (House Officers Deployment)", "amount": 4300000000 },
+        { "vote_head": "Community Health Promoters (CHP) Stipends Base", "amount": 3200000000 },
+        { "vote_head": "Kenya Medical Research Institute (KEMRI) Health Innovation", "amount": 2700000000 },
+        { "vote_head": "Level 5 County Hospital Regional Cancer Centre Construction", "amount": 1000000000 }
+      ]
+    },
+    {
+      "sector_code": "SEC-HOU",
+      "name": "Housing & Urban Development",
+      "total_allocation": 135800000000,
+      "national_budget_share_pct": 2.8,
+      "beta_alignment_tags": ["Housing and Settlement Pillar"],
+      "sub_vote_breakdown": [
+        { "vote_head": "Affordable Housing Programme Unit Construction", "amount": 50000000000, "share_of_vote_pct": 37.0 },
+        { "vote_head": "Vulnerable Population Social Housing", "amount": 20900000000 },
+        { "vote_head": "Civil Servant Institutional Housing (Police/Teachers/Health Workers)", "amount": 20200000000 },
+        { "vote_head": "Housing Project Supporting Infrastructure (Water, Sewer, Power Grid Connect)", "amount": 18300000000 },
+        { "vote_head": "Integrated Urban Development Infrastructure", "amount": 18600000000 },
+        { "vote_head": "Slum Upgrades (KISIP Water and Sanitation Integration)", "amount": 2700000000 }
+      ]
+    },
+    {
+      "sector_code": "SEC-AGR",
+      "name": "Agriculture & Rural Development",
+      "total_allocation": 106800000000,
+      "national_budget_share_pct": 2.2,
+      "beta_alignment_tags": ["Agricultural Transformation & Food Security Pillar"],
+      "sub_vote_breakdown": [
+        { "vote_head": "Smallholder Farmer Fertilizer Subsidy Programme", "amount": 18000000000, "share_of_vote_pct": 17.0 },
+        { "vote_head": "Climate-Resilient Food Systems Resilience Project", "amount": 5400000000 },
+        { "vote_head": "National Agricultural Value Chains Development (Coffee/Tea/Dairy)", "amount": 4600000000 },
+        { "vote_head": "County Aggregation and Industrial Parks (CAIPS) Infrastructure Development", "amount": 3250000000 },
+        { "vote_head": "Sugar Sector Revitalization Reforms", "amount": 2400000000 },
+        { "vote_head": "Certified Seed Subsidy Deliveries", "amount": 2000000000 },
+        { "vote_head": "Livestock Breeding, Disease Control & Vaccination Drives", "amount": 1150000000 }
+      ]
+    },
+    {
+      "sector_code": "SEC-SOC-YTH-WAT",
+      "name": "Social Protection, Youth, Water & Climate Infrastructure Cluster",
+      "total_allocation": 106000000000,
+      "national_budget_share_pct": 2.2,
+      "beta_alignment_tags": ["Social Safety Nets", "Environment & Climate Action"],
+      "sub_vote_breakdown": [
+        { "vote_head": "Water and Sewerage Regional Infrastructure Extensions", "amount": 47000000000 },
+        { "vote_head": "Inua Jamii Monthly Cash Transfers to Older Persons", "amount": 25000000000 },
+        { "vote_head": "Forest Protection & Reforestation Management Infrastructure", "amount": 14000000000 },
+        { "vote_head": "National Youth Service (NYS) Skills Training & Service Operations", "amount": 12500000000 },
+        { "vote_head": "Financing Locally-Led Climate Action (FLLoCA) County Devolution Pool", "amount": 8900000000 },
+        { "vote_head": "Orphans and Vulnerable Children (OVC) Safety Net Cash Transfers", "amount": 8900000000 },
+        { "vote_head": "National Youth Opportunities Towards Advancement (NYOTA) Employment Engine", "amount": 4700000000 },
+        { "vote_head": "National Tree Planting Drive & Rangelands Restoration", "amount": 3700000000 },
+        { "vote_head": "Kenya Jobs and Economic Transformation Programme Placement Infrastructure", "amount": 2500000000 },
+        { "vote_head": "Persons Living with Severe Disabilities Cash Support System", "amount": 1500000000 }
+      ]
+    },
+    {
+      "sector_code": "SEC-ENG-ICT",
+      "name": "Energy, ICT & Digital Economy Cluster",
+      "total_allocation": 33800000000,
+      "national_budget_share_pct": 0.7,
+      "beta_alignment_tags": ["Digital Superhighway Pillar"],
+      "sub_vote_breakdown": [
+        { "vote_head": "Rural Electricity Grid Connectivity Extensions", "amount": 16300000000 },
+        { "vote_head": "National Grid Transmission and Distribution Infrastructure Upgrades", "amount": 7500000000 },
+        { "vote_head": "Kenya Digital Acceleration Project Broadband Expansion", "amount": 5300000000 },
+        { "vote_head": "Alternative & Renewable Geothermal/Solar Energy Generation Research", "amount": 3200000000 },
+        { "vote_head": "National Fiber Optic Maintenance & Last-Mile Connectivity Support", "amount": 1500000000 }
+      ]
+    }
+  ],
+  "tier_2_county_devolution_envelope": {
+    "total_devolution_allocation": 502000000000,
+    "national_budget_share_pct": 10.4,
+    "funding_split": {
+      "unconditional_equitable_share": 428000000000,
+      "additional_national_conditional_allocations": 74000000000,
+      "equalisation_fund_marginalised_areas": 9600000000,
+      "development_partner_conditional_grants": 57400000000
+    },
+    "conditional_allocation_breakdown": [
+      { "item": "Universal Health Coverage (UHC) Worker Grants", "amount": 8938000000 },
+      { "item": "County Aggregation & Industrial Parks (CAIPS) Shared Funding", "amount": 3250000000 },
+      { "item": "Community Health Promoters (CHP) County Level Co-Funding", "amount": 3235000000 },
+      { "item": "Mineral Royalties Devolution Share Pool (20% Allocation)", "amount": 1833000000 },
+      { "item": "County Headquarters Structural Construction Grants", "amount": 523000000 },
+      { "item": "Housing Levy Fund Devolved Transfer (0.5% County Share)", "amount": 366000000 },
+      { "item": "Local Court Fines Contravention Collection Devolved Pool", "amount": 148000000 }
+    ],
+    "sdk_mock_county_profile_example": {
+      "county_id": 47,
+      "county_name": "Nairobi City County",
+      "received_equitable_share_floor": 19500000000,
+      "own_source_revenue_target": 12500000000,
+      "estimated_pending_bills_liability": 50000000000
+    }
+  },
+  "tier_3_ward_project_relational_schema_simulation": [
+    {
+      "project_uuid": "wrd-proj-2026-0019",
+      "project_name": "Maji Mazuri Community Borehole System",
+      "location": {
+        "county_id": 4,
+        "constituency_id": "CON-022",
+        "ward_id": "WRD-109",
+        "ward_name": "Ruiru Central"
+      },
+      "financials": {
+        "allocated_amount": 45000000,
+        "released_amount": 30000000,
+        "expenditure_to_date": 28500000
+      },
+      "lifecycle_status": "ONGOING",
+      "funding_source_entity": "COUNTY_EXEC",
+      "contractor_metadata": {
+        "company_name": "Siliconsavannah Infra Ltd",
+        "cr12_registration_number": "CPR/2024/99104",
+        "contract_value": 45000000
+      },
+      "line_item_mapping": {
+        "parent_sector_code": "SEC-SOC-YTH-WAT",
+        "national_vote_head_reference": "Water and Sewerage Regional Infrastructure Extensions",
+        "parent_macro_allocation_ref_kes": 47000000000
+      },
+      "oversight_metrics": {
+        "absorption_rate_pct": 95.0,
+        "last_audit_date": "2026-05-14",
+        "stalled_flag": false,
+        "citizen_reports_count": 0
+      }
+    }
+  ]
+}

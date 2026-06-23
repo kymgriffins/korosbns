@@ -47,6 +47,8 @@ export const Routes = {
     Article: (slug: string) => `/learn/${slug}`,
     Knowledge: "/learn",
     KnowledgeEntry: (id: string) => `/learn/${id}`,
+    BudgetHub: "/budgethub",
+  Reports: "/budgethub/reports",
     BudgetNews: "/budgetnews",
     BudgetNewsModule: budgetNewsModulePath,
     BudgetNewsChapter: budgetNewsChapterPath,

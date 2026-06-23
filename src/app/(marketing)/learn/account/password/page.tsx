@@ -7,6 +7,7 @@ import { ContentLayout } from "@/layouts/DashboardShell";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 import { useChangePassword } from "@/hooks/use-auth-actions";
 import { Routes } from "@/constants/routes";
 
@@ -119,9 +120,8 @@ export default function PasswordChangePage() {
 
             <div className="space-y-2">
               <Label htmlFor="confirmPassword">Confirm New Password</Label>
-              <Input
+              <PasswordInput
                 id="confirmPassword"
-                type="password"
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}

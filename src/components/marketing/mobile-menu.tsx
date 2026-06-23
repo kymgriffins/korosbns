@@ -12,6 +12,7 @@ import {
   BookOpen,
   ClipboardList,
   HelpCircle,
+  FileBarChart,
   FileText,
   Calendar,
   Mail,
@@ -36,8 +37,10 @@ const getIcon = (label: string) => {
   const cls = "size-5 text-muted-foreground group-hover:text-primary transition-colors duration-200";
   switch (label.toLowerCase()) {
     case "learn":        return <BookOpen className={cls} />;
+    case "budget hub":   return <Newspaper className={cls} />;
     case "budget news":  return <Newspaper className={cls} />;
     case "surveys":      return <ClipboardList className={cls} />;
+    case "reports":      return <FileBarChart className={cls} />;
     case "trivia":       return <HelpCircle className={cls} />;
     case "articles":     return <FileText className={cls} />;
     case "events":       return <Calendar className={cls} />;

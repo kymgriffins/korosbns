@@ -11,6 +11,8 @@ import {
   LinkedInIcon,
   YouTubeIcon,
   TikTokIcon,
+  WhatsAppIcon,
+  FacebookIcon,
 } from "@/components/ui/social-icons";
 
 const platformDefaults: Record<
@@ -42,6 +44,16 @@ const platformDefaults: Record<
     color: "hover:bg-purple-500/10",
     handle: "@budget.ndio.story",
   },
+  whatsapp: {
+    icon: <WhatsAppIcon className="size-5" />,
+    color: "hover:bg-green-500/10",
+    handle: "WhatsApp",
+  },
+  facebook: {
+    icon: <FacebookIcon className="size-5" />,
+    color: "hover:bg-blue-500/10",
+    handle: "Budget Ndio Story",
+  },
 };
 
 export function SocialsSection() {
@@ -49,12 +61,14 @@ export function SocialsSection() {
   const apiSocials = config.socials || [];
 
   const platforms = apiSocials.length
-    ? apiSocials.map((s) => ({
-        platform: s.platform,
-        url: s.url,
-        label: s.label || s.platform,
-        ...platformDefaults[s.platform.toLowerCase()],
-      }))
+    ? apiSocials
+        .filter((s) => s.platform && s.platform.toLowerCase() !== "website")
+        .map((s) => ({
+          platform: s.platform,
+          url: s.url,
+          label: s.label || s.platform,
+          ...platformDefaults[s.platform.toLowerCase()],
+        }))
     : Object.entries(platformDefaults).map(([key, val]) => ({
         platform: key,
         url: "#",

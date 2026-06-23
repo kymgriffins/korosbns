@@ -10,6 +10,8 @@ import { OrgProvider } from "@/contexts/org-context";
 import SentryErrorBoundary from "@/components/error/error-boundary";
 import { DebugLogPanel } from "@/components/debug/debug-log-panel";
 import { PostHogProvider } from "@/components/global/posthog-provider";
+import { PreferencesStoreProvider } from "@/stores/preferences/preferences-provider";
+import { PREFERENCE_DEFAULTS } from "@/lib/preferences/preferences-config";
 const Providers = ({ children }: { children: React.ReactNode }) => {
   const [queryClient] = useState(
     () =>
@@ -33,9 +35,17 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
               <AuthProvider>
                 <TooltipProvider>
                   <PostHogProvider>
-                    <Toaster position="top-right" toastOptions={{ style: { marginTop: "0.25rem" } }} />
-                    {children}
-                    <DebugLogPanel />
+                    <PreferencesStoreProvider
+                      themeMode={PREFERENCE_DEFAULTS.theme_mode}
+                      themePreset={PREFERENCE_DEFAULTS.theme_preset}
+                      contentLayout={PREFERENCE_DEFAULTS.content_layout}
+                      navbarStyle={PREFERENCE_DEFAULTS.navbar_style}
+                      font={PREFERENCE_DEFAULTS.font}
+                    >
+                      <Toaster position="top-right" toastOptions={{ style: { marginTop: "0.25rem" } }} />
+                      {children}
+                      <DebugLogPanel />
+                    </PreferencesStoreProvider>
                   </PostHogProvider>
                 </TooltipProvider>
               </AuthProvider>

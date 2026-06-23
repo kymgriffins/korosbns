@@ -24,3 +24,35 @@
 | Token storage | `sessionStorage` (access) + `localStorage` (refresh) + cookie bridge for middleware |
 
 When changing auth behavior, update **all** of: `auth-policy.ts`, `docs/frontend-auth.md`, tests in `src/lib/__tests__/auth-*.test.ts`, and `.cursor/rules/frontend-auth.mdc`.
+
+---
+
+# Learning Hub upgrade summary
+
+## New standalone routes (outside SPA tab system)
+| Route | File | Component |
+|-------|------|-----------|
+| `/learn/modules/[slug]` | `src/app/(marketing)/learn/modules/[slug]/page.tsx` | `ModuleDetailView` |
+| `/learn/analytics` | `src/app/(marketing)/learn/analytics/page.tsx` | `LearnAnalyticsView` |
+
+## New/rebuilt components
+| Component | Location | Purpose |
+|-----------|----------|---------|
+| `ModuleDetailView` | `src/components/learn/module-detail-view.tsx` | Mobile-first tabbed reader (Read/Watch/Quiz) with progress bar, prev/next nav, completion flow |
+| `LearnAnalyticsView` | `src/components/learn/learn-analytics-view.tsx` | Tabbed analytics (Overview/Content/Modules) with KPI cards, bar chart, top articles/modules |
+| `ArticleForumSection` (via `ModuleForum` reuse) | `client-page.tsx` | Collapsible discussion section below article body |
+
+## Upgraded components
+| Component | Changes |
+|-----------|---------|
+| `LearnContentGrid` | Type icons, gradient fallbacks, difficulty badges, published date, tags, hover zoom |
+| `LearnDashboardView` | Quick action buttons row (Start Learning, Analytics, Discussions, Quests), daily motivational quote card |
+| `LearnHubLayout` sidebar | Analytics link added under "Insights" group |
+
+## Routes updated
+- Dashboard cards now navigate to `/learn/modules/[slug]` instead of using overlay callback
+- Module list cards navigate to `/learn/modules/[slug]`
+- "Continue learning" card navigates to `/learn/modules/[slug]`
+
+## TypeScript
+All new code passes `tsc --noEmit` cleanly. Strict mode enforced on all callback parameters.

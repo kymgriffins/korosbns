@@ -11,6 +11,7 @@ import { Switch } from "@/ui/switch";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 import { BitmojiAvatar } from "./bitmoji-avatar";
 import { ProfileAvatarEditor } from "./profile-avatar-editor";
 import { cn } from "@/utils";
@@ -580,16 +581,16 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
               <form onSubmit={submitPassword} className="mt-3 space-y-3">
                 <div className="space-y-1.5">
                   <Label htmlFor="pw_current" className="text-xs">Current password</Label>
-                  <Input id="pw_current" type="password" autoComplete="current-password" value={pw.current} onChange={(e) => setPw((p) => ({ ...p, current: e.target.value }))} required />
+                  <PasswordInput id="pw_current" autoComplete="current-password" value={pw.current} onChange={(e) => setPw((p) => ({ ...p, current: e.target.value }))} required />
                 </div>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="space-y-1.5">
                     <Label htmlFor="pw_new" className="text-xs">New password</Label>
-                    <Input id="pw_new" type="password" autoComplete="new-password" value={pw.next} onChange={(e) => setPw((p) => ({ ...p, next: e.target.value }))} required />
+                    <PasswordInput id="pw_new" autoComplete="new-password" value={pw.next} onChange={(e) => setPw((p) => ({ ...p, next: e.target.value }))} required />
                   </div>
                   <div className="space-y-1.5">
                     <Label htmlFor="pw_confirm" className="text-xs">Confirm new</Label>
-                    <Input id="pw_confirm" type="password" autoComplete="new-password" value={pw.confirm} onChange={(e) => setPw((p) => ({ ...p, confirm: e.target.value }))} required />
+                    <PasswordInput id="pw_confirm" autoComplete="new-password" value={pw.confirm} onChange={(e) => setPw((p) => ({ ...p, confirm: e.target.value }))} required />
                   </div>
                 </div>
                 <Button type="submit" size="sm" disabled={changingPassword} className="rounded-lg text-xs font-bold">

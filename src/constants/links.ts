@@ -10,6 +10,10 @@ export const NAV_LINKS = [
     href: Routes.Surveys,
   },
   {
+    label: "Reports",
+    href: Routes.Reports,
+  },
+  {
     label: "Events",
     href: Routes.Events,
   },
@@ -33,7 +37,8 @@ export const footerLinks = {
   resources: [
     { label: "Budget Guides", href: Routes.Learn },
     { label: "Documents", href: Routes.Documents },
-    { label: "Surveys", href: Routes.Surveys },
+  { label: "Surveys",     href: Routes.Surveys },
+  { label: "Reports",    href: Routes.Reports },
     { label: "Newsletter", href: "/" },
     { label: "Contact", href: Routes.Contact },
   ],

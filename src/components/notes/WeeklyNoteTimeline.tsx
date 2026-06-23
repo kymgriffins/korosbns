@@ -7,6 +7,7 @@ import { Button } from "@/ui/button";
 import Link from "next/link";
 import { format } from "date-fns";
 import type { WeeklyNoteApi } from "@/types/notes";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 type Props = {
   notes: WeeklyNoteApi[];
@@ -44,13 +45,13 @@ export function WeeklyNoteTimeline({ notes }: Props) {
           <div className="rounded-xl border border-border/60 bg-card p-5 hover:shadow-md transition-shadow">
             <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
               <Calendar className="size-3.5" />
-              {format(new Date(note.created_at), "MMM d, yyyy")}
+              {(() => { try { return format(new Date(note.created_at), "MMM d, yyyy"); } catch { return ""; } })()}
               <span className="text-primary font-medium">— {note.week_label}</span>
             </div>
             <h3 className="font-semibold mb-2">{note.title}</h3>
             <div
               className="prose prose-sm dark:prose-invert max-w-none line-clamp-3 text-muted-foreground"
-              dangerouslySetInnerHTML={{ __html: note.content }}
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(note.content ?? "") }}
             />
             <div className="mt-3 text-xs text-muted-foreground">
               By {note.author_name}

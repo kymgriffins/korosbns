@@ -5,12 +5,13 @@ import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
-import { Loader2, ArrowLeft, BookOpen, ChevronLeft, ArrowRight, Target, HelpCircle } from "lucide-react";
+import { Loader2, ArrowLeft, BookOpen, ChevronLeft, ArrowRight, Target, HelpCircle, MessageSquare } from "lucide-react";
 import Wrapper from "@/components/global/wrapper";
 import { Button } from "@/ui/button";
 import { PageBreadcrumbs } from "@/components/global/page-breadcrumbs";
 import { TriviaQuiz } from "@/components/citizen/trivia-quiz";
 import { ArticleReaderActions } from "@/components/citizen/article-reader-actions";
+import { ModuleForum } from "@/components/forum/module-forum";
 import type { TriviaSetApi } from "@/lib/api-client";
 import { useContentForSlug } from "@/hooks/use-content";
 import { Routes } from "@/constants/routes";
@@ -537,6 +538,18 @@ export default function UnifiedReaderClientPage({
                 </div>
               )}
             </footer>
+
+            <details className="group mt-8 rounded-xl border border-border">
+              <summary className="flex cursor-pointer items-center gap-2 px-4 py-3 text-sm font-bold text-foreground transition-colors hover:bg-muted/40">
+                <MessageSquare className="size-4" />
+                Discussion
+                <span className="ml-auto text-xs font-normal text-muted-foreground group-open:hidden">Click to expand</span>
+                <ChevronLeft className="ml-1 size-4 -rotate-90 transition-transform group-open:rotate-0" />
+              </summary>
+              <div className="border-t border-border px-4 py-4">
+                <ModuleForum moduleId={slug} />
+              </div>
+            </details>
           </article>
         </div>
       </section>

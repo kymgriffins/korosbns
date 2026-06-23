@@ -5,6 +5,7 @@ import { Badge } from "@/ui/badge";
 import { Calendar, User } from "lucide-react";
 import type { WeeklyNoteApi } from "@/types/notes";
 import { format } from "date-fns";
+import { sanitizeHtml } from "@/lib/sanitize";
 
 const statusColors: Record<string, string> = {
   draft: "bg-yellow-500/10 text-yellow-600 border-yellow-500/30",
@@ -37,7 +38,7 @@ export function WeeklyNoteCard({ note, onAudit }: Props) {
       <CardContent>
         <div
           className="prose prose-sm dark:prose-invert max-w-none line-clamp-3"
-          dangerouslySetInnerHTML={{ __html: note.content }}
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(note.content ?? "") }}
         />
       </CardContent>
       <CardFooter className="flex items-center justify-between text-xs text-muted-foreground">
@@ -47,7 +48,7 @@ export function WeeklyNoteCard({ note, onAudit }: Props) {
         </span>
         <span className="flex items-center gap-1.5">
           <Calendar className="size-3.5" />
-          {format(new Date(note.created_at), "MMM d, yyyy")}
+          {(() => { try { return format(new Date(note.created_at), "MMM d, yyyy"); } catch { return ""; } })()}
         </span>
       </CardFooter>
     </Card>
