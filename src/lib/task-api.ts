@@ -3,7 +3,7 @@ import type { ApiListResponse } from "@/types/api";
 import type { WeeklyNoteApi, WeeklyNoteDetailApi, WeeklyNoteCreateApi } from "@/types/notes";
 import type {
   Task, TaskDetail, TaskCreatePayload, TaskUpdatePayload,
-  AssignableUser, ChecklistItem,
+  AssignableUser, ChecklistItem, TaskPriority, TaskTag, KanbanColumn,
 } from "@/types/tasks";
 import { autoHue } from "@/types/tasks";
 
@@ -25,8 +25,14 @@ function mapNoteToTask(note: WeeklyNoteApi): Task {
     hue: note.hue ?? autoHue(note.assigned_team),
     due_label: note.due_label,
     section_count: note.section_count,
-    progress: (note as WeeklyNoteApi & { progress?: number }).progress,
+    progress: note.progress,
     checklist: parsed.checklist,
+    priority: note.priority as TaskPriority | undefined,
+    tag: note.tag as TaskTag | undefined,
+    scheduled_time: note.scheduled_time,
+    kanban_column: note.kanban_column as KanbanColumn | undefined,
+    owner_name: note.owner_name,
+    owner_tone: note.owner_tone,
   };
 }
 
@@ -54,6 +60,10 @@ function buildBody(payload: TaskCreatePayload): Record<string, unknown> {
   if (payload.assigned_team !== undefined) body.assigned_team = payload.assigned_team;
   if (payload.progress !== undefined) body.progress = payload.progress;
   if (payload.due_label !== undefined) body.due_label = payload.due_label;
+  if (payload.priority !== undefined) body.priority = payload.priority;
+  if (payload.tag !== undefined) body.tag = payload.tag;
+  if (payload.scheduled_time !== undefined) body.scheduled_time = payload.scheduled_time;
+  if (payload.kanban_column !== undefined) body.kanban_column = payload.kanban_column;
   body.hue = autoHue(payload.assigned_team) ?? null;
   return body;
 }
@@ -165,5 +175,83 @@ export const taskApi = {
       // fallback below
     }
     return ["MEDIA", "ICT", "MANAGERIAL"];
+  },
+
+  getProjects: async (status?: string) => {
+    const params = status ? `?status=${encodeURIComponent(status)}` : "";
+    return apiFetch<ApiListResponse<{ id: string; title: string; status: string; progress: number; due_date?: string | null }>>(
+      `/projects/${params}`,
+      { auth: true },
+    );
+  },
+
+  createProject: async (data: Record<string, unknown>) => {
+    return apiFetch<{ id: string }>("/projects/", {
+      method: "POST",
+      auth: true,
+      body: JSON.stringify(data),
+    });
+  },
+
+  getCalendarEvents: async (month?: string) => {
+    const params = month ? `?month=${encodeURIComponent(month)}` : "";
+    return apiFetch<ApiListResponse<{ id: string; title: string; date: string; start_time?: string; end_time?: string; color: string }>>(
+      `/calendar/${params}`,
+      { auth: true },
+    );
+  },
+
+  createCalendarEvent: async (data: Record<string, unknown>) => {
+    return apiFetch<{ id: string }>("/calendar/", {
+      method: "POST",
+      auth: true,
+      body: JSON.stringify(data),
+    });
+  },
+
+  getGoals: async (week?: string) => {
+    const params = week ? `?week=${encodeURIComponent(week)}` : "";
+    return apiFetch<ApiListResponse<{ id: string; title: string; status: string; target_date?: string | null }>>(
+      `/goals/${params}`,
+      { auth: true },
+    );
+  },
+
+  getGoalSummary: async (week?: string) => {
+    const params = week ? `?week=${encodeURIComponent(week)}` : "";
+    return apiFetch<{ total: number; completed: number; in_progress: number; not_started: number; completion_rate: number }>(
+      `/goals/summary/${params}`,
+      { auth: true },
+    );
+  },
+
+  createGoal: async (data: Record<string, unknown>) => {
+    return apiFetch<{ id: string }>("/goals/", {
+      method: "POST",
+      auth: true,
+      body: JSON.stringify(data),
+    });
+  },
+
+  startFocusSession: async (taskId?: string, durationMinutes = 90) => {
+    return apiFetch<{ id: string; started_at: string }>("/focus-sessions/start/", {
+      method: "POST",
+      auth: true,
+      body: JSON.stringify({ task: taskId, duration_minutes: durationMinutes }),
+    });
+  },
+
+  stopFocusSession: async (id: string) => {
+    return apiFetch<{ id: string; completed: boolean; ended_at: string }>(`/focus-sessions/${id}/stop/`, {
+      method: "POST",
+      auth: true,
+    });
+  },
+
+  getActiveFocusSession: async () => {
+    return apiFetch<{ active: boolean; id?: string; duration_minutes?: number; started_at?: string }>(
+      "/focus-sessions/active/",
+      { auth: true },
+    );
   },
 };

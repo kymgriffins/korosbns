@@ -2,6 +2,22 @@ import type { NoteSectionApi, NoteAuditTrailApi } from "@/types/notes";
 
 export type TaskStatus = "draft" | "audited" | "published";
 
+export type TaskPriority = "low" | "medium" | "high" | "urgent";
+
+export type TaskTag =
+  | "feature"
+  | "bug"
+  | "improvement"
+  | "research"
+  | "documentation"
+  | "design"
+  | "testing"
+  | "devops"
+  | "meeting"
+  | "review";
+
+export type KanbanColumn = "ideas" | "planned" | "building" | "qa" | "shipped";
+
 export type ChecklistItem = {
   id: string;
   text: string;
@@ -26,6 +42,12 @@ export type Task = {
   section_count?: number;
   progress?: number;
   checklist?: ChecklistItem[];
+  priority?: TaskPriority;
+  tag?: TaskTag;
+  scheduled_time?: string | null;
+  kanban_column?: KanbanColumn;
+  owner_name?: string;
+  owner_tone?: string;
 };
 
 export type TaskDetail = Task & {
@@ -50,6 +72,10 @@ export type TaskCreatePayload = {
   checklist?: ChecklistItem[];
   due_label?: string | null;
   hue?: string | null;
+  priority?: TaskPriority;
+  tag?: TaskTag;
+  scheduled_time?: string | null;
+  kanban_column?: KanbanColumn;
 };
 
 export type TaskUpdatePayload = Partial<TaskCreatePayload>;
