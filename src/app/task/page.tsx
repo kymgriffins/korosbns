@@ -56,7 +56,7 @@ import { useAuth } from "@/contexts/auth-context";
 const COLUMNS: TaskStatus[] = ["draft", "audited", "published"];
 
 const COLUMN_META: Record<TaskStatus, { title: string; icon: any; color: string }> = {
-  draft: { title: "To Do", icon: Circle, color: "border-t-amber-500" },
+  draft: { title: "Undone", icon: Circle, color: "border-t-amber-500" },
   audited: { title: "In Progress", icon: CircleDot, color: "border-t-blue-500" },
   published: { title: "Done", icon: CheckCircle2, color: "border-t-emerald-500" },
 };
@@ -137,9 +137,15 @@ function TaskCard({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-36" onClick={(e) => e.stopPropagation()}>
+              {task.status !== "published" && (
+                <DropdownMenuItem onSelect={() => router.push(`/task/${task.id}`)}>
+                  <Pencil className="mr-2 size-3.5" />
+                  Edit
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem onSelect={() => router.push(`/task/${task.id}`)}>
                 <Pencil className="mr-2 size-3.5" />
-                Edit
+                View
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
@@ -220,7 +226,7 @@ export default function TaskPage() {
     setLoading(true);
     setError("");
     try {
-      const data = await taskApi.list();
+      const data = await taskApi.listAll();
       setTasks(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load tasks");
@@ -286,6 +292,12 @@ export default function TaskPage() {
     const overColumn = columns.find((c) => c.id === overId || c.items.some((i) => i.id === overId));
     if (!overColumn || overColumn.id === activeTask_.status) return;
 
+    if (activeTask_.status === "published") {
+      toast.error("Done tasks cannot be moved");
+      fetchTasks();
+      return;
+    }
+
     setTasks((prev) => prev.map((t) => (t.id === activeId ? { ...t, status: overColumn.id } : t)));
 
     try {
@@ -294,8 +306,7 @@ export default function TaskPage() {
       } else if (overColumn.id === "audited") {
         await taskApi.audit(activeId, "approved", "Moved to in progress");
       } else {
-        await fetchTasks();
-        return;
+        await taskApi.update(activeId, { status: "draft" });
       }
       toast.success(`Moved to ${overColumn.title}`);
     } catch {
@@ -321,6 +332,8 @@ export default function TaskPage() {
   const EXPORT_COLUMNS = [
     { key: "id" as const, label: "ID" },
     { key: "title" as const, label: "Title" },
+    { key: "content" as const, label: "Content" },
+    { key: "checklist" as const, label: "Checklist" },
     { key: "status" as const, label: "Status" },
     { key: "week_label" as const, label: "Week" },
     { key: "author_name" as const, label: "Author" },
@@ -337,6 +350,8 @@ export default function TaskPage() {
     const data = filteredTasks.map((t) => ({
       id: t.id,
       title: t.title,
+      content: t.content ?? "",
+      checklist: t.checklist?.map((c) => `${c.checked ? "[x]" : "[ ]"} ${c.text}`).join("; ") ?? "",
       status: t.status,
       week_label: t.week_label,
       author_name: t.author_name,

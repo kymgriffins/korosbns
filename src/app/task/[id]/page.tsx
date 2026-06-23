@@ -138,9 +138,11 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
             </div>
             {isLoggedIn && (
               <div className="flex items-center gap-2 shrink-0">
-                <Button size="sm" variant="outline" onClick={() => setEditing(true)}>
-                  Edit
-                </Button>
+                {task.status !== "published" && (
+                  <Button size="sm" variant="outline" onClick={() => setEditing(true)}>
+                    Edit
+                  </Button>
+                )}
                 <Button size="sm" variant="destructive" onClick={handleDelete} disabled={deleting}>
                   {deleting ? <Loader2 className="size-4 animate-spin" /> : "Delete"}
                 </Button>

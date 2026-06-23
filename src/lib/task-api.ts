@@ -85,6 +85,22 @@ export const taskApi = {
     return notes.map(mapNoteToTask);
   },
 
+  listAll: async (): Promise<Task[]> => {
+    const [publicNotes, authNotes] = await Promise.allSettled([
+      citizenApi.getWeeklyNotes(),
+      apiFetch<WeeklyNoteApi[]>("/notes/", { auth: true }),
+    ]);
+    const map = new Map<string, Task>();
+    if (publicNotes.status === "fulfilled") {
+      publicNotes.value.forEach((n) => map.set(n.id, mapNoteToTask(n)));
+    }
+    if (authNotes.status === "fulfilled") {
+      const arr = Array.isArray(authNotes.value) ? authNotes.value : (authNotes.value as any).results ?? [];
+      arr.forEach((n: WeeklyNoteApi) => map.set(n.id, mapNoteToTask(n)));
+    }
+    return Array.from(map.values());
+  },
+
   get: async (id: string): Promise<TaskDetail> => {
     const res = await apiFetch<WeeklyNoteDetailApi>(`/notes/${id}/`, { auth: true });
     return mapDetailToTask(res);
@@ -114,6 +130,10 @@ export const taskApi = {
   publish: async (id: string): Promise<Task> => {
     const note = await citizenApi.publishWeeklyNote(id);
     return mapNoteToTask(note);
+  },
+
+  unpublish: async (id: string): Promise<Task> => {
+    return taskApi.update(id, { status: "draft", title: undefined });
   },
 
   getAssignableUsers: async (): Promise<AssignableUser[]> => {

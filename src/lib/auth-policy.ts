@@ -22,6 +22,7 @@ export const DEFAULT_POST_LOGIN_PATH = "/budgethub/dashboard/lms";
 export const LEARN_PROTECTED_PATH_PREFIXES = [
   "/learn/account",
   "/learn/quests",
+  "/task",
 ] as const;
 
 /**
