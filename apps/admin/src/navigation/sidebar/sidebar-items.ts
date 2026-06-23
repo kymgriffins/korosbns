@@ -4,6 +4,7 @@ import {
   Building2,
   Calendar,
   ChartBar,
+  FileBarChart,
   FileText,
   Fingerprint,
   Forklift,
@@ -163,8 +164,11 @@ export const sidebarItems: NavGroup[] = [
       {
         id: "tasks",
         title: "Tasks",
-        url: "/dashboard/task",
         icon: ListTodo,
+        subItems: [
+          { id: "task-board", title: "Board", url: "/dashboard/task", icon: ListTodo },
+          { id: "task-report", title: "Report", url: "/dashboard/task/report", icon: FileBarChart },
+        ],
       },
       {
         id: "invoice",

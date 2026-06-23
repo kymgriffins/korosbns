@@ -14,6 +14,14 @@ import { Badge } from "@/ui/badge";
 import { Checkbox } from "@/ui/checkbox";
 import { PageBreadcrumbs } from "@/components/global/page-breadcrumbs";
 import { Skeleton } from "@/ui/skeleton";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/ui/dialog";
 
 import { taskApi } from "@/lib/task-api";
 import type { TaskDetail } from "@/types/tasks";
@@ -26,6 +34,17 @@ const STATUS_STYLES: Record<string, { bg: string; label: string }> = {
   published: { bg: "bg-emerald-500/10 text-emerald-600 border-emerald-500/30", label: "Published" },
 };
 
+function safeFormat(date: string | Date | null | undefined, fmt: string): string {
+  if (!date) return "";
+  try {
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return "";
+    return format(d, fmt);
+  } catch {
+    return "";
+  }
+}
+
 export default function TaskDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { isLoggedIn } = useAuth();
@@ -35,6 +54,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 
   useEffect(() => {
     taskApi.get(id)
@@ -51,7 +71,6 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
       toast.error("Sign in to delete tasks");
       return;
     }
-    if (!confirm("Delete this task?")) return;
     setDeleting(true);
     try {
       await taskApi.delete(id);
@@ -81,7 +100,25 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
     );
   }
 
-  if (!task) return null;
+  if (!task) {
+    return (
+      <div className="mx-auto max-w-3xl p-4 md:p-6 space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+        <Card className="border-destructive/30 bg-destructive/5">
+          <CardHeader>
+            <CardTitle className="text-destructive">Task Not Found</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              The task you're looking for doesn't exist or has been removed.
+            </p>
+            <Button variant="outline" className="mt-4" onClick={() => router.push("/task")}>
+              Back to Task Board
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   const statusStyle = STATUS_STYLES[task.status] ?? STATUS_STYLES.draft;
   const hue = task.hue ?? autoHue(task.assigned_team);
@@ -143,7 +180,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
                     Edit
                   </Button>
                 )}
-                <Button size="sm" variant="destructive" onClick={handleDelete} disabled={deleting}>
+                <Button size="sm" variant="destructive" onClick={() => setDeleteConfirmOpen(true)} disabled={deleting}>
                   {deleting ? <Loader2 className="size-4 animate-spin" /> : "Delete"}
                 </Button>
               </div>
@@ -160,16 +197,16 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
             </span>
             <span className="flex items-center gap-1.5">
               <Calendar className="size-3.5" />
-              Created {format(new Date(task.created_at), "MMM d, yyyy")}
+              Created {safeFormat(task.created_at, "MMM d, yyyy")}
             </span>
             <span className="flex items-center gap-1.5">
               <Clock className="size-3.5" />
-              Updated {format(new Date(task.updated_at), "MMM d, yyyy")}
+              Updated {safeFormat(task.updated_at, "MMM d, yyyy")}
             </span>
             {task.due_date && (
               <span className="flex items-center gap-1.5">
                 <Calendar className="size-3.5" />
-                Due {format(new Date(task.due_date), "MMM d, yyyy")}
+                Due {safeFormat(task.due_date, "MMM d, yyyy")}
               </span>
             )}
           </div>
@@ -242,7 +279,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
                     <div className="flex items-center justify-between">
                       <span className="font-medium">{trail.auditor_name}</span>
                       <span className="text-muted-foreground">
-                        {format(new Date(trail.created_at), "MMM d, yyyy HH:mm")}
+                        {safeFormat(trail.created_at, "MMM d, yyyy HH:mm")}
                       </span>
                     </div>
                     <p className="mt-0.5 text-muted-foreground">
@@ -257,6 +294,31 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
 
         </CardContent>
       </Card>
+
+      <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Task</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this task? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteConfirmOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                setDeleteConfirmOpen(false);
+                handleDelete();
+              }}
+            >
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

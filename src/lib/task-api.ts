@@ -137,11 +137,22 @@ export const taskApi = {
   },
 
   getAssignableUsers: async (): Promise<AssignableUser[]> => {
-    const res = await apiFetch<ApiListResponse<AssignableUser>>("/users/", { auth: true });
-    if (!Array.isArray(res.results)) return [];
-    return res.results.filter(
-      (u) => u.role !== "citizen" && u.role !== "Citizen",
-    );
+    const res = await apiFetch<AssignableUser[]>("/notes/assignable_users/", { auth: true });
+    if (Array.isArray(res)) return res;
+    if (Array.isArray((res as any).results)) return (res as any).results;
+    return [];
+  },
+
+  getWeeklyReport: async (week?: string): Promise<{
+    total: number;
+    by_status: Record<string, number>;
+    by_team: Record<string, { name: string; color: string; count: number }>;
+    by_assignee: Record<string, number>;
+    avg_progress: number;
+    period: string;
+  }> => {
+    const params = week ? `?week=${encodeURIComponent(week)}` : "";
+    return apiFetch(`/notes/weekly_report/${params}`, { auth: true });
   },
 
   getTeams: async (): Promise<string[]> => {

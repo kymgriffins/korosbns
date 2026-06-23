@@ -74,7 +74,16 @@ const TEAM_OPTIONS = ["MEDIA", "ICT", "MANAGERIAL"] as const;
 export type AssignedTeam = (typeof TEAM_OPTIONS)[number];
 export { TEAM_OPTIONS };
 
-export const TEAM_HUES: Record<string, string> = {
+export type WeeklyReportData = {
+  total: number;
+  by_status: Record<string, number>;
+  by_team: Record<string, { name: string; color: string; count: number }>;
+  by_assignee: Record<string, number>;
+  avg_progress: number;
+  period: string;
+};
+
+const TEAM_HUES: Record<string, string> = {
   MEDIA: "#3b82f6",
   ICT: "#10b981",
   MANAGERIAL: "#8b5cf6",

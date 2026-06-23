@@ -47,6 +47,14 @@ import {
   DropdownMenuTrigger,
 } from "@/ui/dropdown-menu";
 import { Skeleton } from "@/ui/skeleton";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/ui/dialog";
 
 import { taskApi } from "@/lib/task-api";
 import { exportTasksAsCsv, exportTasksAsJson } from "@/lib/export-utils";
@@ -66,6 +74,17 @@ const STATUS_STYLES: Record<string, { bg: string; text: string }> = {
   audited: { bg: "#3b82f6", text: "#3b82f6" },
   published: { bg: "#10b981", text: "#10b981" },
 };
+
+function safeFormat(date: string | Date | null | undefined, fmt: string): string {
+  if (!date) return "";
+  try {
+    const d = new Date(date);
+    if (isNaN(d.getTime())) return "";
+    return format(d, fmt);
+  } catch {
+    return "";
+  }
+}
 
 function TaskCard({
   task,
@@ -173,12 +192,12 @@ function TaskCard({
         </span>
         <span className="flex items-center gap-1">
           <Calendar className="size-3" />
-          {format(new Date(task.created_at), "MMM d")}
+          {safeFormat(task.created_at, "MMM d")}
         </span>
         {task.due_date && (
           <span className="flex items-center gap-1">
             <CalendarDays className="size-3" />
-            {format(new Date(task.due_date), "MMM d")}
+            {safeFormat(task.due_date, "MMM d")}
           </span>
         )}
         {task.assignee && (
@@ -216,6 +235,7 @@ export default function TaskPage() {
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [activeTask, setActiveTask] = useState<Task | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -511,7 +531,7 @@ export default function TaskPage() {
                         <TaskCard
                           key={task.id}
                           task={task}
-                          onDelete={handleDelete}
+                          onDelete={(id) => setDeleteConfirmId(id)}
                           canManage={isLoggedIn}
                         />
                       ))}
@@ -526,11 +546,39 @@ export default function TaskPage() {
         <DragOverlay>
           {activeTask && (
             <div className="w-72 opacity-90">
-              <TaskCard task={activeTask} onDelete={handleDelete} isDragging canManage={isLoggedIn} />
+              <TaskCard task={activeTask} onDelete={(id) => setDeleteConfirmId(id)} isDragging canManage={isLoggedIn} />
             </div>
           )}
         </DragOverlay>
       </DndContext>
+
+      <Dialog
+        open={deleteConfirmId !== null}
+        onOpenChange={(open) => { if (!open) setDeleteConfirmId(null); }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Task</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this task? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteConfirmId(null)}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => {
+                if (deleteConfirmId) handleDelete(deleteConfirmId);
+                setDeleteConfirmId(null);
+              }}
+            >
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
