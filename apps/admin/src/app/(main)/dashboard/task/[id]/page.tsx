@@ -164,10 +164,10 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
               {task.sections.map((section, i) => (
                 <Card key={i} className="border-border/50">
                   <CardHeader className="py-3">
-                    <CardTitle className="text-sm font-medium">{section.title}</CardTitle>
+                    <CardTitle className="text-sm font-medium">{section.heading}</CardTitle>
                   </CardHeader>
                   <CardContent className="py-2">
-                    <p className="text-sm text-muted-foreground whitespace-pre-wrap">{section.content}</p>
+                    <p className="text-sm text-muted-foreground whitespace-pre-wrap">{JSON.stringify(section.content)}</p>
                   </CardContent>
                 </Card>
               ))}
@@ -197,7 +197,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
               <div className="h-2 rounded-full bg-muted overflow-hidden">
                 <div
                   className="h-full rounded-full bg-primary transition-all"
-                  style={{ width: `${Math.min(100, parseInt(task.progress) || 0)}%` }}
+                  style={{ width: `${Math.min(100, task.progress)}%` }}
                 />
               </div>
             </div>
@@ -210,7 +210,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
                 <div key={i} className="rounded-lg border border-border/50 p-3 text-sm">
                   <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
                     <span>{trail.action}</span>
-                    <span>{format(new Date(trail.timestamp), "MMM d, HH:mm")}</span>
+                    <span>{format(new Date(trail.created_at), "MMM d, HH:mm")}</span>
                   </div>
                   <p>{trail.comment}</p>
                 </div>

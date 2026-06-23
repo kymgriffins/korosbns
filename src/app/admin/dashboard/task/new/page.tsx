@@ -55,12 +55,12 @@ export default function NewTaskPage() {
       .create({
         week_label: form.week_label,
         title: form.title,
-        content: form.content || undefined,
+        content: form.content || "",
         assignee: form.assignee || undefined,
         assigned_team: form.assigned_team || undefined,
         due_date: form.due_date || undefined,
         due_label: form.due_label || undefined,
-        progress: form.progress || undefined,
+        progress: form.progress ? Number(form.progress) : undefined,
       })
       .then(() => {
         toast.success("Task created");
