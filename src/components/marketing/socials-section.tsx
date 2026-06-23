@@ -61,12 +61,14 @@ export function SocialsSection() {
   const apiSocials = config.socials || [];
 
   const platforms = apiSocials.length
-    ? apiSocials.map((s) => ({
-        platform: s.platform,
-        url: s.url,
-        label: s.label || s.platform,
-        ...platformDefaults[s.platform.toLowerCase()],
-      }))
+    ? apiSocials
+        .filter((s) => s.platform && s.platform.toLowerCase() !== "website")
+        .map((s) => ({
+          platform: s.platform,
+          url: s.url,
+          label: s.label || s.platform,
+          ...platformDefaults[s.platform.toLowerCase()],
+        }))
     : Object.entries(platformDefaults).map(([key, val]) => ({
         platform: key,
         url: "#",
