@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Field, FieldContent, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { useAuth } from "@/contexts/auth-context";
 
 const formSchema = z.object({
@@ -65,10 +66,9 @@ export function LoginForm() {
           render={({ field, fieldState }) => (
             <Field className="gap-1.5" data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="login-password">Password</FieldLabel>
-              <Input
+              <PasswordInput
                 {...field}
                 id="login-password"
-                type="password"
                 placeholder="••••••••"
                 autoComplete="current-password"
                 aria-invalid={fieldState.invalid}

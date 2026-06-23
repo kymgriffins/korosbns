@@ -7,6 +7,7 @@ import { ContentLayout } from "@/layouts/DashboardShell";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { Label } from "@/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 import { useChangePassword } from "@/hooks/use-auth-actions";
 import { Routes } from "@/constants/routes";
 

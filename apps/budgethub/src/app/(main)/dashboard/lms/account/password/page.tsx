@@ -1,18 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowLeft, Eye, EyeOff, KeyRound, Loader2, Lock, ShieldCheck } from "lucide-react";
+import { ArrowLeft, KeyRound, Loader2, Lock, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
+import { PasswordInput } from "@/components/ui/password-input";
 
 export default function PasswordPage() {
-  const [showOld, setShowOld] = useState(false);
-  const [showNew, setShowNew] = useState(false);
   const [saving, setSaving] = useState(false);
 
   return (
@@ -38,25 +36,15 @@ export default function PasswordPage() {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="currentPassword">Current Password</Label>
-            <div className="relative">
-              <Input id="currentPassword" type={showOld ? "text" : "password"} placeholder="Enter current password" className="pr-9" />
-              <button type="button" onClick={() => setShowOld(!showOld)} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground" tabIndex={-1}>
-                {showOld ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-              </button>
-            </div>
+            <PasswordInput id="currentPassword" placeholder="Enter current password" />
           </div>
           <div className="space-y-2">
             <Label htmlFor="newPassword">New Password</Label>
-            <div className="relative">
-              <Input id="newPassword" type={showNew ? "text" : "password"} placeholder="Enter new password" className="pr-9" />
-              <button type="button" onClick={() => setShowNew(!showNew)} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground" tabIndex={-1}>
-                {showNew ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-              </button>
-            </div>
+            <PasswordInput id="newPassword" placeholder="Enter new password" />
           </div>
           <div className="space-y-2">
             <Label htmlFor="confirmPassword">Confirm New Password</Label>
-            <Input id="confirmPassword" type="password" placeholder="Re-enter new password" />
+            <PasswordInput id="confirmPassword" placeholder="Re-enter new password" />
           </div>
           <div className="flex items-center gap-2 rounded-lg bg-muted px-3 py-2 text-xs text-muted-foreground">
             <ShieldCheck className="size-3.5 shrink-0 text-emerald-500" />

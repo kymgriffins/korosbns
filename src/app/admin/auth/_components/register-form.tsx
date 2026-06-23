@@ -9,6 +9,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { citizenApi } from "@/lib/api-client";
 
 const formSchema = z
@@ -71,10 +72,9 @@ export function RegisterForm() {
           render={({ field, fieldState }) => (
             <Field className="gap-1.5" data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="register-password">Password</FieldLabel>
-              <Input
+              <PasswordInput
                 {...field}
                 id="register-password"
-                type="password"
                 placeholder="••••••••"
                 autoComplete="new-password"
                 aria-invalid={fieldState.invalid}
@@ -89,10 +89,9 @@ export function RegisterForm() {
           render={({ field, fieldState }) => (
             <Field className="gap-1.5" data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor="register-confirm-password">Confirm Password</FieldLabel>
-              <Input
+              <PasswordInput
                 {...field}
                 id="register-confirm-password"
-                type="password"
                 placeholder="••••••••"
                 autoComplete="new-password"
                 aria-invalid={fieldState.invalid}

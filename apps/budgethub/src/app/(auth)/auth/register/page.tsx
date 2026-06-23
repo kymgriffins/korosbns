@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 import { citizenApi } from "@/lib/api-client";
 import { COUNTIES } from "@/constants/counties";
 
@@ -354,9 +355,8 @@ export default function RegisterPage() {
                   <Lock className="size-4 text-muted-foreground" />
                   Password <span className="text-destructive">*</span>
                 </Label>
-                <Input
+                <PasswordInput
                   id="password"
-                  type="password"
                   required
                   autoComplete="new-password"
                   value={password}
@@ -413,9 +413,8 @@ export default function RegisterPage() {
                   <Lock className="size-4 text-muted-foreground" />
                   Confirm password <span className="text-destructive">*</span>
                 </Label>
-                <Input
+                <PasswordInput
                   id="confirmPassword"
-                  type="password"
                   required
                   autoComplete="new-password"
                   value={confirmPassword}
