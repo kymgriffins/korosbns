@@ -16,6 +16,7 @@ import {
 } from "@dnd-kit/core";
 import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { format } from "date-fns";
+import type { LucideIcon } from "lucide-react";
 import {
   Calendar,
   CalendarDays,
@@ -63,7 +64,7 @@ import { useAuth } from "@/contexts/auth-context";
 
 const COLUMNS: TaskStatus[] = ["draft", "audited", "published"];
 
-const COLUMN_META: Record<TaskStatus, { title: string; icon: any; color: string }> = {
+const COLUMN_META: Record<TaskStatus, { title: string; icon: LucideIcon; color: string }> = {
   draft: { title: "Undone", icon: Circle, color: "border-t-amber-500" },
   audited: { title: "In Progress", icon: CircleDot, color: "border-t-blue-500" },
   published: { title: "Done", icon: CheckCircle2, color: "border-t-emerald-500" },
@@ -121,7 +122,10 @@ function TaskCard({
       {...attributes}
       {...listeners}
       onClick={() => router.push(`/task/${task.id}`)}
-      className={`group rounded-xl border border-border/60 bg-card/80 backdrop-blur-sm p-3.5 shadow-xs transition-all duration-200 hover:shadow-md hover:border-primary/20 cursor-pointer ${
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") router.push(`/task/${task.id}`); }}
+      role="button"
+      tabIndex={0}
+      className={`group rounded-xl border border-border/60 bg-card/80 backdrop-blur-sm p-3.5 shadow-xs transition-all duration-200 hover:shadow-md hover:border-primary/20 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 ${
         isDragging || isSortDragging ? "opacity-50 shadow-lg" : ""
       }`}
     >
@@ -151,7 +155,7 @@ function TaskCard({
         {canManage && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-              <Button variant="ghost" size="icon-xs" className="-mr-1.5 -mt-1 shrink-0 opacity-0 group-hover:opacity-100">
+              <Button variant="ghost" size="icon-xs" className="-mr-1.5 -mt-1 shrink-0 opacity-0 group-hover:opacity-100" aria-label="Task actions">
                 <MoreHorizontal className="size-3.5" />
               </Button>
             </DropdownMenuTrigger>
@@ -441,8 +445,11 @@ export default function TaskPage() {
             />
             {search && (
               <button
+                type="button"
                 onClick={() => setSearch("")}
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setSearch(""); }}
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                aria-label="Clear search"
               >
                 <X className="size-3.5" />
               </button>
@@ -450,7 +457,7 @@ export default function TaskPage() {
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="icon" disabled={totalCount === 0}>
+              <Button variant="outline" size="icon" disabled={totalCount === 0} aria-label="Export tasks">
                 <Download className="size-4" />
               </Button>
             </DropdownMenuTrigger>

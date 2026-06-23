@@ -23,7 +23,7 @@ import { Alert, AlertDescription } from "@/ui/alert";
 import { ApiRequestError } from "@/lib/api-errors";
 import { taskApi } from "@/lib/task-api";
 import type {
-  Task, TaskCreatePayload, AssignableUser,
+  Task, TaskStatus, TaskCreatePayload, AssignableUser,
 } from "@/types/tasks";
 import { ChecklistEditor } from "./checklist-editor";
 
@@ -170,7 +170,7 @@ export function TaskForm({
           <Label htmlFor="task-status">Status</Label>
           <Select
             value={form.status ?? "draft"}
-            onValueChange={(v: any) => updateField("status", v)}
+            onValueChange={(v) => updateField("status", v as TaskStatus)}
           >
             <SelectTrigger id="task-status" className={`rounded-lg bg-background text-sm ${fieldErrors.status ? "border-destructive" : ""}`}>
               <SelectValue placeholder="Select status" />

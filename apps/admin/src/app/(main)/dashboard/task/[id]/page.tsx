@@ -147,7 +147,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
             setEditing(false);
             setTask(null);
             setLoading(true);
-            taskApi.get(id).then(setTask).catch(() => {}).finally(() => setLoading(false));
+            taskApi.get(id).then(setTask).catch(() => { toast.error("Failed to reload task"); }).finally(() => setLoading(false));
           }}
         />
       </div>

@@ -62,7 +62,9 @@ export function ChecklistEditor({
             <button
               type="button"
               onClick={() => removeItem(item.id)}
-              className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive"
+              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") removeItem(item.id); }}
+              className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/50 rounded"
+              aria-label={`Remove checklist item: ${item.text || "untitled"}`}
             >
               <Trash2 className="size-3.5" />
             </button>

@@ -176,11 +176,11 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
             {isLoggedIn && (
               <div className="flex items-center gap-2 shrink-0">
                 {task.status !== "published" && (
-                  <Button size="sm" variant="outline" onClick={() => setEditing(true)}>
+                  <Button size="sm" variant="outline" onClick={() => setEditing(true)} aria-label="Edit task">
                     Edit
                   </Button>
                 )}
-                <Button size="sm" variant="destructive" onClick={() => setDeleteConfirmOpen(true)} disabled={deleting}>
+                <Button size="sm" variant="destructive" onClick={() => setDeleteConfirmOpen(true)} disabled={deleting} aria-label="Delete task">
                   {deleting ? <Loader2 className="size-4 animate-spin" /> : "Delete"}
                 </Button>
               </div>

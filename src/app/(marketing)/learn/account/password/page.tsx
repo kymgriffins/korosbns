@@ -119,9 +119,8 @@ export default function PasswordChangePage() {
 
             <div className="space-y-2">
               <Label htmlFor="confirmPassword">Confirm New Password</Label>
-              <Input
+              <PasswordInput
                 id="confirmPassword"
-                type="password"
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}

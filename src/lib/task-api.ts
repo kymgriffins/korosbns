@@ -1,6 +1,6 @@
 import { citizenApi, apiFetch } from "@/lib/api-client";
 import type { ApiListResponse } from "@/types/api";
-import type { WeeklyNoteApi, WeeklyNoteDetailApi } from "@/types/notes";
+import type { WeeklyNoteApi, WeeklyNoteDetailApi, WeeklyNoteCreateApi } from "@/types/notes";
 import type {
   Task, TaskDetail, TaskCreatePayload, TaskUpdatePayload,
   AssignableUser, ChecklistItem,
@@ -25,7 +25,7 @@ function mapNoteToTask(note: WeeklyNoteApi): Task {
     hue: note.hue ?? autoHue(note.assigned_team),
     due_label: note.due_label,
     section_count: note.section_count,
-    progress: (note as any).progress,
+    progress: (note as WeeklyNoteApi & { progress?: number }).progress,
     checklist: parsed.checklist,
   };
 }
@@ -95,7 +95,7 @@ export const taskApi = {
       publicNotes.value.forEach((n) => map.set(n.id, mapNoteToTask(n)));
     }
     if (authNotes.status === "fulfilled") {
-      const arr = Array.isArray(authNotes.value) ? authNotes.value : (authNotes.value as any).results ?? [];
+      const arr = Array.isArray(authNotes.value) ? authNotes.value : ((authNotes.value as ApiListResponse<WeeklyNoteApi>).results ?? []);
       arr.forEach((n: WeeklyNoteApi) => map.set(n.id, mapNoteToTask(n)));
     }
     return Array.from(map.values());
@@ -108,13 +108,13 @@ export const taskApi = {
 
   create: async (payload: TaskCreatePayload): Promise<Task> => {
     const body = buildBody(payload);
-    const note = await citizenApi.createWeeklyNote(body as any);
+    const note = await citizenApi.createWeeklyNote(body as WeeklyNoteCreateApi);
     return mapNoteToTask(note);
   },
 
   update: async (id: string, payload: TaskUpdatePayload): Promise<Task> => {
     const body = buildBody(payload as TaskCreatePayload);
-    const note = await citizenApi.updateWeeklyNote(id, body as any);
+    const note = await citizenApi.updateWeeklyNote(id, body as WeeklyNoteCreateApi);
     return mapNoteToTask(note);
   },
 
