@@ -15,10 +15,8 @@ import { sanitizeRedirectPath } from "@/lib/auth-policy";
 import { useAuth } from "@/contexts/auth-context";
 import { useResendVerification } from "@/hooks/use-auth-actions";
 
-function LoginForm() {
+function LoginForm({ next }: { next: string }) {
   const { login } = useAuth();
-  const searchParams = useSearchParams();
-  const next = sanitizeRedirectPath(searchParams.get("next"), Routes.Learn);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -116,12 +114,21 @@ function LoginForm() {
   );
 }
 
+function LoginPageInner() {
+  const searchParams = useSearchParams();
+  const next = sanitizeRedirectPath(searchParams.get("next"), Routes.Learn);
+
+  return (
+    <GuestOnly redirectTo={next}>
+      <LoginForm next={next} />
+    </GuestOnly>
+  );
+}
+
 export default function LoginPage() {
   return (
-    <GuestOnly>
-      <Suspense fallback={<AuthShell title="Sign in">Loading…</AuthShell>}>
-        <LoginForm />
-      </Suspense>
-    </GuestOnly>
+    <Suspense fallback={<AuthShell title="Sign in">Loading…</AuthShell>}>
+      <LoginPageInner />
+    </Suspense>
   );
 }

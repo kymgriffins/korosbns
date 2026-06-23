@@ -161,6 +161,12 @@ export const sidebarItems: NavGroup[] = [
         icon: Kanban,
       },
       {
+        id: "tasks",
+        title: "Tasks",
+        url: "/dashboard/task",
+        icon: ListTodo,
+      },
+      {
         id: "invoice",
         title: "Invoice",
         url: "/dashboard/invoice",
