@@ -11,6 +11,8 @@ import {
   LinkedInIcon,
   YouTubeIcon,
   TikTokIcon,
+  WhatsAppIcon,
+  FacebookIcon,
 } from "@/components/ui/social-icons";
 
 const platformDefaults: Record<
@@ -41,6 +43,16 @@ const platformDefaults: Record<
     icon: <TikTokIcon className="size-5" />,
     color: "hover:bg-purple-500/10",
     handle: "@budget.ndio.story",
+  },
+  whatsapp: {
+    icon: <WhatsAppIcon className="size-5" />,
+    color: "hover:bg-green-500/10",
+    handle: "WhatsApp",
+  },
+  facebook: {
+    icon: <FacebookIcon className="size-5" />,
+    color: "hover:bg-blue-500/10",
+    handle: "Budget Ndio Story",
   },
 };
 

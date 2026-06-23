@@ -42,7 +42,7 @@ const Footer = () => {
   const [email, setEmail] = useState<string>("");
 
   const displaySocial = useMemo(() => {
-    const api = config.socials?.filter((s) => s.url && s.platform);
+    const api = config.socials?.filter((s) => s.url && s.platform && s.platform !== "website");
     if (api?.length) {
       return api.map((s) => ({
         label: s.label?.trim() || s.platform,
@@ -215,16 +215,13 @@ const Footer = () => {
                 <motion.div whileHover={{ y: -1.5, scale: 1.06 }} transition={{ duration: 0.2 }}>
                   {(() => {
                     const Icon = socialIconMap[social.icon as string];
-                    return Icon ? (
-                      <Icon className="size-5 text-foreground/70 group-hover:text-foreground transition-colors" />
-                    ) : (
-                      <Image
-                        src={`/icons/integrations/${social.icon as string}.svg`}
-                        alt={social.label}
-                        width={20}
-                        height={20}
-                        className="size-5"
-                      />
+                    if (Icon) {
+                      return <Icon className="size-5 text-foreground/70 group-hover:text-foreground transition-colors" />;
+                    }
+                    return (
+                      <span className="text-sm font-medium text-foreground/70 group-hover:text-foreground transition-colors uppercase">
+                        {String(social.icon).charAt(0)}
+                      </span>
                     );
                   })()}
                 </motion.div>
