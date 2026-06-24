@@ -24,6 +24,8 @@ import { useAuth } from "@/contexts/auth-context";
 import { taskApi } from "@/lib/task-api";
 import type { WeeklyReportData } from "@/types/tasks";
 
+import { useRouteBase, getFullUrl } from "@/lib/route-base";
+
 const KPI_ICONS: Record<string, { icon: typeof ListTodo; bg: string; color: string }> = {
   total: { icon: ListTodo, bg: "bg-blue-500/10", color: "text-blue-600" },
   draft: { icon: Clock, bg: "bg-amber-500/10", color: "text-amber-600" },
@@ -44,6 +46,7 @@ function safeFormat(date: string | Date | undefined | null, fmt: string, fallbac
 
 export default function TaskReportPage() {
   const { isLoggedIn } = useAuth();
+  const routeBase = useRouteBase();
   const [report, setReport] = useState<WeeklyReportData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -129,7 +132,7 @@ export default function TaskReportPage() {
           </p>
         </div>
         <Button variant="outline" size="sm" asChild>
-          <Link href="/dashboard/task">
+          <Link href={getFullUrl(routeBase, "/dashboard/task")}>
             <ListTodo className="mr-1.5 size-4" />
             Back to Tasks
           </Link>

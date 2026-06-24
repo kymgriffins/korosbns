@@ -61,6 +61,8 @@ import { taskApi } from "@/lib/task-api";
 import { useAuth } from "@/contexts/auth-context";
 import type { Task, TaskStatus, TaskColumn } from "@/types/tasks";
 
+import { useRouteBase, getFullUrl } from "@/lib/route-base";
+
 const COLUMNS: TaskStatus[] = ["draft", "audited", "published"];
 
 const COLUMN_META: Record<TaskStatus, { title: string; icon: LucideIcon; color: string }> = {
@@ -98,6 +100,7 @@ function TaskCard({
   canManage: boolean;
 }) {
   const router = useRouter();
+  const routeBase = useRouteBase();
   const {
     attributes,
     listeners,
@@ -120,8 +123,8 @@ function TaskCard({
       style={style}
       {...attributes}
       {...listeners}
-      onClick={() => router.push(`/dashboard/task/${task.id}`)}
-      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") router.push(`/dashboard/task/${task.id}`); }}
+      onClick={() => router.push(getFullUrl(routeBase, `/dashboard/task/${task.id}`))}
+      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") router.push(getFullUrl(routeBase, `/dashboard/task/${task.id}`)); }}
       role="button"
       tabIndex={0}
       className={`group rounded-xl border border-border/60 bg-card/80 backdrop-blur-sm p-3.5 shadow-xs transition-all duration-200 hover:shadow-md hover:border-primary/20 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 ${
@@ -160,12 +163,12 @@ function TaskCard({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-36" onClick={(e) => e.stopPropagation()}>
               {task.status !== "published" && (
-                <DropdownMenuItem onSelect={() => router.push(`/dashboard/task/${task.id}`)}>
+                <DropdownMenuItem onSelect={() => router.push(getFullUrl(routeBase, `/dashboard/task/${task.id}`))}>
                   <Pencil className="mr-2 size-3.5" />
                   Edit
                 </DropdownMenuItem>
               )}
-              <DropdownMenuItem onSelect={() => router.push(`/dashboard/task/${task.id}`)}>
+              <DropdownMenuItem onSelect={() => router.push(getFullUrl(routeBase, `/dashboard/task/${task.id}`))}>
                 <Pencil className="mr-2 size-3.5" />
                 View
               </DropdownMenuItem>
@@ -233,6 +236,7 @@ function ColumnSkeleton() {
 export default function AdminTaskPage() {
   const { isLoggedIn } = useAuth();
   const pathname = usePathname();
+  const routeBase = useRouteBase();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -411,7 +415,7 @@ export default function AdminTaskPage() {
             )}
           </div>
           {isLoggedIn ? (
-            <Link href="/dashboard/task/new">
+            <Link href={getFullUrl(routeBase, "/dashboard/task/new")}>
               <Button>
                 <Plus className="mr-1.5 size-4" />
                 New Task

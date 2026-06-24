@@ -146,7 +146,11 @@ export const taskApi = {
 
   update: async (id: string, payload: TaskUpdatePayload): Promise<Task> => {
     const body = buildBody(payload as TaskCreatePayload);
-    const note = await citizenApi.updateWeeklyNote(id, body as WeeklyNoteCreateApi);
+    const note = await apiFetch<WeeklyNoteApi>(`/notes/${id}/`, {
+      method: "PATCH",
+      auth: true,
+      body: JSON.stringify(body),
+    });
     return mapNoteToTask(note);
   },
 

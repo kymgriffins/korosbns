@@ -1,13 +1,17 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useSortable } from "@dnd-kit/sortable";
 
 import { cn } from "@/lib/utils";
+import { useRouteBase, getFullUrl } from "@/lib/route-base";
 
 import { TaskCard } from "./task-card";
 import type { ColumnId, Task } from "./types";
 
 export function SortableTaskCard({ task, columnId }: { task: Task; columnId: ColumnId }) {
+  const router = useRouter();
+  const routeBase = useRouteBase();
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: task.id,
     data: { type: "task", task },
@@ -21,6 +25,7 @@ export function SortableTaskCard({ task, columnId }: { task: Task; columnId: Col
         transition,
       }}
       className={cn("touch-none", isDragging && "opacity-30")}
+      onClick={() => router.push(getFullUrl(routeBase, "/dashboard/task/" + task.id))}
       {...attributes}
       {...listeners}
     >

@@ -27,6 +27,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import { useRouteBase, getFullUrl as _getFullUrl, getLocalPath } from "@/lib/route-base";
 import type {
   NavBadge,
   NavGroup,
@@ -82,12 +83,9 @@ function hasSubItems(item: NavMainItem): item is NavMainParentItem {
 
 export function NavMain({ items }: NavMainProps) {
   const path = usePathname();
-
-  // Extract base prefix (e.g. "/budgethub") from the current path
-  const routeBase = path.match(/^(\/[^/]+)?\/(?:dashboard|auth|chat|mail|unauthorized)/)?.at(1) ?? "";
-  const getFullUrl = (url: string) => `${routeBase}${url}`;
-  // Strip base prefix for path comparisons so item URLs like "/dashboard/default" work unchanged
-  const localPath = (routeBase ? path.slice(routeBase.length) : path).replace(/\/$/, "");
+  const routeBase = useRouteBase();
+  const localPath = getLocalPath(routeBase, path);
+  const getFullUrl = (url: string) => _getFullUrl(routeBase, url);
 
   const isItemActive = (item: NavMainItem) => {
     if (hasSubItems(item)) {

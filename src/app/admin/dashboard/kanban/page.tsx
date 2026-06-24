@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
+import { useRouteBase, getFullUrl } from "@/lib/route-base";
 import { taskApi } from "@/lib/task-api";
 import type { Task as DjangoTask } from "@/types/tasks";
 
@@ -61,6 +62,7 @@ function mapTasksToBoard(tasks: DjangoTask[]) {
 }
 
 export default function Page() {
+  const routeBase = useRouteBase();
   const [tasks, setTasks] = useState<DjangoTask[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -137,7 +139,7 @@ export default function Page() {
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between px-4 pt-4">
         <div />
-        <Button asChild><Link href="/dashboard/task/new">New Task</Link></Button>
+        <Button asChild><Link href={getFullUrl(routeBase, "/dashboard/task/new")}>New Task</Link></Button>
       </div>
       <div data-content-padding="false">
         <Kanban

@@ -26,6 +26,8 @@ import { taskApi } from "@/lib/task-api";
 import { useAuth } from "@/contexts/auth-context";
 import type { Task, TaskStatus } from "@/types/tasks";
 
+import { useRouteBase, getFullUrl } from "@/lib/route-base";
+
 const STATUS_META: Record<TaskStatus, { title: string; icon: typeof Circle; color: string; bg: string }> = {
   draft: { title: "Draft", icon: Circle, color: "text-amber-500", bg: "bg-amber-500/10" },
   audited: { title: "In Progress", icon: CircleDot, color: "text-blue-500", bg: "bg-blue-500/10" },
@@ -89,6 +91,7 @@ function StatCard({
 }
 
 function TaskRow({ task }: { task: Task }) {
+  const routeBase = useRouteBase();
   const meta = STATUS_META[task.status];
   const Icon = meta.icon;
   const priority = task.priority ? PRIORITY_META[task.priority.toLowerCase()] : null;
@@ -96,7 +99,7 @@ function TaskRow({ task }: { task: Task }) {
 
   return (
     <Link
-      href={`/dashboard/task/${task.id}`}
+      href={getFullUrl(routeBase, `/dashboard/task/${task.id}`)}
       className="flex items-center gap-3 rounded-lg border border-border/40 p-3 transition-colors hover:bg-muted/50"
     >
       <Icon className={`size-4 shrink-0 ${meta.color}`} />
@@ -145,6 +148,7 @@ function TaskRow({ task }: { task: Task }) {
 
 export default function TaskOverviewPage() {
   const { isLoggedIn } = useAuth();
+  const routeBase = useRouteBase();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -219,20 +223,20 @@ export default function TaskOverviewPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Link href="/dashboard/task/report">
+          <Link href={getFullUrl(routeBase, "/dashboard/task/report")}>
             <Button variant="outline" size="sm">
               <BarChart3 className="mr-1.5 size-3.5" />
               Report
             </Button>
           </Link>
-          <Link href="/dashboard/task">
+          <Link href={getFullUrl(routeBase, "/dashboard/task")}>
             <Button variant="outline" size="sm">
               <ListTodo className="mr-1.5 size-3.5" />
               Board
             </Button>
           </Link>
           {isLoggedIn && (
-            <Link href="/dashboard/task/new">
+            <Link href={getFullUrl(routeBase, "/dashboard/task/new")}>
               <Button size="sm">
                 <Plus className="mr-1.5 size-3.5" />
                 New Task
@@ -305,7 +309,7 @@ export default function TaskOverviewPage() {
                 {overdueTasks.slice(0, 5).map((task) => (
                   <Link
                     key={task.id}
-                    href={`/dashboard/task/${task.id}`}
+                    href={getFullUrl(routeBase, `/dashboard/task/${task.id}`)}
                     className="flex items-center gap-2 rounded-md p-2 text-sm transition-colors hover:bg-destructive/10"
                   >
                     <Circle className="size-3 text-destructive shrink-0" />

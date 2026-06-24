@@ -13,10 +13,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 
+import { useRouteBase, getFullUrl } from "@/lib/route-base";
 import { taskApi } from "@/lib/task-api";
 import type { Task } from "@/types/tasks";
 
 export function TasksSection() {
+  const routeBase = useRouteBase();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -71,7 +73,7 @@ export function TasksSection() {
             </SelectContent>
           </Select>
           <Button asChild>
-            <Link href="/dashboard/task/new"><Plus data-icon="inline-start" />New Task</Link>
+            <Link href={getFullUrl(routeBase, "/dashboard/task/new")}><Plus data-icon="inline-start" />New Task</Link>
           </Button>
         </div>
       </div>

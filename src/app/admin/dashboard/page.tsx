@@ -16,6 +16,7 @@ import {
   Landmark,
   ListTodo,
   PenSquare,
+  Quote,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -28,6 +29,8 @@ import {
   adminModulesApi,
   adminForumApi,
 } from "@/lib/admin-api";
+
+import { useRouteBase, getFullUrl } from "@/lib/route-base";
 
 type DashboardStats = {
   totalUsers: number;
@@ -88,6 +91,7 @@ const quickLinks = [
 ];
 
 export default function AdminDashboardPage() {
+  const routeBase = useRouteBase();
   const [stats, setStats] = useState<DashboardStats>({
     totalUsers: 0,
     totalContent: 0,
@@ -150,28 +154,28 @@ export default function AdminDashboardPage() {
           title="Total Users"
           value={stats.totalUsers}
           icon={Users}
-          href="/dashboard/users/crud"
+          href={getFullUrl(routeBase, "/dashboard/users/crud")}
           loading={loading}
         />
         <StatCard
           title="Total Content"
           value={stats.totalContent}
           icon={FileText}
-          href="/dashboard/content"
+          href={getFullUrl(routeBase, "/dashboard/content")}
           loading={loading}
         />
         <StatCard
           title="Total Modules"
           value={stats.totalModules}
           icon={GraduationCap}
-          href="/dashboard/modules"
+          href={getFullUrl(routeBase, "/dashboard/modules")}
           loading={loading}
         />
         <StatCard
           title="Active Forum Threads"
           value={stats.activeForumThreads}
           icon={MessageSquare}
-          href="/dashboard/forum"
+          href={getFullUrl(routeBase, "/dashboard/forum")}
           loading={loading}
         />
       </div>
@@ -217,7 +221,7 @@ export default function AdminDashboardPage() {
               {quickLinks.map((link) => (
                 <Link
                   key={link.href}
-                  href={link.href}
+                  href={getFullUrl(routeBase, link.href)}
                   className="flex items-center gap-3 rounded-lg border border-border/50 p-3 text-sm transition-colors hover:bg-muted/50"
                 >
                   <link.icon className="size-4 shrink-0 text-muted-foreground" />
@@ -232,6 +236,18 @@ export default function AdminDashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      <section className="rounded-2xl border bg-card p-6 shadow-xs">
+        <div className="flex items-start gap-4">
+          <div className="grid size-8 shrink-0 place-items-center text-muted-foreground">
+            <Quote className="size-6" />
+          </div>
+          <div className="flex flex-col gap-1">
+            <p className="text-xl leading-none tracking-tight">Small, consistent actions lead to big results.</p>
+            <p className="text-muted-foreground">Keep showing up. You&apos;ve got this.</p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

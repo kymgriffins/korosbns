@@ -32,6 +32,8 @@ import { taskApi } from "@/lib/task-api";
 import type { TaskDetail, TaskAttachment } from "@/types/tasks";
 import type { ChecklistItemApi } from "@/types/notes";
 
+import { useRouteBase, getFullUrl } from "@/lib/route-base";
+
 const STATUS_STYLES: Record<string, { bg: string; label: string }> = {
   draft: { bg: "bg-amber-500/10 text-amber-600 border-amber-500/30", label: "Draft" },
   audited: { bg: "bg-blue-500/10 text-blue-600 border-blue-500/30", label: "In Progress" },
@@ -52,6 +54,7 @@ function safeFormat(date: string | Date | undefined | null, fmt: string, fallbac
 export default function TaskDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
+  const routeBase = useRouteBase();
   const { isLoggedIn } = useAuth();
 
   const exportRef = useRef<HTMLDivElement>(null);
@@ -134,7 +137,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
     try {
       await taskApi.delete(id);
       toast.success("Task deleted");
-      router.push("/dashboard/task");
+      router.push(getFullUrl(routeBase, "/dashboard/task"));
     } catch {
       toast.error("Failed to delete task");
     } finally {
@@ -175,7 +178,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
             <h2 className="mb-2 text-lg font-semibold">Authentication Required</h2>
             <p className="mb-6 text-sm text-muted-foreground">Sign in to view tasks.</p>
             <Button asChild>
-              <a href={`/budgethub/auth/login?next=/dashboard/task/${id}`}>Sign In</a>
+              <a href={`/budgethub/auth/login?next=${getFullUrl(routeBase, `/dashboard/task/${id}`)}`}>Sign In</a>
             </Button>
           </CardContent>
         </Card>
@@ -200,7 +203,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
           <CardContent className="flex flex-col items-center gap-4 py-12">
             <p className="text-destructive">{error || "Task not found"}</p>
             <Button variant="outline" asChild>
-              <Link href="/dashboard/task">Back to Tasks</Link>
+              <Link href={getFullUrl(routeBase, "/dashboard/task")}>Back to Tasks</Link>
             </Button>
           </CardContent>
         </Card>
@@ -240,7 +243,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
     <div className="mx-auto max-w-4xl space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Link href="/dashboard/task" className="hover:text-foreground">Tasks</Link>
+          <Link href={getFullUrl(routeBase, "/dashboard/task")} className="hover:text-foreground">Tasks</Link>
           <span>/</span>
           <span className="max-w-[200px] truncate text-foreground">{task.title}</span>
         </div>

@@ -2,6 +2,10 @@
 
 import * as React from "react";
 
+import Link from "next/link";
+
+import { useRouteBase, getFullUrl } from "@/lib/route-base";
+
 import {
   closestCorners,
   DndContext,
@@ -58,6 +62,7 @@ interface KanbanProps {
 }
 
 export function Kanban({ initialBoard, onColumnChange }: KanbanProps) {
+  const routeBase = useRouteBase();
   const [board, setBoard] = React.useState<BoardState>(initialBoard);
   const [columnOrder, setColumnOrder] = React.useState<ColumnId[]>(columnIds);
   const [activeTask, setActiveTask] = React.useState<Task | null>(null);
@@ -228,9 +233,11 @@ export function Kanban({ initialBoard, onColumnChange }: KanbanProps) {
             Sort
           </Button>
           <ButtonGroup className="w-full sm:w-fit">
-            <Button className="flex-1 sm:flex-none">
-              <Plus data-icon="inline-start" />
-              Add task
+            <Button asChild className="flex-1 sm:flex-none">
+              <Link href={getFullUrl(routeBase, "/dashboard/task/new")}>
+                <Plus data-icon="inline-start" />
+                Add task
+              </Link>
             </Button>
             <ButtonGroupSeparator />
             <DropdownMenu>

@@ -5,6 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronRight, LayoutDashboard } from "lucide-react";
 
+import { useRouteBase, getFullUrl } from "@/lib/route-base";
+
 const LABEL_MAP: Record<string, string> = {
   dashboard: "Dashboard",
   analytics: "Analytics",
@@ -40,6 +42,7 @@ function inferLabel(segment: string): string {
 
 export function AdminBreadcrumb() {
   const pathname = usePathname();
+  const routeBase = useRouteBase();
   const segments = pathname.split("/").filter(Boolean);
 
   const dashboardIdx = segments.findIndex((s) => s === "dashboard");
@@ -51,13 +54,13 @@ export function AdminBreadcrumb() {
     <nav aria-label="breadcrumb" className="mb-4">
       <ol className="flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground">
         <li className="inline-flex items-center gap-1.5">
-          <Link href="/dashboard" className="transition-colors hover:text-foreground inline-flex items-center gap-1">
+          <Link href={getFullUrl(routeBase, "/dashboard")} className="transition-colors hover:text-foreground inline-flex items-center gap-1">
             <LayoutDashboard className="size-3.5" />
             Dashboard
           </Link>
         </li>
         {crumbs.slice(1).map((segment, idx) => {
-          const href = "/" + crumbs.slice(0, idx + 2).join("/");
+          const href = routeBase + "/" + crumbs.slice(0, idx + 2).join("/");
           const isLast = idx === crumbs.length - 2;
           return (
             <Fragment key={segment}>
