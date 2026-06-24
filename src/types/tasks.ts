@@ -115,6 +115,28 @@ const TEAM_HUES: Record<string, string> = {
   MANAGERIAL: "#8b5cf6",
 };
 
+export const PRIORITY_ORDER: TaskPriority[] = ["urgent", "high", "medium", "low"];
+
+export const PRIORITY_LABELS: Record<TaskPriority, string> = {
+  urgent: "Urgent",
+  high: "High",
+  medium: "Medium",
+  low: "Low",
+};
+
+export const TAG_LABELS: Record<TaskTag, string> = {
+  feature: "Feature",
+  bug: "Bug",
+  improvement: "Improvement",
+  research: "Research",
+  documentation: "Documentation",
+  design: "Design",
+  testing: "Testing",
+  devops: "DevOps",
+  meeting: "Meeting",
+  review: "Review",
+};
+
 export function autoHue(team?: string | null): string | undefined {
   if (team && TEAM_HUES[team]) return TEAM_HUES[team];
   return undefined;

@@ -41,6 +41,13 @@ import { Button } from "@/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/ui/card";
 import { Input } from "@/ui/input";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/ui/select";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -59,7 +66,8 @@ import {
 
 import { taskApi } from "@/lib/task-api";
 import { exportTasksAsCsv, exportTasksAsJson } from "@/lib/export-utils";
-import type { Task, TaskStatus, TaskColumn } from "@/types/tasks";
+import type { Task, TaskStatus, TaskColumn, TaskPriority, TaskTag } from "@/types/tasks";
+import { PRIORITY_ORDER, PRIORITY_LABELS, TAG_LABELS } from "@/types/tasks";
 import { useAuth } from "@/contexts/auth-context";
 
 const COLUMNS: TaskStatus[] = ["draft", "audited", "published"];
@@ -270,6 +278,8 @@ export default function TaskPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
+  const [priorityFilter, setPriorityFilter] = useState<TaskPriority | "">("");
+  const [tagFilter, setTagFilter] = useState<TaskTag | "">("");
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
@@ -298,17 +308,20 @@ export default function TaskPage() {
 
   const filteredTasks = useMemo(
     () =>
-      tasks.filter((t) =>
-        search
-          ? t.title.toLowerCase().includes(search.toLowerCase()) ||
-            (t.content ?? "").toLowerCase().includes(search.toLowerCase()) ||
-            (t.assignee ?? "").toLowerCase().includes(search.toLowerCase()) ||
-            (t.team_name ?? "").toLowerCase().includes(search.toLowerCase()) ||
-            (t.author_name ?? "").toLowerCase().includes(search.toLowerCase()) ||
-            (t.week_label ?? "").toLowerCase().includes(search.toLowerCase())
-          : true,
-      ),
-    [tasks, search],
+      tasks.filter((t) => {
+        if (search && !t.title.toLowerCase().includes(search.toLowerCase()) &&
+            !(t.content ?? "").toLowerCase().includes(search.toLowerCase()) &&
+            !(t.assignee ?? "").toLowerCase().includes(search.toLowerCase()) &&
+            !(t.team_name ?? "").toLowerCase().includes(search.toLowerCase()) &&
+            !(t.author_name ?? "").toLowerCase().includes(search.toLowerCase()) &&
+            !(t.week_label ?? "").toLowerCase().includes(search.toLowerCase())) {
+          return false;
+        }
+        if (priorityFilter && t.priority !== priorityFilter) return false;
+        if (tagFilter && t.tag !== tagFilter) return false;
+        return true;
+      }),
+    [tasks, search, priorityFilter, tagFilter],
   );
 
   const columns: TaskColumn[] = useMemo(
@@ -487,6 +500,36 @@ export default function TaskPage() {
               </button>
             )}
           </div>
+          <Select value={priorityFilter} onValueChange={(v) => setPriorityFilter(v as TaskPriority | "")}>
+            <SelectTrigger className="w-32 rounded-lg bg-background text-xs font-medium">
+              <SelectValue placeholder="Priority" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">All Priorities</SelectItem>
+              <SelectItem value="urgent">Urgent</SelectItem>
+              <SelectItem value="high">High</SelectItem>
+              <SelectItem value="medium">Medium</SelectItem>
+              <SelectItem value="low">Low</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={tagFilter} onValueChange={(v) => setTagFilter(v as TaskTag | "")}>
+            <SelectTrigger className="w-32 rounded-lg bg-background text-xs font-medium">
+              <SelectValue placeholder="Tag" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">All Tags</SelectItem>
+              <SelectItem value="feature">Feature</SelectItem>
+              <SelectItem value="bug">Bug</SelectItem>
+              <SelectItem value="improvement">Improvement</SelectItem>
+              <SelectItem value="research">Research</SelectItem>
+              <SelectItem value="documentation">Documentation</SelectItem>
+              <SelectItem value="design">Design</SelectItem>
+              <SelectItem value="testing">Testing</SelectItem>
+              <SelectItem value="devops">DevOps</SelectItem>
+              <SelectItem value="meeting">Meeting</SelectItem>
+              <SelectItem value="review">Review</SelectItem>
+            </SelectContent>
+          </Select>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="icon" disabled={totalCount === 0} aria-label="Export tasks">
