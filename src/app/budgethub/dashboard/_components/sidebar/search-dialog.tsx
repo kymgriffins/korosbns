@@ -17,8 +17,8 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
-import type { NavMainItem } from "@/navigation/sidebar/sidebar-items";
-import { sidebarItems } from "@/navigation/sidebar/sidebar-items";
+import type { NavMainItem } from "@/navigation/sidebar/sidebar-items-lms";
+import { sidebarItems } from "@/navigation/sidebar/sidebar-items-lms";
 
 type SearchItem = {
   id: string;

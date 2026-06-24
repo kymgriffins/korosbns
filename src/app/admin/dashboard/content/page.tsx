@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { ExternalLink, Pencil, Trash2 } from "lucide-react";
+import { ExternalLink, Eye, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { DataTable, type Column } from "@/components/admin/data-table";
 import { FormDialog } from "@/components/admin/form-dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 import { adminContentApi, type AdminContentItem } from "@/lib/admin-api";
 
 const CONTENT_TABS = [
@@ -38,6 +40,9 @@ export default function AdminContentPage() {
   const [editId, setEditId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({ title: "", summary: "", difficulty: "beginner", status: "draft" });
+  const [viewItem, setViewItem] = useState<AdminContentItem | null>(null);
+  const [viewDialogOpen, setViewDialogOpen] = useState(false);
+  const [viewLoading, setViewLoading] = useState(false);
 
   const fetchItems = useCallback(async () => {
     setLoading(true); setError("");
@@ -63,6 +68,21 @@ export default function AdminContentPage() {
     setDialogOpen(true);
   };
 
+  const openView = async (item: AdminContentItem) => {
+    setViewLoading(true);
+    setViewItem(null);
+    setViewDialogOpen(true);
+    try {
+      const detail = await adminContentApi.get(activeTab, item.id);
+      setViewItem(detail);
+    } catch {
+      toast.error("Failed to load item details");
+      setViewDialogOpen(false);
+    } finally {
+      setViewLoading(false);
+    }
+  };
+
   const handleSubmit = async () => {
     if (!form.title) { toast.error("Title is required"); return; }
     setSaving(true);
@@ -86,8 +106,9 @@ export default function AdminContentPage() {
     { key: "difficulty", header: "Level", cell: (c) => c.difficulty ? <Badge variant="outline" className="capitalize text-[10px]">{c.difficulty}</Badge> : <span className="text-muted-foreground">—</span> },
     { key: "published", header: "Published", cell: (c) => <span className="text-sm text-muted-foreground">{c.published_at ? new Date(c.published_at).toLocaleDateString() : "—"}</span> },
     { key: "author", header: "Author", cell: (c) => <span className="text-sm text-muted-foreground">{c.author || "—"}</span> },
-    { key: "actions", header: "", className: "w-24", cell: (c) => (
+    { key: "actions", header: "", className: "w-32", cell: (c) => (
       <div className="flex items-center gap-1">
+        <Button variant="ghost" size="icon-sm" onClick={() => openView(c)}><Eye className="size-3.5" /><span className="sr-only">View</span></Button>
         <Button variant="ghost" size="icon-sm" onClick={() => openEdit(c)}><Pencil className="size-3.5" /></Button>
         {activeTab === "articles" ? (
           <Button variant="ghost" size="icon-sm" asChild className="text-primary hover:text-primary">
@@ -148,6 +169,34 @@ export default function AdminContentPage() {
           </div>
         </div>
       </FormDialog>
+      <Dialog open={viewDialogOpen} onOpenChange={setViewDialogOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader><DialogTitle>{viewItem?.title ?? "View Content"}</DialogTitle></DialogHeader>
+          {viewLoading ? (
+            <div className="space-y-3"><Skeleton className="h-4 w-48" /><Skeleton className="h-4 w-full" /><Skeleton className="h-4 w-32" /></div>
+          ) : viewItem ? (
+            <div className="space-y-4">
+              <div className="space-y-1"><Label>Title</Label><p className="text-sm font-medium">{viewItem.title}</p></div>
+              {viewItem.summary && <div className="space-y-1"><Label>Summary</Label><p className="text-sm text-muted-foreground">{viewItem.summary}</p></div>}
+              <div className="grid grid-cols-3 gap-4">
+                <div className="space-y-1"><Label>Status</Label><Badge variant={viewItem.status === "published" ? "default" : "secondary"} className="capitalize">{viewItem.status}</Badge></div>
+                <div className="space-y-1"><Label>Difficulty</Label><p className="text-sm">{viewItem.difficulty ?? "—"}</p></div>
+                <div className="space-y-1"><Label>Type</Label><p className="text-sm capitalize">{viewItem.content_type}</p></div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1"><Label>Author</Label><p className="text-sm text-muted-foreground">{viewItem.author ?? "—"}</p></div>
+                <div className="space-y-1"><Label>Published</Label><p className="text-sm text-muted-foreground">{viewItem.published_at ? new Date(viewItem.published_at).toLocaleDateString() : "—"}</p></div>
+              </div>
+              {viewItem.tags && viewItem.tags.length > 0 && (
+                <div className="space-y-1"><Label>Tags</Label><div className="flex flex-wrap gap-1">{viewItem.tags.map((t) => <Badge key={t.slug} variant="outline" className="text-[10px]">{t.name}</Badge>)}</div></div>
+              )}
+              {viewItem.slug && <div className="space-y-1"><Label>Slug</Label><p className="text-sm text-muted-foreground">{viewItem.slug}</p></div>}
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">Failed to load item details.</p>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

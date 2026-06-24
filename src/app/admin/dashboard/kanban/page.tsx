@@ -2,8 +2,11 @@
 
 import { useCallback, useEffect, useState } from "react";
 
+import Link from "next/link";
+
 import { toast } from "sonner";
 
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { taskApi } from "@/lib/task-api";
@@ -131,11 +134,17 @@ export default function Page() {
   const board = mapTasksToBoard(tasks);
 
   return (
-    <div data-content-padding="false">
-      <Kanban
-        initialBoard={board as BoardState}
-        onColumnChange={handleColumnChange}
-      />
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center justify-between px-4 pt-4">
+        <div />
+        <Button asChild><Link href="/dashboard/task/new">New Task</Link></Button>
+      </div>
+      <div data-content-padding="false">
+        <Kanban
+          initialBoard={board as BoardState}
+          onColumnChange={handleColumnChange}
+        />
+      </div>
     </div>
   );
 }

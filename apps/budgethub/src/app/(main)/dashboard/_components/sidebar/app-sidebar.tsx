@@ -16,7 +16,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { sidebarItems } from "@/navigation/sidebar/sidebar-items";
+import { sidebarItems } from "@/navigation/sidebar/sidebar-items-lms";
 import { usePreferencesStore } from "@/stores/preferences/preferences-provider";
 
 import { NavMain } from "./nav-main";

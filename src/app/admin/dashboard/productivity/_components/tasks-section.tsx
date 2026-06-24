@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 
+import Link from "next/link";
+
 import { Calendar1, Plus } from "lucide-react";
 import { toast } from "sonner";
 
@@ -68,9 +70,8 @@ export function TasksSection() {
               </SelectGroup>
             </SelectContent>
           </Select>
-          <Button>
-            <Plus data-icon="inline-start" />
-            New Task
+          <Button asChild>
+            <Link href="/dashboard/task/new"><Plus data-icon="inline-start" />New Task</Link>
           </Button>
         </div>
       </div>
