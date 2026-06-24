@@ -1,10 +1,10 @@
 "use client";
 
-import { use, useCallback, useEffect, useState } from "react";
+import { use, useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { format } from "date-fns";
-import { Loader2, Calendar, User, Clock, Pencil, Trash2, ArrowLeft, FileText, ImageIcon, CheckCircle2, Circle } from "lucide-react";
+import { Loader2, Calendar, User, Clock, Pencil, Trash2, ArrowLeft, FileText, ImageIcon, CheckCircle2, Circle, Download } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { toast } from "sonner";
@@ -54,15 +54,59 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
   const router = useRouter();
   const { isLoggedIn } = useAuth();
 
+  const exportRef = useRef<HTMLDivElement>(null);
   const [task, setTask] = useState<TaskDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [editing, setEditing] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
+  const [exportingCalendar, setExportingCalendar] = useState(false);
   const [checklistItems, setChecklistItems] = useState<ChecklistItemApi[]>([]);
   const [togglingItem, setTogglingItem] = useState<string | null>(null);
   const [attachments, setAttachments] = useState<TaskAttachment[]>([]);
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (exportRef.current && !exportRef.current.contains(e.target as Node)) {
+        setExportOpen(false);
+      }
+    }
+    if (exportOpen) {
+      document.addEventListener("mousedown", handleClick);
+      return () => document.removeEventListener("mousedown", handleClick);
+    }
+  }, [exportOpen]);
+
+  async function handleExportCalendar() {
+    setExportingCalendar(true);
+    try {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "";
+      const token = typeof window !== "undefined" ? window.sessionStorage.getItem("access_token") : null;
+      const res = await fetch(`${apiBase}/notes/${id}/export_calendar/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ detail: "Export failed" }));
+        throw new Error(err.detail || "Export failed");
+      }
+      const data = await res.json();
+      if (data.htmlLink) {
+        window.open(data.htmlLink, "_blank");
+        toast.success("Calendar event created");
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to export to calendar");
+    } finally {
+      setExportingCalendar(false);
+      setExportOpen(false);
+    }
+  }
 
   const fetchTask = useCallback(async () => {
     try {
@@ -201,6 +245,47 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
           <span className="max-w-[200px] truncate text-foreground">{task.title}</span>
         </div>
         <div className="flex items-center gap-2">
+          <div className="relative" ref={exportRef}>
+            <Button variant="outline" size="sm" onClick={() => setExportOpen(!exportOpen)}>
+              <Download className="mr-1 size-3.5" />
+              Export
+            </Button>
+            {exportOpen && (
+              <div className="absolute right-0 z-50 mt-1 w-48 rounded-lg border border-border/50 bg-popover p-1 shadow-lg">
+                <a
+                  href={`${process.env.NEXT_PUBLIC_API_URL || ""}/notes/${id}/download/markdown/`}
+                  className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
+                  download
+                  onClick={() => setExportOpen(false)}
+                >
+                  <FileText className="size-4" />
+                  Download Markdown
+                </a>
+                <a
+                  href={`${process.env.NEXT_PUBLIC_API_URL || ""}/notes/${id}/download/pdf/`}
+                  className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
+                  download
+                  onClick={() => setExportOpen(false)}
+                >
+                  <FileText className="size-4" />
+                  Download PDF
+                </a>
+                <button
+                  type="button"
+                  onClick={() => handleExportCalendar()}
+                  disabled={exportingCalendar}
+                  className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent disabled:opacity-50"
+                >
+                  {exportingCalendar ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <Calendar className="size-4" />
+                  )}
+                  Export to Google Calendar
+                </button>
+              </div>
+            )}
+          </div>
           {task.status !== "published" && (
             <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
               <Pencil className="mr-1 size-3.5" />
