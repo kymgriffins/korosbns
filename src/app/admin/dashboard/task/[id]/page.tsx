@@ -1,10 +1,12 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { use, useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { format } from "date-fns";
-import { Loader2, Calendar, User, Clock, Pencil, Trash2, ArrowLeft } from "lucide-react";
+import { Loader2, Calendar, User, Clock, Pencil, Trash2, ArrowLeft, FileText, ImageIcon, CheckCircle2, Circle, Download } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { toast } from "sonner";
 
 import { useAuth } from "@/contexts/auth-context";
@@ -24,8 +26,11 @@ import {
 } from "@/components/ui/dialog";
 
 import { TaskForm } from "@/app/task/_components/task-form";
+import { TaskAttachmentsGrid } from "@/app/task/_components/task-attachments";
+import { TaskFileUpload } from "@/app/task/_components/task-file-upload";
 import { taskApi } from "@/lib/task-api";
-import type { TaskDetail } from "@/types/tasks";
+import type { TaskDetail, TaskAttachment } from "@/types/tasks";
+import type { ChecklistItemApi } from "@/types/notes";
 
 const STATUS_STYLES: Record<string, { bg: string; label: string }> = {
   draft: { bg: "bg-amber-500/10 text-amber-600 border-amber-500/30", label: "Draft" },
@@ -49,29 +54,80 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
   const router = useRouter();
   const { isLoggedIn } = useAuth();
 
+  const exportRef = useRef<HTMLDivElement>(null);
   const [task, setTask] = useState<TaskDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [editing, setEditing] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
+  const [exportingCalendar, setExportingCalendar] = useState(false);
+  const [checklistItems, setChecklistItems] = useState<ChecklistItemApi[]>([]);
+  const [togglingItem, setTogglingItem] = useState<string | null>(null);
+  const [attachments, setAttachments] = useState<TaskAttachment[]>([]);
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (exportRef.current && !exportRef.current.contains(e.target as Node)) {
+        setExportOpen(false);
+      }
+    }
+    if (exportOpen) {
+      document.addEventListener("mousedown", handleClick);
+      return () => document.removeEventListener("mousedown", handleClick);
+    }
+  }, [exportOpen]);
+
+  async function handleExportCalendar() {
+    setExportingCalendar(true);
+    try {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "";
+      const token = typeof window !== "undefined" ? window.sessionStorage.getItem("access_token") : null;
+      const res = await fetch(`${apiBase}/notes/${id}/export_calendar/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ detail: "Export failed" }));
+        throw new Error(err.detail || "Export failed");
+      }
+      const data = await res.json();
+      if (data.htmlLink) {
+        window.open(data.htmlLink, "_blank");
+        toast.success("Calendar event created");
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to export to calendar");
+    } finally {
+      setExportingCalendar(false);
+      setExportOpen(false);
+    }
+  }
+
+  const fetchTask = useCallback(async () => {
+    try {
+      const data = await taskApi.get(id);
+      setTask(data);
+      setChecklistItems(data.checklist_items ?? []);
+      setAttachments(data.attachments ?? []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load task");
+    } finally {
+      setLoading(false);
+    }
+  }, [id]);
 
   useEffect(() => {
     if (!isLoggedIn) {
       setLoading(false);
       return;
     }
-    (async () => {
-      try {
-        const data = await taskApi.get(id);
-        setTask(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load task");
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [id, isLoggedIn]);
+    fetchTask();
+  }, [id, isLoggedIn, fetchTask]);
 
   async function handleDelete() {
     setDeleting(true);
@@ -85,6 +141,30 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
       setDeleting(false);
       setDeleteOpen(false);
     }
+  }
+
+  async function handleToggleChecklist(itemId: string, currentCompleted: boolean) {
+    setTogglingItem(itemId);
+    try {
+      const updated = await taskApi.updateChecklistItem(id, itemId, {
+        is_completed: !currentCompleted,
+      });
+      setChecklistItems((prev) =>
+        prev.map((item) => (item.id === itemId ? updated : item)),
+      );
+    } catch {
+      toast.error("Failed to update checklist item");
+    } finally {
+      setTogglingItem(null);
+    }
+  }
+
+  function handleAttachmentDeleted(attachmentId: string) {
+    setAttachments((prev) => prev.filter((a) => a.id !== attachmentId));
+  }
+
+  function handleAttachmentUploaded(attachment: TaskAttachment) {
+    setAttachments((prev) => [...prev, attachment]);
   }
 
   if (!isLoggedIn) {
@@ -105,7 +185,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-3xl space-y-6 p-6">
+      <div className="mx-auto max-w-4xl space-y-6 p-6">
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-4 w-72" />
         <Skeleton className="h-64 w-full rounded-xl" />
@@ -115,7 +195,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
 
   if (error || !task) {
     return (
-      <div className="mx-auto max-w-3xl p-6">
+      <div className="mx-auto max-w-4xl p-6">
         <Card>
           <CardContent className="flex flex-col items-center gap-4 py-12">
             <p className="text-destructive">{error || "Task not found"}</p>
@@ -130,7 +210,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
 
   if (editing) {
     return (
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto max-w-4xl">
         <Button
           variant="ghost"
           size="sm"
@@ -145,9 +225,8 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
           task={task}
           onSaved={() => {
             setEditing(false);
-            setTask(null);
             setLoading(true);
-            taskApi.get(id).then(setTask).catch(() => { toast.error("Failed to reload task"); }).finally(() => setLoading(false));
+            fetchTask();
           }}
         />
       </div>
@@ -155,9 +234,10 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
   }
 
   const statusStyle = STATUS_STYLES[task.status];
+  const completedCount = checklistItems.filter((i) => i.is_completed).length;
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
+    <div className="mx-auto max-w-4xl space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Link href="/dashboard/task" className="hover:text-foreground">Tasks</Link>
@@ -165,6 +245,47 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
           <span className="max-w-[200px] truncate text-foreground">{task.title}</span>
         </div>
         <div className="flex items-center gap-2">
+          <div className="relative" ref={exportRef}>
+            <Button variant="outline" size="sm" onClick={() => setExportOpen(!exportOpen)}>
+              <Download className="mr-1 size-3.5" />
+              Export
+            </Button>
+            {exportOpen && (
+              <div className="absolute right-0 z-50 mt-1 w-48 rounded-lg border border-border/50 bg-popover p-1 shadow-lg">
+                <a
+                  href={`${process.env.NEXT_PUBLIC_API_URL || ""}/notes/${id}/download/markdown/`}
+                  className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
+                  download
+                  onClick={() => setExportOpen(false)}
+                >
+                  <FileText className="size-4" />
+                  Download Markdown
+                </a>
+                <a
+                  href={`${process.env.NEXT_PUBLIC_API_URL || ""}/notes/${id}/download/pdf/`}
+                  className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
+                  download
+                  onClick={() => setExportOpen(false)}
+                >
+                  <FileText className="size-4" />
+                  Download PDF
+                </a>
+                <button
+                  type="button"
+                  onClick={() => handleExportCalendar()}
+                  disabled={exportingCalendar}
+                  className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent disabled:opacity-50"
+                >
+                  {exportingCalendar ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <Calendar className="size-4" />
+                  )}
+                  Export to Google Calendar
+                </button>
+              </div>
+            )}
+          </div>
           {task.status !== "published" && (
             <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
               <Pencil className="mr-1 size-3.5" />
@@ -209,7 +330,8 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
             {statusStyle.label}
           </Badge>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-8">
+          {/* Meta bar */}
           <div className="flex flex-wrap gap-4 text-sm">
             <div className="flex items-center gap-1.5 text-muted-foreground">
               <User className="size-3.5" />
@@ -236,24 +358,77 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
             )}
           </div>
 
+          {/* Description */}
           {task.content && (
-            <div className="whitespace-pre-wrap text-sm text-muted-foreground">{task.content}</div>
-          )}
-
-          {task.checklist && task.checklist.length > 0 && (
             <div className="space-y-2">
-              <h3 className="text-sm font-semibold">Checklist</h3>
-              {task.checklist.map((item, i) => (
-                <div key={i} className="flex items-center gap-2">
-                  <Checkbox checked={item.checked} disabled />
-                  <span className={`text-sm ${item.checked ? "text-muted-foreground line-through" : ""}`}>
-                    {item.text}
-                  </span>
-                </div>
-              ))}
+              <h3 className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
+                <FileText className="size-4" />
+                Description
+              </h3>
+              <div className="whitespace-pre-wrap text-sm text-muted-foreground">{task.content}</div>
             </div>
           )}
 
+          {/* Meeting Notes (Markdown rendered) */}
+          {task.notes && (
+            <div className="space-y-2">
+              <h3 className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
+                <FileText className="size-4" />
+                Meeting Notes
+              </h3>
+              <div className="prose prose-sm dark:prose-invert max-w-none rounded-lg border border-border/50 bg-muted/30 p-4">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {task.notes}
+                </ReactMarkdown>
+              </div>
+            </div>
+          )}
+
+          {/* Checklist Items with toggle */}
+          {checklistItems.length > 0 && (
+            <div className="space-y-2">
+              <h3 className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
+                <CheckCircle2 className="size-4" />
+                Checklist ({completedCount}/{checklistItems.length})
+              </h3>
+              <div className="space-y-1.5">
+                {checklistItems
+                  .sort((a, b) => a.sort_order - b.sort_order)
+                  .map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center gap-3 rounded-lg border border-border/50 px-3 py-2.5 transition-colors hover:bg-muted/30"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => handleToggleChecklist(item.id, item.is_completed)}
+                        disabled={togglingItem === item.id}
+                        className="shrink-0"
+                      >
+                        {togglingItem === item.id ? (
+                          <Loader2 className="size-4 animate-spin text-muted-foreground" />
+                        ) : item.is_completed ? (
+                          <CheckCircle2 className="size-4 text-emerald-500" />
+                        ) : (
+                          <Circle className="size-4 text-muted-foreground hover:text-primary" />
+                        )}
+                      </button>
+                      <span
+                        className={`text-sm ${
+                          item.is_completed
+                            ? "text-muted-foreground line-through"
+                            : ""
+                        }`}
+                      >
+                        {item.text}
+                      </span>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          )}
+
+          {/* Progress bar */}
           {typeof task.progress === "number" && (
             <div className="space-y-1">
               <div className="flex items-center justify-between text-sm">
@@ -269,9 +444,29 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
             </div>
           )}
 
+          {/* Attachments */}
+          <div className="space-y-3">
+            <h3 className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
+              <ImageIcon className="size-4" />
+              Attachments ({attachments.length})
+            </h3>
+            <TaskAttachmentsGrid
+              attachments={attachments}
+              taskId={id}
+              onDeleted={handleAttachmentDeleted}
+              readonly={task.status === "published"}
+            />
+            {task.status !== "published" && (
+              <div className="rounded-lg border border-dashed border-border/50 p-4">
+                <TaskFileUpload taskId={id} onUploaded={handleAttachmentUploaded} />
+              </div>
+            )}
+          </div>
+
+          {/* Audit trail */}
           {task.audit_trails && task.audit_trails.length > 0 && (
             <div className="space-y-2">
-              <h3 className="text-sm font-semibold">Audit Trail</h3>
+              <h3 className="text-sm font-semibold text-muted-foreground">Audit Trail</h3>
               {task.audit_trails.map((trail, i) => (
                 <div key={i} className="rounded-lg border border-border/50 p-3 text-sm">
                   <div className="mb-1 flex items-center justify-between text-xs text-muted-foreground">

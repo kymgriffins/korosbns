@@ -26,6 +26,19 @@ export const LEARN_PROTECTED_PATH_PREFIXES = [
 ] as const;
 
 /**
+ * Admin routes — token-required at middleware level.
+ * Role-specific enforcement (admin/manager only) happens client-side.
+ */
+export const ADMIN_PATH_PREFIXES = [
+  "/admin",
+  "/dashboard",
+] as const;
+
+export const BUDGETHUB_PATH_PREFIXES = [
+  "/budgethub",
+] as const;
+
+/**
  * Auth pages that redirect authenticated users away (already signed in).
  * Verify and reset are intentionally excluded so users with a stale cookie can finish flows.
  */

@@ -1,8 +1,11 @@
 import {
+  ADMIN_PATH_PREFIXES,
+  BUDGETHUB_PATH_PREFIXES,
   buildLoginUrl,
   DEFAULT_POST_LOGIN_PATH,
   isAuthPage,
   isLearnProtectedPath,
+  pathMatchesPrefix,
   shouldRedirectAuthPageWhenToken,
 } from "@/lib/auth-policy";
 
@@ -18,6 +21,16 @@ export function evaluateAuthMiddleware(
   token: string | null | undefined,
 ): MiddlewareDecision {
   if (isLearnProtectedPath(pathname) && !token) {
+    return { action: "redirect", location: buildLoginUrl(pathname) };
+  }
+
+  const isAdminPath = ADMIN_PATH_PREFIXES.some((p) => pathMatchesPrefix(pathname, p));
+  if (isAdminPath && !token) {
+    return { action: "redirect", location: buildLoginUrl(pathname) };
+  }
+
+  const isBudgethubPath = BUDGETHUB_PATH_PREFIXES.some((p) => pathMatchesPrefix(pathname, p));
+  if (isBudgethubPath && !token) {
     return { action: "redirect", location: buildLoginUrl(pathname) };
   }
 

@@ -23,7 +23,7 @@ import { Alert, AlertDescription } from "@/ui/alert";
 import { ApiRequestError } from "@/lib/api-errors";
 import { taskApi } from "@/lib/task-api";
 import type {
-  Task, TaskStatus, TaskCreatePayload, AssignableUser,
+  Task, TaskStatus, TaskCreatePayload, AssignableUser, TaskPriority, TaskTag,
 } from "@/types/tasks";
 import { ChecklistEditor } from "./checklist-editor";
 
@@ -33,6 +33,7 @@ const FIELD_LABELS: Record<string, string> = {
   week_label: "Week Label",
   title: "Title",
   content: "Description",
+  notes: "Meeting Notes",
   status: "Status",
   due_date: "Due Date",
   assignee: "Assignee",
@@ -68,6 +69,8 @@ export function TaskForm({
     progress: task?.progress ?? 0,
     checklist: task?.checklist ?? [],
     due_label: task?.due_label ?? null,
+    priority: task?.priority ?? "medium",
+    tag: task?.tag ?? undefined,
   }));
 
   useEffect(() => {
@@ -198,6 +201,21 @@ export function TaskForm({
         {fieldAlert("content")}
       </div>
 
+      <div className="space-y-2">
+        <Label htmlFor="task-notes">Meeting Notes (markdown)</Label>
+        <Textarea
+          id="task-notes"
+          value={form.notes ?? ""}
+          onChange={(e) => updateField("notes", e.target.value)}
+          placeholder="Long-form meeting notes, agenda, decisions, action points... Supports markdown."
+          rows={6}
+          className="min-h-[150px] resize-y rounded-lg bg-background text-sm"
+        />
+        <p className="text-[10px] text-muted-foreground">
+          Supports markdown formatting. These notes are displayed in the task detail view.
+        </p>
+      </div>
+
       <ChecklistEditor
         items={form.checklist ?? []}
         onChange={(items) => updateField("checklist", items)}
@@ -241,16 +259,62 @@ export function TaskForm({
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
+          <Label htmlFor="task-priority">Priority</Label>
+          <Select
+            value={form.priority ?? "medium"}
+            onValueChange={(v) => updateField("priority", v as TaskPriority)}
+          >
+            <SelectTrigger id="task-priority" className="rounded-lg bg-background text-sm">
+              <SelectValue placeholder="Select priority" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="low">Low</SelectItem>
+              <SelectItem value="medium">Medium</SelectItem>
+              <SelectItem value="high">High</SelectItem>
+              <SelectItem value="urgent">Urgent</SelectItem>
+            </SelectContent>
+          </Select>
+          {fieldAlert("priority")}
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="task-tag">Tag</Label>
+          <Select
+            value={form.tag ?? ""}
+            onValueChange={(v) => updateField("tag", (v || undefined) as TaskTag)}
+          >
+            <SelectTrigger id="task-tag" className="rounded-lg bg-background text-sm">
+              <SelectValue placeholder="Select tag" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="feature">Feature</SelectItem>
+              <SelectItem value="bug">Bug</SelectItem>
+              <SelectItem value="improvement">Improvement</SelectItem>
+              <SelectItem value="research">Research</SelectItem>
+              <SelectItem value="documentation">Documentation</SelectItem>
+              <SelectItem value="design">Design</SelectItem>
+              <SelectItem value="testing">Testing</SelectItem>
+              <SelectItem value="devops">Devops</SelectItem>
+              <SelectItem value="meeting">Meeting</SelectItem>
+              <SelectItem value="review">Review</SelectItem>
+            </SelectContent>
+          </Select>
+          {fieldAlert("tag")}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
           <Label htmlFor="task-assignee">Assignee</Label>
           <Select
-            value={form.assignee ?? ""}
-            onValueChange={(v) => updateField("assignee", v || null)}
+            value={form.assignee || "unassigned_value_placeholder"}
+            onValueChange={(v) => updateField("assignee", v === "unassigned_value_placeholder" ? null : v)}
             disabled={usersLoading}
           >
             <SelectTrigger id="task-assignee" className={`rounded-lg bg-background text-sm ${fieldErrors.assignee ? "border-destructive" : ""}`}>
               <SelectValue placeholder={usersLoading ? "Loading users..." : "Select assignee"} />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value="unassigned_value_placeholder">None (Unassigned)</SelectItem>
               {assignableUsers.map((u) => (
                 <SelectItem key={u.id} value={u.email}>
                   {u.display_name || `${u.first_name} ${u.last_name}`.trim() || u.email}

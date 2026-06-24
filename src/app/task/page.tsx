@@ -41,6 +41,13 @@ import { Button } from "@/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/ui/card";
 import { Input } from "@/ui/input";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/ui/select";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -59,7 +66,8 @@ import {
 
 import { taskApi } from "@/lib/task-api";
 import { exportTasksAsCsv, exportTasksAsJson } from "@/lib/export-utils";
-import type { Task, TaskStatus, TaskColumn } from "@/types/tasks";
+import type { Task, TaskStatus, TaskColumn, TaskPriority, TaskTag } from "@/types/tasks";
+import { PRIORITY_ORDER, PRIORITY_LABELS, TAG_LABELS } from "@/types/tasks";
 import { useAuth } from "@/contexts/auth-context";
 
 const COLUMNS: TaskStatus[] = ["draft", "audited", "published"];
@@ -189,6 +197,40 @@ function TaskCard({
         </p>
       )}
 
+      {/* Priority and Tag badges */}
+      {(task.priority || task.tag) && (
+        <div className="mt-2 flex flex-wrap gap-1.5 items-center">
+          {task.priority && (
+            <span className={`text-[9px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wider ${
+              task.priority === "urgent" ? "bg-red-500/10 text-red-500 border border-red-500/20" :
+              task.priority === "high" ? "bg-orange-500/10 text-orange-500 border border-orange-500/20" :
+              task.priority === "medium" ? "bg-amber-500/10 text-amber-500 border border-amber-500/20" :
+              "bg-slate-500/10 text-slate-500 border border-slate-500/20"
+            }`}>
+              {task.priority}
+            </span>
+          )}
+          {task.tag && (
+            <span className="text-[9px] font-medium px-2 py-0.5 rounded-full bg-primary/5 text-primary border border-primary/10">
+              #{task.tag}
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* Progress bar */}
+      {task.progress !== undefined && task.progress > 0 && (
+        <div className="mt-3 space-y-1">
+          <div className="flex justify-between text-[9px] text-muted-foreground font-medium">
+            <span>Progress</span>
+            <span>{task.progress}%</span>
+          </div>
+          <div className="h-1 w-full bg-muted rounded-full overflow-hidden">
+            <div className="h-full bg-primary transition-all duration-300" style={{ width: `${task.progress}%` }} />
+          </div>
+        </div>
+      )}
+
       <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-muted-foreground">
         <span className="flex items-center gap-1">
           <User className="size-3" />
@@ -204,12 +246,10 @@ function TaskCard({
             {safeFormat(task.due_date, "MMM d")}
           </span>
         )}
-        {task.assignee && (
-          <span className="flex items-center gap-1">
-            <Users className="size-3" />
-            {task.assignee}
-          </span>
-        )}
+        <span className="flex items-center gap-1">
+          <Users className="size-3" />
+          {task.assignee ? task.assignee : <span className="italic text-[9px] text-muted-foreground/60">Unassigned</span>}
+        </span>
         {task.section_count != null && (
           <span className="flex items-center gap-1">
             <Hash className="size-3" />
@@ -238,6 +278,8 @@ export default function TaskPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
+  const [priorityFilter, setPriorityFilter] = useState<TaskPriority | "">("");
+  const [tagFilter, setTagFilter] = useState<TaskTag | "">("");
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
@@ -266,17 +308,20 @@ export default function TaskPage() {
 
   const filteredTasks = useMemo(
     () =>
-      tasks.filter((t) =>
-        search
-          ? t.title.toLowerCase().includes(search.toLowerCase()) ||
-            (t.content ?? "").toLowerCase().includes(search.toLowerCase()) ||
-            (t.assignee ?? "").toLowerCase().includes(search.toLowerCase()) ||
-            (t.team_name ?? "").toLowerCase().includes(search.toLowerCase()) ||
-            (t.author_name ?? "").toLowerCase().includes(search.toLowerCase()) ||
-            (t.week_label ?? "").toLowerCase().includes(search.toLowerCase())
-          : true,
-      ),
-    [tasks, search],
+      tasks.filter((t) => {
+        if (search && !t.title.toLowerCase().includes(search.toLowerCase()) &&
+            !(t.content ?? "").toLowerCase().includes(search.toLowerCase()) &&
+            !(t.assignee ?? "").toLowerCase().includes(search.toLowerCase()) &&
+            !(t.team_name ?? "").toLowerCase().includes(search.toLowerCase()) &&
+            !(t.author_name ?? "").toLowerCase().includes(search.toLowerCase()) &&
+            !(t.week_label ?? "").toLowerCase().includes(search.toLowerCase())) {
+          return false;
+        }
+        if (priorityFilter && t.priority !== priorityFilter) return false;
+        if (tagFilter && t.tag !== tagFilter) return false;
+        return true;
+      }),
+    [tasks, search, priorityFilter, tagFilter],
   );
 
   const columns: TaskColumn[] = useMemo(
@@ -455,6 +500,36 @@ export default function TaskPage() {
               </button>
             )}
           </div>
+          <Select value={priorityFilter} onValueChange={(v) => setPriorityFilter(v as TaskPriority | "")}>
+            <SelectTrigger className="w-32 rounded-lg bg-background text-xs font-medium">
+              <SelectValue placeholder="Priority" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">All Priorities</SelectItem>
+              <SelectItem value="urgent">Urgent</SelectItem>
+              <SelectItem value="high">High</SelectItem>
+              <SelectItem value="medium">Medium</SelectItem>
+              <SelectItem value="low">Low</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={tagFilter} onValueChange={(v) => setTagFilter(v as TaskTag | "")}>
+            <SelectTrigger className="w-32 rounded-lg bg-background text-xs font-medium">
+              <SelectValue placeholder="Tag" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="">All Tags</SelectItem>
+              <SelectItem value="feature">Feature</SelectItem>
+              <SelectItem value="bug">Bug</SelectItem>
+              <SelectItem value="improvement">Improvement</SelectItem>
+              <SelectItem value="research">Research</SelectItem>
+              <SelectItem value="documentation">Documentation</SelectItem>
+              <SelectItem value="design">Design</SelectItem>
+              <SelectItem value="testing">Testing</SelectItem>
+              <SelectItem value="devops">DevOps</SelectItem>
+              <SelectItem value="meeting">Meeting</SelectItem>
+              <SelectItem value="review">Review</SelectItem>
+            </SelectContent>
+          </Select>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="icon" disabled={totalCount === 0} aria-label="Export tasks">

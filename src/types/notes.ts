@@ -26,8 +26,11 @@ export type WeeklyNoteApi = {
 
 export type WeeklyNoteDetailApi = WeeklyNoteApi & {
   content: string;
+  notes?: string;
   sections: NoteSectionApi[];
   audit_trails: NoteAuditTrailApi[];
+  checklist_items?: ChecklistItemApi[];
+  attachments?: TaskAttachmentApi[];
   author_team?: string | null;
   team?: string | null;
   assignee_email?: string | null;
@@ -57,10 +60,33 @@ export type NoteAuditTrailApi = {
   created_at: string;
 };
 
+export type ChecklistItemApi = {
+  id: string;
+  text: string;
+  is_completed: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+};
+
+export type TaskAttachmentApi = {
+  id: string;
+  file?: string;
+  url?: string;
+  file_name: string;
+  file_size: number;
+  content_type: string;
+  is_image: boolean;
+  uploaded_by?: string;
+  uploaded_by_name?: string;
+  created_at: string;
+};
+
 export type WeeklyNoteCreateApi = {
   week_label: string;
   title: string;
   content: string;
+  notes?: string;
   status?: string;
   due_date?: string | null;
   assignee?: string | null;
