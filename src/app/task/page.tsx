@@ -189,6 +189,40 @@ function TaskCard({
         </p>
       )}
 
+      {/* Priority and Tag badges */}
+      {(task.priority || task.tag) && (
+        <div className="mt-2 flex flex-wrap gap-1.5 items-center">
+          {task.priority && (
+            <span className={`text-[9px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wider ${
+              task.priority === "urgent" ? "bg-red-500/10 text-red-500 border border-red-500/20" :
+              task.priority === "high" ? "bg-orange-500/10 text-orange-500 border border-orange-500/20" :
+              task.priority === "medium" ? "bg-amber-500/10 text-amber-500 border border-amber-500/20" :
+              "bg-slate-500/10 text-slate-500 border border-slate-500/20"
+            }`}>
+              {task.priority}
+            </span>
+          )}
+          {task.tag && (
+            <span className="text-[9px] font-medium px-2 py-0.5 rounded-full bg-primary/5 text-primary border border-primary/10">
+              #{task.tag}
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* Progress bar */}
+      {task.progress !== undefined && task.progress > 0 && (
+        <div className="mt-3 space-y-1">
+          <div className="flex justify-between text-[9px] text-muted-foreground font-medium">
+            <span>Progress</span>
+            <span>{task.progress}%</span>
+          </div>
+          <div className="h-1 w-full bg-muted rounded-full overflow-hidden">
+            <div className="h-full bg-primary transition-all duration-300" style={{ width: `${task.progress}%` }} />
+          </div>
+        </div>
+      )}
+
       <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-muted-foreground">
         <span className="flex items-center gap-1">
           <User className="size-3" />
@@ -204,12 +238,10 @@ function TaskCard({
             {safeFormat(task.due_date, "MMM d")}
           </span>
         )}
-        {task.assignee && (
-          <span className="flex items-center gap-1">
-            <Users className="size-3" />
-            {task.assignee}
-          </span>
-        )}
+        <span className="flex items-center gap-1">
+          <Users className="size-3" />
+          {task.assignee ? task.assignee : <span className="italic text-[9px] text-muted-foreground/60">Unassigned</span>}
+        </span>
         {task.section_count != null && (
           <span className="flex items-center gap-1">
             <Hash className="size-3" />
