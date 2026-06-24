@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { format } from "date-fns";
+import { format, startOfWeek, endOfWeek } from "date-fns";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -28,6 +28,15 @@ import type {
 import { ChecklistEditor } from "./checklist-editor";
 
 export type TaskFormMode = "create" | "edit";
+
+function generateWeekLabel(refDate: Date = new Date()): string {
+  const monday = startOfWeek(refDate, { weekStartsOn: 1 });
+  const sunday = endOfWeek(refDate, { weekStartsOn: 1 });
+  const weekOfMonth = 1 + Math.floor((monday.getDate() - 1) / 7);
+  const monthName = format(refDate, "MMMM");
+  const year = refDate.getFullYear();
+  return `Week ${weekOfMonth} of ${monthName} ${year}, ${format(monday, "MMM d")} - ${format(sunday, "MMM d, yyyy")}`;
+}
 
 const FIELD_LABELS: Record<string, string> = {
   week_label: "Week Label",
@@ -59,7 +68,7 @@ export function TaskForm({
   const [teams, setTeams] = useState<string[]>([]);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
   const [form, setForm] = useState<TaskCreatePayload>(() => ({
-    week_label: task?.week_label ?? format(new Date(), "'Week' w 'of' MMM yyyy"),
+    week_label: task?.week_label ?? generateWeekLabel(),
     title: task?.title ?? "",
     content: task?.content ?? "",
     status: task?.status ?? "draft",

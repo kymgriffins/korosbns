@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
@@ -256,7 +257,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
             {exportOpen && (
               <div className="absolute right-0 z-50 mt-1 w-48 rounded-lg border border-border/50 bg-popover p-1 shadow-lg">
                 <a
-                  href={`${process.env.NEXT_PUBLIC_API_URL || ""}/notes/${id}/download/markdown/`}
+                  href={`${process.env.NEXT_PUBLIC_API_URL || ""}/notes/${id}/download_markdown/`}
                   className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
                   download
                   onClick={() => setExportOpen(false)}
@@ -265,7 +266,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
                   Download Markdown
                 </a>
                 <a
-                  href={`${process.env.NEXT_PUBLIC_API_URL || ""}/notes/${id}/download/pdf/`}
+                  href={`${process.env.NEXT_PUBLIC_API_URL || ""}/notes/${id}/download_pdf/`}
                   className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
                   download
                   onClick={() => setExportOpen(false)}
@@ -333,154 +334,160 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
             {statusStyle.label}
           </Badge>
         </CardHeader>
-        <CardContent className="space-y-8">
-          {/* Meta bar */}
-          <div className="flex flex-wrap gap-4 text-sm">
-            <div className="flex items-center gap-1.5 text-muted-foreground">
-              <User className="size-3.5" />
-              {task.author_name}
-            </div>
-            <div className="flex items-center gap-1.5 text-muted-foreground">
-              <Calendar className="size-3.5" />
-              {safeFormat(task.created_at, "MMM d, yyyy")}
-            </div>
-            {task.due_date && (
-              <div className="flex items-center gap-1.5 text-muted-foreground">
-                <Clock className="size-3.5" />
-                Due {safeFormat(task.due_date, "MMM d, yyyy")}
+        <CardContent>
+          <Tabs defaultValue="info">
+            <TabsList className="mb-6">
+              <TabsTrigger value="info">Task Info</TabsTrigger>
+              <TabsTrigger value="notes">Meeting Notes</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="info" className="space-y-8">
+              {/* Meta bar */}
+              <div className="flex flex-wrap gap-4 text-sm">
+                <div className="flex items-center gap-1.5 text-muted-foreground">
+                  <User className="size-3.5" />
+                  {task.author_name}
+                </div>
+                <div className="flex items-center gap-1.5 text-muted-foreground">
+                  <Calendar className="size-3.5" />
+                  {safeFormat(task.created_at, "MMM d, yyyy")}
+                </div>
+                {task.due_date && (
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
+                    <Clock className="size-3.5" />
+                    Due {safeFormat(task.due_date, "MMM d, yyyy")}
+                  </div>
+                )}
+                {task.assignee && (
+                  <Badge variant="secondary" className="text-xs">{task.assignee}</Badge>
+                )}
+                {task.assigned_team && (
+                  <Badge variant="outline" className="text-xs">{task.assigned_team}</Badge>
+                )}
+                {task.due_label && (
+                  <Badge variant="secondary" className="text-xs">{task.due_label}</Badge>
+                )}
               </div>
-            )}
-            {task.assignee && (
-              <Badge variant="secondary" className="text-xs">{task.assignee}</Badge>
-            )}
-            {task.assigned_team && (
-              <Badge variant="outline" className="text-xs">{task.assigned_team}</Badge>
-            )}
-            {task.due_label && (
-              <Badge variant="secondary" className="text-xs">{task.due_label}</Badge>
-            )}
-          </div>
 
-          {/* Description */}
-          {task.content && (
-            <div className="space-y-2">
-              <h3 className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
-                <FileText className="size-4" />
-                Description
-              </h3>
-              <div className="whitespace-pre-wrap text-sm text-muted-foreground">{task.content}</div>
-            </div>
-          )}
+              {/* Description */}
+              {task.content && (
+                <div className="space-y-2">
+                  <h3 className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
+                    <FileText className="size-4" />
+                    Description
+                  </h3>
+                  <div className="whitespace-pre-wrap text-sm text-muted-foreground">{task.content}</div>
+                </div>
+              )}
 
-          {/* Meeting Notes (Markdown rendered) */}
-          {task.notes && (
-            <div className="space-y-2">
-              <h3 className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
-                <FileText className="size-4" />
-                Meeting Notes
-              </h3>
-              <div className="prose prose-sm dark:prose-invert max-w-none rounded-lg border border-border/50 bg-muted/30 p-4">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {task.notes}
-                </ReactMarkdown>
-              </div>
-            </div>
-          )}
+              {/* Checklist Items with toggle */}
+              {checklistItems.length > 0 && (
+                <div className="space-y-2">
+                  <h3 className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
+                    <CheckCircle2 className="size-4" />
+                    Checklist ({completedCount}/{checklistItems.length})
+                  </h3>
+                  <div className="space-y-1.5">
+                    {checklistItems
+                      .sort((a, b) => a.sort_order - b.sort_order)
+                      .map((item) => (
+                        <div
+                          key={item.id}
+                          className="flex items-center gap-3 rounded-lg border border-border/50 px-3 py-2.5 transition-colors hover:bg-muted/30"
+                        >
+                          <button
+                            type="button"
+                            onClick={() => handleToggleChecklist(item.id, item.is_completed)}
+                            disabled={togglingItem === item.id}
+                            className="shrink-0"
+                          >
+                            {togglingItem === item.id ? (
+                              <Loader2 className="size-4 animate-spin text-muted-foreground" />
+                            ) : item.is_completed ? (
+                              <CheckCircle2 className="size-4 text-emerald-500" />
+                            ) : (
+                              <Circle className="size-4 text-muted-foreground hover:text-primary" />
+                            )}
+                          </button>
+                          <span
+                            className={`text-sm ${
+                              item.is_completed
+                                ? "text-muted-foreground line-through"
+                                : ""
+                            }`}
+                          >
+                            {item.text}
+                          </span>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
 
-          {/* Checklist Items with toggle */}
-          {checklistItems.length > 0 && (
-            <div className="space-y-2">
-              <h3 className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
-                <CheckCircle2 className="size-4" />
-                Checklist ({completedCount}/{checklistItems.length})
-              </h3>
-              <div className="space-y-1.5">
-                {checklistItems
-                  .sort((a, b) => a.sort_order - b.sort_order)
-                  .map((item) => (
+              {/* Progress bar */}
+              {typeof task.progress === "number" && (
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Progress</span>
+                    <span className="font-medium tabular-nums">{task.progress}%</span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-muted">
                     <div
-                      key={item.id}
-                      className="flex items-center gap-3 rounded-lg border border-border/50 px-3 py-2.5 transition-colors hover:bg-muted/30"
-                    >
-                      <button
-                        type="button"
-                        onClick={() => handleToggleChecklist(item.id, item.is_completed)}
-                        disabled={togglingItem === item.id}
-                        className="shrink-0"
-                      >
-                        {togglingItem === item.id ? (
-                          <Loader2 className="size-4 animate-spin text-muted-foreground" />
-                        ) : item.is_completed ? (
-                          <CheckCircle2 className="size-4 text-emerald-500" />
-                        ) : (
-                          <Circle className="size-4 text-muted-foreground hover:text-primary" />
-                        )}
-                      </button>
-                      <span
-                        className={`text-sm ${
-                          item.is_completed
-                            ? "text-muted-foreground line-through"
-                            : ""
-                        }`}
-                      >
-                        {item.text}
-                      </span>
+                      className="h-full rounded-full bg-primary transition-all"
+                      style={{ width: `${Math.min(100, task.progress)}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Attachments */}
+              <div className="space-y-3">
+                <h3 className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
+                  <ImageIcon className="size-4" />
+                  Attachments ({attachments.length})
+                </h3>
+                <TaskAttachmentsGrid
+                  attachments={attachments}
+                  taskId={id}
+                  onDeleted={handleAttachmentDeleted}
+                  readonly={task.status === "published"}
+                />
+                {task.status !== "published" && (
+                  <div className="rounded-lg border border-dashed border-border/50 p-4">
+                    <TaskFileUpload taskId={id} onUploaded={handleAttachmentUploaded} />
+                  </div>
+                )}
+              </div>
+
+              {/* Audit trail */}
+              {task.audit_trails && task.audit_trails.length > 0 && (
+                <div className="space-y-2">
+                  <h3 className="text-sm font-semibold text-muted-foreground">Audit Trail</h3>
+                  {task.audit_trails.map((trail, i) => (
+                    <div key={i} className="rounded-lg border border-border/50 p-3 text-sm">
+                      <div className="mb-1 flex items-center justify-between text-xs text-muted-foreground">
+                        <span className="font-medium capitalize">{trail.action}</span>
+                        <span>{safeFormat(trail.created_at, "MMM d, HH:mm")}</span>
+                      </div>
+                      {trail.comment && <p className="text-sm">{trail.comment}</p>}
                     </div>
                   ))}
-              </div>
-            </div>
-          )}
-
-          {/* Progress bar */}
-          {typeof task.progress === "number" && (
-            <div className="space-y-1">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Progress</span>
-                <span className="font-medium tabular-nums">{task.progress}%</span>
-              </div>
-              <div className="h-2 overflow-hidden rounded-full bg-muted">
-                <div
-                  className="h-full rounded-full bg-primary transition-all"
-                  style={{ width: `${Math.min(100, task.progress)}%` }}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Attachments */}
-          <div className="space-y-3">
-            <h3 className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
-              <ImageIcon className="size-4" />
-              Attachments ({attachments.length})
-            </h3>
-            <TaskAttachmentsGrid
-              attachments={attachments}
-              taskId={id}
-              onDeleted={handleAttachmentDeleted}
-              readonly={task.status === "published"}
-            />
-            {task.status !== "published" && (
-              <div className="rounded-lg border border-dashed border-border/50 p-4">
-                <TaskFileUpload taskId={id} onUploaded={handleAttachmentUploaded} />
-              </div>
-            )}
-          </div>
-
-          {/* Audit trail */}
-          {task.audit_trails && task.audit_trails.length > 0 && (
-            <div className="space-y-2">
-              <h3 className="text-sm font-semibold text-muted-foreground">Audit Trail</h3>
-              {task.audit_trails.map((trail, i) => (
-                <div key={i} className="rounded-lg border border-border/50 p-3 text-sm">
-                  <div className="mb-1 flex items-center justify-between text-xs text-muted-foreground">
-                    <span className="font-medium capitalize">{trail.action}</span>
-                    <span>{safeFormat(trail.created_at, "MMM d, HH:mm")}</span>
-                  </div>
-                  {trail.comment && <p className="text-sm">{trail.comment}</p>}
                 </div>
-              ))}
-            </div>
-          )}
+              )}
+            </TabsContent>
+
+            <TabsContent value="notes">
+              {task.notes ? (
+                <div className="prose prose-sm dark:prose-invert max-w-none">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {task.notes}
+                  </ReactMarkdown>
+                </div>
+              ) : (
+                <p className="py-8 text-center text-sm text-muted-foreground">No meeting notes for this task.</p>
+              )}
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
     </div>

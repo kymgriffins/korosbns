@@ -393,12 +393,12 @@ export default function AdminTaskPage() {
             {totalCount} task{totalCount !== 1 ? "s" : ""} across {COLUMNS.length} stages
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="relative">
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <div className="relative flex-1 sm:flex-initial">
             <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search tasks..."
-              className="w-56 pl-8 rounded-lg bg-background text-xs font-medium focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="w-full sm:w-64 pl-8 rounded-lg bg-background text-xs font-medium focus:outline-none focus:ring-2 focus:ring-primary/20"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -415,8 +415,8 @@ export default function AdminTaskPage() {
             )}
           </div>
           {isLoggedIn ? (
-            <Link href={getFullUrl(routeBase, "/dashboard/task/new")}>
-              <Button>
+            <Link href={getFullUrl(routeBase, "/dashboard/task/new")} className="shrink-0">
+              <Button size="default" className="w-full sm:w-auto">
                 <Plus className="mr-1.5 size-4" />
                 New Task
               </Button>
@@ -464,13 +464,13 @@ export default function AdminTaskPage() {
                     </Badge>
                   </div>
                 </CardHeader>
-                <CardContent className="p-3 pt-0 overflow-hidden flex-1">
+                <CardContent className="p-3 pt-0 overflow-hidden flex-1 flex flex-col">
                   <SortableContext
                     items={column.items.map((t) => t.id)}
                     strategy={verticalListSortingStrategy}
                   >
                     <div className="flex flex-col gap-3 max-h-[calc(100vh-16rem)] overflow-y-auto pr-1
-                      scrollbar-thin scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent">
+                      scrollbar-thin scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent flex-1">
                       {column.items.length === 0 && (
                         <div className="flex flex-col items-center gap-2 py-12 text-muted-foreground">
                           <p className="text-xs">No tasks</p>
@@ -486,6 +486,15 @@ export default function AdminTaskPage() {
                       ))}
                     </div>
                   </SortableContext>
+                  {isLoggedIn && (
+                    <Link
+                      href={getFullUrl(routeBase, "/dashboard/task/new")}
+                      className="mt-2 flex items-center justify-center gap-1.5 rounded-lg border border-dashed border-border/50 py-2 text-xs text-muted-foreground hover:border-primary/30 hover:text-primary transition-colors"
+                    >
+                      <Plus className="size-3.5" />
+                      Add Task
+                    </Link>
+                  )}
                 </CardContent>
               </Card>
             );
