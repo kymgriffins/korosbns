@@ -151,11 +151,17 @@ export type SocialLinkApi = {
   order?: number;
 };
 
+export type UserRole = {
+  slug: string;
+  name: string;
+};
+
 export type UserProfileApi = {
   id?: string;
   email?: string;
   first_name?: string;
   last_name?: string;
+  role?: UserRole;
   display_name?: string;
   bio?: string;
   headline?: string;
