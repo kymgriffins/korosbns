@@ -19,6 +19,7 @@ import { LayoutControls } from "./_components/sidebar/layout-controls";
 import { SearchDialog } from "./_components/sidebar/search-dialog";
 import { ThemeSwitcher } from "./_components/sidebar/theme-switcher";
 import { AdminMobileNav } from "./_components/admin-mobile-nav";
+import { AdminBreadcrumb } from "./_components/breadcrumb/admin-breadcrumb";
 
 export default async function Layout({ children }: Readonly<{ children: ReactNode }>) {
   const cookieStore = await cookies();
@@ -82,6 +83,7 @@ export default async function Layout({ children }: Readonly<{ children: ReactNod
           </div>
         </header>
         <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden p-4 pb-[--mobile-nav-height] has-data-[content-padding=false]:p-0 md:p-6 md:pb-[--mobile-nav-height] lg:pb-0 md:has-data-[content-padding=false]:p-0">
+          <AdminBreadcrumb />
           {children}
         </div>
         <AdminMobileNav />
