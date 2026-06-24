@@ -7,12 +7,37 @@ import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { taskApi } from "@/lib/task-api";
-import type { Task } from "@/types/tasks";
+import type { Task as DjangoTask } from "@/types/tasks";
 
 import { Kanban } from "./_components/kanban";
+import type { BoardState, Task as KanbanTask } from "./_components/types";
 
-function mapTasksToBoard(tasks: Task[]) {
-  const board: Record<string, Task[]> = {
+const TEAM_MAP: Record<string, "MEDIA" | "ICT" | "MANAGERIAL"> = {
+  MEDIA: "MEDIA",
+  ICT: "ICT",
+  MANAGERIAL: "MANAGERIAL",
+};
+
+function toKanbanTask(t: DjangoTask): KanbanTask {
+  const team = t.assigned_team && TEAM_MAP[t.assigned_team] ? TEAM_MAP[t.assigned_team] : "ICT";
+  return {
+    id: t.id,
+    title: t.title,
+    description: t.content ?? "",
+    priority: (t.priority ?? "medium") as KanbanTask["priority"],
+    dueDate: t.due_date ?? "",
+    progress: t.progress ?? 0,
+    owner: {
+      name: t.owner_name ?? t.author_name ?? "Unknown",
+      tone: t.owner_tone ?? "",
+    },
+    team,
+    insights: [],
+  };
+}
+
+function mapTasksToBoard(tasks: DjangoTask[]) {
+  const board: Record<string, KanbanTask[]> = {
     ideas: [],
     planned: [],
     building: [],
@@ -23,9 +48,9 @@ function mapTasksToBoard(tasks: Task[]) {
   for (const task of tasks) {
     const col = task.kanban_column ?? "ideas";
     if (board[col]) {
-      board[col].push(task);
+      board[col].push(toKanbanTask(task));
     } else {
-      board.ideas.push(task);
+      board.ideas.push(toKanbanTask(task));
     }
   }
 
@@ -33,7 +58,7 @@ function mapTasksToBoard(tasks: Task[]) {
 }
 
 export default function Page() {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<DjangoTask[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -57,10 +82,10 @@ export default function Page() {
 
   const handleColumnChange = useCallback(async (taskId: string, newColumn: string) => {
     setTasks((prev) =>
-      prev.map((t) => (t.id === taskId ? { ...t, kanban_column: newColumn as Task["kanban_column"] } : t)),
+      prev.map((t) => (t.id === taskId ? { ...t, kanban_column: newColumn as DjangoTask["kanban_column"] } : t)),
     );
     try {
-      await taskApi.update(taskId, { kanban_column: newColumn as Task["kanban_column"] });
+      await taskApi.update(taskId, { kanban_column: newColumn as DjangoTask["kanban_column"] });
     } catch {
       toast.error("Failed to update task column");
       fetchTasks();
@@ -108,7 +133,7 @@ export default function Page() {
   return (
     <div data-content-padding="false">
       <Kanban
-        initialBoard={board as any}
+        initialBoard={board as BoardState}
         onColumnChange={handleColumnChange}
       />
     </div>

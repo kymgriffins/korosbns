@@ -123,7 +123,8 @@ export const taskApi = {
     ]);
     const map = new Map<string, Task>();
     if (publicNotes.status === "fulfilled") {
-      publicNotes.value.forEach((n) => map.set(n.id, mapNoteToTask(n)));
+      const notes = Array.isArray(publicNotes.value) ? publicNotes.value : ((publicNotes.value as ApiListResponse<WeeklyNoteApi>).results ?? []);
+      notes.forEach((n) => map.set(n.id, mapNoteToTask(n)));
     }
     if (authNotes.status === "fulfilled") {
       const arr = Array.isArray(authNotes.value) ? authNotes.value : ((authNotes.value as ApiListResponse<WeeklyNoteApi>).results ?? []);
