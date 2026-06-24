@@ -1,9 +1,13 @@
 import { citizenApi, apiFetch } from "@/lib/api-client";
 import type { ApiListResponse } from "@/types/api";
-import type { WeeklyNoteApi, WeeklyNoteDetailApi, WeeklyNoteCreateApi } from "@/types/notes";
+import type {
+  WeeklyNoteApi, WeeklyNoteDetailApi, WeeklyNoteCreateApi,
+  TaskAttachmentApi, ChecklistItemApi,
+} from "@/types/notes";
 import type {
   Task, TaskDetail, TaskCreatePayload, TaskUpdatePayload,
   AssignableUser, ChecklistItem, TaskPriority, TaskTag, KanbanColumn,
+  TaskAttachment,
 } from "@/types/tasks";
 import { autoHue } from "@/types/tasks";
 
@@ -36,12 +40,28 @@ function mapNoteToTask(note: WeeklyNoteApi): Task {
   };
 }
 
+function mapAttachment(a: TaskAttachmentApi): TaskAttachment {
+  return {
+    id: a.id,
+    url: a.url ?? "",
+    file_name: a.file_name,
+    file_size: a.file_size,
+    content_type: a.content_type,
+    is_image: a.is_image,
+    uploaded_by_name: a.uploaded_by_name,
+    created_at: a.created_at,
+  };
+}
+
 function mapDetailToTask(detail: WeeklyNoteDetailApi): TaskDetail {
   return {
     ...mapNoteToTask(detail),
     content: detail.content,
+    notes: detail.notes,
     sections: detail.sections,
     audit_trails: detail.audit_trails,
+    checklist_items: detail.checklist_items,
+    attachments: detail.attachments?.map(mapAttachment),
     author_team: detail.author_team,
     team: detail.team,
     assignee_email: detail.assignee_email,
@@ -54,6 +74,7 @@ function buildBody(payload: TaskCreatePayload): Record<string, unknown> {
   body.week_label = payload.week_label;
   body.title = payload.title;
   body.content = encodeChecklist(payload.content, payload.checklist);
+  if (payload.notes !== undefined) body.notes = payload.notes;
   if (payload.status) body.status = payload.status;
   if (payload.due_date !== undefined) body.due_date = payload.due_date;
   if (payload.assignee !== undefined) body.assignee = payload.assignee;
@@ -253,5 +274,55 @@ export const taskApi = {
       "/focus-sessions/active/",
       { auth: true },
     );
+  },
+
+  // ── Attachments ──────────────────────────────────────────
+
+  uploadAttachment: async (taskId: string, file: File): Promise<TaskAttachment> => {
+    const form = new FormData();
+    form.append("file", file);
+    const res = await apiFetch<TaskAttachmentApi>(`/notes/${taskId}/attachments/`, {
+      method: "POST",
+      auth: true,
+      body: form,
+    });
+    return mapAttachment(res);
+  },
+
+  getAttachments: async (taskId: string): Promise<TaskAttachment[]> => {
+    const res = await apiFetch<TaskAttachmentApi[]>(`/notes/${taskId}/attachment_list/`, { auth: true });
+    return (res ?? []).map(mapAttachment);
+  },
+
+  deleteAttachment: async (taskId: string, attachmentId: string): Promise<void> => {
+    await apiFetch<void>(`/notes/${taskId}/attachments/${attachmentId}/`, {
+      method: "DELETE",
+      auth: true,
+    });
+  },
+
+  // ── Checklist Items ─────────────────────────────────────
+
+  addChecklistItem: async (taskId: string, text: string): Promise<ChecklistItemApi> => {
+    return apiFetch<ChecklistItemApi>(`/notes/${taskId}/add_checklist_item/`, {
+      method: "POST",
+      auth: true,
+      body: JSON.stringify({ text }),
+    });
+  },
+
+  updateChecklistItem: async (taskId: string, itemId: string, data: Partial<Pick<ChecklistItemApi, "text" | "is_completed" | "sort_order">>): Promise<ChecklistItemApi> => {
+    return apiFetch<ChecklistItemApi>(`/notes/${taskId}/checklist/${itemId}/`, {
+      method: "PATCH",
+      auth: true,
+      body: JSON.stringify(data),
+    });
+  },
+
+  deleteChecklistItem: async (taskId: string, itemId: string): Promise<void> => {
+    await apiFetch<void>(`/notes/${taskId}/checklist/${itemId}/`, {
+      method: "DELETE",
+      auth: true,
+    });
   },
 };

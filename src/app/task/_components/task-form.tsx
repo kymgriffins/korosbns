@@ -33,6 +33,7 @@ const FIELD_LABELS: Record<string, string> = {
   week_label: "Week Label",
   title: "Title",
   content: "Description",
+  notes: "Meeting Notes",
   status: "Status",
   due_date: "Due Date",
   assignee: "Assignee",
@@ -198,6 +199,21 @@ export function TaskForm({
           className={`min-h-[100px] resize-y rounded-lg bg-background text-sm ${fieldErrors.content ? "border-destructive" : ""}`}
         />
         {fieldAlert("content")}
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="task-notes">Meeting Notes (markdown)</Label>
+        <Textarea
+          id="task-notes"
+          value={form.notes ?? ""}
+          onChange={(e) => updateField("notes", e.target.value)}
+          placeholder="Long-form meeting notes, agenda, decisions, action points... Supports markdown."
+          rows={6}
+          className="min-h-[150px] resize-y rounded-lg bg-background text-sm"
+        />
+        <p className="text-[10px] text-muted-foreground">
+          Supports markdown formatting. These notes are displayed in the task detail view.
+        </p>
       </div>
 
       <ChecklistEditor

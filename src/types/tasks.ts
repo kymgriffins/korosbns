@@ -1,4 +1,7 @@
-import type { NoteSectionApi, NoteAuditTrailApi } from "@/types/notes";
+import type {
+  NoteSectionApi, NoteAuditTrailApi,
+  TaskAttachmentApi, ChecklistItemApi,
+} from "@/types/notes";
 
 export type TaskStatus = "draft" | "audited" | "published";
 
@@ -22,6 +25,17 @@ export type ChecklistItem = {
   id: string;
   text: string;
   checked: boolean;
+};
+
+export type TaskAttachment = {
+  id: string;
+  url: string;
+  file_name: string;
+  file_size: number;
+  content_type: string;
+  is_image: boolean;
+  uploaded_by_name?: string;
+  created_at: string;
 };
 
 export type Task = {
@@ -52,8 +66,11 @@ export type Task = {
 
 export type TaskDetail = Task & {
   content: string;
+  notes?: string;
   sections: NoteSectionApi[];
   audit_trails: NoteAuditTrailApi[];
+  checklist_items?: ChecklistItemApi[];
+  attachments?: TaskAttachment[];
   author_team?: string | null;
   team?: string | null;
   assignee_email?: string | null;
@@ -64,6 +81,7 @@ export type TaskCreatePayload = {
   week_label: string;
   title: string;
   content: string;
+  notes?: string;
   status?: TaskStatus;
   due_date?: string | null;
   assignee?: string | null;
