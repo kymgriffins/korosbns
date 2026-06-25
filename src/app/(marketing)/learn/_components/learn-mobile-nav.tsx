@@ -51,7 +51,7 @@ export function LearnMobileNav() {
       icon: (
         <Avatar className="size-5">
           <AvatarImage src={avatarUrl} alt={displayName} />
-          <AvatarFallback className="text-[8px]">{getInitials(displayName)}</AvatarFallback>
+          <AvatarFallback className="text-[9px] font-medium">{getInitials(displayName)}</AvatarFallback>
         </Avatar>
       ),
     },

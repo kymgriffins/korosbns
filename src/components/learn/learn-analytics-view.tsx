@@ -70,11 +70,11 @@ export function LearnAnalyticsView() {
   ];
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-bold tracking-tight">Analytics</h1>
-          <p className="text-xs text-muted-foreground">Learning Hub content metrics and insights</p>
+          <h1 className="text-xl font-bold tracking-tight">Analytics</h1>
+          <p className="text-sm text-muted-foreground">Learning Hub content metrics and insights</p>
         </div>
         <Button variant="outline" size="sm" onClick={fetchData} disabled={loading}>
           {loading ? <Loader2 className="size-4 animate-spin" /> : <RefreshCw className="size-4" />}
@@ -82,14 +82,14 @@ export function LearnAnalyticsView() {
         </Button>
       </div>
 
-      <Tabs defaultValue="overview" className="flex flex-col gap-4">
+      <Tabs defaultValue="overview" className="flex flex-col gap-5">
         <TabsList variant="line" className="w-full md:w-auto">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="content">Content</TabsTrigger>
           <TabsTrigger value="modules">Modules</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="overview" className="flex flex-col gap-4">
+        <TabsContent value="overview" className="flex flex-col gap-5">
           {loading ? (
             <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
               {Array.from({ length: 6 }).map((_, i) => (
@@ -109,12 +109,12 @@ export function LearnAnalyticsView() {
               {kpiItems.map((kpi) => (
                 <Card key={kpi.label}>
                   <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <CardTitle className="text-xs font-medium">{kpi.label}</CardTitle>
+                    <CardTitle className="text-sm font-medium">{kpi.label}</CardTitle>
                     <kpi.icon className={cn("size-4", kpi.color)} />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold tabular-nums">{String(kpi.value)}</div>
-                    <p className="text-xs text-muted-foreground">{kpi.change}</p>
+                    <div className="text-xl font-bold tabular-nums">{String(kpi.value)}</div>
+                    <p className="text-sm text-muted-foreground">{kpi.change}</p>
                   </CardContent>
                 </Card>
               ))}
@@ -123,7 +123,7 @@ export function LearnAnalyticsView() {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm">Content Distribution</CardTitle>
+              <CardTitle className="text-base font-bold">Content Distribution</CardTitle>
               <CardDescription>Breakdown by content type</CardDescription>
             </CardHeader>
             <CardContent>
@@ -133,11 +133,11 @@ export function LearnAnalyticsView() {
                 <div className="space-y-3">
                   {barItems.map((item) => (
                     <div key={item.label} className="flex items-center gap-3">
-                      <span className="w-20 text-xs text-muted-foreground">{item.label}</span>
+                      <span className="w-20 text-sm text-muted-foreground">{item.label}</span>
                       <div className="h-4 flex-1 overflow-hidden rounded-full bg-muted">
                         <div className={cn("h-full rounded-full transition-all duration-500", item.color)} style={{ width: `${(item.value / item.max) * 100}%` }} />
                       </div>
-                      <span className="w-10 text-right text-xs font-medium tabular-nums">{item.value}</span>
+                      <span className="w-10 text-right text-sm font-medium tabular-nums">{item.value}</span>
                     </div>
                   ))}
                 </div>
@@ -146,10 +146,10 @@ export function LearnAnalyticsView() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="content" className="flex flex-col gap-4">
+        <TabsContent value="content" className="flex flex-col gap-5">
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm">Top Articles</CardTitle>
+              <CardTitle className="text-base font-bold">Top Articles</CardTitle>
               <CardDescription>Most recent articles published</CardDescription>
             </CardHeader>
             <CardContent>
@@ -158,14 +158,14 @@ export function LearnAnalyticsView() {
                   {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-10 w-full" />)}
                 </div>
               ) : articles.length === 0 ? (
-                <p className="py-8 text-center text-xs text-muted-foreground">No articles yet.</p>
+                <p className="py-8 text-center text-sm text-muted-foreground">No articles yet.</p>
               ) : (
                 <div className="space-y-2">
                   {articles.slice(0, 5).map((article) => (
                     <div key={article.id} className="flex items-center justify-between rounded-lg border p-3">
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-medium">{article.title}</p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-sm text-muted-foreground">
                           {article.difficulty && `${article.difficulty} · `}
                           {article.published_at && new Date(article.published_at).toLocaleDateString()}
                         </p>
@@ -173,7 +173,7 @@ export function LearnAnalyticsView() {
                       {article.tags?.length ? (
                         <div className="ml-2 flex gap-1">
                           {article.tags.slice(0, 2).map((tag) => (
-                            <span key={tag.slug} className="rounded-full bg-secondary px-2 py-0.5 text-[10px] text-secondary-foreground">{tag.name}</span>
+                            <span key={tag.slug} className="rounded-full bg-secondary px-2 py-0.5 text-xs text-secondary-foreground">{tag.name}</span>
                           ))}
                         </div>
                       ) : null}
@@ -185,10 +185,10 @@ export function LearnAnalyticsView() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="modules" className="flex flex-col gap-4">
+        <TabsContent value="modules" className="flex flex-col gap-5">
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm">Top Modules by Steps</CardTitle>
+              <CardTitle className="text-base font-bold">Top Modules by Steps</CardTitle>
               <CardDescription>Modules ranked by content volume</CardDescription>
             </CardHeader>
             <CardContent>
@@ -197,15 +197,15 @@ export function LearnAnalyticsView() {
                   {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-10 w-full" />)}
                 </div>
               ) : topModules.length === 0 ? (
-                <p className="py-8 text-center text-xs text-muted-foreground">No modules yet.</p>
+                <p className="py-8 text-center text-sm text-muted-foreground">No modules yet.</p>
               ) : (
                 <div className="space-y-2">
                   {topModules.map((mod, idx) => (
                     <div key={mod.id} className="flex items-center gap-3 rounded-lg border p-3">
-                      <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium">{idx + 1}</span>
+                      <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-medium">{idx + 1}</span>
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-medium">{mod.title}</p>
-                        <p className="text-xs text-muted-foreground">{mod.steps?.length ?? 0} steps{mod.badgeName && ` · ${mod.badgeName}`}</p>
+                        <p className="text-sm text-muted-foreground">{mod.steps?.length ?? 0} steps{mod.badgeName && ` · ${mod.badgeName}`}</p>
                       </div>
                       <Badge variant="secondary" className="shrink-0">
                         <TrendingUp className="size-3" />

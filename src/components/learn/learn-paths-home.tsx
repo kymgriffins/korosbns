@@ -292,9 +292,9 @@ export function LearnPathsHome() {
         <div className="size-12 rounded-full bg-destructive/10 flex items-center justify-center text-destructive mx-auto">
           <ShieldAlert className="size-6" />
         </div>
-        <p className="text-sm font-bold text-foreground">Failed to load modules</p>
-        <p className="text-xs text-muted-foreground max-w-xs">{modulesError}</p>
-        <Button onClick={refreshModules} variant="outline" size="sm" className="mt-2 rounded-lg text-xs font-bold focus-visible:ring-2 focus-visible:ring-ring">
+        <p className="text-sm font-semibold text-foreground">Failed to load modules</p>
+        <p className="text-sm text-muted-foreground max-w-xs">{modulesError}</p>
+        <Button onClick={refreshModules} variant="outline" size="sm" className="mt-2 rounded-lg text-sm font-semibold focus-visible:ring-2 focus-visible:ring-ring">
           Try Again
         </Button>
       </div>
@@ -307,10 +307,9 @@ export function LearnPathsHome() {
     if (!wantsAnonymous) {
       return (
         <div className="flex-1 flex items-center justify-center p-4 min-h-[70vh]">
-          <div className="w-full max-w-md p-6 md:p-8 bg-card border border-border rounded-2xl shadow-lg space-y-6 text-center relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.03] to-transparent pointer-events-none" />
-            <div className="relative space-y-2">
-              <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mx-auto ring-1 ring-primary/20">
+          <div className="w-full max-w-md p-6 md:p-8 bg-card border rounded-xl space-y-6 text-center">
+            <div className="space-y-2">
+              <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mx-auto">
                 <Sparkles className="size-6" />
               </div>
               <h2 className="text-xl font-bold tracking-tight">Citizen Learn Hub</h2>
@@ -319,26 +318,26 @@ export function LearnPathsHome() {
               </p>
             </div>
 
-            <div className="relative space-y-3">
-              <Button asChild className="w-full rounded-xl h-11 font-bold focus-visible:ring-2 focus-visible:ring-ring">
+            <div className="space-y-3">
+              <Button asChild className="w-full rounded-lg h-11 font-bold focus-visible:ring-2 focus-visible:ring-ring">
                 <Link href={Routes.JoinUs}>Join the Movement</Link>
               </Button>
               <div className="flex items-center gap-2 my-2">
                 <div className="h-px bg-border flex-1" />
-                <span className="text-[10px] text-muted-foreground uppercase font-bold">or</span>
+                <span className="text-xs text-muted-foreground font-semibold">or</span>
                 <div className="h-px bg-border flex-1" />
               </div>
               <Button
                 onClick={() => setWantsAnonymous(true)}
                 variant="outline"
-                className="w-full rounded-xl h-11 font-bold"
+                className="w-full rounded-lg h-11 font-bold"
               >
                 Continue as Anonymous User
               </Button>
             </div>
 
-            <p className="relative text-[10px] text-muted-foreground leading-relaxed">
-              <Link href={Routes.Login} className="text-primary font-bold hover:underline focus-visible:ring-2 focus-visible:ring-ring">Already a user? Login</Link>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              <Link href={Routes.Login} className="text-primary font-semibold hover:underline focus-visible:ring-2 focus-visible:ring-ring">Already a user? Login</Link>
               <span className="block mt-1.5">Anonymous progress is stored locally on this device, but won't sync across other browsers.</span>
             </p>
           </div>
@@ -366,7 +365,7 @@ export function LearnPathsHome() {
         <div className="size-12 rounded-full bg-muted/30 flex items-center justify-center text-muted-foreground mx-auto">
           <BookOpen className="size-6" />
         </div>
-        <p className="text-sm font-bold text-muted-foreground">No learning modules available yet.</p>
+        <p className="text-sm font-medium text-muted-foreground">No learning modules available yet.</p>
       </div>
     );
   }
@@ -374,15 +373,15 @@ export function LearnPathsHome() {
   return (
     <div className="w-full h-full min-h-0 bg-background flex flex-col overflow-hidden">
       {showGuestBanner && (
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-primary/20 bg-primary/5 px-4 py-2 text-xs">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b bg-primary/5 px-4 py-2 text-sm">
           <span className="text-muted-foreground">
             Browse modules from our live catalog. Save progress by continuing anonymously or signing in.
           </span>
           <div className="flex flex-wrap gap-2">
-            <Button size="sm" variant="outline" className="h-8 rounded-lg text-xs font-bold" onClick={() => setWantsAnonymous(true)}>
+            <Button size="sm" variant="outline" className="h-8 rounded-lg text-sm font-semibold" onClick={() => setWantsAnonymous(true)}>
               Continue as guest
             </Button>
-            <Button size="sm" className="h-8 rounded-lg text-xs font-bold" asChild>
+            <Button size="sm" className="h-8 rounded-lg text-sm font-semibold" asChild>
               <Link href={Routes.Login}>Sign in</Link>
             </Button>
           </div>
@@ -390,7 +389,7 @@ export function LearnPathsHome() {
       )}
 
       {!selectedStage && activeProfile.language === "SH" && (
-        <div className="w-full py-1 px-4 text-[10px] font-semibold bg-amber-500/15 border-b border-amber-500/20 text-amber-600 text-center">
+        <div className="w-full py-1.5 px-4 text-sm font-medium bg-amber-500/15 border-b border-amber-500/20 text-amber-600 text-center">
           {text.shengComingSoon}
         </div>
       )}

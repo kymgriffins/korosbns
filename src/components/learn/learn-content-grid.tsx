@@ -19,14 +19,6 @@ const TYPE_ICONS: Record<string, typeof BookOpen> = {
   path: BookOpen,
 };
 
-const TYPE_GRADIENTS: Record<string, string> = {
-  video: "from-purple-500/10 to-purple-500/5",
-  article: "from-emerald-500/10 to-emerald-500/5",
-  story: "from-amber-500/10 to-amber-500/5",
-  document: "from-rose-500/10 to-rose-500/5",
-  path: "from-blue-500/10 to-blue-500/5",
-};
-
 export function LearnContentGrid({
   items,
   loading,
@@ -48,7 +40,7 @@ export function LearnContentGrid({
 
   if (items.length === 0) {
     return (
-      <p className="rounded-2xl border border-border bg-card py-12 text-center text-sm text-muted-foreground">
+      <p className="rounded-xl border bg-card py-12 text-center text-sm text-muted-foreground">
         {emptyMessage ?? "Nothing published in this section yet."}
       </p>
     );
@@ -72,7 +64,6 @@ function LearnContentCard({ item }: { item: LearnHubItem }) {
   const href = learnItemHref(item);
   const external = isExternalLearnHref(href);
   const Icon = TYPE_ICONS[item.content_type] ?? BookOpen;
-  const gradient = TYPE_GRADIENTS[item.content_type] ?? "from-primary/10 to-primary/5";
 
   const body = (
     <>
@@ -86,34 +77,34 @@ function LearnContentCard({ item }: { item: LearnHubItem }) {
           />
         </div>
       ) : (
-        <div className={cn("flex aspect-video w-full items-center justify-center bg-gradient-to-br", gradient)}>
-          <Icon className="size-10 text-muted-foreground/40" />
+        <div className="flex aspect-video w-full items-center justify-center bg-muted">
+          <Icon className="size-10 text-muted-foreground/30" />
         </div>
       )}
       <div className="flex flex-1 flex-col p-4">
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+          <span className="inline-flex rounded-md bg-secondary px-2 py-0.5 text-xs font-medium text-secondary-foreground">
             {item.content_type}
           </span>
           {item.difficulty && (
-            <Badge variant="secondary" className="text-[10px] uppercase leading-none px-1.5 py-0.5">
+            <Badge variant="secondary" className="text-xs leading-none px-1.5 py-0.5">
               {item.difficulty}
             </Badge>
           )}
           {item.published_at && (
-            <span className="ml-auto text-[10px] text-muted-foreground">
+            <span className="ml-auto text-xs text-muted-foreground">
               {new Date(item.published_at).toLocaleDateString()}
             </span>
           )}
         </div>
-        <h3 className="mt-2 line-clamp-2 text-sm font-semibold leading-tight">{item.title}</h3>
+        <h3 className="mt-2 line-clamp-2 text-base font-bold leading-snug">{item.title}</h3>
         {item.summary ? (
-          <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{item.summary}</p>
+          <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{item.summary}</p>
         ) : null}
         {item.tags?.length ? (
           <div className="mt-2 flex flex-wrap gap-1">
             {item.tags.slice(0, 3).map((tag) => (
-              <span key={tag.slug} className="rounded-full bg-secondary px-2 py-0.5 text-[10px] text-secondary-foreground">
+              <span key={tag.slug} className="rounded-full bg-secondary px-2 py-0.5 text-xs text-secondary-foreground">
                 {tag.name}
               </span>
             ))}
@@ -121,14 +112,14 @@ function LearnContentCard({ item }: { item: LearnHubItem }) {
         ) : null}
         <div className="mt-auto pt-3">
           {external ? (
-            <Button variant="outline" size="sm" className="w-full text-xs font-bold rounded-lg" asChild>
+            <Button variant="outline" size="sm" className="w-full text-sm font-semibold rounded-lg" asChild>
               <a href={href} target="_blank" rel="noopener noreferrer">
                 Open
-                <ExternalLink className="ml-1.5 size-3" aria-hidden />
+                <ExternalLink className="ml-1.5 size-3.5" aria-hidden />
               </a>
             </Button>
           ) : (
-            <Button variant="outline" size="sm" className="w-full text-xs font-bold rounded-lg" asChild>
+            <Button variant="outline" size="sm" className="w-full text-sm font-semibold rounded-lg" asChild>
               <Link href={href}>
                 {item.content_type === "video" ? "Watch" : item.content_type === "article" ? "Read" : "Open"}
               </Link>
@@ -142,13 +133,13 @@ function LearnContentCard({ item }: { item: LearnHubItem }) {
   return (
     <motion.div variants={fadeInUp} className="group">
       {external ? (
-        <article className="flex h-full flex-col overflow-hidden rounded-xl border bg-card transition-colors hover:border-primary/40">
+        <article className="flex h-full flex-col overflow-hidden rounded-xl border bg-card transition-all hover:border-primary/30 hover:shadow-sm">
           {body}
         </article>
       ) : (
         <Link
           href={href}
-          className="flex h-full flex-col overflow-hidden rounded-xl border bg-card transition-colors hover:border-primary/40"
+          className="flex h-full flex-col overflow-hidden rounded-xl border bg-card transition-all hover:border-primary/30 hover:shadow-sm"
         >
           {body}
         </Link>

@@ -1,0 +1,6 @@
+{
+  "files": ["src/app/(marketing)/learn/layout.tsx", "src/app/(marketing)/learn/page.tsx"],
+  "insertBefore": "</body>",
+  "commentSyntax": "html",
+  "cspChecked": true
+}

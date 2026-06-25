@@ -241,8 +241,8 @@ export function ModuleDetailView() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-background">
-      {/* === Header === */}
-      <header className="flex shrink-0 items-center gap-2 border-b px-3 py-2 md:px-5 md:py-2.5 md:border-b-0 md:bg-background md:sticky md:top-0 md:z-10">
+      {/* Header */}
+      <header className="flex shrink-0 items-center gap-2 border-b px-3 py-2 md:px-5 md:py-2.5 md:bg-background md:sticky md:top-0 md:z-10">
         <button onClick={() => router.push("/learn")} className="p-1 hover:bg-muted/50 rounded-lg transition-colors -ml-1 md:hidden">
           <ChevronLeft className="size-4" />
         </button>
@@ -250,32 +250,31 @@ export function ModuleDetailView() {
           <ChevronLeft className="size-4" />
         </Link>
         <div className="min-w-0 flex-1">
-          <nav className="flex items-center gap-1 text-[10px] text-muted-foreground font-semibold truncate">
+          <nav className="flex items-center gap-1 text-xs text-muted-foreground font-medium truncate">
             <Link href="/learn" className="hover:text-foreground transition-colors">Learn</Link>
             <span className="text-muted-foreground/40">/</span>
-            <span className="truncate text-foreground">{mod.title}</span>
+            <span className="truncate text-foreground font-semibold">{mod.title}</span>
           </nav>
         </div>
         <div className="flex items-center gap-1.5 shrink-0">
           {mod.badgeName && (
-            <Badge variant="outline" className="text-[10px] hidden sm:flex">
+            <Badge variant="outline" className="text-xs hidden sm:flex">
               <BookOpen className="size-3" /> {mod.badgeName}
             </Badge>
           )}
-          <Badge variant="secondary" className="text-[10px]">{steps.length} steps</Badge>
+          <Badge variant="secondary" className="text-xs">{steps.length} steps</Badge>
           <div className="hidden items-center gap-1.5 sm:flex">
             <Progress value={progressPercent} className="h-1.5 w-16" />
-            <span className="text-[10px] tabular-nums text-muted-foreground">{completedSteps.size}/{steps.length}</span>
+            <span className="text-xs tabular-nums text-muted-foreground">{completedSteps.size}/{steps.length}</span>
           </div>
         </div>
       </header>
 
-      {/* === Main === */}
       <div className="flex flex-1 flex-col md:flex-row min-h-0">
-        {/* === Content area === */}
+        {/* Content area */}
         <div className="flex flex-1 flex-col min-w-0 min-h-0">
           {/* Step dots — mobile */}
-          <div className="flex shrink-0 items-center gap-1.5 overflow-x-auto px-3 py-2 scrollbar-hide md:hidden border-b border-border/20">
+          <div className="flex shrink-0 items-center gap-1.5 overflow-x-auto px-3 py-2 scrollbar-hide md:hidden border-b">
             {steps.map((step: ChapterStep, idx: number) => {
               const stepNum = idx + 1;
               const isCurrent = currentStep === stepNum;
@@ -285,10 +284,10 @@ export function ModuleDetailView() {
                   key={step.id}
                   onClick={() => handleSelectStep(stepNum)}
                   className={cn(
-                    "shrink-0 size-7 rounded-full flex items-center justify-center text-[10px] font-bold transition-all duration-200",
-                    isCurrent && "scale-110 bg-primary text-primary-foreground shadow-xs",
+                    "shrink-0 size-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-200",
+                    isCurrent && "bg-primary text-primary-foreground",
                     !isCurrent && passed && "border border-emerald-500/30 bg-emerald-500/15 text-emerald-600",
-                    !isCurrent && !passed && "border border-border/40 bg-muted/40 text-muted-foreground",
+                    !isCurrent && !passed && "border bg-muted/40 text-muted-foreground",
                   )}
                   title={step.title}
                 >
@@ -300,15 +299,15 @@ export function ModuleDetailView() {
 
           {/* Tab bar */}
           {!isMastery && (
-            <div className="flex shrink-0 items-center gap-1 px-3 py-2 border-b border-border/20">
+            <div className="flex shrink-0 items-center gap-1 px-3 py-2 border-b">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={cn(
-                    "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-[10px] font-bold transition-all",
+                    "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all",
                     activeTab === tab.id
-                      ? "bg-primary text-primary-foreground shadow-xs"
+                      ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:bg-muted/30 hover:text-foreground",
                   )}
                 >
@@ -316,41 +315,43 @@ export function ModuleDetailView() {
                   {tab.label}
                 </button>
               ))}
-              <span className="ml-auto text-[10px] text-muted-foreground font-semibold">
+              <span className="ml-auto text-xs text-muted-foreground font-medium">
                 Step {currentStep} of {steps.length}
               </span>
             </div>
           )}
 
           {/* Scrollable content */}
-          <div className="flex-1 overflow-y-auto overscroll-contain md:border-t md:border-border/20">
+          <div className="flex-1 overflow-y-auto overscroll-contain md:border-t">
             <div className="mx-auto max-w-3xl p-4 md:p-6 lg:p-8">
               {isMastery ? (
-                <div className="flex flex-col items-center gap-4 py-16 text-center">
+                <div className="flex flex-col items-center gap-5 py-16 text-center">
                   <div className="text-5xl">{mod.badge || "🎉"}</div>
                   {mod.badgeName && (
-                    <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 text-[10px] font-bold uppercase tracking-wider">{mod.badgeName} Unlocked!</span>
+                    <span className="rounded-full bg-emerald-500/10 px-3 py-1 text-sm font-semibold text-emerald-600">
+                      {mod.badgeName} Unlocked!
+                    </span>
                   )}
-                  <h2 className="text-xl font-black tracking-tight">{mod.title}</h2>
+                  <h2 className="text-2xl font-bold tracking-tight">{mod.title}</h2>
                   <p className="max-w-sm text-sm text-muted-foreground">You completed all steps in this module.</p>
 
-                  <div className="bg-gradient-to-br from-emerald-500/5 to-emerald-500/10 rounded-xl p-4 space-y-2 max-w-xs shadow-xs">
-                    <p className="text-xs font-bold text-emerald-600 flex items-center gap-1.5"><Award className="size-3.5" /> Rewards Earned</p>
-                    <p className="text-lg font-black text-emerald-600">+25 SVG</p>
+                  <div className="rounded-xl border bg-card p-4 space-y-2 max-w-xs">
+                    <p className="text-sm font-bold text-emerald-600 flex items-center gap-1.5"><Award className="size-4" /> Rewards Earned</p>
+                    <p className="text-xl font-bold text-emerald-600">+25 SVG</p>
                     {certificateId && (
-                      <p className="text-[9px] text-muted-foreground">Credential: BNS-{mod.badgeName}-{certificateId.slice(0, 8).toUpperCase()}</p>
+                      <p className="text-xs text-muted-foreground">Credential: BNS-{mod.badgeName}-{certificateId.slice(0, 8).toUpperCase()}</p>
                     )}
                   </div>
 
                   {certificateUrl && (
                     <a href={certificateUrl} target="_blank" rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-card border border-border/40 shadow-xs hover:bg-accent/30 hover:border-primary/30 transition-all group">
-                      <Download className="size-4 text-primary group-hover:scale-110 transition-transform" />
+                      className="inline-flex items-center gap-3 rounded-xl border bg-card px-4 py-3 transition-all hover:border-primary/30 hover:shadow-sm">
+                      <Download className="size-5 text-primary" />
                       <div className="text-left">
-                        <p className="text-xs font-bold group-hover:text-primary transition-colors">Download Certificate</p>
-                        <p className="text-[9px] text-muted-foreground">Printable certificate — BNS Certified</p>
+                        <p className="text-sm font-bold">Download Certificate</p>
+                        <p className="text-xs text-muted-foreground">Printable certificate — BNS Certified</p>
                       </div>
-                      <ExternalLink className="size-3.5 text-muted-foreground/40 group-hover:text-primary transition-colors" />
+                      <ExternalLink className="size-4 text-muted-foreground/40" />
                     </a>
                   )}
 
@@ -359,35 +360,33 @@ export function ModuleDetailView() {
                   </div>
                 </div>
               ) : (
-                <div className="space-y-5">
+                <div className="space-y-6">
                   {/* Step header */}
                   <div className="space-y-1">
-                    <div className="flex items-center justify-between">
-                      <h1 className="text-base font-black md:text-lg">{currentStepObj?.title || `Step ${currentStep}`}</h1>
-                    </div>
+                    <h1 className="text-lg font-bold md:text-xl">{currentStepObj?.title || `Step ${currentStep}`}</h1>
                     {mod.description && (
-                      <p className="text-xs text-muted-foreground">{mod.description}</p>
+                      <p className="text-sm text-muted-foreground">{mod.description}</p>
                     )}
                   </div>
 
-                  {/* === WATCH TAB === */}
+                  {/* Watch tab */}
                   {activeTab === "watch" && (
                     <div className="space-y-3">
                       {videoEntries.length > 0 ? (
                         <>
                           <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-semibold text-muted-foreground">
+                            <span className="text-sm font-medium text-muted-foreground">
                               {videoEntries[activeVideoIdx]?.title || `Video ${activeVideoIdx + 1}`}
                               {videoEntries.length > 1 && <span> · {activeVideoIdx + 1} of {videoEntries.length}</span>}
                             </span>
                             {videoEntries.length > 1 && (
                               <div className="flex items-center gap-1">
                                 <button onClick={() => setActiveVideoIdx((p) => Math.max(0, p - 1))} disabled={activeVideoIdx === 0}
-                                  className="size-6 flex items-center justify-center rounded-md bg-muted/40 hover:bg-muted/60 transition-colors disabled:opacity-30 disabled:pointer-events-none">
+                                  className="size-7 flex items-center justify-center rounded-md bg-muted/40 hover:bg-muted/60 transition-colors disabled:opacity-30 disabled:pointer-events-none">
                                   <ChevronLeft className="size-3.5" />
                                 </button>
                                 <button onClick={() => setActiveVideoIdx((p) => Math.min(videoEntries.length - 1, p + 1))} disabled={activeVideoIdx === videoEntries.length - 1}
-                                  className="size-6 flex items-center justify-center rounded-md bg-muted/40 hover:bg-muted/60 transition-colors disabled:opacity-30 disabled:pointer-events-none">
+                                  className="size-7 flex items-center justify-center rounded-md bg-muted/40 hover:bg-muted/60 transition-colors disabled:opacity-30 disabled:pointer-events-none">
                                   <ChevronRight className="size-3.5" />
                                 </button>
                               </div>
@@ -403,27 +402,27 @@ export function ModuleDetailView() {
                           )}
                         </>
                       ) : (
-                        <div className="flex aspect-video w-full flex-col items-center justify-center rounded-xl bg-gradient-to-br from-primary/5 to-primary/10">
+                        <div className="flex aspect-video w-full flex-col items-center justify-center rounded-xl bg-muted">
                           <PlayCircle className="size-8 text-muted-foreground/40" />
-                          <p className="mt-2 text-xs font-semibold text-muted-foreground/60">Video coming soon</p>
+                          <p className="mt-2 text-sm font-medium text-muted-foreground/60">Video coming soon</p>
                         </div>
                       )}
                     </div>
                   )}
 
-                  {/* === READ TAB === */}
+                  {/* Read tab */}
                   {activeTab === "read" && currentStepObj && (
-                    <div className="space-y-4">
+                    <div className="space-y-5">
                       {currentStepObj.learning_outcomes && currentStepObj.learning_outcomes.length > 0 && (
                         <Card>
                           <CardHeader className="pb-2">
-                            <CardTitle className="text-xs font-semibold text-muted-foreground">Learning Outcomes</CardTitle>
+                            <CardTitle className="text-sm font-semibold text-muted-foreground">Learning Outcomes</CardTitle>
                           </CardHeader>
                           <CardContent>
                             <ul className="space-y-1">
                               {currentStepObj.learning_outcomes.map((outcome: { id: string; description: string }) => (
                                 <li key={outcome.id} className="flex items-start gap-2 text-sm">
-                                  <CheckCircle2 className="mt-0.5 size-3.5 shrink-0 text-emerald-500" />
+                                  <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-500" />
                                   <span>{outcome.description}</span>
                                 </li>
                               ))}
@@ -436,7 +435,7 @@ export function ModuleDetailView() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           {currentStepObj.image_urls.map((url: string, i: number) => (
                             <img key={i} src={url} alt={`${currentStepObj.title} image ${i + 1}`}
-                              className="rounded-xl shadow-xs object-cover w-full aspect-[4/3] bg-muted/40" loading="lazy" />
+                              className="rounded-xl object-cover w-full aspect-[4/3] bg-muted/40" loading="lazy" />
                           ))}
                         </div>
                       )}
@@ -448,7 +447,7 @@ export function ModuleDetailView() {
                       {currentStepObj.takeaways && currentStepObj.takeaways.length > 0 && (
                         <Card className="border-primary/20 bg-primary/5">
                           <CardHeader className="pb-2">
-                            <CardTitle className="text-xs font-semibold">Key Takeaways</CardTitle>
+                            <CardTitle className="text-sm font-semibold">Key Takeaways</CardTitle>
                           </CardHeader>
                           <CardContent>
                             <ul className="space-y-2">
@@ -475,7 +474,7 @@ export function ModuleDetailView() {
                     </div>
                   )}
 
-                  {/* === QUIZ TAB === */}
+                  {/* Quiz tab */}
                   {activeTab === "quiz" && (
                     <div className="space-y-4">
                       {!showTrivia ? (
@@ -483,10 +482,10 @@ export function ModuleDetailView() {
                           <CardContent className="flex flex-col items-center gap-3 py-8 text-center">
                             <Brain className="size-10 text-primary/40" />
                             <div>
-                              <h3 className="text-sm font-bold">Knowledge Check</h3>
-                              <p className="text-xs text-muted-foreground">Test what you learned in this step.</p>
+                              <h3 className="text-base font-bold">Knowledge Check</h3>
+                              <p className="text-sm text-muted-foreground">Test what you learned in this step.</p>
                             </div>
-                            <Button onClick={() => setShowTrivia(true)} size="sm" className="rounded-lg text-xs font-bold">
+                            <Button onClick={() => setShowTrivia(true)} size="sm" className="rounded-lg text-sm font-bold">
                               Start Knowledge Check
                             </Button>
                           </CardContent>
@@ -504,7 +503,7 @@ export function ModuleDetailView() {
                     </div>
                   )}
 
-                  {/* === Step navigation === */}
+                  {/* Step navigation */}
                   {!isMastery && (
                     <>
                       <Separator />
@@ -513,31 +512,31 @@ export function ModuleDetailView() {
                           variant="outline" size="sm"
                           onClick={() => handleSelectStep(Math.max(1, currentStep - 1))}
                           disabled={currentStep <= 1}
-                          className="gap-1 rounded-lg text-xs font-bold"
+                          className="gap-1 rounded-lg text-sm font-semibold"
                         >
                           <ChevronLeft className="size-3.5" /> Previous
                         </Button>
 
-                        <span className="text-[10px] text-muted-foreground font-semibold hidden sm:block">
+                        <span className="text-xs text-muted-foreground font-medium hidden sm:block">
                           Step {currentStep} of {steps.length}
                         </span>
 
                         {currentStep < steps.length ? (
                           currentStepObj && isStepPassed(currentStepObj.order) ? (
-                            <Button variant="outline" size="sm" onClick={() => handleSelectStep(currentStep + 1)} className="gap-1 rounded-lg text-xs font-bold">
+                            <Button variant="outline" size="sm" onClick={() => handleSelectStep(currentStep + 1)} className="gap-1 rounded-lg text-sm font-semibold">
                               Next <ChevronRight className="size-3.5" />
                             </Button>
                           ) : activeTab === "quiz" ? (
-                            <Button size="sm" onClick={handleFinishTrivia} className="gap-1 rounded-lg text-xs font-bold">
+                            <Button size="sm" onClick={handleFinishTrivia} className="gap-1 rounded-lg text-sm font-semibold">
                               <CheckCircle2 className="size-3.5" /> Complete & Continue
                             </Button>
                           ) : (
-                            <Button size="sm" onClick={() => { if (hasQuiz) setActiveTab("quiz"); else handleFinishTrivia(); }} className="gap-1 rounded-lg text-xs font-bold">
+                            <Button size="sm" onClick={() => { if (hasQuiz) setActiveTab("quiz"); else handleFinishTrivia(); }} className="gap-1 rounded-lg text-sm font-semibold">
                               {hasQuiz ? "Take Quiz" : "Complete"} <ArrowRight className="size-3.5" />
                             </Button>
                           )
                         ) : currentStep === steps.length && !isStepPassed(steps[steps.length - 1]?.order) ? (
-                          <Button size="sm" onClick={handleFinishModule} className="gap-1 rounded-lg text-xs font-bold">
+                          <Button size="sm" onClick={handleFinishModule} className="gap-1 rounded-lg text-sm font-semibold">
                             <CheckCircle2 className="size-3.5" /> Finish Module
                           </Button>
                         ) : null}
@@ -550,25 +549,25 @@ export function ModuleDetailView() {
           </div>
         </div>
 
-        {/* === Curriculum sidebar — desktop === */}
+        {/* Curriculum sidebar — desktop */}
         <aside className="hidden w-64 shrink-0 border-l md:flex md:flex-col md:h-[calc(100dvh-8rem)]">
           <div className="flex-1 overflow-y-auto">
             <div className="p-4">
               {mod.author && (
                 <div className="mb-4 flex items-center gap-2.5 rounded-lg bg-muted/30 p-3">
-                  <div className="flex size-8 items-center justify-center rounded-full bg-muted text-xs font-semibold">
+                  <div className="flex size-8 items-center justify-center rounded-full bg-muted text-sm font-semibold">
                     {mod.author.name?.slice(0, 2).toUpperCase()}
                   </div>
                   <div className="min-w-0">
-                    <p className="truncate text-xs font-medium">{mod.author.name}</p>
-                    {mod.author.role && <p className="truncate text-[10px] text-muted-foreground">{mod.author.role}</p>}
+                    <p className="truncate text-sm font-medium">{mod.author.name}</p>
+                    {mod.author.role && <p className="truncate text-xs text-muted-foreground">{mod.author.role}</p>}
                   </div>
                 </div>
               )}
 
               <div className="mb-3 flex items-center justify-between">
-                <h3 className="text-xs font-semibold">Curriculum</h3>
-                <span className="text-[10px] text-muted-foreground">{completedSteps.size}/{steps.length}</span>
+                <h3 className="text-sm font-semibold">Curriculum</h3>
+                <span className="text-xs text-muted-foreground">{completedSteps.size}/{steps.length}</span>
               </div>
 
               <div className="space-y-1">
@@ -581,13 +580,13 @@ export function ModuleDetailView() {
                       key={step.id}
                       onClick={() => handleSelectStep(stepNum)}
                       className={cn(
-                        "flex w-full items-center gap-2.5 rounded-lg p-2 text-left text-xs transition-colors",
+                        "flex w-full items-center gap-2.5 rounded-lg p-2 text-left text-sm transition-colors",
                         isCurrent && "bg-primary/10 text-primary",
                         !isCurrent && "hover:bg-muted/50",
                       )}
                     >
                       <span className={cn(
-                        "flex size-6 shrink-0 items-center justify-center rounded-full text-[10px] font-bold",
+                        "flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-bold",
                         isCurrent && "bg-primary text-primary-foreground",
                         !isCurrent && passed && "bg-emerald-500/15 text-emerald-600",
                         !isCurrent && !passed && "bg-muted text-muted-foreground",
@@ -603,7 +602,7 @@ export function ModuleDetailView() {
               <Separator className="my-4" />
 
               <div className="space-y-2">
-                <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+                <div className="flex items-center justify-between text-xs text-muted-foreground">
                   <span>Progress</span>
                   <span>{progressPercent}%</span>
                 </div>

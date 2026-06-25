@@ -73,7 +73,7 @@ type FlatFile = {
 
 function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }) {
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-semibold text-primary">
+    <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
       {label}
       <button onClick={onRemove} className="ml-0.5 rounded-full p-0.5 hover:bg-primary/20 transition-colors">
         <X className="size-2.5" />
@@ -349,7 +349,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
 
             {activeTab === "all" && (
               <section className="space-y-3">
-                <h2 className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Collections</h2>
+                <h2 className="text-sm font-semibold text-muted-foreground">Collections</h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5">
                   {filteredDocs.map((doc) => {
                     const yearRange = doc.years.length
@@ -400,7 +400,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
 
             {activeTab === "tracked" && (
               <section className="space-y-3">
-                <h2 className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Tracked Documents</h2>
+                <h2 className="text-sm font-semibold text-muted-foreground">Tracked Documents</h2>
                 {trackedFiles.length > 0 ? (
                   <FileList files={trackedFiles} />
                 ) : (
@@ -411,7 +411,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
 
             {activeTab === "commentaries" && (
               <section className="space-y-3">
-                <h2 className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">My Drafts</h2>
+                <h2 className="text-sm font-semibold text-muted-foreground">My Drafts</h2>
                 {commentaryFiles.length > 0 ? (
                   <FileList files={commentaryFiles} />
                 ) : (
@@ -594,12 +594,12 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
               <div className="bg-card shadow-xs rounded-xl overflow-hidden ring-1 ring-border/30">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground border-b border-border/30">
-                      <th className="px-3 py-2.5">Name</th>
-                      <th className="px-3 py-2.5 hidden md:table-cell">County</th>
-                      <th className="px-3 py-2.5 hidden md:table-cell">Year</th>
-                      <th className="px-3 py-2.5 hidden lg:table-cell">Size</th>
-                      <th className="px-3 py-2.5 text-right">Actions</th>
+                    <tr className="text-xs font-semibold text-muted-foreground border-b">
+                      <th className="px-3 py-2.5 font-medium">Name</th>
+                      <th className="px-3 py-2.5 hidden md:table-cell font-medium">County</th>
+                      <th className="px-3 py-2.5 hidden md:table-cell font-medium">Year</th>
+                      <th className="px-3 py-2.5 hidden lg:table-cell font-medium">Size</th>
+                      <th className="px-3 py-2.5 text-right font-medium">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border/20 text-xs">
@@ -694,11 +694,11 @@ function FileList({ files }: { files: DocumentFile[] }) {
       <div className="hidden md:block bg-card shadow-xs rounded-xl overflow-hidden ring-1 ring-border/30">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground border-b border-border/30">
-              <th className="px-4 py-3">Name</th>
-              <th className="px-4 py-3">Size</th>
-              <th className="px-4 py-3">Modified</th>
-              <th className="px-4 py-3 text-right">Actions</th>
+            <tr className="text-xs font-semibold text-muted-foreground border-b">
+              <th className="px-4 py-3 font-medium">Name</th>
+              <th className="px-4 py-3 font-medium">Size</th>
+              <th className="px-4 py-3 font-medium">Modified</th>
+              <th className="px-4 py-3 text-right font-medium">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border/20 text-xs">
@@ -765,11 +765,11 @@ function FileList({ files }: { files: DocumentFile[] }) {
 
 function EmptyState({ message }: { message: string }) {
   return (
-    <div className="text-center py-12 border border-dashed border-border rounded-2xl">
-      <div className="size-10 rounded-full bg-muted/30 flex items-center justify-center mx-auto mb-2 ring-1 ring-border/30">
+    <div className="text-center py-12 border border-dashed rounded-xl">
+      <div className="size-10 rounded-full bg-muted/30 flex items-center justify-center mx-auto mb-2">
         <FileText className="size-4 text-muted-foreground/40" />
       </div>
-      <p className="text-xs font-semibold text-muted-foreground">{message}</p>
+      <p className="text-sm font-medium text-muted-foreground">{message}</p>
     </div>
   );
 }
