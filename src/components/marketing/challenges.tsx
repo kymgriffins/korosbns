@@ -68,7 +68,7 @@ const Challenges = () => {
                         className="text-4xl md:text-6xl font-bold font-heading tracking-tight mt-6"
                     >
                         Amplify your voice, <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-400">win for the community</span>
+                        <span className="text-primary">win for the community</span>
                     </motion.h1>
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}
@@ -89,7 +89,7 @@ const Challenges = () => {
                         viewport={{ once: true }}
                         className="relative mb-20 overflow-hidden rounded-[2.5rem] border border-primary/20 bg-black/40 backdrop-blur-xl"
                     >
-                        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-purple-500/5" />
+                        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary/5" />
                         
                         <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-10 p-8 lg:p-12">
                             <div className="space-y-8">

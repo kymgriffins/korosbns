@@ -316,7 +316,7 @@ export default function RetroTvCard() {
           align-items: center;
           justify-content: center;
           opacity: 0.3;
-          font-family: Montserrat, sans-serif;
+          font-family: Geist, system-ui, sans-serif;
         }
         .text_4041,
         .text_4042,

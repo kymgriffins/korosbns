@@ -83,7 +83,7 @@ const SECTORS: Record<string, SectorData> = {
     label: "Digital Superhighway",
     shortLabel: "Digital",
     allocation: "KES 15.8B",
-    color: "from-violet-800 via-purple-600 to-fuchsia-400",
+    color: "from-blue-800 via-blue-600 to-blue-400",
     icon: Wifi,
     slides: [
       { title: "Budget Allocation", value: "KES 15.8B", body: "Digital infrastructure and connectivity budget", accent: "Digital fund" },
@@ -107,7 +107,7 @@ const SECTORS: Record<string, SectorData> = {
     label: "Education",
     shortLabel: "Education",
     allocation: "KES 784.5B",
-    color: "from-indigo-800 via-indigo-600 to-blue-400",
+    color: "from-emerald-800 via-emerald-600 to-emerald-400",
     icon: BookOpen,
     slides: [
       { title: "Budget Allocation", value: "KES 784.5B", body: "Total education sector budget", accent: "Education fund" },

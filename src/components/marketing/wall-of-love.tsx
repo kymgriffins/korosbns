@@ -120,7 +120,7 @@ const WallOfLove = () => {
                                         whileInView={{ width: `${(item.value / shareMax) * 100}%` }}
                                         viewport={{ once: true }}
                                         transition={{ duration: 0.7 }}
-                                        className="h-3 rounded-md bg-linear-to-r from-violet-500 to-fuchsia-400 shadow-[4px_4px_0_rgba(139,92,246,0.3)]"
+                                        className="h-3 rounded-md bg-primary"
                                     />
                                 </div>
                             ))}

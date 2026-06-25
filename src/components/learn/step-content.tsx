@@ -165,7 +165,7 @@ export function StepContent({ step, currentStep, totalSteps, activeFormat, showT
                 [&>h3]:text-base [&>h3]:font-bold [&>h3]:mb-2 [&>h3]:mt-4
                 [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:mb-4 [&>ul]:space-y-1.5
                 [&>ol]:list-decimal [&>ol]:pl-5 [&>ol]:mb-4 [&>ol]:space-y-1.5
-                [&>blockquote]:border-l-4 [&>blockquote]:border-primary [&>blockquote]:pl-4 [&>blockquote]:italic [&>blockquote]:my-4
+                [&>blockquote]:border [&>blockquote]:border-border [&>blockquote]:bg-muted/30 [&>blockquote]:rounded-xl [&>blockquote]:px-4 [&>blockquote]:py-3 [&>blockquote]:italic [&>blockquote]:my-4
                 [&>a]:text-primary [&>a]:underline hover:[&>a]:text-primary/80
               ">
                 {renderContent(getPersonalizedText(step.text))}
@@ -176,8 +176,8 @@ export function StepContent({ step, currentStep, totalSteps, activeFormat, showT
                 if (!takeaway) return null;
                 const isInfo = takeaway.type === "info" || takeaway.type === "tip";
                 return (
-                  <div className={cn("mt-6 p-4 rounded-xl border-l-4 shadow-xs",
-                    isInfo ? "bg-blue-50/50 border-blue-500 dark:bg-blue-900/15 dark:border-blue-400" : "bg-amber-50/50 border-amber-500 dark:bg-amber-900/15 dark:border-amber-400"
+                  <div className={cn("mt-6 p-4 rounded-xl border",
+                    isInfo ? "bg-blue-50/50 border-blue-200 dark:bg-blue-900/15 dark:border-blue-800" : "bg-amber-50/50 border-amber-200 dark:bg-amber-900/15 dark:border-amber-800"
                   )}>
                     <p className={cn("text-xs font-bold flex items-center gap-1.5", isInfo ? "text-blue-700 dark:text-blue-300" : "text-amber-700 dark:text-amber-300")}>
                       {isInfo ? <Lightbulb className="size-3.5" /> : <AlertTriangle className="size-3.5" />} {takeaway.title}

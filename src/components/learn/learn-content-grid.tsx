@@ -20,11 +20,11 @@ const TYPE_ICONS: Record<string, typeof BookOpen> = {
 };
 
 const TYPE_GRADIENTS: Record<string, string> = {
-  video: "from-purple-500/10 to-purple-500/5",
-  article: "from-emerald-500/10 to-emerald-500/5",
-  story: "from-amber-500/10 to-amber-500/5",
-  document: "from-rose-500/10 to-rose-500/5",
-  path: "from-blue-500/10 to-blue-500/5",
+  video: "from-muted to-muted/50",
+  article: "from-muted to-muted/50",
+  story: "from-muted to-muted/50",
+  document: "from-muted to-muted/50",
+  path: "from-muted to-muted/50",
 };
 
 export function LearnContentGrid({
