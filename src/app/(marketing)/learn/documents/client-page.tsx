@@ -21,9 +21,5 @@ export function LearnDocumentsPageClient() {
     return <DashboardSkeleton />;
   }
 
-  return (
-    <div className="h-full flex flex-col p-4 md:p-6">
-      <LearnDocumentsView profile={profile} />
-    </div>
-  );
+  return <LearnDocumentsView profile={profile} />;
 }

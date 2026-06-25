@@ -32,18 +32,21 @@ const MarketingLayout = ({
     >
       {!isLearnApp && <Navbar />}
 
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.div
-          key={pathname}
-          initial={{ opacity: 0, y: 14, filter: "blur(4px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          exit={{ opacity: 0, y: -10, filter: "blur(4px)" }}
-          transition={{ duration: 0.38, ease: ease.expo }}
-          className={isLearnApp ? "h-dvh md:h-auto" : undefined}
-        >
-          {children}
-        </motion.div>
-      </AnimatePresence>
+      {isLearnApp ? (
+        children
+      ) : (
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={pathname}
+            initial={{ opacity: 0, y: 14, filter: "blur(4px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            exit={{ opacity: 0, y: -10, filter: "blur(4px)" }}
+            transition={{ duration: 0.38, ease: ease.expo }}
+          >
+            {children}
+          </motion.div>
+        </AnimatePresence>
+      )}
 
       {showMarketingFooter && (
         <>
