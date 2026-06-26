@@ -63,6 +63,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/ui/dialog";
+import { Textarea } from "@/ui/textarea";
+import { Label } from "@/ui/label";
 
 import { taskApi } from "@/lib/task-api";
 import { exportTasksAsCsv, exportTasksAsJson } from "@/lib/export-utils";
@@ -282,6 +284,9 @@ export default function TaskPage() {
   const [tagFilter, setTagFilter] = useState<TaskTag | "">("");
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [bypassDialog, setBypassDialog] = useState<{ task: Task; columnId: string } | null>(null);
+  const [bypassComment, setBypassComment] = useState("");
+  const [bypassSaving, setBypassSaving] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -363,6 +368,15 @@ export default function TaskPage() {
 
     if (activeTask_.status === "published") {
       toast.error("Done tasks cannot be moved");
+      fetchTasks();
+      return;
+    }
+
+    const incompleteItems = activeTask_.checklist?.filter((c) => !c.checked) ?? [];
+
+    if (overColumn.id === "published" && incompleteItems.length > 0) {
+      setBypassDialog({ task: activeTask_, columnId: overColumn.id });
+      setBypassComment("");
       fetchTasks();
       return;
     }
@@ -633,6 +647,71 @@ export default function TaskPage() {
           )}
         </DragOverlay>
       </DndContext>
+
+      <Dialog
+        open={bypassDialog !== null}
+        onOpenChange={(open) => { if (!open) { setBypassDialog(null); setBypassComment(""); } }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Incomplete Checklist Items</DialogTitle>
+            <DialogDescription>
+              {bypassDialog?.task.checklist?.filter((c) => !c.checked).length} checklist item(s) are not completed.
+              Complete them first, or leave a comment explaining why you're bypassing.
+            </DialogDescription>
+          </DialogHeader>
+          {bypassDialog && (
+            <div className="space-y-3 py-2">
+              <div className="rounded-lg border bg-muted/30 p-3 max-h-32 overflow-y-auto">
+                {bypassDialog.task.checklist?.filter((c) => !c.checked).map((item) => (
+                  <div key={item.id} className="flex items-center gap-2 py-0.5 text-sm text-muted-foreground">
+                    <span className="size-1.5 rounded-full bg-amber-500 shrink-0" />
+                    {item.text}
+                  </div>
+                ))}
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="bypass-comment">Bypass reason (required)</Label>
+                <Textarea
+                  id="bypass-comment"
+                  value={bypassComment}
+                  onChange={(e) => setBypassComment(e.target.value)}
+                  placeholder="Why are you publishing without completing all checklist items?"
+                  rows={3}
+                  className="resize-none text-sm"
+                />
+              </div>
+            </div>
+          )}
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => { setBypassDialog(null); setBypassComment(""); }}>
+              Cancel
+            </Button>
+            <Button
+              variant="default"
+              disabled={!bypassComment.trim() || bypassSaving}
+              onClick={async () => {
+                if (!bypassDialog) return;
+                setBypassSaving(true);
+                try {
+                  await taskApi.publish(bypassDialog.task.id, true, bypassComment.trim());
+                  toast.success("Task published with bypass");
+                  fetchTasks();
+                } catch {
+                  toast.error("Failed to publish task");
+                } finally {
+                  setBypassSaving(false);
+                  setBypassDialog(null);
+                  setBypassComment("");
+                }
+              }}
+            >
+              {bypassSaving ? <Loader2 className="mr-1.5 size-4 animate-spin" /> : null}
+              Publish Anyway
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Dialog
         open={deleteConfirmId !== null}

@@ -681,10 +681,11 @@ export const citizenApi = {
       auth: true,
       body: JSON.stringify({ action, comment }),
     }),
-  publishWeeklyNote: (id: string) =>
+  publishWeeklyNote: (id: string, bypassChecklist = false, bypassComment = "") =>
     apiFetch<WeeklyNoteApi>(`/notes/${id}/publish/`, {
       method: "POST",
       auth: true,
+      body: JSON.stringify({ bypass_checklist: bypassChecklist, bypass_comment: bypassComment }),
     }),
 
   getAnalyticsSummary: () => apiFetch<AnalyticsSummaryApi>("/analytics/summary/"),

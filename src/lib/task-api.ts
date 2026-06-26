@@ -163,8 +163,8 @@ export const taskApi = {
     return mapNoteToTask(note);
   },
 
-  publish: async (id: string): Promise<Task> => {
-    const note = await citizenApi.publishWeeklyNote(id);
+  publish: async (id: string, bypassChecklist = false, bypassComment = ""): Promise<Task> => {
+    const note = await citizenApi.publishWeeklyNote(id, bypassChecklist, bypassComment);
     return mapNoteToTask(note);
   },
 
