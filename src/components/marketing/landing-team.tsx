@@ -33,7 +33,7 @@ export default function LandingTeam() {
             transition={{ duration: 0.7, delay: i * 0.1 }}
             className="group"
           >
-            <div className="relative mb-6 aspect-[4/5] overflow-hidden rounded-3xl border border-border/40 bg-zinc-100 shadow-md dark:bg-zinc-900">
+            <div className="relative mb-6 aspect-[4/5] overflow-hidden rounded-3xl border border-border/40 bg-zinc-100 dark:bg-zinc-900">
               <Image
                 src={member.image}
                 alt={member.name}
@@ -43,7 +43,7 @@ export default function LandingTeam() {
               />
             </div>
             <h3 className="mb-1 text-2xl font-bold tracking-tight">{member.name}</h3>
-            <p className="mb-4 text-xs font-bold uppercase tracking-widest text-primary">
+            <p className="mb-4 text-xs font-semibold text-primary">
               {member.role}
             </p>
             <p className="text-sm leading-relaxed text-foreground/70">
@@ -61,7 +61,7 @@ export default function LandingTeam() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-40px" }}
             transition={{ duration: 0.5, delay: i * 0.05 }}
-            className="flex w-full flex-col gap-4 rounded-3xl border border-border bg-card p-5 shadow-md"
+            className="flex w-full flex-col gap-4 rounded-3xl border border-border bg-card p-5"
           >
             <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-border/20 bg-zinc-100 dark:bg-zinc-900">
               <Image
@@ -74,7 +74,7 @@ export default function LandingTeam() {
             </div>
             <div>
               <h3 className="mb-0.5 text-xl font-bold tracking-tight">{member.name}</h3>
-              <p className="mb-2.5 text-[10px] font-bold uppercase tracking-widest text-primary">
+              <p className="mb-2.5 text-xs font-semibold text-primary">
                 {member.role}
               </p>
               <p className="text-xs leading-relaxed text-foreground/80">

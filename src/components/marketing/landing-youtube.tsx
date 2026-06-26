@@ -27,7 +27,7 @@ export default function LandingYoutube() {
 
         <motion.div
           variants={fadeInUp}
-          className="relative rounded-2xl border border-border bg-card p-2 shadow-sm md:rounded-3xl"
+          className="relative rounded-2xl border border-border bg-card p-2 md:rounded-3xl"
         >
           <div className="relative aspect-video overflow-hidden rounded-xl bg-muted md:rounded-2xl">
             <iframe

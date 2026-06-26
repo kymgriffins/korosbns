@@ -43,8 +43,8 @@ const activities = [
         title: "Grassroots Organizing",
         description: "Establishing university and community chapters to build a nationwide network of budget trackers.",
         icon: Users,
-        color: "text-purple-500",
-        bg: "bg-purple-500/10",
+        color: "text-primary",
+        bg: "bg-primary/10",
     },
     {
         title: "Impact Monitoring",

@@ -41,14 +41,14 @@ const BarPair = ({ year, budget, debt }: { year: string; budget: number; debt: n
                 whileInView={{ height: `${(budget / chartMax) * 100}%`, opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.75 }}
-                className="w-4 md:w-5 rounded-t-sm bg-linear-to-t from-cyan-500 to-cyan-300 shadow-[6px_6px_0_rgba(6,182,212,0.25)]"
+                className="w-4 md:w-5 rounded-t-sm bg-primary shadow-[6px_6px_0_var(--color-primary)/0.25]"
             />
             <motion.div
                 initial={{ height: 0, opacity: 0.4 }}
                 whileInView={{ height: `${(debt / chartMax) * 100}%`, opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.9 }}
-                className="w-4 md:w-5 rounded-t-sm bg-linear-to-t from-rose-600 to-orange-300 shadow-[6px_6px_0_rgba(244,63,94,0.25)]"
+                className="w-4 md:w-5 rounded-t-sm bg-destructive shadow-[6px_6px_0_var(--color-destructive)/0.25]"
             />
         </div>
         <span className="text-[10px] md:text-xs text-muted-foreground">{year}</span>
@@ -86,8 +86,8 @@ const WallOfLove = () => {
                         <div className="flex items-center justify-between mb-5">
                             <h3 className="text-lg md:text-xl font-semibold">Debt vs Budget Growth (KES Trillion)</h3>
                             <div className="flex items-center gap-3 text-xs">
-                                <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-cyan-400" />Budget</span>
-                                <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-rose-500" />Debt</span>
+                                <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-primary" />Budget</span>
+                                <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-destructive" />Debt</span>
                             </div>
                         </div>
                         <div className="rounded-2xl border border-foreground/10 bg-black/[0.22] p-4 md:p-5">
@@ -143,7 +143,7 @@ const WallOfLove = () => {
                                         whileInView={{ height: `${(item.value / transferMax) * 180}px` }}
                                         viewport={{ once: true }}
                                         transition={{ duration: 0.8 }}
-                                        className="w-full max-w-[70px] rounded-t-md bg-linear-to-t from-sky-700 via-blue-500 to-cyan-300 shadow-[8px_8px_0_rgba(14,116,144,0.3)]"
+                                        className="w-full max-w-[70px] rounded-t-md bg-primary shadow-[8px_8px_0_var(--color-primary)/0.3]"
                                     />
                                     <span className="text-xs text-muted-foreground">{item.year}</span>
                                     <span className="text-[11px] md:text-xs font-medium">{item.value}B</span>

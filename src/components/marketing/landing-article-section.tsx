@@ -15,7 +15,7 @@ const LandingArticleSection = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
                     >
-                        <span className="text-primary font-bold uppercase tracking-widest text-sm mb-6 block">What we do</span>
+                        <span className="text-primary font-semibold text-sm mb-6 block">What we do</span>
                         <h2 className="gusto-heading mb-8">Translating numbers into <span className="italic font-heading text-primary">narratives</span>.</h2>
                     </motion.div>
 
@@ -35,11 +35,11 @@ const LandingArticleSection = () => {
                         <div className="pt-8 grid grid-cols-2 gap-8 border-t border-black/10">
                             <div>
                                 <h4 className="text-3xl md:text-4xl font-bold mb-2">50k+</h4>
-                                <p className="text-xs uppercase tracking-widest text-black/50">Active Community</p>
+                                <p className="text-xs text-black/50">Active Community</p>
                             </div>
                             <div>
                                 <h4 className="text-3xl md:text-4xl font-bold mb-2">12+</h4>
-                                <p className="text-xs uppercase tracking-widest text-black/50">County Chapters</p>
+                                <p className="text-xs text-black/50">County Chapters</p>
                             </div>
                         </div>
                     </motion.div>

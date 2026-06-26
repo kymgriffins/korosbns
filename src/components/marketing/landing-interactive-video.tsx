@@ -46,7 +46,7 @@ const LandingInteractiveVideo = () => {
                             className="fixed -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none w-32 h-32 bg-white rounded-full flex flex-col items-center justify-center mix-blend-difference"
                         >
                             <PlayIcon className="w-8 h-8 text-black fill-black" />
-                            <span className="text-black text-[10px] font-bold tracking-widest mt-2 uppercase">Play</span>
+                            <span className="text-black text-[10px] font-semibold mt-2">Play</span>
                         </motion.div>
                     )}
                 </AnimatePresence>
@@ -104,7 +104,7 @@ const LandingInteractiveVideo = () => {
                             ></iframe>
                             <button 
                                 onClick={() => setIsOpen(false)}
-                                className="absolute top-6 right-6 text-white/50 hover:text-white uppercase tracking-widest text-xs font-bold transition-colors"
+                                className="absolute top-6 right-6 text-white/50 hover:text-white text-xs font-semibold transition-colors"
                             >
                                 Close [esc]
                             </button>

@@ -29,7 +29,7 @@ export default function LandingFooter() {
 
                     <div className="grid grid-cols-2 gap-8 md:gap-12">
                         <div className="space-y-6">
-                            <h4 className="text-white/40 uppercase tracking-widest text-[10px] font-bold">Explore</h4>
+                            <h4 className="text-white/40 text-xs font-semibold">Explore</h4>
                             <ul className="space-y-4">
                                 <li><Link href="/learn" className="text-base md:text-lg hover:text-primary transition-colors inline-block">Stories</Link></li>
                                 <li><Link href="/learn" className="text-base md:text-lg hover:text-primary transition-colors inline-block">Learn</Link></li>
@@ -38,7 +38,7 @@ export default function LandingFooter() {
                             </ul>
                         </div>
                         <div className="space-y-6">
-                            <h4 className="text-white/40 uppercase tracking-widest text-[10px] font-bold">Social</h4>
+                            <h4 className="text-white/40 text-xs font-semibold">Social</h4>
                             <ul className="space-y-4">
                                 <li><a href="https://instagram.com/budgetndiostory" target="_blank" rel="noopener noreferrer" className="text-base md:text-lg hover:text-primary transition-colors inline-block">Instagram</a></li>
                                 <li><a href="https://twitter.com/budgetndiostory" target="_blank" rel="noopener noreferrer" className="text-base md:text-lg hover:text-primary transition-colors inline-block">Twitter / X</a></li>
@@ -54,7 +54,7 @@ export default function LandingFooter() {
                         <span className="text-xl font-black tracking-tighter text-white">BNS.</span>
                         <span className="text-white/20 text-xs">© 2026 Budget Ndio Story</span>
                     </div>
-                    <div className="flex gap-6 text-white/40 text-[10px] font-bold uppercase tracking-widest">
+                    <div className="flex gap-6 text-white/40 text-xs font-semibold">
                         <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
                         <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
                     </div>

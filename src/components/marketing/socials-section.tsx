@@ -41,7 +41,7 @@ const platformDefaults: Record<
   },
   tiktok: {
     icon: <TikTokIcon className="size-5" />,
-    color: "hover:bg-purple-500/10",
+    color: "hover:bg-foreground/10",
     handle: "@budget.ndio.story",
   },
   whatsapp: {

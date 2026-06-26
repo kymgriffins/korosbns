@@ -52,7 +52,7 @@ export default function ArticlesPromoMarquee() {
   if (closed || loading || articles.length === 0) return null;
 
   return (
-    <div className="relative z-30 mx-auto mt-1 lg:mt-2 w-[min(1200px,96%)] rounded-2xl bg-background/70 backdrop-blur-md overflow-hidden">
+    <div className="relative z-30 mx-auto mt-1 lg:mt-2 w-[min(1200px,96%)] rounded-2xl bg-background/70 overflow-hidden">
       <button
         onClick={handleClose}
         aria-label="Close articles promo"
@@ -63,7 +63,7 @@ export default function ArticlesPromoMarquee() {
 
       <div className="flex items-center justify-between border-b border-foreground/10 px-4 py-2.5">
         <div className="flex items-center gap-2 overflow-hidden">
-          <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-primary shrink-0">
+          <span className="text-xs font-semibold text-primary shrink-0">
             Latest articles
           </span>
           <span className="hidden sm:inline-block text-xs text-foreground/60 truncate">

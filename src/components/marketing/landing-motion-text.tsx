@@ -80,7 +80,7 @@ const LandingMotionText = () => {
           <p className="text-xl md:text-2xl text-foreground/50 leading-relaxed font-light mb-6">
             &quot;The energy of youth is a engine, but without the fuel of knowledge, it runs in circles. Youths cannot lead what they do not understand.&quot;
           </p>
-          <span className="text-primary font-bold uppercase tracking-[0.2em] text-sm">&mdash; James Mutinda, Deep Dive Series</span>
+          <span className="text-primary font-semibold text-sm">&mdash; James Mutinda, Deep Dive Series</span>
         </motion.div>
       </div>
 

@@ -25,7 +25,7 @@ export function BNSStudioSection() {
           className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center"
         >
           <motion.div variants={fadeInUp} className="space-y-6">
-            <span className="text-xs font-bold uppercase tracking-widest text-primary">
+            <span className="text-xs font-semibold text-primary">
               BNS Studio
             </span>
             <h2 className="text-3xl md:text-5xl font-bold font-heading tracking-tight">
@@ -72,7 +72,7 @@ export function BNSStudioSection() {
 
           <motion.div
             variants={fadeInUp}
-            className="relative aspect-video lg:aspect-square rounded-2xl overflow-hidden border border-border/60 bg-gradient-to-br from-primary/5 via-primary/10 to-teal-500/5"
+            className="relative aspect-video lg:aspect-square rounded-2xl overflow-hidden border border-border/60 bg-primary/5"
           >
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center">

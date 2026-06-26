@@ -56,7 +56,7 @@ const CloudinaryGallery = () => {
 const GalleryItem = ({ image, index }: { image: CloudinaryImage; index: number }) => {
   return (
     <div
-      className="relative aspect-[4/5] w-[260px] flex-shrink-0 overflow-hidden rounded-3xl border border-border bg-card shadow-lg md:w-[350px] transition-transform duration-500 hover:scale-[1.02]"
+      className="relative aspect-[4/5] w-[260px] flex-shrink-0 overflow-hidden rounded-3xl border border-border bg-card md:w-[350px] transition-transform duration-500 hover:scale-[1.02]"
     >
       <Image
         src={image.src}
@@ -65,8 +65,8 @@ const GalleryItem = ({ image, index }: { image: CloudinaryImage; index: number }
         className="object-cover transition-transform duration-700 hover:scale-105"
         sizes="(max-width: 768px) 260px, 350px"
       />
-      <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/85 via-black/35 to-transparent p-6 opacity-0 transition-opacity duration-300 hover:opacity-100">
-        <p className="text-sm font-semibold uppercase tracking-widest text-white">{image.alt}</p>
+      <div className="absolute inset-0 flex items-end bg-black/50 p-6 opacity-0 transition-opacity duration-300 hover:opacity-100">
+        <p className="text-sm font-semibold text-white">{image.alt}</p>
       </div>
     </div>
   );

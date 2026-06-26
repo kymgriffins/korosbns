@@ -55,15 +55,12 @@ export default function PartnersMarquee() {
   return (
     <section className="overflow-hidden border-y border-border/40 bg-background py-12 md:py-20">
       <div className={`${SECTION_SHELL_INNER} mb-8`}>
-        <span className="block text-center text-xs font-bold uppercase tracking-[0.3em] text-muted-foreground">
+        <span className="block text-center text-xs font-semibold text-muted-foreground">
           Trusted By Leading Institutions
         </span>
       </div>
 
       <div className="relative">
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-background to-transparent md:w-32" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-background to-transparent md:w-32" />
-
         <Marquee pauseOnHover className="[--duration:28s] [--gap:2rem] md:[--gap:3rem]">
           {partners.map((partner) => (
             <PartnerLogo key={partner.name} partner={partner} />
