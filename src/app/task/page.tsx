@@ -25,6 +25,7 @@ import {
   CircleDot,
   Download,
   Hash,
+  Loader2,
   MoreHorizontal,
   Plus,
   Search,
