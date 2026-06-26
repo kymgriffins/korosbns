@@ -382,34 +382,12 @@ function LearnSidebar() {
 
 function LearnAppShell({ children }: { children: React.ReactNode }) {
   const { isLoggedIn, loading: authLoading } = useAuth();
-  const { civicModules } = useLearn();
-  const [hasProfile, setHasProfile] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const canBrowseModules = civicModules.length > 0;
 
   useEffect(() => {
-    const checkProfile = () => {
-      try {
-        const raw = localStorage.getItem("bns_user_profile");
-        setHasProfile(!!raw && JSON.parse(raw)?.breakName);
-      } catch {
-        setHasProfile(false);
-      }
-    };
-    checkProfile();
-
-    const onStorage = (e: StorageEvent) => {
-      if (e.key === "bns_user_profile") checkProfile();
-    };
-    const onProfileUpdate = () => checkProfile();
-    window.addEventListener("storage", onStorage);
-    window.addEventListener("bns-profile-updated", onProfileUpdate);
-
     document.body.classList.add("overflow-hidden");
     return () => {
       document.body.classList.remove("overflow-hidden");
-      window.removeEventListener("storage", onStorage);
-      window.removeEventListener("bns-profile-updated", onProfileUpdate);
     };
   }, []);
 
@@ -420,16 +398,6 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
     main.addEventListener("scroll", onScroll, { passive: true });
     return () => main.removeEventListener("scroll", onScroll);
   }, []);
-
-  // Don't collapse to bare fallback while auth is still resolving — sidebar
-  // should always render (its noUserYet skeleton handles the loading state).
-  if (!authLoading && !isLoggedIn && !hasProfile && !canBrowseModules) {
-    return (
-      <div className="min-h-dvh bg-background text-foreground overflow-hidden flex items-center justify-center">
-        <main className="w-full">{children}</main>
-      </div>
-    );
-  }
 
   return (
     <div className="h-dvh md:min-h-screen bg-background text-foreground overflow-hidden">

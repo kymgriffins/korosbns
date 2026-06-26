@@ -39,7 +39,7 @@ const MarketingLayout = ({
           animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           exit={{ opacity: 0, y: -10, filter: "blur(4px)" }}
           transition={{ duration: 0.38, ease: ease.expo }}
-          className={isLearnApp ? "h-dvh md:h-auto" : undefined}
+          className={isLearnApp ? "contents" : undefined}
         >
           {children}
         </motion.div>
