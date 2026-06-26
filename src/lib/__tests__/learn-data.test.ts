@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import {
-  createGuestBrowseProfile,
   fetchCivicModulesWithRetry,
 } from "@/lib/learn-data";
 import { learnHubApi } from "@/lib/learn-hub";
@@ -34,11 +33,5 @@ describe("fetchCivicModulesWithRetry", () => {
   it("throws after exhausting retries", async () => {
     vi.mocked(learnHubApi.stages).mockRejectedValue(new Error("down"));
     await expect(fetchCivicModulesWithRetry(2)).rejects.toThrow("down");
-  });
-});
-
-describe("createGuestBrowseProfile", () => {
-  it("marks guest browse profiles", () => {
-    expect(createGuestBrowseProfile().isGuestBrowse).toBe(true);
   });
 });

@@ -1,6 +1,7 @@
 import {
   ADMIN_PATH_PREFIXES,
   BUDGETHUB_PATH_PREFIXES,
+  BUDGETHUB_PUBLIC_PREFIXES,
   buildLoginUrl,
   DEFAULT_POST_LOGIN_PATH,
   isAuthPage,
@@ -29,7 +30,8 @@ export function evaluateAuthMiddleware(
     return { action: "redirect", location: buildLoginUrl(pathname) };
   }
 
-  const isBudgethubPath = BUDGETHUB_PATH_PREFIXES.some((p) => pathMatchesPrefix(pathname, p));
+  const isBudgethubPublicPath = BUDGETHUB_PUBLIC_PREFIXES.some((p) => pathMatchesPrefix(pathname, p));
+  const isBudgethubPath = !isBudgethubPublicPath && BUDGETHUB_PATH_PREFIXES.some((p) => pathMatchesPrefix(pathname, p));
   if (isBudgethubPath && !token) {
     return { action: "redirect", location: buildLoginUrl(pathname) };
   }

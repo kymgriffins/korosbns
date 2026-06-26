@@ -21,9 +21,9 @@ interface SectorsTabProps {
 }
 
 const SECTOR_COLORS = [
-  "hsl(221 83% 53%)", "hsl(262 83% 58%)", "hsl(199 89% 48%)",
-  "hsl(142 76% 36%)", "hsl(24 95% 53%)", "hsl(346 77% 50%)",
-  "hsl(47 95% 48%)", "hsl(173 80% 40%)", "hsl(12 76% 61%)",
+  "hsl(221 83% 53%)", "hsl(142 76% 36%)", "hsl(24 95% 53%)",
+  "hsl(173 80% 40%)", "hsl(346 77% 50%)", "hsl(47 95% 48%)",
+  "hsl(12 76% 61%)", "hsl(160 84% 39%)", "hsl(31 95% 50%)",
 ];
 
 function SectorDetailView({
@@ -52,7 +52,7 @@ function SectorDetailView({
       </button>
 
       <div className="flex items-center gap-3">
-        <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/5">
+        <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10">
           <Building2 className="size-5 text-primary" />
         </div>
         <div>
@@ -67,17 +67,17 @@ function SectorDetailView({
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div className="rounded-lg border bg-card p-4">
-          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Budget Share</p>
+          <p className="text-xs font-medium text-muted-foreground">Budget Share</p>
           <p className="text-xl font-bold tabular-nums mt-1">{sector.national_budget_share_pct}%</p>
           <p className="text-xs text-muted-foreground">of national budget</p>
         </div>
         <div className="rounded-lg border bg-card p-4">
-          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Recurrent</p>
+          <p className="text-xs font-medium text-muted-foreground">Recurrent</p>
           <p className="text-xl font-bold tabular-nums mt-1">{formatKesBillions((sector.expenditure_type_split?.recurrent ?? 0) / 1e9)}</p>
           <p className="text-xs text-muted-foreground">Operational expenditure</p>
         </div>
         <div className="rounded-lg border bg-card p-4">
-          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Development</p>
+          <p className="text-xs font-medium text-muted-foreground">Development</p>
           <p className="text-xl font-bold tabular-nums mt-1">{formatKesBillions((sector.expenditure_type_split?.development ?? 0) / 1e9)}</p>
           <p className="text-xs text-muted-foreground">Capital expenditure</p>
         </div>
@@ -94,7 +94,7 @@ function SectorDetailView({
       )}
 
       {multiYear.length > 1 && (
-        <Card className="border-border/60 shadow-sm">
+        <Card className="border-border/60">
           <CardHeader>
             <h3 className="text-sm font-semibold flex items-center gap-2">
               <TrendingUp className="size-4 text-primary" />Multi-Year Trend
@@ -120,7 +120,7 @@ function SectorDetailView({
         </Card>
       )}
 
-      <Card className="border-border/60 shadow-sm">
+      <Card className="border-border/60">
         <CardHeader>
           <h3 className="text-sm font-semibold flex items-center gap-2">
             <PieChart className="size-4 text-primary" />Sub-Vote Breakdown
@@ -232,7 +232,7 @@ export function SectorsTab({ currentData, allYears, fiscalYears }: SectorsTabPro
             <button key={s.name} onClick={() => setSelectedSectorCode(sectors[i]?.sector_code ?? "")}
               className="group text-left"
             >
-              <Card className="border-border/60 shadow-sm group-hover:shadow-md group-hover:border-primary/20 transition-all duration-300">
+              <Card className="border-border/60 group-hover:border-primary/20 transition-all duration-300">
                 <CardContent className="p-4">
                   <div className="flex items-start gap-3">
                     <div className="flex size-9 shrink-0 items-center justify-center rounded-lg" style={{ backgroundColor: `${s.color}15` }}>
@@ -258,7 +258,7 @@ export function SectorsTab({ currentData, allYears, fiscalYears }: SectorsTabPro
         </div>
       </div>
 
-      <Card className="border-border/60 shadow-sm">
+      <Card className="border-border/60">
         <CardHeader>
           <h3 className="text-sm font-semibold flex items-center gap-2">
             <PieChart className="size-4 text-primary" />Sector Comparison Radar
@@ -281,7 +281,7 @@ export function SectorsTab({ currentData, allYears, fiscalYears }: SectorsTabPro
         </CardContent>
       </Card>
 
-      <Card className="border-border/60 shadow-sm">
+      <Card className="border-border/60">
         <CardHeader>
           <h3 className="text-sm font-semibold flex items-center gap-2">
             <ArrowLeftRight className="size-4 text-primary" />Side-by-Side Sector Comparison
@@ -330,10 +330,10 @@ export function SectorsTab({ currentData, allYears, fiscalYears }: SectorsTabPro
 
           {comparisonData.length > 0 && (
             <ResponsiveContainer width="100%" height={Math.max(200, comparisonData.length * 40)}>
-              <BarChart data={comparisonData} layout="vertical" margin={{ left: 140, right: 60, top: 8, bottom: 8 }}>
+              <BarChart data={comparisonData} layout="vertical" margin={{ left: 100, right: 20, top: 8, bottom: 8 }}>
                 <CartesianGrid horizontal={false} strokeOpacity={0.2} />
                 <XAxis type="number" tick={{ fontSize: 10 }} tickFormatter={(v: number) => `${v}B`} />
-                <YAxis type="category" dataKey="label" tick={{ fontSize: 9 }} width={140} tickLine={false} axisLine={false} />
+                <YAxis type="category" dataKey="label" tick={{ fontSize: 9 }} width={100} tickLine={false} axisLine={false} />
                 <Tooltip formatter={(v: any) => `${v.toFixed(1)}B`} />
                 {sectorA && <Bar dataKey={sectorA.name} radius={[0, 4, 4, 0]} maxBarSize={16}
                   fill="hsl(221 83% 53%)" fillOpacity={0.85} />}
@@ -346,7 +346,7 @@ export function SectorsTab({ currentData, allYears, fiscalYears }: SectorsTabPro
         </CardContent>
       </Card>
 
-      <Card className="border-border/60 shadow-sm">
+      <Card className="border-border/60">
         <CardHeader>
           <h3 className="text-sm font-semibold flex items-center gap-2">
             <TrendingUp className="size-4 text-primary" />Multi-Year Sector Allocation Trend

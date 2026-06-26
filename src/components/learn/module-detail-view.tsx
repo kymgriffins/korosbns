@@ -121,6 +121,12 @@ export function ModuleDetailView() {
     }
   }, [mod, currentStep]);
 
+  useEffect(() => {
+    if (currentStep > 0) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [currentStep]);
+
   const isMastery = currentStep > (mod?.steps?.length ?? 0);
   const currentStepObj = !isMastery && currentStep > 0 ? mod?.steps?.[currentStep - 1] ?? null : null;
   const currentTrivia = useMemo(
@@ -322,8 +328,8 @@ export function ModuleDetailView() {
             </div>
           )}
 
-          {/* Scrollable content */}
-          <div className="flex-1 overflow-y-auto overscroll-contain md:border-t md:border-border/20">
+          {/* Content */}
+          <div className="flex-1 md:border-t md:border-border/20">
             <div className="mx-auto max-w-3xl p-4 md:p-6 lg:p-8">
               {isMastery ? (
                 <div className="flex flex-col items-center gap-4 py-16 text-center">

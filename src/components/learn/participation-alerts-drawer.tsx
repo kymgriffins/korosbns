@@ -157,7 +157,7 @@ Submitted By: Anonymized Citizen (${profile.pseudoName})
       {/* Header */}
       <header className="sticky top-0 z-10 w-full h-14 border-b border-border bg-background flex items-center justify-between px-4">
         <div className="flex items-center gap-2">
-          <Bell className="size-5 text-primary animate-bounce" />
+          <Bell className="size-5 text-primary" />
           <div>
             <h2 className="text-sm font-bold tracking-tight uppercase leading-none">Participation Trigger</h2>
             <p className="text-[10px] text-muted-foreground mt-0.5">{profile.county} County Action</p>

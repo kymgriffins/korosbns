@@ -60,10 +60,10 @@ export default function ReportsPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Sticky Header */}
-      <div className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-40">
+      <div className="border-b bg-card sticky top-0 z-40">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3 md:px-6">
           <div className="flex items-center gap-3">
-            <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/5">
+            <div className="flex size-9 items-center justify-center rounded-xl bg-primary/10">
               <Landmark className="size-4.5 text-primary" />
             </div>
             <h1 className="text-base font-bold tracking-tight md:text-lg">Budget Reports</h1>
@@ -203,14 +203,14 @@ export default function ReportsPage() {
 function LoadingSkeleton() {
   return (
     <div className="space-y-6 animate-pulse">
-      <div className="h-28 rounded-2xl bg-gradient-to-r from-primary/5 via-primary/3 to-transparent border border-border/60 p-5">
+      <div className="h-28 rounded-2xl bg-primary/5 border border-border/60 p-5">
         <div className="h-4 w-28 bg-muted rounded-full mb-2" />
         <div className="h-5 w-3/4 bg-muted rounded mb-2" />
         <div className="h-3 w-1/2 bg-muted rounded" />
       </div>
       <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="rounded-xl border border-border/60 bg-card/80 backdrop-blur-sm p-4 space-y-3">
+          <div key={i} className="rounded-xl border border-border/60 bg-card p-4 space-y-3">
             <Skeleton className="h-3 w-20" />
             <Skeleton className="h-7 w-28" />
             <Skeleton className="h-1.5 w-full rounded-full" />

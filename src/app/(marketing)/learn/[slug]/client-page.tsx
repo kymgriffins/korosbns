@@ -412,7 +412,7 @@ export default function UnifiedReaderClientPage({
     ];
 
     return (
-      <section className="relative min-h-screen w-full overflow-hidden bg-background pt-4 sm:pt-6">
+      <section className="w-full bg-background pt-4 sm:pt-6">
         <div className="mx-auto w-full max-w-3xl px-4 pb-24 sm:px-6">
           <PageBreadcrumbs items={breadcrumbItems} />
 

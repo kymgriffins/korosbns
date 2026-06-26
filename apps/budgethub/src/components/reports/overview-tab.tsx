@@ -82,21 +82,21 @@ export function OverviewTab({ currentData, allYears, fiscalYears, selectedYear }
   }, [allYears, fiscalYears, tier_1_national_sectors]);
 
   const sectorColors = [
-    "hsl(221 83% 53%)", "hsl(262 83% 58%)", "hsl(199 89% 48%)",
-    "hsl(142 76% 36%)", "hsl(24 95% 53%)", "hsl(346 77% 50%)",
-    "hsl(47 95% 48%)", "hsl(173 80% 40%)", "hsl(12 76% 61%)",
+    "hsl(221 83% 53%)", "hsl(142 76% 36%)", "hsl(24 95% 53%)",
+    "hsl(173 80% 40%)", "hsl(346 77% 50%)", "hsl(47 95% 48%)",
+    "hsl(12 76% 61%)", "hsl(160 84% 39%)", "hsl(31 95% 50%)",
   ];
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-      <Card className="border-border/60 shadow-sm bg-gradient-to-r from-primary/5 via-primary/3 to-transparent overflow-hidden">
+      <Card className="border-border/60 overflow-hidden">
         <CardContent className="p-5 sm:p-6">
           <div className="flex items-start gap-4">
             <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
               <BookOpen className="size-5 text-primary" />
             </div>
             <div className="min-w-0 flex-1">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-primary bg-primary/8 px-2.5 py-1 rounded-full ring-1 ring-primary/20">
+              <span className="text-xs font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full">
                 {selectedLabel} Budget Theme
               </span>
               <p className="text-sm font-medium leading-relaxed mt-2 sm:text-base">{metadata.theme}</p>
@@ -120,7 +120,7 @@ export function OverviewTab({ currentData, allYears, fiscalYears, selectedYear }
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <Card className="border-border/60 shadow-sm">
+        <Card className="border-border/60">
           <CardHeader>
             <CardTitle className="text-sm flex items-center gap-2">
               <PieChartIcon className="size-4 text-primary" />Revenue Composition
@@ -161,7 +161,7 @@ export function OverviewTab({ currentData, allYears, fiscalYears, selectedYear }
           </CardContent>
         </Card>
 
-        <Card className="border-border/60 shadow-sm">
+        <Card className="border-border/60">
           <CardHeader>
             <CardTitle className="text-sm flex items-center gap-2">
               <TrendingUp className="size-4 text-primary" />Revenue Trend
@@ -192,7 +192,7 @@ export function OverviewTab({ currentData, allYears, fiscalYears, selectedYear }
         </Card>
       </div>
 
-      <Card className="border-border/60 shadow-sm">
+      <Card className="border-border/60">
         <CardHeader>
           <CardTitle className="text-sm flex items-center gap-2">
             <Building2 className="size-4 text-primary" />Sector Allocations
@@ -201,10 +201,10 @@ export function OverviewTab({ currentData, allYears, fiscalYears, selectedYear }
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={360}>
-            <BarChart data={sectorData} layout="vertical" margin={{ left: 180, right: 80, top: 8, bottom: 8 }}>
+            <BarChart data={sectorData} layout="vertical" margin={{ left: 130, right: 20, top: 8, bottom: 8 }}>
               <CartesianGrid horizontal={false} strokeOpacity={0.2} />
               <XAxis type="number" tick={{ fontSize: 10 }} tickFormatter={(v: number) => `${(v / 1e9).toFixed(0)}B`} />
-              <YAxis type="category" dataKey="name" tick={{ fontSize: 10 }} width={180} tickLine={false} axisLine={false} />
+              <YAxis type="category" dataKey="name" tick={{ fontSize: 10 }} width={130} tickLine={false} axisLine={false} />
               <Tooltip formatter={(v: any) => formatKesBillions(v / 1e9)} />
               <Bar dataKey="allocation" radius={[0, 6, 6, 0]} maxBarSize={24}
                 isAnimationActive={true} animationDuration={1000} animationEasing="ease-out">
@@ -221,7 +221,7 @@ export function OverviewTab({ currentData, allYears, fiscalYears, selectedYear }
       </Card>
 
       {sectorHistory.length > 1 && (
-        <Card className="border-border/60 shadow-sm">
+        <Card className="border-border/60">
           <CardHeader>
             <CardTitle className="text-sm flex items-center gap-2">
               <TrendingUp className="size-4 text-primary" />Sector Trends Across Years
@@ -255,7 +255,7 @@ export function OverviewTab({ currentData, allYears, fiscalYears, selectedYear }
         </Card>
       )}
 
-      <Card className="border-border/60 shadow-sm">
+      <Card className="border-border/60">
         <CardHeader>
           <CardTitle className="text-sm flex items-center gap-2">
             <Scale className="size-4 text-primary" />Debt & Financing
@@ -265,19 +265,19 @@ export function OverviewTab({ currentData, allYears, fiscalYears, selectedYear }
         <CardContent>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div className="rounded-lg border bg-card p-4">
-              <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Fiscal Deficit</p>
+              <p className="text-xs font-medium text-muted-foreground">Fiscal Deficit</p>
               <p className="text-xl font-bold tabular-nums mt-1">{formatKesBillions(deficit / 1e9)}</p>
               <p className="text-xs text-muted-foreground">{deficitPct}% of GDP</p>
             </div>
             <div className="rounded-lg border bg-card p-4">
-              <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Domestic Borrowing</p>
+              <p className="text-xs font-medium text-muted-foreground">Domestic Borrowing</p>
               <p className="text-xl font-bold tabular-nums mt-1">
                 {formatKesBillions(debt_portfolio.financing_plan.domestic_borrowing_target / 1e9)}
               </p>
               <p className="text-xs text-muted-foreground">Target {selectedLabel}</p>
             </div>
             <div className="rounded-lg border bg-card p-4">
-              <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">External Borrowing</p>
+              <p className="text-xs font-medium text-muted-foreground">External Borrowing</p>
               <p className="text-xl font-bold tabular-nums mt-1">
                 {formatKesBillions(debt_portfolio.financing_plan.external_borrowing_target / 1e9)}
               </p>
@@ -286,12 +286,12 @@ export function OverviewTab({ currentData, allYears, fiscalYears, selectedYear }
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-4">
             <div className="rounded-lg border bg-card p-4">
-              <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Interest Obligation</p>
+              <p className="text-xs font-medium text-muted-foreground">Interest Obligation</p>
               <p className="text-xl font-bold tabular-nums mt-1">{formatKesBillions(interest / 1e9)}</p>
               <p className="text-xs text-muted-foreground">Debt service cost for {selectedLabel}</p>
             </div>
             <div className="rounded-lg border bg-card p-4">
-              <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Target Deficit (FY 2028/29)</p>
+              <p className="text-xs font-medium text-muted-foreground">Target Deficit (FY 2028/29)</p>
               <p className="text-xl font-bold tabular-nums mt-1">{debt_portfolio.target_deficit_fy2028_29_pct}%</p>
               <p className="text-xs text-muted-foreground">of GDP (fiscal consolidation goal)</p>
             </div>
@@ -299,7 +299,7 @@ export function OverviewTab({ currentData, allYears, fiscalYears, selectedYear }
 
           {debt_portfolio.systemic_risks.length > 0 && (
             <div className="mt-4 space-y-2">
-              <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1">
+              <p className="text-xs font-medium text-muted-foreground flex items-center gap-1">
                 <TriangleAlert className="size-3" /> Systemic Risks
               </p>
               {debt_portfolio.systemic_risks.map((risk, i) => (
@@ -313,7 +313,7 @@ export function OverviewTab({ currentData, allYears, fiscalYears, selectedYear }
         </CardContent>
       </Card>
 
-      <Card className="border-border/60 shadow-sm">
+      <Card className="border-border/60">
         <CardContent className="p-4">
           <a href="/budgethub/dashboard/lms/documents"
             className="flex items-center gap-3 text-sm font-medium text-primary hover:underline"

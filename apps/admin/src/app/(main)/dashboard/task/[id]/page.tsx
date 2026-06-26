@@ -4,7 +4,7 @@ import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { format } from "date-fns";
-import { Loader2, Calendar, User, Clock, Pencil, Trash2, ArrowLeft } from "lucide-react";
+import { Loader2, Calendar, User, Clock, Pencil, Trash2, ArrowLeft, Download, Printer } from "lucide-react";
 import { toast } from "sonner";
 
 import { useAuth } from "@/contexts/auth-context";
@@ -22,9 +22,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import { TaskForm } from "@/app/task/_components/task-form";
 import { taskApi } from "@/lib/task-api";
+import { generateTaskMarkdown, downloadAsMarkdown, printAsPDF } from "@/lib/task-export";
 import type { TaskDetail } from "@/types/tasks";
 
 const STATUS_STYLES: Record<string, { bg: string; label: string }> = {
@@ -194,6 +201,24 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
               </DialogFooter>
             </DialogContent>
           </Dialog>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <Download className="mr-1 size-3.5" />
+                Export
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => downloadAsMarkdown(generateTaskMarkdown(task), `task-${task.id}`)}>
+                <Download className="mr-2 size-3.5" />
+                Download Markdown
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => printAsPDF(task.title)}>
+                <Printer className="mr-2 size-3.5" />
+                Print / Save as PDF
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 

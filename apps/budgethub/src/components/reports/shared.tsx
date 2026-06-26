@@ -45,9 +45,9 @@ export function KpiCard({
   const barPct = trend ? Math.min(Math.abs(trend) * 4, 100) : 0;
 
   return (
-    <Card className="border-border/60 bg-card/80 backdrop-blur-sm shadow-sm group hover:shadow-md hover:border-primary/20 transition-all duration-300">
+    <Card className="border-border/60 hover:border-primary/20 transition-all duration-300">
       <CardHeader className="pb-2 px-4 pt-4">
-        <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{label}</CardTitle>
+        <CardTitle className="text-xs font-medium text-muted-foreground">{label}</CardTitle>
       </CardHeader>
       <CardContent className="px-4 pb-4 space-y-2.5">
         <p className="text-xl sm:text-2xl font-bold tabular-nums tracking-tight">{value}</p>
@@ -100,15 +100,15 @@ export function BarChartIcon({ className }: { className?: string }) {
 
 export const SECTOR_COLORS = [
   "hsl(221 83% 53%)",
-  "hsl(262 83% 58%)",
-  "hsl(199 89% 48%)",
   "hsl(142 76% 36%)",
   "hsl(24 95% 53%)",
+  "hsl(173 80% 40%)",
   "hsl(346 77% 50%)",
   "hsl(47 95% 48%)",
-  "hsl(173 80% 40%)",
-  "hsl(271 81% 56%)",
   "hsl(12 76% 61%)",
   "hsl(160 84% 39%)",
   "hsl(31 95% 50%)",
+  "hsl(340 82% 52%)",
+  "hsl(200 90% 50%)",
+  "hsl(0 0% 40%)",
 ];

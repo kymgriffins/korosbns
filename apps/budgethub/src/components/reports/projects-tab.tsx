@@ -56,7 +56,7 @@ function ProjectCard({
 
   return (
     <button onClick={onClick} className="group text-left w-full">
-      <Card className="border-border/60 shadow-sm group-hover:shadow-md group-hover:border-primary/20 transition-all duration-300 h-full">
+      <Card className="border-border/60 group-hover:border-primary/20 transition-all duration-300 h-full">
         <CardContent className="p-4 space-y-3">
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1 min-w-0">
@@ -157,7 +157,7 @@ function ProjectDetailView({
       </button>
 
       <div className="flex items-start gap-4">
-        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/5">
+        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
           <Hammer className="size-5 text-primary" />
         </div>
         <div className="flex-1 min-w-0">
@@ -176,11 +176,11 @@ function ProjectDetailView({
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div className="rounded-lg border bg-card p-4">
-          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Allocated</p>
+          <p className="text-xs font-medium text-muted-foreground">Allocated</p>
           <p className="text-xl font-bold tabular-nums mt-1">{formatKesBillions(project.financials.allocated_amount / 1e9)}</p>
         </div>
         <div className="rounded-lg border bg-card p-4">
-          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Released</p>
+          <p className="text-xs font-medium text-muted-foreground">Released</p>
           <p className="text-xl font-bold tabular-nums mt-1">{formatKesBillions(project.financials.released_amount / 1e9)}</p>
           <p className="text-xs text-muted-foreground">
             {project.financials.allocated_amount > 0
@@ -189,13 +189,13 @@ function ProjectDetailView({
           </p>
         </div>
         <div className="rounded-lg border bg-card p-4">
-          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Expenditure</p>
+          <p className="text-xs font-medium text-muted-foreground">Expenditure</p>
           <p className="text-xl font-bold tabular-nums mt-1">{formatKesBillions(project.financials.expenditure_to_date / 1e9)}</p>
           <p className="text-xs text-muted-foreground">{absorption.toFixed(0)}% absorption rate</p>
         </div>
       </div>
 
-      <Card className="border-border/60 shadow-sm">
+      <Card className="border-border/60">
         <CardHeader>
           <h3 className="text-sm font-semibold flex items-center gap-2">
             <TrendingUp className="size-4 text-primary" />Financial Overview
@@ -221,7 +221,7 @@ function ProjectDetailView({
       </Card>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Card className="border-border/60 shadow-sm">
+        <Card className="border-border/60">
           <CardHeader>
             <h3 className="text-sm font-semibold flex items-center gap-2">
               <Hammer className="size-4 text-primary" />Contractor Details
@@ -247,7 +247,7 @@ function ProjectDetailView({
           </CardContent>
         </Card>
 
-        <Card className="border-border/60 shadow-sm">
+        <Card className="border-border/60">
           <CardHeader>
             <h3 className="text-sm font-semibold flex items-center gap-2">
               <Users className="size-4 text-primary" />Oversight & Compliance
@@ -279,7 +279,7 @@ function ProjectDetailView({
         </Card>
       </div>
 
-      <Card className="border-border/60 shadow-sm">
+      <Card className="border-border/60">
         <CardHeader>
           <h3 className="text-sm font-semibold flex items-center gap-2">
             <MapPin className="size-4 text-primary" />Line Item Mapping
@@ -364,23 +364,23 @@ export function ProjectsTab({ currentData }: ProjectsTabProps) {
       {/* Stats Row */}
       <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-5">
         <div className="rounded-lg border bg-card p-3 text-center">
-          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Total Projects</p>
+          <p className="text-xs font-medium text-muted-foreground">Total Projects</p>
           <p className="text-lg font-bold tabular-nums mt-1">{stats.total}</p>
         </div>
         <div className="rounded-lg border bg-card p-3 text-center">
-          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Allocated</p>
+          <p className="text-xs font-medium text-muted-foreground">Allocated</p>
           <p className="text-lg font-bold tabular-nums mt-1">{formatKesBillions(stats.totalAllocated / 1e9)}</p>
         </div>
         <div className="rounded-lg border bg-card p-3 text-center">
-          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Released</p>
+          <p className="text-xs font-medium text-muted-foreground">Released</p>
           <p className="text-lg font-bold tabular-nums mt-1">{formatKesBillions(stats.totalReleased / 1e9)}</p>
         </div>
         <div className="rounded-lg border bg-card p-3 text-center">
-          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Avg Absorption</p>
+          <p className="text-xs font-medium text-muted-foreground">Avg Absorption</p>
           <p className="text-lg font-bold tabular-nums mt-1">{stats.avgAbsorption.toFixed(0)}%</p>
         </div>
         <div className="rounded-lg border bg-card p-3 text-center">
-          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Stalled</p>
+          <p className="text-xs font-medium text-muted-foreground">Stalled</p>
           <p className="text-lg font-bold tabular-nums mt-1" style={{ color: stats.stalled > 0 ? "hsl(24 95% 53%)" : undefined }}>
             {stats.stalled}
           </p>

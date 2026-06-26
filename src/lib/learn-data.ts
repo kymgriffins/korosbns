@@ -71,30 +71,6 @@ export type LearnHubProfile = {
   lastActive: number;
   trackedDocs: string[];
   badges: string[];
-  isGuestBrowse?: boolean;
   avatar_url?: string | null;
   participationLogs?: unknown[];
 };
-
-export function createGuestBrowseProfile(): LearnHubProfile {
-  return {
-    userId: "guest_browse",
-    breakName: "Guest",
-    pseudoName: "guest",
-    county: "Kenya",
-    ward: "",
-    language: "EN",
-    notifications: false,
-    whatsappFallback: false,
-    phone: "",
-    consentGranted: false,
-    consentTimestamp: null,
-    sovereigns: 0,
-    stageProgress: [1],
-    streakDays: 0,
-    lastActive: Date.now(),
-    trackedDocs: [],
-    badges: [],
-    isGuestBrowse: true,
-  };
-}

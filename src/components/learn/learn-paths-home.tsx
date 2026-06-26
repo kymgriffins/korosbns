@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { OnboardingWizard } from "./onboarding-wizard";
-import { AnonymousIdentityPicker } from "./anonymous-identity-picker";
 import { StageDetailDrawer } from "./stage-detail-drawer";
 import { LearnDashboardView } from "./learn-dashboard-view";
 import { LearnModulesView } from "./learn-modules-view";
@@ -15,7 +13,7 @@ import { DashboardSkeleton } from "./dashboard-skeleton";
 import { Button } from "@/ui/button";
 import { toast } from "sonner";
 import {
-  Sparkles, ShieldAlert, BookOpen
+  ShieldAlert, BookOpen
 } from "lucide-react";
 import { useLearn } from "@/contexts/learn-context";
 import { motion, AnimatePresence } from "motion/react";
@@ -25,7 +23,7 @@ import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
 import { useUpdateProfile } from "@/hooks/use-profile";
 import { learnHubApi } from "@/lib/learn-hub";
-import { createGuestBrowseProfile, type LearnHubLanguage, type LearnHubProfile } from "@/lib/learn-data";
+import { type LearnHubLanguage, type LearnHubProfile } from "@/lib/learn-data";
 import { learnTabToHref } from "@/lib/learn-nav";
 import { readProgress, clearAllModuleProgress } from "@/lib/module-progress";
 import { useLeaderboard } from "@/hooks/use-gamification";
@@ -44,7 +42,6 @@ export function LearnPathsHome() {
   const { isLoggedIn, user: authUser, loading: authLoading } = useAuth();
   const { civicModules, fetchCivicModules, activeLesson, setActiveLesson, updateCurrentStep, activeTab, setActiveTab, totalStages, modulesLoading, modulesError, refreshModules } = useLearn();
   const stages = civicModules;
-  const [wantsAnonymous, setWantsAnonymous] = useState(false);
   const [profile, setProfile] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -220,9 +217,7 @@ export function LearnPathsHome() {
     }
   };
 
-  const canBrowseWithoutProfile = stages.length > 0;
-  const effectiveProfile: LearnHubProfile | null =
-    profile ?? (canBrowseWithoutProfile ? createGuestBrowseProfile() : null);
+  const effectiveProfile: LearnHubProfile | null = profile;
 
   const langKey = (effectiveProfile?.language ?? profile?.language ?? "EN") as LearnHubLanguage;
   const text = TRANSLATIONS[langKey];
@@ -241,7 +236,7 @@ export function LearnPathsHome() {
         rank: e.rank,
         isUser: effectiveProfile?.pseudoName?.toLowerCase() === (e.name ?? "").toLowerCase(),
       }));
-    if (!entries.some((e) => e.isUser) && effectiveProfile?.pseudoName && !effectiveProfile.isGuestBrowse) {
+    if (!entries.some((e) => e.isUser) && effectiveProfile?.pseudoName) {
       entries.push({
         name: effectiveProfile.pseudoName,
         svg: effectiveProfile.sovereigns ?? 0,
@@ -301,64 +296,7 @@ export function LearnPathsHome() {
     );
   }
 
-  const showOnboardingGate = !isLoggedIn && !profile && !canBrowseWithoutProfile;
-
-  if (showOnboardingGate) {
-    if (!wantsAnonymous) {
-      return (
-        <div className="flex-1 flex items-center justify-center p-4 min-h-[70vh]">
-          <div className="w-full max-w-md p-6 md:p-8 bg-card border border-border rounded-2xl shadow-lg space-y-6 text-center relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.03] to-transparent pointer-events-none" />
-            <div className="relative space-y-2">
-              <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary mx-auto ring-1 ring-primary/20">
-                <Sparkles className="size-6" />
-              </div>
-              <h2 className="text-xl font-bold tracking-tight">Citizen Learn Hub</h2>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Welcome! Track Kenya's public finance, follow projects in your county, and take trivia gates to earn badges.
-              </p>
-            </div>
-
-            <div className="relative space-y-3">
-              <Button asChild className="w-full rounded-xl h-11 font-bold focus-visible:ring-2 focus-visible:ring-ring">
-                <Link href={Routes.JoinUs}>Join the Movement</Link>
-              </Button>
-              <div className="flex items-center gap-2 my-2">
-                <div className="h-px bg-border flex-1" />
-                <span className="text-[10px] text-muted-foreground uppercase font-bold">or</span>
-                <div className="h-px bg-border flex-1" />
-              </div>
-              <Button
-                onClick={() => setWantsAnonymous(true)}
-                variant="outline"
-                className="w-full rounded-xl h-11 font-bold"
-              >
-                Continue as Anonymous User
-              </Button>
-            </div>
-
-            <p className="relative text-[10px] text-muted-foreground leading-relaxed">
-              <Link href={Routes.Login} className="text-primary font-bold hover:underline focus-visible:ring-2 focus-visible:ring-ring">Already a user? Login</Link>
-              <span className="block mt-1.5">Anonymous progress is stored locally on this device, but won't sync across other browsers.</span>
-            </p>
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <div className="flex-1 flex items-center justify-center p-4">
-        <AnonymousIdentityPicker onComplete={handleOnboardingComplete} />
-      </div>
-    );
-  }
-
-  if (!effectiveProfile) {
-    return <DashboardSkeleton />;
-  }
-
-  const activeProfile = effectiveProfile;
-  const showGuestBanner = !profile && canBrowseWithoutProfile && !wantsAnonymous;
+  const activeProfile = effectiveProfile ?? { language: "EN" as const };
 
   if (!stages.length) {
     return (
@@ -373,22 +311,6 @@ export function LearnPathsHome() {
 
   return (
     <div className="w-full h-full min-h-0 bg-background flex flex-col overflow-hidden">
-      {showGuestBanner && (
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-primary/20 bg-primary/5 px-4 py-2 text-xs">
-          <span className="text-muted-foreground">
-            Browse modules from our live catalog. Save progress by continuing anonymously or signing in.
-          </span>
-          <div className="flex flex-wrap gap-2">
-            <Button size="sm" variant="outline" className="h-8 rounded-lg text-xs font-bold" onClick={() => setWantsAnonymous(true)}>
-              Continue as guest
-            </Button>
-            <Button size="sm" className="h-8 rounded-lg text-xs font-bold" asChild>
-              <Link href={Routes.Login}>Sign in</Link>
-            </Button>
-          </div>
-        </div>
-      )}
-
       {!selectedStage && activeProfile.language === "SH" && (
         <div className="w-full py-1 px-4 text-[10px] font-semibold bg-amber-500/15 border-b border-amber-500/20 text-amber-600 text-center">
           {text.shengComingSoon}

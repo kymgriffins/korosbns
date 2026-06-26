@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { LearnDocumentsView } from "@/components/learn/learn-documents-view";
 import { DashboardSkeleton } from "@/components/learn/dashboard-skeleton";
-import { createGuestBrowseProfile, type LearnHubProfile } from "@/lib/learn-data";
+import { type LearnHubProfile } from "@/lib/learn-data";
 
 export function LearnDocumentsPageClient() {
   const [profile, setProfile] = useState<LearnHubProfile | null>(null);
@@ -11,9 +11,9 @@ export function LearnDocumentsPageClient() {
   useEffect(() => {
     try {
       const raw = localStorage.getItem("bns_user_profile");
-      setProfile(raw ? JSON.parse(raw) : createGuestBrowseProfile());
+      setProfile(raw ? JSON.parse(raw) : null);
     } catch {
-      setProfile(createGuestBrowseProfile());
+      setProfile(null);
     }
   }, []);
 

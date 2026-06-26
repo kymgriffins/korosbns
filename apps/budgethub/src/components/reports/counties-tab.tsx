@@ -22,14 +22,14 @@ interface CountiesTabProps {
 }
 
 const REGION_COLORS: Record<string, string> = {
-  Coast: "hsl(199 89% 48%)",
+  Coast: "hsl(173 80% 40%)",
   North_Eastern: "hsl(24 95% 53%)",
   Eastern: "hsl(142 76% 36%)",
   Central: "hsl(47 95% 48%)",
-  Rift_Valley: "hsl(262 83% 58%)",
+  Rift_Valley: "hsl(221 83% 53%)",
   Western: "hsl(346 77% 50%)",
-  Nyanza: "hsl(173 80% 40%)",
-  Nairobi: "hsl(221 83% 53%)",
+  Nyanza: "hsl(12 76% 61%)",
+  Nairobi: "hsl(200 90% 50%)",
 };
 
 const COUNTY_REGIONS: Record<string, string> = {
@@ -161,7 +161,7 @@ export function CountiesTab({ currentData, allYears, fiscalYears, selectedYear }
       {/* Heatmap / Regional View */}
       {viewMode === "heatmap" && (
         <div className="space-y-6">
-          <Card className="border-border/60 shadow-sm">
+          <Card className="border-border/60">
             <CardHeader>
               <h3 className="text-sm font-semibold flex items-center gap-2">
                 <MapPin className="size-4 text-primary" />Allocation by Region
@@ -170,10 +170,10 @@ export function CountiesTab({ currentData, allYears, fiscalYears, selectedYear }
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={regionTotals} layout="vertical" margin={{ left: 100, right: 60, top: 8, bottom: 8 }}>
-                  <CartesianGrid horizontal={false} strokeOpacity={0.2} />
-                  <XAxis type="number" tick={{ fontSize: 10 }} tickFormatter={(v: number) => formatKesBillions(v / 1e9)} />
-                  <YAxis type="category" dataKey="region" tick={{ fontSize: 10 }} width={100} tickLine={false} axisLine={false} />
+              <BarChart data={regionTotals} layout="vertical" margin={{ left: 80, right: 20, top: 8, bottom: 8 }}>
+                <CartesianGrid horizontal={false} strokeOpacity={0.2} />
+                <XAxis type="number" tick={{ fontSize: 10 }} tickFormatter={(v: number) => formatKesBillions(v / 1e9)} />
+                <YAxis type="category" dataKey="region" tick={{ fontSize: 10 }} width={80} tickLine={false} axisLine={false} />
                   <Tooltip formatter={(v: any) => formatKesBillions(v / 1e9)} />
                   <Bar dataKey="total" radius={[0, 6, 6, 0]} maxBarSize={28}
                     isAnimationActive={true} animationDuration={800} animationEasing="ease-out">
@@ -204,7 +204,7 @@ export function CountiesTab({ currentData, allYears, fiscalYears, selectedYear }
           <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
             {heatmapData.map((c) => (
               <button key={c.id} onClick={() => setSelectedCountyId(c.id)}
-                className="group relative rounded-lg border bg-card p-2 text-center transition-all hover:shadow-md hover:border-primary/30"
+                className="group relative rounded-lg border bg-card p-2 text-center transition-all hover:border-primary/30"
               >
                 <div className="absolute inset-0 rounded-lg opacity-20"
                   style={{ backgroundColor: c.color, opacity: Math.max(c.intensity * 0.8, 0.1) }} />
@@ -226,7 +226,7 @@ export function CountiesTab({ currentData, allYears, fiscalYears, selectedYear }
 
       {/* County Comparison Picker */}
       {viewMode === "compare" && (
-        <Card className="border-border/60 shadow-sm">
+        <Card className="border-border/60">
           <CardHeader>
             <h3 className="text-sm font-semibold flex items-center gap-2">
               <ArrowLeftRight className="size-4 text-primary" />Select Two Counties to Compare
@@ -291,7 +291,7 @@ export function CountiesTab({ currentData, allYears, fiscalYears, selectedYear }
             </select>
           </div>
 
-          <Card className="border-border/60 shadow-sm">
+          <Card className="border-border/60">
             <CardHeader className="pb-3">
               <h3 className="text-sm font-semibold flex items-center gap-2">
                 <Building2 className="size-4 text-primary" />County Allocations
@@ -392,7 +392,7 @@ function CountyProfile({
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/5">
+        <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10">
           <MapPin className="size-5 text-primary" />
         </div>
         <div>
@@ -407,12 +407,12 @@ function CountyProfile({
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div className="rounded-lg border bg-card p-4">
-          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">National Rank</p>
+          <p className="text-xs font-medium text-muted-foreground">National Rank</p>
           <p className="text-xl font-bold tabular-nums mt-1">#{countyRanking.findIndex((c) => c.id === county.id) + 1} of 47</p>
           <p className="text-xs text-muted-foreground">{county.share.toFixed(1)}% of devolution</p>
         </div>
         <div className="rounded-lg border bg-card p-4">
-          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Year-over-Year</p>
+          <p className="text-xs font-medium text-muted-foreground">Year-over-Year</p>
           <p className="text-xl font-bold tabular-nums mt-1">
             {(() => {
               const c = countyRanking.find((x) => x.id === county.id);
@@ -422,7 +422,7 @@ function CountyProfile({
           <p className="text-xs text-muted-foreground">vs previous fiscal year</p>
         </div>
         <div className="rounded-lg border bg-card p-4">
-          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Region</p>
+          <p className="text-xs font-medium text-muted-foreground">Region</p>
           <p className="text-xl font-bold tabular-nums mt-1">
             {COUNTY_REGIONS[county.name]?.replace(/_/g, " ") ?? "—"}
           </p>
@@ -430,7 +430,7 @@ function CountyProfile({
         </div>
       </div>
 
-      <Card className="border-border/60 shadow-sm">
+      <Card className="border-border/60">
         <CardHeader>
           <h3 className="text-sm font-semibold flex items-center gap-2">
             <TrendingUp className="size-4 text-primary" />Estimated Sector Allocation
@@ -456,7 +456,7 @@ function CountyProfile({
       </Card>
 
       {neighbors.length > 0 && (
-        <Card className="border-border/60 shadow-sm">
+        <Card className="border-border/60">
           <CardHeader>
             <h3 className="text-sm font-semibold flex items-center gap-2">
               <Building2 className="size-4 text-primary" />Nearby Allocations
@@ -514,7 +514,7 @@ function CountyComparison({
 
       <div className="flex items-center justify-center gap-6">
         <div className="text-center flex-1">
-          <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-500/5 mx-auto">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-blue-500/10 mx-auto">
             <MapPin className="size-5 text-blue-600" />
           </div>
           <h2 className="text-base font-bold mt-1">{countyA.name}</h2>
@@ -533,7 +533,7 @@ function CountyComparison({
           <p className="text-xs text-muted-foreground">{Math.abs(diffPct).toFixed(1)}% difference</p>
         </div>
         <div className="text-center flex-1">
-          <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 mx-auto">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-emerald-500/10 mx-auto">
             <MapPin className="size-5 text-emerald-600" />
           </div>
           <h2 className="text-base font-bold mt-1">{countyB.name}</h2>
@@ -541,7 +541,7 @@ function CountyComparison({
         </div>
       </div>
 
-      <Card className="border-border/60 shadow-sm">
+      <Card className="border-border/60">
         <CardHeader>
           <h3 className="text-sm font-semibold flex items-center gap-2">
             <TrendingUp className="size-4 text-primary" />Allocation Comparison
