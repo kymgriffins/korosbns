@@ -218,30 +218,28 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
         </CardHeader>
       </Card>
 
-      {/* Vertical tabs */}
+      {/* Tabs at top */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <div className="flex flex-col md:flex-row gap-4">
-          <TabsList className="flex flex-row md:flex-col md:w-40 shrink-0 h-auto bg-transparent md:bg-card md:border md:border-border/60 md:rounded-lg md:p-1 md:shadow-sm overflow-x-auto">
-            <TabsTrigger value="overview" className="gap-2 text-xs font-semibold data-[state=active]:bg-primary/10 md:w-full md:justify-start rounded-lg px-3 py-2">
-              <FileText className="size-3.5 shrink-0" /> Overview
+        <TabsList className="w-full justify-start rounded-lg border bg-card mb-4">
+          <TabsTrigger value="overview" className="gap-1.5 text-xs font-semibold data-[state=active]:bg-primary/10">
+            <FileText className="size-3.5" /> Overview
+          </TabsTrigger>
+          <TabsTrigger value="checklist" className="gap-1.5 text-xs font-semibold data-[state=active]:bg-primary/10">
+            <ListChecks className="size-3.5" /> Checklist ({doneCount}/{totalItems})
+          </TabsTrigger>
+          {task.notes && (
+            <TabsTrigger value="notes" className="gap-1.5 text-xs font-semibold data-[state=active]:bg-primary/10">
+              <ScrollText className="size-3.5" /> Notes
             </TabsTrigger>
-            <TabsTrigger value="checklist" className="gap-2 text-xs font-semibold data-[state=active]:bg-primary/10 md:w-full md:justify-start rounded-lg px-3 py-2">
-              <ListChecks className="size-3.5 shrink-0" /> Checklist ({doneCount}/{totalItems})
+          )}
+          {task.audit_trails && task.audit_trails.length > 0 && (
+            <TabsTrigger value="audit" className="gap-1.5 text-xs font-semibold data-[state=active]:bg-primary/10">
+              <History className="size-3.5" /> Audit Trail
             </TabsTrigger>
-            {task.notes && (
-              <TabsTrigger value="notes" className="gap-2 text-xs font-semibold data-[state=active]:bg-primary/10 md:w-full md:justify-start rounded-lg px-3 py-2">
-                <ScrollText className="size-3.5 shrink-0" /> Notes
-              </TabsTrigger>
-            )}
-            {task.audit_trails && task.audit_trails.length > 0 && (
-              <TabsTrigger value="audit" className="gap-2 text-xs font-semibold data-[state=active]:bg-primary/10 md:w-full md:justify-start rounded-lg px-3 py-2">
-                <History className="size-3.5 shrink-0" /> Audit Trail
-              </TabsTrigger>
-            )}
-          </TabsList>
+          )}
+        </TabsList>
 
-          <div className="flex-1 min-w-0">
-            <TabsContent value="overview" className="mt-0">
+        <TabsContent value="overview" className="mt-0">
               <Card className="border-border/60 bg-card shadow-sm">
                 <CardContent className="p-4 space-y-4">
                   <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted-foreground">
@@ -393,8 +391,6 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
                 </Card>
               </TabsContent>
             )}
-          </div>
-        </div>
       </Tabs>
 
       <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
