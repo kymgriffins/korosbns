@@ -38,6 +38,11 @@ export const BUDGETHUB_PATH_PREFIXES = [
   "/budgethub",
 ] as const;
 
+/** Budgethub sub-paths that do NOT require authentication. */
+export const BUDGETHUB_PUBLIC_PREFIXES = [
+  "/budgethub/reports",
+] as const;
+
 /**
  * Auth pages that redirect authenticated users away (already signed in).
  * Verify and reset are intentionally excluded so users with a stale cookie can finish flows.
