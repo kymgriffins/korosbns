@@ -1,7 +1,17 @@
 import type { Metadata } from "next";
 import { metaDescription, canonicalUrl } from "@/utils/metadata";
 import { fetchArticleBySlug, fetchTrivia, resolveContentSlug } from "@/lib/services/content-service";
+import type { TriviaSetApi } from "@/lib/api-client";
 import UnifiedReaderClientPage from "./client-page";
+
+interface StoryData {
+  id: string;
+  title: string;
+  subtitle: string;
+  icon: string;
+  duration: string;
+  cards: StoryCard[];
+}
 
 interface StoryCard {
   emoji?: string;
@@ -115,8 +125,8 @@ export default async function UnifiedReaderPage(
 
   let initialMode: "loading" | "error" | "article" | "story" | "trivia" = "loading";
   let initialArticle: Record<string, unknown> | null = null;
-  let initialTrivia: Record<string, unknown> | null = null;
-  let initialStory: Record<string, unknown> | null = null;
+  let initialTrivia: TriviaSetApi | null = null;
+  let initialStory: StoryData | null = null;
 
   const resolved = await resolveContentSlug(slug);
 

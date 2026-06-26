@@ -106,9 +106,9 @@ export function LearnPathsHome() {
           breakName: authUser.break_name || authUser.display_name || `${authUser.first_name || ""} ${authUser.last_name || ""}`.trim() || authUser.email || "Citizen",
           pseudoName: authUser.pseudo_name || authUser.display_name || `citizen_${String(authUser.id || "").slice(0, 5)}`,
           avatar_url: authUser.avatar_url || authUser.avatar || null,
-          county: authUser.county || authUser.location || preferences.county || "Kenya",
-          ward: authUser.ward || preferences.ward || "",
-          language: authUser.language_preference || "EN" as const,
+          county: authUser.county || authUser.location || String(preferences.county ?? "") || "Kenya",
+          ward: authUser.ward || String(preferences.ward ?? "") || "",
+          language: (authUser.language_preference as LearnHubLanguage) || "EN" as const,
           notifications: authUser.notifications_enabled ?? true,
           whatsappFallback: authUser.whatsapp_fallback ?? false,
           phone: authUser.phone_number || "",
@@ -125,10 +125,10 @@ export function LearnPathsHome() {
 
         if (preferences.county || preferences.priorities) {
           updateProfileMutation.mutate({
-            county: preferences.county || authUser.county || "",
-            ward: preferences.ward || authUser.ward || "",
-            budget_priorities: preferences.priorities || [],
-            location: preferences.county || authUser.location || "",
+            county: String(preferences.county ?? "") || authUser.county || "",
+            ward: String(preferences.ward ?? "") || authUser.ward || "",
+            budget_priorities: (Array.isArray(preferences.priorities) ? preferences.priorities : []) as string[],
+            location: String(preferences.county ?? "") || authUser.location || "",
           });
         }
         localStorage.removeItem("bns_onboarding_profile");

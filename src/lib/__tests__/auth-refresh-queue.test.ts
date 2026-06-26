@@ -1,29 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { apiFetch, setAuthTokens, clearAuthTokens, getAccessToken } from "@/lib/api-client";
+import { apiFetch, clearAuthTokens } from "@/lib/api-client";
 
 const mockFetch = vi.fn();
 vi.stubGlobal("fetch", mockFetch);
 
-const localStorageMock = (() => {
-  let store: Record<string, string> = {};
-  return {
-    getItem: (key: string) => store[key] ?? null,
-    setItem: (key: string, value: string) => { store[key] = value; },
-    removeItem: (key: string) => { delete store[key]; },
-    clear: () => { store = {}; },
-    get length() { return Object.keys(store).length; },
-    key: (i: number) => Object.keys(store)[i] ?? null,
-  };
-})();
-
-Object.defineProperty(globalThis, "localStorage", { value: localStorageMock });
-Object.defineProperty(globalThis, "sessionStorage", {
-  value: {
-    ...localStorageMock,
-    key: (i: number) => Object.keys(localStorageMock).sort()[i] ?? null,
-  },
-});
-
+// Set document.cookie for hasSession() checks
 Object.defineProperty(document, "cookie", {
   writable: true,
   value: "",
@@ -35,12 +16,13 @@ const USER_ME_PATH = "/api/v1/users/me/";
 
 describe("apiFetch — concurrent token refresh queuing", () => {
   beforeEach(() => {
-    localStorageMock.clear();
     mockFetch.mockReset();
-    setAuthTokens("expired-access-token", "valid-refresh-token");
+    document.cookie = "bns_has_session=true; path=/";
+    clearAuthTokens();
   });
 
   afterEach(() => {
+    document.cookie = "bns_has_session=; path=/; max-age=0";
     clearAuthTokens();
   });
 
@@ -50,13 +32,18 @@ describe("apiFetch — concurrent token refresh queuing", () => {
     mockFetch.mockImplementation(async (url: string) => {
       if (url === REFRESH_PATH) {
         refreshCallCount += 1;
-        return new Response(JSON.stringify({ access: "new-access-token" }), {
+        // Simulate successful refresh (new cookies set by server)
+        return new Response(JSON.stringify({ detail: "Token refreshed." }), {
           status: 200,
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "set-cookie": "bns_at=new-access-token; Path=/; HttpOnly; SameSite=Lax",
+          },
         });
       }
       if (url === USER_ME_PATH) {
-        if (getAccessToken() === "new-access-token") {
+        // After refresh, all requests should succeed
+        if (refreshCallCount >= 1) {
           return new Response(JSON.stringify({ id: "1", email: "test@example.com" }), {
             status: 200,
             headers: { "Content-Type": "application/json" },
@@ -76,6 +63,7 @@ describe("apiFetch — concurrent token refresh queuing", () => {
       apiFetch("/users/me/", { auth: true }),
     ]);
 
+    // Only one refresh call should have been made (deduplication)
     expect(refreshCallCount).toBe(1);
     expect(result1).toMatchObject({ email: "test@example.com" });
     expect(result2).toMatchObject({ email: "test@example.com" });

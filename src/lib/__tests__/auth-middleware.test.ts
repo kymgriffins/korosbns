@@ -45,14 +45,14 @@ describe("evaluateAuthMiddleware — protected learn routes", () => {
 });
 
 describe("evaluateAuthMiddleware — auth pages", () => {
-  it("redirects authenticated users from /auth/login to /learn", () => {
+  it("redirects authenticated users from /auth/login to DEFAULT_POST_LOGIN_PATH", () => {
     const result = evaluateAuthMiddleware("/auth/login", "valid-token");
-    expect(result).toEqual({ action: "redirect", location: "/learn" });
+    expect(result).toEqual({ action: "redirect", location: "/budgethub/dashboard/lms" });
   });
 
-  it("redirects authenticated users from /auth/register to /learn", () => {
+  it("redirects authenticated users from /auth/register to DEFAULT_POST_LOGIN_PATH", () => {
     const result = evaluateAuthMiddleware("/auth/register", "valid-token");
-    expect(result).toEqual({ action: "redirect", location: "/learn" });
+    expect(result).toEqual({ action: "redirect", location: "/budgethub/dashboard/lms" });
   });
 
   it("allows authenticated users on /auth/verify (email verification)", () => {

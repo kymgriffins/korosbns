@@ -24,8 +24,8 @@ importers:
         specifier: ^3.2.2
         version: 3.2.2(react@19.2.7)
       '@fullcalendar/react':
-        specifier: 7.0.0-rc.3
-        version: 7.0.0-rc.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(temporal-polyfill@0.3.2)
+        specifier: 7.0.0
+        version: 7.0.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(temporal-polyfill@1.0.1)
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.75.0(react@19.2.7))
@@ -234,8 +234,8 @@ importers:
         specifier: ^3.5.0
         version: 3.5.0
       temporal-polyfill:
-        specifier: 0.3.2
-        version: 0.3.2
+        specifier: ^1.0.1
+        version: 1.0.1
       topojson-client:
         specifier: 3.1.0
         version: 3.1.0
@@ -658,23 +658,23 @@ packages:
   '@floating-ui/utils@0.2.11':
     resolution: {integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==}
 
-  '@full-ui/headless-calendar@7.0.0-rc.3':
-    resolution: {integrity: sha512-1UOZJZ8hp2r+AmjHRmjScacAxjS+28PmPGh/QBaCIXvRE/mIONGOj+eipbrw7WUt/LOr508nD7TP6e2rgChy9w==}
+  '@full-ui/headless-calendar@7.0.0':
+    resolution: {integrity: sha512-47Y2NoiSt/DJy/+PD9yv4OLhaVJqn8oknFXhS6kiMnoXSOiYkoz6gqVIOCF2nvvQPqKUepb3W3403Qj34QfjtQ==}
     peerDependencies:
-      temporal-polyfill: ^0.3.2
+      temporal-polyfill: ^1.0.1
 
-  '@fullcalendar/core@7.0.0-rc.3':
-    resolution: {integrity: sha512-hOBG9/Ty5rrmuAxd8HpBEvYIQW04zjtP6RRI2K+XzcvdH5H+q0AZiRohwdIfNBx5ZiClcIuayDcLTXD4v2bjPg==}
+  '@fullcalendar/core@7.0.0':
+    resolution: {integrity: sha512-cZobng3rB7PQp8zdRp7SIeA4ZEvOWhnwHuFWQf3xXIM9BPfmKb5EFhpiNHCT6zzn041A2wv9ztqiQ60S1sY5KA==}
     peerDependencies:
-      '@full-ui/headless-calendar': 7.0.0-rc.3
-      temporal-polyfill: ^0.3.2
+      '@full-ui/headless-calendar': 7.0.0
+      temporal-polyfill: ^1.0.1
 
-  '@fullcalendar/react@7.0.0-rc.3':
-    resolution: {integrity: sha512-W7AQMuvpBJH6NNRZfzpWX2FjvsR2MfQ4hHsf9LQvb2J29D3WX5GIkpHxQRuC2vribDlr07O4caDBouSlCH4bMg==}
+  '@fullcalendar/react@7.0.0':
+    resolution: {integrity: sha512-klabENcKYXPom8UB8eTzLSaSNeB/gpe11XVBOnjnsVmOJqLftnkBBQXtAF6lFuXQrj0goHdIan8xicOTLJhSeA==}
     peerDependencies:
       react: ^17 || ^18 || ^19
       react-dom: ^17 || ^18 || ^19
-      temporal-polyfill: ^0.3.2
+      temporal-polyfill: ^1.0.1
 
   '@hono/node-server@1.19.14':
     resolution: {integrity: sha512-GwtvgtXxnWsucXvbQXkRgqksiH2Qed37H9xHZocE5sA3N8O8O8/8FA3uclQXxXVzc9XBZuEOMK7+r02FmSpHtw==}
@@ -4883,11 +4883,14 @@ packages:
     resolution: {integrity: sha512-uxc/zpqFg6x7C8vOE7lh6Lbda8eEL9zmVm/PLeTPBRhh1xCgdWaQ+J1CUieGpIfm2HdtsUpRv+HshiasBMcc6A==}
     engines: {node: '>=6'}
 
-  temporal-polyfill@0.3.2:
-    resolution: {integrity: sha512-TzHthD/heRK947GNiSu3Y5gSPpeUDH34+LESnfsq8bqpFhsB79HFBX8+Z834IVX68P3EUyRPZK5bL/1fh437Eg==}
+  temporal-polyfill@1.0.1:
+    resolution: {integrity: sha512-N2SoI9olnW7BUsU8RosDphZQl9s+WJ8O7PoJMFCr/e5/1rFkVI4GNOWaSeySG+UoP04foPYsnLWbJmbXOiShZg==}
 
-  temporal-spec@0.3.1:
-    resolution: {integrity: sha512-B4TUhezh9knfSIMwt7RVggApDRJZo73uZdj8AacL2mZ8RP5KtLianh2MXxL06GN9ESYiIsiuoLQhgVfwe55Yhw==}
+  temporal-spec@1.0.0:
+    resolution: {integrity: sha512-00Ahj1e1ifaERTMOIIGpOCdOo9IEk2m6GGSMedsn9a2SIsGLdOTbmME1Htv6IM82b6VHrzSUTIVc7YHy6hdhFQ==}
+
+  temporal-utils@1.0.1:
+    resolution: {integrity: sha512-HAixuesxFQIUaQk3ptX2jhfO/FsOkgVkDDMawvp6n/fkB1q6BKfs3lURw9I+pK/2e2e/q/vrLrxmeqauBoyGMQ==}
 
   terser-webpack-plugin@5.5.0:
     resolution: {integrity: sha512-UYhptBwhWvfIjKd/UuFo6D8uq9xpGLDK+z8EDsj/zWhrTaH34cKEbrkMKfV5YWqGBvAYA3tlzZbs2R+qYrbQJA==}
@@ -5737,22 +5740,22 @@ snapshots:
 
   '@floating-ui/utils@0.2.11': {}
 
-  '@full-ui/headless-calendar@7.0.0-rc.3(temporal-polyfill@0.3.2)':
+  '@full-ui/headless-calendar@7.0.0(temporal-polyfill@1.0.1)':
     dependencies:
-      temporal-polyfill: 0.3.2
+      temporal-polyfill: 1.0.1
 
-  '@fullcalendar/core@7.0.0-rc.3(@full-ui/headless-calendar@7.0.0-rc.3(temporal-polyfill@0.3.2))(temporal-polyfill@0.3.2)':
+  '@fullcalendar/core@7.0.0(@full-ui/headless-calendar@7.0.0(temporal-polyfill@1.0.1))(temporal-polyfill@1.0.1)':
     dependencies:
-      '@full-ui/headless-calendar': 7.0.0-rc.3(temporal-polyfill@0.3.2)
-      temporal-polyfill: 0.3.2
+      '@full-ui/headless-calendar': 7.0.0(temporal-polyfill@1.0.1)
+      temporal-polyfill: 1.0.1
 
-  '@fullcalendar/react@7.0.0-rc.3(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(temporal-polyfill@0.3.2)':
+  '@fullcalendar/react@7.0.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(temporal-polyfill@1.0.1)':
     dependencies:
-      '@full-ui/headless-calendar': 7.0.0-rc.3(temporal-polyfill@0.3.2)
-      '@fullcalendar/core': 7.0.0-rc.3(@full-ui/headless-calendar@7.0.0-rc.3(temporal-polyfill@0.3.2))(temporal-polyfill@0.3.2)
+      '@full-ui/headless-calendar': 7.0.0(temporal-polyfill@1.0.1)
+      '@fullcalendar/core': 7.0.0(@full-ui/headless-calendar@7.0.0(temporal-polyfill@1.0.1))(temporal-polyfill@1.0.1)
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
-      temporal-polyfill: 0.3.2
+      temporal-polyfill: 1.0.1
 
   '@hono/node-server@1.19.14(hono@4.12.26)':
     dependencies:
@@ -7515,7 +7518,7 @@ snapshots:
 
   '@testing-library/dom@10.4.1':
     dependencies:
-      '@babel/code-frame': 7.29.0
+      '@babel/code-frame': 7.29.7
       '@babel/runtime': 7.29.2
       '@types/aria-query': 5.0.4
       aria-query: 5.3.0
@@ -10186,11 +10189,14 @@ snapshots:
 
   tapable@2.3.3: {}
 
-  temporal-polyfill@0.3.2:
+  temporal-polyfill@1.0.1:
     dependencies:
-      temporal-spec: 0.3.1
+      temporal-spec: 1.0.0
+      temporal-utils: 1.0.1
 
-  temporal-spec@0.3.1: {}
+  temporal-spec@1.0.0: {}
+
+  temporal-utils@1.0.1: {}
 
   terser-webpack-plugin@5.5.0(webpack@5.106.2):
     dependencies:

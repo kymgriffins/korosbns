@@ -1,8 +1,7 @@
 import { buildApiUrl, networkErrorMessage } from "@/lib/api-url";
 import { ApiRequestError, extractApiErrorMessage, extractFieldErrors, type ApiPayload } from "@/lib/api-errors";
 import { apiFetchInit } from "@/lib/fetch-policy";
-import { logDebug, sanitizeToken } from "@/lib/debug-logs";
-import { ACCESS_TOKEN_COOKIE } from "@/lib/auth-policy";
+import { logDebug } from "@/lib/debug-logs";
 import type {
   WeeklyNoteApi,
   WeeklyNoteCreateApi,
@@ -23,10 +22,6 @@ export type {
   StudioTestimonialApi,
   StudioBookingApi,
 };
-
-const ACCESS_KEY = "access_token";
-const REFRESH_KEY = "refresh_token";
-const STORAGE_MODE_KEY = "bns_token_storage_mode";
 
 export type ApiListResponse<T> = {
   count?: number;
@@ -190,27 +185,9 @@ export type UserProfileApi = {
 };
 
 export type AuthLoginResponse = {
-  access: string;
-  refresh: string;
-  /** Accept alternative field names from various backends */
-  access_token?: string;
-  token?: string;
-  refresh_token?: string;
+  detail: string;
 };
 
-/** Normalize a login response regardless of field naming convention. */
-export function normalizeLoginResponse(
-  raw: Record<string, unknown>,
-): { access: string; refresh?: string } | null {
-  const access = (raw.access ?? raw.access_token ?? raw.token) as string | undefined;
-  if (typeof access === "string" && access.length > 0) {
-    return {
-      access,
-      refresh: (raw.refresh ?? raw.refresh_token) as string | undefined,
-    };
-  }
-  return null;
-}
 export type AuthRegisterResponse = {
   user: { id: string; email: string };
   detail: string;
@@ -223,37 +200,20 @@ type RequestConfig = RequestInit & {
   _retry?: boolean;
 };
 
-export function getAccessToken(): string | null {
-  if (typeof window === "undefined") return null;
-  const sessionValue = window.sessionStorage.getItem(ACCESS_KEY);
-  if (sessionValue) return sessionValue;
-  const legacyValue = window.localStorage.getItem(ACCESS_KEY);
-  if (legacyValue) {
-    window.sessionStorage.setItem(ACCESS_KEY, legacyValue);
-    window.localStorage.removeItem(ACCESS_KEY);
-    window.localStorage.setItem(STORAGE_MODE_KEY, "hybrid");
-    logDebug("Auth", "Migrated access token to sessionStorage", {
-      token: sanitizeToken(legacyValue),
-    });
-    return legacyValue;
-  }
-  return null;
+/**
+ * Check whether the user has an active session by reading the non-HttpOnly
+ * ``bns_has_session`` marker cookie. This is used for fast client-side
+ * checks (e.g. showing/hiding login-required UI) without making an API call.
+ *
+ * **Do not** use this for security decisions — always rely on a successful
+ * ``GET /users/me/`` response for actual auth validation.
+ */
+export function hasSession(): boolean {
+  if (typeof document === "undefined") return false;
+  return document.cookie.split("; ").some((c) => c.startsWith("bns_has_session=true"));
 }
 
-export function getRefreshToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return window.localStorage.getItem(REFRESH_KEY);
-}
-
-export function getTokenStorageMode(): "hybrid" | "legacy" {
-  if (typeof window === "undefined") return "hybrid";
-  const mode = window.localStorage.getItem(STORAGE_MODE_KEY);
-  return mode === "legacy" ? "legacy" : "hybrid";
-}
-
-// JWT is set as an HttpOnly cookie by the Django backend on login/token refresh.
-// The cookie is server-managed; no frontend sync needed.
-// Next.js edge middleware reads the HttpOnly cookie for route protection.
+/** Dispatched after login/logout to sync auth state across tabs. */
 function dispatchAuthChanged(): void {
   if (typeof window === "undefined" || typeof window.dispatchEvent !== "function") return;
   try {
@@ -263,63 +223,86 @@ function dispatchAuthChanged(): void {
   }
 }
 
-export function setAuthTokens(access: string, refresh?: string): void {
-  if (typeof window === "undefined") return;
-  if (!access || typeof access !== "string") {
-    logDebug("Auth", "setAuthTokens called with invalid access token", { access });
-    return;
-  }
-  window.sessionStorage.setItem(ACCESS_KEY, access);
-  window.localStorage.setItem(STORAGE_MODE_KEY, "hybrid");
-  if (refresh && typeof refresh === "string") {
-    window.localStorage.setItem(REFRESH_KEY, refresh);
-  }
+export { dispatchAuthChanged };
+
+/**
+ * @deprecated Use `hasSession()` instead. Kept as a no-op for backward
+ * compatibility during migration — callers will not break.
+ */
+export function getAccessToken(): string | null {
+  return null;
+}
+
+/**
+ * @deprecated Refresh token is now in an HttpOnly cookie. No-op kept for
+ * backward compatibility during migration.
+ */
+export function getRefreshToken(): string | null {
+  return null;
+}
+
+/**
+ * @deprecated Tokens are managed by the server via HttpOnly cookies. No-op.
+ */
+export function setAuthTokens(_access: string, _refresh?: string): void {
   dispatchAuthChanged();
 }
 
+/**
+ * @deprecated Tokens are managed by the server via HttpOnly cookies. No-op.
+ */
 export function clearAuthTokens(): void {
-  if (typeof window === "undefined") return;
-  window.sessionStorage.removeItem(ACCESS_KEY);
-  window.localStorage.removeItem(ACCESS_KEY);
-  window.localStorage.removeItem(REFRESH_KEY);
-  window.localStorage.removeItem(STORAGE_MODE_KEY);
   dispatchAuthChanged();
 }
 
+/**
+ * @deprecated Use `hasSession()` for fast checks or `GET /users/me/` for
+ * authoritative validation.
+ */
 export function isAuthenticated(): boolean {
-  return Boolean(getAccessToken());
+  return hasSession();
 }
 
-let refreshPromise: Promise<string | null> | null = null;
+/**
+ * @deprecated Token storage mode is no longer relevant.
+ */
+export function getTokenStorageMode(): "hybrid" | "legacy" {
+  return "hybrid";
+}
 
-async function refreshAccessToken(): Promise<string | null> {
+/** Backward-compat alias — login no longer returns tokens in the body. */
+export function normalizeLoginResponse(
+  _raw: Record<string, unknown>,
+): { access: string; refresh?: string } | null {
+  return null;
+}
+
+// ---------------------------------------------------------------------------
+// Silent refresh — uses the bns_rt HttpOnly cookie via the proxy
+// ---------------------------------------------------------------------------
+
+let refreshPromise: Promise<boolean> | null = null;
+
+async function refreshAccessToken(): Promise<boolean> {
   if (refreshPromise) return refreshPromise;
 
-  refreshPromise = (async (): Promise<string | null> => {
-    const refresh = getRefreshToken();
-    if (!refresh) return null;
-    logDebug("Auth", "Refreshing access token", { refresh: sanitizeToken(refresh) });
+  refreshPromise = (async (): Promise<boolean> => {
+    logDebug("Auth", "Attempting silent token refresh via proxy");
 
     const response = await fetch(buildApiUrl("/auth/token/refresh/"), {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({ refresh }),
+      body: JSON.stringify({}),
+      credentials: "include",
     });
 
     if (!response.ok) {
-      logDebug("Auth", "Refresh token rejected by API", { status: response.status });
-      clearAuthTokens();
-      return null;
+      logDebug("Auth", "Refresh failed", { status: response.status });
+      return false;
     }
 
-    const data = (await response.json()) as { access?: string };
-    if (data?.access && typeof data.access === "string") {
-      setAuthTokens(data.access);
-      logDebug("Auth", "Access token refreshed", { access: sanitizeToken(data.access) });
-      return data.access;
-    }
-    logDebug("Auth", "Refresh response had no access token");
-    return null;
+    logDebug("Auth", "Token refreshed successfully via proxy");
+    return true;
   })();
 
   try {
@@ -329,37 +312,28 @@ async function refreshAccessToken(): Promise<string | null> {
   }
 }
 
-function defaultCredentials(
-  path: string,
-  method: string | undefined,
-  explicit?: RequestCredentials,
-): RequestCredentials {
-  if (explicit) return explicit;
-  return "include";
-}
+// ---------------------------------------------------------------------------
+// Core fetch wrapper
+// ---------------------------------------------------------------------------
 
 export async function apiFetch<T = unknown>(
   path: string,
   config: RequestConfig = {},
 ): Promise<T> {
-  const { params, auth = false, credentials, _retry, ...init } = config;
+  const { params, auth = false, credentials: explicitCredentials, _retry, ...init } = config;
   const headers = new Headers(init.headers);
   if (!headers.has("Accept")) headers.set("Accept", "application/json");
   if (init.body && !headers.has("Content-Type") && !(init.body instanceof FormData)) {
     headers.set("Content-Type", "application/json");
   }
 
-  const token = getAccessToken();
-  if (auth && token) headers.set("Authorization", `Bearer ${token}`);
-  else if (!auth && token && path.includes("/engagement/surveys/") && init.method === "POST") {
-    headers.set("Authorization", `Bearer ${token}`);
-  }
+  // No Authorization header — the browser sends the bns_at HttpOnly cookie
+  // automatically via credentials: 'include'.
 
   logDebug("API", "Request start", {
     path,
     method: init.method ?? "GET",
     auth,
-    hasToken: Boolean(token),
   });
 
   const method = init.method ?? "GET";
@@ -372,7 +346,7 @@ export async function apiFetch<T = unknown>(
     response = await fetch(buildApiUrl(path, params), {
       ...fetchInit,
       headers: mergedHeaders,
-      credentials: defaultCredentials(path, method, credentials),
+      credentials: explicitCredentials ?? "include",
     });
   } catch (err) {
     logDebug("API", "Request network error", {
@@ -383,12 +357,14 @@ export async function apiFetch<T = unknown>(
     throw new Error(networkErrorMessage(err));
   }
 
+  // Silent refresh on 401 — retry once
   if (response.status === 401 && auth && !_retry) {
-    logDebug("API", "401 received; attempting token refresh", { path });
-    const newAccess = await refreshAccessToken();
-    if (newAccess) {
+    logDebug("API", "401 received; attempting silent refresh", { path });
+    const refreshed = await refreshAccessToken();
+    if (refreshed) {
       return apiFetch<T>(path, { ...config, auth: true, _retry: true });
     }
+    // Refresh failed — the auth-context will handle the 401 error
   }
 
   if (!response.ok) {
@@ -419,6 +395,10 @@ export async function apiFetch<T = unknown>(
   if (response.status === 204) return {} as T;
   return response.json() as Promise<T>;
 }
+
+// ---------------------------------------------------------------------------
+// Citizen API — all calls go through the Next.js proxy with credentials
+// ---------------------------------------------------------------------------
 
 export const citizenApi = {
   getOrgConfig: () => apiFetch<OrgConfigApi>("/org/config/"),
@@ -460,14 +440,11 @@ export const citizenApi = {
       body: JSON.stringify({ email, password }),
     }),
 
-  logout: () => {
-    const refresh = getRefreshToken();
-    return apiFetch<{ detail?: string }>("/auth/logout/", {
+  logout: () =>
+    apiFetch<{ detail?: string }>("/auth/logout/", {
       method: "POST",
       auth: true,
-      body: JSON.stringify({ refresh }),
-    });
-  },
+    }),
 
   requestPasswordReset: (email: string) =>
     apiFetch<{ detail: string }>("/auth/password-reset/request/", {
@@ -581,7 +558,6 @@ export const citizenApi = {
     apiFetch<{ response_id: string }>(`/engagement/surveys/${id}/submit/`, {
       method: "POST",
       body: JSON.stringify({ answers }),
-      credentials: "include",
     }),
 
   getTriviaList: () => apiFetch<ApiListResponse<TriviaSetApi>>("/engagement/trivia/"),

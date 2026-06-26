@@ -28,7 +28,7 @@ Token presence alone (`isAuthenticated()`) is **not** sufficient for guards or p
 | `src/lib/auth-middleware.ts` | Pure `evaluateAuthMiddleware()` for edge + tests |
 | `middleware.ts` | Next.js edge wrapper |
 | `src/contexts/auth-context.tsx` | Session provider, login/logout |
-| `src/lib/api-client.ts` | Tokens, refresh, `apiFetch`, `auth: true` Bearer header |
+| `src/lib/api-client.ts` | Cookie-based auth, `apiFetch`, credentials: include |
 | `src/components/citizen/protected.tsx` | Client guard (validates session after middleware) |
 | `src/components/citizen/guest-only.tsx` | Redirects logged-in users away from login/register |
 
@@ -41,7 +41,7 @@ Protected paths (from `LEARN_PROTECTED_PATH_PREFIXES`):
 - `/learn/account/*`
 - `/learn/quests/*`
 
-Middleware checks `access_token` cookie or `Authorization` header. It does **not** validate JWT expiry (client + API handle that).
+Middleware checks the `bns_has_session` marker cookie. It does **not** validate JWT expiry (the Django backend handles that via the `bns_at` HttpOnly cookie).
 
 Auth pages:
 
@@ -78,7 +78,7 @@ Blocks: absolute URLs, `//` protocol-relative paths, `javascript:`, encoded bypa
 
 ## API authentication
 
-`apiFetch(path, { auth: true })` attaches `Authorization: Bearer <access>` and retries once on 401 via refresh token.
+`apiFetch(path, { auth: true })` sends requests with `credentials: 'include'` so the browser automatically attaches the `bns_at` HttpOnly cookie. On 401, it calls the refresh endpoint (which uses the `bns_rt` cookie) and retries once.
 
 ### Requires `auth: true`
 
@@ -97,10 +97,9 @@ Blocks: absolute URLs, `//` protocol-relative paths, `javascript:`, encoded bypa
 
 | Token | Storage | Notes |
 |-------|---------|-------|
-| Access | `sessionStorage` + non-HttpOnly cookie | Cookie bridges middleware; XSS-readable — minimize third-party scripts |
-| Refresh | `localStorage` | Long-lived; cleared on logout |
-
-Future hardening: BFF route that sets HttpOnly cookies on login (requires backend coordination).
+| Access (`bns_at`) | HttpOnly cookie | Set by Django; not readable by JS; sent automatically by the browser |
+| Refresh (`bns_rt`) | HttpOnly cookie | Set by Django; SameSite=Strict; path-restricted to `/api/v1/auth/token/refresh/` |
+| Session marker (`bns_has_session`) | Non-HttpOnly cookie | Readable by JS and Next.js middleware for fast-path auth checks |
 
 ## Anonymous Learning Hub flow
 

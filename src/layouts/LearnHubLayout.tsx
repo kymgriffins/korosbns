@@ -48,7 +48,7 @@ function UserPopover({
   isLoggedIn, user, level, handleTabChange, children,
 }: {
   isLoggedIn: boolean;
-  user: { avatar_url?: string; first_name?: string; email?: string; display_name?: string } | null;
+  user: { avatar_url?: string | null; first_name?: string; email?: string; display_name?: string } | null;
   level: number;
   handleTabChange: (tab: LearnTab) => void;
   children: React.ReactNode;

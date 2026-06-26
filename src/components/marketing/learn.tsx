@@ -30,7 +30,7 @@ import { Button } from "@/ui/button";
 
 import { resolveAppUrl } from "@/lib/api-url";
 import {
-  getAccessToken,
+  hasSession,
   type SurveyDetailApi,
   type SurveyQuestionApi,
 } from "@/lib/api-client";
@@ -621,7 +621,7 @@ export default function Learn() {
       setQuizAnswer(null);
       setShowFeedback(false);
     } else {
-      if (activeTriviaId && getAccessToken()) {
+      if (activeTriviaId && hasSession()) {
         submitTriviaAttemptMutation.mutate({
           id: activeTriviaId,
           answers: quizAnswersByQuestion,

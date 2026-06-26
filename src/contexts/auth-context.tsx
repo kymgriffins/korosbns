@@ -15,9 +15,7 @@ import { ApiRequestError } from "@/lib/api-errors";
 import {
   citizenApi,
   clearAuthTokens,
-  getAccessToken,
-  normalizeLoginResponse,
-  setAuthTokens,
+  hasSession,
   type UserProfileApi,
 } from "@/lib/api-client";
 import { DEFAULT_POST_LOGIN_PATH, sanitizeRedirectPath } from "@/lib/auth-policy";
@@ -46,7 +44,10 @@ function normalizeProfile(profile: UserProfileApi): UserProfileApi {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [hasToken, setHasToken] = useState(() => Boolean(getAccessToken()));
+
+  // Use the bns_has_session cookie as the fast-path check.
+  // The actual auth validation happens via GET /users/me/.
+  const [hasActiveSession, setHasActiveSession] = useState(() => hasSession());
 
   const { data: user, isLoading, isError, isSuccess, error } = useQuery({
     queryKey: USER_PROFILE_KEY,
@@ -54,47 +55,50 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const profile = await citizenApi.getMe();
       return normalizeProfile(profile);
     },
-    enabled: hasToken,
-    staleTime: 1000 * 60 * 5,
+    enabled: hasActiveSession,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
-  // Clear tokens only on 401 — transient errors (network, 5xx) must NOT wipe the session
+  // Clear session marker on 401 — transient errors (network, 5xx) must NOT
+  // wipe the session state.
   useEffect(() => {
-    if (isError && hasToken) {
+    if (isError && hasActiveSession) {
       const is401 = error instanceof ApiRequestError && error.status === 401;
       if (is401) {
-        logDebug("Auth", "Token rejected by server (401); clearing");
+        logDebug("Auth", "Session rejected by server (401); clearing marker");
+        setHasActiveSession(false);
+        document.cookie = "bns_has_session=; path=/; max-age=0";
         clearAuthTokens();
-        setHasToken(false);
       } else {
-        logDebug("Auth", "Profile query failed with non-401 error; keeping tokens", {
+        logDebug("Auth", "Profile query failed with non-401 error; keeping session", {
           error: error instanceof ApiRequestError ? error.status : "network",
         });
       }
     }
-  }, [isError, hasToken, error]);
+  }, [isError, hasActiveSession, error]);
 
-  // Sync auth state across tabs and same-tab custom events
+  // Sync auth state across tabs via storage events + custom event
   useEffect(() => {
-    const checkToken = () => {
-      const stillHasToken = Boolean(getAccessToken());
-      setHasToken(stillHasToken);
-      if (!stillHasToken) {
+    const checkSession = () => {
+      const stillHasSession = hasSession();
+      setHasActiveSession(stillHasSession);
+      if (!stillHasSession) {
         queryClient.clear();
       }
     };
 
     const handleStorage = (e: StorageEvent) => {
-      if (e.key === "access_token" || e.key === "refresh_token" || e.key === "bns_token_storage_mode") {
-        checkToken();
+      // Listen for any auth-related localStorage changes (legacy compat)
+      if (e.key === "bns_has_session" || e.key === "access_token" || e.key === "refresh_token") {
+        checkSession();
       }
     };
 
     window.addEventListener("storage", handleStorage);
-    window.addEventListener("bns-auth-changed", checkToken);
+    window.addEventListener("bns-auth-changed", checkSession);
     return () => {
       window.removeEventListener("storage", handleStorage);
-      window.removeEventListener("bns-auth-changed", checkToken);
+      window.removeEventListener("bns-auth-changed", checkSession);
     };
   }, [queryClient]);
 
@@ -106,29 +110,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async (email: string, password: string, redirectTo = DEFAULT_POST_LOGIN_PATH) => {
       const safeRedirect = sanitizeRedirectPath(redirectTo);
       logDebug("Auth", "Login requested", { redirectTo: safeRedirect });
-      clearUserData({ keepOnboarding: true });
-      const raw = await citizenApi.login(email, password);
-      const tokens = normalizeLoginResponse(raw as Record<string, unknown>);
-      if (!tokens?.access) {
-        const rawRecord = raw as Record<string, unknown>;
-        logDebug("Auth", "Login response missing access token", {
-          rawKeys: Object.keys(rawRecord),
-          hasAccess: "access" in rawRecord,
-          hasAccessToken: "access_token" in rawRecord,
-          hasToken: "token" in rawRecord,
-          accessType: typeof rawRecord.access,
-          statusCode: (rawRecord as any).status,
-        });
-        throw new Error("Login response missing access token.");
-      }
-      setAuthTokens(tokens.access, tokens.refresh);
-      logDebug("Auth", "Login token stored");
+
+      // The login response sets HttpOnly cookies via Set-Cookie headers.
+      // We do NOT extract tokens from the response body.
+      await citizenApi.login(email, password);
+
+      // Set the non-HttpOnly marker cookie so hasSession() returns true
+      // immediately (the browser already has bns_at and bns_rt from the
+      // Set-Cookie headers).
+      document.cookie = "bns_has_session=true; path=/; max-age=3600; SameSite=Lax";
+
       // Fetch profile synchronously before enabling the useQuery to avoid a
-      // double-fetch race (useQuery fires on enabled=true, and a separate
-      // refetchQueries would create a second parallel fetch).
+      // double-fetch race.
       const profile = await citizenApi.getMe();
       queryClient.setQueryData(USER_PROFILE_KEY, normalizeProfile(profile));
-      setHasToken(true);
+      setHasActiveSession(true);
       logDebug("Auth", "Login completed", { redirectTo: safeRedirect });
       router.push(safeRedirect);
     },
@@ -159,11 +155,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await citizenApi.logout();
     } catch {
-      logDebug("Auth", "Server logout failed; clearing local tokens anyway");
+      logDebug("Auth", "Server logout failed; clearing local state anyway");
     }
+    // Server response clears bns_at, bns_rt, bns_has_session cookies via
+    // Set-Cookie headers. Also clear the marker client-side for immediate
+    // state update.
+    document.cookie = "bns_has_session=; path=/; max-age=0";
     clearAuthTokens();
     clearUserData();
-    setHasToken(false);
+    setHasActiveSession(false);
     queryClient.clear();
     logDebug("Auth", "Logout completed — navigating");
     router.push("/auth/login");
@@ -172,13 +172,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       user: user ?? null,
-      loading: hasToken && isLoading,
-      isLoggedIn: hasToken && (isSuccess || Boolean(user)),
+      loading: hasActiveSession && isLoading,
+      isLoggedIn: hasActiveSession && (isSuccess || Boolean(user)),
       login,
       logout,
       refreshUser,
     }),
-    [user, hasToken, isLoading, isError, login, logout, refreshUser],
+    [user, hasActiveSession, isLoading, isError, login, logout, refreshUser],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

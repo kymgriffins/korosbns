@@ -64,6 +64,10 @@ export const AUTH_PAGE_PREFIXES = [
 ] as const;
 
 export const ACCESS_TOKEN_COOKIE = "bns_at";
+export const REFRESH_TOKEN_COOKIE = "bns_rt";
+export const SESSION_MARKER = "bns_has_session";
+/** @deprecated Use SESSION_MARKER for fast-path checks or ACCESS_TOKEN_COOKIE for cookie name. */
+export const SESSION_COOKIE = SESSION_MARKER;
 
 export function pathMatchesPrefix(pathname: string, prefix: string): boolean {
   return pathname === prefix || pathname.startsWith(`${prefix}/`);

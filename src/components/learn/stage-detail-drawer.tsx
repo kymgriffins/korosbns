@@ -117,7 +117,7 @@ export function StageDetailDrawer({
           idempotency_key: rewardTag,
         }),
       }).then((res) => {
-        const updatedPoints = res.points ?? profile.sovereigns + pointsToAward;
+        const updatedPoints = res.points ?? Number(profile.sovereigns ?? 0) + pointsToAward;
         onUpdateProfile({ ...profile, sovereigns: updatedPoints });
       }).catch(() => {
         toast.error("Could not sync answer. Points not saved.");
@@ -157,18 +157,20 @@ export function StageDetailDrawer({
       const p = readProgress(stage.slug, stage.order);
       if (!p.masteryAwarded) {
         writeProgress(stage.slug, { ...p, masteryAwarded: true });
-        const newProgress = profile.stageProgress ? [...profile.stageProgress] : [1];
+        const stageProgress = Array.isArray(profile.stageProgress) ? profile.stageProgress : [];
+        const newProgress = stageProgress.length > 0 ? [...stageProgress] : [1];
         const nextStageId = stage.order + 1;
         if (nextStageId <= totalStages && !newProgress.includes(nextStageId)) {
           newProgress.push(nextStageId);
         }
-        const newBadges = profile.badges ? [...profile.badges] : [];
+        const badges = Array.isArray(profile.badges) ? profile.badges : [];
+        const newBadges = badges.length > 0 ? [...badges] : [];
         if (!newBadges.includes(stage.badge)) {
           newBadges.push(stage.badge);
         }
         const updatedProfile = {
           ...profile,
-          sovereigns: profile.sovereigns + 25,
+          sovereigns: Number(profile.sovereigns ?? 0) + 25,
           stageProgress: newProgress,
           badges: newBadges,
         };

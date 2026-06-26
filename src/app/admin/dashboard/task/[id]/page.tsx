@@ -94,13 +94,12 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
     setExportingCalendar(true);
     try {
       const apiBase = process.env.NEXT_PUBLIC_API_URL || "";
-      const token = typeof window !== "undefined" ? window.sessionStorage.getItem("access_token") : null;
       const res = await fetch(`${apiBase}/notes/${id}/export_calendar/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
+        credentials: "include",
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({ detail: "Export failed" }));

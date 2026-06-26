@@ -6,105 +6,62 @@ import {
   clearAuthTokens,
   isAuthenticated,
   getTokenStorageMode,
+  hasSession,
   citizenApi,
 } from "@/lib/api-client";
 
-const ACCESS_KEY = "access_token";
-const REFRESH_KEY = "refresh_token";
-const STORAGE_MODE_KEY = "bns_token_storage_mode";
-
-function mockSessionStorage(): Record<string, string> {
-  const store: Record<string, string> = {};
-  return store;
-}
-
-beforeEach(() => {
-  vi.stubGlobal("window", {
-    ...window,
-    sessionStorage: {
-      getItem: vi.fn((key: string) => null),
-      setItem: vi.fn(),
-      removeItem: vi.fn(),
-    },
-    localStorage: {
-      getItem: vi.fn((key: string) => null),
-      setItem: vi.fn(),
-      removeItem: vi.fn(),
-      clear: vi.fn(),
-    },
-  });
-});
-
-describe("getAccessToken", () => {
-  it("returns null when no token exists", () => {
+describe("getAccessToken (deprecated)", () => {
+  it("always returns null (tokens are now HttpOnly cookies)", () => {
     expect(getAccessToken()).toBeNull();
   });
+});
 
-  it("returns token from sessionStorage when present", () => {
-    vi.mocked(window.sessionStorage.getItem).mockImplementation((key: string) => {
-      if (key === ACCESS_KEY) return "test-access-token";
-      return null;
-    });
-    expect(getAccessToken()).toBe("test-access-token");
-  });
-
-  it("migrates legacy token from localStorage to sessionStorage", () => {
-    vi.mocked(window.sessionStorage.getItem).mockImplementation(() => null);
-    vi.mocked(window.localStorage.getItem).mockImplementation((key: string) => {
-      if (key === ACCESS_KEY) return "legacy-token";
-      if (key === STORAGE_MODE_KEY) return "legacy";
-      return null;
-    });
-    const token = getAccessToken();
-    expect(token).toBe("legacy-token");
-    expect(window.sessionStorage.setItem).toHaveBeenCalledWith(ACCESS_KEY, "legacy-token");
-    expect(window.localStorage.removeItem).toHaveBeenCalledWith(ACCESS_KEY);
-    expect(window.localStorage.setItem).toHaveBeenCalledWith(STORAGE_MODE_KEY, "hybrid");
+describe("getRefreshToken (deprecated)", () => {
+  it("always returns null (refresh token is now an HttpOnly cookie)", () => {
+    expect(getRefreshToken()).toBeNull();
   });
 });
 
-describe("setAuthTokens / clearAuthTokens", () => {
-  it("stores access and refresh tokens", () => {
-    setAuthTokens("access-123", "refresh-456");
-    expect(window.sessionStorage.setItem).toHaveBeenCalledWith(ACCESS_KEY, "access-123");
-    expect(window.localStorage.setItem).toHaveBeenCalledWith(STORAGE_MODE_KEY, "hybrid");
-    expect(window.localStorage.setItem).toHaveBeenCalledWith(REFRESH_KEY, "refresh-456");
+describe("setAuthTokens / clearAuthTokens (deprecated)", () => {
+  it("setAuthTokens is a no-op but does not throw", () => {
+    expect(() => setAuthTokens("access-123", "refresh-456")).not.toThrow();
   });
 
-  it("clears all tokens", () => {
-    clearAuthTokens();
-    expect(window.sessionStorage.removeItem).toHaveBeenCalledWith(ACCESS_KEY);
-    expect(window.localStorage.removeItem).toHaveBeenCalledWith(ACCESS_KEY);
-    expect(window.localStorage.removeItem).toHaveBeenCalledWith(REFRESH_KEY);
-    expect(window.localStorage.removeItem).toHaveBeenCalledWith(STORAGE_MODE_KEY);
+  it("clearAuthTokens is a no-op but does not throw", () => {
+    expect(() => clearAuthTokens()).not.toThrow();
   });
 });
 
-describe("isAuthenticated", () => {
-  it("returns false when no token", () => {
+describe("isAuthenticated / hasSession", () => {
+  beforeEach(() => {
+    // Reset document.cookie mock
+    Object.defineProperty(document, "cookie", {
+      writable: true,
+      value: "",
+    });
+  });
+
+  it("returns false when no session marker cookie", () => {
+    document.cookie = "";
+    expect(hasSession()).toBe(false);
     expect(isAuthenticated()).toBe(false);
   });
 
-  it("returns true when token exists", () => {
-    vi.mocked(window.sessionStorage.getItem).mockImplementation((key: string) => {
-      if (key === ACCESS_KEY) return "some-token";
-      return null;
-    });
+  it("returns true when bns_has_session cookie is set", () => {
+    document.cookie = "bns_has_session=true; path=/";
+    expect(hasSession()).toBe(true);
     expect(isAuthenticated()).toBe(true);
+  });
+
+  it("returns false when bns_has_session is set to false", () => {
+    document.cookie = "bns_has_session=false; path=/";
+    expect(hasSession()).toBe(false);
   });
 });
 
-describe("getTokenStorageMode", () => {
-  it("defaults to hybrid", () => {
+describe("getTokenStorageMode (deprecated)", () => {
+  it("always returns hybrid", () => {
     expect(getTokenStorageMode()).toBe("hybrid");
-  });
-
-  it("returns legacy when set", () => {
-    vi.mocked(window.localStorage.getItem).mockImplementation((key: string) => {
-      if (key === STORAGE_MODE_KEY) return "legacy";
-      return null;
-    });
-    expect(getTokenStorageMode()).toBe("legacy");
   });
 });
 
@@ -139,7 +96,10 @@ describe("citizenApi", () => {
     it("calls apiFetch with email and password", async () => {
       const mockFetch = vi.fn().mockResolvedValue({
         ok: true,
-        json: () => Promise.resolve({ access: "access-token", refresh: "refresh-token" }),
+        json: () => Promise.resolve({ detail: "Login successful." }),
+        headers: new Headers({
+          "set-cookie": "bns_at=token123; Path=/; HttpOnly; SameSite=Lax",
+        }),
       });
       vi.stubGlobal("fetch", mockFetch);
 
@@ -149,7 +109,7 @@ describe("citizenApi", () => {
       expect(callUrl.toString()).toContain("/auth/login/");
       const body = JSON.parse(mockFetch.mock.calls[0][1].body);
       expect(body.email).toBe("user@test.com");
-      expect(result.access).toBe("access-token");
+      expect(result.detail).toBe("Login successful.");
     });
   });
 
@@ -160,18 +120,16 @@ describe("citizenApi", () => {
         json: () => Promise.resolve({ detail: "Password changed successfully." }),
       });
       vi.stubGlobal("fetch", mockFetch);
-      vi.mocked(window.sessionStorage.getItem).mockImplementation((key: string) => {
-        if (key === ACCESS_KEY) return "valid-token";
-        return null;
-      });
 
       const result = await citizenApi.changePassword("oldPass1!", "newPass123!");
 
       expect(mockFetch).toHaveBeenCalledTimes(1);
       const callUrl = mockFetch.mock.calls[0][0];
       expect(callUrl.toString()).toContain("/auth/password/change/");
-      expect(mockFetch.mock.calls[0][1].headers?.Authorization || mockFetch.mock.calls[0][1].headers?.get?.("Authorization")).toBeDefined();
-      const body = JSON.parse(mockFetch.mock.calls[0][1].body);
+      // Cookie-based auth: credentials should be 'include'
+      const fetchOptions = mockFetch.mock.calls[0][1];
+      expect(fetchOptions.credentials).toBe("include");
+      const body = JSON.parse(fetchOptions.body);
       expect(body.current_password).toBe("oldPass1!");
       expect(body.new_password).toBe("newPass123!");
       expect(result.detail).toBe("Password changed successfully.");
@@ -197,7 +155,7 @@ describe("citizenApi", () => {
   });
 
   describe("patchMe", () => {
-    it("sends onboarding fields to backend", async () => {
+    it("sends onboarding fields to backend with credentials:include", async () => {
       const mockFetch = vi.fn().mockResolvedValue({
         ok: true,
         json: () => Promise.resolve({
@@ -208,10 +166,6 @@ describe("citizenApi", () => {
         }),
       });
       vi.stubGlobal("fetch", mockFetch);
-      vi.mocked(window.sessionStorage.getItem).mockImplementation((key: string) => {
-        if (key === ACCESS_KEY) return "valid-token";
-        return null;
-      });
 
       const result = await citizenApi.patchMe({
         county: "Nairobi",
@@ -222,7 +176,9 @@ describe("citizenApi", () => {
       expect(mockFetch).toHaveBeenCalledTimes(1);
       const callUrl = mockFetch.mock.calls[0][0];
       expect(callUrl.toString()).toContain("/users/me/");
-      expect(mockFetch.mock.calls[0][1].method || mockFetch.mock.calls[0][1].method).toBe("PATCH");
+      expect(mockFetch.mock.calls[0][1].method).toBe("PATCH");
+      // Cookie-based auth: credentials should be 'include'
+      expect(mockFetch.mock.calls[0][1].credentials).toBe("include");
       const body = JSON.parse(mockFetch.mock.calls[0][1].body);
       expect(body.county).toBe("Nairobi");
       expect(body.ward).toBe("Westlands");
@@ -248,21 +204,38 @@ describe("citizenApi", () => {
   });
 
   describe("getMe", () => {
-    it("fetches authenticated user profile", async () => {
+    it("fetches authenticated user profile with credentials:include", async () => {
       const mockFetch = vi.fn().mockResolvedValue({
         ok: true,
         json: () => Promise.resolve({ email: "user@test.com", county: "Nairobi" }),
       });
       vi.stubGlobal("fetch", mockFetch);
-      vi.mocked(window.sessionStorage.getItem).mockImplementation((key: string) => {
-        if (key === ACCESS_KEY) return "valid-token";
-        return null;
-      });
 
       const result = await citizenApi.getMe();
       expect(mockFetch).toHaveBeenCalledTimes(1);
+      // Cookie-based auth: credentials should be 'include'
+      expect(mockFetch.mock.calls[0][1].credentials).toBe("include");
       expect(result.email).toBe("user@test.com");
       expect(result.county).toBe("Nairobi");
+    });
+  });
+
+  describe("logout", () => {
+    it("calls apiFetch with auth (no body — cookie-based)", async () => {
+      const mockFetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ detail: "Logged out successfully." }),
+      });
+      vi.stubGlobal("fetch", mockFetch);
+
+      const result = await citizenApi.logout();
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+      const callUrl = mockFetch.mock.calls[0][0];
+      expect(callUrl.toString()).toContain("/auth/logout/");
+      // Cookie-based auth: no body needed, refresh token is in cookie
+      const fetchOptions = mockFetch.mock.calls[0][1];
+      expect(fetchOptions.method).toBe("POST");
+      expect(fetchOptions.credentials).toBe("include");
     });
   });
 });

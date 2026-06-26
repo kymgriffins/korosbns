@@ -1,18 +1,19 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { ACCESS_TOKEN_COOKIE } from "@/lib/auth-policy";
+import { SESSION_COOKIE, SESSION_MARKER } from "@/lib/auth-policy";
 import { evaluateAuthMiddleware } from "@/lib/auth-middleware";
 
 const DEVICE_COOKIE = "bns_gid";
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const token =
-    request.cookies.get(ACCESS_TOKEN_COOKIE)?.value ??
-    request.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ??
-    null;
 
-  const decision = evaluateAuthMiddleware(pathname, token);
+  // Read the non-HttpOnly session marker for fast-path auth check.
+  // The actual authentication is validated by Django via the bns_at HttpOnly
+  // cookie when the request hits the API proxy.
+  const sessionMarker = request.cookies.get(SESSION_MARKER)?.value ?? null;
+
+  const decision = evaluateAuthMiddleware(pathname, sessionMarker);
 
   if (decision.action === "redirect") {
     return NextResponse.redirect(new URL(decision.location, request.url));
