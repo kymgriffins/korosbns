@@ -86,7 +86,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
     return (
       <div className="mx-auto max-w-3xl p-4 md:p-6 space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
         <Skeleton className="h-5 w-48" />
-        <Card className="border-border/60 bg-card/80 backdrop-blur-sm shadow-sm">
+        <Card className="border-border/60 bg-card shadow-sm">
           <CardHeader>
             <Skeleton className="h-7 w-64" />
           </CardHeader>
@@ -134,7 +134,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
             { label: task.title || "Edit Task" },
           ]}
         />
-        <Card className="border-border/60 bg-card/80 backdrop-blur-sm shadow-sm">
+        <Card className="border-border/60 bg-card shadow-sm">
           <CardHeader>
             <CardTitle className="text-xl tracking-tight">Edit Task</CardTitle>
           </CardHeader>
@@ -156,7 +156,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
       />
 
       <Card
-        className="border-border/60 bg-card/80 backdrop-blur-sm shadow-sm"
+        className="border-border/60 bg-card shadow-sm"
         style={hue ? { borderTopColor: hue, borderTopWidth: 2 } : undefined}
       >
         <CardHeader>

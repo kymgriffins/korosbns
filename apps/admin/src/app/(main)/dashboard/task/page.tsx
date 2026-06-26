@@ -124,7 +124,7 @@ function TaskCard({
       onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") router.push(`/dashboard/task/${task.id}`); }}
       role="button"
       tabIndex={0}
-      className={`group rounded-xl border border-border/60 bg-card/80 backdrop-blur-sm p-3.5 shadow-xs transition-all duration-200 hover:shadow-md hover:border-primary/20 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 ${
+      className={`group rounded-xl border border-border/60 bg-card p-3.5 shadow-xs transition-all duration-200 hover:shadow-md hover:border-primary/20 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 ${
         isDragging || isSortDragging ? "opacity-50 shadow-lg" : ""
       }`}
     >
@@ -366,7 +366,7 @@ export default function AdminTaskPage() {
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {COLUMNS.map((c) => (
             <Card key={c}
-              className="border-border/60 bg-card/80 backdrop-blur-sm shadow-sm">
+              className="border-border/60 bg-card shadow-sm">
               <CardHeader>
                 <Skeleton className="h-5 w-24" />
               </CardHeader>
@@ -447,7 +447,7 @@ export default function AdminTaskPage() {
             return (
               <Card
                 key={column.id}
-                className={`border-border/60 bg-card/80 backdrop-blur-sm shadow-sm border-t-2 ${meta.color} flex flex-col`}
+                className={`border-border/60 bg-card shadow-sm border-t-2 ${meta.color} flex flex-col`}
               >
                 <CardHeader className="pb-3 shrink-0">
                   <div className="flex items-center justify-between">
