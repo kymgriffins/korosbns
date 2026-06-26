@@ -6,7 +6,7 @@ import { motion, type Variants } from "motion/react";
 import {
   Flame, Award, BookOpen, Trophy, Zap, ArrowRight,
   ChevronRight, Play, Sparkles, Crown, CircleUser, Newspaper,
-  MessageSquare, BrainCircuit, ListChecks, Quote,
+  MessageSquare, BrainCircuit, ListChecks,
 } from "lucide-react";
 import { Button } from "@/ui/button";
 import { BitmojiAvatar } from "./bitmoji-avatar";
@@ -44,22 +44,6 @@ const quests = [
   { title: "Streak Boost", desc: "3-day streak bonus", xp: 100, icon: Flame, color: "text-orange-500", bg: "bg-orange-500/10" },
 ];
 
-const QUOTES = [
-  { text: "A budget is telling your money where to go instead of wondering where it went.", author: "Dave Ramsey" },
-  { text: "The art of taxation consists in plucking the goose as to obtain the largest amount of feathers with the least possible amount of hissing.", author: "Jean-Baptiste Colbert" },
-  { text: "The budget is not just a collection of numbers, but an expression of our values and aspirations.", author: "Jack Lew" },
-  { text: "Annual income twenty pounds, annual expenditure nineteen nineteen and six, result happiness. Annual income twenty pounds, annual expenditure twenty pounds ought and six, result misery.", author: "Charles Dickens" },
-  { text: "The best way to teach your kids about money is to not have any.", author: "Dave Chappelle" },
-  { text: "Do not save what is left after spending, but spend what is left after saving.", author: "Warren Buffett" },
-  { text: "In the private sector, if you don't balance your budget, you go bankrupt. In government, if you don't balance your budget, you get reelected.", author: "P. J. O'Rourke" },
-  { text: "Balancing the budget is like protecting your virtue. You have to learn to say no.", author: "Ronald Reagan" },
-  { text: "The taxpayer: that's someone who works for the federal government but doesn't have to take the civil service examination.", author: "Ronald Reagan" },
-  { text: "Governments don't have any money — they only have the money they take from you.", author: "Thomas Sowell" },
-  { text: "The most important budgeting is the budgeting of your time and energy.", author: "Brian Tracy" },
-  { text: "A budget doesn't limit your freedom; it gives you freedom.", author: "Unknown" },
-];
-
-const quoteOfDay = QUOTES[new Date().getDate() % QUOTES.length];
 
 export function LearnDashboardView({
   profile, stages, currentStage, onSelectStage, onNavigateToCurriculum, onNavigateToForum, leaderboard,
@@ -149,40 +133,27 @@ export function LearnDashboardView({
       </motion.div>
 
       {/* Quick actions */}
-      <motion.div variants={itemVars} className="flex flex-wrap items-center gap-2">
+      <motion.div variants={itemVars} className="flex items-center gap-2">
         <Button asChild variant="default" size="sm" className="h-9 rounded-lg text-sm font-bold px-4">
           <Link href={currentStage ? `/learn/modules/${currentStage.slug}` : Routes.Learn}>
             <Play className="mr-1.5 size-3.5" fill="currentColor" /> Start Learning
           </Link>
         </Button>
-        <Button asChild variant="outline" size="sm" className="h-9 rounded-lg text-sm font-bold px-4">
+        <Button asChild variant="outline" size="sm" className="hidden sm:inline-flex h-9 rounded-lg text-sm font-bold px-4">
           <Link href="/learn/analytics">
             <BrainCircuit className="mr-1.5 size-3.5" /> Analytics
           </Link>
         </Button>
-        <Button asChild variant="outline" size="sm" className="h-9 rounded-lg text-sm font-bold px-4">
+        <Button asChild variant="outline" size="sm" className="hidden sm:inline-flex h-9 rounded-lg text-sm font-bold px-4">
           <Link href={Routes.LearnForum}>
             <MessageSquare className="mr-1.5 size-3.5" /> Discussions
           </Link>
         </Button>
-        <Button asChild variant="outline" size="sm" className="h-9 rounded-lg text-sm font-bold px-4">
+        <Button asChild variant="outline" size="sm" className="hidden sm:inline-flex h-9 rounded-lg text-sm font-bold px-4">
           <Link href={Routes.LearnQuests}>
             <ListChecks className="mr-1.5 size-3.5" /> Quests
           </Link>
         </Button>
-      </motion.div>
-
-      {/* Quote card */}
-      <motion.div variants={itemVars} className="rounded-xl border bg-card px-4 py-3">
-        <div className="flex items-start gap-3">
-          <Quote className="size-4 shrink-0 mt-0.5 text-muted-foreground/40" />
-          <div>
-            <p className="text-sm leading-relaxed text-muted-foreground">
-              &ldquo;{quoteOfDay.text}&rdquo;
-            </p>
-            <p className="mt-1 text-xs font-medium text-muted-foreground/60">&mdash; {quoteOfDay.author}</p>
-          </div>
-        </div>
       </motion.div>
 
       {/* Stats row */}
