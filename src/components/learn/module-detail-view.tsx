@@ -121,6 +121,12 @@ export function ModuleDetailView() {
     }
   }, [mod, currentStep]);
 
+  useEffect(() => {
+    if (currentStep > 0) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [currentStep]);
+
   const isMastery = currentStep > (mod?.steps?.length ?? 0);
   const currentStepObj = !isMastery && currentStep > 0 ? mod?.steps?.[currentStep - 1] ?? null : null;
   const currentTrivia = useMemo(
