@@ -114,9 +114,9 @@ export default async function UnifiedReaderPage(
   const { slug } = await props.params;
 
   let initialMode: "loading" | "error" | "article" | "story" | "trivia" = "loading";
-  let initialArticle: any = null;
-  let initialTrivia: any = null;
-  let initialStory: any = null;
+  let initialArticle: Record<string, unknown> | null = null;
+  let initialTrivia: Record<string, unknown> | null = null;
+  let initialStory: Record<string, unknown> | null = null;
 
   const resolved = await resolveContentSlug(slug);
 

@@ -77,7 +77,7 @@ export function StudioHero() {
           </motion.div>
 
           <motion.div variants={fadeInUp} className="pt-8">
-            <ChevronDown className="size-6 mx-auto text-muted-foreground animate-bounce" />
+            <ChevronDown className="size-6 mx-auto text-muted-foreground" />
           </motion.div>
         </motion.div>
       </div>

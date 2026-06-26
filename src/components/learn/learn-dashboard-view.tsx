@@ -6,7 +6,7 @@ import { motion, type Variants } from "motion/react";
 import {
   Flame, Award, BookOpen, Trophy, Zap, ArrowRight,
   ChevronRight, Play, Sparkles, Crown, CircleUser, Newspaper,
-  MessageSquare, BrainCircuit, ListChecks,
+  MessageSquare, ListChecks,
 } from "lucide-react";
 import { Button } from "@/ui/button";
 import { BitmojiAvatar } from "./bitmoji-avatar";
@@ -139,11 +139,7 @@ export function LearnDashboardView({
             <Play className="mr-1.5 size-3.5" fill="currentColor" /> Start Learning
           </Link>
         </Button>
-        <Button asChild variant="outline" size="sm" className="hidden sm:inline-flex h-9 rounded-lg text-sm font-bold px-4">
-          <Link href="/learn/analytics">
-            <BrainCircuit className="mr-1.5 size-3.5" /> Analytics
-          </Link>
-        </Button>
+
         <Button asChild variant="outline" size="sm" className="hidden sm:inline-flex h-9 rounded-lg text-sm font-bold px-4">
           <Link href={Routes.LearnForum}>
             <MessageSquare className="mr-1.5 size-3.5" /> Discussions

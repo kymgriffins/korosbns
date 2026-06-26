@@ -39,9 +39,9 @@ import { MasteryPage } from "./mastery-page";
 
 interface StageDetailDrawerProps {
   stage: CivicModule;
-  profile: any;
+  profile: Record<string, unknown>;
   onClose: () => void;
-  onUpdateProfile: (updatedProfile: any) => void;
+  onUpdateProfile: (updatedProfile: Record<string, unknown>) => void;
   onPrevStage?: () => void;
   onNextStage?: () => void;
   hasPrev: boolean;

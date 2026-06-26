@@ -190,7 +190,7 @@ export default function EventDetailPage() {
 
                 {emailRegistered ? (
                   <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 text-center">
-                    <CheckCircle2 className="size-8 text-primary mx-auto mb-2 animate-bounce" />
+                    <CheckCircle2 className="size-8 text-primary mx-auto mb-2" />
                     <p className="text-sm font-semibold text-primary">You are Connected!</p>
                     <p className="text-xs text-muted-foreground mt-1">We'll alert you as soon as new photos or community boards are available.</p>
                   </div>

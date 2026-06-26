@@ -34,10 +34,10 @@ export function parseArticleBlocks(text: string): Array<
   if (!text?.trim()) return [];
 
   const blocks: ReturnType<typeof parseArticleBlocks> = [];
-  const imgRegex = /<img[^>]+src="([^"]+)"[^>]*alt="([^"]*)"[^>]*\/?>/gi;
+  const imgRegex = /<img[^>]+src="([^"]+)"[^>]*(?:alt="([^"]*)")?[^>]*\/?>/gi;
 
   const cleaned = text.replace(imgRegex, (_, src, alt) => {
-    if (!PLACEHOLDER_IMAGE.test(src)) {
+    if (src && !PLACEHOLDER_IMAGE.test(src)) {
       blocks.push({ type: "image", src, alt: alt || "Chart" });
     }
     return "\n\n";

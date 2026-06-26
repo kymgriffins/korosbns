@@ -42,7 +42,7 @@ export function LearnPathsHome() {
   const { isLoggedIn, user: authUser, loading: authLoading } = useAuth();
   const { civicModules, fetchCivicModules, activeLesson, setActiveLesson, updateCurrentStep, activeTab, setActiveTab, totalStages, modulesLoading, modulesError, refreshModules } = useLearn();
   const stages = civicModules;
-  const [profile, setProfile] = useState<any | null>(null);
+  const [profile, setProfile] = useState<LearnHubProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
   const [selectedStage, setSelectedStage] = useState<CivicModule | null>(null);
@@ -81,10 +81,10 @@ export function LearnPathsHome() {
 
     if (isLoggedIn && authUser) {
       const stored = localStorage.getItem("bns_user_profile");
-      let currentProfile: any = null;
+      let currentProfile: LearnHubProfile | null = null;
       if (stored) {
         try {
-          currentProfile = JSON.parse(stored);
+          currentProfile = JSON.parse(stored) as LearnHubProfile;
         } catch {
           currentProfile = null;
         }
@@ -92,10 +92,10 @@ export function LearnPathsHome() {
       
       if (!currentProfile || currentProfile.userId !== authUser.id) {
         const onboardingData = localStorage.getItem("bns_onboarding_profile");
-        let preferences: any = {};
+        let preferences: Record<string, unknown> = {};
         if (onboardingData) {
           try {
-            preferences = JSON.parse(onboardingData);
+            preferences = JSON.parse(onboardingData) as Record<string, unknown>;
           } catch {
             preferences = {};
           }

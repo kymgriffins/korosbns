@@ -251,25 +251,9 @@ export function getTokenStorageMode(): "hybrid" | "legacy" {
   return mode === "legacy" ? "legacy" : "hybrid";
 }
 
-// Sync access token to a non-httpOnly cookie so Next.js middleware can read it.
-// This is a best-effort bridge; the primary store remains sessionStorage.
-function syncTokenCookie(access: string): void {
-  try {
-    const maxAge = 60 * 60 * 24; // 24h — aligns with typical access token lifetime
-    const secure = process.env.NODE_ENV === "production";
-    document.cookie = `${ACCESS_TOKEN_COOKIE}=${access}; Path=/; SameSite=Lax; Max-Age=${maxAge}${secure ? "; Secure" : ""}`;
-  } catch {
-    // Cookies unavailable (SSR, non-browser environment) — ignore.
-  }
-}
-
-function removeTokenCookie(): void {
-  try {
-    document.cookie = `${ACCESS_TOKEN_COOKIE}=; Path=/; SameSite=Lax; Max-Age=0`;
-  } catch {
-    // Cookies unavailable — ignore.
-  }
-}
+// JWT is set as an HttpOnly cookie by the Django backend on login/token refresh.
+// The cookie is server-managed; no frontend sync needed.
+// Next.js edge middleware reads the HttpOnly cookie for route protection.
 function dispatchAuthChanged(): void {
   if (typeof window === "undefined" || typeof window.dispatchEvent !== "function") return;
   try {
@@ -287,7 +271,6 @@ export function setAuthTokens(access: string, refresh?: string): void {
   }
   window.sessionStorage.setItem(ACCESS_KEY, access);
   window.localStorage.setItem(STORAGE_MODE_KEY, "hybrid");
-  syncTokenCookie(access);
   if (refresh && typeof refresh === "string") {
     window.localStorage.setItem(REFRESH_KEY, refresh);
   }
@@ -300,7 +283,6 @@ export function clearAuthTokens(): void {
   window.localStorage.removeItem(ACCESS_KEY);
   window.localStorage.removeItem(REFRESH_KEY);
   window.localStorage.removeItem(STORAGE_MODE_KEY);
-  removeTokenCookie();
   dispatchAuthChanged();
 }
 

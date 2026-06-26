@@ -7,7 +7,7 @@ import {
   ChevronDown, ChevronRight, X,
   BookOpen, LayoutDashboard, ExternalLink,
   LogOut, Palette, LogIn, User, FileText, Settings,
-  MessagesSquare, Calendar, ListChecks, TrendingUp
+  MessagesSquare, Calendar, ListChecks
 } from "lucide-react";
 import { cn } from "@/utils";
 import { LearnProvider, useLearn, type LearnTab } from "@/contexts/learn-context";
@@ -48,7 +48,7 @@ function UserPopover({
   isLoggedIn, user, level, handleTabChange, children,
 }: {
   isLoggedIn: boolean;
-  user: any;
+  user: { avatar_url?: string; first_name?: string; email?: string; display_name?: string } | null;
   level: number;
   handleTabChange: (tab: LearnTab) => void;
   children: React.ReactNode;
@@ -65,7 +65,7 @@ function UserPopover({
               <div className="flex items-center gap-3 px-2 py-2 border-b border-border/30 mb-1">
                 <Avatar className="size-8 ring-1 ring-sidebar-border/40 shrink-0">
                   {user?.avatar_url ? (
-                    <img src={user.avatar_url} alt="" className="size-full rounded-full object-cover" />
+                    <img src={user.avatar_url} alt={`${user?.display_name || user?.first_name || "User"}'s avatar`} className="size-full rounded-full object-cover" />
                   ) : (
                     <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
                       {user?.first_name?.[0] ?? user?.email?.[0]?.toUpperCase() ?? "?"}
@@ -263,21 +263,7 @@ function LearnSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-[10px] font-bold tracking-wider text-sidebar-foreground/50 uppercase mb-0.5">Insights</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Analytics" className="py-4 rounded-lg">
-                  <Link href="/learn/analytics" onClick={() => { if (isMobile) setOpenMobile(false); }}>
-                    <TrendingUp className="size-4" />
-                    <span className="font-semibold text-xs">Analytics</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+
       </SidebarContent>
 
       <SidebarFooter>

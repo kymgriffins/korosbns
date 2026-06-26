@@ -85,8 +85,8 @@ export default function VideosPage() {
                   />
                 </div>
               ) : (
-                <div className="flex aspect-video w-full items-center justify-center bg-gradient-to-br from-purple-500/10 to-purple-500/5">
-                  <Film className="size-10 text-purple-400/40" />
+                <div className="flex aspect-video w-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
+                  <Film className="size-10 text-primary/30" />
                 </div>
               )}
               <div className="flex flex-1 flex-col p-4">

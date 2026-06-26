@@ -758,12 +758,12 @@ export default function Learn() {
     const progress = ((quizIndex + 1) / effectiveQuizQuestions.length) * 100;
 
     return (
-      <section className="fixed inset-0 z-[100] bg-gradient-to-br from-purple-900 via-indigo-900 to-black flex flex-col overflow-hidden">
+      <section className="fixed inset-0 z-[100] bg-gradient-to-br from-foreground via-primary/20 to-foreground flex flex-col overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <motion.div
             animate={{ scale: [1, 1.1, 1], rotate: [0, 90, 180] }}
             transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] rounded-full bg-purple-600/20 blur-3xl"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] rounded-full bg-primary/10 blur-3xl"
           />
         </div>
 
