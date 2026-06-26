@@ -1,9 +1,10 @@
 "use client";
 
 import { cn } from "@/utils";
-import { MenuIcon, XIcon } from "lucide-react";
+import { MenuIcon, XIcon, LogOut } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { Routes } from "@/constants";
 import MobileMenu from "./mobile-menu";
 import { Button } from "@/ui/button";
@@ -13,12 +14,24 @@ import { useAuth } from "@/contexts/auth-context";
 import { ThemeToggle } from "./theme-toggle";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "motion/react";
 import { navbarEnter } from "@/motion/variants";
+import { toast } from "sonner";
 
 const Navbar = () => {
-  const { isLoggedIn, loading: authLoading, user } = useAuth();
+  const { isLoggedIn, loading: authLoading, user, logout } = useAuth();
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [scrolled, setScrolled] = useState(false);
   const ref = useClickOutside(() => setIsOpen(false));
+
+  async function handleLogout() {
+    try {
+      await logout();
+      toast.success("Logged out");
+      router.push(Routes.Home);
+    } catch {
+      toast.error("Failed to log out");
+    }
+  }
 
   const { scrollY } = useScroll();
 
@@ -100,24 +113,41 @@ const Navbar = () => {
             <div className="flex items-center gap-2 md:gap-3">
               <ThemeToggle />
               {!authLoading && (
-                <Link href={isLoggedIn ? Routes.Learn : Routes.JoinUs}>
-                  <Button
-                    variant="white"
-                    size="sm"
-                    className="h-9 px-4 rounded-lg font-medium gap-2"
-                  >
-                    {isLoggedIn ? (
-                      <>
+                isLoggedIn ? (
+                  <div className="flex items-center gap-2">
+                    <Link href={Routes.Learn}>
+                      <Button
+                        variant="white"
+                        size="sm"
+                        className="h-9 px-4 rounded-lg font-medium gap-2"
+                      >
                         <span className="flex size-5 items-center justify-center rounded-full bg-primary/20 text-[10px] font-bold text-primary shrink-0">
                           {user?.email?.charAt(0).toUpperCase() ?? "?"}
                         </span>
-                        Welcome back, {user?.first_name ?? user?.email ?? "Citizen"}
-                      </>
-                    ) : (
-                      "Join us"
-                    )}
-                  </Button>
-                </Link>
+                        {user?.first_name ?? user?.email ?? "Citizen"}
+                      </Button>
+                    </Link>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleLogout}
+                      className="h-9 px-3 rounded-lg text-muted-foreground hover:text-foreground"
+                      aria-label="Log out"
+                    >
+                      <LogOut className="size-4" />
+                    </Button>
+                  </div>
+                ) : (
+                  <Link href={Routes.JoinUs}>
+                    <Button
+                      variant="white"
+                      size="sm"
+                      className="h-9 px-4 rounded-lg font-medium gap-2"
+                    >
+                      Join us
+                    </Button>
+                  </Link>
+                )
               )}
               <motion.div
                 whileTap={{ scale: 0.92 }}
