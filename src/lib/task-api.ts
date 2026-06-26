@@ -55,13 +55,21 @@ function mapAttachment(a: TaskAttachmentApi): TaskAttachment {
 
 function mapDetailToTask(detail: WeeklyNoteDetailApi): TaskDetail {
   const base = mapNoteToTask(detail);
+  const checklistItems: ChecklistItemApi[] | undefined = detail.checklist_items ?? base.checklist?.map((c) => ({
+    id: c.id,
+    text: c.text,
+    is_completed: c.checked,
+    sort_order: 0,
+    created_at: "",
+    updated_at: "",
+  }));
   return {
     ...base,
     content: base.content ?? "",
     notes: detail.notes,
     sections: detail.sections,
     audit_trails: detail.audit_trails,
-    checklist_items: detail.checklist_items,
+    checklist_items: checklistItems,
     attachments: detail.attachments?.map(mapAttachment),
     author_team: detail.author_team,
     team: detail.team,
