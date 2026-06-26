@@ -54,6 +54,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
   const [editing, setEditing] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [togglingItems, setTogglingItems] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     taskApi.get(id)
@@ -64,6 +65,32 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
       })
       .finally(() => setLoading(false));
   }, [id, router]);
+
+  async function handleToggleChecklistItem(itemId: string, currentChecked: boolean) {
+    if (!isLoggedIn) return;
+    setTogglingItems((prev) => new Set(prev).add(itemId));
+    try {
+      const updated = await taskApi.updateChecklistItem(id, itemId, { is_completed: !currentChecked });
+      setTask((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          checklist: prev.checklist?.map((c) =>
+            c.id === itemId ? { ...c, checked: updated.is_completed } : c
+          ),
+        };
+      });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Failed to update item";
+      toast.error(msg);
+    } finally {
+      setTogglingItems((prev) => {
+        const next = new Set(prev);
+        next.delete(itemId);
+        return next;
+      });
+    }
+  }
 
   async function handleDelete() {
     if (!isLoggedIn) {
@@ -260,15 +287,44 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
             Checklist ({doneCount}/{totalItems})
           </span>
           {task.checklist && task.checklist.length > 0 ? (
-            <div className="space-y-1.5 mt-2">
-              {task.checklist.map((item) => (
-                <div key={item.id} className="flex items-center gap-2">
-                  <Checkbox checked={item.checked} disabled />
-                  <span className={`text-sm ${item.checked ? "line-through text-muted-foreground" : ""}`}>
-                    {item.text}
-                  </span>
-                </div>
-              ))}
+            <div className="space-y-3 mt-2">
+              {/* Active (incomplete) items */}
+              {(() => {
+                const active = task.checklist!.filter((c) => !c.checked);
+                return active.map((item) => (
+                  <div key={item.id} className="flex items-center gap-2">
+                    <Checkbox
+                      checked={false}
+                      disabled={!isLoggedIn || togglingItems.has(item.id)}
+                      onCheckedChange={() => handleToggleChecklistItem(item.id, false)}
+                    />
+                    <span className="text-sm">{item.text}</span>
+                  </div>
+                ));
+              })()}
+
+              {/* Completed items */}
+              {(() => {
+                const done = task.checklist!.filter((c) => c.checked);
+                if (done.length === 0) return null;
+                return (
+                  <div className="space-y-1.5 pt-2 border-t border-border/40">
+                    <span className="text-[10px] text-muted-foreground">Completed</span>
+                    {done.map((item) => (
+                      <div key={item.id} className="flex items-center gap-2">
+                        <Checkbox
+                          checked={true}
+                          disabled={!isLoggedIn || togglingItems.has(item.id)}
+                          onCheckedChange={() => handleToggleChecklistItem(item.id, true)}
+                        />
+                        <span className="text-sm line-through text-muted-foreground">
+                          {item.text}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })()}
             </div>
           ) : (
             <p className="text-sm text-muted-foreground text-center py-4">No checklist items.</p>
