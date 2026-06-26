@@ -26,7 +26,7 @@ const STAGES: StageCard[] = [
     badgeName: "DocNative",
     description: "Learn about the foundations of public finance in Kenya under Chapter Twelve of the Constitution.",
     icon: Shield,
-    colorClass: "from-rose-500/10 to-rose-600/5 border-rose-500/20 text-rose-500",
+    colorClass: "border-primary/20 text-primary bg-primary/5",
   },
   {
     id: 2,
@@ -35,7 +35,7 @@ const STAGES: StageCard[] = [
     badgeName: "VertDecoder",
     description: "Audit macroeconomic forecasts, expenditure ceilings, and transfers to county governments.",
     icon: Scale,
-    colorClass: "from-amber-500/10 to-amber-600/5 border-amber-500/20 text-amber-500",
+    colorClass: "border-amber-500/20 text-amber-600 bg-amber-500/5",
   },
   {
     id: 3,
@@ -44,7 +44,7 @@ const STAGES: StageCard[] = [
     badgeName: "InfraFund",
     description: "Explore Kenya's National Infrastructure Fund for long-term investments in transport, energy, water, and digital infrastructure.",
     icon: Building2,
-    colorClass: "from-blue-500/10 to-blue-600/5 border-blue-500/20 text-blue-500",
+    colorClass: "border-primary/20 text-primary bg-primary/5",
   },
 ];
 
@@ -82,7 +82,7 @@ export default function HorizontalCycleSlider() {
               transition={{ duration: 0.6, ease: [0.19, 1, 0.22, 1] }}
               className="space-y-3"
             >
-              <span className="text-xs uppercase tracking-widest text-primary font-black">
+              <span className="text-xs font-semibold text-primary">
                 The Learning Path
               </span>
               <h2 className="text-3xl md:text-5xl font-black text-foreground tracking-tight leading-none">
@@ -128,7 +128,7 @@ export default function HorizontalCycleSlider() {
                     <h3 className="text-lg font-black text-foreground leading-tight">
                       {stage.title}
                     </h3>
-                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                    <span className="text-xs font-semibold text-muted-foreground">
                       Badge: {stage.badgeName}
                     </span>
                   </div>
@@ -157,7 +157,7 @@ export default function HorizontalCycleSlider() {
               return (
                 <div
                   key={stage.id}
-                  className="w-[380px] shrink-0 rounded-3xl border border-border/80 bg-card/20 p-8 flex flex-col justify-between h-[360px] backdrop-blur-xs hover:border-primary/30 transition-all duration-300 group"
+                  className="w-[380px] shrink-0 rounded-3xl border border-border/80 bg-card p-8 flex flex-col justify-between h-[360px] hover:border-primary/30 transition-all duration-300 group"
                 >
                   <div className="space-y-6">
                     <div className="flex items-center justify-between">
@@ -172,7 +172,7 @@ export default function HorizontalCycleSlider() {
                         {stage.title}
                       </h3>
                       <div className="flex items-center gap-1.5">
-                        <span className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-widest bg-card px-2 py-0.5 rounded border border-border">
+                        <span className="text-xs font-semibold text-muted-foreground bg-card px-2 py-0.5 rounded border border-border">
                           {stage.badgeName}
                         </span>
                       </div>

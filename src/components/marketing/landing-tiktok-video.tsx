@@ -205,7 +205,7 @@ export default function LandingTikTokVideo() {
             ref={phoneRef}
             className="relative w-[min(100%,300px)] sm:w-[340px] lg:w-[min(100%,380px)] xl:w-[420px]"
           >
-            <div className="relative aspect-[9/16] overflow-hidden rounded-[2rem] border-[3px] border-foreground/10 bg-black shadow-2xl shadow-black/30 ring-1 ring-white/10">
+            <div className="relative aspect-[9/16] overflow-hidden rounded-[2rem] border-[3px] border-foreground/10 bg-card ring-1 ring-white/10">
               {video ? (
                 <>
                   <video
@@ -233,7 +233,7 @@ export default function LandingTikTokVideo() {
                       className="absolute inset-0 z-10 flex items-center justify-center"
                       aria-label="Play video"
                     >
-                      <span className="flex size-16 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
+                      <span className="flex size-16 items-center justify-center rounded-full bg-white/20">
                         <Play className="size-8 fill-white text-white" />
                       </span>
                     </button>
@@ -246,7 +246,7 @@ export default function LandingTikTokVideo() {
                       className="pointer-events-auto flex flex-col items-center gap-1 text-white/90 transition-transform hover:scale-105"
                       onClick={handleLike}
                     >
-                      <span className="flex size-10 items-center justify-center rounded-full bg-black/25 backdrop-blur-sm">
+                      <span className="flex size-10 items-center justify-center rounded-full bg-black/25">
                         <Heart
                           className={cn("size-5 transition-colors", liked && "fill-red-500 text-red-500")}
                           strokeWidth={1.75}
@@ -261,7 +261,7 @@ export default function LandingTikTokVideo() {
                       className="pointer-events-auto flex flex-col items-center gap-1 text-white/90 transition-transform hover:scale-105 no-underline"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <span className="flex size-10 items-center justify-center rounded-full bg-black/25 backdrop-blur-sm">
+                      <span className="flex size-10 items-center justify-center rounded-full bg-black/25">
                         <MessageCircle className="size-5" strokeWidth={1.75} />
                       </span>
                       <span className="text-[10px] font-medium">Comment</span>
@@ -272,7 +272,7 @@ export default function LandingTikTokVideo() {
                       className="pointer-events-auto flex flex-col items-center gap-1 text-white/90 transition-transform hover:scale-105"
                       onClick={handleShare}
                     >
-                      <span className="flex size-10 items-center justify-center rounded-full bg-black/25 backdrop-blur-sm">
+                      <span className="flex size-10 items-center justify-center rounded-full bg-black/25">
                         <Share2 className="size-5" strokeWidth={1.75} />
                       </span>
                       <span className="text-[10px] font-medium">Share</span>
@@ -300,7 +300,7 @@ export default function LandingTikTokVideo() {
                         e.stopPropagation();
                         toggleMute();
                       }}
-                      className="pointer-events-auto flex size-9 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-colors hover:bg-black/60"
+                      className="pointer-events-auto flex size-9 items-center justify-center rounded-full bg-black/40 text-white transition-colors hover:bg-black/60"
                       aria-label={isMuted ? "Unmute video" : "Mute video"}
                     >
                       {isMuted ? (
@@ -315,7 +315,7 @@ export default function LandingTikTokVideo() {
                         e.stopPropagation();
                         togglePlay();
                       }}
-                      className="pointer-events-auto flex size-9 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-colors hover:bg-black/60"
+                      className="pointer-events-auto flex size-9 items-center justify-center rounded-full bg-black/40 text-white transition-colors hover:bg-black/60"
                       aria-label={isPlaying ? "Pause video" : "Play video"}
                     >
                       {isPlaying ? (
@@ -373,7 +373,7 @@ function TikTokMarquee({
 }) {
   return (
     <div className="mt-14 overflow-hidden">
-      <p className="mb-5 text-center text-xs font-semibold uppercase tracking-widest text-foreground/40">
+      <p className="mb-5 text-center text-xs font-semibold text-foreground/40">
         As seen on TikTok
       </p>
       <Marquee pauseOnHover repeat={Math.max(2, Math.ceil(8 / videos.length))}>
@@ -381,7 +381,7 @@ function TikTokMarquee({
           <a
             key={v.id}
             href={`/tiktok/${v.id}`}
-            className="group relative aspect-[9/16] w-[140px] shrink-0 overflow-hidden rounded-xl border border-border/40 bg-black sm:w-[160px]"
+            className="group relative aspect-[9/16] w-[140px] shrink-0 overflow-hidden rounded-xl border border-border/40 bg-card sm:w-[160px]"
           >
             {v.cover_image_url ? (
               <Image

@@ -18,7 +18,7 @@ interface MasteryPageProps {
 export function MasteryPage({ badge, badgeName, title, hasNext, onNextStage, onClose, certificateUrl, certificateId }: MasteryPageProps) {
   return (
     <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center text-center gap-4 py-10">
-      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 200, damping: 12 }} className="text-6xl">{badge}</motion.div>
+      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.5, ease: [0.25, 0.4, 0, 1] }} className="text-6xl">{badge}</motion.div>
       <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 text-[10px] font-bold uppercase tracking-wider">{badgeName} Unlocked!</span>
       <h2 className="text-xl font-black tracking-tight">{title}</h2>
 

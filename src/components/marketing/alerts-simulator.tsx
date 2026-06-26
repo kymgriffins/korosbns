@@ -175,7 +175,7 @@ export default function AlertsSimulator() {
             transition={{ duration: 0.6, ease: [0.19, 1, 0.22, 1] }}
             className="lg:col-span-5 space-y-6"
           >
-            <span className="inline-block text-xs uppercase tracking-widest text-primary font-black">
+            <span className="inline-block text-xs font-semibold text-primary">
               Civic Intelligence
             </span>
             <h2 className="text-3xl md:text-5xl font-black text-foreground tracking-tight leading-none">
@@ -188,7 +188,7 @@ export default function AlertsSimulator() {
             </p>
 
             <div className="space-y-3 pt-2">
-              <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-extrabold">
+              <span className="text-xs font-semibold text-muted-foreground">
                 Select a sector to simulate:
               </span>
               <div className="flex flex-wrap gap-2">
@@ -225,15 +225,15 @@ export default function AlertsSimulator() {
             transition={{ duration: 0.7, ease: [0.19, 1, 0.22, 1], delay: 0.1 }}
             className="lg:col-span-7 flex justify-center items-center"
           >
-            <div className="relative w-full max-w-[340px] h-[580px] rounded-[40px] border-[6px] border-border bg-black p-3 shadow-2xl overflow-hidden">
+            <div className="relative w-full max-w-[340px] h-[580px] rounded-[40px] border-[6px] border-border bg-card p-3 shadow-2xl overflow-hidden">
               {/* Camera Notch */}
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-5 bg-black rounded-b-xl z-30 flex items-center justify-center">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-5 bg-card rounded-b-xl z-30 flex items-center justify-center">
                 <div className="size-2 bg-card rounded-full mr-2" />
                 <div className="w-8 h-1 bg-muted-foreground/20 rounded-full" />
               </div>
 
               {/* Story Container */}
-              <div className="relative w-full h-full rounded-[30px] overflow-hidden bg-black">
+              <div className="relative w-full h-full rounded-[30px] overflow-hidden bg-card">
 
                 {/* Story Progress Bar */}
                 <div className="absolute top-3 left-3 right-3 z-20 flex gap-1">
@@ -279,23 +279,23 @@ export default function AlertsSimulator() {
                     className="relative z-10 flex flex-col justify-end h-full p-6 pb-12"
                   >
                     {/* Sector icon chip */}
-                    <div className="absolute top-12 left-6 flex items-center gap-2 bg-black/25 backdrop-blur-sm rounded-full px-3 py-1.5 text-[10px] text-white/90 font-bold uppercase tracking-wider">
+                    <div className="absolute top-12 left-6 flex items-center gap-2 bg-background/80 rounded-full px-3 py-1.5 text-[10px] text-foreground font-semibold">
                       <Icon className="size-3" />
                       {sd.shortLabel}
                     </div>
 
                     {/* Stat Card */}
-                    <div className="bg-black/40 backdrop-blur-md rounded-2xl border border-white/10 p-5 space-y-3">
+                    <div className="bg-card/90 rounded-2xl border border-border/60 p-5 space-y-3">
                       <div className="flex items-start justify-between">
                         <div>
-                          <p className="text-[10px] uppercase tracking-widest text-white/60 font-bold">
+                          <p className="text-xs font-semibold text-muted-foreground">
                             {slide.title}
                           </p>
                           <p className="text-2xl font-black text-white mt-0.5 leading-none">
                             {slide.value}
                           </p>
                         </div>
-                        <span className="text-[9px] uppercase tracking-wider bg-white/10 rounded-full px-2.5 py-1 text-white/70 font-bold whitespace-nowrap">
+                        <span className="text-[10px] font-semibold bg-muted/20 rounded-full px-2.5 py-1 text-muted-foreground whitespace-nowrap">
                           {slide.accent}
                         </span>
                       </div>

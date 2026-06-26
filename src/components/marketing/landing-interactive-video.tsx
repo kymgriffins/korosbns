@@ -26,7 +26,7 @@ const LandingInteractiveVideo = () => {
         <>
             <section 
                 ref={sectionRef}
-                className="relative w-full aspect-video md:h-[80vh] bg-zinc-900 overflow-hidden cursor-none mx-auto max-w-[1400px] px-8 md:px-16 my-24 md:my-48 rounded-[2rem] md:rounded-[4rem] group"
+                className="relative w-full aspect-video md:h-[80vh] bg-card/95 overflow-hidden cursor-none mx-auto max-w-[1400px] px-8 md:px-16 my-24 md:my-48 rounded-[2rem] md:rounded-[4rem] group"
                 onMouseEnter={() => setIsHovering(true)}
                 onMouseLeave={() => setIsHovering(false)}
                 onClick={() => setIsOpen(true)}
@@ -38,7 +38,7 @@ const LandingInteractiveVideo = () => {
                             initial={{ scale: 0, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0, opacity: 0 }}
-                            transition={{ type: "spring", stiffness: 250, damping: 25 }}
+                            transition={{ duration: 0.4, ease: [0.25, 0.4, 0, 1] }}
                             style={{
                                 left: mousePos.x,
                                 top: mousePos.y,
@@ -46,13 +46,13 @@ const LandingInteractiveVideo = () => {
                             className="fixed -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none w-32 h-32 bg-white rounded-full flex flex-col items-center justify-center mix-blend-difference"
                         >
                             <PlayIcon className="w-8 h-8 text-black fill-black" />
-                            <span className="text-black text-[10px] font-bold tracking-widest mt-2 uppercase">Play</span>
+                            <span className="text-black text-[10px] font-semibold mt-2">Play</span>
                         </motion.div>
                     )}
                 </AnimatePresence>
 
                 <div className="absolute inset-0 z-0">
-                    <div className="absolute inset-0 bg-zinc-900/40 z-10 mix-blend-multiply group-hover:bg-zinc-900/20 transition-colors duration-700" />
+                    <div className="absolute inset-0 bg-background/40 z-10 mix-blend-multiply group-hover:bg-background/20 transition-colors duration-700" />
                     <video
                         autoPlay
                         muted
@@ -85,14 +85,14 @@ const LandingInteractiveVideo = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[10001] bg-black/95 flex items-center justify-center p-4 md:p-12"
+                        className="fixed inset-0 z-[10001] bg-background/95 flex items-center justify-center p-4 md:p-12"
                         onClick={() => setIsOpen(false)}
                     >
                         <motion.div 
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
-                            className="relative w-full max-w-6xl aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl"
+                            className="relative w-full max-w-6xl aspect-video bg-card rounded-2xl overflow-hidden border border-border"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <iframe 
@@ -104,7 +104,7 @@ const LandingInteractiveVideo = () => {
                             ></iframe>
                             <button 
                                 onClick={() => setIsOpen(false)}
-                                className="absolute top-6 right-6 text-white/50 hover:text-white uppercase tracking-widest text-xs font-bold transition-colors"
+                                className="absolute top-6 right-6 text-muted-foreground hover:text-card-foreground text-xs font-semibold transition-colors"
                             >
                                 Close [esc]
                             </button>

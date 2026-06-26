@@ -43,8 +43,8 @@ const activities = [
         title: "Grassroots Organizing",
         description: "Establishing university and community chapters to build a nationwide network of budget trackers.",
         icon: Users,
-        color: "text-purple-500",
-        bg: "bg-purple-500/10",
+        color: "text-primary",
+        bg: "bg-primary/10",
     },
     {
         title: "Impact Monitoring",
@@ -79,7 +79,7 @@ const ConsortiumPartners = () => {
                         viewport={{ once: true }}
                     >
                         <SectionBadge title="Consortium of Partners" />
-                        <h2 className="text-4xl md:text-6xl font-bold tracking-tight mt-6 bg-linear-to-b from-foreground to-foreground/70 bg-clip-text text-transparent">
+                        <h2 className="text-4xl md:text-6xl font-bold tracking-tight mt-6 text-foreground">
                             A Kenya-wide <span className="text-primary">youth-led</span> consortium
                         </h2>
                         <p className="mt-6 text-lg md:text-xl text-muted-foreground leading-relaxed max-w-3xl mx-auto">
@@ -94,7 +94,7 @@ const ConsortiumPartners = () => {
                         initial={{ opacity: 0, scale: 0.95 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
-                        className="md:col-span-12 lg:col-span-8 rounded-[2.5rem] border border-foreground/10 bg-cardbox/50 backdrop-blur-sm p-8 md:p-12 relative overflow-hidden group"
+                        className="md:col-span-12 lg:col-span-8 rounded-[2.5rem] border border-foreground/10 bg-card p-8 md:p-12 relative overflow-hidden group"
                     >
                         <div className="relative z-10">
                             <h3 className="text-2xl font-bold mb-4">The BNS Mission</h3>
@@ -118,7 +118,7 @@ const ConsortiumPartners = () => {
                                                 className="object-contain"
                                             />
                                         </div>
-                                        <span className="mt-3 text-xs font-bold uppercase tracking-widest text-muted-foreground group-hover/partner:text-primary transition-colors">
+                                        <span className="mt-3 text-xs font-semibold text-muted-foreground group-hover/partner:text-primary transition-colors">
                                             {partner.name}
                                         </span>
                                     </Link>
@@ -139,7 +139,7 @@ const ConsortiumPartners = () => {
                         className="md:col-span-12 lg:col-span-4 rounded-[2.5rem] border border-foreground/10 bg-primary p-8 md:p-10 text-primary-foreground flex flex-col justify-between"
                     >
                         <div>
-                            <div className="size-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center mb-6">
+                            <div className="size-12 rounded-2xl bg-background/20 flex items-center justify-center mb-6">
                                 <ArrowUpRight className="size-6" />
                             </div>
                             <h3 className="text-2xl font-bold mb-4 leading-tight">National Scale Participation</h3>

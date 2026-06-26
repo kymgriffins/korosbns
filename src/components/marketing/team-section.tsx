@@ -47,7 +47,7 @@ const SocialIcon = ({ platform, href }: { platform: string; href: string }) => {
       onClick={(e) => e.stopPropagation()}
       whileHover={{ scale: 1.1, y: -2 }}
       whileTap={{ scale: 0.95 }}
-      className="inline-flex size-9 items-center justify-center rounded-full bg-background/10 backdrop-blur-sm border border-white/20 text-white/90 hover:bg-white/20 hover:border-white/40 transition-all duration-200"
+      className="inline-flex size-9 items-center justify-center rounded-full bg-background/10 border border-white/20 text-white/90 hover:bg-white/20 hover:border-white/40 transition-all duration-200"
       aria-label={`${platform} profile`}
     >
       <Icon className="size-4" />
@@ -114,7 +114,7 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 20 }}
                   transition={{ duration: 0.25, ease: ease.out }}
-                  className="absolute inset-0 flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm"
+                  className="absolute inset-0 flex items-center justify-center p-6 bg-background/90"
                 >
                   <p className="text-sm text-white/90 text-center leading-relaxed">
                     {member.description}
@@ -154,7 +154,7 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
               initial={{ opacity: 0, x: -8 }}
               animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : -8 }}
               transition={{ duration: 0.2 }}
-              className="absolute top-5 right-5 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-semibold"
+              className="absolute top-5 right-5 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-background/20 border border-white/20 text-white text-xs font-semibold"
             >
               View profile
               <ArrowUpRight className="size-3.5" />

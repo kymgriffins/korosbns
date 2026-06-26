@@ -74,7 +74,7 @@ function StatCard({
   loading?: boolean;
 }) {
   return (
-    <Card className="border-border/60 bg-card/80 backdrop-blur-sm">
+    <Card className="border-border/60 bg-card">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
         <Icon className={`size-4 ${color}`} />

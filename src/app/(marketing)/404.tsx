@@ -66,7 +66,7 @@ export default function NotFound() {
                 >
                     <div className="inline-block relative">
                         <span className="absolute inset-0 blur-2xl opacity-30 bg-gradient-to-r from-primary to-teal-500 filter"></span>
-                        <span className="relative text-[8rem] md:text-[12rem] font-bold leading-none bg-linear-to-b from-primary/20 via-primary/10 to-transparent bg-clip-text text-transparent">
+                        <span className="relative text-[8rem] md:text-[12rem] font-bold leading-none text-foreground/10">
                             404
                         </span>
                     </div>

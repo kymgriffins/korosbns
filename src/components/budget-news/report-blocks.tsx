@@ -87,7 +87,7 @@ function BudgetKpiCard({ kpi, scale }: { kpi: BudgetKpi; scale: number }) {
   const TrendIcon = isUp ? TrendingUp : isDown ? TrendingDown : Minus;
 
   return (
-    <Card className="border-border/60 bg-card/80 backdrop-blur-sm py-4 gap-3 shadow-sm group hover:shadow-md hover:border-primary/20 transition-all duration-300">
+    <Card className="border-border/60 bg-card py-4 gap-3 group hover:border-primary/20 transition-all duration-300">
       <CardHeader className="px-4 pb-0">
         <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
           {kpi.label}
@@ -466,7 +466,7 @@ export function BudgetReportHero({
           {description}
         </p>
         {report.theme && (
-          <p className="text-xs sm:text-sm italic text-muted-foreground/80 border-l-2 border-primary/40 pl-3 max-w-2xl">
+          <p className="text-xs sm:text-sm italic text-muted-foreground/80 max-w-2xl bg-muted/30 rounded-lg px-4 py-2">
             &ldquo;{report.theme}&rdquo;
           </p>
         )}

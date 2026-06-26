@@ -32,7 +32,7 @@ export const CoffeeTableCard = ({
       transition={{ duration: 0.2 }}
     >
       <Link href={`/cafe/${slug}`}>
-        <Card className={`h-full overflow-hidden border-border/50 bg-card/50 backdrop-blur-sm transition-all hover:border-amber-500/50 hover:shadow-lg hover:shadow-amber-500/10 ${featured ? 'ring-2 ring-amber-500/20' : ''}`}>
+        <Card className={`h-full overflow-hidden border-border/50 bg-card transition-all hover:border-amber-500/50 ${featured ? 'ring-2 ring-amber-500/20' : ''}`}>
           <CardHeader className="relative pb-2">
             {featured && (
               <Badge className="absolute right-4 top-4 bg-amber-500 hover:bg-amber-600">

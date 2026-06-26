@@ -36,7 +36,7 @@ export default function NewTaskPage() {
         ]}
       />
 
-      <Card className="border-border/60 bg-card/80 backdrop-blur-sm shadow-sm">
+      <Card className="border-border/60 bg-card shadow-sm">
         <CardHeader>
           <CardTitle className="text-xl tracking-tight">New Task</CardTitle>
         </CardHeader>

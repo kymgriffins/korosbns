@@ -114,9 +114,9 @@ export default function TikTokVideoPage({ params }: { params: Promise<{ uuid: st
 
   if (notFound || !video) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-black text-white">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-background text-foreground">
         <p className="text-lg font-semibold">Video not found</p>
-        <Link href="/" className="text-sm text-white/60 underline underline-offset-2 hover:text-white">
+        <Link href="/" className="text-sm text-muted-foreground underline underline-offset-2 hover:text-foreground">
           Go home
         </Link>
       </div>
@@ -124,9 +124,9 @@ export default function TikTokVideoPage({ params }: { params: Promise<{ uuid: st
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-black p-4">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
       <div className="relative w-full max-w-[400px]">
-        <div className="relative aspect-[9/16] overflow-hidden rounded-2xl border border-white/10 bg-black shadow-2xl">
+        <div className="relative aspect-[9/16] overflow-hidden rounded-2xl border border-border bg-card">
           <video
             ref={videoRef}
             src={video.video_url}
@@ -151,7 +151,7 @@ export default function TikTokVideoPage({ params }: { params: Promise<{ uuid: st
               className="absolute inset-0 z-10 flex items-center justify-center"
               aria-label="Play video"
             >
-              <span className="flex size-16 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
+              <span className="flex size-16 items-center justify-center rounded-full bg-background/90">
                 <Play className="size-8 fill-white text-white" />
               </span>
             </button>
@@ -164,7 +164,7 @@ export default function TikTokVideoPage({ params }: { params: Promise<{ uuid: st
               className="flex flex-col items-center gap-1 text-white/90 transition-transform hover:scale-105"
               onClick={handleLike}
             >
-              <span className="flex size-10 items-center justify-center rounded-full bg-black/25 backdrop-blur-sm">
+              <span className="flex size-10 items-center justify-center rounded-full bg-background/80">
                 <Heart
                   className={cn("size-5 transition-colors", liked && "fill-red-500 text-red-500")}
                   strokeWidth={1.75}
@@ -178,7 +178,7 @@ export default function TikTokVideoPage({ params }: { params: Promise<{ uuid: st
               rel="noopener noreferrer"
               className="flex flex-col items-center gap-1 text-white/90 transition-transform hover:scale-105 no-underline"
             >
-              <span className="flex size-10 items-center justify-center rounded-full bg-black/25 backdrop-blur-sm">
+              <span className="flex size-10 items-center justify-center rounded-full bg-background/80">
                 <MessageCircle className="size-5" strokeWidth={1.75} />
               </span>
               <span className="text-[10px] font-medium">Comment</span>
@@ -189,7 +189,7 @@ export default function TikTokVideoPage({ params }: { params: Promise<{ uuid: st
               className="flex flex-col items-center gap-1 text-white/90 transition-transform hover:scale-105"
               onClick={handleShare}
             >
-              <span className="flex size-10 items-center justify-center rounded-full bg-black/25 backdrop-blur-sm">
+              <span className="flex size-10 items-center justify-center rounded-full bg-background/80">
                 <Share2 className="size-5" strokeWidth={1.75} />
               </span>
               <span className="text-[10px] font-medium">Share</span>
@@ -212,7 +212,7 @@ export default function TikTokVideoPage({ params }: { params: Promise<{ uuid: st
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); toggleMute(); }}
-              className="flex size-9 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-colors hover:bg-black/60"
+              className="flex size-9 items-center justify-center rounded-full bg-background/80 text-foreground transition-colors hover:bg-accent"
               aria-label={isMuted ? "Unmute video" : "Mute video"}
             >
               {isMuted ? <VolumeX className="size-4" /> : <Volume2 className="size-4" />}
@@ -220,7 +220,7 @@ export default function TikTokVideoPage({ params }: { params: Promise<{ uuid: st
             <button
               type="button"
               onClick={(e) => { e.stopPropagation(); togglePlay(); }}
-              className="flex size-9 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-colors hover:bg-black/60"
+              className="flex size-9 items-center justify-center rounded-full bg-background/80 text-foreground transition-colors hover:bg-accent"
               aria-label={isPlaying ? "Pause video" : "Play video"}
             >
               {isPlaying ? <Pause className="size-4" /> : <Play className="size-4 fill-white" />}

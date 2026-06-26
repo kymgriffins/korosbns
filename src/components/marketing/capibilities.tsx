@@ -206,7 +206,7 @@ const Capibilities = () => {
                                 <div className="flex overflow-visible">
                                     <AnimatedTooltip items={AVATAR_ITEMS} />
                                 </div>
-                                <h3 className="text-2xl bg-linear-to-r from-foreground to-foreground/70 text-transparent bg-clip-text font-medium mt-4">
+                                <h3 className="text-2xl text-foreground font-medium mt-4">
                                     {stats[0]?.value} {stats[0]?.label}
                                 </h3>
                                 <p className="text-sm text-muted-foreground mt-1">
@@ -224,7 +224,7 @@ const Capibilities = () => {
                         >
                             <div className="relative">
                                 <div className="flex items-baseline gap-1">
-                                    <h3 className="text-3xl bg-linear-to-r from-foreground to-foreground/70 text-transparent bg-clip-text font-semibold">
+                                    <h3 className="text-3xl text-foreground font-semibold">
                                         Yearly Budgets
                                     </h3>
                                 </div>

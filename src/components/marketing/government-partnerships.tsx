@@ -21,7 +21,7 @@ const GovernmentPartnerships = () => {
             whileInView="visible"
             viewport={{ once: true }}
           >
-            <span className="mb-4 block text-xs font-bold uppercase tracking-widest text-primary">
+            <span className="mb-4 block text-xs font-semibold text-primary">
               National Partnership
             </span>
             <h2 className="mb-4 text-2xl font-black text-foreground md:text-4xl">

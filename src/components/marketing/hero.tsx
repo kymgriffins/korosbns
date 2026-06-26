@@ -53,7 +53,7 @@ const FloatingBadge = ({
     style={{ "--hero-top": top, "--hero-left": left, "--hero-right": right } as React.CSSProperties}
     className="top-[var(--hero-top)] left-[var(--hero-left)] right-[var(--hero-right)] absolute hidden lg:block z-30 pointer-events-none"
   >
-    <div className="px-3.5 py-1.5 rounded-full border border-border/60 bg-background/70 backdrop-blur-md shadow-lg shadow-black/20">
+    <div className="px-3.5 py-1.5 rounded-full border border-border/60 bg-card">
       <span className="text-xs font-bold text-foreground/80 whitespace-nowrap">
         {text}
       </span>

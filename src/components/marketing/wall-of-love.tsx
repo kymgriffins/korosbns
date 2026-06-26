@@ -41,14 +41,14 @@ const BarPair = ({ year, budget, debt }: { year: string; budget: number; debt: n
                 whileInView={{ height: `${(budget / chartMax) * 100}%`, opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.75 }}
-                className="w-4 md:w-5 rounded-t-sm bg-linear-to-t from-cyan-500 to-cyan-300 shadow-[6px_6px_0_rgba(6,182,212,0.25)]"
+                className="w-4 md:w-5 rounded-t-sm bg-primary"
             />
             <motion.div
                 initial={{ height: 0, opacity: 0.4 }}
                 whileInView={{ height: `${(debt / chartMax) * 100}%`, opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.9 }}
-                className="w-4 md:w-5 rounded-t-sm bg-linear-to-t from-rose-600 to-orange-300 shadow-[6px_6px_0_rgba(244,63,94,0.25)]"
+                className="w-4 md:w-5 rounded-t-sm bg-destructive"
             />
         </div>
         <span className="text-[10px] md:text-xs text-muted-foreground">{year}</span>
@@ -81,16 +81,16 @@ const WallOfLove = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.6 }}
-                        className="lg:col-span-2 rounded-3xl border border-foreground/10 bg-background/70 p-6 md:p-8 shadow-[0_20px_60px_-35px_rgba(0,0,0,0.8)]"
+                        className="lg:col-span-2 rounded-3xl border border-foreground/10 bg-background/70 p-6 md:p-8"
                     >
                         <div className="flex items-center justify-between mb-5">
                             <h3 className="text-lg md:text-xl font-semibold">Debt vs Budget Growth (KES Trillion)</h3>
                             <div className="flex items-center gap-3 text-xs">
-                                <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-cyan-400" />Budget</span>
-                                <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-rose-500" />Debt</span>
+                                <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-primary" />Budget</span>
+                                <span className="flex items-center gap-1.5"><span className="size-2.5 rounded-sm bg-destructive" />Debt</span>
                             </div>
                         </div>
-                        <div className="rounded-2xl border border-foreground/10 bg-black/[0.22] p-4 md:p-5">
+                            <div className="rounded-2xl border border-foreground/10 bg-muted/20 p-4 md:p-5">
                             <div className="flex items-end justify-between gap-2 md:gap-4">
                                 {debtVsBudget.map((point) => (
                                     <BarPair key={point.year} year={point.year} budget={point.budget} debt={point.debt} />
@@ -104,7 +104,7 @@ const WallOfLove = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.65 }}
-                        className="rounded-3xl border border-foreground/10 bg-background/70 p-6 shadow-[0_20px_60px_-35px_rgba(0,0,0,0.8)]"
+                        className="rounded-3xl border border-foreground/10 bg-background/70 p-6"
                     >
                         <h3 className="text-lg font-semibold">Debt Service Share</h3>
                         <p className="text-xs text-muted-foreground mt-1">Share of ordinary revenue used for debt servicing (%)</p>
@@ -132,7 +132,7 @@ const WallOfLove = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.7 }}
-                        className="lg:col-span-3 rounded-3xl border border-foreground/10 bg-background/70 p-6 md:p-8 shadow-[0_20px_60px_-35px_rgba(0,0,0,0.8)]"
+                        className="lg:col-span-3 rounded-3xl border border-foreground/10 bg-background/70 p-6 md:p-8"
                     >
                         <h3 className="text-lg md:text-xl font-semibold">County Equitable Transfers Growth (KES Billion)</h3>
                         <div className="mt-6 grid grid-cols-5 gap-3 md:gap-5 items-end">
@@ -143,7 +143,7 @@ const WallOfLove = () => {
                                         whileInView={{ height: `${(item.value / transferMax) * 180}px` }}
                                         viewport={{ once: true }}
                                         transition={{ duration: 0.8 }}
-                                        className="w-full max-w-[70px] rounded-t-md bg-linear-to-t from-sky-700 via-blue-500 to-cyan-300 shadow-[8px_8px_0_rgba(14,116,144,0.3)]"
+                                        className="w-full max-w-[70px] rounded-t-md bg-primary"
                                     />
                                     <span className="text-xs text-muted-foreground">{item.year}</span>
                                     <span className="text-[11px] md:text-xs font-medium">{item.value}B</span>

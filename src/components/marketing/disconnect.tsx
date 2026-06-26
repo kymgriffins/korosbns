@@ -19,8 +19,8 @@ const cards = [
         title: "Digital Misinformation",
         description: "In the absence of clear data, misinformation spreads faster than facts on social media, leading to confusion and misguided outrage.",
         icon: MessageSquareX,
-        color: "text-purple-500",
-        bg: "bg-purple-500/10",
+        color: "text-amber-500",
+        bg: "bg-amber-500/10",
     },
     {
         title: "The Resulting Crisis",

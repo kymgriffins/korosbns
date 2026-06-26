@@ -12,7 +12,7 @@ export function ArticleCard({ article, index }: { article: HubArticle; index: nu
 
   return (
     <Link href={Routes.Article(article.id)} className="group block">
-      <div className="relative overflow-hidden rounded-[24px] border border-border bg-card shadow-[0_12px_40px_rgba(0,0,0,0.12)]">
+      <div className="relative overflow-hidden rounded-[24px] border border-border bg-card">
         <div className="relative m-2 h-44 overflow-hidden rounded-[22px] bg-muted">
           <Image
             src={imageSrc}

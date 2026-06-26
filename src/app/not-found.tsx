@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function NotFoundPage() {
   return (
     <section className="min-h-[80vh] w-full bg-background flex items-center justify-center px-4 py-14">
-      <div className="max-w-3xl w-full rounded-3xl border border-white/10 bg-white/5 p-6 sm:p-8 text-center backdrop-blur-sm">
+      <div className="max-w-3xl w-full rounded-3xl border border-border bg-card p-6 sm:p-8 text-center">
         <div className="mb-4 flex justify-center">
           <DayNightSwitch />
         </div>

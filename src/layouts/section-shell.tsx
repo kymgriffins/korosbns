@@ -45,7 +45,7 @@ export function SectionHeader({
       )}
     >
       <div className="max-w-2xl">
-        <span className="mb-4 block text-xs font-bold uppercase tracking-widest text-primary">
+        <span className="mb-4 block text-xs font-semibold text-primary">
           {eyebrow}
         </span>
         <h2 className="gusto-heading">{title}</h2>

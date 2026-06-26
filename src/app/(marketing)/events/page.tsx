@@ -78,7 +78,7 @@ export default function EventsPage() {
               <Sparkles className="size-3" />
               <span>Budget Ndio Story Hub</span>
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight bg-linear-to-b from-foreground to-foreground/80 bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-foreground">
               Civic Events
             </h1>
             <p className="mt-4 text-lg text-muted-foreground">
@@ -114,7 +114,7 @@ export default function EventsPage() {
               placeholder="Search events..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 bg-cardbox/50 border-border/80 rounded-xl"
+              className="pl-9 bg-card border-border/80 rounded-xl"
             />
           </div>
         </div>
@@ -148,7 +148,7 @@ export default function EventsPage() {
                 >
                   <Link
                     href={Routes.Event(event.id)}
-                    className="group relative block overflow-hidden rounded-2xl border border-border/80 bg-cardbox/40 transition-all hover:border-primary/50 hover:bg-cardbox/60 hover:shadow-lg hover:shadow-primary/5"
+                    className="group relative block overflow-hidden rounded-2xl border border-border/80 bg-card transition-all hover:border-primary/50"
                   >
                     {event.image_url ? (
                       <div>
@@ -162,7 +162,7 @@ export default function EventsPage() {
                           />
                           {/* Floated Date Badge */}
                           {day && month && (
-                            <div className="absolute top-4 left-4 flex flex-col items-center justify-center size-14 rounded-xl bg-background/90 backdrop-blur-md text-primary font-black shadow-md border border-border/50">
+                            <div className="absolute top-4 left-4 flex flex-col items-center justify-center size-14 rounded-xl bg-card text-primary font-black border border-border/50">
                               <span className="text-xl leading-none">{day}</span>
                               <span className="text-[9px] tracking-wider mt-0.5">{month}</span>
                             </div>
