@@ -27,7 +27,7 @@ const modules: LearningModule[] = [
     title: "Budget Policy Statement",
     description: "Decoding the BPS: How national priorities translate into spending plans and what it means for you.",
     href: "/learn/budget-policy",
-    color: "text-purple-500"
+    color: "text-amber-500"
   },
   {
     icon: <Building2 className="w-8 h-8" />,
@@ -42,7 +42,7 @@ const LearningTimeline = () => {
   return (
     <section className="py-24 md:py-48 bg-background relative overflow-hidden">
       {/* Background decoration */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(37,99,235,0.05),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,color-mix(in_oklch,var(--color-primary)_5%,transparent),transparent_50%)]" />
       
       <div className="max-w-[1200px] mx-auto px-8 md:px-16 relative z-10">
         {/* Section Header */}

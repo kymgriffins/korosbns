@@ -77,7 +77,7 @@ const ROI = () => {
                                 whileInView={{ opacity: 1, x: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: index * 0.1 }}
-                                className="p-6 rounded-2xl border border-white/10 bg-background/50 backdrop-blur-sm hover:border-primary/30 transition-all group"
+                                className="p-6 rounded-2xl border border-border bg-card hover:border-primary/30 transition-all group"
                             >
                                 <div className="flex gap-5">
                                     <div className={cn(

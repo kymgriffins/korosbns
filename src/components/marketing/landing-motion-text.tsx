@@ -99,7 +99,7 @@ const LandingMotionText = () => {
             y: [0, 50, 0],
           }}
           transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-          className="absolute bottom-1/4 right-1/4 w-[50vw] h-[50vw] bg-blue-600/30 rounded-full"
+                            className="absolute bottom-1/4 right-1/4 w-[50vw] h-[50vw] bg-primary/20 rounded-full"
         />
       </div>
     </section>

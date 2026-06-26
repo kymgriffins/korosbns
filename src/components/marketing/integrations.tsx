@@ -50,8 +50,8 @@ const IntegrationCard = ({
     const CardContent = (
         <div
             className={cn(
-                "relative group flex h-20 w-20 items-center justify-center rounded-2xl border border-foreground/10 bg-background/95 p-1.5 backdrop-blur-md transition-all duration-300",
-                href && "hover:border-primary/50 hover:shadow-[0_0_15px_rgba(0,85,255,0.2)]",
+                "relative group flex h-20 w-20 items-center justify-center rounded-2xl border border-foreground/10 bg-card p-1.5 transition-all duration-300",
+                href && "hover:border-primary/50",
                 className
             )}
             title={name}
@@ -163,7 +163,7 @@ const Integrations = () => {
                         transition={{ duration: 0.6, delay: 0.3 }}
                         className="absolute bottom-[10%] left-1/2 z-30 -translate-x-1/2"
                     >
-                        <div className="flex h-20 w-20 items-center justify-center rounded-full border border-foreground/10 bg-background/80 backdrop-blur-md">
+                        <div className="flex h-20 w-20 items-center justify-center rounded-full border border-foreground/10 bg-card">
                             <Image
                                 src="/logo.svg"
                                 alt="Budget Ndio Story"
@@ -175,7 +175,7 @@ const Integrations = () => {
                     </motion.div>
 
                     <Container animation="blurIn" delay={0.5} className="absolute left-1/2 top-1/2 z-40 -translate-x-1/2 -translate-y-1/2 flex justify-center w-fit scale-90 lg:scale-100">
-                        <div className="relative flex h-24 w-22 rounded-2xl border border-foreground/10 bg-background/80 px-2 py-1.5 backdrop-blur-md">
+                        <div className="relative flex h-24 w-22 rounded-2xl border border-foreground/10 bg-card px-2 py-1.5">
                             <div className="m-auto flex flex-col items-center justify-center">
                                 <Image
                                     src="/kenya-logo.png"

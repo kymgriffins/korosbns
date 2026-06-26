@@ -55,7 +55,7 @@ export function Header() {
               <motion.div
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.97 }}
-                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                transition={{ duration: 0.3, ease: [0.25, 0.4, 0, 1] }}
               >
                 <Image
                   src="/logo.svg"
@@ -88,9 +88,9 @@ export function Header() {
             )}
             <motion.div
               whileTap={{ scale: 0.92 }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            >
-              <Button
+            transition={{ duration: 0.3, ease: [0.25, 0.4, 0, 1] }}
+          >
+            <Button
                 size="icon-sm"
                 variant="ghost"
                 onClick={() => setIsOpen((prev) => !prev)}

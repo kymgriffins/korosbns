@@ -52,7 +52,7 @@ function TikTokLiveCard({ video }: { video: TikTokOembedResult }) {
 
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="flex size-12 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:scale-100 scale-90">
+          <span className="flex size-12 items-center justify-center rounded-full bg-background/80 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:scale-100 scale-90">
             <Play className="size-6 fill-white text-white" />
           </span>
         </div>
@@ -68,7 +68,7 @@ function TikTokLiveCard({ video }: { video: TikTokOembedResult }) {
       </div>
 
       <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-        <span className="flex size-7 items-center justify-center rounded-full bg-black/50 backdrop-blur-sm">
+        <span className="flex size-7 items-center justify-center rounded-full bg-background/80">
           <ExternalLink className="size-3.5 text-white" />
         </span>
       </div>

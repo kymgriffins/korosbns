@@ -33,7 +33,7 @@ export default function LandingTeam() {
             transition={{ duration: 0.7, delay: i * 0.1 }}
             className="group"
           >
-            <div className="relative mb-6 aspect-[4/5] overflow-hidden rounded-3xl border border-border/40 bg-zinc-100 dark:bg-zinc-900">
+            <div className="relative mb-6 aspect-[4/5] overflow-hidden rounded-3xl border border-border/40 bg-muted">
               <Image
                 src={member.image}
                 alt={member.name}
@@ -63,7 +63,7 @@ export default function LandingTeam() {
             transition={{ duration: 0.5, delay: i * 0.05 }}
             className="flex w-full flex-col gap-4 rounded-3xl border border-border bg-card p-5"
           >
-            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-border/20 bg-zinc-100 dark:bg-zinc-900">
+            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-border/20 bg-muted">
               <Image
                 src={member.image}
                 alt={member.name}

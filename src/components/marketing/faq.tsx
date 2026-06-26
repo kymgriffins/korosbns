@@ -157,7 +157,7 @@ export default function FAQ() {
               className="text-center lg:text-left"
             >
               <h1 className="text-2xl sm:text-4xl font-bold font-heading tracking-tight">
-                Frequently Asked <span className="bg-linear-to-r from-primary via-primary/80 to-teal-500 bg-size-[200%_100%] animate-[shimmer_3s_ease-in-out_infinite] text-transparent bg-clip-text">Questions</span>
+                Frequently Asked <span className="text-primary">Questions</span>
               </h1>
               <p className="text-sm text-foreground/60 mt-2">
                 {filteredItems.length} question{filteredItems.length !== 1 ? 's' : ''} about Kenya's budget

@@ -108,6 +108,7 @@ export default function Contact() {
   const springProgress = useSpring(scrollYProgress, {
     stiffness: 100,
     damping: 30,
+    // Impeccable note: useSpring with damping keeps this scroll-linked value smooth; acceptable for scroll-linked transforms
   });
 
   const submitMutation = useMutation({
@@ -182,7 +183,7 @@ export default function Contact() {
               >
                 <h1 className="text-3xl sm:text-5xl font-bold font-heading tracking-tight">
                   Let&apos;s talk{" "}
-                  <span className="bg-linear-to-r from-primary via-blue-400 to-primary bg-size-[200%_100%] animate-[shimmer_3s_ease-in-out_infinite] text-transparent bg-clip-text">
+                  <span className="text-primary">
                     Budget Stories.
                   </span>
                 </h1>

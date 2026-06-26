@@ -46,7 +46,7 @@ export const CafeChatBubble = ({
           "max-w-[85%] rounded-2xl px-4 py-2.5 text-sm shadow-sm transition-all",
           isMe
             ? "bg-amber-600 text-white rounded-tr-none"
-            : "bg-muted/50 text-foreground ring-1 ring-border/50 rounded-tl-none backdrop-blur-sm"
+            : "bg-muted text-foreground ring-1 ring-border/50 rounded-tl-none"
         )}
       >
         <p className="leading-relaxed whitespace-pre-wrap">{content}</p>

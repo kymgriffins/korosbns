@@ -255,7 +255,7 @@ export default function UnifiedReaderClientPage({
               className="h-full bg-primary rounded-full"
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
-              transition={{ type: "spring", damping: 20 }}
+              transition={{ duration: 0.4, ease: [0.25, 0.4, 0, 1] }}
             />
           </div>
           <div className="ml-3 px-2.5 py-1 rounded-full bg-muted text-xs font-medium text-foreground">

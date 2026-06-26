@@ -62,9 +62,8 @@ export const AnimatedTooltip = ({
                                     y: 0,
                                     scale: 1,
                                     transition: {
-                                        type: "spring",
-                                        stiffness: 260,
-                                        damping: 10,
+                                        duration: 0.35,
+                                        ease: [0.25, 0.4, 0, 1],
                                     },
                                 }}
                                 exit={{ opacity: 0, y: 20, scale: 0.6 }}
@@ -77,7 +76,7 @@ export const AnimatedTooltip = ({
                             >
                                 <div className="absolute inset-x-10 -bottom-px z-30 h-px w-[20%] bg-linear-to-r from-transparent via-primary to-transparent" />
                                 <div className="absolute -bottom-px left-10 z-30 h-px w-[40%] bg-linear-to-r from-transparent via-primary to-transparent" />
-                                <div className="relative z-30 text-base bg-linear-to-r from-foreground to-foreground/70 text-transparent bg-clip-text font-medium">
+                                <div className="relative z-30 text-base text-foreground font-medium">
                                     {item.name}
                                 </div>
                                 <div className="text-sm text-muted-foreground">{item.designation}</div>

@@ -87,7 +87,7 @@ const Challenges = () => {
                         initial={{ opacity: 0, scale: 0.95 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
-                        className="relative mb-20 overflow-hidden rounded-[2.5rem] border border-primary/20 bg-black/40 backdrop-blur-xl"
+                        className="relative mb-20 overflow-hidden rounded-[2.5rem] border border-primary/20 bg-card"
                     >
                         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary/5" />
                         
@@ -117,7 +117,7 @@ const Challenges = () => {
                                     {featuredCampaign.buzzword && (
                                         <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
                                             <div className="flex items-center gap-3 mb-2">
-                                                <Video className="size-5 text-purple-400" />
+                                                <Video className="size-5 text-destructive" />
                                                 <span className="text-sm font-semibold uppercase text-foreground/70">Weekly Buzzword</span>
                                             </div>
                                             <div className="text-xl font-mono font-bold text-white tracking-tight italic">
@@ -240,7 +240,7 @@ const Challenges = () => {
                                     <div className="flex items-center gap-3 mb-6">
                                         <div className={cn(
                                             "size-12 rounded-2xl flex items-center justify-center transition-colors",
-                                            campaign.type === "weekly-buzzword" ? "bg-primary/10 text-primary" : "bg-purple-500/10 text-purple-400"
+                                            campaign.type === "weekly-buzzword" ? "bg-primary/10 text-primary" : "bg-destructive/10 text-destructive"
                                         )}>
                                             {campaign.type === "weekly-buzzword" ? <Video className="size-6" /> : <Trophy className="size-6" />}
                                         </div>
@@ -318,7 +318,7 @@ const Challenges = () => {
                                 {[
                                     { icon: Trophy, title: "Grand Prizes", desc: "Cash rewards and branded creator kits for top-tier storytellers.", color: "text-amber-500" },
                                     { icon: Users, title: "Media Spotlight", desc: "Get your content featured on our platforms reaching millions.", color: "text-blue-400" },
-                                    { icon: Gift, title: "Exclusive Access", desc: "VIP invitations to budget workshops and partner events.", color: "text-purple-400" }
+                                    { icon: Gift, title: "Exclusive Access", desc: "VIP invitations to budget workshops and partner events.", color: "text-destructive" }
                                 ].map((item, i) => (
                                     <div key={i} className="flex gap-4">
                                         <div className={cn("size-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0", item.color)}>
@@ -359,7 +359,7 @@ const Challenges = () => {
                         initial={{ opacity: 0, scale: 0.9 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
-                        className="p-12 rounded-[3rem] bg-gradient-to-br from-primary/20 to-purple-500/20 border border-primary/30"
+                        className="p-12 rounded-[3rem] bg-primary/5 border border-primary/30"
                     >
                         <h2 className="text-3xl lg:text-4xl font-bold">Ready to start your story?</h2>
                         <p className="text-muted-foreground mt-4 max-w-xl mx-auto">

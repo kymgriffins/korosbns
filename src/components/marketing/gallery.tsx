@@ -114,7 +114,7 @@ const Gallery = () => {
                             <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
                             
                             <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                                <span className="inline-block px-2 py-0.5 rounded-full bg-primary/20 text-primary text-[10px] font-bold uppercase tracking-wider mb-2 backdrop-blur-sm border border-primary/20">
+                                <span className="inline-block px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-semibold mb-2 border border-primary/20">
                                     {image.category}
                                 </span>
                                 <h3 className="text-lg lg:text-xl font-bold text-white leading-tight capitalize">

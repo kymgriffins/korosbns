@@ -55,7 +55,7 @@ function TextPanel({
       style={shouldReduceMotion ? {} : { opacity, y }}
       className="absolute inset-0 flex flex-col justify-start space-y-4"
     >
-      <span className="text-xs font-black uppercase tracking-wider text-primary">
+      <span className="text-xs font-semibold text-primary">
         {item.badge}
       </span>
       <h3 className="text-2xl font-black text-foreground leading-tight">
@@ -125,12 +125,12 @@ export default function FramerStickyScroll() {
       description:
         "County assemblies frequently prioritize administrative comforts over primary healthcare. In Nairobi County, proposed office renovations received tenfold the funding allocated for sub-county clinic medicines.",
       visual: (
-        <div className="relative w-full h-full rounded-2xl bg-card border border-border p-6 flex flex-col justify-between overflow-hidden shadow-2xl">
+        <div className="relative w-full h-full rounded-2xl bg-card border border-border p-6 flex flex-col justify-between overflow-hidden">
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
           <div className="absolute -top-1/4 -right-1/4 w-1/2 h-1/2 bg-rose-500/10 rounded-full blur-[80px]" />
 
           <div className="flex items-center justify-between z-10">
-            <span className="text-[10px] uppercase tracking-widest text-rose-500 font-bold px-2 py-1 bg-rose-500/10 rounded-md border border-rose-500/20">
+            <span className="text-xs font-semibold text-destructive px-2 py-1 bg-destructive/10 rounded-md border border-destructive/20">
               Nairobi FY 2026/27
             </span>
             <ShieldAlert className="size-5 text-rose-500 animate-pulse" />
@@ -182,12 +182,12 @@ export default function FramerStickyScroll() {
       description:
         "County treasuries publish financial papers as thousands of pages of scanning-unfriendly, jargon-heavy PDF files. We translate this mountain of text into 60-second video bytes and local storyboards.",
       visual: (
-        <div className="relative w-full h-full rounded-2xl bg-card border border-border p-6 flex flex-col justify-between overflow-hidden shadow-2xl">
+        <div className="relative w-full h-full rounded-2xl bg-card border border-border p-6 flex flex-col justify-between overflow-hidden">
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
           <div className="absolute -bottom-1/4 -left-1/4 w-1/2 h-1/2 bg-blue-500/10 rounded-full blur-[80px]" />
 
           <div className="flex items-center justify-between z-10">
-            <span className="text-[10px] uppercase tracking-widest text-blue-400 font-bold px-2 py-1 bg-blue-500/10 rounded-md border border-blue-500/20">
+            <span className="text-xs font-semibold text-primary px-2 py-1 bg-primary/10 rounded-md border border-primary/20">
               Technical Documents
             </span>
             <FileText className="size-5 text-blue-400" />
@@ -214,7 +214,7 @@ export default function FramerStickyScroll() {
             </motion.div>
             <motion.div
               initial={{ y: 0 }}
-              className="absolute w-32 h-44 bg-card border-2 border-primary rounded-xl p-2.5 shadow-2xl flex flex-col justify-between"
+              className="absolute w-32 h-44 bg-card border-2 border-primary rounded-xl p-2.5 flex flex-col justify-between"
             >
               <div className="h-1 w-8 bg-border rounded-full mx-auto mb-1.5" />
               <div className="flex-1 rounded bg-primary/10 border border-primary/20 p-1 flex flex-col justify-between overflow-hidden">
@@ -241,12 +241,12 @@ export default function FramerStickyScroll() {
       description:
         "County assemblies hold constitutional public hearings during working hours, excluding the youth demographic (18–34). Budget Ndio Story provides hyper-local alerts and digital templates to file submissions anytime.",
       visual: (
-        <div className="relative w-full h-full rounded-2xl bg-card border border-border p-6 flex flex-col justify-between overflow-hidden shadow-2xl">
+        <div className="relative w-full h-full rounded-2xl bg-card border border-border p-6 flex flex-col justify-between overflow-hidden">
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
           <div className="absolute -top-1/4 -left-1/4 w-1/2 h-1/2 bg-amber-500/10 rounded-full blur-[80px]" />
 
           <div className="flex items-center justify-between z-10">
-            <span className="text-[10px] uppercase tracking-widest text-amber-500 font-bold px-2 py-1 bg-amber-500/10 rounded-md border border-amber-500/20">
+            <span className="text-xs font-semibold text-amber-600 px-2 py-1 bg-amber-500/10 rounded-md border border-amber-500/20">
               Statutory Barriers
             </span>
             <Calendar className="size-5 text-amber-500" />
@@ -301,7 +301,7 @@ export default function FramerStickyScroll() {
           transition={{ duration: 0.6, ease: ease.expo }}
           className="text-center space-y-4 max-w-md mx-auto"
         >
-          <span className="inline-block text-xs uppercase tracking-widest text-primary font-black">
+          <span className="inline-block text-xs font-semibold text-primary">
             The Civic Challenge
           </span>
           <h2 className="text-3xl font-black text-foreground leading-tight tracking-tight">
@@ -324,7 +324,7 @@ export default function FramerStickyScroll() {
               className="space-y-6"
             >
               <div className="space-y-3">
-                <span className="text-[11px] uppercase tracking-widest font-black text-primary">
+                <span className="text-xs font-semibold text-primary">
                   {item.badge}
                 </span>
                 <h3 className="text-xl font-bold text-foreground leading-snug">
@@ -379,7 +379,7 @@ export default function FramerStickyScroll() {
           </div>
 
           {/* Right visual panel */}
-          <div className="w-1/2 h-[450px] relative rounded-3xl bg-card/30 border border-border/50 overflow-hidden flex items-center justify-center p-8 backdrop-blur-xs">
+          <div className="w-1/2 h-[450px] relative rounded-3xl bg-card border border-border/50 overflow-hidden flex items-center justify-center p-8">
             {items.map((item, idx) => (
               <VisualPanel
                 key={idx}

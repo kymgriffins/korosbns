@@ -58,7 +58,7 @@ const UpcomingProjects = () => {
                         className="md:col-span-8 group relative overflow-hidden rounded-[2.5rem] border border-foreground/10 bg-cardbox p-8 lg:p-10"
                     >
                         <div className="relative z-10 md:max-w-[60%]">
-                            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-foreground/10 px-4 py-1.5 text-xs font-semibold text-primary backdrop-blur-sm">
+                            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-foreground/10 px-4 py-1.5 text-xs font-semibold text-primary">
                                 <CalendarDays className="size-3.5" />
                                 47 Counties Active
                             </div>

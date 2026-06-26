@@ -205,7 +205,7 @@ export default function LandingTikTokVideo() {
             ref={phoneRef}
             className="relative w-[min(100%,300px)] sm:w-[340px] lg:w-[min(100%,380px)] xl:w-[420px]"
           >
-            <div className="relative aspect-[9/16] overflow-hidden rounded-[2rem] border-[3px] border-foreground/10 bg-black ring-1 ring-white/10">
+            <div className="relative aspect-[9/16] overflow-hidden rounded-[2rem] border-[3px] border-foreground/10 bg-card ring-1 ring-white/10">
               {video ? (
                 <>
                   <video
@@ -381,7 +381,7 @@ function TikTokMarquee({
           <a
             key={v.id}
             href={`/tiktok/${v.id}`}
-            className="group relative aspect-[9/16] w-[140px] shrink-0 overflow-hidden rounded-xl border border-border/40 bg-black sm:w-[160px]"
+            className="group relative aspect-[9/16] w-[140px] shrink-0 overflow-hidden rounded-xl border border-border/40 bg-card sm:w-[160px]"
           >
             {v.cover_image_url ? (
               <Image

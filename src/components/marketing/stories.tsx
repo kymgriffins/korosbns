@@ -89,7 +89,7 @@ const BudgetDebtVisual = () => {
     const years = ["2022", "2023", "2024", "2025", "2026"];
 
     return (
-        <div className="absolute inset-0 overflow-hidden bg-linear-to-br from-slate-950 via-slate-900 to-slate-950">
+        <div className="absolute inset-0 overflow-hidden bg-card">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.08)_1px,transparent_0)] bg-[size:16px_16px]" />
             <motion.div
                 className="absolute -top-8 -left-8 size-40 rounded-full bg-primary/30 blur-2xl"
@@ -113,14 +113,14 @@ const BudgetDebtVisual = () => {
                         <div key={year} className="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
                             <div className="flex h-full w-full items-end justify-center gap-1">
                                 <motion.div
-                                    className="w-[42%] rounded-t-sm bg-gradient-to-t from-primary to-cyan-300 shadow-[0_0_12px_rgba(56,189,248,0.35)]"
+                                    className="w-[42%] rounded-t-sm bg-primary"
                                     initial={{ height: 0 }}
                                     whileInView={{ height: `${budgetBars[idx]}%` }}
                                     viewport={{ once: true }}
                                     transition={{ duration: 0.8, delay: idx * 0.07 }}
                                 />
                                 <motion.div
-                                    className="w-[42%] rounded-t-sm bg-gradient-to-t from-rose-600 to-orange-300 shadow-[0_0_12px_rgba(244,63,94,0.35)]"
+                                    className="w-[42%] rounded-t-sm bg-destructive"
                                     initial={{ height: 0 }}
                                     whileInView={{ height: `${debtBars[idx]}%` }}
                                     viewport={{ once: true }}

@@ -92,7 +92,7 @@ export default function ContactPage() {
                   variants={fadeInUp}
                 >
                   Let&apos;s talk{" "}
-                  <span className="bg-linear-to-r from-primary via-blue-400 to-primary bg-clip-text text-transparent">
+                  <span className="text-primary">
                     Budget Stories.
                   </span>
                 </motion.h1>

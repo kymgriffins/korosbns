@@ -123,7 +123,7 @@ const budgetHighlights = [
     value: "KES 3.63T",
     trend: "stable",
     trendIcon: Minus,
-    trendColor: "text-zinc-400",
+    trendColor: "text-muted-foreground",
   },
   {
     label: "Fiscal Deficit",
@@ -147,7 +147,7 @@ const economicIndicators = [
     value: "4.6%",
     trend: "stable",
     trendIcon: Minus,
-    trendColor: "text-zinc-400",
+    trendColor: "text-muted-foreground",
   },
   {
     label: "GDP Forecast 2026",
@@ -168,7 +168,7 @@ const economicIndicators = [
     value: "9.5%",
     trend: "stable",
     trendIcon: Minus,
-    trendColor: "text-zinc-400",
+    trendColor: "text-muted-foreground",
   },
 ];
 

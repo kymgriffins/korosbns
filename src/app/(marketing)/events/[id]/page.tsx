@@ -116,7 +116,7 @@ export default function EventDetailPage() {
                   {event.title}
                 </h1>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 p-5 rounded-2xl border border-border/80 bg-cardbox/30 backdrop-blur-xs">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 p-5 rounded-2xl border border-border/80 bg-card">
                   {event.starts_at && (
                     <div className="flex gap-3 items-start">
                       <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0 border border-primary/20">
@@ -169,7 +169,7 @@ export default function EventDetailPage() {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.4, delay: 0.2 }}
-                className="rounded-2xl border border-border/80 bg-cardbox/40 p-6 backdrop-blur-xs relative overflow-hidden"
+                className="rounded-2xl border border-border/80 bg-card p-6 relative overflow-hidden"
               >
                 <div className="absolute top-0 right-0 w-24 h-24 bg-linear-to-bl from-primary/5 to-transparent -z-10" />
                 
@@ -233,7 +233,7 @@ export default function EventDetailPage() {
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.4, delay: 0.3 }}
-                  className="rounded-2xl border border-border/80 bg-cardbox/40 p-6 backdrop-blur-xs space-y-4"
+                  className="rounded-2xl border border-border/80 bg-card p-6 space-y-4"
                 >
                   <h3 className="text-lg font-bold flex items-center gap-2 mb-2">
                     <Building2 className="size-5 text-primary" />
