@@ -54,9 +54,10 @@ function mapAttachment(a: TaskAttachmentApi): TaskAttachment {
 }
 
 function mapDetailToTask(detail: WeeklyNoteDetailApi): TaskDetail {
+  const base = mapNoteToTask(detail);
   return {
-    ...mapNoteToTask(detail),
-    content: detail.content,
+    ...base,
+    content: base.content ?? "",
     notes: detail.notes,
     sections: detail.sections,
     audit_trails: detail.audit_trails,

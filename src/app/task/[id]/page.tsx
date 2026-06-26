@@ -3,7 +3,7 @@
 import { use, useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { Loader2, Calendar, User, Clock } from "lucide-react";
+import { Loader2, Calendar, User, Clock, FileText, ListChecks, ScrollText, History } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
 
@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/ui/card";
 import { Button } from "@/ui/button";
 import { Badge } from "@/ui/badge";
 import { Checkbox } from "@/ui/checkbox";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/ui/tabs";
 import { PageBreadcrumbs } from "@/components/global/page-breadcrumbs";
 import { Skeleton } from "@/ui/skeleton";
 import {
@@ -22,6 +23,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/ui/dialog";
+import { Textarea } from "@/ui/textarea";
+import { Label } from "@/ui/label";
 
 import { taskApi } from "@/lib/task-api";
 import type { TaskDetail } from "@/types/tasks";
@@ -45,6 +48,8 @@ function safeFormat(date: string | Date | null | undefined, fmt: string): string
   }
 }
 
+type DetailTab = "overview" | "checklist" | "notes" | "audit";
+
 export default function TaskDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const { isLoggedIn } = useAuth();
@@ -55,6 +60,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
   const [editing, setEditing] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<DetailTab>("overview");
 
   useEffect(() => {
     taskApi.get(id)
@@ -155,11 +161,12 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
         ]}
       />
 
+      {/* Header card */}
       <Card
         className="border-border/60 bg-card shadow-sm"
         style={hue ? { borderTopColor: hue, borderTopWidth: 2 } : undefined}
       >
-        <CardHeader>
+        <CardHeader className="pb-3">
           <div className="flex items-start justify-between gap-4">
             <div className="space-y-1.5 flex-1 min-w-0">
               <div className="flex items-center gap-2">
@@ -187,93 +194,135 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
             )}
           </div>
         </CardHeader>
+      </Card>
 
-        <CardContent className="space-y-6">
-
-          <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1.5">
-              <User className="size-3.5" />
-              {task.author_name}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Calendar className="size-3.5" />
-              Created {safeFormat(task.created_at, "MMM d, yyyy")}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Clock className="size-3.5" />
-              Updated {safeFormat(task.updated_at, "MMM d, yyyy")}
-            </span>
-            {task.due_date && (
-              <span className="flex items-center gap-1.5">
-                <Calendar className="size-3.5" />
-                Due {safeFormat(task.due_date, "MMM d, yyyy")}
-              </span>
-            )}
-          </div>
-
-          {task.assignee && (
-            <div className="rounded-lg border bg-card p-3 text-sm">
-              <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Assignee</span>
-              <p className="mt-0.5">{task.assignee_email || task.assignee}</p>
-              {task.assigned_team && (
-                <Badge variant="outline" className="mt-1 text-[10px]">
-                  {task.assigned_team}
-                </Badge>
-              )}
-            </div>
+      {/* Tabs */}
+      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as DetailTab)} className="w-full">
+        <TabsList className="w-full justify-start rounded-lg border bg-card">
+          <TabsTrigger value="overview" className="gap-1.5 text-xs font-semibold data-[state=active]:bg-primary/10">
+            <FileText className="size-3.5" /> Overview
+          </TabsTrigger>
+          <TabsTrigger value="checklist" className="gap-1.5 text-xs font-semibold data-[state=active]:bg-primary/10">
+            <ListChecks className="size-3.5" /> Checklist {totalItems > 0 && `(${doneCount}/${totalItems})`}
+          </TabsTrigger>
+          {task.notes && (
+            <TabsTrigger value="notes" className="gap-1.5 text-xs font-semibold data-[state=active]:bg-primary/10">
+              <ScrollText className="size-3.5" /> Notes
+            </TabsTrigger>
           )}
-
-          <div className="space-y-2">
-            <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
-              Progress
-            </span>
-            <div className="h-2 w-full bg-muted-foreground/10 rounded-full overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all duration-500"
-                style={{
-                  width: `${Math.max(task.progress ?? 0, 0)}%`,
-                  backgroundColor: hue ?? "hsl(221 83% 53%)",
-                }}
-              />
-            </div>
-            <p className="text-xs text-muted-foreground">{task.progress ?? 0}% complete</p>
-          </div>
-
-          {task.content && (
-            <div className="space-y-2">
-              <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
-                Description
-              </span>
-              <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap text-sm text-muted-foreground">
-                {task.content}
-              </div>
-            </div>
-          )}
-
-          {task.checklist && task.checklist.length > 0 && (
-            <div className="space-y-2">
-              <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
-                Checklist ({doneCount}/{totalItems})
-              </span>
-              <div className="space-y-1.5">
-                {task.checklist.map((item) => (
-                  <div key={item.id} className="flex items-center gap-2">
-                    <Checkbox checked={item.checked} disabled />
-                    <span className={`text-sm ${item.checked ? "line-through text-muted-foreground" : ""}`}>
-                      {item.text}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
           {task.audit_trails && task.audit_trails.length > 0 && (
-            <div className="space-y-2">
-              <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
-                Audit Trail
-              </span>
+            <TabsTrigger value="audit" className="gap-1.5 text-xs font-semibold data-[state=active]:bg-primary/10">
+              <History className="size-3.5" /> Audit Trail
+            </TabsTrigger>
+          )}
+        </TabsList>
+
+        {/* Overview Tab */}
+        <TabsContent value="overview" className="mt-4 space-y-4">
+          <Card className="border-border/60 bg-card shadow-sm">
+            <CardContent className="p-4 space-y-4">
+              <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1.5">
+                  <User className="size-3.5" />
+                  {task.author_name}
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Calendar className="size-3.5" />
+                  Created {safeFormat(task.created_at, "MMM d, yyyy")}
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Clock className="size-3.5" />
+                  Updated {safeFormat(task.updated_at, "MMM d, yyyy")}
+                </span>
+                {task.due_date && (
+                  <span className="flex items-center gap-1.5">
+                    <Calendar className="size-3.5" />
+                    Due {safeFormat(task.due_date, "MMM d, yyyy")}
+                  </span>
+                )}
+              </div>
+
+              {task.assignee && (
+                <div className="rounded-lg border bg-card p-3 text-sm">
+                  <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Assignee</span>
+                  <p className="mt-0.5">{task.assignee_email || task.assignee}</p>
+                  {task.assigned_team && (
+                    <Badge variant="outline" className="mt-1 text-[10px]">
+                      {task.assigned_team}
+                    </Badge>
+                  )}
+                </div>
+              )}
+
               <div className="space-y-2">
+                <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
+                  Progress ({task.progress ?? 0}%)
+                </span>
+                <div className="h-2 w-full bg-muted-foreground/10 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-500"
+                    style={{
+                      width: `${Math.max(task.progress ?? 0, 0)}%`,
+                      backgroundColor: hue ?? "hsl(221 83% 53%)",
+                    }}
+                  />
+                </div>
+              </div>
+
+              {task.content && (
+                <div className="space-y-2">
+                  <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
+                    Description
+                  </span>
+                  <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap text-sm text-muted-foreground">
+                    {task.content}
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Checklist Tab */}
+        <TabsContent value="checklist" className="mt-4">
+          <Card className="border-border/60 bg-card shadow-sm">
+            <CardContent className="p-4">
+              {task.checklist && task.checklist.length > 0 ? (
+                <div className="space-y-1.5">
+                  {task.checklist.map((item) => (
+                    <div key={item.id} className="flex items-center gap-2">
+                      <Checkbox checked={item.checked} disabled />
+                      <span className={`text-sm ${item.checked ? "line-through text-muted-foreground" : ""}`}>
+                        {item.text}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground text-center py-8">No checklist items.</p>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Notes Tab */}
+        {task.notes && (
+          <TabsContent value="notes" className="mt-4">
+            <Card className="border-border/60 bg-card shadow-sm">
+              <CardContent className="p-4">
+                <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap text-sm text-muted-foreground">
+                  {task.notes}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
+
+        {/* Audit Trail Tab */}
+        {task.audit_trails && task.audit_trails.length > 0 && (
+          <TabsContent value="audit" className="mt-4">
+            <Card className="border-border/60 bg-card shadow-sm">
+              <CardContent className="p-4 space-y-2">
                 {task.audit_trails.map((trail) => (
                   <div key={trail.id} className="rounded-lg border bg-card/50 p-3 text-xs">
                     <div className="flex items-center justify-between">
@@ -288,12 +337,11 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
                     </p>
                   </div>
                 ))}
-              </div>
-            </div>
-          )}
-
-        </CardContent>
-      </Card>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        )}
+      </Tabs>
 
       <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
         <DialogContent>
