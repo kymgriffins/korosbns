@@ -11,6 +11,7 @@ import { toast } from "sonner";
 
 import { useAuth } from "@/contexts/auth-context";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -75,6 +76,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
   const [newItemText, setNewItemText] = useState("");
   const [addingItem, setAddingItem] = useState(false);
   const [attachments, setAttachments] = useState<TaskAttachment[]>([]);
+  const [activeSection, setActiveSection] = useState("task");
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -401,246 +403,260 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
             {statusStyle.label}
           </Badge>
         </CardHeader>
-        <CardContent className="space-y-8">
-          {/* Meta bar */}
-          <div className="flex flex-wrap gap-4 text-sm">
-            <div className="flex items-center gap-1.5 text-muted-foreground">
-              <User className="size-3.5" />
-              {task.author_name}
-            </div>
-            <div className="flex items-center gap-1.5 text-muted-foreground">
-              <Calendar className="size-3.5" />
-              {safeFormat(task.created_at, "MMM d, yyyy")}
-            </div>
-            {task.due_date && (
-              <div className="flex items-center gap-1.5 text-muted-foreground">
-                <Clock className="size-3.5" />
-                Due {safeFormat(task.due_date, "MMM d, yyyy")}
+        <CardContent>
+          <Tabs value={activeSection} onValueChange={setActiveSection} className="w-full">
+            <TabsList className="mb-6">
+              <TabsTrigger value="task" className="gap-1.5">
+                <FileText className="size-3.5" /> Task
+              </TabsTrigger>
+              <TabsTrigger value="meeting" className="gap-1.5">
+                <FileText className="size-3.5" /> Meeting
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="task" className="space-y-8">
+              {/* Meta bar */}
+              <div className="flex flex-wrap gap-4 text-sm">
+                <div className="flex items-center gap-1.5 text-muted-foreground">
+                  <User className="size-3.5" />
+                  {task.author_name}
+                </div>
+                <div className="flex items-center gap-1.5 text-muted-foreground">
+                  <Calendar className="size-3.5" />
+                  {safeFormat(task.created_at, "MMM d, yyyy")}
+                </div>
+                {task.due_date && (
+                  <div className="flex items-center gap-1.5 text-muted-foreground">
+                    <Clock className="size-3.5" />
+                    Due {safeFormat(task.due_date, "MMM d, yyyy")}
+                  </div>
+                )}
+                {task.assignee && (
+                  <Badge variant="secondary" className="text-xs">{task.assignee}</Badge>
+                )}
+                {task.assigned_team && (
+                  <Badge variant="outline" className="text-xs">{task.assigned_team}</Badge>
+                )}
+                {task.due_label && (
+                  <Badge variant="secondary" className="text-xs">{task.due_label}</Badge>
+                )}
               </div>
-            )}
-            {task.assignee && (
-              <Badge variant="secondary" className="text-xs">{task.assignee}</Badge>
-            )}
-            {task.assigned_team && (
-              <Badge variant="outline" className="text-xs">{task.assigned_team}</Badge>
-            )}
-            {task.due_label && (
-              <Badge variant="secondary" className="text-xs">{task.due_label}</Badge>
-            )}
-          </div>
 
-          {/* Description */}
-          {task.content && (
-            <div className="space-y-2">
-              <h3 className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
-                <FileText className="size-4" />
-                Description
-              </h3>
-              <div className="whitespace-pre-wrap text-sm text-muted-foreground">{task.content}</div>
-            </div>
-          )}
+              {/* Description */}
+              {task.content && (
+                <div className="space-y-2">
+                  <h3 className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
+                    <FileText className="size-4" />
+                    Description
+                  </h3>
+                  <div className="whitespace-pre-wrap text-sm text-muted-foreground">{task.content}</div>
+                </div>
+              )}
 
-          {/* Meeting Notes (moved to top) */}
-          <div className="space-y-2">
-            <h3 className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
-              <FileText className="size-4" />
-              Meeting Notes
-            </h3>
-            {task.notes ? (
-              <div className="prose prose-sm dark:prose-invert max-w-none">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {task.notes}
-                </ReactMarkdown>
-              </div>
-            ) : (
-              <p className="py-4 text-center text-sm text-muted-foreground">No meeting notes for this task.</p>
-            )}
-          </div>
-
-          {/* Checklist Items with inline edit */}
-          <div className="space-y-2">
-            <h3 className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
-              <CheckCircle2 className="size-4" />
-              Checklist ({completedCount}/{checklistItems.length})
-            </h3>
-            <div className="space-y-1.5">
-              {checklistItems
-                .sort((a, b) => a.sort_order - b.sort_order)
-                .map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex items-center gap-2 rounded-lg border border-border/50 px-3 py-2 transition-colors hover:bg-muted/30 group"
-                  >
-                    <button
-                      type="button"
-                      onClick={() => handleToggleChecklist(item.id, item.is_completed)}
-                      disabled={togglingItem === item.id}
-                      className="shrink-0"
-                    >
-                      {togglingItem === item.id ? (
-                        <Loader2 className="size-4 animate-spin text-muted-foreground" />
-                      ) : item.is_completed ? (
-                        <CheckCircle2 className="size-4 text-emerald-500" />
-                      ) : (
-                        <Circle className="size-4 text-muted-foreground hover:text-primary" />
-                      )}
-                    </button>
-
-                    {editingItemId === item.id ? (
-                      <div className="flex flex-1 items-center gap-1">
-                        <Input
-                          value={editingItemText}
-                          onChange={(e) => setEditingItemText(e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") handleEditSave(item.id);
-                            if (e.key === "Escape") handleEditCancel();
-                          }}
-                          className="h-8 text-sm"
-                          autoFocus
-                        />
+              {/* Checklist Items with inline edit */}
+              <div className="space-y-2">
+                <h3 className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
+                  <CheckCircle2 className="size-4" />
+                  Checklist ({completedCount}/{checklistItems.length})
+                </h3>
+                <div className="space-y-1.5">
+                  {checklistItems
+                    .sort((a, b) => a.sort_order - b.sort_order)
+                    .map((item) => (
+                      <div
+                        key={item.id}
+                        className="flex items-center gap-2 rounded-lg border border-border/50 px-3 py-2 transition-colors hover:bg-muted/30 group"
+                      >
                         <button
                           type="button"
-                          onClick={() => handleEditSave(item.id)}
-                          disabled={savingItem === item.id}
-                          className="shrink-0 rounded p-1 text-muted-foreground hover:text-emerald-500"
+                          onClick={() => handleToggleChecklist(item.id, item.is_completed)}
+                          disabled={togglingItem === item.id}
+                          className="shrink-0"
                         >
-                          {savingItem === item.id ? (
-                            <Loader2 className="size-3.5 animate-spin" />
+                          {togglingItem === item.id ? (
+                            <Loader2 className="size-4 animate-spin text-muted-foreground" />
+                          ) : item.is_completed ? (
+                            <CheckCircle2 className="size-4 text-emerald-500" />
                           ) : (
-                            <Check className="size-3.5" />
+                            <Circle className="size-4 text-muted-foreground hover:text-primary" />
                           )}
                         </button>
-                        <button
-                          type="button"
-                          onClick={handleEditCancel}
-                          className="shrink-0 rounded p-1 text-muted-foreground hover:text-destructive"
-                        >
-                          <X className="size-3.5" />
-                        </button>
-                      </div>
-                    ) : (
-                      <>
-                        <span
-                          className={`flex-1 text-sm ${
-                            item.is_completed
-                              ? "text-muted-foreground line-through"
-                              : ""
-                          }`}
-                        >
-                          {item.text}
-                        </span>
-                        <div className="flex shrink-0 items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            type="button"
-                            onClick={() => handleEditStart(item)}
-                            className="rounded p-1 text-muted-foreground hover:text-foreground"
-                            title="Edit"
-                          >
-                            <Pencil className="size-3.5" />
-                          </button>
-                          {task.status !== "published" && (
+
+                        {editingItemId === item.id ? (
+                          <div className="flex flex-1 items-center gap-1">
+                            <Input
+                              value={editingItemText}
+                              onChange={(e) => setEditingItemText(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") handleEditSave(item.id);
+                                if (e.key === "Escape") handleEditCancel();
+                              }}
+                              className="h-8 text-sm"
+                              autoFocus
+                            />
                             <button
                               type="button"
-                              onClick={() => handleDeleteItem(item.id)}
+                              onClick={() => handleEditSave(item.id)}
                               disabled={savingItem === item.id}
-                              className="rounded p-1 text-muted-foreground hover:text-destructive"
-                              title="Delete"
+                              className="shrink-0 rounded p-1 text-muted-foreground hover:text-emerald-500"
                             >
                               {savingItem === item.id ? (
                                 <Loader2 className="size-3.5 animate-spin" />
                               ) : (
-                                <Trash2 className="size-3.5" />
+                                <Check className="size-3.5" />
                               )}
                             </button>
-                          )}
-                        </div>
-                      </>
-                    )}
-                  </div>
-                ))}
-            </div>
-
-            {/* Add new item */}
-            {task.status !== "published" && (
-              <div className="flex items-center gap-2 rounded-lg border border-dashed border-border/50 px-3 py-2">
-                <Input
-                  value={newItemText}
-                  onChange={(e) => setNewItemText(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") handleAddItem();
-                  }}
-                  placeholder="Add a checklist item..."
-                  className="h-8 flex-1 border-0 bg-transparent p-0 text-sm shadow-none focus-visible:ring-0"
-                />
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="ghost"
-                  onClick={handleAddItem}
-                  disabled={addingItem || !newItemText.trim()}
-                  className="shrink-0 h-7 px-2"
-                >
-                  {addingItem ? (
-                    <Loader2 className="size-3.5 animate-spin" />
-                  ) : (
-                    <Plus className="size-3.5" />
-                  )}
-                  Add
-                </Button>
-              </div>
-            )}
-          </div>
-
-          {/* Progress bar */}
-          {typeof task.progress === "number" && (
-            <div className="space-y-1">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Progress</span>
-                <span className="font-medium tabular-nums">{task.progress}%</span>
-              </div>
-              <div className="h-2 overflow-hidden rounded-full bg-muted">
-                <div
-                  className="h-full rounded-full bg-primary transition-all"
-                  style={{ width: `${Math.min(100, task.progress)}%` }}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Attachments */}
-          <div className="space-y-3">
-            <h3 className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
-              <ImageIcon className="size-4" />
-              Attachments ({attachments.length})
-            </h3>
-            <TaskAttachmentsGrid
-              attachments={attachments}
-              taskId={id}
-              onDeleted={handleAttachmentDeleted}
-              readonly={task.status === "published"}
-            />
-            {task.status !== "published" && (
-              <div className="rounded-lg border border-dashed border-border/50 p-4">
-                <TaskFileUpload taskId={id} onUploaded={handleAttachmentUploaded} />
-              </div>
-            )}
-          </div>
-
-          {/* Audit trail */}
-          {task.audit_trails && task.audit_trails.length > 0 && (
-            <div className="space-y-2">
-              <h3 className="text-sm font-semibold text-muted-foreground">Audit Trail</h3>
-              {task.audit_trails.map((trail, i) => (
-                <div key={i} className="rounded-lg border border-border/50 p-3 text-sm">
-                  <div className="mb-1 flex items-center justify-between text-xs text-muted-foreground">
-                    <span className="font-medium capitalize">{trail.action}</span>
-                    <span>{safeFormat(trail.created_at, "MMM d, HH:mm")}</span>
-                  </div>
-                  {trail.comment && <p className="text-sm">{trail.comment}</p>}
+                            <button
+                              type="button"
+                              onClick={handleEditCancel}
+                              className="shrink-0 rounded p-1 text-muted-foreground hover:text-destructive"
+                            >
+                              <X className="size-3.5" />
+                            </button>
+                          </div>
+                        ) : (
+                          <>
+                            <span
+                              className={`flex-1 text-sm ${
+                                item.is_completed
+                                  ? "text-muted-foreground line-through"
+                                  : ""
+                              }`}
+                            >
+                              {item.text}
+                            </span>
+                            <div className="flex shrink-0 items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button
+                                type="button"
+                                onClick={() => handleEditStart(item)}
+                                className="rounded p-1 text-muted-foreground hover:text-foreground"
+                                title="Edit"
+                              >
+                                <Pencil className="size-3.5" />
+                              </button>
+                              {task.status !== "published" && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteItem(item.id)}
+                                  disabled={savingItem === item.id}
+                                  className="rounded p-1 text-muted-foreground hover:text-destructive"
+                                  title="Delete"
+                                >
+                                  {savingItem === item.id ? (
+                                    <Loader2 className="size-3.5 animate-spin" />
+                                  ) : (
+                                    <Trash2 className="size-3.5" />
+                                  )}
+                                </button>
+                              )}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    ))}
                 </div>
-              ))}
-            </div>
-          )}
+
+                {/* Add new item */}
+                {task.status !== "published" && (
+                  <div className="flex items-center gap-2 rounded-lg border border-dashed border-border/50 px-3 py-2">
+                    <Input
+                      value={newItemText}
+                      onChange={(e) => setNewItemText(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") handleAddItem();
+                      }}
+                      placeholder="Add a checklist item..."
+                      className="h-8 flex-1 border-0 bg-transparent p-0 text-sm shadow-none focus-visible:ring-0"
+                    />
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="ghost"
+                      onClick={handleAddItem}
+                      disabled={addingItem || !newItemText.trim()}
+                      className="shrink-0 h-7 px-2"
+                    >
+                      {addingItem ? (
+                        <Loader2 className="size-3.5 animate-spin" />
+                      ) : (
+                        <Plus className="size-3.5" />
+                      )}
+                      Add
+                    </Button>
+                  </div>
+                )}
+              </div>
+
+              {/* Progress bar */}
+              {typeof task.progress === "number" && (
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Progress</span>
+                    <span className="font-medium tabular-nums">{task.progress}%</span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-muted">
+                    <div
+                      className="h-full rounded-full bg-primary transition-all"
+                      style={{ width: `${Math.min(100, task.progress)}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Attachments */}
+              <div className="space-y-3">
+                <h3 className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
+                  <ImageIcon className="size-4" />
+                  Attachments ({attachments.length})
+                </h3>
+                <TaskAttachmentsGrid
+                  attachments={attachments}
+                  taskId={id}
+                  onDeleted={handleAttachmentDeleted}
+                  readonly={task.status === "published"}
+                />
+                {task.status !== "published" && (
+                  <div className="rounded-lg border border-dashed border-border/50 p-4">
+                    <TaskFileUpload taskId={id} onUploaded={handleAttachmentUploaded} />
+                  </div>
+                )}
+              </div>
+
+              {/* Audit trail */}
+              {task.audit_trails && task.audit_trails.length > 0 && (
+                <div className="space-y-2">
+                  <h3 className="text-sm font-semibold text-muted-foreground">Audit Trail</h3>
+                  {task.audit_trails.map((trail, i) => (
+                    <div key={i} className="rounded-lg border border-border/50 p-3 text-sm">
+                      <div className="mb-1 flex items-center justify-between text-xs text-muted-foreground">
+                        <span className="font-medium capitalize">{trail.action}</span>
+                        <span>{safeFormat(trail.created_at, "MMM d, HH:mm")}</span>
+                      </div>
+                      {trail.comment && <p className="text-sm">{trail.comment}</p>}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="meeting" className="space-y-4">
+              <div className="space-y-2">
+                <h3 className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
+                  <FileText className="size-4" />
+                  Meeting Notes
+                </h3>
+                {task.notes ? (
+                  <div className="prose prose-sm dark:prose-invert max-w-none">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {task.notes}
+                    </ReactMarkdown>
+                  </div>
+                ) : (
+                  <p className="py-8 text-center text-sm text-muted-foreground">No meeting notes for this task.</p>
+                )}
+              </div>
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
     </div>
