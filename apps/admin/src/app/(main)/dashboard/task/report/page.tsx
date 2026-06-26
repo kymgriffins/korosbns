@@ -13,15 +13,24 @@ import {
   Users,
   TrendingUp,
   ListTodo,
+  Download,
+  Printer,
 } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import { useAuth } from "@/contexts/auth-context";
 import { taskApi } from "@/lib/task-api";
+import { generateReportMarkdown, downloadAsMarkdown, printAsPDF } from "@/lib/task-export";
 import type { WeeklyReportData } from "@/types/tasks";
 
 const KPI_ICONS: Record<string, { icon: typeof ListTodo; bg: string; color: string }> = {
@@ -128,12 +137,32 @@ export default function TaskReportPage() {
             Overview of task progress across all teams
           </p>
         </div>
-        <Button variant="outline" size="sm" asChild>
-          <Link href="/dashboard/task">
-            <ListTodo className="mr-1.5 size-4" />
-            Back to Tasks
-          </Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                <Download className="mr-1.5 size-4" />
+                Export
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => downloadAsMarkdown(generateReportMarkdown(report), "weekly-task-report")}>
+                <Download className="mr-2 size-3.5" />
+                Download Markdown
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => printAsPDF("Weekly Task Report")}>
+                <Printer className="mr-2 size-3.5" />
+                Print / Save as PDF
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/dashboard/task">
+              <ListTodo className="mr-1.5 size-4" />
+              Back to Tasks
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <motion.div

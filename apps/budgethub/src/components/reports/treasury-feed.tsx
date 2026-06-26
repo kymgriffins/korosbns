@@ -19,7 +19,7 @@ export function TreasuryFeed() {
 
   return (
     <section id="treasury-feed" className="scroll-mt-24">
-      <Card className="border-border/60 shadow-sm">
+      <Card className="border-border/60">
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
             <CardTitle className="text-sm flex items-center gap-2">

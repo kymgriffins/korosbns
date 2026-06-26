@@ -32,13 +32,13 @@ const GALLERY_ITEMS = [
     icon: BookOpen,
     title: "County Allocations",
     desc: "Equitable share distribution across all 47 counties",
-    color: "hsl(199 89% 48%)",
+    color: "hsl(173 80% 40%)",
   },
   {
     icon: Users,
     title: "Social Programs",
     desc: "Spending on education, health, social protection, and youth initiatives",
-    color: "hsl(262 83% 58%)",
+    color: "hsl(12 76% 61%)",
   },
   {
     icon: Newspaper,
@@ -57,7 +57,7 @@ const GALLERY_ITEMS = [
 export function GallerySection() {
   return (
     <section id="gallery" className="scroll-mt-24">
-      <Card className="border-border/60 shadow-sm">
+      <Card className="border-border/60">
         <CardHeader>
           <CardTitle className="text-sm flex items-center gap-2">
             <BookOpen className="size-4 text-primary" />
@@ -74,7 +74,7 @@ export function GallerySection() {
               return (
                 <div
                   key={i}
-                  className="group relative overflow-hidden rounded-lg border bg-card p-4 transition-all hover:shadow-md hover:border-primary/30 cursor-default"
+                  className="group relative overflow-hidden rounded-lg border bg-card p-4 transition-all hover:border-primary/30 cursor-default"
                 >
                   <div
                     className="mb-3 flex size-10 items-center justify-center rounded-lg"
