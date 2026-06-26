@@ -2,7 +2,7 @@
 
 import { use, useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { Loader2, Calendar, User, Clock } from "lucide-react";
+import { Loader2, Calendar, User, Clock, FileText, ListChecks, ScrollText, History } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
 
@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/ui/card";
 import { Button } from "@/ui/button";
 import { Badge } from "@/ui/badge";
 import { Checkbox } from "@/ui/checkbox";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/ui/tabs";
 
 import { PageBreadcrumbs } from "@/components/global/page-breadcrumbs";
 import { Skeleton } from "@/ui/skeleton";
@@ -55,6 +56,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
   const [deleting, setDeleting] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [togglingItems, setTogglingItems] = useState<Set<string>>(new Set());
+  const [activeTab, setActiveTab] = useState("overview");
 
   useEffect(() => {
     taskApi.get(id)
@@ -216,156 +218,184 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
         </CardHeader>
       </Card>
 
-      {/* Overview */}
-      <Card className="border-border/60 bg-card shadow-sm">
-        <CardContent className="p-4 space-y-4">
-          <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1.5">
-              <User className="size-3.5" />
-              {task.author_name}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Calendar className="size-3.5" />
-              Created {safeFormat(task.created_at, "MMM d, yyyy")}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Clock className="size-3.5" />
-              Updated {safeFormat(task.updated_at, "MMM d, yyyy")}
-            </span>
-            {task.due_date && (
-              <span className="flex items-center gap-1.5">
-                <Calendar className="size-3.5" />
-                Due {safeFormat(task.due_date, "MMM d, yyyy")}
-              </span>
+      {/* Vertical tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <div className="flex flex-col md:flex-row gap-4">
+          <TabsList className="flex flex-row md:flex-col md:w-40 shrink-0 h-auto bg-transparent md:bg-card md:border md:border-border/60 md:rounded-lg md:p-1 md:shadow-sm overflow-x-auto">
+            <TabsTrigger value="overview" className="gap-2 text-xs font-semibold data-[state=active]:bg-primary/10 md:w-full md:justify-start rounded-lg px-3 py-2">
+              <FileText className="size-3.5 shrink-0" /> Overview
+            </TabsTrigger>
+            <TabsTrigger value="checklist" className="gap-2 text-xs font-semibold data-[state=active]:bg-primary/10 md:w-full md:justify-start rounded-lg px-3 py-2">
+              <ListChecks className="size-3.5 shrink-0" /> Checklist ({doneCount}/{totalItems})
+            </TabsTrigger>
+            {task.notes && (
+              <TabsTrigger value="notes" className="gap-2 text-xs font-semibold data-[state=active]:bg-primary/10 md:w-full md:justify-start rounded-lg px-3 py-2">
+                <ScrollText className="size-3.5 shrink-0" /> Notes
+              </TabsTrigger>
             )}
-          </div>
+            {task.audit_trails && task.audit_trails.length > 0 && (
+              <TabsTrigger value="audit" className="gap-2 text-xs font-semibold data-[state=active]:bg-primary/10 md:w-full md:justify-start rounded-lg px-3 py-2">
+                <History className="size-3.5 shrink-0" /> Audit Trail
+              </TabsTrigger>
+            )}
+          </TabsList>
 
-          {task.assignee && (
-            <div className="rounded-lg border bg-card p-3 text-sm">
-              <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Assignee</span>
-              <p className="mt-0.5">{task.assignee_email || task.assignee}</p>
-              {task.assigned_team && (
-                <Badge variant="outline" className="mt-1 text-[10px]">
-                  {task.assigned_team}
-                </Badge>
-              )}
-            </div>
-          )}
-
-          <div className="space-y-2">
-            <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
-              Progress ({task.progress ?? 0}%)
-            </span>
-            <div className="h-2 w-full bg-muted-foreground/10 rounded-full overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all duration-500"
-                style={{
-                  width: `${Math.max(task.progress ?? 0, 0)}%`,
-                  backgroundColor: hue ?? "hsl(221 83% 53%)",
-                }}
-              />
-            </div>
-          </div>
-
-          {task.content && (
-            <div className="space-y-2">
-              <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
-                Description
-              </span>
-              <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap text-sm text-muted-foreground">
-                {task.content}
-              </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Checklist */}
-      <Card className="border-border/60 bg-card shadow-sm">
-        <CardContent className="p-4">
-          <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
-            Checklist ({doneCount}/{totalItems})
-          </span>
-          {task.checklist && task.checklist.length > 0 ? (
-            <div className="space-y-3 mt-2">
-              {/* Active (incomplete) items */}
-              {(() => {
-                const active = task.checklist!.filter((c) => !c.checked);
-                return active.map((item) => (
-                  <div key={item.id} className="flex items-center gap-2">
-                    <Checkbox
-                      checked={false}
-                      disabled={!isLoggedIn || togglingItems.has(item.id)}
-                      onCheckedChange={() => handleToggleChecklistItem(item.id, false)}
-                    />
-                    <span className="text-sm">{item.text}</span>
+          <div className="flex-1 min-w-0">
+            <TabsContent value="overview" className="mt-0">
+              <Card className="border-border/60 bg-card shadow-sm">
+                <CardContent className="p-4 space-y-4">
+                  <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted-foreground">
+                    <span className="flex items-center gap-1.5">
+                      <User className="size-3.5" />
+                      {task.author_name}
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <Calendar className="size-3.5" />
+                      Created {safeFormat(task.created_at, "MMM d, yyyy")}
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <Clock className="size-3.5" />
+                      Updated {safeFormat(task.updated_at, "MMM d, yyyy")}
+                    </span>
+                    {task.due_date && (
+                      <span className="flex items-center gap-1.5">
+                        <Calendar className="size-3.5" />
+                        Due {safeFormat(task.due_date, "MMM d, yyyy")}
+                      </span>
+                    )}
                   </div>
-                ));
-              })()}
 
-              {/* Completed items */}
-              {(() => {
-                const done = task.checklist!.filter((c) => c.checked);
-                if (done.length === 0) return null;
-                return (
-                  <div className="space-y-1.5 pt-2 border-t border-border/40">
-                    <span className="text-[10px] text-muted-foreground">Completed</span>
-                    {done.map((item) => (
-                      <div key={item.id} className="flex items-center gap-2">
-                        <Checkbox
-                          checked={true}
-                          disabled={!isLoggedIn || togglingItems.has(item.id)}
-                          onCheckedChange={() => handleToggleChecklistItem(item.id, true)}
-                        />
-                        <span className="text-sm line-through text-muted-foreground">
-                          {item.text}
-                        </span>
+                  {task.assignee && (
+                    <div className="rounded-lg border bg-card p-3 text-sm">
+                      <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Assignee</span>
+                      <p className="mt-0.5">{task.assignee_email || task.assignee}</p>
+                      {task.assigned_team && (
+                        <Badge variant="outline" className="mt-1 text-[10px]">
+                          {task.assigned_team}
+                        </Badge>
+                      )}
+                    </div>
+                  )}
+
+                  <div className="space-y-2">
+                    <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
+                      Progress ({task.progress ?? 0}%)
+                    </span>
+                    <div className="h-2 w-full bg-muted-foreground/10 rounded-full overflow-hidden">
+                      <div
+                        className="h-full rounded-full transition-all duration-500"
+                        style={{
+                          width: `${Math.max(task.progress ?? 0, 0)}%`,
+                          backgroundColor: hue ?? "hsl(221 83% 53%)",
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {task.content && (
+                    <div className="space-y-2">
+                      <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
+                        Description
+                      </span>
+                      <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap text-sm text-muted-foreground">
+                        {task.content}
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="checklist" className="mt-0">
+              <Card className="border-border/60 bg-card shadow-sm">
+                <CardContent className="p-4">
+                  <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
+                    Checklist ({doneCount}/{totalItems})
+                  </span>
+                  {task.checklist && task.checklist.length > 0 ? (
+                    <div className="space-y-3 mt-2">
+                      {(() => {
+                        const active = task.checklist!.filter((c) => !c.checked);
+                        return active.map((item) => (
+                          <div key={item.id} className="flex items-center gap-2">
+                            <Checkbox
+                              checked={false}
+                              disabled={!isLoggedIn || togglingItems.has(item.id)}
+                              onCheckedChange={() => handleToggleChecklistItem(item.id, false)}
+                            />
+                            <span className="text-sm">{item.text}</span>
+                          </div>
+                        ));
+                      })()}
+
+                      {(() => {
+                        const done = task.checklist!.filter((c) => c.checked);
+                        if (done.length === 0) return null;
+                        return (
+                          <div className="space-y-1.5 pt-2 border-t border-border/40">
+                            <span className="text-[10px] text-muted-foreground">Completed</span>
+                            {done.map((item) => (
+                              <div key={item.id} className="flex items-center gap-2">
+                                <Checkbox
+                                  checked={true}
+                                  disabled={!isLoggedIn || togglingItems.has(item.id)}
+                                  onCheckedChange={() => handleToggleChecklistItem(item.id, true)}
+                                />
+                                <span className="text-sm line-through text-muted-foreground">
+                                  {item.text}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        );
+                      })()}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground text-center py-4">No checklist items.</p>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {task.notes && (
+              <TabsContent value="notes" className="mt-0">
+                <Card className="border-border/60 bg-card shadow-sm">
+                  <CardContent className="p-4">
+                    <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Notes</span>
+                    <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap text-sm text-muted-foreground mt-2">
+                      {task.notes}
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            )}
+
+            {task.audit_trails && task.audit_trails.length > 0 && (
+              <TabsContent value="audit" className="mt-0">
+                <Card className="border-border/60 bg-card shadow-sm">
+                  <CardContent className="p-4 space-y-2">
+                    <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Audit Trail</span>
+                    {task.audit_trails.map((trail) => (
+                      <div key={trail.id} className="rounded-lg border bg-card/50 p-3 text-xs">
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium">{trail.auditor_name}</span>
+                          <span className="text-muted-foreground">
+                            {safeFormat(trail.created_at, "MMM d, yyyy HH:mm")}
+                          </span>
+                        </div>
+                        <p className="mt-0.5 text-muted-foreground">
+                          <Badge variant="outline" className="text-[9px] mr-1">{trail.action}</Badge>
+                          {trail.comment}
+                        </p>
                       </div>
                     ))}
-                  </div>
-                );
-              })()}
-            </div>
-          ) : (
-            <p className="text-sm text-muted-foreground text-center py-4">No checklist items.</p>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Notes */}
-      {task.notes && (
-        <Card className="border-border/60 bg-card shadow-sm">
-          <CardContent className="p-4">
-            <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Notes</span>
-            <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap text-sm text-muted-foreground mt-2">
-              {task.notes}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Audit Trail */}
-      {task.audit_trails && task.audit_trails.length > 0 && (
-        <Card className="border-border/60 bg-card shadow-sm">
-          <CardContent className="p-4 space-y-2">
-            <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Audit Trail</span>
-            {task.audit_trails.map((trail) => (
-              <div key={trail.id} className="rounded-lg border bg-card/50 p-3 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="font-medium">{trail.auditor_name}</span>
-                  <span className="text-muted-foreground">
-                    {safeFormat(trail.created_at, "MMM d, yyyy HH:mm")}
-                  </span>
-                </div>
-                <p className="mt-0.5 text-muted-foreground">
-                  <Badge variant="outline" className="text-[9px] mr-1">{trail.action}</Badge>
-                  {trail.comment}
-                </p>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            )}
+          </div>
+        </div>
+      </Tabs>
 
       <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
         <DialogContent>
