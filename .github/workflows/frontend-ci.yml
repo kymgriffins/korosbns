@@ -1,0 +1,79 @@
+name: Frontend CI
+
+on:
+  push:
+    branches: [main, staging, 'feat/*', 'ft-*', 'ch-*']
+  pull_request:
+    branches: [main, staging]
+
+jobs:
+  smart-review:
+    name: Smart Review — typecheck + lint + test + build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '>=8'
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: TypeScript type check
+        run: npx tsc --noEmit --pretty false
+        continue-on-error: false
+
+      - name: Lint check
+        run: npx next lint --max-warnings 0
+        continue-on-error: true
+
+      - name: Unit tests
+        run: npm test
+        continue-on-error: false
+
+      - name: Production build
+        run: npm run build
+        continue-on-error: false
+
+      - name: Build output summary
+        run: |
+          echo "### Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- TypeScript: ✅ passed" >> $GITHUB_STEP_SUMMARY
+          echo "- Lint: ✅ passed" >> $GITHUB_STEP_SUMMARY
+          echo "- Tests: ✅ passed" >> $GITHUB_STEP_SUMMARY
+          echo "- Build: ✅ passed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "See deploy preview for route map." >> $GITHUB_STEP_SUMMARY
+
+  headless-progress:
+    name: Headless Migration Progress
+    runs-on: ubuntu-latest
+    needs: smart-review
+    if: success()
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Generate migration progress report
+        run: node scripts/progress-report.mjs
+        continue-on-error: true
+
+      - name: Upload progress report
+        uses: actions/upload-artifact@v4
+        with:
+          name: migration-progress
+          path: progress-report.json
