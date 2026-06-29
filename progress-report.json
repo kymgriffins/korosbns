@@ -1,29 +1,29 @@
 {
-  "generatedAt": "2026-06-29T01:50:15.116Z",
+  "generatedAt": "2026-06-29T02:01:49.302Z",
   "phase": "Phase 7: Headless Data Layer Migration",
   "summary": {
     "total": 81,
-    "completed": 8,
+    "completed": 22,
     "inProgress": 0,
     "blocked": 0,
-    "pending": 73
+    "pending": 59
   },
-  "completionPercent": 10,
+  "completionPercent": 27,
   "byStep": [
     {
       "label": "Step 1:Create headless data stores (core layer)",
       "total": 16,
-      "completed": 3,
+      "completed": 15,
       "inProgress": 0,
-      "pending": 13,
+      "pending": 1,
       "blocked": 0
     },
     {
       "label": "Step 2:Create CI + Progress automation",
       "total": 5,
-      "completed": 3,
+      "completed": 5,
       "inProgress": 0,
-      "pending": 2,
+      "pending": 0,
       "blocked": 0
     },
     {
@@ -97,7 +97,7 @@
       "label": "`src/data/content.ts` — Articles, Videos, Stories, Documents. Defaults from seed JSON.",
       "step": "Step 1:Create headless data stores (core layer)",
       "stepCategory": "step-1",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
@@ -113,7 +113,7 @@
       "label": "`src/data/tasks.ts` — Weekly notes / tasks / projects / goals. Defaults from bnsConfig meeting action items.",
       "step": "Step 1:Create headless data stores (core layer)",
       "stepCategory": "step-1",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
@@ -121,7 +121,7 @@
       "label": "`src/data/learning.ts` — Civic modules, chapters, steps, courses. Defaults from civic_modules.json.",
       "step": "Step 1:Create headless data stores (core layer)",
       "stepCategory": "step-1",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
@@ -129,7 +129,7 @@
       "label": "`src/data/events.ts` — Events with default seed data from content_events.example.json.",
       "step": "Step 1:Create headless data stores (core layer)",
       "stepCategory": "step-1",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
@@ -137,7 +137,7 @@
       "label": "`src/data/surveys.ts` — Surveys with default seed data from engagement_surveys.example.json.",
       "step": "Step 1:Create headless data stores (core layer)",
       "stepCategory": "step-1",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
@@ -145,7 +145,7 @@
       "label": "`src/data/forum.ts` — Forum threads and posts with defaults.",
       "step": "Step 1:Create headless data stores (core layer)",
       "stepCategory": "step-1",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
@@ -153,7 +153,7 @@
       "label": "`src/data/budget.ts` — Budget data, fiscal years, reports. Defaults from budget JSON seeds.",
       "step": "Step 1:Create headless data stores (core layer)",
       "stepCategory": "step-1",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
@@ -161,7 +161,7 @@
       "label": "`src/data/analytics.ts` — Analytics summary with zero-value defaults.",
       "step": "Step 1:Create headless data stores (core layer)",
       "stepCategory": "step-1",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
@@ -169,7 +169,7 @@
       "label": "`src/data/users.ts` — User profiles, team members, leadership. Defaults from bnsConfig.json leadership + team constants.",
       "step": "Step 1:Create headless data stores (core layer)",
       "stepCategory": "step-1",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
@@ -177,7 +177,7 @@
       "label": "`src/data/gamification.ts` — Badges, points, streaks, leaderboards. Defaults from gamification_badges.json.",
       "step": "Step 1:Create headless data stores (core layer)",
       "stepCategory": "step-1",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
@@ -185,7 +185,7 @@
       "label": "`src/data/admin-meta.ts` — Admin dashboard meta (sidebar, navigation, preferences).",
       "step": "Step 1:Create headless data stores (core layer)",
       "stepCategory": "step-1",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
@@ -193,7 +193,7 @@
       "label": "`src/data/partners.ts` — Consortium & partner data from bnsConfig.json + org_config.example.json.",
       "step": "Step 1:Create headless data stores (core layer)",
       "stepCategory": "step-1",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
@@ -222,10 +222,10 @@
     },
     {
       "id": "`src/data/adapter.ts`",
-      "label": "`src/data/adapter.ts` — `withFallback<T>(apiCall: () => Promise<T>, fallback: T): Promise<T>` wrapper",
+      "label": "`src/data/adapter.ts` — `withFallback<T>(apiCall: () => Promise<T>, fallback: T): Promise<T>` wrapper + DataError",
       "step": "Step 2:Create CI + Progress automation",
       "stepCategory": "step-2",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
@@ -233,7 +233,7 @@
       "label": "Document the pattern in `AGENTS.md` under \"Headless Data Layer\"",
       "step": "Step 2:Create CI + Progress automation",
       "stepCategory": "step-2",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
