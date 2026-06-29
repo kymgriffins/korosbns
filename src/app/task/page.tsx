@@ -515,24 +515,24 @@ export default function TaskPage() {
               </button>
             )}
           </div>
-          <Select value={priorityFilter} onValueChange={(v) => setPriorityFilter(v as TaskPriority | "")}>
+          <Select value={priorityFilter || "__all__"} onValueChange={(v) => setPriorityFilter(v === "__all__" ? "" : (v as TaskPriority))}>
             <SelectTrigger className="w-32 rounded-lg bg-background text-xs font-medium">
               <SelectValue placeholder="Priority" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Priorities</SelectItem>
+              <SelectItem value="__all__">All Priorities</SelectItem>
               <SelectItem value="urgent">Urgent</SelectItem>
               <SelectItem value="high">High</SelectItem>
               <SelectItem value="medium">Medium</SelectItem>
               <SelectItem value="low">Low</SelectItem>
             </SelectContent>
           </Select>
-          <Select value={tagFilter} onValueChange={(v) => setTagFilter(v as TaskTag | "")}>
+          <Select value={tagFilter || "__all__"} onValueChange={(v) => setTagFilter(v === "__all__" ? "" : (v as TaskTag))}>
             <SelectTrigger className="w-32 rounded-lg bg-background text-xs font-medium">
               <SelectValue placeholder="Tag" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Tags</SelectItem>
+              <SelectItem value="__all__">All Tags</SelectItem>
               <SelectItem value="feature">Feature</SelectItem>
               <SelectItem value="bug">Bug</SelectItem>
               <SelectItem value="improvement">Improvement</SelectItem>
