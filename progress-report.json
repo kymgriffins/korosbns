@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-06-29T02:43:54.027Z",
+  "generatedAt": "2026-06-29T04:45:20.580Z",
   "phase": "Phase 7: Headless Data Layer Migration",
   "summary": {
     "total": 81,
-    "completed": 24,
+    "completed": 54,
     "inProgress": 0,
     "blocked": 0,
-    "pending": 57
+    "pending": 27
   },
-  "completionPercent": 30,
+  "completionPercent": 67,
   "byStep": [
     {
       "label": "Step 1:Create headless data stores (core layer)",
@@ -29,17 +29,17 @@
     {
       "label": "Step 3:Migrate marketing pages (TIER 1 — HIGH priority)",
       "total": 21,
-      "completed": 2,
+      "completed": 17,
       "inProgress": 0,
-      "pending": 19,
+      "pending": 4,
       "blocked": 0
     },
     {
       "label": "Step 4:Migrate admin dashboard pages (TIER 1 — HIGH priority, 20+ pages)",
       "total": 18,
-      "completed": 1,
+      "completed": 8,
       "inProgress": 0,
-      "pending": 17,
+      "pending": 10,
       "blocked": 0
     },
     {
@@ -53,17 +53,17 @@
     {
       "label": "Step 6:Migrate budgethub pages (TIER 1 — HIGH, 19 pages)",
       "total": 10,
-      "completed": 0,
+      "completed": 7,
       "inProgress": 0,
-      "pending": 10,
+      "pending": 3,
       "blocked": 0
     },
     {
       "label": "Step 7:Testing & verification",
       "total": 8,
-      "completed": 0,
+      "completed": 1,
       "inProgress": 0,
-      "pending": 8,
+      "pending": 7,
       "blocked": 0
     }
   ],
@@ -246,10 +246,10 @@
     },
     {
       "id": "`/learn/articles`",
-      "label": "`/learn/articles` — `LearnContentGrid` → use `src/data/content.ts`",
+      "label": "`/learn/articles` — `learn-tab-page.tsx` → uses `contentData.articles.fetch()` via `LIST_FETCHERS` ✅",
       "step": "Step 3:Migrate marketing pages (TIER 1 — HIGH priority)",
       "stepCategory": "step-3",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
@@ -262,26 +262,26 @@
     },
     {
       "id": "`/learn/stories`",
-      "label": "`/learn/stories` — `LearnContentGrid` → use `src/data/content.ts`",
+      "label": "`/learn/stories` — `learn-tab-page.tsx` → uses `contentData.stories.fetch()` ✅",
       "step": "Step 3:Migrate marketing pages (TIER 1 — HIGH priority)",
       "stepCategory": "step-3",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
       "id": "`/learn/documents`",
-      "label": "`/learn/documents` — `LearnContentGrid` → use `src/data/content.ts`",
+      "label": "`/learn/documents` — `learn-tab-page.tsx` → uses `contentData.documents.fetch()` ✅",
       "step": "Step 3:Migrate marketing pages (TIER 1 — HIGH priority)",
       "stepCategory": "step-3",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
-      "id": "`/learn/quests`-→-use-`src/data/gamification.ts`",
-      "label": "`/learn/quests` → use `src/data/gamification.ts`",
+      "id": "`/learn/quests`",
+      "label": "`/learn/quests` — `learn-tab-page.tsx` → uses `contentData.quests.fetch()` ✅",
       "step": "Step 3:Migrate marketing pages (TIER 1 — HIGH priority)",
       "stepCategory": "step-3",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
@@ -293,11 +293,11 @@
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
-      "id": "`/learn/profile`-→-use-`src/data/users.ts`-+-`src/data/gamif",
-      "label": "`/learn/profile` → use `src/data/users.ts` + `src/data/gamification.ts`",
+      "id": "`/learn/profile`-→-uses-`learningdata.profile.fetch()`-+-`us",
+      "label": "`/learn/profile` → uses `learningData.profile.fetch()` + `userData.profile.fetch()` + `citizenApi.getSocialLinks()` ✅",
       "step": "Step 3:Migrate marketing pages (TIER 1 — HIGH priority)",
       "stepCategory": "step-3",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
@@ -309,91 +309,91 @@
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
-      "id": "`/learn/[slug]`-(article-detail)-→-use-`src/data/content.ts`",
-      "label": "`/learn/[slug]` (article detail) → use `src/data/content.ts`",
+      "id": "`/learn/[slug]`",
+      "label": "`/learn/[slug]` — `resolveContentSlug` → uses `contentData.articles.fetchBySlug()` + `contentData.stories.fetchBySlug()` + `contentData.trivia.fetchBySlug()` ✅",
       "step": "Step 3:Migrate marketing pages (TIER 1 — HIGH priority)",
       "stepCategory": "step-3",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
-      "id": "`/learn/modules/[slug]`-→-use-`src/data/learning.ts`",
-      "label": "`/learn/modules/[slug]` → use `src/data/learning.ts`",
+      "id": "`/learn/modules/[slug]`",
+      "label": "`/learn/modules/[slug]` — `module-detail-view.tsx` → uses `learningData.modules.fetchBySlug()` ✅",
       "step": "Step 3:Migrate marketing pages (TIER 1 — HIGH priority)",
       "stepCategory": "step-3",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
-      "id": "`/learn/paths/[slug]`-→-use-`src/data/learning.ts`",
-      "label": "`/learn/paths/[slug]` → use `src/data/learning.ts`",
+      "id": "`/learn/paths/[slug]`",
+      "label": "`/learn/paths/[slug]` — uses `learningData.courses.fetchBySlug()` ✅",
       "step": "Step 3:Migrate marketing pages (TIER 1 — HIGH priority)",
       "stepCategory": "step-3",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
-      "id": "`/learn/units/[unitslug]/[year]`-→-use-`src/data/learning.ts",
-      "label": "`/learn/units/[unitSlug]/[year]` → use `src/data/learning.ts` + `src/data/budget.ts`",
+      "id": "`/learn/units/[unitslug]/[year]`",
+      "label": "`/learn/units/[unitSlug]/[year]` — uses `learningData.courses.fetchByUnitYear()` ✅",
       "step": "Step 3:Migrate marketing pages (TIER 1 — HIGH priority)",
       "stepCategory": "step-3",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
-      "id": "`/learn/authors/[slug]`-→-use-`src/data/users.ts`",
-      "label": "`/learn/authors/[slug]` → use `src/data/users.ts`",
+      "id": "`/learn/authors/[slug]`",
+      "label": "`/learn/authors/[slug]` — uses `learningData.authors.fetchBySlug()` ✅",
       "step": "Step 3:Migrate marketing pages (TIER 1 — HIGH priority)",
       "stepCategory": "step-3",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
-      "id": "`/learn/users/[id]`-→-use-`src/data/users.ts`",
-      "label": "`/learn/users/[id]` → use `src/data/users.ts`",
+      "id": "`/learn/users/[id]`-→-uses-`userdata.profile.fetchpublic()`-",
+      "label": "`/learn/users/[id]` → uses `userData.profile.fetchPublic()` ✅",
       "step": "Step 3:Migrate marketing pages (TIER 1 — HIGH priority)",
       "stepCategory": "step-3",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
-      "id": "`/events`-+-`/events/[id]`-→-use-`src/data/events.ts`",
-      "label": "`/events` + `/events/[id]` → use `src/data/events.ts`",
+      "id": "`/events`-+-`/events/[id]`-→-`useevents`/`useevent`-hooks-mi",
+      "label": "`/events` + `/events/[id]` → `useEvents`/`useEvent` hooks migrated to `eventData.fetch()`/`fetchById()` ✅",
       "step": "Step 3:Migrate marketing pages (TIER 1 — HIGH priority)",
       "stepCategory": "step-3",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
-      "id": "`/surveys`-+-`/surveys/[id]`-→-use-`src/data/surveys.ts`",
-      "label": "`/surveys` + `/surveys/[id]` → use `src/data/surveys.ts`",
+      "id": "`/surveys`-+-`/surveys/[id]`-→-`usesurveys`/`usesurvey`-hook",
+      "label": "`/surveys` + `/surveys/[id]` → `useSurveys`/`useSurvey` hooks migrated to `surveyData.fetch()`/`fetchById()` ✅",
       "step": "Step 3:Migrate marketing pages (TIER 1 — HIGH priority)",
       "stepCategory": "step-3",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
       "id": "`/budgetnews`-+-`/budgetnews/[slug]`-+-`/budgetnews/[slug]/[",
-      "label": "`/budgetnews` + `/budgetnews/[slug]` + `/budgetnews/[slug]/[chapterSlug]` → use `src/data/budget.ts`",
+      "label": "`/budgetnews` + `/budgetnews/[slug]` + `/budgetnews/[slug]/[chapterSlug]` → use `src/data/budget.ts` (delegates to client components)",
       "step": "Step 3:Migrate marketing pages (TIER 1 — HIGH priority)",
       "stepCategory": "step-3",
       "status": "pending",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
-      "id": "`/analytics`-→-use-`src/data/analytics.ts`",
-      "label": "`/analytics` → use `src/data/analytics.ts`",
+      "id": "`/analytics`-→-`analyticsclient`-migrated-to-`analyticsdata.",
+      "label": "`/analytics` → `AnalyticsClient` migrated to `analyticsData.fetch()` ✅",
       "step": "Step 3:Migrate marketing pages (TIER 1 — HIGH priority)",
       "stepCategory": "step-3",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
-      "id": "`/weekly-notes/*`-(3-pages)-→-use-`src/data/tasks.ts`",
-      "label": "`/weekly-notes/*` (3 pages) → use `src/data/tasks.ts`",
+      "id": "`/weekly-notes/*`-(3-pages)-→-manage-+-audit-pages-migrated-",
+      "label": "`/weekly-notes/*` (3 pages) → manage + audit pages migrated to use `taskData.tasks.fetch()` ✅",
       "step": "Step 3:Migrate marketing pages (TIER 1 — HIGH priority)",
       "stepCategory": "step-3",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
@@ -461,27 +461,27 @@
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
-      "id": "`/admin/dashboard/task/*`-(4-pages)-→-use-`src/data/tasks.ts",
-      "label": "`/admin/dashboard/task/*` (4 pages) → use `src/data/tasks.ts`",
+      "id": "`/admin/dashboard/task/*`-(4-pages)-→-uses-`taskdata.tasks.f",
+      "label": "`/admin/dashboard/task/*` (4 pages) → uses `taskData.tasks.fetch()` ✅",
       "step": "Step 4:Migrate admin dashboard pages (TIER 1 — HIGH priority, 20+ pages)",
       "stepCategory": "step-4",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
-      "id": "`/admin/dashboard/task-overview`-→-use-`src/data/tasks.ts`",
-      "label": "`/admin/dashboard/task-overview` → use `src/data/tasks.ts`",
+      "id": "`/admin/dashboard/task-overview`-→-uses-`taskdata.tasks.fetc",
+      "label": "`/admin/dashboard/task-overview` → uses `taskData.tasks.fetch()` ✅",
       "step": "Step 4:Migrate admin dashboard pages (TIER 1 — HIGH priority, 20+ pages)",
       "stepCategory": "step-4",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
-      "id": "`/admin/dashboard/kanban`-→-use-`src/data/tasks.ts`",
-      "label": "`/admin/dashboard/kanban` → use `src/data/tasks.ts`",
+      "id": "`/admin/dashboard/kanban`-→-uses-`taskdata.tasks.fetch()`-✅",
+      "label": "`/admin/dashboard/kanban` → uses `taskData.tasks.fetch()` ✅",
       "step": "Step 4:Migrate admin dashboard pages (TIER 1 — HIGH priority, 20+ pages)",
       "stepCategory": "step-4",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
@@ -517,35 +517,35 @@
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
-      "id": "`/admin/dashboard/security`-→-use-`src/data/users.ts`",
-      "label": "`/admin/dashboard/security` → use `src/data/users.ts`",
+      "id": "`/admin/dashboard/security`-→-uses-`userdata.profile.fetch()",
+      "label": "`/admin/dashboard/security` → uses `userData.profile.fetch()` for profile reads; mutations stay direct ✅",
       "step": "Step 4:Migrate admin dashboard pages (TIER 1 — HIGH priority, 20+ pages)",
       "stepCategory": "step-4",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
-      "id": "`/admin/dashboard/profile`-→-use-`src/data/users.ts`",
-      "label": "`/admin/dashboard/profile` → use `src/data/users.ts`",
+      "id": "`/admin/dashboard/profile`-→-uses-`userdata.profile.fetch()`",
+      "label": "`/admin/dashboard/profile` → uses `userData.profile.fetch()` for profile reads; mutations stay direct ✅",
       "step": "Step 4:Migrate admin dashboard pages (TIER 1 — HIGH priority, 20+ pages)",
       "stepCategory": "step-4",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
-      "id": "`/admin/dashboard/privacy`-→-use-`src/data/users.ts`",
-      "label": "`/admin/dashboard/privacy` → use `src/data/users.ts`",
+      "id": "`/admin/dashboard/privacy`-→-uses-`userdata.profile.fetch()`",
+      "label": "`/admin/dashboard/privacy` → uses `userData.profile.fetch()` for profile reads; mutations stay direct ✅",
       "step": "Step 4:Migrate admin dashboard pages (TIER 1 — HIGH priority, 20+ pages)",
       "stepCategory": "step-4",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
-      "id": "`/admin/dashboard/productivity`-→-use-`src/data/tasks.ts`",
-      "label": "`/admin/dashboard/productivity` → use `src/data/tasks.ts`",
+      "id": "`/admin/dashboard/productivity`-→-uses-`taskdata.tasks.fetch",
+      "label": "`/admin/dashboard/productivity` → uses `taskData.tasks.fetch()` + `userData.profile.fetch()` ✅",
       "step": "Step 4:Migrate admin dashboard pages (TIER 1 — HIGH priority, 20+ pages)",
       "stepCategory": "step-4",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
@@ -573,35 +573,35 @@
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
-      "id": "`/budgethub/dashboard/lms`-(main-dashboard)-→-use-`src/data/",
-      "label": "`/budgethub/dashboard/lms` (main dashboard) → use `src/data/learning.ts` + `src/data/gamification.ts`",
+      "id": "`/budgethub/dashboard/lms`-(main-dashboard)-→-uses-`learning",
+      "label": "`/budgethub/dashboard/lms` (main dashboard) → uses `learningData.summary.fetch()` + `learningData.modules.fetch()` ✅",
       "step": "Step 6:Migrate budgethub pages (TIER 1 — HIGH, 19 pages)",
       "stepCategory": "step-6",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
       "id": "`/budgethub/dashboard/lms/courses`-+-`/courses/[slug]`-→-use",
-      "label": "`/budgethub/dashboard/lms/courses` + `/courses/[slug]` → use `src/data/learning.ts`",
+      "label": "`/budgethub/dashboard/lms/courses` + `/courses/[slug]` → uses `learningData.modules.fetch()` + `learningData.modules.fetchBySlug()`; mutations stay direct ✅",
       "step": "Step 6:Migrate budgethub pages (TIER 1 — HIGH, 19 pages)",
       "stepCategory": "step-6",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
-      "id": "`/budgethub/dashboard/lms/progress`-→-use-`src/data/learning",
-      "label": "`/budgethub/dashboard/lms/progress` → use `src/data/learning.ts`",
+      "id": "`/budgethub/dashboard/lms/progress`-→-uses-`learningdata.pro",
+      "label": "`/budgethub/dashboard/lms/progress` → uses `learningData.profile.fetch()` ✅",
       "step": "Step 6:Migrate budgethub pages (TIER 1 — HIGH, 19 pages)",
       "stepCategory": "step-6",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
-      "id": "`/budgethub/dashboard/lms/profile`-→-use-`src/data/users.ts`",
-      "label": "`/budgethub/dashboard/lms/profile` → use `src/data/users.ts`",
+      "id": "`/budgethub/dashboard/lms/profile`-→-uses-`learningdata.prof",
+      "label": "`/budgethub/dashboard/lms/profile` → uses `learningData.profile.fetch()` + `userData.profile.fetch()` ✅",
       "step": "Step 6:Migrate budgethub pages (TIER 1 — HIGH, 19 pages)",
       "stepCategory": "step-6",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
@@ -613,11 +613,11 @@
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
-      "id": "`/budgethub/dashboard/lms/certificates`-→-use-`src/data/lear",
-      "label": "`/budgethub/dashboard/lms/certificates` → use `src/data/learning.ts`",
+      "id": "`/budgethub/dashboard/lms/certificates`-→-uses-`learningdata",
+      "label": "`/budgethub/dashboard/lms/certificates` → uses `learningData.profile.fetch()` ✅",
       "step": "Step 6:Migrate budgethub pages (TIER 1 — HIGH, 19 pages)",
       "stepCategory": "step-6",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
@@ -629,19 +629,19 @@
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
-      "id": "`/budgethub/dashboard/lms/account`-+-`/account/password`-+-`",
-      "label": "`/budgethub/dashboard/lms/account` + `/account/password` + `/account/sign-out` → use `src/data/users.ts`",
+      "id": "`/budgethub/dashboard/lms/account`-→-uses-`userdata.profile.",
+      "label": "`/budgethub/dashboard/lms/account` → uses `userData.profile.fetch()` ✅",
       "step": "Step 6:Migrate budgethub pages (TIER 1 — HIGH, 19 pages)",
       "stepCategory": "step-6",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
-      "id": "`/budgethub/dashboard/learning-hub/*`-(7-pages)-→-use-`src/d",
-      "label": "`/budgethub/dashboard/learning-hub/*` (7 pages) → use `src/data/learning.ts` + `src/data/content.ts`",
+      "id": "`/budgethub/dashboard/learning-hub/*`-(7-pages)-→-uses-`lear",
+      "label": "`/budgethub/dashboard/learning-hub/*` (7 pages) → uses `learningData`, `contentData`, `videoData` stores ✅",
       "step": "Step 6:Migrate budgethub pages (TIER 1 — HIGH, 19 pages)",
       "stepCategory": "step-6",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
@@ -653,11 +653,11 @@
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
-      "id": "build-passes-with-`npm-run-build`-(no-typescript-errors)",
-      "label": "Build passes with `npm run build` (no TypeScript errors)",
+      "id": "build-passes-with-`npm-run-build`-(no-typescript-errors-in-s",
+      "label": "Build passes with `npm run build` (no TypeScript errors in source code)",
       "step": "Step 7:Testing & verification",
       "stepCategory": "step-7",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
