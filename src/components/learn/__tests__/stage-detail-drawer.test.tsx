@@ -61,7 +61,10 @@ vi.mock("@/lib/module-progress", () => ({
 }));
 
 vi.mock("@/lib/learn-trivia", () => ({
-  triviaForStep: () => [],
+  triviaForStep: (_stage: any, step: any, _idx: number) => {
+    if (step?.trivia?.length) return step.trivia;
+    return [];
+  },
 }));
 
 vi.mock("@/lib/learn-hub", () => ({
