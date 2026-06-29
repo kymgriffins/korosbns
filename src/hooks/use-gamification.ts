@@ -3,6 +3,7 @@ import { apiFetch } from "@/lib/api-client";
 import type { GamificationState, LeaderboardEntry, ChallengeData, ReferralData, BadgeCatalogResponse } from "@/types/gamification";
 import type { CertificateData } from "@/types/learn";
 import type { ApiListResponse } from "@/types/api";
+import { gamificationData } from "@/data/gamification";
 
 export function useGamificationMe() {
   return useQuery({
@@ -25,7 +26,7 @@ export function useBadgeCatalog() {
 export function useLeaderboard(limit = 20) {
   return useQuery({
     queryKey: ["leaderboard", limit],
-    queryFn: () => apiFetch<ApiListResponse<LeaderboardEntry>>(`/gamification/leaderboard/?limit=${limit}`),
+    queryFn: () => gamificationData.leaderboard.fetch(limit).then((results) => ({ results })),
     staleTime: 1000 * 60,
   });
 }

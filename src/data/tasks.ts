@@ -20,18 +20,21 @@ const config = bnsConfig as {
 };
 
 const DEFAULT_TASKS: Task[] = (config.meetings ?? [])
-  .flatMap((m) => (m.actionItems ?? []).map((a, i) => ({
-    id: a.id ?? `default-task-${i}`,
-    week_label: "Backlog",
-    title: a.title,
-    status: a.status === "in_progress" ? "audited" : "draft" as Task["status"],
-    author_name: a.owner,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    due_date: a.due,
-    assignee: a.owner,
-    priority: (a.priority === "high" || a.priority === "medium" ? a.priority : "medium") as Task["priority"],
-  })));
+  .flatMap((m) => (m.actionItems ?? []).map((a, i) => {
+    const t: Task = {
+      id: a.id ?? `default-task-${i}`,
+      week_label: "Backlog",
+      title: a.title,
+      status: a.status === "in_progress" ? "audited" : "draft" as Task["status"],
+      author_name: a.owner,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      due_date: a.due,
+      assignee: a.owner,
+      priority: (a.priority === "high" || a.priority === "medium" ? a.priority : "medium") as Task["priority"],
+    };
+    return t;
+  }));
 
 let _tasks: Task[] = [...DEFAULT_TASKS];
 
@@ -58,14 +61,12 @@ export const taskData = {
         () => {
           const t: Task = {
             id: `new-${Date.now()}`,
-            week_label: payload.week_label,
-            title: payload.title,
             status: payload.status ?? "draft",
             author_name: "Local",
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
             ...payload,
-          };
+          } as Task;
           _tasks.push(t);
           return t;
         },
@@ -77,7 +78,7 @@ export const taskData = {
         () => {
           const idx = _tasks.findIndex((t) => t.id === id);
           if (idx >= 0) {
-            _tasks[idx] = { ..._tasks[idx], ...payload, updated_at: new Date().toISOString() };
+            _tasks[idx] = { ..._tasks[idx], ...payload, updated_at: new Date().toISOString() } as Task;
             return _tasks[idx];
           }
           return null as unknown as Task;

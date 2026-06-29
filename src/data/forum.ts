@@ -17,7 +17,7 @@ export const forumData = {
       withFallback(
         "forum",
         () => learnHubApi.getForumThreads(chapterId),
-        () => ({ results: _threads }),
+        () => ({ count: _threads.length, results: _threads }),
       ).then((r) => r.results ?? []),
     fetchById: (threadId: string) =>
       withFallback(

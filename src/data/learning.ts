@@ -55,7 +55,7 @@ export const learningData = {
       withFallback(
         "learning",
         () => learnHubApi.authors(),
-        () => ({ results: [] }),
+        () => ({ count: 0, results: [] }),
       ).then((r) => r.results ?? []),
     fetchBySlug: (slug: string) =>
       withFallback(

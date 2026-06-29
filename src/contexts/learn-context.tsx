@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { fetchGamificationMe, type GamificationState } from "@/lib/gamification";
-import { fetchCivicModulesWithRetry } from "@/lib/learn-data";
+import { learningData } from "@/data/learning";
 import type { CivicModule } from "@/types/learn";
 import { useAuth } from "@/contexts/auth-context";
 
@@ -72,17 +72,10 @@ export function LearnProvider({ children }: { children: React.ReactNode }) {
     if (!force && modulesCached) return;
     setModulesLoading(true);
     setModulesError(null);
-    try {
-      const results = await fetchCivicModulesWithRetry();
-      setCivicModules(results);
-      setModulesCached(true);
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to load learning modules";
-      setModulesError(message);
-      setCivicModules([]);
-    } finally {
-      setModulesLoading(false);
-    }
+    const results = await learningData.modules.fetch();
+    setCivicModules(results);
+    setModulesCached(true);
+    setModulesLoading(false);
   }, [modulesCached]);
 
   const refreshModules = useCallback(async () => {
