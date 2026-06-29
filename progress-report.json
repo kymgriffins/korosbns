@@ -1,21 +1,21 @@
 {
-  "generatedAt": "2026-06-29T02:01:49.302Z",
+  "generatedAt": "2026-06-29T02:14:41.974Z",
   "phase": "Phase 7: Headless Data Layer Migration",
   "summary": {
     "total": 81,
-    "completed": 22,
+    "completed": 24,
     "inProgress": 0,
     "blocked": 0,
-    "pending": 59
+    "pending": 57
   },
-  "completionPercent": 27,
+  "completionPercent": 30,
   "byStep": [
     {
       "label": "Step 1:Create headless data stores (core layer)",
       "total": 16,
-      "completed": 15,
+      "completed": 16,
       "inProgress": 0,
-      "pending": 1,
+      "pending": 0,
       "blocked": 0
     },
     {
@@ -29,9 +29,9 @@
     {
       "label": "Step 3:Migrate marketing pages (TIER 1 — HIGH priority)",
       "total": 21,
-      "completed": 1,
+      "completed": 2,
       "inProgress": 0,
-      "pending": 20,
+      "pending": 19,
       "blocked": 0
     },
     {
@@ -105,7 +105,7 @@
       "label": "`src/data/admin-content.ts` — Admin CRUD content (videos/articles/stories/documents management). Default admin data.",
       "step": "Step 1:Create headless data stores (core layer)",
       "stepCategory": "step-1",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
@@ -238,10 +238,10 @@
     },
     {
       "id": "`/learn`",
-      "label": "`/learn` — `LearnDashboardView` → use `src/data/learning.ts` + `src/data/gamification.ts`",
+      "label": "`/learn` — `LearnDashboardView` → uses `learningData.modules.fetch()` via updated `learn-context.tsx` + `gamificationData.leaderboard.fetch()` via `use-gamification.ts`",
       "step": "Step 3:Migrate marketing pages (TIER 1 — HIGH priority)",
       "stepCategory": "step-3",
-      "status": "pending",
+      "status": "completed",
       "phase": "Phase 7: Headless Data Layer Migration"
     },
     {
