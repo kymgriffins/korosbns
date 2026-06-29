@@ -8,32 +8,20 @@ import { TopPagesTable } from "./TopPagesTable";
 import { DeviceBreakdown } from "./DeviceBreakdown";
 import { UptimeWidget } from "./UptimeWidget";
 import { ImpactCounters } from "./ImpactCounters";
-import { citizenApi, type AnalyticsSummaryApi } from "@/lib/api-client";
+import { type AnalyticsSummaryApi } from "@/lib/api-client";
+import { analyticsData } from "@/data/analytics";
+import { usePageView } from "@/hooks/use-page-view";
 import { Loader2, BarChart3 } from "lucide-react";
 
 export function AnalyticsClient() {
+  usePageView();
   const [data, setData] = useState<AnalyticsSummaryApi | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    citizenApi
-      .getAnalyticsSummary()
-      .then(setData)
-      .catch(() => {
-        setData({
-          total_visitors: 45231,
-          total_page_views: 128940,
-          daily_visitors: [],
-          top_pages: [],
-          device_breakdown: [],
-          uptime_percentage: 99.97,
-          uptime_data: [],
-          modules_completed: 8241,
-          citizens_reached: 45231,
-          surveys_responded: 3215,
-          quiz_attempts: 12890,
-        });
-      })
+    analyticsData.fetch()
+      .then((res) => setData(res as AnalyticsSummaryApi))
+      .catch(() => setData(null))
       .finally(() => setLoading(false));
   }, []);
 

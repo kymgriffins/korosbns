@@ -19,6 +19,7 @@ import { articlePlaceholderForSlug } from "@/lib/article-placeholders";
 import { renderArticleBody } from "@/lib/render-content";
 import { scaleIn, fadeInUp, fadeInUpDelay1, fadeInUpDelay2, fadeInUpDelay3 } from "@/motion/variants";
 import { HarmonizedImage } from "@/components/ui/harmonized-image";
+import { usePageView } from "@/hooks/use-page-view";
 
 type ReaderMode = "loading" | "error" | "article" | "story" | "trivia";
 
@@ -119,6 +120,7 @@ export default function UnifiedReaderClientPage({
   initialTrivia?: TriviaSetApi | null;
   initialStory?: StoryData | null;
 }) {
+  usePageView();
   const { slug } = useParams() as { slug: string };
   const router = useRouter();
   

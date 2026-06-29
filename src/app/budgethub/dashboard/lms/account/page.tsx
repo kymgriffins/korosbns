@@ -12,8 +12,8 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
-import { citizenApi } from "@/lib/api-client";
 import type { UserProfileApi } from "@/lib/api-client";
+import { userData } from "@/data/users";
 import { usePageView } from "@/hooks/use-page-view";
 
 export default function AccountPage() {
@@ -24,7 +24,7 @@ export default function AccountPage() {
 
   const fetchData = useCallback(async () => {
     setLoading(true);
-    try { const me = await citizenApi.getMe(); setUserProfile(me); } catch {} finally { setLoading(false); }
+    try { const me = await userData.profile.fetch(); setUserProfile(me as UserProfileApi); } catch {} finally { setLoading(false); }
   }, []);
 
   useEffect(() => { fetchData(); }, [fetchData]);

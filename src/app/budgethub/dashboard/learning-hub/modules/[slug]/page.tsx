@@ -26,6 +26,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { learnHubApi } from "@/lib/learn-hub";
 import type { ChapterStep, CivicModule, StageTrivia } from "@/types/learn";
+import { learningData } from "@/data/learning";
 import { usePageView } from "@/hooks/use-page-view";
 
 function triviaForStep(stage: CivicModule, step: ChapterStep | undefined | null, stepIdx: number): StageTrivia[] {
@@ -58,7 +59,7 @@ export default function ModuleDetailPage() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await learnHubApi.stage(slug);
+      const res = await learningData.modules.fetchBySlug(slug);
       setMod(res);
     } catch {
       // silently fail

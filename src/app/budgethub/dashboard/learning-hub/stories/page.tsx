@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { learnHubApi } from "@/lib/learn-hub";
 import type { LearnHubItem } from "@/lib/learn-hub";
+import { contentData } from "@/data/content";
 import { usePageView } from "@/hooks/use-page-view";
 
 export default function StoriesPage() {
@@ -20,8 +20,8 @@ export default function StoriesPage() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await learnHubApi.stories();
-      setItems(res.results ?? []);
+      const res = await contentData.stories.fetch();
+      setItems(res as LearnHubItem[]);
     } catch {
       // silently fail
     } finally {

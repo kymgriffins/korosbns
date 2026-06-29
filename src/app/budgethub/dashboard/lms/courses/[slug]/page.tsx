@@ -30,6 +30,8 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { learnHubApi } from "@/lib/learn-hub";
+import { learningData } from "@/data/learning";
+import { contentData } from "@/data/content";
 import { CourseForum } from "./course-forum";
 import { renderContent } from "@/lib/render-content";
 import { useSidebar } from "@/components/ui/sidebar";
@@ -115,7 +117,7 @@ export default function CourseDetailPage() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await learnHubApi.stage(slug);
+      const res = await learningData.modules.fetchBySlug(slug);
       setMod(res);
     } catch { } finally { setLoading(false); }
   }, [slug]);
@@ -727,13 +729,10 @@ function ArticleViewer({ articleSlug, stepTitle }: { articleSlug: string; stepTi
 
   useEffect(() => {
     setLoading(true);
-    learnHubApi.stage(articleSlug).then((res) => {
-      setArticle(res as unknown as Record<string, unknown>);
+    contentData.articles.fetchBySlug(articleSlug).then((res) => {
+      setArticle(res as Record<string, unknown>);
     }).catch(() => {
-      fetch(`/api/v1/content/articles/${articleSlug}/`)
-        .then((r) => r.json())
-        .then((data) => setArticle(data))
-        .catch(() => {});
+      setArticle(null);
     }).finally(() => setLoading(false));
   }, [articleSlug]);
 

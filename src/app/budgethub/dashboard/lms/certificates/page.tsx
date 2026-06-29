@@ -7,8 +7,8 @@ import { Award, ChevronRight, Download, ExternalLink, Loader2, RefreshCw, Search
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { learnHubApi } from "@/lib/learn-hub";
 import type { LearnProfileResponse } from "@/types/learn";
+import { learningData } from "@/data/learning";
 import { usePageView } from "@/hooks/use-page-view";
 
 export default function CertificatesPage() {
@@ -19,7 +19,7 @@ export default function CertificatesPage() {
 
   const fetchData = useCallback(async () => {
     setLoading(true);
-    try { const res = await learnHubApi.profile(); setProfile(res); } catch {} finally { setLoading(false); }
+    try { const res = await learningData.profile.fetch(); setProfile(res as LearnProfileResponse); } catch {} finally { setLoading(false); }
   }, []);
 
   useEffect(() => { fetchData(); }, [fetchData]);

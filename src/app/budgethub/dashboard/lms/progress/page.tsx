@@ -28,12 +28,12 @@ import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } f
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { learnHubApi } from "@/lib/learn-hub";
 import { fetchLeaderboard, fetchChallenges } from "@/lib/gamification";
 import type { LearnProfileResponse } from "@/types/learn";
 import type { LeaderboardEntry, ChallengeData, BadgeCatalogResponse } from "@/types/gamification";
 import type { ApiListResponse } from "@/types/api";
 import { apiFetch } from "@/lib/api-client";
+import { learningData } from "@/data/learning";
 import { usePageView } from "@/hooks/use-page-view";
 
 const pieConfig = { completed: { label: "Completed", color: "var(--chart-2)" }, inProgress: { label: "In Progress", color: "var(--chart-4)" }, notStarted: { label: "Not Started", color: "var(--chart-5)" } } satisfies ChartConfig;
@@ -51,7 +51,7 @@ export default function ProgressPage() {
     setLoading(true);
     try {
       const [profileRes, lb, ch, bc] = await Promise.all([
-        learnHubApi.profile(),
+        learningData.profile.fetch(),
         fetchLeaderboard(10),
         fetchChallenges(),
         apiFetch<BadgeCatalogResponse>("/gamification/badges/").catch(() => null),

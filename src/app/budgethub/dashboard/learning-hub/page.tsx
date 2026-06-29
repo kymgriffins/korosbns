@@ -18,8 +18,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { learnHubApi } from "@/lib/learn-hub";
 import type { CivicModule } from "@/types/learn";
+import { learningData } from "@/data/learning";
 
 import { LearningHubCard } from "./_components/learning-hub-card";
 import { usePageView } from "@/hooks/use-page-view";
@@ -33,12 +33,12 @@ export default function LearningHubPage() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const [summaryRes, stagesRes] = await Promise.all([
-        learnHubApi.summary(),
-        learnHubApi.stages(),
+      const [summaryRes, mods] = await Promise.all([
+        learningData.summary.fetch(),
+        learningData.modules.fetch(),
       ]);
       setCounts(summaryRes.counts);
-      setModules(stagesRes.results ?? []);
+      setModules(mods as CivicModule[]);
     } catch {
       // silently fail
     } finally {

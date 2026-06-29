@@ -30,6 +30,12 @@ export const contentData = {
         () => learnHubApi.articles(filters),
         () => ({ results: _articles }),
       ).then((r) => r.results ?? []),
+    fetchBySlug: (slug: string) =>
+      withFallback(
+        "content",
+        () => citizenApi.getArticle(slug) as Promise<Record<string, unknown>>,
+        () => null,
+      ),
     fetchFromApi: (filters?: { search?: string }) =>
       citizenApi.getArticles() as Promise<ApiListResponse<LearnHubItem>>,
   },
@@ -42,7 +48,24 @@ export const contentData = {
         () => learnHubApi.stories(filters),
         () => ({ results: _stories }),
       ).then((r) => r.results ?? []),
+    fetchBySlug: (slug: string) =>
+      withFallback(
+        "content",
+        () => citizenApi.getStories().then((r) => {
+          const results = (r as any)?.results ?? [];
+          return results.find((s: any) => s.id === slug) ?? null;
+        }),
+        () => null,
+      ),
     fetchFromApi: () => citizenApi.getStories() as Promise<ApiListResponse<LearnHubItem>>,
+  },
+  trivia: {
+    fetchBySlug: (slug: string) =>
+      withFallback(
+        "content",
+        () => citizenApi.getTrivia(slug) as Promise<Record<string, unknown>>,
+        () => null,
+      ),
   },
   documents: {
     get: () => _documents,

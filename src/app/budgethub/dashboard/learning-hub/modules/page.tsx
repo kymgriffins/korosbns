@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { learnHubApi } from "@/lib/learn-hub";
 import type { CivicModule } from "@/types/learn";
+import { learningData } from "@/data/learning";
 import { usePageView } from "@/hooks/use-page-view";
 
 export default function ModulesPage() {
@@ -24,8 +24,8 @@ export default function ModulesPage() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await learnHubApi.stages();
-      setModules(res.results ?? []);
+      const res = await learningData.modules.fetch();
+      setModules(res as CivicModule[]);
     } catch {
       // silently fail
     } finally {

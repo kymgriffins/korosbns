@@ -12,8 +12,8 @@ import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle }
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { learnHubApi } from "@/lib/learn-hub";
 import type { CivicModule } from "@/types/learn";
+import { learningData } from "@/data/learning";
 import { usePageView } from "@/hooks/use-page-view";
 
 const COLORS = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--chart-4)", "var(--chart-5)"];
@@ -28,7 +28,7 @@ export default function CoursesPage() {
 
   const fetchData = useCallback(async () => {
     setLoading(true);
-    try { const res = await learnHubApi.stages(); setModules(res.results ?? []); } catch {} finally { setLoading(false); }
+    try { const res = await learningData.modules.fetch(); setModules(res as CivicModule[]); } catch {} finally { setLoading(false); }
   }, []);
 
   useEffect(() => { fetchData(); }, [fetchData]);

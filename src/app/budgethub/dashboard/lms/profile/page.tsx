@@ -12,10 +12,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { citizenApi } from "@/lib/api-client";
-import { learnHubApi } from "@/lib/learn-hub";
 import type { UserProfileApi } from "@/lib/api-client";
 import type { LearnProfileResponse } from "@/types/learn";
+import { learningData } from "@/data/learning";
+import { userData } from "@/data/users";
 import { usePageView } from "@/hooks/use-page-view";
 
 export default function ProfilePage() {
@@ -28,8 +28,8 @@ export default function ProfilePage() {
     setLoading(true);
     try {
       const [profileRes, me] = await Promise.all([
-        learnHubApi.profile(),
-        citizenApi.getMe(),
+        learningData.profile.fetch(),
+        userData.profile.fetch(),
       ]);
       setProfile(profileRes);
       setUserProfile(me);

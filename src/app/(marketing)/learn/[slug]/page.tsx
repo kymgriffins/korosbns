@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { metaDescription, canonicalUrl } from "@/utils/metadata";
-import { fetchArticleBySlug, fetchTrivia, resolveContentSlug } from "@/lib/services/content-service";
 import type { TriviaSetApi } from "@/lib/api-client";
+import { contentData } from "@/data/content";
 import UnifiedReaderClientPage from "./client-page";
 
 interface StoryData {
@@ -27,6 +27,22 @@ interface StoryCard {
   pillars?: { emoji: string; title: string }[];
   risks?: { title: string; desc: string }[];
   services?: string[];
+}
+
+async function resolveContentSlug(slug: string) {
+  try {
+    const artData = await contentData.articles.fetchBySlug(slug);
+    if (artData && Object.keys(artData).length > 0) return { type: "article" as const, data: artData };
+  } catch {}
+  try {
+    const trivData = await contentData.trivia.fetchBySlug(slug);
+    if (trivData && Object.keys(trivData).length > 0) return { type: "trivia" as const, data: trivData };
+  } catch {}
+  try {
+    const storyData = await contentData.stories.fetchBySlug(slug);
+    if (storyData) return { type: "story" as const, data: storyData };
+  } catch {}
+  return null;
 }
 
 export const dynamicParams = true;
@@ -134,7 +150,7 @@ export default async function UnifiedReaderPage(
     initialArticle = resolved.data;
     initialMode = "article";
   } else if (resolved?.type === "trivia") {
-    initialTrivia = resolved.data;
+    initialTrivia = resolved.data as TriviaSetApi;
     initialMode = "trivia";
   } else if (resolved?.type === "story") {
     const foundStory = resolved.data;

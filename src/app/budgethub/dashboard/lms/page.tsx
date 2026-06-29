@@ -10,8 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { learnHubApi } from "@/lib/learn-hub";
 import type { CivicModule, LearnHubItem } from "@/types/learn";
+import { learningData } from "@/data/learning";
 import { usePageView } from "@/hooks/use-page-view";
 
 const TYPE_ICONS: Record<string, typeof BookOpen> = {
@@ -168,9 +168,9 @@ export default function LMSPage() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const [summaryRes, stagesRes] = await Promise.all([learnHubApi.summary(), learnHubApi.stages()]);
+      const [summaryRes, modules] = await Promise.all([learningData.summary.fetch(), learningData.modules.fetch()]);
       setCounts(summaryRes.counts);
-      setModules(stagesRes.results ?? []);
+      setModules(modules as CivicModule[]);
       setTrending(summaryRes.trending ?? []);
     } catch {} finally { setLoading(false); }
   }, []);
