@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { DataTable, type Column } from "@/components/admin/data-table";
 import { FormDialog } from "@/components/admin/form-dialog";
+import { AdminContentEditor } from "@/components/admin/content-editor";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { adminContentApi, type AdminContentItem } from "@/lib/admin-api";
@@ -39,7 +40,8 @@ export default function AdminContentPage() {
   const [mode, setMode] = useState<Mode>("create");
   const [editId, setEditId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState({ title: "", summary: "", difficulty: "beginner", status: "draft" });
+  const [form, setForm] = useState({ title: "", summary: "", difficulty: "beginner", status: "draft", body: "" });
+  const [editLoading, setEditLoading] = useState(false);
   const [viewItem, setViewItem] = useState<AdminContentItem | null>(null);
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [viewLoading, setViewLoading] = useState(false);
@@ -58,14 +60,23 @@ export default function AdminContentPage() {
   useEffect(() => { fetchItems(); }, [fetchItems]);
   useEffect(() => { setPage(1); }, [activeTab]);
 
-  const resetForm = () => setForm({ title: "", summary: "", difficulty: "beginner", status: "draft" });
+  const resetForm = () => setForm({ title: "", summary: "", difficulty: "beginner", status: "draft", body: "" });
 
   const openCreate = () => { setMode("create"); setEditId(null); resetForm(); setDialogOpen(true); };
 
-  const openEdit = (item: AdminContentItem) => {
+  const openEdit = async (item: AdminContentItem) => {
     setMode("edit"); setEditId(item.id);
-    setForm({ title: item.title, summary: item.summary ?? "", difficulty: item.difficulty ?? "beginner", status: item.status });
+    setForm({ title: item.title, summary: item.summary ?? "", difficulty: item.difficulty ?? "beginner", status: item.status, body: "" });
     setDialogOpen(true);
+    setEditLoading(true);
+    try {
+      const detail = await adminContentApi.get(activeTab, item.id);
+      setForm({ title: detail.title, summary: detail.summary ?? "", difficulty: detail.difficulty ?? "beginner", status: detail.status, body: detail.body ?? "" });
+    } catch {
+      toast.error("Failed to load content body");
+    } finally {
+      setEditLoading(false);
+    }
   };
 
   const openView = async (item: AdminContentItem) => {
@@ -144,6 +155,10 @@ export default function AdminContentPage() {
       <FormDialog open={dialogOpen} onOpenChange={setDialogOpen} title={mode === "create" ? `Create ${activeTab.slice(0, -1)}` : "Edit Content"} onSubmit={handleSubmit} loading={saving}>
         <div className="space-y-2"><Label htmlFor="title">Title</Label><Input id="title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} /></div>
         <div className="space-y-2"><Label htmlFor="summary">Summary</Label><Textarea id="summary" value={form.summary} onChange={(e) => setForm({ ...form, summary: e.target.value })} rows={3} /></div>
+        <div className="space-y-2">
+          <Label>Body</Label>
+          <AdminContentEditor value={form.body} onChange={(v) => setForm({ ...form, body: v })} />
+        </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label>Difficulty</Label>
