@@ -14,8 +14,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { citizenApi } from "@/lib/api-client";
 import type { UserProfileApi } from "@/lib/api-client";
+import { usePageView } from "@/hooks/use-page-view";
 
 export default function AccountPage() {
+  usePageView();
   const [userProfile, setUserProfile] = useState<UserProfileApi | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);

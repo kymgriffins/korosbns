@@ -26,6 +26,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { learnHubApi } from "@/lib/learn-hub";
 import type { ChapterStep, CivicModule, StageTrivia } from "@/types/learn";
+import { usePageView } from "@/hooks/use-page-view";
 
 function triviaForStep(stage: CivicModule, step: ChapterStep | undefined | null, stepIdx: number): StageTrivia[] {
   if (!step) return [];
@@ -41,6 +42,7 @@ function triviaForStep(stage: CivicModule, step: ChapterStep | undefined | null,
 }
 
 export default function ModuleDetailPage() {
+  usePageView();
   const params = useParams();
   const slug = params.slug as string;
 

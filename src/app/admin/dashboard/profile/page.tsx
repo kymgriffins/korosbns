@@ -4,6 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import { AtSign, Camera, ExternalLink, Globe, Link, Loader2, Plus, Share2, X } from "lucide-react";
 import { toast } from "sonner";
 
+import { usePageView } from "@/hooks/use-page-view";
+import { userData } from "@/data/users";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -44,6 +46,7 @@ const PLATFORM_OPTIONS = [
 ];
 
 export default function AdminProfilePage() {
+  usePageView();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [profile, setProfile] = useState<UserProfileApi | null>(null);
@@ -57,7 +60,7 @@ export default function AdminProfilePage() {
     setLoading(true);
     try {
       const [me, links] = await Promise.all([
-        citizenApi.getMe(),
+        userData.profile.fetch(),
         citizenApi.getSocialLinks(),
       ]);
       setProfile(me);

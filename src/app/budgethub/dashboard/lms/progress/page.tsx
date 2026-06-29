@@ -34,11 +34,13 @@ import type { LearnProfileResponse } from "@/types/learn";
 import type { LeaderboardEntry, ChallengeData, BadgeCatalogResponse } from "@/types/gamification";
 import type { ApiListResponse } from "@/types/api";
 import { apiFetch } from "@/lib/api-client";
+import { usePageView } from "@/hooks/use-page-view";
 
 const pieConfig = { completed: { label: "Completed", color: "var(--chart-2)" }, inProgress: { label: "In Progress", color: "var(--chart-4)" }, notStarted: { label: "Not Started", color: "var(--chart-5)" } } satisfies ChartConfig;
 const PIE_COLORS = ["var(--chart-2)", "var(--chart-4)", "var(--chart-5)"];
 
 export default function ProgressPage() {
+  usePageView();
   const [profile, setProfile] = useState<LearnProfileResponse | null>(null);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [challenges, setChallenges] = useState<ChallengeData[]>([]);

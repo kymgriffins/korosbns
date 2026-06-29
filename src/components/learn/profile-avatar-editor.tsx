@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useState } from "react";
+import { usePageView } from "@/hooks/use-page-view";
 import { Camera, Loader2, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { BitmojiAvatar, FemaleBitmoji, MaleBitmoji, type Gender } from "./bitmoji-avatar";
@@ -33,6 +34,7 @@ export function ProfileAvatarEditor({
   onGenderChange,
   onSaved,
 }: ProfileAvatarEditorProps) {
+  usePageView();
   const inputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);

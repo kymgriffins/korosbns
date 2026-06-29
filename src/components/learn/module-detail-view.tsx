@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { usePageView } from "@/hooks/use-page-view";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import {
@@ -25,6 +26,7 @@ import { Progress } from "@/ui/progress";
 import { Separator } from "@/ui/separator";
 import { cn } from "@/utils";
 import { learnHubApi } from "@/lib/learn-hub";
+import { learningData } from "@/data/learning";
 import { useSidebar } from "@/ui/sidebar";
 import { readProgress, writeProgress } from "@/lib/module-progress";
 import { triviaForStep } from "@/lib/learn-trivia";
@@ -82,6 +84,8 @@ export function ModuleDetailView() {
   const [activeVideoIdx, setActiveVideoIdx] = useState(0);
   const { setOpen: setSidebarOpen } = useSidebar();
 
+  usePageView();
+
   useEffect(() => {
     setSidebarOpen(false);
     return () => setSidebarOpen(true);
@@ -90,7 +94,11 @@ export function ModuleDetailView() {
   const fetchModule = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await learnHubApi.stage(slug);
+      const res = await learningData.modules.fetchBySlug(slug);
+      if (!res) {
+        setMod(null);
+        return;
+      }
       setMod(res);
       if (res.steps?.length) {
         const p = readProgress(res.slug, res.order);

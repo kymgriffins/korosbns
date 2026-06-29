@@ -16,8 +16,10 @@ import { citizenApi } from "@/lib/api-client";
 import { learnHubApi } from "@/lib/learn-hub";
 import type { UserProfileApi } from "@/lib/api-client";
 import type { LearnProfileResponse } from "@/types/learn";
+import { usePageView } from "@/hooks/use-page-view";
 
 export default function ProfilePage() {
+  usePageView();
   const [profile, setProfile] = useState<LearnProfileResponse | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfileApi | null>(null);
   const [loading, setLoading] = useState(true);

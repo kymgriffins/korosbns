@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { usePageView } from "@/hooks/use-page-view";
 import {
   BookOpen,
   FileText,
@@ -17,10 +18,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/ui/
 import { Skeleton } from "@/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/ui/tabs";
 import { cn } from "@/utils";
-import { learnHubApi, type LearnHubItem } from "@/lib/learn-hub";
-import type { CivicModule } from "@/types/learn";
+import { contentData } from "@/data/content";
+import { learningData } from "@/data/learning";
+import type { LearnHubItem, CivicModule } from "@/types/learn";
 
 export function LearnAnalyticsView() {
+  usePageView();
+
   const [counts, setCounts] = useState<Record<string, number> | null>(null);
   const [modules, setModules] = useState<CivicModule[]>([]);
   const [articles, setArticles] = useState<LearnHubItem[]>([]);
@@ -29,14 +33,14 @@ export function LearnAnalyticsView() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const [summaryRes, stagesRes, articlesRes] = await Promise.all([
-        learnHubApi.summary(),
-        learnHubApi.stages(),
-        learnHubApi.articles().catch(() => ({ results: [] as LearnHubItem[] })),
+      const [summaryRes, modulesList, articlesList] = await Promise.all([
+        learningData.summary.fetch(),
+        learningData.modules.fetch(),
+        contentData.articles.fetch().catch(() => []),
       ]);
       setCounts(summaryRes.counts);
-      setModules(stagesRes.results ?? []);
-      setArticles(articlesRes.results ?? []);
+      setModules(modulesList);
+      setArticles(articlesList);
     } catch {
       // silently fail
     } finally {

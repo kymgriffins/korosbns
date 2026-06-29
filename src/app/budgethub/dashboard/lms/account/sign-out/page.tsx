@@ -7,8 +7,10 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/contexts/auth-context";
+import { usePageView } from "@/hooks/use-page-view";
 
 export default function SignOutPage() {
+  usePageView();
   const { logout } = useAuth();
   const router = useRouter();
   const [signingOut, setSigningOut] = useState(false);

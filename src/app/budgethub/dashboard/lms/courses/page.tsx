@@ -14,11 +14,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { learnHubApi } from "@/lib/learn-hub";
 import type { CivicModule } from "@/types/learn";
+import { usePageView } from "@/hooks/use-page-view";
 
 const COLORS = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--chart-4)", "var(--chart-5)"];
 const pieConfig = { published: { label: "Published", color: "var(--chart-2)" }, draft: { label: "Draft", color: "var(--chart-4)" }, archived: { label: "Archived", color: "var(--chart-5)" } } satisfies ChartConfig;
 
 export default function CoursesPage() {
+  usePageView();
   const [modules, setModules] = useState<CivicModule[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");

@@ -11,8 +11,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { learnHubApi } from "@/lib/learn-hub";
 import type { CivicModule } from "@/types/learn";
+import { usePageView } from "@/hooks/use-page-view";
 
 export default function ModulesPage() {
+  usePageView();
   const [modules, setModules] = useState<CivicModule[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");

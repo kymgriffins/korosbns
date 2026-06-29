@@ -4,6 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import { Loader2, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 
+import { usePageView } from "@/hooks/use-page-view";
+import { userData } from "@/data/users";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -12,9 +14,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { citizenApi } from "@/lib/api-client";
-import type { UserProfileApi } from "@/lib/api-client";
 
 export default function AdminPrivacyPage() {
+  usePageView();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [settings, setSettings] = useState({
@@ -28,7 +30,7 @@ export default function AdminPrivacyPage() {
   const fetchSettings = useCallback(async () => {
     setLoading(true);
     try {
-      const me = await citizenApi.getMe();
+      const me = await userData.profile.fetch();
       setSettings({
         profile_visibility: me.profile_visibility || "public",
         allow_discovery: me.allow_discovery ?? true,

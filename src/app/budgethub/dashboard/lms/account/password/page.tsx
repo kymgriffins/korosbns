@@ -9,8 +9,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/ui/password-input";
+import { usePageView } from "@/hooks/use-page-view";
 
 export default function PasswordPage() {
+  usePageView();
   const [saving, setSaving] = useState(false);
 
   return (

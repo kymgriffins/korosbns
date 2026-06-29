@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { usePageView } from "@/hooks/use-page-view";
 import { toast } from "sonner";
 import { ChevronLeft, ChevronRight, PlayCircle, CheckCircle2, BookOpen, BookOpenText, Video, Brain, Loader2 } from "lucide-react";
 import { Badge } from "@/ui/badge";
@@ -51,6 +52,7 @@ interface StageDetailDrawerProps {
 export function StageDetailDrawer({
   stage, profile, onClose, onUpdateProfile, onPrevStage, onNextStage, hasPrev, hasNext
 }: StageDetailDrawerProps) {
+  usePageView();
   const { totalStages } = useLearn();
   const { setOpen: setSidebarOpen, open: sidebarOpen } = useSidebar();
   const [currentStep, setCurrentStep] = useState<number>(0);

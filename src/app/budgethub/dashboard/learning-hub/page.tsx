@@ -22,8 +22,10 @@ import { learnHubApi } from "@/lib/learn-hub";
 import type { CivicModule } from "@/types/learn";
 
 import { LearningHubCard } from "./_components/learning-hub-card";
+import { usePageView } from "@/hooks/use-page-view";
 
 export default function LearningHubPage() {
+  usePageView();
   const [counts, setCounts] = useState<Record<string, number> | null>(null);
   const [modules, setModules] = useState<CivicModule[]>([]);
   const [loading, setLoading] = useState(true);

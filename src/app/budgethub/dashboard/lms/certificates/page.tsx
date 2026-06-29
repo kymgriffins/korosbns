@@ -9,8 +9,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Skeleton } from "@/components/ui/skeleton";
 import { learnHubApi } from "@/lib/learn-hub";
 import type { LearnProfileResponse } from "@/types/learn";
+import { usePageView } from "@/hooks/use-page-view";
 
 export default function CertificatesPage() {
+  usePageView();
   const [profile, setProfile] = useState<LearnProfileResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");

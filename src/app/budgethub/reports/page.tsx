@@ -16,6 +16,7 @@ import { ProjectsTab } from "@/components/reports/projects-tab";
 import { GallerySection } from "@/components/reports/gallery-section";
 import { TreasuryFeed } from "@/components/reports/treasury-feed";
 import { Skeleton } from "@/components/ui/skeleton";
+import { usePageView } from "@/hooks/use-page-view";
 
 type TabId = "overview" | "sectors" | "counties" | "projects" | "gallery";
 
@@ -28,6 +29,7 @@ const TABS: { id: TabId; label: string; icon: typeof Landmark }[] = [
 ];
 
 export default function ReportsPage() {
+  usePageView();
   const [allYears, setAllYears] = useState<Record<string, BudgetSchema>>({});
   const [fiscalYears, setFiscalYears] = useState<FiscalYearMeta[]>([]);
   const [loading, setLoading] = useState(true);

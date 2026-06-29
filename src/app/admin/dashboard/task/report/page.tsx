@@ -20,8 +20,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 
+import { usePageView } from "@/hooks/use-page-view";
+import { taskData } from "@/data/tasks";
 import { useAuth } from "@/contexts/auth-context";
-import { taskApi } from "@/lib/task-api";
 import type { WeeklyReportData } from "@/types/tasks";
 
 import { useRouteBase, getFullUrl } from "@/lib/route-base";
@@ -45,6 +46,7 @@ function safeFormat(date: string | Date | undefined | null, fmt: string, fallbac
 }
 
 export default function TaskReportPage() {
+  usePageView();
   const { isLoggedIn } = useAuth();
   const routeBase = useRouteBase();
   const [report, setReport] = useState<WeeklyReportData | null>(null);
@@ -55,7 +57,7 @@ export default function TaskReportPage() {
     if (!isLoggedIn) { setLoading(false); return; }
     (async () => {
       try {
-        const data = await taskApi.getWeeklyReport();
+        const data = await taskData.report.fetch();
         setReport(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load report");

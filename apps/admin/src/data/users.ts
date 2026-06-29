@@ -18,3 +18,24 @@ export const users = [
 ];
 
 export const rootUser = users[0];
+
+import type { UserProfileApi } from "@/lib/api-client";
+import { citizenApi } from "@/lib/api-client";
+import { withFallback } from "@/data/adapter";
+
+export const userData = {
+  profile: {
+    fetch: () =>
+      withFallback(
+        "users",
+        () => citizenApi.getMe(),
+        () => null as unknown as UserProfileApi,
+      ),
+    fetchPublic: (id: string) =>
+      withFallback(
+        "users",
+        () => citizenApi.getPublicUser(id),
+        () => null,
+      ),
+  },
+};

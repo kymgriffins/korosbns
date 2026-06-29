@@ -57,6 +57,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
+import { usePageView } from "@/hooks/use-page-view";
+import { taskData } from "@/data/tasks";
 import { taskApi } from "@/lib/task-api";
 import { useAuth } from "@/contexts/auth-context";
 import type { Task, TaskStatus, TaskColumn } from "@/types/tasks";
@@ -234,6 +236,7 @@ function ColumnSkeleton() {
 }
 
 export default function AdminTaskPage() {
+  usePageView();
   const { isLoggedIn } = useAuth();
   const pathname = usePathname();
   const routeBase = useRouteBase();
@@ -253,7 +256,7 @@ export default function AdminTaskPage() {
     setLoading(true);
     setError("");
     try {
-      const data = await taskApi.listAll();
+      const data = await taskData.tasks.fetch();
       setTasks(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load tasks");

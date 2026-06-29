@@ -34,6 +34,7 @@ import { CourseForum } from "./course-forum";
 import { renderContent } from "@/lib/render-content";
 import { useSidebar } from "@/components/ui/sidebar";
 import type { ChapterStep, CivicModule, StageTrivia } from "@/types/learn";
+import { usePageView } from "@/hooks/use-page-view";
 
 function triviaForStep(stage: CivicModule, step: ChapterStep | undefined | null, stepIdx: number): StageTrivia[] {
   if (!step) return [];
@@ -88,6 +89,7 @@ function parseAllVideoUrls(step: ChapterStep | null): Array<{ label: string; url
 }
 
 export default function CourseDetailPage() {
+  usePageView();
   const params = useParams();
   const slug = params.slug as string;
 

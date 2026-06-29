@@ -14,6 +14,7 @@ import { useAuth } from "@/contexts/auth-context";
 import type { ForumThread, ForumThreadDetail, ForumPost } from "@/types/learn";
 import type { ApiListResponse } from "@/types/api";
 import { cn } from "@/lib/utils";
+import { usePageView } from "@/hooks/use-page-view";
 
 function ThreadCard({ thread, selected, onSelect }: { thread: ForumThread; selected: boolean; onSelect: () => void }) {
   return (
@@ -103,6 +104,7 @@ function ThreadDetailView({ threadId, onBack }: { threadId: string; onBack: () =
 }
 
 export default function ForumPage() {
+  usePageView();
   const { isLoggedIn } = useAuth();
   const [threads, setThreads] = useState<ForumThread[]>([]);
   const [loading, setLoading] = useState(true);

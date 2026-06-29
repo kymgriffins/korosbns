@@ -30,6 +30,8 @@ import {
 import { TaskForm } from "@/app/task/_components/task-form";
 import { TaskAttachmentsGrid } from "@/app/task/_components/task-attachments";
 import { TaskFileUpload } from "@/app/task/_components/task-file-upload";
+import { usePageView } from "@/hooks/use-page-view";
+import { taskData } from "@/data/tasks";
 import { taskApi } from "@/lib/task-api";
 import type { TaskDetail, TaskAttachment } from "@/types/tasks";
 import type { ChecklistItemApi } from "@/types/notes";
@@ -54,6 +56,7 @@ function safeFormat(date: string | Date | undefined | null, fmt: string, fallbac
 }
 
 export default function TaskDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  usePageView();
   const { id } = use(params);
   const router = useRouter();
   const routeBase = useRouteBase();
@@ -120,7 +123,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
 
   const fetchTask = useCallback(async () => {
     try {
-      const data = await taskApi.get(id);
+      const data = await taskData.tasks.fetchById(id);
       setTask(data);
       setChecklistItems(data.checklist_items ?? []);
       setAttachments(data.attachments ?? []);

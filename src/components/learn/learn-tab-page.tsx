@@ -4,18 +4,27 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { LearnContentGrid } from "@/components/learn/learn-content-grid";
 import { LearnSidebar } from "@/components/learn/learn-sidebar";
-import type { LearnContentType } from "@/types/learn";
-import { learnHubApi, type LearnHubItem, type LearnHubSummary } from "@/lib/learn-hub";
-import { fetchLearnSummaryWithRetry } from "@/lib/learn-data";
+import type { LearnContentType, LearnHubSummary } from "@/types/learn";
+import type { LearnHubItem } from "@/lib/learn-hub";
+import { videoData } from "@/data/videos";
+import { contentData } from "@/data/content";
+import { learningData } from "@/data/learning";
 import { trackAnalytics } from "@/lib/gamification";
+import { usePageView } from "@/hooks/use-page-view";
 
 const LIST_FETCHERS = {
-  videos: learnHubApi.videos,
-  articles: learnHubApi.articles,
-  stories: learnHubApi.stories,
-  documents: learnHubApi.documents,
-  paths: learnHubApi.paths,
-  quests: learnHubApi.quests,
+  videos: (opts?: { search?: string }) =>
+    videoData.fetch(opts).then((items) => ({ results: items })),
+  articles: (opts?: { search?: string }) =>
+    contentData.articles.fetch(opts).then((items) => ({ results: items })),
+  stories: (opts?: { search?: string }) =>
+    contentData.stories.fetch(opts).then((items) => ({ results: items })),
+  documents: (opts?: { search?: string }) =>
+    contentData.documents.fetch(opts).then((items) => ({ results: items })),
+  paths: () =>
+    learningData.modules.fetch().then((items) => ({ results: items as unknown as LearnHubItem[] })),
+  quests: (opts?: { search?: string }) =>
+    contentData.quests.fetch(opts).then((items) => ({ results: items })),
 } as const;
 
 export function LearnTabPage({
@@ -35,10 +44,12 @@ export function LearnTabPage({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  usePageView();
+
   const load = useCallback(() => {
     setLoading(true);
     return LIST_FETCHERS[listKey]({ search: q || undefined })
-      .then((data) => setItems(data.results ?? []))
+      .then((data) => setItems((data.results ?? []) as LearnHubItem[]))
       .catch((err) => {
         const msg =
           err instanceof Error ? err.message : "Could not load content.";
@@ -71,7 +82,7 @@ export function LearnTabPage({
           <LearnContentGrid items={items} loading={loading} />
         </div>
       </div>
-      <LearnSidebar trending={summary?.trending ?? []} dailyQuest={dailyQuest} />
+      <LearnSidebar trending={(summary?.trending ?? []) as LearnHubItem[]} dailyQuest={dailyQuest as LearnHubItem | null | undefined} />
     </div>
   );
 }
@@ -79,7 +90,7 @@ export function LearnTabPage({
 export function useLearnSummary() {
   const [summary, setSummary] = useState<LearnHubSummary | null>(null);
   useEffect(() => {
-    void fetchLearnSummaryWithRetry()
+    void learningData.summary.fetch()
       .then(setSummary)
       .catch(() => setSummary(null));
   }, []);

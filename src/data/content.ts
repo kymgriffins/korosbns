@@ -13,10 +13,12 @@ const DEFAULT_VIDEOS: LearnHubItem[] = [];
 const DEFAULT_STORIES: LearnHubItem[] = [];
 
 const DEFAULT_DOCUMENTS: LearnHubItem[] = [];
+const DEFAULT_QUESTS: LearnHubItem[] = [];
 
 let _articles: LearnHubItem[] = [...DEFAULT_ARTICLES];
 let _stories: LearnHubItem[] = [...DEFAULT_STORIES];
 let _documents: LearnHubItem[] = [...DEFAULT_DOCUMENTS];
+let _quests: LearnHubItem[] = [...DEFAULT_QUESTS];
 
 export const contentData = {
   articles: {
@@ -50,6 +52,16 @@ export const contentData = {
         "content",
         () => learnHubApi.documents(filters),
         () => ({ results: _documents }),
+      ).then((r) => r.results ?? []),
+  },
+  quests: {
+    get: () => _quests,
+    set: (items: LearnHubItem[]) => { _quests = items; },
+    fetch: (filters?: { search?: string }) =>
+      withFallback(
+        "content",
+        () => learnHubApi.quests(filters),
+        () => ({ results: _quests }),
       ).then((r) => r.results ?? []),
   },
 };

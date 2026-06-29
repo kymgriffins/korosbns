@@ -1,3 +1,7 @@
+import { learnHubApi } from "@/lib/learn-hub";
+import { withFallback } from "@/data/adapter";
+import type { LearnHubItem } from "@/types/learn";
+
 export type YouTubeVideo = {
   videoId: string;
   title: string;
@@ -120,3 +124,14 @@ export function removeVideo(videoId: string): void {
 export function embedUrl(videoId: string): string {
   return `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1`;
 }
+
+export const videoData = {
+  get: (): LearnHubItem[] => [],
+  set: (_items: LearnHubItem[]) => {},
+  fetch: (filters?: { search?: string }): Promise<LearnHubItem[]> =>
+    withFallback(
+      "videos",
+      () => learnHubApi.videos(filters),
+      () => ({ results: [] as LearnHubItem[] }),
+    ).then((r) => r.results ?? []),
+};

@@ -1,4 +1,4 @@
-import type { Task, TaskDetail, TaskCreatePayload, TaskUpdatePayload, AssignableUser, WeeklyReportData } from "@/types/tasks";
+import type { Task, TaskDetail, TaskCreatePayload, TaskUpdatePayload, AssignableUser, WeeklyReportData, TaskAttachment, TaskTag } from "@/types/tasks";
 import type { WeeklyNoteApi } from "@/types/notes";
 import { taskApi } from "@/lib/task-api";
 import { withFallback } from "@/data/adapter";
@@ -52,7 +52,19 @@ export const taskData = {
       withFallback(
         "tasks",
         () => taskApi.get(id),
-        () => _tasks.find((t) => t.id === id) ?? null,
+        () => {
+          const found = _tasks.find((t) => t.id === id);
+          if (!found) return null as unknown as TaskDetail;
+          const detail: TaskDetail = {
+            ...found,
+            content: found.content ?? "",
+            sections: [],
+            audit_trails: [],
+            checklist_items: [],
+            attachments: [],
+          };
+          return detail;
+        },
       ),
     create: (payload: TaskCreatePayload) =>
       withFallback(

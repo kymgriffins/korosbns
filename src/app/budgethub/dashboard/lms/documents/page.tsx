@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { fetchDocumentsFromAPI } from "@/constants/documents";
 import type { DocumentType, DocumentFile } from "@/constants/documents";
+import { usePageView } from "@/hooks/use-page-view";
 
 function formatFileSize(bytes: number): string {
   if (bytes === 0) return "0 B";
@@ -47,6 +48,7 @@ function FileRow({ file }: { file: DocumentFile }) {
 }
 
 export default function DocumentsPage() {
+  usePageView();
   const [documents, setDocuments] = useState<DocumentType[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);

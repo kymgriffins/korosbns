@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { learnHubApi } from "@/lib/learn-hub";
 import type { CivicModule, LearnHubItem } from "@/types/learn";
+import { usePageView } from "@/hooks/use-page-view";
 
 const TYPE_ICONS: Record<string, typeof BookOpen> = {
   video: Film,
@@ -158,6 +159,7 @@ function ModuleCard({ mod }: { mod: CivicModule }) {
 }
 
 export default function LMSPage() {
+  usePageView();
   const [counts, setCounts] = useState<Record<string, number> | null>(null);
   const [modules, setModules] = useState<CivicModule[]>([]);
   const [trending, setTrending] = useState<LearnHubItem[]>([]);

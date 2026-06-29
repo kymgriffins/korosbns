@@ -10,8 +10,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { learnHubApi } from "@/lib/learn-hub";
 import type { LearnHubItem } from "@/lib/learn-hub";
+import { usePageView } from "@/hooks/use-page-view";
 
 export default function VideosPage() {
+  usePageView();
   const [items, setItems] = useState<LearnHubItem[]>([]);
   const [loading, setLoading] = useState(true);
 
