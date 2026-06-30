@@ -9,6 +9,11 @@ type RouteContext = { params: Promise<{ path: string[] }> };
  */
 async function proxyRequest(request: Request, context: RouteContext): Promise<Response> {
   const { path } = await context.params;
+  for (const seg of path) {
+    if (seg === ".." || seg.includes("/") || seg.includes("\\")) {
+      return new Response("Forbidden", { status: 403 });
+    }
+  }
   const segment = path.join("/");
   const target = getApiProxyTarget().replace(/\/+$/, "");
   const incoming = new URL(request.url);

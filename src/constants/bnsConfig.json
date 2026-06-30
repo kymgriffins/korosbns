@@ -22,19 +22,28 @@
         "id": "sen-media-events",
         "name": "Sen Media & Events",
         "website": "https://senmedia-events.co.ke/",
-        "role": "Media production, events, and civic storytelling support"
+        "logo_url": "https://res.cloudinary.com/dn8lut2fc/image/upload/v1779284903/senmedia_ylb5wt.png",
+        "role": "Media production, events, and civic storytelling support",
+        "tier": "founding",
+        "is_active": false
       },
       {
         "id": "continental-pot",
         "name": "The Continental Pot",
         "website": "https://continentalpot.africa/",
-        "role": "Consortium leadership and public interest strategy"
+        "logo_url": "https://res.cloudinary.com/dn8lut2fc/image/upload/v1779284902/The-Continental-Pot-Vertical-removebg-preview_b9mpzf.png",
+        "role": "Consortium leadership and public interest strategy",
+        "tier": "founding",
+        "is_active": false
       },
       {
         "id": "colour-twist-media",
         "name": "Colour Twist Media",
         "website": "https://colortwistmedia.com/",
-        "role": "Creative production and youth-facing media execution"
+        "logo_url": "https://res.cloudinary.com/dn8lut2fc/image/upload/v1779284904/colortwist_pv33rt.png",
+        "role": "Creative production and youth-facing media execution",
+        "tier": "founding",
+        "is_active": false
       }
     ]
   },

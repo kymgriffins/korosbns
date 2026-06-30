@@ -2,6 +2,10 @@ import { Routes } from "./routes";
 
 export const NAV_LINKS = [
   {
+    label: "Projects",
+    href: Routes.Projects,
+  },
+  {
     label: "Learn",
     href: Routes.Learn,
   },
@@ -29,16 +33,16 @@ export const NAV_LINKS = [
 
 export const footerLinks = {
   product: [
+    { label: "Projects", href: Routes.Projects },
     { label: "Stories", href: Routes.Learn },
     { label: "Explainers", href: Routes.Capabilities },
-    { label: "Impact", href: "/about" },
     { label: "Get Involved", href: "/about" },
   ],
   resources: [
     { label: "Budget Guides", href: Routes.Learn },
     { label: "Documents", href: Routes.Documents },
-  { label: "Surveys",     href: Routes.Surveys },
-  { label: "Reports",    href: Routes.Reports },
+    { label: "Surveys", href: Routes.Surveys },
+    { label: "Reports", href: Routes.Reports },
     { label: "Newsletter", href: "/" },
     { label: "Contact", href: Routes.Contact },
   ],
@@ -48,6 +52,7 @@ export const footerLinks = {
     { label: "Careers", href: Routes.Careers },
     { label: "Media", href: "/about" },
     { label: "Partners", href: "/about" },
+    { label: "BNS Studio", href: Routes.BNSStudio },
   ],
 };
 

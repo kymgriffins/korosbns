@@ -186,7 +186,7 @@ const Footer = () => {
             ) : null}
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             {displaySocial.map((social, index) => (
               <Link
                 key={`${social.label}-${social.href}`}
@@ -194,32 +194,17 @@ const Footer = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={social.label}
-                className="group relative size-10 flex items-center justify-center rounded-full bg-foreground/5 hover:bg-foreground/10 transition-colors overflow-hidden border border-foreground/10"
+                className="group relative size-9 flex items-center justify-center rounded-full bg-foreground/10 hover:bg-primary/15 transition-colors overflow-hidden border border-foreground/15 hover:border-primary/40"
+                title={social.label}
               >
-                <motion.span
-                  aria-hidden
-                  className="absolute inset-0 rounded-full border border-primary/25"
-                  animate={{ rotate: 360 }}
-                  transition={{
-                    duration: 12 + index * 1.2,
-                    repeat: Infinity,
-                    ease: "linear",
-                  }}
-                />
-                <motion.span
-                  aria-hidden
-                  className="absolute -top-1 -right-1 size-2 rounded-full bg-primary/70 blur-[1px]"
-                  animate={{ opacity: [0.2, 0.9, 0.2], scale: [0.8, 1.2, 0.8] }}
-                  transition={{ duration: 2.8, repeat: Infinity, delay: index * 0.08 }}
-                />
-                <motion.div whileHover={{ y: -1.5, scale: 1.06 }} transition={{ duration: 0.2 }}>
+                <motion.div whileHover={{ y: -1, scale: 1.1 }} transition={{ duration: 0.15 }}>
                   {(() => {
                     const Icon = socialIconMap[social.icon as string];
                     if (Icon) {
-                      return <Icon className="size-5 text-foreground/70 group-hover:text-foreground transition-colors" />;
+                      return <Icon className="size-[18px] text-foreground/80 group-hover:text-primary transition-colors" />;
                     }
                     return (
-                      <span className="text-sm font-medium text-foreground/70 group-hover:text-foreground transition-colors uppercase">
+                      <span className="text-xs font-semibold text-foreground/80 group-hover:text-primary transition-colors uppercase">
                         {String(social.icon).charAt(0)}
                       </span>
                     );

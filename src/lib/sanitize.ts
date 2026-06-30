@@ -1,22 +1,9 @@
+import DOMPurify from "isomorphic-dompurify";
+
 export function stripHtml(text: string): string {
   const trimmed = (text || "").trim();
   if (!trimmed) return "";
   return trimmed.replace(/<[^>]*>/g, "");
-}
-
-let purify: ((html: string, config?: object) => string) | null = null;
-
-function getPurify(): ((html: string, config?: object) => string) | null {
-  if (typeof window === "undefined") return null;
-  if (!purify) {
-    try {
-      const mod = require("dompurify");
-      purify = (html: string, config?: object) => mod.default?.sanitize?.(html, config) ?? html;
-    } catch {
-      return null;
-    }
-  }
-  return purify;
 }
 
 const ALLOWED_TAGS = [
@@ -35,11 +22,5 @@ const ALLOWED_ATTR = [
 export function sanitizeHtml(html: string): string {
   const trimmed = (html || "").trim();
   if (!trimmed) return "";
-
-  const p = getPurify();
-  if (p) {
-    return p(trimmed, { ALLOWED_TAGS, ALLOWED_ATTR, ALLOW_DATA_ATTR: false });
-  }
-
-  return trimmed;
+  return DOMPurify.sanitize(trimmed, { ALLOWED_TAGS, ALLOWED_ATTR, ALLOW_DATA_ATTR: false });
 }

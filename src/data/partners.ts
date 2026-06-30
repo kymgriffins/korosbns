@@ -22,7 +22,9 @@ const DEFAULT_PARTNERS: Partner[] = (config.consortium?.partners ?? []).map((p) 
   name: p.name,
   website: p.website,
   role: p.role,
-  is_active: true,
+  logo_url: p.logo_url,
+  tier: p.tier,
+  is_active: p.is_active ?? false,
 }));
 
 let _partners: Partner[] = [...DEFAULT_PARTNERS];
