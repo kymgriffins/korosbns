@@ -1,5 +1,7 @@
 import type { Task, TaskDetail, TaskCreatePayload, TaskUpdatePayload, AssignableUser, WeeklyReportData, TaskAttachment, TaskTag } from "@/types/tasks";
 import type { WeeklyNoteApi } from "@/types/notes";
+import { adminNotesApi } from "@/lib/admin-api";
+import type { AdminNote } from "@/lib/admin-api";
 import { taskApi } from "@/lib/task-api";
 import { withFallback } from "@/data/adapter";
 import bnsConfig from "@/constants/bnsConfig.json";
@@ -140,6 +142,56 @@ export const taskData = {
           avg_progress: 0,
           period: week ?? "current",
         }),
+      ),
+  },
+  notes: {
+    fetch: (params?: { page?: number; search?: string; status?: string }) =>
+      withFallback(
+        "tasks",
+        () => adminNotesApi.list(params),
+        () => ({ count: 0, results: [] as AdminNote[] }),
+      ),
+    create: (data: Partial<AdminNote>) =>
+      withFallback(
+        "tasks",
+        () => adminNotesApi.create(data),
+        () => {
+          const n: AdminNote = {
+            id: `new-${Date.now()}`,
+            title: data.title ?? "Untitled",
+            content: data.content ?? "",
+            author_name: "Local",
+            status: "draft",
+            is_public: data.is_public ?? false,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          };
+          return n;
+        },
+      ),
+    update: (id: string, data: Partial<AdminNote>) =>
+      withFallback(
+        "tasks",
+        () => adminNotesApi.update(id, data),
+        () => null as unknown as AdminNote,
+      ),
+    delete: (id: string) =>
+      withFallback(
+        "tasks",
+        () => adminNotesApi.delete(id).then(() => true),
+        () => true,
+      ),
+    publish: (id: string) =>
+      withFallback(
+        "tasks",
+        () => adminNotesApi.publish(id),
+        () => null as unknown as AdminNote,
+      ),
+    audit: (id: string, notes: string) =>
+      withFallback(
+        "tasks",
+        () => adminNotesApi.audit(id, notes),
+        () => null as unknown as AdminNote,
       ),
   },
 };

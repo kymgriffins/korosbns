@@ -68,6 +68,7 @@ import { Textarea } from "@/ui/textarea";
 import { Label } from "@/ui/label";
 
 import { taskApi } from "@/lib/task-api";
+import { taskData } from "@/data/tasks";
 import { exportTasksAsCsv, exportTasksAsJson } from "@/lib/export-utils";
 import type { Task, TaskStatus, TaskColumn, TaskPriority, TaskTag } from "@/types/tasks";
 import { PRIORITY_ORDER, PRIORITY_LABELS, TAG_LABELS } from "@/types/tasks";
@@ -298,7 +299,7 @@ export default function TaskPage() {
     setLoading(true);
     setError("");
     try {
-      const data = await taskApi.listAll();
+      const data = await taskData.tasks.fetch();
       setTasks(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load tasks");
@@ -386,11 +387,11 @@ export default function TaskPage() {
 
     try {
       if (overColumn.id === "published") {
-        await taskApi.publish(activeId);
+        await taskData.tasks.publish(activeId);
       } else if (overColumn.id === "audited") {
         await taskApi.audit(activeId, "approved", "Moved to in progress");
       } else {
-        await taskApi.update(activeId, { status: "draft" });
+        await taskData.tasks.update(activeId, { status: "draft" });
       }
       toast.success(`Moved to ${overColumn.title}`);
     } catch {
@@ -405,7 +406,7 @@ export default function TaskPage() {
       return;
     }
     try {
-      await taskApi.delete(id);
+      await taskData.tasks.delete(id);
       setTasks((prev) => prev.filter((t) => t.id !== id));
       toast.success("Task deleted");
     } catch {
@@ -695,7 +696,7 @@ export default function TaskPage() {
                 if (!bypassDialog) return;
                 setBypassSaving(true);
                 try {
-                  await taskApi.publish(bypassDialog.task.id, true, bypassComment.trim());
+                  await taskData.tasks.publish(bypassDialog.task.id, true, bypassComment.trim());
                   toast.success("Task published with bypass");
                   fetchTasks();
                 } catch {

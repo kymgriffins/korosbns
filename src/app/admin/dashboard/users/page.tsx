@@ -4,7 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-import { adminUsersApi, type AdminUser } from "@/lib/admin-api";
+import { userData } from "@/data/users";
+import type { AdminUser } from "@/lib/admin-api";
 
 import { Users } from "./_components/users";
 import type { UserRow } from "./_components/data";
@@ -33,7 +34,7 @@ export default function Page() {
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await adminUsersApi.list({ page: 1 });
+      const res = await userData.admin.users.fetch({ page: 1 });
       setRows(res.results.map(toUserRow));
     } catch {
       toast.error("Failed to load users");

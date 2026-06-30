@@ -5,7 +5,7 @@ import { ArrowLeft, BookOpen, ChevronRight, ChevronLeft } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/ui/button";
 import { budgetNewsChapterPath, budgetNewsModulePath, Routes } from "@/constants/routes";
-import { learnHubApi } from "@/lib/learn-hub";
+import { budgetData } from "@/data/budget";
 import type { CivicModule } from "@/types/learn";
 import type { BudgetNewsYear } from "@/lib/learn-hub";
 import { YearTabs } from "@/components/budget-news/year-tabs";
@@ -22,14 +22,14 @@ import {
 function DetailContent({ slug }: { slug: string }) {
   const { data: mod, isLoading: modLoading, error: modError } = useQuery({
     queryKey: ["budget-news", "module", slug],
-    queryFn: () => learnHubApi.budgetNewsModule(slug),
+    queryFn: () => budgetData.fetchModule(slug),
     staleTime: 1000 * 60 * 10,
     gcTime: 1000 * 60 * 30,
   });
 
   const { data: yearsData } = useQuery({
     queryKey: ["budget-news", "years"],
-    queryFn: () => learnHubApi.budgetNewsYears(),
+    queryFn: () => budgetData.fetchYears(),
     staleTime: 1000 * 60 * 10,
     gcTime: 1000 * 60 * 30,
     select: (data) => data.results || [],

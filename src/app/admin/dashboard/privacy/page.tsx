@@ -30,13 +30,13 @@ export default function AdminPrivacyPage() {
   const fetchSettings = useCallback(async () => {
     setLoading(true);
     try {
-      const me = await userData.profile.fetch();
+      const me = (await userData.profile.fetch()) as Record<string, unknown> | null;
       setSettings({
-        profile_visibility: me.profile_visibility || "public",
-        allow_discovery: me.allow_discovery ?? true,
-        show_email_publicly: me.show_email_publicly ?? false,
-        notifications_enabled: me.notifications_enabled ?? true,
-        digest_frequency: me.digest_frequency || "weekly",
+        profile_visibility: (me?.profile_visibility as string) || "public",
+        allow_discovery: (me?.allow_discovery as boolean) ?? true,
+        show_email_publicly: (me?.show_email_publicly as boolean) ?? false,
+        notifications_enabled: (me?.notifications_enabled as boolean) ?? true,
+        digest_frequency: (me?.digest_frequency as string) || "weekly",
       });
     } catch {
       toast.error("Failed to load privacy settings");

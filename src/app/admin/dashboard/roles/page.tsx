@@ -4,7 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-import { adminRolesApi, type AdminRole } from "@/lib/admin-api";
+import { userData } from "@/data/users";
+import type { AdminRole } from "@/lib/admin-api";
 
 import { Roles } from "./_components/roles";
 import type { Role as RoleRow } from "./_components/roles-table/data";
@@ -31,7 +32,7 @@ export default function Page() {
   const fetchRoles = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await adminRolesApi.list();
+      const res = await userData.admin.roles.fetch();
       setRows(res.results.map(toRoleRow));
     } catch {
       toast.error("Failed to load roles");

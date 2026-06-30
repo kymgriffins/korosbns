@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { fetchReportData } from "@/lib/reports-hub";
+import { budgetData } from "@/data/budget";
 import type { BudgetSchema } from "@/lib/budget-schema";
 import type { FiscalYearMeta } from "@/lib/reports-api";
 import { OverviewTab } from "@/components/reports/overview-tab";
@@ -38,15 +38,11 @@ export default function ReportsPage() {
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
-    try {
-      const result = await fetchReportData();
-      setFiscalYears(result.fiscalYears);
-      setAllYears(result.allYears);
-      setSelectedYear(result.selectedYear);
-    } catch {
-    } finally {
-      setLoading(false);
-    }
+    const result = await budgetData.fetchReportData();
+    setFiscalYears(result.fiscalYears);
+    setAllYears(result.allYears);
+    setSelectedYear(result.selectedYear);
+    setLoading(false);
   }, []);
 
   useEffect(() => { fetchAll(); }, [fetchAll]);

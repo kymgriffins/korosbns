@@ -22,6 +22,7 @@ import { Alert, AlertDescription } from "@/ui/alert";
 
 import { ApiRequestError } from "@/lib/api-errors";
 import { taskApi } from "@/lib/task-api";
+import { taskData } from "@/data/tasks";
 import type {
   Task, TaskStatus, TaskCreatePayload, AssignableUser, TaskPriority, TaskTag,
 } from "@/types/tasks";
@@ -84,7 +85,7 @@ export function TaskForm({
 
   useEffect(() => {
     Promise.all([
-      taskApi.getAssignableUsers(),
+      taskData.users.fetchAssignable(),
       taskApi.getTeams(),
     ])
       .then(([users, teamList]) => {
@@ -115,10 +116,10 @@ export function TaskForm({
     setFieldErrors({});
     try {
       if (mode === "edit" && task) {
-        await taskApi.update(task.id, form);
+        await taskData.tasks.update(task.id, form);
         toast.success("Task updated");
       } else {
-        await taskApi.create(form);
+        await taskData.tasks.create(form);
         toast.success("Task created");
       }
       onSaved?.();

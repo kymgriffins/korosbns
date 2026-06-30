@@ -24,6 +24,7 @@ import {
   DialogTitle,
 } from "@/ui/dialog";
 import { taskApi } from "@/lib/task-api";
+import { taskData } from "@/data/tasks";
 import type { TaskDetail } from "@/types/tasks";
 import { autoHue } from "@/types/tasks";
 import { TaskForm } from "../_components/task-form";
@@ -59,7 +60,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
   const [activeTab, setActiveTab] = useState("overview");
 
   useEffect(() => {
-    taskApi.get(id)
+    taskData.tasks.fetchById(id)
       .then(setTask)
       .catch(() => {
         toast.error("Failed to load task");
@@ -101,7 +102,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
     }
     setDeleting(true);
     try {
-      await taskApi.delete(id);
+      await taskData.tasks.delete(id);
       toast.success("Task deleted");
       router.push("/task");
     } catch {

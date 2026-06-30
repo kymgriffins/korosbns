@@ -17,7 +17,8 @@ import { FormDialog } from "@/components/admin/form-dialog";
 import { AdminContentEditor } from "@/components/admin/content-editor";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
-import { adminContentApi, type AdminContentItem } from "@/lib/admin-api";
+import { adminContentData } from "@/data/admin-content";
+import type { AdminContentItem } from "@/lib/admin-api";
 
 const CONTENT_TABS = [
   { value: "articles", label: "Articles" },
@@ -49,7 +50,7 @@ export default function AdminContentPage() {
   const fetchItems = useCallback(async () => {
     setLoading(true); setError("");
     try {
-      const res = await adminContentApi.list(activeTab, { page, search: search || undefined });
+      const res = await adminContentData.content.fetchList(activeTab, { page, search: search || undefined });
       setItems(res.results);
       setTotalPages(Math.max(1, Math.ceil(res.count / 25)));
     } catch (err) {
@@ -70,8 +71,8 @@ export default function AdminContentPage() {
     setDialogOpen(true);
     setEditLoading(true);
     try {
-      const detail = await adminContentApi.get(activeTab, item.id);
-      setForm({ title: detail.title, summary: detail.summary ?? "", difficulty: detail.difficulty ?? "beginner", status: detail.status, body: detail.body ?? "" });
+      const detail = await adminContentData.content.fetchById(activeTab, item.id);
+      if (detail) setForm({ title: detail.title, summary: detail.summary ?? "", difficulty: detail.difficulty ?? "beginner", status: detail.status, body: detail.body ?? "" });
     } catch {
       toast.error("Failed to load content body");
     } finally {
@@ -84,7 +85,7 @@ export default function AdminContentPage() {
     setViewItem(null);
     setViewDialogOpen(true);
     try {
-      const detail = await adminContentApi.get(activeTab, item.id);
+      const detail = await adminContentData.content.fetchById(activeTab, item.id);
       setViewItem(detail);
     } catch {
       toast.error("Failed to load item details");
@@ -98,8 +99,8 @@ export default function AdminContentPage() {
     if (!form.title) { toast.error("Title is required"); return; }
     setSaving(true);
     try {
-      if (mode === "create") { await adminContentApi.create(activeTab, form); toast.success("Content created"); }
-      else if (editId) { await adminContentApi.update(activeTab, editId, form); toast.success("Content updated"); }
+      if (mode === "create") { await adminContentData.content.create(activeTab, form); toast.success("Content created"); }
+      else if (editId) { await adminContentData.content.update(activeTab, editId, form); toast.success("Content updated"); }
       setDialogOpen(false); fetchItems();
     } catch (err) { toast.error(err instanceof Error ? err.message : "Operation failed"); }
     finally { setSaving(false); }
@@ -107,7 +108,7 @@ export default function AdminContentPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this item?")) return;
-    try { await adminContentApi.delete(activeTab, id); toast.success("Content deleted"); fetchItems(); }
+    try { await adminContentData.content.delete(activeTab, id); toast.success("Content deleted"); fetchItems(); }
     catch (err) { toast.error(err instanceof Error ? err.message : "Delete failed"); }
   };
 

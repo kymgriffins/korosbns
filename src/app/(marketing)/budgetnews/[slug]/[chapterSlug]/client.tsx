@@ -5,7 +5,8 @@ import { ArrowLeft, ChevronLeft, ChevronRight, Calendar, ChevronDown, ListTree }
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/ui/button";
 import { budgetNewsChapterPath, budgetNewsModulePath, Routes } from "@/constants/routes";
-import { learnHubApi, type BudgetNewsYear } from "@/lib/learn-hub";
+import { budgetData } from "@/data/budget";
+import type { BudgetNewsYear } from "@/lib/learn-hub";
 import type { ChapterStep } from "@/types/learn";
 import { YearTabs } from "@/components/budget-news/year-tabs";
 import { BudgetNewsErrorBoundary } from "../../error-boundary";
@@ -29,7 +30,7 @@ function ChapterContent({
 }) {
   const { data: mod, isLoading, error } = useQuery({
     queryKey: ["budget-news", "module", slug],
-    queryFn: () => learnHubApi.budgetNewsModule(slug),
+    queryFn: () => budgetData.fetchModule(slug),
     staleTime: 1000 * 60 * 10,
     gcTime: 1000 * 60 * 30,
   });
@@ -74,7 +75,7 @@ function ChapterContent({
 
   const { data: yearsData } = useQuery({
     queryKey: ["budget-news", "years"],
-    queryFn: () => learnHubApi.budgetNewsYears(),
+    queryFn: () => budgetData.fetchYears(),
     staleTime: 1000 * 60 * 10,
     gcTime: 1000 * 60 * 30,
     select: (data) => data.results || [],

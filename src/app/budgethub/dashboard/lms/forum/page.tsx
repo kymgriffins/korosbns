@@ -9,12 +9,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { apiFetch } from "@/lib/api-client";
 import { useAuth } from "@/contexts/auth-context";
-import type { ForumThread, ForumThreadDetail, ForumPost } from "@/types/learn";
-import type { ApiListResponse } from "@/types/api";
 import { cn } from "@/lib/utils";
 import { usePageView } from "@/hooks/use-page-view";
+import { forumData } from "@/data/forum";
+import type { ForumPost } from "@/data/forum";
+import type { ForumThread, ForumThreadDetail } from "@/types/learn";
 
 function ThreadCard({ thread, selected, onSelect }: { thread: ForumThread; selected: boolean; onSelect: () => void }) {
   return (
@@ -39,7 +39,9 @@ function ThreadDetailView({ threadId, onBack }: { threadId: string; onBack: () =
 
   const fetchThread = useCallback(async () => {
     setLoading(true);
-    try { const res = await apiFetch<ForumThreadDetail>(`/engagement/forum-threads/${threadId}/`); setThread(res); } catch {} finally { setLoading(false); }
+    const res = await forumData.threads.fetchById(threadId);
+    setThread(res as ForumThreadDetail);
+    setLoading(false);
   }, [threadId]);
 
   useEffect(() => { fetchThread(); }, [fetchThread]);
@@ -47,15 +49,10 @@ function ThreadDetailView({ threadId, onBack }: { threadId: string; onBack: () =
   const handleReply = useCallback(async () => {
     if (!replyText.trim() || posting) return;
     setPosting(true);
-    try {
-      await apiFetch<ForumPost>(`/engagement/forum-threads/${threadId}/posts/`, {
-        method: "POST",
-        auth: true,
-        body: JSON.stringify({ content: replyText.trim() }),
-      });
-      setReplyText("");
-      await fetchThread();
-    } catch {} finally { setPosting(false); }
+    await forumData.posts.create(threadId, replyText.trim());
+    setReplyText("");
+    await fetchThread();
+    setPosting(false);
   }, [replyText, posting, threadId, fetchThread]);
 
   const displayName = user?.display_name || user?.break_name || "";
@@ -117,7 +114,9 @@ export default function ForumPage() {
 
   const fetchThreads = useCallback(async () => {
     setLoading(true);
-    try { const res = await apiFetch<ApiListResponse<ForumThread>>("/engagement/forum-threads/"); setThreads(res.results ?? []); } catch {} finally { setLoading(false); }
+    const res = await forumData.threads.fetch();
+    setThreads(res as ForumThread[]);
+    setLoading(false);
   }, []);
 
   useEffect(() => { fetchThreads(); }, [fetchThreads]);
@@ -131,15 +130,10 @@ export default function ForumPage() {
   const handleCreate = useCallback(async () => {
     if (!newTitle.trim() || creating) return;
     setCreating(true);
-    try {
-      await apiFetch<ForumThread>("/engagement/forum-threads/", {
-        method: "POST",
-        auth: true,
-        body: JSON.stringify({ title: newTitle.trim() }),
-      });
-      setNewTitle(""); setNewMessage(""); setShowCreate(false);
-      await fetchThreads();
-    } catch {} finally { setCreating(false); }
+    await forumData.threads.create({ title: newTitle.trim() });
+    setNewTitle(""); setNewMessage(""); setShowCreate(false);
+    await fetchThreads();
+    setCreating(false);
   }, [newTitle, newMessage, creating, fetchThreads]);
 
   if (selectedThreadId) {

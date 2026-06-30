@@ -10,9 +10,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { fetchDocumentsFromAPI } from "@/constants/documents";
-import type { DocumentType, DocumentFile } from "@/constants/documents";
 import { usePageView } from "@/hooks/use-page-view";
+import { contentData } from "@/data/content";
+import type { DocumentType, DocumentFile } from "@/constants/documents";
 
 function formatFileSize(bytes: number): string {
   if (bytes === 0) return "0 B";
@@ -58,13 +58,10 @@ export default function DocumentsPage() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     setError(null);
-    try {
-      const result = await fetchDocumentsFromAPI();
-      if (result.error) { setError(result.error); }
-      setDocuments(result.documents);
-    } catch {
-      setError("Failed to load documents. Please try again later.");
-    } finally { setLoading(false); }
+    const result = await contentData.documents.fetchFromDirectory();
+    if (result.error) { setError(result.error); }
+    setDocuments(result.documents);
+    setLoading(false);
   }, []);
 
   useEffect(() => { fetchData(); }, [fetchData]);

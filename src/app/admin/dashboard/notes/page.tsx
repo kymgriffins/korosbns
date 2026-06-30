@@ -13,7 +13,8 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { DataTable, type Column } from "@/components/admin/data-table";
 import { FormDialog } from "@/components/admin/form-dialog";
-import { adminNotesApi, type AdminNote } from "@/lib/admin-api";
+import { taskData } from "@/data/tasks";
+import type { AdminNote } from "@/lib/admin-api";
 
 type Mode = "create" | "edit";
 
@@ -47,7 +48,7 @@ export default function AdminNotesPage() {
     setLoading(true);
     setError("");
     try {
-      const res = await adminNotesApi.list({ page, search: search || undefined, status: statusFilter || undefined });
+      const res = await taskData.notes.fetch({ page, search: search || undefined, status: statusFilter || undefined });
       setNotes(res.results);
       setTotalPages(Math.max(1, Math.ceil(res.count / 25)));
     } catch (err) {
@@ -80,10 +81,10 @@ export default function AdminNotesPage() {
     setSaving(true);
     try {
       if (mode === "create") {
-        await adminNotesApi.create(form);
+        await taskData.notes.create(form);
         toast.success("Note created");
       } else if (editId) {
-        await adminNotesApi.update(editId, form);
+        await taskData.notes.update(editId, form);
         toast.success("Note updated");
       }
       setDialogOpen(false);
@@ -98,7 +99,7 @@ export default function AdminNotesPage() {
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this note?")) return;
     try {
-      await adminNotesApi.delete(id);
+      await taskData.notes.delete(id);
       toast.success("Note deleted");
       fetchNotes();
     } catch (err) {
@@ -108,7 +109,7 @@ export default function AdminNotesPage() {
 
   const handlePublish = async (id: string) => {
     try {
-      await adminNotesApi.publish(id);
+      await taskData.notes.publish(id);
       toast.success("Note published");
       fetchNotes();
     } catch (err) {
@@ -120,7 +121,7 @@ export default function AdminNotesPage() {
     if (!editId || !auditNote.trim()) { toast.error("Audit notes are required"); return; }
     setSaving(true);
     try {
-      await adminNotesApi.audit(editId, auditNote);
+      await taskData.notes.audit(editId, auditNote);
       toast.success("Note audited");
       setAuditDialogOpen(false);
       setAuditNote("");

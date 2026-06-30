@@ -12,7 +12,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DataTable, type Column } from "@/components/admin/data-table";
 import { FormDialog } from "@/components/admin/form-dialog";
-import { adminAuthorsApi, type AdminAuthor } from "@/lib/admin-api";
+import { userData } from "@/data/users";
+import type { AdminAuthor } from "@/lib/admin-api";
 import { getInitials } from "@/lib/utils";
 
 type Mode = "create" | "edit";
@@ -33,7 +34,7 @@ export default function AdminAuthorsPage() {
   const fetchAuthors = useCallback(async () => {
     setLoading(true); setError("");
     try {
-      const res = await adminAuthorsApi.list({ page, search: search || undefined });
+      const res = await userData.admin.authors.fetch({ page, search: search || undefined });
       setAuthors(res.results);
       setTotalPages(Math.max(1, Math.ceil(res.count / 25)));
     } catch (err) { setError(err instanceof Error ? err.message : "Failed to load authors"); }
@@ -56,8 +57,8 @@ export default function AdminAuthorsPage() {
     if (!form.name) { toast.error("Name is required"); return; }
     setSaving(true);
     try {
-      if (mode === "create") { await adminAuthorsApi.create(form); toast.success("Author created"); }
-      else if (editSlug) { await adminAuthorsApi.update(editSlug, form); toast.success("Author updated"); }
+      if (mode === "create") { await userData.admin.authors.create(form); toast.success("Author created"); }
+      else if (editSlug) { await userData.admin.authors.update(editSlug, form); toast.success("Author updated"); }
       setDialogOpen(false); fetchAuthors();
     } catch (err) { toast.error(err instanceof Error ? err.message : "Operation failed"); }
     finally { setSaving(false); }
@@ -65,7 +66,7 @@ export default function AdminAuthorsPage() {
 
   const handleDelete = async (slug: string) => {
     if (!confirm("Delete this author?")) return;
-    try { await adminAuthorsApi.delete(slug); toast.success("Author deleted"); fetchAuthors(); }
+    try { await userData.admin.authors.delete(slug); toast.success("Author deleted"); fetchAuthors(); }
     catch (err) { toast.error(err instanceof Error ? err.message : "Delete failed"); }
   };
 

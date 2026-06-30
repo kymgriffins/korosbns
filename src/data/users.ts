@@ -1,9 +1,11 @@
 import type { UserProfileApi } from "@/lib/api-client";
 import { citizenApi } from "@/lib/api-client";
+import { adminUsersApi, adminAuthorsApi, adminRolesApi } from "@/lib/admin-api";
+import type { AdminUser, AdminAuthor, AdminRole } from "@/lib/admin-api";
 import { withFallback } from "@/data/adapter";
 import bnsConfig from "@/constants/bnsConfig.json";
 
-export type { UserProfileApi };
+export type { UserProfileApi, AdminUser, AdminAuthor, AdminRole };
 
 export type TeamMember = {
   name: string;
@@ -31,7 +33,30 @@ for (const group of Object.values(leaderData)) {
 
 let _team: TeamMember[] = [...DEFAULT_TEAM];
 
-export const userData = {
+export interface UserDataStore {
+  team: {
+    get: () => TeamMember[];
+    set: (members: TeamMember[]) => void;
+    fetch: () => Promise<TeamMember[]>;
+  };
+  profile: {
+    fetch: () => Promise<UserProfileApi | null>;
+    fetchPublic: (id: string) => Promise<Record<string, unknown> | null>;
+  };
+  admin: {
+    users: { fetch: (params?: { page?: number; search?: string }) => Promise<{ count: number; results: AdminUser[] }> };
+    authors: {
+      fetch: (params?: { page?: number; search?: string }) => Promise<{ count: number; results: AdminAuthor[] }>;
+      fetchBySlug: (slug: string) => Promise<AdminAuthor | null>;
+      create: (data: Partial<AdminAuthor>) => Promise<AdminAuthor | null>;
+      update: (slug: string, data: Partial<AdminAuthor>) => Promise<AdminAuthor | null>;
+      delete: (slug: string) => Promise<boolean>;
+    };
+    roles: { fetch: () => Promise<{ count: number; results: AdminRole[] }> };
+  };
+}
+
+export const userData: UserDataStore = {
   team: {
     get: () => _team,
     set: (members: TeamMember[]) => { _team = members; },
@@ -55,5 +80,66 @@ export const userData = {
         () => citizenApi.getPublicUser(id),
         () => null,
       ),
+  },
+  admin: {
+    users: {
+      fetch: (params?: { page?: number; search?: string }) =>
+        withFallback(
+          "users",
+          () => adminUsersApi.list(params),
+          () => ({ count: 0, results: [] as AdminUser[] }),
+        ),
+    },
+    authors: {
+      fetch: (params?: { page?: number; search?: string }) =>
+        withFallback(
+          "users",
+          () => adminAuthorsApi.list(params),
+          () => ({ count: 0, results: [] as AdminAuthor[] }),
+        ),
+      fetchBySlug: (slug: string) =>
+        withFallback(
+          "users",
+          () => adminAuthorsApi.get(slug),
+          () => null as unknown as AdminAuthor,
+        ),
+      create: (data: Partial<AdminAuthor>) =>
+        withFallback(
+          "users",
+          () => adminAuthorsApi.create(data),
+          () => {
+            const a: AdminAuthor = {
+              id: `new-${Date.now()}`,
+              name: data.name ?? "Untitled",
+              slug: `untitled-${Date.now()}`,
+              image: data.image ?? "",
+              role: data.role ?? "",
+              bio: data.bio ?? "",
+              created_at: new Date().toISOString(),
+            };
+            return a;
+          },
+        ),
+      update: (slug: string, data: Partial<AdminAuthor>) =>
+        withFallback(
+          "users",
+          () => adminAuthorsApi.update(slug, data),
+          () => null as unknown as AdminAuthor,
+        ),
+      delete: (slug: string) =>
+        withFallback(
+          "users",
+          () => adminAuthorsApi.delete(slug).then(() => true),
+          () => true,
+        ),
+    },
+    roles: {
+      fetch: () =>
+        withFallback(
+          "users",
+          () => adminRolesApi.list(),
+          () => ({ count: 0, results: [] as AdminRole[] }),
+        ),
+    },
   },
 };

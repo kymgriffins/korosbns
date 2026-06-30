@@ -3,8 +3,14 @@ import type { LearnHubItem } from "@/types/learn";
 import { citizenApi } from "@/lib/api-client";
 import { learnHubApi } from "@/lib/learn-hub";
 import { withFallback } from "@/data/adapter";
+import {
+  fetchDocumentsFromAPI,
+  type DocumentType,
+  type FetchDocumentsResult,
+} from "@/constants/documents";
 
 export type { LearnHubItem };
+export type { DocumentType, FetchDocumentsResult };
 
 const DEFAULT_ARTICLES: LearnHubItem[] = [];
 
@@ -76,6 +82,12 @@ export const contentData = {
         () => learnHubApi.documents(filters),
         () => ({ results: _documents }),
       ).then((r) => r.results ?? []),
+    fetchFromDirectory: () =>
+      withFallback(
+        "content",
+        () => fetchDocumentsFromAPI(),
+        () => ({ documents: [], error: "Repository unavailable" }) as FetchDocumentsResult,
+      ),
   },
   quests: {
     get: () => _quests,

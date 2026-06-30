@@ -1,4 +1,5 @@
 import { adminContentApi, adminModulesApi, adminForumApi } from "@/lib/admin-api";
+import type { ApiListResponse } from "@/types/api";
 import { withFallback } from "@/data/adapter";
 import type { AdminContentItem, AdminModule, AdminForumThread } from "@/lib/admin-api";
 
@@ -23,6 +24,15 @@ export const adminContentData = {
           return results;
         }),
         () => _content,
+      ),
+    fetchList: (contentType: string, params?: { page?: number; search?: string }) =>
+      withFallback(
+        "admin-content",
+        () => adminContentApi.list(contentType, params).then((r) => {
+          _content = r.results ?? [];
+          return r;
+        }),
+        () => ({ count: _content.length, results: _content } as ApiListResponse<AdminContentItem>),
       ),
     fetchById: (contentType: string, id: string) =>
       withFallback(
@@ -80,6 +90,15 @@ export const adminContentData = {
           return results;
         }),
         () => _modules,
+      ),
+    fetchList: (params?: { page?: number; search?: string }) =>
+      withFallback(
+        "admin-content",
+        () => adminModulesApi.list(params).then((r) => {
+          _modules = r.results ?? [];
+          return r;
+        }),
+        () => ({ count: _modules.length, results: _modules } as ApiListResponse<AdminModule>),
       ),
     fetchBySlug: (slug: string) =>
       withFallback(
@@ -140,6 +159,15 @@ export const adminContentData = {
           return results;
         }),
         () => _forumThreads,
+      ),
+    fetchList: (params?: { page?: number; search?: string }) =>
+      withFallback(
+        "admin-content",
+        () => adminForumApi.listThreads(params).then((r) => {
+          _forumThreads = r.results ?? [];
+          return r;
+        }),
+        () => ({ count: _forumThreads.length, results: _forumThreads } as ApiListResponse<AdminForumThread>),
       ),
     deleteThread: (id: string) =>
       withFallback(
