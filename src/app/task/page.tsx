@@ -67,6 +67,7 @@ import {
 import { Textarea } from "@/ui/textarea";
 import { Label } from "@/ui/label";
 
+import { PageBreadcrumbs } from "@/components/global/page-breadcrumbs";
 import { taskApi } from "@/lib/task-api";
 import { taskData } from "@/data/tasks";
 import { exportTasksAsCsv, exportTasksAsJson } from "@/lib/export-utils";
@@ -462,6 +463,7 @@ export default function TaskPage() {
   if (loading) {
     return (
       <div className="mx-auto max-w-7xl p-6 space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+        <PageBreadcrumbs items={[{ label: "Task Board" }]} />
         <div className="flex items-center justify-between">
           <div>
             <Skeleton className="mb-2 h-8 w-48" />
@@ -487,6 +489,7 @@ export default function TaskPage() {
 
   return (
     <div className="mx-auto max-w-7xl p-4 md:p-6 space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+      <PageBreadcrumbs items={[{ label: "Task Board" }]} />
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>

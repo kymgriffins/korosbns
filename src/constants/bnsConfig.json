@@ -338,6 +338,14 @@
           "priority": "high"
         },
         {
+          "id": "task-engage-ui-expert",
+          "title": "Engage independent expert for professional UI/UX opinion",
+          "owner": "Budget Ndio Story",
+          "due": "2026-05-02",
+          "status": "todo",
+          "priority": "high"
+        },
+        {
           "id": "task-share-strategy-docs",
           "title": "Share strategic plan and context docs with Koros for website updates",
           "owner": "Budget Ndio Story",
@@ -449,6 +457,140 @@
           "due": "2026-04-28",
           "status": "todo",
           "priority": "medium"
+        }
+      ]
+    },
+    {
+      "id": "bns-leadership-2026-06-18",
+      "date": "2026-06-18",
+      "title": "Q3 Sprint Review — June 18 Leadership Sync",
+      "summary": "Review of Q3 sprint deliverables: admin task system redesign, breadcrumb navigation, shadcn UI migration, June 18 meeting seeding, checklist sync, headless CMS documentation, and project management tooling.",
+      "actionItems": [
+        {
+          "id": "task-18-breakdown-task-system",
+          "title": "Break down task system into admin CRUD with full breadcrumb navigation",
+          "owner": "Koros",
+          "due": "2026-06-20",
+          "status": "in_progress",
+          "priority": "high",
+          "notes": "All admin task pages must have BreadcrumbList + BreadcrumbItem + BreadcrumbLink + BreadcrumbPage from shadcn/ui"
+        },
+        {
+          "id": "task-18-checklist-sync",
+          "title": "Implement checklist sync across task detail pages (inline add/edit/delete/toggle with API)",
+          "owner": "Koros",
+          "due": "2026-06-21",
+          "status": "todo",
+          "priority": "high",
+          "notes": "Checklist items serialize as JSON in content field: { __checklist__: [...], __text__: '...' }"
+        },
+        {
+          "id": "task-18-meeting-seed",
+          "title": "Seed June 18 meeting with 14 checklist items in bnsConfig.json",
+          "owner": "Koros",
+          "due": "2026-06-18",
+          "status": "completed",
+          "priority": "high",
+          "notes": "Meeting ID: bns-leadership-2026-06-18. All 14 action items defined."
+        },
+        {
+          "id": "task-18-task-export",
+          "title": "Add task download/export (CSV, JSON, Markdown) with shadcn dropdown menu",
+          "owner": "Koros",
+          "due": "2026-06-22",
+          "status": "todo",
+          "priority": "medium",
+          "notes": "Export button in admin task board header. CSV uses columns: id, title, status, assignee, priority, due_date, tags."
+        },
+        {
+          "id": "task-18-admin-task-form",
+          "title": "Redesign admin task/new page with Card + breadcrumb + shadcn layout",
+          "owner": "Koros",
+          "due": "2026-06-19",
+          "status": "completed",
+          "priority": "high",
+          "notes": "Page wraps TaskForm in Card with header icon, title, description, and AdminTaskBreadcrumbs"
+        },
+        {
+          "id": "task-18-public-task-nav",
+          "title": "Add breadcrumb navigation to public /task pages (board, detail, new)",
+          "owner": "Koros",
+          "due": "2026-06-20",
+          "status": "todo",
+          "priority": "medium",
+          "notes": "Public task breadcrumbs: Home > Tasks > [title]. Use shadcn Breadcrumb component."
+        },
+        {
+          "id": "task-18-headless-cms-docs",
+          "title": "Document headless CMS architecture (Django admin + Next.js + data stores + fallback layers)",
+          "owner": "Koros",
+          "due": "2026-06-25",
+          "status": "todo",
+          "priority": "medium",
+          "notes": "Create ARCHITECTURE.md or update CLAUDE.md. Cover: Django admin at bnske/admin/, withFallback(), store pattern, seed JSONs."
+        },
+        {
+          "id": "task-18-auth-cookie-fix",
+          "title": "Verify auth cookie path fix on production deploy (bns_rt path='/')",
+          "owner": "Koros",
+          "due": "2026-06-23",
+          "status": "completed",
+          "priority": "high",
+          "notes": "Backend fix in core/views/auth_views.py: path changed from /auth/token/refresh/ to /"
+        },
+        {
+          "id": "task-18-build-clean-check",
+          "title": "Run full build and test suite after all changes; fix any regressions",
+          "owner": "Koros",
+          "due": "2026-06-25",
+          "status": "todo",
+          "priority": "high",
+          "notes": "pnpm run build must pass with zero TS errors. pnpm test must show 39/40+ files passing."
+        },
+        {
+          "id": "task-18-shadcn-migration-plan",
+          "title": "Create migration plan for remaining custom UI to shadcn components",
+          "owner": "Koros",
+          "due": "2026-06-26",
+          "status": "todo",
+          "priority": "low",
+          "notes": "Inventory all non-shadcn UI patterns in admin/pages. Prioritize by usage frequency."
+        },
+        {
+          "id": "task-18-qa-task-workflow",
+          "title": "QA the full task workflow: create > edit > checklist > attach > publish > export > delete",
+          "owner": "Koros",
+          "due": "2026-06-24",
+          "status": "todo",
+          "priority": "high",
+          "notes": "Test with backend ON and OFF. Verify withFallback doesn't swallow real errors."
+        },
+        {
+          "id": "task-18-admin-guard-audit",
+          "title": "Audit admin guard (admin-guard.tsx) covers all 40+ admin pages correctly",
+          "owner": "Koros",
+          "due": "2026-06-22",
+          "status": "todo",
+          "priority": "medium",
+          "notes": "Check that ADMIN_ROLES set in rbac.ts covers manager, editor, and admin roles."
+        },
+        {
+          "id": "task-18-meeting-dashboard",
+          "title": "Add meeting view to admin task detail page showing source meeting and all action items",
+          "owner": "Koros",
+          "due": "2026-06-30",
+          "status": "todo",
+          "priority": "low",
+          "notes": "Link from task detail to source meeting in bnsConfig. Show meeting title, date, summary."
+        },
+        {
+          "id": "task-18-sprint-retro",
+          "title": "Conduct Q3 sprint retrospective: what shipped, what slipped, lessons learned",
+          "owner": "Budget Ndio Story",
+          "due": "2026-06-27",
+          "status": "todo",
+          "priority": "medium",
+          "notes": "Topics: auth fixes, build stability, shadcn migration velocity, breadcrumb adoption."
         }
       ]
     }

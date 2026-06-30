@@ -24,6 +24,7 @@ import {
   Circle,
   CircleDot,
   Download,
+  FileText,
   Hash,
   MoreHorizontal,
   Plus,
@@ -64,6 +65,7 @@ import { useAuth } from "@/contexts/auth-context";
 import type { Task, TaskStatus, TaskColumn } from "@/types/tasks";
 
 import { useRouteBase, getFullUrl } from "@/lib/route-base";
+import { AdminTaskBreadcrumbs } from "@/components/admin/admin-task-breadcrumb";
 
 const COLUMNS: TaskStatus[] = ["draft", "audited", "published"];
 
@@ -359,11 +361,39 @@ export default function AdminTaskPage() {
     }
   }
 
+  const exportTasks = useCallback((format: "csv" | "json" | "markdown") => {
+    const cols = ["id","title","status","assignee","priority","due_date","tags","team","progress"];
+    const rows = tasks.map(t => cols.map(c => String((t as Record<string, unknown>)[c] ?? "")).join(","));
+    const csvContent = cols.join(",") + "\n" + rows.join("\n");
+    const filename = `tasks-${new Date().toISOString().slice(0, 10)}`;
+    if (format === "csv") {
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a"); a.href = url; a.download = `${filename}.csv`; a.click();
+      URL.revokeObjectURL(url);
+    } else if (format === "json") {
+      const blob = new Blob([JSON.stringify(tasks, null, 2)], { type: "application/json;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a"); a.href = url; a.download = `${filename}.json`; a.click();
+      URL.revokeObjectURL(url);
+    } else {
+      const md = tasks.map(t =>
+        `- **${t.title}** (${t.status}) — ${t.assignee ?? "unassigned"}${t.priority ? ` [${t.priority}]` : ""}`
+      ).join("\n");
+      const blob = new Blob([`# Tasks Export — ${new Date().toISOString().slice(0, 10)}\n\n${md}`], { type: "text/markdown;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a"); a.href = url; a.download = `${filename}.md`; a.click();
+      URL.revokeObjectURL(url);
+    }
+    toast.success(`Exported ${tasks.length} tasks as ${format.toUpperCase()}`);
+  }, [tasks]);
+
   const totalCount = tasks.length;
 
   if (loading) {
     return (
       <div className="mx-auto max-w-7xl p-6 space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+        <AdminTaskBreadcrumbs />
         <div className="flex items-center justify-between">
           <div>
             <Skeleton className="mb-2 h-8 w-48" />
@@ -389,6 +419,7 @@ export default function AdminTaskPage() {
 
   return (
     <div className="@container/main flex flex-col gap-6 md:gap-8">
+      <AdminTaskBreadcrumbs />
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Task Board</h1>
@@ -417,6 +448,28 @@ export default function AdminTaskPage() {
               </button>
             )}
           </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="default">
+                <Download className="mr-1.5 size-4" />
+                Export
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-44">
+              <DropdownMenuItem onClick={() => exportTasks("csv")}>
+                <FileText className="mr-2 size-4" />
+                CSV
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => exportTasks("json")}>
+                <Hash className="mr-2 size-4" />
+                JSON
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => exportTasks("markdown")}>
+                <FileText className="mr-2 size-4" />
+                Markdown
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           {isLoggedIn ? (
             <Link href={getFullUrl(routeBase, "/dashboard/task/new")} className="shrink-0">
               <Button size="default" className="w-full sm:w-auto">
