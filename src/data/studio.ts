@@ -1,5 +1,6 @@
 import { withFallback } from "@/data/adapter";
 import { citizenApi } from "@/lib/api-client";
+import type { StudioServiceApi, StudioPortfolioItemApi, StudioTestimonialApi } from "@/types/notes";
 
 export type StudioService = {
   name: string;
@@ -16,30 +17,23 @@ export type StudioPortfolioItem = {
   image_url: string;
   video_url?: string;
   video_platform?: "youtube" | "vimeo" | "cloudinary" | "other";
-  description: string;
+  description?: string;
 };
 
 export type StudioTestimonial = {
   id: string;
   client_name: string;
-  role: string;
+  role?: string;
   content: string;
   rating: number;
-  avatar_url: string;
-};
-
-const defaultFeatures: Record<string, string[]> = {
-  Videography: ["4K/HD recording", "Professional audio", "Multi-camera setup", "Same-day edit option"],
-  Photography: ["High-resolution RAW", "Professional lighting", "Edited gallery", "Print-ready files"],
-  "Studio Rental": ["Continuous/ flash lighting", "Backdrop system", "Changing room", "Audio equipment"],
-  "Post-Production": ["DaVinci Resolve / Premiere Pro", "Color grading", "Motion graphics", "Sound mixing"],
+  avatar_url?: string;
 };
 
 const DEFAULT_SERVICES: StudioService[] = [
-  { name: "Videography", description: "Professional video production for events, commercials, and documentaries.", price: "From KES 15,000", features: defaultFeatures.Videography },
-  { name: "Photography", description: "High-quality photography for portraits, events, and product shoots.", price: "From KES 8,000", features: defaultFeatures.Photography },
-  { name: "Studio Rental", description: "Fully equipped studio space for your creative projects.", price: "KES 3,000/hr", features: defaultFeatures["Studio Rental"] },
-  { name: "Post-Production", description: "Professional editing, color grading, and motion graphics.", price: "From KES 10,000", features: defaultFeatures["Post-Production"] },
+  { name: "Videography", description: "Professional video production for events, commercials, and documentaries.", price: "From KES 15,000", features: ["4K/HD recording", "Professional audio", "Multi-camera setup", "Same-day edit option"] },
+  { name: "Photography", description: "High-quality photography for portraits, events, and product shoots.", price: "From KES 8,000", features: ["High-resolution RAW", "Professional lighting", "Edited gallery", "Print-ready files"] },
+  { name: "Studio Rental", description: "Fully equipped studio space for your creative projects.", price: "KES 3,000/hr", features: ["Continuous/flash lighting", "Backdrop system", "Changing room", "Audio equipment"] },
+  { name: "Post-Production", description: "Professional editing, color grading, and motion graphics.", price: "From KES 10,000", features: ["DaVinci Resolve / Premiere Pro", "Color grading", "Motion graphics", "Sound mixing"] },
 ];
 
 const DEFAULT_PORTFOLIO: StudioPortfolioItem[] = [
@@ -52,9 +46,9 @@ const DEFAULT_PORTFOLIO: StudioPortfolioItem[] = [
 ];
 
 const DEFAULT_TESTIMONIALS: StudioTestimonial[] = [
-  { id: "1", client_name: "James M.", role: "Project Lead", content: "BNS Studio delivered exceptional quality. The team was professional and the final product exceeded expectations.", rating: 5, avatar_url: "" },
-  { id: "2", client_name: "Sarah W.", role: "Event Organizer", content: "The studio space is top-notch. Perfect for our production needs with all the equipment we required.", rating: 5, avatar_url: "" },
-  { id: "3", client_name: "David O.", role: "Content Creator", content: "Post-production work was incredible. Fast turnaround without compromising on quality.", rating: 4, avatar_url: "" },
+  { id: "1", client_name: "James M.", role: "Project Lead", content: "BNS Studio delivered exceptional quality.", rating: 5, avatar_url: "" },
+  { id: "2", client_name: "Sarah W.", role: "Event Organizer", content: "The studio space is top-notch.", rating: 5, avatar_url: "" },
+  { id: "3", client_name: "David O.", role: "Content Creator", content: "Post-production work was incredible.", rating: 4, avatar_url: "" },
 ];
 
 export const studioData = {
@@ -63,47 +57,47 @@ export const studioData = {
       "studio",
       async () => {
         const raw = await citizenApi.getStudioServices();
-        return raw.map((s: { title: string; description: string; price: string }) => ({
-          name: s.title,
+        return raw.map((s: StudioServiceApi) => ({
+          name: s.name,
           description: s.description,
           price: s.price,
-          features: defaultFeatures[s.title] || [],
+          features: s.features,
         }));
       },
-      DEFAULT_SERVICES
+      () => DEFAULT_SERVICES
     ),
   fetchPortfolio: () =>
     withFallback<StudioPortfolioItem[]>(
       "studio-portfolio",
       async () => {
         const raw = await citizenApi.getStudioPortfolio();
-        return raw.map((p: { id: string; title: string; category: string; media_type: string; image_url: string; video_url?: string; video_platform?: string; description: string }) => ({
+        return raw.map((p: StudioPortfolioItemApi) => ({
           id: p.id,
           title: p.title,
           category: p.category,
-          media_type: p.media_type === "video" ? "video" as const : "image" as const,
+          media_type: p.media_type,
           image_url: p.image_url,
-          video_url: p.video_url || undefined,
-          video_platform: (p.video_platform || "youtube") as "youtube" | "vimeo" | "cloudinary" | "other",
+          video_url: p.video_url,
+          video_platform: p.video_platform,
           description: p.description,
         }));
       },
-      DEFAULT_PORTFOLIO
+      () => DEFAULT_PORTFOLIO
     ),
   fetchTestimonials: () =>
     withFallback<StudioTestimonial[]>(
       "studio-testimonials",
       async () => {
         const raw = await citizenApi.getStudioTestimonials();
-        return raw.map((t: { id: string; client_name: string; client_role: string; content: string; rating: number; image_url: string }) => ({
+        return raw.map((t: StudioTestimonialApi) => ({
           id: t.id,
           client_name: t.client_name,
-          role: t.client_role,
+          role: t.role,
           content: t.content,
           rating: t.rating,
-          avatar_url: t.image_url,
+          avatar_url: t.avatar_url,
         }));
       },
-      DEFAULT_TESTIMONIALS
+      () => DEFAULT_TESTIMONIALS
     ),
 };
