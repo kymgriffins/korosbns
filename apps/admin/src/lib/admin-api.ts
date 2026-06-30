@@ -130,6 +130,8 @@ export type AdminContentItem = {
   slug: string;
   content_type: string;
   summary?: string;
+  body?: string;
+  body_html?: string;
   thumbnail_url?: string;
   status: string;
   difficulty?: string;
