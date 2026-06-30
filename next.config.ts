@@ -198,11 +198,6 @@ const nextConfig: NextConfig = {
         permanent: false,
       },
       {
-        source: "/budgethub/:path*",
-        destination: "/",
-        permanent: false,
-      },
-      {
         source: "/budgethub",
         destination: "/",
         permanent: false,

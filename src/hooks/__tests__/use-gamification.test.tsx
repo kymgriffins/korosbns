@@ -13,13 +13,23 @@ vi.mock("@/data/gamification", () => ({
   },
 }));
 
+vi.mock("@/lib/api-client", () => ({
+  apiFetch: vi.fn(),
+}));
+
 import { gamificationData } from "@/data/gamification";
+import { apiFetch } from "@/lib/api-client";
 import {
   useBadgeCatalog,
   useChallenges,
   useCertificates,
   useReferralMe,
   useLeaderboard,
+  useGamificationMe,
+  useRecordEvent,
+  useSubmitChallenge,
+  useIssueCertificate,
+  useClaimReferral,
 } from "@/hooks/use-gamification";
 
 function createWrapper() {
@@ -107,5 +117,85 @@ describe("useLeaderboard", () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
     expect(gamificationData.leaderboard.fetch).toHaveBeenCalledWith(10);
+  });
+});
+
+describe("useGamificationMe", () => {
+  it("calls apiFetch and returns gamification state", async () => {
+    const mockState = { total_points: 100, level: 2, streak_days: 5, badges: [] };
+    vi.mocked(apiFetch).mockResolvedValue(mockState);
+
+    const { result } = renderHook(() => useGamificationMe(), { wrapper: createWrapper() });
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    expect(apiFetch).toHaveBeenCalledWith("/gamification/me/", { auth: true });
+    expect(result.current.data).toEqual(mockState);
+  });
+});
+
+describe("useRecordEvent", () => {
+  it("calls apiFetch POST and invalidates gamification cache", async () => {
+    vi.mocked(apiFetch).mockResolvedValue({ total_points: 110 });
+
+    const { result } = renderHook(() => useRecordEvent(), { wrapper: createWrapper() });
+    const payload = { event_type: "article_read", idempotency_key: "abc-123" };
+    result.current.mutate(payload);
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(apiFetch).toHaveBeenCalledWith("/gamification/events/", {
+      method: "POST",
+      auth: true,
+      body: JSON.stringify(payload),
+    });
+  });
+});
+
+describe("useSubmitChallenge", () => {
+  it("calls apiFetch POST and returns points_awarded", async () => {
+    vi.mocked(apiFetch).mockResolvedValue({ points_awarded: 50 });
+
+    const { result } = renderHook(() => useSubmitChallenge(), { wrapper: createWrapper() });
+    result.current.mutate("challenge-1");
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(apiFetch).toHaveBeenCalledWith("/gamification/challenges/challenge-1/submit/", {
+      method: "POST",
+      auth: true,
+    });
+    expect(result.current.data).toEqual({ points_awarded: 50 });
+  });
+});
+
+describe("useIssueCertificate", () => {
+  it("calls apiFetch POST with civic module id", async () => {
+    vi.mocked(apiFetch).mockResolvedValue({ id: "cert-1", module_title: "Module Complete", module_slug: "m1", issued_at: "2026-01-01T00:00:00Z" });
+
+    const { result } = renderHook(() => useIssueCertificate(), { wrapper: createWrapper() });
+    result.current.mutate("module-1");
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(apiFetch).toHaveBeenCalledWith("/gamification/certificates/issue/", {
+      method: "POST",
+      auth: true,
+      body: JSON.stringify({ civic_module_id: "module-1" }),
+    });
+    expect(result.current.data?.module_title).toBe("Module Complete");
+  });
+});
+
+describe("useClaimReferral", () => {
+  it("calls apiFetch POST with referral code", async () => {
+    vi.mocked(apiFetch).mockResolvedValue({ referrer_points: 25 });
+
+    const { result } = renderHook(() => useClaimReferral(), { wrapper: createWrapper() });
+    result.current.mutate("REFCODE");
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(apiFetch).toHaveBeenCalledWith("/gamification/referrals/claim/", {
+      method: "POST",
+      auth: true,
+      body: JSON.stringify({ referral_code: "REFCODE" }),
+    });
+    expect(result.current.data).toEqual({ referrer_points: 25 });
   });
 });

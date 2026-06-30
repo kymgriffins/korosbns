@@ -123,7 +123,9 @@ export default function UnifiedReaderClientPage({
   usePageView();
   const { slug } = useParams() as { slug: string };
   const router = useRouter();
-  
+
+  useEffect(() => { window.scrollTo({ top: 0, behavior: "smooth" }); }, [slug]);
+
   const [mode, setMode] = useState<ReaderMode>(initialMode);
   const [errorMsg, setErrorMsg] = useState("");
   

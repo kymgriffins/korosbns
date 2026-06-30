@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, ChevronLeft, ChevronRight, Calendar, ChevronDown, ListTree } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
@@ -34,6 +35,8 @@ function ChapterContent({
     staleTime: 1000 * 60 * 10,
     gcTime: 1000 * 60 * 30,
   });
+
+  useEffect(() => { window.scrollTo({ top: 0, behavior: "smooth" }); }, [slug, chapterSlug]);
 
   const chapters = (mod?.steps || []) as ChapterStep[];
   const idx = chapters.findIndex((c) => c.article_slug === chapterSlug);

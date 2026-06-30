@@ -4,7 +4,7 @@ import { execSync } from "child_process";
 
 const targetBase = join(process.cwd(), "apps/budgethub/src/app/(main)");
 const linkBase = join(process.cwd(), "src/app/budgethub");
-const dirs = ["dashboard", "auth", "chat", "mail", "unauthorized"];
+const dirs = ["dashboard", "auth", "chat", "mail", "reports", "unauthorized"];
 
 if (!existsSync(linkBase)) {
   mkdirSync(linkBase, { recursive: true });
