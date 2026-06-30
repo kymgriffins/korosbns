@@ -6,6 +6,7 @@ import { toast } from "sonner";
 
 import { userData } from "@/data/users";
 import type { AdminUser } from "@/lib/admin-api";
+import { PageInfo } from "@/components/admin/page-info";
 
 import { Users } from "./_components/users";
 import type { UserRow } from "./_components/data";

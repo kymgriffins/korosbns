@@ -13,14 +13,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { DataTable, type Column } from "@/components/admin/data-table";
 import { FormDialog } from "@/components/admin/form-dialog";
-import { useAuth } from "@/contexts/auth-context";
 import type { AdminModule } from "@/lib/admin-api";
 import { adminContentData } from "@/data/admin-content";
 
 type Mode = "create" | "edit";
 
 export default function AdminModulesPage() {
-  const { isLoggedIn } = useAuth();
   const [modules, setModules] = useState<AdminModule[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");

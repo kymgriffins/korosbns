@@ -27,6 +27,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { dashboardData } from "@/data/admin-dashboard";
 
 import { useRouteBase, getFullUrl } from "@/lib/route-base";
+import { PageInfo } from "@/components/admin/page-info";
 
 type DashboardStats = {
   totalUsers: number;
@@ -125,11 +126,22 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-3xl tracking-tight">Admin Dashboard</h1>
-        <p className="mt-1 text-muted-foreground text-sm">
-          Overview of your platform statistics and management tools.
-        </p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-3xl tracking-tight">Admin Dashboard</h1>
+          <p className="mt-1 text-muted-foreground text-sm">
+            Overview of your platform statistics and management tools.
+          </p>
+        </div>
+        <PageInfo>
+          <p className="font-medium mb-1">Working Tips</p>
+          <ul className="list-disc pl-4 space-y-1">
+            <li>Stats update every 5 minutes — refresh for latest.</li>
+            <li>Quick links navigate to each management section.</li>
+            <li>Content breakdown shows articles, videos, and stories.</li>
+            <li>Use the sidebar to access all admin sections.</li>
+          </ul>
+        </PageInfo>
       </div>
 
       {fetchError && <InlineError message={fetchError} onRetry={() => window.location.reload()} />}
