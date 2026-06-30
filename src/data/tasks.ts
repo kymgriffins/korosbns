@@ -38,6 +38,24 @@ const DEFAULT_TASKS: Task[] = (config.meetings ?? [])
     return t;
   }));
 
+const FALLBACK_TASKS: Task[] = [
+  {
+    id: "demo-1", week_label: "This Week", title: "Review budget allocations", status: "draft",
+    author_name: "System", created_at: new Date().toISOString(), updated_at: new Date().toISOString(),
+    priority: "high", content: "Cross-check county budget allocations against submitted proposals.",
+  },
+  {
+    id: "demo-2", week_label: "This Week", title: "Publish civic education module", status: "audited",
+    author_name: "System", created_at: new Date().toISOString(), updated_at: new Date().toISOString(),
+    priority: "medium", content: "Final review and publish the new module on county budgeting.",
+  },
+  {
+    id: "demo-3", week_label: "This Week", title: "Update community feedback form", status: "published",
+    author_name: "System", created_at: new Date().toISOString(), updated_at: new Date().toISOString(),
+    priority: "low", content: "Incorporate citizen suggestions from the last town hall.",
+  },
+];
+
 let _tasks: Task[] = [...DEFAULT_TASKS];
 
 export const taskData = {
@@ -48,7 +66,7 @@ export const taskData = {
       withFallback(
         "tasks",
         () => taskApi.listAll(),
-        () => _tasks,
+        () => (_tasks.length > 0 ? _tasks : FALLBACK_TASKS),
       ),
     fetchById: (id: string) =>
       withFallback(
