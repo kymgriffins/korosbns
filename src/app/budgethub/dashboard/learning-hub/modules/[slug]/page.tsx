@@ -19,6 +19,7 @@ import { useParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { InlineError } from "@/components/ui/inline-error";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -55,14 +56,16 @@ export default function ModuleDetailPage() {
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
   const [certificateId, setCertificateId] = useState<string | null>(null);
   const [certificateUrl, setCertificateUrl] = useState<string | null>(null);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
+    setFetchError(null);
     try {
       const res = await learningData.modules.fetchBySlug(slug);
       setMod(res);
     } catch {
-      // silently fail
+      setFetchError("Failed to load module.");
     } finally {
       setLoading(false);
     }
@@ -152,6 +155,17 @@ export default function ModuleDetailPage() {
     return (
       <div className="flex h-[calc(100vh-var(--dashboard-header-height,3rem))] items-center justify-center">
         <Loader2 className="size-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (fetchError) {
+    return (
+      <div className="flex flex-col items-center gap-4 py-24">
+        <InlineError message={fetchError} onRetry={fetchData} />
+        <Button asChild variant="outline" size="sm">
+          <Link href="/budgethub/dashboard/learning-hub/modules">Back to Modules</Link>
+        </Button>
       </div>
     );
   }

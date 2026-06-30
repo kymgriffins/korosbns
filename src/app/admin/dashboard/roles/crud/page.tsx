@@ -12,7 +12,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { DataTable, type Column } from "@/components/admin/data-table";
 import { FormDialog } from "@/components/admin/form-dialog";
-import { adminRolesApi, type AdminRole } from "@/lib/admin-api";
+import type { AdminRole } from "@/lib/admin-api";
+import { userData } from "@/data/users";
 
 type Mode = "create" | "edit";
 
@@ -30,7 +31,7 @@ export default function AdminRolesPage() {
     setLoading(true);
     setError("");
     try {
-      const res = await adminRolesApi.list();
+      const res = await userData.admin.roles.fetch();
       setRoles(res.results);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load roles");
@@ -55,8 +56,8 @@ export default function AdminRolesPage() {
     if (!form.name) { toast.error("Name is required"); return; }
     setSaving(true);
     try {
-      if (mode === "create") { await adminRolesApi.create(form); toast.success("Role created"); }
-      else if (editId) { await adminRolesApi.update(editId, form); toast.success("Role updated"); }
+      if (mode === "create") { await userData.admin.roles.create(form); toast.success("Role created"); }
+      else if (editId) { await userData.admin.roles.update(editId, form); toast.success("Role updated"); }
       setDialogOpen(false); fetchRoles();
     } catch (err) { toast.error(err instanceof Error ? err.message : "Operation failed"); }
     finally { setSaving(false); }
@@ -64,7 +65,7 @@ export default function AdminRolesPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this role?")) return;
-    try { await adminRolesApi.delete(id); toast.success("Role deleted"); fetchRoles(); }
+    try { await userData.admin.roles.delete(id); toast.success("Role deleted"); fetchRoles(); }
     catch (err) { toast.error(err instanceof Error ? err.message : "Delete failed"); }
   };
 

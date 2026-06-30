@@ -1,4 +1,4 @@
-import type { UserProfileApi } from "@/lib/api-client";
+import type { UserProfileApi, SocialLinkApi, ApiListResponse } from "@/lib/api-client";
 import { citizenApi } from "@/lib/api-client";
 import { adminUsersApi, adminAuthorsApi, adminRolesApi } from "@/lib/admin-api";
 import type { AdminUser, AdminAuthor, AdminRole } from "@/lib/admin-api";
@@ -32,6 +32,7 @@ for (const group of Object.values(leaderData)) {
 }
 
 let _team: TeamMember[] = [...DEFAULT_TEAM];
+let _roles: AdminRole[] = [];
 
 export interface UserDataStore {
   team: {
@@ -42,9 +43,18 @@ export interface UserDataStore {
   profile: {
     fetch: () => Promise<UserProfileApi | null>;
     fetchPublic: (id: string) => Promise<Record<string, unknown> | null>;
+    fetchNotifications: () => Promise<ApiListResponse<Record<string, unknown>>>;
+    fetchBookmarks: () => Promise<{ results: Record<string, unknown>[] }>;
+    toggleBookmark: (contentType: string, objectId: string) => Promise<{ toggle: boolean; bookmarks: Record<string, unknown>[] } | null>;
+    fetchSocialLinks: () => Promise<SocialLinkApi[]>;
   };
   admin: {
-    users: { fetch: (params?: { page?: number; search?: string }) => Promise<{ count: number; results: AdminUser[] }> };
+    users: {
+      fetch: (params?: { page?: number; search?: string }) => Promise<{ count: number; results: AdminUser[] }>;
+      create: (data: Partial<AdminUser>) => Promise<AdminUser | null>;
+      update: (id: string, data: Partial<AdminUser>) => Promise<AdminUser | null>;
+      delete: (id: string) => Promise<boolean>;
+    };
     authors: {
       fetch: (params?: { page?: number; search?: string }) => Promise<{ count: number; results: AdminAuthor[] }>;
       fetchBySlug: (slug: string) => Promise<AdminAuthor | null>;
@@ -52,7 +62,12 @@ export interface UserDataStore {
       update: (slug: string, data: Partial<AdminAuthor>) => Promise<AdminAuthor | null>;
       delete: (slug: string) => Promise<boolean>;
     };
-    roles: { fetch: () => Promise<{ count: number; results: AdminRole[] }> };
+    roles: {
+      fetch: () => Promise<{ count: number; results: AdminRole[] }>;
+      create: (data: Partial<AdminRole>) => Promise<AdminRole | null>;
+      update: (id: string, data: Partial<AdminRole>) => Promise<AdminRole | null>;
+      delete: (id: string) => Promise<boolean>;
+    };
   };
 }
 
@@ -80,6 +95,30 @@ export const userData: UserDataStore = {
         () => citizenApi.getPublicUser(id),
         () => null,
       ),
+    fetchNotifications: () =>
+      withFallback(
+        "users",
+        () => citizenApi.getNotifications(),
+        () => ({ results: [] }),
+      ),
+    fetchBookmarks: () =>
+      withFallback(
+        "users",
+        () => citizenApi.getBookmarks(),
+        () => ({ results: [] }),
+      ),
+    toggleBookmark: (contentType: string, objectId: string) =>
+      withFallback(
+        "users",
+        () => citizenApi.toggleBookmark(contentType, objectId),
+        () => null,
+      ),
+    fetchSocialLinks: () =>
+      withFallback(
+        "users",
+        () => citizenApi.getSocialLinks(),
+        () => [],
+      ),
   },
   admin: {
     users: {
@@ -88,6 +127,38 @@ export const userData: UserDataStore = {
           "users",
           () => adminUsersApi.list(params),
           () => ({ count: 0, results: [] as AdminUser[] }),
+        ),
+      create: (data: Partial<AdminUser>) =>
+        withFallback(
+          "users",
+          () => adminUsersApi.create(data),
+          () => {
+            const u: AdminUser = {
+              id: `new-${Date.now()}`,
+              email: data.email ?? "",
+              first_name: data.first_name ?? "",
+              last_name: data.last_name ?? "",
+              display_name: data.display_name,
+              avatar: data.avatar ?? null,
+              role: data.role ?? "viewer",
+              is_active: data.is_active ?? true,
+              date_joined: new Date().toISOString(),
+              last_login: null,
+            };
+            return u;
+          },
+        ),
+      update: (id: string, data: Partial<AdminUser>) =>
+        withFallback(
+          "users",
+          () => adminUsersApi.update(id, data),
+          () => null as unknown as AdminUser,
+        ),
+      delete: (id: string) =>
+        withFallback(
+          "users",
+          () => adminUsersApi.delete(id).then(() => true),
+          () => true,
         ),
     },
     authors: {
@@ -137,8 +208,50 @@ export const userData: UserDataStore = {
       fetch: () =>
         withFallback(
           "users",
-          () => adminRolesApi.list(),
-          () => ({ count: 0, results: [] as AdminRole[] }),
+          () => adminRolesApi.list().then((r) => {
+            _roles = r.results ?? [];
+            return r;
+          }),
+          () => ({ count: _roles.length, results: _roles }),
+        ),
+      create: (data: Partial<AdminRole>) =>
+        withFallback(
+          "users",
+          () => adminRolesApi.create(data),
+          () => {
+            const r: AdminRole = {
+              id: `new-${Date.now()}`,
+              name: data.name ?? "Untitled",
+              description: data.description ?? "",
+              permissions: data.permissions ?? [],
+              user_count: data.user_count ?? 0,
+              created_at: new Date().toISOString(),
+            };
+            _roles.unshift(r);
+            return r;
+          },
+        ),
+      update: (id: string, data: Partial<AdminRole>) =>
+        withFallback(
+          "users",
+          () => adminRolesApi.update(id, data),
+          () => {
+            const idx = _roles.findIndex((r) => r.id === id);
+            if (idx !== -1) _roles[idx] = { ..._roles[idx], ...data };
+            return _roles[idx] ?? null;
+          },
+        ),
+      delete: (id: string) =>
+        withFallback(
+          "users",
+          () => adminRolesApi.delete(id).then(() => {
+            _roles = _roles.filter((r) => r.id !== id);
+            return true;
+          }),
+          () => {
+            _roles = _roles.filter((r) => r.id !== id);
+            return true;
+          },
         ),
     },
   },

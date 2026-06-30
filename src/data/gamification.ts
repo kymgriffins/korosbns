@@ -37,4 +37,36 @@ export const gamificationData = {
         () => ({ results: [] as LeaderboardEntry[], count: 0 }),
       ).then((r) => r.results ?? []),
   },
+  badges: {
+    fetch: () =>
+      withFallback(
+        "gamification",
+        () => apiFetch("/gamification/badges/"),
+        () => [],
+      ),
+  },
+  challenges: {
+    fetch: () =>
+      withFallback(
+        "gamification",
+        () => apiFetch("/gamification/challenges/"),
+        () => [],
+      ),
+  },
+  certificates: {
+    fetch: () =>
+      withFallback(
+        "gamification",
+        () => apiFetch("/gamification/certificates/"),
+        () => [],
+      ),
+  },
+  referral: {
+    fetch: () =>
+      withFallback(
+        "gamification",
+        () => apiFetch("/gamification/referrals/"),
+        () => ({ code: "", count: 0, earnings: 0 }),
+      ),
+  },
 };

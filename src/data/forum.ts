@@ -25,6 +25,12 @@ export const forumData = {
         () => learnHubApi.getForumThread(threadId),
         () => null as unknown as ForumThreadDetail,
       ),
+    fetchByChapterId: (chapterId: string) =>
+      withFallback(
+        "forum",
+        () => learnHubApi.getForumThreads(chapterId),
+        () => ({ count: 0, results: [] as ForumThread[] }),
+      ).then((r) => r.results ?? []),
     create: (body: { title: string; civic_module?: string; civic_chapter?: string }) =>
       withFallback(
         "forum",

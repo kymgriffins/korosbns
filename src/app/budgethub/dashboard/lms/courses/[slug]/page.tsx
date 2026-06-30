@@ -24,6 +24,7 @@ import { useParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { InlineError } from "@/components/ui/inline-error";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -107,6 +108,7 @@ export default function CourseDetailPage() {
   const [selectedImageIdx, setSelectedImageIdx] = useState(0);
   const [noteText, setNoteText] = useState<string>("");
   const [noteVisibility, setNoteVisibility] = useState<"private" | "public">("private");
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const { setOpen: setSidebarOpen } = useSidebar();
 
   useEffect(() => {
@@ -116,10 +118,13 @@ export default function CourseDetailPage() {
 
   const fetchData = useCallback(async () => {
     setLoading(true);
+    setFetchError(null);
     try {
       const res = await learningData.modules.fetchBySlug(slug);
       setMod(res);
-    } catch { } finally { setLoading(false); }
+    } catch {
+      setFetchError("Failed to load course.");
+    } finally { setLoading(false); }
   }, [slug]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
@@ -198,6 +203,15 @@ export default function CourseDetailPage() {
     return (
       <div className="flex h-[calc(100vh-var(--dashboard-header-height,3rem))] items-center justify-center">
         <Loader2 className="size-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (fetchError) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        <InlineError message={fetchError} onRetry={fetchData} />
+        <Button variant="outline" className="mt-4" asChild><Link href="/budgethub/dashboard/lms/courses">Back to courses</Link></Button>
       </div>
     );
   }

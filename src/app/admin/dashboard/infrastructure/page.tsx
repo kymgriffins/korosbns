@@ -1,3 +1,4 @@
+import { DemoBanner } from "@/components/admin/demo-banner";
 import { infrastructureGroups } from "./_components/infrastructure-data";
 import { InfrastructureHeader } from "./_components/infrastructure-header";
 import { ProjectEnvironments } from "./_components/project-environments";
@@ -8,6 +9,7 @@ import "@/styles/flag-icons/flags.css";
 export default function Page() {
   return (
     <div className="flex flex-col gap-4">
+      <DemoBanner />
       <InfrastructureHeader />
 
       <div className="flex flex-col gap-4">

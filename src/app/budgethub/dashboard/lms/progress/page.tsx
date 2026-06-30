@@ -25,6 +25,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { InlineError } from "@/components/ui/inline-error";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
@@ -46,9 +47,11 @@ export default function ProgressPage() {
   const [challenges, setChallenges] = useState<ChallengeData[]>([]);
   const [badgeCatalog, setBadgeCatalog] = useState<BadgeCatalogResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
+    setFetchError(null);
     try {
       const [profileRes, lb, ch, bc] = await Promise.all([
         learningData.profile.fetch(),
@@ -60,7 +63,12 @@ export default function ProgressPage() {
       setLeaderboard(lb);
       setChallenges(ch);
       setBadgeCatalog(bc);
-    } catch {} finally { setLoading(false); }
+      if (!profileRes && !lb && !ch) {
+        setFetchError("Failed to load progress data.");
+      }
+    } catch {
+      setFetchError("Failed to load progress data.");
+    } finally { setLoading(false); }
   }, []);
 
   useEffect(() => { fetchData(); }, [fetchData]);
@@ -91,6 +99,8 @@ export default function ProgressPage() {
           Refresh
         </Button>
       </div>
+
+      {fetchError && <InlineError message={fetchError} onRetry={fetchData} />}
 
       {loading ? (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-4">

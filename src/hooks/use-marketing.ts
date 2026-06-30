@@ -1,5 +1,6 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { buildApiUrl, resolveAppUrl } from "@/lib/api-url";
+import { marketingData } from "@/data/marketing";
 import type { ApiListResponse } from "@/types/api";
 import type { Campaign } from "@/lib/campaign/types";
 
@@ -15,11 +16,8 @@ export function useArticlesMarquee(): UseQueryResult<ArticleResponse, Error> {
   return useQuery({
     queryKey: ["articles-marquee"],
     queryFn: async () => {
-      const response = await fetch(buildApiUrl("/content/articles/"), {
-        cache: "no-store",
-      });
-      if (!response.ok) throw new Error("Failed to fetch articles");
-      return response.json() as Promise<ArticleResponse>;
+      const results = await marketingData.articlesMarquee.fetch();
+      return { results } as ArticleResponse;
     },
   });
 }
@@ -64,9 +62,8 @@ export function useCampaigns(): UseQueryResult<CampaignsResponse, Error> {
   return useQuery({
     queryKey: ["campaigns"],
     queryFn: async () => {
-      const res = await fetch("/api/campaigns");
-      if (!res.ok) throw new Error("Failed to fetch campaigns");
-      return res.json() as Promise<CampaignsResponse>;
+      const data = await marketingData.campaigns.fetch();
+      return { success: true, data } as CampaignsResponse;
     },
   });
 }

@@ -4,6 +4,7 @@ import { Download, RotateCw, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+import { DemoBanner } from "@/components/admin/demo-banner";
 import { BalanceDistributionCard } from "./_components/balance-distribution-card";
 import { FinanceNotification } from "./_components/finance-notification";
 import { IncomeBreakdown } from "./_components/income-breakdown";
@@ -18,6 +19,7 @@ export default function Page() {
 
   return (
     <div className="flex flex-col gap-4">
+      <DemoBanner />
       <div className="space-y-1">
         <h1 className="text-3xl tracking-tight">Personal Finances</h1>
         <p className="text-muted-foreground text-sm">{formattedDate}</p>

@@ -12,6 +12,11 @@ import {
   FISCAL_YEARS,
   type FiscalYearMeta,
 } from "@/lib/reports-api";
+import {
+  fetchBudgetAllocations,
+  fetchBudgetKpis,
+  fetchBudgetHighlights,
+} from "@/lib/budget-api";
 
 export type { BudgetReportProfile, BudgetKpi, BudgetComparisonRow, BudgetCallout };
 
@@ -76,6 +81,30 @@ export const budgetData = {
         "budget",
         () => adminBudgetApi.delete(id).then(() => true),
         () => true,
+      ),
+  },
+  allocations: {
+    fetch: (params?: { fiscal_year?: string; entity?: string; allocation_type?: string }) =>
+      withFallback(
+        "budget",
+        () => fetchBudgetAllocations(params),
+        () => [],
+      ),
+  },
+  kpis: {
+    fetch: (params?: { fiscal_year?: string; entity?: string }) =>
+      withFallback(
+        "budget",
+        () => fetchBudgetKpis(params),
+        () => [],
+      ),
+  },
+  highlights: {
+    fetch: (params?: { fiscal_year?: string; entity?: string }) =>
+      withFallback(
+        "budget",
+        () => fetchBudgetHighlights(params),
+        () => [],
       ),
   },
 };

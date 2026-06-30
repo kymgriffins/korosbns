@@ -1,18 +1,19 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { citizenApi } from "@/lib/api-client";
+import { userData } from "@/data/users";
 import type { UserProfileApi, SocialLinkApi } from "@/lib/api-client";
 
 export function useNotifications(status?: string) {
   return useQuery({
     queryKey: ["notifications", status],
-    queryFn: () => citizenApi.getNotifications(status),
+    queryFn: () => userData.profile.fetchNotifications(),
   });
 }
 
 export function useBookmarks() {
   return useQuery({
     queryKey: ["bookmarks"],
-    queryFn: () => citizenApi.getBookmarks(),
+    queryFn: () => userData.profile.fetchBookmarks(),
   });
 }
 
@@ -57,7 +58,7 @@ export function useUpdateProfile() {
 export function useSocialLinks() {
   return useQuery({
     queryKey: ["social-links"],
-    queryFn: () => citizenApi.getSocialLinks(),
+    queryFn: () => userData.profile.fetchSocialLinks(),
   });
 }
 

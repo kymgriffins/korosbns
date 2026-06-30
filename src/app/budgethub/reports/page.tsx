@@ -5,6 +5,7 @@ import {
   ArrowUpRight, BookOpen, Building2, Hammer, Landmark, LayoutDashboard, Loader2, PieChart, RefreshCw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { InlineError } from "@/components/ui/inline-error";
 import { cn } from "@/lib/utils";
 import { budgetData } from "@/data/budget";
 import type { BudgetSchema } from "@/lib/budget-schema";
@@ -33,16 +34,23 @@ export default function ReportsPage() {
   const [allYears, setAllYears] = useState<Record<string, BudgetSchema>>({});
   const [fiscalYears, setFiscalYears] = useState<FiscalYearMeta[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [selectedYear, setSelectedYear] = useState("");
   const [tab, setTab] = useState<TabId>("overview");
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
-    const result = await budgetData.fetchReportData();
-    setFiscalYears(result.fiscalYears);
-    setAllYears(result.allYears);
-    setSelectedYear(result.selectedYear);
-    setLoading(false);
+    setFetchError(null);
+    try {
+      const result = await budgetData.fetchReportData();
+      setFiscalYears(result.fiscalYears);
+      setAllYears(result.allYears);
+      setSelectedYear(result.selectedYear);
+    } catch {
+      setFetchError("Failed to load budget data. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => { fetchAll(); }, [fetchAll]);
@@ -126,8 +134,12 @@ export default function ReportsPage() {
 
       {/* Content */}
       <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-12">
-        {loading || !currentData ? (
+        {loading ? (
           <LoadingSkeleton />
+        ) : fetchError ? (
+          <InlineError message={fetchError} onRetry={fetchAll} />
+        ) : !currentData ? (
+          <InlineError message="No budget data available for the selected year." />
         ) : (
           <>
             {tab === "overview" && (

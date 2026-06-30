@@ -125,13 +125,37 @@ export function embedUrl(videoId: string): string {
   return `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1`;
 }
 
+function defaultVideosAsLearnHubItems(): { results: LearnHubItem[] } {
+  return {
+    results: DEFAULT_VIDEOS.map((v) => ({
+      id: v.videoId,
+      title: v.title,
+      description: v.description,
+      url: v.url,
+      published_at: v.publishedAt,
+      source: "youtube" as const,
+      content_type: "video" as const,
+      channel_id: v.channelId,
+    })),
+  };
+}
+
 export const videoData = {
-  get: (): LearnHubItem[] => [],
+  get: (): LearnHubItem[] => getVideos().map((v) => ({
+    id: v.videoId,
+    title: v.title,
+    description: v.description,
+    url: v.url,
+    published_at: v.publishedAt,
+    source: "youtube" as const,
+    content_type: "video" as const,
+    channel_id: v.channelId,
+  })),
   set: (_items: LearnHubItem[]) => {},
   fetch: (filters?: { search?: string }): Promise<LearnHubItem[]> =>
     withFallback(
       "videos",
       () => learnHubApi.videos(filters),
-      () => ({ results: [] as LearnHubItem[] }),
+      () => defaultVideosAsLearnHubItems(),
     ).then((r) => r.results ?? []),
 };

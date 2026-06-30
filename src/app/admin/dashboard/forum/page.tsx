@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Trash2, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
 
@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { DataTable, type Column } from "@/components/admin/data-table";
-import { adminForumApi, type AdminForumThread } from "@/lib/admin-api";
+import type { AdminForumThread } from "@/lib/admin-api";
+import { adminContentData } from "@/data/admin-content";
 
 export default function AdminForumPage() {
   const [threads, setThreads] = useState<AdminForumThread[]>([]);
@@ -21,16 +22,18 @@ export default function AdminForumPage() {
   const fetchThreads = useCallback(async () => {
     setLoading(true); setError("");
     try {
-      const res = await adminForumApi.listThreads({ page, search: search || undefined });
+      const res = await adminContentData.forum.fetchList({ page, search: search || undefined });
       setThreads(res.results);
       setTotalPages(Math.max(1, Math.ceil(res.count / 25)));
     } catch (err) { setError(err instanceof Error ? err.message : "Failed to load threads"); }
     finally { setLoading(false); }
   }, [page, search]);
 
+  useEffect(() => { fetchThreads(); }, [fetchThreads]);
+
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this thread and all its posts?")) return;
-    try { await adminForumApi.deleteThread(id); toast.success("Thread deleted"); fetchThreads(); }
+    try { await adminContentData.forum.deleteThread(id); toast.success("Thread deleted"); fetchThreads(); }
     catch (err) { toast.error(err instanceof Error ? err.message : "Delete failed"); }
   };
 

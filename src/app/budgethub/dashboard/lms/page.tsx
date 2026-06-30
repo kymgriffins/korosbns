@@ -8,6 +8,7 @@ import { motion } from "motion/react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { InlineError } from "@/components/ui/inline-error";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import type { CivicModule, LearnHubItem } from "@/types/learn";
@@ -164,15 +165,19 @@ export default function LMSPage() {
   const [modules, setModules] = useState<CivicModule[]>([]);
   const [trending, setTrending] = useState<LearnHubItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
+    setFetchError(null);
     try {
       const [summaryRes, modules] = await Promise.all([learningData.summary.fetch(), learningData.modules.fetch()]);
       setCounts(summaryRes.counts);
       setModules(modules as CivicModule[]);
       setTrending(summaryRes.trending ?? []);
-    } catch {} finally { setLoading(false); }
+    } catch {
+      setFetchError("Failed to load LMS data.");
+    } finally { setLoading(false); }
   }, []);
 
   useEffect(() => { fetchData(); }, [fetchData]);
@@ -203,6 +208,8 @@ export default function LMSPage() {
           Refresh
         </Button>
       </div>
+
+      {fetchError && <InlineError message={fetchError} onRetry={fetchData} />}
 
       {loading ? (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">

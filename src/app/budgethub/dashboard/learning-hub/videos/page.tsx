@@ -6,6 +6,7 @@ import { Film, RefreshCw } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { InlineError } from "@/components/ui/inline-error";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import type { LearnHubItem } from "@/lib/learn-hub";
@@ -16,14 +17,16 @@ export default function VideosPage() {
   usePageView();
   const [items, setItems] = useState<LearnHubItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
+    setFetchError(null);
     try {
       const res = await videoData.fetch();
       setItems(res as LearnHubItem[]);
     } catch {
-      // silently fail
+      setFetchError("Failed to load videos.");
     } finally {
       setLoading(false);
     }
@@ -45,6 +48,8 @@ export default function VideosPage() {
           Refresh
         </Button>
       </div>
+
+      {fetchError && <InlineError message={fetchError} onRetry={fetchData} />}
 
       {loading ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

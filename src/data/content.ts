@@ -66,11 +66,23 @@ export const contentData = {
     fetchFromApi: () => citizenApi.getStories() as Promise<ApiListResponse<LearnHubItem>>,
   },
   trivia: {
+    fetchList: () =>
+      withFallback(
+        "content",
+        () => citizenApi.getTriviaList(),
+        () => ({ results: [], count: 0 }),
+      ).then((r) => r.results ?? []),
     fetchBySlug: (slug: string) =>
       withFallback(
         "content",
         () => citizenApi.getTrivia(slug) as Promise<Record<string, unknown>>,
         () => null,
+      ),
+    fetchLeaderboard: (id: string) =>
+      withFallback(
+        "content",
+        () => citizenApi.getTriviaLeaderboard(id),
+        () => ({ results: [] }),
       ),
   },
   documents: {
@@ -98,5 +110,19 @@ export const contentData = {
         () => learnHubApi.quests(filters),
         () => ({ results: _quests }),
       ).then((r) => r.results ?? []),
+  },
+  knowledge: {
+    fetch: () =>
+      withFallback(
+        "content",
+        () => citizenApi.getKnowledge(),
+        () => ({ results: [] }),
+      ).then((r) => r.results ?? []),
+    fetchById: (id: string) =>
+      withFallback(
+        "content",
+        () => citizenApi.getKnowledgeEntry(id),
+        () => null,
+      ),
   },
 };

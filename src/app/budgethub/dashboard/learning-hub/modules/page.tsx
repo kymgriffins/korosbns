@@ -7,6 +7,7 @@ import { BookOpen, GraduationCap, Info, RefreshCw, Search, Trophy, Users, X } fr
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { InlineError } from "@/components/ui/inline-error";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import type { CivicModule } from "@/types/learn";
@@ -17,17 +18,19 @@ export default function ModulesPage() {
   usePageView();
   const [modules, setModules] = useState<CivicModule[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterBadge, setFilterBadge] = useState<string | null>(null);
   const [filterAuthor, setFilterAuthor] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
+    setFetchError(null);
     try {
       const res = await learningData.modules.fetch();
       setModules(res as CivicModule[]);
     } catch {
-      // silently fail
+      setFetchError("Failed to load modules.");
     } finally {
       setLoading(false);
     }
@@ -67,6 +70,8 @@ export default function ModulesPage() {
           Refresh
         </Button>
       </div>
+
+      {fetchError && <InlineError message={fetchError} onRetry={fetchData} />}
 
       {loading ? (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">

@@ -1,25 +1,20 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiFetch } from "@/lib/api-client";
 import { forumData } from "@/data/forum";
-import type { ForumThread, ForumThreadDetail, ForumPost } from "@/types/learn";
+import type { ForumThread, ForumThreadDetail } from "@/types/learn";
 import type { ApiListResponse } from "@/types/api";
 
 export function useForumThreads(filters?: { chapterId?: string; moduleId?: string }) {
-  const params = new URLSearchParams();
-  if (filters?.chapterId) params.set("chapter_id", filters.chapterId);
-  if (filters?.moduleId) params.set("module_id", filters.moduleId);
-  const qs = params.toString();
   return useQuery({
     queryKey: ["forum", "threads", filters],
     queryFn: async () => {
-      if (!filters?.moduleId) {
-        const threads = await forumData.threads.fetch(filters?.chapterId);
+      if (filters?.chapterId) {
+        const threads = await forumData.threads.fetchByChapterId(filters.chapterId);
         return { count: threads.length, results: threads } as ApiListResponse<ForumThread>;
       }
-      const path = qs ? `/engagement/forum-threads/?${qs}` : "/engagement/forum-threads/";
-      return apiFetch<ApiListResponse<ForumThread>>(path);
+      const threads = await forumData.threads.fetch(filters?.chapterId);
+      return { count: threads.length, results: threads } as ApiListResponse<ForumThread>;
     },
     staleTime: 1000 * 60,
   });

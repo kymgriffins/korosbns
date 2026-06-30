@@ -13,10 +13,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { InlineError } from "@/components/ui/inline-error";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { cn } from "@/lib/utils";
-import { adminAnalyticsApi, adminUsersApi, adminModulesApi, adminForumApi, adminNotesApi, adminContentApi } from "@/lib/admin-api";
+import { cn } from "@/utils";
+import { adminNotesApi } from "@/lib/admin-api";
+import { analyticsData } from "@/data/analytics";
+import { adminContentData } from "@/data/admin-content";
+import { userData } from "@/data/users";
 import { AnalyticsToolbar } from "./_components/analytics-toolbar";
 import { RealtimeVisitors } from "./_components/realtime-visitors";
 import { TopPages } from "./_components/top-pages";
@@ -31,6 +35,7 @@ const barConfig = { value: { label: "Count", color: "var(--chart-3)" } } satisfi
 
 export default function AdminAnalyticsPage() {
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [summary, setSummary] = useState<{
     total_users: number; total_content: number; total_modules: number;
     total_articles: number; total_videos: number; total_stories: number;
@@ -42,39 +47,38 @@ export default function AdminAnalyticsPage() {
 
   const fetchData = useCallback(async () => {
     setLoading(true);
+    setFetchError(null);
     try {
-      const [summaryRes, modulesRes, articlesRes, notesRes, forumRes] = await Promise.all([
-        adminAnalyticsApi.summary().catch(() => null),
-        adminModulesApi.list({ page: 1 }).catch(() => ({ results: [] as Array<{ title: string; steps?: Array<unknown> }> })),
-        adminContentApi.list("articles", { page: 1 }).catch(() => ({ results: [] as Array<{ id: string; title: string }> })),
-        adminNotesApi.list({ page: 1 }).catch(() => ({ results: [], count: 0 })),
-        adminForumApi.listThreads({ page: 1 }).catch(() => ({ results: [], count: 0 })),
-      ]);
+      const summaryRes = await analyticsData.admin.fetchSummary();
+      const modulesRes = await adminContentData.modules.fetchList({ page: 1 });
+      const articlesRes = await adminContentData.content.fetchList("articles", { page: 1 });
+      const notesRes = await adminNotesApi.list({ page: 1 }).catch(() => ({ results: [], count: 0 }));
+      const forumRes = await adminContentData.forum.fetchList({ page: 1 });
 
-      if (summaryRes) {
-        setSummary(summaryRes);
-      } else {
-        const [usersRes] = await Promise.all([
-          adminUsersApi.list({ page: 1 }).catch(() => ({ count: 0, results: [] })),
-        ]);
+      if (!summaryRes || (summaryRes.total_users === 0 && summaryRes.total_content === 0)) {
+        setFetchError("Analytics API unavailable. Showing fallback data.");
+        const usersRes = await userData.admin.users.fetch({ page: 1 });
         setSummary({
           total_users: usersRes.count,
           total_content:
-            (articlesRes.results?.length ?? 0) + (modulesRes.results?.length ?? 0),
-          total_modules: modulesRes.results?.length ?? 0,
-          total_articles: articlesRes.results?.length ?? 0,
+            (articlesRes?.results?.length ?? 0) + (modulesRes?.results?.length ?? 0),
+          total_modules: modulesRes?.results?.length ?? 0,
+          total_articles: articlesRes?.results?.length ?? 0,
           total_videos: 0,
           total_stories: 0,
           total_documents: 0,
-          active_forum_threads: forumRes.count,
+          active_forum_threads: forumRes?.count ?? 0,
           total_notes: notesRes.count,
           recent_signups: 0,
           engagement_rate: 0,
         });
+      } else {
+        setSummary(summaryRes);
       }
-      setModules(modulesRes.results ?? []);
-      setArticles(articlesRes.results ?? []);
+      setModules(modulesRes?.results ?? []);
+      setArticles(articlesRes?.results ?? []);
     } catch {
+      setFetchError("Failed to load analytics data.");
     } finally {
       setLoading(false);
     }
@@ -128,6 +132,8 @@ export default function AdminAnalyticsPage() {
           Refresh
         </Button>
       </div>
+
+      {fetchError && <InlineError message={fetchError} compact />}
 
       <Tabs defaultValue="overview" className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center justify-between gap-3">

@@ -17,6 +17,7 @@ import { FormDialog } from "@/components/admin/form-dialog";
 import { AdminContentEditor } from "@/components/admin/content-editor";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/contexts/auth-context";
 import { adminContentData } from "@/data/admin-content";
 import type { AdminContentItem } from "@/lib/admin-api";
 
@@ -30,6 +31,7 @@ const CONTENT_TABS = [
 type Mode = "create" | "edit";
 
 export default function AdminContentPage() {
+  const { isLoggedIn } = useAuth();
   const [activeTab, setActiveTab] = useState("articles");
   const [items, setItems] = useState<AdminContentItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -127,7 +129,7 @@ export default function AdminContentPage() {
             <a href={`/learn/${c.slug}`} target="_blank" rel="noopener noreferrer"><ExternalLink className="size-3.5" /><span className="sr-only">Read</span></a>
           </Button>
         ) : (
-          <Button variant="ghost" size="icon-sm" onClick={() => handleDelete(c.id)} className="text-destructive hover:text-destructive"><Trash2 className="size-3.5" /></Button>
+          <Button variant="ghost" size="icon-sm" onClick={() => handleDelete(c.id)} disabled={!isLoggedIn} title={!isLoggedIn ? "Sign in to perform this action" : "Delete"} className="text-destructive hover:text-destructive"><Trash2 className="size-3.5" /></Button>
         )}
       </div>
     )},

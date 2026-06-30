@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Loader2, Lock, LogOut, Mail, Save, User } from "lucide-react";
 import Link from "next/link";
 
@@ -12,7 +12,9 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 import type { UserProfileApi } from "@/lib/api-client";
+import { citizenApi } from "@/lib/api-client";
 import { userData } from "@/data/users";
 import { usePageView } from "@/hooks/use-page-view";
 
@@ -22,12 +24,34 @@ export default function AccountPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
+  const displayNameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const headlineRef = useRef<HTMLInputElement>(null);
+  const bioRef = useRef<HTMLTextAreaElement>(null);
+
   const fetchData = useCallback(async () => {
     setLoading(true);
     try { const me = await userData.profile.fetch(); setUserProfile(me as UserProfileApi); } catch {} finally { setLoading(false); }
   }, []);
 
   useEffect(() => { fetchData(); }, [fetchData]);
+
+  const handleSave = useCallback(async () => {
+    setSaving(true);
+    try {
+      await citizenApi.patchMe({
+        display_name: displayNameRef.current?.value ?? undefined,
+        email: emailRef.current?.value ?? undefined,
+        headline: headlineRef.current?.value ?? undefined,
+        bio: bioRef.current?.value ?? undefined,
+      });
+      toast.success("Profile saved successfully");
+    } catch {
+      toast.error("Failed to save profile");
+    } finally {
+      setSaving(false);
+    }
+  }, []);
 
   const displayName = userProfile?.display_name || userProfile?.first_name || "User";
   const avatarUrl = userProfile?.avatar_url || userProfile?.avatar;
@@ -63,22 +87,22 @@ export default function AccountPage() {
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="displayName">Display Name</Label>
-                  <Input id="displayName" defaultValue={displayName} placeholder="Your name" />
+                  <Input id="displayName" ref={displayNameRef} defaultValue={displayName} placeholder="Your name" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" defaultValue={userProfile?.email ?? ""} placeholder="your@email.com" />
+                  <Input id="email" ref={emailRef} type="email" defaultValue={userProfile?.email ?? ""} placeholder="your@email.com" />
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="headline">Headline</Label>
-                <Input id="headline" defaultValue={userProfile?.headline ?? ""} placeholder="e.g. Lifelong Learner" />
+                  <Input id="headline" ref={headlineRef} defaultValue={userProfile?.headline ?? ""} placeholder="e.g. Lifelong Learner" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="bio">Bio</Label>
-                <Textarea id="bio" defaultValue={userProfile?.bio ?? ""} placeholder="Tell us about yourself..." rows={3} />
+                  <Textarea id="bio" ref={bioRef} defaultValue={userProfile?.bio ?? ""} placeholder="Tell us about yourself..." rows={3} />
               </div>
-              <Button disabled={saving}>
+              <Button disabled={saving} onClick={handleSave}>
                 {saving ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />}
                 Save Changes
               </Button>

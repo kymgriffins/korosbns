@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { usePageView } from "@/hooks/use-page-view";
 import { userData } from "@/data/users";
+import { DemoBanner } from "@/components/admin/demo-banner";
 import { CalendarPanel } from "./_components/calendar-panel";
 import { FocusCard } from "./_components/focus-card";
 import { ProjectsSection } from "./_components/projects-section";
@@ -27,6 +28,7 @@ export default function Page() {
 
   return (
     <div className="grid gap-6 lg:grid-cols-12">
+      <DemoBanner />
       <section className="lg:col-span-9">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">

@@ -2,9 +2,6 @@
 
 import { useState, useEffect, useMemo } from "react";
 import {
-  fetchBudgetAllocations,
-  fetchBudgetKpis,
-  fetchBudgetHighlights,
   allocationsToChartPoints,
   kpiRawToKpi,
   allocationToComparisonRows,
@@ -13,6 +10,7 @@ import {
   type BudgetKpiRaw,
   type BudgetHighlightRaw,
 } from "@/lib/budget-api";
+import { budgetData } from "@/data/budget";
 import type { BudgetReportProfile } from "@/types/budget-report";
 
 interface UseBudgetDataResult {
@@ -36,14 +34,14 @@ export function useBudgetData(fiscalYearId?: string | null, fiscalYearLabel?: st
     async function loadBudget() {
       try {
         const [allocations, kpis, highlights] = await Promise.all([
-          fetchBudgetAllocations({ fiscal_year: fiscalYearId! }),
-          fetchBudgetKpis({ fiscal_year: fiscalYearId! }),
-          fetchBudgetHighlights({ fiscal_year: fiscalYearId! }),
+          budgetData.allocations.fetch({ fiscal_year: fiscalYearId! }),
+          budgetData.kpis.fetch({ fiscal_year: fiscalYearId! }),
+          budgetData.highlights.fetch({ fiscal_year: fiscalYearId! }),
         ]);
         if (cancelled) return;
-        setBudgetAllocations(allocations);
-        setBudgetKpis(kpis);
-        setBudgetHighlights(highlights);
+        setBudgetAllocations(allocations as BudgetAllocation[]);
+        setBudgetKpis(kpis as BudgetKpiRaw[]);
+        setBudgetHighlights(highlights as BudgetHighlightRaw[]);
       } catch {
         // silently fail — fall back to JSON metadata
       } finally {
