@@ -4,6 +4,14 @@ import React from "react";
 import dynamic from "next/dynamic";
 import LandingHero from "@/components/marketing/landing-hero";
 
+const BudgetReadingCard = dynamic(
+  () => import("@/components/marketing/budget-reading-card").then((m) => ({ default: m.BudgetReadingCard })),
+  {
+    ssr: false,
+    loading: () => <div className="h-96 w-full bg-muted animate-pulse" />,
+  }
+);
+
 const CloudinaryGallery = dynamic(
   () => import("@/components/marketing/cloudinary-gallery"),
   {
@@ -93,6 +101,7 @@ export default function PremiumLandingClient() {
   return (
     <>
       <LandingHero />
+      <BudgetReadingCard />
       <CloudinaryGallery />
       <LandingTikTokVideo />
       <LandingYoutube />
