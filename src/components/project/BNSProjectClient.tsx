@@ -175,13 +175,13 @@ export function BNSProjectClient() {
         <ProjectImpactMetrics />
       </SectionShell>
 
-      {/* Project Gallery — images from landing page */}
+      {/* Project Gallery — images from landing page as clickable project cards */}
       {projectImages.length > 0 && (
         <SectionShell className="bg-muted/30">
           <SectionHeader
             eyebrow="In Action"
             title="Our Projects in the Field"
-            description="Moments from our civic workshops, townhalls, and community engagements across Kenya."
+            description="Moments from our civic workshops, townhalls, and community engagements across Kenya — click to explore each project."
           />
           <motion.div
             variants={staggerContainer}
@@ -190,45 +190,34 @@ export function BNSProjectClient() {
             viewport={{ once: true }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
           >
-            {projectImages.slice(0, 6).map((img, i) => (
-              <motion.div
-                key={i}
-                variants={fadeInUp}
-                custom={i}
-                className="group relative aspect-[4/3] rounded-xl overflow-hidden border border-border/60 bg-card"
-              >
-                <img
-                  src={img.src}
-                  alt={img.alt}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                  <span className="text-sm font-semibold text-white">{img.alt}</span>
-                </div>
-              </motion.div>
-            ))}
-            {initiatives.slice(0, Math.max(0, 6 - projectImages.length)).map((initiative, i) => {
-              const Icon = initiative.icon;
+            {projectImages.slice(0, 6).map((img, i) => {
+              const projectIds = ["budget-literacy", "county-budget-tracking", "public-participation", "bns-studio", "community-outreach"];
+              const projectId = projectIds[i % projectIds.length];
+              const projectTitle = initiatives.find(p => p.id === projectId)?.title ?? projectIds[i];
               return (
-                <motion.div
-                  key={initiative.id}
-                  variants={fadeInUp}
-                  custom={projectImages.length + i}
-                >
+                <motion.div key={i} variants={fadeInUp} custom={i}>
                   <Link
-                    href={`/bns-project/${initiative.id}`}
-                    className="group block h-full rounded-xl border border-border/60 bg-card p-6 transition-all duration-300 hover:border-primary/30 hover:shadow-lg"
+                    href={`/bns-project/${projectId}`}
+                    className="group block h-full rounded-xl overflow-hidden border border-border/60 bg-card transition-all duration-300 hover:border-primary/30 hover:shadow-lg"
                   >
-                    <Icon className="size-10 text-primary mb-4" />
-                    <h3 className="font-bold text-lg mb-2 group-hover:text-primary transition-colors">
-                      {initiative.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                      {initiative.desc}
-                    </p>
-                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-primary">
-                      View Timeline <ArrowRight className="size-3" />
-                    </span>
+                    <div className="relative aspect-[4/3] overflow-hidden">
+                      <img
+                        src={img.src}
+                        alt={img.alt}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-transparent flex items-end p-4">
+                        <div>
+                          <span className="text-sm font-bold text-white drop-shadow-sm">{img.alt}</span>
+                          <p className="text-xs text-white/70 mt-1">{projectTitle}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-4 flex items-center justify-between">
+                      <span className="text-xs font-semibold text-primary group-hover:gap-2 transition-all inline-flex items-center gap-1">
+                        View Project <ArrowRight className="size-3" />
+                      </span>
+                    </div>
                   </Link>
                 </motion.div>
               );
