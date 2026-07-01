@@ -208,7 +208,13 @@ export function BNSProjectClient() {
                     </div>
                   )}
                   <div className="p-5">
-                    <Icon className="size-8 text-primary mb-3" />
+                    <motion.div
+                      animate={{ scale: [1, 1.06, 1], rotate: [0, i === 1 ? -4 : 4, 0] }}
+                      transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                      className="inline-flex size-11 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 text-primary mb-3"
+                    >
+                      <Icon className="size-5" />
+                    </motion.div>
                     <h3 className="font-bold text-lg mb-2 group-hover:text-primary transition-colors">
                       {initiative.title}
                     </h3>
