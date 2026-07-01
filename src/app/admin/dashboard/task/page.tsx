@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {
   closestCorners,
@@ -14,26 +14,14 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { format } from "date-fns";
-import type { LucideIcon } from "lucide-react";
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import {
-  Calendar,
-  CalendarDays,
-  CheckCircle2,
-  Circle,
-  CircleDot,
   Download,
   FileText,
   Hash,
-  MoreHorizontal,
   Plus,
   Search,
-  Trash2,
-  User,
   X,
-  Pencil,
-  Users,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -45,7 +33,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -59,6 +46,7 @@ import {
 } from "@/components/ui/dialog";
 
 import { usePageView } from "@/hooks/use-page-view";
+import { TaskCard } from "@/components/tasks/task-card";
 import { taskData } from "@/data/tasks";
 import { taskApi } from "@/lib/task-api";
 import { useAuth } from "@/contexts/auth-context";
@@ -66,182 +54,14 @@ import type { Task, TaskStatus, TaskColumn } from "@/types/tasks";
 
 import { useRouteBase, getFullUrl } from "@/lib/route-base";
 import { AdminTaskBreadcrumbs } from "@/components/admin/admin-task-breadcrumb";
-
-const COLUMNS: TaskStatus[] = ["draft", "audited", "published"];
-
-const COLUMN_META: Record<TaskStatus, { title: string; icon: LucideIcon; color: string }> = {
-  draft: { title: "Undone", icon: Circle, color: "border-t-amber-500" },
-  audited: { title: "In Progress", icon: CircleDot, color: "border-t-blue-500" },
-  published: { title: "Done", icon: CheckCircle2, color: "border-t-emerald-500" },
-};
-
-const STATUS_STYLES: Record<string, { bg: string; text: string }> = {
-  draft: { bg: "#f59e0b", text: "#f59e0b" },
-  audited: { bg: "#3b82f6", text: "#3b82f6" },
-  published: { bg: "#10b981", text: "#10b981" },
-};
-
-function safeFormat(date: string | Date | null | undefined, fmt: string): string {
-  if (!date) return "";
-  try {
-    const d = new Date(date);
-    if (isNaN(d.getTime())) return "";
-    return format(d, fmt);
-  } catch {
-    return "";
-  }
-}
-
-function TaskCard({
-  task,
-  onDelete,
-  isDragging,
-  canManage,
-}: {
-  task: Task;
-  onDelete: (id: string) => void;
-  isDragging?: boolean;
-  canManage: boolean;
-}) {
-  const router = useRouter();
-  const routeBase = useRouteBase();
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging: isSortDragging,
-  } = useSortable({ id: task.id });
-
-  const style = {
-    transform: transform ? `translate3d(${transform.x}px, ${transform.y}px, 0)` : undefined,
-    transition,
-  };
-
-  const statusStyle = STATUS_STYLES[task.status] ?? STATUS_STYLES.draft;
-
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-      onClick={() => router.push(getFullUrl(routeBase, `/dashboard/task/${task.id}`))}
-      onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") router.push(getFullUrl(routeBase, `/dashboard/task/${task.id}`)); }}
-      role="button"
-      tabIndex={0}
-      className={`group rounded-xl border border-border/60 bg-card p-3.5 shadow-xs transition-all duration-200 hover:shadow-md hover:border-primary/20 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 ${
-        isDragging || isSortDragging ? "opacity-50 shadow-lg" : ""
-      }`}
-    >
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <span
-              className="size-2 rounded-full shrink-0"
-              style={{ backgroundColor: statusStyle.bg }}
-            />
-            <span className="text-[10px] font-medium uppercase tracking-wider"
-              style={{ color: statusStyle.text }}>
-              {task.status}
-            </span>
-            {task.due_label && (
-              <span className="text-[9px] text-muted-foreground truncate">
-                · {task.due_label}
-              </span>
-            )}
-          </div>
-          <h4 className="text-sm font-semibold leading-snug truncate">{task.title}</h4>
-          {task.week_label && (
-            <p className="text-[10px] text-muted-foreground mt-0.5">{task.week_label}</p>
-          )}
-        </div>
-
-        {canManage && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-              <Button variant="ghost" size="icon-xs" className="-mr-1.5 -mt-1 shrink-0 opacity-0 group-hover:opacity-100" aria-label="Task actions">
-                <MoreHorizontal className="size-3.5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-36" onClick={(e) => e.stopPropagation()}>
-              {task.status !== "published" && (
-                <DropdownMenuItem onSelect={() => router.push(getFullUrl(routeBase, `/dashboard/task/${task.id}`))}>
-                  <Pencil className="mr-2 size-3.5" />
-                  Edit
-                </DropdownMenuItem>
-              )}
-              <DropdownMenuItem onSelect={() => router.push(getFullUrl(routeBase, `/dashboard/task/${task.id}`))}>
-                <Pencil className="mr-2 size-3.5" />
-                View
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="text-destructive focus:text-destructive"
-                onSelect={() => onDelete(task.id)}
-              >
-                <Trash2 className="mr-2 size-3.5" />
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
-      </div>
-
-      {task.content && (
-        <p className="mt-2 line-clamp-2 text-[11px] text-muted-foreground leading-relaxed">
-          {task.content}
-        </p>
-      )}
-
-      <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-muted-foreground">
-        <span className="flex items-center gap-1">
-          <User className="size-3" />
-          {task.author_name}
-        </span>
-        <span className="flex items-center gap-1">
-          <Calendar className="size-3" />
-          {safeFormat(task.created_at, "MMM d")}
-        </span>
-        {task.due_date && (
-          <span className="flex items-center gap-1">
-            <CalendarDays className="size-3" />
-            {safeFormat(task.due_date, "MMM d")}
-          </span>
-        )}
-        {task.assignee && (
-          <span className="flex items-center gap-1">
-            <Users className="size-3" />
-            {task.assignee}
-          </span>
-        )}
-        {task.section_count != null && (
-          <span className="flex items-center gap-1">
-            <Hash className="size-3" />
-            {task.section_count}
-          </span>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function ColumnSkeleton() {
-  return (
-    <div className="flex flex-col gap-3">
-      {Array.from({ length: 3 }).map((_, i) => (
-        <Skeleton key={i} className="h-28 w-full rounded-xl" />
-      ))}
-    </div>
-  );
-}
+import { COLUMNS, COLUMN_META, ColumnSkeleton } from "@/components/tasks/task-constants";
 
 export default function AdminTaskPage() {
   usePageView();
   const { isLoggedIn } = useAuth();
   const pathname = usePathname();
   const routeBase = useRouteBase();
+  const taskBasePath = getFullUrl(routeBase, "/dashboard/task");
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -538,6 +358,7 @@ export default function AdminTaskPage() {
                           task={task}
                           onDelete={(id) => setDeleteConfirmId(id)}
                           canManage={isLoggedIn}
+                          basePath={taskBasePath}
                         />
                       ))}
                     </div>
@@ -560,7 +381,7 @@ export default function AdminTaskPage() {
         <DragOverlay>
           {activeTask && (
             <div className="w-72 opacity-90">
-              <TaskCard task={activeTask} onDelete={(id) => setDeleteConfirmId(id)} isDragging canManage={isLoggedIn} />
+              <TaskCard task={activeTask} onDelete={(id) => setDeleteConfirmId(id)} isDragging canManage={isLoggedIn} basePath={taskBasePath} />
             </div>
           )}
         </DragOverlay>

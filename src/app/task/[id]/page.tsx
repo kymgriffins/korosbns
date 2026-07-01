@@ -2,8 +2,7 @@
 
 import { use, useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { Loader2, Calendar, User, Clock, FileText, ListChecks, ScrollText, History } from "lucide-react";
-import { format } from "date-fns";
+import { Loader2, Calendar, User, Clock, FileText, ListChecks, ScrollText, History, Upload, Download, ImageIcon, Paperclip, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { useAuth } from "@/contexts/auth-context";
@@ -23,28 +22,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { taskApi } from "@/lib/task-api";
 import { taskData } from "@/data/tasks";
 import type { TaskDetail } from "@/types/tasks";
 import { autoHue } from "@/types/tasks";
 import { TaskForm } from "../_components/task-form";
-
-const STATUS_STYLES: Record<string, { bg: string; label: string }> = {
-  draft: { bg: "bg-amber-500/10 text-amber-600 border-amber-500/30", label: "Draft" },
-  audited: { bg: "bg-blue-500/10 text-blue-600 border-blue-500/30", label: "In Progress" },
-  published: { bg: "bg-emerald-500/10 text-emerald-600 border-emerald-500/30", label: "Published" },
-};
-
-function safeFormat(date: string | Date | null | undefined, fmt: string): string {
-  if (!date) return "";
-  try {
-    const d = new Date(date);
-    if (isNaN(d.getTime())) return "";
-    return format(d, fmt);
-  } catch {
-    return "";
-  }
-}
+import { safeFormat, STATUS_STYLES } from "@/components/tasks/task-constants";
 
 export default function TaskDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -58,6 +40,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [togglingItems, setTogglingItems] = useState<Set<string>>(new Set());
   const [activeTab, setActiveTab] = useState("overview");
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     taskData.tasks.fetchById(id)
@@ -73,7 +56,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
     if (!isLoggedIn) return;
     setTogglingItems((prev) => new Set(prev).add(itemId));
     try {
-      const updated = await taskApi.updateChecklistItem(id, itemId, { is_completed: !currentChecked });
+      const updated = await taskData.tasks.updateChecklistItem(id, itemId, { is_completed: !currentChecked });
       setTask((prev) => {
         if (!prev) return prev;
         return {
@@ -92,6 +75,37 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
         next.delete(itemId);
         return next;
       });
+    }
+  }
+
+  async function handleUploadAttachment(file: File) {
+    if (!isLoggedIn) return;
+    setUploading(true);
+    try {
+      const attachment = await taskData.tasks.uploadAttachment(id, file);
+      setTask((prev) => {
+        if (!prev) return prev;
+        return { ...prev, attachments: [...(prev.attachments ?? []), attachment] };
+      });
+      toast.success("Attachment uploaded");
+    } catch {
+      toast.error("Failed to upload attachment");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  async function handleDeleteAttachment(attachmentId: string) {
+    if (!isLoggedIn) return;
+    try {
+      await taskData.tasks.deleteAttachment(id, attachmentId);
+      setTask((prev) => {
+        if (!prev) return prev;
+        return { ...prev, attachments: prev.attachments?.filter((a) => a.id !== attachmentId) };
+      });
+      toast.success("Attachment deleted");
+    } catch {
+      toast.error("Failed to delete attachment");
     }
   }
 
@@ -238,6 +252,9 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
               <History className="size-3.5" /> Audit Trail
             </TabsTrigger>
           )}
+          <TabsTrigger value="attachments" className="gap-1.5 text-xs font-semibold data-[state=active]:bg-primary/10">
+            <Paperclip className="size-3.5" /> Attachments ({task.attachments?.length ?? 0})
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="mt-0">
@@ -392,6 +409,82 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
                 </Card>
               </TabsContent>
             )}
+          <TabsContent value="attachments" className="mt-0">
+            <Card className="border-border/60 bg-card shadow-sm">
+              <CardContent className="p-4">
+                <div className="mb-3 flex items-center justify-between">
+                  <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
+                    Attachments
+                  </span>
+                  {isLoggedIn && (
+                    <label className="cursor-pointer">
+                      <input
+                        type="file"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleUploadAttachment(file);
+                          e.target.value = "";
+                        }}
+                      />
+                      <Button variant="outline" size="sm" disabled={uploading} asChild>
+                        <span>
+                          {uploading ? <Loader2 className="mr-1.5 size-3.5 animate-spin" /> : <Upload className="mr-1.5 size-3.5" />}
+                          Upload
+                        </span>
+                      </Button>
+                    </label>
+                  )}
+                </div>
+                {task.attachments && task.attachments.length > 0 ? (
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+                    {task.attachments.map((att) => (
+                      <div key={att.id} className="group relative overflow-hidden rounded-lg border bg-card">
+                        {att.is_image ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={att.url} alt={att.file_name} className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                        ) : (
+                          <div className="flex aspect-square w-full items-center justify-center bg-muted">
+                            <FileText className="size-8 text-muted-foreground/40" />
+                          </div>
+                        )}
+                        <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/60 via-transparent to-transparent p-2 opacity-0 transition-opacity group-hover:opacity-100">
+                          <p className="truncate text-[10px] font-medium text-white">{att.file_name}</p>
+                          <p className="text-[8px] text-white/70">
+                            {(att.file_size / 1024).toFixed(0)} KB
+                          </p>
+                          <div className="mt-1 flex gap-1">
+                            <a href={att.url} target="_blank" rel="noopener noreferrer"
+                              className="inline-flex size-6 items-center justify-center rounded bg-white/20 text-white hover:bg-white/30"
+                              aria-label="Download">
+                              <Download className="size-3" />
+                            </a>
+                            {isLoggedIn && (
+                              <button
+                                onClick={() => handleDeleteAttachment(att.id)}
+                                className="inline-flex size-6 items-center justify-center rounded bg-red-500/40 text-white hover:bg-red-500/60"
+                                aria-label="Delete attachment"
+                              >
+                                <Trash2 className="size-3" />
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center gap-2 py-8 text-center text-muted-foreground">
+                    <ImageIcon className="size-8 text-muted-foreground/30" />
+                    <p className="text-xs">No attachments yet.</p>
+                    {isLoggedIn && (
+                      <p className="text-[10px]">Upload files, screenshots, or documents.</p>
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
       </Tabs>
 
       <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>

@@ -1,5 +1,5 @@
 import type { Task, TaskDetail, TaskCreatePayload, TaskUpdatePayload, AssignableUser, WeeklyReportData, TaskAttachment, TaskTag } from "@/types/tasks";
-import type { WeeklyNoteApi } from "@/types/notes";
+import type { WeeklyNoteApi, ChecklistItemApi } from "@/types/notes";
 import { adminNotesApi } from "@/lib/admin-api";
 import type { AdminNote } from "@/lib/admin-api";
 import { taskApi } from "@/lib/task-api";
@@ -138,6 +138,74 @@ export const taskData = {
           return null as unknown as Task;
         },
       ),
+    audit: (id: string, action: string, comment: string) =>
+      withFallback(
+        "tasks",
+        () => taskApi.audit(id, action, comment),
+        () => {
+          const idx = _tasks.findIndex((t) => t.id === id);
+          if (idx >= 0) {
+            _tasks[idx] = { ..._tasks[idx], updated_at: new Date().toISOString() };
+            return _tasks[idx];
+          }
+          return null as unknown as Task;
+        },
+      ),
+    addChecklistItem: (id: string, text: string) =>
+      withFallback(
+        "tasks",
+        () => taskApi.addChecklistItem(id, text),
+        () => ({
+          id: `new-cl-${Date.now()}`,
+          text,
+          is_completed: false,
+          sort_order: 0,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        } as ChecklistItemApi),
+      ),
+    updateChecklistItem: (id: string, itemId: string, data: Partial<Pick<ChecklistItemApi, "text" | "is_completed" | "sort_order">>) =>
+      withFallback(
+        "tasks",
+        () => taskApi.updateChecklistItem(id, itemId, data),
+        () => ({
+          id: itemId,
+          text: data.text ?? "",
+          is_completed: data.is_completed ?? false,
+          sort_order: data.sort_order ?? 0,
+          created_at: "",
+          updated_at: new Date().toISOString(),
+        } as ChecklistItemApi),
+      ),
+    deleteChecklistItem: (id: string, itemId: string) =>
+      withFallback(
+        "tasks",
+        () => taskApi.deleteChecklistItem(id, itemId).then(() => true),
+        () => true,
+      ),
+    uploadAttachment: (id: string, file: File) =>
+      withFallback(
+        "tasks",
+        () => taskApi.uploadAttachment(id, file),
+        () => {
+          const fallback: TaskAttachment = {
+            id: `att-${Date.now()}`,
+            url: URL.createObjectURL(file),
+            file_name: file.name,
+            file_size: file.size,
+            content_type: file.type,
+            is_image: file.type.startsWith("image/"),
+            created_at: new Date().toISOString(),
+          };
+          return fallback;
+        },
+      ),
+    deleteAttachment: (id: string, attachmentId: string) =>
+      withFallback(
+        "tasks",
+        () => taskApi.deleteAttachment(id, attachmentId).then(() => true),
+        () => true,
+      ),
   },
   users: {
     fetchAssignable: () =>
@@ -145,6 +213,14 @@ export const taskData = {
         "tasks",
         () => taskApi.getAssignableUsers(),
         () => [],
+      ),
+  },
+  teams: {
+    fetch: () =>
+      withFallback(
+        "tasks",
+        () => taskApi.getTeams(),
+        () => ["MEDIA", "ICT", "MANAGERIAL"],
       ),
   },
   report: {

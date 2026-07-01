@@ -10,10 +10,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ListTodo, Sparkles } from "lucide-react";
+import { ListTodo } from "lucide-react";
+import { useRouteBase, getFullUrl } from "@/lib/route-base";
 
 export default function NewTaskPage() {
   usePageView();
+  const routeBase = useRouteBase();
   return (
     <div className="@container/main mx-auto max-w-3xl space-y-6">
       <AdminTaskBreadcrumbs segments={["new"]} />
@@ -32,7 +34,7 @@ export default function NewTaskPage() {
           </div>
         </CardHeader>
         <CardContent className="p-6">
-          <TaskForm mode="create" />
+          <TaskForm mode="create" redirectPath={getFullUrl(routeBase, "/dashboard/task")} />
         </CardContent>
       </Card>
     </div>

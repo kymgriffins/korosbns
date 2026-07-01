@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/utils/index";
-import { taskApi } from "@/lib/task-api";
+import { taskData } from "@/data/tasks";
 import type { TaskAttachment } from "@/types/tasks";
 
 function formatFileSize(bytes: number): string {
@@ -36,7 +36,7 @@ export function TaskAttachmentsGrid({
   async function handleDelete(attachmentId: string) {
     setDeleting(attachmentId);
     try {
-      await taskApi.deleteAttachment(taskId, attachmentId);
+      await taskData.tasks.deleteAttachment(taskId, attachmentId);
       toast.success("Attachment deleted");
       onDeleted?.(attachmentId);
     } catch {

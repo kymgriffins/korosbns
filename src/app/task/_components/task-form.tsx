@@ -21,7 +21,6 @@ import { Slider } from "@/components/ui/slider";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 import { ApiRequestError } from "@/lib/api-errors";
-import { taskApi } from "@/lib/task-api";
 import { taskData } from "@/data/tasks";
 import type {
   Task, TaskStatus, TaskCreatePayload, AssignableUser, TaskPriority, TaskTag,
@@ -57,10 +56,12 @@ export function TaskForm({
   mode,
   task,
   onSaved,
+  redirectPath = "/task",
 }: {
   mode: TaskFormMode;
   task?: Task;
   onSaved?: () => void;
+  redirectPath?: string;
 }) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
@@ -86,7 +87,7 @@ export function TaskForm({
   useEffect(() => {
     Promise.all([
       taskData.users.fetchAssignable(),
-      taskApi.getTeams(),
+      taskData.teams.fetch(),
     ])
       .then(([users, teamList]) => {
         setAssignableUsers(users);
@@ -123,7 +124,7 @@ export function TaskForm({
         toast.success("Task created");
       }
       onSaved?.();
-      router.push("/task");
+      router.push(redirectPath);
     } catch (err) {
       if (err instanceof ApiRequestError && err.fields) {
         setFieldErrors(err.fields);
@@ -368,7 +369,7 @@ export function TaskForm({
           {saving && <Loader2 className="mr-1.5 size-4 animate-spin" />}
           {mode === "create" ? "Create Task" : "Save Changes"}
         </Button>
-        <Button variant="outline" onClick={() => router.push("/task")}>
+        <Button variant="outline" onClick={() => router.push(redirectPath)}>
           Cancel
         </Button>
       </div>

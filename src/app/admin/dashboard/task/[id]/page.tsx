@@ -3,7 +3,6 @@
 import { use, useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { format } from "date-fns";
 import { Loader2, Calendar, User, Clock, Pencil, Trash2, ArrowLeft, FileText, ImageIcon, CheckCircle2, Circle, Download, Plus, Check, X } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -32,29 +31,12 @@ import { TaskAttachmentsGrid } from "@/app/task/_components/task-attachments";
 import { TaskFileUpload } from "@/app/task/_components/task-file-upload";
 import { usePageView } from "@/hooks/use-page-view";
 import { taskData } from "@/data/tasks";
-import { taskApi } from "@/lib/task-api";
 import type { TaskDetail, TaskAttachment } from "@/types/tasks";
 import type { ChecklistItemApi } from "@/types/notes";
 
 import { useRouteBase, getFullUrl } from "@/lib/route-base";
 import { AdminTaskBreadcrumbs } from "@/components/admin/admin-task-breadcrumb";
-
-const STATUS_STYLES: Record<string, { bg: string; label: string }> = {
-  draft: { bg: "bg-amber-500/10 text-amber-600 border-amber-500/30", label: "Draft" },
-  audited: { bg: "bg-blue-500/10 text-blue-600 border-blue-500/30", label: "In Progress" },
-  published: { bg: "bg-emerald-500/10 text-emerald-600 border-emerald-500/30", label: "Published" },
-};
-
-function safeFormat(date: string | Date | undefined | null, fmt: string, fallback = ""): string {
-  if (!date) return fallback;
-  try {
-    const d = new Date(date);
-    if (isNaN(d.getTime())) return fallback;
-    return format(d, fmt);
-  } catch {
-    return fallback;
-  }
-}
+import { safeFormat, STATUS_STYLES } from "@/components/tasks/task-constants";
 
 export default function TaskDetailPage({ params }: { params: Promise<{ id: string }> }) {
   usePageView();
@@ -146,7 +128,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
   async function handleDelete() {
     setDeleting(true);
     try {
-      await taskApi.delete(id);
+      await taskData.tasks.delete(id);
       toast.success("Task deleted");
       router.push(getFullUrl(routeBase, "/dashboard/task"));
     } catch {
@@ -160,7 +142,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
   async function handleToggleChecklist(itemId: string, currentCompleted: boolean) {
     setTogglingItem(itemId);
     try {
-      const updated = await taskApi.updateChecklistItem(id, itemId, {
+      const updated = await taskData.tasks.updateChecklistItem(id, itemId, {
         is_completed: !currentCompleted,
       });
       setChecklistItems((prev) =>
@@ -190,7 +172,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
     if (!trimmed) return;
     setSavingItem(itemId);
     try {
-      const updated = await taskApi.updateChecklistItem(id, itemId, { text: trimmed });
+      const updated = await taskData.tasks.updateChecklistItem(id, itemId, { text: trimmed });
       setChecklistItems((prev) => prev.map((item) => (item.id === itemId ? updated : item)));
       setEditingItemId(null);
       setEditingItemText("");
@@ -206,7 +188,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
   async function handleDeleteItem(itemId: string) {
     setSavingItem(itemId);
     try {
-      await taskApi.deleteChecklistItem(id, itemId);
+      await taskData.tasks.deleteChecklistItem(id, itemId);
       setChecklistItems((prev) => prev.filter((item) => item.id !== itemId));
       if (editingItemId === itemId) handleEditCancel();
     } catch (err) {
@@ -223,7 +205,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
     if (!trimmed) return;
     setAddingItem(true);
     try {
-      const newItem = await taskApi.addChecklistItem(id, trimmed);
+      const newItem = await taskData.tasks.addChecklistItem(id, trimmed);
       setChecklistItems((prev) => [...prev, newItem]);
       setNewItemText("");
     } catch (err) {
