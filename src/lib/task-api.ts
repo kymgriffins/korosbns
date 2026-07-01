@@ -220,11 +220,26 @@ export const taskApi = {
     );
   },
 
-  createProject: async (data: Record<string, unknown>) => {
+  createProject: async (data: Record<string, unknown> | FormData) => {
     return apiFetch<{ id: string }>("/projects/", {
       method: "POST",
       auth: true,
-      body: JSON.stringify(data),
+      body: data instanceof FormData ? data : JSON.stringify(data),
+    });
+  },
+
+  updateProject: async (id: string, data: Record<string, unknown> | FormData) => {
+    return apiFetch<{ id: string }>(`/projects/${id}/`, {
+      method: "PATCH",
+      auth: true,
+      body: data instanceof FormData ? data : JSON.stringify(data),
+    });
+  },
+
+  deleteProject: async (id: string) => {
+    return apiFetch<void>(`/projects/${id}/`, {
+      method: "DELETE",
+      auth: true,
     });
   },
 

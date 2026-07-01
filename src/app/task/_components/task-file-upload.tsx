@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/utils/index";
-import { taskApi } from "@/lib/task-api";
+import { taskData } from "@/data/tasks";
 import type { TaskAttachment } from "@/types/tasks";
 
 export function TaskFileUpload({
@@ -45,7 +45,7 @@ export function TaskFileUpload({
     setUploading(true);
     try {
       for (const item of previews) {
-        const result = await taskApi.uploadAttachment(taskId, item.file);
+        const result = await taskData.tasks.uploadAttachment(taskId, item.file);
         onUploaded?.(result);
       }
       toast.success(`${previews.length} file(s) uploaded`);
