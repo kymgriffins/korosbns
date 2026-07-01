@@ -162,7 +162,7 @@ export default function TaskReportPage() {
           { key: "audited", label: "In Progress", value: report.by_status.audited ?? 0, period: report.period },
           { key: "published", label: "Published", value: report.by_status.published ?? 0, period: report.period },
         ].map((stat) => {
-          const kpi = KPI_ICONS[stat.key];
+          const kpi = KPI_ICONS[stat.key] ?? { icon: ListTodo, bg: "bg-gray-500/10", color: "text-gray-600" };
           const Icon = kpi.icon;
           return (
             <motion.div

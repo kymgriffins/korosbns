@@ -112,7 +112,7 @@ function TaskCard({
     transition,
   };
 
-  const statusStyle = STATUS_STYLES[task.status];
+  const statusStyle = STATUS_STYLES[task.status] ?? STATUS_STYLES.draft;
 
   return (
     <div

@@ -312,7 +312,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
     );
   }
 
-  const statusStyle = STATUS_STYLES[task.status];
+  const statusStyle = STATUS_STYLES[task.status] ?? STATUS_STYLES.draft;
   const completedCount = checklistItems.filter((i) => i.is_completed).length;
 
   return (

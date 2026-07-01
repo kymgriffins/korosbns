@@ -45,7 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // user is treated as anonymous — no session marker needed.
   // A timeout prevents the login page from hanging indefinitely when
   // the backend is unreachable (GuestOnly waits for loading=false).
-  const { data: user, isLoading, isSuccess } = useQuery({
+  const { data: user, isLoading } = useQuery({
     queryKey: USER_PROFILE_KEY,
     queryFn: async () => {
       const profile = await Promise.race([
@@ -115,12 +115,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     () => ({
       user: user ?? null,
       loading: isLoading,
-      isLoggedIn: isSuccess && !!user,
+      isLoggedIn: !isLoading && !!user,
       login,
       logout,
       refreshUser: () => queryClient.invalidateQueries({ queryKey: USER_PROFILE_KEY }),
     }),
-    [user, isLoading, isSuccess, login, logout, queryClient],
+    [user, isLoading, login, logout, queryClient],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
