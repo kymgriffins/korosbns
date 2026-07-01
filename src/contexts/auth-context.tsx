@@ -37,14 +37,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const queryClient = useQueryClient();
 
+  const AUTH_TIMEOUT_MS = 5000;
+
   // Always try to fetch the user profile on mount. If the browser has
   // HttpOnly cookies (bns_at/bns_rt), the request succeeds and isLoggedIn
   // becomes true. If there are no cookies, Django returns 401 and the
   // user is treated as anonymous — no session marker needed.
+  // A timeout prevents the login page from hanging indefinitely when
+  // the backend is unreachable (GuestOnly waits for loading=false).
   const { data: user, isLoading, isSuccess } = useQuery({
     queryKey: USER_PROFILE_KEY,
     queryFn: async () => {
-      const profile = await citizenApi.getMe();
+      const profile = await Promise.race([
+        citizenApi.getMe(),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error("Auth check timed out")), AUTH_TIMEOUT_MS)
+        ),
+      ]);
       return normalizeProfile(profile);
     },
     retry: false,

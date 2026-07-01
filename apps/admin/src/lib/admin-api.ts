@@ -83,6 +83,10 @@ export const adminForumApi = {
     const qs = q.toString();
     return adminFetch<ApiListResponse<AdminForumThread>>(`/engagement/forum-threads/${qs ? `?${qs}` : ""}`);
   },
+  createThread: (data: { title: string; civic_module?: string | null }) =>
+    adminFetch<AdminForumThread>("/engagement/forum-threads/", { method: "POST", body: JSON.stringify(data) }),
+  updateThread: (id: string, data: { title?: string; civic_module?: string | null }) =>
+    adminFetch<AdminForumThread>(`/engagement/forum-threads/${id}/`, { method: "PATCH", body: JSON.stringify(data) }),
   deleteThread: (id: string) =>
     adminFetch<void>(`/engagement/forum-threads/${id}/`, { method: "DELETE" }),
   deletePost: (threadId: string, postId: string) =>

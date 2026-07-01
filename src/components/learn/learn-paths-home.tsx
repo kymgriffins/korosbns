@@ -3,28 +3,22 @@
 import { useEffect, useState, useMemo } from "react";
 import { StageDetailDrawer } from "./stage-detail-drawer";
 import { LearnDashboardView } from "./learn-dashboard-view";
-import { SignUpCta } from "@/components/ui/sign-up-cta";
 import { LearnModulesView } from "./learn-modules-view";
 import { LearnDocumentsView } from "./learn-documents-view";
 import { ProfileView } from "./profile-view";
 import { AlertsView } from "./alerts-view";
 import { ForumView } from "./forum-view";
 import { DashboardSkeleton } from "./dashboard-skeleton";
-import { AnonymousIdentityPicker } from "./anonymous-identity-picker";
 
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import {
   ShieldAlert, BookOpen
 } from "lucide-react";
 import { useLearn } from "@/contexts/learn-context";
 import { motion, AnimatePresence } from "motion/react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
-import { useUpdateProfile } from "@/hooks/use-profile";
-import { learnHubApi } from "@/lib/learn-hub";
 import { type LearnHubLanguage, type LearnHubProfile } from "@/lib/learn-data";
 import { learnTabToHref } from "@/lib/learn-nav";
 import { readProgress, clearAllModuleProgress } from "@/lib/module-progress";
@@ -33,22 +27,15 @@ import type { CivicModule } from "@/types/learn";
 import { TRANSLATIONS } from "@/constants/learn-translations";
 import { safeArray, safeLen, safeMap } from "@/lib/safe-data";
 
-function saveProfile(profile: any) {
-  localStorage.setItem("bns_user_profile", JSON.stringify(profile));
-  window.dispatchEvent(new Event("bns-profile-updated"));
-}
-
-
 export function LearnPathsHome() {
   const router = useRouter();
   const { isLoggedIn, user: authUser, loading: authLoading } = useAuth();
-  const { civicModules, fetchCivicModules, activeLesson, setActiveLesson, updateCurrentStep, activeTab, setActiveTab, totalStages, modulesLoading, modulesError, refreshModules } = useLearn();
+  const { civicModules, activeLesson, setActiveLesson, activeTab, setActiveTab, totalStages, modulesLoading, modulesError, refreshModules } = useLearn();
   const stages = civicModules;
   const [profile, setProfile] = useState<LearnHubProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
   const [selectedStage, setSelectedStage] = useState<CivicModule | null>(null);
-  const updateProfileMutation = useUpdateProfile();
 
   useEffect(() => {
     if (selectedStage) {
@@ -91,7 +78,7 @@ export function LearnPathsHome() {
           currentProfile = null;
         }
       }
-      
+
       if (!currentProfile || currentProfile.userId !== authUser.id) {
         const onboardingData = localStorage.getItem("bns_onboarding_profile");
         let preferences: Record<string, unknown> = {};
@@ -102,9 +89,9 @@ export function LearnPathsHome() {
             preferences = {};
           }
         }
-        
+
         currentProfile = {
-          userId: authUser.id || `user_${Math.random().toString(36).substr(2, 9)}`,
+          userId: authUser.id || "",
           breakName: authUser.break_name || authUser.display_name || `${authUser.first_name || ""} ${authUser.last_name || ""}`.trim() || authUser.email || "Citizen",
           pseudoName: authUser.pseudo_name || authUser.display_name || `citizen_${String(authUser.id || "").slice(0, 5)}`,
           avatar_url: authUser.avatar_url || authUser.avatar || null,
@@ -123,132 +110,53 @@ export function LearnPathsHome() {
           trackedDocs: currentProfile?.trackedDocs || [],
           badges: currentProfile?.badges || []
         };
-        saveProfile(currentProfile);
+        localStorage.setItem("bns_user_profile", JSON.stringify(currentProfile));
 
         if (preferences.county || preferences.priorities) {
-          updateProfileMutation.mutate({
-            county: String(preferences.county ?? "") || authUser.county || "",
-            ward: String(preferences.ward ?? "") || authUser.ward || "",
-            budget_priorities: (Array.isArray(preferences.priorities) ? preferences.priorities : []) as string[],
-            location: String(preferences.county ?? "") || authUser.location || "",
+          import("@/hooks/use-profile").then(({ useUpdateProfile }) => {
+            const { mutate } = useUpdateProfile();
+            mutate({
+              county: String(preferences.county ?? "") || authUser.county || "",
+              ward: String(preferences.ward ?? "") || authUser.ward || "",
+              budget_priorities: (Array.isArray(preferences.priorities) ? preferences.priorities : []) as string[],
+              location: String(preferences.county ?? "") || authUser.location || "",
+            });
           });
         }
         localStorage.removeItem("bns_onboarding_profile");
       }
-      
-      const streakDays = checkStreak(currentProfile);
-      const updated = { ...currentProfile, streakDays, lastActive: Date.now() };
-      setProfile(updated);
-      saveProfile(updated);
+
+      setProfile(currentProfile);
+      setLoading(false);
     } else {
-      const stored = localStorage.getItem("bns_user_profile");
-      if (stored) {
-        try {
-          const parsed = JSON.parse(stored);
-          const streakDays = checkStreak(parsed);
-          const updated = { ...parsed, streakDays, lastActive: Date.now() };
-          setProfile(updated);
-          saveProfile(updated);
-        } catch {
-          setProfile(null);
-        }
-      } else {
-        setProfile(null);
-      }
+      setProfile(null);
+      setLoading(false);
     }
-    setLoading(false);
   }, [isLoggedIn, authUser, authLoading]);
 
-  useEffect(() => {
-    if (!profile || loading) return;
-    const today = new Date().toDateString();
-    const lastShown = sessionStorage.getItem("bns_streak_toast");
-    if (profile.streakDays > 0 && lastShown !== today) {
-      const timer = setTimeout(() => {
-        if (profile.streakDays >= 7) {
-          toast("Inferno Streak! 🔥", { description: `${profile.streakDays}-day streak! You're unstoppable.`, duration: 5000 });
-        } else if (profile.streakDays >= 3) {
-          toast("Hot Streak! 🔥", { description: `${profile.streakDays}-day streak! Keep showing up.`, duration: 5000 });
-        } else {
-          toast(`${profile.streakDays}-day streak!`, { description: "Come back tomorrow to keep it alive.", duration: 4000 });
-        }
-        sessionStorage.setItem("bns_streak_toast", today);
-      }, 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [profile, loading]);
-
-  const checkStreak = (userProfile: any) => {
-    if (!userProfile.lastActive) return 0;
-    const lastActiveDate = new Date(userProfile.lastActive);
-    const today = new Date();
-    lastActiveDate.setHours(0,0,0,0);
-    today.setHours(0,0,0,0);
-    
-    const diffTime = Math.abs(today.getTime() - lastActiveDate.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    if (diffDays === 0) {
-      return userProfile.streakDays || 0;
-    } else if (diffDays === 1) {
-      return (userProfile.streakDays || 0) + 1;
-    } else {
-      return 0;
-    }
-  };
-
-  const handleOnboardingComplete = (newProfile: any) => {
-    setProfile(newProfile);
-    setActiveTab("home");
-    toast.success("Welcome aboard, Civic Champion!");
-  };
-
   const handleUpdateProfile = (updated: any) => {
+    if (!isLoggedIn) return;
     setProfile(updated);
-    saveProfile(updated);
+    localStorage.setItem("bns_user_profile", JSON.stringify(updated));
   };
 
   const handleResetProgress = () => {
-    if (window.confirm("Reset all progress? This wipes profile & statistics.")) {
+    if (!isLoggedIn) return;
+    if (window.confirm("Reset all progress?")) {
       localStorage.removeItem("bns_user_profile");
       clearAllModuleProgress(stages);
       setProfile(null);
       setSelectedStage(null);
       setActiveTab("home");
-      toast.success("All profiles wiped.");
     }
   };
 
   const effectiveProfile: LearnHubProfile | null = profile;
 
-  const langKey = (effectiveProfile?.language ?? profile?.language ?? "EN") as LearnHubLanguage;
+  const langKey = (effectiveProfile?.language ?? "EN") as LearnHubLanguage;
   const text = TRANSLATIONS[langKey];
 
   const { data: leaderboardData } = useLeaderboard(20);
-  const leaderboard = useMemo(() => {
-    const entries = (leaderboardData?.results ?? [])
-      .filter((e) => {
-        const name = (e.name ?? "").trim().toLowerCase();
-        return name && name !== "none" && name !== "true";
-      })
-      .map((e) => ({
-        name: e.name ?? "Anonymous",
-        svg: e.points,
-        stages: e.badge_count,
-        rank: e.rank,
-        isUser: effectiveProfile?.pseudoName?.toLowerCase() === (e.name ?? "").toLowerCase(),
-      }));
-    if (!entries.some((e) => e.isUser) && effectiveProfile?.pseudoName) {
-      entries.push({
-        name: effectiveProfile.pseudoName,
-        svg: effectiveProfile.sovereigns ?? 0,
-        stages: effectiveProfile.badges?.length ?? 0,
-        rank: entries.length + 1,
-        isUser: true,
-      });
-    }
-    return entries.sort((a, b) => b.svg - a.svg).map((item, idx) => ({ ...item, rank: idx + 1 }));
-  }, [leaderboardData, effectiveProfile]);
 
   const currentStageNum = effectiveProfile
     ? (effectiveProfile.stageProgress ? Math.max(...effectiveProfile.stageProgress) : 1)
@@ -311,23 +219,15 @@ export function LearnPathsHome() {
     );
   }
 
-  const showWelcome = !isLoggedIn && !effectiveProfile && !authLoading && !loading;
-
   return (
     <div className="w-full h-full min-h-0 bg-background flex flex-col overflow-hidden">
-      {showWelcome && (
-        <div className="flex-1 overflow-y-auto p-4 md:p-6 flex items-center justify-center">
-          <AnonymousIdentityPicker onComplete={handleOnboardingComplete} />
-        </div>
-      )}
-
-      {!showWelcome && activeProfile.language === "SH" && (
+      {activeProfile.language === "SH" && (
         <div className="w-full py-1 px-4 text-[10px] font-semibold bg-amber-500/15 border-b border-amber-500/20 text-amber-600 text-center">
           {text.shengComingSoon}
         </div>
       )}
 
-      {!showWelcome && selectedStage ? (
+      {selectedStage ? (
         <div className="absolute inset-0 z-10 flex flex-col overflow-hidden bg-background md:relative md:inset-auto">
           <StageDetailDrawer key={selectedStage.slug}
             stage={selectedStage}
@@ -436,15 +336,6 @@ export function LearnPathsHome() {
               </motion.div>
             )}
           </AnimatePresence>
-
-          {!effectiveProfile && (
-            <div className="mt-6">
-              <SignUpCta
-                feature="Quizzes & progress tracking"
-                description="Save your quiz scores, track your learning progress, and unlock personalized content recommendations."
-              />
-            </div>
-          )}
         </div>
       )}
     </div>

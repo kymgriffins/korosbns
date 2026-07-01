@@ -4,24 +4,31 @@ import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import {
-  ChevronDown, ChevronRight, X,
+  ChevronRight, X, EllipsisVertical,
   BookOpen, LayoutDashboard, ExternalLink,
-  LogOut, Palette, LogIn, User, FileText, Settings,
+  LogOut, LogIn, User, FileText,
   MessagesSquare, Calendar, ListChecks
 } from "lucide-react";
 import { cn } from "@/utils";
+import { ThemeToggle } from "@/components/marketing/theme-toggle";
 import { LearnProvider, useLearn, type LearnTab } from "@/contexts/learn-context";
 import { LearnTabSync } from "@/components/learn/learn-tab-sync";
 import { learnTabToHref } from "@/lib/learn-nav";
 import { useAuth } from "@/contexts/auth-context";
-import { ThemeToggle } from "@/components/marketing/theme-toggle";
 import { LearnMobileNav } from "@/layouts/LearnMobileNav";
 import { Routes } from "@/constants/routes";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { SurveyListItemApi } from "@/lib/api-client";
 import { loadEventList, type HubEvent } from "@/lib/citizen-content";
 import { loadSurveyList } from "@/lib/marketing-content";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Collapsible, CollapsibleContent, CollapsibleTrigger,
 } from "@/components/ui/collapsible";
@@ -44,86 +51,92 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-function UserPopover({
-  isLoggedIn, user, level, handleTabChange, children,
-}: {
-  isLoggedIn: boolean;
-  user: { avatar_url?: string | null; first_name?: string; email?: string; display_name?: string } | null;
-  level: number;
-  handleTabChange: (tab: LearnTab) => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        {children}
-      </PopoverTrigger>
-      <PopoverContent align="end" side="top" className="w-56 rounded-xl border-border/60 p-2 shadow-lg ring-1 ring-border/40">
-        <div className="space-y-1">
-          {isLoggedIn ? (
-            <>
-              <div className="flex items-center gap-3 px-2 py-2 border-b border-border/30 mb-1">
-                <Avatar className="size-8 ring-1 ring-sidebar-border/40 shrink-0">
-                  {user?.avatar_url ? (
-                    <img src={user.avatar_url} alt={`${user?.display_name || user?.first_name || "User"}'s avatar`} className="size-full rounded-full object-cover" />
-                  ) : (
-                    <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
-                      {user?.first_name?.[0] ?? user?.email?.[0]?.toUpperCase() ?? "?"}
-                    </AvatarFallback>
-                  )}
-                </Avatar>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-xs font-bold">{user?.display_name || user?.first_name || "User"}</p>
-                  <p className="truncate text-[10px] text-muted-foreground">Level {level}</p>
-                </div>
-              </div>
-              <PopoverItem href={learnTabToHref("profile")} onClick={() => handleTabChange("profile")}>
-                <User className="size-3.5" /> View Profile
-              </PopoverItem>
-              <PopoverItem href={Routes.Account}>
-                <Settings className="size-3.5" /> Account Settings
-              </PopoverItem>
-              <div className="flex items-center gap-3 px-2 py-1.5 text-xs font-medium text-muted-foreground rounded-lg hover:bg-sidebar-accent transition-colors">
-                <Palette className="size-3.5 shrink-0" />
-                <span className="flex-1">Theme</span>
-                <ThemeToggle />
-              </div>
-              <div className="border-t border-border/30 pt-1 mt-1">
-                <PopoverItem href={Routes.AccountSignOut}>
-                  <LogOut className="size-3.5" /> Sign Out
-                </PopoverItem>
-              </div>
-            </>
-          ) : (
-            <PopoverItem href={Routes.Login}>
-              <LogIn className="size-3.5" /> Sign In
-            </PopoverItem>
-          )}
-        </div>
-      </PopoverContent>
-    </Popover>
-  );
+function getInitials(name: string): string {
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .filter(Boolean)
+    .join("")
+    .slice(0, 2)
+    .toUpperCase() || "?";
 }
 
-function PopoverItem({ href, onClick, children }: { href: string; onClick?: () => void; children: React.ReactNode }) {
+function LearnNavUser() {
+  const { isLoggedIn, user, logout } = useAuth();
+  const { gamification } = useLearn();
+  const { isMobile } = useSidebar();
+  const level = gamification?.level ?? 1;
+
+  const displayName = user?.display_name || [user?.first_name, user?.last_name].filter(Boolean).join(" ") || "User";
+  const email = user?.email || "";
+  const avatar = user?.avatar_url || user?.avatar || "";
+
   return (
-    <Link
-      href={href}
-      onClick={onClick}
-      className="flex items-center gap-3 rounded-lg px-2 py-1.5 text-xs font-medium text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-    >
-      {children}
-    </Link>
+    <SidebarMenu>
+      <SidebarMenuItem>
+        {isLoggedIn ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <SidebarMenuButton size="lg" className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
+                <Avatar className="h-8 w-8 rounded-lg grayscale">
+                  <AvatarImage src={avatar || undefined} alt={displayName} />
+                  <AvatarFallback className="rounded-lg">{getInitials(displayName)}</AvatarFallback>
+                </Avatar>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-medium">{displayName}</span>
+                  <span className="truncate text-muted-foreground text-xs">Level {level}</span>
+                </div>
+                <EllipsisVertical className="ml-auto size-4" />
+              </SidebarMenuButton>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg" side={isMobile ? "bottom" : "right"} align="end" sideOffset={4}>
+              <DropdownMenuLabel className="p-0 font-normal">
+                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                  <Avatar className="h-8 w-8 rounded-lg">
+                    <AvatarImage src={avatar || undefined} alt={displayName} />
+                    <AvatarFallback className="rounded-lg">{getInitials(displayName)}</AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-medium">{displayName}</span>
+                    <span className="truncate text-muted-foreground text-xs">Level {level}</span>
+                  </div>
+                </div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href={learnTabToHref("profile")}>
+                  <User />
+                  View Profile
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={logout}>
+                <LogOut />
+                Log out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <SidebarMenuButton asChild size="lg" tooltip="Sign In">
+            <Link href={Routes.Login}>
+              <Avatar className="h-8 w-8 rounded-lg grayscale">
+                <AvatarFallback className="rounded-lg">?</AvatarFallback>
+              </Avatar>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-medium">Sign In</span>
+                <span className="truncate text-muted-foreground text-xs">Guest</span>
+              </div>
+            </Link>
+          </SidebarMenuButton>
+        )}
+      </SidebarMenuItem>
+    </SidebarMenu>
   );
 }
 
 function LearnSidebar() {
-  const { isLoggedIn, loading: userLoading, user } = useAuth();
-  const { activeTab, setActiveTab, gamification, refreshGamification, activeLesson, civicModules } = useLearn();
+  const { activeTab, setActiveTab, refreshGamification, activeLesson, civicModules } = useLearn();
   const { state, isMobile, setOpenMobile } = useSidebar();
   const isCollapsed = state === "collapsed";
-  const level = gamification?.level ?? 1;
-  const noUserYet = userLoading && !user;
   const [showAppCard, setShowAppCard] = useState(true);
   const [events, setEvents] = useState<HubEvent[]>([]);
   const [surveys, setSurveys] = useState<SurveyListItemApi[]>([]);
@@ -212,7 +225,7 @@ function LearnSidebar() {
                             {item.badge && !isCollapsed && (
                               <span className="ml-auto flex h-4.5 px-1 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow-xs ring-1 ring-primary/20">{item.badge}</span>
                             )}
-                            {!isCollapsed && <ChevronDown className="ml-auto size-3 shrink-0 transition-transform group-data-[state=open]/collapsible:rotate-180" />}
+                            {!isCollapsed && <ChevronRight className="ml-auto size-3 shrink-0 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />}
                           </SidebarMenuButton>
                         </CollapsibleTrigger>
                         <CollapsibleContent>
@@ -262,112 +275,63 @@ function LearnSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-
-
       </SidebarContent>
 
       <SidebarFooter>
-        {isCollapsed ? (
-          <div className="flex flex-col items-center gap-2 py-2">
-            {noUserYet ? (
-              <div className="flex flex-col items-center gap-2">
-                <div className="size-7 rounded-full bg-muted animate-pulse" />
-                <div className="size-7 rounded-full bg-muted animate-pulse" />
-              </div>
-            ) : (
-              <UserPopover isLoggedIn={isLoggedIn} user={user} level={level} handleTabChange={handleTabChange}>
-                <div className="flex flex-col items-center gap-2">
-                  <Avatar className="size-7 ring-1 ring-sidebar-border/40 cursor-pointer">
-                    {user?.avatar_url ? (
-                      <img src={user.avatar_url} alt="" className="size-full rounded-full object-cover" />
-                    ) : (
-                      <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-bold">
-                        {user?.first_name?.[0] ?? user?.email?.[0]?.toUpperCase() ?? "?"}
-                      </AvatarFallback>
-                    )}
-                  </Avatar>
-                  {isLoggedIn && (
-                    <div className="size-7 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-[10px] ring-1 ring-primary/20" title="Level">{level}</div>
-                  )}
-                </div>
-              </UserPopover>
-            )}
-
-          </div>
-        ) : (
-          <div className="p-2 space-y-1.5">
-            {!noUserYet && (
-              <UserPopover isLoggedIn={isLoggedIn} user={user} level={level} handleTabChange={handleTabChange}>
-                <button
-                  type="button"
-                  className="flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  <Avatar className="size-8 ring-1 ring-sidebar-border/40 shrink-0">
-                    {user?.avatar_url ? (
-                      <img src={user.avatar_url} alt="" className="size-full rounded-full object-cover" />
-                    ) : (
-                      <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-bold">
-                        {user?.first_name?.[0] ?? user?.email?.[0]?.toUpperCase() ?? "?"}
-                      </AvatarFallback>
-                    )}
-                  </Avatar>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-xs font-bold">{user?.display_name || user?.first_name || "User"}</p>
-                    <p className="truncate text-[10px] text-muted-foreground">Level {level}</p>
-                  </div>
-                  <ChevronRight className="size-3.5 text-muted-foreground shrink-0" />
-                </button>
-              </UserPopover>
-            )}
+        <SidebarMenu>
+          <SidebarMenuItem>
             {showAppCard && !feedLoading && (
-              <Link
-                href={upcomingEvents.length > 0 ? Routes.Events : Routes.Surveys}
-                className="relative flex items-start gap-3 rounded-lg bg-gradient-to-r from-emerald-500/10 to-teal-500/10 p-3 text-sm ring-1 ring-emerald-500/20 hover:from-emerald-500/15 hover:to-teal-500/15 transition-all group"
-              >
-                <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowAppCard(false); }}
-                  className="absolute top-1.5 right-1.5 size-4 rounded-full bg-muted-foreground/10 flex items-center justify-center hover:bg-muted-foreground/20 transition-colors z-10">
-                  <X className="size-2.5" />
-                </button>
-                <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
-                  {upcomingEvents.length > 0 ? <Calendar className="size-4" /> : <ListChecks className="size-4" />}
-                </div>
-                <div className="min-w-0 flex-1 pr-4">
-                  <p className="text-[11px] font-bold text-emerald-700 dark:text-emerald-300">
-                    {upcomingEvents.length > 0 ? "Upcoming Events" : "Active Surveys"}
-                  </p>
-                  {upcomingEvents.length > 0 ? (
-                    upcomingEvents.slice(0, 2).map((ev) => (
-                      <p key={ev.id} className="text-[10px] text-muted-foreground truncate">{ev.title}</p>
-                    ))
-                  ) : surveys.length > 0 ? (
-                    surveys.slice(0, 2).map((sv) => (
-                      <p key={sv.id} className="text-[10px] text-muted-foreground truncate">{sv.title}</p>
-                    ))
-                  ) : (
-                    <p className="text-[10px] text-muted-foreground">No upcoming content</p>
-                  )}
-                </div>
-              </Link>
+              <div className={cn("px-2 pb-1", isCollapsed && "hidden")}>
+                <Link
+                  href={upcomingEvents.length > 0 ? Routes.Events : Routes.Surveys}
+                  className="relative flex items-start gap-3 rounded-lg bg-gradient-to-r from-emerald-500/10 to-teal-500/10 p-3 text-sm ring-1 ring-emerald-500/20 hover:from-emerald-500/15 hover:to-teal-500/15 transition-all group"
+                >
+                  <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowAppCard(false); }}
+                    className="absolute top-1.5 right-1.5 size-4 rounded-full bg-muted-foreground/10 flex items-center justify-center hover:bg-muted-foreground/20 transition-colors z-10">
+                    <X className="size-2.5" />
+                  </button>
+                  <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+                    {upcomingEvents.length > 0 ? <Calendar className="size-4" /> : <ListChecks className="size-4" />}
+                  </div>
+                  <div className="min-w-0 flex-1 pr-4">
+                    <p className="text-[11px] font-bold text-emerald-700 dark:text-emerald-300">
+                      {upcomingEvents.length > 0 ? "Upcoming Events" : "Active Surveys"}
+                    </p>
+                    {upcomingEvents.length > 0 ? (
+                      upcomingEvents.slice(0, 2).map((ev) => (
+                        <p key={ev.id} className="text-[10px] text-muted-foreground truncate">{ev.title}</p>
+                      ))
+                    ) : surveys.length > 0 ? (
+                      surveys.slice(0, 2).map((sv) => (
+                        <p key={sv.id} className="text-[10px] text-muted-foreground truncate">{sv.title}</p>
+                      ))
+                    ) : (
+                      <p className="text-[10px] text-muted-foreground">No upcoming content</p>
+                    )}
+                  </div>
+                </Link>
+              </div>
             )}
             {showAppCard && feedLoading && (
-              <div className="flex items-center gap-3 rounded-lg bg-muted/30 p-3 animate-pulse">
-                <div className="size-8 rounded-full bg-muted-foreground/10" />
-                <div className="flex-1 space-y-1.5">
-                  <div className="h-2.5 w-24 rounded bg-muted-foreground/10" />
-                  <div className="h-2 w-32 rounded bg-muted-foreground/10" />
+              <div className={cn("px-2 pb-1", isCollapsed && "hidden")}>
+                <div className="flex items-center gap-3 rounded-lg bg-muted/30 p-3 animate-pulse">
+                  <div className="size-8 rounded-full bg-muted-foreground/10" />
+                  <div className="flex-1 space-y-1.5">
+                    <div className="h-2.5 w-24 rounded bg-muted-foreground/10" />
+                    <div className="h-2 w-32 rounded bg-muted-foreground/10" />
+                  </div>
                 </div>
               </div>
             )}
-
-          </div>
-        )}
+          </SidebarMenuItem>
+        </SidebarMenu>
+        <LearnNavUser />
       </SidebarFooter>
     </Sidebar>
   );
 }
 
 function LearnAppShell({ children }: { children: React.ReactNode }) {
-  const { isLoggedIn, loading: authLoading } = useAuth();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {

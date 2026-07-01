@@ -5,7 +5,6 @@ import {
   buildLoginUrl,
   DEFAULT_POST_LOGIN_PATH,
   isAuthPage,
-  isLearnProtectedPath,
   pathMatchesPrefix,
   shouldRedirectAuthPageWhenToken,
 } from "@/lib/auth-policy";
@@ -16,15 +15,12 @@ export type MiddlewareDecision =
 
 /**
  * Pure middleware decision function — shared by edge middleware and stress tests.
+ * Only /admin and /dashboard require auth. /learn and /task are fully public.
  */
 export function evaluateAuthMiddleware(
   pathname: string,
   token: string | null | undefined,
 ): MiddlewareDecision {
-  if (isLearnProtectedPath(pathname) && !token) {
-    return { action: "redirect", location: buildLoginUrl(pathname) };
-  }
-
   const isAdminPath = ADMIN_PATH_PREFIXES.some((p) => pathMatchesPrefix(pathname, p));
   if (isAdminPath && !token) {
     return { action: "redirect", location: buildLoginUrl(pathname) };

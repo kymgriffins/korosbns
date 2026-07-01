@@ -169,6 +169,40 @@ export const adminContentData = {
         }),
         () => ({ count: _forumThreads.length, results: _forumThreads } as ApiListResponse<AdminForumThread>),
       ),
+    create: (data: { title: string; civic_module?: string | null }) =>
+      withFallback(
+        "admin-content",
+        () => adminForumApi.createThread(data).then((r) => {
+          _forumThreads.unshift(r);
+          return r;
+        }),
+        () => {
+          const t: AdminForumThread = {
+            id: `new-${Date.now()}`,
+            title: data.title,
+            author_name: "Admin",
+            posts_count: 0,
+            created_at: new Date().toISOString(),
+            civic_module: data.civic_module ?? null,
+          };
+          _forumThreads.unshift(t);
+          return t;
+        },
+      ),
+    update: (id: string, data: { title?: string; civic_module?: string | null }) =>
+      withFallback(
+        "admin-content",
+        () => adminForumApi.updateThread(id, data).then((r) => {
+          const idx = _forumThreads.findIndex((t) => t.id === id);
+          if (idx !== -1) _forumThreads[idx] = r;
+          return r;
+        }),
+        () => {
+          const idx = _forumThreads.findIndex((t) => t.id === id);
+          if (idx !== -1) _forumThreads[idx] = { ..._forumThreads[idx], ...data };
+          return _forumThreads[idx] ?? null;
+        },
+      ),
     deleteThread: (id: string) =>
       withFallback(
         "admin-content",

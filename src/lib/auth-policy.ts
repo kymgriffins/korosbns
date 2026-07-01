@@ -1,13 +1,10 @@
 /**
  * Canonical frontend auth policy for Budget Ndio Story (korosbns).
  *
- * DO NOT introduce alternate auth models, duplicate route lists, or ad-hoc guards.
- * All middleware, client guards, and post-login redirects MUST import from here.
- *
- * Model: PUBLIC (anonymous browse + real auth for admin/gated features)
- * - Anonymous users may browse all citizen-level content (learn, task, etc.).
- * - Authenticated session is required for admin, account settings, quests,
- *   and mutating APIs.
+ * Model: REAL AUTH ONLY
+ * - Anonymous users may browse all learn & task content freely — no profile needed.
+ * - Admin routes require a real authenticated session with admin/manager role.
+ * - No synthetic "citizen" state — either you have a real session or you don't.
  * - `isLoggedIn` (validated by GET /users/me/) gates privileged UI actions.
  *
  * @see docs/frontend-auth.md
@@ -15,15 +12,6 @@
 
 /** Default path after successful login when `next` is missing or invalid. */
 export const DEFAULT_POST_LOGIN_PATH = "/";
-
-/**
- * Server middleware: redirect to login when no access token cookie/header.
- * Keep this list minimal — only routes that must never render for guests.
- */
-export const LEARN_PROTECTED_PATH_PREFIXES = [
-  "/learn/account",
-  "/learn/quests",
-] as const;
 
 /**
  * Admin routes — token-required at middleware level.
@@ -68,10 +56,6 @@ export const REFRESH_TOKEN_COOKIE = "bns_rt";
 
 export function pathMatchesPrefix(pathname: string, prefix: string): boolean {
   return pathname === prefix || pathname.startsWith(`${prefix}/`);
-}
-
-export function isLearnProtectedPath(pathname: string): boolean {
-  return LEARN_PROTECTED_PATH_PREFIXES.some((p) => pathMatchesPrefix(pathname, p));
 }
 
 export function isAuthPage(pathname: string): boolean {
