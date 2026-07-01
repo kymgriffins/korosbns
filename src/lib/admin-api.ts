@@ -106,8 +106,14 @@ export const adminNotesApi = {
 };
 
 export const adminAnalyticsApi = {
-  summary: () => adminFetch<AdminAnalyticsSummary>("/analytics/summary/"),
-  dashboard: () => adminFetch<AdminAnalyticsSummary>("/analytics/dashboard/"),
+  summary: (period?: string) => {
+    const qs = period ? `?period=${period}` : "";
+    return adminFetch<AdminAnalyticsSummary>(`/analytics/summary/${qs}`);
+  },
+  dashboard: (period?: string) => {
+    const qs = period ? `?period=${period}` : "";
+    return adminFetch<AdminAnalyticsSummary>(`/analytics/dashboard/${qs}`);
+  },
 };
 
 export type AdminUser = {
@@ -200,4 +206,30 @@ export type AdminAnalyticsSummary = {
   recent_signups: number;
   engagement_rate: number;
   period?: string;
+
+  users_new_today: number;
+  users_new_7d: number;
+  users_new_30d: number;
+  users_active_7d: number;
+  users_active_30d: number;
+  users_growth_pct: number;
+
+  visitors_today: number;
+  visitors_7d: number;
+  visitors_30d: number;
+  pageviews_today: number;
+  pageviews_7d: number;
+  pageviews_30d: number;
+  bounce_rate: number;
+  avg_session_seconds: number;
+
+  daily_visitors: { date: string; count: number }[];
+  top_pages: { path: string; views: number }[];
+  device_breakdown: { device_type: string; percentage: number }[];
+  traffic_sources: { source: string; count: number; percentage: number }[];
+
+  content_published_today: number;
+  content_published_7d: number;
+  content_published_30d: number;
+  content_drafts: number;
 };
