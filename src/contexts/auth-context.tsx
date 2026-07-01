@@ -49,10 +49,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // The actual auth validation happens via GET /users/me/.
   const [hasActiveSession, setHasActiveSession] = useState(() => hasSession());
 
+  // Refresh the session marker cookie on every successful profile fetch so
+  // it never silently expires while the user is active.  Backend sets this
+  // too (via Set-Cookie on /auth/login/ and /auth/token/refresh/), but the
+  // frontend also sets it here to cover the gap between page navigations
+  // where no API call happens.
+  const refreshSessionMarker = useCallback(() => {
+    document.cookie = "bns_has_session=true; path=/; max-age=86400; SameSite=Lax";
+  }, []);
+
   const { data: user, isLoading, isError, isSuccess, error } = useQuery({
     queryKey: USER_PROFILE_KEY,
     queryFn: async () => {
       const profile = await citizenApi.getMe();
+      refreshSessionMarker();
       return normalizeProfile(profile);
     },
     enabled: hasActiveSession,
@@ -118,7 +128,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Set the non-HttpOnly marker cookie so hasSession() returns true
       // immediately (the browser already has bns_at and bns_rt from the
       // Set-Cookie headers).
-      document.cookie = "bns_has_session=true; path=/; max-age=3600; SameSite=Lax";
+      refreshSessionMarker();
 
       // Fetch profile synchronously before enabling the useQuery to avoid a
       // double-fetch race.

@@ -13,7 +13,7 @@
  */
 
 /** Default path after successful login when `next` is missing or invalid. */
-export const DEFAULT_POST_LOGIN_PATH = "/budgethub/dashboard/lms";
+export const DEFAULT_POST_LOGIN_PATH = "/";
 
 /**
  * Server middleware: redirect to login when no access token cookie/header.
@@ -22,7 +22,6 @@ export const DEFAULT_POST_LOGIN_PATH = "/budgethub/dashboard/lms";
 export const LEARN_PROTECTED_PATH_PREFIXES = [
   "/learn/account",
   "/learn/quests",
-  "/task",
 ] as const;
 
 /**
