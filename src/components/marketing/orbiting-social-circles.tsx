@@ -3,11 +3,11 @@
 import React from "react";
 import { motion } from "motion/react";
 import { OrbitingCircles } from "@/components/ui/orbiting-circles";
-import { Globe, Youtube, Music2, MessageCircleMore } from "lucide-react";
+import { Globe, Video, Music2, MessageCircleMore } from "lucide-react";
 
 const socialIcons = [
   { icon: Globe, label: "Website", className: "text-blue-500" },
-  { icon: Youtube, label: "YouTube", className: "text-red-500" },
+  { icon: Video, label: "YouTube", className: "text-red-500" },
   { icon: Music2, label: "TikTok", className: "text-foreground" },
   { icon: MessageCircleMore, label: "WhatsApp", className: "text-green-500" },
 ];
