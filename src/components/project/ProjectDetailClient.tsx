@@ -86,50 +86,6 @@ const projectDetails: Record<string, {
       "Increase civic engagement in budget making",
     ],
   },
-  "bns-studio": {
-    id: "bns-studio",
-    title: "BNS Studio",
-    description: "Professional videography, photography, and post-production services to fund operations and expand storytelling capacity for civic engagement.",
-    image: "https://res.cloudinary.com/dn8lut2fc/image/upload/v1740749235/cohort-4_j0t3yq.jpg",
-    location: "Nairobi, Kenya",
-    gallery: [
-      "/images/towwnhallmay/129A4094.jpg",
-      "/images/towwnhallmay/129A3912.jpg",
-      "/images/towwnhallmay/129A3863.jpg",
-    ],
-    documents: [
-      { name: "Studio Rate Card", url: "#" },
-      { name: "Portfolio Showcase", url: "#" },
-      { name: "Booking Terms", url: "#" },
-    ],
-    objectives: [
-      "Fund civic operations through professional media services",
-      "Expand storytelling capacity for budget narratives",
-      "Create compelling visual content for civic education",
-    ],
-  },
-  "community-outreach": {
-    id: "community-outreach",
-    title: "Community Outreach & Workshops",
-    description: "On-the-ground civic workshops, townhalls, and community engagements across the country empowering citizens to take action on budget matters.",
-    image: "https://res.cloudinary.com/dn8lut2fc/image/upload/v1740749250/cohort-5_h1p5bb.jpg",
-    location: "Various Counties",
-    gallery: [
-      "/images/towwnhallmay/129A3923.jpg",
-      "/images/towwnhallmay/129A4056.jpg",
-      "/images/towwnhallmay/129A4094.jpg",
-    ],
-    documents: [
-      { name: "Workshop Facilitator Guide", url: "#" },
-      { name: "Townhall Report Template", url: "#" },
-      { name: "Community Feedback Form", url: "#" },
-    ],
-    objectives: [
-      "Take budget education directly to communities across Kenya",
-      "Facilitate townhall discussions on county allocations",
-      "Collect citizen feedback to inform budget advocacy",
-    ],
-  },
 };
 
 export function ProjectDetailClient() {
@@ -233,9 +189,9 @@ export function ProjectDetailClient() {
           whileInView="visible"
           viewport={{ once: true }}
         >
-          <motion.div variants={fadeInUp}>
-            <ProjectTimeline />
-          </motion.div>
+            <motion.div variants={fadeInUp}>
+              <ProjectTimeline projectId={id} />
+            </motion.div>
         </motion.div>
       </SectionShell>
 
