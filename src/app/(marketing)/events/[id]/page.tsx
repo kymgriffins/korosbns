@@ -85,13 +85,13 @@ export default function EventDetailPage() {
                   initial={{ opacity: 0, scale: 0.98 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.4 }}
-                  className="relative w-full h-64 sm:h-80 overflow-hidden rounded-2xl bg-muted border border-border/40 shadow-sm"
+                  className="relative w-full h-72 sm:h-80 overflow-hidden rounded-2xl bg-muted border border-border/40 shadow-sm"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={event.image_url}
                     alt={event.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-center sm:object-top"
                   />
                 </motion.div>
               )}

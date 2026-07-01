@@ -134,7 +134,7 @@ export default function EventsPage() {
 
         {/* Events Grid */}
         {!isLoading && !error && (
-          <div className="grid gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredEvents.map((event, idx) => {
               const status = getEventStatus(event.starts_at);
               const { day, month, year } = parseDateParts(event.starts_at);
@@ -153,12 +153,12 @@ export default function EventsPage() {
                     {event.image_url ? (
                       <div>
                         {/* Cover Image */}
-                        <div className="relative w-full h-48 sm:h-56 overflow-hidden bg-muted border-b border-border/40">
+                        <div className="relative w-full h-56 sm:h-48 overflow-hidden bg-muted border-b border-border/40">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={event.image_url}
                             alt={event.title}
-                            className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
+                            className="w-full h-full object-cover object-center sm:object-top group-hover:scale-103 transition-transform duration-500"
                           />
                           {/* Floated Date Badge */}
                           {day && month && (
