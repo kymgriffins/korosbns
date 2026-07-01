@@ -17,7 +17,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 import { ApiRequestError } from "@/lib/api-errors";
@@ -232,16 +231,7 @@ export function TaskForm({
         onChange={(items) => updateField("checklist", items)}
       />
 
-      <div className="space-y-2">
-        <Label>Progress ({form.progress ?? 0}%)</Label>
-        <Slider
-          value={[form.progress ?? 0]}
-          onValueChange={([v]) => updateField("progress", v)}
-          max={100}
-          step={5}
-        />
-        {fieldAlert("progress")}
-      </div>
+
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">

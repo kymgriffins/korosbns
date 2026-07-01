@@ -293,20 +293,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
                     </div>
                   )}
 
-                  <div className="space-y-2">
-                    <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
-                      Progress ({task.progress ?? 0}%)
-                    </span>
-                    <div className="h-2 w-full bg-muted-foreground/10 rounded-full overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all duration-500"
-                        style={{
-                          width: `${Math.max(task.progress ?? 0, 0)}%`,
-                          backgroundColor: hue ?? "hsl(221 83% 53%)",
-                        }}
-                      />
-                    </div>
-                  </div>
+
 
                   {task.content && (
                     <div className="space-y-2">

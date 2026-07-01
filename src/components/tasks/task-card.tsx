@@ -130,17 +130,7 @@ export function TaskCard({ task, onDelete, isDragging, canManage, basePath = "/t
         </div>
       )}
 
-      {task.progress !== undefined && task.progress > 0 && (
-        <div className="mt-3 space-y-1">
-          <div className="flex justify-between text-[9px] text-muted-foreground font-medium">
-            <span>Progress</span>
-            <span>{task.progress}%</span>
-          </div>
-          <div className="h-1 w-full bg-muted rounded-full overflow-hidden">
-            <div className="h-full bg-primary transition-all duration-300" style={{ width: `${task.progress}%` }} />
-          </div>
-        </div>
-      )}
+
 
       <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-muted-foreground">
         <span className="flex items-center gap-1">
