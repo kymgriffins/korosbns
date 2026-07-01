@@ -11,8 +11,8 @@ import { fadeInUp, staggerContainer } from "@/motion/variants";
 function PartnerLogo({ partner }: { partner: Partner }) {
   return (
     <a href={partner.website || "#"} target="_blank" rel="noopener noreferrer" className="group relative flex h-16 w-40 shrink-0 items-center justify-center rounded-xl border border-border/20 bg-card/50 px-6 transition-all duration-300 hover:border-primary/30 hover:bg-card hover:shadow-md">
-      {partner.image?.src ? (
-        <Image src={partner.image.src} alt={partner.name} width={100} height={32} className="max-h-8 w-auto object-contain grayscale transition-all duration-300 group-hover:grayscale-0" />
+      {partner.logo_url ? (
+        <Image src={partner.logo_url} alt={partner.name} width={100} height={32} className="max-h-8 w-auto object-contain grayscale transition-all duration-300 group-hover:grayscale-0" />
       ) : (
         <span className="text-xs font-semibold text-muted-foreground group-hover:text-foreground transition-colors">{partner.name}</span>
       )}
