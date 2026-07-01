@@ -1,9 +1,10 @@
 "use client";
 
 import { useMemo } from "react";
+import { motion } from "motion/react";
 import {
   ArrowUpRight, BookOpen, Building2, Calendar, FileText,
-  Landmark, Scale, TrendingUp, TriangleAlert,
+  Landmark, Minus, Scale, TrendingDown, TrendingUp, TriangleAlert,
 } from "lucide-react";
 import {
   Bar, BarChart, CartesianGrid, Cell, Label, Pie, PieChart as RechartPie,
@@ -88,39 +89,55 @@ export function OverviewTab({ currentData, allYears, fiscalYears, selectedYear }
   ];
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-      <Card className="border-border/60 overflow-hidden">
-        <CardContent className="p-5 sm:p-6">
-          <div className="flex items-start gap-4">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
-              <BookOpen className="size-5 text-primary" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <span className="text-xs font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full">
-                {selectedLabel} Budget Theme
-              </span>
-              <p className="text-sm font-medium leading-relaxed mt-2 sm:text-base">{metadata.theme}</p>
-              <div className="flex flex-wrap items-center gap-2 mt-2 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1"><Landmark className="size-3" />{metadata.presented_by}</span>
-                <span className="text-muted-foreground/40">·</span>
-                <span className="flex items-center gap-1"><Calendar className="size-3" />Presented {metadata.presented_date}</span>
-                <span className="text-muted-foreground/40">·</span>
-                <span className="flex items-center gap-1"><Scale className="size-3" />Approved {metadata.approved_date}</span>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+    <div className="space-y-8">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="overflow-hidden rounded-3xl border border-primary/30 bg-primary/5 p-6 text-center md:p-10"
+      >
+        <div className="mb-2 inline-block rounded-full bg-primary/10 px-4 py-1 text-xs font-semibold text-primary">
+          {selectedLabel} Budget Theme
+        </div>
+        <h2 className="mb-3 text-xl font-black tracking-tight md:text-2xl">{metadata.theme}</h2>
+        <div className="mx-auto flex max-w-lg flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground">
+          <span className="flex items-center gap-1"><Landmark className="size-3" />{metadata.presented_by}</span>
+          <span className="text-muted-foreground/40">·</span>
+          <span className="flex items-center gap-1"><Calendar className="size-3" />Presented {metadata.presented_date}</span>
+          <span className="text-muted-foreground/40">·</span>
+          <span className="flex items-center gap-1"><Scale className="size-3" />Approved {metadata.approved_date}</span>
+        </div>
+        <div className="mx-auto mt-5 flex max-w-md flex-wrap items-center justify-center gap-2">
+          <span className="rounded-lg border border-primary/20 bg-primary/10 px-3 py-1.5 text-sm font-bold text-primary">{formatKesTrillions(totalRev / 1e9)} Revenue</span>
+          <span className="rounded-lg border border-amber-500/20 bg-amber-500/10 px-3 py-1.5 text-sm font-bold text-amber-500">{formatKesBillions(deficit / 1e9)} Deficit</span>
+          <span className="rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-1.5 text-sm font-bold text-red-500">{formatKesBillions(interest / 1e9)} Interest</span>
+        </div>
+      </motion.div>
 
       <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-        <KpiCard label="Total Revenue" value={formatKesTrillions(totalRev / 1e9)} trend={8.1} subtitle={selectedLabel} />
-        <KpiCard label="Ordinary Revenue" value={formatKesBillions(ordinaryRev / 1e9)} trend={7.2} subtitle="KRA collections" />
-        <KpiCard label="Interest Obligation" value={formatKesBillions(interest / 1e9)} trend={-5.2} subtitle="Debt service cost" />
-        <KpiCard label="Fiscal Deficit" value={formatKesBillions(deficit / 1e9)} trend={-deficitPct} subtitle={`${deficitPct}% of GDP`} />
+        {[
+          { label: "Total Revenue", value: formatKesTrillions(totalRev / 1e9), trend: 8.1, subtitle: selectedLabel },
+          { label: "Ordinary Revenue", value: formatKesBillions(ordinaryRev / 1e9), trend: 7.2, subtitle: "KRA collections" },
+          { label: "Interest Obligation", value: formatKesBillions(interest / 1e9), trend: -5.2, subtitle: "Debt service cost" },
+          { label: "Fiscal Deficit", value: formatKesBillions(deficit / 1e9), trend: -deficitPct, subtitle: `${deficitPct}% of GDP` },
+        ].map((kpi, i) => (
+          <motion.div
+            key={kpi.label}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 + i * 0.08 }}
+          >
+            <KpiCard {...kpi} />
+          </motion.div>
+        ))}
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <Card className="border-border/60">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+        className="grid grid-cols-1 gap-6 lg:grid-cols-2"
+      >
+        <Card className="rounded-2xl border-border/60">
           <CardHeader>
             <CardTitle className="text-sm flex items-center gap-2">
               <PieChartIcon className="size-4 text-primary" />Revenue Composition
@@ -131,7 +148,7 @@ export function OverviewTab({ currentData, allYears, fiscalYears, selectedYear }
             {revenueStreams.length === 0 ? (
               <div className="flex flex-col items-center gap-2 py-12">
                 <Landmark className="size-10 text-muted-foreground/30" />
-                <p className="text-sm text-muted-foreground">No data</p>
+                <p className="text-muted-foreground">No data</p>
               </div>
             ) : (
               <div className="flex flex-col items-center">
@@ -161,7 +178,7 @@ export function OverviewTab({ currentData, allYears, fiscalYears, selectedYear }
           </CardContent>
         </Card>
 
-        <Card className="border-border/60">
+        <Card className="rounded-2xl border-border/60">
           <CardHeader>
             <CardTitle className="text-sm flex items-center gap-2">
               <TrendingUp className="size-4 text-primary" />Revenue Trend
@@ -190,115 +207,146 @@ export function OverviewTab({ currentData, allYears, fiscalYears, selectedYear }
             </ResponsiveContainer>
           </CardContent>
         </Card>
-      </div>
+      </motion.div>
 
-      <Card className="border-border/60">
-        <CardHeader>
-          <CardTitle className="text-sm flex items-center gap-2">
-            <Building2 className="size-4 text-primary" />Sector Allocations
-          </CardTitle>
-          <CardDescription>National budget distribution across sectors ({selectedLabel})</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={360}>
-            <BarChart data={sectorData} layout="vertical" margin={{ left: 130, right: 20, top: 8, bottom: 8 }}>
-              <CartesianGrid horizontal={false} strokeOpacity={0.2} />
-              <XAxis type="number" tick={{ fontSize: 10 }} tickFormatter={(v: number) => `${(v / 1e9).toFixed(0)}B`} />
-              <YAxis type="category" dataKey="name" tick={{ fontSize: 10 }} width={130} tickLine={false} axisLine={false} />
-              <Tooltip formatter={(v: any) => formatKesBillions(v / 1e9)} />
-              <Bar dataKey="allocation" radius={[0, 6, 6, 0]} maxBarSize={24}
-                isAnimationActive={true} animationDuration={1000} animationEasing="ease-out">
-                {sectorData.map((_, i) => (
-                  <Cell key={i} fill={sectorColors[i % sectorColors.length]} fillOpacity={0.85} />
-                ))}
-                <LabelList dataKey="allocation" position="right"
-                  formatter={(v: any) => `${(v / 1e9).toFixed(0)}B`}
-                  className="text-[10px] tabular-nums" />
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
-
-      {sectorHistory.length > 1 && (
-        <Card className="border-border/60">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.5 }}
+      >
+        <Card className="rounded-2xl border-border/60">
           <CardHeader>
             <CardTitle className="text-sm flex items-center gap-2">
-              <TrendingUp className="size-4 text-primary" />Sector Trends Across Years
+              <Building2 className="size-4 text-primary" />Sector Allocations
             </CardTitle>
-            <CardDescription>Year-over-year allocation comparison by sector</CardDescription>
+            <CardDescription>National budget distribution across sectors ({selectedLabel})</CardDescription>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={sectorHistory} margin={{ left: 8, right: 8, top: 12, bottom: 0 }}>
+            <ResponsiveContainer width="100%" height={360}>
+              <BarChart data={sectorData} layout="vertical" margin={{ left: 130, right: 20, top: 8, bottom: 8 }}>
                 <CartesianGrid horizontal={false} strokeOpacity={0.2} />
-                <XAxis dataKey="label" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
-                <YAxis tick={{ fontSize: 10 }} tickFormatter={(v: number) => `${v}B`} />
-                <Tooltip formatter={(v: any) => `${v.toFixed(1)}B`} />
-                {tier_1_national_sectors.map((s, i) => (
-                  <Bar key={s.sector_code} dataKey={shortSectorName(s.name)} stackId="a" radius={[0, 0, 0, 0]}
-                    fill={sectorColors[i % sectorColors.length]} fillOpacity={0.85}
-                    isAnimationActive={true} animationDuration={800} animationEasing="ease-out"
-                  />
-                ))}
+                <XAxis type="number" tick={{ fontSize: 10 }} tickFormatter={(v: number) => `${(v / 1e9).toFixed(0)}B`} />
+                <YAxis type="category" dataKey="name" tick={{ fontSize: 10 }} width={130} tickLine={false} axisLine={false} />
+                <Tooltip formatter={(v: any) => formatKesBillions(v / 1e9)} />
+                <Bar dataKey="allocation" radius={[0, 6, 6, 0]} maxBarSize={24}
+                  isAnimationActive={true} animationDuration={1000} animationEasing="ease-out">
+                  {sectorData.map((_, i) => (
+                    <Cell key={i} fill={sectorColors[i % sectorColors.length]} fillOpacity={0.85} />
+                  ))}
+                  <LabelList dataKey="allocation" position="right"
+                    formatter={(v: any) => `${(v / 1e9).toFixed(0)}B`}
+                    className="text-[10px] tabular-nums" />
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
-            <div className="flex flex-wrap justify-center gap-3 mt-4">
-              {tier_1_national_sectors.map((s, i) => (
-                <div key={s.sector_code} className="flex items-center gap-1.5 text-xs">
-                  <span className="size-2.5 rounded-full" style={{ backgroundColor: sectorColors[i % sectorColors.length] }} />
-                  <span className="text-muted-foreground">{shortSectorName(s.name)}</span>
-                </div>
-              ))}
-            </div>
           </CardContent>
         </Card>
+      </motion.div>
+
+      {sectorHistory.length > 1 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+        >
+          <Card className="rounded-2xl border-border/60">
+            <CardHeader>
+              <CardTitle className="text-sm flex items-center gap-2">
+                <TrendingUp className="size-4 text-primary" />Sector Trends Across Years
+              </CardTitle>
+              <CardDescription>Year-over-year allocation comparison by sector</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={sectorHistory} margin={{ left: 8, right: 8, top: 12, bottom: 0 }}>
+                  <CartesianGrid horizontal={false} strokeOpacity={0.2} />
+                  <XAxis dataKey="label" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
+                  <YAxis tick={{ fontSize: 10 }} tickFormatter={(v: number) => `${v}B`} />
+                  <Tooltip formatter={(v: any) => `${v.toFixed(1)}B`} />
+                  {tier_1_national_sectors.map((s, i) => (
+                    <Bar key={s.sector_code} dataKey={shortSectorName(s.name)} stackId="a" radius={[0, 0, 0, 0]}
+                      fill={sectorColors[i % sectorColors.length]} fillOpacity={0.85}
+                      isAnimationActive={true} animationDuration={800} animationEasing="ease-out"
+                    />
+                  ))}
+                </BarChart>
+              </ResponsiveContainer>
+              <div className="flex flex-wrap justify-center gap-3 mt-4">
+                {tier_1_national_sectors.map((s, i) => (
+                  <div key={s.sector_code} className="flex items-center gap-1.5 text-xs">
+                    <span className="size-2.5 rounded-full" style={{ backgroundColor: sectorColors[i % sectorColors.length] }} />
+                    <span className="text-muted-foreground">{shortSectorName(s.name)}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
       )}
 
-      <Card className="border-border/60">
-        <CardHeader>
-          <CardTitle className="text-sm flex items-center gap-2">
-            <Scale className="size-4 text-primary" />Debt & Financing
-          </CardTitle>
-          <CardDescription>Borrowing plan and fiscal sustainability metrics</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div className="rounded-lg border bg-card p-4">
-              <p className="text-xs font-medium text-muted-foreground">Fiscal Deficit</p>
-              <p className="text-xl font-bold tabular-nums mt-1">{formatKesBillions(deficit / 1e9)}</p>
-              <p className="text-xs text-muted-foreground">{deficitPct}% of GDP</p>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.7 }}
+        className="rounded-2xl border border-border/60 bg-card"
+      >
+        <div className="p-5 sm:p-6">
+          <div className="mb-4 flex items-center gap-2">
+            <Scale className="size-4 text-primary" />
+            <h3 className="text-sm font-semibold">Debt & Financing</h3>
+            <span className="text-xs text-muted-foreground">Borrowing plan and fiscal sustainability metrics</span>
+          </div>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="rounded-2xl border border-border bg-card p-4">
+              <span className="text-xs font-semibold text-muted-foreground">Fiscal Deficit</span>
+              <p className="mt-1 text-xl font-black tracking-tight tabular-nums">{formatKesBillions(deficit / 1e9)}</p>
+              <div className="mt-2 flex items-center gap-1">
+                <TrendingDown className="size-3.5 text-amber-500" />
+                <span className="text-xs font-semibold text-amber-500">{deficitPct}% of GDP</span>
+              </div>
             </div>
-            <div className="rounded-lg border bg-card p-4">
-              <p className="text-xs font-medium text-muted-foreground">Domestic Borrowing</p>
-              <p className="text-xl font-bold tabular-nums mt-1">
+            <div className="rounded-2xl border border-border bg-card p-4">
+              <span className="text-xs font-semibold text-muted-foreground">Domestic Borrowing</span>
+              <p className="mt-1 text-xl font-black tracking-tight tabular-nums">
                 {formatKesBillions(debt_portfolio.financing_plan.domestic_borrowing_target / 1e9)}
               </p>
-              <p className="text-xs text-muted-foreground">Target {selectedLabel}</p>
+              <div className="mt-2 flex items-center gap-1">
+                <TrendingUp className="size-3.5 text-primary" />
+                <span className="text-xs font-semibold text-primary">Target {selectedLabel}</span>
+              </div>
             </div>
-            <div className="rounded-lg border bg-card p-4">
-              <p className="text-xs font-medium text-muted-foreground">External Borrowing</p>
-              <p className="text-xl font-bold tabular-nums mt-1">
+            <div className="rounded-2xl border border-border bg-card p-4">
+              <span className="text-xs font-semibold text-muted-foreground">External Borrowing</span>
+              <p className="mt-1 text-xl font-black tracking-tight tabular-nums">
                 {formatKesBillions(debt_portfolio.financing_plan.external_borrowing_target / 1e9)}
               </p>
-              <p className="text-xs text-muted-foreground">Target {selectedLabel}</p>
+              <div className="mt-2 flex items-center gap-1">
+                <Minus className="size-3.5 text-muted-foreground" />
+                <span className="text-xs font-semibold text-muted-foreground">Target {selectedLabel}</span>
+              </div>
             </div>
           </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-4">
-            <div className="rounded-lg border bg-card p-4">
-              <p className="text-xs font-medium text-muted-foreground">Interest Obligation</p>
-              <p className="text-xl font-bold tabular-nums mt-1">{formatKesBillions(interest / 1e9)}</p>
-              <p className="text-xs text-muted-foreground">Debt service cost for {selectedLabel}</p>
+          <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className="rounded-2xl border border-border bg-card p-4">
+              <span className="text-xs font-semibold text-muted-foreground">Interest Obligation</span>
+              <p className="mt-1 text-xl font-black tracking-tight tabular-nums">{formatKesBillions(interest / 1e9)}</p>
+              <div className="mt-2 flex items-center gap-1">
+                <TrendingUp className="size-3.5 text-red-500" />
+                <span className="text-xs font-semibold text-red-500">Debt service cost</span>
+              </div>
             </div>
-            <div className="rounded-lg border bg-card p-4">
-              <p className="text-xs font-medium text-muted-foreground">Target Deficit (FY 2028/29)</p>
-              <p className="text-xl font-bold tabular-nums mt-1">{debt_portfolio.target_deficit_fy2028_29_pct}%</p>
-              <p className="text-xs text-muted-foreground">of GDP (fiscal consolidation goal)</p>
+            <div className="rounded-2xl border border-border bg-card p-4">
+              <span className="text-xs font-semibold text-muted-foreground">Target Deficit (FY 2028/29)</span>
+              <p className="mt-1 text-xl font-black tracking-tight tabular-nums">{debt_portfolio.target_deficit_fy2028_29_pct}%</p>
+              <div className="mt-2 flex items-center gap-1">
+                <TrendingDown className="size-3.5 text-green-500" />
+                <span className="text-xs font-semibold text-green-500">Fiscal consolidation goal</span>
+              </div>
             </div>
           </div>
 
           {debt_portfolio.systemic_risks.length > 0 && (
-            <div className="mt-4 space-y-2">
+            <div className="mt-4 space-y-2 border-t border-border/60 pt-4">
               <p className="text-xs font-medium text-muted-foreground flex items-center gap-1">
                 <TriangleAlert className="size-3" /> Systemic Risks
               </p>
@@ -310,20 +358,26 @@ export function OverviewTab({ currentData, allYears, fiscalYears, selectedYear }
               ))}
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </motion.div>
 
-      <Card className="border-border/60">
-        <CardContent className="p-4">
-          <a href="/budgethub/dashboard/lms/documents"
-            className="flex items-center gap-3 text-sm font-medium text-primary hover:underline"
-          >
-            <FileText className="size-4" />
-            View source budget documents
-            <ArrowUpRight className="size-3.5" />
-          </a>
-        </CardContent>
-      </Card>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.8 }}
+      >
+        <Card className="rounded-2xl border-border/60">
+          <CardContent className="p-4">
+            <a href="/budgethub/dashboard/lms/documents"
+              className="flex items-center gap-3 text-sm font-medium text-primary hover:underline"
+            >
+              <FileText className="size-4" />
+              View source budget documents
+              <ArrowUpRight className="size-3.5" />
+            </a>
+          </CardContent>
+        </Card>
+      </motion.div>
     </div>
   );
 }
