@@ -13,13 +13,6 @@ export function useRegister() {
   });
 }
 
-export function useLogin() {
-  return useMutation({
-    mutationFn: ({ email, password }: { email: string; password: string }) =>
-      citizenApi.login(email, password),
-  });
-}
-
 export function useVerifyEmail() {
   return useMutation({
     mutationFn: (token: string) => citizenApi.verifyEmail(token),
@@ -57,8 +50,4 @@ export function useResendVerification() {
   });
 }
 
-export function useLogout() {
-  return useMutation({
-    mutationFn: () => citizenApi.logout(),
-  });
-}
+

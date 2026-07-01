@@ -11,27 +11,30 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { Routes } from "@/constants/routes";
-import { learnHubApi, type LearnProfileResponse } from "@/lib/learn-hub";
+import { learningData } from "@/data/learning";
+import { userData } from "@/data/users";
 import { citizenApi, type SocialLinkApi, type UserProfileApi } from "@/lib/api-client";
 import { MotionPage } from "@/motion/wrappers";
 import { fadeInUp } from "@/motion/variants";
 import { motion } from "motion/react";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
+import { usePageView } from "@/hooks/use-page-view";
 
 const SOCIAL_ICONS: Record<string, LucideIcon> = {
   website: Globe,
 };
 
 export default function LearnProfilePage() {
-  const [data, setData] = useState<LearnProfileResponse | null>(null);
+  usePageView();
+  const [data, setData] = useState<Awaited<ReturnType<typeof learningData.profile.fetch>> | null>(null);
   const [profile, setProfile] = useState<UserProfileApi | null>(null);
   const [socialLinks, setSocialLinks] = useState<SocialLinkApi[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     void Promise.all([
-      learnHubApi.profile(),
-      citizenApi.getMe().catch(() => null),
+      learningData.profile.fetch(),
+      userData.profile.fetch().catch(() => null),
       citizenApi.getSocialLinks().catch(() => [] as SocialLinkApi[]),
     ]).then(([d, p, s]) => {
       setData(d);

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 
 /** Minimal header for auth/account flows (no full marketing navbar). */
 export function CitizenNav() {

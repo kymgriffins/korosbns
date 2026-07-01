@@ -9,7 +9,7 @@ const Icons = {
     ),
     wordmark: (props: LucideProps) => (
         <svg {...props} width="220" height="24" viewBox="0 0 220 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <text x="0" y="18" fill="currentColor" fontFamily="Inter, system-ui, sans-serif" fontWeight="700" fontSize="18">
+            <text x="0" y="18" fill="currentColor" fontFamily="Geist, system-ui, sans-serif" fontWeight="700" fontSize="18">
                 Budget Ndio Story
             </text>
         </svg>
@@ -22,7 +22,7 @@ const Icons = {
                     <stop offset="1" stopColor="#0066FF" />
                 </linearGradient>
             </defs>
-            <text x="0" y="20" fill="url(#wordmarkGradient)" fontFamily="Inter, system-ui, sans-serif" fontWeight="800" fontSize="18">
+            <text x="0" y="20" fill="url(#wordmarkGradient)" fontFamily="Geist, system-ui, sans-serif" fontWeight="800" fontSize="18">
                 Budget Ndio Story
             </text>
         </svg>

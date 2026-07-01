@@ -7,8 +7,7 @@ import { AlertTriangle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/contexts/auth-context";
-
-const ALLOWED_ROLES = new Set(["admin", "manager", "editor"]);
+import { ADMIN_ROLES } from "@/constants/rbac";
 
 export function AdminGuard({ children }: { children: React.ReactNode }) {
   const { isLoggedIn, loading, user } = useAuth();
@@ -34,7 +33,7 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
   if (!isLoggedIn || !user) return null;
 
   const roleSlug = user.role?.slug;
-  if (!roleSlug || !ALLOWED_ROLES.has(roleSlug)) {
+  if (!roleSlug || !ADMIN_ROLES.has(roleSlug)) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center p-6">
         <Card className="mx-auto max-w-md text-center">
@@ -49,7 +48,7 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-3">
-            <Button onClick={() => router.push("/budgethub/dashboard/lms")} variant="outline">
+            <Button onClick={() => router.push("/admin/dashboard")} variant="outline">
               Go to Dashboard
             </Button>
             <Button onClick={() => router.push("/auth/login")} variant="ghost" size="sm">

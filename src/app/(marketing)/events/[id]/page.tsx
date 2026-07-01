@@ -6,9 +6,9 @@ import { useParams } from "next/navigation";
 import { ArrowLeft, ExternalLink, Loader2, Calendar, MapPin, Sparkles, Send, Mail, CheckCircle2, Building2 } from "lucide-react";
 import Wrapper from "@/components/global/wrapper";
 import { Routes } from "@/constants/routes";
-import { Badge } from "@/ui/badge";
-import { Button } from "@/ui/button";
-import { Input } from "@/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { motion } from "motion/react";
 import { useEvent } from "@/hooks/use-events";
@@ -190,7 +190,7 @@ export default function EventDetailPage() {
 
                 {emailRegistered ? (
                   <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 text-center">
-                    <CheckCircle2 className="size-8 text-primary mx-auto mb-2 animate-bounce" />
+                    <CheckCircle2 className="size-8 text-primary mx-auto mb-2" />
                     <p className="text-sm font-semibold text-primary">You are Connected!</p>
                     <p className="text-xs text-muted-foreground mt-1">We'll alert you as soon as new photos or community boards are available.</p>
                   </div>

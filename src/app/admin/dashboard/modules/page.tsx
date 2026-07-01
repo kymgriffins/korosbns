@@ -13,7 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { DataTable, type Column } from "@/components/admin/data-table";
 import { FormDialog } from "@/components/admin/form-dialog";
-import { adminModulesApi, type AdminModule } from "@/lib/admin-api";
+import type { AdminModule } from "@/lib/admin-api";
+import { adminContentData } from "@/data/admin-content";
 
 type Mode = "create" | "edit";
 
@@ -33,7 +34,7 @@ export default function AdminModulesPage() {
   const fetchModules = useCallback(async () => {
     setLoading(true); setError("");
     try {
-      const res = await adminModulesApi.list({ page, search: search || undefined });
+      const res = await adminContentData.modules.fetchList({ page, search: search || undefined });
       setModules(res.results);
       setTotalPages(Math.max(1, Math.ceil(res.count / 25)));
     } catch (err) {
@@ -57,8 +58,8 @@ export default function AdminModulesPage() {
     if (!form.title) { toast.error("Title is required"); return; }
     setSaving(true);
     try {
-      if (mode === "create") { await adminModulesApi.create(form); toast.success("Module created"); }
-      else if (editSlug) { await adminModulesApi.update(editSlug, form); toast.success("Module updated"); }
+      if (mode === "create") { await adminContentData.modules.create(form); toast.success("Module created"); }
+      else if (editSlug) { await adminContentData.modules.update(editSlug, form); toast.success("Module updated"); }
       setDialogOpen(false); fetchModules();
     } catch (err) { toast.error(err instanceof Error ? err.message : "Operation failed"); }
     finally { setSaving(false); }
@@ -66,7 +67,7 @@ export default function AdminModulesPage() {
 
   const handleDelete = async (slug: string) => {
     if (!confirm("Delete this module and all its content?")) return;
-    try { await adminModulesApi.delete(slug); toast.success("Module deleted"); fetchModules(); }
+    try { await adminContentData.modules.delete(slug); toast.success("Module deleted"); fetchModules(); }
     catch (err) { toast.error(err instanceof Error ? err.message : "Delete failed"); }
   };
 

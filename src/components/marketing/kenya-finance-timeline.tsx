@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "motion/react";
-import { Badge } from "@/ui/badge";
+import { Badge } from "@/components/ui/badge";
 import {
   Check,
   Loader2,
@@ -414,69 +414,6 @@ export default function KenyaFinanceTimeline() {
         </div>
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, scale: 0.98 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
-        className="mx-auto flex max-w-5xl flex-col gap-6 rounded-3xl border border-primary/20 bg-primary/5 p-6 md:p-8"
-      >
-        <div className="flex items-start gap-4">
-          <div className="rounded-2xl border border-primary/20 bg-primary/10 p-3 text-primary shrink-0">
-            <TrendingUp className="h-6 w-6" />
-          </div>
-          <div className="w-full">
-            <h3 className="mb-3 text-lg font-bold text-primary">
-              FY 2026/27 Sector Budget Allocations (KES)
-            </h3>
-            <div className="grid grid-cols-1 gap-x-8 gap-y-2.5 text-sm text-muted-foreground md:grid-cols-2">
-              <div className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-2">
-                <span className="font-semibold text-foreground">Education</span>
-                <span className="font-mono font-bold text-primary">KES 781.4B</span>
-              </div>
-              <div className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-2">
-                <span className="font-semibold text-foreground">Governance, Justice &amp; Order</span>
-                <span className="font-mono font-bold text-primary">KES 353.3B</span>
-              </div>
-              <div className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-2">
-                <span className="font-semibold text-foreground">National Security</span>
-                <span className="font-mono font-bold text-primary">KES 308.6B</span>
-              </div>
-              <div className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-2">
-                <span className="font-semibold text-foreground">Infrastructure &amp; Roads</span>
-                <span className="font-mono font-bold text-primary">KES 230B</span>
-              </div>
-              <div className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-2">
-                <span className="font-semibold text-foreground">Health (UHC)</span>
-                <span className="font-mono font-bold text-primary">KES 175.5B</span>
-              </div>
-              <div className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-2">
-                <span className="font-semibold text-foreground">Housing &amp; Urban Dev</span>
-                <span className="font-mono font-bold text-primary">KES 135.8B</span>
-              </div>
-              <div className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-2">
-                <span className="font-semibold text-foreground">Agriculture &amp; Rural Dev</span>
-                <span className="font-mono font-bold text-primary">KES 106.8B</span>
-              </div>
-              <div className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/50 px-3 py-2">
-                <span className="font-semibold text-foreground">County Governments</span>
-                <span className="font-mono font-bold text-primary">KES 502B</span>
-              </div>
-            </div>
-            <p className="mt-3 text-xs text-muted-foreground/70">
-              Source: National Treasury Budget Statement, June 2026 &bull; Parliament approval June 2, 2026
-            </p>
-            <div className="mt-4">
-              <a
-                href="/budgetnews"
-                className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
-              >
-                View Full Budget News Analysis
-                <TrendingUp className="size-4" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </motion.div>
     </SectionShell>
   );
 }

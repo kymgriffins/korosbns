@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { Award, ArrowRight, Download, ExternalLink } from "lucide-react";
 
 interface MasteryPageProps {

@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { MessageSquare, Search, Loader2 } from "lucide-react";
-import { Input } from "@/ui/input";
+import { Input } from "@/components/ui/input";
 import { useForumThreads } from "@/hooks/use-forum";
 import { ForumThreadCard } from "./forum-thread-card";
 import { ForumThreadDetail } from "./forum-thread-detail";

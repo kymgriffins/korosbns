@@ -4,7 +4,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
 import { motion } from "motion/react";
 import Wrapper from "../global/wrapper";
-import SectionBadge from "@/ui/section-badge";
+import SectionBadge from "@/components/ui/section-badge";
 import { cn } from "@/utils";
 import { useCohortImages } from "@/hooks/use-marketing";
 

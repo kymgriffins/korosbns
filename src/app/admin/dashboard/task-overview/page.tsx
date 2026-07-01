@@ -22,7 +22,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { taskApi } from "@/lib/task-api";
+import { usePageView } from "@/hooks/use-page-view";
+import { taskData } from "@/data/tasks";
 import { useAuth } from "@/contexts/auth-context";
 import type { Task, TaskStatus } from "@/types/tasks";
 
@@ -147,6 +148,7 @@ function TaskRow({ task }: { task: Task }) {
 }
 
 export default function TaskOverviewPage() {
+  usePageView();
   const { isLoggedIn } = useAuth();
   const routeBase = useRouteBase();
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -157,7 +159,7 @@ export default function TaskOverviewPage() {
     setLoading(true);
     setError("");
     try {
-      const data = await taskApi.listAll();
+      const data = await taskData.tasks.fetch();
       setTasks(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load tasks");

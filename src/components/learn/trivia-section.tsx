@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { CheckCircle2, AlertCircle, Sparkles, ArrowRight, Lightbulb } from "lucide-react";
 import { cn } from "@/utils";
 import type { StageTrivia } from "@/types/learn";

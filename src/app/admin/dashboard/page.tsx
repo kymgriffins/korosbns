@@ -22,15 +22,12 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { InlineError } from "@/components/ui/inline-error";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  adminUsersApi,
-  adminContentApi,
-  adminModulesApi,
-  adminForumApi,
-} from "@/lib/admin-api";
+import { dashboardData } from "@/data/admin-dashboard";
 
 import { useRouteBase, getFullUrl } from "@/lib/route-base";
+import { PageInfo } from "@/components/admin/page-info";
 
 type DashboardStats = {
   totalUsers: number;
@@ -100,39 +97,26 @@ export default function AdminDashboardPage() {
     contentByType: {},
   });
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchStats() {
+      setFetchError(null);
       try {
-        const [usersRes, modulesRes, forumRes] = await Promise.allSettled([
-          adminUsersApi.list({ page: 1 }),
-          adminModulesApi.list({ page: 1 }),
-          adminForumApi.listThreads({ page: 1 }),
-        ]);
-
-        let totalContent = 0;
-        const contentByType: Record<string, number> = {};
-
-        const contentResults = await Promise.allSettled(
-          contentTypes.map((ct) =>
-            adminContentApi.list(ct.id, { page: 1 }).then((res) => ({ type: ct.id, count: res.count ?? 0 }))
-          )
-        );
-        for (const result of contentResults) {
-          if (result.status === "fulfilled") {
-            contentByType[result.value.type] = result.value.count;
-            totalContent += result.value.count;
-          }
-        }
-
+        const data = await dashboardData.fetch();
         setStats({
-          totalUsers: usersRes.status === "fulfilled" ? (usersRes.value.count ?? 0) : 0,
-          totalContent,
-          totalModules: modulesRes.status === "fulfilled" ? (modulesRes.value.count ?? 0) : 0,
-          activeForumThreads: forumRes.status === "fulfilled" ? (forumRes.value.count ?? 0) : 0,
-          contentByType,
+          totalUsers: data.users.total,
+          totalContent: data.content.total,
+          totalModules: data.modules.total,
+          activeForumThreads: data.forum.total_threads,
+          contentByType: {
+            articles: data.content.articles,
+            videos: data.content.videos,
+            stories: data.content.stories,
+          },
         });
       } catch {
+        setFetchError("Unable to load dashboard data. Please try again.");
       } finally {
         setLoading(false);
       }
@@ -142,12 +126,25 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-3xl tracking-tight">Admin Dashboard</h1>
-        <p className="mt-1 text-muted-foreground text-sm">
-          Overview of your platform statistics and management tools.
-        </p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-3xl tracking-tight">Admin Dashboard</h1>
+          <p className="mt-1 text-muted-foreground text-sm">
+            Overview of your platform statistics and management tools.
+          </p>
+        </div>
+        <PageInfo>
+          <p className="font-medium mb-1">Working Tips</p>
+          <ul className="list-disc pl-4 space-y-1">
+            <li>Stats update every 5 minutes — refresh for latest.</li>
+            <li>Quick links navigate to each management section.</li>
+            <li>Content breakdown shows articles, videos, and stories.</li>
+            <li>Use the sidebar to access all admin sections.</li>
+          </ul>
+        </PageInfo>
       </div>
+
+      {fetchError && <InlineError message={fetchError} onRetry={() => window.location.reload()} />}
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard

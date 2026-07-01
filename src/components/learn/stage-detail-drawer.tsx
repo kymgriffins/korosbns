@@ -1,14 +1,15 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { usePageView } from "@/hooks/use-page-view";
 import { toast } from "sonner";
 import { ChevronLeft, ChevronRight, PlayCircle, CheckCircle2, BookOpen, BookOpenText, Video, Brain, Loader2 } from "lucide-react";
-import { Badge } from "@/ui/badge";
-import { Button } from "@/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { apiFetch } from "@/lib/api-client";
 import { learnHubApi } from "@/lib/learn-hub";
 import { useLearn } from "@/contexts/learn-context";
-import { useSidebar } from "@/ui/sidebar";
+import { useSidebar } from "@/components/ui/sidebar";
 import { readProgress, writeProgress } from "@/lib/module-progress";
 import { triviaForStep } from "@/lib/learn-trivia";
 import { certificateDownloadHref } from "@/lib/certificate-url";
@@ -39,9 +40,9 @@ import { MasteryPage } from "./mastery-page";
 
 interface StageDetailDrawerProps {
   stage: CivicModule;
-  profile: any;
+  profile: Record<string, unknown>;
   onClose: () => void;
-  onUpdateProfile: (updatedProfile: any) => void;
+  onUpdateProfile: (updatedProfile: Record<string, unknown>) => void;
   onPrevStage?: () => void;
   onNextStage?: () => void;
   hasPrev: boolean;
@@ -51,6 +52,7 @@ interface StageDetailDrawerProps {
 export function StageDetailDrawer({
   stage, profile, onClose, onUpdateProfile, onPrevStage, onNextStage, hasPrev, hasNext
 }: StageDetailDrawerProps) {
+  usePageView();
   const { totalStages } = useLearn();
   const { setOpen: setSidebarOpen, open: sidebarOpen } = useSidebar();
   const [currentStep, setCurrentStep] = useState<number>(0);
@@ -117,7 +119,7 @@ export function StageDetailDrawer({
           idempotency_key: rewardTag,
         }),
       }).then((res) => {
-        const updatedPoints = res.points ?? profile.sovereigns + pointsToAward;
+        const updatedPoints = res.points ?? Number(profile.sovereigns ?? 0) + pointsToAward;
         onUpdateProfile({ ...profile, sovereigns: updatedPoints });
       }).catch(() => {
         toast.error("Could not sync answer. Points not saved.");
@@ -157,18 +159,20 @@ export function StageDetailDrawer({
       const p = readProgress(stage.slug, stage.order);
       if (!p.masteryAwarded) {
         writeProgress(stage.slug, { ...p, masteryAwarded: true });
-        const newProgress = profile.stageProgress ? [...profile.stageProgress] : [1];
+        const stageProgress = Array.isArray(profile.stageProgress) ? profile.stageProgress : [];
+        const newProgress = stageProgress.length > 0 ? [...stageProgress] : [1];
         const nextStageId = stage.order + 1;
         if (nextStageId <= totalStages && !newProgress.includes(nextStageId)) {
           newProgress.push(nextStageId);
         }
-        const newBadges = profile.badges ? [...profile.badges] : [];
+        const badges = Array.isArray(profile.badges) ? profile.badges : [];
+        const newBadges = badges.length > 0 ? [...badges] : [];
         if (!newBadges.includes(stage.badge)) {
           newBadges.push(stage.badge);
         }
         const updatedProfile = {
           ...profile,
-          sovereigns: profile.sovereigns + 25,
+          sovereigns: Number(profile.sovereigns ?? 0) + 25,
           stageProgress: newProgress,
           badges: newBadges,
         };

@@ -1,8 +1,8 @@
 "use client";
 
 import Wrapper from "@/components/global/wrapper";
-import { Button } from "@/ui/button";
-import { Input } from "@/ui/input";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";

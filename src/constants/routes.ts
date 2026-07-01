@@ -56,6 +56,9 @@ export const Routes = {
     Events: "/events",
     Event: (id: string) => `/events/${id}`,
 
+    Projects: "/bns-project",
+    BNSStudio: "/bns-studio",
+
     Login: "/auth/login",
     Register: "/auth/register",
     Verify: "/auth/verify",

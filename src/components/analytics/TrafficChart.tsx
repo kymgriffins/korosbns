@@ -37,7 +37,7 @@ export function TrafficChart({ data }: Props) {
             contentStyle={{
               backgroundColor: "hsl(var(--card))",
               border: "1px solid hsl(var(--border))",
-              borderRadius: "8px",
+              borderRadius: "10px",
               fontSize: "13px",
             }}
           />

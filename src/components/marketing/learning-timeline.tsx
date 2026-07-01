@@ -4,7 +4,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { BookOpen, FileText, Building2, Scale } from 'lucide-react';
 import Link from 'next/link';
-import { Button } from '@/ui/button';
+import { Button } from '@/components/ui/button';
 
 interface LearningModule {
   icon: React.ReactNode;

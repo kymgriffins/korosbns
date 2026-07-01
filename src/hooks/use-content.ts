@@ -1,41 +1,40 @@
 import { useQuery } from "@tanstack/react-query";
-import { citizenApi } from "@/lib/api-client";
-import type { TriviaSetApi, TriviaLeaderboardRow } from "@/lib/api-client";
-import type { ApiListResponse } from "@/types/api";
+import { contentData } from "@/data/content";
+import type { TriviaLeaderboardRow } from "@/lib/api-client";
 
 export function useArticle(slug: string, enabled = true) {
   return useQuery({
     queryKey: ["article", slug],
-    queryFn: () => citizenApi.getArticle(slug),
+    queryFn: () => contentData.articles.fetchBySlug(slug),
     enabled: !!slug && enabled,
   });
 }
 
-export function useArticles() {
+export function useArticles(filters?: { search?: string }) {
   return useQuery({
-    queryKey: ["articles"],
-    queryFn: () => citizenApi.getArticles(),
+    queryKey: ["articles", filters],
+    queryFn: () => contentData.articles.fetch(filters).then((results) => ({ results })),
   });
 }
 
 export function useStories() {
   return useQuery({
     queryKey: ["stories"],
-    queryFn: () => citizenApi.getStories(),
+    queryFn: () => contentData.stories.fetch().then((results) => ({ results })),
   });
 }
 
 export function useTriviaList() {
   return useQuery({
     queryKey: ["trivia-list"],
-    queryFn: () => citizenApi.getTriviaList(),
+    queryFn: () => contentData.trivia.fetchList().then((results) => ({ results })),
   });
 }
 
 export function useTrivia(id: string, enabled = true) {
   return useQuery({
     queryKey: ["trivia", id],
-    queryFn: () => citizenApi.getTrivia(id),
+    queryFn: () => contentData.trivia.fetchBySlug(id),
     enabled: !!id && enabled,
   });
 }
@@ -43,7 +42,7 @@ export function useTrivia(id: string, enabled = true) {
 export function useTriviaLeaderboard(id: string) {
   return useQuery({
     queryKey: ["trivia-leaderboard", id],
-    queryFn: () => citizenApi.getTriviaLeaderboard(id),
+    queryFn: () => contentData.trivia.fetchLeaderboard(id),
     enabled: !!id,
   });
 }
@@ -51,14 +50,14 @@ export function useTriviaLeaderboard(id: string) {
 export function useKnowledge() {
   return useQuery({
     queryKey: ["knowledge"],
-    queryFn: () => citizenApi.getKnowledge(),
+    queryFn: () => contentData.knowledge.fetch().then((results) => ({ results })),
   });
 }
 
 export function useKnowledgeEntry(id: string) {
   return useQuery({
     queryKey: ["knowledge", id],
-    queryFn: () => citizenApi.getKnowledgeEntry(id),
+    queryFn: () => contentData.knowledge.fetchById(id),
     enabled: !!id,
   });
 }
@@ -68,20 +67,20 @@ export function useContentForSlug(slug: string, enabled = true) {
     queryKey: ["content-by-slug", slug],
     queryFn: async (): Promise<{ type: "article" | "trivia" | "story"; data: Record<string, unknown> } | null> => {
       try {
-        const artData = await citizenApi.getArticle(slug);
+        const artData = await contentData.articles.fetchBySlug(slug);
         if (artData && Object.keys(artData).length > 0) return { type: "article", data: artData as Record<string, unknown> };
       } catch {
         // Content type not found, try next
       }
       try {
-        const trivData = await citizenApi.getTrivia(slug);
+        const trivData = await contentData.trivia.fetchBySlug(slug);
         if (trivData && Object.keys(trivData).length > 0) return { type: "trivia", data: trivData as Record<string, unknown> };
       } catch {
         // Content type not found, try next
       }
       try {
-        const storiesRes = await citizenApi.getStories();
-        const match = (storiesRes as { results?: Record<string, unknown>[] })?.results?.find((s) => s.id === slug);
+        const storiesRes = await contentData.stories.fetch();
+        const match = storiesRes?.find((s: Record<string, unknown>) => s.id === slug);
         if (match) return { type: "story", data: match };
       } catch {
         // Content type not found

@@ -56,7 +56,7 @@ export function editorBlocksToHtml(blocks: EditorJsBlock[]): string {
     } else if (btype === "embed") {
       const src = String(d.embed ?? d.source ?? "");
       parts.push(
-        `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;border-radius:8px;margin:1rem 0">` +
+        `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:100%;border-radius:10px;margin:1rem 0">` +
           `<iframe src="${src}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0" allowfullscreen></iframe></div>`,
       );
     } else if (btype === "table") {

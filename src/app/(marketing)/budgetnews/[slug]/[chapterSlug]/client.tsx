@@ -1,11 +1,13 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, ChevronLeft, ChevronRight, Calendar, ChevronDown, ListTree } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { budgetNewsChapterPath, budgetNewsModulePath, Routes } from "@/constants/routes";
-import { learnHubApi, type BudgetNewsYear } from "@/lib/learn-hub";
+import { budgetData } from "@/data/budget";
+import type { BudgetNewsYear } from "@/lib/learn-hub";
 import type { ChapterStep } from "@/types/learn";
 import { YearTabs } from "@/components/budget-news/year-tabs";
 import { BudgetNewsErrorBoundary } from "../../error-boundary";
@@ -18,7 +20,7 @@ import {
   ArticleSectionToc,
   MobileArticleToc,
 } from "@/components/budget-news/report-blocks";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 function ChapterContent({
   slug,
@@ -29,10 +31,12 @@ function ChapterContent({
 }) {
   const { data: mod, isLoading, error } = useQuery({
     queryKey: ["budget-news", "module", slug],
-    queryFn: () => learnHubApi.budgetNewsModule(slug),
+    queryFn: () => budgetData.fetchModule(slug),
     staleTime: 1000 * 60 * 10,
     gcTime: 1000 * 60 * 30,
   });
+
+  useEffect(() => { window.scrollTo({ top: 0, behavior: "smooth" }); }, [slug, chapterSlug]);
 
   const chapters = (mod?.steps || []) as ChapterStep[];
   const idx = chapters.findIndex((c) => c.article_slug === chapterSlug);
@@ -74,7 +78,7 @@ function ChapterContent({
 
   const { data: yearsData } = useQuery({
     queryKey: ["budget-news", "years"],
-    queryFn: () => learnHubApi.budgetNewsYears(),
+    queryFn: () => budgetData.fetchYears(),
     staleTime: 1000 * 60 * 10,
     gcTime: 1000 * 60 * 30,
     select: (data) => data.results || [],

@@ -5,18 +5,21 @@ import { motion } from "motion/react";
 import { fadeInUp } from "@/motion/variants";
 import { WeeklyNotesList } from "@/components/notes/WeeklyNotesList";
 import { WeeklyNoteAuditPanel } from "@/components/notes/WeeklyNoteAuditPanel";
-import { citizenApi, type ApiListResponse, type WeeklyNoteApi } from "@/lib/api-client";
+import { taskData } from "@/data/tasks";
+import type { WeeklyNoteApi } from "@/types/notes";
 import { Loader2, ShieldCheck } from "lucide-react";
+import { usePageView } from "@/hooks/use-page-view";
 
 export default function AuditWeeklyNotesPage() {
+  usePageView();
   const [notes, setNotes] = useState<WeeklyNoteApi[]>([]);
   const [selectedNote, setSelectedNote] = useState<WeeklyNoteApi | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchNotes = useCallback(async () => {
     try {
-      const res: ApiListResponse<WeeklyNoteApi> = await citizenApi.getMyNotes();
-      setNotes(res.results || []);
+      const results = await taskData.tasks.fetch();
+      setNotes(results as unknown as WeeklyNoteApi[]);
     } catch {
       /* ignore */
     } finally {

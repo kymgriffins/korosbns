@@ -4,7 +4,7 @@ import React from "react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { slideInLeft, slideInRight } from "@/motion/variants";
 import { CLOUDINARY_PARTNERSHIPS } from "@/constants/cloudinary";

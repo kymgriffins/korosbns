@@ -5,8 +5,8 @@ import Link from "next/link";
 import { Loader2, Search, Calendar, MapPin, Sparkles, Building2 } from "lucide-react";
 import Wrapper from "@/components/global/wrapper";
 import { Routes } from "@/constants/routes";
-import { Badge } from "@/ui/badge";
-import { Input } from "@/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { motion } from "motion/react";
 import { useEvents } from "@/hooks/use-events";
 

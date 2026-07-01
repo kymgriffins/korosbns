@@ -1,4 +1,14 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, afterAll } from "vitest";
+
+const originalServiceWorker = navigator.serviceWorker;
+
+afterAll(() => {
+  Object.defineProperty(navigator, "serviceWorker", {
+    value: originalServiceWorker,
+    configurable: true,
+    writable: true,
+  });
+});
 
 describe("registerServiceWorker", () => {
   it("does not throw when serviceWorker is not available", async () => {

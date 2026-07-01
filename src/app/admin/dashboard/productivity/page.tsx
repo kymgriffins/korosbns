@@ -2,6 +2,9 @@
 
 import { useCallback, useEffect, useState } from "react";
 
+import { usePageView } from "@/hooks/use-page-view";
+import { userData } from "@/data/users";
+import { DemoBanner } from "@/components/admin/demo-banner";
 import { CalendarPanel } from "./_components/calendar-panel";
 import { FocusCard } from "./_components/focus-card";
 import { ProjectsSection } from "./_components/projects-section";
@@ -12,20 +15,20 @@ import { SummaryCards } from "./_components/summary-cards";
 import { TasksSection } from "./_components/tasks-section";
 import { WeeklySummaryCard } from "./_components/weekly-summary-card";
 
-import { citizenApi } from "@/lib/api-client";
-
 export default function Page() {
+  usePageView();
   const [userName, setUserName] = useState("there");
 
   useEffect(() => {
-    citizenApi.getMe().then((profile) => {
-      const name = profile.first_name || profile.display_name || "there";
+    userData.profile.fetch().then((profile: any) => {
+      const name = profile?.first_name || profile?.display_name || "there";
       setUserName(name);
     }).catch(() => {});
   }, []);
 
   return (
     <div className="grid gap-6 lg:grid-cols-12">
+      <DemoBanner />
       <section className="lg:col-span-9">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-2">

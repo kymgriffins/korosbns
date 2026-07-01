@@ -1,10 +1,8 @@
-import React from "react";
-import { Metadata } from "next";
+import React, { Suspense } from "react";
+import type { Metadata } from "next";
 import { buildPageMetadata } from "@/utils/page-metadata";
 import { StudioHero } from "@/components/studio/StudioHero";
-import { StudioServices } from "@/components/studio/StudioServices";
-import { StudioPortfolio } from "@/components/studio/StudioPortfolio";
-import { StudioTestimonials } from "@/components/studio/StudioTestimonials";
+import { StudioSections } from "@/components/studio/studio-sections";
 import { StudioBookingForm } from "@/components/studio/StudioBookingForm";
 import { StudioContactCTA } from "@/components/studio/StudioContactCTA";
 
@@ -15,65 +13,7 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/bns-studio",
 });
 
-const API = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
-
-async function fetchJson<T>(path: string): Promise<T | null> {
-  try {
-    const res = await fetch(`${API}${path}`, {
-      next: { revalidate: 60 },
-    });
-    if (!res.ok) return null;
-    return res.json() as Promise<T>;
-  } catch {
-    return null;
-  }
-}
-
-type ApiService = { id: string; title: string; description: string; icon: string; price: string; order: number };
-type ApiPortfolio = { id: string; title: string; description: string; media_type: string; image_url: string; video_url: string; video_platform: string; category: string; order: number };
-type ApiTestimonial = { id: string; client_name: string; client_role: string; content: string; rating: number; image_url: string; order: number };
-
-const defaultFeatures: Record<string, string[]> = {
-  Videography: ["4K/HD recording", "Professional audio", "Multi-camera setup", "Same-day edit option"],
-  Photography: ["High-resolution RAW", "Professional lighting", "Edited gallery", "Print-ready files"],
-  "Studio Rental": ["Continuous/ flash lighting", "Backdrop system", "Changing room", "Audio equipment"],
-  "Post-Production": ["DaVinci Resolve / Premiere Pro", "Color grading", "Motion graphics", "Sound mixing"],
-};
-
-export default async function BNSStudioPage() {
-  const [services, portfolio, testimonials] = await Promise.all([
-    fetchJson<ApiService[]>("/api/v1/studio/services/"),
-    fetchJson<ApiPortfolio[]>("/api/v1/studio/portfolio/"),
-    fetchJson<ApiTestimonial[]>("/api/v1/studio/testimonials/"),
-  ]);
-
-  const mappedServices = services?.map((s) => ({
-    name: s.title,
-    description: s.description,
-    price: s.price,
-    features: defaultFeatures[s.title] || [],
-  }));
-
-  const mappedPortfolio = portfolio?.map((p) => ({
-    id: p.id,
-    title: p.title,
-    category: p.category,
-    media_type: p.media_type === "video" ? "video" as const : "image" as const,
-    image_url: p.image_url,
-    video_url: p.video_url || undefined,
-    video_platform: (p.video_platform || "youtube") as "youtube" | "vimeo" | "cloudinary" | "other",
-    description: p.description,
-  }));
-
-  const mappedTestimonials = testimonials?.map((t) => ({
-    id: t.id,
-    client_name: t.client_name,
-    role: t.client_role,
-    content: t.content,
-    rating: t.rating,
-    avatar_url: t.image_url,
-  }));
-
+export default function BNSStudioPage() {
   return (
     <>
       <script
@@ -102,9 +42,9 @@ export default async function BNSStudioPage() {
         }}
       />
       <StudioHero />
-      <StudioServices services={mappedServices} />
-      <StudioPortfolio items={mappedPortfolio} />
-      <StudioTestimonials testimonials={mappedTestimonials} />
+      <Suspense fallback={<div className="flex min-h-[40vh] items-center justify-center"><p className="text-sm text-muted-foreground">Loading studio content...</p></div>}>
+        <StudioSections />
+      </Suspense>
       <StudioBookingForm />
       <StudioContactCTA />
     </>

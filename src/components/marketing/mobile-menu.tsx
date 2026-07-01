@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import React from "react";
 import { NAV_LINKS, Routes } from "@/constants";
 import { cn } from "@/utils";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/auth-context";
 import {
   BookOpen,

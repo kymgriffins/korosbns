@@ -1,7 +1,7 @@
 "use client";
 
 import { Phone, MessageCircle } from "lucide-react";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { useOrg } from "@/contexts/org-context";
 
 export function StudioContactCTA() {

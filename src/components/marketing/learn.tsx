@@ -26,11 +26,11 @@ import Balancer from "react-wrap-balancer";
 import { toast } from "sonner";
 import Container from "../global/container";
 import Wrapper from "../global/wrapper";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 
 import { resolveAppUrl } from "@/lib/api-url";
+import { useAuth } from "@/contexts/auth-context";
 import {
-  getAccessToken,
   type SurveyDetailApi,
   type SurveyQuestionApi,
 } from "@/lib/api-client";
@@ -285,6 +285,7 @@ export default function Learn() {
   const containerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { isLoggedIn } = useAuth();
   const [appState, setAppState] = useState<AppState>("hub");
   const [selectedStoryId, setSelectedStoryId] = useState<string>("");
   const [articleIndex, setArticleIndex] = useState(0);
@@ -621,7 +622,7 @@ export default function Learn() {
       setQuizAnswer(null);
       setShowFeedback(false);
     } else {
-      if (activeTriviaId && getAccessToken()) {
+      if (activeTriviaId && isLoggedIn) {
         submitTriviaAttemptMutation.mutate({
           id: activeTriviaId,
           answers: quizAnswersByQuestion,
@@ -758,12 +759,12 @@ export default function Learn() {
     const progress = ((quizIndex + 1) / effectiveQuizQuestions.length) * 100;
 
     return (
-      <section className="fixed inset-0 z-[100] bg-gradient-to-br from-purple-900 via-indigo-900 to-black flex flex-col overflow-hidden">
+      <section className="fixed inset-0 z-[100] bg-gradient-to-br from-foreground via-primary/20 to-foreground flex flex-col overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
           <motion.div
             animate={{ scale: [1, 1.1, 1], rotate: [0, 90, 180] }}
             transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] rounded-full bg-purple-600/20 blur-3xl"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] rounded-full bg-primary/10 blur-3xl"
           />
         </div>
 

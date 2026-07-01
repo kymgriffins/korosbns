@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, MessageSquarePlus, MessagesSquare, RefreshCw, Search } from "lucide-react";
-import { Input } from "@/ui/input";
+import { Input } from "@/components/ui/input";
 import { useForumThreads } from "@/hooks/use-forum";
 import { ForumThreadCard } from "@/components/forum/forum-thread-card";
 import { ForumThreadDetail } from "@/components/forum/forum-thread-detail";

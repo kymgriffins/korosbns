@@ -3,11 +3,17 @@ import { getApiProxyTarget } from "@/lib/api-config";
 type RouteContext = { params: Promise<{ path: string[] }> };
 
 /**
- * Server-side proxy for /api/v1/* — more reliable than next.config rewrites for POST on Vercel.
- * Browser calls same-origin /api/v1/auth/register/ → this handler → BNSKE Django API.
+ * Server-side proxy for /api/v1/* — forwards all requests to Django and
+ * relays Set-Cookie headers so that HttpOnly auth cookies (bns_at, bns_rt,
+ * bns_has_session) are set on the browser.
  */
 async function proxyRequest(request: Request, context: RouteContext): Promise<Response> {
   const { path } = await context.params;
+  for (const seg of path) {
+    if (seg === ".." || seg.includes("/") || seg.includes("\\")) {
+      return new Response("Forbidden", { status: 403 });
+    }
+  }
   const segment = path.join("/");
   const target = getApiProxyTarget().replace(/\/+$/, "");
   const incoming = new URL(request.url);
@@ -49,9 +55,11 @@ async function proxyRequest(request: Request, context: RouteContext): Promise<Re
   const upstreamType = upstreamResponse.headers.get("content-type");
   if (upstreamType) outHeaders.set("Content-Type", upstreamType);
 
-  // Diagnostic: log first 200 chars of login response body
-  if (segment === "auth/login" || segment.startsWith("auth/")) {
-    console.log("[API Proxy] upstream status:", upstreamResponse.status, "body preview:", responseBody.slice(0, 200));
+  // Forward all Set-Cookie headers from Django to the browser.
+  // This is critical for HttpOnly cookie-based auth (bns_at, bns_rt, etc.).
+  const setCookieHeaders = upstreamResponse.headers.getSetCookie?.() ?? [];
+  for (const cookie of setCookieHeaders) {
+    outHeaders.append("Set-Cookie", cookie);
   }
 
   return new Response(responseBody, {

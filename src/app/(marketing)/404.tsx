@@ -5,8 +5,8 @@ import { motion } from 'motion/react';
 import Link from 'next/link';
 import { scaleIn, float, orbitLeft, orbitRight, fadeInUp, fadeInUpDelay1, fadeInUpDelay2, fadeInUpDelay3, fadeInDelay5 } from '@/motion/variants';
 import { Home, Search, ArrowLeft, FileQuestion } from 'lucide-react';
-import { Button } from '@/ui/button';
-import { Particles } from '@/ui/particles';
+import { Button } from '@/components/ui/button';
+import { Particles } from '@/components/ui/particles';
 
 export default function NotFound() {
     useEffect(() => {

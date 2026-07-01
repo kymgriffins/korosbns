@@ -7,10 +7,10 @@ import {
   Flame, Sparkles, Award, Globe, Star, Trophy, Lock, Check,
   Pencil, KeyRound, Bell, LogOut, ChevronDown, ShieldCheck, Loader2, LogIn, Download, ExternalLink,
 } from "lucide-react";
-import { Switch } from "@/ui/switch";
-import { Button } from "@/ui/button";
-import { Input } from "@/ui/input";
-import { Label } from "@/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/ui/password-input";
 import { BitmojiAvatar } from "./bitmoji-avatar";
 import { ProfileAvatarEditor } from "./profile-avatar-editor";

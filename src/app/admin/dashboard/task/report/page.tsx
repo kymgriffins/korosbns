@@ -20,11 +20,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 
+import { usePageView } from "@/hooks/use-page-view";
+import { taskData } from "@/data/tasks";
 import { useAuth } from "@/contexts/auth-context";
-import { taskApi } from "@/lib/task-api";
 import type { WeeklyReportData } from "@/types/tasks";
 
 import { useRouteBase, getFullUrl } from "@/lib/route-base";
+import { AdminTaskBreadcrumbs } from "@/components/admin/admin-task-breadcrumb";
 
 const KPI_ICONS: Record<string, { icon: typeof ListTodo; bg: string; color: string }> = {
   total: { icon: ListTodo, bg: "bg-blue-500/10", color: "text-blue-600" },
@@ -45,6 +47,7 @@ function safeFormat(date: string | Date | undefined | null, fmt: string, fallbac
 }
 
 export default function TaskReportPage() {
+  usePageView();
   const { isLoggedIn } = useAuth();
   const routeBase = useRouteBase();
   const [report, setReport] = useState<WeeklyReportData | null>(null);
@@ -55,7 +58,7 @@ export default function TaskReportPage() {
     if (!isLoggedIn) { setLoading(false); return; }
     (async () => {
       try {
-        const data = await taskApi.getWeeklyReport();
+        const data = await taskData.report.fetch();
         setReport(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load report");
@@ -84,6 +87,7 @@ export default function TaskReportPage() {
   if (loading) {
     return (
       <div className="@container/main flex flex-col gap-4 md:gap-6">
+        <AdminTaskBreadcrumbs segments={["report"]} />
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-4 w-72" />
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -97,24 +101,30 @@ export default function TaskReportPage() {
 
   if (error) {
     return (
-      <Card>
-        <CardContent className="flex flex-col items-center gap-4 py-12">
-          <AlertCircle className="size-8 text-destructive" />
-          <p className="text-sm text-muted-foreground">{error}</p>
-          <Button variant="outline" size="sm" onClick={() => window.location.reload()}>Retry</Button>
-        </CardContent>
-      </Card>
+      <div className="@container/main flex flex-col gap-4 md:gap-6">
+        <AdminTaskBreadcrumbs segments={["report"]} />
+        <Card>
+          <CardContent className="flex flex-col items-center gap-4 py-12">
+            <AlertCircle className="size-8 text-destructive" />
+            <p className="text-sm text-muted-foreground">{error}</p>
+            <Button variant="outline" size="sm" onClick={() => window.location.reload()}>Retry</Button>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
   if (!report) {
     return (
-      <Card>
-        <CardContent className="flex flex-col items-center gap-4 py-12">
-          <FileBarChart className="size-8 text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">No report data available.</p>
-        </CardContent>
-      </Card>
+      <div className="@container/main flex flex-col gap-4 md:gap-6">
+        <AdminTaskBreadcrumbs segments={["report"]} />
+        <Card>
+          <CardContent className="flex flex-col items-center gap-4 py-12">
+            <FileBarChart className="size-8 text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">No report data available.</p>
+          </CardContent>
+        </Card>
+      </div>
     );
   }
 
@@ -124,6 +134,7 @@ export default function TaskReportPage() {
 
   return (
     <div className="@container/main flex flex-col gap-4 md:gap-6">
+      <AdminTaskBreadcrumbs segments={["report"]} />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Weekly Task Report</h1>
@@ -151,7 +162,7 @@ export default function TaskReportPage() {
           { key: "audited", label: "In Progress", value: report.by_status.audited ?? 0, period: report.period },
           { key: "published", label: "Published", value: report.by_status.published ?? 0, period: report.period },
         ].map((stat) => {
-          const kpi = KPI_ICONS[stat.key];
+          const kpi = KPI_ICONS[stat.key] ?? { icon: ListTodo, bg: "bg-gray-500/10", color: "text-gray-600" };
           const Icon = kpi.icon;
           return (
             <motion.div

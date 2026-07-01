@@ -2,11 +2,13 @@ import { Save, Send } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
+import { DemoBanner } from "@/components/admin/demo-banner";
 import { Invoice } from "./_components/invoice";
 
 export default function Page() {
   return (
     <div className="flex flex-col gap-6">
+      <DemoBanner />
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div className="flex flex-col gap-1">
           <h1 className="font-medium text-3xl leading-none tracking-tight">Create New Invoice</h1>

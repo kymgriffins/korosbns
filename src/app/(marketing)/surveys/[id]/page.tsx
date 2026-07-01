@@ -8,7 +8,7 @@ import Wrapper from "@/components/global/wrapper";
 import { SurveyForm } from "@/components/citizen/survey-form";
 import { useSurvey } from "@/hooks/use-surveys";
 import { Routes } from "@/constants/routes";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 
 export default function SurveyDetailPage() {
   const params = useParams();

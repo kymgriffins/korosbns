@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { usePageView } from "@/hooks/use-page-view";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import {
@@ -18,14 +19,15 @@ import {
   Award,
   ArrowRight,
 } from "lucide-react";
-import { Badge } from "@/ui/badge";
-import { Button } from "@/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/ui/card";
-import { Progress } from "@/ui/progress";
-import { Separator } from "@/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
 import { cn } from "@/utils";
 import { learnHubApi } from "@/lib/learn-hub";
-import { useSidebar } from "@/ui/sidebar";
+import { learningData } from "@/data/learning";
+import { useSidebar } from "@/components/ui/sidebar";
 import { readProgress, writeProgress } from "@/lib/module-progress";
 import { triviaForStep } from "@/lib/learn-trivia";
 import { certificateDownloadHref } from "@/lib/certificate-url";
@@ -80,7 +82,10 @@ export function ModuleDetailView() {
   const [certificateId, setCertificateId] = useState<string | null>(null);
   const [certificateUrl, setCertificateUrl] = useState<string | null>(null);
   const [activeVideoIdx, setActiveVideoIdx] = useState(0);
+  const [animatingStep, setAnimatingStep] = useState<number | null>(null);
   const { setOpen: setSidebarOpen } = useSidebar();
+
+  usePageView();
 
   useEffect(() => {
     setSidebarOpen(false);
@@ -90,7 +95,11 @@ export function ModuleDetailView() {
   const fetchModule = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await learnHubApi.stage(slug);
+      const res = await learningData.modules.fetchBySlug(slug);
+      if (!res) {
+        setMod(null);
+        return;
+      }
       setMod(res);
       if (res.steps?.length) {
         const p = readProgress(res.slug, res.order);
@@ -138,6 +147,29 @@ export function ModuleDetailView() {
   const steps = mod?.steps ?? [];
   const progressPercent = steps.length ? Math.round((completedSteps.size / steps.length) * 100) : 0;
 
+  const readingTime = useMemo(() => {
+    if (!currentStepObj) return "";
+    const words = (currentStepObj.text || "").split(/\s+/).filter(Boolean).length;
+    const textMinutes = Math.ceil(words / 200);
+    const mediaCount = (currentStepObj.image_urls?.length || 0) + videoEntries.length;
+    const totalMinutes = textMinutes + Math.ceil((mediaCount * 30) / 60);
+    return totalMinutes < 1 ? "<1 min read" : `${totalMinutes} min read`;
+  }, [currentStepObj, videoEntries]);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement).tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+      if ((e.key === "ArrowLeft" || e.key === "j") && currentStep > 1) {
+        handleSelectStep(currentStep - 1);
+      } else if ((e.key === "ArrowRight" || e.key === "k") && currentStep < steps.length) {
+        handleSelectStep(currentStep + 1);
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [currentStep, steps.length, mod]);
+
   const isStepPassed = (stepNum: number) => {
     const step = steps[stepNum - 1];
     return step ? completedSteps.has(step.order) : false;
@@ -182,6 +214,8 @@ export function ModuleDetailView() {
       currentStep: currentStep + 1,
     });
     setCompletedSteps((prev) => new Set(prev).add(currentStepObj.order));
+    setAnimatingStep(currentStepObj.order);
+    setTimeout(() => setAnimatingStep(null), 600);
     learnHubApi.completeChapter(currentStepObj.id).catch(() => {});
     if (currentStep < steps.length) {
       setCurrentStep((prev) => prev + 1);
@@ -246,6 +280,14 @@ export function ModuleDetailView() {
   ];
 
   return (
+    <>
+      <style jsx>{`
+        @keyframes animate-step-complete {
+          0% { transform: scale(1); }
+          40% { transform: scale(1.25); box-shadow: 0 0 0 4px hsl(var(--primary)); }
+          100% { transform: scale(1); box-shadow: 0 0 0 0 hsl(var(--primary)); }
+        }
+      `}</style>
     <div className="flex min-h-0 flex-1 flex-col bg-background">
       {/* === Header === */}
       <header className="flex shrink-0 items-center gap-2 border-b px-3 py-2 md:px-5 md:py-2.5 md:border-b-0 md:bg-background md:sticky md:top-0 md:z-10">
@@ -295,6 +337,7 @@ export function ModuleDetailView() {
                     isCurrent && "scale-110 bg-primary text-primary-foreground shadow-xs",
                     !isCurrent && passed && "border border-emerald-500/30 bg-emerald-500/15 text-emerald-600",
                     !isCurrent && !passed && "border border-border/40 bg-muted/40 text-muted-foreground",
+                    animatingStep === stepNum && "animate-step-complete",
                   )}
                   title={step.title}
                 >
@@ -368,8 +411,9 @@ export function ModuleDetailView() {
                 <div className="space-y-5">
                   {/* Step header */}
                   <div className="space-y-1">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-2">
                       <h1 className="text-base font-black md:text-lg">{currentStepObj?.title || `Step ${currentStep}`}</h1>
+                      {readingTime && <span className="shrink-0 text-[10px] font-semibold text-muted-foreground">{readingTime}</span>}
                     </div>
                     {mod.description && (
                       <p className="text-xs text-muted-foreground">{mod.description}</p>
@@ -597,6 +641,7 @@ export function ModuleDetailView() {
                         isCurrent && "bg-primary text-primary-foreground",
                         !isCurrent && passed && "bg-emerald-500/15 text-emerald-600",
                         !isCurrent && !passed && "bg-muted text-muted-foreground",
+                        animatingStep === stepNum && "animate-step-complete",
                       )}>
                         {passed ? <CheckCircle2 className="size-3" /> : stepNum}
                       </span>
@@ -620,5 +665,6 @@ export function ModuleDetailView() {
         </aside>
       </div>
     </div>
+    </>
   );
 }

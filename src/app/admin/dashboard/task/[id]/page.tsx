@@ -30,11 +30,14 @@ import {
 import { TaskForm } from "@/app/task/_components/task-form";
 import { TaskAttachmentsGrid } from "@/app/task/_components/task-attachments";
 import { TaskFileUpload } from "@/app/task/_components/task-file-upload";
+import { usePageView } from "@/hooks/use-page-view";
+import { taskData } from "@/data/tasks";
 import { taskApi } from "@/lib/task-api";
 import type { TaskDetail, TaskAttachment } from "@/types/tasks";
 import type { ChecklistItemApi } from "@/types/notes";
 
 import { useRouteBase, getFullUrl } from "@/lib/route-base";
+import { AdminTaskBreadcrumbs } from "@/components/admin/admin-task-breadcrumb";
 
 const STATUS_STYLES: Record<string, { bg: string; label: string }> = {
   draft: { bg: "bg-amber-500/10 text-amber-600 border-amber-500/30", label: "Draft" },
@@ -54,6 +57,7 @@ function safeFormat(date: string | Date | undefined | null, fmt: string, fallbac
 }
 
 export default function TaskDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  usePageView();
   const { id } = use(params);
   const router = useRouter();
   const routeBase = useRouteBase();
@@ -94,13 +98,12 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
     setExportingCalendar(true);
     try {
       const apiBase = process.env.NEXT_PUBLIC_API_URL || "";
-      const token = typeof window !== "undefined" ? window.sessionStorage.getItem("access_token") : null;
       const res = await fetch(`${apiBase}/notes/${id}/export_calendar/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
+        credentials: "include",
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({ detail: "Export failed" }));
@@ -121,7 +124,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
 
   const fetchTask = useCallback(async () => {
     try {
-      const data = await taskApi.get(id);
+      const data = await taskData.tasks.fetchById(id);
       setTask(data);
       setChecklistItems(data.checklist_items ?? []);
       setAttachments(data.attachments ?? []);
@@ -259,6 +262,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
   if (loading) {
     return (
       <div className="mx-auto max-w-4xl space-y-6 p-6">
+        <AdminTaskBreadcrumbs />
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-4 w-72" />
         <Skeleton className="h-64 w-full rounded-xl" />
@@ -268,7 +272,8 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
 
   if (error || !task) {
     return (
-      <div className="mx-auto max-w-4xl p-6">
+      <div className="mx-auto max-w-4xl space-y-6 p-6">
+        <AdminTaskBreadcrumbs />
         <Card>
           <CardContent className="flex flex-col items-center gap-4 py-12">
             <p className="text-destructive">{error || "Task not found"}</p>
@@ -283,7 +288,8 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
 
   if (editing) {
     return (
-      <div className="mx-auto max-w-4xl">
+      <div className="mx-auto max-w-4xl space-y-6">
+        <AdminTaskBreadcrumbs />
         <Button
           variant="ghost"
           size="sm"
@@ -306,17 +312,13 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
     );
   }
 
-  const statusStyle = STATUS_STYLES[task.status];
+  const statusStyle = STATUS_STYLES[task.status] ?? STATUS_STYLES.draft;
   const completedCount = checklistItems.filter((i) => i.is_completed).length;
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
+      <AdminTaskBreadcrumbs />
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Link href={getFullUrl(routeBase, "/dashboard/task")} className="hover:text-foreground">Tasks</Link>
-          <span>/</span>
-          <span className="max-w-[200px] truncate text-foreground">{task.title}</span>
-        </div>
         <div className="flex items-center gap-2">
           <div className="relative" ref={exportRef}>
             <Button variant="outline" size="sm" onClick={() => setExportOpen(!exportOpen)}>

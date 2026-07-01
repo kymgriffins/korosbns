@@ -1,8 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api-client";
-import type { GamificationState, LeaderboardEntry, ChallengeData, ReferralData, BadgeCatalogResponse } from "@/types/gamification";
+import type { GamificationState, LeaderboardEntry } from "@/types/gamification";
+import type { ChallengeData, ReferralData, BadgeCatalogResponse } from "@/types/gamification";
 import type { CertificateData } from "@/types/learn";
 import type { ApiListResponse } from "@/types/api";
+import { gamificationData } from "@/data/gamification";
 
 export function useGamificationMe() {
   return useQuery({
@@ -16,7 +18,7 @@ export function useGamificationMe() {
 export function useBadgeCatalog() {
   return useQuery({
     queryKey: ["gamification", "badges"],
-    queryFn: () => apiFetch<BadgeCatalogResponse>("/gamification/badges/"),
+    queryFn: () => gamificationData.badges.fetch() as Promise<BadgeCatalogResponse>,
     staleTime: 1000 * 30,
     retry: false,
   });
@@ -25,7 +27,7 @@ export function useBadgeCatalog() {
 export function useLeaderboard(limit = 20) {
   return useQuery({
     queryKey: ["leaderboard", limit],
-    queryFn: () => apiFetch<ApiListResponse<LeaderboardEntry>>(`/gamification/leaderboard/?limit=${limit}`),
+    queryFn: () => gamificationData.leaderboard.fetch(limit).then((results) => ({ results })),
     staleTime: 1000 * 60,
   });
 }
@@ -54,7 +56,7 @@ export function useRecordEvent() {
 export function useChallenges() {
   return useQuery({
     queryKey: ["challenges"],
-    queryFn: () => apiFetch<ApiListResponse<ChallengeData>>("/gamification/challenges/"),
+    queryFn: () => gamificationData.challenges.fetch() as Promise<ApiListResponse<ChallengeData>>,
     staleTime: 1000 * 60 * 5,
   });
 }
@@ -77,7 +79,7 @@ export function useSubmitChallenge() {
 export function useCertificates() {
   return useQuery({
     queryKey: ["certificates"],
-    queryFn: () => apiFetch<ApiListResponse<CertificateData>>("/gamification/certificates/", { auth: true }),
+    queryFn: () => gamificationData.certificates.fetch() as Promise<ApiListResponse<CertificateData>>,
     staleTime: 1000 * 60 * 5,
   });
 }
@@ -100,7 +102,7 @@ export function useIssueCertificate() {
 export function useReferralMe() {
   return useQuery({
     queryKey: ["referral", "me"],
-    queryFn: () => apiFetch<ReferralData>("/gamification/referrals/me/", { auth: true }),
+    queryFn: () => gamificationData.referral.fetch() as Promise<ReferralData>,
     staleTime: 1000 * 60 * 5,
   });
 }

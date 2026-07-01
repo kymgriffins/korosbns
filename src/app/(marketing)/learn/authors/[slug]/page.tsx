@@ -9,12 +9,14 @@ import {
   ArrowLeft, BookOpen, Globe, ExternalLink,
   Loader2, AlertCircle, Link2, MessageCircle,
 } from "lucide-react";
-import { Button } from "@/ui/button";
-import { fetchAuthorBySlug } from "@/lib/learn-authors";
+import { Button } from "@/components/ui/button";
 import { Routes } from "@/constants/routes";
+import { learningData } from "@/data/learning";
+import { usePageView } from "@/hooks/use-page-view";
 import type { CivicModule, CivicModuleAuthor } from "@/types/learn";
 
 export default function AuthorProfilePage() {
+  usePageView();
   const params = useParams();
   const slug = params.slug as string;
   const [data, setData] = useState<{
@@ -27,9 +29,9 @@ export default function AuthorProfilePage() {
   useEffect(() => {
     setLoading(true);
     setNotFound(false);
-    fetchAuthorBySlug(slug)
+    learningData.authors.fetchBySlug(slug)
       .then((res) => {
-        if (res) setData(res);
+        if (res) setData(res as { author: CivicModuleAuthor; modules: CivicModule[] });
         else setNotFound(true);
       })
       .catch(() => setNotFound(true))

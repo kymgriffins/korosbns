@@ -3,8 +3,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
 import React, { useState } from "react";
-import { Toaster } from "@/ui/sonner";
-import { TooltipProvider } from "@/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/auth-context";
 import { OrgProvider } from "@/contexts/org-context";
 import SentryErrorBoundary from "@/components/error/error-boundary";

@@ -4,14 +4,16 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ArrowLeft, Globe, Loader2, MapPin, Trophy } from "lucide-react";
-import { citizenApi } from "@/lib/api-client";
+import { userData } from "@/data/users";
 import { MotionPage } from "@/motion/wrappers";
 import { fadeInUp } from "@/motion/variants";
 import { motion } from "motion/react";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { Routes } from "@/constants/routes";
+import { usePageView } from "@/hooks/use-page-view";
 
 export default function PublicUserProfilePage() {
+  usePageView();
   const params = useParams();
   const userId = params.id as string;
   const [data, setData] = useState<Record<string, unknown> | null>(null);
@@ -21,10 +23,10 @@ export default function PublicUserProfilePage() {
   useEffect(() => {
     if (!userId) return;
     setLoading(true);
-    void citizenApi
-      .getPublicUser(userId)
+    void userData.profile
+      .fetchPublic(userId)
       .then(setData)
-      .catch((err) => setError(err instanceof Error ? err.message : "Profile not found."))
+      .catch((err: unknown) => setError(err instanceof Error ? err.message : "Profile not found."))
       .finally(() => setLoading(false));
   }, [userId]);
 

@@ -13,12 +13,15 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { DataTable, type Column } from "@/components/admin/data-table";
 import { FormDialog } from "@/components/admin/form-dialog";
-import { adminUsersApi, type AdminUser } from "@/lib/admin-api";
+import { useAuth } from "@/contexts/auth-context";
+import type { AdminUser } from "@/lib/admin-api";
+import { userData } from "@/data/users";
 
 // Modal mode
 type Mode = "create" | "edit";
 
 export default function AdminUsersPage() {
+  const { isLoggedIn } = useAuth();
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -35,7 +38,7 @@ export default function AdminUsersPage() {
     setLoading(true);
     setError("");
     try {
-      const res = await adminUsersApi.list({ page, search: search || undefined });
+      const res = await userData.admin.users.fetch({ page, search: search || undefined });
       setUsers(res.results);
       setTotalPages(Math.max(1, Math.ceil(res.count / 25)));
     } catch (err) {
@@ -71,10 +74,10 @@ export default function AdminUsersPage() {
     setSaving(true);
     try {
       if (mode === "create") {
-        await adminUsersApi.create(form);
+        await userData.admin.users.create(form);
         toast.success("User created");
       } else if (editId) {
-        await adminUsersApi.update(editId, form);
+        await userData.admin.users.update(editId, form);
         toast.success("User updated");
       }
       setDialogOpen(false);
@@ -89,7 +92,7 @@ export default function AdminUsersPage() {
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this user?")) return;
     try {
-      await adminUsersApi.delete(id);
+      await userData.admin.users.delete(id);
       toast.success("User deleted");
       fetchUsers();
     } catch (err) {
@@ -106,7 +109,7 @@ export default function AdminUsersPage() {
     { key: "actions", header: "", className: "w-24", cell: (u) => (
       <div className="flex items-center gap-1">
         <Button variant="ghost" size="icon-sm" onClick={() => openEdit(u)}><Pencil className="size-3.5" /></Button>
-        <Button variant="ghost" size="icon-sm" onClick={() => handleDelete(u.id)} className="text-destructive hover:text-destructive"><Trash2 className="size-3.5" /></Button>
+        <Button variant="ghost" size="icon-sm" onClick={() => handleDelete(u.id)} disabled={!isLoggedIn} title={!isLoggedIn ? "Sign in to perform this action" : "Delete"} className="text-destructive hover:text-destructive"><Trash2 className="size-3.5" /></Button>
       </div>
     )},
   ];

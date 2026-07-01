@@ -7,7 +7,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
 import { Loader2, ArrowLeft, BookOpen, ChevronLeft, ArrowRight, Target, HelpCircle, MessageSquare } from "lucide-react";
 import Wrapper from "@/components/global/wrapper";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { PageBreadcrumbs } from "@/components/global/page-breadcrumbs";
 import { TriviaQuiz } from "@/components/citizen/trivia-quiz";
 import { ArticleReaderActions } from "@/components/citizen/article-reader-actions";
@@ -19,6 +19,7 @@ import { articlePlaceholderForSlug } from "@/lib/article-placeholders";
 import { renderArticleBody } from "@/lib/render-content";
 import { scaleIn, fadeInUp, fadeInUpDelay1, fadeInUpDelay2, fadeInUpDelay3 } from "@/motion/variants";
 import { HarmonizedImage } from "@/components/ui/harmonized-image";
+import { usePageView } from "@/hooks/use-page-view";
 
 type ReaderMode = "loading" | "error" | "article" | "story" | "trivia";
 
@@ -119,9 +120,12 @@ export default function UnifiedReaderClientPage({
   initialTrivia?: TriviaSetApi | null;
   initialStory?: StoryData | null;
 }) {
+  usePageView();
   const { slug } = useParams() as { slug: string };
   const router = useRouter();
-  
+
+  useEffect(() => { window.scrollTo({ top: 0, behavior: "smooth" }); }, [slug]);
+
   const [mode, setMode] = useState<ReaderMode>(initialMode);
   const [errorMsg, setErrorMsg] = useState("");
   

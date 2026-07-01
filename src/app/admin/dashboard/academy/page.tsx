@@ -2,6 +2,7 @@ import { BookOpenCheck, Megaphone, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
+import { DemoBanner } from "@/components/admin/demo-banner";
 import { AssignmentStatus } from "./_components/assignment-status";
 import { ClassSchedule } from "./_components/class-schedule";
 import { KpiCards } from "./_components/kpi-cards";
@@ -11,6 +12,7 @@ import { UpcomingEvents } from "./_components/upcoming-events";
 export default function Page() {
   return (
     <div className="flex flex-col gap-4">
+      <DemoBanner />
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-1">
           <h1 className="text-3xl tracking-tight">Academy Dashboard</h1>

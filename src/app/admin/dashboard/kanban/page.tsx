@@ -9,6 +9,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
+import { usePageView } from "@/hooks/use-page-view";
+import { taskData } from "@/data/tasks";
 import { useRouteBase, getFullUrl } from "@/lib/route-base";
 import { taskApi } from "@/lib/task-api";
 import type { Task as DjangoTask } from "@/types/tasks";
@@ -62,6 +64,7 @@ function mapTasksToBoard(tasks: DjangoTask[]) {
 }
 
 export default function Page() {
+  usePageView();
   const routeBase = useRouteBase();
   const [tasks, setTasks] = useState<DjangoTask[]>([]);
   const [loading, setLoading] = useState(true);
@@ -71,7 +74,7 @@ export default function Page() {
     setLoading(true);
     setError("");
     try {
-      const data = await taskApi.listAll();
+      const data = await taskData.tasks.fetch();
       setTasks(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load tasks");

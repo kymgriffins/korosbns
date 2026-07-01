@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Newspaper, BookOpen, ChevronRight, Calendar, BarChart3, TrendingUp, TrendingDown } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { budgetNewsModulePath } from "@/constants/routes";
-import { learnHubApi } from "@/lib/learn-hub";
+import { budgetData } from "@/data/budget";
 import type { CivicModule } from "@/types/learn";
 import type { BudgetNewsYear } from "@/lib/learn-hub";
 import { YearTabs } from "@/components/budget-news/year-tabs";
@@ -20,7 +20,7 @@ function BudgetNewsContent() {
 
   const { data: yearsData, isLoading: yearsLoading, error: yearsError } = useQuery({
     queryKey: YEARS_KEY,
-    queryFn: () => learnHubApi.budgetNewsYears(),
+    queryFn: () => budgetData.fetchYears(),
     staleTime: 1000 * 60 * 10,
     gcTime: 1000 * 60 * 30,
     select: (data) => data.results || [],
@@ -38,7 +38,7 @@ function BudgetNewsContent() {
 
   const { data: modules = [], isLoading: modulesLoading } = useQuery({
     queryKey: [...YEARS_KEY, "modules", selectedLabel],
-    queryFn: () => learnHubApi.budgetNewsModules({ fiscal_year_label: selectedLabel ?? undefined }),
+    queryFn: () => budgetData.fetchModules({ fiscal_year_label: selectedLabel ?? undefined }),
     enabled: !!selectedLabel,
     staleTime: 1000 * 60 * 10,
     gcTime: 1000 * 60 * 30,

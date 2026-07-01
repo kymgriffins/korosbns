@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import { ContentLayout } from "@/layouts/DashboardShell";
-import { Skeleton } from "@/ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Routes } from "@/constants/routes";
 import { useNotifications } from "@/hooks/use-profile";
 

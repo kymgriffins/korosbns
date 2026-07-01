@@ -3,7 +3,6 @@ import {
   DEFAULT_POST_LOGIN_PATH,
   buildLoginUrl,
   isAuthPage,
-  isLearnProtectedPath,
   sanitizeRedirectPath,
   shouldRedirectAuthPageWhenToken,
 } from "@/lib/auth-policy";
@@ -74,17 +73,6 @@ describe("sanitizeRedirectPath — open redirect hardening", () => {
 });
 
 describe("route policy helpers", () => {
-  it("identifies learn protected paths", () => {
-    expect(isLearnProtectedPath("/learn/account")).toBe(true);
-    expect(isLearnProtectedPath("/learn/account/password")).toBe(true);
-    expect(isLearnProtectedPath("/learn/quests")).toBe(true);
-    expect(isLearnProtectedPath("/learn/quests/abc")).toBe(true);
-    expect(isLearnProtectedPath("/learn")).toBe(false);
-    expect(isLearnProtectedPath("/learn/forum")).toBe(false);
-    expect(isLearnProtectedPath("/learn/profile")).toBe(false);
-    expect(isLearnProtectedPath("/learn/users/123")).toBe(false);
-  });
-
   it("identifies auth pages", () => {
     expect(isAuthPage("/auth/login")).toBe(true);
     expect(isAuthPage("/auth/register")).toBe(true);

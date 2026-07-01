@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, BookOpen } from "lucide-react";
-import { fetchLearningEditionServer } from "@/lib/learning-units";
 import { Routes } from "@/constants/routes";
 import { metaDescription, canonicalUrl } from "@/utils/metadata";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
+import { learningData } from "@/data/learning";
+import type { LearningEditionDetail } from "@/lib/learning-units";
 
 export const revalidate = 3600;
 
@@ -13,7 +14,7 @@ export async function generateMetadata(
   props: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
   const { slug } = await props.params;
-  const edition = await fetchLearningEditionServer(slug).catch(() => null);
+  const edition = await learningData.courses.fetchBySlug(slug) as LearningEditionDetail | null;
   const canonical = canonicalUrl(`/learn/paths/${slug}`);
   const ogImage = { url: "/logo.svg", width: 1200, height: 630 };
 
@@ -65,7 +66,7 @@ export default async function LearnPathDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const edition = await fetchLearningEditionServer(slug).catch(() => null);
+  const edition = await learningData.courses.fetchBySlug(slug) as LearningEditionDetail | null;
   if (!edition) notFound();
 
   return (

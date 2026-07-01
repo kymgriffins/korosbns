@@ -10,7 +10,7 @@ import {
   RefreshCw,
   Music2,
 } from "lucide-react";
-import { Marquee } from "@/ui/marquee";
+import { Marquee } from "@/components/ui/marquee";
 import { cn } from "@/utils";
 import type { TikTokLiveFeedResponse, TikTokOembedResult } from "@/app/api/tiktok/live/route";
 

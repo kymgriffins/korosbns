@@ -7,14 +7,14 @@ import { format } from "date-fns";
 import { toast } from "sonner";
 
 import { useAuth } from "@/contexts/auth-context";
-import { Card, CardContent, CardHeader, CardTitle } from "@/ui/card";
-import { Button } from "@/ui/button";
-import { Badge } from "@/ui/badge";
-import { Checkbox } from "@/ui/checkbox";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 import { PageBreadcrumbs } from "@/components/global/page-breadcrumbs";
-import { Skeleton } from "@/ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
   DialogContent,
@@ -22,8 +22,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/ui/dialog";
+} from "@/components/ui/dialog";
 import { taskApi } from "@/lib/task-api";
+import { taskData } from "@/data/tasks";
 import type { TaskDetail } from "@/types/tasks";
 import { autoHue } from "@/types/tasks";
 import { TaskForm } from "../_components/task-form";
@@ -59,7 +60,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
   const [activeTab, setActiveTab] = useState("overview");
 
   useEffect(() => {
-    taskApi.get(id)
+    taskData.tasks.fetchById(id)
       .then(setTask)
       .catch(() => {
         toast.error("Failed to load task");
@@ -101,7 +102,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
     }
     setDeleting(true);
     try {
-      await taskApi.delete(id);
+      await taskData.tasks.delete(id);
       toast.success("Task deleted");
       router.push("/task");
     } catch {

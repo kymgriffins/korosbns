@@ -5,21 +5,11 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
-  useState,
   type ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
-import { ApiRequestError } from "@/lib/api-errors";
-import {
-  citizenApi,
-  clearAuthTokens,
-  getAccessToken,
-  normalizeLoginResponse,
-  setAuthTokens,
-  type UserProfileApi,
-} from "@/lib/api-client";
+import { citizenApi, type UserProfileApi } from "@/lib/api-client";
 import { DEFAULT_POST_LOGIN_PATH, sanitizeRedirectPath } from "@/lib/auth-policy";
 import { logDebug } from "@/lib/debug-logs";
 
@@ -46,89 +36,42 @@ function normalizeProfile(profile: UserProfileApi): UserProfileApi {
 export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [hasToken, setHasToken] = useState(() => Boolean(getAccessToken()));
 
-  const { data: user, isLoading, isError, isSuccess, error } = useQuery({
+  const AUTH_TIMEOUT_MS = 5000;
+
+  // Always try to fetch the user profile on mount. If the browser has
+  // HttpOnly cookies (bns_at/bns_rt), the request succeeds and isLoggedIn
+  // becomes true. If there are no cookies, Django returns 401 and the
+  // user is treated as anonymous — no session marker needed.
+  // A timeout prevents the login page from hanging indefinitely when
+  // the backend is unreachable (GuestOnly waits for loading=false).
+  const { data: user, isLoading } = useQuery({
     queryKey: USER_PROFILE_KEY,
     queryFn: async () => {
-      const profile = await citizenApi.getMe();
+      const profile = await Promise.race([
+        citizenApi.getMe(),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error("Auth check timed out")), AUTH_TIMEOUT_MS)
+        ),
+      ]);
       return normalizeProfile(profile);
     },
-    enabled: hasToken,
-    staleTime: 1000 * 60 * 5,
+    retry: false,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
-
-  // Clear tokens only on 401 — transient errors (network, 5xx) must NOT wipe the session
-  useEffect(() => {
-    if (isError && hasToken) {
-      const is401 = error instanceof ApiRequestError && error.status === 401;
-      if (is401) {
-        logDebug("Auth", "Token rejected by server (401); clearing");
-        clearAuthTokens();
-        setHasToken(false);
-      } else {
-        logDebug("Auth", "Profile query failed with non-401 error; keeping tokens", {
-          error: error instanceof ApiRequestError ? error.status : "network",
-        });
-      }
-    }
-  }, [isError, hasToken, error]);
-
-  // Sync auth state across tabs and same-tab custom events
-  useEffect(() => {
-    const checkToken = () => {
-      const stillHasToken = Boolean(getAccessToken());
-      setHasToken(stillHasToken);
-      if (!stillHasToken) {
-        queryClient.clear();
-      }
-    };
-
-    const handleStorage = (e: StorageEvent) => {
-      if (e.key === "access_token" || e.key === "refresh_token" || e.key === "bns_token_storage_mode") {
-        checkToken();
-      }
-    };
-
-    window.addEventListener("storage", handleStorage);
-    window.addEventListener("bns-auth-changed", checkToken);
-    return () => {
-      window.removeEventListener("storage", handleStorage);
-      window.removeEventListener("bns-auth-changed", checkToken);
-    };
-  }, [queryClient]);
-
-  const refreshUser = useCallback(async () => {
-    await queryClient.invalidateQueries({ queryKey: USER_PROFILE_KEY });
-  }, [queryClient]);
 
   const login = useCallback(
     async (email: string, password: string, redirectTo = DEFAULT_POST_LOGIN_PATH) => {
       const safeRedirect = sanitizeRedirectPath(redirectTo);
       logDebug("Auth", "Login requested", { redirectTo: safeRedirect });
-      clearUserData({ keepOnboarding: true });
-      const raw = await citizenApi.login(email, password);
-      const tokens = normalizeLoginResponse(raw as Record<string, unknown>);
-      if (!tokens?.access) {
-        const rawRecord = raw as Record<string, unknown>;
-        logDebug("Auth", "Login response missing access token", {
-          rawKeys: Object.keys(rawRecord),
-          hasAccess: "access" in rawRecord,
-          hasAccessToken: "access_token" in rawRecord,
-          hasToken: "token" in rawRecord,
-          accessType: typeof rawRecord.access,
-          statusCode: (rawRecord as any).status,
-        });
-        throw new Error("Login response missing access token.");
-      }
-      setAuthTokens(tokens.access, tokens.refresh);
-      logDebug("Auth", "Login token stored");
-      // Fetch profile synchronously before enabling the useQuery to avoid a
-      // double-fetch race (useQuery fires on enabled=true, and a separate
-      // refetchQueries would create a second parallel fetch).
+
+      // The login response sets HttpOnly cookies via Set-Cookie headers.
+      // We do NOT extract tokens from the response body.
+      await citizenApi.login(email, password);
+
+      // Fetch profile synchronously to avoid a double-fetch race.
       const profile = await citizenApi.getMe();
       queryClient.setQueryData(USER_PROFILE_KEY, normalizeProfile(profile));
-      setHasToken(true);
       logDebug("Auth", "Login completed", { redirectTo: safeRedirect });
       router.push(safeRedirect);
     },
@@ -159,11 +102,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await citizenApi.logout();
     } catch {
-      logDebug("Auth", "Server logout failed; clearing local tokens anyway");
+      logDebug("Auth", "Server logout failed; clearing local state anyway");
     }
     clearAuthTokens();
     clearUserData();
-    setHasToken(false);
     queryClient.clear();
     logDebug("Auth", "Logout completed — navigating");
     router.push("/auth/login");
@@ -172,13 +114,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       user: user ?? null,
-      loading: hasToken && isLoading,
-      isLoggedIn: hasToken && (isSuccess || Boolean(user)),
+      loading: isLoading,
+      isLoggedIn: !isLoading && !!user,
       login,
       logout,
-      refreshUser,
+      refreshUser: () => queryClient.invalidateQueries({ queryKey: USER_PROFILE_KEY }),
     }),
-    [user, hasToken, isLoading, isError, login, logout, refreshUser],
+    [user, isLoading, login, logout, queryClient],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -188,4 +130,11 @@ export function useAuth(): AuthContextValue {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth must be used within AuthProvider");
   return ctx;
+}
+
+// Remove tokens from localStorage (legacy compat — no-op for HttpOnly cookies).
+function clearAuthTokens(): void {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem("access_token");
+  localStorage.removeItem("refresh_token");
 }

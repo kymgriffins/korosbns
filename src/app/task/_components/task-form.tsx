@@ -6,22 +6,23 @@ import { format, startOfWeek, endOfWeek } from "date-fns";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-import { Button } from "@/ui/button";
-import { Input } from "@/ui/input";
-import { Label } from "@/ui/label";
-import { Textarea } from "@/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/ui/select";
-import { Slider } from "@/ui/slider";
-import { Alert, AlertDescription } from "@/ui/alert";
+} from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 import { ApiRequestError } from "@/lib/api-errors";
 import { taskApi } from "@/lib/task-api";
+import { taskData } from "@/data/tasks";
 import type {
   Task, TaskStatus, TaskCreatePayload, AssignableUser, TaskPriority, TaskTag,
 } from "@/types/tasks";
@@ -84,7 +85,7 @@ export function TaskForm({
 
   useEffect(() => {
     Promise.all([
-      taskApi.getAssignableUsers(),
+      taskData.users.fetchAssignable(),
       taskApi.getTeams(),
     ])
       .then(([users, teamList]) => {
@@ -115,10 +116,10 @@ export function TaskForm({
     setFieldErrors({});
     try {
       if (mode === "edit" && task) {
-        await taskApi.update(task.id, form);
+        await taskData.tasks.update(task.id, form);
         toast.success("Task updated");
       } else {
-        await taskApi.create(form);
+        await taskData.tasks.create(form);
         toast.success("Task created");
       }
       onSaved?.();

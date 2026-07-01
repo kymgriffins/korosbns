@@ -4,6 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import { Loader2, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 
+import { usePageView } from "@/hooks/use-page-view";
+import { userData } from "@/data/users";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -12,9 +14,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { citizenApi } from "@/lib/api-client";
-import type { UserProfileApi } from "@/lib/api-client";
 
 export default function AdminPrivacyPage() {
+  usePageView();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [settings, setSettings] = useState({
@@ -28,13 +30,13 @@ export default function AdminPrivacyPage() {
   const fetchSettings = useCallback(async () => {
     setLoading(true);
     try {
-      const me = await citizenApi.getMe();
+      const me = (await userData.profile.fetch()) as Record<string, unknown> | null;
       setSettings({
-        profile_visibility: me.profile_visibility || "public",
-        allow_discovery: me.allow_discovery ?? true,
-        show_email_publicly: me.show_email_publicly ?? false,
-        notifications_enabled: me.notifications_enabled ?? true,
-        digest_frequency: me.digest_frequency || "weekly",
+        profile_visibility: (me?.profile_visibility as string) || "public",
+        allow_discovery: (me?.allow_discovery as boolean) ?? true,
+        show_email_publicly: (me?.show_email_publicly as boolean) ?? false,
+        notifications_enabled: (me?.notifications_enabled as boolean) ?? true,
+        digest_frequency: (me?.digest_frequency as string) || "weekly",
       });
     } catch {
       toast.error("Failed to load privacy settings");

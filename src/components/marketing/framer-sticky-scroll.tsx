@@ -10,7 +10,7 @@ import {
 } from "motion/react";
 import { TrendingDown, FileText, Calendar, ArrowRight, ShieldAlert } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { ease } from "@/motion/variants";
 
 interface DisconnectItem {

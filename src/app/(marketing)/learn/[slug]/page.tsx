@@ -1,7 +1,17 @@
 import type { Metadata } from "next";
 import { metaDescription, canonicalUrl } from "@/utils/metadata";
-import { fetchArticleBySlug, fetchTrivia, resolveContentSlug } from "@/lib/services/content-service";
+import type { TriviaSetApi } from "@/lib/api-client";
+import { contentData } from "@/data/content";
 import UnifiedReaderClientPage from "./client-page";
+
+interface StoryData {
+  id: string;
+  title: string;
+  subtitle: string;
+  icon: string;
+  duration: string;
+  cards: StoryCard[];
+}
 
 interface StoryCard {
   emoji?: string;
@@ -17,6 +27,22 @@ interface StoryCard {
   pillars?: { emoji: string; title: string }[];
   risks?: { title: string; desc: string }[];
   services?: string[];
+}
+
+async function resolveContentSlug(slug: string) {
+  try {
+    const artData = await contentData.articles.fetchBySlug(slug);
+    if (artData && Object.keys(artData).length > 0) return { type: "article" as const, data: artData };
+  } catch {}
+  try {
+    const trivData = await contentData.trivia.fetchBySlug(slug);
+    if (trivData && Object.keys(trivData).length > 0) return { type: "trivia" as const, data: trivData };
+  } catch {}
+  try {
+    const storyData = await contentData.stories.fetchBySlug(slug);
+    if (storyData) return { type: "story" as const, data: storyData };
+  } catch {}
+  return null;
 }
 
 export const dynamicParams = true;
@@ -114,9 +140,9 @@ export default async function UnifiedReaderPage(
   const { slug } = await props.params;
 
   let initialMode: "loading" | "error" | "article" | "story" | "trivia" = "loading";
-  let initialArticle: any = null;
-  let initialTrivia: any = null;
-  let initialStory: any = null;
+  let initialArticle: Record<string, unknown> | null = null;
+  let initialTrivia: TriviaSetApi | null = null;
+  let initialStory: StoryData | null = null;
 
   const resolved = await resolveContentSlug(slug);
 
@@ -124,7 +150,7 @@ export default async function UnifiedReaderPage(
     initialArticle = resolved.data;
     initialMode = "article";
   } else if (resolved?.type === "trivia") {
-    initialTrivia = resolved.data;
+    initialTrivia = resolved.data as TriviaSetApi;
     initialMode = "trivia";
   } else if (resolved?.type === "story") {
     const foundStory = resolved.data;

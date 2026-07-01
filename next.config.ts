@@ -202,11 +202,6 @@ const nextConfig: NextConfig = {
         destination: "/",
         permanent: false,
       },
-      {
-        source: "/budgethub",
-        destination: "/",
-        permanent: false,
-      },
     ];
   },
 

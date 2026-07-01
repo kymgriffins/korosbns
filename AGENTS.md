@@ -56,3 +56,51 @@ When changing auth behavior, update **all** of: `auth-policy.ts`, `docs/frontend
 
 ## TypeScript
 All new code passes `tsc --noEmit` cleanly. Strict mode enforced on all callback parameters.
+
+---
+
+# Headless Data Layer
+
+**Canonical location:** `src/data/*.ts`  
+**Pattern doc:** `TASKLIST.md` → Phase 7
+
+## Rules for AI agents
+
+1. **Do not call API functions directly in page/components.** Always go through `src/data/{domain}.ts` stores using `withFallback()`.
+2. **Every data store must export**: `get()`, `set()`, `fetch()`, and optionally `fetchById()` / `create()` / `update()` / `delete()`.
+3. **`fetch()` must use `withFallback()`** from `src/data/adapter.ts` — it tries the real API first, falls back to defaults on failure.
+4. **Default data comes from seed JSONs** (`content_videos.example.json`, `civic_modules.json`, `bnsConfig.json`, etc.) or sensible zero-value states.
+5. **All stores are headless** — they work without a backend. The UI stays functional with defaults.
+6. **Add new types to the store file**, not to shared type files, unless the type is used across multiple domains.
+
+## Migration workflow per page
+
+```
+1. Add `src/data/{domain}.ts` store (if not already created)
+2. Import the store in the page/component
+3. Replace `citizenApi.getXxx()` / `adminApi.getXxx()` / `learnHubApi.getXxx()`
+   with `dataStore.fetch()` (which uses `withFallback` internally)
+4. Remove loading/error states that only trigger on API failure
+5. Test with backend ON → live data
+6. Test with backend OFF → default data
+```
+
+## Quick reference
+
+| Store | File | Default Source |
+|-------|------|----------------|
+| Videos | `src/data/videos.ts` | `content_videos.example.json` |
+| Transcripts | `src/data/transcripts.ts` | Inline defaults + API fetch |
+| Content (articles/stories/docs) | `src/data/content.ts` | Seed JSONs |
+| Learning modules | `src/data/learning.ts` | `civic_modules.json` |
+| Tasks | `src/data/tasks.ts` | `bnsConfig.json` meeting action items |
+| Users & Team | `src/data/users.ts` | `bnsConfig.json` leadership |
+| Gamification | `src/data/gamification.ts` | Zero-value defaults |
+| Events | `src/data/events.ts` | `content_events.example.json` |
+| Surveys | `src/data/surveys.ts` | `engagement_surveys.example.json` |
+| Forum | `src/data/forum.ts` | Empty array |
+| Budget | `src/data/budget.ts` | Budget seed JSONs |
+| Analytics | `src/data/analytics.ts` | Zero-value defaults |
+| Partners | `src/data/partners.ts` | `bnsConfig.json` consortium |
+| Admin meta | `src/data/admin-meta.ts` | Hardcoded sidebar nav |
+| Site inventory | `src/data/site-content-inventory.ts` | `bnsConfig.json` |

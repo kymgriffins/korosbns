@@ -3,7 +3,7 @@
 import { motion } from "motion/react";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
 import { Camera, Video, Monitor, Scissors, CheckCircle } from "lucide-react";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 
 const serviceIcons: Record<string, React.ReactNode> = {
   Videography: <Video className="size-8" />,

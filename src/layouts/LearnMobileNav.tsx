@@ -7,8 +7,8 @@ import { learnTabToHref } from "@/lib/learn-nav";
 import {
   MobileBottomNav,
   type MobileBottomNavItem,
-} from "@/ui/mobile-bottom-nav";
-import { Avatar, AvatarFallback } from "@/ui/avatar";
+} from "@/components/ui/mobile-bottom-nav";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 type StoredProfile = {
   breakName?: string;
@@ -121,7 +121,7 @@ export function LearnMobileNav() {
     <MobileBottomNav
       items={items}
       ariaLabel="Learning hub navigation"
-      placement="embedded"
+      placement="fixed"
     />
   );
 }

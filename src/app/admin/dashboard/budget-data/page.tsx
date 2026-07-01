@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { DataTable, type Column } from "@/components/admin/data-table";
-import { adminBudgetApi, type AdminBudgetRecord } from "@/lib/admin-api";
+import { budgetData } from "@/data/budget";
+import type { AdminBudgetRecord } from "@/lib/admin-api";
 
 export default function AdminBudgetDataPage() {
   const [records, setRecords] = useState<AdminBudgetRecord[]>([]);
@@ -20,7 +21,7 @@ export default function AdminBudgetDataPage() {
   const fetchRecords = useCallback(async () => {
     setLoading(true); setError("");
     try {
-      const res = await adminBudgetApi.list();
+      const res = await budgetData.records.fetch();
       setRecords(res.results);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load budget records");
@@ -35,7 +36,7 @@ export default function AdminBudgetDataPage() {
     if (!file.name.endsWith(".json")) { toast.error("Only JSON files are accepted"); return; }
     setUploading(true);
     try {
-      await adminBudgetApi.upload(file);
+      await budgetData.records.upload(file);
       toast.success("Budget data uploaded");
       fetchRecords();
     } catch (err) {
@@ -48,7 +49,7 @@ export default function AdminBudgetDataPage() {
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this budget record?")) return;
-    try { await adminBudgetApi.delete(id); toast.success("Record deleted"); fetchRecords(); }
+    try { await budgetData.records.delete(id); toast.success("Record deleted"); fetchRecords(); }
     catch (err) { toast.error(err instanceof Error ? err.message : "Delete failed"); }
   };
 

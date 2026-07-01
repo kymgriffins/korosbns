@@ -193,3 +193,79 @@ Shadows appear only as interactive responses:
 - **Don't** hide content behind animations.
 - **Don't** use the hero-metric template (big number, small label, gradient).
 - **Don't** use Montserrat, Inter, or Roboto as primary fonts.
+
+## 7. Component-Specific Overrides
+
+These are intentional deviations from the core tokens for specific visual contexts. They are documented here so they remain deliberate choices, not drift.
+
+### Day/Night Switch (`day-night-switch.tsx`)
+A thematic toggle with a sky-atmosphere metaphor. Colors represent sky, sun, and ambient light at different times of day — not general UI tokens.
+
+| Token | Value | Role |
+|-------|-------|------|
+| `#83d8ff` | sky-blue | Day sky gradient start |
+| `#749ed7` / `#749dd6` | muted-blue | Day sky gradient end / horizon |
+| `#ffcf96` | warm-peach | Sun element |
+| `#e8cda5` | sand | Ground / horizon line |
+| `#ffe5b5` | light-gold | Sun glow |
+
+| Radius | Value | Role |
+|--------|-------|------|
+| `84px` | pill | Outer switch track |
+| `50px` | pill | Inner knob / sun-moon element |
+
+### Retro TV Card (`retro-tv-card.tsx`)
+A decorative component emulating a vintage CRT television. The palette is drawn from retro amber/orange displays and period-correct plastics — not general UI tokens.
+
+| Token | Value | Role |
+|-------|-------|------|
+| `#f27405` | amber-glow | CRT screen glow |
+| `#a85103` | dark-amber | CRT ambient / deep glow |
+| `#d36604` | burnt-orange | Accent / active state |
+| `#e69635` | warm-gold | Text highlight, button active |
+| `#1d0e01` | near-black | Deep shadow / power-off state |
+| `#7f5934` | bronze | Chassis accent, speaker grille |
+| `#b49577` | beige | Chassis highlight, button face |
+| `#513721` | dark-brown | Chassis shadow |
+| `#171717` | off-black | Frame / bezel |
+| `#353535` / `#4d4d4d` | dark-gray | Inner shadow, vent detail |
+| `#979797` | mid-gray | Knob detail, secondary text |
+| `#252525` | dark-charcoal | Stand / base |
+
+| Radius | Value | Role |
+|--------|-------|------|
+| `50px` | pill | CRT screen corner, knob shape |
+| `25px` | rounded | Button / control element |
+| `15px` | soft | Inner element rounding |
+| `5px` | micro | Detail / vent element |
+
+**Font note.** Geist is the intentional brand font (see Typography §3). The `overused-font` signal for Geist is noted; it remains the chosen single-family system for this project.
+
+### Learn Quiz Immersive Mode (`learn.tsx` lines ~760–770)
+A fullscreen dark overlay for quiz-taking. The dark background (`#2a2d37`, `#16171d`) and glow colors (derived from brand primary and semantic tokens) create a focused, cinematic quiz environment separate from the main UI.
+
+| Color | Value | Role |
+|-------|-------|------|
+| `#2a2d37` | surface | Quiz card background |
+| `#16171d` | base | Quiz page background |
+| `rgba(56, 189, 248, 0.22)` | info-glow | Info accent glow |
+| `rgba(14, 116, 144, 0.12)` | info-subtle | Info subtle fill |
+| `#fbbf24` / `rgba(251, 191, 36, …)` | amber | Warning / highlight state |
+| `#d97706` / `rgba(217, 119, 6, …)` | dark-amber | Warning deep state |
+
+### Button Ripple Effect (`components.css`)
+The `.button__bg` pseudo-element uses `border-radius: 100px` to create a fully round ripple origin. This is a motion utility, not a surface token.
+
+### Chart Palette (`apps/budgethub/src/components/reports/`)
+The report chart palette is a separate color system for data visualization, where distinct hues are needed for series differentiation. These HSL values are managed via CSS variables in the budgethub app theme.
+
+| Hue | Usage |
+|-----|-------|
+| `hsl(221 83% 53%)` | Primary data series (blue) |
+| `hsl(142 76% 36%)` | Success data series (green) |
+| `hsl(47 95% 48%)` | Warning data series (amber) |
+| `hsl(346 77% 50%)` | Destructive data series (red) |
+| `hsl(173 80% 40%)` | Teal data series |
+| `hsl(12 76% 61%)` | Orange data series |
+| `hsl(24 95% 53%)` | Deep orange data series |
+| `hsl(0 0% 60%)` | Muted / disabled data series (gray) |

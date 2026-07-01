@@ -7,6 +7,13 @@ export default defineConfig({
     globals: true,
     setupFiles: ["./vitest.setup.ts"],
     exclude: ["**/node_modules/**", "**/dist/**", "**/e2e/**", "**/cypress/**", "**/.next/**"],
+    css: true,
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "lcov", "html"],
+      include: ["src/data/**", "src/hooks/**", "src/lib/**"],
+      exclude: ["**/__tests__/**", "**/*.test.*", "**/*.d.ts"],
+    },
   },
   resolve: {
     alias: {

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { KeyRound, Loader2, LogOut, ShieldAlert } from "lucide-react";
 import { toast } from "sonner";
 
+import { usePageView } from "@/hooks/use-page-view";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { citizenApi } from "@/lib/api-client";
 
 export default function AdminSecurityPage() {
+  usePageView();
   const [saving, setSaving] = useState(false);
   const [passwords, setPasswords] = useState({ current: "", newPass: "", confirm: "" });
 

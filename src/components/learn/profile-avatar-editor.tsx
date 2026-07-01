@@ -1,13 +1,14 @@
 "use client";
 
 import React, { useRef, useState } from "react";
+import { usePageView } from "@/hooks/use-page-view";
 import { Camera, Loader2, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { BitmojiAvatar, FemaleBitmoji, MaleBitmoji, type Gender } from "./bitmoji-avatar";
 import { cn } from "@/utils";
 import { citizenApi } from "@/lib/api-client";
-import { Button } from "@/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/ui/popover";
+import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const MAX_AVATAR_BYTES = 2 * 1024 * 1024;
 const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
@@ -33,6 +34,7 @@ export function ProfileAvatarEditor({
   onGenderChange,
   onSaved,
 }: ProfileAvatarEditorProps) {
+  usePageView();
   const inputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);

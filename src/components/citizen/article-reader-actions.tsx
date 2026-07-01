@@ -2,7 +2,7 @@
 
 import { Bookmark, Share2 } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/auth-context";
 import { useToggleBookmark, useRecordShare } from "@/hooks/use-profile";
 

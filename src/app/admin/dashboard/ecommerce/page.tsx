@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 
+import { DemoBanner } from "@/components/admin/demo-banner";
 import { CustomerReviews } from "./_components/customer-reviews";
 import { Inventory } from "./_components/inventory";
 import { KpiStrip } from "./_components/kpi-strip";
@@ -18,6 +19,7 @@ export default function Page() {
 
   return (
     <div className="flex flex-col gap-4">
+      <DemoBanner />
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div className="flex flex-col gap-1">
           <h1 className="text-3xl leading-none tracking-tight">Store Overview</h1>

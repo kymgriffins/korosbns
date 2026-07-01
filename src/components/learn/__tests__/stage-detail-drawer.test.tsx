@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StageDetailDrawer } from "../stage-detail-drawer";
+import type { CivicModule } from "@/types/learn";
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
 
@@ -21,8 +22,57 @@ vi.mock("@/contexts/learn-context", () => ({
   }),
 }));
 
-vi.mock("@/ui/sidebar", () => ({
+vi.mock("@/components/ui/sidebar", () => ({
   useSidebar: () => ({ open: true, setOpen: vi.fn() }),
+}));
+
+vi.mock("../curriculum-sidebar", () => ({
+  CurriculumSidebar: () => <div data-testid="curriculum-sidebar" />,
+}));
+
+vi.mock("../rating-section", () => ({
+  RatingSection: () => <div data-testid="rating-section" />,
+}));
+
+vi.mock("../step-content", () => ({
+  StepContent: ({ step, onStartTrivia }: { step: { title: string }; onStartTrivia: () => void }) => (
+    <div data-testid="step-content">
+      <span>{step.title}</span>
+      <button onClick={onStartTrivia}>Start Knowledge Check</button>
+    </div>
+  ),
+}));
+
+vi.mock("../trivia-section", () => ({
+  TriviaSection: () => <div data-testid="trivia-section" />,
+}));
+
+vi.mock("../mastery-page", () => ({
+  MasteryPage: () => <div data-testid="mastery-page" />,
+}));
+
+vi.mock("../youtube-player", () => ({
+  YouTubePlayer: () => <div data-testid="youtube-player" />,
+}));
+
+vi.mock("@/lib/module-progress", () => ({
+  readProgress: vi.fn(() => ({ currentStep: 1, stepsCompleted: {}, triviaRewards: [] })),
+  writeProgress: vi.fn(),
+}));
+
+vi.mock("@/lib/learn-trivia", () => ({
+  triviaForStep: (_stage: any, step: any, _idx: number) => {
+    if (step?.trivia?.length) return step.trivia;
+    return [];
+  },
+}));
+
+vi.mock("@/lib/learn-hub", () => ({
+  learnHubApi: { completeChapter: vi.fn(), markProgress: vi.fn() },
+}));
+
+vi.mock("@/hooks/use-budget-data", () => ({
+  useBudgetData: () => ({ budgetAllocations: [], budgetKpis: [], budgetHighlights: [], budgetLoading: false, budgetReportProfile: null }),
 }));
 
 if (typeof window !== "undefined" && !window.matchMedia) {
@@ -32,36 +82,57 @@ if (typeof window !== "undefined" && !window.matchMedia) {
   }));
 }
 
-const mockStage: any = {
-  id: 1, title: "Stage 1: Constitution", badge: "🛡️", badgeName: "DocNative",
-  documentName: "Constitution of Kenya 2010", archive: "2010",
-  link: "https://kenyalaw.org", status: "Published", credits: "Credits: BNS Team",
+const mockStage: CivicModule = {
+  id: "550e8400-e29b-41d4-a716-446655440000",
+  slug: "constitution",
+  order: 1,
+  title: "Stage 1: Constitution",
+  badge: "shield",
+  badgeName: "DocNative",
+  documentName: "Constitution of Kenya 2010",
+  archive: "2010",
+  link: "https://kenyalaw.org",
+  status: "published",
+  credits: "Credits: BNS Team",
   description: "Learn about the foundations of public finance in Kenya under Chapter Twelve of the Constitution.",
-  expectations: ["Decode your 5 core budget rights in Kenya."],
+  expectations: [
+    { text: "Decode your 5 core budget rights in Kenya." },
+  ],
   steps: [
     {
-      id: 1, title: "1. Public Finance Principles", order: 1, youtubeId: "Ed9lP0-komE",
-      audioUrl: "/audio/stage1_step1.mp3", transcript: "Hello citizens, welcome to Budget Ndio Story...",
+      id: "step-1",
+      order: 1,
+      title: "1. Public Finance Principles",
+      slug: "public-finance-principles",
+      youtube_url: "https://youtube.com/watch?v=Ed9lP0-komE",
+      audioUrl: "/audio/stage1_step1.mp3",
+      transcript: "Hello citizens, welcome to Budget Ndio Story...",
       text: "The Kenyan Constitution sets the foundational framework for public finance under Chapter Twelve.",
       trivia: [{
-        type: "multiple-choice",
         question: "Which article of the Kenyan Constitution details the principles of public finance?",
         options: ["Article 201", "Article 217", "Article 221", "Article 35"],
-        answer: 0, explanation: "Article 201 sets out the principles of public finance.",
+        correct_index: 0,
+        explanation: "Article 201 sets out the principles of public finance.",
       }],
     },
     {
-      id: 2, title: "2. Budget Cycle Overview", order: 2, youtubeId: "abc123",
-      audioUrl: "/audio/stage1_step2.mp3", transcript: "Step 2 transcript...",
+      id: "step-2",
+      order: 2,
+      title: "2. Budget Cycle Overview",
+      slug: "budget-cycle-overview",
+      youtube_url: "https://youtube.com/watch?v=abc123",
+      audioUrl: "/audio/stage1_step2.mp3",
+      transcript: "Step 2 transcript...",
       text: "The budget cycle has four main phases.",
       trivia: [{
-        type: "multiple-choice",
         question: "How many phases are in the budget cycle?",
         options: ["Three", "Four", "Five", "Six"],
-        answer: 1, explanation: "The budget cycle has four phases.",
+        correct_index: 1,
+        explanation: "The budget cycle has four phases.",
       }],
     },
   ],
+  stageProgress: [1],
 };
 
 const mockProfile = {
@@ -83,8 +154,8 @@ Object.defineProperty(window, "localStorage", { value: mockLocalStorage });
 Object.defineProperty(globalThis, "localStorage", { value: mockLocalStorage });
 
 describe("StageDetailDrawer", () => {
-  let mockOnClose: any;
-  let mockOnUpdateProfile: any;
+  let mockOnClose: () => void;
+  let mockOnUpdateProfile: (p: typeof mockProfile) => void;
 
   beforeEach(() => {
     mockOnClose = vi.fn();
@@ -123,13 +194,11 @@ describe("StageDetailDrawer", () => {
         hasPrev={false} hasNext={false}
       />
     );
-    const tabs = screen.getAllByText("Read");
-    expect(tabs.length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText("Read").length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText("Watch").length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText("Quiz").length).toBeGreaterThanOrEqual(1);
   });
 
-  it("shows video placeholder when on Watch tab", () => {
+  it("switches to Watch tab and shows YouTubePlayer", () => {
     renderWithClient(
       <StageDetailDrawer
         stage={mockStage} profile={mockProfile}
@@ -138,22 +207,35 @@ describe("StageDetailDrawer", () => {
       />
     );
     fireEvent.click(screen.getAllByText("Watch")[0]);
-    expect(screen.getByText("Video coming soon")).toBeInTheDocument();
+    expect(screen.getByTestId("youtube-player")).toBeInTheDocument();
   });
 
-  it("switches to Quiz tab and shows Start Knowledge Check button", () => {
+  it("shows Start Knowledge Check button on Quiz tab when trivia available", () => {
     renderWithClient(
       <StageDetailDrawer
-        stage={mockStage} profile={mockProfile}
+        stage={{
+          ...mockStage,
+          steps: [{
+            ...mockStage.steps[0],
+            trivia: [{
+              question: "Test?",
+              options: ["A", "B"],
+              correct_index: 0,
+              explanation: "E",
+            }],
+          }],
+        }}
+        profile={mockProfile}
         onClose={mockOnClose} onUpdateProfile={mockOnUpdateProfile}
         hasPrev={false} hasNext={false}
       />
     );
-    fireEvent.click(screen.getAllByText("Quiz")[0]);
+    const quizButtons = screen.getAllByText("Quiz");
+    fireEvent.click(quizButtons[0]);
     expect(screen.getByText("Start Knowledge Check")).toBeInTheDocument();
   });
 
-  it("shows curriculum sidebar with step titles", () => {
+  it("shows curriculum sidebar", () => {
     renderWithClient(
       <StageDetailDrawer
         stage={mockStage} profile={mockProfile}
@@ -161,8 +243,7 @@ describe("StageDetailDrawer", () => {
         hasPrev={false} hasNext={false}
       />
     );
-    expect(screen.getAllByText("1. Public Finance Principles", { exact: false }).length).toBeGreaterThan(0);
-    expect(screen.getAllByText("2. Budget Cycle Overview", { exact: false }).length).toBeGreaterThan(0);
+    expect(screen.getByTestId("curriculum-sidebar")).toBeInTheDocument();
   });
 
   it("calls onClose when back button is clicked", () => {

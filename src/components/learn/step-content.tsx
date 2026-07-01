@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/ui/button";
-import { Progress } from "@/ui/progress";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { cn } from "@/utils";
 import { Sparkles, Lightbulb, AlertTriangle, ChevronLeft, ChevronRight } from "lucide-react";
 import type { ChapterStep, StageTakeaway, ChapterVideo } from "@/types/learn";

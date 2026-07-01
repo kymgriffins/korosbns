@@ -5,11 +5,14 @@ import { motion } from "motion/react";
 import { fadeInUp } from "@/motion/variants";
 import { WeeklyNoteComposer } from "@/components/notes/WeeklyNoteComposer";
 import { WeeklyNotesList } from "@/components/notes/WeeklyNotesList";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/ui/tabs";
-import { citizenApi, type ApiListResponse, type WeeklyNoteApi } from "@/lib/api-client";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { taskData } from "@/data/tasks";
+import type { WeeklyNoteApi } from "@/types/notes";
 import { Loader2, PenLine, FileText } from "lucide-react";
+import { usePageView } from "@/hooks/use-page-view";
 
 export default function ManageWeeklyNotesPage() {
+  usePageView();
   const [notes, setNotes] = useState<WeeklyNoteApi[]>([]);
   const [editing, setEditing] = useState<WeeklyNoteApi | null>(null);
   const [loading, setLoading] = useState(true);
@@ -17,8 +20,8 @@ export default function ManageWeeklyNotesPage() {
 
   const fetchNotes = useCallback(async () => {
     try {
-      const res: ApiListResponse<WeeklyNoteApi> = await citizenApi.getMyNotes();
-      setNotes(res.results || []);
+      const results = await taskData.tasks.fetch();
+      setNotes(results as unknown as WeeklyNoteApi[]);
     } catch {
       /* ignore */
     } finally {

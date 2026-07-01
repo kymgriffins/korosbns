@@ -5,7 +5,7 @@ import { BookOpen, FileBarChart, FileText, LayoutDashboard } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/contexts/auth-context";
 import { getInitials } from "@/lib/utils";
-import { MobileBottomNav, isMobileNavActive, type MobileBottomNavItem } from "@/ui/mobile-bottom-nav";
+import { MobileBottomNav, isMobileNavActive, type MobileBottomNavItem } from "@/components/ui/mobile-bottom-nav";
 
 export function BudgethubMobileNav() {
   const pathname = usePathname();

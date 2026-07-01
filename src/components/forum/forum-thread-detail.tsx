@@ -5,7 +5,7 @@ import { useForumThread, useCreateForumPost } from "@/hooks/use-forum";
 import { safeArray, safeLen } from "@/lib/safe-data";
 import { ForumPostItem } from "./forum-post-item";
 import { ForumPostComposer } from "./forum-post-composer";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/auth-context";
 import Link from "next/link";
 import { Routes } from "@/constants/routes";

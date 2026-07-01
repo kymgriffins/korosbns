@@ -8,7 +8,7 @@ import type { LearnHubItem } from "@/lib/learn-hub";
 import { learnItemHref, isExternalLearnHref } from "@/lib/learn-hub";
 import { fadeInUp } from "@/motion/variants";
 import { useReducedMotionSafe } from "@/motion/hooks";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   continueItems?: LearnHubItem[];
