@@ -7,7 +7,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from "@/ui/chart";
+} from "@/components/ui/chart";
 import {
   BudgetBarChart,
   BudgetComparisonTable,

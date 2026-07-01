@@ -1,8 +1,8 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Label } from "@/ui/label";
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/ui/accordion";
+import { Label } from "@/components/ui/label";
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { Layers, Map } from "lucide-react";
 import { StageCard, type StageCardData } from "./stage-card";
 

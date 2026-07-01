@@ -10,7 +10,7 @@ import { StepContent } from "../step-content";
 import { TriviaSection } from "../trivia-section";
 import { DocumentsTab } from "../documents-tab";
 
-vi.mock("@/ui/progress", () => ({
+vi.mock("@/components/ui/progress", () => ({
   Progress: ({ value, className }: { value: number; className?: string }) => (
     <div data-testid="progress" data-value={value} className={className} />
   ),

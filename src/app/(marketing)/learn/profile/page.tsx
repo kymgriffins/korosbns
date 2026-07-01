@@ -17,7 +17,7 @@ import { citizenApi, type SocialLinkApi, type UserProfileApi } from "@/lib/api-c
 import { MotionPage } from "@/motion/wrappers";
 import { fadeInUp } from "@/motion/variants";
 import { motion } from "motion/react";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { usePageView } from "@/hooks/use-page-view";
 
 const SOCIAL_ICONS: Record<string, LucideIcon> = {

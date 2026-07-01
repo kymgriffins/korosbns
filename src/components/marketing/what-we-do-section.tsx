@@ -3,7 +3,7 @@
 import React from "react";
 import { motion } from "motion/react";
 import Link from "next/link";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { fadeInUp, staggerFast } from "@/motion/variants";
 import { SectionHeader, SectionShell } from "@/layouts/section-shell";

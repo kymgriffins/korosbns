@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Button } from "@/ui/button";
-import { Input } from "@/ui/input";
-import { Label } from "@/ui/label";
-import { Checkbox } from "@/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Flame, Bell, Shield, ArrowRight, ArrowLeft, Sparkles, GraduationCap } from "lucide-react";
 import { useUpdateProfile } from "@/hooks/use-profile";
 import { useAuth } from "@/contexts/auth-context";

@@ -1,7 +1,7 @@
 "use client";
 
 import Wrapper from '@/components/global/wrapper';
-import { Button } from '@/ui/button';
+import { Button } from '@/components/ui/button';
 import { Routes } from '@/constants';
 import { motion } from 'motion/react';
 import Link from 'next/link';

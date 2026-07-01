@@ -1,9 +1,9 @@
 "use client";
 
 import { Plus, Trash2, GripVertical } from "lucide-react";
-import { Button } from "@/ui/button";
-import { Input } from "@/ui/input";
-import { Checkbox } from "@/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import type { ChecklistItem } from "@/types/tasks";
 
 function genId() {

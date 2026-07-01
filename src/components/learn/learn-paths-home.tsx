@@ -10,8 +10,9 @@ import { ProfileView } from "./profile-view";
 import { AlertsView } from "./alerts-view";
 import { ForumView } from "./forum-view";
 import { DashboardSkeleton } from "./dashboard-skeleton";
+import { AnonymousIdentityPicker } from "./anonymous-identity-picker";
 
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
   ShieldAlert, BookOpen
@@ -310,15 +311,23 @@ export function LearnPathsHome() {
     );
   }
 
+  const showWelcome = !isLoggedIn && !effectiveProfile && !authLoading && !loading;
+
   return (
     <div className="w-full h-full min-h-0 bg-background flex flex-col overflow-hidden">
-      {!selectedStage && activeProfile.language === "SH" && (
+      {showWelcome && (
+        <div className="flex-1 overflow-y-auto p-4 md:p-6 flex items-center justify-center">
+          <AnonymousIdentityPicker onComplete={handleOnboardingComplete} />
+        </div>
+      )}
+
+      {!showWelcome && activeProfile.language === "SH" && (
         <div className="w-full py-1 px-4 text-[10px] font-semibold bg-amber-500/15 border-b border-amber-500/20 text-amber-600 text-center">
           {text.shengComingSoon}
         </div>
       )}
 
-      {selectedStage ? (
+      {!showWelcome && selectedStage ? (
         <div className="absolute inset-0 z-10 flex flex-col overflow-hidden bg-background md:relative md:inset-auto">
           <StageDetailDrawer key={selectedStage.slug}
             stage={selectedStage}
@@ -428,12 +437,14 @@ export function LearnPathsHome() {
             )}
           </AnimatePresence>
 
-          <div className="mt-6">
-            <SignUpCta
-              feature="Quizzes & progress tracking"
-              description="Save your quiz scores, track your learning progress, and unlock personalized content recommendations."
-            />
-          </div>
+          {!effectiveProfile && (
+            <div className="mt-6">
+              <SignUpCta
+                feature="Quizzes & progress tracking"
+                description="Save your quiz scores, track your learning progress, and unlock personalized content recommendations."
+              />
+            </div>
+          )}
         </div>
       )}
     </div>

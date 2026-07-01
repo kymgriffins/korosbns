@@ -10,7 +10,7 @@ import { IconBrandLinkedin, IconBrandX, IconBrandInstagram } from "@tabler/icons
 import { ArrowUpRight, Mail } from "lucide-react";
 import { ease } from "@/motion/variants";
 import Wrapper from "@/components/global/wrapper";
-import SectionBadge from "@/ui/section-badge";
+import SectionBadge from "@/components/ui/section-badge";
 
 interface TeamMember {
   name: string;

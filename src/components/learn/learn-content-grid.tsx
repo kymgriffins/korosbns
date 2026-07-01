@@ -7,8 +7,8 @@ import type { LearnHubItem } from "@/lib/learn-hub";
 import { isExternalLearnHref, learnItemHref } from "@/lib/learn-hub";
 import { staggerContainer, fadeInUp } from "@/motion/variants";
 import { useReducedMotionSafe } from "@/motion/hooks";
-import { Button } from "@/ui/button";
-import { Badge } from "@/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/utils";
 
 const TYPE_ICONS: Record<string, typeof BookOpen> = {

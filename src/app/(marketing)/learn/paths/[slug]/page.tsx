@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, BookOpen } from "lucide-react";
 import { Routes } from "@/constants/routes";
 import { metaDescription, canonicalUrl } from "@/utils/metadata";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { learningData } from "@/data/learning";
 import type { LearningEditionDetail } from "@/lib/learning-units";
 

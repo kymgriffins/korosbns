@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { Upload, Loader2, X, FileIcon, ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/utils/index";
 import { taskApi } from "@/lib/task-api";
 import type { TaskAttachment } from "@/types/tasks";

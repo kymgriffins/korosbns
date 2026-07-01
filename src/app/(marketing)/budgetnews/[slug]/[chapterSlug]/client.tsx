@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { ArrowLeft, ChevronLeft, ChevronRight, Calendar, ChevronDown, ListTree } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { budgetNewsChapterPath, budgetNewsModulePath, Routes } from "@/constants/routes";
 import { budgetData } from "@/data/budget";
 import type { BudgetNewsYear } from "@/lib/learn-hub";
@@ -20,7 +20,7 @@ import {
   ArticleSectionToc,
   MobileArticleToc,
 } from "@/components/budget-news/report-blocks";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 function ChapterContent({
   slug,

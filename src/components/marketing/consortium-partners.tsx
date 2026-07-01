@@ -1,7 +1,7 @@
 "use client";
 
 import Wrapper from "@/components/global/wrapper";
-import SectionBadge from "@/ui/section-badge";
+import SectionBadge from "@/components/ui/section-badge";
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";

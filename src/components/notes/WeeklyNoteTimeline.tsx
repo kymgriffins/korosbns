@@ -3,7 +3,7 @@
 import { motion } from "motion/react";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
 import { Calendar, ChevronRight } from "lucide-react";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { format } from "date-fns";
 import type { WeeklyNoteApi } from "@/types/notes";

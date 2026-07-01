@@ -5,9 +5,9 @@ import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { AuthShell } from "@/layouts/AuthShell";
-import { Button } from "@/ui/button";
-import { Input } from "@/ui/input";
-import { Label } from "@/ui/label";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Routes } from "@/constants/routes";
 import { useRequestPasswordReset, useConfirmPasswordReset } from "@/hooks/use-auth-actions";
 

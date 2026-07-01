@@ -19,15 +19,15 @@ import {
   Award,
   ArrowRight,
 } from "lucide-react";
-import { Badge } from "@/ui/badge";
-import { Button } from "@/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/ui/card";
-import { Progress } from "@/ui/progress";
-import { Separator } from "@/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
 import { cn } from "@/utils";
 import { learnHubApi } from "@/lib/learn-hub";
 import { learningData } from "@/data/learning";
-import { useSidebar } from "@/ui/sidebar";
+import { useSidebar } from "@/components/ui/sidebar";
 import { readProgress, writeProgress } from "@/lib/module-progress";
 import { triviaForStep } from "@/lib/learn-trivia";
 import { certificateDownloadHref } from "@/lib/certificate-url";

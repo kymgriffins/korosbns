@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { FileCheck, History, DownloadCloud, Share2, AlertCircle, FileText } from "lucide-react";
 import { cn } from "@/utils";
 import { CONSTITUTION_HISTORICAL_DOCS, GovernmentDocument } from "@/constants/documents-registry";

@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button } from "@/ui/button";
-import { Input } from "@/ui/input";
-import { Label } from "@/ui/label";
-import { Checkbox } from "@/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Shield, ArrowRight, Edit3, RefreshCw, Sparkles } from "lucide-react";
 import { FemaleBitmoji, MaleBitmoji, type Gender } from "./bitmoji-avatar";
 

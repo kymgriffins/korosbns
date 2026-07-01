@@ -5,7 +5,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { CheckCircle2, Loader2, XCircle } from "lucide-react";
 import { AuthShell } from "@/layouts/AuthShell";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { Routes } from "@/constants/routes";
 import { useVerifyEmail } from "@/hooks/use-auth-actions";
 

@@ -4,17 +4,17 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { FormStatus } from "@/components/citizen/form-status";
-import { Button } from "@/ui/button";
-import { Input } from "@/ui/input";
-import { Label } from "@/ui/label";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/ui/select";
-import { Textarea } from "@/ui/textarea";
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
 import { citizenApi, type SocialLinkApi } from "@/lib/api-client";

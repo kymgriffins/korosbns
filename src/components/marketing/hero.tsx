@@ -8,7 +8,7 @@ import {
   useTransform,
   useReducedMotion,
 } from "motion/react";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import Balancer from "react-wrap-balancer";
 import { ease } from "@/motion/variants";

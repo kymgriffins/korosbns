@@ -26,7 +26,7 @@ import Balancer from "react-wrap-balancer";
 import { toast } from "sonner";
 import Container from "../global/container";
 import Wrapper from "../global/wrapper";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 
 import { resolveAppUrl } from "@/lib/api-url";
 import { useAuth } from "@/contexts/auth-context";

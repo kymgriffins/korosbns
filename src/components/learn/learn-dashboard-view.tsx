@@ -8,7 +8,7 @@ import {
   ChevronRight, Play, Sparkles, Crown, CircleUser, Newspaper,
   MessageSquare, ListChecks,
 } from "lucide-react";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { BitmojiAvatar } from "./bitmoji-avatar";
 import type { CivicModule } from "@/types/learn";
 import type { LeaderboardEntry } from "@/types/gamification";

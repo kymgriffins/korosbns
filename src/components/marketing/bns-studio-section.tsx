@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Camera, Video, Monitor, Scissors, ArrowRight } from "lucide-react";
 

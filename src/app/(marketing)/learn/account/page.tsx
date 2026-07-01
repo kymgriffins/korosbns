@@ -4,7 +4,7 @@ import Link from "next/link";
 import { KeyRound, LogOut } from "lucide-react";
 import { ContentLayout } from "@/layouts/DashboardShell";
 import { AccountProfileForm } from "@/components/citizen/account-profile-form";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { Routes } from "@/constants/routes";
 
 export default function AccountPage() {

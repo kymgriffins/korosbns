@@ -2,7 +2,7 @@
 
 import { motion } from 'motion/react';
 import Wrapper from '@/components/global/wrapper';
-import SectionBadge from '@/ui/section-badge';
+import SectionBadge from '@/components/ui/section-badge';
 import { Users, Eye, Map, Calendar, Heart, Share2 } from 'lucide-react';
 
 const impactMetrics = [

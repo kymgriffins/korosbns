@@ -5,7 +5,7 @@ import { motion, useScroll, useTransform, useReducedMotion } from "motion/react"
 import {
   Shield, Scale, Building2, ArrowRight
 } from "lucide-react";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { ease } from "@/motion/variants";
 
 interface StageCard {

@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/ui/button";
-import { Textarea } from "@/ui/textarea";
-import { Label } from "@/ui/label";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { CheckCircle, XCircle, RefreshCw, Loader2 } from "lucide-react";
 import type { WeeklyNoteApi } from "@/types/notes";
 import { citizenApi } from "@/lib/api-client";

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { LogOut } from "lucide-react";
 import { ContentLayout } from "@/layouts/DashboardShell";
 import { FormStatus } from "@/components/citizen/form-status";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
 

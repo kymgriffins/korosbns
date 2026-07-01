@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { motion } from "motion/react";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
 import { WeeklyNoteCard } from "./WeeklyNoteCard";
-import { Input } from "@/ui/input";
+import { Input } from "@/components/ui/input";
 import { Search, Filter } from "lucide-react";
 import type { WeeklyNoteApi } from "@/types/notes";
 

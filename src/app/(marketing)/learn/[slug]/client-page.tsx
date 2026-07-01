@@ -7,7 +7,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
 import { Loader2, ArrowLeft, BookOpen, ChevronLeft, ArrowRight, Target, HelpCircle, MessageSquare } from "lucide-react";
 import Wrapper from "@/components/global/wrapper";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { PageBreadcrumbs } from "@/components/global/page-breadcrumbs";
 import { TriviaQuiz } from "@/components/citizen/trivia-quiz";
 import { ArticleReaderActions } from "@/components/citizen/article-reader-actions";

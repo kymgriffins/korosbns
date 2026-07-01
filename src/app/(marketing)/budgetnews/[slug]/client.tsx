@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ArrowLeft, BookOpen, ChevronRight, ChevronLeft } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { budgetNewsChapterPath, budgetNewsModulePath, Routes } from "@/constants/routes";
 import { budgetData } from "@/data/budget";
 import type { CivicModule } from "@/types/learn";

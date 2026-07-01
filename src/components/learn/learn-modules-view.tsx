@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { RefreshCw, Search, BookOpen, ExternalLink } from "lucide-react";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { BitmojiAvatar } from "./bitmoji-avatar";
 import { Routes } from "@/constants/routes";
 import { getAuthorSlug } from "@/lib/learn-authors";

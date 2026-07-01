@@ -17,14 +17,14 @@ import { useAuth } from "@/contexts/auth-context";
 import { ThemeToggle } from "@/components/marketing/theme-toggle";
 import { LearnMobileNav } from "@/layouts/LearnMobileNav";
 import { Routes } from "@/constants/routes";
-import { Avatar, AvatarFallback } from "@/ui/avatar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/ui/popover";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { SurveyListItemApi } from "@/lib/api-client";
 import { loadEventList, type HubEvent } from "@/lib/citizen-content";
 import { loadSurveyList } from "@/lib/marketing-content";
 import {
   Collapsible, CollapsibleContent, CollapsibleTrigger,
-} from "@/ui/collapsible";
+} from "@/components/ui/collapsible";
 import {
   Sidebar,
   SidebarContent,
@@ -42,7 +42,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
   useSidebar,
-} from "@/ui/sidebar";
+} from "@/components/ui/sidebar";
 
 function UserPopover({
   isLoggedIn, user, level, handleTabChange, children,
@@ -413,8 +413,8 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
               <ThemeToggle />
             </div>
           </header>
-          <main className="flex-1 overflow-y-auto">{children}</main>
-          <div className="md:hidden"><LearnMobileNav /></div>
+          <main className="flex-1 overflow-y-auto pb-[--mobile-nav-height] lg:pb-0">{children}</main>
+          <LearnMobileNav />
         </div>
       </SidebarProvider>
     </div>

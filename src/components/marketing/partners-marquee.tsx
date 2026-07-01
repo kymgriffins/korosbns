@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { Marquee } from "@/ui/marquee";
+import { Marquee } from "@/components/ui/marquee";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 import { partnerData, type Partner } from "@/data/partners";
 import { motion } from "motion/react";

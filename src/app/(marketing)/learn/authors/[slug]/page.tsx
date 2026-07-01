@@ -9,7 +9,7 @@ import {
   ArrowLeft, BookOpen, Globe, ExternalLink,
   Loader2, AlertCircle, Link2, MessageCircle,
 } from "lucide-react";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { Routes } from "@/constants/routes";
 import { learningData } from "@/data/learning";
 import { usePageView } from "@/hooks/use-page-view";

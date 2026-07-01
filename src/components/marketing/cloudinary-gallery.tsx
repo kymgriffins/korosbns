@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { SectionHeader, SectionShell } from "@/layouts/section-shell";
-import { Marquee } from "@/ui/marquee";
+import { Marquee } from "@/components/ui/marquee";
 import { useCohortImages } from "@/hooks/use-marketing";
 
 interface CloudinaryImage {

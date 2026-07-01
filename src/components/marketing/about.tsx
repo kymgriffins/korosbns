@@ -2,7 +2,7 @@
 
 import { motion } from 'motion/react';
 import Wrapper from '@/components/global/wrapper';
-import SectionBadge from '@/ui/section-badge';
+import SectionBadge from '@/components/ui/section-badge';
 import Link from 'next/link';
 import { ease } from '@/motion/variants';
 import TeamSection from './team-section';

@@ -2,13 +2,13 @@
 
 import { capabilities, stats, AVATAR_ITEMS } from '@/constants/capabilities';
 import Wrapper from '@/components/global/wrapper';
-import SectionBadge from '@/ui/section-badge';
+import SectionBadge from '@/components/ui/section-badge';
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import { Users, Calendar, FileText, Zap, ArrowRight, Sparkles } from 'lucide-react';
-import { AnimatedTooltip } from '@/ui/animated-tooltip';
+import { AnimatedTooltip } from '@/components/ui/animated-tooltip';
 import { cn } from '@/utils';
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 
 const Capibilities = () => {

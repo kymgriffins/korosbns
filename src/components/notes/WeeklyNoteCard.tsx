@@ -1,7 +1,7 @@
 "use client";
 
-import { Card, CardContent, CardFooter, CardHeader } from "@/ui/card";
-import { Badge } from "@/ui/badge";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Calendar, User } from "lucide-react";
 import type { WeeklyNoteApi } from "@/types/notes";
 import { format } from "date-fns";

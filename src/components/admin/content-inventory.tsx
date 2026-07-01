@@ -16,18 +16,18 @@ import {
   X,
 } from "lucide-react";
 
-import { Badge } from "@/ui/badge";
-import { Button } from "@/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/ui/card";
-import { Input } from "@/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/ui/select";
-import { Skeleton } from "@/ui/skeleton";
+} from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
 import { SectionHeader, SectionShell } from "@/layouts/section-shell";
 import { cn } from "@/utils";

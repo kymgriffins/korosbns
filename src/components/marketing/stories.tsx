@@ -2,10 +2,10 @@
 
 import { motion } from 'motion/react';
 import Wrapper from '@/components/global/wrapper';
-import SectionBadge from '@/ui/section-badge';
+import SectionBadge from '@/components/ui/section-badge';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { ArrowRight, Clock, Eye } from 'lucide-react';
 
 type StoryItem = {

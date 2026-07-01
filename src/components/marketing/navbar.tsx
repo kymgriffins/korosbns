@@ -7,7 +7,7 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Routes } from "@/constants";
 import MobileMenu from "./mobile-menu";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useClickOutside } from "@/hooks";
 import { useAuth } from "@/contexts/auth-context";

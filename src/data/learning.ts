@@ -7,7 +7,56 @@ import { withFallback } from "@/data/adapter";
 
 export type { CivicModule, CivicModuleAuthor, LearnHubSummary, LearnProfileResponse };
 
-const DEFAULT_MODULES: CivicModule[] = [];
+const DEFAULT_MODULES: CivicModule[] = [
+  {
+    id: "budget-basics",
+    title: "Budget Basics",
+    slug: "budget-basics",
+    badge: "BB",
+    badgeName: "Budget Basics",
+    documentName: "budget-basics",
+    archive: "",
+    link: "",
+    status: "published",
+    credits: "BNS",
+    description: "Understand how Kenya's national budget works — from revenue collection to allocation across sectors.",
+    expectations: ["Learn the budget cycle", "Understand revenue sources", "Explore expenditure categories"],
+    order: 1,
+    steps: [],
+  },
+  {
+    id: "sector-deep-dive",
+    title: "Sector Deep Dive",
+    slug: "sector-deep-dive",
+    badge: "SD",
+    badgeName: "Sector Deep Dive",
+    documentName: "sector-deep-dive",
+    archive: "",
+    link: "",
+    status: "published",
+    credits: "BNS",
+    description: "Explore allocations across education, health, infrastructure, and agriculture sectors.",
+    expectations: ["Compare sector allocations", "Analyze year-over-year trends", "Understand policy priorities"],
+    order: 2,
+    steps: [],
+  },
+  {
+    id: "citizen-engagement",
+    title: "Citizen Engagement",
+    slug: "citizen-engagement",
+    badge: "CE",
+    badgeName: "Citizen Engagement",
+    documentName: "citizen-engagement",
+    archive: "",
+    link: "",
+    status: "published",
+    credits: "BNS",
+    description: "Learn how citizens can participate in the budget process through public forums and petitions.",
+    expectations: ["Identify engagement channels", "Understand public participation", "Take action in your county"],
+    order: 3,
+    steps: [],
+  },
+];
 
 const DEFAULT_SUMMARY: LearnHubSummary = {
   counts: {},

@@ -22,7 +22,7 @@ vi.mock("@/contexts/learn-context", () => ({
   }),
 }));
 
-vi.mock("@/ui/sidebar", () => ({
+vi.mock("@/components/ui/sidebar", () => ({
   useSidebar: () => ({ open: true, setOpen: vi.fn() }),
 }));
 

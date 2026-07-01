@@ -4,8 +4,8 @@ import { useState } from "react";
 import { ImageIcon, FileIcon, Download, Trash2, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-import { Button } from "@/ui/button";
-import { Dialog, DialogContent, DialogTitle } from "@/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/utils/index";
 import { taskApi } from "@/lib/task-api";
 import type { TaskAttachment } from "@/types/tasks";

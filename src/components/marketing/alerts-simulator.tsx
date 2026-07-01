@@ -13,7 +13,7 @@ import {
   BookOpen,
   Droplets,
 } from "lucide-react";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 
 interface SectorData {

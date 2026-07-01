@@ -10,8 +10,8 @@ import {
   subscribeNewsletter,
 } from "@/lib/newsletter-subscribe";
 
-import { Button } from "@/ui/button";
-import { Input } from "@/ui/input";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -19,8 +19,8 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-} from "@/ui/dialog";
-import { Alert, AlertDescription } from "@/ui/alert";
+} from "@/components/ui/dialog";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const NEWSLETTER_SEEN_KEY = "hasSeenNewsletterPopup";
 const NEWSLETTER_DELAY_MS = 10_000;

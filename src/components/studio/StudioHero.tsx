@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import { Camera, ChevronDown } from "lucide-react";
 
 export function StudioHero() {

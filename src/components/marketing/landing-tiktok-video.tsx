@@ -18,7 +18,7 @@ import { toast } from "sonner";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
 import { SectionHeader, SectionShell } from "@/layouts/section-shell";
 import { cn } from "@/utils";
-import { Marquee } from "@/ui/marquee";
+import { Marquee } from "@/components/ui/marquee";
 import { getFeaturedTikTokVideos, likeTikTokVideo } from "@/lib/tiktok-service";
 // import { LandingTikTokLiveMarquee } from "@/components/marketing/landing-tiktok-live-marquee";
 import type { TikTokVideoApi } from "@/lib/api-client";

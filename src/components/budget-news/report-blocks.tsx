@@ -2,8 +2,8 @@
 
 import { TrendingDown, TrendingUp, Minus, Info, AlertTriangle, Sparkles, ArrowUpRight, ArrowDownRight, ChevronDown, ListTree } from "lucide-react";
 import { cn } from "@/utils";
-import { Card, CardContent, CardHeader, CardTitle } from "@/ui/card";
-import { Badge } from "@/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -11,13 +11,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/ui/table";
+} from "@/components/ui/table";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from "@/ui/chart";
+} from "@/components/ui/chart";
 import {
   Bar,
   BarChart,
@@ -34,7 +34,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/ui/collapsible";
+} from "@/components/ui/collapsible";
 import type {
   BudgetCallout,
   BudgetChartConfig,

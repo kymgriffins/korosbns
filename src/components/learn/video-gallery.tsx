@@ -4,17 +4,17 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
 import { Calendar, ChevronDown, ChevronUp, ExternalLink, FileText, Search, X } from "lucide-react";
 
-import { Input } from "@/ui/input";
-import { Badge } from "@/ui/badge";
-import { Button } from "@/ui/button";
-import { Skeleton } from "@/ui/skeleton";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/ui/select";
+} from "@/components/ui/select";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
 import { SectionHeader, SectionShell } from "@/layouts/section-shell";
 import type { YouTubeVideo } from "@/data/videos";

@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react'
 import { motion } from 'motion/react'
 import Wrapper from '../global/wrapper'
 import Container from '../global/container'
-import { Button } from '@/ui/button'
+import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { 
     ArrowLeft, 
