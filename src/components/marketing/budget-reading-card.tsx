@@ -11,17 +11,17 @@ export function BudgetReadingCard() {
   return (
     <section className="w-full py-20 md:py-32 bg-background border-b border-border/40">
       <div className={SECTION_SHELL_INNER}>
-        <div className="relative overflow-hidden rounded-3xl border border-border/60 shadow-xl bg-black/60">
-          <div className="relative aspect-[3/4] md:aspect-[9/16] w-full">
+        <div className="relative overflow-hidden rounded-3xl border border-border/60 shadow-xl">
+          <div className="relative aspect-[4/5] sm:aspect-[3/4] md:aspect-[2/3] w-full">
             <Image
               src="/images/landing/budget-reading-2026.jpg"
               alt="CS John Mbadi presents the KES 4.82 Trillion national budget at Parliament Buildings, Nairobi — June 11, 2026"
               fill
-              className="object-contain"
+              className="object-cover object-[center_25%]"
               sizes="(max-width: 768px) 100vw, (max-width: 1400px) 90vw, 1400px"
               priority
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/10" />
             <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-8 md:p-12">
               <div className="max-w-3xl space-y-4">
                 <div className="space-y-1">
