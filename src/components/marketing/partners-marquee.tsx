@@ -10,87 +10,34 @@ import { fadeInUp, staggerContainer } from "@/motion/variants";
 
 function PartnerLogo({ partner }: { partner: Partner }) {
   return (
-    <a
-      href={partner.website || "#"}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group flex shrink-0 items-center justify-center px-6 md:px-10"
-      aria-label={`Visit ${partner.name} website`}
-    >
-      <div className="relative h-14 w-28 opacity-50 grayscale transition-all duration-500 group-hover:scale-105 group-hover:opacity-100 group-hover:grayscale-0 md:h-20 md:w-40">
-        {partner.logo_url ? (
-          <Image
-            src={partner.logo_url}
-            alt={`${partner.name} logo`}
-            fill
-            className="object-contain"
-            sizes="(max-width: 768px) 112px, 160px"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center text-xs font-semibold text-muted-foreground">
-            {partner.name}
-          </div>
-        )}
-      </div>
+    <a href={partner.website || "#"} target="_blank" rel="noopener noreferrer" className="group relative flex h-16 w-40 shrink-0 items-center justify-center rounded-xl border border-border/20 bg-card/50 px-6 transition-all duration-300 hover:border-primary/30 hover:bg-card hover:shadow-md">
+      {partner.image?.src ? (
+        <Image src={partner.image.src} alt={partner.name} width={100} height={32} className="max-h-8 w-auto object-contain grayscale transition-all duration-300 group-hover:grayscale-0" />
+      ) : (
+        <span className="text-xs font-semibold text-muted-foreground group-hover:text-foreground transition-colors">{partner.name}</span>
+      )}
     </a>
   );
 }
 
 export default function PartnersMarquee() {
-  const [activePartners, setActivePartners] = useState<Partner[]>([]);
-  const [foundingPartners, setFoundingPartners] = useState<Partner[]>([]);
-
-  useEffect(() => {
-    const all = partnerData.get();
-    setActivePartners(all.filter((p) => p.is_active));
-    setFoundingPartners(all.filter((p) => !p.is_active));
-  }, []);
+  const [partners, setPartners] = useState<Partner[]>([]);
+  useEffect(() => { partnerData.fetch().then(setPartners); }, []);
+  if (!partners.length) return null;
 
   return (
-    <section className="overflow-hidden border-y border-border/40 bg-background py-12 md:py-20">
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-      >
-        <motion.div variants={fadeInUp}>
-          <div className={`${SECTION_SHELL_INNER} mb-8 text-center`}>
-            <span className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Partnering for Impact
-            </span>
-          </div>
+    <section className="relative overflow-hidden border-y border-border/10 bg-background py-16">
+      <div className={SECTION_SHELL_INNER}>
+        <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }} className="mb-8 flex flex-col items-center gap-4">
+          <motion.span variants={fadeInUp} className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Trusted by</motion.span>
         </motion.div>
-
-        {activePartners.length > 0 && (
-          <motion.div variants={fadeInUp}>
-            <div className="relative">
-              <Marquee pauseOnHover className="[--duration:28s] [--gap:2rem] md:[--gap:3rem]">
-                {activePartners.map((partner) => (
-                  <PartnerLogo key={partner.id || partner.name} partner={partner} />
-                ))}
-              </Marquee>
-            </div>
-          </motion.div>
-        )}
-
-        {foundingPartners.length > 0 && (
-          <motion.div variants={fadeInUp} className="mt-12">
-            <div className={`${SECTION_SHELL_INNER} mb-6 text-center`}>
-              <span className="text-xs text-muted-foreground/60 uppercase tracking-wider">
-                Founding Consortium
-              </span>
-            </div>
-            <div className="relative">
-              <Marquee pauseOnHover className="[--duration:22s] [--gap:2rem] md:[--gap:3rem]">
-                {foundingPartners.map((partner) => (
-                  <PartnerLogo key={partner.id || partner.name} partner={partner} />
-                ))}
-              </Marquee>
-            </div>
-          </motion.div>
-        )}
-      </motion.div>
+      </div>
+      <Marquee pauseOnHover className="[--duration:40s]">
+        {partners.map((partner, idx) => <PartnerLogo key={partner.name + idx} partner={partner} />)}
+      </Marquee>
+      <Marquee pauseOnHover reverse className="[--duration:40s] mt-4">
+        {partners.map((partner, idx) => <PartnerLogo key={`rev-${partner.name}-${idx}`} partner={partner} />)}
+      </Marquee>
     </section>
   );
 }

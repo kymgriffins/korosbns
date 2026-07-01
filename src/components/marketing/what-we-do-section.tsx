@@ -4,86 +4,63 @@ import React from "react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
-import { fadeInUp, staggerFast } from "@/motion/variants";
+import { ArrowRight, BarChart3, Users, Newspaper, Video, FileCheck, Globe } from "lucide-react";
+import { fadeInUp, staggerContainer } from "@/motion/variants";
 import { SectionHeader, SectionShell } from "@/layouts/section-shell";
+import { Routes } from "@/constants/routes";
+
+const services = [
+  { icon: BarChart3, title: "Budget Analysis", description: "Breaking down complex national and county budgets into clear, visual insights." },
+  { icon: Newspaper, title: "Civic Journalism", description: "Investigative stories that connect budget data to real-world impact on communities." },
+  { icon: Users, title: "Community Training", description: "Workshops and resources empowering citizens to track public spending." },
+  { icon: Video, title: "Multimedia Content", description: "Engaging videos, infographics, and interactive tools for fiscal literacy." },
+  { icon: FileCheck, title: "Policy Tracking", description: "Monitoring legislation and policy changes that affect budget allocation." },
+  { icon: Globe, title: "Digital Tools", description: "Open-source platforms for budget visualization, alerts, and civic engagement." },
+];
 
 const WhatWeDoSection = () => {
   return (
     <SectionShell className="relative overflow-hidden border-t border-border/40 bg-background text-foreground">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,color-mix(in_oklch,var(--primary)_15%,transparent),transparent_70%)]" />
-
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,color-mix(in_oklch,var(--primary)_8%,transparent),transparent_70%)]" />
       <div className="relative z-10">
         <SectionHeader
           eyebrow="What We Do"
-          title={
-            <>
-              We turn{" "}
-              <span className="font-heading italic text-primary">complex budgets</span>{" "}
-              into{" "}
-              <span className="font-heading italic text-primary">civic action</span>.
-            </>
-          }
-          description="Decode national and county fiscal documents, create spaces for participation, and equip citizens to track execution and demand accountability."
+          title={<>Making <span className="font-heading italic text-primary">fiscal</span> literacy accessible to all Kenyans</>}
+          description="From budget analysis to community training — we equip citizens with the tools to understand and engage with public finance."
         />
-
         <motion.div
-          variants={staggerFast}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-60px" }}
-          className="mb-12 grid gap-10 md:mb-14 md:grid-cols-3 md:gap-14"
+          variants={staggerContainer}
+          initial="hidden" whileInView="visible"
+          viewport={{ once: true, margin: "-80px" }}
+          className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
         >
-          <motion.div variants={fadeInUp}>
-            <h3 className="mb-4 text-xl font-bold text-primary md:text-2xl">01. Decode</h3>
-            <p className="leading-relaxed text-muted-foreground">
-              We break down the Budget Policy Statement, County Fiscal Strategy Papers,
-              and appropriations bills into clear, accessible narratives.
-            </p>
-          </motion.div>
-
-          <motion.div variants={fadeInUp}>
-            <h3 className="mb-4 text-xl font-bold text-primary md:text-2xl">02. Engage</h3>
-            <p className="leading-relaxed text-muted-foreground">
-              Through campus forums, barazas, and digital platforms, we create spaces
-              for citizens to participate in budget-making processes.
-            </p>
-          </motion.div>
-
-          <motion.div variants={fadeInUp}>
-            <h3 className="mb-4 text-xl font-bold text-primary md:text-2xl">03. Track</h3>
-            <p className="leading-relaxed text-muted-foreground">
-              We monitor budget execution, flag discrepancies, and equip citizens
-              with tools to demand accountability from their representatives.
-            </p>
-          </motion.div>
+          {services.map((service) => {
+            const Icon = service.icon;
+            return (
+              <motion.div
+                key={service.title}
+                variants={fadeInUp}
+                className="group relative rounded-2xl border border-border/30 bg-card p-6 transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
+              >
+                <div className="mb-4 flex size-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                  <Icon className="size-6" />
+                </div>
+                <h3 className="mb-2 text-lg font-bold text-foreground">{service.title}</h3>
+                <p className="text-sm leading-relaxed text-foreground/60">{service.description}</p>
+              </motion.div>
+            );
+          })}
         </motion.div>
-
         <motion.div
-          variants={fadeInUp}
-          initial="hidden"
-          whileInView="visible"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="flex flex-col items-center justify-center gap-4 sm:flex-row"
+          transition={{ delay: 0.4, duration: 0.5 }}
+          className="mt-12 text-center"
         >
-          <Link href="/about">
-            <Button
-              size="lg"
-              variant="white"
-              className="gap-2 rounded-full px-10 py-7 text-lg font-bold"
-            >
-              Start Your Journey
-              <ArrowRight className="h-5 w-5" />
-            </Button>
-          </Link>
-          <Link href="/events">
-            <Button
-              size="lg"
-              variant="outline"
-              className="gap-2 rounded-full px-10 py-7 text-lg font-bold"
-            >
-              View All Events
-              <ArrowRight className="h-5 w-5" />
+          <Link href={Routes.BudgetNews}>
+            <Button variant="outline" size="lg" className="gap-2 rounded-full px-8 py-6 text-base font-bold">
+              Explore Our Work <ArrowRight className="size-5" />
             </Button>
           </Link>
         </motion.div>

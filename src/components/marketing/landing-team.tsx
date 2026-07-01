@@ -5,85 +5,28 @@ import { motion } from "motion/react";
 import { team } from "@/constants/team";
 import Image from "next/image";
 import { SectionHeader, SectionShell } from "@/layouts/section-shell";
+import { fadeInUp, staggerContainer } from "@/motion/variants";
 
 export default function LandingTeam() {
   return (
-    <SectionShell
-      spacing="loose"
-      className="overflow-hidden border-t border-border/10 bg-background"
-    >
+    <SectionShell spacing="loose" className="overflow-hidden border-t border-border/10 bg-background">
       <SectionHeader
         eyebrow="Our Team"
-        title={
-          <>
-            Meet the minds behind the{" "}
-            <span className="font-heading italic">story</span>.
-          </>
-        }
-        description="A dedicated group of researchers, storytellers, and tech innovators working together to bring transparency to Kenya's public budgets."
+        title={<>Meet the <span className="font-heading italic text-primary">people</span> behind the story</>}
+        description="Youth leaders, data journalists, and civic technologists driving fiscal transparency in Kenya."
       />
-
-      <div className="hidden gap-x-8 gap-y-16 md:grid md:grid-cols-2 lg:grid-cols-3">
-        {team.map((member, i) => (
-          <motion.div
-            key={member.name}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.7, delay: i * 0.1 }}
-            className="group"
-          >
-            <div className="relative mb-6 aspect-[4/5] overflow-hidden rounded-3xl border border-border/40 bg-muted">
-              <Image
-                src={member.image}
-                alt={member.name}
-                fill
-                className="object-cover object-top transition-transform duration-700 group-hover:scale-104"
-                sizes="(max-width: 1024px) 50vw, 33vw"
-              />
+      <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-60px" }} className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {team.slice(0, 8).map((member) => (
+          <motion.div key={member.name} variants={fadeInUp} className="group">
+            <div className="relative mb-4 aspect-[3/4] overflow-hidden rounded-2xl border border-border/30 bg-muted transition-all duration-300 group-hover:border-primary/30 group-hover:shadow-lg group-hover:shadow-primary/5">
+              <Image src={member.image} alt={member.name} fill className="object-cover transition-all duration-500 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             </div>
-            <h3 className="mb-1 text-2xl font-bold tracking-tight">{member.name}</h3>
-            <p className="mb-4 text-xs font-semibold text-primary">
-              {member.role}
-            </p>
-            <p className="text-sm leading-relaxed text-foreground/70">
-              {member.description}
-            </p>
+            <h3 className="text-sm font-bold text-foreground">{member.name}</h3>
+            {member.role && <p className="mt-0.5 text-xs text-foreground/50">{member.role}</p>}
           </motion.div>
         ))}
-      </div>
-
-      <div className="flex w-full flex-col gap-6 md:hidden">
-        {team.map((member, i) => (
-          <motion.div
-            key={member.name}
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.5, delay: i * 0.05 }}
-            className="flex w-full flex-col gap-4 rounded-3xl border border-border bg-card p-5"
-          >
-            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-border/20 bg-muted">
-              <Image
-                src={member.image}
-                alt={member.name}
-                fill
-                className="object-cover object-top"
-                sizes="100vw"
-              />
-            </div>
-            <div>
-              <h3 className="mb-0.5 text-xl font-bold tracking-tight">{member.name}</h3>
-              <p className="mb-2.5 text-xs font-semibold text-primary">
-                {member.role}
-              </p>
-              <p className="text-xs leading-relaxed text-foreground/80">
-                {member.description}
-              </p>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+      </motion.div>
     </SectionShell>
   );
 }
