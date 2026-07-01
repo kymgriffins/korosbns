@@ -20,7 +20,6 @@
   },
   "registries": {
     "@kibo-ui": "https://www.kibo-ui.com/r/{name}.json",
-    "@shadcn-space": "https://shadcnspace.com/r/{name}.json",
-    "@magicui": "https://magicui.design/r/{name}"
+    "@shadcn-space": "https://shadcnspace.com/r/{name}.json"
   }
 }

@@ -84,30 +84,6 @@ const BNSStudioSection = dynamic(
   }
 );
 
-const TweetCardSection = dynamic(
-  () => import("@/components/marketing/tweet-card-client").then((m) => ({ default: m.TweetCardSection })),
-  {
-    ssr: false,
-    loading: () => <div className="h-64 w-full bg-muted animate-pulse" />,
-  }
-);
-
-const OrbitingSocialCircles = dynamic(
-  () => import("@/components/marketing/orbiting-social-circles").then((m) => ({ default: m.OrbitingSocialCircles })),
-  {
-    ssr: false,
-    loading: () => <div className="h-[400px] w-full bg-muted animate-pulse" />,
-  }
-);
-
-const BnsVideoText = dynamic(
-  () => import("@/components/marketing/bns-video-text").then((m) => ({ default: m.BnsVideoText })),
-  {
-    ssr: false,
-    loading: () => <div className="h-[300px] w-full bg-muted animate-pulse" />,
-  }
-);
-
 const NewsletterPopup = dynamic(
   () => import("@/components/marketing/newsletter-popup"),
   { ssr: false }
@@ -127,9 +103,6 @@ export default function PremiumLandingClient() {
       <WhatWeDoSection />
       <AlertsSimulator />
       <BNSStudioSection />
-      <TweetCardSection />
-      <OrbitingSocialCircles />
-      <BnsVideoText />
       <NewsletterPopup />
     </>
   );

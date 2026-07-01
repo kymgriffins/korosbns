@@ -209,9 +209,6 @@ importers:
       react-resizable-panels:
         specifier: ^4.10.0
         version: 4.10.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      react-tweet:
-        specifier: ^3.3.1
-        version: 3.3.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react-wrap-balancer:
         specifier: ^1.1.1
         version: 1.1.1(react@19.2.7)
@@ -4592,12 +4589,6 @@ packages:
       '@types/react':
         optional: true
 
-  react-tweet@3.3.1:
-    resolution: {integrity: sha512-0Gj1YgBTe1K85NBMoWBlUc17Rdc67gIJLlacrVgj+3jWIoXpFfxPdZ1U5OnWkkF9zxhphqs2pY1i//JBfP3Qog==}
-    peerDependencies:
-      react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
-
   react-wrap-balancer@1.1.1:
     resolution: {integrity: sha512-AB+l7FPRWl6uZ28VcJ8skkwLn2+UC62bjiw8tQUrZPlEWDVnR9MG0lghyn7EyxuJSsFEpht4G+yh2WikEqQ/5Q==}
     peerDependencies:
@@ -4879,11 +4870,6 @@ packages:
   supports-color@8.1.1:
     resolution: {integrity: sha512-MpUEN2OodtUzxvKQl72cUF7RQ5EiHsGvSsVG0ia9c5RbWGL2CI4C7EpPS8UTBIplnlzZiNuV56w+FuNxy3ty2Q==}
     engines: {node: '>=10'}
-
-  swr@2.4.2:
-    resolution: {integrity: sha512-ej644Y2bvkIajfR32KGeSSdBXQW+ScjGjkybZgSE7kFpk9eGnV44XY9FJylXi+W75pavSX1PVNB57W5EbhGIYw==}
-    peerDependencies:
-      react: ^16.11.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   symbol-tree@3.2.4:
     resolution: {integrity: sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==}
@@ -9778,14 +9764,6 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.2.17
 
-  react-tweet@3.3.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
-    dependencies:
-      '@swc/helpers': 0.5.23
-      clsx: 2.1.1
-      react: 19.2.7
-      react-dom: 19.2.7(react@19.2.7)
-      swr: 2.4.2(react@19.2.7)
-
   react-wrap-balancer@1.1.1(react@19.2.7):
     dependencies:
       react: 19.2.7
@@ -10215,12 +10193,6 @@ snapshots:
   supports-color@8.1.1:
     dependencies:
       has-flag: 4.0.0
-
-  swr@2.4.2(react@19.2.7):
-    dependencies:
-      dequal: 2.0.3
-      react: 19.2.7
-      use-sync-external-store: 1.6.0(react@19.2.7)
 
   symbol-tree@3.2.4: {}
 
