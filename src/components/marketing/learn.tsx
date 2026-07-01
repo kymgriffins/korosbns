@@ -29,8 +29,8 @@ import Wrapper from "../global/wrapper";
 import { Button } from "@/ui/button";
 
 import { resolveAppUrl } from "@/lib/api-url";
+import { useAuth } from "@/contexts/auth-context";
 import {
-  hasSession,
   type SurveyDetailApi,
   type SurveyQuestionApi,
 } from "@/lib/api-client";
@@ -285,6 +285,7 @@ export default function Learn() {
   const containerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { isLoggedIn } = useAuth();
   const [appState, setAppState] = useState<AppState>("hub");
   const [selectedStoryId, setSelectedStoryId] = useState<string>("");
   const [articleIndex, setArticleIndex] = useState(0);
@@ -621,7 +622,7 @@ export default function Learn() {
       setQuizAnswer(null);
       setShowFeedback(false);
     } else {
-      if (activeTriviaId && hasSession()) {
+      if (activeTriviaId && isLoggedIn) {
         submitTriviaAttemptMutation.mutate({
           id: activeTriviaId,
           answers: quizAnswersByQuestion,

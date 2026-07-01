@@ -200,67 +200,27 @@ type RequestConfig = RequestInit & {
   _retry?: boolean;
 };
 
-/**
- * Check whether the user has an active session by reading the non-HttpOnly
- * ``bns_has_session`` marker cookie. This is used for fast client-side
- * checks (e.g. showing/hiding login-required UI) without making an API call.
- *
- * **Do not** use this for security decisions — always rely on a successful
- * ``GET /users/me/`` response for actual auth validation.
- */
-export function hasSession(): boolean {
-  if (typeof document === "undefined") return false;
-  return document.cookie.split("; ").some((c) => c.startsWith("bns_has_session=true"));
-}
-
-/** Dispatched after login/logout to sync auth state across tabs. */
-function dispatchAuthChanged(): void {
-  if (typeof window === "undefined" || typeof window.dispatchEvent !== "function") return;
-  try {
-    window.dispatchEvent(new CustomEvent("bns-auth-changed"));
-  } catch {
-    // Non-browser environment (jsdom, SSR) — ignore.
-  }
-}
-
-export { dispatchAuthChanged };
-
-/**
- * @deprecated Use `hasSession()` instead. Kept as a no-op for backward
- * compatibility during migration — callers will not break.
- */
 export function getAccessToken(): string | null {
   return null;
 }
 
-/**
- * @deprecated Refresh token is now in an HttpOnly cookie. No-op kept for
- * backward compatibility during migration.
- */
 export function getRefreshToken(): string | null {
   return null;
 }
 
-/**
- * @deprecated Tokens are managed by the server via HttpOnly cookies. No-op.
- */
 export function setAuthTokens(_access: string, _refresh?: string): void {
-  dispatchAuthChanged();
+  // Tokens are managed server-side via Set-Cookie headers.
 }
 
-/**
- * @deprecated Tokens are managed by the server via HttpOnly cookies. No-op.
- */
 export function clearAuthTokens(): void {
-  dispatchAuthChanged();
+  // Tokens are HttpOnly cookies — can't clear them from JS.
 }
 
 /**
- * @deprecated Use `hasSession()` for fast checks or `GET /users/me/` for
- * authoritative validation.
+ * @deprecated Use isLoggedIn from useAuth() instead.
  */
 export function isAuthenticated(): boolean {
-  return hasSession();
+  return false;
 }
 
 /**

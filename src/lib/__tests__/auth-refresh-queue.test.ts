@@ -4,12 +4,6 @@ import { apiFetch, clearAuthTokens } from "@/lib/api-client";
 const mockFetch = vi.fn();
 vi.stubGlobal("fetch", mockFetch);
 
-// Set document.cookie for hasSession() checks
-Object.defineProperty(document, "cookie", {
-  writable: true,
-  value: "",
-});
-
 // buildApiUrl resolves to /api/v1/{path} when API_BASE_URL is "" (browser default)
 const REFRESH_PATH = "/api/v1/auth/token/refresh/";
 const USER_ME_PATH = "/api/v1/users/me/";
@@ -17,12 +11,10 @@ const USER_ME_PATH = "/api/v1/users/me/";
 describe("apiFetch — concurrent token refresh queuing", () => {
   beforeEach(() => {
     mockFetch.mockReset();
-    document.cookie = "bns_has_session=true; path=/";
     clearAuthTokens();
   });
 
   afterEach(() => {
-    document.cookie = "bns_has_session=; path=/; max-age=0";
     clearAuthTokens();
   });
 

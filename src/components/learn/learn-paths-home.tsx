@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { StageDetailDrawer } from "./stage-detail-drawer";
 import { LearnDashboardView } from "./learn-dashboard-view";
+import { SignUpCta } from "@/components/ui/sign-up-cta";
 import { LearnModulesView } from "./learn-modules-view";
 import { LearnDocumentsView } from "./learn-documents-view";
 import { ProfileView } from "./profile-view";
@@ -426,6 +427,13 @@ export function LearnPathsHome() {
               </motion.div>
             )}
           </AnimatePresence>
+
+          <div className="mt-6">
+            <SignUpCta
+              feature="Quizzes & progress tracking"
+              description="Save your quiz scores, track your learning progress, and unlock personalized content recommendations."
+            />
+          </div>
         </div>
       )}
     </div>

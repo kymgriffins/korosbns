@@ -1,12 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import {
   getAccessToken,
   getRefreshToken,
   setAuthTokens,
   clearAuthTokens,
-  isAuthenticated,
-  getTokenStorageMode,
-  hasSession,
   citizenApi,
 } from "@/lib/api-client";
 
@@ -29,39 +26,6 @@ describe("setAuthTokens / clearAuthTokens (deprecated)", () => {
 
   it("clearAuthTokens is a no-op but does not throw", () => {
     expect(() => clearAuthTokens()).not.toThrow();
-  });
-});
-
-describe("isAuthenticated / hasSession", () => {
-  beforeEach(() => {
-    // Reset document.cookie mock
-    Object.defineProperty(document, "cookie", {
-      writable: true,
-      value: "",
-    });
-  });
-
-  it("returns false when no session marker cookie", () => {
-    document.cookie = "";
-    expect(hasSession()).toBe(false);
-    expect(isAuthenticated()).toBe(false);
-  });
-
-  it("returns true when bns_has_session cookie is set", () => {
-    document.cookie = "bns_has_session=true; path=/";
-    expect(hasSession()).toBe(true);
-    expect(isAuthenticated()).toBe(true);
-  });
-
-  it("returns false when bns_has_session is set to false", () => {
-    document.cookie = "bns_has_session=false; path=/";
-    expect(hasSession()).toBe(false);
-  });
-});
-
-describe("getTokenStorageMode (deprecated)", () => {
-  it("always returns hybrid", () => {
-    expect(getTokenStorageMode()).toBe("hybrid");
   });
 });
 

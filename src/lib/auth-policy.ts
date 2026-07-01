@@ -4,10 +4,11 @@
  * DO NOT introduce alternate auth models, duplicate route lists, or ad-hoc guards.
  * All middleware, client guards, and post-login redirects MUST import from here.
  *
- * Model: HYBRID (Clerk-style session + public browse)
- * - Anonymous users may browse the Learning Hub, forum (read), and public profiles.
- * - Authenticated session is required for account settings, quests, and mutating APIs.
- * - `isLoggedIn` (validated /users/me/) gates privileged UI actions, not public pages.
+ * Model: PUBLIC (anonymous browse + real auth for admin/gated features)
+ * - Anonymous users may browse all citizen-level content (learn, task, etc.).
+ * - Authenticated session is required for admin, account settings, quests,
+ *   and mutating APIs.
+ * - `isLoggedIn` (validated by GET /users/me/) gates privileged UI actions.
  *
  * @see docs/frontend-auth.md
  */
@@ -64,9 +65,6 @@ export const AUTH_PAGE_PREFIXES = [
 
 export const ACCESS_TOKEN_COOKIE = "bns_at";
 export const REFRESH_TOKEN_COOKIE = "bns_rt";
-export const SESSION_MARKER = "bns_has_session";
-/** @deprecated Use SESSION_MARKER for fast-path checks or ACCESS_TOKEN_COOKIE for cookie name. */
-export const SESSION_COOKIE = SESSION_MARKER;
 
 export function pathMatchesPrefix(pathname: string, prefix: string): boolean {
   return pathname === prefix || pathname.startsWith(`${prefix}/`);
