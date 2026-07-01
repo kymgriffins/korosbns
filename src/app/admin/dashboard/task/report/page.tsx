@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { format } from "date-fns";
 import {
   Loader2,
   AlertCircle,
@@ -34,17 +33,6 @@ const KPI_ICONS: Record<string, { icon: typeof ListTodo; bg: string; color: stri
   audited: { icon: TrendingUp, bg: "bg-purple-500/10", color: "text-purple-600" },
   published: { icon: CheckCircle2, bg: "bg-emerald-500/10", color: "text-emerald-600" },
 };
-
-function safeFormat(date: string | Date | undefined | null, fmt: string, fallback = ""): string {
-  if (!date) return fallback;
-  try {
-    const d = new Date(date);
-    if (isNaN(d.getTime())) return fallback;
-    return format(d, fmt);
-  } catch {
-    return fallback;
-  }
-}
 
 export default function TaskReportPage() {
   usePageView();

@@ -48,7 +48,6 @@ import {
 import { usePageView } from "@/hooks/use-page-view";
 import { TaskCard } from "@/components/tasks/task-card";
 import { taskData } from "@/data/tasks";
-import { taskApi } from "@/lib/task-api";
 import { useAuth } from "@/contexts/auth-context";
 import type { Task, TaskStatus, TaskColumn } from "@/types/tasks";
 
@@ -154,11 +153,11 @@ export default function AdminTaskPage() {
 
     try {
       if (overColumn.id === "published") {
-        await taskApi.publish(activeId);
+        await taskData.tasks.publish(activeId);
       } else if (overColumn.id === "audited") {
-        await taskApi.audit(activeId, "approved", "Moved to in progress");
+        await taskData.tasks.audit(activeId, "approved", "Moved to in progress");
       } else {
-        await taskApi.update(activeId, { status: "draft" });
+        await taskData.tasks.update(activeId, { status: "draft" });
       }
       toast.success(`Moved to ${overColumn.title}`);
     } catch {
@@ -173,7 +172,7 @@ export default function AdminTaskPage() {
       return;
     }
     try {
-      await taskApi.delete(id);
+      await taskData.tasks.delete(id);
       setTasks((prev) => prev.filter((t) => t.id !== id));
       toast.success("Task deleted");
     } catch {

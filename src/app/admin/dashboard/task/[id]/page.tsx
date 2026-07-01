@@ -289,6 +289,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
             setLoading(true);
             fetchTask();
           }}
+          redirectPath={getFullUrl(routeBase, "/dashboard/task")}
         />
       </div>
     );
