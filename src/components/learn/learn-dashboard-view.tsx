@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion, type Variants } from "motion/react";
 import {
   Flame, Award, BookOpen, Trophy, Zap, ArrowRight,
-  ChevronRight, Play, Sparkles, Crown, CircleUser, Newspaper,
+  ChevronRight, Play, Sparkles, Crown, CircleUser,
   MessageSquare, ListChecks,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -242,52 +242,6 @@ export function LearnDashboardView({
             </div>
           </motion.div>
 
-          {/* Modules grid */}
-          <motion.div variants={itemVars} className="space-y-2">
-            <div className="flex items-center justify-between px-0.5">
-              <h2 className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
-                <Newspaper className="size-3 text-primary" /> Learning Modules
-              </h2>
-              <button
-                onClick={onNavigateToCurriculum}
-                className="rounded text-xs font-semibold text-primary transition-colors hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                View all
-              </button>
-            </div>
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-              {stages.slice(0, 6).map((stage) => (
-                <button
-                  key={stage.slug}
-                  onClick={() => router.push(`/learn/modules/${stage.slug}`)}
-                  className="group flex w-full cursor-pointer flex-col overflow-hidden rounded-xl border bg-card text-left transition-all hover:border-primary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  <div className="relative aspect-video overflow-hidden bg-muted">
-                    {stage.image_url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={stage.image_url} alt="" className="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/10 to-muted text-2xl">{stage.badge}</div>
-                    )}
-                  </div>
-                  <div className="space-y-1 p-2.5">
-                    <div className="flex items-center justify-between">
-                      <span className="inline-flex rounded px-1.5 py-0.5 text-[9px] font-semibold text-muted-foreground bg-muted">
-                        {stage.badgeName || stage.badge}
-                      </span>
-                      {stage.steps?.length ? (
-                        <span className="inline-flex items-center gap-1 text-[9px] font-semibold text-muted-foreground">
-                          <BookOpen className="size-2.5" /> {stage.steps.length}
-                        </span>
-                      ) : null}
-                    </div>
-                    <h3 className="line-clamp-2 text-xs font-bold leading-tight transition-colors group-hover:text-primary">{stage.title}</h3>
-                    <p className="line-clamp-2 text-[10px] leading-relaxed text-muted-foreground">{stage.description}</p>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </motion.div>
         </div>
 
         {/* ===== RIGHT ===== */}

@@ -19,7 +19,8 @@ const MarketingLayout = ({
     pathname === "/contact" ||
     pathname.startsWith("/surveys") ||
     pathname.startsWith("/events") ||
-    pathname.startsWith("/budgetnews");
+    pathname.startsWith("/budgetnews") ||
+    pathname.startsWith("/bns-project");
   const showMarketingFooter = !isAppPage;
 
   const showMarketingChrome = !isLearnApp;

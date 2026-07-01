@@ -134,7 +134,7 @@ export default function EventsPage() {
 
         {/* Events Grid */}
         {!isLoading && !error && (
-          <div className="grid gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {filteredEvents.map((event, idx) => {
               const status = getEventStatus(event.starts_at);
               const { day, month, year } = parseDateParts(event.starts_at);
@@ -145,20 +145,21 @@ export default function EventsPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: idx * 0.05 }}
+                  className="flex"
                 >
                   <Link
                     href={Routes.Event(event.id)}
-                    className="group relative block overflow-hidden rounded-2xl border border-border/80 bg-card transition-all hover:border-primary/50"
+                    className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/80 bg-card transition-all hover:border-primary/50 w-full"
                   >
                     {event.image_url ? (
-                      <div>
+                      <>
                         {/* Cover Image */}
-                        <div className="relative w-full h-48 sm:h-56 overflow-hidden bg-muted border-b border-border/40">
+                        <div className="relative w-full h-48 sm:h-52 overflow-hidden bg-muted border-b border-border/40 shrink-0">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={event.image_url}
                             alt={event.title}
-                            className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
+                            className="w-full h-full object-cover object-center sm:object-top group-hover:scale-103 transition-transform duration-500"
                           />
                           {/* Floated Date Badge */}
                           {day && month && (
@@ -170,7 +171,7 @@ export default function EventsPage() {
                         </div>
 
                         {/* Content */}
-                        <div className="p-6">
+                        <div className="p-6 flex flex-col flex-1">
                           <div className="flex flex-wrap items-center gap-2 mb-2">
                             <Badge
                               variant={status === "Upcoming" ? "default" : "secondary"}
@@ -178,10 +179,15 @@ export default function EventsPage() {
                             >
                               {status}
                             </Badge>
-                            {event.sponsors && event.sponsors.length > 0 && (
+                            {event.sponsors && event.sponsors.length > 0 ? (
                               <Badge variant="outline" className="text-[10px] font-semibold border-primary/20 text-primary flex items-center gap-1">
                                 <Building2 className="size-3" />
                                 <span>Sponsored</span>
+                              </Badge>
+                            ) : (
+                              <Badge variant="outline" className="text-[10px] font-semibold border-primary/20 text-primary/70 flex items-center gap-1">
+                                <Building2 className="size-3" />
+                                <span>BNS</span>
                               </Badge>
                             )}
                           </div>
@@ -205,26 +211,32 @@ export default function EventsPage() {
                             )}
                           </div>
 
-                          <p className="mt-4 text-muted-foreground line-clamp-2 leading-relaxed">
+                          <p className="mt-4 text-muted-foreground line-clamp-2 leading-relaxed flex-1">
                             {event.snippet}
                           </p>
 
-                          {event.sponsors && event.sponsors.length > 0 && (
-                            <div className="mt-4 pt-4 border-t border-border/40 flex items-center gap-2">
-                              <span className="text-xs text-muted-foreground">Partners:</span>
-                              <div className="flex flex-wrap gap-2">
-                                {event.sponsors.map((s, sIdx) => (
+                          <div className="mt-4 pt-4 border-t border-border/40 flex items-center gap-2">
+                            <span className="text-xs text-muted-foreground">
+                              {event.sponsors && event.sponsors.length > 0 ? "Partners:" : "Organized by:"}
+                            </span>
+                            <div className="flex flex-wrap gap-2">
+                              {event.sponsors && event.sponsors.length > 0 ? (
+                                event.sponsors.map((s, sIdx) => (
                                   <span key={sIdx} className="text-xs font-semibold px-2 py-0.5 rounded bg-muted/60 border border-border/80">
                                     {s.name}
                                   </span>
-                                ))}
-                              </div>
+                                ))
+                              ) : (
+                                <span className="text-xs font-semibold px-2 py-0.5 rounded bg-primary/5 border border-primary/20 text-primary">
+                                  Budget Ndio Story
+                                </span>
+                              )}
                             </div>
-                          )}
+                          </div>
                         </div>
-                      </div>
+                      </>
                     ) : (
-                      <div className="p-6 flex flex-col sm:flex-row gap-6 items-start">
+                      <div className="p-6 flex flex-col sm:flex-row gap-6 items-start flex-1">
                         {/* Date Badge component */}
                         {day && month ? (
                           <div className="flex sm:flex-col items-center justify-center size-16 sm:size-20 shrink-0 rounded-xl bg-primary/10 border border-primary/20 text-primary font-bold">
@@ -239,7 +251,7 @@ export default function EventsPage() {
                         )}
 
                         {/* Content details */}
-                        <div className="flex-1 min-w-0">
+                        <div className="flex-1 min-w-0 flex flex-col">
                           <div className="flex flex-wrap items-center gap-2 mb-2">
                             <Badge
                               variant={status === "Upcoming" ? "default" : "secondary"}
@@ -247,10 +259,15 @@ export default function EventsPage() {
                             >
                               {status}
                             </Badge>
-                            {event.sponsors && event.sponsors.length > 0 && (
+                            {event.sponsors && event.sponsors.length > 0 ? (
                               <Badge variant="outline" className="text-[10px] font-semibold border-primary/20 text-primary flex items-center gap-1">
                                 <Building2 className="size-3" />
                                 <span>Sponsored</span>
+                              </Badge>
+                            ) : (
+                              <Badge variant="outline" className="text-[10px] font-semibold border-primary/20 text-primary/70 flex items-center gap-1">
+                                <Building2 className="size-3" />
+                                <span>BNS</span>
                               </Badge>
                             )}
                           </div>
@@ -274,23 +291,28 @@ export default function EventsPage() {
                             )}
                           </div>
 
-                          <p className="mt-4 text-muted-foreground line-clamp-2 leading-relaxed">
+                          <p className="mt-4 text-muted-foreground line-clamp-2 leading-relaxed flex-1">
                             {event.snippet}
                           </p>
 
-                          {/* Sponsors list indicator */}
-                          {event.sponsors && event.sponsors.length > 0 && (
-                            <div className="mt-4 pt-4 border-t border-border/40 flex items-center gap-2">
-                              <span className="text-xs text-muted-foreground">Partners:</span>
-                              <div className="flex flex-wrap gap-2">
-                                {event.sponsors.map((s, sIdx) => (
+                          <div className="mt-4 pt-4 border-t border-border/40 flex items-center gap-2">
+                            <span className="text-xs text-muted-foreground">
+                              {event.sponsors && event.sponsors.length > 0 ? "Partners:" : "Organized by:"}
+                            </span>
+                            <div className="flex flex-wrap gap-2">
+                              {event.sponsors && event.sponsors.length > 0 ? (
+                                event.sponsors.map((s, sIdx) => (
                                   <span key={sIdx} className="text-xs font-semibold px-2 py-0.5 rounded bg-muted/60 border border-border/80">
                                     {s.name}
                                   </span>
-                                ))}
-                              </div>
+                                ))
+                              ) : (
+                                <span className="text-xs font-semibold px-2 py-0.5 rounded bg-primary/5 border border-primary/20 text-primary">
+                                  Budget Ndio Story
+                                </span>
+                              )}
                             </div>
-                          )}
+                          </div>
                         </div>
                       </div>
                     )}

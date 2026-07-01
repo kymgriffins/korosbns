@@ -96,22 +96,25 @@ const mockStage: CivicModule = {
   credits: "Credits: BNS Team",
   description: "Learn about the foundations of public finance in Kenya under Chapter Twelve of the Constitution.",
   expectations: [
-    { text: "Decode your 5 core budget rights in Kenya." },
+    "Decode your 5 core budget rights in Kenya.",
   ],
   steps: [
     {
       id: "step-1",
       order: 1,
       title: "1. Public Finance Principles",
-      slug: "public-finance-principles",
       youtube_url: "https://youtube.com/watch?v=Ed9lP0-komE",
-      audioUrl: "/audio/stage1_step1.mp3",
+      audio_url: "/audio/stage1_step1.mp3",
       transcript: "Hello citizens, welcome to Budget Ndio Story...",
       text: "The Kenyan Constitution sets the foundational framework for public finance under Chapter Twelve.",
+      takeaways: [],
+      is_completed: false,
+      is_locked: false,
       trivia: [{
+          type: "multiple-choice",
         question: "Which article of the Kenyan Constitution details the principles of public finance?",
         options: ["Article 201", "Article 217", "Article 221", "Article 35"],
-        correct_index: 0,
+        answer: 0,
         explanation: "Article 201 sets out the principles of public finance.",
       }],
     },
@@ -119,20 +122,22 @@ const mockStage: CivicModule = {
       id: "step-2",
       order: 2,
       title: "2. Budget Cycle Overview",
-      slug: "budget-cycle-overview",
       youtube_url: "https://youtube.com/watch?v=abc123",
-      audioUrl: "/audio/stage1_step2.mp3",
+      audio_url: "/audio/stage1_step2.mp3",
       transcript: "Step 2 transcript...",
       text: "The budget cycle has four main phases.",
+      takeaways: [],
+      is_completed: false,
+      is_locked: false,
       trivia: [{
+          type: "multiple-choice",
         question: "How many phases are in the budget cycle?",
         options: ["Three", "Four", "Five", "Six"],
-        correct_index: 1,
+        answer: 1,
         explanation: "The budget cycle has four phases.",
       }],
     },
   ],
-  stageProgress: [1],
 };
 
 const mockProfile = {
@@ -155,7 +160,7 @@ Object.defineProperty(globalThis, "localStorage", { value: mockLocalStorage });
 
 describe("StageDetailDrawer", () => {
   let mockOnClose: () => void;
-  let mockOnUpdateProfile: (p: typeof mockProfile) => void;
+  let mockOnUpdateProfile: (p: Record<string, unknown>) => void;
 
   beforeEach(() => {
     mockOnClose = vi.fn();
@@ -217,10 +222,11 @@ describe("StageDetailDrawer", () => {
           ...mockStage,
           steps: [{
             ...mockStage.steps[0],
-            trivia: [{
+              trivia: [{
+                type: "multiple-choice",
               question: "Test?",
               options: ["A", "B"],
-              correct_index: 0,
+              answer: 0,
               explanation: "E",
             }],
           }],
