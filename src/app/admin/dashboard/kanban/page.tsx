@@ -111,7 +111,7 @@ export default function Page() {
       <div className="flex h-[calc(100dvh-var(--dashboard-header-height))] items-center justify-center">
         <div className="text-center">
           <p className="text-muted-foreground mb-4">{error}</p>
-          <button onClick={fetchTasks} className="text-sm text-primary underline">
+          <button onClick={() => void fetchTasks()} className="text-sm text-primary underline">
             Retry
           </button>
         </div>

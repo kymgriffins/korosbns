@@ -291,7 +291,7 @@ export default function AdminTaskPage() {
       {error && (
         <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
           {error}
-          <Button variant="ghost" size="xs" onClick={fetchTasks} className="ml-3">
+          <Button variant="ghost" size="xs" onClick={() => void fetchTasks()} className="ml-3">
             Retry
           </Button>
         </div>
