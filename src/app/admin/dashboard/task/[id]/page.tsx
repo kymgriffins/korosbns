@@ -1,12 +1,28 @@
 "use client";
 
-import { use, useCallback, useEffect, useRef, useState } from "react";
+import { use, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { format } from "date-fns";
 import {
-  Loader2, Calendar, User, Clock, Pencil, Trash2, FileText, ImageIcon,
-  CheckCircle2, Circle, Download, Plus, Check, X, ListChecks, ScrollText, History,
+  Loader2,
+  Calendar,
+  User,
+  Clock,
+  Pencil,
+  Trash2,
+  FileText,
+  ImageIcon,
+  CheckCircle2,
+  Circle,
+  Download,
+  Plus,
+  Check,
+  X,
+  ListChecks,
+  ScrollText,
+  History,
+  ArrowLeft,
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -19,7 +35,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-
+import { Separator } from "@/components/ui/separator";
 import {
   Dialog,
   DialogContent,
@@ -40,7 +56,7 @@ import type { TaskDetail, TaskAttachment } from "@/types/tasks";
 import type { ChecklistItemApi } from "@/types/notes";
 
 import { useRouteBase, getFullUrl } from "@/lib/route-base";
-import { AdminTaskBreadcrumbs } from "@/components/admin/admin-task-breadcrumb";
+import { SetBreadcrumbTitle } from "@/app/admin/dashboard/_components/breadcrumb/breadcrumb-title-context";
 
 const STATUS_STYLES: Record<string, { bg: string; label: string }> = {
   draft: { bg: "bg-amber-500/10 text-amber-600 border-amber-500/30", label: "Draft" },
@@ -59,11 +75,117 @@ function safeFormat(date: string | Date | undefined | null, fmt: string, fallbac
   }
 }
 
+function sortChecklist(items: ChecklistItemApi[]) {
+  return [...items].sort((a, b) => a.sort_order - b.sort_order || a.created_at.localeCompare(b.created_at));
+}
+
+function ChecklistRow({
+  item,
+  toggling,
+  saving,
+  editing,
+  editingText,
+  onToggle,
+  onEditStart,
+  onEditCancel,
+  onEditSave,
+  onEditTextChange,
+  onDelete,
+}: {
+  item: ChecklistItemApi;
+  toggling: boolean;
+  saving: boolean;
+  editing: boolean;
+  editingText: string;
+  onToggle: () => void;
+  onEditStart: () => void;
+  onEditCancel: () => void;
+  onEditSave: () => void;
+  onEditTextChange: (value: string) => void;
+  onDelete: () => void;
+}) {
+  const completed = item.is_completed;
+
+  return (
+    <div
+      className={`group flex items-center gap-3 rounded-lg border px-3 py-2.5 transition-colors ${
+        completed
+          ? "border-border/30 bg-muted/20"
+          : "border-border/50 bg-card hover:border-border hover:bg-muted/10"
+      }`}
+    >
+      <button
+        type="button"
+        onClick={onToggle}
+        disabled={toggling}
+        className="shrink-0 rounded-full p-0.5 transition-colors hover:bg-muted"
+        aria-label={completed ? "Mark incomplete" : "Mark complete"}
+      >
+        {toggling ? (
+          <Loader2 className="size-4 animate-spin text-muted-foreground" />
+        ) : completed ? (
+          <CheckCircle2 className="size-4 text-emerald-600" />
+        ) : (
+          <Circle className="size-4 text-muted-foreground group-hover:text-primary" />
+        )}
+      </button>
+
+      {editing ? (
+        <div className="flex min-w-0 flex-1 items-center gap-1">
+          <Input
+            value={editingText}
+            onChange={(e) => onEditTextChange(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") onEditSave();
+              if (e.key === "Escape") onEditCancel();
+            }}
+            className="h-8 text-sm"
+            autoFocus
+          />
+          <Button type="button" size="icon" variant="ghost" className="size-7 shrink-0" onClick={onEditSave} disabled={saving}>
+            {saving ? <Loader2 className="size-3.5 animate-spin" /> : <Check className="size-3.5" />}
+          </Button>
+          <Button type="button" size="icon" variant="ghost" className="size-7 shrink-0" onClick={onEditCancel}>
+            <X className="size-3.5" />
+          </Button>
+        </div>
+      ) : (
+        <>
+          <span
+            className={`min-w-0 flex-1 text-sm leading-snug ${
+              completed ? "text-muted-foreground/70 line-through decoration-muted-foreground/50" : "text-foreground"
+            }`}
+          >
+            {item.text}
+          </span>
+          <div className="flex shrink-0 items-center gap-0.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-within:opacity-100 transition-opacity">
+            <Button type="button" size="icon" variant="ghost" className="size-7" onClick={onEditStart} title="Edit">
+              <Pencil className="size-3.5" />
+            </Button>
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              className="size-7 text-muted-foreground hover:text-destructive"
+              onClick={onDelete}
+              disabled={saving}
+              title="Delete"
+            >
+              {saving ? <Loader2 className="size-3.5 animate-spin" /> : <Trash2 className="size-3.5" />}
+            </Button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 export default function TaskDetailPage({ params }: { params: Promise<{ id: string }> }) {
   usePageView();
   const { id } = use(params);
   const router = useRouter();
   const routeBase = useRouteBase();
+  const taskListHref = getFullUrl(routeBase, "/dashboard/task");
   const { isLoggedIn } = useAuth();
 
   const exportRef = useRef<HTMLDivElement>(null);
@@ -84,6 +206,16 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
   const [addingItem, setAddingItem] = useState(false);
   const [attachments, setAttachments] = useState<TaskAttachment[]>([]);
   const [activeTab, setActiveTab] = useState("tasks");
+
+  const pendingItems = useMemo(
+    () => sortChecklist(checklistItems.filter((i) => !i.is_completed)),
+    [checklistItems],
+  );
+  const doneItems = useMemo(
+    () => sortChecklist(checklistItems.filter((i) => i.is_completed)),
+    [checklistItems],
+  );
+  const completedCount = doneItems.length;
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -149,7 +281,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
     try {
       await taskApi.delete(id);
       toast.success("Task deleted");
-      router.push(getFullUrl(routeBase, "/dashboard/task"));
+      router.push(taskListHref);
     } catch {
       toast.error("Failed to delete task");
     } finally {
@@ -159,13 +291,18 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
   }
 
   async function handleToggleChecklist(itemId: string, currentCompleted: boolean) {
+    const nextCompleted = !currentCompleted;
     setTogglingItem(itemId);
+    setChecklistItems((prev) =>
+      prev.map((item) => (item.id === itemId ? { ...item, is_completed: nextCompleted } : item)),
+    );
     try {
-      const updated = await taskApi.updateChecklistItem(id, itemId, {
-        is_completed: !currentCompleted,
-      });
+      const updated = await taskApi.updateChecklistItem(id, itemId, { is_completed: nextCompleted });
       setChecklistItems((prev) => prev.map((item) => (item.id === itemId ? updated : item)));
     } catch (err) {
+      setChecklistItems((prev) =>
+        prev.map((item) => (item.id === itemId ? { ...item, is_completed: currentCompleted } : item)),
+      );
       toast.error(err instanceof Error ? err.message : "Failed to update checklist item");
     } finally {
       setTogglingItem(null);
@@ -204,6 +341,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
       await taskApi.deleteChecklistItem(id, itemId);
       setChecklistItems((prev) => prev.filter((item) => item.id !== itemId));
       if (editingItemId === itemId) handleEditCancel();
+      toast.success("Checklist item removed");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to delete checklist item");
     } finally {
@@ -228,7 +366,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
 
   if (!isLoggedIn) {
     return (
-      <div className="mx-auto flex min-h-[60vh] max-w-md items-center justify-center p-6">
+      <div className="mx-auto flex min-h-[50vh] max-w-md items-center justify-center">
         <Card className="w-full text-center">
           <CardContent className="py-12">
             <h2 className="mb-2 text-lg font-semibold">Authentication Required</h2>
@@ -244,24 +382,22 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-4xl space-y-6 p-6">
-        <AdminTaskBreadcrumbs />
-        <Skeleton className="h-8 w-48" />
-        <Skeleton className="h-4 w-72" />
-        <Skeleton className="h-64 w-full rounded-xl" />
+      <div className="mx-auto max-w-4xl space-y-6">
+        <Skeleton className="h-8 w-64" />
+        <Skeleton className="h-4 w-96" />
+        <Skeleton className="h-72 w-full rounded-xl" />
       </div>
     );
   }
 
   if (error || !task) {
     return (
-      <div className="mx-auto max-w-4xl space-y-6 p-6">
-        <AdminTaskBreadcrumbs />
+      <div className="mx-auto max-w-4xl">
         <Card>
           <CardContent className="flex flex-col items-center gap-4 py-12">
             <p className="text-destructive">{error || "Task not found"}</p>
             <Button variant="outline" asChild>
-              <Link href={getFullUrl(routeBase, "/dashboard/task")}>Back to Tasks</Link>
+              <Link href={taskListHref}>Back to Tasks</Link>
             </Button>
           </CardContent>
         </Card>
@@ -271,8 +407,12 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
 
   if (editing) {
     return (
-      <div className="mx-auto max-w-4xl space-y-6">
-        <AdminTaskBreadcrumbs />
+      <div className="mx-auto max-w-4xl space-y-4">
+        <SetBreadcrumbTitle title={`Edit: ${task.title}`} />
+        <Button variant="ghost" size="sm" onClick={() => setEditing(false)} className="-ml-2 w-fit">
+          <ArrowLeft className="mr-1 size-4" />
+          Back to task
+        </Button>
         <TaskForm
           mode="edit"
           task={task}
@@ -288,409 +428,341 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
   }
 
   const statusStyle = STATUS_STYLES[task.status] ?? STATUS_STYLES.draft;
-  const completedCount = checklistItems.filter((i) => i.is_completed).length;
+  const checklistProgress =
+    checklistItems.length > 0 ? Math.round((completedCount / checklistItems.length) * 100) : null;
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
-      <AdminTaskBreadcrumbs />
+      <SetBreadcrumbTitle title={task.title} />
 
       {/* Header */}
-      <Card>
-        <CardHeader className="flex flex-row items-start justify-between gap-4">
-          <div className="space-y-1 flex-1 min-w-0">
-            <CardTitle className="text-2xl">{task.title}</CardTitle>
-            {task.week_label && (
-              <CardDescription>{task.week_label}</CardDescription>
-            )}
-          </div>
-          <div className="flex items-center gap-2 shrink-0 flex-wrap">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0 space-y-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Badge className={statusStyle.bg} variant="outline">
               {statusStyle.label}
             </Badge>
-
-            {/* Export dropdown */}
-            <div className="relative" ref={exportRef}>
-              <Button variant="outline" size="sm" onClick={() => setExportOpen(!exportOpen)}>
-                <Download className="mr-1 size-3.5" />
-                Export
-              </Button>
-              {exportOpen && (
-                <div className="absolute right-0 z-50 mt-1 w-52 rounded-lg border border-border/50 bg-popover p-1 shadow-lg">
-                  <a
-                    href={`${process.env.NEXT_PUBLIC_API_URL || ""}/notes/${id}/download_markdown/`}
-                    className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
-                    download
-                    onClick={() => setExportOpen(false)}
-                  >
-                    <FileText className="size-4" />
-                    Download Markdown
-                  </a>
-                  <a
-                    href={`${process.env.NEXT_PUBLIC_API_URL || ""}/notes/${id}/download_pdf/`}
-                    className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
-                    download
-                    onClick={() => setExportOpen(false)}
-                  >
-                    <FileText className="size-4" />
-                    Download PDF
-                  </a>
-                  <button
-                    type="button"
-                    onClick={handleExportCalendar}
-                    disabled={exportingCalendar}
-                    className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent disabled:opacity-50"
-                  >
-                    {exportingCalendar ? (
-                      <Loader2 className="size-4 animate-spin" />
-                    ) : (
-                      <Calendar className="size-4" />
-                    )}
-                    Export to Google Calendar
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {task.status !== "published" && (
-              <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
-                <Pencil className="mr-1 size-3.5" />
-                Edit
-              </Button>
+            {task.week_label && (
+              <span className="text-xs text-muted-foreground">{task.week_label}</span>
             )}
-
-            <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-              <DialogTrigger asChild>
-                <Button variant="destructive" size="sm">
-                  <Trash2 className="mr-1 size-3.5" />
-                  Delete
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Delete Task</DialogTitle>
-                  <DialogDescription>
-                    Are you sure you want to delete &ldquo;{task.title}&rdquo;? This action cannot be undone.
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                  <Button variant="outline" onClick={() => setDeleteOpen(false)}>Cancel</Button>
-                  <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
-                    {deleting && <Loader2 className="mr-2 size-4 animate-spin" />}
-                    {deleting ? "Deleting..." : "Delete"}
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
           </div>
-        </CardHeader>
-      </Card>
+          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{task.title}</h1>
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5">
+              <User className="size-3.5" />
+              {task.author_name}
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <Calendar className="size-3.5" />
+              {safeFormat(task.created_at, "MMM d, yyyy")}
+            </span>
+            {task.due_date && (
+              <span className="inline-flex items-center gap-1.5">
+                <Clock className="size-3.5" />
+                Due {safeFormat(task.due_date, "MMM d, yyyy")}
+              </span>
+            )}
+          </div>
+        </div>
 
-      {/* Tabs at the top */}
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <div className="relative" ref={exportRef}>
+            <Button variant="outline" size="sm" onClick={() => setExportOpen(!exportOpen)}>
+              <Download className="mr-1 size-3.5" />
+              Export
+            </Button>
+            {exportOpen && (
+              <div className="absolute right-0 z-50 mt-1 w-52 rounded-lg border border-border/50 bg-popover p-1 shadow-lg">
+                <a
+                  href={`${process.env.NEXT_PUBLIC_API_URL || ""}/notes/${id}/download_markdown/`}
+                  className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
+                  download
+                  onClick={() => setExportOpen(false)}
+                >
+                  <FileText className="size-4" />
+                  Download Markdown
+                </a>
+                <a
+                  href={`${process.env.NEXT_PUBLIC_API_URL || ""}/notes/${id}/download_pdf/`}
+                  className="flex items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent"
+                  download
+                  onClick={() => setExportOpen(false)}
+                >
+                  <FileText className="size-4" />
+                  Download PDF
+                </a>
+                <button
+                  type="button"
+                  onClick={handleExportCalendar}
+                  disabled={exportingCalendar}
+                  className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-accent disabled:opacity-50"
+                >
+                  {exportingCalendar ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : (
+                    <Calendar className="size-4" />
+                  )}
+                  Export to Google Calendar
+                </button>
+              </div>
+            )}
+          </div>
+
+          <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
+            <Pencil className="mr-1 size-3.5" />
+            Edit
+          </Button>
+
+          <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+            <DialogTrigger asChild>
+              <Button variant="destructive" size="sm">
+                <Trash2 className="mr-1 size-3.5" />
+                Delete
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Delete task</DialogTitle>
+                <DialogDescription>
+                  Delete &ldquo;{task.title}&rdquo;? This removes the task, checklist, and attachments permanently.
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setDeleteOpen(false)}>
+                  Cancel
+                </Button>
+                <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
+                  {deleting && <Loader2 className="mr-2 size-4 animate-spin" />}
+                  {deleting ? "Deleting…" : "Delete task"}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
+
+      {/* Meta chips */}
+      {(task.assignee || task.assigned_team || task.due_label) && (
+        <div className="flex flex-wrap gap-2">
+          {task.assignee && <Badge variant="secondary">{task.assignee}</Badge>}
+          {task.assigned_team && <Badge variant="outline">{task.assigned_team}</Badge>}
+          {task.due_label && <Badge variant="secondary">{task.due_label}</Badge>}
+        </div>
+      )}
+
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="w-full justify-start rounded-lg border bg-card">
+        <TabsList className="h-auto w-full flex-wrap justify-start gap-1 rounded-lg border bg-muted/30 p-1">
           <TabsTrigger value="tasks" className="gap-1.5">
             <ListChecks className="size-3.5" />
-            Tasks
+            Overview
           </TabsTrigger>
           <TabsTrigger value="notes" className="gap-1.5">
             <ScrollText className="size-3.5" />
             Notes
           </TabsTrigger>
-          {task.attachments && task.attachments.length > 0 && (
-            <TabsTrigger value="files" className="gap-1.5">
-              <ImageIcon className="size-3.5" />
-              Files ({attachments.length})
-            </TabsTrigger>
-          )}
+          <TabsTrigger value="files" className="gap-1.5">
+            <ImageIcon className="size-3.5" />
+            Files ({attachments.length})
+          </TabsTrigger>
           {task.audit_trails && task.audit_trails.length > 0 && (
             <TabsTrigger value="audit" className="gap-1.5">
               <History className="size-3.5" />
-              Audit Trail
+              Audit
             </TabsTrigger>
           )}
         </TabsList>
 
-        {/* ── Tasks Tab ── */}
-        <TabsContent value="tasks" className="mt-4 space-y-6">
-          {/* Meta */}
-          <Card>
-            <CardContent className="p-4 space-y-4">
-              <div className="flex flex-wrap gap-4 text-sm">
-                <div className="flex items-center gap-1.5 text-muted-foreground">
-                  <User className="size-3.5" />
-                  {task.author_name}
-                </div>
-                <div className="flex items-center gap-1.5 text-muted-foreground">
-                  <Calendar className="size-3.5" />
-                  {safeFormat(task.created_at, "MMM d, yyyy")}
-                </div>
-                {task.due_date && (
-                  <div className="flex items-center gap-1.5 text-muted-foreground">
-                    <Clock className="size-3.5" />
-                    Due {safeFormat(task.due_date, "MMM d, yyyy")}
-                  </div>
-                )}
-                {task.assignee && (
-                  <Badge variant="secondary" className="text-xs">{task.assignee}</Badge>
-                )}
-                {task.assigned_team && (
-                  <Badge variant="outline" className="text-xs">{task.assigned_team}</Badge>
-                )}
-                {task.due_label && (
-                  <Badge variant="secondary" className="text-xs">{task.due_label}</Badge>
-                )}
-              </div>
-
-              {task.content && (
-                <div className="space-y-1.5">
-                  <h3 className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
-                    <FileText className="size-4" />
-                    Description
-                  </h3>
-                  <div className="whitespace-pre-wrap text-sm text-muted-foreground">{task.content}</div>
-                </div>
-              )}
-
-              {typeof task.progress === "number" && (
-                <div className="space-y-1">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Progress</span>
-                    <span className="font-medium tabular-nums">{task.progress}%</span>
-                  </div>
-                  <div className="h-2 overflow-hidden rounded-full bg-muted">
-                    <div
-                      className="h-full rounded-full bg-primary transition-all"
-                      style={{ width: `${Math.min(100, task.progress)}%` }}
-                    />
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Checklist */}
-          <Card>
-            <CardContent className="p-4 space-y-3">
-              <h3 className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
-                <CheckCircle2 className="size-4" />
-                Checklist ({completedCount}/{checklistItems.length})
-              </h3>
-              <div className="space-y-1.5">
-                {checklistItems
-                  .sort((a, b) => a.sort_order - b.sort_order)
-                  .map((item) => (
-                    <div
-                      key={item.id}
-                      className="flex items-center gap-2 rounded-lg border border-border/50 px-3 py-2 transition-colors hover:bg-muted/30 group"
-                    >
-                      <button
-                        type="button"
-                        onClick={() => handleToggleChecklist(item.id, item.is_completed)}
-                        disabled={togglingItem === item.id}
-                        className="shrink-0"
-                      >
-                        {togglingItem === item.id ? (
-                          <Loader2 className="size-4 animate-spin text-muted-foreground" />
-                        ) : item.is_completed ? (
-                          <CheckCircle2 className="size-4 text-emerald-500" />
-                        ) : (
-                          <Circle className="size-4 text-muted-foreground hover:text-primary" />
-                        )}
-                      </button>
-
-                      {editingItemId === item.id ? (
-                        <div className="flex flex-1 items-center gap-1">
-                          <Input
-                            value={editingItemText}
-                            onChange={(e) => setEditingItemText(e.target.value)}
-                            onKeyDown={(e) => {
-                              if (e.key === "Enter") handleEditSave(item.id);
-                              if (e.key === "Escape") handleEditCancel();
-                            }}
-                            className="h-8 text-sm"
-                            autoFocus
-                          />
-                          <button
-                            type="button"
-                            onClick={() => handleEditSave(item.id)}
-                            disabled={savingItem === item.id}
-                            className="shrink-0 rounded p-1 text-muted-foreground hover:text-emerald-500"
-                          >
-                            {savingItem === item.id ? (
-                              <Loader2 className="size-3.5 animate-spin" />
-                            ) : (
-                              <Check className="size-3.5" />
-                            )}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={handleEditCancel}
-                            className="shrink-0 rounded p-1 text-muted-foreground hover:text-destructive"
-                          >
-                            <X className="size-3.5" />
-                          </button>
-                        </div>
-                      ) : (
-                        <>
-                          <span
-                            className={`flex-1 text-sm ${
-                              item.is_completed ? "text-muted-foreground line-through" : ""
-                            }`}
-                          >
-                            {item.text}
-                          </span>
-                          <div className="flex shrink-0 items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button
-                              type="button"
-                              onClick={() => handleEditStart(item)}
-                              className="rounded p-1 text-muted-foreground hover:text-foreground"
-                              title="Edit"
-                            >
-                              <Pencil className="size-3.5" />
-                            </button>
-                            {task.status !== "published" && (
-                              <button
-                                type="button"
-                                onClick={() => handleDeleteItem(item.id)}
-                                disabled={savingItem === item.id}
-                                className="rounded p-1 text-muted-foreground hover:text-destructive"
-                                title="Delete"
-                              >
-                                {savingItem === item.id ? (
-                                  <Loader2 className="size-3.5 animate-spin" />
-                                ) : (
-                                  <Trash2 className="size-3.5" />
-                                )}
-                              </button>
-                            )}
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  ))}
-              </div>
-
-              {task.status !== "published" && (
-                <div className="flex items-center gap-2 rounded-lg border border-dashed border-border/50 px-3 py-2">
-                  <Input
-                    value={newItemText}
-                    onChange={(e) => setNewItemText(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === "Enter") handleAddItem(); }}
-                    placeholder="Add a checklist item..."
-                    className="h-8 flex-1 border-0 bg-transparent p-0 text-sm shadow-none focus-visible:ring-0"
-                  />
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="ghost"
-                    onClick={handleAddItem}
-                    disabled={addingItem || !newItemText.trim()}
-                    className="shrink-0 h-7 px-2"
-                  >
-                    {addingItem ? <Loader2 className="size-3.5 animate-spin" /> : <Plus className="size-3.5" />}
-                    Add
-                  </Button>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Attachments inline in Tasks tab */}
-          <Card>
-            <CardContent className="p-4 space-y-3">
-              <h3 className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
-                <ImageIcon className="size-4" />
-                Attachments ({attachments.length})
-              </h3>
-              <TaskAttachmentsGrid
-                attachments={attachments}
-                taskId={id}
-                onDeleted={(aId) => setAttachments((prev) => prev.filter((a) => a.id !== aId))}
-                readonly={task.status === "published"}
-              />
-              {task.status !== "published" && (
-                <div className="rounded-lg border border-dashed border-border/50 p-4">
-                  <TaskFileUpload
-                    taskId={id}
-                    onUploaded={(a) => setAttachments((prev) => [...prev, a])}
-                  />
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* ── Notes Tab ── */}
-        <TabsContent value="notes" className="mt-4">
-          <Card>
-            <CardContent className="p-4 space-y-3">
-              <h3 className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
-                <ScrollText className="size-4" />
-                Meeting Notes
-              </h3>
-              {task.notes ? (
-                <div className="prose prose-sm dark:prose-invert max-w-none">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {task.notes}
-                  </ReactMarkdown>
-                </div>
-              ) : (
-                <p className="py-8 text-center text-sm text-muted-foreground">
-                  No meeting notes for this task.
-                  {task.status !== "published" && (
-                    <> {" "}
-                      <button
-                        type="button"
-                        className="underline text-primary"
-                        onClick={() => setEditing(true)}
-                      >
-                        Add notes via Edit
-                      </button>
-                    </>
-                  )}
-                </p>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* ── Files Tab ── */}
-        {task.attachments && task.attachments.length > 0 && (
-          <TabsContent value="files" className="mt-4">
+        <TabsContent value="tasks" className="mt-4 space-y-4">
+          {(task.content || typeof task.progress === "number") && (
             <Card>
-              <CardContent className="p-4 space-y-3">
-                <TaskAttachmentsGrid
-                  attachments={attachments}
-                  taskId={id}
-                  onDeleted={(aId) => setAttachments((prev) => prev.filter((a) => a.id !== aId))}
-                  readonly={task.status === "published"}
-                />
-                {task.status !== "published" && (
-                  <div className="rounded-lg border border-dashed border-border/50 p-4">
-                    <TaskFileUpload
-                      taskId={id}
-                      onUploaded={(a) => setAttachments((prev) => [...prev, a])}
-                    />
+              <CardContent className="space-y-4 p-5">
+                {task.content && (
+                  <div className="space-y-2">
+                    <h2 className="text-sm font-medium text-muted-foreground">Description</h2>
+                    <p className="whitespace-pre-wrap text-sm leading-relaxed">{task.content}</p>
+                  </div>
+                )}
+                {typeof task.progress === "number" && (
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Overall progress</span>
+                      <span className="font-medium tabular-nums">{task.progress}%</span>
+                    </div>
+                    <div className="h-2 overflow-hidden rounded-full bg-muted">
+                      <div
+                        className="h-full rounded-full bg-primary transition-all"
+                        style={{ width: `${Math.min(100, task.progress)}%` }}
+                      />
+                    </div>
                   </div>
                 )}
               </CardContent>
             </Card>
-          </TabsContent>
-        )}
+          )}
 
-        {/* ── Audit Trail Tab ── */}
+          <Card>
+            <CardHeader className="pb-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <CardTitle className="text-base">Checklist</CardTitle>
+                  <CardDescription>
+                    {completedCount} of {checklistItems.length} complete
+                    {checklistProgress !== null ? ` · ${checklistProgress}%` : ""}
+                  </CardDescription>
+                </div>
+              </div>
+              {checklistItems.length > 0 && (
+                <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-muted">
+                  <div
+                    className="h-full rounded-full bg-emerald-500/80 transition-all"
+                    style={{ width: `${checklistProgress ?? 0}%` }}
+                  />
+                </div>
+              )}
+            </CardHeader>
+            <CardContent className="space-y-5 px-5 pb-5">
+              <div className="space-y-2">
+                <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">To do</p>
+                {pendingItems.length === 0 ? (
+                  <p className="rounded-lg border border-dashed border-border/50 px-3 py-4 text-center text-sm text-muted-foreground">
+                    {checklistItems.length === 0 ? "No checklist items yet." : "All items completed."}
+                  </p>
+                ) : (
+                  <div className="space-y-2">
+                    {pendingItems.map((item) => (
+                      <ChecklistRow
+                        key={item.id}
+                        item={item}
+                        toggling={togglingItem === item.id}
+                        saving={savingItem === item.id}
+                        editing={editingItemId === item.id}
+                        editingText={editingItemText}
+                        onToggle={() => handleToggleChecklist(item.id, item.is_completed)}
+                        onEditStart={() => handleEditStart(item)}
+                        onEditCancel={handleEditCancel}
+                        onEditSave={() => handleEditSave(item.id)}
+                        onEditTextChange={setEditingItemText}
+                        onDelete={() => handleDeleteItem(item.id)}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {doneItems.length > 0 && (
+                <>
+                  <Separator />
+                  <div className="space-y-2">
+                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Done</p>
+                    <div className="space-y-2">
+                      {doneItems.map((item) => (
+                        <ChecklistRow
+                          key={item.id}
+                          item={item}
+                          toggling={togglingItem === item.id}
+                          saving={savingItem === item.id}
+                          editing={editingItemId === item.id}
+                          editingText={editingItemText}
+                          onToggle={() => handleToggleChecklist(item.id, item.is_completed)}
+                          onEditStart={() => handleEditStart(item)}
+                          onEditCancel={handleEditCancel}
+                          onEditSave={() => handleEditSave(item.id)}
+                          onEditTextChange={setEditingItemText}
+                          onDelete={() => handleDeleteItem(item.id)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+
+              <div className="flex items-center gap-2 rounded-lg border border-dashed border-border/60 bg-muted/10 px-3 py-2">
+                <Input
+                  value={newItemText}
+                  onChange={(e) => setNewItemText(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") handleAddItem();
+                  }}
+                  placeholder="Add checklist item…"
+                  className="h-9 flex-1 border-0 bg-transparent px-0 text-sm shadow-none focus-visible:ring-0"
+                />
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={handleAddItem}
+                  disabled={addingItem || !newItemText.trim()}
+                  className="shrink-0"
+                >
+                  {addingItem ? <Loader2 className="size-3.5 animate-spin" /> : <Plus className="size-3.5" />}
+                  Add
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">Attachments</CardTitle>
+              <CardDescription>{attachments.length} file{attachments.length === 1 ? "" : "s"}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4 px-5 pb-5">
+              <TaskAttachmentsGrid
+                attachments={attachments}
+                taskId={id}
+                onDeleted={(aId) => setAttachments((prev) => prev.filter((a) => a.id !== aId))}
+              />
+              <div className="rounded-lg border border-dashed border-border/50 p-4">
+                <TaskFileUpload taskId={id} onUploaded={(a) => setAttachments((prev) => [...prev, a])} />
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="notes" className="mt-4">
+          <Card>
+            <CardContent className="p-5">
+              {task.notes ? (
+                <div className="prose prose-sm dark:prose-invert max-w-none">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{task.notes}</ReactMarkdown>
+                </div>
+              ) : (
+                <div className="py-8 text-center text-sm text-muted-foreground">
+                  No meeting notes yet.{" "}
+                  <button type="button" className="text-primary underline-offset-4 hover:underline" onClick={() => setEditing(true)}>
+                    Add notes
+                  </button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="files" className="mt-4">
+          <Card>
+            <CardContent className="space-y-4 p-5">
+              <TaskAttachmentsGrid
+                attachments={attachments}
+                taskId={id}
+                onDeleted={(aId) => setAttachments((prev) => prev.filter((a) => a.id !== aId))}
+              />
+              <div className="rounded-lg border border-dashed border-border/50 p-4">
+                <TaskFileUpload taskId={id} onUploaded={(a) => setAttachments((prev) => [...prev, a])} />
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         {task.audit_trails && task.audit_trails.length > 0 && (
           <TabsContent value="audit" className="mt-4">
             <Card>
-              <CardContent className="p-4 space-y-2">
-                <h3 className="text-sm font-semibold text-muted-foreground">Audit Trail</h3>
+              <CardContent className="space-y-2 p-5">
                 {task.audit_trails.map((trail, i) => (
                   <div key={i} className="rounded-lg border border-border/50 p-3 text-sm">
                     <div className="mb-1 flex items-center justify-between text-xs text-muted-foreground">
                       <span className="font-medium capitalize">{trail.action}</span>
                       <span>{safeFormat(trail.created_at, "MMM d, HH:mm")}</span>
                     </div>
-                    {trail.comment && <p className="text-sm">{trail.comment}</p>}
+                    {trail.comment && <p>{trail.comment}</p>}
                   </div>
                 ))}
               </CardContent>

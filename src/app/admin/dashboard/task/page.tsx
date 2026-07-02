@@ -52,7 +52,6 @@ import { useAuth } from "@/contexts/auth-context";
 import type { Task, TaskStatus, TaskColumn } from "@/types/tasks";
 
 import { useRouteBase, getFullUrl } from "@/lib/route-base";
-import { AdminTaskBreadcrumbs } from "@/components/admin/admin-task-breadcrumb";
 import { COLUMNS, COLUMN_META, ColumnSkeleton } from "@/components/tasks/task-constants";
 
 export default function AdminTaskPage() {
@@ -212,7 +211,6 @@ export default function AdminTaskPage() {
   if (loading) {
     return (
       <div className="mx-auto max-w-7xl p-6 space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-        <AdminTaskBreadcrumbs />
         <div className="flex items-center justify-between">
           <div>
             <Skeleton className="mb-2 h-8 w-48" />
@@ -238,7 +236,6 @@ export default function AdminTaskPage() {
 
   return (
     <div className="@container/main flex flex-col gap-6 md:gap-8">
-      <AdminTaskBreadcrumbs />
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Task Board</h1>

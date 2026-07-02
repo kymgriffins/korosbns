@@ -25,7 +25,6 @@ import { useAuth } from "@/contexts/auth-context";
 import type { WeeklyReportData } from "@/types/tasks";
 
 import { useRouteBase, getFullUrl } from "@/lib/route-base";
-import { AdminTaskBreadcrumbs } from "@/components/admin/admin-task-breadcrumb";
 
 const KPI_ICONS: Record<string, { icon: typeof ListTodo; bg: string; color: string }> = {
   total: { icon: ListTodo, bg: "bg-blue-500/10", color: "text-blue-600" },
@@ -75,7 +74,6 @@ export default function TaskReportPage() {
   if (loading) {
     return (
       <div className="@container/main flex flex-col gap-4 md:gap-6">
-        <AdminTaskBreadcrumbs segments={["report"]} />
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-4 w-72" />
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -90,7 +88,6 @@ export default function TaskReportPage() {
   if (error) {
     return (
       <div className="@container/main flex flex-col gap-4 md:gap-6">
-        <AdminTaskBreadcrumbs segments={["report"]} />
         <Card>
           <CardContent className="flex flex-col items-center gap-4 py-12">
             <AlertCircle className="size-8 text-destructive" />
@@ -105,7 +102,6 @@ export default function TaskReportPage() {
   if (!report) {
     return (
       <div className="@container/main flex flex-col gap-4 md:gap-6">
-        <AdminTaskBreadcrumbs segments={["report"]} />
         <Card>
           <CardContent className="flex flex-col items-center gap-4 py-12">
             <FileBarChart className="size-8 text-muted-foreground" />
@@ -122,7 +118,6 @@ export default function TaskReportPage() {
 
   return (
     <div className="@container/main flex flex-col gap-4 md:gap-6">
-      <AdminTaskBreadcrumbs segments={["report"]} />
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Weekly Task Report</h1>
