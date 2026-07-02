@@ -40,6 +40,13 @@ const DEFAULT_SIDEBAR: AdminSidebarSection[] = [
     ],
   },
   {
+    title: "Communication",
+    items: [
+      { title: "Email", url: "/admin/dashboard/mail", icon: "mail" },
+      { title: "Live Chat", url: "/admin/dashboard/chat", icon: "message-square" },
+    ],
+  },
+  {
     title: "System",
     items: [
       { title: "Budget Data", url: "/admin/dashboard/budget-data", icon: "landmark" },
