@@ -34,7 +34,7 @@ export default function NewTaskPage() {
           </div>
         </CardHeader>
         <CardContent className="p-6">
-          <TaskForm mode="create" redirectPath={getFullUrl(routeBase, "/dashboard/task")} />
+          <TaskForm mode="create" redirectTo={getFullUrl(routeBase, "/dashboard/task")} />
         </CardContent>
       </Card>
     </div>
