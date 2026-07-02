@@ -255,8 +255,35 @@ export function TaskTableView({ heading, description, singleTaskId }: Props) {
                             {loadingDetails[task.id] ? (
                               <Skeleton className="h-20 w-full" />
                             ) : activeTab === "notes" ? (
-                              <div className="rounded-md border bg-background p-3 text-sm">
-                                {detail?.notes?.trim() || "No meeting notes yet."}
+                              <div className="space-y-3">
+                                <div className="rounded-md border bg-background p-3 text-sm">
+                                  {detail?.notes?.trim() || "No meeting notes yet."}
+                                </div>
+                                {detail?.checklist && detail.checklist.length > 0 && (
+                                  <div className="rounded-md border bg-background p-3">
+                                    <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                                      Sub-tasks ({detail.checklist.length})
+                                    </p>
+                                    <ul className="space-y-2 text-sm">
+                                      {detail.checklist.map((item) => {
+                                        const done = item.checked || item.status === "done";
+                                        return (
+                                          <li key={item.id} className="flex items-start gap-2">
+                                            <span className="mt-0.5 text-muted-foreground">{done ? "☑" : "☐"}</span>
+                                            <div>
+                                              <div className={done ? "line-through text-muted-foreground" : ""}>
+                                                {item.title || item.text}
+                                              </div>
+                                              {item.assignee_name && (
+                                                <div className="text-xs text-muted-foreground">{item.assignee_name}</div>
+                                              )}
+                                            </div>
+                                          </li>
+                                        );
+                                      })}
+                                    </ul>
+                                  </div>
+                                )}
                               </div>
                             ) : (
                               <div className="rounded-md border bg-background p-3">

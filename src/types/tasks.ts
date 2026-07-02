@@ -1,6 +1,6 @@
 import type {
   NoteSectionApi, NoteAuditTrailApi,
-  TaskAttachmentApi, ChecklistItemApi,
+  TaskAttachmentApi, ChecklistItemApi, ChecklistItemAttachmentApi,
 } from "@/types/notes";
 
 export type TaskStatus = "draft" | "audited" | "published";
@@ -21,10 +21,35 @@ export type TaskTag =
 
 export type KanbanColumn = "ideas" | "planned" | "building" | "qa" | "shipped";
 
+export type ChecklistItemStatus = "todo" | "in_progress" | "blocked" | "done";
+
 export type ChecklistItem = {
   id: string;
+  title: string;
   text: string;
   checked: boolean;
+  status?: ChecklistItemStatus;
+  description_text?: string;
+  description_json?: Record<string, unknown>;
+  assignee?: string | null;
+  assignee_name?: string | null;
+  due_date?: string | null;
+  priority?: TaskPriority;
+  progress?: number;
+  sort_order?: number;
+  attachment_count?: number;
+  attachments?: ChecklistItemAttachment[];
+};
+
+export type ChecklistItemAttachment = {
+  id: string;
+  url: string;
+  file_name: string;
+  file_size: number;
+  content_type: string;
+  is_image: boolean;
+  uploaded_by_name?: string;
+  created_at: string;
 };
 
 export type TaskAttachment = {
@@ -111,7 +136,18 @@ export type AssignableUser = {
   last_name: string;
   display_name?: string;
   role: string;
-  team?: string | null;
+  team?: {
+    slug: string;
+    name: string;
+    color: string;
+  } | null;
+};
+
+export type AssignableTeam = {
+  id: string;
+  name: string;
+  slug?: string;
+  color?: string;
 };
 
 const TEAM_OPTIONS = ["MEDIA", "ICT", "MANAGERIAL"] as const;

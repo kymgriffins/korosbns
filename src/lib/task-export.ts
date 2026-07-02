@@ -33,7 +33,24 @@ export function generateTaskMarkdown(task: TaskDetail): string {
     lines.push("## Checklist");
     lines.push("");
     for (const item of task.checklist) {
-      lines.push(`- [${item.checked ? "x" : " "}] ${item.text}`);
+      const label = item.title || item.text;
+      const done = item.checked || item.status === "done";
+      lines.push(`- [${done ? "x" : " "}] ${label}`);
+      if (item.status && item.status !== "todo") {
+        lines.push(`  - Status: ${item.status.replace("_", " ")}`);
+      }
+      if (item.assignee_name) lines.push(`  - Assignee: ${item.assignee_name}`);
+      if (item.due_date) lines.push(`  - Due: ${safeFormat(item.due_date, "MMM d, yyyy")}`);
+      if (item.priority) lines.push(`  - Priority: ${item.priority}`);
+      if (typeof item.progress === "number") lines.push(`  - Progress: ${item.progress}%`);
+      if (item.description_text?.trim()) {
+        lines.push(`  - Notes: ${item.description_text.trim()}`);
+      }
+      if (item.attachments && item.attachments.length > 0) {
+        for (const att of item.attachments) {
+          lines.push(`  - Attachment: ${att.file_name}`);
+        }
+      }
     }
     lines.push("");
   }

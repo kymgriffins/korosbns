@@ -131,27 +131,30 @@ export const taskData = {
       upsertCachedTask(task);
       return task;
     },
-    addChecklistItem: (id: string, text: string) =>
+    addChecklistItem: (id: string, data: Partial<import("@/types/tasks").ChecklistItem>) =>
       withFallback(
         "tasks",
-        () => taskApi.addChecklistItem(id, text),
+        () => taskApi.addChecklistItem(id, data),
         () => ({
           id: `new-cl-${Date.now()}`,
-          text,
-          is_completed: false,
+          title: data.title ?? data.text ?? "",
+          text: data.text ?? data.title ?? "",
+          checked: false,
+          status: "todo",
           sort_order: 0,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         } as ChecklistItemApi),
       ),
-    updateChecklistItem: (id: string, itemId: string, data: Partial<Pick<ChecklistItemApi, "text" | "is_completed" | "sort_order">>) =>
+    updateChecklistItem: (id: string, itemId: string, data: Partial<import("@/types/tasks").ChecklistItem>) =>
       withFallback(
         "tasks",
         () => taskApi.updateChecklistItem(id, itemId, data),
         () => ({
           id: itemId,
+          title: data.title ?? data.text ?? "",
           text: data.text ?? "",
-          is_completed: data.is_completed ?? false,
+          is_completed: data.checked ?? false,
           sort_order: data.sort_order ?? 0,
           created_at: "",
           updated_at: new Date().toISOString(),
@@ -200,7 +203,11 @@ export const taskData = {
       withFallback(
         "tasks",
         () => taskApi.getTeams(),
-        () => ["MEDIA", "ICT", "MANAGERIAL"],
+        () => [
+          { id: "media", name: "MEDIA", slug: "media", color: "#3b82f6" },
+          { id: "ict", name: "ICT", slug: "ict", color: "#10b981" },
+          { id: "managerial", name: "MANAGERIAL", slug: "managerial", color: "#8b5cf6" },
+        ],
       ),
   },
   report: {

@@ -62,11 +62,45 @@ export type NoteAuditTrailApi = {
 
 export type ChecklistItemApi = {
   id: string;
+  title?: string;
   text: string;
+  description_json?: Record<string, unknown>;
+  description_text?: string;
+  status?: "todo" | "in_progress" | "blocked" | "done";
   is_completed: boolean;
+  assignee?: string | null;
+  assignee_email?: string | null;
+  assignee_name?: string | null;
+  due_date?: string | null;
+  priority?: string;
+  progress?: number;
   sort_order: number;
+  attachment_count?: number;
+  attachments?: ChecklistItemAttachmentApi[];
+  completed_at?: string | null;
   created_at: string;
   updated_at: string;
+};
+
+export type ChecklistItemAttachmentApi = {
+  id: string;
+  url?: string;
+  file_name: string;
+  file_size: number;
+  content_type: string;
+  is_image: boolean;
+  uploaded_by_name?: string;
+  created_at: string;
+};
+
+export type ChecklistItemEventApi = {
+  id: string;
+  event_type: string;
+  actor_name?: string | null;
+  old_value: Record<string, unknown>;
+  new_value: Record<string, unknown>;
+  comment: string;
+  created_at: string;
 };
 
 export type TaskAttachmentApi = {

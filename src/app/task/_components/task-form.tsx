@@ -25,7 +25,7 @@ import { taskApi } from "@/lib/task-api";
 import { taskData } from "@/data/tasks";
 import { invalidateTaskList } from "@/lib/task-events";
 import type {
-  Task, TaskStatus, TaskCreatePayload, AssignableUser, TaskPriority, TaskTag, TaskAttachment,
+  Task, TaskStatus, TaskCreatePayload, AssignableTeam, AssignableUser, TaskPriority, TaskTag, TaskAttachment,
 } from "@/types/tasks";
 import { ChecklistEditor } from "./checklist-editor";
 import { TaskFileUpload } from "./task-file-upload";
@@ -71,7 +71,7 @@ export function TaskForm({
   const [saving, setSaving] = useState(false);
   const [assignableUsers, setAssignableUsers] = useState<AssignableUser[]>([]);
   const [usersLoading, setUsersLoading] = useState(true);
-  const [teams, setTeams] = useState<string[]>([]);
+  const [teams, setTeams] = useState<AssignableTeam[]>([]);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
   const [attachments, setAttachments] = useState<TaskAttachment[]>(
     (task as (Task & { attachments?: TaskAttachment[] }) | undefined)?.attachments ?? []
@@ -133,6 +133,14 @@ export function TaskForm({
         router.push(redirectTo ?? "/admin/dashboard/task");
       } else {
         const created = await taskData.tasks.create(form);
+        for (const item of form.checklist ?? []) {
+          if (!item.title?.trim() && !item.text?.trim()) continue;
+          try {
+            await taskApi.addChecklistItem(created.id, item);
+          } catch {
+            // keep going; parent task already created
+          }
+        }
         invalidateTaskList();
         toast.success("Task created");
         onSaved?.();
@@ -153,7 +161,7 @@ export function TaskForm({
     }
   }
 
-  const selectedUser = assignableUsers.find((u) => u.email === form.assignee);
+  const selectedUser = assignableUsers.find((u) => u.id === form.assignee);
 
   function fieldAlert(key: string) {
     const msgs = fieldErrors[key];
@@ -243,6 +251,9 @@ export function TaskForm({
       <ChecklistEditor
         items={form.checklist ?? []}
         onChange={(items) => updateField("checklist", items)}
+        taskId={mode === "edit" && task ? task.id : undefined}
+        assignableUsers={assignableUsers}
+        readonly={task?.status === "published"}
       />
 
       <div className="space-y-2">
@@ -340,10 +351,10 @@ export function TaskForm({
             <SelectContent>
               <SelectItem value="unassigned_value_placeholder">None (Unassigned)</SelectItem>
               {assignableUsers.map((u) => (
-                <SelectItem key={u.id} value={u.email}>
+                <SelectItem key={u.id} value={u.id}>
                   {u.display_name || `${u.first_name} ${u.last_name}`.trim() || u.email}
                   <span className="ml-2 text-[10px] text-muted-foreground">
-                    ({u.role}{u.team ? ` · ${u.team}` : ""})
+                    ({u.role}{u.team ? ` · ${u.team.name}` : ""})
                   </span>
                 </SelectItem>
               ))}
@@ -353,7 +364,7 @@ export function TaskForm({
             <p className="text-[10px] text-muted-foreground">
               {selectedUser.display_name || `${selectedUser.first_name} ${selectedUser.last_name}`.trim()}
               {" · "}{selectedUser.role}
-              {selectedUser.team ? ` · ${selectedUser.team}` : ""}
+              {selectedUser.team ? ` · ${selectedUser.team.name}` : ""}
             </p>
           )}
           {fieldAlert("assignee")}
@@ -369,7 +380,7 @@ export function TaskForm({
             </SelectTrigger>
             <SelectContent>
               {teams.map((team) => (
-                <SelectItem key={team} value={team}>{team}</SelectItem>
+                <SelectItem key={team.id} value={team.id}>{team.name}</SelectItem>
               ))}
             </SelectContent>
           </Select>

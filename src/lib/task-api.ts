@@ -2,14 +2,63 @@ import { citizenApi, apiFetch } from "@/lib/api-client";
 import type { ApiListResponse } from "@/types/api";
 import type {
   WeeklyNoteApi, WeeklyNoteDetailApi, WeeklyNoteCreateApi,
-  TaskAttachmentApi, ChecklistItemApi,
+  TaskAttachmentApi, ChecklistItemApi, ChecklistItemAttachmentApi,
 } from "@/types/notes";
 import type {
   Task, TaskDetail, TaskCreatePayload, TaskUpdatePayload,
-  AssignableUser, ChecklistItem, TaskPriority, TaskTag, KanbanColumn,
+  AssignableUser, AssignableTeam, ChecklistItem, TaskPriority, TaskTag, KanbanColumn,
   TaskAttachment,
 } from "@/types/tasks";
 import { autoHue } from "@/types/tasks";
+
+function mapChecklistItemApi(item: ChecklistItemApi): ChecklistItem {
+  const title = item.title || item.text;
+  return {
+    id: item.id,
+    title,
+    text: item.text || title,
+    checked: item.is_completed || item.status === "done",
+    status: item.status,
+    description_text: item.description_text,
+    description_json: item.description_json,
+    assignee: item.assignee ?? null,
+    assignee_name: item.assignee_name,
+    due_date: item.due_date,
+    priority: item.priority as TaskPriority | undefined,
+    progress: item.progress,
+    sort_order: item.sort_order,
+    attachment_count: item.attachment_count,
+    attachments: item.attachments?.map((a) => ({
+      id: a.id,
+      url: a.url ?? "",
+      file_name: a.file_name,
+      file_size: a.file_size,
+      content_type: a.content_type,
+      is_image: a.is_image,
+      uploaded_by_name: a.uploaded_by_name,
+      created_at: a.created_at,
+    })),
+  };
+}
+
+function buildChecklistPayload(data: Partial<ChecklistItem>): Record<string, unknown> {
+  const body: Record<string, unknown> = {};
+  const title = data.title ?? data.text;
+  if (title !== undefined) {
+    body.title = title;
+    body.text = title;
+  }
+  if (data.description_text !== undefined) body.description_text = data.description_text;
+  if (data.description_json !== undefined) body.description_json = data.description_json;
+  if (data.status !== undefined) body.status = data.status;
+  if (data.checked !== undefined) body.is_completed = data.checked;
+  if (data.assignee !== undefined) body.assignee = data.assignee;
+  if (data.due_date !== undefined) body.due_date = data.due_date;
+  if (data.priority !== undefined) body.priority = data.priority;
+  if (data.progress !== undefined) body.progress = data.progress;
+  if (data.sort_order !== undefined) body.sort_order = data.sort_order;
+  return body;
+}
 
 function mapNoteToTask(note: WeeklyNoteApi): Task {
   const parsed = parseChecklist(note.content);
@@ -55,21 +104,15 @@ function mapAttachment(a: TaskAttachmentApi): TaskAttachment {
 
 function mapDetailToTask(detail: WeeklyNoteDetailApi): TaskDetail {
   const base = mapNoteToTask(detail);
-  const checklistItems: ChecklistItemApi[] | undefined = detail.checklist_items ?? base.checklist?.map((c) => ({
-    id: c.id,
-    text: c.text,
-    is_completed: c.checked,
-    sort_order: 0,
-    created_at: "",
-    updated_at: "",
-  }));
+  const checklistItems = detail.checklist_items?.map(mapChecklistItemApi);
   return {
     ...base,
     content: base.content ?? "",
     notes: detail.notes,
     sections: detail.sections,
     audit_trails: detail.audit_trails,
-    checklist_items: checklistItems,
+    checklist_items: detail.checklist_items,
+    checklist: checklistItems ?? base.checklist,
     attachments: detail.attachments?.map(mapAttachment),
     author_team: detail.author_team,
     team: detail.team,
@@ -128,9 +171,10 @@ export function parseChecklist(content?: string): { clean: string; checklist: Ch
   try {
     const parsed = JSON.parse(content);
     if (parsed && typeof parsed === "object" && "__checklist__" in parsed) {
+      const rawItems = (parsed.__checklist__ as Array<Partial<ChecklistItem>>) ?? [];
       return {
         clean: parsed.__text__ ?? "",
-        checklist: (parsed.__checklist__ as ChecklistItem[]) ?? [],
+        checklist: rawItems.map(normalizeEmbeddedChecklistItem),
       };
     }
   } catch {
@@ -139,9 +183,36 @@ export function parseChecklist(content?: string): { clean: string; checklist: Ch
   return { clean: content, checklist: [] };
 }
 
+function normalizeEmbeddedChecklistItem(raw: Partial<ChecklistItem>): ChecklistItem {
+  const text = raw.text ?? "";
+  const title = raw.title || text;
+  const checked = Boolean(raw.checked) || raw.status === "done";
+  return {
+    id: raw.id ?? "",
+    title,
+    text: text || title,
+    checked,
+    status: raw.status ?? (checked ? "done" : "todo"),
+    description_text: raw.description_text,
+    description_json: raw.description_json,
+    assignee: raw.assignee ?? null,
+    assignee_name: raw.assignee_name,
+    due_date: raw.due_date ?? null,
+    priority: raw.priority,
+    progress: raw.progress,
+    sort_order: raw.sort_order,
+    attachment_count: raw.attachment_count,
+    attachments: raw.attachments,
+  };
+}
+
 export function encodeChecklist(text: string, checklist?: ChecklistItem[]): string {
   if (!checklist || checklist.length === 0) return text;
-  return JSON.stringify({ __checklist__: checklist, __text__: text });
+  const normalized = checklist.map((item) => {
+    const title = item.title || item.text;
+    return { ...item, title, text: item.text || title };
+  });
+  return JSON.stringify({ __checklist__: normalized, __text__: text });
 }
 
 export const taskApi = {
@@ -214,16 +285,20 @@ export const taskApi = {
     return apiFetch(`/notes/weekly_report/${params}`, { auth: true });
   },
 
-  getTeams: async (): Promise<string[]> => {
+  getTeams: async (): Promise<AssignableTeam[]> => {
     try {
-      const res = await apiFetch<{ results: { name: string }[] }>("/teams/", { auth: true });
+      const res = await apiFetch<{ results: AssignableTeam[] }>("/teams/", { auth: true });
       if (Array.isArray(res.results)) {
-        return res.results.map((t) => t.name);
+        return res.results;
       }
     } catch {
       // fallback below
     }
-    return ["MEDIA", "ICT", "MANAGERIAL"];
+    return [
+      { id: "media", name: "MEDIA", slug: "media", color: "#3b82f6" },
+      { id: "ict", name: "ICT", slug: "ict", color: "#10b981" },
+      { id: "managerial", name: "MANAGERIAL", slug: "managerial", color: "#8b5cf6" },
+    ];
   },
 
   getProjects: async (status?: string) => {
@@ -346,26 +421,62 @@ export const taskApi = {
 
   // ── Checklist Items ─────────────────────────────────────
 
-  addChecklistItem: async (taskId: string, text: string): Promise<ChecklistItemApi> => {
-    return apiFetch<ChecklistItemApi>(`/notes/${taskId}/add_checklist_item/`, {
-      method: "POST",
-      auth: true,
-      body: JSON.stringify({ text }),
-    });
+  listChecklistItems: async (taskId: string): Promise<ChecklistItem[]> => {
+    const res = await apiFetch<ChecklistItemApi[]>(`/notes/${taskId}/checklist-items/`, { auth: true });
+    return (res ?? []).map(mapChecklistItemApi);
   },
 
-  updateChecklistItem: async (taskId: string, itemId: string, data: Partial<Pick<ChecklistItemApi, "text" | "is_completed" | "sort_order">>): Promise<ChecklistItemApi> => {
-    return apiFetch<ChecklistItemApi>(`/notes/${taskId}/checklist/${itemId}/`, {
+  addChecklistItem: async (taskId: string, data: Partial<ChecklistItem>): Promise<ChecklistItem> => {
+    const res = await apiFetch<ChecklistItemApi>(`/notes/${taskId}/add_checklist_item/`, {
+      method: "POST",
+      auth: true,
+      body: JSON.stringify(buildChecklistPayload(data)),
+    });
+    return mapChecklistItemApi(res);
+  },
+
+  updateChecklistItem: async (
+    taskId: string,
+    itemId: string,
+    data: Partial<ChecklistItem>,
+  ): Promise<ChecklistItem> => {
+    const res = await apiFetch<ChecklistItemApi>(`/notes/${taskId}/checklist-items/${itemId}/`, {
       method: "PATCH",
       auth: true,
-      body: JSON.stringify(data),
+      body: JSON.stringify(buildChecklistPayload(data)),
     });
+    return mapChecklistItemApi(res);
   },
 
   deleteChecklistItem: async (taskId: string, itemId: string): Promise<void> => {
-    await apiFetch<void>(`/notes/${taskId}/checklist/${itemId}/`, {
+    await apiFetch<void>(`/notes/${taskId}/checklist-items/${itemId}/`, {
       method: "DELETE",
       auth: true,
     });
+  },
+
+  reorderChecklistItems: async (taskId: string, itemIds: string[]): Promise<ChecklistItem[]> => {
+    const res = await apiFetch<ChecklistItemApi[]>(`/notes/${taskId}/reorder_checklist/`, {
+      method: "POST",
+      auth: true,
+      body: JSON.stringify({ item_ids: itemIds }),
+    });
+    return (res ?? []).map(mapChecklistItemApi);
+  },
+
+  uploadChecklistAttachment: async (taskId: string, itemId: string, file: File) => {
+    const form = new FormData();
+    form.append("file", file);
+    return apiFetch<ChecklistItemAttachmentApi>(
+      `/notes/${taskId}/checklist-items/${itemId}/attachments/`,
+      { method: "POST", auth: true, body: form },
+    );
+  },
+
+  deleteChecklistAttachment: async (taskId: string, itemId: string, attachmentId: string) => {
+    await apiFetch<void>(
+      `/notes/${taskId}/checklist-items/${itemId}/attachments/${attachmentId}/`,
+      { method: "DELETE", auth: true },
+    );
   },
 };

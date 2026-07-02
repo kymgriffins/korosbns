@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { parseChecklist, encodeChecklist, buildPatchBody, taskApi } from "@/lib/task-api";
-import { citizenApi } from "@/lib/api-client";
+import { apiFetch, citizenApi } from "@/lib/api-client";
 
 vi.mock("@/lib/api-client", () => ({
   citizenApi: {
@@ -41,6 +41,18 @@ describe("parseChecklist", () => {
     expect(result.checklist[0].checked).toBe(false);
     expect(result.checklist[1].text).toBe("Task two");
     expect(result.checklist[1].checked).toBe(true);
+  });
+
+  it("normalizes legacy items with text-only to title", () => {
+    const content = JSON.stringify({
+      __checklist__: [{ id: "1", text: "Legacy item", checked: true }],
+      __text__: "Body",
+    });
+    const result = parseChecklist(content);
+    expect(result.checklist[0].title).toBe("Legacy item");
+    expect(result.checklist[0].text).toBe("Legacy item");
+    expect(result.checklist[0].checked).toBe(true);
+    expect(result.checklist[0].status).toBe("done");
   });
 
   it("handles JSON without checklist key", () => {
@@ -123,8 +135,8 @@ describe("taskApi.create", () => {
 
   it("creates a note with checklist items", async () => {
     const checklist = [
-      { id: "1", text: "Step one", checked: false },
-      { id: "2", text: "Step two", checked: true },
+      { id: "1", title: "Step one", text: "Step one", checked: false },
+      { id: "2", title: "Step two", text: "Step two", checked: true },
     ];
 
     vi.mocked(citizenApi.createWeeklyNote).mockImplementation(
@@ -157,7 +169,7 @@ describe("taskApi.create", () => {
 
     expect(task.checklist).toBeDefined();
     expect(task.checklist).toHaveLength(2);
-    expect(task.checklist![0].text).toBe("Step one");
+    expect(task.checklist![0].title).toBe("Step one");
     expect(task.checklist![1].checked).toBe(true);
     expect(task.progress).toBe(50);
   });
@@ -180,10 +192,13 @@ describe("taskApi.create", () => {
       title: "Assigned Task",
       week_label: "W26-2026",
       content: "",
-      assignee: "assignee-1",
-      assigned_team: "team-1",
+      assignee: "2e4f6e08-04d9-4d85-b78e-bd2c3dc87fd5",
+      assigned_team: "f07134ab-cce5-48e6-8b28-e92d4394c6ba",
     });
 
+    const body = vi.mocked(citizenApi.createWeeklyNote).mock.calls[0][0] as any;
+    expect(body.assignee).toBe("2e4f6e08-04d9-4d85-b78e-bd2c3dc87fd5");
+    expect(body.assigned_team).toBe("f07134ab-cce5-48e6-8b28-e92d4394c6ba");
     expect(task.assignee).toBe("assignee-1");
     expect(task.assigned_team).toBe("team-1");
   });
@@ -212,5 +227,21 @@ describe("taskApi.create", () => {
 
     expect(task.due_date).toBe("2026-07-01");
     expect(task.due_label).toBe("Next week");
+  });
+});
+
+describe("taskApi.getTeams", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("returns team IDs from API response", async () => {
+    vi.mocked(apiFetch).mockResolvedValue({
+      results: [
+        { id: "team-uuid-1", name: "MEDIA", slug: "media", color: "#3b82f6" },
+      ],
+    } as any);
+    const teams = await taskApi.getTeams();
+    expect(teams).toEqual([{ id: "team-uuid-1", name: "MEDIA", slug: "media", color: "#3b82f6" }]);
   });
 });
