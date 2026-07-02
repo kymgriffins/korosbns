@@ -15,7 +15,7 @@ export type MiddlewareDecision =
 
 /**
  * Pure middleware decision function — shared by edge middleware and stress tests.
- * Only /admin and /dashboard require auth. /learn and /task are fully public.
+ * Only /admin and /dashboard require auth. /learn is fully public.
  */
 export function evaluateAuthMiddleware(
   pathname: string,

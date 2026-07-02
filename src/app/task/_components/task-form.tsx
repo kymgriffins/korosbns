@@ -17,14 +17,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 import { ApiRequestError } from "@/lib/api-errors";
+import { taskApi } from "@/lib/task-api";
 import { taskData } from "@/data/tasks";
 import type {
-  Task, TaskStatus, TaskCreatePayload, AssignableUser, TaskPriority, TaskTag,
+  Task, TaskStatus, TaskCreatePayload, AssignableUser, TaskPriority, TaskTag, TaskAttachment,
 } from "@/types/tasks";
 import { ChecklistEditor } from "./checklist-editor";
+import { TaskFileUpload } from "./task-file-upload";
+import { TaskAttachmentsGrid } from "./task-attachments";
 
 export type TaskFormMode = "create" | "edit";
 
@@ -55,12 +59,12 @@ export function TaskForm({
   mode,
   task,
   onSaved,
-  redirectPath = "/task",
+  redirectTo,
 }: {
   mode: TaskFormMode;
   task?: Task;
   onSaved?: () => void;
-  redirectPath?: string;
+  redirectTo?: string;
 }) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
@@ -68,6 +72,9 @@ export function TaskForm({
   const [usersLoading, setUsersLoading] = useState(true);
   const [teams, setTeams] = useState<string[]>([]);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
+  const [attachments, setAttachments] = useState<TaskAttachment[]>(
+    (task as (Task & { attachments?: TaskAttachment[] }) | undefined)?.attachments ?? []
+  );
   const [form, setForm] = useState<TaskCreatePayload>(() => ({
     week_label: task?.week_label ?? generateWeekLabel(),
     title: task?.title ?? "",
@@ -83,10 +90,12 @@ export function TaskForm({
     tag: task?.tag ?? undefined,
   }));
 
+  const cancelHref = redirectTo ?? "/admin/dashboard/task";
+
   useEffect(() => {
     Promise.all([
       taskData.users.fetchAssignable(),
-      taskData.teams.fetch(),
+      taskApi.getTeams(),
     ])
       .then(([users, teamList]) => {
         setAssignableUsers(users);
@@ -118,12 +127,14 @@ export function TaskForm({
       if (mode === "edit" && task) {
         await taskData.tasks.update(task.id, form);
         toast.success("Task updated");
+        onSaved?.();
+        router.push(redirectTo ?? "/admin/dashboard/task");
       } else {
-        await taskData.tasks.create(form);
+        const created = await taskData.tasks.create(form);
         toast.success("Task created");
+        onSaved?.();
+        router.push(redirectTo ?? `/admin/dashboard/task/${created.id}`);
       }
-      onSaved?.();
-      router.push(redirectPath);
     } catch (err) {
       if (err instanceof ApiRequestError && err.fields) {
         setFieldErrors(err.fields);
@@ -152,7 +163,7 @@ export function TaskForm({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 overflow-y-auto max-h-[calc(100vh-12rem)] pr-1 scrollbar-thin scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent">
       <div className="space-y-2">
         <Label htmlFor="task-title">Title *</Label>
         <Input
@@ -231,7 +242,16 @@ export function TaskForm({
         onChange={(items) => updateField("checklist", items)}
       />
 
-
+      <div className="space-y-2">
+        <Label>Progress ({form.progress ?? 0}%)</Label>
+        <Slider
+          value={[form.progress ?? 0]}
+          onValueChange={([v]) => updateField("progress", v)}
+          max={100}
+          step={5}
+        />
+        {fieldAlert("progress")}
+      </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
@@ -354,12 +374,33 @@ export function TaskForm({
         </div>
       </div>
 
+      {/* File attachments — shown for edit mode or after create */}
+      {(mode === "edit" && task) && (
+        <div className="space-y-3">
+          <Label>Attachments</Label>
+          <TaskAttachmentsGrid
+            attachments={attachments}
+            taskId={task.id}
+            onDeleted={(id) => setAttachments((prev) => prev.filter((a) => a.id !== id))}
+            readonly={task.status === "published"}
+          />
+          {task.status !== "published" && (
+            <div className="rounded-lg border border-dashed border-border/50 p-4">
+              <TaskFileUpload
+                taskId={task.id}
+                onUploaded={(a) => setAttachments((prev) => [...prev, a])}
+              />
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="flex items-center gap-3 pt-2">
         <Button onClick={handleSave} disabled={saving}>
           {saving && <Loader2 className="mr-1.5 size-4 animate-spin" />}
           {mode === "create" ? "Create Task" : "Save Changes"}
         </Button>
-        <Button variant="outline" onClick={() => router.push(redirectPath)}>
+        <Button variant="outline" onClick={() => router.push(cancelHref)}>
           Cancel
         </Button>
       </div>

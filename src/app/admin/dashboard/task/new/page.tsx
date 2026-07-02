@@ -19,8 +19,8 @@ export default function NewTaskPage() {
   return (
     <div className="@container/main mx-auto max-w-3xl space-y-6">
       <AdminTaskBreadcrumbs segments={["new"]} />
-      <Card className="border-border/60 shadow-sm">
-        <CardHeader className="border-b border-border/40 bg-muted/10">
+      <Card className="border-border/60 shadow-sm overflow-hidden">
+        <CardHeader className="border-b border-border/40 bg-muted/10 shrink-0">
           <div className="flex items-center gap-3">
             <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10">
               <ListTodo className="size-5 text-primary" />
