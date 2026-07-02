@@ -232,6 +232,12 @@ const nextConfig: NextConfig = {
         source: "/api/public/:path*/",
         destination: `${target}/api/public/:path*/`,
       },
+      // Proxy Django media files (attachments, uploads) through Next.js so
+      // they are served same-origin and avoid CORS / production media-serving issues.
+      {
+        source: "/media/:path*",
+        destination: `${target}/media/:path*`,
+      },
     ];
   },
 };
