@@ -1,5 +1,5 @@
-import type { Task, TaskDetail, TaskCreatePayload, TaskUpdatePayload, AssignableUser, WeeklyReportData, TaskAttachment, TaskTag } from "@/types/tasks";
-import type { WeeklyNoteApi, ChecklistItemApi } from "@/types/notes";
+import type { Task, TaskDetail, TaskCreatePayload, TaskUpdatePayload, AssignableUser, WeeklyReportData, TaskAttachment, TaskTag, ChecklistItem } from "@/types/tasks";
+import type { WeeklyNoteApi } from "@/types/notes";
 import { adminNotesApi } from "@/lib/admin-api";
 import type { AdminNote } from "@/lib/admin-api";
 import { taskApi } from "@/lib/task-api";
@@ -131,7 +131,7 @@ export const taskData = {
       upsertCachedTask(task);
       return task;
     },
-    addChecklistItem: (id: string, data: Partial<import("@/types/tasks").ChecklistItem>) =>
+    addChecklistItem: (id: string, data: Partial<ChecklistItem>) =>
       withFallback(
         "tasks",
         () => taskApi.addChecklistItem(id, data),
@@ -142,23 +142,20 @@ export const taskData = {
           checked: false,
           status: "todo",
           sort_order: 0,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        } as ChecklistItemApi),
+        } satisfies ChecklistItem),
       ),
-    updateChecklistItem: (id: string, itemId: string, data: Partial<import("@/types/tasks").ChecklistItem>) =>
+    updateChecklistItem: (id: string, itemId: string, data: Partial<ChecklistItem>) =>
       withFallback(
         "tasks",
         () => taskApi.updateChecklistItem(id, itemId, data),
         () => ({
           id: itemId,
           title: data.title ?? data.text ?? "",
-          text: data.text ?? "",
-          is_completed: data.checked ?? false,
+          text: data.text ?? data.title ?? "",
+          checked: data.checked ?? false,
+          status: data.status,
           sort_order: data.sort_order ?? 0,
-          created_at: "",
-          updated_at: new Date().toISOString(),
-        } as ChecklistItemApi),
+        } satisfies ChecklistItem),
       ),
     deleteChecklistItem: (id: string, itemId: string) =>
       withFallback(
