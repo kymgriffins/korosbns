@@ -25,6 +25,8 @@ export type UserRow = {
   status: UserStatus;
   team: UserTeam;
   workspace: string[];
+  avatar?: string;
+  id?: string;
 };
 
 export const users: UserRow[] = [

@@ -5,7 +5,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { parse } from "date-fns";
 import { Check, Clock, MoreHorizontal, X } from "lucide-react";
 
-import { Avatar, AvatarBadge, AvatarFallback, AvatarGroup, AvatarGroupCount } from "@/components/ui/avatar";
+import { Avatar, AvatarBadge, AvatarFallback, AvatarGroup, AvatarGroupCount, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -85,17 +85,23 @@ function getLastActiveBadge(lastActive: number) {
   };
 }
 
-function AvatarCell({ lastActive, name }: { lastActive: number; name: string }) {
+function AvatarCell({ lastActive, name, avatar }: { lastActive: number; name: string; avatar?: string }) {
   const badge = getLastActiveBadge(lastActive);
   const BadgeIcon = badge.icon;
 
   return (
     <Avatar size="lg" className={cn("font-medium", getAvatarTone(name))}>
+      {avatar ? <AvatarImage src={avatar} alt={name} /> : null}
       <AvatarFallback>{getInitials(name)}</AvatarFallback>
       <AvatarBadge className={badge.className}>{BadgeIcon ? <BadgeIcon /> : null}</AvatarBadge>
     </Avatar>
   );
 }
+
+export type UsersTableMeta = {
+  onEdit?: (user: UserRow) => void;
+  onDelete?: (user: UserRow) => void;
+};
 
 function WorkspaceCell({ workspaces }: { workspaces: string[] }) {
   const [firstWorkspace, ...remainingWorkspaces] = workspaces;
@@ -150,7 +156,7 @@ export const usersColumns: ColumnDef<UserRow>[] = [
     header: "User",
     cell: ({ row }) => (
       <div className="flex items-center gap-3">
-        <AvatarCell name={row.original.name} lastActive={row.original.lastActive} />
+        <AvatarCell name={row.original.name} lastActive={row.original.lastActive} avatar={row.original.avatar} />
         <div className="min-w-0">
           <div className="truncate font-medium text-foreground text-sm">{row.original.name}</div>
           <div className="truncate text-muted-foreground text-sm">{row.original.email}</div>
@@ -191,30 +197,32 @@ export const usersColumns: ColumnDef<UserRow>[] = [
   {
     id: "actions",
     header: () => <div className="text-right">Actions</div>,
-    cell: ({ row }) => (
-      <div className="text-right">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              aria-label={`Open actions for ${row.original.name}`}
-              className="size-8 rounded-md text-muted-foreground hover:bg-muted/50"
-              size="icon-sm"
-              variant="ghost"
-            >
-              <MoreHorizontal className="size-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem>View profile</DropdownMenuItem>
-            <DropdownMenuItem>Edit user</DropdownMenuItem>
-            <DropdownMenuItem>Manage team</DropdownMenuItem>
-            <DropdownMenuItem>Resend invite</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive">Deactivate user</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    ),
+    cell: ({ row, table }) => {
+      const meta = table.options.meta as UsersTableMeta | undefined;
+      return (
+        <div className="text-right">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                aria-label={`Open actions for ${row.original.name}`}
+                className="size-8 rounded-md text-muted-foreground hover:bg-muted/50"
+                size="icon-sm"
+                variant="ghost"
+              >
+                <MoreHorizontal className="size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => meta?.onEdit?.(row.original)}>Edit user</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem variant="destructive" onClick={() => meta?.onDelete?.(row.original)}>
+                {row.original.status === "Deactivated" ? "Activate user" : "Deactivate user"}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      );
+    },
     enableHiding: false,
     enableSorting: false,
   },

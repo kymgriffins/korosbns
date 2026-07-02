@@ -27,7 +27,7 @@ import { filters, type UserRow } from "./data";
 import { usersColumns } from "./users-columns";
 import { UsersTable } from "./users-table";
 
-export function Users({ users }: { users: UserRow[] }) {
+export function Users({ users, onEdit, onDelete, onAdd }: { users: UserRow[]; onEdit?: (user: UserRow) => void; onDelete?: (user: UserRow) => void; onAdd?: () => void }) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [sorting, setSorting] = React.useState<SortingState>([{ id: "joinedDate", desc: true }]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -62,6 +62,7 @@ export function Users({ users }: { users: UserRow[] }) {
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    meta: { onEdit, onDelete },
   });
 
   const searchQuery = (table.getColumn("search")?.getFilterValue() as string) ?? "";
@@ -110,7 +111,7 @@ export function Users({ users }: { users: UserRow[] }) {
           <Button variant="outline" size="sm">
             <Download /> Export
           </Button>
-          <Button size="sm">
+          <Button size="sm" onClick={onAdd}>
             <Plus /> Add User
           </Button>
         </CardAction>
