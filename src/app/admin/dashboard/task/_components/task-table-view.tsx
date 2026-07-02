@@ -35,8 +35,11 @@ import { getFullUrl, useRouteBase } from "@/lib/route-base";
 import { invalidateTaskList } from "@/lib/task-events";
 import type { Task, TaskDetail, TaskPriority, TaskStatus } from "@/types/tasks";
 
+const ALL_STATUSES = "all_statuses";
+const ALL_PRIORITIES = "all_priorities";
+
 const STATUS_FILTER_OPTIONS: Array<{ value: string; label: string }> = [
-  { value: "", label: "All statuses" },
+  { value: ALL_STATUSES, label: "All statuses" },
   { value: "draft", label: "Draft" },
   { value: "audited", label: "In progress" },
   { value: "published", label: "Done" },
@@ -155,8 +158,8 @@ export function TaskTableView({ heading, description, singleTaskId }: Props) {
   const { isLoggedIn } = useAuth();
   const { tasks, loading, error, fetchTasks, upsertTask, removeTask } = useTaskList();
   const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
-  const [priorityFilter, setPriorityFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState(ALL_STATUSES);
+  const [priorityFilter, setPriorityFilter] = useState(ALL_PRIORITIES);
   const [expandedId, setExpandedId] = useState<string | null>(singleTaskId ?? null);
   const [detailTab, setDetailTab] = useState<Record<string, "notes" | "files">>({});
   const [details, setDetails] = useState<Record<string, TaskDetail>>({});
@@ -180,8 +183,8 @@ export function TaskTableView({ heading, description, singleTaskId }: Props) {
 
   const filteredTasks = useMemo(() => {
     let scoped = singleTaskId ? tasks.filter((task) => task.id === singleTaskId) : tasks;
-    if (statusFilter) scoped = scoped.filter((t) => t.status === statusFilter);
-    if (priorityFilter) scoped = scoped.filter((t) => (t.priority ?? "medium") === priorityFilter);
+    if (statusFilter !== ALL_STATUSES) scoped = scoped.filter((t) => t.status === statusFilter);
+    if (priorityFilter !== ALL_PRIORITIES) scoped = scoped.filter((t) => (t.priority ?? "medium") === priorityFilter);
     if (!query) return scoped;
     const q = query.toLowerCase();
     return scoped.filter(
@@ -311,21 +314,21 @@ export function TaskTableView({ heading, description, singleTaskId }: Props) {
               <SelectValue placeholder="All priorities" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All priorities</SelectItem>
+              <SelectItem value={ALL_PRIORITIES}>All priorities</SelectItem>
               {(Object.keys(PRIORITY_LABELS) as TaskPriority[]).map((p) => (
                 <SelectItem key={p} value={p}>{PRIORITY_LABELS[p]}</SelectItem>
               ))}
             </SelectContent>
           </Select>
-          {(statusFilter || priorityFilter) && (
-            <Button variant="ghost" size="sm" className="h-8 gap-1 text-xs" onClick={() => { setStatusFilter(""); setPriorityFilter(""); }}>
+          {(statusFilter !== ALL_STATUSES || priorityFilter !== ALL_PRIORITIES) && (
+            <Button variant="ghost" size="sm" className="h-8 gap-1 text-xs" onClick={() => { setStatusFilter(ALL_STATUSES); setPriorityFilter(ALL_PRIORITIES); }}>
               <FilterX className="size-3" />
               Clear
             </Button>
           )}
           <div className="flex flex-wrap gap-1 ml-1">
-            {statusFilter && <FilterChip label={`Status: ${STATUS_FILTER_OPTIONS.find((o) => o.value === statusFilter)?.label ?? statusFilter}`} onRemove={() => setStatusFilter("")} />}
-            {priorityFilter && <FilterChip label={`Priority: ${PRIORITY_LABELS[priorityFilter as TaskPriority] ?? priorityFilter}`} onRemove={() => setPriorityFilter("")} />}
+            {statusFilter !== ALL_STATUSES && <FilterChip label={`Status: ${STATUS_FILTER_OPTIONS.find((o) => o.value === statusFilter)?.label ?? statusFilter}`} onRemove={() => setStatusFilter(ALL_STATUSES)} />}
+            {priorityFilter !== ALL_PRIORITIES && <FilterChip label={`Priority: ${PRIORITY_LABELS[priorityFilter as TaskPriority] ?? priorityFilter}`} onRemove={() => setPriorityFilter(ALL_PRIORITIES)} />}
           </div>
         </div>
 
