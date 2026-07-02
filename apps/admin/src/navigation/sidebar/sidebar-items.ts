@@ -1,17 +1,23 @@
 import {
+  BarChart3,
   FileBarChart,
+  Forward,
   Gauge,
+  Inbox,
   LayoutDashboard,
   ListTodo,
-  type LucideIcon,
-  ShieldCheck,
   Lock,
-  User,
-  Users,
+  type LucideIcon,
   Mail,
   MessageSquare,
-  BookOpen,
   Pen,
+  Phone,
+  Send,
+  ShieldCheck,
+  BookOpen,
+  User,
+  Users,
+  Waypoints,
 } from "lucide-react";
 
 export type NavBadge = "new" | "soon";
@@ -135,6 +141,42 @@ export const sidebarItems: NavGroup[] = [
     id: 5,
     label: "Communication",
     items: [
+      {
+        id: "comm-overview",
+        title: "Dashboard",
+        url: "/dashboard/communication",
+        icon: BarChart3,
+      },
+      {
+        id: "comm-campaigns",
+        title: "Campaigns",
+        url: "/dashboard/communication/campaigns",
+        icon: Send,
+      },
+      {
+        id: "comm-inbox",
+        title: "Inbox",
+        url: "/dashboard/communication/inbox",
+        icon: Inbox,
+      },
+      {
+        id: "comm-outbox",
+        title: "Outbox",
+        url: "/dashboard/communication/outbox",
+        icon: Forward,
+      },
+      {
+        id: "comm-contacts",
+        title: "Contact Messages",
+        url: "/dashboard/communication/contact-messages",
+        icon: Phone,
+      },
+      {
+        id: "comm-email-hooks",
+        title: "Email Hooks",
+        url: "/dashboard/communication/email-hooks",
+        icon: Waypoints,
+      },
       {
         id: "mail",
         title: "Email",

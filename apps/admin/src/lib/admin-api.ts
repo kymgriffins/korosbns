@@ -284,3 +284,264 @@ export const adminAnalyticsApi = {
     return adminFetch<AdminAnalyticsSummary>(`/analytics/dashboard/${qs}`);
   },
 };
+
+// ── Communication / Campaigns ──────────────────────────────────────────────
+
+export type NewsletterCampaign = {
+  id: string;
+  subject: string;
+  image_url?: string;
+  body_plain?: string;
+  body_html?: string;
+  status: string;
+  status_display: string;
+  audience_type: string;
+  audience_type_display: string;
+  audience_filter?: Record<string, unknown>;
+  recipient_count: number;
+  sent_count: number;
+  failed_count: number;
+  scheduled_at?: string | null;
+  sent_at?: string | null;
+  created_by_email?: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export const adminCampaignsApi = {
+  list: (params?: { page?: number; status?: string }) => {
+    const q = new URLSearchParams();
+    if (params?.page) q.set("page", String(params.page));
+    if (params?.status) q.set("status", params.status);
+    const qs = q.toString();
+    return adminFetch<ApiListResponse<NewsletterCampaign>>(`/newsletter/campaigns/${qs ? `?${qs}` : ""}`);
+  },
+  get: (id: string) => adminFetch<NewsletterCampaign>(`/newsletter/campaigns/${id}/`),
+  create: (data: Partial<NewsletterCampaign>) =>
+    adminFetch<NewsletterCampaign>("/newsletter/campaigns/", { method: "POST", body: JSON.stringify(data) }),
+  update: (id: string, data: Partial<NewsletterCampaign>) =>
+    adminFetch<NewsletterCampaign>(`/newsletter/campaigns/${id}/`, { method: "PATCH", body: JSON.stringify(data) }),
+  delete: (id: string) =>
+    adminFetch<void>(`/newsletter/campaigns/${id}/`, { method: "DELETE" }),
+  send: (id: string) =>
+    adminFetch<NewsletterCampaign>(`/newsletter/campaigns/${id}/send/`, { method: "POST" }),
+  schedule: (id: string, scheduledAt: string) =>
+    adminFetch<NewsletterCampaign>(`/newsletter/campaigns/${id}/schedule/`, {
+      method: "POST", body: JSON.stringify({ scheduled_at: scheduledAt }),
+    }),
+  preview: (id: string) =>
+    adminFetch<NewsletterCampaign & { audience_count: number; sample_emails: string[] }>(
+      `/newsletter/campaigns/${id}/preview/`,
+    ),
+};
+
+// ── Communication / Inbox ─────────────────────────────────────────────────
+
+export type NewsletterInboxMessage = {
+  id: string;
+  message_type: string;
+  message_type_display: string;
+  from_email?: string;
+  subject: string;
+  body_plain?: string;
+  is_read: boolean;
+  related_subscriber?: string | null;
+  related_subscriber_email?: string | null;
+  related_campaign?: string | null;
+  related_campaign_subject?: string | null;
+  received_at: string;
+  created_at: string;
+};
+
+export const adminInboxApi = {
+  list: (params?: { page?: number; message_type?: string; is_read?: boolean }) => {
+    const q = new URLSearchParams();
+    if (params?.page) q.set("page", String(params.page));
+    if (params?.message_type) q.set("message_type", params.message_type);
+    if (params?.is_read !== undefined) q.set("is_read", String(params.is_read));
+    const qs = q.toString();
+    return adminFetch<ApiListResponse<NewsletterInboxMessage>>(`/newsletter/inbox/${qs ? `?${qs}` : ""}`);
+  },
+  get: (id: string) => adminFetch<NewsletterInboxMessage>(`/newsletter/inbox/${id}/`),
+  markRead: (id: string) =>
+    adminFetch<NewsletterInboxMessage>(`/newsletter/inbox/${id}/read/`, { method: "POST" }),
+  createNote: (data: { subject: string; body_plain: string }) =>
+    adminFetch<NewsletterInboxMessage>("/newsletter/inbox/notes/", { method: "POST", body: JSON.stringify(data) }),
+};
+
+// ── Communication / Outbox ───────────────────────────────────────────────
+
+export type NewsletterOutboxEmail = {
+  id: string;
+  email_type: string;
+  email_type_display: string;
+  subscriber_email: string;
+  recipient: string;
+  subject: string;
+  status: string;
+  status_display: string;
+  attempts: number;
+  error_message?: string;
+  sent_at?: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export const adminOutboxApi = {
+  list: (params?: { page?: number; status?: string }) => {
+    const q = new URLSearchParams();
+    if (params?.page) q.set("page", String(params.page));
+    if (params?.status) q.set("status", params.status);
+    const qs = q.toString();
+    return adminFetch<ApiListResponse<NewsletterOutboxEmail>>(`/newsletter/outbox/${qs ? `?${qs}` : ""}`);
+  },
+  dispatch: () =>
+    adminFetch<{ processed: number; sent: number; failed: number }>("/newsletter/outbox/dispatch/", { method: "POST" }),
+  retry: (id: string) =>
+    adminFetch<NewsletterOutboxEmail>(`/newsletter/outbox/${id}/retry/`, { method: "POST" }),
+};
+
+// ── Communication / Contact Messages ────────────────────────────────────
+
+export type ContactMessage = {
+  id: string;
+  name: string;
+  email: string;
+  message: string;
+  status: string;
+  status_display: string;
+  source: string;
+  ip_address?: string;
+  user_agent?: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export const adminContactMessagesApi = {
+  list: (params?: { page?: number; status?: string; q?: string }) => {
+    const q = new URLSearchParams();
+    if (params?.page) q.set("page", String(params.page));
+    if (params?.status) q.set("status", params.status);
+    if (params?.q) q.set("q", params.q);
+    const qs = q.toString();
+    return adminFetch<ApiListResponse<ContactMessage>>(`/contact/messages/${qs ? `?${qs}` : ""}`);
+  },
+  get: (id: string) => adminFetch<ContactMessage>(`/contact/messages/${id}/`),
+  reply: (id: string, replyBody: string) =>
+    adminFetch<ContactMessage>(`/contact/messages/${id}/reply/`, {
+      method: "POST", body: JSON.stringify({ reply_body: replyBody }),
+    }),
+  markRead: (id: string) =>
+    adminFetch<ContactMessage>(`/contact/messages/${id}/read/`, { method: "POST" }),
+  delete: (id: string) =>
+    adminFetch<void>(`/contact/messages/${id}/delete/`, { method: "DELETE" }),
+};
+
+// ── Communication / Email Hooks ──────────────────────────────────────────
+
+export type EmailHook = {
+  id: string;
+  recipient: string;
+  subject: string;
+  source: string;
+  status: string;
+  status_display: string;
+  error_message?: string;
+  sent_at?: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export const adminEmailHooksApi = {
+  list: (params?: { status?: string; source?: string; q?: string }) => {
+    const q = new URLSearchParams();
+    if (params?.status) q.set("status", params.status);
+    if (params?.source) q.set("source", params.source);
+    if (params?.q) q.set("q", params.q);
+    const qs = q.toString();
+    return adminFetch<{
+      counts: Record<string, number>;
+      sources: string[];
+      results: EmailHook[];
+    }>(`/email-hooks/${qs ? `?${qs}` : ""}`);
+  },
+  resend: (id: string) =>
+    adminFetch<EmailHook>(`/email-hooks/${id}/resend/`, { method: "POST" }),
+};
+
+// ── Communication / Notification Queue & History ─────────────────────────
+
+export type NotificationQueueItem = {
+  id: string;
+  trigger_type: string;
+  target_user: string;
+  target_user_email: string;
+  obj_id: string;
+  payload: Record<string, unknown>;
+  status: string;
+  status_display: string;
+  skip_reason: string;
+  scheduled_at: string;
+  dispatched_at?: string | null;
+  attempts: number;
+  correlation_id?: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export const adminNotificationsApi = {
+  queue: (params?: { status?: string; trigger_type?: string }) => {
+    const q = new URLSearchParams();
+    if (params?.status) q.set("status", params.status);
+    if (params?.trigger_type) q.set("trigger_type", params.trigger_type);
+    const qs = q.toString();
+    return adminFetch<ApiListResponse<NotificationQueueItem>>(`/engagement/notifications/admin/${qs ? `?${qs}` : ""}`);
+  },
+  history: (params?: { status?: string; trigger_type?: string }) => {
+    const q = new URLSearchParams();
+    if (params?.status) q.set("status", params.status);
+    if (params?.trigger_type) q.set("trigger_type", params.trigger_type);
+    const qs = q.toString();
+    return adminFetch<ApiListResponse<NotificationQueueItem>>(`/engagement/notification-history/${qs ? `?${qs}` : ""}`);
+  },
+  triggerRules: () => adminFetch<ApiListResponse<NotificationQueueItem>>("/engagement/trigger-rules/"),
+  toggleRule: (id: string, enabled: boolean) =>
+    adminFetch<NotificationQueueItem>(`/engagement/trigger-rules/${id}/toggle/`, {
+      method: "POST", body: JSON.stringify({ enabled }),
+    }),
+};
+
+// ── Communication / Content Feedback ─────────────────────────────────────
+
+export type ContentFeedbackItem = {
+  id: string;
+  content_type: string;
+  content_id: string;
+  rating: number;
+  comment: string;
+  status: string;
+  status_display: string;
+  created_by?: string | null;
+  created_by_email?: string | null;
+  created_at: string;
+};
+
+export const adminContentFeedbackApi = {
+  list: (params?: { content_type?: string; status?: string; content_id?: string }) => {
+    const q = new URLSearchParams();
+    if (params?.content_type) q.set("content_type", params.content_type);
+    if (params?.status) q.set("status", params.status);
+    if (params?.content_id) q.set("content_id", params.content_id);
+    const qs = q.toString();
+    return adminFetch<ApiListResponse<ContentFeedbackItem>>(`/engagement/feedback/admin/${qs ? `?${qs}` : ""}`);
+  },
+  summary: () => adminFetch<{
+    total: number;
+    average_rating: number;
+    rating_distribution: Record<string, number>;
+    by_content_type: Record<string, number>;
+    by_status: Record<string, number>;
+  }>("/engagement/feedback/summary/"),
+  submit: (data: { content_type: string; content_id: string; rating: number; comment?: string }) =>
+    adminFetch<ContentFeedbackItem>("/engagement/feedback/", { method: "POST", body: JSON.stringify(data) }),
+};
