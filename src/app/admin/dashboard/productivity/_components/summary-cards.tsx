@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { taskApi } from "@/lib/task-api";
+import { TASK_LIST_INVALIDATED_EVENT } from "@/lib/task-events";
 
 type SummaryData = {
   todayTasks: number;
@@ -51,6 +52,11 @@ export function SummaryCards() {
 
   useEffect(() => {
     fetchData();
+    const refresh = () => {
+      void fetchData();
+    };
+    window.addEventListener(TASK_LIST_INVALIDATED_EVENT, refresh);
+    return () => window.removeEventListener(TASK_LIST_INVALIDATED_EVENT, refresh);
   }, [fetchData]);
 
   const summaryCards = [

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {
@@ -46,13 +46,16 @@ import {
 } from "@/components/ui/dialog";
 
 import { usePageView } from "@/hooks/use-page-view";
+import { useTaskList } from "@/hooks/use-task-list";
 import { TaskCard } from "@/components/tasks/task-card";
 import { taskData } from "@/data/tasks";
+import { invalidateTaskList } from "@/lib/task-events";
 import { useAuth } from "@/contexts/auth-context";
 import type { Task, TaskStatus, TaskColumn } from "@/types/tasks";
 
 import { useRouteBase, getFullUrl } from "@/lib/route-base";
 import { COLUMNS, COLUMN_META, ColumnSkeleton } from "@/components/tasks/task-constants";
+import { TaskPageShell } from "@/app/admin/dashboard/task/_components/task-page-shell";
 
 export default function AdminTaskPage() {
   usePageView();
@@ -60,9 +63,7 @@ export default function AdminTaskPage() {
   const pathname = usePathname();
   const routeBase = useRouteBase();
   const taskBasePath = getFullUrl(routeBase, "/dashboard/task");
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const { tasks, setTasks, loading, error, fetchTasks, upsertTask, removeTask } = useTaskList();
   const [search, setSearch] = useState("");
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
@@ -71,24 +72,6 @@ export default function AdminTaskPage() {
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
     useSensor(KeyboardSensor),
   );
-
-  const fetchTasks = useCallback(async () => {
-    setLoading(true);
-    setError("");
-    try {
-      const data = await taskData.tasks.fetch();
-      setTasks(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load tasks");
-      toast.error("Failed to load tasks");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchTasks();
-  }, [fetchTasks]);
 
   const filteredTasks = useMemo(
     () =>
@@ -151,13 +134,16 @@ export default function AdminTaskPage() {
     setTasks((prev) => prev.map((t) => (t.id === activeId ? { ...t, status: overColumn.id } : t)));
 
     try {
+      let updated: Task;
       if (overColumn.id === "published") {
-        await taskData.tasks.publish(activeId);
+        updated = await taskData.tasks.publish(activeId);
       } else if (overColumn.id === "audited") {
-        await taskData.tasks.audit(activeId, "approved", "Moved to in progress");
+        updated = await taskData.tasks.audit(activeId, "approved", "Moved to in progress");
       } else {
-        await taskData.tasks.update(activeId, { status: "draft" });
+        updated = await taskData.tasks.update(activeId, { status: "draft" });
       }
+      upsertTask(updated);
+      invalidateTaskList();
       toast.success(`Moved to ${overColumn.title}`);
     } catch {
       toast.error("Failed to update task status");
@@ -172,7 +158,8 @@ export default function AdminTaskPage() {
     }
     try {
       await taskData.tasks.delete(id);
-      setTasks((prev) => prev.filter((t) => t.id !== id));
+      removeTask(id);
+      invalidateTaskList();
       toast.success("Task deleted");
     } catch {
       toast.error("Failed to delete task");
@@ -210,7 +197,7 @@ export default function AdminTaskPage() {
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-7xl p-6 space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+      <TaskPageShell className="animate-in fade-in slide-in-from-bottom-2 duration-500">
         <div className="flex items-center justify-between">
           <div>
             <Skeleton className="mb-2 h-8 w-48" />
@@ -230,12 +217,12 @@ export default function AdminTaskPage() {
             </Card>
           ))}
         </div>
-      </div>
+      </TaskPageShell>
     );
   }
 
   return (
-    <div className="@container/main flex flex-col gap-6 md:gap-8">
+    <TaskPageShell>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Task Board</h1>
@@ -316,7 +303,7 @@ export default function AdminTaskPage() {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {columns.map((column) => {
             const meta = COLUMN_META[column.id];
             const Icon = meta.icon;
@@ -410,6 +397,6 @@ export default function AdminTaskPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </TaskPageShell>
   );
 }

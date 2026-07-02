@@ -23,6 +23,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ApiRequestError } from "@/lib/api-errors";
 import { taskApi } from "@/lib/task-api";
 import { taskData } from "@/data/tasks";
+import { invalidateTaskList } from "@/lib/task-events";
 import type {
   Task, TaskStatus, TaskCreatePayload, AssignableUser, TaskPriority, TaskTag, TaskAttachment,
 } from "@/types/tasks";
@@ -126,11 +127,13 @@ export function TaskForm({
     try {
       if (mode === "edit" && task) {
         await taskData.tasks.update(task.id, form);
+        invalidateTaskList();
         toast.success("Task updated");
         onSaved?.();
         router.push(redirectTo ?? "/admin/dashboard/task");
       } else {
         const created = await taskData.tasks.create(form);
+        invalidateTaskList();
         toast.success("Task created");
         onSaved?.();
         router.push(redirectTo ?? `/admin/dashboard/task/${created.id}`);

@@ -52,11 +52,13 @@ import { TaskFileUpload } from "@/app/task/_components/task-file-upload";
 import { usePageView } from "@/hooks/use-page-view";
 import { taskData } from "@/data/tasks";
 import { taskApi } from "@/lib/task-api";
+import { invalidateTaskList } from "@/lib/task-events";
 import type { TaskDetail, TaskAttachment } from "@/types/tasks";
 import type { ChecklistItemApi } from "@/types/notes";
 
 import { useRouteBase, getFullUrl } from "@/lib/route-base";
 import { SetBreadcrumbTitle } from "@/app/admin/dashboard/_components/breadcrumb/breadcrumb-title-context";
+import { TaskPageShell } from "@/app/admin/dashboard/task/_components/task-page-shell";
 
 const STATUS_STYLES: Record<string, { bg: string; label: string }> = {
   draft: { bg: "bg-amber-500/10 text-amber-600 border-amber-500/30", label: "Draft" },
@@ -279,7 +281,8 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
   async function handleDelete() {
     setDeleting(true);
     try {
-      await taskApi.delete(id);
+      await taskData.tasks.delete(id);
+      invalidateTaskList();
       toast.success("Task deleted");
       router.push(taskListHref);
     } catch {
@@ -366,8 +369,8 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
 
   if (!isLoggedIn) {
     return (
-      <div className="mx-auto flex min-h-[50vh] max-w-md items-center justify-center">
-        <Card className="w-full text-center">
+      <TaskPageShell className="min-h-[50vh] items-center justify-center">
+        <Card className="w-full max-w-md text-center">
           <CardContent className="py-12">
             <h2 className="mb-2 text-lg font-semibold">Authentication Required</h2>
             <p className="mb-6 text-sm text-muted-foreground">Sign in to view tasks.</p>
@@ -376,23 +379,23 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
             </Button>
           </CardContent>
         </Card>
-      </div>
+      </TaskPageShell>
     );
   }
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-4xl space-y-6">
+      <TaskPageShell>
         <Skeleton className="h-8 w-64" />
         <Skeleton className="h-4 w-96" />
         <Skeleton className="h-72 w-full rounded-xl" />
-      </div>
+      </TaskPageShell>
     );
   }
 
   if (error || !task) {
     return (
-      <div className="mx-auto max-w-4xl">
+      <TaskPageShell>
         <Card>
           <CardContent className="flex flex-col items-center gap-4 py-12">
             <p className="text-destructive">{error || "Task not found"}</p>
@@ -401,13 +404,13 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
             </Button>
           </CardContent>
         </Card>
-      </div>
+      </TaskPageShell>
     );
   }
 
   if (editing) {
     return (
-      <div className="mx-auto max-w-4xl space-y-4">
+      <TaskPageShell className="gap-4">
         <SetBreadcrumbTitle title={`Edit: ${task.title}`} />
         <Button variant="ghost" size="sm" onClick={() => setEditing(false)} className="-ml-2 w-fit">
           <ArrowLeft className="mr-1 size-4" />
@@ -420,10 +423,11 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
           onSaved={() => {
             setEditing(false);
             setLoading(true);
+            invalidateTaskList();
             fetchTask();
           }}
         />
-      </div>
+      </TaskPageShell>
     );
   }
 
@@ -432,7 +436,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
     checklistItems.length > 0 ? Math.round((completedCount / checklistItems.length) * 100) : null;
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
+    <TaskPageShell>
       <SetBreadcrumbTitle title={task.title} />
 
       {/* Header */}
@@ -550,56 +554,49 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
         </div>
       )}
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="h-auto w-full flex-wrap justify-start gap-1 rounded-lg border bg-muted/30 p-1">
-          <TabsTrigger value="tasks" className="gap-1.5">
-            <ListChecks className="size-3.5" />
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full gap-0">
+        <TabsList
+          variant="line"
+          className="h-auto w-full justify-start gap-0 overflow-x-auto rounded-none border-b border-border bg-transparent p-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          <TabsTrigger
+            value="tasks"
+            className="shrink-0 gap-1.5 rounded-none border-b-2 border-transparent px-4 py-3 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+          >
+            <ListChecks className="size-4" />
             Overview
           </TabsTrigger>
-          <TabsTrigger value="notes" className="gap-1.5">
-            <ScrollText className="size-3.5" />
+          <TabsTrigger
+            value="notes"
+            className="shrink-0 gap-1.5 rounded-none border-b-2 border-transparent px-4 py-3 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+          >
+            <ScrollText className="size-4" />
             Notes
           </TabsTrigger>
-          <TabsTrigger value="files" className="gap-1.5">
-            <ImageIcon className="size-3.5" />
-            Files ({attachments.length})
+          <TabsTrigger
+            value="files"
+            className="shrink-0 gap-1.5 rounded-none border-b-2 border-transparent px-4 py-3 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+          >
+            <ImageIcon className="size-4" />
+            Files
+            <Badge variant="secondary" className="ml-1 h-5 min-w-5 px-1.5 text-[10px] tabular-nums">
+              {attachments.length}
+            </Badge>
           </TabsTrigger>
           {task.audit_trails && task.audit_trails.length > 0 && (
-            <TabsTrigger value="audit" className="gap-1.5">
-              <History className="size-3.5" />
+            <TabsTrigger
+              value="audit"
+              className="shrink-0 gap-1.5 rounded-none border-b-2 border-transparent px-4 py-3 data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+            >
+              <History className="size-4" />
               Audit
             </TabsTrigger>
           )}
         </TabsList>
 
-        <TabsContent value="tasks" className="mt-4 space-y-4">
-          {(task.content || typeof task.progress === "number") && (
-            <Card>
-              <CardContent className="space-y-4 p-5">
-                {task.content && (
-                  <div className="space-y-2">
-                    <h2 className="text-sm font-medium text-muted-foreground">Description</h2>
-                    <p className="whitespace-pre-wrap text-sm leading-relaxed">{task.content}</p>
-                  </div>
-                )}
-                {typeof task.progress === "number" && (
-                  <div className="space-y-1.5">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Overall progress</span>
-                      <span className="font-medium tabular-nums">{task.progress}%</span>
-                    </div>
-                    <div className="h-2 overflow-hidden rounded-full bg-muted">
-                      <div
-                        className="h-full rounded-full bg-primary transition-all"
-                        style={{ width: `${Math.min(100, task.progress)}%` }}
-                      />
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          )}
-
+        <TabsContent value="tasks" className="mt-6 space-y-6">
+          <div className="grid gap-6 xl:grid-cols-12">
+            <div className="order-2 space-y-6 xl:order-1 xl:col-span-8">
           <Card>
             <CardHeader className="pb-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
@@ -699,26 +696,59 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
               </div>
             </CardContent>
           </Card>
+            </div>
 
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base">Attachments</CardTitle>
-              <CardDescription>{attachments.length} file{attachments.length === 1 ? "" : "s"}</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4 px-5 pb-5">
-              <TaskAttachmentsGrid
-                attachments={attachments}
-                taskId={id}
-                onDeleted={(aId) => setAttachments((prev) => prev.filter((a) => a.id !== aId))}
-              />
-              <div className="rounded-lg border border-dashed border-border/50 p-4">
-                <TaskFileUpload taskId={id} onUploaded={(a) => setAttachments((prev) => [...prev, a])} />
-              </div>
-            </CardContent>
-          </Card>
+            <div className="order-1 space-y-6 xl:order-2 xl:col-span-4">
+              {(task.content || typeof task.progress === "number") && (
+                <Card className="xl:order-first">
+                  <CardContent className="space-y-4 p-5">
+                    {task.content && (
+                      <div className="space-y-2">
+                        <h2 className="text-sm font-medium text-muted-foreground">Description</h2>
+                        <p className="whitespace-pre-wrap text-sm leading-relaxed">{task.content}</p>
+                      </div>
+                    )}
+                    {typeof task.progress === "number" && (
+                      <div className="space-y-1.5">
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-muted-foreground">Overall progress</span>
+                          <span className="font-medium tabular-nums">{task.progress}%</span>
+                        </div>
+                        <div className="h-2 overflow-hidden rounded-full bg-muted">
+                          <div
+                            className="h-full rounded-full bg-primary transition-all"
+                            style={{ width: `${Math.min(100, task.progress)}%` }}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              )}
+
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base">Quick files</CardTitle>
+                  <CardDescription>{attachments.length} attachment{attachments.length === 1 ? "" : "s"}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3 px-5 pb-5">
+                  <TaskAttachmentsGrid
+                    attachments={attachments.slice(0, 4)}
+                    taskId={id}
+                    onDeleted={(aId) => setAttachments((prev) => prev.filter((a) => a.id !== aId))}
+                  />
+                  {attachments.length > 4 && (
+                    <Button variant="link" className="h-auto p-0 text-sm" onClick={() => setActiveTab("files")}>
+                      View all files
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </TabsContent>
 
-        <TabsContent value="notes" className="mt-4">
+        <TabsContent value="notes" className="mt-6">
           <Card>
             <CardContent className="p-5">
               {task.notes ? (
@@ -737,7 +767,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
           </Card>
         </TabsContent>
 
-        <TabsContent value="files" className="mt-4">
+        <TabsContent value="files" className="mt-6">
           <Card>
             <CardContent className="space-y-4 p-5">
               <TaskAttachmentsGrid
@@ -753,7 +783,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
         </TabsContent>
 
         {task.audit_trails && task.audit_trails.length > 0 && (
-          <TabsContent value="audit" className="mt-4">
+          <TabsContent value="audit" className="mt-6">
             <Card>
               <CardContent className="space-y-2 p-5">
                 {task.audit_trails.map((trail, i) => (
@@ -770,6 +800,6 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
           </TabsContent>
         )}
       </Tabs>
-    </div>
+    </TaskPageShell>
   );
 }

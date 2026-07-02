@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import Link from "next/link";
 import { format } from "date-fns";
 import {
@@ -15,7 +15,6 @@ import {
   TrendingUp,
   Users,
 } from "lucide-react";
-import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,7 +22,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { usePageView } from "@/hooks/use-page-view";
-import { taskData } from "@/data/tasks";
+import { useTaskList } from "@/hooks/use-task-list";
 import { useAuth } from "@/contexts/auth-context";
 import type { Task, TaskStatus } from "@/types/tasks";
 
@@ -151,27 +150,7 @@ export default function TaskOverviewPage() {
   usePageView();
   const { isLoggedIn } = useAuth();
   const routeBase = useRouteBase();
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  const fetchTasks = useCallback(async () => {
-    setLoading(true);
-    setError("");
-    try {
-      const data = await taskData.tasks.fetch();
-      setTasks(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load tasks");
-      toast.error("Failed to load tasks");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchTasks();
-  }, [fetchTasks]);
+  const { tasks, loading, error, fetchTasks } = useTaskList();
 
   const stats = useMemo(() => {
     const total = tasks.length;

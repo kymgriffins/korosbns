@@ -64,6 +64,7 @@ const MOCK_NOTE: AdminNote = {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  taskData.tasks.set([]);
 });
 
 describe("taskData.tasks", () => {
@@ -74,10 +75,11 @@ describe("taskData.tasks", () => {
     expect(result).toEqual([MOCK_TASK]);
   });
 
-  it("fetch falls back to defaults on API error", async () => {
+  it("fetch returns cached tasks on API error", async () => {
+    taskData.tasks.set([MOCK_TASK]);
     vi.mocked(taskApi.listAll).mockRejectedValue(new Error("fail"));
     const result = await taskData.tasks.fetch();
-    expect(result.length).toBeGreaterThanOrEqual(0);
+    expect(result).toEqual([MOCK_TASK]);
   });
 
   it("fetchById returns task detail from API", async () => {
@@ -102,11 +104,10 @@ describe("taskData.tasks", () => {
     expect(result?.title).toBe("Test task");
   });
 
-  it("create falls back to local creation on API error", async () => {
+  it("create rejects on API error", async () => {
     const payload: TaskCreatePayload = { week_label: "W1", title: "Offline task", content: "" };
     vi.mocked(taskApi.create).mockRejectedValue(new Error("fail"));
-    const result = await taskData.tasks.create(payload);
-    expect(result?.id).toContain("new-");
+    await expect(taskData.tasks.create(payload)).rejects.toThrow("fail");
   });
 
   it("update sends payload and returns updated task", async () => {
@@ -116,11 +117,10 @@ describe("taskData.tasks", () => {
     expect(result?.title).toBe("Updated");
   });
 
-  it("update falls back to local update on API error", async () => {
+  it("update rejects on API error", async () => {
     taskData.tasks.set([MOCK_TASK]);
     vi.mocked(taskApi.update).mockRejectedValue(new Error("fail"));
-    const result = await taskData.tasks.update("task-1", { title: "Local update" });
-    expect(result?.title).toBe("Local update");
+    await expect(taskData.tasks.update("task-1", { title: "Local update" })).rejects.toThrow("fail");
   });
 
   it("delete calls API and returns true", async () => {
@@ -130,11 +130,10 @@ describe("taskData.tasks", () => {
     expect(result).toBe(true);
   });
 
-  it("delete falls back to local removal on API error", async () => {
+  it("delete rejects on API error", async () => {
     taskData.tasks.set([MOCK_TASK]);
     vi.mocked(taskApi.delete).mockRejectedValue(new Error("fail"));
-    const result = await taskData.tasks.delete("task-1");
-    expect(result).toBe(true);
+    await expect(taskData.tasks.delete("task-1")).rejects.toThrow("fail");
   });
 
   it("publish calls API and returns published task", async () => {
@@ -143,11 +142,10 @@ describe("taskData.tasks", () => {
     expect(taskApi.publish).toHaveBeenCalledWith("task-1", false, "");
   });
 
-  it("publish falls back to local status change on API error", async () => {
+  it("publish rejects on API error", async () => {
     taskData.tasks.set([MOCK_TASK]);
     vi.mocked(taskApi.publish).mockRejectedValue(new Error("fail"));
-    const result = await taskData.tasks.publish("task-1");
-    expect(result?.status).toBe("published");
+    await expect(taskData.tasks.publish("task-1")).rejects.toThrow("fail");
   });
 });
 

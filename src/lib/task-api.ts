@@ -98,6 +98,31 @@ function buildBody(payload: TaskCreatePayload): Record<string, unknown> {
   return body;
 }
 
+/** Only sends fields present on the payload — safe for PATCH (status moves, kanban column, etc.). */
+export function buildPatchBody(payload: TaskUpdatePayload): Record<string, unknown> {
+  const body: Record<string, unknown> = {};
+  if (payload.week_label !== undefined) body.week_label = payload.week_label;
+  if (payload.title !== undefined) body.title = payload.title;
+  if (payload.notes !== undefined) body.notes = payload.notes;
+  if (payload.status !== undefined) body.status = payload.status;
+  if (payload.due_date !== undefined) body.due_date = payload.due_date;
+  if (payload.assignee !== undefined) body.assignee = payload.assignee;
+  if (payload.assigned_team !== undefined) {
+    body.assigned_team = payload.assigned_team;
+    body.hue = autoHue(payload.assigned_team) ?? null;
+  }
+  if (payload.progress !== undefined) body.progress = payload.progress;
+  if (payload.due_label !== undefined) body.due_label = payload.due_label;
+  if (payload.priority !== undefined) body.priority = payload.priority;
+  if (payload.tag !== undefined) body.tag = payload.tag;
+  if (payload.scheduled_time !== undefined) body.scheduled_time = payload.scheduled_time;
+  if (payload.kanban_column !== undefined) body.kanban_column = payload.kanban_column;
+  if (payload.content !== undefined || payload.checklist !== undefined) {
+    body.content = encodeChecklist(payload.content ?? "", payload.checklist);
+  }
+  return body;
+}
+
 export function parseChecklist(content?: string): { clean: string; checklist: ChecklistItem[] } {
   if (!content) return { clean: "", checklist: [] };
   try {
@@ -126,20 +151,9 @@ export const taskApi = {
   },
 
   listAll: async (): Promise<Task[]> => {
-    const [publicNotes, authNotes] = await Promise.allSettled([
-      citizenApi.getWeeklyNotes(),
-      apiFetch<WeeklyNoteApi[]>("/notes/", { auth: true }),
-    ]);
-    const map = new Map<string, Task>();
-    if (publicNotes.status === "fulfilled") {
-      const notes = Array.isArray(publicNotes.value) ? publicNotes.value : ((publicNotes.value as ApiListResponse<WeeklyNoteApi>).results ?? []);
-      notes.forEach((n) => map.set(n.id, mapNoteToTask(n)));
-    }
-    if (authNotes.status === "fulfilled") {
-      const arr = Array.isArray(authNotes.value) ? authNotes.value : ((authNotes.value as ApiListResponse<WeeklyNoteApi>).results ?? []);
-      arr.forEach((n: WeeklyNoteApi) => map.set(n.id, mapNoteToTask(n)));
-    }
-    return Array.from(map.values());
+    const res = await apiFetch<WeeklyNoteApi[] | ApiListResponse<WeeklyNoteApi>>("/notes/", { auth: true });
+    const arr = Array.isArray(res) ? res : (res.results ?? []);
+    return arr.map(mapNoteToTask);
   },
 
   get: async (id: string): Promise<TaskDetail> => {
@@ -154,7 +168,7 @@ export const taskApi = {
   },
 
   update: async (id: string, payload: TaskUpdatePayload): Promise<Task> => {
-    const body = buildBody(payload as TaskCreatePayload);
+    const body = buildPatchBody(payload);
     const note = await apiFetch<WeeklyNoteApi>(`/notes/${id}/`, {
       method: "PATCH",
       auth: true,

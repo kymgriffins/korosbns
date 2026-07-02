@@ -10,6 +10,7 @@ import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/componen
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { taskApi } from "@/lib/task-api";
+import { TASK_LIST_INVALIDATED_EVENT } from "@/lib/task-events";
 import type { Task } from "@/types/tasks";
 
 function formatNoteDate(date: string | Date) {
@@ -40,6 +41,11 @@ export function RecentNotesCard() {
 
   useEffect(() => {
     fetchRecent();
+    const refresh = () => {
+      void fetchRecent();
+    };
+    window.addEventListener(TASK_LIST_INVALIDATED_EVENT, refresh);
+    return () => window.removeEventListener(TASK_LIST_INVALIDATED_EVENT, refresh);
   }, [fetchRecent]);
 
   return (

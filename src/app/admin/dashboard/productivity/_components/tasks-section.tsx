@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useMemo } from "react";
 
 import Link from "next/link";
 
@@ -13,30 +13,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 
+import { useTaskList } from "@/hooks/use-task-list";
 import { useRouteBase, getFullUrl } from "@/lib/route-base";
-import { taskApi } from "@/lib/task-api";
-import type { Task } from "@/types/tasks";
+import { taskData } from "@/data/tasks";
+import { invalidateTaskList } from "@/lib/task-events";
 
 export function TasksSection() {
   const routeBase = useRouteBase();
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchTasks = useCallback(async () => {
-    setLoading(true);
-    try {
-      const data = await taskApi.listAll();
-      setTasks(data.slice(0, 6));
-    } catch {
-      toast.error("Failed to load tasks");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchTasks();
-  }, [fetchTasks]);
+  const { tasks: allTasks, loading, fetchTasks, upsertTask } = useTaskList();
+  const tasks = useMemo(() => allTasks.slice(0, 6), [allTasks]);
 
   if (loading) {
     return (
@@ -90,14 +75,14 @@ export function TasksSection() {
                   aria-label={task.title}
                   onCheckedChange={async (checked) => {
                     try {
-                      if (checked) {
-                        await taskApi.publish(task.id);
-                      } else {
-                        await taskApi.update(task.id, { status: "draft" });
-                      }
-                      fetchTasks();
+                      const updated = checked
+                        ? await taskData.tasks.publish(task.id)
+                        : await taskData.tasks.update(task.id, { status: "draft" });
+                      upsertTask(updated);
+                      invalidateTaskList();
                     } catch {
                       toast.error("Failed to update task");
+                      fetchTasks();
                     }
                   }}
                 />

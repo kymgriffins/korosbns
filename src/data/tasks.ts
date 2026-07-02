@@ -56,18 +56,38 @@ const FALLBACK_TASKS: Task[] = [
   },
 ];
 
-let _tasks: Task[] = [...DEFAULT_TASKS];
+let _tasks: Task[] = [];
+
+function upsertCachedTask(task: Task) {
+  const idx = _tasks.findIndex((t) => t.id === task.id);
+  if (idx === -1) {
+    _tasks = [..._tasks, task];
+  } else {
+    const next = [..._tasks];
+    next[idx] = task;
+    _tasks = next;
+  }
+}
+
+function removeCachedTask(id: string) {
+  _tasks = _tasks.filter((t) => t.id !== id);
+}
 
 export const taskData = {
   tasks: {
     get: () => _tasks,
-    set: (items: Task[]) => { _tasks = items; },
-    fetch: () =>
-      withFallback(
-        "tasks",
-        () => taskApi.listAll(),
-        () => (_tasks.length > 0 ? _tasks : FALLBACK_TASKS),
-      ),
+    set: (items: Task[]) => {
+      _tasks = items;
+    },
+    fetch: async () => {
+      try {
+        const result = await taskApi.listAll();
+        _tasks = result;
+        return result;
+      } catch {
+        return _tasks;
+      }
+    },
     fetchById: (id: string) =>
       withFallback(
         "tasks",
@@ -86,71 +106,31 @@ export const taskData = {
           return detail;
         },
       ),
-    create: (payload: TaskCreatePayload) =>
-      withFallback(
-        "tasks",
-        () => taskApi.create(payload),
-        () => {
-          const t: Task = {
-            id: `new-${Date.now()}`,
-            status: payload.status ?? "draft",
-            author_name: "Local",
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-            ...payload,
-          } as Task;
-          _tasks.push(t);
-          return t;
-        },
-      ),
-    update: (id: string, payload: TaskUpdatePayload) =>
-      withFallback(
-        "tasks",
-        () => taskApi.update(id, payload),
-        () => {
-          const idx = _tasks.findIndex((t) => t.id === id);
-          if (idx >= 0) {
-            _tasks[idx] = { ..._tasks[idx], ...payload, updated_at: new Date().toISOString() } as Task;
-            return _tasks[idx];
-          }
-          return null as unknown as Task;
-        },
-      ),
-    delete: (id: string) =>
-      withFallback(
-        "tasks",
-        () => taskApi.delete(id).then(() => true),
-        () => {
-          _tasks = _tasks.filter((t) => t.id !== id);
-          return true;
-        },
-      ),
-    publish: (id: string, bypassChecklist = false, bypassComment = "") =>
-      withFallback(
-        "tasks",
-        () => taskApi.publish(id, bypassChecklist, bypassComment),
-        () => {
-          const idx = _tasks.findIndex((t) => t.id === id);
-          if (idx >= 0) {
-            _tasks[idx] = { ..._tasks[idx], status: "published", updated_at: new Date().toISOString() };
-            return _tasks[idx];
-          }
-          return null as unknown as Task;
-        },
-      ),
-    audit: (id: string, action: string, comment: string) =>
-      withFallback(
-        "tasks",
-        () => taskApi.audit(id, action, comment),
-        () => {
-          const idx = _tasks.findIndex((t) => t.id === id);
-          if (idx >= 0) {
-            _tasks[idx] = { ..._tasks[idx], updated_at: new Date().toISOString() };
-            return _tasks[idx];
-          }
-          return null as unknown as Task;
-        },
-      ),
+    create: async (payload: TaskCreatePayload) => {
+      const task = await taskApi.create(payload);
+      upsertCachedTask(task);
+      return task;
+    },
+    update: async (id: string, payload: TaskUpdatePayload) => {
+      const task = await taskApi.update(id, payload);
+      upsertCachedTask(task);
+      return task;
+    },
+    delete: async (id: string) => {
+      await taskApi.delete(id);
+      removeCachedTask(id);
+      return true;
+    },
+    publish: async (id: string, bypassChecklist = false, bypassComment = "") => {
+      const task = await taskApi.publish(id, bypassChecklist, bypassComment);
+      upsertCachedTask(task);
+      return task;
+    },
+    audit: async (id: string, action: string, comment: string) => {
+      const task = await taskApi.audit(id, action, comment);
+      upsertCachedTask(task);
+      return task;
+    },
     addChecklistItem: (id: string, text: string) =>
       withFallback(
         "tasks",

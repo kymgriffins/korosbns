@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 
 import Link from "next/link";
 
@@ -10,9 +10,10 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { usePageView } from "@/hooks/use-page-view";
+import { useTaskList } from "@/hooks/use-task-list";
 import { taskData } from "@/data/tasks";
 import { useRouteBase, getFullUrl } from "@/lib/route-base";
-import { taskApi } from "@/lib/task-api";
+import { invalidateTaskList } from "@/lib/task-events";
 import type { Task as DjangoTask } from "@/types/tasks";
 
 import { Kanban } from "./_components/kanban";
@@ -66,39 +67,21 @@ function mapTasksToBoard(tasks: DjangoTask[]) {
 export default function Page() {
   usePageView();
   const routeBase = useRouteBase();
-  const [tasks, setTasks] = useState<DjangoTask[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  const fetchTasks = useCallback(async () => {
-    setLoading(true);
-    setError("");
-    try {
-      const data = await taskData.tasks.fetch();
-      setTasks(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load tasks");
-      toast.error("Failed to load tasks");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchTasks();
-  }, [fetchTasks]);
+  const { tasks, setTasks, loading, error, fetchTasks, upsertTask } = useTaskList();
 
   const handleColumnChange = useCallback(async (taskId: string, newColumn: string) => {
     setTasks((prev) =>
       prev.map((t) => (t.id === taskId ? { ...t, kanban_column: newColumn as DjangoTask["kanban_column"] } : t)),
     );
     try {
-      await taskApi.update(taskId, { kanban_column: newColumn as DjangoTask["kanban_column"] });
+      const updated = await taskData.tasks.update(taskId, { kanban_column: newColumn as DjangoTask["kanban_column"] });
+      upsertTask(updated);
+      invalidateTaskList();
     } catch {
       toast.error("Failed to update task column");
       fetchTasks();
     }
-  }, [fetchTasks]);
+  }, [fetchTasks, upsertTask, setTasks]);
 
   if (loading) {
     return (

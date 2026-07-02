@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { parseChecklist, encodeChecklist, taskApi } from "@/lib/task-api";
+import { parseChecklist, encodeChecklist, buildPatchBody, taskApi } from "@/lib/task-api";
 import { citizenApi } from "@/lib/api-client";
 
 vi.mock("@/lib/api-client", () => ({
@@ -71,6 +71,25 @@ describe("encodeChecklist", () => {
     expect(parsed.__text__).toBe("Note body");
     expect(parsed.__checklist__).toHaveLength(1);
     expect(parsed.__checklist__[0].text).toBe("Do this");
+  });
+});
+
+describe("buildPatchBody", () => {
+  it("only includes defined fields for partial updates", () => {
+    expect(buildPatchBody({ status: "published" })).toEqual({ status: "published" });
+    expect(buildPatchBody({ kanban_column: "building" })).toEqual({ kanban_column: "building" });
+  });
+
+  it("does not send undefined title or content on status-only patch", () => {
+    const body = buildPatchBody({ status: "draft" });
+    expect(body).not.toHaveProperty("title");
+    expect(body).not.toHaveProperty("content");
+    expect(body).not.toHaveProperty("week_label");
+  });
+
+  it("includes content when explicitly provided", () => {
+    const body = buildPatchBody({ content: "Updated body" });
+    expect(body.content).toBe("Updated body");
   });
 });
 
