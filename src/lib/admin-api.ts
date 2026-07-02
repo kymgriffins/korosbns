@@ -5,21 +5,36 @@ function adminFetch<T>(url: string, options?: RequestInit & { auth?: boolean }):
   return apiFetch<T>(url, { ...options, auth: true });
 }
 
+function localFetch<T>(path: string, init?: RequestInit): Promise<T> {
+  return fetch(path, {
+    ...init,
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      ...(init?.headers as Record<string, string>),
+    },
+  }).then(async (r) => {
+    if (!r.ok) throw new Error(`Request failed (${r.status})`);
+    if (r.status === 204) return {} as T;
+    return r.json() as Promise<T>;
+  });
+}
+
 export const adminUsersApi = {
   list: (params?: { page?: number; search?: string }) => {
     const q = new URLSearchParams();
     if (params?.page) q.set("page", String(params.page));
     if (params?.search) q.set("search", params.search);
     const qs = q.toString();
-    return adminFetch<ApiListResponse<AdminUser>>(`/users/${qs ? `?${qs}` : ""}`);
+    return localFetch<ApiListResponse<AdminUser>>(`/api/admin/users/${qs ? `?${qs}` : ""}`);
   },
-  get: (id: string) => adminFetch<AdminUser>(`/users/${id}/`),
+  get: (id: string) => localFetch<AdminUser>(`/api/admin/users/${id}/`),
   create: (data: Partial<AdminUser>) =>
-    adminFetch<AdminUser>("/users/", { method: "POST", body: JSON.stringify(data) }),
+    localFetch<AdminUser>("/api/admin/users/", { method: "POST", body: JSON.stringify(data) }),
   update: (id: string, data: Partial<AdminUser>) =>
-    adminFetch<AdminUser>(`/users/${id}/`, { method: "PATCH", body: JSON.stringify(data) }),
+    localFetch<AdminUser>(`/api/admin/users/${id}/`, { method: "PATCH", body: JSON.stringify(data) }),
   delete: (id: string) =>
-    adminFetch<void>(`/users/${id}/`, { method: "DELETE" }),
+    localFetch<void>(`/api/admin/users/${id}/`, { method: "DELETE" }),
 };
 
 export const adminContentApi = {

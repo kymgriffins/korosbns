@@ -7,6 +7,11 @@ import {
   ShieldCheck,
   Lock,
   User,
+  Users,
+  Mail,
+  MessageSquare,
+  BookOpen,
+  Pen,
 } from "lucide-react";
 
 export type NavBadge = "new" | "soon";
@@ -92,14 +97,62 @@ export const sidebarItems: NavGroup[] = [
   },
   {
     id: 3,
-    label: "Settings",
+    label: "Management",
     items: [
+      {
+        id: "users",
+        title: "Users",
+        url: "/dashboard/users",
+        icon: Users,
+      },
+      {
+        id: "authors",
+        title: "Authors",
+        url: "/dashboard/authors",
+        icon: Pen,
+      },
       {
         id: "profile",
         title: "Profile",
         url: "/dashboard/profile",
         icon: User,
       },
+    ],
+  },
+  {
+    id: 4,
+    label: "Content",
+    items: [
+      {
+        id: "modules",
+        title: "Modules",
+        url: "/dashboard/modules",
+        icon: BookOpen,
+      },
+    ],
+  },
+  {
+    id: 5,
+    label: "Communication",
+    items: [
+      {
+        id: "mail",
+        title: "Email",
+        url: "/dashboard/mail",
+        icon: Mail,
+      },
+      {
+        id: "chat",
+        title: "Live Chat",
+        url: "/dashboard/chat",
+        icon: MessageSquare,
+      },
+    ],
+  },
+  {
+    id: 6,
+    label: "Settings",
+    items: [
       {
         id: "privacy",
         title: "Privacy",
