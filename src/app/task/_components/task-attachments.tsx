@@ -16,6 +16,11 @@ function formatFileSize(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+function downloadUrl(url: string, filename: string): string {
+  const path = url.replace(/^\//, "");
+  return `/api/download?path=${encodeURIComponent(path)}&name=${encodeURIComponent(filename)}`;
+}
+
 export function TaskAttachmentsGrid({
   attachments,
   taskId,
@@ -74,7 +79,7 @@ export function TaskAttachmentsGrid({
                     className="size-6"
                     asChild
                   >
-                    <a href={img.url} download={img.file_name}>
+                    <a href={downloadUrl(img.url, img.file_name)} download={img.file_name}>
                       <Download className="size-3" />
                     </a>
                   </Button>
@@ -124,7 +129,7 @@ export function TaskAttachmentsGrid({
                 </div>
                 <div className="flex items-center gap-1">
                   <Button variant="ghost" size="icon" className="size-8" asChild>
-                    <a href={file.url} download={file.file_name}>
+                    <a href={downloadUrl(file.url, file.file_name)} download={file.file_name}>
                       <Download className="size-4" />
                     </a>
                   </Button>

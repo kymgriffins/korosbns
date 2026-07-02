@@ -73,6 +73,7 @@ function mapNoteToTask(note: WeeklyNoteApi): Task {
     updated_at: note.updated_at,
     due_date: note.due_date,
     assignee: note.assignee,
+    assignee_name: note.assignee_name,
     assigned_team: note.assigned_team,
     team_name: note.team_name,
     hue: note.hue ?? autoHue(note.assigned_team),
@@ -476,10 +477,14 @@ export const taskApi = {
   uploadChecklistAttachment: async (taskId: string, itemId: string, file: File) => {
     const form = new FormData();
     form.append("file", file);
-    return apiFetch<ChecklistItemAttachmentApi>(
+    const res = await apiFetch<ChecklistItemAttachmentApi>(
       `/notes/${taskId}/checklist-items/${itemId}/attachments/`,
       { method: "POST", auth: true, body: form },
     );
+    return {
+      ...res,
+      url: toRelativeMediaUrl(res.url),
+    };
   },
 
   deleteChecklistAttachment: async (taskId: string, itemId: string, attachmentId: string) => {

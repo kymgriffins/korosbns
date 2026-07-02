@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { parseChecklist, encodeChecklist, buildPatchBody, taskApi } from "@/lib/task-api";
+import type { ChecklistItem } from "@/types/tasks";
 import { apiFetch, citizenApi } from "@/lib/api-client";
 
 vi.mock("@/lib/api-client", () => ({
@@ -75,8 +76,8 @@ describe("encodeChecklist", () => {
   });
 
   it("encodes text with checklist as JSON", () => {
-    const items = [
-      { id: "1", text: "Do this", checked: false },
+    const items: ChecklistItem[] = [
+      { id: "1", title: "Do this", text: "Do this", checked: false, status: "todo", sort_order: 0 },
     ];
     const result = encodeChecklist("Note body", items);
     const parsed = JSON.parse(result);

@@ -168,7 +168,7 @@ export function TaskListView({
         (t) =>
           !q ||
           t.title.toLowerCase().includes(q) ||
-          (t.assignee ?? "").toLowerCase().includes(q) ||
+          (t.assignee_name ?? t.assignee ?? "").toLowerCase().includes(q) ||
           (t.author_name ?? "").toLowerCase().includes(q) ||
           (t.content ?? "").toLowerCase().includes(q),
       ),
@@ -418,10 +418,10 @@ export function TaskListView({
 
                 <div className="w-20 shrink-0 hidden lg:flex items-center gap-1.5">
                   <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-muted text-[10px] font-medium text-muted-foreground border border-border/30">
-                    {(task.assignee ?? "?")[0]?.toUpperCase() ?? "?"}
+                    {(task.assignee_name ?? task.assignee ?? "?")[0]?.toUpperCase() ?? "?"}
                   </span>
                   <span className="text-xs text-muted-foreground truncate max-w-12">
-                    {task.assignee || "-"}
+                    {task.assignee_name || task.assignee || "-"}
                   </span>
                 </div>
 

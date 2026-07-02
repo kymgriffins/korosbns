@@ -36,6 +36,7 @@ type Task = {
   priority?: TaskPriority;
   tag?: TaskTag;
   assignee?: string | null;
+  assignee_name?: string | null;
   assigned_team?: string | null;
   due_date?: string | null;
   updated_at: string;
@@ -115,9 +116,9 @@ export function TaskCard({ task, selected, onSelectChange, showCheckbox }: Props
 
       <div className="mt-2 flex items-center justify-between">
         <div className="flex items-center gap-1.5">
-          {task.assignee ? (
+          {task.assignee_name || task.assignee ? (
             <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-muted text-[10px] font-medium text-muted-foreground border border-border/30">
-              {task.assignee[0]?.toUpperCase() ?? "?"}
+              {(task.assignee_name ?? task.assignee ?? "?")[0]?.toUpperCase() ?? "?"}
             </span>
           ) : (
             <span className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-border bg-muted text-[10px] font-medium text-muted-foreground">
@@ -125,7 +126,7 @@ export function TaskCard({ task, selected, onSelectChange, showCheckbox }: Props
             </span>
           )}
           <span className="text-[11px] text-muted-foreground truncate max-w-20">
-            {task.assignee || "Unassigned"}
+            {task.assignee_name || task.assignee || "Unassigned"}
           </span>
         </div>
 

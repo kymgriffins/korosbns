@@ -37,7 +37,7 @@ export function TaskTilesView({ tasks, onRefresh, query }: Props) {
         (t) =>
           !q ||
           t.title.toLowerCase().includes(q) ||
-          (t.assignee ?? "").toLowerCase().includes(q) ||
+          (t.assignee_name ?? t.assignee ?? "").toLowerCase().includes(q) ||
           (t.content ?? "").toLowerCase().includes(q),
       ),
     [tasks, q],

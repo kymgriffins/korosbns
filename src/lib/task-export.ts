@@ -16,7 +16,7 @@ export function generateTaskMarkdown(task: TaskDetail): string {
   lines.push(`**Author:** ${task.author_name}`);
   lines.push(`**Created:** ${safeFormat(task.created_at, "MMM d, yyyy")}`);
   if (task.due_date) lines.push(`**Due:** ${safeFormat(task.due_date, "MMM d, yyyy")}`);
-  if (task.assignee) lines.push(`**Assignee:** ${task.assignee}`);
+  if (task.assignee_name || task.assignee) lines.push(`**Assignee:** ${task.assignee_name || task.assignee}`);
   if (task.assigned_team) lines.push(`**Team:** ${task.assigned_team}`);
   if (task.week_label) lines.push(`**Week:** ${task.week_label}`);
   if (typeof task.progress === "number") lines.push(`**Progress:** ${task.progress}%`);

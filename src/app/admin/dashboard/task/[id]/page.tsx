@@ -12,6 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { TaskForm } from "@/app/task/_components/task-form";
+import { TaskExportDialog } from "@/app/task/_components/task-export-dialog";
 import { usePageView } from "@/hooks/use-page-view";
 import { taskApi } from "@/lib/task-api";
 import { taskData } from "@/data/tasks";
@@ -138,13 +139,16 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
       {/* Task metadata card */}
       <Card className="border-border/60 shadow-sm overflow-hidden">
         <CardHeader className="border-b border-border/40 bg-muted/10">
-          <div className="flex items-start justify-between gap-4 flex-wrap">
+              <div className="flex items-start justify-between gap-4 flex-wrap">
             <div className="flex items-center gap-3 min-w-0">
               <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
                 <ListTodo className="size-5 text-primary" />
               </div>
               <div className="min-w-0">
-                <CardTitle className="text-xl truncate">{task.title}</CardTitle>
+                <CardTitle className="text-xl truncate flex items-center gap-2">
+                  {task.title}
+                  {detail && <TaskExportDialog task={detail} />}
+                </CardTitle>
                 <CardDescription className="flex items-center gap-2 mt-0.5 flex-wrap">
                   <span className="text-xs text-muted-foreground">ID: {task.id.slice(0, 8)}</span>
                   <span className="text-muted-foreground">·</span>
@@ -180,14 +184,14 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
                 <AuthorCard detail={detail} task={task} />
               </div>
 
-              {task.assignee && (
+              {(task.assignee_name || task.assignee) && (
                 <div>
                   <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2">Assignee</p>
                   <div className="flex items-center gap-2">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-xs font-medium text-muted-foreground">
-                      {task.assignee[0]?.toUpperCase() ?? "?"}
+                      {(task.assignee_name ?? task.assignee ?? "?")[0]?.toUpperCase() ?? "?"}
                     </div>
-                    <div className="text-sm">{task.assignee}</div>
+                    <div className="text-sm">{task.assignee_name || task.assignee}</div>
                   </div>
                 </div>
               )}

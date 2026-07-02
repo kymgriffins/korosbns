@@ -33,6 +33,7 @@ const DEFAULT_TASKS: Task[] = (config.meetings ?? [])
       updated_at: new Date().toISOString(),
       due_date: a.due,
       assignee: a.owner,
+      assignee_name: a.owner,
       priority: (a.priority === "high" || a.priority === "medium" ? a.priority : "medium") as Task["priority"],
     };
     return t;

@@ -92,10 +92,10 @@ function BoardCard({ task, isOverlay = false }: { task: Task; isOverlay?: boolea
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5">
           <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-muted text-[10px] font-medium text-muted-foreground border border-border/30">
-            {(task.assignee ?? "?")[0]?.toUpperCase() ?? "?"}
+            {(task.assignee_name ?? task.assignee ?? "?")[0]?.toUpperCase() ?? "?"}
           </span>
           <span className="text-[11px] text-muted-foreground truncate max-w-16">
-            {task.assignee || "?"}
+            {task.assignee_name || task.assignee || "?"}
           </span>
         </div>
         {task.due_date && (
@@ -159,7 +159,7 @@ export function TaskBoardView({ tasks, onRefresh, query }: Props) {
         (t) =>
           !q ||
           t.title.toLowerCase().includes(q) ||
-          (t.assignee ?? "").toLowerCase().includes(q) ||
+          (t.assignee_name ?? t.assignee ?? "").toLowerCase().includes(q) ||
           (t.content ?? "").toLowerCase().includes(q),
       ),
     [localTasks, q],

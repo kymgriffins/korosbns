@@ -74,6 +74,7 @@ export type Task = {
   updated_at: string;
   due_date?: string | null;
   assignee?: string | null;
+  assignee_name?: string | null;
   assigned_team?: string | null;
   team_name?: string | null;
   hue?: string;
