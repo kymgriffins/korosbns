@@ -17,13 +17,13 @@ function contentSecurityPolicy(): string {
       : "";
   return [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.youtube.com https://www.youtube-nocookie.com https://s.ytimg.com https://www.clarity.ms https://static.cloudflareinsights.com",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.youtube.com https://www.youtube-nocookie.com https://s.ytimg.com https://www.clarity.ms https://scripts.clarity.ms https://va.vercel-scripts.com https://static.cloudflareinsights.com",
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob: https:",
     "font-src 'self' data: https:",
     `connect-src 'self' https://bnske.budgetndiostory.org https://*.budgetndiostory.org https://app.posthog.com https://us.i.posthog.com${localApiConnect}`,
     "media-src 'self' https://res.cloudinary.com blob: data:",
-    "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://youtube.com https://youtube-nocookie.com",
+    "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://youtube.com https://youtube-nocookie.com https://www.google.com",
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",

@@ -248,12 +248,14 @@ export function VideoGallery() {
           }
           description="Every Budget Ndio Story video in one place. Watch, learn, and follow the transcript."
         />
+        <h1 className="sr-only">Video Library</h1>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="relative flex-1 max-w-xs">
             <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search videos..."
+              aria-label="Search videos"
               className="w-full pl-8 rounded-lg bg-background text-xs"
               value={search}
               onChange={(e) => setSearch(e.target.value)}

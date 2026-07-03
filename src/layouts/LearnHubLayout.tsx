@@ -335,6 +335,7 @@ function LearnSidebar() {
                   className="relative flex items-start gap-3 rounded-lg bg-gradient-to-r from-emerald-500/10 to-teal-500/10 p-3 text-sm ring-1 ring-emerald-500/20 hover:from-emerald-500/15 hover:to-teal-500/15 transition-all group"
                 >
                   <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); setShowAppCard(false); }}
+                    aria-label="Dismiss"
                     className="absolute top-1.5 right-1.5 size-4 rounded-full bg-muted-foreground/10 flex items-center justify-center hover:bg-muted-foreground/20 transition-colors z-10">
                     <X className="size-2.5" />
                   </button>

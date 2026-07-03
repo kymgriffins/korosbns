@@ -79,6 +79,7 @@ export function ForumView() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search conversations…"
+          aria-label="Search conversations"
           className="h-10 rounded-xl pl-9 text-sm"
         />
       </div>

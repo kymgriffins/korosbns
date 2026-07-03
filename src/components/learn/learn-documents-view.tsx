@@ -271,6 +271,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
 
   return (
     <div className="flex flex-col h-full bg-background overflow-hidden">
+      <h1 className="sr-only">Document Hub</h1>
       <header className="flex items-center justify-between px-4 md:px-5 py-3 border-b border-border/50 shrink-0 gap-3">
         <div className="flex items-center gap-2.5 min-w-0">
           {selectedFolder ? (
