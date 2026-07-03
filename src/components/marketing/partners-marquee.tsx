@@ -8,6 +8,16 @@ import { useOrg } from "@/contexts/org-context";
 import { motion } from "motion/react";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
 
+const TISA_SPONSOR: Partner = {
+  id: "tisa",
+  name: "Tax Justice Network Africa (TISA)",
+  website: "https://newtisa.tisa.co.ke/",
+  logo_url: "https://newtisa.tisa.co.ke/wp-content/uploads/2025/03/New-TISA-logo.svg",
+  tier: "sponsor",
+  is_active: true,
+  is_consortium: false,
+};
+
 function mapOrgPartners(
   apiPartners: NonNullable<ReturnType<typeof useOrg>["config"]["partners"]>,
 ): Partner[] {
@@ -64,15 +74,17 @@ export default function PartnersMarquee() {
   useEffect(() => {
     const fromApi = config.partners?.length ? mapOrgPartners(config.partners) : [];
     const all = fromApi.length ? fromApi : partnerData.get();
-
-    const sponsors = all.filter(
+    const tisaFromData = all.find(
       (p) =>
+        (p.id?.toLowerCase() === "tisa" ||
+          p.name.toLowerCase().includes("tisa") ||
+          p.website?.includes("newtisa.tisa.co.ke")) &&
         (p.is_active ?? true) &&
-        !p.is_consortium &&
-        (p.tier === "sponsor" || p.id === "tisa"),
+        !p.is_consortium,
     );
 
-    setMainSponsors(sponsors);
+    // Always show TISA as the main sponsor logo on landing.
+    setMainSponsors([tisaFromData ? { ...TISA_SPONSOR, ...tisaFromData, logo_url: TISA_SPONSOR.logo_url } : TISA_SPONSOR]);
   }, [config.partners]);
 
   if (mainSponsors.length === 0) return null;
