@@ -154,14 +154,14 @@ select:focus-visible,
   background: var(--secondary);
   border: 1px solid var(--border);
   box-shadow:
-    0 0 20px rgba(0, 85, 255, 0.05),
+    0 0 20px color-mix(in srgb, var(--primary) 5%, transparent),
     inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
 .badge-minimal {
   background: var(--secondary);
   border: 1px solid var(--border);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--foreground) 10%, transparent);
 }
 
 /* Notion inspired elements */
@@ -170,7 +170,7 @@ select:focus-visible,
 }
 
 .notion-content h3 {
-  @apply text-xl font-bold mt-10 mb-4 border-b border-white/5 pb-2 text-foreground;
+  @apply text-xl font-bold mt-10 mb-4 border-b border-border pb-2 text-foreground;
 }
 
 .notion-content p {
@@ -182,23 +182,23 @@ select:focus-visible,
 }
 
 .notion-table {
-  @apply my-8 w-full border-collapse overflow-hidden rounded-2xl border border-white/10 bg-white/5;
+  @apply my-8 w-full border-collapse overflow-hidden rounded-2xl border border-border bg-muted/30;
 }
 
 .notion-table th {
-  @apply bg-white/10 px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-foreground/70;
+  @apply bg-muted/50 px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-foreground/70;
 }
 
 .notion-table td {
-  @apply border-t border-white/5 px-4 py-3 text-sm text-foreground/80;
+  @apply border-t border-border px-4 py-3 text-sm text-foreground/80;
 }
 
 .notion-table tr:hover {
-  @apply bg-white/[0.03];
+  @apply bg-muted/20;
 }
 
 .notion-cta {
-  @apply my-10 rounded-3xl bg-gradient-to-br from-primary/20 to-teal-500/20 border border-primary/30 p-8 shadow-xl;
+  @apply my-10 rounded-3xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/30 p-8 shadow-xl;
 }
 
 .notion-cta h4 {

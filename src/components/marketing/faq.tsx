@@ -101,7 +101,7 @@ export default function FAQ() {
           {/* Side Menu */}
           <div className="lg:w-64 shrink-0">
             <div className="lg:sticky lg:top-24 space-y-2">
-              <div className="hidden lg:block p-4 rounded-2xl bg-white/5 border border-white/10">
+              <div className="hidden lg:block p-4 rounded-2xl bg-muted/30 border border-border">
                 <h2 className="text-sm font-semibold text-foreground/60 mb-3 uppercase tracking-wider">Categories</h2>
                 <div className="space-y-1">
                   {faqCategories.map((cat) => {
@@ -114,7 +114,7 @@ export default function FAQ() {
                           "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all",
                           activeCategory === cat.id 
                             ? "bg-primary text-white" 
-                            : "text-foreground/70 hover:bg-white/5 hover:text-foreground"
+                            : "text-foreground/70 hover:bg-muted/30 hover:text-foreground"
                         )}
                       >
                         <Icon className="size-4" />
@@ -122,8 +122,8 @@ export default function FAQ() {
                         <span className={cn(
                           "text-xs px-1.5 py-0.5 rounded-full",
                           activeCategory === cat.id 
-                            ? "bg-white/20" 
-                            : "bg-white/10"
+                            ? "bg-muted/70" 
+                            : "bg-muted/50"
                         )}>
                           {cat.count}
                         </span>
@@ -138,7 +138,7 @@ export default function FAQ() {
                 <select 
                   value={activeCategory}
                   onChange={(e) => { setActiveCategory(e.target.value); setOpenFaq(null); }}
-                  className="w-full p-3 rounded-xl bg-white/5 border border-white/10 text-sm"
+                  className="w-full p-3 rounded-xl bg-muted/30 border border-border text-sm"
                 >
                   {faqCategories.map(cat => (
                     <option key={cat.id} value={cat.id}>{cat.label}</option>
@@ -171,11 +171,11 @@ export default function FAQ() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.05 }}
-                  className="rounded-xl bg-white/5 border border-white/10 overflow-hidden"
+                  className="rounded-xl bg-muted/30 border border-border overflow-hidden"
                 >
                   <button
                     onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                    className="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-white/5 transition-colors"
+                    className="w-full p-4 sm:p-5 flex items-center justify-between gap-3 text-left hover:bg-muted/30 transition-colors"
                   >
                     <div className="flex items-center gap-3">
                       <HelpCircle className="size-5 text-primary shrink-0" />
@@ -220,7 +220,7 @@ export default function FAQ() {
             </div>
 
             {/* Footer */}
-            <div className="max-w-3xl mx-auto w-full pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-foreground/30 px-4">
+            <div className="max-w-3xl mx-auto w-full pt-6 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-4 text-foreground/30 px-4">
               <p className="text-[10px] font-medium">© 2026 Budget Ndio Story.</p>
               <div className="flex items-center gap-4 text-[9px] font-medium uppercase tracking-wider">
                 <a href="mailto:info@budgetndiostory.com" className="hover:text-foreground">Email</a>

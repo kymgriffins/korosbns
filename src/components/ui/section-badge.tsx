@@ -25,7 +25,6 @@ const SectionBadge = ({ title, className }: Props) => {
             <motion.div
                 className={cn(
                     "relative z-0 px-4 pt-2 pb-1.5 rounded-full text-xs font-semibold uppercase bg-muted text-muted-foreground border border-border/60 overflow-hidden",
-                    // "relative z-0 px-4 pt-2 pb-1.5 rounded-full text-xs bg-[linear-gradient(110deg,#0055ff,45%,#bfdbfe,55%,#0055ff)] bg-size-[250%_100%] bg-clip-text animate-background-shine text-transparent font-medium uppercase bg-background/10 shadow-[inset_0_0_50px_5px_rgba(0,85,255,0.2)] overflow-hidden",
                     className
                 )}
                 transition={{ duration: 0.2 }}

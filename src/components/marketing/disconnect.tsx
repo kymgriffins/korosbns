@@ -64,7 +64,7 @@ const Disconnect = () => {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: index * 0.1 }}
-                            className="group relative p-5 rounded-2xl border border-white/10 bg-white/2 hover:bg-white/5 transition-all duration-300"
+                            className="group relative p-5 rounded-2xl border border-border bg-muted/10 hover:bg-muted/30 transition-all duration-300"
                         >
                             <div className="mb-3 flex items-center gap-2.5">
                                 <div

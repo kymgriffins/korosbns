@@ -191,7 +191,7 @@ export function LearnDashboardView({
       <motion.div variants={itemVars} className="grid grid-cols-2 gap-3 md:grid-cols-4">
         {[
           { label: "Total XP", value: points, icon: Sparkles, color: "text-primary" },
-          { label: "Day streak", value: streak, icon: Flame, color: "text-orange-500" },
+          { label: "Day streak", value: streak, icon: Flame, color: "text-tertiary" },
           { label: "Badges", value: isNewUser ? "—" : `${earnedBadges}`, icon: Award, color: "text-emerald-600" },
           { label: "Rank", value: userRank ? `#${userRank}` : isNewUser ? "—" : "—", icon: Trophy, color: "text-amber-600" },
         ].map((stat) => (
@@ -334,7 +334,7 @@ export function LearnDashboardView({
                     <div className="mt-0.5 shrink-0">
                       <div className={cn(
                         "size-2 rounded-full",
-                        task.priority === "high" || task.priority === "urgent" ? "bg-red-500" :
+                        task.priority === "high" || task.priority === "urgent" ? "bg-destructive" :
                         task.priority === "medium" ? "bg-amber-500" : "bg-muted-foreground/40",
                       )} />
                     </div>
@@ -378,7 +378,7 @@ export function LearnDashboardView({
                     <div className="flex min-w-0 items-center gap-2">
                       <span className={cn(
                         "w-5 text-center text-xs font-bold",
-                        entry.rank === 1 ? "text-amber-500" : entry.rank === 2 ? "text-slate-400" : entry.rank === 3 ? "text-orange-500" : "text-muted-foreground",
+                        entry.rank === 1 ? "text-amber-500" : entry.rank === 2 ? "text-muted-foreground" : entry.rank === 3 ? "text-tertiary" : "text-muted-foreground",
                       )}>
                         {entry.rank}
                       </span>

@@ -97,7 +97,7 @@ export default function ArticlesPromoMarquee() {
             href={Routes.Article(article.id)}
             className={cn(
               "mx-2 inline-flex items-center gap-2 rounded-full border border-foreground/15",
-              "bg-white/5 px-4 py-2 text-sm text-foreground/90 hover:bg-white/10 transition-colors",
+              "bg-muted/30 px-4 py-2 text-sm text-foreground/90 hover:bg-muted/50 transition-colors",
             )}
           >
             <BookOpen className="size-3.5 shrink-0 text-primary" />

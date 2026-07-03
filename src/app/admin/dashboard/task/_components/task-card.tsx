@@ -10,7 +10,7 @@ import type { TaskPriority, TaskTag } from "@/types/tasks";
 import { TAG_LABELS, PRIORITY_LABELS } from "@/types/tasks";
 
 const PRIORITY_COLORS: Record<TaskPriority, string> = {
-  urgent: "text-red-500 fill-red-500",
+  urgent: "text-destructive fill-destructive",
   high: "text-orange-500 fill-orange-500",
   medium: "text-yellow-500 fill-yellow-500",
   low: "text-slate-400 fill-slate-400",

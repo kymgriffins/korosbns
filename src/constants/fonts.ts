@@ -1,4 +1,4 @@
-import { Inter, Caveat } from "next/font/google";
+import { Caveat } from "next/font/google";
 import localFont from "next/font/local";
 
 export const heading = localFont({
@@ -37,8 +37,8 @@ export const heading = localFont({
     variable: "--font-heading",
 });
 
-export const base = Inter({
-    subsets: ["latin"],
+export const base = localFont({
+    src: "../../node_modules/geist/dist/fonts/geist-sans/Geist-Variable.woff2",
     variable: "--font-base",
 });
 
@@ -47,3 +47,4 @@ export const handwriting = Caveat({
     variable: "--font-handwriting",
     weight: ["400", "500", "600", "700"],
 });
+

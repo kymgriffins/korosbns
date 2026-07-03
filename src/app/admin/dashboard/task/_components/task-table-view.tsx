@@ -46,7 +46,7 @@ const STATUS_FILTER_OPTIONS: Array<{ value: string; label: string }> = [
 ];
 
 const PRIORITY_ICONS: Record<TaskPriority, { icon: typeof Circle; color: string }> = {
-  urgent: { icon: Circle, color: "text-red-500 fill-red-500" },
+  urgent: { icon: Circle, color: "text-destructive fill-destructive" },
   high:   { icon: Circle, color: "text-orange-500 fill-orange-500" },
   medium: { icon: Circle, color: "text-yellow-500 fill-yellow-500" },
   low:    { icon: Circle, color: "text-slate-400 fill-slate-400" },

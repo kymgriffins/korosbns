@@ -105,22 +105,22 @@ const Challenges = () => {
                                 </div>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
+                                    <div className="p-4 rounded-2xl bg-muted/30 border-border">
                                         <div className="flex items-center gap-3 mb-2">
                                             <Hash className="size-5 text-primary" />
                                             <span className="text-sm font-semibold uppercase text-foreground/70">Required Hashtag</span>
                                         </div>
-                                        <div className="text-xl font-mono font-bold text-white tracking-tight">
+                                        <div className="text-xl font-mono font-bold text-foreground tracking-tight">
                                             {featuredCampaign.hashtag}
                                         </div>
                                     </div>
                                     {featuredCampaign.buzzword && (
-                                        <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
+                                        <div className="p-4 rounded-2xl bg-muted/30 border-border">
                                             <div className="flex items-center gap-3 mb-2">
                                                 <Video className="size-5 text-destructive" />
                                                 <span className="text-sm font-semibold uppercase text-foreground/70">Weekly Buzzword</span>
                                             </div>
-                                            <div className="text-xl font-mono font-bold text-white tracking-tight italic">
+                                            <div className="text-xl font-mono font-bold text-foreground tracking-tight italic">
                                                 &quot;{featuredCampaign.buzzword}&quot;
                                             </div>
                                         </div>
@@ -150,7 +150,7 @@ const Challenges = () => {
                                         <ArrowRight className="ml-2 size-4 group-hover:translate-x-1 transition-transform" />
                                     </Button>
                                     <Link href="https://tiktok.com" target="_blank">
-                                        <Button variant="outline" size="lg" className="rounded-full border-white/10 hover:bg-white/5">
+                                        <Button variant="outline" size="lg" className="rounded-full border-border hover:bg-muted/30">
                                             Open TikTok
                                             <ExternalLink className="ml-2 size-4" />
                                         </Button>
@@ -160,7 +160,7 @@ const Challenges = () => {
 
                             <div className="relative lg:block hidden">
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
-                                <div className="h-full w-full rounded-3xl overflow-hidden border border-white/10 bg-white/5 flex items-center justify-center">
+                                <div className="h-full w-full rounded-3xl overflow-hidden border border-border bg-muted/30 flex items-center justify-center">
                                     {/* Mock Video Placeholder */}
                                     <div className="text-center space-y-4 p-8">
                                         <div className="size-20 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-6">
@@ -198,7 +198,7 @@ const Challenges = () => {
 
                 {/* Tabs for other campaigns */}
                 <div className="flex flex-col items-center mb-12">
-                    <div className="flex p-1 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
+                    <div className="flex p-1 rounded-2xl bg-muted/30 border border-border backdrop-blur-md">
                         {(["active", "upcoming", "completed"] as const).map((tab) => (
                             <button
                                 key={tab}
@@ -227,7 +227,7 @@ const Challenges = () => {
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -20 }}
                                     transition={{ duration: 0.3, delay: idx * 0.05 }}
-                                    className="group relative flex flex-col h-full rounded-3xl border border-white/10 bg-white/2 hover:bg-white/5 hover:border-primary/30 transition-all p-6 overflow-hidden"
+                                    className="group relative flex flex-col h-full rounded-3xl border border-border bg-muted/10 hover:bg-muted/30 hover:border-primary/30 transition-all p-6 overflow-hidden"
                                 >
                                     {activeTab === "completed" && (
                                         <div className="absolute top-4 right-4 z-10">
@@ -259,7 +259,7 @@ const Challenges = () => {
                                     </p>
 
                                     <div className="mt-auto space-y-4">
-                                        <div className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
+                                        <div className="flex items-center justify-between p-3 rounded-xl bg-muted/30 border border-border/50">
                                             <div className="flex items-center gap-2">
                                                 <Hash className="size-4 text-primary" />
                                                 <span className="text-xs font-mono font-bold">{campaign.hashtag}</span>
@@ -291,7 +291,7 @@ const Challenges = () => {
                             ))
                         ) : (
                             <div className="col-span-full py-20 text-center">
-                                <div className="size-20 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-6">
+                                <div className="size-20 rounded-full bg-muted/30 flex items-center justify-center mx-auto mb-6">
                                     <Calendar className="size-10 text-muted-foreground opacity-20" />
                                 </div>
                                 <h3 className="text-xl font-bold opacity-40">No {activeTab} challenges found</h3>
@@ -302,7 +302,7 @@ const Challenges = () => {
                 </div>
 
                 {/* Rewards Showcase */}
-                <div className="mt-32 relative rounded-[3rem] border border-white/10 bg-foreground/2 p-8 lg:p-16 overflow-hidden">
+                <div className="mt-32 relative rounded-[3rem] border border-border bg-foreground/2 p-8 lg:p-16 overflow-hidden">
                     <div className="absolute top-0 right-0 size-64 bg-primary/10 blur-[100px] rounded-full" />
                     <div className="absolute bottom-0 left-0 size-64 bg-purple-500/10 blur-[100px] rounded-full" />
                     
@@ -321,11 +321,11 @@ const Challenges = () => {
                                     { icon: Gift, title: "Exclusive Access", desc: "VIP invitations to budget workshops and partner events.", color: "text-destructive" }
                                 ].map((item, i) => (
                                     <div key={i} className="flex gap-4">
-                                        <div className={cn("size-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0", item.color)}>
+                                        <div className={cn("size-12 rounded-2xl bg-muted/30 border border-border flex items-center justify-center shrink-0", item.color)}>
                                             <item.icon className="size-6" />
                                         </div>
                                         <div>
-                                            <h4 className="font-bold text-white">{item.title}</h4>
+                                            <h4 className="font-bold text-foreground">{item.title}</h4>
                                             <p className="text-sm text-muted-foreground mt-1">{item.desc}</p>
                                         </div>
                                     </div>
@@ -338,7 +338,7 @@ const Challenges = () => {
                                 <motion.div
                                     key={i}
                                     whileHover={{ y: -5 }}
-                                    className="aspect-square rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center p-6 text-center"
+                                    className="aspect-square rounded-3xl bg-muted/30 border border-border flex items-center justify-center p-6 text-center"
                                 >
                                     <div>
                                         <div className="size-12 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
@@ -367,7 +367,7 @@ const Challenges = () => {
                         </p>
                         <div className="mt-8 flex flex-wrap justify-center gap-4">
                             <Button size="lg" className="rounded-full px-10">Start Challenge</Button>
-                            <Button variant="outline" size="lg" className="rounded-full border-white/20 hover:bg-white/10">View Rulebook</Button>
+                            <Button variant="outline" size="lg" className="rounded-full border-border hover:bg-muted/30">View Rulebook</Button>
                         </div>
                     </motion.div>
                 </div>

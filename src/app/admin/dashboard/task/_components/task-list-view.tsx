@@ -34,7 +34,7 @@ import type { Task, TaskPriority, TaskStatus, TaskTag } from "@/types/tasks";
 import { TAG_LABELS, PRIORITY_LABELS } from "@/types/tasks";
 
 const PRIORITY_ICONS: Record<TaskPriority, { color: string }> = {
-  urgent: { color: "text-red-500 fill-red-500" },
+  urgent: { color: "text-destructive fill-destructive" },
   high: { color: "text-orange-500 fill-orange-500" },
   medium: { color: "text-yellow-500 fill-yellow-500" },
   low: { color: "text-slate-400 fill-slate-400" },

@@ -6,18 +6,17 @@ import {
     ArrowRight,
     BookOpen,
     CheckCircle,
-    ChevronDown,
     ChevronLeft,
     Folder,
     HelpCircle,
-    Mail,
-    RefreshCcw,
     Send,
     Target,
   Trophy,
     X,
     XCircle,
 } from "lucide-react";
+import { FAQSection } from "@/components/learn/faq-section";
+import { NewsletterSignup } from "@/components/learn/newsletter-signup";
 import { AnimatePresence, motion, useScroll, useTransform } from "motion/react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -38,10 +37,6 @@ import { useStories, useArticles, useTriviaList } from "@/hooks/use-content";
 import { useSurveys, useSurvey, useSubmitSurvey } from "@/hooks/use-surveys";
 import { useYouTubeVideos } from "@/hooks/use-marketing";
 import { useSubmitTriviaAttempt } from "@/hooks/use-profile";
-import {
-  newsletterSubscribeErrorMessage,
-  subscribeNewsletter,
-} from "@/lib/newsletter-subscribe";
 import { LEARN_STORIES_VISIBLE } from "@/constants/feature-flags";
 import { sanitizeHtml, stripHtml } from "@/lib/sanitize";
 import { renderArticleBody } from "@/lib/render-content";
@@ -55,45 +50,6 @@ import {
 } from "@/lib/learn-content";
 import { fetchPublicOrgConfig } from "@/lib/org-config";
 
-
-const faqItems = [
-  {
-    q: "What is the Budget Policy Statement (BPS)?",
-    a: "The BPS is a yearly government document that sets out Kenya's spending priorities. It's like a preview of the national budget - showing where money will come from and where it'll go.",
-  },
-  {
-    q: "When is the BPS released?",
-    a: "By law (PFM Act), the BPS must be submitted to Parliament by February 15th every year. The final budget comes later on April 30th.",
-  },
-  {
-    q: "What's the difference between BPS and the national budget?",
-    a: "Think of BPS as the blueprint or trailer, and the national budget as the full movie. BPS sets the priorities and direction, while the budget is the actual detailed spending plan.",
-  },
-  {
-    q: "What is BETA?",
-    a: "BETA = Bottom-Up Economic Transformation Agenda. It's Kenya's plan to grow the economy by focusing on agriculture, small businesses, healthcare, housing, and digital transformation.",
-  },
-  {
-    q: "Why does Kenya borrow so much?",
-    a: "Kenya spends more than it collects in taxes (fiscal deficit). The gap is filled through borrowing - both from foreign sources and domestic (like treasury bonds). This helps fund development but also increases debt costs.",
-  },
-  {
-    q: "How much goes to county governments?",
-    a: "In 2026/27, Parliament approved KES 428 billion equitable share to counties (total county allocation KES 502 billion). This funds local services like roads, health, water, and markets in all 47 counties.",
-  },
-  {
-    q: "What are the main fiscal risks?",
-    a: "The BPS warns about: rising debt payments, state corporations needing bailouts, economic slowdowns, climate change (droughts/floods), and increased county demands.",
-  },
-];
-
-const moduleInfo = {
-  module: "Module 002",
-  title: "Reflecting on Kenya's 2026 Budget Policy Statement (BPS)",
-  credits: "Millicent Makina",
-};
-
-// Sourced dynamically from BNSKE API
 
 const quizQuestions = [
   {
@@ -138,138 +94,6 @@ const quizQuestions = [
       "KES 428 billion equitable share (KES 502B total) is allocated to county governments for devolved services like roads, health, water, and markets.",
   },
 ];
-
-function FAQSection() {
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
-
-  return (
-    <Container animation="fadeUp" delay={0.3} className="space-y-4">
-      <h2 className="text-xl font-bold">FAQ: Budget Basics</h2>
-      <div className="space-y-2">
-        {faqItems.map((item, idx) => (
-          <motion.div
-            key={idx}
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="rounded-xl bg-white/5 border border-white/10 overflow-hidden"
-          >
-            <button
-              onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-              className="w-full p-4 flex items-center justify-between gap-3 text-left"
-            >
-              <div className="flex items-center gap-3">
-                <HelpCircle className="size-4 text-primary shrink-0" />
-                <span className="text-sm font-medium">{item.q}</span>
-              </div>
-              <motion.div
-                animate={{ rotate: openFaq === idx ? 180 : 0 }}
-                transition={{ duration: 0.2 }}
-              >
-                <ChevronDown className="size-4 text-foreground/50" />
-              </motion.div>
-            </button>
-            <motion.div
-              initial={false}
-              animate={{
-                height: openFaq === idx ? "auto" : 0,
-                opacity: openFaq === idx ? 1 : 0,
-              }}
-              transition={{ duration: 0.2 }}
-              className="overflow-hidden"
-            >
-              <p className="px-4 pb-4 text-sm text-foreground/70 pl-8">
-                {item.a}
-              </p>
-            </motion.div>
-          </motion.div>
-        ))}
-      </div>
-    </Container>
-  );
-}
-
-function NewsletterSignup() {
-  const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    setLoading(true);
-
-    try {
-      const { alreadySubscribed } = await subscribeNewsletter({
-        email,
-        name: email.split("@")[0],
-        source: "learn_page",
-      });
-      setSubscribed(true);
-      if (alreadySubscribed) {
-        toast.info("You're already subscribed.");
-      } else {
-        toast.success("You're subscribed. Check your inbox for updates.");
-      }
-    } catch (error) {
-      toast.error(newsletterSubscribeErrorMessage(error));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (subscribed) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center p-8 rounded-2xl bg-gradient-to-r from-primary/20 to-teal-500/20 border border-primary/30"
-      >
-        <CheckCircle className="size-12 text-primary mx-auto mb-4" />
-        <h3 className="text-xl font-bold mb-2">You're Subscribed!</h3>
-        <p className="text-foreground/60">You'll receive budget updates.</p>
-      </motion.div>
-    );
-  }
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="p-8 rounded-2xl bg-white/5 border border-white/10"
-    >
-      <div className="text-center mb-6">
-        <Mail className="size-10 text-primary mx-auto mb-3" />
-        <h3 className="text-xl font-bold">Stay Updated</h3>
-        <p className="text-sm text-foreground/60">
-          Get budget insights delivered.
-        </p>
-      </div>
-      <form onSubmit={handleSubmit} className="flex gap-2">
-        <input
-          type="email"
-          placeholder="your@email.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="flex-1 px-4 py-3 rounded-xl bg-white/5 border border-white/20 text-sm"
-          required
-        />
-        <Button
-          type="submit"
-          disabled={loading}
-          size="lg"
-          className="px-4 rounded-xl"
-        >
-          {loading ? (
-            <RefreshCcw className="size-4 animate-spin" />
-          ) : (
-            <Send className="size-4" />
-          )}
-        </Button>
-      </form>
-    </motion.div>
-  );
-}
 
 type AppState = "hub" | "article" | "quiz" | "complete" | "survey" | "survey-complete";
 const STORY_WATCHED_STORAGE_KEY = "bns_story_watched";
@@ -1476,7 +1300,7 @@ export default function Learn() {
                     <span className="rounded-full border border-border bg-muted/30 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground/85">
                       Articles
                     </span>
-                    <span className="rounded-full border border-white/20 bg-white/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-white/85">
+                    <span className="rounded-full border border-border bg-muted/50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground/85">
                       Quiz + survey
                     </span>
                   </div>
@@ -1488,7 +1312,7 @@ export default function Learn() {
               <Container animation="fadeUp" delay={0.04} className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl font-bold">Stories</h2>
-                  <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground/55">
+                  <span className="rounded-full border border-border bg-muted/30 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-foreground/55">
                     Swipe horizontally
                   </span>
                 </div>
@@ -1645,7 +1469,7 @@ export default function Learn() {
                         key={video.id}
                         href={`https://www.youtube.com/watch?v=${video.id}`}
                         target="_blank"
-                        className="group relative block w-[280px] sm:w-[320px] rounded-2xl overflow-hidden border border-white/10 bg-white/5 hover:border-primary/50 transition-all"
+                        className="group relative block w-[280px] sm:w-[320px] rounded-2xl overflow-hidden border border-border bg-muted/30 hover:border-primary/50 transition-all"
                       >
                         <div className="relative aspect-video w-full overflow-hidden">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -1678,7 +1502,7 @@ export default function Learn() {
               <h2 className="text-xl font-bold">Document Repository</h2>
               <Link
                 href="/learn/documents"
-                className="group block rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-6 hover:border-primary/30 transition-all overflow-hidden"
+                className="group block rounded-2xl border border-border bg-muted/30 p-5 sm:p-6 hover:border-primary/30 transition-all overflow-hidden"
               >
                 <motion.div whileHover={{ y: -2 }} className="relative">
                   <div className="pointer-events-none absolute -right-10 -top-10 size-36 rounded-full bg-primary/20 blur-3xl" />
@@ -1745,7 +1569,7 @@ export default function Learn() {
               <h2 className="text-xl font-bold">Quick Answers</h2>
               <Link
                 href="/faq"
-                className="group block p-5 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 transition-all cursor-pointer"
+                className="group block p-5 rounded-xl bg-muted/30 border border-border hover:bg-muted/50 transition-all cursor-pointer"
               >
                 <motion.div whileHover={{ y: -2 }}>
                   <div className="flex items-center gap-4">
@@ -1794,7 +1618,7 @@ export default function Learn() {
             <Container
               animation="fadeUp"
               delay={0.5}
-              className="max-w-3xl mx-auto w-full pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-foreground/30 px-4"
+              className="max-w-3xl mx-auto w-full pt-6 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-4 text-foreground/30 px-4"
             >
               <p className="text-[10px] font-medium">
                 © 2026 Budget Ndio Story.
