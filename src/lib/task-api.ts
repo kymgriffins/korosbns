@@ -30,7 +30,7 @@ function mapChecklistItemApi(item: ChecklistItemApi): ChecklistItem {
     attachment_count: item.attachment_count,
     attachments: item.attachments?.map((a) => ({
       id: a.id,
-      url: toRelativeMediaUrl(a.url),
+      url: toRelativeMediaUrl(a.url ?? a.file),
       file_name: a.file_name,
       file_size: a.file_size,
       content_type: a.content_type,
@@ -93,16 +93,19 @@ function mapNoteToTask(note: WeeklyNoteApi): Task {
 /** Strip the Django host so URLs become relative `/media/…` paths served by the Next.js rewrite proxy. */
 function toRelativeMediaUrl(url?: string | null): string {
   if (!url) return "";
-  // Already relative (starts with /)
   if (url.startsWith("/")) return url;
-  // Strip absolute origin → "/media/..."
-  return url.replace(/^https?:\/\/[^/]+/, "") ?? "";
+  if (/^https?:\/\//i.test(url)) {
+    return url.replace(/^https?:\/\/[^/]+/i, "") || "";
+  }
+  const trimmed = url.replace(/^\/+/, "");
+  if (trimmed.startsWith("media/")) return `/${trimmed}`;
+  return `/media/${trimmed}`;
 }
 
 function mapAttachment(a: TaskAttachmentApi): TaskAttachment {
   return {
     id: a.id,
-    url: toRelativeMediaUrl(a.url),
+    url: toRelativeMediaUrl(a.url ?? a.file),
     file_name: a.file_name,
     file_size: a.file_size,
     content_type: a.content_type,
@@ -483,7 +486,7 @@ export const taskApi = {
     );
     return {
       ...res,
-      url: toRelativeMediaUrl(res.url),
+      url: toRelativeMediaUrl(res.url ?? res.file),
     };
   },
 

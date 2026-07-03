@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useSidebar } from "@/components/ui/sidebar";
 
 import { TaskForm } from "@/app/task/_components/task-form";
 import { TaskExportDialog } from "@/app/task/_components/task-export-dialog";
@@ -21,11 +22,17 @@ import type { Task, TaskDetail } from "@/types/tasks";
 export default function TaskDetailPage({ params }: { params: Promise<{ id: string }> }) {
   usePageView();
   const { id } = use(params);
+  const { setOpen: setSidebarOpen } = useSidebar();
   const routeBase = useRouteBase();
   const backHref = getFullUrl(routeBase, "/dashboard/task");
   const [task, setTask] = useState<Task | null>(null);
   const [detail, setDetail] = useState<TaskDetail | null>(null);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setSidebarOpen(false);
+    return () => setSidebarOpen(true);
+  }, [setSidebarOpen]);
 
   useEffect(() => {
     let cancelled = false;
