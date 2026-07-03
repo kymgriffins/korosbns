@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { DemoBanner } from "@/components/admin/demo-banner";
+import { AccountsTab } from "./_components/accounts-tab";
 import { BalanceDistributionCard } from "./_components/balance-distribution-card";
 import { FinanceNotification } from "./_components/finance-notification";
 import { IncomeBreakdown } from "./_components/income-breakdown";
 import { OverviewKpis } from "./_components/overview-kpis";
 import { QuickActions } from "./_components/quick-actions";
 import { TransactionsOverviewCard } from "./_components/transactions-overview-card";
+import { TransactionsTab } from "./_components/transactions-tab";
 import { UpcomingTransactions } from "./_components/upcoming-transactions";
 import { Wallet } from "./_components/wallet";
 
@@ -84,15 +86,11 @@ export default function Page() {
         </TabsContent>
 
         <TabsContent value="12-months">
-          <div className="flex h-64 items-center justify-center rounded-xl border border-border border-dashed text-muted-foreground">
-            Accounts view coming soon.
-          </div>
+          <AccountsTab />
         </TabsContent>
 
         <TabsContent value="custom">
-          <div className="flex h-64 items-center justify-center rounded-xl border border-border border-dashed text-muted-foreground">
-            Transactions view coming soon.
-          </div>
+          <TransactionsTab />
         </TabsContent>
       </Tabs>
     </div>

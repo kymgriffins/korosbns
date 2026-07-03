@@ -50,6 +50,8 @@ export type ChecklistItemAttachment = {
   is_image: boolean;
   uploaded_by_name?: string;
   created_at: string;
+  /** In-memory file before upload (create / unsaved sub-task). */
+  _file?: File;
 };
 
 export type TaskAttachment = {
