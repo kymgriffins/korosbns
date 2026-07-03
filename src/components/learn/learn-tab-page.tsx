@@ -1,9 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { LearnContentGrid } from "@/components/learn/learn-content-grid";
-import { LearnSidebar } from "@/components/learn/learn-sidebar";
+import { LearnStage, LearnStageHeader } from "@/components/learn/learn-stage";
 import type { LearnContentType, LearnHubSummary } from "@/types/learn";
 import type { LearnHubItem } from "@/lib/learn-hub";
 import { videoData } from "@/data/videos";
@@ -67,23 +67,18 @@ export function LearnTabPage({
     void trackAnalytics("learn_list_view", { tab: listKey });
   }, [listKey]);
 
-  const dailyQuest = useMemo(() => {
-    const fromSummary = summary?.trending?.find((t) => t.content_type === "quest");
-    return fromSummary ?? items.find((i) => i.content_type === "quest") ?? null;
-  }, [summary, items]);
-
   return (
-    <div className="mx-auto grid max-w-6xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[1fr_280px]">
-      <div>
-        <h1 className="text-2xl font-bold">{title}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{description}</p>
-        {error ? <p className="mt-4 text-destructive">{error}</p> : null}
-        <div className="mt-6">
-          <LearnContentGrid items={items} loading={loading} />
-        </div>
+    <LearnStage>
+      <LearnStageHeader title={title} subtitle={description} />
+      {error ? (
+        <p className="mt-4 text-sm text-destructive">
+          Content didn&apos;t load. Check your connection and try again.
+        </p>
+      ) : null}
+      <div className="mt-6">
+        <LearnContentGrid items={items} loading={loading} />
       </div>
-      <LearnSidebar trending={(summary?.trending ?? []) as LearnHubItem[]} dailyQuest={dailyQuest as LearnHubItem | null | undefined} />
-    </div>
+    </LearnStage>
   );
 }
 

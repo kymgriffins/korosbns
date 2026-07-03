@@ -7,23 +7,26 @@ import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { RefreshCw, Search, BookOpen, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { BitmojiAvatar } from "./bitmoji-avatar";
 import { Routes } from "@/constants/routes";
 import { getAuthorSlug } from "@/lib/learn-authors";
 import type { CivicModule } from "@/types/learn";
+import type { LearnHubProfile } from "@/lib/learn-data";
 import { readProgress } from "@/lib/module-progress";
 import { HarmonizedImage } from "@/components/ui/harmonized-image";
+import { LearnStage, LearnStageHeader } from "./learn-stage";
+import { LearnPathSpine } from "./learn-path-spine";
+import { useReducedMotionSafe } from "@/motion/hooks";
 
 interface LearnModulesViewProps {
-  profile: any;
+  profile: Partial<LearnHubProfile>;
   stages: CivicModule[];
   currentStage: CivicModule;
-  onSelectStage: (stage: CivicModule) => void;
   onRefresh?: () => Promise<void>;
 }
 
-export function LearnModulesView({ profile, stages, currentStage, onSelectStage, onRefresh }: LearnModulesViewProps) {
+export function LearnModulesView({ profile, stages, onRefresh }: LearnModulesViewProps) {
   const router = useRouter();
+  const reduced = useReducedMotionSafe();
   const [activeTab, setActiveTab] = useState<"all" | "in-progress" | "completed">("all");
   const [contentFilter, setContentFilter] = useState<"all" | "budget" | "civic">("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -67,48 +70,40 @@ export function LearnModulesView({ profile, stages, currentStage, onSelectStage,
   }), [moduleProgress]);
 
   return (
-    <div className="flex flex-col h-full bg-background overflow-hidden">
-      <header className="flex items-center justify-between px-4 md:px-5 py-3 border-b border-border/50 shrink-0 gap-3">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div className="bg-primary/8 p-1.5 rounded-lg shrink-0 ring-1 ring-primary/20">
-            <BookOpen className="size-4 text-primary" />
-          </div>
-          <div className="min-w-0">
-            <h1 className="font-bold text-sm leading-tight truncate">Civic Modules</h1>
-            <p className="text-[10px] text-muted-foreground font-semibold">Master the budget process</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <div className="relative hidden sm:block">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Search..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8 pr-3 py-1.5 bg-muted/40 border-0 rounded-lg text-xs w-36 focus:outline-none focus:ring-2 focus:ring-ring/30 transition-all"
-            />
-          </div>
-          {onRefresh && (
+    <LearnStage className="space-y-5">
+      <LearnStageHeader
+        eyebrow="Learning path"
+        title="Budget literacy modules"
+        subtitle="Follow the path from BPS and BROP through the Finance Bill — one document at a time."
+        action={
+          onRefresh ? (
             <button
               onClick={async () => { setRefreshing(true); try { await onRefresh(); } finally { setRefreshing(false); } }}
               disabled={refreshing}
-              className="p-1.5 hover:bg-muted/50 rounded-lg transition-colors text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+              className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
               title="Refresh modules"
             >
               <RefreshCw className={`size-4 ${refreshing ? "animate-spin" : ""}`} />
             </button>
-          )}
-          {profile?.avatar_url ? (
-            <img src={profile.avatar_url} alt="" className="size-7 rounded-full object-cover shrink-0 ring-1 ring-border/40" />
-          ) : (
-            <BitmojiAvatar gender={profile?.gender} size="sm" className="shrink-0" />
-          )}
-        </div>
-      </header>
+          ) : undefined
+        }
+      />
 
-      <div className="flex-1 overflow-y-auto p-3 md:p-4">
-        <div className="max-w-6xl mx-auto space-y-3">
+      {!searchQuery && activeTab === "all" && contentFilter === "all" && (
+        <LearnPathSpine stages={stages} />
+      )}
+
+      <div className="space-y-3">
+        <div className="relative sm:max-w-xs">
+          <Search className="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="Search modules…"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full rounded-lg border-0 bg-muted/40 py-2 pl-8 pr-3 text-xs focus:outline-none focus:ring-2 focus:ring-ring/30"
+          />
+        </div>
           <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-hide">
             {[
               { key: "all", label: "All", count: counts.all },
@@ -154,10 +149,10 @@ export function LearnModulesView({ profile, stages, currentStage, onSelectStage,
               {filteredModules.map(({ stage, completedCount, total, isCompleted, isInProgress }, idx) => (
                   <motion.div
                     key={stage.id}
-                    layout
-                    initial={{ opacity: 0, y: 12 }}
+                    layout={!reduced}
+                    initial={reduced ? false : { opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.03 }}
+                    transition={reduced ? { duration: 0 } : { delay: idx * 0.03 }}
                     className="group bg-card shadow-xs hover:shadow-sm rounded-xl p-3.5 cursor-pointer hover:bg-accent/30 transition-all flex flex-col ring-1 ring-border/40"
                     onClick={() => router.push(`/learn/modules/${stage.slug}`)}
                   >
@@ -248,8 +243,7 @@ export function LearnModulesView({ profile, stages, currentStage, onSelectStage,
               </p>
             </div>
           )}
-        </div>
       </div>
-    </div>
+    </LearnStage>
   );
 }

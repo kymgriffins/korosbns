@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Bell, Loader2, CheckCircle2, FileText, MessageSquare, RefreshCw } from "lucide-react";
 import { useGamificationMe } from "@/hooks/use-gamification";
 import { safeArray, safeLen, safeMap } from "@/lib/safe-data";
+import { LearnStage, LearnStageHeader } from "./learn-stage";
 
 interface AlertsViewProps {
   profile: any;
@@ -25,21 +26,22 @@ export function AlertsView({ profile }: AlertsViewProps) {
   const [refreshing, setRefreshing] = useState(false);
 
   return (
-    <div className="space-y-4 md:space-y-6 max-w-3xl mx-auto">
-      <div className="flex items-start justify-between gap-3">
-        <div className="space-y-1">
-          <h2 className="text-xl font-black uppercase tracking-tight">Participation Alerts</h2>
-          <p className="text-xs text-muted-foreground">Hyper-local alerts matching your county and tracked documents.</p>
-        </div>
-        <button
-          onClick={async () => { setRefreshing(true); try { await queryClient.invalidateQueries({ queryKey: ["gamification", "me"] }); } finally { setRefreshing(false); } }}
-          disabled={refreshing}
-          className="p-1.5 hover:bg-muted/50 rounded-lg transition-colors text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring shrink-0 mt-1"
-          title="Refresh activity"
-        >
-          <RefreshCw className={`size-4 ${refreshing ? "animate-spin" : ""}`} />
-        </button>
-      </div>
+    <LearnStage>
+      <LearnStageHeader
+        eyebrow="Alerts"
+        title="Participation alerts"
+        subtitle="Hyper-local alerts matching your county and tracked documents."
+        action={
+          <button
+            onClick={async () => { setRefreshing(true); try { await queryClient.invalidateQueries({ queryKey: ["gamification", "me"] }); } finally { setRefreshing(false); } }}
+            disabled={refreshing}
+            className="shrink-0 rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+            title="Refresh activity"
+          >
+            <RefreshCw className={`size-4 ${refreshing ? "animate-spin" : ""}`} />
+          </button>
+        }
+      />
 
       {gamification && !gamificationLoading && (
         <div className="space-y-4">
@@ -104,6 +106,6 @@ export function AlertsView({ profile }: AlertsViewProps) {
           </div>
         )}
       </div>
-    </div>
+    </LearnStage>
   );
 }

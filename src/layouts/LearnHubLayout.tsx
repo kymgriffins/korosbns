@@ -14,6 +14,7 @@ import { cn } from "@/utils";
 import { ThemeToggle } from "@/components/marketing/theme-toggle";
 import { LearnProvider, useLearn, type LearnTab } from "@/contexts/learn-context";
 import { LearnTabSync } from "@/components/learn/learn-tab-sync";
+import { LearnTopChrome } from "@/components/learn/learn-stage";
 import { learnTabToHref } from "@/lib/learn-nav";
 import { useAuth } from "@/contexts/auth-context";
 import { LearnMobileNav } from "@/layouts/LearnMobileNav";
@@ -398,6 +399,7 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
               <ThemeToggle />
             </div>
           </header>
+          <LearnTopChrome />
           <main className="flex-1 overflow-y-auto pb-[--mobile-nav-height] lg:pb-0">{children}</main>
           <LearnMobileNav />
         </div>

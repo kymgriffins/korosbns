@@ -1,5 +1,11 @@
 :root {
   --mobile-nav-height: 3.5rem;
+  --learn-stage-width: 42rem;
+  --learn-chamber-ink: #0b1220;
+  --learn-chamber-paper: #f7f4ee;
+  --learn-seal-gold: #c4a035;
+  --learn-vote-green: #1f6b4f;
+  --learn-vermillion: #d4483b;
   --radius: 0.625rem;
   --background: #ffffff;
   --foreground: #000000;

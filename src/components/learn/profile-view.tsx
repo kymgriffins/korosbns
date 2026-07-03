@@ -24,6 +24,8 @@ import { certificateDownloadHrefFromRecord } from "@/lib/certificate-url";
 import type { Gender } from "./bitmoji-avatar";
 import type { CivicModule } from "@/types/learn";
 import type { BadgeCatalogEntry, BadgeTier } from "@/types/gamification";
+import { LearnStage } from "./learn-stage";
+import { resolveGamification, SOVEREIGN_SHORT } from "@/lib/learn-gamification";
 
 interface ProfileViewProps {
   profile: any;
@@ -138,11 +140,8 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
   const { mutateAsync: updateProfile, isPending: savingProfile } = useUpdateProfile();
   const { mutateAsync: changePassword, isPending: changingPassword } = useChangePassword();
 
-  const points = gamification?.points ?? profile.sovereigns ?? 0;
-  const level = gamification?.level ?? Math.floor(points / 100) + 1;
-  const streak = gamification?.streak_days ?? profile.streakDays ?? 0;
+  const { points, level, streak, xpIntoLevel } = resolveGamification(profile, gamification ?? undefined);
   const earnedBadges = gamification?.badges ?? [];
-  const xpIntoLevel = points % 100;
 
   const displayName =
     user?.display_name || user?.break_name || profile.breakName || "Citizen";
@@ -265,9 +264,9 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
   };
 
   return (
-    <div className="space-y-4 md:space-y-5 max-w-3xl mx-auto">
-      {/* Hero */}
-      <div className="relative overflow-visible rounded-2xl bg-gradient-to-br from-primary/90 via-primary/80 to-primary/60 p-5 md:p-7 text-primary-foreground shadow-lg">
+    <LearnStage className="space-y-4 md:space-y-5">
+      {/* Citizen dossier hero */}
+      <div className="relative overflow-visible rounded-2xl border border-border/50 bg-[var(--learn-chamber-ink)] p-5 text-[var(--learn-chamber-paper)] md:p-7">
         <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl">
           <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.07] mix-blend-overlay" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/15 to-transparent" />
@@ -318,7 +317,7 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
             </span>
           </div>
           <div className="min-w-0 flex-1">
-            <p className="mb-0.5 text-[10px] font-black uppercase tracking-widest text-white/70">Citizen Champion</p>
+            <p className="mb-0.5 text-[10px] font-bold uppercase tracking-widest text-[var(--learn-seal-gold)]">Citizen dossier</p>
             <h2 className="truncate text-lg font-black leading-tight text-white md:text-2xl">{displayName}</h2>
             <p className="mt-0.5 truncate text-[11px] font-semibold text-white/80 md:text-sm">
               {county}{ward ? ` · ${ward}` : ""}
@@ -334,7 +333,7 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
             )}
             <div className="mt-2 md:mt-3">
               <div className="mb-1 flex justify-between text-[10px] font-bold text-white/70">
-                <span>{points} XP</span>
+                <span className="font-mono">{points} {SOVEREIGN_SHORT}</span>
                 <span>{xpIntoLevel}/100 to Lv.{level + 1}</span>
               </div>
               <div className="h-1.5 overflow-hidden rounded-full bg-white/20 md:h-2">
@@ -345,7 +344,7 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
                   aria-valuenow={xpIntoLevel}
                   aria-valuemin={0}
                   aria-valuemax={100}
-                  aria-label={`XP progress: ${xpIntoLevel}%`}
+                  aria-label={`${SOVEREIGN_SHORT} progress: ${xpIntoLevel}%`}
                 />
               </div>
             </div>
@@ -356,7 +355,7 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
       {/* Stats */}
       <div className="grid grid-cols-4 gap-2 md:gap-3">
         {[
-          { label: "XP", value: points, icon: Sparkles, color: "text-primary", bg: "bg-primary/8 border-primary/20" },
+          { label: SOVEREIGN_SHORT, value: points, icon: Sparkles, color: "text-[var(--learn-seal-gold)]", bg: "bg-[var(--learn-seal-gold)]/10 border-[var(--learn-seal-gold)]/20" },
           { label: "Streak", value: streak, icon: Flame, color: "text-orange-500", bg: "bg-orange-500/8 border-orange-500/20" },
           { label: "Badges", value: badgeStatCount, icon: Award, color: "text-emerald-600", bg: "bg-emerald-500/8 border-emerald-500/20" },
           { label: "Level", value: level, icon: Star, color: "text-amber-500", bg: "bg-amber-500/8 border-amber-500/20" },
@@ -659,6 +658,6 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
           Reset local progress
         </button>
       </div>
-    </div>
+    </LearnStage>
   );
 }

@@ -2,7 +2,7 @@
 
 export function DashboardSkeleton() {
   return (
-    <div className="space-y-3 max-w-6xl mx-auto p-3 md:p-5 pb-24 animate-pulse">
+    <div className="mx-auto max-w-[var(--learn-stage-width)] space-y-3 p-3 pb-24 animate-pulse md:p-5">
       {/* Hero */}
       <div className="bg-muted/30 rounded-2xl p-4 md:p-5 h-28" />
 

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePageView } from "@/hooks/use-page-view";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import {
   BookOpen,
   BookOpenText,
@@ -28,6 +28,9 @@ import { cn } from "@/utils";
 import { learnHubApi } from "@/lib/learn-hub";
 import { learningData } from "@/data/learning";
 import { useSidebar } from "@/components/ui/sidebar";
+import { useLearn } from "@/contexts/learn-context";
+import { LearnProgressRail, LearnStageShell } from "@/components/learn/learn-stage";
+import { formatSovereignGain } from "@/lib/learn-gamification";
 import { readProgress, writeProgress } from "@/lib/module-progress";
 import { triviaForStep } from "@/lib/learn-trivia";
 import { certificateDownloadHref } from "@/lib/certificate-url";
@@ -71,7 +74,9 @@ type TabId = "read" | "watch" | "quiz";
 export function ModuleDetailView() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const slug = params.slug as string;
+  const { setActiveLesson, updateCurrentStep } = useLearn();
 
   const [mod, setMod] = useState<CivicModule | null>(null);
   const [loading, setLoading] = useState(true);
@@ -103,7 +108,8 @@ export function ModuleDetailView() {
       setMod(res);
       if (res.steps?.length) {
         const p = readProgress(res.slug, res.order);
-        const startStep = p.currentStep || 1;
+        const stepFromUrl = Number(searchParams.get("step"));
+        const startStep = stepFromUrl > 0 ? stepFromUrl : (p.currentStep || 1);
         setCurrentStep(startStep);
         const completed = new Set<number>();
         for (const step of res.steps) {
@@ -112,13 +118,27 @@ export function ModuleDetailView() {
           }
         }
         setCompletedSteps(completed);
+        setActiveLesson({
+          stageId: res.slug,
+          stageTitle: res.title,
+          stageBadge: res.badge,
+          stageOrder: res.order,
+          currentStep: startStep,
+          totalSteps: res.steps.length,
+          completedStepIds: [...completed],
+          stepTitles: res.steps.map((s) => ({ id: s.order, title: s.title })),
+        });
       }
     } catch {
       setMod(null);
     } finally {
       setLoading(false);
     }
-  }, [slug]);
+  }, [slug, searchParams, setActiveLesson]);
+
+  useEffect(() => {
+    return () => setActiveLesson(null);
+  }, [setActiveLesson]);
 
   useEffect(() => {
     fetchModule();
@@ -177,6 +197,7 @@ export function ModuleDetailView() {
 
   const handleSelectStep = (stepNum: number) => {
     setCurrentStep(stepNum);
+    updateCurrentStep(stepNum);
     setShowTrivia(false);
     setActiveTab("read");
     setActiveVideoIdx(0);
@@ -288,35 +309,20 @@ export function ModuleDetailView() {
           100% { transform: scale(1); box-shadow: 0 0 0 0 hsl(var(--primary)); }
         }
       `}</style>
-    <div className="flex min-h-0 flex-1 flex-col bg-background">
-      {/* === Header === */}
-      <header className="flex shrink-0 items-center gap-2 border-b px-3 py-2 md:px-5 md:py-2.5 md:border-b-0 md:bg-background md:sticky md:top-0 md:z-10">
-        <button onClick={() => router.push("/learn")} className="p-1 hover:bg-muted/50 rounded-lg transition-colors -ml-1 md:hidden">
+    <LearnStageShell>
+      <LearnProgressRail
+        fyLabel={mod.fiscal_year_label ?? "FY Chamber"}
+        moduleTitle={mod.title}
+        currentStep={isMastery ? steps.length : currentStep}
+        totalSteps={steps.length}
+      />
+
+      <div className="flex items-center gap-2 border-b px-3 py-2 md:hidden">
+        <button type="button" onClick={() => router.push("/learn")} className="-ml-1 rounded-lg p-1 hover:bg-muted/50">
           <ChevronLeft className="size-4" />
         </button>
-        <Link href="/learn" className="hidden md:flex p-1 hover:bg-muted/50 rounded-lg transition-colors -ml-1">
-          <ChevronLeft className="size-4" />
-        </Link>
-        <div className="min-w-0 flex-1">
-          <nav className="flex items-center gap-1 text-[10px] text-muted-foreground font-semibold truncate">
-            <Link href="/learn" className="hover:text-foreground transition-colors">Learn</Link>
-            <span className="text-muted-foreground/40">/</span>
-            <span className="truncate text-foreground">{mod.title}</span>
-          </nav>
-        </div>
-        <div className="flex items-center gap-1.5 shrink-0">
-          {mod.badgeName && (
-            <Badge variant="outline" className="text-[10px] hidden sm:flex">
-              <BookOpen className="size-3" /> {mod.badgeName}
-            </Badge>
-          )}
-          <Badge variant="secondary" className="text-[10px]">{steps.length} steps</Badge>
-          <div className="hidden items-center gap-1.5 sm:flex">
-            <Progress value={progressPercent} className="h-1.5 w-16" />
-            <span className="text-[10px] tabular-nums text-muted-foreground">{completedSteps.size}/{steps.length}</span>
-          </div>
-        </div>
-      </header>
+        <span className="truncate text-xs font-semibold">{mod.title}</span>
+      </div>
 
       {/* === Main === */}
       <div className="flex flex-1 flex-col md:flex-row min-h-0">
@@ -373,7 +379,7 @@ export function ModuleDetailView() {
 
           {/* Content */}
           <div className="flex-1 md:border-t md:border-border/20">
-            <div className="mx-auto max-w-3xl p-4 md:p-6 lg:p-8">
+            <div className="mx-auto max-w-[var(--learn-stage-width)] p-4 md:p-6 lg:p-8">
               {isMastery ? (
                 <div className="flex flex-col items-center gap-4 py-16 text-center">
                   <div className="text-5xl">{mod.badge || "🎉"}</div>
@@ -385,7 +391,7 @@ export function ModuleDetailView() {
 
                   <div className="bg-gradient-to-br from-emerald-500/5 to-emerald-500/10 rounded-xl p-4 space-y-2 max-w-xs shadow-xs">
                     <p className="text-xs font-bold text-emerald-600 flex items-center gap-1.5"><Award className="size-3.5" /> Rewards Earned</p>
-                    <p className="text-lg font-black text-emerald-600">+25 SVG</p>
+                    <p className="text-lg font-black text-[var(--learn-vote-green)]">{formatSovereignGain(25)}</p>
                     {certificateId && (
                       <p className="text-[9px] text-muted-foreground">Credential: BNS-{mod.badgeName}-{certificateId.slice(0, 8).toUpperCase()}</p>
                     )}
@@ -664,7 +670,7 @@ export function ModuleDetailView() {
           </div>
         </aside>
       </div>
-    </div>
+    </LearnStageShell>
     </>
   );
 }
