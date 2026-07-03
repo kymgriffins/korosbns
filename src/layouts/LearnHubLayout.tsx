@@ -15,6 +15,7 @@ import { ThemeToggle } from "@/components/marketing/theme-toggle";
 import { LearnProvider, useLearn, type LearnTab } from "@/contexts/learn-context";
 import { LearnTabSync } from "@/components/learn/learn-tab-sync";
 import { LearnTopChrome } from "@/components/learn/learn-stage";
+import { LearnMotionShell } from "@/components/learn/learn-motion";
 import { learnTabToHref } from "@/lib/learn-nav";
 import { useAuth } from "@/contexts/auth-context";
 import { LearnMobileNav } from "@/layouts/LearnMobileNav";
@@ -202,11 +203,14 @@ function LearnSidebar() {
   const moduleCount = civicModules.length;
 
   const primaryItems: { key: LearnTab; label: string; icon: React.ReactNode; badge?: string }[] = [
-    { key: "home", label: "Dashboard", icon: <LayoutDashboard className="size-4" /> },
-    { key: "learn", label: "Modules", icon: <BookOpen className="size-4" />, badge: moduleCount > 0 ? String(moduleCount) : undefined },
+    { key: "home", label: "Chamber", icon: <LayoutDashboard className="size-4" /> },
+    { key: "learn", label: "Learning path", icon: <BookOpen className="size-4" />, badge: moduleCount > 0 ? String(moduleCount) : undefined },
+  ];
+
+  const laneItems: { key: LearnTab; label: string; icon: React.ReactNode }[] = [
     { key: "documents", label: "Documents", icon: <FileText className="size-4" /> },
-    { key: "profile", label: "Profile", icon: <User className="size-4" /> },
-    { key: "forum", label: "Forums", icon: <MessagesSquare className="size-4" /> },
+    { key: "forum", label: "Town hall", icon: <MessagesSquare className="size-4" /> },
+    { key: "profile", label: "Dossier", icon: <User className="size-4" /> },
   ];
 
   return (
@@ -229,7 +233,7 @@ function LearnSidebar() {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Menu</SidebarGroupLabel>
+          <SidebarGroupLabel>Your path</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {primaryItems.map((item) => {
@@ -294,6 +298,28 @@ function LearnSidebar() {
                   </SidebarMenuItem>
                 );
               })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-muted-foreground/70">Lanes</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {laneItems.map((item) => (
+                <SidebarMenuItem key={item.key}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={activeTab === item.key}
+                    tooltip={item.label}
+                    className="text-muted-foreground"
+                  >
+                    <Link href={learnTabToHref(item.key)} onClick={() => handleTabChange(item.key)}>
+                      {item.icon}
+                      <span>{item.label}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -400,7 +426,9 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
             </div>
           </header>
           <LearnTopChrome />
-          <main className="flex-1 overflow-y-auto pb-[--mobile-nav-height] lg:pb-0">{children}</main>
+          <main className="flex-1 overflow-y-auto pb-[--mobile-nav-height] lg:pb-0">
+            <LearnMotionShell>{children}</LearnMotionShell>
+          </main>
           <LearnMobileNav />
         </div>
       </SidebarProvider>

@@ -71,7 +71,7 @@ export function LearnMobileNav() {
   const items: MobileBottomNavItem[] = [
     {
       id: "home",
-      label: "Dashboard",
+      label: "Chamber",
       href: learnTabToHref("home"),
       active: activeTab === "home",
       ariaCurrent: activeTab === "home" ? "page" : undefined,
@@ -89,7 +89,7 @@ export function LearnMobileNav() {
     },
     {
       id: "learn",
-      label: "Learn",
+      label: "Path",
       href: learnTabToHref("learn"),
       active: activeTab === "learn",
       prominent: true,

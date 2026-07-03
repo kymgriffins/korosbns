@@ -25,6 +25,8 @@ import type { Gender } from "./bitmoji-avatar";
 import type { CivicModule } from "@/types/learn";
 import type { BadgeCatalogEntry, BadgeTier } from "@/types/gamification";
 import { LearnStage } from "./learn-stage";
+import { DossierJourneyTimeline } from "./learn-dossier-timeline";
+import { SovereignChip, StreakChip } from "./learn-chamber-ui";
 import { resolveGamification, SOVEREIGN_SHORT } from "@/lib/learn-gamification";
 
 interface ProfileViewProps {
@@ -331,28 +333,17 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
                 Sign in to update photo
               </Link>
             )}
-            <div className="mt-2 md:mt-3">
-              <div className="mb-1 flex justify-between text-[10px] font-bold text-white/70">
-                <span className="font-mono">{points} {SOVEREIGN_SHORT}</span>
-                <span>{xpIntoLevel}/100 to Lv.{level + 1}</span>
-              </div>
-              <div className="h-1.5 overflow-hidden rounded-full bg-white/20 md:h-2">
-                <div
-                  className="h-full rounded-full bg-white/90 transition-all duration-700 w-[var(--progress)]"
-                  style={{ "--progress": `${xpIntoLevel}%` } as React.CSSProperties}
-                  role="progressbar"
-                  aria-valuenow={xpIntoLevel}
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  aria-label={`${SOVEREIGN_SHORT} progress: ${xpIntoLevel}%`}
-                />
-              </div>
+            <div className="mt-2 md:mt-3 flex flex-wrap gap-2">
+              <SovereignChip amount={points} className="bg-white/15 text-white" />
+              <StreakChip days={streak} className="bg-white/15 text-white" />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Stats */}
+      <DossierJourneyTimeline stages={stages} />
+
+      {/* Stats — secondary to journey */}
       <div className="grid grid-cols-4 gap-2 md:gap-3">
         {[
           { label: SOVEREIGN_SHORT, value: points, icon: Sparkles, color: "text-[var(--learn-seal-gold)]", bg: "bg-[var(--learn-seal-gold)]/10 border-[var(--learn-seal-gold)]/20" },
@@ -460,27 +451,29 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
       )}
 
       {certificates.length > 0 && (
-        <SectionCard title={`Certificates (${certificates.length})`} icon={<Award className="size-3" />}>
-          <div className="space-y-2">
+        <SectionCard title={`Issued documents (${certificates.length})`} icon={<Award className="size-3" />}>
+          <div className="space-y-3">
             {certificates.map((cert) => (
               <a
                 key={cert.id}
                 href={certificateDownloadHrefFromRecord(cert)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 rounded-xl border border-border/50 bg-muted/10 p-3 transition-colors hover:border-primary/30 hover:bg-primary/[0.04]"
+                className="relative block overflow-hidden rounded-xl border border-[var(--learn-seal-gold)]/30 bg-[var(--learn-chamber-paper)] p-4 transition-colors hover:border-[var(--learn-seal-gold)]/60 dark:bg-[var(--learn-chamber-ink)]/40"
               >
-                <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-lg ring-1 ring-emerald-500/20">
-                  📜
+                <div className="absolute right-3 top-3 flex size-10 items-center justify-center rounded-full border-2 border-[var(--learn-seal-gold)] text-[8px] font-black uppercase text-[var(--learn-seal-gold)]">
+                  BNS
                 </div>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-xs font-bold">{cert.civic_module_title ?? "Module"}</p>
-                  <p className="text-[10px] text-muted-foreground">
-                    Issued {new Date(cert.issued_at).toLocaleDateString("en-KE", { month: "short", day: "numeric", year: "numeric" })}
-                  </p>
-                </div>
-                <Download className="size-4 shrink-0 text-primary" />
-                <ExternalLink className="size-3.5 shrink-0 text-muted-foreground/50" />
+                <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--learn-seal-gold)]">
+                  Certificate of completion
+                </p>
+                <p className="mt-1 truncate text-sm font-bold">{cert.civic_module_title ?? "Module"}</p>
+                <p className="mt-1 font-mono text-[10px] text-muted-foreground">
+                  Issued {new Date(cert.issued_at).toLocaleDateString("en-KE", { month: "short", day: "numeric", year: "numeric" })}
+                </p>
+                <p className="mt-2 inline-flex items-center gap-1 text-[10px] font-semibold text-primary">
+                  <Download className="size-3" /> Download issued document
+                </p>
               </a>
             ))}
           </div>

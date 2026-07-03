@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { Flame, Zap } from "lucide-react";
 import { cn } from "@/utils";
 import { useLearn } from "@/contexts/learn-context";
-import { resolveGamification, formatSovereigns, SOVEREIGN_SHORT } from "@/lib/learn-gamification";
+import { resolveGamification } from "@/lib/learn-gamification";
+import { SovereignChip, StreakChip } from "@/components/learn/learn-chamber-ui";
 import { heading } from "@/constants/fonts";
 
 /** Centered column used on every /learn surface. */
@@ -47,13 +47,8 @@ export function LearnProgressRail({
   const segments = [
     fyLabel ?? "FY Chamber",
     moduleTitle,
-    currentStep && totalSteps ? `Step ${currentStep}/${totalSteps}` : undefined,
+    currentStep && totalSteps ? `Step ${currentStep} of ${totalSteps}` : undefined,
   ].filter(Boolean);
-
-  const stepPct =
-    currentStep && totalSteps && totalSteps > 0
-      ? Math.round((currentStep / totalSteps) * 100)
-      : 0;
 
   return (
     <div className={cn("relative border-b border-border/40 bg-background/95", className)}>
@@ -73,14 +68,6 @@ export function LearnProgressRail({
             </span>
           ))}
         </nav>
-        {totalSteps ? (
-          <div className="h-0.5 overflow-hidden rounded-full bg-muted">
-            <div
-              className="h-full rounded-full bg-[var(--learn-vote-green)] transition-all duration-500"
-              style={{ width: `${stepPct}%` }}
-            />
-          </div>
-        ) : null}
       </div>
     </div>
   );
@@ -89,7 +76,7 @@ export function LearnProgressRail({
 /** Top chrome: streak + sovereigns + level — shown when user is in learn hub. */
 export function LearnTopChrome({ className }: { className?: string }) {
   const { gamification, activeLesson } = useLearn();
-  const { points, level, streak } = resolveGamification(null, gamification);
+  const { points, streak } = resolveGamification(null, gamification);
 
   const breadcrumb = activeLesson
     ? `${activeLesson.stageTitle} · Step ${activeLesson.currentStep}/${activeLesson.totalSteps}`
@@ -103,19 +90,10 @@ export function LearnTopChrome({ className }: { className?: string }) {
       )}
     >
       <div className="mx-auto flex max-w-[var(--learn-stage-width)] items-center justify-between gap-3 px-6 py-2">
-        <p className="min-w-0 truncate text-xs font-medium text-muted-foreground">{breadcrumb}</p>
+        <p className="min-w-0 truncate font-mono text-xs font-medium text-muted-foreground">{breadcrumb}</p>
         <div className="flex shrink-0 items-center gap-2">
-          <span className="inline-flex items-center gap-1 rounded-md bg-muted/60 px-2 py-0.5 text-[10px] font-bold tabular-nums">
-            <Flame className="size-3 text-amber-500" fill="currentColor" />
-            {streak}
-          </span>
-          <span className="inline-flex items-center gap-1 rounded-md bg-muted/60 px-2 py-0.5 font-mono text-[10px] font-bold tabular-nums">
-            <Zap className="size-3 text-[var(--learn-seal-gold)]" />
-            {points} {SOVEREIGN_SHORT}
-          </span>
-          <span className="rounded-md bg-[var(--learn-vote-green)]/15 px-2 py-0.5 text-[10px] font-bold text-[var(--learn-vote-green)]">
-            Lv {level}
-          </span>
+          <StreakChip days={streak} />
+          <SovereignChip amount={points} />
         </div>
       </div>
     </div>

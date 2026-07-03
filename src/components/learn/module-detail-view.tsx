@@ -22,7 +22,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/utils";
 import { learnHubApi } from "@/lib/learn-hub";
@@ -37,6 +36,10 @@ import { certificateDownloadHref } from "@/lib/certificate-url";
 import { renderContent } from "@/lib/render-content";
 import { resolveYoutubeId } from "@/lib/learn-video";
 import { apiFetch } from "@/lib/api-client";
+import { AnimatePresence, motion } from "motion/react";
+import { useReducedMotionSafe } from "@/motion/hooks";
+import { learnPageTurn, learnTransition } from "@/components/learn/learn-motion";
+import { ChamberSealOverlay } from "@/components/learn/learn-chamber-ui";
 import { YouTubePlayer } from "./youtube-player";
 import { TriviaSection } from "./trivia-section";
 import type { ChapterStep, CivicModule } from "@/types/learn";
@@ -87,7 +90,10 @@ export function ModuleDetailView() {
   const [certificateId, setCertificateId] = useState<string | null>(null);
   const [certificateUrl, setCertificateUrl] = useState<string | null>(null);
   const [activeVideoIdx, setActiveVideoIdx] = useState(0);
-  const [animatingStep, setAnimatingStep] = useState<number | null>(null);
+  const [showSeal, setShowSeal] = useState(false);
+  const [sealLabel, setSealLabel] = useState("Step recorded");
+  const [pendingAfterSeal, setPendingAfterSeal] = useState<"next" | null>(null);
+  const reduced = useReducedMotionSafe();
   const { setOpen: setSidebarOpen } = useSidebar();
 
   usePageView();
@@ -165,7 +171,6 @@ export function ModuleDetailView() {
   const hasQuiz = currentTrivia.length > 0;
   const videoEntries = parseVideoEntries(currentStepObj);
   const steps = mod?.steps ?? [];
-  const progressPercent = steps.length ? Math.round((completedSteps.size / steps.length) * 100) : 0;
 
   const readingTime = useMemo(() => {
     if (!currentStepObj) return "";
@@ -204,6 +209,7 @@ export function ModuleDetailView() {
     if (mod) {
       const p = readProgress(mod.slug, mod.order);
       writeProgress(mod.slug, { ...p, currentStep: stepNum });
+      router.replace(`/learn/modules/${mod.slug}?step=${stepNum}`, { scroll: false });
     }
   };
 
@@ -228,6 +234,17 @@ export function ModuleDetailView() {
 
   const handleFinishTrivia = () => {
     if (!mod || !currentStepObj) return;
+    if (currentStep >= steps.length) {
+      const p = readProgress(mod.slug, mod.order);
+      writeProgress(mod.slug, {
+        ...p,
+        stepsCompleted: { ...p.stepsCompleted, [currentStepObj.order]: true },
+      });
+      setCompletedSteps((prev) => new Set(prev).add(currentStepObj.order));
+      learnHubApi.completeChapter(currentStepObj.id).catch(() => {});
+      handleFinishModule();
+      return;
+    }
     const p = readProgress(mod.slug, mod.order);
     writeProgress(mod.slug, {
       ...p,
@@ -235,17 +252,10 @@ export function ModuleDetailView() {
       currentStep: currentStep + 1,
     });
     setCompletedSteps((prev) => new Set(prev).add(currentStepObj.order));
-    setAnimatingStep(currentStepObj.order);
-    setTimeout(() => setAnimatingStep(null), 600);
+    setSealLabel("Step recorded in your dossier");
+    setPendingAfterSeal("next");
+    setShowSeal(true);
     learnHubApi.completeChapter(currentStepObj.id).catch(() => {});
-    if (currentStep < steps.length) {
-      setCurrentStep((prev) => prev + 1);
-      setShowTrivia(false);
-      setActiveTab("read");
-      setActiveVideoIdx(0);
-    } else {
-      handleFinishModule();
-    }
   };
 
   const handleFinishModule = () => {
@@ -267,6 +277,8 @@ export function ModuleDetailView() {
         }
       }).catch(() => {});
     }
+    setSealLabel("Module certified — seal applied");
+    setShowSeal(true);
     setCurrentStep(mod.steps.length + 1);
   };
 
@@ -302,14 +314,32 @@ export function ModuleDetailView() {
 
   return (
     <>
-      <style jsx>{`
-        @keyframes animate-step-complete {
-          0% { transform: scale(1); }
-          40% { transform: scale(1.25); box-shadow: 0 0 0 4px hsl(var(--primary)); }
-          100% { transform: scale(1); box-shadow: 0 0 0 0 hsl(var(--primary)); }
-        }
-      `}</style>
-    <LearnStageShell>
+      <ChamberSealOverlay
+        show={showSeal}
+        label={sealLabel}
+        onDone={() => {
+          setShowSeal(false);
+          if (pendingAfterSeal === "next") {
+            const next = currentStep + 1;
+            setCurrentStep(next);
+            updateCurrentStep(next);
+            setShowTrivia(false);
+            setActiveTab("read");
+            setActiveVideoIdx(0);
+            if (mod) {
+              const p = readProgress(mod.slug, mod.order);
+              writeProgress(mod.slug, { ...p, currentStep: next });
+              router.replace(`/learn/modules/${mod.slug}?step=${next}`, { scroll: false });
+            }
+          }
+          setPendingAfterSeal(null);
+        }}
+      />
+    <LearnStageShell className={cn(
+      activeTab === "watch" && !isMastery
+        ? "bg-[var(--learn-chamber-ink)] text-[var(--learn-chamber-paper)]"
+        : "bg-[var(--learn-chamber-paper)] dark:bg-background",
+    )}>
       <LearnProgressRail
         fyLabel={mod.fiscal_year_label ?? "FY Chamber"}
         moduleTitle={mod.title}
@@ -325,8 +355,7 @@ export function ModuleDetailView() {
       </div>
 
       {/* === Main === */}
-      <div className="flex flex-1 flex-col md:flex-row min-h-0">
-        {/* === Content area === */}
+      <div className="flex flex-1 flex-col min-h-0">
         <div className="flex flex-1 flex-col min-w-0 min-h-0">
           {/* Step dots — mobile */}
           <div className="flex shrink-0 items-center gap-1.5 overflow-x-auto px-3 py-2 scrollbar-hide md:hidden border-b border-border/20">
@@ -343,7 +372,6 @@ export function ModuleDetailView() {
                     isCurrent && "scale-110 bg-primary text-primary-foreground shadow-xs",
                     !isCurrent && passed && "border border-emerald-500/30 bg-emerald-500/15 text-emerald-600",
                     !isCurrent && !passed && "border border-border/40 bg-muted/40 text-muted-foreground",
-                    animatingStep === stepNum && "animate-step-complete",
                   )}
                   title={step.title}
                 >
@@ -414,7 +442,16 @@ export function ModuleDetailView() {
                   </div>
                 </div>
               ) : (
-                <div className="space-y-5">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={`step-${currentStep}-${activeTab}`}
+                    initial={reduced ? false : "initial"}
+                    animate="animate"
+                    exit="exit"
+                    variants={learnPageTurn}
+                    transition={learnTransition(reduced, 0.28)}
+                    className="space-y-5"
+                  >
                   {/* Step header */}
                   <div className="space-y-1">
                     <div className="flex items-center justify-between gap-2">
@@ -600,75 +637,12 @@ export function ModuleDetailView() {
                       </div>
                     </>
                   )}
-                </div>
+                  </motion.div>
+                </AnimatePresence>
               )}
             </div>
           </div>
         </div>
-
-        {/* === Curriculum sidebar — desktop === */}
-        <aside className="hidden w-64 shrink-0 border-l md:flex md:flex-col md:h-[calc(100dvh-8rem)]">
-          <div className="flex-1 overflow-y-auto">
-            <div className="p-4">
-              {mod.author && (
-                <div className="mb-4 flex items-center gap-2.5 rounded-lg bg-muted/30 p-3">
-                  <div className="flex size-8 items-center justify-center rounded-full bg-muted text-xs font-semibold">
-                    {mod.author.name?.slice(0, 2).toUpperCase()}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="truncate text-xs font-medium">{mod.author.name}</p>
-                    {mod.author.role && <p className="truncate text-[10px] text-muted-foreground">{mod.author.role}</p>}
-                  </div>
-                </div>
-              )}
-
-              <div className="mb-3 flex items-center justify-between">
-                <h3 className="text-xs font-semibold">Curriculum</h3>
-                <span className="text-[10px] text-muted-foreground">{completedSteps.size}/{steps.length}</span>
-              </div>
-
-              <div className="space-y-1">
-                {steps.map((step: ChapterStep, idx: number) => {
-                  const stepNum = idx + 1;
-                  const isCurrent = currentStep === stepNum;
-                  const passed = isStepPassed(stepNum);
-                  return (
-                    <button
-                      key={step.id}
-                      onClick={() => handleSelectStep(stepNum)}
-                      className={cn(
-                        "flex w-full items-center gap-2.5 rounded-lg p-2 text-left text-xs transition-colors",
-                        isCurrent && "bg-primary/10 text-primary",
-                        !isCurrent && "hover:bg-muted/50",
-                      )}
-                    >
-                      <span className={cn(
-                        "flex size-6 shrink-0 items-center justify-center rounded-full text-[10px] font-bold",
-                        isCurrent && "bg-primary text-primary-foreground",
-                        !isCurrent && passed && "bg-emerald-500/15 text-emerald-600",
-                        !isCurrent && !passed && "bg-muted text-muted-foreground",
-                        animatingStep === stepNum && "animate-step-complete",
-                      )}>
-                        {passed ? <CheckCircle2 className="size-3" /> : stepNum}
-                      </span>
-                      <span className={cn("line-clamp-2 leading-tight", passed && !isCurrent && "text-muted-foreground")}>{step.title}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              <Separator className="my-4" />
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-                  <span>Progress</span>
-                  <span>{progressPercent}%</span>
-                </div>
-                <Progress value={progressPercent} className="h-1.5" />
-              </div>
-            </div>
-          </div>
-        </aside>
       </div>
     </LearnStageShell>
     </>

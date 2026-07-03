@@ -2,11 +2,10 @@
 
 import Link from "next/link";
 import { ExternalLink, Film, GraduationCap, Loader2, Newspaper, BookOpen, FileText } from "lucide-react";
-import { motion } from "motion/react";
 import type { LearnHubItem } from "@/lib/learn-hub";
 import { isExternalLearnHref, learnItemHref } from "@/lib/learn-hub";
-import { staggerContainer, fadeInUp } from "@/motion/variants";
-import { useReducedMotionSafe } from "@/motion/hooks";
+import { SOVEREIGN_SHORT } from "@/lib/learn-gamification";
+import { SovereignSealGlyph } from "@/components/learn/learn-chamber-ui";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/utils";
@@ -36,8 +35,6 @@ export function LearnContentGrid({
   loading?: boolean;
   emptyMessage?: string;
 }) {
-  const reduced = useReducedMotionSafe();
-
   if (loading) {
     return (
       <div className="flex justify-center py-16">
@@ -49,22 +46,17 @@ export function LearnContentGrid({
   if (items.length === 0) {
     return (
       <p className="rounded-2xl border border-border bg-card py-12 text-center text-sm text-muted-foreground">
-        {emptyMessage ?? "Nothing published in this section yet."}
+        {emptyMessage ?? "Nothing filed in this lane yet. Check back when new material is published."}
       </p>
     );
   }
 
   return (
-    <motion.div
-      className="grid grid-cols-1 gap-4 sm:grid-cols-2"
-      variants={staggerContainer}
-      initial={reduced ? false : "hidden"}
-      animate="visible"
-    >
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       {items.map((item) => (
         <LearnContentCard key={`${item.content_type}-${item.id}`} item={item} />
       ))}
-    </motion.div>
+    </div>
   );
 }
 
@@ -110,6 +102,21 @@ function LearnContentCard({ item }: { item: LearnHubItem }) {
         {item.summary ? (
           <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{item.summary}</p>
         ) : null}
+        {item.content_type === "quest" && (
+          <div className="mt-2 flex flex-wrap items-center gap-2 text-[10px]">
+            {item.path_slug && (
+              <span className="rounded-md bg-muted px-2 py-0.5 text-muted-foreground">
+                Unlocks after {item.path_slug.replace(/-/g, " ")}
+              </span>
+            )}
+            {item.points != null && item.points > 0 && (
+              <span className="inline-flex items-center gap-1 font-mono font-bold text-[var(--learn-seal-gold)]">
+                <SovereignSealGlyph />
+                +{item.points} {SOVEREIGN_SHORT}
+              </span>
+            )}
+          </div>
+        )}
         {item.tags?.length ? (
           <div className="mt-2 flex flex-wrap gap-1">
             {item.tags.slice(0, 3).map((tag) => (
@@ -140,7 +147,7 @@ function LearnContentCard({ item }: { item: LearnHubItem }) {
   );
 
   return (
-    <motion.div variants={fadeInUp} className="group">
+    <div className="group">
       {external ? (
         <article className="flex h-full flex-col overflow-hidden rounded-xl border bg-card transition-colors hover:border-primary/40">
           {body}
@@ -153,6 +160,6 @@ function LearnContentCard({ item }: { item: LearnHubItem }) {
           {body}
         </Link>
       )}
-    </motion.div>
+    </div>
   );
 }

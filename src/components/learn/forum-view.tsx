@@ -101,12 +101,12 @@ export function ForumView() {
           </div>
           <div>
             <p className="text-sm font-bold text-foreground">
-              {search ? "No conversations match your search" : "No conversations yet"}
+              {search ? "No questions match your search" : "No questions filed yet on this chapter"}
             </p>
             <p className="mt-1 text-xs text-muted-foreground">
               {search
                 ? "Try a different keyword or browse all threads."
-                : "Be the first to start a civic budget discussion."}
+                : "Be the first to file a question about the budget process."}
             </p>
           </div>
           {!search && isLoggedIn && <CreateThreadDialog />}

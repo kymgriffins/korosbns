@@ -27,6 +27,14 @@ const LIST_FETCHERS = {
     contentData.quests.fetch(opts).then((items) => ({ results: items })),
 } as const;
 
+const LANE_FRAMING: Partial<Record<keyof typeof LIST_FETCHERS, string>> = {
+  documents: "Official budget documents tied to your learning path — prerequisite reading for chamber steps.",
+  quests: "Daily civic tasks with Sovereign rewards — each quest links to a module on the path.",
+  articles: "Briefings filed alongside the FY learning path.",
+  videos: "Hearings and explainers filed for the current fiscal year.",
+  stories: "Narrative case files from Kenya's budget process.",
+};
+
 export function LearnTabPage({
   title,
   description,
@@ -69,14 +77,27 @@ export function LearnTabPage({
 
   return (
     <LearnStage>
-      <LearnStageHeader title={title} subtitle={description} />
+      <LearnStageHeader
+        title={title}
+        subtitle={LANE_FRAMING[listKey] ?? description}
+      />
       {error ? (
         <p className="mt-4 text-sm text-destructive">
           Content didn&apos;t load. Check your connection and try again.
         </p>
       ) : null}
       <div className="mt-6">
-        <LearnContentGrid items={items} loading={loading} />
+        <LearnContentGrid
+          items={items}
+          loading={loading}
+          emptyMessage={
+            listKey === "documents"
+              ? "Documents for this fiscal year haven't been published yet."
+              : listKey === "quests"
+                ? "No quests filed today. Check back after the next chamber session."
+                : undefined
+          }
+        />
       </div>
     </LearnStage>
   );

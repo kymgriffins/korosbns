@@ -27,6 +27,27 @@ export const learnStepAdvance: Variants = {
   exit: { opacity: 0, x: -12 },
 };
 
+export const learnPageTurn: Variants = {
+  initial: { opacity: 0, x: 16, rotateY: -4 },
+  animate: { opacity: 1, x: 0, rotateY: 0 },
+  exit: { opacity: 0, x: -16, rotateY: 4 },
+};
+
+export function LearnMotionShell({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  const reduced = useReducedMotionSafe();
+  return (
+    <div className={className} data-reduced-motion={reduced ? "true" : undefined}>
+      {children}
+    </div>
+  );
+}
+
 export function learnTransition(reduced: boolean, duration = 0.15): Transition {
   return reduced ? { duration: 0 } : { duration, ease: "easeOut" };
 }
