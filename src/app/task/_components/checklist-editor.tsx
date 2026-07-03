@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ChevronDown, ChevronRight, GripVertical, Loader2, Paperclip, Plus, Trash2 } from "lucide-react";
@@ -46,15 +46,34 @@ export function ChecklistEditor({
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [previewTab, setPreviewTab] = useState<Record<string, "write" | "preview">>({});
   const [uploading, setUploading] = useState<string | null>(null);
+  const persistSeqRef = useRef<Record<string, number>>({});
+  const debounceTimersRef = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
+
+  function applyItemsChange(
+    updater: ChecklistItem[] | ((prev: ChecklistItem[]) => ChecklistItem[]),
+  ) {
+    onChange(typeof updater === "function" ? updater(items) : updater);
+  }
 
   useEffect(() => {
     if (!taskId) return;
+    let cancelled = false;
     taskApi.listChecklistItems(taskId)
       .then((apiItems) => {
-        if (apiItems.length > 0) onChange(apiItems);
+        if (!cancelled && apiItems.length > 0) applyItemsChange(apiItems);
       })
       .catch(() => toast.error("Failed to load checklist items"));
+    return () => {
+      cancelled = true;
+    };
   }, [taskId]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    const timers = debounceTimersRef.current;
+    return () => {
+      Object.values(timers).forEach(clearTimeout);
+    };
+  }, []);
 
   function toggleExpanded(id: string) {
     setExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -72,21 +91,45 @@ export function ChecklistEditor({
       priority: "medium",
       attachments: [],
     };
-    onChange([...items, item]);
+    applyItemsChange([...items, item]);
     setExpanded((prev) => ({ ...prev, [item.id]: true }));
   }
 
   async function persistItem(id: string, patch: Partial<ChecklistItem>) {
     if (!taskId) return;
+    const seq = (persistSeqRef.current[id] ?? 0) + 1;
+    persistSeqRef.current[id] = seq;
     const current = items.find((i) => i.id === id);
     if (!current) return;
     try {
       if (isPersistedId(id)) {
         const updated = await taskApi.updateChecklistItem(taskId, id, patch);
-        onChange(items.map((i) => (i.id === id ? updated : i)));
+        if (persistSeqRef.current[id] !== seq) return;
+        applyItemsChange((prev) =>
+          prev.map((i) =>
+            i.id === id
+              ? {
+                  ...updated,
+                  description_text:
+                    patch.description_text !== undefined ? i.description_text : updated.description_text,
+                }
+              : i,
+          ),
+        );
       } else {
         const created = await taskApi.addChecklistItem(taskId, { ...current, ...patch });
-        onChange(items.map((i) => (i.id === id ? created : i)));
+        if (persistSeqRef.current[id] !== seq) return;
+        applyItemsChange((prev) =>
+          prev.map((i) =>
+            i.id === id
+              ? {
+                  ...created,
+                  description_text:
+                    patch.description_text !== undefined ? i.description_text : created.description_text,
+                }
+              : i,
+          ),
+        );
         setExpanded((prev) => {
           const next = { ...prev };
           if (next[id]) {
@@ -101,22 +144,39 @@ export function ChecklistEditor({
     }
   }
 
-  function updateItem(id: string, patch: Partial<ChecklistItem>) {
-    const next = items.map((i) => {
-      if (i.id !== id) return i;
-      const merged = { ...i, ...patch };
-      if (patch.title !== undefined) merged.text = patch.title;
-      if (patch.text !== undefined) merged.title = patch.text;
-      if (patch.checked !== undefined) {
-        merged.status = patch.checked ? "done" : merged.status === "done" ? "todo" : merged.status;
-      }
-      if (patch.status !== undefined) {
-        merged.checked = patch.status === "done";
-      }
-      return merged;
-    });
-    onChange(next);
-    if (taskId) void persistItem(id, patch);
+  function schedulePersist(id: string, patch: Partial<ChecklistItem>, delayMs = 450) {
+    if (!taskId) return;
+    const timers = debounceTimersRef.current;
+    if (timers[id]) clearTimeout(timers[id]);
+    timers[id] = setTimeout(() => {
+      delete timers[id];
+      void persistItem(id, patch);
+    }, delayMs);
+  }
+
+  function updateItem(id: string, patch: Partial<ChecklistItem>, options?: { debounce?: boolean }) {
+    applyItemsChange((prev) =>
+      prev.map((i) => {
+        if (i.id !== id) return i;
+        const merged = { ...i, ...patch };
+        if (patch.title !== undefined) merged.text = patch.title;
+        if (patch.text !== undefined) merged.title = patch.text;
+        if (patch.checked !== undefined) {
+          merged.status = patch.checked ? "done" : merged.status === "done" ? "todo" : merged.status;
+        }
+        if (patch.status !== undefined) {
+          merged.checked = patch.status === "done";
+        }
+        return merged;
+      }),
+    );
+
+    if (!taskId) return;
+    if (options?.debounce) {
+      schedulePersist(id, patch);
+      return;
+    }
+    void persistItem(id, patch);
   }
 
   async function removeItem(id: string) {
@@ -128,7 +188,7 @@ export function ChecklistEditor({
         return;
       }
     }
-    onChange(items.filter((i) => i.id !== id));
+    applyItemsChange(items.filter((i) => i.id !== id));
   }
 
   async function handleUpload(id: string, file: File) {
@@ -151,7 +211,7 @@ export function ChecklistEditor({
         uploaded_by_name: attachment.uploaded_by_name,
         created_at: attachment.created_at,
       }];
-      onChange(items.map((i) => (i.id === id ? { ...i, attachments, attachment_count: attachments.length } : i)));
+      applyItemsChange(items.map((i) => (i.id === id ? { ...i, attachments, attachment_count: attachments.length } : i)));
       toast.success("File uploaded");
     } catch {
       toast.error("Upload failed");
@@ -328,7 +388,9 @@ export function ChecklistEditor({
                       <Textarea
                         value={item.description_text ?? ""}
                         disabled={readonly}
-                        onChange={(e) => updateItem(item.id, { description_text: e.target.value })}
+                        onChange={(e) =>
+                          updateItem(item.id, { description_text: e.target.value }, { debounce: true })
+                        }
                         placeholder="Add context, steps, links, and notes. Markdown supported."
                         rows={5}
                         className="text-sm"

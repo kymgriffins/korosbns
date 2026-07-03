@@ -84,6 +84,7 @@ export type ChecklistItemApi = {
 
 export type ChecklistItemAttachmentApi = {
   id: string;
+  file?: string;
   url?: string;
   file_name: string;
   file_size: number;

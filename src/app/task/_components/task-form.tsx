@@ -499,10 +499,10 @@ export function TaskForm({
       </div>
 
       {/* ── Sticky footer action bar ──────────────────────────── */}
-      <div className="sticky bottom-0 z-10 -mx-6 mt-2 border-t bg-background/95 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="sticky bottom-0 z-10 -mx-5 mt-2 border-t bg-background/95 px-5 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:-mx-6 md:px-6">
         <div className="flex items-center justify-between">
           <p className="text-[11px] text-muted-foreground">
-            {mode === "create" ? "Creating a new task" : `Editing task · ID: ${task?.id.slice(0, 8)}`}
+            {mode === "create" ? "New weekly note" : `Saving changes to ref ${task?.id.slice(0, 8)}`}
           </p>
           <div className="flex items-center gap-3">
             <Button variant="outline" onClick={() => router.push(cancelHref)}>
@@ -510,7 +510,7 @@ export function TaskForm({
             </Button>
             <Button onClick={handleSave} disabled={saving}>
               {saving && <Loader2 className="mr-1.5 size-4 animate-spin" />}
-              {mode === "create" ? "Create Task" : "Save Changes"}
+              {mode === "create" ? "Create task" : "Save changes"}
             </Button>
           </div>
         </div>
