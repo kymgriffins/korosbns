@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useQueryClient } from "@tanstack/react-query";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import {
@@ -208,20 +209,26 @@ function LearnSidebar() {
   ];
 
   return (
-    <Sidebar collapsible="icon" className="hidden md:flex">
+    <Sidebar variant="inset" collapsible="icon" className="hidden md:flex">
       <SidebarHeader>
-        <div className="flex items-center justify-between p-2">
-          <Link href={"/"} className="flex items-center gap-2 hover:opacity-80 transition-opacity overflow-hidden group">
-            <img src="/logo.svg" alt="BNS" className="h-7 w-auto shrink-0" width={108} height={28} />
-          </Link>
-          {!isCollapsed && <SidebarTrigger className="-mr-1" />}
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <Link href="/" className="flex items-center gap-2">
+                <Image src="/logo.svg" alt="BNS" width={28} height={28} className="size-7 shrink-0" />
+                <span className="font-semibold text-base">Learning Hub</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+        <div className={cn("flex px-2", isCollapsed ? "justify-center" : "justify-end")}>
+          <SidebarTrigger className="-mr-1" />
         </div>
-        {isCollapsed && <div className="flex justify-center mt-1"><SidebarTrigger /></div>}
       </SidebarHeader>
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel className="text-[10px] font-bold tracking-wider text-sidebar-foreground/50 uppercase mb-0.5">Menu</SidebarGroupLabel>
+          <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {primaryItems.map((item) => {
@@ -233,15 +240,14 @@ function LearnSidebar() {
                           <SidebarMenuButton
                             isActive={activeTab === item.key}
                             tooltip={item.label}
-                            className="py-4 rounded-lg transition-all data-[active=true]:ring-1 data-[active=true]:ring-sidebar-ring/30"
                             onClick={() => handleTabChange(item.key)}
                           >
                             {item.icon}
-                            <span className="font-semibold text-xs">{item.label}</span>
+                            <span>{item.label}</span>
                             {item.badge && !isCollapsed && (
                               <span className="ml-auto flex h-4.5 px-1 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow-xs ring-1 ring-primary/20">{item.badge}</span>
                             )}
-                            {!isCollapsed && <ChevronRight className="ml-auto size-3 shrink-0 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />}
+                            {!isCollapsed && <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />}
                           </SidebarMenuButton>
                         </CollapsibleTrigger>
                         <CollapsibleContent>
@@ -258,7 +264,7 @@ function LearnSidebar() {
                                     className="flex min-w-0 items-center gap-2"
                                   >
                                     <ModuleNavBadge badge={m.badge} />
-                                    <span className="truncate text-xs font-medium">{m.title}</span>
+                                    <span className="truncate">{m.title}</span>
                                   </Link>
                                 </SidebarMenuSubButton>
                               </SidebarMenuSubItem>
@@ -275,11 +281,10 @@ function LearnSidebar() {
                       asChild
                       isActive={activeTab === item.key}
                       tooltip={item.label}
-                      className="py-4 rounded-lg transition-all data-[active=true]:ring-1 data-[active=true]:ring-sidebar-ring/30"
                     >
                       <Link href={learnTabToHref(item.key)} onClick={() => handleTabChange(item.key)}>
                         {item.icon}
-                        <span className="font-semibold text-xs">{item.label}</span>
+                        <span>{item.label}</span>
                         {item.badge && !isCollapsed && (
                           <span className="ml-auto flex h-4.5 px-1 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow-xs ring-1 ring-primary/20">{item.badge}</span>
                         )}
