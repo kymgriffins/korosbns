@@ -3,8 +3,9 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { ArrowLeft, Loader2, Paperclip, Trash2 } from "lucide-react";
+import { ArrowLeft, Trash2 } from "lucide-react";
 
+import { AttachmentField } from "@/components/attachments/attachment-field";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -26,22 +27,24 @@ export function ChecklistItemFocus({
   item,
   assignableUsers,
   readonly,
-  taskId,
   uploading,
+  pendingHint,
   onBack,
   onUpdate,
   onRemove,
   onUpload,
+  onDeleteAttachment,
 }: {
   item: ChecklistItem;
   assignableUsers: AssignableUser[];
   readonly?: boolean;
-  taskId?: string;
   uploading?: boolean;
+  pendingHint?: string;
   onBack: () => void;
   onUpdate: (patch: Partial<ChecklistItem>, options?: { debounce?: boolean }) => void;
   onRemove: () => void;
-  onUpload: (file: File) => void;
+  onUpload: (files: File[]) => void;
+  onDeleteAttachment: (attachmentId: string) => void;
 }) {
   const [tab, setTab] = useState<"write" | "preview">("write");
   const title = item.title || item.text || "Untitled item";
@@ -233,38 +236,18 @@ export function ChecklistItemFocus({
             )}
           </div>
 
-          {!readonly && taskId && (
-            <div className="space-y-2 border-t border-border/50 pt-4">
-              <Label className="text-xs text-muted-foreground">Attachments</Label>
-              <div className="flex flex-wrap gap-2">
-                {(item.attachments ?? []).map((att) => (
-                  <a
-                    key={att.id}
-                    href={att.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 rounded-md border border-border/60 bg-background px-2.5 py-1.5 text-[11px] hover:bg-muted/50"
-                  >
-                    <Paperclip className="size-3" />
-                    {att.file_name}
-                  </a>
-                ))}
-              </div>
-              <label className="inline-flex cursor-pointer items-center gap-2 text-xs text-muted-foreground hover:text-foreground">
-                {uploading ? <Loader2 className="size-3.5 animate-spin" /> : <Paperclip className="size-3.5" />}
-                Upload file or image
-                <input
-                  type="file"
-                  className="hidden"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) onUpload(file);
-                    e.target.value = "";
-                  }}
-                />
-              </label>
-            </div>
-          )}
+          <div className="space-y-2 border-t border-border/50 pt-4">
+            <Label className="text-xs text-muted-foreground">Attachments</Label>
+            <AttachmentField
+              attachments={item.attachments ?? []}
+              readonly={readonly}
+              uploading={uploading}
+              pendingHint={pendingHint}
+              onUpload={readonly ? undefined : onUpload}
+              onDelete={readonly ? undefined : onDeleteAttachment}
+              emptyHint="Add screenshots, PDFs, or supporting files for this sub-task."
+            />
+          </div>
         </div>
       </div>
     </div>

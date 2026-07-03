@@ -35,7 +35,6 @@ import type {
   Task, TaskStatus, TaskCreatePayload, AssignableTeam, AssignableUser, TaskPriority, TaskTag, TaskAttachment,
 } from "@/types/tasks";
 import { ChecklistEditor } from "./checklist-editor";
-import { TaskFileUpload } from "./task-file-upload";
 import { TaskAttachmentsGrid } from "./task-attachments";
 
 export type TaskFormMode = "create" | "edit";
@@ -154,7 +153,15 @@ export function TaskForm({
         for (const item of form.checklist ?? []) {
           if (!item.title?.trim() && !item.text?.trim()) continue;
           try {
-            await taskApi.addChecklistItem(created.id, item);
+            const createdItem = await taskApi.addChecklistItem(created.id, item);
+            for (const att of item.attachments ?? []) {
+              if (!att._file) continue;
+              try {
+                await taskApi.uploadChecklistAttachment(created.id, createdItem.id, att._file);
+              } catch {
+                // keep going; checklist item already created
+              }
+            }
           } catch {
             // keep going; parent task already created
           }
@@ -483,17 +490,10 @@ export function TaskForm({
               <TaskAttachmentsGrid
                 attachments={attachments}
                 taskId={task.id}
+                onUploaded={(a) => setAttachments((prev) => [...prev, a])}
                 onDeleted={(id) => setAttachments((prev) => prev.filter((a) => a.id !== id))}
                 readonly={task.status === "published"}
               />
-              {task.status !== "published" && (
-                <div className="rounded-lg border border-dashed border-border/50 p-4">
-                  <TaskFileUpload
-                    taskId={task.id}
-                    onUploaded={(a) => setAttachments((prev) => [...prev, a])}
-                  />
-                </div>
-              )}
             </TabsContent>
           )}
         </div>
