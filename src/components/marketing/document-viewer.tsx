@@ -130,7 +130,7 @@ export default function DocumentViewer({ document }: DocumentViewerProps) {
                                     placeholder="Search documents..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-2 rounded-lg bg-white/5 border border-white/10 text-foreground text-sm placeholder:text-foreground/40 focus:outline-none focus:border-primary/50 transition-colors"
+                                    className="w-full pl-10 pr-4 py-2 rounded-lg bg-muted/30 border border-border text-foreground text-sm placeholder:text-foreground/40 focus:outline-none focus:border-primary/50 transition-colors"
                                 />
                             </div>
                             
@@ -138,7 +138,7 @@ export default function DocumentViewer({ document }: DocumentViewerProps) {
                             <select 
                                 value={selectedYear || ''}
                                 onChange={(e) => setSelectedYear(e.target.value || null)}
-                                className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-foreground text-sm focus:outline-none focus:border-primary/50 transition-colors"
+                                className="px-4 py-2 rounded-lg bg-muted/30 border border-border text-foreground text-sm focus:outline-none focus:border-primary/50 transition-colors"
                             >
                                 <option value="">All Years</option>
                                 {availableYears.map(year => (
@@ -165,7 +165,7 @@ export default function DocumentViewer({ document }: DocumentViewerProps) {
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ duration: 0.3, delay: index * 0.02 }}
-                                            className="group p-4 rounded-xl bg-white/5 border border-white/10 hover:border-primary/30 transition-all"
+                                            className="group p-4 rounded-xl bg-muted/30 border border-border hover:border-primary/30 transition-all"
                                         >
                                             <div className="flex items-start gap-3">
                                                 <div className="shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -226,7 +226,7 @@ export default function DocumentViewer({ document }: DocumentViewerProps) {
                     </Container>
 
                     {/* FOOTER */}
-                    <Container animation="fadeUp" delay={0.5} className="max-w-3xl mx-auto w-full pt-12 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-foreground/30 px-4 sm:px-6">
+                    <Container animation="fadeUp" delay={0.5} className="max-w-3xl mx-auto w-full pt-12 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-4 text-foreground/30 px-4 sm:px-6">
                         <p className="text-[10px] font-medium">© 2026 Budget Ndio Story.</p>
                         <div className="flex items-center gap-4 text-[9px] font-medium uppercase tracking-wider">
                             <a href="mailto:info@budgetndiostory.com" className="hover:text-foreground transition-colors">Email</a>

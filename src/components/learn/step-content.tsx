@@ -159,7 +159,7 @@ export function StepContent({ step, currentStep, totalSteps, activeFormat, showT
 
               <article className="
                 text-foreground leading-relaxed text-[13px]
-                [&>p]:mb-4 [&>p]:text-gray-800 dark:[&>p]:text-gray-200
+                [&>p]:mb-4 [&>p]:text-foreground/85
                 [&>h1]:text-xl [&>h1]:font-black [&>h1]:mb-3 [&>h1]:mt-6
                 [&>h2]:text-lg [&>h2]:font-bold [&>h2]:mb-2 [&>h2]:mt-5
                 [&>h3]:text-base [&>h3]:font-bold [&>h3]:mb-2 [&>h3]:mt-4
@@ -177,12 +177,12 @@ export function StepContent({ step, currentStep, totalSteps, activeFormat, showT
                 const isInfo = takeaway.type === "info" || takeaway.type === "tip";
                 return (
                   <div className={cn("mt-6 p-4 rounded-xl border",
-                    isInfo ? "bg-blue-50/50 border-blue-200 dark:bg-blue-900/15 dark:border-blue-800" : "bg-amber-50/50 border-amber-200 dark:bg-amber-900/15 dark:border-amber-800"
+                    isInfo ? "bg-primary/5 border-primary/20" : "bg-amber-50/50 border-amber-200 dark:bg-amber-900/15 dark:border-amber-800"
                   )}>
-                    <p className={cn("text-xs font-bold flex items-center gap-1.5", isInfo ? "text-blue-700 dark:text-blue-300" : "text-amber-700 dark:text-amber-300")}>
+                    <p className={cn("text-xs font-bold flex items-center gap-1.5", isInfo ? "text-primary" : "text-amber-700 dark:text-amber-300")}>
                       {isInfo ? <Lightbulb className="size-3.5" /> : <AlertTriangle className="size-3.5" />} {takeaway.title}
                     </p>
-                    <p className="text-[12px] text-gray-700 dark:text-gray-300 mt-1.5 leading-relaxed">{stripHtml(takeaway.text)}</p>
+                    <p className="text-[12px] text-muted-foreground mt-1.5 leading-relaxed">{stripHtml(takeaway.text)}</p>
                   </div>
                 );
               })()}

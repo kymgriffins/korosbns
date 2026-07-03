@@ -229,7 +229,7 @@ export default function TikTokVideoPage({ params }: { params: Promise<{ uuid: st
         </div>
 
         <div className="mt-12 w-full max-w-3xl">
-          <div className="border-t border-white/10 pt-8">
+          <div className="border-t border-border pt-8">
             {/* <LandingTikTokLiveMarquee /> */}
           </div>
         </div>

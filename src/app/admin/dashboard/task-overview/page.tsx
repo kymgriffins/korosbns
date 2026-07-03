@@ -30,7 +30,7 @@ import { useRouteBase, getFullUrl } from "@/lib/route-base";
 
 const STATUS_META: Record<TaskStatus, { title: string; icon: typeof Circle; color: string; bg: string }> = {
   draft: { title: "Draft", icon: Circle, color: "text-amber-500", bg: "bg-amber-500/10" },
-  audited: { title: "In Progress", icon: CircleDot, color: "text-blue-500", bg: "bg-blue-500/10" },
+  audited: { title: "In Progress", icon: CircleDot, color: "text-primary", bg: "bg-primary/10" },
   published: { title: "Done", icon: CheckCircle2, color: "text-emerald-500", bg: "bg-emerald-500/10" },
 };
 
@@ -239,7 +239,7 @@ export default function TaskOverviewPage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard title="Total Tasks" value={stats.total} icon={ListTodo} color="text-foreground" loading={loading} />
         <StatCard title="Draft" value={stats.draft} icon={Circle} color="text-amber-500" loading={loading} />
-        <StatCard title="In Progress" value={stats.inProgress} icon={CircleDot} color="text-blue-500" loading={loading} />
+        <StatCard title="In Progress" value={stats.inProgress} icon={CircleDot} color="text-primary" loading={loading} />
         <StatCard title="Done" value={stats.done} icon={CheckCircle2} color="text-emerald-500" loading={loading} />
       </div>
 

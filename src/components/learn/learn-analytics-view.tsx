@@ -57,16 +57,16 @@ export function LearnAnalyticsView() {
   const topModules = [...modules].sort((a, b) => (b.steps?.length ?? 0) - (a.steps?.length ?? 0)).slice(0, 5);
 
   const kpiItems = [
-    { label: "All Content", value: totalContent, icon: FileText, color: "text-blue-500", change: `${modules.length} modules` },
+    { label: "All Content", value: totalContent, icon: FileText, color: "text-primary", change: `${modules.length} modules` },
     { label: "Modules", value: modules.length, icon: BookOpen, color: "text-emerald-500", change: `${totalSteps} steps` },
-    { label: "Articles", value: counts?.articles ?? 0, icon: Newspaper, color: "text-purple-500", change: "published" },
+    { label: "Articles", value: counts?.articles ?? 0, icon: Newspaper, color: "text-primary", change: "published" },
     { label: "Videos", value: counts?.videos ?? 0, icon: Film, color: "text-amber-500", change: "published" },
-    { label: "Stories", value: counts?.stories ?? 0, icon: GraduationCap, color: "text-rose-500", change: "published" },
-    { label: "Documents", value: counts?.documents ?? 0, icon: FileText, color: "text-cyan-500", change: "uploaded" },
+    { label: "Stories", value: counts?.stories ?? 0, icon: GraduationCap, color: "text-destructive", change: "published" },
+    { label: "Documents", value: counts?.documents ?? 0, icon: FileText, color: "text-primary", change: "uploaded" },
   ];
 
   const barItems = [
-    { label: "Modules", value: modules.length, color: "bg-blue-500", max: Math.max(totalContent, 1) },
+    { label: "Modules", value: modules.length, color: "bg-primary", max: Math.max(totalContent, 1) },
     { label: "Articles", value: counts?.articles ?? 0, color: "bg-emerald-500", max: Math.max(totalContent, 1) },
     { label: "Videos", value: counts?.videos ?? 0, color: "bg-purple-500", max: Math.max(totalContent, 1) },
     { label: "Stories", value: counts?.stories ?? 0, color: "bg-amber-500", max: Math.max(totalContent, 1) },

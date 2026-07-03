@@ -19,7 +19,7 @@ const progressRingClasses: Record<Shipment["status"], string> = {
   Scheduled: "text-muted-foreground",
   "In Transit": "text-primary",
   "Out for Delivery": "text-primary",
-  Delivered: "text-green-600",
+  Delivered: "text-emerald-600",
   Delayed: "text-destructive",
   "On Hold": "text-amber-500",
   "Customs Hold": "text-amber-500",

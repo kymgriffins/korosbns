@@ -33,7 +33,7 @@ const roiItems = [
 
 const ROI = () => {
     return (
-        <section id="roi" className="w-full py-16 lg:py-24 bg-foreground/[0.02] border-y border-white/5">
+        <section id="roi" className="w-full py-16 lg:py-24 bg-foreground/[0.02] border-y border-border/50">
             <Wrapper>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                     <div>

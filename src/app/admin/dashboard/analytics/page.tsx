@@ -71,14 +71,14 @@ export default function AdminAnalyticsPage() {
   const contentPublished = periodValue(summary, "content_published_today", "content_published_7d", "content_published_30d", "total_content", period);
 
   const kpiItems = [
-    { label: "Visitors", value: visitorTotal, icon: Eye, color: "text-blue-500", sub: `Last ${period === "today" ? "day" : period}` },
+    { label: "Visitors", value: visitorTotal, icon: Eye, color: "text-primary", sub: `Last ${period === "today" ? "day" : period}` },
     { label: "Page Views", value: pageviewTotal, icon: MousePointerClick, color: "text-purple-500", sub: period === "all" ? "total" : `Last ${period}` },
     { label: "New Users", value: newUsers, icon: UserPlus, color: "text-emerald-500", sub: `${summary?.users_growth_pct ?? 0}% growth` },
     { label: "Active Users", value: periodValue(summary, "users_active_7d", "users_active_7d", "users_active_30d", "total_users", period), icon: Activity, color: "text-amber-500", sub: `${period === "today" ? "24h" : period}` },
     { label: "Bounce Rate", value: `${summary?.bounce_rate ?? 0}%`, icon: TrendingDown, color: "text-rose-500", sub: "avg" },
     { label: "Avg Session", value: summary?.avg_session_seconds ? `${Math.round(summary.avg_session_seconds / 60)}m ${summary.avg_session_seconds % 60}s` : "--", icon: Clock, color: "text-cyan-500", sub: "per visit" },
     { label: "Content Published", value: contentPublished, icon: FileText, color: "text-indigo-500", sub: `+${summary?.content_drafts ?? 0} drafts` },
-    { label: "Engagement Rate", value: `${summary?.engagement_rate ?? 0}%`, icon: TrendingUp, color: "text-green-500", sub: period === "all" ? "overall" : "avg" },
+    { label: "Engagement Rate", value: `${summary?.engagement_rate ?? 0}%`, icon: TrendingUp, color: "text-emerald-500", sub: period === "all" ? "overall" : "avg" },
   ];
 
   const deviceData = useMemo(() => (summary?.device_breakdown ?? summary?.vercel_traffic?.devices ?? []), [summary]);

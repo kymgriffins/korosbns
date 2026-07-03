@@ -282,7 +282,7 @@ export default function Contact() {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="space-y-4 p-4 sm:p-6 rounded-2xl bg-white/5 border border-white/10"
+                  className="space-y-4 p-4 sm:p-6 rounded-2xl bg-muted/30 border border-border"
                   onSubmit={handleSubmit}
                 >
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -300,7 +300,7 @@ export default function Contact() {
                         onChange={(e) =>
                           setFormData({ ...formData, name: e.target.value })
                         }
-                        className="bg-white/5 border-white/10 h-10 rounded-lg focus:ring-primary focus:bg-white/10 text-sm"
+                        className="bg-muted/30 border-border h-10 rounded-lg focus:ring-primary focus:bg-muted/50 text-sm"
                       />
                     </div>
                     <div className="space-y-1.5">
@@ -318,7 +318,7 @@ export default function Contact() {
                         onChange={(e) =>
                           setFormData({ ...formData, email: e.target.value })
                         }
-                        className="bg-white/5 border-white/10 h-10 rounded-lg focus:ring-primary focus:bg-white/10 text-sm"
+                        className="bg-muted/30 border-border h-10 rounded-lg focus:ring-primary focus:bg-muted/50 text-sm"
                       />
                     </div>
                   </div>
@@ -336,7 +336,7 @@ export default function Contact() {
                       onChange={(e) =>
                         setFormData({ ...formData, message: e.target.value })
                       }
-                      className="bg-white/5 border-white/10 min-h-[100px] rounded-lg focus:ring-primary focus:bg-white/10 text-sm resize-none"
+                      className="bg-muted/30 border-border min-h-[100px] rounded-lg focus:ring-primary focus:bg-muted/50 text-sm resize-none"
                     />
                   </div>
                   <div className="flex gap-2">
@@ -373,7 +373,7 @@ export default function Contact() {
         <Container
           animation="fadeUp"
           delay={0.4}
-          className="max-w-3xl mx-auto w-full pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-foreground/30 px-4 sm:px-6"
+          className="max-w-3xl mx-auto w-full pt-6 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-4 text-foreground/30 px-4 sm:px-6"
         >
           <p className="text-[10px] font-medium">© 2026 Budget Ndio Story.</p>
           <div className="flex items-center gap-4 text-[9px] font-medium uppercase tracking-wider">

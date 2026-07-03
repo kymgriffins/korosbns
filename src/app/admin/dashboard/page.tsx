@@ -70,9 +70,9 @@ function StatCard({
 }
 
 const contentTypes = [
-  { id: "articles", label: "Articles", icon: FileText, color: "text-blue-500" },
-  { id: "videos", label: "Videos", icon: Video, color: "text-red-500" },
-  { id: "stories", label: "Stories", icon: BookOpen, color: "text-green-500" },
+  { id: "articles", label: "Articles", icon: FileText, color: "text-primary" },
+  { id: "videos", label: "Videos", icon: Video, color: "text-destructive" },
+  { id: "stories", label: "Stories", icon: BookOpen, color: "text-emerald-500" },
   { id: "documents", label: "Documents", icon: File, color: "text-amber-500" },
 ];
 
