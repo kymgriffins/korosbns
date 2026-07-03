@@ -91,11 +91,11 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
 
   return (
     <TaskPageShell>
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)] lg:gap-10 xl:grid-cols-[minmax(0,340px)_minmax(0,1fr)]">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)] lg:gap-10 xl:grid-cols-[minmax(0,340px)_minmax(0,1fr)]">
         <TaskDetailBrief task={task} detail={detail} backHref={backHref} />
 
         <div className="min-w-0">
-          <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-border/60 pb-4">
+          <div className="mb-5 flex flex-col gap-3 border-b border-border/60 pb-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
             <div>
               <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
                 Edit weekly note

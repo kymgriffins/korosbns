@@ -32,6 +32,8 @@ import { getFullUrl, useRouteBase } from "@/lib/route-base";
 import { invalidateTaskList } from "@/lib/task-events";
 import type { Task, TaskPriority, TaskStatus, TaskTag } from "@/types/tasks";
 import { TAG_LABELS, PRIORITY_LABELS } from "@/types/tasks";
+import { TaskBulkActionsBar } from "./task-bulk-actions-bar";
+import { TaskRowMobileMeta } from "./task-row-mobile-meta";
 
 const PRIORITY_ICONS: Record<TaskPriority, { color: string }> = {
   urgent: { color: "text-destructive fill-destructive" },
@@ -259,67 +261,49 @@ export function TaskListView({
         </div>
       )}
 
-      {selectedIds.size > 0 && (
-        <div className="flex items-center gap-2 rounded-md border bg-muted/50 px-3 py-2 text-sm">
-          <span className="font-medium">{selectedIds.size} selected</span>
-          <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => setSelectedIds(new Set())}>
-            Clear
-          </Button>
-          <div className="ml-auto flex gap-1">
-            <Select onValueChange={async (val) => {
-              if (!val) return;
-              const ids = Array.from(selectedIds);
-              try {
-                for (const id of ids) await taskData.tasks.update(id, { status: val as TaskStatus });
-                invalidateTaskList();
-                await onRefresh();
-                toast.success(`Updated ${ids.length} tasks`);
-                setSelectedIds(new Set());
-              } catch { toast.error("Bulk update failed"); }
-            }}>
-              <SelectTrigger className="h-7 w-[130px] text-xs"><SelectValue placeholder="Set status" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="draft">To do</SelectItem>
-                <SelectItem value="audited">In progress</SelectItem>
-                <SelectItem value="published">Done</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select onValueChange={async (val) => {
-              if (!val) return;
-              const ids = Array.from(selectedIds);
-              try {
-                for (const id of ids) await taskData.tasks.update(id, { priority: val as TaskPriority });
-                invalidateTaskList();
-                await onRefresh();
-                toast.success(`Updated ${ids.length} tasks`);
-                setSelectedIds(new Set());
-              } catch { toast.error("Bulk update failed"); }
-            }}>
-              <SelectTrigger className="h-7 w-[130px] text-xs"><SelectValue placeholder="Set priority" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="urgent">Urgent</SelectItem>
-                <SelectItem value="high">High</SelectItem>
-                <SelectItem value="medium">Medium</SelectItem>
-                <SelectItem value="low">Low</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button variant="destructive" size="sm" className="h-7 text-xs" onClick={async () => {
-              const ids = Array.from(selectedIds);
-              if (!window.confirm(`Delete ${ids.length} tasks?`)) return;
-              try {
-                for (const id of ids) await taskData.tasks.delete(id);
-                invalidateTaskList();
-                await onRefresh();
-                toast.success(`Deleted ${ids.length} tasks`);
-                setSelectedIds(new Set());
-              } catch { toast.error("Bulk delete failed"); }
-            }}>
-              <Trash2 className="size-3 mr-1" />
-              Delete
-            </Button>
-          </div>
-        </div>
-      )}
+      <TaskBulkActionsBar
+        count={selectedIds.size}
+        onClear={() => setSelectedIds(new Set())}
+        onBulkStatus={async (val) => {
+          if (!val) return;
+          const ids = Array.from(selectedIds);
+          try {
+            for (const id of ids) await taskData.tasks.update(id, { status: val as TaskStatus });
+            invalidateTaskList();
+            await onRefresh();
+            toast.success(`Updated ${ids.length} tasks`);
+            setSelectedIds(new Set());
+          } catch {
+            toast.error("Bulk update failed");
+          }
+        }}
+        onBulkPriority={async (val) => {
+          if (!val) return;
+          const ids = Array.from(selectedIds);
+          try {
+            for (const id of ids) await taskData.tasks.update(id, { priority: val as TaskPriority });
+            invalidateTaskList();
+            await onRefresh();
+            toast.success(`Updated ${ids.length} tasks`);
+            setSelectedIds(new Set());
+          } catch {
+            toast.error("Bulk update failed");
+          }
+        }}
+        onBulkDelete={async () => {
+          const ids = Array.from(selectedIds);
+          if (!window.confirm(`Delete ${ids.length} tasks?`)) return;
+          try {
+            for (const id of ids) await taskData.tasks.delete(id);
+            invalidateTaskList();
+            await onRefresh();
+            toast.success(`Deleted ${ids.length} tasks`);
+            setSelectedIds(new Set());
+          } catch {
+            toast.error("Bulk delete failed");
+          }
+        }}
+      />
 
       {filtered.length === 0 ? (
         <div className="rounded-lg border border-dashed p-10 text-center text-sm text-muted-foreground">
@@ -327,7 +311,7 @@ export function TaskListView({
         </div>
       ) : (
         <div tabIndex={-1} onKeyDown={onKeyDown} className="outline-none rounded-lg border">
-          <div className="flex items-center gap-3 border-b border-border/50 bg-muted/30 px-4 py-2 text-xs font-medium text-muted-foreground">
+          <div className="flex items-center gap-3 border-b border-border/50 bg-muted/30 px-3 py-2 text-xs font-medium text-muted-foreground sm:px-4">
             <div className="flex w-8 items-center">
               <input
                 type="checkbox"
@@ -343,8 +327,8 @@ export function TaskListView({
             <div className="w-24 shrink-0 hidden sm:block">Priority</div>
             <div className="w-28 shrink-0 hidden md:block">Status</div>
             <div className="w-20 shrink-0 hidden lg:block">Assignee</div>
-            <div className="w-24 shrink-0 hidden lg:block">Updated</div>
-            <div className="w-20 shrink-0 text-right">Actions</div>
+            <div className="w-20 shrink-0 hidden lg:block">Updated</div>
+            <div className="w-16 shrink-0 text-right sm:w-20">Actions</div>
           </div>
 
           {filtered.map((task, idx) => {
@@ -354,7 +338,7 @@ export function TaskListView({
               <div
                 key={task.id}
                 id={`task-row-${task.id}`}
-                className={`group relative flex items-center gap-3 border-b border-border/50 px-4 py-2 transition-colors last:border-b-0 ${
+                className={`group relative flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-border/50 px-3 py-2.5 transition-colors last:border-b-0 sm:flex-nowrap sm:px-4 ${
                   isSelected ? "bg-accent/45" : "hover:bg-accent/60"
                 } ${isFocused ? "ring-2 ring-inset ring-ring/50" : ""}`}
               >
@@ -394,6 +378,12 @@ export function TaskListView({
                       </span>
                     )}
                   </div>
+                  <TaskRowMobileMeta
+                    task={task}
+                    onChangeStatus={onChangeStatus}
+                    PriorityCell={PriorityCell}
+                    onPriorityUpdate={priorityUpdate}
+                  />
                 </div>
 
                 <div className="w-24 shrink-0 hidden sm:block">
@@ -429,10 +419,13 @@ export function TaskListView({
                   {formatDistanceToNow(new Date(task.updated_at), { addSuffix: true })}
                 </div>
 
-                <div className="w-20 shrink-0 text-right">
+                <div className="ml-auto w-auto shrink-0 text-right sm:ml-0 sm:w-16 md:w-20">
                   <div className="flex justify-end gap-1">
-                    <Button variant="outline" size="sm" className="h-7 text-xs px-2" asChild>
-                      <Link href={getFullUrl(routeBase, `/dashboard/task/${task.id}`)}>Open</Link>
+                    <Button variant="outline" size="sm" className="h-7 px-2 text-xs max-sm:size-7 max-sm:p-0" asChild>
+                      <Link href={getFullUrl(routeBase, `/dashboard/task/${task.id}`)}>
+                        <span className="max-sm:sr-only">Open</span>
+                        <span className="sm:hidden" aria-hidden>→</span>
+                      </Link>
                     </Button>
                     <Button variant="ghost" size="icon" className="size-7" onClick={() => void onDelete(task.id)}>
                       <Trash2 className="size-3 text-destructive" />

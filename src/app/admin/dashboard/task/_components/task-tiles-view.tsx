@@ -1,23 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
-
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useAuth } from "@/contexts/auth-context";
 import { taskData } from "@/data/tasks";
 import { invalidateTaskList } from "@/lib/task-events";
 import type { Task, TaskPriority, TaskStatus } from "@/types/tasks";
 import { TaskCard } from "./task-card";
+import { TaskBulkActionsBar } from "./task-bulk-actions-bar";
 
 type Props = {
   tasks: Task[];
@@ -26,8 +15,6 @@ type Props = {
 };
 
 export function TaskTilesView({ tasks, onRefresh, query }: Props) {
-  const { isLoggedIn } = useAuth();
-  const router = useRouter();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const q = query.toLowerCase();
@@ -102,51 +89,13 @@ export function TaskTilesView({ tasks, onRefresh, query }: Props) {
 
   return (
     <div className="space-y-4">
-      {selectedIds.size > 0 && (
-        <div className="flex items-center gap-2 rounded-md border bg-muted/50 px-3 py-2 text-sm">
-          <span className="font-medium">{selectedIds.size} selected</span>
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-7 text-xs"
-            onClick={() => setSelectedIds(new Set())}
-          >
-            Clear
-          </Button>
-          <div className="ml-auto flex gap-1">
-            <Select onValueChange={handleBulkStatus}>
-              <SelectTrigger className="h-7 w-[130px] text-xs">
-                <SelectValue placeholder="Set status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="draft">To do</SelectItem>
-                <SelectItem value="audited">In progress</SelectItem>
-                <SelectItem value="published">Done</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select onValueChange={handleBulkPriority}>
-              <SelectTrigger className="h-7 w-[130px] text-xs">
-                <SelectValue placeholder="Set priority" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="urgent">Urgent</SelectItem>
-                <SelectItem value="high">High</SelectItem>
-                <SelectItem value="medium">Medium</SelectItem>
-                <SelectItem value="low">Low</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button
-              variant="destructive"
-              size="sm"
-              className="h-7 text-xs"
-              onClick={handleBulkDelete}
-            >
-              <Trash2 className="size-3 mr-1" />
-              Delete
-            </Button>
-          </div>
-        </div>
-      )}
+      <TaskBulkActionsBar
+        count={selectedIds.size}
+        onClear={() => setSelectedIds(new Set())}
+        onBulkStatus={handleBulkStatus}
+        onBulkPriority={handleBulkPriority}
+        onBulkDelete={handleBulkDelete}
+      />
 
       {filtered.length === 0 ? (
         <div className="rounded-lg border border-dashed p-10 text-center text-sm text-muted-foreground">

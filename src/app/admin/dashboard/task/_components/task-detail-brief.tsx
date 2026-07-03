@@ -63,7 +63,7 @@ export function TaskDetailBrief({
             )}
           </div>
 
-          <dl className="grid grid-cols-2 gap-3 text-sm">
+          <dl className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
             <div>
               <dt className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">Priority</dt>
               <dd className="mt-1 flex items-center gap-2 font-medium">

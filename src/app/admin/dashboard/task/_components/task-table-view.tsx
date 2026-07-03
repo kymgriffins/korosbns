@@ -438,8 +438,8 @@ export function TaskTableView({ heading, description, singleTaskId }: Props) {
               </div>
             )}
 
-            <div tabIndex={-1} onKeyDown={onKeyDown} className="outline-none">
-              <Table>
+            <div tabIndex={-1} onKeyDown={onKeyDown} className="outline-none -mx-2 overflow-x-auto sm:mx-0">
+              <Table className="min-w-[40rem]">
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-10">
