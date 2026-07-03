@@ -9,6 +9,7 @@ export type Partner = {
   logo_url?: string;
   tier?: string;
   is_active?: boolean;
+  is_consortium?: boolean;
 };
 
 const config = bnsConfig as {
@@ -25,6 +26,7 @@ const DEFAULT_PARTNERS: Partner[] = (config.consortium?.partners ?? []).map((p) 
   logo_url: p.logo_url,
   tier: p.tier,
   is_active: p.is_active ?? false,
+  is_consortium: p.is_consortium ?? false,
 }));
 
 let _partners: Partner[] = [...DEFAULT_PARTNERS];

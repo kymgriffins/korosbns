@@ -131,10 +131,13 @@ export type OrgConfigApi = {
   socials?: { platform: string; url: string; label?: string }[];
   partners?: {
     name: string;
+    slug?: string;
     logo_url?: string;
     website_url?: string;
     tier?: string;
+    role?: string;
     description?: string;
+    is_consortium?: boolean;
   }[];
   updated_at?: string;
 };
