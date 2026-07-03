@@ -247,29 +247,6 @@ export default function KenyaFinanceTimeline() {
     <SectionShell className="relative overflow-x-clip border-t border-border/40 bg-background text-foreground">
       <div className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-1/2 w-4/5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/5 blur-[120px]" />
 
-      {/* Hero banner: Budget Reading — Mbadi 4.8T, 1.15T Deficit */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="mx-auto mb-8 max-w-5xl overflow-hidden rounded-3xl border border-primary/30 bg-primary/5 p-6 text-center md:p-10"
-      >
-        <div className="mb-2 inline-block rounded-full bg-primary/10 px-4 py-1 text-xs font-semibold text-primary">
-          Budget Reading — June 11, 2026
-        </div>
-        <h2 className="mb-3 text-2xl font-black tracking-tight md:text-4xl">
-          CS John Mbadi Presents KES 4.82 Trillion Budget
-        </h2>
-        <p className="mx-auto mb-5 max-w-2xl text-sm text-muted-foreground md:text-base">
-          Revenue KES 3.63 trillion · Deficit KES 1.15 trillion · Debt interest KES 1.2 trillion
-        </p>
-        <div className="mx-auto flex max-w-md flex-wrap items-center justify-center gap-3">
-          <span className="rounded-lg border border-primary/20 bg-primary/10 px-4 py-2 text-sm font-bold text-primary">KES 4.82T Total Budget</span>
-          <span className="rounded-lg border border-amber-500/20 bg-amber-500/10 px-4 py-2 text-sm font-bold text-amber-500">KES 1.15T Deficit</span>
-          <span className="rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm font-bold text-red-500">KES 1.2T Debt Interest</span>
-        </div>
-      </motion.div>
-
       <SectionHeader
         eyebrow="FY 2026/27 Budget Cycle"
         title={

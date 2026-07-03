@@ -17,8 +17,9 @@ export const FISCAL_YEARS: FiscalYearMeta[] = [
   { id: "fy2024", label: "FY 2024/25", is_current: false },
   { id: "fy2025", label: "FY 2025/26", is_current: false },
   { id: "fy2026", label: "FY 2026/27", is_current: true },
-  { id: "fy2027", label: "FY 2027/28", is_current: false },
 ];
+
+export const VISIBLE_FISCAL_YEARS = FISCAL_YEARS;
 
 function scaleValue(val: number, fyId: string): number {
   const factors: Record<string, number> = {

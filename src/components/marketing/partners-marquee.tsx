@@ -2,13 +2,28 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { Marquee } from "@/components/ui/marquee";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 import { partnerData, type Partner } from "@/data/partners";
+import { useOrg } from "@/contexts/org-context";
 import { motion } from "motion/react";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
 
-function PartnerLogo({ partner }: { partner: Partner }) {
+function mapOrgPartners(
+  apiPartners: NonNullable<ReturnType<typeof useOrg>["config"]["partners"]>,
+): Partner[] {
+  return apiPartners.map((p, index) => ({
+    id: p.slug ?? `partner-${index}`,
+    name: p.name,
+    website: p.website_url,
+    role: p.role ?? p.description,
+    logo_url: p.logo_url,
+    tier: p.tier,
+    is_active: true,
+    is_consortium: p.is_consortium ?? false,
+  }));
+}
+
+function PartnerLogo({ partner, prominent = false }: { partner: Partner; prominent?: boolean }) {
   return (
     <a
       href={partner.website || "#"}
@@ -17,14 +32,20 @@ function PartnerLogo({ partner }: { partner: Partner }) {
       className="group flex shrink-0 items-center justify-center px-6 md:px-10"
       aria-label={`Visit ${partner.name} website`}
     >
-      <div className="relative h-14 w-28 opacity-50 grayscale transition-all duration-500 group-hover:scale-105 group-hover:opacity-100 group-hover:grayscale-0 md:h-20 md:w-40">
+      <div
+        className={`relative transition-all duration-500 group-hover:scale-105 ${
+          prominent
+            ? "h-20 w-44 opacity-90 grayscale-0 md:h-24 md:w-52"
+            : "h-14 w-28 opacity-50 grayscale group-hover:opacity-100 group-hover:grayscale-0 md:h-20 md:w-40"
+        }`}
+      >
         {partner.logo_url ? (
           <Image
             src={partner.logo_url}
             alt={`${partner.name} logo`}
             fill
             className="object-contain"
-            sizes="(max-width: 768px) 112px, 160px"
+            sizes={prominent ? "(max-width: 768px) 176px, 208px" : "(max-width: 768px) 112px, 160px"}
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-xs font-semibold text-muted-foreground">
@@ -37,17 +58,27 @@ function PartnerLogo({ partner }: { partner: Partner }) {
 }
 
 export default function PartnersMarquee() {
-  const [activePartners, setActivePartners] = useState<Partner[]>([]);
-  const [foundingPartners, setFoundingPartners] = useState<Partner[]>([]);
+  const { config } = useOrg();
+  const [mainSponsors, setMainSponsors] = useState<Partner[]>([]);
 
   useEffect(() => {
-    const all = partnerData.get();
-    setActivePartners(all.filter((p) => p.is_active));
-    setFoundingPartners(all.filter((p) => !p.is_active));
-  }, []);
+    const fromApi = config.partners?.length ? mapOrgPartners(config.partners) : [];
+    const all = fromApi.length ? fromApi : partnerData.get();
+
+    const sponsors = all.filter(
+      (p) =>
+        (p.is_active ?? true) &&
+        !p.is_consortium &&
+        (p.tier === "sponsor" || p.id === "tisa"),
+    );
+
+    setMainSponsors(sponsors);
+  }, [config.partners]);
+
+  if (mainSponsors.length === 0) return null;
 
   return (
-    <section className="overflow-hidden border-y border-border/40 bg-background py-12 md:py-20">
+    <section className="overflow-hidden border-y border-border/40 bg-background py-12 md:py-16">
       <motion.div
         variants={staggerContainer}
         initial="hidden"
@@ -57,39 +88,18 @@ export default function PartnersMarquee() {
         <motion.div variants={fadeInUp}>
           <div className={`${SECTION_SHELL_INNER} mb-8 text-center`}>
             <span className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-              Partnering for Impact
+              Main Sponsor
             </span>
           </div>
         </motion.div>
 
-        {activePartners.length > 0 && (
-          <motion.div variants={fadeInUp}>
-            <div className="relative">
-              <Marquee pauseOnHover className="[--duration:28s] [--gap:2rem] md:[--gap:3rem]">
-                {activePartners.map((partner) => (
-                  <PartnerLogo key={partner.id || partner.name} partner={partner} />
-                ))}
-              </Marquee>
-            </div>
-          </motion.div>
-        )}
-
-        {foundingPartners.length > 0 && (
-          <motion.div variants={fadeInUp} className="mt-12">
-            <div className={`${SECTION_SHELL_INNER} mb-6 text-center`}>
-              <span className="text-xs text-muted-foreground/60 uppercase tracking-wider">
-                Founding Consortium
-              </span>
-            </div>
-            <div className="relative">
-              <Marquee pauseOnHover className="[--duration:22s] [--gap:2rem] md:[--gap:3rem]">
-                {foundingPartners.map((partner) => (
-                  <PartnerLogo key={partner.id || partner.name} partner={partner} />
-                ))}
-              </Marquee>
-            </div>
-          </motion.div>
-        )}
+        <motion.div variants={fadeInUp}>
+          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
+            {mainSponsors.map((partner) => (
+              <PartnerLogo key={partner.id || partner.name} partner={partner} prominent />
+            ))}
+          </div>
+        </motion.div>
       </motion.div>
     </section>
   );

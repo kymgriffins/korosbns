@@ -9,7 +9,7 @@ import type { BudgetNewsYear } from "@/lib/learn-hub";
 import type { ApiListResponse } from "@/types/api";
 import {
   fetchAllYearsData,
-  FISCAL_YEARS,
+  VISIBLE_FISCAL_YEARS,
   type FiscalYearMeta,
 } from "@/lib/reports-api";
 import {
@@ -58,8 +58,8 @@ export const budgetData = {
       "budget",
       async () => {
         const allYears = await fetchAllYearsData();
-        const currentYear = FISCAL_YEARS.find((y) => y.is_current)?.id ?? FISCAL_YEARS[0]?.id ?? "fy2026";
-        return { allYears, fiscalYears: FISCAL_YEARS, selectedYear: currentYear };
+        const currentYear = VISIBLE_FISCAL_YEARS.find((y) => y.is_current)?.id ?? VISIBLE_FISCAL_YEARS[0]?.id ?? "fy2026";
+        return { allYears, fiscalYears: VISIBLE_FISCAL_YEARS, selectedYear: currentYear };
       },
       () => ({ allYears: {} as Record<string, BudgetSchema>, fiscalYears: [] as FiscalYearMeta[], selectedYear: "" }),
     ),

@@ -19,6 +19,7 @@ import {
   LogIn,
   ArrowUpRight,
   Newspaper,
+  FolderKanban,
   XIcon,
 } from "lucide-react";
 import { ease } from "@/motion/variants";
@@ -36,6 +37,7 @@ function isActiveNav(pathname: string, href: string) {
 const getIcon = (label: string) => {
   const cls = "size-5 text-muted-foreground group-hover:text-primary transition-colors duration-200";
   switch (label.toLowerCase()) {
+    case "projects":     return <FolderKanban className={cls} />;
     case "learn":        return <BookOpen className={cls} />;
     case "budget hub":   return <Newspaper className={cls} />;
     case "budget news":  return <Newspaper className={cls} />;

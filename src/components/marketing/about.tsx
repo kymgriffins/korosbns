@@ -6,6 +6,7 @@ import SectionBadge from '@/components/ui/section-badge';
 import Link from 'next/link';
 import { ease } from '@/motion/variants';
 import TeamSection from './team-section';
+import ConsortiumFoundersSection from './consortium-founders-section';
 
 const About = () => {
     const openCallRoles = [
@@ -74,6 +75,8 @@ const About = () => {
                     </div>
                 </motion.div>
             </Wrapper>
+
+            <ConsortiumFoundersSection />
 
             {/* Team Section - Full width */}
             <TeamSection />

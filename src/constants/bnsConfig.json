@@ -25,7 +25,8 @@
         "logo_url": "https://res.cloudinary.com/dn8lut2fc/image/upload/v1779284903/senmedia_ylb5wt.png",
         "role": "Media production, events, and civic storytelling support",
         "tier": "founding",
-        "is_active": false
+        "is_active": false,
+        "is_consortium": true
       },
       {
         "id": "continental-pot",
@@ -34,7 +35,8 @@
         "logo_url": "https://res.cloudinary.com/dn8lut2fc/image/upload/v1779284902/The-Continental-Pot-Vertical-removebg-preview_b9mpzf.png",
         "role": "Consortium leadership and public interest strategy",
         "tier": "founding",
-        "is_active": false
+        "is_active": false,
+        "is_consortium": true
       },
       {
         "id": "colour-twist-media",
@@ -43,7 +45,18 @@
         "logo_url": "https://res.cloudinary.com/dn8lut2fc/image/upload/v1779284904/colortwist_pv33rt.png",
         "role": "Creative production and youth-facing media execution",
         "tier": "founding",
-        "is_active": false
+        "is_active": false,
+        "is_consortium": true
+      },
+      {
+        "id": "tisa",
+        "name": "Tax Justice Network Africa (TISA)",
+        "website": "https://newtisa.tisa.co.ke/",
+        "logo_url": "https://newtisa.tisa.co.ke/wp-content/uploads/2025/03/New-TISA-logo.svg",
+        "role": "Main sponsor — fiscal justice and tax policy advocacy across Africa",
+        "tier": "sponsor",
+        "is_active": true,
+        "is_consortium": false
       }
     ]
   },
