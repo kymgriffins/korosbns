@@ -251,7 +251,7 @@ export default function AdminAnalyticsPage() {
                           <ExternalLink className="size-3 shrink-0 text-muted-foreground" />
                           <span className="truncate">{p.path}</span>
                         </span>
-                        <span className="ml-2 shrink-0 font-medium tabular-nums text-xs">{p.views.toLocaleString()}</span>
+                        <span className="ml-2 shrink-0 font-medium tabular-nums text-xs">{(p.pageviews ?? p.views ?? 0).toLocaleString()}</span>
                       </div>
                     ))}
                   </div>
@@ -344,7 +344,7 @@ export default function AdminAnalyticsPage() {
                         <Search className="size-3.5 text-muted-foreground" />
                         <span className="font-mono text-xs">{p.path}</span>
                       </div>
-                      <span className="tabular-nums font-medium">{(p.pageviews ?? p.views).toLocaleString()} views</span>
+                      <span className="tabular-nums font-medium">{(p.pageviews ?? p.views ?? 0).toLocaleString()} views</span>
                     </div>
                   ))}
                 </div>
