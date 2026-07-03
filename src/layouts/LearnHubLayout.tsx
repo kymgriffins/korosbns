@@ -21,6 +21,22 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { SurveyListItemApi } from "@/lib/api-client";
 import { loadEventList, type HubEvent } from "@/lib/citizen-content";
 import { loadSurveyList } from "@/lib/marketing-content";
+
+function isEmojiBadge(badge: string) {
+  return /\p{Extended_Pictographic}/u.test(badge);
+}
+
+function ModuleNavBadge({ badge }: { badge?: string }) {
+  if (!badge) return null;
+  if (isEmojiBadge(badge)) {
+    return <span className="shrink-0 text-sm leading-none">{badge}</span>;
+  }
+  return (
+    <span className="flex size-5 shrink-0 items-center justify-center rounded-md bg-primary/10 text-[9px] font-bold uppercase tracking-wide text-primary">
+      {badge}
+    </span>
+  );
+}
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -237,12 +253,12 @@ function LearnSidebar() {
                                   isActive={activeLesson?.stageId === m.slug}
                                 >
                                   <Link
-                                    href={`${Routes.Learn}?tab=modules`}
+                                    href={`/learn/modules/${m.slug}`}
                                     onClick={() => { if (isMobile) setOpenMobile(false); }}
-                                    className="flex items-center gap-2"
+                                    className="flex min-w-0 items-center gap-2"
                                   >
-                                    <span className="text-sm leading-none">{m.badge}</span>
-                                    <span className="truncate text-xs font-medium">{m.badgeName || m.title}</span>
+                                    <ModuleNavBadge badge={m.badge} />
+                                    <span className="truncate text-xs font-medium">{m.title}</span>
                                   </Link>
                                 </SidebarMenuSubButton>
                               </SidebarMenuSubItem>

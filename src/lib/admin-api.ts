@@ -212,6 +212,24 @@ export type AdminNote = {
   updated_at: string;
 };
 
+export type TrafficMetricRow = {
+  pageviews: number;
+  visitors: number;
+  percentage?: number;
+};
+
+export type VercelTrafficBundle = {
+  daily_visitors: Array<TrafficMetricRow & { date: string; count: number }>;
+  top_pages: Array<TrafficMetricRow & { path: string; views?: number }>;
+  top_routes: Array<TrafficMetricRow & { route: string }>;
+  referrers: Array<TrafficMetricRow & { hostname: string; label: string }>;
+  countries: Array<TrafficMetricRow & { code: string }>;
+  devices: Array<TrafficMetricRow & { device_type: string }>;
+  operating_systems: Array<TrafficMetricRow & { os_name: string }>;
+  browsers: Array<TrafficMetricRow & { browser_name: string }>;
+  traffic_sources: { source: string; count: number; visitors?: number; percentage: number }[];
+};
+
 export type AdminAnalyticsSummary = {
   total_users: number;
   total_content: number;
@@ -241,11 +259,19 @@ export type AdminAnalyticsSummary = {
   pageviews_30d: number;
   bounce_rate: number;
   avg_session_seconds: number;
+  traffic_source?: "vercel" | "local";
+  traffic_synced_at?: string | null;
 
-  daily_visitors: { date: string; count: number }[];
-  top_pages: { path: string; views: number }[];
-  device_breakdown: { device_type: string; percentage: number }[];
-  traffic_sources: { source: string; count: number; percentage: number }[];
+  daily_visitors: { date: string; count: number; visitors?: number; pageviews?: number }[];
+  top_pages: { path: string; views: number; pageviews?: number; visitors?: number; percentage?: number }[];
+  top_routes?: { route: string; pageviews: number; visitors: number; percentage?: number }[];
+  referrers?: { hostname: string; label: string; pageviews: number; visitors: number; percentage?: number }[];
+  countries?: { code: string; pageviews: number; visitors: number; percentage?: number }[];
+  device_breakdown: { device_type: string; percentage: number; pageviews?: number; visitors?: number }[];
+  operating_systems?: { os_name: string; pageviews: number; visitors: number; percentage?: number }[];
+  browsers?: { browser_name: string; pageviews: number; visitors: number; percentage?: number }[];
+  traffic_sources: { source: string; count: number; visitors?: number; percentage: number }[];
+  vercel_traffic?: VercelTrafficBundle;
 
   content_published_today: number;
   content_published_7d: number;
