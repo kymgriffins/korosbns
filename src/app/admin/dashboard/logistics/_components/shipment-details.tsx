@@ -8,6 +8,10 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 
+import { ActivityTab } from "./activity-tab";
+import { CargoTab } from "./cargo-tab";
+import { DocumentsTab } from "./documents-tab";
+import { RouteTab } from "./route-tab";
 import type { Shipment } from "./shipment-data";
 import { ShipmentRouteMap } from "./shipment-route-map";
 
@@ -245,25 +249,17 @@ export function ShipmentDetails({ shipment }: ShipmentDetailsProps) {
             <TabsContent className="min-h-0 overflow-auto p-4" value="overview">
               <ShipmentOverview shipment={shipment} />
             </TabsContent>
-            <TabsContent className="p-4" value="route">
-              <div className="grid h-full place-items-center rounded-md border border-dashed text-muted-foreground text-sm">
-                Route view coming soon.
-              </div>
+            <TabsContent className="min-h-0 overflow-auto p-4" value="route">
+              <RouteTab shipmentId={shipment.id} />
             </TabsContent>
-            <TabsContent className="p-4" value="cargo">
-              <div className="grid h-full place-items-center rounded-md border border-dashed text-muted-foreground text-sm">
-                Cargo view coming soon.
-              </div>
+            <TabsContent className="min-h-0 overflow-auto p-4" value="cargo">
+              <CargoTab shipmentId={shipment.id} />
             </TabsContent>
-            <TabsContent className="p-4" value="documents">
-              <div className="grid h-full place-items-center rounded-md border border-dashed text-muted-foreground text-sm">
-                Documents view coming soon.
-              </div>
+            <TabsContent className="min-h-0 overflow-auto p-4" value="documents">
+              <DocumentsTab shipmentId={shipment.id} />
             </TabsContent>
-            <TabsContent className="p-4" value="activity">
-              <div className="grid h-full place-items-center rounded-md border border-dashed text-muted-foreground text-sm">
-                Activity view coming soon.
-              </div>
+            <TabsContent className="min-h-0 overflow-auto p-4" value="activity">
+              <ActivityTab shipmentId={shipment.id} />
             </TabsContent>
           </Tabs>
         </div>

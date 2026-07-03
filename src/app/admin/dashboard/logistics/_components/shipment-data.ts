@@ -999,3 +999,139 @@ export const shipmentTimeline = [
   { label: "Ground", time: "May 12, 12:10 PM", place: "Singapore, SGP", done: false, active: false },
   { label: "Delivered", time: "-", place: "Singapore, SGP", done: false, active: false },
 ] as const;
+
+export type RouteStopStatus = "completed" | "active" | "pending" | "delayed";
+export type TransportModeType = "air" | "land" | "sea";
+
+export type RouteStop = {
+  location: string;
+  country: string;
+  transportDetail: string;
+  arrivalMode?: TransportModeType;
+  arrivalTime: string;
+  departureTime?: string;
+  status: RouteStopStatus;
+  distanceFromPrev?: string;
+  durationFromPrev: number;
+};
+
+export type RouteData = {
+  shipmentId: string;
+  stops: RouteStop[];
+};
+
+export type CargoItem = {
+  id: string;
+  description: string;
+  quantity: number;
+  unit: string;
+  weight: string;
+  dimensions: string;
+  hazmat: boolean;
+  containerRef: string;
+};
+
+export type DocumentStatus = "approved" | "pending" | "rejected";
+
+export type ShipmentDocument = {
+  id: string;
+  name: string;
+  type: string;
+  reference: string;
+  status: DocumentStatus;
+  issuedDate: string;
+  expiryDate: string | null;
+  fileUrl: string;
+};
+
+export type ActivityEvent = {
+  id: string;
+  timestamp: string;
+  event: string;
+  location: string;
+  actor: string;
+  note: string;
+};
+
+const routeData: Record<string, RouteData> = {
+  "SDA-01-2401": {
+    shipmentId: "SDA-01-2401",
+    stops: [
+      { location: "Soekarno-Hatta International Airport (CGK)", country: "Indonesia", transportDetail: "Truck C-112 → Cargo Terminal 2", arrivalMode: "land", arrivalTime: "Jul 02, 06:30 AM", departureTime: "Jul 02, 07:15 AM", status: "completed", distanceFromPrev: "0", durationFromPrev: 0 },
+      { location: "Cargo Terminal 2 — CGK", country: "Indonesia", transportDetail: "Security screening & palletization", arrivalMode: "land", arrivalTime: "Jul 02, 07:30 AM", departureTime: "Jul 02, 08:10 AM", status: "completed", distanceFromPrev: "3", durationFromPrev: 40 },
+      { location: "Changi International Airport (SIN)", country: "Singapore", transportDetail: "Flight GA-884 (Airbus A330-300)", arrivalMode: "air", arrivalTime: "Jul 02, 10:45 AM", departureTime: "Jul 02, 11:30 AM", status: "active", distanceFromPrev: "890", durationFromPrev: 155 },
+      { location: "SIN Cargo Clearance Hub", country: "Singapore", transportDetail: "Customs inspection & release", arrivalMode: "land", arrivalTime: "Jul 02, 12:00 PM", status: "pending", distanceFromPrev: "2", durationFromPrev: 30 },
+    ],
+  },
+  "SDA-02-2402": {
+    shipmentId: "SDA-02-2402",
+    stops: [
+      { location: "Surabaya Industrial Warehouse", country: "Indonesia", transportDetail: "Forklift loading — B 9042 KX", arrivalMode: "land", arrivalTime: "Jul 01, 08:00 AM", departureTime: "Jul 01, 09:30 AM", status: "completed", distanceFromPrev: "0", durationFromPrev: 0 },
+      { location: "Surabaya Outer Ring Road", country: "Indonesia", transportDetail: "Road transport via Trans-Java Toll", arrivalMode: "land", arrivalTime: "Jul 01, 10:15 AM", departureTime: "Jul 01, 11:00 AM", status: "completed", distanceFromPrev: "15", durationFromPrev: 45 },
+      { location: "Mojokerto Weigh Station", country: "Indonesia", transportDetail: "Weight check & cargo inspection", arrivalMode: "land", arrivalTime: "Jul 01, 12:30 PM", departureTime: "Jul 01, 01:15 PM", status: "completed", distanceFromPrev: "48", durationFromPrev: 90 },
+      { location: "Semarang Logistics Hub", country: "Indonesia", transportDetail: "Unloading at warehouse bay #4", arrivalMode: "land", arrivalTime: "Jul 02, 09:45 AM", departureTime: "Jul 02, 10:30 AM", status: "delayed", distanceFromPrev: "310", durationFromPrev: 510 },
+    ],
+  },
+};
+
+const cargoData: Record<string, CargoItem[]> = {
+  "SDA-01-2401": [
+    { id: "PKG-001", description: "Smartphones — Model X Pro", quantity: 500, unit: "units", weight: "250 kg", dimensions: "120×80×60 cm", hazmat: false, containerRef: "ULD-AY-8841" },
+    { id: "PKG-002", description: "Tablets — Model Tab S", quantity: 200, unit: "units", weight: "180 kg", dimensions: "100×70×50 cm", hazmat: false, containerRef: "ULD-AY-8841" },
+    { id: "PKG-003", description: "Laptop Batteries (Li-ion)", quantity: 50, unit: "boxes", weight: "320 kg", dimensions: "80×60×40 cm", hazmat: true, containerRef: "ULD-AY-8842" },
+    { id: "PKG-004", description: "USB-C Accessory Kits", quantity: 1000, unit: "units", weight: "700 kg", dimensions: "140×100×80 cm", hazmat: false, containerRef: "ULD-AY-8843" },
+  ],
+  "SDA-02-2402": [
+    { id: "PKG-005", description: "CNC Milling Machine Base", quantity: 1, unit: "unit", weight: "4,200 kg", dimensions: "300×180×220 cm", hazmat: false, containerRef: "Flat Rack FR-202" },
+    { id: "PKG-006", description: "Hydraulic Press Assembly", quantity: 1, unit: "unit", weight: "2,800 kg", dimensions: "250×150×190 cm", hazmat: false, containerRef: "Flat Rack FR-202" },
+    { id: "PKG-007", description: "Steel Shafts (set of 12)", quantity: 2, unit: "bundles", weight: "1,120 kg", dimensions: "400×30×30 cm", hazmat: false, containerRef: "Flat Rack FR-203" },
+  ],
+};
+
+const documentData: Record<string, ShipmentDocument[]> = {
+  "SDA-01-2401": [
+    { id: "doc-001", name: "Air Waybill", type: "Transport", reference: "AWB-784-2910-3847", status: "approved", issuedDate: "Jul 01, 2026", expiryDate: null, fileUrl: "#" },
+    { id: "doc-002", name: "Commercial Invoice", type: "Customs", reference: "INV-2026-4471", status: "approved", issuedDate: "Jun 30, 2026", expiryDate: null, fileUrl: "#" },
+    { id: "doc-003", name: "Packing List", type: "Customs", reference: "PL-2026-4471", status: "approved", issuedDate: "Jun 30, 2026", expiryDate: null, fileUrl: "#" },
+    { id: "doc-004", name: "Certificate of Origin", type: "Compliance", reference: "COO-ID-2026-8912", status: "pending", issuedDate: "Jul 02, 2026", expiryDate: "Dec 31, 2026", fileUrl: "#" },
+    { id: "doc-005", name: "Dangerous Goods Declaration", type: "Compliance", reference: "DGD-8841-2026", status: "approved", issuedDate: "Jul 01, 2026", expiryDate: null, fileUrl: "#" },
+  ],
+  "SDA-02-2402": [
+    { id: "doc-006", name: "Consignment Note (CMR)", type: "Transport", reference: "CMR-ID-2026-3302", status: "approved", issuedDate: "Jul 01, 2026", expiryDate: null, fileUrl: "#" },
+    { id: "doc-007", name: "Commercial Invoice", type: "Customs", reference: "INV-2026-4492", status: "approved", issuedDate: "Jun 30, 2026", expiryDate: null, fileUrl: "#" },
+    { id: "doc-008", name: "Packing List", type: "Customs", reference: "PL-2026-4492", status: "pending", issuedDate: "Jul 01, 2026", expiryDate: null, fileUrl: "#" },
+    { id: "doc-009", name: "Insurance Certificate", type: "Insurance", reference: "INS-2026-7712", status: "rejected", issuedDate: "Jul 01, 2026", expiryDate: "Jan 01, 2027", fileUrl: "#" },
+  ],
+};
+
+const activityData: Record<string, ActivityEvent[]> = {
+  "SDA-01-2401": [
+    { id: "act-001", timestamp: "Jul 02, 08:10 AM", event: "Palletized and loaded onto aircraft", location: "CGK Airport, Terminal 2", actor: "Ground crew GA-884", note: "ULD-AY-8841 through 8843 secured in forward hold. Weight distribution verified." },
+    { id: "act-002", timestamp: "Jul 02, 07:45 AM", event: "Security clearance completed", location: "CGK Airport, Cargo Security", actor: "Aviation Security Unit", note: "X-ray and trace detection passed. No anomalies found." },
+    { id: "act-003", timestamp: "Jul 02, 07:15 AM", event: "Cargo delivered to airline terminal", location: "CGK Airport, Cargo Terminal 2", actor: "Courier — Budi S.", note: "Drop-off completed. AWB verified and cargo accepted by Garuda cargo desk." },
+    { id: "act-004", timestamp: "Jul 02, 06:30 AM", event: "Shipment created", location: "TechCorp Warehouse, Jakarta", actor: "Shipper — TechCorp", note: "All packages scanned and manifest generated." },
+  ],
+  "SDA-02-2402": [
+    { id: "act-005", timestamp: "Jul 02, 08:00 AM", event: "Driver reported mechanical issue", location: "Mojokerto Rest Area", actor: "Driver — H. Prasetyo", note: "Check engine light on. Inspection underway — estimated 3h delay." },
+    { id: "act-006", timestamp: "Jul 01, 01:15 PM", event: "Weight inspection passed", location: "Mojokerto Weigh Station", actor: "Dishub Inspector", note: "Total GVW 14,280 kg. Within legal limits. Axle loads balanced." },
+    { id: "act-007", timestamp: "Jul 01, 09:30 AM", event: "Cargo loaded and secured", location: "Surabaya Industrial Warehouse", actor: "Warehouse Team Lead — Rina W.", note: "All machinery crates strapped and load distribution verified." },
+    { id: "act-008", timestamp: "Jul 01, 07:45 AM", event: "Vehicle arrived at pickup location", location: "Surabaya Industrial Warehouse", actor: "Driver — H. Prasetyo", note: "Vehicle B 9042 KX arrived for loading." },
+    { id: "act-009", timestamp: "Jul 01, 06:00 AM", event: "Dispatch confirmed", location: "Logistics Plus Dispatch Center", actor: "Dispatcher — S. Tan", note: "Route assigned: Surabaya → Semarang via Trans-Java Toll." },
+  ],
+};
+
+export function getRouteForShipment(shipmentId: string): RouteData | undefined {
+  return routeData[shipmentId];
+}
+
+export function getCargoForShipment(shipmentId: string): CargoItem[] {
+  return cargoData[shipmentId] ?? [];
+}
+
+export function getDocumentsForShipment(shipmentId: string): ShipmentDocument[] {
+  return documentData[shipmentId] ?? [];
+}
+
+export function getActivityForShipment(shipmentId: string): ActivityEvent[] {
+  return activityData[shipmentId] ?? [];
+}
