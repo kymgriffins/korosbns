@@ -81,10 +81,15 @@ export default function AdminAnalyticsPage() {
     { label: "Engagement Rate", value: `${summary?.engagement_rate ?? 0}%`, icon: TrendingUp, color: "text-green-500", sub: period === "all" ? "overall" : "avg" },
   ];
 
-  const deviceData = useMemo(() => (summary?.device_breakdown ?? []), [summary]);
-  const sourceData = useMemo(() => (summary?.traffic_sources ?? []), [summary]);
-  const dailyData = useMemo(() => (summary?.daily_visitors ?? []), [summary]);
-  const topPages = useMemo(() => (summary?.top_pages ?? []), [summary]);
+  const deviceData = useMemo(() => (summary?.device_breakdown ?? summary?.vercel_traffic?.devices ?? []), [summary]);
+  const sourceData = useMemo(() => (summary?.traffic_sources ?? summary?.vercel_traffic?.traffic_sources ?? []), [summary]);
+  const dailyData = useMemo(() => (summary?.daily_visitors ?? summary?.vercel_traffic?.daily_visitors ?? []), [summary]);
+  const topPages = useMemo(() => (summary?.top_pages ?? summary?.vercel_traffic?.top_pages ?? []), [summary]);
+  const topRoutes = useMemo(() => (summary?.top_routes ?? summary?.vercel_traffic?.top_routes ?? []), [summary]);
+  const referrers = useMemo(() => (summary?.referrers ?? summary?.vercel_traffic?.referrers ?? []), [summary]);
+  const countries = useMemo(() => (summary?.countries ?? summary?.vercel_traffic?.countries ?? []), [summary]);
+  const operatingSystems = useMemo(() => (summary?.operating_systems ?? summary?.vercel_traffic?.operating_systems ?? []), [summary]);
+  const browsers = useMemo(() => (summary?.browsers ?? summary?.vercel_traffic?.browsers ?? []), [summary]);
 
   const deviceIcons: Record<string, typeof Smartphone> = { Mobile: Smartphone, Desktop: Monitor, Tablet: Tablet };
 
@@ -93,7 +98,12 @@ export default function AdminAnalyticsPage() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Analytics</h1>
-          <p className="text-sm text-muted-foreground">Users, traffic, and content performance</p>
+          <p className="text-sm text-muted-foreground">
+            Users, traffic, and content performance
+            {summary?.traffic_source === "vercel" && summary.traffic_synced_at
+              ? ` · Vercel synced ${new Date(summary.traffic_synced_at).toLocaleString()}`
+              : ""}
+          </p>
         </div>
         <div className="flex items-center gap-2">
           <div className="flex rounded-lg border p-0.5 bg-muted/30">
@@ -334,13 +344,104 @@ export default function AdminAnalyticsPage() {
                         <Search className="size-3.5 text-muted-foreground" />
                         <span className="font-mono text-xs">{p.path}</span>
                       </div>
-                      <span className="tabular-nums font-medium">{p.views.toLocaleString()} views</span>
+                      <span className="tabular-nums font-medium">{(p.pageviews ?? p.views).toLocaleString()} views</span>
                     </div>
                   ))}
                 </div>
               )}
             </CardContent>
           </Card>
+
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Card>
+              <CardHeader><CardTitle className="text-sm">Framework Routes</CardTitle><CardDescription>Vercel `route` dimension</CardDescription></CardHeader>
+              <CardContent>
+                {topRoutes.length === 0 ? (
+                  <p className="py-6 text-center text-sm text-muted-foreground">No route data</p>
+                ) : (
+                  <div className="divide-y">
+                    {topRoutes.slice(0, 8).map((row) => (
+                      <div key={row.route} className="flex items-center justify-between py-2 text-sm">
+                        <span className="truncate font-mono text-xs">{row.route}</span>
+                        <span className="ml-2 shrink-0 tabular-nums text-xs">{row.pageviews} pv · {row.visitors} uv</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader><CardTitle className="text-sm">Referrers</CardTitle><CardDescription>Incoming hostnames</CardDescription></CardHeader>
+              <CardContent>
+                {referrers.length === 0 ? (
+                  <p className="py-6 text-center text-sm text-muted-foreground">No referrer data</p>
+                ) : (
+                  <div className="divide-y">
+                    {referrers.slice(0, 8).map((row) => (
+                      <div key={row.hostname} className="flex items-center justify-between py-2 text-sm">
+                        <span className="truncate">{row.label}</span>
+                        <span className="ml-2 shrink-0 tabular-nums text-xs">{row.pageviews} pv · {row.percentage ?? 0}%</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+            <Card>
+              <CardHeader><CardTitle className="text-sm">Countries</CardTitle><CardDescription>Visitor geography</CardDescription></CardHeader>
+              <CardContent>
+                {countries.length === 0 ? (
+                  <p className="py-6 text-center text-sm text-muted-foreground">No country data</p>
+                ) : (
+                  <div className="divide-y">
+                    {countries.slice(0, 8).map((row) => (
+                      <div key={row.code} className="flex items-center justify-between py-2 text-sm">
+                        <span className="font-medium">{row.code}</span>
+                        <span className="tabular-nums text-xs">{row.pageviews} pv · {row.visitors} uv</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader><CardTitle className="text-sm">Operating Systems</CardTitle><CardDescription>OS breakdown</CardDescription></CardHeader>
+              <CardContent>
+                {operatingSystems.length === 0 ? (
+                  <p className="py-6 text-center text-sm text-muted-foreground">No OS data</p>
+                ) : (
+                  <div className="divide-y">
+                    {operatingSystems.slice(0, 8).map((row) => (
+                      <div key={row.os_name} className="flex items-center justify-between py-2 text-sm">
+                        <span>{row.os_name}</span>
+                        <span className="tabular-nums text-xs">{row.percentage ?? 0}%</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader><CardTitle className="text-sm">Browsers</CardTitle><CardDescription>Browser breakdown</CardDescription></CardHeader>
+              <CardContent>
+                {browsers.length === 0 ? (
+                  <p className="py-6 text-center text-sm text-muted-foreground">No browser data</p>
+                ) : (
+                  <div className="divide-y">
+                    {browsers.slice(0, 8).map((row) => (
+                      <div key={row.browser_name} className="flex items-center justify-between py-2 text-sm">
+                        <span>{row.browser_name}</span>
+                        <span className="tabular-nums text-xs">{row.pageviews} pv</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
         {/* ── Users ── */}
