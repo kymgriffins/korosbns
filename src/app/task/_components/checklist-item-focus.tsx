@@ -1,54 +1,40 @@
 "use client";
 
-import { useState } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import { ArrowLeft, Trash2 } from "lucide-react";
 
-import { AttachmentField } from "@/components/attachments/attachment-field";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/utils/index";
-import type { AssignableUser, ChecklistItem, ChecklistItemStatus, TaskPriority } from "@/types/tasks";
+import type { AssignableUser, ChecklistItem } from "@/types/tasks";
 import { isChecklistItemDone } from "./checklist-utils";
-
-const STATUS_OPTIONS: { value: ChecklistItemStatus; label: string }[] = [
-  { value: "todo", label: "To Do" },
-  { value: "in_progress", label: "In Progress" },
-  { value: "blocked", label: "Blocked" },
-  { value: "done", label: "Done" },
-];
 
 export function ChecklistItemFocus({
   item,
   assignableUsers,
   readonly,
-  uploading,
-  pendingHint,
   onBack,
   onUpdate,
   onRemove,
-  onUpload,
-  onDeleteAttachment,
 }: {
   item: ChecklistItem;
   assignableUsers: AssignableUser[];
   readonly?: boolean;
-  uploading?: boolean;
-  pendingHint?: string;
   onBack: () => void;
   onUpdate: (patch: Partial<ChecklistItem>, options?: { debounce?: boolean }) => void;
   onRemove: () => void;
-  onUpload: (files: File[]) => void;
-  onDeleteAttachment: (attachmentId: string) => void;
 }) {
-  const [tab, setTab] = useState<"write" | "preview">("write");
   const title = item.title || item.text || "Untitled item";
   const done = isChecklistItemDone(item);
+  const selectedUser = assignableUsers.find((u) => u.id === item.assignee);
 
   return (
     <div className="animate-in fade-in slide-in-from-right-2 duration-200">
@@ -59,7 +45,7 @@ export function ChecklistItemFocus({
           className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
         >
           <ArrowLeft className="size-3.5" />
-          Checklist
+          Sub-tasks
         </button>
         <span className="text-muted-foreground/50" aria-hidden>
           /
@@ -75,13 +61,9 @@ export function ChecklistItemFocus({
           done && "opacity-90",
         )}
       >
-        <div
-          className="absolute inset-y-0 left-0 w-1 bg-primary/80"
-          style={{ background: done ? "var(--muted-foreground)" : undefined }}
-          aria-hidden
-        />
+        <div className="absolute inset-y-0 left-0 w-1 bg-primary/80" aria-hidden />
 
-        <div className="space-y-5 p-4 pl-5 md:p-5 md:pl-6">
+        <div className="space-y-4 p-4 pl-5 md:p-5 md:pl-6">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="flex min-w-0 flex-1 items-start gap-3">
               <Checkbox
@@ -119,134 +101,50 @@ export function ChecklistItemFocus({
                 </Button>
               )}
               <Button type="button" variant="secondary" size="sm" onClick={onBack}>
-                Done editing
+                Done
               </Button>
             </div>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">Status</Label>
-              <Select
-                value={item.status ?? "todo"}
-                disabled={readonly}
-                onValueChange={(v) => onUpdate({ status: v as ChecklistItemStatus })}
-              >
-                <SelectTrigger className="h-9 bg-background text-sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {STATUS_OPTIONS.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">Priority</Label>
-              <Select
-                value={item.priority ?? "medium"}
-                disabled={readonly}
-                onValueChange={(v) => onUpdate({ priority: v as TaskPriority })}
-              >
-                <SelectTrigger className="h-9 bg-background text-sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="low">Low</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
-                  <SelectItem value="urgent">Urgent</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">Assignee</Label>
-              <Select
-                value={item.assignee || "unassigned"}
-                disabled={readonly}
-                onValueChange={(v) => onUpdate({ assignee: v === "unassigned" ? null : v })}
-              >
-                <SelectTrigger className="h-9 bg-background text-sm">
-                  <SelectValue placeholder="Unassigned" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="unassigned">Unassigned</SelectItem>
-                  {assignableUsers.map((u) => (
-                    <SelectItem key={u.id} value={u.id}>
-                      {u.display_name || u.email}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">Due date</Label>
-              <Input
-                type="date"
-                disabled={readonly}
-                value={item.due_date ?? ""}
-                onChange={(e) => onUpdate({ due_date: e.target.value || null })}
-                className="h-9 bg-background text-sm"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Label className="text-xs text-muted-foreground">Details</Label>
-              <div className="ml-auto flex gap-1 rounded-md border border-border/50 p-0.5">
-                <Button
-                  type="button"
-                  size="sm"
-                  variant={tab === "write" ? "secondary" : "ghost"}
-                  className="h-7 px-2.5 text-[11px]"
-                  onClick={() => setTab("write")}
-                >
-                  Write
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant={tab === "preview" ? "secondary" : "ghost"}
-                  className="h-7 px-2.5 text-[11px]"
-                  onClick={() => setTab("preview")}
-                >
-                  Preview
-                </Button>
-              </div>
-            </div>
-            {tab === "write" ? (
-              <Textarea
-                value={item.description_text ?? ""}
-                disabled={readonly}
-                onChange={(e) => onUpdate({ description_text: e.target.value }, { debounce: true })}
-                placeholder="Steps, links, context — markdown supported."
-                rows={8}
-                className="min-h-[160px] resize-y bg-background text-sm leading-relaxed"
-              />
-            ) : (
-              <div className="prose prose-sm dark:prose-invert max-w-none rounded-lg border border-border/50 bg-muted/20 p-4 text-sm">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {item.description_text || "_No content yet._"}
-                </ReactMarkdown>
-              </div>
+          <div className="space-y-1.5">
+            <Label className="text-xs text-muted-foreground">Assignee</Label>
+            <Select
+              value={item.assignee || "unassigned_value_placeholder"}
+              disabled={readonly}
+              onValueChange={(v) =>
+                onUpdate({
+                  assignee: v === "unassigned_value_placeholder" ? null : v,
+                  assignee_name:
+                    v === "unassigned_value_placeholder"
+                      ? null
+                      : assignableUsers.find((u) => u.id === v)?.display_name ?? null,
+                })
+              }
+            >
+              <SelectTrigger className="h-9 bg-background text-sm">
+                <SelectValue placeholder={readonly ? "Unassigned" : "Select assignee"} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="unassigned_value_placeholder">None (Unassigned)</SelectItem>
+                {assignableUsers.map((u) => (
+                  <SelectItem key={u.id} value={u.id}>
+                    {u.display_name || `${u.first_name} ${u.last_name}`.trim() || u.email}
+                    <span className="ml-2 text-[10px] text-muted-foreground">
+                      ({u.role}{u.team ? ` · ${u.team.name}` : ""})
+                    </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {selectedUser && (
+              <p className="text-[10px] text-muted-foreground">
+                {selectedUser.display_name ||
+                  `${selectedUser.first_name} ${selectedUser.last_name}`.trim()}
+                {" · "}
+                {selectedUser.role}
+                {selectedUser.team ? ` · ${selectedUser.team.name}` : ""}
+              </p>
             )}
-          </div>
-
-          <div className="space-y-2 border-t border-border/50 pt-4">
-            <Label className="text-xs text-muted-foreground">Attachments</Label>
-            <AttachmentField
-              attachments={item.attachments ?? []}
-              readonly={readonly}
-              uploading={uploading}
-              pendingHint={pendingHint}
-              onUpload={readonly ? undefined : onUpload}
-              onDelete={readonly ? undefined : onDeleteAttachment}
-              emptyHint="Add screenshots, PDFs, or supporting files for this sub-task."
-            />
           </div>
         </div>
       </div>

@@ -36,6 +36,11 @@ import type {
 } from "@/types/tasks";
 import { ChecklistEditor } from "./checklist-editor";
 import { TaskAttachmentsGrid } from "./task-attachments";
+import {
+  buildRosterChecklist,
+  buildWeeklyTeamDeliverablePack,
+  findTeamA,
+} from "./task-checklist-templates";
 
 export type TaskFormMode = "create" | "edit";
 
@@ -102,7 +107,7 @@ export function TaskForm({
     assignee: task?.assignee ?? null,
     assigned_team: task?.assigned_team ?? null,
     progress: task?.progress ?? 0,
-    checklist: task?.checklist ?? [],
+    checklist: task?.checklist ?? (mode === "create" ? buildRosterChecklist() : []),
     due_label: task?.due_label ?? null,
     priority: task?.priority ?? "medium",
     tag: task?.tag ?? undefined,
@@ -189,7 +194,9 @@ export function TaskForm({
   const selectedUser = assignableUsers.find((u) => u.id === form.assignee);
   const checklistOpen = (form.checklist ?? []).filter((i) => !isChecklistItemDone(i)).length;
   const defaultTab: TaskFormTab =
-    mode === "edit" && (form.checklist?.length ?? 0) > 0 ? "checklist" : "basics";
+    mode === "create" || (mode === "edit" && (form.checklist?.length ?? 0) > 0)
+      ? "checklist"
+      : "basics";
   const [activeTab, setActiveTab] = useState<TaskFormTab>(defaultTab);
 
   function fieldAlert(key: string) {
@@ -332,6 +339,43 @@ export function TaskForm({
           </TabsContent>
 
           <TabsContent value="checklist" className="mt-0 focus-visible:ring-0">
+            {(!task || task.status !== "published") && (
+              <div className="mb-4 flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="h-8 text-xs"
+                  onClick={() => updateField("checklist", buildRosterChecklist())}
+                >
+                  Reset roster
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="h-8 text-xs"
+                  onClick={() => {
+                    const teamA = findTeamA(teams);
+                    if (!teamA) {
+                      toast.error("Team A not found — add it in admin or pick a team manually.");
+                      return;
+                    }
+                    const pack = buildWeeklyTeamDeliverablePack(teamA, form.week_label);
+                    setForm((prev) => ({
+                      ...prev,
+                      title: pack.title,
+                      week_label: pack.week_label,
+                      assigned_team: pack.assigned_team,
+                      checklist: pack.checklist,
+                    }));
+                    toast.success("Weekly Team A deliverable template applied");
+                  }}
+                >
+                  Weekly Team A deliverable
+                </Button>
+              </div>
+            )}
             <ChecklistEditor
               items={form.checklist ?? []}
               onChange={(itemsOrFn) => {
