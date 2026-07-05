@@ -144,7 +144,7 @@ export default function RegisterPage() {
       localStorage.setItem("bns_onboarding_profile", JSON.stringify(profile));
 
       // NOTE: Onboarding data saved to localStorage only - will be synced to
-      // backend after user verifies email and logs in (see learn-paths-home.tsx).
+      // backend after user verifies email and logs in (see Learn Studio home).
 
       setSent(true);
       toast.success("Registration complete! Check your email.");
