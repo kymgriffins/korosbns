@@ -1,12 +1,11 @@
 "use client";
 
 import React from "react";
-import { Footer } from "@/layouts/Footer";
 import { Header as Navbar } from "@/layouts/Header";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { ease } from "@/motion/variants";
-import { SocialsSection } from "@/components/marketing/socials-section";
+import BNSFooter from "@/components/shadcn-space/blocks/footer-02/footer";
 
 const MarketingLayout = ({
   children,
@@ -46,12 +45,7 @@ const MarketingLayout = ({
         </motion.div>
       </AnimatePresence>
 
-      {showMarketingFooter && (
-        <>
-          <SocialsSection />
-          <Footer />
-        </>
-      )}
+      {showMarketingFooter && <BNSFooter />}
     </main>
   );
 };

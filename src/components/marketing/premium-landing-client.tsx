@@ -84,10 +84,59 @@ const BNSStudioSection = dynamic(
   }
 );
 
+const ServicesSection = dynamic(
+  () => import("@/components/shadcn-space/blocks/services-02/services"),
+  {
+    ssr: false,
+    loading: () => <div className="h-96 w-full bg-muted animate-pulse" />,
+  }
+);
+
+const TestimonialsSection = dynamic(
+  () => import("@/components/shadcn-space/blocks/testimonial-01/testimonial"),
+  {
+    ssr: false,
+    loading: () => <div className="h-96 w-full bg-muted animate-pulse" />,
+  }
+);
+
+const BlogSection = dynamic(
+  () => import("@/components/shadcn-space/blocks/blog-01/blog"),
+  {
+    ssr: false,
+    loading: () => <div className="h-96 w-full bg-muted animate-pulse" />,
+  }
+);
+
 const NewsletterPopup = dynamic(
   () => import("@/components/marketing/newsletter-popup"),
   { ssr: false }
 );
+
+import type { ServiceItem } from "@/components/shadcn-space/blocks/services-02/services";
+
+const bnsServices: ServiceItem[] = [
+  {
+    heading: "Budget Analysis",
+    descp: "We break down complex national and county budgets into clear, accessible narratives that empower citizens to understand where public money is going and hold leaders accountable.",
+    image: "https://images.shadcnspace.com/assets/services/services-1.png"
+  },
+  {
+    heading: "Civic Education",
+    descp: "We create engaging learning content — videos, articles, and interactive modules — that builds fiscal literacy and helps Kenyans understand their role in the budget process.",
+    image: "https://images.shadcnspace.com/assets/services/services-2.png"
+  },
+  {
+    heading: "Data Visualization",
+    descp: "We transform dry budget figures into compelling visual stories — infographics, charts, and interactive dashboards — making fiscal data understandable at a glance.",
+    image: "https://images.shadcnspace.com/assets/services/services-3.png"
+  },
+  {
+    heading: "Public Engagement",
+    descp: "We facilitate citizen participation in budget processes through forums, surveys, and digital tools that amplify community voices and influence policy decisions.",
+    image: "https://images.shadcnspace.com/assets/services/services-4.png"
+  }
+];
 
 export default function PremiumLandingClient() {
   return (
@@ -101,6 +150,9 @@ export default function PremiumLandingClient() {
       <KenyaFinanceTimeline />
       <GovernmentPartnerships />
       <WhatWeDoSection />
+      <ServicesSection data={bnsServices} />
+      <TestimonialsSection />
+      <BlogSection />
       <AlertsSimulator />
       <BNSStudioSection />
       <NewsletterPopup />
