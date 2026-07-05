@@ -15,11 +15,11 @@ import type { LearnHubProfile } from "@/lib/learn-data";
 function progressIcon(contentType: string) {
   switch (contentType) {
     case "lesson":
-      return <CheckCircle2 className="size-4 text-emerald-500" />;
+      return <CheckCircle2 className="size-4 text-success" />;
     case "document":
-      return <FileText className="size-4 text-blue-500" />;
+      return <FileText className="size-4 text-info" />;
     case "path":
-      return <MessageSquare className="size-4 text-amber-500" />;
+      return <MessageSquare className="size-4 text-warning" />;
     default:
       return <CheckCircle2 className="size-4 text-muted-foreground" />;
   }
@@ -73,7 +73,7 @@ export function LearnAlertsView({ profile }: { profile: LearnHubProfile }) {
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium capitalize">{item.content_type}</p>
                     <p className="text-xs text-muted-foreground">{item.progress_percent}% complete</p>
-                    <p className="mt-1 text-[11px] text-muted-foreground">
+                    <p className="mt-1 text-xs text-muted-foreground">
                       {new Date(item.completed_at).toLocaleDateString()}
                     </p>
                   </div>
@@ -112,14 +112,14 @@ export function LearnAlertsView({ profile }: { profile: LearnHubProfile }) {
                 <CardContent className="space-y-2 p-4 text-sm">
                   <div className="flex items-start justify-between gap-2">
                     <p className="font-medium">{log.documentName}</p>
-                    <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium uppercase text-primary">
+                    <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-micro font-medium uppercase text-primary">
                       {log.method}
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground">
                     {new Date(log.dateSubmitted).toLocaleString()}
                   </p>
-                  <p className="line-clamp-3 rounded-lg bg-muted/40 p-2 font-mono text-[11px] leading-relaxed">
+                  <p className="line-clamp-3 rounded-lg bg-muted/40 p-2 font-mono text-xs leading-relaxed">
                     {log.draftText}
                   </p>
                 </CardContent>

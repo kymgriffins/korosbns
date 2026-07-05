@@ -50,9 +50,9 @@ function SectionCard({
 
 const TIER_STYLES: Record<BadgeTier, { label: string; chip: string }> = {
   none: { label: "", chip: "bg-primary/10 text-primary ring-primary/20" },
-  bronze: { label: "Bronze", chip: "bg-orange-500/12 text-orange-700 ring-orange-500/25" },
-  silver: { label: "Silver", chip: "bg-slate-400/15 text-slate-600 ring-slate-400/30" },
-  gold: { label: "Gold", chip: "bg-amber-400/15 text-amber-700 ring-amber-400/30" },
+  bronze: { label: "Bronze", chip: "bg-warning/12 text-warning ring-warning/25" },
+  silver: { label: "Silver", chip: "bg-muted/15 text-muted-foreground ring-border/30" },
+  gold: { label: "Gold", chip: "bg-warning/15 text-warning ring-warning/30" },
   platinum: { label: "Platinum", chip: "bg-cyan-500/12 text-cyan-700 ring-cyan-500/25" },
 };
 
@@ -68,7 +68,7 @@ function CatalogBadgeCard({ badge }: { badge: BadgeCatalogEntry }) {
       className={cn(
         "relative flex flex-col gap-2 rounded-xl border p-3 transition-all",
         isEarned
-          ? "border-emerald-500/25 bg-gradient-to-br from-emerald-500/8 to-transparent shadow-xs"
+          ? "border-success/25 bg-gradient-to-br from-success/8 to-transparent shadow-xs"
           : isLocked
             ? "border-border/40 bg-muted/20 opacity-70"
             : "border-primary/20 bg-primary/[0.04]",
@@ -78,14 +78,14 @@ function CatalogBadgeCard({ badge }: { badge: BadgeCatalogEntry }) {
         <div
           className={cn(
             "flex size-9 shrink-0 items-center justify-center rounded-full text-lg ring-1",
-            isEarned ? "bg-emerald-500/15 ring-emerald-500/25" : "bg-muted ring-border/40",
+            isEarned ? "bg-success/15 ring-success/25" : "bg-muted ring-border/40",
             isLocked && "grayscale",
           )}
         >
           {badge.icon || "🏅"}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-[11px] font-bold leading-tight">{badge.name}</p>
+          <p className="truncate text-xs font-bold leading-tight">{badge.name}</p>
           {tier.label && (
             <span className={cn("mt-0.5 inline-block rounded-full px-1.5 py-px text-[8px] font-black uppercase tracking-wider ring-1", tier.chip)}>
               {tier.label}
@@ -95,7 +95,7 @@ function CatalogBadgeCard({ badge }: { badge: BadgeCatalogEntry }) {
         <span
           className={cn(
             "flex size-4 shrink-0 items-center justify-center rounded-full text-white shadow",
-            isEarned ? "bg-emerald-500" : "bg-muted-foreground/40",
+            isEarned ? "bg-success" : "bg-muted-foreground/40",
           )}
         >
           {isEarned ? <Check className="size-2.5" /> : <Lock className="size-2.5" />}
@@ -104,7 +104,7 @@ function CatalogBadgeCard({ badge }: { badge: BadgeCatalogEntry }) {
 
       {isEarned ? (
         badge.earned_at && (
-          <p className="text-[9px] text-muted-foreground">
+          <p className="text-nano text-muted-foreground">
             Earned {new Date(badge.earned_at).toLocaleDateString("en-KE", { month: "short", day: "numeric", year: "numeric" })}
           </p>
         )
@@ -121,7 +121,7 @@ function CatalogBadgeCard({ badge }: { badge: BadgeCatalogEntry }) {
               aria-label={`${badge.name} progress: ${percent}%`}
             />
           </div>
-          <p className="text-[9px] font-semibold text-muted-foreground tabular-nums">
+          <p className="text-nano font-semibold text-muted-foreground tabular-nums">
             {badge.progress?.current ?? 0}/{badge.progress?.target ?? 0}
           </p>
         </div>
@@ -308,7 +308,7 @@ export function LearnProfileView({ profile, stages, onResetProgress, onUpdatePro
                 </span>
               </Link>
             )}
-            <span className="absolute -bottom-1 -right-1 flex h-6 min-w-6 items-center justify-center rounded-full border-2 border-primary bg-white px-1 text-[10px] font-black text-primary shadow">
+            <span className="absolute -bottom-1 -right-1 flex h-6 min-w-6 items-center justify-center rounded-full border-2 border-primary bg-white px-1 text-micro font-black text-primary shadow">
               {level}
             </span>
           </div>
@@ -352,14 +352,14 @@ export function LearnProfileView({ profile, stages, onResetProgress, onUpdatePro
       <div className="grid grid-cols-4 gap-2 md:gap-3">
         {[
           { label: "XP", value: points, icon: Sparkles, color: "text-primary", bg: "bg-primary/8 border-primary/20" },
-          { label: "Streak", value: streak, icon: Flame, color: "text-orange-500", bg: "bg-orange-500/8 border-orange-500/20" },
-          { label: "Badges", value: badgeStatCount, icon: Award, color: "text-emerald-600", bg: "bg-emerald-500/8 border-emerald-500/20" },
-          { label: "Level", value: level, icon: Star, color: "text-amber-500", bg: "bg-amber-500/8 border-amber-500/20" },
+          { label: "Streak", value: streak, icon: Flame, color: "text-warning", bg: "bg-warning/8 border-warning/20" },
+          { label: "Badges", value: badgeStatCount, icon: Award, color: "text-success", bg: "bg-success/8 border-success/20" },
+          { label: "Level", value: level, icon: Star, color: "text-warning", bg: "bg-warning/8 border-warning/20" },
         ].map((s) => (
           <div key={s.label} className={cn("space-y-1 rounded-2xl border p-3 text-center", s.bg)}>
             <s.icon className={cn("mx-auto size-4 md:size-5", s.color)} />
             <p className={cn("text-sm font-black tabular-nums md:text-xl", s.color)}>{s.value}</p>
-            <p className="text-[9px] font-black uppercase tracking-wider text-muted-foreground">{s.label}</p>
+            <p className="text-nano font-black uppercase tracking-wider text-muted-foreground">{s.label}</p>
           </div>
         ))}
       </div>
@@ -406,14 +406,14 @@ export function LearnProfileView({ profile, stages, onResetProgress, onUpdatePro
             <SectionCard title={`Achievements (${earnedBadges.length})`} icon={<Trophy className="size-3" />}>
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                 {earnedBadges.map((badge) => (
-                  <div key={badge.slug} className="flex items-center gap-2.5 rounded-xl border border-amber-500/20 bg-gradient-to-br from-amber-500/8 to-transparent p-2.5">
-                    <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-amber-500/15 text-lg ring-1 ring-amber-500/25">
+                  <div key={badge.slug} className="flex items-center gap-2.5 rounded-xl border border-warning/20 bg-gradient-to-br from-warning/8 to-transparent p-2.5">
+                    <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-warning/15 text-lg ring-1 ring-warning/25">
                       {badge.icon || "🏅"}
                     </div>
                     <div className="min-w-0">
-                      <p className="truncate text-[11px] font-bold leading-tight">{badge.name}</p>
+                      <p className="truncate text-xs font-bold leading-tight">{badge.name}</p>
                       {badge.awarded_at && (
-                        <p className="text-[9px] text-muted-foreground">
+                        <p className="text-nano text-muted-foreground">
                           {new Date(badge.awarded_at).toLocaleDateString("en-KE", { month: "short", day: "numeric", year: "numeric" })}
                         </p>
                       )}
@@ -439,11 +439,11 @@ export function LearnProfileView({ profile, stages, onResetProgress, onUpdatePro
                   )}
                 >
                   <div className={cn("text-xl md:text-2xl", !b.unlocked && "grayscale")}>{b.emoji}</div>
-                  <p className="line-clamp-1 text-[9px] font-bold leading-tight">{b.name}</p>
+                  <p className="line-clamp-1 text-nano font-bold leading-tight">{b.name}</p>
                   <span
                     className={cn(
                       "absolute -top-1 -right-1 flex size-4 items-center justify-center rounded-full text-white shadow",
-                      b.unlocked ? "bg-emerald-500" : "bg-muted-foreground/40",
+                      b.unlocked ? "bg-success" : "bg-muted-foreground/40",
                     )}
                   >
                     {b.unlocked ? <Check className="size-2.5" /> : <Lock className="size-2.5" />}
@@ -466,12 +466,12 @@ export function LearnProfileView({ profile, stages, onResetProgress, onUpdatePro
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 rounded-xl border border-border/50 bg-muted/10 p-3 transition-colors hover:border-primary/30 hover:bg-primary/[0.04]"
               >
-                <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-lg ring-1 ring-emerald-500/20">
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-success/10 text-lg ring-1 ring-success/20">
                   📜
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-xs font-bold">{cert.civic_module_title ?? "Module"}</p>
-                  <p className="text-[10px] text-muted-foreground">
+                  <p className="text-micro text-muted-foreground">
                     Issued {new Date(cert.issued_at).toLocaleDateString("en-KE", { month: "short", day: "numeric", year: "numeric" })}
                   </p>
                 </div>
@@ -488,7 +488,7 @@ export function LearnProfileView({ profile, stages, onResetProgress, onUpdatePro
           {/* Account details */}
           <SectionCard>
             <div className="flex items-center justify-between">
-              <h3 className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+              <h3 className="flex items-center gap-1.5 text-micro font-black uppercase tracking-widest text-muted-foreground">
                 <ShieldCheck className="size-3" /> Account details
               </h3>
               <Button
@@ -496,7 +496,7 @@ export function LearnProfileView({ profile, stages, onResetProgress, onUpdatePro
                 variant="ghost"
                 size="sm"
                 onClick={() => setEditingProfile((v) => !v)}
-                className="h-7 gap-1 rounded-lg text-[11px] font-bold"
+                className="h-7 gap-1 rounded-lg text-xs font-bold"
               >
                 <Pencil className="size-3" /> {editingProfile ? "Cancel" : "Edit"}
               </Button>
@@ -532,10 +532,10 @@ export function LearnProfileView({ profile, stages, onResetProgress, onUpdatePro
               </form>
             ) : (
               <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2.5 text-xs">
-                <div><dt className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Name</dt><dd className="font-semibold">{user?.display_name || displayName}</dd></div>
-                <div><dt className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Email</dt><dd className="truncate font-semibold">{user?.email || "—"}</dd></div>
-                <div><dt className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">County</dt><dd className="font-semibold">{county}</dd></div>
-                <div><dt className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Ward</dt><dd className="font-semibold">{ward || "—"}</dd></div>
+                <div><dt className="text-micro font-bold uppercase tracking-wider text-muted-foreground">Name</dt><dd className="font-semibold">{user?.display_name || displayName}</dd></div>
+                <div><dt className="text-micro font-bold uppercase tracking-wider text-muted-foreground">Email</dt><dd className="truncate font-semibold">{user?.email || "—"}</dd></div>
+                <div><dt className="text-micro font-bold uppercase tracking-wider text-muted-foreground">County</dt><dd className="font-semibold">{county}</dd></div>
+                <div><dt className="text-micro font-bold uppercase tracking-wider text-muted-foreground">Ward</dt><dd className="font-semibold">{ward || "—"}</dd></div>
               </dl>
             )}
           </SectionCard>
@@ -546,14 +546,14 @@ export function LearnProfileView({ profile, stages, onResetProgress, onUpdatePro
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <h4 className="text-xs font-bold">Push notifications</h4>
-                  <p className="text-[10px] text-muted-foreground">Comment alerts and reminders.</p>
+                  <p className="text-micro text-muted-foreground">Comment alerts and reminders.</p>
                 </div>
                 <Switch checked={notificationsEnabled} onCheckedChange={(c) => void toggleNotificationSetting("notifications_enabled", c)} />
               </div>
               <div className="flex items-center justify-between gap-3 border-t border-border/40 pt-3">
                 <div>
                   <h4 className="text-xs font-bold">WhatsApp fallback</h4>
-                  <p className="text-[10px] text-muted-foreground">SMS/WhatsApp if push fails.</p>
+                  <p className="text-micro text-muted-foreground">SMS/WhatsApp if push fails.</p>
                 </div>
                 <Switch checked={whatsappFallback} onCheckedChange={(c) => void toggleNotificationSetting("whatsapp_fallback", c)} />
               </div>
@@ -567,7 +567,7 @@ export function LearnProfileView({ profile, stages, onResetProgress, onUpdatePro
               onClick={() => setShowPwForm((v) => !v)}
               className="flex w-full items-center justify-between text-left focus-visible:outline-none"
             >
-              <h3 className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+              <h3 className="flex items-center gap-1.5 text-micro font-black uppercase tracking-widest text-muted-foreground">
                 <KeyRound className="size-3" /> Change password
               </h3>
               <ChevronDown className={cn("size-4 text-muted-foreground transition-transform", showPwForm && "rotate-180")} />

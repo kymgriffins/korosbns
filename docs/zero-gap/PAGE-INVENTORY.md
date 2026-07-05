@@ -16,9 +16,9 @@ States shorthand: **L** loading · **E** empty · **Er** error · **P** populate
 | 4 | `/admin/dashboard/task/report` | View weekly report | L E Er P | ◐ | ☐ |
 | 5 | `/admin/dashboard/task-overview` | Overview metrics | L E Er P | ◐ | ☐ |
 | 6 | `/learn` (dashboard) | Continue learning | L E Er P | ☑ | ☑ |
-| 7 | `/learn/[slug]` | Read module | L E Er P D | ◐ | ☐ |
-| 8 | `/learn/profile` | View progress | L E Er P | ◐ | ☐ |
-| 9 | `/learn/account` | Manage account | L Er P | ◐ | ☐ |
+| 7 | `/learn/[slug]` | Read module | L E Er P D | ☑ | ☑ |
+| 8 | `/learn/profile` | View progress | L E Er P | ☑ | ☑ |
+| 9 | `/learn/account` | Manage account | L Er P | ☑ | ☑ |
 | 10 | `/auth/login` | Sign in | Er P | ☑ | ☑ |
 | 11 | `/auth/register` | Create account | Er P | ◐ | ☐ |
 | 12 | `/auth/reset` | Reset password | Er P | ☐ | ☐ |
@@ -37,8 +37,8 @@ States shorthand: **L** loading · **E** empty · **Er** error · **P** populate
 | 18 | `/events/[id]` | ☐ | ☐ |
 | 19 | `/budgetnews` | ☐ | ☐ |
 | 20 | `/budgetnews/[slug]` | ☐ | ☐ |
-| 21 | `/learn/forum` | ☐ | ☐ |
-| 22 | `/learn/analytics` | ☐ | ☐ |
+| 21 | `/learn/forum` | ☑ | ☐ |
+| 22 | `/learn/analytics` | ☑ | ☐ |
 | 23 | `/learn/videos` | ☐ | ☐ |
 | 24 | `/bns-studio` | ☐ | ☐ |
 | 25 | `/surveys` | ☐ | ☐ |

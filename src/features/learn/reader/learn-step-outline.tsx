@@ -59,7 +59,7 @@ export function LearnStepOutline({
                   className={cn(
                     "flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-semibold",
                     isPassed
-                      ? "bg-emerald-500/15 text-emerald-600"
+                      ? "bg-success/15 text-success"
                       : isCurrent
                         ? "bg-primary text-primary-foreground"
                         : "bg-muted text-muted-foreground",

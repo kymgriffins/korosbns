@@ -9,10 +9,10 @@ Last updated: 2026-07-05 · Branch: `feat/zero-gap-upgrade` · Target: **v0.3.0*
 | 0 Foundation | 0.2.0 | ✅ Complete | Docs, audit script, patterns, motion tokens, CI |
 | 1 Process gates | — | ✅ Complete | PRDs + P0 specs drafted |
 | 2A Tasks | 0.3.0 | ✅ Complete | Mobile-first, hook, roster, AsyncListShell |
-| 2B Learn | 0.3.0 | ✅ Complete | Dynamic stages, error fetch, motion tokens |
+| 2B Learn | 0.3.0 | ✅ Complete | Dynamic stages, error fetch, motion tokens, all P0+P1 page specs signed |
 | 2C Auth | 0.3.0 | ◐ Partial | Citizen login → rhf+zod; register/reset next |
 | 3 Token/motion | 0.3.x | ◐ In progress | Learn tabs migrated; P0 arbitrary values remain |
-| 4 P1 pages | 0.4.0 | ☐ Planned | Specs listed; implementation queued |
+| 4 P1 pages | 0.4.0 | ◐ Partial | Forum + analytics specs signed; implementation complete |
 | 5 Learn scale | 0.5.0 | ◐ Partial | totalStages dynamic; content bundle / localStorage TBD |
 | 6 Admin trim | 0.6.0 | ◐ Started | Legacy routes flagged in config |
 | 7 Continuous | ongoing | ✅ Rules in TASKPLAN | PR checklist active |
@@ -50,7 +50,12 @@ Last updated: 2026-07-05 · Branch: `feat/zero-gap-upgrade` · Target: **v0.3.0*
 | [p0-task-new.md](./specs/p0-task-new.md) | ✅ Signed |
 | [p0-learn-dashboard.md](./specs/p0-learn-dashboard.md) | ✅ Signed |
 | [p0-citizen-login.md](./specs/p0-citizen-login.md) | ✅ Signed |
-| Remaining P0 (report, overview, module, profile, account, register, reset, verify, weekly-notes, reports) | ◐ Spec stubs in PAGE-INVENTORY |
+| [p0-module-reader.md](./specs/p0-module-reader.md) | ✅ Signed |
+| [p0-learn-profile.md](./specs/p0-learn-profile.md) | ✅ Signed |
+| [p0-learn-account.md](./specs/p0-learn-account.md) | ✅ Signed |
+| [p1-learn-forum.md](./specs/p1-learn-forum.md) | ✅ Signed |
+| [p1-learn-analytics.md](./specs/p1-learn-analytics.md) | ✅ Signed |
+| Remaining P0 (report, overview, register, reset, verify, weekly-notes, reports) | ◐ Spec stubs in PAGE-INVENTORY |
 
 ---
 

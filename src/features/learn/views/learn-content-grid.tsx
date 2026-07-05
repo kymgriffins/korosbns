@@ -77,11 +77,11 @@ function LearnContentCard({ item }: { item: LearnHubItem }) {
       )}
       <CardContent className="flex flex-1 flex-col p-4">
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+          <span className="text-micro font-medium uppercase tracking-wider text-muted-foreground">
             {item.content_type}
           </span>
           {item.difficulty ? (
-            <Badge variant="secondary" className="text-[10px] uppercase">
+            <Badge variant="secondary" className="text-micro uppercase">
               {item.difficulty}
             </Badge>
           ) : null}

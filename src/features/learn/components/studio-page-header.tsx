@@ -22,7 +22,7 @@ export function StudioPageHeader({
       <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
         <div className="min-w-0 flex-1">
           {eyebrow ? (
-            <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
               {eyebrow}
             </p>
           ) : null}

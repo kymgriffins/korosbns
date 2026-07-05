@@ -75,7 +75,7 @@ type FlatFile = {
 
 function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }) {
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-semibold text-primary">
+    <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-semibold text-primary">
       {label}
       <button onClick={onRemove} className="ml-0.5 rounded-full p-0.5 hover:bg-primary/20 transition-colors">
         <X className="size-2.5" />
@@ -313,7 +313,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
               <h1 className="truncate text-sm font-semibold leading-tight">
                 {selectedFolder.fullName}
               </h1>
-              <p className="text-[10px] font-medium text-muted-foreground">
+              <p className="text-micro font-medium text-muted-foreground">
                 {folderFiles.length} file{folderFiles.length !== 1 ? "s" : ""}
               </p>
             </div>
@@ -364,7 +364,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={cn(
-                    "px-3 py-1 rounded-md text-[10px] font-bold transition-all focus-visible:ring-2 focus-visible:ring-ring",
+                    "px-3 py-1 rounded-md text-micro font-bold transition-all focus-visible:ring-2 focus-visible:ring-ring",
                     activeTab === tab.id ? "bg-card shadow-xs text-foreground ring-1 ring-border/30" : "text-muted-foreground hover:text-foreground"
                   )}
                 >
@@ -375,7 +375,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
 
             {activeTab === "all" && (
               <section className="space-y-3">
-                <h2 className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Collections</h2>
+                <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Collections</h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5">
                   {filteredDocs.map((doc) => {
                     const yearRange = doc.years.length
@@ -394,16 +394,16 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                           <ChevronRight className="size-4 text-muted-foreground/40 transition-all group-hover:translate-x-0.5 group-hover:text-primary" />
                         </div>
                         <div className="min-w-0 space-y-0.5">
-                          <h3 className="truncate text-[13px] font-bold leading-tight">{doc.title}</h3>
-                          <p className="truncate text-[10px] font-medium text-muted-foreground">{doc.fullName}</p>
+                          <h3 className="truncate text-sm font-bold leading-tight">{doc.title}</h3>
+                          <p className="truncate text-micro font-medium text-muted-foreground">{doc.fullName}</p>
                         </div>
                         <div className="flex flex-wrap items-center gap-1.5">
-                          <span className="inline-flex items-center gap-1 rounded-full bg-muted/60 px-2 py-0.5 text-[9px] font-bold text-muted-foreground ring-1 ring-border/30">
+                          <span className="inline-flex items-center gap-1 rounded-full bg-muted/60 px-2 py-0.5 text-nano font-bold text-muted-foreground ring-1 ring-border/30">
                             <FileText className="size-2.5" />
                             {doc.files.length} file{doc.files.length !== 1 ? "s" : ""}
                           </span>
                           {yearRange && (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/5 px-2 py-0.5 text-[9px] font-bold text-blue-600 ring-1 ring-blue-500/20">
+                            <span className="inline-flex items-center gap-1 rounded-full bg-info/5 px-2 py-0.5 text-nano font-bold text-info ring-1 ring-info/20">
                               <Calendar className="size-2.5" />
                               {yearRange}
                             </span>
@@ -426,7 +426,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
 
             {activeTab === "tracked" && (
               <section className="space-y-3">
-                <h2 className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Tracked Documents</h2>
+                <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Tracked Documents</h2>
                 {trackedFiles.length > 0 ? (
                   <FileList files={trackedFiles} />
                 ) : (
@@ -437,7 +437,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
 
             {activeTab === "commentaries" && (
               <section className="space-y-3">
-                <h2 className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">My Drafts</h2>
+                <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">My Drafts</h2>
                 {commentaryFiles.length > 0 ? (
                   <FileList files={commentaryFiles} />
                 ) : (
@@ -450,7 +450,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
           /* === INSIDE FOLDER — full document hub with filters, sort, view toggle, pagination, stats === */
           <section className="space-y-3">
             {/* Description */}
-            <p className="text-[11px] text-muted-foreground">{selectedFolder.description}</p>
+            <p className="text-xs text-muted-foreground">{selectedFolder.description}</p>
 
             {/* Stats */}
             {folderStats.total > 0 && (
@@ -460,7 +460,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                   <span className="text-xs font-semibold">{folderStats.total} files</span>
                 </div>
                 <div className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 ring-1 ring-border/30">
-                  <Building2 className="size-3.5 text-blue-500" />
+                  <Building2 className="size-3.5 text-info" />
                   <span className="text-xs font-semibold">{folderStats.byCounty.size} counties</span>
                 </div>
                 <div className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 ring-1 ring-border/30">
@@ -478,7 +478,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                   <select
                     value={selectedYear ?? ""}
                     onChange={(e) => setSelectedYear(e.target.value ? parseInt(e.target.value, 10) : null)}
-                    className="rounded-lg border border-border bg-card px-2.5 py-1.5 text-[11px] font-semibold focus:outline-none focus:ring-2 focus:ring-ring/30"
+                    className="rounded-lg border border-border bg-card px-2.5 py-1.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-ring/30"
                   >
                     <option value="">All Years</option>
                     {folderYears.map((y) => (
@@ -490,7 +490,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                   <select
                     value={selectedCounty}
                     onChange={(e) => setSelectedCounty(e.target.value)}
-                    className="rounded-lg border border-border bg-card px-2.5 py-1.5 text-[11px] font-semibold focus:outline-none focus:ring-2 focus:ring-ring/30"
+                    className="rounded-lg border border-border bg-card px-2.5 py-1.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-ring/30"
                   >
                     <option value="">All Counties</option>
                     {folderCounties.map((c) => (
@@ -504,7 +504,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                 <select
                   value={sortKey}
                   onChange={(e) => setSortKey(e.target.value as SortKey)}
-                  className="rounded-lg border border-border bg-card px-2.5 py-1.5 text-[11px] font-semibold focus:outline-none focus:ring-2 focus:ring-ring/30"
+                  className="rounded-lg border border-border bg-card px-2.5 py-1.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-ring/30"
                 >
                   {SORT_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -541,7 +541,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                 <FilterChip label={`Search: "${searchQuery}"`} onRemove={() => setSearchQuery("")} />
               )}
               {hasActiveFilters && (
-                <button onClick={clearAllFilters} className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold text-muted-foreground hover:text-foreground transition-colors">
+                <button onClick={clearAllFilters} className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors">
                   <X className="size-2.5" />
                   Clear all
                 </button>
@@ -597,19 +597,19 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                       </div>
                       <div className="mt-2 flex flex-wrap items-center gap-1.5">
                         {file.year && (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[9px] font-semibold text-muted-foreground ring-1 ring-border/30">
+                          <span className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-nano font-semibold text-muted-foreground ring-1 ring-border/30">
                             <Calendar className="size-2.5" />
                             FY {file.year - 1}/{String(file.year).slice(-2)}
                           </span>
                         )}
                         {file.county && (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/5 px-2 py-0.5 text-[9px] font-semibold text-blue-600 ring-1 ring-blue-500/20">
+                          <span className="inline-flex items-center gap-1 rounded-full bg-info/5 px-2 py-0.5 text-nano font-semibold text-info ring-1 ring-info/20">
                             <Building2 className="size-2.5" />
                             {file.county}
                           </span>
                         )}
                         {file.size > 0 && (
-                          <span className="text-[9px] font-medium text-muted-foreground">{formatBytes(file.size)}</span>
+                          <span className="text-nano font-medium text-muted-foreground">{formatBytes(file.size)}</span>
                         )}
                       </div>
                     </div>
@@ -620,7 +620,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
               <div className="bg-card shadow-xs rounded-xl overflow-hidden ring-1 ring-border/30">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground border-b border-border/30">
+                    <tr className="text-micro font-bold uppercase tracking-wider text-muted-foreground border-b border-border/30">
                       <th className="px-3 py-2.5">Name</th>
                       <th className="px-3 py-2.5 hidden md:table-cell">County</th>
                       <th className="px-3 py-2.5 hidden md:table-cell">Year</th>
@@ -634,14 +634,14 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
                         <td className="px-3 py-2">
                           <div className="flex items-center gap-2 min-w-0">
                             <FileText className="size-3.5 shrink-0 text-primary" />
-                            <p className="font-semibold text-[11px] truncate max-w-[180px] lg:max-w-[280px]">{file.name}</p>
+                            <p className="font-semibold text-xs truncate max-w-[180px] lg:max-w-[280px]">{file.name}</p>
                           </div>
                         </td>
-                        <td className="px-3 py-2 hidden md:table-cell text-muted-foreground text-[10px]">{file.county}</td>
-                        <td className="px-3 py-2 hidden md:table-cell text-muted-foreground text-[10px]">
+                        <td className="px-3 py-2 hidden md:table-cell text-muted-foreground text-micro">{file.county}</td>
+                        <td className="px-3 py-2 hidden md:table-cell text-muted-foreground text-micro">
                           {file.year ? `FY ${file.year - 1}/${String(file.year).slice(-2)}` : ""}
                         </td>
-                        <td className="px-3 py-2 hidden lg:table-cell text-muted-foreground text-[10px]">{formatBytes(file.size)}</td>
+                        <td className="px-3 py-2 hidden lg:table-cell text-muted-foreground text-micro">{formatBytes(file.size)}</td>
                         <td className="px-3 py-2 text-right">
                           <div className="flex items-center justify-end gap-1">
                             {file.url && file.url !== "#" && (
@@ -720,7 +720,7 @@ function FileList({ files }: { files: DocumentFile[] }) {
       <div className="hidden md:block bg-card shadow-xs rounded-xl overflow-hidden ring-1 ring-border/30">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground border-b border-border/30">
+            <tr className="text-micro font-bold uppercase tracking-wider text-muted-foreground border-b border-border/30">
               <th className="px-4 py-3">Name</th>
               <th className="px-4 py-3">Size</th>
               <th className="px-4 py-3">Modified</th>
@@ -735,11 +735,11 @@ function FileList({ files }: { files: DocumentFile[] }) {
                     <div className="bg-muted/30 p-1.5 rounded-lg shrink-0 ring-1 ring-border/30">
                       <FileText className="size-3.5 text-primary" />
                     </div>
-                    <p className="font-bold text-foreground text-[11px] truncate">{file.name}</p>
+                    <p className="font-bold text-foreground text-xs truncate">{file.name}</p>
                   </div>
                 </td>
-                <td className="px-4 py-2.5 text-muted-foreground text-[10px]">{formatBytes(file.size)}</td>
-                <td className="px-4 py-2.5 text-muted-foreground text-[10px]">{formatDate(file.modified)}</td>
+                <td className="px-4 py-2.5 text-muted-foreground text-micro">{formatBytes(file.size)}</td>
+                <td className="px-4 py-2.5 text-muted-foreground text-micro">{formatDate(file.modified)}</td>
                 <td className="px-4 py-2.5 text-right">
                   <div className="flex items-center justify-end gap-1">
                     {file.url && file.url !== "#" && (
@@ -767,8 +767,8 @@ function FileList({ files }: { files: DocumentFile[] }) {
               <FileText className="size-3.5 text-primary" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-bold text-foreground text-[11px] truncate">{file.name}</p>
-              <p className="text-[10px] text-muted-foreground mt-0.5">{formatBytes(file.size)}</p>
+              <p className="font-bold text-foreground text-xs truncate">{file.name}</p>
+              <p className="text-micro text-muted-foreground mt-0.5">{formatBytes(file.size)}</p>
             </div>
             <div className="flex items-center gap-1 shrink-0">
               {file.url && file.url !== "#" && (

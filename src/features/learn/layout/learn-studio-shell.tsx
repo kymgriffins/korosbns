@@ -43,7 +43,7 @@ function ShellInner({ children }: { children: React.ReactNode }) {
           </div>
           <div>
             <p className="text-sm font-semibold tracking-tight">Learn Studio</p>
-            <p className="text-[10px] text-muted-foreground">Budget literacy</p>
+            <p className="text-micro text-muted-foreground">Budget literacy</p>
           </div>
         </div>
         <LearnStudioNav activeTab={activeTab} onSelect={setActiveTab} className="flex-1 border-0 bg-transparent" />

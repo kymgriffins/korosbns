@@ -45,7 +45,7 @@ export function LearnHomeView({
     <StudioPage width="default" className="space-y-10">
       <section className="text-center">
         <HeroOrbit className="mx-auto h-40 w-full max-w-sm opacity-90" />
-        <p className="mt-4 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+        <p className="mt-4 text-xs font-medium uppercase tracking-wider text-muted-foreground">
           Budget Ndio Story
         </p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
@@ -99,7 +99,7 @@ export function LearnHomeView({
             className="rounded-2xl border border-border/40 bg-card/80 px-4 py-5 text-center backdrop-blur-sm"
           >
             <p className="text-2xl font-semibold tabular-nums tracking-tight">{stat.value}</p>
-            <p className="mt-1 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+            <p className="mt-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
               {stat.label}
             </p>
           </div>

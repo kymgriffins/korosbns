@@ -29,6 +29,12 @@
   --chart-5: hsl(27 87% 67%);
   --dot-color: rgba(0, 0, 0, 0.05);
   --cardbox: #ffffff;
+  --success: #10b981;
+  --success-foreground: #ffffff;
+  --warning: #f59e0b;
+  --warning-foreground: #ffffff;
+  --info: #3b82f6;
+  --info-foreground: #ffffff;
 
 }
 
@@ -61,4 +67,10 @@
   --radius: 0.625rem;
   --cardbox: #111112;
   --dot-color: rgba(255, 255, 255, 0.1);
+  --success: #10b981;
+  --success-foreground: #ffffff;
+  --warning: #f59e0b;
+  --warning-foreground: #ffffff;
+  --info: #3b82f6;
+  --info-foreground: #ffffff;
 }

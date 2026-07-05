@@ -271,7 +271,7 @@ export function LearnStageReader({
         </div>
         {!isMastery ? (
           <div className="mt-3 space-y-1">
-            <div className="flex justify-between text-[11px] text-muted-foreground">
+            <div className="flex justify-between text-xs text-muted-foreground">
               <span>Step {Math.min(currentStep, stage.steps.length)} of {stage.steps.length}</span>
               <span>{stepPct}%</span>
             </div>
@@ -312,11 +312,11 @@ export function LearnStageReader({
                     <button
                       key={step.id}
                       onClick={() => selectStep(stepNum)}
-                      className={`shrink-0 size-7 rounded-full flex items-center justify-center text-[10px] font-bold transition-all duration-200 ${
+                      className={`shrink-0 size-7 rounded-full flex items-center justify-center text-micro font-bold transition-all duration-200 ${
                         isCurrent
                           ? "bg-primary text-primary-foreground shadow-xs scale-110"
                           : isPassed
-                            ? "bg-emerald-500/15 text-emerald-600 border border-emerald-500/30"
+                            ? "bg-success/15 text-success border border-success/30"
                             : "bg-muted/40 text-muted-foreground border border-border/40"
                       }`}
                       title={step.title}
@@ -332,7 +332,7 @@ export function LearnStageReader({
                   currentVideoUrl ? (
                     <div className="space-y-2">
                       <div className="flex items-center justify-between gap-2">
-                        <div className="text-[10px] font-semibold text-muted-foreground">
+                        <div className="text-micro font-semibold text-muted-foreground">
                           {stepVideos[activeVideoIdx]?.title || stepVideos[activeVideoIdx]?.role || `Video ${activeVideoIdx + 1}`}
                           {showNav && <span> · {activeVideoIdx + 1} of {stepVideos.length}</span>}
                         </div>
@@ -388,7 +388,7 @@ export function LearnStageReader({
                       <div className="flex items-center gap-2 flex-wrap">
                         <h3 className="text-base font-black">{currentStepObj?.title || stage.title}</h3>
                         {isBudgetModule && currentStepObj?.budget_entity_name && (
-                          <Badge variant="outline" className="text-[10px] font-normal border-primary/30 text-primary">
+                          <Badge variant="outline" className="text-micro font-normal border-primary/30 text-primary">
                             Sector: {currentStepObj.budget_entity_name}
                           </Badge>
                         )}
@@ -480,7 +480,7 @@ export function LearnStageReader({
                       <ChevronLeft className="size-3.5" />
                       Previous
                     </Button>
-                    <span className="text-[10px] text-muted-foreground font-semibold">
+                    <span className="text-micro text-muted-foreground font-semibold">
                       Step {currentStep} of {stage.steps.length}
                     </span>
                     <Button

@@ -53,7 +53,7 @@ export function LearnCurriculumView({
               <span
                 className={cn(
                   "absolute -left-[1.65rem] top-5 size-3 rounded-full border-2 border-background",
-                  active ? "bg-primary" : pct === 100 ? "bg-emerald-500" : "bg-muted",
+                  active ? "bg-primary" : pct === 100 ? "bg-success" : "bg-muted",
                 )}
                 aria-hidden
               />
@@ -67,7 +67,7 @@ export function LearnCurriculumView({
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                       Module {index + 1}
                     </p>
                     <p className="mt-1 text-lg font-semibold tracking-tight">{stage.title}</p>
@@ -77,7 +77,7 @@ export function LearnCurriculumView({
                 </div>
                 {total > 0 && (
                   <div className="mt-4 space-y-1.5">
-                    <div className="flex justify-between text-[11px] text-muted-foreground">
+                    <div className="flex justify-between text-xs text-muted-foreground">
                       <span>{done}/{total} steps</span>
                       <span>{pct}%</span>
                     </div>

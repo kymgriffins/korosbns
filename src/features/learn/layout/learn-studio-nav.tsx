@@ -38,7 +38,7 @@ export function LearnStudioNav({
           const inner = (
             <>
               <Icon className={cn("size-5 shrink-0", active ? "text-primary" : "text-muted-foreground")} />
-              <span className={cn("text-[10px] font-medium md:text-xs", active ? "text-foreground" : "text-muted-foreground")}>
+              <span className={cn("text-micro font-medium md:text-xs", active ? "text-foreground" : "text-muted-foreground")}>
                 {label}
               </span>
             </>
