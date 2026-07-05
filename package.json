@@ -1,6 +1,6 @@
 {
   "name": "korosbns",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "engines": {
     "pnpm": ">=8"
@@ -17,7 +17,9 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:report": "playwright show-report e2e/report --port 9324",
     "test:e2e:api": "cd ../bnske.budgetndiostory.org && python -m pytest core/tests/test_citizen_e2e_journeys.py -v --tb=short -o addopts=",
-    "e2e:prepare": "cd ../bnske.budgetndiostory.org && python manage.py bootstrap_e2e_personas"
+    "e2e:prepare": "cd ../bnske.budgetndiostory.org && python manage.py bootstrap_e2e_personas",
+    "goldrules:audit": "node scripts/goldrules-audit.mjs",
+    "goldrules:audit:json": "node scripts/goldrules-audit.mjs --json"
   },
   "dependencies": {
     "@base-ui/react": "1.6.0",

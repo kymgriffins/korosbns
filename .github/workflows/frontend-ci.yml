@@ -28,6 +28,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: GOLDRULES mechanical audit
+        run: pnpm goldrules:audit
+        continue-on-error: true
+
       - name: TypeScript type check
         run: npx tsc --noEmit --pretty false
         continue-on-error: false
