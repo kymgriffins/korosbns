@@ -8,9 +8,5 @@ const CookieConsent = dynamic(
 );
 
 export default function CookieConsentWrapper() {
-  return (
-    <div className="fixed inset-0 z-[999]">
-      <CookieConsent />
-    </div>
-  );
+  return <CookieConsent />;
 }

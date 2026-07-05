@@ -6,21 +6,31 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { cn } from "@/utils";
 
+const CONSENT_KEY = "bns_cookie_consent";
+
 const CookieConsent = () => {
   const [visible, setVisible] = useState(false);
+  const [dismissed, setDismissed] = useState(() =>
+    typeof window !== "undefined" ? sessionStorage.getItem(CONSENT_KEY) === "true" : false
+  );
 
   useEffect(() => {
+    if (dismissed) return;
     const timer = setTimeout(() => setVisible(true), 1000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [dismissed]);
 
   const dismiss = (accepted: boolean) => {
     setVisible(false);
+    setDismissed(true);
+    sessionStorage.setItem(CONSENT_KEY, "true");
     if (accepted) toast.success("Cookies accepted.");
   };
 
+  if (dismissed) return null;
+
   return (
-    <section className="overflow-hidden bg-[url('https://images.shadcnspace.com/assets/hero-img/cookie-concent-bg-01.webp')] bg-no-repeat bg-bottom bg-cover">
+    <section className="fixed inset-0 z-[999] overflow-hidden bg-[url('https://images.shadcnspace.com/assets/hero-img/cookie-concent-bg-01.webp')] bg-no-repeat bg-bottom bg-cover">
       <div className="relative min-h-screen max-w-7xl xl:px-16 lg:px-8 px-4 mx-auto">
         <div
           className={cn(
