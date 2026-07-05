@@ -10,17 +10,17 @@ States shorthand: **L** loading · **E** empty · **Er** error · **P** populate
 
 | # | Route | Primary action | States | Spec | Checklist |
 |---|-------|----------------|--------|------|-----------|
-| 1 | `/admin/dashboard/task` | Find / open a task | L E Er P | ☐ | ☐ |
-| 2 | `/admin/dashboard/task/[id]` | Edit weekly note | L E Er P D | ☐ | ☐ |
-| 3 | `/admin/dashboard/task/new` | Create task | L Er P | ☐ | ☐ |
-| 4 | `/admin/dashboard/task/report` | View weekly report | L E Er P | ☐ | ☐ |
-| 5 | `/admin/dashboard/task-overview` | Overview metrics | L E Er P | ☐ | ☐ |
-| 6 | `/learn` (dashboard) | Continue learning | L E Er P | ☐ | ☐ |
-| 7 | `/learn/[slug]` | Read module | L E Er P D | ☐ | ☐ |
-| 8 | `/learn/profile` | View progress | L E Er P | ☐ | ☐ |
-| 9 | `/learn/account` | Manage account | L Er P | ☐ | ☐ |
-| 10 | `/auth/login` | Sign in | Er P | ☐ | ☐ |
-| 11 | `/auth/register` | Create account | Er P | ☐ | ☐ |
+| 1 | `/admin/dashboard/task` | Find / open a task | L E Er P | ☑ | ☑ |
+| 2 | `/admin/dashboard/task/[id]` | Edit weekly note | L E Er P D | ☑ | ☑ |
+| 3 | `/admin/dashboard/task/new` | Create task | L Er P | ☑ | ☑ |
+| 4 | `/admin/dashboard/task/report` | View weekly report | L E Er P | ◐ | ☐ |
+| 5 | `/admin/dashboard/task-overview` | Overview metrics | L E Er P | ◐ | ☐ |
+| 6 | `/learn` (dashboard) | Continue learning | L E Er P | ☑ | ☑ |
+| 7 | `/learn/[slug]` | Read module | L E Er P D | ◐ | ☐ |
+| 8 | `/learn/profile` | View progress | L E Er P | ◐ | ☐ |
+| 9 | `/learn/account` | Manage account | L Er P | ◐ | ☐ |
+| 10 | `/auth/login` | Sign in | Er P | ☑ | ☑ |
+| 11 | `/auth/register` | Create account | Er P | ◐ | ☐ |
 | 12 | `/auth/reset` | Reset password | Er P | ☐ | ☐ |
 | 13 | `/auth/verify` | Verify email | Er P | ☐ | ☐ |
 | 14 | `/weekly-notes/manage` | Manage notes | L E Er P D | ☐ | ☐ |

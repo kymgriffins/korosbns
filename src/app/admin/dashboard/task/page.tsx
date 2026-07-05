@@ -1,26 +1,21 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useAuth } from "@/contexts/auth-context";
-import { taskData } from "@/data/tasks";
 import { usePageView } from "@/hooks/use-page-view";
 import { useTaskList } from "@/hooks/use-task-list";
-import { invalidateTaskList } from "@/lib/task-events";
-import type { TaskStatus, TaskPriority } from "@/types/tasks";
 
 import { TaskPageShell } from "@/app/admin/dashboard/task/_components/task-page-shell";
 import { TaskToolbar, type ViewMode } from "@/app/admin/dashboard/task/_components/task-toolbar";
 import { TaskBoardView } from "@/app/admin/dashboard/task/_components/task-board-view";
 import { TaskTilesView } from "@/app/admin/dashboard/task/_components/task-tiles-view";
 import { TaskListView } from "@/app/admin/dashboard/task/_components/task-list-view";
+import { AsyncListShell, EmptyStateShell } from "@/components/patterns";
 
 export default function AdminTaskPage() {
   usePageView();
-  const { isLoggedIn } = useAuth();
   const { tasks, loading, error, fetchTasks } = useTaskList();
 
   const [viewMode, setViewMode] = useState<ViewMode>("list");
@@ -40,6 +35,9 @@ export default function AdminTaskPage() {
     return true;
   });
 
+  const hasFilters =
+    Boolean(query) || statusFilter !== "all_statuses" || priorityFilter !== "all_priorities";
+
   return (
     <TaskPageShell>
       <TaskToolbar
@@ -55,37 +53,44 @@ export default function AdminTaskPage() {
       />
 
       <div className="px-2 md:px-3">
-        {error && (
-          <div className="mb-4 rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">
-            {error}
-            <Button variant="link" className="h-auto px-2" onClick={() => void fetchTasks()}>
-              Retry
-            </Button>
-          </div>
-        )}
-
-        {loading ? (
-          <div className="space-y-2">
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-            <Skeleton className="h-10 w-full" />
-          </div>
-        ) : viewMode === "board" ? (
-          <TaskBoardView tasks={filteredTasks} onRefresh={() => void fetchTasks()} query={query} />
-        ) : viewMode === "tiles" ? (
-          <TaskTilesView tasks={filteredTasks} onRefresh={() => void fetchTasks()} query={query} />
-        ) : (
-          <TaskListView
-            tasks={filteredTasks}
-            onRefresh={() => void fetchTasks()}
-            query={query}
-            statusFilter={statusFilter}
-            priorityFilter={priorityFilter}
-            onStatusFilterChange={setStatusFilter}
-            onPriorityFilterChange={setPriorityFilter}
-            onClearFilters={clearFilters}
-          />
-        )}
+        <AsyncListShell
+          loading={loading}
+          error={error}
+          isEmpty={!loading && !error && filteredTasks.length === 0}
+          onRetry={() => void fetchTasks()}
+          empty={
+            <EmptyStateShell
+              title="No tasks match your filters"
+              description={
+                hasFilters
+                  ? "Try clearing filters or search."
+                  : "Create your first weekly note to get started."
+              }
+              action={
+                <Button asChild size="sm">
+                  <Link href="/admin/dashboard/task/new">New task</Link>
+                </Button>
+              }
+            />
+          }
+        >
+          {viewMode === "board" ? (
+            <TaskBoardView tasks={filteredTasks} onRefresh={() => void fetchTasks()} query={query} />
+          ) : viewMode === "tiles" ? (
+            <TaskTilesView tasks={filteredTasks} onRefresh={() => void fetchTasks()} query={query} />
+          ) : (
+            <TaskListView
+              tasks={filteredTasks}
+              onRefresh={() => void fetchTasks()}
+              query={query}
+              statusFilter={statusFilter}
+              priorityFilter={priorityFilter}
+              onStatusFilterChange={setStatusFilter}
+              onPriorityFilterChange={setPriorityFilter}
+              onClearFilters={clearFilters}
+            />
+          )}
+        </AsyncListShell>
       </div>
     </TaskPageShell>
   );

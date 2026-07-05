@@ -1,6 +1,6 @@
 # PRD: Task workspace
 
-Status: `Draft`  
+Status: `Approved`  
 Owner: Eng · Date: 2026-07-05 · Version: 0.1.0  
 Parent program: [TASKPLAN.md](../TASKPLAN.md)
 

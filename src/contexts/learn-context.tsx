@@ -72,10 +72,16 @@ export function LearnProvider({ children }: { children: React.ReactNode }) {
     if (!force && modulesCached) return;
     setModulesLoading(true);
     setModulesError(null);
-    const results = await learningData.modules.fetch();
-    setCivicModules(results);
-    setModulesCached(true);
-    setModulesLoading(false);
+    try {
+      const results = await learningData.modules.fetch();
+      setCivicModules(results);
+      setModulesCached(true);
+    } catch (err) {
+      setCivicModules([]);
+      setModulesError(err instanceof Error ? err.message : "Failed to load learning modules");
+    } finally {
+      setModulesLoading(false);
+    }
   }, [modulesCached]);
 
   const refreshModules = useCallback(async () => {

@@ -4,7 +4,28 @@ Chronological record of version bumps and phase completions on `feat/zero-gap-up
 
 ---
 
-## v0.2.0 — Foundation (in progress)
+## v0.3.0 — P0 surfaces (shipped on branch)
+
+**Branch:** `feat/zero-gap-upgrade`
+
+### Shipped
+- Mobile-first task detail + workspace form
+- Subtask roster templates (merge feat/task-subtask-roster)
+- `useTaskForm` + zod `task-schema.ts`
+- `AsyncListShell` / `EmptyStateShell` patterns
+- Task board empty/error/loading via patterns
+- Learn: modulesError on fetch fail, motionTokens on tabs
+- Citizen login: rhf + zod in `features/auth/`
+- PRDs: task, learn, auth
+- P0 page specs + PHASE-STATUS.md
+- `admin-nav-policy.ts` for Phase 6 legacy hide list
+
+### Metrics (v0.3.0)
+Run `pnpm goldrules:audit` — ratchet continues on v0.4.0
+
+---
+
+## v0.2.0 — Foundation (complete)
 
 **Branch:** `feat/zero-gap-upgrade`  
 **Target date:** TBD

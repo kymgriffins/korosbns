@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useLearn } from "@/contexts/learn-context";
 import { motion, AnimatePresence } from "motion/react";
+import { motionTokens } from "@/motion/motion-tokens";
 import { useRouter } from "next/navigation";
 import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
@@ -249,7 +250,7 @@ export function LearnPathsHome() {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.15, ease: "easeOut" }}
+                transition={motionTokens.enter.framer}
               >
                 <LearnDashboardView
                   profile={activeProfile}
@@ -269,7 +270,7 @@ export function LearnPathsHome() {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.15, ease: "easeOut" }}
+                transition={motionTokens.enter.framer}
               >
                 <LearnModulesView
                   profile={activeProfile}
@@ -287,7 +288,7 @@ export function LearnPathsHome() {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.15, ease: "easeOut" }}
+                transition={motionTokens.enter.framer}
               >
                 <AlertsView profile={activeProfile} />
               </motion.div>
@@ -299,7 +300,7 @@ export function LearnPathsHome() {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.15, ease: "easeOut" }}
+                transition={motionTokens.enter.framer}
                 className="h-[calc(100dvh-120px)] md:h-auto"
               >
                 <LearnDocumentsView profile={activeProfile} />
@@ -312,7 +313,7 @@ export function LearnPathsHome() {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.15, ease: "easeOut" }}
+                transition={motionTokens.enter.framer}
               >
                 <ForumView />
               </motion.div>
@@ -324,7 +325,7 @@ export function LearnPathsHome() {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.15, ease: "easeOut" }}
+                transition={motionTokens.enter.framer}
                 className="space-y-4 pb-4 md:pb-0"
               >
                 <ProfileView
