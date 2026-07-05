@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import { Mail, Sparkles, Inbox } from "lucide-react";
+import { Sparkles, Inbox } from "lucide-react";
 import { toast } from "sonner";
 
 import { useOrg } from "@/contexts/org-context";
@@ -12,13 +12,13 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -81,57 +81,95 @@ export default function NewsletterPopup() {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) dismiss(); }}>
-      <DialogContent className="sm:max-w-md" showCloseButton={false}>
-        <DialogHeader>
-          <div className="mx-auto sm:mx-0 size-10 rounded-full bg-primary/10 flex items-center justify-center mb-1">
-            <Mail className="size-5 text-primary" />
-          </div>
-          <DialogTitle className="text-center sm:text-left">Get budget updates in your inbox</DialogTitle>
-          <DialogDescription className="text-center sm:text-left">
-            Subscribe for explainers, stories, and policy highlights from Budget Ndio Story.
-          </DialogDescription>
+      <DialogContent className="md:max-w-4xl p-0 rounded-none gap-0" showCloseButton={false}>
+        <DialogHeader className="sr-only">
+          <DialogTitle>Subscribe to Budget Ndio Story</DialogTitle>
         </DialogHeader>
-
-        {subscribed ? (
-          <div className="space-y-4 py-2">
-            <Alert variant="default" className="border-emerald-500/30 bg-emerald-500/5">
-              <Sparkles className="size-4 text-emerald-600" />
-              <AlertDescription className="text-emerald-800 dark:text-emerald-200">
-                <span className="font-semibold">You&apos;re subscribed!</span> Keep an eye on your inbox for our latest updates.
-              </AlertDescription>
-            </Alert>
-            <Alert variant="default" className="border-amber-500/30 bg-amber-500/5">
-              <Inbox className="size-4 text-amber-600" />
-              <AlertDescription className="text-amber-800 dark:text-amber-200">
-                <span className="font-semibold">Don&apos;t see our email?</span> Check your <strong>Spam</strong> or <strong>Junk</strong> folder — sometimes our messages land there. Mark us as &ldquo;Not Spam&rdquo; so you never miss an update.
-              </AlertDescription>
-            </Alert>
-            <DialogFooter className="sm:justify-center pt-1">
-              <Button onClick={dismiss} className="w-full sm:w-auto">
-                Got it
-              </Button>
-            </DialogFooter>
-          </div>
-        ) : (
-          <form onSubmit={handleSubscribe} className="space-y-4 py-2">
-            <Input
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder="you@example.com"
-              required
-              autoFocus
+        <div className="flex md:flex-row flex-col">
+          <div className="md:max-w-md w-full">
+            <img
+              src="/images/towwnhallmay/129A4056.jpg"
+              alt="Budget Ndio Story"
+              className="w-full object-cover sm:h-full h-40"
             />
-            <DialogFooter className="sm:justify-between gap-2">
-              <Button type="button" variant="outline" onClick={dismiss} className="w-full sm:w-auto">
-                Not now
-              </Button>
-              <Button type="submit" disabled={loading} className="w-full sm:w-auto gap-1.5">
-                {loading ? "Subscribing…" : <><Mail className="size-4" /> Join</>}
-              </Button>
-            </DialogFooter>
-          </form>
-        )}
+          </div>
+
+          {subscribed ? (
+            <div className="md:p-16 p-6 w-full">
+              <div className="space-y-4 py-2">
+                <Alert variant="default" className="border-emerald-500/30 bg-emerald-500/5">
+                  <Sparkles className="size-4 text-emerald-600" />
+                  <AlertDescription className="text-emerald-800 dark:text-emerald-200">
+                    <span className="font-semibold">You&apos;re subscribed!</span> Keep an eye on your inbox for our latest updates.
+                  </AlertDescription>
+                </Alert>
+                <Alert variant="default" className="border-amber-500/30 bg-amber-500/5">
+                  <Inbox className="size-4 text-amber-600" />
+                  <AlertDescription className="text-amber-800 dark:text-amber-200">
+                    <span className="font-semibold">Don&apos;t see our email?</span> Check your <strong>Spam</strong> or <strong>Junk</strong> folder — sometimes our messages land there. Mark us as &ldquo;Not Spam&rdquo; so you never miss an update.
+                  </AlertDescription>
+                </Alert>
+                <div className="pt-2">
+                  <Button onClick={dismiss} className="w-full">
+                    Got it
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="md:p-16 p-6 w-full">
+              <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-4">
+                  <h2 className="text-card-foreground text-3xl font-medium">
+                    Get budget updates in your inbox
+                  </h2>
+                  <p className="text-muted-foreground text-base font-normal">
+                    Subscribe for explainers, stories, and policy highlights from Budget Ndio Story.
+                  </p>
+                </div>
+                <form onSubmit={handleSubscribe} className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-3">
+                    <Input
+                      id="email"
+                      type="email"
+                      value={email}
+                      onChange={(event) => setEmail(event.target.value)}
+                      placeholder="you@example.com"
+                      required
+                      autoFocus
+                      className="dark:bg-background rounded-lg h-9 shadow-xs"
+                    />
+                    <Button
+                      type="submit"
+                      size="lg"
+                      disabled={loading}
+                      className="rounded-lg h-10 cursor-pointer hover:bg-primary/80"
+                    >
+                      {loading ? "Subscribing…" : "Subscribe now"}
+                    </Button>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Checkbox id="newsletter" className="cursor-pointer" />
+                    <Label
+                      htmlFor="newsletter"
+                      className="text-sm text-muted-foreground font-normal cursor-pointer"
+                    >
+                      I agree to receive email updates
+                    </Label>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={dismiss}
+                    className="w-full mt-2"
+                  >
+                    Not now
+                  </Button>
+                </form>
+              </div>
+            </div>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );
