@@ -43,19 +43,16 @@ export function NavMain({ items }: { items: NavItem[] }) {
           <SidebarMenu>
             <Collapsible>
               <SidebarMenuItem>
-                <CollapsibleTrigger
-                  render={
-                    <SidebarMenuButton
-                      tooltip={item.title}
-                      className="rounded-xl text-sm px-3 py-2 h-9 cursor-pointer"
-                    >
-                      {item.icon && <item.icon size={16} />}
-                      <span>{item.title}</span>
-                      <ChevronRight className="ml-auto transition-transform duration-200 collapsible/button-[aria-expanded='true']:rotate-90" />
-                    </SidebarMenuButton>
-                  }
-                  className="w-full collapsible/button"
-                />
+                <CollapsibleTrigger asChild className="w-full">
+                  <SidebarMenuButton
+                    tooltip={item.title}
+                    className="rounded-xl text-sm px-3 py-2 h-9 cursor-pointer"
+                  >
+                    {item.icon && <item.icon size={16} />}
+                    <span>{item.title}</span>
+                    <ChevronRight className="ml-auto transition-transform duration-200 data-[state=open]:rotate-90" />
+                  </SidebarMenuButton>
+                </CollapsibleTrigger>
                 <CollapsibleContent>
                   <SidebarMenuSub className="me-0 pe-0">
                     {item.children!.map(renderItemSub)}
@@ -122,10 +119,9 @@ export function NavMain({ items }: { items: NavItem[] }) {
     if (item.title) {
       return (
         <SidebarMenuSubItem key={item.title} className="w-full">
-          <SidebarMenuSubButton
-            className="w-full"
-            render={<a href={item.href}>{item.title}</a>}
-          />
+          <SidebarMenuSubButton className="w-full" asChild>
+            <a href={item.href}>{item.title}</a>
+          </SidebarMenuSubButton>
         </SidebarMenuSubItem>
       );
     }
