@@ -1,3 +1,10 @@
+import type {
+  BudgetKpi,
+  BudgetChartPoint,
+  BudgetComparisonRow,
+  BudgetCallout,
+} from "@/types/budget-report";
+
 // ─── Full Kenya Budget SDK Blueprint types (from gemini-code JSON) ───
 
 export interface BudgetSchemaMetadata {
@@ -166,4 +173,54 @@ export interface BudgetSchema {
   tier_1_national_sectors: NationalSector[];
   tier_2_county_devolution_envelope: CountyDevolutionEnvelope;
   tier_3_ward_project_relational_schema_simulation: WardProject[];
+
+  /** Report display fields — optional, populated by reports-api seed data */
+  kpis?: BudgetKpi[];
+  sector_chart?: BudgetChartPoint[];
+  revenue_chart?: BudgetChartPoint[];
+  expenditure_chart?: BudgetChartPoint[];
+  comparison_rows?: BudgetComparisonRow[];
+  highlights?: BudgetCallout[];
+  timeline?: BudgetTimelinePhase[];
+  projects?: BudgetProject[];
+  glossary_terms?: BudgetGlossaryTerm[];
+}
+
+export interface BudgetTimelinePhase {
+  phase: string;
+  label: string;
+  period: string;
+  icon: string;
+  is_current?: boolean;
+}
+
+export interface BudgetProject {
+  id: string;
+  title: string;
+  sector: string;
+  county: string;
+  status: "completed" | "in_progress" | "planned";
+  budget: number;
+  spent: number;
+  description: string;
+  impact: string;
+}
+
+export interface BudgetGlossaryTerm {
+  term: string;
+  en: string;
+  sw: string;
+  category: string;
+}
+
+export interface CountyBudgetProfile {
+  id: string;
+  name: string;
+  tagline: string;
+  total_allocation: number;
+  citizen_rating: number;
+  transparency_rating: "High" | "Moderate" | "Low";
+  allocation_per_capita: number;
+  sector_breakdown: BudgetChartPoint[];
+  projects: BudgetProject[];
 }

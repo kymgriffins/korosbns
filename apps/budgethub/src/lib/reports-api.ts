@@ -1,6 +1,7 @@
 "use client";
 
-import type { BudgetSchema, NationalSector, WardProject } from "@/lib/budget-schema";
+import type { BudgetSchema, NationalSector, WardProject, CountyBudgetProfile } from "@/lib/budget-schema";
+import type { BudgetKpi, BudgetChartPoint, BudgetComparisonRow, BudgetCallout } from "@/types/budget-report";
 import { API_BASE_URL } from "@/lib/api-config";
 import budgetJson from "@/data/budget-fy2026-27.json";
 
@@ -119,7 +120,7 @@ export async function fetchBudgetOverview(fyId?: string): Promise<BudgetSchema> 
 
 export async function fetchAllYearsData(): Promise<Record<string, BudgetSchema>> {
   const entries = await Promise.all(
-    FISCAL_YEARS.map(async (fy) => [fy.id, await fetchBudgetOverview(fy.id)] as const),
+    FISCAL_YEARS.map(async (fy) => [fy.id, enrichWithDisplayFields(await fetchBudgetOverview(fy.id), fy.is_current)] as const),
   );
   return Object.fromEntries(entries);
 }
@@ -171,4 +172,116 @@ export function generateCountyAllocations(data: BudgetSchema): CountyAllocation[
     };
   }).sort((a, b) => b.allocation - a.allocation)
     .map((c, i) => ({ ...c, rank: i + 1 }));
+}
+
+export function enrichWithDisplayFields(data: BudgetSchema, isCurrent: boolean): BudgetSchema {
+  const sectors = data.tier_1_national_sectors;
+  const county = data.tier_2_county_devolution_envelope;
+  const projects = data.tier_3_ward_project_relational_schema_simulation;
+  const kpis: BudgetKpi[] = [
+    { key: "total_budget", label: "Total Budget", value: isCurrent ? 4820 : 4380, prefix: "KES ", suffix: "B", trend: "up", previous: isCurrent ? 4380 : 3980 },
+    { key: "recurrent", label: "Recurrent Expenditure", value: isCurrent ? 2950 : 2710, prefix: "KES ", suffix: "B", trend: "up", previous: isCurrent ? 2710 : 2480 },
+    { key: "development", label: "Development Expenditure", value: isCurrent ? 1870 : 1670, prefix: "KES ", suffix: "B", trend: "up", previous: isCurrent ? 1670 : 1500 },
+    { key: "county_allocation", label: "County Allocation", value: Math.round(county.total_devolution_allocation / 1000), prefix: "KES ", suffix: "B", trend: "up", previous: isCurrent ? 385 : 370 },
+  ];
+  const sector_chart: BudgetChartPoint[] = sectors.slice(0, 8).map((s) => ({
+    name: s.name, value: s.total_allocation / 1000,
+    fill: s.sector_code === "EDU" ? "#10b981" : s.sector_code === "HLT" ? "#f59e0b" : s.sector_code === "INF" ? "#3b82f6" : "#64748b",
+  }));
+  const highlights: BudgetCallout[] = [
+    { type: "success", title: "Education Gets Historic Boost", text: `KES ${(sectors.find((s) => s.sector_code === "EDU")?.total_allocation ?? 0) / 1000}B allocated — the highest ever.` },
+    { type: "trend", title: `${sectors.find((s) => s.sector_code === "HLT")?.name ?? "Health"} Sector`, text: `KES ${(sectors.find((s) => s.sector_code === "HLT")?.total_allocation ?? 0) / 1000}B allocated for healthcare.` },
+    { type: "info", title: "Infrastructure Spending", text: `KES ${(sectors.find((s) => s.sector_code === "INF")?.total_allocation ?? 0) / 1000}B for roads, bridges, and connectivity.` },
+    { type: "warning", title: "Debt Service Burden", text: `KES ${data.macro_modules.debt_portfolio.total_interest_service_obligation / 1000}T goes to debt repayment.` },
+  ];
+  return {
+    ...data,
+    kpis,
+    sector_chart,
+    revenue_chart: data.macro_modules.revenue_engine.streams.map((s) => ({ name: s.type, value: s.amount / 1000, fill: "#10b981" })),
+    highlights,
+    timeline: [
+      { phase: "formulation", label: "Formulation", period: "Aug – Feb", icon: "edit_document", is_current: false },
+      { phase: "approval", label: "Approval", period: "Mar – Jun", icon: "how_to_vote", is_current: false },
+      { phase: "implementation", label: "Implementation", period: "Jul – Jun", icon: "play_circle", is_current: true },
+      { phase: "audit", label: "Audit & Oversight", period: "Post-Jun", icon: "fact_check", is_current: false },
+    ],
+    projects: projects.slice(0, 6).map((p) => ({
+      id: (p.project_uuid?.slice(0, 10) ?? "PRJ").toUpperCase(),
+      title: p.project_name,
+      sector: p.line_item_mapping.parent_sector_code === "EDU" ? "Education" : p.line_item_mapping.parent_sector_code === "HLT" ? "Health" : p.line_item_mapping.parent_sector_code === "INF" ? "Infrastructure" : "Other",
+      county: p.location.county_id ? `County ${p.location.county_id}` : "All Counties",
+      status: p.lifecycle_status === "Completed" ? "completed" as const : p.lifecycle_status === "In Progress" ? "in_progress" as const : "planned" as const,
+      budget: Math.round((p.financials?.allocated_amount ?? 0) / 1e6),
+      spent: Math.round((p.financials?.expenditure_to_date ?? 0) / 1e6),
+      description: p.project_name,
+      impact: "On track",
+    })),
+    comparison_rows: [
+      { label: "Education", fy2025: "KES 628.6B", fy2026: "KES 781.4B", change: "+KES 152.8B (+24.3%)" },
+      { label: "Infrastructure", fy2025: "KES 198.4B", fy2026: "KES 230.0B", change: "+KES 31.6B (+15.9%)" },
+      { label: "Health", fy2025: "KES 145.2B", fy2026: "KES 175.5B", change: "+KES 30.3B (+20.9%)" },
+      { label: "Security", fy2025: "KES 284.1B", fy2026: "KES 308.6B", change: "+KES 24.5B (+8.6%)" },
+      { label: "Agriculture", fy2025: "KES 92.4B", fy2026: "KES 106.8B", change: "+KES 14.4B (+15.6%)" },
+      { label: "Housing & Urban Dev", fy2025: "KES 108.6B", fy2026: "KES 135.8B", change: "+KES 27.2B (+25.0%)" },
+      { label: "Social Protection", fy2025: "KES 76.8B", fy2026: "KES 89.2B", change: "+KES 12.4B (+16.1%)" },
+      { label: "Debt Service", fy2025: "KES 1,950B", fy2026: "KES 2,100B", change: "+KES 150B (+7.7%)" },
+    ],
+    expenditure_chart: [
+      { name: "Education", value: 781.4, fill: "#10b981" },
+      { name: "Infrastructure", value: 230, fill: "#3b82f6" },
+      { name: "Health", value: 175.5, fill: "#f59e0b" },
+      { name: "Security", value: 308.6, fill: "#ef4444" },
+      { name: "Agriculture", value: 106.8, fill: "#8b5cf6" },
+      { name: "Housing & Urban Dev", value: 135.8, fill: "#06b6d4" },
+      { name: "Social Protection", value: 89.2, fill: "#ec4899" },
+      { name: "Governance & Judiciary", value: 192.7, fill: "#64748b" },
+      { name: "Debt Service & Others", value: 2800, fill: "#a855f7" },
+    ],
+    glossary_terms: [],
+  };
+}
+
+export function seedCountyProfiles(): Record<string, CountyBudgetProfile> {
+  return {
+    nairobi: {
+      id: "nairobi", name: "Nairobi", tagline: "Capital City County",
+      total_allocation: 39400, citizen_rating: 4.2, transparency_rating: "High",
+      allocation_per_capita: 8200,
+      sector_breakdown: [
+        { name: "Health", value: 35, fill: "#10b981" },
+        { name: "Infrastructure", value: 28, fill: "#3b82f6" },
+        { name: "Education", value: 18, fill: "#f59e0b" },
+        { name: "Social Services", value: 12, fill: "#8b5cf6" },
+        { name: "Administration", value: 7, fill: "#64748b" },
+      ],
+      projects: [],
+    },
+    mombasa: {
+      id: "mombasa", name: "Mombasa", tagline: "Coastal Hub",
+      total_allocation: 14200, citizen_rating: 3.8, transparency_rating: "Moderate",
+      allocation_per_capita: 6100,
+      sector_breakdown: [
+        { name: "Infrastructure", value: 32, fill: "#3b82f6" },
+        { name: "Health", value: 25, fill: "#10b981" },
+        { name: "Education", value: 20, fill: "#f59e0b" },
+        { name: "Social Services", value: 13, fill: "#8b5cf6" },
+        { name: "Administration", value: 10, fill: "#64748b" },
+      ],
+      projects: [],
+    },
+    kisumu: {
+      id: "kisumu", name: "Kisumu", tagline: "Lakeside County",
+      total_allocation: 12100, citizen_rating: 3.5, transparency_rating: "Moderate",
+      allocation_per_capita: 5400,
+      sector_breakdown: [
+        { name: "Health", value: 30, fill: "#10b981" },
+        { name: "Education", value: 24, fill: "#f59e0b" },
+        { name: "Infrastructure", value: 22, fill: "#3b82f6" },
+        { name: "Agriculture", value: 14, fill: "#8b5cf6" },
+        { name: "Administration", value: 10, fill: "#64748b" },
+      ],
+      projects: [],
+    },
+  };
 }
