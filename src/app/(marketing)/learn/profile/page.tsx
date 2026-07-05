@@ -19,6 +19,9 @@ import { fadeInUp } from "@/motion/variants";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { usePageView } from "@/hooks/use-page-view";
+import { StudioPage } from "@/features/learn/components/studio-page";
+import { StudioPageHeader } from "@/features/learn/components/studio-page-header";
+import { ProfileGlow } from "@/features/learn/illustrations/profile-glow";
 
 const SOCIAL_ICONS: Record<string, LucideIcon> = {
   website: Globe,
@@ -52,7 +55,13 @@ export default function LearnProfilePage() {
 
   return (
     <MotionPage>
-      <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
+      <StudioPage width="narrow">
+        <StudioPageHeader
+          eyebrow="Public profile"
+          title={loading ? "Profile" : displayName}
+          description="Your learning identity on Budget Ndio Story."
+          illustration={<ProfileGlow className="hidden h-20 w-28 opacity-90 sm:block" />}
+        />
         {loading ? (
           <div className="flex justify-center py-16">
             <Loader2 className="size-8 animate-spin text-primary" aria-hidden />
@@ -191,7 +200,7 @@ export default function LearnProfilePage() {
             ) : null}
           </motion.div>
         ) : null}
-      </div>
+      </StudioPage>
     </MotionPage>
   );
 }

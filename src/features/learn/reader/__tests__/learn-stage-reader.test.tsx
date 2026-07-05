@@ -164,7 +164,7 @@ describe("LearnStageReader", () => {
     localStorage.clear();
   });
 
-  it("renders the stage title and breadcrumb", () => {
+  it("renders the module label and current step title", () => {
     renderWithClient(
       <LearnStageReader
         stage={mockStage} profile={mockProfile}
@@ -172,11 +172,11 @@ describe("LearnStageReader", () => {
         hasPrev={false} hasNext={false}
       />
     );
-    expect(screen.getAllByText("Stage 1: Constitution")[0]).toBeInTheDocument();
-    expect(screen.getByText(mockStage.documentName)).toBeInTheDocument();
+    expect(screen.getByText("Module 1")).toBeInTheDocument();
+    expect(screen.getAllByText("1. Public Finance Principles").length).toBeGreaterThan(0);
   });
 
-  it("shows the lesson count", () => {
+  it("shows step progress in the header", () => {
     renderWithClient(
       <LearnStageReader
         stage={mockStage} profile={mockProfile}
@@ -184,7 +184,7 @@ describe("LearnStageReader", () => {
         hasPrev={false} hasNext={false}
       />
     );
-    expect(screen.getByText(`${mockStage.steps.length} lessons`)).toBeInTheDocument();
+    expect(screen.getAllByText(`Step 1 of ${mockStage.steps.length}`).length).toBeGreaterThan(0);
   });
 
   it("renders Read tab as active by default", () => {

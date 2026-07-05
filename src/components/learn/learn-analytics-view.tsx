@@ -75,12 +75,8 @@ export function LearnAnalyticsView() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-lg font-bold tracking-tight">Analytics</h1>
-          <p className="text-xs text-muted-foreground">Learning Hub content metrics and insights</p>
-        </div>
-        <Button variant="outline" size="sm" onClick={fetchData} disabled={loading}>
+      <div className="flex justify-end">
+        <Button variant="outline" size="sm" className="rounded-full" onClick={fetchData} disabled={loading}>
           {loading ? <Loader2 className="size-4 animate-spin" /> : <RefreshCw className="size-4" />}
           Refresh
         </Button>
