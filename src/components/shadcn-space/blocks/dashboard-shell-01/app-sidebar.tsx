@@ -164,26 +164,19 @@ const AppSidebar = ({ children }: { children: React.ReactNode }) => {
             <div className="pt-4 px-4">
               <Dialog>
                 <DialogTrigger asChild>
-                  <Card className="shadow-none ring-0 bg-blue-500/10 px-4 py-6 cursor-pointer hover:bg-blue-500/20 transition-colors">
+                  <Card className="shadow-none ring-0 bg-primary/5 px-4 py-6 cursor-pointer hover:bg-primary/10 transition-colors">
                     <CardContent className="p-0 flex flex-col gap-3 items-center">
-                      <img
-                        src="https://images.shadcnspace.com/assets/backgrounds/download-img.png"
-                        alt="sidebar-img"
-                        width={74}
-                        height={74}
-                        className="h-20 w-20"
-                      />
-                      <div className="flex flex-col gap-4 items-center">
+                      <div className="flex flex-col gap-3 items-center">
                         <div>
-                          <p className="text-base font-semibold text-card-foreground text-center">
-                            Grab Pro Now
+                          <p className="text-sm font-semibold text-card-foreground text-center">
+                            Get budget updates in your inbox
                           </p>
-                          <p className="text-sm font-regular text-muted-foreground text-center">
-                            Customize your admin
+                          <p className="text-xs text-muted-foreground text-center mt-1 max-w-48">
+                            Subscribe for explainers, stories, and policy highlights from Budget Ndio Story.
                           </p>
                         </div>
-                        <Button className="w-fit px-4 py-2 shadow-none cursor-pointer rounded-xl bg-blue-500 font-medium hover:bg-blue-500/80 h-9">
-                          Get Premium
+                        <Button className="w-fit px-4 py-2 shadow-none cursor-pointer rounded-xl bg-primary font-medium hover:bg-primary/80 h-8 text-xs">
+                          Subscribe
                         </Button>
                       </div>
                     </CardContent>
@@ -191,13 +184,13 @@ const AppSidebar = ({ children }: { children: React.ReactNode }) => {
                 </DialogTrigger>
                 <DialogContent className="md:max-w-4xl p-0 rounded-none">
                   <DialogHeader className="sr-only">
-                    <DialogTitle>Subscribe to Newsletter</DialogTitle>
+                    <DialogTitle>Subscribe to Budget Ndio Story</DialogTitle>
                   </DialogHeader>
                   <div className="flex md:flex-row flex-col">
                     <div className="md:max-w-md w-full">
                       <img
-                        src="https://images.shadcnspace.com/assets/backgrounds/newsletter-image.webp"
-                        alt="newsletter"
+                        src="https://res.cloudinary.com/dn8lut2fc/image/upload/v1778481263/129A4298_shi7ef.jpg"
+                        alt="Budget Ndio Story"
                         className="w-full object-cover sm:h-full h-40"
                       />
                     </div>
@@ -205,10 +198,10 @@ const AppSidebar = ({ children }: { children: React.ReactNode }) => {
                       <div className="flex flex-col gap-6">
                         <div className="flex flex-col gap-4">
                           <h2 className="text-card-foreground text-3xl font-medium">
-                            Subscribe to the latest updates of Shadcn Space
+                            Get budget updates in your inbox
                           </h2>
                           <p className="text-muted-foreground text-base font-normal">
-                            Subscribe our newsletters and get the latest business updates
+                            Subscribe for explainers, stories, and policy highlights from Budget Ndio Story.
                           </p>
                         </div>
                         <form className="flex flex-col gap-4">
@@ -216,7 +209,7 @@ const AppSidebar = ({ children }: { children: React.ReactNode }) => {
                             <Input
                               id="email"
                               type="email"
-                              placeholder="example@shadcnspace.com"
+                              placeholder="you@example.com"
                               required
                               className="dark:bg-background rounded-lg h-9 shadow-xs"
                             />
@@ -228,16 +221,14 @@ const AppSidebar = ({ children }: { children: React.ReactNode }) => {
                               Subscribe now
                             </Button>
                           </div>
-                          <div className="flex flex-row items-center justify-between w-full">
-                            <div className="flex items-center gap-3">
-                              <Checkbox id="newsletter" className="cursor-pointer" />
-                              <FieldLabel
-                                htmlFor="newsletter"
-                                className="text-sm text-primary font-normal cursor-pointer"
-                              >
-                                Don&apos;t show this popup again
-                              </FieldLabel>
-                            </div>
+                          <div className="flex items-center gap-3">
+                            <Checkbox id="newsletter" className="cursor-pointer" />
+                            <FieldLabel
+                              htmlFor="newsletter"
+                              className="text-sm text-muted-foreground font-normal cursor-pointer"
+                            >
+                              I agree to receive email updates
+                            </FieldLabel>
                           </div>
                         </form>
                       </div>
