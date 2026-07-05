@@ -17,18 +17,36 @@ export function AnalyticsClient() {
   usePageView();
   const [data, setData] = useState<AnalyticsSummaryApi | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    analyticsData.fetch()
-      .then((res) => setData(res as AnalyticsSummaryApi))
-      .catch(() => setData(null))
-      .finally(() => setLoading(false));
+    (async () => {
+      try {
+        const res = await analyticsData.fetch();
+        setData(res as AnalyticsSummaryApi);
+      } catch (err) {
+        setError("Unable to load analytics data. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, []);
 
-  if (loading || !data) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <Loader2 className="size-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh] text-center px-4">
+        <div>
+          <p className="text-lg font-semibold">Analytics data unavailable</p>
+          <p className="text-sm text-muted-foreground mt-2">{error ?? "No analytics data could be loaded."}</p>
+        </div>
       </div>
     );
   }

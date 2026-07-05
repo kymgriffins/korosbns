@@ -78,11 +78,13 @@ export function TaskForm({
   task,
   onSaved,
   redirectTo,
+  layout = "default",
 }: {
   mode: TaskFormMode;
   task?: Task;
   onSaved?: () => void;
   redirectTo?: string;
+  layout?: "default" | "workspace";
 }) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
@@ -202,35 +204,46 @@ export function TaskForm({
     );
   }
 
+  const isWorkspace = layout === "workspace";
+  const edgePad = isWorkspace ? "px-3 sm:px-5 md:px-6" : "px-5 md:px-6";
+  const edgeNeg = isWorkspace ? "-mx-3 sm:-mx-5 md:-mx-6" : "-mx-5 md:-mx-6";
+
   return (
-    <div className="flex flex-col">
+    <div className="flex min-w-0 flex-col">
       <Tabs
         value={activeTab}
         onValueChange={(v) => setActiveTab(v as TaskFormTab)}
         className="flex flex-col gap-0"
       >
-        <div className="sticky top-0 z-10 -mx-5 border-b border-border/60 bg-background/95 px-5 backdrop-blur supports-[backdrop-filter]:bg-background/80 md:-mx-6 md:px-6">
+        <div
+          className={cn(
+            "sticky top-0 z-10 border-b border-border/60 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80",
+            edgeNeg,
+            edgePad,
+            isWorkspace ? "top-[3.25rem] z-[15] lg:top-0 lg:z-10" : undefined,
+          )}
+        >
           <TabsList
             variant="line"
             className="h-auto w-full justify-start gap-1 overflow-x-auto rounded-none border-0 bg-transparent p-0 pb-px scrollbar-thin"
           >
             <TabsTrigger
               value="basics"
-              className="rounded-none border-b-2 border-transparent px-3 py-2.5 text-xs data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none sm:text-sm"
+              className="shrink-0 rounded-none border-b-2 border-transparent px-2.5 py-2.5 text-xs data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none sm:px-3 sm:text-sm"
             >
               <FileText className="mr-1.5 size-3.5 opacity-60" />
               Basics
             </TabsTrigger>
             <TabsTrigger
               value="content"
-              className="rounded-none border-b-2 border-transparent px-3 py-2.5 text-xs data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none sm:text-sm"
+              className="shrink-0 rounded-none border-b-2 border-transparent px-2.5 py-2.5 text-xs data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none sm:px-3 sm:text-sm"
             >
               <AlignLeft className="mr-1.5 size-3.5 opacity-60" />
               Content
             </TabsTrigger>
             <TabsTrigger
               value="checklist"
-              className="rounded-none border-b-2 border-transparent px-3 py-2.5 text-xs data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none sm:text-sm"
+              className="shrink-0 rounded-none border-b-2 border-transparent px-2.5 py-2.5 text-xs data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none sm:px-3 sm:text-sm"
             >
               <ClipboardList className="mr-1.5 size-3.5 opacity-60" />
               Checklist
@@ -238,7 +251,7 @@ export function TaskForm({
             </TabsTrigger>
             <TabsTrigger
               value="schedule"
-              className="rounded-none border-b-2 border-transparent px-3 py-2.5 text-xs data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none sm:text-sm"
+              className="shrink-0 rounded-none border-b-2 border-transparent px-2.5 py-2.5 text-xs data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none sm:px-3 sm:text-sm"
             >
               <CalendarClock className="mr-1.5 size-3.5 opacity-60" />
               Schedule
@@ -246,7 +259,7 @@ export function TaskForm({
             {mode === "edit" && task && (
               <TabsTrigger
                 value="files"
-                className="rounded-none border-b-2 border-transparent px-3 py-2.5 text-xs data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none sm:text-sm"
+                className="shrink-0 rounded-none border-b-2 border-transparent px-2.5 py-2.5 text-xs data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none sm:px-3 sm:text-sm"
               >
                 <Paperclip className="mr-1.5 size-3.5 opacity-60" />
                 Files
@@ -256,7 +269,15 @@ export function TaskForm({
           </TabsList>
         </div>
 
-        <div className="max-h-[calc(100vh-15rem)] overflow-y-auto py-5 pr-1 scrollbar-thin scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent">
+        <div
+          className={cn(
+            "py-4 pr-1 sm:py-5",
+            edgePad,
+            isWorkspace
+              ? "max-h-none overflow-visible"
+              : "max-h-[calc(100vh-15rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent",
+          )}
+        >
           <TabsContent value="basics" className="mt-0 space-y-4 focus-visible:ring-0">
             <p className="text-[11px] text-muted-foreground">Title, status, and week context for this note.</p>
             <div className="space-y-2">
@@ -500,16 +521,23 @@ export function TaskForm({
       </Tabs>
 
       {/* ── Sticky footer action bar ──────────────────────────── */}
-      <div className="sticky bottom-0 z-10 -mx-5 mt-2 border-t bg-background/95 px-5 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:-mx-6 md:px-6">
-        <div className="flex items-center justify-between">
-          <p className="text-[11px] text-muted-foreground">
+      <div
+        className={cn(
+          "sticky bottom-0 z-10 mt-2 border-t bg-background/95 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/60",
+          edgeNeg,
+          edgePad,
+          isWorkspace && "pb-[max(0.75rem,env(safe-area-inset-bottom))]",
+        )}
+      >
+        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-center text-[11px] text-muted-foreground sm:text-left">
             {mode === "create" ? "New weekly note" : `Saving changes to ref ${task?.id.slice(0, 8)}`}
           </p>
-          <div className="flex items-center gap-3">
-            <Button variant="outline" onClick={() => router.push(cancelHref)}>
+          <div className="flex items-center justify-end gap-2 sm:gap-3">
+            <Button variant="outline" className="min-w-0 flex-1 sm:flex-none" onClick={() => router.push(cancelHref)}>
               Cancel
             </Button>
-            <Button onClick={handleSave} disabled={saving}>
+            <Button className="min-w-0 flex-1 sm:flex-none" onClick={handleSave} disabled={saving}>
               {saving && <Loader2 className="mr-1.5 size-4 animate-spin" />}
               {mode === "create" ? "Create task" : "Save changes"}
             </Button>

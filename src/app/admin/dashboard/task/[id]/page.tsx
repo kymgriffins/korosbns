@@ -2,7 +2,6 @@
 
 import { use, useEffect, useState } from "react";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -17,6 +16,7 @@ import { taskData } from "@/data/tasks";
 import { useRouteBase, getFullUrl } from "@/lib/route-base";
 import { TaskPageShell } from "@/app/admin/dashboard/task/_components/task-page-shell";
 import { TaskDetailBrief } from "@/app/admin/dashboard/task/_components/task-detail-brief";
+import { TaskDetailMobileChrome } from "@/app/admin/dashboard/task/_components/task-detail-mobile-chrome";
 import type { Task, TaskDetail } from "@/types/tasks";
 
 export default function TaskDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -60,14 +60,11 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
 
   if (loading) {
     return (
-      <TaskPageShell>
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,320px)_1fr]">
-          <div className="space-y-4">
-            <Skeleton className="h-4 w-24" />
-            <Skeleton className="h-48 w-full rounded-xl" />
-            <Skeleton className="h-40 w-full rounded-xl" />
-          </div>
-          <Skeleton className="h-[32rem] w-full rounded-xl" />
+      <TaskPageShell className="px-2 sm:px-0">
+        <Skeleton className="mb-3 h-11 w-full rounded-lg lg:hidden" />
+        <div className="flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)] lg:gap-10">
+          <Skeleton className="order-2 h-64 w-full rounded-xl lg:order-1" />
+          <Skeleton className="order-1 h-[28rem] w-full rounded-xl lg:order-2" />
         </div>
       </TaskPageShell>
     );
@@ -75,7 +72,7 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
 
   if (!task) {
     return (
-      <TaskPageShell>
+      <TaskPageShell className="px-2 sm:px-0">
         <div className="flex min-h-[40vh] flex-col items-center justify-center rounded-xl border border-dashed border-border/80 px-6 text-center">
           <p className="text-lg font-semibold text-foreground">No task with that reference</p>
           <p className="mt-2 max-w-sm text-sm text-muted-foreground">
@@ -90,12 +87,17 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
   }
 
   return (
-    <TaskPageShell>
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)] lg:gap-10 xl:grid-cols-[minmax(0,340px)_minmax(0,1fr)]">
-        <TaskDetailBrief task={task} detail={detail} backHref={backHref} />
+    <TaskPageShell className="min-w-0 px-2 sm:px-0">
+      <TaskDetailMobileChrome
+        task={task}
+        backHref={backHref}
+        trailing={detail ? <TaskExportDialog task={detail} /> : undefined}
+      />
 
-        <div className="min-w-0">
-          <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-border/60 pb-4">
+      <div className="mt-3 flex flex-col gap-4 lg:mt-0 lg:grid lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)] lg:items-start lg:gap-10 xl:grid-cols-[minmax(0,340px)_minmax(0,1fr)]">
+        {/* Mobile-first: editor before reference panels */}
+        <div className="order-1 min-w-0 lg:order-2">
+          <div className="mb-4 hidden border-b border-border/60 pb-4 sm:flex sm:flex-wrap sm:items-center sm:justify-between lg:mb-5">
             <div>
               <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
                 Edit weekly note
@@ -107,14 +109,22 @@ export default function TaskDetailPage({ params }: { params: Promise<{ id: strin
             {detail && <TaskExportDialog task={detail} />}
           </div>
 
-          <div className="rounded-xl border border-border/70 bg-card px-5 py-1 shadow-sm md:px-6">
+          <div className="overflow-hidden rounded-xl border border-border/70 bg-card shadow-sm">
             <TaskForm
               mode="edit"
               task={detail ?? task}
               redirectTo={backHref}
+              layout="workspace"
             />
           </div>
         </div>
+
+        <TaskDetailBrief
+          className="order-2 lg:order-1"
+          task={task}
+          detail={detail}
+          backHref={backHref}
+        />
       </div>
     </TaskPageShell>
   );
