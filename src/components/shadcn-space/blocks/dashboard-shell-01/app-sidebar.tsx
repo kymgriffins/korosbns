@@ -124,7 +124,7 @@ const AppSidebar = ({ children }: { children: React.ReactNode }) => {
                   <div className="flex md:flex-row flex-col">
                     <div className="md:max-w-md w-full">
                       <img
-                        src="https://res.cloudinary.com/dn8lut2fc/image/upload/v1778481263/129A4298_shi7ef.jpg"
+                        src="/images/towwnhallmay/129A4056.jpg"
                         alt="Budget Ndio Story"
                         className="w-full object-cover sm:h-full h-40"
                       />
