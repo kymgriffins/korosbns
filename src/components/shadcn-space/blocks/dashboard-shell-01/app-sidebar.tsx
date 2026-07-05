@@ -13,18 +13,16 @@ import { Button } from "@/components/ui/button";
 import Logo from "@/assets/logo/logo";
 import { NavMain } from "@/components/shadcn-space/blocks/dashboard-shell-01/nav-main";
 import {
-  AlignStartVertical,
-  CreditCard,
-  LayoutPanelTop,
-  ChartPie,
   BarChart3,
+  BookOpen,
+  ChartPie,
   CircleUserRound,
-  ClipboardList,
+  FileText,
   Languages,
   LucideIcon,
+  MessagesSquare,
   Notebook,
   NotepadText,
-  Table,
   Ticket,
 } from "lucide-react";
 import {
@@ -52,82 +50,19 @@ export type NavItem = {
 };
 
 export const navData: NavItem[] = [
-  // Dashboards Section
-  { label: "Dashboards", isSection: true },
-  { title: "Analytics", icon: BarChart3, href: "#", isActive: true },
-  { title: "CRM Dashboard", icon: ClipboardList, href: "#" },
+  { label: "Learning Hub", isSection: true },
+  { title: "Dashboard", icon: BarChart3, href: "/learn", isActive: true },
+  { title: "Modules", icon: BookOpen, href: "/learn?tab=modules" },
+  { title: "Documents", icon: FileText, href: "/learn/documents" },
+  { title: "Forum", icon: MessagesSquare, href: "/learn/forum" },
+  { title: "Profile", icon: CircleUserRound, href: "/learn/profile" },
 
-  // Pages Section
-  { label: "Pages", isSection: true },
-  { title: "Tables", icon: Table, href: "#" },
-  { title: "Forms", icon: ClipboardList, href: "#" },
-  { title: "User Profile", icon: CircleUserRound, href: "#" },
-
-  // Apps Section
-  { label: "Apps", isSection: true },
-  { title: "Notes", icon: Notebook, href: "#" },
-  { title: "Tickets", icon: Ticket, href: "#" },
-  {
-    title: "Blogs",
-    icon: Languages,
-    children: [
-      { title: "Blog Post", href: "#" },
-      { title: "Blog Detail", href: "#" },
-      { title: "Blog Edit", href: "#" },
-      { title: "Blog Create", href: "#" },
-      { title: "Manage Blogs", href: "#" },
-    ],
-  },
-
-  // Form Elements Section
-  { label: "Form Elements", isSection: true },
-  {
-    title: "Shadcn Forms",
-    icon: NotepadText,
-    children: [
-      { title: "Button", href: "#" },
-      { title: "Input", href: "#" },
-      { title: "Select", href: "#" },
-      { title: "Checkbox", href: "#" },
-      { title: "Radio", href: "#" },
-    ],
-  },
-  {
-    title: "Form layouts",
-    icon: AlignStartVertical,
-    children: [
-      { title: "Forms Horizontal", href: "#" },
-      { title: "Forms Vertical", href: "#" },
-      { title: "Forms Validation", href: "#" },
-      { title: "Forms Examples", href: "#" },
-      { title: "Forms Wizard", href: "#" },
-    ],
-  },
-  { label: "WIDGETS", isSection: true },
-  {
-    title: "Cards",
-    icon: CreditCard,
-    children: [
-      { title: "Ecommerce Actions", href: "#" },
-      { title: "Course ", href: "#" },
-      { title: "Campaign Performance ", href: "#" },
-      { title: "Selling Products ", href: "#" },
-      { title: "Activity Timeline ", href: "#" },
-    ],
-  },
-  {
-    title: "Banners",
-    icon: LayoutPanelTop,
-    children: [{ title: "Analytic Banner ", href: "#" }],
-  },
-  {
-    title: "Charts",
-    icon: ChartPie,
-    children: [
-      { title: "Sales Report", href: "#" },
-      { title: "Weekly Sales", href: "#" },
-    ],
-  },
+  { label: "Content", isSection: true },
+  { title: "Videos", icon: Languages, href: "/learn/videos" },
+  { title: "Articles", icon: NotepadText, href: "/learn/articles" },
+  { title: "Stories", icon: Notebook, href: "/learn/stories" },
+  { title: "Quests", icon: Ticket, href: "/learn/quests" },
+  { title: "Analytics", icon: ChartPie, href: "/learn/analytics" },
 ];
 
 /* -------------------------------------------------------------------------- */
