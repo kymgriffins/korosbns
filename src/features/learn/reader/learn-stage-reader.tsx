@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { apiFetch } from "@/lib/api-client";
 import { learnHubApi } from "@/lib/learn-hub";
 import { useLearn } from "@/contexts/learn-context";
-import { useSidebar } from "@/components/ui/sidebar";
 import { readProgress, writeProgress } from "@/lib/module-progress";
 import { triviaForStep } from "@/lib/learn-trivia";
 import { certificateDownloadHref } from "@/lib/certificate-url";
@@ -28,17 +27,18 @@ import type {
 } from "@/types/budget-report";
 import { resolveYoutubeId, videoEmbedUrl } from "@/lib/learn-video";
 import { useBudgetData } from "@/hooks/use-budget-data";
-import { BudgetInlineSnapshot, BudgetInlineDeepDive } from "./budget-inline";
-import { CurriculumSidebar } from "./curriculum-sidebar";
-import { RatingSection } from "./rating-section";
-import { YouTubePlayer } from "./youtube-player";
+import { BudgetInlineSnapshot, BudgetInlineDeepDive } from "@/components/learn/budget-inline";
+import { LearnStepOutline } from "./learn-step-outline";
+import { RatingSection } from "@/components/learn/rating-section";
+import { YouTubePlayer } from "@/components/learn/youtube-player";
 
-import { StepContent } from "./step-content";
-import { TriviaSection } from "./trivia-section";
-import { MasteryPage } from "./mastery-page";
+import { StepContent } from "@/components/learn/step-content";
+import { TriviaSection } from "@/components/learn/trivia-section";
+import { MasteryPage } from "@/components/learn/mastery-page";
+import { Progress } from "@/components/ui/progress";
 
 
-interface StageDetailDrawerProps {
+interface LearnStageReaderProps {
   stage: CivicModule;
   profile: Record<string, unknown>;
   onClose: () => void;
@@ -49,12 +49,11 @@ interface StageDetailDrawerProps {
   hasNext: boolean;
 }
 
-export function StageDetailDrawer({
+export function LearnStageReader({
   stage, profile, onClose, onUpdateProfile, onPrevStage, onNextStage, hasPrev, hasNext
-}: StageDetailDrawerProps) {
+}: LearnStageReaderProps) {
   usePageView();
   const { totalStages } = useLearn();
-  const { setOpen: setSidebarOpen, open: sidebarOpen } = useSidebar();
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [activeTab, setActiveTab] = useState<"read" | "watch" | "quiz">("read");
   const [showTrivia, setShowTrivia] = useState<boolean>(false);
@@ -92,11 +91,6 @@ export function StageDetailDrawer({
     setCurrentStep(initialStep);
     setExpandedStep(initialStep);
   }, [stage.slug, stage.order]);
-
-  useEffect(() => {
-    setSidebarOpen(false);
-    return () => setSidebarOpen(true);
-  }, []);
 
   const isStepTriviaPassed = (stepId: number) => {
     return readProgress(stage.slug, stage.order).stepsCompleted[stepId] === true;
@@ -245,36 +239,46 @@ export function StageDetailDrawer({
   const showNav = stepVideos.length > 1;
   const currentVideoUrl = stepVideos.length > 0 ? videoEmbedUrl(stepVideos[activeVideoIdx]?.youtube_video_id || stepVideos[activeVideoIdx]?.url || "") : null;
 
+  const stepPct = stage.steps.length
+    ? Math.round(((currentStep - 1) / stage.steps.length) * 100)
+    : 0;
+
   return (
-    <div className="flex flex-col h-full overflow-hidden bg-background">
-      <div className="px-4 md:px-5 py-2.5 border-b border-border/30 flex items-center justify-between shrink-0 gap-2">
-        <div className="min-w-0 flex items-center gap-2">
-          <button onClick={onClose} className="p-1 hover:bg-muted/50 rounded-lg transition-colors -ml-1">
-            <ChevronLeft className="size-4" />
-          </button>
-          <div className="min-w-0">
-            <nav className="flex items-center gap-1 text-[10px] text-muted-foreground font-semibold truncate">
-              <button onClick={onClose} className="hover:text-foreground transition-colors">Home</button>
-              <span className="text-muted-foreground/40">/</span>
-              <button onClick={onClose} className="hover:text-foreground transition-colors">Civic Modules</button>
-              <span className="text-muted-foreground/40">/</span>
-              <span className="text-foreground truncate">{stage.title}</span>
-            </nav>
-            <h2 className="text-sm font-black tracking-tight truncate">{currentStepObj?.title || stage.title}</h2>
+    <div className="flex h-full flex-col overflow-hidden bg-background">
+      <header className="shrink-0 border-b border-border/40 bg-background/80 px-4 py-3 backdrop-blur-xl supports-[backdrop-filter]:bg-background/65">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="icon" className="shrink-0 rounded-full" onClick={onClose} aria-label="Close reader">
+            <ChevronLeft className="size-5" />
+          </Button>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-xs text-muted-foreground">Module {stage.order}</p>
+            <h2 className="truncate text-sm font-semibold tracking-tight md:text-base">
+              {currentStepObj?.title || stage.title}
+            </h2>
+          </div>
+          <div className="hidden items-center gap-2 sm:flex">
+            {hasPrev ? (
+              <Button variant="outline" size="sm" className="rounded-full text-xs" onClick={onPrevStage}>
+                Prev module
+              </Button>
+            ) : null}
+            {hasNext ? (
+              <Button variant="outline" size="sm" className="rounded-full text-xs" onClick={onNextStage}>
+                Next module
+              </Button>
+            ) : null}
           </div>
         </div>
-        <div className="flex items-center gap-1.5 shrink-0">
-          <span className="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded flex items-center gap-1">
-            <BookOpen className="size-3" /> {stage.steps.length} lessons
-          </span>
-          {stage.documentName && (
-            <span className="hidden sm:flex px-2 py-0.5 bg-muted/40 text-muted-foreground text-[10px] font-bold rounded items-center gap-1">
-              <BookOpenText className="size-3" /> {stage.documentName}
-            </span>
-          )}
-          <RatingSection contentId={stage.id} contentType="civic_module" readonly />
-        </div>
-      </div>
+        {!isMastery ? (
+          <div className="mt-3 space-y-1">
+            <div className="flex justify-between text-[11px] text-muted-foreground">
+              <span>Step {Math.min(currentStep, stage.steps.length)} of {stage.steps.length}</span>
+              <span>{stepPct}%</span>
+            </div>
+            <Progress value={stepPct} className="h-1" />
+          </div>
+        ) : null}
+      </header>
 
       <div className="flex flex-1 overflow-hidden flex-col md:flex-row">
         <div className="flex-1 min-w-0 overflow-y-auto p-3 md:p-4 lg:p-5">
@@ -282,23 +286,20 @@ export function StageDetailDrawer({
             <MasteryPage badge={stage.badge} badgeName={stage.badgeName} title={stage.documentName || "Stage Mastered"} hasNext={hasNext} onNextStage={onNextStage} onClose={onClose} certificateUrl={certificateUrl} certificateId={certificateId} />
           ) : (
             <div className="max-w-3xl mx-auto space-y-3">
-              <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
+              <div className="flex items-center gap-1 overflow-x-auto rounded-2xl bg-muted/40 p-1">
                 {[
                   { id: "read", label: "Read", icon: BookOpenText },
                   { id: "watch", label: "Watch", icon: Video },
                   ...(hasQuiz ? [{ id: "quiz", label: "Quiz", icon: Brain }] : []),
                 ].map((tab) => (
-                  <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all whitespace-nowrap ${
-                      activeTab === tab.id ? "bg-primary text-primary-foreground shadow-xs" : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
+                  <button key={tab.id} onClick={() => setActiveTab(tab.id as "read" | "watch" | "quiz")}
+                    className={`flex flex-1 items-center justify-center gap-1.5 rounded-xl px-3 py-2 text-xs font-medium transition-all whitespace-nowrap ${
+                      activeTab === tab.id ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
                     }`}>
                     <tab.icon className="size-3.5" />
                     {tab.label}
                   </button>
                 ))}
-                <span className="ml-auto text-[10px] text-muted-foreground font-semibold shrink-0">
-                  Step {currentStep} of {stage.steps.length}
-                </span>
               </div>
 
               {/* Mobile step dots — tap to jump between chapters */}
@@ -499,14 +500,13 @@ export function StageDetailDrawer({
           )}
         </div>
 
-        <CurriculumSidebar
+        <LearnStepOutline
           steps={stage.steps}
           stage={stage}
           currentStep={currentStep}
           expandedStep={expandedStep}
           setExpandedStep={setExpandedStep}
           selectStep={selectStep}
-          triviaForStepFn={triviaForStep}
           setActiveTab={setActiveTab}
           setShowTrivia={setShowTrivia}
           isStepTriviaPassed={isStepTriviaPassed}

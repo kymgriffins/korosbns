@@ -1,15 +1,16 @@
 "use client";
 
 import { Suspense } from "react";
-import { LearnTabPage, useLearnSummary } from "@/components/learn/learn-tab-page";
+import { LearnContentLibraryView, useLearnSummary } from "@/features/learn/views/learn-content-library-view";
+import { LearnStudioLoading } from "@/features/learn/views/learn-studio-states";
 
 function StoriesContent() {
   const summary = useLearnSummary();
   return (
-    <LearnTabPage
+    <LearnContentLibraryView
       listKey="stories"
       title="Stories"
-      description="Swipeable civic explainers designed for quick understanding."
+      description="Real-world budget stories from communities across Kenya."
       summary={summary}
     />
   );
@@ -17,7 +18,7 @@ function StoriesContent() {
 
 export default function LearnStoriesPage() {
   return (
-    <Suspense fallback={<div className="min-h-[40vh] animate-pulse bg-muted/20" />}>
+    <Suspense fallback={<LearnStudioLoading />}>
       <StoriesContent />
     </Suspense>
   );

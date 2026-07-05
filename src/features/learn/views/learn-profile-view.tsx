@@ -12,16 +12,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/ui/password-input";
-import { BitmojiAvatar } from "./bitmoji-avatar";
-import { ProfileAvatarEditor } from "./profile-avatar-editor";
-import { cn } from "@/utils";
+import { BitmojiAvatar } from "@/components/learn/bitmoji-avatar";
+import { ProfileAvatarEditor } from "@/components/learn/profile-avatar-editor";
+import { cn } from "@/lib/utils";
 import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
 import { useGamificationMe, useBadgeCatalog, useCertificates } from "@/hooks/use-gamification";
 import { useUpdateProfile } from "@/hooks/use-profile";
 import { useChangePassword } from "@/hooks/use-auth-actions";
 import { certificateDownloadHrefFromRecord } from "@/lib/certificate-url";
-import type { Gender } from "./bitmoji-avatar";
+import type { Gender } from "@/components/learn/bitmoji-avatar";
 import type { CivicModule } from "@/types/learn";
 import type { BadgeCatalogEntry, BadgeTier } from "@/types/gamification";
 
@@ -36,9 +36,9 @@ function SectionCard({
   title, icon, children, className,
 }: { title?: string; icon?: React.ReactNode; children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-5 shadow-xs ring-1 ring-border/40", className)}>
+    <div className={cn("rounded-2xl border border-border/50 bg-card p-5 shadow-none", className)}>
       {title && (
-        <h3 className="mb-3 flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+        <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold tracking-tight text-foreground">
           {icon}
           {title}
         </h3>
@@ -130,7 +130,7 @@ function CatalogBadgeCard({ badge }: { badge: BadgeCatalogEntry }) {
   );
 }
 
-export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile }: ProfileViewProps) {
+export function LearnProfileView({ profile, stages, onResetProgress, onUpdateProfile }: ProfileViewProps) {
   const { user, isLoggedIn, loading: authLoading, logout } = useAuth();
   const { data: gamification } = useGamificationMe();
   const { data: badgeCatalog } = useBadgeCatalog();
@@ -265,18 +265,13 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
   };
 
   return (
-    <div className="space-y-4 md:space-y-5 max-w-3xl mx-auto">
-      {/* Hero */}
-      <div className="relative overflow-visible rounded-2xl bg-gradient-to-br from-primary/90 via-primary/80 to-primary/60 p-5 md:p-7 text-primary-foreground shadow-lg">
-        <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl">
-          <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.07] mix-blend-overlay" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/15 to-transparent" />
-        </div>
-        <div className="relative flex items-center gap-4 md:gap-5">
-          <div className="relative shrink-0 z-10">
+    <div className="space-y-6">
+      <div className="rounded-2xl border border-border/50 bg-card p-6 shadow-none md:p-8">
+        <div className="flex flex-col items-center gap-5 sm:flex-row sm:items-start">
+          <div className="relative shrink-0">
             {authLoading ? (
-              <div className="flex size-16 md:size-20 items-center justify-center rounded-full border-2 border-white/30 bg-white/10">
-                <Loader2 className="size-6 animate-spin text-white/80" />
+              <div className="flex size-16 md:size-20 items-center justify-center rounded-full border-2 border-border bg-muted">
+                <Loader2 className="size-6 animate-spin text-muted-foreground" />
               </div>
             ) : isLoggedIn ? (
               <ProfileAvatarEditor
@@ -299,14 +294,14 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
             ) : (
               <Link
                 href={Routes.Login}
-                className="group relative block rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+                className="group relative block rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 aria-label="Sign in to change profile photo"
               >
                 {avatarUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={avatarUrl} alt="" className="size-16 md:size-20 rounded-full border-2 border-white/30 object-cover shadow-md" />
+                  <img src={avatarUrl} alt="" className="size-16 md:size-20 rounded-full border-2 border-border object-cover shadow-sm" />
                 ) : (
-                  <BitmojiAvatar gender={profile.gender} size="xl" className="rounded-full border-2 border-white/30 shadow-md" />
+                  <BitmojiAvatar gender={profile.gender} size="xl" className="rounded-full border-2 border-border shadow-sm" />
                 )}
                 <span className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40">
                   <LogIn className="size-5 text-white" />
@@ -317,29 +312,29 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
               {level}
             </span>
           </div>
-          <div className="min-w-0 flex-1">
-            <p className="mb-0.5 text-[10px] font-black uppercase tracking-widest text-white/70">Citizen Champion</p>
-            <h2 className="truncate text-lg font-black leading-tight text-white md:text-2xl">{displayName}</h2>
-            <p className="mt-0.5 truncate text-[11px] font-semibold text-white/80 md:text-sm">
+          <div className="min-w-0 flex-1 text-center sm:text-left">
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Your profile</p>
+            <h2 className="truncate text-xl font-semibold tracking-tight md:text-2xl">{displayName}</h2>
+            <p className="mt-0.5 truncate text-sm text-muted-foreground">
               {county}{ward ? ` · ${ward}` : ""}
             </p>
             {!isLoggedIn && !authLoading && (
               <Link
                 href={Routes.Login}
-                className="mt-2 inline-flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-1 text-[10px] font-bold text-white hover:bg-white/25 transition-colors"
+                className="mt-2 inline-flex items-center gap-1 rounded-full border border-border px-3 py-1 text-xs font-medium hover:bg-muted/50 transition-colors"
               >
                 <LogIn className="size-3" />
                 Sign in to update photo
               </Link>
             )}
-            <div className="mt-2 md:mt-3">
-              <div className="mb-1 flex justify-between text-[10px] font-bold text-white/70">
+            <div className="mt-3">
+              <div className="mb-1 flex justify-between text-xs text-muted-foreground">
                 <span>{points} XP</span>
                 <span>{xpIntoLevel}/100 to Lv.{level + 1}</span>
               </div>
-              <div className="h-1.5 overflow-hidden rounded-full bg-white/20 md:h-2">
+              <div className="h-1.5 overflow-hidden rounded-full bg-muted md:h-2">
                 <div
-                  className="h-full rounded-full bg-white/90 transition-all duration-700 w-[var(--progress)]"
+                  className="h-full rounded-full bg-primary transition-all duration-700 w-[var(--progress)]"
                   style={{ "--progress": `${xpIntoLevel}%` } as React.CSSProperties}
                   role="progressbar"
                   aria-valuenow={xpIntoLevel}

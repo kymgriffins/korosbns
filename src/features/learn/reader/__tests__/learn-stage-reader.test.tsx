@@ -2,7 +2,7 @@ import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { StageDetailDrawer } from "../stage-detail-drawer";
+import { LearnStageReader } from "../learn-stage-reader";
 import type { CivicModule } from "@/types/learn";
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
@@ -22,19 +22,15 @@ vi.mock("@/contexts/learn-context", () => ({
   }),
 }));
 
-vi.mock("@/components/ui/sidebar", () => ({
-  useSidebar: () => ({ open: true, setOpen: vi.fn() }),
+vi.mock("../learn-step-outline", () => ({
+  LearnStepOutline: () => <div data-testid="learn-step-outline" />,
 }));
 
-vi.mock("../curriculum-sidebar", () => ({
-  CurriculumSidebar: () => <div data-testid="curriculum-sidebar" />,
-}));
-
-vi.mock("../rating-section", () => ({
+vi.mock("@/components/learn/rating-section", () => ({
   RatingSection: () => <div data-testid="rating-section" />,
 }));
 
-vi.mock("../step-content", () => ({
+vi.mock("@/components/learn/step-content", () => ({
   StepContent: ({ step, onStartTrivia }: { step: { title: string }; onStartTrivia: () => void }) => (
     <div data-testid="step-content">
       <span>{step.title}</span>
@@ -43,15 +39,15 @@ vi.mock("../step-content", () => ({
   ),
 }));
 
-vi.mock("../trivia-section", () => ({
+vi.mock("@/components/learn/trivia-section", () => ({
   TriviaSection: () => <div data-testid="trivia-section" />,
 }));
 
-vi.mock("../mastery-page", () => ({
+vi.mock("@/components/learn/mastery-page", () => ({
   MasteryPage: () => <div data-testid="mastery-page" />,
 }));
 
-vi.mock("../youtube-player", () => ({
+vi.mock("@/components/learn/youtube-player", () => ({
   YouTubePlayer: () => <div data-testid="youtube-player" />,
 }));
 
@@ -158,7 +154,7 @@ const mockLocalStorage = (() => {
 Object.defineProperty(window, "localStorage", { value: mockLocalStorage });
 Object.defineProperty(globalThis, "localStorage", { value: mockLocalStorage });
 
-describe("StageDetailDrawer", () => {
+describe("LearnStageReader", () => {
   let mockOnClose: () => void;
   let mockOnUpdateProfile: (p: Record<string, unknown>) => void;
 
@@ -170,7 +166,7 @@ describe("StageDetailDrawer", () => {
 
   it("renders the stage title and breadcrumb", () => {
     renderWithClient(
-      <StageDetailDrawer
+      <LearnStageReader
         stage={mockStage} profile={mockProfile}
         onClose={mockOnClose} onUpdateProfile={mockOnUpdateProfile}
         hasPrev={false} hasNext={false}
@@ -182,7 +178,7 @@ describe("StageDetailDrawer", () => {
 
   it("shows the lesson count", () => {
     renderWithClient(
-      <StageDetailDrawer
+      <LearnStageReader
         stage={mockStage} profile={mockProfile}
         onClose={mockOnClose} onUpdateProfile={mockOnUpdateProfile}
         hasPrev={false} hasNext={false}
@@ -193,7 +189,7 @@ describe("StageDetailDrawer", () => {
 
   it("renders Read tab as active by default", () => {
     renderWithClient(
-      <StageDetailDrawer
+      <LearnStageReader
         stage={mockStage} profile={mockProfile}
         onClose={mockOnClose} onUpdateProfile={mockOnUpdateProfile}
         hasPrev={false} hasNext={false}
@@ -205,7 +201,7 @@ describe("StageDetailDrawer", () => {
 
   it("switches to Watch tab and shows YouTubePlayer", () => {
     renderWithClient(
-      <StageDetailDrawer
+      <LearnStageReader
         stage={mockStage} profile={mockProfile}
         onClose={mockOnClose} onUpdateProfile={mockOnUpdateProfile}
         hasPrev={false} hasNext={false}
@@ -217,7 +213,7 @@ describe("StageDetailDrawer", () => {
 
   it("shows Start Knowledge Check button on Quiz tab when trivia available", () => {
     renderWithClient(
-      <StageDetailDrawer
+      <LearnStageReader
         stage={{
           ...mockStage,
           steps: [{
@@ -241,20 +237,20 @@ describe("StageDetailDrawer", () => {
     expect(screen.getByText("Start Knowledge Check")).toBeInTheDocument();
   });
 
-  it("shows curriculum sidebar", () => {
+  it("shows step outline sidebar", () => {
     renderWithClient(
-      <StageDetailDrawer
+      <LearnStageReader
         stage={mockStage} profile={mockProfile}
         onClose={mockOnClose} onUpdateProfile={mockOnUpdateProfile}
         hasPrev={false} hasNext={false}
       />
     );
-    expect(screen.getByTestId("curriculum-sidebar")).toBeInTheDocument();
+    expect(screen.getByTestId("learn-step-outline")).toBeInTheDocument();
   });
 
   it("calls onClose when back button is clicked", () => {
     renderWithClient(
-      <StageDetailDrawer
+      <LearnStageReader
         stage={mockStage} profile={mockProfile}
         onClose={mockOnClose} onUpdateProfile={mockOnUpdateProfile}
         hasPrev={false} hasNext={false}

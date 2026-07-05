@@ -1,10 +1,8 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { vi, describe, it, expect, beforeEach, afterEach } from "vitest";
-import { DrawerHeader } from "../drawer-header";
 import { CourseOverview } from "../course-overview";
 import { ProgressDots } from "../progress-dots";
-import { NavigationFooter } from "../navigation-footer";
 import { MasteryPage } from "../mastery-page";
 import { StepContent } from "../step-content";
 import { TriviaSection } from "../trivia-section";
@@ -50,69 +48,6 @@ if (typeof window !== "undefined" && !window.matchMedia) {
   }));
 }
 
-describe("DrawerHeader", () => {
-  it("renders title and badge", () => {
-    render(
-      <DrawerHeader
-        title="Stage 1: Constitution" badge="🛡️" currentStep={0}
-        activeSubTab="learn" onSubTabChange={vi.fn()}
-        isCached={false} onClose={vi.fn()}
-      />
-    );
-    expect(screen.getAllByText("Stage 1: Constitution")[0]).toBeInTheDocument();
-    expect(screen.getByText("🛡️")).toBeInTheDocument();
-  });
-
-  it("shows Guided Journey and Documents tabs", () => {
-    render(
-      <DrawerHeader
-        title="Test" badge="📘" currentStep={0}
-        activeSubTab="learn" onSubTabChange={vi.fn()}
-        isCached={false} onClose={vi.fn()}
-      />
-    );
-    expect(screen.getByText("Journey")).toBeInTheDocument();
-    expect(screen.getByText("Docs")).toBeInTheDocument();
-  });
-
-  it("calls onSubTabChange when Documents is clicked", () => {
-    const onSubTabChange = vi.fn();
-    render(
-      <DrawerHeader
-        title="Test" badge="📘" currentStep={0}
-        activeSubTab="learn" onSubTabChange={onSubTabChange}
-        isCached={false} onClose={vi.fn()}
-      />
-    );
-    fireEvent.click(screen.getByText("Docs"));
-    expect(onSubTabChange).toHaveBeenCalledWith("documents");
-  });
-
-  it("calls onClose when close button clicked", () => {
-    const onClose = vi.fn();
-    render(
-      <DrawerHeader
-        title="Test" badge="📘" currentStep={0}
-        activeSubTab="learn" onSubTabChange={vi.fn()}
-        isCached={false} onClose={onClose}
-      />
-    );
-    fireEvent.click(screen.getByLabelText("Close"));
-    expect(onClose).toHaveBeenCalled();
-  });
-
-  it("accepts isCached prop without error", () => {
-    const { container } = render(
-      <DrawerHeader
-        title="Test" badge="📘" currentStep={0}
-        activeSubTab="learn" onSubTabChange={vi.fn()}
-        isCached={true} onClose={vi.fn()}
-      />
-    );
-    expect(container.querySelector('[class*="truncate"]')).toBeInTheDocument();
-  });
-});
-
 describe("CourseOverview", () => {
   const defaultProps = {
     badge: "🛡️", title: "Stage 1: Constitution",
@@ -152,39 +87,6 @@ describe("ProgressDots", () => {
     const { container } = render(<ProgressDots currentStep={2} totalSteps={5} />);
     const dots = container.querySelector(".flex")?.children;
     expect(dots?.length).toBe(5);
-  });
-});
-
-describe("NavigationFooter", () => {
-  const baseProps = {
-    currentStep: 0, totalSteps: 5,
-    hasNext: true, hasPrev: false,
-    onClose: vi.fn(), onPrevStep: vi.fn(),
-    onNextStep: vi.fn(), onStartLearning: vi.fn(),
-  };
-
-  it("renders Back and Start Course on step 0", () => {
-    render(<NavigationFooter {...baseProps} />);
-    expect(screen.getByText("Overview")).toBeInTheDocument();
-    expect(screen.getByText("Start")).toBeInTheDocument();
-  });
-
-  it("calls onStartLearning when Start clicked", () => {
-    const onStartLearning = vi.fn();
-    render(<NavigationFooter {...baseProps} onStartLearning={onStartLearning} />);
-    fireEvent.click(screen.getByText("Start"));
-    expect(onStartLearning).toHaveBeenCalled();
-  });
-
-  it("renders Previous and Continue on mid steps", () => {
-    render(<NavigationFooter {...baseProps} currentStep={3} hasPrev={true} />);
-    expect(screen.getByText((c) => c.includes("Prev"))).toBeInTheDocument();
-    expect(screen.getByText((c) => c.includes("Continue"))).toBeInTheDocument();
-  });
-
-  it("renders Finish on last step", () => {
-    render(<NavigationFooter {...baseProps} currentStep={6} totalSteps={5} hasNext={false} />);
-    expect(screen.getByText("Finish")).toBeInTheDocument();
   });
 });
 

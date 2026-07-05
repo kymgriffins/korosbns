@@ -1,12 +1,25 @@
 "use client";
 
 import { Suspense } from "react";
-import { VideoGallery } from "@/components/learn/video-gallery";
+import { LearnContentLibraryView, useLearnSummary } from "@/features/learn/views/learn-content-library-view";
+import { LearnStudioLoading } from "@/features/learn/views/learn-studio-states";
+
+function VideosContent() {
+  const summary = useLearnSummary();
+  return (
+    <LearnContentLibraryView
+      listKey="videos"
+      title="Videos"
+      description="Budget explainers, lectures, and civic education from across Kenya."
+      summary={summary}
+    />
+  );
+}
 
 export default function LearnVideosPage() {
   return (
-    <Suspense fallback={<div className="min-h-[40vh] animate-pulse bg-muted/20" />}>
-      <VideoGallery />
+    <Suspense fallback={<LearnStudioLoading />}>
+      <VideosContent />
     </Suspense>
   );
 }

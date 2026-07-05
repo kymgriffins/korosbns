@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { LearnDocumentsView } from "@/components/learn/learn-documents-view";
-import { DashboardSkeleton } from "@/components/learn/dashboard-skeleton";
+import { LearnDocumentsView } from "@/features/learn/views/learn-documents-view";
+import { LearnStudioLoading } from "@/features/learn/views/learn-studio-states";
 import { type LearnHubProfile } from "@/lib/learn-data";
 
 export function LearnDocumentsPageClient() {
@@ -18,11 +18,11 @@ export function LearnDocumentsPageClient() {
   }, []);
 
   if (!profile) {
-    return <DashboardSkeleton />;
+    return <LearnStudioLoading />;
   }
 
   return (
-    <div className="h-full flex flex-col p-4 md:p-6">
+    <div className="mx-auto h-[calc(100dvh-8rem)] max-w-5xl md:h-auto">
       <LearnDocumentsView profile={profile} />
     </div>
   );

@@ -1,5 +1,5 @@
-import LearnHubLayout from "@/layouts/LearnHubLayout";
+import { LearnStudioShell } from "@/features/learn";
 
 export default function LearnLayout({ children }: { children: React.ReactNode }) {
-  return <LearnHubLayout>{children}</LearnHubLayout>;
+  return <LearnStudioShell>{children}</LearnStudioShell>;
 }

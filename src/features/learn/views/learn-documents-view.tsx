@@ -7,8 +7,10 @@ import {
   Filter, X, Calendar, Building2, LayoutGrid, List, ChevronLeft, ChevronRight,
   RefreshCw, BarChart3, BookOpen
 } from "lucide-react";
-import { cn } from "@/utils";
-import { BitmojiAvatar } from "./bitmoji-avatar";
+import { cn } from "@/lib/utils";
+import { BitmojiAvatar } from "@/components/learn/bitmoji-avatar";
+import { StudioPageHeader } from "../components/studio-page-header";
+import { DocumentsStack } from "../illustrations/documents-stack";
 import { type DocumentType, type DocumentFile, extractPrefixFromFolderName } from "@/constants/documents";
 import { useLearnDocuments } from "@/hooks/use-documents";
 import { COUNTIES } from "@/constants/counties";
@@ -270,29 +272,52 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
   }
 
   return (
-    <div className="flex flex-col h-full bg-background overflow-hidden">
-      <header className="flex items-center justify-between px-4 md:px-5 py-3 border-b border-border/50 shrink-0 gap-3">
-        <div className="flex items-center gap-2.5 min-w-0">
+    <div className="flex h-full flex-col overflow-hidden bg-background">
+      {!selectedFolder ? (
+        <div className="shrink-0 border-b border-border/40 px-4 py-4 md:px-6">
+          <StudioPageHeader
+            eyebrow="Repository"
+            title="Documents"
+            description="National and county budget documents, commentaries, and tracked files."
+            illustration={<DocumentsStack className="hidden h-20 w-28 opacity-90 sm:block" />}
+            actions={
+              <button
+                onClick={async () => {
+                  setRefreshing(true);
+                  try {
+                    await queryClient.invalidateQueries({ queryKey: ["learn", "documents"] });
+                  } finally {
+                    setRefreshing(false);
+                  }
+                }}
+                disabled={refreshing}
+                className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted/50"
+              >
+                <RefreshCw className={`size-3.5 ${refreshing ? "animate-spin" : ""}`} />
+                Refresh
+              </button>
+            }
+          />
+        </div>
+      ) : null}
+      {selectedFolder ? (
+      <header className="flex shrink-0 items-center justify-between gap-3 border-b border-border/50 px-4 py-3 md:px-5">
+        <div className="flex min-w-0 items-center gap-2.5">
           {selectedFolder ? (
-            <button onClick={() => { setSelectedFolder(null); clearAllFilters(); }} className="p-1 hover:bg-muted/50 rounded-lg transition-colors -ml-1 shrink-0 focus-visible:ring-2 focus-visible:ring-ring">
+            <button onClick={() => { setSelectedFolder(null); clearAllFilters(); }} className="-ml-1 shrink-0 rounded-lg p-1 transition-colors hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring">
               <ArrowLeft className="size-4" />
             </button>
-          ) : (
-            <div className="bg-primary/8 p-1.5 rounded-lg shrink-0 ring-1 ring-primary/20">
-              <Database className="size-4 text-primary" />
+          ) : null}
+          {selectedFolder ? (
+            <div className="min-w-0">
+              <h1 className="truncate text-sm font-semibold leading-tight">
+                {selectedFolder.fullName}
+              </h1>
+              <p className="text-[10px] font-medium text-muted-foreground">
+                {folderFiles.length} file{folderFiles.length !== 1 ? "s" : ""}
+              </p>
             </div>
-          )}
-          <div className="min-w-0">
-            <h1 className="font-bold text-sm leading-tight truncate">
-              {selectedFolder ? selectedFolder.fullName : "Document Hub"}
-            </h1>
-            <p className="text-[10px] text-muted-foreground font-semibold">
-              {selectedFolder
-                ? `${folderFiles.length} file${folderFiles.length !== 1 ? "s" : ""}`
-                : `${documents.length} collections`
-              }
-            </p>
-          </div>
+          ) : null}
         </div>
         <div className="flex items-center gap-2 shrink-0">
           {selectedFolder && (
@@ -324,6 +349,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
           </div>
         </div>
       </header>
+      ) : null}
 
       <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-4 md:space-y-5">
         {!selectedFolder ? (
