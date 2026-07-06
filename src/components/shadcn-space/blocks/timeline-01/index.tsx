@@ -6,59 +6,38 @@ import type { TimelineItemProps } from "@/components/shadcn-space/blocks/timelin
 
 export const budgetCycleTimelineData: TimelineItemProps[] = [
   {
-    title: "MTEF Budget Circular Issued",
+    title: "National Treasury — Budget Formulation",
     description:
-      "Treasury issued spending ceilings to all MDAs for FY2026/27. Sector Working Groups began reviewing bids against strategic priorities under BETA.",
-    date: "Aug 30, 2025",
+      "Treasury sets the fiscal frame for FY2026/27: MTEF ceilings to ministries and counties, then the Budget Policy Statement projecting KES 3.3T revenue and KES 4.2T expenditure under the BETA agenda.",
+    date: "Aug 2025 – Feb 2026",
     image: "/images/explainer-formulation.png",
   },
   {
-    title: "BPS 2026 Tabled in Parliament",
+    title: "Parliament — Review & Approval",
     description:
-      "Cabinet Secretary John Mbadi submitted the Budget Policy Statement — theme: Consolidating Gains Under BETA. Projected revenue KES 3.3T, expenditure KES 4.2T.",
-    date: "Feb 15, 2026",
-    image: "/images/media/129A3905.jpg",
-  },
-  {
-    title: "BPS Approved by Parliament",
-    description:
-      "National Assembly approved BPS 2026, setting sector spending ceilings. County equitable share fixed at KES 420B after MP amendments.",
-    date: "Mar 10, 2026",
-    image: "/images/media/129A4039.jpg",
-  },
-  {
-    title: "Budget Estimates Published",
-    description:
-      "Detailed revenue and expenditure estimates tabled at KES 4.82 trillion — Education KES 781.4B, Security KES 308.6B, Health KES 175.5B, Infrastructure KES 230B.",
-    date: "Apr 30, 2026",
-    image: "/images/explainer-approval.png",
-  },
-  {
-    title: "Budget & Committee Review",
-    description:
-      "Budget and Appropriations Committee hearings ran across counties. Civil society submitted memoranda on sector allocations during public participation windows.",
-    date: "May–Jun 2026",
-    image: "/images/towwnhallmay/129A3863.jpg",
-  },
-  {
-    title: "Parliament Approves Budget",
-    description:
-      "National Assembly approved FY2026/27 expenditure estimates at KES 4.82T, prioritising health and education allocations ahead of the June budget reading.",
-    date: "Jun 2, 2026",
-    image: "/images/towwnhallmay/129A4056.jpg",
-  },
-  {
-    title: "CS Mbadi Presents KES 4.82T Budget",
-    description:
-      "Budget Statement delivered under theme Sustaining BETA for Resilient and Inclusive Growth. Revenue KES 3.63T, deficit KES 1.15T (5.5% of GDP), debt interest KES 1.2T.",
-    date: "Jun 11, 2026",
+      "National Assembly scrutinises the BPS and detailed estimates (KES 4.82T), amends sector ceilings, and approves the budget — including KES 781.4B for education and KES 175.5B for health.",
+    date: "Feb – Jun 2026",
     image: "/images/landing/budget-reading-2026.jpg",
   },
   {
-    title: "FY 2026/27 Begins",
+    title: "Citizens — Public Participation",
     description:
-      "New financial year starts under Parliament-approved estimates. Government transitions to FY2026/27 spending across ministries, counties, and agencies.",
-    date: "Jul 1, 2026",
+      "Kenyans engage through county hearings, memoranda, and civic forums. Civil society and communities shape allocations before the Budget and Appropriations Committee finalises the estimates.",
+    date: "May – Jun 2026",
+    image: "/images/towwnhallmay/129A3863.jpg",
+  },
+  {
+    title: "Executive — Budget Reading & Assent",
+    description:
+      "Cabinet Secretary John Mbadi presents the KES 4.82T Budget Statement to Parliament. The President assents to the Finance Bill and Appropriation Act, authorising spending for the new financial year.",
+    date: "Jun 2026",
+    image: "/images/media/129A3905.jpg",
+  },
+  {
+    title: "Government — Implementation Begins",
+    description:
+      "FY2026/27 starts on 1 July. Ministries, counties, and agencies execute Parliament-approved programmes under the national budget — tracked by citizens through BNS.",
+    date: "Jul 2026",
     image: "/images/explainer-implementation.png",
   },
 ];
@@ -85,8 +64,9 @@ const TimelineBlock01 = ({ items = budgetCycleTimelineData }: TimelineBlock01Pro
                 <span className="font-heading italic text-primary">Allocations</span>
               </h2>
               <p className="text-base leading-relaxed text-muted-foreground md:text-lg">
-                Tracking Kenya&apos;s FY2026/27 budget from formulation through
-                implementation — with verified milestones and sector allocations.
+                Who moves Kenya&apos;s budget forward — Treasury, Parliament,
+                citizens, the Executive, and implementation — in five clear stages
+                for FY2026/27.
               </p>
             </div>
           </div>
