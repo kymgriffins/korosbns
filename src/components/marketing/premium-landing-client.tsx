@@ -118,7 +118,6 @@ export default function PremiumLandingClient() {
   return (
     <>
       <LandingHero />
-      <CloudinaryGallery />
       <LandingTikTokVideo />
       <LandingYoutube />
       <PartnersMarquee />
@@ -127,6 +126,7 @@ export default function PremiumLandingClient() {
       <ServicesSection data={bnsServices} />
       <TestimonialsSection />
       <BlogSection />
+      <CloudinaryGallery />
       <BNSStudioSection />
       <NewsletterPopup />
     </>
