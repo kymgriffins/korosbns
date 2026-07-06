@@ -14,7 +14,6 @@ import { NavMain } from "@/components/shadcn-space/blocks/dashboard-shell-01/nav
 import {
   BarChart3,
   BookOpen,
-  ChartPie,
   CircleUserRound,
   FileText,
   Languages,
@@ -25,6 +24,7 @@ import {
   Ticket,
 } from "lucide-react";
 import { SiteHeader } from "@/components/shadcn-space/blocks/dashboard-shell-01/site-header";
+import { learnTabToHref } from "@/lib/learn-nav";
 import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
 
@@ -40,18 +40,17 @@ export type NavItem = {
 
 export const navData: NavItem[] = [
   { label: "Learning Hub", isSection: true },
-  { title: "Dashboard", icon: BarChart3, href: "/learn", isActive: true },
-  { title: "Modules", icon: BookOpen, href: "/learn?tab=modules" },
-  { title: "Documents", icon: FileText, href: "/learn/documents" },
-  { title: "Forum", icon: MessagesSquare, href: "/learn/forum" },
-  { title: "Profile", icon: CircleUserRound, href: "/learn/profile" },
+  { title: "Dashboard", icon: BarChart3, href: learnTabToHref("home") },
+  { title: "Modules", icon: BookOpen, href: learnTabToHref("learn") },
+  { title: "Documents", icon: FileText, href: learnTabToHref("documents") },
+  { title: "Forum", icon: MessagesSquare, href: learnTabToHref("forum") },
+  { title: "Profile", icon: CircleUserRound, href: learnTabToHref("profile") },
 
   { label: "Content", isSection: true },
   { title: "Videos", icon: Languages, href: "/learn/videos" },
   { title: "Articles", icon: NotepadText, href: "/learn/articles" },
   { title: "Stories", icon: Notebook, href: "/learn/stories" },
   { title: "Quests", icon: Ticket, href: "/learn/quests" },
-  { title: "Analytics", icon: ChartPie, href: "/learn/analytics" },
 ];
 
 const AppSidebar = ({ children }: { children: React.ReactNode }) => {

@@ -1,5 +1,7 @@
 "use client";
 
+import { Suspense } from "react";
+import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import {
   Collapsible,
@@ -18,14 +20,15 @@ import {
 } from "@/components/ui/sidebar";
 import { NavItem } from "@/components/shadcn-space/blocks/dashboard-shell-01/app-sidebar";
 import { cn } from "@/utils";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
+import { isLearnNavHrefActive } from "@/lib/learn-nav";
 
-export function NavMain({ items }: { items: NavItem[] }) {
+function NavMainInner({ items }: { items: NavItem[] }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab");
 
-  // Recursive render function
   const renderItem = (item: NavItem) => {
-    //  Section label
     if (item.isSection && item.label) {
       return (
         <SidebarGroup key={item.label} className="p-0 pt-5 first:pt-0">
@@ -35,8 +38,8 @@ export function NavMain({ items }: { items: NavItem[] }) {
         </SidebarGroup>
       );
     }
+
     const hasChildren = !!item.children?.length;
-    // Item with children → collapsible
     if (hasChildren && item.title) {
       return (
         <SidebarGroup key={item.title} className="p-0">
@@ -64,36 +67,39 @@ export function NavMain({ items }: { items: NavItem[] }) {
         </SidebarGroup>
       );
     }
-    // Item without children
-    if (item.title) {
-      const isActive = item.isActive ?? pathname === item.href;
+
+    if (item.title && item.href) {
+      const isActive = isLearnNavHrefActive(pathname, tabParam, item.href);
 
       return (
         <SidebarGroup key={item.title} className="p-0">
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton
+                asChild
                 tooltip={item.title}
+                isActive={isActive}
                 className={cn(
-                  "rounded-lg text-sm px-3 py-2 h-9 ",
+                  "rounded-lg text-sm px-3 py-2 h-9",
                   isActive
                     ? "bg-primary hover:bg-primary dark:bg-blue-500 text-white dark:hover:bg-blue-500 hover:text-white"
                     : "",
                 )}
               >
-                {item.icon && <item.icon />}
-                <a href={item.href} className="w-full">
-                  {item.title}
-                </a>
+                <Link href={item.href} prefetch>
+                  {item.icon && <item.icon />}
+                  <span>{item.title}</span>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
       );
     }
+
     return null;
   };
-  // Recursive render function for sub-items
+
   const renderItemSub = (item: NavItem) => {
     const hasChildren = !!item.children?.length;
     if (hasChildren && item.title) {
@@ -116,17 +122,29 @@ export function NavMain({ items }: { items: NavItem[] }) {
         </SidebarMenuSubItem>
       );
     }
-    if (item.title) {
+
+    if (item.title && item.href) {
       return (
         <SidebarMenuSubItem key={item.title} className="w-full">
-          <SidebarMenuSubButton className="w-full" asChild>
-            <a href={item.href}>{item.title}</a>
+          <SidebarMenuSubButton asChild className="w-full">
+            <Link href={item.href} prefetch>
+              {item.title}
+            </Link>
           </SidebarMenuSubButton>
         </SidebarMenuSubItem>
       );
     }
+
     return null;
   };
 
   return <>{items.map(renderItem)}</>;
+}
+
+export function NavMain({ items }: { items: NavItem[] }) {
+  return (
+    <Suspense fallback={<div className="space-y-2 px-1">{items.map((item) => item.title ? <div key={item.title} className="h-9 rounded-lg bg-muted/40 animate-pulse" /> : null)}</div>}>
+      <NavMainInner items={items} />
+    </Suspense>
+  );
 }
