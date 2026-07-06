@@ -241,7 +241,7 @@ export function LearnPathsHome() {
           />
         </div>
       ) : (
-        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 md:p-6">
+        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 md:p-6 lg:px-8">
           <AnimatePresence mode="popLayout">
             {activeTab === "home" && (
               <motion.div

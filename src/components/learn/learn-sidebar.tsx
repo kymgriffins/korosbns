@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Flame, TrendingUp, MessageSquare } from "lucide-react";
+import { Flame, MessageSquare, TrendingUp } from "lucide-react";
 import { motion } from "motion/react";
 import { Routes } from "@/constants/routes";
 import { learnTabToHref } from "@/lib/learn-nav";
@@ -10,6 +10,7 @@ import { learnItemHref, isExternalLearnHref } from "@/lib/learn-hub";
 import { fadeInUp } from "@/motion/variants";
 import { useReducedMotionSafe } from "@/motion/hooks";
 import { Button } from "@/components/ui/button";
+import { LearnPanel, LearnSection } from "@/components/learn/learn-ui-primitives";
 
 type Props = {
   continueItems?: LearnHubItem[];
@@ -17,24 +18,37 @@ type Props = {
   trending?: LearnHubItem[];
 };
 
-export function LearnSidebar({ continueItems = [], dailyQuest, trending = [] }: Props) {
+function SidebarBlock({
+  title,
+  hint,
+  children,
+}: {
+  title: string;
+  hint?: string;
+  children: React.ReactNode;
+}) {
   const reduced = useReducedMotionSafe();
-
   return (
-    <aside className="space-y-4 lg:sticky lg:top-48 lg:self-start">
-      <motion.section
-        variants={fadeInUp}
-        initial={reduced ? false : "hidden"}
-        animate="visible"
-        className="rounded-2xl border border-border bg-card p-4"
-      >
-        <h2 className="text-sm font-bold">Continue learning</h2>
+    <motion.div variants={fadeInUp} initial={reduced ? false : "hidden"} animate="visible">
+      <LearnPanel padding="sm">
+        <LearnSection title={title} hint={hint}>
+          {children}
+        </LearnSection>
+      </LearnPanel>
+    </motion.div>
+  );
+}
+
+export function LearnSidebar({ continueItems = [], dailyQuest, trending = [] }: Props) {
+  return (
+    <>
+      <SidebarBlock title="Continue learning" hint="Principle: Purpose">
         {continueItems.length === 0 ? (
-          <p className="mt-2 text-xs text-muted-foreground">
-            Start a path or article to see your progress here.
+          <p className="text-xs text-muted-foreground">
+            Start a path or article to see progress here.
           </p>
         ) : (
-          <ul className="mt-3 space-y-2">
+          <ul className="space-y-2">
             {continueItems.slice(0, 3).map((item) => {
               const href = learnItemHref(item);
               const external = isExternalLearnHref(href);
@@ -59,44 +73,34 @@ export function LearnSidebar({ continueItems = [], dailyQuest, trending = [] }: 
             })}
           </ul>
         )}
-      </motion.section>
+      </SidebarBlock>
 
-      <motion.section
-        variants={fadeInUp}
-        initial={reduced ? false : "hidden"}
-        animate="visible"
-        className="rounded-2xl border border-border bg-card p-4"
-      >
-        <h2 className="flex items-center gap-2 text-sm font-bold">
-          <Flame className="size-4 text-orange-500" aria-hidden />
-          Daily quest
-        </h2>
+      <SidebarBlock title="Daily quest" hint="Principle: Craft">
+        <div className="flex items-center gap-2 text-amber-600">
+          <Flame className="size-4" aria-hidden />
+          <span className="text-xs font-medium">Today&apos;s challenge</span>
+        </div>
         {dailyQuest ? (
-          <div className="mt-3">
-            <p className="text-sm font-medium">{dailyQuest.title}</p>
+          <div className="mt-2">
+            <p className="text-sm font-semibold">{dailyQuest.title}</p>
             {dailyQuest.summary ? (
               <p className="mt-1 text-xs text-muted-foreground">{dailyQuest.summary}</p>
             ) : null}
-            <Button asChild size="sm" className="mt-3 w-full">
+            <Button asChild size="sm" className="mt-3 w-full rounded-xl">
               <Link href={learnItemHref(dailyQuest)}>Start quest</Link>
             </Button>
           </div>
         ) : (
           <p className="mt-2 text-xs text-muted-foreground">No active quest right now.</p>
         )}
-      </motion.section>
+      </SidebarBlock>
 
-      <motion.section
-        variants={fadeInUp}
-        initial={reduced ? false : "hidden"}
-        animate="visible"
-        className="rounded-2xl border border-border bg-card p-4"
-      >
-        <h2 className="flex items-center gap-2 text-sm font-bold">
-          <TrendingUp className="size-4 text-primary" aria-hidden />
-          Trending
-        </h2>
-        <ul className="mt-3 space-y-2">
+      <SidebarBlock title="Trending" hint="Principle: Clarity">
+        <div className="flex items-center gap-2 text-primary">
+          <TrendingUp className="size-4" aria-hidden />
+          <span className="text-xs font-medium">Popular now</span>
+        </div>
+        <ul className="mt-2 space-y-2">
           {trending.slice(0, 4).map((item) => (
             <li key={`${item.content_type}-${item.id}`}>
               <Link href={learnItemHref(item)} className="text-sm hover:text-primary">
@@ -105,28 +109,29 @@ export function LearnSidebar({ continueItems = [], dailyQuest, trending = [] }: 
             </li>
           ))}
         </ul>
-        <Link href={Routes.LearnArticles} className="mt-3 inline-block text-xs font-semibold text-primary">
+        <Link
+          href={Routes.LearnArticles}
+          className="mt-3 inline-block text-xs font-semibold text-primary"
+        >
           Browse all articles
         </Link>
-      </motion.section>
+      </SidebarBlock>
 
-      <motion.section
-        variants={fadeInUp}
-        initial={reduced ? false : "hidden"}
-        animate="visible"
-        className="rounded-2xl border border-border bg-card p-4"
-      >
-        <h2 className="flex items-center gap-2 text-sm font-bold">
-          <MessageSquare className="size-4 text-primary" aria-hidden />
-          Community
-        </h2>
+      <SidebarBlock title="Community" hint="Principle: Familiarity">
+        <div className="flex items-center gap-2 text-primary">
+          <MessageSquare className="size-4" aria-hidden />
+          <span className="text-xs font-medium">Citizen forum</span>
+        </div>
         <p className="mt-2 text-xs text-muted-foreground">
-          Join the discussion about Kenya's budget and public finance.
+          Join the discussion about Kenya&apos;s budget and public finance.
         </p>
-        <Link href={learnTabToHref("forum")} className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-primary">
-          Visit Forum
+        <Link
+          href={learnTabToHref("forum")}
+          className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-primary"
+        >
+          Visit forum
         </Link>
-      </motion.section>
-    </aside>
+      </SidebarBlock>
+    </>
   );
 }

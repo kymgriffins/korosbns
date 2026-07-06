@@ -1,7 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { ExternalLink, Film, GraduationCap, Loader2, Newspaper, BookOpen, FileText } from "lucide-react";
+import {
+  BookOpen,
+  ExternalLink,
+  Film,
+  GraduationCap,
+  Loader2,
+  Newspaper,
+  FileText,
+  Target,
+} from "lucide-react";
 import { motion } from "motion/react";
 import type { LearnHubItem } from "@/lib/learn-hub";
 import { isExternalLearnHref, learnItemHref } from "@/lib/learn-hub";
@@ -9,6 +18,7 @@ import { staggerContainer, fadeInUp } from "@/motion/variants";
 import { useReducedMotionSafe } from "@/motion/hooks";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { LearnCardGrid, LearnEmptyState } from "@/components/learn/learn-ui-primitives";
 import { cn } from "@/utils";
 
 const TYPE_ICONS: Record<string, typeof BookOpen> = {
@@ -17,26 +27,50 @@ const TYPE_ICONS: Record<string, typeof BookOpen> = {
   story: GraduationCap,
   document: FileText,
   path: BookOpen,
+  quest: Target,
 };
 
-const TYPE_GRADIENTS: Record<string, string> = {
-  video: "from-muted to-muted/50",
-  article: "from-muted to-muted/50",
-  story: "from-muted to-muted/50",
-  document: "from-muted to-muted/50",
-  path: "from-muted to-muted/50",
+const TYPE_LABELS: Record<string, string> = {
+  video: "Watch",
+  article: "Read",
+  story: "Read story",
+  document: "Open",
+  path: "Start path",
+  quest: "Start quest",
+};
+
+const EMPTY_COPY: Record<string, { title: string; description: string }> = {
+  articles: {
+    title: "No articles yet",
+    description: "Editorial explainers will appear here when published.",
+  },
+  stories: {
+    title: "No stories yet",
+    description: "Field narratives from across Kenya will show up here.",
+  },
+  quests: {
+    title: "No quests available",
+    description: "Daily challenges will return soon — check back.",
+  },
+  default: {
+    title: "Nothing here yet",
+    description: "Content for this section is on the way.",
+  },
 };
 
 export function LearnContentGrid({
   items,
   loading,
   emptyMessage,
+  listKey,
 }: {
   items: LearnHubItem[];
   loading?: boolean;
   emptyMessage?: string;
+  listKey?: string;
 }) {
   const reduced = useReducedMotionSafe();
+  const empty = EMPTY_COPY[listKey ?? ""] ?? EMPTY_COPY.default;
 
   if (loading) {
     return (
@@ -48,22 +82,25 @@ export function LearnContentGrid({
 
   if (items.length === 0) {
     return (
-      <p className="rounded-2xl border border-border bg-card py-12 text-center text-sm text-muted-foreground">
-        {emptyMessage ?? "Nothing published in this section yet."}
-      </p>
+      <LearnEmptyState
+        icon={TYPE_ICONS[listKey ?? "article"] ?? BookOpen}
+        title={emptyMessage ?? empty.title}
+        description={empty.description}
+      />
     );
   }
 
   return (
     <motion.div
-      className="grid grid-cols-1 gap-4 sm:grid-cols-2"
       variants={staggerContainer}
       initial={reduced ? false : "hidden"}
       animate="visible"
     >
-      {items.map((item) => (
-        <LearnContentCard key={`${item.content_type}-${item.id}`} item={item} />
-      ))}
+      <LearnCardGrid columns={2}>
+        {items.map((item) => (
+          <LearnContentCard key={`${item.content_type}-${item.id}`} item={item} />
+        ))}
+      </LearnCardGrid>
     </motion.div>
   );
 }
@@ -72,66 +109,71 @@ function LearnContentCard({ item }: { item: LearnHubItem }) {
   const href = learnItemHref(item);
   const external = isExternalLearnHref(href);
   const Icon = TYPE_ICONS[item.content_type] ?? BookOpen;
-  const gradient = TYPE_GRADIENTS[item.content_type] ?? "from-primary/10 to-primary/5";
+  const actionLabel = TYPE_LABELS[item.content_type] ?? "Open";
 
   const body = (
     <>
       {item.thumbnail_url ? (
-        <div className="aspect-video w-full overflow-hidden bg-muted">
+        <div className="aspect-video w-full overflow-hidden rounded-t-2xl bg-muted">
           <img
             src={item.thumbnail_url}
-            alt={item.title}
+            alt=""
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
             loading="lazy"
           />
         </div>
       ) : (
-        <div className={cn("flex aspect-video w-full items-center justify-center bg-gradient-to-br", gradient)}>
-          <Icon className="size-10 text-muted-foreground/40" />
+        <div className="flex aspect-video w-full items-center justify-center rounded-t-2xl bg-gradient-to-br from-primary/8 to-muted">
+          <Icon className="size-10 text-muted-foreground/35" aria-hidden />
         </div>
       )}
       <div className="flex flex-1 flex-col p-4">
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-primary">
             {item.content_type}
           </span>
-          {item.difficulty && (
-            <Badge variant="secondary" className="text-[10px] uppercase leading-none px-1.5 py-0.5">
+          {item.difficulty ? (
+            <Badge variant="secondary" className="text-[10px] uppercase leading-none">
               {item.difficulty}
             </Badge>
-          )}
-          {item.published_at && (
+          ) : null}
+          {item.published_at ? (
             <span className="ml-auto text-[10px] text-muted-foreground">
               {new Date(item.published_at).toLocaleDateString()}
             </span>
-          )}
+          ) : null}
         </div>
-        <h3 className="mt-2 line-clamp-2 text-sm font-semibold leading-tight">{item.title}</h3>
+        <h3 className="mt-2 line-clamp-2 text-sm font-bold leading-snug group-hover:text-primary">
+          {item.title}
+        </h3>
         {item.summary ? (
-          <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{item.summary}</p>
+          <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+            {item.summary}
+          </p>
         ) : null}
         {item.tags?.length ? (
           <div className="mt-2 flex flex-wrap gap-1">
             {item.tags.slice(0, 3).map((tag) => (
-              <span key={tag.slug} className="rounded-full bg-secondary px-2 py-0.5 text-[10px] text-secondary-foreground">
+              <span
+                key={tag.slug}
+                className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
+              >
                 {tag.name}
               </span>
             ))}
           </div>
         ) : null}
-        <div className="mt-auto pt-3">
+        <div className="mt-auto pt-4">
           {external ? (
-            <Button variant="outline" size="sm" className="w-full text-xs font-bold rounded-lg" asChild>
+            <Button variant="outline" size="sm" className="w-full rounded-xl text-xs font-semibold" asChild>
               <a href={href} target="_blank" rel="noopener noreferrer">
-                Open
+                {actionLabel}
                 <ExternalLink className="ml-1.5 size-3" aria-hidden />
               </a>
             </Button>
           ) : (
-            <Button variant="outline" size="sm" className="w-full text-xs font-bold rounded-lg" asChild>
-              <Link href={href}>
-                {item.content_type === "video" ? "Watch" : item.content_type === "article" ? "Read" : "Open"}
-              </Link>
+            <Button variant="outline" size="sm" className="w-full rounded-xl text-xs font-semibold" asChild>
+              <Link href={href}>{actionLabel}</Link>
             </Button>
           )}
         </div>
@@ -140,19 +182,22 @@ function LearnContentCard({ item }: { item: LearnHubItem }) {
   );
 
   return (
-    <motion.div variants={fadeInUp} className="group">
+    <motion.article variants={fadeInUp} className="group h-full">
       {external ? (
-        <article className="flex h-full flex-col overflow-hidden rounded-xl border bg-card transition-colors hover:border-primary/40">
+        <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-border/60 bg-card ring-1 ring-border/30 transition-all hover:border-primary/25 hover:shadow-sm">
           {body}
-        </article>
+        </div>
       ) : (
         <Link
           href={href}
-          className="flex h-full flex-col overflow-hidden rounded-xl border bg-card transition-colors hover:border-primary/40"
+          className={cn(
+            "flex h-full flex-col overflow-hidden rounded-2xl border border-border/60 bg-card",
+            "ring-1 ring-border/30 transition-all hover:border-primary/25 hover:shadow-sm",
+          )}
         >
           {body}
         </Link>
       )}
-    </motion.div>
+    </motion.article>
   );
 }

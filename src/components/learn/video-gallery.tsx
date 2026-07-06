@@ -2,9 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
-import { Calendar, ChevronDown, ChevronUp, ExternalLink, FileText, Search, X } from "lucide-react";
+import { Calendar, ChevronDown, ChevronUp, ExternalLink, FileText } from "lucide-react";
 
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -17,6 +16,13 @@ import {
 } from "@/components/ui/select";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
 import { LearnPageShell } from "@/components/learn/learn-page-shell";
+import {
+  LearnCardGrid,
+  LearnEmptyState,
+  LearnPageBody,
+  LearnSearchField,
+  LearnToolbar,
+} from "@/components/learn/learn-ui-primitives";
 import type { YouTubeVideo } from "@/data/videos";
 import { getVideos, embedUrl } from "@/data/videos";
 import { getTranscript, fetchTranscript, formatTimestamp } from "@/data/transcripts";
@@ -219,82 +225,69 @@ export function VideoGallery() {
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
-        <LearnPageShell navId="videos">
+      <LearnPageShell navId="videos">
+        <LearnPageBody>
           <VideoGridSkeleton />
-        </LearnPageShell>
-      </div>
+        </LearnPageBody>
+      </LearnPageShell>
     );
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
-      <LearnPageShell navId="videos">
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-40px" }}
-        className="space-y-6"
-      >
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="relative flex-1 max-w-xs">
-            <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder="Search videos..."
-              className="w-full pl-8 rounded-lg bg-background text-xs"
+    <LearnPageShell navId="videos">
+      <LearnPageBody>
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+          className="space-y-6"
+        >
+          <LearnToolbar>
+            <LearnSearchField
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={setSearch}
+              placeholder="Search videos…"
+              className="w-full max-w-xs"
             />
-            {search && (
-              <button
-                type="button"
-                onClick={() => setSearch("")}
-                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setSearch(""); }}
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                aria-label="Clear search"
-              >
-                <X className="size-3.5" />
-              </button>
-            )}
-          </div>
+            <Select value={sortBy} onValueChange={(v) => setSortBy(v as typeof sortBy)}>
+              <SelectTrigger className="w-36 rounded-xl bg-background text-xs">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">Newest first</SelectItem>
+                <SelectItem value="oldest">Oldest first</SelectItem>
+                <SelectItem value="title">A–Z</SelectItem>
+              </SelectContent>
+            </Select>
+          </LearnToolbar>
 
-          <Select value={sortBy} onValueChange={(v) => setSortBy(v as typeof sortBy)}>
-            <SelectTrigger className="w-36 rounded-lg bg-background text-xs">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="newest">Newest First</SelectItem>
-              <SelectItem value="oldest">Oldest First</SelectItem>
-              <SelectItem value="title">A-Z</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+          {filtered.length === 0 ? (
+            <LearnEmptyState
+              icon={FileText}
+              title="No videos found"
+              description={search ? `Nothing matches "${search}".` : "Videos will appear here when published."}
+              action={
+                search ? (
+                  <Button variant="outline" size="sm" onClick={() => setSearch("")}>
+                    Clear search
+                  </Button>
+                ) : undefined
+              }
+            />
+          ) : (
+            <LearnCardGrid columns={3}>
+              {filtered.map((video) => (
+                <VideoCard key={video.videoId} video={video} />
+              ))}
+            </LearnCardGrid>
+          )}
 
-        {filtered.length === 0 ? (
-          <div className="flex flex-col items-center gap-3 py-16 text-muted-foreground">
-            <FileText className="size-10 opacity-40" />
-            <p className="text-sm">No videos found</p>
-            {search && (
-              <Button variant="outline" size="xs" onClick={() => setSearch("")}>
-                Clear search
-              </Button>
-            )}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((video) => (
-              <VideoCard key={video.videoId} video={video} />
-            ))}
-          </div>
-        )}
-
-        <div className="text-center text-[11px] text-muted-foreground">
-          {filtered.length} video{filtered.length !== 1 ? "s" : ""}
-          {search && ` matching "${search}"`}
-        </div>
-      </motion.div>
-      </LearnPageShell>
-    </div>
+          <p className="text-center text-[11px] text-muted-foreground">
+            {filtered.length} video{filtered.length !== 1 ? "s" : ""}
+            {search ? ` matching "${search}"` : ""}
+          </p>
+        </motion.div>
+      </LearnPageBody>
+    </LearnPageShell>
   );
 }

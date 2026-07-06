@@ -1,19 +1,27 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 import { motion } from "motion/react";
-import { RefreshCw, Search, BookOpen, ExternalLink } from "lucide-react";
+import { BookOpen, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { BitmojiAvatar } from "./bitmoji-avatar";
-import { Routes } from "@/constants/routes";
-import { getAuthorSlug } from "@/lib/learn-authors";
-import type { CivicModule } from "@/types/learn";
-import { readProgress } from "@/lib/module-progress";
 import { HarmonizedImage } from "@/components/ui/harmonized-image";
 import { LearnPageShell } from "@/components/learn/learn-page-shell";
+import {
+  LearnCardGrid,
+  LearnEmptyState,
+  LearnFilterTabs,
+  LearnPageBody,
+  LearnRefreshButton,
+  LearnSearchField,
+  LearnToolbar,
+} from "@/components/learn/learn-ui-primitives";
+import { Routes } from "@/constants/routes";
+import { getAuthorSlug } from "@/lib/learn-authors";
+import { readProgress } from "@/lib/module-progress";
+import type { CivicModule } from "@/types/learn";
 import { cn } from "@/utils";
 
 interface LearnModulesViewProps {
@@ -24,18 +32,24 @@ interface LearnModulesViewProps {
   onRefresh?: () => Promise<void>;
 }
 
-export function LearnModulesView({ profile, stages, currentStage, onSelectStage, onRefresh }: LearnModulesViewProps) {
+type ProgressTab = "all" | "in-progress" | "completed";
+type ContentTab = "all" | "budget" | "civic";
+
+export function LearnModulesView({
+  stages,
+  onRefresh,
+}: LearnModulesViewProps) {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<"all" | "in-progress" | "completed">("all");
-  const [contentFilter, setContentFilter] = useState<"all" | "budget" | "civic">("all");
+  const [progressTab, setProgressTab] = useState<ProgressTab>("all");
+  const [contentTab, setContentTab] = useState<ContentTab>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [refreshing, setRefreshing] = useState(false);
 
   const contentFiltered = useMemo(() => {
-    if (contentFilter === "budget") return stages.filter((s) => s.is_financial_year_analysis);
-    if (contentFilter === "civic") return stages.filter((s) => !s.is_financial_year_analysis);
+    if (contentTab === "budget") return stages.filter((s) => s.is_financial_year_analysis);
+    if (contentTab === "civic") return stages.filter((s) => !s.is_financial_year_analysis);
     return stages;
-  }, [stages, contentFilter]);
+  }, [stages, contentTab]);
 
   const moduleProgress = useMemo(() => {
     return contentFiltered.map((stage) => {
@@ -50,37 +64,36 @@ export function LearnModulesView({ profile, stages, currentStage, onSelectStage,
 
   const filteredModules = useMemo(() => {
     let list = moduleProgress;
-    if (activeTab === "in-progress") list = list.filter((m) => m.isInProgress);
-    else if (activeTab === "completed") list = list.filter((m) => m.isCompleted);
+    if (progressTab === "in-progress") list = list.filter((m) => m.isInProgress);
+    else if (progressTab === "completed") list = list.filter((m) => m.isCompleted);
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
-      list = list.filter((m) =>
-        m.stage.title.toLowerCase().includes(q) ||
-        (m.stage.description || "").toLowerCase().includes(q)
+      list = list.filter(
+        (m) =>
+          m.stage.title.toLowerCase().includes(q) ||
+          (m.stage.description || "").toLowerCase().includes(q),
       );
     }
     return list;
-  }, [moduleProgress, activeTab, searchQuery]);
+  }, [moduleProgress, progressTab, searchQuery]);
 
-  const counts = useMemo(() => ({
-    all: moduleProgress.length,
-    inProgress: moduleProgress.filter((m) => m.isInProgress).length,
-    completed: moduleProgress.filter((m) => m.isCompleted).length,
-  }), [moduleProgress]);
+  const counts = useMemo(
+    () => ({
+      all: moduleProgress.length,
+      inProgress: moduleProgress.filter((m) => m.isInProgress).length,
+      completed: moduleProgress.filter((m) => m.isCompleted).length,
+    }),
+    [moduleProgress],
+  );
 
   return (
     <LearnPageShell
       navId="modules"
-      compact
-      className="h-full"
-      contentClassName="flex min-h-0 flex-1 flex-col overflow-hidden"
       actions={
         onRefresh ? (
-          <Button
-            variant="outline"
-            size="sm"
-            className="rounded-full"
-            disabled={refreshing}
+          <LearnRefreshButton
+            label="Sync"
+            refreshing={refreshing}
             onClick={async () => {
               setRefreshing(true);
               try {
@@ -89,176 +102,153 @@ export function LearnModulesView({ profile, stages, currentStage, onSelectStage,
                 setRefreshing(false);
               }
             }}
-          >
-            <RefreshCw className={cn("size-3.5", refreshing && "animate-spin")} />
-            Sync modules
-          </Button>
+          />
         ) : null
       }
     >
-      <div className="flex h-full flex-col overflow-hidden bg-background">
-        <div className="flex shrink-0 items-center justify-end gap-2 border-b border-border/40 px-1 pb-3">
-          <div className="relative hidden sm:block">
-            <Search className="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Search modules…"
+      <LearnPageBody>
+        <div className="space-y-4">
+          <LearnToolbar>
+            <LearnSearchField
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-40 rounded-full border border-border/60 bg-muted/30 py-1.5 pl-8 pr-3 text-xs transition-all focus:outline-none focus:ring-2 focus:ring-ring/30"
+              onChange={setSearchQuery}
+              placeholder="Search modules…"
+              className="w-full sm:max-w-xs"
             />
-          </div>
-          {profile?.avatar_url ? (
-            <img src={profile.avatar_url} alt="" className="size-7 shrink-0 rounded-full object-cover ring-1 ring-border/40" />
-          ) : (
-            <BitmojiAvatar gender={profile?.gender} size="sm" className="shrink-0" />
-          )}
-        </div>
+          </LearnToolbar>
 
-        <div className="flex-1 overflow-y-auto p-3 md:p-4">
-        <div className="max-w-6xl mx-auto space-y-3">
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-hide">
-            {[
+          <LearnFilterTabs
+            tabs={[
               { key: "all", label: "All", count: counts.all },
               { key: "in-progress", label: "Active", count: counts.inProgress },
               { key: "completed", label: "Done", count: counts.completed },
-            ].map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key as any)}
-                className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all shrink-0 focus-visible:ring-2 focus-visible:ring-ring ${
-                  activeTab === tab.key
-                    ? "bg-primary text-primary-foreground shadow-xs"
-                    : "bg-muted/40 text-muted-foreground hover:text-foreground hover:bg-muted/60"
-                }`}
-              >
-                {tab.label}{tab.count > 0 ? ` (${tab.count})` : ""}
-              </button>
-            ))}
-          </div>
+            ]}
+            value={progressTab}
+            onChange={setProgressTab}
+          />
 
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-hide border-t border-border/20 pt-2.5 mt-0.5">
-            {[
-              { key: "all", label: "All" },
-              { key: "budget", label: "Budget Data" },
-              { key: "civic", label: "Civic Modules" },
-            ].map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setContentFilter(tab.key as any)}
-                className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all shrink-0 focus-visible:ring-2 focus-visible:ring-ring ${
-                  contentFilter === tab.key
-                    ? "bg-primary/15 text-primary ring-1 ring-primary/30"
-                    : "text-muted-foreground/60 hover:text-foreground"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
+          <LearnFilterTabs
+            tabs={[
+              { key: "all", label: "All types" },
+              { key: "budget", label: "Budget data" },
+              { key: "civic", label: "Civic modules" },
+            ]}
+            value={contentTab}
+            onChange={setContentTab}
+          />
 
           {filteredModules.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2.5">
+            <LearnCardGrid>
               {filteredModules.map(({ stage, completedCount, total, isCompleted, isInProgress }, idx) => (
-                  <motion.div
-                    key={stage.id}
-                    layout
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.03 }}
-                    className="group bg-card shadow-xs hover:shadow-sm rounded-xl p-3.5 cursor-pointer hover:bg-accent/30 transition-all flex flex-col ring-1 ring-border/40"
-                    onClick={() => router.push(`/learn/modules/${stage.slug}`)}
-                  >
+                <motion.article
+                  key={stage.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.03 }}
+                  className="group flex cursor-pointer flex-col rounded-2xl border border-border/60 bg-card p-4 ring-1 ring-border/30 transition-all hover:border-primary/25 hover:shadow-sm"
+                  onClick={() => router.push(`/learn/modules/${stage.slug}`)}
+                >
                   <HarmonizedImage
                     src={stage.image_url}
                     alt={stage.title}
-                    className="-mx-0.5 -mt-0.5 mb-2.5 rounded-lg ring-1 ring-border/20"
-                    fallbackLabel="Module image"
+                    className="mb-3 rounded-xl ring-1 ring-border/20"
+                    fallbackLabel="Module"
                     imageClassName="group-hover:scale-105"
                   />
-                  <div className="flex items-start justify-between mb-2">
-                    <span className="text-xl">{stage.badge || "\uD83D\uDCD8"}</span>
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
-                      isCompleted ? "bg-emerald-500/10 text-emerald-600 ring-1 ring-emerald-500/20" :
-                      isInProgress ? "bg-amber-500/10 text-amber-600 ring-1 ring-amber-500/20" :
-                      "bg-muted/40 text-muted-foreground"
-                    }`}>
+
+                  <div className="mb-2 flex items-start justify-between gap-2">
+                    <span className="text-xl">{stage.badge || "📘"}</span>
+                    <span
+                      className={cn(
+                        "rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide",
+                        isCompleted
+                          ? "bg-emerald-500/10 text-emerald-600 ring-1 ring-emerald-500/20"
+                          : isInProgress
+                            ? "bg-amber-500/10 text-amber-600 ring-1 ring-amber-500/20"
+                            : "bg-muted text-muted-foreground",
+                      )}
+                    >
                       {isCompleted ? "Done" : isInProgress ? "Active" : "New"}
                     </span>
                   </div>
 
-                  <h3 className="font-bold text-xs leading-tight mb-1 group-hover:text-primary transition-colors">{stage.title}</h3>
-                  <p className="text-[10px] text-muted-foreground line-clamp-2 mb-2 flex-1">{stage.description || ""}</p>
+                  <h3 className="text-sm font-bold leading-tight group-hover:text-primary">
+                    {stage.title}
+                  </h3>
+                  <p className="mt-1 line-clamp-2 flex-1 text-[11px] text-muted-foreground">
+                    {stage.description || ""}
+                  </p>
 
-                  {total > 0 && (
-                    <div className="space-y-1 mb-2.5">
-                      <div className="flex justify-between text-[10px] font-semibold text-muted-foreground">
-                        <span>{completedCount}/{total} steps</span>
+                  {total > 0 ? (
+                    <div className="mt-3 space-y-1">
+                      <div className="flex justify-between text-[10px] font-medium text-muted-foreground">
+                        <span>
+                          {completedCount}/{total} steps
+                        </span>
                         <span>{Math.round((completedCount / total) * 100)}%</span>
                       </div>
-                      <div className="h-1 bg-muted/60 rounded-full overflow-hidden">
+                      <div className="h-1 overflow-hidden rounded-full bg-muted">
                         <div
-                          className="h-full bg-primary rounded-full transition-all duration-500 w-[var(--progress)]"
-                          style={{ "--progress": `${(completedCount / total) * 100}%` } as React.CSSProperties}
-                          role="progressbar"
-                          aria-valuenow={Math.round((completedCount / total) * 100)}
-                          aria-valuemin={0}
-                          aria-valuemax={100}
-                          aria-label={`${stage.title}: ${completedCount} of ${total} steps completed`}
+                          className="h-full rounded-full bg-primary w-[var(--p)]"
+                          style={
+                            { "--p": `${(completedCount / total) * 100}%` } as React.CSSProperties
+                          }
                         />
                       </div>
                     </div>
-                  )}
+                  ) : null}
 
-                  <div className="flex items-center justify-between pt-2 border-t border-border/30 mt-auto">
-                    <div className="flex items-center gap-1.5 min-w-0">
+                  <div className="mt-3 flex items-center justify-between gap-2 border-t border-border/40 pt-3">
+                    <div className="min-w-0">
                       {stage.author ? (
-                        <Link href={Routes.LearnAuthor(getAuthorSlug(stage.author))} className="flex items-center gap-1.5 min-w-0 group" onClick={(e) => e.stopPropagation()}>
+                        <Link
+                          href={Routes.LearnAuthor(getAuthorSlug(stage.author))}
+                          className="flex items-center gap-1.5 text-[10px] font-semibold text-muted-foreground hover:text-primary"
+                          onClick={(e) => e.stopPropagation()}
+                        >
                           {stage.author.image ? (
-                            <Image src={stage.author.image} alt={stage.author.name} width={18} height={18} className="size-[18px] rounded-full object-cover shrink-0" />
-                          ) : (
-                            <div className="size-[18px] rounded-full bg-muted flex items-center justify-center shrink-0 ring-1 ring-border/30">
-                              <span className="text-[8px] font-bold text-muted-foreground">{stage.author.name[0]}</span>
-                            </div>
-                          )}
-                          <span className="text-[10px] font-semibold text-muted-foreground group-hover:text-primary transition-colors truncate">
-                            {stage.author.name}
-                          </span>
-                          <ExternalLink className="size-2 text-muted-foreground/40 group-hover:text-primary transition-colors shrink-0" />
+                            <Image
+                              src={stage.author.image}
+                              alt=""
+                              width={16}
+                              height={16}
+                              className="size-4 rounded-full object-cover"
+                            />
+                          ) : null}
+                          <span className="truncate">{stage.author.name}</span>
+                          <ExternalLink className="size-2.5 shrink-0" />
                         </Link>
-                      ) : stage.credits ? (
-                        <div className="flex items-center gap-1.5 min-w-0">
-                          <div className="size-[18px] rounded-full bg-muted flex items-center justify-center shrink-0 ring-1 ring-border/30">
-                            <span className="text-[8px] font-bold text-muted-foreground">{stage.credits[0]}</span>
-                          </div>
-                          <span className="text-[10px] font-semibold text-muted-foreground truncate">
-                            {stage.credits}
-                          </span>
-                        </div>
                       ) : null}
                     </div>
-                    <Button size="sm" className="rounded-lg h-6 px-2.5 text-[10px] font-bold shrink-0 focus-visible:ring-2 focus-visible:ring-ring"
-                      onClick={(e) => { e.stopPropagation(); router.push(`/learn/modules/${stage.slug}`); }}>
+                    <Button
+                      size="sm"
+                      className="h-7 rounded-lg px-2.5 text-[10px] font-bold"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        router.push(`/learn/modules/${stage.slug}`);
+                      }}
+                    >
                       {isCompleted ? "Review" : isInProgress ? "Continue" : "Start"}
                     </Button>
                   </div>
-                </motion.div>
+                </motion.article>
               ))}
-            </div>
+            </LearnCardGrid>
           ) : (
-            <div className="text-center py-16">
-              <div className="size-12 rounded-full bg-muted/30 flex items-center justify-center mx-auto mb-3 ring-1 ring-border/30">
-                <BookOpen className="size-5 text-muted-foreground/40" />
-              </div>
-              <p className="text-sm font-bold text-muted-foreground">No modules found</p>
-              <p className="text-[10px] text-muted-foreground/60 mt-1">
-                {searchQuery ? "Try a different search" : activeTab !== "all" ? "No modules match this filter" : "No modules available yet"}
-              </p>
-            </div>
+            <LearnEmptyState
+              icon={BookOpen}
+              title="No modules found"
+              description={
+                searchQuery
+                  ? "Try a different search term."
+                  : progressTab !== "all"
+                    ? "No modules match this filter."
+                    : "No modules available yet."
+              }
+            />
           )}
         </div>
-      </div>
-      </div>
+      </LearnPageBody>
     </LearnPageShell>
   );
 }

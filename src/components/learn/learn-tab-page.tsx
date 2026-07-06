@@ -5,6 +5,11 @@ import { useSearchParams } from "next/navigation";
 import { LearnContentGrid } from "@/components/learn/learn-content-grid";
 import { LearnSidebar } from "@/components/learn/learn-sidebar";
 import { LearnPageShell } from "@/components/learn/learn-page-shell";
+import {
+  LearnExploreLayout,
+  LearnPageBody,
+  LearnSearchField,
+} from "@/components/learn/learn-ui-primitives";
 import type { LearnContentType, LearnHubSummary } from "@/types/learn";
 import type { LearnHubItem } from "@/lib/learn-hub";
 import { videoData } from "@/data/videos";
@@ -51,21 +56,21 @@ export function LearnTabPage({
   const [items, setItems] = useState<LearnHubItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [localSearch, setLocalSearch] = useState(q);
 
   usePageView();
 
   const load = useCallback(() => {
     setLoading(true);
-    return LIST_FETCHERS[listKey]({ search: q || undefined })
+    return LIST_FETCHERS[listKey]({ search: q || localSearch || undefined })
       .then((data) => setItems((data.results ?? []) as LearnHubItem[]))
       .catch((err) => {
-        const msg =
-          err instanceof Error ? err.message : "Could not load content.";
+        const msg = err instanceof Error ? err.message : "Could not load content.";
         setError(msg);
         console.error(`[LearnTabPage] Failed to load ${listKey}:`, err);
       })
       .finally(() => setLoading(false));
-  }, [listKey, q]);
+  }, [listKey, q, localSearch]);
 
   useEffect(() => {
     void load();
@@ -80,19 +85,43 @@ export function LearnTabPage({
     return fromSummary ?? items.find((i) => i.content_type === "quest") ?? null;
   }, [summary, items]);
 
+  const filteredItems = useMemo(() => {
+    if (!localSearch.trim()) return items;
+    const needle = localSearch.toLowerCase();
+    return items.filter(
+      (item) =>
+        item.title.toLowerCase().includes(needle) ||
+        (item.summary || "").toLowerCase().includes(needle),
+    );
+  }, [items, localSearch]);
+
   return (
-    <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:py-8">
-      <LearnPageShell navId={LIST_NAV_IDS[listKey]} contentClassName="mt-6">
+    <LearnPageShell navId={LIST_NAV_IDS[listKey]}>
+      <LearnPageBody>
+        <LearnSearchField
+          value={localSearch}
+          onChange={setLocalSearch}
+          placeholder={`Search ${listKey}…`}
+          className="mb-6 max-w-md"
+        />
         {error ? <p className="mb-4 text-sm text-destructive">{error}</p> : null}
-        <div className="grid gap-8 lg:grid-cols-[1fr_280px]">
-          <LearnContentGrid items={items} loading={loading} />
-          <LearnSidebar
-            trending={(summary?.trending ?? []) as LearnHubItem[]}
-            dailyQuest={dailyQuest as LearnHubItem | null | undefined}
-          />
-        </div>
-      </LearnPageShell>
-    </div>
+        <LearnExploreLayout
+          main={
+            <LearnContentGrid
+              items={filteredItems}
+              loading={loading}
+              listKey={listKey}
+            />
+          }
+          aside={
+            <LearnSidebar
+              trending={(summary?.trending ?? []) as LearnHubItem[]}
+              dailyQuest={dailyQuest as LearnHubItem | null | undefined}
+            />
+          }
+        />
+      </LearnPageBody>
+    </LearnPageShell>
   );
 }
 

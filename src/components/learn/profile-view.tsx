@@ -21,6 +21,12 @@ import { useGamificationMe, useBadgeCatalog, useCertificates } from "@/hooks/use
 import { useUpdateProfile } from "@/hooks/use-profile";
 import { useChangePassword } from "@/hooks/use-auth-actions";
 import { certificateDownloadHrefFromRecord } from "@/lib/certificate-url";
+import { LearnPageShell } from "@/components/learn/learn-page-shell";
+import {
+  LearnPageBody,
+  LearnPanel,
+  LearnStatTile,
+} from "@/components/learn/learn-ui-primitives";
 import type { Gender } from "./bitmoji-avatar";
 import type { CivicModule } from "@/types/learn";
 import type { BadgeCatalogEntry, BadgeTier } from "@/types/gamification";
@@ -36,15 +42,19 @@ function SectionCard({
   title, icon, children, className,
 }: { title?: string; icon?: React.ReactNode; children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("rounded-2xl border border-border bg-card p-4 md:p-5 shadow-xs ring-1 ring-border/40", className)}>
-      {title && (
-        <h3 className="mb-3 flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-          {icon}
-          {title}
-        </h3>
+    <LearnPanel className={className}>
+      {title ? (
+        <>
+          <h3 className="mb-3 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+            {icon}
+            {title}
+          </h3>
+          {children}
+        </>
+      ) : (
+        children
       )}
-      {children}
-    </div>
+    </LearnPanel>
   );
 }
 
@@ -265,18 +275,15 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
   };
 
   return (
-    <div className="space-y-4 md:space-y-5 max-w-3xl mx-auto">
-      {/* Hero */}
-      <div className="relative overflow-visible rounded-2xl bg-gradient-to-br from-primary/90 via-primary/80 to-primary/60 p-5 md:p-7 text-primary-foreground shadow-lg">
-        <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl">
-          <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.07] mix-blend-overlay" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/15 to-transparent" />
-        </div>
-        <div className="relative flex items-center gap-4 md:gap-5">
-          <div className="relative shrink-0 z-10">
+    <LearnPageShell navId="profile">
+      <LearnPageBody narrow className="space-y-4 md:space-y-5">
+      {/* Identity strip */}
+      <LearnPanel className="border-primary/15 bg-gradient-to-br from-primary/[0.05] to-card">
+        <div className="flex items-center gap-4 md:gap-5">
+          <div className="relative shrink-0">
             {authLoading ? (
-              <div className="flex size-16 md:size-20 items-center justify-center rounded-full border-2 border-white/30 bg-white/10">
-                <Loader2 className="size-6 animate-spin text-white/80" />
+              <div className="flex size-16 items-center justify-center rounded-2xl border border-border bg-muted">
+                <Loader2 className="size-6 animate-spin text-muted-foreground" />
               </div>
             ) : isLoggedIn ? (
               <ProfileAvatarEditor
@@ -299,47 +306,47 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
             ) : (
               <Link
                 href={Routes.Login}
-                className="group relative block rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+                className="group relative block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 aria-label="Sign in to change profile photo"
               >
                 {avatarUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={avatarUrl} alt="" className="size-16 md:size-20 rounded-full border-2 border-white/30 object-cover shadow-md" />
+                  <img src={avatarUrl} alt="" className="size-16 rounded-2xl border border-border object-cover md:size-20" />
                 ) : (
-                  <BitmojiAvatar gender={profile.gender} size="xl" className="rounded-full border-2 border-white/30 shadow-md" />
+                  <BitmojiAvatar gender={profile.gender} size="xl" className="rounded-2xl border border-border" />
                 )}
-                <span className="absolute inset-0 flex items-center justify-center rounded-full bg-black/40">
+                <span className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/40">
                   <LogIn className="size-5 text-white" />
                 </span>
               </Link>
             )}
-            <span className="absolute -bottom-1 -right-1 flex h-6 min-w-6 items-center justify-center rounded-full border-2 border-primary bg-white px-1 text-[10px] font-black text-primary shadow">
+            <span className="absolute -bottom-1 -right-1 flex h-6 min-w-6 items-center justify-center rounded-full border-2 border-card bg-primary px-1 text-[10px] font-bold text-primary-foreground shadow">
               {level}
             </span>
           </div>
           <div className="min-w-0 flex-1">
-            <p className="mb-0.5 text-[10px] font-black uppercase tracking-widest text-white/70">Citizen Champion</p>
-            <h2 className="truncate text-lg font-black leading-tight text-white md:text-2xl">{displayName}</h2>
-            <p className="mt-0.5 truncate text-[11px] font-semibold text-white/80 md:text-sm">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Citizen profile</p>
+            <h2 className="truncate text-lg font-bold leading-tight md:text-xl">{displayName}</h2>
+            <p className="mt-0.5 truncate text-xs text-muted-foreground">
               {county}{ward ? ` · ${ward}` : ""}
             </p>
             {!isLoggedIn && !authLoading && (
               <Link
                 href={Routes.Login}
-                className="mt-2 inline-flex items-center gap-1 rounded-full bg-white/15 px-2.5 py-1 text-[10px] font-bold text-white hover:bg-white/25 transition-colors"
+                className="mt-2 inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-[10px] font-semibold text-primary"
               >
                 <LogIn className="size-3" />
-                Sign in to update photo
+                Sign in to update
               </Link>
             )}
-            <div className="mt-2 md:mt-3">
-              <div className="mb-1 flex justify-between text-[10px] font-bold text-white/70">
+            <div className="mt-3 space-y-1">
+              <div className="flex justify-between text-[10px] font-medium text-muted-foreground">
                 <span>{points} XP</span>
                 <span>{xpIntoLevel}/100 to Lv.{level + 1}</span>
               </div>
-              <div className="h-1.5 overflow-hidden rounded-full bg-white/20 md:h-2">
+              <div className="h-1.5 overflow-hidden rounded-full bg-muted">
                 <div
-                  className="h-full rounded-full bg-white/90 transition-all duration-700 w-[var(--progress)]"
+                  className="h-full rounded-full bg-primary transition-all duration-700 w-[var(--progress)]"
                   style={{ "--progress": `${xpIntoLevel}%` } as React.CSSProperties}
                   role="progressbar"
                   aria-valuenow={xpIntoLevel}
@@ -351,22 +358,13 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
             </div>
           </div>
         </div>
-      </div>
+      </LearnPanel>
 
-      {/* Stats */}
-      <div className="grid grid-cols-4 gap-2 md:gap-3">
-        {[
-          { label: "XP", value: points, icon: Sparkles, color: "text-primary", bg: "bg-primary/8 border-primary/20" },
-          { label: "Streak", value: streak, icon: Flame, color: "text-orange-500", bg: "bg-orange-500/8 border-orange-500/20" },
-          { label: "Badges", value: badgeStatCount, icon: Award, color: "text-emerald-600", bg: "bg-emerald-500/8 border-emerald-500/20" },
-          { label: "Level", value: level, icon: Star, color: "text-amber-500", bg: "bg-amber-500/8 border-amber-500/20" },
-        ].map((s) => (
-          <div key={s.label} className={cn("space-y-1 rounded-2xl border p-3 text-center", s.bg)}>
-            <s.icon className={cn("mx-auto size-4 md:size-5", s.color)} />
-            <p className={cn("text-sm font-black tabular-nums md:text-xl", s.color)}>{s.value}</p>
-            <p className="text-[9px] font-black uppercase tracking-wider text-muted-foreground">{s.label}</p>
-          </div>
-        ))}
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        <LearnStatTile label="XP" value={points} icon={Sparkles} />
+        <LearnStatTile label="Streak" value={streak} icon={Flame} tone="warm" />
+        <LearnStatTile label="Badges" value={badgeStatCount} icon={Award} tone="success" />
+        <LearnStatTile label="Level" value={level} icon={Star} tone="accent" />
       </div>
 
       {hasCatalog ? (
@@ -659,6 +657,7 @@ export function ProfileView({ profile, stages, onResetProgress, onUpdateProfile 
           Reset local progress
         </button>
       </div>
-    </div>
+      </LearnPageBody>
+    </LearnPageShell>
   );
 }

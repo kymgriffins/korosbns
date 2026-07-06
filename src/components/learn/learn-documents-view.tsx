@@ -3,12 +3,35 @@
 import { useState, useEffect, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import {
-  Search, Folder, FileText, Database, ArrowLeft, Download, ExternalLink, Loader2,
-  Filter, X, Calendar, Building2, LayoutGrid, List, ChevronLeft, ChevronRight,
-  RefreshCw, BarChart3, BookOpen
+  ArrowLeft,
+  BarChart3,
+  BookOpen,
+  Building2,
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  Database,
+  Download,
+  ExternalLink,
+  FileText,
+  Filter,
+  Folder,
+  LayoutGrid,
+  List,
+  X,
 } from "lucide-react";
+import { LearnPageShell } from "@/components/learn/learn-page-shell";
+import {
+  LearnEmptyState,
+  LearnFilterTabs,
+  LearnLoadingState,
+  LearnPageBody,
+  LearnPanel,
+  LearnRefreshButton,
+  LearnSearchField,
+  LearnToolbar,
+} from "@/components/learn/learn-ui-primitives";
 import { cn } from "@/utils";
-import { BitmojiAvatar } from "./bitmoji-avatar";
 import { type DocumentType, type DocumentFile, extractPrefixFromFolderName } from "@/constants/documents";
 import { useLearnDocuments } from "@/hooks/use-documents";
 import { COUNTIES } from "@/constants/counties";
@@ -250,102 +273,80 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center h-full min-h-[40vh] gap-3">
-        <Loader2 className="size-6 text-primary animate-spin" />
-        <p className="text-xs text-muted-foreground font-semibold">Loading document repository...</p>
-      </div>
+      <LearnPageShell navId="documents">
+        <LearnLoadingState label="Loading document repository…" />
+      </LearnPageShell>
     );
   }
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center h-full min-h-[40vh] gap-3 p-6 text-center">
-        <div className="size-12 rounded-full bg-muted/30 flex items-center justify-center mx-auto ring-1 ring-border/30">
-          <Database className="size-5 text-muted-foreground/40" />
-        </div>
-        <p className="text-sm font-bold text-foreground">Repository unavailable</p>
-        <p className="text-xs text-muted-foreground max-w-xs">{error}</p>
-      </div>
+      <LearnPageShell navId="documents">
+        <LearnPageBody narrow>
+          <LearnEmptyState
+            icon={Database}
+            title="Repository unavailable"
+            description={error}
+          />
+        </LearnPageBody>
+      </LearnPageShell>
     );
   }
 
   return (
-    <div className="flex flex-col h-full bg-background overflow-hidden">
-      <header className="hidden lg:flex items-center justify-between px-4 md:px-5 py-3 border-b border-border/50 shrink-0 gap-3">
-        <div className="flex items-center gap-2.5 min-w-0">
-          {selectedFolder ? (
-            <button onClick={() => { setSelectedFolder(null); clearAllFilters(); }} className="p-1 hover:bg-muted/50 rounded-lg transition-colors -ml-1 shrink-0 focus-visible:ring-2 focus-visible:ring-ring">
-              <ArrowLeft className="size-4" />
-            </button>
-          ) : (
-            <div className="bg-primary/8 p-1.5 rounded-lg shrink-0 ring-1 ring-primary/20">
-              <Database className="size-4 text-primary" />
-            </div>
-          )}
-          <div className="min-w-0">
-            <h1 className="font-bold text-sm leading-tight truncate">
-              {selectedFolder ? selectedFolder.fullName : "Document Hub"}
-            </h1>
-            <p className="text-[10px] text-muted-foreground font-semibold">
-              {selectedFolder
-                ? `${folderFiles.length} file${folderFiles.length !== 1 ? "s" : ""}`
-                : `${documents.length} collections`
-              }
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2 shrink-0">
-          {selectedFolder && (
-            <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder="Search files..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8 pr-3 py-1.5 bg-muted/40 border-0 rounded-lg text-xs w-28 md:w-44 focus:outline-none focus:ring-2 focus:ring-ring/30 transition-all"
-              />
-            </div>
-          )}
-          <div className="flex items-center gap-2 ml-1 md:ml-3 md:pl-3 md:border-l border-border/50">
+    <LearnPageShell
+      navId="documents"
+      actions={
+        <LearnRefreshButton
+          label="Sync"
+          refreshing={refreshing}
+          onClick={async () => {
+            setRefreshing(true);
+            try {
+              await queryClient.invalidateQueries({ queryKey: ["learn-documents"] });
+            } finally {
+              setRefreshing(false);
+            }
+          }}
+        />
+      }
+    >
+      <LearnPageBody className="flex min-h-0 flex-col">
+        {selectedFolder ? (
+          <LearnToolbar className="mb-4">
             <button
-              onClick={async () => { setRefreshing(true); try { await queryClient.invalidateQueries({ queryKey: ["learn-documents"] }); } finally { setRefreshing(false); } }}
-              disabled={refreshing}
-              className="p-1.5 hover:bg-muted/50 rounded-lg transition-colors text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-              title="Refresh documents"
+              type="button"
+              onClick={() => {
+                setSelectedFolder(null);
+                clearAllFilters();
+              }}
+              className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-semibold text-muted-foreground hover:bg-muted hover:text-foreground"
             >
-              <RefreshCw className={`size-4 ${refreshing ? "animate-spin" : ""}`} />
+              <ArrowLeft className="size-4" />
+              Back to collections
             </button>
-            {profile?.avatar_url ? (
-              <img src={profile.avatar_url} alt="" className="size-7 rounded-full object-cover ring-1 ring-border/40" />
-            ) : (
-              <BitmojiAvatar gender={profile?.gender} size="sm" className="shrink-0" />
-            )}
-          </div>
-        </div>
-      </header>
+            <LearnSearchField
+              value={searchQuery}
+              onChange={setSearchQuery}
+              placeholder="Search files…"
+              className="w-full sm:max-w-xs"
+            />
+          </LearnToolbar>
+        ) : null}
 
-      <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-4 md:space-y-5">
+      <div className="flex flex-col overflow-hidden">
         {!selectedFolder ? (
           <>
-            <div className="flex items-center gap-0.5 bg-muted/30 p-0.5 rounded-lg w-fit ring-1 ring-border/30">
-              {([
-                { id: "all" as const, label: "Repository" },
-                { id: "tracked" as const, label: "Tracked" },
-                { id: "commentaries" as const, label: "My Drafts" },
-              ]).map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={cn(
-                    "px-3 py-1 rounded-md text-[10px] font-bold transition-all focus-visible:ring-2 focus-visible:ring-ring",
-                    activeTab === tab.id ? "bg-card shadow-xs text-foreground ring-1 ring-border/30" : "text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
+            <LearnFilterTabs
+              tabs={[
+                { key: "all", label: "Repository" },
+                { key: "tracked", label: "Tracked" },
+                { key: "commentaries", label: "My drafts" },
+              ]}
+              value={activeTab}
+              onChange={setActiveTab}
+              className="mb-4 w-fit"
+            />
 
             {activeTab === "all" && (
               <section className="space-y-3">
@@ -684,7 +685,8 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
           </section>
         )}
       </div>
-    </div>
+      </LearnPageBody>
+    </LearnPageShell>
   );
 }
 
