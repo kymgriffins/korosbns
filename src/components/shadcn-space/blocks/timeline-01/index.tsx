@@ -1,9 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import Timeline from "@/components/shadcn-space/blocks/timeline-01/timeline";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Routes } from "@/constants/routes";
 import type { TimelineItemProps } from "@/components/shadcn-space/blocks/timeline-01/timeline";
-
 export const budgetCycleTimelineData: TimelineItemProps[] = [
   {
     title: "National Treasury — Budget Formulation",
@@ -73,6 +75,21 @@ const TimelineBlock01 = ({ items = budgetCycleTimelineData }: TimelineBlock01Pro
         </div>
         <div className="border-r border-border md:border-x">
           <Timeline items={items} />
+        </div>
+        <div className="border-x border-border px-6 py-10 md:px-10 md:py-14 lg:px-16 lg:py-16">
+          <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 text-center">
+            <p className="text-base leading-relaxed text-muted-foreground md:text-lg">
+              We&apos;ll take you through the full budget-making process — from
+              Treasury formulation to implementation — and show you how you, as a
+              Mwananchi, can take part at every stage.
+            </p>
+            <Button
+              asChild
+              className="h-auto rounded-full px-6 py-3 text-sm font-semibold"
+            >
+              <Link href={Routes.Learn}>Explore the learning hub</Link>
+            </Button>
+          </div>
         </div>
         <div className="h-18 border-x border-t border-border md:h-28" />
       </div>

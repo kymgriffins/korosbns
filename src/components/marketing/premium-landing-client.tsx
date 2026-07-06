@@ -76,14 +76,6 @@ const TestimonialsSection = dynamic(
   }
 );
 
-const BlogSection = dynamic(
-  () => import("@/components/shadcn-space/blocks/blog-01/blog"),
-  {
-    ssr: false,
-    loading: () => <div className="h-96 w-full bg-muted animate-pulse" />,
-  }
-);
-
 const NewsletterPopup = dynamic(
   () => import("@/components/marketing/newsletter-popup"),
   { ssr: false }
@@ -125,7 +117,6 @@ export default function PremiumLandingClient() {
       <TimelineSection />
       <ServicesSection data={bnsServices} />
       <TestimonialsSection />
-      <BlogSection />
       <CloudinaryGallery />
       <BNSStudioSection />
       <NewsletterPopup />
