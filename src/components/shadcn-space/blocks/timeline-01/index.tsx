@@ -24,21 +24,21 @@ export const budgetCycleTimelineData: TimelineItemProps[] = [
     description:
       "After public hearings, the National Assembly scrutinises the estimates (KES 4.82T), adopts amendments, and approves the budget — including KES 781.4B for education and KES 175.5B for health.",
     date: "Jun 2026",
-    image: "/images/landing/budget-reading-2026.jpg",
+    image: "/images/treasury/budget-reading-2026.jpg",
   },
   {
     title: "Executive — Budget Reading & Assent",
     description:
       "Cabinet Secretary John Mbadi presents the KES 4.82T Budget Statement to Parliament. The President assents to the Finance Bill and Appropriation Act, authorising spending for the new financial year.",
     date: "Jun 2026",
-    image: "/images/media/129A3905.jpg",
+    image: "/images/treasury/budget-reading-2026.jpg",
   },
   {
     title: "Government — Implementation Begins",
     description:
-      "FY2026/27 starts on 1 July. Ministries, counties, and agencies execute Parliament-approved programmes under the national budget — tracked by citizens through BNS.",
+      "FY2026/27 starts on 1 July under the Treasury’s Budget Sasa ni Delivery push — ministries, counties, and agencies turn approved allocations into services citizens can track through BNS.",
     date: "Jul 2026",
-    image: "/images/explainer-implementation.png",
+    image: "/images/treasury/budget%20sasa%20ni%20delivery.jpg",
   },
 ];
 
