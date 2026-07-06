@@ -258,6 +258,7 @@ export function LearnModulesView({ profile, stages, currentStage, onSelectStage,
           )}
         </div>
       </div>
+      </div>
     </LearnPageShell>
   );
 }
