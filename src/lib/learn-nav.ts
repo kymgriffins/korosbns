@@ -11,9 +11,9 @@ export function learnTabToHref(tab: LearnTab): string {
     case "alerts":
       return `${Routes.Learn}?tab=alerts`;
     case "documents":
-      return Routes.LearnDocuments;
+      return `${Routes.Learn}?tab=documents`;
     case "forum":
-      return Routes.LearnForum;
+      return `${Routes.Learn}?tab=forum`;
     case "profile":
       return `${Routes.Learn}?tab=profile`;
   }
@@ -41,7 +41,34 @@ export function learnTabFromLocation(
       return "alerts";
     case "profile":
       return "profile";
+    case "documents":
+      return "documents";
+    case "forum":
+      return "forum";
     default:
       return "home";
   }
+}
+
+/** Active state for sidebar / hub links (supports ?tab= query routes). */
+export function isLearnNavHrefActive(
+  pathname: string,
+  tabParam: string | null,
+  href: string,
+): boolean {
+  const [path, query = ""] = href.split("?");
+  if (pathname !== path) return false;
+
+  const params = new URLSearchParams(query);
+  const expectedTab = params.get("tab");
+
+  if (expectedTab) {
+    return tabParam === expectedTab;
+  }
+
+  if (path === Routes.Learn) {
+    return !tabParam;
+  }
+
+  return true;
 }

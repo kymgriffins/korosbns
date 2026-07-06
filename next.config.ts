@@ -202,6 +202,16 @@ const nextConfig: NextConfig = {
         destination: "/",
         permanent: false,
       },
+      {
+        source: "/projects",
+        destination: "/bns-project",
+        permanent: false,
+      },
+      {
+        source: "/projects/",
+        destination: "/bns-project/",
+        permanent: false,
+      },
     ];
   },
 

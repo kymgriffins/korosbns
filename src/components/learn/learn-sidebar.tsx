@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Flame, TrendingUp, MessageSquare } from "lucide-react";
 import { motion } from "motion/react";
 import { Routes } from "@/constants/routes";
+import { learnTabToHref } from "@/lib/learn-nav";
 import type { LearnHubItem } from "@/lib/learn-hub";
 import { learnItemHref, isExternalLearnHref } from "@/lib/learn-hub";
 import { fadeInUp } from "@/motion/variants";
@@ -122,7 +123,7 @@ export function LearnSidebar({ continueItems = [], dailyQuest, trending = [] }: 
         <p className="mt-2 text-xs text-muted-foreground">
           Join the discussion about Kenya's budget and public finance.
         </p>
-        <Link href={Routes.LearnForum} className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-primary">
+        <Link href={learnTabToHref("forum")} className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-primary">
           Visit Forum
         </Link>
       </motion.section>

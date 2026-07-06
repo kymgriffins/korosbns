@@ -20,6 +20,7 @@ import { taskData } from "@/data/tasks";
 import type { Task } from "@/types/tasks";
 import Link from "next/link";
 import { Routes } from "@/constants/routes";
+import { learnTabToHref } from "@/lib/learn-nav";
 import { cn } from "@/utils";
 
 interface LearnDashboardViewProps {
@@ -175,7 +176,7 @@ export function LearnDashboardView({
             </Link>
           </Button>
           <Button asChild variant="outline" size="sm" className="h-9 rounded-lg text-sm font-bold px-4">
-            <Link href={Routes.LearnForum}>
+            <Link href={learnTabToHref("forum")}>
               <MessageSquare className="mr-1.5 size-3.5" /> Discussions
             </Link>
           </Button>

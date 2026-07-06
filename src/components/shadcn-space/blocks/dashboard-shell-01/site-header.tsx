@@ -1,3 +1,5 @@
+"use client";
+
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import UserDropdown from "@/components/shadcn-space/blocks/dashboard-shell-01/user-dropdown";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -8,14 +10,35 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
+import { useAuth } from "@/contexts/auth-context";
+
+function getDisplayName(user: ReturnType<typeof useAuth>["user"]) {
+  if (!user) return "Learner";
+  const full = [user.first_name, user.last_name].filter(Boolean).join(" ").trim();
+  return user.display_name || user.break_name || full || user.email || "Learner";
+}
+
+function getInitials(name: string) {
+  return name
+    .split(" ")
+    .map((part) => part[0] ?? "")
+    .join("")
+    .slice(0, 2)
+    .toUpperCase() || "BN";
+}
 
 export function SiteHeader() {
+  const { user } = useAuth();
+  const displayName = getDisplayName(user);
+  const avatarUrl = user?.avatar_url ?? undefined;
+  const initials = getInitials(displayName);
+
   return (
     <div className="flex w-full items-center justify-between">
       <div className="flex items-center gap-2">
         <SidebarTrigger className="-ml-1 h-8 w-8 cursor-pointer" />
         <InputGroup className="h-9 rounded-md">
-          <InputGroupInput placeholder="Search" />
+          <InputGroupInput placeholder="Search modules, documents..." />
           <InputGroupAddon>
             <SearchIcon />
           </InputGroupAddon>
@@ -37,11 +60,10 @@ export function SiteHeader() {
           trigger={
             <div className="rounded-full">
               <Avatar className="size-8 cursor-pointer">
-                <AvatarImage
-                  src="https://images.shadcnspace.com/assets/profiles/user-11.jpg"
-                  alt="David McMichael"
-                />
-                <AvatarFallback>DM</AvatarFallback>
+                {avatarUrl ? (
+                  <AvatarImage src={avatarUrl} alt={displayName} />
+                ) : null}
+                <AvatarFallback>{initials}</AvatarFallback>
               </Avatar>
             </div>
           }

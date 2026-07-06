@@ -2,6 +2,7 @@ import FlareCursor from "@/components/global/flare-cursor";
 import LoadingScreen from "@/components/global/loading-screen";
 import Providers from "@/components/global/providers";
 import WhatsAppSupport from "@/components/global/whatsapp-support";
+import CookieConsentWrapper from "@/components/global/cookie-consent-wrapper";
 import { base, handwriting, heading } from "@/constants";
 import "@/styles/globals.css";
 import { cn, generateMetadata } from "@/utils";
@@ -122,6 +123,7 @@ export default function RootLayout({
           <FlareCursor />
           <WhatsAppSupport />
           {children}
+          <CookieConsentWrapper />
         </Providers>
         <Analytics />
         <Script id="microsoft-clarity" strategy="afterInteractive">

@@ -29,7 +29,7 @@ export function DashboardShell({
 
   return (
     <div className="min-h-dvh bg-background">
-      <header className="border-b border-border/60 bg-background/95 backdrop-blur-md">
+      <header className="hidden lg:block border-b border-border/60 bg-background/95 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-4 px-4">
           <Link href={Routes.Home} className="flex items-center gap-2 shrink-0">
             <Image src="/logo.svg" alt="Budget Ndio Story" width={120} height={24} className="h-5 w-auto" />

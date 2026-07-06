@@ -68,7 +68,7 @@ export function LearnModulesView({ profile, stages, currentStage, onSelectStage,
 
   return (
     <div className="flex flex-col h-full bg-background overflow-hidden">
-      <header className="flex items-center justify-between px-4 md:px-5 py-3 border-b border-border/50 shrink-0 gap-3">
+      <header className="hidden lg:flex items-center justify-between px-4 md:px-5 py-3 border-b border-border/50 shrink-0 gap-3">
         <div className="flex items-center gap-2.5 min-w-0">
           <div className="bg-primary/8 p-1.5 rounded-lg shrink-0 ring-1 ring-primary/20">
             <BookOpen className="size-4 text-primary" />

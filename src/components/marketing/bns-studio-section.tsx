@@ -1,10 +1,12 @@
 "use client";
 
 import { motion } from "motion/react";
+import Image from "next/image";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Camera, Video, Monitor, Scissors, ArrowRight } from "lucide-react";
+import { BNS_MEDIA_IMAGES } from "@/constants/bns-media-images";
 
 const services = [
   { icon: Video, label: "Videography", desc: "Corporate events, documentaries, music videos" },
@@ -72,13 +74,20 @@ export function BNSStudioSection() {
 
           <motion.div
             variants={fadeInUp}
-            className="relative aspect-video lg:aspect-square rounded-2xl overflow-hidden border border-border/60 bg-primary/5"
+            className="relative aspect-video lg:aspect-square rounded-2xl overflow-hidden border border-border/60"
           >
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center">
-                <Camera className="size-16 mx-auto mb-4 text-primary/40" />
-                <p className="text-muted-foreground text-sm">BNS Studio</p>
-              </div>
+            <Image
+              src={BNS_MEDIA_IMAGES.main}
+              alt="BNS Studio main production"
+              fill
+              className="object-cover object-center"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              priority={false}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+            <div className="absolute bottom-4 left-4 right-4">
+              <p className="text-white text-sm font-semibold">BNS Studio</p>
+              <p className="text-white/80 text-xs">Audio-visual production for civic storytelling</p>
             </div>
           </motion.div>
         </motion.div>

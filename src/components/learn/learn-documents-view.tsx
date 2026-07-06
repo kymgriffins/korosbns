@@ -271,7 +271,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
 
   return (
     <div className="flex flex-col h-full bg-background overflow-hidden">
-      <header className="flex items-center justify-between px-4 md:px-5 py-3 border-b border-border/50 shrink-0 gap-3">
+      <header className="hidden lg:flex items-center justify-between px-4 md:px-5 py-3 border-b border-border/50 shrink-0 gap-3">
         <div className="flex items-center gap-2.5 min-w-0">
           {selectedFolder ? (
             <button onClick={() => { setSelectedFolder(null); clearAllFilters(); }} className="p-1 hover:bg-muted/50 rounded-lg transition-colors -ml-1 shrink-0 focus-visible:ring-2 focus-visible:ring-ring">

@@ -163,11 +163,11 @@ export default function LandingTikTokVideo() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-80px" }}
-        className="grid items-center gap-10 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:gap-12 xl:gap-16"
+        className="grid items-stretch gap-8 lg:grid-cols-2 lg:gap-6 lg:min-h-[min(72vh,760px)] xl:gap-8"
       >
         <motion.div
           variants={fadeInUp}
-          className="flex max-w-md flex-col justify-center lg:max-w-lg"
+          className="flex h-full flex-col justify-center lg:pr-4 xl:pr-8"
         >
           <SectionHeader
             eyebrow="Short-form civic media"
@@ -199,13 +199,13 @@ export default function LandingTikTokVideo() {
 
         <motion.div
           variants={fadeInUp}
-          className="flex justify-center lg:justify-end"
+          className="flex h-full min-h-[520px] items-stretch justify-center sm:min-h-[580px] lg:min-h-0 lg:justify-start lg:pl-4 xl:pl-8"
         >
           <div
             ref={phoneRef}
-            className="relative w-[min(100%,300px)] sm:w-[340px] lg:w-[min(100%,380px)] xl:w-[420px]"
+            className="mx-auto flex h-full max-h-[min(78vh,820px)] w-auto max-w-full flex-col lg:mx-0"
           >
-            <div className="relative aspect-[9/16] overflow-hidden rounded-[2rem] border-[3px] border-foreground/10 bg-card ring-1 ring-white/10">
+            <div className="relative h-full w-auto max-w-full aspect-[9/16] overflow-hidden rounded-[2rem] border-[3px] border-foreground/10 bg-card ring-1 ring-white/10">
               {video ? (
                 <>
                   <video
@@ -334,7 +334,7 @@ export default function LandingTikTokVideo() {
             </div>
 
             {videos.length > 1 && (
-              <div className="mt-4 flex justify-center gap-2">
+              <div className="mt-4 flex shrink-0 justify-center gap-2 lg:justify-start">
                 {videos.map((v) => (
                   <button
                     key={v.id}

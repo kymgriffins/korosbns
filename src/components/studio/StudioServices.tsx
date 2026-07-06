@@ -1,9 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "motion/react";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
 import { Camera, Video, Monitor, Scissors, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BNS_MEDIA_IMAGES } from "@/constants/bns-media-images";
 
 const serviceIcons: Record<string, React.ReactNode> = {
   Videography: <Video className="size-8" />,
@@ -13,7 +15,7 @@ const serviceIcons: Record<string, React.ReactNode> = {
 };
 
 type Props = {
-  services?: { name: string; description: string; price: string; features: string[] }[];
+  services?: { name: string; description: string; price: string; features: string[]; image?: string }[];
 };
 
 const defaultServices = [
@@ -22,29 +24,39 @@ const defaultServices = [
     description: "Corporate events, documentaries, music videos, and budget explainers.",
     price: "From KES 25,000",
     features: ["4K/HD recording", "Professional audio", "Multi-camera setup", "Same-day edit option"],
+    image: BNS_MEDIA_IMAGES.productionA,
   },
   {
     name: "Photography",
     description: "Portraits, events, product photography, and branded content.",
     price: "From KES 15,000",
     features: ["High-resolution RAW", "Professional lighting", "Edited gallery", "Print-ready files"],
+    image: BNS_MEDIA_IMAGES.productionB,
   },
   {
     name: "Studio Rental",
     description: "Fully equipped studio with professional lighting and backdrop options.",
     price: "KES 5,000/hr",
     features: ["Continuous/ flash lighting", "Backdrop system", "Changing room", "Audio equipment"],
+    image: BNS_MEDIA_IMAGES.hall,
   },
   {
     name: "Post-Production",
     description: "Editing, color grading, motion graphics, and sound design.",
     price: "From KES 10,000",
     features: ["DaVinci Resolve / Premiere Pro", "Color grading", "Motion graphics", "Sound mixing"],
+    image: BNS_MEDIA_IMAGES.main,
   },
 ];
 
 export function StudioServices({ services }: Props) {
-  const items = services && services.length ? services : defaultServices;
+  const items = (services?.length ? services : defaultServices).map((service, index) => ({
+    ...service,
+    image:
+      ("image" in service && service.image) ||
+      defaultServices[index]?.image ||
+      BNS_MEDIA_IMAGES.main,
+  }));
 
   return (
     <section id="services" className="w-full py-20 md:py-32">
@@ -81,14 +93,38 @@ export function StudioServices({ services }: Props) {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
+          className="grid grid-cols-3 gap-3 mb-10 rounded-2xl overflow-hidden border border-border/60"
+        >
+          {[BNS_MEDIA_IMAGES.main, BNS_MEDIA_IMAGES.productionA, BNS_MEDIA_IMAGES.productionB].map((src, i) => (
+            <motion.div key={i} variants={fadeInUp} className="relative aspect-[4/3] md:aspect-video">
+              <Image src={src} alt="BNS Studio production" fill className="object-cover" sizes="33vw" />
+            </motion.div>
+          ))}
+        </motion.div>
+
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
           className="grid md:grid-cols-2 lg:grid-cols-4 gap-6"
         >
           {items.map((service, index) => (
             <motion.div
               key={index}
               variants={fadeInUp}
-              className="p-6 rounded-xl border border-border/60 bg-card flex flex-col"
+              className="rounded-xl border border-border/60 bg-card flex flex-col overflow-hidden"
             >
+              <div className="relative aspect-video">
+                <Image
+                  src={service.image}
+                  alt={service.name}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 50vw, 25vw"
+                />
+              </div>
+              <div className="p-6 flex flex-col flex-1">
               <div className="mb-4 text-primary">
                 {serviceIcons[service.name] || <Camera className="size-8" />}
               </div>
@@ -118,6 +154,7 @@ export function StudioServices({ services }: Props) {
               >
                 Book Now
               </Button>
+              </div>
             </motion.div>
           ))}
         </motion.div>

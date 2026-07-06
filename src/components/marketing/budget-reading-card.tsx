@@ -14,7 +14,7 @@ export function BudgetReadingCard() {
         <div className="relative overflow-hidden rounded-3xl border border-border/60 shadow-xl">
           <div className="relative aspect-[4/5] sm:aspect-[3/4] md:aspect-[2/3] w-full">
             <Image
-              src="/images/landing/budget-reading-2026.jpg"
+              src="/images/treasury/budget-reading-2026.jpg"
               alt="CS John Mbadi presents the KES 4.82 Trillion national budget at Parliament Buildings, Nairobi — June 11, 2026"
               fill
               className="object-cover object-[center_25%]"

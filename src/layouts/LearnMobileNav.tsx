@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { BookOpen, FileText, LayoutDashboard, MessagesSquare } from "lucide-react";
 import { useLearn, type LearnTab } from "@/contexts/learn-context";
 import { learnTabToHref } from "@/lib/learn-nav";
@@ -9,6 +10,7 @@ import {
   type MobileBottomNavItem,
 } from "@/components/ui/mobile-bottom-nav";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useAuth } from "@/contexts/auth-context";
 
 type StoredProfile = {
   breakName?: string;
@@ -17,8 +19,20 @@ type StoredProfile = {
   avatar_url?: string | null;
 };
 
+function getDisplayName(
+  user: ReturnType<typeof useAuth>["user"],
+  profile: StoredProfile | null
+) {
+  if (user) {
+    const full = [user.first_name, user.last_name].filter(Boolean).join(" ").trim();
+    return user.display_name || user.break_name || full || user.email || "";
+  }
+  return profile?.breakName ?? "";
+}
+
 export function LearnMobileNav() {
   const { activeTab, setActiveTab } = useLearn();
+  const { user } = useAuth();
   const onNav = (tab: LearnTab) => () => setActiveTab(tab);
   const [profile, setProfile] = useState<StoredProfile | null>(null);
 
@@ -40,8 +54,10 @@ export function LearnMobileNav() {
     };
   }, []);
 
-  const initials = profile?.breakName
-    ? profile.breakName.split(" ").map(p => p[0] ?? "").join("").slice(0, 2).toUpperCase()
+  const displayName = getDisplayName(user, profile);
+  const avatarUrl = user?.avatar_url ?? profile?.avatar_url ?? null;
+  const initials = displayName
+    ? displayName.split(" ").map((p) => p[0] ?? "").join("").slice(0, 2).toUpperCase()
     : "?";
 
   const profileIcon = (
@@ -52,8 +68,15 @@ export function LearnMobileNav() {
           : ""
       }
     >
-      {profile?.avatar_url ? (
-        <img src={profile.avatar_url} alt="" className="size-full rounded-full object-cover" />
+      {avatarUrl ? (
+        <Image
+          src={avatarUrl}
+          alt={displayName || "Profile"}
+          width={32}
+          height={32}
+          className="size-full rounded-full object-cover"
+          unoptimized
+        />
       ) : (
         <AvatarFallback
           className={

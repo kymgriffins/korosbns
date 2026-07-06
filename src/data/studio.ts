@@ -1,6 +1,7 @@
 import { withFallback } from "@/data/adapter";
 import { citizenApi } from "@/lib/api-client";
 import type { StudioServiceApi, StudioPortfolioItemApi, StudioTestimonialApi } from "@/types/notes";
+import { BNS_STUDIO_PORTFOLIO_IMAGES, BNS_MEDIA_IMAGES, BNS_COMMUNITY_IMAGES } from "@/constants/bns-media-images";
 
 export type StudioService = {
   name: string;
@@ -36,19 +37,19 @@ const DEFAULT_SERVICES: StudioService[] = [
   { name: "Post-Production", description: "Professional editing, color grading, and motion graphics.", price: "From KES 10,000", features: ["DaVinci Resolve / Premiere Pro", "Color grading", "Motion graphics", "Sound mixing"] },
 ];
 
-const DEFAULT_PORTFOLIO: StudioPortfolioItem[] = [
-  { id: "1", title: "Budget Literacy Campaign", category: "Videography", media_type: "video", image_url: "/placeholder.svg?height=400&width=600", video_url: "https://www.youtube.com/embed/dQw4w9WgXcQ", video_platform: "youtube", description: "Youth engagement video series" },
-  { id: "2", title: "County Budget Forum", category: "Photography", media_type: "image", image_url: "/placeholder.svg?height=400&width=600", description: "Public participation event coverage" },
-  { id: "3", title: "Studio Session Reel", category: "Videography", media_type: "video", image_url: "/placeholder.svg?height=400&width=600", video_url: "https://www.youtube.com/embed/dQw4w9WgXcQ", video_platform: "youtube", description: "Behind the scenes" },
-  { id: "4", title: "Portrait Collection", category: "Photography", media_type: "image", image_url: "/placeholder.svg?height=400&width=600", description: "Professional headshots" },
-  { id: "5", title: "Documentary Shoot", category: "Videography", media_type: "video", image_url: "/placeholder.svg?height=400&width=600", video_url: "https://www.youtube.com/embed/dQw4w9WgXcQ", video_platform: "youtube", description: "Community impact story" },
-  { id: "6", title: "Product Photography", category: "Photography", media_type: "image", image_url: "/placeholder.svg?height=400&width=600", description: "Commercial product shoot" },
-];
+const DEFAULT_PORTFOLIO: StudioPortfolioItem[] = BNS_STUDIO_PORTFOLIO_IMAGES.map((item) => ({
+  id: item.id,
+  title: item.title,
+  category: item.category,
+  media_type: "image" as const,
+  image_url: item.image_url,
+  description: item.description,
+}));
 
 const DEFAULT_TESTIMONIALS: StudioTestimonial[] = [
-  { id: "1", client_name: "James M.", role: "Project Lead", content: "BNS Studio delivered exceptional quality.", rating: 5, avatar_url: "" },
-  { id: "2", client_name: "Sarah W.", role: "Event Organizer", content: "The studio space is top-notch.", rating: 5, avatar_url: "" },
-  { id: "3", client_name: "David O.", role: "Content Creator", content: "Post-production work was incredible.", rating: 4, avatar_url: "" },
+  { id: "1", client_name: "James M.", role: "Project Lead", content: "BNS Studio delivered exceptional quality.", rating: 5, avatar_url: BNS_MEDIA_IMAGES.productionA },
+  { id: "2", client_name: "Sarah W.", role: "Event Organizer", content: "The studio space is top-notch.", rating: 5, avatar_url: BNS_COMMUNITY_IMAGES.forumB },
+  { id: "3", client_name: "David O.", role: "Content Creator", content: "Post-production work was incredible.", rating: 4, avatar_url: BNS_MEDIA_IMAGES.productionB },
 ];
 
 export const studioData = {

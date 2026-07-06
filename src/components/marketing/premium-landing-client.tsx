@@ -44,35 +44,11 @@ const LandingTeam = dynamic(
   }
 );
 
-const KenyaFinanceTimeline = dynamic(
-  () => import("@/components/marketing/kenya-finance-timeline"),
+const TimelineSection = dynamic(
+  () => import("@/components/shadcn-space/blocks/timeline-01"),
   {
     ssr: false,
     loading: () => <div className="h-screen w-full bg-muted animate-pulse" />,
-  }
-);
-
-const GovernmentPartnerships = dynamic(
-  () => import("@/components/marketing/government-partnerships"),
-  {
-    ssr: false,
-    loading: () => <div className="h-96 w-full bg-background animate-pulse" />,
-  }
-);
-
-const WhatWeDoSection = dynamic(
-  () => import("@/components/marketing/what-we-do-section"),
-  {
-    ssr: false,
-    loading: () => <div className="h-96 w-full bg-background animate-pulse" />,
-  }
-);
-
-const AlertsSimulator = dynamic(
-  () => import("@/components/marketing/alerts-simulator"),
-  {
-    ssr: false,
-    loading: () => <div className="h-[600px] w-full bg-muted animate-pulse" />,
   }
 );
 
@@ -84,24 +60,64 @@ const BNSStudioSection = dynamic(
   }
 );
 
+const ServicesSection = dynamic(
+  () => import("@/components/shadcn-space/blocks/services-02/services"),
+  {
+    ssr: false,
+    loading: () => <div className="h-96 w-full bg-muted animate-pulse" />,
+  }
+);
+
+const TestimonialsSection = dynamic(
+  () => import("@/components/shadcn-space/blocks/testimonial-01/testimonial"),
+  {
+    ssr: false,
+    loading: () => <div className="h-96 w-full bg-muted animate-pulse" />,
+  }
+);
+
 const NewsletterPopup = dynamic(
   () => import("@/components/marketing/newsletter-popup"),
   { ssr: false }
 );
 
+import type { ServiceItem } from "@/components/shadcn-space/blocks/services-02/services";
+
+const bnsServices: ServiceItem[] = [
+  {
+    heading: "Budget Analysis",
+    descp: "We break down complex national and county budgets into clear, accessible narratives that empower citizens to understand where public money is going and hold leaders accountable.",
+    image: "/images/explainer-formulation.png"
+  },
+  {
+    heading: "Civic Education",
+    descp: "We create engaging learning content — videos, articles, and interactive modules — that builds fiscal literacy and helps Kenyans understand their role in the budget process.",
+    image: "/images/community-pulse.png"
+  },
+  {
+    heading: "Media (Audio Visual) Agency",
+    descp: "BNS Studio delivers professional videography, photography, studio rental, and post-production — turning civic and brand stories into high-quality audio-visual content.",
+    image: "/images/media/main%20media%20image.jpg"
+  },
+  {
+    heading: "Public Engagement",
+    descp: "We facilitate citizen participation in budget processes through forums, surveys, and digital tools that amplify community voices and influence policy decisions.",
+    image: "/images/towwnhallmay/129A3923.jpg"
+  }
+];
+
 export default function PremiumLandingClient() {
   return (
     <>
       <LandingHero />
-      <CloudinaryGallery />
       <LandingTikTokVideo />
       <LandingYoutube />
       <PartnersMarquee />
       <LandingTeam />
-      <KenyaFinanceTimeline />
-      <GovernmentPartnerships />
-      <WhatWeDoSection />
-      <AlertsSimulator />
+      <TimelineSection />
+      <ServicesSection data={bnsServices} />
+      <TestimonialsSection />
+      <CloudinaryGallery />
       <BNSStudioSection />
       <NewsletterPopup />
     </>
