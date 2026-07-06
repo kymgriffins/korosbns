@@ -13,18 +13,18 @@ export const budgetCycleTimelineData: TimelineItemProps[] = [
     image: "/images/explainer-formulation.png",
   },
   {
-    title: "Parliament — Review & Approval",
-    description:
-      "National Assembly scrutinises the BPS and detailed estimates (KES 4.82T), amends sector ceilings, and approves the budget — including KES 781.4B for education and KES 175.5B for health.",
-    date: "Feb – Jun 2026",
-    image: "/images/landing/budget-reading-2026.jpg",
-  },
-  {
     title: "Citizens — Public Participation",
     description:
-      "Kenyans engage through county hearings, memoranda, and civic forums. Civil society and communities shape allocations before the Budget and Appropriations Committee finalises the estimates.",
+      "Kenyans engage through county hearings, memoranda, and civic forums. Communities and civil society submit input while the Budget and Appropriations Committee is still reviewing estimates.",
     date: "May – Jun 2026",
     image: "/images/towwnhallmay/129A3863.jpg",
+  },
+  {
+    title: "Parliament — Review & Approval",
+    description:
+      "After public hearings, the National Assembly scrutinises the estimates (KES 4.82T), adopts amendments, and approves the budget — including KES 781.4B for education and KES 175.5B for health.",
+    date: "Jun 2026",
+    image: "/images/landing/budget-reading-2026.jpg",
   },
   {
     title: "Executive — Budget Reading & Assent",
@@ -64,8 +64,8 @@ const TimelineBlock01 = ({ items = budgetCycleTimelineData }: TimelineBlock01Pro
                 <span className="font-heading italic text-primary">Allocations</span>
               </h2>
               <p className="text-base leading-relaxed text-muted-foreground md:text-lg">
-                Who moves Kenya&apos;s budget forward — Treasury, Parliament,
-                citizens, the Executive, and implementation — in five clear stages
+                Who moves Kenya&apos;s budget forward — Treasury, citizens,
+                Parliament, the Executive, and implementation — in five clear stages
                 for FY2026/27.
               </p>
             </div>
