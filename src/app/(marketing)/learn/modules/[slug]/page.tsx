@@ -1,5 +1,10 @@
-import { ModuleDetailView } from "@/components/learn/module-detail-view";
+import { redirect } from "next/navigation";
 
-export default function ModuleDetailPage() {
-  return <ModuleDetailView />;
+export default async function ModuleIndexPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  redirect(`/learn/modules/${slug}/read/1`);
 }

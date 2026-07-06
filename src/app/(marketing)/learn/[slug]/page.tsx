@@ -1,189 +1,82 @@
+import { redirect } from "next/navigation";
+import { contentData } from "@/data/content";
 import type { Metadata } from "next";
 import { metaDescription, canonicalUrl } from "@/utils/metadata";
-import type { TriviaSetApi } from "@/lib/api-client";
-import { contentData } from "@/data/content";
-import UnifiedReaderClientPage from "./client-page";
-
-interface StoryData {
-  id: string;
-  title: string;
-  subtitle: string;
-  icon: string;
-  duration: string;
-  cards: StoryCard[];
-}
-
-interface StoryCard {
-  emoji?: string;
-  title?: string;
-  subtitle?: string;
-  content?: string;
-  hook?: string;
-  bg?: string;
-  tinyLogo?: boolean;
-  stat?: { value: string; label: string };
-  note?: string;
-  facts?: string[];
-  pillars?: { emoji: string; title: string }[];
-  risks?: { title: string; desc: string }[];
-  services?: string[];
-}
 
 async function resolveContentSlug(slug: string) {
   try {
-    const artData = await contentData.articles.fetchBySlug(slug);
-    if (artData && Object.keys(artData).length > 0) return { type: "article" as const, data: artData };
+    const art = await contentData.articles.fetchBySlug(slug);
+    if (art && Object.keys(art).length > 0) return { type: "article" as const, data: art };
   } catch {}
   try {
-    const trivData = await contentData.trivia.fetchBySlug(slug);
-    if (trivData && Object.keys(trivData).length > 0) return { type: "trivia" as const, data: trivData };
+    const triv = await contentData.trivia.fetchBySlug(slug);
+    if (triv && Object.keys(triv).length > 0) return { type: "trivia" as const, data: triv };
   } catch {}
   try {
-    const storyData = await contentData.stories.fetchBySlug(slug);
-    if (storyData) return { type: "story" as const, data: storyData };
+    const story = await contentData.stories.fetchBySlug(slug);
+    if (story) return { type: "story" as const, data: story };
   } catch {}
   return null;
 }
 
 export const dynamicParams = true;
-export const revalidate = 3600; // ISR revalidate every hour
-export const fallback = 'blocking';
+export const revalidate = 3600;
 
 export async function generateMetadata(
-  props: { params: Promise<{ slug: string }> }
+  props: { params: Promise<{ slug: string }> },
 ): Promise<Metadata> {
   const { slug } = await props.params;
   const resolved = await resolveContentSlug(slug);
-
   const canonicalPath = `/learn/${slug}`;
   const canonical = canonicalUrl(canonicalPath);
   const ogImage = { url: "/logo.svg", width: 1200, height: 630 };
 
   if (resolved?.type === "article") {
-    const artData = resolved.data;
-    const artTitle = `${artData.title as string} | Budget Ndio Story`;
-    const artDesc = (artData.summary as string) || `In-depth explainer on Kenya's ${slug.replace(/-/g, " ")} covering budget, Finance Bill, and fiscal policy.`;
+    const artTitle = `${resolved.data.title as string} | Budget Ndio Story`;
+    const artDesc =
+      (resolved.data.summary as string) ||
+      `In-depth explainer on Kenya's ${slug.replace(/-/g, " ")}.`;
     return {
       title: artTitle,
       description: metaDescription(artDesc),
       alternates: { canonical },
-      openGraph: {
-        title: artTitle,
-        description: artDesc,
-        url: canonical,
-        type: "article",
-        images: [ogImage],
-      },
-      twitter: {
-        card: "summary_large_image",
-        title: artTitle,
-        description: artDesc,
-        images: ["/logo.svg"],
-      },
+      openGraph: { title: artTitle, description: artDesc, url: canonical, type: "article", images: [ogImage] },
     };
   }
 
   if (resolved?.type === "trivia") {
-    const trivData = resolved.data;
-    const trivTitle = `${trivData.title as string} | Budget Trivia | Budget Ndio Story`;
-    const trivDesc = `Interactive trivia on Kenya's budget and Finance Bill. Test your knowledge of public finance.`;
+    const trivTitle = `${resolved.data.title as string} | Budget Trivia | Budget Ndio Story`;
+    const trivDesc = `Interactive trivia on Kenya's budget and public finance.`;
     return {
       title: trivTitle,
       description: metaDescription(trivDesc),
       alternates: { canonical },
-      openGraph: {
-        title: trivTitle,
-        description: trivDesc,
-        url: canonical,
-        type: "article",
-        images: [ogImage],
-      },
-      twitter: {
-        card: "summary_large_image",
-        title: trivTitle,
-        description: trivDesc,
-        images: ["/logo.svg"],
-      },
+      openGraph: { title: trivTitle, description: trivDesc, url: canonical, type: "article", images: [ogImage] },
     };
   }
 
   const fallbackTitle = `Learn: ${slug.replace(/-/g, " ")} | Budget Ndio Story`;
-  const fallbackDesc = `Budget literacy content on ${slug.replace(/-/g, " ")} — Kenya's Finance Bill, fiscal policy, and public finance explained.`;
   return {
     title: fallbackTitle,
-    description: metaDescription(fallbackDesc),
+    description: metaDescription(`Budget literacy content on ${slug.replace(/-/g, " ")}.`),
     alternates: { canonical },
-    openGraph: {
-      title: fallbackTitle,
-      description: fallbackDesc,
-      url: canonical,
-      type: "article",
-      images: [ogImage],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: fallbackTitle,
-      description: fallbackDesc,
-      images: ["/logo.svg"],
-    },
   };
 }
 
 export async function generateStaticParams() {
-  // Fetch from Django or return empty for fallback: 'blocking'
-  return []; 
+  return [];
 }
 
-export default async function UnifiedReaderPage(
-  props: { params: Promise<{ slug: string }> }
-) {
-  const { slug } = await props.params;
-
-  let initialMode: "loading" | "error" | "article" | "story" | "trivia" = "loading";
-  let initialArticle: Record<string, unknown> | null = null;
-  let initialTrivia: TriviaSetApi | null = null;
-  let initialStory: StoryData | null = null;
-
+export default async function UnifiedReaderRedirect({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
   const resolved = await resolveContentSlug(slug);
 
-  if (resolved?.type === "article") {
-    initialArticle = resolved.data;
-    initialMode = "article";
-  } else if (resolved?.type === "trivia") {
-    initialTrivia = resolved.data as TriviaSetApi;
-    initialMode = "trivia";
-  } else if (resolved?.type === "story") {
-    const foundStory = resolved.data;
-    let parsedCards: StoryCard[] = [];
-    try {
-      parsedCards = typeof foundStory.body === "string" 
-        ? JSON.parse(foundStory.body) 
-        : (foundStory.body as StoryCard[] || []);
-    } catch {
-      parsedCards = [];
-    }
-
-    const metadata = (foundStory.metadata as Record<string, string>) || {};
-    
-    initialStory = {
-      id: foundStory.id,
-      title: foundStory.title,
-      subtitle: foundStory.summary,
-      icon: metadata.icon || "📖",
-      duration: metadata.duration || "2 min",
-      cards: parsedCards
-    };
-    initialMode = "story";
-  } else {
-    initialMode = "error";
-  }
-
-  return (
-    <UnifiedReaderClientPage
-      initialMode={initialMode}
-      initialArticle={initialArticle}
-      initialTrivia={initialTrivia}
-      initialStory={initialStory}
-    />
-  );
+  if (resolved?.type === "article") redirect(`/learn/${slug}/read`);
+  if (resolved?.type === "trivia") redirect(`/learn/${slug}/quiz/1`);
+  if (resolved?.type === "story") redirect(`/learn/${slug}/story/1`);
+  redirect("/learn");
 }

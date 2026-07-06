@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { StageDetailDrawer } from "./stage-detail-drawer";
 import { LearnDashboardView } from "./learn-dashboard-view";
 import { LearnModulesView } from "./learn-modules-view";
 import { LearnDocumentsView } from "./learn-documents-view";
@@ -25,45 +24,14 @@ import { readProgress, clearAllModuleProgress } from "@/lib/module-progress";
 import { useLeaderboard } from "@/hooks/use-gamification";
 import type { CivicModule } from "@/types/learn";
 import { TRANSLATIONS } from "@/constants/learn-translations";
-import { safeArray, safeLen, safeMap } from "@/lib/safe-data";
 
 export function LearnPathsHome() {
   const router = useRouter();
   const { isLoggedIn, user: authUser, loading: authLoading } = useAuth();
-  const { civicModules, activeLesson, setActiveLesson, activeTab, setActiveTab, totalStages, modulesLoading, modulesError, refreshModules } = useLearn();
+  const { civicModules, activeTab, setActiveTab, modulesLoading, modulesError, refreshModules } = useLearn();
   const stages = civicModules;
   const [profile, setProfile] = useState<LearnHubProfile | null>(null);
   const [loading, setLoading] = useState(true);
-
-  const [selectedStage, setSelectedStage] = useState<CivicModule | null>(null);
-
-  useEffect(() => {
-    if (selectedStage) {
-      const completedStepIds: number[] = [];
-      const p = readProgress(selectedStage.slug, selectedStage.order);
-      for (const step of safeArray(selectedStage.steps)) {
-        if (p.stepsCompleted[step.order]) {
-          completedStepIds.push(step.order);
-        }
-      }
-      setActiveLesson({
-        stageId: selectedStage.slug,
-        stageTitle: selectedStage.title,
-        stageBadge: selectedStage.badge,
-        stageOrder: selectedStage.order,
-        currentStep: 0,
-        totalSteps: safeLen(selectedStage.steps),
-        completedStepIds,
-        stepTitles: safeMap(selectedStage.steps, (s) => ({ id: s.order, title: s.title })),
-      });
-    } else {
-      setActiveLesson(null);
-    }
-  }, [selectedStage, setActiveLesson]);
-
-  useEffect(() => {
-    setSelectedStage(null);
-  }, [activeTab]);
 
   useEffect(() => {
     if (authLoading) return;
@@ -146,7 +114,6 @@ export function LearnPathsHome() {
       localStorage.removeItem("bns_user_profile");
       clearAllModuleProgress(stages);
       setProfile(null);
-      setSelectedStage(null);
       setActiveTab("home");
     }
   };
@@ -164,25 +131,7 @@ export function LearnPathsHome() {
   const currentStage = stages.find(s => s.order === currentStageNum) || stages[0];
 
   const handleSelectStage = (stage: CivicModule) => {
-    setSelectedStage(stage);
-  };
-
-  const handlePrevStage = () => {
-    if (!selectedStage) return;
-    const idx = stages.findIndex(s => s.slug === selectedStage.slug);
-    const prev = stages[idx - 1];
-    if (prev) {
-      setSelectedStage(prev);
-    }
-  };
-
-  const handleNextStage = () => {
-    if (!selectedStage) return;
-    const idx = stages.findIndex(s => s.slug === selectedStage.slug);
-    const next = stages[idx + 1];
-    if (next) {
-      setSelectedStage(next);
-    }
+    router.push(`/learn/modules/${stage.slug}/read/1`);
   };
 
   const waitingForLoggedInProfile = isLoggedIn && !profile;
@@ -227,21 +176,7 @@ export function LearnPathsHome() {
         </div>
       )}
 
-      {selectedStage ? (
-        <div className="absolute inset-0 z-10 flex flex-col overflow-hidden bg-background md:relative md:inset-auto">
-          <StageDetailDrawer key={selectedStage.slug}
-            stage={selectedStage}
-            profile={activeProfile}
-            onUpdateProfile={handleUpdateProfile}
-            onClose={() => setSelectedStage(null)}
-            hasNext={stages.findIndex(s => s.slug === selectedStage.slug) < stages.length - 1}
-            hasPrev={stages.findIndex(s => s.slug === selectedStage.slug) > 0}
-            onPrevStage={handlePrevStage}
-            onNextStage={handleNextStage}
-          />
-        </div>
-      ) : (
-        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 md:p-6 lg:px-8">
+      <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 md:p-6 lg:px-8">
           <AnimatePresence mode="popLayout">
             {activeTab === "home" && (
               <motion.div
@@ -337,7 +272,6 @@ export function LearnPathsHome() {
             )}
           </AnimatePresence>
         </div>
-      )}
     </div>
   );
 }
