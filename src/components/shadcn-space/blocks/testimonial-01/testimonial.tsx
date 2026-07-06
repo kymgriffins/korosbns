@@ -36,21 +36,30 @@ function EngagementPhotoCard({
           backgroundPosition: imagePosition,
         }}
       />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/45 to-transparent" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[62%] bg-gradient-to-t from-black/90 via-black/55 to-transparent" />
 
-      <CardContent className="relative z-10 flex h-full min-h-80 flex-col justify-between p-6 md:p-8">
-        <p className="w-fit rounded-full border border-white/15 bg-white/10 px-3 py-1 text-sm font-normal text-white/90 backdrop-blur-md">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black/25 to-transparent" />
+
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[72%] bg-gradient-to-t from-black/95 via-black/72 to-transparent" />
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-[58%] backdrop-blur-[2px] supports-[backdrop-filter]:backdrop-blur-md"
+        style={{
+          maskImage: "linear-gradient(to top, black 52%, transparent 100%)",
+          WebkitMaskImage: "linear-gradient(to top, black 52%, transparent 100%)",
+        }}
+      />
+
+      <CardContent className="relative z-10 flex h-full min-h-80 flex-col justify-between p-6 md:p-8 lg:p-10">
+        <p className="text-xs font-medium uppercase tracking-[0.18em] text-white/75">
           Citizen engagements
         </p>
 
-        <div className="rounded-2xl border border-white/15 bg-black/35 p-5 shadow-lg backdrop-blur-md md:p-6">
-          <p className="text-lg font-medium leading-snug text-white md:text-xl lg:text-2xl">
+        <div className="space-y-5 pt-8">
+          <p className="max-w-3xl text-lg font-medium leading-relaxed text-white md:text-xl lg:text-[1.65rem] lg:leading-snug">
             {quote}
           </p>
-          <div className="mt-4 border-t border-white/10 pt-4">
+          <div className="space-y-1">
             <p className="text-base font-medium text-white">{name}</p>
-            <p className="text-sm font-normal text-white/75">{role}</p>
+            <p className="text-sm text-white/65">{role}</p>
           </div>
         </div>
       </CardContent>
@@ -113,7 +122,7 @@ const Testimonials = () => {
                 />
                 <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,transparent_32%,rgba(255,255,255,0.06)_50%,transparent_68%)]" />
                 <CardContent className="relative z-10 flex h-full flex-col items-start justify-between gap-24 p-0">
-                  <p className="w-fit rounded-full border border-white/15 bg-white/10 px-3 py-1 text-base font-normal text-white/85 backdrop-blur-sm">
+                  <p className="text-xs font-medium uppercase tracking-[0.18em] text-white/75">
                     Facts & numbers
                   </p>
                   <div className="flex flex-col items-start gap-4">
