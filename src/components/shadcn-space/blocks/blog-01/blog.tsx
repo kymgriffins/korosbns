@@ -14,17 +14,17 @@ type BlogData = {
 
 const blogData: BlogData[] = [
   {
-    coverImage: "https://images.shadcnspace.com/assets/blog/blog-1.webp",
+    coverImage: "/images/landing/budget-reading-2026.jpg",
     title: "Kenya FY2026/27 Budget Breakdown: Key Allocations by Sector",
     date: "2026-06-15",
   },
   {
-    coverImage: "https://images.shadcnspace.com/assets/blog/blog-2.webp",
+    coverImage: "/images/towwnhallmay/129A4094.jpg",
     title: "How Public Participation Shapes the National Budget",
     date: "2026-05-28",
   },
   {
-    coverImage: "https://images.shadcnspace.com/assets/blog/blog-3.webp",
+    coverImage: "/images/media/129A4039.jpg",
     title: "Education Budget 2026: KES 781.4 Billion Explained",
     date: "2026-05-10",
   },

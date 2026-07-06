@@ -38,7 +38,7 @@ const Testimonials = () => {
               transition={{ duration: 1, delay: 0.2, ease: "easeInOut" }}
               className="col-span-1 lg:col-span-8"
             >
-              <Card className="bg-[url('https://images.shadcnspace.com/assets/backgrounds/testimonials-userBg-01.webp')] object-cover bg-center bg-cover bg-no-repeat border border-border h-full w-full md:min-h-96 p-8 md:pe-16 rounded-2xl">
+              <Card className="h-full w-full rounded-2xl border border-border bg-[url('/images/media/129A3905.jpg')] bg-cover bg-center bg-no-repeat object-cover p-8 md:min-h-96 md:pe-16">
                 <CardContent className="flex flex-col items-start justify-between gap-24 p-0 h-full">
                    <p className="text-white/70 text-base font-normal">
                     Customer stories
@@ -101,8 +101,8 @@ const Testimonials = () => {
                     </p>
                   </div>
                   <img
-                    src="https://images.shadcnspace.com/assets/backgrounds/testimonials-bg-01.webp"
-                    alt="background-img"
+                    src="/images/towwnhallmay/129A3912.jpg"
+                    alt="Budget Ndio Story community engagement"
                     width={'100%'}
                     height={220}
                   />

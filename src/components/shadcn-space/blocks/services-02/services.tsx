@@ -20,22 +20,22 @@ export const servicesData: ServiceItem[] = [
     {
         heading: "Brand Strategy",
         descp: "We craft unique brand stories and visual identities that resonate with your audience and build long-lasting trust and recognition.",
-        image: "https://images.shadcnspace.com/assets/services/services-1.png"
+        image: "/images/explainer-formulation.png"
     },
     {
         heading: "Web development",
         descp: "Build stunning, user-friendly websites that not only look great but also perform seamlessly across all devices.",
-        image: "https://images.shadcnspace.com/assets/services/services-2.png"
+        image: "/images/project.png"
     },
     {
         heading: "Content creation",
         descp: "We create engaging, high-quality content that resonates with your audience and helps you connect with them on a deeper level.",
-        image: "https://images.shadcnspace.com/assets/services/services-3.png"
+        image: "/images/community-pulse.png"
     },
     {
         heading: "Motion graphics",
         descp: "We create engaging, high-quality motion graphics that capture the essence of your brand and help you connect with your audience on a deeper level.",
-        image: "https://images.shadcnspace.com/assets/services/services-4.png"
+        image: "/images/dashboard.png"
     }
 ];
 
