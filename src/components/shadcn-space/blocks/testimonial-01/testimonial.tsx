@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion, useInView } from "motion/react";
+import { BNS_COMMUNITY_IMAGES } from "@/constants/bns-media-images";
 
 const Testimonials = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -13,7 +14,6 @@ const Testimonials = () => {
     <section ref={sectionRef} className="py-10">
       <div className="max-w-7xl mx-auto px-4 xl:px-16">
         <div className="flex flex-col items-center self-stretch gap-12">
-          {/* Heading */}
           <motion.div
             initial={{ opacity: 0, y: -32 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -32 }}
@@ -30,7 +30,6 @@ const Testimonials = () => {
               What Kenyans are saying about transparent budgets
             </h2>
           </motion.div>
-          {/* Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 w-full">
             <motion.div
               initial={{ opacity: 0, y: 40 }}
@@ -38,10 +37,13 @@ const Testimonials = () => {
               transition={{ duration: 1, delay: 0.2, ease: "easeInOut" }}
               className="col-span-1 lg:col-span-8"
             >
-              <Card className="h-full w-full rounded-2xl border border-border bg-[url('/images/media/129A3905.jpg')] bg-cover bg-center bg-no-repeat object-cover p-8 md:min-h-96 md:pe-16">
+              <Card
+                className="h-full w-full rounded-2xl border border-border bg-cover bg-center bg-no-repeat object-cover p-8 md:min-h-96 md:pe-16"
+                style={{ backgroundImage: `url('${BNS_COMMUNITY_IMAGES.forumA}')` }}
+              >
                 <CardContent className="flex flex-col items-start justify-between gap-24 p-0 h-full">
-                   <p className="text-white/70 text-base font-normal">
-                    Customer stories
+                  <p className="text-white/70 text-base font-normal">
+                    Citizen engagements
                   </p>
                   <div className="flex flex-col gap-6">
                     <p className="text-white text-xl lg:text-2xl font-medium">
@@ -93,7 +95,7 @@ const Testimonials = () => {
                 <CardContent className="flex flex-col items-start justify-between gap-6 p-0 h-full">
                   <div className="flex flex-col items-start gap-2">
                     <p className="text-white/70 text-base font-normal">
-                      Customer stories
+                      Citizen engagements
                     </p>
                     <p className="text-white text-xl lg:text-2xl font-medium">
                       Their budget explainers helped our students understand
@@ -101,10 +103,11 @@ const Testimonials = () => {
                     </p>
                   </div>
                   <img
-                    src="/images/towwnhallmay/129A3912.jpg"
-                    alt="Budget Ndio Story community engagement"
-                    width={'100%'}
+                    src={BNS_COMMUNITY_IMAGES.cohortA}
+                    alt="BNS cohort civic engagement session"
+                    width={"100%"}
                     height={220}
+                    className="rounded-xl object-cover"
                   />
                 </CardContent>
               </Card>
@@ -115,23 +118,26 @@ const Testimonials = () => {
               transition={{ duration: 1, delay: 0.5, ease: "easeInOut" }}
               className="col-span-1 lg:col-span-8"
             >
-              <Card className="bg-primary/10 dark:bg-white/10 border border-border h-full w-full p-8 rounded-2xl">
-                <CardContent className="flex flex-col items-start justify-between gap-24 p-0 h-full">
+              <Card
+                className="h-full w-full rounded-2xl border border-border bg-cover bg-center bg-no-repeat p-8"
+                style={{ backgroundImage: `url('${BNS_COMMUNITY_IMAGES.stakeholdersC}')` }}
+              >
+                <CardContent className="flex flex-col items-start justify-between gap-24 p-0 h-full min-h-64">
                   <div className="flex flex-col items-start gap-2">
-                    <p className="text-primary/70 text-base font-normal">
-                      Customer stories
+                    <p className="text-white/80 text-base font-normal">
+                      Citizen engagements
                     </p>
-                    <p className="text-card-foreground text-xl lg:text-2xl font-medium">
+                    <p className="text-white text-xl lg:text-2xl font-medium drop-shadow-sm">
                       “Budget Ndio Story is bridging the gap between policy
                       and people. Every Kenyan deserves to understand
                       how public funds are spent.”
                     </p>
                   </div>
                   <div>
-                    <p className="text-card-foreground text-base font-medium">
+                    <p className="text-white text-base font-medium">
                       Dr. James Ochieng
                     </p>
-                    <p className="text-muted-foreground text-sm font-normal">
+                    <p className="text-white/80 text-sm font-normal">
                       Lecturer, University of Nairobi
                     </p>
                   </div>

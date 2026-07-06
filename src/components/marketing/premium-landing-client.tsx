@@ -103,9 +103,9 @@ const bnsServices: ServiceItem[] = [
     image: "/images/community-pulse.png"
   },
   {
-    heading: "Data Visualization",
-    descp: "We transform dry budget figures into compelling visual stories — infographics, charts, and interactive dashboards — making fiscal data understandable at a glance.",
-    image: "/images/dashboard.png"
+    heading: "Media (Audio Visual) Agency",
+    descp: "BNS Studio delivers professional videography, photography, studio rental, and post-production — turning civic and brand stories into high-quality audio-visual content.",
+    image: "/images/media/main%20media%20image.jpg"
   },
   {
     heading: "Public Engagement",

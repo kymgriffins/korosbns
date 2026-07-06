@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
-import { X, Play } from "lucide-react";
+import { X } from "lucide-react";
+import { BNS_STUDIO_PORTFOLIO_IMAGES } from "@/constants/bns-media-images";
 
 type PortfolioItem = {
   id: string;
@@ -16,67 +18,16 @@ type PortfolioItem = {
   description?: string;
 };
 
-function isEmbedPlatform(platform?: string) {
-  return platform === "youtube" || platform === "vimeo" || platform === "other" || !platform;
-}
-
 const categories = ["All", "Videography", "Photography", "Events", "Brand"];
 
-const defaultItems: PortfolioItem[] = [
-  {
-    id: "1",
-    title: "Budget Breakdown 2026",
-    category: "Videography",
-    media_type: "video",
-    image_url: "/placeholder.svg",
-    video_url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-    description: "Animated explainer breaking down the FY2026/27 budget allocations.",
-  },
-  {
-    id: "2",
-    title: "County Legislative Process",
-    category: "Videography",
-    media_type: "video",
-    image_url: "/placeholder.svg",
-    video_url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-    description: "Documentary on how county assemblies process budgets.",
-  },
-  {
-    id: "3",
-    title: "Youth Civic Engagement",
-    category: "Photography",
-    media_type: "image",
-    image_url: "/placeholder.svg",
-    description: "Photo series capturing youth participation in public forums.",
-  },
-  {
-    id: "4",
-    title: "Finance Bill Town Hall",
-    category: "Events",
-    media_type: "video",
-    image_url: "/placeholder.svg",
-    video_url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-    description: "Coverage of public participation forums on the Finance Bill.",
-  },
-  {
-    id: "5",
-    title: "BNS Brand Documentary",
-    category: "Brand",
-    media_type: "video",
-    image_url: "/placeholder.svg",
-    video_url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-    description: "Brand film showcasing the Budget Ndio Story mission and impact.",
-  },
-  {
-    id: "6",
-    title: "Parliamentary Proceedings",
-    category: "Videography",
-    media_type: "video",
-    image_url: "/placeholder.svg",
-    video_url: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-    description: "Coverage of National Assembly budget committee sessions.",
-  },
-];
+const defaultItems: PortfolioItem[] = BNS_STUDIO_PORTFOLIO_IMAGES.map((item) => ({
+  id: item.id,
+  title: item.title,
+  category: item.category,
+  media_type: "image" as const,
+  image_url: item.image_url,
+  description: item.description,
+}));
 
 type Props = {
   items?: PortfolioItem[];
@@ -154,38 +105,13 @@ export function StudioPortfolio({ items }: Props) {
                 className="group relative aspect-video rounded-xl overflow-hidden border border-border/60 bg-card cursor-pointer"
                 onClick={() => setLightbox(item)}
               >
-                {item.media_type === "video" && item.video_url ? (
-                  <>
-                    {isEmbedPlatform(item.video_platform) ? (
-                      <iframe
-                        src={item.video_url}
-                        className="absolute inset-0 size-full pointer-events-none"
-                        title={item.title}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <video
-                        src={item.video_url}
-                        className="absolute inset-0 size-full pointer-events-none object-cover"
-                        muted
-                        loop
-                        playsInline
-                      />
-                    )}
-                    <div className="absolute inset-0 bg-black/20 z-10" />
-                    <div className="absolute inset-0 flex items-center justify-center z-20">
-                      <div className="size-14 rounded-full bg-white/20 backdrop-blur flex items-center justify-center group-hover:bg-white/30 transition-colors">
-                        <Play className="size-6 text-white ml-0.5" />
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <div
-                    className="absolute inset-0 bg-cover bg-center"
-                    style={{ backgroundImage: `url(${item.image_url})` }}
-                  />
-                )}
+                <Image
+                  src={item.image_url}
+                  alt={item.title}
+                  fill
+                  className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-30" />
                 <div className="absolute bottom-0 left-0 right-0 p-4 z-40 opacity-0 group-hover:opacity-100 transition-opacity">
                   <h3 className="text-white font-semibold text-sm">
@@ -216,32 +142,14 @@ export function StudioPortfolio({ items }: Props) {
               className="relative max-w-4xl w-full rounded-xl overflow-hidden bg-card"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="aspect-video bg-muted">
-                {lightbox.media_type === "video" && lightbox.video_url ? (
-                  isEmbedPlatform(lightbox.video_platform) ? (
-                    <iframe
-                      src={lightbox.video_url}
-                      className="size-full"
-                      title={lightbox.title}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                  ) : (
-                    <video
-                      src={lightbox.video_url}
-                      className="size-full"
-                      controls
-                      autoPlay
-                      playsInline
-                    />
-                  )
-                ) : (
-                  <img
-                    src={lightbox.image_url}
-                    alt={lightbox.title}
-                    className="size-full object-cover"
-                  />
-                )}
+              <div className="relative aspect-video bg-muted">
+                <Image
+                  src={lightbox.image_url}
+                  alt={lightbox.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 896px) 100vw, 896px"
+                />
               </div>
               <div className="p-5">
                 <h3 className="font-semibold text-lg">{lightbox.title}</h3>

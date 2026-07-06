@@ -22,6 +22,7 @@ const defaultTestimonials: Testimonial[] = [
     content:
       "BNS Studio produced an exceptional documentary on Kenya's budget process. Their attention to detail and understanding of civic issues made the final product both informative and engaging.",
     rating: 5,
+    avatar_url: "/images/media/129A3905.jpg",
   },
   {
     id: "2",
@@ -30,6 +31,7 @@ const defaultTestimonials: Testimonial[] = [
     content:
       "Working with BNS Studio was a pleasure. They brought our county budget workshops to life through beautiful videography and photography. Highly recommend their services.",
     rating: 5,
+    avatar_url: "/images/towwnhallmay/129A3912.jpg",
   },
   {
     id: "3",
@@ -38,6 +40,7 @@ const defaultTestimonials: Testimonial[] = [
     content:
       "The team at BNS Studio understood our vision immediately. The explainer video they created has been instrumental in helping young people understand the Finance Bill.",
     rating: 5,
+    avatar_url: "/images/media/129A4039.jpg",
   },
   {
     id: "4",
@@ -46,6 +49,7 @@ const defaultTestimonials: Testimonial[] = [
     content:
       "BNS Studio's documentary on parliamentary budget processes is now used as teaching material in our political science department. Outstanding quality and research depth.",
     rating: 4,
+    avatar_url: "/images/media/main%20media%20image.jpg",
   },
 ];
 
@@ -103,7 +107,17 @@ export function StudioTestimonials({ testimonials }: Props) {
               transition={{ duration: 0.3 }}
               className="p-8 md:p-12 rounded-2xl border border-border/60 bg-card"
             >
-              <Quote className="size-8 text-primary/30 mx-auto mb-6" />
+              {items[current].avatar_url ? (
+                <div className="relative size-14 mx-auto mb-6 rounded-full overflow-hidden border border-border">
+                  <img
+                    src={items[current].avatar_url}
+                    alt={items[current].client_name}
+                    className="size-full object-cover"
+                  />
+                </div>
+              ) : (
+                <Quote className="size-8 text-primary/30 mx-auto mb-6" />
+              )}
               <p className="text-lg md:text-xl leading-relaxed text-foreground/90 mb-6">
                 &ldquo;{items[current].content}&rdquo;
               </p>
