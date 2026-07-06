@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { LearnTabSync } from "@/components/learn/learn-tab-sync";
 import { LearnMobileNav } from "@/layouts/LearnMobileNav";
 import AppSidebar from "@/components/shadcn-space/blocks/dashboard-shell-01/app-sidebar";
+import BNSFooter from "@/components/shadcn-space/blocks/footer-02/footer";
 
 export default function LearnLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -17,6 +18,9 @@ export default function LearnLayout({ children }: { children: React.ReactNode })
           <div className="flex flex-col flex-1 min-h-0">
             <div className="flex-1 overflow-y-auto pb-[--mobile-nav-height] lg:pb-0">
               {children}
+              <div className="lg:hidden border-t border-border/40">
+                <BNSFooter />
+              </div>
             </div>
             <LearnMobileNav />
           </div>
