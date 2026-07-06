@@ -11,6 +11,7 @@ import { CreateThreadDialog } from "@/components/forum/create-thread-dialog";
 import { useAuth } from "@/contexts/auth-context";
 import Link from "next/link";
 import { Routes } from "@/constants/routes";
+import { LearnPageShell } from "@/components/learn/learn-page-shell";
 
 export function ForumView() {
   const { isLoggedIn } = useAuth();
@@ -41,41 +42,40 @@ export function ForumView() {
     );
   }
 
-  return (
-    <div className="flex flex-col">
-      <div className="mb-4 flex items-start justify-between gap-3">
-        <div>
-          <div className="mb-1 flex items-center gap-2">
-            <MessagesSquare className="size-5 text-primary" />
-            <h1 className="text-lg font-black tracking-tight">Community Forums</h1>
-          </div>
-          <p className="text-xs font-semibold text-muted-foreground">
-            Civic learning discussions — ask questions, share insights, learn together.
-          </p>
-        </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <button
-            onClick={async () => { setRefreshing(true); try { await queryClient.invalidateQueries({ queryKey: ["forum", "threads"] }); } finally { setRefreshing(false); } }}
-            disabled={refreshing}
-            className="p-2 hover:bg-muted/50 rounded-xl transition-colors text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-            title="Refresh threads"
-          >
-            <RefreshCw className={`size-4 ${refreshing ? "animate-spin" : ""}`} />
-          </button>
-          {isLoggedIn ? (
-            <CreateThreadDialog />
-          ) : (
-            <Link
-              href={Routes.Login}
-              className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-xl bg-primary px-4 text-xs font-bold text-primary-foreground transition-colors hover:bg-primary/90"
-            >
-              <MessageSquarePlus className="size-4" />
-              Sign in to post
-            </Link>
-          )}
-        </div>
-      </div>
+  const headerActions = (
+    <>
+      <button
+        onClick={async () => {
+          setRefreshing(true);
+          try {
+            await queryClient.invalidateQueries({ queryKey: ["forum", "threads"] });
+          } finally {
+            setRefreshing(false);
+          }
+        }}
+        disabled={refreshing}
+        className="rounded-xl p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+        title="Refresh threads"
+        type="button"
+      >
+        <RefreshCw className={`size-4 ${refreshing ? "animate-spin" : ""}`} />
+      </button>
+      {isLoggedIn ? (
+        <CreateThreadDialog />
+      ) : (
+        <Link
+          href={Routes.Login}
+          className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-primary px-4 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+        >
+          <MessageSquarePlus className="size-4" />
+          Sign in to post
+        </Link>
+      )}
+    </>
+  );
 
+  return (
+    <LearnPageShell navId="forum" actions={headerActions} compact>
       <div className="relative mb-4">
         <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
@@ -126,6 +126,6 @@ export function ForumView() {
           ))}
         </div>
       )}
-    </div>
+    </LearnPageShell>
   );
 }

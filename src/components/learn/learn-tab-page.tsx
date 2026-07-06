@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { LearnContentGrid } from "@/components/learn/learn-content-grid";
 import { LearnSidebar } from "@/components/learn/learn-sidebar";
+import { LearnPageShell } from "@/components/learn/learn-page-shell";
 import type { LearnContentType, LearnHubSummary } from "@/types/learn";
 import type { LearnHubItem } from "@/lib/learn-hub";
 import { videoData } from "@/data/videos";
@@ -27,14 +28,21 @@ const LIST_FETCHERS = {
     contentData.quests.fetch(opts).then((items) => ({ results: items })),
 } as const;
 
+const LIST_NAV_IDS: Record<keyof typeof LIST_FETCHERS, string> = {
+  videos: "videos",
+  articles: "articles",
+  stories: "stories",
+  documents: "documents",
+  paths: "modules",
+  quests: "quests",
+};
+
 export function LearnTabPage({
-  title,
-  description,
   listKey,
   summary,
 }: {
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
   listKey: keyof typeof LIST_FETCHERS;
   summary?: LearnHubSummary | null;
 }) {
@@ -73,16 +81,17 @@ export function LearnTabPage({
   }, [summary, items]);
 
   return (
-    <div className="mx-auto grid max-w-6xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[1fr_280px]">
-      <div>
-        <h1 className="text-2xl font-bold">{title}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{description}</p>
-        {error ? <p className="mt-4 text-destructive">{error}</p> : null}
-        <div className="mt-6">
+    <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:py-8">
+      <LearnPageShell navId={LIST_NAV_IDS[listKey]} contentClassName="mt-6">
+        {error ? <p className="mb-4 text-sm text-destructive">{error}</p> : null}
+        <div className="grid gap-8 lg:grid-cols-[1fr_280px]">
           <LearnContentGrid items={items} loading={loading} />
+          <LearnSidebar
+            trending={(summary?.trending ?? []) as LearnHubItem[]}
+            dailyQuest={dailyQuest as LearnHubItem | null | undefined}
+          />
         </div>
-      </div>
-      <LearnSidebar trending={(summary?.trending ?? []) as LearnHubItem[]} dailyQuest={dailyQuest as LearnHubItem | null | undefined} />
+      </LearnPageShell>
     </div>
   );
 }

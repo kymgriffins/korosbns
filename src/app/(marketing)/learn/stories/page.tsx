@@ -5,14 +5,7 @@ import { LearnTabPage, useLearnSummary } from "@/components/learn/learn-tab-page
 
 function StoriesContent() {
   const summary = useLearnSummary();
-  return (
-    <LearnTabPage
-      listKey="stories"
-      title="Stories"
-      description="Swipeable civic explainers designed for quick understanding."
-      summary={summary}
-    />
-  );
+  return <LearnTabPage listKey="stories" summary={summary} />;
 }
 
 export default function LearnStoriesPage() {

@@ -5,14 +5,7 @@ import { LearnTabPage, useLearnSummary } from "@/components/learn/learn-tab-page
 
 function ArticlesContent() {
   const summary = useLearnSummary();
-  return (
-    <LearnTabPage
-      listKey="articles"
-      title="Articles"
-      description="Standalone budget explainers outside structured learning paths."
-      summary={summary}
-    />
-  );
+  return <LearnTabPage listKey="articles" summary={summary} />;
 }
 
 export default function LearnArticlesPage() {

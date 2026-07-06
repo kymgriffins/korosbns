@@ -13,6 +13,8 @@ import { getAuthorSlug } from "@/lib/learn-authors";
 import type { CivicModule } from "@/types/learn";
 import { readProgress } from "@/lib/module-progress";
 import { HarmonizedImage } from "@/components/ui/harmonized-image";
+import { LearnPageShell } from "@/components/learn/learn-page-shell";
+import { cn } from "@/utils";
 
 interface LearnModulesViewProps {
   profile: any;
@@ -67,47 +69,53 @@ export function LearnModulesView({ profile, stages, currentStage, onSelectStage,
   }), [moduleProgress]);
 
   return (
-    <div className="flex flex-col h-full bg-background overflow-hidden">
-      <header className="hidden lg:flex items-center justify-between px-4 md:px-5 py-3 border-b border-border/50 shrink-0 gap-3">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div className="bg-primary/8 p-1.5 rounded-lg shrink-0 ring-1 ring-primary/20">
-            <BookOpen className="size-4 text-primary" />
-          </div>
-          <div className="min-w-0">
-            <h1 className="font-bold text-sm leading-tight truncate">Civic Modules</h1>
-            <p className="text-[10px] text-muted-foreground font-semibold">Master the budget process</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2 shrink-0">
+    <LearnPageShell
+      navId="modules"
+      compact
+      className="h-full"
+      contentClassName="flex min-h-0 flex-1 flex-col overflow-hidden"
+      actions={
+        onRefresh ? (
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-full"
+            disabled={refreshing}
+            onClick={async () => {
+              setRefreshing(true);
+              try {
+                await onRefresh();
+              } finally {
+                setRefreshing(false);
+              }
+            }}
+          >
+            <RefreshCw className={cn("size-3.5", refreshing && "animate-spin")} />
+            Sync modules
+          </Button>
+        ) : null
+      }
+    >
+      <div className="flex h-full flex-col overflow-hidden bg-background">
+        <div className="flex shrink-0 items-center justify-end gap-2 border-b border-border/40 px-1 pb-3">
           <div className="relative hidden sm:block">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
+            <Search className="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
-              placeholder="Search..."
+              placeholder="Search modules…"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8 pr-3 py-1.5 bg-muted/40 border-0 rounded-lg text-xs w-36 focus:outline-none focus:ring-2 focus:ring-ring/30 transition-all"
+              className="w-40 rounded-full border border-border/60 bg-muted/30 py-1.5 pl-8 pr-3 text-xs transition-all focus:outline-none focus:ring-2 focus:ring-ring/30"
             />
           </div>
-          {onRefresh && (
-            <button
-              onClick={async () => { setRefreshing(true); try { await onRefresh(); } finally { setRefreshing(false); } }}
-              disabled={refreshing}
-              className="p-1.5 hover:bg-muted/50 rounded-lg transition-colors text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-              title="Refresh modules"
-            >
-              <RefreshCw className={`size-4 ${refreshing ? "animate-spin" : ""}`} />
-            </button>
-          )}
           {profile?.avatar_url ? (
-            <img src={profile.avatar_url} alt="" className="size-7 rounded-full object-cover shrink-0 ring-1 ring-border/40" />
+            <img src={profile.avatar_url} alt="" className="size-7 shrink-0 rounded-full object-cover ring-1 ring-border/40" />
           ) : (
             <BitmojiAvatar gender={profile?.gender} size="sm" className="shrink-0" />
           )}
         </div>
-      </header>
 
-      <div className="flex-1 overflow-y-auto p-3 md:p-4">
+        <div className="flex-1 overflow-y-auto p-3 md:p-4">
         <div className="max-w-6xl mx-auto space-y-3">
           <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 scrollbar-hide">
             {[
@@ -250,6 +258,6 @@ export function LearnModulesView({ profile, stages, currentStage, onSelectStage,
           )}
         </div>
       </div>
-    </div>
+    </LearnPageShell>
   );
 }

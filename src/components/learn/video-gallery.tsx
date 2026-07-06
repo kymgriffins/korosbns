@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
-import { SectionHeader, SectionShell } from "@/layouts/section-shell";
+import { LearnPageShell } from "@/components/learn/learn-page-shell";
 import type { YouTubeVideo } from "@/data/videos";
 import { getVideos, embedUrl } from "@/data/videos";
 import { getTranscript, fetchTranscript, formatTimestamp } from "@/data/transcripts";
@@ -219,36 +219,24 @@ export function VideoGallery() {
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <SectionHeader
-          eyebrow="Video Library"
-          title="All YouTube Videos"
-          description="Every Budget Ndio Story video in one place"
-        />
-        <VideoGridSkeleton />
+      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+        <LearnPageShell navId="videos">
+          <VideoGridSkeleton />
+        </LearnPageShell>
       </div>
     );
   }
 
   return (
-    <SectionShell>
+    <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+      <LearnPageShell navId="videos">
       <motion.div
         variants={staggerContainer}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-40px" }}
-        className="space-y-8"
+        className="space-y-6"
       >
-        <SectionHeader
-          eyebrow="Video Library"
-          title={
-            <>
-              All <span className="font-heading italic text-primary">YouTube</span> Videos
-            </>
-          }
-          description="Every Budget Ndio Story video in one place. Watch, learn, and follow the transcript."
-        />
-
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="relative flex-1 max-w-xs">
             <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -306,6 +294,7 @@ export function VideoGallery() {
           {search && ` matching "${search}"`}
         </div>
       </motion.div>
-    </SectionShell>
+      </LearnPageShell>
+    </div>
   );
 }

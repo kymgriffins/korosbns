@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Bell, Loader2, CheckCircle2, FileText, MessageSquare, RefreshCw } from "lucide-react";
 import { useGamificationMe } from "@/hooks/use-gamification";
 import { safeArray, safeLen, safeMap } from "@/lib/safe-data";
+import { LearnPageShell } from "@/components/learn/learn-page-shell";
 
 interface AlertsViewProps {
   profile: any;
@@ -25,22 +26,29 @@ export function AlertsView({ profile }: AlertsViewProps) {
   const [refreshing, setRefreshing] = useState(false);
 
   return (
-    <div className="space-y-4 md:space-y-6 max-w-3xl mx-auto">
-      <div className="flex items-start justify-between gap-3">
-        <div className="space-y-1">
-          <h2 className="text-xl font-black uppercase tracking-tight">Participation Alerts</h2>
-          <p className="text-xs text-muted-foreground">Hyper-local alerts matching your county and tracked documents.</p>
-        </div>
-        <button
-          onClick={async () => { setRefreshing(true); try { await queryClient.invalidateQueries({ queryKey: ["gamification", "me"] }); } finally { setRefreshing(false); } }}
-          disabled={refreshing}
-          className="p-1.5 hover:bg-muted/50 rounded-lg transition-colors text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring shrink-0 mt-1"
-          title="Refresh activity"
-        >
-          <RefreshCw className={`size-4 ${refreshing ? "animate-spin" : ""}`} />
-        </button>
-      </div>
-
+    <div className="mx-auto max-w-3xl">
+      <LearnPageShell
+        navId="participation"
+        compact
+        actions={
+          <button
+            onClick={async () => {
+              setRefreshing(true);
+              try {
+                await queryClient.invalidateQueries({ queryKey: ["gamification", "me"] });
+              } finally {
+                setRefreshing(false);
+              }
+            }}
+            disabled={refreshing}
+            className="rounded-xl p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            title="Refresh activity"
+            type="button"
+          >
+            <RefreshCw className={`size-4 ${refreshing ? "animate-spin" : ""}`} />
+          </button>
+        }
+      >
       {gamification && !gamificationLoading && (
         <div className="space-y-4">
           <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Recent Activity</h3>
@@ -104,6 +112,7 @@ export function AlertsView({ profile }: AlertsViewProps) {
           </div>
         )}
       </div>
+      </LearnPageShell>
     </div>
   );
 }

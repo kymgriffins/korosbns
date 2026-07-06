@@ -1,67 +1,32 @@
 "use client";
-import React from "react";
+
+import React, { Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuItem,
   SidebarProvider,
 } from "@/components/ui/sidebar";
 import { NavMain } from "@/components/shadcn-space/blocks/dashboard-shell-01/nav-main";
-import {
-  BarChart3,
-  BookOpen,
-  CircleUserRound,
-  FileText,
-  Languages,
-  LucideIcon,
-  MessagesSquare,
-  Notebook,
-  NotepadText,
-  Ticket,
-} from "lucide-react";
 import { SiteHeader } from "@/components/shadcn-space/blocks/dashboard-shell-01/site-header";
-import { learnTabToHref } from "@/lib/learn-nav";
+import { ArrowLeft } from "lucide-react";
 import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
-
-export type NavItem = {
-  label?: string;
-  isSection?: boolean;
-  title?: string;
-  icon?: LucideIcon;
-  href?: string;
-  children?: NavItem[];
-  isActive?: boolean;
-};
-
-export const navData: NavItem[] = [
-  { label: "Learning Hub", isSection: true },
-  { title: "Dashboard", icon: BarChart3, href: learnTabToHref("home") },
-  { title: "Modules", icon: BookOpen, href: learnTabToHref("learn") },
-  { title: "Documents", icon: FileText, href: learnTabToHref("documents") },
-  { title: "Forum", icon: MessagesSquare, href: learnTabToHref("forum") },
-  { title: "Profile", icon: CircleUserRound, href: learnTabToHref("profile") },
-
-  { label: "Content", isSection: true },
-  { title: "Videos", icon: Languages, href: "/learn/videos" },
-  { title: "Articles", icon: NotepadText, href: "/learn/articles" },
-  { title: "Stories", icon: Notebook, href: "/learn/stories" },
-  { title: "Quests", icon: Ticket, href: "/learn/quests" },
-];
 
 const AppSidebar = ({ children }: { children: React.ReactNode }) => {
   return (
     <SidebarProvider>
-      <Sidebar className="py-4 px-0 bg-background">
-        <div className="flex flex-col gap-6 bg-background">
-          <SidebarHeader className="py-0 px-4">
+      <Sidebar className="border-r border-border/60 bg-sidebar px-0 py-4">
+        <div className="flex flex-col gap-4 bg-sidebar">
+          <SidebarHeader className="px-4 py-0">
             <SidebarMenu>
               <SidebarMenuItem>
-                <Link href="/learn" className="flex items-center gap-2 w-full h-full py-1">
+                <Link href="/learn" className="flex h-full w-full items-center gap-2 py-1">
                   <Image
                     src="/logo.svg"
                     alt="Budget Ndio Story"
@@ -73,23 +38,38 @@ const AppSidebar = ({ children }: { children: React.ReactNode }) => {
                 </Link>
               </SidebarMenuItem>
             </SidebarMenu>
+            <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground">
+              Civic budget learning — choose your path, move at your pace.
+            </p>
           </SidebarHeader>
 
-          <SidebarContent className="overflow-hidden gap-0 px-0">
-            <SimpleBar autoHide className="h-[calc(100vh-5.5rem)]">
-              <div className="px-4 pb-4">
-                <NavMain items={navData} />
+          <SidebarContent className="gap-0 overflow-hidden px-0">
+            <SimpleBar autoHide className="h-[calc(100vh-11rem)]">
+              <div className="px-3 pb-4">
+                <NavMain />
               </div>
             </SimpleBar>
           </SidebarContent>
+
+          <SidebarFooter className="border-t border-border/60 px-4 pt-4">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
+            >
+              <ArrowLeft className="size-3.5" aria-hidden />
+              Back to Budget Ndio Story
+            </Link>
+          </SidebarFooter>
         </div>
       </Sidebar>
 
-      <div className="flex flex-1 flex-col min-w-0">
-        <header className="sticky top-0 z-50 hidden lg:flex items-center border-b px-6 py-3 bg-background">
-          <SiteHeader />
+      <div className="flex min-w-0 flex-1 flex-col bg-background">
+        <header className="sticky top-0 z-50 hidden items-center border-b border-border/60 bg-background/95 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/80 lg:flex">
+          <Suspense fallback={<div className="h-9 w-full animate-pulse rounded-full bg-muted/40" />}>
+            <SiteHeader />
+          </Suspense>
         </header>
-        <main className="flex-1 min-w-0">{children}</main>
+        <main className="min-w-0 flex-1">{children}</main>
       </div>
     </SidebarProvider>
   );

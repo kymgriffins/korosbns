@@ -5,14 +5,7 @@ import { LearnTabPage, useLearnSummary } from "@/components/learn/learn-tab-page
 
 function QuestsContent() {
   const summary = useLearnSummary();
-  return (
-    <LearnTabPage
-      listKey="quests"
-      title="Quests"
-      description="Trivia and challenges that earn XP when you complete them."
-      summary={summary}
-    />
-  );
+  return <LearnTabPage listKey="quests" summary={summary} />;
 }
 
 export default function LearnQuestsPage() {

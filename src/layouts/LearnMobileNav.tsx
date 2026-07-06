@@ -2,26 +2,25 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { BookOpen, FileText, LayoutDashboard, MessagesSquare } from "lucide-react";
-import { useLearn, type LearnTab } from "@/contexts/learn-context";
-import { learnTabToHref } from "@/lib/learn-nav";
+import { useLearn } from "@/contexts/learn-context";
 import {
   MobileBottomNav,
   type MobileBottomNavItem,
 } from "@/components/ui/mobile-bottom-nav";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAuth } from "@/contexts/auth-context";
+import { learnMobileNavItems } from "@/lib/learn-shell-nav";
+import { isLearnNavHrefActive } from "@/lib/learn-nav";
+import { usePathname, useSearchParams } from "next/navigation";
 
 type StoredProfile = {
   breakName?: string;
-  gender?: string;
-  participationLogs?: unknown[];
   avatar_url?: string | null;
 };
 
 function getDisplayName(
   user: ReturnType<typeof useAuth>["user"],
-  profile: StoredProfile | null
+  profile: StoredProfile | null,
 ) {
   if (user) {
     const full = [user.first_name, user.last_name].filter(Boolean).join(" ").trim();
@@ -33,7 +32,9 @@ function getDisplayName(
 export function LearnMobileNav() {
   const { activeTab, setActiveTab } = useLearn();
   const { user } = useAuth();
-  const onNav = (tab: LearnTab) => () => setActiveTab(tab);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab");
   const [profile, setProfile] = useState<StoredProfile | null>(null);
 
   useEffect(() => {
@@ -57,88 +58,73 @@ export function LearnMobileNav() {
   const displayName = getDisplayName(user, profile);
   const avatarUrl = user?.avatar_url ?? profile?.avatar_url ?? null;
   const initials = displayName
-    ? displayName.split(" ").map((p) => p[0] ?? "").join("").slice(0, 2).toUpperCase()
+    ? displayName
+        .split(" ")
+        .map((p) => p[0] ?? "")
+        .join("")
+        .slice(0, 2)
+        .toUpperCase()
     : "?";
 
-  const profileIcon = (
-    <Avatar
-      className={
-        activeTab === "profile"
-          ? "ring-2 ring-primary ring-offset-1 ring-offset-background"
-          : ""
-      }
-    >
-      {avatarUrl ? (
-        <Image
-          src={avatarUrl}
-          alt={displayName || "Profile"}
-          width={32}
-          height={32}
-          className="size-full rounded-full object-cover"
-          unoptimized
-        />
-      ) : (
-        <AvatarFallback
-          className={
-            activeTab === "profile"
-              ? "bg-primary text-primary-foreground text-[10px] font-black"
-              : "bg-muted text-muted-foreground text-[10px] font-black"
-          }
-        >
-          {initials}
-        </AvatarFallback>
-      )}
-    </Avatar>
-  );
+  const items: MobileBottomNavItem[] = learnMobileNavItems().map((nav) => {
+    const isActive =
+      (nav.tab ? activeTab === nav.tab : false) ||
+      isLearnNavHrefActive(pathname, tabParam, nav.href);
+    const Icon = nav.icon;
 
-  const items: MobileBottomNavItem[] = [
-    {
-      id: "home",
-      label: "Dashboard",
-      href: learnTabToHref("home"),
-      active: activeTab === "home",
-      ariaCurrent: activeTab === "home" ? "page" : undefined,
-      icon: <LayoutDashboard className="size-5" aria-hidden />,
-      onNavigate: onNav("home"),
-    },
-    {
-      id: "documents",
-      label: "Documents",
-      href: learnTabToHref("documents"),
-      active: activeTab === "documents",
-      ariaCurrent: activeTab === "documents" ? "page" : undefined,
-      icon: <FileText className="size-5" aria-hidden />,
-      onNavigate: onNav("documents"),
-    },
-    {
-      id: "learn",
-      label: "Learn",
-      href: learnTabToHref("learn"),
-      active: activeTab === "learn",
-      prominent: true,
-      ariaCurrent: activeTab === "learn" ? "page" : undefined,
-      icon: <BookOpen className="size-5" aria-hidden />,
-      onNavigate: onNav("learn"),
-    },
-    {
-      id: "forum",
-      label: "Forums",
-      href: learnTabToHref("forum"),
-      active: activeTab === "forum",
-      ariaCurrent: activeTab === "forum" ? "page" : undefined,
-      icon: <MessagesSquare className="size-5" aria-hidden />,
-      onNavigate: onNav("forum"),
-    },
-    {
-      id: "profile",
-      label: "Profile",
-      href: learnTabToHref("profile"),
-      active: activeTab === "profile",
-      ariaCurrent: activeTab === "profile" ? "page" : undefined,
-      icon: profileIcon,
-      onNavigate: onNav("profile"),
-    },
-  ];
+    if (nav.id === "profile") {
+      return {
+        id: nav.id,
+        label: nav.shortLabel,
+        href: nav.href,
+        active: isActive,
+        ariaCurrent: isActive ? "page" : undefined,
+        icon: (
+          <Avatar
+            className={
+              isActive
+                ? "ring-2 ring-primary ring-offset-1 ring-offset-background"
+                : ""
+            }
+          >
+            {avatarUrl ? (
+              <Image
+                src={avatarUrl}
+                alt={displayName || "Profile"}
+                width={32}
+                height={32}
+                className="size-full rounded-full object-cover"
+                unoptimized
+              />
+            ) : (
+              <AvatarFallback
+                className={
+                  isActive
+                    ? "bg-primary text-[10px] font-bold text-primary-foreground"
+                    : "bg-muted text-[10px] font-bold text-muted-foreground"
+                }
+              >
+                {initials}
+              </AvatarFallback>
+            )}
+          </Avatar>
+        ),
+        onNavigate: () => setActiveTab("profile"),
+        prominent: false,
+      };
+    }
+
+    return {
+      id: nav.id,
+      label: nav.shortLabel,
+      href: nav.href,
+      active: isActive,
+      prominent: nav.id === "modules",
+      ariaCurrent: isActive ? "page" : undefined,
+      icon: <Icon className="size-5" aria-hidden />,
+      onNavigate: nav.tab ? () => setActiveTab(nav.tab!) : undefined,
+    };
+  });
 
   return (
     <MobileBottomNav

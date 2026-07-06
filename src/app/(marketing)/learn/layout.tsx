@@ -18,7 +18,9 @@ export default function LearnLayout({ children }: { children: React.ReactNode })
             <div className="flex-1 overflow-y-auto pb-[--mobile-nav-height] lg:pb-0">
               {children}
             </div>
-            <LearnMobileNav />
+            <Suspense fallback={null}>
+              <LearnMobileNav />
+            </Suspense>
           </div>
         </AppSidebar>
       </Suspense>
