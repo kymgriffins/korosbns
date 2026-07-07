@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useSpring, useTransform } from "motion/react";
+import { AnimatePresence, motion, useScroll, useSpring, useTransform } from "motion/react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@iconify/react";
@@ -12,6 +12,7 @@ export interface ServiceItem {
     heading: string;
     descp: string;
     image: string;
+    icon?: string;
     ctaLabel?: string;
     ctaHref?: string;
     secondaryCtaLabel?: string;
@@ -30,6 +31,7 @@ export const servicesData: ServiceItem[] = [
         heading: "Brand Strategy",
         descp: "We craft unique brand stories and visual identities that resonate with your audience and build long-lasting trust and recognition.",
         image: "/images/explainer-formulation.png",
+        icon: "lucide:lightbulb",
         ctaLabel: "Learn More",
         ctaHref: "/contact",
         secondaryCtaLabel: "View Portfolio",
@@ -42,6 +44,7 @@ export const servicesData: ServiceItem[] = [
         heading: "Web development",
         descp: "Build stunning, user-friendly websites that not only look great but also perform seamlessly across all devices.",
         image: "/images/project.png",
+        icon: "lucide:code-2",
         ctaLabel: "See Capabilities",
         ctaHref: "/about",
         secondaryCtaLabel: "Talk to team",
@@ -54,6 +57,7 @@ export const servicesData: ServiceItem[] = [
         heading: "Content creation",
         descp: "We create engaging, high-quality content that resonates with your audience and helps you connect with them on a deeper level.",
         image: "/images/community-pulse.png",
+        icon: "lucide:pen-line",
         ctaLabel: "View Work",
         ctaHref: "/about",
         secondaryCtaLabel: "Get strategy call",
@@ -66,6 +70,7 @@ export const servicesData: ServiceItem[] = [
         heading: "Motion graphics",
         descp: "We create engaging, high-quality motion graphics that capture the essence of your brand and help you connect with your audience on a deeper level.",
         image: "/images/dashboard.png",
+        icon: "lucide:clapperboard",
         ctaLabel: "Book a Session",
         ctaHref: "/contact",
         secondaryCtaLabel: "See showreel",
@@ -100,7 +105,7 @@ function Services({ data = servicesData }: ServicesProps) {
         const updateActiveFromScroll = () => {
             ticking = false;
             const viewportAnchor = window.innerHeight * 0.38;
-            let nextIndex = activeIndex;
+            let nextIndex = 0;
             let bestDistance = Number.POSITIVE_INFINITY;
 
             itemRefs.current.forEach((node, index) => {
@@ -114,9 +119,7 @@ function Services({ data = servicesData }: ServicesProps) {
                 }
             });
 
-            if (nextIndex !== activeIndex) {
-                setActiveIndex(nextIndex);
-            }
+            setActiveIndex((prev) => (prev === nextIndex ? prev : nextIndex));
         };
 
         const onScroll = () => {
@@ -133,7 +136,7 @@ function Services({ data = servicesData }: ServicesProps) {
             window.removeEventListener("scroll", onScroll);
             window.removeEventListener("resize", onScroll);
         };
-    }, [activeIndex, data]);
+    }, [data]);
 
     return (
         <section ref={sectionRef} className="bg-background">
@@ -173,17 +176,50 @@ function Services({ data = servicesData }: ServicesProps) {
                                 style={{ y: parallaxY }}
                                 className="sticky top-24 transition-all duration-300 z-10 w-full max-w-lg"
                             >
-                                {data?.[activeIndex]?.image && (
-                                    <div className="overflow-hidden rounded-2xl border border-border/60 bg-card">
-                                        <Image
-                                            src={data[activeIndex].image}
-                                            alt={data[activeIndex].heading}
-                                            width={640}
-                                            height={420}
-                                            className="h-[320px] w-full object-cover"
-                                        />
-                                    </div>
-                                )}
+                                <AnimatePresence mode="wait" initial={false}>
+                                    <motion.div
+                                        key={`sticky-panel-${activeIndex}`}
+                                        initial={{ opacity: 0, y: 18 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -18 }}
+                                        transition={{ duration: 0.35, ease: "easeOut" }}
+                                        className="overflow-hidden rounded-2xl border border-border/60 bg-card"
+                                    >
+                                        {data?.[activeIndex]?.image && (
+                                            <div className="relative">
+                                                <Image
+                                                    src={data[activeIndex].image}
+                                                    alt={data[activeIndex].heading}
+                                                    width={640}
+                                                    height={420}
+                                                    className="h-[320px] w-full object-cover"
+                                                />
+                                                <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
+                                            </div>
+                                        )}
+                                        <div className="space-y-3 p-5">
+                                            <motion.div
+                                                initial={{ scale: 0.88, opacity: 0 }}
+                                                animate={{ scale: 1, opacity: 1 }}
+                                                transition={{ duration: 0.3, ease: "easeOut" }}
+                                                className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary/15 text-primary"
+                                            >
+                                                <Icon icon={data?.[activeIndex]?.icon ?? "lucide:sparkles"} width={18} height={18} />
+                                            </motion.div>
+                                            <h3 className="text-xl font-semibold text-foreground">
+                                                {data?.[activeIndex]?.heading}
+                                            </h3>
+                                            {data?.[activeIndex]?.statLabel && data?.[activeIndex]?.statValue ? (
+                                                <div className="inline-flex items-center gap-2 rounded-xl border border-primary/25 bg-primary/10 px-3 py-2">
+                                                    <span className="text-xs uppercase tracking-wide text-primary/80">
+                                                        {data[activeIndex].statLabel}
+                                                    </span>
+                                                    <AnimatedStat value={data[activeIndex].statValue} />
+                                                </div>
+                                            ) : null}
+                                        </div>
+                                    </motion.div>
+                                </AnimatePresence>
                             </motion.div>
                         </div>
                         <div className="w-full flex flex-col gap-16 lg:col-span-7 col-span-12">
@@ -267,3 +303,40 @@ function Services({ data = servicesData }: ServicesProps) {
 }
 
 export default Services;
+
+function AnimatedStat({ value }: { value: string }) {
+    const parsed = value.match(/^(\d+(?:\.\d+)?)(.*)$/);
+    const numeric = parsed ? Number(parsed[1]) : null;
+    const suffix = parsed ? parsed[2] : "";
+    const [display, setDisplay] = useState<string>(numeric === null ? value : "0");
+
+    useEffect(() => {
+        if (numeric === null) {
+            setDisplay(value);
+            return;
+        }
+
+        const durationMs = 550;
+        const steps = 24;
+        const stepMs = Math.max(16, Math.floor(durationMs / steps));
+        let step = 0;
+        const timer = window.setInterval(() => {
+            step += 1;
+            const progress = Math.min(step / steps, 1);
+            const current = numeric * progress;
+            const decimalPlaces = Number.isInteger(numeric) ? 0 : 1;
+            setDisplay(current.toFixed(decimalPlaces));
+            if (progress >= 1) {
+                window.clearInterval(timer);
+            }
+        }, stepMs);
+
+        return () => window.clearInterval(timer);
+    }, [numeric, value]);
+
+    return (
+        <span className="text-sm font-semibold text-foreground">
+            {numeric === null ? value : `${display}${suffix}`}
+        </span>
+    );
+}
