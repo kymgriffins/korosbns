@@ -90,6 +90,11 @@ const bnsServices: ServiceItem[] = [
     image: "/images/explainer-formulation.png",
     ctaLabel: "Read Reports",
     ctaHref: "/reports",
+    secondaryCtaLabel: "See Methodology",
+    secondaryCtaHref: "/learn",
+    highlights: ["National budgets", "County scorecards", "Citizen explainers"],
+    statLabel: "Reports Published",
+    statValue: "85+",
   },
   {
     heading: "Civic Education",
@@ -97,6 +102,11 @@ const bnsServices: ServiceItem[] = [
     image: "/images/community-pulse.png",
     ctaLabel: "Start Learning",
     ctaHref: "/learn",
+    secondaryCtaLabel: "View Stories",
+    secondaryCtaHref: "/learn/stories",
+    highlights: ["Interactive modules", "Youth workshops", "Explainer videos"],
+    statLabel: "Learners Reached",
+    statValue: "12k+",
   },
   {
     heading: "Media (Audio Visual) Agency",
@@ -104,6 +114,11 @@ const bnsServices: ServiceItem[] = [
     image: "/images/media/main%20media%20image.jpg",
     ctaLabel: "Explore BNS Studio",
     ctaHref: "/bns-studio",
+    secondaryCtaLabel: "Book Production",
+    secondaryCtaHref: "/contact",
+    highlights: ["Studio rental", "Post-production", "Campaign visuals"],
+    statLabel: "Production Turnaround",
+    statValue: "5-7 days",
   },
   {
     heading: "Public Engagement",
@@ -111,6 +126,11 @@ const bnsServices: ServiceItem[] = [
     image: "/images/towwnhallmay/129A3923.jpg",
     ctaLabel: "Join Surveys",
     ctaHref: "/surveys",
+    secondaryCtaLabel: "Upcoming Events",
+    secondaryCtaHref: "/events",
+    highlights: ["Town halls", "Citizen surveys", "Policy feedback loops"],
+    statLabel: "Communities Engaged",
+    statValue: "47",
   }
 ];
 

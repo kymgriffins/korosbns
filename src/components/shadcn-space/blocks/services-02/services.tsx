@@ -13,6 +13,11 @@ export interface ServiceItem {
     image: string;
     ctaLabel?: string;
     ctaHref?: string;
+    secondaryCtaLabel?: string;
+    secondaryCtaHref?: string;
+    highlights?: string[];
+    statLabel?: string;
+    statValue?: string;
 }
 
 export interface ServicesProps {
@@ -26,6 +31,11 @@ export const servicesData: ServiceItem[] = [
         image: "/images/explainer-formulation.png",
         ctaLabel: "Learn More",
         ctaHref: "/contact",
+        secondaryCtaLabel: "View Portfolio",
+        secondaryCtaHref: "/about",
+        highlights: ["Brand audit", "Positioning", "Messaging kit"],
+        statLabel: "Projects",
+        statValue: "40+",
     },
     {
         heading: "Web development",
@@ -33,6 +43,11 @@ export const servicesData: ServiceItem[] = [
         image: "/images/project.png",
         ctaLabel: "See Capabilities",
         ctaHref: "/about",
+        secondaryCtaLabel: "Talk to team",
+        secondaryCtaHref: "/contact",
+        highlights: ["Responsive builds", "Performance-first", "SEO setup"],
+        statLabel: "Avg load gain",
+        statValue: "2.3x",
     },
     {
         heading: "Content creation",
@@ -40,6 +55,11 @@ export const servicesData: ServiceItem[] = [
         image: "/images/community-pulse.png",
         ctaLabel: "View Work",
         ctaHref: "/about",
+        secondaryCtaLabel: "Get strategy call",
+        secondaryCtaHref: "/contact",
+        highlights: ["Video scripts", "Editorial plans", "Social campaigns"],
+        statLabel: "Monthly outputs",
+        statValue: "120+",
     },
     {
         heading: "Motion graphics",
@@ -47,6 +67,11 @@ export const servicesData: ServiceItem[] = [
         image: "/images/dashboard.png",
         ctaLabel: "Book a Session",
         ctaHref: "/contact",
+        secondaryCtaLabel: "See showreel",
+        secondaryCtaHref: "/about",
+        highlights: ["2D/3D motion", "Explainers", "Campaign assets"],
+        statLabel: "Delivery SLA",
+        statValue: "72h",
     }
 ];
 
@@ -119,6 +144,27 @@ function Services({ data = servicesData }: ServicesProps) {
                                             <p className={cn("text-muted-foreground text-base transition-all duration-300", activeIndex === index ? "opacity-100" : "opacity-80")}>
                                                 {value.descp}
                                             </p>
+                                            <div className="flex flex-wrap gap-2">
+                                                {(value.highlights ?? []).map((item) => (
+                                                    <span
+                                                        key={item}
+                                                        className={cn(
+                                                            "rounded-full border px-3 py-1 text-xs font-medium",
+                                                            activeIndex === index
+                                                                ? "border-primary/30 bg-primary/10 text-primary"
+                                                                : "border-border text-muted-foreground",
+                                                        )}
+                                                    >
+                                                        {item}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                            {(value.statLabel && value.statValue) ? (
+                                                <div className="inline-flex items-center gap-2 rounded-xl border border-border/70 bg-card px-3 py-2">
+                                                    <span className="text-xs uppercase tracking-wide text-muted-foreground">{value.statLabel}</span>
+                                                    <span className="text-sm font-semibold text-foreground">{value.statValue}</span>
+                                                </div>
+                                            ) : null}
                                             <div className="lg:hidden overflow-hidden rounded-xl border border-border/60 bg-card">
                                                 <Image
                                                     src={value.image}
@@ -129,14 +175,23 @@ function Services({ data = servicesData }: ServicesProps) {
                                                 />
                                             </div>
                                         </div>
-                                        <Link href={value.ctaHref ?? "/contact"} className="shrink-0">
-                                            <Button
-                                                variant={activeIndex === index ? "default" : "outline"}
-                                                className="rounded-full"
-                                            >
-                                                {value.ctaLabel ?? "Learn More"}
-                                            </Button>
-                                        </Link>
+                                        <div className="flex shrink-0 items-center gap-2">
+                                            <Link href={value.ctaHref ?? "/contact"}>
+                                                <Button
+                                                    variant={activeIndex === index ? "default" : "outline"}
+                                                    className="rounded-full"
+                                                >
+                                                    {value.ctaLabel ?? "Learn More"}
+                                                </Button>
+                                            </Link>
+                                            {value.secondaryCtaHref ? (
+                                                <Link href={value.secondaryCtaHref}>
+                                                    <Button variant="ghost" className="rounded-full">
+                                                        {value.secondaryCtaLabel ?? "Details"}
+                                                    </Button>
+                                                </Link>
+                                            ) : null}
+                                        </div>
                                     </div>
                                 ))}
                             </div>
