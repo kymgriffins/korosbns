@@ -68,6 +68,14 @@ const ServicesSection = dynamic(
   }
 );
 
+const ServicesStackedScroll = dynamic(
+  () => import("@/components/marketing/services-stacked-scroll"),
+  {
+    ssr: false,
+    loading: () => <div className="h-screen w-full bg-muted animate-pulse" />,
+  }
+);
+
 const TestimonialsSection = dynamic(
   () => import("@/components/shadcn-space/blocks/testimonial-01/testimonial"),
   {
@@ -81,58 +89,7 @@ const NewsletterPopup = dynamic(
   { ssr: false }
 );
 
-import type { ServiceItem } from "@/components/shadcn-space/blocks/services-02/services";
-
-const bnsServices: ServiceItem[] = [
-  {
-    heading: "Budget Analysis",
-    descp: "We break down complex national and county budgets into clear, accessible narratives that empower citizens to understand where public money is going and hold leaders accountable.",
-    image: "/images/explainer-formulation.png",
-    ctaLabel: "Read Reports",
-    ctaHref: "/reports",
-    secondaryCtaLabel: "See Methodology",
-    secondaryCtaHref: "/learn",
-    highlights: ["National budgets", "County scorecards", "Citizen explainers"],
-    statLabel: "Reports Published",
-    statValue: "85+",
-  },
-  {
-    heading: "Civic Education",
-    descp: "We create engaging learning content — videos, articles, and interactive modules — that builds fiscal literacy and helps Kenyans understand their role in the budget process.",
-    image: "/images/community-pulse.png",
-    ctaLabel: "Start Learning",
-    ctaHref: "/learn",
-    secondaryCtaLabel: "View Stories",
-    secondaryCtaHref: "/learn/stories",
-    highlights: ["Interactive modules", "Youth workshops", "Explainer videos"],
-    statLabel: "Learners Reached",
-    statValue: "12k+",
-  },
-  {
-    heading: "Media (Audio Visual) Agency",
-    descp: "BNS Studio delivers professional videography, photography, studio rental, and post-production — turning civic and brand stories into high-quality audio-visual content.",
-    image: "/images/media/main%20media%20image.jpg",
-    ctaLabel: "Explore BNS Studio",
-    ctaHref: "/bns-studio",
-    secondaryCtaLabel: "Book Production",
-    secondaryCtaHref: "/contact",
-    highlights: ["Studio rental", "Post-production", "Campaign visuals"],
-    statLabel: "Production Turnaround",
-    statValue: "5-7 days",
-  },
-  {
-    heading: "Public Engagement",
-    descp: "We facilitate citizen participation in budget processes through forums, surveys, and digital tools that amplify community voices and influence policy decisions.",
-    image: "/images/towwnhallmay/129A3923.jpg",
-    ctaLabel: "Join Surveys",
-    ctaHref: "/surveys",
-    secondaryCtaLabel: "Upcoming Events",
-    secondaryCtaHref: "/events",
-    highlights: ["Town halls", "Citizen surveys", "Policy feedback loops"],
-    statLabel: "Communities Engaged",
-    statValue: "47",
-  }
-];
+import { bnsServices } from "@/data/bns-services";
 
 export default function PremiumLandingClient() {
   return (
@@ -144,6 +101,7 @@ export default function PremiumLandingClient() {
       <LandingTeam />
       <TimelineSection />
       <ServicesSection data={bnsServices} />
+      <ServicesStackedScroll data={bnsServices} />
       <TestimonialsSection />
       <CloudinaryGallery />
       <BNSStudioSection />
