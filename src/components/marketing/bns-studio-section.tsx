@@ -41,7 +41,7 @@ export function BNSStudioSection() {
               >
                 <div
                   className={cn(
-                    "flex flex-col justify-center p-6 md:p-10 lg:p-12",
+                    "flex flex-col justify-center p-4 sm:p-6 md:p-10 lg:p-12",
                     isEven ? "md:items-end md:text-right" : "md:order-2",
                   )}
                 >
@@ -50,17 +50,16 @@ export function BNSStudioSection() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-80px" }}
                     transition={{ duration: 0.5, delay: 0.1 }}
-                    className="max-w-md space-y-4"
+                    className="max-w-md space-y-3 sm:space-y-4"
                   >
-                    <div
-                      className={cn(
-                        "inline-flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary",
-                        isEven ? "md:ml-auto" : "",
-                      )}
-                    >
-                      <Icon className="size-5" />
+                    <div className={cn(T.inlineTitle, isEven && T.inlineTitleEnd)}>
+                      <div className={T.inlineIcon}>
+                        <Icon className="size-4 sm:size-5" />
+                      </div>
+                      <h3 className={cn(T.itemTitle, "min-w-0 text-xl sm:text-2xl md:text-3xl lg:text-4xl")}>
+                        {service.name}
+                      </h3>
                     </div>
-                    <h3 className={T.itemTitle}>{service.name}</h3>
                     <p className={T.caption}>{service.description}</p>
                     <ul
                       className={cn(
@@ -82,7 +81,7 @@ export function BNSStudioSection() {
 
                 <div
                   className={cn(
-                    "flex items-center justify-center p-6 md:p-10 lg:p-12",
+                    "flex items-center justify-center p-4 sm:p-6 md:p-10 lg:p-12",
                     isEven ? "md:order-2" : "",
                   )}
                 >

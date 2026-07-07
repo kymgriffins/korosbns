@@ -40,7 +40,7 @@ export function StudioServices() {
               >
                 <div
                   className={cn(
-                    "flex flex-col justify-center p-6 md:p-10 lg:p-12",
+                    "flex flex-col justify-center p-4 sm:p-6 md:p-10 lg:p-12",
                     isEven ? "md:items-end md:text-right" : "md:order-2",
                   )}
                 >
@@ -49,19 +49,18 @@ export function StudioServices() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-80px" }}
                     transition={{ duration: 0.45, delay: 0.05 }}
-                    className="flex max-w-md flex-col gap-4"
+                    className="flex max-w-md flex-col gap-3 sm:gap-4"
                   >
-                    <div
-                      className={cn(
-                        "inline-flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary",
-                        isEven ? "md:ml-auto" : "",
-                      )}
-                    >
-                      <Icon className="size-5" />
-                    </div>
-                    <div className="space-y-2">
-                      <p className={T.role}>{service.price}</p>
-                      <h3 className={T.itemTitle}>{service.name}</h3>
+                    <div className={cn(T.inlineTitle, isEven && T.inlineTitleEnd)}>
+                      <div className={T.inlineIcon}>
+                        <Icon className="size-4 sm:size-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className={cn(T.itemTitle, "text-xl sm:text-2xl md:text-3xl lg:text-4xl")}>
+                          {service.name}
+                        </h3>
+                        <p className={cn(T.role, "mt-0.5")}>{service.price}</p>
+                      </div>
                     </div>
                     <p className={T.caption}>{service.description}</p>
                     <ul className="space-y-2">

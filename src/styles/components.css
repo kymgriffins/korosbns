@@ -126,6 +126,18 @@ select:focus-visible,
   @apply relative rounded-2xl border border-border bg-card p-2 md:rounded-3xl;
 }
 
+.landing-inline-icon {
+  @apply inline-flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary sm:size-9;
+}
+
+.landing-inline-title {
+  @apply flex items-center gap-2.5 sm:gap-3;
+}
+
+.landing-inline-title-end {
+  @apply md:flex-row-reverse;
+}
+
 /* Button flairs and elements */
 .button__flair {
   pointer-events: none;

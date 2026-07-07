@@ -25,4 +25,7 @@ export const LANDING_TYPOGRAPHY = {
   btnHero: "landing-btn-hero",
   btnOutline: "landing-btn-outline",
   mediaFrame: "landing-media-frame",
+  inlineIcon: "landing-inline-icon",
+  inlineTitle: "landing-inline-title",
+  inlineTitleEnd: "landing-inline-title-end",
 } as const;

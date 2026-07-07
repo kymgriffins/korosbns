@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
+import { Routes } from "@/constants/routes";
 import {
   LandingContent,
   LandingSection,
@@ -52,7 +53,7 @@ const CloudinaryGallery = () => {
       />
 
       <LandingContent>
-        <Link href="/projects" className="block cursor-pointer" aria-label="View our projects">
+        <Link href={Routes.Projects} className="block cursor-pointer" aria-label="View our projects">
           <div className="py-4">
             <Marquee pauseOnHover className="py-4 [--duration:70s] [--gap:1.5rem]">
               {images.map((image, i) => (
