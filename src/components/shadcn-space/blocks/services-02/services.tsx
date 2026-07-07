@@ -187,17 +187,17 @@ function Services({ data = servicesData }: ServicesProps) {
                                 style={{ y: parallaxY }}
                                 className="sticky top-24 transition-all duration-300 z-10 w-full max-w-lg"
                             >
-                                <AnimatePresence mode="wait" initial={false}>
-                                    <motion.div
-                                        key={activeService?.heading ?? activeIndex}
-                                        initial={{ opacity: 0, y: 18 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -18 }}
-                                        transition={{ duration: 0.35, ease: "easeOut" }}
-                                        className="overflow-hidden rounded-2xl border border-border/70 bg-card p-1"
-                                    >
-                                        <StickyServiceMedia data={data} activeIndex={activeIndex} />
-                                        <div className="space-y-3 p-5">
+                                <div className="overflow-hidden rounded-2xl border border-border/70 bg-card p-1">
+                                    <StickyServiceMedia service={activeService} />
+                                    <AnimatePresence mode="wait" initial={false}>
+                                        <motion.div
+                                            key={activeService?.heading ?? activeIndex}
+                                            initial={{ opacity: 0, y: 12 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -12 }}
+                                            transition={{ duration: 0.3, ease: "easeOut" }}
+                                            className="space-y-3 p-5"
+                                        >
                                             <motion.div
                                                 initial={{ scale: 0.88, opacity: 0 }}
                                                 animate={{ scale: 1, opacity: 1 }}
@@ -220,9 +220,9 @@ function Services({ data = servicesData }: ServicesProps) {
                                                     />
                                                 </div>
                                             ) : null}
-                                        </div>
-                                    </motion.div>
-                                </AnimatePresence>
+                                        </motion.div>
+                                    </AnimatePresence>
+                                </div>
                             </motion.div>
                         </div>
                         <div className="w-full flex flex-col gap-16 lg:col-span-7 col-span-12">
@@ -308,36 +308,15 @@ function Services({ data = servicesData }: ServicesProps) {
 
 export default Services;
 
-function StickyServiceMedia({
-    data,
-    activeIndex,
-}: {
-    data: ServiceItem[];
-    activeIndex: number;
-}) {
+function StickyServiceMedia({ service }: { service: ServiceItem }) {
     return (
-        <div className="relative aspect-4/3 w-full overflow-hidden rounded-xl">
-            {data.map((service, index) => (
-                <motion.div
-                    key={service.image}
-                    className="absolute inset-0"
-                    initial={false}
-                    animate={{
-                        opacity: activeIndex === index ? 1 : 0,
-                        scale: activeIndex === index ? 1 : 1.05,
-                    }}
-                    transition={{ duration: 0.4, ease: "easeOut" }}
-                    aria-hidden={activeIndex !== index}
-                >
-                    <Image
-                        src={service.image}
-                        alt={service.heading}
-                        fill
-                        sizes="(max-width: 1024px) 100vw, 40vw"
-                        className="object-cover object-top"
-                    />
-                </motion.div>
-            ))}
+        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl">
+            <img
+                key={service.image}
+                src={service.image}
+                alt={service.heading}
+                className="absolute inset-0 h-full w-full object-cover object-top"
+            />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
         </div>
     );
