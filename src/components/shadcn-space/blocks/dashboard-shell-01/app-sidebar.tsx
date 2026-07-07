@@ -16,11 +16,7 @@ import {
   BookOpen,
   CircleUserRound,
   FileText,
-  Languages,
   LucideIcon,
-  MessagesSquare,
-  Notebook,
-  NotepadText,
   Ticket,
 } from "lucide-react";
 import { SiteHeader } from "@/components/shadcn-space/blocks/dashboard-shell-01/site-header";
@@ -40,17 +36,11 @@ export type NavItem = {
 
 export const navData: NavItem[] = [
   { label: "Learning Hub", isSection: true },
-  { title: "Dashboard", icon: BarChart3, href: learnTabToHref("home") },
-  { title: "Modules", icon: BookOpen, href: learnTabToHref("learn") },
-  { title: "Documents", icon: FileText, href: learnTabToHref("documents") },
-  { title: "Forum", icon: MessagesSquare, href: learnTabToHref("forum") },
+  { title: "Home", icon: BarChart3, href: learnTabToHref("home") },
+  { title: "Courses", icon: BookOpen, href: learnTabToHref("learn") },
+  { title: "Progress", icon: FileText, href: learnTabToHref("progress") },
+  { title: "Achievements", icon: Ticket, href: learnTabToHref("achievements") },
   { title: "Profile", icon: CircleUserRound, href: learnTabToHref("profile") },
-
-  { label: "Content", isSection: true },
-  { title: "Videos", icon: Languages, href: "/learn/videos" },
-  { title: "Articles", icon: NotepadText, href: "/learn/articles" },
-  { title: "Stories", icon: Notebook, href: "/learn/stories" },
-  { title: "Quests", icon: Ticket, href: "/learn/quests" },
 ];
 
 const AppSidebar = ({ children }: { children: React.ReactNode }) => {

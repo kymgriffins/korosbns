@@ -1,48 +1,88 @@
-import type { Metadata } from "next";
-import { Suspense } from "react";
-import { LearnPathsHome } from "@/components/learn/learn-paths-home";
-import { metaDescription, canonicalUrl } from "@/utils/metadata";
+import Link from "next/link";
+import { Flame, Target } from "lucide-react";
+import { LmsPage, LmsSection } from "@/components/lms/lms-page";
+import { CourseCard } from "@/components/lms/course-card";
+import { AchievementCard } from "@/components/lms/achievement-card";
+import { LMS_ACHIEVEMENTS, LMS_COURSES } from "@/data/lms/catalog";
+import { LmsRoutes } from "@/data/lms/routes";
+import { Button } from "@/components/ui/button";
 
-const learnDescription = metaDescription(
-  "Learn Hub — Kenya FY2026/27 budget sector-by-sector breakdown. Education KES 781.4B, Health KES 175.5B, Infrastructure KES 230B, Agriculture KES 106.8B, Housing KES 135.8B. Gamified learning with videos, articles, and quests.",
-);
-
-export const metadata: Metadata = {
-  title: "Learn Hub — FY2026/27 Budget Sector Breakdown | Budget Ndio Story",
-  description: learnDescription,
-  keywords: [
-    "Kenya budget learning",
-    "FY2026/27 budget breakdown",
-    "Kenya education budget 781 billion",
-    "Kenya health budget allocations",
-    "Finance Bill explained",
-    "Appropriation Bill guide",
-    "budget literacy hub Kenya",
-    "fiscal policy education",
-    "public finance learning paths",
-    "Kenya budget sector by sector",
-  ],
-  alternates: { canonical: canonicalUrl("/learn") },
-  openGraph: {
-    title: "Learn Hub — FY2026/27 Kenya Budget Sector Breakdown | Budget Ndio Story",
-    description: "Complete FY2026/27 budget breakdown: Education KES 781.4B, Health KES 175.5B, Security KES 308.6B, Infrastructure KES 230B, Agriculture KES 106.8B, Housing KES 135.8B. Learn through interactive modules and quizzes.",
-    url: canonicalUrl("/learn"),
-    images: [{ url: "/logo.svg", width: 1200, height: 630 }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Learn Hub — FY2026/27 Kenya Budget Sector Breakdown | Budget Ndio Story",
-    description: "Education KES 781.4B, Health KES 175.5B, Security KES 308.6B, Infrastructure KES 230B. Interactive budget learning with videos, articles, and quests.",
-    images: ["/logo.svg"],
-  },
+export const metadata = {
+  title: "Learn | Budget Ndio Story",
+  description: "Continue your civic learning journey.",
 };
 
-export const revalidate = 3600;
+export default function LearnHomePage() {
+  const continueCourse = LMS_COURSES[0];
+  const recent = LMS_COURSES.slice(0, 2);
+  const unlockedAchievements = LMS_ACHIEVEMENTS.filter((a) => a.unlocked).slice(0, 2);
 
-export default function LearnPage() {
   return (
-    <Suspense fallback={<div className="min-h-[50vh] animate-pulse bg-muted/20" />}>
-      <LearnPathsHome />
-    </Suspense>
+    <LmsPage className="space-y-10">
+      <header className="space-y-2">
+        <p className="text-sm font-medium text-primary">Welcome back</p>
+        <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">Your learning journey</h1>
+        <p className="max-w-2xl text-muted-foreground">
+          Pick up where you left off. Every lesson is designed for mobile-first, distraction-free civic education.
+        </p>
+      </header>
+
+      {continueCourse ? <CourseCard course={continueCourse} variant="continue" /> : null}
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-sm">
+          <div className="flex items-center gap-3">
+            <span className="flex size-10 items-center justify-center rounded-full bg-orange-500/10 text-orange-600">
+              <Flame className="size-5" />
+            </span>
+            <div>
+              <p className="text-sm text-muted-foreground">Daily goal</p>
+              <p className="font-semibold">15 min today</p>
+            </div>
+          </div>
+        </div>
+        <div className="rounded-2xl border border-border/60 bg-card p-5 shadow-sm">
+          <div className="flex items-center gap-3">
+            <span className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <Target className="size-5" />
+            </span>
+            <div>
+              <p className="text-sm text-muted-foreground">3 day streak</p>
+              <p className="font-semibold">Keep it going</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <LmsSection title="Recently viewed" description="Courses you opened recently">
+        <div className="grid gap-5 md:grid-cols-2">
+          {recent.map((course) => (
+            <CourseCard key={course.slug} course={course} />
+          ))}
+        </div>
+      </LmsSection>
+
+      <LmsSection title="Recommended" description="Start with civic fundamentals">
+        <div className="grid gap-5 md:grid-cols-2">
+          {LMS_COURSES.map((course) => (
+            <CourseCard key={course.slug} course={course} />
+          ))}
+        </div>
+        <Button asChild variant="outline" className="mt-4">
+          <Link href={LmsRoutes.catalogue}>Browse all courses</Link>
+        </Button>
+      </LmsSection>
+
+      <LmsSection title="Recent achievements">
+        <div className="grid gap-4 md:grid-cols-2">
+          {unlockedAchievements.map((achievement) => (
+            <AchievementCard key={achievement.id} achievement={achievement} />
+          ))}
+        </div>
+        <Button asChild variant="ghost" className="mt-2">
+          <Link href={LmsRoutes.achievements}>View all achievements</Link>
+        </Button>
+      </LmsSection>
+    </LmsPage>
   );
 }

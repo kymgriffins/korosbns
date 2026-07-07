@@ -1,74 +1,47 @@
-import { Routes } from "@/constants/routes";
-import type { LearnTab } from "@/contexts/learn-context";
+import { LmsRoutes } from "@/data/lms/routes";
 
-/** Map hub tab → shareable route */
-export function learnTabToHref(tab: LearnTab): string {
-  switch (tab) {
+export type LmsNavId = "home" | "learn" | "progress" | "achievements" | "profile";
+
+export function lmsNavToHref(id: LmsNavId): string {
+  switch (id) {
     case "home":
-      return Routes.Learn;
+      return LmsRoutes.home;
     case "learn":
-      return `${Routes.Learn}?tab=modules`;
-    case "alerts":
-      return `${Routes.Learn}?tab=alerts`;
-    case "documents":
-      return `${Routes.Learn}?tab=documents`;
-    case "forum":
-      return `${Routes.Learn}?tab=forum`;
+      return LmsRoutes.catalogue;
+    case "progress":
+      return LmsRoutes.progress;
+    case "achievements":
+      return LmsRoutes.achievements;
     case "profile":
-      return `${Routes.Learn}?tab=profile`;
+      return LmsRoutes.profile;
   }
 }
 
-/** Resolve hub tab from current location; null when path is unrelated hub content (articles, etc.) */
-export function learnTabFromLocation(
-  pathname: string,
-  tabParam: string | null,
-): LearnTab | null {
-  if (pathname === Routes.LearnForum || pathname.startsWith(`${Routes.LearnForum}/`)) {
-    return "forum";
+export function isLmsNavActive(pathname: string, href: string): boolean {
+  if (href === LmsRoutes.home) {
+    return pathname === LmsRoutes.home;
   }
-  if (pathname === Routes.LearnDocuments || pathname.startsWith(`${Routes.LearnDocuments}/`)) {
-    return "documents";
-  }
-  if (pathname !== Routes.Learn) {
-    return null;
-  }
-
-  switch (tabParam) {
-    case "modules":
-      return "learn";
-    case "alerts":
-      return "alerts";
-    case "profile":
-      return "profile";
-    case "documents":
-      return "documents";
-    case "forum":
-      return "forum";
-    default:
-      return "home";
-  }
+  return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-/** Active state for sidebar / hub links (supports ?tab= query routes). */
+/** @deprecated Use isLmsNavActive — kept for dashboard-shell nav compatibility */
 export function isLearnNavHrefActive(
   pathname: string,
-  tabParam: string | null,
+  _tabParam: string | null,
   href: string,
 ): boolean {
-  const [path, query = ""] = href.split("?");
-  if (pathname !== path) return false;
+  return isLmsNavActive(pathname, href.split("?")[0] ?? href);
+}
 
-  const params = new URLSearchParams(query);
-  const expectedTab = params.get("tab");
-
-  if (expectedTab) {
-    return tabParam === expectedTab;
-  }
-
-  if (path === Routes.Learn) {
-    return !tabParam;
-  }
-
-  return true;
+/** @deprecated Use lmsNavToHref */
+export function learnTabToHref(tab: string): string {
+  const map: Record<string, string> = {
+    home: LmsRoutes.home,
+    learn: LmsRoutes.catalogue,
+    modules: LmsRoutes.catalogue,
+    profile: LmsRoutes.profile,
+    progress: LmsRoutes.progress,
+    achievements: LmsRoutes.achievements,
+  };
+  return map[tab] ?? LmsRoutes.home;
 }

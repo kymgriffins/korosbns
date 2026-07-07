@@ -1,197 +1,56 @@
-"use client";
-
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import {
-  Globe,
-  Loader2,
-  MapPin,
-  Settings,
-  Trophy,
-  type LucideIcon,
-} from "lucide-react";
-import { Routes } from "@/constants/routes";
-import { learningData } from "@/data/learning";
-import { userData } from "@/data/users";
-import { citizenApi, type SocialLinkApi, type UserProfileApi } from "@/lib/api-client";
-import { MotionPage } from "@/motion/wrappers";
-import { fadeInUp } from "@/motion/variants";
-import { motion } from "motion/react";
+import { Bookmark, Download, Settings, Award } from "lucide-react";
+import { LmsPage } from "@/components/lms/lms-page";
+import { BitmojiAvatar } from "@/components/profile/bitmoji-avatar";
+import { LmsRoutes } from "@/data/lms/routes";
 import { Button } from "@/components/ui/button";
-import { usePageView } from "@/hooks/use-page-view";
 
-const SOCIAL_ICONS: Record<string, LucideIcon> = {
-  website: Globe,
+export const metadata = {
+  title: "Profile | Learn",
 };
 
+const STATS = [
+  { label: "Lessons completed", value: "4" },
+  { label: "Courses enrolled", value: "2" },
+  { label: "Trivia correct", value: "7" },
+  { label: "Day streak", value: "3" },
+] as const;
+
 export default function LearnProfilePage() {
-  usePageView();
-  const [data, setData] = useState<Awaited<ReturnType<typeof learningData.profile.fetch>> | null>(null);
-  const [profile, setProfile] = useState<UserProfileApi | null>(null);
-  const [socialLinks, setSocialLinks] = useState<SocialLinkApi[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    void Promise.all([
-      learningData.profile.fetch(),
-      userData.profile.fetch().catch(() => null),
-      citizenApi.getSocialLinks().catch(() => [] as SocialLinkApi[]),
-    ]).then(([d, p, s]) => {
-      setData(d);
-      setProfile(p);
-      setSocialLinks(s);
-    }).finally(() => setLoading(false));
-  }, []);
-
-  const g = data?.gamification;
-  const displayName =
-    profile?.display_name ||
-    [profile?.first_name, profile?.last_name].filter(Boolean).join(" ") ||
-    profile?.email?.split("@")[0] ||
-    "Learner";
-
   return (
-    <MotionPage>
-      <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
-        {loading ? (
-          <div className="flex justify-center py-16">
-            <Loader2 className="size-8 animate-spin text-primary" aria-hidden />
+    <LmsPage className="space-y-8">
+      <header className="flex items-center gap-4">
+        <BitmojiAvatar size="xl" className="rounded-full" />
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Learner profile</h1>
+          <p className="text-sm text-muted-foreground">Civic education enthusiast</p>
+        </div>
+      </header>
+
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        {STATS.map((stat) => (
+          <div key={stat.label} className="rounded-2xl border border-border/60 bg-card p-4 text-center shadow-sm">
+            <p className="text-2xl font-semibold">{stat.value}</p>
+            <p className="mt-1 text-xs text-muted-foreground">{stat.label}</p>
           </div>
-        ) : null}
-
-        {!loading ? (
-          <motion.div variants={fadeInUp} initial="hidden" animate="visible" className="space-y-6">
-            {/* Profile card */}
-            <div className="rounded-2xl border border-border bg-card p-6 sm:p-8">
-              <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
-                {profile?.avatar_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={profile.avatar_url}
-                    alt=""
-                    className="size-20 rounded-full object-cover ring-4 ring-primary/10 sm:size-24"
-                  />
-                ) : (
-                  <div className="flex size-20 items-center justify-center rounded-full bg-primary/10 text-2xl font-bold text-primary sm:size-24">
-                    {displayName.charAt(0).toUpperCase()}
-                  </div>
-                )}
-                <div className="flex-1 text-center sm:text-left">
-                  <h1 className="text-2xl font-bold">{displayName}</h1>
-                  {profile?.headline ? (
-                    <p className="mt-1 text-sm text-muted-foreground">{profile.headline}</p>
-                  ) : null}
-                  {profile?.location ? (
-                    <p className="mt-1 flex items-center justify-center gap-1 text-xs text-muted-foreground sm:justify-start">
-                      <MapPin className="size-3" aria-hidden />
-                      {profile.location}
-                    </p>
-                  ) : null}
-                  {profile?.email ? (
-                    <p className="mt-1 text-xs text-muted-foreground">{profile.email}</p>
-                  ) : null}
-                  {profile?.bio ? (
-                    <p className="mt-3 max-w-prose text-sm leading-relaxed text-muted-foreground">
-                      {profile.bio}
-                    </p>
-                  ) : null}
-                  {/* Social links */}
-                  {socialLinks.length > 0 ? (
-                    <div className="mt-4 flex flex-wrap justify-center gap-3 sm:justify-start">
-                      {socialLinks.map((link) => {
-                        const Icon = SOCIAL_ICONS[link.platform] || Globe;
-                        return (
-                          <a
-                            key={link.platform}
-                            href={link.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 rounded-full bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary/10"
-                          >
-                            <Icon className="size-3.5" aria-hidden />
-                            {link.platform}
-                          </a>
-                        );
-                      })}
-                    </div>
-                  ) : null}
-                  <div className="mt-4">
-                    <Button type="button" variant="outline" size="sm" asChild>
-                      <Link href={Routes.Account}>
-                        <Settings className="mr-1.5 size-3.5" aria-hidden />
-                        Edit profile
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Gamification stats */}
-            {g ? (
-              <div className="grid grid-cols-3 gap-3">
-                <div className="rounded-2xl border border-border bg-card p-4 text-center">
-                  <p className="text-2xl font-bold">{g.points}</p>
-                  <p className="text-xs text-muted-foreground">XP</p>
-                </div>
-                <div className="rounded-2xl border border-border bg-card p-4 text-center">
-                  <p className="text-2xl font-bold">{g.level}</p>
-                  <p className="text-xs text-muted-foreground">Level</p>
-                </div>
-                <div className="rounded-2xl border border-border bg-card p-4 text-center">
-                  <p className="text-2xl font-bold">{g.streak_days}</p>
-                  <p className="text-xs text-muted-foreground">Day streak</p>
-                </div>
-              </div>
-            ) : null}
-
-            {/* Badges */}
-            {g ? (
-              <section>
-                <h2 className="flex items-center gap-2 text-lg font-semibold">
-                  <Trophy className="size-5 text-primary" aria-hidden />
-                  Badges
-                </h2>
-                {g.badges.length === 0 ? (
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    Complete quests and lessons to earn badges.
-                  </p>
-                ) : (
-                  <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-                    {g.badges.map((badge) => (
-                      <li
-                        key={badge.slug}
-                        className="rounded-xl border border-border bg-card px-3 py-2 text-sm"
-                      >
-                        <span className="mr-2">{badge.icon || "🏅"}</span>
-                        {badge.name}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </section>
-            ) : null}
-
-            {/* Recent progress */}
-            {data?.progress && data.progress.length > 0 ? (
-              <section>
-                <h2 className="text-lg font-semibold">Recent progress</h2>
-                <ul className="mt-3 space-y-2">
-                  {data.progress.slice(0, 10).map((row) => (
-                    <li
-                      key={`${row.content_type}-${row.content_id}`}
-                      className="rounded-xl border border-border bg-card px-3 py-2 text-sm"
-                    >
-                      <span className="font-medium capitalize">{row.content_type}</span>
-                      <span className="text-muted-foreground"> · {row.progress_percent}%</span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            ) : null}
-          </motion.div>
-        ) : null}
+        ))}
       </div>
-    </MotionPage>
+
+      <nav className="space-y-2">
+        {[
+          { href: LmsRoutes.progress, icon: Award, label: "Certificates" },
+          { href: "#", icon: Bookmark, label: "Bookmarks" },
+          { href: "#", icon: Download, label: "Downloads" },
+          { href: "#", icon: Settings, label: "Settings" },
+        ].map((item) => (
+          <Button key={item.label} variant="outline" className="h-12 w-full justify-start" asChild>
+            <Link href={item.href}>
+              <item.icon className="mr-2 size-4" />
+              {item.label}
+            </Link>
+          </Button>
+        ))}
+      </nav>
+    </LmsPage>
   );
 }

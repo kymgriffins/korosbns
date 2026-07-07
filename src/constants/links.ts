@@ -40,7 +40,7 @@ export const footerLinks = {
   ],
   resources: [
     { label: "Budget Guides", href: Routes.Learn },
-    { label: "Documents", href: Routes.Documents },
+    { label: "Courses", href: Routes.LearnCatalogue },
     { label: "Surveys", href: Routes.Surveys },
     { label: "Reports", href: Routes.Reports },
     { label: "Newsletter", href: "/" },

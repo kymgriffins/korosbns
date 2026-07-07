@@ -19,7 +19,7 @@ import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
 import { citizenApi, type SocialLinkApi } from "@/lib/api-client";
 import { useUpdateProfile, useUpsertSocialLink, useDeleteSocialLink } from "@/hooks/use-profile";
-import { ProfileAvatarEditor } from "@/components/learn/profile-avatar-editor";
+import { ProfileAvatarEditor } from "@/components/profile/profile-avatar-editor";
 
 const SOCIAL_PLATFORMS = [
   "linkedin",
