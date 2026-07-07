@@ -3,129 +3,100 @@
 import { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
-import { fadeInUp, staggerContainer } from "@/motion/variants";
 import { X } from "lucide-react";
-import { BNS_STUDIO_PORTFOLIO_IMAGES } from "@/constants/bns-media-images";
+import { BNS_STUDIO_PORTFOLIO } from "@/constants/bns-studio-content";
+import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
+import {
+  LandingContent,
+  LandingSection,
+  LandingSectionHeader,
+} from "@/layouts/landing-section";
+import { cn } from "@/utils";
 
-type PortfolioItem = {
-  id: string;
-  title: string;
-  category: string;
-  media_type: "image" | "video";
-  image_url: string;
-  video_url?: string;
-  video_platform?: "youtube" | "vimeo" | "cloudinary" | "other";
-  description?: string;
-};
+type PortfolioItem = (typeof BNS_STUDIO_PORTFOLIO)[number];
 
-const categories = ["All", "Videography", "Photography", "Events", "Brand"];
+const categories = ["All", "Videography", "Photography", "Events", "Brand"] as const;
 
-const defaultItems: PortfolioItem[] = BNS_STUDIO_PORTFOLIO_IMAGES.map((item) => ({
-  id: item.id,
-  title: item.title,
-  category: item.category,
-  media_type: "image" as const,
-  image_url: item.image_url,
-  description: item.description,
-}));
-
-type Props = {
-  items?: PortfolioItem[];
-};
-
-export function StudioPortfolio({ items }: Props) {
-  const portfolio = items && items.length ? items : defaultItems;
-  const [filter, setFilter] = useState("All");
+export function StudioPortfolio() {
+  const [filter, setFilter] = useState<(typeof categories)[number]>("All");
   const [lightbox, setLightbox] = useState<PortfolioItem | null>(null);
 
   const filtered =
     filter === "All"
-      ? portfolio
-      : portfolio.filter((item) => item.category === filter);
+      ? BNS_STUDIO_PORTFOLIO
+      : BNS_STUDIO_PORTFOLIO.filter((item) => item.category === filter);
 
   return (
-    <section id="portfolio" className="w-full py-20 md:py-32 bg-muted/30">
-      <div className="max-w-6xl mx-auto px-6 md:px-16">
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="text-center mb-10"
-        >
-          <motion.span
-            variants={fadeInUp}
-            className="text-xs font-bold uppercase tracking-widest text-primary"
-          >
-            Portfolio
-          </motion.span>
-          <motion.h2
-            variants={fadeInUp}
-            className="text-3xl md:text-5xl font-bold font-heading tracking-tight mt-3"
-          >
-            Our Work
-          </motion.h2>
-        </motion.div>
+    <LandingSection id="portfolio" className="bg-muted/20">
+      <LandingSectionHeader
+        eyebrow="Portfolio"
+        title={
+          <>
+            Recent <span className={T.highlight}>productions</span>
+          </>
+        }
+        description="A selection of civic forums, studio sessions, and field shoots captured by the BNS team."
+      />
 
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="flex flex-wrap justify-center gap-2 mb-10"
-        >
+      <LandingContent>
+        <div className="mb-8 flex flex-wrap gap-2">
           {categories.map((cat) => (
-            <motion.button
+            <button
               key={cat}
-              variants={fadeInUp}
+              type="button"
               onClick={() => setFilter(cat)}
-              className={`px-4 py-2 text-xs font-bold rounded-full border transition-colors ${
+              className={cn(
+                "rounded-full border px-4 py-2 text-xs font-semibold transition-colors",
                 filter === cat
-                  ? "bg-primary text-primary-foreground border-primary"
-                  : "bg-card text-muted-foreground border-border hover:border-primary/50"
-              }`}
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-border bg-card text-muted-foreground hover:border-primary/50",
+              )}
             >
               {cat}
-            </motion.button>
+            </button>
           ))}
-        </motion.div>
+        </div>
 
-        <motion.div
-          layout
-          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"
-        >
-          <AnimatePresence mode="popLayout">
-            {filtered.map((item) => (
-              <motion.div
-                key={item.id}
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                className="group relative aspect-video rounded-xl overflow-hidden border border-border/60 bg-card cursor-pointer"
-                onClick={() => setLightbox(item)}
-              >
-                <Image
-                  src={item.image_url}
-                  alt={item.title}
-                  fill
-                  className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-30" />
-                <div className="absolute bottom-0 left-0 right-0 p-4 z-40 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <h3 className="text-white font-semibold text-sm">
-                    {item.title}
-                  </h3>
-                  <span className="text-white/70 text-xs">{item.category}</span>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
-      </div>
+        <div className="border-x border-b border-border">
+          <motion.div layout className="grid gap-0 sm:grid-cols-2 lg:grid-cols-3">
+            <AnimatePresence mode="popLayout">
+              {filtered.map((item, index) => (
+                <motion.button
+                  key={item.id}
+                  type="button"
+                  layout
+                  initial={{ opacity: 0, scale: 0.96 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.96 }}
+                  transition={{ duration: 0.25 }}
+                  onClick={() => setLightbox(item)}
+                  className={cn(
+                    "group relative aspect-4/3 overflow-hidden border-t border-border text-left",
+                    index % 3 !== 0 && "sm:border-l",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                  )}
+                >
+                  <Image
+                    src={item.image_url}
+                    alt={item.title}
+                    fill
+                    className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-80 transition-opacity group-hover:opacity-100" />
+                  <div className="absolute inset-x-0 bottom-0 p-4">
+                    <p className="text-sm font-semibold text-white">{item.title}</p>
+                    <p className="text-xs text-white/70">{item.category}</p>
+                  </div>
+                </motion.button>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        </div>
 
-      {/* Lightbox */}
+        <div className="h-18 border-x border-t border-border md:h-28" />
+      </LandingContent>
+
       <AnimatePresence>
         {lightbox && (
           <motion.div
@@ -136,35 +107,33 @@ export function StudioPortfolio({ items }: Props) {
             onClick={() => setLightbox(null)}
           >
             <motion.div
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.9 }}
-              className="relative max-w-4xl w-full rounded-xl overflow-hidden bg-card"
+              initial={{ scale: 0.94, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.94, opacity: 0 }}
+              className="relative max-w-4xl w-full overflow-hidden rounded-2xl border border-border bg-card"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="relative aspect-video bg-muted">
+              <div className="relative aspect-4/3 bg-muted">
                 <Image
                   src={lightbox.image_url}
                   alt={lightbox.title}
                   fill
-                  className="object-cover"
+                  className="object-cover object-center"
                   sizes="(max-width: 896px) 100vw, 896px"
                 />
               </div>
-              <div className="p-5">
-                <h3 className="font-semibold text-lg">{lightbox.title}</h3>
-                <span className="text-xs text-muted-foreground">
-                  {lightbox.category}
-                </span>
-                {lightbox.description && (
-                  <p className="text-sm text-muted-foreground mt-2">
-                    {lightbox.description}
-                  </p>
-                )}
+              <div className="space-y-2 p-5">
+                <h3 className={T.cardTitle}>{lightbox.title}</h3>
+                <p className={T.role}>{lightbox.category}</p>
+                {lightbox.description ? (
+                  <p className={T.caption}>{lightbox.description}</p>
+                ) : null}
               </div>
               <button
+                type="button"
                 onClick={() => setLightbox(null)}
-                className="absolute top-3 right-3 size-8 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+                className="absolute top-3 right-3 flex size-8 items-center justify-center rounded-full bg-black/50 text-white transition-colors hover:bg-black/70"
+                aria-label="Close preview"
               >
                 <X className="size-4" />
               </button>
@@ -172,6 +141,6 @@ export function StudioPortfolio({ items }: Props) {
           </motion.div>
         )}
       </AnimatePresence>
-    </section>
+    </LandingSection>
   );
 }

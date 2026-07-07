@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { cn } from "@/utils";
+import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import { motion, useScroll, useSpring, useTransform } from "motion/react";
 
 export interface TimelineItemProps {
@@ -45,11 +46,11 @@ const TimelineItem = ({
             <p className="text-lg md:text-xl text-muted-foreground font-normal">
               ({date})
             </p>
-            <h3 className="text-2xl md:text-3xl lg:text-4xl font-medium tracking-tight text-foreground">
+            <h3 className={T.itemTitle}>
               {title}
             </h3>
           </div>
-          <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
+          <p className={T.caption}>
             {description}
           </p>
         </motion.div>

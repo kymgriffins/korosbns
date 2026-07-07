@@ -4,16 +4,17 @@ import React from "react";
 import { motion } from "motion/react";
 import { team } from "@/constants/team";
 import Image from "next/image";
-import { SectionHeader, SectionShell } from "@/layouts/section-shell";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
+import {
+  LandingSection,
+  LandingSectionHeader,
+} from "@/layouts/landing-section";
+import { cn } from "@/utils";
 
 export default function LandingTeam() {
   return (
-    <SectionShell
-      spacing="loose"
-      className="overflow-hidden border-t border-border/10 bg-background"
-    >
-      <SectionHeader
+    <LandingSection>
+      <LandingSectionHeader
         eyebrow="Our Team"
         title={
           <>
@@ -43,11 +44,11 @@ export default function LandingTeam() {
                 sizes="(max-width: 1024px) 50vw, 33vw"
               />
             </div>
-            <h3 className="mb-1 font-heading text-2xl font-bold tracking-tight">{member.name}</h3>
-            <p className="mb-4 text-xs font-semibold text-primary">
+            <h3 className={T.cardTitle}>{member.name}</h3>
+            <p className={cn(T.role, "mb-4 mt-1")}>
               {member.role}
             </p>
-            <p className="text-sm leading-relaxed text-foreground/70">
+            <p className={T.caption}>
               {member.description}
             </p>
           </motion.div>
@@ -74,17 +75,17 @@ export default function LandingTeam() {
               />
             </div>
             <div>
-              <h3 className="mb-0.5 font-heading text-xl font-bold tracking-tight">{member.name}</h3>
-              <p className="mb-2.5 text-xs font-semibold text-primary">
+              <h3 className={T.cardTitle}>{member.name}</h3>
+              <p className={cn(T.role, "mb-2.5 mt-0.5")}>
                 {member.role}
               </p>
-              <p className="text-xs leading-relaxed text-foreground/80">
+              <p className={T.caption}>
                 {member.description}
               </p>
             </div>
           </motion.div>
         ))}
       </div>
-    </SectionShell>
+    </LandingSection>
   );
 }

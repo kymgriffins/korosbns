@@ -146,7 +146,7 @@ export default function NewsletterPopup() {
                   <h2 className={T.subheading}>
                     Get budget updates in your inbox
                   </h2>
-                  <p className={T.prose}>
+                  <p className={T.lead}>
                     Subscribe for explainers, stories, and policy highlights from Budget Ndio Story.
                   </p>
                 </div>

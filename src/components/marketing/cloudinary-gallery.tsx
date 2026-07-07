@@ -3,8 +3,13 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { SectionHeader, SectionShell } from "@/layouts/section-shell";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
+import { Routes } from "@/constants/routes";
+import {
+  LandingContent,
+  LandingSection,
+  LandingSectionHeader,
+} from "@/layouts/landing-section";
 import { Marquee } from "@/components/ui/marquee";
 import { useCohortImages } from "@/hooks/use-marketing";
 
@@ -28,18 +33,15 @@ const CloudinaryGallery = () => {
 
   if (loading) {
     return (
-      <SectionShell className="border-b border-border/40 bg-background">
+      <LandingSection>
         <div className="flex h-96 items-center justify-center">Loading Gallery...</div>
-      </SectionShell>
+      </LandingSection>
     );
   }
 
   return (
-    <SectionShell
-      className="overflow-x-hidden border-b border-border/40 bg-background"
-      innerClassName="mb-0"
-    >
-      <SectionHeader
+    <LandingSection className="overflow-x-hidden" innerClassName="mb-0">
+      <LandingSectionHeader
         eyebrow="Visual Impact"
         title={
           <>
@@ -50,16 +52,18 @@ const CloudinaryGallery = () => {
         description="Explore moments from our civic workshops, townhalls, and community engagements across the country as we empower citizens to take action."
       />
 
-      <Link href="/projects" className="block cursor-pointer" aria-label="View our projects">
-        <div className="py-4">
-          <Marquee pauseOnHover className="py-4 [--duration:70s] [--gap:1.5rem]">
-            {images.map((image, i) => (
-              <GalleryItem key={i} image={image} index={i} />
-            ))}
-          </Marquee>
-        </div>
-      </Link>
-    </SectionShell>
+      <LandingContent>
+        <Link href={Routes.Projects} className="block cursor-pointer" aria-label="View our projects">
+          <div className="py-4">
+            <Marquee pauseOnHover className="py-4 [--duration:70s] [--gap:1.5rem]">
+              {images.map((image, i) => (
+                <GalleryItem key={i} image={image} index={i} />
+              ))}
+            </Marquee>
+          </div>
+        </Link>
+      </LandingContent>
+    </LandingSection>
   );
 };
 

@@ -244,12 +244,12 @@ export function ProjectDetailClient() {
             <motion.div key={i} variants={fadeInUp} custom={i}>
               <a
                 href={doc.url}
-                className="group flex items-start gap-4 p-5 rounded-xl border border-border/60 bg-card transition-all duration-300 hover:border-primary/30 hover:shadow-lg"
+                className="group flex items-center gap-3 p-4 sm:gap-4 sm:p-5 rounded-xl border border-border/60 bg-card transition-all duration-300 hover:border-primary/30 hover:shadow-lg"
               >
-                <div className="size-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                  <FileText className="size-5" />
+                <div className="inline-flex size-8 sm:size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <FileText className="size-4 sm:size-5" />
                 </div>
-                <div className="flex-1 min-w-0">
+                <div className="min-w-0 flex-1">
                   <h4 className="font-semibold text-sm group-hover:text-primary transition-colors">
                     {doc.name}
                   </h4>

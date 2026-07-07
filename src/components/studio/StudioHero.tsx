@@ -5,24 +5,22 @@ import { motion } from "motion/react";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
 import { Button } from "@/components/ui/button";
 import { Camera, ChevronDown } from "lucide-react";
-import { BNS_MEDIA_IMAGES } from "@/constants/bns-media-images";
+import { BNS_STUDIO_HERO_IMAGE } from "@/constants/bns-studio-content";
+import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
+import { cn } from "@/utils";
 
 export function StudioHero() {
   return (
-    <section className="relative w-full min-h-[80vh] flex items-center justify-center overflow-hidden">
+    <section className="relative w-full min-h-[80vh] flex items-center justify-center overflow-hidden border-b border-border/40">
       <Image
-        src={BNS_MEDIA_IMAGES.main}
-        alt="BNS Studio production"
+        src={BNS_STUDIO_HERO_IMAGE}
+        alt="BNS Studio production on set"
         fill
-        className="object-cover object-center"
+        className="object-cover object-top"
         priority
         sizes="100vw"
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-background/85 via-background/70 to-background" />
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 blur-[150px] rounded-full" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-teal-500/10 blur-[150px] rounded-full" />
-      </div>
+      <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/75 to-background" />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 md:px-16 text-center">
         <motion.div
@@ -35,27 +33,17 @@ export function StudioHero() {
             <div className="size-16 mx-auto mb-6 rounded-2xl bg-primary/10 flex items-center justify-center backdrop-blur-sm">
               <Camera className="size-8 text-primary" />
             </div>
-            <span className="text-xs font-bold uppercase tracking-widest text-primary">
-              BNS Studio
-            </span>
+            <span className={cn(T.eyebrow, "mb-0 text-center")}>BNS Studio</span>
           </motion.div>
 
-          <motion.h1
-            variants={fadeInUp}
-            className="text-4xl md:text-6xl lg:text-7xl font-bold font-heading tracking-tight"
-          >
-            Telling Kenya&apos;s Stories
-            <br />
-            <span className="text-primary">Through Film & Photo</span>
+          <motion.h1 variants={fadeInUp} className={cn(T.heroTitle, "mx-auto max-w-4xl")}>
+            Telling Kenya&apos;s stories through{" "}
+            <span className={T.highlight}>film & photo</span>
           </motion.h1>
 
-          <motion.p
-            variants={fadeInUp}
-            className="text-lg text-muted-foreground max-w-2xl mx-auto"
-          >
-            Professional videography, photography, and post-production services
-            powered by Budget Ndio Story. Every booking supports civic education
-            in Kenya.
+          <motion.p variants={fadeInUp} className={cn(T.lead, "mx-auto max-w-2xl md:max-w-2xl")}>
+            Professional videography, photography, and post-production powered by
+            Budget Ndio Story. Every booking supports civic education in Kenya.
           </motion.p>
 
           <motion.div
@@ -64,11 +52,9 @@ export function StudioHero() {
           >
             <Button
               size="lg"
-              className="gap-2 rounded-full px-8"
+              className={cn(T.btnPrimary, "px-8")}
               onClick={() =>
-                document
-                  .getElementById("booking")
-                  ?.scrollIntoView({ behavior: "smooth" })
+                document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" })
               }
             >
               Book a Shoot
@@ -76,11 +62,9 @@ export function StudioHero() {
             <Button
               size="lg"
               variant="outline"
-              className="rounded-full px-8"
+              className={cn(T.btnPrimary, "px-8")}
               onClick={() =>
-                document
-                  .getElementById("portfolio")
-                  ?.scrollIntoView({ behavior: "smooth" })
+                document.getElementById("portfolio")?.scrollIntoView({ behavior: "smooth" })
               }
             >
               View Portfolio
