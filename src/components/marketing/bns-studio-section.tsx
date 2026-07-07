@@ -1,11 +1,10 @@
 "use client";
 
-import { motion } from "motion/react";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Camera, Video, Monitor, Scissors, ArrowRight } from "lucide-react";
-import { BNS_MEDIA_IMAGES } from "@/constants/bns-media-images";
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { BNS_STUDIO_LANDING_SHOWCASE } from "@/constants/bns-studio-content";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import {
   LandingContent,
@@ -13,77 +12,124 @@ import {
   LandingSectionHeader,
 } from "@/layouts/landing-section";
 import { cn } from "@/utils";
-
-const services = [
-  { icon: Video, label: "Videography", desc: "Corporate events, documentaries, music videos" },
-  { icon: Camera, label: "Photography", desc: "Portraits, events, product photography" },
-  { icon: Monitor, label: "Studio Rental", desc: "Fully equipped studio with lighting & backdrops" },
-  { icon: Scissors, label: "Post-Production", desc: "Editing, color grading, motion graphics" },
-];
+import { motion } from "motion/react";
 
 export function BNSStudioSection() {
   return (
-    <LandingSection>
+    <LandingSection className="overflow-hidden">
       <LandingSectionHeader
         eyebrow="BNS Studio"
-        title="Professional Media Production for Storytellers"
-        description="From budget explainers to brand documentaries, BNS Studio offers end-to-end videography, photography, and post-production services. Revenue supports our civic education mission."
+        title={
+          <>
+            Professional media production for{" "}
+            <span className={T.highlight}>storytellers</span>
+          </>
+        }
+        description="From budget explainers to brand documentaries — videography, photography, studio rental, and post-production. Revenue supports our civic education mission."
       />
 
-      <LandingContent className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
-        <div className="space-y-6">
-          <div className="grid grid-cols-2 gap-4">
-            {services.map((s, i) => (
-              <div key={i} className="flex items-start gap-3">
-                <div className="size-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                  <s.icon className="size-5 text-primary" />
+      <LandingContent>
+        <div className="border-x border-b border-border">
+          {BNS_STUDIO_LANDING_SHOWCASE.map((service, index) => {
+            const isEven = index % 2 === 0;
+            const Icon = service.icon;
+
+            return (
+              <div
+                key={service.name}
+                className="grid grid-cols-1 items-center gap-6 border-t border-border md:grid-cols-2 md:gap-0"
+              >
+                <div
+                  className={cn(
+                    "flex flex-col justify-center p-6 md:p-10 lg:p-12",
+                    isEven ? "md:items-end md:text-right" : "md:order-2",
+                  )}
+                >
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-80px" }}
+                    transition={{ duration: 0.5, delay: 0.1 }}
+                    className="max-w-md space-y-4"
+                  >
+                    <div
+                      className={cn(
+                        "inline-flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary",
+                        isEven ? "md:ml-auto" : "",
+                      )}
+                    >
+                      <Icon className="size-5" />
+                    </div>
+                    <h3 className={T.itemTitle}>{service.name}</h3>
+                    <p className={T.caption}>{service.description}</p>
+                    <ul
+                      className={cn(
+                        "flex flex-wrap gap-2",
+                        isEven ? "md:justify-end" : "justify-start",
+                      )}
+                    >
+                      {service.features.map((feature) => (
+                        <li
+                          key={feature}
+                          className="rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-foreground/70"
+                        >
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  </motion.div>
                 </div>
-                <div>
-                  <div className="text-sm font-semibold">{s.label}</div>
-                  <div className={T.caption}>{s.desc}</div>
+
+                <div
+                  className={cn(
+                    "flex items-center justify-center p-6 md:p-10 lg:p-12",
+                    isEven ? "md:order-2" : "",
+                  )}
+                >
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.96 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true, margin: "-80px" }}
+                    transition={{ duration: 0.5 }}
+                    className="relative aspect-4/3 w-full overflow-hidden rounded-2xl border border-border/60"
+                  >
+                    <Image
+                      src={service.image}
+                      alt={`${service.name} — BNS Studio production`}
+                      fill
+                      className="object-cover"
+                      style={{ objectPosition: service.imagePosition ?? "center" }}
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                    />
+                  </motion.div>
                 </div>
               </div>
-            ))}
-          </div>
+            );
+          })}
+        </div>
 
-          <div className="flex flex-wrap gap-4 pt-2">
-            <Link href="/bns-studio">
-              <Button size="lg" className={cn(T.btnPrimary, "gap-2")}>
-                Book a Shoot <ArrowRight className="size-4" />
-              </Button>
-            </Link>
-            <Link href="/bns-studio#portfolio">
-              <Button size="lg" variant="outline" className={T.btnPrimary}>
-                View Portfolio
-              </Button>
-            </Link>
-            <Link href="/bns-studio#booking">
-              <Button size="lg" variant="ghost" className={T.btnPrimary}>
-                Get a Quote
-              </Button>
-            </Link>
+        <div className="border-x border-border px-6 py-10 md:px-10 md:py-14 lg:px-16 lg:py-16">
+          <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 text-center">
+            <p className={T.body}>
+              Book a shoot, browse recent work, or request a quote — every production
+              booking helps fund civic storytelling across Kenya.
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              <Link href="/bns-studio#booking">
+                <Button size="lg" className={cn(T.btnPrimary, "gap-2")}>
+                  Book a Shoot <ArrowRight className="size-4" />
+                </Button>
+              </Link>
+              <Link href="/bns-studio#portfolio">
+                <Button size="lg" variant="outline" className={T.btnPrimary}>
+                  View Portfolio
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
 
-        <motion.div
-          whileHover={{ scale: 1.01 }}
-          transition={{ duration: 0.3 }}
-          className="relative aspect-video lg:aspect-square rounded-2xl overflow-hidden border border-border/60"
-        >
-          <Image
-            src={BNS_MEDIA_IMAGES.main}
-            alt="BNS Studio main production"
-            fill
-            className="object-cover object-center"
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            priority={false}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-          <div className="absolute bottom-4 left-4 right-4">
-            <p className="text-white text-sm font-semibold">BNS Studio</p>
-            <p className="text-white/80 text-xs">Audio-visual production for civic storytelling</p>
-          </div>
-        </motion.div>
+        <div className="h-18 border-x border-t border-border md:h-28" />
       </LandingContent>
     </LandingSection>
   );

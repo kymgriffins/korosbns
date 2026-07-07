@@ -8,9 +8,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Calendar, Loader2, Send } from "lucide-react";
+import { Loader2, Send } from "lucide-react";
 import { citizenApi } from "@/lib/api-client";
 import { toast } from "sonner";
+import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
+import {
+  LandingContent,
+  LandingSection,
+  LandingSectionHeader,
+} from "@/layouts/landing-section";
+import { cn } from "@/utils";
 
 type FormData = {
   name: string;
@@ -45,49 +52,29 @@ export function StudioBookingForm() {
       toast.success("Booking request submitted! We'll be in touch within 24 hours.");
       reset();
     } catch {
-      toast.error("Failed to submit booking. Please try again.");
+      toast.error("Failed to submit booking. Please try again or contact us on WhatsApp.");
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <section id="booking" className="w-full py-20 md:py-32 bg-muted/30">
-      <div className="max-w-2xl mx-auto px-6 md:px-16">
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="text-center mb-10"
-        >
-          <motion.span
-            variants={fadeInUp}
-            className="text-xs font-bold uppercase tracking-widest text-primary"
-          >
-            Book Now
-          </motion.span>
-          <motion.h2
-            variants={fadeInUp}
-            className="text-3xl md:text-5xl font-bold font-heading tracking-tight mt-3"
-          >
-            Book a Shoot
-          </motion.h2>
-          <motion.p
-            variants={fadeInUp}
-            className="text-muted-foreground mt-4"
-          >
-            Fill in the form and we&apos;ll get back to you within 24 hours.
-          </motion.p>
-        </motion.div>
+    <LandingSection id="booking">
+      <LandingSectionHeader
+        align="center"
+        eyebrow="Book Now"
+        title="Book a shoot"
+        description="Share your project details and we'll get back to you within 24 hours."
+      />
 
+      <LandingContent>
         <motion.form
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           onSubmit={handleSubmit(onSubmit)}
-          className="space-y-5 p-8 rounded-2xl border border-border/60 bg-card"
+          className="mx-auto max-w-2xl space-y-5 rounded-2xl border border-border bg-card p-6 md:p-8"
         >
           <motion.div variants={fadeInUp} className="space-y-2">
             <Label htmlFor="name">Full Name *</Label>
@@ -110,9 +97,7 @@ export function StudioBookingForm() {
               {...register("email", { required: "Email is required" })}
             />
             {errors.email && (
-              <p className="text-xs text-destructive">
-                {errors.email.message}
-              </p>
+              <p className="text-xs text-destructive">{errors.email.message}</p>
             )}
           </motion.div>
 
@@ -125,9 +110,7 @@ export function StudioBookingForm() {
               {...register("phone", { required: "Phone is required" })}
             />
             {errors.phone && (
-              <p className="text-xs text-destructive">
-                {errors.phone.message}
-              </p>
+              <p className="text-xs text-destructive">{errors.phone.message}</p>
             )}
           </motion.div>
 
@@ -173,7 +156,7 @@ export function StudioBookingForm() {
             <Button
               type="submit"
               size="lg"
-              className="w-full gap-2 rounded-full"
+              className={cn(T.btnPrimary, "w-full gap-2")}
               disabled={submitting}
             >
               {submitting ? (
@@ -185,7 +168,7 @@ export function StudioBookingForm() {
             </Button>
           </motion.div>
         </motion.form>
-      </div>
-    </section>
+      </LandingContent>
+    </LandingSection>
   );
 }

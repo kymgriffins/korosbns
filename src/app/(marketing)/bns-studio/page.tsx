@@ -1,8 +1,9 @@
-import React, { Suspense } from "react";
+import React from "react";
 import type { Metadata } from "next";
 import { buildPageMetadata } from "@/utils/page-metadata";
 import { StudioHero } from "@/components/studio/StudioHero";
-import { StudioSections } from "@/components/studio/studio-sections";
+import { StudioServices } from "@/components/studio/StudioServices";
+import { StudioPortfolio } from "@/components/studio/StudioPortfolio";
 import { StudioBookingForm } from "@/components/studio/StudioBookingForm";
 import { StudioContactCTA } from "@/components/studio/StudioContactCTA";
 
@@ -42,9 +43,8 @@ export default function BNSStudioPage() {
         }}
       />
       <StudioHero />
-      <Suspense fallback={<div className="flex min-h-[40vh] items-center justify-center"><p className="text-sm text-muted-foreground">Loading studio content...</p></div>}>
-        <StudioSections />
-      </Suspense>
+      <StudioServices />
+      <StudioPortfolio />
       <StudioBookingForm />
       <StudioContactCTA />
     </>
