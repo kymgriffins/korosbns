@@ -2,7 +2,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useScroll, useSpring, useTransform } from "motion/react";
+import {
+    AnimatePresence,
+    motion,
+    useMotionValueEvent,
+    useScroll,
+    useSpring,
+    useTransform,
+} from "motion/react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@iconify/react";
@@ -84,7 +91,7 @@ export const servicesData: ServiceItem[] = [
 function Services({ data = servicesData }: ServicesProps) {
     const [activeIndex, setActiveIndex] = useState<number>(0);
     const sectionRef = useRef<HTMLElement | null>(null);
-    const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
+    const listRef = useRef<HTMLDivElement | null>(null);
     const { scrollYProgress } = useScroll({
         target: sectionRef,
         offset: ["start end", "end start"],
@@ -93,58 +100,27 @@ function Services({ data = servicesData }: ServicesProps) {
         useTransform(scrollYProgress, [0, 1], [28, -28]),
         { stiffness: 90, damping: 28 },
     );
+    const { scrollYProgress: listProgress } = useScroll({
+        target: listRef,
+        offset: ["start center", "end center"],
+    });
 
     const handleMouseEnter = (index: number) => {
         setActiveIndex(index);
     };
 
     useEffect(() => {
-        if (!data?.length) return;
-        let ticking = false;
-
-        const updateActiveFromScroll = () => {
-            ticking = false;
-            const viewportAnchor = window.innerHeight * 0.42;
-            let nextIndex = 0;
-            let closestUpcomingDistance = Number.POSITIVE_INFINITY;
-
-            itemRefs.current.forEach((node, index) => {
-                if (!node) return;
-                const rect = node.getBoundingClientRect();
-                const passedAnchor = rect.top <= viewportAnchor;
-
-                // Promote the latest section that has crossed the anchor.
-                if (passedAnchor) {
-                    nextIndex = index;
-                    return;
-                }
-
-                // Before first crossing, use nearest upcoming section.
-                const upcomingDistance = rect.top - viewportAnchor;
-                if (upcomingDistance < closestUpcomingDistance) {
-                    closestUpcomingDistance = upcomingDistance;
-                    nextIndex = index;
-                }
-            });
-
-            setActiveIndex((prev) => (prev === nextIndex ? prev : nextIndex));
-        };
-
-        const onScroll = () => {
-            if (ticking) return;
-            ticking = true;
-            requestAnimationFrame(updateActiveFromScroll);
-        };
-
-        window.addEventListener("scroll", onScroll, { passive: true });
-        window.addEventListener("resize", onScroll);
-        onScroll();
-
-        return () => {
-            window.removeEventListener("scroll", onScroll);
-            window.removeEventListener("resize", onScroll);
-        };
+        setActiveIndex(0);
     }, [data]);
+    useMotionValueEvent(listProgress, "change", (latest) => {
+        if (!data?.length) return;
+        const segment = 1 / data.length;
+        const next = Math.min(
+            data.length - 1,
+            Math.max(0, Math.floor((latest + segment * 0.5) / segment)),
+        );
+        setActiveIndex((prev) => (prev === next ? prev : next));
+    });
 
     return (
         <section ref={sectionRef} className="bg-background">
@@ -231,20 +207,17 @@ function Services({ data = servicesData }: ServicesProps) {
                             </motion.div>
                         </div>
                         <div className="w-full flex flex-col gap-16 lg:col-span-7 col-span-12">
-                            <div>
+                            <div ref={listRef}>
                                 {data?.map((value, index) => (
                                     <motion.div
                                         key={index}
-                                        ref={(node) => {
-                                            itemRefs.current[index] = node;
-                                        }}
                                         onMouseEnter={() => handleMouseEnter(index)}
                                         animate={{
                                             opacity: activeIndex === index ? 1 : 0.45,
                                             y: activeIndex === index ? 0 : 20,
                                         }}
                                         transition={{ duration: 0.35, ease: "easeOut" }}
-                                        className="group min-h-[72vh] lg:min-h-[92vh] py-8 xl:py-10 border-t border-border cursor-pointer flex xl:flex-row flex-col xl:items-center items-start justify-between xl:gap-10 gap-5 relative">
+                                        className="group min-h-[78vh] lg:min-h-[96vh] py-8 xl:py-10 border-t border-border cursor-pointer flex xl:flex-row flex-col xl:items-center items-start justify-between xl:gap-10 gap-5 relative">
                                         <div className="w-full max-w-2xl space-y-4">
                                             <h3 className={cn("group-hover:text-primary py-1 text-2xl md:text-3xl font-semibold text-foreground w-full", activeIndex === index ? "text-primary" : "")}>
                                             {value.heading}
