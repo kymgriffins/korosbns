@@ -68,14 +68,6 @@ const ServicesSection = dynamic(
   }
 );
 
-const ServicesStackedScroll = dynamic(
-  () => import("@/components/marketing/services-stacked-scroll"),
-  {
-    ssr: false,
-    loading: () => <div className="h-screen w-full bg-muted animate-pulse" />,
-  }
-);
-
 const TestimonialsSection = dynamic(
   () => import("@/components/shadcn-space/blocks/testimonial-01/testimonial"),
   {
@@ -101,7 +93,6 @@ export default function PremiumLandingClient() {
       <LandingTeam />
       <TimelineSection />
       <ServicesSection data={bnsServices} />
-      <ServicesStackedScroll data={bnsServices} />
       <TestimonialsSection />
       <CloudinaryGallery />
       <BNSStudioSection />
