@@ -87,22 +87,30 @@ const bnsServices: ServiceItem[] = [
   {
     heading: "Budget Analysis",
     descp: "We break down complex national and county budgets into clear, accessible narratives that empower citizens to understand where public money is going and hold leaders accountable.",
-    image: "/images/explainer-formulation.png"
+    image: "/images/explainer-formulation.png",
+    ctaLabel: "Read Reports",
+    ctaHref: "/reports",
   },
   {
     heading: "Civic Education",
     descp: "We create engaging learning content — videos, articles, and interactive modules — that builds fiscal literacy and helps Kenyans understand their role in the budget process.",
-    image: "/images/community-pulse.png"
+    image: "/images/community-pulse.png",
+    ctaLabel: "Start Learning",
+    ctaHref: "/learn",
   },
   {
     heading: "Media (Audio Visual) Agency",
     descp: "BNS Studio delivers professional videography, photography, studio rental, and post-production — turning civic and brand stories into high-quality audio-visual content.",
-    image: "/images/media/main%20media%20image.jpg"
+    image: "/images/media/main%20media%20image.jpg",
+    ctaLabel: "Explore BNS Studio",
+    ctaHref: "/bns-studio",
   },
   {
     heading: "Public Engagement",
     descp: "We facilitate citizen participation in budget processes through forums, surveys, and digital tools that amplify community voices and influence policy decisions.",
-    image: "/images/towwnhallmay/129A3923.jpg"
+    image: "/images/towwnhallmay/129A3923.jpg",
+    ctaLabel: "Join Surveys",
+    ctaHref: "/surveys",
   }
 ];
 

@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,8 @@ export interface ServiceItem {
     heading: string;
     descp: string;
     image: string;
+    ctaLabel?: string;
+    ctaHref?: string;
 }
 
 export interface ServicesProps {
@@ -20,22 +23,30 @@ export const servicesData: ServiceItem[] = [
     {
         heading: "Brand Strategy",
         descp: "We craft unique brand stories and visual identities that resonate with your audience and build long-lasting trust and recognition.",
-        image: "/images/explainer-formulation.png"
+        image: "/images/explainer-formulation.png",
+        ctaLabel: "Learn More",
+        ctaHref: "/contact",
     },
     {
         heading: "Web development",
         descp: "Build stunning, user-friendly websites that not only look great but also perform seamlessly across all devices.",
-        image: "/images/project.png"
+        image: "/images/project.png",
+        ctaLabel: "See Capabilities",
+        ctaHref: "/about",
     },
     {
         heading: "Content creation",
         descp: "We create engaging, high-quality content that resonates with your audience and helps you connect with them on a deeper level.",
-        image: "/images/community-pulse.png"
+        image: "/images/community-pulse.png",
+        ctaLabel: "View Work",
+        ctaHref: "/about",
     },
     {
         heading: "Motion graphics",
         descp: "We create engaging, high-quality motion graphics that capture the essence of your brand and help you connect with your audience on a deeper level.",
-        image: "/images/dashboard.png"
+        image: "/images/dashboard.png",
+        ctaLabel: "Book a Session",
+        ctaHref: "/contact",
     }
 ];
 
@@ -60,52 +71,72 @@ function Services({ data = servicesData }: ServicesProps) {
                                 A glimpse into our creativity—exploring innovative designs, successful collaborations, and transformative digital experiences.
                             </p>
                         </div>
-                        <Button
-                            className={"group p-1 bg-primary hover:bg-primary/80 text-white font-medium flex gap-2 lg:gap-3 justify-between items-center rounded-full w-fit ps-5 h-auto border-0 animate-in fade-in slide-in-from-right-10 duration-1000 delay-200 ease-in-out fill-mode-both"}
-                        >
-                            <a href="#" className="flex items-center gap-3 text-primary-foreground text-sm font-medium">
-                                Let's Collaborate
-                                <div className="p-2 bg-background rounded-full group-hover:rotate-45 transition-transform duration-300 ease-in-out">
-                                    <Icon
-                                        className="text-foreground"
-                                        icon="lucide:arrow-up-right"
-                                        width={16}
-                                        height={16}
-                                    />
-                                </div>
-                            </a>
-                        </Button>
+                        <Link href="/contact">
+                            <Button
+                                className={"group p-1 bg-primary hover:bg-primary/80 text-white font-medium flex gap-2 lg:gap-3 justify-between items-center rounded-full w-fit ps-5 h-auto border-0 animate-in fade-in slide-in-from-right-10 duration-1000 delay-200 ease-in-out fill-mode-both"}
+                            >
+                                <span className="flex items-center gap-3 text-primary-foreground text-sm font-medium">
+                                    Let's Collaborate
+                                    <span className="p-2 bg-background rounded-full group-hover:rotate-45 transition-transform duration-300 ease-in-out">
+                                        <Icon
+                                            className="text-foreground"
+                                            icon="lucide:arrow-up-right"
+                                            width={16}
+                                            height={16}
+                                        />
+                                    </span>
+                                </span>
+                            </Button>
+                        </Link>
                     </div>
                     <div className="grid grid-cols-12 relative gap-6 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-200 ease-in-out fill-mode-both">
-                        <div className="w-full lg:col-span-4 col-span-12 flex items-center justify-center">
-                            <div className={`transition-all duration-300 z-10 h-80`} >
+                        <div className="hidden lg:flex w-full lg:col-span-5 items-start justify-center">
+                            <div className={`transition-all duration-300 z-10 w-full max-w-lg`}>
                                 {data?.[activeIndex]?.image && (
-                                    <Image
-                                        src={data[activeIndex].image}
-                                        alt="Service Image"
-                                        width={400}
-                                        height={250}
-                                        className="w-full h-full object-cover"
-                                    />
+                                    <div className="overflow-hidden rounded-2xl border border-border/60 bg-card">
+                                        <Image
+                                            src={data[activeIndex].image}
+                                            alt={data[activeIndex].heading}
+                                            width={640}
+                                            height={420}
+                                            className="h-[320px] w-full object-cover"
+                                        />
+                                    </div>
                                 )}
                             </div>
                         </div>
-                        <div className="lg:col-span-1" />
                         <div className="w-full flex flex-col gap-16 lg:col-span-7 col-span-12">
                             <div>
                                 {data?.map((value, index) => (
                                     <div
                                         key={index}
-                                        onMouseEnter={(e) => handleMouseEnter(index)}
-                                        className="group py-6 xl:py-10 border-t border-border cursor-pointer flex xl:flex-row flex-col xl:items-center items-start justify-between xl:gap-10 gap-1 relative">
-                                        <h3 className={cn("group-hover:text-teal-400 py-1 text-2xl md:text-3xl font-semibold text-foreground max-w-2xs w-full", activeIndex === index ? "text-teal-400" : "")}>
+                                        onMouseEnter={() => handleMouseEnter(index)}
+                                        className="group py-6 xl:py-8 border-t border-border cursor-pointer flex xl:flex-row flex-col xl:items-start items-start justify-between xl:gap-10 gap-4 relative">
+                                        <div className="w-full space-y-3">
+                                            <h3 className={cn("group-hover:text-primary py-1 text-2xl md:text-3xl font-semibold text-foreground w-full", activeIndex === index ? "text-primary" : "")}>
                                             {value.heading}
-                                        </h3>
-                                        {activeIndex === index && (
-                                            <p className="text-muted-foreground text-base transition-all duration-300 flex-1">
+                                            </h3>
+                                            <p className={cn("text-muted-foreground text-base transition-all duration-300", activeIndex === index ? "opacity-100" : "opacity-80")}>
                                                 {value.descp}
                                             </p>
-                                        )}
+                                            <div className="lg:hidden overflow-hidden rounded-xl border border-border/60 bg-card">
+                                                <Image
+                                                    src={value.image}
+                                                    alt={value.heading}
+                                                    width={560}
+                                                    height={320}
+                                                    className="h-52 w-full object-cover"
+                                                />
+                                            </div>
+                                        </div>
+                                        <Link href={value.ctaHref ?? "/contact"} className="shrink-0">
+                                            <Button
+                                                variant={activeIndex === index ? "default" : "outline"}
+                                                className="rounded-full"
+                                            >
+                                                {value.ctaLabel ?? "Learn More"}
+                                            </Button>
+                                        </Link>
                                     </div>
                                 ))}
                             </div>

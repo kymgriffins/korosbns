@@ -44,13 +44,13 @@ export default function LandingHero() {
               and democratic audit.
             </p>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <Link href={Routes.BudgetNews} className="w-full sm:w-auto">
+              <Link href={Routes.Reports} className="w-full sm:w-auto">
                 <Button
                   size="lg"
                   variant="white"
                   className="w-full gap-2 rounded-full px-8 py-6 text-base font-bold sm:w-auto"
                 >
-                  Explore Budget News
+                  Explore Reports
                   <ArrowRight className="size-5" />
                 </Button>
               </Link>
