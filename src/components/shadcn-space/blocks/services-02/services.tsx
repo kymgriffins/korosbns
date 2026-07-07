@@ -231,12 +231,13 @@ function Services({ data = servicesData }: ServicesProps) {
                                             itemRefs.current[index] = node;
                                         }}
                                         onMouseEnter={() => handleMouseEnter(index)}
-                                        initial={{ opacity: 0, y: 26 }}
-                                        whileInView={{ opacity: 1, y: 0 }}
-                                        viewport={{ once: true, amount: 0.35 }}
-                                        transition={{ duration: 0.45, ease: "easeOut" }}
-                                        className="group py-6 xl:py-8 border-t border-border cursor-pointer flex xl:flex-row flex-col xl:items-start items-start justify-between xl:gap-10 gap-4 relative">
-                                        <div className="w-full space-y-3">
+                                        animate={{
+                                            opacity: activeIndex === index ? 1 : 0.45,
+                                            y: activeIndex === index ? 0 : 20,
+                                        }}
+                                        transition={{ duration: 0.35, ease: "easeOut" }}
+                                        className="group min-h-[72vh] lg:min-h-[92vh] py-8 xl:py-10 border-t border-border cursor-pointer flex xl:flex-row flex-col xl:items-center items-start justify-between xl:gap-10 gap-5 relative">
+                                        <div className="w-full max-w-2xl space-y-4">
                                             <h3 className={cn("group-hover:text-primary py-1 text-2xl md:text-3xl font-semibold text-foreground w-full", activeIndex === index ? "text-primary" : "")}>
                                             {value.heading}
                                             </h3>
@@ -274,7 +275,7 @@ function Services({ data = servicesData }: ServicesProps) {
                                                 />
                                             </div>
                                         </div>
-                                        <div className="flex shrink-0 items-center gap-2">
+                                        <div className="flex shrink-0 items-center gap-2 self-start xl:self-center">
                                             <Link href={value.ctaHref ?? "/contact"}>
                                                 <Button
                                                     variant={activeIndex === index ? "default" : "outline"}
