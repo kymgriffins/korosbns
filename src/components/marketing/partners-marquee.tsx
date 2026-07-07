@@ -92,7 +92,7 @@ export default function PartnersMarquee() {
 
   return (
     <LandingSection>
-      <LandingSectionEyebrow muted>Main Sponsor</LandingSectionEyebrow>
+      <LandingSectionEyebrow muted>Partners</LandingSectionEyebrow>
       <LandingContent className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
         {mainSponsors.map((partner) => (
           <PartnerLogo key={partner.id || partner.name} partner={partner} prominent />
