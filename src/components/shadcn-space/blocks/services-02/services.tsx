@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useSpring, useTransform } from "motion/react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -79,6 +79,7 @@ export const servicesData: ServiceItem[] = [
 function Services({ data = servicesData }: ServicesProps) {
     const [activeIndex, setActiveIndex] = useState<number>(0);
     const sectionRef = useRef<HTMLElement | null>(null);
+    const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
     const { scrollYProgress } = useScroll({
         target: sectionRef,
         offset: ["start end", "end start"],
@@ -91,6 +92,48 @@ function Services({ data = servicesData }: ServicesProps) {
     const handleMouseEnter = (index: number) => {
         setActiveIndex(index);
     };
+
+    useEffect(() => {
+        if (!data?.length) return;
+        let ticking = false;
+
+        const updateActiveFromScroll = () => {
+            ticking = false;
+            const viewportAnchor = window.innerHeight * 0.38;
+            let nextIndex = activeIndex;
+            let bestDistance = Number.POSITIVE_INFINITY;
+
+            itemRefs.current.forEach((node, index) => {
+                if (!node) return;
+                const rect = node.getBoundingClientRect();
+                const centerY = rect.top + rect.height / 2;
+                const distance = Math.abs(centerY - viewportAnchor);
+                if (distance < bestDistance) {
+                    bestDistance = distance;
+                    nextIndex = index;
+                }
+            });
+
+            if (nextIndex !== activeIndex) {
+                setActiveIndex(nextIndex);
+            }
+        };
+
+        const onScroll = () => {
+            if (ticking) return;
+            ticking = true;
+            requestAnimationFrame(updateActiveFromScroll);
+        };
+
+        window.addEventListener("scroll", onScroll, { passive: true });
+        window.addEventListener("resize", onScroll);
+        onScroll();
+
+        return () => {
+            window.removeEventListener("scroll", onScroll);
+            window.removeEventListener("resize", onScroll);
+        };
+    }, [activeIndex, data]);
 
     return (
         <section ref={sectionRef} className="bg-background">
@@ -146,9 +189,16 @@ function Services({ data = servicesData }: ServicesProps) {
                         <div className="w-full flex flex-col gap-16 lg:col-span-7 col-span-12">
                             <div>
                                 {data?.map((value, index) => (
-                                    <div
+                                    <motion.div
                                         key={index}
+                                        ref={(node) => {
+                                            itemRefs.current[index] = node;
+                                        }}
                                         onMouseEnter={() => handleMouseEnter(index)}
+                                        initial={{ opacity: 0, y: 26 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        viewport={{ once: true, amount: 0.35 }}
+                                        transition={{ duration: 0.45, ease: "easeOut" }}
                                         className="group py-6 xl:py-8 border-t border-border cursor-pointer flex xl:flex-row flex-col xl:items-start items-start justify-between xl:gap-10 gap-4 relative">
                                         <div className="w-full space-y-3">
                                             <h3 className={cn("group-hover:text-primary py-1 text-2xl md:text-3xl font-semibold text-foreground w-full", activeIndex === index ? "text-primary" : "")}>
@@ -205,7 +255,7 @@ function Services({ data = servicesData }: ServicesProps) {
                                                 </Link>
                                             ) : null}
                                         </div>
-                                    </div>
+                                    </motion.div>
                                 ))}
                             </div>
                         </div>

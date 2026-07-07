@@ -7,7 +7,7 @@
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "dev": "next dev",
+    "dev": "next dev --webpack",
     "prebuild": "node scripts/link-budgethub.mjs",
     "build": "next build",
     "start": "next start",
