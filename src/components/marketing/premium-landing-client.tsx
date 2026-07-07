@@ -83,6 +83,9 @@ const NewsletterPopup = dynamic(
 
 import { bnsServices } from "@/data/bns-services";
 
+/** Temporarily hidden while sticky services desktop behavior is fixed. */
+const SHOW_SERVICES_SECTION = false;
+
 export default function PremiumLandingClient() {
   return (
     <>
@@ -92,7 +95,7 @@ export default function PremiumLandingClient() {
       <PartnersMarquee />
       <LandingTeam />
       <TimelineSection />
-      <ServicesSection data={bnsServices} />
+      {SHOW_SERVICES_SECTION ? <ServicesSection data={bnsServices} /> : null}
       <TestimonialsSection />
       <CloudinaryGallery />
       <BNSStudioSection />
