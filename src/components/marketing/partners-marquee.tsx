@@ -2,13 +2,13 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 import { partnerData, type Partner } from "@/data/partners";
 import { useOrg } from "@/contexts/org-context";
-import { motion } from "motion/react";
-import { fadeInUp, staggerContainer } from "@/motion/variants";
-import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
-import { cn } from "@/utils";
+import {
+  LandingContent,
+  LandingSection,
+  LandingSectionEyebrow,
+} from "@/layouts/landing-section";
 
 const TISA_SPONSOR: Partner = {
   id: "tisa",
@@ -85,36 +85,19 @@ export default function PartnersMarquee() {
         !p.is_consortium,
     );
 
-    // Always show TISA as the main sponsor logo on landing.
     setMainSponsors([tisaFromData ? { ...TISA_SPONSOR, ...tisaFromData, logo_url: TISA_SPONSOR.logo_url } : TISA_SPONSOR]);
   }, [config.partners]);
 
   if (mainSponsors.length === 0) return null;
 
   return (
-    <section className="overflow-hidden border-y border-border/40 bg-background py-12 md:py-16">
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-      >
-        <motion.div variants={fadeInUp}>
-          <div className={`${SECTION_SHELL_INNER} mb-8 text-center`}>
-            <span className={cn(T.eyebrowMuted, "mb-8 text-center")}>
-              Main Sponsor
-            </span>
-          </div>
-        </motion.div>
-
-        <motion.div variants={fadeInUp}>
-          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
-            {mainSponsors.map((partner) => (
-              <PartnerLogo key={partner.id || partner.name} partner={partner} prominent />
-            ))}
-          </div>
-        </motion.div>
-      </motion.div>
-    </section>
+    <LandingSection>
+      <LandingSectionEyebrow muted>Main Sponsor</LandingSectionEyebrow>
+      <LandingContent className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
+        {mainSponsors.map((partner) => (
+          <PartnerLogo key={partner.id || partner.name} partner={partner} prominent />
+        ))}
+      </LandingContent>
+    </LandingSection>
   );
 }

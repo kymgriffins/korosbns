@@ -9,6 +9,8 @@ type SectionShellProps = React.ComponentProps<"section"> & {
   innerClassName?: string;
 };
 
+export type { SectionShellProps };
+
 export function SectionShell({
   children,
   className,

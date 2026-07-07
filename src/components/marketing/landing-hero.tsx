@@ -11,14 +11,21 @@ import {
   staggerFast,
 } from "@/motion/variants";
 import { CLOUDINARY_HERO_LANDING_VIDEO_MP4 } from "@/constants/cloudinary";
-import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
+import {
+  LANDING_SECTION_SURFACE,
+  SECTION_SHELL_INNER,
+} from "@/layouts/landing-section";
 import { cn } from "@/utils";
 
 export default function LandingHero() {
   return (
     <section
-      className="relative w-full overflow-hidden bg-background text-foreground"
+      className={cn(
+        "relative w-full overflow-hidden text-foreground",
+        LANDING_SECTION_SURFACE,
+        "border-t-0",
+      )}
       aria-labelledby="landing-hero-heading"
     >
       <div className={SECTION_SHELL_INNER}>
@@ -29,10 +36,8 @@ export default function LandingHero() {
           className="grid w-full gap-8 pb-10 pt-4 md:gap-12 md:pb-14 md:pt-6 lg:grid-cols-2 lg:items-end"
         >
           <motion.div variants={fadeInUp} className="flex flex-col gap-5">
-            <h1
-              id="landing-hero-heading"
-              className="gusto-heading max-w-xl text-foreground"
-            >
+            <span className={cn(T.eyebrow, "mb-0")}>Budget Ndio Story</span>
+            <h1 id="landing-hero-heading" className={cn(T.sectionTitle, "max-w-xl")}>
               Translating{" "}
               <span className={T.highlight}>numbers</span>{" "}
               into civic narratives.
@@ -40,7 +45,7 @@ export default function LandingHero() {
           </motion.div>
 
           <motion.div variants={fadeInUp} className="flex flex-col gap-6 lg:gap-8">
-            <p className={cn(T.prose, "max-w-xl text-muted-foreground")}>
+            <p className={cn(T.lead, "max-w-xl md:max-w-none")}>
               Budget Ndio Story is a youth-led initiative in Kenya turning complex
               national budgets into clear, actionable stories for civic engagement
               and democratic audit.
@@ -50,7 +55,7 @@ export default function LandingHero() {
                 <Button
                   size="lg"
                   variant="white"
-                  className="w-full gap-2 rounded-full px-8 py-6 text-base font-bold sm:w-auto"
+                  className={T.btnHero}
                 >
                   Explore Reports
                   <ArrowRight className="size-5" />
@@ -69,11 +74,10 @@ export default function LandingHero() {
           <motion.div
             variants={fadeInUp}
             className="relative aspect-video w-full min-h-[12rem] overflow-hidden rounded-2xl border border-border/60 md:rounded-3xl group cursor-pointer"
-            onClick={() => window.open('https://www.youtube.com/@BudgetNdioStory', '_blank')}
+            onClick={() => window.open("https://www.youtube.com/@BudgetNdioStory", "_blank")}
             whileHover={{ scale: 1.02 }}
             transition={{ duration: 0.3 }}
           >
-            {/* Hover overlay */}
             <div className="absolute inset-0 z-10 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
               <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center gap-2">
                 <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center">
@@ -82,14 +86,14 @@ export default function LandingHero() {
                 <span className="text-white text-sm font-bold">Watch on YouTube</span>
               </div>
             </div>
-            
+
             <video
               autoPlay
               muted
               loop
               playsInline
               onError={(e) => {
-                console.warn('Hero video failed to load:', e);
+                console.warn("Hero video failed to load:", e);
               }}
               className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
             >

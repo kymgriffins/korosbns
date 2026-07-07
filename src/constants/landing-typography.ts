@@ -1,24 +1,10 @@
 /**
- * Landing page typography system.
+ * Landing page typography & UI tokens.
+ * Reference section: landing-youtube (SectionShell + LandingSectionHeader + LandingContent).
  *
- * Font roles (see src/constants/fonts.ts):
- * - font-base (Neue Montreal): body copy, UI labels, descriptions
- * - font-heading (Satoshi): section titles, emphasis highlights
- * - font-handwriting (Caveat): decorative accents only (not used on landing)
- *
- * Section audit (premium-landing-client.tsx):
- * | Section            | Eyebrow              | Title              | Highlight        | Body              |
- * |--------------------|----------------------|--------------------|------------------|-------------------|
- * | LandingHero        | —                    | gusto-heading      | landing-highlight| gusto-text scale  |
- * | LandingTikTokVideo | landing-eyebrow      | gusto-heading      | landing-highlight| landing-body      |
- * | LandingYoutube     | landing-eyebrow      | gusto-heading      | landing-highlight| landing-lead      |
- * | PartnersMarquee    | landing-eyebrow-muted| —                  | —                | —                 |
- * | LandingTeam        | landing-eyebrow      | gusto-heading      | landing-highlight| landing-lead      |
- * | TimelineBlock01    | Badge (shadcn)       | gusto-heading      | landing-highlight| landing-body      |
- * | Testimonials       | Badge (shadcn)       | gusto-heading      | —                | card copy         |
- * | CloudinaryGallery  | landing-eyebrow      | gusto-heading      | landing-highlight| landing-lead      |
- * | BNSStudioSection   | landing-eyebrow      | gusto-heading      | —                | gusto-text scale  |
- * | NewsletterPopup    | —                    | gusto-subheading   | —                | gusto-text        |
+ * Font roles (src/constants/fonts.ts):
+ * - font-base (Neue Montreal): body, UI, captions
+ * - font-heading (Satoshi): titles, highlights, card headings
  */
 export const LANDING_TYPOGRAPHY = {
   eyebrow: "landing-eyebrow",
@@ -29,4 +15,13 @@ export const LANDING_TYPOGRAPHY = {
   lead: "landing-lead",
   body: "landing-body",
   prose: "gusto-text",
+  cardTitle: "landing-card-title",
+  itemTitle: "landing-item-title",
+  role: "landing-role",
+  caption: "landing-caption",
+  marqueeLabel: "landing-marquee-label",
+  btnPrimary: "landing-btn-primary",
+  btnHero: "landing-btn-hero",
+  btnOutline: "landing-btn-outline",
+  mediaFrame: "landing-media-frame",
 } as const;

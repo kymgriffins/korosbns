@@ -1,12 +1,13 @@
 "use client";
 
-import { useRef } from "react";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { motion, useInView } from "motion/react";
+import { motion } from "motion/react";
 import { cn } from "@/utils";
 import { BNS_COMMUNITY_IMAGES } from "@/constants/bns-media-images";
-import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
+import {
+  LandingSection,
+  LandingSectionHeader,
+} from "@/layouts/landing-section";
 
 function EngagementPhotoCard({
   image,
@@ -69,119 +70,108 @@ function EngagementPhotoCard({
 }
 
 const Testimonials = () => {
-  const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { once: true, amount: 0.1 });
+  const cardMotion = {
+    initial: { opacity: 0, y: 40 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true, amount: 0.1 },
+    transition: { duration: 1, ease: "easeInOut" as const },
+  };
 
   return (
-    <section ref={sectionRef} className="py-10">
-      <div className="max-w-7xl mx-auto px-4 xl:px-16">
-        <div className="flex flex-col items-center self-stretch gap-12">
+    <LandingSection>
+      <LandingSectionHeader
+        align="center"
+        eyebrow="Testimonials"
+        title="What Kenyans are saying about transparent budgets"
+        className="mb-0 md:mb-0"
+      />
+
+      <div className="mt-12 flex flex-col items-center self-stretch gap-12 md:mt-16">
+        <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-12">
           <motion.div
-            initial={{ opacity: 0, y: -32 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: -32 }}
-            transition={{ duration: 0.7, ease: "easeInOut" }}
-            className="flex flex-col items-center justify-center gap-2 sm:gap-4"
+            {...cardMotion}
+            transition={{ ...cardMotion.transition, delay: 0.2 }}
+            className="col-span-1 lg:col-span-8"
           >
-            <Badge
-              variant={"outline"}
-              className="py-1 px-3 text-sm font-normal h-7"
-            >
-              Testimonials
-            </Badge>
-            <h2 className={cn(T.sectionTitle, "mx-auto max-w-xs text-center sm:max-w-2xl")}>
-              What Kenyans are saying about transparent budgets
-            </h2>
+            <EngagementPhotoCard
+              image={BNS_COMMUNITY_IMAGES.forumA}
+              imagePosition="center top"
+              quote="Budget Ndio Story made the national budget understandable for my community. Now we can actually track where our tax money is going."
+              name="Grace Wanjiku"
+              role="Community Organizer, Nakuru"
+            />
           </motion.div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 w-full">
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-              transition={{ duration: 1, delay: 0.2, ease: "easeInOut" }}
-              className="col-span-1 lg:col-span-8"
-            >
-              <EngagementPhotoCard
-                image={BNS_COMMUNITY_IMAGES.forumA}
-                imagePosition="center top"
-                quote="Budget Ndio Story made the national budget understandable for my community. Now we can actually track where our tax money is going."
-                name="Grace Wanjiku"
-                role="Community Organizer, Nakuru"
+          <motion.div
+            {...cardMotion}
+            transition={{ ...cardMotion.transition, delay: 0.2 }}
+            className="col-span-1 lg:col-span-4"
+          >
+            <Card className="relative h-full w-full overflow-hidden rounded-2xl border border-border p-8 md:min-h-96">
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "linear-gradient(145deg, rgba(15, 81, 50, 0.92) 0%, rgba(22, 94, 58, 0.88) 28%, rgba(122, 28, 42, 0.82) 58%, rgba(18, 18, 18, 0.94) 100%)",
+                }}
               />
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-              transition={{ duration: 1, delay: 0.2, ease: "easeInOut" }}
-              className="col-span-1 lg:col-span-4"
-            >
-              <Card className="relative h-full w-full overflow-hidden rounded-2xl border border-border p-8 md:min-h-96">
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      "linear-gradient(145deg, rgba(15, 81, 50, 0.92) 0%, rgba(22, 94, 58, 0.88) 28%, rgba(122, 28, 42, 0.82) 58%, rgba(18, 18, 18, 0.94) 100%)",
-                  }}
-                />
-                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,transparent_32%,rgba(255,255,255,0.06)_50%,transparent_68%)]" />
-                <CardContent className="relative z-10 flex h-full flex-col items-start justify-between gap-24 p-0">
-                  <p className="text-xs font-medium uppercase tracking-[0.18em] text-white/75">
-                    Facts & numbers
+              <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,transparent_32%,rgba(255,255,255,0.06)_50%,transparent_68%)]" />
+              <CardContent className="relative z-10 flex h-full flex-col items-start justify-between gap-24 p-0">
+                <p className="text-xs font-medium uppercase tracking-[0.18em] text-white/75">
+                  Facts & numbers
+                </p>
+                <div className="flex flex-col items-start gap-4">
+                  <p className="text-4xl font-medium text-white lg:text-5xl">
+                    78%
                   </p>
-                  <div className="flex flex-col items-start gap-4">
-                    <p className="text-4xl font-medium text-white lg:text-5xl">
-                      78%
-                    </p>
-                    <p className="text-xl font-medium text-white/95 lg:text-2xl">
-                      of Kenyans want easier budget access.
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-              transition={{ duration: 1, delay: 0.5, ease: "easeInOut" }}
-              className="col-span-1 lg:col-span-4"
-            >
-              <Card className="bg-gray-950 border border-border h-full w-full p-8 rounded-2xl">
-                <CardContent className="flex flex-col items-start justify-between gap-6 p-0 h-full">
-                  <div className="flex flex-col items-start gap-2">
-                    <p className="text-white/70 text-base font-normal">
-                      Citizen engagements
-                    </p>
-                    <p className="text-white text-xl lg:text-2xl font-medium">
-                      Their budget explainers helped our students understand
-                      fiscal policy for the first time!
-                    </p>
-                  </div>
-                  <img
-                    src={BNS_COMMUNITY_IMAGES.cohortA}
-                    alt="BNS cohort civic engagement session"
-                    width={"100%"}
-                    height={220}
-                    className="rounded-xl object-cover"
-                  />
-                </CardContent>
-              </Card>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-              transition={{ duration: 1, delay: 0.5, ease: "easeInOut" }}
-              className="col-span-1 lg:col-span-8"
-            >
-              <EngagementPhotoCard
-                image={BNS_COMMUNITY_IMAGES.stakeholdersC}
-                imagePosition="center 20%"
-                quote="Budget Ndio Story is bridging the gap between policy and people. Every Kenyan deserves to understand how public funds are spent."
-                name="Nelly Maina"
-                role="Lead Podcast Host, Budget Ndio Story"
-              />
-            </motion.div>
-          </div>
+                  <p className="text-xl font-medium text-white/95 lg:text-2xl">
+                    of Kenyans want easier budget access.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+          <motion.div
+            {...cardMotion}
+            transition={{ ...cardMotion.transition, delay: 0.5 }}
+            className="col-span-1 lg:col-span-4"
+          >
+            <Card className="bg-gray-950 border border-border h-full w-full p-8 rounded-2xl">
+              <CardContent className="flex flex-col items-start justify-between gap-6 p-0 h-full">
+                <div className="flex flex-col items-start gap-2">
+                  <p className="text-white/70 text-base font-normal">
+                    Citizen engagements
+                  </p>
+                  <p className="text-white text-xl lg:text-2xl font-medium">
+                    Their budget explainers helped our students understand
+                    fiscal policy for the first time!
+                  </p>
+                </div>
+                <img
+                  src={BNS_COMMUNITY_IMAGES.cohortA}
+                  alt="BNS cohort civic engagement session"
+                  width={"100%"}
+                  height={220}
+                  className="rounded-xl object-cover"
+                />
+              </CardContent>
+            </Card>
+          </motion.div>
+          <motion.div
+            {...cardMotion}
+            transition={{ ...cardMotion.transition, delay: 0.5 }}
+            className="col-span-1 lg:col-span-8"
+          >
+            <EngagementPhotoCard
+              image={BNS_COMMUNITY_IMAGES.stakeholdersC}
+              imagePosition="center 20%"
+              quote="Budget Ndio Story is bridging the gap between policy and people. Every Kenyan deserves to understand how public funds are spent."
+              name="Nelly Maina"
+              role="Lead Podcast Host, Budget Ndio Story"
+            />
+          </motion.div>
         </div>
       </div>
-    </section>
+    </LandingSection>
   );
 };
 

@@ -2,11 +2,16 @@
 
 import Link from "next/link";
 import Timeline from "@/components/shadcn-space/blocks/timeline-01/timeline";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Routes } from "@/constants/routes";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
+import {
+  LandingContent,
+  LandingSection,
+  LandingSectionHeader,
+} from "@/layouts/landing-section";
 import type { TimelineItemProps } from "@/components/shadcn-space/blocks/timeline-01/timeline";
+
 export const budgetCycleTimelineData: TimelineItemProps[] = [
   {
     title: "National Treasury — Budget Formulation",
@@ -51,50 +56,39 @@ export interface TimelineBlock01Props {
 
 const TimelineBlock01 = ({ items = budgetCycleTimelineData }: TimelineBlock01Props) => {
   return (
-    <section className="overflow-hidden border-t border-border/40 bg-background">
-      <div className="mx-auto max-w-7xl px-4 md:px-8 lg:px-16">
+    <LandingSection className="overflow-hidden">
+      <LandingContent>
         <div className="border-x border-b border-border px-6 py-10 md:px-10 md:py-16 lg:px-16 lg:py-20">
-          <div className="max-w-2xl space-y-4">
-            <Badge
-              variant="outline"
-              className="rounded-full px-3 py-1 font-normal"
-            >
-              FY 2026/27 Budget Cycle
-            </Badge>
-            <div className="space-y-3">
-              <h2 className={T.sectionTitle}>
+          <LandingSectionHeader
+            eyebrow="FY 2026/27 Budget Cycle"
+            title={
+              <>
                 Budget Tracker &{" "}
                 <span className={T.highlight}>Allocations</span>
-              </h2>
-              <p className={T.body}>
-                Who moves Kenya&apos;s budget forward — Treasury, citizens,
-                Parliament, the Executive, and implementation — in five clear stages
-                for FY2026/27.
-              </p>
-            </div>
-          </div>
+              </>
+            }
+            description="Who moves Kenya&apos;s budget forward — Treasury, citizens, Parliament, the Executive, and implementation — in five clear stages for FY2026/27."
+            className="mb-0 md:mb-0"
+          />
         </div>
         <div className="border-r border-border md:border-x">
           <Timeline items={items} />
         </div>
         <div className="border-x border-border px-6 py-10 md:px-10 md:py-14 lg:px-16 lg:py-16">
           <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 text-center">
-            <p className="text-base leading-relaxed text-muted-foreground md:text-lg">
+            <p className={T.body}>
               We&apos;ll take you through the full budget-making process — from
               Treasury formulation to implementation — and show you how you, as a
               Mwananchi, can take part at every stage.
             </p>
-            <Button
-              asChild
-              className="h-auto rounded-full px-6 py-3 text-sm font-semibold"
-            >
+            <Button asChild className={T.btnPrimary}>
               <Link href={Routes.Learn}>Explore the learning hub</Link>
             </Button>
           </div>
         </div>
         <div className="h-18 border-x border-t border-border md:h-28" />
-      </div>
-    </section>
+      </LandingContent>
+    </LandingSection>
   );
 };
 

@@ -15,9 +15,12 @@ import {
   VolumeX,
 } from "lucide-react";
 import { toast } from "sonner";
-import { fadeInUp, staggerContainer } from "@/motion/variants";
-import { SectionHeader, SectionShell } from "@/layouts/section-shell";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
+import {
+  LandingContent,
+  LandingSection,
+  LandingSectionHeader,
+} from "@/layouts/landing-section";
 import { cn } from "@/utils";
 import { Marquee } from "@/components/ui/marquee";
 import { getFeaturedTikTokVideos, likeTikTokVideo } from "@/lib/tiktok-service";
@@ -158,19 +161,10 @@ export default function LandingTikTokVideo() {
   if (loading || videos.length === 0) return null;
 
   return (
-    <SectionShell className="border-y border-border/40 bg-background">
-      <motion.div
-        variants={staggerContainer}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-80px" }}
-        className="grid items-stretch gap-8 lg:grid-cols-2 lg:gap-6 lg:min-h-[min(72vh,760px)] xl:gap-8"
-      >
-        <motion.div
-          variants={fadeInUp}
-          className="flex h-full flex-col justify-center lg:pr-4 xl:pr-8"
-        >
-          <SectionHeader
+    <LandingSection>
+      <div className="grid items-stretch gap-8 lg:grid-cols-2 lg:gap-6 lg:min-h-[min(72vh,760px)] xl:gap-8">
+        <LandingContent className="flex h-full flex-col justify-center lg:pr-4 xl:pr-8">
+          <LandingSectionHeader
             eyebrow="Short-form civic media"
             title={
               <>
@@ -178,28 +172,23 @@ export default function LandingTikTokVideo() {
                 <span className={T.highlight}>made to scroll</span>.
               </>
             }
+            description="Snackable explainers that meet youth where they scroll — turning county fiscal data into stories anyone can share."
             className="mb-0 md:mb-0"
           />
-
-          <p className={cn(T.body, "mt-6 lg:mt-8")}>
-            Snackable explainers that meet youth where they scroll — turning county
-            fiscal data into stories anyone can share.
-          </p>
 
           <div className="mt-8 flex flex-wrap gap-4 lg:mt-10">
             <Link
               href={TIKTOK_PROFILE}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-semibold transition-colors hover:bg-muted"
+              className={T.btnOutline}
             >
               Follow @budget.ndio.story
             </Link>
           </div>
-        </motion.div>
+        </LandingContent>
 
-        <motion.div
-          variants={fadeInUp}
+        <LandingContent
           className="flex h-full min-h-[520px] items-stretch justify-center sm:min-h-[580px] lg:min-h-0 lg:justify-start lg:pl-4 xl:pl-8"
         >
           <div
@@ -353,15 +342,15 @@ export default function LandingTikTokVideo() {
               </div>
             )}
           </div>
-        </motion.div>
-      </motion.div>
+        </LandingContent>
+      </div>
 
       {videos.length > 1 && (
         <TikTokMarquee videos={videos} formatCount={formatCount} />
       )}
 
       {/* <LandingTikTokLiveMarquee /> */}
-    </SectionShell>
+    </LandingSection>
   );
 }
 
@@ -373,8 +362,8 @@ function TikTokMarquee({
   formatCount: (n: number) => string;
 }) {
   return (
-    <div className="mt-14 overflow-hidden">
-      <p className="mb-5 text-center text-xs font-semibold text-foreground/40">
+    <LandingContent className="mt-14 overflow-hidden">
+      <p className={cn(T.marqueeLabel, "mb-5 text-center")}>
         As seen on TikTok
       </p>
       <Marquee pauseOnHover repeat={Math.max(2, Math.ceil(8 / videos.length))}>
@@ -406,6 +395,6 @@ function TikTokMarquee({
           </a>
         ))}
       </Marquee>
-    </div>
+    </LandingContent>
   );
 }
