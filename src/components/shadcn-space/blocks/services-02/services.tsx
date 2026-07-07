@@ -84,8 +84,8 @@ function Services({ data = servicesData }: ServicesProps) {
         offset: ["start end", "end start"],
     });
     const parallaxY = useSpring(
-        useTransform(scrollYProgress, [0, 1], [48, -48]),
-        { stiffness: 100, damping: 26 },
+        useTransform(scrollYProgress, [0, 1], [28, -28]),
+        { stiffness: 90, damping: 28 },
     );
 
     const handleMouseEnter = (index: number) => {
