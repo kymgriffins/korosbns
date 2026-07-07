@@ -80,13 +80,12 @@ const Testimonials = () => {
   return (
     <LandingSection>
       <LandingSectionHeader
-        align="center"
         eyebrow="Testimonials"
         title="What Kenyans are saying about transparent budgets"
-        className="mb-0 md:mb-0"
+        description="Real voices from communities, students, and organizers engaging with our budget transparency work across Kenya."
       />
 
-      <div className="mt-12 flex flex-col items-center self-stretch gap-12 md:mt-16">
+      <div className="flex flex-col items-center self-stretch gap-12">
         <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-12">
           <motion.div
             {...cardMotion}

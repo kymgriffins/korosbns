@@ -56,6 +56,11 @@ select:focus-visible,
   @apply font-heading text-[clamp(2rem,6vw,4.5rem)] font-black tracking-[-0.03em] leading-[1.05] text-balance;
 }
 
+/* Section titles below the hero — smaller scale at large breakpoints */
+.landing-section-title {
+  @apply font-heading text-[clamp(1.75rem,3.5vw,3rem)] font-bold tracking-[-0.02em] leading-[1.1] text-balance;
+}
+
 .gusto-subheading {
   @apply font-heading text-[clamp(1.25rem,2.5vw,2.25rem)] font-bold tracking-tight leading-tight text-balance;
 }

@@ -37,7 +37,7 @@ export default function LandingHero() {
         >
           <motion.div variants={fadeInUp} className="flex flex-col gap-5">
             <span className={cn(T.eyebrow, "mb-0")}>Budget Ndio Story</span>
-            <h1 id="landing-hero-heading" className={cn(T.sectionTitle, "max-w-xl")}>
+            <h1 id="landing-hero-heading" className={cn(T.heroTitle, "max-w-xl")}>
               Translating{" "}
               <span className={T.highlight}>numbers</span>{" "}
               into civic narratives.
