@@ -1,7 +1,8 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { motion, useScroll, useSpring, useTransform } from "motion/react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@iconify/react";
@@ -77,13 +78,22 @@ export const servicesData: ServiceItem[] = [
 
 function Services({ data = servicesData }: ServicesProps) {
     const [activeIndex, setActiveIndex] = useState<number>(0);
+    const sectionRef = useRef<HTMLElement | null>(null);
+    const { scrollYProgress } = useScroll({
+        target: sectionRef,
+        offset: ["start end", "end start"],
+    });
+    const parallaxY = useSpring(
+        useTransform(scrollYProgress, [0, 1], [48, -48]),
+        { stiffness: 100, damping: 26 },
+    );
 
     const handleMouseEnter = (index: number) => {
         setActiveIndex(index);
     };
 
     return (
-        <section className="bg-background">
+        <section ref={sectionRef} className="bg-background">
             <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 lg:py-20 sm:py-16 py-8">
                 <div className="flex flex-col sm:gap-16 gap-8">
                     <div className="flex md:flex-row flex-col justify-between md:items-end items-start gap-4">
@@ -116,7 +126,10 @@ function Services({ data = servicesData }: ServicesProps) {
                     </div>
                     <div className="grid grid-cols-12 relative gap-6 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-200 ease-in-out fill-mode-both">
                         <div className="hidden lg:flex w-full lg:col-span-5 items-start justify-center">
-                            <div className={`transition-all duration-300 z-10 w-full max-w-lg`}>
+                            <motion.div
+                                style={{ y: parallaxY }}
+                                className="sticky top-24 transition-all duration-300 z-10 w-full max-w-lg"
+                            >
                                 {data?.[activeIndex]?.image && (
                                     <div className="overflow-hidden rounded-2xl border border-border/60 bg-card">
                                         <Image
@@ -128,7 +141,7 @@ function Services({ data = servicesData }: ServicesProps) {
                                         />
                                     </div>
                                 )}
-                            </div>
+                            </motion.div>
                         </div>
                         <div className="w-full flex flex-col gap-16 lg:col-span-7 col-span-12">
                             <div>
