@@ -1,0 +1,31 @@
+/**
+ * Learning Journey Platform — scoped styles.
+ * Import from learn layout when shell Phase B ships.
+ * @see docs/ljp-spec/design-dna.md
+ */
+
+.learn-root {
+  --ljp-cta-bg: #111827;
+  --ljp-cta-fg: #fafafa;
+  --ljp-page-bg: #fafafa;
+}
+
+.learn-root .ljp-btn-primary {
+  background-color: var(--ljp-cta-bg);
+  color: var(--ljp-cta-fg);
+}
+
+.learn-root .ljp-btn-primary:hover {
+  background-color: color-mix(in srgb, var(--ljp-cta-bg) 95%, black);
+}
+
+.learn-root .ljp-prose {
+  max-width: 65ch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .learn-root * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
