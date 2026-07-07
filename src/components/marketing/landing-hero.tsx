@@ -50,7 +50,7 @@ export default function LandingHero() {
               national budgets into clear, actionable stories for civic engagement
               and democratic audit.
             </p>
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+            <div className="hidden flex-col gap-4 lg:flex sm:flex-row sm:items-center">
               <Link href={Routes.Reports} className="w-full sm:w-auto">
                 <Button
                   size="lg"
@@ -99,6 +99,19 @@ export default function LandingHero() {
             >
               <source src={CLOUDINARY_HERO_LANDING_VIDEO_MP4} type="video/mp4" />
             </video>
+          </motion.div>
+
+          <motion.div variants={fadeInUp} className="mt-6 lg:hidden">
+            <Link href={Routes.Reports} className="block w-full">
+              <Button
+                size="lg"
+                variant="white"
+                className={T.btnHero}
+              >
+                Explore Reports
+                <ArrowRight className="size-5" />
+              </Button>
+            </Link>
           </motion.div>
         </motion.div>
       </div>
