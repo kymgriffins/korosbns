@@ -104,17 +104,25 @@ function Services({ data = servicesData }: ServicesProps) {
 
         const updateActiveFromScroll = () => {
             ticking = false;
-            const viewportAnchor = window.innerHeight * 0.38;
+            const viewportAnchor = window.innerHeight * 0.42;
             let nextIndex = 0;
-            let bestDistance = Number.POSITIVE_INFINITY;
+            let closestUpcomingDistance = Number.POSITIVE_INFINITY;
 
             itemRefs.current.forEach((node, index) => {
                 if (!node) return;
                 const rect = node.getBoundingClientRect();
-                const centerY = rect.top + rect.height / 2;
-                const distance = Math.abs(centerY - viewportAnchor);
-                if (distance < bestDistance) {
-                    bestDistance = distance;
+                const passedAnchor = rect.top <= viewportAnchor;
+
+                // Promote the latest section that has crossed the anchor.
+                if (passedAnchor) {
+                    nextIndex = index;
+                    return;
+                }
+
+                // Before first crossing, use nearest upcoming section.
+                const upcomingDistance = rect.top - viewportAnchor;
+                if (upcomingDistance < closestUpcomingDistance) {
+                    closestUpcomingDistance = upcomingDistance;
                     nextIndex = index;
                 }
             });
@@ -183,16 +191,16 @@ function Services({ data = servicesData }: ServicesProps) {
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -18 }}
                                         transition={{ duration: 0.35, ease: "easeOut" }}
-                                        className="overflow-hidden rounded-2xl border border-border/60 bg-card"
+                                        className="overflow-hidden rounded-2xl border border-border/70 bg-card p-1"
                                     >
                                         {data?.[activeIndex]?.image && (
-                                            <div className="relative">
+                                            <div className="relative aspect-4/3 w-full overflow-hidden rounded-xl">
                                                 <Image
                                                     src={data[activeIndex].image}
                                                     alt={data[activeIndex].heading}
                                                     width={640}
                                                     height={420}
-                                                    className="h-[320px] w-full object-cover"
+                                                    className="absolute inset-0 h-full w-full object-cover object-top"
                                                 />
                                                 <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
                                             </div>

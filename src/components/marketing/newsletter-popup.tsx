@@ -23,7 +23,8 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const NEWSLETTER_SEEN_KEY = "hasSeenNewsletterPopup";
-const NEWSLETTER_DELAY_MS = 10_000;
+const NEWSLETTER_TIME_ON_PAGE_MS = 45_000;
+const NEWSLETTER_SCROLL_TRIGGER = 0.5;
 
 export default function NewsletterPopup() {
   const { showNewsletter } = useOrg();
@@ -37,13 +38,34 @@ export default function NewsletterPopup() {
     const hasSeenPopup = sessionStorage.getItem(NEWSLETTER_SEEN_KEY);
     if (hasSeenPopup) return;
 
-    const timer = setTimeout(() => {
-      if (!sessionStorage.getItem(NEWSLETTER_SEEN_KEY)) {
-        setIsOpen(true);
-      }
-    }, NEWSLETTER_DELAY_MS);
+    let hasTriggered = false;
+    let timer: ReturnType<typeof setTimeout> | null = null;
 
-    return () => clearTimeout(timer);
+    const openIfEligible = () => {
+      if (hasTriggered) return;
+      if (sessionStorage.getItem(NEWSLETTER_SEEN_KEY)) return;
+      hasTriggered = true;
+      setIsOpen(true);
+      window.removeEventListener("scroll", handleScrollDepth);
+    };
+
+    const handleScrollDepth = () => {
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      if (scrollable <= 0) return;
+      const ratio = window.scrollY / scrollable;
+      if (ratio >= NEWSLETTER_SCROLL_TRIGGER) {
+        openIfEligible();
+      }
+    };
+
+    timer = setTimeout(openIfEligible, NEWSLETTER_TIME_ON_PAGE_MS);
+    window.addEventListener("scroll", handleScrollDepth, { passive: true });
+    handleScrollDepth();
+
+    return () => {
+      if (timer) clearTimeout(timer);
+      window.removeEventListener("scroll", handleScrollDepth);
+    };
   }, [showNewsletter]);
 
   const dismiss = () => {
