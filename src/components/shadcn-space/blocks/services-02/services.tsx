@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import {
     AnimatePresence,
     motion,
-    useMotionValueEvent,
     useScroll,
     useSpring,
     useTransform,
@@ -91,7 +90,7 @@ export const servicesData: ServiceItem[] = [
 function Services({ data = servicesData }: ServicesProps) {
     const [activeIndex, setActiveIndex] = useState<number>(0);
     const sectionRef = useRef<HTMLElement | null>(null);
-    const listRef = useRef<HTMLDivElement | null>(null);
+    const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
     const { scrollYProgress } = useScroll({
         target: sectionRef,
         offset: ["start end", "end start"],
@@ -100,27 +99,55 @@ function Services({ data = servicesData }: ServicesProps) {
         useTransform(scrollYProgress, [0, 1], [28, -28]),
         { stiffness: 90, damping: 28 },
     );
-    const { scrollYProgress: listProgress } = useScroll({
-        target: listRef,
-        offset: ["start center", "end center"],
-    });
 
     const handleMouseEnter = (index: number) => {
         setActiveIndex(index);
     };
 
+    const activeService = data?.[activeIndex] ?? data?.[0];
+
     useEffect(() => {
         setActiveIndex(0);
     }, [data]);
-    useMotionValueEvent(listProgress, "change", (latest) => {
+
+    useEffect(() => {
         if (!data?.length) return;
-        const segment = 1 / data.length;
-        const next = Math.min(
-            data.length - 1,
-            Math.max(0, Math.floor((latest + segment * 0.5) / segment)),
-        );
-        setActiveIndex((prev) => (prev === next ? prev : next));
-    });
+
+        const visibility = new Map<number, number>();
+
+        const pickActive = () => {
+            let nextIndex = 0;
+            let bestRatio = -1;
+            visibility.forEach((ratio, index) => {
+                if (ratio > bestRatio) {
+                    bestRatio = ratio;
+                    nextIndex = index;
+                }
+            });
+            setActiveIndex((prev) => (prev === nextIndex ? prev : nextIndex));
+        };
+
+        const observers = itemRefs.current.map((node, index) => {
+            if (!node) return null;
+            const observer = new IntersectionObserver(
+                ([entry]) => {
+                    visibility.set(index, entry.intersectionRatio);
+                    pickActive();
+                },
+                {
+                    root: null,
+                    rootMargin: "-38% 0px -38% 0px",
+                    threshold: [0, 0.15, 0.35, 0.55, 0.75, 1],
+                },
+            );
+            observer.observe(node);
+            return observer;
+        });
+
+        return () => {
+            observers.forEach((observer) => observer?.disconnect());
+        };
+    }, [data]);
 
     return (
         <section ref={sectionRef} className="bg-background">
@@ -162,25 +189,14 @@ function Services({ data = servicesData }: ServicesProps) {
                             >
                                 <AnimatePresence mode="wait" initial={false}>
                                     <motion.div
-                                        key={`sticky-panel-${activeIndex}`}
+                                        key={activeService?.heading ?? activeIndex}
                                         initial={{ opacity: 0, y: 18 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -18 }}
                                         transition={{ duration: 0.35, ease: "easeOut" }}
                                         className="overflow-hidden rounded-2xl border border-border/70 bg-card p-1"
                                     >
-                                        {data?.[activeIndex]?.image && (
-                                            <div className="relative aspect-4/3 w-full overflow-hidden rounded-xl">
-                                                <Image
-                                                    src={data[activeIndex].image}
-                                                    alt={data[activeIndex].heading}
-                                                    width={640}
-                                                    height={420}
-                                                    className="absolute inset-0 h-full w-full object-cover object-top"
-                                                />
-                                                <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
-                                            </div>
-                                        )}
+                                        <StickyServiceMedia data={data} activeIndex={activeIndex} />
                                         <div className="space-y-3 p-5">
                                             <motion.div
                                                 initial={{ scale: 0.88, opacity: 0 }}
@@ -188,17 +204,20 @@ function Services({ data = servicesData }: ServicesProps) {
                                                 transition={{ duration: 0.3, ease: "easeOut" }}
                                                 className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary/15 text-primary"
                                             >
-                                                <Icon icon={data?.[activeIndex]?.icon ?? "lucide:sparkles"} width={18} height={18} />
+                                                <Icon icon={activeService?.icon ?? "lucide:sparkles"} width={18} height={18} />
                                             </motion.div>
                                             <h3 className="text-xl font-semibold text-foreground">
-                                                {data?.[activeIndex]?.heading}
+                                                {activeService?.heading}
                                             </h3>
-                                            {data?.[activeIndex]?.statLabel && data?.[activeIndex]?.statValue ? (
+                                            {activeService?.statLabel && activeService?.statValue ? (
                                                 <div className="inline-flex items-center gap-2 rounded-xl border border-primary/25 bg-primary/10 px-3 py-2">
                                                     <span className="text-xs uppercase tracking-wide text-primary/80">
-                                                        {data[activeIndex].statLabel}
+                                                        {activeService.statLabel}
                                                     </span>
-                                                    <AnimatedStat value={data[activeIndex].statValue} />
+                                                    <AnimatedStat
+                                                        key={activeService.statValue}
+                                                        value={activeService.statValue}
+                                                    />
                                                 </div>
                                             ) : null}
                                         </div>
@@ -207,10 +226,13 @@ function Services({ data = servicesData }: ServicesProps) {
                             </motion.div>
                         </div>
                         <div className="w-full flex flex-col gap-16 lg:col-span-7 col-span-12">
-                            <div ref={listRef}>
+                            <div>
                                 {data?.map((value, index) => (
                                     <motion.div
-                                        key={index}
+                                        key={value.heading}
+                                        ref={(node) => {
+                                            itemRefs.current[index] = node;
+                                        }}
                                         onMouseEnter={() => handleMouseEnter(index)}
                                         animate={{
                                             opacity: activeIndex === index ? 1 : 0.45,
@@ -285,6 +307,41 @@ function Services({ data = servicesData }: ServicesProps) {
 }
 
 export default Services;
+
+function StickyServiceMedia({
+    data,
+    activeIndex,
+}: {
+    data: ServiceItem[];
+    activeIndex: number;
+}) {
+    return (
+        <div className="relative aspect-4/3 w-full overflow-hidden rounded-xl">
+            {data.map((service, index) => (
+                <motion.div
+                    key={service.image}
+                    className="absolute inset-0"
+                    initial={false}
+                    animate={{
+                        opacity: activeIndex === index ? 1 : 0,
+                        scale: activeIndex === index ? 1 : 1.05,
+                    }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
+                    aria-hidden={activeIndex !== index}
+                >
+                    <Image
+                        src={service.image}
+                        alt={service.heading}
+                        fill
+                        sizes="(max-width: 1024px) 100vw, 40vw"
+                        className="object-cover object-top"
+                    />
+                </motion.div>
+            ))}
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
+        </div>
+    );
+}
 
 function AnimatedStat({ value }: { value: string }) {
     const parsed = value.match(/^(\d+(?:\.\d+)?)(.*)$/);
