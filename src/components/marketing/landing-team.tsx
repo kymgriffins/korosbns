@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import { team } from "@/constants/team";
 import Image from "next/image";
 import { SectionHeader, SectionShell } from "@/layouts/section-shell";
+import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 
 export default function LandingTeam() {
   return (
@@ -17,7 +18,7 @@ export default function LandingTeam() {
         title={
           <>
             Meet the minds behind the{" "}
-            <span className="font-heading italic">story</span>.
+            <span className={T.highlight}>story</span>.
           </>
         }
         description="A dedicated group of researchers, storytellers, and tech innovators working together to bring transparency to Kenya's public budgets."
@@ -42,7 +43,7 @@ export default function LandingTeam() {
                 sizes="(max-width: 1024px) 50vw, 33vw"
               />
             </div>
-            <h3 className="mb-1 text-2xl font-bold tracking-tight">{member.name}</h3>
+            <h3 className="mb-1 font-heading text-2xl font-bold tracking-tight">{member.name}</h3>
             <p className="mb-4 text-xs font-semibold text-primary">
               {member.role}
             </p>
@@ -73,7 +74,7 @@ export default function LandingTeam() {
               />
             </div>
             <div>
-              <h3 className="mb-0.5 text-xl font-bold tracking-tight">{member.name}</h3>
+              <h3 className="mb-0.5 font-heading text-xl font-bold tracking-tight">{member.name}</h3>
               <p className="mb-2.5 text-xs font-semibold text-primary">
                 {member.role}
               </p>

@@ -38,8 +38,9 @@ export const heading = localFont({
 });
 
 export const base = localFont({
-    src: "../../node_modules/geist/dist/fonts/geist-sans/Geist-Variable.woff2",
+    src: "../../public/fonts/NeueMontreal.woff",
     variable: "--font-base",
+    display: "swap",
 });
 
 export const handwriting = Caveat({

@@ -1,5 +1,6 @@
 import React from "react";
 import { cn } from "@/utils/helpers";
+import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 
 export const SECTION_SHELL_INNER = "max-w-[1400px] mx-auto px-6 md:px-16";
 
@@ -45,13 +46,13 @@ export function SectionHeader({
       )}
     >
       <div className="max-w-2xl">
-        <span className="mb-4 block text-xs font-semibold text-primary">
+        <span className={T.eyebrow}>
           {eyebrow}
         </span>
-        <h2 className="gusto-heading">{title}</h2>
+        <h2 className={T.sectionTitle}>{title}</h2>
       </div>
       {description ? (
-        <p className="max-w-sm text-sm leading-relaxed text-foreground/60">
+        <p className={T.lead}>
           {description}
         </p>
       ) : null}

@@ -12,6 +12,8 @@ import {
 } from "@/motion/variants";
 import { CLOUDINARY_HERO_LANDING_VIDEO_MP4 } from "@/constants/cloudinary";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
+import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
+import { cn } from "@/utils";
 
 export default function LandingHero() {
   return (
@@ -32,13 +34,13 @@ export default function LandingHero() {
               className="gusto-heading max-w-xl text-foreground"
             >
               Translating{" "}
-              <span className="font-heading italic text-primary">numbers</span>{" "}
+              <span className={T.highlight}>numbers</span>{" "}
               into civic narratives.
             </h1>
           </motion.div>
 
           <motion.div variants={fadeInUp} className="flex flex-col gap-6 lg:gap-8">
-            <p className="max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+            <p className={cn(T.prose, "max-w-xl text-muted-foreground")}>
               Budget Ndio Story is a youth-led initiative in Kenya turning complex
               national budgets into clear, actionable stories for civic engagement
               and democratic audit.

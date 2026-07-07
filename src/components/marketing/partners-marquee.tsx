@@ -7,6 +7,8 @@ import { partnerData, type Partner } from "@/data/partners";
 import { useOrg } from "@/contexts/org-context";
 import { motion } from "motion/react";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
+import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
+import { cn } from "@/utils";
 
 const TISA_SPONSOR: Partner = {
   id: "tisa",
@@ -99,7 +101,7 @@ export default function PartnersMarquee() {
       >
         <motion.div variants={fadeInUp}>
           <div className={`${SECTION_SHELL_INNER} mb-8 text-center`}>
-            <span className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            <span className={cn(T.eyebrowMuted, "mb-8 text-center")}>
               Main Sponsor
             </span>
           </div>

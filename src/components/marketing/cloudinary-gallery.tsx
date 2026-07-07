@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { SectionHeader, SectionShell } from "@/layouts/section-shell";
+import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import { Marquee } from "@/components/ui/marquee";
 import { useCohortImages } from "@/hooks/use-marketing";
 
@@ -43,7 +44,7 @@ const CloudinaryGallery = () => {
         title={
           <>
             Documenting the{" "}
-            <span className="font-heading italic text-primary">Movement</span> in the field.
+            <span className={T.highlight}>Movement</span> in the field.
           </>
         }
         description="Explore moments from our civic workshops, townhalls, and community engagements across the country as we empower citizens to take action."

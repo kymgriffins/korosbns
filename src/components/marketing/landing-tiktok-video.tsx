@@ -17,6 +17,7 @@ import {
 import { toast } from "sonner";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
 import { SectionHeader, SectionShell } from "@/layouts/section-shell";
+import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import { cn } from "@/utils";
 import { Marquee } from "@/components/ui/marquee";
 import { getFeaturedTikTokVideos, likeTikTokVideo } from "@/lib/tiktok-service";
@@ -174,13 +175,13 @@ export default function LandingTikTokVideo() {
             title={
               <>
                 County budgets,{" "}
-                <span className="font-heading italic text-primary">made to scroll</span>.
+                <span className={T.highlight}>made to scroll</span>.
               </>
             }
             className="mb-0 md:mb-0"
           />
 
-          <p className="mt-6 text-sm leading-relaxed text-foreground/60 lg:mt-8">
+          <p className={cn(T.body, "mt-6 lg:mt-8")}>
             Snackable explainers that meet youth where they scroll — turning county
             fiscal data into stories anyone can share.
           </p>

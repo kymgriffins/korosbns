@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { motion, useInView } from "motion/react";
 import { cn } from "@/utils";
 import { BNS_COMMUNITY_IMAGES } from "@/constants/bns-media-images";
+import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 
 function EngagementPhotoCard({
   image,
@@ -87,7 +88,7 @@ const Testimonials = () => {
             >
               Testimonials
             </Badge>
-            <h2 className="text-foreground text-3xl sm:text-5xl font-medium max-w-xs sm:max-w-2xl mx-auto text-center">
+            <h2 className={cn(T.sectionTitle, "mx-auto max-w-xs text-center sm:max-w-2xl")}>
               What Kenyans are saying about transparent budgets
             </h2>
           </motion.div>

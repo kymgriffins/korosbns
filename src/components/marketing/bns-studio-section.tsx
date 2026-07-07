@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Camera, Video, Monitor, Scissors, ArrowRight } from "lucide-react";
 import { BNS_MEDIA_IMAGES } from "@/constants/bns-media-images";
+import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
+import { cn } from "@/utils";
 
 const services = [
   { icon: Video, label: "Videography", desc: "Corporate events, documentaries, music videos" },
@@ -27,13 +29,13 @@ export function BNSStudioSection() {
           className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center"
         >
           <motion.div variants={fadeInUp} className="space-y-6">
-            <span className="text-xs font-semibold text-primary">
+            <span className={T.eyebrow}>
               BNS Studio
             </span>
-            <h2 className="text-3xl md:text-5xl font-bold font-heading tracking-tight">
+            <h2 className={T.sectionTitle}>
               Professional Media Production for Storytellers
             </h2>
-            <p className="text-muted-foreground leading-relaxed">
+            <p className={cn(T.prose, "text-muted-foreground")}>
               From budget explainers to brand documentaries, BNS Studio offers
               end-to-end videography, photography, and post-production services.
               Revenue supports our civic education mission.

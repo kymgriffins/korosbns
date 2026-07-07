@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
 import { LANDING_YOUTUBE_EMBED } from "@/constants/cloudinary";
 import { SectionHeader, SectionShell } from "@/layouts/section-shell";
+import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 
 export default function LandingYoutube() {
   return (
@@ -19,7 +20,7 @@ export default function LandingYoutube() {
           eyebrow="Watch & Learn"
           title={
             <>
-              The Budget <span className="font-heading italic text-primary">Mtaani</span> Series
+              The Budget <span className={T.highlight}>Mtaani</span> Series
             </>
           }
           description="See how we translate complex fiscal policy into stories that meet youth where they are."

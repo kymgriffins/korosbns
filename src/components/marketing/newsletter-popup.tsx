@@ -3,6 +3,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Sparkles, Inbox } from "lucide-react";
 import { toast } from "sonner";
+import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 
 import { useOrg } from "@/contexts/org-context";
 import {
@@ -142,10 +143,10 @@ export default function NewsletterPopup() {
             <div className="md:p-16 p-6 w-full">
               <div className="flex flex-col gap-6">
                 <div className="flex flex-col gap-4">
-                  <h2 className="text-card-foreground text-3xl font-medium">
+                  <h2 className={T.subheading}>
                     Get budget updates in your inbox
                   </h2>
-                  <p className="text-muted-foreground text-base font-normal">
+                  <p className={T.prose}>
                     Subscribe for explainers, stories, and policy highlights from Budget Ndio Story.
                   </p>
                 </div>

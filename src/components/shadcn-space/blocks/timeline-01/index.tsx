@@ -5,6 +5,7 @@ import Timeline from "@/components/shadcn-space/blocks/timeline-01/timeline";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Routes } from "@/constants/routes";
+import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import type { TimelineItemProps } from "@/components/shadcn-space/blocks/timeline-01/timeline";
 export const budgetCycleTimelineData: TimelineItemProps[] = [
   {
@@ -61,11 +62,11 @@ const TimelineBlock01 = ({ items = budgetCycleTimelineData }: TimelineBlock01Pro
               FY 2026/27 Budget Cycle
             </Badge>
             <div className="space-y-3">
-              <h2 className="text-3xl font-medium tracking-tight text-foreground md:text-4xl lg:text-5xl">
+              <h2 className={T.sectionTitle}>
                 Budget Tracker &{" "}
-                <span className="font-heading italic text-primary">Allocations</span>
+                <span className={T.highlight}>Allocations</span>
               </h2>
-              <p className="text-base leading-relaxed text-muted-foreground md:text-lg">
+              <p className={T.body}>
                 Who moves Kenya&apos;s budget forward — Treasury, citizens,
                 Parliament, the Executive, and implementation — in five clear stages
                 for FY2026/27.
