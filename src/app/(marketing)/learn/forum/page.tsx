@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { BudgetHubForumPage } from "@/components/budget-hub/pages/budget-hub-forum-page";
 
 export default function LearnForumPage() {
-  redirect("/learn?tab=forum");
+  return <BudgetHubForumPage />;
 }
