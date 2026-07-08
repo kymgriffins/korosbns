@@ -39,6 +39,8 @@ PHASE 0.5 — CONSTRAINTS
   design-review-checklist.md   PR gate (Family Test + Critic C1–C5)
   ui-completion-roadmap.md     Finite UI delivery program (Phase A/B)
   sic-cap-004-course-detail.md UI reference SIC — Builder asks this, not taste
+  reference-composition-cap-004.md Phase A inherit / reuse declaration
+  sic-cap-005-home.md              Home — composed from REF-COMP-004
 
 PHASE 1 — PRODUCT
   ../lms-architecture.md       Vision (legacy filename)

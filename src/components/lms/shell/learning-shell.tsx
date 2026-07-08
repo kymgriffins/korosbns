@@ -27,12 +27,12 @@ export function LearningShell({ mode, children }: LearningShellProps) {
   const layers = SHELL_LAYERS_BY_MODE[mode];
 
   return (
-    <div className="learn-root flex min-h-dvh flex-col bg-background">
+    <div className="learn-root flex min-h-dvh flex-col bg-[var(--ljp-page-bg)] dark:bg-[var(--ljp-canvas)]">
       {layers.topNav ? <LmsTopNav /> : null}
       <main
         id="lms-main"
         className={cn(
-          "flex min-h-0 flex-1 flex-col",
+          "flex min-h-0 flex-1 flex-col pt-4 md:pt-6 lg:pt-8",
           layers.bottomNav && "pb-[var(--mobile-nav-height)] lg:pb-0",
         )}
       >

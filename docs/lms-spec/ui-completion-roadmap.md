@@ -100,6 +100,19 @@ The Builder must **never** invent values such as `padding: 22px`, `border-radius
 
 Missing value → add a **named token** in `lms-design-tokens.ts` in the same PR — never a one-off.
 
+**Reference Composition:** After CAP-004, Phase A screens **compose** [reference-composition-cap-004.md](./reference-composition-cap-004.md). Each capability must declare `reference_composition` YAML (reuses / introduces / new_patterns: none).
+
+### Phase A quality KPI
+
+```yaml
+phase_a_quality:
+  platform_changes: 0
+  interaction_patterns_added: 0
+  design_tokens_added: 0
+  reusable_component_ratio: ">= 80%"
+  screens_using_reference_components: "100%"
+```
+
 ## Token freeze (implementation)
 
 Already in `src/constants/lms-design-tokens.ts` / RX-001 — do not invent values.
@@ -179,6 +192,9 @@ Phase A starts with CAP-004 (flagship UI) — may proceed before Gate 1
 CAP-004 SIC → build reference Course Detail → Critic + acceptance matrix
         │
         ▼
+Visual Polish Sprint v1.1 (Design System Validation execution contract)
+        │
+        ▼
 Gate 1 (lesson walkthrough) may run in parallel; three commits when validated
         │
         ▼
@@ -196,6 +212,8 @@ Platform Validation Review
 
 Evidence DoD per capability still required (review · tests · ledger · FT · VAS).
 
+After VPS-001 PASS, no additional Phase A design sprint is allowed; CAP-005/006/007 are composition-only.
+
 ---
 
 ## Related
@@ -204,6 +222,7 @@ Evidence DoD per capability still required (review · tests · ledger · FT · V
 |-----|------|
 | `reference-experience-rx-001.md` | Experience constitution |
 | `visual-acceptance.yaml` | Critic VAS |
+| `visual-polish-sprint-v1.md` | Design System Validation sprint |
 | `PLATFORM.md` | Frozen platform |
 | `capability-ledger.yaml` | Validation register |
 | `ARCHITECTURE-AUDIT.md` | Drift / baseline |

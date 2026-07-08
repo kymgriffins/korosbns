@@ -8,11 +8,31 @@
   --ljp-cta-bg: #111827;
   --ljp-cta-fg: #fafafa;
   --ljp-page-bg: #fafafa;
+  --ljp-canvas: #0b0b0c;
+  --ljp-nav: #101012;
+  --ljp-surface: #171719;
+  --ljp-surface-elevated: #202024;
+  --ljp-surface-hover: #252525;
+  --ljp-border-subtle: rgba(255, 255, 255, 0.06);
 }
 
 .learn-root .ljp-nav-active {
-  background-color: color-mix(in srgb, var(--foreground) 10%, transparent);
+  background-color: color-mix(in srgb, var(--foreground) 8%, transparent);
   color: var(--foreground);
+}
+
+.dark .learn-root {
+  background: var(--ljp-canvas);
+}
+
+.dark .learn-root .ljp-surface {
+  background: var(--ljp-surface);
+  border-color: var(--ljp-border-subtle);
+}
+
+.dark .learn-root .ljp-surface-elevated {
+  background: var(--ljp-surface-elevated);
+  border-color: var(--ljp-border-subtle);
 }
 
 .learn-root .ljp-btn-primary {

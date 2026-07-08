@@ -9,8 +9,17 @@ knowledge_layer: living
 guiding_principle: prove_the_architecture
 ui_execution: active
 ui_completion_roadmap: docs/lms-spec/ui-completion-roadmap.md
+visual_polish_sprint: docs/lms-spec/visual-polish-sprint-v1.md
 cap_004_sic: docs/lms-spec/sic-cap-004-course-detail.md
+reference_composition: docs/lms-spec/reference-composition-cap-004.md
+cap_005_sic: docs/lms-spec/sic-cap-005-home.md
 pixel_discipline: active
+phase_a_quality: active
+phase_a_visual_language: in_polish_sprint
+phase_a_visual_redesign_allowed: false_after_vps001
+visual_critic: active
+visual_critic_template: agent/reviews/VC-001-template.md
+design_baseline_library: design-baseline/
 phase_dod: build_evidence
 rule_of_three: active
 change_categories:
@@ -24,6 +33,12 @@ kpi:
   constitution_pressure:
     definition: constitution_exceptions_per_capability
     goal: 0
+  phase_a_quality:
+    platform_changes: 0
+    interaction_patterns_added: 0
+    design_tokens_added: 0
+    reusable_component_ratio: ">=80%"
+    screens_using_reference_components: "100%"
 platform_validation_review:
   earliest_after: CAP-010
   template: reviews/PLATFORM-VALIDATION-REVIEW.md
@@ -46,18 +61,31 @@ capabilities:
   learning-experience:
     spec_id: LJP-003
     status: complete
+  course-detail:
+    spec_id: LJP-004
+    status: complete
+    role: reference_composition
 
 scheduler:
-  next_action: build_cap_005_against_cap_004_patterns
+  next_action: run_visual_polish_sprint_v1_on_shared_components
   parallel_ok:
     - gate_1_human_walkthrough
+    - ljp_004_sticky_cta_device_checklist
   phase_a_order:
-    - CAP-004  # Course Detail — UI reference (complete)
-    - CAP-005  # Home Continue
-    - CAP-006  # Catalogue
-    - CAP-007  # Progress
+    - CAP-004  # Reference Composition — complete
+    - CAP-005  # Home — compose (active)
+    - CAP-006
+    - CAP-007
   after_phase_a: phase_b_secondaries
   after_cap_010: platform_validation_review
   note: >
-    CAP-004 Course Detail is the UI reference (complete). Inherit its components.
-    Pixel Discipline. platform_changes=0. Gate 1 may run in parallel.
+    CAP-004 promoted to REF-COMP-004. Visual Polish Sprint v1.0 now
+    precedes CAP-005 expansion. Refine shared components, then compose.
+    Reuse budget ≥80%. new_patterns: none. platform_changes: 0.
+    Gate 1 remains parallel.
+  freeze_after_sprint: >
+    VPS-001 is the last design sprint in Phase A. After PASS, CAP-005/006/007
+    are composition-only and may not introduce bespoke visual redesign.
+  verification_enforcement: >
+    VC-001 required before capability PASS claims. Claims without screenshot
+    artifacts, score matrix, drift, and CQI are invalid.

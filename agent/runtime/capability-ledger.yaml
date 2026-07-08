@@ -34,26 +34,68 @@ kpi:
   constitution_pressure:
     definition: constitution_exceptions_per_capability
     goal: 0
+  phase_a_quality:
+    platform_changes: 0
+    interaction_patterns_added: 0
+    design_tokens_added: 0
+    reusable_component_ratio: ">=80%"
+    screens_using_reference_components: "100%"
+    reference_composition: docs/lms-spec/reference-composition-cap-004.md
+  visual_critic_quality:
+    threshold_score: 90
+    visual_drift_threshold_pct: 5
+    cqi_non_regression: true
 updated: 2026-07-08
 runtime_stage: draft
 runtime_stage_note: >
   Capability status "complete" means slice evidence exists.
   Platform-wide runtime_stage: validated still waits Gate 1.
+  CAP-004 promoted to Reference Composition (REF-COMP-004).
 ui_completion:
   roadmap: docs/lms-spec/ui-completion-roadmap.md
+  visual_polish_sprint: docs/lms-spec/visual-polish-sprint-v1.md
+  reference_composition: docs/lms-spec/reference-composition-cap-004.md
   guiding_question: Can we faithfully realize RX-001 across every screen?
   phase_a:
-    - CAP-course-detail   # flagship
-    - CAP-home-continue   # resume ≤5s
-    - CAP-catalogue       # chips, no sidebar
-    - CAP-learning-experience  # polish only
-    - CAP-progress-hub    # editorial cards
+    - CAP-course-detail   # reference composition — complete
+    - CAP-home-continue   # compose; inherit — next
+    - CAP-catalogue
+    - CAP-learning-experience
+    - CAP-progress-hub
   phase_b:
     - CAP-achievements
     - CAP-profile
     - CAP-search
-  design_gates: [RX-001, VAS, Experience, FamilyTest, Critic]
+  design_gates: [RX-001, VAS, Experience, FamilyTest, Critic, ReferenceComposition]
   platform_changes_goal: 0
+  reuse_budget:
+    existing_components_reused_pct: 80
+    new_reusable_components_max: 2
+    new_interaction_patterns: 0
+    new_design_tokens: 0
+    platform_changes: 0
+  sprint_gate:
+    id: VPS-001
+    required_before: CAP-home-continue_complete
+    last_design_sprint_phase_a: true
+    focuses:
+      - editorial_rhythm
+      - hero_system
+      - typography_hierarchy
+      - card_family_hierarchy
+      - contrast_separation
+      - civic_warmth
+    execution_contract: docs/lms-spec/visual-polish-sprint-v1.md
+    pass_requires:
+      - rx001_pass
+      - family_test_ft1_ft5_pass
+      - editorial_rhythm_pass
+      - civic_warmth_pass
+      - pixel_discipline_pass
+      - platform_changes_0
+      - vc001_score_gte_90
+      - visual_drift_lte_5
+      - cqi_non_regression
 
 capabilities:
 
@@ -173,12 +215,13 @@ capabilities:
     alias: CAP-004
     title: Course Detail
     ui_phase: A
-    ui_role: reference_implementation
+    ui_role: reference_composition
     kind: capability_validation
     status: complete
     hypothesis: Flagship RX-001 Course Detail — UI reference for all Phase A screens
     proves: content_composition
     screen_implementation_contract: docs/lms-spec/sic-cap-004-course-detail.md
+    reference_composition: docs/lms-spec/reference-composition-cap-004.md
     acceptance:
       - SIC-CAP-004 all sections satisfied
       - breadcrumb + 60/40 hero + overview + outcomes + module accordion
@@ -186,6 +229,7 @@ capabilities:
       - one dominant CTA Start Journey / Continue Learning / Review
       - sticky mobile CTA · skeleton · 404 · Pixel Discipline
       - Critic gates 1–5 + acceptance matrix in SIC §15
+      - promoted to REF-COMP-004
     platform_changes: 0
     constitution_exceptions: 0
     rx_family_test: pass
@@ -194,7 +238,7 @@ capabilities:
       implementation: true
       tests: true
       review: true
-      retrospective: false
+      retrospective: true
       metrics: false
       drift_note: true
       ledger_update: true
@@ -204,18 +248,23 @@ capabilities:
       - course_hero@1.0.0
       - module_card@1.0.0
       - sic-cap-004@1.0.0
+      - ref-comp-004@1.0.0
     depends_on:
       - CAP-learning-shell
     implemented_in:
       - src/components/lms/course/
+      - src/components/lms/progress-bar.tsx
       - src/app/(marketing)/learn/courses/[courseSlug]/page.tsx
       - src/app/(marketing)/learn/courses/[courseSlug]/loading.tsx
     evidence:
       - agent/reviews/LJP-004.md
-    drift_pct: 8
+      - agent/reviews/LJP-004-walkthrough.md
+    retrospective:
+      - agent/reviews/LJP-004-retrospective.md
+    drift_pct: 5
     notes: >
-      UI reference complete against SIC. Critic PASS. platform_changes=0.
-      Gate 1 may still run in parallel. Phase A screens must inherit this language.
+      Promoted to Reference Composition. ProgressBar owns success fill.
+      platform_changes=0. Phase A must inherit via reference_composition YAML.
 
   CAP-home-continue:
     spec_id: LJP-005
@@ -224,26 +273,46 @@ capabilities:
     ui_phase: A
     kind: capability_validation
     status: in_progress
-    hypothesis: Resume learning within 5 seconds — one Continue card, no dashboard widgets
+    hypothesis: Home composed from REF-COMP-004 — resume ≤5s; no independent design
     proves: runtime_resume_deep_link
+    screen_implementation_contract: docs/lms-spec/sic-cap-005-home.md
+    reference_composition:
+      source: REF-COMP-004
+      reuses:
+        - ContentContainer
+        - SectionHeader
+        - PrimaryButton
+        - ProgressBadge
+        - DifficultyBadge
+        - JourneyMeta
+      introduces:
+        - ContinueCard
+        - JourneyCard
+      new_patterns: none
+      new_design_tokens: 0
+      platform_changes: 0
+      composition_reuse_target_pct: 80
     acceptance:
-      - one dominant Continue card
+      - SIC-CAP-005 + reuse budget
+      - one dominant Continue card → lesson
       - recommended journeys (cards only)
-      - light achievements / recent activity — no analytics overload
-      - Critic gates 1–5 pass
+      - feels built from Course Detail
+      - Critic gates 1–5 + reference_composition pass
     platform_changes: 0
     constitution_exceptions: 0
     evidence_complete:
-      implementation: true
+      implementation: partial
       tests: true
       review: false
       retrospective: false
       metrics: false
       drift_note: partial
       ledger_update: true
+      sic: true
     contracts:
       - continue_button@1.0.0
       - course_card@1.0.0
+      - sic-cap-005@1.0.0
     depends_on:
       - CAP-learning-experience
       - CAP-course-detail
@@ -252,8 +321,11 @@ capabilities:
       - src/lib/learning-runtime/continue.ts
       - src/app/(marketing)/learn/page.tsx
     evidence: []
-    drift_pct: 15
-    notes: Close against Home composition; no platform change.
+    drift_pct: 20
+    notes: >
+      Wired stub exists — close against SIC-CAP-005 inheritance + reuse budget.
+      Complete VPS-001 shared-component polish first, then compose CAP-005.
+      ContinueCard must use PrimaryButton + ProgressBar language from CAP-004.
 
   CAP-catalogue:
     spec_id: LJP-006

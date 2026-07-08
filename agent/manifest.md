@@ -102,6 +102,7 @@ Implement `/learn` as a specification-driven learning experience — content-fir
 16. **Follow the UI Completion Roadmap** for Phase A before Phase B — `docs/lms-spec/ui-completion-roadmap.md`. UI execution is the product.
 17. **Pixel Discipline** — every spacing, radius, type size, color, shadow, breakpoint, motion, and layout value must come from `lms-design-tokens.ts` or a Screen Implementation Contract (SIC). Never invent values (e.g. `22px`, `19px`, `15px`). Missing token → add a named token in the same PR.
 18. **CAP-004 is the UI reference** — after Course Detail is complete, every Learn screen must look at home beside it. Reuse its components and patterns; do not fork visual language. Contract: `docs/lms-spec/sic-cap-004-course-detail.md`.
+19. **Reference Composition** — Phase A capabilities must declare `reference_composition` (reuses / introduces ≤2 / `new_patterns: none` / `platform_changes: 0`). Source: `docs/lms-spec/reference-composition-cap-004.md`. Target reuse ≥80%; new design tokens: 0.
 
 ---
 
@@ -115,6 +116,8 @@ Load before any implementation:
 - Capability Validation ledger → `agent/runtime/capability-ledger.yaml`
 - UI Completion Roadmap (RX-001) → `docs/lms-spec/ui-completion-roadmap.md`
 - CAP-004 Screen Implementation Contract → `docs/lms-spec/sic-cap-004-course-detail.md`
+- Reference Composition (Phase A inherit) → `docs/lms-spec/reference-composition-cap-004.md`
+- CAP-005 Home SIC → `docs/lms-spec/sic-cap-005-home.md`
 - Design tokens (Pixel Discipline) → `src/constants/lms-design-tokens.ts`
 - What the product is → `docs/product-architecture.md`
 - Why it exists → `docs/lms-architecture.md`

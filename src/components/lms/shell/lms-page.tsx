@@ -19,7 +19,7 @@ export function LmsPage({ children, className, variant = "default" }: LmsPagePro
   return (
     <div
       className={cn(
-        "mx-auto w-full px-4 py-6 md:px-6 md:py-8",
+        "mx-auto w-full px-5 py-10 md:px-8 md:py-12 xl:px-12 xl:py-14",
         variant === "lesson" ? LMS_LAYOUT.lessonMaxWidthClass : LMS_LAYOUT.maxWidthClass,
         className,
       )}
@@ -41,14 +41,14 @@ export function LmsSection({
   description?: string;
 }) {
   return (
-    <section className={cn("space-y-4", className)}>
+    <section className={cn("space-y-6", className)}>
       {(title || description) && (
-        <header className="space-y-1">
+        <header className="space-y-2">
           {title ? (
-            <h2 className="text-xl font-semibold tracking-tight md:text-2xl">{title}</h2>
+            <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
           ) : null}
           {description ? (
-            <p className="text-sm text-muted-foreground md:text-base">{description}</p>
+            <p className="text-sm leading-relaxed text-muted-foreground md:text-base">{description}</p>
           ) : null}
         </header>
       )}

@@ -18,6 +18,53 @@ pnpm exec tsc --noEmit
 
 ---
 
+## Layer 1.5 — Visual Capture (VC-001)
+
+Capture rendered evidence before tests/critic conclusions.
+
+Required screenshots per capability (minimum):
+
+- [ ] `desktop-home.png` (1440px)
+- [ ] `tablet-home.png` (1024px)
+- [ ] `mobile-home.png` (390px)
+- [ ] `desktop-course-detail.png`
+- [ ] `tablet-course-detail.png`
+- [ ] `mobile-course-detail.png`
+
+Plus for changed shared components:
+
+- [ ] Before/After for each changed shared component
+
+Store under: `design-baseline/<Component>/` and capability evidence folder.
+
+Fail action: missing artifacts = FAIL (no commit).
+
+---
+
+## Layer 1.6 — Visual Critic (VC-001)
+
+Evaluate rendered UI (not source code) with numeric scorecard:
+
+| Category | Weight |
+|----------|-------:|
+| Editorial Rhythm | 20 |
+| Hierarchy | 20 |
+| Typography | 15 |
+| Card Family | 15 |
+| Civic Warmth | 10 |
+| RX-001 Similarity | 10 |
+| Family Test | 10 |
+
+Passing threshold:
+
+- [ ] `score_total >= 90`
+- [ ] FT1–FT5 all pass
+- [ ] Visual Drift <= 5%
+
+Fail action: any threshold fail = block merge.
+
+---
+
 ## Layer 2 — Lint
 
 ```bash
@@ -94,6 +141,9 @@ Plus:
 - [ ] Phase A before Phase B per `ui-completion-roadmap.md`
 - [ ] Pixel Discipline — all values from tokens or SIC (no invented px)
 - [ ] CAP-004: `sic-cap-004-course-detail.md` satisfaction matrix when touching Course Detail
+- [ ] VC-001 score >= 90 and visual evidence attached
+- [ ] CQI updated for changed shared components
+- [ ] Visual Drift report attached and <=5%
 
 ---
 
@@ -131,6 +181,8 @@ verification:
   date: 2026-07-07
   layers:
     compilation: PASS
+    visual_capture: PASS
+    visual_critic: PASS
     lint: PASS
     tests: PASS
     accessibility: PASS

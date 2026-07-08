@@ -23,6 +23,9 @@ export const LMS_SPACING_SCALE = [4, 8, 16, 24, 32, 48, 64, 80] as const;
 export const LMS_LAYOUT = {
   maxWidth: 1280,
   maxWidthClass: "max-w-[1280px]",
+  contentPaddingDesktop: 48,
+  contentPaddingTablet: 32,
+  contentPaddingMobile: 20,
   lessonMaxWidth: 1100,
   lessonMaxWidthClass: "max-w-[1100px]",
   proseMaxWidth: "max-w-prose",
@@ -101,6 +104,14 @@ export const LMS_COLORS = {
     border: "#E5E7EB",
     success: "#16A34A",
     warning: "#D97706",
+  },
+  dark: {
+    canvas: "#0B0B0C",
+    nav: "#101012",
+    surface: "#171719",
+    elevated: "#202024",
+    hover: "#252525",
+    borderSubtle: "rgba(255,255,255,0.06)",
   },
 } as const;
 

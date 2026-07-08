@@ -388,15 +388,17 @@ Evidence: `agent/reviews/LJP-004.md` + ledger `CAP-course-detail` → `complete`
 
 ---
 
-## 16. Inheritance rule (after CAP-004)
+## Inheritance rule (after CAP-004)
 
-When CAP-004 is `complete`:
+When CAP-004 is `complete` / promoted to **Reference Composition**:
 
 > Would this look at home beside the Course Detail screen?
 
 If no → revise the new screen.  
 If yes by **reuse** → proceed.  
 If yes only by **new pattern** → fail OSS interaction / Pixel Discipline unless ADR + Rule of Three (platform still frozen).
+
+Required YAML: see [`reference-composition-cap-004.md`](./reference-composition-cap-004.md).
 
 ---
 
