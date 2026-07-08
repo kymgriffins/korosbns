@@ -5,20 +5,17 @@ import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
-import { Loader2, ArrowLeft, BookOpen, ChevronLeft, ArrowRight, Target, HelpCircle, MessageSquare } from "lucide-react";
+import { Loader2, ArrowLeft, ChevronLeft, ArrowRight } from "lucide-react";
 import Wrapper from "@/components/global/wrapper";
 import { Button } from "@/components/ui/button";
-import { PageBreadcrumbs } from "@/components/global/page-breadcrumbs";
 import { TriviaQuiz } from "@/components/citizen/trivia-quiz";
-import { ArticleReaderActions } from "@/components/citizen/article-reader-actions";
-import { ModuleForum } from "@/components/forum/module-forum";
 import type { TriviaSetApi } from "@/lib/api-client";
 import { useContentForSlug } from "@/hooks/use-content";
 import { Routes } from "@/constants/routes";
 import { articlePlaceholderForSlug } from "@/lib/article-placeholders";
-import { renderArticleBody } from "@/lib/render-content";
 import { scaleIn, fadeInUp, fadeInUpDelay1, fadeInUpDelay2, fadeInUpDelay3 } from "@/motion/variants";
-import { HarmonizedImage } from "@/components/ui/harmonized-image";
+import { BudgetHubArticlePage } from "@/components/budget-hub/pages/budget-hub-article-page";
+import { HubNotFound } from "@/components/budget-hub/states/not-found";
 import { usePageView } from "@/hooks/use-page-view";
 
 type ReaderMode = "loading" | "error" | "article" | "story" | "trivia";
@@ -197,25 +194,7 @@ export default function UnifiedReaderClientPage({
   }
 
   if (mode === "error") {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background px-4">
-        <motion.div 
-          variants={fadeInUp}
-          initial="hidden"
-          animate="visible"
-          className="max-w-md w-full text-center p-8 rounded-3xl border border-border bg-card shadow-lg"
-        >
-          <HelpCircle className="size-16 text-muted-foreground/60 mx-auto mb-4" />
-          <h1 className="text-2xl font-bold mb-2">Unavailable</h1>
-          <p className="text-sm text-muted-foreground mb-6">{errorMsg}</p>
-          <Link href={Routes.Learn}>
-            <Button size="lg" className="rounded-xl w-full">
-              Back to Learn Hub
-            </Button>
-          </Link>
-        </motion.div>
-      </div>
-    );
+    return <HubNotFound message={errorMsg} />;
   }
 
   if (mode === "trivia" && trivia) {
@@ -386,177 +365,21 @@ export default function UnifiedReaderClientPage({
 
   if (mode === "article" && article) {
     const placeholder = articlePlaceholderForSlug(slug);
-    const hasHero = Boolean(article.heroImage);
-    const heroSrc = article.heroImage || placeholder.src;
-    const ctx = article.learningContext;
-    const editionCrumb =
-      ctx?.unit_slug && ctx.fiscal_year != null
-        ? {
-            label: ctx.edition_title ?? `${ctx.unit_abbreviation ?? "Unit"} ${ctx.fiscal_year}`,
-            href: Routes.LearnUnitEdition(ctx.unit_slug, ctx.fiscal_year),
-          }
-        : null;
-
-    const breadcrumbItems = [
-      { label: "Home", href: Routes.Home },
-      { label: "Learn", href: Routes.Learn },
-      ...(ctx?.unit_slug
-        ? [
-            { label: "Units", href: Routes.LearnUnits },
-            {
-              label: ctx.unit_abbreviation ?? ctx.unit_title ?? "Unit",
-              href: editionCrumb?.href ?? Routes.LearnUnits,
-            },
-          ]
-        : [{ label: "Articles", href: Routes.Learn }]),
-      ...(editionCrumb ? [editionCrumb] : []),
-      {
-        label: ctx?.section_label ?? ctx?.lesson_title ?? article.title,
-      },
-    ];
-
     return (
-      <section className="w-full bg-background pt-4 sm:pt-6">
-        <div className="mx-auto w-full max-w-3xl px-4 pb-24 sm:px-6">
-          <PageBreadcrumbs items={breadcrumbItems} />
-
-          <motion.div 
-            variants={scaleIn}
-            initial="hidden"
-            animate="visible"
-            className="relative mb-8 h-48 overflow-hidden rounded-[24px] border border-border sm:h-56"
-          >
-            <HarmonizedImage src={heroSrc} alt={article.title} className="h-full rounded-none border-0" imageClassName="object-cover" fallbackLabel="Article cover" />
-            {!hasHero && <div className={`absolute inset-0 bg-gradient-to-br ${placeholder.accent}`} />}
-          </motion.div>
-
-            <article className="space-y-8">
-                <header className="space-y-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="space-y-3 flex-1 min-w-0">
-                      <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-primary">
-                        {article.category || "Article"} · {article.sourceLabel || "BNSKE"}
-                      </div>
-                      <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-                        {article.title}
-                      </h1>
-                      <p className="text-xl leading-relaxed text-muted-foreground">{article.snippet}</p>
-                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
-                        {article.author?.name ? (
-                          <span className="flex items-center gap-1.5">
-                            {article.author.image ? (
-                              <Image
-                                src={article.author.image}
-                                alt={article.author.name}
-                                width={20}
-                                height={20}
-                                className="size-5 rounded-full object-cover"
-                              />
-                            ) : (
-                              <span className="size-5 rounded-full bg-muted flex items-center justify-center text-[9px] font-bold text-muted-foreground">
-                                {article.author.name[0]}
-                              </span>
-                            )}
-                            {article.author.slug ? (
-                              <Link href={Routes.LearnAuthor(article.author.slug)} className="font-semibold hover:text-primary transition-colors">
-                                {article.author.name}
-                              </Link>
-                            ) : (
-                              <span className="font-semibold">{article.author.name}</span>
-                            )}
-                            {article.author.role ? <span className="text-muted-foreground/60">· {article.author.role}</span> : null}
-                          </span>
-                        ) : null}
-                        <span>{article.readTime}</span>
-                        {article.publishedAt ? (
-                          <span>{new Date(article.publishedAt).toLocaleDateString("en-KE", { year: "numeric", month: "long", day: "numeric" })}</span>
-                        ) : null}
-                        {article.updatedAt ? (
-                          <span className="text-xs text-muted-foreground/60">Updated {new Date(article.updatedAt).toLocaleDateString()}</span>
-                        ) : null}
-                      </div>
-                    </div>
-                    <ArticleReaderActions
-                      slug={slug}
-                      contentId={article.id || slug}
-                    />
-                  </div>
-                </header>
-
-            <hr className="border-border" />
-
-            <div className="max-w-none">
-              {renderArticleBody(article.body_html, article.body, article.snippet)}
-            </div>
-
-            <footer className="mt-16 border-t border-border pt-8 space-y-6">
-              {ctx?.section_total && ctx.section_total > 1 ? (
-                <p className="text-center text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  Section {ctx.section_index ?? "—"} of {ctx.section_total} ·{" "}
-                  {ctx.unit_abbreviation ?? ctx.unit_title}
-                </p>
-              ) : null}
-              <div className="grid gap-3 sm:grid-cols-2">
-                {ctx?.prev_article_slug ? (
-                  <Link
-                    href={`/learn/${ctx.prev_article_slug}`}
-                    className="rounded-xl border border-border p-4 text-sm transition-colors hover:bg-muted/40"
-                  >
-                    <span className="text-xs text-muted-foreground">Previous section</span>
-                    <p className="mt-1 font-semibold">{ctx.prev_section_title}</p>
-                  </Link>
-                ) : (
-                  <div />
-                )}
-                {ctx?.next_article_slug ? (
-                  <Link
-                    href={`/learn/${ctx.next_article_slug}`}
-                    className="rounded-xl border border-border p-4 text-sm text-right transition-colors hover:bg-muted/40"
-                  >
-                    <span className="text-xs text-muted-foreground">Next section</span>
-                    <p className="mt-1 font-semibold">{ctx.next_section_title}</p>
-                  </Link>
-                ) : null}
-              </div>
-              {ctx?.unit_slug && ctx.fiscal_year != null ? (
-                <div className="text-center">
-                  <Link
-                    href={Routes.LearnUnitEdition(ctx.unit_slug, ctx.fiscal_year)}
-                    className="text-sm font-semibold text-primary hover:underline"
-                  >
-                    Back to {ctx.edition_title ?? "edition"} overview
-                  </Link>
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
-                  <div className="space-y-1">
-                    <p className="text-sm font-semibold text-foreground">Keep reading</p>
-                    <p className="text-xs text-muted-foreground">Standalone explainers only.</p>
-                  </div>
-                  <Link
-                    href={Routes.Learn}
-                    className="inline-flex h-11 items-center gap-2 rounded-xl bg-foreground px-6 text-sm font-bold text-background transition-all hover:bg-foreground/90"
-                  >
-                    Learning modules <ArrowRight className="size-4" />
-                  </Link>
-                </div>
-              )}
-            </footer>
-
-            <details className="group mt-8 rounded-xl border border-border">
-              <summary className="flex cursor-pointer items-center gap-2 px-4 py-3 text-sm font-bold text-foreground transition-colors hover:bg-muted/40">
-                <MessageSquare className="size-4" />
-                Discussion
-                <span className="ml-auto text-xs font-normal text-muted-foreground group-open:hidden">Click to expand</span>
-                <ChevronLeft className="ml-1 size-4 -rotate-90 transition-transform group-open:rotate-0" />
-              </summary>
-              <div className="border-t border-border px-4 py-4">
-                <ModuleForum moduleId={slug} />
-              </div>
-            </details>
-          </article>
-        </div>
-      </section>
+      <BudgetHubArticlePage
+        article={{
+          id: article.id,
+          title: article.title,
+          snippet: article.snippet,
+          body: article.body,
+          body_html: article.body_html,
+          heroImage: article.heroImage || placeholder.src,
+          category: article.category,
+          readTime: article.readTime,
+          publishedAt: article.publishedAt,
+          author: article.author,
+        }}
+      />
     );
   }
 

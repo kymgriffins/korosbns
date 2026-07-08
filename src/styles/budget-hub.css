@@ -1,0 +1,105 @@
+/**
+ * Budget Hub presentation styles.
+ * Scoped to .budget-hub canvas — platform_changes: 0
+ */
+
+.budget-hub {
+  --bh-canvas: hsl(40 20% 98%);
+  --bh-surface: hsl(0 0% 100%);
+  --bh-ink: hsl(0 0% 7%);
+  --bh-ink-muted: hsl(0 0% 45%);
+  --bh-accent: hsl(0 0% 7%);
+  --bh-accent-warm: #ff6b35;
+  --bh-border: hsl(0 0% 0% / 0.08);
+  --bh-radius-sm: 8px;
+  --bh-radius-md: 12px;
+  --bh-radius-lg: 16px;
+  --bh-shadow-hover: 0 12px 40px -12px rgb(0 0 0 / 0.12);
+  --bh-section-y: clamp(3rem, 6vw, 5rem);
+  --bh-content-max: 70rem;
+  --bh-prose: 42rem;
+
+  background-color: var(--bh-canvas);
+  color: var(--bh-ink);
+}
+
+.dark .budget-hub {
+  --bh-canvas: hsl(220 15% 7%);
+  --bh-surface: hsl(220 12% 10%);
+  --bh-ink: hsl(0 0% 96%);
+  --bh-ink-muted: hsl(0 0% 62%);
+  --bh-accent: hsl(0 0% 96%);
+  --bh-border: hsl(0 0% 100% / 0.1);
+}
+
+.budget-hub-prose {
+  max-width: var(--bh-prose);
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+.budget-hub-prose h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.budget-hub-prose h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.budget-hub-prose p {
+  margin-bottom: 1.25rem;
+  color: hsl(0 0% 20%);
+}
+
+.dark .budget-hub-prose p {
+  color: hsl(0 0% 82%);
+}
+
+.budget-hub-prose a {
+  color: var(--bh-accent-warm);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.budget-hub-prose ul,
+.budget-hub-prose ol {
+  margin-bottom: 1.25rem;
+  padding-left: 1.5rem;
+}
+
+.budget-hub-prose li {
+  margin-bottom: 0.5rem;
+}
+
+.budget-hub-prose img {
+  border-radius: var(--bh-radius-md);
+  margin: 2rem 0;
+}
+
+.budget-hub-card-hover {
+  transition:
+    transform 200ms ease-out,
+    box-shadow 200ms ease-out;
+}
+
+.budget-hub-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--bh-shadow-hover);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .budget-hub-card-hover {
+    transition: none;
+  }
+
+  .budget-hub-card-hover:hover {
+    transform: none;
+  }
+}

@@ -2,7 +2,8 @@ import { LearnProvider } from "@/contexts/learn-context";
 import { Suspense } from "react";
 import { LearnTabSync } from "@/components/learn/learn-tab-sync";
 import { LearnMobileNav } from "@/layouts/LearnMobileNav";
-import AppSidebar from "@/components/shadcn-space/blocks/dashboard-shell-01/app-sidebar";
+import { BudgetHubShell } from "@/components/budget-hub/layout/budget-hub-shell";
+import "@/styles/budget-hub.css";
 
 export default function LearnLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -13,14 +14,9 @@ export default function LearnLayout({ children }: { children: React.ReactNode })
         </div>
       }>
         <LearnTabSync />
-        <AppSidebar>
-          <div className="flex flex-col flex-1 min-h-0">
-            <div className="flex-1 overflow-y-auto pb-[--mobile-nav-height] lg:pb-0">
-              {children}
-            </div>
-            <LearnMobileNav />
-          </div>
-        </AppSidebar>
+        <BudgetHubShell footer={<LearnMobileNav />}>
+          {children}
+        </BudgetHubShell>
       </Suspense>
     </LearnProvider>
   );
