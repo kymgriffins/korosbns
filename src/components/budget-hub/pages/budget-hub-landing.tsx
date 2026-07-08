@@ -51,7 +51,10 @@ export function BudgetHubLanding() {
     setLoading(true);
     try {
       const [articleItems, moduleItems] = await Promise.all([
-        contentData.articles.fetch({ search: search || undefined }),
+        contentData.articles
+          .fetchFromApi({ search: search || undefined })
+          .then((r) => r.results ?? [])
+          .catch(() => contentData.articles.fetch({ search: search || undefined })),
         learningData.modules.fetch(),
       ]);
       setArticles(articleItems.map(learnHubItemToCard));

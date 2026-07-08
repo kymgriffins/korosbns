@@ -16,9 +16,21 @@ const LIST_FETCHERS = {
   videos: (opts?: { search?: string }) =>
     videoData.fetch(opts).then((items) => ({ results: items })),
   articles: (opts?: { search?: string }) =>
-    contentData.articles.fetch(opts).then((items) => ({ results: items })),
+    contentData.articles
+      .fetchFromApi(opts)
+      .then((r) => ({ results: r.results ?? [] }))
+      .catch(() => contentData.articles.fetch(opts).then((items) => ({ results: items }))),
   stories: (opts?: { search?: string }) =>
-    contentData.stories.fetch(opts).then((items) => ({ results: items })),
+    contentData.stories
+      .fetchFromApi()
+      .then((r) => ({ results: (r.results ?? []).filter((item) => {
+        const q = (opts?.search ?? "").trim().toLowerCase();
+        if (!q) return true;
+        const title = String(item.title ?? "").toLowerCase();
+        const summary = String(item.summary ?? "").toLowerCase();
+        return title.includes(q) || summary.includes(q);
+      }) }))
+      .catch(() => contentData.stories.fetch(opts).then((items) => ({ results: items }))),
   documents: (opts?: { search?: string }) =>
     contentData.documents.fetch(opts).then((items) => ({ results: items })),
   paths: () =>
@@ -49,10 +61,15 @@ export function LearnTabPage({
   const load = useCallback(() => {
     setLoading(true);
     return LIST_FETCHERS[listKey]({ search: q || undefined })
-      .then((data) => setItems((data.results ?? []) as LearnHubItem[]))
+      .then((data) => {
+        setItems((data.results ?? []) as LearnHubItem[]);
+        setError("");
+      })
       .catch((err) => {
-        const msg =
-          err instanceof Error ? err.message : "Could not load content.";
+        const raw = err instanceof Error ? err.message : String(err);
+        const msg = raw?.trim()
+          ? `Could not load content from API: ${raw}`
+          : "Could not load content from API.";
         setError(msg);
         console.error(`[LearnTabPage] Failed to load ${listKey}:`, err);
       })
