@@ -38,6 +38,9 @@ export const LMS_LAYOUT = {
   heroDesktopMinHeightClass: "lg:min-h-[280px]",
   heroMobileAspect: "16 / 10",
   heroMobileAspectClass: "aspect-[16/10]",
+  heroFeaturedDesktopHeightClass: "lg:min-h-[420px]",
+  heroFeaturedTabletHeightClass: "md:min-h-[360px]",
+  heroFeaturedMobileHeightClass: "min-h-[300px]",
 } as const;
 
 /** Breakpoints — CSS must match; do not invent midpoints (SIC-CAP-004 §3). */
@@ -55,8 +58,9 @@ export const LMS_RADIUS = {
   input: "rounded-[14px]",
   button: "rounded-xl",
   card: "rounded-2xl",
-  cardLg: "rounded-3xl",
+  cardLg: "rounded-[28px]",
   dialog: "rounded-[28px]",
+  badge: "rounded-full",
 } as const;
 
 export const LMS_MOTION = {

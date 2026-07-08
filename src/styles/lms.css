@@ -17,7 +17,7 @@
 }
 
 .learn-root .ljp-nav-active {
-  background-color: color-mix(in srgb, var(--foreground) 8%, transparent);
+  background-color: color-mix(in srgb, var(--foreground) 7%, transparent);
   color: var(--foreground);
 }
 
@@ -27,12 +27,16 @@
 
 .dark .learn-root .ljp-surface {
   background: var(--ljp-surface);
-  border-color: var(--ljp-border-subtle);
+  border-color: color-mix(in srgb, var(--ljp-border-subtle) 80%, transparent);
 }
 
 .dark .learn-root .ljp-surface-elevated {
   background: var(--ljp-surface-elevated);
-  border-color: var(--ljp-border-subtle);
+  border-color: color-mix(in srgb, var(--ljp-border-subtle) 80%, transparent);
+}
+
+.dark .learn-root .ljp-surface-interactive {
+  background: var(--ljp-surface-hover);
 }
 
 .learn-root .ljp-btn-primary {

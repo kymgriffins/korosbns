@@ -28,18 +28,18 @@ export function LmsTopNav() {
 
   return (
     <header className="sticky top-0 z-50 hidden border-b border-border/60 bg-background/95 backdrop-blur-md dark:bg-[var(--ljp-nav)] lg:block">
-      <div className="mx-auto flex h-20 max-w-[1280px] items-center gap-8 px-10">
+      <div className="mx-auto flex h-16 max-w-[1280px] items-center gap-10 px-12">
         <Link href={LmsRoutes.home} className="shrink-0">
           <Image
             src="/logo.svg"
             alt="Budget Ndio Story"
-            width={132}
-            height={36}
+            width={140}
+            height={38}
             className="h-8 w-auto"
           />
         </Link>
 
-        <nav className="flex flex-1 items-center gap-3" aria-label="Learn navigation">
+        <nav className="flex flex-1 items-center gap-4" aria-label="Learn navigation">
           {DESKTOP_LINKS.map((item) => {
             const active = isLmsNavActive(pathname, item.href);
             return (
@@ -48,10 +48,10 @@ export function LmsTopNav() {
                 href={item.href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "rounded-full px-4 py-2.5 text-sm font-medium transition-colors",
+                  "rounded-full px-4 py-2 text-sm font-medium tracking-[0.01em] transition-colors",
                   active
-                    ? "ljp-nav-active border border-border/60 text-foreground"
-                    : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
+                    ? "ljp-nav-active border border-border/50 text-foreground"
+                    : "text-muted-foreground hover:bg-muted/40 hover:text-foreground",
                 )}
               >
                 {item.label}
@@ -63,7 +63,7 @@ export function LmsTopNav() {
         <div className="flex items-center gap-3">
           <Link
             href={LmsRoutes.search}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/60 text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border/50 text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground"
             aria-label="Search"
           >
             <Search className="size-4" />
@@ -72,10 +72,10 @@ export function LmsTopNav() {
             href={LmsRoutes.profile}
             aria-current={isLmsNavActive(pathname, LmsRoutes.profile) ? "page" : undefined}
             className={cn(
-              "inline-flex h-10 w-10 items-center justify-center rounded-full border transition-colors",
+              "inline-flex h-9 w-9 items-center justify-center rounded-full border transition-colors",
               isLmsNavActive(pathname, LmsRoutes.profile)
                 ? "ljp-nav-active border-foreground/30 text-foreground"
-                : "border-border/60 text-muted-foreground hover:bg-muted/50 hover:text-foreground",
+                : "border-border/50 text-muted-foreground hover:bg-muted/40 hover:text-foreground",
             )}
             aria-label="Profile"
           >

@@ -28,7 +28,7 @@ export function ProgressBar({ completed, total, label, className }: ProgressBarP
       </div>
       <ProgressPrimitive.Root
         value={pct}
-        className="relative h-2 w-full overflow-hidden rounded-full bg-muted/50"
+        className="relative h-1.5 w-full overflow-hidden rounded-full bg-muted/40"
         aria-label={label ?? `${completed} of ${total} lessons`}
       >
         <ProgressPrimitive.Indicator
@@ -36,6 +36,7 @@ export function ProgressBar({ completed, total, label, className }: ProgressBarP
           style={{
             transform: `translateX(-${100 - pct}%)`,
             backgroundColor: LMS_COLORS.reference.success,
+            opacity: 0.85,
             transitionDuration: `${LMS_MOTION.accordionMs}ms`,
           }}
         />

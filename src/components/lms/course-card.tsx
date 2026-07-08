@@ -45,7 +45,7 @@ export function CourseCard({ course, variant = "grid" }: CourseCardProps) {
   }
 
   return (
-    <Card className="group overflow-hidden border-border/70 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
+    <Card className="group overflow-hidden border-border/50 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:ljp-surface">
       <Link href={href} className="block">
         <div className="relative aspect-[16/10] w-full overflow-hidden">
           <Image
@@ -58,8 +58,12 @@ export function CourseCard({ course, variant = "grid" }: CourseCardProps) {
         </div>
         <CardHeader className="space-y-3">
           <div className="flex flex-wrap gap-2">
-            <Badge variant="secondary">{course.category}</Badge>
-            <Badge variant="outline">{course.difficulty}</Badge>
+            <Badge variant="secondary" className={LMS_RADIUS.badge}>
+              {course.category}
+            </Badge>
+            <Badge variant="outline" className={LMS_RADIUS.badge}>
+              {course.difficulty}
+            </Badge>
           </div>
           <CardTitle className="text-xl">{course.title}</CardTitle>
           <CardDescription className="line-clamp-2">{course.subtitle}</CardDescription>

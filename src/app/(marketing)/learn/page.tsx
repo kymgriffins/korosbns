@@ -28,7 +28,11 @@ export default function LearnHomePage() {
 
       <ContinueCard courses={LMS_COURSES} />
 
-      <LmsSection title="Continue where you left off" description="Courses you opened recently">
+      <LmsSection
+        title="Continue where you left off"
+        description="Courses you opened recently"
+        className="pt-2 md:pt-4"
+      >
         <div className="grid gap-5 md:grid-cols-2">
           {recent.map((course) => (
             <CourseCard key={course.slug} course={course} />
@@ -36,7 +40,7 @@ export default function LearnHomePage() {
         </div>
       </LmsSection>
 
-      <LmsSection title="Continue exploring" description="Start with civic fundamentals">
+      <LmsSection title="Continue exploring" description="Start with civic fundamentals" className="pt-2 md:pt-4">
         <div className="grid gap-5 md:grid-cols-2">
           {LMS_COURSES.map((course) => (
             <CourseCard key={course.slug} course={course} />
@@ -47,7 +51,7 @@ export default function LearnHomePage() {
         </Button>
       </LmsSection>
 
-      <LmsSection title="Milestones">
+      <LmsSection title="Milestones" className="pt-2 md:pt-4">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {unlockedAchievements.map((achievement) => (
             <AchievementCard key={achievement.id} achievement={achievement} />
