@@ -21,6 +21,12 @@ Presentation-layer tokens only. Does not amend platform constitution (`platform_
 | `--bh-content-max` | `70rem` | Editorial column |
 | `--bh-prose` | `42rem` | Article reading measure |
 
+## Layer 1 Token Additions
+
+- `budgetHubTokens.layer = "L1"` in `src/constants/budget-hub-tokens.ts`
+- `budgetHubLayer1AcaTokens` captures the provided Aca course-page design token system
+- Source reference document: `DESIGN_SPEC.md`
+
 ## Typography Scale
 
 | Role | Classes |

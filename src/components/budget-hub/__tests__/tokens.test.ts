@@ -22,7 +22,7 @@ describe("budget-hub tokens", () => {
 
     const card = learnHubItemToCard(item);
     expect(card.title).toBe("Finance Bill Explained");
-    expect(card.href).toBe("/learn/finance-bill");
+    expect(card.href).toBe("/learn/content/a1");
     expect(card.category).toBe("Budget");
     expect(card.imageUrl).toBe("/thumb.jpg");
   });

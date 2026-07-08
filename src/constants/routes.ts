@@ -34,6 +34,7 @@ export const Routes = {
     LearnQuests: "/learn/quests",
     LearnProfile: "/learn/profile",
     LearnDoc: (doc: string) => `/learn/${doc}`,
+    LearnContentById: (contentId: string) => `/learn/content/${contentId}`,
     LearnUnits: "/learn",
     LearnUnitEdition: (unitSlug: string, year: number | string) => `/learn/units/${unitSlug}/${year}`,
     Challenges: "/learn/quests",

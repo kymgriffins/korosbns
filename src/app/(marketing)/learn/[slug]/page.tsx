@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { metaDescription, canonicalUrl } from "@/utils/metadata";
 import type { TriviaSetApi } from "@/lib/api-client";
-import { contentData } from "@/data/content";
+import { resolveBudgetHubContentBySlug } from "@/lib/budget-hub-content-resolver";
 import UnifiedReaderClientPage from "./client-page";
 
 interface StoryData {
@@ -29,22 +29,6 @@ interface StoryCard {
   services?: string[];
 }
 
-async function resolveContentSlug(slug: string) {
-  try {
-    const artData = await contentData.articles.fetchBySlug(slug);
-    if (artData && Object.keys(artData).length > 0) return { type: "article" as const, data: artData };
-  } catch {}
-  try {
-    const trivData = await contentData.trivia.fetchBySlug(slug);
-    if (trivData && Object.keys(trivData).length > 0) return { type: "trivia" as const, data: trivData };
-  } catch {}
-  try {
-    const storyData = await contentData.stories.fetchBySlug(slug);
-    if (storyData) return { type: "story" as const, data: storyData };
-  } catch {}
-  return null;
-}
-
 export const dynamicParams = true;
 export const revalidate = 3600; // ISR revalidate every hour
 export const fallback = 'blocking';
@@ -53,7 +37,7 @@ export async function generateMetadata(
   props: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
   const { slug } = await props.params;
-  const resolved = await resolveContentSlug(slug);
+  const resolved = await resolveBudgetHubContentBySlug(slug);
 
   const canonicalPath = `/learn/${slug}`;
   const canonical = canonicalUrl(canonicalPath);
@@ -144,7 +128,7 @@ export default async function UnifiedReaderPage(
   let initialTrivia: TriviaSetApi | null = null;
   let initialStory: StoryData | null = null;
 
-  const resolved = await resolveContentSlug(slug);
+  const resolved = await resolveBudgetHubContentBySlug(slug);
 
   if (resolved?.type === "article") {
     initialArticle = resolved.data;
@@ -153,12 +137,13 @@ export default async function UnifiedReaderPage(
     initialTrivia = resolved.data as TriviaSetApi;
     initialMode = "trivia";
   } else if (resolved?.type === "story") {
-    const foundStory = resolved.data;
+    const foundStory = resolved.data as Record<string, unknown>;
     let parsedCards: StoryCard[] = [];
     try {
-      parsedCards = typeof foundStory.body === "string" 
-        ? JSON.parse(foundStory.body) 
-        : (foundStory.body as StoryCard[] || []);
+      const storyBody = foundStory.body;
+      parsedCards = typeof storyBody === "string"
+        ? JSON.parse(storyBody)
+        : (storyBody as StoryCard[] || []);
     } catch {
       parsedCards = [];
     }
@@ -166,9 +151,9 @@ export default async function UnifiedReaderPage(
     const metadata = (foundStory.metadata as Record<string, string>) || {};
     
     initialStory = {
-      id: foundStory.id,
-      title: foundStory.title,
-      subtitle: foundStory.summary,
+      id: String(foundStory.id ?? ""),
+      title: String(foundStory.title ?? ""),
+      subtitle: String(foundStory.summary ?? ""),
       icon: metadata.icon || "📖",
       duration: metadata.duration || "2 min",
       cards: parsedCards

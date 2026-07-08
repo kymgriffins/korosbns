@@ -1,5 +1,6 @@
 import type { LearnHubItem } from "@/types/learn";
 import type { CivicModule } from "@/types/learn";
+import { Routes } from "@/constants/routes";
 
 export type HubContentItem = {
   id: string;
@@ -37,7 +38,7 @@ export function learnHubItemToCard(item: LearnHubItem): HubContentItem {
     publishedAt: item.published_at ?? null,
     authorName: null,
     authorImage: null,
-    href: `/learn/${slug}`,
+    href: Routes.LearnContentById(item.id),
   };
 }
 
