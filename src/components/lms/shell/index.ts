@@ -1,6 +1,6 @@
 /**
- * Learning Shell — public API (implementation Phase B).
- * @see docs/ljp-spec/implementation-roadmap.md
+ * Learning Shell — public API
+ * @see docs/ljp-spec/implementation-roadmap.md Phase B
  */
 
 export {
@@ -10,4 +10,10 @@ export {
   resolveShellMode,
 } from "@/components/lms/shell/types";
 
-// LearningShell component — feat(shell) commit
+export { LearningShell } from "@/components/lms/shell/learning-shell";
+export { LmsTopNav } from "@/components/lms/shell/lms-top-nav";
+export { LmsBottomNav } from "@/components/lms/shell/lms-bottom-nav";
+export { LmsPage, LmsSection } from "@/components/lms/shell/lms-page";
+export { LmsToastLayer } from "@/components/lms/shell/lms-toast-layer";
+export { LmsDialogLayer } from "@/components/lms/shell/lms-dialog-layer";
+export { LmsBottomSheetLayer } from "@/components/lms/shell/lms-bottom-sheet-layer";

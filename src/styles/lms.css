@@ -10,6 +10,11 @@
   --ljp-page-bg: #fafafa;
 }
 
+.learn-root .ljp-nav-active {
+  background-color: color-mix(in srgb, var(--foreground) 10%, transparent);
+  color: var(--foreground);
+}
+
 .learn-root .ljp-btn-primary {
   background-color: var(--ljp-cta-bg);
   color: var(--ljp-cta-fg);

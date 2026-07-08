@@ -1,22 +1,42 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { Component, type ErrorInfo, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { LmsRoutes } from "@/data/lms/routes";
 
-/**
- * Learn route error boundary — @see docs/ljp-spec/error-handling.md
- */
-export function LmsErrorBoundary({
-  children,
-  fallback,
-}: {
+type BoundaryProps = {
   children: ReactNode;
   fallback?: ReactNode;
-}) {
-  // Phase B: wrap with react-error-boundary or class boundary
-  return <>{children}</>;
+};
+
+type BoundaryState = {
+  hasError: boolean;
+};
+
+/**
+ * @sdp-provenance capability: CAP-learning-shell
+ * @see docs/ljp-spec/error-handling.md
+ */
+export class LmsErrorBoundary extends Component<BoundaryProps, BoundaryState> {
+  state: BoundaryState = { hasError: false };
+
+  static getDerivedStateFromError(): BoundaryState {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    if (process.env.NODE_ENV === "development") {
+      console.error("[LmsErrorBoundary]", error, info.componentStack);
+    }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback ?? <LmsErrorFallback />;
+    }
+    return this.props.children;
+  }
 }
 
 export function LmsErrorFallback() {
@@ -30,7 +50,7 @@ export function LmsErrorFallback() {
         <Button type="button" variant="outline" onClick={() => window.location.reload()}>
           Reload
         </Button>
-        <Button asChild>
+        <Button asChild className="ljp-btn-primary">
           <Link href={LmsRoutes.home}>Back to Learn</Link>
         </Button>
       </div>

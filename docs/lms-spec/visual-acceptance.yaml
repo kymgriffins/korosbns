@@ -1,0 +1,70 @@
+# Visual Acceptance — Critic gate
+## Companion to RX-001 · ADR-015 · v1.1
+
+```yaml
+visual_acceptance:
+  id: VAS-001
+  reference: RX-001
+  version: 1.1.0
+  applies_to: [/learn, src/components/lms]
+
+  learner_feel:
+    first_impression: [calm, welcoming, trustworthy]
+    during_learning: [focused, uninterrupted, confident]
+    after_completion: [accomplished, curious_to_continue, empowered]
+
+  family_test:
+    require_all: true
+    questions:
+      - id: FT1
+        text: Recognizable as Budget Ndio Story Learn without the logo?
+      - id: FT2
+        text: Does one action dominate the screen?
+      - id: FT3
+        text: Does the layout breathe?
+      - id: FT4
+        text: Would removing an element improve the screen? (Yes → remove before pass)
+      - id: FT5
+        text: Would RX-001's designer approve this composition?
+
+  necessity_test:
+    question: >
+      If this component disappeared tomorrow, would learning become harder,
+      or merely different?
+    fail_if: merely_different_and_kept
+
+  experience_drift:
+    visual_noise: { max: low, require: pass }
+    competing_actions: { max: 2, require: pass }
+    cognitive_load: { require: within_budget }
+    primary_focus: { require: obvious_under_3_seconds }
+    brand_recognition: { require: passes_family_test }
+    civic_warmth: { require: present }
+    learner_feel: { require: matches_journey_phase }
+
+  checks:
+    whitespace: { require: pass }
+    one_primary_cta: { require: pass }
+    no_sidebar: { require: pass }
+    content_width: { max_px: 1280, require: pass }
+    typography_scale: { require: pass }
+    black_primary_button: { require: pass }
+    visual_noise: { max: low, require: pass }
+    cards: { require: consistent }
+    spacing: { system: 8pt, require: pass }
+    navigation: { require: horizontal_or_immersive }
+    hierarchy: { require: pass }
+    marketplace_patterns: { require: absent }
+    civic_warmth: { require: pass }
+    oss_interaction_rule: { require: pass, note: No new interaction without ADR }
+
+  critic_prompt: |
+    1. Score visual checks.
+    2. Run Family Test FT1–FT5 — all required.
+    3. Score Experience Drift block.
+    4. Confirm learner_feel matches journey phase.
+    5. Apply necessity test to every new element.
+    Fail any → revise. Do not pass “contract-correct but cluttered.”
+```
+
+Attach results in capability review under `visual_acceptance:` + `experience_drift:` + Family Test answers.

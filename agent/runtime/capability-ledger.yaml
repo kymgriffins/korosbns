@@ -1,0 +1,381 @@
+# Capability Ledger
+## Authoritative Capability Validation register — humans and agents
+
+```yaml
+# These are Capability Validations — not "features."
+# Each entry either validates or falsifies the platform under Baseline freeze.
+#
+# status enum:
+#   planned | in_progress | complete | validated | superseded
+#
+# "complete"  = capability gates PASS + review PASS (may predate platform validated)
+# "validated" = complete AND included under runtime_stage: validated (post Gate 1)
+# drift_pct   = estimated % specification ↔ implementation
+# platform_changes       = constitutional edits attributable to this slice (Goal: 0)
+# constitution_exceptions = times Builder could not ship without breaking a Law (Goal: 0)
+#   If >0, record law_id + rationale. Do not silently rewrite the constitution.
+#
+# Change categories (PLATFORM.md):
+#   Constitution (frozen) | Knowledge (living — this file) | Product (continuous)
+
+version: 1
+platform_version: "3.1"
+baseline_frozen: "1.0"
+platform_evolution: stopped
+knowledge_layer: living
+product_delivery: active
+platform_validation_review:
+  earliest_after: CAP-search  # LJP-010 — do not reopen constitution after CAP-004/005
+  template: agent/reviews/PLATFORM-VALIDATION-REVIEW.md
+kpi:
+  platform_stability:
+    definition: platform_constitutional_changes_per_capability
+    goal: 0
+  constitution_pressure:
+    definition: constitution_exceptions_per_capability
+    goal: 0
+updated: 2026-07-08
+runtime_stage: draft
+runtime_stage_note: >
+  Capability status "complete" means slice evidence exists.
+  Platform-wide runtime_stage: validated still waits Gate 1.
+ui_completion:
+  roadmap: docs/lms-spec/ui-completion-roadmap.md
+  guiding_question: Can we faithfully realize RX-001 across every screen?
+  phase_a:
+    - CAP-course-detail   # flagship
+    - CAP-home-continue   # resume ≤5s
+    - CAP-catalogue       # chips, no sidebar
+    - CAP-learning-experience  # polish only
+    - CAP-progress-hub    # editorial cards
+  phase_b:
+    - CAP-achievements
+    - CAP-profile
+    - CAP-search
+  design_gates: [RX-001, VAS, Experience, FamilyTest, Critic]
+  platform_changes_goal: 0
+
+capabilities:
+
+  CAP-learning-shell:
+    spec_id: LJP-001
+    title: Learning Shell
+    kind: capability_validation
+    status: complete
+    hypothesis: Shell composes hub/immersive/account without sidebar
+    proves: shell_composition_without_sidebar
+    platform_changes: 0
+    constitution_exceptions: 0
+    evidence_complete:
+      implementation: true
+      tests: true
+      review: true
+      retrospective: true
+      metrics: partial
+      drift_note: true
+      ledger_update: true
+    contracts:
+      - lms_shell@1.0.0
+      - navigation_laws@1.0.0
+      - accessibility_contract@1.0.0
+    depends_on: []
+    implemented_in:
+      - src/components/lms/shell/
+      - src/app/(marketing)/learn/layout.tsx
+    evidence:
+      - agent/reviews/LJP-001.md
+    retrospective:
+      - agent/reviews/LJP-001-retrospective.md
+    drift_pct: 5
+    notes: Deprecated re-exports linger; constitution unchanged by slice.
+
+  CAP-learning-runtime:
+    spec_id: LJP-002
+    title: Learning Runtime
+    kind: capability_validation
+    status: complete
+    hypothesis: Event-sourced runtime owns journey without UI truth
+    proves: event_sourced_journey_ownership
+    platform_changes: 0
+    constitution_exceptions: 0
+    evidence_complete:
+      implementation: true
+      tests: true
+      review: true
+      retrospective: false
+      metrics: true
+      drift_note: true
+      ledger_update: true
+    contracts:
+      - learning-runtime@1.0.0
+      - event-model@1.0.0
+      - session@1.0.0
+      - progress@1.0.0
+      - timeline@1.0.0
+    depends_on:
+      - CAP-learning-shell
+    implemented_in:
+      - src/lib/learning-runtime/
+    evidence:
+      - agent/reviews/LJP-002.md
+    retrospective: []
+    observability:
+      - agent/runtime/observability/LJP-002.yaml
+    drift_pct: 5
+    notes: Dual PartAdvanced is product/rule gap — ADR only if Rule of Three met.
+
+  CAP-learning-experience:
+    spec_id: LJP-003
+    alias: CAP-003
+    title: Learning Experience
+    ui_phase: A
+    kind: capability_validation
+    status: complete
+    hypothesis: First vertical slice composes Shell + Runtime without redesign
+    proves: vertical_slice_composition
+    acceptance:
+      - polish only — Video → Trivia → Reflection → Continue
+      - no new distractions or chrome
+      - Critic gates 1–5 on polish PRs
+    platform_changes: 0
+    constitution_exceptions: 0
+    evidence_complete:
+      implementation: true
+      tests: true
+      review: true
+      retrospective: true
+      metrics: partial
+      drift_note: true
+      ledger_update: true
+    contracts:
+      - lesson-journey@1.0.0
+      - lesson_screen@1.0.0
+      - video_player@1.0.0
+      - trivia_popup@1.0.0
+      - continue_button@1.0.0
+    depends_on:
+      - CAP-learning-shell
+      - CAP-learning-runtime
+    implemented_in:
+      - src/components/lms/lesson/
+    evidence:
+      - agent/reviews/LJP-003.md
+      - agent/reviews/LJP-003-validation.md
+    retrospective:
+      - agent/reviews/LJP-003-retrospective.md
+    observability:
+      - agent/runtime/observability/LJP-003.yaml
+    drift_pct: 10
+    notes: Gate 1 pending. Hydration fix stays product — not constitution.
+
+  CAP-course-detail:
+    spec_id: LJP-004
+    alias: CAP-004
+    title: Course Detail
+    ui_phase: A
+    ui_role: reference_implementation
+    kind: capability_validation
+    status: complete
+    hypothesis: Flagship RX-001 Course Detail — UI reference for all Phase A screens
+    proves: content_composition
+    screen_implementation_contract: docs/lms-spec/sic-cap-004-course-detail.md
+    acceptance:
+      - SIC-CAP-004 all sections satisfied
+      - breadcrumb + 60/40 hero + overview + outcomes + module accordion
+      - journey meta replaces price (time, difficulty, optional citizens/certificate)
+      - one dominant CTA Start Journey / Continue Learning / Review
+      - sticky mobile CTA · skeleton · 404 · Pixel Discipline
+      - Critic gates 1–5 + acceptance matrix in SIC §15
+    platform_changes: 0
+    constitution_exceptions: 0
+    rx_family_test: pass
+    pixel_discipline: pass
+    evidence_complete:
+      implementation: true
+      tests: true
+      review: true
+      retrospective: false
+      metrics: false
+      drift_note: true
+      ledger_update: true
+      sic: true
+    contracts:
+      - course_detail@1.0.0
+      - course_hero@1.0.0
+      - module_card@1.0.0
+      - sic-cap-004@1.0.0
+    depends_on:
+      - CAP-learning-shell
+    implemented_in:
+      - src/components/lms/course/
+      - src/app/(marketing)/learn/courses/[courseSlug]/page.tsx
+      - src/app/(marketing)/learn/courses/[courseSlug]/loading.tsx
+    evidence:
+      - agent/reviews/LJP-004.md
+    drift_pct: 8
+    notes: >
+      UI reference complete against SIC. Critic PASS. platform_changes=0.
+      Gate 1 may still run in parallel. Phase A screens must inherit this language.
+
+  CAP-home-continue:
+    spec_id: LJP-005
+    alias: CAP-005
+    title: Home Continue
+    ui_phase: A
+    kind: capability_validation
+    status: in_progress
+    hypothesis: Resume learning within 5 seconds — one Continue card, no dashboard widgets
+    proves: runtime_resume_deep_link
+    acceptance:
+      - one dominant Continue card
+      - recommended journeys (cards only)
+      - light achievements / recent activity — no analytics overload
+      - Critic gates 1–5 pass
+    platform_changes: 0
+    constitution_exceptions: 0
+    evidence_complete:
+      implementation: true
+      tests: true
+      review: false
+      retrospective: false
+      metrics: false
+      drift_note: partial
+      ledger_update: true
+    contracts:
+      - continue_button@1.0.0
+      - course_card@1.0.0
+    depends_on:
+      - CAP-learning-experience
+      - CAP-course-detail
+    implemented_in:
+      - src/components/lms/home/continue-card.tsx
+      - src/lib/learning-runtime/continue.ts
+      - src/app/(marketing)/learn/page.tsx
+    evidence: []
+    drift_pct: 15
+    notes: Close against Home composition; no platform change.
+
+  CAP-catalogue:
+    spec_id: LJP-006
+    alias: CAP-006
+    title: Catalogue
+    ui_phase: A
+    kind: capability_validation
+    status: planned
+    hypothesis: Catalogue is calm discovery — featured + cards + horizontal FilterChips; never sidebar
+    proves: discovery_patterns
+    acceptance:
+      - header + search + horizontal category chips
+      - featured journey + journey grid
+      - no desktop sidebar ever
+      - Critic gates 1–5 pass
+    platform_changes: 0
+    constitution_exceptions: 0
+    evidence_complete: pending
+    contracts: []
+    depends_on:
+      - CAP-learning-shell
+    implemented_in: []
+    evidence: []
+    drift_pct: null
+    notes: Add FilterChip to component library; remap bottom-nav Learn label if needed.
+
+  CAP-progress-hub:
+    spec_id: LJP-007
+    alias: CAP-007
+    title: Progress Hub
+    ui_phase: A
+    kind: capability_validation
+    status: planned
+    hypothesis: Editorial progress cards — not BI charts
+    proves: runtime_aggregation
+    acceptance:
+      - overall + current + completed + achievements + certificates as cards
+      - no chart-dashboard chrome
+      - Critic gates 1–5 pass
+    platform_changes: 0
+    constitution_exceptions: 0
+    evidence_complete: pending
+    contracts: []
+    depends_on:
+      - CAP-learning-shell
+      - CAP-learning-experience
+    implemented_in: []
+    evidence: []
+    drift_pct: null
+
+  CAP-achievements:
+    spec_id: LJP-008
+    alias: CAP-008
+    title: Achievements
+    ui_phase: B
+    kind: capability_validation
+    status: planned
+    hypothesis: Achievements derive from events only
+    proves: event_derived_state
+    platform_changes: 0
+    constitution_exceptions: 0
+    evidence_complete: pending
+    contracts: []
+    depends_on:
+      - CAP-learning-shell
+    implemented_in: []
+    evidence: []
+    drift_pct: null
+    notes: Phase B — after Phase A feels world-class.
+
+  CAP-profile:
+    spec_id: LJP-009
+    alias: CAP-009
+    title: Profile
+    ui_phase: B
+    kind: capability_validation
+    status: planned
+    hypothesis: Account mode separation holds
+    proves: account_mode_separation
+    platform_changes: 0
+    constitution_exceptions: 0
+    evidence_complete: pending
+    contracts: []
+    depends_on:
+      - CAP-learning-shell
+    implemented_in: []
+    evidence: []
+    drift_pct: null
+    notes: Phase B.
+
+  CAP-search:
+    spec_id: LJP-010
+    alias: CAP-010
+    title: Search
+    ui_phase: B
+    kind: capability_validation
+    status: planned
+    hypothesis: Search validates IA without platform change
+    proves: information_architecture
+    platform_changes: 0
+    constitution_exceptions: 0
+    evidence_complete: pending
+    contracts: []
+    depends_on:
+      - CAP-learning-shell
+    implemented_in: []
+    evidence: []
+    drift_pct: null
+    notes: Phase B; triggers Platform Validation Review eligibility after complete.
+```
+
+## Update protocol (Build Evidence DoD)
+
+After each Capability Validation:
+
+1. Set `status` from evidence only.
+2. Set `platform_changes` (must be `0` unless ADR + Rule of Three).
+3. Set `constitution_exceptions` (must be `0`; if >0 record law + rationale — signal only).
+4. Fill `evidence_complete` checklist (implementation, tests, review, retrospective, metrics, drift, ledger).
+5. Attach evidence / retrospective / observability paths.
+6. Update `drift_pct` from ARCHITECTURE-AUDIT (Knowledge layer).
+7. Never mark `runtime_stage: validated` here — that is `state.yaml` + Gate 1.
+8. Never schedule Platform Validation Review before CAP-010.
+
+Agents: **prefer this ledger over inventing features.** Constitution frozen; knowledge living; product continuous.

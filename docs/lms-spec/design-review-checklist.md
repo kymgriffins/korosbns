@@ -98,12 +98,42 @@ Attach completed checklist to PR description or `docs/lms-ui-audit.md`.
 
 ---
 
-## 9. Acceptance questionnaire
+## 9. Reference Experience RX-001
 
 | # | Question | Pass |
 |---|----------|------|
-| 9.1 | All **70 UI questionnaire** answers Yes? | Yes |
-| 9.2 | Section 15 **final acceptance** all Yes? | Yes |
+| 9.1 | **FT1** Recognizable as BNS Learn without logo? | Yes |
+| 9.2 | **FT2** One action dominates? | Yes |
+| 9.3 | **FT3** Layout breathes? | Yes |
+| 9.4 | **FT4** Would removing an element improve it? | **No** (or removed) |
+| 9.5 | **FT5** Would RX-001’s designer approve? | Yes |
+| 9.6 | `visual-acceptance.yaml` + Experience Drift pass? | Yes — attach |
+| 9.7 | Necessity test: any kept “merely different” component? | No |
+| 9.8 | Marketplace patterns absent? | Yes |
+| 9.9 | Civic Warmth / learner_feel for phase? | Yes |
+
+### Critic (must try to reject — Gate 5)
+
+Hostile review. Any No → revise before merge.
+
+| # | Question | Pass |
+|---|----------|------|
+| C1 | Feel like RX-001 **without copying** it? | Yes |
+| C2 | First-time citizen understands screen in **&lt;30s**? | Yes |
+| C3 | Exactly **one** dominant action? | Yes |
+| C4 | Would removing any element improve the screen? | **No** (or removed) |
+| C5 | Preserves Budget Ndio Story Learn identity (not Moodle / LMS / Coursera)? | Yes |
+
+Program: `ui-completion-roadmap.md` — Phase A screens before Phase B.
+
+---
+
+## 10. Acceptance questionnaire
+
+| # | Question | Pass |
+|---|----------|------|
+| 10.1 | All **70 UI questionnaire** answers Yes? | Yes |
+| 10.2 | Section 15 **final acceptance** all Yes? | Yes |
 
 ---
 
@@ -112,31 +142,28 @@ Attach completed checklist to PR description or `docs/lms-ui-audit.md`.
 ```md
 ## Design Review — [Screen / Feature]
 
-### Blueprint & contracts
-- Blueprint: D — Lesson
-- Screen contract: lesson.md
-- Components: VideoPlayer, ContinueButton, TriviaPopup
+### Reference
+- RX-001 · VAS-001
+- Journey phase feel: first_impression | during_learning | after_completion
 
-### Quick fails (must all be No)
-- New visual pattern: No
-- Violates DNA: No
-- Increases cognitive load: No
-- More UI than content: No
-- Anti-pattern match: No
-- Confused with another product: No
+### Family Test (all Yes / FT4 No-or-removed)
+- FT1 … FT5
 
-### Removals applied
-- [list anything removed per 3.4, 4.3, 4.4]
+### Critic Gate 5 (all Yes / C4 No-or-removed)
+- C1 … C5
 
-### W1 — Why this CTA?
-[one sentence]
+### Experience Drift
+- visual_noise: low
+- competing_actions: ≤2
+- cognitive_load: within_budget
+- primary_focus: <3s
+- civic_warmth: present
 
-### Visual regression
-- Recognizable without logo: Yes
-- Whitespace rhythm: Yes
+### Necessity
+- No component kept that is merely different
 
 ### Checklist
-All 9 sections pass.
+All sections pass.
 ```
 
 ---

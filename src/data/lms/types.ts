@@ -63,6 +63,10 @@ export type LmsCourse = {
   heroImage: string;
   requirements: string[];
   modules: LmsModule[];
+  /** SIC-CAP-004 optional journey meta — hide in UI when absent */
+  learningOutcomes?: string[];
+  citizensCompleted?: number;
+  awardsCertificate?: boolean;
 };
 
 export type LmsAchievement = {

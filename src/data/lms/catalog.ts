@@ -16,6 +16,14 @@ export const LMS_COURSES: LmsCourse[] = [
     instructor: "Budget Ndio Story",
     heroImage: "/images/explainer-formulation.png",
     requirements: ["No prior finance background required", "15 minutes per session recommended"],
+    learningOutcomes: [
+      "Explain Kenya’s national budget cycle in plain language",
+      "Identify where citizens can participate before approval",
+      "Follow money from formulation to implementation",
+      "Take one concrete civic action this month",
+    ],
+    citizensCompleted: 1284,
+    awardsCertificate: true,
     modules: [
       {
         slug: "introduction",

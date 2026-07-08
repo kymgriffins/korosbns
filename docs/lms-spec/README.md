@@ -30,11 +30,15 @@ Implementation is judged by whether it **feels identical** to the intended exper
 ```
 PHASE 0 — EXPERIENCE
   experience-principles.md     How it should feel (emotion, cognitive load, complexity)
-  design-dna.md                Personality, visual grammar, brand recognition
+  design-dna.md                Personality, visual grammar, Civic Warmth, brand recognition
+  reference-experience-rx-001.md  Visual constitution (ADR-015) — feeling of the reference board
+  visual-acceptance.yaml       Critic VAS-001 checklist
 
 PHASE 0.5 — CONSTRAINTS
   anti-patterns.md             Instant-fail catalog
-  design-review-checklist.md   PR gate (every question)
+  design-review-checklist.md   PR gate (Family Test + Critic C1–C5)
+  ui-completion-roadmap.md     Finite UI delivery program (Phase A/B)
+  sic-cap-004-course-detail.md UI reference SIC — Builder asks this, not taste
 
 PHASE 1 — PRODUCT
   ../lms-architecture.md       Vision (legacy filename)

@@ -1,14 +1,18 @@
-import Image from "next/image";
-import Link from "next/link";
+/**
+ * @sdp-provenance
+ * capability: CAP-course-detail
+ * spec_id: LJP-004
+ * contracts: course_detail@1.0.0,sic-cap-004@1.0.0
+ */
 import { notFound } from "next/navigation";
-import { Clock, GraduationCap } from "lucide-react";
-import { LmsPage, LmsSection } from "@/components/lms/lms-page";
-import { ModuleCard } from "@/components/lms/module-card";
-import { ProgressBar } from "@/components/lms/progress-bar";
-import { getCourse, getCompletedLessonsCount, getTotalLessons } from "@/data/lms/catalog";
-import { getFirstLessonHref } from "@/data/lms/helpers";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { LmsPage } from "@/components/lms/lms-page";
+import { CourseHero } from "@/components/lms/course/course-hero";
+import { ModuleAccordion } from "@/components/lms/course/module-accordion";
+import { JourneyBreadcrumb } from "@/components/lms/course/journey-breadcrumb";
+import { LearningOutcomes } from "@/components/lms/course/learning-outcomes";
+import { getCompletedLessonsCount, getCourse, getTotalLessons } from "@/data/lms/catalog";
+import { LMS_TYPE } from "@/constants/lms-design-tokens";
+import { cn } from "@/utils";
 
 type PageProps = {
   params: Promise<{ courseSlug: string }>;
@@ -17,7 +21,7 @@ type PageProps = {
 export async function generateMetadata({ params }: PageProps) {
   const { courseSlug } = await params;
   const course = getCourse(courseSlug);
-  return { title: course ? `${course.title} | Learn` : "Course | Learn" };
+  return { title: course ? `${course.title} | Learn` : "Journey | Learn" };
 }
 
 export default async function CourseDetailPage({ params }: PageProps) {
@@ -27,65 +31,60 @@ export default async function CourseDetailPage({ params }: PageProps) {
 
   const total = getTotalLessons(course);
   const completed = getCompletedLessonsCount(course);
-  const startHref = getFirstLessonHref(course);
+  const journeyComplete = total > 0 && completed >= total;
 
   return (
-    <LmsPage className="space-y-8">
-      <section className="overflow-hidden rounded-3xl border border-border/60 bg-card shadow-sm">
-        <div className="relative aspect-[21/9] w-full">
-          <Image src={course.heroImage} alt="" fill className="object-cover" priority sizes="100vw" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-        </div>
-        <div className="space-y-4 p-5 md:p-8">
-          <div className="flex flex-wrap gap-2">
-            <Badge>{course.category}</Badge>
-            <Badge variant="outline">{course.difficulty}</Badge>
-          </div>
-          <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">{course.title}</h1>
-          <p className="max-w-3xl text-lg text-muted-foreground">{course.subtitle}</p>
-          <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-            <span className="inline-flex items-center gap-1">
-              <Clock className="size-4" />
-              {course.durationMinutes} minutes
-            </span>
-            <span className="inline-flex items-center gap-1">
-              <GraduationCap className="size-4" />
-              {course.instructor}
-            </span>
-          </div>
-          <ProgressBar completed={completed} total={total} />
-          {startHref ? (
-            <Button asChild size="lg" className="w-full sm:w-auto">
-              <Link href={startHref}>Enroll &amp; start learning</Link>
-            </Button>
-          ) : null}
-        </div>
+    <LmsPage className="space-y-8 pb-24 lg:pb-8">
+      <JourneyBreadcrumb title={course.title} />
+
+      <CourseHero course={course} />
+
+      <section className="space-y-4" aria-labelledby="journey-overview-heading">
+        <h2
+          id="journey-overview-heading"
+          className={cn(LMS_TYPE.h3, "font-semibold tracking-tight")}
+        >
+          About this journey
+        </h2>
+        <p className={cn(LMS_TYPE.body, "ljp-prose leading-relaxed text-muted-foreground")}>
+          {course.description}
+        </p>
+
+        {course.requirements.length > 0 ? (
+          <details className="max-w-prose rounded-2xl border border-border/60 bg-card p-4 shadow-sm">
+            <summary
+              className={cn(
+                LMS_TYPE.caption,
+                "cursor-pointer font-medium text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              )}
+            >
+              Requirements
+            </summary>
+            <ul className={cn(LMS_TYPE.body, "mt-4 list-disc space-y-1 pl-5 text-muted-foreground")}>
+              {course.requirements.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </details>
+        ) : null}
       </section>
 
-      <LmsSection title="About this course">
-        <p className="max-w-3xl leading-relaxed text-muted-foreground">{course.description}</p>
-      </LmsSection>
+      <LearningOutcomes course={course} journeyComplete={journeyComplete} />
 
-      <LmsSection title="Requirements">
-        <ul className="list-disc space-y-1 pl-5 text-muted-foreground">
-          {course.requirements.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
-      </LmsSection>
-
-      <LmsSection title="Modules" description="Expand each module to see lessons">
-        <div className="space-y-4">
-          {course.modules.map((mod, index) => (
-            <ModuleCard
-              key={mod.slug}
-              courseSlug={course.slug}
-              module={mod}
-              defaultOpen={index === 1 || mod.status === "in_progress"}
-            />
-          ))}
-        </div>
-      </LmsSection>
+      <section className="space-y-4 pt-4" aria-labelledby="journey-modules-heading">
+        <header className="space-y-1">
+          <h2
+            id="journey-modules-heading"
+            className={cn(LMS_TYPE.h3, "font-semibold tracking-tight")}
+          >
+            Journey modules
+          </h2>
+          <p className={cn(LMS_TYPE.caption, "text-muted-foreground")}>
+            Expand a module to see lessons
+          </p>
+        </header>
+        <ModuleAccordion course={course} />
+      </section>
     </LmsPage>
   );
 }

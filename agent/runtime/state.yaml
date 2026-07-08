@@ -1,0 +1,63 @@
+version: 3.1
+runtime_stage: draft
+pending: cap_005_home_continue
+platform_version: "3.1"
+baseline_frozen: "1.0"
+platform_evolution: stopped
+product_delivery: active
+knowledge_layer: living
+guiding_principle: prove_the_architecture
+ui_execution: active
+ui_completion_roadmap: docs/lms-spec/ui-completion-roadmap.md
+cap_004_sic: docs/lms-spec/sic-cap-004-course-detail.md
+pixel_discipline: active
+phase_dod: build_evidence
+rule_of_three: active
+change_categories:
+  constitution: frozen
+  knowledge: living
+  product: continuous
+kpi:
+  platform_stability:
+    definition: platform_constitutional_changes_per_capability
+    goal: 0
+  constitution_pressure:
+    definition: constitution_exceptions_per_capability
+    goal: 0
+platform_validation_review:
+  earliest_after: CAP-010
+  template: reviews/PLATFORM-VALIDATION-REVIEW.md
+
+validation:
+  report: reviews/LJP-003-validation.md
+  gates:
+    experience: pending_human
+    runtime: pass
+    traceability: pass
+    architecture: pass
+    design: conditional
+    performance: pass
+
+ledger: runtime/capability-ledger.yaml
+platform: PLATFORM.md
+architecture_baseline: reviews/ARCHITECTURE-AUDIT.md
+
+capabilities:
+  learning-experience:
+    spec_id: LJP-003
+    status: complete
+
+scheduler:
+  next_action: build_cap_005_against_cap_004_patterns
+  parallel_ok:
+    - gate_1_human_walkthrough
+  phase_a_order:
+    - CAP-004  # Course Detail — UI reference (complete)
+    - CAP-005  # Home Continue
+    - CAP-006  # Catalogue
+    - CAP-007  # Progress
+  after_phase_a: phase_b_secondaries
+  after_cap_010: platform_validation_review
+  note: >
+    CAP-004 Course Detail is the UI reference (complete). Inherit its components.
+    Pixel Discipline. platform_changes=0. Gate 1 may run in parallel.
