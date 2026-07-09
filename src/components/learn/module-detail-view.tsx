@@ -290,7 +290,7 @@ export function ModuleDetailView() {
       `}</style>
     <div className="flex min-h-0 flex-1 flex-col bg-background">
       {/* === Header === */}
-      <header className="flex shrink-0 items-center gap-2 border-b px-3 py-2 md:px-5 md:py-2.5 md:border-b-0 md:bg-background md:sticky md:top-0 md:z-10">
+      <header className="flex shrink-0 items-center gap-2 border-b px-3 py-1.5 md:px-4 md:py-2 md:border-b-0 md:bg-background md:sticky md:top-0 md:z-10">
         <button onClick={() => router.push("/learn")} className="p-1 hover:bg-muted/50 rounded-lg transition-colors -ml-1 md:hidden">
           <ChevronLeft className="size-4" />
         </button>
@@ -323,7 +323,7 @@ export function ModuleDetailView() {
         {/* === Content area === */}
         <div className="flex flex-1 flex-col min-w-0 min-h-0">
           {/* Step dots — mobile */}
-          <div className="flex shrink-0 items-center gap-1.5 overflow-x-auto px-3 py-2 scrollbar-hide md:hidden border-b border-border/20">
+          <div className="flex shrink-0 items-center gap-1 overflow-x-auto px-3 py-1.5 scrollbar-hide md:hidden border-b border-border/20">
             {steps.map((step: ChapterStep, idx: number) => {
               const stepNum = idx + 1;
               const isCurrent = currentStep === stepNum;
@@ -333,7 +333,7 @@ export function ModuleDetailView() {
                   key={step.id}
                   onClick={() => handleSelectStep(stepNum)}
                   className={cn(
-                    "shrink-0 size-7 rounded-full flex items-center justify-center text-[10px] font-bold transition-all duration-200",
+                    "shrink-0 size-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-all duration-200",
                     isCurrent && "scale-110 bg-primary text-primary-foreground shadow-xs",
                     !isCurrent && passed && "border border-emerald-500/30 bg-emerald-500/15 text-emerald-600",
                     !isCurrent && !passed && "border border-border/40 bg-muted/40 text-muted-foreground",
@@ -601,9 +601,9 @@ export function ModuleDetailView() {
         </div>
 
         {/* === Curriculum sidebar — desktop === */}
-        <aside className="hidden w-64 shrink-0 border-l md:flex md:flex-col md:h-[calc(100dvh-8rem)]">
+        <aside className="hidden w-56 shrink-0 border-l md:flex md:flex-col md:h-[calc(100dvh-8rem)]">
           <div className="flex-1 overflow-y-auto">
-            <div className="p-4">
+            <div className="p-3">
               {mod.author && (
                 <div className="mb-4 flex items-center gap-2.5 rounded-lg bg-muted/30 p-3">
                   <div className="flex size-8 items-center justify-center rounded-full bg-muted text-xs font-semibold">
@@ -645,7 +645,7 @@ export function ModuleDetailView() {
                       )}>
                         {passed ? <CheckCircle2 className="size-3" /> : stepNum}
                       </span>
-                      <span className={cn("line-clamp-2 leading-tight", passed && !isCurrent && "text-muted-foreground")}>{step.title}</span>
+                      <span className={cn("truncate leading-tight", passed && !isCurrent && "text-muted-foreground")}>{step.title}</span>
                     </button>
                   );
                 })}

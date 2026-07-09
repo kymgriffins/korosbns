@@ -26,28 +26,28 @@ export function ArticleCard({
     <article className={cn("group", className)}>
       <Link
         href={item.href}
-        className="budget-hub-card-hover flex h-full flex-col gap-4"
+        className="budget-hub-card-hover flex h-full flex-col gap-3"
       >
-        <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-muted">
+        <div className="relative aspect-[16/10] overflow-hidden rounded-lg bg-muted">
           <Image
             src={item.imageUrl || "/images/community-pulse.png"}
             alt=""
             fill
             className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-[1.03]"
-            sizes="(max-width: 768px) 100vw, 33vw"
+            sizes="(max-width: 768px) 50vw, 25vw"
           />
         </div>
-        <div className="flex flex-1 flex-col gap-2">
+        <div className="flex flex-1 flex-col gap-1.5">
           {item.category ? (
             <span className="text-xs font-medium uppercase tracking-wide text-[var(--bh-accent-warm)]">
               {item.category}
             </span>
           ) : null}
-          <h3 className="text-xl font-semibold leading-snug tracking-tight transition-colors group-hover:text-[var(--bh-accent-warm)]">
+          <h3 className="text-lg font-semibold leading-snug tracking-tight transition-colors group-hover:text-[var(--bh-accent-warm)]">
             {item.title}
           </h3>
           {item.excerpt ? (
-            <p className="line-clamp-2 text-[15px] text-muted-foreground">
+            <p className="line-clamp-2 text-sm text-muted-foreground">
               {item.excerpt}
             </p>
           ) : null}

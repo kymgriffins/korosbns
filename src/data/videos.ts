@@ -125,6 +125,10 @@ export function embedUrl(videoId: string): string {
   return `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1`;
 }
 
+export function getYoutubeThumbnail(videoId: string, quality: "default" | "mqdefault" | "hqdefault" | "sddefault" | "maxresdefault" = "mqdefault"): string {
+  return `https://img.youtube.com/vi/${videoId}/${quality}.jpg`;
+}
+
 function defaultVideosAsLearnHubItems(): { results: LearnHubItem[] } {
   return {
     results: DEFAULT_VIDEOS.map((v) => ({

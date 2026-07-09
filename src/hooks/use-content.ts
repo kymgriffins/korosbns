@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { contentData } from "@/data/content";
-import type { TriviaLeaderboardRow } from "@/lib/api-client";
+import { citizenApi, type TriviaLeaderboardRow, type TriviaSetApi } from "@/lib/api-client";
 
 export function useArticle(slug: string, enabled = true) {
   return useQuery({
@@ -27,7 +27,7 @@ export function useStories() {
 export function useTriviaList() {
   return useQuery({
     queryKey: ["trivia-list"],
-    queryFn: () => contentData.trivia.fetchList().then((results) => ({ results })),
+    queryFn: () => citizenApi.getTriviaList(),
   });
 }
 

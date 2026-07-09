@@ -2,6 +2,7 @@ import { apiFetch } from "@/lib/api-client";
 import type { CivicModule, CivicModuleAuthor } from "@/types/learn";
 import type { ApiListResponse } from "@/types/api";
 import type { LearningUnitSummary } from "@/lib/learning-units";
+import type { LearningEditionDetail } from "@/lib/learning-units";
 
 export type LearnHubItem = {
   id: string;
@@ -89,10 +90,16 @@ function fetchList(segment: string, filters?: LearnListFilters) {
 export const learnHubApi = {
   units: () =>
     apiFetch<{ results: LearningUnitSummary[] }>("/content/units/"),
+  courseDetail: (slug: string) =>
+    apiFetch<LearningEditionDetail | null>(`/content/courses/${slug}/`, { allowed404: true }),
   summary: () => apiFetch<LearnHubSummary>("/content/learn/"),
   videos: (filters?: LearnListFilters) => fetchList("videos", filters),
   articles: (filters?: LearnListFilters) => fetchList("articles", filters),
+  articleDetail: (slug: string) =>
+    apiFetch<Record<string, unknown>>(`/content/articles/${slug}/`, { allowed404: true }),
   stories: (filters?: LearnListFilters) => fetchList("stories", filters),
+  storyDetail: (slug: string) =>
+    apiFetch<Record<string, unknown>>(`/content/stories/${slug}/`, { allowed404: true }),
   documents: (filters?: LearnListFilters) => fetchList("documents", filters),
   paths: (filters?: LearnListFilters) => fetchList("paths", filters),
   quests: (filters?: LearnListFilters) => fetchList("quests", filters),

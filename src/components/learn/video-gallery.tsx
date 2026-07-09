@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
-import { Calendar, ChevronDown, ChevronUp, ExternalLink, FileText, Search, X } from "lucide-react";
+import Image from "next/image";
+import { Calendar, ChevronDown, ChevronUp, ExternalLink, FileText, Play, Search, X } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +19,7 @@ import {
 import { fadeInUp, staggerContainer } from "@/motion/variants";
 import { SectionHeader, SectionShell } from "@/layouts/section-shell";
 import type { YouTubeVideo } from "@/data/videos";
-import { getVideos, embedUrl } from "@/data/videos";
+import { getVideos, embedUrl, getYoutubeThumbnail } from "@/data/videos";
 import { getTranscript, fetchTranscript, formatTimestamp } from "@/data/transcripts";
 import type { TranscriptEntry } from "@/data/transcripts";
 import { cn } from "@/utils";
@@ -72,21 +73,38 @@ function VideoCard({
         )}
       >
         <div
-          className="aspect-video relative bg-black overflow-hidden cursor-pointer"
+          className="aspect-video relative bg-black overflow-hidden cursor-pointer group/vid"
           onClick={() => setExpanded((p) => !p)}
           onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setExpanded((p) => !p); }}
           role="button"
           tabIndex={0}
           aria-label={expanded ? "Collapse video" : "Expand video"}
         >
-          <iframe
-            src={embedUrl(video.videoId)}
-            title={video.title}
-            className="absolute inset-0 h-full w-full border-0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowFullScreen
-            loading="lazy"
-          />
+          {expanded ? (
+            <iframe
+              src={embedUrl(video.videoId)}
+              title={video.title}
+              className="absolute inset-0 h-full w-full border-0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              loading="lazy"
+            />
+          ) : (
+            <>
+              <Image
+                src={getYoutubeThumbnail(video.videoId, "mqdefault")}
+                alt={video.title}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+              <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover/vid:bg-black/10 transition-colors">
+                <div className="flex size-12 items-center justify-center rounded-full bg-white/90 shadow-lg group-hover/vid:scale-110 transition-transform">
+                  <Play className="size-5 text-black ml-0.5" />
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         <div className="p-4 space-y-3">

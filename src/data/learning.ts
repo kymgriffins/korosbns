@@ -119,29 +119,21 @@ export const learningData = {
     fetchBySlug: (slug: string) =>
       withFallback(
         "learning",
-        () => fetch(buildApiUrl(`/content/courses/${slug}/`)).then((r) => {
-          if (r.status === 404) return null;
-          if (!r.ok) throw new Error(`Failed to load course (${r.status})`);
-          return r.json() as Promise<LearningEditionDetail>;
-        }),
+        () => learnHubApi.courseDetail(slug) as Promise<LearningEditionDetail | null>,
         () => null,
       ),
     fetchByUnitYear: (unitSlug: string, year: string) =>
       withFallback(
         "learning",
         async () => {
-          const unitsRes = await fetch(buildApiUrl("/content/units/"));
-          if (!unitsRes.ok) throw new Error(`Failed to load units (${unitsRes.status})`);
-          const unitsData = await unitsRes.json() as { results?: Array<{ slug: string; editions: Array<{ slug: string; fiscal_year: number | null }> }> };
+          const unitsRes = await learnHubApi.units();
+          if (!unitsRes) return null;
           const fiscalYear = parseInt(year, 10);
-          const unit = (unitsData.results ?? []).find((u) => u.slug === unitSlug);
+          const unit = (unitsRes.results ?? []).find((u) => u.slug === unitSlug);
           if (!unit) return null;
           const edition = unit.editions.find((e) => e.fiscal_year === fiscalYear);
           if (!edition?.slug) return null;
-          const courseRes = await fetch(buildApiUrl(`/content/courses/${edition.slug}/`));
-          if (courseRes.status === 404) return null;
-          if (!courseRes.ok) throw new Error(`Failed to load course (${courseRes.status})`);
-          return courseRes.json() as Promise<LearningEditionDetail>;
+          return learnHubApi.courseDetail(edition.slug) as Promise<LearningEditionDetail | null>;
         },
         () => null,
       ),

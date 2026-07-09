@@ -33,17 +33,19 @@ export const contentData = {
     fetch: (filters?: { search?: string }) =>
       withFallback(
         "content",
-        () => learnHubApi.articles(filters),
+        () => learnHubApi.articles(filters) as Promise<ApiListResponse<LearnHubItem>>,
         () => ({ results: _articles }),
+        { timeoutMs: 8000 },
       ).then((r) => r.results ?? []),
     fetchBySlug: (slug: string) =>
-      withFallback(
+      withFallback<Record<string, unknown> | null>(
         "content",
-        () => citizenApi.getArticle(slug) as Promise<Record<string, unknown>>,
+        () => learnHubApi.articleDetail(slug) as Promise<Record<string, unknown>>,
         () => null,
+        { timeoutMs: 6000 },
       ),
     fetchFromApi: (filters?: { search?: string }) =>
-      citizenApi.getArticles() as Promise<ApiListResponse<LearnHubItem>>,
+      learnHubApi.articles(filters) as Promise<ApiListResponse<LearnHubItem>>,
   },
   stories: {
     get: () => _stories,
@@ -51,19 +53,18 @@ export const contentData = {
     fetch: (filters?: { search?: string }) =>
       withFallback(
         "content",
-        () => learnHubApi.stories(filters),
+        () => learnHubApi.stories(filters) as Promise<ApiListResponse<LearnHubItem>>,
         () => ({ results: _stories }),
+        { timeoutMs: 8000 },
       ).then((r) => r.results ?? []),
     fetchBySlug: (slug: string) =>
-      withFallback(
+      withFallback<Record<string, unknown> | null>(
         "content",
-        () => citizenApi.getStories().then((r) => {
-          const results = (r as any)?.results ?? [];
-          return results.find((s: any) => s.id === slug) ?? null;
-        }),
+        () => learnHubApi.storyDetail(slug) as Promise<Record<string, unknown>>,
         () => null,
+        { timeoutMs: 6000 },
       ),
-    fetchFromApi: () => citizenApi.getStories() as Promise<ApiListResponse<LearnHubItem>>,
+    fetchFromApi: () => learnHubApi.stories() as Promise<ApiListResponse<LearnHubItem>>,
   },
   trivia: {
     fetchList: () =>

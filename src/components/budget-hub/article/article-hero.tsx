@@ -39,21 +39,21 @@ export function ArticleHero({ article }: { article: ArticleReaderData }) {
   return (
     <header className="mx-auto max-w-[var(--bh-prose)] py-[var(--bh-section-y)]">
       {article.category ? (
-        <p className="mb-4 text-xs font-medium uppercase tracking-widest text-[var(--bh-accent-warm)]">
+        <p className="mb-3 text-xs font-medium uppercase tracking-widest text-[var(--bh-accent-warm)]">
           {article.category}
         </p>
       ) : null}
-      <h1 className="text-3xl font-semibold tracking-tight md:text-5xl md:leading-[1.1]">
+      <h1 className="text-3xl font-semibold tracking-tight md:text-4xl md:leading-[1.15]">
         {article.title}
       </h1>
       {article.excerpt ? (
-        <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
+        <p className="mt-4 text-base leading-relaxed text-muted-foreground md:text-lg">
           {article.excerpt}
         </p>
       ) : null}
-      <MetadataRow items={metadata} className="mt-6" />
+      <MetadataRow items={metadata} className="mt-4" />
       {article.heroImage ? (
-        <div className="relative mt-10 aspect-[16/9] overflow-hidden rounded-2xl bg-muted">
+        <div className="relative mt-6 aspect-[16/9] overflow-hidden rounded-2xl bg-muted md:aspect-[21/9]">
           <Image
             src={article.heroImage}
             alt=""

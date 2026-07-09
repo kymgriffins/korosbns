@@ -200,6 +200,7 @@ type RequestConfig = RequestInit & {
   params?: Record<string, string>;
   auth?: boolean;
   credentials?: RequestCredentials;
+  allowed404?: boolean;
   _retry?: boolean;
 };
 
@@ -331,6 +332,9 @@ export async function apiFetch<T = unknown>(
   }
 
   if (!response.ok) {
+    if (response.status === 404 && config.allowed404) {
+      return null as T;
+    }
     const payload = (await response.json().catch(() => ({}))) as ApiPayload;
     const fieldErrors = extractFieldErrors(payload);
     const message = extractApiErrorMessage(
