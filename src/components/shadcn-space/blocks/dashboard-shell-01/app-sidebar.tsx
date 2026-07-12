@@ -89,7 +89,7 @@ const AppSidebar = ({ children }: { children: React.ReactNode }) => {
         <header className="sticky top-0 z-50 hidden lg:flex items-center border-b px-6 py-3 bg-background">
           <SiteHeader />
         </header>
-        <main className="flex-1 min-w-0">{children}</main>
+        <main className="flex-1 min-w-0 flex flex-col min-h-0">{children}</main>
       </div>
     </SidebarProvider>
   );

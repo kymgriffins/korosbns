@@ -15,7 +15,7 @@ export default function LearnLayout({ children }: { children: React.ReactNode })
         <LearnTabSync />
         <AppSidebar>
           <div className="flex flex-col flex-1 min-h-0">
-            <div className="flex-1 overflow-y-auto pb-[--mobile-nav-height] lg:pb-0">
+            <div className="flex-1 min-h-0 flex flex-col pb-[--mobile-nav-height] lg:pb-0">
               {children}
             </div>
             <LearnMobileNav />
