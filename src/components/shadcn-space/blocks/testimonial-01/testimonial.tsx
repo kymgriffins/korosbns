@@ -12,6 +12,7 @@ import {
 function EngagementPhotoCard({
   image,
   imagePosition = "center",
+  eyebrow = "Citizen engagements",
   quote,
   name,
   role,
@@ -19,6 +20,7 @@ function EngagementPhotoCard({
 }: {
   image: string;
   imagePosition?: string;
+  eyebrow?: string;
   quote: string;
   name: string;
   role: string;
@@ -52,7 +54,7 @@ function EngagementPhotoCard({
 
       <CardContent className="relative z-10 flex h-full min-h-80 flex-col justify-between p-6 md:p-8 lg:p-10">
         <p className="text-xs font-medium uppercase tracking-[0.18em] text-white/75">
-          Citizen engagements
+          {eyebrow}
         </p>
 
         <div className="space-y-5 pt-8">
@@ -95,9 +97,10 @@ const Testimonials = () => {
             <EngagementPhotoCard
               image={BNS_COMMUNITY_IMAGES.forumA}
               imagePosition="center top"
-              quote="Budget Ndio Story made the national budget understandable for my community. Now we can actually track where our tax money is going."
-              name="Grace Wanjiku"
-              role="Community Organizer, Nakuru"
+              eyebrow="Budget & economy"
+              quote="Public finance only works when laws, tax systems, and data protect fiscal space from illicit flows. Budget literacy turns that reality into public power — so citizens can see where money goes and demand economic justice."
+              name="Dr. Lyla Latif"
+              role="Pan-African lawyer · public finance & tax policy strategist"
             />
           </motion.div>
           <motion.div

@@ -17,7 +17,6 @@ import {
   Download,
   ExternalLink,
   Award,
-  ArrowRight,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -217,15 +216,44 @@ export function ModuleDetailView() {
     setAnimatingStep(currentStepObj.order);
     setTimeout(() => setAnimatingStep(null), 600);
     learnHubApi.completeChapter(currentStepObj.id).catch(() => {});
+    setShowTrivia(false);
     if (currentStep < steps.length) {
       setCurrentStep((prev) => prev + 1);
-      setShowTrivia(false);
       setActiveTab("read");
       setActiveVideoIdx(0);
     } else {
       handleFinishModule();
     }
   };
+
+  const openTrivia = useCallback(() => {
+    setActiveTab("quiz");
+    setShowTrivia(true);
+  }, []);
+
+  /** Stable footer CTA — label stays Next/Finish; behavior follows progress + quiz. */
+  const handlePrimaryNext = () => {
+    if (!currentStepObj || isMastery) return;
+    const passed = isStepPassed(currentStep);
+    const isLast = currentStep >= steps.length;
+
+    if (passed) {
+      if (isLast) handleFinishModule();
+      else handleSelectStep(currentStep + 1);
+      return;
+    }
+
+    if (hasQuiz) {
+      openTrivia();
+      return;
+    }
+
+    // No quiz: mark complete and advance (or finish)
+    handleFinishTrivia();
+  };
+
+  const primaryNextLabel =
+    currentStep >= steps.length ? "Finish" : "Next";
 
   const handleFinishModule = () => {
     if (!mod) return;
@@ -525,72 +553,77 @@ export function ModuleDetailView() {
                     </div>
                   )}
 
-                  {/* === QUIZ TAB === */}
-                  {activeTab === "quiz" && (
+                  {/* === QUIZ TAB (full-page trivia opens on demand) === */}
+                  {activeTab === "quiz" && !showTrivia && (
                     <div className="space-y-4">
-                      {!showTrivia ? (
-                        <Card>
-                          <CardContent className="flex flex-col items-center gap-3 py-8 text-center">
-                            <Brain className="size-10 text-primary/40" />
-                            <div>
-                              <h3 className="text-sm font-bold">Knowledge Check</h3>
-                              <p className="text-xs text-muted-foreground">Test what you learned in this step.</p>
-                            </div>
-                            <Button onClick={() => setShowTrivia(true)} size="sm" className="rounded-lg text-xs font-bold">
+                      <Card>
+                        <CardContent className="flex flex-col items-center gap-3 py-10 text-center">
+                          <Brain className="size-10 text-primary/40" />
+                          <div>
+                            <h3 className="text-sm font-bold">Knowledge Check</h3>
+                            <p className="text-xs text-muted-foreground">
+                              {currentStepObj && isStepPassed(currentStep)
+                                ? "You already completed this check."
+                                : "One question at a time — full screen, no distractions."}
+                            </p>
+                          </div>
+                              {currentStepObj && isStepPassed(currentStep) ? (
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              className="rounded-lg text-xs font-bold"
+                              onClick={() => handleSelectStep(Math.min(currentStep + 1, steps.length))}
+                            >
+                              Continue to next step
+                            </Button>
+                          ) : (
+                            <Button type="button" size="sm" onClick={openTrivia} className="rounded-lg text-xs font-bold">
                               Start Knowledge Check
                             </Button>
-                          </CardContent>
-                        </Card>
-                      ) : (
-                        <TriviaSection
-                          trivia={currentTrivia}
-                          stepId={currentStepObj?.order ?? currentStep}
-                          showTrivia={showTrivia}
-                          isStepTriviaPassed={(stepId) => isStepPassed(stepId)}
-                          onCorrectAnswer={handleCorrectAnswer}
-                          onFinish={handleFinishTrivia}
-                        />
-                      )}
+                          )}
+                        </CardContent>
+                      </Card>
                     </div>
                   )}
 
-                  {/* === Step navigation === */}
-                  {!isMastery && (
+                  {/* === Step navigation — fixed positions (learning-hub chrome) === */}
+                  {!isMastery && !showTrivia && (
                     <>
                       <Separator />
-                      <div className="flex items-center justify-between gap-2 pb-4">
-                        <Button
-                          variant="outline" size="sm"
-                          onClick={() => handleSelectStep(Math.max(1, currentStep - 1))}
-                          disabled={currentStep <= 1}
-                          className="gap-1 rounded-lg text-xs font-bold"
-                        >
-                          <ChevronLeft className="size-3.5" /> Previous
-                        </Button>
+                      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 pb-4">
+                        <div className="justify-self-start">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleSelectStep(Math.max(1, currentStep - 1))}
+                            disabled={currentStep <= 1}
+                            className="min-w-[7.5rem] gap-1 rounded-lg text-xs font-bold"
+                          >
+                            <ChevronLeft className="size-3.5" /> Previous
+                          </Button>
+                        </div>
 
-                        <span className="text-[10px] text-muted-foreground font-semibold hidden sm:block">
+                        <span className="text-[10px] font-semibold tabular-nums text-muted-foreground">
                           Step {currentStep} of {steps.length}
                         </span>
 
-                        {currentStep < steps.length ? (
-                          currentStepObj && isStepPassed(currentStepObj.order) ? (
-                            <Button variant="outline" size="sm" onClick={() => handleSelectStep(currentStep + 1)} className="gap-1 rounded-lg text-xs font-bold">
-                              Next <ChevronRight className="size-3.5" />
-                            </Button>
-                          ) : activeTab === "quiz" ? (
-                            <Button size="sm" onClick={handleFinishTrivia} className="gap-1 rounded-lg text-xs font-bold">
-                              <CheckCircle2 className="size-3.5" /> Complete & Continue
-                            </Button>
-                          ) : (
-                            <Button size="sm" onClick={() => { if (hasQuiz) setActiveTab("quiz"); else handleFinishTrivia(); }} className="gap-1 rounded-lg text-xs font-bold">
-                              {hasQuiz ? "Take Quiz" : "Complete"} <ArrowRight className="size-3.5" />
-                            </Button>
-                          )
-                        ) : currentStep === steps.length && !isStepPassed(steps[steps.length - 1]?.order) ? (
-                          <Button size="sm" onClick={handleFinishModule} className="gap-1 rounded-lg text-xs font-bold">
-                            <CheckCircle2 className="size-3.5" /> Finish Module
+                        <div className="justify-self-end">
+                          <Button
+                            type="button"
+                            size="sm"
+                            onClick={handlePrimaryNext}
+                            className="min-w-[7.5rem] gap-1 rounded-lg text-xs font-bold"
+                          >
+                            {primaryNextLabel}
+                            {primaryNextLabel === "Finish" ? (
+                              <CheckCircle2 className="size-3.5" />
+                            ) : (
+                              <ChevronRight className="size-3.5" />
+                            )}
                           </Button>
-                        ) : null}
+                        </div>
                       </div>
                     </>
                   )}
@@ -665,6 +698,22 @@ export function ModuleDetailView() {
         </aside>
       </div>
     </div>
+
+      {showTrivia && currentStepObj ? (
+        <TriviaSection
+          trivia={currentTrivia}
+          stepId={currentStepObj.order}
+          showTrivia={showTrivia}
+          isStepTriviaPassed={(stepId) => isStepPassed(stepId)}
+          onCorrectAnswer={handleCorrectAnswer}
+          onFinish={handleFinishTrivia}
+          onClose={() => {
+            setShowTrivia(false);
+            setActiveTab("read");
+          }}
+          title={currentStepObj.title || "Knowledge Check"}
+        />
+      ) : null}
     </>
   );
 }

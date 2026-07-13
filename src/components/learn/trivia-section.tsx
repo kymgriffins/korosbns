@@ -1,8 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, AlertCircle, Sparkles, ArrowRight, Lightbulb } from "lucide-react";
+import {
+  CheckCircle2,
+  AlertCircle,
+  Sparkles,
+  ArrowRight,
+  Lightbulb,
+  X,
+  ChevronLeft,
+} from "lucide-react";
 import { cn } from "@/utils";
 import type { StageTrivia } from "@/types/learn";
 
@@ -13,6 +21,10 @@ interface TriviaSectionProps {
   isStepTriviaPassed: (stepId: number) => boolean;
   onCorrectAnswer: (qIdx: number) => void;
   onFinish: () => void;
+  /** Close full-page quiz without finishing (returns to module content). */
+  onClose?: () => void;
+  /** Optional title shown in the full-page chrome */
+  title?: string;
 }
 
 interface QuestionState {
@@ -21,132 +33,294 @@ interface QuestionState {
   isCorrect: boolean;
 }
 
-const BATCH_SIZE = 3;
-
-export function TriviaSection({ trivia, stepId, showTrivia, isStepTriviaPassed, onCorrectAnswer, onFinish }: TriviaSectionProps) {
-  const [batchIdx, setBatchIdx] = useState(0);
+/**
+ * Full-page knowledge check — one question at a time (desktop + mobile).
+ */
+export function TriviaSection({
+  trivia,
+  stepId,
+  showTrivia,
+  isStepTriviaPassed,
+  onCorrectAnswer,
+  onFinish,
+  onClose,
+  title = "Knowledge Check",
+}: TriviaSectionProps) {
+  const [qIdx, setQIdx] = useState(0);
   const [questionStates, setQuestionStates] = useState<Record<number, QuestionState>>({});
+
+  useEffect(() => {
+    if (showTrivia) {
+      setQIdx(0);
+      setQuestionStates({});
+    }
+  }, [showTrivia, stepId]);
+
+  useEffect(() => {
+    if (!showTrivia) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [showTrivia]);
+
+  if (!showTrivia) return null;
 
   if (isStepTriviaPassed(stepId)) {
     return (
-      <div className="p-3 rounded-xl bg-emerald-500/5 flex items-center gap-2.5">
-        <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
-        <div>
-          <h4 className="text-xs font-bold text-emerald-700 dark:text-emerald-300">Step Complete!</h4>
-          <p className="text-[10px] text-muted-foreground">Continue your journey.</p>
+      <div
+        className="fixed inset-0 z-50 flex flex-col bg-background"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="trivia-title"
+      >
+        <header className="flex shrink-0 items-center gap-2 border-b px-3 py-3 md:px-6">
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            aria-label="Close quiz"
+          >
+            {onClose ? <X className="size-4" /> : <ChevronLeft className="size-4" />}
+          </button>
+          <p id="trivia-title" className="text-sm font-semibold">
+            {title}
+          </p>
+        </header>
+        <div className="flex flex-1 flex-col items-center justify-center gap-3 p-6 text-center">
+          <CheckCircle2 className="size-10 text-emerald-600" />
+          <div>
+            <h4 className="text-sm font-bold text-emerald-700 dark:text-emerald-300">Step Complete!</h4>
+            <p className="text-xs text-muted-foreground">You already passed this check. Continue your journey.</p>
+          </div>
+          {onClose ? (
+            <Button type="button" variant="outline" size="sm" onClick={onClose} className="rounded-lg text-xs font-bold">
+              Back to lesson
+            </Button>
+          ) : (
+            <Button type="button" size="sm" onClick={onFinish} className="rounded-lg text-xs font-bold">
+              Continue
+            </Button>
+          )}
         </div>
       </div>
     );
   }
 
-  if (!showTrivia) return null;
+  const total = trivia.length;
+  const q = trivia[qIdx];
+  const state = questionStates[qIdx];
+  const isLast = qIdx >= total - 1;
+  const canAdvance = Boolean(state?.submitted && state.isCorrect);
 
-  const totalQuestions = trivia.length;
-  const totalBatches = Math.ceil(totalQuestions / BATCH_SIZE);
-  const startIdx = batchIdx * BATCH_SIZE;
-  const batchQuestions = trivia.slice(startIdx, startIdx + BATCH_SIZE);
-
-  const allInBatchCorrect = batchQuestions.every((_, i) => {
-    const gIdx = startIdx + i;
-    return questionStates[gIdx]?.submitted && questionStates[gIdx]?.isCorrect;
-  });
-
-  const handleSelect = (globalIdx: number, selectedIdx: number) => {
-    const prev = questionStates[globalIdx];
-    if (prev?.submitted) return;
-    const q = trivia[globalIdx];
+  const handleSelect = (selectedIdx: number) => {
+    if (state?.submitted) return;
+    if (!q) return;
     const isCorrect = q.type === "reflection" ? true : q.answer === selectedIdx;
-    setQuestionStates((s) => ({ ...s, [globalIdx]: { selected: selectedIdx, submitted: true, isCorrect } }));
-    if (isCorrect) onCorrectAnswer(globalIdx);
+    setQuestionStates((s) => ({
+      ...s,
+      [qIdx]: { selected: selectedIdx, submitted: true, isCorrect },
+    }));
+    if (isCorrect) onCorrectAnswer(qIdx);
   };
 
-  const handleRetry = (globalIdx: number) => {
-    setQuestionStates((s) => ({ ...s, [globalIdx]: { selected: null, submitted: false, isCorrect: false } }));
+  const handleRetry = () => {
+    setQuestionStates((s) => ({
+      ...s,
+      [qIdx]: { selected: null, submitted: false, isCorrect: false },
+    }));
   };
 
-  const handleNextBatch = () => {
-    if (batchIdx < totalBatches - 1) setBatchIdx((b) => b + 1);
-    else onFinish();
+  const handleContinue = () => {
+    if (!canAdvance) return;
+    if (isLast) onFinish();
+    else setQIdx((i) => i + 1);
   };
+
+  if (!q || total === 0) {
+    return (
+      <div className="flex min-h-[40vh] flex-col items-center justify-center gap-3 p-6">
+        <p className="text-sm text-muted-foreground">No questions for this step.</p>
+        <Button type="button" size="sm" onClick={onFinish} className="rounded-lg text-xs font-bold">
+          Continue
+        </Button>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-4 bg-card shadow-xs rounded-xl p-3.5 animate-in fade-in slide-in-from-bottom-2 duration-200">
-      <div className="flex items-center gap-1.5 text-primary">
-        <Sparkles className="size-3.5" />
-        <span className="text-[10px] font-bold uppercase tracking-wide">Knowledge Check · Batch {batchIdx + 1} of {totalBatches}</span>
+    <div
+      className="fixed inset-0 z-50 flex flex-col bg-background"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="trivia-title"
+    >
+      <header className="flex shrink-0 items-center gap-2 border-b px-3 py-3 md:px-6">
+        <button
+          type="button"
+          onClick={onClose}
+          className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          aria-label="Close quiz"
+        >
+          {onClose ? <X className="size-4" /> : <ChevronLeft className="size-4" />}
+        </button>
+        <div className="min-w-0 flex-1">
+          <p id="trivia-title" className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide text-primary">
+            <Sparkles className="size-3.5 shrink-0" />
+            {title}
+          </p>
+          <p className="truncate text-xs text-muted-foreground">
+            Question {qIdx + 1} of {total}
+          </p>
+        </div>
+        <div className="flex shrink-0 items-center gap-1" aria-hidden>
+          {trivia.map((_, i) => (
+            <span
+              key={i}
+              className={cn(
+                "size-1.5 rounded-full transition-colors",
+                i === qIdx && "bg-primary",
+                i < qIdx && questionStates[i]?.isCorrect && "bg-emerald-500",
+                i < qIdx && !questionStates[i]?.isCorrect && "bg-muted-foreground/40",
+                i > qIdx && "bg-muted-foreground/25",
+              )}
+            />
+          ))}
+        </div>
+      </header>
+
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+        <div className="mx-auto flex w-full max-w-lg flex-1 flex-col justify-center gap-6 px-4 py-8 md:px-6 md:py-12">
+          <div className="space-y-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-[11px] font-semibold tabular-nums text-muted-foreground">
+                {qIdx + 1} / {total}
+              </span>
+              {q.type === "reflection" ? (
+                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+                  Reflection
+                </span>
+              ) : null}
+            </div>
+            <h2 className="font-heading text-xl font-bold leading-snug tracking-tight md:text-2xl">
+              {q.question}
+            </h2>
+          </div>
+
+          <div className="grid gap-2.5">
+            {q.options?.map((opt, optIdx) => {
+              const isSelected = state?.selected === optIdx;
+              const isReflection = q.type === "reflection";
+              const isCorrectOpt = isReflection ? true : q.answer === optIdx;
+              let optStyle = "border-border/60 bg-card hover:bg-muted/40";
+
+              if (state?.submitted) {
+                if (isSelected) {
+                  optStyle = isReflection
+                    ? "border-amber-500 bg-amber-500/10 text-amber-800 dark:text-amber-200 font-semibold"
+                    : isCorrectOpt
+                      ? "border-emerald-500 bg-emerald-500/10 text-emerald-800 dark:text-emerald-200 font-semibold"
+                      : "border-destructive bg-destructive/10 text-destructive font-semibold";
+                } else if (isCorrectOpt && !isReflection) {
+                  optStyle = "border-emerald-500/50 bg-emerald-500/5 text-emerald-800 dark:text-emerald-200";
+                } else {
+                  optStyle = "border-border/30 bg-card opacity-45";
+                }
+              } else if (isSelected) {
+                optStyle = "border-primary bg-primary/5 text-primary font-semibold";
+              }
+
+              return (
+                <button
+                  key={optIdx}
+                  type="button"
+                  onClick={() => handleSelect(optIdx)}
+                  disabled={state?.submitted}
+                  className={cn(
+                    "min-h-12 w-full rounded-xl border px-4 py-3 text-left text-sm transition-all active:scale-[0.99]",
+                    optStyle,
+                  )}
+                >
+                  {opt}
+                </button>
+              );
+            })}
+          </div>
+
+          {state?.submitted ? (
+            <div
+              className={cn(
+                "rounded-xl border p-3.5 text-sm leading-relaxed animate-in fade-in zoom-in-95 duration-200",
+                q.type === "reflection"
+                  ? "border-amber-500/20 bg-amber-500/5 text-amber-900 dark:text-amber-100"
+                  : state.isCorrect
+                    ? "border-emerald-500/20 bg-emerald-500/5 text-emerald-900 dark:text-emerald-100"
+                    : "border-destructive/20 bg-destructive/5 text-destructive",
+              )}
+            >
+              <h5 className="mb-1 flex items-center gap-1.5 text-xs font-bold">
+                {q.type === "reflection" ? (
+                  <>
+                    <Lightbulb className="size-3.5" /> Reflection recorded
+                  </>
+                ) : state.isCorrect ? (
+                  <>
+                    <CheckCircle2 className="size-3.5 text-emerald-600" /> Correct
+                  </>
+                ) : (
+                  <>
+                    <AlertCircle className="size-3.5" /> Not quite
+                  </>
+                )}
+              </h5>
+              {q.explanation ? <p className="text-sm opacity-90">{q.explanation}</p> : null}
+            </div>
+          ) : null}
+
+          {state?.submitted && !state.isCorrect && q.type !== "reflection" ? (
+            <Button type="button" onClick={handleRetry} variant="outline" size="sm" className="w-fit rounded-lg text-xs font-bold">
+              Try again
+            </Button>
+          ) : null}
+        </div>
       </div>
 
-      {batchQuestions.map((q, batchLocalIdx) => {
-        const globalIdx = startIdx + batchLocalIdx;
-        const state = questionStates[globalIdx];
-
-        return (
-          <div key={globalIdx} className="space-y-2.5 pb-3 border-b border-border/20 last:border-b-0 last:pb-0">
-            <div className="flex items-start justify-between gap-2">
-              <h4 className="text-xs font-bold leading-snug">{startIdx + batchLocalIdx + 1}. {q.question}</h4>
-              {q.type === "reflection" && (
-                <span className="shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">Reflection</span>
-              )}
-            </div>
-
-            <div className="grid gap-1.5">
-              {q.options?.map((opt, optIdx) => {
-                const isSelected = state?.selected === optIdx;
-                const isReflection = q.type === "reflection";
-                const isCorrectOpt = isReflection ? true : q.answer === optIdx;
-                let optStyle = "bg-card border-border/50 hover:bg-muted/30";
-
-                if (state?.submitted) {
-                  if (isSelected) {
-                    optStyle = isReflection ? "border-amber-500 bg-amber-500/10 text-amber-700 dark:text-amber-300 font-bold" :
-                      isCorrectOpt ? "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold" :
-                      "border-destructive bg-destructive/10 text-destructive font-bold";
-                  } else if (isCorrectOpt && !isReflection) {
-                    optStyle = "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 font-bold";
-                  } else {
-                    optStyle = "border-border/30 bg-card opacity-50";
-                  }
-                } else if (isSelected) {
-                  optStyle = "border-primary bg-primary/5 text-primary font-bold";
-                }
-
-                return (
-                  <button key={optIdx} onClick={() => handleSelect(globalIdx, optIdx)} disabled={state?.submitted}
-                    className={cn("w-full min-h-11 px-3.5 py-2.5 rounded-xl border text-xs font-semibold text-left transition-all active:scale-[0.99]", optStyle)}>
-                    {opt}
-                  </button>
-                );
-              })}
-            </div>
-
-            {state?.submitted && (
-              <div className={cn("p-2.5 rounded-xl border text-[11px] leading-normal animate-in zoom-in-95 duration-200", 
-                q.type === "reflection" ? "border-amber-500/20 bg-amber-500/5 text-amber-800 dark:text-amber-200" :
-                state.isCorrect ? "border-emerald-500/20 bg-emerald-500/5 text-emerald-800 dark:text-emerald-200" :
-                "border-destructive/20 bg-destructive/5 text-destructive"
-              )}>
-                <h5 className="font-bold flex items-center gap-1.5 mb-0.5">
-                  {q.type === "reflection" ? <><Lightbulb className="size-3.5" /> Reflection recorded</> :
-                    state.isCorrect ? <><CheckCircle2 className="size-3.5 text-emerald-600" /> Correct!</> :
-                    <><AlertCircle className="size-3.5 text-destructive" /> Not quite</>
-                  }
-                </h5>
-                {q.explanation && <p>{q.explanation}</p>}
-              </div>
-            )}
-
-            {state?.submitted && !state.isCorrect && q.type !== "reflection" && (
-              <Button onClick={() => handleRetry(globalIdx)} variant="outline" size="sm" className="rounded-lg font-bold text-[10px] h-7">Try Again</Button>
+      <footer className="shrink-0 border-t bg-background px-4 py-3 md:px-6">
+        <div className="mx-auto grid w-full max-w-lg grid-cols-[1fr_auto_1fr] items-center gap-2">
+          <div className="justify-self-start">
+            {onClose ? (
+              <Button type="button" variant="ghost" size="sm" onClick={onClose} className="min-w-[6.5rem] rounded-lg text-xs font-bold">
+                Exit quiz
+              </Button>
+            ) : (
+              <span className="inline-block min-w-[6.5rem]" />
             )}
           </div>
-        );
-      })}
-
-      {allInBatchCorrect && (
-        <Button onClick={handleNextBatch} className="w-full h-9 rounded-lg font-bold text-xs gap-1.5">
-          {batchIdx < totalBatches - 1 ? <>Next Batch <ArrowRight className="size-3.5" /></> : <>Finish <CheckCircle2 className="size-3.5" /></>}
-        </Button>
-      )}
+          <span className="text-[10px] font-semibold tabular-nums text-muted-foreground">
+            {qIdx + 1} / {total}
+          </span>
+          <div className="justify-self-end">
+            <Button
+              type="button"
+              size="sm"
+              disabled={!canAdvance}
+              onClick={handleContinue}
+              className="min-w-[6.5rem] rounded-lg text-xs font-bold gap-1"
+            >
+              {isLast ? (
+                <>
+                  Finish <CheckCircle2 className="size-3.5" />
+                </>
+              ) : (
+                <>
+                  Next <ArrowRight className="size-3.5" />
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

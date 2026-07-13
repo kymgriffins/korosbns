@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { team } from "@/constants/team";
+import { team } from "@/data/org";
 import {
   findMemberByParam,
   slugifyName,
@@ -32,8 +32,9 @@ export async function generateMetadata({
     return { title: "Team Member Not Found" };
   }
 
+  const blurb = member.bio || member.description;
   const description = metaDescription(
-    `${member.name} — ${member.role} at Budget Ndio Story. Making Kenya's budget transparent and accessible.`,
+    `${member.name} — ${member.role} at Budget Ndio Story. ${blurb}`,
   );
   return {
     title: `${member.name} | Budget Ndio Story`,
@@ -46,78 +47,79 @@ export async function generateMetadata({
   };
 }
 
-const TeamMemberProfile = ({ member }: { member: typeof team[0] }) => {
+function TeamMemberProfile({ member }: { member: TeamMember }) {
+  const firstName = member.name.split(" ")[0] ?? member.name;
+  const aboutText = member.bio?.trim() || member.description;
+
   return (
     <div className="min-h-screen bg-background">
-      <div className="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
+      <div className="relative flex min-h-[50vh] items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent" />
-        
-        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-teal-500/10 blur-[100px] rounded-full" />
+        <div className="absolute top-[-20%] left-[-10%] h-[50%] w-[50%] rounded-full bg-primary/10 blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] h-[40%] w-[40%] rounded-full bg-teal-500/10 blur-[100px]" />
 
-        <div className="relative z-10 text-center px-6 py-16">
+        <div className="relative z-10 px-6 py-16 text-center">
           <Link
             href="/about"
-            className="inline-flex items-center gap-2 text-sm text-foreground/60 hover:text-foreground mb-8 transition-colors"
+            className="mb-8 inline-flex items-center gap-2 text-sm text-foreground/60 transition-colors hover:text-foreground"
           >
             <ArrowLeft className="size-4" />
             Back to Team
           </Link>
 
           <div className="relative inline-block">
-            <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl" />
+            <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl" />
             <Image
               src={member.image}
               alt={member.name}
               width={160}
               height={160}
-              className="relative rounded-full object-cover border-4 border-background shadow-2xl size-40 mx-auto"
+              className="relative mx-auto size-40 rounded-full border-4 border-background object-cover shadow-2xl"
+              priority
             />
           </div>
 
           <div>
-            <h1 className="text-3xl sm:text-4xl font-bold mt-6 mb-2">{member.name}</h1>
-            <p className="text-lg text-primary font-medium">{member.role}</p>
+            <h1 className="mb-2 mt-6 text-3xl font-bold sm:text-4xl">{member.name}</h1>
+            <p className="text-lg font-medium text-primary">{member.role}</p>
           </div>
 
-          <div className="flex items-center justify-center gap-4 mt-6">
-            {member.socials?.linkedin && (
+          <div className="mt-6 flex items-center justify-center gap-4">
+            {member.socials?.linkedin ? (
               <Link
                 href={member.socials.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="size-10 flex items-center justify-center rounded-full bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
+                className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors hover:bg-primary/20"
+                aria-label={`${member.name} on LinkedIn`}
               >
                 <IconBrandLinkedin className="size-5" />
               </Link>
-            )}
-            {member.socials?.x && (
+            ) : null}
+            {member.socials?.x ? (
               <Link
                 href={member.socials.x}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="size-10 flex items-center justify-center rounded-full bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
+                className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary transition-colors hover:bg-primary/20"
+                aria-label={`${member.name} on X`}
               >
                 <IconBrandX className="size-5" />
               </Link>
-            )}
+            ) : null}
           </div>
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-6 pb-16">
-        <div className="p-8 rounded-2xl bg-white/5 border border-white/10">
-          <h2 className="text-xl font-semibold mb-4">About {member.name.split(" ")[0]}</h2>
-          <p className="text-foreground/70 leading-relaxed mb-6">
-            {member.name} is a dedicated member of the Budget Ndio Story team, serving as {member.role.toLowerCase()}. 
-            With a passion for civic engagement and fiscal transparency, they contribute to making Kenya's budget 
-            information accessible to all citizens.
-          </p>
-          
-          <div className="flex items-center gap-3 pt-4 border-t border-white/10">
+      <div className="mx-auto max-w-3xl px-6 pb-16">
+        <div className="rounded-2xl border border-border/60 bg-card p-8 shadow-sm">
+          <h2 className="mb-4 text-xl font-semibold">About {firstName}</h2>
+          <p className="mb-6 leading-relaxed text-muted-foreground whitespace-pre-line">{aboutText}</p>
+
+          <div className="flex items-center gap-3 border-t border-border/60 pt-4">
             <Link
               href="/about"
-              className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors"
+              className="inline-flex items-center gap-2 text-sm text-primary transition-colors hover:text-primary/80"
             >
               Meet the full team
               <ArrowRight className="size-4" />
@@ -125,32 +127,35 @@ const TeamMemberProfile = ({ member }: { member: typeof team[0] }) => {
           </div>
         </div>
 
-        <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-4">
-          {team.filter((m) => m.name !== member.name).slice(0, 3).map((m) => {
-            const mUsername = slugifyName(m.name);
-            return (
-              <Link
-                key={m.name}
-                href={`/team/${mUsername}`}
-                className="group p-4 rounded-xl bg-white/5 border border-white/10 hover:border-primary/30 transition-colors"
-              >
-                <Image
-                  src={m.image}
-                  alt={m.name}
-                  width={60}
-                  height={60}
-                  className="rounded-full object-cover mb-3 size-12 mx-auto"
-                />
-                <p className="text-sm font-medium text-center">{m.name.split(" ")[0]}</p>
-                <p className="text-xs text-foreground/50 text-center">{m.role}</p>
-              </Link>
-            );
-          })}
+        <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
+          {team
+            .filter((m) => m.name !== member.name)
+            .slice(0, 3)
+            .map((m) => {
+              const mUsername = slugifyName(m.name);
+              return (
+                <Link
+                  key={m.name}
+                  href={`/team/${mUsername}`}
+                  className="group rounded-xl border border-border/60 bg-card p-4 transition-colors hover:border-primary/30"
+                >
+                  <Image
+                    src={m.image}
+                    alt={m.name}
+                    width={60}
+                    height={60}
+                    className="mx-auto mb-3 size-12 rounded-full object-cover"
+                  />
+                  <p className="text-center text-sm font-medium">{m.name.split(" ")[0]}</p>
+                  <p className="text-center text-xs text-muted-foreground">{m.role}</p>
+                </Link>
+              );
+            })}
         </div>
       </div>
     </div>
   );
-};
+}
 
 export default async function TeamMemberPage({
   params,

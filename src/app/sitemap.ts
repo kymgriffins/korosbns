@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 import { citizenApi } from "@/lib/api-client";
 import { learningData } from "@/data/learning";
-import { team } from "@/constants/team";
+import { team } from "@/data/org";
 import { slugifyName } from "@/lib/team";
 import { canonicalUrl } from "@/utils/metadata";
 

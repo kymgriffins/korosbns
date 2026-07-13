@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import { team } from "@/constants/team";
+import { team } from "@/data/org";
 import { slugifyName } from "@/lib/team";
 import { IconBrandLinkedin, IconBrandX, IconBrandInstagram } from "@tabler/icons-react";
 import { ArrowUpRight, Mail } from "lucide-react";
