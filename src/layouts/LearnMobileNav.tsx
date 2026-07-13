@@ -144,7 +144,7 @@ export function LearnMobileNav() {
     <MobileBottomNav
       items={items}
       ariaLabel="Learning hub navigation"
-      placement="fixed"
+      placement="embedded"
     />
   );
 }

@@ -320,12 +320,18 @@ select:focus-visible,
   to { height: 0; }
 }
 
-/* Mobile fixed bottom navigation — content clearance + safe area.
-   Extra 1.25rem clears the prominent center tab that sits above the bar (-mt-5). */
+/* Mobile bottom-nav clearance — only for legacy fixed overlays.
+   Prefer in-flow `placement="embedded"` so content never sits under the nav. */
 .pb-mobile-nav {
   padding-bottom: calc(
-    var(--mobile-nav-height) + 1.25rem + env(safe-area-inset-bottom, 0px)
+    var(--mobile-nav-height) + env(safe-area-inset-bottom, 0px)
   );
+}
+
+@media (min-width: 1024px) {
+  .pb-mobile-nav {
+    padding-bottom: 0;
+  }
 }
 
 /* Lift Toaster above fixed bottom navigation & drawer footers on mobile */

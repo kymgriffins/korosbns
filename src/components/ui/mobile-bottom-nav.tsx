@@ -42,10 +42,12 @@ export function MobileBottomNav({
       initial={prefersReducedMotion ? false : "hidden"}
       animate={prefersReducedMotion ? undefined : "visible"}
       className={cn(
-        "flex h-[var(--mobile-nav-height)] w-full items-center justify-around border-t border-border bg-background/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden",
+        "flex w-full items-center justify-around border-t border-border bg-background/95 px-2 backdrop-blur-md lg:hidden",
+        /* Height = bar content + home-indicator inset (outside the icon row). */
+        "min-h-[var(--mobile-nav-height)] pb-[env(safe-area-inset-bottom,0px)]",
         placement === "fixed"
           ? "fixed bottom-0 inset-x-0 z-40"
-          : "relative shrink-0",
+          : "relative z-40 shrink-0",
         className
       )}
       aria-label={ariaLabel}
@@ -55,8 +57,8 @@ export function MobileBottomNav({
           <>
             <div
               className={cn(
-                "-mt-5 flex size-12 items-center justify-center rounded-full border-4 border-background bg-primary text-primary-foreground shadow-lg transition-all duration-200",
-                item.active && "scale-105"
+                "flex size-11 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md transition-transform duration-200",
+                item.active && "scale-105 ring-2 ring-primary/30 ring-offset-2 ring-offset-background"
               )}
             >
               {item.icon}

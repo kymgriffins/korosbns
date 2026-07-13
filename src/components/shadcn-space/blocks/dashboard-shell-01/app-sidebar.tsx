@@ -53,7 +53,14 @@ export const navData: NavItem[] = [
   { title: "Quests", icon: Ticket, href: "/learn/quests" },
 ];
 
-const AppSidebar = ({ children }: { children: React.ReactNode }) => {
+const AppSidebar = ({
+  children,
+  bottom,
+}: {
+  children: React.ReactNode;
+  /** In-flow chrome below the scrollport (e.g. mobile bottom nav). */
+  bottom?: React.ReactNode;
+}) => {
   return (
     <SidebarProvider className="h-dvh overflow-hidden">
       <Sidebar className="py-4 px-0 bg-background">
@@ -89,10 +96,15 @@ const AppSidebar = ({ children }: { children: React.ReactNode }) => {
         <header className="sticky top-0 z-50 hidden shrink-0 items-center border-b bg-background px-6 py-3 lg:flex">
           <SiteHeader />
         </header>
-        {/* Single scrollport for all /learn (+ /learnhub) content */}
+        {/*
+          Golden rule: scroll content and bottom chrome are flex siblings.
+          Never overlay a fixed bottom nav on the scrollport — padding hacks fail
+          (safe-area, raised center tabs, content that fits the viewport).
+        */}
         <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto overscroll-contain">
           {children}
         </main>
+        {bottom}
       </div>
     </SidebarProvider>
   );
