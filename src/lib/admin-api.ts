@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Canonical Django admin API client (P0.6).
  * Consumed by `apps/admin` and `src/app/admin` via `@/lib/admin-api`
  * (apps/admin tsconfig falls through `./src/*` → `../../src/*`).
