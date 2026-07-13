@@ -24,7 +24,8 @@
 - [x] **P0.3** Removed placeholder nav: Email + Live Chat iframes.
 - [x] **P0.4** Unhide Content → Modules (`sidebarItems.filter(g => g.id !== 4)` removed).
 - [x] **P0.5** Profile / privacy / security / org settings / partners nav restored once 1C pages shipped.
-- [ ] **P0.6** Single source of truth for `admin-api.ts`.
+- [x] **P0.6** Single source of truth for `admin-api.ts`.
+  - Canonical: `src/lib/admin-api.ts`. Removed duplicate `apps/admin/src/lib/admin-api.ts`; `apps/admin` resolves `@/lib/admin-api` via tsconfig path fallback to root `src`.
 - [x] **P0.7** Analytics: stop `Math.random()` fake charts (zeros until real series API is wired in 1A.2).
 
 ### Learn hub data integrity (related)
@@ -75,29 +76,35 @@
 ### 1F. Documents
 - [x] **1F.1** Doc repository files/folders/links (+ proxy) → `/api/v1/docrepository/*` — full Next.js admin UI.
   - `apps/admin` page `/dashboard/docrepository`: browse folders/files, upload, create folder, pinned links CRUD, cookie-auth view/download + link proxy.
-  - Nav under **Library**. Client: `adminDocRepositoryApi` in `apps/admin/src/lib/admin-api.ts`.
+  - Nav under **Library**. Client: `adminDocRepositoryApi` in `src/lib/admin-api.ts`.
 
 ### 1G. Forum / community (moderation)
 - [x] **1G.1** Thread list/detail using `/api/v1/engagement/forum-threads/`.
   - List + create + detail + reply at `/dashboard/forum` and `/dashboard/forum/[id]`. Nav under **Engagement**.
-- [ ] **1G.2** Admin soft-delete / moderation (may need new API if only HTML today).
-  - **Blocked — HTML-only today.** Django `AdminCommunityConversationsView` soft-deletes via POST `action=delete_thread` (sets `deleted_at`). DRF exposes only GET list/detail + POST create thread/post — no DELETE/PATCH moderation. Do not invent write endpoints; use Django portal until `DELETE /api/v1/engagement/forum-threads/{id}/` (and post delete) ship.
+- [x] **1G.2** Admin soft-delete / moderation (may need new API if only HTML today).
+  - `DELETE /api/v1/engagement/forum-threads/{id}/` + `DELETE .../posts/{id}/` soft-delete (`deleted_at` + `is_active=False`); list/detail filter non-deleted. Next.js forum list/detail wired.
 
 ---
 
 ## Phase 2 — Partial in Django (add write APIs, then Next.js)
 
 ### 2A. Civic modules admin wizard
-- [ ] **2A.1** Backend: admin write endpoints for civic modules / chapters / wizard (today mostly HTML).
-- [ ] **2A.2** Next.js Modules page: full create/edit/delete/preview (not citizen-read-only).
+- [x] **2A.1** Backend: admin write endpoints for civic modules / chapters / wizard (today mostly HTML).
+  - `GET|POST /api/v1/content/admin/civic-modules/`, detail PATCH/DELETE, `transition/`, nested chapters CRUD + reorder + link-article.
+- [x] **2A.2** Next.js Modules page: full create/edit/delete/preview (not citizen-read-only).
+  - `/dashboard/modules` uses admin civic-modules API; chapters inline; workflow transitions.
 
 ### 2B. Surveys
-- [ ] **2B.1** Backend: survey CRUD write API (create/edit HTML-only today).
-- [ ] **2B.2** Next.js surveys list/form + results (`GET .../surveys/<id>/results/`).
+- [x] **2B.1** Backend: survey CRUD write API (create/edit HTML-only today).
+  - `GET|POST /api/v1/engagement/admin/surveys/`, detail PATCH/DELETE, `transition/`, questions CRUD. Results remain `GET .../surveys/<id>/results/`.
+- [x] **2B.2** Next.js surveys list/form + results (`GET .../surveys/<id>/results/`).
+  - `/dashboard/surveys` + `/dashboard/surveys/[id]/results`.
 
 ### 2C. Trivia
-- [ ] **2C.1** Backend: trivia builder write API.
-- [ ] **2C.2** Next.js trivia CRUD + attempts inspector.
+- [x] **2C.1** Backend: trivia builder write API.
+  - `GET|POST /api/v1/engagement/admin/trivia/`, detail PATCH/DELETE, `publish/`, questions CRUD, attempts list/detail.
+- [x] **2C.2** Next.js trivia CRUD + attempts inspector.
+  - `/dashboard/trivia` + `/dashboard/trivia/[id]/attempts`.
 
 ### 2D. Events
 - [ ] **2D.1** Harden admin events API (galleries parity with HTML).
@@ -123,10 +130,14 @@
 
 ## Phase 3 — HTML-only today (new APIs required)
 
-- [ ] **3.1 Roles & permissions** — Django `roles.html` has no DRF API. Design `/api/v1/roles/` (or groups) then Next.js Roles UI.
-- [ ] **3.2 Gamification admin** — rule/badge CRUD HTML-only; learner APIs exist. Add admin gamification APIs + Next.js page.
-- [ ] **3.3 Invoices** — entire invoice HTML app has no DRF. Decide: port to API + Next.js, or drop from admin scope.
-- [ ] **3.4 Engagements hub shell** — thin landing; rebuild as Next.js overview of surveys/trivia/events/forum once those ship.
+- [x] **3.1 Roles & permissions** — Django `roles.html` has no DRF API. Design `/api/v1/roles/` (or groups) then Next.js Roles UI.
+  - `GET|POST /api/v1/roles/`, `GET|PATCH|DELETE /api/v1/roles/<uuid>/`, `GET /api/v1/roles/permissions/`. Soft-delete; built-in slugs protected. Next.js `/dashboard/roles`.
+- [x] **3.2 Gamification admin** — rule/badge CRUD HTML-only; learner APIs exist. Add admin gamification APIs + Next.js page.
+  - `GET|PUT /api/v1/gamification/rules/`, `POST .../rules/seed/`, badges CRUD (DELETE = deactivate). Next.js `/dashboard/gamification`.
+- [x] **3.3 Invoices** — entire invoice HTML app has no DRF. Decide: port to API + Next.js, or drop from admin scope.
+  - **Decision: ship API + UI** — `Invoice` model + serializers already existed. Wired `GET|POST /api/v1/invoices/`, `GET|PATCH|DELETE /api/v1/invoices/<uuid>/` (org-agnostic, matches HTML). Next.js `/dashboard/invoices`. StudioKit `/dashboard/invoice` demo left out of nav.
+- [x] **3.4 Engagements hub shell** — thin landing; rebuild as Next.js overview of surveys/trivia/events/forum once those ship.
+  - `/dashboard/engagement` KPI hub (surveys/trivia/forum + public events count). Nav Overview under Engagement.
 
 ---
 
@@ -166,18 +177,18 @@ Remove until real: Mail iframe, Live Chat, StudioKit demos, finance demos.
 |-------------|-------------|----------------|
 | `/dashboard/weekly-notes/` | `/api/v1/notes/` (+ teams, publish, audit, exports) | **DONE** (Tasks) |
 | `/dashboard/team/` | `/api/v1/users/`, `/api/v1/users/stats/`, invitations | **1B done** (list/stats/invite; role/deactivate → 2H) |
-| `/dashboard/roles/` | — | Missing API |
+| `/dashboard/roles/` | `/api/v1/roles/` (+ permissions catalog) | **3.1 done** |
 | `/dashboard/settings/` | `/api/v1/org/config/`, partners | **DONE** (Settings + Partners) |
 | /dashboard/newsletter/* | /api/v1/newsletter/*, contact, email-hooks, notifications, audit-logs | **1D done** (CRUD/send + subscribers/notifications/audit pages) |
 | `/dashboard/stories|knowledge|learning/` | `/api/v1/content/admin/*` | **1E done** (stories/knowledge/courses/media/feedback; authors read-only; course transition + author/feedback writes blocked) |
-| `/dashboard/civic-modules/` | Citizen read only; writes HTML | Needs admin write API |
-| `/dashboard/surveys|trivia/` | Results/read; writes HTML | Needs write APIs |
+| `/dashboard/civic-modules/` | `/api/v1/content/admin/civic-modules/` (+ chapters/transition) | **2A done** (Modules CRUD + chapters) |
+| `/dashboard/surveys|trivia/` | `/api/v1/engagement/admin/surveys|trivia/` (+ results/attempts) | **2B/2C done** |
 | `/dashboard/docrepository/` | `/api/v1/docrepository/*` | **DONE** (apps/admin Library) |
-| `/dashboard/community/` (forum) | `/api/v1/engagement/forum-threads/` | **1G.1 done** (list/detail/reply); soft-delete → HTML-only / 1G.2 |
-| `/dashboard/gamification/` | Citizen gamification only | Needs admin APIs |
+| `/dashboard/community/` (forum) | `/api/v1/engagement/forum-threads/` | **1G done** (list/detail/reply + soft-delete moderation) |
+| `/dashboard/gamification/` | `/api/v1/gamification/rules|badges/` (+ learner `/api/gamification/`) | **3.2 done** |
 | `/dashboard/studio/` | Public read; admin write HTML | Needs admin write APIs |
-| `/dashboard/invoices/` | — | HTML-only |
-| `/dashboard/analytics/` | analytics summary/dashboard | Wired (1A — empty series labeled honestly) |
+| `/dashboard/invoices/` | `/api/v1/invoices/` | **3.3 done** (API + Next.js; model was org-agnostic) |
+| `/dashboard/engagements/` | composed list APIs | **3.4 done** (hub shell) |
 
 ---
 

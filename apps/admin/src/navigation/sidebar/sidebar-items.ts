@@ -2,6 +2,7 @@ import {
   BarChart3,
   Bell,
   BookOpen,
+  ClipboardList,
   FileBarChart,
   FolderOpen,
   Forward,
@@ -25,6 +26,7 @@ import {
   Send,
   Settings,
   ShieldCheck,
+  Trophy,
   UserRound,
   Users,
   Waypoints,
@@ -185,6 +187,18 @@ export const sidebarItems: NavGroup[] = [
     id: 5,
     label: "Engagement",
     items: [
+      {
+        id: "surveys",
+        title: "Surveys",
+        url: "/dashboard/surveys",
+        icon: ClipboardList,
+      },
+      {
+        id: "trivia",
+        title: "Trivia",
+        url: "/dashboard/trivia",
+        icon: Trophy,
+      },
       {
         id: "forum",
         title: "Forum",
