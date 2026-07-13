@@ -1,25 +1,176 @@
-import { apiFetch } from "@/lib/api-client";
+import { apiFetch, type OrgConfigApi, type SocialLinkApi, type UserProfileApi } from "@/lib/api-client";
 import type { ApiListResponse } from "@/types/api";
 
 function adminFetch<T>(url: string, options?: RequestInit & { auth?: boolean }): Promise<T> {
   return apiFetch<T>(url, { ...options, auth: true });
 }
 
+export type { OrgConfigApi, SocialLinkApi, UserProfileApi };
+
+/** Flat write body for PATCH /org/config/ (model fields, not nested GET shape). */
+export type OrgConfigWritePayload = {
+  tagline?: string;
+  mission?: string;
+  vision?: string;
+  values?: string[];
+  contact_email?: string;
+  contact_phone?: string;
+  contact_address?: string;
+  contact_whatsapp?: string;
+  seo_title?: string;
+  seo_description?: string;
+  seo_keywords?: string[];
+  og_image_url?: string;
+  favicon_url?: string;
+  show_partner_carousel?: boolean;
+  show_newsletter_signup?: boolean;
+  footer_note?: string;
+  social_links?: { platform: string; url: string; label?: string; order?: number; is_active?: boolean }[];
+};
+
+export type AdminPartner = {
+  id: string;
+  name: string;
+  logo_url: string;
+  website_url: string;
+  tier: "sponsor" | "partner" | "supporter" | string;
+  description: string;
+  display_order: number;
+  is_active: boolean;
+  is_consortium: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type AdminPartnerWrite = {
+  name?: string;
+  logo_url?: string;
+  website_url?: string;
+  tier?: string;
+  description?: string;
+  display_order?: number;
+  is_active?: boolean;
+  is_consortium?: boolean;
+};
+
+export type PrivacyConfigApi = {
+  dpa_contact: string;
+  data_retention_days: number;
+  cookie_policy_url: string;
+  privacy_policy_url: string;
+  gdpr_compliant: boolean;
+  third_party_sharing: boolean;
+  data_collection_purpose: string;
+  last_updated: string;
+};
+
+export type SecurityInfoApi = {
+  last_audit_date: string;
+  encryption: string;
+  headers: Record<string, string>;
+  dpa_status: string;
+  data_retention_days: number;
+  backup_frequency: string;
+};
+
+export const adminProfileApi = {
+  getMe: () => adminFetch<UserProfileApi>("/users/me/"),
+  patchMe: (body: Partial<UserProfileApi>) =>
+    adminFetch<UserProfileApi>("/users/me/", { method: "PATCH", body: JSON.stringify(body) }),
+  patchAvatar: (file: File) => {
+    const form = new FormData();
+    form.append("avatar", file);
+    return adminFetch<UserProfileApi>("/users/me/", { method: "PATCH", body: form as unknown as BodyInit });
+  },
+  getSocialLinks: () => adminFetch<SocialLinkApi[]>("/users/me/social-links/"),
+  upsertSocialLink: (body: SocialLinkApi) =>
+    adminFetch<SocialLinkApi>("/users/me/social-links/", { method: "POST", body: JSON.stringify(body) }),
+  deleteSocialLink: (platform: string) =>
+    adminFetch<{ detail?: string }>("/users/me/social-links/", {
+      method: "DELETE",
+      body: JSON.stringify({ platform }),
+    }),
+  changePassword: (current_password: string, new_password: string) =>
+    adminFetch<{ detail: string }>("/auth/password/change/", {
+      method: "POST",
+      body: JSON.stringify({ current_password, new_password }),
+    }),
+};
+
+export const adminOrgApi = {
+  getConfig: () => adminFetch<OrgConfigApi>("/org/config/"),
+  patchConfig: (body: OrgConfigWritePayload) =>
+    adminFetch<OrgConfigApi>("/org/config/", { method: "PATCH", body: JSON.stringify(body) }),
+};
+
+export const adminPartnersApi = {
+  list: () => adminFetch<AdminPartner[]>("/org/partners/"),
+  create: (data: AdminPartnerWrite) =>
+    adminFetch<AdminPartner>("/org/partners/", { method: "POST", body: JSON.stringify(data) }),
+  update: (id: string, data: AdminPartnerWrite) =>
+    adminFetch<AdminPartner>(`/org/partners/${id}/`, { method: "PATCH", body: JSON.stringify(data) }),
+};
+
+export const adminPrivacyApi = {
+  getConfig: () => adminFetch<PrivacyConfigApi>("/privacy/config/"),
+};
+
+export const adminSecurityApi = {
+  getInfo: () => adminFetch<SecurityInfoApi>("/security/info/"),
+};
+
+/** Org team directory — GET list + stats only. Writes (role/deactivate) are HTML-only until Phase 2H. */
 export const adminUsersApi = {
-  list: (params?: { page?: number; search?: string }) => {
+  list: (params?: { page?: number; search?: string; role?: string }) => {
     const q = new URLSearchParams();
     if (params?.page) q.set("page", String(params.page));
     if (params?.search) q.set("search", params.search);
+    if (params?.role) q.set("role", params.role);
     const qs = q.toString();
     return adminFetch<ApiListResponse<AdminUser>>(`/users/${qs ? `?${qs}` : ""}`);
   },
-  get: (id: string) => adminFetch<AdminUser>(`/users/${id}/`),
-  create: (data: Partial<AdminUser>) =>
-    adminFetch<AdminUser>("/users/", { method: "POST", body: JSON.stringify(data) }),
-  update: (id: string, data: Partial<AdminUser>) =>
-    adminFetch<AdminUser>(`/users/${id}/`, { method: "PATCH", body: JSON.stringify(data) }),
-  delete: (id: string) =>
-    adminFetch<void>(`/users/${id}/`, { method: "DELETE" }),
+  stats: () => adminFetch<AdminUserStats>("/users/stats/"),
+};
+
+/** Seeded role slugs (no public Roles list API yet — Phase 3.1). */
+export const INVITE_ROLE_OPTIONS = [
+  { slug: "citizen", label: "Citizen" },
+  { slug: "editor", label: "Editor" },
+  { slug: "manager", label: "Manager" },
+  { slug: "admin", label: "Admin" },
+] as const;
+
+export type AdminInvitation = {
+  id: string;
+  email: string;
+  role_name: string;
+  invited_by_name: string;
+  status: "pending" | "accepted" | "declined" | "expired" | "revoked" | string;
+  expires_at: string;
+  created_at: string;
+};
+
+export type AdminUserStats = {
+  total_members: number;
+  active_30d: number;
+  recent_joined_30d: number;
+  role_distribution: Record<string, number>;
+};
+
+export const adminInvitationsApi = {
+  list: (params?: { page?: number }) => {
+    const q = new URLSearchParams();
+    if (params?.page) q.set("page", String(params.page));
+    const qs = q.toString();
+    return adminFetch<ApiListResponse<AdminInvitation>>(`/invitations/list/${qs ? `?${qs}` : ""}`);
+  },
+  create: (data: { email: string; role_slug: string; message?: string }) =>
+    adminFetch<{ detail: string; id: string }>("/invitations/", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+  revoke: (id: string) =>
+    adminFetch<{ detail: string }>(`/invitations/${id}/revoke/`, { method: "POST", body: JSON.stringify({}) }),
 };
 
 export const adminContentApi = {
@@ -298,6 +449,81 @@ export type AdminAnalyticsSummary = {
   content_published_7d: number;
   content_published_30d: number;
   content_drafts: number;
+
+  monthly_trends?: { month: string; tasks_created: number; new_users: number }[];
+  total_tasks?: number;
+  published_tasks?: number;
+  avg_progress_pct?: number;
+  unique_visitors?: number;
+  total_pageviews?: number;
+};
+
+/** Nested payload from GET /api/v1/analytics/dashboard/ (DashboardStatsAPI). */
+export type AdminDashboardStats = {
+  snapshot: {
+    date: string | null;
+    total_pageviews: number;
+    unique_visitors: number;
+    uptime_percentage: number;
+  };
+  users: {
+    total: number;
+    recent_signups_30d: number;
+    engagement_rate: number;
+  };
+  weekly_notes: {
+    total: number;
+    published: number;
+    avg_progress_pct: number;
+  };
+  content: {
+    civic_modules: number;
+    civic_chapters: number;
+    knowledge_entries: number;
+    articles: number;
+    stories: number;
+    events: number;
+    learning_courses: number;
+    youtube_videos: number;
+    tiktok_videos: number;
+  };
+  engagement: {
+    surveys: number;
+    survey_responses: number;
+    trivia_sets: number;
+    trivia_attempts: number;
+    forum_threads: number;
+    forum_posts: number;
+    content_feedback: number;
+    bookmarks: number;
+    newsletter_subscribers: number;
+  };
+  gamification: {
+    learner_profiles: number;
+    total_points_earned: number;
+    badges_issued: number;
+    certificates_issued: number;
+    challenges_completed: number;
+    referrals_made: number;
+  };
+  budget: {
+    fiscal_years: number;
+    budget_entities: number;
+    budget_allocations: number;
+    budget_executions: number;
+    programmes: number;
+    revenue_streams: number;
+    source_documents: number;
+  };
+  monthly_trends: { month: string; tasks_created: number; new_users: number }[];
+};
+
+export type ModuleAnalytics = {
+  period: string;
+  completions_over_time: { period: string | null; count: number }[];
+  top_modules: { slug: string; title: string; completions: number }[];
+  event_summary_last_30d: Record<string, number>;
+  total_modules_published: number;
 };
 
 export const adminAnalyticsApi = {
@@ -305,9 +531,13 @@ export const adminAnalyticsApi = {
     const qs = period ? `?period=${period}` : "";
     return adminFetch<AdminAnalyticsSummary>(`/analytics/summary/${qs}`);
   },
-  dashboard: (period?: string) => {
-    const qs = period ? `?period=${period}` : "";
-    return adminFetch<AdminAnalyticsSummary>(`/analytics/dashboard/${qs}`);
+  dashboard: () => adminFetch<AdminDashboardStats>("/analytics/dashboard/"),
+  moduleAnalytics: (params?: { period?: "daily" | "weekly"; module_slug?: string }) => {
+    const q = new URLSearchParams();
+    if (params?.period) q.set("period", params.period);
+    if (params?.module_slug) q.set("module_slug", params.module_slug);
+    const qs = q.toString();
+    return adminFetch<ModuleAnalytics>(`/content/analytics/modules/${qs ? `?${qs}` : ""}`);
   },
 };
 

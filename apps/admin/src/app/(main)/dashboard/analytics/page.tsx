@@ -1,330 +1,740 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { format } from "date-fns";
 import {
-  BookOpen, FileText, Film, GraduationCap, Loader2, Newspaper, Notebook, RefreshCw, TrendingUp, Users,
+  Activity,
+  Clock,
+  ExternalLink,
+  Eye,
+  FileText,
+  Globe,
+  Loader2,
+  Monitor,
+  MousePointerClick,
+  RefreshCw,
+  Smartphone,
+  Tablet,
+  TrendingDown,
+  TrendingUp,
+  TriangleAlert,
+  UserPlus,
 } from "lucide-react";
 import {
-  Area, AreaChart, Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, XAxis, YAxis,
+  Area,
+  AreaChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Pie,
+  PieChart,
+  XAxis,
+  YAxis,
 } from "recharts";
 
-import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import { adminAnalyticsApi, adminUsersApi, adminModulesApi, adminForumApi, adminNotesApi, adminContentApi } from "@/lib/admin-api";
-import { AnalyticsToolbar } from "./_components/analytics-toolbar";
-import { RealtimeVisitors } from "./_components/realtime-visitors";
-import { TopPages } from "./_components/top-pages";
-import { TopTrafficSources } from "./_components/top-traffic-sources";
-import { TrafficQuality } from "./_components/traffic-quality";
+import {
+  adminAnalyticsApi,
+  type AdminAnalyticsSummary,
+  type ModuleAnalytics,
+} from "@/lib/admin-api";
 
-import "@/styles/flag-icons/flags.css";
+type Period = "today" | "7d" | "30d" | "all";
+
+const PERIODS: { key: Period; label: string }[] = [
+  { key: "today", label: "Today" },
+  { key: "7d", label: "7 Days" },
+  { key: "30d", label: "30 Days" },
+  { key: "all", label: "All Time" },
+];
 
 const PIE_COLORS = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--chart-4)", "var(--chart-5)"];
-const areaConfig = { completions: { label: "Completions", color: "var(--chart-1)" }, enrollments: { label: "Enrollments", color: "var(--chart-2)" } } satisfies ChartConfig;
-const barConfig = { value: { label: "Count", color: "var(--chart-3)" } } satisfies ChartConfig;
+
+const areaConfig = {
+  visitors: { label: "Visitors", color: "var(--chart-1)" },
+  pageviews: { label: "Pageviews", color: "var(--chart-2)" },
+  tasks: { label: "Tasks created", color: "var(--chart-1)" },
+  users: { label: "New users", color: "var(--chart-2)" },
+  completions: { label: "Completions", color: "var(--chart-1)" },
+} satisfies ChartConfig;
+
+const barConfig = {
+  completions: { label: "Completions", color: "var(--chart-3)" },
+} satisfies ChartConfig;
+
+function kpiValue(summary: AdminAnalyticsSummary | null, key: keyof AdminAnalyticsSummary): number {
+  const v = summary?.[key];
+  return typeof v === "number" ? v : 0;
+}
+
+function periodValue(
+  s: AdminAnalyticsSummary | null,
+  today: keyof AdminAnalyticsSummary,
+  _7d: keyof AdminAnalyticsSummary,
+  _30d: keyof AdminAnalyticsSummary,
+  all: keyof AdminAnalyticsSummary,
+  period: Period,
+): number {
+  const map: Record<Period, keyof AdminAnalyticsSummary> = { today, "7d": _7d, "30d": _30d, all };
+  return kpiValue(s, map[period]);
+}
+
+function EmptySeries({ label = "No series yet" }: { label?: string }) {
+  return (
+    <div className="flex h-48 items-center justify-center text-sm text-muted-foreground">{label}</div>
+  );
+}
 
 export default function AdminAnalyticsPage() {
   const [loading, setLoading] = useState(true);
-  const [summary, setSummary] = useState<{
-    total_users: number; total_content: number; total_modules: number;
-    total_articles: number; total_videos: number; total_stories: number;
-    total_documents: number; active_forum_threads: number; total_notes: number;
-    recent_signups: number; engagement_rate: number;
-  } | null>(null);
-  const [modules, setModules] = useState<Array<{ title: string; steps?: Array<unknown> }>>([]);
-  const [articles, setArticles] = useState<Array<{ id: string; title: string; difficulty?: string | null; published_at?: string | null; tags?: Array<{ name?: string; slug?: string }> }>>([]);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const [summary, setSummary] = useState<AdminAnalyticsSummary | null>(null);
+  const [moduleAnalytics, setModuleAnalytics] = useState<ModuleAnalytics | null>(null);
+  const [period, setPeriod] = useState<Period>("30d");
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (p: Period) => {
     setLoading(true);
+    setFetchError(null);
     try {
-      const [summaryRes, modulesRes, articlesRes, notesRes, forumRes] = await Promise.all([
-        adminAnalyticsApi.summary().catch(() => null),
-        adminModulesApi.list({ page: 1 }).catch(() => ({ results: [] as Array<{ title: string; steps?: Array<unknown> }> })),
-        adminContentApi.list("articles", { page: 1 }).catch(() => ({ results: [] as Array<{ id: string; title: string }> })),
-        adminNotesApi.list({ page: 1 }).catch(() => ({ results: [], count: 0 })),
-        adminForumApi.listThreads({ page: 1 }).catch(() => ({ results: [], count: 0 })),
+      const [summaryRes, moduleRes] = await Promise.allSettled([
+        adminAnalyticsApi.summary(p),
+        adminAnalyticsApi.moduleAnalytics({ period: "weekly" }),
       ]);
 
-      if (summaryRes) {
-        setSummary(summaryRes);
+      if (summaryRes.status === "fulfilled") {
+        setSummary(summaryRes.value);
       } else {
-        const [usersRes] = await Promise.all([
-          adminUsersApi.list({ page: 1 }).catch(() => ({ count: 0, results: [] })),
-        ]);
-        setSummary({
-          total_users: usersRes.count,
-          total_content:
-            (articlesRes.results?.length ?? 0) + (modulesRes.results?.length ?? 0),
-          total_modules: modulesRes.results?.length ?? 0,
-          total_articles: articlesRes.results?.length ?? 0,
-          total_videos: 0,
-          total_stories: 0,
-          total_documents: 0,
-          active_forum_threads: forumRes.count,
-          total_notes: notesRes.count,
-          recent_signups: 0,
-          engagement_rate: 0,
-        });
+        setSummary(null);
+        setFetchError("Failed to load analytics summary from the API.");
       }
-      setModules(modulesRes.results ?? []);
-      setArticles(articlesRes.results ?? []);
+
+      if (moduleRes.status === "fulfilled") {
+        setModuleAnalytics(moduleRes.value);
+      } else {
+        setModuleAnalytics(null);
+      }
     } catch {
+      setSummary(null);
+      setModuleAnalytics(null);
+      setFetchError("Failed to load analytics data.");
     } finally {
       setLoading(false);
     }
   }, []);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+  useEffect(() => {
+    void fetchData(period);
+  }, [period, fetchData]);
 
-  const totalContent = useMemo(() =>
-    summary ? summary.total_content : 0, [summary]);
-
-  const trendData = useMemo(() => {
-    // No time-series analytics API yet — show flat zeros instead of fake random charts.
-    return Array.from({ length: 12 }, (_, i) => {
-      const d = new Date();
-      d.setMonth(d.getMonth() - (11 - i));
-      return {
-        month: format(d, "MMM yyyy"),
-        completions: 0,
-        enrollments: 0,
-      };
-    });
-  }, []);
+  const visitorTotal = periodValue(summary, "visitors_today", "visitors_7d", "visitors_30d", "total_users", period);
+  const pageviewTotal = periodValue(summary, "pageviews_today", "pageviews_7d", "pageviews_30d", "total_content", period);
+  const newUsers = periodValue(summary, "users_new_today", "users_new_7d", "users_new_30d", "total_users", period);
+  const contentPublished = periodValue(
+    summary,
+    "content_published_today",
+    "content_published_7d",
+    "content_published_30d",
+    "total_content",
+    period,
+  );
 
   const kpiItems = [
-    { label: "Users", value: summary?.total_users ?? 0, icon: Users, color: "text-blue-500", change: `${summary?.recent_signups ?? 0} recent signups` },
-    { label: "Content Items", value: totalContent, icon: FileText, color: "text-purple-500", change: `${summary?.total_modules ?? 0} modules` },
-    { label: "Modules", value: summary?.total_modules ?? 0, icon: BookOpen, color: "text-emerald-500", change: `${modules.reduce((s, m) => s + ((m as { steps?: Array<unknown> }).steps?.length ?? 0), 0)} steps` },
-    { label: "Articles", value: summary?.total_articles ?? 0, icon: Newspaper, color: "text-amber-500", change: "published" },
-    { label: "Forum Threads", value: summary?.active_forum_threads ?? 0, icon: GraduationCap, color: "text-rose-500", change: "active" },
-    { label: "Notes", value: summary?.total_notes ?? 0, icon: Notebook, color: "text-cyan-500", change: "total" },
+    { label: "Visitors", value: visitorTotal, icon: Eye, color: "text-primary", sub: `Last ${period === "today" ? "day" : period}` },
+    { label: "Page views", value: pageviewTotal, icon: MousePointerClick, color: "text-purple-500", sub: period === "all" ? "total" : `Last ${period}` },
+    { label: "New users", value: newUsers, icon: UserPlus, color: "text-emerald-500", sub: `${summary?.users_growth_pct ?? 0}% growth` },
+    {
+      label: "Active users",
+      value: periodValue(summary, "users_active_7d", "users_active_7d", "users_active_30d", "total_users", period),
+      icon: Activity,
+      color: "text-amber-500",
+      sub: period === "today" ? "7d proxy" : period,
+    },
+    { label: "Bounce rate", value: `${summary?.bounce_rate ?? 0}%`, icon: TrendingDown, color: "text-rose-500", sub: "avg" },
+    {
+      label: "Avg session",
+      value: summary?.avg_session_seconds
+        ? `${Math.round(summary.avg_session_seconds / 60)}m ${summary.avg_session_seconds % 60}s`
+        : "—",
+      icon: Clock,
+      color: "text-cyan-500",
+      sub: "per visit",
+    },
+    { label: "Content published", value: contentPublished, icon: FileText, color: "text-indigo-500", sub: `+${summary?.content_drafts ?? 0} drafts` },
+    { label: "Engagement rate", value: `${summary?.engagement_rate ?? 0}%`, icon: TrendingUp, color: "text-emerald-500", sub: period === "all" ? "overall" : "notes publish rate" },
   ];
 
-  const contentPieData = useMemo(() => [
-    { name: "Modules", value: summary?.total_modules ?? 0 },
-    { name: "Articles", value: summary?.total_articles ?? 0 },
-    { name: "Videos", value: summary?.total_videos ?? 0 },
-    { name: "Stories", value: summary?.total_stories ?? 0 },
-    { name: "Documents", value: summary?.total_documents ?? 0 },
-  ].filter((d) => d.value > 0), [summary]);
+  const deviceData = useMemo(
+    () => summary?.device_breakdown ?? summary?.vercel_traffic?.devices ?? [],
+    [summary],
+  );
+  const sourceData = useMemo(
+    () => summary?.traffic_sources ?? summary?.vercel_traffic?.traffic_sources ?? [],
+    [summary],
+  );
+  const dailyData = useMemo(() => {
+    const raw = summary?.daily_visitors ?? summary?.vercel_traffic?.daily_visitors ?? [];
+    return raw.map((d) => ({
+      date: d.date,
+      count: d.count ?? d.visitors ?? 0,
+      pageviews: d.pageviews ?? 0,
+    }));
+  }, [summary]);
+  const topPages = useMemo(
+    () => summary?.top_pages ?? summary?.vercel_traffic?.top_pages ?? [],
+    [summary],
+  );
+  const monthlyTrends = useMemo(() => summary?.monthly_trends ?? [], [summary]);
+  const completionSeries = useMemo(() => {
+    const rows = moduleAnalytics?.completions_over_time ?? [];
+    return [...rows]
+      .reverse()
+      .map((r) => ({
+        period: r.period ? r.period.slice(0, 10) : "—",
+        completions: r.count,
+      }));
+  }, [moduleAnalytics]);
+  const topModules = useMemo(() => moduleAnalytics?.top_modules ?? [], [moduleAnalytics]);
 
-  const topModules = useMemo(() =>
-    [...modules].sort((a, b) => ((b as { steps?: Array<unknown> }).steps?.length ?? 0) - ((a as { steps?: Array<unknown> }).steps?.length ?? 0)).slice(0, 5),
-  [modules]);
+  const contentPieData = useMemo(
+    () =>
+      [
+        { name: "Modules", value: summary?.total_modules ?? 0 },
+        { name: "Articles", value: summary?.total_articles ?? 0 },
+        { name: "Videos", value: summary?.total_videos ?? 0 },
+        { name: "Stories", value: summary?.total_stories ?? 0 },
+        { name: "Documents", value: summary?.total_documents ?? 0 },
+      ].filter((d) => d.value > 0),
+    [summary],
+  );
+
+  const deviceIcons: Record<string, typeof Smartphone> = {
+    Mobile: Smartphone,
+    Desktop: Monitor,
+    Tablet: Tablet,
+  };
+
+  const hasAnySeries =
+    dailyData.length > 0 || monthlyTrends.length > 0 || completionSeries.length > 0;
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Analytics</h1>
-          <p className="text-sm text-muted-foreground">Platform metrics, content insights, and engagement data</p>
+          <p className="text-sm text-muted-foreground">
+            Users, traffic, and content performance
+            {summary?.traffic_source === "vercel" && summary.traffic_synced_at
+              ? ` · Vercel synced ${new Date(summary.traffic_synced_at).toLocaleString()}`
+              : ""}
+          </p>
         </div>
-        <Button variant="outline" size="sm" onClick={fetchData} disabled={loading}>
-          {loading ? <Loader2 className="size-4 animate-spin" /> : <RefreshCw className="size-4" />}
-          Refresh
-        </Button>
+        <div className="flex items-center gap-2">
+          <div className="flex rounded-lg border bg-muted/30 p-0.5">
+            {PERIODS.map((p) => (
+              <button
+                key={p.key}
+                type="button"
+                onClick={() => setPeriod(p.key)}
+                className={cn(
+                  "rounded-md px-3 py-1 text-xs font-medium transition-all",
+                  period === p.key
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+          <Button variant="outline" size="sm" onClick={() => void fetchData(period)} disabled={loading}>
+            {loading ? <Loader2 className="size-4 animate-spin" /> : <RefreshCw className="size-4" />}
+            Refresh
+          </Button>
+        </div>
       </div>
 
-      <Tabs defaultValue="overview" className="flex flex-col gap-4">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <TabsList className="gap-1">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="trends">Trends</TabsTrigger>
-            <TabsTrigger value="content">Content</TabsTrigger>
-            <TabsTrigger value="traffic">Traffic</TabsTrigger>
-          </TabsList>
-          <AnalyticsToolbar />
-        </div>
+      {fetchError ? (
+        <Alert variant="destructive">
+          <TriangleAlert className="size-4" />
+          <AlertTitle>Analytics unavailable</AlertTitle>
+          <AlertDescription className="flex flex-wrap items-center gap-2">
+            <span>{fetchError}</span>
+            <Button variant="outline" size="sm" onClick={() => void fetchData(period)}>
+              Retry
+            </Button>
+          </AlertDescription>
+        </Alert>
+      ) : null}
 
-        <TabsContent value="overview" className="flex flex-col gap-4">
-          {loading ? (
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <Card key={i}><CardHeader className="pb-2"><Skeleton className="h-3 w-20" /></CardHeader><CardContent><Skeleton className="h-7 w-12" /><Skeleton className="mt-1 h-3 w-16" /></CardContent></Card>
-              ))}
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
-              {kpiItems.map((kpi) => (
-                <Card key={kpi.label}>
-                  <CardHeader className="flex flex-row items-center justify-between pb-2">
-                    <CardTitle className="text-sm font-medium">{kpi.label}</CardTitle>
-                    <kpi.icon className={cn("size-4", kpi.color)} />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold">{String(kpi.value)}</div>
-                    <p className="text-xs text-muted-foreground">{kpi.change}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <Card className="shadow-xs">
-              <CardHeader><CardTitle className="text-sm">Content Composition</CardTitle><CardDescription>Breakdown by content type</CardDescription></CardHeader>
+      {loading && !summary ? (
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-8">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <Card key={i}>
+              <CardHeader className="pb-2">
+                <Skeleton className="h-3 w-16" />
+              </CardHeader>
               <CardContent>
-                <ChartContainer config={areaConfig} className="mx-auto aspect-square h-56">
-                  <PieChart>
-                    <ChartTooltip content={<ChartTooltipContent className="w-32" />} />
-                    <Pie data={contentPieData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={52} outerRadius={80} strokeWidth={2} paddingAngle={2}>
-                      {contentPieData.map((_, idx) => <Cell key={idx} fill={PIE_COLORS[idx % PIE_COLORS.length]} />)}
-                    </Pie>
-                    <Legend verticalAlign="bottom" iconType="circle" iconSize={8} formatter={(value: string) => <span className="text-xs text-muted-foreground">{value}</span>} />
-                  </PieChart>
-                </ChartContainer>
+                <Skeleton className="h-7 w-10" />
+                <Skeleton className="mt-1 h-3 w-14" />
               </CardContent>
             </Card>
-            <Card className="shadow-xs">
-              <CardHeader><CardTitle className="text-sm">Top Modules by Steps</CardTitle><CardDescription>Modules ranked by content volume</CardDescription></CardHeader>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-8">
+          {kpiItems.map((kpi) => (
+            <Card key={kpi.label}>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardTitle className="text-xs font-medium">{kpi.label}</CardTitle>
+                <kpi.icon className={cn("size-3.5", kpi.color)} />
+              </CardHeader>
               <CardContent>
-                <ChartContainer config={barConfig} className="aspect-auto h-56 w-full">
-                  <BarChart data={topModules.map((m) => ({ name: m.title.length > 20 ? m.title.slice(0, 20) + "..." : m.title, steps: (m as { steps?: Array<unknown> }).steps?.length ?? 0 }))}
-                    layout="vertical" margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
-                    <CartesianGrid horizontal={false} strokeOpacity={0.5} />
-                    <XAxis type="number" hide />
-                    <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} tickMargin={8} tick={{ fontSize: 11 }} width={140} />
-                    <ChartTooltip content={<ChartTooltipContent className="w-40" />} cursor={{ fill: "var(--muted)", opacity: 0.3 }} />
-                    <Bar dataKey="steps" fill="var(--chart-1)" radius={[0, 4, 4, 0]} barSize={14} />
-                  </BarChart>
-                </ChartContainer>
+                <div className="text-xl font-bold tabular-nums">{String(kpi.value)}</div>
+                <p className="text-[10px] text-muted-foreground">{kpi.sub}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {!loading && summary && !hasAnySeries ? (
+        <p className="text-sm text-muted-foreground">
+          KPI totals loaded. Chart series are empty until traffic snapshots or module completions exist.
+        </p>
+      ) : null}
+
+      <Tabs defaultValue="overview" className="flex flex-col gap-4">
+        <TabsList>
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="trends">Trends</TabsTrigger>
+          <TabsTrigger value="traffic">Traffic</TabsTrigger>
+          <TabsTrigger value="content">Content</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="flex flex-col gap-4">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm">Daily visitors</CardTitle>
+                <CardDescription>From analytics summary traffic series</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {dailyData.length === 0 ? (
+                  <EmptySeries />
+                ) : (
+                  <ChartContainer config={areaConfig} className="aspect-auto h-48 w-full">
+                    <AreaChart data={dailyData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+                      <defs>
+                        <linearGradient id="dailyFill" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="var(--color-visitors)" stopOpacity={0.3} />
+                          <stop offset="95%" stopColor="var(--color-visitors)" stopOpacity={0.02} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid vertical={false} strokeOpacity={0.5} />
+                      <XAxis
+                        dataKey="date"
+                        axisLine={false}
+                        tickLine={false}
+                        tickMargin={8}
+                        tick={{ fontSize: 10 }}
+                        tickFormatter={(v: string) => v.slice(5)}
+                      />
+                      <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+                      <Area
+                        dataKey="count"
+                        type="natural"
+                        fill="url(#dailyFill)"
+                        stroke="var(--color-visitors)"
+                        strokeWidth={2}
+                        dot={false}
+                      />
+                    </AreaChart>
+                  </ChartContainer>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm">Traffic sources</CardTitle>
+                <CardDescription>Where visitors come from</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {sourceData.length === 0 ? (
+                  <EmptySeries />
+                ) : (
+                  <div className="space-y-3">
+                    {sourceData.map((s, i) => (
+                      <div key={s.source} className="flex items-center gap-3">
+                        <Globe className="size-4 shrink-0 text-muted-foreground" />
+                        <span className="w-28 text-xs text-muted-foreground">{s.source}</span>
+                        <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted">
+                          <div
+                            className="h-full rounded-full transition-all"
+                            style={{
+                              width: `${s.percentage ?? 0}%`,
+                              backgroundColor: PIE_COLORS[i % PIE_COLORS.length],
+                            }}
+                          />
+                        </div>
+                        <span className="w-10 text-right text-xs font-medium tabular-nums">{s.count}</span>
+                        <span className="w-8 text-right text-[10px] text-muted-foreground">
+                          {s.percentage ?? 0}%
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
 
-          <Card className="shadow-xs">
-            <CardHeader><CardTitle>Content Distribution</CardTitle><CardDescription>Breakdown by content type</CardDescription></CardHeader>
-            <CardContent>
-              {loading ? <Skeleton className="h-40 w-full" /> : (
-                <div className="space-y-4">
-                  {contentPieData.map((item) => (
-                    <div key={item.name} className="flex items-center gap-3">
-                      <span className="w-20 text-sm text-muted-foreground">{item.name}</span>
-                      <div className="h-4 flex-1 overflow-hidden rounded-full bg-muted">
-                        <div className="h-full rounded-full transition-all duration-500" style={{ width: `${(item.value / Math.max(totalContent, 1)) * 100}%`, backgroundColor: PIE_COLORS[contentPieData.indexOf(item) % PIE_COLORS.length] }} />
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm">Devices</CardTitle>
+                <CardDescription>By device type</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {deviceData.length === 0 ? (
+                  <EmptySeries />
+                ) : (
+                  <div className="grid grid-cols-3 gap-4">
+                    {deviceData.map((d) => {
+                      const Icon = deviceIcons[d.device_type] ?? Smartphone;
+                      return (
+                        <div
+                          key={d.device_type}
+                          className="flex flex-col items-center gap-2 rounded-lg border p-4 text-center"
+                        >
+                          <Icon className="size-6 text-muted-foreground" />
+                          <span className="text-2xl font-bold tabular-nums">{d.percentage}%</span>
+                          <span className="text-[10px] text-muted-foreground">{d.device_type}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm">Top pages</CardTitle>
+                <CardDescription>Most visited routes</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {topPages.length === 0 ? (
+                  <EmptySeries />
+                ) : (
+                  <div className="space-y-1">
+                    {topPages.slice(0, 6).map((p) => (
+                      <div
+                        key={p.path}
+                        className="flex items-center justify-between rounded-lg px-2 py-1.5 text-sm hover:bg-muted/50"
+                      >
+                        <span className="flex items-center gap-2 truncate">
+                          <ExternalLink className="size-3 shrink-0 text-muted-foreground" />
+                          <span className="truncate">{p.path}</span>
+                        </span>
+                        <span className="ml-2 shrink-0 text-xs font-medium tabular-nums">
+                          {(p.pageviews ?? p.views ?? 0).toLocaleString()}
+                        </span>
                       </div>
-                      <span className="w-10 text-right text-sm font-medium tabular-nums">{item.value}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
         <TabsContent value="trends" className="flex flex-col gap-4">
-          <Card className="shadow-xs">
-            <CardHeader><CardTitle>Monthly Trends</CardTitle><CardDescription>Completions and enrollments over the last 12 months</CardDescription></CardHeader>
+          <Card>
+            <CardHeader>
+              <CardTitle>Monthly trends</CardTitle>
+              <CardDescription>Tasks created and new users from analytics summary</CardDescription>
+            </CardHeader>
             <CardContent>
-              <ChartContainer config={areaConfig} className="aspect-auto h-72 w-full">
-                <AreaChart data={trendData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
-                  <defs>
-                    {(["completions", "enrollments"] as const).map((key) => (
-                      <linearGradient key={key} id={`trendFill${key.charAt(0).toUpperCase() + key.slice(1)}`} x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor={`var(--color-${key})`} stopOpacity={0.3} />
-                        <stop offset="95%" stopColor={`var(--color-${key})`} stopOpacity={0.02} />
-                      </linearGradient>
-                    ))}
-                  </defs>
-                  <CartesianGrid vertical={false} strokeOpacity={0.5} />
-                  <XAxis dataKey="month" axisLine={false} tickLine={false} tickMargin={8} tick={{ fontSize: 11 }} />
-                  <ChartTooltip cursor={false} content={<ChartTooltipContent className="w-44" indicator="line" />} />
-                  <Area dataKey="completions" type="natural" fill="url(#trendFillCompletions)" stroke="var(--color-completions)" strokeWidth={2} dot={false} fillOpacity={1} />
-                  <Area dataKey="enrollments" type="natural" fill="url(#trendFillEnrollments)" stroke="var(--color-enrollments)" strokeWidth={2} dot={false} fillOpacity={1} />
-                </AreaChart>
-              </ChartContainer>
+              {monthlyTrends.length === 0 ? (
+                <EmptySeries label="No monthly series yet" />
+              ) : (
+                <ChartContainer config={areaConfig} className="aspect-auto h-72 w-full">
+                  <AreaChart data={monthlyTrends} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+                    <CartesianGrid vertical={false} strokeOpacity={0.5} />
+                    <XAxis dataKey="month" axisLine={false} tickLine={false} tickMargin={8} tick={{ fontSize: 11 }} />
+                    <ChartTooltip cursor={false} content={<ChartTooltipContent className="w-44" indicator="line" />} />
+                    <Area
+                      dataKey="tasks_created"
+                      name="tasks"
+                      type="natural"
+                      fill="var(--color-tasks)"
+                      fillOpacity={0.15}
+                      stroke="var(--color-tasks)"
+                      strokeWidth={2}
+                      dot={false}
+                    />
+                    <Area
+                      dataKey="new_users"
+                      name="users"
+                      type="natural"
+                      fill="var(--color-users)"
+                      fillOpacity={0.1}
+                      stroke="var(--color-users)"
+                      strokeWidth={2}
+                      dot={false}
+                    />
+                  </AreaChart>
+                </ChartContainer>
+              )}
             </CardContent>
           </Card>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            {[
-              { label: "Avg. Monthly Completions", value: Math.round(trendData.reduce((s, d) => s + d.completions, 0) / trendData.length), change: "+12.3%" },
-              { label: "Avg. Monthly Enrollments", value: Math.round(trendData.reduce((s, d) => s + d.enrollments, 0) / trendData.length), change: "+8.7%" },
-              { label: "Engagement Rate", value: summary?.engagement_rate ? `${summary.engagement_rate}%` : "64.8%", change: "+5.2%" },
-            ].map((stat) => (
-              <Card key={stat.label} className="shadow-xs">
-                <CardHeader className="pb-2"><CardTitle className="text-sm">{stat.label}</CardTitle></CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold tabular-nums">{stat.value}</div>
-                  <p className="text-xs text-muted-foreground"><TrendingUp className="mr-1 inline size-3 text-green-500" />{stat.change} vs previous period</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </TabsContent>
 
-        <TabsContent value="content" className="flex flex-col gap-4">
-          <Card className="shadow-xs">
-            <CardHeader><CardTitle>Recent Articles</CardTitle><CardDescription>Most recent articles published</CardDescription></CardHeader>
+          <Card>
+            <CardHeader>
+              <CardTitle>Module completions</CardTitle>
+              <CardDescription>
+                From module analytics API
+                {moduleAnalytics
+                  ? ` · ${moduleAnalytics.total_modules_published} published modules`
+                  : " · unavailable"}
+              </CardDescription>
+            </CardHeader>
             <CardContent>
-              {loading ? (
-                <div className="space-y-3">{Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-10 w-full" />)}</div>
-              ) : articles.length === 0 ? (
-                <p className="py-8 text-center text-sm text-muted-foreground">No articles yet.</p>
+              {completionSeries.length === 0 ? (
+                <EmptySeries label="No completion series yet" />
               ) : (
-                <div className="space-y-2">
-                  {articles.slice(0, 5).map((article) => (
-                    <div key={article.id} className="flex items-center justify-between rounded-lg border p-3 transition-colors hover:bg-muted/50">
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium">{article.title}</p>
-                        <p className="text-xs text-muted-foreground">{article.difficulty && `${article.difficulty} · `}{article.published_at && new Date(article.published_at).toLocaleDateString()}</p>
-                      </div>
-                      {article.tags?.length ? (
-                        <div className="ml-2 flex gap-1">{article.tags.slice(0, 2).map((tag) => <span key={tag.slug} className="rounded-full bg-secondary px-2 py-0.5 text-[10px] text-secondary-foreground">{tag.name}</span>)}</div>
-                      ) : null}
-                    </div>
-                  ))}
-                </div>
+                <ChartContainer config={areaConfig} className="aspect-auto h-56 w-full">
+                  <AreaChart data={completionSeries} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+                    <CartesianGrid vertical={false} strokeOpacity={0.5} />
+                    <XAxis dataKey="period" axisLine={false} tickLine={false} tickMargin={8} tick={{ fontSize: 10 }} />
+                    <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+                    <Area
+                      dataKey="completions"
+                      type="natural"
+                      fill="var(--color-completions)"
+                      fillOpacity={0.15}
+                      stroke="var(--color-completions)"
+                      strokeWidth={2}
+                      dot={false}
+                    />
+                  </AreaChart>
+                </ChartContainer>
               )}
             </CardContent>
           </Card>
-          <Card className="shadow-xs">
-            <CardHeader><CardTitle>Top Modules by Steps</CardTitle><CardDescription>Modules ranked by content volume</CardDescription></CardHeader>
-            <CardContent>
-              {loading ? (
-                <div className="space-y-3">{Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-10 w-full" />)}</div>
-              ) : topModules.length === 0 ? (
-                <p className="py-8 text-center text-sm text-muted-foreground">No modules yet.</p>
-              ) : (
-                <div className="space-y-2">
-                  {topModules.map((mod, idx) => (
-                    <div key={idx} className="flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-muted/50">
-                      <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium">{idx + 1}</span>
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium">{mod.title}</p>
-                        <p className="text-xs text-muted-foreground">{(mod as { steps?: Array<unknown> }).steps?.length ?? 0} steps</p>
-                      </div>
-                      <Badge variant="secondary" className="shrink-0"><TrendingUp className="size-3" />{(mod as { steps?: Array<unknown> }).steps?.length ?? 0}</Badge>
-                    </div>
-                  ))}
+
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Tasks created (window)</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold tabular-nums">
+                  {monthlyTrends.reduce((s, d) => s + d.tasks_created, 0).toLocaleString()}
                 </div>
-              )}
-            </CardContent>
-          </Card>
+                <p className="text-xs text-muted-foreground">Sum of monthly_trends series</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">New users (window)</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold tabular-nums">
+                  {monthlyTrends.reduce((s, d) => s + d.new_users, 0).toLocaleString()}
+                </div>
+                <p className="text-xs text-muted-foreground">Sum of monthly_trends series</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Engagement rate</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold tabular-nums">{summary?.engagement_rate ?? 0}%</div>
+                <p className="text-xs text-muted-foreground">Published notes / total notes</p>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
         <TabsContent value="traffic" className="flex flex-col gap-4">
-          <div className="grid grid-cols-1 items-stretch gap-4 xl:grid-cols-12">
-            <div className="xl:col-span-7">
-              <TrafficQuality />
-            </div>
-            <div className="xl:col-span-5">
-              <RealtimeVisitors />
-            </div>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Visitors</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold tabular-nums">{visitorTotal.toLocaleString()}</div>
+                <p className="text-xs text-muted-foreground">
+                  {period === "today" ? "Today" : `Last ${period}`}
+                  {summary?.bounce_rate ? ` · ${summary.bounce_rate}% bounce` : ""}
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Page views</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold tabular-nums">{pageviewTotal.toLocaleString()}</div>
+                <p className="text-xs text-muted-foreground">
+                  {period === "today" ? "Today" : `Last ${period}`}
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Unique (period)</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold tabular-nums">
+                  {(summary?.unique_visitors ?? visitorTotal).toLocaleString()}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Source: {summary?.traffic_source ?? "unknown"}
+                </p>
+              </CardContent>
+            </Card>
           </div>
-          <div className="grid grid-cols-1 items-stretch gap-4 xl:grid-cols-12">
-            <div className="xl:col-span-7">
-              <TopPages />
-            </div>
-            <div className="xl:col-span-5 xl:col-start-8">
-              <TopTrafficSources />
-            </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm">Daily visitors trend</CardTitle>
+              <CardDescription>Real traffic series only — no synthetic data</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {dailyData.length === 0 ? (
+                <EmptySeries />
+              ) : (
+                <ChartContainer config={areaConfig} className="aspect-auto h-64 w-full">
+                  <AreaChart data={dailyData}>
+                    <CartesianGrid vertical={false} strokeOpacity={0.5} />
+                    <XAxis
+                      dataKey="date"
+                      axisLine={false}
+                      tickLine={false}
+                      tickMargin={8}
+                      tick={{ fontSize: 10 }}
+                      tickFormatter={(v: string) => v.slice(5)}
+                    />
+                    <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+                    <Area
+                      dataKey="count"
+                      type="natural"
+                      fill="var(--color-visitors)"
+                      fillOpacity={0.15}
+                      stroke="var(--color-visitors)"
+                      strokeWidth={2}
+                      dot={false}
+                    />
+                  </AreaChart>
+                </ChartContainer>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="content" className="flex flex-col gap-4">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm">Content composition</CardTitle>
+                <CardDescription>Breakdown by content type</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {contentPieData.length === 0 ? (
+                  <EmptySeries label="No content counts yet" />
+                ) : (
+                  <ChartContainer config={areaConfig} className="mx-auto aspect-square h-56">
+                    <PieChart>
+                      <ChartTooltip content={<ChartTooltipContent className="w-32" />} />
+                      <Pie
+                        data={contentPieData}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={52}
+                        outerRadius={80}
+                        strokeWidth={2}
+                        paddingAngle={2}
+                      >
+                        {contentPieData.map((_, idx) => (
+                          <Cell key={idx} fill={PIE_COLORS[idx % PIE_COLORS.length]} />
+                        ))}
+                      </Pie>
+                    </PieChart>
+                  </ChartContainer>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-sm">Top modules by completions</CardTitle>
+                <CardDescription>From module analytics</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {topModules.length === 0 ? (
+                  <EmptySeries label="No module completion series yet" />
+                ) : (
+                  <ChartContainer config={barConfig} className="aspect-auto h-56 w-full">
+                    <BarChart
+                      data={topModules.map((m) => ({
+                        name: m.title.length > 20 ? `${m.title.slice(0, 20)}…` : m.title,
+                        completions: m.completions,
+                      }))}
+                      layout="vertical"
+                      margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
+                    >
+                      <CartesianGrid horizontal={false} strokeOpacity={0.5} />
+                      <XAxis type="number" hide />
+                      <YAxis
+                        type="category"
+                        dataKey="name"
+                        axisLine={false}
+                        tickLine={false}
+                        tickMargin={8}
+                        tick={{ fontSize: 11 }}
+                        width={140}
+                      />
+                      <ChartTooltip content={<ChartTooltipContent className="w-40" />} />
+                      <Bar dataKey="completions" fill="var(--chart-1)" radius={[0, 4, 4, 0]} barSize={14} />
+                    </BarChart>
+                  </ChartContainer>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+            {[
+              { label: "Users", value: summary?.total_users ?? 0 },
+              { label: "Modules", value: summary?.total_modules ?? 0 },
+              { label: "Articles", value: summary?.total_articles ?? 0 },
+              { label: "Forum threads", value: summary?.active_forum_threads ?? 0 },
+              { label: "Notes", value: summary?.total_notes ?? 0 },
+              { label: "Videos", value: summary?.total_videos ?? 0 },
+              { label: "Stories", value: summary?.total_stories ?? 0 },
+              { label: "Documents", value: summary?.total_documents ?? 0 },
+            ].map((item) => (
+              <Card key={item.label}>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm">{item.label}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold tabular-nums">{item.value.toLocaleString()}</div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </TabsContent>
       </Tabs>

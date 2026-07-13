@@ -38,8 +38,8 @@
 ## Phase 1 — Already have JSON APIs (wire / harden Next.js)
 
 ### 1A. Dashboard & analytics
-- [ ] **1A.1** Overview KPIs from `GET /api/v1/analytics/dashboard/` (+ org widgets parity with Django `dashboard.html`).
-- [ ] **1A.2** Analytics page: replace `Math.random()` charts with real series; use `GET /api/v1/analytics/summary/`, module analytics, notes/forum aggregates.
+- [x] **1A.1** Overview KPIs from `GET /api/v1/analytics/dashboard/` (+ org widgets parity with Django `dashboard.html`).
+- [x] **1A.2** Analytics page: replace `Math.random()` charts with real series; use `GET /api/v1/analytics/summary/`, module analytics, notes/forum aggregates.
 
 ### 1B. Users / team / invitations
 - [ ] **1B.1** Users list already hits `/users/` — audit create/update/deactivate parity with Django team POSTs.
@@ -170,7 +170,7 @@ Remove until real: Mail iframe, Live Chat, StudioKit demos, finance demos.
 | `/dashboard/gamification/` | Citizen gamification only | Needs admin APIs |
 | `/dashboard/studio/` | Public read; admin write HTML | Needs admin write APIs |
 | `/dashboard/invoices/` | — | HTML-only |
-| `/dashboard/analytics/` | analytics summary/dashboard | Partial (mock charts) |
+| `/dashboard/analytics/` | analytics summary/dashboard | Wired (1A — empty series labeled honestly) |
 
 ---
 
