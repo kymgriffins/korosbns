@@ -42,9 +42,11 @@
 - [x] **1A.2** Analytics page: replace `Math.random()` charts with real series; use `GET /api/v1/analytics/summary/`, module analytics, notes/forum aggregates.
 
 ### 1B. Users / team / invitations
-- [ ] **1B.1** Users list already hits `/users/` — audit create/update/deactivate parity with Django team POSTs.
-- [ ] **1B.2** Invitations UI: `POST/GET /api/v1/invitations/`, revoke — full lifecycle in Next.js.
-- [ ] **1B.3** User stats: `GET /api/v1/users/stats/`.
+- [x] **1B.1** Users list already hits `/users/` — audit create/update/deactivate parity with Django team POSTs.
+  - List + search + role filter wired. Direct create/PATCH/DELETE on `/users/` do **not** exist (ListAPIView only).
+  - Add members via invitations. Role change / deactivate / verify remain HTML-only → **Phase 2H**.
+- [x] **1B.2** Invitations UI: `POST /api/v1/invitations/`, `GET /api/v1/invitations/list/`, `POST .../revoke/` — page + nav in `apps/admin`.
+- [x] **1B.3** User stats: `GET /api/v1/users/stats/` surfaced on Users page (total, active 30d, joined 30d, role distribution).
 
 ### 1C. Profile / org settings
 - [ ] **1C.1** Profile: `GET/PATCH /api/v1/users/me/` (+ social links / avatar).
@@ -159,7 +161,7 @@ Remove until real: Mail iframe, Live Chat, StudioKit demos, finance demos.
 | Django HTML | API surface | Next.js status |
 |-------------|-------------|----------------|
 | `/dashboard/weekly-notes/` | `/api/v1/notes/` (+ teams, publish, audit, exports) | **DONE** (Tasks) |
-| `/dashboard/team/` | `/api/v1/users/`, invitations | Partial |
+| `/dashboard/team/` | `/api/v1/users/`, `/api/v1/users/stats/`, invitations | **1B done** (list/stats/invite; role/deactivate → 2H) |
 | `/dashboard/roles/` | — | Missing API |
 | `/dashboard/settings/` | `/api/v1/org/config/`, partners | Partial / missing UI |
 | `/dashboard/newsletter/*` | `/api/v1/newsletter/*`, contact, email-hooks | Claimed wired — audit |

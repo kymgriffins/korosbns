@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   ListTodo,
   type LucideIcon,
+  MailPlus,
   Pen,
   Phone,
   Send,
@@ -104,6 +105,12 @@ export const sidebarItems: NavGroup[] = [
         title: "Users",
         url: "/dashboard/users",
         icon: Users,
+      },
+      {
+        id: "invitations",
+        title: "Invitations",
+        url: "/dashboard/invitations",
+        icon: MailPlus,
       },
       {
         id: "authors",
