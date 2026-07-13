@@ -108,7 +108,7 @@ const Blog = () => {
                 explore budgets, participation, and accountability at your pace.
               </p>
               <Link
-                href={`${Routes.Learn}?tab=modules`}
+                href={Routes.LearnModules}
                 className="text-sm font-semibold text-primary hover:underline w-fit"
               >
                 View all modules →
