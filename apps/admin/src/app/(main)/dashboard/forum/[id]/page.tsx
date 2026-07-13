@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { ArrowLeft, Loader2, MessageSquare } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { ArrowLeft, Loader2, MessageSquare, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +15,7 @@ import { adminForumApi, type AdminForumThreadDetail } from "@/lib/admin-api";
 
 export default function AdminForumThreadDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const threadId = String(params.id ?? "");
 
   const [thread, setThread] = useState<AdminForumThreadDetail | null>(null);
@@ -60,6 +61,29 @@ export default function AdminForumThreadDetailPage() {
     }
   };
 
+  const handleDeleteThread = async () => {
+    if (!thread) return;
+    if (!confirm(`Soft-delete thread "${thread.title}"?`)) return;
+    try {
+      await adminForumApi.softDeleteThread(threadId);
+      toast.success("Thread deleted");
+      router.push("/dashboard/forum");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Delete failed");
+    }
+  };
+
+  const handleDeletePost = async (postId: string) => {
+    if (!confirm("Soft-delete this post?")) return;
+    try {
+      await adminForumApi.softDeletePost(threadId, postId);
+      toast.success("Post deleted");
+      fetchThread();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Delete failed");
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center gap-2 text-muted-foreground">
@@ -101,16 +125,20 @@ export default function AdminForumThreadDetailPage() {
               Started by {thread.author_name} · {new Date(thread.created_at).toLocaleString()}
             </p>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Badge variant="secondary">{posts.length} posts</Badge>
             <Badge variant="outline">{thread.civic_module || "General"}</Badge>
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-destructive hover:text-destructive"
+              onClick={handleDeleteThread}
+            >
+              <Trash2 className="mr-1.5 size-3.5" />
+              Delete thread
+            </Button>
           </div>
         </div>
-        <p className="text-xs text-muted-foreground">
-          Soft-delete / post moderation is HTML-only on the Django portal
-          (`/dashboard/community/` conversations). No JSON delete API yet — writes for moderation are
-          skipped here.
-        </p>
       </div>
 
       <Card>
@@ -128,9 +156,19 @@ export default function AdminForumThreadDetailPage() {
               <div key={post.id} className="rounded-lg border p-4 space-y-2">
                 <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
                   <span className="font-medium">{post.author_name}</span>
-                  <span className="text-muted-foreground">
-                    {new Date(post.created_at).toLocaleString()}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-muted-foreground">
+                      {new Date(post.created_at).toLocaleString()}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      className="text-destructive hover:text-destructive"
+                      onClick={() => handleDeletePost(post.id)}
+                    >
+                      <Trash2 className="size-3.5" />
+                    </Button>
+                  </div>
                 </div>
                 <p className="text-sm whitespace-pre-wrap">{post.content}</p>
                 {post.upvotes > 0 && (

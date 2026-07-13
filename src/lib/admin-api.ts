@@ -137,7 +137,7 @@ export const adminUsersApi = {
   stats: () => adminFetch<AdminUserStats>("/users/stats/"),
 };
 
-/** Seeded role slugs (no public Roles list API yet ΓÇö Phase 3.1). */
+/** Seeded role slugs for invitations (full catalog via GET /roles/). */
 export const INVITE_ROLE_OPTIONS = [
   { slug: "citizen", label: "Citizen" },
   { slug: "editor", label: "Editor" },

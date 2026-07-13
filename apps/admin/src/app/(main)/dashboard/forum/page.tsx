@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { MessageSquare, Plus } from "lucide-react";
+import { MessageSquare, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -74,6 +74,17 @@ export default function AdminForumPage() {
     }
   };
 
+  const handleSoftDelete = async (thread: AdminForumThread) => {
+    if (!confirm(`Soft-delete thread "${thread.title}"?`)) return;
+    try {
+      await adminForumApi.softDeleteThread(thread.id);
+      toast.success("Thread deleted");
+      fetchThreads();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Delete failed");
+    }
+  };
+
   const columns: Column<AdminForumThread>[] = [
     {
       key: "title",
@@ -115,6 +126,21 @@ export default function AdminForumPage() {
         </span>
       ),
     },
+    {
+      key: "actions",
+      header: "",
+      className: "w-16",
+      cell: (t) => (
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          className="text-destructive hover:text-destructive"
+          onClick={() => handleSoftDelete(t)}
+        >
+          <Trash2 className="size-3.5" />
+        </Button>
+      ),
+    },
   ];
 
   return (
@@ -123,8 +149,7 @@ export default function AdminForumPage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Forum</h1>
           <p className="text-sm text-muted-foreground">
-            Browse discussion threads. Soft-delete / moderation remains on the Django portal until a
-            JSON moderation API ships.
+            Browse and moderate discussion threads (soft-delete via JSON API).
           </p>
         </div>
         <Button

@@ -1,4 +1,5 @@
 import {
+  Award,
   BarChart3,
   Bell,
   BookOpen,
@@ -22,9 +23,11 @@ import {
   Newspaper,
   Pen,
   Phone,
+  Receipt,
   ScrollText,
   Send,
   Settings,
+  Shield,
   ShieldCheck,
   Trophy,
   UserRound,
@@ -188,6 +191,12 @@ export const sidebarItems: NavGroup[] = [
     label: "Engagement",
     items: [
       {
+        id: "engagement-hub",
+        title: "Overview",
+        url: "/dashboard/engagement",
+        icon: LayoutDashboard,
+      },
+      {
         id: "surveys",
         title: "Surveys",
         url: "/dashboard/surveys",
@@ -294,6 +303,24 @@ export const sidebarItems: NavGroup[] = [
         title: "Partners",
         url: "/dashboard/partners",
         icon: Handshake,
+      },
+      {
+        id: "org-roles",
+        title: "Roles",
+        url: "/dashboard/roles",
+        icon: Shield,
+      },
+      {
+        id: "org-gamification",
+        title: "Gamification",
+        url: "/dashboard/gamification",
+        icon: Award,
+      },
+      {
+        id: "org-invoices",
+        title: "Invoices",
+        url: "/dashboard/invoices",
+        icon: Receipt,
       },
     ],
   },
