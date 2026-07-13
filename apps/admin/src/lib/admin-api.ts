@@ -209,21 +209,14 @@ export const adminModulesApi = {
     adminFetch<void>(`/content/civic-modules/${slug}/`, { method: "DELETE" }),
 };
 
+/**
+ * Authors are derived from published civic modules (public GET only).
+ * POST/PATCH/DELETE are not available — Phase 1E.6 blocker.
+ */
 export const adminAuthorsApi = {
-  list: (params?: { page?: number; search?: string }) => {
-    const q = new URLSearchParams();
-    if (params?.page) q.set("page", String(params.page));
-    if (params?.search) q.set("search", params.search);
-    const qs = q.toString();
-    return adminFetch<ApiListResponse<AdminAuthor>>(`/content/authors/${qs ? `?${qs}` : ""}`);
-  },
-  get: (slug: string) => adminFetch<AdminAuthor>(`/content/authors/${slug}/`),
-  create: (data: Partial<AdminAuthor>) =>
-    adminFetch<AdminAuthor>("/content/authors/", { method: "POST", body: JSON.stringify(data) }),
-  update: (slug: string, data: Partial<AdminAuthor>) =>
-    adminFetch<AdminAuthor>(`/content/authors/${slug}/`, { method: "PATCH", body: JSON.stringify(data) }),
-  delete: (slug: string) =>
-    adminFetch<void>(`/content/authors/${slug}/`, { method: "DELETE" }),
+  list: () => adminFetch<{ results: AdminAuthor[] }>("/content/authors/"),
+  get: (slug: string) =>
+    adminFetch<{ author: AdminAuthor; modules: unknown[] }>(`/content/authors/${slug}/`),
 };
 
 export const adminForumApi = {
@@ -312,14 +305,17 @@ export type AdminModule = {
   updated_at: string;
 };
 
+/** Derived from published civic modules — GET shape; id/created_at may be absent. */
 export type AdminAuthor = {
-  id: string;
+  id?: string;
   name: string;
   slug: string;
   image: string;
   role: string;
   bio: string;
-  created_at: string;
+  created_at?: string;
+  intro_video_url?: string;
+  socials?: Record<string, string>;
 };
 
 export type AdminForumThread = {
@@ -882,3 +878,235 @@ export const adminContentFeedbackApi = {
   submit: (data: { content_type: string; content_id: string; rating: number; comment?: string }) =>
     adminFetch<ContentFeedbackItem>("/engagement/feedback/", { method: "POST", body: JSON.stringify(data) }),
 };
+
+// ── Content admin (Phase 1E) ─────────────────────────────────────────────
+
+export type ContentTransitionAction = "submit_review" | "reject_to_draft" | "publish" | "archive";
+export type ContentPublishState = "draft" | "review" | "published" | "archived" | string;
+
+export type AdminContentUnitListItem = {
+  id: string;
+  title: string;
+  slug: string;
+  format: "article" | "story" | string;
+  state: ContentPublishState;
+  updated_at: string;
+};
+
+export type AdminContentUnitDetail = {
+  id: string;
+  title: string;
+  slug: string;
+  summary: string;
+  body: string;
+  body_html: string;
+  format: string;
+  state: ContentPublishState;
+  metadata: Record<string, unknown>;
+  published_at: string | null;
+  tags: { id: string; name: string; slug: string }[];
+};
+
+export type AdminContentUnitWrite = {
+  title: string;
+  format: "article" | "story";
+  slug?: string;
+  summary?: string;
+  body?: string;
+  body_html?: string;
+  metadata?: Record<string, unknown>;
+  tag_ids?: string[];
+  author_id?: string | null;
+  author_is_team?: boolean;
+};
+
+export type AdminContentUnitUpdate = {
+  title?: string;
+  slug?: string;
+  summary?: string;
+  body?: string;
+  body_html?: string;
+  metadata?: Record<string, unknown>;
+  tag_ids?: string[];
+  author_id?: string | null;
+  author_is_team?: boolean;
+};
+
+function contentUnitCollection(format: "article" | "story") {
+  return format === "story" ? "stories" : "articles";
+}
+
+/** Articles + stories admin CRUD (PUT updates) + workflow transition. No DELETE. */
+export const adminContentUnitsApi = {
+  list: (format: "article" | "story") =>
+    adminFetch<{ results: AdminContentUnitListItem[] }>(
+      `/content/admin/${contentUnitCollection(format)}/?format=${format}`,
+    ),
+  get: (format: "article" | "story", id: string) =>
+    adminFetch<AdminContentUnitDetail>(`/content/admin/${contentUnitCollection(format)}/${id}/`),
+  create: (data: AdminContentUnitWrite) =>
+    adminFetch<{ id: string; slug: string }>(`/content/admin/${contentUnitCollection(data.format)}/`, {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+  update: (format: "article" | "story", id: string, data: AdminContentUnitUpdate) =>
+    adminFetch<{ id: string; slug: string; title: string; state: string }>(
+      `/content/admin/${contentUnitCollection(format)}/${id}/`,
+      { method: "PUT", body: JSON.stringify(data) },
+    ),
+  transition: (format: "article" | "story", id: string, action: ContentTransitionAction) =>
+    adminFetch<{ id: string; state: string }>(
+      `/content/admin/${contentUnitCollection(format)}/${id}/transition/`,
+      { method: "POST", body: JSON.stringify({ action }) },
+    ),
+};
+
+export type AdminKnowledgeListItem = {
+  id: string;
+  title: string;
+  state: ContentPublishState;
+  updated_at: string;
+};
+
+export type AdminKnowledgeDetail = {
+  id: string;
+  title: string;
+  summary: string;
+  body: string;
+  state: ContentPublishState;
+  published_at: string | null;
+  tags: { id: string; name: string; slug: string }[];
+};
+
+export type AdminKnowledgeWrite = {
+  title: string;
+  summary?: string;
+  body?: string;
+  tag_ids?: string[];
+};
+
+export const adminKnowledgeApi = {
+  list: () => adminFetch<{ results: AdminKnowledgeListItem[] }>("/content/admin/knowledge/"),
+  get: (id: string) => adminFetch<AdminKnowledgeDetail>(`/content/admin/knowledge/${id}/`),
+  create: (data: AdminKnowledgeWrite) =>
+    adminFetch<{ id: string }>("/content/admin/knowledge/", { method: "POST", body: JSON.stringify(data) }),
+  update: (id: string, data: Partial<AdminKnowledgeWrite>) =>
+    adminFetch<{ id: string; state: string }>(`/content/admin/knowledge/${id}/`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }),
+  transition: (id: string, action: ContentTransitionAction) =>
+    adminFetch<{ id: string; state: string }>(`/content/admin/knowledge/${id}/transition/`, {
+      method: "POST",
+      body: JSON.stringify({ action }),
+    }),
+};
+
+export type AdminCourseListItem = {
+  id: string;
+  module_code: string;
+  title: string;
+  slug: string;
+  state: ContentPublishState;
+  lesson_count: number;
+};
+
+export type AdminCourseDetail = {
+  id: string;
+  module_code: string;
+  title: string;
+  slug: string;
+  fiscal_year?: number | null;
+  credits?: string;
+  summary?: string;
+  state: ContentPublishState;
+  county_code?: string | null;
+  sector?: string | null;
+  image_url?: string | null;
+  external_source_url?: string | null;
+  published_at?: string | null;
+  lessons?: { id: string; title: string; order: number; kind?: string }[];
+};
+
+export type AdminCourseWrite = {
+  title: string;
+  slug?: string;
+  unit_slug?: string | null;
+  fiscal_year?: number | null;
+  module_code?: string;
+  credits?: string;
+  summary?: string;
+  county_code?: string;
+  sector?: string;
+  image_url?: string;
+  external_source_url?: string;
+};
+
+/** Courses: list/create/detail/PUT. No transition JSON endpoint. */
+export const adminCoursesApi = {
+  list: () => adminFetch<{ results: AdminCourseListItem[] }>("/content/admin/courses/"),
+  get: (id: string) => adminFetch<AdminCourseDetail>(`/content/admin/courses/${id}/`),
+  create: (data: AdminCourseWrite) =>
+    adminFetch<{ id: string; slug: string }>("/content/admin/courses/create/", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+  update: (id: string, data: AdminCourseWrite) =>
+    adminFetch<{ id: string; slug: string; state: string }>(`/content/admin/courses/${id}/`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }),
+};
+
+export type AdminMediaUploadResult = {
+  id: string;
+  location: string;
+  url: string;
+};
+
+export const adminMediaApi = {
+  upload: (file: File, altText?: string) => {
+    const form = new FormData();
+    form.append("file", file);
+    if (altText) form.append("alt_text", altText);
+    return adminFetch<AdminMediaUploadResult>("/content/admin/media/upload/", {
+      method: "POST",
+      body: form,
+    });
+  },
+};
+
+export type YouTubeSyncResult = {
+  status?: string;
+  created?: number;
+  updated?: number;
+  skipped?: number;
+  detail?: string;
+  [key: string]: unknown;
+};
+
+export const adminYouTubeSyncApi = {
+  sync: () =>
+    adminFetch<YouTubeSyncResult>("/content/sync/youtube/", {
+      method: "POST",
+      body: JSON.stringify({}),
+    }),
+};
+
+export function availableContentTransitions(
+  state: string,
+): { action: ContentTransitionAction; label: string }[] {
+  switch (state) {
+    case "draft":
+      return [{ action: "submit_review", label: "Submit for review" }];
+    case "review":
+      return [
+        { action: "reject_to_draft", label: "Reject to draft" },
+        { action: "publish", label: "Publish" },
+      ];
+    case "published":
+      return [{ action: "archive", label: "Archive" }];
+    default:
+      return [];
+  }
+}

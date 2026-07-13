@@ -1,21 +1,28 @@
 import {
   BarChart3,
   Bell,
+  BookOpen,
   FileBarChart,
+  FolderOpen,
   Forward,
   Gauge,
+  GraduationCap,
   Handshake,
+  Image,
   Inbox,
   LayoutDashboard,
+  Library,
   ListTodo,
   Lock,
   type LucideIcon,
   MailPlus,
+  MessageSquare,
+  MessageSquareQuote,
+  Newspaper,
   Pen,
   Phone,
   ScrollText,
   Send,
-  BookOpen,
   Settings,
   ShieldCheck,
   UserRound,
@@ -142,10 +149,52 @@ export const sidebarItems: NavGroup[] = [
         url: "/dashboard/modules",
         icon: BookOpen,
       },
+      {
+        id: "stories",
+        title: "Stories",
+        url: "/dashboard/stories",
+        icon: Newspaper,
+      },
+      {
+        id: "knowledge",
+        title: "Knowledge",
+        url: "/dashboard/knowledge",
+        icon: Library,
+      },
+      {
+        id: "courses",
+        title: "Courses",
+        url: "/dashboard/courses",
+        icon: GraduationCap,
+      },
+      {
+        id: "media",
+        title: "Media",
+        url: "/dashboard/media",
+        icon: Image,
+      },
+      {
+        id: "feedback",
+        title: "Feedback",
+        url: "/dashboard/feedback",
+        icon: MessageSquareQuote,
+      },
     ],
   },
   {
     id: 5,
+    label: "Engagement",
+    items: [
+      {
+        id: "forum",
+        title: "Forum",
+        url: "/dashboard/forum",
+        icon: MessageSquare,
+      },
+    ],
+  },
+  {
+    id: 6,
     label: "Communication",
     items: [
       {
@@ -205,7 +254,19 @@ export const sidebarItems: NavGroup[] = [
     ],
   },
   {
-    id: 6,
+    id: 7,
+    label: "Library",
+    items: [
+      {
+        id: "docrepository",
+        title: "Doc repository",
+        url: "/dashboard/docrepository",
+        icon: FolderOpen,
+      },
+    ],
+  },
+  {
+    id: 8,
     label: "Organization",
     items: [
       {
@@ -223,7 +284,7 @@ export const sidebarItems: NavGroup[] = [
     ],
   },
   {
-    id: 7,
+    id: 9,
     label: "Account",
     items: [
       {

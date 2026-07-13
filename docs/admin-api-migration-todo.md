@@ -64,13 +64,13 @@
 - [x] **1D.7** Notifications / trigger-rules / audit-logs (Django `/dashboard/notifications/`) — add Next.js pages.
 
 ### 1E. Content (stories, knowledge, courses, media)
-- [ ] **1E.1** Stories/articles admin CRUD + transition → `/api/v1/content/admin/articles|stories/`.
-- [ ] **1E.2** Knowledge base CRUD → `/api/v1/content/admin/knowledge/`.
-- [ ] **1E.3** Learning courses admin → `/api/v1/content/admin/courses/`.
-- [ ] **1E.4** Media upload → `/api/v1/content/admin/media/upload/`.
-- [ ] **1E.5** YouTube sync trigger → `/api/v1/content/sync/youtube/`.
-- [ ] **1E.6** Authors — confirm full parity with `/api/v1/content/authors/`.
-- [ ] **1E.7** Content feedback admin → `/api/v1/engagement/feedback/admin/`.
+- [x] **1E.1** Stories/articles admin CRUD + transition → `/api/v1/content/admin/articles|stories/` — `/dashboard/stories` (tabs; PUT updates; no DELETE).
+- [x] **1E.2** Knowledge base CRUD → `/api/v1/content/admin/knowledge/` — `/dashboard/knowledge` (+ transition).
+- [x] **1E.3** Learning courses admin → `/api/v1/content/admin/courses/` — `/dashboard/courses` (list/create/edit). **Blocker:** no `/transition/` JSON endpoint (publish stays Django admin).
+- [x] **1E.4** Media upload → `/api/v1/content/admin/media/upload/` — `/dashboard/media`.
+- [x] **1E.5** YouTube sync trigger → `/api/v1/content/sync/youtube/` — on Media page (org admin/manager).
+- [x] **1E.6** Authors — confirm full parity with `/api/v1/content/authors/` — read-only list (`/dashboard/authors`). **Blocker:** GET-only (no POST/PATCH/DELETE); derived from published civic modules.
+- [x] **1E.7** Content feedback admin → `/api/v1/engagement/feedback/admin/` — `/dashboard/feedback` list/filter. **Blocker:** no status update (READ/ACTIONED) via JSON.
 
 ### 1F. Documents
 - [ ] **1F.1** Doc repository files/folders/links (+ proxy) → `/api/v1/docrepository/*` — full Next.js admin UI.
