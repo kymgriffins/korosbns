@@ -27,16 +27,32 @@ export const learningData = {
       _modules = items;
     },
     fetch: async (): Promise<CivicModule[]> => {
-      try {
+      const load = async () => {
         const r = await learnHubApi.civicModules();
-        const results = r.results ?? [];
+        return r.results ?? [];
+      };
+
+      try {
+        const results = await load();
         _modules = results;
         return results;
-      } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        console.warn(`[Data:learning] civic-modules failed (${message}); returning empty list`);
-        _modules = [];
-        throw err instanceof Error ? err : new Error(message);
+      } catch (firstErr) {
+        // One quick retry — login/cookie races and transient proxy blips are common.
+        try {
+          await new Promise((r) => setTimeout(r, 350));
+          const results = await load();
+          _modules = results;
+          return results;
+        } catch {
+          const message =
+            firstErr instanceof Error ? firstErr.message : String(firstErr);
+          console.warn(
+            `[Data:learning] civic-modules failed (${message}); returning empty list`,
+          );
+          // Prefer last good in-memory catalogue over a hard failure when possible.
+          if (_modules.length > 0) return _modules;
+          throw firstErr instanceof Error ? firstErr : new Error(message);
+        }
       }
     },
     fetchBySlug: (slug: string) =>

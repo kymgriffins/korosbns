@@ -222,7 +222,7 @@ export function LearnPathsHome({ tab }: Props) {
     return <DashboardSkeleton />;
   }
 
-  if (needsModules && modulesError) {
+  if (needsModules && modulesError && !stages.length) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-3 p-6 text-center min-h-[50vh]">
         <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-destructive/10 text-destructive">
