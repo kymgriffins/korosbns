@@ -15,10 +15,11 @@ export default function LearnLayout({ children }: { children: React.ReactNode })
         <LearnTabSync />
         <AppSidebar>
           {/*
-            Scroll lives on AppSidebar <main>. This wrapper only pads for the
-            fixed mobile bottom nav and must not introduce another overflow.
+            Scroll lives on AppSidebar <main>. Use pb-mobile-nav (not the broken
+            pb-[--mobile-nav-height] arbitrary) so bottom content clears the
+            fixed mobile nav + safe-area inset.
           */}
-          <div className="min-h-0 w-full pb-[--mobile-nav-height] lg:pb-0">
+          <div className="min-h-0 w-full pb-mobile-nav lg:pb-0">
             {children}
           </div>
           <LearnMobileNav />

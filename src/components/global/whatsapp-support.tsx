@@ -10,7 +10,8 @@ const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}`;
 const STORAGE_KEY = "whatsapp-dismissed";
 
 function isMarketingPage(pathname: string) {
-  return !pathname.startsWith("/auth");
+  // Hide on auth and learn shell — learn already has a fixed mobile bottom nav.
+  return !pathname.startsWith("/auth") && !pathname.startsWith("/learn");
 }
 
 export default function WhatsAppSupport() {
