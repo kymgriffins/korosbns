@@ -14,6 +14,8 @@ interface FormDialogProps {
   onSubmit: () => void;
   loading?: boolean;
   submitLabel?: string;
+  /** Dialog content width class (default max-w-lg). */
+  contentClassName?: string;
 }
 
 export function FormDialog({
@@ -24,10 +26,11 @@ export function FormDialog({
   onSubmit,
   loading,
   submitLabel = "Save",
+  contentClassName = "max-w-lg",
 }: FormDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className={contentClassName}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>

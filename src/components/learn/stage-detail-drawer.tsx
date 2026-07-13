@@ -441,63 +441,90 @@ export function StageDetailDrawer({
                   </div>
                 )}
 
-                {activeTab === "quiz" && currentStep > 0 && (
-                  <div className="pt-2">
-                    {!showTrivia ? (
-                      <div className="space-y-3">
-                        <div className="space-y-1 pb-3 border-b border-border/30">
-                          <h3 className="text-base font-black">Knowledge Check</h3>
-                          <p className="text-xs text-muted-foreground">Test what you learned in this step.</p>
-                        </div>
-                        <Button onClick={() => setShowTrivia(true)} size="sm" className="rounded-lg text-xs font-bold">
-                          Start Knowledge Check
-                        </Button>
-                      </div>
-                    ) : (
-                      <TriviaSection
-                        trivia={currentStepTrivia}
-                        stepId={stage.steps[currentStep - 1].order}
-                        showTrivia={showTrivia}
-                        isStepTriviaPassed={isStepTriviaPassed}
-                        onCorrectAnswer={handleCorrectAnswer}
-                        onFinish={handleFinishTrivia}
-                      />
-                    )}
+                {activeTab === "quiz" && currentStep > 0 && !showTrivia && (
+                  <div className="space-y-3 pt-2">
+                    <div className="space-y-1 border-b border-border/30 pb-3">
+                      <h3 className="text-base font-black">Knowledge Check</h3>
+                      <p className="text-xs text-muted-foreground">
+                        One question at a time in full screen.
+                      </p>
+                    </div>
+                    <Button
+                      type="button"
+                      onClick={() => setShowTrivia(true)}
+                      size="sm"
+                      className="rounded-lg text-xs font-bold"
+                    >
+                      Start Knowledge Check
+                    </Button>
                   </div>
                 )}
 
-                {/* Prev / Next step navigation */}
-                {!isMastery && (
-                  <div className="flex items-center justify-between gap-2 pt-4 border-t border-border/20 mt-8 pb-4">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => selectStep(currentStep - 1)}
-                      disabled={currentStep <= 1}
-                      className="rounded-lg text-xs font-bold gap-1"
-                    >
-                      <ChevronLeft className="size-3.5" />
-                      Previous
-                    </Button>
-                    <span className="text-[10px] text-muted-foreground font-semibold">
+                {/* Prev / Next — fixed slots */}
+                {!isMastery && !showTrivia && (
+                  <div className="mt-8 grid grid-cols-[1fr_auto_1fr] items-center gap-2 border-t border-border/20 pt-4 pb-4">
+                    <div className="justify-self-start">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => selectStep(currentStep - 1)}
+                        disabled={currentStep <= 1}
+                        className="min-w-[7.5rem] gap-1 rounded-lg text-xs font-bold"
+                      >
+                        <ChevronLeft className="size-3.5" />
+                        Previous
+                      </Button>
+                    </div>
+                    <span className="text-[10px] font-semibold tabular-nums text-muted-foreground">
                       Step {currentStep} of {stage.steps.length}
                     </span>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => selectStep(currentStep + 1)}
-                      disabled={currentStep >= stage.steps.length}
-                      className="rounded-lg text-xs font-bold gap-1"
-                    >
-                      Next
-                      <ChevronRight className="size-3.5" />
-                    </Button>
+                    <div className="justify-self-end">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          if (currentStep >= stage.steps.length) return;
+                          const step = stage.steps[currentStep - 1];
+                          const hasStepQuiz = triviaForStep(stage, step, currentStep - 1).length > 0;
+                          const passed = step ? isStepTriviaPassed(step.order) : false;
+                          if (!passed && hasStepQuiz) {
+                            setActiveTab("quiz");
+                            setShowTrivia(true);
+                            return;
+                          }
+                          selectStep(currentStep + 1);
+                        }}
+                        disabled={currentStep >= stage.steps.length}
+                        className="min-w-[7.5rem] gap-1 rounded-lg text-xs font-bold"
+                      >
+                        Next
+                        <ChevronRight className="size-3.5" />
+                      </Button>
+                    </div>
                   </div>
                 )}
               </div>
             </div>
           )}
         </div>
+
+        {showTrivia && currentStep > 0 ? (
+          <TriviaSection
+            trivia={currentStepTrivia}
+            stepId={stage.steps[currentStep - 1].order}
+            showTrivia={showTrivia}
+            isStepTriviaPassed={isStepTriviaPassed}
+            onCorrectAnswer={handleCorrectAnswer}
+            onFinish={handleFinishTrivia}
+            onClose={() => {
+              setShowTrivia(false);
+              setActiveTab("read");
+            }}
+            title={stage.steps[currentStep - 1]?.title || "Knowledge Check"}
+          />
+        ) : null}
 
         <CurriculumSidebar
           steps={stage.steps}

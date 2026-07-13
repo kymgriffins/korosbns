@@ -1,5 +1,5 @@
 import { socialLinks, footerLinks } from "@/constants/links";
-import { team } from "@/constants/team";
+import { team } from "@/data/org";
 
 type OrgPartner = {
   id: string;

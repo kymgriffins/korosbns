@@ -79,7 +79,7 @@ export default function AdminAuthorsPage() {
     )},
     { key: "role", header: "Role", cell: (a) => <span className="text-sm text-muted-foreground">{a.role}</span> },
     { key: "bio", header: "Bio", cell: (a) => <span className="text-sm text-muted-foreground line-clamp-1">{a.bio || "—"}</span> },
-    { key: "created", header: "Created", cell: (a) => <span className="text-sm text-muted-foreground">{new Date(a.created_at).toLocaleDateString()}</span> },
+    { key: "created", header: "Created", cell: (a) => <span className="text-sm text-muted-foreground">{a.created_at ? new Date(a.created_at).toLocaleDateString() : "—"}</span> },
     { key: "actions", header: "", className: "w-24", cell: (a) => (
       <div className="flex items-center gap-1">
         <Button variant="ghost" size="icon-sm" onClick={() => openEdit(a)}><Pencil className="size-3.5" /></Button>

@@ -1,17 +1,19 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Check, Reply, Search, Trash2 } from "lucide-react";
+import { Check, Eye, Reply, Search, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DataTable, type Column } from "@/components/admin/data-table";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { adminContactMessagesApi, type ContactMessage } from "@/lib/admin-api";
+
+const PAGE_SIZE = 50;
 
 export default function ContactMessagesPage() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
@@ -19,11 +21,13 @@ export default function ContactMessagesPage() {
   const [error, setError] = useState("");
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
-  const [statusFilter, setStatusFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [replyOpen, setReplyOpen] = useState(false);
   const [replyId, setReplyId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [detail, setDetail] = useState<ContactMessage | null>(null);
 
   const fetchMessages = useCallback(async () => {
     setLoading(true);
@@ -31,19 +35,23 @@ export default function ContactMessagesPage() {
     try {
       const res = await adminContactMessagesApi.list({
         page,
-        status: statusFilter || undefined,
+        status: statusFilter === "all" ? undefined : statusFilter,
         q: searchQuery || undefined,
       });
-      setMessages(res.results);
-      setTotal(res.count);
+      setMessages(res.results ?? []);
+      setTotal(res.count ?? 0);
     } catch (err) {
+      setMessages([]);
+      setTotal(0);
       setError(err instanceof Error ? err.message : "Failed to load messages");
     } finally {
       setLoading(false);
     }
   }, [page, statusFilter, searchQuery]);
 
-  useEffect(() => { fetchMessages(); }, [fetchMessages]);
+  useEffect(() => {
+    fetchMessages();
+  }, [fetchMessages]);
 
   const handleMarkRead = async (id: string) => {
     try {
@@ -56,12 +64,23 @@ export default function ContactMessagesPage() {
   };
 
   const handleDelete = async (id: string) => {
+    if (!confirm("Delete this contact message?")) return;
     try {
       await adminContactMessagesApi.delete(id);
       toast.success("Message deleted");
       fetchMessages();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to delete");
+    }
+  };
+
+  const openDetail = async (id: string) => {
+    try {
+      const msg = await adminContactMessagesApi.get(id);
+      setDetail(msg);
+      setDetailOpen(true);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to load message");
     }
   };
 
@@ -108,6 +127,9 @@ export default function ContactMessagesPage() {
       header: "",
       cell: (r) => (
         <div className="flex gap-1">
+          <Button variant="ghost" size="icon-sm" onClick={() => openDetail(r.id)} title="View">
+            <Eye className="size-3.5" />
+          </Button>
           {r.status === "NEW" && (
             <Button variant="ghost" size="icon-sm" onClick={() => handleMarkRead(r.id)} title="Mark read">
               <Check className="size-3.5" />
@@ -128,9 +150,7 @@ export default function ContactMessagesPage() {
     <div className="@container/main flex flex-col gap-4 md:gap-6">
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-semibold tracking-tight">Contact Messages</h1>
-        <p className="text-sm text-muted-foreground">
-          Manage contact form submissions from citizens.
-        </p>
+        <p className="text-sm text-muted-foreground">Manage contact form submissions from citizens.</p>
       </div>
 
       <Card>
@@ -143,14 +163,25 @@ export default function ContactMessagesPage() {
                 <Input
                   placeholder="Search messages..."
                   value={searchQuery}
-                  onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setPage(1);
+                  }}
                   className="w-56 pl-8"
                 />
               </div>
-              <Select value={statusFilter} onValueChange={(v) => { setStatusFilter(v); setPage(1); }}>
-                <SelectTrigger className="w-32"><SelectValue placeholder="All" /></SelectTrigger>
+              <Select
+                value={statusFilter}
+                onValueChange={(v) => {
+                  setStatusFilter(v);
+                  setPage(1);
+                }}
+              >
+                <SelectTrigger className="w-32">
+                  <SelectValue placeholder="All" />
+                </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All</SelectItem>
+                  <SelectItem value="all">All</SelectItem>
                   <SelectItem value="NEW">New</SelectItem>
                   <SelectItem value="READ">Read</SelectItem>
                   <SelectItem value="REPLIED">Replied</SelectItem>
@@ -167,27 +198,63 @@ export default function ContactMessagesPage() {
             error={error}
             emptyMessage="No contact messages."
             page={page}
-            totalPages={Math.ceil(total / 25)}
+            totalPages={Math.max(1, Math.ceil(total / PAGE_SIZE))}
             onPageChange={setPage}
           />
         </CardContent>
       </Card>
 
-      <Dialog open={replyOpen} onOpenChange={(o) => { setReplyOpen(o); if (!o) setReplyId(null); }}>
+      <Dialog
+        open={replyOpen}
+        onOpenChange={(o) => {
+          setReplyOpen(o);
+          if (!o) setReplyId(null);
+        }}
+      >
         <DialogContent>
-          <DialogHeader><DialogTitle>Reply to Message</DialogTitle></DialogHeader>
+          <DialogHeader>
+            <DialogTitle>Reply to Message</DialogTitle>
+          </DialogHeader>
           <form onSubmit={handleReply} className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
               <Label htmlFor="reply_body">Your Reply</Label>
               <Textarea id="reply_body" name="reply_body" rows={6} required />
             </div>
             <div className="flex justify-end gap-2">
-              <Button variant="outline" type="button" onClick={() => { setReplyOpen(false); setReplyId(null); }}>
+              <Button
+                variant="outline"
+                type="button"
+                onClick={() => {
+                  setReplyOpen(false);
+                  setReplyId(null);
+                }}
+              >
                 Cancel
               </Button>
-              <Button type="submit" disabled={saving}>{saving ? "Sending..." : "Send Reply"}</Button>
+              <Button type="submit" disabled={saving}>
+                {saving ? "Sending..." : "Send Reply"}
+              </Button>
             </div>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={detailOpen} onOpenChange={setDetailOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>{detail?.name || "Message"}</DialogTitle>
+          </DialogHeader>
+          {detail ? (
+            <div className="flex flex-col gap-2 text-sm">
+              <p className="text-muted-foreground">
+                {detail.email} · {detail.status_display} · {detail.source}
+              </p>
+              <p className="whitespace-pre-wrap">{detail.message}</p>
+              <p className="text-xs text-muted-foreground">
+                {new Date(detail.created_at).toLocaleString()}
+              </p>
+            </div>
+          ) : null}
         </DialogContent>
       </Dialog>
     </div>

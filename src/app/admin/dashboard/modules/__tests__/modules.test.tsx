@@ -2,20 +2,22 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-const mockFetchList = vi.hoisted(() => vi.fn());
-const mockCreate = vi.hoisted(() => vi.fn());
-const mockUpdate = vi.hoisted(() => vi.fn());
-const mockDelete = vi.hoisted(() => vi.fn());
+const mockList = vi.hoisted(() => vi.fn());
 
-vi.mock("@/data/admin-content", () => ({
-  adminContentData: {
-    modules: {
-      fetchList: mockFetchList,
-      create: mockCreate,
-      update: mockUpdate,
-      delete: mockDelete,
-    },
+vi.mock("@/lib/admin-api", () => ({
+  adminModulesApi: {
+    list: mockList,
+    delete: vi.fn(),
   },
+}));
+
+vi.mock("@/lib/route-base", () => ({
+  useRouteBase: () => "/admin",
+  getFullUrl: (_base: string, path: string) => `/admin${path}`,
+}));
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
 }));
 
 vi.mock("@/contexts/auth-context", () => ({
@@ -29,25 +31,36 @@ describe("AdminModulesPage", () => {
     vi.clearAllMocks();
   });
 
-  it("renders loading state initially", () => {
-    mockFetchList.mockReturnValue(new Promise(() => {}));
+  it("renders learning modules heading", () => {
+    mockList.mockReturnValue(new Promise(() => {}));
     render(<AdminModulesPage />);
-    expect(screen.getByText("Modules")).toBeInTheDocument();
-    expect(screen.getByText("Manage civic education modules")).toBeInTheDocument();
+    expect(screen.getByText("Learning modules")).toBeInTheDocument();
   });
 
   it("renders module data when fetch succeeds", async () => {
-    mockFetchList.mockResolvedValue({
+    mockList.mockResolvedValue({
       count: 1,
-      results: [{ id: "1", title: "Test Module", slug: "test-module", description: "Desc", badge: "bronze", badgeName: "Bronze", status: "published", steps: [], created_at: "2024-01-01", updated_at: "2024-01-01" }],
+      results: [
+        {
+          id: "1",
+          title: "Test Module",
+          slug: "test-module",
+          description: "Desc",
+          status: "published",
+          chapter_count: 2,
+          created_at: "2024-01-01",
+          updated_at: "2024-01-01",
+        },
+      ],
     });
 
     render(<AdminModulesPage />);
-    expect(await screen.findByText("All Modules")).toBeInTheDocument();
+    expect(await screen.findByText("All modules")).toBeInTheDocument();
+    expect(await screen.findByText("Test Module")).toBeInTheDocument();
   });
 
   it("shows error when fetch fails", async () => {
-    mockFetchList.mockRejectedValue(new Error("Network error"));
+    mockList.mockRejectedValue(new Error("Network error"));
 
     render(<AdminModulesPage />);
     expect(await screen.findByText("Network error")).toBeInTheDocument();

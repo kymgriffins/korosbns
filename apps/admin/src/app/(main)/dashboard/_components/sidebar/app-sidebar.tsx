@@ -74,7 +74,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const collapsible = isSynced ? sidebarCollapsible : props.collapsible;
 
   // Show all groups except LMS (id: 4)
-  const adminItems = sidebarItems.filter((g) => g.id !== 4);
+  const adminItems = sidebarItems;
 
   return (
     <Sidebar {...props} variant={variant} collapsible={collapsible}>

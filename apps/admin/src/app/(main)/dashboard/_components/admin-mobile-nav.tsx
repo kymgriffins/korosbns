@@ -17,8 +17,8 @@ export function AdminMobileNav() {
     {
       id: "dashboard",
       label: "Dashboard",
-      href: "/dashboard/default",
-      active: isMobileNavActive(pathname, "/dashboard/default", ["/dashboard"]),
+      href: "/dashboard",
+      active: isMobileNavActive(pathname, "/dashboard", ["/dashboard/analytics"]),
       icon: <LayoutDashboard className="size-5" aria-hidden />,
     },
     {
@@ -31,8 +31,8 @@ export function AdminMobileNav() {
     {
       id: "profile",
       label: "Profile",
-      href: "/dashboard/default",
-      active: pathname.startsWith("/dashboard/default"),
+      href: "/dashboard/profile",
+      active: pathname.startsWith("/dashboard/profile"),
       icon: (
         <Avatar className="size-5">
           <AvatarImage src={avatarUrl} alt={displayName} />
@@ -43,8 +43,8 @@ export function AdminMobileNav() {
     {
       id: "settings",
       label: "Settings",
-      href: "#",
-      active: false,
+      href: "/dashboard/settings",
+      active: pathname.startsWith("/dashboard/settings") || pathname.startsWith("/dashboard/partners"),
       icon: <Settings className="size-5" aria-hidden />,
     },
   ];

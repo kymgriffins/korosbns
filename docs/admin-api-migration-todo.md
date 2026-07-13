@@ -1,0 +1,217 @@
+# Admin API Migration TODO
+
+**Branch:** `feat/admin-api-migration`  
+**Goal:** Every Next.js admin page must consume Django (`bnske`) JSON APIs the way the HTML portal does — no mock StudioKit pages, no dead sidebar links.  
+**Done (do not redo):** Weekly notes / Tasks (`/api/v1/notes/`, board, report, checklist, publish/audit, exports).
+
+**Surfaces**
+- Primary target: `apps/admin` (`/dashboard/*`)
+- Legacy/embedded: `src/app/admin` — converge onto `apps/admin` over time
+- Backend: `bnske.budgetndiostory.org` HTML at `/dashboard/*`, APIs at `/api/v1/*` (+ `/api/gamification/`, `/api/analytics/`, `/api/v2/budget/`)
+
+**Golden rules**
+1. Prefer `/api/v1` JSON over scraping HTML form POSTs.
+2. If a feature is HTML-only in Django, add a DRF write API first, then wire Next.js.
+3. Remove or hide sidebar items that are demo/mock until they are real.
+4. Auth: Cookie/Bearer JWT + `IsOrgAdminOrManager` / `IsLeadershipOrDigitalTeam` as on Django.
+
+---
+
+## Phase 0 — Shell hygiene (do first)
+
+- [x] **P0.1** Fix Overview redirect: was `/dashboard` → `/dashboard/default`; now reverse (demo → real overview).
+- [x] **P0.2** Demo StudioKit `/dashboard/default` redirects to `/dashboard`.
+- [x] **P0.3** Removed placeholder nav: Email + Live Chat iframes.
+- [x] **P0.4** Unhide Content → Modules (`sidebarItems.filter(g => g.id !== 4)` removed).
+- [x] **P0.5** Profile / privacy / security / org settings / partners nav restored once 1C pages shipped.
+- [x] **P0.6** Single source of truth for `admin-api.ts`.
+  - Canonical: `src/lib/admin-api.ts`. Removed duplicate `apps/admin/src/lib/admin-api.ts`; `apps/admin` resolves `@/lib/admin-api` via tsconfig path fallback to root `src`.
+- [x] **P0.7** Analytics: stop `Math.random()` fake charts (zeros until real series API is wired in 1A.2).
+
+### Learn hub data integrity (related)
+
+- [x] Remove hardcoded civic-module fallbacks ("Budget Basics", "Sector Deep Dive", "Citizen Engagement") — they were not API data; shown when `withFallback` swallowed API errors after login.
+- [x] Module detail SEO: `generateMetadata` + Course JSON-LD on `/learn/modules/[slug]`.
+- [x] Learn hub layout metadata + sitemap entries for `/learn/modules/{slug}`.
+
+---
+
+## Phase 1 — Already have JSON APIs (wire / harden Next.js)
+
+### 1A. Dashboard & analytics
+- [x] **1A.1** Overview KPIs from `GET /api/v1/analytics/dashboard/` (+ org widgets parity with Django `dashboard.html`).
+- [x] **1A.2** Analytics page: replace `Math.random()` charts with real series; use `GET /api/v1/analytics/summary/`, module analytics, notes/forum aggregates.
+
+### 1B. Users / team / invitations
+- [x] **1B.1** Users list already hits `/users/` — audit create/update/deactivate parity with Django team POSTs.
+  - List + search + role filter wired. Direct create/PATCH/DELETE on `/users/` do **not** exist (ListAPIView only).
+  - Add members via invitations. Role change / deactivate / verify remain HTML-only → **Phase 2H**.
+- [x] **1B.2** Invitations UI: `POST /api/v1/invitations/`, `GET /api/v1/invitations/list/`, `POST .../revoke/` — page + nav in `apps/admin`.
+- [x] **1B.3** User stats: `GET /api/v1/users/stats/` surfaced on Users page (total, active 30d, joined 30d, role distribution).
+
+### 1C. Profile / org settings
+- [x] **1C.1** Profile: `GET/PATCH /api/v1/users/me/` (+ social links / avatar) — `/dashboard/profile`.
+- [x] **1C.2** Org settings: `GET/PATCH /api/v1/org/config/` — `/dashboard/settings`.
+- [x] **1C.3** Partners CRUD: list/create/PATCH `/api/v1/org/partners/` — `/dashboard/partners`. Hard DELETE is HTML-only (deactivate via `is_active` in Next.js).
+- [x] **1C.4** Privacy / security: `GET /api/v1/privacy/config/`, `GET /api/v1/security/info/` + password change — `/dashboard/privacy`, `/dashboard/security`.
+
+### 1D. Communication (claimed wired — audit for real CRUD/send)
+- [x] **1D.1** Campaigns: list/create/edit/send/schedule/preview → `/api/v1/newsletter/campaigns/`.
+- [x] **1D.2** Inbox notes/read → `/api/v1/newsletter/inbox/`.
+- [x] **1D.3** Outbox dispatch/retry → `/api/v1/newsletter/outbox/`.
+- [x] **1D.4** Contact messages reply/read/delete → `/api/v1/contact/messages/`.
+- [x] **1D.5** Email hooks list/resend → `/api/v1/email-hooks/`.
+- [x] **1D.6** Subscribers list → `/api/v1/newsletter/subscribers/` (add nav if missing).
+- [x] **1D.7** Notifications / trigger-rules / audit-logs (Django `/dashboard/notifications/`) — add Next.js pages.
+
+### 1E. Content (stories, knowledge, courses, media)
+- [x] **1E.1** Stories/articles admin CRUD + transition → `/api/v1/content/admin/articles|stories/` — `/dashboard/stories` (tabs; PUT updates; no DELETE).
+- [x] **1E.2** Knowledge base CRUD → `/api/v1/content/admin/knowledge/` — `/dashboard/knowledge` (+ transition).
+- [x] **1E.3** Learning courses admin → `/api/v1/content/admin/courses/` — `/dashboard/courses` (list/create/edit). **Blocker:** no `/transition/` JSON endpoint (publish stays Django admin).
+- [x] **1E.4** Media upload → `/api/v1/content/admin/media/upload/` — `/dashboard/media`.
+- [x] **1E.5** YouTube sync trigger → `/api/v1/content/sync/youtube/` — on Media page (org admin/manager).
+- [x] **1E.6** Authors — confirm full parity with `/api/v1/content/authors/` — read-only list (`/dashboard/authors`). **Blocker:** GET-only (no POST/PATCH/DELETE); derived from published civic modules.
+- [x] **1E.7** Content feedback admin → `/api/v1/engagement/feedback/admin/` — `/dashboard/feedback` list/filter. **Blocker:** no status update (READ/ACTIONED) via JSON.
+
+### 1F. Documents
+- [x] **1F.1** Doc repository files/folders/links (+ proxy) → `/api/v1/docrepository/*` — full Next.js admin UI.
+  - `apps/admin` page `/dashboard/docrepository`: browse folders/files, upload, create folder, pinned links CRUD, cookie-auth view/download + link proxy.
+  - Nav under **Library**. Client: `adminDocRepositoryApi` in `src/lib/admin-api.ts`.
+
+### 1G. Forum / community (moderation)
+- [x] **1G.1** Thread list/detail using `/api/v1/engagement/forum-threads/`.
+  - List + create + detail + reply at `/dashboard/forum` and `/dashboard/forum/[id]`. Nav under **Engagement**.
+- [x] **1G.2** Admin soft-delete / moderation (may need new API if only HTML today).
+  - `DELETE /api/v1/engagement/forum-threads/{id}/` + `DELETE .../posts/{id}/` soft-delete (`deleted_at` + `is_active=False`); list/detail filter non-deleted. Next.js forum list/detail wired.
+
+---
+
+## Phase 2 — Partial in Django (add write APIs, then Next.js)
+
+### 2A. Civic modules admin wizard
+- [x] **2A.1** Backend: admin write endpoints for civic modules / chapters / wizard (today mostly HTML).
+  - `GET|POST /api/v1/content/admin/civic-modules/`, detail PATCH/DELETE (`trivia_id`), `transition/`, nested chapters CRUD + reorder + link-article.
+- [x] **2A.2** Next.js Modules page: full create/edit/delete/preview (not citizen-read-only).
+  - `/dashboard/modules` list + `/dashboard/modules/new` + `/dashboard/modules/[id]?step=` non-strict wizard (overview → chapters → YouTube → trivia → publish).
+  - Ongoing populate checklist: `docs/admin-db-api-ui-checklist.md`.
+
+### 2B. Surveys
+- [x] **2B.1** Backend: survey CRUD write API (create/edit HTML-only today).
+  - `GET|POST /api/v1/engagement/admin/surveys/`, detail PATCH/DELETE, `transition/`, questions CRUD. Results remain `GET .../surveys/<id>/results/`.
+- [x] **2B.2** Next.js surveys list/form + results (`GET .../surveys/<id>/results/`).
+  - `/dashboard/surveys` + `/dashboard/surveys/[id]/results`.
+
+### 2C. Trivia
+- [x] **2C.1** Backend: trivia builder write API.
+  - `GET|POST /api/v1/engagement/admin/trivia/`, detail PATCH/DELETE, `publish/`, questions CRUD, attempts list/detail.
+- [x] **2C.2** Next.js trivia CRUD + attempts inspector.
+  - `/dashboard/trivia` + `/dashboard/trivia/[id]/attempts`.
+
+### 2D. Events
+- [x] **2D.1** Harden admin events API (galleries parity with HTML).
+  - `GET|POST /api/v1/content/admin/events/`, `GET|PATCH|DELETE .../<uuid>/`, galleries list/create + `PATCH|DELETE .../galleries/<uuid>/`. `image_url` + `physical_location` persisted; soft-delete. Permission: `IsLeadershipOrDigitalTeam`.
+- [x] **2D.2** Next.js events admin UI.
+  - `/dashboard/events` CRUD + gallery links; nav under Engagement; hub KPI links here.
+
+### 2E. TikTok / social
+- [x] **2E.1** Backend: TikTok admin write API (public read exists).
+  - `GET|POST /api/v1/content/admin/tiktok/`, `GET|PATCH|DELETE .../<uuid>/`. Permission: `IsLeadershipOrDigitalTeam`.
+- [x] **2E.2** Next.js social media hub + TikTok CRUD.
+  - `/dashboard/social` TikTok CRUD; nav under Communication.
+
+### 2F. KE Budget writes
+- [x] **2F.1** Backend: admin write for fiscal year / entity / allocation (reads on v1/v2 today).
+  - Legacy HTML parity on `content.models.budget`: `GET|POST /api/v1/budget/admin/fiscal-years/`, detail PATCH/DELETE, `PUT .../allocations/`, `GET .../admin/entities/`. Permission: `IsOrgAdminOrManager`.
+  - **Blocker / note:** writes target legacy tables (same as Django HTML). v2 staging ingest/promote remains the bulk pipeline; no entity CRUD in HTML → none in API.
+- [x] **2F.2** Next.js budget-data admin beyond read-only.
+  - `/dashboard/ke-budget` fiscal years + sector allocation editor; nav under Org. Existing `/dashboard/budget-data` record upload left as-is.
+
+### 2G. Studio / project
+- [x] **2G.1** Backend: admin write for studio services/portfolio/testimonials/bookings status.
+  - `/api/v1/studio/admin/services|portfolio|testimonials|bookings/` (+ booking messages). Permission: `IsOrgAdminOrManager`.
+- [x] **2G.2** Backend: project milestones/config write.
+  - `/api/v1/project/admin/milestones/`, `/api/v1/project/admin/config/`.
+- [x] **2G.3** Next.js studio + project admin pages.
+  - `/dashboard/studio` tabs: services, bookings, milestones, config. Portfolio/testimonials API shipped; UI focuses on services + bookings + project (portfolio/testimonials CRUD can use same clients later).
+
+### 2H. Team beyond list
+- [x] **2H.1** Role assign / deactivate / verify endpoints if missing from JSON; then Next.js.
+  - `PATCH /api/v1/users/<uuid>/role/`, `POST .../deactivate/`, `POST .../verify/`. List serializer enriched with `membership_id`, `role_slug`, `membership_is_active`, `is_verified`. Users page row actions wired.
+
+---
+
+## Phase 3 — HTML-only today (new APIs required)
+
+- [x] **3.1 Roles & permissions** — Django `roles.html` has no DRF API. Design `/api/v1/roles/` (or groups) then Next.js Roles UI.
+  - `GET|POST /api/v1/roles/`, `GET|PATCH|DELETE /api/v1/roles/<uuid>/`, `GET /api/v1/roles/permissions/`. Soft-delete; built-in slugs protected. Next.js `/dashboard/roles`.
+- [x] **3.2 Gamification admin** — rule/badge CRUD HTML-only; learner APIs exist. Add admin gamification APIs + Next.js page.
+  - `GET|PUT /api/v1/gamification/rules/`, `POST .../rules/seed/`, badges CRUD (DELETE = deactivate). Next.js `/dashboard/gamification`.
+- [x] **3.3 Invoices** — entire invoice HTML app has no DRF. Decide: port to API + Next.js, or drop from admin scope.
+  - **Decision: ship API + UI** — `Invoice` model + serializers already existed. Wired `GET|POST /api/v1/invoices/`, `GET|PATCH|DELETE /api/v1/invoices/<uuid>/` (org-agnostic, matches HTML). Next.js `/dashboard/invoices`. StudioKit `/dashboard/invoice` demo left out of nav.
+- [x] **3.4 Engagements hub shell** — thin landing; rebuild as Next.js overview of surveys/trivia/events/forum once those ship.
+  - `/dashboard/engagement` KPI hub (surveys/trivia/forum + public events count). Nav Overview under Engagement.
+
+---
+
+## Phase 4 — Sidebar IA (proposed end state)
+
+Keep:
+1. **Dashboard** — Overview, Analytics  
+2. **Tasks** — Overview, Board, Report *(DONE)*  
+3. **People** — Users, Invitations, Authors, Profile  
+4. **Content** — Modules, Stories, Knowledge, Courses, Media, Feedback  
+5. **Engagement** — Surveys, Trivia, Events, Forum  
+6. **Communication** — Campaigns, Inbox, Outbox, Contacts, Hooks, Subscribers, Notifications  
+7. **Library** — Doc repository  
+8. **Org** — Settings, Partners, Roles, Gamification, Studio, Budget  
+9. **Account** — Privacy, Security  
+
+Remove until real: Mail iframe, Live Chat, StudioKit demos, finance demos.
+
+---
+
+## Suggested implementation order
+
+| Sprint | Focus | Why |
+|--------|--------|-----|
+| S0 | Phase 0 shell hygiene | Stops fake pages looking “broken” |
+| S1 | 1A + 1C + 1B | Real home + identity |
+| S2 | 1D audit + 1E content | Highest daily admin use after tasks |
+| S3 | 1F docs + 1G forum | Ops completeness |
+| S4 | Phase 2 write APIs (modules, surveys, trivia) | Unblocks learning/engagement admin |
+| S5 | Phase 3 roles + gamification (+ invoices decision) | Parity with Django portal |
+
+---
+
+## Reference map (Django HTML → API)
+
+| Django HTML | API surface | Next.js status |
+|-------------|-------------|----------------|
+| `/dashboard/weekly-notes/` | `/api/v1/notes/` (+ teams, publish, audit, exports) | **DONE** (Tasks) |
+| `/dashboard/team/` | `/api/v1/users/`, `/api/v1/users/stats/`, invitations, role/deactivate/verify | **1B + 2H done** |
+| `/dashboard/roles/` | `/api/v1/roles/` (+ permissions catalog) | **3.1 done** |
+| `/dashboard/settings/` | `/api/v1/org/config/`, partners | **DONE** (Settings + Partners) |
+| /dashboard/newsletter/* | /api/v1/newsletter/*, contact, email-hooks, notifications, audit-logs | **1D done** (CRUD/send + subscribers/notifications/audit pages) |
+| `/dashboard/stories|knowledge|learning/` | `/api/v1/content/admin/*` | **1E done** (stories/knowledge/courses/media/feedback; authors read-only; course transition + author/feedback writes blocked) |
+| `/dashboard/civic-modules/` | `/api/v1/content/admin/civic-modules/` (+ chapters/transition) | **2A done** (Modules CRUD + chapters) |
+| `/dashboard/surveys|trivia/` | `/api/v1/engagement/admin/surveys|trivia/` (+ results/attempts) | **2B/2C done** |
+| `/dashboard/docrepository/` | `/api/v1/docrepository/*` | **DONE** (apps/admin Library) |
+| `/dashboard/community/` (forum) | `/api/v1/engagement/forum-threads/` | **1G done** (list/detail/reply + soft-delete moderation) |
+| `/dashboard/gamification/` | `/api/v1/gamification/rules|badges/` (+ learner `/api/gamification/`) | **3.2 done** |
+| `/dashboard/studio/` | `/api/v1/studio/admin/*` + public reads | **2G done** (services/bookings/milestones/config UI; portfolio/testimonials APIs ready) |
+| `/dashboard/ke-budget/` | `/api/v1/budget/admin/fiscal-years|entities/` | **2F done** (legacy FY + allocations; v2 staging unchanged) |
+| `/dashboard/events/` | `/api/v1/content/admin/events/` (+ galleries) | **2D done** |
+| `/dashboard/tiktok/` / social | `/api/v1/content/admin/tiktok/` | **2E done** (`/dashboard/social`) |
+| `/dashboard/team/` | `/api/v1/users/` + role/deactivate/verify | **2H done** |
+| `/dashboard/invoices/` | `/api/v1/invoices/` | **3.3 done** (API + Next.js; model was org-agnostic) |
+| `/dashboard/engagements/` | composed list APIs | **3.4 done** (hub shell) |
+
+---
+
+## Definition of done (per feature)
+
+1. Sidebar item opens a real page (no catch-all / iframe / StudioKit).  
+2. List + detail + mutations call Django JSON with correct auth.  
+3. Error/empty/loading states handled.  
+4. Parity checklist vs corresponding Django HTML view signed off.  
+5. No silent fallback to mock numbers.

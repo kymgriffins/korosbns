@@ -21,12 +21,21 @@ import {
 import { NavItem } from "@/components/shadcn-space/blocks/dashboard-shell-01/app-sidebar";
 import { cn } from "@/utils";
 import { usePathname, useSearchParams } from "next/navigation";
-import { isLearnNavHrefActive } from "@/lib/learn-nav";
+import { isLearnNavHrefActive, learnTabFromLocation } from "@/lib/learn-nav";
+import { useLearn } from "@/contexts/learn-context";
 
 function NavMainInner({ items }: { items: NavItem[] }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");
+  const { setActiveTab } = useLearn();
+
+  const onHubNavigate = (href: string) => {
+    const path = href.split("?")[0] ?? href;
+    const q = href.split("?")[1] ?? "";
+    const tab = learnTabFromLocation(path, new URLSearchParams(q).get("tab"));
+    if (tab) setActiveTab(tab);
+  };
 
   const renderItem = (item: NavItem) => {
     if (item.isSection && item.label) {
@@ -86,7 +95,11 @@ function NavMainInner({ items }: { items: NavItem[] }) {
                     : "",
                 )}
               >
-                <Link href={item.href} prefetch>
+                <Link
+                  href={item.href}
+                  prefetch
+                  onClick={() => onHubNavigate(item.href!)}
+                >
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
                 </Link>
@@ -127,7 +140,7 @@ function NavMainInner({ items }: { items: NavItem[] }) {
       return (
         <SidebarMenuSubItem key={item.title} className="w-full">
           <SidebarMenuSubButton asChild className="w-full">
-            <Link href={item.href} prefetch>
+            <Link href={item.href} prefetch onClick={() => onHubNavigate(item.href!)}>
               {item.title}
             </Link>
           </SidebarMenuSubButton>
@@ -143,7 +156,17 @@ function NavMainInner({ items }: { items: NavItem[] }) {
 
 export function NavMain({ items }: { items: NavItem[] }) {
   return (
-    <Suspense fallback={<div className="space-y-2 px-1">{items.map((item) => item.title ? <div key={item.title} className="h-9 rounded-lg bg-muted/40 animate-pulse" /> : null)}</div>}>
+    <Suspense
+      fallback={
+        <div className="space-y-2 px-1">
+          {items.map((item) =>
+            item.title ? (
+              <div key={item.title} className="h-9 animate-pulse rounded-lg bg-muted/40" />
+            ) : null,
+          )}
+        </div>
+      }
+    >
       <NavMainInner items={items} />
     </Suspense>
   );

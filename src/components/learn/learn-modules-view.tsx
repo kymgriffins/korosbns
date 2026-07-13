@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { RefreshCw, Search, BookOpen, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BitmojiAvatar } from "./bitmoji-avatar";
+import { Teachable } from "@/components/admin/teaching/teachable";
 import { Routes } from "@/constants/routes";
 import { getAuthorSlug } from "@/lib/learn-authors";
 import type { CivicModule } from "@/types/learn";
@@ -134,41 +135,56 @@ export function LearnModulesView({
         </div>
 
         <div className="relative">
-          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <input
-            type="search"
-            placeholder="Search modules…"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="h-11 w-full rounded-xl border border-border/70 bg-card pl-10 pr-3 text-sm outline-none ring-0 transition-shadow focus:border-primary/40 focus:ring-2 focus:ring-ring/30"
-          />
+          <Teachable
+            tipId="search-modules"
+            title="Search modules"
+            body="Find a module by title or topic. Clear the box to see the full list again."
+            className="w-full"
+          >
+            <div className="relative w-full">
+              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <input
+                type="search"
+                placeholder="Search modules…"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="h-11 w-full rounded-xl border border-border/70 bg-card pl-10 pr-3 text-sm outline-none ring-0 transition-shadow focus:border-primary/40 focus:ring-2 focus:ring-ring/30"
+              />
+            </div>
+          </Teachable>
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
-            {(
-              [
-                { key: "all", label: "All", count: counts.all },
-                { key: "in-progress", label: "Active", count: counts.inProgress },
-                { key: "completed", label: "Done", count: counts.completed },
-              ] as const
-            ).map((tab) => (
-              <button
-                key={tab.key}
-                type="button"
-                onClick={() => setActiveTab(tab.key)}
-                className={cn(
-                  "shrink-0 rounded-xl px-3.5 py-2 text-xs font-bold transition-colors focus-visible:ring-2 focus-visible:ring-ring",
-                  activeTab === tab.key
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground",
-                )}
-              >
-                {tab.label}
-                {tab.count > 0 ? ` · ${tab.count}` : ""}
-              </button>
-            ))}
-          </div>
+          <Teachable
+            tipId="filter-tabs"
+            title="Filters"
+            body="Show all modules, only ones you started (Active), or ones you finished (Done)."
+          >
+            <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
+              {(
+                [
+                  { key: "all", label: "All", count: counts.all },
+                  { key: "in-progress", label: "Active", count: counts.inProgress },
+                  { key: "completed", label: "Done", count: counts.completed },
+                ] as const
+              ).map((tab) => (
+                <button
+                  key={tab.key}
+                  type="button"
+                  onClick={() => setActiveTab(tab.key)}
+                  className={cn(
+                    "shrink-0 rounded-xl px-3.5 py-2 text-xs font-bold transition-colors focus-visible:ring-2 focus-visible:ring-ring",
+                    activeTab === tab.key
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground",
+                  )}
+                >
+                  {tab.label}
+                  {tab.count > 0 ? ` · ${tab.count}` : ""}
+                </button>
+              ))}
+            </div>
+          </Teachable>
 
           <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
             {(
