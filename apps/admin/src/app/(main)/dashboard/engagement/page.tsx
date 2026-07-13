@@ -98,9 +98,6 @@ export default function EngagementHubPage() {
                 <div className="text-2xl font-bold">
                   {loading ? <span className="text-muted-foreground">…</span> : kpi.value}
                 </div>
-                {"note" in kpi && kpi.note ? (
-                  <p className="mt-1 text-xs text-muted-foreground">{kpi.note}</p>
-                ) : null}
               </CardContent>
             </Card>
           </Link>
