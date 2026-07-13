@@ -220,7 +220,7 @@ export function LearnPathsHome() {
   }
 
   return (
-    <div className="w-full h-full min-h-0 bg-background flex flex-col overflow-hidden">
+    <div className="w-full bg-background">
       {activeProfile.language === "SH" && (
         <div className="w-full py-1 px-4 text-[10px] font-semibold bg-amber-500/15 border-b border-amber-500/20 text-amber-600 text-center">
           {text.shengComingSoon}
@@ -228,7 +228,7 @@ export function LearnPathsHome() {
       )}
 
       {selectedStage ? (
-        <div className="absolute inset-0 z-10 flex flex-col overflow-hidden bg-background md:relative md:inset-auto">
+        <div className="fixed inset-0 z-50 flex flex-col overflow-hidden bg-background">
           <StageDetailDrawer key={selectedStage.slug}
             stage={selectedStage}
             profile={activeProfile}
@@ -241,7 +241,7 @@ export function LearnPathsHome() {
           />
         </div>
       ) : (
-        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 md:p-6">
+        <div className="p-4 md:p-6">
           <AnimatePresence mode="popLayout">
             {activeTab === "home" && (
               <motion.div
@@ -300,7 +300,6 @@ export function LearnPathsHome() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.15, ease: "easeOut" }}
-                className="h-[calc(100dvh-120px)] md:h-auto"
               >
                 <LearnDocumentsView profile={activeProfile} />
               </motion.div>

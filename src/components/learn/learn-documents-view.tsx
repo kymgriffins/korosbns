@@ -270,8 +270,8 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
   }
 
   return (
-    <div className="flex flex-col h-full bg-background overflow-hidden">
-      <header className="hidden lg:flex items-center justify-between px-4 md:px-5 py-3 border-b border-border/50 shrink-0 gap-3">
+    <div className="flex flex-col bg-background">
+      <header className="sticky top-0 z-10 hidden items-center justify-between gap-3 border-b border-border/50 bg-background/95 px-4 py-3 backdrop-blur-md md:px-5 lg:flex">
         <div className="flex items-center gap-2.5 min-w-0">
           {selectedFolder ? (
             <button onClick={() => { setSelectedFolder(null); clearAllFilters(); }} className="p-1 hover:bg-muted/50 rounded-lg transition-colors -ml-1 shrink-0 focus-visible:ring-2 focus-visible:ring-ring">
@@ -325,7 +325,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
         </div>
       </header>
 
-      <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-4 md:space-y-5">
+      <div className="space-y-4 p-3 md:p-4 md:space-y-5">
         {!selectedFolder ? (
           <>
             <div className="flex items-center gap-0.5 bg-muted/30 p-0.5 rounded-lg w-fit ring-1 ring-border/30">

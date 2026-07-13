@@ -55,7 +55,7 @@ export const navData: NavItem[] = [
 
 const AppSidebar = ({ children }: { children: React.ReactNode }) => {
   return (
-    <SidebarProvider>
+    <SidebarProvider className="h-dvh overflow-hidden">
       <Sidebar className="py-4 px-0 bg-background">
         <div className="flex flex-col gap-6 bg-background">
           <SidebarHeader className="py-0 px-4">
@@ -76,7 +76,7 @@ const AppSidebar = ({ children }: { children: React.ReactNode }) => {
           </SidebarHeader>
 
           <SidebarContent className="overflow-hidden gap-0 px-0">
-            <SimpleBar autoHide className="h-[calc(100vh-5.5rem)]">
+            <SimpleBar autoHide className="h-[calc(100dvh-5.5rem)]">
               <div className="px-4 pb-4">
                 <NavMain items={navData} />
               </div>
@@ -85,11 +85,14 @@ const AppSidebar = ({ children }: { children: React.ReactNode }) => {
         </div>
       </Sidebar>
 
-      <div className="flex flex-1 flex-col min-w-0">
-        <header className="sticky top-0 z-50 hidden lg:flex items-center border-b px-6 py-3 bg-background">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+        <header className="sticky top-0 z-50 hidden shrink-0 items-center border-b bg-background px-6 py-3 lg:flex">
           <SiteHeader />
         </header>
-        <main className="flex-1 min-w-0 flex flex-col min-h-0">{children}</main>
+        {/* Single scrollport for all /learn (+ /learnhub) content */}
+        <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto overscroll-contain">
+          {children}
+        </main>
       </div>
     </SidebarProvider>
   );

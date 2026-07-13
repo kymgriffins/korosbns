@@ -19,7 +19,7 @@ import Wrapper from "@/components/global/wrapper";
 import { useOrg } from "@/contexts/org-context";
 import { citizenApi } from "@/lib/api-client";
 import { ApiRequestError } from "@/lib/api-errors";
-import { MotionPage, MotionSection } from "@/motion/wrappers";
+import { MotionPage } from "@/motion/wrappers";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -74,7 +74,12 @@ export default function ContactPage() {
 
   return (
     <MotionPage>
-      <section className="relative min-h-dvh overflow-hidden bg-background pt-20">
+      {/*
+        Do not use overflow-hidden + whileInView with a negative viewport margin
+        on this hero. Content starts at opacity 0; if IntersectionObserver never
+        fires (common with overflow clipping / -80px margin), the page stays blank.
+      */}
+      <section className="relative min-h-dvh bg-background pt-20">
         <div
           className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
           aria-hidden
@@ -86,7 +91,12 @@ export default function ContactPage() {
         <Wrapper className="relative z-10 flex min-h-[calc(100dvh-5rem)] flex-col justify-between py-6">
           <div className="flex flex-1 flex-col justify-center py-4">
             <div className="mx-auto w-full max-w-2xl space-y-8 px-4 sm:space-y-10 sm:px-6">
-              <MotionSection className="space-y-3 text-center">
+              <motion.div
+                className="space-y-3 text-center"
+                variants={staggerContainer}
+                initial="hidden"
+                animate="visible"
+              >
                 <motion.h1
                   className="font-heading text-3xl font-bold tracking-tight sm:text-5xl"
                   variants={fadeInUp}
@@ -105,36 +115,38 @@ export default function ContactPage() {
                     typically reply within 48 hours.
                   </Balancer>
                 </motion.p>
-              </MotionSection>
+              </motion.div>
 
-              <MotionSection>
-                <motion.ul
-                  className="flex flex-wrap justify-center gap-2 sm:gap-3"
-                  variants={staggerContainer}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                >
-                  {socials.map((social) => (
-                    <motion.li key={social.name} variants={fadeInUp}>
-                      <a
-                        href={social.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={cn(
-                          "inline-flex items-center gap-2 rounded-xl border border-border/60 px-3 py-2 text-xs font-medium transition-transform hover:-translate-y-0.5",
-                          social.chipClass,
-                        )}
-                      >
-                        <social.icon className="size-4" aria-hidden />
-                        <span className="hidden sm:inline">{social.name}</span>
-                      </a>
-                    </motion.li>
-                  ))}
-                </motion.ul>
-              </MotionSection>
+              <motion.ul
+                className="flex flex-wrap justify-center gap-2 sm:gap-3"
+                variants={staggerContainer}
+                initial="hidden"
+                animate="visible"
+              >
+                {socials.map((social) => (
+                  <motion.li key={social.name} variants={fadeInUp}>
+                    <a
+                      href={social.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={cn(
+                        "inline-flex items-center gap-2 rounded-xl border border-border/60 px-3 py-2 text-xs font-medium transition-transform hover:-translate-y-0.5",
+                        social.chipClass,
+                      )}
+                    >
+                      <social.icon className="size-4" aria-hidden />
+                      <span className="hidden sm:inline">{social.name}</span>
+                    </a>
+                  </motion.li>
+                ))}
+              </motion.ul>
 
-              <MotionSection className="space-y-4">
+              <motion.div
+                className="space-y-4"
+                variants={fadeInUp}
+                initial="hidden"
+                animate="visible"
+              >
                 <div className="text-center">
                   <h2 className="text-lg font-semibold">Ready to collaborate?</h2>
                   <p className="mt-1 text-sm text-muted-foreground">
@@ -232,7 +244,7 @@ export default function ContactPage() {
                     </div>
                   </motion.form>
                 )}
-              </MotionSection>
+              </motion.div>
             </div>
           </div>
 
