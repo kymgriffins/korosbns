@@ -325,10 +325,21 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
         </div>
       </header>
 
-      <div className="space-y-4 p-3 md:p-4 md:space-y-5">
+      <div className="space-y-4 p-4 md:p-6 md:space-y-5">
         {!selectedFolder ? (
           <>
-            <div className="flex items-center gap-0.5 bg-muted/30 p-0.5 rounded-lg w-fit ring-1 ring-border/30">
+            <div className="space-y-1 pb-1 lg:hidden">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                Library
+              </p>
+              <h1 className="font-heading text-2xl font-bold tracking-tight">
+                Documents
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                {`${documents.length} collections in the repository`}
+              </p>
+            </div>
+            <div className="flex w-fit items-center gap-0.5 rounded-xl bg-muted/40 p-1 ring-1 ring-border/40">
               {([
                 { id: "all" as const, label: "Repository" },
                 { id: "tracked" as const, label: "Tracked" },

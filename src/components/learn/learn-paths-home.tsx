@@ -241,7 +241,7 @@ export function LearnPathsHome() {
           />
         </div>
       ) : (
-        <div className="p-4 md:p-6">
+        <div className="min-w-0">
           <AnimatePresence mode="popLayout">
             {activeTab === "home" && (
               <motion.div
