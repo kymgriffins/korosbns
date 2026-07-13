@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { UserPlus } from "lucide-react";
+import { ShieldCheck, UserMinus, UserPlus } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,6 +26,7 @@ export default function AdminUsersPage() {
   const [role, setRole] = useState("all");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [busyId, setBusyId] = useState<string | null>(null);
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -52,6 +54,19 @@ export default function AdminUsersPage() {
     fetchUsers();
   }, [fetchUsers]);
 
+  const runAction = async (userId: string, action: () => Promise<unknown>, ok: string) => {
+    setBusyId(userId);
+    try {
+      await action();
+      toast.success(ok);
+      fetchUsers();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Action failed");
+    } finally {
+      setBusyId(null);
+    }
+  };
+
   const columns: Column<AdminUser>[] = [
     {
       key: "name",
@@ -69,18 +84,50 @@ export default function AdminUsersPage() {
       key: "role",
       header: "Role",
       cell: (u) => (
-        <Badge variant="secondary" className="text-[10px]">
-          {u.role || "—"}
-        </Badge>
+        <Select
+          value={u.role_slug || ""}
+          disabled={busyId === u.id}
+          onValueChange={(slug) => {
+            if (!slug || slug === u.role_slug) return;
+            runAction(u.id, () => adminUsersApi.assignRole(u.id, slug), `Role updated to ${slug}`);
+          }}
+        >
+          <SelectTrigger className="h-8 w-[130px]">
+            <SelectValue placeholder={u.role || "Role"} />
+          </SelectTrigger>
+          <SelectContent>
+            {INVITE_ROLE_OPTIONS.map((r) => (
+              <SelectItem key={r.slug} value={r.slug}>
+                {r.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       ),
     },
     {
       key: "is_active",
       header: "Status",
       cell: (u) => (
-        <Badge variant={u.is_active ? "default" : "secondary"} className="text-[10px]">
-          {u.is_active ? "Active" : "Inactive"}
-        </Badge>
+        <div className="flex flex-wrap gap-1">
+          <Badge variant={u.is_active ? "default" : "secondary"} className="text-[10px]">
+            {u.is_active ? "User active" : "User inactive"}
+          </Badge>
+          {u.membership_is_active === false ? (
+            <Badge variant="secondary" className="text-[10px]">
+              Membership off
+            </Badge>
+          ) : null}
+          {u.is_verified === false ? (
+            <Badge variant="outline" className="text-[10px]">
+              Unverified
+            </Badge>
+          ) : (
+            <Badge variant="outline" className="text-[10px]">
+              Verified
+            </Badge>
+          )}
+        </div>
       ),
     },
     {
@@ -93,12 +140,36 @@ export default function AdminUsersPage() {
       ),
     },
     {
-      key: "last_login",
-      header: "Last Login",
+      key: "actions",
+      header: "",
       cell: (u) => (
-        <span className="text-sm text-muted-foreground">
-          {u.last_login ? new Date(u.last_login).toLocaleDateString() : "—"}
-        </span>
+        <div className="flex justify-end gap-1">
+          {u.is_verified === false ? (
+            <Button
+              size="sm"
+              variant="secondary"
+              disabled={busyId === u.id}
+              onClick={() => runAction(u.id, () => adminUsersApi.verify(u.id), "User verified")}
+            >
+              <ShieldCheck className="mr-1 size-3.5" />
+              Verify
+            </Button>
+          ) : null}
+          {u.membership_is_active !== false ? (
+            <Button
+              size="sm"
+              variant="ghost"
+              disabled={busyId === u.id}
+              onClick={() => {
+                if (!confirm(`Deactivate membership for ${u.email}?`)) return;
+                runAction(u.id, () => adminUsersApi.deactivate(u.id), "Member deactivated");
+              }}
+            >
+              <UserMinus className="mr-1 size-3.5" />
+              Deactivate
+            </Button>
+          ) : null}
+        </div>
       ),
     },
   ];
@@ -109,7 +180,7 @@ export default function AdminUsersPage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Users</h1>
           <p className="text-sm text-muted-foreground">
-            Organization members from Django team directory
+            Organization members — assign roles, verify, or deactivate via Django JSON APIs.
           </p>
         </div>
         <Button asChild size="sm">
@@ -191,10 +262,6 @@ export default function AdminUsersPage() {
           </Select>
         </CardHeader>
         <CardContent>
-          <p className="mb-4 text-xs text-muted-foreground">
-            Role change, deactivate, and verify are HTML-only in Django today (Phase 2H). Add members via
-            invitations.
-          </p>
           <DataTable
             columns={columns}
             data={users}

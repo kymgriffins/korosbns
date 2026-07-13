@@ -107,24 +107,35 @@
   - `/dashboard/trivia` + `/dashboard/trivia/[id]/attempts`.
 
 ### 2D. Events
-- [ ] **2D.1** Harden admin events API (galleries parity with HTML).
-- [ ] **2D.2** Next.js events admin UI.
+- [x] **2D.1** Harden admin events API (galleries parity with HTML).
+  - `GET|POST /api/v1/content/admin/events/`, `GET|PATCH|DELETE .../<uuid>/`, galleries list/create + `PATCH|DELETE .../galleries/<uuid>/`. `image_url` + `physical_location` persisted; soft-delete. Permission: `IsLeadershipOrDigitalTeam`.
+- [x] **2D.2** Next.js events admin UI.
+  - `/dashboard/events` CRUD + gallery links; nav under Engagement; hub KPI links here.
 
 ### 2E. TikTok / social
-- [ ] **2E.1** Backend: TikTok admin write API (public read exists).
-- [ ] **2E.2** Next.js social media hub + TikTok CRUD.
+- [x] **2E.1** Backend: TikTok admin write API (public read exists).
+  - `GET|POST /api/v1/content/admin/tiktok/`, `GET|PATCH|DELETE .../<uuid>/`. Permission: `IsLeadershipOrDigitalTeam`.
+- [x] **2E.2** Next.js social media hub + TikTok CRUD.
+  - `/dashboard/social` TikTok CRUD; nav under Communication.
 
 ### 2F. KE Budget writes
-- [ ] **2F.1** Backend: admin write for fiscal year / entity / allocation (reads on v1/v2 today).
-- [ ] **2F.2** Next.js budget-data admin beyond read-only.
+- [x] **2F.1** Backend: admin write for fiscal year / entity / allocation (reads on v1/v2 today).
+  - Legacy HTML parity on `content.models.budget`: `GET|POST /api/v1/budget/admin/fiscal-years/`, detail PATCH/DELETE, `PUT .../allocations/`, `GET .../admin/entities/`. Permission: `IsOrgAdminOrManager`.
+  - **Blocker / note:** writes target legacy tables (same as Django HTML). v2 staging ingest/promote remains the bulk pipeline; no entity CRUD in HTML → none in API.
+- [x] **2F.2** Next.js budget-data admin beyond read-only.
+  - `/dashboard/ke-budget` fiscal years + sector allocation editor; nav under Org. Existing `/dashboard/budget-data` record upload left as-is.
 
 ### 2G. Studio / project
-- [ ] **2G.1** Backend: admin write for studio services/portfolio/testimonials/bookings status.
-- [ ] **2G.2** Backend: project milestones/config write.
-- [ ] **2G.3** Next.js studio + project admin pages.
+- [x] **2G.1** Backend: admin write for studio services/portfolio/testimonials/bookings status.
+  - `/api/v1/studio/admin/services|portfolio|testimonials|bookings/` (+ booking messages). Permission: `IsOrgAdminOrManager`.
+- [x] **2G.2** Backend: project milestones/config write.
+  - `/api/v1/project/admin/milestones/`, `/api/v1/project/admin/config/`.
+- [x] **2G.3** Next.js studio + project admin pages.
+  - `/dashboard/studio` tabs: services, bookings, milestones, config. Portfolio/testimonials API shipped; UI focuses on services + bookings + project (portfolio/testimonials CRUD can use same clients later).
 
 ### 2H. Team beyond list
-- [ ] **2H.1** Role assign / deactivate / verify endpoints if missing from JSON; then Next.js.
+- [x] **2H.1** Role assign / deactivate / verify endpoints if missing from JSON; then Next.js.
+  - `PATCH /api/v1/users/<uuid>/role/`, `POST .../deactivate/`, `POST .../verify/`. List serializer enriched with `membership_id`, `role_slug`, `membership_is_active`, `is_verified`. Users page row actions wired.
 
 ---
 
@@ -176,7 +187,7 @@ Remove until real: Mail iframe, Live Chat, StudioKit demos, finance demos.
 | Django HTML | API surface | Next.js status |
 |-------------|-------------|----------------|
 | `/dashboard/weekly-notes/` | `/api/v1/notes/` (+ teams, publish, audit, exports) | **DONE** (Tasks) |
-| `/dashboard/team/` | `/api/v1/users/`, `/api/v1/users/stats/`, invitations | **1B done** (list/stats/invite; role/deactivate → 2H) |
+| `/dashboard/team/` | `/api/v1/users/`, `/api/v1/users/stats/`, invitations, role/deactivate/verify | **1B + 2H done** |
 | `/dashboard/roles/` | `/api/v1/roles/` (+ permissions catalog) | **3.1 done** |
 | `/dashboard/settings/` | `/api/v1/org/config/`, partners | **DONE** (Settings + Partners) |
 | /dashboard/newsletter/* | /api/v1/newsletter/*, contact, email-hooks, notifications, audit-logs | **1D done** (CRUD/send + subscribers/notifications/audit pages) |
@@ -186,7 +197,11 @@ Remove until real: Mail iframe, Live Chat, StudioKit demos, finance demos.
 | `/dashboard/docrepository/` | `/api/v1/docrepository/*` | **DONE** (apps/admin Library) |
 | `/dashboard/community/` (forum) | `/api/v1/engagement/forum-threads/` | **1G done** (list/detail/reply + soft-delete moderation) |
 | `/dashboard/gamification/` | `/api/v1/gamification/rules|badges/` (+ learner `/api/gamification/`) | **3.2 done** |
-| `/dashboard/studio/` | Public read; admin write HTML | Needs admin write APIs |
+| `/dashboard/studio/` | `/api/v1/studio/admin/*` + public reads | **2G done** (services/bookings/milestones/config UI; portfolio/testimonials APIs ready) |
+| `/dashboard/ke-budget/` | `/api/v1/budget/admin/fiscal-years|entities/` | **2F done** (legacy FY + allocations; v2 staging unchanged) |
+| `/dashboard/events/` | `/api/v1/content/admin/events/` (+ galleries) | **2D done** |
+| `/dashboard/tiktok/` / social | `/api/v1/content/admin/tiktok/` | **2E done** (`/dashboard/social`) |
+| `/dashboard/team/` | `/api/v1/users/` + role/deactivate/verify | **2H done** |
 | `/dashboard/invoices/` | `/api/v1/invoices/` | **3.3 done** (API + Next.js; model was org-agnostic) |
 | `/dashboard/engagements/` | composed list APIs | **3.4 done** (hub shell) |
 

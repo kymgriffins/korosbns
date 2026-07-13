@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Canonical Django admin API client (P0.6).
  * Consumed by `apps/admin` and `src/app/admin` via `@/lib/admin-api`
  * (apps/admin tsconfig falls through `./src/*` → `../../src/*`).
@@ -124,7 +124,7 @@ export const adminSecurityApi = {
   getInfo: () => adminFetch<SecurityInfoApi>("/security/info/"),
 };
 
-/** Org team directory ΓÇö GET list + stats only. Writes (role/deactivate) are HTML-only until Phase 2H. */
+/** Org team directory — list/stats + role/deactivate/verify (Phase 2H). */
 export const adminUsersApi = {
   list: (params?: { page?: number; search?: string; role?: string }) => {
     const q = new URLSearchParams();
@@ -135,6 +135,21 @@ export const adminUsersApi = {
     return adminFetch<ApiListResponse<AdminUser>>(`/users/${qs ? `?${qs}` : ""}`);
   },
   stats: () => adminFetch<AdminUserStats>("/users/stats/"),
+  assignRole: (userId: string, role_slug: string) =>
+    adminFetch<AdminUser>(`/users/${userId}/role/`, {
+      method: "PATCH",
+      body: JSON.stringify({ role_slug }),
+    }),
+  deactivate: (userId: string) =>
+    adminFetch<AdminUser>(`/users/${userId}/deactivate/`, {
+      method: "POST",
+      body: JSON.stringify({}),
+    }),
+  verify: (userId: string) =>
+    adminFetch<AdminUser>(`/users/${userId}/verify/`, {
+      method: "POST",
+      body: JSON.stringify({}),
+    }),
 };
 
 /** Seeded role slugs for invitations (full catalog via GET /roles/). */
@@ -490,6 +505,375 @@ export const adminBudgetApi = {
     adminFetch<void>(`/budget/records/${id}/`, { method: "DELETE" }),
 };
 
+/** KE Budget fiscal year / allocation admin (legacy HTML parity — Phase 2F). */
+export type AdminBudgetFiscalYear = {
+  id: string;
+  fiscal_year: number;
+  label: string;
+  starts_at?: string | null;
+  ends_at?: string | null;
+  is_current: boolean;
+  allocations?: AdminBudgetAllocation[];
+};
+
+export type AdminBudgetAllocation = {
+  id: string;
+  entity_id: string;
+  entity_name?: string;
+  entity_code?: string;
+  allocation_type: string;
+  amount: string;
+  notes?: string;
+};
+
+export type AdminBudgetEntity = {
+  id: string;
+  type: string;
+  code: string;
+  name: string;
+  is_active: boolean;
+  sort_order: number;
+};
+
+export type AdminBudgetFiscalYearWrite = {
+  fiscal_year: number;
+  label?: string;
+  starts_at?: string | null;
+  ends_at?: string | null;
+  is_current?: boolean;
+};
+
+export const adminKeBudgetApi = {
+  listFiscalYears: () =>
+    adminFetch<ApiListResponse<AdminBudgetFiscalYear>>("/budget/admin/fiscal-years/"),
+  getFiscalYear: (id: string) =>
+    adminFetch<AdminBudgetFiscalYear>(`/budget/admin/fiscal-years/${id}/`),
+  createFiscalYear: (data: AdminBudgetFiscalYearWrite) =>
+    adminFetch<AdminBudgetFiscalYear>("/budget/admin/fiscal-years/", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+  updateFiscalYear: (id: string, data: Partial<AdminBudgetFiscalYearWrite>) =>
+    adminFetch<AdminBudgetFiscalYear>(`/budget/admin/fiscal-years/${id}/`, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    }),
+  deleteFiscalYear: (id: string) =>
+    adminFetch<void>(`/budget/admin/fiscal-years/${id}/`, { method: "DELETE" }),
+  saveAllocations: (
+    fyId: string,
+    data: {
+      allocations: Array<{
+        entity_id: string;
+        allocation_type?: string;
+        amount: string | number;
+        notes?: string;
+      }>;
+      delete_ids?: string[];
+    },
+  ) =>
+    adminFetch<AdminBudgetFiscalYear>(`/budget/admin/fiscal-years/${fyId}/allocations/`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }),
+  listEntities: (params?: { type?: string }) => {
+    const q = new URLSearchParams();
+    if (params?.type) q.set("type", params.type);
+    const qs = q.toString();
+    return adminFetch<ApiListResponse<AdminBudgetEntity>>(
+      `/budget/admin/entities/${qs ? `?${qs}` : ""}`,
+    );
+  },
+};
+
+export type AdminEventGallery = {
+  id: string;
+  url: string;
+  label: string;
+  display_order: number;
+  is_active?: boolean;
+};
+
+export type AdminEvent = {
+  id: string;
+  title: string;
+  summary: string;
+  description: string;
+  image_url?: string;
+  location_url?: string;
+  starts_at: string;
+  ends_at?: string | null;
+  is_active: boolean;
+  metadata?: Record<string, unknown>;
+  physical_location?: string;
+  galleries: AdminEventGallery[];
+  created_at?: string | null;
+  updated_at?: string | null;
+};
+
+export type AdminEventWrite = {
+  title: string;
+  summary?: string;
+  description?: string;
+  image_url?: string;
+  location_url?: string;
+  starts_at: string;
+  ends_at?: string | null;
+  is_active?: boolean;
+  physical_location?: string;
+  metadata?: Record<string, unknown>;
+};
+
+export const adminEventsApi = {
+  list: () => adminFetch<ApiListResponse<AdminEvent>>("/content/admin/events/"),
+  get: (id: string) => adminFetch<AdminEvent>(`/content/admin/events/${id}/`),
+  create: (data: AdminEventWrite) =>
+    adminFetch<AdminEvent>("/content/admin/events/", { method: "POST", body: JSON.stringify(data) }),
+  update: (id: string, data: Partial<AdminEventWrite>) =>
+    adminFetch<AdminEvent>(`/content/admin/events/${id}/`, { method: "PATCH", body: JSON.stringify(data) }),
+  delete: (id: string) =>
+    adminFetch<void>(`/content/admin/events/${id}/`, { method: "DELETE" }),
+  listGalleries: (eventId: string) =>
+    adminFetch<ApiListResponse<AdminEventGallery>>(`/content/admin/events/${eventId}/galleries/`),
+  addGallery: (
+    eventId: string,
+    data: { url: string; label?: string; display_order?: number; link_id?: string },
+  ) =>
+    adminFetch<AdminEventGallery>(`/content/admin/events/${eventId}/galleries/`, {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+  updateGallery: (
+    eventId: string,
+    linkId: string,
+    data: Partial<{ url: string; label: string; display_order: number; is_active: boolean }>,
+  ) =>
+    adminFetch<AdminEventGallery>(`/content/admin/events/${eventId}/galleries/${linkId}/`, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    }),
+  deleteGallery: (eventId: string, linkId: string) =>
+    adminFetch<void>(`/content/admin/events/${eventId}/galleries/${linkId}/`, { method: "DELETE" }),
+};
+
+export type AdminTikTokVideo = {
+  id: string;
+  tiktok_url: string;
+  video_url: string;
+  cover_image_url: string;
+  embed_html: string;
+  caption: string;
+  is_active: boolean;
+  is_featured: boolean;
+  display_order: number;
+  like_count?: number;
+  created_at?: string | null;
+  updated_at?: string | null;
+};
+
+export type AdminTikTokWrite = {
+  tiktok_url?: string;
+  video_url?: string;
+  cover_image_url?: string;
+  embed_html?: string;
+  caption?: string;
+  is_active?: boolean;
+  is_featured?: boolean;
+  display_order?: number;
+};
+
+export const adminTikTokApi = {
+  list: (params?: { is_featured?: boolean; is_active?: boolean }) => {
+    const q = new URLSearchParams();
+    if (params?.is_featured !== undefined) q.set("is_featured", String(params.is_featured));
+    if (params?.is_active !== undefined) q.set("is_active", String(params.is_active));
+    const qs = q.toString();
+    return adminFetch<ApiListResponse<AdminTikTokVideo>>(
+      `/content/admin/tiktok/${qs ? `?${qs}` : ""}`,
+    );
+  },
+  get: (id: string) => adminFetch<AdminTikTokVideo>(`/content/admin/tiktok/${id}/`),
+  create: (data: AdminTikTokWrite) =>
+    adminFetch<AdminTikTokVideo>("/content/admin/tiktok/", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+  update: (id: string, data: Partial<AdminTikTokWrite>) =>
+    adminFetch<AdminTikTokVideo>(`/content/admin/tiktok/${id}/`, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    }),
+  delete: (id: string) =>
+    adminFetch<void>(`/content/admin/tiktok/${id}/`, { method: "DELETE" }),
+};
+
+export type AdminStudioService = {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  price: string;
+  order: number;
+  is_published: boolean;
+};
+
+export type AdminStudioPortfolio = {
+  id: string;
+  title: string;
+  description: string;
+  media_type: string;
+  image_url: string;
+  video_url: string;
+  video_platform: string;
+  category: string;
+  order: number;
+  is_published: boolean;
+};
+
+export type AdminStudioTestimonial = {
+  id: string;
+  client_name: string;
+  client_role: string;
+  content: string;
+  rating: number;
+  image_url: string;
+  order: number;
+  is_published: boolean;
+};
+
+export type AdminStudioBooking = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  service_type: string;
+  message: string;
+  status: string;
+  notes: string;
+  is_read: boolean;
+  assigned_to_id?: string | null;
+  assigned_to_email?: string | null;
+  last_contacted_at?: string | null;
+  follow_up_at?: string | null;
+  created_at?: string | null;
+  messages?: Array<{
+    id: string;
+    direction: string;
+    message: string;
+    sent_by_name?: string;
+    created_at?: string | null;
+  }>;
+};
+
+export type AdminProjectMilestone = {
+  id: string;
+  title: string;
+  description: string;
+  date?: string | null;
+  image_url: string;
+  milestone_type: string;
+  order: number;
+  is_published: boolean;
+};
+
+export type AdminProjectConfig = {
+  mission: string;
+  vision: string;
+  about_text: string;
+  updated_at?: string | null;
+};
+
+export const adminStudioApi = {
+  listServices: () => adminFetch<ApiListResponse<AdminStudioService>>("/studio/admin/services/"),
+  createService: (data: Partial<AdminStudioService>) =>
+    adminFetch<AdminStudioService>("/studio/admin/services/", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+  updateService: (id: string, data: Partial<AdminStudioService>) =>
+    adminFetch<AdminStudioService>(`/studio/admin/services/${id}/`, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    }),
+  deleteService: (id: string) =>
+    adminFetch<void>(`/studio/admin/services/${id}/`, { method: "DELETE" }),
+  listPortfolio: () => adminFetch<ApiListResponse<AdminStudioPortfolio>>("/studio/admin/portfolio/"),
+  createPortfolio: (data: Partial<AdminStudioPortfolio>) =>
+    adminFetch<AdminStudioPortfolio>("/studio/admin/portfolio/", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+  updatePortfolio: (id: string, data: Partial<AdminStudioPortfolio>) =>
+    adminFetch<AdminStudioPortfolio>(`/studio/admin/portfolio/${id}/`, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    }),
+  deletePortfolio: (id: string) =>
+    adminFetch<void>(`/studio/admin/portfolio/${id}/`, { method: "DELETE" }),
+  listTestimonials: () =>
+    adminFetch<ApiListResponse<AdminStudioTestimonial>>("/studio/admin/testimonials/"),
+  createTestimonial: (data: Partial<AdminStudioTestimonial>) =>
+    adminFetch<AdminStudioTestimonial>("/studio/admin/testimonials/", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+  updateTestimonial: (id: string, data: Partial<AdminStudioTestimonial>) =>
+    adminFetch<AdminStudioTestimonial>(`/studio/admin/testimonials/${id}/`, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    }),
+  deleteTestimonial: (id: string) =>
+    adminFetch<void>(`/studio/admin/testimonials/${id}/`, { method: "DELETE" }),
+  listBookings: (params?: { status?: string }) => {
+    const q = new URLSearchParams();
+    if (params?.status) q.set("status", params.status);
+    const qs = q.toString();
+    return adminFetch<{
+      results: AdminStudioBooking[];
+      summary?: { total: number; unread: number; by_status: Record<string, number> };
+    }>(`/studio/admin/bookings/${qs ? `?${qs}` : ""}`);
+  },
+  getBooking: (id: string) => adminFetch<AdminStudioBooking>(`/studio/admin/bookings/${id}/`),
+  updateBooking: (
+    id: string,
+    data: Partial<{ status: string; notes: string; is_read: boolean; assigned_to_id: string | null }>,
+  ) =>
+    adminFetch<AdminStudioBooking>(`/studio/admin/bookings/${id}/`, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    }),
+  deleteBooking: (id: string) =>
+    adminFetch<void>(`/studio/admin/bookings/${id}/`, { method: "DELETE" }),
+  addBookingMessage: (id: string, message: string) =>
+    adminFetch<{ id: string }>(`/studio/admin/bookings/${id}/messages/`, {
+      method: "POST",
+      body: JSON.stringify({ message }),
+    }),
+};
+
+export const adminProjectApi = {
+  listMilestones: () =>
+    adminFetch<ApiListResponse<AdminProjectMilestone>>("/project/admin/milestones/"),
+  createMilestone: (data: Partial<AdminProjectMilestone>) =>
+    adminFetch<AdminProjectMilestone>("/project/admin/milestones/", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+  updateMilestone: (id: string, data: Partial<AdminProjectMilestone>) =>
+    adminFetch<AdminProjectMilestone>(`/project/admin/milestones/${id}/`, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    }),
+  deleteMilestone: (id: string) =>
+    adminFetch<void>(`/project/admin/milestones/${id}/`, { method: "DELETE" }),
+  getConfig: () => adminFetch<AdminProjectConfig>("/project/admin/config/"),
+  updateConfig: (data: Partial<AdminProjectConfig>) =>
+    adminFetch<AdminProjectConfig>("/project/admin/config/", {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    }),
+};
+
 export const adminRolesApi = {
   list: () => adminFetch<ApiListResponse<AdminRole>>("/roles/"),
   get: (id: string) => adminFetch<AdminRole>(`/roles/${id}/`),
@@ -648,13 +1032,17 @@ export const adminInvoicesApi = {
 
 export type AdminUser = {
   id: string;
+  membership_id?: string;
   email: string;
   first_name: string;
   last_name: string;
   display_name?: string;
   avatar?: string | null;
   role: string;
+  role_slug?: string;
   is_active: boolean;
+  membership_is_active?: boolean;
+  is_verified?: boolean;
   date_joined: string;
   last_login?: string | null;
 };

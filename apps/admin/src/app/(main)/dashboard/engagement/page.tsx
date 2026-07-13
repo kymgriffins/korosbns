@@ -67,8 +67,7 @@ export default function EngagementHubPage() {
       label: "Events",
       value: eventCount,
       icon: CalendarDays,
-      href: "/dashboard/engagement",
-      note: "Admin write UI pending Phase 2D",
+      href: "/dashboard/events",
     },
   ];
 
