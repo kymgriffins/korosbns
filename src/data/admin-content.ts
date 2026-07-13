@@ -104,22 +104,31 @@ export const adminContentData = {
       withFallback(
         "admin-content",
         () => adminModulesApi.get(slug),
-        () => _modules.find((m) => m.slug === slug) ?? null,
+        () => _modules.find((m) => m.slug === slug || m.id === slug) ?? null,
       ),
     create: (data: Partial<AdminModule>) =>
       withFallback(
         "admin-content",
-        () => adminModulesApi.create(data),
+        () =>
+          adminModulesApi.create({
+            title: data.title ?? "Untitled",
+            slug: data.slug ?? `untitled-${Date.now()}`,
+            description: data.description,
+            image_url: data.image_url,
+            status: data.status,
+            author_id: data.author_id,
+            author_is_team: data.author_is_team,
+            order: data.order,
+            is_financial_year_analysis: data.is_financial_year_analysis,
+            fiscal_year_id: data.fiscal_year_id,
+          }),
         () => {
           const m: AdminModule = {
             id: `new-${Date.now()}`,
             title: data.title ?? "Untitled",
             slug: data.slug ?? `untitled-${Date.now()}`,
             description: data.description ?? "",
-            badge: data.badge ?? "",
-            badgeName: data.badgeName ?? "",
             status: "draft",
-            steps: [],
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           };
@@ -130,9 +139,21 @@ export const adminContentData = {
     update: (slug: string, data: Partial<AdminModule>) =>
       withFallback(
         "admin-content",
-        () => adminModulesApi.update(slug, data),
+        () =>
+          adminModulesApi.update(slug, {
+            title: data.title,
+            slug: data.slug,
+            description: data.description,
+            image_url: data.image_url,
+            status: data.status,
+            author_id: data.author_id,
+            author_is_team: data.author_is_team,
+            order: data.order,
+            is_financial_year_analysis: data.is_financial_year_analysis,
+            fiscal_year_id: data.fiscal_year_id,
+          }),
         () => {
-          const idx = _modules.findIndex((m) => m.slug === slug);
+          const idx = _modules.findIndex((m) => m.slug === slug || m.id === slug);
           if (idx !== -1) _modules[idx] = { ..._modules[idx], ...data };
           return _modules[idx] ?? null;
         },
@@ -140,10 +161,13 @@ export const adminContentData = {
     delete: (slug: string) =>
       withFallback(
         "admin-content",
-        () => adminModulesApi.delete(slug).then(() => {
-          _modules = _modules.filter((m) => m.slug !== slug);
-        }),
-        () => { _modules = _modules.filter((m) => m.slug !== slug); },
+        () =>
+          adminModulesApi.delete(slug).then(() => {
+            _modules = _modules.filter((m) => m.slug !== slug && m.id !== slug);
+          }),
+        () => {
+          _modules = _modules.filter((m) => m.slug !== slug && m.id !== slug);
+        },
       ),
   },
 
@@ -192,11 +216,10 @@ export const adminContentData = {
     update: (id: string, data: { title?: string; civic_module?: string | null }) =>
       withFallback(
         "admin-content",
-        () => adminForumApi.updateThread(id, data).then((r) => {
-          const idx = _forumThreads.findIndex((t) => t.id === id);
-          if (idx !== -1) _forumThreads[idx] = r;
-          return r;
-        }),
+        async () => {
+          // No PATCH thread API — soft-delete + recreate is the admin path; local merge only.
+          throw new Error("Forum thread update is not available on the Django JSON API.");
+        },
         () => {
           const idx = _forumThreads.findIndex((t) => t.id === id);
           if (idx !== -1) _forumThreads[idx] = { ..._forumThreads[idx], ...data };
@@ -206,15 +229,18 @@ export const adminContentData = {
     deleteThread: (id: string) =>
       withFallback(
         "admin-content",
-        () => adminForumApi.deleteThread(id).then(() => {
+        () =>
+          adminForumApi.softDeleteThread(id).then(() => {
+            _forumThreads = _forumThreads.filter((t) => t.id !== id);
+          }),
+        () => {
           _forumThreads = _forumThreads.filter((t) => t.id !== id);
-        }),
-        () => { _forumThreads = _forumThreads.filter((t) => t.id !== id); },
+        },
       ),
     deletePost: (threadId: string, postId: string) =>
       withFallback(
         "admin-content",
-        () => adminForumApi.deletePost(threadId, postId),
+        () => adminForumApi.softDeletePost(threadId, postId),
         () => {},
       ),
   },

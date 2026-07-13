@@ -29,7 +29,7 @@ export default function AdminModulesPage() {
   const [mode, setMode] = useState<Mode>("create");
   const [editSlug, setEditSlug] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState({ title: "", description: "", badge: "", badgeName: "", status: "draft" });
+  const [form, setForm] = useState({ title: "", slug: "", description: "", status: "draft" });
 
   const fetchModules = useCallback(async () => {
     setLoading(true); setError("");
@@ -44,13 +44,13 @@ export default function AdminModulesPage() {
 
   useEffect(() => { fetchModules(); }, [fetchModules]);
 
-  const resetForm = () => setForm({ title: "", description: "", badge: "", badgeName: "", status: "draft" });
+  const resetForm = () => setForm({ title: "", slug: "", description: "", status: "draft" });
 
   const openCreate = () => { setMode("create"); setEditSlug(null); resetForm(); setDialogOpen(true); };
 
   const openEdit = (m: AdminModule) => {
     setMode("edit"); setEditSlug(m.slug);
-    setForm({ title: m.title, description: m.description, badge: m.badge, badgeName: m.badgeName, status: m.status });
+    setForm({ title: m.title, slug: m.slug, description: m.description, status: m.status });
     setDialogOpen(true);
   };
 
@@ -73,9 +73,9 @@ export default function AdminModulesPage() {
 
   const columns: Column<AdminModule>[] = [
     { key: "title", header: "Title", cell: (m) => <span className="font-medium">{m.title}</span> },
-    { key: "badge", header: "Badge", cell: (m) => m.badgeName ? <Badge variant="secondary" className="text-[10px]">{m.badgeName}</Badge> : <span className="text-muted-foreground">—</span> },
+    { key: "slug", header: "Slug", cell: (m) => <span className="text-sm text-muted-foreground">{m.slug}</span> },
     { key: "status", header: "Status", cell: (m) => <Badge variant={m.status === "published" ? "default" : "secondary"} className="capitalize text-[10px]">{m.status}</Badge> },
-    { key: "steps", header: "Steps", cell: (m) => <span className="tabular-nums text-muted-foreground">{m.steps?.length ?? 0}</span> },
+    { key: "chapters", header: "Chapters", cell: (m) => <span className="tabular-nums text-muted-foreground">{m.chapter_count ?? 0}</span> },
     { key: "created", header: "Created", cell: (m) => <span className="text-sm text-muted-foreground">{new Date(m.created_at).toLocaleDateString()}</span> },
     { key: "actions", header: "", className: "w-24", cell: (m) => (
       <div className="flex items-center gap-1">
@@ -98,11 +98,8 @@ export default function AdminModulesPage() {
       </Card>
       <FormDialog open={dialogOpen} onOpenChange={setDialogOpen} title={mode === "create" ? "Create Module" : "Edit Module"} onSubmit={handleSubmit} loading={saving}>
         <div className="space-y-2"><Label>Title</Label><Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} /></div>
+        <div className="space-y-2"><Label>Slug</Label><Input value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} placeholder="optional-url-slug" /></div>
         <div className="space-y-2"><Label>Description</Label><Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} /></div>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2"><Label>Badge Code</Label><Input value={form.badge} onChange={(e) => setForm({ ...form, badge: e.target.value })} placeholder="e.g., bronze" /></div>
-          <div className="space-y-2"><Label>Badge Name</Label><Input value={form.badgeName} onChange={(e) => setForm({ ...form, badgeName: e.target.value })} placeholder="e.g., Bronze" /></div>
-        </div>
         <div className="space-y-2">
           <Label>Status</Label>
           <Select value={form.status} onValueChange={(v) => setForm({ ...form, status: v })}>

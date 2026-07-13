@@ -213,10 +213,11 @@ export const adminContentApi = {
 };
 
 export const adminModulesApi = {
-  list: (params?: { search?: string; status?: string }) => {
+  list: (params?: { search?: string; status?: string; page?: number }) => {
     const q = new URLSearchParams();
     if (params?.search) q.set("search", params.search);
     if (params?.status) q.set("status", params.status);
+    if (params?.page) q.set("page", String(params.page));
     const qs = q.toString();
     return adminFetch<ApiListResponse<AdminModule>>(`/content/admin/civic-modules/${qs ? `?${qs}` : ""}`);
   },
@@ -365,11 +366,17 @@ export const adminAuthorsApi = {
  * Forum threads: GET list/detail + POST create/reply + admin soft-delete.
  */
 export const adminForumApi = {
-  listThreads: (params?: { page?: number; chapter_id?: string; module_id?: string }) => {
+  listThreads: (params?: {
+    page?: number;
+    chapter_id?: string;
+    module_id?: string;
+    search?: string;
+  }) => {
     const q = new URLSearchParams();
     if (params?.page) q.set("page", String(params.page));
     if (params?.chapter_id) q.set("chapter_id", params.chapter_id);
     if (params?.module_id) q.set("module_id", params.module_id);
+    if (params?.search) q.set("search", params.search);
     const qs = q.toString();
     return adminFetch<ApiListResponse<AdminForumThread>>(`/engagement/forum-threads/${qs ? `?${qs}` : ""}`);
   },

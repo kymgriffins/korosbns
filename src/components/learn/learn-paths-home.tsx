@@ -158,10 +158,11 @@ export function LearnPathsHome({ tab }: Props) {
     }
   }, [isLoggedIn, authUser, authLoading]);
 
-  const handleUpdateProfile = (updated: LearnHubProfile) => {
+  const handleUpdateProfile = (updated: LearnHubProfile | Record<string, unknown>) => {
     if (!isLoggedIn) return;
-    setProfile(updated);
-    localStorage.setItem("bns_user_profile", JSON.stringify(updated));
+    const next = updated as LearnHubProfile;
+    setProfile(next);
+    localStorage.setItem("bns_user_profile", JSON.stringify(next));
   };
 
   const handleResetProgress = () => {
