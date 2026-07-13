@@ -398,7 +398,7 @@ function LearnAppShell({ children }: { children: React.ReactNode }) {
               <ThemeToggle />
             </div>
           </header>
-          <main className="flex-1 overflow-y-auto pb-mobile-nav lg:pb-0">{children}</main>
+          <main className="flex-1 overflow-y-auto">{children}</main>
           <LearnMobileNav />
         </div>
       </SidebarProvider>
