@@ -55,13 +55,13 @@
 - [x] **1C.4** Privacy / security: `GET /api/v1/privacy/config/`, `GET /api/v1/security/info/` + password change — `/dashboard/privacy`, `/dashboard/security`.
 
 ### 1D. Communication (claimed wired — audit for real CRUD/send)
-- [ ] **1D.1** Campaigns: list/create/edit/send/schedule/preview → `/api/v1/newsletter/campaigns/`.
-- [ ] **1D.2** Inbox notes/read → `/api/v1/newsletter/inbox/`.
-- [ ] **1D.3** Outbox dispatch/retry → `/api/v1/newsletter/outbox/`.
-- [ ] **1D.4** Contact messages reply/read/delete → `/api/v1/contact/messages/`.
-- [ ] **1D.5** Email hooks list/resend → `/api/v1/email-hooks/`.
-- [ ] **1D.6** Subscribers list → `/api/v1/newsletter/subscribers/` (add nav if missing).
-- [ ] **1D.7** Notifications / trigger-rules / audit-logs (Django `/dashboard/notifications/`) — add Next.js pages.
+- [x] **1D.1** Campaigns: list/create/edit/send/schedule/preview → `/api/v1/newsletter/campaigns/`.
+- [x] **1D.2** Inbox notes/read → `/api/v1/newsletter/inbox/`.
+- [x] **1D.3** Outbox dispatch/retry → `/api/v1/newsletter/outbox/`.
+- [x] **1D.4** Contact messages reply/read/delete → `/api/v1/contact/messages/`.
+- [x] **1D.5** Email hooks list/resend → `/api/v1/email-hooks/`.
+- [x] **1D.6** Subscribers list → `/api/v1/newsletter/subscribers/` (add nav if missing).
+- [x] **1D.7** Notifications / trigger-rules / audit-logs (Django `/dashboard/notifications/`) — add Next.js pages.
 
 ### 1E. Content (stories, knowledge, courses, media)
 - [ ] **1E.1** Stories/articles admin CRUD + transition → `/api/v1/content/admin/articles|stories/`.
@@ -164,7 +164,7 @@ Remove until real: Mail iframe, Live Chat, StudioKit demos, finance demos.
 | `/dashboard/team/` | `/api/v1/users/`, `/api/v1/users/stats/`, invitations | **1B done** (list/stats/invite; role/deactivate → 2H) |
 | `/dashboard/roles/` | — | Missing API |
 | `/dashboard/settings/` | `/api/v1/org/config/`, partners | **DONE** (Settings + Partners) |
-| `/dashboard/newsletter/*` | `/api/v1/newsletter/*`, contact, email-hooks | Claimed wired — audit |
+| /dashboard/newsletter/* | /api/v1/newsletter/*, contact, email-hooks, notifications, audit-logs | **1D done** (CRUD/send + subscribers/notifications/audit pages) |
 | `/dashboard/stories|knowledge|learning/` | `/api/v1/content/admin/*` | Partial / missing UI |
 | `/dashboard/civic-modules/` | Citizen read only; writes HTML | Needs admin write API |
 | `/dashboard/surveys|trivia/` | Results/read; writes HTML | Needs write APIs |

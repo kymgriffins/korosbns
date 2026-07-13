@@ -1,4 +1,4 @@
-import { apiFetch, type OrgConfigApi, type SocialLinkApi, type UserProfileApi } from "@/lib/api-client";
+﻿import { apiFetch, type OrgConfigApi, type SocialLinkApi, type UserProfileApi } from "@/lib/api-client";
 import type { ApiListResponse } from "@/types/api";
 
 function adminFetch<T>(url: string, options?: RequestInit & { auth?: boolean }): Promise<T> {
@@ -119,7 +119,7 @@ export const adminSecurityApi = {
   getInfo: () => adminFetch<SecurityInfoApi>("/security/info/"),
 };
 
-/** Org team directory — GET list + stats only. Writes (role/deactivate) are HTML-only until Phase 2H. */
+/** Org team directory ΓÇö GET list + stats only. Writes (role/deactivate) are HTML-only until Phase 2H. */
 export const adminUsersApi = {
   list: (params?: { page?: number; search?: string; role?: string }) => {
     const q = new URLSearchParams();
@@ -132,7 +132,7 @@ export const adminUsersApi = {
   stats: () => adminFetch<AdminUserStats>("/users/stats/"),
 };
 
-/** Seeded role slugs (no public Roles list API yet — Phase 3.1). */
+/** Seeded role slugs (no public Roles list API yet ΓÇö Phase 3.1). */
 export const INVITE_ROLE_OPTIONS = [
   { slug: "citizen", label: "Citizen" },
   { slug: "editor", label: "Editor" },
@@ -541,7 +541,7 @@ export const adminAnalyticsApi = {
   },
 };
 
-// ── Communication / Campaigns ──────────────────────────────────────────────
+// ΓöÇΓöÇ Communication / Campaigns ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
 export type NewsletterCampaign = {
   id: string;
@@ -586,12 +586,40 @@ export const adminCampaignsApi = {
       method: "POST", body: JSON.stringify({ scheduled_at: scheduledAt }),
     }),
   preview: (id: string) =>
-    adminFetch<NewsletterCampaign & { audience_count: number; sample_emails: string[] }>(
-      `/newsletter/campaigns/${id}/preview/`,
-    ),
+    adminFetch<
+      NewsletterCampaign & {
+        audience_count: number;
+        sample_emails: string[];
+        send_logs?: { id: string; subscriber_email: string; status: string; status_display: string }[];
+      }
+    >(`/newsletter/campaigns/${id}/preview/`),
 };
 
-// ── Communication / Inbox ─────────────────────────────────────────────────
+// ── Communication / Subscribers ──────────────────────────────────────────
+
+export type NewsletterSubscriber = {
+  id: string;
+  email: string;
+  name?: string;
+  consent_at: string;
+  unsubscribed_at?: string | null;
+  source?: string;
+  created_at: string;
+};
+
+export const adminSubscribersApi = {
+  list: (params?: { page?: number; active_only?: boolean }) => {
+    const q = new URLSearchParams();
+    if (params?.page) q.set("page", String(params.page));
+    if (params?.active_only === false) q.set("active_only", "false");
+    const qs = q.toString();
+    return adminFetch<ApiListResponse<NewsletterSubscriber>>(
+      `/newsletter/subscribers/${qs ? `?${qs}` : ""}`,
+    );
+  },
+};
+
+// ── Communication / Inbox ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
 export type NewsletterInboxMessage = {
   id: string;
@@ -625,7 +653,7 @@ export const adminInboxApi = {
     adminFetch<NewsletterInboxMessage>("/newsletter/inbox/notes/", { method: "POST", body: JSON.stringify(data) }),
 };
 
-// ── Communication / Outbox ───────────────────────────────────────────────
+// ΓöÇΓöÇ Communication / Outbox ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
 export type NewsletterOutboxEmail = {
   id: string;
@@ -657,7 +685,7 @@ export const adminOutboxApi = {
     adminFetch<NewsletterOutboxEmail>(`/newsletter/outbox/${id}/retry/`, { method: "POST" }),
 };
 
-// ── Communication / Contact Messages ────────────────────────────────────
+// ΓöÇΓöÇ Communication / Contact Messages ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
 export type ContactMessage = {
   id: string;
@@ -693,7 +721,7 @@ export const adminContactMessagesApi = {
     adminFetch<void>(`/contact/messages/${id}/delete/`, { method: "DELETE" }),
 };
 
-// ── Communication / Email Hooks ──────────────────────────────────────────
+// ΓöÇΓöÇ Communication / Email Hooks ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
 export type EmailHook = {
   id: string;
@@ -745,29 +773,82 @@ export type NotificationQueueItem = {
   updated_at: string;
 };
 
+export type TriggerRule = {
+  id: string;
+  event_type: string;
+  conditions: Record<string, unknown> | unknown[];
+  enabled: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type AuditLogEntry = {
+  id: string;
+  actor?: string | null;
+  actor_email?: string | null;
+  action: string;
+  target_model: string;
+  target_id?: string | null;
+  correlation_id?: string | null;
+  ip_address?: string | null;
+  user_agent?: string | null;
+  before_state?: Record<string, unknown> | null;
+  after_state?: Record<string, unknown> | null;
+  created_at: string;
+};
+
+/** Normalize DRF list responses that may be paginated or a bare array. */
+export function normalizeListResponse<T>(res: ApiListResponse<T> | T[]): { results: T[]; count: number } {
+  if (Array.isArray(res)) return { results: res, count: res.length };
+  const results = res.results ?? [];
+  return { results, count: res.count ?? results.length };
+}
+
 export const adminNotificationsApi = {
-  queue: (params?: { status?: string; trigger_type?: string }) => {
+  queue: (params?: { page?: number; status?: string; trigger_type?: string }) => {
     const q = new URLSearchParams();
+    if (params?.page) q.set("page", String(params.page));
     if (params?.status) q.set("status", params.status);
     if (params?.trigger_type) q.set("trigger_type", params.trigger_type);
     const qs = q.toString();
-    return adminFetch<ApiListResponse<NotificationQueueItem>>(`/engagement/notifications/admin/${qs ? `?${qs}` : ""}`);
+    return adminFetch<ApiListResponse<NotificationQueueItem> | NotificationQueueItem[]>(
+      `/engagement/notifications/admin/${qs ? `?${qs}` : ""}`,
+    );
   },
-  history: (params?: { status?: string; trigger_type?: string }) => {
+  history: (params?: { page?: number; status?: string; trigger_type?: string }) => {
     const q = new URLSearchParams();
+    if (params?.page) q.set("page", String(params.page));
     if (params?.status) q.set("status", params.status);
     if (params?.trigger_type) q.set("trigger_type", params.trigger_type);
     const qs = q.toString();
-    return adminFetch<ApiListResponse<NotificationQueueItem>>(`/engagement/notification-history/${qs ? `?${qs}` : ""}`);
+    return adminFetch<ApiListResponse<NotificationQueueItem> | NotificationQueueItem[]>(
+      `/engagement/notification-history/${qs ? `?${qs}` : ""}`,
+    );
   },
-  triggerRules: () => adminFetch<ApiListResponse<NotificationQueueItem>>("/engagement/trigger-rules/"),
+  triggerRules: () =>
+    adminFetch<ApiListResponse<TriggerRule> | TriggerRule[]>("/engagement/trigger-rules/"),
   toggleRule: (id: string, enabled: boolean) =>
-    adminFetch<NotificationQueueItem>(`/engagement/trigger-rules/${id}/toggle/`, {
-      method: "POST", body: JSON.stringify({ enabled }),
+    adminFetch<TriggerRule>(`/engagement/trigger-rules/${id}/toggle/`, {
+      method: "POST",
+      body: JSON.stringify({ enabled }),
     }),
 };
 
-// ── Communication / Content Feedback ─────────────────────────────────────
+export const adminAuditLogsApi = {
+  list: (params?: { page?: number; q?: string; action?: string; target_model?: string }) => {
+    const q = new URLSearchParams();
+    if (params?.page) q.set("page", String(params.page));
+    if (params?.q) q.set("q", params.q);
+    if (params?.action) q.set("action", params.action);
+    if (params?.target_model) q.set("target_model", params.target_model);
+    const qs = q.toString();
+    return adminFetch<ApiListResponse<AuditLogEntry> | AuditLogEntry[]>(
+      `/audit-logs/${qs ? `?${qs}` : ""}`,
+    );
+  },
+};
+
+// ── Communication / Content Feedback ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
 export type ContentFeedbackItem = {
   id: string;

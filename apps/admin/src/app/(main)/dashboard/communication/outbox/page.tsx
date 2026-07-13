@@ -9,37 +9,50 @@ import { DataTable, type Column } from "@/components/admin/data-table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { adminOutboxApi, type NewsletterOutboxEmail } from "@/lib/admin-api";
 
+const PAGE_SIZE = 50;
+
 export default function OutboxPage() {
   const [emails, setEmails] = useState<NewsletterOutboxEmail[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
-  const [statusFilter, setStatusFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [dispatching, setDispatching] = useState(false);
 
   const fetchEmails = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
-      const res = await adminOutboxApi.list({ page, status: statusFilter || undefined });
-      setEmails(res.results);
-      setTotal(res.count);
+      const res = await adminOutboxApi.list({
+        page,
+        status: statusFilter === "all" ? undefined : statusFilter,
+      });
+      setEmails(res.results ?? []);
+      setTotal(res.count ?? 0);
     } catch (err) {
+      setEmails([]);
+      setTotal(0);
       setError(err instanceof Error ? err.message : "Failed to load outbox");
     } finally {
       setLoading(false);
     }
   }, [page, statusFilter]);
 
-  useEffect(() => { fetchEmails(); }, [fetchEmails]);
+  useEffect(() => {
+    fetchEmails();
+  }, [fetchEmails]);
 
   const handleDispatch = async () => {
+    setDispatching(true);
     try {
       const res = await adminOutboxApi.dispatch();
-      toast.success(`Dispatched: ${res.sent} sent, ${res.failed} failed`);
+      toast.success(`Dispatched: ${res.sent} sent, ${res.failed} failed (${res.processed} processed)`);
       fetchEmails();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to dispatch");
+    } finally {
+      setDispatching(false);
     }
   };
 
@@ -55,7 +68,7 @@ export default function OutboxPage() {
 
   const columns: Column<NewsletterOutboxEmail>[] = [
     { key: "email_type_display", header: "Type", cell: (r) => <span>{r.email_type_display}</span> },
-    { key: "subscriber_email", header: "Subscriber", cell: (r) => <span>{r.subscriber_email}</span> },
+    { key: "subscriber_email", header: "Subscriber", cell: (r) => <span>{r.subscriber_email || r.recipient}</span> },
     { key: "subject", header: "Subject", cell: (r) => <span>{r.subject}</span> },
     { key: "status_display", header: "Status", cell: (r) => <span>{r.status_display}</span> },
     {
@@ -66,20 +79,17 @@ export default function OutboxPage() {
     {
       key: "error_message",
       header: "Error",
-      cell: (r) => <span>{r.error_message || "-"}</span>,
+      cell: (r) => <span className="line-clamp-2 max-w-xs">{r.error_message || "-"}</span>,
     },
     {
       key: "actions",
       header: "",
-      cell: (r) => (
-        <div className="flex gap-1">
-          {r.status === "failed" && (
-            <Button variant="ghost" size="icon-sm" onClick={() => handleRetry(r.id)} title="Retry">
-              <RefreshCw className="size-3.5" />
-            </Button>
-          )}
-        </div>
-      ),
+      cell: (r) =>
+        r.status === "failed" ? (
+          <Button variant="ghost" size="icon-sm" onClick={() => handleRetry(r.id)} title="Retry">
+            <RefreshCw className="size-3.5" />
+          </Button>
+        ) : null,
     },
   ];
 
@@ -92,8 +102,8 @@ export default function OutboxPage() {
             Subscription emails — welcome messages and admin alerts.
           </p>
         </div>
-        <Button size="sm" onClick={handleDispatch}>
-          <Send /> Dispatch Pending
+        <Button size="sm" onClick={handleDispatch} disabled={dispatching}>
+          <Send /> {dispatching ? "Dispatching..." : "Dispatch Pending"}
         </Button>
       </div>
 
@@ -101,10 +111,18 @@ export default function OutboxPage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg">Subscription Emails</CardTitle>
-            <Select value={statusFilter} onValueChange={(v) => { setStatusFilter(v); setPage(1); }}>
-              <SelectTrigger className="w-36"><SelectValue placeholder="All statuses" /></SelectTrigger>
+            <Select
+              value={statusFilter}
+              onValueChange={(v) => {
+                setStatusFilter(v);
+                setPage(1);
+              }}
+            >
+              <SelectTrigger className="w-36">
+                <SelectValue placeholder="All statuses" />
+              </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All statuses</SelectItem>
+                <SelectItem value="all">All statuses</SelectItem>
                 <SelectItem value="pending">Pending</SelectItem>
                 <SelectItem value="sent">Sent</SelectItem>
                 <SelectItem value="failed">Failed</SelectItem>
@@ -120,7 +138,7 @@ export default function OutboxPage() {
             error={error}
             emptyMessage="No outbound emails."
             page={page}
-            totalPages={Math.ceil(total / 25)}
+            totalPages={Math.max(1, Math.ceil(total / PAGE_SIZE))}
             onPageChange={setPage}
           />
         </CardContent>
