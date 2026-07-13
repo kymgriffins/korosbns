@@ -73,11 +73,15 @@
 - [x] **1E.7** Content feedback admin → `/api/v1/engagement/feedback/admin/` — `/dashboard/feedback` list/filter. **Blocker:** no status update (READ/ACTIONED) via JSON.
 
 ### 1F. Documents
-- [ ] **1F.1** Doc repository files/folders/links (+ proxy) → `/api/v1/docrepository/*` — full Next.js admin UI.
+- [x] **1F.1** Doc repository files/folders/links (+ proxy) → `/api/v1/docrepository/*` — full Next.js admin UI.
+  - `apps/admin` page `/dashboard/docrepository`: browse folders/files, upload, create folder, pinned links CRUD, cookie-auth view/download + link proxy.
+  - Nav under **Library**. Client: `adminDocRepositoryApi` in `apps/admin/src/lib/admin-api.ts`.
 
 ### 1G. Forum / community (moderation)
-- [ ] **1G.1** Thread list/detail using `/api/v1/engagement/forum-threads/`.
+- [x] **1G.1** Thread list/detail using `/api/v1/engagement/forum-threads/`.
+  - List + create + detail + reply at `/dashboard/forum` and `/dashboard/forum/[id]`. Nav under **Engagement**.
 - [ ] **1G.2** Admin soft-delete / moderation (may need new API if only HTML today).
+  - **Blocked — HTML-only today.** Django `AdminCommunityConversationsView` soft-deletes via POST `action=delete_thread` (sets `deleted_at`). DRF exposes only GET list/detail + POST create thread/post — no DELETE/PATCH moderation. Do not invent write endpoints; use Django portal until `DELETE /api/v1/engagement/forum-threads/{id}/` (and post delete) ship.
 
 ---
 
@@ -165,10 +169,11 @@ Remove until real: Mail iframe, Live Chat, StudioKit demos, finance demos.
 | `/dashboard/roles/` | — | Missing API |
 | `/dashboard/settings/` | `/api/v1/org/config/`, partners | **DONE** (Settings + Partners) |
 | /dashboard/newsletter/* | /api/v1/newsletter/*, contact, email-hooks, notifications, audit-logs | **1D done** (CRUD/send + subscribers/notifications/audit pages) |
-| `/dashboard/stories|knowledge|learning/` | `/api/v1/content/admin/*` | Partial / missing UI |
+| `/dashboard/stories|knowledge|learning/` | `/api/v1/content/admin/*` | **1E done** (stories/knowledge/courses/media/feedback; authors read-only; course transition + author/feedback writes blocked) |
 | `/dashboard/civic-modules/` | Citizen read only; writes HTML | Needs admin write API |
 | `/dashboard/surveys|trivia/` | Results/read; writes HTML | Needs write APIs |
-| `/dashboard/docrepository/` | `/api/v1/docrepository/*` | Missing / partial UI |
+| `/dashboard/docrepository/` | `/api/v1/docrepository/*` | **DONE** (apps/admin Library) |
+| `/dashboard/community/` (forum) | `/api/v1/engagement/forum-threads/` | **1G.1 done** (list/detail/reply); soft-delete → HTML-only / 1G.2 |
 | `/dashboard/gamification/` | Citizen gamification only | Needs admin APIs |
 | `/dashboard/studio/` | Public read; admin write HTML | Needs admin write APIs |
 | `/dashboard/invoices/` | — | HTML-only |

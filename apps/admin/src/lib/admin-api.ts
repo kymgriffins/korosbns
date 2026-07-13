@@ -219,22 +219,136 @@ export const adminAuthorsApi = {
     adminFetch<{ author: AdminAuthor; modules: unknown[] }>(`/content/authors/${slug}/`),
 };
 
+/**
+ * Forum threads: GET list/detail + POST create/reply exist on DRF.
+ * Soft-delete / moderation is HTML-only today
+ * (`AdminCommunityConversationsView` POST action=delete_thread).
+ * Do not call invented DELETE/PATCH moderation endpoints.
+ */
 export const adminForumApi = {
-  listThreads: (params?: { page?: number; search?: string }) => {
+  listThreads: (params?: { page?: number; chapter_id?: string; module_id?: string }) => {
     const q = new URLSearchParams();
     if (params?.page) q.set("page", String(params.page));
-    if (params?.search) q.set("search", params.search);
+    if (params?.chapter_id) q.set("chapter_id", params.chapter_id);
+    if (params?.module_id) q.set("module_id", params.module_id);
     const qs = q.toString();
     return adminFetch<ApiListResponse<AdminForumThread>>(`/engagement/forum-threads/${qs ? `?${qs}` : ""}`);
   },
-  createThread: (data: { title: string; civic_module?: string | null }) =>
+  getThread: (id: string) =>
+    adminFetch<AdminForumThreadDetail>(`/engagement/forum-threads/${id}/`),
+  createThread: (data: { title: string; civic_module?: string | null; civic_chapter?: string | null }) =>
     adminFetch<AdminForumThread>("/engagement/forum-threads/", { method: "POST", body: JSON.stringify(data) }),
-  updateThread: (id: string, data: { title?: string; civic_module?: string | null }) =>
-    adminFetch<AdminForumThread>(`/engagement/forum-threads/${id}/`, { method: "PATCH", body: JSON.stringify(data) }),
-  deleteThread: (id: string) =>
-    adminFetch<void>(`/engagement/forum-threads/${id}/`, { method: "DELETE" }),
-  deletePost: (threadId: string, postId: string) =>
-    adminFetch<void>(`/engagement/forum-threads/${threadId}/posts/${postId}/`, { method: "DELETE" }),
+  createPost: (threadId: string, content: string) =>
+    adminFetch<AdminForumPost>(`/engagement/forum-threads/${threadId}/posts/`, {
+      method: "POST",
+      body: JSON.stringify({ content }),
+    }),
+};
+
+// ── Doc repository ────────────────────────────────────────────────────────
+
+export type AdminDocItem = {
+  name: string;
+  path: string;
+  is_directory: boolean;
+  size: number | null;
+  modified: number;
+  mime_type?: string;
+};
+
+export type AdminDocLink = {
+  id: string;
+  title: string;
+  url: string;
+  description: string;
+  mime_type: string;
+  order: number;
+  folder_path?: string;
+};
+
+export type AdminDocListResponse = {
+  path: string;
+  items: AdminDocItem[];
+  count: number;
+  links: AdminDocLink[];
+  link_count: number;
+};
+
+export const adminDocRepositoryApi = {
+  list: (path = "") => {
+    const qs = path ? `?path=${encodeURIComponent(path)}` : "";
+    return adminFetch<AdminDocListResponse>(`/docrepository/files/${qs}`);
+  },
+  upload: (file: File, path = "") => {
+    const form = new FormData();
+    form.append("file", file);
+    const qs = path ? `?path=${encodeURIComponent(path)}` : "";
+    return adminFetch<AdminDocItem>(`/docrepository/files/upload/${qs}`, {
+      method: "POST",
+      body: form as unknown as BodyInit,
+    });
+  },
+  deleteFile: (filePath: string) => {
+    const encoded = filePath.split("/").map(encodeURIComponent).join("/");
+    return adminFetch<void>(`/docrepository/files/${encoded}`, { method: "DELETE" });
+  },
+  createFolder: (name: string, path = "") =>
+    adminFetch<AdminDocItem>("/docrepository/folders/", {
+      method: "POST",
+      body: JSON.stringify({ name, path }),
+    }),
+  deleteFolder: (folderPath: string) =>
+    adminFetch<void>("/docrepository/folders/", {
+      method: "DELETE",
+      body: JSON.stringify({ path: folderPath }),
+    }),
+  renameFolder: (path: string, name: string) =>
+    adminFetch<AdminDocItem>("/docrepository/folders/", {
+      method: "PATCH",
+      body: JSON.stringify({ path, name }),
+    }),
+  listLinks: (folder = "") => {
+    const qs = folder ? `?folder=${encodeURIComponent(folder)}` : "";
+    return adminFetch<{ links: AdminDocLink[]; count: number }>(`/docrepository/links/${qs}`);
+  },
+  createLink: (data: {
+    title: string;
+    url: string;
+    folder?: string;
+    description?: string;
+    mime_type?: string;
+    order?: number;
+  }) =>
+    adminFetch<AdminDocLink>("/docrepository/links/", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+  updateLink: (
+    linkId: string,
+    data: Partial<{
+      title: string;
+      url: string;
+      description: string;
+      mime_type: string;
+      order: number;
+      folder_path: string;
+      is_active: boolean;
+    }>,
+  ) =>
+    adminFetch<AdminDocLink>(`/docrepository/links/${linkId}/`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }),
+  deleteLink: (linkId: string) =>
+    adminFetch<void>(`/docrepository/links/${linkId}/`, { method: "DELETE" }),
+  /** Same-origin API path for opening/proxying a file (cookie auth). */
+  fileUrl: (filePath: string, download = false) => {
+    const encoded = filePath.split("/").map(encodeURIComponent).join("/");
+    const qs = download ? "?download=1" : "";
+    return `/api/v1/docrepository/files/${encoded}${qs}`;
+  },
+  proxyLinkUrl: (linkId: string, mode: "view" | "download" = "view") =>
+    `/api/v1/docrepository/links/${encodeURIComponent(linkId)}/proxy/?mode=${mode}`,
 };
 
 export const adminBudgetApi = {
@@ -318,13 +432,30 @@ export type AdminAuthor = {
   socials?: Record<string, string>;
 };
 
+export type AdminForumPost = {
+  id: string;
+  content: string;
+  upvotes: number;
+  author_name: string;
+  author_initials: string;
+  author_id?: string | null;
+  author_avatar?: string | null;
+  created_at: string;
+};
+
 export type AdminForumThread = {
   id: string;
   title: string;
   author_name: string;
+  author_initials?: string;
   posts_count: number;
   created_at: string;
   civic_module?: string | null;
+  civic_chapter?: string | null;
+};
+
+export type AdminForumThreadDetail = AdminForumThread & {
+  posts: AdminForumPost[];
 };
 
 export type AdminBudgetRecord = {
