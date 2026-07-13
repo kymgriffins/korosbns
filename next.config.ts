@@ -136,6 +136,16 @@ const nextConfig: NextConfig = {
         destination: "https://budgetndiostory.org/:path*",
         permanent: true,
       },
+      {
+        source: "/contacts",
+        destination: "/contact/",
+        permanent: true,
+      },
+      {
+        source: "/contacts/",
+        destination: "/contact/",
+        permanent: true,
+      },
       // Consolidated legacy routes redirecting to unified /learn
       {
         source: "/articles/:slug*",
