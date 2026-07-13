@@ -1,140 +1,267 @@
 "use client";
 
-import { motion } from "motion/react";
-import { fadeInUp, staggerContainer } from "@/motion/variants";
+import { useState } from "react";
 import Link from "next/link";
-import { useOrg } from "@/contexts/org-context";
 import { ExternalLink } from "lucide-react";
+import bnsConfig from "@/constants/bnsConfig.json";
+import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import {
-  XIcon,
+  LandingContent,
+  LandingSection,
+  LandingSectionHeader,
+} from "@/layouts/landing-section";
+import {
+  FacebookIcon,
   InstagramIcon,
   LinkedInIcon,
-  YouTubeIcon,
   TikTokIcon,
   WhatsAppIcon,
-  FacebookIcon,
+  XIcon,
+  YouTubeIcon,
 } from "@/components/ui/social-icons";
+import { cn } from "@/utils";
 
-const platformDefaults: Record<
+type SocialPlatform = {
+  id: string;
+  name: string;
+  handle: string;
+  url: string;
+  stat: string;
+  cta: string;
+  accent: string;
+  icon: React.ComponentType<{ className?: string }>;
+};
+
+const PLATFORM_META: Record<
   string,
-  { icon: React.ReactNode; color: string; handle: string }
+  Omit<SocialPlatform, "id" | "name" | "url">
 > = {
   x: {
-    icon: <XIcon className="size-5" />,
-    color: "hover:bg-black/10 dark:hover:bg-white/10",
-    handle: "@BudgetNdioStory",
-  },
-  instagram: {
-    icon: <InstagramIcon className="size-5" />,
-    color: "hover:bg-pink-500/10",
     handle: "@budgetndiostory",
+    stat: "Policy takes & threads",
+    cta: "Follow",
+    accent: "bg-foreground text-background",
+    icon: XIcon,
   },
-  linkedin: {
-    icon: <LinkedInIcon className="size-5" />,
-    color: "hover:bg-blue-600/10",
-    handle: "Budget Ndio Story",
+  twitter: {
+    handle: "@budgetndiostory",
+    stat: "Policy takes & threads",
+    cta: "Follow",
+    accent: "bg-foreground text-background",
+    icon: XIcon,
   },
   youtube: {
-    icon: <YouTubeIcon className="size-5" />,
-    color: "hover:bg-red-600/10",
-    handle: "@BudgetNdioStory",
+    handle: "@budgetndiostory",
+    stat: "Budget Mtaani series",
+    cta: "Subscribe",
+    accent: "bg-red-600 text-white",
+    icon: YouTubeIcon,
   },
   tiktok: {
-    icon: <TikTokIcon className="size-5" />,
-    color: "hover:bg-foreground/10",
     handle: "@budget.ndio.story",
+    stat: "1.2M+ content views",
+    cta: "Follow",
+    accent: "bg-foreground text-background",
+    icon: TikTokIcon,
   },
-  whatsapp: {
-    icon: <WhatsAppIcon className="size-5" />,
-    color: "hover:bg-green-500/10",
-    handle: "WhatsApp",
+  instagram: {
+    handle: "@budgetndiostory",
+    stat: "Reels & field stories",
+    cta: "Follow",
+    accent: "bg-gradient-to-br from-amber-500 via-rose-500 to-violet-600 text-white",
+    icon: InstagramIcon,
+  },
+  linkedin: {
+    handle: "Budget Ndio Story",
+    stat: "Org & partnership news",
+    cta: "Follow",
+    accent: "bg-sky-700 text-white",
+    icon: LinkedInIcon,
   },
   facebook: {
-    icon: <FacebookIcon className="size-5" />,
-    color: "hover:bg-blue-500/10",
     handle: "Budget Ndio Story",
+    stat: "Community updates",
+    cta: "Follow",
+    accent: "bg-blue-600 text-white",
+    icon: FacebookIcon,
+  },
+  whatsapp: {
+    handle: "+254 790 631 623",
+    stat: "Usually replies in minutes",
+    cta: "Chat",
+    accent: "bg-emerald-600 text-white",
+    icon: WhatsAppIcon,
   },
 };
 
-export function SocialsSection() {
-  const { config } = useOrg();
-  const apiSocials = config.socials || [];
+function buildPlatforms(): SocialPlatform[] {
+  const fromConfig = (bnsConfig.platforms ?? [])
+    .filter((p) => p.type === "social" && p.url)
+    .map((p) => {
+      const key = p.name.toLowerCase();
+      const meta = PLATFORM_META[key];
+      if (!meta) return null;
+      return {
+        id: key,
+        name: p.name === "X" ? "X" : p.name,
+        url: p.url,
+        ...meta,
+      } satisfies SocialPlatform;
+    })
+    .filter(Boolean) as SocialPlatform[];
 
-  const platforms = apiSocials.length
-    ? apiSocials
-        .filter((s) => s.platform && s.platform.toLowerCase() !== "website")
-        .map((s) => ({
-          platform: s.platform,
-          url: s.url,
-          label: s.label || s.platform,
-          ...platformDefaults[s.platform.toLowerCase()],
-        }))
-    : Object.entries(platformDefaults).map(([key, val]) => ({
-        platform: key,
-        url: "#",
-        label: val.handle,
-        ...val,
-      }));
+  if (fromConfig.length > 0) return fromConfig;
+
+  return Object.entries(PLATFORM_META)
+    .filter(([key]) => key !== "twitter")
+    .map(([key, meta]) => ({
+      id: key,
+      name: key === "x" ? "X" : key.charAt(0).toUpperCase() + key.slice(1),
+      url: "#",
+      ...meta,
+    }));
+}
+
+function SocialExpandTile({
+  platform,
+  expanded,
+  onExpand,
+}: {
+  platform: SocialPlatform;
+  expanded: boolean;
+  onExpand: () => void;
+}) {
+  const Icon = platform.icon;
 
   return (
-    <section className="w-full py-16 lg:py-20 overflow-hidden">
-      <div className="max-w-6xl mx-auto px-6 md:px-16">
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="text-center mb-10"
+    <Link
+      href={platform.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      onMouseEnter={onExpand}
+      onFocus={onExpand}
+      aria-label={`${platform.cta} ${platform.name} ${platform.handle}`}
+      className={cn(
+        "group relative flex min-h-16 items-center overflow-hidden rounded-2xl border border-border/70 bg-card transition-[flex-grow,background-color,border-color] duration-300 ease-out",
+        "outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "flex-1 basis-0 hover:border-foreground/20",
+        expanded && "flex-[2.4] border-foreground/25 bg-muted/30",
+      )}
+    >
+      <div className="flex w-full items-center gap-3 px-3 py-3 sm:px-4">
+        <span
+          className={cn(
+            "flex size-10 shrink-0 items-center justify-center rounded-xl transition-transform duration-300",
+            platform.accent,
+            expanded && "scale-105",
+          )}
         >
-          <motion.h2
-            variants={fadeInUp}
-            className="text-2xl md:text-4xl font-bold font-heading tracking-tight mb-3"
-          >
-            Follow Us
-          </motion.h2>
-          <motion.p
-            variants={fadeInUp}
-            className="text-muted-foreground text-sm"
-          >
-            Stay connected for budget updates, civic education, and Kenya
-            finance news.
-          </motion.p>
-        </motion.div>
+          <Icon className="size-4" />
+        </span>
 
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4"
+        {/* Desktop: reveal on expand. Mobile list is separate. */}
+        <div
+          className={cn(
+            "min-w-0 flex-1 overflow-hidden transition-all duration-300",
+            expanded ? "max-w-[14rem] opacity-100" : "max-w-0 opacity-0",
+          )}
         >
-          {platforms.map((platform, index) => (
-            <motion.div key={index} variants={fadeInUp}>
-              <Link
-                href={platform.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`flex flex-col items-center gap-3 p-6 rounded-xl border border-border/60 bg-card transition-all duration-200 group hover:shadow-md ${platform.color || "hover:bg-muted/50"}`}
-              >
-                <div className="size-12 rounded-full bg-muted/50 flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-                  {platform.icon}
-                </div>
-                <div className="text-center">
-                  <div className="text-sm font-semibold capitalize">
-                    {platform.platform}
-                  </div>
-                  <div className="text-xs text-muted-foreground mt-0.5">
-                    {platform.handle}
-                  </div>
-                </div>
-                <span className="text-xs text-primary font-medium group-hover:underline inline-flex items-center gap-1">
-                  Follow <ExternalLink className="size-3" />
-                </span>
-              </Link>
-            </motion.div>
-          ))}
-        </motion.div>
+          <p className="truncate text-sm font-bold leading-tight">
+            {platform.handle}
+          </p>
+          <p className="truncate text-[11px] text-muted-foreground">
+            {platform.stat}
+          </p>
+        </div>
+
+        <span
+          className={cn(
+            "ml-auto inline-flex shrink-0 items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-[10px] font-bold text-primary-foreground transition-all duration-300",
+            expanded
+              ? "translate-x-0 opacity-100"
+              : "pointer-events-none translate-x-2 opacity-0",
+          )}
+        >
+          {platform.cta}
+          <ExternalLink className="size-2.5" aria-hidden />
+        </span>
       </div>
-    </section>
+    </Link>
   );
 }
+
+export function SocialsSection() {
+  const platforms = buildPlatforms();
+  const [activeId, setActiveId] = useState<string | null>(null);
+
+  return (
+    <LandingSection>
+      <LandingSectionHeader
+        eyebrow="Stay connected"
+        title={
+          <>
+            Find us where{" "}
+            <span className={T.highlight}>you already scroll</span>
+          </>
+        }
+        description="Hover a channel to see the handle and what we post — then follow in one click."
+      />
+
+      <LandingContent>
+        {/* Desktop expanding row */}
+        <div
+          className="hidden gap-2 md:flex"
+          onMouseLeave={() => setActiveId(null)}
+        >
+          {platforms.map((platform) => (
+            <SocialExpandTile
+              key={platform.id}
+              platform={platform}
+              expanded={activeId === platform.id}
+              onExpand={() => setActiveId(platform.id)}
+            />
+          ))}
+        </div>
+
+        {/* Mobile: static compact list — no hover animation */}
+        <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:hidden">
+          {platforms.map((platform) => {
+            const Icon = platform.icon;
+            return (
+              <li key={platform.id}>
+                <Link
+                  href={platform.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 rounded-2xl border border-border/70 bg-card px-3 py-3 transition-colors hover:border-foreground/20"
+                >
+                  <span
+                    className={cn(
+                      "flex size-10 shrink-0 items-center justify-center rounded-xl",
+                      platform.accent,
+                    )}
+                  >
+                    <Icon className="size-4" />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-bold leading-tight">
+                      {platform.handle}
+                    </p>
+                    <p className="truncate text-[11px] text-muted-foreground">
+                      {platform.stat}
+                    </p>
+                  </div>
+                  <span className="shrink-0 text-[10px] font-bold uppercase tracking-wider text-primary">
+                    {platform.cta}
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </LandingContent>
+    </LandingSection>
+  );
+}
+
+export default SocialsSection;

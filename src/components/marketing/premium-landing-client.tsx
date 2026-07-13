@@ -60,6 +60,14 @@ const BNSStudioSection = dynamic(
   }
 );
 
+const SocialsSection = dynamic(
+  () => import("@/components/marketing/socials-section"),
+  {
+    ssr: false,
+    loading: () => <div className="h-64 w-full bg-muted animate-pulse" />,
+  }
+);
+
 const ServicesSection = dynamic(
   () => import("@/components/shadcn-space/blocks/services-02/services"),
   {
@@ -99,6 +107,7 @@ export default function PremiumLandingClient() {
       <TestimonialsSection />
       <CloudinaryGallery />
       <BNSStudioSection />
+      <SocialsSection />
       <NewsletterPopup />
     </>
   );
