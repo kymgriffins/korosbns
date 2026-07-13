@@ -19,12 +19,19 @@
 
 ## Phase 0 — Shell hygiene (do first)
 
-- [ ] **P0.1** Fix Overview redirect: `apps/admin/next.config.mjs` currently sends `/dashboard` → `/dashboard/default` (mock). Point Overview at a real API dashboard (or remove the redirect).
-- [ ] **P0.2** Remove / hide demo StudioKit routes from shipping admin (default, crm, ecommerce, logistics, kanban demos, etc.).
-- [ ] **P0.3** Remove placeholder nav: **Email** (`/dashboard/mail`) and **Live Chat** (`/dashboard/chat`) iframes — or replace with real features later.
-- [ ] **P0.4** Unhide or re-home **Content → Modules** (currently filtered out of `apps/admin` sidebar).
-- [ ] **P0.5** Add missing pages in `apps/admin` that exist only in `src/app/admin`: task-overview, profile, privacy, security — or drop them from the sidebar until wired.
-- [ ] **P0.6** Single source of truth for `admin-api.ts` (stop diverging `apps/admin` vs `src/lib`).
+- [x] **P0.1** Fix Overview redirect: was `/dashboard` → `/dashboard/default`; now reverse (demo → real overview).
+- [x] **P0.2** Demo StudioKit `/dashboard/default` redirects to `/dashboard`.
+- [x] **P0.3** Removed placeholder nav: Email + Live Chat iframes.
+- [x] **P0.4** Unhide Content → Modules (`sidebarItems.filter(g => g.id !== 4)` removed).
+- [x] **P0.5** Deferred missing profile/privacy/security/task-overview nav — removed empty Settings + task-overview until pages ship (avoid dead links).
+- [ ] **P0.6** Single source of truth for `admin-api.ts`.
+- [x] **P0.7** Analytics: stop `Math.random()` fake charts (zeros until real series API is wired in 1A.2).
+
+### Learn hub data integrity (related)
+
+- [x] Remove hardcoded civic-module fallbacks ("Budget Basics", "Sector Deep Dive", "Citizen Engagement") — they were not API data; shown when `withFallback` swallowed API errors after login.
+- [x] Module detail SEO: `generateMetadata` + Course JSON-LD on `/learn/modules/[slug]`.
+- [x] Learn hub layout metadata + sitemap entries for `/learn/modules/{slug}`.
 
 ---
 

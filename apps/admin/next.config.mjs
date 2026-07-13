@@ -6,9 +6,10 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      // Demo StudioKit landing — send users to the real overview
       {
-        source: "/dashboard",
-        destination: "/dashboard/default",
+        source: "/dashboard/default",
+        destination: "/dashboard",
         permanent: false,
       },
     ];

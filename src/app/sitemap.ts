@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { citizenApi } from "@/lib/api-client";
+import { learningData } from "@/data/learning";
 import { team } from "@/constants/team";
 import { slugifyName } from "@/lib/team";
 import { canonicalUrl } from "@/utils/metadata";
@@ -93,6 +94,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   } catch (err) {
     console.error("Sitemap: Failed to fetch stories from API", err);
+  }
+
+  // Civic learning modules (API only — never invent placeholder slugs)
+  try {
+    const modules = await learningData.modules.fetch();
+    for (const mod of modules) {
+      if (!mod?.slug) continue;
+      sitemapEntries.push({
+        url: canonicalUrl(`/learn/modules/${mod.slug}`),
+        lastModified: new Date(),
+        changeFrequency: "weekly",
+        priority: 0.85,
+      });
+    }
+  } catch (err) {
+    console.error("Sitemap: Failed to fetch civic modules from API", err);
   }
 
   return sitemapEntries;

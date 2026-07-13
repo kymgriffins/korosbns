@@ -6,16 +6,11 @@ import {
   Inbox,
   LayoutDashboard,
   ListTodo,
-  Lock,
   type LucideIcon,
-  Mail,
-  MessageSquare,
   Pen,
   Phone,
   Send,
-  ShieldCheck,
   BookOpen,
-  User,
   Users,
   Waypoints,
 } from "lucide-react";
@@ -58,6 +53,11 @@ export interface NavGroup {
   items: NavMainItem[];
 }
 
+/**
+ * Only ship nav items with real API-backed pages.
+ * Tasks/weekly notes = done. Mail/Chat iframes, missing profile/privacy/security,
+ * and StudioKit demos stay out until wired.
+ */
 export const sidebarItems: NavGroup[] = [
   {
     id: 1,
@@ -81,12 +81,6 @@ export const sidebarItems: NavGroup[] = [
     id: 2,
     label: "Task Management",
     items: [
-      {
-        id: "task-overview",
-        title: "Overview",
-        url: "/dashboard/task-overview",
-        icon: LayoutDashboard,
-      },
       {
         id: "tasks",
         title: "Board",
@@ -116,12 +110,6 @@ export const sidebarItems: NavGroup[] = [
         title: "Authors",
         url: "/dashboard/authors",
         icon: Pen,
-      },
-      {
-        id: "profile",
-        title: "Profile",
-        url: "/dashboard/profile",
-        icon: User,
       },
     ],
   },
@@ -176,36 +164,6 @@ export const sidebarItems: NavGroup[] = [
         title: "Email Hooks",
         url: "/dashboard/communication/email-hooks",
         icon: Waypoints,
-      },
-      {
-        id: "mail",
-        title: "Email",
-        url: "/dashboard/mail",
-        icon: Mail,
-      },
-      {
-        id: "chat",
-        title: "Live Chat",
-        url: "/dashboard/chat",
-        icon: MessageSquare,
-      },
-    ],
-  },
-  {
-    id: 6,
-    label: "Settings",
-    items: [
-      {
-        id: "privacy",
-        title: "Privacy",
-        url: "/dashboard/privacy",
-        icon: ShieldCheck,
-      },
-      {
-        id: "security",
-        title: "Security",
-        url: "/dashboard/security",
-        icon: Lock,
       },
     ],
   },

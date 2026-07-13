@@ -7,85 +7,50 @@ import { withFallback } from "@/data/adapter";
 
 export type { CivicModule, CivicModuleAuthor, LearnHubSummary, LearnProfileResponse };
 
-const DEFAULT_MODULES: CivicModule[] = [
-  {
-    id: "budget-basics",
-    title: "Budget Basics",
-    slug: "budget-basics",
-    badge: "BB",
-    badgeName: "Budget Basics",
-    documentName: "budget-basics",
-    archive: "",
-    link: "",
-    status: "published",
-    credits: "BNS",
-    description: "Understand how Kenya's national budget works — from revenue collection to allocation across sectors.",
-    expectations: ["Learn the budget cycle", "Understand revenue sources", "Explore expenditure categories"],
-    order: 1,
-    steps: [],
-  },
-  {
-    id: "sector-deep-dive",
-    title: "Sector Deep Dive",
-    slug: "sector-deep-dive",
-    badge: "SD",
-    badgeName: "Sector Deep Dive",
-    documentName: "sector-deep-dive",
-    archive: "",
-    link: "",
-    status: "published",
-    credits: "BNS",
-    description: "Explore allocations across education, health, infrastructure, and agriculture sectors.",
-    expectations: ["Compare sector allocations", "Analyze year-over-year trends", "Understand policy priorities"],
-    order: 2,
-    steps: [],
-  },
-  {
-    id: "citizen-engagement",
-    title: "Citizen Engagement",
-    slug: "citizen-engagement",
-    badge: "CE",
-    badgeName: "Citizen Engagement",
-    documentName: "citizen-engagement",
-    archive: "",
-    link: "",
-    status: "published",
-    credits: "BNS",
-    description: "Learn how citizens can participate in the budget process through public forums and petitions.",
-    expectations: ["Identify engagement channels", "Understand public participation", "Take action in your county"],
-    order: 3,
-    steps: [],
-  },
-];
-
 const DEFAULT_SUMMARY: LearnHubSummary = {
   counts: {},
   trending: [],
 };
 
-let _modules: CivicModule[] = [...DEFAULT_MODULES];
+let _modules: CivicModule[] = [];
 let _summary: LearnHubSummary = { ...DEFAULT_SUMMARY };
 
+/**
+ * Never invent civic modules. Fake titles like "Budget Basics" /
+ * "Sector Deep Dive" / "Citizen Engagement" used to appear when the API
+ * failed (common right after login). Show empty + error UI instead.
+ */
 export const learningData = {
   modules: {
     get: () => _modules,
-    set: (items: CivicModule[]) => { _modules = items; },
-    fetch: () =>
-      withFallback(
-        "learning",
-        () => learnHubApi.civicModules(),
-        () => ({ results: _modules }),
-      ).then((r) => r.results ?? []),
+    set: (items: CivicModule[]) => {
+      _modules = items;
+    },
+    fetch: async (): Promise<CivicModule[]> => {
+      try {
+        const r = await learnHubApi.civicModules();
+        const results = r.results ?? [];
+        _modules = results;
+        return results;
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        console.warn(`[Data:learning] civic-modules failed (${message}); returning empty list`);
+        _modules = [];
+        throw err instanceof Error ? err : new Error(message);
+      }
+    },
     fetchBySlug: (slug: string) =>
       withFallback(
         "learning",
         () => learnHubApi.civicModule(slug),
-        () => _modules.find((m) => m.slug === slug) ?? null,
+        () => null,
       ),
   },
   summary: {
     get: () => _summary,
-    set: (s: LearnHubSummary) => { _summary = s; },
+    set: (s: LearnHubSummary) => {
+      _summary = s;
+    },
     fetch: () =>
       withFallback(
         "learning",
@@ -119,11 +84,12 @@ export const learningData = {
     fetchBySlug: (slug: string) =>
       withFallback(
         "learning",
-        () => fetch(buildApiUrl(`/content/courses/${slug}/`)).then((r) => {
-          if (r.status === 404) return null;
-          if (!r.ok) throw new Error(`Failed to load course (${r.status})`);
-          return r.json() as Promise<LearningEditionDetail>;
-        }),
+        () =>
+          fetch(buildApiUrl(`/content/courses/${slug}/`)).then((r) => {
+            if (r.status === 404) return null;
+            if (!r.ok) throw new Error(`Failed to load course (${r.status})`);
+            return r.json() as Promise<LearningEditionDetail>;
+          }),
         () => null,
       ),
     fetchByUnitYear: (unitSlug: string, year: string) =>
@@ -132,13 +98,20 @@ export const learningData = {
         async () => {
           const unitsRes = await fetch(buildApiUrl("/content/units/"));
           if (!unitsRes.ok) throw new Error(`Failed to load units (${unitsRes.status})`);
-          const unitsData = await unitsRes.json() as { results?: Array<{ slug: string; editions: Array<{ slug: string; fiscal_year: number | null }> }> };
+          const unitsData = (await unitsRes.json()) as {
+            results?: Array<{
+              slug: string;
+              editions: Array<{ slug: string; fiscal_year: number | null }>;
+            }>;
+          };
           const fiscalYear = parseInt(year, 10);
           const unit = (unitsData.results ?? []).find((u) => u.slug === unitSlug);
           if (!unit) return null;
           const edition = unit.editions.find((e) => e.fiscal_year === fiscalYear);
           if (!edition?.slug) return null;
-          const courseRes = await fetch(buildApiUrl(`/content/courses/${edition.slug}/`));
+          const courseRes = await fetch(
+            buildApiUrl(`/content/courses/${edition.slug}/`),
+          );
           if (courseRes.status === 404) return null;
           if (!courseRes.ok) throw new Error(`Failed to load course (${courseRes.status})`);
           return courseRes.json() as Promise<LearningEditionDetail>;

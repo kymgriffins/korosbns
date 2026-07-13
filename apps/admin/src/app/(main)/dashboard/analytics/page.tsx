@@ -85,15 +85,18 @@ export default function AdminAnalyticsPage() {
   const totalContent = useMemo(() =>
     summary ? summary.total_content : 0, [summary]);
 
-  const trendData = useMemo(() =>
-    Array.from({ length: 12 }, (_, i) => {
-      const d = new Date(); d.setMonth(d.getMonth() - (11 - i));
+  const trendData = useMemo(() => {
+    // No time-series analytics API yet — show flat zeros instead of fake random charts.
+    return Array.from({ length: 12 }, (_, i) => {
+      const d = new Date();
+      d.setMonth(d.getMonth() - (11 - i));
       return {
         month: format(d, "MMM yyyy"),
-        completions: Math.round(120 + Math.random() * 180 + Math.sin(i / 2) * 40),
-        enrollments: Math.round(200 + Math.random() * 250 + Math.cos(i / 3) * 50),
+        completions: 0,
+        enrollments: 0,
       };
-    }), []);
+    });
+  }, []);
 
   const kpiItems = [
     { label: "Users", value: summary?.total_users ?? 0, icon: Users, color: "text-blue-500", change: `${summary?.recent_signups ?? 0} recent signups` },
