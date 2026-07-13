@@ -11,6 +11,7 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { useAuth } from "@/contexts/auth-context";
+import { TeachingToggle } from "@/components/admin/teaching";
 
 function getDisplayName(user: ReturnType<typeof useAuth>["user"]) {
   if (!user) return "Learner";
@@ -45,6 +46,10 @@ export function SiteHeader() {
         </InputGroup>
       </div>
       <div className="flex items-center gap-3">
+        <TeachingToggle
+          title="Learning tips"
+          description="Guides for each Learning Hub page. Mute anytime — learning still works without them."
+        />
         <NotificationDropdown
           defaultOpen={false}
           align="center"

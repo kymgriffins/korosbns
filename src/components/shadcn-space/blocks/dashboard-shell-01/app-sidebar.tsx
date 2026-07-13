@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { SiteHeader } from "@/components/shadcn-space/blocks/dashboard-shell-01/site-header";
 import { learnTabToHref } from "@/lib/learn-nav";
+import { PageTeachingBanner, TeachingToggle } from "@/components/admin/teaching";
 import SimpleBar from "simplebar-react";
 import "simplebar-react/dist/simplebar.min.css";
 
@@ -102,6 +103,17 @@ const AppSidebar = ({
           (safe-area, raised center tabs, content that fits the viewport).
         */}
         <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto overscroll-contain">
+          <div className="flex items-start gap-2 px-4 pt-4 md:px-6 lg:px-8">
+            <div className="min-w-0 flex-1">
+              <PageTeachingBanner surface="learn" />
+            </div>
+            <div className="shrink-0 lg:hidden">
+              <TeachingToggle
+                title="Learning tips"
+                description="Guides for each Learning Hub page. Mute anytime — learning still works without them."
+              />
+            </div>
+          </div>
           {children}
         </main>
         {bottom}

@@ -90,9 +90,10 @@
 
 ### 2A. Civic modules admin wizard
 - [x] **2A.1** Backend: admin write endpoints for civic modules / chapters / wizard (today mostly HTML).
-  - `GET|POST /api/v1/content/admin/civic-modules/`, detail PATCH/DELETE, `transition/`, nested chapters CRUD + reorder + link-article.
+  - `GET|POST /api/v1/content/admin/civic-modules/`, detail PATCH/DELETE (`trivia_id`), `transition/`, nested chapters CRUD + reorder + link-article.
 - [x] **2A.2** Next.js Modules page: full create/edit/delete/preview (not citizen-read-only).
-  - `/dashboard/modules` uses admin civic-modules API; chapters inline; workflow transitions.
+  - `/dashboard/modules` list + `/dashboard/modules/new` + `/dashboard/modules/[id]?step=` non-strict wizard (overview → chapters → YouTube → trivia → publish).
+  - Ongoing populate checklist: `docs/admin-db-api-ui-checklist.md`.
 
 ### 2B. Surveys
 - [x] **2B.1** Backend: survey CRUD write API (create/edit HTML-only today).

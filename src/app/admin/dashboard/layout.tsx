@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 
 import { cookies } from "next/headers";
-import Link from "next/link";
 
 import { AppSidebar } from "./_components/sidebar/app-sidebar";
 import { Separator } from "@/components/ui/separator";
@@ -9,13 +8,20 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/s
 import { SIDEBAR_COLLAPSIBLE_VALUES, SIDEBAR_VARIANT_VALUES } from "@/lib/preferences/layout";
 import { cn } from "@/lib/utils";
 import { getPreference } from "@/server/server-actions";
+import {
+  AdminPageBreadcrumb,
+  BreadcrumbTitleProvider,
+} from "@/components/admin/admin-page-breadcrumb";
+import {
+  AdminTeachingProviderShell,
+  PageTeachingBanner,
+  TeachingToggle,
+} from "@/components/admin/teaching";
 
 import { AccountSwitcher } from "./_components/sidebar/account-switcher";
 import { LayoutControls } from "./_components/sidebar/layout-controls";
 import { SearchDialog } from "./_components/sidebar/search-dialog";
 import { ThemeSwitcher } from "./_components/sidebar/theme-switcher";
-import { AdminBreadcrumb } from "./_components/breadcrumb/admin-breadcrumb";
-import { BreadcrumbTitleProvider } from "./_components/breadcrumb/breadcrumb-title-context";
 import { AdminGuard } from "./_components/admin-guard";
 
 export default async function Layout({ children }: Readonly<{ children: ReactNode }>) {
@@ -46,34 +52,38 @@ export default async function Layout({ children }: Readonly<{ children: ReactNod
           "min-w-0 overflow-x-hidden",
         )}
       >
-        <header
-          className={cn(
-            "flex h-12 shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12",
-            "[html[data-navbar-style=sticky]_&]:sticky [html[data-navbar-style=sticky]_&]:top-0 [html[data-navbar-style=sticky]_&]:z-50 [html[data-navbar-style=sticky]_&]:overflow-hidden [html[data-navbar-style=sticky]_&]:rounded-t-[inherit] [html[data-navbar-style=sticky]_&]:bg-background/50 [html[data-navbar-style=sticky]_&]:backdrop-blur-md",
-          )}
-        >
-          <div className="flex w-full items-center justify-between px-4 lg:px-6">
-            <div className="flex items-center gap-1 lg:gap-2">
-              <SidebarTrigger className="-ml-1" />
-              <Separator
-                orientation="vertical"
-                className="mx-2 data-[orientation=vertical]:h-4 data-[orientation=vertical]:self-center"
-              />
-              <SearchDialog />
-            </div>
-            <div className="flex items-center gap-2">
-              <LayoutControls />
-              <ThemeSwitcher />
-              <AccountSwitcher />
-            </div>
-          </div>
-        </header>
-        <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden p-4 has-data-[content-padding=false]:p-0 md:p-6 md:has-data-[content-padding=false]:p-0">
+        <AdminTeachingProviderShell>
           <BreadcrumbTitleProvider>
-            <AdminBreadcrumb />
-            <AdminGuard>{children}</AdminGuard>
+            <header
+              className={cn(
+                "flex h-12 shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12",
+                "[html[data-navbar-style=sticky]_&]:sticky [html[data-navbar-style=sticky]_&]:top-0 [html[data-navbar-style=sticky]_&]:z-50 [html[data-navbar-style=sticky]_&]:overflow-hidden [html[data-navbar-style=sticky]_&]:rounded-t-[inherit] [html[data-navbar-style=sticky]_&]:bg-background/50 [html[data-navbar-style=sticky]_&]:backdrop-blur-md",
+              )}
+            >
+              <div className="flex w-full items-center justify-between gap-3 px-4 lg:px-6">
+                <div className="flex min-w-0 flex-1 items-center gap-1 lg:gap-2">
+                  <SidebarTrigger className="-ml-1 shrink-0" />
+                  <Separator
+                    orientation="vertical"
+                    className="mx-2 data-[orientation=vertical]:h-4 data-[orientation=vertical]:self-center"
+                  />
+                  <AdminPageBreadcrumb className="min-w-0 flex-1" />
+                </div>
+                <div className="flex shrink-0 items-center gap-2">
+                  <TeachingToggle />
+                  <SearchDialog />
+                  <LayoutControls />
+                  <ThemeSwitcher />
+                  <AccountSwitcher />
+                </div>
+              </div>
+            </header>
+            <div className="min-h-0 min-w-0 flex-1 overflow-x-hidden p-4 has-data-[content-padding=false]:p-0 md:p-6 md:has-data-[content-padding=false]:p-0">
+              <PageTeachingBanner />
+              <AdminGuard>{children}</AdminGuard>
+            </div>
           </BreadcrumbTitleProvider>
-        </div>
+        </AdminTeachingProviderShell>
       </SidebarInset>
     </SidebarProvider>
   );

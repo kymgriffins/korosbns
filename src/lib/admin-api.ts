@@ -260,6 +260,11 @@ export const adminModulesApi = {
       method: "POST",
       body: JSON.stringify({ chapter_ids }),
     }),
+  linkArticle: (moduleId: string, chapterId: string, article_id: string) =>
+    adminFetch<AdminChapter>(
+      `/content/admin/civic-modules/${moduleId}/chapters/${chapterId}/link-article/`,
+      { method: "POST", body: JSON.stringify({ article_id }) },
+    ),
 };
 
 export const adminSurveysApi = {
@@ -1121,6 +1126,7 @@ export type AdminModuleWrite = {
   order?: number;
   is_financial_year_analysis?: boolean;
   fiscal_year_id?: string | null;
+  trivia_id?: string | null;
 };
 
 export type AdminChapterWrite = {
