@@ -52,18 +52,18 @@ function EngagementPhotoCard({
         }}
       />
 
-      <CardContent className="relative z-10 flex h-full min-h-80 flex-col justify-between p-6 md:p-8 lg:p-10">
-        <p className="text-xs font-medium uppercase tracking-[0.18em] text-white/75">
+      <CardContent className="relative z-10 flex h-full min-h-80 flex-col justify-between p-5 md:p-7 lg:p-8">
+        <p className="text-[10px] font-medium uppercase tracking-[0.18em] text-white/75 sm:text-xs">
           {eyebrow}
         </p>
 
-        <div className="space-y-5 pt-8">
-          <p className="max-w-3xl text-lg font-medium leading-relaxed text-white md:text-xl lg:text-[1.65rem] lg:leading-snug">
+        <div className="space-y-3 pt-6 md:space-y-4 md:pt-8">
+          <p className="max-w-3xl text-sm font-medium leading-snug text-white sm:text-[0.95rem] sm:leading-relaxed md:text-base lg:text-lg lg:leading-snug">
             {quote}
           </p>
-          <div className="space-y-1">
-            <p className="text-base font-medium text-white">{name}</p>
-            <p className="text-sm text-white/65">{role}</p>
+          <div className="space-y-0.5">
+            <p className="text-sm font-medium text-white md:text-[0.95rem]">{name}</p>
+            <p className="text-xs text-white/65 md:text-sm">{role}</p>
           </div>
         </div>
       </CardContent>
