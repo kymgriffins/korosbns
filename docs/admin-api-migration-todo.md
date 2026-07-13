@@ -23,7 +23,7 @@
 - [x] **P0.2** Demo StudioKit `/dashboard/default` redirects to `/dashboard`.
 - [x] **P0.3** Removed placeholder nav: Email + Live Chat iframes.
 - [x] **P0.4** Unhide Content → Modules (`sidebarItems.filter(g => g.id !== 4)` removed).
-- [x] **P0.5** Deferred missing profile/privacy/security/task-overview nav — removed empty Settings + task-overview until pages ship (avoid dead links).
+- [x] **P0.5** Profile / privacy / security / org settings / partners nav restored once 1C pages shipped.
 - [ ] **P0.6** Single source of truth for `admin-api.ts`.
 - [x] **P0.7** Analytics: stop `Math.random()` fake charts (zeros until real series API is wired in 1A.2).
 
@@ -49,10 +49,10 @@
 - [x] **1B.3** User stats: `GET /api/v1/users/stats/` surfaced on Users page (total, active 30d, joined 30d, role distribution).
 
 ### 1C. Profile / org settings
-- [ ] **1C.1** Profile: `GET/PATCH /api/v1/users/me/` (+ social links / avatar).
-- [ ] **1C.2** Org settings: `GET/PATCH /api/v1/org/config/`.
-- [ ] **1C.3** Partners CRUD: `/api/v1/org/partners/`.
-- [ ] **1C.4** Privacy / security pages: consume `GET /api/v1/privacy/config/`, `GET /api/v1/security/info/` (+ password change via auth APIs).
+- [x] **1C.1** Profile: `GET/PATCH /api/v1/users/me/` (+ social links / avatar) — `/dashboard/profile`.
+- [x] **1C.2** Org settings: `GET/PATCH /api/v1/org/config/` — `/dashboard/settings`.
+- [x] **1C.3** Partners CRUD: list/create/PATCH `/api/v1/org/partners/` — `/dashboard/partners`. Hard DELETE is HTML-only (deactivate via `is_active` in Next.js).
+- [x] **1C.4** Privacy / security: `GET /api/v1/privacy/config/`, `GET /api/v1/security/info/` + password change — `/dashboard/privacy`, `/dashboard/security`.
 
 ### 1D. Communication (claimed wired — audit for real CRUD/send)
 - [ ] **1D.1** Campaigns: list/create/edit/send/schedule/preview → `/api/v1/newsletter/campaigns/`.
@@ -163,7 +163,7 @@ Remove until real: Mail iframe, Live Chat, StudioKit demos, finance demos.
 | `/dashboard/weekly-notes/` | `/api/v1/notes/` (+ teams, publish, audit, exports) | **DONE** (Tasks) |
 | `/dashboard/team/` | `/api/v1/users/`, `/api/v1/users/stats/`, invitations | **1B done** (list/stats/invite; role/deactivate → 2H) |
 | `/dashboard/roles/` | — | Missing API |
-| `/dashboard/settings/` | `/api/v1/org/config/`, partners | Partial / missing UI |
+| `/dashboard/settings/` | `/api/v1/org/config/`, partners | **DONE** (Settings + Partners) |
 | `/dashboard/newsletter/*` | `/api/v1/newsletter/*`, contact, email-hooks | Claimed wired — audit |
 | `/dashboard/stories|knowledge|learning/` | `/api/v1/content/admin/*` | Partial / missing UI |
 | `/dashboard/civic-modules/` | Citizen read only; writes HTML | Needs admin write API |

@@ -3,15 +3,20 @@ import {
   FileBarChart,
   Forward,
   Gauge,
+  Handshake,
   Inbox,
   LayoutDashboard,
   ListTodo,
+  Lock,
   type LucideIcon,
   MailPlus,
   Pen,
   Phone,
   Send,
   BookOpen,
+  Settings,
+  ShieldCheck,
+  UserRound,
   Users,
   Waypoints,
 } from "lucide-react";
@@ -56,8 +61,7 @@ export interface NavGroup {
 
 /**
  * Only ship nav items with real API-backed pages.
- * Tasks/weekly notes = done. Mail/Chat iframes, missing profile/privacy/security,
- * and StudioKit demos stay out until wired.
+ * StudioKit demos and HTML-only surfaces stay out until wired.
  */
 export const sidebarItems: NavGroup[] = [
   {
@@ -118,6 +122,12 @@ export const sidebarItems: NavGroup[] = [
         url: "/dashboard/authors",
         icon: Pen,
       },
+      {
+        id: "profile",
+        title: "Profile",
+        url: "/dashboard/profile",
+        icon: UserRound,
+      },
     ],
   },
   {
@@ -171,6 +181,42 @@ export const sidebarItems: NavGroup[] = [
         title: "Email Hooks",
         url: "/dashboard/communication/email-hooks",
         icon: Waypoints,
+      },
+    ],
+  },
+  {
+    id: 6,
+    label: "Organization",
+    items: [
+      {
+        id: "org-settings",
+        title: "Settings",
+        url: "/dashboard/settings",
+        icon: Settings,
+      },
+      {
+        id: "org-partners",
+        title: "Partners",
+        url: "/dashboard/partners",
+        icon: Handshake,
+      },
+    ],
+  },
+  {
+    id: 7,
+    label: "Account",
+    items: [
+      {
+        id: "privacy",
+        title: "Privacy",
+        url: "/dashboard/privacy",
+        icon: ShieldCheck,
+      },
+      {
+        id: "security",
+        title: "Security",
+        url: "/dashboard/security",
+        icon: Lock,
       },
     ],
   },
