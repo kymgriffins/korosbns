@@ -12,14 +12,23 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { fetchDocumentsFromAPI } from "@/constants/documents";
 import type { DocumentType, DocumentFile } from "@/constants/documents";
-import { extractYearFromName, formatBytes } from "@/data/documents";
-import { DocumentFolderCard, DocumentFileRow, DocumentViewerDialog } from "@/components/documents";
+import { extractYearFromName, formatBytes, type FlatFile } from "@/data/documents";
+import { DocumentFolderCard, DocumentFileRow, DocumentFileView } from "@/components/documents";
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+  BreadcrumbPage,
+} from "@/components/ui/breadcrumb";
 
 export default function DocumentsPage() {
   const [documents, setDocuments] = useState<DocumentType[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedDoc, setSelectedDoc] = useState<DocumentType | null>(null);
+  const [selectedFile, setSelectedFile] = useState<FlatFile | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
   const fetchData = useCallback(async () => {
@@ -35,6 +44,8 @@ export default function DocumentsPage() {
   }, []);
 
   useEffect(() => { fetchData(); }, [fetchData]);
+
+  useEffect(() => { setSelectedFile(null); }, [selectedDoc]);
 
   const filteredDocs = useMemo(() => {
     if (!searchQuery) return documents;
@@ -55,6 +66,36 @@ export default function DocumentsPage() {
       files: selectedDoc.files.filter((f) => f.name.toLowerCase().includes(q)),
     };
   }, [selectedDoc, searchQuery]);
+
+  const flatFiles: FlatFile[] = useMemo(() => {
+    if (!selectedDocFiltered) return [];
+    return selectedDocFiltered.files.map((f, i) => ({
+      id: `${selectedDoc!.id}-${f.name}-${i}`,
+      name: f.name,
+      size: f.size,
+      url: f.url,
+      downloadUrl: f.downloadUrl,
+      modified: f.modified,
+      folderName: selectedDoc!.fullName,
+      docType: selectedDoc!.title,
+      year: extractYearFromName(f.name),
+      county: null,
+    }));
+  }, [selectedDocFiltered]);
+
+  const breadcrumbs = [
+    {
+      label: "Documents",
+      onClick: () => { setSelectedDoc(null); setSelectedFile(null); setSearchQuery(""); },
+    },
+    ...(selectedDoc ? [{
+      label: selectedDoc.fullName,
+      onClick: () => setSelectedFile(null),
+    }] : []),
+    ...(selectedFile ? [{
+      label: selectedFile.name,
+    }] : []),
+  ];
 
   if (loading) {
     return (
@@ -88,22 +129,47 @@ export default function DocumentsPage() {
     );
   }
 
-  if (selectedDoc) {
-    const flatFiles = selectedDocFiltered
-      ? selectedDocFiltered.files.map((f, i) => ({
-          id: `${selectedDoc!.id}-${f.name}-${i}`,
-          name: f.name,
-          size: f.size,
-          url: f.url,
-          downloadUrl: f.downloadUrl,
-          modified: f.modified,
-          folderName: selectedDoc!.fullName,
-          docType: selectedDoc!.title,
-          year: extractYearFromName(f.name),
-          county: null,
-        }))
-      : [];
+  // File detail view (breadcrumb-based, no popup)
+  if (selectedFile && selectedDoc) {
+    return (
+      <div className="flex flex-col gap-0">
+        <div className="border-b border-border/50 bg-background px-4 py-3">
+          <Breadcrumb>
+            <BreadcrumbList>
+              {breadcrumbs.map((crumb, i) => (
+                <BreadcrumbItem key={crumb.label}>
+                  {i < breadcrumbs.length - 1 ? (
+                    <>
+                      <BreadcrumbLink
+                        href="#"
+                        onClick={(e) => { e.preventDefault(); crumb.onClick?.(); }}
+                        className="text-sm hover:text-foreground"
+                      >
+                        {crumb.label}
+                      </BreadcrumbLink>
+                      <BreadcrumbSeparator />
+                    </>
+                  ) : (
+                    <BreadcrumbPage className="text-sm font-semibold truncate max-w-[300px]">
+                      {crumb.label}
+                    </BreadcrumbPage>
+                  )}
+                </BreadcrumbItem>
+              ))}
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
+        <DocumentFileView
+          file={selectedFile}
+          folderName={selectedDoc.fullName}
+          docType={selectedDoc.title}
+          onBack={() => setSelectedFile(null)}
+        />
+      </div>
+    );
+  }
 
+  if (selectedDoc) {
     return (
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
@@ -137,7 +203,7 @@ export default function DocumentsPage() {
         </div>
 
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <Badge variant="secondary" className="text-[10px]">{selectedDocFiltered?.files.length ?? 0} file{(selectedDocFiltered?.files.length ?? 0) !== 1 ? "s" : ""}</Badge>
+          <Badge variant="secondary" className="text-[10px]">{flatFiles.length} file{flatFiles.length !== 1 ? "s" : ""}</Badge>
           {selectedDoc.years.length > 0 && (
             <Badge variant="outline" className="text-[10px]">{selectedDoc.years[0]}\u2013{selectedDoc.years[selectedDoc.years.length - 1]}</Badge>
           )}
@@ -150,8 +216,7 @@ export default function DocumentsPage() {
                 key={file.id}
                 file={file}
                 viewMode="card"
-                folderName={selectedDoc?.fullName}
-                docType={selectedDoc?.title}
+                onView={() => setSelectedFile(file)}
               />
             ))}
           </div>
