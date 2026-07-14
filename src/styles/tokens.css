@@ -19,8 +19,8 @@
   --accent-foreground: #ffffff;
   --destructive: hsl(356 85% 55%);
   --destructive-foreground: #ffffff;
-  --border: hsl(0 0% 0% / 0.08);
-  --input: hsl(0 0% 100%);
+  --border: hsl(0 0% 0% / 0.12);
+  --input: hsl(0 0% 0% / 0.16);
   --ring: hsl(214 100% 55%);
   --chart-1: hsl(12 76% 61%);
   --chart-2: hsl(173 58% 39%);
@@ -50,8 +50,8 @@
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
+  --border: oklch(1 0 0 / 14%);
+  --input: oklch(1 0 0 / 22%);
   --ring: #0055FF;
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
