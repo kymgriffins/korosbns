@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   ExternalLink, Download, Calendar, Building2, HardDrive, FileText, Eye,
 } from "lucide-react";
@@ -32,6 +32,37 @@ export function DocumentFileView({
   onBack,
 }: DocumentFileViewProps) {
   const [pdfError, setPdfError] = useState(false);
+  const [checking, setChecking] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    setChecking(true);
+    setPdfError(false);
+
+    if (!file.url || file.url === "#") {
+      setPdfError(true);
+      setChecking(false);
+      return;
+    }
+
+    fetch(file.url, { method: "HEAD", signal: AbortSignal.timeout(5000) })
+      .then((res) => {
+        if (cancelled) return;
+        const ct = res.headers.get("content-type") || "";
+        if (!ct.includes("pdf") && !ct.includes("octet-stream") && !ct.includes("application")) {
+          setPdfError(true);
+        }
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setPdfError(true);
+      })
+      .finally(() => {
+        if (!cancelled) setChecking(false);
+      });
+
+    return () => { cancelled = true; };
+  }, [file.url]);
 
   const segments = [
     { label: "Document Hub", onClick: onBack },
@@ -171,7 +202,11 @@ export function DocumentFileView({
 
         {/* PDF viewer */}
         <div className="flex-1 flex flex-col min-w-0 bg-muted/10">
-          {pdfError ? (
+          {checking ? (
+            <div className="flex items-center justify-center h-full min-h-[50vh]">
+              <div className="size-8 animate-pulse rounded-full bg-muted/50" />
+            </div>
+          ) : pdfError ? (
             <div className="flex flex-col items-center justify-center h-full gap-4 p-6 text-center min-h-[50vh]">
               <div className="size-14 rounded-full bg-muted/30 flex items-center justify-center ring-1 ring-border/30">
                 <Eye className="size-6 text-muted-foreground/40" />
@@ -192,11 +227,11 @@ export function DocumentFileView({
               )}
             </div>
           ) : (
-            <iframe
-              src={`${file.url}#view=FitH`}
+            <embed
+              src={file.url}
+              type="application/pdf"
               className="w-full min-h-[70vh] flex-1"
               title={file.name}
-              onError={() => setPdfError(true)}
             />
           )}
         </div>
