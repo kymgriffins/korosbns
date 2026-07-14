@@ -1,40 +1,101 @@
 "use client";
 
+/**
+ * BNS first-party site tracker — VPS-ready, no third party required.
+ *
+ * Every SPA route change (and page leave duration) is POSTed to Django
+ * `POST /api/v1/track/event/` and stored in AnalyticsEvent forever.
+ * Admin `/dashboard/analytics` rolls these into day snapshots.
+ */
+
 import { useEffect, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
 import { buildApiUrl } from "@/lib/api-url";
 
-const SESSION_KEY = "bns_analytics_session";
+const VISITOR_KEY = "bns_vid";
+const SESSION_KEY = "bns_sid";
 
-function getOrCreateSessionId(): string {
-  if (typeof window === "undefined") return "";
+function envEnabled(name: string, fallback = true): boolean {
+  const raw = process.env[name];
+  if (raw == null || raw === "") return fallback;
+  return !["0", "false", "off", "no"].includes(raw.toLowerCase());
+}
+
+function uuid(): string {
   try {
-    let id = sessionStorage.getItem(SESSION_KEY);
-    if (!id) {
-      id = crypto.randomUUID();
-      sessionStorage.setItem(SESSION_KEY, id);
-    }
-    return id;
+    return crypto.randomUUID();
   } catch {
-    return `anon-${Date.now()}`;
+    return `bns-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
   }
 }
 
-function trackPageview(path: string, referrer: string) {
-  const payload = {
-    event_name: "pageview",
-    payload: {
-      path,
-      referrer: referrer || "",
-      source: "beacon",
-      session_id: getOrCreateSessionId(),
-      href: typeof window !== "undefined" ? window.location.href : path,
-    },
-  };
+function getOrCreate(storage: Storage, key: string): string {
+  try {
+    let id = storage.getItem(key);
+    if (!id) {
+      id = uuid();
+      storage.setItem(key, id);
+    }
+    return id;
+  } catch {
+    return uuid();
+  }
+}
 
+function visitorId(): string {
+  if (typeof window === "undefined") return "";
+  return getOrCreate(window.localStorage, VISITOR_KEY);
+}
+
+function sessionId(): string {
+  if (typeof window === "undefined") return "";
+  return getOrCreate(window.sessionStorage, SESSION_KEY);
+}
+
+function deviceHints() {
+  if (typeof window === "undefined" || typeof navigator === "undefined") {
+    return {};
+  }
+  const ua = navigator.userAgent || "";
+  let device_type = "Desktop";
+  if (/Mobi|Android|iPhone|iPod/i.test(ua)) device_type = "Mobile";
+  else if (/iPad|Tablet/i.test(ua)) device_type = "Tablet";
+
+  let os_name = "Unknown";
+  if (/Windows/i.test(ua)) os_name = "Windows";
+  else if (/Android/i.test(ua)) os_name = "Android";
+  else if (/iPhone|iPad|iPod|Mac OS/i.test(ua) && /Mobile/i.test(ua)) os_name = "iOS";
+  else if (/Mac OS/i.test(ua)) os_name = "Mac";
+  else if (/Linux/i.test(ua)) os_name = "Linux";
+
+  let browser_name = "Unknown";
+  if (/Edg\//i.test(ua)) browser_name = "Edge";
+  else if (/Chrome\//i.test(ua) && !/Edg\//i.test(ua)) browser_name = "Chrome";
+  else if (/Safari\//i.test(ua) && !/Chrome\//i.test(ua)) browser_name = "Safari";
+  else if (/Firefox\//i.test(ua)) browser_name = "Firefox";
+
+  return {
+    device_type,
+    os_name,
+    browser_name,
+    language: navigator.language || "",
+    screen: `${window.screen?.width || 0}x${window.screen?.height || 0}`,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "",
+  };
+}
+
+function postEvent(event_name: string, payload: Record<string, unknown>) {
+  const body = JSON.stringify({
+    event_name,
+    payload: {
+      ...payload,
+      source: "bns-tracker",
+      visitor_id: visitorId(),
+      session_id: sessionId(),
+    },
+  });
   const endpoint = buildApiUrl("/track/event/");
-  const body = JSON.stringify(payload);
 
   try {
     if (typeof navigator !== "undefined" && typeof navigator.sendBeacon === "function") {
@@ -42,7 +103,7 @@ function trackPageview(path: string, referrer: string) {
       if (navigator.sendBeacon(endpoint, blob)) return;
     }
   } catch {
-    /* fall through to fetch */
+    /* fall through */
   }
 
   void fetch(endpoint, {
@@ -51,27 +112,75 @@ function trackPageview(path: string, referrer: string) {
     body,
     keepalive: true,
     credentials: "include",
-  }).catch(() => {
-    /* never break navigation for analytics */
+  }).catch(() => undefined);
+}
+
+function trackPageview(path: string, referrer: string) {
+  postEvent("pageview", {
+    path,
+    referrer: referrer || "",
+    href: typeof window !== "undefined" ? window.location.href : path,
+    ...deviceHints(),
+  });
+}
+
+function trackPageleave(path: string, durationSeconds: number) {
+  if (durationSeconds < 1) return;
+  postEvent("pageleave", {
+    path,
+    duration_seconds: durationSeconds,
+    ...deviceHints(),
   });
 }
 
 /**
- * Global first-party pageview warehouse beacon.
- * Stores every route change into Django AnalyticsEvent immediately.
+ * First-party sitewide tracker. Primary analytics for VPS / self-host.
+ * Toggle with NEXT_PUBLIC_BNS_ANALYTICS (default on).
  */
 export function PageviewBeacon() {
+  const enabled = envEnabled("NEXT_PUBLIC_BNS_ANALYTICS", true);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const lastPath = useRef<string>("");
+  const startedAt = useRef<number>(Date.now());
 
   useEffect(() => {
+    if (!enabled) return;
+
     const qs = searchParams?.toString();
     const path = qs ? `${pathname}?${qs}` : pathname;
-    if (!path || path === lastPath.current) return;
-    lastPath.current = path;
-    trackPageview(path, typeof document !== "undefined" ? document.referrer : "");
-  }, [pathname, searchParams]);
+    if (!path) return;
+
+    const prev = lastPath.current;
+    const elapsed = Math.round((Date.now() - startedAt.current) / 1000);
+    if (prev && prev !== path) {
+      trackPageleave(prev, elapsed);
+    }
+
+    if (path !== lastPath.current) {
+      lastPath.current = path;
+      startedAt.current = Date.now();
+      trackPageview(path, typeof document !== "undefined" ? document.referrer : "");
+    }
+  }, [pathname, searchParams, enabled]);
+
+  useEffect(() => {
+    if (!enabled) return;
+
+    const onLeave = () => {
+      const path = lastPath.current;
+      if (!path) return;
+      const elapsed = Math.round((Date.now() - startedAt.current) / 1000);
+      trackPageleave(path, elapsed);
+    };
+
+    window.addEventListener("pagehide", onLeave);
+    window.addEventListener("beforeunload", onLeave);
+    return () => {
+      window.removeEventListener("pagehide", onLeave);
+      window.removeEventListener("beforeunload", onLeave);
+    };
+  }, [enabled]);
 
   return null;
 }
