@@ -337,46 +337,15 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
     );
   }
 
-  // File detail view (breadcrumb-based, no popup)
+  // File detail view — DocumentFileView has its own breadcrumb
   if (selectedFile && selectedFolder) {
     return (
-      <div className="flex flex-col bg-background">
-        <div className="border-b border-border/50 bg-background/95 px-4 py-3 md:px-6">
-          <Breadcrumb>
-            <BreadcrumbList>
-              {breadcrumbs.map((crumb, i) => (
-                <BreadcrumbItem key={crumb.label}>
-                  {i < breadcrumbs.length - 1 ? (
-                    <>
-                      <BreadcrumbLink
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          crumb.onClick?.();
-                        }}
-                        className="text-sm hover:text-foreground"
-                      >
-                        {crumb.label}
-                      </BreadcrumbLink>
-                      <BreadcrumbSeparator />
-                    </>
-                  ) : (
-                    <BreadcrumbPage className="text-sm font-semibold truncate max-w-[200px] sm:max-w-[400px]">
-                      {crumb.label}
-                    </BreadcrumbPage>
-                  )}
-                </BreadcrumbItem>
-              ))}
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
-        <DocumentFileView
-          file={selectedFile}
-          folderName={selectedFolder.fullName}
-          docType={selectedFile.docType ?? undefined}
-          onBack={() => setSelectedFile(null)}
-        />
-      </div>
+      <DocumentFileView
+        file={selectedFile}
+        folderName={selectedFolder.fullName}
+        docType={selectedFile.docType ?? undefined}
+        onBack={() => setSelectedFile(null)}
+      />
     );
   }
 

@@ -14,14 +14,6 @@ import { fetchDocumentsFromAPI } from "@/constants/documents";
 import type { DocumentType, DocumentFile } from "@/constants/documents";
 import { extractYearFromName, formatBytes, type FlatFile } from "@/data/documents";
 import { DocumentFolderCard, DocumentFileRow, DocumentFileView } from "@/components/documents";
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbSeparator,
-  BreadcrumbPage,
-} from "@/components/ui/breadcrumb";
 
 export default function DocumentsPage() {
   const [documents, setDocuments] = useState<DocumentType[]>([]);
@@ -83,20 +75,6 @@ export default function DocumentsPage() {
     }));
   }, [selectedDocFiltered]);
 
-  const breadcrumbs = [
-    {
-      label: "Documents",
-      onClick: () => { setSelectedDoc(null); setSelectedFile(null); setSearchQuery(""); },
-    },
-    ...(selectedDoc ? [{
-      label: selectedDoc.fullName,
-      onClick: () => setSelectedFile(null),
-    }] : []),
-    ...(selectedFile ? [{
-      label: selectedFile.name,
-    }] : []),
-  ];
-
   if (loading) {
     return (
       <div className="flex flex-col gap-4">
@@ -129,43 +107,15 @@ export default function DocumentsPage() {
     );
   }
 
-  // File detail view (breadcrumb-based, no popup)
+  // File detail view — DocumentFileView has its own breadcrumb
   if (selectedFile && selectedDoc) {
     return (
-      <div className="flex flex-col gap-0">
-        <div className="border-b border-border/50 bg-background px-4 py-3">
-          <Breadcrumb>
-            <BreadcrumbList>
-              {breadcrumbs.map((crumb, i) => (
-                <BreadcrumbItem key={crumb.label}>
-                  {i < breadcrumbs.length - 1 ? (
-                    <>
-                      <BreadcrumbLink
-                        href="#"
-                        onClick={(e) => { e.preventDefault(); crumb.onClick?.(); }}
-                        className="text-sm hover:text-foreground"
-                      >
-                        {crumb.label}
-                      </BreadcrumbLink>
-                      <BreadcrumbSeparator />
-                    </>
-                  ) : (
-                    <BreadcrumbPage className="text-sm font-semibold truncate max-w-[300px]">
-                      {crumb.label}
-                    </BreadcrumbPage>
-                  )}
-                </BreadcrumbItem>
-              ))}
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
-        <DocumentFileView
-          file={selectedFile}
-          folderName={selectedDoc.fullName}
-          docType={selectedDoc.title}
-          onBack={() => setSelectedFile(null)}
-        />
-      </div>
+      <DocumentFileView
+        file={selectedFile}
+        folderName={selectedDoc.fullName}
+        docType={selectedDoc.title}
+        onBack={() => setSelectedFile(null)}
+      />
     );
   }
 
