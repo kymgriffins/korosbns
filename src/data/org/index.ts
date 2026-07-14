@@ -1,7 +1,11 @@
 /**
- * Org marketing data — re-exports from the JSON “org database”.
- * Prefer `@/data/org` for new code. Landing / About / team pages read this,
- * not live DB, for mundane roster fields.
+ * Org marketing data.
+ *
+ * Live roster for About / landing /team pages: `GET /api/v1/org/team/public/`
+ * via `fetchPublicTeam()` in `@/lib/org-team` (falls back to this JSON if API is down).
+ *
+ * Keep `org.json` seed for offline deploys and fallback; edit live profiles in Django
+ * (OrganizationMember + Profile) so public bios stay in the DB.
  */
 import orgData from "@/data/org/org.json";
 
@@ -31,7 +35,8 @@ export type OrgMeta = {
 
 export const orgMeta: OrgMeta = orgData.org;
 
+/** Static fallback roster — prefer `fetchPublicTeam()` for UI. */
 export const team: OrgTeamMember[] = orgData.team;
 
-/** @deprecated Prefer importing `team` / `orgMeta` from `@/data/org` */
+/** @deprecated Prefer `fetchPublicTeam()` from `@/lib/org-team` */
 export default team;

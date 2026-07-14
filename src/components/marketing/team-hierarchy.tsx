@@ -2,8 +2,8 @@
 
 import Wrapper from "@/components/global/wrapper";
 import SectionBadge from "@/components/ui/section-badge";
-import { team } from "@/constants";
 import { getMemberUsername, type TeamMember } from "@/lib/team";
+import { fetchPublicTeam } from "@/lib/org-team";
 import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -23,7 +23,7 @@ import {
     IconBrandYoutube,
     IconBrandX
 } from "@tabler/icons-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const leadershipRoles = new Set([
     "Executive Director",
@@ -227,6 +227,18 @@ const TeamCarousel = ({ members }: { members: TeamMember[] }) => {
 };
 
 const TeamHierarchy = () => {
+    const [team, setTeam] = useState<TeamMember[]>([]);
+
+    useEffect(() => {
+        let cancelled = false;
+        fetchPublicTeam().then((members) => {
+            if (!cancelled) setTeam(members);
+        });
+        return () => {
+            cancelled = true;
+        };
+    }, []);
+
     const sortedMembers = [
         ...team.filter((member) => advisorRoles.has(member.role)),
         ...team.filter((member) => leadershipRoles.has(member.role)),

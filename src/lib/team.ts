@@ -1,6 +1,6 @@
-import { team } from "@/data/org";
+import type { PublicTeamMember } from "@/lib/org-team";
 
-export type TeamMember = (typeof team)[number];
+export type TeamMember = PublicTeamMember;
 
 export const slugifyName = (name: string) =>
   name
@@ -17,23 +17,28 @@ export const normalizeHandle = (value: string) =>
     .replace(/\/+$/, "");
 
 export const getMemberUsername = (member: TeamMember) => {
+  const explicit = member.username?.trim();
+  if (explicit) return normalizeHandle(explicit);
+
   const x = member.socials?.x?.trim();
-  if (!x) return slugifyName(member.name);
+  if (x) {
+    const handle = x
+      .replace(/^https?:\/\/(www\.)?x\.com\//i, "")
+      .replace(/^https?:\/\/(www\.)?twitter\.com\//i, "")
+      .split(/[/?#]/)[0];
+    if (handle) return normalizeHandle(handle);
+  }
 
-  const handle = x
-    .replace(/^https?:\/\/(www\.)?x\.com\//i, "")
-    .replace(/^https?:\/\/(www\.)?twitter\.com\//i, "")
-    .split(/[/?#]/)[0];
-
-  return normalizeHandle(handle || slugifyName(member.name));
+  return slugifyName(member.name);
 };
 
 export const getMemberAliases = (member: TeamMember) => {
   const aliases = new Set<string>([getMemberUsername(member), slugifyName(member.name)]);
+  if (member.id) aliases.add(normalizeHandle(member.id));
   return [...aliases];
 };
 
-export const findMemberByParam = (rawParam: string) => {
+export const findMemberByParam = (members: TeamMember[], rawParam: string) => {
   const param = normalizeHandle(rawParam);
-  return team.find((member) => getMemberAliases(member).includes(param));
+  return members.find((member) => getMemberAliases(member).includes(param));
 };

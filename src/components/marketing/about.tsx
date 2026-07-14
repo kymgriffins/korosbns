@@ -7,8 +7,9 @@ import Link from 'next/link';
 import { ease } from '@/motion/variants';
 import TeamSection from './team-section';
 import ConsortiumFoundersSection from './consortium-founders-section';
+import type { TeamMember } from '@/lib/team';
 
-const About = () => {
+const About = ({ members }: { members: TeamMember[] }) => {
     const openCallRoles = [
         "Podcast hosts",
         "Storytellers",
@@ -79,7 +80,7 @@ const About = () => {
             <ConsortiumFoundersSection />
 
             {/* Team Section - Full width */}
-            <TeamSection />
+            <TeamSection members={members} />
 
             <Wrapper className="relative z-10">
                 <motion.div

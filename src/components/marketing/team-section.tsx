@@ -4,27 +4,12 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import { team } from "@/data/org";
-import { slugifyName } from "@/lib/team";
+import { getMemberUsername, type TeamMember } from "@/lib/team";
 import { IconBrandLinkedin, IconBrandX, IconBrandInstagram } from "@tabler/icons-react";
 import { ArrowUpRight, Mail } from "lucide-react";
 import { ease } from "@/motion/variants";
 import Wrapper from "@/components/global/wrapper";
 import SectionBadge from "@/components/ui/section-badge";
-
-interface TeamMember {
-  name: string;
-  role: string;
-  image: string;
-  description: string;
-  bio?: string;
-  socials?: {
-    linkedin?: string;
-    x?: string;
-    instagram?: string;
-    email?: string;
-  };
-}
 
 const SocialIcon = ({ platform, href }: { platform: string; href: string }) => {
   const icons = {
@@ -58,7 +43,7 @@ const SocialIcon = ({ platform, href }: { platform: string; href: string }) => {
 const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
   const [imageError, setImageError] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const username = slugifyName(member.name);
+  const username = getMemberUsername(member);
 
   const initials = member.name
     .split(" ")
@@ -79,9 +64,8 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
     >
       <Link href={`/team/${username}`} className="block">
         <div className="relative rounded-2xl lg:rounded-3xl overflow-hidden bg-card border border-border hover:border-primary/40 transition-all duration-300 shadow-sm hover:shadow-lg">
-          {/* Image container with 3:4 aspect ratio */}
           <div className="relative aspect-[3/4] w-full overflow-hidden">
-            {imageError ? (
+            {imageError || !member.image ? (
               <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/60 via-primary/40 to-primary/20">
                 <span className="text-5xl font-bold tracking-wide text-white/95">
                   {initials}
@@ -99,16 +83,14 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
               />
             )}
 
-            {/* Gradient overlay */}
             <motion.div
               animate={{ opacity: isHovered ? 0.95 : 0.85 }}
               transition={{ duration: 0.3 }}
               className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"
             />
 
-            {/* Hover state: Show description */}
             <AnimatePresence>
-              {isHovered && (
+              {isHovered && (member.description || member.bio) ? (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -117,14 +99,13 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
                   className="absolute inset-0 flex items-center justify-center p-6 bg-background/90"
                 >
                   <p className="text-sm text-white/90 text-center leading-relaxed">
-                    {member.description}
+                    {member.description || member.bio}
                   </p>
                 </motion.div>
-              )}
+              ) : null}
             </AnimatePresence>
           </div>
 
-          {/* Info overlay (always visible) */}
           <div className="absolute bottom-0 inset-x-0 p-5 lg:p-6">
             <motion.div
               animate={{ y: isHovered ? -4 : 0 }}
@@ -133,23 +114,17 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
               <h3 className="text-xl lg:text-2xl font-bold text-white leading-tight mb-1">
                 {member.name}
               </h3>
-              <p className="text-sm text-white/75 font-medium mb-3">
-                {member.role}
-              </p>
+              <p className="text-sm text-white/75 font-medium mb-3">{member.role}</p>
 
-              {/* Social links */}
-              {member.socials && Object.keys(member.socials).length > 0 && (
+              {member.socials && Object.keys(member.socials).length > 0 ? (
                 <div className="flex items-center gap-2">
                   {Object.entries(member.socials).map(([platform, href]) =>
-                    href ? (
-                      <SocialIcon key={platform} platform={platform} href={href} />
-                    ) : null
+                    href ? <SocialIcon key={platform} platform={platform} href={href} /> : null,
                   )}
                 </div>
-              )}
+              ) : null}
             </motion.div>
 
-            {/* View profile indicator */}
             <motion.div
               initial={{ opacity: 0, x: -8 }}
               animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : -8 }}
@@ -166,10 +141,9 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
   );
 };
 
-const TeamSection = () => {
+export default function TeamSection({ members }: { members: TeamMember[] }) {
   return (
     <section id="team" className="relative w-full py-16 lg:py-24 bg-background overflow-hidden">
-      {/* Ambient background */}
       <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
         <motion.div
           animate={{ scale: [1, 1.15, 1], opacity: [0.08, 0.12, 0.08] }}
@@ -184,7 +158,6 @@ const TeamSection = () => {
       </div>
 
       <Wrapper>
-        {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-12 lg:mb-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -216,14 +189,12 @@ const TeamSection = () => {
           </motion.p>
         </div>
 
-        {/* Team grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-7xl mx-auto">
-          {team.map((member, index) => (
-            <TeamCard key={member.name} member={member} index={index} />
+          {members.map((member, index) => (
+            <TeamCard key={member.id || member.name} member={member} index={index} />
           ))}
         </div>
 
-        {/* CTA */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -242,6 +213,4 @@ const TeamSection = () => {
       </Wrapper>
     </section>
   );
-};
-
-export default TeamSection;
+}

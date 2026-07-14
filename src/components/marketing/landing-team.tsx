@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 import Link from "next/link";
 import Image from "next/image";
 import { team } from "@/data/org";
-import { slugifyName } from "@/lib/team";
+import { getMemberUsername } from "@/lib/team";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import {
   LandingSection,
@@ -13,6 +13,10 @@ import {
 } from "@/layouts/landing-section";
 import { cn } from "@/utils";
 
+/**
+ * Landing roster is static (`org.json`) on purpose — fast brochure chrome, no API round-trip.
+ * Full bios / live profiles live on `/about` and `/team/[username]` via `fetchPublicTeam()`.
+ */
 export default function LandingTeam() {
   return (
     <LandingSection>
@@ -20,8 +24,7 @@ export default function LandingTeam() {
         eyebrow="Our Team"
         title={
           <>
-            Meet the minds behind the{" "}
-            <span className={T.highlight}>story</span>.
+            Meet the minds behind the <span className={T.highlight}>story</span>.
           </>
         }
         description="A dedicated group of researchers, storytellers, and tech innovators working together to bring transparency to Kenya's public budgets."
@@ -29,7 +32,7 @@ export default function LandingTeam() {
 
       <div className="hidden gap-x-8 gap-y-16 md:grid md:grid-cols-2 lg:grid-cols-3">
         {team.map((member, i) => {
-          const href = `/team/${slugifyName(member.name)}`;
+          const href = `/team/${getMemberUsername(member)}`;
           return (
             <motion.div
               key={member.name}
@@ -39,19 +42,24 @@ export default function LandingTeam() {
               transition={{ duration: 0.7, delay: i * 0.1 }}
               className="group"
             >
-              <Link href={href} className="block outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-3xl">
+              <Link
+                href={href}
+                className="block rounded-3xl outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
                 <div className="relative mb-6 aspect-[4/5] overflow-hidden rounded-3xl border border-border/40 bg-muted">
                   <Image
-                    src={member.image}
+                    src={member.image || "/logo.svg"}
                     alt={member.name}
                     fill
                     className="object-cover object-top transition-transform duration-700 group-hover:scale-104"
                     sizes="(max-width: 1024px) 50vw, 33vw"
                   />
                 </div>
-                <h3 className={cn(T.cardTitle, "transition-colors group-hover:text-primary")}>{member.name}</h3>
+                <h3 className={cn(T.cardTitle, "transition-colors group-hover:text-primary")}>
+                  {member.name}
+                </h3>
                 <p className={cn(T.role, "mb-4 mt-1")}>{member.role}</p>
-                <p className={T.caption}>{member.description}</p>
+                <p className={T.caption}>{member.description || member.bio}</p>
               </Link>
             </motion.div>
           );
@@ -60,7 +68,7 @@ export default function LandingTeam() {
 
       <div className="flex w-full flex-col gap-6 md:hidden">
         {team.map((member, i) => {
-          const href = `/team/${slugifyName(member.name)}`;
+          const href = `/team/${getMemberUsername(member)}`;
           return (
             <motion.div
               key={member.name}
@@ -75,7 +83,7 @@ export default function LandingTeam() {
               >
                 <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-border/20 bg-muted">
                   <Image
-                    src={member.image}
+                    src={member.image || "/logo.svg"}
                     alt={member.name}
                     fill
                     className="object-cover object-top"
@@ -85,7 +93,7 @@ export default function LandingTeam() {
                 <div>
                   <h3 className={T.cardTitle}>{member.name}</h3>
                   <p className={cn(T.role, "mb-2.5 mt-0.5")}>{member.role}</p>
-                  <p className={T.caption}>{member.description}</p>
+                  <p className={T.caption}>{member.description || member.bio}</p>
                 </div>
               </Link>
             </motion.div>

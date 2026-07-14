@@ -497,12 +497,15 @@ export const citizenApi = {
 
   getTeamMembers: () =>
     apiFetch<Array<{
+      id?: string;
+      profile_id?: string;
+      username?: string | null;
       name: string;
       role: string;
       image: string;
       description?: string;
       bio?: string;
-      socials?: { linkedin?: string; x?: string; website?: string };
+      socials?: { linkedin?: string; x?: string; website?: string; instagram?: string; email?: string };
     }>>("/org/team/public/"),
 
   getStories: () => apiFetch<ApiListResponse<Record<string, unknown>>>("/content/stories/"),

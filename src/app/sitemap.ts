@@ -1,8 +1,8 @@
 import { MetadataRoute } from "next";
 import { citizenApi } from "@/lib/api-client";
 import { learningData } from "@/data/learning";
-import { team } from "@/data/org";
-import { slugifyName } from "@/lib/team";
+import { fetchPublicTeam } from "@/lib/org-team";
+import { getMemberUsername } from "@/lib/team";
 import { canonicalUrl } from "@/utils/metadata";
 
 export const dynamic = "force-dynamic";
@@ -43,11 +43,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: route.priority,
   }));
 
-  // Add static team profile pages from constants
+  // Team profile pages from org API (fallback: static org.json)
   try {
+    const team = await fetchPublicTeam();
     team.forEach((member) => {
       sitemapEntries.push({
-        url: canonicalUrl(`/team/${slugifyName(member.name)}`),
+        url: canonicalUrl(`/team/${getMemberUsername(member)}`),
         lastModified: new Date(),
         changeFrequency: "monthly",
         priority: 0.5,

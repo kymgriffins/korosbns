@@ -1,7 +1,8 @@
 import { Metadata } from "next";
-import { team } from "@/data/org";
+import { fetchPublicTeam } from "@/lib/org-team";
 import {
   findMemberByParam,
+  getMemberUsername,
   slugifyName,
   type TeamMember,
 } from "@/lib/team";
@@ -14,9 +15,12 @@ import { metaDescription } from "@/utils/metadata";
 
 type TeamMemberParams = { username: string };
 
-export function generateStaticParams() {
+export const revalidate = 300;
+
+export async function generateStaticParams() {
+  const team = await fetchPublicTeam();
   return team.map((member) => ({
-    username: slugifyName(member.name),
+    username: getMemberUsername(member),
   }));
 }
 
@@ -26,7 +30,8 @@ export async function generateMetadata({
   params: Promise<TeamMemberParams>;
 }): Promise<Metadata> {
   const { username } = await params;
-  const member = findMemberByParam(username);
+  const team = await fetchPublicTeam();
+  const member = findMemberByParam(team, username);
 
   if (!member) {
     return { title: "Team Member Not Found" };
@@ -42,12 +47,18 @@ export async function generateMetadata({
     openGraph: {
       title: `${member.name} | Budget Ndio Story`,
       description,
-      images: [member.image],
+      images: member.image ? [member.image] : undefined,
     },
   };
 }
 
-function TeamMemberProfile({ member }: { member: TeamMember }) {
+function TeamMemberProfile({
+  member,
+  others,
+}: {
+  member: TeamMember;
+  others: TeamMember[];
+}) {
   const firstName = member.name.split(" ")[0] ?? member.name;
   const aboutText = member.bio?.trim() || member.description;
 
@@ -70,7 +81,7 @@ function TeamMemberProfile({ member }: { member: TeamMember }) {
           <div className="relative inline-block">
             <div className="absolute inset-0 rounded-full bg-primary/20 blur-xl" />
             <Image
-              src={member.image}
+              src={member.image || "/logo.svg"}
               alt={member.name}
               width={160}
               height={160}
@@ -114,7 +125,9 @@ function TeamMemberProfile({ member }: { member: TeamMember }) {
       <div className="mx-auto max-w-3xl px-6 pb-16">
         <div className="rounded-2xl border border-border/60 bg-card p-8 shadow-sm">
           <h2 className="mb-4 text-xl font-semibold">About {firstName}</h2>
-          <p className="mb-6 leading-relaxed text-muted-foreground whitespace-pre-line">{aboutText}</p>
+          <p className="mb-6 whitespace-pre-line leading-relaxed text-muted-foreground">
+            {aboutText || `${member.name} is part of the Budget Ndio Story team.`}
+          </p>
 
           <div className="flex items-center gap-3 border-t border-border/60 pt-4">
             <Link
@@ -128,29 +141,26 @@ function TeamMemberProfile({ member }: { member: TeamMember }) {
         </div>
 
         <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
-          {team
-            .filter((m) => m.name !== member.name)
-            .slice(0, 3)
-            .map((m) => {
-              const mUsername = slugifyName(m.name);
-              return (
-                <Link
-                  key={m.name}
-                  href={`/team/${mUsername}`}
-                  className="group rounded-xl border border-border/60 bg-card p-4 transition-colors hover:border-primary/30"
-                >
-                  <Image
-                    src={m.image}
-                    alt={m.name}
-                    width={60}
-                    height={60}
-                    className="mx-auto mb-3 size-12 rounded-full object-cover"
-                  />
-                  <p className="text-center text-sm font-medium">{m.name.split(" ")[0]}</p>
-                  <p className="text-center text-xs text-muted-foreground">{m.role}</p>
-                </Link>
-              );
-            })}
+          {others.slice(0, 3).map((m) => {
+            const mUsername = getMemberUsername(m);
+            return (
+              <Link
+                key={m.id || m.name}
+                href={`/team/${mUsername}`}
+                className="group rounded-xl border border-border/60 bg-card p-4 transition-colors hover:border-primary/30"
+              >
+                <Image
+                  src={m.image || "/logo.svg"}
+                  alt={m.name}
+                  width={60}
+                  height={60}
+                  className="mx-auto mb-3 size-12 rounded-full object-cover"
+                />
+                <p className="text-center text-sm font-medium">{m.name.split(" ")[0]}</p>
+                <p className="text-center text-xs text-muted-foreground">{m.role}</p>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </div>
@@ -163,16 +173,19 @@ export default async function TeamMemberPage({
   params: Promise<TeamMemberParams>;
 }) {
   const { username } = await params;
-  const member = findMemberByParam(username);
+  const team = await fetchPublicTeam();
+  const member = findMemberByParam(team, username);
 
   if (!member) {
     notFound();
   }
 
-  const canonicalUsername = slugifyName(member.name);
-  if (username !== canonicalUsername) {
+  const canonicalUsername = getMemberUsername(member);
+  if (username !== canonicalUsername && username !== slugifyName(member.name)) {
     redirect(`/team/${canonicalUsername}`);
   }
 
-  return <TeamMemberProfile member={member} />;
+  const others = team.filter((m) => m.name !== member.name);
+
+  return <TeamMemberProfile member={member} others={others} />;
 }
