@@ -12,39 +12,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { fetchDocumentsFromAPI } from "@/constants/documents";
 import type { DocumentType, DocumentFile } from "@/constants/documents";
-
-function formatFileSize(bytes: number): string {
-  if (bytes === 0) return "0 B";
-  const units = ["B", "KB", "MB", "GB"];
-  const k = 1024;
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${units[i]}`;
-}
-
-function FileRow({ file }: { file: DocumentFile }) {
-  return (
-    <div className="flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-muted/40">
-      <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-blue-500/10">
-        <File className="size-4.5 text-blue-600" />
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-medium">{file.name}</p>
-        <p className="text-xs text-muted-foreground">
-          {formatFileSize(file.size)}
-          {file.modified > 0 && ` · ${format(new Date(file.modified * 1000), "MMM d, yyyy")}`}
-        </p>
-      </div>
-      <div className="flex items-center gap-1">
-        <Button variant="ghost" size="icon-xs" asChild title="View">
-          <a href={file.url} target="_blank" rel="noopener noreferrer"><ExternalLink className="size-3.5" /></a>
-        </Button>
-        <Button variant="ghost" size="icon-xs" asChild title="Download">
-          <a href={file.downloadUrl} target="_blank" rel="noopener noreferrer" download><Download className="size-3.5" /></a>
-        </Button>
-      </div>
-    </div>
-  );
-}
+import { extractYearFromName, formatBytes } from "@/data/documents";
+import { DocumentFolderCard, DocumentFileRow, DocumentViewerDialog } from "@/components/documents";
 
 export default function DocumentsPage() {
   const [documents, setDocuments] = useState<DocumentType[]>([]);
@@ -120,6 +89,21 @@ export default function DocumentsPage() {
   }
 
   if (selectedDoc) {
+    const flatFiles = selectedDocFiltered
+      ? selectedDocFiltered.files.map((f, i) => ({
+          id: `${selectedDoc!.id}-${f.name}-${i}`,
+          name: f.name,
+          size: f.size,
+          url: f.url,
+          downloadUrl: f.downloadUrl,
+          modified: f.modified,
+          folderName: selectedDoc!.fullName,
+          docType: selectedDoc!.title,
+          year: extractYearFromName(f.name),
+          county: null,
+        }))
+      : [];
+
     return (
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
@@ -155,13 +139,21 @@ export default function DocumentsPage() {
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <Badge variant="secondary" className="text-[10px]">{selectedDocFiltered?.files.length ?? 0} file{(selectedDocFiltered?.files.length ?? 0) !== 1 ? "s" : ""}</Badge>
           {selectedDoc.years.length > 0 && (
-            <Badge variant="outline" className="text-[10px]">{selectedDoc.years[0]}–{selectedDoc.years[selectedDoc.years.length - 1]}</Badge>
+            <Badge variant="outline" className="text-[10px]">{selectedDoc.years[0]}\u2013{selectedDoc.years[selectedDoc.years.length - 1]}</Badge>
           )}
         </div>
 
-        {selectedDocFiltered && selectedDocFiltered.files.length > 0 ? (
+        {flatFiles.length > 0 ? (
           <div className="space-y-2">
-            {selectedDocFiltered.files.map((file, idx) => <FileRow key={`${file.name}-${idx}`} file={file} />)}
+            {flatFiles.map((file) => (
+              <DocumentFileRow
+                key={file.id}
+                file={file}
+                viewMode="card"
+                folderName={selectedDoc?.fullName}
+                docType={selectedDoc?.title}
+              />
+            ))}
           </div>
         ) : (
           <Card><CardContent className="flex flex-col items-center gap-2 py-12"><FileText className="size-10 text-muted-foreground/30" /><p className="text-sm text-muted-foreground">No files match your search.</p></CardContent></Card>
@@ -219,7 +211,7 @@ export default function DocumentsPage() {
                   <div className="flex items-center gap-2 pt-1 text-xs text-muted-foreground">
                     <Badge variant="secondary" className="text-[10px]">{doc.files.length} file{doc.files.length !== 1 ? "s" : ""}</Badge>
                     {doc.years.length > 0 && (
-                      <Badge variant="outline" className="text-[10px]">{doc.years[0]}–{doc.years[doc.years.length - 1]}</Badge>
+                      <Badge variant="outline" className="text-[10px]">{doc.years[0]}\u2013{doc.years[doc.years.length - 1]}</Badge>
                     )}
                   </div>
                 </CardContent>
