@@ -1448,6 +1448,8 @@ export type AdminAnalyticsSummary = {
   tracked_pageleaves?: number;
   traffic_source?: "vercel" | "local" | "first-party" | "local+vercel";
   traffic_synced_at?: string | null;
+  events_as_of?: string | null;
+  events_count?: number;
 
   daily_visitors: { date: string; count: number; visitors?: number; pageviews?: number }[];
   top_pages: { path: string; views: number; pageviews?: number; visitors?: number; percentage?: number }[];

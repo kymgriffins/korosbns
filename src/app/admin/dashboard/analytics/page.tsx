@@ -641,6 +641,7 @@ export default function AdminAnalyticsPage() {
                 </div>
                 <p className="text-xs text-muted-foreground">
                   Source: {summary?.traffic_source ?? "unknown"}
+                  {summary?.events_count != null ? ` · ${summary.events_count.toLocaleString()} events` : ""}
                 </p>
               </CardContent>
             </Card>
