@@ -1,4 +1,5 @@
 allowBuilds:
   '@sentry/cli': true
+  '@vercel/speed-insights': true
   core-js: set this to true or false
   sharp: true

@@ -2,55 +2,45 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-const mockFetchSummary = vi.hoisted(() => vi.fn());
-const mockModulesFetchList = vi.hoisted(() => vi.fn());
-const mockContentFetchList = vi.hoisted(() => vi.fn());
-const mockForumFetchList = vi.hoisted(() => vi.fn());
-const mockUsersFetch = vi.hoisted(() => vi.fn());
+const mockSummary = vi.hoisted(() => vi.fn());
+const mockModuleAnalytics = vi.hoisted(() => vi.fn());
 
-vi.mock("@/data/analytics", () => ({
-  analyticsData: { admin: { fetchSummary: mockFetchSummary } },
-}));
-
-vi.mock("@/data/admin-content", () => ({
-  adminContentData: {
-    modules: { fetchList: mockModulesFetchList },
-    content: { fetchList: mockContentFetchList },
-    forum: { fetchList: mockForumFetchList },
+vi.mock("@/lib/admin-api", () => ({
+  adminAnalyticsApi: {
+    summary: mockSummary,
+    moduleAnalytics: mockModuleAnalytics,
   },
 }));
 
-vi.mock("@/data/users", () => ({
-  userData: { admin: { users: { fetch: mockUsersFetch } } },
-}));
-
-vi.mock("@/lib/admin-api", () => ({
-  adminNotesApi: { list: vi.fn().mockResolvedValue({ count: 5, results: [] }) },
-}));
-
 vi.mock("@/components/ui/chart", () => ({
-  ChartContainer: ({ children }: any) => <div>{children}</div>,
+  ChartContainer: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   ChartTooltip: () => null,
   ChartTooltipContent: () => null,
 }));
-
-vi.mock("@/styles/flag-icons/flags.css", () => ({}));
 
 import AdminAnalyticsPage from "@/app/admin/dashboard/analytics/page";
 
 describe("AdminAnalyticsPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockModuleAnalytics.mockResolvedValue({
+      period: "weekly",
+      completions_over_time: [],
+      top_modules: [],
+      event_summary_last_30d: {},
+      total_modules_published: 0,
+    });
   });
 
   it("renders loading state initially", () => {
-    mockFetchSummary.mockReturnValue(new Promise(() => {}));
+    mockSummary.mockReturnValue(new Promise(() => {}));
+    mockModuleAnalytics.mockReturnValue(new Promise(() => {}));
     render(<AdminAnalyticsPage />);
     expect(screen.getByText("Analytics")).toBeInTheDocument();
   });
 
-  it("renders KPIs when data loads successfully via fetchSummary", async () => {
-    mockFetchSummary.mockResolvedValue({
+  it("renders KPIs when summary loads", async () => {
+    mockSummary.mockResolvedValue({
       total_users: 150,
       total_content: 63,
       total_modules: 10,
@@ -62,37 +52,50 @@ describe("AdminAnalyticsPage", () => {
       total_notes: 10,
       recent_signups: 12,
       engagement_rate: 72.5,
+      visitors_today: 20,
+      visitors_7d: 100,
+      visitors_30d: 420,
+      pageviews_today: 50,
+      pageviews_7d: 300,
+      pageviews_30d: 900,
+      users_new_today: 1,
+      users_new_7d: 5,
+      users_new_30d: 18,
+      users_active_7d: 40,
+      users_active_30d: 90,
+      users_growth_pct: 2.5,
+      bounce_rate: 41,
+      avg_session_seconds: 180,
+      content_published_today: 0,
+      content_published_7d: 2,
+      content_published_30d: 8,
+      content_drafts: 3,
+      traffic_source: "vercel",
+      traffic_synced_at: "2026-07-14T10:00:00Z",
+      daily_visitors: [{ date: "2026-07-13", count: 40 }],
+      top_pages: [{ path: "/", views: 120, pageviews: 120 }],
+      device_breakdown: [{ device_type: "Mobile", percentage: 62 }],
+      traffic_sources: [{ source: "Direct", count: 50, percentage: 40 }],
     });
-    mockModulesFetchList.mockResolvedValue({ count: 10, results: [] });
-    mockContentFetchList.mockResolvedValue({ count: 40, results: [] });
 
     render(<AdminAnalyticsPage />);
-    expect(await screen.findByText("150")).toBeInTheDocument();
-    expect(screen.getByText("63")).toBeInTheDocument();
-    expect(screen.getByText("10")).toBeInTheDocument();
-    expect(screen.getByText("40")).toBeInTheDocument();
+    expect(await screen.findByText("Vercel Web Analytics")).toBeInTheDocument();
+    expect(screen.getAllByText("420").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("900").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("72.5%").length).toBeGreaterThan(0);
   });
 
-  it("falls back to manual counts when fetchSummary returns zeros", async () => {
-    mockFetchSummary.mockResolvedValue({
-      total_users: 0,
-      total_content: 0,
-      total_modules: 0,
-      total_articles: 0,
-      total_videos: 0,
-      total_stories: 0,
-      total_documents: 0,
-      active_forum_threads: 0,
-      total_notes: 0,
-      recent_signups: 0,
-      engagement_rate: 0,
+  it("shows an error when the summary API fails", async () => {
+    mockSummary.mockRejectedValue(new Error("network"));
+    mockModuleAnalytics.mockResolvedValue({
+      period: "weekly",
+      completions_over_time: [],
+      top_modules: [],
+      event_summary_last_30d: {},
+      total_modules_published: 0,
     });
-    mockUsersFetch.mockResolvedValue({ count: 100, results: [] });
-    mockModulesFetchList.mockResolvedValue({ count: 8, results: [] });
-    mockForumFetchList.mockResolvedValue({ count: 20, results: [] });
 
     render(<AdminAnalyticsPage />);
-    expect(await screen.findByText("100")).toBeInTheDocument();
-    expect(screen.getByText("8")).toBeInTheDocument();
+    expect(await screen.findByText("Analytics unavailable")).toBeInTheDocument();
   });
 });

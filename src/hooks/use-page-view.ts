@@ -33,6 +33,7 @@ function storeVisit(record: VisitRecord) {
   }
 }
 
+/** Local duration log. Sitewide DB warehouse is handled by PageviewBeacon. */
 export function usePageView() {
   const pathname = usePathname();
   const startRef = useRef(Date.now());
@@ -43,7 +44,11 @@ export function usePageView() {
     const elapsed = Math.round((Date.now() - startRef.current) / 1000);
 
     if (prevPath && elapsed > 0) {
-      storeVisit({ path: prevPath, entered_at: new Date(Date.now() - elapsed * 1000).toISOString(), duration_seconds: elapsed });
+      storeVisit({
+        path: prevPath,
+        entered_at: new Date(Date.now() - elapsed * 1000).toISOString(),
+        duration_seconds: elapsed,
+      });
     }
 
     startRef.current = Date.now();
@@ -54,7 +59,11 @@ export function usePageView() {
     const handleBeforeUnload = () => {
       const elapsed = Math.round((Date.now() - startRef.current) / 1000);
       if (elapsed > 0) {
-        storeVisit({ path: pathname, entered_at: new Date(Date.now() - elapsed * 1000).toISOString(), duration_seconds: elapsed });
+        storeVisit({
+          path: pathname,
+          entered_at: new Date(Date.now() - elapsed * 1000).toISOString(),
+          duration_seconds: elapsed,
+        });
       }
     };
     window.addEventListener("beforeunload", handleBeforeUnload);

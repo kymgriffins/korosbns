@@ -6,7 +6,7 @@ import CookieConsentWrapper from "@/components/global/cookie-consent-wrapper";
 import { base, handwriting, heading } from "@/constants";
 import "@/styles/globals.css";
 import { cn, generateMetadata } from "@/utils";
-import { Analytics } from "@vercel/analytics/next";
+import { SiteAnalytics } from "@/components/analytics/site-analytics";
 import type { Viewport } from "next";
 import Script from "next/script";
 
@@ -125,7 +125,7 @@ export default function RootLayout({
           {children}
           <CookieConsentWrapper />
         </Providers>
-        <Analytics />
+        <SiteAnalytics />
         <Script id="microsoft-clarity" strategy="afterInteractive">
           {`(function(c,l,a,r,i,t,y){
         c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};

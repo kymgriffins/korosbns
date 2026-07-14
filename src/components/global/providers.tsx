@@ -2,7 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/auth-context";
@@ -12,6 +12,8 @@ import { DebugLogPanel } from "@/components/debug/debug-log-panel";
 import { PostHogProvider } from "@/components/global/posthog-provider";
 import { PreferencesStoreProvider } from "@/stores/preferences/preferences-provider";
 import { PREFERENCE_DEFAULTS } from "@/lib/preferences/preferences-config";
+import { PageviewBeacon } from "@/components/analytics/pageview-beacon";
+
 const Providers = ({ children }: { children: React.ReactNode }) => {
   const [queryClient] = useState(
     () =>
@@ -32,23 +34,26 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         <OrgProvider>
           <SentryErrorBoundary>
-              <AuthProvider>
-                <TooltipProvider>
-                  <PostHogProvider>
-                    <PreferencesStoreProvider
-                      themeMode={PREFERENCE_DEFAULTS.theme_mode}
-                      themePreset={PREFERENCE_DEFAULTS.theme_preset}
-                      contentLayout={PREFERENCE_DEFAULTS.content_layout}
-                      navbarStyle={PREFERENCE_DEFAULTS.navbar_style}
-                      font={PREFERENCE_DEFAULTS.font}
-                    >
-                      <Toaster position="top-right" toastOptions={{ style: { marginTop: "0.25rem" } }} />
-                      {children}
-                      <DebugLogPanel />
-                    </PreferencesStoreProvider>
-                  </PostHogProvider>
-                </TooltipProvider>
-              </AuthProvider>
+            <AuthProvider>
+              <TooltipProvider>
+                <PostHogProvider>
+                  <PreferencesStoreProvider
+                    themeMode={PREFERENCE_DEFAULTS.theme_mode}
+                    themePreset={PREFERENCE_DEFAULTS.theme_preset}
+                    contentLayout={PREFERENCE_DEFAULTS.content_layout}
+                    navbarStyle={PREFERENCE_DEFAULTS.navbar_style}
+                    font={PREFERENCE_DEFAULTS.font}
+                  >
+                    <Toaster position="top-right" toastOptions={{ style: { marginTop: "0.25rem" } }} />
+                    <Suspense fallback={null}>
+                      <PageviewBeacon />
+                    </Suspense>
+                    {children}
+                    <DebugLogPanel />
+                  </PreferencesStoreProvider>
+                </PostHogProvider>
+              </TooltipProvider>
+            </AuthProvider>
           </SentryErrorBoundary>
         </OrgProvider>
       </ThemeProvider>
@@ -57,4 +62,3 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
 };
 
 export default Providers;
-

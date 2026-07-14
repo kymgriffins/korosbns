@@ -1,141 +1,92 @@
-import { ArrowDownRight, ArrowUpRight, Ellipsis } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
-export function AnalyticsKpiStrip() {
+export type AnalyticsKpiItem = {
+  label: string;
+  value: string;
+  changePct?: number | null;
+  fromLabel?: string;
+  periodLabel?: string;
+};
+
+function ChangeBadge({ changePct }: { changePct: number }) {
+  const up = changePct >= 0;
+  return (
+    <Badge
+      className={cn(
+        up
+          ? "bg-green-500/10 text-green-700 dark:bg-green-500/15 dark:text-green-300"
+          : "bg-destructive/10 text-destructive",
+      )}
+    >
+      {up ? <ArrowUpRight /> : <ArrowDownRight />}
+      {Math.abs(changePct).toFixed(1)}%
+    </Badge>
+  );
+}
+
+export function AnalyticsKpiStrip({
+  items,
+  loading,
+}: {
+  items: AnalyticsKpiItem[];
+  loading?: boolean;
+}) {
   return (
     <div className="overflow-hidden rounded-xl bg-card shadow-xs ring-1 ring-foreground/10">
-      <div className="grid divide-y *:data-[slot=card]:rounded-none *:data-[slot=card]:ring-0 md:grid-cols-2 md:divide-x md:divide-y-0 xl:grid-cols-5">
-        <Card>
-          <CardHeader>
-            <CardTitle className="font-normal text-sm">Unique Visitors</CardTitle>
-            <CardAction>
-              <Ellipsis className="size-4" />
-            </CardAction>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-4">
-            <div className="flex items-center justify-between gap-4">
-              <div className="text-2xl leading-none tracking-tight">213.1k</div>
-              <Badge className="bg-green-500/10 text-green-700 dark:bg-green-500/15 dark:text-green-300">
-                <ArrowUpRight />
-                2.8%
-              </Badge>
-            </div>
-
-            <div className="flex items-center gap-2 text-muted-foreground text-xs">
-              <span>
-                from <span className="text-foreground">207.3k</span>
-              </span>
-              <span>•</span>
-              <span>last 4 weeks</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="font-normal text-sm">Sessions</CardTitle>
-            <CardAction>
-              <Ellipsis className="size-4" />
-            </CardAction>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-4">
-            <div className="flex items-center justify-between gap-4">
-              <div className="text-2xl leading-none tracking-tight">248.6k</div>
-              <Badge className="bg-green-500/10 text-green-700 dark:bg-green-500/15 dark:text-green-300">
-                <ArrowUpRight />
-                2.1%
-              </Badge>
-            </div>
-
-            <div className="flex items-center gap-2 text-muted-foreground text-xs">
-              <span>
-                from <span className="text-foreground">243.5k</span>
-              </span>
-              <span>•</span>
-              <span>last 4 weeks</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="font-normal text-sm">Pageviews</CardTitle>
-            <CardAction>
-              <Ellipsis className="size-4" />
-            </CardAction>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-4">
-            <div className="flex items-center justify-between gap-4">
-              <div className="text-2xl leading-none tracking-tight">547.9k</div>
-              <Badge className="bg-destructive/10 text-destructive">
-                <ArrowDownRight />
-                3.3%
-              </Badge>
-            </div>
-
-            <div className="flex items-center gap-2 text-muted-foreground text-xs">
-              <span>
-                from <span className="text-foreground">566.8k</span>
-              </span>
-              <span>•</span>
-              <span>last 4 weeks</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="font-normal text-sm">Engagement Rate</CardTitle>
-            <CardAction>
-              <Ellipsis className="size-4" />
-            </CardAction>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-4">
-            <div className="flex items-center justify-between gap-4">
-              <div className="text-2xl leading-none tracking-tight">61.4%</div>
-              <Badge className="bg-green-500/10 text-green-700 dark:bg-green-500/15 dark:text-green-300">
-                <ArrowUpRight />
-                4.2%
-              </Badge>
-            </div>
-
-            <div className="flex items-center gap-2 text-muted-foreground text-xs">
-              <span>
-                from <span className="text-foreground">58.9%</span>
-              </span>
-              <span>•</span>
-              <span>last 4 weeks</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="font-normal text-sm">Conversion Rate</CardTitle>
-            <CardAction>
-              <Ellipsis className="size-4" />
-            </CardAction>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-4">
-            <div className="flex items-center justify-between gap-4">
-              <div className="text-2xl leading-none tracking-tight">8.4%</div>
-              <Badge className="bg-destructive/10 text-destructive">
-                <ArrowDownRight />
-                5.6%
-              </Badge>
-            </div>
-
-            <div className="flex items-center gap-2 text-muted-foreground text-xs">
-              <span>
-                from <span className="text-foreground">8.9%</span>
-              </span>
-              <span>•</span>
-              <span>last 4 weeks</span>
-            </div>
-          </CardContent>
-        </Card>
+      <div
+        className={cn(
+          "grid divide-y *:data-[slot=card]:rounded-none *:data-[slot=card]:shadow-none *:data-[slot=card]:ring-0",
+          "md:grid-cols-2 md:divide-x md:divide-y-0",
+          items.length >= 5 ? "xl:grid-cols-5" : "xl:grid-cols-4",
+        )}
+      >
+        {(loading ? Array.from({ length: Math.max(items.length, 4) }) : items).map((item, i) => {
+          const kpi = loading ? null : (item as AnalyticsKpiItem);
+          return (
+            <Card key={kpi?.label ?? `kpi-skel-${i}`} data-slot="card">
+              <CardHeader>
+                <CardTitle className="font-normal text-sm">
+                  {loading ? <Skeleton className="h-4 w-20" /> : kpi!.label}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-col gap-4">
+                {loading ? (
+                  <>
+                    <Skeleton className="h-7 w-24" />
+                    <Skeleton className="h-3 w-32" />
+                  </>
+                ) : (
+                  <>
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="text-2xl leading-none tracking-tight tabular-nums">
+                        {kpi!.value}
+                      </div>
+                      {typeof kpi!.changePct === "number" ? (
+                        <ChangeBadge changePct={kpi!.changePct} />
+                      ) : null}
+                    </div>
+                    {(kpi!.fromLabel || kpi!.periodLabel) && (
+                      <div className="flex items-center gap-2 text-muted-foreground text-xs">
+                        {kpi!.fromLabel ? (
+                          <span>
+                            from <span className="text-foreground">{kpi!.fromLabel}</span>
+                          </span>
+                        ) : null}
+                        {kpi!.fromLabel && kpi!.periodLabel ? <span>•</span> : null}
+                        {kpi!.periodLabel ? <span>{kpi!.periodLabel}</span> : null}
+                      </div>
+                    )}
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
     </div>
   );
