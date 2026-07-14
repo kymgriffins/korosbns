@@ -97,11 +97,9 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
   const [refreshing, setRefreshing] = useState(false);
   const documents = data?.documents ?? [];
   const loading = isLoading;
-  const error =
-    data?.error ??
-    (isError
-      ? "The document repository is temporarily unavailable. Please try again later."
-      : null);
+  const error = isError
+    ? "The document repository is temporarily unavailable. Please try again later."
+    : null;
 
   // Navigation state
   const [selectedFolder, setSelectedFolder] = useState<DocumentType | null>(

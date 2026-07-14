@@ -30,7 +30,12 @@ export const documentData = {
   fetch: (): Promise<FetchDocumentsResult> =>
     withFallback(
       "documents",
-      () => fetchDocumentsFromAPI(),
+      async () => {
+        const result = await fetchDocumentsFromAPI();
+        if (result.error) throw new Error(result.error);
+        _documents = sortByNameAZ(result.documents);
+        return result;
+      },
       () => ({ documents: _documents }),
     ),
 };

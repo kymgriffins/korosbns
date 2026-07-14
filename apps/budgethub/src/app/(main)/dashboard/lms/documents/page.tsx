@@ -10,8 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
-import { fetchDocumentsFromAPI } from "@/constants/documents";
-import type { DocumentType, DocumentFile } from "@/constants/documents";
+import { documentData, type DocumentType, type DocumentFile } from "@/data/documents";
 import { extractYearFromName, formatBytes, type FlatFile } from "@/data/documents";
 import { DocumentFolderCard, DocumentFileRow, DocumentFileView } from "@/components/documents";
 
@@ -27,8 +26,7 @@ export default function DocumentsPage() {
     setLoading(true);
     setError(null);
     try {
-      const result = await fetchDocumentsFromAPI();
-      if (result.error) { setError(result.error); }
+      const result = await documentData.fetch();
       setDocuments(result.documents);
     } catch {
       setError("Failed to load documents. Please try again later.");
