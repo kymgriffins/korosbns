@@ -79,7 +79,7 @@ describe("AdminAnalyticsPage", () => {
     });
 
     render(<AdminAnalyticsPage />);
-    expect(await screen.findByText("Vercel Web Analytics")).toBeInTheDocument();
+    expect(await screen.findByText("First-party tracker")).toBeInTheDocument();
     expect(screen.getAllByText("420").length).toBeGreaterThan(0);
     expect(screen.getAllByText("900").length).toBeGreaterThan(0);
     expect(screen.getAllByText("72.5%").length).toBeGreaterThan(0);

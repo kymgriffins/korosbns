@@ -1429,7 +1429,24 @@ export type AdminAnalyticsSummary = {
   pageviews_30d: number;
   bounce_rate: number;
   avg_session_seconds: number;
-  traffic_source?: "vercel" | "local";
+  avg_hit_seconds?: number;
+  total_engagement_seconds?: number;
+  top_paths_by_time?: {
+    path: string;
+    total_seconds: number;
+    avg_seconds: number;
+    hits: number;
+    share_pct: number;
+  }[];
+  insights?: {
+    id: string;
+    severity: "info" | "positive" | "warning" | "attention";
+    title: string;
+    body: string;
+  }[];
+  tracked_sessions?: number;
+  tracked_pageleaves?: number;
+  traffic_source?: "vercel" | "local" | "first-party" | "local+vercel";
   traffic_synced_at?: string | null;
 
   daily_visitors: { date: string; count: number; visitors?: number; pageviews?: number }[];

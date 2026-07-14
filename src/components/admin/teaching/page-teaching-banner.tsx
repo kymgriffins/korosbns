@@ -36,6 +36,11 @@ export function PageTeachingBanner({ surface = "admin" }: Props) {
     [local, surface],
   );
 
+  // Analytics page: breadcrumb + inline helpers only — skip tip banners.
+  if (surface === "admin" && (local === "analytics" || local.startsWith("analytics/"))) {
+    return null;
+  }
+
   if (!teaching?.ready || teaching.muted || !guide || teaching.isPageDismissed(guide.id)) return null;
 
   const { setMuted, dismissPage } = teaching;

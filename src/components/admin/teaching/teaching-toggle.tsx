@@ -1,6 +1,7 @@
 "use client";
 
 import { BookOpen, VolumeX } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +24,10 @@ export function TeachingToggle({
   description = "Page guides and button tips. Mute anytime — nothing is required.",
 }: Props) {
   const teaching = useTeachingOptional();
+  const pathname = usePathname();
+
+  // Analytics uses breadcrumb + inline helpers only (no tip chrome / menus).
+  if (pathname?.includes("/dashboard/analytics")) return null;
 
   if (!teaching) return null;
 

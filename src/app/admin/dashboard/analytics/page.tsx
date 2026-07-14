@@ -39,7 +39,18 @@ import {
 
 import { AnalyticsKpiStrip } from "./_components/analytics-kpi-strip";
 import { AnalyticsToolbar, type AnalyticsPeriod } from "./_components/analytics-toolbar";
+import { AnalyticsInsightsPanel } from "./_components/analytics-insights";
+import { TimeSpentTable } from "./_components/time-spent-table";
 import { TopPages } from "./_components/top-pages";
+
+function formatDuration(seconds: number): string {
+  if (!seconds || seconds < 1) return "—";
+  if (seconds < 60) return `${Math.round(seconds)}s`;
+  const m = Math.floor(seconds / 60);
+  const s = Math.round(seconds % 60);
+  if (m < 60) return `${m}m ${s}s`;
+  return `${Math.floor(m / 60)}h ${m % 60}m`;
+}
 
 type Period = AnalyticsPeriod;
 
@@ -163,7 +174,7 @@ export default function AdminAnalyticsPage() {
       label: "Bounce rate",
       value: `${summary?.bounce_rate ?? 0}%`,
       periodLabel: summary?.avg_session_seconds
-        ? `avg session ${Math.round(summary.avg_session_seconds / 60)}m`
+        ? `avg session ${formatDuration(summary.avg_session_seconds)}`
         : "avg",
     },
   ];
@@ -178,12 +189,10 @@ export default function AdminAnalyticsPage() {
     },
     {
       label: "Avg session",
-      value: summary?.avg_session_seconds
-        ? `${Math.round(summary.avg_session_seconds / 60)}m ${summary.avg_session_seconds % 60}s`
-        : "—",
+      value: formatDuration(summary?.avg_session_seconds ?? 0),
       icon: Clock,
       color: "text-cyan-500",
-      sub: "per visit",
+      sub: `${summary?.tracked_sessions ?? 0} sessions`,
     },
     {
       label: "Content published",
@@ -193,11 +202,11 @@ export default function AdminAnalyticsPage() {
       sub: `+${summary?.content_drafts ?? 0} drafts`,
     },
     {
-      label: "Unique (period)",
-      value: summary?.unique_visitors ?? visitorTotal,
+      label: "Dwell total",
+      value: formatDuration(summary?.total_engagement_seconds ?? 0),
       icon: Eye,
       color: "text-primary",
-            sub: summary?.traffic_source?.includes("vercel") ? "Vercel web analytics" : "API summary",
+      sub: `${summary?.tracked_pageleaves ?? 0} pageleaves`,
     },
   ];
 
@@ -260,21 +269,13 @@ export default function AdminAnalyticsPage() {
         <div className="space-y-1">
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-2xl font-semibold tracking-tight">Analytics</h1>
-            {summary?.traffic_source?.includes("vercel") ? (
-              <Badge variant="outline" className="font-normal">
-                Vercel Web Analytics
-              </Badge>
-            ) : summary ? (
-              <Badge variant="secondary" className="font-normal">
-                Source: {summary.traffic_source ?? "api"}
-              </Badge>
-            ) : null}
+            <Badge variant="secondary" className="font-normal">
+              First-party tracker
+            </Badge>
           </div>
           <p className="text-sm text-muted-foreground">
-            Live platform traffic, growth, and module performance
-            {summary?.traffic_source?.includes("vercel") && summary.traffic_synced_at
-              ? ` · synced ${new Date(summary.traffic_synced_at).toLocaleString()}`
-              : ""}
+            All periods read from BNS Tracker (pageviews + dwell). Use the breadcrumb to navigate —
+            helpers below stay on this page.
           </p>
         </div>
         <AnalyticsToolbar
@@ -315,17 +316,20 @@ export default function AdminAnalyticsPage() {
         ))}
       </div>
 
+      {!loading && summary?.insights ? (
+        <AnalyticsInsightsPanel insights={summary.insights} />
+      ) : null}
+
       {!loading && summary && !hasAnySeries ? (
         <p className="text-sm text-muted-foreground">
-          KPI totals loaded. Chart series are empty until Vercel traffic sync or module completions exist.
-          Confirm <code className="text-xs">VERCEL_API_TOKEN</code> /{" "}
-          <code className="text-xs">VERCEL_PROJECT_ID</code> on the Django API.
+          KPI totals loaded. Chart series fill as day rollups accumulate from BNS Tracker events.
         </p>
       ) : null}
 
       <Tabs defaultValue="overview" className="flex flex-col gap-4">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="engagement">Engagement</TabsTrigger>
           <TabsTrigger value="trends">Trends</TabsTrigger>
           <TabsTrigger value="traffic">Traffic</TabsTrigger>
           <TabsTrigger value="content">Content</TabsTrigger>
@@ -447,6 +451,49 @@ export default function AdminAnalyticsPage() {
               }))}
             />
           </div>
+        </TabsContent>
+
+        <TabsContent value="engagement" className="flex flex-col gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Avg session</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold tabular-nums">
+                  {formatDuration(summary?.avg_session_seconds ?? 0)}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {summary?.tracked_sessions ?? 0} sessions · bounce {summary?.bounce_rate ?? 0}%
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Avg hit</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold tabular-nums">
+                  {formatDuration(summary?.avg_hit_seconds ?? 0)}
+                </div>
+                <p className="text-xs text-muted-foreground">Per pageleave duration</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Total dwell</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold tabular-nums">
+                  {formatDuration(summary?.total_engagement_seconds ?? 0)}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {summary?.tracked_pageleaves ?? 0} pageleaves in period
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+          <TimeSpentTable rows={summary?.top_paths_by_time ?? []} />
         </TabsContent>
 
         <TabsContent value="trends" className="flex flex-col gap-4">
