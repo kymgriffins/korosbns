@@ -12,6 +12,8 @@ import {
   Tablet,
   TriangleAlert,
 } from "lucide-react";
+
+
 import {
   Area,
   AreaChart,
@@ -42,6 +44,7 @@ import { AnalyticsToolbar, type AnalyticsPeriod } from "./_components/analytics-
 import { AnalyticsInsightsPanel } from "./_components/analytics-insights";
 import { TimeSpentTable } from "./_components/time-spent-table";
 import { TopPages } from "./_components/top-pages";
+import { isShowcasePage } from "@/lib/page-categories";
 
 function formatDuration(seconds: number): string {
   if (!seconds || seconds < 1) return "—";
@@ -83,6 +86,61 @@ function periodValue(
 ): number {
   const map: Record<Period, keyof AdminAnalyticsSummary> = { today, "7d": _7d, "30d": _30d, all };
   return kpiValue(s, map[period]);
+}
+
+function MarketingTrafficCards({ pages }: { pages: Array<{ path: string; views?: number; visitors?: number }> }) {
+  const showcase = pages.filter((p) => isShowcasePage(p.path));
+  const totalViews = pages.reduce((s, p) => s + (p.views ?? 0), 0);
+  const showcaseViews = showcase.reduce((s, p) => s + (p.views ?? 0), 0);
+  const showcaseVisitors = showcase.reduce((s, p) => s + (p.visitors ?? 0), 0);
+  const showcaseShare = totalViews > 0 ? Math.round((showcaseViews / totalViews) * 100) : 0;
+  if (showcase.length === 0) return null;
+  return (
+    <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <CardTitle className="text-xs font-medium">Marketing views</CardTitle>
+          <Globe className="size-3.5 text-emerald-500" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-xl font-bold tabular-nums">{showcaseViews.toLocaleString()}</div>
+          <p className="text-[10px] text-muted-foreground">Showcase pages only</p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <CardTitle className="text-xs font-medium">Marketing visitors</CardTitle>
+          <Globe className="size-3.5 text-emerald-500" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-xl font-bold tabular-nums">{showcaseVisitors.toLocaleString()}</div>
+          <p className="text-[10px] text-muted-foreground">Unique to showcase pages</p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <CardTitle className="text-xs font-medium">Traffic share</CardTitle>
+          <Activity className="size-3.5 text-primary" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-xl font-bold tabular-nums">{showcaseShare}%</div>
+          <p className="text-[10px] text-muted-foreground">
+            {showcase.length} showcase page{showcase.length !== 1 ? "s" : ""} tracked
+          </p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <CardTitle className="text-xs font-medium">Other traffic</CardTitle>
+          <Activity className="size-3.5 text-muted-foreground" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-xl font-bold tabular-nums">{100 - showcaseShare}%</div>
+          <p className="text-[10px] text-muted-foreground">API + internal routes</p>
+        </CardContent>
+      </Card>
+    </div>
+  );
 }
 
 function EmptySeries({ label = "No series yet" }: { label?: string }) {
@@ -315,6 +373,10 @@ export default function AdminAnalyticsPage() {
           </Card>
         ))}
       </div>
+
+      {!loading && summary && topPages.length > 0 ? (
+        <MarketingTrafficCards pages={topPages} />
+      ) : null}
 
       {!loading && summary?.insights ? (
         <AnalyticsInsightsPanel insights={summary.insights} />

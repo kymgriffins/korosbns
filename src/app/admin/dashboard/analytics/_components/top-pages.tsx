@@ -1,5 +1,9 @@
+import { useMemo } from "react";
+import { Globe } from "lucide-react";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { isShowcasePage } from "@/lib/page-categories";
 
 export type TopPageRow = {
   path: string;
@@ -14,6 +18,8 @@ function formatCount(n: number): string {
   return n.toLocaleString();
 }
 
+
+
 export function TopPages({
   pages,
   emptyLabel = "No page data yet",
@@ -21,15 +27,36 @@ export function TopPages({
   pages: TopPageRow[];
   emptyLabel?: string;
 }) {
+  const { showcasePages, marketingViews, marketingVisitors, marketingShare } = useMemo(() => {
+    const showcase = pages.filter((p) => isShowcasePage(p.path));
+    const mViews = showcase.reduce((sum, p) => sum + (p.views ?? 0), 0);
+    const mVisitors = showcase.reduce((sum, p) => sum + (p.visitors ?? 0), 0);
+    const totalViews = pages.reduce((sum, p) => sum + (p.views ?? 0), 0);
+    const mShare = totalViews > 0 ? Math.round((mViews / totalViews) * 100) : 0;
+    return { showcasePages: showcase.slice(0, 8), marketingViews: mViews, marketingVisitors: mVisitors, marketingShare: mShare };
+  }, [pages]);
+
   return (
     <Card className="h-full gap-2">
       <CardHeader>
-        <CardTitle className="font-normal">Page performance</CardTitle>
-        <CardDescription>Top routes from analytics traffic</CardDescription>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="font-normal">Page performance</CardTitle>
+            <CardDescription>Showcase pages from analytics traffic</CardDescription>
+          </div>
+          {pages.length > 0 && (
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <Globe className="size-3" />
+              <span>
+                {formatCount(marketingViews)} views · {marketingShare}% of traffic
+              </span>
+            </div>
+          )}
+        </div>
       </CardHeader>
 
       <CardContent className="px-0">
-        {pages.length === 0 ? (
+        {showcasePages.length === 0 ? (
           <p className="px-4 py-8 text-center text-sm text-muted-foreground">{emptyLabel}</p>
         ) : (
           <Table className="[&_td:first-child]:pl-4 [&_td:last-child]:pr-4 [&_th:first-child]:pl-4 [&_th:last-child]:pr-4">
@@ -42,14 +69,14 @@ export function TopPages({
               </TableRow>
             </TableHeader>
             <TableBody className="[&_tr]:border-border/50">
-              {pages.slice(0, 8).map((page) => (
+              {showcasePages.map((page) => (
                 <TableRow className="hover:bg-transparent" key={page.path}>
                   <TableCell className="max-w-0 truncate py-3 font-medium">{page.path}</TableCell>
                   <TableCell className="text-right tabular-nums">{formatCount(page.views)}</TableCell>
                   <TableCell className="text-right text-muted-foreground tabular-nums">
                     {page.visitors != null ? formatCount(page.visitors) : "—"}
                   </TableCell>
-                  <TableCell className="text-right text-muted-foreground tabular-nums">
+                  <TableCell className="text-right tabular-nums text-muted-foreground">
                     {page.percentage != null ? `${page.percentage}%` : "—"}
                   </TableCell>
                 </TableRow>
