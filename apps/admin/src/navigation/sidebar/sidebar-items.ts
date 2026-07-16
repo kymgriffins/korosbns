@@ -106,6 +106,7 @@ export const sidebarItems: NavGroup[] = [
           { id: "courses", title: "Courses", url: "/dashboard/courses" },
           { id: "media", title: "Media", url: "/dashboard/media" },
           { id: "feedback", title: "Feedback", url: "/dashboard/feedback" },
+          { id: "org-gamification", title: "Gamification", url: "/dashboard/gamification", icon: Award },
         ],
       },
       {
@@ -148,7 +149,6 @@ export const sidebarItems: NavGroup[] = [
           { id: "org-settings", title: "Settings", url: "/dashboard/settings" },
           { id: "org-partners", title: "Partners", url: "/dashboard/partners", icon: Handshake },
           { id: "org-roles", title: "Roles", url: "/dashboard/roles", icon: Shield },
-          { id: "org-gamification", title: "Gamification", url: "/dashboard/gamification", icon: Award },
           { id: "org-studio", title: "Studio", url: "/dashboard/studio", icon: Clapperboard },
           { id: "org-ke-budget", title: "KE Budget", url: "/dashboard/ke-budget", icon: PiggyBank },
           { id: "org-invoices", title: "Invoices", url: "/dashboard/invoices", icon: Receipt },
