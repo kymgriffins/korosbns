@@ -59,10 +59,10 @@ export default function CommunicationDashboard() {
   }, [fetchData]);
 
   const kpis = [
-    { label: "Campaigns", value: campaignCount, icon: Send, href: "/dashboard/communication/campaigns" },
-    { label: "Unread Inbox", value: inboxUnread, icon: Inbox, href: "/dashboard/communication/inbox" },
-    { label: "Pending Outbox", value: outboxPending, icon: Forward, href: "/dashboard/communication/outbox" },
-    { label: "New Messages", value: contactNew, icon: Phone, href: "/dashboard/communication/contact-messages" },
+    { label: "Messages", value: `${inboxUnread + contactNew}`, icon: Inbox, href: "/dashboard/communication/messages" },
+    { label: "Campaigns", value: campaignCount, icon: Send, href: "/dashboard/communication/messages?tab=campaigns" },
+    { label: "Pending Outbox", value: outboxPending, icon: Forward, href: "/dashboard/communication/messages?tab=outbox" },
+    { label: "New Messages", value: contactNew, icon: Phone, href: "/dashboard/communication/messages?tab=contacts" },
     { label: "Subscribers", value: subscriberCount, icon: Users, href: "/dashboard/communication/subscribers" },
     { label: "Notifications", value: "→", icon: Bell, href: "/dashboard/communication/notifications" },
   ];
