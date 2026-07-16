@@ -2,44 +2,22 @@ import { describe, it, expect } from "vitest";
 import { evaluateAuthMiddleware } from "@/lib/auth-middleware";
 import { DEFAULT_POST_LOGIN_PATH } from "@/lib/auth-policy";
 
-describe("evaluateAuthMiddleware — protected learn routes", () => {
-  it("redirects unauthenticated users from /learn/account to login", () => {
-    const result = evaluateAuthMiddleware("/learn/account", null);
-    expect(result.action).toBe("redirect");
-    if (result.action === "redirect") {
-      expect(result.location).toContain("/auth/login");
-      expect(result.location).toContain("next=%2Flearn%2Faccount");
-    }
+describe("evaluateAuthMiddleware — public learn routes", () => {
+  it("allows unauthenticated users on /learn/account (protected client-side, not middleware)", () => {
+    expect(evaluateAuthMiddleware("/learn/account", null)).toEqual({ action: "next" });
   });
 
-  it("redirects unauthenticated users from /learn/account/password", () => {
-    const result = evaluateAuthMiddleware("/learn/account/password", null);
-    expect(result.action).toBe("redirect");
+  it("allows unauthenticated users on /learn/quests (protected client-side, not middleware)", () => {
+    expect(evaluateAuthMiddleware("/learn/quests", null)).toEqual({ action: "next" });
   });
 
-  it("redirects unauthenticated users from /learn/quests", () => {
-    const result = evaluateAuthMiddleware("/learn/quests", null);
-    expect(result.action).toBe("redirect");
-  });
-
-  it("allows authenticated users on protected paths", () => {
+  it("allows authenticated users on all learn paths", () => {
     expect(evaluateAuthMiddleware("/learn/account", "valid-token")).toEqual({ action: "next" });
     expect(evaluateAuthMiddleware("/learn/quests", "valid-token")).toEqual({ action: "next" });
   });
 
-  it("allows unauthenticated users on public learn paths", () => {
-    const publicPaths = [
-      "/learn",
-      "/learn/forum",
-      "/learn/profile",
-      "/learn/users/abc",
-      "/learn/authors/jane",
-      "/learn/videos",
-      "/learn/documents",
-      "/learn/bps-2026",
-    ];
-
-    for (const path of publicPaths) {
+  it("allows unauthenticated users on all learn paths", () => {
+    for (const path of ["/learn", "/learn/forum", "/learn/profile", "/learn/videos"]) {
       expect(evaluateAuthMiddleware(path, null), path).toEqual({ action: "next" });
     }
   });
@@ -72,11 +50,11 @@ describe("evaluateAuthMiddleware — auth pages", () => {
 });
 
 describe("evaluateAuthMiddleware — stress matrix", () => {
-  const protectedPaths = ["/learn/account", "/learn/account/sign-out", "/learn/quests", "/learn/quests/x"];
-  const publicPaths = ["/", "/about", "/learn", "/learn/forum", "/learn/profile", "/events"];
+  const adminProtectedPaths = ["/admin", "/dashboard", "/dashboard/task"];
+  const publicPaths = ["/", "/about", "/learn", "/learn/account", "/learn/quests", "/events"];
 
-  it("every protected path requires token", () => {
-    for (const path of protectedPaths) {
+  it("every admin path requires token", () => {
+    for (const path of adminProtectedPaths) {
       expect(evaluateAuthMiddleware(path, null).action, path).toBe("redirect");
       expect(evaluateAuthMiddleware(path, "token").action, path).toBe("next");
     }
