@@ -44,6 +44,8 @@ import { AnalyticsToolbar, type AnalyticsPeriod } from "./_components/analytics-
 import { AnalyticsInsightsPanel } from "./_components/analytics-insights";
 import { TimeSpentTable } from "./_components/time-spent-table";
 import { TopPages } from "./_components/top-pages";
+import { TopTrafficSources } from "./_components/top-traffic-sources";
+import { RealtimeVisitors } from "./_components/realtime-visitors";
 import { isShowcasePage } from "@/lib/page-categories";
 
 function formatDuration(seconds: number): string {
@@ -274,6 +276,14 @@ export default function AdminAnalyticsPage() {
   );
   const sourceData = useMemo(
     () => summary?.traffic_sources ?? summary?.vercel_traffic?.traffic_sources ?? [],
+    [summary],
+  );
+  const referrerData = useMemo(
+    () => summary?.referrers ?? [],
+    [summary],
+  );
+  const countryData = useMemo(
+    () => summary?.countries ?? [],
     [summary],
   );
   const dailyData = useMemo(() => {
@@ -744,6 +754,18 @@ export default function AdminAnalyticsPage() {
               )}
             </CardContent>
           </Card>
+
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <RealtimeVisitors countries={countryData} />
+            <TopTrafficSources
+              sources={sourceData.map((s) => ({
+                source: s.source,
+                count: s.count,
+                percentage: s.percentage,
+              }))}
+              referrers={referrerData}
+            />
+          </div>
         </TabsContent>
 
         <TabsContent value="content" className="flex flex-col gap-4">

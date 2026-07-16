@@ -1,9 +1,9 @@
 "use client";
 
-import { Ellipsis } from "lucide-react";
+import { Globe, Link, Hash } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, LabelList, type LabelProps, XAxis, YAxis } from "recharts";
 
-import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -12,48 +12,24 @@ const chartConfig = {
     color: "var(--chart-1)",
     label: "Visitors",
   },
+  pageviews: {
+    color: "var(--chart-2)",
+    label: "Pageviews",
+  },
 } satisfies ChartConfig;
 
-type TrafficSourceDatum = {
-  label: string;
-  source: string;
-  visitors: number;
-};
+type SourceRow = { source: string; count: number; percentage: number };
+type ReferrerRow = { hostname: string; label: string; pageviews: number; percentage?: number };
 
-const sourcesData: TrafficSourceDatum[] = [
-  { label: "89.4k", source: "Organic Search", visitors: 89_400 },
-  { label: "55.2k", source: "Direct", visitors: 55_200 },
-  { label: "38.1k", source: "Social", visitors: 38_100 },
-  { label: "30.4k", source: "Referral", visitors: 30_400 },
-  { label: "22.7k", source: "Paid", visitors: 22_700 },
-];
-
-const campaignsData: TrafficSourceDatum[] = [
-  { label: "16.8k", source: "Spring Launch", visitors: 16_800 },
-  { label: "12.0k", source: "Newsletter", visitors: 12_000 },
-  { label: "7.7k", source: "Retargeting", visitors: 7700 },
-  { label: "5.9k", source: "Brand Search", visitors: 5900 },
-  { label: "4.3k", source: "Partners", visitors: 4300 },
-];
-
-const referrersData: TrafficSourceDatum[] = [
-  { label: "18.4k", source: "Google", visitors: 18_400 },
-  { label: "8.9k", source: "LinkedIn", visitors: 8900 },
-  { label: "5.7k", source: "Product Hunt", visitors: 5700 },
-  { label: "4.8k", source: "GitHub", visitors: 4800 },
-  { label: "3.6k", source: "Medium", visitors: 3600 },
-];
-
-function TrafficSourceBarChart({ data }: { data: TrafficSourceDatum[] }) {
-  const renderValueLabel = (props: LabelProps) => {
+function SourceBarChart({ data, valueKey }: { data: SourceRow[]; valueKey: "count" }) {
+  const renderLabel = (props: LabelProps) => {
     const { height, value, y } = props;
-
     return (
       <text
         className="fill-foreground"
         dominantBaseline="middle"
         dx={-6}
-        fontSize={14}
+        fontSize={13}
         textAnchor="end"
         x="100%"
         y={Number(y) + Number(height) / 2}
@@ -69,58 +45,129 @@ function TrafficSourceBarChart({ data }: { data: TrafficSourceDatum[] }) {
         accessibilityLayer
         data={data}
         layout="vertical"
-        margin={{
-          left: 0,
-          right: 48,
-        }}
+        margin={{ left: 0, right: 52 }}
       >
         <CartesianGrid horizontal={false} vertical={false} />
         <YAxis dataKey="source" hide tickLine={false} tickMargin={10} type="category" />
-        <XAxis dataKey="visitors" hide type="number" />
+        <XAxis dataKey={valueKey} hide type="number" />
         <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" />} />
-        <Bar barSize={40} dataKey="visitors" fill="var(--color-visitors)" fillOpacity={0.5} radius={8}>
-          <LabelList className="fill-foreground" dataKey="source" fontSize={14} offset={12} position="insideLeft" />
-          <LabelList content={renderValueLabel} dataKey="label" />
+        <Bar barSize={36} dataKey={valueKey} fill="var(--color-visitors)" fillOpacity={0.5} radius={6}>
+          <LabelList className="fill-foreground" dataKey="source" fontSize={13} offset={12} position="insideLeft" />
+          <LabelList content={renderLabel} dataKey="count" formatter={(v: unknown) => typeof v === "number" ? v.toLocaleString() : String(v)} />
         </Bar>
       </BarChart>
     </ChartContainer>
   );
 }
 
-export function TopTrafficSources() {
+function ReferrerBarChart({ data }: { data: ReferrerRow[] }) {
+  const renderLabel = (props: LabelProps) => {
+    const { height, value, y } = props;
+    return (
+      <text
+        className="fill-foreground"
+        dominantBaseline="middle"
+        dx={-6}
+        fontSize={13}
+        textAnchor="end"
+        x="100%"
+        y={Number(y) + Number(height) / 2}
+      >
+        {value}
+      </text>
+    );
+  };
+
+  const chartData = data.map((r) => ({
+    source: r.label || r.hostname,
+    pageviews: r.pageviews,
+    percentage: r.percentage ?? 0,
+  }));
+
+  return (
+    <ChartContainer config={chartConfig} className="h-64 w-full">
+      <BarChart
+        accessibilityLayer
+        data={chartData}
+        layout="vertical"
+        margin={{ left: 0, right: 52 }}
+      >
+        <CartesianGrid horizontal={false} vertical={false} />
+        <YAxis dataKey="source" hide tickLine={false} tickMargin={10} type="category" />
+        <XAxis dataKey="pageviews" hide type="number" />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" />} />
+        <Bar barSize={36} dataKey="pageviews" fill="var(--color-visitors)" fillOpacity={0.5} radius={6}>
+          <LabelList className="fill-foreground" dataKey="source" fontSize={13} offset={12} position="insideLeft" />
+          <LabelList content={renderLabel} dataKey="pageviews" formatter={(v: unknown) => typeof v === "number" ? v.toLocaleString() : String(v)} />
+        </Bar>
+      </BarChart>
+    </ChartContainer>
+  );
+}
+
+export function TopTrafficSources({
+  sources,
+  referrers,
+}: {
+  sources: SourceRow[];
+  referrers: ReferrerRow[];
+}) {
+  const hasSources = sources.length > 0;
+  const hasReferrers = referrers.length > 0;
+
+  if (!hasSources && !hasReferrers) {
+    return (
+      <Card className="h-full gap-2">
+        <CardHeader>
+          <CardTitle className="font-normal">Traffic sources</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="py-8 text-center text-sm text-muted-foreground">
+            No traffic source data yet
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="h-full gap-2">
       <CardHeader>
-        <CardTitle className="font-normal">Traffic Sources</CardTitle>
-        <CardAction>
-          <Ellipsis className="size-4" />
-        </CardAction>
+        <CardTitle className="font-normal">Traffic sources</CardTitle>
+        <CardDescription>
+          {hasSources ? `${sources.length} channels tracked` : ""}
+          {hasSources && hasReferrers ? " · " : ""}
+          {hasReferrers ? `${referrers.length} referrers` : ""}
+        </CardDescription>
       </CardHeader>
 
       <CardContent className="px-0">
         <Tabs defaultValue="sources" className="flex flex-col gap-3">
           <TabsList className="w-full justify-start border-b px-2.5" variant="line">
-            <TabsTrigger className="flex-none font-normal" value="sources">
-              Sources
-            </TabsTrigger>
-            <TabsTrigger className="flex-none font-normal" value="campaigns">
-              Campaigns
-            </TabsTrigger>
-            <TabsTrigger className="flex-none font-normal" value="referrers">
-              Referrers
-            </TabsTrigger>
+            {hasSources ? (
+              <TabsTrigger className="flex-none font-normal" value="sources">
+                <Hash className="mr-1.5 size-3.5" />
+                Sources
+              </TabsTrigger>
+            ) : null}
+            {hasReferrers ? (
+              <TabsTrigger className="flex-none font-normal" value="referrers">
+                <Link className="mr-1.5 size-3.5" />
+                Referrers
+              </TabsTrigger>
+            ) : null}
           </TabsList>
 
-          <TabsContent value="sources" className="px-4">
-            <TrafficSourceBarChart data={sourcesData} />
-          </TabsContent>
-
-          <TabsContent value="campaigns" className="px-4">
-            <TrafficSourceBarChart data={campaignsData} />
-          </TabsContent>
-          <TabsContent value="referrers" className="px-4">
-            <TrafficSourceBarChart data={referrersData} />
-          </TabsContent>
+          {hasSources ? (
+            <TabsContent value="sources" className="px-4">
+              <SourceBarChart data={sources} valueKey="count" />
+            </TabsContent>
+          ) : null}
+          {hasReferrers ? (
+            <TabsContent value="referrers" className="px-4">
+              <ReferrerBarChart data={referrers} />
+            </TabsContent>
+          ) : null}
         </Tabs>
       </CardContent>
     </Card>

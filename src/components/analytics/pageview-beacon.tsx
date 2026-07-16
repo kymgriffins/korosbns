@@ -53,6 +53,56 @@ function sessionId(): string {
   return getOrCreate(window.sessionStorage, SESSION_KEY);
 }
 
+const GEO_KEY = "bns_geo";
+
+type GeoLocation = {
+  country: string;
+  country_code: string;
+  region: string;
+  city: string;
+};
+
+function cachedGeo(): GeoLocation | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = sessionStorage.getItem(GEO_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function storeGeo(geo: GeoLocation) {
+  try {
+    sessionStorage.setItem(GEO_KEY, JSON.stringify(geo));
+  } catch {
+    /* noop */
+  }
+}
+
+let geoPromise: Promise<GeoLocation | null> | null = null;
+
+function fetchGeo(): Promise<GeoLocation | null> {
+  if (geoPromise) return geoPromise;
+  geoPromise = fetch("https://ip-api.com/json/?fields=country,countryCode,regionName,city", {
+    signal: AbortSignal.timeout(5000),
+  })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((data: Record<string, unknown> | null) => {
+      if (!data || !data.countryCode) return null;
+      const geo: GeoLocation = {
+        country: String(data.country || ""),
+        country_code: String(data.countryCode || ""),
+        region: String(data.regionName || ""),
+        city: String(data.city || ""),
+      };
+      storeGeo(geo);
+      return geo;
+    })
+    .catch(() => null);
+  return geoPromise;
+}
+
 function deviceHints() {
   if (typeof window === "undefined" || typeof navigator === "undefined") {
     return {};
@@ -115,12 +165,24 @@ function postEvent(event_name: string, payload: Record<string, unknown>) {
   }).catch(() => undefined);
 }
 
+function geoHints(): Record<string, unknown> {
+  const geo = cachedGeo();
+  if (!geo) return {};
+  return {
+    country: geo.country,
+    country_code: geo.country_code,
+    county: geo.region,
+    town: geo.city,
+  };
+}
+
 function trackPageview(path: string, referrer: string) {
   postEvent("pageview", {
     path,
     referrer: referrer || "",
     href: typeof window !== "undefined" ? window.location.href : path,
     ...deviceHints(),
+    ...geoHints(),
   });
 }
 
@@ -130,6 +192,7 @@ function trackPageleave(path: string, durationSeconds: number) {
     path,
     duration_seconds: durationSeconds,
     ...deviceHints(),
+    ...geoHints(),
   });
 }
 
@@ -146,6 +209,8 @@ export function PageviewBeacon() {
 
   useEffect(() => {
     if (!enabled) return;
+
+    if (!cachedGeo()) void fetchGeo();
 
     const qs = searchParams?.toString();
     const path = qs ? `${pathname}?${qs}` : pathname;
