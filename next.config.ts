@@ -21,7 +21,7 @@ function contentSecurityPolicy(): string {
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob: https:",
     "font-src 'self' data: https:",
-    `connect-src 'self' https://bnske.budgetndiostory.org https://*.budgetndiostory.org https://app.posthog.com https://us.i.posthog.com${localApiConnect}`,
+    `connect-src 'self' https://bnske.budgetndiostory.org https://*.budgetndiostory.org https://app.posthog.com https://us.i.posthog.com https://vitals.vercel-insights.com https://*.vercel-analytics.com${localApiConnect}`,
     "media-src 'self' https://res.cloudinary.com blob: data:",
     "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://youtube.com https://youtube-nocookie.com",
     "frame-ancestors 'none'",
