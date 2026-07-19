@@ -8,7 +8,7 @@ import learnSummaryFallback from "@/data/fallbacks/learn-summary.json";
 
 export type { CivicModule, CivicModuleAuthor, LearnHubSummary, LearnProfileResponse };
 
-const FALLBACK_MODULES = (civicModulesFallback.results ?? []) as CivicModule[];
+const FALLBACK_MODULES = (civicModulesFallback.results ?? []) as unknown as CivicModule[];
 
 const DEFAULT_SUMMARY: LearnHubSummary = {
   counts: { ...(learnSummaryFallback.counts ?? {}) },

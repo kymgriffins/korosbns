@@ -59,8 +59,8 @@ export const contentData = {
         if (results.length) _articles = results;
         return results.length ? results : filterBySearch(DEFAULT_ARTICLES, filters?.search);
       }),
-    fetchBySlug: (slug: string) =>
-      withFallback(
+    fetchBySlug: (slug: string): Promise<Record<string, unknown> | null> =>
+      withFallback<Record<string, unknown> | null>(
         "content",
         () => citizenApi.getArticle(slug) as Promise<Record<string, unknown>>,
         () =>
@@ -83,13 +83,17 @@ export const contentData = {
         () => learnHubApi.stories(filters),
         () => ({ results: filterBySearch(_stories, filters?.search) }),
       ).then((r) => r.results ?? []),
-    fetchBySlug: (slug: string) =>
-      withFallback(
+    fetchBySlug: (slug: string): Promise<Record<string, unknown> | null> =>
+      withFallback<Record<string, unknown> | null>(
         "content",
         () =>
           citizenApi.getStories().then((r) => {
-            const results = (r as { results?: Array<{ id?: string; slug?: string }> })?.results ?? [];
-            return results.find((s) => s.id === slug || s.slug === slug) ?? null;
+            const results = (r?.results ?? []) as Array<Record<string, unknown>>;
+            return (
+              results.find(
+                (s) => s.id === slug || s.slug === slug || String(s.id) === slug,
+              ) ?? null
+            );
           }),
         () => null,
       ),
@@ -119,8 +123,8 @@ export const contentData = {
         () => citizenApi.getTriviaList(),
         () => ({ results: [], count: 0 }),
       ).then((r) => r.results ?? []),
-    fetchBySlug: (slug: string) =>
-      withFallback(
+    fetchBySlug: (slug: string): Promise<Record<string, unknown> | null> =>
+      withFallback<Record<string, unknown> | null>(
         "content",
         () => citizenApi.getTrivia(slug) as Promise<Record<string, unknown>>,
         () => null,

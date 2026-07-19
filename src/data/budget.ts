@@ -22,7 +22,7 @@ import civicModulesFallback from "@/data/fallbacks/civic-modules.json";
 export type { BudgetReportProfile, BudgetKpi, BudgetComparisonRow, BudgetCallout };
 
 const DEFAULT_REPORTS: BudgetReportProfile[] = [];
-const FALLBACK_CIVIC_MODULES = (civicModulesFallback.results ?? []) as CivicModule[];
+const FALLBACK_CIVIC_MODULES = (civicModulesFallback.results ?? []) as unknown as CivicModule[];
 
 let _reports: BudgetReportProfile[] = [...DEFAULT_REPORTS];
 
