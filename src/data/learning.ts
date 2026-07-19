@@ -1,24 +1,27 @@
 import type { CivicModule, CivicModuleAuthor, LearnHubSummary, LearnProfileResponse } from "@/types/learn";
-import type { ApiListResponse } from "@/types/api";
 import type { LearningEditionDetail } from "@/lib/learning-units";
 import { learnHubApi } from "@/lib/learn-hub";
 import { buildApiUrl } from "@/lib/api-url";
 import { withFallback } from "@/data/adapter";
+import civicModulesFallback from "@/data/fallbacks/civic-modules.json";
+import learnSummaryFallback from "@/data/fallbacks/learn-summary.json";
 
 export type { CivicModule, CivicModuleAuthor, LearnHubSummary, LearnProfileResponse };
 
+const FALLBACK_MODULES = (civicModulesFallback.results ?? []) as CivicModule[];
+
 const DEFAULT_SUMMARY: LearnHubSummary = {
-  counts: {},
-  trending: [],
+  counts: { ...(learnSummaryFallback.counts ?? {}) },
+  trending: [...(learnSummaryFallback.trending ?? [])] as LearnHubSummary["trending"],
 };
 
-let _modules: CivicModule[] = [];
+let _modules: CivicModule[] = [...FALLBACK_MODULES];
+let _modulesUsedFallback = false;
 let _summary: LearnHubSummary = { ...DEFAULT_SUMMARY };
 
 /**
- * Never invent civic modules. Fake titles like "Budget Basics" /
- * "Sector Deep Dive" / "Citizen Engagement" used to appear when the API
- * failed (common right after login). Show empty + error UI instead.
+ * Civic modules are read-only catalogue data. Prefer the live API, but always
+ * fall back to seeded JSON so the Learn hub never hard-fails on timeout/404.
  */
 export const learningData = {
   modules: {
@@ -26,40 +29,46 @@ export const learningData = {
     set: (items: CivicModule[]) => {
       _modules = items;
     },
+    usedFallback: () => _modulesUsedFallback,
     fetch: async (): Promise<CivicModule[]> => {
-      const load = async () => {
-        const r = await learnHubApi.civicModules();
-        return r.results ?? [];
-      };
-
-      try {
-        const results = await load();
-        _modules = results;
-        return results;
-      } catch (firstErr) {
-        // One quick retry — login/cookie races and transient proxy blips are common.
-        try {
-          await new Promise((r) => setTimeout(r, 350));
-          const results = await load();
-          _modules = results;
-          return results;
-        } catch {
-          const message =
-            firstErr instanceof Error ? firstErr.message : String(firstErr);
-          console.warn(
-            `[Data:learning] civic-modules failed (${message}); returning empty list`,
-          );
-          // Prefer last good in-memory catalogue over a hard failure when possible.
-          if (_modules.length > 0) return _modules;
-          throw firstErr instanceof Error ? firstErr : new Error(message);
-        }
-      }
+      let usedFallback = false;
+      const results = await withFallback(
+        "learning",
+        async () => {
+          const load = async () => {
+            const r = await learnHubApi.civicModules();
+            return r.results ?? [];
+          };
+          try {
+            return await load();
+          } catch (firstErr) {
+            // One quick retry — login/cookie races and transient proxy blips.
+            await new Promise((r) => setTimeout(r, 350));
+            try {
+              return await load();
+            } catch {
+              throw firstErr;
+            }
+          }
+        },
+        () => {
+          usedFallback = true;
+          // Prefer last good in-memory catalogue when available.
+          return _modules.length > 0 ? _modules : FALLBACK_MODULES;
+        },
+      );
+      _modules = results;
+      _modulesUsedFallback = usedFallback;
+      return results;
     },
     fetchBySlug: (slug: string) =>
       withFallback(
         "learning",
         () => learnHubApi.civicModule(slug),
-        () => null,
+        () =>
+          FALLBACK_MODULES.find((m) => m.slug === slug) ??
+          _modules.find((m) => m.slug === slug) ??
+          null,
       ),
   },
   summary: {

@@ -17,10 +17,12 @@ import {
   fetchBudgetKpis,
   fetchBudgetHighlights,
 } from "@/lib/budget-api";
+import civicModulesFallback from "@/data/fallbacks/civic-modules.json";
 
 export type { BudgetReportProfile, BudgetKpi, BudgetComparisonRow, BudgetCallout };
 
 const DEFAULT_REPORTS: BudgetReportProfile[] = [];
+const FALLBACK_CIVIC_MODULES = (civicModulesFallback.results ?? []) as CivicModule[];
 
 let _reports: BudgetReportProfile[] = [...DEFAULT_REPORTS];
 
@@ -45,13 +47,17 @@ export const budgetData = {
     withFallback(
       "budget",
       () => learnHubApi.budgetNewsModules(params),
-      () => ({ results: [] as CivicModule[] }) as ApiListResponse<CivicModule>,
+      () =>
+        ({
+          results: FALLBACK_CIVIC_MODULES,
+          count: FALLBACK_CIVIC_MODULES.length,
+        }) as ApiListResponse<CivicModule>,
     ),
   fetchModule: (slug: string) =>
     withFallback(
       "budget",
       () => learnHubApi.budgetNewsModule(slug),
-      () => null as unknown as CivicModule,
+      () => FALLBACK_CIVIC_MODULES.find((m) => m.slug === slug) ?? null,
     ),
   fetchReportData: () =>
     withFallback(

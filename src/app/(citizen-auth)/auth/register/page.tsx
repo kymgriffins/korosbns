@@ -55,9 +55,11 @@ export default function RegisterPage() {
   // Step 1: Priorities (Multi-select)
   const [selectedPriorities, setSelectedPriorities] = useState<string[]>([]);
 
-  // Step 2: Location
+  // Step 2: Location + personalization
   const [county, setCounty] = useState("");
   const [ward, setWard] = useState("");
+  const [ageRange, setAgeRange] = useState("");
+  const [educationLevel, setEducationLevel] = useState("");
 
   // Step 3: Identity
   const [firstName, setFirstName] = useState("");
@@ -94,6 +96,14 @@ export default function RegisterPage() {
     } else if (step === 2) {
       if (!county) {
         setFormError("Please select your county.");
+        return;
+      }
+      if (!ageRange) {
+        setFormError("Please select your age range.");
+        return;
+      }
+      if (!educationLevel) {
+        setFormError("Please select your education level.");
         return;
       }
       setStep(3);
@@ -139,6 +149,8 @@ export default function RegisterPage() {
         priorities: selectedPriorities,
         county,
         ward: ward.trim() || undefined,
+        ageRange,
+        educationLevel,
         onboardingCompleted: true,
       };
       localStorage.setItem("bns_onboarding_profile", JSON.stringify(profile));
@@ -280,6 +292,44 @@ export default function RegisterPage() {
                   onChange={(e) => setWard(e.target.value)}
                   className="rounded-xl h-11"
                 />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="ageRange" className="text-sm font-bold">
+                  Age range <span className="text-destructive">*</span>
+                </Label>
+                <select
+                  id="ageRange"
+                  value={ageRange}
+                  onChange={(e) => setAgeRange(e.target.value)}
+                  className="w-full h-11 px-3.5 rounded-xl border border-input bg-card text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <option value="">Select your age range</option>
+                  <option value="under_13">Under 13</option>
+                  <option value="age_13_17">13 – 17</option>
+                  <option value="age_18_24">18 – 24</option>
+                  <option value="age_25_34">25 – 34</option>
+                  <option value="age_35_44">35 – 44</option>
+                  <option value="age_45_plus">45+</option>
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="educationLevel" className="text-sm font-bold">
+                  Education level <span className="text-destructive">*</span>
+                </Label>
+                <select
+                  id="educationLevel"
+                  value={educationLevel}
+                  onChange={(e) => setEducationLevel(e.target.value)}
+                  className="w-full h-11 px-3.5 rounded-xl border border-input bg-card text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <option value="">Select your education level</option>
+                  <option value="primary">Primary School</option>
+                  <option value="secondary">Secondary School</option>
+                  <option value="tertiary">Tertiary / College / University</option>
+                  <option value="professional">Professional</option>
+                </select>
               </div>
 
               <div className="flex gap-3 pt-2">

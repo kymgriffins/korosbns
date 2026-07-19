@@ -21,8 +21,8 @@ const LIST_FETCHERS = {
     contentData.stories.fetch(opts).then((items) => ({ results: items })),
   documents: (opts?: { search?: string }) =>
     contentData.documents.fetch(opts).then((items) => ({ results: items })),
-  paths: () =>
-    learningData.modules.fetch().then((items) => ({ results: items as unknown as LearnHubItem[] })),
+  paths: (opts?: { search?: string }) =>
+    contentData.paths.fetch(opts).then((items) => ({ results: items })),
   quests: (opts?: { search?: string }) =>
     contentData.quests.fetch(opts).then((items) => ({ results: items })),
 } as const;
@@ -48,11 +48,20 @@ export function LearnTabPage({
 
   const load = useCallback(() => {
     setLoading(true);
+    setError("");
     return LIST_FETCHERS[listKey]({ search: q || undefined })
-      .then((data) => setItems((data.results ?? []) as LearnHubItem[]))
+      .then((data) => {
+        const results = (data.results ?? []) as LearnHubItem[];
+        setItems(results);
+        if (results.length === 0) {
+          setError("Nothing in this list yet. Retry when the catalogue is available.");
+        }
+      })
       .catch((err) => {
         const msg =
-          err instanceof Error ? err.message : "Could not load content.";
+          err instanceof Error
+            ? err.message
+            : "This list is temporarily unavailable.";
         setError(msg);
         console.error(`[LearnTabPage] Failed to load ${listKey}:`, err);
       })
@@ -77,7 +86,19 @@ export function LearnTabPage({
       <div>
         <h1 className="text-2xl font-bold">{title}</h1>
         <p className="mt-1 text-sm text-muted-foreground">{description}</p>
-        {error ? <p className="mt-4 text-destructive">{error}</p> : null}
+        {error ? (
+          <div className="mt-4 rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-900 dark:text-amber-100">
+            <p className="font-medium">Catalogue note</p>
+            <p className="mt-0.5 text-xs opacity-90">{error}</p>
+            <button
+              type="button"
+              onClick={() => void load()}
+              className="mt-2 text-xs font-semibold underline underline-offset-2"
+            >
+              Retry
+            </button>
+          </div>
+        ) : null}
         <div className="mt-6">
           <LearnContentGrid items={items} loading={loading} />
         </div>

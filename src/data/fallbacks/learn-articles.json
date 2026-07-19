@@ -1,0 +1,40 @@
+{
+  "provenance": {
+    "source": "seeds/learning_statutory_shells.json",
+    "note": "Read-only offline articles when learn/articles API is unreachable.",
+    "level": "fallback"
+  },
+  "count": 3,
+  "results": [
+    {
+      "id": "intro-budget-policy-statement",
+      "content_type": "article",
+      "title": "What is the Budget Policy Statement?",
+      "summary": "How the BPS sets national and county budget priorities under the PFM Act.",
+      "slug": "intro-budget-policy-statement",
+      "url": "/learn/articles/intro-budget-policy-statement",
+      "difficulty": "beginner",
+      "tags": [{ "name": "BPS", "slug": "bps" }]
+    },
+    {
+      "id": "intro-county-fiscal-strategy-paper",
+      "content_type": "article",
+      "title": "What is the County Fiscal Strategy Paper?",
+      "summary": "CFSP role in the county budget cycle.",
+      "slug": "intro-county-fiscal-strategy-paper",
+      "url": "/learn/articles/intro-county-fiscal-strategy-paper",
+      "difficulty": "beginner",
+      "tags": [{ "name": "CFSP", "slug": "cfsp" }]
+    },
+    {
+      "id": "intro-division-of-revenue-bill",
+      "content_type": "article",
+      "title": "What is the Division of Revenue Bill?",
+      "summary": "How nationally raised revenue is split between national and county governments.",
+      "slug": "intro-division-of-revenue-bill",
+      "url": "/learn/articles/intro-division-of-revenue-bill",
+      "difficulty": "beginner",
+      "tags": [{ "name": "DoRB", "slug": "dorb" }]
+    }
+  ]
+}

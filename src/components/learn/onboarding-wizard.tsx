@@ -49,6 +49,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
       setStep(3);
     } else if (step === 3) {
       if (!educationLevel) { setError("Education level is required."); return; }
+      if (!ageRange) { setError("Age range is required."); return; }
       setStep(4);
     }
   };

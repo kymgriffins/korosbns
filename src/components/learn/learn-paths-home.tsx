@@ -40,6 +40,7 @@ export function LearnPathsHome({ tab }: Props) {
     setActiveTab,
     modulesLoading,
     modulesError,
+    modulesOffline,
     refreshModules,
   } = useLearn();
   const stages = civicModules;
@@ -121,6 +122,14 @@ export function LearnPathsHome({ tab }: Props) {
           county: authUser.county || authUser.location || String(preferences.county ?? "") || "Kenya",
           ward: authUser.ward || String(preferences.ward ?? "") || "",
           language: (authUser.language_preference as LearnHubLanguage) || ("EN" as const),
+          ageRange:
+            authUser.age_range ||
+            String(preferences.ageRange ?? preferences.age_range ?? "") ||
+            undefined,
+          educationLevel:
+            authUser.education_level ||
+            String(preferences.educationLevel ?? preferences.education_level ?? "") ||
+            undefined,
           notifications: authUser.notifications_enabled ?? true,
           whatsappFallback: authUser.whatsapp_fallback ?? false,
           phone: authUser.phone_number || "",
@@ -135,7 +144,13 @@ export function LearnPathsHome({ tab }: Props) {
         };
         localStorage.setItem("bns_user_profile", JSON.stringify(currentProfile));
 
-        if (preferences.county || preferences.priorities || preferences.ageRange || preferences.language) {
+        if (
+          preferences.county ||
+          preferences.priorities ||
+          preferences.ageRange ||
+          preferences.educationLevel ||
+          preferences.language
+        ) {
           import("@/lib/onboarding-profile-patch").then(({ buildOnboardingProfilePatch }) => {
             import("@/hooks/use-profile").then(({ useUpdateProfile }) => {
               const { mutate } = useUpdateProfile();
@@ -191,8 +206,8 @@ export function LearnPathsHome({ tab }: Props) {
     return recommendModules(stages, {
       county: effectiveProfile.county,
       language: effectiveProfile.language,
-      ageRange: (effectiveProfile as LearnHubProfile & { ageRange?: string }).ageRange,
-      interests: (effectiveProfile as LearnHubProfile & { interests?: string[] }).interests,
+      ageRange: effectiveProfile.ageRange,
+      interests: effectiveProfile.interests,
     });
   }, [isLoggedIn, effectiveProfile, stages]);
 
@@ -240,18 +255,21 @@ export function LearnPathsHome({ tab }: Props) {
   if (needsModules && modulesError && !stages.length) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-3 p-6 text-center min-h-[50vh]">
-        <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+        <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-muted/40 text-muted-foreground">
           <ShieldAlert className="size-6" />
         </div>
-        <p className="text-sm font-bold text-foreground">Failed to load modules</p>
-        <p className="max-w-xs text-xs text-muted-foreground">{modulesError}</p>
+        <p className="text-sm font-bold text-foreground">Modules temporarily unavailable</p>
+        <p className="max-w-sm text-xs text-muted-foreground">
+          {modulesError} We usually show an offline catalogue — if you still see this,
+          retry in a moment.
+        </p>
         <Button
           onClick={refreshModules}
           variant="outline"
           size="sm"
           className="mt-2 rounded-lg text-xs font-bold focus-visible:ring-2 focus-visible:ring-ring"
         >
-          Try Again
+          Try again
         </Button>
       </div>
     );
@@ -290,6 +308,24 @@ export function LearnPathsHome({ tab }: Props) {
 
   return (
     <div className="w-full bg-background">
+      {(modulesOffline || modulesError) && stages.length > 0 ? (
+        <div className="flex w-full flex-wrap items-center justify-center gap-2 border-b border-amber-500/25 bg-amber-500/10 px-4 py-2 text-center text-[11px] text-amber-800 dark:text-amber-200">
+          <span className="font-semibold">Offline catalogue</span>
+          <span className="text-amber-800/80 dark:text-amber-200/80">
+            Live modules could not be reached. Showing seeded JSON until retry succeeds.
+          </span>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="h-7 rounded-md px-2 text-[11px] font-bold"
+            onClick={refreshModules}
+          >
+            Retry live
+          </Button>
+        </div>
+      ) : null}
+
       {activeProfile.language === "SH" && (
         <div className="w-full border-b border-amber-500/20 bg-amber-500/15 px-4 py-1 text-center text-[10px] font-semibold text-amber-600">
           {text.shengComingSoon}

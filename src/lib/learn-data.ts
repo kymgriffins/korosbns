@@ -60,6 +60,10 @@ export type LearnHubProfile = {
   county: string;
   ward: string;
   language: LearnHubLanguage;
+  /** Django Profile.age_range enum value (e.g. age_18_24). */
+  ageRange?: string;
+  /** Django Profile.education_level enum value (e.g. tertiary). */
+  educationLevel?: string;
   notifications: boolean;
   whatsappFallback: boolean;
   phone: string;
@@ -73,4 +77,5 @@ export type LearnHubProfile = {
   badges: string[];
   avatar_url?: string | null;
   participationLogs?: unknown[];
+  interests?: string[];
 };
