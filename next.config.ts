@@ -172,11 +172,7 @@ const nextConfig: NextConfig = {
         destination: "/learn/:slug*",
         permanent: false,
       },
-      {
-        source: "/learn/units/:path*",
-        destination: "/learn/",
-        permanent: false,
-      },
+      // /learn/units/* is handled by app router → redirect to /learn/paths/{edition}
       {
         source: "/learn/repository/:path*",
         destination: "/learn/",

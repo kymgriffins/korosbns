@@ -12,7 +12,7 @@ import { KpiCard } from "@/components/reports/shared";
 import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { formatKesBillions } from "@/lib/budget-format";
-import { generateCountyAllocations, type CountyAllocation } from "@/lib/reports-api";
+import { extractCountyAllocations, type CountyAllocation } from "@/lib/reports-api";
 
 interface CountiesTabProps {
   currentData: BudgetSchema;
@@ -51,20 +51,23 @@ export function CountiesTab({ currentData, allYears, fiscalYears, selectedYear }
   const [compareId, setCompareId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"ranking" | "compare" | "heatmap">("ranking");
 
-  const countyAllocations = useMemo(() => generateCountyAllocations(currentData), [currentData]);
+  const countyAllocations = useMemo(() => extractCountyAllocations(currentData), [currentData]);
   const selectedCounty = selectedCountyId ? countyAllocations.find((c) => c.id === selectedCountyId) : null;
   const compareCounty = compareId ? countyAllocations.find((c) => c.id === compareId) : null;
 
   const prevYearId = fiscalYears.find((y) => y.id !== selectedYear && y.id < selectedYear)?.id;
-  const prevCountyAllocations = prevYearId
-    ? generateCountyAllocations(allYears[prevYearId])
-    : countyAllocations.map((c) => ({ ...c, allocation: Math.round(c.allocation * 0.92) }));
+  // Prior-year comparison only when we have a real prior-year payload — never invent ±% changes
+  const prevCountyAllocations = prevYearId && allYears[prevYearId]
+    ? extractCountyAllocations(allYears[prevYearId])
+    : [];
 
   const countyRanking = useMemo(() =>
     countyAllocations.map((c) => {
-      const prev = prevCountyAllocations.find((p) => p.id === c.id)?.allocation ?? c.allocation;
-      const change = prev > 0 ? ((c.allocation - prev) / prev) * 100 : 0;
-      return { ...c, prevAllocation: prev, change };
+      const prevRow = prevCountyAllocations.find((p) => p.id === c.id);
+      const prev = prevRow?.allocation;
+      const change =
+        prev != null && prev > 0 ? ((c.allocation - prev) / prev) * 100 : null;
+      return { ...c, prevAllocation: prev ?? null, change };
     }).sort((a, b) => b.allocation - a.allocation)
       .map((c, i) => ({ ...c, rank: i + 1 })),
   [countyAllocations, prevCountyAllocations]);
@@ -77,7 +80,8 @@ export function CountiesTab({ currentData, allYears, fiscalYears, selectedYear }
   const avgAllocation = countyRanking.length > 0 ? totalDevolution / countyRanking.length : 0;
 
   const heatmapData = useMemo(() => {
-    const maxAlloc = Math.max(...countyRanking.map((c) => c.allocation));
+    if (countyRanking.length === 0) return [];
+    const maxAlloc = Math.max(...countyRanking.map((c) => c.allocation), 1);
     return countyRanking.map((c) => ({
       ...c,
       intensity: c.allocation / maxAlloc,
@@ -104,6 +108,19 @@ export function CountiesTab({ currentData, allYears, fiscalYears, selectedYear }
   }, [countyRanking]);
 
   const selectedYearLabel = fiscalYears.find((y) => y.id === selectedYear)?.label ?? "FY";
+
+  if (countyAllocations.length === 0) {
+    return (
+      <div className="rounded-xl border border-dashed border-border/60 bg-muted/20 px-6 py-16 text-center">
+        <Building2 className="mx-auto mb-3 size-8 text-muted-foreground/60" />
+        <h2 className="text-base font-semibold tracking-tight">County allocations unavailable</h2>
+        <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+          We only show county figures from CRA / Treasury-linked API rows. No county allocations
+          are seeded for this fiscal year yet — nothing is invented here.
+        </p>
+      </div>
+    );
+  }
 
   if (selectedCountyId && selectedCounty && !compareId && viewMode !== "compare" && viewMode !== "heatmap") {
     return (
@@ -328,8 +345,17 @@ export function CountiesTab({ currentData, allYears, fiscalYears, selectedYear }
                           </td>
                           <td className="py-2.5 px-2 text-right tabular-nums">{formatKesBillions(c.allocation / 1e9)}</td>
                           <td className="py-2.5 px-2 text-right tabular-nums hidden sm:table-cell">
-                            <span className={cn("font-medium", c.change >= 0 ? "text-emerald-600" : "text-red-600")}>
-                              {c.change >= 0 ? "+" : ""}{c.change.toFixed(1)}%
+                            <span
+                              className={cn(
+                                "font-medium",
+                                c.change == null
+                                  ? "text-muted-foreground"
+                                  : c.change >= 0
+                                    ? "text-emerald-600"
+                                    : "text-red-600",
+                              )}
+                            >
+                              {c.change == null ? "—" : `${c.change >= 0 ? "+" : ""}${c.change.toFixed(1)}%`}
                             </span>
                           </td>
                           <td className="py-2.5 pr-4 pl-2 text-right tabular-nums text-muted-foreground">
@@ -359,24 +385,16 @@ function CountyProfile({
   county, countyRanking, onBack, onCompare, selectedYearLabel,
 }: {
   county: CountyAllocation & { rank?: number };
-  countyRanking: (CountyAllocation & { change: number })[];
+  countyRanking: (CountyAllocation & { change: number | null })[];
   onBack: () => void;
   onCompare: () => void;
   selectedYearLabel: string;
 }) {
-  const sectorLabels = [
-    "Health Services", "Infrastructure", "Agriculture", "Education",
-    "Social Protection", "Water & Sanitation", "Administration", "Trade & Industry",
-  ];
-  const sectorData = sectorLabels.map((name, i) => ({
-    name,
-    value: Math.round(county.allocation * (0.08 + (i % 5) * 0.025) / 1e8) / 10,
-    fill: `hsl(${200 + i * 30}, 70%, 45%)`,
-  }));
-
   const neighbors = countyRanking
     .filter((c) => c.id !== county.id)
     .slice(0, 3);
+  const countyCount = countyRanking.length;
+  const yoy = countyRanking.find((x) => x.id === county.id)?.change ?? null;
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
@@ -408,18 +426,20 @@ function CountyProfile({
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div className="rounded-lg border bg-card p-4">
           <p className="text-xs font-medium text-muted-foreground">National Rank</p>
-          <p className="text-xl font-bold tabular-nums mt-1">#{countyRanking.findIndex((c) => c.id === county.id) + 1} of 47</p>
+          <p className="text-xl font-bold tabular-nums mt-1">
+            #{countyRanking.findIndex((c) => c.id === county.id) + 1}
+            {countyCount > 0 ? ` of ${countyCount}` : ""}
+          </p>
           <p className="text-xs text-muted-foreground">{county.share.toFixed(1)}% of devolution</p>
         </div>
         <div className="rounded-lg border bg-card p-4">
           <p className="text-xs font-medium text-muted-foreground">Year-over-Year</p>
           <p className="text-xl font-bold tabular-nums mt-1">
-            {(() => {
-              const c = countyRanking.find((x) => x.id === county.id);
-              return c ? `${c.change >= 0 ? "+" : ""}${c.change.toFixed(1)}%` : "—";
-            })()}
+            {yoy == null ? "—" : `${yoy >= 0 ? "+" : ""}${yoy.toFixed(1)}%`}
           </p>
-          <p className="text-xs text-muted-foreground">vs previous fiscal year</p>
+          <p className="text-xs text-muted-foreground">
+            {yoy == null ? "Prior-year data unavailable" : "vs previous fiscal year"}
+          </p>
         </div>
         <div className="rounded-lg border bg-card p-4">
           <p className="text-xs font-medium text-muted-foreground">Region</p>
@@ -433,25 +453,16 @@ function CountyProfile({
       <Card className="border-border/60">
         <CardHeader>
           <h3 className="text-sm font-semibold flex items-center gap-2">
-            <TrendingUp className="size-4 text-primary" />Estimated Sector Allocation
+            <TrendingUp className="size-4 text-primary" />Sector breakdown
           </h3>
-          <CardDescription>Breakdown by sector for {county.name} County</CardDescription>
+          <CardDescription>
+            County sector lines are shown only when linked from the API — none are estimated here.
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            {sectorData.map((s, i) => (
-              <div key={i} className="space-y-1">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-medium">{s.name}</span>
-                  <span className="tabular-nums text-muted-foreground">{formatKesBillions(s.value)}</span>
-                </div>
-                <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
-                  <div className="h-full rounded-full transition-all duration-700 ease-out"
-                    style={{ width: `${((s.value * 1e8) / county.allocation) * 100}%`, backgroundColor: s.fill }} />
-                </div>
-              </div>
-            ))}
-          </div>
+          <p className="text-sm text-muted-foreground">
+            Sector allocation detail for {county.name} is not available in the current CRA payload.
+          </p>
         </CardContent>
       </Card>
 
@@ -469,9 +480,17 @@ function CountyProfile({
                 <div key={n.id} className="rounded-lg border bg-card p-3 text-center">
                   <p className="text-xs font-bold">{n.name}</p>
                   <p className="text-sm font-bold tabular-nums mt-0.5">{formatKesBillions(n.allocation / 1e9)}</p>
-                  <p className={cn("text-[10px] font-medium",
-                    (n as any).change >= 0 ? "text-emerald-600" : "text-red-600")}>
-                    {(n as any).change >= 0 ? "+" : ""}{(n as any).change.toFixed(1)}%
+                  <p
+                    className={cn(
+                      "text-[10px] font-medium",
+                      n.change == null
+                        ? "text-muted-foreground"
+                        : n.change >= 0
+                          ? "text-emerald-600"
+                          : "text-red-600",
+                    )}
+                  >
+                    {n.change == null ? "—" : `${n.change >= 0 ? "+" : ""}${n.change.toFixed(1)}%`}
                   </p>
                 </div>
               ))}

@@ -35,6 +35,7 @@ import { resolveYoutubeId } from "@/lib/learn-video";
 import { apiFetch } from "@/lib/api-client";
 import { YouTubePlayer } from "./youtube-player";
 import { TriviaSection } from "./trivia-section";
+import { SignUpCta } from "@/components/ui/sign-up-cta";
 import type { ChapterStep, CivicModule } from "@/types/learn";
 
 function parseVideoEntries(step: ChapterStep | null): { videoId: string; title: string }[] {
@@ -522,6 +523,8 @@ export function ModuleDetailView() {
                       <div className="prose prose-sm max-w-none dark:prose-invert prose-headings:font-bold prose-p:leading-relaxed">
                         {renderContent(currentStepObj.text)}
                       </div>
+
+                      <SignUpCta dismissKey="bns-soft-login-module-reader" />
 
                       {currentStepObj.takeaways && currentStepObj.takeaways.length > 0 && (
                         <Card className="border-primary/20 bg-primary/5">
