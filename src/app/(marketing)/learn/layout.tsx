@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { LearnProvider } from "@/contexts/learn-context";
 import { Suspense } from "react";
 import { LearnTabSync } from "@/components/learn/learn-tab-sync";
-import { LearnMobileNav } from "@/layouts/LearnMobileNav";
-import AppSidebar from "@/components/shadcn-space/blocks/dashboard-shell-01/app-sidebar";
+import { CitizenSyllabusShell } from "@/layouts/CitizenSyllabusShell";
 import { LearnTeachingProviderShell } from "@/components/admin/teaching";
 import { canonicalUrl, metaDescription } from "@/utils/metadata";
 
@@ -52,7 +51,7 @@ export default function LearnLayout({ children }: { children: React.ReactNode })
           }
         >
           <LearnTabSync />
-          <AppSidebar bottom={<LearnMobileNav />}>{children}</AppSidebar>
+          <CitizenSyllabusShell>{children}</CitizenSyllabusShell>
         </Suspense>
       </LearnTeachingProviderShell>
     </LearnProvider>

@@ -9,6 +9,7 @@ import { Flame, Bell, Shield, ArrowRight, ArrowLeft, Sparkles, GraduationCap } f
 import { useUpdateProfile } from "@/hooks/use-profile";
 import { useAuth } from "@/contexts/auth-context";
 import { COUNTIES } from "@/constants/counties";
+import { buildOnboardingProfilePatch } from "@/lib/onboarding-profile-patch";
 
 interface OnboardingWizardProps { onComplete: (profile: any) => void; }
 
@@ -72,18 +73,23 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
     localStorage.setItem("bns_user_profile", JSON.stringify(profile));
     window.dispatchEvent(new Event("bns-profile-updated"));
     if (isLoggedIn) {
-      updateProfileMutation.mutate({
-        display_name: breakName.trim(), location: county,
-        metadata: {
-          county, ward: ward.trim() || "",
-          break_name: breakName.trim(), pseudo_name: pseudoName.trim(),
-          language, education_level: educationLevel, age_range: ageRange, date_of_birth: dateOfBirth,
-          notifications_enabled: notifications, whatsapp_fallback: whatsappFallback,
-          phone: phone.trim() || "", dpa_consent: consent,
-          dpa_consent_timestamp: new Date().toISOString(),
-          onboarding_completed_at: new Date().toISOString(),
-        },
-      });
+      updateProfileMutation.mutate(
+        buildOnboardingProfilePatch({
+          breakName: breakName.trim(),
+          pseudoName: pseudoName.trim(),
+          county,
+          ward: ward.trim() || undefined,
+          language,
+          educationLevel,
+          ageRange,
+          dateOfBirth,
+          notifications,
+          whatsappFallback,
+          phone: phone.trim() || undefined,
+          consentGranted: true,
+          consentTimestamp: new Date().toISOString(),
+        }),
+      );
     }
     onComplete(profile);
   };
@@ -195,10 +201,8 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
               <option value="">Select your education level</option>
               <option value="primary">Primary School</option>
               <option value="secondary">Secondary School</option>
-              <option value="diploma">Diploma / Certificate</option>
-              <option value="undergraduate">Undergraduate Degree</option>
-              <option value="postgraduate">Postgraduate Degree</option>
-              <option value="other">Other</option>
+              <option value="tertiary">Tertiary / College / University</option>
+              <option value="professional">Professional</option>
             </select>
           </div>
 
@@ -210,11 +214,12 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
               className="w-full h-10 px-3 rounded-lg border-0 bg-muted/40 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
             >
               <option value="">Select your age range</option>
-              <option value="under_18">Under 18</option>
-              <option value="18_25">18 - 25</option>
-              <option value="26_35">26 - 35</option>
-              <option value="36_50">36 - 50</option>
-              <option value="over_50">Over 50</option>
+              <option value="under_13">Under 13</option>
+              <option value="age_13_17">13 – 17</option>
+              <option value="age_18_24">18 – 24</option>
+              <option value="age_25_34">25 – 34</option>
+              <option value="age_35_44">35 – 44</option>
+              <option value="age_45_plus">45+</option>
             </select>
           </div>
 

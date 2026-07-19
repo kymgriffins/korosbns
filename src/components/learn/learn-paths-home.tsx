@@ -135,16 +135,21 @@ export function LearnPathsHome({ tab }: Props) {
         };
         localStorage.setItem("bns_user_profile", JSON.stringify(currentProfile));
 
-        if (preferences.county || preferences.priorities) {
-          import("@/hooks/use-profile").then(({ useUpdateProfile }) => {
-            const { mutate } = useUpdateProfile();
-            mutate({
-              county: String(preferences.county ?? "") || authUser.county || "",
-              ward: String(preferences.ward ?? "") || authUser.ward || "",
-              budget_priorities: (Array.isArray(preferences.priorities)
-                ? preferences.priorities
-                : []) as string[],
-              location: String(preferences.county ?? "") || authUser.location || "",
+        if (preferences.county || preferences.priorities || preferences.ageRange || preferences.language) {
+          import("@/lib/onboarding-profile-patch").then(({ buildOnboardingProfilePatch }) => {
+            import("@/hooks/use-profile").then(({ useUpdateProfile }) => {
+              const { mutate } = useUpdateProfile();
+              mutate(
+                buildOnboardingProfilePatch({
+                  breakName: currentProfile!.breakName,
+                  pseudoName: currentProfile!.pseudoName,
+                  county: String(preferences.county ?? currentProfile!.county ?? ""),
+                  ward: String(preferences.ward ?? currentProfile!.ward ?? ""),
+                  language: String(preferences.language ?? currentProfile!.language ?? "EN"),
+                  ageRange: String(preferences.ageRange ?? ""),
+                  educationLevel: String(preferences.educationLevel ?? ""),
+                }),
+              );
             });
           });
         }
