@@ -42,7 +42,6 @@ export const learningData = {
           try {
             return await load();
           } catch (firstErr) {
-            // One quick retry — login/cookie races and transient proxy blips.
             await new Promise((r) => setTimeout(r, 350));
             try {
               return await load();
@@ -53,13 +52,16 @@ export const learningData = {
         },
         () => {
           usedFallback = true;
-          // Prefer last good in-memory catalogue when available.
           return _modules.length > 0 ? _modules : FALLBACK_MODULES;
         },
+        {
+          // Empty success must not wipe the hub — use seeded catalogue.
+          accept: (rows) => Array.isArray(rows) && rows.length > 0,
+        },
       );
-      _modules = results;
-      _modulesUsedFallback = usedFallback;
-      return results;
+      _modules = results.length > 0 ? results : FALLBACK_MODULES;
+      _modulesUsedFallback = usedFallback || results.length === 0;
+      return _modules;
     },
     fetchBySlug: (slug: string) =>
       withFallback(

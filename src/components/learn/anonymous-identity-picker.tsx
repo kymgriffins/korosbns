@@ -8,6 +8,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Shield, ArrowRight, Edit3, RefreshCw, Sparkles } from "lucide-react";
 import { FemaleBitmoji, MaleBitmoji, type Gender } from "./bitmoji-avatar";
 
+import { writeHubProfile } from "@/lib/profile-local-storage";
+
 const PATRIOTIC_WORDS = [
   "halisi", "daima", "mzalendo", "huruma", "amani", "umoja",
   "saba", "azimio", "uhuru", "harambee", "nyayo", "ishara",
@@ -61,8 +63,7 @@ export function AnonymousIdentityPicker({ onComplete }: AnonymousIdentityPickerP
       trackedDocs: [] as string[], badges: [] as string[],
     };
 
-    localStorage.setItem("bns_user_profile", JSON.stringify(profile));
-    window.dispatchEvent(new Event("bns-profile-updated"));
+    writeHubProfile(profile as unknown as Record<string, unknown>);
     onComplete(profile);
   };
 

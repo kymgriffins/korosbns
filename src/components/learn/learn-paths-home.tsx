@@ -23,6 +23,14 @@ import type { CivicModule } from "@/types/learn";
 import { TRANSLATIONS } from "@/constants/learn-translations";
 import { safeArray, safeLen, safeMap } from "@/lib/safe-data";
 import { useMemo } from "react";
+import {
+  readHubProfile,
+  writeHubProfile,
+  clearHubProfile,
+  readOnboardingDraft,
+  clearOnboardingDraft,
+} from "@/lib/profile-local-storage";
+import { flushAllOfflineCitizenData } from "@/lib/sync-profile";
 
 const MODULES_REQUIRED: LearnTab[] = ["home", "learn", "profile"];
 
@@ -85,89 +93,67 @@ export function LearnPathsHome({ tab }: Props) {
     if (authLoading) return;
 
     if (isLoggedIn && authUser) {
-      const stored = localStorage.getItem("bns_user_profile");
-      let currentProfile: LearnHubProfile | null = null;
-      if (stored) {
-        try {
-          currentProfile = JSON.parse(stored) as LearnHubProfile;
-        } catch {
-          currentProfile = null;
-        }
+      let currentProfile = readHubProfile<LearnHubProfile>();
+      if (currentProfile && currentProfile.userId !== authUser.id) {
+        currentProfile = null;
       }
 
-      if (!currentProfile || currentProfile.userId !== authUser.id) {
-        void import("@/lib/profile-local-storage").then(
-          ({ readOnboardingDraft, writeHubProfile, clearOnboardingDraft }) => {
-            const preferences = readOnboardingDraft() ?? {};
-            const nextProfile: LearnHubProfile = {
-              userId: authUser.id || "",
-              breakName:
-                authUser.break_name ||
-                authUser.display_name ||
-                `${authUser.first_name || ""} ${authUser.last_name || ""}`.trim() ||
-                authUser.email ||
-                "Citizen",
-              pseudoName:
-                authUser.pseudo_name ||
-                authUser.display_name ||
-                `citizen_${String(authUser.id || "").slice(0, 5)}`,
-              avatar_url: authUser.avatar_url || authUser.avatar || null,
-              county:
-                authUser.county ||
-                authUser.location ||
-                String(preferences.county ?? "") ||
-                "Kenya",
-              ward: authUser.ward || String(preferences.ward ?? "") || "",
-              language: (authUser.language_preference as LearnHubLanguage) || ("EN" as const),
-              ageRange:
-                authUser.age_range ||
-                preferences.ageRange ||
-                undefined,
-              educationLevel:
-                authUser.education_level ||
-                preferences.educationLevel ||
-                undefined,
-              interests: preferences.priorities,
-              notifications: authUser.notifications_enabled ?? true,
-              whatsappFallback: authUser.whatsapp_fallback ?? false,
-              phone: authUser.phone_number || "",
-              consentGranted: authUser.dpa_consent_granted ?? false,
-              consentTimestamp: authUser.dpa_consent_timestamp || new Date().toISOString(),
-              sovereigns: currentProfile?.sovereigns || 0,
-              stageProgress: currentProfile?.stageProgress || [1],
-              streakDays: currentProfile?.streakDays || 0,
-              lastActive: Date.now(),
-              trackedDocs: currentProfile?.trackedDocs || [],
-              badges: currentProfile?.badges || [],
-            };
-            writeHubProfile(nextProfile as unknown as Record<string, unknown>);
-            setProfile(nextProfile);
+      if (!currentProfile) {
+        const preferences = readOnboardingDraft() ?? {};
+        const nextProfile: LearnHubProfile = {
+          userId: authUser.id || "",
+          breakName:
+            authUser.break_name ||
+            authUser.display_name ||
+            `${authUser.first_name || ""} ${authUser.last_name || ""}`.trim() ||
+            authUser.email ||
+            "Citizen",
+          pseudoName:
+            authUser.pseudo_name ||
+            authUser.display_name ||
+            `citizen_${String(authUser.id || "").slice(0, 5)}`,
+          avatar_url: authUser.avatar_url || authUser.avatar || null,
+          county:
+            authUser.county ||
+            authUser.location ||
+            preferences.county ||
+            "Kenya",
+          ward: authUser.ward || preferences.ward || "",
+          language: (authUser.language_preference as LearnHubLanguage) || ("EN" as const),
+          ageRange: authUser.age_range || preferences.ageRange || undefined,
+          educationLevel:
+            authUser.education_level || preferences.educationLevel || undefined,
+          interests: preferences.priorities,
+          notifications: authUser.notifications_enabled ?? true,
+          whatsappFallback: authUser.whatsapp_fallback ?? false,
+          phone: authUser.phone_number || "",
+          consentGranted: authUser.dpa_consent_granted ?? false,
+          consentTimestamp: authUser.dpa_consent_timestamp || new Date().toISOString(),
+          sovereigns: 0,
+          stageProgress: [1],
+          streakDays: 0,
+          lastActive: Date.now(),
+          trackedDocs: [],
+          badges: [],
+        };
+        writeHubProfile(nextProfile as unknown as Record<string, unknown>);
+        setProfile(nextProfile);
 
-            void import("@/lib/sync-profile").then(({ flushAllOfflineCitizenData }) => {
-              void flushAllOfflineCitizenData(undefined, {
-                breakName: nextProfile.breakName,
-                pseudoName: nextProfile.pseudoName,
-                county: nextProfile.county,
-                ward: nextProfile.ward,
-                language: nextProfile.language,
-                ageRange: nextProfile.ageRange,
-                educationLevel: nextProfile.educationLevel,
-                priorities: preferences.priorities,
-              }).then(() => {
-                // Draft cleared on successful sync inside flush; keep local prefs if still queued.
-                if (!localStorage.getItem("bns_pending_profile_patch")) {
-                  clearOnboardingDraft();
-                }
-              });
-            });
-          },
-        );
+        void flushAllOfflineCitizenData(undefined, {
+          breakName: nextProfile.breakName,
+          pseudoName: nextProfile.pseudoName,
+          county: nextProfile.county,
+          ward: nextProfile.ward,
+          language: nextProfile.language,
+          ageRange: nextProfile.ageRange,
+          educationLevel: nextProfile.educationLevel,
+          priorities: preferences.priorities,
+        }).then((result) => {
+          if (result.profile === "synced") clearOnboardingDraft();
+        });
       } else {
         setProfile(currentProfile);
-        // Still flush any pending offline XP / progress / profile patches.
-        void import("@/lib/sync-profile").then(({ flushAllOfflineCitizenData }) => {
-          void flushAllOfflineCitizenData();
-        });
+        void flushAllOfflineCitizenData();
       }
 
       setLoading(false);
@@ -181,15 +167,13 @@ export function LearnPathsHome({ tab }: Props) {
     if (!isLoggedIn) return;
     const next = updated as LearnHubProfile;
     setProfile(next);
-    void import("@/lib/profile-local-storage").then(({ writeHubProfile }) => {
-      writeHubProfile(next as unknown as Record<string, unknown>);
-    });
+    writeHubProfile(next as unknown as Record<string, unknown>);
   };
 
   const handleResetProgress = () => {
     if (!isLoggedIn) return;
     if (window.confirm("Reset all progress?")) {
-      localStorage.removeItem("bns_user_profile");
+      clearHubProfile();
       clearAllModuleProgress(stages);
       setProfile(null);
       setSelectedStage(null);

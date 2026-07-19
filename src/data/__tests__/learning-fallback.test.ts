@@ -61,6 +61,16 @@ describe("learningData.modules (read-only JSON fallback)", () => {
     expect(learningData.modules.usedFallback()).toBe(true);
   });
 
+  it("uses JSON fallback when API returns an empty results list", async () => {
+    (learnHubApi.civicModules as ReturnType<typeof vi.fn>).mockResolvedValue({
+      results: [],
+      count: 0,
+    });
+    const result = await learningData.modules.fetch();
+    expect(result.length).toBeGreaterThan(0);
+    expect(learningData.modules.usedFallback()).toBe(true);
+  });
+
   it("never throws when fallback catalogue exists", async () => {
     (learnHubApi.civicModules as ReturnType<typeof vi.fn>).mockRejectedValue(
       new Error("404"),

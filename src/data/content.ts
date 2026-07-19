@@ -53,10 +53,11 @@ export const contentData = {
         "content",
         () => learnHubApi.articles(filters),
         () => ({ results: filterBySearch(_articles.length ? _articles : DEFAULT_ARTICLES, filters?.search) }),
+        { accept: (r) => Array.isArray(r?.results) && (r.results?.length ?? 0) > 0 },
       ).then((r) => {
         const results = r.results ?? [];
         if (results.length) _articles = results;
-        return results;
+        return results.length ? results : filterBySearch(DEFAULT_ARTICLES, filters?.search);
       }),
     fetchBySlug: (slug: string) =>
       withFallback(
@@ -104,10 +105,11 @@ export const contentData = {
         "content",
         () => learnHubApi.paths(filters),
         () => ({ results: filterBySearch(_paths.length ? _paths : DEFAULT_PATHS, filters?.search) }),
+        { accept: (r) => Array.isArray(r?.results) && (r.results?.length ?? 0) > 0 },
       ).then((r) => {
         const results = r.results ?? [];
         if (results.length) _paths = results;
-        return results;
+        return results.length ? results : filterBySearch(DEFAULT_PATHS, filters?.search);
       }),
   },
   trivia: {

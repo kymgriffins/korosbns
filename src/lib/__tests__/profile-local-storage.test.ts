@@ -9,18 +9,25 @@ import {
   readGamificationQueue,
   readOnboardingDraft,
   readPendingProfilePatch,
+  sanitizeProfilePatch,
   writeOnboardingDraft,
+  clearCitizenLocalSession,
 } from "@/lib/profile-local-storage";
 import {
+  __resetFlushLockForTests,
   flushAllOfflineCitizenData,
   pushOnboardingDraftToApi,
   saveProfileWithOfflineQueue,
 } from "@/lib/sync-profile";
+import fallbackModules from "@/data/fallbacks/civic-modules.json";
+import fallbackArticles from "@/data/fallbacks/learn-articles.json";
+import fallbackPaths from "@/data/fallbacks/learn-paths.json";
 
 const store = new Map<string, string>();
 
 beforeEach(() => {
   store.clear();
+  __resetFlushLockForTests();
   vi.stubGlobal("localStorage", {
     getItem: (k: string) => store.get(k) ?? null,
     setItem: (k: string, v: string) => {
@@ -30,11 +37,16 @@ beforeEach(() => {
       store.delete(k);
     },
     clear: () => store.clear(),
-    key: () => null,
-    length: 0,
+    key: (i: number) => Array.from(store.keys())[i] ?? null,
+    get length() {
+      return store.size;
+    },
   });
   vi.stubGlobal("window", {
     localStorage: globalThis.localStorage,
+    sessionStorage: {
+      removeItem: vi.fn(),
+    },
     dispatchEvent: vi.fn(),
   });
 });
@@ -52,6 +64,20 @@ describe("profile-local-storage", () => {
     expect(draft?.ageRange).toBe("age_18_24");
     expect(draft?.educationLevel).toBe("tertiary");
     expect(draft?.priorities).toEqual(["Healthcare", "Education"]);
+  });
+
+  it("scrubs invalid age/education so bad drafts cannot 400 the API forever", () => {
+    writeOnboardingDraft({
+      county: "Nairobi",
+      ageRange: "teen",
+      educationLevel: "phd",
+    });
+    const draft = readOnboardingDraft();
+    expect(draft?.ageRange).toBeUndefined();
+    expect(draft?.educationLevel).toBeUndefined();
+    expect(sanitizeProfilePatch({ age_range: "nope", education_level: "tertiary" })).toEqual({
+      education_level: "tertiary",
+    });
   });
 
   it("maps draft to top-level API patch including budget_priorities", () => {
@@ -76,6 +102,34 @@ describe("profile-local-storage", () => {
       county: "Mombasa",
       age_range: "age_35_44",
     });
+  });
+
+  it("removes corrupt JSON blobs instead of throwing", () => {
+    store.set(PROFILE_STORAGE_KEYS.onboarding, "{not-json");
+    expect(readOnboardingDraft()).toBeNull();
+    expect(store.has(PROFILE_STORAGE_KEYS.onboarding)).toBe(false);
+  });
+
+  it("logout keeps onboarding draft for a later login sync", () => {
+    writeOnboardingDraft({ county: "Narok", ageRange: "age_18_24", educationLevel: "tertiary" });
+    mergePendingProfilePatch({ county: "Narok" });
+    clearCitizenLocalSession({ wipePendingPersonalization: false });
+    expect(readOnboardingDraft()?.county).toBe("Narok");
+    expect(readPendingProfilePatch()?.county).toBe("Narok");
+  });
+
+  it("stores gamification events in the offline queue (deduped)", () => {
+    enqueueGamificationEvent({
+      event_type: "module_step_complete",
+      idempotency_key: "evt-1",
+      points: 10,
+    });
+    enqueueGamificationEvent({
+      event_type: "module_step_complete",
+      idempotency_key: "evt-1",
+      points: 10,
+    });
+    expect(readGamificationQueue()).toHaveLength(1);
   });
 });
 
@@ -142,46 +196,60 @@ describe("sync-profile (localStorage → DB)", () => {
     expect(readPendingProfilePatch()).toBeNull();
   });
 
-  it("stores gamification events in the offline queue", () => {
-    enqueueGamificationEvent({
-      event_type: "module_step_complete",
-      idempotency_key: "evt-1",
-      points: 10,
-    });
-    enqueueGamificationEvent({
-      event_type: "module_step_complete",
-      idempotency_key: "evt-1",
-      points: 10,
-    });
-    expect(readGamificationQueue()).toHaveLength(1);
-  });
-});
-
-describe("flushAllOfflineCitizenData", () => {
-  it("pushes onboarding + clears queues when API is healthy", async () => {
+  it("dedupes concurrent flushAllOfflineCitizenData into one PATCH", async () => {
     writeOnboardingDraft({
       county: "Garissa",
       ageRange: "age_25_34",
       educationLevel: "professional",
       priorities: ["Jobs & Digital Economy"],
     });
-    enqueueGamificationEvent({
-      event_type: "streak_day",
-      idempotency_key: "streak-1",
-      points: 5,
-    });
-    const patchMe = vi.fn().mockResolvedValue({ id: "u3" });
-    // gamification flush uses real postGamificationEvent which catches → null → remains
-    // So we only assert profile path here.
-    const result = await flushAllOfflineCitizenData(patchMe, {
+    let resolvePatch!: (v: unknown) => void;
+    const patchMe = vi.fn(
+      () =>
+        new Promise((resolve) => {
+          resolvePatch = resolve;
+        }),
+    );
+    const a = flushAllOfflineCitizenData(patchMe as never, {
       breakName: "Learner",
       pseudoName: "Learner_Garissa",
       county: "Garissa",
       language: "EN",
     });
-    expect(result.profile).toBe("synced");
-    expect(patchMe).toHaveBeenCalled();
+    const b = flushAllOfflineCitizenData(patchMe as never, {
+      breakName: "Learner",
+      pseudoName: "Learner_Garissa",
+      county: "Garissa",
+      language: "EN",
+    });
+    expect(patchMe).toHaveBeenCalledTimes(1);
+    resolvePatch({ id: "u3" });
+    const [ra, rb] = await Promise.all([a, b]);
+    expect(ra.profile).toBe("synced");
+    expect(rb.profile).toBe("synced");
     clearOnboardingDraft();
     clearPendingProfilePatch();
+  });
+});
+
+describe("JSON fallback contracts (read-only catalogue)", () => {
+  it("civic-modules fallback has slug, title, steps for every entry", () => {
+    expect(fallbackModules.results.length).toBeGreaterThan(0);
+    for (const mod of fallbackModules.results) {
+      expect(mod.slug).toBeTruthy();
+      expect(mod.title).toBeTruthy();
+      expect(Array.isArray(mod.steps)).toBe(true);
+      expect(mod.steps.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("articles and paths fallbacks are non-empty learn hub items", () => {
+    expect(fallbackArticles.results.length).toBeGreaterThan(0);
+    expect(fallbackPaths.results.length).toBeGreaterThan(0);
+    for (const item of [...fallbackArticles.results, ...fallbackPaths.results]) {
+      expect(item.slug).toBeTruthy();
+      expect(item.title).toBeTruthy();
+      expect(item.content_type).toBeTruthy();
+    }
   });
 });

@@ -12,6 +12,7 @@ import {
   readLearnProgressQueue,
   readOnboardingDraft,
   readPendingProfilePatch,
+  sanitizeProfilePatch,
   writeGamificationQueue,
   writeLearnProgressQueue,
   type GamificationEventPayload,
@@ -27,6 +28,9 @@ export type SyncResult = {
 
 type PatchFn = (body: Partial<UserProfileApi>) => Promise<UserProfileApi>;
 
+/** Prevents parallel login + online + learn-home flushes from racing. */
+let flushInFlight: Promise<SyncResult> | null = null;
+
 /**
  * Persist prefs locally first, then PATCH /users/me/.
  * On network failure the merged patch stays queued for the next flush.
@@ -36,7 +40,11 @@ export async function saveProfileWithOfflineQueue(
   patchMe: PatchFn = (body) => citizenApi.patchMe(body),
 ): Promise<"synced" | "queued"> {
   mergePendingProfilePatch(patch);
-  const toSend = readPendingProfilePatch() ?? patch;
+  const toSend = sanitizeProfilePatch(readPendingProfilePatch() ?? patch);
+  if (Object.keys(toSend).length === 0) {
+    clearPendingProfilePatch();
+    return "synced";
+  }
   try {
     await patchMe(toSend);
     clearPendingProfilePatch();
@@ -74,7 +82,7 @@ export async function flushPendingProfilePatch(
   const pending = readPendingProfilePatch();
   if (!pending || Object.keys(pending).length === 0) return "empty";
   try {
-    await patchMe(pending);
+    await patchMe(sanitizeProfilePatch(pending));
     clearPendingProfilePatch();
     return "synced";
   } catch {
@@ -141,24 +149,51 @@ export async function flushLearnProgressQueue(): Promise<{
   return { flushed, remaining: remaining.length };
 }
 
-/**
- * After login / when browser comes online: push draft + pending patches +
- * queued gamification / learn progress so personalization works offline-first.
- */
-export async function flushAllOfflineCitizenData(
-  patchMe: PatchFn = (body) => citizenApi.patchMe(body),
+async function runFlushAll(
+  patchMe: PatchFn,
   identity?: Parameters<typeof onboardingDraftToPatch>[1],
 ): Promise<SyncResult> {
-  const draftResult = await pushOnboardingDraftToApi(null, patchMe, identity);
+  // Single PATCH: fold draft into pending, then flush once (avoids double-race).
+  const draft = readOnboardingDraft();
+  if (
+    draft &&
+    (draft.county || draft.ageRange || draft.educationLevel || draft.priorities?.length)
+  ) {
+    mergePendingProfilePatch(onboardingDraftToPatch(draft, identity));
+  }
+
   const pendingResult = await flushPendingProfilePatch(patchMe);
+  if (pendingResult === "synced") clearOnboardingDraft();
+
   const profile: SyncResult["profile"] =
-    draftResult === "synced" || pendingResult === "synced"
+    pendingResult === "synced"
       ? "synced"
-      : draftResult === "queued" || pendingResult === "queued"
+      : pendingResult === "queued"
         ? "queued"
         : "empty";
 
   const gamification = await flushGamificationQueue();
   const learnProgress = await flushLearnProgressQueue();
   return { profile, gamification, learnProgress };
+}
+
+/**
+ * After login / when browser comes online: push draft + pending patches +
+ * queued gamification / learn progress so personalization works offline-first.
+ * Concurrent callers share one in-flight flush.
+ */
+export async function flushAllOfflineCitizenData(
+  patchMe: PatchFn = (body) => citizenApi.patchMe(body),
+  identity?: Parameters<typeof onboardingDraftToPatch>[1],
+): Promise<SyncResult> {
+  if (flushInFlight) return flushInFlight;
+  flushInFlight = runFlushAll(patchMe, identity).finally(() => {
+    flushInFlight = null;
+  });
+  return flushInFlight;
+}
+
+/** Test-only: reset the flush mutex between cases. */
+export function __resetFlushLockForTests(): void {
+  flushInFlight = null;
 }
