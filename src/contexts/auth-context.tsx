@@ -5,6 +5,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   type ReactNode,
 } from "react";
@@ -73,6 +74,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const profile = await citizenApi.getMe();
       queryClient.setQueryData(USER_PROFILE_KEY, normalizeProfile(profile));
       logDebug("Auth", "Login completed", { redirectTo: safeRedirect });
+
+      // Push register draft + queued gamification/progress regardless of network timing.
+      try {
+        const { flushAllOfflineCitizenData } = await import("@/lib/sync-profile");
+        await flushAllOfflineCitizenData(undefined, {
+          breakName: profile.break_name || profile.display_name || "",
+          pseudoName: profile.pseudo_name || "",
+          county: profile.county || "",
+          ward: profile.ward,
+          language: profile.language_preference || "EN",
+          ageRange: profile.age_range,
+          educationLevel: profile.education_level,
+          priorities: profile.budget_priorities,
+        });
+        await queryClient.invalidateQueries({ queryKey: USER_PROFILE_KEY });
+      } catch (err) {
+        logDebug("Auth", "Offline flush deferred", { err: String(err) });
+      }
+
       router.push(safeRedirect);
     },
     [router, queryClient],
@@ -82,7 +102,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (typeof window === "undefined") return;
     const userKeys = options?.keepOnboarding
       ? ["bns_user_profile", "bns_story_watched"]
-      : ["bns_user_profile", "bns_onboarding_profile", "bns_story_watched"];
+      : [
+          "bns_user_profile",
+          "bns_onboarding_profile",
+          "bns_pending_profile_patch",
+          "bns_pending_gamification_events",
+          "bns_pending_learn_progress",
+          "bns_story_watched",
+        ];
     for (const key of userKeys) {
       window.localStorage.removeItem(key);
     }
@@ -110,6 +137,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     logDebug("Auth", "Logout completed — navigating");
     router.push("/auth/login");
   }, [queryClient, router]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onOnline = () => {
+      if (!user) return;
+      void import("@/lib/sync-profile").then(({ flushAllOfflineCitizenData }) => {
+        void flushAllOfflineCitizenData().then(() => {
+          void queryClient.invalidateQueries({ queryKey: USER_PROFILE_KEY });
+        });
+      });
+    };
+    window.addEventListener("online", onOnline);
+    return () => window.removeEventListener("online", onOnline);
+  }, [user, queryClient]);
 
   const value = useMemo(
     () => ({

@@ -96,82 +96,80 @@ export function LearnPathsHome({ tab }: Props) {
       }
 
       if (!currentProfile || currentProfile.userId !== authUser.id) {
-        const onboardingData = localStorage.getItem("bns_onboarding_profile");
-        let preferences: Record<string, unknown> = {};
-        if (onboardingData) {
-          try {
-            preferences = JSON.parse(onboardingData) as Record<string, unknown>;
-          } catch {
-            preferences = {};
-          }
-        }
+        void import("@/lib/profile-local-storage").then(
+          ({ readOnboardingDraft, writeHubProfile, clearOnboardingDraft }) => {
+            const preferences = readOnboardingDraft() ?? {};
+            const nextProfile: LearnHubProfile = {
+              userId: authUser.id || "",
+              breakName:
+                authUser.break_name ||
+                authUser.display_name ||
+                `${authUser.first_name || ""} ${authUser.last_name || ""}`.trim() ||
+                authUser.email ||
+                "Citizen",
+              pseudoName:
+                authUser.pseudo_name ||
+                authUser.display_name ||
+                `citizen_${String(authUser.id || "").slice(0, 5)}`,
+              avatar_url: authUser.avatar_url || authUser.avatar || null,
+              county:
+                authUser.county ||
+                authUser.location ||
+                String(preferences.county ?? "") ||
+                "Kenya",
+              ward: authUser.ward || String(preferences.ward ?? "") || "",
+              language: (authUser.language_preference as LearnHubLanguage) || ("EN" as const),
+              ageRange:
+                authUser.age_range ||
+                preferences.ageRange ||
+                undefined,
+              educationLevel:
+                authUser.education_level ||
+                preferences.educationLevel ||
+                undefined,
+              interests: preferences.priorities,
+              notifications: authUser.notifications_enabled ?? true,
+              whatsappFallback: authUser.whatsapp_fallback ?? false,
+              phone: authUser.phone_number || "",
+              consentGranted: authUser.dpa_consent_granted ?? false,
+              consentTimestamp: authUser.dpa_consent_timestamp || new Date().toISOString(),
+              sovereigns: currentProfile?.sovereigns || 0,
+              stageProgress: currentProfile?.stageProgress || [1],
+              streakDays: currentProfile?.streakDays || 0,
+              lastActive: Date.now(),
+              trackedDocs: currentProfile?.trackedDocs || [],
+              badges: currentProfile?.badges || [],
+            };
+            writeHubProfile(nextProfile as unknown as Record<string, unknown>);
+            setProfile(nextProfile);
 
-        currentProfile = {
-          userId: authUser.id || "",
-          breakName:
-            authUser.break_name ||
-            authUser.display_name ||
-            `${authUser.first_name || ""} ${authUser.last_name || ""}`.trim() ||
-            authUser.email ||
-            "Citizen",
-          pseudoName:
-            authUser.pseudo_name ||
-            authUser.display_name ||
-            `citizen_${String(authUser.id || "").slice(0, 5)}`,
-          avatar_url: authUser.avatar_url || authUser.avatar || null,
-          county: authUser.county || authUser.location || String(preferences.county ?? "") || "Kenya",
-          ward: authUser.ward || String(preferences.ward ?? "") || "",
-          language: (authUser.language_preference as LearnHubLanguage) || ("EN" as const),
-          ageRange:
-            authUser.age_range ||
-            String(preferences.ageRange ?? preferences.age_range ?? "") ||
-            undefined,
-          educationLevel:
-            authUser.education_level ||
-            String(preferences.educationLevel ?? preferences.education_level ?? "") ||
-            undefined,
-          notifications: authUser.notifications_enabled ?? true,
-          whatsappFallback: authUser.whatsapp_fallback ?? false,
-          phone: authUser.phone_number || "",
-          consentGranted: authUser.dpa_consent_granted ?? false,
-          consentTimestamp: authUser.dpa_consent_timestamp || new Date().toISOString(),
-          sovereigns: currentProfile?.sovereigns || 0,
-          stageProgress: currentProfile?.stageProgress || [1],
-          streakDays: currentProfile?.streakDays || 0,
-          lastActive: Date.now(),
-          trackedDocs: currentProfile?.trackedDocs || [],
-          badges: currentProfile?.badges || [],
-        };
-        localStorage.setItem("bns_user_profile", JSON.stringify(currentProfile));
-
-        if (
-          preferences.county ||
-          preferences.priorities ||
-          preferences.ageRange ||
-          preferences.educationLevel ||
-          preferences.language
-        ) {
-          import("@/lib/onboarding-profile-patch").then(({ buildOnboardingProfilePatch }) => {
-            import("@/hooks/use-profile").then(({ useUpdateProfile }) => {
-              const { mutate } = useUpdateProfile();
-              mutate(
-                buildOnboardingProfilePatch({
-                  breakName: currentProfile!.breakName,
-                  pseudoName: currentProfile!.pseudoName,
-                  county: String(preferences.county ?? currentProfile!.county ?? ""),
-                  ward: String(preferences.ward ?? currentProfile!.ward ?? ""),
-                  language: String(preferences.language ?? currentProfile!.language ?? "EN"),
-                  ageRange: String(preferences.ageRange ?? ""),
-                  educationLevel: String(preferences.educationLevel ?? ""),
-                }),
-              );
+            void import("@/lib/sync-profile").then(({ flushAllOfflineCitizenData }) => {
+              void flushAllOfflineCitizenData(undefined, {
+                breakName: nextProfile.breakName,
+                pseudoName: nextProfile.pseudoName,
+                county: nextProfile.county,
+                ward: nextProfile.ward,
+                language: nextProfile.language,
+                ageRange: nextProfile.ageRange,
+                educationLevel: nextProfile.educationLevel,
+                priorities: preferences.priorities,
+              }).then(() => {
+                // Draft cleared on successful sync inside flush; keep local prefs if still queued.
+                if (!localStorage.getItem("bns_pending_profile_patch")) {
+                  clearOnboardingDraft();
+                }
+              });
             });
-          });
-        }
-        localStorage.removeItem("bns_onboarding_profile");
+          },
+        );
+      } else {
+        setProfile(currentProfile);
+        // Still flush any pending offline XP / progress / profile patches.
+        void import("@/lib/sync-profile").then(({ flushAllOfflineCitizenData }) => {
+          void flushAllOfflineCitizenData();
+        });
       }
 
-      setProfile(currentProfile);
       setLoading(false);
     } else {
       setProfile(null);
@@ -183,7 +181,9 @@ export function LearnPathsHome({ tab }: Props) {
     if (!isLoggedIn) return;
     const next = updated as LearnHubProfile;
     setProfile(next);
-    localStorage.setItem("bns_user_profile", JSON.stringify(next));
+    void import("@/lib/profile-local-storage").then(({ writeHubProfile }) => {
+      writeHubProfile(next as unknown as Record<string, unknown>);
+    });
   };
 
   const handleResetProgress = () => {

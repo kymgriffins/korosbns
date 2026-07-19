@@ -10,6 +10,8 @@ import { useUpdateProfile } from "@/hooks/use-profile";
 import { useAuth } from "@/contexts/auth-context";
 import { COUNTIES } from "@/constants/counties";
 import { buildOnboardingProfilePatch } from "@/lib/onboarding-profile-patch";
+import { writeHubProfile } from "@/lib/profile-local-storage";
+import { saveProfileWithOfflineQueue } from "@/lib/sync-profile";
 
 interface OnboardingWizardProps { onComplete: (profile: any) => void; }
 
@@ -71,25 +73,26 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
       sovereigns: 0, stageProgress: [1], streakDays: 0, lastActive: Date.now(), trackedDocs: [] as string[]
     };
 
-    localStorage.setItem("bns_user_profile", JSON.stringify(profile));
+    writeHubProfile(profile as unknown as Record<string, unknown>);
     window.dispatchEvent(new Event("bns-profile-updated"));
     if (isLoggedIn) {
-      updateProfileMutation.mutate(
-        buildOnboardingProfilePatch({
-          breakName: breakName.trim(),
-          pseudoName: pseudoName.trim(),
-          county,
-          ward: ward.trim() || undefined,
-          language,
-          educationLevel,
-          ageRange,
-          dateOfBirth,
-          notifications,
-          whatsappFallback,
-          phone: phone.trim() || undefined,
-          consentGranted: true,
-          consentTimestamp: new Date().toISOString(),
-        }),
+      const patch = buildOnboardingProfilePatch({
+        breakName: breakName.trim(),
+        pseudoName: pseudoName.trim(),
+        county,
+        ward: ward.trim() || undefined,
+        language,
+        educationLevel,
+        ageRange,
+        dateOfBirth,
+        notifications,
+        whatsappFallback,
+        phone: phone.trim() || undefined,
+        consentGranted: true,
+        consentTimestamp: new Date().toISOString(),
+      });
+      void saveProfileWithOfflineQueue(patch, (body) =>
+        updateProfileMutation.mutateAsync(body),
       );
     }
     onComplete(profile);

@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Routes } from "@/constants/routes";
 import { COUNTIES } from "@/constants/counties";
 import { useRegister } from "@/hooks/use-auth-actions";
+import { writeOnboardingDraft } from "@/lib/profile-local-storage";
 import { 
   Heart, 
   BookOpen, 
@@ -145,18 +146,16 @@ export default function RegisterPage() {
       });
 
       // Save onboarding choices locally for later sync when user verifies email
-      const profile = {
+      writeOnboardingDraft({
         priorities: selectedPriorities,
         county,
         ward: ward.trim() || undefined,
         ageRange,
         educationLevel,
         onboardingCompleted: true,
-      };
-      localStorage.setItem("bns_onboarding_profile", JSON.stringify(profile));
+      });
 
-      // NOTE: Onboarding data saved to localStorage only - will be synced to
-      // backend after user verifies email and logs in (see learn-paths-home.tsx).
+      // NOTE: Draft lives in localStorage until verify+login; flushAllOfflineCitizenData pushes to DB.
 
       setSent(true);
       toast.success("Registration complete! Check your email.");

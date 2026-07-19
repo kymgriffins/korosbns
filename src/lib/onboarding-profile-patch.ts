@@ -14,6 +14,8 @@ export type OnboardingFormValues = {
   phone?: string;
   consentGranted?: boolean;
   consentTimestamp?: string;
+  /** Budget interest tags from registration (Healthcare, Education, …). */
+  priorities?: string[];
 };
 
 /**
@@ -25,7 +27,7 @@ export function buildOnboardingProfilePatch(
 ): Partial<UserProfileApi> {
   const county = values.county.trim();
   const language = String(values.language || "EN").toUpperCase();
-  return {
+  const patch: Partial<UserProfileApi> = {
     display_name: values.breakName.trim(),
     break_name: values.breakName.trim(),
     pseudo_name: values.pseudoName.trim(),
@@ -41,8 +43,13 @@ export function buildOnboardingProfilePatch(
     dpa_consent_granted: values.consentGranted ?? true,
     dpa_consent_timestamp: values.consentTimestamp || new Date().toISOString(),
     onboarding_completed_at: new Date().toISOString(),
-    metadata: {
-      date_of_birth: values.dateOfBirth || "",
-    },
   };
+  if (values.priorities?.length) {
+    patch.budget_priorities = values.priorities;
+  }
+  if (values.dateOfBirth) {
+    patch.date_of_birth = values.dateOfBirth;
+    patch.metadata = { date_of_birth: values.dateOfBirth };
+  }
+  return patch;
 }
