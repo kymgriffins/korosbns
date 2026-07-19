@@ -128,11 +128,13 @@ describe("reports-api honesty (P0 Trust)", () => {
     const { fetchBudgetOverview } = await import("@/lib/reports-api");
     const fy2024 = await fetchBudgetOverview("fy2024");
     const fy2026 = await fetchBudgetOverview("fy2026");
+    expect(fy2024).not.toBeNull();
+    expect(fy2026).not.toBeNull();
 
     // Same live payload for any requested year — no client-side linear scaling
-    expect(fy2024.tier_1_national_sectors[0].total_allocation).toBe(100_000);
-    expect(fy2026.tier_1_national_sectors[0].total_allocation).toBe(100_000);
-    expect(fy2024.macro_modules.revenue_engine.total_projected_revenue).toBe(1_000_000);
+    expect(fy2024!.tier_1_national_sectors[0].total_allocation).toBe(100_000);
+    expect(fy2026!.tier_1_national_sectors[0].total_allocation).toBe(100_000);
+    expect(fy2024!.macro_modules.revenue_engine.total_projected_revenue).toBe(1_000_000);
   });
 
   it("fetchAllYearsData only includes years with real payloads (no fabricated prior-FY clones)", async () => {

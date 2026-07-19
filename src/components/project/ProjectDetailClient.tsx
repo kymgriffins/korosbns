@@ -45,9 +45,9 @@ const projectDetails: Record<string, {
   "county-budget-tracking": {
     id: "county-budget-tracking",
     title: "County Budget Tracking",
-    description: "Hyper-local budget analysis for all 47 counties, enabling citizens to track development projects and county expenditure in real-time.",
+    description: "County budget analysis where verified allocations exist. Missing counties show as unavailable — never invented.",
     image: "https://res.cloudinary.com/dn8lut2fc/image/upload/v1740749200/cohort-2_p9p1yi.jpg",
-    location: "All 47 Counties",
+    location: "Verified counties only",
     gallery: [
       "/images/towwnhallmay/129A4056.jpg",
       "/images/towwnhallmay/129A4094.jpg",
@@ -55,13 +55,13 @@ const projectDetails: Record<string, {
     ],
     documents: [
       { name: "County Budget Toolkit", url: "#" },
-      { name: "47 County Allocations Report", url: "#" },
+      { name: "CRA Provenance Notes", url: "/reports" },
       { name: "Expenditure Tracking Template", url: "#" },
     ],
     objectives: [
-      "Enable citizens to monitor county-level budget execution",
-      "Provide comparative analysis across all 47 counties",
-      "Track development project milestones and expenditure",
+      "Enable citizens to monitor county-level budget execution when data exists",
+      "Show honest empty states instead of inventing 47-county coverage",
+      "Track development project milestones from verified sources",
     ],
   },
   "public-participation": {

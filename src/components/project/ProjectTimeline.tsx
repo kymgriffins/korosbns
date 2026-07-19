@@ -28,9 +28,9 @@ const projectMilestones: Record<string, Milestone[]> = {
     { date: "Q3 2024", title: "Pilot Counties", description: "Launched pilot tracking in 5 counties: Nairobi, Kisumu, Mombasa, Nakuru, and Uasin Gishu.", status: "completed", image_url: "/images/towwnhallmay/129A3923.jpg" },
     { date: "Q1 2025", title: "County Toolkits", description: "Developed standardized county budget analysis toolkits for citizen use.", status: "completed" },
     { date: "Q2 2025", title: "20-County Expansion", description: "Expanded tracking coverage to 20 counties through partnerships with civil society organizations.", status: "completed", image_url: "/images/towwnhallmay/129A4056.jpg" },
-    { date: "Q4 2025", title: "Public Dashboard", description: "Launched a public-facing dashboard showing real-time county allocations and expenditure data.", status: "completed" },
-    { date: "Q1 2026", title: "Devolution Reports", description: "Published comparative devolution reports highlighting county performance and resource allocation trends.", status: "completed" },
-    { date: "Q2 2026", title: "All 47 Counties", description: "Scaling hyper-local budget tracking to all 47 counties with community-based monitors.", status: "in_progress" },
+    { date: "Q4 2025", title: "Public Dashboard", description: "Public reports surface verified national/county figures when available; missing data is labeled unavailable.", status: "in_progress" },
+    { date: "Q1 2026", title: "Devolution Reports", description: "Published comparative devolution reports highlighting county performance and resource allocation trends where data exists.", status: "completed" },
+    { date: "Q2 2026", title: "All 47 Counties", description: "Goal: scale verified county tracking nationwide as CRA and county documents are ingested — not claimed complete today.", status: "upcoming" },
     { date: "Q3 2026", title: "Automated Alerts", description: "Deploy automated SMS and WhatsApp alerts for county budget changes and public participation windows.", status: "upcoming" },
   ],
   "public-participation": [

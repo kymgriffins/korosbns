@@ -2,7 +2,7 @@
 
 import { useEffect, useLayoutEffect, useState } from "react";
 import { StageDetailDrawer } from "./stage-detail-drawer";
-import { LearnDashboardView } from "./learn-dashboard-view";
+import { SyllabusLibraryHome } from "./syllabus-library-home";
 import { LearnModulesView } from "./learn-modules-view";
 import { LearnDocumentsView } from "./learn-documents-view";
 import { ProfileView } from "./profile-view";
@@ -18,10 +18,11 @@ import { useAuth } from "@/contexts/auth-context";
 import { type LearnHubLanguage, type LearnHubProfile } from "@/lib/learn-data";
 import { learnTabToHref } from "@/lib/learn-nav";
 import { readProgress, clearAllModuleProgress } from "@/lib/module-progress";
-import { useLeaderboard } from "@/hooks/use-gamification";
+import { recommendModules } from "@/lib/recommend-modules";
 import type { CivicModule } from "@/types/learn";
 import { TRANSLATIONS } from "@/constants/learn-translations";
 import { safeArray, safeLen, safeMap } from "@/lib/safe-data";
+import { useMemo } from "react";
 
 const MODULES_REQUIRED: LearnTab[] = ["home", "learn", "profile"];
 
@@ -179,7 +180,16 @@ export function LearnPathsHome({ tab }: Props) {
   const effectiveProfile = profile;
   const langKey = (effectiveProfile?.language ?? "EN") as LearnHubLanguage;
   const text = TRANSLATIONS[langKey];
-  const { data: leaderboardData } = useLeaderboard(20);
+
+  const recommended = useMemo(() => {
+    if (!isLoggedIn || !effectiveProfile) return [];
+    return recommendModules(stages, {
+      county: effectiveProfile.county,
+      language: effectiveProfile.language,
+      ageRange: (effectiveProfile as LearnHubProfile & { ageRange?: string }).ageRange,
+      interests: (effectiveProfile as LearnHubProfile & { interests?: string[] }).interests,
+    });
+  }, [isLoggedIn, effectiveProfile, stages]);
 
   const currentStageNum = effectiveProfile
     ? effectiveProfile.stageProgress
@@ -282,15 +292,18 @@ export function LearnPathsHome({ tab }: Props) {
       )}
 
       <div className="min-w-0">
-        {tab === "home" && currentStage && (
-          <LearnDashboardView
-            profile={activeProfile}
+        {tab === "home" && (
+          <SyllabusLibraryHome
             stages={stages}
-            currentStage={currentStage}
             onSelectStage={handleSelectStage}
-            onNavigateToCurriculum={() => router.push(learnTabToHref("learn"))}
-            onNavigateToForum={() => router.push(learnTabToHref("forum"))}
-            leaderboard={leaderboardData?.results}
+            recommended={isLoggedIn ? recommended : []}
+            greeting={
+              isLoggedIn && effectiveProfile?.county
+                ? `Welcome back — recommendations for ${effectiveProfile.county} and your learning path.`
+                : isLoggedIn
+                  ? "Welcome back — a free syllabus with picks based on your profile."
+                  : undefined
+            }
           />
         )}
 

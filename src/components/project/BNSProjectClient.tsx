@@ -26,7 +26,7 @@ const initiatives = [
   {
     id: "county-budget-tracking",
     title: "County Budget Tracking",
-    desc: "Hyper-local budget analysis for all 47 counties, enabling citizens to track development projects and county expenditure.",
+    desc: "County budget literacy and tracking where CRA/API data is available — we do not invent coverage for all 47 counties.",
     icon: Target,
     image: BNS_COMMUNITY_IMAGES.forumE,
   },
