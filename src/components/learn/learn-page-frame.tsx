@@ -2,21 +2,18 @@
 
 import { cn } from "@/utils";
 
-/** Shared content width for learn shell + every /learn page. */
-export const LEARN_SHELL_WIDTH = "mx-auto w-full max-w-6xl";
-
 type LearnPageFrameProps = {
   children: React.ReactNode;
   className?: string;
 };
 
 /**
- * Shared spacing chrome for every /learn surface.
- * Width lives on the shell so pages fill the same column — no empty right gutter.
+ * Page padding only — width comes from CitizenSyllabusShell so every tab
+ * fills the same centered column.
  */
 export function LearnPageFrame({ children, className }: LearnPageFrameProps) {
   return (
-    <div className={cn("w-full px-5 pb-16 pt-10 sm:px-8 sm:pb-20 sm:pt-14", className)}>
+    <div className={cn("w-full py-10 sm:py-14", className)}>
       {children}
     </div>
   );
@@ -49,7 +46,7 @@ export function LearnPageHeader({
           {title}
         </h1>
         {description ? (
-          <p className="max-w-3xl text-[15px] leading-relaxed text-muted-foreground sm:text-base">
+          <p className="max-w-2xl text-[15px] leading-relaxed text-muted-foreground sm:text-base">
             {description}
           </p>
         ) : null}
@@ -68,7 +65,7 @@ type LearnSectionProps = {
 
 export function LearnSection({ title, children, className, action }: LearnSectionProps) {
   return (
-    <section className={cn("mt-14 space-y-4", className)} aria-label={title}>
+    <section className={cn("space-y-4", className)} aria-label={title}>
       <div className="flex items-end justify-between gap-3">
         <h2 className="text-[15px] font-semibold tracking-tight text-foreground">{title}</h2>
         {action}

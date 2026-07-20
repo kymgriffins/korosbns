@@ -170,7 +170,7 @@ export function LearnDashboardView({
       : "Start learning";
 
   return (
-    <div className="w-full space-y-8 px-5 py-10 sm:px-8 sm:py-14">
+    <div className="w-full space-y-8 py-10 sm:py-14">
       {/* ── Identity + level ─────────────────────────────────────────── */}
       <section className="space-y-5">
         <div className="flex items-start justify-between gap-4">

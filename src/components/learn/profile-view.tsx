@@ -381,7 +381,7 @@ export function ProfileView({
   };
 
   return (
-    <div className="w-full space-y-10 px-5 pb-16 pt-10 sm:px-8 sm:pb-20 sm:pt-14">
+    <div className="w-full space-y-10 py-10 sm:py-14">
       {/* Identity */}
       <section className="space-y-6">
         <div className="flex items-start gap-4">

@@ -42,9 +42,9 @@ export const metadata: Metadata = {
 export default function LearnLayout({ children }: { children: React.ReactNode }) {
   return (
     <LearnProvider>
-      <SidebarProvider defaultOpen={false}>
-        {/* LearnTabSync uses useSearchParams — give it its own boundary so it
-            never blocks the page render with the full-screen spinner. */}
+      {/* flex-col + w-full: SidebarProvider defaults to a row flex that
+          shrinks the citizen shell left and leaves empty space on the right. */}
+      <SidebarProvider defaultOpen={false} className="flex min-h-svh w-full flex-col">
         <Suspense fallback={null}>
           <LearnTabSync />
         </Suspense>

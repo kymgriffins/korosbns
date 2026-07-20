@@ -421,7 +421,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
         </div>
       </header>
 
-      <div className="space-y-5 px-5 py-10 sm:px-8 sm:py-14 md:space-y-6">
+      <div className="space-y-5 py-10 sm:py-14 md:space-y-6">
         {!selectedFolder ? (
           <>
             {/* Collections view */}
