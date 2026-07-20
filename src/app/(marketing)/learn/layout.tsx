@@ -3,7 +3,6 @@ import { LearnProvider } from "@/contexts/learn-context";
 import { Suspense } from "react";
 import { LearnTabSync } from "@/components/learn/learn-tab-sync";
 import { CitizenSyllabusShell } from "@/layouts/CitizenSyllabusShell";
-import { LearnTeachingProviderShell } from "@/components/admin/teaching";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { canonicalUrl, metaDescription } from "@/utils/metadata";
 
@@ -43,16 +42,14 @@ export const metadata: Metadata = {
 export default function LearnLayout({ children }: { children: React.ReactNode }) {
   return (
     <LearnProvider>
-      <LearnTeachingProviderShell>
-        <SidebarProvider defaultOpen={false}>
-          {/* LearnTabSync uses useSearchParams — give it its own boundary so it
-              never blocks the page render with the full-screen spinner. */}
-          <Suspense fallback={null}>
-            <LearnTabSync />
-          </Suspense>
-          <CitizenSyllabusShell>{children}</CitizenSyllabusShell>
-        </SidebarProvider>
-      </LearnTeachingProviderShell>
+      <SidebarProvider defaultOpen={false}>
+        {/* LearnTabSync uses useSearchParams — give it its own boundary so it
+            never blocks the page render with the full-screen spinner. */}
+        <Suspense fallback={null}>
+          <LearnTabSync />
+        </Suspense>
+        <CitizenSyllabusShell>{children}</CitizenSyllabusShell>
+      </SidebarProvider>
     </LearnProvider>
   );
 }

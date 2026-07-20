@@ -7,9 +7,9 @@ import { useRouter } from "next/navigation";
 import { RefreshCw, Search, BookOpen, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BitmojiAvatar } from "./bitmoji-avatar";
-import { Teachable } from "@/components/admin/teaching/teachable";
 import { Routes } from "@/constants/routes";
 import { getAuthorSlug } from "@/lib/learn-authors";
+import { getModuleEyebrow, getModuleOrderLabel } from "@/lib/learn-module-display";
 import type { CivicModule } from "@/types/learn";
 import { readProgress } from "@/lib/module-progress";
 import { HarmonizedImage } from "@/components/ui/harmonized-image";
@@ -134,57 +134,42 @@ export function LearnModulesView({
           </div>
         </div>
 
-        <div className="relative">
-          <Teachable
-            tipId="search-modules"
-            title="Search modules"
-            body="Find a module by title or topic. Clear the box to see the full list again."
-            className="w-full"
-          >
-            <div className="relative w-full">
-              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <input
-                type="search"
-                placeholder="Search modules…"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-11 w-full rounded-xl border border-border/70 bg-card pl-10 pr-3 text-sm outline-none ring-0 transition-shadow focus:border-primary/40 focus:ring-2 focus:ring-ring/30"
-              />
-            </div>
-          </Teachable>
+        <div className="relative w-full">
+          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="search"
+            placeholder="Search modules..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="h-11 w-full rounded-xl border border-border/70 bg-card pl-10 pr-3 text-sm outline-none ring-0 transition-shadow focus:border-primary/40 focus:ring-2 focus:ring-ring/30"
+          />
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <Teachable
-            tipId="filter-tabs"
-            title="Filters"
-            body="Show all modules, only ones you started (Active), or ones you finished (Done)."
-          >
-            <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
-              {(
-                [
-                  { key: "all", label: "All", count: counts.all },
-                  { key: "in-progress", label: "Active", count: counts.inProgress },
-                  { key: "completed", label: "Done", count: counts.completed },
-                ] as const
-              ).map((tab) => (
-                <button
-                  key={tab.key}
-                  type="button"
-                  onClick={() => setActiveTab(tab.key)}
-                  className={cn(
-                    "shrink-0 rounded-xl px-3.5 py-2 text-xs font-bold transition-colors focus-visible:ring-2 focus-visible:ring-ring",
-                    activeTab === tab.key
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground",
-                  )}
-                >
-                  {tab.label}
-                  {tab.count > 0 ? ` · ${tab.count}` : ""}
-                </button>
-              ))}
-            </div>
-          </Teachable>
+          <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
+            {(
+              [
+                { key: "all", label: "All", count: counts.all },
+                { key: "in-progress", label: "Active", count: counts.inProgress },
+                { key: "completed", label: "Done", count: counts.completed },
+              ] as const
+            ).map((tab) => (
+              <button
+                key={tab.key}
+                type="button"
+                onClick={() => setActiveTab(tab.key)}
+                className={cn(
+                  "shrink-0 rounded-xl px-3.5 py-2 text-xs font-bold transition-colors focus-visible:ring-2 focus-visible:ring-ring",
+                  activeTab === tab.key
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground",
+                )}
+              >
+                {tab.label}
+                {tab.count > 0 ? ` · ${tab.count}` : ""}
+              </button>
+            ))}
+          </div>
 
           <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
             {(
@@ -214,8 +199,11 @@ export function LearnModulesView({
 
       {filteredModules.length > 0 ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {filteredModules.map(
-            ({ stage, completedCount, total, isCompleted, isInProgress }) => (
+          {filteredModules.map(({ stage, completedCount, total, isCompleted, isInProgress }) => {
+            const eyebrow = getModuleEyebrow(stage);
+            const orderLabel = getModuleOrderLabel(stage);
+
+            return (
               <article
                 key={stage.id}
                 role="button"
@@ -239,8 +227,8 @@ export function LearnModulesView({
 
                 <div className="flex flex-1 flex-col gap-3 p-4">
                   <div className="flex items-start justify-between gap-2">
-                    <span className="text-lg leading-none">
-                      {stage.badge || "📘"}
+                    <span className="inline-flex min-w-8 items-center justify-center rounded-full bg-muted px-2 py-1 text-xs font-bold tabular-nums text-foreground">
+                      {orderLabel}
                     </span>
                     <span
                       className={cn(
@@ -257,6 +245,11 @@ export function LearnModulesView({
                   </div>
 
                   <div className="space-y-1">
+                    {eyebrow ? (
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                        {eyebrow}
+                      </p>
+                    ) : null}
                     <h3 className="font-heading text-sm font-bold leading-snug group-hover:text-primary">
                       {stage.title}
                     </h3>
@@ -282,9 +275,7 @@ export function LearnModulesView({
                             width: `${(completedCount / total) * 100}%`,
                           }}
                           role="progressbar"
-                          aria-valuenow={Math.round(
-                            (completedCount / total) * 100,
-                          )}
+                          aria-valuenow={Math.round((completedCount / total) * 100)}
                           aria-valuemin={0}
                           aria-valuemax={100}
                           aria-label={`${stage.title}: ${completedCount} of ${total} steps completed`}
@@ -337,17 +328,13 @@ export function LearnModulesView({
                         router.push(`/learn/modules/${stage.slug}`);
                       }}
                     >
-                      {isCompleted
-                        ? "Review"
-                        : isInProgress
-                          ? "Continue"
-                          : "Start"}
+                      {isCompleted ? "Review" : isInProgress ? "Continue" : "Start"}
                     </Button>
                   </div>
                 </div>
               </article>
-            ),
-          )}
+            );
+          })}
         </div>
       ) : (
         <div className="rounded-2xl border border-dashed border-border/70 px-4 py-16 text-center">

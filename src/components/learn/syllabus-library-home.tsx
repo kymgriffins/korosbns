@@ -5,6 +5,7 @@ import { BookOpen, ArrowRight, Landmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Routes } from "@/constants/routes";
 import { learnTabToHref } from "@/lib/learn-nav";
+import { getModuleEyebrow } from "@/lib/learn-module-display";
 import type { CivicModule } from "@/types/learn";
 import { SignUpCta } from "@/components/ui/sign-up-cta";
 
@@ -91,28 +92,32 @@ export function SyllabusLibraryHome({
           <p className="text-sm text-muted-foreground">No published modules yet.</p>
         ) : (
           <ol className="space-y-2">
-            {featured.map((mod, i) => (
-              <li key={mod.slug}>
-                <button
-                  type="button"
-                  onClick={() => onSelectStage(mod)}
-                  className="flex w-full items-center gap-3 rounded-lg border border-transparent px-3 py-2.5 text-left transition hover:border-border/60 hover:bg-muted/30"
-                >
-                  <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-muted text-xs font-bold tabular-nums text-muted-foreground">
-                    {i + 1}
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-semibold">{mod.title}</span>
-                    {mod.badge ? (
-                      <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
-                        {mod.badge}
-                      </span>
-                    ) : null}
-                  </span>
-                  <ArrowRight className="size-3.5 shrink-0 text-muted-foreground" />
-                </button>
-              </li>
-            ))}
+            {featured.map((mod, i) => {
+              const eyebrow = getModuleEyebrow(mod);
+
+              return (
+                <li key={mod.slug}>
+                  <button
+                    type="button"
+                    onClick={() => onSelectStage(mod)}
+                    className="flex w-full items-center gap-3 rounded-lg border border-transparent px-3 py-2.5 text-left transition hover:border-border/60 hover:bg-muted/30"
+                  >
+                    <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-muted text-xs font-bold tabular-nums text-muted-foreground">
+                      {i + 1}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm font-semibold">{mod.title}</span>
+                      {eyebrow ? (
+                        <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+                          {eyebrow}
+                        </span>
+                      ) : null}
+                    </span>
+                    <ArrowRight className="size-3.5 shrink-0 text-muted-foreground" />
+                  </button>
+                </li>
+              );
+            })}
           </ol>
         )}
         {stages.length > featured.length && (
