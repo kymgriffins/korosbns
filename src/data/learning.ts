@@ -55,8 +55,10 @@ export const learningData = {
           return _modules.length > 0 ? _modules : FALLBACK_MODULES;
         },
         {
-          // Empty success must not wipe the hub — use seeded catalogue.
-          accept: (rows) => Array.isArray(rows) && rows.length > 0,
+          // Prefer fallback when API returns fewer modules than the seeded catalogue.
+          // This prevents a partially-seeded backend from showing a degraded hub.
+          accept: (rows) =>
+            Array.isArray(rows) && rows.length >= FALLBACK_MODULES.length,
         },
       );
       _modules = results.length > 0 ? results : FALLBACK_MODULES;
