@@ -13,7 +13,7 @@ import type { BudgetSchema, WardProject } from "@/lib/budget-schema";
 import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { formatKesBillions } from "@/lib/budget-format";
-import { generateCountyAllocations } from "@/lib/reports-api";
+import { extractCountyAllocations } from "@/lib/reports-api";
 
 interface ProjectsTabProps {
   currentData: BudgetSchema;
@@ -309,8 +309,8 @@ export function ProjectsTab({ currentData }: ProjectsTabProps) {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedProjectUuid, setSelectedProjectUuid] = useState<string | null>(null);
 
-  const counties = useMemo(() => generateCountyAllocations(currentData), [currentData]);
-  const projects = currentData.tier_3_ward_project_relational_schema_simulation;
+  const counties = useMemo(() => extractCountyAllocations(currentData), [currentData]);
+  const projects = currentData.tier_3_ward_project_relational_schema_simulation ?? [];
 
   const stats = useMemo(() => {
     const total = projects.length;

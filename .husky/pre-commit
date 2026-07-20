@@ -1,0 +1,3 @@
+#!/bin/sh
+# Pre-commit: fast type check only (full test suite runs on pre-push).
+pnpm typecheck

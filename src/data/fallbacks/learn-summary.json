@@ -1,0 +1,34 @@
+{
+  "provenance": {
+    "source": "civic-modules fallback catalogue",
+    "note": "Read-only learn hub summary when /content/learn/ is unreachable.",
+    "level": "fallback"
+  },
+  "counts": {
+    "article": 3,
+    "path": 1,
+    "video": 0,
+    "story": 0,
+    "document": 0,
+    "quest": 0
+  },
+  "trending": [
+    {
+      "id": "budget-policy-statement",
+      "content_type": "path",
+      "title": "Budget Policy Statement",
+      "summary": "A citizen-friendly guide to Kenya's Budget Policy Statement 2026.",
+      "slug": "budget-policy-statement",
+      "url": "/learn/stages/budget-policy-statement",
+      "lesson_count": 3
+    },
+    {
+      "id": "intro-budget-policy-statement",
+      "content_type": "article",
+      "title": "What is the Budget Policy Statement?",
+      "summary": "How the BPS sets national and county budget priorities under the PFM Act.",
+      "slug": "intro-budget-policy-statement",
+      "url": "/learn/articles/intro-budget-policy-statement"
+    }
+  ]
+}

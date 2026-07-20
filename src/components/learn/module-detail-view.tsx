@@ -35,7 +35,9 @@ import { resolveYoutubeId } from "@/lib/learn-video";
 import { apiFetch } from "@/lib/api-client";
 import { YouTubePlayer } from "./youtube-player";
 import { TriviaSection } from "./trivia-section";
+import { SignUpCta } from "@/components/ui/sign-up-cta";
 import type { ChapterStep, CivicModule } from "@/types/learn";
+import { getModuleEmoji } from "@/lib/learn-module-display";
 
 function parseVideoEntries(step: ChapterStep | null): { videoId: string; title: string }[] {
   if (!step) return [];
@@ -401,10 +403,10 @@ export function ModuleDetailView() {
 
           {/* Content */}
           <div className="flex-1 md:border-t md:border-border/20">
-            <div className="mx-auto max-w-3xl p-4 md:p-6 lg:p-8">
+            <div className="mx-auto w-full max-w-5xl p-5 md:p-8 lg:p-10">
               {isMastery ? (
                 <div className="flex flex-col items-center gap-4 py-16 text-center">
-                  <div className="text-5xl">{mod.badge || "🎉"}</div>
+                  <div className="text-5xl">{getModuleEmoji(mod.badge)}</div>
                   {mod.badgeName && (
                     <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 text-[10px] font-bold uppercase tracking-wider">{mod.badgeName} Unlocked!</span>
                   )}
@@ -522,6 +524,8 @@ export function ModuleDetailView() {
                       <div className="prose prose-sm max-w-none dark:prose-invert prose-headings:font-bold prose-p:leading-relaxed">
                         {renderContent(currentStepObj.text)}
                       </div>
+
+                      <SignUpCta dismissKey="bns-soft-login-module-reader" />
 
                       {currentStepObj.takeaways && currentStepObj.takeaways.length > 0 && (
                         <Card className="border-primary/20 bg-primary/5">

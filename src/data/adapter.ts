@@ -34,10 +34,21 @@ export async function withFallback<T>(
   domain: string,
   apiCall: () => Promise<T>,
   fallback: () => T,
-  options?: { silent?: boolean },
+  options?: {
+    silent?: boolean;
+    /** Return false to treat a successful but unusable payload as failure. */
+    accept?: (result: T) => boolean;
+  },
 ): Promise<T> {
   try {
     const result = await apiCall();
+    if (options?.accept && !options.accept(result)) {
+      const fallbackData = fallback();
+      if (!options?.silent) {
+        log("warn", domain, "API returned empty/unusable data, using fallback");
+      }
+      return fallbackData;
+    }
     log("info", domain, "API data fetched successfully");
     return result;
   } catch (err) {

@@ -102,8 +102,15 @@ export interface CountyProfileExample {
   county_id: number;
   county_name: string;
   received_equitable_share_floor: number;
+  total_allocation?: number;
   own_source_revenue_target: number;
   estimated_pending_bills_liability: number;
+}
+
+export interface CountyEnvelopeProvenance {
+  source: string;
+  fiscal_year: string | null;
+  note?: string;
 }
 
 export interface CountyDevolutionEnvelope {
@@ -111,7 +118,12 @@ export interface CountyDevolutionEnvelope {
   national_budget_share_pct: number;
   funding_split: FundingSplit;
   conditional_allocation_breakdown: ConditionalAllocation[];
-  sdk_mock_county_profile_example: CountyProfileExample;
+  /** CRA-backed profiles from API (empty when unavailable). */
+  county_profiles?: CountyProfileExample[];
+  /** @deprecated Legacy mock field — prefer county_profiles. */
+  sdk_mock_county_profile_example?: CountyProfileExample;
+  data_status?: "ok" | "unavailable" | "partial";
+  provenance?: CountyEnvelopeProvenance;
 }
 
 export interface ProjectLocation {

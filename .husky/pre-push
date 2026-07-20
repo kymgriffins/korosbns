@@ -1,0 +1,5 @@
+#!/bin/sh
+# Pre-push hook: catch type errors and failing tests before they hit CI.
+# Runs fast subset: typecheck + citizen unit tests only.
+echo "Running pre-push checks…"
+pnpm typecheck && pnpm test:citizen

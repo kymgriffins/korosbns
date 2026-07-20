@@ -421,18 +421,18 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
         </div>
       </header>
 
-      <div className="space-y-4 p-4 md:p-6 md:space-y-5">
+      <div className="space-y-5 py-10 sm:py-14 md:space-y-6">
         {!selectedFolder ? (
           <>
             {/* Collections view */}
             <div className="space-y-1 pb-1 lg:hidden">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                 Library
               </p>
-              <h1 className="font-heading text-2xl font-bold tracking-tight">
+              <h1 className="font-heading text-[2rem] font-bold tracking-tight sm:text-4xl">
                 Documents
               </h1>
-              <p className="text-sm text-muted-foreground">
+              <p className="mt-1.5 text-[15px] text-muted-foreground">
                 {`${documents.length} collections in the repository`}
               </p>
             </div>

@@ -2,10 +2,10 @@
 
 import type { BudgetSchema, NationalSector, WardProject } from "@/lib/budget-schema";
 import { API_BASE_URL } from "@/lib/api-config";
-import budgetJson from "@/data/budget-fy2026-27.json";
+import seededBudgetOverview from "../data/budget-fy2026-27.json";
 
-const schema = budgetJson as unknown as BudgetSchema;
 const V2_BUDGET_OVERVIEW_URL = `${API_BASE_URL}/api/v2/budget/overview/`;
+const V2_FISCAL_YEARS_URL = `${API_BASE_URL}/api/v2/budget/fiscal-years/`;
 
 export interface FiscalYearMeta {
   id: string;
@@ -13,162 +13,257 @@ export interface FiscalYearMeta {
   is_current: boolean;
 }
 
+export interface CountyAllocation {
+  id: string;
+  name: string;
+  allocation: number;
+  share: number;
+  rank?: number;
+  /** Always "api" when sourced from CRA/overview profiles — never synthetic weights. */
+  provenance: "api";
+}
+
+export interface ReportProvenance {
+  source: string;
+  fiscal_year: string | null;
+  synced_at: string | null;
+  data_status: "ok" | "unavailable" | "partial";
+}
+
+/** Default FY chrome when API fiscal-years list is empty — UI still only shows years with payloads. */
 export const FISCAL_YEARS: FiscalYearMeta[] = [
-  { id: "fy2024", label: "FY 2024/25", is_current: false },
-  { id: "fy2025", label: "FY 2025/26", is_current: false },
   { id: "fy2026", label: "FY 2026/27", is_current: true },
 ];
 
 export const VISIBLE_FISCAL_YEARS = FISCAL_YEARS;
 
-function scaleValue(val: number, fyId: string): number {
-  const factors: Record<string, number> = {
-    fy2024: 0.88,
-    fy2025: 0.94,
-    fy2026: 1.0,
-    fy2027: 1.08,
-  };
-  return Math.round(val * (factors[fyId] ?? 1.0));
+function fiscalYearIdFromLabel(label: string | undefined | null): string {
+  if (!label) return "current";
+  const m = label.match(/(\d{4})\s*\/\s*(\d{2,4})/);
+  if (m) {
+    const start = m[1];
+    return `fy${start}`;
+  }
+  const digits = label.replace(/\D/g, "");
+  if (digits.length >= 4) return `fy${digits.slice(0, 4)}`;
+  return "current";
 }
 
-function scaleBudgetSchema(base: BudgetSchema, fyId: string): BudgetSchema {
-  if (fyId === "fy2026") return base;
-  const f = fyId === "fy2024" ? 0.88 : fyId === "fy2025" ? 0.94 : 1.08;
+function emptySchema(label = "Unavailable"): BudgetSchema {
   return {
-    ...base,
+    $schema: "",
     metadata: {
-      ...base.metadata,
-      fiscal_year: FISCAL_YEARS.find((y) => y.id === fyId)?.label ?? base.metadata.fiscal_year,
-      presented_date: fyId === "fy2024" ? "2024-06-12" : fyId === "fy2025" ? "2025-06-11" : fyId === "fy2027" ? "2027-06-10" : base.metadata.presented_date,
-      approved_date: fyId === "fy2024" ? "2024-06-01" : fyId === "fy2025" ? "2025-06-03" : fyId === "fy2027" ? "2027-06-04" : base.metadata.approved_date,
+      sdk_version: "1.0.0-beta",
+      fiscal_year: label,
+      base_currency: "KES",
+      unit_scale: "RAW_INTEGER",
+      theme: "",
+      presented_by: "",
+      presented_date: "",
+      approved_date: "",
+      provenance_level: 0,
+      source_verbatim: "",
     },
+    stakeholder_ledger: { allocators: [], oversight: [], implementers: [] },
     macro_modules: {
-      revenue_engine: {
-        total_projected_revenue: scaleValue(base.macro_modules.revenue_engine.total_projected_revenue, fyId),
-        streams: base.macro_modules.revenue_engine.streams.map((s) => ({
-          ...s,
-          amount: scaleValue(s.amount, fyId),
-        })),
-      },
+      revenue_engine: { total_projected_revenue: 0, streams: [] },
       debt_portfolio: {
-        ...base.macro_modules.debt_portfolio,
-        total_interest_service_obligation: scaleValue(base.macro_modules.debt_portfolio.total_interest_service_obligation, fyId),
-        fiscal_deficit_gap: scaleValue(base.macro_modules.debt_portfolio.fiscal_deficit_gap, fyId),
-        financing_plan: {
-          domestic_borrowing_target: scaleValue(base.macro_modules.debt_portfolio.financing_plan.domestic_borrowing_target, fyId),
-          external_borrowing_target: scaleValue(base.macro_modules.debt_portfolio.financing_plan.external_borrowing_target, fyId),
-        },
+        total_interest_service_obligation: 0,
+        fiscal_deficit_gap: 0,
+        deficit_gdp_ratio_pct: 0,
+        target_deficit_fy2028_29_pct: 0,
+        financing_plan: { domestic_borrowing_target: 0, external_borrowing_target: 0 },
+        systemic_risks: [],
       },
     },
-    tier_1_national_sectors: base.tier_1_national_sectors.map((s) => ({
-      ...s,
-      total_allocation: scaleValue(s.total_allocation, fyId),
-      sub_vote_breakdown: s.sub_vote_breakdown.map((sv) => ({
-        ...sv,
-        amount: scaleValue(sv.amount, fyId),
-      })),
-    })),
+    tier_1_national_sectors: [],
     tier_2_county_devolution_envelope: {
-      ...base.tier_2_county_devolution_envelope,
-      total_devolution_allocation: scaleValue(base.tier_2_county_devolution_envelope.total_devolution_allocation, fyId),
+      total_devolution_allocation: 0,
+      national_budget_share_pct: 0,
       funding_split: {
-        unconditional_equitable_share: scaleValue(base.tier_2_county_devolution_envelope.funding_split.unconditional_equitable_share, fyId),
-        additional_national_conditional_allocations: scaleValue(base.tier_2_county_devolution_envelope.funding_split.additional_national_conditional_allocations, fyId),
-        equalisation_fund_marginalised_areas: scaleValue(base.tier_2_county_devolution_envelope.funding_split.equalisation_fund_marginalised_areas, fyId),
-        development_partner_conditional_grants: scaleValue(base.tier_2_county_devolution_envelope.funding_split.development_partner_conditional_grants, fyId),
+        unconditional_equitable_share: 0,
+        additional_national_conditional_allocations: 0,
+        equalisation_fund_marginalised_areas: 0,
+        development_partner_conditional_grants: 0,
       },
-      conditional_allocation_breakdown: base.tier_2_county_devolution_envelope.conditional_allocation_breakdown.map((c) => ({
-        ...c,
-        amount: scaleValue(c.amount, fyId),
-      })),
+      conditional_allocation_breakdown: [],
+      county_profiles: [],
+      data_status: "unavailable",
+      provenance: {
+        source: "none",
+        fiscal_year: null,
+        note: "No overview payload from API.",
+      },
     },
-    tier_3_ward_project_relational_schema_simulation: base.tier_3_ward_project_relational_schema_simulation.map((p) => ({
-      ...p,
-      financials: {
-        allocated_amount: scaleValue(p.financials.allocated_amount, fyId),
-        released_amount: scaleValue(p.financials.released_amount, fyId),
-        expenditure_to_date: scaleValue(p.financials.expenditure_to_date, fyId),
-      },
-      contractor_metadata: {
-        ...p.contractor_metadata,
-        contract_value: scaleValue(p.contractor_metadata.contract_value, fyId),
-      },
-    })),
+    tier_3_ward_project_relational_schema_simulation: [],
   };
 }
 
-export async function fetchBudgetOverview(fyId?: string): Promise<BudgetSchema> {
-  const target = fyId ?? "fy2026";
+const SEEDED_OVERVIEW = seededBudgetOverview as BudgetSchema;
 
+function overviewHasNationalSectors(data: BudgetSchema | null | undefined): boolean {
+  return (data?.tier_1_national_sectors?.length ?? 0) > 0;
+}
+
+/** Verbatim FY 2026/27 catalogue — not scaled or synthesized from other years. */
+export function getSeededBudgetOverview(): BudgetSchema {
+  return SEEDED_OVERVIEW;
+}
+
+/**
+ * Fetch live overview. Never applies client-side FY scale factors.
+ * Falls back to seeded FY 2026/27 JSON when the API is unreachable or empty.
+ */
+export async function fetchBudgetOverview(_fyId?: string): Promise<BudgetSchema | null> {
   try {
     const res = await fetch(V2_BUDGET_OVERVIEW_URL, {
       method: "GET",
       headers: { Accept: "application/json" },
       signal: AbortSignal.timeout(8000),
     });
-    if (res.ok) {
-      const liveData = (await res.json()) as BudgetSchema;
-      return scaleBudgetSchema(liveData, target);
-    }
+    if (!res.ok) return getSeededBudgetOverview();
+    const data = (await res.json()) as BudgetSchema;
+    return overviewHasNationalSectors(data) ? data : getSeededBudgetOverview();
   } catch {
-    // API unreachable — fall through to static JSON
+    return getSeededBudgetOverview();
   }
-
-  return scaleBudgetSchema(schema, target);
 }
 
+async function fetchFiscalYearMetas(): Promise<FiscalYearMeta[]> {
+  try {
+    const res = await fetch(V2_FISCAL_YEARS_URL, {
+      method: "GET",
+      headers: { Accept: "application/json" },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) return [];
+    const body = await res.json();
+    const rows = Array.isArray(body) ? body : Array.isArray(body?.results) ? body.results : [];
+    return rows.map((row: { fiscal_year?: number; label?: string; is_current?: boolean }) => {
+      const year = row.fiscal_year ?? 0;
+      return {
+        id: year ? `fy${year}` : fiscalYearIdFromLabel(row.label),
+        label: row.label?.startsWith("FY") ? row.label : `FY ${row.label ?? year}`,
+        is_current: Boolean(row.is_current),
+      };
+    });
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Only years with a real API payload. Does not clone/scale one FY into prior years.
+ */
 export async function fetchAllYearsData(): Promise<Record<string, BudgetSchema>> {
-  const entries = await Promise.all(
-    FISCAL_YEARS.map(async (fy) => [fy.id, await fetchBudgetOverview(fy.id)] as const),
-  );
-  return Object.fromEntries(entries);
+  const overview = await fetchBudgetOverview();
+  if (!overview) return {};
+
+  const id = fiscalYearIdFromLabel(overview.metadata?.fiscal_year);
+  return { [id]: overview };
+}
+
+export async function fetchReportFiscalYears(): Promise<FiscalYearMeta[]> {
+  const metas = await fetchFiscalYearMetas();
+  const data = await fetchAllYearsData();
+  const availableIds = new Set(Object.keys(data));
+  if (availableIds.size === 0) return [];
+  const filtered = metas.filter((m) => availableIds.has(m.id));
+  if (filtered.length > 0) return filtered;
+  // Derive chrome from payload keys when fiscal-years list is empty/mismatched
+  return Object.keys(data).map((id) => ({
+    id,
+    label: data[id].metadata?.fiscal_year
+      ? `FY ${data[id].metadata.fiscal_year}`
+      : id,
+    is_current: true,
+  }));
 }
 
 export function getNationalSectors(data: BudgetSchema): NationalSector[] {
-  return data.tier_1_national_sectors;
+  return data.tier_1_national_sectors ?? [];
 }
 
 export function getProjects(data: BudgetSchema): WardProject[] {
-  return data.tier_3_ward_project_relational_schema_simulation;
+  return data.tier_3_ward_project_relational_schema_simulation ?? [];
 }
 
 export function getTotalNationalBudget(data: BudgetSchema): number {
-  return data.tier_1_national_sectors.reduce((s, sec) => s + sec.total_allocation, 0);
+  return (data.tier_1_national_sectors ?? []).reduce((s, sec) => s + (sec.total_allocation || 0), 0);
 }
 
-export interface CountyAllocation {
-  id: string;
-  name: string;
-  allocation: number;
-  share: number;
-}
+/**
+ * County rows from API `county_profiles` only. Empty when CRA data is missing.
+ * Replaces the removed synthetic `generateCountyAllocations` weight generator.
+ */
+export function extractCountyAllocations(data: BudgetSchema | null | undefined): CountyAllocation[] {
+  if (!data) return [];
+  const envelope = data.tier_2_county_devolution_envelope as BudgetSchema["tier_2_county_devolution_envelope"] & {
+    county_profiles?: Array<{
+      county_id?: number;
+      county_name?: string;
+      received_equitable_share_floor?: number;
+      total_allocation?: number;
+    }>;
+  };
+  const profiles = envelope?.county_profiles ?? [];
+  if (!profiles.length) return [];
 
-export function generateCountyAllocations(data: BudgetSchema): CountyAllocation[] {
-  const totalDevolution = data.tier_2_county_devolution_envelope.total_devolution_allocation;
-  const countyNames = [
-    "Mombasa", "Kwale", "Kilifi", "Tana River", "Lamu", "Taita Taveta",
-    "Garissa", "Wajir", "Mandera", "Marsabit", "Isiolo", "Meru",
-    "Tharaka-Nithi", "Embu", "Kitui", "Machakos", "Makueni", "Nyandarua",
-    "Nyeri", "Kirinyaga", "Murang'a", "Kiambu", "Turkana", "West Pokot",
-    "Samburu", "Trans Nzoia", "Uasin Gishu", "Elgeyo-Marakwet", "Nandi",
-    "Baringo", "Laikipia", "Nakuru", "Narok", "Kajiado", "Kericho",
-    "Bomet", "Kakamega", "Vihiga", "Bungoma", "Busia", "Siaya",
-    "Kisumu", "Homa Bay", "Migori", "Kisii", "Nyamira", "Nairobi",
-  ];
+  const total =
+    envelope.total_devolution_allocation ||
+    profiles.reduce(
+      (s, p) => s + (p.total_allocation ?? p.received_equitable_share_floor ?? 0),
+      0,
+    );
 
-  return countyNames.map((name, i) => {
-    const weight = name === "Nairobi" ? 0.065 : 0.035 + (i % 7) * 0.008;
-    const totalWeight = countyNames.reduce((s, _, j) => {
-      if (name === "Nairobi" && countyNames[j] === "Nairobi") return s + 0.065;
-      return s + (0.035 + (j % 7) * 0.008);
-    }, 0);
-    const allocation = Math.round(totalDevolution * (weight / totalWeight));
-    return {
-      id: `county-${String(i + 1).padStart(2, "0")}`,
-      name,
-      allocation,
-      share: (allocation / totalDevolution) * 100,
-    };
-  }).sort((a, b) => b.allocation - a.allocation)
+  return profiles
+    .map((p, i) => {
+      const allocation = p.total_allocation ?? p.received_equitable_share_floor ?? 0;
+      return {
+        id: `county-${String(p.county_id ?? i + 1).padStart(2, "0")}`,
+        name: p.county_name ?? `County ${i + 1}`,
+        allocation,
+        share: total > 0 ? (allocation / total) * 100 : 0,
+        provenance: "api" as const,
+      };
+    })
+    .sort((a, b) => b.allocation - a.allocation)
     .map((c, i) => ({ ...c, rank: i + 1 }));
 }
+
+export function getReportProvenance(data: BudgetSchema | null | undefined): ReportProvenance {
+  if (!data) {
+    return {
+      source: "none",
+      fiscal_year: null,
+      synced_at: null,
+      data_status: "unavailable",
+    };
+  }
+  const isSeeded =
+    data.metadata?.source_verbatim === "budget_fy2026_27.json" ||
+    data === SEEDED_OVERVIEW;
+  const envelope = data.tier_2_county_devolution_envelope as {
+    data_status?: string;
+    provenance?: { source?: string; fiscal_year?: string | null };
+  };
+  const hasSectors = (data.tier_1_national_sectors?.length ?? 0) > 0;
+  const hasCounties = (envelope as { county_profiles?: unknown[] })?.county_profiles?.length;
+  let data_status: ReportProvenance["data_status"] = "unavailable";
+  if (hasSectors && hasCounties) data_status = "ok";
+  else if (hasSectors || hasCounties) data_status = "partial";
+  else if (envelope?.data_status === "ok") data_status = "ok";
+
+  return {
+    source: isSeeded
+      ? "seeded:budget_fy2026_27.json"
+      : envelope?.provenance?.source ||
+        data.metadata?.source_verbatim ||
+        "bnscore_v2 overview",
+    fiscal_year: data.metadata?.fiscal_year ?? envelope?.provenance?.fiscal_year ?? null,
+    synced_at: new Date().toISOString(),
+    data_status,
+  };
+}
+
+export { emptySchema };

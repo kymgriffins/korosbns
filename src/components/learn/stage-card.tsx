@@ -2,6 +2,7 @@
 
 import { cn } from "@/utils";
 import { Lock } from "lucide-react";
+import { getModuleEmoji } from "@/lib/learn-module-display";
 
 export type StageCardData = {
   id: number;
@@ -36,7 +37,7 @@ export function StageCard({ stage, isCompleted, isActive, isLocked, onSelect }: 
         isActive ? "bg-muted/50 text-foreground" :
         "bg-muted/30 text-muted-foreground"
       )}>
-        {isCompleted ? stage.badge : isLocked ? <Lock className="size-3" /> : stage.id}
+        {isCompleted ? getModuleEmoji(stage.badge) : isLocked ? <Lock className="size-3" /> : stage.id}
       </div>
       <div className="min-w-0 flex-1">
         <h3 className="text-xs font-bold truncate">{stage.title}</h3>

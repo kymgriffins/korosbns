@@ -172,11 +172,7 @@ const nextConfig: NextConfig = {
         destination: "/learn/:slug*",
         permanent: false,
       },
-      {
-        source: "/learn/units/:path*",
-        destination: "/learn/",
-        permanent: false,
-      },
+      // /learn/units/* is handled by app router → redirect to /learn/paths/{edition}
       {
         source: "/learn/repository/:path*",
         destination: "/learn/",
@@ -231,6 +227,14 @@ const nextConfig: NextConfig = {
       {
         source: "/api/v1/:path*/",
         destination: `${target}/api/v1/:path*/`,
+      },
+      {
+        source: "/api/v2/:path*/",
+        destination: `${target}/api/v2/:path*/`,
+      },
+      {
+        source: "/api/analytics/:path*/",
+        destination: `${target}/api/analytics/:path*/`,
       },
       {
         source: "/api/gamification/:path*/",

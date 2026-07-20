@@ -6,37 +6,33 @@ import { metaDescription, canonicalUrl } from "@/utils/metadata";
 import { legacyLearnTabRedirect } from "@/lib/learn-nav";
 
 const learnDescription = metaDescription(
-  "Learn Hub — Kenya FY2026/27 budget sector-by-sector breakdown. Education KES 781.4B, Health KES 175.5B, Infrastructure KES 230B, Agriculture KES 106.8B, Housing KES 135.8B. Gamified learning with videos, articles, and quests.",
+  "Learn Kenya’s national and county budget cycle — free civic modules, articles, and paths. No paywall. Optional account to save progress.",
 );
 
 export const metadata: Metadata = {
-  title: "Learn Hub — FY2026/27 Budget Sector Breakdown | Budget Ndio Story",
+  title: "Learn Kenya’s Budget | Budget Ndio Story",
   description: learnDescription,
   keywords: [
     "Kenya budget learning",
-    "FY2026/27 budget breakdown",
-    "Kenya education budget 781 billion",
-    "Kenya health budget allocations",
+    "budget literacy hub Kenya",
     "Finance Bill explained",
     "Appropriation Bill guide",
-    "budget literacy hub Kenya",
     "fiscal policy education",
     "public finance learning paths",
-    "Kenya budget sector by sector",
+    "county budget CIDP CFSP",
+    "Kenya budget cycle BPS",
   ],
   alternates: { canonical: canonicalUrl("/learn") },
   openGraph: {
-    title: "Learn Hub — FY2026/27 Kenya Budget Sector Breakdown | Budget Ndio Story",
-    description:
-      "Complete FY2026/27 budget breakdown: Education KES 781.4B, Health KES 175.5B, Security KES 308.6B, Infrastructure KES 230B, Agriculture KES 106.8B, Housing KES 135.8B. Learn through interactive modules and quizzes.",
+    title: "Learn Kenya’s Budget | Budget Ndio Story",
+    description: learnDescription,
     url: canonicalUrl("/learn"),
     images: [{ url: "/logo.svg", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Learn Hub — FY2026/27 Kenya Budget Sector Breakdown | Budget Ndio Story",
-    description:
-      "Education KES 781.4B, Health KES 175.5B, Security KES 308.6B, Infrastructure KES 230B. Interactive budget learning with videos, articles, and quests.",
+    title: "Learn Kenya’s Budget | Budget Ndio Story",
+    description: learnDescription,
     images: ["/logo.svg"],
   },
 };

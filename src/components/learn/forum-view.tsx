@@ -11,6 +11,7 @@ import { CreateThreadDialog } from "@/components/forum/create-thread-dialog";
 import { useAuth } from "@/contexts/auth-context";
 import Link from "next/link";
 import { Routes } from "@/constants/routes";
+import { LearnPageFrame, LearnPageHeader } from "@/components/learn/learn-page-frame";
 
 export function ForumView() {
   const { isLoggedIn } = useAuth();
@@ -42,20 +43,15 @@ export function ForumView() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6 p-4 md:p-6">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-            Community
-          </p>
-          <h1 className="font-heading text-2xl font-bold tracking-tight sm:text-3xl">
-            Forums
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Discuss budgets, ask questions, and share what you learn.
-          </p>
-        </div>
-        <div className="flex shrink-0 items-center gap-2">
+    <LearnPageFrame className="space-y-8">
+      <div className="flex items-start justify-between gap-4">
+        <LearnPageHeader
+          eyebrow="Community"
+          title="Forum"
+          description="Discuss budgets, ask questions, and share what you learn."
+          className="flex-1"
+        />
+        <div className="mt-1 flex shrink-0 items-center gap-2">
           <button
             type="button"
             onClick={async () => {
@@ -69,7 +65,7 @@ export function ForumView() {
               }
             }}
             disabled={refreshing}
-            className="rounded-xl p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+            className="rounded-full p-2.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
             title="Refresh threads"
           >
             <RefreshCw
@@ -81,7 +77,7 @@ export function ForumView() {
           ) : (
             <Link
               href={Routes.Login}
-              className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-xl bg-primary px-4 text-xs font-bold text-primary-foreground transition-colors hover:bg-primary/90"
+              className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-primary px-4 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
             >
               <MessageSquarePlus className="size-4" />
               Sign in to post
@@ -91,42 +87,42 @@ export function ForumView() {
       </div>
 
       <div className="relative">
-        <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+        <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search conversations…"
-          className="h-11 rounded-xl pl-10 text-sm"
+          placeholder="Search conversations..."
+          className="h-11 rounded-full border-border/60 bg-muted/30 pl-10 text-sm"
         />
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center py-16">
+        <div className="flex items-center justify-center py-20">
           <Loader2 className="size-6 animate-spin text-muted-foreground" />
         </div>
       ) : isError ? (
-        <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-destructive/30 bg-destructive/5 px-6 py-12 text-center">
-          <p className="text-sm font-bold text-destructive">
+        <div className="flex flex-col items-center justify-center gap-3 rounded-3xl border border-destructive/30 bg-destructive/5 px-6 py-14 text-center">
+          <p className="text-sm font-semibold text-destructive">
             Could not load conversations
           </p>
-          <p className="max-w-md text-xs text-muted-foreground">
+          <p className="max-w-md text-sm text-muted-foreground">
             {error instanceof Error
               ? error.message
               : "An unexpected error occurred. Please try again later."}
           </p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border bg-muted/15 px-6 py-16 text-center">
-          <div className="flex size-14 items-center justify-center rounded-2xl bg-primary/10">
-            <MessagesSquare className="size-7 text-primary/70" />
+        <div className="flex flex-col items-center justify-center gap-3 rounded-3xl border border-dashed border-border/60 bg-muted/10 px-6 py-20 text-center">
+          <div className="flex size-14 items-center justify-center rounded-full bg-primary/10">
+            <MessagesSquare className="size-6 text-primary/70" />
           </div>
           <div>
-            <p className="font-heading text-base font-bold text-foreground">
+            <p className="font-heading text-base font-semibold text-foreground">
               {search
                 ? "No conversations match your search"
                 : "No conversations yet"}
             </p>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <p className="mt-1.5 text-sm text-muted-foreground">
               {search
                 ? "Try a different keyword or browse all threads."
                 : "Be the first to start a civic budget discussion."}
@@ -135,7 +131,7 @@ export function ForumView() {
           {!search && isLoggedIn && <CreateThreadDialog />}
         </div>
       ) : (
-        <div className="space-y-2 pb-2">
+        <div className="space-y-2.5 pb-2">
           {filtered.map((thread) => (
             <ForumThreadCard
               key={thread.id}
@@ -146,6 +142,6 @@ export function ForumView() {
           ))}
         </div>
       )}
-    </div>
+    </LearnPageFrame>
   );
 }

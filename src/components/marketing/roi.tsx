@@ -17,7 +17,7 @@ const roiItems = [
     },
     {
         title: "Data Intelligence",
-        description: "Exclusive access to real-time sentiment analysis and priority mapping from over 5 million young Kenyans across all 47 counties.",
+        description: "Access to civic education insights and priority mapping from youth across Kenya — coverage grows as county data is verified.",
         icon: Database,
         color: "text-blue-500",
         bg: "bg-blue-500/10",

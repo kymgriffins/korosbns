@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { fetchReportData } from "@/lib/reports-hub";
 import type { BudgetSchema } from "@/lib/budget-schema";
-import type { FiscalYearMeta } from "@/lib/reports-api";
+import type { FiscalYearMeta, ReportProvenance } from "@/lib/reports-api";
 import { OverviewTab } from "@/components/reports/overview-tab";
 import { SectorsTab } from "@/components/reports/sectors-tab";
 import { CountiesTab } from "@/components/reports/counties-tab";
@@ -33,6 +33,7 @@ export function ReportsClientPage() {
   const [loading, setLoading] = useState(true);
   const [selectedYear, setSelectedYear] = useState("");
   const [tab, setTab] = useState<TabId>("overview");
+  const [provenance, setProvenance] = useState<ReportProvenance | null>(null);
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
@@ -41,7 +42,16 @@ export function ReportsClientPage() {
       setFiscalYears(result.fiscalYears);
       setAllYears(result.allYears);
       setSelectedYear(result.selectedYear);
+      setProvenance(result.provenance);
     } catch {
+      setAllYears({});
+      setFiscalYears([]);
+      setProvenance({
+        source: "none",
+        fiscal_year: null,
+        synced_at: null,
+        data_status: "unavailable",
+      });
     } finally {
       setLoading(false);
     }
@@ -128,8 +138,21 @@ export function ReportsClientPage() {
 
       {/* Content */}
       <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-12">
-        {loading || !currentData ? (
+        {loading ? (
           <LoadingSkeleton />
+        ) : !currentData ? (
+          <div className="rounded-xl border border-dashed border-border/60 bg-muted/20 px-6 py-16 text-center">
+            <Landmark className="mx-auto mb-3 size-8 text-muted-foreground/60" />
+            <h2 className="text-base font-semibold tracking-tight">Budget data unavailable</h2>
+            <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+              The live budget API did not return an overview for this session. We do not show
+              scaled or invented figures when data is missing.
+            </p>
+            <Button variant="outline" size="sm" className="mt-4" onClick={fetchAll}>
+              <RefreshCw className="size-3.5 mr-1.5" />
+              Retry
+            </Button>
+          </div>
         ) : (
           <>
             {tab === "overview" && (
@@ -174,12 +197,19 @@ export function ReportsClientPage() {
         )}
       </div>
 
-      {/* Footer */}
+      {/* Provenance footer */}
       <footer className="border-t bg-card/30 mt-12">
         <div className="mx-auto max-w-5xl px-4 py-6 text-center text-xs text-muted-foreground">
           <Landmark className="size-4 mx-auto mb-1" />
-          <p>Kenya National Budget Data — {fiscalYears.find((y) => y.id === selectedYear)?.label ?? "FY"}</p>
-          <p className="mt-0.5">Presented by {currentData?.metadata?.presented_by ?? "National Treasury"}</p>
+          <p>Kenya National Budget Data — {fiscalYears.find((y) => y.id === selectedYear)?.label ?? provenance?.fiscal_year ?? "FY"}</p>
+          <p className="mt-0.5">
+            Source: {provenance?.source ?? "bnscore_v2"}
+            {provenance?.data_status ? ` · Status: ${provenance.data_status}` : ""}
+          </p>
+          {provenance?.synced_at && (
+            <p className="mt-0.5">Synced: {new Date(provenance.synced_at).toLocaleString()}</p>
+          )}
+          <p className="mt-0.5">Presented by {currentData?.metadata?.presented_by || "—"}</p>
           <div className="flex items-center justify-center gap-4 mt-3">
             <a href="https://x.com/ketreasury" target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-1 hover:text-foreground transition-colors"

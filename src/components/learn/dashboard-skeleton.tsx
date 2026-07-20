@@ -2,7 +2,7 @@
 
 export function DashboardSkeleton() {
   return (
-    <div className="mx-auto max-w-5xl animate-pulse space-y-8 p-4 md:p-6">
+    <div className="w-full animate-pulse space-y-8 py-10 sm:py-14">
       <section className="space-y-5">
         <div className="flex items-center gap-3.5">
           <div className="size-14 rounded-2xl bg-muted sm:size-16" />

@@ -31,6 +31,7 @@ import { BitmojiAvatar } from "./bitmoji-avatar";
 import { ProfileAvatarEditor } from "./profile-avatar-editor";
 import { cn } from "@/utils";
 import { Routes } from "@/constants/routes";
+import { getModuleEmoji } from "@/lib/learn-module-display";
 import { useAuth } from "@/contexts/auth-context";
 import {
   useGamificationMe,
@@ -267,7 +268,7 @@ export function ProfileView({
     () =>
       stages.map((stage) => ({
         key: stage.slug,
-        emoji: stage.badge,
+        emoji: getModuleEmoji(stage.badge),
         name: stage.badgeName || stage.title,
         unlocked: Boolean(profile.badges?.includes(stage.badge)),
       })),
@@ -380,13 +381,13 @@ export function ProfileView({
   };
 
   return (
-    <div className="mx-auto max-w-3xl space-y-8 p-4 md:p-6">
+    <div className="w-full space-y-10 py-10 sm:py-14">
       {/* Identity */}
-      <section className="space-y-5">
+      <section className="space-y-6">
         <div className="flex items-start gap-4">
           <div className="relative shrink-0">
             {authLoading ? (
-              <div className="flex size-16 items-center justify-center rounded-2xl bg-muted sm:size-20">
+              <div className="flex size-16 items-center justify-center rounded-full bg-muted sm:size-20">
                 <Loader2 className="size-6 animate-spin text-muted-foreground" />
               </div>
             ) : isLoggedIn ? (
@@ -410,7 +411,7 @@ export function ProfileView({
             ) : (
               <Link
                 href={Routes.Login}
-                className="group relative block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="group relative block rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 aria-label="Sign in to change profile photo"
               >
                 {avatarUrl ? (
@@ -418,33 +419,33 @@ export function ProfileView({
                   <img
                     src={avatarUrl}
                     alt=""
-                    className="size-16 rounded-2xl object-cover ring-1 ring-border/60 sm:size-20"
+                    className="size-16 rounded-full object-cover ring-1 ring-border/60 sm:size-20"
                   />
                 ) : (
                   <BitmojiAvatar
                     gender={profile.gender}
                     size="xl"
-                    className="rounded-2xl ring-1 ring-border/60"
+                    className="rounded-full ring-1 ring-border/60"
                   />
                 )}
-                <span className="absolute inset-0 flex items-center justify-center rounded-2xl bg-black/45">
+                <span className="absolute inset-0 flex items-center justify-center rounded-full bg-black/45">
                   <LogIn className="size-5 text-white" />
                 </span>
               </Link>
             )}
-            <span className="absolute -bottom-1.5 -right-1.5 flex h-6 min-w-6 items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-bold text-primary-foreground shadow-sm ring-2 ring-background">
+            <span className="absolute -bottom-1 -right-1 flex h-6 min-w-6 items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-bold text-primary-foreground shadow-sm ring-2 ring-background">
               {level}
             </span>
           </div>
 
-          <div className="min-w-0 flex-1 pt-0.5">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-              Your profile
+          <div className="min-w-0 flex-1 pt-1">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              Account
             </p>
-            <h1 className="truncate font-heading text-2xl font-bold tracking-tight sm:text-3xl">
+            <h1 className="mt-1 truncate font-heading text-[2rem] font-bold leading-tight tracking-tight sm:text-4xl">
               {displayName}
             </h1>
-            <p className="truncate text-sm text-muted-foreground">
+            <p className="mt-1.5 truncate text-sm text-muted-foreground">
               {county}
               {ward ? ` · ${ward}` : ""}
               {streak > 0 ? ` · ${streak}-day streak` : ""}
@@ -452,7 +453,7 @@ export function ProfileView({
             {!isLoggedIn && !authLoading ? (
               <Link
                 href={Routes.Login}
-                className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:underline"
+                className="mt-2 inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"
               >
                 <LogIn className="size-3.5" />
                 Sign in to update photo

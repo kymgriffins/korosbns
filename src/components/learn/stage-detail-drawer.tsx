@@ -36,6 +36,7 @@ import { YouTubePlayer } from "./youtube-player";
 import { StepContent } from "./step-content";
 import { TriviaSection } from "./trivia-section";
 import { MasteryPage } from "./mastery-page";
+import { getModuleEmoji } from "@/lib/learn-module-display";
 
 
 interface StageDetailDrawerProps {
@@ -54,7 +55,7 @@ export function StageDetailDrawer({
 }: StageDetailDrawerProps) {
   usePageView();
   const { totalStages } = useLearn();
-  const { setOpen: setSidebarOpen, open: sidebarOpen } = useSidebar();
+  const { setOpen: setSidebarOpen } = useSidebar();
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [activeTab, setActiveTab] = useState<"read" | "watch" | "quiz">("read");
   const [showTrivia, setShowTrivia] = useState<boolean>(false);
@@ -96,7 +97,7 @@ export function StageDetailDrawer({
   useEffect(() => {
     setSidebarOpen(false);
     return () => setSidebarOpen(true);
-  }, []);
+  }, [setSidebarOpen]);
 
   const isStepTriviaPassed = (stepId: number) => {
     return readProgress(stage.slug, stage.order).stepsCompleted[stepId] === true;
@@ -191,7 +192,7 @@ export function StageDetailDrawer({
             // server chapter completion failed silently
           });
         }
-        toast.success(`Mastered! +25 SVG. ${stage.badge} Badge unlocked!`);
+        toast.success(`Mastered! +25 SVG. ${getModuleEmoji(stage.badge)} Badge unlocked!`);
       }
     }
   }, [currentStep, stage.steps.length]);
@@ -279,9 +280,9 @@ export function StageDetailDrawer({
       <div className="flex flex-1 overflow-hidden flex-col md:flex-row">
         <div className="flex-1 min-w-0 overflow-y-auto p-3 md:p-4 lg:p-5">
           {isMastery ? (
-            <MasteryPage badge={stage.badge} badgeName={stage.badgeName} title={stage.documentName || "Stage Mastered"} hasNext={hasNext} onNextStage={onNextStage} onClose={onClose} certificateUrl={certificateUrl} certificateId={certificateId} />
+            <MasteryPage badge={getModuleEmoji(stage.badge)} badgeName={stage.badgeName} title={stage.documentName || "Stage Mastered"} hasNext={hasNext} onNextStage={onNextStage} onClose={onClose} certificateUrl={certificateUrl} certificateId={certificateId} />
           ) : (
-            <div className="max-w-3xl mx-auto space-y-3">
+            <div className="mx-auto w-full max-w-5xl space-y-3">
               <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
                 {[
                   { id: "read", label: "Read", icon: BookOpenText },

@@ -2,7 +2,7 @@
 
 import { useEffect, useLayoutEffect, useState } from "react";
 import { StageDetailDrawer } from "./stage-detail-drawer";
-import { LearnDashboardView } from "./learn-dashboard-view";
+import { SyllabusLibraryHome } from "./syllabus-library-home";
 import { LearnModulesView } from "./learn-modules-view";
 import { LearnDocumentsView } from "./learn-documents-view";
 import { ProfileView } from "./profile-view";
@@ -18,10 +18,19 @@ import { useAuth } from "@/contexts/auth-context";
 import { type LearnHubLanguage, type LearnHubProfile } from "@/lib/learn-data";
 import { learnTabToHref } from "@/lib/learn-nav";
 import { readProgress, clearAllModuleProgress } from "@/lib/module-progress";
-import { useLeaderboard } from "@/hooks/use-gamification";
+import { recommendModules } from "@/lib/recommend-modules";
 import type { CivicModule } from "@/types/learn";
 import { TRANSLATIONS } from "@/constants/learn-translations";
 import { safeArray, safeLen, safeMap } from "@/lib/safe-data";
+import { useMemo } from "react";
+import {
+  readHubProfile,
+  writeHubProfile,
+  clearHubProfile,
+  readOnboardingDraft,
+  clearOnboardingDraft,
+} from "@/lib/profile-local-storage";
+import { flushAllOfflineCitizenData } from "@/lib/sync-profile";
 
 const MODULES_REQUIRED: LearnTab[] = ["home", "learn", "profile"];
 
@@ -39,6 +48,7 @@ export function LearnPathsHome({ tab }: Props) {
     setActiveTab,
     modulesLoading,
     modulesError,
+    modulesOffline,
     refreshModules,
   } = useLearn();
   const stages = civicModules;
@@ -83,28 +93,14 @@ export function LearnPathsHome({ tab }: Props) {
     if (authLoading) return;
 
     if (isLoggedIn && authUser) {
-      const stored = localStorage.getItem("bns_user_profile");
-      let currentProfile: LearnHubProfile | null = null;
-      if (stored) {
-        try {
-          currentProfile = JSON.parse(stored) as LearnHubProfile;
-        } catch {
-          currentProfile = null;
-        }
+      let currentProfile = readHubProfile<LearnHubProfile>();
+      if (currentProfile && currentProfile.userId !== authUser.id) {
+        currentProfile = null;
       }
 
-      if (!currentProfile || currentProfile.userId !== authUser.id) {
-        const onboardingData = localStorage.getItem("bns_onboarding_profile");
-        let preferences: Record<string, unknown> = {};
-        if (onboardingData) {
-          try {
-            preferences = JSON.parse(onboardingData) as Record<string, unknown>;
-          } catch {
-            preferences = {};
-          }
-        }
-
-        currentProfile = {
+      if (!currentProfile) {
+        const preferences = readOnboardingDraft() ?? {};
+        const nextProfile: LearnHubProfile = {
           userId: authUser.id || "",
           breakName:
             authUser.break_name ||
@@ -117,40 +113,49 @@ export function LearnPathsHome({ tab }: Props) {
             authUser.display_name ||
             `citizen_${String(authUser.id || "").slice(0, 5)}`,
           avatar_url: authUser.avatar_url || authUser.avatar || null,
-          county: authUser.county || authUser.location || String(preferences.county ?? "") || "Kenya",
-          ward: authUser.ward || String(preferences.ward ?? "") || "",
+          county:
+            authUser.county ||
+            authUser.location ||
+            preferences.county ||
+            "Kenya",
+          ward: authUser.ward || preferences.ward || "",
           language: (authUser.language_preference as LearnHubLanguage) || ("EN" as const),
+          ageRange: authUser.age_range || preferences.ageRange || undefined,
+          educationLevel:
+            authUser.education_level || preferences.educationLevel || undefined,
+          interests: preferences.priorities,
           notifications: authUser.notifications_enabled ?? true,
           whatsappFallback: authUser.whatsapp_fallback ?? false,
           phone: authUser.phone_number || "",
           consentGranted: authUser.dpa_consent_granted ?? false,
           consentTimestamp: authUser.dpa_consent_timestamp || new Date().toISOString(),
-          sovereigns: currentProfile?.sovereigns || 0,
-          stageProgress: currentProfile?.stageProgress || [1],
-          streakDays: currentProfile?.streakDays || 0,
+          sovereigns: 0,
+          stageProgress: [1],
+          streakDays: 0,
           lastActive: Date.now(),
-          trackedDocs: currentProfile?.trackedDocs || [],
-          badges: currentProfile?.badges || [],
+          trackedDocs: [],
+          badges: [],
         };
-        localStorage.setItem("bns_user_profile", JSON.stringify(currentProfile));
+        writeHubProfile(nextProfile as unknown as Record<string, unknown>);
+        setProfile(nextProfile);
 
-        if (preferences.county || preferences.priorities) {
-          import("@/hooks/use-profile").then(({ useUpdateProfile }) => {
-            const { mutate } = useUpdateProfile();
-            mutate({
-              county: String(preferences.county ?? "") || authUser.county || "",
-              ward: String(preferences.ward ?? "") || authUser.ward || "",
-              budget_priorities: (Array.isArray(preferences.priorities)
-                ? preferences.priorities
-                : []) as string[],
-              location: String(preferences.county ?? "") || authUser.location || "",
-            });
-          });
-        }
-        localStorage.removeItem("bns_onboarding_profile");
+        void flushAllOfflineCitizenData(undefined, {
+          breakName: nextProfile.breakName,
+          pseudoName: nextProfile.pseudoName,
+          county: nextProfile.county,
+          ward: nextProfile.ward,
+          language: nextProfile.language,
+          ageRange: nextProfile.ageRange,
+          educationLevel: nextProfile.educationLevel,
+          priorities: preferences.priorities,
+        }).then((result) => {
+          if (result.profile === "synced") clearOnboardingDraft();
+        });
+      } else {
+        setProfile(currentProfile);
+        void flushAllOfflineCitizenData();
       }
 
-      setProfile(currentProfile);
       setLoading(false);
     } else {
       setProfile(null);
@@ -162,13 +167,13 @@ export function LearnPathsHome({ tab }: Props) {
     if (!isLoggedIn) return;
     const next = updated as LearnHubProfile;
     setProfile(next);
-    localStorage.setItem("bns_user_profile", JSON.stringify(next));
+    writeHubProfile(next as unknown as Record<string, unknown>);
   };
 
   const handleResetProgress = () => {
     if (!isLoggedIn) return;
     if (window.confirm("Reset all progress?")) {
-      localStorage.removeItem("bns_user_profile");
+      clearHubProfile();
       clearAllModuleProgress(stages);
       setProfile(null);
       setSelectedStage(null);
@@ -179,7 +184,16 @@ export function LearnPathsHome({ tab }: Props) {
   const effectiveProfile = profile;
   const langKey = (effectiveProfile?.language ?? "EN") as LearnHubLanguage;
   const text = TRANSLATIONS[langKey];
-  const { data: leaderboardData } = useLeaderboard(20);
+
+  const recommended = useMemo(() => {
+    if (!isLoggedIn || !effectiveProfile) return [];
+    return recommendModules(stages, {
+      county: effectiveProfile.county,
+      language: effectiveProfile.language,
+      ageRange: effectiveProfile.ageRange,
+      interests: effectiveProfile.interests,
+    });
+  }, [isLoggedIn, effectiveProfile, stages]);
 
   const currentStageNum = effectiveProfile
     ? effectiveProfile.stageProgress
@@ -225,18 +239,21 @@ export function LearnPathsHome({ tab }: Props) {
   if (needsModules && modulesError && !stages.length) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-3 p-6 text-center min-h-[50vh]">
-        <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+        <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-muted/40 text-muted-foreground">
           <ShieldAlert className="size-6" />
         </div>
-        <p className="text-sm font-bold text-foreground">Failed to load modules</p>
-        <p className="max-w-xs text-xs text-muted-foreground">{modulesError}</p>
+        <p className="text-sm font-bold text-foreground">Modules temporarily unavailable</p>
+        <p className="max-w-sm text-xs text-muted-foreground">
+          {modulesError} We usually show an offline catalogue — if you still see this,
+          retry in a moment.
+        </p>
         <Button
           onClick={refreshModules}
           variant="outline"
           size="sm"
           className="mt-2 rounded-lg text-xs font-bold focus-visible:ring-2 focus-visible:ring-ring"
         >
-          Try Again
+          Try again
         </Button>
       </div>
     );
@@ -275,6 +292,8 @@ export function LearnPathsHome({ tab }: Props) {
 
   return (
     <div className="w-full bg-background">
+      {/* Offline banner intentionally suppressed — fallback catalogue is seamless to the user. */}
+
       {activeProfile.language === "SH" && (
         <div className="w-full border-b border-amber-500/20 bg-amber-500/15 px-4 py-1 text-center text-[10px] font-semibold text-amber-600">
           {text.shengComingSoon}
@@ -282,15 +301,18 @@ export function LearnPathsHome({ tab }: Props) {
       )}
 
       <div className="min-w-0">
-        {tab === "home" && currentStage && (
-          <LearnDashboardView
-            profile={activeProfile}
+        {tab === "home" && (
+          <SyllabusLibraryHome
             stages={stages}
-            currentStage={currentStage}
             onSelectStage={handleSelectStage}
-            onNavigateToCurriculum={() => router.push(learnTabToHref("learn"))}
-            onNavigateToForum={() => router.push(learnTabToHref("forum"))}
-            leaderboard={leaderboardData?.results}
+            recommended={isLoggedIn ? recommended : []}
+            greeting={
+              isLoggedIn && effectiveProfile?.county
+                ? `Welcome back — recommendations for ${effectiveProfile.county} and your learning path.`
+                : isLoggedIn
+                  ? "Welcome back — a free syllabus with picks based on your profile."
+                  : undefined
+            }
           />
         )}
 

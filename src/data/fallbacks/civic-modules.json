@@ -1,0 +1,57 @@
+{
+  "provenance": {
+    "source": "seeds/civic_modules.json",
+    "note": "Read-only offline catalogue when civic-modules API is unreachable. Only modules with learnable step content are listed.",
+    "level": "fallback"
+  },
+  "count": 1,
+  "results": [
+    {
+      "id": "budget-policy-statement",
+      "title": "Budget Policy Statement",
+      "slug": "budget-policy-statement",
+      "badge": "🧾",
+      "badgeName": "Budget Policy Statement",
+      "documentName": "Budget Policy Statement",
+      "archive": "",
+      "link": "",
+      "status": "Published",
+      "credits": "Budget Ndio Story",
+      "description": "A citizen-friendly guide to Kenya's Budget Policy Statement 2026, prepared under the guidance of Millicent Makina, Board Advisor at Budget Ndio Story.",
+      "expectations": [],
+      "image_url": "https://pbs.twimg.com/media/HKlf32wX0AEFvZz?format=jpg&name=small",
+      "order": 1,
+      "steps": [
+        {
+          "id": "budget-policy-statement-ch1",
+          "title": "Understanding the BPS",
+          "order": 1,
+          "youtube_url": "",
+          "audio_url": "",
+          "transcript": "",
+          "text": "The Budget Policy Statement (BPS) is Kenya's early roadmap for the national budget. It sets priorities, spending ceilings, and policy signals before the full estimates are published."
+        },
+        {
+          "id": "budget-policy-statement-ch2",
+          "title": "Reading the BPS 2026 Summary",
+          "order": 2,
+          "youtube_url": "",
+          "audio_url": "",
+          "transcript": "",
+          "text": ""
+        },
+        {
+          "id": "budget-policy-statement-ch3",
+          "title": "BPS and the BETA Agenda",
+          "order": 3,
+          "youtube_url": "",
+          "audio_url": "",
+          "transcript": "",
+          "text": ""
+        }
+      ],
+      "author": null,
+      "trivia": []
+    }
+  ]
+}

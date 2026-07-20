@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import { LearnProvider } from "@/contexts/learn-context";
 import { Suspense } from "react";
 import { LearnTabSync } from "@/components/learn/learn-tab-sync";
-import { LearnMobileNav } from "@/layouts/LearnMobileNav";
-import AppSidebar from "@/components/shadcn-space/blocks/dashboard-shell-01/app-sidebar";
-import { LearnTeachingProviderShell } from "@/components/admin/teaching";
+import { CitizenSyllabusShell } from "@/layouts/CitizenSyllabusShell";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { canonicalUrl, metaDescription } from "@/utils/metadata";
 
 export const metadata: Metadata = {
@@ -43,18 +42,14 @@ export const metadata: Metadata = {
 export default function LearnLayout({ children }: { children: React.ReactNode }) {
   return (
     <LearnProvider>
-      <LearnTeachingProviderShell>
-        <Suspense
-          fallback={
-            <div className="flex min-h-screen items-center justify-center bg-background">
-              <div className="size-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-            </div>
-          }
-        >
+      {/* flex-col + w-full: SidebarProvider defaults to a row flex that
+          shrinks the citizen shell left and leaves empty space on the right. */}
+      <SidebarProvider defaultOpen={false} className="flex min-h-svh w-full flex-col">
+        <Suspense fallback={null}>
           <LearnTabSync />
-          <AppSidebar bottom={<LearnMobileNav />}>{children}</AppSidebar>
         </Suspense>
-      </LearnTeachingProviderShell>
+        <CitizenSyllabusShell>{children}</CitizenSyllabusShell>
+      </SidebarProvider>
     </LearnProvider>
   );
 }

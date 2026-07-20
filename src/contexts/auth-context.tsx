@@ -5,6 +5,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   type ReactNode,
 } from "react";
@@ -12,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { citizenApi, type UserProfileApi } from "@/lib/api-client";
 import { DEFAULT_POST_LOGIN_PATH, sanitizeRedirectPath } from "@/lib/auth-policy";
 import { logDebug } from "@/lib/debug-logs";
+import { clearCitizenLocalSession, readOnboardingDraft } from "@/lib/profile-local-storage";
 
 const USER_PROFILE_KEY = ["auth", "me"];
 
@@ -73,28 +75,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const profile = await citizenApi.getMe();
       queryClient.setQueryData(USER_PROFILE_KEY, normalizeProfile(profile));
       logDebug("Auth", "Login completed", { redirectTo: safeRedirect });
+
+      // Push register draft + queued gamification/progress regardless of network timing.
+      try {
+        const { flushAllOfflineCitizenData } = await import("@/lib/sync-profile");
+        const draft = readOnboardingDraft();
+        await flushAllOfflineCitizenData(undefined, {
+          breakName:
+            draft?.breakName || profile.break_name || profile.display_name || "",
+          pseudoName: draft?.pseudoName || profile.pseudo_name || "",
+          county: draft?.county || profile.county || "",
+          ward: draft?.ward || profile.ward,
+          language: draft?.language || profile.language_preference || "EN",
+          // Prefer local draft over empty server fields (first login after register).
+          ageRange: draft?.ageRange || profile.age_range,
+          educationLevel: draft?.educationLevel || profile.education_level,
+          priorities: draft?.priorities?.length
+            ? draft.priorities
+            : profile.budget_priorities,
+        });
+        await queryClient.invalidateQueries({ queryKey: USER_PROFILE_KEY });
+      } catch (err) {
+        logDebug("Auth", "Offline flush deferred", { err: String(err) });
+      }
+
       router.push(safeRedirect);
     },
     [router, queryClient],
   );
 
-  function clearUserData(options?: { keepOnboarding?: boolean }): void {
-    if (typeof window === "undefined") return;
-    const userKeys = options?.keepOnboarding
-      ? ["bns_user_profile", "bns_story_watched"]
-      : ["bns_user_profile", "bns_onboarding_profile", "bns_story_watched"];
-    for (const key of userKeys) {
-      window.localStorage.removeItem(key);
-    }
-    for (let i = window.localStorage.length - 1; i >= 0; i--) {
-      const key = window.localStorage.key(i);
-      if (!key) continue;
-      if (key.startsWith("bns_module_") || key.startsWith("stage_")) {
-        window.localStorage.removeItem(key);
-      }
-    }
-    window.sessionStorage.removeItem("bns_streak_toast");
-    window.dispatchEvent(new Event("bns-profile-updated"));
+  function clearUserData(): void {
+    clearCitizenLocalSession({ wipePendingPersonalization: false });
   }
 
   const logout = useCallback(async () => {
@@ -110,6 +121,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     logDebug("Auth", "Logout completed — navigating");
     router.push("/auth/login");
   }, [queryClient, router]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onOnline = () => {
+      if (!user) return;
+      void import("@/lib/sync-profile").then(({ flushAllOfflineCitizenData }) => {
+        void flushAllOfflineCitizenData().then(() => {
+          void queryClient.invalidateQueries({ queryKey: USER_PROFILE_KEY });
+        });
+      });
+    };
+    window.addEventListener("online", onOnline);
+    return () => window.removeEventListener("online", onOnline);
+  }, [user, queryClient]);
 
   const value = useMemo(
     () => ({

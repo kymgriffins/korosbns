@@ -153,25 +153,32 @@ export default async function UnifiedReaderPage(
     initialTrivia = resolved.data as TriviaSetApi;
     initialMode = "trivia";
   } else if (resolved?.type === "story") {
-    const foundStory = resolved.data;
+    const foundStory = resolved.data as Record<string, unknown>;
     let parsedCards: StoryCard[] = [];
     try {
-      parsedCards = typeof foundStory.body === "string" 
-        ? JSON.parse(foundStory.body) 
-        : (foundStory.body as StoryCard[] || []);
+      const body = foundStory.body;
+      parsedCards =
+        typeof body === "string"
+          ? (JSON.parse(body) as StoryCard[])
+          : Array.isArray(body)
+            ? (body as StoryCard[])
+            : [];
     } catch {
       parsedCards = [];
     }
 
-    const metadata = (foundStory.metadata as Record<string, string>) || {};
-    
+    const metadata =
+      foundStory.metadata && typeof foundStory.metadata === "object"
+        ? (foundStory.metadata as Record<string, string>)
+        : {};
+
     initialStory = {
-      id: foundStory.id,
-      title: foundStory.title,
-      subtitle: foundStory.summary,
+      id: String(foundStory.id ?? slug),
+      title: String(foundStory.title ?? ""),
+      subtitle: String(foundStory.summary ?? ""),
       icon: metadata.icon || "📖",
       duration: metadata.duration || "2 min",
-      cards: parsedCards
+      cards: parsedCards,
     };
     initialMode = "story";
   } else {

@@ -41,6 +41,8 @@ interface LearnContextType {
   totalStages: number;
   modulesLoading: boolean;
   modulesError: string | null;
+  /** True when catalogue came from JSON fallback (API unreachable). */
+  modulesOffline: boolean;
   modulesCached: boolean;
   refreshModules: () => Promise<void>;
 }
@@ -56,6 +58,7 @@ export function LearnProvider({ children }: { children: React.ReactNode }) {
   const [civicModules, setCivicModules] = useState<CivicModule[]>([]);
   const [modulesLoading, setModulesLoading] = useState(true);
   const [modulesError, setModulesError] = useState<string | null>(null);
+  const [modulesOffline, setModulesOffline] = useState(false);
   const [modulesCached, setModulesCached] = useState(false);
   const [gamificationCached, setGamificationCached] = useState(false);
 
@@ -92,17 +95,21 @@ export function LearnProvider({ children }: { children: React.ReactNode }) {
       setCivicModules(results);
       modulesCachedRef.current = true;
       setModulesCached(true);
+      const offline = learningData.modules.usedFallback();
+      setModulesOffline(offline);
+      // Don't surface offline status to users — fallback catalogue is seamless.
       setModulesError(null);
     } catch (err) {
       if (gen !== fetchGenRef.current) return;
       const message =
         err instanceof Error
           ? err.message
-          : "Could not load learning modules from the API.";
-      // Keep last good catalogue if we have one — don't blank the hub on a blip.
+          : "Learning modules are temporarily unavailable.";
+      // Keep last good / JSON catalogue — don't blank the hub on a blip.
       if (!modulesCachedRef.current) {
-        setCivicModules([]);
+        setCivicModules(learningData.modules.get());
       }
+      setModulesOffline(true);
       setModulesError(message);
       modulesCachedRef.current = false;
       setModulesCached(false);
@@ -155,6 +162,7 @@ export function LearnProvider({ children }: { children: React.ReactNode }) {
         totalStages,
         modulesLoading,
         modulesError,
+        modulesOffline,
         modulesCached,
         refreshModules,
       }}

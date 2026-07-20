@@ -177,6 +177,9 @@ export type UserProfileApi = {
   ward?: string;
   budget_priorities?: string[];
   language_preference?: string;
+  age_range?: string;
+  education_level?: string;
+  date_of_birth?: string;
   break_name?: string;
   pseudo_name?: string;
   phone_number?: string;
