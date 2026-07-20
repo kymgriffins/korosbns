@@ -56,7 +56,7 @@ export function SyllabusLibraryHome({
   const picks = recommended.length > 0 ? recommended.slice(0, 3) : [];
 
   return (
-    <LearnPageFrame width="reading">
+    <LearnPageFrame>
       <div data-testid="syllabus-library-home">
         <LearnPageHeader
           eyebrow="Budget Ndio Story"

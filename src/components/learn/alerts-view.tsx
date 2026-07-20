@@ -25,7 +25,7 @@ export function AlertsView({ profile }: AlertsViewProps) {
   const [refreshing, setRefreshing] = useState(false);
 
   return (
-    <div className="space-y-4 md:space-y-6 max-w-3xl mx-auto">
+    <div className="w-full space-y-4 px-5 py-10 sm:px-8 sm:py-14 md:space-y-6">
       <div className="flex items-start justify-between gap-3">
         <div className="space-y-1">
           <h2 className="text-xl font-black uppercase tracking-tight">Participation Alerts</h2>

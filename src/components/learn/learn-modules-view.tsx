@@ -88,7 +88,7 @@ export function LearnModulesView({
   );
 
   return (
-    <LearnPageFrame width="hub" className="space-y-10">
+    <LearnPageFrame className="space-y-10">
       <div className="flex items-start justify-between gap-4">
         <LearnPageHeader
           eyebrow="Curriculum"
@@ -181,7 +181,7 @@ export function LearnModulesView({
       </div>
 
       {filteredModules.length > 0 ? (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {filteredModules.map(({ stage, completedCount, total, isCompleted, isInProgress }) => {
             const pct = total > 0 ? Math.round((completedCount / total) * 100) : 0;
 

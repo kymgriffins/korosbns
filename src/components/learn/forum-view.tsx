@@ -43,7 +43,7 @@ export function ForumView() {
   }
 
   return (
-    <LearnPageFrame width="hub" className="space-y-8">
+    <LearnPageFrame className="space-y-8">
       <div className="flex items-start justify-between gap-4">
         <LearnPageHeader
           eyebrow="Community"

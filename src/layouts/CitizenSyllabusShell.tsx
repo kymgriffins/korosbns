@@ -4,6 +4,7 @@ import Link from "next/link";
 import { BookOpen, FileText, Home, MessagesSquare, User } from "lucide-react";
 import { learnTabToHref } from "@/lib/learn-nav";
 import { useLearn, type LearnTab } from "@/contexts/learn-context";
+import { LEARN_SHELL_WIDTH } from "@/components/learn/learn-page-frame";
 import { cn } from "@/utils";
 import { LearnMobileNav } from "@/layouts/LearnMobileNav";
 
@@ -17,6 +18,7 @@ const NAV: { tab: LearnTab; label: string; href: string; icon: typeof Home }[] =
 
 /**
  * Citizen syllabus chrome — top nav + content. Replaces admin AppSidebar shell.
+ * Nav and main share one width so pages never leave a dead right column.
  */
 export function CitizenSyllabusShell({ children }: { children: React.ReactNode }) {
   const { activeTab } = useLearn();
@@ -24,7 +26,7 @@ export function CitizenSyllabusShell({ children }: { children: React.ReactNode }
   return (
     <div data-testid="citizen-syllabus-shell" className="flex min-h-screen flex-col bg-background">
       <header className="sticky top-0 z-40 border-b border-border/40 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70">
-        <div className="mx-auto flex h-14 max-w-4xl items-center justify-between gap-4 px-5 sm:px-8">
+        <div className={cn(LEARN_SHELL_WIDTH, "flex h-14 items-center justify-between gap-4 px-5 sm:px-8")}>
           <Link href="/learn" className="text-sm font-semibold tracking-tight text-foreground">
             Budget Ndio Story
           </Link>
@@ -59,7 +61,7 @@ export function CitizenSyllabusShell({ children }: { children: React.ReactNode }
         </div>
       </header>
 
-      <main className="w-full flex-1 pb-20 md:pb-10">{children}</main>
+      <main className={cn(LEARN_SHELL_WIDTH, "flex-1 pb-20 md:pb-10")}>{children}</main>
 
       <div className="md:hidden">
         <LearnMobileNav />

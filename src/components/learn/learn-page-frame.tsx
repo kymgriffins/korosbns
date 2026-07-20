@@ -2,30 +2,21 @@
 
 import { cn } from "@/utils";
 
+/** Shared content width for learn shell + every /learn page. */
+export const LEARN_SHELL_WIDTH = "mx-auto w-full max-w-6xl";
+
 type LearnPageFrameProps = {
   children: React.ReactNode;
-  /** Narrow reading column (Syllabus) vs wider hub (Modules/Documents). */
-  width?: "reading" | "hub";
   className?: string;
 };
 
 /**
  * Shared spacing chrome for every /learn surface.
- * Apple HIG-inspired: generous padding, calm hierarchy, one rhythm.
+ * Width lives on the shell so pages fill the same column — no empty right gutter.
  */
-export function LearnPageFrame({
-  children,
-  width = "hub",
-  className,
-}: LearnPageFrameProps) {
+export function LearnPageFrame({ children, className }: LearnPageFrameProps) {
   return (
-    <div
-      className={cn(
-        "mx-auto w-full px-5 pb-16 pt-10 sm:px-8 sm:pb-20 sm:pt-14",
-        width === "reading" ? "max-w-2xl" : "max-w-4xl",
-        className,
-      )}
-    >
+    <div className={cn("w-full px-5 pb-16 pt-10 sm:px-8 sm:pb-20 sm:pt-14", className)}>
       {children}
     </div>
   );
@@ -58,7 +49,7 @@ export function LearnPageHeader({
           {title}
         </h1>
         {description ? (
-          <p className="max-w-xl text-[15px] leading-relaxed text-muted-foreground sm:text-base">
+          <p className="max-w-3xl text-[15px] leading-relaxed text-muted-foreground sm:text-base">
             {description}
           </p>
         ) : null}

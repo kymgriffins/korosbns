@@ -403,7 +403,7 @@ export function ModuleDetailView() {
 
           {/* Content */}
           <div className="flex-1 md:border-t md:border-border/20">
-            <div className="mx-auto max-w-3xl p-4 md:p-6 lg:p-8">
+            <div className="mx-auto w-full max-w-5xl p-5 md:p-8 lg:p-10">
               {isMastery ? (
                 <div className="flex flex-col items-center gap-4 py-16 text-center">
                   <div className="text-5xl">{getModuleEmoji(mod.badge)}</div>

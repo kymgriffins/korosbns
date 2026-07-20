@@ -282,7 +282,7 @@ export function StageDetailDrawer({
           {isMastery ? (
             <MasteryPage badge={getModuleEmoji(stage.badge)} badgeName={stage.badgeName} title={stage.documentName || "Stage Mastered"} hasNext={hasNext} onNextStage={onNextStage} onClose={onClose} certificateUrl={certificateUrl} certificateId={certificateId} />
           ) : (
-            <div className="max-w-3xl mx-auto space-y-3">
+            <div className="mx-auto w-full max-w-5xl space-y-3">
               <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
                 {[
                   { id: "read", label: "Read", icon: BookOpenText },
