@@ -37,7 +37,17 @@ describe("learningData.modules (read-only JSON fallback)", () => {
         description: "from API",
         expectations: [],
         order: 1,
-        steps: [],
+        steps: [
+          {
+            id: "live-ch1",
+            title: "Intro",
+            order: 1,
+            youtube_url: "",
+            audio_url: "",
+            transcript: "",
+            text: "Published lesson body",
+          },
+        ],
       },
     ];
     (learnHubApi.civicModules as ReturnType<typeof vi.fn>).mockResolvedValue({
@@ -48,6 +58,71 @@ describe("learningData.modules (read-only JSON fallback)", () => {
     const result = await learningData.modules.fetch();
     expect(result).toEqual(apiMods);
     expect(learningData.modules.usedFallback()).toBe(false);
+  });
+
+  it("drops API modules that have no learnable content", async () => {
+    const apiMods = [
+      {
+        id: "empty",
+        title: "Empty Module",
+        slug: "empty-module",
+        badge: "1",
+        badgeName: "Empty",
+        documentName: "Empty",
+        archive: "",
+        link: "",
+        status: "Published",
+        credits: "BNS",
+        description: "placeholder",
+        expectations: [],
+        order: 1,
+        steps: [
+          {
+            id: "empty-ch1",
+            title: "Placeholder",
+            order: 1,
+            youtube_url: "",
+            audio_url: "",
+            transcript: "",
+            text: "",
+          },
+        ],
+      },
+      {
+        id: "api-1",
+        title: "Live Module",
+        slug: "live-module",
+        badge: "1",
+        badgeName: "Live",
+        documentName: "Live",
+        archive: "",
+        link: "",
+        status: "Published",
+        credits: "BNS",
+        description: "from API",
+        expectations: [],
+        order: 2,
+        steps: [
+          {
+            id: "live-ch1",
+            title: "Intro",
+            order: 1,
+            youtube_url: "",
+            audio_url: "",
+            transcript: "",
+            text: "Published lesson body",
+          },
+        ],
+      },
+    ];
+    (learnHubApi.civicModules as ReturnType<typeof vi.fn>).mockResolvedValue({
+      results: apiMods,
+      count: 2,
+    });
+
+    const result = await learningData.modules.fetch();
+    expect(result).toHaveLength(1);
+    expect(result[0]?.slug).toBe("live-module");
   });
 
   it("returns seeded JSON catalogue when civic-modules API fails", async () => {

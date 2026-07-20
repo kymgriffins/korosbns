@@ -1,21 +1,11 @@
 {
   "provenance": {
     "source": "civic-modules fallback catalogue",
-    "note": "Read-only learn paths when /content/learn/paths/ is unreachable.",
+    "note": "Read-only learn paths when /content/learn/paths/ is unreachable. Only paths with published module content are listed.",
     "level": "fallback"
   },
-  "count": 4,
+  "count": 1,
   "results": [
-    {
-      "id": "constitution",
-      "content_type": "path",
-      "title": "Constitution & Public Finance",
-      "summary": "Learn about the foundations of public finance in Kenya under Chapter Twelve.",
-      "slug": "constitution",
-      "url": "/learn/stages/constitution",
-      "lesson_count": 3,
-      "path_slug": "constitution"
-    },
     {
       "id": "budget-policy-statement",
       "content_type": "path",
@@ -25,26 +15,6 @@
       "url": "/learn/stages/budget-policy-statement",
       "lesson_count": 3,
       "path_slug": "budget-policy-statement"
-    },
-    {
-      "id": "finance-bill",
-      "content_type": "path",
-      "title": "Finance Bill",
-      "summary": "How the Finance Bill shapes tax measures and citizen obligations.",
-      "slug": "finance-bill",
-      "url": "/learn/stages/finance-bill",
-      "lesson_count": 3,
-      "path_slug": "finance-bill"
-    },
-    {
-      "id": "kenya-national-infrastructure-fund",
-      "content_type": "path",
-      "title": "Kenya National Infrastructure Fund",
-      "summary": "What the infrastructure fund means for counties and projects.",
-      "slug": "kenya-national-infrastructure-fund",
-      "url": "/learn/stages/kenya-national-infrastructure-fund",
-      "lesson_count": 1,
-      "path_slug": "kenya-national-infrastructure-fund"
     }
   ]
 }

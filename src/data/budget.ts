@@ -18,11 +18,14 @@ import {
   fetchBudgetHighlights,
 } from "@/lib/budget-api";
 import civicModulesFallback from "@/data/fallbacks/civic-modules.json";
+import { filterModulesWithPublishableContent } from "@/lib/civic-module-content";
 
 export type { BudgetReportProfile, BudgetKpi, BudgetComparisonRow, BudgetCallout };
 
 const DEFAULT_REPORTS: BudgetReportProfile[] = [];
-const FALLBACK_CIVIC_MODULES = (civicModulesFallback.results ?? []) as unknown as CivicModule[];
+const FALLBACK_CIVIC_MODULES = filterModulesWithPublishableContent(
+  (civicModulesFallback.results ?? []) as unknown as CivicModule[],
+);
 
 let _reports: BudgetReportProfile[] = [...DEFAULT_REPORTS];
 

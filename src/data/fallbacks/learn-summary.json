@@ -6,7 +6,7 @@
   },
   "counts": {
     "article": 3,
-    "path": 4,
+    "path": 1,
     "video": 0,
     "story": 0,
     "document": 0,
@@ -14,12 +14,12 @@
   },
   "trending": [
     {
-      "id": "constitution",
+      "id": "budget-policy-statement",
       "content_type": "path",
-      "title": "Constitution & Public Finance",
-      "summary": "Foundations of public finance under Chapter Twelve of the Constitution.",
-      "slug": "constitution",
-      "url": "/learn/stages/constitution",
+      "title": "Budget Policy Statement",
+      "summary": "A citizen-friendly guide to Kenya's Budget Policy Statement 2026.",
+      "slug": "budget-policy-statement",
+      "url": "/learn/stages/budget-policy-statement",
       "lesson_count": 3
     },
     {

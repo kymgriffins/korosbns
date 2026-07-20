@@ -3,12 +3,15 @@ import type { LearningEditionDetail } from "@/lib/learning-units";
 import { learnHubApi } from "@/lib/learn-hub";
 import { buildApiUrl } from "@/lib/api-url";
 import { withFallback } from "@/data/adapter";
+import { filterModulesWithPublishableContent } from "@/lib/civic-module-content";
 import civicModulesFallback from "@/data/fallbacks/civic-modules.json";
 import learnSummaryFallback from "@/data/fallbacks/learn-summary.json";
 
 export type { CivicModule, CivicModuleAuthor, LearnHubSummary, LearnProfileResponse };
 
-const FALLBACK_MODULES = (civicModulesFallback.results ?? []) as unknown as CivicModule[];
+const FALLBACK_MODULES = filterModulesWithPublishableContent(
+  (civicModulesFallback.results ?? []) as unknown as CivicModule[],
+);
 
 const DEFAULT_SUMMARY: LearnHubSummary = {
   counts: { ...(learnSummaryFallback.counts ?? {}) },
@@ -55,14 +58,18 @@ export const learningData = {
           return _modules.length > 0 ? _modules : FALLBACK_MODULES;
         },
         {
-          // Prefer fallback when API returns fewer modules than the seeded catalogue.
-          // This prevents a partially-seeded backend from showing a degraded hub.
+          // Accept API payloads that include at least one module with learnable content.
           accept: (rows) =>
-            Array.isArray(rows) && rows.length >= FALLBACK_MODULES.length,
+            Array.isArray(rows) &&
+            filterModulesWithPublishableContent(rows).length > 0,
         },
       );
-      _modules = results.length > 0 ? results : FALLBACK_MODULES;
-      _modulesUsedFallback = usedFallback || results.length === 0;
+      const publishable = filterModulesWithPublishableContent(
+        Array.isArray(results) ? results : [],
+      );
+      _modules = publishable.length > 0 ? publishable : FALLBACK_MODULES;
+      _modulesUsedFallback =
+        usedFallback || publishable.length === 0 || results.length === 0;
       return _modules;
     },
     fetchBySlug: (slug: string) =>
