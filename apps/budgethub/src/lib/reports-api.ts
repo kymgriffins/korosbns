@@ -2,6 +2,7 @@
 
 import type { BudgetSchema, NationalSector, WardProject } from "@/lib/budget-schema";
 import { API_BASE_URL } from "@/lib/api-config";
+import seededBudgetOverview from "../data/budget-fy2026-27.json";
 
 const V2_BUDGET_OVERVIEW_URL = `${API_BASE_URL}/api/v2/budget/overview/`;
 const V2_FISCAL_YEARS_URL = `${API_BASE_URL}/api/v2/budget/fiscal-years/`;
@@ -98,9 +99,20 @@ function emptySchema(label = "Unavailable"): BudgetSchema {
   };
 }
 
+const SEEDED_OVERVIEW = seededBudgetOverview as BudgetSchema;
+
+function overviewHasNationalSectors(data: BudgetSchema | null | undefined): boolean {
+  return (data?.tier_1_national_sectors?.length ?? 0) > 0;
+}
+
+/** Verbatim FY 2026/27 catalogue — not scaled or synthesized from other years. */
+export function getSeededBudgetOverview(): BudgetSchema {
+  return SEEDED_OVERVIEW;
+}
+
 /**
  * Fetch live overview. Never applies client-side FY scale factors.
- * Returns null when the API is unreachable (UI must show unavailable).
+ * Falls back to seeded FY 2026/27 JSON when the API is unreachable or empty.
  */
 export async function fetchBudgetOverview(_fyId?: string): Promise<BudgetSchema | null> {
   try {
@@ -109,10 +121,11 @@ export async function fetchBudgetOverview(_fyId?: string): Promise<BudgetSchema 
       headers: { Accept: "application/json" },
       signal: AbortSignal.timeout(8000),
     });
-    if (!res.ok) return null;
-    return (await res.json()) as BudgetSchema;
+    if (!res.ok) return getSeededBudgetOverview();
+    const data = (await res.json()) as BudgetSchema;
+    return overviewHasNationalSectors(data) ? data : getSeededBudgetOverview();
   } catch {
-    return null;
+    return getSeededBudgetOverview();
   }
 }
 
@@ -227,6 +240,9 @@ export function getReportProvenance(data: BudgetSchema | null | undefined): Repo
       data_status: "unavailable",
     };
   }
+  const isSeeded =
+    data.metadata?.source_verbatim === "budget_fy2026_27.json" ||
+    data === SEEDED_OVERVIEW;
   const envelope = data.tier_2_county_devolution_envelope as {
     data_status?: string;
     provenance?: { source?: string; fiscal_year?: string | null };
@@ -239,10 +255,11 @@ export function getReportProvenance(data: BudgetSchema | null | undefined): Repo
   else if (envelope?.data_status === "ok") data_status = "ok";
 
   return {
-    source:
-      envelope?.provenance?.source ||
-      data.metadata?.source_verbatim ||
-      "bnscore_v2 overview",
+    source: isSeeded
+      ? "seeded:budget_fy2026_27.json"
+      : envelope?.provenance?.source ||
+        data.metadata?.source_verbatim ||
+        "bnscore_v2 overview",
     fiscal_year: data.metadata?.fiscal_year ?? envelope?.provenance?.fiscal_year ?? null,
     synced_at: new Date().toISOString(),
     data_status,

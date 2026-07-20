@@ -229,6 +229,14 @@ const nextConfig: NextConfig = {
         destination: `${target}/api/v1/:path*/`,
       },
       {
+        source: "/api/v2/:path*/",
+        destination: `${target}/api/v2/:path*/`,
+      },
+      {
+        source: "/api/analytics/:path*/",
+        destination: `${target}/api/analytics/:path*/`,
+      },
+      {
         source: "/api/gamification/:path*/",
         destination: `${target}/api/gamification/:path*/`,
       },

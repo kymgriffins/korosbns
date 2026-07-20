@@ -1,4 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import type { BudgetSchema } from "@/lib/budget-schema";
 
 /**
@@ -166,5 +168,27 @@ describe("reports-api honesty (P0 Trust)", () => {
         }
       }
     }
+  });
+
+  it("fetchBudgetOverview falls back to seeded FY 2026/27 JSON when API fails", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockRejectedValue(new Error("network")),
+    );
+
+    const { fetchBudgetOverview, getSeededBudgetOverview } = await import("@/lib/reports-api");
+    const overview = await fetchBudgetOverview();
+    expect(overview).not.toBeNull();
+    expect(overview!.tier_1_national_sectors.length).toBeGreaterThan(0);
+    expect(overview!.metadata?.source_verbatim).toBe(
+      getSeededBudgetOverview().metadata?.source_verbatim,
+    );
+  });
+});
+
+describe("reports API proxy (next.config)", () => {
+  it("rewrites /api/v2 to BNSKE so browser budget overview calls succeed", () => {
+    const src = readFileSync(join(process.cwd(), "next.config.ts"), "utf8");
+    expect(src).toMatch(/source:\s*["']\/api\/v2\/:path\*\//);
   });
 });

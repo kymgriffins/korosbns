@@ -13,6 +13,7 @@ export {
   getTotalNationalBudget,
   extractCountyAllocations,
   getReportProvenance,
+  getSeededBudgetOverview,
   emptySchema,
   type FiscalYearMeta,
   type CountyAllocation,
