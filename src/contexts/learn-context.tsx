@@ -97,11 +97,8 @@ export function LearnProvider({ children }: { children: React.ReactNode }) {
       setModulesCached(true);
       const offline = learningData.modules.usedFallback();
       setModulesOffline(offline);
-      setModulesError(
-        offline
-          ? "Showing the offline catalogue — live modules could not be reached. You can keep browsing; retry when the connection is back."
-          : null,
-      );
+      // Don't surface offline status to users — fallback catalogue is seamless.
+      setModulesError(null);
     } catch (err) {
       if (gen !== fetchGenRef.current) return;
       const message =

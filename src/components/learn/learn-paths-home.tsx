@@ -292,23 +292,7 @@ export function LearnPathsHome({ tab }: Props) {
 
   return (
     <div className="w-full bg-background">
-      {(modulesOffline || modulesError) && stages.length > 0 ? (
-        <div className="flex w-full flex-wrap items-center justify-center gap-2 border-b border-amber-500/25 bg-amber-500/10 px-4 py-2 text-center text-[11px] text-amber-800 dark:text-amber-200">
-          <span className="font-semibold">Offline catalogue</span>
-          <span className="text-amber-800/80 dark:text-amber-200/80">
-            Live modules could not be reached. Showing seeded JSON until retry succeeds.
-          </span>
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="h-7 rounded-md px-2 text-[11px] font-bold"
-            onClick={refreshModules}
-          >
-            Retry live
-          </Button>
-        </div>
-      ) : null}
+      {/* Offline banner intentionally suppressed — fallback catalogue is seamless to the user. */}
 
       {activeProfile.language === "SH" && (
         <div className="w-full border-b border-amber-500/20 bg-amber-500/15 px-4 py-1 text-center text-[10px] font-semibold text-amber-600">

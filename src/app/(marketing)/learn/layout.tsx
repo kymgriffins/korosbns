@@ -45,16 +45,12 @@ export default function LearnLayout({ children }: { children: React.ReactNode })
     <LearnProvider>
       <LearnTeachingProviderShell>
         <SidebarProvider defaultOpen={false}>
-          <Suspense
-            fallback={
-              <div className="flex min-h-screen items-center justify-center bg-background">
-                <div className="size-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-              </div>
-            }
-          >
+          {/* LearnTabSync uses useSearchParams — give it its own boundary so it
+              never blocks the page render with the full-screen spinner. */}
+          <Suspense fallback={null}>
             <LearnTabSync />
-            <CitizenSyllabusShell>{children}</CitizenSyllabusShell>
           </Suspense>
+          <CitizenSyllabusShell>{children}</CitizenSyllabusShell>
         </SidebarProvider>
       </LearnTeachingProviderShell>
     </LearnProvider>
