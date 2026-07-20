@@ -53,11 +53,6 @@ function useSidebar() {
   return context
 }
 
-/** Citizen learn shell has no admin sidebar — use this instead of throwing. */
-function useOptionalSidebar(): SidebarContextProps | null {
-  return React.useContext(SidebarContext)
-}
-
 function SidebarProvider({
   defaultOpen = true,
   open: openProp,
@@ -727,6 +722,5 @@ export {
   SidebarRail,
   SidebarSeparator,
   SidebarTrigger,
-  useOptionalSidebar,
   useSidebar,
 }

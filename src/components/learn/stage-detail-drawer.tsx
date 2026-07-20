@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { apiFetch } from "@/lib/api-client";
 import { learnHubApi } from "@/lib/learn-hub";
 import { useLearn } from "@/contexts/learn-context";
-import { useOptionalSidebar } from "@/components/ui/sidebar";
+import { useSidebar } from "@/components/ui/sidebar";
 import { readProgress, writeProgress } from "@/lib/module-progress";
 import { triviaForStep } from "@/lib/learn-trivia";
 import { certificateDownloadHref } from "@/lib/certificate-url";
@@ -54,7 +54,7 @@ export function StageDetailDrawer({
 }: StageDetailDrawerProps) {
   usePageView();
   const { totalStages } = useLearn();
-  const sidebar = useOptionalSidebar();
+  const { setOpen: setSidebarOpen } = useSidebar();
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [activeTab, setActiveTab] = useState<"read" | "watch" | "quiz">("read");
   const [showTrivia, setShowTrivia] = useState<boolean>(false);
@@ -94,10 +94,9 @@ export function StageDetailDrawer({
   }, [stage.slug, stage.order]);
 
   useEffect(() => {
-    if (!sidebar) return;
-    sidebar.setOpen(false);
-    return () => sidebar.setOpen(true);
-  }, [sidebar]);
+    setSidebarOpen(false);
+    return () => setSidebarOpen(true);
+  }, [setSidebarOpen]);
 
   const isStepTriviaPassed = (stepId: number) => {
     return readProgress(stage.slug, stage.order).stepsCompleted[stepId] === true;

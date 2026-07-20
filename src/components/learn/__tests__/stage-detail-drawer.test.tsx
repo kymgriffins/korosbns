@@ -24,7 +24,6 @@ vi.mock("@/contexts/learn-context", () => ({
 
 vi.mock("@/components/ui/sidebar", () => ({
   useSidebar: () => ({ open: true, setOpen: vi.fn() }),
-  useOptionalSidebar: () => ({ open: true, setOpen: vi.fn() }),
 }));
 
 vi.mock("../curriculum-sidebar", () => ({

@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { LearnTabSync } from "@/components/learn/learn-tab-sync";
 import { CitizenSyllabusShell } from "@/layouts/CitizenSyllabusShell";
 import { LearnTeachingProviderShell } from "@/components/admin/teaching";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { canonicalUrl, metaDescription } from "@/utils/metadata";
 
 export const metadata: Metadata = {
@@ -43,16 +44,18 @@ export default function LearnLayout({ children }: { children: React.ReactNode })
   return (
     <LearnProvider>
       <LearnTeachingProviderShell>
-        <Suspense
-          fallback={
-            <div className="flex min-h-screen items-center justify-center bg-background">
-              <div className="size-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-            </div>
-          }
-        >
-          <LearnTabSync />
-          <CitizenSyllabusShell>{children}</CitizenSyllabusShell>
-        </Suspense>
+        <SidebarProvider defaultOpen={false}>
+          <Suspense
+            fallback={
+              <div className="flex min-h-screen items-center justify-center bg-background">
+                <div className="size-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              </div>
+            }
+          >
+            <LearnTabSync />
+            <CitizenSyllabusShell>{children}</CitizenSyllabusShell>
+          </Suspense>
+        </SidebarProvider>
       </LearnTeachingProviderShell>
     </LearnProvider>
   );
