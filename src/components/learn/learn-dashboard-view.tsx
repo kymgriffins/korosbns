@@ -33,6 +33,7 @@ import Link from "next/link";
 import { Routes } from "@/constants/routes";
 import { learnTabToHref } from "@/lib/learn-nav";
 import { cn } from "@/utils";
+import { getModuleEmoji } from "@/lib/learn-module-display";
 
 interface LearnDashboardViewProps {
   profile: any;
@@ -324,7 +325,7 @@ export function LearnDashboardView({
                     />
                   ) : (
                     <div className="flex size-full items-center justify-center bg-primary/10 text-3xl">
-                      {currentStage.badge}
+                      {getModuleEmoji(currentStage.badge)}
                     </div>
                   )}
                 </div>
@@ -423,7 +424,7 @@ export function LearnDashboardView({
                         />
                       ) : (
                         <div className="flex size-full items-center justify-center text-2xl">
-                          {stage.badge || "📘"}
+                          {getModuleEmoji(stage.badge)}
                         </div>
                       )}
                       {isComplete ? (

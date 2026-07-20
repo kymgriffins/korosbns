@@ -37,6 +37,7 @@ import { YouTubePlayer } from "./youtube-player";
 import { TriviaSection } from "./trivia-section";
 import { SignUpCta } from "@/components/ui/sign-up-cta";
 import type { ChapterStep, CivicModule } from "@/types/learn";
+import { getModuleEmoji } from "@/lib/learn-module-display";
 
 function parseVideoEntries(step: ChapterStep | null): { videoId: string; title: string }[] {
   if (!step) return [];
@@ -405,7 +406,7 @@ export function ModuleDetailView() {
             <div className="mx-auto max-w-3xl p-4 md:p-6 lg:p-8">
               {isMastery ? (
                 <div className="flex flex-col items-center gap-4 py-16 text-center">
-                  <div className="text-5xl">{mod.badge || "🎉"}</div>
+                  <div className="text-5xl">{getModuleEmoji(mod.badge)}</div>
                   {mod.badgeName && (
                     <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 text-[10px] font-bold uppercase tracking-wider">{mod.badgeName} Unlocked!</span>
                   )}

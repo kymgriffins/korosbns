@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { Layers, Map } from "lucide-react";
 import { StageCard, type StageCardData } from "./stage-card";
+import { getModuleEmoji } from "@/lib/learn-module-display";
 
 type Profile = { badges?: string[]; stageProgress?: number[]; };
 
@@ -56,7 +57,7 @@ export function StageRoadmap({ text, profile, stages, onSelectStage }: {
                   <div key={s.id} className={`p-2 rounded-lg text-[10px] flex items-center gap-1.5 ${
                     done ? "bg-primary/5" : active ? "bg-card shadow-xs" : "bg-muted/20 opacity-40"
                   }`}>
-                    <span className="text-sm">{s.badge}</span>
+                    <span className="text-sm">{getModuleEmoji(s.badge)}</span>
                     <div className="truncate">
                       <p className="font-bold truncate text-[10px]">{s.badgeName || s.title}</p>
                     </div>

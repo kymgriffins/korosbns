@@ -49,22 +49,22 @@ export function SignUpCta({
   return (
     <div
       data-testid="soft-login-cta"
-      className="relative rounded-xl border border-border/60 bg-muted/30 p-5"
+      className="relative rounded-3xl border border-border/50 bg-muted/25 p-6 sm:p-7"
       role="complementary"
       aria-label="Optional account prompt"
     >
       <button
         type="button"
         onClick={dismiss}
-        className="absolute right-3 top-3 rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+        className="absolute right-3 top-3 rounded-full p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
         aria-label="Dismiss"
       >
         <X className="size-3.5" />
       </button>
-      <div className="flex flex-col items-start gap-4 pr-6 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h3 className="text-sm font-semibold">{title}</h3>
-          <p className="mt-1 text-sm text-muted-foreground">
+      <div className="flex flex-col items-start gap-5 pr-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="space-y-1.5">
+          <h3 className="text-[15px] font-semibold tracking-tight">{title}</h3>
+          <p className="max-w-md text-sm leading-relaxed text-muted-foreground">
             {feature ? (
               <>
                 <span className="font-medium text-foreground">{feature}</span> — {description}
@@ -75,10 +75,10 @@ export function SignUpCta({
           </p>
         </div>
         <div className="flex shrink-0 gap-2">
-          <Button asChild variant="default" size="sm">
+          <Button asChild variant="default" size="sm" className="h-9 rounded-full px-4 text-xs font-semibold">
             <Link href="/auth/register">Create free account</Link>
           </Button>
-          <Button asChild variant="outline" size="sm">
+          <Button asChild variant="outline" size="sm" className="h-9 rounded-full px-4 text-xs font-semibold">
             <Link href="/auth/login">Sign in</Link>
           </Button>
         </div>

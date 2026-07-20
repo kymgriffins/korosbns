@@ -23,12 +23,12 @@ export function CitizenSyllabusShell({ children }: { children: React.ReactNode }
 
   return (
     <div data-testid="citizen-syllabus-shell" className="flex min-h-screen flex-col bg-background">
-      <header className="sticky top-0 z-40 border-b border-border/60 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-        <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-4 px-4 sm:px-6">
-          <Link href="/learn" className="text-sm font-bold tracking-tight text-foreground">
+      <header className="sticky top-0 z-40 border-b border-border/40 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70">
+        <div className="mx-auto flex h-14 max-w-4xl items-center justify-between gap-4 px-5 sm:px-8">
+          <Link href="/learn" className="text-sm font-semibold tracking-tight text-foreground">
             Budget Ndio Story
           </Link>
-          <nav aria-label="Learn syllabus" className="hidden items-center gap-1 md:flex">
+          <nav aria-label="Learn syllabus" className="hidden items-center gap-0.5 md:flex">
             {NAV.map((item) => {
               const Icon = item.icon;
               const active = activeTab === item.tab;
@@ -38,10 +38,10 @@ export function CitizenSyllabusShell({ children }: { children: React.ReactNode }
                   href={item.href}
                   data-active={active || undefined}
                   className={cn(
-                    "inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-colors",
+                    "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors",
                     active
                       ? "bg-muted text-foreground"
-                      : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
+                      : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
                   )}
                 >
                   <Icon className="size-3.5" aria-hidden />
@@ -52,14 +52,14 @@ export function CitizenSyllabusShell({ children }: { children: React.ReactNode }
           </nav>
           <Link
             href="/reports"
-            className="text-xs font-semibold text-muted-foreground hover:text-foreground"
+            className="text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
             Reports
           </Link>
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-5xl flex-1 pb-20 md:pb-8">{children}</main>
+      <main className="w-full flex-1 pb-20 md:pb-10">{children}</main>
 
       <div className="md:hidden">
         <LearnMobileNav />

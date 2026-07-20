@@ -1,25 +1,49 @@
 "use client";
 
 import Link from "next/link";
-import { BookOpen, ArrowRight, Landmark } from "lucide-react";
+import { ArrowRight, Landmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Routes } from "@/constants/routes";
 import { learnTabToHref } from "@/lib/learn-nav";
-import { getModuleEyebrow } from "@/lib/learn-module-display";
 import type { CivicModule } from "@/types/learn";
 import { SignUpCta } from "@/components/ui/sign-up-cta";
+import { readProgress } from "@/lib/module-progress";
+import {
+  LearnPageFrame,
+  LearnPageHeader,
+  LearnSection,
+} from "@/components/learn/learn-page-frame";
+import { cn } from "@/utils";
 
 type Props = {
   stages: CivicModule[];
   onSelectStage: (stage: CivicModule) => void;
-  /** Optional personalized picks for logged-in users */
   recommended?: CivicModule[];
   greeting?: string;
 };
 
+function moduleProgressPct(mod: CivicModule): number {
+  const total = mod.steps?.length ?? 0;
+  if (!total) return 0;
+  const p = readProgress(mod.slug, mod.order);
+  if (p.masteryAwarded) return 100;
+  const done = Object.keys(p.stepsCompleted).length;
+  return Math.round((done / total) * 100);
+}
+
 /**
- * Civic syllabus library — brand + one CTA + module list.
- * Used for anonymous /learn home (and recommended strip when logged in).
+ * Prefer Budget Policy Statement first — it is the flagship civic module.
+ * Remaining modules keep their natural order.
+ */
+function orderForSyllabus(stages: CivicModule[]): CivicModule[] {
+  const bps = stages.find((s) => s.slug === "budget-policy-statement");
+  if (!bps) return stages;
+  return [bps, ...stages.filter((s) => s.slug !== bps.slug)];
+}
+
+/**
+ * Civic syllabus home — brand, one CTA group, calm numbered list.
+ * Matches the accepted /learn composition.
  */
 export function SyllabusLibraryHome({
   stages,
@@ -27,109 +51,137 @@ export function SyllabusLibraryHome({
   recommended = [],
   greeting,
 }: Props) {
-  const featured = stages.slice(0, 8);
+  const ordered = orderForSyllabus(stages);
+  const featured = ordered.slice(0, 8);
   const picks = recommended.length > 0 ? recommended.slice(0, 3) : [];
 
   return (
-    <div data-testid="syllabus-library-home" className="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-14">
-      <header className="space-y-4">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-          Budget Ndio Story
-        </p>
-        <h1 className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-          Learn Kenya&apos;s budget
-        </h1>
-        <p className="max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-          {greeting ||
-            "A free civic syllabus for the national and county budget cycle — read everything without an account."}
-        </p>
-        <div className="flex flex-wrap gap-2 pt-1">
-          <Button asChild size="sm" className="rounded-lg text-xs font-bold">
-            <Link href={learnTabToHref("learn")}>
-              Browse modules
-              <ArrowRight className="ml-1.5 size-3.5" />
-            </Link>
-          </Button>
-          <Button asChild variant="outline" size="sm" className="rounded-lg text-xs font-bold">
-            <Link href={Routes.Reports}>
-              <Landmark className="mr-1.5 size-3.5" />
-              Open reports
-            </Link>
-          </Button>
-        </div>
-      </header>
+    <LearnPageFrame width="reading">
+      <div data-testid="syllabus-library-home">
+        <LearnPageHeader
+          eyebrow="Budget Ndio Story"
+          title="Learn Kenya's budget"
+          description={
+            greeting ||
+            "A free civic syllabus for the national and county budget cycle — read everything without an account."
+          }
+          actions={
+            <>
+              <Button asChild size="sm" className="h-9 rounded-full px-4 text-xs font-semibold">
+                <Link href={learnTabToHref("learn")}>
+                  Browse modules
+                  <ArrowRight className="ml-1.5 size-3.5" />
+                </Link>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                size="sm"
+                className="h-9 rounded-full px-4 text-xs font-semibold"
+              >
+                <Link href={Routes.Reports}>
+                  <Landmark className="mr-1.5 size-3.5" />
+                  Open reports
+                </Link>
+              </Button>
+            </>
+          }
+        />
 
-      {picks.length > 0 && (
-        <section className="mt-10 space-y-3" aria-label="Recommended for you">
-          <h2 className="text-sm font-bold tracking-tight">Recommended for you</h2>
-          <ul className="space-y-2">
-            {picks.map((mod) => (
-              <li key={mod.slug}>
-                <button
-                  type="button"
-                  onClick={() => onSelectStage(mod)}
-                  className="flex w-full items-start gap-3 rounded-lg border border-border/60 bg-muted/20 px-4 py-3 text-left transition hover:bg-muted/40"
-                >
-                  <BookOpen className="mt-0.5 size-4 shrink-0 text-primary" />
-                  <span>
-                    <span className="block text-sm font-semibold">{mod.title}</span>
-                    {mod.description ? (
-                      <span className="mt-0.5 block text-xs text-muted-foreground line-clamp-2">
-                        {mod.description}
-                      </span>
-                    ) : null}
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      <section className="mt-10 space-y-3" aria-label="Syllabus">
-        <h2 className="text-sm font-bold tracking-tight">Syllabus</h2>
-        {featured.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No published modules yet.</p>
-        ) : (
-          <ol className="space-y-2">
-            {featured.map((mod, i) => {
-              const eyebrow = getModuleEyebrow(mod);
-
-              return (
+        {picks.length > 0 ? (
+          <LearnSection title="Recommended for you">
+            <ul className="divide-y divide-border/50 overflow-hidden rounded-2xl border border-border/50">
+              {picks.map((mod) => (
                 <li key={mod.slug}>
                   <button
                     type="button"
                     onClick={() => onSelectStage(mod)}
-                    className="flex w-full items-center gap-3 rounded-lg border border-transparent px-3 py-2.5 text-left transition hover:border-border/60 hover:bg-muted/30"
+                    className="flex w-full items-start gap-3 px-4 py-3.5 text-left transition-colors hover:bg-muted/40"
                   >
-                    <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-muted text-xs font-bold tabular-nums text-muted-foreground">
-                      {i + 1}
+                    <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+                      →
                     </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm font-semibold">{mod.title}</span>
-                      {eyebrow ? (
-                        <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
-                          {eyebrow}
+                    <span className="min-w-0">
+                      <span className="block text-[15px] font-semibold leading-snug">
+                        {mod.title}
+                      </span>
+                      {mod.description ? (
+                        <span className="mt-1 block text-sm leading-relaxed text-muted-foreground line-clamp-2">
+                          {mod.description}
                         </span>
                       ) : null}
                     </span>
-                    <ArrowRight className="size-3.5 shrink-0 text-muted-foreground" />
                   </button>
                 </li>
-              );
-            })}
-          </ol>
-        )}
-        {stages.length > featured.length && (
-          <Button asChild variant="ghost" size="sm" className="mt-2 text-xs font-bold">
-            <Link href={learnTabToHref("learn")}>See all {stages.length} modules</Link>
-          </Button>
-        )}
-      </section>
+              ))}
+            </ul>
+          </LearnSection>
+        ) : null}
 
-      <div className="mt-10">
-        <SignUpCta dismissKey="bns-soft-login-syllabus-home" />
+        <LearnSection
+          title="Syllabus"
+          action={
+            stages.length > featured.length ? (
+              <Link
+                href={learnTabToHref("learn")}
+                className="text-xs font-semibold text-primary hover:underline"
+              >
+                See all {stages.length}
+              </Link>
+            ) : null
+          }
+        >
+          {featured.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No published modules yet.</p>
+          ) : (
+            <ol className="space-y-1">
+              {featured.map((mod, i) => {
+                const pct = moduleProgressPct(mod);
+
+                return (
+                  <li key={mod.slug}>
+                    <button
+                      type="button"
+                      onClick={() => onSelectStage(mod)}
+                      className="group flex w-full items-center gap-3.5 rounded-2xl px-2 py-3 text-left transition-colors hover:bg-muted/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                      <span
+                        className={cn(
+                          "flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-bold tabular-nums",
+                          pct >= 100
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted text-muted-foreground",
+                        )}
+                      >
+                        {i + 1}
+                      </span>
+                      <span className="min-w-0 flex-1 space-y-1.5">
+                        <span className="block truncate text-[15px] font-semibold leading-snug text-foreground group-hover:text-primary">
+                          {mod.title}
+                        </span>
+                        <span
+                          className="block h-1 max-w-[7.5rem] overflow-hidden rounded-full bg-muted"
+                          aria-hidden
+                        >
+                          <span
+                            className="block h-full rounded-full bg-primary transition-all"
+                            style={{ width: `${Math.max(pct, pct > 0 ? pct : 6)}%`, opacity: pct > 0 ? 1 : 0.35 }}
+                          />
+                        </span>
+                      </span>
+                      <ArrowRight className="size-3.5 shrink-0 text-muted-foreground/70 transition-transform group-hover:translate-x-0.5 group-hover:text-foreground" />
+                    </button>
+                  </li>
+                );
+              })}
+            </ol>
+          )}
+        </LearnSection>
+
+        <div className="mt-14">
+          <SignUpCta dismissKey="bns-soft-login-syllabus-home" />
+        </div>
       </div>
-    </div>
+    </LearnPageFrame>
   );
 }
