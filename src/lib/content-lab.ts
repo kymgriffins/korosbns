@@ -17,7 +17,7 @@ import {
   level1SourcesOnly,
   type BudgetSource,
 } from "@/lib/budget-sources";
-import { filterModulesWithPublishableContent } from "@/lib/civic-module-content";
+import { ensureModulesBpsYoutube, filterModulesWithPublishableContent } from "@/lib/civic-module-content";
 import type { CivicModule } from "@/types/learn";
 
 export type PresenceStatus = "API" | "FALLBACK" | "MISSING";
@@ -146,8 +146,10 @@ export function allSurfacesMirror(): SurfaceContractMirror[] {
   return [...LEARN_HUB_SURFACE_MIRROR, budgetYearSurfaceMirror()];
 }
 
-const FALLBACK_MODULES = filterModulesWithPublishableContent(
-  (civicModulesFallback.results ?? []) as unknown as CivicModule[],
+const FALLBACK_MODULES = ensureModulesBpsYoutube(
+  filterModulesWithPublishableContent(
+    (civicModulesFallback.results ?? []) as unknown as CivicModule[],
+  ),
 );
 
 function present(value: unknown): boolean {

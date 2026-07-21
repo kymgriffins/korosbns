@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, BookOpen, Clapperboard, Notebook } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Routes } from "@/constants/routes";
 import { learnTabToHref } from "@/lib/learn-nav";
 import type { CivicModule } from "@/types/learn";
@@ -16,6 +17,13 @@ import {
   LearnSection,
 } from "@/components/learn/learn-page-frame";
 import { cn } from "@/utils";
+import {
+  getCurrentSeries,
+  learnHubItemToVideo,
+  videoData,
+  type YouTubeVideo,
+} from "@/data/videos";
+import { BPS_MODULE_SLUG, type YouTubeSeries } from "@/lib/youtube-series";
 
 type Props = {
   stages: CivicModule[];
@@ -60,6 +68,7 @@ export function SyllabusLibraryHome({
 
   const [progressBySlug, setProgressBySlug] = useState<Record<string, number>>({});
   const [progressReady, setProgressReady] = useState(false);
+  const [currentSeries, setCurrentSeries] = useState<YouTubeSeries | null>(null);
 
   useEffect(() => {
     const next: Record<string, number> = {};
@@ -69,6 +78,21 @@ export function SyllabusLibraryHome({
     setProgressBySlug(next);
     setProgressReady(true);
   }, [stages]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const items = await videoData.fetch();
+      if (cancelled) return;
+      const mapped = items
+        .map(learnHubItemToVideo)
+        .filter((v): v is YouTubeVideo => v != null);
+      setCurrentSeries(getCurrentSeries(mapped));
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const continueItems = useMemo(
     () =>
@@ -96,13 +120,16 @@ export function SyllabusLibraryHome({
           }
         : null;
 
+  const watchHref = currentSeries?.isBps
+    ? moduleHref(BPS_MODULE_SLUG)
+    : Routes.LearnVideos;
+
   return (
     <LearnPageFrame>
       <div
         data-testid="syllabus-library-home"
         className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_22rem]"
       >
-        {/* ── Main column ─────────────────────────────────────────── */}
         <div className="min-w-0 space-y-12">
           <LearnPageHeader
             eyebrow="Budget Ndio Story"
@@ -151,25 +178,73 @@ export function SyllabusLibraryHome({
             </LearnSection>
           ) : null}
 
-          <nav
-            aria-label="Watch and stories"
-            className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm"
+          <LearnSection
+            title="Watch"
+            action={
+              <Link
+                href={Routes.LearnVideos}
+                className="text-xs font-semibold text-primary hover:underline"
+              >
+                All series
+              </Link>
+            }
           >
-            <Link
-              href={Routes.LearnVideos}
-              className="inline-flex items-center gap-1.5 font-semibold text-foreground transition-colors hover:text-primary"
-            >
-              <Clapperboard className="size-3.5 text-muted-foreground" />
-              Watch
-            </Link>
-            <Link
-              href={Routes.LearnStories}
-              className="inline-flex items-center gap-1.5 font-semibold text-foreground transition-colors hover:text-primary"
-            >
-              <Notebook className="size-3.5 text-muted-foreground" />
-              Stories
-            </Link>
-          </nav>
+            {currentSeries ? (
+              <Link
+                href={watchHref}
+                data-testid="hub-current-watch"
+                className="flex items-start gap-3 rounded-2xl border border-border/50 bg-muted/15 px-4 py-4 transition-colors hover:border-primary/35 hover:bg-muted/30"
+              >
+                <Clapperboard className="mt-0.5 size-4 shrink-0 text-primary" />
+                <span className="min-w-0 flex-1 space-y-1.5">
+                  <span className="flex flex-wrap items-center gap-2">
+                    <Badge variant="default" className="text-[10px]">
+                      Current
+                    </Badge>
+                    {seed ? (
+                      <Badge variant="secondary" className="text-[10px]">
+                        Budget Policy Statement
+                      </Badge>
+                    ) : null}
+                  </span>
+                  <span className="block text-[15px] font-semibold leading-snug">
+                    {currentSeries.title}
+                  </span>
+                  <span className="block text-sm text-muted-foreground">
+                    {currentSeries.videos.length} part
+                    {currentSeries.videos.length !== 1 ? "s" : ""}
+                    {currentSeries.latestPublishedAt
+                      ? ` · ${new Date(currentSeries.latestPublishedAt).toLocaleDateString("en-KE", { month: "short", day: "numeric", year: "numeric" })}`
+                      : ""}
+                    {currentSeries.isBps
+                      ? " · paired with the BPS module"
+                      : " · learn alongside the BPS path"}
+                  </span>
+                </span>
+                <ArrowRight className="mt-1 size-3.5 shrink-0 text-muted-foreground" />
+              </Link>
+            ) : (
+              <nav
+                aria-label="Watch and stories"
+                className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm"
+              >
+                <Link
+                  href={Routes.LearnVideos}
+                  className="inline-flex items-center gap-1.5 font-semibold text-foreground transition-colors hover:text-primary"
+                >
+                  <Clapperboard className="size-3.5 text-muted-foreground" />
+                  Watch
+                </Link>
+                <Link
+                  href={Routes.LearnStories}
+                  className="inline-flex items-center gap-1.5 font-semibold text-foreground transition-colors hover:text-primary"
+                >
+                  <Notebook className="size-3.5 text-muted-foreground" />
+                  Stories
+                </Link>
+              </nav>
+            )}
+          </LearnSection>
 
           {picks.length > 0 ? (
             <LearnSection title="Recommended for you">
@@ -261,13 +336,11 @@ export function SyllabusLibraryHome({
             )}
           </LearnSection>
 
-          {/* Mobile / tablet CTA — desktop uses the aside */}
           <div className="lg:hidden">
             <SignUpCta dismissKey="bns-soft-login-syllabus-home" />
           </div>
         </div>
 
-        {/* ── Aside: one soft auth message, or path when logged in ── */}
         <aside className="hidden min-w-0 lg:block">
           <div className="sticky top-20 space-y-5">
             {isLoggedIn ? (

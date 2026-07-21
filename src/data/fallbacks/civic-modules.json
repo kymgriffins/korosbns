@@ -26,7 +26,12 @@
           "id": "budget-policy-statement-ch1",
           "title": "Understanding the BPS",
           "order": 1,
-          "youtube_url": "",
+          "youtube_url": "https://www.youtube.com/watch?v=Ed9lP0-komE",
+          "youtube_urls": [
+            "https://www.youtube.com/watch?v=Ed9lP0-komE",
+            "https://www.youtube.com/watch?v=wkPe3sWomoA",
+            "https://www.youtube.com/watch?v=FkgRz4v2Llk"
+          ],
           "audio_url": "",
           "transcript": "",
           "text": "The Budget Policy Statement (BPS) is Kenya's early roadmap for the national budget. It sets priorities, spending ceilings, and policy signals before the full estimates are published."
@@ -35,19 +40,29 @@
           "id": "budget-policy-statement-ch2",
           "title": "Reading the BPS 2026 Summary",
           "order": 2,
-          "youtube_url": "",
+          "youtube_url": "https://www.youtube.com/watch?v=Ed9lP0-komE",
+          "youtube_urls": [
+            "https://www.youtube.com/watch?v=Ed9lP0-komE",
+            "https://www.youtube.com/watch?v=wkPe3sWomoA",
+            "https://www.youtube.com/watch?v=FkgRz4v2Llk"
+          ],
           "audio_url": "",
           "transcript": "",
-          "text": ""
+          "text": "Explore the key highlights of BPS 2026 — revenue targets, spending priorities, and fiscal outlook — explained in plain language."
         },
         {
           "id": "budget-policy-statement-ch3",
           "title": "BPS and the BETA Agenda",
           "order": 3,
-          "youtube_url": "",
+          "youtube_url": "https://www.youtube.com/watch?v=Ed9lP0-komE",
+          "youtube_urls": [
+            "https://www.youtube.com/watch?v=Ed9lP0-komE",
+            "https://www.youtube.com/watch?v=wkPe3sWomoA",
+            "https://www.youtube.com/watch?v=FkgRz4v2Llk"
+          ],
           "audio_url": "",
           "transcript": "",
-          "text": ""
+          "text": "Understand how the Bottom-Up Economic Transformation Agenda shapes BPS priorities and budget allocations."
         }
       ],
       "author": null,
