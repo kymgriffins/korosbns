@@ -16,6 +16,7 @@ import {
   LearnPageHeader,
   LearnSection,
 } from "@/components/learn/learn-page-frame";
+import { LedgerDivider } from "@/components/learn/ledger-divider";
 import { cn } from "@/utils";
 import {
   getCurrentSeries,
@@ -27,7 +28,6 @@ import { BPS_MODULE_SLUG, type YouTubeSeries } from "@/lib/youtube-series";
 
 type Props = {
   stages: CivicModule[];
-  onSelectStage: (stage: CivicModule) => void;
   recommended?: CivicModule[];
   greeting?: string;
 };
@@ -57,7 +57,6 @@ function moduleHref(slug: string): string {
  */
 export function SyllabusLibraryHome({
   stages,
-  onSelectStage,
   recommended = [],
   greeting,
 }: Props) {
@@ -65,6 +64,39 @@ export function SyllabusLibraryHome({
   const ordered = useMemo(() => orderForSyllabus(stages), [stages]);
   const featured = ordered.slice(0, 8);
   const picks = recommended.length > 0 ? recommended.slice(0, 3) : [];
+
+  // Day-one-of-a-growing-course cue: while the syllabus is short, name what's
+  // next so the page reads as "early" rather than "unfinished."
+  const comingSoonTitles =
+    featured.length < 4
+      ? [
+          "County budget: where the money comes from",
+          "Reading the Appropriation Act",
+          "The Finance Bill, explained",
+        ].slice(0, 4 - featured.length)
+      : [];
+
+  const ComingSoonList =
+    comingSoonTitles.length > 0 ? (
+      <ol className="mt-1 space-y-1 border-t border-border/40 pt-1">
+        {comingSoonTitles.map((title) => (
+          <li
+            key={title}
+            className="flex items-center gap-3.5 rounded-xl px-2 py-3 text-muted-foreground/70"
+          >
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-muted/60 text-xs font-bold">
+              {featured.length + comingSoonTitles.indexOf(title) + 1}
+            </span>
+            <span className="min-w-0 flex-1 text-[15px] font-medium leading-snug">
+              {title}
+            </span>
+            <span className="shrink-0 rounded-full bg-muted/60 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide">
+              Coming soon
+            </span>
+          </li>
+        ))}
+      </ol>
+    ) : null;
 
   const [progressBySlug, setProgressBySlug] = useState<Record<string, number>>({});
   const [progressReady, setProgressReady] = useState(false);
@@ -251,9 +283,8 @@ export function SyllabusLibraryHome({
               <ul className="divide-y divide-border/50 overflow-hidden rounded-2xl border border-border/50">
                 {picks.map((mod) => (
                   <li key={mod.slug}>
-                    <button
-                      type="button"
-                      onClick={() => onSelectStage(mod)}
+                    <Link
+                      href={moduleHref(mod.slug)}
                       className="flex w-full items-start gap-3 px-4 py-3.5 text-left transition-colors hover:bg-muted/40"
                     >
                       <BookOpen className="mt-0.5 size-4 shrink-0 text-primary" />
@@ -267,12 +298,14 @@ export function SyllabusLibraryHome({
                           </span>
                         ) : null}
                       </span>
-                    </button>
+                    </Link>
                   </li>
                 ))}
               </ul>
             </LearnSection>
           ) : null}
+
+          <LedgerDivider />
 
           <LearnSection
             title="Syllabus"
@@ -296,9 +329,8 @@ export function SyllabusLibraryHome({
 
                   return (
                     <li key={mod.slug}>
-                      <button
-                        type="button"
-                        onClick={() => onSelectStage(mod)}
+                      <Link
+                        href={moduleHref(mod.slug)}
                         className="group flex w-full items-center gap-3.5 rounded-xl px-2 py-3 text-left transition-colors hover:bg-muted/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       >
                         <span
@@ -328,12 +360,14 @@ export function SyllabusLibraryHome({
                           </span>
                         </span>
                         <ArrowRight className="size-3.5 shrink-0 text-muted-foreground/70 transition-transform group-hover:translate-x-0.5 group-hover:text-foreground" />
-                      </button>
+                      </Link>
                     </li>
                   );
                 })}
               </ol>
             )}
+
+            {ComingSoonList}
           </LearnSection>
 
           <div className="lg:hidden">

@@ -22,7 +22,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
 import { cn } from "@/utils";
 import { learnHubApi } from "@/lib/learn-hub";
 import { learningData } from "@/data/learning";
@@ -31,6 +30,7 @@ import { readProgress, writeProgress } from "@/lib/module-progress";
 import { triviaForStep } from "@/lib/learn-trivia";
 import { certificateDownloadHref } from "@/lib/certificate-url";
 import { renderContent } from "@/lib/render-content";
+import { applyLearnGlossary } from "@/lib/learn-glossary";
 import { resolveYoutubeId } from "@/lib/learn-video";
 import {
   recordLearnProgressWithQueue,
@@ -38,6 +38,7 @@ import {
 } from "@/lib/sync-profile";
 import { YouTubePlayer } from "./youtube-player";
 import { TriviaSection } from "./trivia-section";
+import { LedgerDivider } from "./ledger-divider";
 import { SignUpCta } from "@/components/ui/sign-up-cta";
 import type { ChapterStep, CivicModule } from "@/types/learn";
 import { getModuleEmoji } from "@/lib/learn-module-display";
@@ -264,8 +265,24 @@ export function ModuleDetailView() {
     handleFinishTrivia();
   };
 
-  const primaryNextLabel =
-    currentStep >= steps.length ? "Finish" : "Next";
+  const isLastStep = currentStep >= steps.length;
+  const alreadyPassed = currentStepObj ? isStepPassed(currentStep) : false;
+  const nextStepTitle = !isLastStep ? steps[currentStep]?.title : undefined;
+
+  // Explicit terminal action per activity — the Read tab used to just stop
+  // mid-sentence. Name the action and name what's next.
+  const primaryNextLabel = isLastStep
+    ? "Finish module"
+    : alreadyPassed
+      ? "Next step"
+      : hasQuiz
+        ? "Take knowledge check"
+        : "Mark as read";
+
+  const primaryNextCaption =
+    !isLastStep && nextStepTitle && (alreadyPassed || !hasQuiz)
+      ? `Continue to: ${nextStepTitle}`
+      : undefined;
 
   const handleFinishModule = () => {
     if (!mod) return;
@@ -354,10 +371,12 @@ export function ModuleDetailView() {
               <BookOpen className="size-3" /> {mod.badgeName}
             </Badge>
           )}
-          <Badge variant="secondary" className="text-[10px]">{steps.length} steps</Badge>
-          <div className="hidden items-center gap-1.5 sm:flex">
-            <Progress value={progressPercent} className="h-1.5 w-16" />
-            <span className="text-[10px] tabular-nums text-muted-foreground">{completedSteps.size}/{steps.length}</span>
+          {/* Single progress readout — the only place completion is stated. */}
+          <div className="flex items-center gap-1.5">
+            <Progress value={progressPercent} className="h-1.5 w-14 sm:w-16" />
+            <span className="figure text-[10px] font-semibold tabular-nums text-muted-foreground">
+              {completedSteps.size}/{steps.length} steps
+            </span>
           </div>
         </div>
       </header>
@@ -409,14 +428,11 @@ export function ModuleDetailView() {
                   {tab.label}
                 </button>
               ))}
-              <Button asChild variant="outline" size="sm" className="ml-1 h-7 px-2 text-[10px] font-bold">
+              <Button asChild variant="outline" size="sm" className="ml-auto h-7 px-2 text-[10px] font-bold">
                 <Link href={immersiveModuleHref(slug, "read", Math.max(1, currentStep))}>
                   Immersive
                 </Link>
               </Button>
-              <span className="ml-auto text-[10px] text-muted-foreground font-semibold">
-                Step {currentStep} of {steps.length}
-              </span>
             </div>
           )}
 
@@ -541,7 +557,7 @@ export function ModuleDetailView() {
                       )}
 
                       <div className="prose prose-sm max-w-none dark:prose-invert prose-headings:font-bold prose-p:leading-relaxed">
-                        {renderContent(currentStepObj.text)}
+                        {renderContent(currentStepObj.text, { transformHtml: applyLearnGlossary })}
                       </div>
 
                       <SignUpCta dismissKey="bns-soft-login-module-reader" />
@@ -616,7 +632,12 @@ export function ModuleDetailView() {
                   {/* === Step navigation — fixed positions (learning-hub chrome) === */}
                   {!isMastery && !showTrivia && (
                     <>
-                      <Separator />
+                      <LedgerDivider />
+                      {primaryNextCaption ? (
+                        <p className="-mt-1 text-center text-[11px] font-medium text-muted-foreground">
+                          {primaryNextCaption}
+                        </p>
+                      ) : null}
                       <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 pb-4">
                         <div className="justify-self-start">
                           <Button
@@ -631,7 +652,7 @@ export function ModuleDetailView() {
                           </Button>
                         </div>
 
-                        <span className="text-[10px] font-semibold tabular-nums text-muted-foreground">
+                        <span className="figure text-[10px] font-semibold tabular-nums text-muted-foreground">
                           Step {currentStep} of {steps.length}
                         </span>
 
@@ -643,7 +664,7 @@ export function ModuleDetailView() {
                             className="min-w-[7.5rem] gap-1 rounded-lg text-xs font-bold"
                           >
                             {primaryNextLabel}
-                            {primaryNextLabel === "Finish" ? (
+                            {primaryNextLabel === "Finish module" ? (
                               <CheckCircle2 className="size-3.5" />
                             ) : (
                               <ChevronRight className="size-3.5" />
@@ -675,9 +696,16 @@ export function ModuleDetailView() {
                 </div>
               )}
 
-              <div className="mb-3 flex items-center justify-between">
-                <h3 className="text-xs font-semibold">Curriculum</h3>
-                <span className="text-[10px] text-muted-foreground">{completedSteps.size}/{steps.length}</span>
+              {/* Course index — one progress bar, one fraction. Every other
+                  progress readout in this view mirrors this same source. */}
+              <div className="mb-3 space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs font-semibold">Curriculum</h3>
+                  <span className="figure text-[10px] font-semibold tabular-nums text-muted-foreground">
+                    {completedSteps.size}/{steps.length}
+                  </span>
+                </div>
+                <Progress value={progressPercent} className="h-1.5" />
               </div>
 
               <div className="space-y-1">
@@ -708,16 +736,6 @@ export function ModuleDetailView() {
                     </button>
                   );
                 })}
-              </div>
-
-              <Separator className="my-4" />
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-                  <span>Progress</span>
-                  <span>{progressPercent}%</span>
-                </div>
-                <Progress value={progressPercent} className="h-1.5" />
               </div>
             </div>
           </div>

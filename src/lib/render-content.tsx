@@ -48,9 +48,13 @@ function toHtml(content: string): string {
 const CLS =
   "notion-content prose dark:prose-invert max-w-none prose-headings:font-black prose-p:leading-relaxed prose-a:text-primary prose-a:underline hover:prose-a:text-primary/80 prose-blockquote:border-primary prose-strong:text-foreground prose-code:bg-muted prose-code:px-1 prose-code:rounded prose-img:rounded-xl prose-img:shadow-md";
 
-export function renderContent(content: string): React.ReactNode {
-  const html = toHtml(content);
+export function renderContent(
+  content: string,
+  options?: { transformHtml?: (html: string) => string },
+): React.ReactNode {
+  let html = toHtml(content);
   if (!html) return null;
+  if (options?.transformHtml) html = options.transformHtml(html);
   return <div className={CLS} dangerouslySetInnerHTML={{ __html: html }} />;
 }
 

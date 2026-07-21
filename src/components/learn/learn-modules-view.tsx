@@ -12,13 +12,23 @@ import type { CivicModule } from "@/types/learn";
 import { readProgress } from "@/lib/module-progress";
 import { HarmonizedImage } from "@/components/ui/harmonized-image";
 import { LearnPageFrame, LearnPageHeader } from "@/components/learn/learn-page-frame";
+import { LedgerDivider } from "@/components/learn/ledger-divider";
 import { cn } from "@/utils";
+
+/** Below this count, filter chips add clutter without helping — the whole
+ * catalogue fits on one screen already. */
+const MIN_MODULES_FOR_FILTERS = 4;
+/** Ghost cards shown so a young grid doesn't read as "broken" rather than "early." */
+const COMING_SOON_TITLES = [
+  "County budget: where the money comes from",
+  "Reading the Appropriation Act",
+  "The Finance Bill, explained",
+];
 
 interface LearnModulesViewProps {
   profile: any;
   stages: CivicModule[];
   currentStage: CivicModule;
-  onSelectStage: (stage: CivicModule) => void;
   onRefresh?: () => Promise<void>;
 }
 
@@ -87,6 +97,9 @@ export function LearnModulesView({
     [moduleProgress],
   );
 
+  const showFilters = moduleProgress.length >= MIN_MODULES_FOR_FILTERS;
+  const ghostCount = showFilters ? 0 : Math.max(0, 3 - moduleProgress.length);
+
   return (
     <LearnPageFrame className="space-y-10">
       <div className="flex items-start justify-between gap-4">
@@ -116,69 +129,73 @@ export function LearnModulesView({
         ) : null}
       </div>
 
-      <div className="space-y-4">
-        <div className="relative w-full">
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <input
-            type="search"
-            placeholder="Search modules..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="h-11 w-full rounded-full border border-border/60 bg-muted/30 pl-10 pr-4 text-sm outline-none transition-shadow focus:border-primary/35 focus:bg-background focus:ring-2 focus:ring-ring/25"
-          />
-        </div>
+      <LedgerDivider />
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
-            {(
-              [
-                { key: "all", label: "All", count: counts.all },
-                { key: "in-progress", label: "Active", count: counts.inProgress },
-                { key: "completed", label: "Done", count: counts.completed },
-              ] as const
-            ).map((tab) => (
-              <button
-                key={tab.key}
-                type="button"
-                onClick={() => setActiveTab(tab.key)}
-                className={cn(
-                  "shrink-0 rounded-full px-3.5 py-2 text-xs font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-ring",
-                  activeTab === tab.key
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground",
-                )}
-              >
-                {tab.label}
-                {tab.count > 0 ? ` · ${tab.count}` : ""}
-              </button>
-            ))}
+      {showFilters ? (
+        <div className="space-y-4">
+          <div className="relative w-full">
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <input
+              type="search"
+              placeholder="Search modules..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="h-11 w-full rounded-full border border-border/60 bg-muted/30 pl-10 pr-4 text-sm outline-none transition-shadow focus:border-primary/35 focus:bg-background focus:ring-2 focus:ring-ring/25"
+            />
           </div>
 
-          <div className="flex gap-1 overflow-x-auto scrollbar-hide">
-            {(
-              [
-                { key: "all", label: "All types" },
-                { key: "budget", label: "Budget data" },
-                { key: "civic", label: "Civic" },
-              ] as const
-            ).map((tab) => (
-              <button
-                key={tab.key}
-                type="button"
-                onClick={() => setContentFilter(tab.key)}
-                className={cn(
-                  "shrink-0 rounded-full px-3 py-1.5 text-[11px] font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-ring",
-                  contentFilter === tab.key
-                    ? "bg-foreground text-background"
-                    : "text-muted-foreground hover:text-foreground",
-                )}
-              >
-                {tab.label}
-              </button>
-            ))}
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex gap-1.5 overflow-x-auto scrollbar-hide">
+              {(
+                [
+                  { key: "all", label: "All", count: 0 },
+                  { key: "in-progress", label: "Active", count: counts.inProgress },
+                  { key: "completed", label: "Done", count: counts.completed },
+                ] as const
+              ).map((tab) => (
+                <button
+                  key={tab.key}
+                  type="button"
+                  onClick={() => setActiveTab(tab.key)}
+                  className={cn(
+                    "shrink-0 rounded-full px-3.5 py-2 text-xs font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-ring",
+                    activeTab === tab.key
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground",
+                  )}
+                >
+                  {tab.label}
+                  {tab.count > 0 ? ` · ${tab.count}` : ""}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex gap-1 overflow-x-auto scrollbar-hide">
+              {(
+                [
+                  { key: "all", label: "All types" },
+                  { key: "budget", label: "Budget data" },
+                  { key: "civic", label: "Civic" },
+                ] as const
+              ).map((tab) => (
+                <button
+                  key={tab.key}
+                  type="button"
+                  onClick={() => setContentFilter(tab.key)}
+                  className={cn(
+                    "shrink-0 rounded-full px-3 py-1.5 text-[11px] font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-ring",
+                    contentFilter === tab.key
+                      ? "bg-foreground text-background"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      ) : null}
 
       {filteredModules.length > 0 ? (
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -304,6 +321,25 @@ export function LearnModulesView({
               </article>
             );
           })}
+          {ghostCount > 0
+            ? COMING_SOON_TITLES.slice(0, ghostCount).map((title) => (
+                <div
+                  key={title}
+                  aria-hidden
+                  className="flex flex-col overflow-hidden rounded-3xl border border-dashed border-border/50 bg-muted/10 opacity-60"
+                >
+                  <div className="aspect-[16/9] bg-muted/40" />
+                  <div className="flex flex-1 flex-col gap-3.5 p-5">
+                    <span className="w-fit rounded-full bg-muted px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      Coming soon
+                    </span>
+                    <h3 className="font-heading text-[15px] font-semibold leading-snug tracking-tight text-muted-foreground">
+                      {title}
+                    </h3>
+                  </div>
+                </div>
+              ))
+            : null}
         </div>
       ) : (
         <div className="rounded-3xl border border-dashed border-border/60 px-4 py-20 text-center">

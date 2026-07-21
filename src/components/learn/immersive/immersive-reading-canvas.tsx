@@ -1,6 +1,7 @@
 "use client";
 
 import { renderContent } from "@/lib/render-content";
+import { applyLearnGlossary } from "@/lib/learn-glossary";
 import type { ChapterStep } from "@/types/learn";
 
 export function ImmersiveReadingCanvas({ step, durationLabel }: { step: ChapterStep; durationLabel?: string }) {
@@ -42,7 +43,9 @@ export function ImmersiveReadingCanvas({ step, durationLabel }: { step: ChapterS
         />
       ))}
 
-      <div className="immersive-prose max-w-none">{renderContent(step.text)}</div>
+      <div className="immersive-prose max-w-none">
+        {renderContent(step.text, { transformHtml: applyLearnGlossary })}
+      </div>
 
       {step.takeaways?.length > 0 ? (
         <section className="mt-8 rounded-[var(--immersive-radius)] border border-border/60 bg-card p-5">

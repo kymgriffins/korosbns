@@ -29,7 +29,7 @@ export function CitizenSyllabusShell({ children }: { children: React.ReactNode }
   return (
     <div
       data-testid="citizen-syllabus-shell"
-      className="flex min-h-svh w-full min-w-0 flex-1 flex-col bg-background"
+      className="learn-app flex min-h-svh w-full min-w-0 flex-1 flex-col bg-background"
     >
       <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
         <div className={cn(SHELL, "flex h-14 items-center justify-between gap-4")}>
