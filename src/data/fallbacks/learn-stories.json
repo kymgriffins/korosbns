@@ -1,0 +1,56 @@
+{
+  "provenance": {
+    "source": "Kenya budget civic seeds",
+    "note": "Read-only offline stories when /content/learn/stories/ is unreachable.",
+    "level": "fallback"
+  },
+  "count": 3,
+  "results": [
+    {
+      "id": "where-your-tax-goes",
+      "content_type": "story",
+      "title": "Where your tax shilling goes",
+      "summary": "A short scroll through how PAYE and VAT feed the national budget — and what counties receive.",
+      "description": "A short scroll through how PAYE and VAT feed the national budget — and what counties receive.",
+      "slug": "where-your-tax-goes",
+      "url": "/learn/stories/where-your-tax-goes",
+      "difficulty": "beginner",
+      "tags": [{ "name": "Taxes", "slug": "taxes" }],
+      "slides": [
+        { "text": "Every PAYE deduction is a claim on tomorrow’s classrooms, clinics, and roads." },
+        { "text": "National government keeps some revenue; counties get a share via the Division of Revenue." },
+        { "stat": "≈15%", "text": "County governments typically receive around this share of nationally raised revenue after equitable allocation." }
+      ]
+    },
+    {
+      "id": "finance-bill-in-plain-words",
+      "content_type": "story",
+      "title": "The Finance Bill in plain words",
+      "summary": "What Kenya’s annual Finance Bill changes — tax rates, exemptions, and why public hearings matter.",
+      "description": "What Kenya’s annual Finance Bill changes — tax rates, exemptions, and why public hearings matter.",
+      "slug": "finance-bill-in-plain-words",
+      "url": "/learn/stories/finance-bill-in-plain-words",
+      "difficulty": "beginner",
+      "tags": [{ "name": "Finance Bill", "slug": "finance-bill" }],
+      "slides": [
+        { "text": "The Finance Bill is how Parliament updates tax law for the next fiscal year." },
+        { "text": "Citizens can submit memoranda before MPs vote — your feedback is part of the process." }
+      ]
+    },
+    {
+      "id": "budget-day-to-your-ward",
+      "content_type": "story",
+      "title": "From Budget Day to your ward",
+      "summary": "Follow the path from the Budget Policy Statement to projects that show up in your county CIDP.",
+      "description": "Follow the path from the Budget Policy Statement to projects that show up in your county CIDP.",
+      "slug": "budget-day-to-your-ward",
+      "url": "/learn/stories/budget-day-to-your-ward",
+      "difficulty": "intermediate",
+      "tags": [{ "name": "Counties", "slug": "counties" }],
+      "slides": [
+        { "text": "National priorities start in the Budget Policy Statement (BPS)." },
+        { "text": "County Fiscal Strategy Papers (CFSP) and CIDPs translate those priorities into local plans." }
+      ]
+    }
+  ]
+}

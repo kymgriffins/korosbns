@@ -1,3 +1,8 @@
+"use client";
+
+import Link from "next/link";
+import { useState, type FormEvent } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,8 +13,30 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Routes } from "@/constants/routes";
+import { useRequestPasswordReset } from "@/hooks/use-auth-actions";
 
 const ForgotPassword = () => {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [requested, setRequested] = useState(false);
+  const requestResetMutation = useRequestPasswordReset();
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!email.trim()) return;
+    setLoading(true);
+    try {
+      await requestResetMutation.mutateAsync(email.trim());
+      setRequested(true);
+      toast.success("If that email exists, we sent a reset link.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Request failed.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <section className="bg-foreground dark:bg-background min-h-screen flex items-center justify-center relative">
       <div className="pointer-events-none absolute inset-0 right-0 overflow-hidden md:block hidden">
@@ -22,7 +49,7 @@ const ForgotPassword = () => {
         <Card className="px-6 py-8 sm:p-12 relative gap-6">
           <CardHeader className="text-center gap-6 p-0">
             <div className="mx-auto">
-              <a href="">
+              <Link href={Routes.Home}>
                 <img
                   src="/logo.svg"
                   alt="Budget Ndio Story"
@@ -33,53 +60,69 @@ const ForgotPassword = () => {
                   alt="Budget Ndio Story"
                   className="hidden dark:block h-10 w-10"
                 />
-              </a>
+              </Link>
             </div>
             <div className="flex flex-col gap-1">
               <CardTitle className="text-2xl font-medium text-card-foreground">
-                Forgot your password?
+                {requested ? "Check your email" : "Forgot your password?"}
               </CardTitle>
               <CardDescription className="text-sm font-normal text-muted-foreground">
-                Please enter the email address associated with your account and
-                we will email you a link to reset your password.
+                {requested
+                  ? "If an account exists for that address, we sent reset instructions."
+                  : "Please enter the email address associated with your account and we will email you a link to reset your password."}
               </CardDescription>
             </div>
           </CardHeader>
           <CardContent className="p-0">
-            <form>
-              <FieldGroup className="gap-6">
-                <div className="flex flex-col gap-4">
-                  <Field className="gap-1.5">
-                    <FieldLabel
-                      htmlFor="email"
-                      className="text-sm text-muted-foreground font-normal"
+            {requested ? (
+              <Button asChild size="lg" className="w-full rounded-xl h-10">
+                <Link href={Routes.Login}>Back to Login</Link>
+              </Button>
+            ) : (
+              <form onSubmit={handleSubmit}>
+                <FieldGroup className="gap-6">
+                  <div className="flex flex-col gap-4">
+                    <Field className="gap-1.5">
+                      <FieldLabel
+                        htmlFor="email"
+                        className="text-sm text-muted-foreground font-normal"
+                      >
+                        Email*
+                      </FieldLabel>
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="you@example.com"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        disabled={loading}
+                        className="dark:bg-background h-9 shadow-xs"
+                      />
+                    </Field>
+                  </div>
+                  <Field className="gap-4">
+                    <Button
+                      type="submit"
+                      size="lg"
+                      disabled={loading}
+                      className="rounded-xl h-10 cursor-pointer hover:bg-primary/80"
                     >
-                      Email*
-                    </FieldLabel>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="example@shadcnspace.com"
-                      required
-                      className="dark:bg-background h-9 shadow-xs"
-                    />
+                      {loading ? "Sending…" : "Send reset link"}
+                    </Button>
+                    <Button
+                      asChild
+                      type="button"
+                      size="lg"
+                      variant="ghost"
+                      className="rounded-xl cursor-pointer"
+                    >
+                      <Link href={Routes.Login}>Back to Login</Link>
+                    </Button>
                   </Field>
-                </div>
-                <Field className="gap-4">
-                  <Button type="submit" size={"lg"} className="rounded-xl h-10 cursor-pointer hover:bg-primary/80">
-                    Forgot password
-                  </Button>
-                  <Button
-                    type="submit"
-                    size={"lg"}
-                    variant={"ghost"}
-                    className="rounded-xl cursor-pointer"
-                  >
-                    Back to Login
-                  </Button>
-                </Field>
-              </FieldGroup>
-            </form>
+                </FieldGroup>
+              </form>
+            )}
           </CardContent>
         </Card>
       </div>

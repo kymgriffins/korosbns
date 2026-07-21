@@ -74,14 +74,14 @@
 ## NOT DONE ❌ (required by PRDs / BudgetWatch / OSINT hub)
 
 ### P0 — do next (Bar A)
-- [ ] Edge-first learn: seed stories/quests/trivia; SSR hub; no blank on Django slow
-- [ ] Learn hub surfaces: Continue · Watch · Stories · Know-it · Numbers; **one** primary CTA
-- [ ] Merge `reform-learn` immersive + fix finish / Continue no-op / wrong hrefs
-- [ ] Admin **Content Test Runner** (inventory, edit, suite, block publish)
-- [ ] Promote FY25/26 & 26/27 → `TESTED_TRUE` (runner + ≥3 graphs + dual Level-1)
-- [ ] `/reports` year episode template for `IN_APP` years (movie-hub layout)
-- [ ] P0 bugs: footer newsletter submit, learnhub no-ops, portal/WhatsApp alerts, admin `/admin` prefixes
-- [ ] Content events: every visible string planned (no orphan copy)
+- [x] Edge-first learn: seed stories/quests/trivia; SSR hub; no blank on Django slow
+- [x] Learn hub surfaces: Continue · Watch · Stories · Know-it · Numbers; **one** primary CTA
+- [x] Admin **Content Test Runner** v1 (inventory, suite) — `/admin/dashboard/content-lab`
+- [x] FY25/26 & 26/27 episode UI on `/reports` (IN_APP; TESTED_TRUE after lab suite)
+- [x] P0 bugs: footer newsletter, learn finish paths, portal/WhatsApp, forgot-password, author/quest hrefs
+- [ ] Merge `reform-learn` immersive (still on remote branch)
+- [ ] Content events: every visible string planned (no orphan copy) — in progress via surfaces
+- [ ] Wire progress/XP queues on all lesson complete paths
 
 ### P1 — BudgetWatch / citizen impact
 - [ ] Citizen lens blocks (“how this hits your school/hospital/tax”) per year

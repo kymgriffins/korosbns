@@ -22,6 +22,9 @@ import {
 import fallbackModules from "@/data/fallbacks/civic-modules.json";
 import fallbackArticles from "@/data/fallbacks/learn-articles.json";
 import fallbackPaths from "@/data/fallbacks/learn-paths.json";
+import fallbackStories from "@/data/fallbacks/learn-stories.json";
+import fallbackQuests from "@/data/fallbacks/learn-quests.json";
+import fallbackTrivia from "@/data/fallbacks/learn-trivia.json";
 
 const store = new Map<string, string>();
 
@@ -250,6 +253,22 @@ describe("JSON fallback contracts (read-only catalogue)", () => {
       expect(item.slug).toBeTruthy();
       expect(item.title).toBeTruthy();
       expect(item.content_type).toBeTruthy();
+    }
+  });
+
+  it("stories, quests, and trivia fallbacks are non-empty", () => {
+    expect(fallbackStories.results.length).toBeGreaterThan(0);
+    expect(fallbackQuests.results.length).toBeGreaterThan(0);
+    expect(fallbackTrivia.results.length).toBeGreaterThan(0);
+    for (const item of [...fallbackStories.results, ...fallbackQuests.results]) {
+      expect(item.slug).toBeTruthy();
+      expect(item.title).toBeTruthy();
+      expect(item.content_type).toBeTruthy();
+    }
+    for (const set of fallbackTrivia.results) {
+      expect(set.id || set.slug).toBeTruthy();
+      expect(set.title).toBeTruthy();
+      expect(Array.isArray(set.questions)).toBe(true);
     }
   });
 });

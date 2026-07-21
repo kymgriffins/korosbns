@@ -173,6 +173,17 @@ function buildDebtBrief(data: BudgetSchema): CategoryBrief {
   const interest = toBillions(debt.total_interest_service_obligation);
   const domestic = toBillions(debt.financing_plan.domestic_borrowing_target);
   const external = toBillions(debt.financing_plan.external_borrowing_target);
+  const hasFinancingSplit = domestic > 0 || external > 0;
+
+  const lines = [
+    { label: "Interest obligation", amountBillions: interest },
+    ...(hasFinancingSplit
+      ? [
+          { label: "Domestic borrowing", amountBillions: domestic },
+          { label: "External borrowing", amountBillions: external },
+        ]
+      : []),
+  ];
 
   return {
     id: "debt",
@@ -180,14 +191,12 @@ function buildDebtBrief(data: BudgetSchema): CategoryBrief {
     amountBillions: deficit,
     sharePct: debt.deficit_gdp_ratio_pct,
     summary: `Kenya plans to borrow to cover a ${formatKesBillions(deficit, { prefix: false })} gap (${debt.deficit_gdp_ratio_pct}% of GDP). Interest payments alone are ${formatKesBillions(interest, { prefix: false })} — money that cannot hire teachers or build roads.`,
-    takeaway: `Domestic borrowing (${formatKesBillions(domestic, { prefix: false })}) crowds out private credit. The target is to shrink the deficit to ${debt.target_deficit_fy2028_29_pct}% of GDP by FY 2028/29 — citizens should track whether that path is credible.`,
+    takeaway: hasFinancingSplit
+      ? `Domestic borrowing (${formatKesBillions(domestic, { prefix: false })}) crowds out private credit. The target is to shrink the deficit to ${debt.target_deficit_fy2028_29_pct}% of GDP by FY 2028/29 — citizens should track whether that path is credible.`
+      : `Domestic vs external financing split is not in this seed extract. Track Treasury borrowing updates during the year — interest alone is already ${formatKesBillions(interest, { prefix: false })}.`,
     accent: "from-orange-500/20 to-red-600/5",
     tags: debt.systemic_risks?.slice(0, 2),
-    lines: [
-      { label: "Domestic borrowing", amountBillions: domestic },
-      { label: "External borrowing", amountBillions: external },
-      { label: "Interest obligation", amountBillions: interest },
-    ],
+    lines,
   };
 }
 

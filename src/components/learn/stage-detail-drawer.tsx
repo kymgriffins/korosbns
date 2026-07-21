@@ -486,22 +486,44 @@ export function StageDetailDrawer({
                         variant="outline"
                         size="sm"
                         onClick={() => {
-                          if (currentStep >= stage.steps.length) return;
                           const step = stage.steps[currentStep - 1];
                           const hasStepQuiz = triviaForStep(stage, step, currentStep - 1).length > 0;
                           const passed = step ? isStepTriviaPassed(step.order) : false;
+                          const isLast = currentStep >= stage.steps.length;
+
                           if (!passed && hasStepQuiz) {
                             setActiveTab("quiz");
                             setShowTrivia(true);
                             return;
                           }
-                          selectStep(currentStep + 1);
+
+                          if (!passed && !hasStepQuiz) {
+                            // No quiz: mark step complete then advance (or finish)
+                            handleFinishTrivia();
+                            return;
+                          }
+
+                          // Already passed — advance to next step or mastery
+                          if (isLast) {
+                            setCurrentStep(stage.steps.length + 1);
+                            setShowTrivia(false);
+                          } else {
+                            selectStep(currentStep + 1);
+                          }
                         }}
-                        disabled={currentStep >= stage.steps.length}
                         className="min-w-[7.5rem] gap-1 rounded-lg text-xs font-bold"
                       >
-                        Next
-                        <ChevronRight className="size-3.5" />
+                        {currentStep >= stage.steps.length ? (
+                          <>
+                            Finish
+                            <CheckCircle2 className="size-3.5" />
+                          </>
+                        ) : (
+                          <>
+                            Next
+                            <ChevronRight className="size-3.5" />
+                          </>
+                        )}
                       </Button>
                     </div>
                   </div>

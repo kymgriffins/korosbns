@@ -2,6 +2,7 @@ import { apiFetch } from "@/lib/api-client";
 import type { CivicModule, CivicModuleAuthor } from "@/types/learn";
 import type { ApiListResponse } from "@/types/api";
 import type { LearningUnitSummary } from "@/lib/learning-units";
+import { publicCatalogueFetchInit } from "@/lib/fetch-policy";
 
 export type LearnHubItem = {
   id: string;
@@ -83,21 +84,34 @@ function filtersToQuery(filters?: LearnListFilters): string {
 function fetchList(segment: string, filters?: LearnListFilters) {
   return apiFetch<ApiListResponse<LearnHubItem>>(
     `/content/learn/${segment}/${filtersToQuery(filters)}`,
+    publicCatalogueFetchInit(),
   );
 }
 
 export const learnHubApi = {
   units: () =>
-    apiFetch<{ results: LearningUnitSummary[] }>("/content/units/"),
-  summary: () => apiFetch<LearnHubSummary>("/content/learn/"),
+    apiFetch<{ results: LearningUnitSummary[] }>(
+      "/content/units/",
+      publicCatalogueFetchInit(),
+    ),
+  summary: () =>
+    apiFetch<LearnHubSummary>("/content/learn/", publicCatalogueFetchInit()),
   videos: (filters?: LearnListFilters) => fetchList("videos", filters),
   articles: (filters?: LearnListFilters) => fetchList("articles", filters),
   stories: (filters?: LearnListFilters) => fetchList("stories", filters),
   documents: (filters?: LearnListFilters) => fetchList("documents", filters),
   paths: (filters?: LearnListFilters) => fetchList("paths", filters),
   quests: (filters?: LearnListFilters) => fetchList("quests", filters),
-  stages: () => apiFetch<ApiListResponse<CivicModule>>("/content/civic-modules/"),
-  stage: (slug: string) => apiFetch<CivicModule>(`/content/civic-modules/${slug}/`),
+  stages: () =>
+    apiFetch<ApiListResponse<CivicModule>>(
+      "/content/civic-modules/",
+      publicCatalogueFetchInit(),
+    ),
+  stage: (slug: string) =>
+    apiFetch<CivicModule>(
+      `/content/civic-modules/${slug}/`,
+      publicCatalogueFetchInit(),
+    ),
   leaderboard: (limit = 20) =>
     apiFetch<ApiListResponse<LeaderboardEntry>>(`/gamification/leaderboard/?limit=${limit}`),
   stageLeaderboard: (slug: string) =>
@@ -118,12 +132,21 @@ export const learnHubApi = {
   civicModule: (slug: string) => learnHubApi.stage(slug),
   budgetNewsModules: (params?: { fiscal_year_label?: string | null }) => {
     const q = params?.fiscal_year_label ? `?is_financial_year_analysis=true&fiscal_year_label=${encodeURIComponent(params.fiscal_year_label)}` : "?is_financial_year_analysis=true";
-    return apiFetch<ApiListResponse<CivicModule>>(`/content/civic-modules/${q}`);
+    return apiFetch<ApiListResponse<CivicModule>>(
+      `/content/civic-modules/${q}`,
+      publicCatalogueFetchInit(),
+    );
   },
   budgetNewsModule: (slug: string) =>
-    apiFetch<CivicModule>(`/content/civic-modules/${slug}/`),
+    apiFetch<CivicModule>(
+      `/content/civic-modules/${slug}/`,
+      publicCatalogueFetchInit(),
+    ),
   budgetNewsYears: () =>
-    apiFetch<ApiListResponse<BudgetNewsYear>>("/content/civic-modules/years/"),
+    apiFetch<ApiListResponse<BudgetNewsYear>>(
+      "/content/civic-modules/years/",
+      publicCatalogueFetchInit(),
+    ),
   completeChapter: (chapterId: string) =>
     apiFetch<{
       detail: string;
@@ -160,10 +183,14 @@ export const learnHubApi = {
     }),
   // Dedicated author endpoints (no more client-side filtering)
   authors: () =>
-    apiFetch<ApiListResponse<CivicModuleAuthor>>("/content/authors/"),
+    apiFetch<ApiListResponse<CivicModuleAuthor>>(
+      "/content/authors/",
+      publicCatalogueFetchInit(),
+    ),
   author: (slug: string) =>
     apiFetch<{ author: CivicModuleAuthor; modules: CivicModule[] }>(
       `/content/authors/${slug}/`,
+      publicCatalogueFetchInit(),
     ),
   // Module analytics (daily/weekly)
   moduleAnalytics: (params?: { period?: string; module_slug?: string }) => {
@@ -185,7 +212,7 @@ export function learnItemHref(item: LearnHubItem): string {
     case "path":
       return `/learn/paths/${item.slug || item.id}`;
     case "quest":
-      return `/learn/${item.id}`;
+      return `/learn/quests`;
     case "video":
       return item.url ? item.url : `/learn/videos`;
     case "document":

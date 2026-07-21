@@ -1,6 +1,6 @@
 import { buildApiUrl, networkErrorMessage } from "@/lib/api-url";
 import { ApiRequestError, extractApiErrorMessage, extractFieldErrors, type ApiPayload } from "@/lib/api-errors";
-import { apiFetchInit } from "@/lib/fetch-policy";
+import { apiFetchInit, publicCatalogueFetchInit } from "@/lib/fetch-policy";
 import { logDebug } from "@/lib/debug-logs";
 import type {
   WeeklyNoteApi,
@@ -508,10 +508,21 @@ export const citizenApi = {
       socials?: { linkedin?: string; x?: string; website?: string };
     }>>("/org/team/public/"),
 
-  getStories: () => apiFetch<ApiListResponse<Record<string, unknown>>>("/content/stories/"),
-  getArticles: () => apiFetch<ApiListResponse<Record<string, unknown>>>("/content/articles/"),
+  getStories: () =>
+    apiFetch<ApiListResponse<Record<string, unknown>>>(
+      "/content/stories/",
+      publicCatalogueFetchInit(),
+    ),
+  getArticles: () =>
+    apiFetch<ApiListResponse<Record<string, unknown>>>(
+      "/content/articles/",
+      publicCatalogueFetchInit(),
+    ),
   getArticle: (slug: string) =>
-    apiFetch<Record<string, unknown>>(`/content/articles/${slug}/`),
+    apiFetch<Record<string, unknown>>(
+      `/content/articles/${slug}/`,
+      publicCatalogueFetchInit(),
+    ),
   getKnowledge: () => apiFetch<ApiListResponse<Record<string, unknown>>>("/content/knowledge/"),
   getKnowledgeEntry: (id: string) =>
     apiFetch<Record<string, unknown>>(`/content/knowledge/${id}/`),
@@ -526,8 +537,16 @@ export const citizenApi = {
       body: JSON.stringify({ answers }),
     }),
 
-  getTriviaList: () => apiFetch<ApiListResponse<TriviaSetApi>>("/engagement/trivia/"),
-  getTrivia: (id: string) => apiFetch<TriviaSetApi>(`/engagement/trivia/${id}/`),
+  getTriviaList: () =>
+    apiFetch<ApiListResponse<TriviaSetApi>>(
+      "/engagement/trivia/",
+      publicCatalogueFetchInit(),
+    ),
+  getTrivia: (id: string) =>
+    apiFetch<TriviaSetApi>(
+      `/engagement/trivia/${id}/`,
+      publicCatalogueFetchInit(),
+    ),
   submitTriviaAttempt: (
     id: string,
     answers: Record<string, number>,

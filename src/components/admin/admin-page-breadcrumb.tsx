@@ -54,6 +54,8 @@ const LABEL_MAP: Record<string, string> = {
   docrepository: "Documents",
   "budget-data": "Budget Data",
   "ke-budget": "KE Budget",
+  "content-lab": "Content Lab",
+  "content-inventory": "Content Inventory",
   notes: "Notes",
   partners: "Partners",
   settings: "Settings",

@@ -577,9 +577,12 @@ export function ModuleDetailView() {
                               size="sm"
                               variant="outline"
                               className="rounded-lg text-xs font-bold"
-                              onClick={() => handleSelectStep(Math.min(currentStep + 1, steps.length))}
+                              onClick={() => {
+                                if (currentStep >= steps.length) handleFinishModule();
+                                else handleSelectStep(currentStep + 1);
+                              }}
                             >
-                              Continue to next step
+                              {currentStep >= steps.length ? "Finish module" : "Continue to next step"}
                             </Button>
                           ) : (
                             <Button type="button" size="sm" onClick={openTrivia} className="rounded-lg text-xs font-bold">

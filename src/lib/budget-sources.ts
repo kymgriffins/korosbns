@@ -4,6 +4,8 @@
  * Policy: bnske DATA_PROVENANCE_RULE.md
  */
 
+import budgetSourcesFile from "../../audit/data/budget-sources.json";
+
 export type BudgetSourceLevel = 1 | 2;
 
 export type BudgetSource = {
@@ -36,6 +38,23 @@ export const BUDGET_YEAR_CRITICAL_KEYS = [
   "top_sectors",
   "provenance.sources",
 ] as const;
+
+type BudgetSourcesFile = {
+  version: number;
+  updated: string;
+  sources: BudgetSource[];
+};
+
+const FILE = budgetSourcesFile as BudgetSourcesFile;
+
+/** All sources from audit/data/budget-sources.json. */
+export function getBudgetSources(): BudgetSource[] {
+  return FILE.sources ?? [];
+}
+
+export function getBudgetSourcesUpdated(): string {
+  return FILE.updated ?? "";
+}
 
 export function forEachBudgetSource(
   sources: BudgetSource[],

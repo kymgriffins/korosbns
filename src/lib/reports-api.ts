@@ -14,6 +14,7 @@ export {
   extractCountyAllocations,
   getReportProvenance,
   getSeededBudgetOverview,
+  getSeededBudgetFy2025,
   emptySchema,
   type FiscalYearMeta,
   type CountyAllocation,

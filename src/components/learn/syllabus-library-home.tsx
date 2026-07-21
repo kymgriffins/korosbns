@@ -1,7 +1,8 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Landmark, BookOpen } from "lucide-react";
+import { ArrowRight, BookOpen, Clapperboard, Notebook } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Routes } from "@/constants/routes";
 import { learnTabToHref } from "@/lib/learn-nav";
@@ -38,9 +39,13 @@ function orderForSyllabus(stages: CivicModule[]): CivicModule[] {
   return [bps, ...stages.filter((s) => s.slug !== bps.slug)];
 }
 
+function moduleHref(slug: string): string {
+  return `/learn/modules/${slug}`;
+}
+
 /**
- * Fluid Syllabus home: main column + adaptive aside.
- * Anonymous → soft signup / reports. Authenticated → progress + picks.
+ * Fluid Syllabus home: Netflix-style hub first viewport + minimal rows.
+ * Anonymous → one soft signup. Authenticated → path + picks.
  */
 export function SyllabusLibraryHome({
   stages,
@@ -49,17 +54,54 @@ export function SyllabusLibraryHome({
   greeting,
 }: Props) {
   const { isLoggedIn } = useAuth();
-  const ordered = orderForSyllabus(stages);
+  const ordered = useMemo(() => orderForSyllabus(stages), [stages]);
   const featured = ordered.slice(0, 8);
   const picks = recommended.length > 0 ? recommended.slice(0, 3) : [];
-  const inProgress = ordered
-    .map((mod) => ({ mod, pct: moduleProgressPct(mod) }))
-    .filter((x) => x.pct > 0 && x.pct < 100)
-    .slice(0, 3);
+
+  const [progressBySlug, setProgressBySlug] = useState<Record<string, number>>({});
+  const [progressReady, setProgressReady] = useState(false);
+
+  useEffect(() => {
+    const next: Record<string, number> = {};
+    for (const mod of stages) {
+      next[mod.slug] = moduleProgressPct(mod);
+    }
+    setProgressBySlug(next);
+    setProgressReady(true);
+  }, [stages]);
+
+  const continueItems = useMemo(
+    () =>
+      ordered
+        .map((mod) => ({ mod, pct: progressBySlug[mod.slug] ?? 0 }))
+        .filter((x) => x.pct > 0 && x.pct < 100)
+        .sort((a, b) => b.pct - a.pct)
+        .slice(0, 6),
+    [ordered, progressBySlug],
+  );
+
+  const seed =
+    ordered.find((s) => s.slug === "budget-policy-statement") ?? ordered[0] ?? null;
+
+  const primary =
+    progressReady && continueItems[0]
+      ? {
+          href: moduleHref(continueItems[0].mod.slug),
+          label: `Continue: ${continueItems[0].mod.title}`,
+        }
+      : seed
+        ? {
+            href: moduleHref(seed.slug),
+            label: `Start: ${seed.title}`,
+          }
+        : null;
 
   return (
     <LearnPageFrame>
-      <div data-testid="syllabus-library-home" className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_22rem]">
+      <div
+        data-testid="syllabus-library-home"
+        className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_22rem]"
+      >
         {/* ── Main column ─────────────────────────────────────────── */}
         <div className="min-w-0 space-y-12">
           <LearnPageHeader
@@ -67,30 +109,67 @@ export function SyllabusLibraryHome({
             title="Learn Kenya's budget"
             description={
               greeting ||
-              "A free civic syllabus for the national and county budget cycle — read everything without an account."
+              "Free civic syllabus — read without an account."
             }
             actions={
-              <>
+              primary ? (
                 <Button asChild size="sm" className="h-9 rounded-lg px-4 text-xs font-bold">
-                  <Link href={learnTabToHref("learn")}>
-                    Browse modules
+                  <Link href={primary.href} data-testid="hub-primary-cta">
+                    {primary.label}
                     <ArrowRight className="ml-1.5 size-3.5" />
                   </Link>
                 </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  size="sm"
-                  className="h-9 rounded-lg px-4 text-xs font-bold"
-                >
-                  <Link href={Routes.Reports}>
-                    <Landmark className="mr-1.5 size-3.5" />
-                    Open reports
-                  </Link>
-                </Button>
-              </>
+              ) : null
             }
           />
+
+          {progressReady && continueItems.length > 0 ? (
+            <LearnSection title="Continue">
+              <ul className="-mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-1">
+                {continueItems.map(({ mod, pct }) => (
+                  <li key={mod.slug} className="w-[min(100%,16rem)] shrink-0 snap-start">
+                    <Link
+                      href={moduleHref(mod.slug)}
+                      className="block rounded-xl border border-border/50 bg-muted/15 px-4 py-3.5 transition-colors hover:border-primary/35 hover:bg-muted/30"
+                    >
+                      <span className="block truncate text-[15px] font-semibold leading-snug">
+                        {mod.title}
+                      </span>
+                      <span className="mt-2.5 block h-1 overflow-hidden rounded-full bg-muted">
+                        <span
+                          className="block h-full rounded-full bg-primary"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </span>
+                      <span className="mt-1.5 block text-[11px] font-medium tabular-nums text-muted-foreground">
+                        {pct}% · Continue
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </LearnSection>
+          ) : null}
+
+          <nav
+            aria-label="Watch and stories"
+            className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm"
+          >
+            <Link
+              href={Routes.LearnVideos}
+              className="inline-flex items-center gap-1.5 font-semibold text-foreground transition-colors hover:text-primary"
+            >
+              <Clapperboard className="size-3.5 text-muted-foreground" />
+              Watch
+            </Link>
+            <Link
+              href={Routes.LearnStories}
+              className="inline-flex items-center gap-1.5 font-semibold text-foreground transition-colors hover:text-primary"
+            >
+              <Notebook className="size-3.5 text-muted-foreground" />
+              Stories
+            </Link>
+          </nav>
 
           {picks.length > 0 ? (
             <LearnSection title="Recommended for you">
@@ -107,7 +186,7 @@ export function SyllabusLibraryHome({
                         <span className="block text-[15px] font-semibold leading-snug">
                           {mod.title}
                         </span>
-                        {mod.description ? (
+                        {mod.description && mod.description !== mod.title ? (
                           <span className="mt-1 block text-sm leading-relaxed text-muted-foreground line-clamp-2">
                             {mod.description}
                           </span>
@@ -138,7 +217,7 @@ export function SyllabusLibraryHome({
             ) : (
               <ol className="w-full space-y-1">
                 {featured.map((mod, i) => {
-                  const pct = moduleProgressPct(mod);
+                  const pct = progressReady ? (progressBySlug[mod.slug] ?? 0) : 0;
 
                   return (
                     <li key={mod.slug}>
@@ -165,13 +244,12 @@ export function SyllabusLibraryHome({
                             className="block h-1 w-full max-w-xs overflow-hidden rounded-full bg-muted"
                             aria-hidden
                           >
-                            <span
-                              className="block h-full rounded-full bg-primary transition-all"
-                              style={{
-                                width: `${Math.max(pct, pct > 0 ? pct : 8)}%`,
-                                opacity: pct > 0 ? 1 : 0.35,
-                              }}
-                            />
+                            {pct > 0 ? (
+                              <span
+                                className="block h-full rounded-full bg-primary transition-all"
+                                style={{ width: `${pct}%` }}
+                              />
+                            ) : null}
                           </span>
                         </span>
                         <ArrowRight className="size-3.5 shrink-0 text-muted-foreground/70 transition-transform group-hover:translate-x-0.5 group-hover:text-foreground" />
@@ -189,7 +267,7 @@ export function SyllabusLibraryHome({
           </div>
         </div>
 
-        {/* ── Aside: adapts to auth state ─────────────────────────── */}
+        {/* ── Aside: one soft auth message, or path when logged in ── */}
         <aside className="hidden min-w-0 lg:block">
           <div className="sticky top-20 space-y-5">
             {isLoggedIn ? (
@@ -199,18 +277,17 @@ export function SyllabusLibraryHome({
                     Your path
                   </p>
                   <p className="mt-2 text-sm leading-relaxed text-foreground">
-                    {inProgress.length > 0
+                    {continueItems.length > 0
                       ? "Pick up where you left off — progress syncs across devices."
                       : "Start any module. Your progress saves as you go."}
                   </p>
-                  {inProgress.length > 0 ? (
+                  {continueItems.length > 0 ? (
                     <ul className="mt-4 space-y-2">
-                      {inProgress.map(({ mod, pct }) => (
+                      {continueItems.slice(0, 3).map(({ mod, pct }) => (
                         <li key={mod.slug}>
-                          <button
-                            type="button"
-                            onClick={() => onSelectStage(mod)}
-                            className="w-full rounded-xl border border-border/40 bg-background/60 px-3 py-2.5 text-left transition-colors hover:border-primary/30"
+                          <Link
+                            href={moduleHref(mod.slug)}
+                            className="block w-full rounded-xl border border-border/40 bg-background/60 px-3 py-2.5 text-left transition-colors hover:border-primary/30"
                           >
                             <span className="block truncate text-xs font-semibold">{mod.title}</span>
                             <span className="mt-1.5 block h-1 overflow-hidden rounded-full bg-muted">
@@ -222,24 +299,24 @@ export function SyllabusLibraryHome({
                             <span className="mt-1 block text-[10px] font-medium tabular-nums text-muted-foreground">
                               {pct}% complete
                             </span>
-                          </button>
+                          </Link>
                         </li>
                       ))}
                     </ul>
-                  ) : (
+                  ) : primary ? (
                     <Button asChild size="sm" className="mt-4 h-9 w-full rounded-lg text-xs font-bold">
-                      <Link href={learnTabToHref("learn")}>Browse modules</Link>
+                      <Link href={primary.href}>{primary.label}</Link>
                     </Button>
-                  )}
+                  ) : null}
                 </div>
                 <div className="rounded-2xl border border-border/50 px-5 py-4">
                   <p className="text-xs font-semibold text-foreground">Explore further</p>
                   <div className="mt-3 flex flex-col gap-2">
                     <Link
-                      href={Routes.Reports}
+                      href={Routes.LearnVideos}
                       className="text-xs font-medium text-muted-foreground hover:text-primary"
                     >
-                      Open budget reports →
+                      Watch videos →
                     </Link>
                     <Link
                       href={learnTabToHref("forum")}
@@ -251,23 +328,7 @@ export function SyllabusLibraryHome({
                 </div>
               </>
             ) : (
-              <>
-                <SignUpCta dismissKey="bns-soft-login-syllabus-home" />
-                <div className="rounded-2xl border border-border/50 px-5 py-4">
-                  <p className="text-xs font-semibold text-foreground">No account needed</p>
-                  <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
-                    Every module stays free to read. Create an account only when you want
-                    progress synced across devices.
-                  </p>
-                  <Link
-                    href={Routes.Reports}
-                    className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
-                  >
-                    <Landmark className="size-3.5" />
-                    Browse reports
-                  </Link>
-                </div>
-              </>
+              <SignUpCta dismissKey="bns-soft-login-syllabus-home" />
             )}
           </div>
         </aside>

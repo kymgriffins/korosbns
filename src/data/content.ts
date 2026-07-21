@@ -1,5 +1,6 @@
 import type { ApiListResponse } from "@/types/api";
 import type { LearnHubItem } from "@/types/learn";
+import type { TriviaSetApi } from "@/lib/api-client";
 import { citizenApi } from "@/lib/api-client";
 import { learnHubApi } from "@/lib/learn-hub";
 import { withFallback } from "@/data/adapter";
@@ -10,6 +11,9 @@ import {
 } from "@/constants/documents";
 import learnArticlesFallback from "@/data/fallbacks/learn-articles.json";
 import learnPathsFallback from "@/data/fallbacks/learn-paths.json";
+import learnStoriesFallback from "@/data/fallbacks/learn-stories.json";
+import learnQuestsFallback from "@/data/fallbacks/learn-quests.json";
+import learnTriviaFallback from "@/data/fallbacks/learn-trivia.json";
 
 export type { LearnHubItem };
 export type { DocumentType, FetchDocumentsResult };
@@ -18,11 +22,18 @@ const DEFAULT_ARTICLES: LearnHubItem[] = [
   ...(learnArticlesFallback.results as LearnHubItem[]),
 ];
 const DEFAULT_VIDEOS: LearnHubItem[] = [];
-const DEFAULT_STORIES: LearnHubItem[] = [];
+const DEFAULT_STORIES: LearnHubItem[] = [
+  ...(learnStoriesFallback.results as LearnHubItem[]),
+];
 const DEFAULT_DOCUMENTS: LearnHubItem[] = [];
-const DEFAULT_QUESTS: LearnHubItem[] = [];
+const DEFAULT_QUESTS: LearnHubItem[] = [
+  ...(learnQuestsFallback.results as LearnHubItem[]),
+];
 const DEFAULT_PATHS: LearnHubItem[] = [
   ...(learnPathsFallback.results as LearnHubItem[]),
+];
+const DEFAULT_TRIVIA: TriviaSetApi[] = [
+  ...(learnTriviaFallback.results as TriviaSetApi[]),
 ];
 
 function filterBySearch(items: LearnHubItem[], search?: string): LearnHubItem[] {
@@ -34,6 +45,22 @@ function filterBySearch(items: LearnHubItem[], search?: string): LearnHubItem[] 
       item.summary?.toLowerCase().includes(q) ||
       item.slug?.toLowerCase().includes(q),
   );
+}
+
+function findTriviaBySlug(slug: string): TriviaSetApi | null {
+  const hit = DEFAULT_TRIVIA.find(
+    (t) =>
+      t.id === slug ||
+      String((t as TriviaSetApi & { slug?: string }).slug ?? "") === slug,
+  );
+  return hit ?? null;
+}
+
+function findStoryBySlug(slug: string): Record<string, unknown> | null {
+  const hit = DEFAULT_STORIES.find(
+    (s) => s.id === slug || s.slug === slug || String(s.id) === slug,
+  );
+  return (hit as unknown as Record<string, unknown>) ?? null;
 }
 
 let _articles: LearnHubItem[] = [...DEFAULT_ARTICLES];
@@ -81,8 +108,15 @@ export const contentData = {
       withFallback(
         "content",
         () => learnHubApi.stories(filters),
-        () => ({ results: filterBySearch(_stories, filters?.search) }),
-      ).then((r) => r.results ?? []),
+        () => ({
+          results: filterBySearch(_stories.length ? _stories : DEFAULT_STORIES, filters?.search),
+        }),
+        { accept: (r) => Array.isArray(r?.results) && (r.results?.length ?? 0) > 0 },
+      ).then((r) => {
+        const results = r.results ?? [];
+        if (results.length) _stories = results;
+        return results.length ? results : filterBySearch(DEFAULT_STORIES, filters?.search);
+      }),
     fetchBySlug: (slug: string): Promise<Record<string, unknown> | null> =>
       withFallback<Record<string, unknown> | null>(
         "content",
@@ -95,7 +129,8 @@ export const contentData = {
               ) ?? null
             );
           }),
-        () => null,
+        () => findStoryBySlug(slug),
+        { accept: (r) => r != null && Object.keys(r).length > 0 },
       ),
     fetchFromApi: () => citizenApi.getStories() as Promise<ApiListResponse<LearnHubItem>>,
   },
@@ -121,13 +156,18 @@ export const contentData = {
       withFallback(
         "content",
         () => citizenApi.getTriviaList(),
-        () => ({ results: [], count: 0 }),
-      ).then((r) => r.results ?? []),
+        () => ({ results: DEFAULT_TRIVIA, count: DEFAULT_TRIVIA.length }),
+        { accept: (r) => Array.isArray(r?.results) && (r.results?.length ?? 0) > 0 },
+      ).then((r) => {
+        const results = r.results ?? [];
+        return results.length ? results : DEFAULT_TRIVIA;
+      }),
     fetchBySlug: (slug: string): Promise<Record<string, unknown> | null> =>
       withFallback<Record<string, unknown> | null>(
         "content",
         () => citizenApi.getTrivia(slug) as Promise<Record<string, unknown>>,
-        () => null,
+        () => (findTriviaBySlug(slug) as unknown as Record<string, unknown>) ?? null,
+        { accept: (r) => r != null && Object.keys(r).length > 0 },
       ),
     fetchLeaderboard: (id: string) =>
       withFallback(
@@ -167,8 +207,15 @@ export const contentData = {
       withFallback(
         "content",
         () => learnHubApi.quests(filters),
-        () => ({ results: filterBySearch(_quests, filters?.search) }),
-      ).then((r) => r.results ?? []),
+        () => ({
+          results: filterBySearch(_quests.length ? _quests : DEFAULT_QUESTS, filters?.search),
+        }),
+        { accept: (r) => Array.isArray(r?.results) && (r.results?.length ?? 0) > 0 },
+      ).then((r) => {
+        const results = r.results ?? [];
+        if (results.length) _quests = results;
+        return results.length ? results : filterBySearch(DEFAULT_QUESTS, filters?.search);
+      }),
   },
   knowledge: {
     fetch: () =>
