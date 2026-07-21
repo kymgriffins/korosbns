@@ -6,8 +6,11 @@ import { toast } from "sonner";
 import { ChevronLeft, ChevronRight, PlayCircle, CheckCircle2, BookOpen, BookOpenText, Video, Brain, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { apiFetch } from "@/lib/api-client";
 import { learnHubApi } from "@/lib/learn-hub";
+import {
+  recordLearnProgressWithQueue,
+  trackGamificationWithQueue,
+} from "@/lib/sync-profile";
 import { useLearn } from "@/contexts/learn-context";
 import { useSidebar } from "@/components/ui/sidebar";
 import { readProgress, writeProgress } from "@/lib/module-progress";
@@ -110,20 +113,20 @@ export function StageDetailDrawer({
     if (!p.triviaRewards.includes(rewardTag)) {
       writeProgress(stage.slug, { ...p, triviaRewards: [...p.triviaRewards, rewardTag] });
       const pointsToAward = 5;
-      apiFetch<{ points: number }>("/gamification/trivia-answers/", {
-        method: "POST",
-        body: JSON.stringify({
+      void trackGamificationWithQueue({
+        event_type: "trivia_correct",
+        points: pointsToAward,
+        object_id: `${stage.slug}/ch${step.order}/q${qIdx}`,
+        idempotency_key: `trivia:${stage.slug}:${step.order}:${qIdx}:${rewardTag}`,
+        metadata: {
           module_slug: stage.slug,
           chapter_order: step.order,
           question_index: qIdx,
-          is_correct: true,
-          idempotency_key: rewardTag,
-        }),
-      }).then((res) => {
-        const updatedPoints = res.points ?? Number(profile.sovereigns ?? 0) + pointsToAward;
-        onUpdateProfile({ ...profile, sovereigns: updatedPoints });
-      }).catch(() => {
-        toast.error("Could not sync answer. Points not saved.");
+        },
+      });
+      onUpdateProfile({
+        ...profile,
+        sovereigns: Number(profile.sovereigns ?? 0) + pointsToAward,
       });
       toast.success("Correct! +5 SVG!");
     } else {
@@ -140,6 +143,11 @@ export function StageDetailDrawer({
       currentStep: currentStep + 1
     });
     toast.success("Knowledge Check complete!");
+    void recordLearnProgressWithQueue({
+      content_type: "lesson",
+      content_id: step.id,
+      progress_percent: 100,
+    });
     learnHubApi.completeChapter(step.id).catch(() => {
       // server recording failed silently
     });
@@ -178,8 +186,10 @@ export function StageDetailDrawer({
           badges: newBadges,
         };
         onUpdateProfile(updatedProfile);
-        learnHubApi.markProgress({ content_type: "path", content_id: stage.id, progress_percent: 100 }).catch(() => {
-          // server progress marking failed silently
+        void recordLearnProgressWithQueue({
+          content_type: "path",
+          content_id: stage.id,
+          progress_percent: 100,
         });
         const lastStep = stage.steps[stage.steps.length - 1];
         if (lastStep) {

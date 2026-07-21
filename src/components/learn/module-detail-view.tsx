@@ -32,12 +32,16 @@ import { triviaForStep } from "@/lib/learn-trivia";
 import { certificateDownloadHref } from "@/lib/certificate-url";
 import { renderContent } from "@/lib/render-content";
 import { resolveYoutubeId } from "@/lib/learn-video";
-import { apiFetch } from "@/lib/api-client";
+import {
+  recordLearnProgressWithQueue,
+  trackGamificationWithQueue,
+} from "@/lib/sync-profile";
 import { YouTubePlayer } from "./youtube-player";
 import { TriviaSection } from "./trivia-section";
 import { SignUpCta } from "@/components/ui/sign-up-cta";
 import type { ChapterStep, CivicModule } from "@/types/learn";
 import { getModuleEmoji } from "@/lib/learn-module-display";
+import { immersiveModuleHref } from "@/lib/immersive-module";
 
 function parseVideoEntries(step: ChapterStep | null): { videoId: string; title: string }[] {
   if (!step) return [];
@@ -193,16 +197,17 @@ export function ModuleDetailView() {
     const p = readProgress(mod.slug, mod.order);
     if (!p.triviaRewards.includes(rewardTag)) {
       writeProgress(mod.slug, { ...p, triviaRewards: [...p.triviaRewards, rewardTag] });
-      apiFetch<{ points: number }>("/gamification/trivia-answers/", {
-        method: "POST",
-        body: JSON.stringify({
+      void trackGamificationWithQueue({
+        event_type: "trivia_correct",
+        points: 5,
+        object_id: `${mod.slug}/ch${currentStepObj.order}/q${qIdx}`,
+        idempotency_key: `trivia:${mod.slug}:${currentStepObj.order}:${qIdx}:${rewardTag}`,
+        metadata: {
           module_slug: mod.slug,
           chapter_order: currentStepObj.order,
           question_index: qIdx,
-          is_correct: true,
-          idempotency_key: rewardTag,
-        }),
-      }).catch(() => {});
+        },
+      });
     }
   };
 
@@ -217,6 +222,11 @@ export function ModuleDetailView() {
     setCompletedSteps((prev) => new Set(prev).add(currentStepObj.order));
     setAnimatingStep(currentStepObj.order);
     setTimeout(() => setAnimatingStep(null), 600);
+    void recordLearnProgressWithQueue({
+      content_type: "lesson",
+      content_id: currentStepObj.id,
+      progress_percent: 100,
+    });
     learnHubApi.completeChapter(currentStepObj.id).catch(() => {});
     setShowTrivia(false);
     if (currentStep < steps.length) {
@@ -266,7 +276,11 @@ export function ModuleDetailView() {
     });
     const p = readProgress(mod.slug, mod.order);
     writeProgress(mod.slug, { ...p, masteryAwarded: true, stepsCompleted: Object.fromEntries(mod.steps.map((s: ChapterStep) => [s.order, true])) });
-    learnHubApi.markProgress({ content_type: "path", content_id: mod.id, progress_percent: 100 }).catch(() => {});
+    void recordLearnProgressWithQueue({
+      content_type: "path",
+      content_id: mod.id,
+      progress_percent: 100,
+    });
     const lastStep = mod.steps[mod.steps.length - 1];
     if (lastStep) {
       learnHubApi.completeChapter(lastStep.id).then((res) => {
@@ -395,6 +409,11 @@ export function ModuleDetailView() {
                   {tab.label}
                 </button>
               ))}
+              <Button asChild variant="outline" size="sm" className="ml-1 h-7 px-2 text-[10px] font-bold">
+                <Link href={immersiveModuleHref(slug, "read", Math.max(1, currentStep))}>
+                  Immersive
+                </Link>
+              </Button>
               <span className="ml-auto text-[10px] text-muted-foreground font-semibold">
                 Step {currentStep} of {steps.length}
               </span>

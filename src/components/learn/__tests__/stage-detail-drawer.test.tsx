@@ -71,6 +71,11 @@ vi.mock("@/lib/learn-hub", () => ({
   learnHubApi: { completeChapter: vi.fn(), markProgress: vi.fn() },
 }));
 
+vi.mock("@/lib/sync-profile", () => ({
+  recordLearnProgressWithQueue: vi.fn(),
+  trackGamificationWithQueue: vi.fn().mockResolvedValue("synced"),
+}));
+
 vi.mock("@/hooks/use-budget-data", () => ({
   useBudgetData: () => ({ budgetAllocations: [], budgetKpis: [], budgetHighlights: [], budgetLoading: false, budgetReportProfile: null }),
 }));

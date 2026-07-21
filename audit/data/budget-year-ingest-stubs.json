@@ -1,0 +1,114 @@
+{
+  "version": 1,
+  "updated": "2026-07-21",
+  "policy": "Scaffold only. No invented expenditure/revenue/deficit figures. Years stay SOURCE_LISTED until Level-1 metrics are extracted into seeds.",
+  "ingest_targets": {
+    "from_fy": "2013/14",
+    "to_fy": "2024/25",
+    "status": "SOURCE_LISTED",
+    "primary_portals": [
+      {
+        "id": "treasury-budget-books",
+        "name": "National Treasury — Budget Books",
+        "url": "https://www.treasury.go.ke/budget-books"
+      },
+      {
+        "id": "cbk-gfs",
+        "name": "CBK — Government Finance Statistics",
+        "url": "https://www.centralbank.go.ke/statistics/government-finance-statistics/"
+      },
+      {
+        "id": "parliament-home",
+        "name": "Parliament of Kenya",
+        "url": "https://www.parliament.go.ke/"
+      }
+    ]
+  },
+  "years": {
+    "2013/14": {
+      "status": "SOURCE_LISTED",
+      "era": "Counties",
+      "note": "First full devolution FY — extract from CBK GFS / Treasury books only.",
+      "seed_available": false,
+      "source_hints": ["treasury-budget-books", "cbk-gfs"]
+    },
+    "2014/15": {
+      "status": "SOURCE_LISTED",
+      "era": "Counties",
+      "note": "Official books online; metrics not extracted.",
+      "seed_available": false,
+      "source_hints": ["treasury-budget-books", "cbk-gfs"]
+    },
+    "2015/16": {
+      "status": "SOURCE_LISTED",
+      "era": "Counties",
+      "note": "Official books online; metrics not extracted.",
+      "seed_available": false,
+      "source_hints": ["treasury-budget-books", "cbk-gfs"]
+    },
+    "2016/17": {
+      "status": "SOURCE_LISTED",
+      "era": "Counties",
+      "note": "Official books online; metrics not extracted.",
+      "seed_available": false,
+      "source_hints": ["treasury-budget-books", "cbk-gfs"]
+    },
+    "2017/18": {
+      "status": "SOURCE_LISTED",
+      "era": "Counties",
+      "note": "Official books online; metrics not extracted.",
+      "seed_available": false,
+      "source_hints": ["treasury-budget-books", "cbk-gfs"]
+    },
+    "2018/19": {
+      "status": "SOURCE_LISTED",
+      "era": "Big 4 / MTP",
+      "note": "Official books online; metrics not extracted.",
+      "seed_available": false,
+      "source_hints": ["treasury-budget-books", "cbk-gfs"]
+    },
+    "2019/20": {
+      "status": "SOURCE_LISTED",
+      "era": "Big 4 / MTP",
+      "note": "Official books online; metrics not extracted.",
+      "seed_available": false,
+      "source_hints": ["treasury-budget-books", "cbk-gfs"]
+    },
+    "2020/21": {
+      "status": "SOURCE_LISTED",
+      "era": "COVID shock",
+      "note": "Official books online; metrics not extracted.",
+      "seed_available": false,
+      "source_hints": ["treasury-budget-books", "cbk-gfs"]
+    },
+    "2021/22": {
+      "status": "SOURCE_LISTED",
+      "era": "Recovery",
+      "note": "Official books online; metrics not extracted.",
+      "seed_available": false,
+      "source_hints": ["treasury-budget-books", "cbk-gfs"]
+    },
+    "2022/23": {
+      "status": "SOURCE_LISTED",
+      "era": "Transition",
+      "note": "Official books online; metrics not extracted.",
+      "seed_available": false,
+      "source_hints": ["treasury-budget-books", "cbk-gfs"]
+    },
+    "2023/24": {
+      "status": "SOURCE_LISTED",
+      "era": "BETA",
+      "note": "Official books online; metrics not extracted.",
+      "seed_available": false,
+      "source_hints": ["treasury-budget-books", "cbk-gfs"]
+    },
+    "2024/25": {
+      "status": "SOURCE_LISTED",
+      "era": "BETA",
+      "note": "Referenced in FY2025/26 seed comparison rows only — full episode not seeded.",
+      "seed_available": false,
+      "comparison_mentioned_in": ["budget_fy2025_26.json"],
+      "source_hints": ["treasury-budget-books", "cbk-gfs", "parliament-home"]
+    }
+  }
+}

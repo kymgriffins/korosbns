@@ -79,32 +79,33 @@
 - [x] Admin **Content Test Runner** v1 (inventory, suite) — `/admin/dashboard/content-lab`
 - [x] FY25/26 & 26/27 episode UI on `/reports` (IN_APP; TESTED_TRUE after lab suite)
 - [x] P0 bugs: footer newsletter, learn finish paths, portal/WhatsApp, forgot-password, author/quest hrefs
-- [ ] Merge `reform-learn` immersive (still on remote branch)
+- [x] Immersive learn routes integrated selectively from `reform-learn` (read/watch/quiz; hub kept) — full hub rewrite not merged
 - [ ] Content events: every visible string planned (no orphan copy) — in progress via surfaces
-- [ ] Wire progress/XP queues on all lesson complete paths
+- [x] Wire progress/XP queues on lesson complete paths (module-detail, stage drawer, immersive)
 
 ### P1 — BudgetWatch / citizen impact
-- [ ] Citizen lens blocks (“how this hits your school/hospital/tax”) per year
-- [ ] Instant graph export (SVG/PNG) for video production
-- [ ] Economist vs citizen filter tabs
-- [ ] CBK GFS + Treasury books ingest **2013/14 → 2024/25** → leave `SOURCE_LISTED`
-- [ ] Honest UI for `GAP` years (digitize CTA — never invent numbers)
+- [x] Citizen lens blocks for FY **2025/26** + **2026/27** from cited seed copy only
+- [x] Instant graph export (SVG/PNG) for episode charts
+- [x] Economist vs citizen filter tabs on FY episodes
+- [x] CBK GFS + Treasury books **ingest scaffolding** for **2013/14 → 2024/25** (`SOURCE_LISTED` stubs; no invented figures)
+- [x] Honest UI for `GAP` / `SOURCE_LISTED` years (digitize CTA + portal links — never invent numbers)
 - [ ] Glossary of budget terms (Level-1 definitions)
 - [ ] Circa calendar of budget history events
-- [ ] County map + equitable share from official sources only
+- [x] County lens (47-county list → official CRA/Treasury/COB URLs; **no** illustrative CRA figures)
 - [ ] Public participation hub (Treasury/Parliament comment windows)
 
 ### P2 — Full LMS + engagement
-- [ ] Impact simulator (realloc sliders → plain-language effects) — clearly labeled **scenario**, not official
-- [ ] Full leaderboards, daily streaks, quests UX
+- [x] Impact simulator MVP (realloc sliders) — clearly labeled **SCENARIO**, not official
+- [x] Basic leaderboard / XP display on learn profile (API-backed)
 - [ ] Certificate PDF generation
 - [ ] Drag-drop quiz types; confetti/Lottie mastery
-- [ ] PWA offline pack for critical metrics + last lesson
+- [x] PWA: existing `/sw.js` kept; `/reports` added to precache shell
 - [ ] Swahili key explainers
 - [ ] User-generated stories / forum quality bar
 - [ ] Pre-2013 independence archive digitization program
 - [ ] Lighthouse CI / CWV budget enforcement
 - [ ] GDPR export/delete UX polish
+- [ ] Full leaderboards / daily streaks / quests UX (beyond basic profile board)
 
 ### Explicitly out of “done” claims
 - [ ] All years 1963–2026 `TESTED_TRUE` — **false today**; matrix says so
@@ -167,4 +168,4 @@
 | Not done P0 | ~8 |
 | Not done P1–P2 | ~20+ |
 
-**Next action:** start backlog **#1 Edge catalogue** (or say if Admin Runner / FY2026 episode should go first).
+**Next action:** glossary + public participation hub; extract real CBK/Treasury metrics for 2013→2025 into IN_APP seeds (OSINT); optional full `reform-learn` hub rewrite PR later.

@@ -1,6 +1,7 @@
 @import "./tokens.css";
 @import "./base.css";
 @import "./components.css";
+@import "./learn-immersive.css";
 
 @custom-variant dark (&:is(.dark *));
 

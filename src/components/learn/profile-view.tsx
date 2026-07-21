@@ -37,6 +37,7 @@ import {
   useGamificationMe,
   useBadgeCatalog,
   useCertificates,
+  useLeaderboard,
 } from "@/hooks/use-gamification";
 import { useUpdateProfile } from "@/hooks/use-profile";
 import { useChangePassword } from "@/hooks/use-auth-actions";
@@ -228,6 +229,7 @@ export function ProfileView({
   const { data: gamification } = useGamificationMe();
   const { data: badgeCatalog } = useBadgeCatalog();
   const { data: certificatesData } = useCertificates();
+  const { data: leaderboardData } = useLeaderboard(10);
   const { mutateAsync: updateProfile, isPending: savingProfile } =
     useUpdateProfile();
   const { mutateAsync: changePassword, isPending: changingPassword } =
@@ -246,6 +248,27 @@ export function ProfileView({
   const ward = user?.ward || profile.ward || "";
   const avatarUrl =
     user?.avatar_url || user?.avatar || profile.avatar_url || null;
+
+  const leaderboardEntries = useMemo(() => {
+    return (leaderboardData?.results ?? []).slice(0, 8).map((entry, i) => ({
+      name: entry.name ?? "Anonymous",
+      points: entry.points,
+      rank: entry.rank ?? i + 1,
+      isUser:
+        displayName.toLowerCase() === (entry.name ?? "").toLowerCase() ||
+        (profile.pseudoName ?? "").toLowerCase() === (entry.name ?? "").toLowerCase(),
+    }));
+  }, [leaderboardData?.results, displayName, profile.pseudoName]);
+
+  const userRank =
+    leaderboardEntries.find((entry) => entry.isUser)?.rank ??
+    leaderboardData?.results?.find(
+      (entry) =>
+        displayName.toLowerCase() === (entry.name ?? "").toLowerCase() ||
+        (profile.pseudoName ?? "").toLowerCase() === (entry.name ?? "").toLowerCase(),
+    )?.rank ??
+    null;
+
   const certificates =
     certificatesData?.results ?? gamification?.certificates ?? [];
 
@@ -497,6 +520,47 @@ export function ProfileView({
           <ScoreStat label="Level" value={level} icon={Trophy} />
         </div>
       </section>
+
+      {leaderboardEntries.length > 0 ? (
+        <ProfileSection
+          title="Leaderboard"
+          icon={<Globe className="size-4 text-primary" />}
+          action={
+            userRank != null ? (
+              <span className="text-[11px] font-semibold tabular-nums text-muted-foreground">
+                Your rank: #{userRank}
+              </span>
+            ) : null
+          }
+        >
+          <ol className="divide-y divide-border/60 overflow-hidden rounded-2xl border border-border/70">
+            {leaderboardEntries.map((entry) => (
+              <li
+                key={`${entry.rank}-${entry.name}`}
+                className={cn(
+                  "flex items-center justify-between gap-2 px-4 py-2.5",
+                  entry.isUser && "bg-primary/5",
+                )}
+              >
+                <div className="flex min-w-0 items-center gap-2.5">
+                  <span
+                    className={cn(
+                      "w-5 text-center text-xs font-bold tabular-nums",
+                      entry.rank === 1 ? "text-amber-500" : "text-muted-foreground",
+                    )}
+                  >
+                    {entry.rank}
+                  </span>
+                  <span className="truncate text-sm font-bold">{entry.name}</span>
+                </div>
+                <span className="shrink-0 text-xs font-semibold tabular-nums text-muted-foreground">
+                  {entry.points.toLocaleString()} XP
+                </span>
+              </li>
+            ))}
+          </ol>
+        </ProfileSection>
+      ) : null}
 
       {/* Badges */}
       {hasCatalog ? (

@@ -29,16 +29,21 @@ describe("budget FY episode catalogue (P0)", () => {
     }
   });
 
-  it("includes citizen impact blurbs only for 2026/27 from seed narrative", () => {
-    expect(getFyEpisode("2025/26")?.citizen_impact).toBeNull();
+  it("includes citizen impact blurbs from cited seed narrative for IN_APP years", () => {
+    const fy25 = getFyEpisode("2025/26")?.citizen_impact;
+    expect(fy25?.blurbs.length).toBeGreaterThan(0);
+    expect(fy25?.source_note).toMatch(/seed/i);
+    expect(fy25?.blurbs.some((b) => /1,007\.4B/.test(b.text))).toBe(true);
+
     const impact = getFyEpisode(DEFAULT_BUDGET_YEAR_ID)?.citizen_impact;
     expect(impact?.blurbs.length).toBeGreaterThan(0);
     expect(impact?.source_note).toMatch(/seed/i);
     expect(impact?.blurbs.some((b) => /96,400/.test(b.text))).toBe(true);
   });
 
-  it("does not invent metrics for GAP years", () => {
+  it("does not invent metrics for GAP or SOURCE_LISTED years", () => {
     expect(getFyEpisode("1975/76")).toBeUndefined();
     expect(getFyEpisode("2013/14")).toBeUndefined();
+    expect(getFyEpisode("2024/25")).toBeUndefined();
   });
 });

@@ -43,7 +43,28 @@
         { "name": "Social Protection", "value_billions": 36.8 }
       ],
       "synopsis": "Parliament approved a KES 4.30 trillion budget for FY2025/26 — up from KES 3.99 trillion in FY2024/25. Revenue is projected at KES 3,368.6 billion, leaving a KES 933.3 billion deficit (4.6% of GDP). Education leads at KES 628.6 billion; debt interest at KES 1,007.4 billion remains a significant portion of expenditure.",
-      "citizen_impact": null
+      "citizen_impact": {
+        "title": "What this budget means for citizens",
+        "source_note": "Cited from seed budget_fy2025_26.json highlights & systemic_risks — no new figures.",
+        "blurbs": [
+          {
+            "title": "Debt service remains high",
+            "text": "Interest on public debt (KES 1,007.4B) accounts for nearly a quarter of the total budget — limiting fiscal space for development."
+          },
+          {
+            "title": "Debt exceeds development",
+            "text": "Debt interest (KES 1,007.4B) exceeds development spending (KES 680B)."
+          },
+          {
+            "title": "Education leads again",
+            "text": "Education at KES 628.6B remains the largest sector allocation — about 14.6% of the total budget."
+          },
+          {
+            "title": "County allocation up",
+            "text": "Parliament approved KES 415B equitable share to counties — up from KES 398B in FY2024/25."
+          }
+        ]
+      }
     },
     "2026/27": {
       "fy": "2026/27",

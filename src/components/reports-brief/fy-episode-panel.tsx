@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { ExternalLink, ShieldCheck } from "lucide-react";
 import {
   Bar,
@@ -16,7 +17,11 @@ import {
 import type { FyEpisode } from "@/lib/budget-episodes";
 import { episodeVerificationBadge } from "@/lib/budget-episodes";
 import { formatKesBillions, formatKesTrillions } from "@/lib/budget-format";
+import { cn } from "@/utils";
 import { BriefAmount, ChapterIntro } from "./brief-primitives";
+import { ChartExportButtons } from "./chart-export-buttons";
+import { CountyLensPanel } from "./county-lens-panel";
+import { ImpactSimulatorPanel } from "./impact-simulator-panel";
 
 const SECTOR_COLORS = [
   "hsl(221 83% 53%)",
@@ -36,6 +41,7 @@ function formatMetricBillions(value: number): string {
 export function FyEpisodePanel({ episode }: { episode: FyEpisode }) {
   const m = episode.metrics;
   const badge = episodeVerificationBadge(episode);
+  const [lens, setLens] = useState<"citizen" | "economist">("citizen");
 
   const splitData = [
     m.recurrent_billions != null
@@ -51,6 +57,15 @@ export function FyEpisodePanel({ episode }: { episode: FyEpisode }) {
     value: s.value_billions,
   }));
 
+  const educationBillions = useMemo(
+    () => episode.top_sectors.find((s) => /education/i.test(s.name))?.value_billions ?? 0,
+    [episode.top_sectors],
+  );
+  const healthBillions = useMemo(
+    () => episode.top_sectors.find((s) => /health/i.test(s.name))?.value_billions ?? 0,
+    [episode.top_sectors],
+  );
+
   return (
     <div className="space-y-6">
       <ChapterIntro
@@ -58,6 +73,35 @@ export function FyEpisodePanel({ episode }: { episode: FyEpisode }) {
         title="Budget Data World"
         description={episode.synopsis}
       />
+
+      <div
+        className="flex gap-1 rounded-2xl bg-muted/50 p-1"
+        role="tablist"
+        aria-label="Report lens"
+      >
+        {(
+          [
+            { id: "citizen" as const, label: "Citizen" },
+            { id: "economist" as const, label: "Economist" },
+          ] as const
+        ).map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            role="tab"
+            aria-selected={lens === tab.id}
+            onClick={() => setLens(tab.id)}
+            className={cn(
+              "flex-1 rounded-xl px-3 py-2 text-xs font-bold transition-colors",
+              lens === tab.id
+                ? "bg-background text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground",
+            )}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
 
       {/* Hero: theme + chips */}
       <div className="rounded-3xl border border-border/50 bg-gradient-to-br from-primary/10 via-background to-background p-5 sm:p-6">
@@ -110,10 +154,18 @@ export function FyEpisodePanel({ episode }: { episode: FyEpisode }) {
       {/* Recurrent vs development */}
       {splitData.length > 0 ? (
         <section className="rounded-3xl border border-border/50 bg-card/60 p-4 sm:p-5">
-          <h3 className="font-heading text-sm font-bold">Recurrent vs development</h3>
-          <p className="mt-1 text-xs text-muted-foreground">
-            From seed expenditure split — figures in billions KES.
-          </p>
+          <div className="flex items-start justify-between gap-2">
+            <div>
+              <h3 className="font-heading text-sm font-bold">Recurrent vs development</h3>
+              <p className="mt-1 text-xs text-muted-foreground">
+                From seed expenditure split — figures in billions KES.
+              </p>
+            </div>
+            <ChartExportButtons
+              label="Recurrent vs development"
+              fileBase={`fy-${episode.fy.replace("/", "-")}-recurrent-dev`}
+            />
+          </div>
           <div className="mt-4 h-44 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -159,15 +211,21 @@ export function FyEpisodePanel({ episode }: { episode: FyEpisode }) {
 
       {/* Top sectors */}
       <section className="rounded-3xl border border-border/50 bg-card/60 p-4 sm:p-5">
-        <div className="flex items-end justify-between gap-2">
+        <div className="flex flex-wrap items-end justify-between gap-2">
           <div>
             <h3 className="font-heading text-sm font-bold">Top sectors</h3>
             <p className="mt-1 text-xs text-muted-foreground">Largest allocations (KES billions)</p>
           </div>
-          <BriefAmount
-            billions={m.total_expenditure_billions}
-            className="text-base text-muted-foreground"
-          />
+          <div className="flex flex-wrap items-center gap-2">
+            <BriefAmount
+              billions={m.total_expenditure_billions}
+              className="text-base text-muted-foreground"
+            />
+            <ChartExportButtons
+              label="Top sectors"
+              fileBase={`fy-${episode.fy.replace("/", "-")}-sectors`}
+            />
+          </div>
         </div>
         <div className="mt-4 h-56 w-full sm:h-64">
           <ResponsiveContainer width="100%" height="100%">
@@ -201,8 +259,8 @@ export function FyEpisodePanel({ episode }: { episode: FyEpisode }) {
         </div>
       </section>
 
-      {/* Citizen impact — 2026/27 only from seed */}
-      {episode.citizen_impact ? (
+      {/* Citizen impact — cited seed blurbs only */}
+      {lens === "citizen" && episode.citizen_impact ? (
         <section className="rounded-3xl border border-amber-500/20 bg-amber-500/5 p-4 sm:p-5">
           <h3 className="font-heading text-sm font-bold">{episode.citizen_impact.title}</h3>
           <p className="mt-1 text-[10px] font-semibold uppercase tracking-wide text-amber-800/80 dark:text-amber-300/80">
@@ -223,6 +281,64 @@ export function FyEpisodePanel({ episode }: { episode: FyEpisode }) {
           </ul>
         </section>
       ) : null}
+
+      {lens === "economist" ? (
+        <section className="rounded-3xl border border-border/50 bg-muted/20 p-4 sm:p-5">
+          <h3 className="font-heading text-sm font-bold">Economist read</h3>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Macro split and sector ranking from the same Level-1 seed — no secondary KPIs invented.
+          </p>
+          <dl className="mt-4 grid grid-cols-2 gap-3 text-sm">
+            <div>
+              <dt className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+                Deficit / GDP
+              </dt>
+              <dd className="mt-1 font-bold tabular-nums">{m.deficit_gdp_pct}%</dd>
+            </div>
+            <div>
+              <dt className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+                Debt interest
+              </dt>
+              <dd className="mt-1 font-bold tabular-nums">
+                {m.debt_interest_billions != null
+                  ? formatKesBillions(m.debt_interest_billions, { prefix: true })
+                  : "—"}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+                Recurrent
+              </dt>
+              <dd className="mt-1 font-bold tabular-nums">
+                {m.recurrent_billions != null
+                  ? formatKesBillions(m.recurrent_billions, { prefix: true })
+                  : "—"}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+                Development
+              </dt>
+              <dd className="mt-1 font-bold tabular-nums">
+                {m.development_billions != null
+                  ? formatKesBillions(m.development_billions, { prefix: true })
+                  : "—"}
+              </dd>
+            </div>
+          </dl>
+        </section>
+      ) : null}
+
+      {lens === "citizen" && educationBillions > 0 && healthBillions > 0 ? (
+        <ImpactSimulatorPanel
+          fiscalYear={episode.fy}
+          totalExpenditureBillions={m.total_expenditure_billions}
+          educationBillions={educationBillions}
+          healthBillions={healthBillions}
+        />
+      ) : null}
+
+      <CountyLensPanel fiscalYear={episode.fy} />
 
       {/* Document links from provenance */}
       <section className="space-y-3">
