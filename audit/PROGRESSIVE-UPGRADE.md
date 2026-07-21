@@ -2,7 +2,8 @@
 
 **Goal:** Every page is tested, designed, meaningful, and resilient when Django (bnske / cPanel) is slow.  
 **Rule:** Next.js owns public catalogue + experience; Django owns auth, admin, profiles, authoritative points.  
-**Design logic:** Every region is a **Surface** (`agent/spec/surface-contracts/`) — lock **what/why**, swap **how** variants for tests (Moodle structure, fun motion, Kenya budget data).
+**Design logic:** Every region is a **Surface** (`agent/spec/surface-contracts/`) — lock **what/why**, swap **how** variants for tests (Moodle structure, fun motion, Kenya budget data).  
+**PRD:** [`PRD-BUDGET-NDIO-STORY.md`](./PRD-BUDGET-NDIO-STORY.md) · **Checklist:** [`CHECKLIST-PRD-VERIFICATION.md`](./CHECKLIST-PRD-VERIFICATION.md) · **Admin runner:** [`ADMIN-CONTENT-TEST-RUNNER.md`](./ADMIN-CONTENT-TEST-RUNNER.md)
 
 **Active branch (this workstream):** `feat/mobile-first-reports-redesign` → merge to `main` via PR when green.  
 **Immersive learn (prior session):** already on remote `reform-learn` — merge in **Wave L2** after edge catalogue.
