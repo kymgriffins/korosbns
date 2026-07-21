@@ -5,6 +5,8 @@ import {
   groupYoutubeSeries,
   isBpsSeriesTitle,
   normalizeSeriesTitle,
+  partLetterFromTitle,
+  partNumberFromTitle,
 } from "@/lib/youtube-series";
 import { ensureBpsYoutube } from "@/lib/civic-module-content";
 import type { CivicModule, ChapterStep } from "@/types/learn";
@@ -22,6 +24,15 @@ describe("youtube-series", () => {
   it("detects BPS series titles", () => {
     expect(isBpsSeriesTitle("Before Budget Day: This Is Where It Starts")).toBe(true);
     expect(isBpsSeriesTitle("County Budget: Where Does the Money Come From?")).toBe(false);
+  });
+
+  it("maps PART 1/2/3 to module parts A/B/C", () => {
+    expect(partNumberFromTitle("Before Budget Day: This Is Where It Starts")).toBe(1);
+    expect(partLetterFromTitle("Before Budget Day: This Is Where It Starts")).toBe("A");
+    expect(partLetterFromTitle("PART 1: County Budget: Revenue")).toBe("A");
+    expect(partLetterFromTitle("PART 2: County Budget: Revenue")).toBe("B");
+    expect(partLetterFromTitle("PART 3: County Budget: Revenue")).toBe("C");
+    expect(partLetterFromTitle("PART 4: Extra")).toBe("D");
   });
 
   it("groups RSS parts and marks newest series current", () => {

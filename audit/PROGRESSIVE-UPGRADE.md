@@ -3,7 +3,7 @@
 **Goal:** Every page is tested, designed, meaningful, and resilient when Django (bnske / cPanel) is slow.  
 **Rule:** Next.js owns public catalogue + experience; Django owns auth, admin, profiles, authoritative points.  
 **Design logic:** Every region is a **Surface** (`agent/spec/surface-contracts/`) — lock **what/why**, swap **how** variants for tests (Moodle structure, fun motion, Kenya budget data).  
-**PRD:** [`PRD-BUDGET-NDIO-STORY.md`](./PRD-BUDGET-NDIO-STORY.md) · [`PRD-LMS-BUDGET-HUB.md`](./PRD-LMS-BUDGET-HUB.md) · **Tasklist:** [`TASKLIST-DONE-TODO.md`](./TASKLIST-DONE-TODO.md) · **Checklist:** [`CHECKLIST-PRD-VERIFICATION.md`](./CHECKLIST-PRD-VERIFICATION.md) · [`CHECKLIST-BUDGET-YEARS.md`](./CHECKLIST-BUDGET-YEARS.md) · **Admin runner:** [`ADMIN-CONTENT-TEST-RUNNER.md`](./ADMIN-CONTENT-TEST-RUNNER.md) · **Sources:** [`data/budget-sources.json`](./data/budget-sources.json)
+**PRD:** [`PRD-BUDGET-NDIO-STORY.md`](./PRD-BUDGET-NDIO-STORY.md) · [`PRD-LMS-BUDGET-HUB.md`](./PRD-LMS-BUDGET-HUB.md) · [`PRD-YOUTUBE-CONTENT-PIPELINE.md`](./PRD-YOUTUBE-CONTENT-PIPELINE.md) · **Tasklist:** [`TASKLIST-DONE-TODO.md`](./TASKLIST-DONE-TODO.md) · **Checklist:** [`CHECKLIST-PRD-VERIFICATION.md`](./CHECKLIST-PRD-VERIFICATION.md) · [`CHECKLIST-BUDGET-YEARS.md`](./CHECKLIST-BUDGET-YEARS.md) · **Admin runner:** [`ADMIN-CONTENT-TEST-RUNNER.md`](./ADMIN-CONTENT-TEST-RUNNER.md) · **Sources:** [`data/budget-sources.json`](./data/budget-sources.json)
 
 **Active branch (this workstream):** `feat/mobile-first-reports-redesign` → merge to `main` via PR when green.  
 **Immersive learn (prior session):** already on remote `reform-learn` — merge in **Wave L2** after edge catalogue.

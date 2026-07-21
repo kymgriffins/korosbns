@@ -26,6 +26,25 @@ export type YouTubeSeries = {
 const PART_PREFIX =
   /^(?:part\s*[\d]+)\s*[:\-–—.]?\s*/i;
 
+const PART_NUMBER = /^part\s*(\d+)/i;
+
+const PART_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+/** 1-based PART index; titles without PART default to 1 (Part A). */
+export function partNumberFromTitle(title: string): number {
+  const m = title.trim().match(PART_NUMBER);
+  if (!m) return 1;
+  const n = Number.parseInt(m[1], 10);
+  return Number.isFinite(n) && n >= 1 ? n : 1;
+}
+
+/** Map PART 1/2/3 → A/B/C (PART 4+ → D…). */
+export function partLetterFromTitle(title: string): string {
+  const n = partNumberFromTitle(title);
+  if (n <= PART_LETTERS.length) return PART_LETTERS[n - 1]!;
+  return `PART_${n}`;
+}
+
 export function normalizeSeriesTitle(title: string): string {
   let t = title
     .replace(PART_PREFIX, "")
