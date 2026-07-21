@@ -1,6 +1,6 @@
 {
   "provenance": {
-    "source": "seeds/civic_modules.json",
+    "source": "seeds/civic_modules.json + youtube pipeline apply",
     "note": "Read-only offline catalogue when civic-modules API is unreachable. Only modules with learnable step content are listed.",
     "level": "fallback"
   },
@@ -34,35 +34,31 @@
           ],
           "audio_url": "",
           "transcript": "",
-          "text": "The Budget Policy Statement (BPS) is Kenya's early roadmap for the national budget. It sets priorities, spending ceilings, and policy signals before the full estimates are published."
+          "text": "Part 1 — Before Budget Day: This Is Where It Starts. The Budget Policy Statement (BPS) is Kenya's early roadmap for the national budget. It sets priorities, spending ceilings, and policy signals before the full estimates are published."
         },
         {
           "id": "budget-policy-statement-ch2",
           "title": "Reading the BPS 2026 Summary",
           "order": 2,
-          "youtube_url": "https://www.youtube.com/watch?v=Ed9lP0-komE",
+          "youtube_url": "https://www.youtube.com/watch?v=wkPe3sWomoA",
           "youtube_urls": [
-            "https://www.youtube.com/watch?v=Ed9lP0-komE",
-            "https://www.youtube.com/watch?v=wkPe3sWomoA",
-            "https://www.youtube.com/watch?v=FkgRz4v2Llk"
+            "https://www.youtube.com/watch?v=wkPe3sWomoA"
           ],
           "audio_url": "",
           "transcript": "",
-          "text": "Explore the key highlights of BPS 2026 — revenue targets, spending priorities, and fiscal outlook — explained in plain language."
+          "text": "Part 2 — Before the Budget: This Is Where It Starts. Go deeper into the BPS and why it matters before Budget Day — where government priorities become clearer and major budget choices begin to take shape."
         },
         {
           "id": "budget-policy-statement-ch3",
           "title": "BPS and the BETA Agenda",
           "order": 3,
-          "youtube_url": "https://www.youtube.com/watch?v=Ed9lP0-komE",
+          "youtube_url": "https://www.youtube.com/watch?v=FkgRz4v2Llk",
           "youtube_urls": [
-            "https://www.youtube.com/watch?v=Ed9lP0-komE",
-            "https://www.youtube.com/watch?v=wkPe3sWomoA",
             "https://www.youtube.com/watch?v=FkgRz4v2Llk"
           ],
           "audio_url": "",
           "transcript": "",
-          "text": "Understand how the Bottom-Up Economic Transformation Agenda shapes BPS priorities and budget allocations."
+          "text": "Part 3 — Before Budget Day: This Is Where It Starts. Break down what the BPS is and why young people should care — how choices on jobs, education, healthcare, business, and taxes begin to take shape."
         }
       ],
       "author": null,

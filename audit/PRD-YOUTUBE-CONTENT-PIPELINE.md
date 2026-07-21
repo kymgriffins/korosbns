@@ -4,7 +4,7 @@
 **Version:** 1.1  
 **Status:** Wave 1 done · Wave 2 in progress  
 **Stack:** Django `bnske` (`content`) · Next.js `korosbns` (series grouping + learn hub)  
-**Companions:** [`PRD-LMS-BUDGET-HUB.md`](./PRD-LMS-BUDGET-HUB.md) · [`PROGRESSIVE-UPGRADE.md`](./PROGRESSIVE-UPGRADE.md) · bnske `content/services/*`
+**Companions:** [`PRD-LMS-BUDGET-HUB.md`](./PRD-LMS-BUDGET-HUB.md) · [`PRD-RSS-LEARNING-CONTENT-ALWAYS-PRESENT.md`](./PRD-RSS-LEARNING-CONTENT-ALWAYS-PRESENT.md) (schedule + always-present durability) · [`PROGRESSIVE-UPGRADE.md`](./PROGRESSIVE-UPGRADE.md) · bnske `content/services/*`
 
 ---
 
