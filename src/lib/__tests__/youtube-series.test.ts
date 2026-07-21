@@ -8,7 +8,7 @@ import {
   partLetterFromTitle,
   partNumberFromTitle,
 } from "@/lib/youtube-series";
-import { ensureBpsYoutube } from "@/lib/civic-module-content";
+import { ensureBpsYoutube, applyPartUrlsToSteps } from "@/lib/civic-module-content";
 import type { CivicModule, ChapterStep } from "@/types/learn";
 
 describe("youtube-series", () => {
@@ -105,8 +105,9 @@ describe("ensureBpsYoutube", () => {
       steps: [emptyStep(1), emptyStep(2)],
     };
     const next = ensureBpsYoutube(mod);
+    expect(next.steps[0].youtube_url).toBe(BPS_YOUTUBE_URLS[0]);
     expect(next.steps[0].youtube_urls).toEqual([...BPS_YOUTUBE_URLS]);
-    expect(next.steps[1].youtube_url).toBe(BPS_YOUTUBE_URLS[0]);
+    expect(next.steps[1].youtube_url).toBe(BPS_YOUTUBE_URLS[1]);
   });
 
   it("leaves non-BPS modules untouched", () => {
@@ -127,5 +128,32 @@ describe("ensureBpsYoutube", () => {
       steps: [emptyStep(1)],
     };
     expect(ensureBpsYoutube(mod).steps[0].youtube_urls ?? []).toEqual([]);
+  });
+
+  it("applyPartUrlsToSteps maps A/B/C onto chapter orders", () => {
+    const mod: CivicModule = {
+      id: "m",
+      title: "County",
+      slug: "county-budget",
+      badge: "1",
+      badgeName: "County",
+      documentName: "County",
+      archive: "",
+      link: "",
+      status: "Published",
+      credits: "BNS",
+      description: "County",
+      expectations: [],
+      order: 3,
+      steps: [emptyStep(1), emptyStep(2), emptyStep(3)],
+    };
+    const next = applyPartUrlsToSteps(mod, {
+      A: "https://www.youtube.com/watch?v=aaaaaaaaaaa",
+      B: "https://www.youtube.com/watch?v=bbbbbbbbbbb",
+      C: "https://www.youtube.com/watch?v=ccccccccccc",
+    });
+    expect(next.steps[0].youtube_url).toContain("aaaaaaaaaaa");
+    expect(next.steps[1].youtube_url).toContain("bbbbbbbbbbb");
+    expect(next.steps[2].youtube_url).toContain("ccccccccccc");
   });
 });
