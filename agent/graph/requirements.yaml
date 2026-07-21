@@ -1,0 +1,65 @@
+# Addressable requirements — Builder cites REQ-* in evidence
+
+requirements:
+  REQ-0001:
+    text: Desktop navigation must never use a sidebar
+    source: navigation-laws.md Law 1
+    contracts: [CTR-navigation-laws@1.0.0]
+
+  REQ-0003:
+    text: Mobile bottom navigation must have at most 5 items
+    source: navigation-laws.md Law 3
+    contracts: [CTR-lms-shell@1.0.0]
+
+  REQ-0012:
+    text: Lesson routes must hide bottom navigation (immersive mode)
+    source: navigation-laws.md Law 12
+    contracts: [CTR-lms-shell@1.0.0]
+
+  REQ-0014:
+    text: Account routes must bypass the learn shell
+    source: navigation-laws.md Law 14
+    contracts: [CTR-lms-shell@1.0.0]
+
+  REQ-0021:
+    text: Lesson must expose exactly one primary CTA
+    source: experience-principles.md
+    contracts: [CTR-lesson-screen@1.0.0]
+    capability: CAP-lesson-screen
+
+  REQ-0088:
+    text: Trivia cannot be dismissed without answering
+    source: navigation-laws.md Law 8
+    contracts: [CTR-trivia-popup@1.0.0]
+    capability: CAP-lesson-screen
+
+  REQ-0100:
+    text: Progress owned by Learning Runtime — no direct UI mutation
+    source: runtime-contracts/progress-contract.md
+    capability: CAP-learning-runtime
+
+  REQ-0101:
+    text: State derived from append-only events
+    source: runtime-contracts/event-model.md
+    capability: CAP-learning-runtime
+
+  REQ-0102:
+    text: Timeline observable for every learning event
+    source: runtime-contracts/timeline-contract.md
+    capability: CAP-learning-runtime
+
+  REQ-0103:
+    text: Video lifecycle emits VideoStarted Paused Completed
+    capability: CAP-learning-runtime
+
+  REQ-0104:
+    text: Trivia lifecycle emits TriviaOpened TriviaAnswered
+    capability: CAP-learning-runtime
+
+  REQ-0105:
+    text: LessonCompleted event marks lesson in progress store
+    capability: CAP-learning-runtime
+
+  REQ-0106:
+    text: Session fields owned by runtime session contract
+    capability: CAP-learning-runtime

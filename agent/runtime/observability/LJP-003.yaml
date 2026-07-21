@@ -1,0 +1,61 @@
+observability:
+  id: OBS-LJP-003-001
+  capability: learning-experience
+  spec_id: LJP-003
+  date: 2026-07-07
+
+  pipeline:
+    planner: { status: complete }
+    builder: { status: complete }
+    verifier: { status: complete }
+    critic: { status: pass }
+
+  files_changed:
+    - src/components/lms/lesson/**
+    - src/lib/learning-runtime/experience.ts
+    - src/lib/learning-runtime/journey-effects.ts
+    - src/app/(marketing)/learn/courses/**/lessons/**
+    - agent/spec/journey-contracts/**
+
+  requirements_satisfied:
+    - REQ-0200
+    - REQ-0201
+    - REQ-0021
+    - REQ-0088
+    - REQ-0103
+    - REQ-0104
+    - REQ-0105
+
+  contracts_used:
+    - lesson-journey@1.0.0
+    - lesson-screen@1.0.0
+    - video_player@1.0.0
+    - trivia_popup@1.0.0
+    - continue_button@1.0.0
+
+  tests_added:
+    - src/lib/learning-runtime/__tests__/lesson-journey.test.ts
+
+  experience_metrics:
+    time_to_first_learning:
+      target_ms: 2000
+      measurement: LessonOpened → VideoStarted
+      status: design_target
+    time_to_continue:
+      target: immediate
+      measurement: TriviaAnswered → showContinue
+      status: design_target
+    decision_count_per_viewport:
+      target_max: 2
+      status: pass
+
+  experience_replay:
+    api: formatExperienceReplay
+    path: src/lib/learning-runtime/experience.ts
+
+  evidence:
+    - reviews/LJP-003.md
+    - lesson-journey.test.ts pass
+    - tsc --noEmit pass
+
+  confidence: 91

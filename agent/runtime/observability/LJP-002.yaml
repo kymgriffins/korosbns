@@ -1,0 +1,42 @@
+observability:
+  id: OBS-LJP-002-001
+  capability: learning-runtime
+  spec_id: LJP-002
+  date: 2026-07-07
+
+  pipeline:
+    planner: { status: complete }
+    builder: { status: complete }
+    verifier: { status: complete }
+
+  files_changed:
+    - src/lib/learning-runtime/**
+    - src/data/lms/events.ts
+    - src/app/(marketing)/learn/layout.tsx
+    - agent/spec/runtime-contracts/**
+    - agent/graph/requirements.yaml
+
+  requirements_satisfied:
+    - REQ-0100
+    - REQ-0101
+    - REQ-0102
+    - REQ-0103
+    - REQ-0104
+    - REQ-0105
+    - REQ-0106
+
+  contracts_used:
+    - learning-runtime@1.0.0
+    - event-model@1.0.0
+    - session@1.0.0
+    - progress@1.0.0
+    - timeline@1.0.0
+
+  tests_added:
+    - src/lib/learning-runtime/__tests__/runtime.test.ts
+
+  evidence:
+    - reviews/LJP-002.md
+    - 4 runtime tests pass
+
+  confidence: 93

@@ -1,0 +1,67 @@
+# Execution Queue
+## Capability-centric — scheduler reads this + state.yaml
+
+```yaml
+version: 2
+mode: capability
+
+# Runtime promotion (do not commit runtime until validated)
+runtime_stage: draft  # draft → validated (after LJP-001 E2E) → reference
+
+active_capability: learning-experience
+active_spec_id: LJP-003
+
+queue:
+  - capability: learning-shell
+    spec_id: LJP-001
+    priority: P0
+    critical_path: true
+  - capability: learning-runtime
+    spec_id: LJP-002
+    depends_on: [learning-shell]
+    critical_path: true
+  - capability: learning-experience
+    spec_id: LJP-003
+    depends_on: [learning-shell, learning-runtime]
+    critical_path: true
+  - capability: course-detail
+    spec_id: LJP-004
+    depends_on: [learning-shell]
+    parallel_group: features
+  - capability: home-continue
+    spec_id: LJP-005
+    depends_on: [learning-experience, course-detail]
+  - capability: catalogue
+    spec_id: LJP-006
+    depends_on: [learning-shell]
+    parallel_group: hubs
+  - capability: progress-hub
+    spec_id: LJP-007
+    depends_on: [learning-shell, learning-experience]
+  - capability: achievements
+    spec_id: LJP-008
+    depends_on: [learning-shell]
+    parallel_group: hubs
+  - capability: profile
+    spec_id: LJP-009
+    depends_on: [learning-shell]
+    parallel_group: hubs
+  - capability: search
+    spec_id: LJP-010
+    depends_on: [learning-shell]
+    parallel_group: hubs
+
+critical_path:
+  - learning-shell
+  - learning-runtime
+  - learning-experience
+  - home-continue
+
+parallel_after:
+  learning-shell: [learning-runtime, course-detail, catalogue, achievements, profile, search]
+
+scheduler:
+  next_action: await_validated_sign_off_for_commit
+  next_responsibility: Human
+  note: LJP-003 complete — three commits when validated
+```
