@@ -1,0 +1,122 @@
+{
+  "version": 1,
+  "updated": "2026-07-21",
+  "policy": "Level-1 government sources only for published KPIs. Secondary sources must be labeled and cite Level-1.",
+  "sources": [
+    {
+      "id": "treasury-budget-books",
+      "name": "National Treasury — Budget Books",
+      "url": "https://www.treasury.go.ke/budget-books",
+      "type": "budget_books",
+      "level": 1,
+      "org": "National Treasury",
+      "verified_link": true,
+      "lastChecked": "2026-07-21",
+      "notes": "Primary portal for recurrent/development/PBB volumes by FY"
+    },
+    {
+      "id": "parliament-budget-books-2026-27",
+      "name": "Parliament — Budget Books FY 2026/27",
+      "url": "https://parliament.go.ke/budget-books-fy-2026-2027",
+      "type": "budget_books",
+      "level": 1,
+      "org": "Parliament of Kenya",
+      "verified_link": true,
+      "lastChecked": "2026-07-21"
+    },
+    {
+      "id": "cbk-gfs",
+      "name": "CBK — Government Finance Statistics",
+      "url": "https://www.centralbank.go.ke/statistics/government-finance-statistics/",
+      "type": "fiscal_time_series",
+      "level": 1,
+      "org": "Central Bank of Kenya",
+      "verified_link": true,
+      "lastChecked": "2026-07-21",
+      "notes": "Revenue, expenditure, deficit financing, public debt — best path for multi-year series"
+    },
+    {
+      "id": "cbk-statistical-bulletin",
+      "name": "CBK Statistical Bulletin",
+      "url": "https://www.centralbank.go.ke/uploads/statistical_bulletin/1771120740_Statistical%20Bulletin%20-%20June%202025.pdf",
+      "type": "bulletin",
+      "level": 1,
+      "org": "Central Bank of Kenya",
+      "verified_link": true,
+      "lastChecked": "2026-07-21"
+    },
+    {
+      "id": "knbs",
+      "name": "Kenya National Bureau of Statistics",
+      "url": "https://www.knbs.or.ke/",
+      "type": "outcomes_gdp",
+      "level": 1,
+      "org": "KNBS",
+      "verified_link": true,
+      "lastChecked": "2026-07-21"
+    },
+    {
+      "id": "parliament-home",
+      "name": "Parliament of Kenya",
+      "url": "https://www.parliament.go.ke/",
+      "type": "legislation_hansard",
+      "level": 1,
+      "org": "Parliament of Kenya",
+      "verified_link": true,
+      "lastChecked": "2026-07-21"
+    },
+    {
+      "id": "cob",
+      "name": "Office of the Controller of Budget",
+      "url": "https://cob.go.ke/",
+      "type": "implementation",
+      "level": 1,
+      "org": "Controller of Budget",
+      "verified_link": true,
+      "lastChecked": "2026-07-21",
+      "notes": "Execution vs estimates — required for 'outcomes' tabs"
+    },
+    {
+      "id": "oag",
+      "name": "Office of the Auditor-General",
+      "url": "https://www.oagkenya.go.ke/",
+      "type": "audit",
+      "level": 1,
+      "org": "Auditor-General",
+      "verified_link": true,
+      "lastChecked": "2026-07-21"
+    },
+    {
+      "id": "cra",
+      "name": "Commission on Revenue Allocation",
+      "url": "https://www.crakenya.org/",
+      "type": "revenue_sharing",
+      "level": 1,
+      "org": "CRA",
+      "verified_link": true,
+      "lastChecked": "2026-07-21"
+    },
+    {
+      "id": "world-bank",
+      "name": "World Bank Open Data (Kenya)",
+      "url": "https://data.worldbank.org/country/kenya",
+      "type": "secondary_aggregate",
+      "level": 2,
+      "org": "World Bank",
+      "verified_link": true,
+      "lastChecked": "2026-07-21",
+      "notes": "SECONDARY — cite for gaps only; label provenance level 2; prefer CBK/KNBS for publish"
+    },
+    {
+      "id": "imf",
+      "name": "IMF Data / Article IV (Kenya)",
+      "url": "https://www.imf.org/en/Countries/KEN",
+      "type": "secondary_aggregate",
+      "level": 2,
+      "org": "IMF",
+      "verified_link": true,
+      "lastChecked": "2026-07-21",
+      "notes": "SECONDARY — not sole source for published KPIs"
+    }
+  ]
+}
