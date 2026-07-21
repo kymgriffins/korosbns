@@ -37,6 +37,26 @@
   --ring: var(--civic-blue);
 }
 
+/* Leaderboard podium rank colours (Trophy components) */
+.learn-app,
+.learn-immersive {
+  --rank-1: #c77d26;
+  --rank-2: #94a3b8;
+  --rank-3: #b45309;
+}
+.learn-app .text-rank-1,
+.learn-immersive .text-rank-1 { color: var(--rank-1); }
+.learn-app .text-rank-2,
+.learn-immersive .text-rank-2 { color: var(--rank-2); }
+.learn-app .text-rank-3,
+.learn-immersive .text-rank-3 { color: var(--rank-3); }
+.learn-app .bg-rank-1\/60,
+.learn-immersive .bg-rank-1\/60 { background-color: color-mix(in srgb, var(--rank-1) 60%, transparent); }
+.learn-app .bg-rank-2\/30,
+.learn-immersive .bg-rank-2\/30 { background-color: color-mix(in srgb, var(--rank-2) 30%, transparent); }
+.learn-app .bg-rank-3\/50,
+.learn-immersive .bg-rank-3\/50 { background-color: color-mix(in srgb, var(--rank-3) 50%, transparent); }
+
 .dark .learn-app,
 .dark .learn-immersive {
   --ink: #f5f7fb;
