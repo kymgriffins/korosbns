@@ -7,6 +7,13 @@ schema: semver
 status_values: [draft, approved, deprecated]
 
 contracts:
+  # Surface method — what/why locked; how variants for A/B
+  surface_contracts:
+    id: surface-contracts
+    version: 0.1.0
+    status: draft
+    path: agent/spec/surface-contracts/README.md
+
   # Experience (frozen during execution lock)
   design_dna:
     id: design-dna

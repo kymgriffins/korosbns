@@ -1,0 +1,232 @@
+# Learn hub surfaces — Moodle structure, playful Kenya budget presentation
+version: 0.1.0
+status: draft
+product: "Budget Ndio Story Learn"
+metaphor: "Moodle curriculum + Netflix browse + Duolingo checklist + living budget numbers"
+
+surfaces:
+  - id: learn.hub.hero
+    job: Start the next budget lesson in one tap
+    why: Anonymous citizens must enter learning without account friction
+    emotion: Discovery
+    cognitive_load: browse
+    success:
+      event: hub_primary_cta_clicked
+      description: User opens first/continue module step
+    data:
+      - { key: headline, source: next_seed, required: true, fallback: "Learn Kenya's budget" }
+      - { key: subcopy, source: next_seed, required: true, fallback: "Free civic syllabus — read without an account" }
+      - { key: primary_module_slug, source: local_progress, required: true, fallback: "budget-policy-statement" }
+      - { key: primary_href, source: derived, required: true, fallback: "/learn/modules/budget-policy-statement" }
+    how:
+      default: single_cta
+      variants:
+        - id: single_cta
+          format: hero-cta
+          description: Brand + one sentence + one Start button
+          motion: Soft fade of CTA only; no competing secondary
+        - id: continue_chip
+          format: hero-cta
+          description: If progress>0 show Continue {title} instead of Start
+          motion: Chip slides in from progress store
+    anti:
+      - Second CTA to Reports on first viewport
+      - Signup card competing with Start
+      - Fake progress bar at 0%
+
+  - id: learn.hub.continue
+    job: Resume unfinished modules
+    why: Retention — Moodle “my courses” without admin chrome
+    emotion: Focus
+    cognitive_load: browse
+    success:
+      event: continue_row_opened
+      description: User opens a module from continue rail
+    data:
+      - { key: items[].slug, source: local_progress, required: true, fallback: "[]" }
+      - { key: items[].title, source: next_isr, required: true, fallback: "civic-modules.json" }
+      - { key: items[].pct, source: local_progress, required: true, fallback: "0" }
+      - { key: items[].href, source: derived, required: true, fallback: "/learn/modules/{slug}" }
+    how:
+      default: tile-row
+      variants:
+        - id: tile-row
+          format: tile-row
+          description: Horizontal Netflix-style continue cards
+          motion: Snap scroll; card lift on press
+        - id: checklist
+          format: checklist
+          description: Vertical “pick up where you left off” list with % 
+          motion: Check fill on return after complete
+    anti:
+      - Empty state that looks broken (use “Start BPS” seed item)
+
+  - id: learn.hub.watch
+    job: Pick a video or podcast chapter about the budget
+    why: Long podcasts (≈2h) need chapter entry, not one dump player
+    emotion: Discovery
+    cognitive_load: browse
+    success:
+      event: watch_item_started
+      description: Playback or chapter open
+    data:
+      - { key: items[].id, source: next_isr, required: true, fallback: "DEFAULT_VIDEOS" }
+      - { key: items[].title, source: next_isr, required: true, fallback: "DEFAULT_VIDEOS" }
+      - { key: items[].youtube_id, source: next_isr, required: false, fallback: "" }
+      - { key: items[].chapters[], source: next_seed, required: false, fallback: "[]" }
+      - { key: items[].cast[], source: next_seed, required: false, fallback: "[]" }
+    how:
+      default: tile-row
+      variants:
+        - id: tile-row
+          format: tile-row
+          description: Poster tiles with duration
+          motion: Hover scale 1.02; reduced-motion off
+        - id: podcast-chapter
+          format: podcast-chapter
+          description: List chapters with cast avatars; jump to timestamp
+          motion: Active chapter underline follows time
+    anti:
+      - Embedding full 2h player on hub
+      - Dead “See Report” style buttons
+
+  - id: learn.hub.stories
+    job: Complete one short budget story beat
+    why: Scroll/story format builds emotion before long modules
+    emotion: Discovery
+    cognitive_load: browse
+    success:
+      event: story_beat_completed
+      description: Last slide reached or share
+    data:
+      - { key: stories[].slug, source: next_isr, required: true, fallback: "learn-stories.json" }
+      - { key: stories[].slides[].text, source: next_seed, required: true, fallback: "learn-stories.json" }
+      - { key: stories[].slides[].stat, source: next_seed, required: false, fallback: null }
+    how:
+      default: short-slide
+      variants:
+        - id: short-slide
+          format: short-slide
+          description: Full-bleed one slide per swipe
+          motion: Horizontal snap; progress dots
+        - id: story-scroll
+          format: story-scroll
+          description: Vertical scroll chapters; each viewport new data
+          motion: Scrub-linked opacity on stats
+    anti:
+      - Fixed single page with all slides visible at once
+
+  - id: learn.hub.numbers
+    job: Understand one budget number and what it means for citizens
+    why: Statistics must feel human — reveal meaning, not dump tables
+    emotion: Mastery
+    cognitive_load: browse
+    success:
+      event: kpi_meaning_revealed
+      description: User scrolled/tapped to reveal plain-language meaning
+    data:
+      - { key: rows[].label, source: next_isr, required: true, fallback: "reports seed / KPI JSON" }
+      - { key: rows[].value, source: next_isr, required: true, fallback: "—" }
+      - { key: rows[].meaning, source: next_seed, required: true, fallback: "Why this matters for you" }
+      - { key: fy, source: next_seed, required: true, fallback: "2026/27" }
+    how:
+      default: table-reveal
+      variants:
+        - id: table-reveal
+          format: table-reveal
+          description: Rows inert until scroll; meaning expands under value
+          motion: Count-up + fade meaning (respect reduced-motion)
+        - id: board
+          format: board
+          description: 3–6 sector tiles; tap opens meaning sheet
+          motion: Sheet spring from bottom
+    anti:
+      - Raw spreadsheet with no meaning line
+      - Glow/purple decorative charts with no civic claim
+
+  - id: learn.hub.know
+    job: See what you now know from visits and completed beats
+    why: Gamified feedback without waiting on Django
+    emotion: Mastery
+    cognitive_load: browse
+    success:
+      event: knowledge_chip_viewed
+      description: User sees unlocked knowledge statement
+    data:
+      - { key: chips[].id, source: local_events, required: true, fallback: "[]" }
+      - { key: chips[].label, source: derived, required: true, fallback: "Visited BPS intro" }
+      - { key: soft_xp, source: local_events, required: true, fallback: "0" }
+      - { key: authoritative_xp, source: django, required: false, fallback: null }
+    how:
+      default: checklist
+      variants:
+        - id: checklist
+          format: checklist
+          description: Duolingo-style skills checklist
+          motion: Chip pop + soft XP tick
+        - id: tile-row
+          format: tile-row
+          description: “You unlocked” cards rail
+          motion: Stagger enter
+    anti:
+      - Blocking UI on /gamification/me/
+      - Showing 0 XP as failure state for anonymous users
+
+  - id: learn.module.step
+    job: Finish one module step (read or watch) then advance
+    why: Moodle lesson atom — one focus surface
+    emotion: Focus
+    cognitive_load: lesson
+    success:
+      event: module_step_completed
+      description: Next or complete fired after step
+    data:
+      - { key: module.title, source: next_isr, required: true, fallback: "civic-modules.json" }
+      - { key: step.title, source: next_isr, required: true, fallback: "civic-modules.json" }
+      - { key: step.body, source: next_isr, required: true, fallback: "civic-modules.json" }
+      - { key: step.videos[], source: next_isr, required: false, fallback: "[]" }
+      - { key: step_index, source: derived, required: true, fallback: "1" }
+      - { key: step_total, source: derived, required: true, fallback: "1" }
+    how:
+      default: long-article
+      variants:
+        - id: long-article
+          format: long-article
+          description: Reader + bottom Next only; progress once
+          motion: Page crossfade between steps
+        - id: short-slide
+          format: short-slide
+          description: Break step into scroll beats
+          motion: Scroll-snap sections
+    anti:
+      - Six simultaneous progress indicators
+      - Mid-article hard signup wall
+      - Author prestige card during Focus emotion
+
+  - id: learn.module.quiz_beat
+    job: Answer one question correctly or learn the answer
+    why: Assessment without batched walls of MCQs
+    emotion: Focus
+    cognitive_load: assess
+    success:
+      event: trivia_answered
+      description: Submit with correct/incorrect recorded
+    data:
+      - { key: question.id, source: next_isr, required: true, fallback: "trivia seed" }
+      - { key: question.text, source: next_isr, required: true, fallback: "trivia seed" }
+      - { key: question.options[], source: next_isr, required: true, fallback: "trivia seed" }
+      - { key: explanation, source: next_isr, required: false, fallback: "" }
+    how:
+      default: quiz-beat
+      variants:
+        - id: quiz-beat
+          format: quiz-beat
+          description: One question per route/page
+          motion: Option select + feedback panel
+        - id: short-slide
+          format: short-slide
+          description: Question as full-bleed card; swipe after answer
+          motion: Card exit to next q
+    anti:
+      - All questions on one scroll
+      - Continue button that no-ops on last question

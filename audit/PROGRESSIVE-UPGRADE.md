@@ -1,7 +1,8 @@
 # Progressive app upgrade program (korosbns)
 
 **Goal:** Every page is tested, designed, meaningful, and resilient when Django (bnske / cPanel) is slow.  
-**Rule:** Next.js owns public catalogue + experience; Django owns auth, admin, profiles, authoritative points.
+**Rule:** Next.js owns public catalogue + experience; Django owns auth, admin, profiles, authoritative points.  
+**Design logic:** Every region is a **Surface** (`agent/spec/surface-contracts/`) — lock **what/why**, swap **how** variants for tests (Moodle structure, fun motion, Kenya budget data).
 
 **Active branch (this workstream):** `feat/mobile-first-reports-redesign` → merge to `main` via PR when green.  
 **Immersive learn (prior session):** already on remote `reform-learn` — merge in **Wave L2** after edge catalogue.
