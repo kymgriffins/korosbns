@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { LearnProvider } from "@/contexts/learn-context";
 import { Suspense } from "react";
 import { LearnTabSync } from "@/components/learn/learn-tab-sync";
-import { CitizenSyllabusShell } from "@/layouts/CitizenSyllabusShell";
+import { LearnAppShell } from "@/layouts/LearnAppShell";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { canonicalUrl, metaDescription } from "@/utils/metadata";
 
@@ -48,7 +48,7 @@ export default function LearnLayout({ children }: { children: React.ReactNode })
         <Suspense fallback={null}>
           <LearnTabSync />
         </Suspense>
-        <CitizenSyllabusShell>{children}</CitizenSyllabusShell>
+        <LearnAppShell>{children}</LearnAppShell>
       </SidebarProvider>
     </LearnProvider>
   );

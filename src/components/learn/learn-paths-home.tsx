@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useState } from "react";
-import { SyllabusLibraryHome } from "./syllabus-library-home";
 import { LearnModulesView } from "./learn-modules-view";
 import { LearnDocumentsView } from "./learn-documents-view";
 import { ProfileView } from "./profile-view";
@@ -17,9 +16,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { type LearnHubLanguage, type LearnHubProfile } from "@/lib/learn-data";
 import { learnTabToHref } from "@/lib/learn-nav";
 import { clearAllModuleProgress } from "@/lib/module-progress";
-import { recommendModules } from "@/lib/recommend-modules";
 import { TRANSLATIONS } from "@/constants/learn-translations";
-import { useMemo } from "react";
 import {
   readHubProfile,
   writeHubProfile,
@@ -29,7 +26,7 @@ import {
 } from "@/lib/profile-local-storage";
 import { flushAllOfflineCitizenData } from "@/lib/sync-profile";
 
-const MODULES_REQUIRED: LearnTab[] = ["home", "learn", "profile"];
+const MODULES_REQUIRED: LearnTab[] = ["home", "learn", "profile"]; // home kept for legacy redirects
 
 type Props = {
   /** Route-driven tab — source of truth for which view to show (no query-param lag). */
@@ -148,23 +145,13 @@ export function LearnPathsHome({ tab }: Props) {
       clearHubProfile();
       clearAllModuleProgress(stages);
       setProfile(null);
-      router.push(learnTabToHref("home"));
+      router.push(learnTabToHref("learn"));
     }
   };
 
   const effectiveProfile = profile;
   const langKey = (effectiveProfile?.language ?? "EN") as LearnHubLanguage;
   const text = TRANSLATIONS[langKey];
-
-  const recommended = useMemo(() => {
-    if (!isLoggedIn || !effectiveProfile) return [];
-    return recommendModules(stages, {
-      county: effectiveProfile.county,
-      language: effectiveProfile.language,
-      ageRange: effectiveProfile.ageRange,
-      interests: effectiveProfile.interests,
-    });
-  }, [isLoggedIn, effectiveProfile, stages]);
 
   const currentStageNum = effectiveProfile
     ? effectiveProfile.stageProgress
@@ -236,21 +223,8 @@ export function LearnPathsHome({ tab }: Props) {
       )}
 
       <div className="min-w-0">
-        {tab === "home" && (
-          <SyllabusLibraryHome
-            stages={stages}
-            recommended={isLoggedIn ? recommended : []}
-            greeting={
-              isLoggedIn && effectiveProfile?.county
-                ? `Welcome back — recommendations for ${effectiveProfile.county} and your learning path.`
-                : isLoggedIn
-                  ? "Welcome back — a free syllabus with picks based on your profile."
-                  : undefined
-            }
-          />
-        )}
 
-        {tab === "learn" && currentStage && (
+        {(tab === "learn" || tab === "home") && currentStage && (
           <LearnModulesView
             profile={activeProfile}
             stages={stages}

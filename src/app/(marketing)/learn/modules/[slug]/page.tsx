@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ModuleDetailView } from "@/components/learn/module-detail-view";
+import { CourseLandingView } from "@/components/learn/course-landing-view";
 import { learningData } from "@/data/learning";
 import { canonicalUrl, metaDescription } from "@/utils/metadata";
 
@@ -102,7 +102,7 @@ export default async function ModuleDetailPage({ params }: PageProps) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       ) : null}
-      <ModuleDetailView />
+      <CourseLandingView />
     </>
   );
 }

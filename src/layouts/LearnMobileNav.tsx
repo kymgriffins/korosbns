@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { BookOpen, FileText, LayoutDashboard, MessagesSquare } from "lucide-react";
+import { BookOpen, FileText, MessagesSquare } from "lucide-react";
 import { useLearn, type LearnTab } from "@/contexts/learn-context";
 import { learnTabToHref } from "@/lib/learn-nav";
 import {
@@ -93,13 +93,14 @@ export function LearnMobileNav() {
 
   const items: MobileBottomNavItem[] = [
     {
-      id: "home",
-      label: "Dashboard",
-      href: learnTabToHref("home"),
-      active: activeTab === "home",
-      ariaCurrent: activeTab === "home" ? "page" : undefined,
-      icon: <LayoutDashboard className="size-5" aria-hidden />,
-      onNavigate: onNav("home"),
+      id: "learn",
+      label: "Modules",
+      href: learnTabToHref("learn"),
+      active: activeTab === "learn" || activeTab === "home",
+      prominent: true,
+      ariaCurrent: activeTab === "learn" || activeTab === "home" ? "page" : undefined,
+      icon: <BookOpen className="size-5" aria-hidden />,
+      onNavigate: onNav("learn"),
     },
     {
       id: "documents",
@@ -109,16 +110,6 @@ export function LearnMobileNav() {
       ariaCurrent: activeTab === "documents" ? "page" : undefined,
       icon: <FileText className="size-5" aria-hidden />,
       onNavigate: onNav("documents"),
-    },
-    {
-      id: "learn",
-      label: "Learn",
-      href: learnTabToHref("learn"),
-      active: activeTab === "learn",
-      prominent: true,
-      ariaCurrent: activeTab === "learn" ? "page" : undefined,
-      icon: <BookOpen className="size-5" aria-hidden />,
-      onNavigate: onNav("learn"),
     },
     {
       id: "forum",
