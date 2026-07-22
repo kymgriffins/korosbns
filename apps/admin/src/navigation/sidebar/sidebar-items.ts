@@ -2,6 +2,7 @@ import {
   Award,
   BookOpen,
   Clapperboard,
+  FlaskConical,
   FolderOpen,
   GraduationCap,
   Handshake,
@@ -107,6 +108,13 @@ export const sidebarItems: NavGroup[] = [
           { id: "media", title: "Media", url: "/dashboard/media" },
           { id: "feedback", title: "Feedback", url: "/dashboard/feedback" },
           { id: "org-gamification", title: "Gamification", url: "/dashboard/gamification", icon: Award },
+          {
+            id: "content-lab",
+            title: "Content Lab",
+            url: "/dashboard/content-lab",
+            icon: FlaskConical,
+            badge: "new",
+          },
         ],
       },
       {

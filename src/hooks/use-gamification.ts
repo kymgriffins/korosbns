@@ -4,6 +4,7 @@ import type { GamificationState, LeaderboardEntry } from "@/types/gamification";
 import type { ChallengeData, ReferralData, BadgeCatalogResponse } from "@/types/gamification";
 import type { CertificateData } from "@/types/learn";
 import type { ApiListResponse } from "@/types/api";
+import type { PointHistoryEvent } from "@/lib/trophy-profile-data";
 import { gamificationData } from "@/data/gamification";
 
 export function useGamificationMe() {
@@ -29,6 +30,19 @@ export function useLeaderboard(limit = 20) {
     queryKey: ["leaderboard", limit],
     queryFn: () => gamificationData.leaderboard.fetch(limit).then((results) => ({ results })),
     staleTime: 1000 * 60,
+  });
+}
+
+export function usePointHistory(limit = 120) {
+  return useQuery({
+    queryKey: ["gamification", "history", limit],
+    queryFn: () =>
+      apiFetch<{ results: PointHistoryEvent[]; total: number }>(
+        `/gamification/history/?limit=${limit}`,
+        { auth: true },
+      ),
+    staleTime: 1000 * 60,
+    retry: false,
   });
 }
 

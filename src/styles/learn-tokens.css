@@ -1,0 +1,169 @@
+/*
+ * Learn design tokens — civic ledger palette (white / blue / black).
+ * Scoped to `.learn-app` (CitizenSyllabusShell) and `.learn-immersive`
+ * (full-screen read/watch/quiz) so Home/Reports/Forum marketing pages
+ * are unaffected. Overrides map onto the existing semantic vars
+ * (--primary, --foreground, --muted, --border, --ring) so every
+ * bg-primary/text-primary/border usage in Learn components picks up
+ * the new palette without per-component edits.
+ */
+
+.learn-app,
+.learn-immersive {
+  /* Raw palette */
+  --ink: #0b0e14;
+  --paper: #ffffff;
+  --mist: #f5f7fb;
+  --civic-blue: #1746d1;
+  --civic-blue-tint: #dce6ff;
+  --civic-amber: #c77d26;
+  --signal: rgb(11 14 20 / 6%);
+
+  /* Semantic remap */
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--paper);
+  --card-foreground: var(--ink);
+  --popover: var(--paper);
+  --popover-foreground: var(--ink);
+  --primary: var(--civic-blue);
+  --primary-foreground: #ffffff;
+  --accent: var(--civic-blue);
+  --accent-foreground: #ffffff;
+  --muted: var(--mist);
+  --muted-foreground: rgb(11 14 20 / 62%);
+  --border: var(--signal);
+  --input: rgb(11 14 20 / 10%);
+  --ring: var(--civic-blue);
+}
+
+/* Leaderboard podium rank colours (Trophy components) */
+.learn-app,
+.learn-immersive {
+  --rank-1: #c77d26;
+  --rank-2: #94a3b8;
+  --rank-3: #b45309;
+}
+.learn-app .text-rank-1,
+.learn-immersive .text-rank-1 { color: var(--rank-1); }
+.learn-app .text-rank-2,
+.learn-immersive .text-rank-2 { color: var(--rank-2); }
+.learn-app .text-rank-3,
+.learn-immersive .text-rank-3 { color: var(--rank-3); }
+.learn-app .bg-rank-1\/60,
+.learn-immersive .bg-rank-1\/60 { background-color: color-mix(in srgb, var(--rank-1) 60%, transparent); }
+.learn-app .bg-rank-2\/30,
+.learn-immersive .bg-rank-2\/30 { background-color: color-mix(in srgb, var(--rank-2) 30%, transparent); }
+.learn-app .bg-rank-3\/50,
+.learn-immersive .bg-rank-3\/50 { background-color: color-mix(in srgb, var(--rank-3) 50%, transparent); }
+
+.dark .learn-app,
+.dark .learn-immersive {
+  --ink: #f5f7fb;
+  --paper: #0b0e14;
+  --mist: #12151d;
+  --civic-blue: #5c86ff;
+  --civic-blue-tint: rgb(92 134 255 / 16%);
+  --civic-amber: #e3a15c;
+  --signal: rgb(245 247 251 / 10%);
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--mist);
+  --card-foreground: var(--ink);
+  --popover: var(--mist);
+  --popover-foreground: var(--ink);
+  --primary: var(--civic-blue);
+  --primary-foreground: #0b0e14;
+  --accent: var(--civic-blue);
+  --accent-foreground: #0b0e14;
+  --muted: var(--mist);
+  --muted-foreground: rgb(245 247 251 / 62%);
+  --border: var(--signal);
+  --input: rgb(245 247 251 / 14%);
+  --ring: var(--civic-blue);
+}
+
+/* Utility: attention state — deficit figures, "not official" warnings, NEW badges.
+   Used sparingly — if amber shows up everywhere it stops meaning "pay attention." */
+.learn-app .text-attention,
+.learn-immersive .text-attention {
+  color: var(--civic-amber);
+}
+.learn-app .bg-attention-tint,
+.learn-immersive .bg-attention-tint {
+  background-color: color-mix(in srgb, var(--civic-amber) 14%, transparent);
+}
+
+/* Utility: data/utility figures (currency, percentages, counts) get tabular
+   numerals so columns of stats align like a real ledger. */
+.learn-app .figure,
+.learn-immersive .figure {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  letter-spacing: -0.01em;
+}
+
+/* Glossary auto-link — dotted underline + pure-CSS tooltip on first use of
+   jargon (BETA, Appropriation Act, fiscal deficit, ...). Works on server
+   HTML injected via dangerouslySetInnerHTML — no JS listener required. */
+.learn-app .glossary-term,
+.learn-immersive .glossary-term {
+  position: relative;
+  cursor: help;
+  border-bottom: 1px dotted var(--civic-blue, currentColor);
+  text-decoration: none;
+}
+.learn-app .glossary-term::after,
+.learn-immersive .glossary-term::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 6px);
+  z-index: 30;
+  width: max-content;
+  max-width: 15rem;
+  white-space: normal;
+  border-radius: 0.5rem;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.72rem;
+  line-height: 1.35;
+  padding: 0.4rem 0.55rem;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(2px);
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+.learn-app .glossary-term:hover::after,
+.learn-app .glossary-term:focus-visible::after,
+.learn-immersive .glossary-term:hover::after,
+.learn-immersive .glossary-term:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Signature element — ledger tick-rule divider between major sections. */
+.ledger-tick-rule {
+  position: relative;
+  height: 1px;
+  width: 100%;
+  background: var(--signal, hsl(var(--border)));
+  margin-block: 0.25rem;
+}
+.ledger-tick-rule::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -3px;
+  height: 4px;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--civic-blue, currentColor) 0,
+    var(--civic-blue, currentColor) 1px,
+    transparent 1px,
+    transparent 14px
+  );
+  opacity: 0.4;
+}

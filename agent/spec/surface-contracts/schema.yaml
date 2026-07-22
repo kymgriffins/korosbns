@@ -1,0 +1,63 @@
+# Surface contract schema
+version: 1
+status: draft
+
+# Every UI that shows learn/budget data MUST declare a surface.
+# Variants change presentation only — never data keys or success metrics mid-test.
+
+surface:
+  required: [id, job, why, success, data, how, emotion]
+  properties:
+    id: { type: string, pattern: "^[a-z0-9]+(\\.[a-z0-9_-]+)+$" }
+    job: { type: string, maxLength: 120 }
+    why: { type: string }
+    success:
+      type: object
+      required: [event]
+      properties:
+        event: { type: string }          # analytics / runtime event name
+        description: { type: string }
+    emotion: { enum: [Discovery, Focus, Mastery, Utility, Reassurance] }
+    cognitive_load: { enum: [browse, lesson, assess, account] }
+    data:
+      type: array
+      items:
+        required: [key, source, required]
+        properties:
+          key: { type: string }
+          source:
+            enum: [next_seed, next_isr, django, local_progress, local_events, derived]
+          required: { type: boolean }
+          fallback: { type: string }     # path or literal when source fails
+          note: { type: string }
+    how:
+      required: [default, variants]
+      properties:
+        default: { type: string }
+        variants:
+          type: array
+          minItems: 2
+          items:
+            required: [id, format]
+            properties:
+              id: { type: string }
+              format:
+                enum:
+                  - tile-row
+                  - board
+                  - story-scroll
+                  - short-slide
+                  - checklist
+                  - table-reveal
+                  - long-article
+                  - podcast-chapter
+                  - quiz-beat
+                  - hero-cta
+              description: { type: string }
+              motion: { type: string }   # only if it changes knowledge/next action
+    anti:
+      type: array
+      items: { type: string }
+
+# Test rule: for each surface, assert required data keys resolve (API or fallback)
+# and success.event can fire. Do NOT assert a single CSS layout as "correct".

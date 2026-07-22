@@ -3,6 +3,7 @@
 import type { BudgetSchema, NationalSector, WardProject } from "@/lib/budget-schema";
 import { API_BASE_URL } from "@/lib/api-config";
 import seededBudgetOverview from "../data/budget-fy2026-27.json";
+import seededBudgetFy2025 from "../data/budget-fy2025-26.json";
 
 const V2_BUDGET_OVERVIEW_URL = `${API_BASE_URL}/api/v2/budget/overview/`;
 const V2_FISCAL_YEARS_URL = `${API_BASE_URL}/api/v2/budget/fiscal-years/`;
@@ -33,6 +34,7 @@ export interface ReportProvenance {
 /** Default FY chrome when API fiscal-years list is empty — UI still only shows years with payloads. */
 export const FISCAL_YEARS: FiscalYearMeta[] = [
   { id: "fy2026", label: "FY 2026/27", is_current: true },
+  { id: "fy2025", label: "FY 2025/26", is_current: false },
 ];
 
 export const VISIBLE_FISCAL_YEARS = FISCAL_YEARS;
@@ -100,6 +102,7 @@ function emptySchema(label = "Unavailable"): BudgetSchema {
 }
 
 const SEEDED_OVERVIEW = seededBudgetOverview as BudgetSchema;
+const SEEDED_FY2025 = seededBudgetFy2025 as BudgetSchema;
 
 function overviewHasNationalSectors(data: BudgetSchema | null | undefined): boolean {
   return (data?.tier_1_national_sectors?.length ?? 0) > 0;
@@ -108,6 +111,11 @@ function overviewHasNationalSectors(data: BudgetSchema | null | undefined): bool
 /** Verbatim FY 2026/27 catalogue — not scaled or synthesized from other years. */
 export function getSeededBudgetOverview(): BudgetSchema {
   return SEEDED_OVERVIEW;
+}
+
+/** Verbatim FY 2025/26 seed extract — not scaled from 2026/27. */
+export function getSeededBudgetFy2025(): BudgetSchema {
+  return SEEDED_FY2025;
 }
 
 /**
@@ -153,14 +161,22 @@ async function fetchFiscalYearMetas(): Promise<FiscalYearMeta[]> {
 }
 
 /**
- * Only years with a real API payload. Does not clone/scale one FY into prior years.
+ * Years with a real API or verbatim seed payload. Does not clone/scale one FY into prior years.
+ * Always includes IN_APP seeds for 2025/26 and 2026/27 so /reports episodes stay available offline.
  */
 export async function fetchAllYearsData(): Promise<Record<string, BudgetSchema>> {
   const overview = await fetchBudgetOverview();
-  if (!overview) return {};
+  const byId: Record<string, BudgetSchema> = {
+    fy2025: getSeededBudgetFy2025(),
+    fy2026: getSeededBudgetOverview(),
+  };
 
-  const id = fiscalYearIdFromLabel(overview.metadata?.fiscal_year);
-  return { [id]: overview };
+  if (overview && overviewHasNationalSectors(overview)) {
+    const id = fiscalYearIdFromLabel(overview.metadata?.fiscal_year);
+    byId[id] = overview;
+  }
+
+  return byId;
 }
 
 export async function fetchReportFiscalYears(): Promise<FiscalYearMeta[]> {
@@ -240,9 +256,12 @@ export function getReportProvenance(data: BudgetSchema | null | undefined): Repo
       data_status: "unavailable",
     };
   }
+  const seedKey = data.metadata?.source_verbatim;
   const isSeeded =
-    data.metadata?.source_verbatim === "budget_fy2026_27.json" ||
-    data === SEEDED_OVERVIEW;
+    seedKey === "budget_fy2026_27.json" ||
+    seedKey === "budget_fy2025_26.json" ||
+    data === SEEDED_OVERVIEW ||
+    data === SEEDED_FY2025;
   const envelope = data.tier_2_county_devolution_envelope as {
     data_status?: string;
     provenance?: { source?: string; fiscal_year?: string | null };
@@ -256,7 +275,7 @@ export function getReportProvenance(data: BudgetSchema | null | undefined): Repo
 
   return {
     source: isSeeded
-      ? "seeded:budget_fy2026_27.json"
+      ? `seeded:${seedKey || "budget_fy2026_27.json"}`
       : envelope?.provenance?.source ||
         data.metadata?.source_verbatim ||
         "bnscore_v2 overview",

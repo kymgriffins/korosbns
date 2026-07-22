@@ -1,13 +1,12 @@
 import { Routes } from "@/constants/routes";
 import type { LearnTab } from "@/contexts/learn-context";
 
-/** Map hub tab → dedicated shareable route (same speed model as Content pages). */
+/** Map hub tab → dedicated shareable route. */
 export function learnTabToHref(tab: LearnTab): string {
   switch (tab) {
     case "home":
-      return Routes.Learn;
     case "learn":
-      return Routes.LearnModules;
+      return Routes.Learn;
     case "alerts":
       return Routes.LearnAlerts;
     case "documents":
@@ -35,14 +34,14 @@ export function learnTabFromLocation(
   if (path === Routes.LearnProfile || path.startsWith(`${Routes.LearnProfile}/`)) {
     return "profile";
   }
-  if (path === Routes.LearnModules) {
+  if (path === Routes.LearnModules || path === Routes.Learn) {
     return "learn";
   }
   if (path === Routes.LearnAlerts) {
     return "alerts";
   }
 
-  // Module detail pages are under /learn/modules/[slug] — not a hub tab
+  // Module detail / immersive — not a hub tab highlight
   if (path.startsWith(`${Routes.LearnModules}/`)) {
     return null;
   }
@@ -51,9 +50,9 @@ export function learnTabFromLocation(
     return null;
   }
 
-  // Legacy ?tab= on /learn (redirects should clear these; keep for active-state races)
   switch (tabParam) {
     case "modules":
+    case "home":
       return "learn";
     case "alerts":
       return "alerts";
@@ -64,7 +63,7 @@ export function learnTabFromLocation(
     case "forum":
       return "forum";
     default:
-      return "home";
+      return "learn";
   }
 }
 
@@ -77,12 +76,8 @@ export function isLearnNavHrefActive(
   const path = pathname.replace(/\/$/, "") || "/";
   const target = (href.split("?")[0] ?? href).replace(/\/$/, "") || "/";
 
-  if (target === Routes.Learn) {
-    return path === Routes.Learn;
-  }
-
-  if (target === Routes.LearnModules) {
-    return path === Routes.LearnModules;
+  if (target === Routes.Learn || target === Routes.LearnModules) {
+    return path === Routes.Learn || path === Routes.LearnModules;
   }
 
   return path === target || path.startsWith(`${target}/`);
@@ -92,7 +87,8 @@ export function isLearnNavHrefActive(
 export function legacyLearnTabRedirect(tabParam: string | null): string | null {
   switch (tabParam) {
     case "modules":
-      return Routes.LearnModules;
+    case "home":
+      return Routes.Learn;
     case "alerts":
       return Routes.LearnAlerts;
     case "documents":

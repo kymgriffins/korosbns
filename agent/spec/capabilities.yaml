@@ -1,0 +1,197 @@
+# Capability Registry
+## Execution gates — capability complete only when ALL sub-capabilities pass
+
+The scheduler activates capabilities from `runtime/queue.yaml`. A capability is **done** only when every sub-capability has `verification: pass` in `runtime/state.yaml`.
+
+```yaml
+version: 1
+
+capabilities:
+  learning-shell:
+    spec_id: LJP-001
+    priority: P0
+    depends_on_capabilities: []
+    contracts:
+      - lms_shell@1.0.0
+      - navigation_laws@1.0.0
+      - accessibility_contract@1.0.0
+    sub_capabilities:
+      providers:
+        description: LmsProviders — motion, reduced-motion, event bus host
+        contract: lms_shell@1.0.0
+        verification: [compilation, tests, architecture]
+      error_boundary:
+        description: LmsErrorBoundary per error-handling.md
+        contract: error_handling@1.0.0
+        verification: [compilation, architecture]
+      top_navigation:
+        description: LmsTopNav — desktop sticky, 5 hub links max semantics
+        contract: lms_shell@1.0.0
+        verification: [compilation, accessibility, design, architecture]
+      bottom_navigation:
+        description: LmsBottomNav — mobile 5-item, Law 3
+        contract: lms_shell@1.0.0
+        verification: [compilation, accessibility, design, architecture]
+      page_container:
+        description: LmsPage — max-width, padding tokens
+        contract: lms_shell@1.0.0
+        verification: [compilation, design]
+      learning_shell_composer:
+        description: LearningShell — hub / immersive / account modes
+        contract: lms_shell@1.0.0
+        verification: [compilation, architecture]
+      toasts:
+        description: LmsToastLayer — Sonner scoped to learn
+        contract: lms_shell@1.0.0
+        verification: [compilation]
+      dialogs:
+        description: LmsDialogLayer — portal stub v2
+        contract: lms_shell@1.0.0
+        verification: [compilation]
+      bottom_sheets:
+        description: LmsBottomSheetLayer — trivia portal target
+        contract: lms_shell@1.0.0
+        verification: [compilation, architecture]
+      theme:
+        description: lms.css + design tokens — learn-scoped black CTA
+        contract: lms_design_tokens@1.0.0
+        verification: [compilation, design]
+      motion:
+        description: navBottomEnter + reduced-motion
+        contract: motion_guidelines@1.0.0
+        verification: [compilation, accessibility]
+      accessibility:
+        description: Landmarks, focus order, aria-current
+        contract: accessibility_contract@1.0.0
+        verification: [accessibility]
+      layout_integration:
+        description: learn/layout.tsx — resolveShellMode, account bypass
+        contract: lms_shell@1.0.0
+        verification: [compilation, architecture, accessibility]
+
+  learning-runtime:
+    spec_id: LJP-002
+    priority: P0
+    depends_on_capabilities: [learning-shell]
+    contracts:
+      - learning-runtime@1.0.0
+      - event-model@1.0.0
+      - session@1.0.0
+      - progress@1.0.0
+      - timeline@1.0.0
+    sub_capabilities:
+      event_store:
+        description: Append-only event log + dispatch
+        contract: event-model@1.0.0
+        verification: [compilation, tests, architecture]
+      session:
+        description: Current course/module/lesson/part
+        contract: session@1.0.0
+        verification: [compilation, tests]
+      progress:
+        description: Derived progress from events
+        contract: progress@1.0.0
+        verification: [compilation, tests]
+      timeline:
+        description: Observable event history
+        contract: timeline@1.0.0
+        verification: [compilation, tests]
+      navigation:
+        description: Next/prev lesson, locked/unlocked
+        contract: learning-runtime@1.0.0
+        verification: [compilation, tests]
+      persistence:
+        description: sessionStorage hydrate + recover
+        contract: learning-runtime@1.0.0
+        verification: [compilation, tests]
+      lesson_phase:
+        description: Lesson session phase derived from events
+        contract: state_machines@1.0.0
+        verification: [compilation, tests]
+      runtime_provider:
+        description: LearningRuntimeProvider context
+        contract: learning-runtime@1.0.0
+        verification: [compilation, architecture]
+
+  learning-experience:
+    spec_id: LJP-003
+    priority: P0
+    depends_on_capabilities: [learning-shell, learning-runtime]
+    contracts:
+      - lesson-journey@1.0.0
+      - lesson_screen@1.0.0
+      - video_player@1.0.0
+      - trivia_popup@1.0.0
+      - continue_button@1.0.0
+    sub_capabilities:
+      learning_experience_orchestrator:
+        description: LearningExperience — journey orchestration via runtime events only
+        contract: lesson-journey@1.0.0
+        verification: [compilation, tests, architecture]
+      video_player:
+        description: VideoPlayer — VideoStarted/Paused/Completed events
+        contract: video_player@1.0.0
+        verification: [compilation, architecture]
+      trivia_sheet:
+        description: TriviaSheet — no backdrop dismiss (REQ-0088)
+        contract: trivia_popup@1.0.0
+        verification: [compilation, architecture]
+      continue_button:
+        description: ContinueButton — sticky black CTA
+        contract: continue_button@1.0.0
+        verification: [compilation, design]
+      reflection_panel:
+        description: ReflectionPanel — ReflectionSaved event
+        contract: lesson_screen@1.0.0
+        verification: [compilation, architecture]
+      journey_effects:
+        description: Runtime owns PartAdvanced + LessonCompleted after ContinuePressed
+        contract: lesson-journey@1.0.0
+        verification: [compilation, tests, architecture]
+      experience_replay:
+        description: formatExperienceReplay — event-sourced journey reconstruction
+        contract: lesson-journey@1.0.0
+        verification: [compilation, tests]
+      canonical_journey_test:
+        description: lesson-journey.test.ts — acceptance test
+        contract: lesson-journey@1.0.0
+        verification: [tests]
+
+  course-detail:
+    spec_id: LJP-004
+    priority: P1
+    depends_on_capabilities: [learning-shell]
+
+  home-continue:
+    spec_id: LJP-005
+    priority: P1
+    depends_on_capabilities: [learning-experience, course-detail]
+
+  catalogue:
+    spec_id: LJP-006
+    priority: P2
+    depends_on_capabilities: [learning-shell]
+
+  progress-hub:
+    spec_id: LJP-007
+    priority: P2
+    depends_on_capabilities: [learning-shell, learning-experience]
+
+  achievements:
+    spec_id: LJP-008
+    priority: P2
+    depends_on_capabilities: [learning-shell]
+
+  profile:
+    spec_id: LJP-009
+    priority: P2
+    depends_on_capabilities: [learning-shell]
+
+  search:
+    spec_id: LJP-010
+    priority: P2
+    depends_on_capabilities: [learning-shell]
+
+# Capability complete predicate
+complete_when: all(sub_capabilities.verification == pass)
+```

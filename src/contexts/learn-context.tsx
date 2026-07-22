@@ -51,7 +51,7 @@ const LearnContext = createContext<LearnContextType | undefined>(undefined);
 
 export function LearnProvider({ children }: { children: React.ReactNode }) {
   const { isLoggedIn } = useAuth();
-  const [activeTab, setActiveTab] = useState<LearnTab>("home");
+  const [activeTab, setActiveTab] = useState<LearnTab>("learn");
   const [rightDrawerOpen, setRightDrawerOpen] = useState(false);
   const [gamification, setGamification] = useState<GamificationState | null>(null);
   const [activeLesson, setActiveLesson] = useState<ActiveLesson | null>(null);

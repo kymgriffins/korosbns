@@ -1,0 +1,56 @@
+{
+  "provenance": {
+    "source": "Kenya budget civic seeds",
+    "note": "Read-only offline trivia when /engagement/trivia/ is unreachable.",
+    "level": "fallback"
+  },
+  "count": 2,
+  "results": [
+    {
+      "id": "finance-bill-basics",
+      "slug": "finance-bill-basics",
+      "title": "Finance Bill basics",
+      "description": "Quick check: what the Finance Bill does in Kenya’s budget calendar.",
+      "points": 30,
+      "questions": [
+        {
+          "id": "fb-q1",
+          "question_text": "What does Kenya’s annual Finance Bill mainly update?",
+          "question_type": "multiple_choice",
+          "options": [
+            "County assembly standing orders",
+            "Tax laws and related fiscal measures for the year",
+            "The Constitution’s bill of rights",
+            "IEBC election timelines"
+          ],
+          "order": 1,
+          "correct_index": 1,
+          "explanation": "The Finance Bill amends tax and related fiscal statutes for the upcoming financial year."
+        }
+      ]
+    },
+    {
+      "id": "county-share-check",
+      "slug": "county-share-check",
+      "title": "County share check",
+      "description": "How nationally raised revenue reaches county governments.",
+      "points": 25,
+      "questions": [
+        {
+          "id": "cs-q1",
+          "question_text": "Which bill divides nationally raised revenue between national and county governments?",
+          "question_type": "multiple_choice",
+          "options": [
+            "Appropriation Bill",
+            "Division of Revenue Bill",
+            "County Governments Act alone",
+            "Finance Bill only"
+          ],
+          "order": 1,
+          "correct_index": 1,
+          "explanation": "The Division of Revenue Bill sets the vertical split of shared revenue each year."
+        }
+      ]
+    }
+  ]
+}

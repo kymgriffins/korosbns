@@ -1,8 +1,18 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { motion } from "motion/react";
-import { Calendar, ChevronDown, ChevronUp, ExternalLink, FileText, Search, X } from "lucide-react";
+import {
+  Calendar,
+  ChevronDown,
+  ChevronUp,
+  ExternalLink,
+  FileText,
+  Search,
+  Sparkles,
+  X,
+} from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -17,10 +27,18 @@ import {
 } from "@/components/ui/select";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
 import { SectionHeader, SectionShell } from "@/layouts/section-shell";
-import type { YouTubeVideo } from "@/data/videos";
-import { getVideos, embedUrl } from "@/data/videos";
+import {
+  embedUrl,
+  getGroupedSeries,
+  learnHubItemToVideo,
+  videoData,
+  type YouTubeVideo,
+} from "@/data/videos";
 import { getTranscript, fetchTranscript, formatTimestamp } from "@/data/transcripts";
 import type { TranscriptEntry } from "@/data/transcripts";
+import type { YouTubeSeries } from "@/lib/youtube-series";
+import { BPS_MODULE_SLUG } from "@/lib/youtube-series";
+import { Routes } from "@/constants/routes";
 import { cn } from "@/utils";
 
 function VideoCard({
@@ -57,11 +75,13 @@ function VideoCard({
     }
   }, [video.videoId, transcript]);
 
-  const date = new Date(video.publishedAt).toLocaleDateString("en-KE", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
+  const date = video.publishedAt
+    ? new Date(video.publishedAt).toLocaleDateString("en-KE", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+    : "";
 
   return (
     <motion.div variants={fadeInUp} className="group">
@@ -74,7 +94,9 @@ function VideoCard({
         <div
           className="aspect-video relative bg-black overflow-hidden cursor-pointer"
           onClick={() => setExpanded((p) => !p)}
-          onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setExpanded((p) => !p); }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") setExpanded((p) => !p);
+          }}
           role="button"
           tabIndex={0}
           aria-label={expanded ? "Collapse video" : "Expand video"}
@@ -95,10 +117,12 @@ function VideoCard({
               <h3 className="text-sm font-semibold leading-snug line-clamp-2">
                 {video.title}
               </h3>
-              <div className="flex items-center gap-2 mt-1.5 text-[11px] text-muted-foreground">
-                <Calendar className="size-3" />
-                <span>{date}</span>
-              </div>
+              {date ? (
+                <div className="flex items-center gap-2 mt-1.5 text-[11px] text-muted-foreground">
+                  <Calendar className="size-3" />
+                  <span>{date}</span>
+                </div>
+              ) : null}
             </div>
             <a
               href={video.url}
@@ -116,7 +140,7 @@ function VideoCard({
             {video.description}
           </p>
 
-          {transcriptVisible && transcript && transcript.length > 0 && (
+          {transcriptVisible && transcript && transcript.length > 0 ? (
             <div className="rounded-xl border border-border/50 bg-muted/30 p-3 max-h-48 overflow-y-auto space-y-1.5 text-[11px] leading-relaxed scrollbar-thin">
               {transcript.map((entry, i) => (
                 <div key={i} className="flex gap-2">
@@ -127,7 +151,7 @@ function VideoCard({
                 </div>
               ))}
             </div>
-          )}
+          ) : null}
 
           <div className="flex items-center gap-2">
             <Button
@@ -181,20 +205,56 @@ function VideoGridSkeleton() {
   );
 }
 
+function seriesToVideos(series: YouTubeSeries): YouTubeVideo[] {
+  return series.videos.map((v) => ({
+    videoId: v.videoId,
+    title: v.title,
+    url: v.url,
+    publishedAt: v.publishedAt,
+    description: v.description || "",
+    channelId: "",
+  }));
+}
+
 export function VideoGallery() {
   const [videos, setVideos] = useState<YouTubeVideo[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState<"newest" | "oldest" | "title">("newest");
+  const [seriesFilter, setSeriesFilter] = useState<string>("current");
 
   useEffect(() => {
-    const data = getVideos();
-    setVideos(data);
-    setLoading(false);
+    let cancelled = false;
+    (async () => {
+      try {
+        const items = await videoData.fetch();
+        if (cancelled) return;
+        const mapped = items
+          .map(learnHubItemToVideo)
+          .filter((v): v is YouTubeVideo => v != null);
+        setVideos(mapped);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
+  const seriesList = useMemo(() => getGroupedSeries(videos), [videos]);
+
   const filtered = useMemo(() => {
-    let result = [...videos];
+    let pool = videos;
+    if (seriesFilter === "current") {
+      const current = seriesList.find((s) => s.isCurrent);
+      pool = current ? seriesToVideos(current) : videos;
+    } else if (seriesFilter !== "all") {
+      const match = seriesList.find((s) => s.id === seriesFilter);
+      pool = match ? seriesToVideos(match) : videos;
+    }
+
+    let result = [...pool];
     if (search) {
       const q = search.toLowerCase();
       result = result.filter(
@@ -205,17 +265,28 @@ export function VideoGallery() {
     }
     switch (sortBy) {
       case "newest":
-        result.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+        result.sort(
+          (a, b) =>
+            new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
+        );
         break;
       case "oldest":
-        result.sort((a, b) => new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime());
+        result.sort(
+          (a, b) =>
+            new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime(),
+        );
         break;
       case "title":
         result.sort((a, b) => a.title.localeCompare(b.title));
         break;
     }
     return result;
-  }, [videos, search, sortBy]);
+  }, [videos, search, sortBy, seriesFilter, seriesList]);
+
+  const currentSeries = seriesList.find((s) => s.isCurrent) ?? null;
+  const currentHref = currentSeries?.isBps
+    ? `/learn/modules/${BPS_MODULE_SLUG}`
+    : currentSeries?.videos[0]?.url || Routes.LearnVideos;
 
   if (loading) {
     return (
@@ -243,11 +314,52 @@ export function VideoGallery() {
           eyebrow="Video Library"
           title={
             <>
-              All <span className="font-heading italic text-primary">YouTube</span> Videos
+              All <span className="font-heading italic text-primary">YouTube</span>{" "}
+              Videos
             </>
           }
-          description="Every Budget Ndio Story video in one place. Watch, learn, and follow the transcript."
+          description="RSS series grouped by title, newest first — current series always advertised."
         />
+
+        {currentSeries ? (
+          <div
+            data-testid="current-youtube-series"
+            className="flex flex-col gap-3 rounded-2xl border border-primary/25 bg-primary/5 px-4 py-4 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <div className="min-w-0 space-y-1">
+              <div className="flex items-center gap-2">
+                <Badge variant="default" className="gap-1 text-[10px]">
+                  <Sparkles className="size-3" />
+                  Current series
+                </Badge>
+                {currentSeries.isBps ? (
+                  <Badge variant="secondary" className="text-[10px]">
+                    With Budget Policy Statement
+                  </Badge>
+                ) : null}
+              </div>
+              <p className="text-sm font-semibold leading-snug">{currentSeries.title}</p>
+              <p className="text-[11px] text-muted-foreground">
+                {currentSeries.videos.length} part
+                {currentSeries.videos.length !== 1 ? "s" : ""}
+                {currentSeries.latestPublishedAt
+                  ? ` · latest ${new Date(currentSeries.latestPublishedAt).toLocaleDateString("en-KE", { month: "short", day: "numeric", year: "numeric" })}`
+                  : ""}
+              </p>
+            </div>
+            <Button asChild size="sm" className="h-9 shrink-0 rounded-lg text-xs font-bold">
+              {currentSeries.isBps || currentHref.startsWith("/") ? (
+                <Link href={currentHref}>
+                  {currentSeries.isBps ? "Open BPS module" : "Watch current"}
+                </Link>
+              ) : (
+                <a href={currentHref} target="_blank" rel="noopener noreferrer">
+                  Watch on YouTube
+                </a>
+              )}
+            </Button>
+          </div>
+        ) : null}
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="relative flex-1 max-w-xs">
@@ -258,40 +370,63 @@ export function VideoGallery() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-            {search && (
+            {search ? (
               <button
                 type="button"
                 onClick={() => setSearch("")}
-                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setSearch(""); }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") setSearch("");
+                }}
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 aria-label="Clear search"
               >
                 <X className="size-3.5" />
               </button>
-            )}
+            ) : null}
           </div>
 
-          <Select value={sortBy} onValueChange={(v) => setSortBy(v as typeof sortBy)}>
-            <SelectTrigger className="w-36 rounded-lg bg-background text-xs">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="newest">Newest First</SelectItem>
-              <SelectItem value="oldest">Oldest First</SelectItem>
-              <SelectItem value="title">A-Z</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex flex-wrap gap-2">
+            <Select value={seriesFilter} onValueChange={setSeriesFilter}>
+              <SelectTrigger className="w-48 rounded-lg bg-background text-xs">
+                <SelectValue placeholder="Series" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="current">Current series</SelectItem>
+                <SelectItem value="all">All series</SelectItem>
+                {seriesList.map((s) => (
+                  <SelectItem key={s.id} value={s.id}>
+                    {s.title}
+                    {s.isCurrent ? " · now" : ""}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={sortBy}
+              onValueChange={(v) => setSortBy(v as typeof sortBy)}
+            >
+              <SelectTrigger className="w-36 rounded-lg bg-background text-xs">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">Newest First</SelectItem>
+                <SelectItem value="oldest">Oldest First</SelectItem>
+                <SelectItem value="title">A-Z</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center gap-3 py-16 text-muted-foreground">
             <FileText className="size-10 opacity-40" />
             <p className="text-sm">No videos found</p>
-            {search && (
+            {search ? (
               <Button variant="outline" size="xs" onClick={() => setSearch("")}>
                 Clear search
               </Button>
-            )}
+            ) : null}
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -303,7 +438,10 @@ export function VideoGallery() {
 
         <div className="text-center text-[11px] text-muted-foreground">
           {filtered.length} video{filtered.length !== 1 ? "s" : ""}
-          {search && ` matching "${search}"`}
+          {search ? ` matching "${search}"` : ""}
+          {seriesFilter === "current" && currentSeries
+            ? ` in current series · ${currentSeries.title}`
+            : ""}
         </div>
       </motion.div>
     </SectionShell>

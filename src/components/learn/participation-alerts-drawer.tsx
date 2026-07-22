@@ -111,20 +111,30 @@ Submitted By: Anonymized Citizen (${profile.pseudoName})
   };
 
   const handleSubmitPortal = () => {
-    toast.loading("Uploading memorandum to county portal...");
-    setTimeout(() => {
-      toast.dismiss();
-      toast.success("Memorandum successfully submitted to the County Portal!");
-      recordParticipation("Portal");
-      setStep("completed");
-    }, 1500);
+    if (!alert.portalLink) {
+      toast.error("County portal link is not available for this alert.");
+      return;
+    }
+    window.open(alert.portalLink, "_blank", "noopener,noreferrer");
+    toast.success("Opened county portal — paste your draft to submit.");
+    recordParticipation("Portal");
+    setStep("completed");
   };
 
   const handleWhatsAppSubmit = () => {
+    const waTarget = alert.whatsappGroup.trim();
+    if (!waTarget) {
+      toast.error("WhatsApp group is not configured for this alert.");
+      return;
+    }
     const text = encodeURIComponent(draftContent);
-    const waNumber = alert.whatsappGroup.replace(/[^0-9]/g, "");
-    const url = waNumber ? `https://wa.me/${waNumber}?text=${text}` : "#";
-    if (url !== "#") window.open(url, "_blank");
+    const waNumber = waTarget.replace(/[^0-9]/g, "");
+    const url = waNumber
+      ? `https://wa.me/${waNumber}?text=${text}`
+      : waTarget.startsWith("http")
+        ? waTarget
+        : `https://chat.whatsapp.com/${waTarget}`;
+    window.open(url, "_blank", "noopener,noreferrer");
     toast.success("Opened WhatsApp forward!");
     recordParticipation("WhatsApp");
     setStep("completed");
@@ -289,21 +299,28 @@ Submitted By: Anonymized Citizen (${profile.pseudoName})
                   <Button onClick={handleCopyToClipboard} variant="outline" size="sm" className="rounded-xl flex-1 gap-1">
                     <Copy className="size-3.5" /> Copy Draft
                   </Button>
-                  <Button onClick={handleSubmitPortal} size="sm" className="rounded-xl flex-1 gap-1">
-                    <Send className="size-3.5" /> Open Portal & Submit
+                  <Button
+                    onClick={handleSubmitPortal}
+                    size="sm"
+                    className="rounded-xl flex-1 gap-1"
+                    disabled={!alert.portalLink}
+                  >
+                    <Send className="size-3.5" /> Open Portal
                   </Button>
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl border border-border bg-card flex flex-col gap-3">
-                <div className="space-y-0.5">
-                  <h4 className="text-sm font-bold">Pathway B: WhatsApp Submission</h4>
-                  <p className="text-xs text-muted-foreground">Forward your draft to the official county representation public engagement WhatsApp line.</p>
+              {alert.whatsappGroup.trim() ? (
+                <div className="p-4 rounded-xl border border-border bg-card flex flex-col gap-3">
+                  <div className="space-y-0.5">
+                    <h4 className="text-sm font-bold">Pathway B: WhatsApp Submission</h4>
+                    <p className="text-xs text-muted-foreground">Forward your draft to the official county representation public engagement WhatsApp line.</p>
+                  </div>
+                  <Button onClick={handleWhatsAppSubmit} variant="outline" className="rounded-xl w-full gap-1.5 text-emerald-600 border-emerald-200 hover:bg-emerald-50/50">
+                    <MessageSquare className="size-4" /> Forward via WhatsApp
+                  </Button>
                 </div>
-                <Button onClick={handleWhatsAppSubmit} variant="outline" className="rounded-xl w-full gap-1.5 text-emerald-600 border-emerald-200 hover:bg-emerald-50/50">
-                  <MessageSquare className="size-4" /> Forward via WhatsApp
-                </Button>
-              </div>
+              ) : null}
             </div>
 
             <Button

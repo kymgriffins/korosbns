@@ -50,7 +50,7 @@ export default async function LearnPage({ searchParams }: PageProps) {
 
   return (
     <Suspense fallback={<div className="min-h-[50vh] animate-pulse bg-muted/20" />}>
-      <LearnPathsHome tab="home" />
+      <LearnPathsHome tab="learn" />
     </Suspense>
   );
 }

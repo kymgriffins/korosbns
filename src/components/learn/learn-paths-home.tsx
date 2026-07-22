@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useState } from "react";
-import { StageDetailDrawer } from "./stage-detail-drawer";
-import { SyllabusLibraryHome } from "./syllabus-library-home";
 import { LearnModulesView } from "./learn-modules-view";
 import { LearnDocumentsView } from "./learn-documents-view";
 import { ProfileView } from "./profile-view";
@@ -17,12 +15,8 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 import { type LearnHubLanguage, type LearnHubProfile } from "@/lib/learn-data";
 import { learnTabToHref } from "@/lib/learn-nav";
-import { readProgress, clearAllModuleProgress } from "@/lib/module-progress";
-import { recommendModules } from "@/lib/recommend-modules";
-import type { CivicModule } from "@/types/learn";
+import { clearAllModuleProgress } from "@/lib/module-progress";
 import { TRANSLATIONS } from "@/constants/learn-translations";
-import { safeArray, safeLen, safeMap } from "@/lib/safe-data";
-import { useMemo } from "react";
 import {
   readHubProfile,
   writeHubProfile,
@@ -32,7 +26,7 @@ import {
 } from "@/lib/profile-local-storage";
 import { flushAllOfflineCitizenData } from "@/lib/sync-profile";
 
-const MODULES_REQUIRED: LearnTab[] = ["home", "learn", "profile"];
+const MODULES_REQUIRED: LearnTab[] = ["home", "learn", "profile"]; // home kept for legacy redirects
 
 type Props = {
   /** Route-driven tab — source of truth for which view to show (no query-param lag). */
@@ -54,7 +48,6 @@ export function LearnPathsHome({ tab }: Props) {
   const stages = civicModules;
   const [profile, setProfile] = useState<LearnHubProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedStage, setSelectedStage] = useState<CivicModule | null>(null);
 
   // Sync hub chrome (mobile nav highlight) immediately — before paint.
   useLayoutEffect(() => {
@@ -62,32 +55,8 @@ export function LearnPathsHome({ tab }: Props) {
   }, [tab, setActiveTab]);
 
   useEffect(() => {
-    if (selectedStage) {
-      const completedStepIds: number[] = [];
-      const p = readProgress(selectedStage.slug, selectedStage.order);
-      for (const step of safeArray(selectedStage.steps)) {
-        if (p.stepsCompleted[step.order]) {
-          completedStepIds.push(step.order);
-        }
-      }
-      setActiveLesson({
-        stageId: selectedStage.slug,
-        stageTitle: selectedStage.title,
-        stageBadge: selectedStage.badge,
-        stageOrder: selectedStage.order,
-        currentStep: 0,
-        totalSteps: safeLen(selectedStage.steps),
-        completedStepIds,
-        stepTitles: safeMap(selectedStage.steps, (s) => ({ id: s.order, title: s.title })),
-      });
-    } else {
-      setActiveLesson(null);
-    }
-  }, [selectedStage, setActiveLesson]);
-
-  useEffect(() => {
-    setSelectedStage(null);
-  }, [tab]);
+    setActiveLesson(null);
+  }, [tab, setActiveLesson]);
 
   useEffect(() => {
     if (authLoading) return;
@@ -176,8 +145,7 @@ export function LearnPathsHome({ tab }: Props) {
       clearHubProfile();
       clearAllModuleProgress(stages);
       setProfile(null);
-      setSelectedStage(null);
-      router.push(learnTabToHref("home"));
+      router.push(learnTabToHref("learn"));
     }
   };
 
@@ -185,40 +153,12 @@ export function LearnPathsHome({ tab }: Props) {
   const langKey = (effectiveProfile?.language ?? "EN") as LearnHubLanguage;
   const text = TRANSLATIONS[langKey];
 
-  const recommended = useMemo(() => {
-    if (!isLoggedIn || !effectiveProfile) return [];
-    return recommendModules(stages, {
-      county: effectiveProfile.county,
-      language: effectiveProfile.language,
-      ageRange: effectiveProfile.ageRange,
-      interests: effectiveProfile.interests,
-    });
-  }, [isLoggedIn, effectiveProfile, stages]);
-
   const currentStageNum = effectiveProfile
     ? effectiveProfile.stageProgress
       ? Math.max(...effectiveProfile.stageProgress)
       : 1
     : 1;
   const currentStage = stages.find((s) => s.order === currentStageNum) || stages[0];
-
-  const handleSelectStage = (stage: CivicModule) => {
-    setSelectedStage(stage);
-  };
-
-  const handlePrevStage = () => {
-    if (!selectedStage) return;
-    const idx = stages.findIndex((s) => s.slug === selectedStage.slug);
-    const prev = stages[idx - 1];
-    if (prev) setSelectedStage(prev);
-  };
-
-  const handleNextStage = () => {
-    if (!selectedStage) return;
-    const idx = stages.findIndex((s) => s.slug === selectedStage.slug);
-    const next = stages[idx + 1];
-    if (next) setSelectedStage(next);
-  };
 
   const needsModules = MODULES_REQUIRED.includes(tab);
   const waitingForLoggedInProfile = isLoggedIn && !profile && tab !== "forum";
@@ -272,24 +212,6 @@ export function LearnPathsHome({ tab }: Props) {
     );
   }
 
-  if (selectedStage) {
-    return (
-      <div className="fixed inset-0 z-50 flex flex-col overflow-hidden bg-background">
-        <StageDetailDrawer
-          key={selectedStage.slug}
-          stage={selectedStage}
-          profile={activeProfile}
-          onUpdateProfile={handleUpdateProfile}
-          onClose={() => setSelectedStage(null)}
-          hasNext={stages.findIndex((s) => s.slug === selectedStage.slug) < stages.length - 1}
-          hasPrev={stages.findIndex((s) => s.slug === selectedStage.slug) > 0}
-          onPrevStage={handlePrevStage}
-          onNextStage={handleNextStage}
-        />
-      </div>
-    );
-  }
-
   return (
     <div className="w-full bg-background">
       {/* Offline banner intentionally suppressed — fallback catalogue is seamless to the user. */}
@@ -301,27 +223,12 @@ export function LearnPathsHome({ tab }: Props) {
       )}
 
       <div className="min-w-0">
-        {tab === "home" && (
-          <SyllabusLibraryHome
-            stages={stages}
-            onSelectStage={handleSelectStage}
-            recommended={isLoggedIn ? recommended : []}
-            greeting={
-              isLoggedIn && effectiveProfile?.county
-                ? `Welcome back — recommendations for ${effectiveProfile.county} and your learning path.`
-                : isLoggedIn
-                  ? "Welcome back — a free syllabus with picks based on your profile."
-                  : undefined
-            }
-          />
-        )}
 
-        {tab === "learn" && currentStage && (
+        {(tab === "learn" || tab === "home") && currentStage && (
           <LearnModulesView
             profile={activeProfile}
             stages={stages}
             currentStage={currentStage}
-            onSelectStage={handleSelectStage}
             onRefresh={refreshModules}
           />
         )}

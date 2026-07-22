@@ -11,7 +11,8 @@ import {
 export type { FiscalYearMeta, ReportProvenance };
 
 function yearsFromPayload(allYears: Record<string, BudgetSchema>): FiscalYearMeta[] {
-  return Object.keys(allYears).map((id, index) => ({
+  const keys = Object.keys(allYears).sort((a, b) => b.localeCompare(a));
+  return keys.map((id, index) => ({
     id,
     label: allYears[id]?.metadata?.fiscal_year
       ? `FY ${allYears[id].metadata.fiscal_year}`

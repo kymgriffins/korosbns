@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
-import { LearnPathsHome } from "@/components/learn/learn-paths-home";
+import { redirect } from "next/navigation";
 import { canonicalUrl, metaDescription } from "@/utils/metadata";
 
 export const metadata: Metadata = {
@@ -8,13 +7,10 @@ export const metadata: Metadata = {
   description: metaDescription(
     "Browse civic learning modules on Kenya's public finance, budget cycle, and citizen participation.",
   ),
-  alternates: { canonical: canonicalUrl("/learn/modules") },
+  alternates: { canonical: canonicalUrl("/learn") },
 };
 
+/** Modules catalogue lives at /learn — keep this route as a stable alias. */
 export default function LearnModulesListPage() {
-  return (
-    <Suspense fallback={<div className="min-h-[50vh] animate-pulse bg-muted/20" />}>
-      <LearnPathsHome tab="learn" />
-    </Suspense>
-  );
+  redirect("/learn");
 }

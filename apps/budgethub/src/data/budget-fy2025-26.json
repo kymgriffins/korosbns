@@ -1,0 +1,139 @@
+{
+  "$schema": "https://api.budgetndiostory.org/schemas/v1/pfm-sdk-blueprint.json",
+  "metadata": {
+    "sdk_version": "1.0.0-beta",
+    "fiscal_year": "2025/26",
+    "base_currency": "KES",
+    "unit_scale": "RAW_INTEGER",
+    "theme": "Bottom-Up Economic Transformation Agenda (BETA) for Inclusive Growth, Job Creation, and Poverty Reduction",
+    "presented_by": "John Mbadi",
+    "presented_date": "2025-06-12",
+    "approved_date": "2025-06-25",
+    "provenance_level": 1,
+    "source_verbatim": "budget_fy2025_26.json"
+  },
+  "stakeholder_ledger": {
+    "allocators": [
+      { "code": "NT", "name": "National Treasury" },
+      { "code": "NA", "name": "National Assembly (Parliament)" }
+    ],
+    "oversight": [
+      { "code": "COB", "name": "Controller of Budget" },
+      { "code": "OAG", "name": "Office of the Auditor General" }
+    ],
+    "implementers": [
+      { "code": "MDAs", "name": "Ministries, Departments, and Agencies" },
+      { "code": "CEG", "name": "County Executive Governments" }
+    ]
+  },
+  "macro_modules": {
+    "revenue_engine": {
+      "total_projected_revenue": 3368600000000,
+      "streams": [
+        {
+          "type": "ORDINARY_REVENUE",
+          "amount": 2780400000000
+        },
+        {
+          "type": "APPROPRIATIONS_IN_AID_AIA",
+          "amount": 588200000000
+        },
+        {
+          "type": "GRANTS",
+          "amount": 38500000000
+        }
+      ]
+    },
+    "debt_portfolio": {
+      "total_interest_service_obligation": 1007400000000,
+      "fiscal_deficit_gap": 933300000000,
+      "deficit_gdp_ratio_pct": 4.6,
+      "target_deficit_fy2028_29_pct": 3.3,
+      "financing_plan": {
+        "domestic_borrowing_target": 0,
+        "external_borrowing_target": 0
+      },
+      "systemic_risks": [
+        "Debt interest (KES 1,007.4B) exceeds development spending (KES 680B)",
+        "Tax-to-GDP ratio remained below 14%"
+      ]
+    }
+  },
+  "tier_1_national_sectors": [
+    {
+      "sector_code": "SEC-EDU",
+      "name": "Education",
+      "total_allocation": 628600000000,
+      "national_budget_share_pct": 14.6,
+      "beta_alignment_tags": ["Human Capital Development"],
+      "sub_vote_breakdown": []
+    },
+    {
+      "sector_code": "SEC-GJLO",
+      "name": "Governance, Justice, Law & Order",
+      "total_allocation": 322100000000,
+      "national_budget_share_pct": 7.5,
+      "beta_alignment_tags": ["Constitutionalism & Public Accountability"],
+      "sub_vote_breakdown": []
+    },
+    {
+      "sector_code": "SEC-SEC",
+      "name": "National Security",
+      "total_allocation": 270300000000,
+      "national_budget_share_pct": 6.3,
+      "beta_alignment_tags": ["National Safety & Border Control"],
+      "sub_vote_breakdown": []
+    },
+    {
+      "sector_code": "SEC-INF",
+      "name": "Infrastructure & Roads",
+      "total_allocation": 220000000000,
+      "national_budget_share_pct": 5.1,
+      "beta_alignment_tags": ["Infrastructure Enabler Pillar"],
+      "sub_vote_breakdown": []
+    },
+    {
+      "sector_code": "SEC-HEA",
+      "name": "Health",
+      "total_allocation": 141500000000,
+      "national_budget_share_pct": 3.3,
+      "beta_alignment_tags": ["Healthcare Pillar (Universal Health Coverage)"],
+      "sub_vote_breakdown": []
+    },
+    {
+      "sector_code": "SEC-AGR",
+      "name": "Agriculture & Rural Development",
+      "total_allocation": 106800000000,
+      "national_budget_share_pct": 2.5,
+      "beta_alignment_tags": ["Agricultural Transformation & Food Security Pillar"],
+      "sub_vote_breakdown": []
+    },
+    {
+      "sector_code": "SEC-SOC-YTH-WAT",
+      "name": "Social Protection, Youth, Water & Climate Infrastructure Cluster",
+      "total_allocation": 36800000000,
+      "national_budget_share_pct": 0.9,
+      "beta_alignment_tags": ["Social Safety Nets"],
+      "sub_vote_breakdown": []
+    }
+  ],
+  "tier_2_county_devolution_envelope": {
+    "total_devolution_allocation": 421900000000,
+    "national_budget_share_pct": 9.8,
+    "funding_split": {
+      "unconditional_equitable_share": 415000000000,
+      "additional_national_conditional_allocations": 6900000000,
+      "equalisation_fund_marginalised_areas": 0,
+      "development_partner_conditional_grants": 0
+    },
+    "conditional_allocation_breakdown": [],
+    "county_profiles": [],
+    "data_status": "partial",
+    "provenance": {
+      "source": "seeded:budget_fy2025_26.json",
+      "fiscal_year": "2025/26",
+      "note": "Equitable share KES 415B from seed highlights; county profiles not bundled."
+    }
+  },
+  "tier_3_ward_project_relational_schema_simulation": []
+}

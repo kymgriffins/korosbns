@@ -1,0 +1,158 @@
+# Contract Versions
+## Every contract has id + version + status — implementations record what they satisfy
+
+```yaml
+version: 1
+schema: semver
+status_values: [draft, approved, deprecated]
+
+contracts:
+  # Surface method — what/why locked; how variants for A/B
+  surface_contracts:
+    id: surface-contracts
+    version: 0.1.0
+    status: draft
+    path: agent/spec/surface-contracts/README.md
+
+  # Experience (frozen during execution lock)
+  design_dna:
+    id: design-dna
+    version: 1.0.0
+    status: approved
+    path: docs/lms-spec/design-dna.md
+
+  navigation_laws:
+    id: navigation-laws
+    version: 1.0.0
+    status: approved
+    path: docs/navigation-laws.md
+
+  experience_principles:
+    id: experience-principles
+    version: 1.0.0
+    status: approved
+    path: docs/lms-spec/experience-principles.md
+
+  anti_patterns:
+    id: anti-patterns
+    version: 1.0.0
+    status: approved
+    path: docs/lms-spec/anti-patterns.md
+
+  # Engineering (frozen during execution lock)
+  engineering_principles:
+    id: engineering-principles
+    version: 1.0.0
+    status: approved
+    path: docs/ljp-spec/engineering-principles.md
+
+  motion_guidelines:
+    id: motion-guidelines
+    version: 1.0.0
+    status: approved
+    path: docs/ljp-spec/motion-guidelines.md
+
+  accessibility_contract:
+    id: accessibility-contract
+    version: 1.0.0
+    status: approved
+    path: docs/ljp-spec/accessibility-contract.md
+
+  error_handling:
+    id: error-handling
+    version: 1.0.0
+    status: approved
+    path: docs/ljp-spec/error-handling.md
+
+  state_machines:
+    id: state-machines
+    version: 1.0.0
+    status: approved
+    path: docs/ljp-spec/state-machines.md
+
+  testing_strategy:
+    id: testing-strategy
+    version: 1.0.0
+    status: approved
+    path: docs/ljp-spec/testing-strategy.md
+
+  # Component contracts
+  lms_shell:
+    id: lms-shell
+    version: 1.0.0
+    status: approved
+    path: docs/component-contracts/lms-shell.md
+
+  lesson_screen:
+    id: lesson-screen
+    version: 1.0.0
+    status: approved
+    path: docs/screen-contracts/lesson.md
+
+  video_player:
+    id: video-player
+    version: 1.0.0
+    status: approved
+    path: docs/component-contracts/video-player.md
+
+  trivia_popup:
+    id: trivia-popup
+    version: 1.0.0
+    status: approved
+    path: docs/component-contracts/trivia-popup.md
+
+  continue_button:
+    id: continue-button
+    version: 1.0.0
+    status: approved
+    path: docs/component-contracts/continue-button.md
+
+  course_detail:
+    id: course-detail
+    version: 1.0.0
+    status: approved
+    path: docs/screen-contracts/course-detail.md
+
+  lms_design_tokens:
+    id: lms-design-tokens
+    version: 1.0.0
+    status: approved
+    path: src/constants/lms-design-tokens.ts
+```
+
+---
+
+## Implementation binding
+
+Components record satisfied contract versions in `memory/implemented.md`:
+
+```yaml
+LmsShell:
+  implements:
+    - lms-shell@1.0.0
+  drift: none | detected
+```
+
+---
+
+## Drift detection
+
+```pseudo
+function detectDrift(component):
+  implemented = memory[component].implements
+  for each contract in implemented:
+    if contract.version < versions[contract.id].version:
+      return DRIFT(component, contract)
+```
+
+See [../runtime/drift.md](../runtime/drift.md).
+
+---
+
+## Version bump rules
+
+| Change type | Bump |
+|-------------|------|
+| Clarification, no behavior change | patch |
+| New required behavior | minor |
+| Breaking contract change | major + human approval |

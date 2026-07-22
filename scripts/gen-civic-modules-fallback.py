@@ -16,17 +16,22 @@ def main() -> None:
         steps = []
         for i, ch in enumerate(m.get("chapters") or [], 1):
             body = ch.get("body_html") or ch.get("summary") or ch.get("description") or ""
-            steps.append(
-                {
-                    "id": ch.get("slug") or f"{m['slug']}-ch{i}",
-                    "title": ch.get("title") or f"Chapter {i}",
-                    "order": i,
-                    "youtube_url": "",
-                    "audio_url": "",
-                    "transcript": "",
-                    "text": body[:500],
-                }
-            )
+            yt_urls = [u for u in (ch.get("youtube_urls") or []) if u]
+            yt_primary = (ch.get("youtube_url") or "").strip() or (yt_urls[0] if yt_urls else "")
+            if yt_primary and yt_primary not in yt_urls:
+                yt_urls = [yt_primary, *yt_urls]
+            step = {
+                "id": ch.get("slug") or f"{m['slug']}-ch{i}",
+                "title": ch.get("title") or f"Chapter {i}",
+                "order": i,
+                "youtube_url": yt_primary,
+                "audio_url": "",
+                "transcript": "",
+                "text": body[:500],
+            }
+            if yt_urls:
+                step["youtube_urls"] = yt_urls
+            steps.append(step)
         if not steps:
             steps = [
                 {

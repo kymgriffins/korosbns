@@ -1,0 +1,50 @@
+{
+  "provenance": {
+    "source": "Kenya budget civic seeds",
+    "note": "Read-only offline quests when /content/learn/quests/ is unreachable.",
+    "level": "fallback"
+  },
+  "count": 3,
+  "results": [
+    {
+      "id": "read-bps-intro",
+      "content_type": "quest",
+      "title": "Read the BPS intro",
+      "summary": "Open the Budget Policy Statement path and finish the first lesson.",
+      "description": "Open the Budget Policy Statement path and finish the first lesson.",
+      "slug": "read-bps-intro",
+      "url": "/learn/modules/budget-policy-statement",
+      "difficulty": "beginner",
+      "points": 25,
+      "daily": true,
+      "path_slug": "budget-policy-statement",
+      "tags": [{ "name": "BPS", "slug": "bps" }]
+    },
+    {
+      "id": "spot-one-budget-number",
+      "content_type": "quest",
+      "title": "Spot one budget number",
+      "summary": "Find one allocation figure in a story or article and note what it funds for citizens.",
+      "description": "Find one allocation figure in a story or article and note what it funds for citizens.",
+      "slug": "spot-one-budget-number",
+      "url": "/learn/stories",
+      "difficulty": "beginner",
+      "points": 15,
+      "daily": true,
+      "tags": [{ "name": "Literacy", "slug": "literacy" }]
+    },
+    {
+      "id": "try-finance-bill-trivia",
+      "content_type": "quest",
+      "title": "Try Finance Bill trivia",
+      "summary": "Complete one question in the Finance Bill basics quiz.",
+      "description": "Complete one question in the Finance Bill basics quiz.",
+      "slug": "try-finance-bill-trivia",
+      "url": "/learn/trivia/finance-bill-basics",
+      "difficulty": "beginner",
+      "points": 20,
+      "daily": true,
+      "tags": [{ "name": "Trivia", "slug": "trivia" }]
+    }
+  ]
+}

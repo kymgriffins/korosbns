@@ -1,6 +1,13 @@
 import { learnHubApi } from "@/lib/learn-hub";
 import { withFallback } from "@/data/adapter";
 import type { LearnHubItem } from "@/types/learn";
+import {
+  BPS_YOUTUBE_URLS,
+  currentYoutubeSeries,
+  groupYoutubeSeries,
+  type SeriesVideo,
+  type YouTubeSeries,
+} from "@/lib/youtube-series";
 
 export type YouTubeVideo = {
   videoId: string;
@@ -18,7 +25,37 @@ export type TranscriptEntry = {
   duration: number;
 };
 
+const CHANNEL_ID = "UCvxVwuKoG8XEN53OohMu9qA";
+
+/** Seeded RSS mirror — BPS + Infrastructure + County Budget (newest). */
 const DEFAULT_VIDEOS: YouTubeVideo[] = [
+  {
+    videoId: "oHuImiQvvN0",
+    title: "PART 3: County Budget: Where Does the Money Come From?",
+    url: "https://www.youtube.com/watch?v=oHuImiQvvN0",
+    publishedAt: "2026-06-26T17:31:25Z",
+    description:
+      "Counties provide many of the services we interact with every day. Where does the money that funds county governments actually come from?",
+    channelId: CHANNEL_ID,
+  },
+  {
+    videoId: "abDYZ5xjQgo",
+    title: "PART 2: County Budget: Where Does the Money Come From?",
+    url: "https://www.youtube.com/watch?v=abDYZ5xjQgo",
+    publishedAt: "2026-06-22T15:27:28Z",
+    description:
+      "Counties provide many of the services we interact with every day. Where does the money that funds county governments actually come from?",
+    channelId: CHANNEL_ID,
+  },
+  {
+    videoId: "3wfk09c_xNQ",
+    title: "County Budget: Where Does the Money Come From?",
+    url: "https://www.youtube.com/watch?v=3wfk09c_xNQ",
+    publishedAt: "2026-06-19T05:46:47Z",
+    description:
+      "Counties provide many of the services we interact with every day. Where does the money that funds county governments actually come from?",
+    channelId: CHANNEL_ID,
+  },
   {
     videoId: "FkgRz4v2Llk",
     title: "PART 3: Before Budget Day: This Is Where It Starts",
@@ -26,7 +63,7 @@ const DEFAULT_VIDEOS: YouTubeVideo[] = [
     publishedAt: "2026-04-07T11:03:33Z",
     description:
       "In this part, we break down what the Budget Policy Statement (BPS) is and why young people should care about it.",
-    channelId: "UCvxVwuKoG8XEN53OohMu9qA",
+    channelId: CHANNEL_ID,
   },
   {
     videoId: "wkPe3sWomoA",
@@ -35,7 +72,7 @@ const DEFAULT_VIDEOS: YouTubeVideo[] = [
     publishedAt: "2026-04-04T10:28:55Z",
     description:
       "In Part 2, we go deeper into the Budget Policy Statement (BPS) and why it matters before Budget Day.",
-    channelId: "UCvxVwuKoG8XEN53OohMu9qA",
+    channelId: CHANNEL_ID,
   },
   {
     videoId: "Ed9lP0-komE",
@@ -44,7 +81,7 @@ const DEFAULT_VIDEOS: YouTubeVideo[] = [
     publishedAt: "2026-04-02T10:09:24Z",
     description:
       "In this part, we break down what the Budget Policy Statement (BPS) is and why young people should care about it.",
-    channelId: "UCvxVwuKoG8XEN53OohMu9qA",
+    channelId: CHANNEL_ID,
   },
   {
     videoId: "SfPwtqUFyj4",
@@ -53,7 +90,7 @@ const DEFAULT_VIDEOS: YouTubeVideo[] = [
     publishedAt: "2026-03-17T18:07:33Z",
     description:
       "Kenya\u2019s National Infrastructure Fund is now law. But do young people really understand what it means?",
-    channelId: "UCvxVwuKoG8XEN53OohMu9qA",
+    channelId: CHANNEL_ID,
   },
   {
     videoId: "KeNCrx6krl0",
@@ -62,7 +99,7 @@ const DEFAULT_VIDEOS: YouTubeVideo[] = [
     publishedAt: "2026-03-17T18:00:11Z",
     description:
       "Kenya\u2019s National Infrastructure Fund is now law. But do young people really understand what it means?",
-    channelId: "UCvxVwuKoG8XEN53OohMu9qA",
+    channelId: CHANNEL_ID,
   },
   {
     videoId: "jLZe3iPSMfc",
@@ -71,7 +108,7 @@ const DEFAULT_VIDEOS: YouTubeVideo[] = [
     publishedAt: "2026-03-17T17:54:40Z",
     description:
       "Kenya\u2019s National Infrastructure Fund is now law. But do young people really understand what it means?",
-    channelId: "UCvxVwuKoG8XEN53OohMu9qA",
+    channelId: CHANNEL_ID,
   },
   {
     videoId: "A_EXLueEMlk",
@@ -80,7 +117,7 @@ const DEFAULT_VIDEOS: YouTubeVideo[] = [
     publishedAt: "2026-03-16T08:25:38Z",
     description:
       "Kenya\u2019s National Infrastructure Fund is now law. But do young people really understand what it means?",
-    channelId: "UCvxVwuKoG8XEN53OohMu9qA",
+    channelId: CHANNEL_ID,
   },
 ];
 
@@ -90,6 +127,32 @@ function sortByDate(videos: YouTubeVideo[]): YouTubeVideo[] {
   return [...videos].sort(
     (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
   );
+}
+
+export function learnHubItemToVideo(item: LearnHubItem): YouTubeVideo | null {
+  const videoId =
+    item.id ||
+    (item.url ? item.url.match(/[?&]v=([^&]+)/)?.[1] : "") ||
+    "";
+  if (!videoId) return null;
+  return {
+    videoId,
+    title: item.title,
+    url: item.url || `https://www.youtube.com/watch?v=${videoId}`,
+    publishedAt: item.published_at || "",
+    description: item.summary || "",
+    channelId: (item as LearnHubItem & { channel_id?: string }).channel_id || CHANNEL_ID,
+  };
+}
+
+export function toSeriesVideos(videos: YouTubeVideo[]): SeriesVideo[] {
+  return videos.map((v) => ({
+    videoId: v.videoId,
+    title: v.title,
+    url: v.url,
+    publishedAt: v.publishedAt,
+    description: v.description,
+  }));
 }
 
 export function getVideos(): YouTubeVideo[] {
@@ -122,7 +185,20 @@ export function removeVideo(videoId: string): void {
 }
 
 export function embedUrl(videoId: string): string {
-  return `https://www.youtube-nocookie.com/embed/${videoId}?rel=0&modestbranding=1`;
+  return `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`;
+}
+
+export function getGroupedSeries(videos?: YouTubeVideo[]): YouTubeSeries[] {
+  return groupYoutubeSeries(toSeriesVideos(videos ?? getVideos()));
+}
+
+export function getCurrentSeries(videos?: YouTubeVideo[]): YouTubeSeries | null {
+  return currentYoutubeSeries(toSeriesVideos(videos ?? getVideos()));
+}
+
+/** BPS explainer watch URLs — always available for the seeded module. */
+export function getBpsYoutubeUrls(): string[] {
+  return [...BPS_YOUTUBE_URLS];
 }
 
 function defaultVideosAsLearnHubItems(): { results: LearnHubItem[] } {
@@ -131,6 +207,7 @@ function defaultVideosAsLearnHubItems(): { results: LearnHubItem[] } {
       id: v.videoId,
       title: v.title,
       description: v.description,
+      summary: v.description,
       url: v.url,
       published_at: v.publishedAt,
       source: "youtube" as const,
@@ -140,22 +217,37 @@ function defaultVideosAsLearnHubItems(): { results: LearnHubItem[] } {
   };
 }
 
+function hydrateFromLearnHub(items: LearnHubItem[]): YouTubeVideo[] {
+  const mapped = items
+    .map(learnHubItemToVideo)
+    .filter((v): v is YouTubeVideo => v != null);
+  if (mapped.length === 0) return getVideos();
+  setVideos(mapped);
+  return mapped;
+}
+
 export const videoData = {
-  get: (): LearnHubItem[] => getVideos().map((v) => ({
-    id: v.videoId,
-    title: v.title,
-    description: v.description,
-    url: v.url,
-    published_at: v.publishedAt,
-    source: "youtube" as const,
-    content_type: "video" as const,
-    channel_id: v.channelId,
-  })),
+  get: (): LearnHubItem[] =>
+    getVideos().map((v) => ({
+      id: v.videoId,
+      title: v.title,
+      description: v.description,
+      summary: v.description,
+      url: v.url,
+      published_at: v.publishedAt,
+      source: "youtube" as const,
+      content_type: "video" as const,
+      channel_id: v.channelId,
+    })),
   set: (_items: LearnHubItem[]) => {},
   fetch: (filters?: { search?: string }): Promise<LearnHubItem[]> =>
     withFallback(
       "videos",
       () => learnHubApi.videos(filters),
       () => defaultVideosAsLearnHubItems(),
-    ).then((r) => r.results ?? []),
+    ).then((r) => {
+      const results = r.results ?? [];
+      hydrateFromLearnHub(results);
+      return results;
+    }),
 };

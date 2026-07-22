@@ -6,12 +6,12 @@ import { ReportsClientPage } from "./reports-client";
 export const metadata: Metadata = {
   title: "Budget Reports | Budget Ndio Story",
   description:
-    "Explore Kenya's national and county budget data with interactive sector breakdowns, county allocations, and project tracking across multiple fiscal years.",
+    "Budget Data World — FY episode workshop with honest year status, provenance, and citizen-readable Kenya budget metrics.",
   alternates: { canonical: canonicalUrl("/reports") },
   openGraph: {
     title: "Budget Reports | Budget Ndio Story",
     description:
-      "Interactive budget reports with sector breakdowns, county allocations, and project tracking.",
+      "Select a fiscal year episode: IN_APP years with provenanced metrics, honest empty states for GAP and SOURCE_LISTED years.",
     url: "/reports",
   },
 };

@@ -8,7 +8,7 @@ type LearnPageFrameProps = {
 };
 
 /**
- * Page padding only — width comes from CitizenSyllabusShell so every tab
+ * Page padding only — width comes from LearnAppShell so every tab
  * fills the same centered column.
  */
 export function LearnPageFrame({ children, className }: LearnPageFrameProps) {

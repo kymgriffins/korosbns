@@ -3,6 +3,7 @@ const STATIC_ASSETS = [
   "/",
   "/learn",
   "/learn/paths",
+  "/reports",
   "/offline",
 ];
 

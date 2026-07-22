@@ -1,10 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import { useState, type FormEvent } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { useOrg } from "@/contexts/org-context";
+import {
+  newsletterSubscribeErrorMessage,
+  subscribeNewsletter,
+} from "@/lib/newsletter-subscribe";
 
 const footerLinks = [
   { label: "Home", href: "/" },
@@ -19,11 +25,36 @@ const footerLinks = [
 
 export default function Footer() {
   const { config } = useOrg();
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
   const footerBlurb =
     config.layout?.footer_note ||
     config.tagline ||
     "Stay informed with budget updates, civic education content, and policy insights from Budget Ndio Story.";
   const organizationTitle = config.seo?.title || "Budget Ndio Story";
+
+  const handleSubscribe = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!email.trim()) return;
+    setLoading(true);
+    try {
+      const { alreadySubscribed } = await subscribeNewsletter({
+        email: email.trim(),
+        name: email.trim().split("@")[0],
+        source: "footer",
+      });
+      setEmail("");
+      if (alreadySubscribed) {
+        toast.info("You're already subscribed. Check your inbox (and Spam/Junk folder)!");
+      } else {
+        toast.success("You're subscribed! Check your inbox (and Spam/Junk folder).");
+      }
+    } catch (err) {
+      toast.error(newsletterSubscribeErrorMessage(err));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <footer className="relative overflow-hidden border-t border-border bg-muted/40 text-foreground dark:bg-card/50">
@@ -42,19 +73,23 @@ export default function Footer() {
               <div className="md:col-span-1" />
               <div className="col-span-12 md:col-span-8">
                 <div className="flex flex-col gap-5 lg:flex-row lg:gap-10">
-                  <form className="flex flex-1 gap-2">
+                  <form onSubmit={handleSubscribe} className="flex flex-1 gap-2">
                     <Input
                       required
                       type="email"
                       name="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       placeholder="Enter your email"
+                      disabled={loading}
                       className="h-11 rounded-full border-border/80 bg-background/90 py-2 text-foreground shadow-sm placeholder:text-muted-foreground dark:bg-background/70"
                     />
                     <Button
                       type="submit"
+                      disabled={loading}
                       className="h-11 cursor-pointer rounded-full px-5 font-medium"
                     >
-                      Subscribe
+                      {loading ? "Subscribing…" : "Subscribe"}
                     </Button>
                   </form>
                   <p className="flex-1 text-sm text-muted-foreground">

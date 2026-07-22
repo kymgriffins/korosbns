@@ -1,0 +1,138 @@
+{
+  "version": 1,
+  "updated": "2026-07-21",
+  "policy": "Figures and citizen blurbs are copied from bnske seeds / Level-1 provenance blocks only. No invented numbers.",
+  "episodes": {
+    "2025/26": {
+      "fy": "2025/26",
+      "status": "IN_APP",
+      "theme": "Bottom-Up Economic Transformation Agenda (BETA) for Inclusive Growth, Job Creation, and Poverty Reduction",
+      "presented_by": "John Mbadi",
+      "presented_date": "2025-06-12",
+      "approved_date": "2025-06-25",
+      "seed_key": "budget_fy2025_26.json",
+      "provenance_level": 1,
+      "sources": [
+        {
+          "name": "National Treasury Budget Statement FY2025/26",
+          "url": "https://www.treasury.go.ke",
+          "org": "National Treasury"
+        },
+        {
+          "name": "Parliament — Budget Books FY2025/26",
+          "url": "https://parliament.go.ke",
+          "org": "Parliament of Kenya"
+        }
+      ],
+      "metrics": {
+        "total_expenditure_billions": 4301.9,
+        "total_revenue_billions": 3368.6,
+        "deficit_billions": 933.3,
+        "deficit_gdp_pct": 4.6,
+        "recurrent_billions": 3200,
+        "development_billions": 680,
+        "debt_interest_billions": 1007.4
+      },
+      "top_sectors": [
+        { "name": "Education", "value_billions": 628.6 },
+        { "name": "Governance", "value_billions": 322.1 },
+        { "name": "Security", "value_billions": 270.3 },
+        { "name": "Infrastructure", "value_billions": 220 },
+        { "name": "Health", "value_billions": 141.5 },
+        { "name": "Agriculture", "value_billions": 106.8 },
+        { "name": "Social Protection", "value_billions": 36.8 }
+      ],
+      "synopsis": "Parliament approved a KES 4.30 trillion budget for FY2025/26 — up from KES 3.99 trillion in FY2024/25. Revenue is projected at KES 3,368.6 billion, leaving a KES 933.3 billion deficit (4.6% of GDP). Education leads at KES 628.6 billion; debt interest at KES 1,007.4 billion remains a significant portion of expenditure.",
+      "citizen_impact": {
+        "title": "What this budget means for citizens",
+        "source_note": "Cited from seed budget_fy2025_26.json highlights & systemic_risks — no new figures.",
+        "blurbs": [
+          {
+            "title": "Debt service remains high",
+            "text": "Interest on public debt (KES 1,007.4B) accounts for nearly a quarter of the total budget — limiting fiscal space for development."
+          },
+          {
+            "title": "Debt exceeds development",
+            "text": "Debt interest (KES 1,007.4B) exceeds development spending (KES 680B)."
+          },
+          {
+            "title": "Education leads again",
+            "text": "Education at KES 628.6B remains the largest sector allocation — about 14.6% of the total budget."
+          },
+          {
+            "title": "County allocation up",
+            "text": "Parliament approved KES 415B equitable share to counties — up from KES 398B in FY2024/25."
+          }
+        ]
+      }
+    },
+    "2026/27": {
+      "fy": "2026/27",
+      "status": "IN_APP",
+      "theme": "Sustaining the Bottom-Up Economic Transformation Agenda (BETA) for Resilient and Inclusive Growth amid Global Uncertainty",
+      "presented_by": "John Mbadi",
+      "presented_date": "2026-06-11",
+      "approved_date": "2026-06-02",
+      "seed_key": "budget_fy2026_27.json",
+      "provenance_level": 1,
+      "sources": [
+        {
+          "name": "National Treasury — Mwananchi Guide FY2026/27",
+          "url": "https://www.treasury.go.ke/sites/default/files/Speeches/Budget%20Highlights-The%20Mwananchi%20Guide%20for%20the%20FY-2026-27%20Budget.pdf",
+          "org": "National Treasury"
+        },
+        {
+          "name": "Parliament — Budget Books FY2026/27",
+          "url": "https://parliament.go.ke/index.php/budget-books-fy-2026-2027",
+          "org": "Parliament of Kenya"
+        },
+        {
+          "name": "Parliament — Approval Notice",
+          "url": "https://www.parliament.go.ke/node/25878",
+          "org": "Parliament of Kenya"
+        }
+      ],
+      "metrics": {
+        "total_expenditure_billions": 4820,
+        "total_revenue_billions": 3630.5,
+        "deficit_billions": 1146.2,
+        "deficit_gdp_pct": 5.5,
+        "recurrent_billions": 3568,
+        "development_billions": 750,
+        "debt_interest_billions": 1203.1
+      },
+      "top_sectors": [
+        { "name": "Education", "value_billions": 784.5 },
+        { "name": "Governance", "value_billions": 353.3 },
+        { "name": "Security", "value_billions": 308.6 },
+        { "name": "Infrastructure", "value_billions": 230 },
+        { "name": "Health", "value_billions": 175.5 },
+        { "name": "Housing", "value_billions": 135.8 },
+        { "name": "Agriculture", "value_billions": 106.8 }
+      ],
+      "synopsis": "Parliament approved a KES 4.82 trillion budget for FY2026/27 — up from KES 4,301.9 billion in FY2025/26. Revenue is projected at KES 3,630.5 billion, leaving a KES 1,146.2 billion deficit (5.5% of GDP). Education leads at KES 784.5 billion; debt interest at KES 1,203.1 billion exceeds total development spending of KES 750 billion.",
+      "citizen_impact": {
+        "title": "What this budget means for citizens",
+        "source_note": "Cited from seed budget_fy2026_27.json callouts & highlights — no new figures.",
+        "blurbs": [
+          {
+            "title": "Per citizen",
+            "text": "KES 4.82 trillion is approximately KES 96,400 per Kenyan (based on ~50M population)."
+          },
+          {
+            "title": "Debt exceeds development",
+            "text": "Debt interest (KES 1,203.1B) exceeds total development spending (KES 750B) for the first time at this scale."
+          },
+          {
+            "title": "Education leads",
+            "text": "Education at KES 784.5B is the largest sector — about 16.3% of the total budget."
+          },
+          {
+            "title": "County share approved higher",
+            "text": "Parliament approved KES 428B equitable share — up from KES 415B in FY2025/26 and the BPS proposal of KES 420B."
+          }
+        ]
+      }
+    }
+  }
+}

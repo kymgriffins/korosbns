@@ -1,0 +1,70 @@
+# Execution Locks
+## Freeze specifications while Builder runs
+
+```yaml
+execution_lock:
+  active: false
+  capability: null
+  started_at: null
+  completed_at: 2026-07-07
+  last_capability: learning-shell
+
+# When execution_lock.active == true:
+frozen:
+  - design_dna@1.0.0
+  - navigation_laws@1.0.0
+  - engineering_principles@1.0.0
+  - experience_principles@1.0.0
+  - motion_guidelines@1.0.0
+
+allowed_during_lock:
+  - bug_fixes_in_src
+  - spec_clarifications_via_adr_only  # docs/ljp-spec/decision-log.md
+  - runtime_state_updates
+  - memory_updates
+  - review_evidence
+
+forbidden_during_lock:
+  - spec/backlog_amendments
+  - capabilities_yaml_amendments
+  - contract_version_bumps_without_unlock
+  - design_dna_edits
+  - navigation_law_edits
+  - engineering_principle_edits
+
+unlock_requires:
+  - capability_complete_or_builder_halted
+  - retrospective_complete  # if capability marked done
+
+# Librarian may only edit frozen specs when lock is OFF
+librarian_gate:
+  requires_lock: false
+  requires_human_approval: true
+```
+
+---
+
+## Lock lifecycle
+
+```
+Planner approved
+  → execution_lock.active: true
+  → capability: learning-shell
+Builder runs (frozen specs)
+  → capability sub-capabilities complete
+  → retrospective
+  → execution_lock.active: false
+```
+
+---
+
+## Violation handling
+
+If Builder or agent edits frozen spec during lock:
+
+```yaml
+action: STOP
+assign: Guardian
+notify: Reporter
+rollback: evaluate
+```

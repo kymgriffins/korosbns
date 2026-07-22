@@ -184,7 +184,7 @@ export default function AuthorProfilePage() {
             {modules.map((mod) => (
               <Link
                 key={mod.id}
-                href={`/learn/${mod.slug || mod.id}`}
+                href={`/learn/modules/${mod.slug || mod.id}`}
                 className="flex items-center gap-3 p-3.5 bg-card border border-border/40 rounded-xl hover:bg-accent/30 transition-colors group"
               >
                 <span className="text-2xl shrink-0">{mod.badge || "📘"}</span>
