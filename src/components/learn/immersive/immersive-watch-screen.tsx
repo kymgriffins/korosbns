@@ -5,16 +5,22 @@ import { ImmersiveChrome } from "./immersive-chrome";
 import { ImmersiveSegment } from "./immersive-segment";
 import { ImmersiveBottomBar } from "./immersive-bottom-bar";
 import { ImmersiveVideoStage } from "./immersive-video-stage";
+import { ImmersiveLessonFrame } from "./immersive-lesson-frame";
 import { useImmersiveModule } from "./immersive-module-provider";
 import {
+  awardModuleMastery,
+  completeModuleStep,
   immersiveModuleHref,
-  moduleStepTrivia,
+  markVideoWatched,
+  nextContentAfter,
   parseStepVideos,
+  segmentItemsForStep,
+  stepHasArticle,
 } from "@/lib/immersive-module";
 
 export function ImmersiveWatchScreen({ stepNumber }: { stepNumber: number }) {
   const router = useRouter();
-  const { mod } = useImmersiveModule();
+  const { mod, refreshProgress } = useImmersiveModule();
   const stepIndex = stepNumber - 1;
   const step = mod.steps[stepIndex];
   if (!step) {
@@ -23,35 +29,30 @@ export function ImmersiveWatchScreen({ stepNumber }: { stepNumber: number }) {
   }
 
   const videos = parseStepVideos(step);
-  const trivia = moduleStepTrivia(mod, stepIndex);
+  if (videos.length === 0) {
+    router.replace(immersiveModuleHref(mod.slug, "read", stepNumber));
+    return null;
+  }
 
-  const segments = [
-    { mode: "read" as const, label: "Read", href: immersiveModuleHref(mod.slug, "read", stepNumber) },
-    {
-      mode: "watch" as const,
-      label: "Watch",
-      href: immersiveModuleHref(mod.slug, "watch", stepNumber),
-      hidden: videos.length === 0,
-    },
-    {
-      mode: "quiz" as const,
-      label: "Quiz",
-      href: immersiveModuleHref(mod.slug, "quiz", stepNumber, 1),
-      hidden: trivia.length === 0,
-    },
-  ];
+  const segments = segmentItemsForStep(mod, stepNumber);
+  const next = nextContentAfter(mod, stepNumber, "watch");
 
-  const nextHref =
-    trivia.length > 0
-      ? immersiveModuleHref(mod.slug, "quiz", stepNumber, 1)
-      : immersiveModuleHref(mod.slug, "read", stepNumber);
+  const handleNext = () => {
+    markVideoWatched(mod, step);
+    if (next.completesStep) {
+      completeModuleStep(mod, step, stepNumber + 1);
+      if (next.awardsMastery) awardModuleMastery(mod);
+      refreshProgress();
+    }
+    router.push(next.href);
+  };
 
   return (
-    <>
+    <ImmersiveLessonFrame activeStep={stepNumber} activeMode="watch">
       <ImmersiveChrome
-        backHref="/learn?tab=learn"
+        backHref={`/learn/modules/${mod.slug}`}
         title={mod.title}
-        subtitle={`Step ${stepNumber} · Watch`}
+        subtitle={`${step.title} · Video`}
         progress={{ current: stepNumber, total: mod.steps.length }}
       />
       <ImmersiveSegment items={segments} active="watch" />
@@ -59,10 +60,16 @@ export function ImmersiveWatchScreen({ stepNumber }: { stepNumber: number }) {
         <ImmersiveVideoStage videos={videos} stepTitle={step.title} />
       </div>
       <ImmersiveBottomBar
-        prevHref={immersiveModuleHref(mod.slug, "read", stepNumber)}
-        nextHref={nextHref}
-        nextLabel={trivia.length > 0 ? "Take quiz" : "Back to reading"}
+        prevHref={
+          stepHasArticle(step)
+            ? immersiveModuleHref(mod.slug, "read", stepNumber)
+            : stepNumber > 1
+              ? immersiveModuleHref(mod.slug, "read", stepNumber - 1)
+              : `/learn/modules/${mod.slug}`
+        }
+        onNext={handleNext}
+        nextLabel={next.label}
       />
-    </>
+    </ImmersiveLessonFrame>
   );
 }

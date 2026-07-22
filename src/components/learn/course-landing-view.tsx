@@ -6,8 +6,10 @@ import { useParams } from "next/navigation";
 import { motion } from "motion/react";
 import {
   BookOpen,
+  Brain,
   CheckCircle2,
   ChevronRight,
+  Clapperboard,
   Clock,
   Loader2,
   Play,
@@ -17,15 +19,27 @@ import { Progress } from "@/components/ui/progress";
 import { HarmonizedImage } from "@/components/ui/harmonized-image";
 import { LearnPageFrame } from "@/components/learn/learn-page-frame";
 import { learningData } from "@/data/learning";
-import { immersiveModuleHref } from "@/lib/immersive-module";
+import {
+  lecturesForModule,
+  modesForStep,
+  resumeHref,
+  resolveResumeStep,
+  type LectureKind,
+} from "@/lib/immersive-module";
 import { readProgress } from "@/lib/module-progress";
 import { fadeInUp } from "@/motion/variants";
 import type { CivicModule } from "@/types/learn";
 import { cn } from "@/utils";
 
+const KIND_ICON: Record<LectureKind, typeof BookOpen> = {
+  article: BookOpen,
+  video: Clapperboard,
+  quiz: Brain,
+};
+
 /**
- * Udemy-style course landing: overview + curriculum + one primary Start/Continue CTA.
- * Learning happens in immersive routes — this page does not double as the reader.
+ * Udemy-style course landing: overview + typed curriculum (Article / Video / Quiz)
+ * + one primary Start/Continue CTA into the immersive player.
  */
 export function CourseLandingView() {
   const params = useParams();
@@ -58,18 +72,18 @@ export function CourseLandingView() {
     const completedCount = Object.keys(p.stepsCompleted).length;
     const total = mod.steps.length;
     const pct = total > 0 ? Math.round((completedCount / total) * 100) : 0;
-    const resumeStep = Math.min(
-      Math.max(p.currentStep, completedCount > 0 ? completedCount : 0),
-      Math.max(total - 1, 0),
-    );
+    const lectures = lecturesForModule(mod);
     return {
       completedCount,
       total,
       pct,
       isCompleted: p.masteryAwarded,
       isInProgress: completedCount > 0 && !p.masteryAwarded,
-      resumeStep,
+      resumeStep: resolveResumeStep(mod),
+      startHref: resumeHref(mod),
       completed: p.stepsCompleted,
+      lectures,
+      lectureCount: lectures.length,
     };
   }, [mod]);
 
@@ -93,7 +107,6 @@ export function CourseLandingView() {
     );
   }
 
-  const startHref = immersiveModuleHref(mod.slug, "read", progress.resumeStep);
   const ctaLabel = progress.isCompleted
     ? "Review course"
     : progress.isInProgress
@@ -108,7 +121,10 @@ export function CourseLandingView() {
   return (
     <LearnPageFrame className="space-y-10">
       <nav aria-label="Breadcrumb" className="text-xs text-muted-foreground">
-        <Link href="/learn" className="hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+        <Link
+          href="/learn"
+          className="hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
           Modules
         </Link>
         <span className="mx-2" aria-hidden>
@@ -136,7 +152,7 @@ export function CourseLandingView() {
             </p>
           ) : (
             <p className="max-w-2xl text-[15px] leading-relaxed text-muted-foreground sm:text-base">
-              A free civic course on Kenya&apos;s public finance — read lessons, watch explainers, and check your understanding.
+              Articles, videos, and quizzes — self-paced civic learning on Kenya&apos;s public finance.
             </p>
           )}
 
@@ -146,13 +162,15 @@ export function CourseLandingView() {
               {progress.total} lesson{progress.total === 1 ? "" : "s"}
             </li>
             <li className="inline-flex items-center gap-1.5">
+              <Clapperboard className="size-3.5" aria-hidden />
+              {progress.lectureCount} lecture{progress.lectureCount === 1 ? "" : "s"}
+            </li>
+            <li className="inline-flex items-center gap-1.5">
               <Clock className="size-3.5" aria-hidden />
               ~{estMinutes} min
             </li>
             {progress.isInProgress || progress.isCompleted ? (
-              <li className="inline-flex items-center gap-1.5 tabular-nums">
-                {progress.pct}% complete
-              </li>
+              <li className="inline-flex items-center gap-1.5 tabular-nums">{progress.pct}% complete</li>
             ) : (
               <li>Not started</li>
             )}
@@ -164,7 +182,7 @@ export function CourseLandingView() {
 
           <div className="flex flex-wrap gap-3 pt-1">
             <Button asChild size="lg" className="h-11 gap-2 rounded-md px-6 text-sm font-semibold">
-              <Link href={startHref}>
+              <Link href={progress.startHref}>
                 <Play className="size-4" aria-hidden />
                 {ctaLabel}
               </Link>
@@ -208,42 +226,64 @@ export function CourseLandingView() {
             Course content
           </h2>
           <p className="text-xs text-muted-foreground">
-            {progress.completedCount}/{progress.total} completed
+            {progress.completedCount}/{progress.total} lessons · {progress.lectureCount} lectures
           </p>
         </div>
 
         <ol className="divide-y divide-border/50 overflow-hidden rounded-2xl border border-border/60">
           {mod.steps.map((step, index) => {
+            const stepNumber = index + 1;
             const done = Boolean(progress.completed[step.order]) || progress.isCompleted;
-            const href = immersiveModuleHref(mod.slug, "read", index);
+            const modes = modesForStep(mod, index);
+            const lectures = progress.lectures.filter((l) => l.stepNumber === stepNumber);
+            const primaryHref = lectures[0]?.href ?? progress.startHref;
+
             return (
-              <li key={step.id}>
-                <Link
-                  href={href}
-                  className={cn(
-                    "flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
-                    done && "bg-muted/20",
-                  )}
-                >
-                  <span
-                    className={cn(
-                      "flex size-7 shrink-0 items-center justify-center rounded-md text-xs font-semibold",
-                      done
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-muted-foreground",
-                    )}
+              <li key={step.id} className={cn(done && "bg-muted/15")}>
+                <div className="flex flex-col gap-2 px-4 py-3.5 sm:flex-row sm:items-center sm:gap-3">
+                  <Link
+                    href={primaryHref}
+                    className="flex min-w-0 flex-1 items-center gap-3 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
-                    {done ? <CheckCircle2 className="size-3.5" aria-hidden /> : index + 1}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-foreground">{step.title}</p>
-                    <p className="text-xs text-muted-foreground">
-                      Lesson {index + 1}
-                      {done ? " · Done" : ""}
-                    </p>
+                    <span
+                      className={cn(
+                        "flex size-7 shrink-0 items-center justify-center rounded-md text-xs font-semibold",
+                        done
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted text-muted-foreground",
+                      )}
+                    >
+                      {done ? <CheckCircle2 className="size-3.5" aria-hidden /> : stepNumber}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium text-foreground">{step.title}</p>
+                      <p className="text-xs text-muted-foreground">
+                        Lesson {stepNumber}
+                        {done ? " · Done" : ""}
+                      </p>
+                    </div>
+                    <ChevronRight className="hidden size-4 shrink-0 text-muted-foreground sm:block" aria-hidden />
+                  </Link>
+
+                  <div className="flex flex-wrap gap-1.5 pl-10 sm:pl-0">
+                    {lectures.map((lec) => {
+                      const Icon = KIND_ICON[lec.kind];
+                      return (
+                        <Link
+                          key={`${lec.stepNumber}-${lec.mode}`}
+                          href={lec.href}
+                          className="inline-flex items-center gap-1 rounded-md border border-border/60 bg-background px-2 py-1 text-[11px] font-semibold text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        >
+                          <Icon className="size-3" aria-hidden />
+                          {lec.label}
+                        </Link>
+                      );
+                    })}
+                    {modes.length === 0 ? (
+                      <span className="text-[11px] text-muted-foreground">No content yet</span>
+                    ) : null}
                   </div>
-                  <ChevronRight className="size-4 shrink-0 text-muted-foreground" aria-hidden />
-                </Link>
+                </div>
               </li>
             );
           })}

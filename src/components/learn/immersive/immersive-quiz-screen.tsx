@@ -4,17 +4,20 @@ import { useRouter } from "next/navigation";
 import { ImmersiveChrome } from "./immersive-chrome";
 import { ImmersiveSegment } from "./immersive-segment";
 import { ImmersiveQuestionScreen } from "./immersive-question-screen";
+import { ImmersiveLessonFrame } from "./immersive-lesson-frame";
 import { useImmersiveModule } from "./immersive-module-provider";
 import {
   awardModuleMastery,
   completeModuleStep,
   immersiveModuleHref,
   moduleStepTrivia,
+  nextContentAfter,
   parseStepVideos,
+  preferredModeForStep,
   recordCorrectAnswer,
+  segmentItemsForStep,
 } from "@/lib/immersive-module";
 import { learnHubApi } from "@/lib/learn-hub";
-import { certificateDownloadHref } from "@/lib/certificate-url";
 
 export function ImmersiveQuizScreen({
   stepNumber,
@@ -32,31 +35,19 @@ export function ImmersiveQuizScreen({
   const question = trivia[qIndex];
 
   if (!step || !question) {
-    router.replace(immersiveModuleHref(mod.slug, "read", stepNumber));
+    router.replace(immersiveModuleHref(mod.slug, preferredModeForStep(mod, Math.max(0, stepIndex)), Math.max(1, stepNumber)));
     return null;
   }
 
   const videos = parseStepVideos(step);
-  const segments = [
-    { mode: "read" as const, label: "Read", href: immersiveModuleHref(mod.slug, "read", stepNumber) },
-    {
-      mode: "watch" as const,
-      label: "Watch",
-      href: immersiveModuleHref(mod.slug, "watch", stepNumber),
-      hidden: videos.length === 0,
-    },
-    {
-      mode: "quiz" as const,
-      label: "Quiz",
-      href: immersiveModuleHref(mod.slug, "quiz", stepNumber, 1),
-      hidden: trivia.length === 0,
-    },
-  ];
+  const segments = segmentItemsForStep(mod, stepNumber);
 
   const prevQuestionHref =
     questionNumber > 1
       ? immersiveModuleHref(mod.slug, "quiz", stepNumber, questionNumber - 1)
-      : immersiveModuleHref(mod.slug, "read", stepNumber);
+      : videos.length > 0
+        ? immersiveModuleHref(mod.slug, "watch", stepNumber)
+        : immersiveModuleHref(mod.slug, "read", stepNumber);
 
   const nextQuestionHref =
     questionNumber < trivia.length
@@ -64,28 +55,23 @@ export function ImmersiveQuizScreen({
       : undefined;
 
   const finishStep = () => {
-    const nextStep = stepNumber + 1;
-    completeModuleStep(mod, step, nextStep);
-    refreshProgress();
-
-    if (stepNumber >= mod.steps.length) {
+    const next = nextContentAfter(mod, stepNumber, "quiz");
+    completeModuleStep(mod, step, stepNumber + 1);
+    if (next.awardsMastery) {
       awardModuleMastery(mod);
       const lastStep = mod.steps[mod.steps.length - 1];
-      if (lastStep) {
-        learnHubApi.completeChapter(lastStep.id).catch(() => {});
-      }
-      router.push(`/learn/modules/${mod.slug}/complete`);
-      return;
+      if (lastStep) learnHubApi.completeChapter(lastStep.id).catch(() => {});
     }
-    router.push(immersiveModuleHref(mod.slug, "read", nextStep));
+    refreshProgress();
+    router.push(next.href);
   };
 
   return (
-    <>
+    <ImmersiveLessonFrame activeStep={stepNumber} activeMode="quiz">
       <ImmersiveChrome
-        backHref={immersiveModuleHref(mod.slug, "read", stepNumber)}
+        backHref={`/learn/modules/${mod.slug}`}
         title={mod.title}
-        subtitle={`Step ${stepNumber} · Quiz`}
+        subtitle={`${step.title} · Quiz`}
         progress={{ current: questionNumber, total: trivia.length }}
       />
       <ImmersiveSegment items={segments} active="quiz" />
@@ -99,6 +85,6 @@ export function ImmersiveQuizScreen({
         onAnsweredCorrectly={() => recordCorrectAnswer(mod, step, qIndex)}
         onFinish={finishStep}
       />
-    </>
+    </ImmersiveLessonFrame>
   );
 }
