@@ -1,17 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ChevronRight, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { cn } from "@/utils/index";
 import { taskApi } from "@/lib/task-api";
 import type { AssignableUser, ChecklistItem, ChecklistItemStatus } from "@/types/tasks";
 import { ChecklistItemFocus } from "./checklist-item-focus";
 import { isChecklistItemDone, mergeChecklistOrder, partitionChecklistItems } from "./checklist-utils";
+import { PlayfulTodolist } from "@/components/animate-ui/components/community/playful-todolist";
 import { fileToLocalAttachment, isLocalAttachmentId } from "@/lib/attachment-display";
 
 function genId() {
@@ -28,63 +27,6 @@ const STATUS_LABEL: Record<ChecklistItemStatus, string> = {
   blocked: "Blocked",
   done: "Done",
 };
-
-function ChecklistRow({
-  item,
-  readonly,
-  isFocused,
-  onOpen,
-  onToggleDone,
-}: {
-  item: ChecklistItem;
-  readonly?: boolean;
-  isFocused?: boolean;
-  onOpen: () => void;
-  onToggleDone: (checked: boolean) => void;
-}) {
-  const done = isChecklistItemDone(item);
-  const assigneeLabel = item.assignee_name?.split(" ")[0];
-
-  return (
-    <div
-      className={cn(
-        "group flex items-center gap-2 rounded-lg border px-2 py-2 transition-colors",
-        isFocused ? "border-primary/40 bg-primary/5" : "border-border/50 bg-background hover:border-border hover:bg-muted/30",
-        done && "opacity-75",
-      )}
-    >
-      <Checkbox
-        checked={done}
-        disabled={readonly}
-        onCheckedChange={(checked) => onToggleDone(checked === true)}
-        onClick={(e) => e.stopPropagation()}
-      />
-      <button
-        type="button"
-        onClick={onOpen}
-        className="flex min-w-0 flex-1 items-center gap-2 text-left"
-      >
-        <span className={cn("min-w-0 flex-1 truncate text-sm font-medium", done && "line-through text-muted-foreground")}>
-          {item.title || item.text || "Untitled item"}
-        </span>
-        {item.status && item.status !== "todo" && (
-          <span className="hidden shrink-0 rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground sm:inline">
-            {STATUS_LABEL[item.status]}
-          </span>
-        )}
-        {assigneeLabel && (
-          <span className="hidden shrink-0 text-[10px] text-muted-foreground md:inline">{assigneeLabel}</span>
-        )}
-        {(item.attachment_count ?? item.attachments?.length ?? 0) > 0 && (
-          <span className="shrink-0 text-[10px] tabular-nums text-muted-foreground">
-            {item.attachment_count ?? item.attachments?.length} files
-          </span>
-        )}
-        <ChevronRight className="size-4 shrink-0 text-muted-foreground/60 transition-transform group-hover:translate-x-0.5" />
-      </button>
-    </div>
-  );
-}
 
 export function ChecklistEditor({
   items,
@@ -399,50 +341,32 @@ export function ChecklistEditor({
         )}
       </div>
 
-      {items.length === 0 && (
-        <div className="rounded-xl border border-dashed border-border/60 px-4 py-8 text-center">
-          <p className="text-sm text-muted-foreground">No sub-tasks yet.</p>
-          {!readonly && (
-            <Button type="button" variant="link" size="sm" className="mt-2" onClick={addItem}>
-              Add the first one
-            </Button>
-          )}
-        </div>
-      )}
-
-      {active.length > 0 && (
-        <div className="space-y-1.5">
-          {active.map((item) => (
-            <ChecklistRow
-              key={item.id}
-              item={item}
-              readonly={readonly}
-              isFocused={focusedId === item.id}
-              onOpen={() => setFocusedId(item.id)}
-              onToggleDone={(checked) => updateItem(item.id, { checked, status: checked ? "done" : "todo" })}
-            />
-          ))}
-        </div>
-      )}
-
-      {done.length > 0 && (
-        <div className="space-y-2 pt-2">
-          <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
-            Completed · {done.length}
-          </p>
-          <div className="space-y-1.5">
-            {done.map((item) => (
-              <ChecklistRow
-                key={item.id}
-                item={item}
-                readonly={readonly}
-                onOpen={() => setFocusedId(item.id)}
-                onToggleDone={(checked) => updateItem(item.id, { checked, status: checked ? "done" : "todo" })}
-              />
-            ))}
-          </div>
-        </div>
-      )}
+      <PlayfulTodolist
+        items={items.map((item) => ({
+          id: item.id,
+          label: item.title || item.text || "Untitled item",
+          checked: isChecklistItemDone(item),
+          hint: [
+            item.assignee_name,
+            item.status && item.status !== "todo" ? STATUS_LABEL[item.status] : null,
+            (item.attachment_count ?? item.attachments?.length ?? 0) > 0
+              ? `${item.attachment_count ?? item.attachments?.length} files`
+              : null,
+          ]
+            .filter(Boolean)
+            .join(" · ") || undefined,
+        }))}
+        onToggle={
+          readonly
+            ? undefined
+            : (id, checked) => updateItem(id, { checked, status: checked ? "done" : "todo" })
+        }
+        onSelect={(id) => setFocusedId(id)}
+        onAdd={readonly ? undefined : addItem}
+        disabled={readonly}
+        emptyLabel="No sub-tasks yet — add the first one to start this week."
+        addLabel="Add sub-task"
+      />
     </div>
   );
 }

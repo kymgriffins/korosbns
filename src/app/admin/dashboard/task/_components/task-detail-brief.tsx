@@ -34,8 +34,6 @@ export function TaskDetailBrief({
   backHref: string;
 }) {
   const activeIdx = workflowIndex(task.status);
-  const checklist = detail?.checklist_items ?? [];
-  const doneCount = checklist.filter((c) => c.is_completed || c.status === "done").length;
   const accent = task.hue ?? "var(--primary)";
 
   return (
@@ -52,12 +50,12 @@ export function TaskDetailBrief({
         <div className="h-1 w-full" style={{ background: accent }} aria-hidden />
         <div className="space-y-5 p-5">
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+            <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+              At a glance
+            </p>
+            <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
               {task.week_label}
             </p>
-            <h1 className="mt-2 font-heading text-2xl font-bold leading-tight tracking-tight text-foreground md:text-[1.65rem]">
-              {task.title}
-            </h1>
             {task.tag && (
               <p className="mt-2 text-xs text-muted-foreground capitalize">{task.tag.replace(/_/g, " ")}</p>
             )}
@@ -187,36 +185,6 @@ export function TaskDetailBrief({
           <p className="mt-2 font-mono text-[10px]">ref {task.id.slice(0, 8)}</p>
         </div>
       </div>
-
-      {checklist.length > 0 && (
-        <div className="rounded-xl border border-border/70 bg-card p-5">
-          <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-            Checklist · {doneCount}/{checklist.length}
-          </p>
-          <ul className="mt-3 space-y-2">
-            {checklist.slice(0, 6).map((item) => {
-              const done = item.is_completed || item.status === "done";
-              return (
-                <li key={item.id} className="flex items-start gap-2 text-sm">
-                  <span
-                    className={cn(
-                      "mt-1 size-1.5 shrink-0 rounded-full",
-                      done ? "bg-emerald-500" : "bg-muted-foreground/40",
-                    )}
-                    aria-hidden
-                  />
-                  <span className={cn(done && "text-muted-foreground line-through")}>
-                    {item.title || item.text}
-                  </span>
-                </li>
-              );
-            })}
-            {checklist.length > 6 && (
-              <li className="text-xs text-muted-foreground">+{checklist.length - 6} more items</li>
-            )}
-          </ul>
-        </div>
-      )}
 
       {detail?.audit_trails && detail.audit_trails.length > 0 && (
         <div className="rounded-xl border border-border/70 bg-card p-5">
