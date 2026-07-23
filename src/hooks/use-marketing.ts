@@ -72,9 +72,21 @@ export function useYouTubeVideos(): UseQueryResult<YouTubeVideosResponse, Error>
   return useQuery({
     queryKey: ["youtube-videos"],
     queryFn: async () => {
-      const response = await fetch(resolveAppUrl("/api/youtube"));
-      if (!response.ok) throw new Error("Failed to fetch YouTube videos");
-      return response.json() as Promise<YouTubeVideosResponse>;
+      const { videoData } = await import("@/data/videos");
+      const items = await videoData.fetch();
+      return {
+        videos: items.map((v) => ({
+          id: v.id,
+          title: v.title,
+          published: v.published_at,
+          thumbnail: v.id
+            ? `https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`
+            : "",
+          url: v.url,
+          description: v.summary ?? "",
+        })),
+        source: "content-videos.json",
+      } as YouTubeVideosResponse;
     },
   });
 }

@@ -1,0 +1,91 @@
+{
+  "provenance": {
+    "source": "YouTube channel @budgetndiostory (UCvxVwuKoG8XEN53OohMu9qA)",
+    "note": "JSON-only Learn Hub video catalogue — no learn/videos API. Accumulate; do not truncate to RSS window.",
+    "level": "fallback",
+    "shape": "youtube_catalogue"
+  },
+  "count": 10,
+  "results": [
+    {
+      "videoId": "oHuImiQvvN0",
+      "title": "PART 3: County Budget: Where Does the Money Come From?",
+      "url": "https://www.youtube.com/watch?v=oHuImiQvvN0",
+      "publishedAt": "2026-06-26T17:31:25Z",
+      "description": "Counties provide many of the services we interact with every day. Where does the money that funds county governments actually come from?",
+      "channelId": "UCvxVwuKoG8XEN53OohMu9qA"
+    },
+    {
+      "videoId": "abDYZ5xjQgo",
+      "title": "PART 2: County Budget: Where Does the Money Come From?",
+      "url": "https://www.youtube.com/watch?v=abDYZ5xjQgo",
+      "publishedAt": "2026-06-22T15:27:28Z",
+      "description": "Counties provide many of the services we interact with every day. Where does the money that funds county governments actually come from?",
+      "channelId": "UCvxVwuKoG8XEN53OohMu9qA"
+    },
+    {
+      "videoId": "3wfk09c_xNQ",
+      "title": "County Budget: Where Does the Money Come From?",
+      "url": "https://www.youtube.com/watch?v=3wfk09c_xNQ",
+      "publishedAt": "2026-06-19T05:46:47Z",
+      "description": "Counties provide many of the services we interact with every day. Where does the money that funds county governments actually come from?",
+      "channelId": "UCvxVwuKoG8XEN53OohMu9qA"
+    },
+    {
+      "videoId": "FkgRz4v2Llk",
+      "title": "PART 3: Before Budget Day: This Is Where It Starts",
+      "url": "https://www.youtube.com/watch?v=FkgRz4v2Llk",
+      "publishedAt": "2026-04-07T11:03:33Z",
+      "description": "In this part, we break down what the Budget Policy Statement (BPS) is and why young people should care about it.",
+      "channelId": "UCvxVwuKoG8XEN53OohMu9qA"
+    },
+    {
+      "videoId": "wkPe3sWomoA",
+      "title": "PART 2-Before the Budget: This Is Where It Starts",
+      "url": "https://www.youtube.com/watch?v=wkPe3sWomoA",
+      "publishedAt": "2026-04-04T10:28:55Z",
+      "description": "In Part 2, we go deeper into the Budget Policy Statement (BPS) and why it matters before Budget Day.",
+      "channelId": "UCvxVwuKoG8XEN53OohMu9qA"
+    },
+    {
+      "videoId": "Ed9lP0-komE",
+      "title": "Before Budget Day: This Is Where It Starts",
+      "url": "https://www.youtube.com/watch?v=Ed9lP0-komE",
+      "publishedAt": "2026-04-02T10:09:24Z",
+      "description": "In this part, we break down what the Budget Policy Statement (BPS) is and why young people should care about it.",
+      "channelId": "UCvxVwuKoG8XEN53OohMu9qA"
+    },
+    {
+      "videoId": "SfPwtqUFyj4",
+      "title": "PART 4: Inside Kenya’s National Infrastructure Fund",
+      "url": "https://www.youtube.com/watch?v=SfPwtqUFyj4",
+      "publishedAt": "2026-03-17T18:07:33Z",
+      "description": "Kenya’s National Infrastructure Fund is now law. But do young people really understand what it means?",
+      "channelId": "UCvxVwuKoG8XEN53OohMu9qA"
+    },
+    {
+      "videoId": "KeNCrx6krl0",
+      "title": "PART3 :Inside Kenya’s National Infrastructure Fund",
+      "url": "https://www.youtube.com/watch?v=KeNCrx6krl0",
+      "publishedAt": "2026-03-17T18:00:11Z",
+      "description": "Kenya’s National Infrastructure Fund is now law. But do young people really understand what it means?",
+      "channelId": "UCvxVwuKoG8XEN53OohMu9qA"
+    },
+    {
+      "videoId": "jLZe3iPSMfc",
+      "title": "PART 2: Inside Kenya’s National Infrastructure Fund",
+      "url": "https://www.youtube.com/watch?v=jLZe3iPSMfc",
+      "publishedAt": "2026-03-17T17:54:40Z",
+      "description": "Kenya’s National Infrastructure Fund is now law. But do young people really understand what it means?",
+      "channelId": "UCvxVwuKoG8XEN53OohMu9qA"
+    },
+    {
+      "videoId": "A_EXLueEMlk",
+      "title": "Inside Kenya’s National Infrastructure Fund",
+      "url": "https://www.youtube.com/watch?v=A_EXLueEMlk",
+      "publishedAt": "2026-03-16T08:25:38Z",
+      "description": "Kenya’s National Infrastructure Fund is now law. But do young people really understand what it means?",
+      "channelId": "UCvxVwuKoG8XEN53OohMu9qA"
+    }
+  ]
+}

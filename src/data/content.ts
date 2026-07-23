@@ -2,7 +2,6 @@ import type { ApiListResponse } from "@/types/api";
 import type { LearnHubItem } from "@/types/learn";
 import type { TriviaSetApi } from "@/lib/api-client";
 import { citizenApi } from "@/lib/api-client";
-import { learnHubApi } from "@/lib/learn-hub";
 import { withFallback } from "@/data/adapter";
 import {
   fetchDocumentsFromAPI,
@@ -21,7 +20,6 @@ export type { DocumentType, FetchDocumentsResult };
 const DEFAULT_ARTICLES: LearnHubItem[] = [
   ...(learnArticlesFallback.results as LearnHubItem[]),
 ];
-const DEFAULT_VIDEOS: LearnHubItem[] = [];
 const DEFAULT_STORIES: LearnHubItem[] = [
   ...(learnStoriesFallback.results as LearnHubItem[]),
 ];
@@ -63,39 +61,33 @@ function findStoryBySlug(slug: string): Record<string, unknown> | null {
   return (hit as unknown as Record<string, unknown>) ?? null;
 }
 
+function findArticleBySlug(slug: string): Record<string, unknown> | null {
+  const hit = DEFAULT_ARTICLES.find((a) => a.slug === slug || a.id === slug);
+  return (hit as unknown as Record<string, unknown>) ?? null;
+}
+
 let _articles: LearnHubItem[] = [...DEFAULT_ARTICLES];
 let _stories: LearnHubItem[] = [...DEFAULT_STORIES];
 let _documents: LearnHubItem[] = [...DEFAULT_DOCUMENTS];
 let _quests: LearnHubItem[] = [...DEFAULT_QUESTS];
 let _paths: LearnHubItem[] = [...DEFAULT_PATHS];
 
+/**
+ * Learn catalogue (articles, stories, paths, quests, trivia list) is JSON-only.
+ * Knowledge / document directory / trivia leaderboard may still use API.
+ */
 export const contentData = {
   articles: {
     get: () => _articles,
     set: (items: LearnHubItem[]) => {
       _articles = items;
     },
-    fetch: (filters?: { search?: string }) =>
-      withFallback(
-        "content",
-        () => learnHubApi.articles(filters),
-        () => ({ results: filterBySearch(_articles.length ? _articles : DEFAULT_ARTICLES, filters?.search) }),
-        { accept: (r) => Array.isArray(r?.results) && (r.results?.length ?? 0) > 0 },
-      ).then((r) => {
-        const results = r.results ?? [];
-        if (results.length) _articles = results;
-        return results.length ? results : filterBySearch(DEFAULT_ARTICLES, filters?.search);
-      }),
-    fetchBySlug: (slug: string): Promise<Record<string, unknown> | null> =>
-      withFallback<Record<string, unknown> | null>(
-        "content",
-        () => citizenApi.getArticle(slug) as Promise<Record<string, unknown>>,
-        () =>
-          (DEFAULT_ARTICLES.find((a) => a.slug === slug) as unknown as Record<
-            string,
-            unknown
-          >) ?? null,
-      ),
+    fetch: async (filters?: { search?: string }) => {
+      _articles = [...DEFAULT_ARTICLES];
+      return filterBySearch(_articles, filters?.search);
+    },
+    fetchBySlug: async (slug: string): Promise<Record<string, unknown> | null> =>
+      findArticleBySlug(slug),
     fetchFromApi: (filters?: { search?: string }) =>
       citizenApi.getArticles() as Promise<ApiListResponse<LearnHubItem>>,
   },
@@ -104,34 +96,12 @@ export const contentData = {
     set: (items: LearnHubItem[]) => {
       _stories = items;
     },
-    fetch: (filters?: { search?: string }) =>
-      withFallback(
-        "content",
-        () => learnHubApi.stories(filters),
-        () => ({
-          results: filterBySearch(_stories.length ? _stories : DEFAULT_STORIES, filters?.search),
-        }),
-        { accept: (r) => Array.isArray(r?.results) && (r.results?.length ?? 0) > 0 },
-      ).then((r) => {
-        const results = r.results ?? [];
-        if (results.length) _stories = results;
-        return results.length ? results : filterBySearch(DEFAULT_STORIES, filters?.search);
-      }),
-    fetchBySlug: (slug: string): Promise<Record<string, unknown> | null> =>
-      withFallback<Record<string, unknown> | null>(
-        "content",
-        () =>
-          citizenApi.getStories().then((r) => {
-            const results = (r?.results ?? []) as Array<Record<string, unknown>>;
-            return (
-              results.find(
-                (s) => s.id === slug || s.slug === slug || String(s.id) === slug,
-              ) ?? null
-            );
-          }),
-        () => findStoryBySlug(slug),
-        { accept: (r) => r != null && Object.keys(r).length > 0 },
-      ),
+    fetch: async (filters?: { search?: string }) => {
+      _stories = [...DEFAULT_STORIES];
+      return filterBySearch(_stories, filters?.search);
+    },
+    fetchBySlug: async (slug: string): Promise<Record<string, unknown> | null> =>
+      findStoryBySlug(slug),
     fetchFromApi: () => citizenApi.getStories() as Promise<ApiListResponse<LearnHubItem>>,
   },
   paths: {
@@ -139,36 +109,15 @@ export const contentData = {
     set: (items: LearnHubItem[]) => {
       _paths = items;
     },
-    fetch: (filters?: { search?: string }) =>
-      withFallback(
-        "content",
-        () => learnHubApi.paths(filters),
-        () => ({ results: filterBySearch(_paths.length ? _paths : DEFAULT_PATHS, filters?.search) }),
-        { accept: (r) => Array.isArray(r?.results) && (r.results?.length ?? 0) > 0 },
-      ).then((r) => {
-        const results = r.results ?? [];
-        if (results.length) _paths = results;
-        return results.length ? results : filterBySearch(DEFAULT_PATHS, filters?.search);
-      }),
+    fetch: async (filters?: { search?: string }) => {
+      _paths = [...DEFAULT_PATHS];
+      return filterBySearch(_paths, filters?.search);
+    },
   },
   trivia: {
-    fetchList: () =>
-      withFallback(
-        "content",
-        () => citizenApi.getTriviaList(),
-        () => ({ results: DEFAULT_TRIVIA, count: DEFAULT_TRIVIA.length }),
-        { accept: (r) => Array.isArray(r?.results) && (r.results?.length ?? 0) > 0 },
-      ).then((r) => {
-        const results = r.results ?? [];
-        return results.length ? results : DEFAULT_TRIVIA;
-      }),
-    fetchBySlug: (slug: string): Promise<Record<string, unknown> | null> =>
-      withFallback<Record<string, unknown> | null>(
-        "content",
-        () => citizenApi.getTrivia(slug) as Promise<Record<string, unknown>>,
-        () => (findTriviaBySlug(slug) as unknown as Record<string, unknown>) ?? null,
-        { accept: (r) => r != null && Object.keys(r).length > 0 },
-      ),
+    fetchList: async () => [...DEFAULT_TRIVIA],
+    fetchBySlug: async (slug: string): Promise<Record<string, unknown> | null> =>
+      (findTriviaBySlug(slug) as unknown as Record<string, unknown>) ?? null,
     fetchLeaderboard: (id: string) =>
       withFallback(
         "content",
@@ -181,12 +130,10 @@ export const contentData = {
     set: (items: LearnHubItem[]) => {
       _documents = items;
     },
-    fetch: (filters?: { search?: string }) =>
-      withFallback(
-        "content",
-        () => learnHubApi.documents(filters),
-        () => ({ results: filterBySearch(_documents, filters?.search) }),
-      ).then((r) => r.results ?? []),
+    fetch: async (filters?: { search?: string }) => {
+      _documents = [...DEFAULT_DOCUMENTS];
+      return filterBySearch(_documents, filters?.search);
+    },
     fetchFromDirectory: () =>
       withFallback(
         "content",
@@ -203,19 +150,10 @@ export const contentData = {
     set: (items: LearnHubItem[]) => {
       _quests = items;
     },
-    fetch: (filters?: { search?: string }) =>
-      withFallback(
-        "content",
-        () => learnHubApi.quests(filters),
-        () => ({
-          results: filterBySearch(_quests.length ? _quests : DEFAULT_QUESTS, filters?.search),
-        }),
-        { accept: (r) => Array.isArray(r?.results) && (r.results?.length ?? 0) > 0 },
-      ).then((r) => {
-        const results = r.results ?? [];
-        if (results.length) _quests = results;
-        return results.length ? results : filterBySearch(DEFAULT_QUESTS, filters?.search);
-      }),
+    fetch: async (filters?: { search?: string }) => {
+      _quests = [...DEFAULT_QUESTS];
+      return filterBySearch(_quests, filters?.search);
+    },
   },
   knowledge: {
     fetch: () =>

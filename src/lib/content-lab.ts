@@ -342,25 +342,9 @@ function probeLearnKey(surfaceId: string, key: string): PresenceCell {
   }
 }
 
-/** Try live catalogue; upgrade FALLBACK → API when Django responds with modules. */
-async function tryUpgradeModulesToApi(matrix: PresenceCell[]): Promise<void> {
-  try {
-    const { learningData } = await import("@/data/learning");
-    await learningData.modules.fetch();
-    if (!learningData.modules.usedFallback() && learningData.modules.get().length > 0) {
-      for (const cell of matrix) {
-        if (
-          (cell.surfaceId === "learn.hub.hero" || cell.surfaceId === "learn.hub.continue") &&
-          cell.status === "FALLBACK"
-        ) {
-          cell.status = "API";
-          cell.detail = `Live civic-modules API (${learningData.modules.get().length})`;
-        }
-      }
-    }
-  } catch {
-    // keep FALLBACK / MISSING
-  }
+/** Learning catalogue is JSON-only — no civic-modules API upgrade path. */
+async function tryUpgradeModulesToApi(_matrix: PresenceCell[]): Promise<void> {
+  // Intentionally empty: modules come from civic-modules.json only.
 }
 
 export async function buildPresenceMatrix(): Promise<PresenceCell[]> {

@@ -61,17 +61,19 @@ All new code passes `tsc --noEmit` cleanly. Strict mode enforced on all callback
 
 # Headless Data Layer
 
-**Canonical location:** `src/data/*.ts`  
+**Canonical location:** `src/data/*.ts` 
 **Pattern doc:** `TASKLIST.md` → Phase 7
 
 ## Rules for AI agents
 
 1. **Do not call API functions directly in page/components.** Always go through `src/data/{domain}.ts` stores using `withFallback()`.
-2. **Every data store must export**: `get()`, `set()`, `fetch()`, and optionally `fetchById()` / `create()` / `update()` / `delete()`.
-3. **`fetch()` must use `withFallback()`** from `src/data/adapter.ts` — it tries the real API first, falls back to defaults on failure.
-4. **Default data comes from seed JSONs** (`content_videos.example.json`, `civic_modules.json`, `bnsConfig.json`, etc.) or sensible zero-value states.
-5. **All stores are headless** — they work without a backend. The UI stays functional with defaults.
-6. **Add new types to the store file**, not to shared type files, unless the type is used across multiple domains.
+2. **Learn catalogue is JSON-only.** `learningData.modules` / `summary`, `videoData`, `contentData` articles/stories/paths/quests/trivia list, and `transcripts` read seeded JSON under `src/data/fallbacks/` and must not call Learn Hub catalogue APIs. **Profile and gamification** (plus trivia leaderboard / knowledge when used) remain authenticated or personal API calls.
+3. **YouTube bloodline:** `fallbacks/content-videos.json` + module `youtube_urls` are the frontend source of truth for series; do not hydrate videos from Django on the Learn Hub.
+3. **Every data store must export**: `get()`, `set()`, `fetch()`, and optionally `fetchById()` / `create()` / `update()` / `delete()`.
+4. **`fetch()` for non-catalogue domains must use `withFallback()`** from `src/data/adapter.ts` — it tries the real API first, falls back to defaults on failure.
+5. **Default data comes from seed JSONs** (`content_videos.example.json`, `civic_modules.json`, `bnsConfig.json`, etc.) or sensible zero-value states.
+6. **All stores are headless** — they work without a backend. The UI stays functional with defaults.
+7. **Add new types to the store file**, not to shared type files, unless the type is used across multiple domains.
 
 ## Migration workflow per page
 

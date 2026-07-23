@@ -25,12 +25,11 @@ const DEFAULT_SUMMARY: LearnHubSummary = {
 };
 
 let _modules: CivicModule[] = [...FALLBACK_MODULES];
-let _modulesUsedFallback = false;
 let _summary: LearnHubSummary = { ...DEFAULT_SUMMARY };
 
 /**
- * Civic modules are read-only catalogue data. Prefer the live API, but always
- * fall back to seeded JSON so the Learn hub never hard-fails on timeout/404.
+ * Learn catalogue (modules + hub summary) is JSON-only — no civic-modules DB
+ * hits. Profile / gamification stay on the authenticated API.
  */
 export const learningData = {
   modules: {
@@ -38,69 +37,28 @@ export const learningData = {
     set: (items: CivicModule[]) => {
       _modules = items;
     },
-    usedFallback: () => _modulesUsedFallback,
+    /** Always true: catalogue is the seeded JSON constant, not live API. */
+    usedFallback: () => true,
     fetch: async (): Promise<CivicModule[]> => {
-      let usedFallback = false;
-      const results = await withFallback(
-        "learning",
-        async () => {
-          const load = async () => {
-            const r = await learnHubApi.civicModules();
-            return r.results ?? [];
-          };
-          try {
-            return await load();
-          } catch (firstErr) {
-            await new Promise((r) => setTimeout(r, 350));
-            try {
-              return await load();
-            } catch {
-              throw firstErr;
-            }
-          }
-        },
-        () => {
-          usedFallback = true;
-          return _modules.length > 0 ? _modules : FALLBACK_MODULES;
-        },
-        {
-          // Accept API payloads that include at least one module with learnable content.
-          accept: (rows) =>
-            Array.isArray(rows) &&
-            filterModulesWithPublishableContent(rows).length > 0,
-        },
-      );
-      const publishable = ensureModulesBpsYoutube(
-        filterModulesWithPublishableContent(
-          Array.isArray(results) ? results : [],
-        ),
-      );
-      _modules = publishable.length > 0 ? publishable : FALLBACK_MODULES;
-      _modulesUsedFallback =
-        usedFallback || publishable.length === 0 || results.length === 0;
+      _modules = [...FALLBACK_MODULES];
       return _modules;
     },
-    fetchBySlug: (slug: string) =>
-      withFallback(
-        "learning",
-        () => learnHubApi.civicModule(slug).then(ensureBpsYoutube),
-        () =>
-          FALLBACK_MODULES.find((m) => m.slug === slug) ??
-          _modules.find((m) => m.slug === slug) ??
-          null,
-      ).then((m) => (m ? ensureBpsYoutube(m) : null)),
+    fetchBySlug: async (slug: string): Promise<CivicModule | null> => {
+      const fromMemory = _modules.find((m) => m.slug === slug);
+      const fromSeed = FALLBACK_MODULES.find((m) => m.slug === slug);
+      const mod = fromMemory ?? fromSeed ?? null;
+      return mod ? ensureBpsYoutube(mod) : null;
+    },
   },
   summary: {
     get: () => _summary,
     set: (s: LearnHubSummary) => {
       _summary = s;
     },
-    fetch: () =>
-      withFallback(
-        "learning",
-        () => learnHubApi.summary(),
-        () => DEFAULT_SUMMARY,
-      ),
+    fetch: async (): Promise<LearnHubSummary> => {
+      _summary = { ...DEFAULT_SUMMARY };
+      return _summary;
+    },
   },
   profile: {
     fetch: () =>
