@@ -1,14 +1,15 @@
 {
   "provenance": {
-    "source": "seeds/civic_modules.json + youtube pipeline apply",
-    "note": "Read-only offline catalogue when civic-modules API is unreachable. Only modules with learnable step content are listed.",
-    "level": "fallback"
+    "source": "seeds/youtube_series_modules.json",
+    "note": "YouTube-bloodline Learn Hub catalogue: one article per module + full series youtube_urls. Offline when civic-modules API is unreachable.",
+    "level": "fallback",
+    "shape": "one_article_per_module"
   },
-  "count": 1,
+  "count": 3,
   "results": [
     {
       "id": "budget-policy-statement",
-      "title": "Budget Policy Statement",
+      "title": "Before Budget Day: Budget Policy Statement",
       "slug": "budget-policy-statement",
       "badge": "🧾",
       "badgeName": "Budget Policy Statement",
@@ -17,14 +18,14 @@
       "link": "",
       "status": "Published",
       "credits": "Budget Ndio Story",
-      "description": "A citizen-friendly guide to Kenya's Budget Policy Statement 2026, prepared under the guidance of Millicent Makina, Board Advisor at Budget Ndio Story.",
+      "description": "Watch and read the full Before Budget Day series — what the Budget Policy Statement is, why it matters before Budget Day, and how young people can engage.",
       "expectations": [],
       "image_url": "https://pbs.twimg.com/media/HKlf32wX0AEFvZz?format=jpg&name=small",
       "order": 1,
       "steps": [
         {
           "id": "budget-policy-statement-ch1",
-          "title": "Understanding the BPS",
+          "title": "Before Budget Day: This Is Where It Starts",
           "order": 1,
           "youtube_url": "https://www.youtube.com/watch?v=Ed9lP0-komE",
           "youtube_urls": [
@@ -34,31 +35,82 @@
           ],
           "audio_url": "",
           "transcript": "",
-          "text": "Part 1 — Before Budget Day: This Is Where It Starts. The Budget Policy Statement (BPS) is Kenya's early roadmap for the national budget. It sets priorities, spending ceilings, and policy signals before the full estimates are published."
-        },
+          "article_slug": "before-budget-day-full-series",
+          "article_summary": "One guide to the full Before Budget Day YouTube series — the Budget Policy Statement, why it comes before Budget Day, and how citizens can use it.",
+          "text": "This module pairs one article with the full Budget Ndio Story YouTube series Before Budget Day: This Is Where It Starts (Parts 1–3). Watch the playlist in order, then use this page as your written companion.\n\nWHAT THE SERIES COVERS\nPart 1 introduces the Budget Policy Statement (BPS) — Kenya's early roadmap for the national budget — and why young people should care before the big Budget Day speech. Part 2 goes deeper into how BPS priorities take shape. Part 3 connects the BPS to everyday stakes: jobs, education, healthcare, business, and taxes.\n\nWHAT THE BPS IS\nThe Budget Policy Statement is the government's annual economic blueprint, tabled in Parliament by the Cabinet Secretary for the National Treasury no later than mid-February each year. It sets broad fiscal strategy — revenue outlook, spending ceilings by sector, and the macroeconomic framework that guides the detailed estimates presented later.\n\nBy law, the BPS must go through public participation. Parliament invites submissions from citizens and civil society. That window is often the most practical moment to influence priorities before line-item estimates harden.\n\nTYPICAL CALENDAR (CITIZEN VIEW)\n- By mid-February: Treasury tables the BPS\n- February–March: Public participation and parliamentary review\n- By end of April: National budget estimates presented\n- By end of June: Appropriation before the July 1 financial-year start\n\nWHY WATCH BEFORE BUDGET DAY\nBudget Day is the headline. The BPS is where many choices are framed. If you only arrive on Budget Day, you are reading outcomes of an earlier process. The series walks that earlier process in plain language.\n\nHOW TO USE THIS MODULE\n1. Watch Part 1, then Parts 2 and 3 (links above).\n2. Note questions you still have about revenue, debt, counties, or sector priorities.\n3. Check official Treasury / Parliament publications for any figure you need to cite — do not treat social clips as the source of record for amounts.\n\nWatch the series: Part 1 → Part 2 → Part 3 using the YouTube links on this module."
+        }
+      ],
+      "author": null,
+      "trivia": []
+    },
+    {
+      "id": "county-budget",
+      "title": "County Budget: Where Does the Money Come From?",
+      "slug": "county-budget",
+      "badge": "🏛️",
+      "badgeName": "County Budget",
+      "documentName": "County Budget",
+      "archive": "",
+      "link": "",
+      "status": "Published",
+      "credits": "Budget Ndio Story",
+      "description": "A full-series guide to where county governments get their money — equitable share, own-source revenue, and conditional grants — paired with the Budget Ndio Story County Budget YouTube series.",
+      "expectations": [],
+      "image_url": "",
+      "order": 2,
+      "steps": [
         {
-          "id": "budget-policy-statement-ch2",
-          "title": "Reading the BPS 2026 Summary",
-          "order": 2,
-          "youtube_url": "https://www.youtube.com/watch?v=wkPe3sWomoA",
+          "id": "county-budget-ch1",
+          "title": "County Budget: Where Does the Money Come From?",
+          "order": 1,
+          "youtube_url": "https://www.youtube.com/watch?v=3wfk09c_xNQ",
           "youtube_urls": [
-            "https://www.youtube.com/watch?v=wkPe3sWomoA"
+            "https://www.youtube.com/watch?v=3wfk09c_xNQ",
+            "https://www.youtube.com/watch?v=abDYZ5xjQgo",
+            "https://www.youtube.com/watch?v=oHuImiQvvN0"
           ],
           "audio_url": "",
           "transcript": "",
-          "text": "Part 2 — Before the Budget: This Is Where It Starts. Go deeper into the BPS and why it matters before Budget Day — where government priorities become clearer and major budget choices begin to take shape."
-        },
+          "article_slug": "county-budget-where-money-comes-from",
+          "article_summary": "One article for the full County Budget YouTube series — how counties are funded and what citizens should ask when they hear \"the county has no money.\"",
+          "text": "This module pairs one article with the full Budget Ndio Story YouTube series County Budget: Where Does the Money Come From? (Parts 1–3). Counties deliver many services Kenyans use every day — health facilities, early childhood education, local roads, water, and markets. This series asks a simple question: where does that money actually come from?\n\nWHAT THE SERIES COVERS\nPart 1 frames the question and why county finance is not the same as the national Budget Day story. Part 2 and Part 3 dig further into revenue streams and what that means for services and accountability. Watch in order using the links on this module.\n\nTHE BIG PICTURE (NO INVENTED FIGURES)\nCounty governments typically draw on several revenue families:\n1. Equitable share — the constitutional share of nationally raised revenue allocated to counties through the Commission on Revenue Allocation / Division of Revenue process.\n2. Own-source revenue — local collections (for example fees, rates, and other lawful county charges), which vary widely by county capacity and economy.\n3. Conditional and other transfers — funds tied to specific programmes or national priorities when the law and budget instruments provide for them.\n\nExact shillings for any county or financial year belong in official documents: Division of Revenue Act / County Allocation of Revenue Act, county budget estimates, Controller of Budget reports, and county finance acts. This companion article does not invent or scale those amounts.\n\nWHY THE SERIES MATTERS\nWhen people say \"the county has no money,\" they often collapse three different stories: what Nairobi transferred, what the county collected itself, and what was ring-fenced for a programme. Separating those streams is the first accountability skill.\n\nCITIZEN QUESTIONS TO KEEP WHILE YOU WATCH\n- Which share of this year's county budget is equitable share vs own-source vs conditional?\n- Are collection targets realistic, and is collection improving?\n- Do budget books and implementation reports match what clinics, ECD centres, and roads actually receive?\n- Where can I read the county's approved estimates and CoB implementation report?\n\nHOW TO USE THIS MODULE\n1. Watch Part 1 → Part 2 → Part 3.\n2. Pick your county and open its latest approved budget or CoB report for real figures.\n3. Use the series language to ask clearer questions in public participation, not to invent numbers from memory.\n\nWatch the series with the YouTube links above."
+        }
+      ],
+      "author": null,
+      "trivia": []
+    },
+    {
+      "id": "kenya-national-infrastructure-fund",
+      "title": "Inside Kenya's National Infrastructure Fund",
+      "slug": "kenya-national-infrastructure-fund",
+      "badge": "🏗️",
+      "badgeName": "Infrastructure Fund",
+      "documentName": "Kenya National Infrastructure Fund",
+      "archive": "",
+      "link": "",
+      "status": "Published",
+      "credits": "Budget Ndio Story",
+      "description": "A full-series guide to Kenya's National Infrastructure Fund — what it is, why it became law, and what young people should understand — paired with the Budget Ndio Story YouTube series.",
+      "expectations": [],
+      "image_url": "",
+      "order": 3,
+      "steps": [
         {
-          "id": "budget-policy-statement-ch3",
-          "title": "BPS and the BETA Agenda",
-          "order": 3,
-          "youtube_url": "https://www.youtube.com/watch?v=FkgRz4v2Llk",
+          "id": "kenya-national-infrastructure-fund-ch1",
+          "title": "Inside Kenya's National Infrastructure Fund",
+          "order": 1,
+          "youtube_url": "https://www.youtube.com/watch?v=A_EXLueEMlk",
           "youtube_urls": [
-            "https://www.youtube.com/watch?v=FkgRz4v2Llk"
+            "https://www.youtube.com/watch?v=A_EXLueEMlk",
+            "https://www.youtube.com/watch?v=jLZe3iPSMfc",
+            "https://www.youtube.com/watch?v=KeNCrx6krl0",
+            "https://www.youtube.com/watch?v=SfPwtqUFyj4"
           ],
           "audio_url": "",
           "transcript": "",
-          "text": "Part 3 — Before Budget Day: This Is Where It Starts. Break down what the BPS is and why young people should care — how choices on jobs, education, healthcare, business, and taxes begin to take shape."
+          "article_slug": "inside-kenya-national-infrastructure-fund",
+          "article_summary": "One article for the full National Infrastructure Fund YouTube series — purpose, law, and citizen questions — without inventing fund sizes or project lists.",
+          "text": "This module pairs one article with the full Budget Ndio Story YouTube series Inside Kenya's National Infrastructure Fund (Parts 1–4). The channel frames a practical question: the Fund is now law — but do young people really understand what that means?\n\nWHAT THE SERIES COVERS\nParts 1–4 walk through the Fund as a public-finance story: why a dedicated infrastructure financing vehicle exists, how it sits beside the ordinary budget, and what accountability looks like once the law is in place. Watch in order using the four YouTube links on this module.\n\nWHAT THIS COMPANION DOES (AND DOES NOT DO)\nIt explains the idea of a national infrastructure fund: mobilising and channeling resources for strategic infrastructure (commonly discussed around transport, energy, water, and digital connectivity) with a longer horizon than a single annual budget cycle.\nIt does not invent the Fund's capitalisation, project pipeline, or disbursement totals. Those figures must come from the statute, regulations, Treasury or Fund publications, and audited reports when you need to cite amounts.\n\nWHY A FUND — NOT ONLY THE ANNUAL BUDGET\nAnnual budgets fund many things at once. Large infrastructure often needs project preparation, patient capital, and clearer ring-fencing. A dedicated fund is one policy answer to that gap. Whether it delivers depends on governance, project selection, transparency, and follow-through — themes the series probes in conversation form.\n\nCITIZEN QUESTIONS TO KEEP WHILE YOU WATCH\n- What does the law actually authorise the Fund to do?\n- Who governs it, and what must be published?\n- How do Fund projects relate to the ordinary development budget?\n- How will young people see benefits (jobs, services, connectivity) versus debt or opportunity cost?\n- Where is the public list of projects and progress reports?\n\nHOW TO USE THIS MODULE\n1. Watch Part 1 → Part 2 → Part 3 → Part 4.\n2. When a guest or host mentions a figure, treat the official document as the source of record.\n3. Use the series to build vocabulary for public participation and oversight — not as a substitute for audited numbers.\n\nWatch the series with the YouTube links above."
         }
       ],
       "author": null,

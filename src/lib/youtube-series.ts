@@ -131,3 +131,22 @@ export const BPS_YOUTUBE_URLS = [
 ] as const;
 
 export const BPS_MODULE_SLUG = "budget-policy-statement";
+
+/** County Budget series — Part 1 → 3 watch order. */
+export const COUNTY_BUDGET_YOUTUBE_URLS = [
+  "https://www.youtube.com/watch?v=3wfk09c_xNQ",
+  "https://www.youtube.com/watch?v=abDYZ5xjQgo",
+  "https://www.youtube.com/watch?v=oHuImiQvvN0",
+] as const;
+
+export const COUNTY_BUDGET_MODULE_SLUG = "county-budget";
+
+/** National Infrastructure Fund series — Part 1 → 4 watch order. */
+export const KNIF_YOUTUBE_URLS = [
+  "https://www.youtube.com/watch?v=A_EXLueEMlk",
+  "https://www.youtube.com/watch?v=jLZe3iPSMfc",
+  "https://www.youtube.com/watch?v=KeNCrx6krl0",
+  "https://www.youtube.com/watch?v=SfPwtqUFyj4",
+] as const;
+
+export const KNIF_MODULE_SLUG = "kenya-national-infrastructure-fund";
