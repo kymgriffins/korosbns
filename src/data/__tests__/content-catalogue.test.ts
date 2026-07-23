@@ -43,6 +43,7 @@ describe("contentData catalogue (JSON-only)", () => {
     const result = await contentData.articles.fetch();
     expect(learnHubApi.articles).not.toHaveBeenCalled();
     expect(result.length).toBe(learnArticlesFallback.results.length);
+    expect(result[0]?.thumbnail_url).toMatch(/i\.ytimg\.com\/vi\//);
   });
 
   it("articles.fetchBySlug never calls citizenApi.getArticle", async () => {

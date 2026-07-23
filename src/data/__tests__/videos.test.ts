@@ -54,6 +54,15 @@ describe("videoData (JSON-only YouTube catalogue)", () => {
     expect(titles).toMatch(/Infrastructure Fund/i);
   });
 
+  it("attaches YouTube hqdefault thumbnail_url on each item", async () => {
+    const result = await videoData.fetch();
+    for (const item of result) {
+      expect(item.thumbnail_url).toMatch(
+        new RegExp(`i\\.ytimg\\.com/vi/${item.id}/hqdefault\\.jpg`),
+      );
+    }
+  });
+
   it("getGroupedSeries builds series from JSON catalogue", () => {
     const series = getGroupedSeries();
     expect(series.length).toBeGreaterThanOrEqual(3);

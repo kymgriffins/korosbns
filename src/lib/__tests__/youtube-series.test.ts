@@ -7,6 +7,8 @@ import {
   normalizeSeriesTitle,
   partLetterFromTitle,
   partNumberFromTitle,
+  youtubeThumbnailUrl,
+  youtubeVideoIdFromUrl,
 } from "@/lib/youtube-series";
 import { ensureBpsYoutube, applyPartUrlsToSteps } from "@/lib/civic-module-content";
 import type { CivicModule, ChapterStep } from "@/types/learn";
@@ -155,5 +157,12 @@ describe("ensureBpsYoutube", () => {
     expect(next.steps[0].youtube_url).toContain("aaaaaaaaaaa");
     expect(next.steps[1].youtube_url).toContain("bbbbbbbbbbb");
     expect(next.steps[2].youtube_url).toContain("ccccccccccc");
+  });
+
+  it("youtubeThumbnailUrl builds hqdefault from watch URL or bare id", () => {
+    expect(youtubeThumbnailUrl("https://www.youtube.com/watch?v=Ed9lP0-komE")).toBe(
+      "https://i.ytimg.com/vi/Ed9lP0-komE/hqdefault.jpg",
+    );
+    expect(youtubeVideoIdFromUrl("Ed9lP0-komE")).toBe("Ed9lP0-komE");
   });
 });

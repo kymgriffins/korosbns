@@ -1,7 +1,7 @@
 {
   "provenance": {
-    "source": "seeds/learning_statutory_shells.json",
-    "note": "Read-only offline articles when learn/articles API is unreachable.",
+    "source": "seeds/learning_statutory_shells.json + YouTube bloodline thumbs",
+    "note": "Read-only offline articles when learn/articles API is unreachable. thumbnail_url uses YouTube hqdefault where a series maps cleanly.",
     "level": "fallback"
   },
   "count": 3,
@@ -13,6 +13,7 @@
       "summary": "How the BPS sets national and county budget priorities under the PFM Act.",
       "slug": "intro-budget-policy-statement",
       "url": "/learn/articles/intro-budget-policy-statement",
+      "thumbnail_url": "https://i.ytimg.com/vi/Ed9lP0-komE/hqdefault.jpg",
       "difficulty": "beginner",
       "tags": [{ "name": "BPS", "slug": "bps" }]
     },
@@ -23,6 +24,7 @@
       "summary": "CFSP role in the county budget cycle.",
       "slug": "intro-county-fiscal-strategy-paper",
       "url": "/learn/articles/intro-county-fiscal-strategy-paper",
+      "thumbnail_url": "https://i.ytimg.com/vi/3wfk09c_xNQ/hqdefault.jpg",
       "difficulty": "beginner",
       "tags": [{ "name": "CFSP", "slug": "cfsp" }]
     },
@@ -33,6 +35,7 @@
       "summary": "How nationally raised revenue is split between national and county governments.",
       "slug": "intro-division-of-revenue-bill",
       "url": "/learn/articles/intro-division-of-revenue-bill",
+      "thumbnail_url": "https://i.ytimg.com/vi/oHuImiQvvN0/hqdefault.jpg",
       "difficulty": "beginner",
       "tags": [{ "name": "DoRB", "slug": "dorb" }]
     }

@@ -150,3 +150,32 @@ export const KNIF_YOUTUBE_URLS = [
 ] as const;
 
 export const KNIF_MODULE_SLUG = "kenya-national-infrastructure-fund";
+
+/** Extract a YouTube video id from a watch URL, youtu.be link, or bare id. */
+export function youtubeVideoIdFromUrl(urlOrId: string): string | null {
+  const raw = urlOrId.trim();
+  if (!raw) return null;
+  if (/^[\w-]{11}$/.test(raw)) return raw;
+  try {
+    const u = new URL(raw);
+    if (u.hostname.includes("youtu.be")) {
+      const id = u.pathname.replace(/^\//, "").split("/")[0];
+      return id && /^[\w-]{11}$/.test(id) ? id : null;
+    }
+    const v = u.searchParams.get("v");
+    if (v && /^[\w-]{11}$/.test(v)) return v;
+    const embed = u.pathname.match(/\/(?:embed|shorts)\/([\w-]{11})/);
+    return embed?.[1] ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/** Standard YouTube thumbnail (hqdefault) for cards and module covers. */
+export function youtubeThumbnailUrl(
+  urlOrId: string,
+  quality: "hqdefault" | "mqdefault" | "sddefault" | "maxresdefault" = "hqdefault",
+): string | null {
+  const id = youtubeVideoIdFromUrl(urlOrId);
+  return id ? `https://i.ytimg.com/vi/${id}/${quality}.jpg` : null;
+}

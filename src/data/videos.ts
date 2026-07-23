@@ -3,6 +3,7 @@ import {
   BPS_YOUTUBE_URLS,
   currentYoutubeSeries,
   groupYoutubeSeries,
+  youtubeThumbnailUrl,
   type SeriesVideo,
   type YouTubeSeries,
 } from "@/lib/youtube-series";
@@ -120,13 +121,15 @@ function toLearnHubItems(videos: YouTubeVideo[]): LearnHubItem[] {
   return videos.map((v) => ({
     id: v.videoId,
     title: v.title,
-    description: v.description,
     summary: v.description,
     url: v.url,
     published_at: v.publishedAt,
     source: "youtube" as const,
     content_type: "video" as const,
     channel_id: v.channelId,
+    thumbnail_url:
+      youtubeThumbnailUrl(v.videoId) ??
+      `https://i.ytimg.com/vi/${v.videoId}/hqdefault.jpg`,
   }));
 }
 
