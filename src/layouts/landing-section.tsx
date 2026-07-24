@@ -76,7 +76,7 @@ export function LandingSectionHeader({
   return (
     <div
       className={cn(
-        "mb-12 flex flex-col gap-6 md:mb-16",
+        "mb-8 flex flex-col gap-4 md:mb-10",
         isCentered
           ? "items-center text-center"
           : "items-start justify-between md:flex-row md:items-end",

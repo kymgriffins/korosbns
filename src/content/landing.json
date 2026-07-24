@@ -50,13 +50,17 @@
     "titleBefore": "Meet the minds behind the",
     "titleHighlight": "story",
     "titleAfter": ".",
-    "description": "A dedicated group of researchers, storytellers, and tech innovators working together to bring transparency to Kenya's public budgets."
+    "description": "A dedicated group of researchers, storytellers, and tech innovators working together to bring transparency to Kenya's public budgets.",
+    "seeMoreLabel": "See more",
+    "seeMoreHref": "/about"
   },
   "gallery": {
     "titleBefore": "Documenting the",
     "titleHighlight": "Movement",
     "titleAfter": "in the field.",
     "description": "Moments from civic workshops, town halls, and community engagements across the country.",
+    "seeMoreLabel": "See more",
+    "seeMoreHref": "/bns-project",
     "projectNames": [
       "Budget Literacy Programme",
       "County Budget Tracking",
@@ -69,6 +73,8 @@
     "titleHighlight": "numbers",
     "description": "Commissioned podcasts, documentaries, animations, and campaigns for governments, funders, and CSOs — every project helps fund Kenya's leading youth budget platform.",
     "highlight": "Every BNS Studios commission is double impact: content built for your audience, and a proportion of our profit funding BNS Foundation's civic mission permanently.",
+    "seeMoreLabel": "See more",
+    "seeMoreHref": "/bns-studio",
     "primaryCta": { "label": "Commission BNS Studios", "href": "/bns-studio#booking" },
     "secondaryCta": { "label": "View Portfolio", "href": "/bns-studio#portfolio" }
   },
@@ -76,7 +82,9 @@
     "eyebrow": "Stay connected",
     "titleBefore": "Find us where",
     "titleHighlight": "you already scroll",
-    "description": "Hover a channel to see the handle and what we post — then follow in one click."
+    "description": "Hover a channel to see the handle and what we post — then follow in one click.",
+    "seeMoreLabel": "See more",
+    "seeMoreHref": "https://www.tiktok.com/@budget.ndio.story"
   },
   "navigation": {
     "desktop": [

@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   LandingContent,
   LandingSection,
 } from "@/layouts/landing-section";
+import {
+  LandingSeeMore,
+  LandingSectionCta,
+} from "@/components/marketing/landing-see-more";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import {
   PROGRAMMES,
@@ -18,27 +20,20 @@ import {
 } from "@/content";
 import { GsapReveal, GsapStaggerReveal } from "@/motion/gsap";
 import { cn } from "@/utils";
+import { Plus } from "lucide-react";
 
 const strip = landingContent.programmesStrip;
 
 export function ProgrammesSection() {
   return (
-    <LandingSection id="programmes" spacing="default" aria-labelledby="home-programmes-heading">
-      <GsapReveal className="mb-10 flex flex-col gap-6 sm:mb-12 sm:flex-row sm:items-end sm:justify-between">
-        <div className="max-w-2xl">
-          <h2 id="home-programmes-heading" className={T.sectionTitle}>
-            {strip.title}
-          </h2>
-          <p className={cn(T.lead, "mt-3 max-w-xl text-base text-foreground/75")}>
-            {strip.description}
-          </p>
-        </div>
-        <Button asChild variant="outline" className="w-fit gap-2 rounded-full">
-          <Link href={strip.seeMoreHref}>
-            {strip.seeMoreLabel}
-            <ArrowRight className="size-4" aria-hidden />
-          </Link>
-        </Button>
+    <LandingSection id="programmes" aria-labelledby="home-programmes-heading">
+      <GsapReveal className="mb-8 max-w-2xl md:mb-10">
+        <h2 id="home-programmes-heading" className={T.sectionTitle}>
+          {strip.title}
+        </h2>
+        <p className={cn(T.lead, "mt-3 max-w-xl text-base text-foreground/75")}>
+          {strip.description}
+        </p>
       </GsapReveal>
 
       <GsapStaggerReveal className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
@@ -58,7 +53,7 @@ export function ProgrammesSection() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/25 to-transparent" />
 
-            <span className="absolute right-3 top-3 flex size-9 items-center justify-center rounded-full border border-border/40 bg-background/85 text-foreground backdrop-blur-sm transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+            <span className="absolute right-3 top-3 flex size-9 items-center justify-center rounded-full border border-border/40 bg-background/85 text-foreground transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
               <Plus className="size-4" aria-hidden />
               <span className="sr-only">Open {programme.name}</span>
             </span>
@@ -75,13 +70,10 @@ export function ProgrammesSection() {
         ))}
       </GsapStaggerReveal>
 
-      <LandingContent className="mt-8 md:mt-10">
-        <Button asChild size="lg" className={cn(T.btnPrimary, "gap-2 rounded-full")}>
-          <Link href={strip.exploreHref}>
-            {strip.exploreLabel}
-            <ArrowRight className="size-4" aria-hidden />
-          </Link>
-        </Button>
+      <LandingContent>
+        <LandingSectionCta>
+          <LandingSeeMore href={strip.seeMoreHref} label={strip.seeMoreLabel} />
+        </LandingSectionCta>
       </LandingContent>
     </LandingSection>
   );

@@ -2,15 +2,16 @@
 
 import React from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { cloudinaryUrl, landingContent } from "@/content";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import {
   LandingContent,
   LandingSection,
 } from "@/layouts/landing-section";
+import {
+  LandingSeeMore,
+  LandingSectionCta,
+} from "@/components/marketing/landing-see-more";
 import { GsapReveal, GsapStaggerReveal } from "@/motion/gsap";
 import { cn } from "@/utils";
 
@@ -19,16 +20,13 @@ const intro = landingContent.storyIntro;
 export default function LandingYoutube() {
   return (
     <LandingSection>
-      <div className="mb-10 grid items-center gap-8 md:mb-14 md:grid-cols-12 md:gap-10">
+      <div className="mb-8 grid items-center gap-8 md:mb-10 md:grid-cols-12 md:gap-10">
         <GsapReveal className="flex flex-col gap-5 md:col-span-5">
           <h2 className={T.sectionTitle}>{intro.title}</h2>
           <p className={cn(T.lead, "max-w-md text-base text-foreground/75")}>{intro.body}</p>
-          <Button asChild className={cn(T.btnPrimary, "w-fit gap-2 rounded-full")}>
-            <Link href={intro.cta.href}>
-              {intro.cta.label}
-              <ArrowRight className="size-4" aria-hidden />
-            </Link>
-          </Button>
+          <LandingSectionCta className="mt-0 md:mt-2">
+            <LandingSeeMore href={intro.cta.href} label="See more" />
+          </LandingSectionCta>
         </GsapReveal>
         <GsapStaggerReveal className="grid grid-cols-2 gap-3 md:col-span-7 md:gap-4">
           {intro.images.map((image) => (

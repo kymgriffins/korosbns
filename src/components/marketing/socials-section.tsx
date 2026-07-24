@@ -12,6 +12,10 @@ import {
   LandingSectionHeader,
 } from "@/layouts/landing-section";
 import {
+  LandingSeeMore,
+  LandingSectionCta,
+} from "@/components/marketing/landing-see-more";
+import {
   FacebookIcon,
   InstagramIcon,
   LinkedInIcon,
@@ -219,6 +223,14 @@ export function SocialsSection() {
             );
           })}
         </ul>
+
+        <LandingSectionCta>
+          <LandingSeeMore
+            href={landingContent.socials.seeMoreHref}
+            label={landingContent.socials.seeMoreLabel}
+            external
+          />
+        </LandingSectionCta>
       </LandingContent>
     </LandingSection>
   );

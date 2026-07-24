@@ -2,15 +2,17 @@
 
 import React from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
-import { Routes } from "@/constants/routes";
 import { landingContent } from "@/content";
 import {
   LandingContent,
   LandingSection,
   LandingSectionHeader,
 } from "@/layouts/landing-section";
+import {
+  LandingSeeMore,
+  LandingSectionCta,
+} from "@/components/marketing/landing-see-more";
 import { Marquee } from "@/components/ui/marquee";
 import { useCohortImages } from "@/hooks/use-marketing";
 
@@ -50,15 +52,19 @@ const CloudinaryGallery = () => {
       />
 
       <LandingContent>
-        <Link href={Routes.Projects} className="block cursor-pointer" aria-label="View our projects">
-          <div className="py-4">
-            <Marquee pauseOnHover className="py-4 [--duration:70s] [--gap:1.5rem]">
-              {images.map((image, i) => (
-                <GalleryItem key={i} image={image} index={i} />
-              ))}
-            </Marquee>
-          </div>
-        </Link>
+        <div className="py-2">
+          <Marquee pauseOnHover className="py-2 [--duration:70s] [--gap:1.5rem]">
+            {images.map((image, i) => (
+              <GalleryItem key={i} image={image} index={i} />
+            ))}
+          </Marquee>
+        </div>
+        <LandingSectionCta>
+          <LandingSeeMore
+            href={landingContent.gallery.seeMoreHref}
+            label={landingContent.gallery.seeMoreLabel}
+          />
+        </LandingSectionCta>
       </LandingContent>
     </LandingSection>
   );
