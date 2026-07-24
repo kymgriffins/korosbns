@@ -13,35 +13,40 @@ import {
   PROGRAMMES,
   PROGRAMME_CARD_BLURBS,
   programmeHref,
-} from "@/constants/programmes-content";
+  landingContent,
+  type ProgrammeSlug,
+} from "@/content";
+import { GsapReveal, GsapStaggerReveal } from "@/motion/gsap";
 import { cn } from "@/utils";
 
-/** Homepage programmes — tall image cards (Mason “top places” rhythm), BNS colors. */
+const strip = landingContent.programmesStrip;
+
 export function ProgrammesSection() {
   return (
     <LandingSection id="programmes" spacing="default" aria-labelledby="home-programmes-heading">
-      <div className="mb-10 flex flex-col gap-6 sm:mb-12 sm:flex-row sm:items-end sm:justify-between">
+      <GsapReveal className="mb-10 flex flex-col gap-6 sm:mb-12 sm:flex-row sm:items-end sm:justify-between">
         <div className="max-w-2xl">
           <h2 id="home-programmes-heading" className={T.sectionTitle}>
-            Our programmes
+            {strip.title}
           </h2>
           <p className={cn(T.lead, "mt-3 max-w-xl text-base text-foreground/75")}>
-            National tracking, county depth, newsroom capacity, and commissioned storytelling.
+            {strip.description}
           </p>
         </div>
         <Button asChild variant="outline" className="w-fit gap-2 rounded-full">
-          <Link href="/programmes">
-            See more
+          <Link href={strip.seeMoreHref}>
+            {strip.seeMoreLabel}
             <ArrowRight className="size-4" aria-hidden />
           </Link>
         </Button>
-      </div>
+      </GsapReveal>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
+      <GsapStaggerReveal className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
         {PROGRAMMES.map((programme) => (
           <Link
             key={programme.slug}
-            href={programmeHref(programme.slug)}
+            data-gsap-item
+            href={programmeHref(programme.slug as ProgrammeSlug)}
             className="group relative block aspect-[3/4] overflow-hidden rounded-[1.5rem] border border-border/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <Image
@@ -63,17 +68,17 @@ export function ProgrammesSection() {
                 {programme.name}
               </p>
               <p className="font-heading text-base font-semibold leading-snug tracking-tight text-foreground md:text-lg">
-                {PROGRAMME_CARD_BLURBS[programme.slug]}
+                {PROGRAMME_CARD_BLURBS[programme.slug as ProgrammeSlug]}
               </p>
             </div>
           </Link>
         ))}
-      </div>
+      </GsapStaggerReveal>
 
       <LandingContent className="mt-8 md:mt-10">
         <Button asChild size="lg" className={cn(T.btnPrimary, "gap-2 rounded-full")}>
-          <Link href="/programmes">
-            Explore our programmes
+          <Link href={strip.exploreHref}>
+            {strip.exploreLabel}
             <ArrowRight className="size-4" aria-hidden />
           </Link>
         </Button>

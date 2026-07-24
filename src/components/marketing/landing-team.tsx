@@ -7,6 +7,7 @@ import Image from "next/image";
 import { team } from "@/data/org";
 import { slugifyName } from "@/lib/team";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
+import { landingContent } from "@/content";
 import {
   LandingSection,
   LandingSectionHeader,
@@ -17,14 +18,15 @@ export default function LandingTeam() {
   return (
     <LandingSection>
       <LandingSectionHeader
-        eyebrow="Our Team"
+        eyebrow={landingContent.team.eyebrow}
         title={
           <>
-            Meet the minds behind the{" "}
-            <span className={T.highlight}>story</span>.
+            {landingContent.team.titleBefore}{" "}
+            <span className={T.highlight}>{landingContent.team.titleHighlight}</span>
+            {landingContent.team.titleAfter}
           </>
         }
-        description="A dedicated group of researchers, storytellers, and tech innovators working together to bring transparency to Kenya's public budgets."
+        description={landingContent.team.description}
       />
 
       <div className="hidden gap-x-8 gap-y-16 md:grid md:grid-cols-2 lg:grid-cols-3">

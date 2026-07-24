@@ -1,0 +1,52 @@
+{
+  "platforms": {
+    "x": {
+      "handle": "@budgetndiostory",
+      "stat": "Policy takes & threads",
+      "cta": "Follow",
+      "accent": "bg-foreground text-background"
+    },
+    "twitter": {
+      "handle": "@budgetndiostory",
+      "stat": "Policy takes & threads",
+      "cta": "Follow",
+      "accent": "bg-foreground text-background"
+    },
+    "youtube": {
+      "handle": "@budgetndiostory",
+      "stat": "Budget Mtaani series",
+      "cta": "Subscribe",
+      "accent": "bg-red-600 text-white"
+    },
+    "tiktok": {
+      "handle": "@budget.ndio.story",
+      "stat": "1.2M+ content views",
+      "cta": "Follow",
+      "accent": "bg-foreground text-background"
+    },
+    "instagram": {
+      "handle": "@budgetndiostory",
+      "stat": "Reels & field stories",
+      "cta": "Follow",
+      "accent": "bg-gradient-to-br from-amber-500 via-rose-500 to-violet-600 text-white"
+    },
+    "linkedin": {
+      "handle": "Budget Ndio Story",
+      "stat": "Org & partnership news",
+      "cta": "Follow",
+      "accent": "bg-sky-700 text-white"
+    },
+    "facebook": {
+      "handle": "Budget Ndio Story",
+      "stat": "Community updates",
+      "cta": "Follow",
+      "accent": "bg-blue-600 text-white"
+    },
+    "whatsapp": {
+      "handle": "+254 790 631 623",
+      "stat": "Usually replies in minutes",
+      "cta": "Chat",
+      "accent": "bg-emerald-600 text-white"
+    }
+  }
+}

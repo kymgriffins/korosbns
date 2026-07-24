@@ -1,0 +1,90 @@
+{
+  "hero": {
+    "brand": "Budget Ndio Story",
+    "headlineBefore": "Follow the budget.",
+    "headlineHighlight": "Find the story.",
+    "body": "Kenya's public money moves fast, and mostly out of sight. We track it — nationally and in four select counties — and turn it into stories, data, and training young Kenyans, journalists, government, and partners actually use.",
+    "primaryCta": { "label": "Explore our programmes", "href": "/programmes" },
+    "secondaryCta": { "label": "Open reports", "href": "/reports" },
+    "videoSrcKey": "heroLandingVideoMp4"
+  },
+  "storyIntro": {
+    "title": "Find the story near you",
+    "body": "See how we translate complex fiscal policy into stories that meet youth where they are — from town halls to short-form feeds.",
+    "cta": { "label": "Get started", "href": "/learn" },
+    "images": [
+      {
+        "src": "/images/towwnhallmay/129A3912.jpg",
+        "alt": "Budget Ndio Story town hall engagement"
+      },
+      {
+        "src": "/images/cohort1 groundworks/129A3964.jpg",
+        "alt": "Youth cohort during a Budget Ndio Story session"
+      }
+    ],
+    "seriesLabelBefore": "The Budget",
+    "seriesHighlight": "Mtaani",
+    "seriesLabelAfter": "Series",
+    "youtubeTitle": "Budget Ndio Story overview",
+    "youtubeEmbedKey": "youtubeEmbed"
+  },
+  "programmesStrip": {
+    "title": "Our programmes",
+    "description": "National tracking, county depth, newsroom capacity, and commissioned storytelling.",
+    "seeMoreLabel": "See more",
+    "seeMoreHref": "/programmes",
+    "exploreLabel": "Explore our programmes",
+    "exploreHref": "/programmes"
+  },
+  "tiktok": {
+    "eyebrow": "Short-form civic media",
+    "titleBefore": "County budgets,",
+    "titleHighlight": "made to scroll",
+    "titleAfter": ".",
+    "description": "Snackable explainers that meet youth where they scroll — turning county fiscal data into stories anyone can share.",
+    "profileUrl": "https://www.tiktok.com/@budget.ndio.story",
+    "profileCta": "Follow @budget.ndio.story"
+  },
+  "team": {
+    "eyebrow": "Our Team",
+    "titleBefore": "Meet the minds behind the",
+    "titleHighlight": "story",
+    "titleAfter": ".",
+    "description": "A dedicated group of researchers, storytellers, and tech innovators working together to bring transparency to Kenya's public budgets."
+  },
+  "gallery": {
+    "titleBefore": "Documenting the",
+    "titleHighlight": "Movement",
+    "titleAfter": "in the field.",
+    "description": "Moments from civic workshops, town halls, and community engagements across the country.",
+    "projectNames": [
+      "Budget Literacy Programme",
+      "County Budget Tracking",
+      "Public Participation Hub"
+    ]
+  },
+  "studioStrip": {
+    "eyebrow": "BNS Studios",
+    "titleBefore": "The stories behind the",
+    "titleHighlight": "numbers",
+    "description": "Commissioned podcasts, documentaries, animations, and campaigns for governments, funders, and CSOs — every project helps fund Kenya's leading youth budget platform.",
+    "highlight": "Every BNS Studios commission is double impact: content built for your audience, and a proportion of our profit funding BNS Foundation's civic mission permanently.",
+    "primaryCta": { "label": "Commission BNS Studios", "href": "/bns-studio#booking" },
+    "secondaryCta": { "label": "View Portfolio", "href": "/bns-studio#portfolio" }
+  },
+  "socials": {
+    "eyebrow": "Stay connected",
+    "titleBefore": "Find us where",
+    "titleHighlight": "you already scroll",
+    "description": "Hover a channel to see the handle and what we post — then follow in one click."
+  },
+  "navigation": {
+    "desktop": [
+      { "label": "Programmes", "href": "/programmes" },
+      { "label": "Learn", "href": "/learn" },
+      { "label": "Reports", "href": "/reports" },
+      { "label": "Studios", "href": "/bns-studio" },
+      { "label": "About", "href": "/about" }
+    ]
+  }
+}

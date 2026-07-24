@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,8 +15,8 @@ import {
   PROGRAMMES_LANDING,
   PROGRAMME_CARD_BLURBS,
   programmeHref,
-} from "@/constants/programmes-content";
-import { fadeInUp, staggerContainer } from "@/motion/variants";
+} from "@/content";
+import { GsapHeroChoreography, GsapReveal, GsapStaggerReveal } from "@/motion/gsap";
 import { cn } from "@/utils";
 
 export function ProgrammesLanding() {
@@ -25,56 +24,50 @@ export function ProgrammesLanding() {
 
   return (
     <div className="w-full bg-background">
-      <section className="relative min-h-[70svh] overflow-hidden border-b border-border/40 md:min-h-[85svh]">
-        <Image
-          src={featured.visual.hero}
-          alt={featured.visual.heroAlt}
-          fill
-          priority
-          className="object-cover"
-          sizes="100vw"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/75 to-background/25" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/50 to-transparent" />
-
-        <div className="relative z-10 mx-auto flex min-h-[70svh] max-w-[1400px] flex-col justify-end px-6 pb-14 pt-28 md:min-h-[85svh] md:px-16 md:pb-20">
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            animate="visible"
-            className="flex max-w-3xl flex-col gap-5"
-          >
-            <motion.p variants={fadeInUp} className="font-heading text-sm font-semibold text-foreground">
-              Programmes
-            </motion.p>
-            <motion.h1 variants={fadeInUp} className={cn(T.heroTitle, "max-w-3xl")}>
-              {PROGRAMMES_LANDING.headline}
-            </motion.h1>
-            <motion.p variants={fadeInUp} className={cn(T.lead, "max-w-2xl text-base text-foreground/80 md:text-lg")}>
-              {PROGRAMMES_LANDING.body}
-            </motion.p>
-            <motion.div variants={fadeInUp}>
-              <Button asChild size="lg" className={cn(T.btnPrimary, "gap-2")}>
-                <a href={PROGRAMMES_LANDING.exploreCta.href}>
-                  {PROGRAMMES_LANDING.exploreCta.label}
-                  <ArrowRight className="size-4" aria-hidden />
-                </a>
-              </Button>
-            </motion.div>
-          </motion.div>
+      <GsapHeroChoreography className="relative min-h-[70svh] overflow-hidden border-b border-border/40 md:min-h-[85svh]">
+        <div data-gsap-hero-media className="absolute inset-0">
+          <Image
+            src={featured.visual.hero}
+            alt={featured.visual.heroAlt}
+            fill
+            priority
+            className="object-cover"
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/75 to-background/25" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/50 to-transparent" />
         </div>
-      </section>
+
+        <div
+          data-gsap-hero-content
+          className="relative z-10 mx-auto flex min-h-[70svh] max-w-[1400px] flex-col justify-end gap-5 px-6 pb-14 pt-28 md:min-h-[85svh] md:px-16 md:pb-20"
+        >
+          <p className="font-heading text-sm font-semibold text-foreground">Programmes</p>
+          <h1 className={cn(T.heroTitle, "max-w-3xl")}>{PROGRAMMES_LANDING.headline}</h1>
+          <p className={cn(T.lead, "max-w-2xl text-base text-foreground/80 md:text-lg")}>
+            {PROGRAMMES_LANDING.body}
+          </p>
+          <div>
+            <Button asChild size="lg" className={cn(T.btnPrimary, "gap-2")}>
+              <a href={PROGRAMMES_LANDING.exploreCta.href}>
+                {PROGRAMMES_LANDING.exploreCta.label}
+                <ArrowRight className="size-4" aria-hidden />
+              </a>
+            </Button>
+          </div>
+        </div>
+      </GsapHeroChoreography>
 
       <LandingSection id="programmes" spacing="loose" aria-labelledby="programmes-grid-heading">
-        <LandingContent className="mb-10 max-w-2xl md:mb-14">
+        <GsapReveal className="mb-10 max-w-2xl md:mb-14">
           <h2 id="programmes-grid-heading" className={T.sectionTitle}>
             Four programmes. One civic ecosystem.
           </h2>
-        </LandingContent>
+        </GsapReveal>
 
-        {/* Featured mosaic: large + stacked gallery */}
-        <div className="grid gap-4 md:grid-cols-12 md:gap-5">
+        <GsapStaggerReveal className="grid gap-4 md:grid-cols-12 md:gap-5">
           <Link
+            data-gsap-item
             href={programmeHref(featured.slug)}
             className="group relative min-h-[22rem] overflow-hidden rounded-2xl border border-border/50 md:col-span-7 md:min-h-[32rem]"
           >
@@ -96,7 +89,7 @@ export function ProgrammesLanding() {
             </div>
           </Link>
 
-          <div className="grid gap-4 md:col-span-5 md:grid-rows-3">
+          <div data-gsap-item className="grid gap-4 md:col-span-5 md:grid-rows-3">
             {featured.visual.gallery.map((shot) => (
               <div
                 key={shot.src}
@@ -112,7 +105,7 @@ export function ProgrammesLanding() {
               </div>
             ))}
           </div>
-        </div>
+        </GsapStaggerReveal>
 
         <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-b border-border/40 pb-10 md:mt-8 md:pb-14">
           <p className="max-w-xl text-sm leading-relaxed text-foreground/70 md:text-base">
@@ -126,76 +119,76 @@ export function ProgrammesLanding() {
           </Button>
         </div>
 
-        {/* Remaining programmes as cinematic rows */}
         <div className="mt-10 flex flex-col gap-12 md:mt-16 md:gap-20">
           {rest.map((programme, index) => {
             const imageLeft = index % 2 === 0;
             return (
-              <article
+              <GsapReveal
                 key={programme.slug}
+                as="article"
                 id={programme.slug}
                 className="grid items-center gap-6 md:grid-cols-12 md:gap-10"
               >
-                <Link
-                  href={programmeHref(programme.slug)}
-                  className={cn(
-                    "group relative min-h-[18rem] overflow-hidden rounded-2xl border border-border/50 md:col-span-6 md:min-h-[26rem]",
-                    !imageLeft && "md:order-2",
-                  )}
-                >
-                  <Image
-                    src={programme.visual.hero}
-                    alt={programme.visual.heroAlt}
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-80" />
-                </Link>
+                  <Link
+                    href={programmeHref(programme.slug)}
+                    className={cn(
+                      "group relative min-h-[18rem] overflow-hidden rounded-2xl border border-border/50 md:col-span-6 md:min-h-[26rem]",
+                      !imageLeft && "md:order-2",
+                    )}
+                  >
+                    <Image
+                      src={programme.visual.hero}
+                      alt={programme.visual.heroAlt}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-80" />
+                  </Link>
 
-                <div
-                  className={cn(
-                    "flex flex-col gap-4 md:col-span-6",
-                    !imageLeft && "md:order-1",
-                  )}
-                >
-                  <p className="text-sm font-medium text-muted-foreground">{programme.eyebrow}</p>
-                  <p className="font-heading text-sm font-semibold text-foreground">{programme.name}</p>
-                  <h2 className="font-heading text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-                    {programme.headline}
-                  </h2>
-                  <p className="text-sm leading-relaxed text-foreground/70 md:text-base">
-                    {PROGRAMME_CARD_BLURBS[programme.slug]}
-                  </p>
-                  <p className="text-sm leading-relaxed text-muted-foreground md:text-base">
-                    {programme.body.slice(0, 220)}…
-                  </p>
-                  <div className="grid grid-cols-3 gap-2 pt-2">
-                    {programme.visual.gallery.map((shot) => (
-                      <div
-                        key={shot.src}
-                        className="relative aspect-[4/3] overflow-hidden rounded-xl border border-border/40"
-                      >
-                        <Image
-                          src={shot.src}
-                          alt={shot.alt}
-                          fill
-                          className="object-cover"
-                          sizes="120px"
-                        />
-                      </div>
-                    ))}
+                  <div
+                    className={cn(
+                      "flex flex-col gap-4 md:col-span-6",
+                      !imageLeft && "md:order-1",
+                    )}
+                  >
+                    <p className="text-sm font-medium text-muted-foreground">{programme.eyebrow}</p>
+                    <p className="font-heading text-sm font-semibold text-foreground">{programme.name}</p>
+                    <h2 className="font-heading text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+                      {programme.headline}
+                    </h2>
+                    <p className="text-sm leading-relaxed text-foreground/70 md:text-base">
+                      {PROGRAMME_CARD_BLURBS[programme.slug]}
+                    </p>
+                    <p className="text-sm leading-relaxed text-muted-foreground md:text-base">
+                      {programme.body.slice(0, 220)}…
+                    </p>
+                    <div className="grid grid-cols-3 gap-2 pt-2">
+                      {programme.visual.gallery.map((shot) => (
+                        <div
+                          key={shot.src}
+                          className="relative aspect-[4/3] overflow-hidden rounded-xl border border-border/40"
+                        >
+                          <Image
+                            src={shot.src}
+                            alt={shot.alt}
+                            fill
+                            className="object-cover"
+                            sizes="120px"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                    <div className="pt-2">
+                      <Button asChild variant="outline" className="gap-2">
+                        <Link href={programmeHref(programme.slug)}>
+                          Explore {programme.name}
+                          <ArrowRight className="size-4" aria-hidden />
+                        </Link>
+                      </Button>
+                    </div>
                   </div>
-                  <div className="pt-2">
-                    <Button asChild variant="outline" className="gap-2">
-                      <Link href={programmeHref(programme.slug)}>
-                        Explore {programme.name}
-                        <ArrowRight className="size-4" aria-hidden />
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
-              </article>
+              </GsapReveal>
             );
           })}
         </div>

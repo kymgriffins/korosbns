@@ -19,8 +19,7 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:report": "playwright show-report e2e/report --port 9324",
     "test:e2e:api": "cd ../bnske.budgetndiostory.org && python -m pytest core/tests/test_citizen_e2e_journeys.py -v --tb=short -o addopts=",
-    "e2e:prepare": "cd ../bnske.budgetndiostory.org && python manage.py bootstrap_e2e_personas",
-    "prepare": "husky"
+    "e2e:prepare": "cd ../bnske.budgetndiostory.org && python manage.py bootstrap_e2e_personas"
   },
   "dependencies": {
     "@base-ui/react": "1.6.0",
@@ -29,6 +28,7 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@fullcalendar/react": "7.0.0",
+    "@gsap/react": "^2.1.2",
     "@hookform/resolvers": "^5.2.2",
     "@iconify/react": "^6.0.2",
     "@number-flow/react": "^0.6.0",

@@ -24,10 +24,8 @@ import {
 import { cn } from "@/utils";
 import { Marquee } from "@/components/ui/marquee";
 import { getFeaturedTikTokVideos, likeTikTokVideo } from "@/lib/tiktok-service";
-// import { LandingTikTokLiveMarquee } from "@/components/marketing/landing-tiktok-live-marquee";
 import type { TikTokVideoApi } from "@/lib/api-client";
-
-const TIKTOK_PROFILE = "https://www.tiktok.com/@budget.ndio.story";
+import { landingContent } from "@/content";
 
 export default function LandingTikTokVideo() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -165,25 +163,26 @@ export default function LandingTikTokVideo() {
       <div className="grid items-stretch gap-8 lg:grid-cols-2 lg:gap-6 lg:min-h-[min(72vh,760px)] xl:gap-8">
         <LandingContent className="flex h-full flex-col justify-center lg:pr-4 xl:pr-8">
           <LandingSectionHeader
-            eyebrow="Short-form civic media"
+            eyebrow={landingContent.tiktok.eyebrow}
             title={
               <>
-                County budgets,{" "}
-                <span className={T.highlight}>made to scroll</span>.
+                {landingContent.tiktok.titleBefore}{" "}
+                <span className={T.highlight}>{landingContent.tiktok.titleHighlight}</span>
+                {landingContent.tiktok.titleAfter}
               </>
             }
-            description="Snackable explainers that meet youth where they scroll — turning county fiscal data into stories anyone can share."
+            description={landingContent.tiktok.description}
             className="mb-0 md:mb-0"
           />
 
           <div className="mt-8 flex flex-wrap gap-4 lg:mt-10">
             <Link
-              href={TIKTOK_PROFILE}
+              href={landingContent.tiktok.profileUrl}
               target="_blank"
               rel="noopener noreferrer"
               className={T.btnOutline}
             >
-              Follow @budget.ndio.story
+              {landingContent.tiktok.profileCta}
             </Link>
           </div>
         </LandingContent>
@@ -245,7 +244,7 @@ export default function LandingTikTokVideo() {
                       <span className="text-[10px] font-medium">{formatCount(likeCount)}</span>
                     </button>
                     <a
-                      href={TIKTOK_PROFILE}
+                      href={landingContent.tiktok.profileUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="pointer-events-auto flex flex-col items-center gap-1 text-white/90 transition-transform hover:scale-105 no-underline"

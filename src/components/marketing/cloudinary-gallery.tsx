@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import { Routes } from "@/constants/routes";
+import { landingContent } from "@/content";
 import {
   LandingContent,
   LandingSection,
@@ -13,11 +14,7 @@ import {
 import { Marquee } from "@/components/ui/marquee";
 import { useCohortImages } from "@/hooks/use-marketing";
 
-const PROJECT_NAMES = [
-  "Budget Literacy Programme",
-  "County Budget Tracking",
-  "Public Participation Hub",
-] as const;
+const PROJECT_NAMES = landingContent.gallery.projectNames;
 
 interface CloudinaryImage {
   src: string;
@@ -44,11 +41,12 @@ const CloudinaryGallery = () => {
       <LandingSectionHeader
         title={
           <>
-            Documenting the{" "}
-            <span className={T.highlight}>Movement</span> in the field.
+            {landingContent.gallery.titleBefore}{" "}
+            <span className={T.highlight}>{landingContent.gallery.titleHighlight}</span>{" "}
+            {landingContent.gallery.titleAfter}
           </>
         }
-        description="Moments from civic workshops, town halls, and community engagements across the country."
+        description={landingContent.gallery.description}
       />
 
       <LandingContent>

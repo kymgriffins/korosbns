@@ -1,0 +1,39 @@
+{
+  "hero": {
+    "eyebrow": "About",
+    "title": "Youth-led transparency for Kenya's budget",
+    "body": "Budget Ndio Story transforms how Kenyans understand national and county budgets — turning complex fiscal documents into stories, data, and training people actually use.",
+    "image": "/images/stakeholders/129A4113.jpg",
+    "imageAlt": "Budget Ndio Story team and partners in a stakeholder session"
+  },
+  "mission": {
+    "title": "Our mission",
+    "body": "Every young Kenyan has the right to understand how public money is spent. We break down Budget Policy Statements and related fiscal documents into digestible content — so a new generation can hold leaders accountable and participate meaningfully in governance."
+  },
+  "photoStrip": {
+    "alt": "Budget Ndio Story community and civic engagement",
+    "images": [
+      "/images/towwnhallmay/129A3863.jpg",
+      "/images/cohort1 groundworks/129A3964.jpg",
+      "/images/towwnhallmay/129A4056.jpg",
+      "/images/stakeholders/129A4164.jpg"
+    ]
+  },
+  "openCall": {
+    "id": "join-us",
+    "title": "Open call: young creatives wanted (18–34)",
+    "body": "Space for young creators who care about civic storytelling and public accountability. If you are ready to shape how Kenya talks about budgets, join our creative network.",
+    "roles": [
+      "Podcast hosts",
+      "Storytellers",
+      "Animators",
+      "Videographers",
+      "Photographers",
+      "Script writers",
+      "Social media managers",
+      "Facilitators"
+    ],
+    "primaryCta": { "label": "Contact us to apply", "href": "/contact" },
+    "secondaryCta": { "label": "Partner with BNS", "href": "/contact?intent=partner" }
+  }
+}

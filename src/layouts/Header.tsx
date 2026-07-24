@@ -13,15 +13,10 @@ import { useAuth } from "@/contexts/auth-context";
 import { ThemeToggle } from "@/components/marketing/theme-toggle";
 import { motion, AnimatePresence } from "motion/react";
 import { navbarEnter } from "@/motion/variants";
+import { landingContent } from "@/content";
 import { cn } from "@/utils";
 
-const DESKTOP_NAV = [
-  { label: "Programmes", href: Routes.Programmes },
-  { label: "Learn", href: Routes.Learn },
-  { label: "Reports", href: Routes.Reports },
-  { label: "Studios", href: Routes.BNSStudio },
-  { label: "About", href: Routes.About },
-] as const;
+const DESKTOP_NAV = landingContent.navigation.desktop;
 
 export function Header() {
   const { isLoggedIn, loading: authLoading, user } = useAuth();

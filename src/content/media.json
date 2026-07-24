@@ -1,0 +1,33 @@
+{
+  "media": {
+    "main": "/images/media/main%20media%20image.jpg",
+    "productionA": "/images/media/129A3905.jpg",
+    "productionB": "/images/media/129A4039.jpg",
+    "hall": "/images/hall/129A4248.jpg"
+  },
+  "community": {
+    "forumA": "/images/towwnhallmay/129A3863.jpg",
+    "forumB": "/images/towwnhallmay/129A3912.jpg",
+    "forumC": "/images/towwnhallmay/129A3923.jpg",
+    "forumD": "/images/towwnhallmay/129A4056.jpg",
+    "forumE": "/images/towwnhallmay/129A4094.jpg",
+    "cohortA": "/images/cohort1 groundworks/129A3964.jpg",
+    "cohortB": "/images/cohort1 groundworks/129A3987.jpg",
+    "stakeholdersA": "/images/stakeholders/129A4094.jpg",
+    "stakeholdersB": "/images/stakeholders/129A4113.jpg",
+    "stakeholdersC": "/images/stakeholders/129A4164.jpg"
+  },
+  "cloudinary": {
+    "heroBaraza": "https://res.cloudinary.com/dn8lut2fc/image/upload/f_auto,q_auto,w_1920/v1/events/citizen-baraza",
+    "heroLandingVideoMp4": "https://res.cloudinary.com/dn8lut2fc/video/upload/f_auto,q_auto/Untitled_design_maph6q.mp4",
+    "youtubeEmbed": "https://www.youtube-nocookie.com/embed/Ed9lP0-komE?rel=0&modestbranding=1",
+    "countyBudgetSocialVideo": "https://res.cloudinary.com/dn8lut2fc/video/upload/v1781717049/county_budget_socials_new_chdopa.mp4"
+  },
+  "partnerships": {
+    "nationalTreasuryWorkshop": "/images/towwnhallmay/theman.jpg",
+    "bpsSession": "/images/towwnhallmay/129A3912.jpg",
+    "parliamentEngagement": "/images/towwnhallmay/129A3923.jpg",
+    "fiscalFramework": "/images/towwnhallmay/129A4056.jpg",
+    "countyAssemblyHearing": "/images/towwnhallmay/129A4094.jpg"
+  }
+}
