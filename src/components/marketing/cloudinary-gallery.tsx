@@ -42,14 +42,13 @@ const CloudinaryGallery = () => {
   return (
     <LandingSection className="overflow-x-hidden" innerClassName="mb-0">
       <LandingSectionHeader
-        eyebrow="Visual Impact"
         title={
           <>
             Documenting the{" "}
             <span className={T.highlight}>Movement</span> in the field.
           </>
         }
-        description="Explore moments from our civic workshops, townhalls, and community engagements across the country as we empower citizens to take action."
+        description="Moments from civic workshops, town halls, and community engagements across the country."
       />
 
       <LandingContent>
@@ -81,8 +80,8 @@ const GalleryItem = ({ image, index }: { image: CloudinaryImage; index: number }
         className="object-cover transition-transform duration-700 hover:scale-105"
         sizes="(max-width: 768px) 260px, 350px"
       />
-      <div className="absolute inset-0 flex items-end bg-black/50 p-6">
-        <p className="text-sm font-semibold text-white">{projectName}</p>
+      <div className="absolute inset-0 flex items-end bg-gradient-to-t from-background/90 via-background/20 to-transparent p-6">
+        <p className="text-sm font-semibold text-foreground">{projectName}</p>
       </div>
     </div>
   );

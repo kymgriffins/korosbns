@@ -7,110 +7,77 @@ import { Button } from "@/components/ui/button";
 import {
   fadeInUp,
   staggerContainer,
-  staggerFast,
 } from "@/motion/variants";
 import { CLOUDINARY_HERO_LANDING_VIDEO_MP4 } from "@/constants/cloudinary";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
-import {
-  LANDING_SECTION_SURFACE,
-  SECTION_SHELL_INNER,
-} from "@/layouts/landing-section";
+import { SECTION_SHELL_INNER } from "@/layouts/landing-section";
 import { cn } from "@/utils";
 
+/**
+ * Landing hero — Mason-inspired composition (large rounded media + overlay type)
+ * with Budget Ndio Story branding colors and copy.
+ */
 export default function LandingHero() {
   return (
     <section
-      className={cn(
-        "relative w-full overflow-hidden text-foreground",
-        LANDING_SECTION_SURFACE,
-        "border-t-0",
-      )}
+      className="relative w-full overflow-hidden border-b border-border/40 bg-background text-foreground"
       aria-labelledby="landing-hero-heading"
     >
-      <div className={SECTION_SHELL_INNER}>
+      <div className={cn(SECTION_SHELL_INNER, "pb-10 pt-4 md:pb-14 md:pt-6")}>
         <motion.div
           variants={staggerContainer}
           initial="hidden"
           animate="visible"
-          className="grid w-full gap-8 pb-10 pt-4 md:gap-12 md:pb-14 md:pt-6 lg:grid-cols-2 lg:items-end"
+          className="relative min-h-[70svh] overflow-hidden rounded-[1.75rem] border border-border/50 md:min-h-[78svh] md:rounded-[2rem]"
         >
-          <motion.div variants={fadeInUp} className="flex flex-col gap-5">
-            <span className={cn(T.eyebrow, "mb-0")}>Budget Ndio Story</span>
-            <h1 id="landing-hero-heading" className={cn(T.heroTitle, "max-w-xl")}>
-              Follow the budget.{" "}
-              <span className={T.highlight}>Find the story.</span>
-            </h1>
-          </motion.div>
-
-          <motion.div variants={fadeInUp} className="flex flex-col gap-6 lg:gap-8">
-            <p className={cn(T.lead, "max-w-xl md:max-w-none")}>
-              Kenya&apos;s public money moves fast, and mostly out of sight. We track it —
-              nationally and in four select counties — and turn it into stories, data,
-              and training young Kenyans, journalists, government, and partners actually use.
-            </p>
-            <div className="hidden flex-col gap-4 lg:flex sm:flex-row sm:items-center">
-              <Link href="/programmes" className="w-full sm:w-auto">
-                <Button
-                  size="lg"
-                  variant="white"
-                  className={T.btnHero}
-                >
-                  Explore our programmes
-                  <ArrowRight className="size-5" />
-                </Button>
-              </Link>
-            </div>
-          </motion.div>
-        </motion.div>
-
-        <motion.div
-          variants={staggerFast}
-          initial="hidden"
-          animate="visible"
-          className="w-full pb-12 md:pb-16"
-        >
-          <motion.div
-            variants={fadeInUp}
-            className="relative aspect-video w-full min-h-[12rem] overflow-hidden rounded-2xl border border-border/60 md:rounded-3xl group cursor-pointer"
-            onClick={() => window.open("https://www.youtube.com/@BudgetNdioStory", "_blank")}
-            whileHover={{ scale: 1.02 }}
-            transition={{ duration: 0.3 }}
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            onError={(e) => {
+              console.warn("Hero video failed to load:", e);
+            }}
+            className="absolute inset-0 size-full object-cover"
           >
-            <div className="absolute inset-0 z-10 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
-              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center gap-2">
-                <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center">
-                  <ArrowRight className="w-8 h-8 text-black" />
-                </div>
-                <span className="text-white text-sm font-bold">Watch on YouTube</span>
-              </div>
-            </div>
+            <source src={CLOUDINARY_HERO_LANDING_VIDEO_MP4} type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/55 to-background/10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/25 to-transparent" />
 
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              onError={(e) => {
-                console.warn("Hero video failed to load:", e);
-              }}
-              className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
-            >
-              <source src={CLOUDINARY_HERO_LANDING_VIDEO_MP4} type="video/mp4" />
-            </video>
-          </motion.div>
+          <div className="relative z-10 flex min-h-[70svh] flex-col justify-end gap-6 p-6 md:min-h-[78svh] md:p-10 lg:p-14">
+            <motion.div variants={fadeInUp} className="flex max-w-2xl flex-col gap-4">
+              <span className="font-heading text-sm font-semibold text-foreground">
+                Budget Ndio Story
+              </span>
+              <h1 id="landing-hero-heading" className={cn(T.heroTitle, "max-w-2xl text-foreground")}>
+                Follow the budget.{" "}
+                <span className={T.highlight}>Find the story.</span>
+              </h1>
+              <p className="max-w-lg text-sm leading-relaxed text-foreground/80 md:text-base">
+                Kenya&apos;s public money moves fast, and mostly out of sight. We track it —
+                nationally and in four select counties — and turn it into stories, data,
+                and training young Kenyans, journalists, government, and partners actually use.
+              </p>
+            </motion.div>
 
-          <motion.div variants={fadeInUp} className="mt-6 lg:hidden">
-            <Link href="/programmes" className="block w-full">
-              <Button
-                size="lg"
-                variant="white"
-                className={T.btnHero}
-              >
-                Explore our programmes
-                <ArrowRight className="size-5" />
+            <motion.div variants={fadeInUp} className="flex flex-wrap items-center gap-3">
+              <Button asChild size="lg" variant="white" className={cn(T.btnHero, "rounded-full")}>
+                <Link href="/programmes">
+                  Explore our programmes
+                  <ArrowRight className="size-5" aria-hidden />
+                </Link>
               </Button>
-            </Link>
-          </motion.div>
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                className="rounded-full border-foreground/20 bg-background/70 backdrop-blur-sm"
+              >
+                <Link href="/reports">Open reports</Link>
+              </Button>
+            </motion.div>
+          </div>
         </motion.div>
       </div>
     </section>

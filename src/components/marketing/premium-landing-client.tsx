@@ -106,10 +106,10 @@ export default function PremiumLandingClient() {
   return (
     <>
       <LandingHero />
-      <LandingTikTokVideo />
       <LandingYoutube />
-      <PartnersMarquee />
       <ProgrammesSection />
+      <LandingTikTokVideo />
+      <PartnersMarquee />
       <LandingTeam />
       <TimelineSection />
       {SHOW_SERVICES_SECTION ? <ServicesSection data={bnsServices} /> : null}
