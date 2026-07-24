@@ -10,6 +10,7 @@ export const Routes = {
     Home: "/",
     
     Research: "/about",
+    About: "/about",
     Careers: "/about",
     FAQ: "/faq",
     Contact: "/contact",

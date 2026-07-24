@@ -3,6 +3,7 @@
 import { MenuIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { Routes } from "@/constants";
 import MobileMenu from "@/components/marketing/mobile-menu";
 import { Button } from "@/components/ui/button";
@@ -12,9 +13,20 @@ import { useAuth } from "@/contexts/auth-context";
 import { ThemeToggle } from "@/components/marketing/theme-toggle";
 import { motion, AnimatePresence } from "motion/react";
 import { navbarEnter } from "@/motion/variants";
+import { cn } from "@/utils";
+
+const DESKTOP_NAV = [
+  { label: "Programmes", href: Routes.Programmes },
+  { label: "Learn", href: Routes.Learn },
+  { label: "Reports", href: Routes.Reports },
+  { label: "Studios", href: Routes.BNSStudio },
+  { label: "About", href: Routes.About },
+] as const;
+
 export function Header() {
   const { isLoggedIn, loading: authLoading, user } = useAuth();
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const pathname = usePathname();
   const ref = useClickOutside(() => setIsOpen(false));
 
   useEffect(() => {
@@ -50,7 +62,7 @@ export function Header() {
         className="fixed top-0 inset-x-0 z-[100] border-b border-border/50 bg-background/95 backdrop-blur-md"
       >
         <div className="relative mx-auto flex h-12 max-w-[1400px] items-center justify-between gap-4 px-4 md:h-16 md:px-16 lg:px-6">
-          <div className="flex min-w-0 shrink-0 items-center">
+          <div className="flex min-w-0 items-center gap-8">
             <Link href={Routes.Home} className="group flex shrink-0 items-center gap-2">
               <motion.div
                 whileHover={{ scale: 1.04 }}
@@ -66,6 +78,26 @@ export function Header() {
                 />
               </motion.div>
             </Link>
+
+            <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
+              {DESKTOP_NAV.map((item) => {
+                const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      "rounded-md px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                      active
+                        ? "text-foreground"
+                        : "text-muted-foreground hover:text-foreground",
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </nav>
           </div>
 
           <div className="flex shrink-0 items-center gap-2 md:gap-3">
@@ -88,9 +120,10 @@ export function Header() {
             )}
             <motion.div
               whileTap={{ scale: 0.92 }}
-            transition={{ duration: 0.3, ease: [0.25, 0.4, 0, 1] }}
-          >
-            <Button
+              transition={{ duration: 0.3, ease: [0.25, 0.4, 0, 1] }}
+              className="lg:hidden"
+            >
+              <Button
                 size="icon-sm"
                 variant="ghost"
                 onClick={() => setIsOpen((prev) => !prev)}
@@ -125,7 +158,6 @@ export function Header() {
               </Button>
             </motion.div>
           </div>
-
         </div>
       </motion.header>
 

@@ -1,7 +1,12 @@
 /**
- * Programmes & BNS Studios website copy — SEO, body, CTAs.
+ * Programmes & BNS Studios website copy — SEO, body, CTAs, visual assets.
  * Tone: Connect/Mashinani/Wanahabari = youth + public; Studios = funders/gov/CSOs.
  */
+
+import {
+  BNS_COMMUNITY_IMAGES,
+  BNS_MEDIA_IMAGES,
+} from "@/constants/bns-media-images";
 
 export type ProgrammeSlug = "connect" | "mashinani" | "wanahabari-lab" | "studios";
 
@@ -9,6 +14,12 @@ export type ProgrammeCta = {
   label: string;
   href: string;
   note?: string;
+};
+
+export type ProgrammeVisual = {
+  hero: string;
+  heroAlt: string;
+  gallery: { src: string; alt: string }[];
 };
 
 export type ProgrammeBlock = {
@@ -22,6 +33,7 @@ export type ProgrammeBlock = {
   seoTitle: string;
   seoDescription: string;
   cta: ProgrammeCta;
+  visual: ProgrammeVisual;
 };
 
 export const PROGRAMMES_LANDING = {
@@ -54,6 +66,24 @@ export const PROGRAMMES: ProgrammeBlock[] = [
       href: "/contact?intent=budget-tracker",
       note: "Tracker application / Academy onboarding",
     },
+    visual: {
+      hero: BNS_COMMUNITY_IMAGES.cohortA,
+      heroAlt: "Youth cohort at a Budget Ndio Story groundworks session",
+      gallery: [
+        {
+          src: BNS_COMMUNITY_IMAGES.cohortB,
+          alt: "Young Budget Trackers in discussion during cohort training",
+        },
+        {
+          src: BNS_COMMUNITY_IMAGES.stakeholdersA,
+          alt: "Stakeholder session on national budget tracking",
+        },
+        {
+          src: BNS_COMMUNITY_IMAGES.forumE,
+          alt: "Public forum documenting national budget conversations",
+        },
+      ],
+    },
   },
   {
     slug: "mashinani",
@@ -71,6 +101,24 @@ export const PROGRAMMES: ProgrammeBlock[] = [
       href: "/reports",
       note: "County scorecards / live trackers for Kakamega, Kilifi, Nakuru, Wajir",
     },
+    visual: {
+      hero: BNS_COMMUNITY_IMAGES.forumA,
+      heroAlt: "County town hall forum on budget accountability",
+      gallery: [
+        {
+          src: BNS_COMMUNITY_IMAGES.forumB,
+          alt: "Community members engaging county budget discussions",
+        },
+        {
+          src: BNS_COMMUNITY_IMAGES.forumC,
+          alt: "Mashinani session with citizens and civic partners",
+        },
+        {
+          src: BNS_COMMUNITY_IMAGES.forumD,
+          alt: "Embedded county engagement during the budget cycle",
+        },
+      ],
+    },
   },
   {
     slug: "wanahabari-lab",
@@ -87,6 +135,24 @@ export const PROGRAMMES: ProgrammeBlock[] = [
       label: "Apply for the next Lab",
       href: "/contact?intent=wanahabari-lab",
       note: "Lab application with cohort dates and eligibility",
+    },
+    visual: {
+      hero: BNS_COMMUNITY_IMAGES.stakeholdersB,
+      heroAlt: "Journalists and creators in a Wanahabari Lab training session",
+      gallery: [
+        {
+          src: BNS_COMMUNITY_IMAGES.stakeholdersC,
+          alt: "Media practitioners reviewing budget evidence together",
+        },
+        {
+          src: BNS_MEDIA_IMAGES.productionB,
+          alt: "Creator-led budget storytelling in production",
+        },
+        {
+          src: BNS_COMMUNITY_IMAGES.forumC,
+          alt: "Lab participants at a civic media convening",
+        },
+      ],
     },
   },
   {
@@ -107,6 +173,24 @@ export const PROGRAMMES: ProgrammeBlock[] = [
       label: "Commission BNS Studios",
       href: "/bns-studio#booking",
       note: "Studios services / commissioning — info@budgetndiostory.org",
+    },
+    visual: {
+      hero: BNS_MEDIA_IMAGES.main,
+      heroAlt: "BNS Studios production capturing civic storytelling on set",
+      gallery: [
+        {
+          src: BNS_MEDIA_IMAGES.productionA,
+          alt: "On-set videography for a BNS Studios commission",
+        },
+        {
+          src: BNS_MEDIA_IMAGES.hall,
+          alt: "Hall event coverage by BNS Studios",
+        },
+        {
+          src: BNS_MEDIA_IMAGES.productionB,
+          alt: "Studio portrait and interview session",
+        },
+      ],
     },
   },
 ];

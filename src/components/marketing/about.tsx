@@ -1,197 +1,134 @@
 "use client";
 
-import { motion } from 'motion/react';
-import Wrapper from '@/components/global/wrapper';
-import SectionBadge from '@/components/ui/section-badge';
-import Link from 'next/link';
-import { ease } from '@/motion/variants';
-import TeamSection from './team-section';
-import ConsortiumFoundersSection from './consortium-founders-section';
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  LandingContent,
+  LandingSection,
+} from "@/layouts/landing-section";
+import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
+import { BNS_COMMUNITY_IMAGES } from "@/constants/bns-media-images";
+import { PROGRAMMES_CLOSING } from "@/constants/programmes-content";
+import TeamSection from "@/components/marketing/team-section";
+import ConsortiumFoundersSection from "@/components/marketing/consortium-founders-section";
+import { cn } from "@/utils";
 
+const openCallRoles = [
+  "Podcast hosts",
+  "Storytellers",
+  "Animators",
+  "Videographers",
+  "Photographers",
+  "Script writers",
+  "Social media managers",
+  "Facilitators",
+];
+
+/** About — Civic Studio system: image-led, no glow orbs, same landing grammar. */
 const About = () => {
-    const openCallRoles = [
-        "Podcast hosts",
-        "Storytellers",
-        "Animators",
-        "Videographers",
-        "Photographers",
-        "Script writers",
-        "Social media managers",
-        "Facilitators",
-    ];
+  return (
+    <div className="w-full bg-background">
+      <section className="relative min-h-[70svh] overflow-hidden border-b border-border/40 md:min-h-[85svh]">
+        <Image
+          src={BNS_COMMUNITY_IMAGES.stakeholdersB}
+          alt="Budget Ndio Story team and partners in a stakeholder session"
+          fill
+          priority
+          className="object-cover"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/75 to-background/30" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/45 to-transparent" />
 
-    return (
-        <section className="relative w-full min-h-screen bg-background overflow-hidden">
-            <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-                <motion.div
-                    animate={{ scale: [1, 1.2, 1], rotate: [0, 180, 360] }}
-                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                    className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[120px] rounded-full"
-                />
-                <motion.div
-                    animate={{ scale: [1.2, 1, 1.2], rotate: [360, 180, 0] }}
-                    transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                    className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-teal-500/10 blur-[120px] rounded-full"
-                />
-            </div>
+        <div className="relative z-10 mx-auto flex min-h-[70svh] max-w-[1400px] flex-col justify-end px-6 pb-14 pt-28 md:min-h-[85svh] md:px-16 md:pb-20">
+          <div className="flex max-w-3xl flex-col gap-5">
+            <p className="font-heading text-sm font-semibold text-foreground">About</p>
+            <h1 className={cn(T.heroTitle, "max-w-3xl")}>
+              Youth-led transparency for Kenya&apos;s budget
+            </h1>
+            <p className={cn(T.lead, "max-w-2xl text-base text-foreground/80 md:text-lg")}>
+              Budget Ndio Story transforms how Kenyans understand national and county budgets —
+              turning complex fiscal documents into stories, data, and training people actually use.
+            </p>
+          </div>
+        </div>
+      </section>
 
-            <Wrapper className="relative z-10 py-12 lg:py-20">
-                {/* Header */}
-                <div className="text-center max-w-3xl mx-auto mb-16 lg:mb-24">
-                    <SectionBadge title="About Us" />
-                    <motion.h1
-                        initial={{ opacity: 0, y: 24 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6, delay: 0.1, ease: ease.expo }}
-                        className="text-3xl md:text-5xl lg:text-6xl font-bold font-heading tracking-tight mt-6"
-                    >
-                        Youth-led transparency for Kenya&apos;s budget
-                    </motion.h1>
-                    <motion.p
-                        initial={{ opacity: 0, y: 24 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6, delay: 0.2, ease: ease.expo }}
-                        className="text-base md:text-lg text-muted-foreground mt-6 leading-relaxed"
-                    >
-                        Budget Ndio Story (BNS) is a youth-led organization transforming how Kenyans understand national and county budgets. We turn complex fiscal documents into simple stories, visuals, and actionable steps.
-                    </motion.p>
-                </div>
+      <LandingSection spacing="default">
+        <LandingContent className="grid gap-10 md:grid-cols-12 md:gap-12">
+          <div className="md:col-span-5">
+            <h2 className={T.sectionTitle}>Our mission</h2>
+          </div>
+          <div className="md:col-span-7">
+            <p className="text-base leading-relaxed text-foreground/80 md:text-lg">
+              Every young Kenyan has the right to understand how public money is spent. We break
+              down Budget Policy Statements and related fiscal documents into digestible content —
+              so a new generation can hold leaders accountable and participate meaningfully in
+              governance.
+            </p>
+          </div>
+        </LandingContent>
+      </LandingSection>
 
-                {/* Mission Section */}
-                <motion.div
-                    initial={{ opacity: 0, y: 32 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, ease: ease.expo }}
-                    className="max-w-4xl mx-auto mb-20 lg:mb-32"
-                >
-                    <div className="rounded-2xl lg:rounded-3xl p-8 lg:p-12 bg-card border border-border shadow-sm">
-                        <h2 className="text-2xl lg:text-3xl font-bold mb-6">Our Mission</h2>
-                        <p className="text-base lg:text-lg text-muted-foreground leading-relaxed">
-                            We believe every young Kenyan has the right to understand how public money is spent. By breaking down the Budget Policy Statement and other fiscal documents into digestible content, we empower a new generation to hold leaders accountable and participate meaningfully in governance.
-                        </p>
-                    </div>
-                </motion.div>
-            </Wrapper>
+      <div className="mx-auto grid max-w-[1400px] grid-cols-2 gap-2 px-6 pb-6 md:grid-cols-4 md:gap-3 md:px-16">
+        {[
+          BNS_COMMUNITY_IMAGES.forumA,
+          BNS_COMMUNITY_IMAGES.cohortA,
+          BNS_COMMUNITY_IMAGES.forumD,
+          BNS_COMMUNITY_IMAGES.stakeholdersC,
+        ].map((src) => (
+          <div
+            key={src}
+            className="relative aspect-[4/3] overflow-hidden rounded-xl border border-border/40 md:rounded-2xl"
+          >
+            <Image
+              src={src}
+              alt="Budget Ndio Story community and civic engagement"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 50vw, 25vw"
+            />
+          </div>
+        ))}
+      </div>
 
-            <ConsortiumFoundersSection />
+      <ConsortiumFoundersSection />
+      <TeamSection />
 
-            {/* Team Section - Full width */}
-            <TeamSection />
-
-            <Wrapper className="relative z-10">
-                <motion.div
-                    id="join-us"
-                    initial={{ opacity: 0, y: 32 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, ease: ease.expo }}
-                    className="max-w-5xl mx-auto mb-16 lg:mb-24"
-                >
-                    <div className="rounded-2xl lg:rounded-3xl p-8 lg:p-12 bg-card border border-border shadow-sm">
-                        <div className="max-w-3xl">
-                            <SectionBadge title="Join Us" />
-                            <h2 className="text-2xl lg:text-3xl font-bold mt-5">Open call: young creatives wanted (18-34)</h2>
-                            <p className="text-muted-foreground mt-4 leading-relaxed">
-                                Budget Ndio Story is opening space for young creators who care about civic storytelling and public accountability.
-                                If you are between 18 and 34 and ready to shape how Kenya talks about budgets, apply to join our creative network.
-                            </p>
-                        </div>
-
-                        <div className="mt-7 flex flex-wrap gap-3">
-                            {openCallRoles.map((role) => (
-                                <span
-                                    key={role}
-                                    className="rounded-full border border-border bg-background px-4 py-2 text-sm font-medium"
-                                >
-                                    {role}
-                                </span>
-                            ))}
-                        </div>
-
-                        <div className="mt-8 flex flex-wrap items-center gap-3">
-                            <Link
-                                href="/contact"
-                                className="inline-flex items-center justify-center rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 shadow-sm"
-                            >
-                                Contact us to apply
-                            </Link>
-                            <Link
-                                href="/contact"
-                                className="inline-flex items-center justify-center rounded-xl border border-border px-5 py-3 text-sm font-semibold transition-colors hover:border-primary/40 hover:text-primary"
-                            >
-                                Go to contact page
-                            </Link>
-                        </div>
-                    </div>
-                </motion.div>
-
-                {/* Impact Stats */}
-                <motion.div
-                    initial={{ opacity: 0, y: 32 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, ease: ease.expo }}
-                    className="max-w-5xl mx-auto"
-                >
-                    <div className="rounded-2xl lg:rounded-3xl p-8 lg:p-12 bg-card border border-border shadow-sm">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-                            <div>
-                                <h2 className="text-2xl lg:text-3xl font-bold mb-4">Our Impact</h2>
-                                <p className="text-muted-foreground leading-relaxed">
-                                    Since our inception, we&apos;ve reached thousands of young Kenyans with clear, actionable budget information. Our content spans social media, interactive learning modules, and detailed research analyses.
-                                </p>
-                            </div>
-                            <div className="grid grid-cols-2 gap-6">
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    whileInView={{ opacity: 1, scale: 1 }}
-                                    viewport={{ once: true }}
-                                    transition={{ duration: 0.4, delay: 0.1 }}
-                                    className="text-center p-6 rounded-xl bg-card border border-border"
-                                >
-                                    <div className="text-4xl lg:text-5xl font-bold text-primary">20k+</div>
-                                    <div className="text-sm text-muted-foreground mt-2">Youth reached</div>
-                                </motion.div>
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    whileInView={{ opacity: 1, scale: 1 }}
-                                    viewport={{ once: true }}
-                                    transition={{ duration: 0.4, delay: 0.2 }}
-                                    className="text-center p-6 rounded-xl bg-card border border-border"
-                                >
-                                    <div className="text-4xl lg:text-5xl font-bold text-primary">1.2M+</div>
-                                    <div className="text-sm text-muted-foreground mt-2">Content views</div>
-                                </motion.div>
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    whileInView={{ opacity: 1, scale: 1 }}
-                                    viewport={{ once: true }}
-                                    transition={{ duration: 0.4, delay: 0.3 }}
-                                    className="text-center p-6 rounded-xl bg-card border border-border"
-                                >
-                                    <div className="text-4xl lg:text-5xl font-bold text-primary">47</div>
-                                    <div className="text-sm text-muted-foreground mt-2">Counties covered</div>
-                                </motion.div>
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    whileInView={{ opacity: 1, scale: 1 }}
-                                    viewport={{ once: true }}
-                                    transition={{ duration: 0.4, delay: 0.4 }}
-                                    className="text-center p-6 rounded-xl bg-card border border-border"
-                                >
-                                    <div className="text-4xl lg:text-5xl font-bold text-primary">5+</div>
-                                    <div className="text-sm text-muted-foreground mt-2">Years of work</div>
-                                </motion.div>
-                            </div>
-                        </div>
-                    </div>
-                </motion.div>
-            </Wrapper>
-        </section>
-    );
+      <LandingSection spacing="default" className="bg-muted/30" id="join-us">
+        <LandingContent className="flex max-w-3xl flex-col gap-5">
+          <h2 className={T.sectionTitle}>Open call: young creatives wanted (18–34)</h2>
+          <p className={cn(T.lead, "max-w-2xl text-base text-foreground/75")}>
+            Space for young creators who care about civic storytelling and public accountability.
+            If you are ready to shape how Kenya talks about budgets, join our creative network.
+          </p>
+          <ul className="flex flex-wrap gap-2">
+            {openCallRoles.map((role) => (
+              <li
+                key={role}
+                className="rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium text-foreground"
+              >
+                {role}
+              </li>
+            ))}
+          </ul>
+          <div className="flex flex-wrap gap-3 pt-2">
+            <Button asChild size="lg" className={cn(T.btnPrimary, "gap-2")}>
+              <Link href="/contact">
+                Contact us to apply
+                <ArrowRight className="size-4" aria-hidden />
+              </Link>
+            </Button>
+            <Button asChild size="lg" variant="outline">
+              <Link href={PROGRAMMES_CLOSING.cta.href}>Partner with BNS</Link>
+            </Button>
+          </div>
+        </LandingContent>
+      </LandingSection>
+    </div>
+  );
 };
 
 export default About;

@@ -71,7 +71,7 @@ select:focus-visible,
 
 /* Landing page typography tokens — use across all premium-landing sections */
 .landing-eyebrow {
-  @apply mb-4 block text-xs font-semibold text-primary;
+  @apply mb-4 block text-sm font-semibold text-foreground;
 }
 
 .landing-eyebrow-muted {
@@ -83,7 +83,7 @@ select:focus-visible,
 }
 
 .landing-lead {
-  @apply max-w-sm text-sm leading-relaxed text-foreground/60;
+  @apply max-w-xl text-base leading-relaxed text-foreground/75;
 }
 
 .landing-body {
