@@ -18,14 +18,14 @@ export function BNSStudioSection() {
   return (
     <LandingSection className="overflow-hidden">
       <LandingSectionHeader
-        eyebrow="BNS Studio"
+        eyebrow="BNS Studios"
         title={
           <>
-            Professional media production for{" "}
-            <span className={T.highlight}>storytellers</span>
+            The stories behind the{" "}
+            <span className={T.highlight}>numbers</span>
           </>
         }
-        description="From budget explainers to brand documentaries — videography, photography, studio rental, and post-production. Revenue supports our civic education mission."
+        description="Commissioned podcasts, documentaries, animations, and campaigns for governments, funders, and CSOs — every project helps fund Kenya's leading youth budget platform."
       />
 
       <LandingContent>
@@ -94,7 +94,7 @@ export function BNSStudioSection() {
                   >
                     <Image
                       src={service.image}
-                      alt={`${service.name} — BNS Studio production`}
+                      alt={`${service.name} — BNS Studios production`}
                       fill
                       className="object-cover"
                       style={{ objectPosition: service.imagePosition ?? "center" }}
@@ -110,13 +110,14 @@ export function BNSStudioSection() {
         <div className="border-x border-border px-6 py-10 md:px-10 md:py-14 lg:px-16 lg:py-16">
           <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 text-center">
             <p className={T.body}>
-              Book a shoot, browse recent work, or request a quote — every production
-              booking helps fund civic storytelling across Kenya.
+              Every BNS Studios commission is double impact: content built for your
+              audience, and a proportion of our profit funding BNS Foundation&apos;s
+              civic mission permanently.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4">
               <Link href="/bns-studio#booking">
                 <Button size="lg" className={cn(T.btnPrimary, "gap-2")}>
-                  Book a Shoot <ArrowRight className="size-4" />
+                  Commission BNS Studios <ArrowRight className="size-4" />
                 </Button>
               </Link>
               <Link href="/bns-studio#portfolio">

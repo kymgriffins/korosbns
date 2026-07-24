@@ -106,7 +106,7 @@ export function StudioServices() {
                   >
                     <Image
                       src={service.image}
-                      alt={`${service.name} — BNS Studio`}
+                      alt={`${service.name} — BNS Studios`}
                       fill
                       className="object-cover"
                       style={{ objectPosition: service.imagePosition ?? "center" }}

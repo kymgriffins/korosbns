@@ -6,11 +6,13 @@ import { StudioServices } from "@/components/studio/StudioServices";
 import { StudioPortfolio } from "@/components/studio/StudioPortfolio";
 import { StudioBookingForm } from "@/components/studio/StudioBookingForm";
 import { StudioContactCTA } from "@/components/studio/StudioContactCTA";
+import { getProgramme } from "@/constants/programmes-content";
+
+const studios = getProgramme("studios")!;
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "BNS Studio | Budget Ndio Story",
-  description:
-    "BNS Studio offers professional videography, photography, studio rental, and post-production services in Kenya. Every booking supports civic education. Book a shoot today.",
+  title: studios.seoTitle,
+  description: studios.seoDescription,
   path: "/bns-studio",
 });
 
@@ -23,12 +25,10 @@ export default function BNSStudioPage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "LocalBusiness",
-            name: "BNS Studio",
-            description:
-              "Professional videography, photography, studio rental, and post-production services in Kenya.",
+            name: "BNS Studios",
+            description: studios.seoDescription,
             url: "https://budgetndiostory.org/bns-studio",
-            telephone: "+254700000000",
-            email: "studio@budgetndiostory.org",
+            email: "info@budgetndiostory.org",
             address: {
               "@type": "PostalAddress",
               addressLocality: "Nairobi",
@@ -38,7 +38,6 @@ export default function BNSStudioPage() {
               "@type": "Organization",
               name: "Budget Ndio Story",
             },
-            priceRange: "KES 5,000 - 100,000",
           }),
         }}
       />

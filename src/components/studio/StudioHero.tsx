@@ -14,7 +14,7 @@ export function StudioHero() {
     <section className="relative w-full min-h-[80vh] flex items-center justify-center overflow-hidden border-b border-border/40">
       <Image
         src={BNS_STUDIO_HERO_IMAGE}
-        alt="BNS Studio production on set"
+        alt="BNS Studios production on set"
         fill
         className="object-cover object-top"
         priority
@@ -33,17 +33,20 @@ export function StudioHero() {
             <div className="size-16 mx-auto mb-6 rounded-2xl bg-primary/10 flex items-center justify-center backdrop-blur-sm">
               <Camera className="size-8 text-primary" />
             </div>
-            <span className={cn(T.eyebrow, "mb-0 text-center")}>BNS Studio</span>
+            <span className={cn(T.eyebrow, "mb-0 text-center")}>BNS Studios</span>
           </motion.div>
 
           <motion.h1 variants={fadeInUp} className={cn(T.heroTitle, "mx-auto max-w-4xl")}>
-            Telling Kenya&apos;s stories through{" "}
-            <span className={T.highlight}>film & photo</span>
+            The stories behind the{" "}
+            <span className={T.highlight}>numbers</span>
           </motion.h1>
 
           <motion.p variants={fadeInUp} className={cn(T.lead, "mx-auto max-w-2xl md:max-w-2xl")}>
-            Professional videography, photography, and post-production powered by
-            Budget Ndio Story. Every booking supports civic education in Kenya.
+            Your organisation&apos;s impact story is only as useful as the audience it
+            reaches. BNS Studios turns institutional data into podcasts, documentaries,
+            animations, and campaigns for governments, funders, private sector, and CSOs —
+            mission-aligned, editorially independent, and funding Kenya&apos;s youth budget
+            platform.
           </motion.p>
 
           <motion.div
@@ -57,17 +60,15 @@ export function StudioHero() {
                 document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" })
               }
             >
-              Book a Shoot
+              Commission BNS Studios
             </Button>
             <Button
               size="lg"
               variant="outline"
               className={cn(T.btnPrimary, "px-8")}
-              onClick={() =>
-                document.getElementById("portfolio")?.scrollIntoView({ behavior: "smooth" })
-              }
+              asChild
             >
-              View Portfolio
+              <a href="mailto:info@budgetndiostory.org">info@budgetndiostory.org</a>
             </Button>
           </motion.div>
 

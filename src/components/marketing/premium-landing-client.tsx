@@ -28,6 +28,14 @@ const LandingYoutube = dynamic(
   }
 );
 
+const ProgrammesSection = dynamic(
+  () => import("@/components/marketing/programmes-section").then((m) => ({ default: m.ProgrammesSection })),
+  {
+    ssr: false,
+    loading: () => <div className="h-96 w-full bg-muted animate-pulse" />,
+  }
+);
+
 const PartnersMarquee = dynamic(
   () => import("@/components/marketing/partners-marquee"),
   {
@@ -101,6 +109,7 @@ export default function PremiumLandingClient() {
       <LandingTikTokVideo />
       <LandingYoutube />
       <PartnersMarquee />
+      <ProgrammesSection />
       <LandingTeam />
       <TimelineSection />
       {SHOW_SERVICES_SECTION ? <ServicesSection data={bnsServices} /> : null}

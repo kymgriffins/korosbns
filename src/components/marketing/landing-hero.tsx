@@ -4,7 +4,6 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Routes } from "@/constants/routes";
 import {
   fadeInUp,
   staggerContainer,
@@ -38,26 +37,25 @@ export default function LandingHero() {
           <motion.div variants={fadeInUp} className="flex flex-col gap-5">
             <span className={cn(T.eyebrow, "mb-0")}>Budget Ndio Story</span>
             <h1 id="landing-hero-heading" className={cn(T.heroTitle, "max-w-xl")}>
-              Translating{" "}
-              <span className={T.highlight}>numbers</span>{" "}
-              into civic narratives.
+              Follow the budget.{" "}
+              <span className={T.highlight}>Find the story.</span>
             </h1>
           </motion.div>
 
           <motion.div variants={fadeInUp} className="flex flex-col gap-6 lg:gap-8">
             <p className={cn(T.lead, "max-w-xl md:max-w-none")}>
-              Budget Ndio Story is a youth-led initiative in Kenya turning complex
-              national budgets into clear, actionable stories for civic engagement
-              and democratic audit.
+              Kenya&apos;s public money moves fast, and mostly out of sight. We track it —
+              nationally and in four select counties — and turn it into stories, data,
+              and training young Kenyans, journalists, government, and partners actually use.
             </p>
             <div className="hidden flex-col gap-4 lg:flex sm:flex-row sm:items-center">
-              <Link href={Routes.Reports} className="w-full sm:w-auto">
+              <Link href="/programmes" className="w-full sm:w-auto">
                 <Button
                   size="lg"
                   variant="white"
                   className={T.btnHero}
                 >
-                  Explore Reports
+                  Explore our programmes
                   <ArrowRight className="size-5" />
                 </Button>
               </Link>
@@ -102,13 +100,13 @@ export default function LandingHero() {
           </motion.div>
 
           <motion.div variants={fadeInUp} className="mt-6 lg:hidden">
-            <Link href={Routes.Reports} className="block w-full">
+            <Link href="/programmes" className="block w-full">
               <Button
                 size="lg"
                 variant="white"
                 className={T.btnHero}
               >
-                Explore Reports
+                Explore our programmes
                 <ArrowRight className="size-5" />
               </Button>
             </Link>
