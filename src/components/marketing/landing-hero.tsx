@@ -7,65 +7,109 @@ import { Button } from "@/components/ui/button";
 import {
   fadeInUp,
   staggerContainer,
+  staggerFast,
 } from "@/motion/variants";
 import { CLOUDINARY_HERO_LANDING_VIDEO_MP4 } from "@/constants/cloudinary";
-import { PROGRAMMES_LANDING } from "@/constants/programmes-content";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
+import {
+  LANDING_SECTION_SURFACE,
+  SECTION_SHELL_INNER,
+} from "@/layouts/landing-section";
 import { cn } from "@/utils";
 
-/** Full-bleed Civic Studio hero — brand, one claim, one CTA, atmosphere media. */
 export default function LandingHero() {
   return (
     <section
-      className="relative flex min-h-[100svh] w-full items-end overflow-hidden border-b border-border/40"
+      className={cn(
+        "relative w-full overflow-hidden text-foreground",
+        LANDING_SECTION_SURFACE,
+        "border-t-0",
+      )}
       aria-labelledby="landing-hero-heading"
     >
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        className="absolute inset-0 size-full object-cover"
-        onError={(e) => {
-          console.warn("Hero video failed to load:", e);
-        }}
-      >
-        <source src={CLOUDINARY_HERO_LANDING_VIDEO_MP4} type="video/mp4" />
-      </video>
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/30" />
-      <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/40 to-transparent" />
-
-      <div className="relative z-10 mx-auto w-full max-w-[1400px] px-6 pb-16 pt-28 md:px-16 md:pb-24 md:pt-32">
+      <div className={SECTION_SHELL_INNER}>
         <motion.div
           variants={staggerContainer}
           initial="hidden"
           animate="visible"
-          className="flex max-w-3xl flex-col gap-6"
+          className="grid w-full gap-8 pb-10 pt-4 md:gap-12 md:pb-14 md:pt-6 lg:grid-cols-2 lg:items-end"
         >
-          <motion.p variants={fadeInUp} className="font-heading text-sm font-semibold tracking-tight text-foreground">
-            Budget Ndio Story
-          </motion.p>
-          <motion.h1
-            id="landing-hero-heading"
-            variants={fadeInUp}
-            className={cn(T.heroTitle, "max-w-3xl")}
-          >
-            Follow the budget.{" "}
-            <span className={T.highlight}>Find the story.</span>
-          </motion.h1>
-          <motion.p variants={fadeInUp} className={cn(T.lead, "max-w-xl text-base text-foreground/80 md:text-lg")}>
-            {PROGRAMMES_LANDING.body}
-          </motion.p>
-          <motion.div variants={fadeInUp} className="flex flex-wrap gap-3 pt-2">
-            <Button asChild size="lg" variant="white" className={T.btnHero}>
-              <Link href="/programmes">
-                Explore our programmes
-                <ArrowRight className="size-5" aria-hidden />
+          <motion.div variants={fadeInUp} className="flex flex-col gap-5">
+            <span className={cn(T.eyebrow, "mb-0")}>Budget Ndio Story</span>
+            <h1 id="landing-hero-heading" className={cn(T.heroTitle, "max-w-xl")}>
+              Follow the budget.{" "}
+              <span className={T.highlight}>Find the story.</span>
+            </h1>
+          </motion.div>
+
+          <motion.div variants={fadeInUp} className="flex flex-col gap-6 lg:gap-8">
+            <p className={cn(T.lead, "max-w-xl md:max-w-none")}>
+              Kenya&apos;s public money moves fast, and mostly out of sight. We track it —
+              nationally and in four select counties — and turn it into stories, data,
+              and training young Kenyans, journalists, government, and partners actually use.
+            </p>
+            <div className="hidden flex-col gap-4 lg:flex sm:flex-row sm:items-center">
+              <Link href="/programmes" className="w-full sm:w-auto">
+                <Button
+                  size="lg"
+                  variant="white"
+                  className={T.btnHero}
+                >
+                  Explore our programmes
+                  <ArrowRight className="size-5" />
+                </Button>
               </Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className={cn(T.btnPrimary, "border-foreground/20 bg-background/60 backdrop-blur-sm")}>
-              <Link href="/reports">Open reports</Link>
-            </Button>
+            </div>
+          </motion.div>
+        </motion.div>
+
+        <motion.div
+          variants={staggerFast}
+          initial="hidden"
+          animate="visible"
+          className="w-full pb-12 md:pb-16"
+        >
+          <motion.div
+            variants={fadeInUp}
+            className="relative aspect-video w-full min-h-[12rem] overflow-hidden rounded-2xl border border-border/60 md:rounded-3xl group cursor-pointer"
+            onClick={() => window.open("https://www.youtube.com/@BudgetNdioStory", "_blank")}
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="absolute inset-0 z-10 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center gap-2">
+                <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center">
+                  <ArrowRight className="w-8 h-8 text-black" />
+                </div>
+                <span className="text-white text-sm font-bold">Watch on YouTube</span>
+              </div>
+            </div>
+
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              onError={(e) => {
+                console.warn("Hero video failed to load:", e);
+              }}
+              className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
+            >
+              <source src={CLOUDINARY_HERO_LANDING_VIDEO_MP4} type="video/mp4" />
+            </video>
+          </motion.div>
+
+          <motion.div variants={fadeInUp} className="mt-6 lg:hidden">
+            <Link href="/programmes" className="block w-full">
+              <Button
+                size="lg"
+                variant="white"
+                className={T.btnHero}
+              >
+                Explore our programmes
+                <ArrowRight className="size-5" />
+              </Button>
+            </Link>
           </motion.div>
         </motion.div>
       </div>
