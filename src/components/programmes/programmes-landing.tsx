@@ -107,46 +107,27 @@ export function ProgrammesLanding() {
           </h2>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-12 md:gap-5">
-          <Link
-            href={programmeHref(featured.slug)}
-            className="group relative min-h-[22rem] overflow-hidden rounded-2xl border border-border/50 md:col-span-7 md:min-h-[30rem]"
-          >
-            <Image
-              src={featured.visual.hero}
-              alt={featured.visual.heroAlt}
-              fill
-              className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-              sizes="(max-width: 768px) 100vw, 58vw"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
-            <div className="absolute inset-x-0 bottom-0 space-y-2 p-6 md:p-8">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-foreground/80">
-                {featured.name}
-              </p>
-              <p className="max-w-md font-heading text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-                {PROGRAMME_CARD_BLURBS[featured.slug]}
-              </p>
-            </div>
-          </Link>
-
-          <div className="grid gap-4 md:col-span-5 md:grid-rows-3">
-            {featured.visual.gallery.map((shot) => (
-              <div
-                key={shot.src}
-                className="relative min-h-[7.5rem] overflow-hidden rounded-2xl border border-border/50 md:min-h-0"
-              >
-                <Image
-                  src={shot.src}
-                  alt={shot.alt}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 40vw"
-                />
-              </div>
-            ))}
+        <Link
+          href={programmeHref(featured.slug)}
+          className="group relative aspect-[16/9] min-h-[14rem] overflow-hidden rounded-2xl border border-border/50 md:min-h-[20rem]"
+        >
+          <Image
+            src={featured.visual.hero}
+            alt={featured.visual.heroAlt}
+            fill
+            className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+            sizes="(max-width: 768px) 100vw, 1200px"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 space-y-2 p-5 md:p-7">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-foreground/80">
+              {featured.name}
+            </p>
+            <p className="max-w-md font-heading text-xl font-bold tracking-tight text-foreground md:text-2xl">
+              {PROGRAMME_CARD_BLURBS[featured.slug]}
+            </p>
           </div>
-        </div>
+        </Link>
 
         <div className="mt-8 flex flex-wrap items-end justify-between gap-4 border-b border-border/40 pb-10 md:mt-10 md:pb-12">
           <p className="max-w-xl text-sm leading-relaxed text-foreground/70 md:text-base">
@@ -158,7 +139,7 @@ export function ProgrammesLanding() {
           />
         </div>
 
-        <div ref={listRef} className="mt-12 flex flex-col gap-14 md:mt-16 md:gap-20">
+        <div ref={listRef} className="mt-12 flex flex-col gap-12 md:mt-14 md:gap-16">
           {rest.map((programme, index) => {
             const imageLeft = index % 2 === 0;
             return (
@@ -166,12 +147,12 @@ export function ProgrammesLanding() {
                 key={programme.slug}
                 id={programme.slug}
                 data-programme-row
-                className="grid items-center gap-6 md:grid-cols-12 md:gap-10"
+                className="grid items-center gap-5 md:grid-cols-12 md:gap-8"
               >
                 <Link
                   href={programmeHref(programme.slug)}
                   className={cn(
-                    "group relative min-h-[18rem] overflow-hidden rounded-2xl border border-border/50 md:col-span-6 md:min-h-[24rem]",
+                    "group relative aspect-[16/10] overflow-hidden rounded-2xl border border-border/50 md:col-span-5",
                     !imageLeft && "md:order-2",
                   )}
                 >
@@ -180,45 +161,28 @@ export function ProgrammesLanding() {
                     alt={programme.visual.heroAlt}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                    sizes="(max-width: 768px) 100vw, 50vw"
+                    sizes="(max-width: 768px) 100vw, 40vw"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-80" />
                 </Link>
 
                 <div
                   className={cn(
-                    "flex flex-col gap-4 md:col-span-6",
+                    "flex flex-col gap-3 md:col-span-7",
                     !imageLeft && "md:order-1",
                   )}
                 >
                   <p className="text-sm font-medium text-muted-foreground">{programme.eyebrow}</p>
                   <p className="font-heading text-sm font-semibold text-foreground">{programme.name}</p>
-                  <h2 className="font-heading text-3xl font-bold tracking-tight text-balance text-foreground md:text-4xl">
+                  <h2 className="font-heading text-2xl font-bold tracking-tight text-balance text-foreground md:text-3xl">
                     {programme.headline}
                   </h2>
                   <p className="max-w-[60ch] text-sm leading-relaxed text-foreground/70 md:text-base">
                     {PROGRAMME_CARD_BLURBS[programme.slug]}
                   </p>
-                  <p className="max-w-[60ch] text-sm leading-relaxed text-muted-foreground md:text-base">
-                    {programme.body.slice(0, 220)}…
+                  <p className="max-w-[60ch] text-sm leading-relaxed text-muted-foreground">
+                    {programme.body.slice(0, 180)}…
                   </p>
-                  <div className="grid grid-cols-3 gap-2 pt-1">
-                    {programme.visual.gallery.map((shot) => (
-                      <div
-                        key={shot.src}
-                        className="relative aspect-[4/3] overflow-hidden rounded-xl border border-border/40"
-                      >
-                        <Image
-                          src={shot.src}
-                          alt={shot.alt}
-                          fill
-                          className="object-cover"
-                          sizes="120px"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                  <LandingSectionCta className="mt-2 md:mt-3">
+                  <LandingSectionCta className="mt-1 md:mt-2">
                     <Button asChild variant="outline" className={cn(T.btnPrimary, "gap-2")}>
                       <Link href={programmeHref(programme.slug)}>
                         Explore {programme.name}

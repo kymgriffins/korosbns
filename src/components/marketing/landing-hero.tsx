@@ -37,11 +37,7 @@ export default function LandingHero() {
             <p className={cn(T.lead, "max-w-lg text-base text-foreground/75")}>{hero.body}</p>
             <LandingSectionCta className="mt-2 md:mt-4">
               <LandingSeeMore href={hero.primaryCta.href} label={hero.primaryCta.label} />
-              <Button
-                asChild
-                variant="outline"
-                className={cn(T.btnPrimary, "hidden sm:inline-flex")}
-              >
+              <Button asChild variant="outline" className={T.btnPrimary}>
                 <Link href={hero.secondaryCta.href}>{hero.secondaryCta.label}</Link>
               </Button>
             </LandingSectionCta>
