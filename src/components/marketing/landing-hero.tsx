@@ -14,7 +14,6 @@ import { cn } from "@/utils";
 import { Button } from "@/components/ui/button";
 
 const hero = landingContent.hero;
-const tiktok = landingContent.tiktok;
 
 export default function LandingHero() {
   return (
@@ -36,12 +35,13 @@ export default function LandingHero() {
               <span className={T.highlight}>{hero.headlineHighlight}</span>
             </h1>
             <p className={cn(T.lead, "max-w-lg text-base text-foreground/75")}>{hero.body}</p>
-            <p className="max-w-md text-sm leading-relaxed text-muted-foreground">
-              {tiktok.description}
-            </p>
             <LandingSectionCta className="mt-2 md:mt-4">
               <LandingSeeMore href={hero.primaryCta.href} label={hero.primaryCta.label} />
-              <Button asChild variant="outline" className={T.btnPrimary}>
+              <Button
+                asChild
+                variant="outline"
+                className={cn(T.btnPrimary, "hidden sm:inline-flex")}
+              >
                 <Link href={hero.secondaryCta.href}>{hero.secondaryCta.label}</Link>
               </Button>
             </LandingSectionCta>

@@ -10,12 +10,20 @@ export const NAV_LINKS = [
     href: Routes.Learn,
   },
   {
-    label: "Surveys",
-    href: Routes.Surveys,
+    label: "About",
+    href: Routes.About,
   },
   {
     label: "Reports",
     href: Routes.Reports,
+  },
+  {
+    label: "Studios",
+    href: Routes.BNSStudio,
+  },
+  {
+    label: "Surveys",
+    href: Routes.Surveys,
   },
   {
     label: "Events",

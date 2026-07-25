@@ -1,30 +1,69 @@
 "use client";
 
+import { useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { LandingSection } from "@/layouts/landing-section";
 import {
-  LandingContent,
-  LandingSection,
-} from "@/layouts/landing-section";
+  LandingSeeMore,
+  LandingSectionCta,
+} from "@/components/marketing/landing-see-more";
+import { ProgrammePartnerCta } from "@/components/programmes/programme-partner-cta";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import {
   PROGRAMMES,
-  PROGRAMMES_CLOSING,
   PROGRAMMES_LANDING,
   PROGRAMME_CARD_BLURBS,
   programmeHref,
 } from "@/content";
-import { GsapHeroChoreography, GsapReveal, GsapStaggerReveal } from "@/motion/gsap";
+import {
+  GsapHeroChoreography,
+  gsap,
+  registerGsap,
+  useGSAP,
+  usePrefersReducedMotion,
+} from "@/motion/gsap";
+import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 import { cn } from "@/utils";
+
+registerGsap();
 
 export function ProgrammesLanding() {
   const [featured, ...rest] = PROGRAMMES;
+  const listRef = useRef<HTMLDivElement>(null);
+  const reduced = usePrefersReducedMotion();
+
+  useGSAP(
+    () => {
+      const root = listRef.current;
+      if (!root || reduced) return;
+
+      const articles = root.querySelectorAll("[data-programme-row]");
+      gsap.fromTo(
+        articles,
+        { autoAlpha: 0, y: 56 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.85,
+          stagger: 0.16,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: root,
+            start: "top 82%",
+            once: true,
+          },
+        },
+      );
+    },
+    { scope: listRef, dependencies: [reduced] },
+  );
 
   return (
     <div className="w-full bg-background">
-      <GsapHeroChoreography className="relative min-h-[70svh] overflow-hidden border-b border-border/40 md:min-h-[85svh]">
+      <GsapHeroChoreography className="relative min-h-[62svh] overflow-hidden border-b border-border/40 md:min-h-[72svh]">
         <div data-gsap-hero-media className="absolute inset-0">
           <Image
             src={featured.visual.hero}
@@ -34,42 +73,44 @@ export function ProgrammesLanding() {
             className="object-cover"
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/75 to-background/25" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/20" />
           <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/50 to-transparent" />
         </div>
 
         <div
           data-gsap-hero-content
-          className="relative z-10 mx-auto flex min-h-[70svh] max-w-[1400px] flex-col justify-end gap-5 px-6 pb-14 pt-28 md:min-h-[85svh] md:px-16 md:pb-20"
+          className={cn(
+            SECTION_SHELL_INNER,
+            "relative z-10 flex min-h-[62svh] flex-col justify-end gap-5 pb-12 pt-28 md:min-h-[72svh] md:pb-16",
+          )}
         >
           <p className="font-heading text-sm font-semibold text-foreground">Programmes</p>
-          <h1 className={cn(T.heroTitle, "max-w-3xl")}>{PROGRAMMES_LANDING.headline}</h1>
+          <h1 className={cn(T.heroTitle, "max-w-3xl text-balance")}>
+            {PROGRAMMES_LANDING.headline}
+          </h1>
           <p className={cn(T.lead, "max-w-2xl text-base text-foreground/80 md:text-lg")}>
             {PROGRAMMES_LANDING.body}
           </p>
           <div>
-            <Button asChild size="lg" className={cn(T.btnPrimary, "gap-2")}>
-              <a href={PROGRAMMES_LANDING.exploreCta.href}>
-                {PROGRAMMES_LANDING.exploreCta.label}
-                <ArrowRight className="size-4" aria-hidden />
-              </a>
-            </Button>
+            <LandingSeeMore
+              href={PROGRAMMES_LANDING.exploreCta.href}
+              label={PROGRAMMES_LANDING.exploreCta.label}
+            />
           </div>
         </div>
       </GsapHeroChoreography>
 
-      <LandingSection id="programmes" spacing="loose" aria-labelledby="programmes-grid-heading">
-        <GsapReveal className="mb-10 max-w-2xl md:mb-14">
+      <LandingSection id="programmes" aria-labelledby="programmes-grid-heading">
+        <div className="mb-8 max-w-2xl md:mb-10">
           <h2 id="programmes-grid-heading" className={T.sectionTitle}>
             Four programmes. One civic ecosystem.
           </h2>
-        </GsapReveal>
+        </div>
 
-        <GsapStaggerReveal className="grid gap-4 md:grid-cols-12 md:gap-5">
+        <div className="grid gap-4 md:grid-cols-12 md:gap-5">
           <Link
-            data-gsap-item
             href={programmeHref(featured.slug)}
-            className="group relative min-h-[22rem] overflow-hidden rounded-2xl border border-border/50 md:col-span-7 md:min-h-[32rem]"
+            className="group relative min-h-[22rem] overflow-hidden rounded-2xl border border-border/50 md:col-span-7 md:min-h-[30rem]"
           >
             <Image
               src={featured.visual.hero}
@@ -89,7 +130,7 @@ export function ProgrammesLanding() {
             </div>
           </Link>
 
-          <div data-gsap-item className="grid gap-4 md:col-span-5 md:grid-rows-3">
+          <div className="grid gap-4 md:col-span-5 md:grid-rows-3">
             {featured.visual.gallery.map((shot) => (
               <div
                 key={shot.src}
@@ -105,111 +146,94 @@ export function ProgrammesLanding() {
               </div>
             ))}
           </div>
-        </GsapStaggerReveal>
+        </div>
 
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-b border-border/40 pb-10 md:mt-8 md:pb-14">
+        <div className="mt-8 flex flex-wrap items-end justify-between gap-4 border-b border-border/40 pb-10 md:mt-10 md:pb-12">
           <p className="max-w-xl text-sm leading-relaxed text-foreground/70 md:text-base">
             {featured.body.slice(0, 200)}…
           </p>
-          <Button asChild className="gap-2">
-            <Link href={programmeHref(featured.slug)}>
-              Explore {featured.name}
-              <ArrowRight className="size-4" aria-hidden />
-            </Link>
-          </Button>
+          <LandingSeeMore
+            href={programmeHref(featured.slug)}
+            label={`Explore ${featured.name}`}
+          />
         </div>
 
-        <div className="mt-10 flex flex-col gap-12 md:mt-16 md:gap-20">
+        <div ref={listRef} className="mt-12 flex flex-col gap-14 md:mt-16 md:gap-20">
           {rest.map((programme, index) => {
             const imageLeft = index % 2 === 0;
             return (
-              <GsapReveal
+              <article
                 key={programme.slug}
-                as="article"
                 id={programme.slug}
+                data-programme-row
                 className="grid items-center gap-6 md:grid-cols-12 md:gap-10"
               >
-                  <Link
-                    href={programmeHref(programme.slug)}
-                    className={cn(
-                      "group relative min-h-[18rem] overflow-hidden rounded-2xl border border-border/50 md:col-span-6 md:min-h-[26rem]",
-                      !imageLeft && "md:order-2",
-                    )}
-                  >
-                    <Image
-                      src={programme.visual.hero}
-                      alt={programme.visual.heroAlt}
-                      fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-80" />
-                  </Link>
+                <Link
+                  href={programmeHref(programme.slug)}
+                  className={cn(
+                    "group relative min-h-[18rem] overflow-hidden rounded-2xl border border-border/50 md:col-span-6 md:min-h-[24rem]",
+                    !imageLeft && "md:order-2",
+                  )}
+                >
+                  <Image
+                    src={programme.visual.hero}
+                    alt={programme.visual.heroAlt}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-80" />
+                </Link>
 
-                  <div
-                    className={cn(
-                      "flex flex-col gap-4 md:col-span-6",
-                      !imageLeft && "md:order-1",
-                    )}
-                  >
-                    <p className="text-sm font-medium text-muted-foreground">{programme.eyebrow}</p>
-                    <p className="font-heading text-sm font-semibold text-foreground">{programme.name}</p>
-                    <h2 className="font-heading text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-                      {programme.headline}
-                    </h2>
-                    <p className="text-sm leading-relaxed text-foreground/70 md:text-base">
-                      {PROGRAMME_CARD_BLURBS[programme.slug]}
-                    </p>
-                    <p className="text-sm leading-relaxed text-muted-foreground md:text-base">
-                      {programme.body.slice(0, 220)}…
-                    </p>
-                    <div className="grid grid-cols-3 gap-2 pt-2">
-                      {programme.visual.gallery.map((shot) => (
-                        <div
-                          key={shot.src}
-                          className="relative aspect-[4/3] overflow-hidden rounded-xl border border-border/40"
-                        >
-                          <Image
-                            src={shot.src}
-                            alt={shot.alt}
-                            fill
-                            className="object-cover"
-                            sizes="120px"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                    <div className="pt-2">
-                      <Button asChild variant="outline" className="gap-2">
-                        <Link href={programmeHref(programme.slug)}>
-                          Explore {programme.name}
-                          <ArrowRight className="size-4" aria-hidden />
-                        </Link>
-                      </Button>
-                    </div>
+                <div
+                  className={cn(
+                    "flex flex-col gap-4 md:col-span-6",
+                    !imageLeft && "md:order-1",
+                  )}
+                >
+                  <p className="text-sm font-medium text-muted-foreground">{programme.eyebrow}</p>
+                  <p className="font-heading text-sm font-semibold text-foreground">{programme.name}</p>
+                  <h2 className="font-heading text-3xl font-bold tracking-tight text-balance text-foreground md:text-4xl">
+                    {programme.headline}
+                  </h2>
+                  <p className="max-w-[60ch] text-sm leading-relaxed text-foreground/70 md:text-base">
+                    {PROGRAMME_CARD_BLURBS[programme.slug]}
+                  </p>
+                  <p className="max-w-[60ch] text-sm leading-relaxed text-muted-foreground md:text-base">
+                    {programme.body.slice(0, 220)}…
+                  </p>
+                  <div className="grid grid-cols-3 gap-2 pt-1">
+                    {programme.visual.gallery.map((shot) => (
+                      <div
+                        key={shot.src}
+                        className="relative aspect-[4/3] overflow-hidden rounded-xl border border-border/40"
+                      >
+                        <Image
+                          src={shot.src}
+                          alt={shot.alt}
+                          fill
+                          className="object-cover"
+                          sizes="120px"
+                        />
+                      </div>
+                    ))}
                   </div>
-              </GsapReveal>
+                  <LandingSectionCta className="mt-2 md:mt-3">
+                    <Button asChild variant="outline" className={cn(T.btnPrimary, "gap-2")}>
+                      <Link href={programmeHref(programme.slug)}>
+                        Explore {programme.name}
+                        <ArrowRight className="size-4" aria-hidden />
+                      </Link>
+                    </Button>
+                  </LandingSectionCta>
+                </div>
+              </article>
             );
           })}
         </div>
       </LandingSection>
 
-      <LandingSection spacing="default" className="bg-muted/30" aria-labelledby="partner-cta-heading">
-        <LandingContent className="flex max-w-3xl flex-col gap-5">
-          <h2 id="partner-cta-heading" className={cn(T.sectionTitle, "text-balance")}>
-            {PROGRAMMES_CLOSING.headline}
-          </h2>
-          <p className={cn(T.lead, "max-w-2xl text-base text-foreground/75")}>{PROGRAMMES_CLOSING.body}</p>
-          <div>
-            <Button asChild size="lg" className={cn(T.btnPrimary, "gap-2")}>
-              <Link href={PROGRAMMES_CLOSING.cta.href}>
-                {PROGRAMMES_CLOSING.cta.label}
-                <ArrowRight className="size-4" aria-hidden />
-              </Link>
-            </Button>
-          </div>
-        </LandingContent>
-      </LandingSection>
+      <ProgrammePartnerCta />
     </div>
   );
 }

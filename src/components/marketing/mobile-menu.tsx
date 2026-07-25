@@ -20,6 +20,12 @@ import {
   ArrowUpRight,
   Newspaper,
   FolderKanban,
+  Layers,
+  Clapperboard,
+  Users,
+  UserPlus,
+  Home,
+  CircleDot,
   XIcon,
 } from "lucide-react";
 import { ease } from "@/motion/variants";
@@ -34,23 +40,58 @@ function isActiveNav(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-const getIcon = (label: string) => {
-  const cls = "size-5 text-muted-foreground group-hover:text-primary transition-colors duration-200";
-  switch (label.toLowerCase()) {
-    case "projects":     return <FolderKanban className={cls} />;
-    case "learn":        return <BookOpen className={cls} />;
-    case "budget hub":   return <Newspaper className={cls} />;
-    case "budget news":  return <Newspaper className={cls} />;
-    case "surveys":      return <ClipboardList className={cls} />;
-    case "reports":      return <FileBarChart className={cls} />;
-    case "trivia":       return <HelpCircle className={cls} />;
-    case "articles":     return <FileText className={cls} />;
-    case "events":       return <Calendar className={cls} />;
-    case "faq":          return <HelpCircle className={cls} />;
-    case "contact":      return <Mail className={cls} />;
-    default:             return null;
+const ICON_CLS =
+  "size-5 shrink-0 text-muted-foreground transition-colors duration-200 group-hover:text-primary group-[.nav-active]:text-primary";
+
+function NavItemIcon({ label }: { label: string }) {
+  const key = label.toLowerCase();
+  switch (key) {
+    case "home":
+      return <Home className={ICON_CLS} aria-hidden />;
+    case "programmes":
+    case "partners":
+      return <Layers className={ICON_CLS} aria-hidden />;
+    case "learn":
+    case "stories":
+    case "budget guides":
+      return <BookOpen className={ICON_CLS} aria-hidden />;
+    case "about":
+    case "about bns":
+    case "team":
+      return <Users className={ICON_CLS} aria-hidden />;
+    case "studios":
+    case "bns studios":
+    case "media":
+      return <Clapperboard className={ICON_CLS} aria-hidden />;
+    case "projects":
+      return <FolderKanban className={ICON_CLS} aria-hidden />;
+    case "budget hub":
+    case "budget news":
+      return <Newspaper className={ICON_CLS} aria-hidden />;
+    case "surveys":
+      return <ClipboardList className={ICON_CLS} aria-hidden />;
+    case "reports":
+      return <FileBarChart className={ICON_CLS} aria-hidden />;
+    case "trivia":
+    case "faq":
+      return <HelpCircle className={ICON_CLS} aria-hidden />;
+    case "articles":
+    case "documents":
+      return <FileText className={ICON_CLS} aria-hidden />;
+    case "events":
+      return <Calendar className={ICON_CLS} aria-hidden />;
+    case "contact":
+      return <Mail className={ICON_CLS} aria-hidden />;
+    case "join us":
+    case "careers":
+      return <UserPlus className={ICON_CLS} aria-hidden />;
+    case "sign in":
+    case "login":
+      return <LogIn className={ICON_CLS} aria-hidden />;
+    default:
+      return <CircleDot className={ICON_CLS} aria-hidden />;
   }
-};
+}
 
 function MenuPanel({ isOpen, setIsOpen }: Props) {
   const pathname = usePathname();
@@ -109,17 +150,17 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
                       href={item.href}
                       onClick={() => setIsOpen(false)}
                       className={cn(
-                        "group flex items-center justify-between w-full px-4 py-3.5 text-base font-medium rounded-2xl active:scale-[0.98] transition-all duration-200",
+                        "group flex w-full items-center justify-between rounded-2xl px-4 py-3.5 text-base font-medium transition-all duration-200 active:scale-[0.98]",
                         isActiveNav(pathname, item.href)
-                          ? "bg-primary/10 text-primary"
-                          : "text-foreground hover:text-primary hover:bg-foreground/[0.04]"
+                          ? "nav-active bg-primary/10 text-primary"
+                          : "text-foreground hover:bg-foreground/[0.04] hover:text-primary",
                       )}
                     >
                       <span className="flex items-center gap-3">
-                        {getIcon(item.label)}
+                        <NavItemIcon label={item.label} />
                         {item.label}
                       </span>
-                      <ArrowUpRight className="size-4 opacity-30 group-hover:opacity-80 transition-opacity duration-200" />
+                      <ArrowUpRight className="size-4 opacity-30 transition-opacity duration-200 group-hover:opacity-80" />
                     </Link>
                   </motion.li>
                 ))}
@@ -176,7 +217,10 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
                         Welcome back, {user?.first_name ?? user?.email ?? "Citizen"}
                       </>
                     ) : (
-                      "Join us"
+                      <>
+                        <UserPlus className="size-5 shrink-0" aria-hidden />
+                        Join us
+                      </>
                     )}
                   </Button>
                 </Link>
@@ -214,17 +258,17 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
                       href={item.href}
                       onClick={() => setIsOpen(false)}
                       className={cn(
-                        "group flex items-center justify-between w-full px-4 py-3.5 text-base font-medium rounded-2xl active:scale-[0.98] transition-all duration-200",
+                        "group flex w-full items-center justify-between rounded-2xl px-4 py-3.5 text-base font-medium transition-all duration-200 active:scale-[0.98]",
                         isActiveNav(pathname, item.href)
-                          ? "bg-primary/10 text-primary"
-                          : "text-foreground hover:text-primary hover:bg-foreground/[0.04]"
+                          ? "nav-active bg-primary/10 text-primary"
+                          : "text-foreground hover:bg-foreground/[0.04] hover:text-primary",
                       )}
                     >
                       <span className="flex items-center gap-3">
-                        {getIcon(item.label)}
+                        <NavItemIcon label={item.label} />
                         {item.label}
                       </span>
-                      <ArrowUpRight className="size-4 opacity-30 group-hover:opacity-80 transition-opacity duration-200" />
+                      <ArrowUpRight className="size-4 opacity-30 transition-opacity duration-200 group-hover:opacity-80" />
                     </Link>
                   </motion.li>
                 ))}
@@ -281,7 +325,10 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
                         Welcome back, {user?.first_name ?? user?.email ?? "Citizen"}
                       </>
                     ) : (
-                      "Join us"
+                      <>
+                        <UserPlus className="size-5 shrink-0" aria-hidden />
+                        Join us
+                      </>
                     )}
                   </Button>
                 </Link>
