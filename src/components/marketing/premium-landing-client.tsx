@@ -4,14 +4,6 @@ import React from "react";
 import dynamic from "next/dynamic";
 import LandingHero from "@/components/marketing/landing-hero";
 
-const CloudinaryGallery = dynamic(
-  () => import("@/components/marketing/cloudinary-gallery"),
-  {
-    ssr: false,
-    loading: () => <div className="h-96 w-full animate-pulse bg-muted" />,
-  },
-);
-
 const LandingYoutube = dynamic(
   () => import("@/components/marketing/landing-youtube"),
   {
@@ -90,7 +82,8 @@ const NewsletterPopup = dynamic(
 /**
  * Homepage spine:
  * Hero (TikTok) → Story → Programmes → Partners → Team → Timeline →
- * Testimonials → Gallery → Studios (single) → Socials
+ * Testimonials → Studios (single) → Socials
+ * (Field gallery temporarily hidden)
  */
 export default function PremiumLandingClient() {
   return (
@@ -102,7 +95,6 @@ export default function PremiumLandingClient() {
       <LandingTeam />
       <TimelineSection />
       <TestimonialsSection />
-      <CloudinaryGallery />
       <BNSStudioSection />
       <SocialsSection />
       <NewsletterPopup />
