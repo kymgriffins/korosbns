@@ -58,9 +58,6 @@ export default function Footer() {
 
   return (
     <footer className="relative overflow-hidden border-t border-border bg-muted/40 text-foreground dark:bg-card/50">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/45 to-transparent" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-36 bg-gradient-to-b from-primary/10 via-primary/5 to-transparent dark:from-primary/14 dark:via-primary/6" />
-
       <div className="relative mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-24 lg:px-8">
         <div className="flex flex-col gap-16">
           <div className="flex flex-col gap-12">

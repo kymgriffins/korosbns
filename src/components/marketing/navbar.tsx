@@ -85,8 +85,8 @@ const Navbar = () => {
             // No pill — straight rounded-xl on all breakpoints
             "rounded-xl border h-full flex flex-col relative transition-all duration-300",
             scrolled
-              ? "bg-background/95 border-border/60 shadow-lg shadow-black/10"
-              : "bg-background/95 border-border/30"
+              ? "bg-transparent border-border/60 shadow-lg shadow-black/10"
+              : "bg-transparent border-border/30"
           )}
         >
           <div className="flex items-center justify-between w-full px-4 min-h-14 md:min-h-16 shrink-0">

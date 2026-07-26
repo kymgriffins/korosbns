@@ -1,0 +1,873 @@
+{
+  "base": "http://localhost:3000",
+  "checkedAt": "2026-07-13T19:25:53.748Z",
+  "totals": {
+    "routes": 86,
+    "ok": 79,
+    "missing": 4,
+    "unreachable": 3
+  },
+  "results": [
+    {
+      "path": "/",
+      "status": 200,
+      "finalUrl": "/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Kenya FY2026/27 Budget Breakdown &amp; Allocations by Sector",
+      "ms": 298,
+      "bytes": 270504,
+      "notFoundBody": true
+    },
+    {
+      "path": "/about/",
+      "status": 200,
+      "finalUrl": "/about/",
+      "kind": "ok",
+      "title": "About | Budget Ndio Story",
+      "ms": 6855,
+      "bytes": 89657,
+      "notFoundBody": true
+    },
+    {
+      "path": "/analytics/",
+      "status": 200,
+      "finalUrl": "/analytics/",
+      "kind": "ok",
+      "title": "Analytics | Budget Ndio Story",
+      "ms": 14476,
+      "bytes": 33323,
+      "notFoundBody": true
+    },
+    {
+      "path": "/bns-project/",
+      "status": 200,
+      "finalUrl": "/bns-project/",
+      "kind": "ok",
+      "title": "BNS Project | Budget Ndio Story",
+      "ms": 10149,
+      "bytes": 43486,
+      "notFoundBody": true
+    },
+    {
+      "path": "/bns-studio/",
+      "status": 200,
+      "finalUrl": "/bns-studio/",
+      "kind": "ok",
+      "title": "BNS Studio | Budget Ndio Story",
+      "ms": 6367,
+      "bytes": 98077,
+      "notFoundBody": true
+    },
+    {
+      "path": "/budgetnews/",
+      "status": 200,
+      "finalUrl": "/budgetnews/",
+      "kind": "ok",
+      "title": "Budget News — Financial Year Analysis | Budget Ndio Story",
+      "ms": 7447,
+      "bytes": 33697,
+      "notFoundBody": true
+    },
+    {
+      "path": "/contact/",
+      "status": 200,
+      "finalUrl": "/contact/",
+      "kind": "ok",
+      "title": "Contact | Budget Ndio Story",
+      "ms": 7732,
+      "bytes": 43117,
+      "notFoundBody": true
+    },
+    {
+      "path": "/events/",
+      "status": 200,
+      "finalUrl": "/events/",
+      "kind": "ok",
+      "title": "Civic Events &amp; Budget Forums | Budget Ndio Story",
+      "ms": 5624,
+      "bytes": 36817,
+      "notFoundBody": true
+    },
+    {
+      "path": "/faq/",
+      "status": 200,
+      "finalUrl": "/faq/",
+      "kind": "ok",
+      "title": "FAQ: Budget, Finance Bill &amp; Appropriation Bill | Budget Ndio Story",
+      "ms": 3499,
+      "bytes": 62321,
+      "notFoundBody": true
+    },
+    {
+      "path": "/learnhub/",
+      "status": 200,
+      "finalUrl": "/learnhub/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 17940,
+      "bytes": 141913,
+      "notFoundBody": true
+    },
+    {
+      "path": "/privacy/",
+      "status": 200,
+      "finalUrl": "/privacy/",
+      "kind": "ok",
+      "title": "Privacy Policy | Budget Ndio Story",
+      "ms": 12662,
+      "bytes": 73284,
+      "notFoundBody": true
+    },
+    {
+      "path": "/reports/",
+      "status": 200,
+      "finalUrl": "/reports/",
+      "kind": "ok",
+      "title": "Budget Reports | Budget Ndio Story",
+      "ms": 16435,
+      "bytes": 43744,
+      "notFoundBody": true
+    },
+    {
+      "path": "/security/",
+      "status": 200,
+      "finalUrl": "/security/",
+      "kind": "ok",
+      "title": "Security | Budget Ndio Story",
+      "ms": 3843,
+      "bytes": 58671,
+      "notFoundBody": true
+    },
+    {
+      "path": "/surveys/",
+      "status": 200,
+      "finalUrl": "/surveys/",
+      "kind": "ok",
+      "title": "Budget Surveys &amp; Public Opinion | Budget Ndio Story",
+      "ms": 4188,
+      "bytes": 33551,
+      "notFoundBody": true
+    },
+    {
+      "path": "/team/",
+      "status": 200,
+      "finalUrl": "/team/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 7825,
+      "bytes": 56387,
+      "notFoundBody": true
+    },
+    {
+      "path": "/terms/",
+      "status": 200,
+      "finalUrl": "/terms/",
+      "kind": "ok",
+      "title": "Terms of Service | Budget Ndio Story",
+      "ms": 4595,
+      "bytes": 50395,
+      "notFoundBody": true
+    },
+    {
+      "path": "/weekly-notes/",
+      "status": 200,
+      "finalUrl": "/weekly-notes/",
+      "kind": "ok",
+      "title": "Weekly Notes | Budget Ndio Story",
+      "ms": 7727,
+      "bytes": 33340,
+      "notFoundBody": true
+    },
+    {
+      "path": "/weekly-notes/audit/",
+      "status": 200,
+      "finalUrl": "/weekly-notes/audit/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 5674,
+      "bytes": 35455,
+      "notFoundBody": true
+    },
+    {
+      "path": "/weekly-notes/manage/",
+      "status": 200,
+      "finalUrl": "/weekly-notes/manage/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 3907,
+      "bytes": 35462,
+      "notFoundBody": true
+    },
+    {
+      "path": "/learn/",
+      "status": 200,
+      "finalUrl": "/learn/",
+      "kind": "ok",
+      "title": "Learn Hub — FY2026/27 Budget Sector Breakdown | Budget Ndio Story",
+      "ms": 19481,
+      "bytes": 69468,
+      "notFoundBody": true
+    },
+    {
+      "path": "/learn/modules/",
+      "status": 200,
+      "finalUrl": "/learn/modules/",
+      "kind": "ok",
+      "title": "Learning Modules — Kenya Budget Literacy | Budget Ndio Story",
+      "ms": 11646,
+      "bytes": 69105,
+      "notFoundBody": true
+    },
+    {
+      "path": "/learn/documents/",
+      "status": 200,
+      "finalUrl": "/learn/documents/",
+      "kind": "ok",
+      "title": "Budget Documents | Budget Ndio Story",
+      "ms": 4190,
+      "bytes": 69038,
+      "notFoundBody": true
+    },
+    {
+      "path": "/learn/forum/",
+      "status": 200,
+      "finalUrl": "/learn/forum/",
+      "kind": "ok",
+      "title": "Community Forum | Budget Ndio Story",
+      "ms": 5894,
+      "bytes": 70223,
+      "notFoundBody": true
+    },
+    {
+      "path": "/learn/alerts/",
+      "status": 200,
+      "finalUrl": "/learn/alerts/",
+      "kind": "ok",
+      "title": "Participation Alerts | Budget Ndio Story",
+      "ms": 4515,
+      "bytes": 69008,
+      "notFoundBody": true
+    },
+    {
+      "path": "/learn/profile/",
+      "status": 200,
+      "finalUrl": "/learn/profile/",
+      "kind": "ok",
+      "title": "Learning Profile | Budget Ndio Story",
+      "ms": 6704,
+      "bytes": 68925,
+      "notFoundBody": true
+    },
+    {
+      "path": "/learn/account/",
+      "status": 200,
+      "finalUrl": "/learn/account/",
+      "kind": "ok",
+      "title": "Account Settings — Budget Ndio Story | Budget Ndio Story",
+      "ms": 25581,
+      "bytes": 66814,
+      "notFoundBody": true
+    },
+    {
+      "path": "/learn/account/notifications/",
+      "status": 200,
+      "finalUrl": "/learn/account/notifications/",
+      "kind": "ok",
+      "title": "Account Settings — Budget Ndio Story | Budget Ndio Story",
+      "ms": 12606,
+      "bytes": 67533,
+      "notFoundBody": true
+    },
+    {
+      "path": "/learn/account/password/",
+      "status": 200,
+      "finalUrl": "/learn/account/password/",
+      "kind": "ok",
+      "title": "Account Settings — Budget Ndio Story | Budget Ndio Story",
+      "ms": 3851,
+      "bytes": 67498,
+      "notFoundBody": true
+    },
+    {
+      "path": "/learn/account/sign-out/",
+      "status": 200,
+      "finalUrl": "/learn/account/sign-out/",
+      "kind": "ok",
+      "title": "Account Settings — Budget Ndio Story | Budget Ndio Story",
+      "ms": 5910,
+      "bytes": 67498,
+      "notFoundBody": true
+    },
+    {
+      "path": "/learn/analytics/",
+      "status": 200,
+      "finalUrl": "/learn/analytics/",
+      "kind": "ok",
+      "title": "Learn Kenya&#x27;s Budget | Budget Ndio Story",
+      "ms": 19211,
+      "bytes": 82517,
+      "notFoundBody": true
+    },
+    {
+      "path": "/learn/articles/",
+      "status": 200,
+      "finalUrl": "/learn/articles/",
+      "kind": "ok",
+      "title": "Budget Articles &amp; Explainers | Budget Ndio Story | Budget Ndio Story",
+      "ms": 9811,
+      "bytes": 70586,
+      "notFoundBody": true
+    },
+    {
+      "path": "/learn/videos/",
+      "status": 200,
+      "finalUrl": "/learn/videos/",
+      "kind": "ok",
+      "title": "Budget Explainers &amp; Video Series | Budget Ndio Story | Budget Ndio Story",
+      "ms": 34016,
+      "bytes": 69546,
+      "notFoundBody": true
+    },
+    {
+      "path": "/learn/stories/",
+      "status": 200,
+      "finalUrl": "/learn/stories/",
+      "kind": "ok",
+      "title": "Civic Stories &amp; Budget Narratives | Budget Ndio Story | Budget Ndio Story",
+      "ms": 3085,
+      "bytes": 70548,
+      "notFoundBody": true
+    },
+    {
+      "path": "/learn/quests/",
+      "status": 200,
+      "finalUrl": "/learn/quests/",
+      "kind": "ok",
+      "title": "Budget Trivia &amp; Learning Quests | Budget Ndio Story | Budget Ndio Story",
+      "ms": 2982,
+      "bytes": 67630,
+      "notFoundBody": true
+    },
+    {
+      "path": "/auth/login/",
+      "status": 200,
+      "finalUrl": "/auth/login/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 16062,
+      "bytes": 41684,
+      "notFoundBody": true
+    },
+    {
+      "path": "/auth/register/",
+      "status": 200,
+      "finalUrl": "/auth/register/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 13066,
+      "bytes": 41688,
+      "notFoundBody": true
+    },
+    {
+      "path": "/auth/verify/",
+      "status": 200,
+      "finalUrl": "/auth/verify/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 8461,
+      "bytes": 42091,
+      "notFoundBody": true
+    },
+    {
+      "path": "/auth/reset/",
+      "status": 200,
+      "finalUrl": "/auth/reset/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 4191,
+      "bytes": 43809,
+      "notFoundBody": true
+    },
+    {
+      "path": "/auth/forgot-password/",
+      "status": 200,
+      "finalUrl": "/auth/forgot-password/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 8048,
+      "bytes": 55121,
+      "notFoundBody": true
+    },
+    {
+      "path": "/offline/",
+      "status": 200,
+      "finalUrl": "/offline/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 6274,
+      "bytes": 28127,
+      "notFoundBody": true
+    },
+    {
+      "path": "/team/movine-omondi/",
+      "status": 200,
+      "finalUrl": "/team/movine-omondi/",
+      "kind": "ok",
+      "title": "Movine Omondi | Budget Ndio Story",
+      "ms": 6774,
+      "bytes": 57863,
+      "notFoundBody": true
+    },
+    {
+      "path": "/team/peculiar-koros/",
+      "status": 200,
+      "finalUrl": "/team/peculiar-koros/",
+      "kind": "ok",
+      "title": "Peculiar Koros | Budget Ndio Story",
+      "ms": 320,
+      "bytes": 57666,
+      "notFoundBody": true
+    },
+    {
+      "path": "/team/not-a-real-person-xyz/",
+      "status": 200,
+      "finalUrl": "/team/not-a-real-person-xyz/",
+      "kind": "missing",
+      "title": "Team Member Not Found",
+      "ms": 229,
+      "bytes": 59548,
+      "notFoundBody": true
+    },
+    {
+      "path": "/insights/",
+      "status": 404,
+      "finalUrl": "/insights/",
+      "kind": "missing",
+      "title": "Page Not Found | Budget Ndio Story",
+      "ms": 4041,
+      "bytes": 32357,
+      "notFoundBody": true
+    },
+    {
+      "path": "/partners/",
+      "status": 404,
+      "finalUrl": "/partners/",
+      "kind": "missing",
+      "title": "Page Not Found | Budget Ndio Story",
+      "ms": 126,
+      "bytes": 32357,
+      "notFoundBody": true
+    },
+    {
+      "path": "/trivia/",
+      "status": 200,
+      "finalUrl": "/learn/",
+      "kind": "ok",
+      "title": "Learn Hub — FY2026/27 Budget Sector Breakdown | Budget Ndio Story",
+      "ms": 7843,
+      "bytes": 69468,
+      "notFoundBody": true
+    },
+    {
+      "path": "/learn/paths/",
+      "status": 200,
+      "finalUrl": "/learn/paths/",
+      "kind": "ok",
+      "title": "Learn: paths | Budget Ndio Story | Budget Ndio Story",
+      "ms": 8693,
+      "bytes": 68868,
+      "notFoundBody": true
+    },
+    {
+      "path": "/dashboard/",
+      "status": 404,
+      "finalUrl": "/dashboard/",
+      "kind": "missing",
+      "title": "Page Not Found | Budget Ndio Story",
+      "ms": 160,
+      "bytes": 32358,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/communication/email-hooks/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/communication/email-hooks/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 23162,
+      "bytes": 86913,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/",
+      "status": 200,
+      "finalUrl": "/admin/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 3406,
+      "bytes": 39266,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 4257,
+      "bytes": 75163,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/auth/v1/login/",
+      "status": 200,
+      "finalUrl": "/admin/auth/v1/login/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 12588,
+      "bytes": 45756,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/auth/v2/login/",
+      "status": 200,
+      "finalUrl": "/admin/auth/v2/login/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 4544,
+      "bytes": 49797,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/modules/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/modules/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 5756,
+      "bytes": 82650,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/modules/new/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/modules/new/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 8702,
+      "bytes": 83802,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/stories/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/stories/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 4787,
+      "bytes": 82650,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/forum/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/forum/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 4582,
+      "bytes": 81265,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/surveys/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/surveys/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 6802,
+      "bytes": 81295,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/trivia/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/trivia/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 6313,
+      "bytes": 81286,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/events/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/events/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 4673,
+      "bytes": 81286,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/settings/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/settings/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 8243,
+      "bytes": 86339,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/communication/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/communication/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 4617,
+      "bytes": 86215,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/users/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/users/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 11975,
+      "bytes": 80336,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/authors/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/authors/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 4752,
+      "bytes": 80354,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/media/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/media/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 6785,
+      "bytes": 82632,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/knowledge/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/knowledge/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 8305,
+      "bytes": 82668,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/courses/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/courses/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 8038,
+      "bytes": 82650,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/docrepository/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/docrepository/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 8902,
+      "bytes": 76456,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/engagement/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/engagement/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 5122,
+      "bytes": 81322,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/feedback/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/feedback/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 10003,
+      "bytes": 82659,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/partners/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/partners/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 4883,
+      "bytes": 86339,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/roles/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/roles/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 8255,
+      "bytes": 86300,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/gamification/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/gamification/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 14784,
+      "bytes": 86375,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/studio/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/studio/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 6570,
+      "bytes": 86321,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/ke-budget/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/ke-budget/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 6109,
+      "bytes": 86348,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/invoices/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/invoices/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 11771,
+      "bytes": 86339,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/privacy/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/privacy/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 14630,
+      "bytes": 78930,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/security/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/security/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 7154,
+      "bytes": 78939,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/social/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/social/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 13161,
+      "bytes": 86152,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/content/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/content/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 16148,
+      "bytes": 76379,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/analytics/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/analytics/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 15518,
+      "bytes": 76416,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/invitations/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/invitations/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 6045,
+      "bytes": 80402,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/task/",
+      "status": 200,
+      "finalUrl": "/admin/dashboard/task/",
+      "kind": "ok",
+      "title": "Budget Ndio Story | Youth-Led Budget Literacy in Kenya",
+      "ms": 12825,
+      "bytes": 78738,
+      "notFoundBody": true
+    },
+    {
+      "path": "/admin/dashboard/notes/",
+      "status": 0,
+      "kind": "unreachable",
+      "finalUrl": "/admin/dashboard/notes/",
+      "title": "",
+      "ms": 2352,
+      "bytes": 0,
+      "error": "fetch failed"
+    },
+    {
+      "path": "/admin/dashboard/calendar/",
+      "status": 0,
+      "kind": "unreachable",
+      "finalUrl": "/admin/dashboard/calendar/",
+      "title": "",
+      "ms": 4,
+      "bytes": 0,
+      "error": "fetch failed"
+    },
+    {
+      "path": "/admin/dashboard/coming-soon/",
+      "status": 0,
+      "kind": "unreachable",
+      "finalUrl": "/admin/dashboard/coming-soon/",
+      "title": "",
+      "ms": 2,
+      "bytes": 0,
+      "error": "fetch failed"
+    }
+  ],
+  "note": "reclassified by status+title"
+}

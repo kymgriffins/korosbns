@@ -22,7 +22,8 @@ const partnerVisual = PROGRAMMES.find((p) => p.slug === "studios")?.visual.hero
 
 /**
  * Shared Partner CTA for /programmes and programme detail.
- * Scrubbed media + staggered content — reduced-motion sees static layout.
+ * Scenic closing beat: pin+scrub on desktop, light parallax on mobile.
+ * Reduced-motion sees a static, readable layout.
  */
 export function ProgrammePartnerCta({ className }: { className?: string }) {
   const rootRef = useRef<HTMLElement>(null);
@@ -33,45 +34,83 @@ export function ProgrammePartnerCta({ className }: { className?: string }) {
       const root = rootRef.current;
       if (!root || reduced) return;
 
-      const media = root.querySelector("[data-partner-media]");
-      const items = root.querySelectorAll("[data-partner-content] > *");
+      const media = root.querySelector<HTMLElement>("[data-partner-media]");
+      const items = root.querySelectorAll<HTMLElement>("[data-partner-content] > *");
 
-      if (media) {
-        gsap.fromTo(
-          media,
-          { scale: 1.14, yPercent: -4 },
-          {
-            scale: 1,
-            yPercent: 0,
-            ease: "none",
-            scrollTrigger: {
-              trigger: root,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: 0.6,
-            },
-          },
-        );
-      }
+      const mm = gsap.matchMedia();
 
-      if (items.length) {
-        gsap.fromTo(
-          items,
-          { autoAlpha: 0, y: 36 },
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.8,
-            stagger: 0.1,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: root,
-              start: "top 78%",
-              once: true,
-            },
+      mm.add("(min-width: 768px)", () => {
+        const tl = gsap.timeline({
+          defaults: { ease: "none" },
+          scrollTrigger: {
+            trigger: root,
+            start: "top top",
+            end: "+=90%",
+            pin: true,
+            scrub: 0.8,
+            anticipatePin: 1,
           },
-        );
-      }
+        });
+
+        if (media) {
+          tl.fromTo(
+            media,
+            { scale: 1.16, yPercent: -5 },
+            { scale: 1, yPercent: 0 },
+            0,
+          );
+        }
+
+        if (items.length) {
+          tl.fromTo(
+            items,
+            { autoAlpha: 0, y: 44 },
+            { autoAlpha: 1, y: 0, stagger: 0.07 },
+            0.15,
+          );
+        }
+      });
+
+      mm.add("(max-width: 767px)", () => {
+        if (media) {
+          gsap.fromTo(
+            media,
+            { scale: 1.1, yPercent: -3 },
+            {
+              scale: 1,
+              yPercent: 0,
+              ease: "none",
+              scrollTrigger: {
+                trigger: root,
+                start: "top bottom",
+                end: "bottom top",
+                scrub: 0.55,
+              },
+            },
+          );
+        }
+
+        if (items.length) {
+          gsap.fromTo(
+            items,
+            { autoAlpha: 0, y: 32 },
+            {
+              autoAlpha: 1,
+              y: 0,
+              duration: 0.75,
+              stagger: 0.09,
+              ease: "power3.out",
+              scrollTrigger: {
+                trigger: root,
+                start: "top 78%",
+                once: true,
+              },
+            },
+          );
+        }
+      });
+
+      return () => mm.revert();
     },
     { scope: rootRef, dependencies: [reduced] },
   );
@@ -81,7 +120,7 @@ export function ProgrammePartnerCta({ className }: { className?: string }) {
       ref={rootRef}
       aria-labelledby="partner-cta-heading"
       className={cn(
-        "relative isolate overflow-hidden border-y border-border/40",
+        "relative isolate flex min-h-[100svh] items-center overflow-hidden border-y border-border/40",
         className,
       )}
     >
@@ -97,14 +136,14 @@ export function ProgrammePartnerCta({ className }: { className?: string }) {
             />
           </div>
         ) : null}
-        <div className="absolute inset-0 bg-background/92" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/55" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/35" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/70 to-transparent" />
       </div>
 
       <div
         className={cn(
           SECTION_SHELL_INNER,
-          "flex min-h-[min(52svh,28rem)] flex-col justify-center py-16 md:min-h-[min(48svh,32rem)] md:py-24",
+          "relative z-10 flex w-full flex-col justify-center py-16 md:py-20",
         )}
       >
         <div
@@ -128,7 +167,7 @@ export function ProgrammePartnerCta({ className }: { className?: string }) {
               href={PROGRAMMES_CLOSING.cta.href}
               className={cn(
                 T.btnPrimary,
-                "inline-flex h-11 items-center gap-2 rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                "inline-flex h-11 items-center gap-2 rounded-[10px] bg-primary px-6 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               )}
             >
               {PROGRAMMES_CLOSING.cta.label}
