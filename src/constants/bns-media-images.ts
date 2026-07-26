@@ -1,23 +1,10 @@
-/** Local public assets — names reflect intended use across landing & studio. */
-export const BNS_MEDIA_IMAGES = {
-  main: "/images/media/main%20media%20image.jpg",
-  productionA: "/images/media/129A3905.jpg",
-  productionB: "/images/media/129A4039.jpg",
-  hall: "/images/hall/129A4248.jpg",
-} as const;
+/**
+ * @deprecated Prefer `@/content` media JSON — kept as a compatibility shim.
+ */
+import { mediaContent } from "@/content";
 
-export const BNS_COMMUNITY_IMAGES = {
-  forumA: "/images/towwnhallmay/129A3863.jpg",
-  forumB: "/images/towwnhallmay/129A3912.jpg",
-  forumC: "/images/towwnhallmay/129A3923.jpg",
-  forumD: "/images/towwnhallmay/129A4056.jpg",
-  forumE: "/images/towwnhallmay/129A4094.jpg",
-  cohortA: "/images/cohort1 groundworks/129A3964.jpg",
-  cohortB: "/images/cohort1 groundworks/129A3987.jpg",
-  stakeholdersA: "/images/stakeholders/129A4094.jpg",
-  stakeholdersB: "/images/stakeholders/129A4113.jpg",
-  stakeholdersC: "/images/stakeholders/129A4164.jpg",
-} as const;
+export const BNS_MEDIA_IMAGES = mediaContent.media;
+export const BNS_COMMUNITY_IMAGES = mediaContent.community;
 
 export const BNS_STUDIO_PORTFOLIO_IMAGES = [
   {

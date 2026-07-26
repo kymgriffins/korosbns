@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { ArrowRight, Loader2, MessageSquare, Send } from "lucide-react";
 import {
   IconBrandFacebook,
@@ -16,6 +17,7 @@ import Balancer from "react-wrap-balancer";
 import { toast } from "sonner";
 import Wrapper from "@/components/global/wrapper";
 import { useOrg } from "@/contexts/org-context";
+import { CONTACT_INTENT_COPY } from "@/constants/programmes-content";
 import { citizenApi } from "@/lib/api-client";
 import { ApiRequestError } from "@/lib/api-errors";
 import { Button } from "@/components/ui/button";
@@ -36,10 +38,17 @@ const socials = [
 
 export default function ContactPage() {
   const { config } = useOrg();
+  const searchParams = useSearchParams();
+  const intentKey = searchParams.get("intent")?.trim().toLowerCase() ?? "";
+  const intent = CONTACT_INTENT_COPY[intentKey];
   const contactEmail = config?.contact?.email || "info@budgetndiostory.org";
   const [isSending, setIsSending] = useState(false);
-  const [formExpanded, setFormExpanded] = useState(false);
-  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [formExpanded, setFormExpanded] = useState(Boolean(intent));
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: intent?.messagePrefill ?? "",
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,7 +62,7 @@ export default function ContactPage() {
         name: formData.name,
         email: formData.email,
         message: formData.message,
-        source: "contact-page",
+        source: intentKey ? `contact-page:${intentKey}` : "contact-page",
       });
       toast.success("Message sent! We'll reply within 48 hours.");
       setFormData({ name: "", email: "", message: "" });
@@ -84,13 +93,19 @@ export default function ContactPage() {
           <div className="mx-auto w-full max-w-2xl space-y-8 px-4 sm:space-y-10 sm:px-6">
             <div className="space-y-3 text-center">
               <h1 className="font-heading text-3xl font-bold tracking-tight sm:text-5xl">
-                Let&apos;s talk{" "}
-                <span className="text-primary">Budget Stories.</span>
+                {intent ? (
+                  intent.title
+                ) : (
+                  <>
+                    Let&apos;s talk{" "}
+                    <span className="text-primary">Budget Stories.</span>
+                  </>
+                )}
               </h1>
               <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground sm:text-base">
                 <Balancer>
-                  Have a question or want to collaborate? We read every message and
-                  typically reply within 48 hours.
+                  {intent?.blurb ??
+                    "Have a question or want to collaborate? We read every message and typically reply within 48 hours."}
                 </Balancer>
               </p>
             </div>

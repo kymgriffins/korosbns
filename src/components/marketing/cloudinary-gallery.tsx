@@ -2,22 +2,21 @@
 
 import React from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
-import { Routes } from "@/constants/routes";
+import { landingContent } from "@/content";
 import {
   LandingContent,
   LandingSection,
   LandingSectionHeader,
 } from "@/layouts/landing-section";
+import {
+  LandingSeeMore,
+  LandingSectionCta,
+} from "@/components/marketing/landing-see-more";
 import { Marquee } from "@/components/ui/marquee";
 import { useCohortImages } from "@/hooks/use-marketing";
 
-const PROJECT_NAMES = [
-  "Budget Literacy Programme",
-  "County Budget Tracking",
-  "Public Participation Hub",
-] as const;
+const PROJECT_NAMES = landingContent.gallery.projectNames;
 
 interface CloudinaryImage {
   src: string;
@@ -42,26 +41,30 @@ const CloudinaryGallery = () => {
   return (
     <LandingSection className="overflow-x-hidden" innerClassName="mb-0">
       <LandingSectionHeader
-        eyebrow="Visual Impact"
         title={
           <>
-            Documenting the{" "}
-            <span className={T.highlight}>Movement</span> in the field.
+            {landingContent.gallery.titleBefore}{" "}
+            <span className={T.highlight}>{landingContent.gallery.titleHighlight}</span>{" "}
+            {landingContent.gallery.titleAfter}
           </>
         }
-        description="Explore moments from our civic workshops, townhalls, and community engagements across the country as we empower citizens to take action."
+        description={landingContent.gallery.description}
       />
 
       <LandingContent>
-        <Link href={Routes.Projects} className="block cursor-pointer" aria-label="View our projects">
-          <div className="py-4">
-            <Marquee pauseOnHover className="py-4 [--duration:70s] [--gap:1.5rem]">
-              {images.map((image, i) => (
-                <GalleryItem key={i} image={image} index={i} />
-              ))}
-            </Marquee>
-          </div>
-        </Link>
+        <div className="py-2">
+          <Marquee pauseOnHover className="py-2 [--duration:70s] [--gap:1.5rem]">
+            {images.map((image, i) => (
+              <GalleryItem key={i} image={image} index={i} />
+            ))}
+          </Marquee>
+        </div>
+        <LandingSectionCta>
+          <LandingSeeMore
+            href={landingContent.gallery.seeMoreHref}
+            label={landingContent.gallery.seeMoreLabel}
+          />
+        </LandingSectionCta>
       </LandingContent>
     </LandingSection>
   );
@@ -81,8 +84,8 @@ const GalleryItem = ({ image, index }: { image: CloudinaryImage; index: number }
         className="object-cover transition-transform duration-700 hover:scale-105"
         sizes="(max-width: 768px) 260px, 350px"
       />
-      <div className="absolute inset-0 flex items-end bg-black/50 p-6">
-        <p className="text-sm font-semibold text-white">{projectName}</p>
+      <div className="absolute inset-0 flex items-end bg-gradient-to-t from-background/90 via-background/20 to-transparent p-6">
+        <p className="text-sm font-semibold text-foreground">{projectName}</p>
       </div>
     </div>
   );

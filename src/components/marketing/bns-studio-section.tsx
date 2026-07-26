@@ -1,134 +1,62 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { BNS_STUDIO_LANDING_SHOWCASE } from "@/constants/bns-studio-content";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
+import { landingContent } from "@/content";
+import {
+  LandingSeeMore,
+  LandingSectionCta,
+} from "@/components/marketing/landing-see-more";
 import {
   LandingContent,
   LandingSection,
   LandingSectionHeader,
 } from "@/layouts/landing-section";
+import { GsapReveal } from "@/motion/gsap";
 import { cn } from "@/utils";
-import { motion } from "motion/react";
 
+/** Single Studios fold on the homepage — one story, one CTA. */
 export function BNSStudioSection() {
+  const strip = landingContent.studioStrip;
+  const featured = BNS_STUDIO_LANDING_SHOWCASE[0];
+
   return (
     <LandingSection className="overflow-hidden">
       <LandingSectionHeader
-        eyebrow="BNS Studio"
         title={
           <>
-            Professional media production for{" "}
-            <span className={T.highlight}>storytellers</span>
+            {strip.titleBefore}{" "}
+            <span className={T.highlight}>{strip.titleHighlight}</span>
           </>
         }
-        description="From budget explainers to brand documentaries — videography, photography, studio rental, and post-production. Revenue supports our civic education mission."
+        description={strip.description}
       />
 
       <LandingContent>
-        <div className="border-x border-b border-border">
-          {BNS_STUDIO_LANDING_SHOWCASE.map((service, index) => {
-            const isEven = index % 2 === 0;
-            const Icon = service.icon;
-
-            return (
-              <div
-                key={service.name}
-                className="grid grid-cols-1 items-center gap-6 border-t border-border md:grid-cols-2 md:gap-0"
-              >
-                <div
-                  className={cn(
-                    "flex flex-col justify-center p-4 sm:p-6 md:p-10 lg:p-12",
-                    isEven ? "md:items-end md:text-right" : "md:order-2",
-                  )}
-                >
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-80px" }}
-                    transition={{ duration: 0.5, delay: 0.1 }}
-                    className="max-w-md space-y-3 sm:space-y-4"
-                  >
-                    <div className={cn(T.inlineTitle, isEven && T.inlineTitleEnd)}>
-                      <div className={T.inlineIcon}>
-                        <Icon className="size-4 sm:size-5" />
-                      </div>
-                      <h3 className={cn(T.itemTitle, "min-w-0 text-xl sm:text-2xl md:text-3xl lg:text-4xl")}>
-                        {service.name}
-                      </h3>
-                    </div>
-                    <p className={T.caption}>{service.description}</p>
-                    <ul
-                      className={cn(
-                        "flex flex-wrap gap-2",
-                        isEven ? "md:justify-end" : "justify-start",
-                      )}
-                    >
-                      {service.features.map((feature) => (
-                        <li
-                          key={feature}
-                          className="rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-foreground/70"
-                        >
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                  </motion.div>
-                </div>
-
-                <div
-                  className={cn(
-                    "flex items-center justify-center p-4 sm:p-6 md:p-10 lg:p-12",
-                    isEven ? "md:order-2" : "",
-                  )}
-                >
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.96 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true, margin: "-80px" }}
-                    transition={{ duration: 0.5 }}
-                    className="relative aspect-4/3 w-full overflow-hidden rounded-2xl border border-border/60"
-                  >
-                    <Image
-                      src={service.image}
-                      alt={`${service.name} — BNS Studio production`}
-                      fill
-                      className="object-cover"
-                      style={{ objectPosition: service.imagePosition ?? "center" }}
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                    />
-                  </motion.div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="border-x border-border px-6 py-10 md:px-10 md:py-14 lg:px-16 lg:py-16">
-          <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 text-center">
-            <p className={T.body}>
-              Book a shoot, browse recent work, or request a quote — every production
-              booking helps fund civic storytelling across Kenya.
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <Link href="/bns-studio#booking">
-                <Button size="lg" className={cn(T.btnPrimary, "gap-2")}>
-                  Book a Shoot <ArrowRight className="size-4" />
-                </Button>
-              </Link>
-              <Link href="/bns-studio#portfolio">
-                <Button size="lg" variant="outline" className={T.btnPrimary}>
-                  View Portfolio
-                </Button>
-              </Link>
+        <div className="grid items-center gap-8 md:grid-cols-12 md:gap-10">
+          <GsapReveal className="md:col-span-6">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border/50 md:rounded-[1.5rem]">
+              <Image
+                src={featured.image}
+                alt={`${featured.name} — BNS Studios production`}
+                fill
+                className="object-cover object-[center_top]"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
             </div>
-          </div>
-        </div>
+          </GsapReveal>
 
-        <div className="h-18 border-x border-t border-border md:h-28" />
+          <GsapReveal y={24} className="flex flex-col gap-5 md:col-span-6">
+            <p className={cn(T.body, "max-w-xl")}>{strip.highlight}</p>
+            <LandingSectionCta className="mt-0 md:mt-2">
+              <LandingSeeMore
+                href={strip.seeMoreHref}
+                label={strip.seeMoreLabel}
+              />
+            </LandingSectionCta>
+          </GsapReveal>
+        </div>
       </LandingContent>
     </LandingSection>
   );

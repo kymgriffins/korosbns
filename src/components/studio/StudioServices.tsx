@@ -1,8 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "motion/react";
-import { fadeInUp, staggerContainer } from "@/motion/variants";
 import { CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BNS_STUDIO_PAGE_SERVICES } from "@/constants/bns-studio-content";
@@ -12,7 +10,16 @@ import {
   LandingSection,
   LandingSectionHeader,
 } from "@/layouts/landing-section";
+import { GsapReveal } from "@/motion/gsap";
 import { cn } from "@/utils";
+
+const OBJECT_POSITION: Record<string, string> = {
+  center: "object-center",
+  top: "object-top",
+  "center top": "object-[center_top]",
+  "center 20%": "object-[center_20%]",
+  "center 15%": "object-[center_15%]",
+};
 
 export function StudioServices() {
   return (
@@ -32,31 +39,32 @@ export function StudioServices() {
           {BNS_STUDIO_PAGE_SERVICES.map((service, index) => {
             const isEven = index % 2 === 0;
             const Icon = service.icon;
+            const objectPos =
+              OBJECT_POSITION[service.imagePosition ?? "center"] ?? "object-center";
 
             return (
               <div
                 key={service.name}
                 className="grid grid-cols-1 items-stretch border-t border-border md:grid-cols-2"
               >
-                <div
+                <GsapReveal
                   className={cn(
                     "flex flex-col justify-center p-4 sm:p-6 md:p-10 lg:p-12",
                     isEven ? "md:items-end md:text-right" : "md:order-2",
                   )}
                 >
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-80px" }}
-                    transition={{ duration: 0.45, delay: 0.05 }}
-                    className="flex max-w-md flex-col gap-3 sm:gap-4"
-                  >
+                  <div className="flex max-w-md flex-col gap-3 sm:gap-4">
                     <div className={cn(T.inlineTitle, isEven && T.inlineTitleEnd)}>
                       <div className={T.inlineIcon}>
                         <Icon className="size-4 sm:size-5" />
                       </div>
                       <div className="min-w-0">
-                        <h3 className={cn(T.itemTitle, "text-xl sm:text-2xl md:text-3xl lg:text-4xl")}>
+                        <h3
+                          className={cn(
+                            T.itemTitle,
+                            "text-xl sm:text-2xl md:text-3xl lg:text-4xl",
+                          )}
+                        >
                           {service.name}
                         </h3>
                         <p className={cn(T.role, "mt-0.5")}>{service.price}</p>
@@ -82,38 +90,35 @@ export function StudioServices() {
                         variant="outline"
                         className={T.btnPrimary}
                         onClick={() =>
-                          document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" })
+                          document
+                            .getElementById("booking")
+                            ?.scrollIntoView({ behavior: "smooth" })
                         }
                       >
                         Book {service.name}
                       </Button>
                     </div>
-                  </motion.div>
-                </div>
+                  </div>
+                </GsapReveal>
 
-                <div
+                <GsapReveal
+                  y={24}
+                  delay={0.08}
                   className={cn(
                     "flex items-center justify-center p-6 md:p-10 lg:p-12",
                     isEven ? "md:order-2" : "",
                   )}
                 >
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.96 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true, margin: "-80px" }}
-                    transition={{ duration: 0.45 }}
-                    className="relative aspect-4/3 w-full overflow-hidden rounded-2xl border border-border/60"
-                  >
+                  <div className="relative aspect-4/3 w-full overflow-hidden rounded-2xl border border-border/60">
                     <Image
                       src={service.image}
-                      alt={`${service.name} — BNS Studio`}
+                      alt={`${service.name} — BNS Studios`}
                       fill
-                      className="object-cover"
-                      style={{ objectPosition: service.imagePosition ?? "center" }}
+                      className={cn("object-cover", objectPos)}
                       sizes="(max-width: 768px) 100vw, 50vw"
                     />
-                  </motion.div>
-                </div>
+                  </div>
+                </GsapReveal>
               </div>
             );
           })}

@@ -2,20 +2,28 @@ import { Routes } from "./routes";
 
 export const NAV_LINKS = [
   {
-    label: "Projects",
-    href: Routes.Projects,
+    label: "Programmes",
+    href: Routes.Programmes,
   },
   {
     label: "Learn",
     href: Routes.Learn,
   },
   {
-    label: "Surveys",
-    href: Routes.Surveys,
+    label: "About",
+    href: Routes.About,
   },
   {
     label: "Reports",
     href: Routes.Reports,
+  },
+  {
+    label: "Studios",
+    href: Routes.BNSStudio,
+  },
+  {
+    label: "Surveys",
+    href: Routes.Surveys,
   },
   {
     label: "Events",
@@ -33,7 +41,7 @@ export const NAV_LINKS = [
 
 export const footerLinks = {
   product: [
-    { label: "Projects", href: Routes.Projects },
+    { label: "Programmes", href: Routes.Programmes },
     { label: "Stories", href: Routes.Learn },
     { label: "Explainers", href: Routes.Capabilities },
     { label: "Get Involved", href: "/about" },
@@ -51,8 +59,8 @@ export const footerLinks = {
     { label: "Team", href: "/about" },
     { label: "Careers", href: Routes.Careers },
     { label: "Media", href: "/about" },
-    { label: "Partners", href: "/about" },
-    { label: "BNS Studio", href: Routes.BNSStudio },
+    { label: "Partners", href: "/programmes" },
+    { label: "BNS Studios", href: Routes.BNSStudio },
   ],
 };
 

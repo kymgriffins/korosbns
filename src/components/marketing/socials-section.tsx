@@ -4,12 +4,17 @@ import { useState } from "react";
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import bnsConfig from "@/constants/bnsConfig.json";
+import { landingContent, socialsContent } from "@/content";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import {
   LandingContent,
   LandingSection,
   LandingSectionHeader,
 } from "@/layouts/landing-section";
+import {
+  LandingSeeMore,
+  LandingSectionCta,
+} from "@/components/marketing/landing-see-more";
 import {
   FacebookIcon,
   InstagramIcon,
@@ -32,67 +37,23 @@ type SocialPlatform = {
   icon: React.ComponentType<{ className?: string }>;
 };
 
+const PLATFORM_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  x: XIcon,
+  twitter: XIcon,
+  youtube: YouTubeIcon,
+  tiktok: TikTokIcon,
+  instagram: InstagramIcon,
+  linkedin: LinkedInIcon,
+  facebook: FacebookIcon,
+  whatsapp: WhatsAppIcon,
+};
+
 const PLATFORM_META: Record<
   string,
-  Omit<SocialPlatform, "id" | "name" | "url">
-> = {
-  x: {
-    handle: "@budgetndiostory",
-    stat: "Policy takes & threads",
-    cta: "Follow",
-    accent: "bg-foreground text-background",
-    icon: XIcon,
-  },
-  twitter: {
-    handle: "@budgetndiostory",
-    stat: "Policy takes & threads",
-    cta: "Follow",
-    accent: "bg-foreground text-background",
-    icon: XIcon,
-  },
-  youtube: {
-    handle: "@budgetndiostory",
-    stat: "Budget Mtaani series",
-    cta: "Subscribe",
-    accent: "bg-red-600 text-white",
-    icon: YouTubeIcon,
-  },
-  tiktok: {
-    handle: "@budget.ndio.story",
-    stat: "1.2M+ content views",
-    cta: "Follow",
-    accent: "bg-foreground text-background",
-    icon: TikTokIcon,
-  },
-  instagram: {
-    handle: "@budgetndiostory",
-    stat: "Reels & field stories",
-    cta: "Follow",
-    accent: "bg-gradient-to-br from-amber-500 via-rose-500 to-violet-600 text-white",
-    icon: InstagramIcon,
-  },
-  linkedin: {
-    handle: "Budget Ndio Story",
-    stat: "Org & partnership news",
-    cta: "Follow",
-    accent: "bg-sky-700 text-white",
-    icon: LinkedInIcon,
-  },
-  facebook: {
-    handle: "Budget Ndio Story",
-    stat: "Community updates",
-    cta: "Follow",
-    accent: "bg-blue-600 text-white",
-    icon: FacebookIcon,
-  },
-  whatsapp: {
-    handle: "+254 790 631 623",
-    stat: "Usually replies in minutes",
-    cta: "Chat",
-    accent: "bg-emerald-600 text-white",
-    icon: WhatsAppIcon,
-  },
-};
+  Omit<SocialPlatform, "id" | "name" | "url" | "icon">
+> = Object.fromEntries(
+  Object.entries(socialsContent.platforms).map(([id, meta]) => [id, meta]),
+);
 
 function buildPlatforms(): SocialPlatform[] {
   const fromConfig = (bnsConfig.platforms ?? [])
@@ -100,11 +61,13 @@ function buildPlatforms(): SocialPlatform[] {
     .map((p) => {
       const key = p.name.toLowerCase();
       const meta = PLATFORM_META[key];
-      if (!meta) return null;
+      const icon = PLATFORM_ICONS[key];
+      if (!meta || !icon) return null;
       return {
         id: key,
         name: p.name === "X" ? "X" : p.name,
         url: p.url,
+        icon,
         ...meta,
       } satisfies SocialPlatform;
     })
@@ -118,6 +81,7 @@ function buildPlatforms(): SocialPlatform[] {
       id: key,
       name: key === "x" ? "X" : key.charAt(0).toUpperCase() + key.slice(1),
       url: "#",
+      icon: PLATFORM_ICONS[key]!,
       ...meta,
     }));
 }
@@ -197,14 +161,14 @@ export function SocialsSection() {
   return (
     <LandingSection>
       <LandingSectionHeader
-        eyebrow="Stay connected"
+        eyebrow={landingContent.socials.eyebrow}
         title={
           <>
-            Find us where{" "}
-            <span className={T.highlight}>you already scroll</span>
+            {landingContent.socials.titleBefore}{" "}
+            <span className={T.highlight}>{landingContent.socials.titleHighlight}</span>
           </>
         }
-        description="Hover a channel to see the handle and what we post — then follow in one click."
+        description={landingContent.socials.description}
       />
 
       <LandingContent>
@@ -259,6 +223,14 @@ export function SocialsSection() {
             );
           })}
         </ul>
+
+        <LandingSectionCta>
+          <LandingSeeMore
+            href={landingContent.socials.seeMoreHref}
+            label={landingContent.socials.seeMoreLabel}
+            external
+          />
+        </LandingSectionCta>
       </LandingContent>
     </LandingSection>
   );

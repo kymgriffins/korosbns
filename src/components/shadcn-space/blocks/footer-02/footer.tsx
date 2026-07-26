@@ -13,14 +13,14 @@ import {
 } from "@/lib/newsletter-subscribe";
 
 const footerLinks = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
+  { label: "Programmes", href: "/programmes" },
   { label: "Learn", href: "/learn" },
-  { label: "Budget News", href: "/budgetnews" },
+  { label: "Reports", href: "/reports" },
+  { label: "BNS Studios", href: "/bns-studio" },
+  { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
-  { label: "Team", href: "/team" },
+  { label: "Events", href: "/events" },
   { label: "FAQ", href: "/faq" },
-  { label: "Privacy", href: "/privacy" },
 ];
 
 export default function Footer() {
