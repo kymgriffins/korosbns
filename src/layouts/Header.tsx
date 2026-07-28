@@ -124,7 +124,7 @@ export function Header() {
             >
               <span className="relative flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white">
                 <Image
-                  src="/icons/icon.svg"
+                  src="/logo.svg"
                   alt=""
                   width={28}
                   height={28}
