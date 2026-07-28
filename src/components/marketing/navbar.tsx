@@ -101,9 +101,10 @@ const Navbar = () => {
                   <Image
                     src="/logo.svg"
                     alt="Budget Ndio Story"
-                    width={140}
-                    height={28}
-                    className="w-auto h-5 lg:h-6 transition-all group-hover:brightness-110"
+                    width={180}
+                    height={50}
+                    className="w-auto h-8 lg:h-10 transition-all group-hover:brightness-110"
+                    priority
                   />
                 </motion.div>
               </Link>
