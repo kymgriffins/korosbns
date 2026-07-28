@@ -147,7 +147,7 @@ function ProgrammeScenicStage({ programme, index }: ScenicStageProps) {
       ref={rootRef}
       id={programme.slug}
       aria-labelledby={`${programme.slug}-scenic-heading`}
-      className="relative isolate flex min-h-[100svh] items-end overflow-hidden border-b border-border/30 md:items-center"
+      className="relative isolate flex min-h-[100svh] items-end overflow-hidden rounded-[1.5rem] border border-border/30 md:items-center"
     >
       <div className="absolute inset-0 -z-10" aria-hidden>
         <div
@@ -330,13 +330,15 @@ export function ProgrammesLanding() {
         </div>
       </section>
 
-      {PROGRAMMES.map((programme, index) => (
-        <ProgrammeScenicStage
-          key={programme.slug}
-          programme={programme}
-          index={index}
-        />
-      ))}
+      <div className="space-y-6 px-4 py-6 md:space-y-8 md:px-8 md:py-10">
+        {PROGRAMMES.map((programme, index) => (
+          <ProgrammeScenicStage
+            key={programme.slug}
+            programme={programme}
+            index={index}
+          />
+        ))}
+      </div>
 
       <ProgrammePartnerCta />
     </div>
