@@ -130,8 +130,8 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
             className="object-cover"
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/65 to-background/15" />
-          <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/45 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-background/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-background/20 to-transparent" />
         </div>
 
         <div

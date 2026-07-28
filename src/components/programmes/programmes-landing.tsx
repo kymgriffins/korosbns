@@ -57,22 +57,21 @@ function ProgrammeScenicStage({ programme, index }: ScenicStageProps) {
 
       mm.add("(min-width: 768px)", () => {
         const tl = gsap.timeline({
-          defaults: { ease: "none" },
+          defaults: { ease: "power4.out" },
           scrollTrigger: {
             trigger: root,
             start: "top top",
-            end: "+=135%",
+            end: "+=120%",
             pin: true,
-            scrub: 0.85,
-            anticipatePin: 1,
+            scrub: 0.5,
           },
         });
 
         if (media) {
           tl.fromTo(
             media,
-            { scale: 1.14, yPercent: -5 },
-            { scale: 1, yPercent: 0 },
+            { scale: 1.08, yPercent: -4, filter: "brightness(0.7)" },
+            { scale: 1, yPercent: 0, filter: "brightness(1)" },
             0,
           );
         }
@@ -80,18 +79,18 @@ function ProgrammeScenicStage({ programme, index }: ScenicStageProps) {
         if (copy.length) {
           tl.fromTo(
             copy,
-            { autoAlpha: 0, y: 56 },
-            { autoAlpha: 1, y: 0, stagger: 0.06 },
-            0.12,
+            { autoAlpha: 0, y: 48, filter: "blur(4px)" },
+            { autoAlpha: 1, y: 0, filter: "blur(0px)", stagger: 0.08 },
+            0.08,
           );
         }
 
         if (cta) {
           tl.fromTo(
             cta,
-            { autoAlpha: 0, y: 28 },
-            { autoAlpha: 1, y: 0 },
-            0.42,
+            { autoAlpha: 0, y: 24, filter: "blur(2px)" },
+            { autoAlpha: 1, y: 0, filter: "blur(0px)" },
+            0.35,
           );
         }
       });
@@ -100,16 +99,17 @@ function ProgrammeScenicStage({ programme, index }: ScenicStageProps) {
         if (media) {
           gsap.fromTo(
             media,
-            { scale: 1.1, yPercent: -3 },
+            { scale: 1.06, yPercent: -2, filter: "brightness(0.8)" },
             {
               scale: 1,
               yPercent: 0,
+              filter: "brightness(1)",
               ease: "none",
               scrollTrigger: {
                 trigger: root,
                 start: "top bottom",
                 end: "bottom top",
-                scrub: 0.55,
+                scrub: 0.4,
               },
             },
           );
@@ -119,16 +119,17 @@ function ProgrammeScenicStage({ programme, index }: ScenicStageProps) {
         if (mobileTargets.length) {
           gsap.fromTo(
             mobileTargets,
-            { autoAlpha: 0, y: 36 },
+            { autoAlpha: 0, y: 28, filter: "blur(3px)" },
             {
               autoAlpha: 1,
               y: 0,
-              duration: 0.75,
-              stagger: 0.09,
-              ease: "power3.out",
+              filter: "blur(0px)",
+              duration: 0.65,
+              stagger: 0.08,
+              ease: "power4.out",
               scrollTrigger: {
                 trigger: root,
-                start: "top 72%",
+                start: "top 78%",
                 once: true,
               },
             },
