@@ -96,6 +96,7 @@ export default function Hero() {
   const contentOpacity = useTransform(scrollYProgress, [0, 0.55], [1, 0]);
   const contentY = useTransform(scrollYProgress, [0, 1], [0, -50]);
 
+  const videoWebm = "/images/tiktoklanding.mp4";
   const videoMp4 = "/images/tiktoklanding.mp4";
 
   return (
