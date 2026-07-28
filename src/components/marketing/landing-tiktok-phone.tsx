@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/utils";
-import { landingContent } from "@/content";
+import { landingContent, mediaContent } from "@/content";
 
 /**
  * Phone-framed featured TikTok player — used in the landing hero.
@@ -42,12 +42,15 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
     tiktok_play_count: number;
   } | null>(null);
 
-  // Initialize with the local TikTok landing video
+  // Initialize with the featured TikTok landing video
   useEffect(() => {
+    const videoUrl =
+      mediaContent.cloudinary.countyBudgetSocialVideo ||
+      "https://pub-f17936ca338a4ebcbdaa81475beda374.r2.dev/county%20%26%20budget%20socials%20new.mp4";
     const mockVideo = {
       id: "tiktok-landing-video",
-      video_url: "/images/tiktoklanding.mp4",
-      cover_image_url: "/images/tiktoklanding.mp4", // Using video as fallback for cover
+      video_url: videoUrl,
+      cover_image_url: videoUrl,
       embed_html: "",
       caption: "Budget Ndio Story - County Budget Explained",
       like_count: 12500,
