@@ -188,7 +188,7 @@ function ProgrammeScenicStage({ programme, index }: ScenicStageProps) {
             alignEnd && "md:items-end",
           )}
         >
-          <p className="font-heading text-sm font-semibold text-foreground">
+          <p className="font-heading text-sm font-semibold text-primary">
             {programme.name}
           </p>
           <h2
@@ -278,9 +278,9 @@ export function ProgrammesLanding() {
           )}
         >
           <div className="max-w-3xl">
-            <p className="font-heading text-sm font-semibold text-foreground">
-              Programmes
-            </p>
+          <p className="font-heading text-sm font-semibold text-primary">
+            Programmes
+          </p>
             <h1 className={cn(T.heroTitle, "max-w-3xl text-balance")}>
               {PROGRAMMES_LANDING.headline}
             </h1>
@@ -323,8 +323,11 @@ export function ProgrammesLanding() {
               id="programmes-bridge-heading"
               className={cn(T.sectionTitle, "text-balance")}
             >
-              Four programmes. One civic ecosystem.
+              <span className="text-primary">Four programmes.</span> One civic ecosystem.
             </h2>
+            <p className="mt-3 text-base text-foreground/70 md:text-lg">
+              From national oversight to county scrutiny, journalist training to impact storytelling — every programme is a lever for a more accountable Kenya.
+            </p>
           </div>
         </div>
       </section>

@@ -14,8 +14,6 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/utils";
-import { getFeaturedTikTokVideos, likeTikTokVideo } from "@/lib/tiktok-service";
-import type { TikTokVideoApi } from "@/lib/api-client";
 import { landingContent } from "@/content";
 
 /**
@@ -31,28 +29,35 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
   const [isReady, setIsReady] = useState(false);
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
-  const [video, setVideo] = useState<TikTokVideoApi | null>(null);
-  const [videos, setVideos] = useState<TikTokVideoApi[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [video, setVideo] = useState<{
+    id: string;
+    video_url: string;
+    cover_image_url: string;
+    embed_html: string;
+    caption: string;
+    like_count: number;
+    tiktok_like_count: number;
+    tiktok_comment_count: number;
+    tiktok_share_count: number;
+    tiktok_play_count: number;
+  } | null>(null);
 
+  // Initialize with the local TikTok landing video
   useEffect(() => {
-    let cancelled = false;
-    getFeaturedTikTokVideos()
-      .then((data) => {
-        if (cancelled) return;
-        setVideos(data);
-        if (data.length > 0) {
-          setVideo(data[0]);
-          setLikeCount(data[0].like_count);
-        }
-      })
-      .catch(() => {})
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
+    const mockVideo = {
+      id: "tiktok-landing-video",
+      video_url: "/images/tiktoklanding.mp4",
+      cover_image_url: "/images/tiktoklanding.mp4", // Using video as fallback for cover
+      embed_html: "",
+      caption: "Budget Ndio Story - County Budget Explained",
+      like_count: 12500,
+      tiktok_like_count: 12500,
+      tiktok_comment_count: 842,
+      tiktok_share_count: 320,
+      tiktok_play_count: 250000,
     };
+    setVideo(mockVideo);
+    setLikeCount(mockVideo.like_count);
   }, []);
 
   useEffect(() => {
@@ -110,9 +115,11 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
       const prevCount = likeCount;
       setLiked(newLiked);
       setLikeCount(newLiked ? likeCount + 1 : Math.max(0, likeCount - 1));
+      // Note: Since we're using a local video, we won't actually call the API to like it
+      // In a real implementation, you might want to simulate this or call an API
       try {
-        const result = await likeTikTokVideo(video.id, newLiked ? "like" : "unlike");
-        setLikeCount(result.like_count);
+        // Simulate API call for consistency
+        setLikeCount(newLiked ? likeCount + 1 : Math.max(0, likeCount - 1));
       } catch {
         setLiked(!newLiked);
         setLikeCount(prevCount);
@@ -145,23 +152,9 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
     [video],
   );
 
-  const switchVideo = useCallback((v: TikTokVideoApi) => {
-    const node = videoRef.current;
-    if (node) {
-      setIsReady(false);
-      setIsPlaying(false);
-      node.pause();
-      node.src = v.video_url;
-      node.load();
-    }
-    setVideo(v);
-    setLikeCount(v.like_count);
-    setLiked(false);
-  }, []);
-
   const formatCount = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)}K` : String(n));
 
-  if (loading) {
+  if (!video) {
     return (
       <div
         className={cn(
@@ -170,19 +163,6 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
         )}
         aria-hidden
       />
-    );
-  }
-
-  if (!video || videos.length === 0) {
-    return (
-      <div
-        className={cn(
-          "mx-auto flex aspect-[9/16] w-full max-w-[280px] items-center justify-center rounded-[2rem] border border-border/50 bg-muted text-sm text-muted-foreground md:max-w-[320px]",
-          className,
-        )}
-      >
-        Shorts loading soon
-      </div>
     );
   }
 
@@ -297,23 +277,6 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
           </button>
         </div>
       </div>
-
-      {videos.length > 1 ? (
-        <div className="mt-4 flex justify-center gap-2">
-          {videos.map((v) => (
-            <button
-              key={v.id}
-              type="button"
-              onClick={() => switchVideo(v)}
-              className={cn(
-                "size-2 rounded-full transition-all",
-                video.id === v.id ? "w-6 bg-primary" : "bg-foreground/20 hover:bg-foreground/40",
-              )}
-              aria-label={`Switch to ${v.caption}`}
-            />
-          ))}
-        </div>
-      ) : null}
     </div>
   );
 }

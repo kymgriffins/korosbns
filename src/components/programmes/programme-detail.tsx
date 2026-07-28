@@ -149,8 +149,8 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
               <ArrowLeft className="size-4" aria-hidden />
               All programmes
             </Link>
-            <p className="text-sm font-medium text-foreground/70">{programme.eyebrow}</p>
-            <p className="font-heading text-sm font-semibold text-foreground">{programme.name}</p>
+            <p className="text-sm font-medium text-primary/80">{programme.eyebrow}</p>
+            <p className="font-heading text-sm font-semibold text-primary">{programme.name}</p>
             <h1 className={cn(T.heroTitle, "max-w-3xl text-balance")}>{programme.headline}</h1>
           </div>
         </div>
@@ -228,7 +228,8 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
             ) : null}
 
             {programme.highlight ? (
-              <p className="rounded-2xl border border-border bg-muted/35 px-5 py-4 text-sm font-medium leading-relaxed text-foreground md:text-base">
+              <p className="rounded-2xl border-l-4 border-primary bg-primary/5 px-5 py-4 text-sm font-medium leading-relaxed text-foreground md:text-base">
+                <span className="text-primary font-semibold">Key stat: </span>
                 {programme.highlight}
               </p>
             ) : null}

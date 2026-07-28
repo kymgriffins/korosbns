@@ -59,7 +59,7 @@ export function ProgrammesSection() {
             </span>
 
             <div className="absolute inset-x-0 bottom-0 space-y-1 p-4 md:p-5">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-foreground/80">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">
                 {programme.name}
               </p>
               <p className="font-heading text-base font-semibold leading-snug tracking-tight text-foreground md:text-lg">

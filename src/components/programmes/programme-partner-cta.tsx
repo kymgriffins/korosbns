@@ -150,7 +150,7 @@ export function ProgrammePartnerCta({ className }: { className?: string }) {
           data-partner-content
           className="flex max-w-2xl flex-col gap-5 md:gap-6"
         >
-          <p className="font-heading text-sm font-semibold text-foreground">
+          <p className="font-heading text-sm font-semibold text-primary">
             Next step
           </p>
           <h2
