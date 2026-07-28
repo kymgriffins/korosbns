@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { LandingSeeMore } from "@/components/marketing/landing-see-more";
-import { LandingTikTokPhone } from "@/components/marketing/landing-tiktok-phone";
 import { ProgrammePartnerCta } from "@/components/programmes/programme-partner-cta";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import {
@@ -163,13 +162,13 @@ function ProgrammeScenicStage({ programme, index }: ScenicStageProps) {
             priority={index === 0}
           />
         </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/75 to-background/25" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/30 via-background/15 to-transparent" />
         <div
           className={cn(
             "absolute inset-0",
             alignEnd
-              ? "bg-gradient-to-l from-background/95 via-background/55 to-transparent"
-              : "bg-gradient-to-r from-background/95 via-background/55 to-transparent",
+              ? "bg-gradient-to-l from-background/60 via-background/20 to-transparent"
+              : "bg-gradient-to-r from-background/60 via-background/20 to-transparent",
           )}
         />
       </div>
@@ -266,15 +265,15 @@ export function ProgrammesLanding() {
             className="object-cover"
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/20" />
-          <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-background/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-background/20 to-transparent" />
         </div>
 
         <div
           data-gsap-hero-content
           className={cn(
             SECTION_SHELL_INNER,
-            "relative z-10 flex min-h-[100svh] flex-col justify-end gap-8 pb-14 pt-28 md:pb-20 lg:grid lg:grid-cols-[1.05fr_0.95fr] lg:items-end lg:gap-10",
+            "relative z-10 flex min-h-[100svh] flex-col justify-end gap-8 pb-14 pt-28 md:pb-20",
           )}
         >
           <div className="max-w-3xl">
@@ -300,9 +299,7 @@ export function ProgrammesLanding() {
             </div>
           </div>
 
-          <div className="flex justify-center lg:justify-end">
-            <LandingTikTokPhone className="w-full max-w-[280px] md:max-w-[320px]" />
-          </div>
+
         </div>
       </GsapHeroChoreography>
 
