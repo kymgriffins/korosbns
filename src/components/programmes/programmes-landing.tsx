@@ -5,8 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { LandingSeeMore } from "@/components/marketing/landing-see-more";
-import { ProgrammePartnerCta } from "@/components/programmes/programme-partner-cta";
-import { ProgrammesTrustBar } from "@/components/programmes/programmes-trust-bar";
 import { ProgrammesImpactStrip } from "@/components/programmes/programmes-impact-strip";
 import { ProgrammesTeamTeaser } from "@/components/programmes/programmes-team-teaser";
 import { ProgrammesLatestContent } from "@/components/programmes/programmes-latest-content";
@@ -148,13 +146,10 @@ export function ProgrammesLanding() {
         </div>
       </section>
 
-      {/* 1. Social Proof / Trust Bar */}
-      <ProgrammesTrustBar />
-
-      {/* 2. Numbers / Impact Strip */}
+      {/* 1. Numbers / Impact Strip */}
       <ProgrammesImpactStrip />
 
-      {/* 3. Core Four Programmes Section */}
+      {/* 2. Core Four Programmes Section */}
       <LandingSection
         id="programmes"
         aria-labelledby="programmes-heading"
@@ -181,22 +176,17 @@ export function ProgrammesLanding() {
         </LandingContent>
       </LandingSection>
 
-      {/* 4. Team & Leadership Teaser */}
+      {/* 3. Team & Leadership Teaser */}
       <ProgrammesTeamTeaser />
 
-      {/* 5. Latest Stories & Reports Preview */}
+      {/* 4. Latest Stories & Reports Preview */}
       <ProgrammesLatestContent />
 
-      {/* 6. FAQ Block + FAQ Schema */}
+      {/* 5. FAQ Block + FAQ Schema */}
       <ProgrammesFaq />
 
-      {/* 7. Dedicated Contact & Newsletter Section */}
+      {/* 6. Dedicated Contact & Newsletter Section */}
       <ProgrammesContactSection />
-
-      {/* 8. Partner CTA Section */}
-      <div className={LANDING_SECTION_SURFACE}>
-        <ProgrammePartnerCta />
-      </div>
     </div>
   );
 }

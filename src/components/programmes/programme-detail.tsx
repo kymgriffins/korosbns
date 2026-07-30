@@ -7,7 +7,6 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import type { ProgrammeBlock } from "@/content";
-import { ProgrammePartnerCta } from "@/components/programmes/programme-partner-cta";
 import {
   GsapHeroChoreography,
   gsap,
@@ -230,8 +229,6 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
           </aside>
         </div>
       </section>
-
-      <ProgrammePartnerCta />
     </div>
   );
 }

@@ -27,10 +27,10 @@ export function ProgrammesContactSection() {
         <LandingSectionHeader
           title={
             <>
-              <span className="text-primary">Get in touch.</span> Start the conversation.
+              <span className="text-primary">Partner with Budget Ndio Story.</span> Get in touch.
             </>
           }
-          description="Connect with the Budget Ndio Story team for programme partnerships, Wanahabari Lab applications, BNS Studios commissions, or general enquiries."
+          description="Whether you are a funder seeking measurable civic impact, a government agency fulfilling public participation mandates, a newsroom building journalism capacity, or a creator following public money — connect with us to collaborate."
           className="mb-10 md:mb-14"
         />
         <LandingContent>
@@ -38,10 +38,10 @@ export function ProgrammesContactSection() {
             {/* Contact Form & Routing Panel */}
             <div className="rounded-3xl border border-border/60 bg-card p-6 shadow-sm md:col-span-7 md:p-8">
               <h3 id="contact-heading" className="text-xl font-bold text-foreground">
-                Send an Enquiry
+                Get in Touch to Partner
               </h3>
               <p className="mt-1 text-xs text-muted-foreground">
-                Select your enquiry area — we route directly to our programme leads.
+                Select your inquiry area below to connect directly with our programme leads.
               </p>
 
               <div className="mt-6 flex flex-wrap gap-2">
@@ -55,7 +55,7 @@ export function ProgrammesContactSection() {
                     key={item.id}
                     type="button"
                     onClick={() => setIntent(item.id)}
-                    className={`rounded-xl border px-3 py-1.5 text-xs font-semibold transition-all ${
+                    className={`rounded-xl border px-3.5 py-2 text-xs font-semibold transition-all ${
                       intent === item.id
                         ? "border-primary bg-primary text-primary-foreground shadow-sm"
                         : "border-border/60 bg-muted/30 text-muted-foreground hover:bg-muted/60 hover:text-foreground"
@@ -70,7 +70,13 @@ export function ProgrammesContactSection() {
                 <Button asChild size="lg" className="w-full rounded-2xl gap-2 font-semibold">
                   <Link href={`/contact?intent=${intent}`}>
                     <Mail className="size-4" />
-                    Open Dedicated Contact Form
+                    {intent === "partner"
+                      ? "Get in Touch to Partner"
+                      : intent === "commission"
+                      ? "Commission BNS Studios"
+                      : intent === "wanahabari-lab"
+                      ? "Apply for Wanahabari Lab"
+                      : "Apply to Join Tracker Network"}
                   </Link>
                 </Button>
                 <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground pt-2 border-t border-border/40">
