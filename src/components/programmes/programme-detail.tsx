@@ -119,42 +119,24 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
   );
 
   return (
-    <div className="w-full bg-background">
-      <GsapHeroChoreography className="relative min-h-[62svh] overflow-hidden border-b border-border/40 md:min-h-[72svh]">
-        <div data-gsap-hero-media className="absolute inset-0">
-          <Image
-            src={programme.visual.hero}
-            alt={programme.visual.heroAlt}
-            fill
-            priority
-            className="object-cover"
-            sizes="100vw"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-background/20 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-background/20 to-transparent" />
-        </div>
-
-        <div
-          data-gsap-hero-content
-          className={cn(
-            SECTION_SHELL_INNER,
-            "relative z-10 flex min-h-[62svh] flex-col justify-end pb-12 pt-28 md:min-h-[72svh] md:pb-16",
-          )}
-        >
+    <div className="w-full bg-background scroll-smooth">
+      <section className="relative overflow-hidden border-b border-border/40 bg-gradient-to-b from-neutral-900/50 via-background to-background py-16 md:py-24">
+        <div className="pointer-events-none absolute left-1/2 top-1/4 -z-10 h-72 w-full max-w-4xl -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[120px]" />
+        <div className={cn(SECTION_SHELL_INNER, "relative z-10")}>
           <div className="flex max-w-3xl flex-col gap-4 md:gap-5">
             <Link
               href="/programmes"
-              className="inline-flex w-fit items-center gap-1.5 text-sm text-foreground/80 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <ArrowLeft className="size-4" aria-hidden />
               All programmes
             </Link>
             <p className="text-sm font-medium text-primary/80">{programme.eyebrow}</p>
             <p className="font-heading text-sm font-semibold text-primary">{programme.name}</p>
-            <h1 className={cn(T.heroTitle, "max-w-3xl text-balance")}>{programme.headline}</h1>
+            <h1 className={cn(T.heroTitle, "max-w-3xl text-balance text-foreground")}>{programme.headline}</h1>
           </div>
         </div>
-      </GsapHeroChoreography>
+      </section>
 
       {/* Contact sheet — overlaps hero for denser use of space */}
       <div

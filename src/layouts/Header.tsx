@@ -95,12 +95,12 @@ export function Header() {
     };
   }, [isOpen]);
 
-  const joinHref = isLoggedIn ? Routes.Learn : Routes.JoinUs;
+  const joinHref = isLoggedIn ? Routes.Learn : Routes.Login;
   const joinLabel = isLoggedIn
     ? user?.first_name
       ? `Hi, ${user.first_name}`
       : "Account"
-    : "Join us";
+    : "Sign in";
 
   return (
     <div ref={ref} className="relative w-full">

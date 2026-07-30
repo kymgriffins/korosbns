@@ -22,11 +22,7 @@ export const NAV_LINKS = [
     href: Routes.BNSStudio,
   },
   {
-    label: "Surveys",
-    href: Routes.Surveys,
-  },
-  {
-    label: "Events",
+    label: "Surveys & Events",
     href: Routes.Events,
   },
   {

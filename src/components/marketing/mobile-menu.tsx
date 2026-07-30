@@ -69,7 +69,10 @@ function NavItemIcon({ label }: { label: string }) {
     case "budget news":
       return <Newspaper className={ICON_CLS} aria-hidden />;
     case "surveys":
-      return <ClipboardList className={ICON_CLS} aria-hidden />;
+    case "events":
+    case "surveys & events":
+    case "events & surveys":
+      return <Calendar className={ICON_CLS} aria-hidden />;
     case "reports":
       return <FileBarChart className={ICON_CLS} aria-hidden />;
     case "trivia":
@@ -78,8 +81,6 @@ function NavItemIcon({ label }: { label: string }) {
     case "articles":
     case "documents":
       return <FileText className={ICON_CLS} aria-hidden />;
-    case "events":
-      return <Calendar className={ICON_CLS} aria-hidden />;
     case "contact":
       return <Mail className={ICON_CLS} aria-hidden />;
     case "join us":
@@ -164,34 +165,6 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
                     </Link>
                   </motion.li>
                 ))}
-                {!authLoading && (
-                  <motion.li
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{
-                      delay: 0.05 + NAV_LINKS.length * 0.06,
-                      duration: 0.35,
-                      ease: ease.expo,
-                    }}
-                    className="w-full border-t border-border/40 pt-2 mt-2"
-                  >
-                    <Link
-                      href={isLoggedIn ? Routes.Learn : Routes.Login}
-                      onClick={() => setIsOpen(false)}
-                      className="group flex items-center justify-between w-full px-4 py-3.5 text-base font-semibold rounded-2xl text-primary hover:bg-primary/[0.06] active:scale-[0.98] transition-all duration-200"
-                    >
-                      <span className="flex items-center gap-3">
-                        {isLoggedIn ? (
-                          <BookOpen className="size-5 text-primary" />
-                        ) : (
-                          <LogIn className="size-5 text-primary" />
-                        )}
-                        {isLoggedIn ? "Go to Learn Hub" : "Sign in to your account"}
-                      </span>
-                      <ArrowUpRight className="size-4 text-primary opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
-                    </Link>
-                  </motion.li>
-                )}
               </ul>
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
@@ -203,7 +176,7 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
                 }}
                 className="pt-4 border-t border-border/40 mt-4"
               >
-                <Link href={isLoggedIn ? Routes.Learn : Routes.JoinUs} onClick={() => setIsOpen(false)}>
+                <Link href={isLoggedIn ? Routes.Learn : Routes.Login} onClick={() => setIsOpen(false)}>
                   <Button
                     size="default"
                     variant="white"
@@ -218,8 +191,8 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
                       </>
                     ) : (
                       <>
-                        <UserPlus className="size-5 shrink-0" aria-hidden />
-                        Join us
+                        <LogIn className="size-5 shrink-0" aria-hidden />
+                        Sign in
                       </>
                     )}
                   </Button>
@@ -272,34 +245,6 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
                     </Link>
                   </motion.li>
                 ))}
-                {!authLoading && (
-                  <motion.li
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      delay: 0.06 + NAV_LINKS.length * 0.05,
-                      duration: 0.3,
-                      ease: ease.expo,
-                    }}
-                    className="w-full border-t border-border/40 pt-2 mt-2"
-                  >
-                    <Link
-                      href={isLoggedIn ? Routes.Learn : Routes.Login}
-                      onClick={() => setIsOpen(false)}
-                      className="group flex items-center justify-between w-full px-4 py-3.5 text-base font-semibold rounded-2xl text-primary hover:bg-primary/[0.06] active:scale-[0.98] transition-all duration-200"
-                    >
-                      <span className="flex items-center gap-3">
-                        {isLoggedIn ? (
-                          <BookOpen className="size-5 text-primary" />
-                        ) : (
-                          <LogIn className="size-5 text-primary" />
-                        )}
-                        {isLoggedIn ? "Go to Learn Hub" : "Sign in to your account"}
-                      </span>
-                      <ArrowUpRight className="size-4 text-primary opacity-50 group-hover:opacity-100 transition-opacity duration-200" />
-                    </Link>
-                  </motion.li>
-                )}
               </ul>
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
@@ -311,7 +256,7 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
                 }}
                 className="pt-4 border-t border-border/40 mt-4"
               >
-                <Link href={isLoggedIn ? Routes.Learn : Routes.JoinUs} onClick={() => setIsOpen(false)}>
+                <Link href={isLoggedIn ? Routes.Learn : Routes.Login} onClick={() => setIsOpen(false)}>
                   <Button
                     size="default"
                     variant="white"
@@ -326,8 +271,8 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
                       </>
                     ) : (
                       <>
-                        <UserPlus className="size-5 shrink-0" aria-hidden />
-                        Join us
+                        <LogIn className="size-5 shrink-0" aria-hidden />
+                        Sign in
                       </>
                     )}
                   </Button>

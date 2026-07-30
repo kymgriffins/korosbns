@@ -139,13 +139,13 @@ const Navbar = () => {
                     </Button>
                   </div>
                 ) : (
-                  <Link href={Routes.JoinUs}>
+                  <Link href={Routes.Login}>
                     <Button
                       variant="white"
                       size="sm"
                       className="h-9 px-4 rounded-lg font-medium gap-2"
                     >
-                      Join us
+                      Sign in
                     </Button>
                   </Link>
                 )

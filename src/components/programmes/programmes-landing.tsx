@@ -40,49 +40,11 @@ type ProgrammeCardProps = {
 };
 
 function ProgrammeCard({ programme, index }: ProgrammeCardProps) {
-  const rootRef = useRef<HTMLDivElement>(null);
-  const reduced = usePrefersReducedMotion();
   const alignEnd = index % 2 === 1;
   const blurb = PROGRAMME_CARD_BLURBS[programme.slug as ProgrammeSlug];
 
-  useGSAP(
-    () => {
-      if (reduced) return;
-      const root = rootRef.current;
-      if (!root) return;
-
-      const media = root.querySelector<HTMLElement>("[data-card-media]");
-      const content = root.querySelectorAll<HTMLElement>("[data-card-content] > *");
-
-      const tl = gsap.timeline({
-        defaults: { ease: "power4.out" },
-        scrollTrigger: { trigger: root, start: "top 85%", once: true },
-      });
-
-      if (media) {
-        tl.fromTo(
-          media,
-          { scale: 1.04, autoAlpha: 0.9, filter: "brightness(0.85)" },
-          { scale: 1, autoAlpha: 1, filter: "brightness(1)", duration: 1 },
-          0,
-        );
-      }
-
-      if (content.length) {
-        tl.fromTo(
-          content,
-          { autoAlpha: 0, y: 24 },
-          { autoAlpha: 1, y: 0, stagger: 0.06, duration: 0.6 },
-          0.2,
-        );
-      }
-    },
-    { scope: rootRef, dependencies: [reduced] },
-  );
-
   return (
     <div
-      ref={rootRef}
       className="group grid gap-8 md:grid-cols-2 md:items-center md:gap-12 lg:gap-16"
     >
       <div
@@ -132,41 +94,21 @@ function ProgrammeCard({ programme, index }: ProgrammeCardProps) {
 
 export function ProgrammesLanding() {
   return (
-    <div className="w-full bg-background">
-      <GsapHeroChoreography className="relative min-h-[90svh] overflow-hidden border-b border-border/40">
-        <div data-gsap-hero-media className="absolute inset-0">
-          <Image
-            src={PROGRAMMES[0].visual.hero}
-            alt={PROGRAMMES[0].visual.heroAlt}
-            fill
-            priority
-            className="object-cover"
-            sizes="100vw"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-background/20 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-background/60 via-background/20 to-transparent" />
-        </div>
-
-        <div
-          data-gsap-hero-content
-          className={cn(
-            SECTION_SHELL_INNER,
-            "relative z-10 flex min-h-[90svh] flex-col justify-end pb-14 pt-28 md:pb-20",
-          )}
-        >
+    <div className="w-full bg-background scroll-smooth">
+      {/* Mobile-first Hero without background image */}
+      <section className="relative overflow-hidden border-b border-border/40 bg-gradient-to-b from-neutral-900/50 via-background to-background py-16 md:py-24 lg:py-32">
+        {/* Subtle ambient accent glow */}
+        <div className="pointer-events-none absolute left-1/2 top-1/4 -z-10 h-72 w-full max-w-4xl -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[120px]" />
+        
+        <div className={cn(SECTION_SHELL_INNER, "relative z-10")}>
           <div className="max-w-3xl">
-            <p className="font-heading text-sm font-semibold text-primary">
-              Programmes
-            </p>
-            <h1 className={cn(T.heroTitle, "max-w-3xl text-balance")}>
+            <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3.5 py-1 text-xs font-semibold text-primary mb-4">
+              Our Initiatives & Impact
+            </span>
+            <h1 className={cn(T.heroTitle, "max-w-3xl text-balance text-foreground")}>
               {PROGRAMMES_LANDING.headline}
             </h1>
-            <p
-              className={cn(
-                T.lead,
-                "mt-4 max-w-2xl text-base text-foreground/80 md:text-lg",
-              )}
-            >
+            <p className={cn(T.lead, "mt-4 max-w-2xl text-base text-muted-foreground md:text-lg")}>
               {PROGRAMMES_LANDING.body}
             </p>
             <div className="mt-6">
@@ -177,7 +119,7 @@ export function ProgrammesLanding() {
             </div>
           </div>
         </div>
-      </GsapHeroChoreography>
+      </section>
 
       <LandingSection
         id="programmes"
@@ -193,17 +135,15 @@ export function ProgrammesLanding() {
           className="mb-12 md:mb-16"
         />
         <LandingContent>
-          <GsapReveal>
-            <div className="space-y-16 md:space-y-24 lg:space-y-28">
-              {PROGRAMMES.map((programme, index) => (
-                <ProgrammeCard
-                  key={programme.slug}
-                  programme={programme}
-                  index={index}
-                />
-              ))}
-            </div>
-          </GsapReveal>
+          <div className="space-y-16 md:space-y-24 lg:space-y-28">
+            {PROGRAMMES.map((programme, index) => (
+              <ProgrammeCard
+                key={programme.slug}
+                programme={programme}
+                index={index}
+              />
+            ))}
+          </div>
         </LandingContent>
       </LandingSection>
 
