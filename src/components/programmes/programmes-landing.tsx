@@ -6,6 +6,12 @@ import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { LandingSeeMore } from "@/components/marketing/landing-see-more";
 import { ProgrammePartnerCta } from "@/components/programmes/programme-partner-cta";
+import { ProgrammesTrustBar } from "@/components/programmes/programmes-trust-bar";
+import { ProgrammesImpactStrip } from "@/components/programmes/programmes-impact-strip";
+import { ProgrammesTeamTeaser } from "@/components/programmes/programmes-team-teaser";
+import { ProgrammesLatestContent } from "@/components/programmes/programmes-latest-content";
+import { ProgrammesFaq } from "@/components/programmes/programmes-faq";
+import { ProgrammesContactSection } from "@/components/programmes/programmes-contact-section";
 import {
   LANDING_SECTION_SURFACE,
   LandingContent,
@@ -93,10 +99,31 @@ function ProgrammeCard({ programme, index }: ProgrammeCardProps) {
 }
 
 export function ProgrammesLanding() {
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Budget Ndio Story",
+    alternateName: "BNS",
+    url: "https://budgetndiostory.org/programmes",
+    logo: "https://budgetndiostory.org/logo.svg",
+    description: "Kenya's leading youth civic initiative tracking national and county public spending, training journalists, and producing impact media.",
+    sameAs: [
+      "https://youtube.com/@budgetndiostory",
+      "https://www.linkedin.com/company/budget-ndio-story/",
+      "https://www.tiktok.com/@budget.ndio.story",
+    ],
+  };
+
   return (
     <div className="w-full bg-background scroll-smooth">
+      {/* Organization Schema Markup for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
+
       {/* Mobile-first Hero without background image */}
-      <section className="relative overflow-hidden border-b border-border/40 bg-gradient-to-b from-neutral-900/50 via-background to-background py-16 md:py-24 lg:py-32">
+      <section className="relative overflow-hidden border-b border-border/40 bg-gradient-to-b from-neutral-900/50 via-background to-background py-16 md:py-24 lg:py-28">
         {/* Subtle ambient accent glow */}
         <div className="pointer-events-none absolute left-1/2 top-1/4 -z-10 h-72 w-full max-w-4xl -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[120px]" />
         
@@ -121,6 +148,13 @@ export function ProgrammesLanding() {
         </div>
       </section>
 
+      {/* 1. Social Proof / Trust Bar */}
+      <ProgrammesTrustBar />
+
+      {/* 2. Numbers / Impact Strip */}
+      <ProgrammesImpactStrip />
+
+      {/* 3. Core Four Programmes Section */}
       <LandingSection
         id="programmes"
         aria-labelledby="programmes-heading"
@@ -147,6 +181,19 @@ export function ProgrammesLanding() {
         </LandingContent>
       </LandingSection>
 
+      {/* 4. Team & Leadership Teaser */}
+      <ProgrammesTeamTeaser />
+
+      {/* 5. Latest Stories & Reports Preview */}
+      <ProgrammesLatestContent />
+
+      {/* 6. FAQ Block + FAQ Schema */}
+      <ProgrammesFaq />
+
+      {/* 7. Dedicated Contact & Newsletter Section */}
+      <ProgrammesContactSection />
+
+      {/* 8. Partner CTA Section */}
       <div className={LANDING_SECTION_SURFACE}>
         <ProgrammePartnerCta />
       </div>

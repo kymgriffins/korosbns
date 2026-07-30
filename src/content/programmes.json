@@ -1,27 +1,27 @@
 {
   "landing": {
-    "seoTitle": "Budget Ndio Story | Follow Kenya's Budget. Find the Story.",
-    "seoDescription": "Track Kenya's KSh 4.8 trillion national budget, county spending, and public accountability — built for Kenya's youth, media, and government partners.",
-    "headline": "Follow the budget. Find the story.",
-    "body": "Kenya's public money moves fast, and mostly out of sight. Budget Ndio Story tracks it, nationally and in four select counties, and turns it into stories, data, and training that young Kenyans, journalists, digital creators, government, private sector, and development partners actually use.",
+    "seoTitle": "Kenya National & County Budget Tracking Programmes | Budget Ndio Story",
+    "seoDescription": "Track Kenya's KES 4.8 trillion national budget and county spending in Kakamega, Kilifi, Nakuru & Wajir. Youth tracking network, journalist training, and impact storytelling.",
+    "headline": "Kenya National & County Budget Tracking",
+    "body": "Kenya's public money moves fast, and mostly out of sight. Budget Ndio Story tracks it nationally and in four select counties, turning complex fiscal data into verified stories, scorecards, and journalist training that young Kenyans, media, government, and partners actually use.",
     "exploreCta": {
-      "label": "Explore our programmes",
+      "label": "Explore our four programmes",
       "href": "#programmes"
     }
   },
   "cardBlurbs": {
-    "connect": "Kenya's national budget, tracked live.",
-    "mashinani": "Four counties, one relentless standard of scrutiny.",
-    "wanahabari-lab": "Turning journalists and creators into budget-literate reporters, every quarter.",
-    "studios": "Commissioned storytelling that funds Kenya's civic future."
+    "connect": "Kenya's KES 4.8 trillion national budget, tracked live from Treasury allocation to project delivery by a trained youth network.",
+    "mashinani": "Sustained, embedded budget scrutiny across Kakamega, Kilifi, Nakuru, and Wajir with scorecards, town halls, and community oversight.",
+    "wanahabari-lab": "Quarterly intensive training equipping mainstream journalists and digital creators to investigate, visualize, and report public finance all year round.",
+    "studios": "Commissioned podcasts, documentaries, animations, and civic campaigns that turn complex fiscal data into engaging impact storytelling."
   },
   "closing": {
     "seoTitle": "Partner With BNS | Budget Ndio Story",
     "seoDescription": "Partner with Budget Ndio Story on national and county budget accountability, journalist training, or commissioned impact content.",
-    "headline": "Partner with BNS",
-    "body": "BNS is a true budget information ecosystem: BNS Connect monitors the national flow, BNS Mashinani dives into county-level scrutiny, and Wanahabari Lab trains the next generation of journalists and national finance storytellers — all powered by BNS Studios. Together, we transform a multi-trillion shilling budget into clear, accessible intelligence for every young Kenyan and partner.",
+    "headline": "Partner with Budget Ndio Story",
+    "body": "Whether you are a funder seeking measurable civic impact, a government agency fulfilling public participation mandates, a newsroom building fiscal journalism capacity, or a creator following public money — BNS provides the data, network, and storytelling engine to deliver real accountability.",
     "cta": {
-      "label": "Partner with BNS",
+      "label": "Get in Touch to Partner",
       "href": "/contact?intent=partner",
       "note": "Partnerships routed by enquiry type (programme, commission, or funding)"
     }
