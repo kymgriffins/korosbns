@@ -18,7 +18,8 @@ import { landingContent, mediaContent } from "@/content";
 
 /**
  * Phone-framed featured TikTok player — used in the landing hero.
- * Renders Cloudflare video first frame as native image preview and plays seamlessly on click.
+ * Showcases Nelly Maina media cover photo when video is paused/loading,
+ * and opens the TikTok page when user clicks play.
  */
 export function LandingTikTokPhone({ className }: { className?: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -26,6 +27,7 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isInView, setIsInView] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [video, setVideo] = useState<{
@@ -45,10 +47,12 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
     const videoUrl =
       mediaContent.cloudinary.countyBudgetSocialVideo ||
       "https://pub-f17936ca338a4ebcbdaa81475beda374.r2.dev/county%20%26%20budget%20socials%20new.mp4";
+    const nellyMediaPhoto =
+      "/images/marketing%20newsletter%20subcribe/Nelly%20with%20The%20Mic.jpg";
     const mockVideo = {
       id: "tiktok-landing-video",
       video_url: videoUrl,
-      cover_image_url: `${videoUrl}#t=0.001`,
+      cover_image_url: nellyMediaPhoto,
       embed_html: "",
       caption: "Budget Ndio Story - County Budget Explained",
       like_count: 12500,
@@ -72,43 +76,16 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
     return () => observer.disconnect();
   }, []);
 
-  const attemptPlay = useCallback(() => {
-    const node = videoRef.current;
-    if (!node) return;
-    if (isInView) {
-      void node
-        .play()
-        .then(() => setIsPlaying(true))
-        .catch(() => setIsPlaying(false));
-    } else {
-      node.pause();
-      setIsPlaying(false);
-    }
-  }, [isInView]);
-
-  useEffect(() => {
-    attemptPlay();
-  }, [attemptPlay]);
+  const openTikTokPage = useCallback((e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    window.open(landingContent.tiktok.profileUrl, "_blank", "noopener,noreferrer");
+  }, []);
 
   const toggleMute = useCallback(() => {
     const node = videoRef.current;
     if (!node) return;
     node.muted = !node.muted;
     setIsMuted(node.muted);
-  }, []);
-
-  const togglePlay = useCallback(() => {
-    const node = videoRef.current;
-    if (!node) return;
-    if (node.paused) {
-      void node
-        .play()
-        .then(() => setIsPlaying(true))
-        .catch(() => setIsPlaying(false));
-    } else {
-      node.pause();
-      setIsPlaying(false);
-    }
   }, []);
 
   const handleLike = useCallback(
@@ -167,22 +144,41 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
     );
   }
 
-  const srcUrl = video.video_url.includes("#") ? video.video_url : `${video.video_url}#t=0.001`;
-
   return (
     <div ref={phoneRef} className={cn("mx-auto flex w-full max-w-[280px] flex-col md:max-w-[320px]", className)}>
       <div className="relative aspect-[9/16] w-full overflow-hidden rounded-[2rem] border-[3px] border-foreground/10 bg-card ring-1 ring-white/10">
+        {/* Nelly Maina media cover image preview when video is paused/loading */}
+        {(!isPlaying || !isReady) && (
+          <div
+            className="absolute inset-0 z-0 overflow-hidden cursor-pointer bg-black/40"
+            onClick={openTikTokPage}
+            data-testid="tiktok-hero-cover-image"
+          >
+            <Image
+              src={video.cover_image_url}
+              alt="Nelly Maina - Budget Ndio Story"
+              fill
+              sizes="(max-width: 768px) 280px, 320px"
+              className="object-cover"
+              priority
+            />
+          </div>
+        )}
+
         <video
           ref={videoRef}
-          src={srcUrl}
+          src={video.video_url}
+          poster={video.cover_image_url}
           className="absolute inset-0 size-full object-cover"
           loop
           muted={isMuted}
           playsInline
           preload="auto"
-          onClick={togglePlay}
+          onClick={openTikTokPage}
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
+          onCanPlay={() => setIsReady(true)}
+          onError={() => setIsReady(false)}
           aria-label="County budget social video"
         />
 
@@ -191,7 +187,7 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
         {!isPlaying ? (
           <button
             type="button"
-            onClick={togglePlay}
+            onClick={openTikTokPage}
             className="absolute inset-0 z-10 flex items-center justify-center"
             aria-label="Play video"
           >
@@ -269,7 +265,7 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              togglePlay();
+              openTikTokPage(e);
             }}
             className="pointer-events-auto flex size-9 items-center justify-center rounded-full bg-black/40 text-white transition-colors hover:bg-black/60"
             aria-label={isPlaying ? "Pause video" : "Play video"}

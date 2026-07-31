@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // Mock IntersectionObserver
@@ -18,18 +18,31 @@ beforeEach(() => {
 import { LandingTikTokPhone } from "../landing-tiktok-phone";
 
 describe("LandingTikTokPhone", () => {
-  it("renders video element with Cloudflare URL and playback controls", async () => {
+  it("renders Nelly Maina media cover photo and opens TikTok page on play click", async () => {
+    const windowOpenSpy = vi.spyOn(window, "open").mockImplementation(() => null);
+
     render(<LandingTikTokPhone />);
 
-    const videoElement = screen.getByLabelText("County budget social video");
-    expect(videoElement).toBeInTheDocument();
-    expect(videoElement).toHaveAttribute(
+    // 1. Verify Cover Thumbnail Image is Nelly Maina media image (Nelly with The Mic)
+    const coverImageOverlay = screen.getByTestId("tiktok-hero-cover-image");
+    expect(coverImageOverlay).toBeInTheDocument();
+
+    const imgElement = screen.getByAltText("Nelly Maina - Budget Ndio Story");
+    expect(imgElement).toBeInTheDocument();
+    expect(imgElement).toHaveAttribute(
       "src",
-      expect.stringContaining("county%20%26%20budget%20socials%20new.mp4")
+      expect.stringContaining("Nelly")
     );
 
-    // Verify play button is visible initially
-    expect(screen.getAllByRole("button", { name: "Play video" }).length).toBeGreaterThan(0);
-    expect(screen.getByText("@budget.ndio.story")).toBeInTheDocument();
+    // 2. Click play button and verify window.open called with TikTok URL
+    const playButtons = screen.getAllByRole("button", { name: "Play video" });
+    expect(playButtons.length).toBeGreaterThan(0);
+
+    fireEvent.click(playButtons[0]);
+    expect(windowOpenSpy).toHaveBeenCalledWith(
+      "https://www.tiktok.com/@budget.ndio.story",
+      "_blank",
+      "noopener,noreferrer"
+    );
   });
 });
