@@ -159,7 +159,7 @@ export function LearnModulesView({ stages }: LearnModulesViewProps) {
               size="lg"
               className="learn-hub-primary-action h-12 rounded-full px-5 text-sm font-bold shadow-lg shadow-primary/20"
             >
-              <Link href={primaryHref}>
+              <Link href={primaryHref} target="_blank" rel="noopener noreferrer">
                 <span>{primaryCta}</span>
                 <ArrowRight className="size-4" aria-hidden />
               </Link>
@@ -170,6 +170,8 @@ export function LearnModulesView({ stages }: LearnModulesViewProps) {
         {primary ? (
           <Link
             href={primaryHref}
+            target="_blank"
+            rel="noopener noreferrer"
             className="learn-featured-panel group relative z-10 mt-8 block overflow-hidden rounded-[1.5rem] border border-background/70 bg-muted/30 shadow-2xl shadow-foreground/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring lg:mt-0"
           >
             <HarmonizedImage
@@ -217,6 +219,8 @@ export function LearnModulesView({ stages }: LearnModulesViewProps) {
               <Link
                 key={row.stage.id}
                 href={`/learn/modules/${row.stage.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="learn-progress-tile min-w-[280px] max-w-[340px] shrink-0 rounded-2xl border border-border/70 bg-card/80 p-4 shadow-sm transition-colors hover:border-primary/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <div className="flex items-start justify-between gap-4">
@@ -260,6 +264,8 @@ export function LearnModulesView({ stages }: LearnModulesViewProps) {
               <Link
                 key={article.id}
                 href={article.href}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="group rounded-2xl border border-border/70 bg-card/80 p-4 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <div className="flex items-start gap-3">
@@ -351,6 +357,8 @@ export function LearnModulesView({ stages }: LearnModulesViewProps) {
               >
                 <Link
                   href={`/learn/modules/${row.stage.slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className={cn(
                     "learn-module-card group flex h-full flex-col overflow-hidden rounded-[1.35rem] border border-border/60 bg-card transition-all duration-500 hover:-translate-y-1 hover:border-primary/30 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     row.isInProgress && "is-in-progress",

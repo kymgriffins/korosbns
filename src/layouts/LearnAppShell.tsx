@@ -6,6 +6,7 @@ import { learnTabToHref } from "@/lib/learn-nav";
 import { useLearn, type LearnTab } from "@/contexts/learn-context";
 import { cn } from "@/utils";
 import { LearnMobileNav } from "@/layouts/LearnMobileNav";
+import { PageBreadcrumbs } from "@/components/global/page-breadcrumbs";
 
 const NAV: { tab: LearnTab; label: string; href: string; icon: typeof BookOpen }[] = [
   { tab: "learn", label: "Modules", href: learnTabToHref("learn"), icon: BookOpen },
@@ -65,7 +66,10 @@ export function LearnAppShell({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      <main className={cn(SHELL, "w-full flex-1 pb-20 md:pb-10")}>{children}</main>
+      <main className={cn(SHELL, "w-full flex-1 pb-20 md:pb-10")}>
+        <PageBreadcrumbs className="mb-4 pt-2" />
+        {children}
+      </main>
 
       <div className="md:hidden">
         <LearnMobileNav />

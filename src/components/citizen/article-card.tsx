@@ -11,7 +11,7 @@ export function ArticleCard({ article, index }: { article: HubArticle; index: nu
   const imageSrc = article.heroImage || placeholder.src;
 
   return (
-    <Link href={Routes.Article(article.id)} className="group block">
+    <Link href={Routes.Article(article.id)} target="_blank" rel="noopener noreferrer" className="group block">
       <div className="relative overflow-hidden rounded-[24px] border border-border bg-card">
         <div className="relative m-2 h-44 overflow-hidden rounded-[22px] bg-muted">
           <Image
