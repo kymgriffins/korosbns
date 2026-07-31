@@ -11,7 +11,6 @@ import {
   Share2,
   Volume2,
   VolumeX,
-  ExternalLink,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/utils";
@@ -19,7 +18,7 @@ import { landingContent, mediaContent } from "@/content";
 
 /**
  * Phone-framed featured TikTok player — used in the landing hero.
- * Content stays visible before play; reduced-motion users get paused controls.
+ * Renders Cloudflare video first frame as native image preview and plays seamlessly on click.
  */
 export function LandingTikTokPhone({ className }: { className?: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -27,7 +26,6 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isInView, setIsInView] = useState(false);
-  const [isReady, setIsReady] = useState(false);
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [video, setVideo] = useState<{
@@ -43,18 +41,14 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
     tiktok_play_count: number;
   } | null>(null);
 
-  // Initialize with the featured TikTok landing video
   useEffect(() => {
     const videoUrl =
       mediaContent.cloudinary.countyBudgetSocialVideo ||
       "https://pub-f17936ca338a4ebcbdaa81475beda374.r2.dev/county%20%26%20budget%20socials%20new.mp4";
-    const coverImageUrl =
-      mediaContent.media.main ||
-      "/images/media/main%20media%20image.jpg";
     const mockVideo = {
       id: "tiktok-landing-video",
       video_url: videoUrl,
-      cover_image_url: coverImageUrl,
+      cover_image_url: `${videoUrl}#t=0.001`,
       embed_html: "",
       caption: "Budget Ndio Story - County Budget Explained",
       like_count: 12500,
@@ -80,7 +74,7 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
 
   const attemptPlay = useCallback(() => {
     const node = videoRef.current;
-    if (!node || !isReady) return;
+    if (!node) return;
     if (isInView) {
       void node
         .play()
@@ -90,7 +84,7 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
       node.pause();
       setIsPlaying(false);
     }
-  }, [isInView, isReady]);
+  }, [isInView]);
 
   useEffect(() => {
     attemptPlay();
@@ -107,7 +101,10 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
     const node = videoRef.current;
     if (!node) return;
     if (node.paused) {
-      void node.play().then(() => setIsPlaying(true));
+      void node
+        .play()
+        .then(() => setIsPlaying(true))
+        .catch(() => setIsPlaying(false));
     } else {
       node.pause();
       setIsPlaying(false);
@@ -170,57 +167,26 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
     );
   }
 
+  const srcUrl = video.video_url.includes("#") ? video.video_url : `${video.video_url}#t=0.001`;
+
   return (
     <div ref={phoneRef} className={cn("mx-auto flex w-full max-w-[280px] flex-col md:max-w-[320px]", className)}>
       <div className="relative aspect-[9/16] w-full overflow-hidden rounded-[2rem] border-[3px] border-foreground/10 bg-card ring-1 ring-white/10">
-        {/* Cover image shown when paused or before video play */}
-        {(!isPlaying || !isReady) && (
-          <div className="absolute inset-0 z-0 overflow-hidden bg-black/40" data-testid="tiktok-hero-cover-image">
-            <Image
-              src={video.cover_image_url}
-              alt={video.caption}
-              fill
-              sizes="(max-width: 768px) 280px, 320px"
-              className="object-cover opacity-90"
-              priority
-            />
-          </div>
-        )}
-
         <video
           ref={videoRef}
-          src={video.video_url}
-          poster={video.cover_image_url}
+          src={srcUrl}
           className="absolute inset-0 size-full object-cover"
           loop
-          muted
+          muted={isMuted}
           playsInline
           preload="auto"
           onClick={togglePlay}
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
-          onCanPlay={() => setIsReady(true)}
-          onError={() => setIsReady(false)}
           aria-label="County budget social video"
         />
 
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/40" />
-
-        {/* Top left TikTok URL badge */}
-        <div className="absolute top-3 left-3 z-20 flex items-center">
-          <a
-            href={landingContent.tiktok.profileUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="pointer-events-auto flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-1 text-xs text-white backdrop-blur-sm border border-white/20 transition-all hover:bg-black/80 hover:border-teal-400"
-            data-testid="tiktok-hero-url-badge"
-          >
-            <span className="font-mono text-[11px] text-teal-300">
-              tiktok.com/@budget.ndio.story
-            </span>
-            <ExternalLink className="size-3 text-teal-300" />
-          </a>
-        </div>
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/20" />
 
         {!isPlaying ? (
           <button
@@ -229,7 +195,7 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
             className="absolute inset-0 z-10 flex items-center justify-center"
             aria-label="Play video"
           >
-            <span className="flex size-16 items-center justify-center rounded-full bg-white/20">
+            <span className="flex size-16 items-center justify-center rounded-full bg-white/20 transition-transform hover:scale-110">
               <Play className="size-8 fill-white text-white" />
             </span>
           </button>
@@ -278,20 +244,9 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
           </div>
         </div>
 
-        <div className="absolute bottom-4 left-4 right-14 z-20 space-y-1.5 text-white">
+        <div className="absolute bottom-4 left-4 right-14 z-20 space-y-2 text-white">
           <p className="text-sm font-bold">@budget.ndio.story</p>
           <p className="text-xs leading-relaxed text-white/90">{video.caption}</p>
-          <a
-            href={landingContent.tiktok.profileUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 text-[11px] text-teal-300 hover:underline font-mono"
-            onClick={(e) => e.stopPropagation()}
-            data-testid="tiktok-hero-caption-url"
-          >
-            <span>tiktok.com/@budget.ndio.story</span>
-            <ExternalLink className="size-3" />
-          </a>
           <p className="flex items-center gap-1.5 text-xs text-white/70">
             <Music2 className="size-3.5 shrink-0" />
             <span className="truncate">Original audio · Budget Ndio Story</span>
@@ -322,20 +277,6 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
             {isPlaying ? <Pause className="size-4" /> : <Play className="size-4 fill-white" />}
           </button>
         </div>
-      </div>
-
-      {/* External TikTok URL banner under the phone container */}
-      <div className="mt-3 flex items-center justify-center">
-        <a
-          href={landingContent.tiktok.profileUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-muted/50 px-4 py-1.5 text-xs text-foreground/80 hover:bg-muted hover:text-foreground transition-colors font-mono"
-          data-testid="tiktok-hero-footer-url"
-        >
-          <span>https://www.tiktok.com/@budget.ndio.story</span>
-          <ExternalLink className="size-3.5 text-primary" />
-        </a>
       </div>
     </div>
   );
