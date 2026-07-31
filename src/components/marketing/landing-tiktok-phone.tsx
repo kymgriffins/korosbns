@@ -18,7 +18,7 @@ import { landingContent, mediaContent } from "@/content";
 
 /**
  * Phone-framed featured TikTok player — used in the landing hero.
- * Content stays visible before play; reduced-motion users get paused controls.
+ * Renders Cloudflare video first frame as native image preview and plays seamlessly on click.
  */
 export function LandingTikTokPhone({ className }: { className?: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -26,7 +26,6 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isInView, setIsInView] = useState(false);
-  const [isReady, setIsReady] = useState(false);
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [video, setVideo] = useState<{
@@ -42,7 +41,6 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
     tiktok_play_count: number;
   } | null>(null);
 
-  // Initialize with the featured TikTok landing video
   useEffect(() => {
     const videoUrl =
       mediaContent.cloudinary.countyBudgetSocialVideo ||
@@ -50,7 +48,7 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
     const mockVideo = {
       id: "tiktok-landing-video",
       video_url: videoUrl,
-      cover_image_url: videoUrl,
+      cover_image_url: `${videoUrl}#t=0.001`,
       embed_html: "",
       caption: "Budget Ndio Story - County Budget Explained",
       like_count: 12500,
@@ -76,7 +74,7 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
 
   const attemptPlay = useCallback(() => {
     const node = videoRef.current;
-    if (!node || !isReady) return;
+    if (!node) return;
     if (isInView) {
       void node
         .play()
@@ -86,7 +84,7 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
       node.pause();
       setIsPlaying(false);
     }
-  }, [isInView, isReady]);
+  }, [isInView]);
 
   useEffect(() => {
     attemptPlay();
@@ -103,7 +101,10 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
     const node = videoRef.current;
     if (!node) return;
     if (node.paused) {
-      void node.play().then(() => setIsPlaying(true));
+      void node
+        .play()
+        .then(() => setIsPlaying(true))
+        .catch(() => setIsPlaying(false));
     } else {
       node.pause();
       setIsPlaying(false);
@@ -118,10 +119,7 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
       const prevCount = likeCount;
       setLiked(newLiked);
       setLikeCount(newLiked ? likeCount + 1 : Math.max(0, likeCount - 1));
-      // Note: Since we're using a local video, we won't actually call the API to like it
-      // In a real implementation, you might want to simulate this or call an API
       try {
-        // Simulate API call for consistency
         setLikeCount(newLiked ? likeCount + 1 : Math.max(0, likeCount - 1));
       } catch {
         setLiked(!newLiked);
@@ -169,22 +167,22 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
     );
   }
 
+  const srcUrl = video.video_url.includes("#") ? video.video_url : `${video.video_url}#t=0.001`;
+
   return (
     <div ref={phoneRef} className={cn("mx-auto flex w-full max-w-[280px] flex-col md:max-w-[320px]", className)}>
       <div className="relative aspect-[9/16] w-full overflow-hidden rounded-[2rem] border-[3px] border-foreground/10 bg-card ring-1 ring-white/10">
         <video
           ref={videoRef}
-          src={video.video_url}
+          src={srcUrl}
           className="absolute inset-0 size-full object-cover"
           loop
-          muted
+          muted={isMuted}
           playsInline
           preload="auto"
           onClick={togglePlay}
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
-          onCanPlay={() => setIsReady(true)}
-          onError={() => setIsReady(false)}
           aria-label="County budget social video"
         />
 
@@ -197,7 +195,7 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
             className="absolute inset-0 z-10 flex items-center justify-center"
             aria-label="Play video"
           >
-            <span className="flex size-16 items-center justify-center rounded-full bg-white/20">
+            <span className="flex size-16 items-center justify-center rounded-full bg-white/20 transition-transform hover:scale-110">
               <Play className="size-8 fill-white text-white" />
             </span>
           </button>

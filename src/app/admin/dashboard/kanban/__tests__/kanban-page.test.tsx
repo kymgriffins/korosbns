@@ -30,18 +30,18 @@ vi.mock("@/app/admin/dashboard/kanban/_components/kanban", () => ({
   },
 }));
 
+import KanbanPage from "../page";
+
 describe("KanbanPage", () => {
   it("renders without crashing when tasks load", async () => {
     mockListAll.mockResolvedValue([]);
-    const Page = (await import("../page")).default;
-    const { container } = render(React.createElement(Page));
+    const { container } = render(<KanbanPage />);
     expect(container).toBeTruthy();
   });
 
   it("shows loading skeleton initially", async () => {
     mockListAll.mockReturnValue(new Promise(() => {}));
-    const Page = (await import("../page")).default;
-    render(React.createElement(Page));
+    render(<KanbanPage />);
     const skeletons = document.querySelectorAll('[class*="animate"]');
     expect(skeletons.length).toBeGreaterThanOrEqual(1);
   });
