@@ -1,12 +1,12 @@
 {
   "provenance": {
-    "source": "civic-modules fallback catalogue",
-    "note": "Read-only learn hub summary when /content/learn/ is unreachable.",
+    "source": "civic-modules YouTube RSS playlist catalogue",
+    "note": "Read-only learn hub summary matching official YouTube RSS playlist series.",
     "level": "fallback"
   },
   "counts": {
-    "article": 5,
-    "path": 5,
+    "article": 3,
+    "path": 3,
     "video": 0,
     "story": 0,
     "document": 0,
@@ -16,8 +16,8 @@
     {
       "id": "budget-policy-statement",
       "content_type": "path",
-      "title": "Budget Policy Statement (BPS)",
-      "summary": "A citizen-friendly guide to Kenya's Budget Policy Statement & Sector Ceilings.",
+      "title": "Before Budget Day: Budget Policy Statement (BPS)",
+      "summary": "Official written & video guide to Kenya's BPS and sector ceilings.",
       "slug": "budget-policy-statement",
       "url": "/learn/modules/budget-policy-statement",
       "lesson_count": 3
@@ -25,20 +25,20 @@
     {
       "id": "county-budget",
       "content_type": "path",
-      "title": "County Budgets & Revenue Architecture",
-      "summary": "How 47 counties are funded via Equitable Share, CARA, DoRA, and OSR.",
+      "title": "County Budgets: Where Does the Money Come From?",
+      "summary": "Official written & video guide to county funding, DoRA, CARA, and OSR.",
       "slug": "county-budget",
       "url": "/learn/modules/county-budget",
       "lesson_count": 3
     },
     {
-      "id": "finance-bill-vs-appropriation-bill",
+      "id": "kenya-national-infrastructure-fund",
       "content_type": "path",
-      "title": "Finance Bill vs. Appropriation Bill",
-      "summary": "Understanding tax policy laws vs. executive line-item spending votes.",
-      "slug": "finance-bill-vs-appropriation-bill",
-      "url": "/learn/modules/finance-bill-vs-appropriation-bill",
-      "lesson_count": 1
+      "title": "Inside Kenya's National Infrastructure Fund",
+      "summary": "Official written & video guide to public funds, PPPs, and debt governance.",
+      "slug": "kenya-national-infrastructure-fund",
+      "url": "/learn/modules/kenya-national-infrastructure-fund",
+      "lesson_count": 4
     }
   ]
 }
