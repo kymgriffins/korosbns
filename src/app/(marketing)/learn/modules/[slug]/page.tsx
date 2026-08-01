@@ -67,41 +67,79 @@ export default async function ModuleDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const module = await learningData.modules.fetchBySlug(slug).catch(() => null);
 
-  const jsonLd =
-    module != null
-      ? {
-          "@context": "https://schema.org",
-          "@type": "Course",
-          name: module.title,
-          description: module.description,
-          url: canonicalUrl(`/learn/modules/${slug}`),
-          provider: {
-            "@type": "Organization",
-            name: "Budget Ndio Story",
-            url: "https://budgetndiostory.org",
-          },
-          educationalLevel: "Beginner",
-          inLanguage: "en-KE",
-          isAccessibleForFree: true,
-          about: [
-            "Kenya public finance",
-            "National budget",
-            "Civic education",
-          ],
-          ...(module.image_url
-            ? { image: module.image_url }
-            : {}),
+  const schemas: Record<string, unknown>[] = [];
+
+  if (module) {
+    const pageUrl = canonicalUrl(`/learn/modules/${slug}`);
+    
+    // 1. Course Schema
+    schemas.push({
+      "@context": "https://schema.org",
+      "@type": "Course",
+      name: module.title,
+      description: module.description,
+      url: pageUrl,
+      provider: {
+        "@type": "Organization",
+        name: "Budget Ndio Story",
+        url: "https://budgetndiostory.org",
+      },
+      educationalLevel: "Beginner",
+      inLanguage: "en-KE",
+      isAccessibleForFree: true,
+      about: [
+        "Kenya public finance",
+        "National budget",
+        "Civic education",
+        "Finance Bill",
+      ],
+      ...(module.image_url ? { image: module.image_url } : {}),
+    });
+
+    // 2. Breadcrumb Schema
+    schemas.push({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: "https://budgetndiostory.org" },
+        { "@type": "ListItem", position: 2, name: "Learn Hub", item: "https://budgetndiostory.org/learn" },
+        { "@type": "ListItem", position: 3, name: module.title, item: pageUrl },
+      ],
+    });
+
+    // 3. VideoObject Schema for step videos
+    const processedVideoIds = new Set<string>();
+    for (const step of module.steps || []) {
+      const urls = [step.youtube_url, ...(step.youtube_urls || [])].filter(Boolean) as string[];
+      for (const rawUrl of urls) {
+        const videoIdMatch = rawUrl.match(/(?:v=|\/embed\/|\/watch\?v=|\/shorts\/|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+        const videoId = videoIdMatch ? videoIdMatch[1] : null;
+        if (videoId && !processedVideoIds.has(videoId)) {
+          processedVideoIds.add(videoId);
+          schemas.push({
+            "@context": "https://schema.org",
+            "@type": "VideoObject",
+            name: `${step.title || module.title} — Budget Ndio Story`,
+            description: step.article_summary || module.description,
+            thumbnailUrl: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+            uploadDate: "2026-01-01T00:00:00Z",
+            embedUrl: `https://www.youtube-nocookie.com/embed/${videoId}`,
+            contentUrl: rawUrl,
+          });
         }
-      : null;
+      }
+    }
+  }
 
   return (
     <>
-      {jsonLd ? (
+      {schemas.map((s, idx) => (
         <script
+          key={idx}
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(s) }}
         />
-      ) : null}
+      ))}
       <CourseLandingView />
     </>
   );

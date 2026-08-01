@@ -1,7 +1,7 @@
 {
   "provenance": {
-    "source": "seeds/learning_statutory_shells.json + YouTube bloodline thumbs",
-    "note": "Read-only offline articles when learn/articles API is unreachable. thumbnail_url uses YouTube hqdefault where a series maps cleanly.",
+    "source": "seeds/youtube_series_modules.json + YouTube RSS Bloodline",
+    "note": "Official companion articles for YouTube RSS playlist series.",
     "level": "fallback"
   },
   "count": 3,
@@ -9,35 +9,35 @@
     {
       "id": "intro-budget-policy-statement",
       "content_type": "article",
-      "title": "What is the Budget Policy Statement?",
-      "summary": "How the BPS sets national and county budget priorities under the PFM Act.",
-      "slug": "intro-budget-policy-statement",
-      "url": "/learn/articles/intro-budget-policy-statement",
+      "title": "Before Budget Day: The Budget Policy Statement (BPS)",
+      "summary": "Official written companion to the 3-part YouTube series Before Budget Day: This Is Where It Starts — PFM Act Section 25, sector ceilings, and public participation.",
+      "slug": "before-budget-day-full-series",
+      "url": "/learn/articles/before-budget-day-full-series",
       "thumbnail_url": "https://i.ytimg.com/vi/Ed9lP0-komE/hqdefault.jpg",
-      "difficulty": "beginner",
-      "tags": [{ "name": "BPS", "slug": "bps" }]
+      "difficulty": "intermediate",
+      "tags": [{ "name": "BPS", "slug": "bps" }, { "name": "PFM Act", "slug": "pfm-act" }]
     },
     {
       "id": "intro-county-fiscal-strategy-paper",
       "content_type": "article",
-      "title": "What is the County Fiscal Strategy Paper?",
-      "summary": "CFSP role in the county budget cycle.",
-      "slug": "intro-county-fiscal-strategy-paper",
-      "url": "/learn/articles/intro-county-fiscal-strategy-paper",
+      "title": "County Budgets: Where Does the Money Come From?",
+      "summary": "Official written companion to the 3-part YouTube series County Budget: Where Does the Money Come From? — Articles 202 & 203, DoRA, CARA, OSR, and CoB reports.",
+      "slug": "county-budget-where-money-comes-from",
+      "url": "/learn/articles/county-budget-where-money-comes-from",
       "thumbnail_url": "https://i.ytimg.com/vi/3wfk09c_xNQ/hqdefault.jpg",
-      "difficulty": "beginner",
-      "tags": [{ "name": "CFSP", "slug": "cfsp" }]
+      "difficulty": "intermediate",
+      "tags": [{ "name": "County Finance", "slug": "county-finance" }, { "name": "DoRA", "slug": "dora" }]
     },
     {
-      "id": "intro-division-of-revenue-bill",
+      "id": "intro-national-infrastructure-fund",
       "content_type": "article",
-      "title": "What is the Division of Revenue Bill?",
-      "summary": "How nationally raised revenue is split between national and county governments.",
-      "slug": "intro-division-of-revenue-bill",
-      "url": "/learn/articles/intro-division-of-revenue-bill",
-      "thumbnail_url": "https://i.ytimg.com/vi/oHuImiQvvN0/hqdefault.jpg",
-      "difficulty": "beginner",
-      "tags": [{ "name": "DoRB", "slug": "dorb" }]
+      "title": "Inside Kenya's National Infrastructure Fund",
+      "summary": "Official written companion to the 4-part YouTube series Inside Kenya's National Infrastructure Fund — PFM Act Section 24, PPP concessions, and public debt governance.",
+      "slug": "inside-kenya-national-infrastructure-fund",
+      "url": "/learn/articles/inside-kenya-national-infrastructure-fund",
+      "thumbnail_url": "https://i.ytimg.com/vi/A_EXLueEMlk/hqdefault.jpg",
+      "difficulty": "advanced",
+      "tags": [{ "name": "Infrastructure", "slug": "infrastructure" }, { "name": "Public Debt", "slug": "public-debt" }]
     }
   ]
 }

@@ -18,6 +18,7 @@ import Container from "../global/container";
 import Wrapper from "../global/wrapper";
 import { Button } from "@/components/ui/button";
 import { useMutation } from "@tanstack/react-query";
+import { EmailObfuscator } from "../global/email-obfuscator";
 
 // Compact X icon
 const XIcon = ({ className }: { className?: string }) => (
@@ -377,18 +378,11 @@ export default function Contact() {
         >
           <p className="text-[10px] font-medium">© 2026 Budget Ndio Story.</p>
           <div className="flex items-center gap-4 text-[9px] font-medium uppercase tracking-wider">
-            <a
-              href="mailto:info@budgetndiostory.org"
+            <EmailObfuscator
+              email="info@budgetndiostory.org"
+              label="Email"
               className="group inline-flex items-center gap-1.5 hover:text-foreground transition-colors"
-            >
-              <motion.span
-                aria-hidden
-                className="size-1.5 rounded-full bg-primary/70"
-                animate={{ scale: [0.8, 1.5, 0.8], opacity: [0.4, 1, 0.4] }}
-                transition={{ duration: 2.2, repeat: Infinity }}
-              />
-              Email
-            </a>
+            />
             <a
               href="/privacy"
               className="group inline-flex items-center gap-1.5 hover:text-foreground transition-colors"

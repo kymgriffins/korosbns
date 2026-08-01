@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ImmersiveChrome } from "./immersive-chrome";
 import { ImmersiveSegment } from "./immersive-segment";
@@ -23,6 +24,14 @@ export function ImmersiveWatchScreen({ stepNumber }: { stepNumber: number }) {
   const { mod, refreshProgress } = useImmersiveModule();
   const stepIndex = stepNumber - 1;
   const step = mod.steps[stepIndex];
+
+  useEffect(() => {
+    if (step) {
+      markVideoWatched(mod, step);
+      refreshProgress();
+    }
+  }, [mod, step, refreshProgress]);
+
   if (!step) {
     router.replace(`/learn/modules/${mod.slug}/watch/1`);
     return null;

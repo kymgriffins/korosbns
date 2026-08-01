@@ -7,6 +7,7 @@ import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import { getProgramme } from "@/content";
 import { GsapHeroChoreography } from "@/motion/gsap";
 import { cn } from "@/utils";
+import { EmailObfuscator } from "@/components/global/email-obfuscator";
 
 const studios = getProgramme("studios")!;
 
@@ -45,9 +46,10 @@ export function StudioHero() {
           >
             {studios.cta.label}
           </Button>
-          <Button size="lg" variant="outline" className={cn(T.btnPrimary, "px-8")} asChild>
-            <a href="mailto:info@budgetndiostory.org">info@budgetndiostory.org</a>
-          </Button>
+          <EmailObfuscator
+            email="info@budgetndiostory.org"
+            className={cn(T.btnPrimary, "px-8 inline-flex items-center justify-center rounded-lg border border-input bg-background text-sm font-medium hover:bg-accent hover:text-accent-foreground h-11")}
+          />
         </div>
       </div>
     </GsapHeroChoreography>

@@ -265,18 +265,59 @@ export function completeModuleStep(mod: CivicModule, step: ChapterStep, nextStep
   learnHubApi.completeChapter(step.id).catch(() => {});
 }
 
+export function areAllModuleVideosWatched(mod: CivicModule, p: ReturnType<typeof readProgress>): boolean {
+  const videoSteps = (mod.steps ?? []).filter((s) => stepHasVideo(s));
+  if (videoSteps.length === 0) return true;
+  return videoSteps.every((s) => Boolean(p.videosWatched?.[s.order]));
+}
+
+export function isModuleFullyCompleted(mod: CivicModule, p: ReturnType<typeof readProgress>): boolean {
+  if (!p.masteryAwarded && Object.keys(p.stepsCompleted ?? {}).length < (mod.steps?.length ?? 0)) {
+    return false;
+  }
+  return areAllModuleVideosWatched(mod, p);
+}
+
+export function calculateModuleProgressPct(mod: CivicModule, p: ReturnType<typeof readProgress>): number {
+  const totalSteps = mod.steps?.length ?? 0;
+  if (totalSteps === 0) return 0;
+
+  const videoSteps = (mod.steps ?? []).filter((s) => stepHasVideo(s));
+  const totalVideoSteps = videoSteps.length;
+
+  const completedStepsCount = Object.keys(p.stepsCompleted ?? {}).length;
+  const watchedVideosCount = videoSteps.filter((s) => Boolean(p.videosWatched?.[s.order])).length;
+
+  if (totalVideoSteps === 0) {
+    return Math.round((completedStepsCount / totalSteps) * 100);
+  }
+
+  const totalItems = totalSteps + totalVideoSteps;
+  const completedItems = completedStepsCount + watchedVideosCount;
+  const rawPct = Math.round((completedItems / totalItems) * 100);
+
+  const allVideosWatched = watchedVideosCount === totalVideoSteps;
+  if (!allVideosWatched && rawPct >= 100) {
+    return 95;
+  }
+  return rawPct;
+}
+
 export function awardModuleMastery(mod: CivicModule) {
   const p = readProgress(mod.slug, mod.order);
+  const allVideosWatched = areAllModuleVideosWatched(mod, p);
   writeProgress(mod.slug, {
     ...p,
-    masteryAwarded: true,
+    masteryAwarded: allVideosWatched,
     stepsCompleted: Object.fromEntries(mod.steps.map((s) => [s.order, true])),
   });
-  void recordLearnProgressWithQueue({
-    content_type: "path",
-    content_id: mod.id,
-    progress_percent: 100,
-  });
+  if (allVideosWatched) {
+    void recordLearnProgressWithQueue({
+      content_type: "path",
+      content_id: mod.id,
+      progress_percent: 100,
+    });
+  }
 }
 
 /** Shared segment tabs for a step (Article / Video / Quiz labels). */

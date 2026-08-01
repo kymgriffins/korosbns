@@ -10,6 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import { Routes } from "@/constants/routes";
 import type { CivicModule } from "@/types/learn";
 import { readProgress } from "@/lib/module-progress";
+import { isModuleFullyCompleted, calculateModuleProgressPct } from "@/lib/immersive-module";
 import { HarmonizedImage } from "@/components/ui/harmonized-image";
 import { LearnPageFrame } from "@/components/learn/learn-page-frame";
 import { fadeInUp, staggerContainer } from "@/motion/variants";
@@ -63,9 +64,9 @@ export function LearnModulesView({ stages }: LearnModulesViewProps) {
       const completedCount = Object.keys(p.stepsCompleted).length;
       const total = stage.steps.length;
       const minutes = stage.steps.reduce((sum, step) => sum + (step.estimated_minutes ?? 8), 0);
-      const isCompleted = p.masteryAwarded;
-      const isInProgress = completedCount > 0 && !isCompleted;
-      const pct = total > 0 ? Math.round((completedCount / total) * 100) : 0;
+      const isCompleted = isModuleFullyCompleted(stage, p);
+      const pct = calculateModuleProgressPct(stage, p);
+      const isInProgress = (completedCount > 0 || Object.keys(p.videosWatched ?? {}).length > 0) && !isCompleted;
       return { stage, completedCount, total, minutes, pct, isCompleted, isInProgress };
     });
   }, [orderedStages]);
@@ -219,8 +220,6 @@ export function LearnModulesView({ stages }: LearnModulesViewProps) {
               <Link
                 key={row.stage.id}
                 href={`/learn/modules/${row.stage.slug}`}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="learn-progress-tile min-w-[280px] max-w-[340px] shrink-0 rounded-2xl border border-border/70 bg-card/80 p-4 shadow-sm transition-colors hover:border-primary/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <div className="flex items-start justify-between gap-4">
@@ -264,8 +263,6 @@ export function LearnModulesView({ stages }: LearnModulesViewProps) {
               <Link
                 key={article.id}
                 href={article.href}
-                target="_blank"
-                rel="noopener noreferrer"
                 className="group rounded-2xl border border-border/70 bg-card/80 p-4 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <div className="flex items-start gap-3">
@@ -357,8 +354,6 @@ export function LearnModulesView({ stages }: LearnModulesViewProps) {
               >
                 <Link
                   href={`/learn/modules/${row.stage.slug}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className={cn(
                     "learn-module-card group flex h-full flex-col overflow-hidden rounded-[1.35rem] border border-border/60 bg-card transition-all duration-500 hover:-translate-y-1 hover:border-primary/30 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     row.isInProgress && "is-in-progress",

@@ -20,6 +20,8 @@ import { HarmonizedImage } from "@/components/ui/harmonized-image";
 import { LearnPageFrame } from "@/components/learn/learn-page-frame";
 import { learningData } from "@/data/learning";
 import {
+  isModuleFullyCompleted,
+  calculateModuleProgressPct,
   lecturesForModule,
   modesForStep,
   resumeHref,
@@ -71,14 +73,15 @@ export function CourseLandingView() {
     const p = readProgress(mod.slug, mod.order);
     const completedCount = Object.keys(p.stepsCompleted).length;
     const total = mod.steps.length;
-    const pct = total > 0 ? Math.round((completedCount / total) * 100) : 0;
+    const isCompleted = isModuleFullyCompleted(mod, p);
+    const pct = calculateModuleProgressPct(mod, p);
     const lectures = lecturesForModule(mod);
     return {
       completedCount,
       total,
       pct,
-      isCompleted: p.masteryAwarded,
-      isInProgress: completedCount > 0 && !p.masteryAwarded,
+      isCompleted,
+      isInProgress: (completedCount > 0 || Object.keys(p.videosWatched ?? {}).length > 0) && !isCompleted,
       resumeStep: resolveResumeStep(mod),
       startHref: resumeHref(mod),
       completed: p.stepsCompleted,
@@ -182,7 +185,7 @@ export function CourseLandingView() {
 
           <div className="flex flex-wrap gap-3 pt-1">
             <Button asChild size="lg" className="h-11 gap-2 rounded-md px-6 text-sm font-semibold">
-              <Link href={progress.startHref} target="_blank" rel="noopener noreferrer">
+              <Link href={progress.startHref}>
                 <Play className="size-4" aria-hidden />
                 {ctaLabel}
               </Link>
@@ -243,8 +246,6 @@ export function CourseLandingView() {
                 <div className="flex flex-col gap-2 px-4 py-3.5 sm:flex-row sm:items-center sm:gap-3">
                   <Link
                     href={primaryHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="flex min-w-0 flex-1 items-center gap-3 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     <span
@@ -274,8 +275,6 @@ export function CourseLandingView() {
                         <Link
                           key={`${lec.stepNumber}-${lec.mode}`}
                           href={lec.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
                           className="inline-flex items-center gap-1 rounded-md border border-border/60 bg-background px-2 py-1 text-[11px] font-semibold text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         >
                           <Icon className="size-3" aria-hidden />

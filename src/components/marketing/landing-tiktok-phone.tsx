@@ -161,6 +161,7 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
               sizes="(max-width: 768px) 280px, 320px"
               className="object-cover"
               priority
+              fetchPriority="high"
             />
           </div>
         )}
