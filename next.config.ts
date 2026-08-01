@@ -35,6 +35,15 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: ['192.168.100.78', 'localhost', '127.0.0.1'],
   reactCompiler: true,
   trailingSlash: true,
+  experimental: {
+    optimizePackageImports: [
+      'lucide-react',
+      'framer-motion',
+      'motion',
+      '@radix-ui/react-icons',
+      '@tabler/icons-react'
+    ],
+  },
 
   // Performance optimizations
   compress: true, // Enable gzip compression

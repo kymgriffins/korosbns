@@ -7,6 +7,7 @@ import { LANDING_SECTION_SURFACE, LandingContent, LandingSection, LandingSection
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { EmailObfuscator } from "@/components/global/email-obfuscator";
 
 export function ProgrammesContactSection() {
   const [email, setEmail] = useState("");
@@ -80,10 +81,7 @@ export function ProgrammesContactSection() {
                   </Link>
                 </Button>
                 <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground pt-2 border-t border-border/40">
-                  <span className="flex items-center gap-1.5">
-                    <Mail className="size-3.5 text-primary" />
-                    info@budgetndiostory.org
-                  </span>
+                  <EmailObfuscator email="info@budgetndiostory.org" showIcon className="flex items-center gap-1.5 hover:text-primary transition-colors" />
                   <span className="flex items-center gap-1.5">
                     <PhoneCall className="size-3.5 text-primary" />
                     +254 790 631 623

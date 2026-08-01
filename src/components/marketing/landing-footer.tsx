@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { motion } from 'motion/react';
 import { fadeInUp, staggerContainer } from "@/motion/variants";
+import { EmailObfuscator } from "@/components/global/email-obfuscator";
 
 export default function LandingFooter() {
     return (
@@ -22,9 +23,10 @@ export default function LandingFooter() {
                             <span className="text-primary italic font-heading">next chapter</span> together.
                         </h2>
                         <div className="flex flex-col gap-4">
-                            <a href="mailto:hello@budgetndiostory.org" className="text-2xl md:text-4xl font-black hover:text-primary transition-colors tracking-tight">
-                                hello@budgetndiostory.org
-                            </a>
+                            <EmailObfuscator
+                                email="hello@budgetndiostory.org"
+                                className="text-2xl md:text-4xl font-black hover:text-primary transition-colors tracking-tight"
+                            />
                             <p className="text-muted-foreground tracking-[0.2em] uppercase text-xs">Join the movement</p>
                         </div>
                     </motion.div>

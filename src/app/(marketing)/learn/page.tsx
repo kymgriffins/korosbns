@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { LearnPathsHome } from "@/components/learn/learn-paths-home";
 import { metaDescription, canonicalUrl } from "@/utils/metadata";
 import { legacyLearnTabRedirect } from "@/lib/learn-nav";
+import { BreadcrumbJsonLd, ArticleJsonLd } from "@/components/seo/json-ld";
 
 const learnDescription = metaDescription(
   "Learn Kenya’s national and county budget cycle — free civic modules, articles, and paths. No paywall. Optional account to save progress.",
@@ -49,8 +50,21 @@ export default async function LearnPage({ searchParams }: PageProps) {
   if (legacy) redirect(legacy);
 
   return (
-    <Suspense fallback={<div className="min-h-[50vh] animate-pulse bg-muted/20" />}>
-      <LearnPathsHome tab="learn" />
-    </Suspense>
+    <>
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Home", item: "https://budgetndiostory.org" },
+          { name: "Learn", item: "https://budgetndiostory.org/learn" },
+        ]}
+      />
+      <ArticleJsonLd
+        title="Learn Kenya’s Budget — Civic Learning Hub"
+        description={learnDescription}
+        url="https://budgetndiostory.org/learn"
+      />
+      <Suspense fallback={<div className="min-h-[50vh] animate-pulse bg-muted/20" />}>
+        <LearnPathsHome tab="learn" />
+      </Suspense>
+    </>
   );
 }
