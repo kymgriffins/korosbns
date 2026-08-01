@@ -20,6 +20,8 @@ import { HarmonizedImage } from "@/components/ui/harmonized-image";
 import { LearnPageFrame } from "@/components/learn/learn-page-frame";
 import { learningData } from "@/data/learning";
 import {
+  isModuleFullyCompleted,
+  calculateModuleProgressPct,
   lecturesForModule,
   modesForStep,
   resumeHref,
@@ -71,14 +73,15 @@ export function CourseLandingView() {
     const p = readProgress(mod.slug, mod.order);
     const completedCount = Object.keys(p.stepsCompleted).length;
     const total = mod.steps.length;
-    const pct = total > 0 ? Math.round((completedCount / total) * 100) : 0;
+    const isCompleted = isModuleFullyCompleted(mod, p);
+    const pct = calculateModuleProgressPct(mod, p);
     const lectures = lecturesForModule(mod);
     return {
       completedCount,
       total,
       pct,
-      isCompleted: p.masteryAwarded,
-      isInProgress: completedCount > 0 && !p.masteryAwarded,
+      isCompleted,
+      isInProgress: (completedCount > 0 || Object.keys(p.videosWatched ?? {}).length > 0) && !isCompleted,
       resumeStep: resolveResumeStep(mod),
       startHref: resumeHref(mod),
       completed: p.stepsCompleted,
