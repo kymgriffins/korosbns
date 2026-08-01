@@ -43,13 +43,14 @@ const Capibilities = () => {
                     </motion.p>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-12 max-w-5xl mx-auto">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 mt-12 max-w-5xl mx-auto">
                     <motion.div
                         className={cn(
                             "lg:col-span-7 relative group",
-                            "rounded-xl lg:rounded-2xl p-8 overflow-hidden",
-                            "bg-cardbox",
-                            "transition-all duration-500"
+                            "rounded-2xl lg:rounded-3xl p-8 overflow-hidden",
+                            "bg-gradient-to-b from-card to-card/70 text-card-foreground",
+                            "shadow-[0_2px_12px_-2px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.35)]",
+                            "transition-all duration-500 hover:-translate-y-1 hover:shadow-xl"
                         )}
                         initial={{ opacity: 0, y: 10 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -75,7 +76,7 @@ const Capibilities = () => {
                                 width={500}
                                 height={500}
                                 unoptimized
-                                className="w-full mx-auto h-full object-contain object-center z-10"
+                                className="w-full mx-auto h-full object-contain object-center z-10 transition-transform duration-500 group-hover:scale-105"
                             />
                         </div>
                     </motion.div>
@@ -83,9 +84,10 @@ const Capibilities = () => {
                     <motion.div
                         className={cn(
                             "lg:col-span-5 relative group",
-                            "rounded-xl lg:rounded-2xl p-8 overflow-hidden",
-                            "bg-cardbox",
-                            "transition-all duration-500"
+                            "rounded-2xl lg:rounded-3xl p-8 overflow-hidden",
+                            "bg-gradient-to-b from-card to-card/70 text-card-foreground",
+                            "shadow-[0_2px_12px_-2px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.35)]",
+                            "transition-all duration-500 hover:-translate-y-1 hover:shadow-xl"
                         )}
                         initial={{ opacity: 0, y: 10 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -111,7 +113,7 @@ const Capibilities = () => {
                                 width={500}
                                 height={500}
                                 unoptimized
-                                className="w-full mx-auto h-full object-contain object-center z-10"
+                                className="w-full mx-auto h-full object-contain object-center z-10 transition-transform duration-500 group-hover:scale-105"
                             />
                         </div>
                     </motion.div>
@@ -119,9 +121,10 @@ const Capibilities = () => {
                     <motion.div
                         className={cn(
                             "lg:col-span-4 relative group",
-                            "rounded-xl lg:rounded-2xl p-6 overflow-hidden",
-                            "bg-cardbox",
-                            "transition-all duration-500"
+                            "rounded-2xl lg:rounded-3xl p-6 overflow-hidden",
+                            "bg-gradient-to-b from-card to-card/70 text-card-foreground",
+                            "shadow-[0_2px_12px_-2px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.35)]",
+                            "transition-all duration-500 hover:-translate-y-1 hover:shadow-xl"
                         )}
                         initial={{ opacity: 0, y: 10 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -147,7 +150,7 @@ const Capibilities = () => {
                                 width={500}
                                 height={500}
                                 unoptimized
-                                className="w-full mx-auto h-full object-contain object-center z-10"
+                                className="w-full mx-auto h-full object-contain object-center z-10 transition-transform duration-500 group-hover:scale-105"
                             />
                         </div>
                     </motion.div>
@@ -155,9 +158,10 @@ const Capibilities = () => {
                     <motion.div
                         className={cn(
                             "lg:col-span-4 relative group",
-                            "rounded-xl lg:rounded-2xl p-6 overflow-hidden",
-                            "bg-cardbox",
-                            "transition-all duration-500"
+                            "rounded-2xl lg:rounded-3xl p-6 overflow-hidden",
+                            "bg-gradient-to-b from-card to-card/70 text-card-foreground",
+                            "shadow-[0_2px_12px_-2px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.35)]",
+                            "transition-all duration-500 hover:-translate-y-1 hover:shadow-xl"
                         )}
                         initial={{ opacity: 0, y: 10 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -183,7 +187,7 @@ const Capibilities = () => {
                                 width={500}
                                 height={500}
                                 unoptimized
-                                className="w-full mx-auto h-full object-contain object-center z-10"
+                                className="w-full mx-auto h-full object-contain object-center z-10 transition-transform duration-500 group-hover:scale-105"
                             />
                         </div>
                     </motion.div>
@@ -197,9 +201,10 @@ const Capibilities = () => {
                     >
                         <motion.div
                             className={cn(
-                                "relative group rounded-xl lg:rounded-2xl p-6 overflow-visible",
-                                "bg-cardbox",
-                                "transition-all duration-500"
+                                "relative group rounded-2xl lg:rounded-3xl p-6 overflow-visible",
+                                "bg-gradient-to-b from-card to-card/70 text-card-foreground",
+                                "shadow-[0_2px_12px_-2px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.35)]",
+                                "transition-all duration-500 hover:-translate-y-1 hover:shadow-xl"
                             )}
                         >
                             <div className="relative overflow-visible">
@@ -217,9 +222,10 @@ const Capibilities = () => {
 
                         <motion.div
                             className={cn(
-                                "relative group rounded-xl lg:rounded-2xl p-6 overflow-hidden",
-                                "bg-cardbox",
-                                "transition-all duration-500"
+                                "relative group rounded-2xl lg:rounded-3xl p-6 overflow-hidden",
+                                "bg-gradient-to-b from-card to-card/70 text-card-foreground",
+                                "shadow-[0_2px_12px_-2px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_16px_rgba(0,0,0,0.35)]",
+                                "transition-all duration-500 hover:-translate-y-1 hover:shadow-xl"
                             )}
                         >
                             <div className="relative">

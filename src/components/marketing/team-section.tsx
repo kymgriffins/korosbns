@@ -78,7 +78,7 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
       className="group relative"
     >
       <Link href={`/team/${username}`} className="block">
-        <div className="relative rounded-2xl lg:rounded-3xl overflow-hidden bg-card border border-border hover:border-primary/40 transition-all duration-300 shadow-sm hover:shadow-lg">
+        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-b from-card to-card/60 shadow-[0_4px_16px_-4px_rgba(0,0,0,0.1),0_2px_4px_rgba(0,0,0,0.05)] dark:shadow-[0_6px_24px_rgba(0,0,0,0.45)] transition-all duration-500 group-hover:-translate-y-2 group-hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.2)]">
           {/* Image container with 3:4 aspect ratio */}
           <div className="relative aspect-[3/4] w-full overflow-hidden">
             {imageError ? (
