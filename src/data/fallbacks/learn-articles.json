@@ -1,43 +1,65 @@
 {
   "provenance": {
     "source": "seeds/learning_statutory_shells.json + YouTube bloodline thumbs",
-    "note": "Read-only offline articles when learn/articles API is unreachable. thumbnail_url uses YouTube hqdefault where a series maps cleanly.",
+    "note": "Read-only offline articles when learn/articles API is unreachable. Enriched with comprehensive statutory references.",
     "level": "fallback"
   },
-  "count": 3,
+  "count": 5,
   "results": [
     {
       "id": "intro-budget-policy-statement",
       "content_type": "article",
-      "title": "What is the Budget Policy Statement?",
-      "summary": "How the BPS sets national and county budget priorities under the PFM Act.",
-      "slug": "intro-budget-policy-statement",
-      "url": "/learn/articles/intro-budget-policy-statement",
+      "title": "Before Budget Day: The Budget Policy Statement (BPS)",
+      "summary": "How the BPS sets national and county budget priorities under Section 25 of the PFM Act 2012.",
+      "slug": "before-budget-day-full-series",
+      "url": "/learn/articles/before-budget-day-full-series",
       "thumbnail_url": "https://i.ytimg.com/vi/Ed9lP0-komE/hqdefault.jpg",
-      "difficulty": "beginner",
-      "tags": [{ "name": "BPS", "slug": "bps" }]
+      "difficulty": "intermediate",
+      "tags": [{ "name": "BPS", "slug": "bps" }, { "name": "PFM Act", "slug": "pfm-act" }]
     },
     {
       "id": "intro-county-fiscal-strategy-paper",
       "content_type": "article",
-      "title": "What is the County Fiscal Strategy Paper?",
-      "summary": "CFSP role in the county budget cycle.",
-      "slug": "intro-county-fiscal-strategy-paper",
-      "url": "/learn/articles/intro-county-fiscal-strategy-paper",
+      "title": "County Budgets: Equitable Share & Revenue Architecture",
+      "summary": "How 47 counties are funded under Articles 202 & 203 of the Constitution, DoRA, and CARA.",
+      "slug": "county-budget-where-money-comes-from",
+      "url": "/learn/articles/county-budget-where-money-comes-from",
       "thumbnail_url": "https://i.ytimg.com/vi/3wfk09c_xNQ/hqdefault.jpg",
-      "difficulty": "beginner",
-      "tags": [{ "name": "CFSP", "slug": "cfsp" }]
+      "difficulty": "intermediate",
+      "tags": [{ "name": "County Finance", "slug": "county-finance" }, { "name": "DoRA", "slug": "dora" }]
     },
     {
-      "id": "intro-division-of-revenue-bill",
+      "id": "intro-national-infrastructure-fund",
       "content_type": "article",
-      "title": "What is the Division of Revenue Bill?",
-      "summary": "How nationally raised revenue is split between national and county governments.",
-      "slug": "intro-division-of-revenue-bill",
-      "url": "/learn/articles/intro-division-of-revenue-bill",
-      "thumbnail_url": "https://i.ytimg.com/vi/oHuImiQvvN0/hqdefault.jpg",
+      "title": "Inside Kenya's Infrastructure Fund & Public Debt",
+      "summary": "Special public funds, debt service ratios, PPP concessions, and asset governance under Article 211.",
+      "slug": "inside-kenya-national-infrastructure-fund",
+      "url": "/learn/articles/inside-kenya-national-infrastructure-fund",
+      "thumbnail_url": "https://i.ytimg.com/vi/A_EXLueEMlk/hqdefault.jpg",
+      "difficulty": "advanced",
+      "tags": [{ "name": "Infrastructure", "slug": "infrastructure" }, { "name": "Public Debt", "slug": "public-debt" }]
+    },
+    {
+      "id": "intro-finance-vs-appropriation",
+      "content_type": "article",
+      "title": "The Finance Bill vs. The Appropriation Bill",
+      "summary": "How Parliament raises tax revenues under Article 209 and authorizes line-item spending under Article 221.",
+      "slug": "finance-bill-vs-appropriation-bill-guide",
+      "url": "/learn/articles/finance-bill-vs-appropriation-bill-guide",
+      "thumbnail_url": "https://i.ytimg.com/vi/Ed9lP0-komE/hqdefault.jpg",
+      "difficulty": "intermediate",
+      "tags": [{ "name": "Finance Bill", "slug": "finance-bill" }, { "name": "Taxation", "slug": "taxation" }]
+    },
+    {
+      "id": "intro-public-participation",
+      "content_type": "article",
+      "title": "Public Participation & Civic Advocacy Masterclass",
+      "summary": "How to draft citizen memoranda, present testimony, and track community project implementation under Article 118.",
+      "slug": "public-participation-civic-advocacy-guide",
+      "url": "/learn/articles/public-participation-civic-advocacy-guide",
+      "thumbnail_url": "https://i.ytimg.com/vi/3wfk09c_xNQ/hqdefault.jpg",
       "difficulty": "beginner",
-      "tags": [{ "name": "DoRB", "slug": "dorb" }]
+      "tags": [{ "name": "Advocacy", "slug": "advocacy" }, { "name": "Public Participation", "slug": "public-participation" }]
     }
   ]
 }

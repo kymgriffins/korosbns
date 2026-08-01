@@ -5,8 +5,8 @@
     "level": "fallback"
   },
   "counts": {
-    "article": 3,
-    "path": 1,
+    "article": 5,
+    "path": 5,
     "video": 0,
     "story": 0,
     "document": 0,
@@ -16,19 +16,29 @@
     {
       "id": "budget-policy-statement",
       "content_type": "path",
-      "title": "Budget Policy Statement",
-      "summary": "A citizen-friendly guide to Kenya's Budget Policy Statement 2026.",
+      "title": "Budget Policy Statement (BPS)",
+      "summary": "A citizen-friendly guide to Kenya's Budget Policy Statement & Sector Ceilings.",
       "slug": "budget-policy-statement",
-      "url": "/learn/stages/budget-policy-statement",
+      "url": "/learn/modules/budget-policy-statement",
       "lesson_count": 3
     },
     {
-      "id": "intro-budget-policy-statement",
-      "content_type": "article",
-      "title": "What is the Budget Policy Statement?",
-      "summary": "How the BPS sets national and county budget priorities under the PFM Act.",
-      "slug": "intro-budget-policy-statement",
-      "url": "/learn/articles/intro-budget-policy-statement"
+      "id": "county-budget",
+      "content_type": "path",
+      "title": "County Budgets & Revenue Architecture",
+      "summary": "How 47 counties are funded via Equitable Share, CARA, DoRA, and OSR.",
+      "slug": "county-budget",
+      "url": "/learn/modules/county-budget",
+      "lesson_count": 3
+    },
+    {
+      "id": "finance-bill-vs-appropriation-bill",
+      "content_type": "path",
+      "title": "Finance Bill vs. Appropriation Bill",
+      "summary": "Understanding tax policy laws vs. executive line-item spending votes.",
+      "slug": "finance-bill-vs-appropriation-bill",
+      "url": "/learn/modules/finance-bill-vs-appropriation-bill",
+      "lesson_count": 1
     }
   ]
 }

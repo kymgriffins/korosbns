@@ -182,7 +182,7 @@ export function CourseLandingView() {
 
           <div className="flex flex-wrap gap-3 pt-1">
             <Button asChild size="lg" className="h-11 gap-2 rounded-md px-6 text-sm font-semibold">
-              <Link href={progress.startHref} target="_blank" rel="noopener noreferrer">
+              <Link href={progress.startHref}>
                 <Play className="size-4" aria-hidden />
                 {ctaLabel}
               </Link>
@@ -243,8 +243,6 @@ export function CourseLandingView() {
                 <div className="flex flex-col gap-2 px-4 py-3.5 sm:flex-row sm:items-center sm:gap-3">
                   <Link
                     href={primaryHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="flex min-w-0 flex-1 items-center gap-3 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     <span
@@ -274,8 +272,6 @@ export function CourseLandingView() {
                         <Link
                           key={`${lec.stepNumber}-${lec.mode}`}
                           href={lec.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
                           className="inline-flex items-center gap-1 rounded-md border border-border/60 bg-background px-2 py-1 text-[11px] font-semibold text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         >
                           <Icon className="size-3" aria-hidden />

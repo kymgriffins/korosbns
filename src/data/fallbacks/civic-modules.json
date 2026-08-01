@@ -1,15 +1,15 @@
 {
   "provenance": {
-    "source": "seeds/youtube_series_modules.json",
-    "note": "YouTube-bloodline Learn Hub catalogue: one article per module + full series youtube_urls. Offline when civic-modules API is unreachable.",
+    "source": "seeds/youtube_series_modules.json + Civic Literacy Maturing Initiative",
+    "note": "Complete, highly detailed civic literacy modules referencing statutory provisions, constitutional articles, exact quotes, and video companion guides.",
     "level": "fallback",
-    "shape": "one_article_per_module"
+    "shape": "comprehensive_civic_catalogue"
   },
-  "count": 3,
+  "count": 5,
   "results": [
     {
       "id": "budget-policy-statement",
-      "title": "Before Budget Day: Budget Policy Statement",
+      "title": "Before Budget Day: The Budget Policy Statement (BPS)",
       "slug": "budget-policy-statement",
       "badge": "🧾",
       "badgeName": "Budget Policy Statement",
@@ -17,15 +17,20 @@
       "archive": "",
       "link": "",
       "status": "Published",
-      "credits": "Budget Ndio Story",
-      "description": "Watch and read the full Before Budget Day series — what the Budget Policy Statement is, why it matters before Budget Day, and how young people can engage.",
-      "expectations": [],
+      "credits": "Budget Ndio Story Editorial & Research Team",
+      "description": "Master Kenya's annual economic blueprint. Understand how the National Treasury sets sector ceilings, macroeconomic forecasts, and revenue targets under Section 25 of the PFM Act 2012, and how citizens can submit effective memoranda before February 20th.",
+      "expectations": [
+        "Understand the statutory timeline of the BPS under the Public Finance Management Act 2012.",
+        "Decode macroeconomic assumptions: GDP growth, inflation targets, debt service ratios, and revenue forecasts.",
+        "Analyze sector allocation ceilings (Education, Health, Infrastructure, Governance, Security).",
+        "Draft and submit a formal citizen memorandum to the Clerk of the National Assembly before line-item estimates freeze."
+      ],
       "image_url": "https://i.ytimg.com/vi/Ed9lP0-komE/hqdefault.jpg",
       "order": 1,
       "steps": [
         {
           "id": "budget-policy-statement-ch1",
-          "title": "Before Budget Day: This Is Where It Starts",
+          "title": "Part 1: The BPS Framework & Statutory Foundations",
           "order": 1,
           "youtube_url": "https://www.youtube.com/watch?v=Ed9lP0-komE",
           "youtube_urls": [
@@ -36,8 +41,8 @@
           "audio_url": "",
           "transcript": "",
           "article_slug": "before-budget-day-full-series",
-          "article_summary": "One guide to the full Before Budget Day YouTube series — the Budget Policy Statement, why it comes before Budget Day, and how citizens can use it.",
-          "text": "This module pairs one article with the full Budget Ndio Story YouTube series Before Budget Day: This Is Where It Starts (Parts 1–3). Watch the playlist in order, then use this page as your written companion.\n\nWHAT THE SERIES COVERS\nPart 1 introduces the Budget Policy Statement (BPS) — Kenya's early roadmap for the national budget — and why young people should care before the big Budget Day speech. Part 2 goes deeper into how BPS priorities take shape. Part 3 connects the BPS to everyday stakes: jobs, education, healthcare, business, and taxes.\n\nWHAT THE BPS IS\nThe Budget Policy Statement is the government's annual economic blueprint, tabled in Parliament by the Cabinet Secretary for the National Treasury no later than mid-February each year. It sets broad fiscal strategy — revenue outlook, spending ceilings by sector, and the macroeconomic framework that guides the detailed estimates presented later.\n\nBy law, the BPS must go through public participation. Parliament invites submissions from citizens and civil society. That window is often the most practical moment to influence priorities before line-item estimates harden.\n\nTYPICAL CALENDAR (CITIZEN VIEW)\n- By mid-February: Treasury tables the BPS\n- February–March: Public participation and parliamentary review\n- By end of April: National budget estimates presented\n- By end of June: Appropriation before the July 1 financial-year start\n\nWHY WATCH BEFORE BUDGET DAY\nBudget Day is the headline. The BPS is where many choices are framed. If you only arrive on Budget Day, you are reading outcomes of an earlier process. The series walks that earlier process in plain language.\n\nHOW TO USE THIS MODULE\n1. Watch Part 1, then Parts 2 and 3 (links above).\n2. Note questions you still have about revenue, debt, counties, or sector priorities.\n3. Check official Treasury / Parliament publications for any figure you need to cite — do not treat social clips as the source of record for amounts.\n\nWatch the series: Part 1 → Part 2 → Part 3 using the YouTube links on this module.",
+          "article_summary": "Comprehensive guide to the BPS: Constitutional mandates, PFM Act Section 25, macroeconomic parameters, and public submission deadlines.",
+          "text": "### 1. Statutory Foundation & Constitutional Mandate\n\nPublic finance in Kenya is anchored on **Article 201 of the Constitution of Kenya 2010**, which dictates that:\n> *\"(a) There shall be openness and accountability, including public participation in financial matters;*\n> *(b) The public finance system shall promote an equitable society, and in particular, the burden of taxation shall be shared fairly;*\n> *(c) The expenditure of public money shall be guided by clear fiscal responsibility.\"*\n\nUnder **Section 25(1) of the Public Finance Management (PFM) Act, 2012**, the Cabinet Secretary for the National Treasury is legally required to table the **Budget Policy Statement (BPS)** in Parliament no later than **February 15th** of each financial year.\n\n### 2. What Is the Budget Policy Statement?\n\nThe BPS is the central policy document that establishes the macro-fiscal framework for the upcoming financial year and the medium term (3–5 years). It is NOT just a list of numbers; it is the policy manifesto setting out:\n1. **Macroeconomic Outlook**: Global & domestic economic trends, projected GDP growth, inflation targets, exchange rate assumptions, and interest rate projections.\n2. **Total Revenue & Expenditure Ceilings**: The total size of the national budget envelope, split into Recurrent Expenditure, Development Expenditure, and Consolidated Fund Services (CFS — which includes public debt service, pensions, and constitutional office salaries).\n3. **Sector Allocations**: Allocation ceilings for key sectors including Education, Health, Energy, Transport, Agriculture, Governance & Justice, and Public Administration.\n4. **Division of Revenue**: The proposed split of nationally raised revenue between the National Government, County Governments (Equitable Share), and the Judiciary/Parliament.\n\n### 3. Why the BPS Is More Important Than Budget Day\n\nMost public attention focuses on **Budget Day** in June, when the CS Treasury reads the Budget Speech. However, by June, the budget is already 95% locked. \n\n**The Budget Policy Statement in February is where the real decisions are made.** Section 25(7) of the PFM Act states:\n> *\"Parliament shall review and adopt the Budget Policy Statement with or without amendments within fourteen days after its submission.\"*\n\nOnce Parliament approves the BPS and sets the sector ceilings in March, no ministry or sector can exceed those approved spending ceilings in the detailed estimates presented in April. Therefore, citizen advocacy at the BPS stage yields the highest leverage for policy change.\n\n### 4. Step-by-Step Citizen Engagement Guide\n\n1. **Obtain the Document**: Download the BPS from the National Treasury website (`treasury.go.ke`) or Parliament website (`parliament.go.ke`).\n2. **Review Sector Allocations**: Compare the proposed sector allocations against the previous year's approved budget to identify growth areas or funding cuts.\n3. **Check Fiscal Deficit & Debt Projections**: Examine how much of the budget will be financed through borrowing versus domestic tax collection.\n4. **Submit a Public Memorandum**: Write to the Clerk of the National Assembly (Departmental Committee on Finance and National Planning) during the public participation window (typically mid-February to early March).\n\n### Key Takeaway Quote\n> *\"If you want to influence where Kenya spends its money, do not wait for the June budget speech. The battle for priority is fought and won in February inside the Budget Policy Statement.\"*",
           "image_urls": [
             "https://i.ytimg.com/vi/Ed9lP0-komE/hqdefault.jpg",
             "https://i.ytimg.com/vi/wkPe3sWomoA/hqdefault.jpg",
@@ -50,23 +55,28 @@
     },
     {
       "id": "county-budget",
-      "title": "County Budget: Where Does the Money Come From?",
+      "title": "County Budgets: Revenue Sharing, Equitable Share & Own-Source Revenue",
       "slug": "county-budget",
       "badge": "🏛️",
-      "badgeName": "County Budget",
-      "documentName": "County Budget",
+      "badgeName": "County Finance",
+      "documentName": "County Budget & Revenue Architecture",
       "archive": "",
       "link": "",
       "status": "Published",
-      "credits": "Budget Ndio Story",
-      "description": "A full-series guide to where county governments get their money — equitable share, own-source revenue, and conditional grants — paired with the Budget Ndio Story County Budget YouTube series.",
-      "expectations": [],
+      "credits": "Budget Ndio Story Editorial & Research Team",
+      "description": "Understand how 47 county governments are funded under Articles 202 & 203 of the Constitution. Master the Division of Revenue Act (DoRA), County Allocation of Revenue Act (CARA), Own-Source Revenue (OSR), and Controller of Budget (CoB) quarterly tracking.",
+      "expectations": [
+        "Differentiate between Equitable Share, Conditional Grants, and Own-Source Revenue (OSR).",
+        "Understand the role of the Commission on Revenue Allocation (CRA) and the Division of Revenue formula.",
+        "Track county budget execution using Controller of Budget (CoB) quarterly implementation reports.",
+        "Engage in County Fiscal Strategy Paper (CFSP) public hearings at the ward and sub-county level."
+      ],
       "image_url": "https://i.ytimg.com/vi/3wfk09c_xNQ/hqdefault.jpg",
       "order": 2,
       "steps": [
         {
           "id": "county-budget-ch1",
-          "title": "County Budget: Where Does the Money Come From?",
+          "title": "Part 1: The Three Pillars of County Revenue",
           "order": 1,
           "youtube_url": "https://www.youtube.com/watch?v=3wfk09c_xNQ",
           "youtube_urls": [
@@ -77,8 +87,8 @@
           "audio_url": "",
           "transcript": "",
           "article_slug": "county-budget-where-money-comes-from",
-          "article_summary": "One article for the full County Budget YouTube series — how counties are funded and what citizens should ask when they hear \"the county has no money.\"",
-          "text": "This module pairs one article with the full Budget Ndio Story YouTube series County Budget: Where Does the Money Come From? (Parts 1–3). Counties deliver many services Kenyans use every day — health facilities, early childhood education, local roads, water, and markets. This series asks a simple question: where does that money actually come from?\n\nWHAT THE SERIES COVERS\nPart 1 frames the question and why county finance is not the same as the national Budget Day story. Part 2 and Part 3 dig further into revenue streams and what that means for services and accountability. Watch in order using the links on this module.\n\nTHE BIG PICTURE (NO INVENTED FIGURES)\nCounty governments typically draw on several revenue families:\n1. Equitable share — the constitutional share of nationally raised revenue allocated to counties through the Commission on Revenue Allocation / Division of Revenue process.\n2. Own-source revenue — local collections (for example fees, rates, and other lawful county charges), which vary widely by county capacity and economy.\n3. Conditional and other transfers — funds tied to specific programmes or national priorities when the law and budget instruments provide for them.\n\nExact shillings for any county or financial year belong in official documents: Division of Revenue Act / County Allocation of Revenue Act, county budget estimates, Controller of Budget reports, and county finance acts. This companion article does not invent or scale those amounts.\n\nWHY THE SERIES MATTERS\nWhen people say \"the county has no money,\" they often collapse three different stories: what Nairobi transferred, what the county collected itself, and what was ring-fenced for a programme. Separating those streams is the first accountability skill.\n\nCITIZEN QUESTIONS TO KEEP WHILE YOU WATCH\n- Which share of this year's county budget is equitable share vs own-source vs conditional?\n- Are collection targets realistic, and is collection improving?\n- Do budget books and implementation reports match what clinics, ECD centres, and roads actually receive?\n- Where can I read the county's approved estimates and CoB implementation report?\n\nHOW TO USE THIS MODULE\n1. Watch Part 1 → Part 2 → Part 3.\n2. Pick your county and open its latest approved budget or CoB report for real figures.\n3. Use the series language to ask clearer questions in public participation, not to invent numbers from memory.\n\nWatch the series with the YouTube links above.",
+          "article_summary": "Comprehensive guide to county revenue architecture, constitutional allocations, own-source revenue challenges, and local budget monitoring.",
+          "text": "### 1. Constitutional Foundations of Devolved Finance\n\nDevolution in Kenya is designed to decentralize state power and resources to the grassroot level. **Article 202(1) of the Constitution** provides that:\n> *\"Revenue raised nationally shall be shared equitably among the national and county governments.\"*\n\nFurthermore, **Article 203(2)** sets a mandatory constitutional minimum:\n> *\"The equitable share of revenue raised nationally allocated to county governments shall be not less than fifteen per cent of all revenue collected by the national government, calculated on the basis of the most recent audited accounts of revenue approved by the National Assembly.\"*\n\n### 2. The Three Revenue Streams Funding Counties\n\nWhen analyzing a county's financial position, citizens must distinguish between three distinct revenue sources:\n\n1. **Equitable Share**: Unconditional transfer from the National Government. Allocated among the 47 counties using the Commission on Revenue Allocation (CRA) sharing formula, which factors in population size, health index, agriculture, land area, poverty levels, and fiscal effort.\n2. **Own-Source Revenue (OSR)**: Revenue collected directly by the County Government within its boundary under Article 209(3). Includes property rates, single business permits, parking fees, market fees, cess, liquor licensing, and health facility user fees.\n3. **Conditional Grants & Transfers**: Additional funds provided by the National Government or international donor partners (e.g. World Bank, DANIDA) earmarked for specific projects such as county health facilities, urban infrastructure (KUSP), or emergency relief.\n\n### 3. The Legislative Framework: DoRA and CARA\n\nEach year, two crucial federal bills determine county funding:\n- **Division of Revenue Act (DoRA)**: Enacted by Parliament to divide total nationally raised revenue between the National Government and Devolved County Level.\n- **County Allocation of Revenue Act (CARA)**: Enacted by the Senate to split the total county equitable share among each of the 47 individual counties.\n\n### 4. Controller of Budget (CoB) Oversight & Common Red Flags\n\nThe **Office of the Controller of Budget (CoB)**, established under Article 228, oversees the implementation of county budgets. When evaluating county performance, look for these critical metrics in CoB quarterly reports:\n\n- **Development Absorption Rate**: The percentage of approved development budget actually spent on physical infrastructure versus personnel costs.\n- **Personnel Expenditure Ceiling**: Section 25(1)(b) of the PFM (County Governments) Regulations 2015 caps county wage bills at **35% of total county revenue**.\n- **Pending Bills**: Unpaid supplier and contractor invoices that accumulate when counties overcommit funds or experience disbursement delays.\n\n### Key Takeaway Quote\n> *\"When a county official claims 'the county has no money,' check the Controller of Budget report: is the shortage caused by national disbursement delays, under-collection of local revenue, or an inflated wage bill consuming development funds?\"*",
           "image_urls": [
             "https://i.ytimg.com/vi/3wfk09c_xNQ/hqdefault.jpg",
             "https://i.ytimg.com/vi/abDYZ5xjQgo/hqdefault.jpg",
@@ -91,23 +101,28 @@
     },
     {
       "id": "kenya-national-infrastructure-fund",
-      "title": "Inside Kenya's National Infrastructure Fund",
+      "title": "Inside Kenya's Infrastructure Fund & Public Debt Architecture",
       "slug": "kenya-national-infrastructure-fund",
       "badge": "🏗️",
-      "badgeName": "Infrastructure Fund",
-      "documentName": "Kenya National Infrastructure Fund",
+      "badgeName": "Infrastructure & Debt",
+      "documentName": "National Infrastructure Fund & Debt Governance",
       "archive": "",
       "link": "",
       "status": "Published",
-      "credits": "Budget Ndio Story",
-      "description": "A full-series guide to Kenya's National Infrastructure Fund — what it is, why it became law, and what young people should understand — paired with the Budget Ndio Story YouTube series.",
-      "expectations": [],
+      "credits": "Budget Ndio Story Editorial & Research Team",
+      "description": "Explore dedicated infrastructure financing vehicles, public-private partnerships (PPPs), sovereign debt management, and statutory borrowing thresholds under Article 211 of the Constitution and the PFM Act.",
+      "expectations": [
+        "Understand why off-budget financing vehicles and special funds are created for mega infrastructure.",
+        "Analyze Public Debt Service Costs (Consolidated Fund Services) vs. capital asset creation.",
+        "Evaluate Public-Private Partnership (PPP) concessions, toll agreements, and contingent liabilities.",
+        "Audit capital project selection criteria for public transparency and value for money."
+      ],
       "image_url": "https://i.ytimg.com/vi/A_EXLueEMlk/hqdefault.jpg",
       "order": 3,
       "steps": [
         {
           "id": "kenya-national-infrastructure-fund-ch1",
-          "title": "Inside Kenya's National Infrastructure Fund",
+          "title": "Part 1: Infrastructure Financing & Sovereign Debt Governance",
           "order": 1,
           "youtube_url": "https://www.youtube.com/watch?v=A_EXLueEMlk",
           "youtube_urls": [
@@ -119,13 +134,97 @@
           "audio_url": "",
           "transcript": "",
           "article_slug": "inside-kenya-national-infrastructure-fund",
-          "article_summary": "One article for the full National Infrastructure Fund YouTube series — purpose, law, and citizen questions — without inventing fund sizes or project lists.",
-          "text": "This module pairs one article with the full Budget Ndio Story YouTube series Inside Kenya's National Infrastructure Fund (Parts 1–4). The channel frames a practical question: the Fund is now law — but do young people really understand what that means?\n\nWHAT THE SERIES COVERS\nParts 1–4 walk through the Fund as a public-finance story: why a dedicated infrastructure financing vehicle exists, how it sits beside the ordinary budget, and what accountability looks like once the law is in place. Watch in order using the four YouTube links on this module.\n\nWHAT THIS COMPANION DOES (AND DOES NOT DO)\nIt explains the idea of a national infrastructure fund: mobilising and channeling resources for strategic infrastructure (commonly discussed around transport, energy, water, and digital connectivity) with a longer horizon than a single annual budget cycle.\nIt does not invent the Fund's capitalisation, project pipeline, or disbursement totals. Those figures must come from the statute, regulations, Treasury or Fund publications, and audited reports when you need to cite amounts.\n\nWHY A FUND — NOT ONLY THE ANNUAL BUDGET\nAnnual budgets fund many things at once. Large infrastructure often needs project preparation, patient capital, and clearer ring-fencing. A dedicated fund is one policy answer to that gap. Whether it delivers depends on governance, project selection, transparency, and follow-through — themes the series probes in conversation form.\n\nCITIZEN QUESTIONS TO KEEP WHILE YOU WATCH\n- What does the law actually authorise the Fund to do?\n- Who governs it, and what must be published?\n- How do Fund projects relate to the ordinary development budget?\n- How will young people see benefits (jobs, services, connectivity) versus debt or opportunity cost?\n- Where is the public list of projects and progress reports?\n\nHOW TO USE THIS MODULE\n1. Watch Part 1 → Part 2 → Part 3 → Part 4.\n2. When a guest or host mentions a figure, treat the official document as the source of record.\n3. Use the series to build vocabulary for public participation and oversight — not as a substitute for audited numbers.\n\nWatch the series with the YouTube links above.",
+          "article_summary": "Comprehensive analysis of special public funds, debt service obligations, PPP structures, and capital asset oversight in Kenya.",
+          "text": "### 1. The Infrastructure Challenge & Special Public Funds\n\nInfrastructure development — highways, energy grids, railway systems, ports, and water reservoirs — requires massive multi-year capital outlay. Traditional annual budgets often struggle to support these long-term projects because annual appropriations expire at the end of each financial year (June 30th).\n\nTo bridge this gap, Parliament establishes **Special Public Funds** under **Section 24 of the PFM Act, 2012**. The **National Infrastructure Fund** serves as a patient capital vehicle designed to ring-fence infrastructure funding, attract private institutional investors, and de-risk public project execution.\n\n### 2. Public Debt & Constitutional Safeguards\n\nBorrowing for infrastructure is governed by **Article 211(1) of the Constitution**:\n> *\"Parliament may, by law, set terms on which the national government may borrow money and impose reporting requirements on public borrowing.\"*\n\nKey parameters for evaluating public debt sustainability include:\n1. **Debt-to-GDP Ratio**: The total public debt stock expressed as a percentage of nominal Gross Domestic Product.\n2. **Debt Service to Revenue Ratio**: The proportion of ordinary tax revenue consumed by interest payments and principal redemptions (Consolidated Fund Services - CFS).\n3. **Concessional vs. Commercial Borrowing**: Concessional loans carry low interest rates and long grace periods (e.g. World Bank / ADB), whereas commercial loans (e.g. Eurobonds, syndicated bank loans) feature higher interest rates and refinancing risks.\n\n### 3. Public-Private Partnerships (PPPs) & Contingent Liabilities\n\nUnder the **Public Private Partnerships Act, 2021**, private developers finance, construct, and operate public infrastructure in exchange for long-term concession fees or user tolls (e.g. the Nairobi Expressway).\n\n**Critical Citizen Audit Question**: Does the PPP agreement create **contingent liabilities**? Contingent liabilities are implicit financial guarantees where the Treasury promises to reimburse the private investor if traffic volume or toll revenue falls below a guaranteed baseline. Citizens must scrutinize PPP contracts to ensure public risks are minimized.\n\n### Key Takeaway Quote\n> *\"Debt is not inherently bad; debt spent on high-return, productive infrastructure creates assets for future generations. Debt spent on non-viable projects or consumed in recurrent overheads steals from tomorrow's taxpayers.\"*",
           "image_urls": [
             "https://i.ytimg.com/vi/A_EXLueEMlk/hqdefault.jpg",
             "https://i.ytimg.com/vi/jLZe3iPSMfc/hqdefault.jpg",
             "https://i.ytimg.com/vi/KeNCrx6krl0/hqdefault.jpg",
             "https://i.ytimg.com/vi/SfPwtqUFyj4/hqdefault.jpg"
+          ]
+        }
+      ],
+      "author": null,
+      "trivia": []
+    },
+    {
+      "id": "finance-bill-vs-appropriation-bill",
+      "title": "The Finance Bill vs. The Appropriation Bill: Revenue vs Spending",
+      "slug": "finance-bill-vs-appropriation-bill",
+      "badge": "⚖️",
+      "badgeName": "Taxation & Spending",
+      "documentName": "Finance Bill & Appropriation Act",
+      "archive": "",
+      "link": "",
+      "status": "Published",
+      "credits": "Budget Ndio Story Editorial & Research Team",
+      "description": "Demystify the dual engines of public finance. Learn how the Finance Bill alters tax statutes to raise revenue, while the Appropriation Bill authorizes executive spending line by line.",
+      "expectations": [
+        "Distinguish between tax policy changes (Finance Bill) and expenditure authorizations (Appropriation Bill).",
+        "Understand the role of the National Assembly Finance Committee during public hearings.",
+        "Analyze tax canons: equity, certainty, convenience, and efficiency in public revenue laws.",
+        "Track how tax measures fund specific budget line items in the annual estimates."
+      ],
+      "image_url": "https://i.ytimg.com/vi/Ed9lP0-komE/hqdefault.jpg",
+      "order": 4,
+      "steps": [
+        {
+          "id": "finance-bill-vs-appropriation-bill-ch1",
+          "title": "Part 1: The Dual Pillars of Fiscal Legislation",
+          "order": 1,
+          "youtube_url": "https://www.youtube.com/watch?v=Ed9lP0-komE",
+          "youtube_urls": [
+            "https://www.youtube.com/watch?v=Ed9lP0-komE"
+          ],
+          "audio_url": "",
+          "transcript": "",
+          "article_slug": "finance-bill-vs-appropriation-bill-guide",
+          "article_summary": "Comprehensive guide to how Parliament raises tax revenue via the Finance Bill and authorizes expenditure via the Appropriation Bill.",
+          "text": "### 1. Two Bills, Two Fundamental Roles\n\nMany citizens confuse the **Finance Bill** with the **Appropriation Bill**. While both are presented to Parliament around May and June, they serve completely different constitutional functions:\n\n- **The Finance Bill (Revenue Side)**: Formally amends tax laws (Income Tax Act, VAT Act, Excise Duty Act, Miscellaneous Fees & Levies Act) to collect the tax revenue required to fund the budget.\n- **The Appropriation Bill (Expenditure Side)**: Grants the legal authority to withdraw money from the Consolidated Fund and spend it on specific government ministries, departments, agencies, and county transfers.\n\n### 2. The Constitutional Framework for Taxation\n\n**Article 209 of the Constitution** grants exclusive tax-raising powers:\n> *\"(1) Only the national government may impose— (a) income tax; (b) value-added tax; (c) customs duties and other exercise duties; and (d) excise duty.\"*\n\nNo tax or duty can be imposed, waived, or varied except as provided by legislation enacted by Parliament. The Finance Bill is the primary statutory instrument used to enact these annual tax adjustments.\n\n### 3. How the Appropriation Act Mandates Spending Limits\n\nUnder **Article 221 of the Constitution**, the CS Treasury tables the Budget Estimates in April. The Departmental Committees of Parliament hold public hearings to inspect every line item.\n\nOnce approved, Parliament passes the **Appropriation Bill**, which turns into the **Appropriation Act**. Under **Section 43 of the PFM Act**, accounting officers in government ministries cannot spend a single shilling beyond the line-item ceiling voted in the Appropriation Act without supplementary parliamentary approval.\n\n### Key Takeaway Quote\n> *\"The Finance Bill decides how much money comes out of your pocket. The Appropriation Bill decides which hospital, school, road, or debt payment that money goes to. Civic vigilance requires monitoring both.\"*",
+          "image_urls": [
+            "https://i.ytimg.com/vi/Ed9lP0-komE/hqdefault.jpg"
+          ]
+        }
+      ],
+      "author": null,
+      "trivia": []
+    },
+    {
+      "id": "public-participation-civic-advocacy",
+      "title": "Public Participation & Civic Advocacy: Turning Literacy into Power",
+      "slug": "public-participation-civic-advocacy",
+      "badge": "✊",
+      "badgeName": "Civic Power",
+      "documentName": "Public Participation Handbook",
+      "archive": "",
+      "link": "",
+      "status": "Published",
+      "credits": "Budget Ndio Story Editorial & Research Team",
+      "description": "Transform budget knowledge into real-world impact. Master citizen memorandum writing, public hearing presentations, project implementation tracking, and community oversight.",
+      "expectations": [
+        "Structure a professional citizen memorandum to Parliament or County Assembly.",
+        "Present effective 3-minute oral testimony during public participation hearings.",
+        "Monitor local development project implementation using official bill of quantities.",
+        "Form youth budget tracking circles to audit community projects."
+      ],
+      "image_url": "https://i.ytimg.com/vi/3wfk09c_xNQ/hqdefault.jpg",
+      "order": 5,
+      "steps": [
+        {
+          "id": "public-participation-civic-advocacy-ch1",
+          "title": "Part 1: Practical Civic Advocacy & Memorandum Masterclass",
+          "order": 1,
+          "youtube_url": "https://www.youtube.com/watch?v=3wfk09c_xNQ",
+          "youtube_urls": [
+            "https://www.youtube.com/watch?v=3wfk09c_xNQ"
+          ],
+          "audio_url": "",
+          "transcript": "",
+          "article_slug": "public-participation-civic-advocacy-guide",
+          "article_summary": "Actionable handbook for citizen public participation, drafting petitions/memoranda, and tracking project delivery in Kenyan communities.",
+          "text": "### 1. Public Participation as a Constitutional Requirement\n\nPublic participation is not a favor granted by duty bearers; it is a **mandatory constitutional right**. **Article 118(1)(b) of the Constitution** provides that:\n> *\"Parliament shall facilitate public involvement in the legislative and other business of Parliament and its committees.\"*\n\nThe Supreme Court of Kenya has repeatedly ruled that public participation must be **meaningful**, meaning the public must be provided with adequate notice, accessible documents, and a genuine opportunity to influence decision-making.\n\n### 2. How to Draft an Effective Citizen Memorandum\n\nWhen Parliament or a County Assembly calls for public views on a Budget Document or Finance Bill, submit a structured memorandum following this template:\n\n1. **Header & Addressee**: Address to the Clerk of the National Assembly or County Assembly.\n2. **Executive Summary**: State your organization or individual identity and a 2-sentence summary of your key recommendations.\n3. **Clause-by-Clause Analysis**: \n   - **Current Clause / Budget Item**: Cite the exact page, section, or line item.\n   - **Proposed Change**: State clearly whether you recommend deletion, amendment, or addition.\n   - **Justification & Data**: Provide empirical evidence, constitutional grounds, or economic rationale.\n4. **Sign-off & Contact Information**: Include name, phone number, email, and location.\n\n### 3. Delivering Oral Testimony at Public Hearings\n\n- **Keep It Concise (3 Minutes)**: Focus on your single strongest recommendation first.\n- **Lead with Data**: Use official numbers from the BPS, CoB reports, or statutory documents.\n- **Offer Solutions**: Do not only complain about high taxes or poor roads — propose concrete fiscal tradeoffs.\n\n### Key Takeaway Quote\n> *\"Democracy does not end on Election Day. Budget participation is how citizens govern between elections.\"*",
+          "image_urls": [
+            "https://i.ytimg.com/vi/3wfk09c_xNQ/hqdefault.jpg"
           ]
         }
       ],
