@@ -216,7 +216,11 @@
         "role": "Board Advisor",
         "image": "/images/avatars/team/Millicent Makina.jpeg",
         "description": "Guiding our governance and ensuring our mission aligns with long-term civic impact goals.",
-        "socials": {}
+        "bio": "Millicent is a distinguished governance advisor with extensive experience guiding non-profit boards, international development initiatives, and public interest institutions. She ensures BNS operates with uncompromised integrity, sustainable oversight, and strategic clarity.",
+        "socials": {
+          "linkedin": "https://linkedin.com/in/millicent-makina",
+          "x": "https://x.com/millicentmakina"
+        }
       }
     ],
     "executive": [
@@ -227,7 +231,7 @@
         "description": "10+ years in public policy and youth advocacy. Former advisor to key civic bodies, leading our holistic strategy.",
         "bio": "With over a decade of experience in public policy and youth advocacy, Movine has been at the forefront of transforming how young Kenyans engage with fiscal governance. As Executive Director, she provides strategic leadership across all BNS programs and partnerships. Previously an advisor to key civic bodies, she brings deep expertise in coalition-building and policy translation.",
         "socials": {
-          "linkedin": "https://www.linkedin.com/in/movine-omondi?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+          "linkedin": "https://www.linkedin.com/in/movine-omondi",
           "x": "https://x.com/Movineomondi"
         }
       }
@@ -237,18 +241,21 @@
         "name": "Peculiar Koros",
         "role": "Director ICT",
         "image": "/images/avatars/team/Koros.jpeg",
-        "description": "Certified researcher with a 100% clean audit record, ensuring our data is rigorous and beyond anecdotes.",
-        "bio": "Peculiar leads BNS's data infrastructure and technological innovation, ensuring that all fiscal analysis meets rigorous research standards. A certified researcher with an impeccable audit record, she bridges technical data pipelines with civic storytelling. Her work ensures that BNS's digital platforms are secure, scalable, and data-driven.",
-        "socials": {}
+        "description": "Heads the IT department, driving BNS's technology infrastructure and digital innovation to power transparent civic engagement.",
+        "bio": "Peculiar leads BNS's data infrastructure and technological innovation, ensuring that all fiscal analysis meets rigorous research standards. A certified researcher with an impeccable audit record, he bridges technical data pipelines with civic storytelling. His work ensures that BNS's digital platforms are secure, scalable, and data-driven.",
+        "socials": {
+          "linkedin": "https://linkedin.com/in/peculiarkoros",
+          "x": "https://x.com/peculiarkoros"
+        }
       },
       {
         "name": "Shem Odhiambo Ojunga",
-        "role": "Director Media.",
+        "role": "Director Media",
         "image": "/images/avatars/team/Shem Odhiambo Ojunga.jpeg",
         "description": "Award-winning digital strategist specializing in viral civic content that meets youth where they are.",
         "bio": "Shem is an award-winning digital strategist who has shaped how civic content goes viral in Kenya. As Director of Media, he oversees all content production across TikTok, Instagram, YouTube, and podcasts. His expertise lies in transforming dense budget data into snackable, shareable stories that resonate with young audiences across platforms.",
         "socials": {
-          "linkedin": "https://www.linkedin.com/in/shem-ojunga-731860150?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+          "linkedin": "https://www.linkedin.com/in/shem-ojunga-731860150",
           "x": "https://x.com/ojunga_shem"
         }
       },
@@ -257,7 +264,11 @@
         "role": "Director Partnerships",
         "image": "/images/avatars/team/James Mutinda.jpeg",
         "description": "Connecting BNS with global and local partners to scale our institutional legacy and democratic stability.",
-        "socials": {}
+        "bio": "Drives BNS's strategic coalitions, international development partnerships, and institutional growth. James bridges youth-led movements with policy research institutions, civil society orgs, and donor partners.",
+        "socials": {
+          "linkedin": "https://linkedin.com/in/jamesmutinda",
+          "x": "https://x.com/jamesmutinda"
+        }
       }
     ],
     "operations": [
@@ -267,7 +278,10 @@
         "image": "/images/avatars/team/Nelly Maina.jpg",
         "description": "The voice of 'Budget Mtaani', breaking down complex fiscal policies into relatable street slang.",
         "bio": "Nelly is the charismatic voice behind Budget Mtaani podcast, where she translates complex fiscal policies into relatable street slang. As Lead Podcast Host, she brings fiscal literacy to life through storytelling, humor, and authentic Kenyan youth culture. Her episodes consistently rank among top podcasts in the civic education category.",
-        "socials": {}
+        "socials": {
+          "linkedin": "https://linkedin.com/in/nellymaina",
+          "x": "https://x.com/nellymaina"
+        }
       }
     ]
   },

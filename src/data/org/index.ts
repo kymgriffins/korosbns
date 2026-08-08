@@ -18,6 +18,11 @@ export type OrgTeamMember = {
   image: string;
   description: string;
   bio: string;
+  tagline?: string;
+  profileText?: string;
+  focusAreas?: string[];
+  achievements?: string[];
+  quote?: string;
   socials?: OrgTeamSocials;
 };
 
