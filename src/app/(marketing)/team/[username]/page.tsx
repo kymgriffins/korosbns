@@ -9,6 +9,7 @@ import { ArrowLeft, ArrowRight, Award, CheckCircle2, Quote, Sparkles, Target } f
 import { IconBrandLinkedin, IconBrandX } from "@tabler/icons-react";
 import { notFound, redirect } from "next/navigation";
 import { metaDescription } from "@/utils/metadata";
+import { TeamAvatar } from "@/components/marketing/team-avatar";
 
 type TeamMemberParams = { username: string };
 
@@ -40,6 +41,7 @@ export async function generateMetadata({
     openGraph: {
       title: `${member.name} | Budget Ndio Story`,
       description,
+      images: [member.image],
     },
   };
 }
@@ -61,7 +63,7 @@ function TeamMemberProfile({ member }: { member: OrgTeamMember }) {
 
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/20">
-      {/* Hero Header Section - Pure Words & Typography Medallion */}
+      {/* Hero Header Section - High Aesthetic Avatar Image & Title */}
       <div className="relative overflow-hidden border-b border-border/50 bg-gradient-to-b from-card/80 via-background to-background py-16 lg:py-24">
         {/* Subtle Ambient Radial Lighting */}
         <div className="pointer-events-none absolute -top-40 left-1/2 -z-10 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-primary/10 blur-[140px]" />
@@ -75,18 +77,18 @@ function TeamMemberProfile({ member }: { member: OrgTeamMember }) {
             Back to Leadership Team
           </Link>
 
-          <div className="flex flex-col items-center text-center sm:items-start sm:text-left">
-            {/* High-Aesthetic Typography Initial Medallion (No Images) */}
-            <div className="relative mb-6 flex size-24 items-center justify-center rounded-3xl border border-primary/30 bg-gradient-to-br from-primary/20 via-primary/10 to-card shadow-xl sm:size-28">
-              <span className="font-heading text-3xl font-black tracking-widest text-primary sm:text-4xl">
-                {initials}
-              </span>
-              <div className="absolute -bottom-2.5 rounded-full border border-primary/30 bg-card px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary shadow-xs">
-                BNS Team
-              </div>
+          <div className="flex flex-col items-center text-center sm:flex-row sm:items-start sm:gap-8 sm:text-left">
+            {/* Team Member Avatar Image with Fallback */}
+            <div className="mb-6 shrink-0 sm:mb-0">
+              <TeamAvatar
+                src={member.image}
+                alt={member.name}
+                initials={initials}
+                size="lg"
+              />
             </div>
 
-            <div className="max-w-2xl">
+            <div className="max-w-2xl flex-1">
               <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary/90">
                 <Sparkles className="size-3.5" />
                 <span>Budget Ndio Story Leadership</span>
@@ -102,34 +104,34 @@ function TeamMemberProfile({ member }: { member: OrgTeamMember }) {
                   {member.tagline}
                 </p>
               )}
-            </div>
 
-            {/* Social Links */}
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:justify-start">
-              {member.socials?.linkedin && (
-                <a
-                  href={member.socials.linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-5 py-2.5 text-xs font-semibold text-primary transition-all hover:border-primary/40 hover:bg-primary/20"
-                  aria-label={`${member.name} on LinkedIn`}
-                >
-                  <IconBrandLinkedin className="size-4" />
-                  <span>LinkedIn Profile</span>
-                </a>
-              )}
-              {member.socials?.x && (
-                <a
-                  href={member.socials.x}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-card px-5 py-2.5 text-xs font-semibold text-foreground/80 transition-all hover:border-foreground/30 hover:bg-accent"
-                  aria-label={`${member.name} on X`}
-                >
-                  <IconBrandX className="size-4" />
-                  <span>X (Twitter)</span>
-                </a>
-              )}
+              {/* Social Links */}
+              <div className="mt-6 flex flex-wrap items-center justify-center gap-3 sm:justify-start">
+                {member.socials?.linkedin && (
+                  <a
+                    href={member.socials.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-5 py-2.5 text-xs font-semibold text-primary transition-all hover:border-primary/40 hover:bg-primary/20"
+                    aria-label={`${member.name} on LinkedIn`}
+                  >
+                    <IconBrandLinkedin className="size-4" />
+                    <span>LinkedIn Profile</span>
+                  </a>
+                )}
+                {member.socials?.x && (
+                  <a
+                    href={member.socials.x}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-card px-5 py-2.5 text-xs font-semibold text-foreground/80 transition-all hover:border-foreground/30 hover:bg-accent"
+                    aria-label={`${member.name} on X`}
+                  >
+                    <IconBrandX className="size-4" />
+                    <span>X (Twitter)</span>
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -211,7 +213,7 @@ function TeamMemberProfile({ member }: { member: OrgTeamMember }) {
             </section>
           )}
 
-          {/* Other Leadership Team Navigation (Text Cards, No Images) */}
+          {/* Other Leadership Team Navigation */}
           <section className="pt-6">
             <div className="mb-6 flex items-center justify-between">
               <h3 className="text-lg font-bold text-foreground">
@@ -239,9 +241,12 @@ function TeamMemberProfile({ member }: { member: OrgTeamMember }) {
                       className="group flex flex-col justify-between rounded-2xl border border-border/60 bg-card p-5 transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-md"
                     >
                       <div>
-                        <div className="mb-3 flex size-12 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-sm font-bold text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                          {mInitials}
-                        </div>
+                        <TeamAvatar
+                          src={m.image}
+                          alt={m.name}
+                          initials={mInitials}
+                          size="sm"
+                        />
                         <h4 className="font-bold text-foreground transition-colors group-hover:text-primary">
                           {m.name}
                         </h4>
