@@ -13,7 +13,7 @@ type LearnPageFrameProps = {
  */
 export function LearnPageFrame({ children, className }: LearnPageFrameProps) {
   return (
-    <div className={cn("w-full py-10 sm:py-14", className)}>
+    <div className={cn("w-full py-6 sm:py-10 lg:py-14", className)}>
       {children}
     </div>
   );
