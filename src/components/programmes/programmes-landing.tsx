@@ -6,6 +6,8 @@ import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { LandingSeeMore } from "@/components/marketing/landing-see-more";
 import { ProgrammesImpactStrip } from "@/components/programmes/programmes-impact-strip";
+import { ProgrammesEcosystemBar } from "@/components/programmes/programmes-ecosystem-bar";
+import { ProgrammesTrustBar } from "@/components/programmes/programmes-trust-bar";
 import { ProgrammesTeamTeaser } from "@/components/programmes/programmes-team-teaser";
 import { ProgrammesLatestContent } from "@/components/programmes/programmes-latest-content";
 import { ProgrammesFaq } from "@/components/programmes/programmes-faq";
@@ -79,7 +81,7 @@ function ProgrammeCard({ programme, index }: ProgrammeCardProps) {
         <p className={cn(T.lead, "mt-3 max-w-lg text-foreground/75")}>
           {blurb}
         </p>
-        <div className="mt-6">
+        <div className="mt-6 flex flex-wrap items-center gap-3">
           <Link
             href={programmeHref(programme.slug)}
             className={cn(
@@ -128,7 +130,7 @@ export function ProgrammesLanding() {
         <div className={cn(SECTION_SHELL_INNER, "relative z-10")}>
           <div className="max-w-3xl">
             <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3.5 py-1 text-xs font-semibold text-primary mb-4">
-              Our Initiatives & Impact
+              Our Initiatives & Impact Ecosystem
             </span>
             <h1 className={cn(T.heroTitle, "max-w-3xl text-balance text-foreground")}>
               {PROGRAMMES_LANDING.headline}
@@ -146,10 +148,16 @@ export function ProgrammesLanding() {
         </div>
       </section>
 
-      {/* 1. Numbers / Impact Strip */}
+      {/* 1. Ecosystem Pipeline Diagram (TRACK -> LOCALISE -> TRAIN -> PRODUCE) */}
+      <ProgrammesEcosystemBar />
+
+      {/* 2. Numbers / Impact Strip */}
       <ProgrammesImpactStrip />
 
-      {/* 2. Core Four Programmes Section */}
+      {/* 3. Institutional & Research Partners Bar */}
+      <ProgrammesTrustBar />
+
+      {/* 4. Core Four Programmes Section */}
       <LandingSection
         id="programmes"
         aria-labelledby="programmes-heading"
@@ -176,16 +184,16 @@ export function ProgrammesLanding() {
         </LandingContent>
       </LandingSection>
 
-      {/* 3. Team & Leadership Teaser */}
+      {/* 5. Team & Leadership Teaser */}
       <ProgrammesTeamTeaser />
 
-      {/* 4. Latest Stories & Reports Preview */}
+      {/* 6. Latest Stories & Reports Preview */}
       <ProgrammesLatestContent />
 
-      {/* 5. FAQ Block + FAQ Schema */}
+      {/* 7. FAQ Block + FAQ Schema */}
       <ProgrammesFaq />
 
-      {/* 6. Dedicated Contact & Newsletter Section */}
+      {/* 8. Dedicated Contact & Newsletter Section */}
       <ProgrammesContactSection />
     </div>
   );
