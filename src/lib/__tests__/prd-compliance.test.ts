@@ -14,6 +14,11 @@ import {
 import {
   getComprehensiveAnalytics,
 } from "@/components/analytics/analytics-data";
+import { countyScraperEngine } from "@/lib/county-scraper-engine";
+import { bnskeSyncEngine } from "@/lib/bnske-sync";
+import { pushNotificationEngine } from "@/lib/push-notifications";
+import { liveTownhallEngine } from "@/lib/townhall-live";
+import { socialAuthAdapter } from "@/lib/social-auth";
 
 describe("Updated PRD Compliance Test Suite", () => {
   /* ========================================================================
@@ -210,6 +215,79 @@ describe("Updated PRD Compliance Test Suite", () => {
       expect(mashinani?.body).toContain("Nakuru");
       expect(mashinani?.body).toContain("Wajir");
       expect(mashinani?.highlight).toContain("4 counties");
+    });
+  });
+
+  /* ========================================================================
+   * 5. 47-County Budget Ingestion & Real Data Engine
+   * ======================================================================== */
+  describe("47-County Fiscal Data Engine (PRD Spec 5)", () => {
+    it("provides verified allocation data for ALL 47 Kenyan counties", () => {
+      const counties = countyScraperEngine.getAllCounties();
+      expect(counties.length).toBe(47);
+
+      const nairobi = countyScraperEngine.getCountyByCode(47);
+      expect(nairobi?.name).toBe("Nairobi");
+      expect(nairobi?.allocationKesMillion).toBeGreaterThan(40000);
+
+      const kakamega = countyScraperEngine.getCountyByName("Kakamega");
+      expect(kakamega?.name).toBe("Kakamega");
+      expect(kakamega?.executionRatePct).toBeGreaterThan(90);
+    });
+
+    it("calculates accurate summary metrics for national equitable share", () => {
+      const summary = countyScraperEngine.getSummary();
+      expect(summary.totalCounties).toBe(47);
+      expect(summary.nationalEquitableShareKesBillion).toBe(415.0);
+      expect(summary.averageExecutionRatePct).toBeGreaterThan(80);
+    });
+  });
+
+  /* ========================================================================
+   * 6. Real-Time Features: Django Sync, Push Notifications & Townhall Live
+   * ======================================================================== */
+  describe("Real-Time Engagement & Django Sync (PRD Spec 6)", () => {
+    it("synchronizes God Mode and CMS requests with bnske Django backend", async () => {
+      const syncGod = await bnskeSyncEngine.syncGodModeRequests();
+      expect(syncGod).toBe(true);
+
+      const syncCms = await bnskeSyncEngine.syncCmsCollection("programmes", {});
+      expect(syncCms).toBe(true);
+
+      const status = bnskeSyncEngine.getStatus();
+      expect(status.connected).toBe(true);
+      expect(status.godModeRequestsSynced).toBeGreaterThan(0);
+    });
+
+    it("generates VAPID keys and handles Web Push Subscriptions", () => {
+      const key = pushNotificationEngine.getVapidPublicKey();
+      expect(key).toContain("BNS_YOUTH_PUBLIC_VAPID_KEY");
+    });
+
+    it("handles live townhall question submissions and upvoting", () => {
+      const initialCount = liveTownhallEngine.getSession().questions.length;
+      const q = liveTownhallEngine.submitQuestion(
+        "John Kamau",
+        "Nakuru",
+        "What proportion of Nakuru agricultural budget targets water harvesting?",
+      );
+
+      expect(q.authorName).toBe("John Kamau");
+      expect(liveTownhallEngine.getSession().questions.length).toBe(initialCount + 1);
+
+      const upvoted = liveTownhallEngine.upvoteQuestion(q.id);
+      expect(upvoted).toBe(true);
+      const updatedQ = liveTownhallEngine.getSession().questions.find((item) => item.id === q.id);
+      expect(updatedQ?.upvotes).toBe(2);
+    });
+
+    it("generates valid OAuth authentication URLs for Google and Apple", () => {
+      const googleUrl = socialAuthAdapter.getGoogleAuthUrl();
+      expect(googleUrl).toContain("accounts.google.com");
+      expect(googleUrl).toContain("oauth2");
+
+      const appleUrl = socialAuthAdapter.getAppleAuthUrl();
+      expect(appleUrl).toContain("appleid.apple.com");
     });
   });
 });
