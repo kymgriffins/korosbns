@@ -41,11 +41,11 @@ export function TeamAvatar({
 
   if (error || !src) {
     return (
-      <div className="relative flex size-32 items-center justify-center rounded-3xl border-2 border-primary/30 bg-gradient-to-br from-primary/20 via-primary/10 to-card shadow-xl sm:size-40">
+      <div className="relative flex size-32 items-center justify-center rounded-3xl border-2 border-primary/30 bg-primary/10 shadow-md sm:size-40">
         <span className="font-heading text-4xl font-black tracking-widest text-primary sm:text-5xl">
           {initials}
         </span>
-        <div className="absolute -bottom-2.5 rounded-full border border-primary/30 bg-card px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary shadow-xs">
+        <div className="absolute -bottom-2.5 rounded-full border border-border/80 bg-card px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary shadow-xs">
           BNS Team
         </div>
       </div>
@@ -54,8 +54,7 @@ export function TeamAvatar({
 
   return (
     <div className="relative inline-block">
-      <div className="absolute inset-0 rounded-3xl bg-primary/20 blur-xl" />
-      <div className="relative size-32 overflow-hidden rounded-3xl border-4 border-background shadow-2xl ring-2 ring-primary/20 sm:size-40">
+      <div className="relative size-32 overflow-hidden rounded-3xl border-2 border-border/80 bg-muted shadow-md sm:size-40">
         <Image
           src={src}
           alt={alt}

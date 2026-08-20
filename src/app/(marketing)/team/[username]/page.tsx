@@ -170,23 +170,18 @@ function TeamMemberProfile({ member }: { member: OrgTeamMember }) {
       </div>
 
       {/* Header Spotlight Banner */}
-      <div className="relative overflow-hidden border-b border-border/50 bg-gradient-to-b from-card via-background to-background py-12 lg:py-16">
-        <div className="pointer-events-none absolute -top-40 left-1/2 -z-10 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-primary/10 blur-[140px]" />
-
+      <div className="relative overflow-hidden border-b border-border/60 bg-muted/20 py-12 lg:py-16">
         <div className="mx-auto max-w-6xl px-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left Avatar Column */}
             <div className="lg:col-span-4 flex flex-col items-center lg:items-start text-center lg:text-left space-y-4">
-              <div className="relative group">
-                <div className="absolute -inset-1.5 rounded-3xl bg-gradient-to-r from-primary/50 to-purple-500/50 opacity-70 blur-md group-hover:opacity-100 transition duration-500" />
-                <div className="relative">
-                  <TeamAvatar
-                    src={member.image}
-                    alt={member.name}
-                    initials={initials}
-                    size="lg"
-                  />
-                </div>
+              <div className="relative">
+                <TeamAvatar
+                  src={member.image}
+                  alt={member.name}
+                  initials={initials}
+                  size="lg"
+                />
               </div>
 
               <div className="pt-2 flex flex-wrap gap-2 justify-center lg:justify-start">
@@ -262,8 +257,8 @@ function TeamMemberProfile({ member }: { member: OrgTeamMember }) {
           <div className="lg:col-span-8 space-y-10">
             {/* Mission & Vision Impact Showcase Card */}
             {(member.missionImpact || member.visionContribution) && (
-              <section className="rounded-3xl border border-primary/30 bg-gradient-to-br from-primary/10 via-card to-background p-8 shadow-sm sm:p-10 space-y-6">
-                <div className="flex items-center gap-2.5 text-primary font-heading pb-4 border-b border-primary/20">
+              <section className="rounded-3xl border border-border/80 bg-card p-8 shadow-xs sm:p-10 space-y-6">
+                <div className="flex items-center gap-2.5 text-primary font-heading pb-4 border-b border-border/40">
                   <Sparkles className="size-5" />
                   <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
                     Mission Impact &amp; Civic Vision
@@ -272,7 +267,7 @@ function TeamMemberProfile({ member }: { member: OrgTeamMember }) {
 
                 <div className="grid gap-6 sm:grid-cols-1">
                   {member.missionImpact && (
-                    <div className="space-y-2.5 rounded-2xl border border-primary/20 bg-background/80 p-5 shadow-xs">
+                    <div className="space-y-2.5 rounded-2xl border border-border/60 bg-muted/30 p-5 shadow-xs">
                       <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
                         <Target className="size-4" />
                         <span>Driving The BNS Mission</span>
@@ -284,8 +279,8 @@ function TeamMemberProfile({ member }: { member: OrgTeamMember }) {
                   )}
 
                   {member.visionContribution && (
-                    <div className="space-y-2.5 rounded-2xl border border-border/60 bg-muted/30 p-5 shadow-xs">
-                      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
+                    <div className="space-y-2.5 rounded-2xl border border-border/60 bg-muted/20 p-5 shadow-xs">
+                      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-foreground/80">
                         <Compass className="size-4" />
                         <span>Shaping Kenya&apos;s Civic Vision</span>
                       </div>
@@ -299,7 +294,7 @@ function TeamMemberProfile({ member }: { member: OrgTeamMember }) {
             )}
 
             {/* Biography Section */}
-            <section className="rounded-3xl border border-border/70 bg-card p-8 shadow-sm sm:p-10 space-y-6">
+            <section className="rounded-3xl border border-border/70 bg-card p-8 shadow-xs sm:p-10 space-y-6">
               <div className="flex items-center justify-between pb-4 border-b border-border/40">
                 <div className="flex items-center gap-2.5 text-foreground font-heading">
                   <Compass className="size-5 text-primary" />
@@ -319,7 +314,7 @@ function TeamMemberProfile({ member }: { member: OrgTeamMember }) {
 
             {/* Core Focus & Domain Expertise */}
             {member.focusAreas && member.focusAreas.length > 0 && (
-              <section className="rounded-3xl border border-border/70 bg-card p-8 shadow-sm sm:p-10 space-y-6">
+              <section className="rounded-3xl border border-border/70 bg-card p-8 shadow-xs sm:p-10 space-y-6">
                 <div className="flex items-center gap-2.5 text-primary font-heading pb-4 border-b border-border/40">
                   <Target className="size-5" />
                   <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
@@ -345,7 +340,7 @@ function TeamMemberProfile({ member }: { member: OrgTeamMember }) {
 
             {/* Key Leadership Initiatives & Achievements */}
             {member.achievements && member.achievements.length > 0 && (
-              <section className="rounded-3xl border border-border/70 bg-card p-8 shadow-sm sm:p-10 space-y-6">
+              <section className="rounded-3xl border border-border/70 bg-card p-8 shadow-xs sm:p-10 space-y-6">
                 <div className="flex items-center gap-2.5 text-primary font-heading pb-4 border-b border-border/40">
                   <Award className="size-5" />
                   <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
@@ -359,8 +354,8 @@ function TeamMemberProfile({ member }: { member: OrgTeamMember }) {
                       key={idx}
                       className="flex items-start gap-4 rounded-2xl border border-border/40 bg-background/40 p-4 sm:p-5 transition-all hover:border-primary/30"
                     >
-                      <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shrink-0">
-                        <CheckCircle2 className="size-5" />
+                      <div className="p-2 rounded-xl bg-muted text-foreground shrink-0">
+                        <CheckCircle2 className="size-5 text-primary" />
                       </div>
                       <span className="text-sm sm:text-base font-medium text-foreground/90 leading-relaxed pt-1">
                         {achievement}
@@ -373,8 +368,8 @@ function TeamMemberProfile({ member }: { member: OrgTeamMember }) {
 
             {/* Member Quote */}
             {member.quote && (
-              <section className="relative overflow-hidden rounded-3xl border border-primary/30 bg-gradient-to-br from-primary/15 via-card to-background p-8 sm:p-10 shadow-sm">
-                <Quote className="absolute right-6 top-6 size-20 text-primary/10" aria-hidden />
+              <section className="relative overflow-hidden rounded-3xl border border-border/80 bg-card p-8 sm:p-10 shadow-xs">
+                <Quote className="absolute right-6 top-6 size-20 text-muted/20" aria-hidden />
                 <blockquote className="relative z-10 space-y-4">
                   <p className="text-lg sm:text-xl md:text-2xl font-bold italic text-foreground leading-relaxed">
                     &ldquo;{member.quote}&rdquo;
@@ -390,7 +385,7 @@ function TeamMemberProfile({ member }: { member: OrgTeamMember }) {
           {/* Sticky Sidebar Right Column */}
           <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24">
             {/* Quick Executive Snapshot Card */}
-            <div className="p-6 rounded-3xl border border-border/70 bg-card shadow-sm space-y-4">
+            <div className="p-6 rounded-3xl border border-border/70 bg-card shadow-xs space-y-4">
               <h3 className="text-base font-bold font-heading text-foreground flex items-center gap-2">
                 <ShieldCheck className="size-4 text-primary" />
                 <span>Executive Summary</span>
@@ -422,10 +417,10 @@ function TeamMemberProfile({ member }: { member: OrgTeamMember }) {
             </div>
 
             {/* Associated Programmes & Hubs */}
-            <div className="p-6 rounded-3xl border border-border/70 bg-card shadow-sm space-y-4">
+            <div className="p-6 rounded-3xl border border-border/70 bg-card shadow-xs space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="text-base font-bold font-heading text-foreground flex items-center gap-2">
-                  <Flame className="size-4 text-amber-500" />
+                  <Layers className="size-4 text-primary" />
                   <span>Associated Initiatives</span>
                 </h3>
               </div>
@@ -455,7 +450,7 @@ function TeamMemberProfile({ member }: { member: OrgTeamMember }) {
             </div>
 
             {/* Direct Connect Card */}
-            <div className="p-6 rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/10 to-card shadow-sm space-y-3 text-center">
+            <div className="p-6 rounded-3xl border border-border/70 bg-card shadow-xs space-y-3 text-center">
               <h4 className="text-sm font-bold text-foreground">Interested in Collaborating?</h4>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 Connect directly with {firstName} for speaking engagements, policy roundtables, or media interviews.

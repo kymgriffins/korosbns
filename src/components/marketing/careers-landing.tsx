@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
@@ -215,11 +215,11 @@ export function CareersLanding() {
   return (
     <div className="w-full bg-background min-h-screen">
       {/* Hero Banner */}
-      <section className="relative overflow-hidden border-b border-border/40 bg-gradient-to-b from-primary/5 via-background to-background py-20 lg:py-28">
+      <section className="relative overflow-hidden border-b border-border/60 bg-muted/20 py-20 lg:py-28">
         <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:32px]" />
         <Wrapper className="relative z-10">
           <div className="max-w-3xl mx-auto text-center space-y-6">
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-bold text-primary backdrop-blur-md">
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-bold text-primary">
               <Sparkles className="size-3.5" />
               <span>Careers &amp; Creative Open Call (Ages 18–34)</span>
             </div>
@@ -441,7 +441,7 @@ export function CareersLanding() {
       {/* General Open Call Banner */}
       <section className="py-16 lg:py-20 border-t border-border/40">
         <Wrapper>
-          <div className="p-8 sm:p-12 rounded-3xl border border-primary/30 bg-gradient-to-br from-primary/10 via-card to-background text-center max-w-4xl mx-auto space-y-6 shadow-sm">
+          <div className="p-8 sm:p-12 rounded-3xl border border-border/80 bg-card text-center max-w-4xl mx-auto space-y-6 shadow-xs">
             <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3.5 py-1 text-xs font-bold text-primary mx-auto">
               <Sparkles className="size-3.5" />
               <span>Spontaneous Applications Welcome</span>

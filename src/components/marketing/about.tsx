@@ -30,8 +30,7 @@ const About = () => {
             className="object-cover transition-transform duration-1000 ease-out scale-100"
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/30" />
-          <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/60 to-transparent" />
+          <div className="absolute inset-0 bg-background/85" />
         </div>
 
         <div className="relative z-10 mx-auto w-full max-w-[1400px] px-6 pb-14 pt-28 md:px-16 md:pb-20">

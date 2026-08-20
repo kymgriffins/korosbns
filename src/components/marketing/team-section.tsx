@@ -82,12 +82,12 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
       className="group relative"
     >
       <Link href={`/team/${username}`} className="block">
-        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-b from-card to-card/60 shadow-[0_4px_16px_-4px_rgba(0,0,0,0.1),0_2px_4px_rgba(0,0,0,0.05)] dark:shadow-[0_6px_24px_rgba(0,0,0,0.45)] transition-all duration-500 group-hover:-translate-y-2 group-hover:shadow-[0_20px_40px_-12px_rgba(0,0,0,0.2)]">
+        <div className="relative rounded-3xl overflow-hidden bg-card border border-border/70 shadow-xs transition-all duration-300 group-hover:-translate-y-1.5 group-hover:border-primary/40 group-hover:shadow-md">
           {/* Image container with 3:4 aspect ratio */}
-          <div className="relative aspect-[3/4] w-full overflow-hidden">
+          <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted">
             {imageError ? (
-              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/60 via-primary/40 to-primary/20">
-                <span className="text-5xl font-bold tracking-wide text-white/95">
+              <div className="absolute inset-0 flex items-center justify-center bg-primary/10 border border-primary/20">
+                <span className="text-5xl font-bold tracking-wide text-primary">
                   {initials}
                 </span>
               </div>
@@ -97,17 +97,17 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
                 alt={member.name}
                 fill
                 onError={() => setImageError(true)}
-                className="object-cover object-top transition-all duration-700 group-hover:scale-110"
+                className="object-cover object-top transition-all duration-500 group-hover:scale-105"
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 loading="lazy"
               />
             )}
 
-            {/* Gradient overlay */}
+            {/* Photo contrast overlay */}
             <motion.div
-              animate={{ opacity: isHovered ? 0.95 : 0.85 }}
-              transition={{ duration: 0.3 }}
-              className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"
+              animate={{ opacity: isHovered ? 0.9 : 0.75 }}
+              transition={{ duration: 0.2 }}
+              className="absolute inset-0 bg-black/60"
             />
 
             {/* Hover state: Show description */}
