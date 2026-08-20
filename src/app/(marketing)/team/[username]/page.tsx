@@ -107,9 +107,9 @@ function TeamMemberProfile({ member }: { member: OrgTeamMember }) {
 
               {/* Social Links */}
               <div className="mt-6 flex flex-wrap items-center justify-center gap-3 sm:justify-start">
-                {member.socials?.linkedin && (
+                {member.socials?.linkedin && member.socials.linkedin.trim() && member.socials.linkedin !== "#" && (
                   <a
-                    href={member.socials.linkedin}
+                    href={member.socials.linkedin.trim()}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-5 py-2.5 text-xs font-semibold text-primary transition-all hover:border-primary/40 hover:bg-primary/20"
@@ -119,9 +119,9 @@ function TeamMemberProfile({ member }: { member: OrgTeamMember }) {
                     <span>LinkedIn Profile</span>
                   </a>
                 )}
-                {member.socials?.x && (
+                {member.socials?.x && member.socials.x.trim() && member.socials.x !== "#" && (
                   <a
-                    href={member.socials.x}
+                    href={member.socials.x.trim()}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-card px-5 py-2.5 text-xs font-semibold text-foreground/80 transition-all hover:border-foreground/30 hover:bg-accent"

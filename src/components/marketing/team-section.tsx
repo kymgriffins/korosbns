@@ -27,6 +27,8 @@ interface TeamMember {
 }
 
 const SocialIcon = ({ platform, href }: { platform: string; href: string }) => {
+  if (!href || typeof href !== "string" || !href.trim() || href === "#") return null;
+
   const icons = {
     linkedin: IconBrandLinkedin,
     x: IconBrandX,
@@ -37,7 +39,8 @@ const SocialIcon = ({ platform, href }: { platform: string; href: string }) => {
   const Icon = icons[platform as keyof typeof icons];
   if (!Icon) return null;
 
-  const link = platform === "email" && !href.startsWith("mailto:") ? `mailto:${href}` : href;
+  const trimmed = href.trim();
+  const link = platform === "email" && !trimmed.startsWith("mailto:") ? `mailto:${trimmed}` : trimmed;
 
   return (
     <motion.a
