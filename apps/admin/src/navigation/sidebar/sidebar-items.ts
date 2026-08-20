@@ -59,13 +59,13 @@ export interface NavGroup {
 }
 
 /**
- * Category-first nav: few top-level entries; children expand in the sidebar.
- * Only ship items with real API-backed pages.
+ * Category-first minimalist nav: Core Operations (Analytics, Tasks, Communication),
+ * Civic Content & Data, and Platform Governance.
  */
 export const sidebarItems: NavGroup[] = [
   {
     id: 1,
-    label: "Workspace",
+    label: "Operations",
     items: [
       {
         id: "cat-dashboard",
@@ -78,55 +78,11 @@ export const sidebarItems: NavGroup[] = [
       },
       {
         id: "cat-tasks",
-        title: "Tasks",
+        title: "Tasks Management",
         icon: ListTodo,
         subItems: [
-          { id: "tasks", title: "Board", url: "/dashboard/task" },
-          { id: "task-report", title: "Report", url: "/dashboard/task/report" },
-        ],
-      },
-      {
-        id: "cat-people",
-        title: "People",
-        icon: Users,
-        subItems: [
-          { id: "users", title: "Users", url: "/dashboard/users" },
-          { id: "invitations", title: "Invitations", url: "/dashboard/invitations" },
-          { id: "authors", title: "Authors", url: "/dashboard/authors" },
-          { id: "profile", title: "Profile", url: "/dashboard/profile" },
-        ],
-      },
-      {
-        id: "cat-learning",
-        title: "Learning",
-        icon: GraduationCap,
-        subItems: [
-          { id: "modules", title: "Modules", url: "/dashboard/modules", icon: BookOpen },
-          { id: "stories", title: "Stories", url: "/dashboard/stories" },
-          { id: "knowledge", title: "Knowledge", url: "/dashboard/knowledge" },
-          { id: "courses", title: "Courses", url: "/dashboard/courses" },
-          { id: "media", title: "Media", url: "/dashboard/media" },
-          { id: "feedback", title: "Feedback", url: "/dashboard/feedback" },
-          { id: "org-gamification", title: "Gamification", url: "/dashboard/gamification", icon: Award },
-          {
-            id: "content-lab",
-            title: "Content Lab",
-            url: "/dashboard/content-lab",
-            icon: FlaskConical,
-            badge: "new",
-          },
-        ],
-      },
-      {
-        id: "cat-engagement",
-        title: "Engagement",
-        icon: MessageSquare,
-        subItems: [
-          { id: "engagement-hub", title: "Overview", url: "/dashboard/engagement" },
-          { id: "surveys", title: "Surveys", url: "/dashboard/surveys" },
-          { id: "trivia", title: "Trivia", url: "/dashboard/trivia" },
-          { id: "events", title: "Events", url: "/dashboard/events" },
-          { id: "forum", title: "Forum", url: "/dashboard/forum" },
+          { id: "tasks", title: "Task Board", url: "/dashboard/task" },
+          { id: "task-report", title: "Task Reports", url: "/dashboard/task/report" },
         ],
       },
       {
@@ -134,41 +90,77 @@ export const sidebarItems: NavGroup[] = [
         title: "Communication",
         icon: Share2,
         subItems: [
-          { id: "comm-overview", title: "Dashboard", url: "/dashboard/communication" },
+          { id: "comm-overview", title: "Command Center", url: "/dashboard/communication" },
           { id: "comm-messages", title: "Messages", url: "/dashboard/communication/messages" },
           { id: "comm-subscribers", title: "Subscribers", url: "/dashboard/communication/subscribers" },
           { id: "comm-notifications", title: "Notifications", url: "/dashboard/communication/notifications" },
-          { id: "comm-email-hooks", title: "Email Hooks", url: "/dashboard/communication/email-hooks" },
-          { id: "comm-audit-logs", title: "Audit Logs", url: "/dashboard/communication/audit-logs" },
-          { id: "comm-social", title: "Social / TikTok", url: "/dashboard/social" },
+        ],
+      },
+    ],
+  },
+  {
+    id: 2,
+    label: "Civic Content & Data",
+    items: [
+      {
+        id: "cat-learning",
+        title: "Curriculum",
+        icon: GraduationCap,
+        subItems: [
+          { id: "modules", title: "Modules & Lessons", url: "/dashboard/modules", icon: BookOpen },
+          { id: "stories", title: "Civic Stories", url: "/dashboard/stories" },
+          { id: "knowledge", title: "Knowledge Base", url: "/dashboard/knowledge" },
+          { id: "media", title: "Media Assets", url: "/dashboard/media" },
+        ],
+      },
+      {
+        id: "cat-engagement",
+        title: "Participation",
+        icon: MessageSquare,
+        subItems: [
+          { id: "surveys", title: "Public Surveys", url: "/dashboard/surveys" },
+          { id: "trivia", title: "Trivia & Quizzes", url: "/dashboard/trivia" },
+          { id: "events", title: "Events & Townhalls", url: "/dashboard/events" },
+          { id: "forum", title: "Community Forum", url: "/dashboard/forum" },
         ],
       },
       {
         id: "docrepository",
-        title: "Library",
+        title: "Document Library",
         url: "/dashboard/docrepository",
         icon: FolderOpen,
       },
       {
-        id: "cat-organization",
-        title: "Organization",
-        icon: Settings,
+        id: "org-ke-budget",
+        title: "KE Budget Engine",
+        url: "/dashboard/ke-budget",
+        icon: PiggyBank,
+      },
+    ],
+  },
+  {
+    id: 3,
+    label: "Platform & Access",
+    items: [
+      {
+        id: "cat-people",
+        title: "Access & Users",
+        icon: Users,
         subItems: [
-          { id: "org-settings", title: "Settings", url: "/dashboard/settings" },
-          { id: "org-partners", title: "Partners", url: "/dashboard/partners", icon: Handshake },
-          { id: "org-roles", title: "Roles", url: "/dashboard/roles", icon: Shield },
-          { id: "org-studio", title: "Studio", url: "/dashboard/studio", icon: Clapperboard },
-          { id: "org-ke-budget", title: "KE Budget", url: "/dashboard/ke-budget", icon: PiggyBank },
-          { id: "org-invoices", title: "Invoices", url: "/dashboard/invoices", icon: Receipt },
+          { id: "users", title: "Citizen & Staff Users", url: "/dashboard/users" },
+          { id: "invitations", title: "Invitations", url: "/dashboard/invitations" },
+          { id: "roles", title: "Roles & Permissions", url: "/dashboard/roles", icon: Shield },
+          { id: "profile", title: "My Profile", url: "/dashboard/profile" },
         ],
       },
       {
-        id: "cat-account",
-        title: "Account",
-        icon: UserRound,
+        id: "cat-organization",
+        title: "Settings & System",
+        icon: Settings,
         subItems: [
-          { id: "privacy", title: "Privacy", url: "/dashboard/privacy", icon: ShieldCheck },
-          { id: "security", title: "Security", url: "/dashboard/security" },
+          { id: "org-settings", title: "System Settings", url: "/dashboard/settings" },
+          { id: "security", title: "Security & Audits", url: "/dashboard/security", icon: ShieldCheck },
+          { id: "org-partners", title: "Civic Partners", url: "/dashboard/partners", icon: Handshake },
         ],
       },
     ],
