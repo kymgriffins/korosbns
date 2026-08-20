@@ -51,8 +51,8 @@
     "titleHighlight": "story",
     "titleAfter": ".",
     "description": "A dedicated group of researchers, storytellers, and tech innovators working together to bring transparency to Kenya's public budgets.",
-    "seeMoreLabel": "See more",
-    "seeMoreHref": "/about"
+    "seeMoreLabel": "View all members",
+    "seeMoreHref": "/about#team"
   },
   "gallery": {
     "titleBefore": "Documenting the",

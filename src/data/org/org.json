@@ -157,6 +157,31 @@
         "linkedin": "https://linkedin.com/in/nellymaina",
         "x": "https://x.com/nellymaina"
       }
+    },
+    {
+      "name": "Calvina Praise",
+      "role": "Digital Content Strategist",
+      "image": "/images/avatars/team/Calvina%20Praise.jpg",
+      "description": "Develops and executes youth-centered content strategies for Instagram and TikTok focused on public finance and civic engagement.",
+      "bio": "Calvina develops and executes youth-centered content strategies for Instagram and TikTok focused on public finance and civic engagement. She creates engaging short-form videos, educational carousels, and digital campaigns simplifying complex budget and taxation topics.",
+      "tagline": "Youth Content Strategist & Digital Storyteller",
+      "profileText": "Calvina Praise develops and executes youth-centered content strategies for Instagram and TikTok focused on public finance and civic engagement.\n\nShe creates engaging short-form videos, educational carousels, and digital campaigns simplifying complex budget and taxation topics, collaborating with creative teams during shoots, podcasts, and interviews to produce impactful multimedia content.\n\nThrough interactive storytelling, polls, audience discussions, and campaign-based content, Calvina drives deep community engagement across BNS's digital platforms.",
+      "focusAreas": [
+        "Youth-Centered Content Strategy (Instagram & TikTok)",
+        "Short-Form Video Production & Educational Carousels",
+        "Public Finance & Civic Engagement Storytelling",
+        "Community Discussions, Polls & Digital Campaigns"
+      ],
+      "achievements": [
+        "Develop and execute youth-centered content strategies for Instagram and TikTok focused on public finance and civic engagement.",
+        "Create engaging short-form videos, educational carousels, and digital campaigns simplifying complex budget and taxation topics.",
+        "Collaborate with creative teams during shoots, podcasts, and interviews to produce impactful multimedia content.",
+        "Drive community engagement through interactive storytelling, polls, audience discussions, and campaign-based content."
+      ],
+      "quote": "Simplifying complex public finance and taxation topics empowers a new generation of informed citizens.",
+      "socials": {
+        "linkedin": "https://www.linkedin.com/in/calvinapraise/"
+      }
     }
   ]
 }

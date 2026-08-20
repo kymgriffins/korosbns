@@ -18,6 +18,8 @@ import { GsapStaggerReveal } from "@/motion/gsap";
 import { cn } from "@/utils";
 
 export default function LandingTeam() {
+  const landingMembers = team.slice(0, 6);
+
   return (
     <LandingSection>
       <LandingSectionHeader
@@ -33,7 +35,7 @@ export default function LandingTeam() {
       />
 
       <GsapStaggerReveal className="hidden gap-x-8 gap-y-12 md:grid md:grid-cols-2 lg:grid-cols-3">
-        {team.map((member) => {
+        {landingMembers.map((member) => {
           const href = `/team/${slugifyName(member.name)}`;
           return (
             <Link
@@ -62,7 +64,7 @@ export default function LandingTeam() {
       </GsapStaggerReveal>
 
       <GsapStaggerReveal className="flex w-full flex-col gap-6 md:hidden">
-        {team.map((member) => {
+        {landingMembers.map((member) => {
           const href = `/team/${slugifyName(member.name)}`;
           return (
             <Link
