@@ -11,7 +11,7 @@ export const Routes = {
     
     Research: "/about",
     About: "/about",
-    Careers: "/about",
+    Careers: "/careers",
     FAQ: "/faq",
     Contact: "/contact",
     JoinUs: "/auth/register",
