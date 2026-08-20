@@ -12,27 +12,28 @@ export function TeamAvatar({
   src: string;
   alt: string;
   initials: string;
-  size?: "sm" | "lg";
+  size?: "sm" | "md" | "lg";
 }) {
   const [error, setError] = useState(false);
 
-  if (size === "sm") {
+  if (size === "sm" || size === "md") {
+    const dimClass = size === "md" ? "size-14" : "size-12";
     if (error || !src) {
       return (
-        <div className="mb-3 flex size-12 items-center justify-center rounded-2xl border border-primary/30 bg-primary/10 text-sm font-bold text-primary">
+        <div className={`mb-3 flex ${dimClass} items-center justify-center rounded-2xl border border-primary/30 bg-primary/10 text-sm font-bold text-primary`}>
           {initials}
         </div>
       );
     }
     return (
-      <div className="relative mb-3 size-12 overflow-hidden rounded-2xl border border-border/80 shadow-xs">
+      <div className={`relative mb-3 ${dimClass} overflow-hidden rounded-2xl border border-border/80 shadow-xs shrink-0`}>
         <Image
           src={src}
           alt={alt}
           fill
           onError={() => setError(true)}
           className="object-cover object-top"
-          sizes="48px"
+          sizes="56px"
         />
       </div>
     );

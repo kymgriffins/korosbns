@@ -1,4 +1,4 @@
-﻿import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "vitest";
 import { team } from "@/data/org";
 import {
   slugifyName,
@@ -92,7 +92,7 @@ describe("Team Members Dataset & Dynamic Routing Integrity", () => {
     for (const member of team) {
       const slug = slugifyName(member.name);
       const meta = await generateMetadata({ params: Promise.resolve({ username: slug }) });
-      expect(meta.title).toBe(`${member.name} | Budget Ndio Story`);
+      expect(meta.title).toBe(`${member.name} — ${member.role} | Budget Ndio Story`);
       expect(meta.description).toBeDefined();
       expect(meta.openGraph?.images).toContain(member.image);
     }
