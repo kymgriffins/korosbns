@@ -43,6 +43,8 @@ const CATEGORIES: ("All" | CmsCategory)[] = [
   "Marketing & Site Copy",
   "Organization & Team",
   "Civic Allocations",
+  "Platform Config & Documents",
+  "KE Budget Engine Datasets",
   "Learning Curriculum Fallbacks",
 ];
 
@@ -55,6 +57,7 @@ export function HeadlessCmsStudio() {
   const [jsonError, setJsonError] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isPushingAll, setIsPushingAll] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [activeView, setActiveView] = useState<"json" | "tree" | "preview">("json");
   const [lastSavedTime, setLastSavedTime] = useState<string | null>(null);
@@ -179,6 +182,31 @@ export function HeadlessCmsStudio() {
     }
   };
 
+  const handlePushAllToDisk = async () => {
+    setIsPushingAll(true);
+    try {
+      const res = await fetch("/api/cms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "push-all", editorEmail: MASTER_CMS_EMAIL }),
+      });
+
+      const result = await res.json();
+      if (!res.ok) {
+        throw new Error(result.error || "Failed to push all datasets");
+      }
+
+      toast.success(
+        `Bulk Synced & Pushed ${result.totalSynced}/${result.totalDatasets} JSON Datasets to Disk!`,
+        { description: "All files updated persistently on disk." },
+      );
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to push all datasets");
+    } finally {
+      setIsPushingAll(false);
+    }
+  };
+
   const handleExportJson = () => {
     const blob = new Blob([rawJsonText], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -188,6 +216,25 @@ export function HeadlessCmsStudio() {
     a.click();
     URL.revokeObjectURL(url);
     toast.success(`Exported ${selectedSlug}.json`);
+  };
+
+  const handleExportAllBundle = async () => {
+    try {
+      const res = await fetch("/api/cms?export=all");
+      const json = await res.json();
+      const blob = new Blob([JSON.stringify(json.bundle, null, 2)], {
+        type: "application/json",
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `bns-all-datasets-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success(`Exported bundle of ${json.totalCollections} datasets!`);
+    } catch {
+      toast.error("Failed to export all datasets");
+    }
   };
 
   // Helper for Tree Editor to update a nested key path
@@ -203,7 +250,7 @@ export function HeadlessCmsStudio() {
       const updatedStr = JSON.stringify(root, null, 2);
       setRawJsonText(updatedStr);
       setJsonError(null);
-    } catch (err) {
+    } catch {
       toast.error("Failed to update field value");
     }
   };
@@ -224,6 +271,10 @@ export function HeadlessCmsStudio() {
         return Users;
       case "Civic Allocations":
         return BarChart3;
+      case "Platform Config & Documents":
+        return Layers;
+      case "KE Budget Engine Datasets":
+        return Database;
       case "Learning Curriculum Fallbacks":
         return BookOpen;
       default:
@@ -243,7 +294,7 @@ export function HeadlessCmsStudio() {
             <div>
               <div className="flex flex-wrap items-center gap-2">
                 <Badge variant="outline" className="bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20 font-bold">
-                  JSON Data Engine & Content CMS
+                  JSON Data Engine &amp; Content CMS
                 </Badge>
                 <span className="text-xs text-muted-foreground">
                   Persistent Storage: <code className="text-foreground font-semibold px-1.5 py-0.5 rounded bg-muted">Local Filesystem + API</code>
@@ -258,7 +309,30 @@ export function HeadlessCmsStudio() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
+            <Button
+              variant="default"
+              size="sm"
+              onClick={handlePushAllToDisk}
+              disabled={isPushingAll}
+              className="gap-1.5 text-xs font-bold bg-primary text-primary-foreground shadow-xs"
+            >
+              {isPushingAll ? (
+                <RefreshCw className="size-3.5 animate-spin" />
+              ) : (
+                <Sparkles className="size-3.5 text-amber-300" />
+              )}
+              <span>Push All to Disk</span>
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleExportAllBundle}
+              className="gap-1.5 text-xs font-semibold"
+            >
+              <Download className="size-3.5 text-purple-500" />
+              <span>Export All (Bundle)</span>
+            </Button>
             <Button
               variant="outline"
               size="sm"

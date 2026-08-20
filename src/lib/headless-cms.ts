@@ -1,10 +1,12 @@
 /**
  * Headless CMS Engine for Budget Ndio Story (korosbns).
  * 
- * Persistent JSON content management supporting:
+ * Persistent JSON content management supporting all 22 datasets across:
  * - Marketing content (`landing.json`, `about.json`, `programmes.json`, `media.json`, `socials.json`, `timeline.json`)
  * - Organization & Team (`org.json`)
  * - Civic Allocations (`counties-allocations.json`)
+ * - Platform Config & Documents (`bnsConfig.json`, `docrepository-dump.json`)
+ * - KE Budget Engine Datasets (`budget-fy-episodes.json`, `budget-fy2025-26.json`, `budget-fy2026-27.json`)
  * - Learning Curriculum Fallbacks (`civic-modules.json`, `learn-articles.json`, `learn-stories.json`, `learn-trivia.json`, `learn-paths.json`, `learn-quests.json`, `content-videos.json`, `learn-summary.json`, `video-transcripts.json`)
  * 
  * Privileges:
@@ -19,6 +21,8 @@ import socialsContent from "@/content/socials.json";
 import timelineContent from "@/content/timeline.json";
 import orgContent from "@/data/org/org.json";
 import countiesAllocationsContent from "@/data/counties-allocations.json";
+import bnsConfigContent from "@/constants/bnsConfig.json";
+import docRepositoryContent from "@/constants/docrepository-dump.json";
 import civicModulesContent from "@/data/fallbacks/civic-modules.json";
 import contentVideosContent from "@/data/fallbacks/content-videos.json";
 import learnArticlesContent from "@/data/fallbacks/learn-articles.json";
@@ -28,6 +32,26 @@ import learnStoriesContent from "@/data/fallbacks/learn-stories.json";
 import learnSummaryContent from "@/data/fallbacks/learn-summary.json";
 import learnTriviaContent from "@/data/fallbacks/learn-trivia.json";
 import videoTranscriptsContent from "@/data/fallbacks/video-transcripts.json";
+
+// Optional imports for budgethub datasets
+let budgetFyEpisodesContent: unknown = {};
+let budgetFy202526Content: unknown = {};
+let budgetFy202627Content: unknown = {};
+try {
+  budgetFyEpisodesContent = require("../../apps/budgethub/src/data/budget-fy-episodes.json");
+} catch {
+  budgetFyEpisodesContent = { episodes: [] };
+}
+try {
+  budgetFy202526Content = require("../../apps/budgethub/src/data/budget-fy2025-26.json");
+} catch {
+  budgetFy202526Content = { fiscal_year: "2025/26" };
+}
+try {
+  budgetFy202627Content = require("../../apps/budgethub/src/data/budget-fy2026-27.json");
+} catch {
+  budgetFy202627Content = { fiscal_year: "2026/27" };
+}
 
 export const MASTER_CMS_EMAIL = "info@budgetndiostory.org";
 
@@ -46,6 +70,11 @@ export type CmsCollectionSlug =
   | CoreCmsCollectionSlug
   | "org"
   | "counties-allocations"
+  | "bns-config"
+  | "doc-repository"
+  | "budget-fy-episodes"
+  | "budget-fy2025-26"
+  | "budget-fy2026-27"
   | "civic-modules"
   | "content-videos"
   | "learn-articles"
@@ -60,6 +89,8 @@ export type CmsCategory =
   | "Marketing & Site Copy"
   | "Organization & Team"
   | "Civic Allocations"
+  | "Platform Config & Documents"
+  | "KE Budget Engine Datasets"
   | "Learning Curriculum Fallbacks";
 
 export type CmsCollectionMeta = {
@@ -157,6 +188,60 @@ export const CMS_COLLECTIONS_CATALOG: Record<CmsCollectionSlug, CmsCollectionMet
     itemCount: Array.isArray(countiesAllocationsContent) ? countiesAllocationsContent.length : 47,
     lastUpdated: new Date().toISOString(),
     schemaKeys: ["counties", "allocations"],
+  },
+  "bns-config": {
+    slug: "bns-config",
+    name: "BNS Platform Master Config",
+    description: "Global brand metadata, tagline, contact emails, theme tokens, and SEO definitions.",
+    category: "Platform Config & Documents",
+    filePath: "src/constants/bnsConfig.json",
+    itemCount: Object.keys(bnsConfigContent || {}).length,
+    lastUpdated: new Date().toISOString(),
+    schemaKeys: ["name", "shortName", "tagline", "siteUrl", "theme", "socials", "seo"],
+  },
+  "doc-repository": {
+    slug: "doc-repository",
+    name: "Civic Document Library",
+    description: "National budget legislation, Finance Bills, Appropriation Acts, and PDF repository entries.",
+    category: "Platform Config & Documents",
+    filePath: "src/constants/docrepository-dump.json",
+    itemCount: Array.isArray((docRepositoryContent as { documents?: unknown[] })?.documents)
+      ? (docRepositoryContent as { documents: unknown[] }).documents.length
+      : 10,
+    lastUpdated: new Date().toISOString(),
+    schemaKeys: ["categories", "documents", "years", "tags"],
+  },
+  "budget-fy-episodes": {
+    slug: "budget-fy-episodes",
+    name: "KE Budget Audio & Video Episodes",
+    description: "Fiscal year budget podcast series, episode descriptors, topics, and timestamps.",
+    category: "KE Budget Engine Datasets",
+    filePath: "apps/budgethub/src/data/budget-fy-episodes.json",
+    itemCount: Array.isArray((budgetFyEpisodesContent as { episodes?: unknown[] })?.episodes)
+      ? (budgetFyEpisodesContent as { episodes: unknown[] }).episodes.length
+      : 6,
+    lastUpdated: new Date().toISOString(),
+    schemaKeys: ["fiscal_year", "episodes", "summary"],
+  },
+  "budget-fy2025-26": {
+    slug: "budget-fy2025-26",
+    name: "Kenya Budget FY 2025/26 Engine",
+    description: "National expenditure ceilings, revenue projections, and debt allocations for 2025/26.",
+    category: "KE Budget Engine Datasets",
+    filePath: "apps/budgethub/src/data/budget-fy2025-26.json",
+    itemCount: 15,
+    lastUpdated: new Date().toISOString(),
+    schemaKeys: ["fiscal_year", "total_expenditure", "revenue", "sectors", "debt_service"],
+  },
+  "budget-fy2026-27": {
+    slug: "budget-fy2026-27",
+    name: "Kenya Budget FY 2026/27 Estimates",
+    description: "Medium-term expenditure framework (MTEF) estimates and ministry ceilings for 2026/27.",
+    category: "KE Budget Engine Datasets",
+    filePath: "apps/budgethub/src/data/budget-fy2026-27.json",
+    itemCount: 15,
+    lastUpdated: new Date().toISOString(),
+    schemaKeys: ["fiscal_year", "mtef_projections", "ministries", "county_share"],
   },
   "civic-modules": {
     slug: "civic-modules",
@@ -260,6 +345,11 @@ const _cmsDataCache: Record<CmsCollectionSlug, Record<string, unknown>> = {
   timeline: timelineContent as Record<string, unknown>,
   org: orgContent as unknown as Record<string, unknown>,
   "counties-allocations": countiesAllocationsContent as unknown as Record<string, unknown>,
+  "bns-config": bnsConfigContent as unknown as Record<string, unknown>,
+  "doc-repository": docRepositoryContent as unknown as Record<string, unknown>,
+  "budget-fy-episodes": budgetFyEpisodesContent as unknown as Record<string, unknown>,
+  "budget-fy2025-26": budgetFy202526Content as unknown as Record<string, unknown>,
+  "budget-fy2026-27": budgetFy202627Content as unknown as Record<string, unknown>,
   "civic-modules": civicModulesContent as unknown as Record<string, unknown>,
   "content-videos": contentVideosContent as unknown as Record<string, unknown>,
   "learn-articles": learnArticlesContent as unknown as Record<string, unknown>,
@@ -293,7 +383,7 @@ export const headlessCmsApi = {
   },
 
   /**
-   * Returns all 17 registered JSON collections across marketing, team, data & learning.
+   * Returns all 22 registered JSON collections across marketing, org, config, documents, data & learning.
    */
   getAllCollections: (): CmsCollectionMeta[] => {
     return Object.values(CMS_COLLECTIONS_CATALOG);
@@ -330,6 +420,17 @@ export const headlessCmsApi = {
 
   exportCollectionJson: (slug: CmsCollectionSlug): string => {
     return JSON.stringify(_cmsDataCache[slug] || {}, null, 2);
+  },
+
+  /**
+   * Bulk export all datasets as a bundled JSON map
+   */
+  exportAllCollectionsJson: (): Record<string, unknown> => {
+    const bundle: Record<string, unknown> = {};
+    for (const [slug, data] of Object.entries(_cmsDataCache)) {
+      bundle[slug] = data;
+    }
+    return bundle;
   },
 };
 
