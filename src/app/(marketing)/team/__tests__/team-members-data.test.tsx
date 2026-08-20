@@ -30,12 +30,17 @@ describe("Team Members Dataset & Dynamic Routing Integrity", () => {
       expect(member.image).toBeDefined();
       expect(member.description).toBeDefined();
       expect(member.bio).toBeDefined();
+      expect(member.missionImpact).toBeDefined();
+      expect(member.missionImpact?.length).toBeGreaterThan(0);
+      expect(member.visionContribution).toBeDefined();
+      expect(member.visionContribution?.length).toBeGreaterThan(0);
       expect(member.focusAreas).toBeDefined();
       expect(member.focusAreas?.length).toBeGreaterThan(0);
       expect(member.achievements).toBeDefined();
       expect(member.achievements?.length).toBeGreaterThan(0);
       expect(member.quote).toBeDefined();
       expect(member.socials?.linkedin).toBeDefined();
+      expect(member.socials?.x).toBeUndefined();
     }
   });
 

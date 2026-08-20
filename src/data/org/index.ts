@@ -20,6 +20,8 @@ export type OrgTeamMember = {
   bio: string;
   tagline?: string;
   profileText?: string;
+  missionImpact?: string;
+  visionContribution?: string;
   focusAreas?: string[];
   achievements?: string[];
   quote?: string;

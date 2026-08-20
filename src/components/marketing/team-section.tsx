@@ -27,6 +27,7 @@ interface TeamMember {
 }
 
 const SocialIcon = ({ platform, href }: { platform: string; href: string }) => {
+  if (platform === "x" || platform === "twitter") return null;
   if (!href || typeof href !== "string" || !href.trim() || href === "#") return null;
 
   const icons = {

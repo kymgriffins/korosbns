@@ -24,7 +24,7 @@ import {
   ChevronRight,
   ShieldCheck,
 } from "lucide-react";
-import { IconBrandLinkedin, IconBrandX } from "@tabler/icons-react";
+import { IconBrandLinkedin } from "@tabler/icons-react";
 import { notFound, redirect } from "next/navigation";
 import { metaDescription } from "@/utils/metadata";
 import { TeamAvatar } from "@/components/marketing/team-avatar";
@@ -243,20 +243,6 @@ function TeamMemberProfile({ member }: { member: OrgTeamMember }) {
                   </Button>
                 )}
 
-                {member.socials?.x && member.socials.x.trim() && member.socials.x !== "#" && (
-                  <Button asChild variant="outline" size="sm" className="gap-2 font-semibold">
-                    <a
-                      href={member.socials.x.trim()}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`${member.name} on X`}
-                    >
-                      <IconBrandX className="size-4" />
-                      <span>Follow on X</span>
-                    </a>
-                  </Button>
-                )}
-
                 <Button asChild variant="secondary" size="sm" className="gap-1.5 font-semibold text-xs">
                   <Link href={`/contact?intent=team-inquiry&member=${encodeURIComponent(member.name)}`}>
                     <Mail className="size-3.5" />
@@ -274,6 +260,44 @@ function TeamMemberProfile({ member }: { member: OrgTeamMember }) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           {/* Main Left Content Area */}
           <div className="lg:col-span-8 space-y-10">
+            {/* Mission & Vision Impact Showcase Card */}
+            {(member.missionImpact || member.visionContribution) && (
+              <section className="rounded-3xl border border-primary/30 bg-gradient-to-br from-primary/10 via-card to-background p-8 shadow-sm sm:p-10 space-y-6">
+                <div className="flex items-center gap-2.5 text-primary font-heading pb-4 border-b border-primary/20">
+                  <Sparkles className="size-5" />
+                  <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+                    Mission Impact &amp; Civic Vision
+                  </h2>
+                </div>
+
+                <div className="grid gap-6 sm:grid-cols-1">
+                  {member.missionImpact && (
+                    <div className="space-y-2.5 rounded-2xl border border-primary/20 bg-background/80 p-5 shadow-xs">
+                      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
+                        <Target className="size-4" />
+                        <span>Driving The BNS Mission</span>
+                      </div>
+                      <p className="text-base sm:text-lg text-foreground/90 leading-relaxed font-serif italic">
+                        {member.missionImpact}
+                      </p>
+                    </div>
+                  )}
+
+                  {member.visionContribution && (
+                    <div className="space-y-2.5 rounded-2xl border border-border/60 bg-muted/30 p-5 shadow-xs">
+                      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
+                        <Compass className="size-4" />
+                        <span>Shaping Kenya&apos;s Civic Vision</span>
+                      </div>
+                      <p className="text-sm sm:text-base text-foreground/80 leading-relaxed">
+                        {member.visionContribution}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </section>
+            )}
+
             {/* Biography Section */}
             <section className="rounded-3xl border border-border/70 bg-card p-8 shadow-sm sm:p-10 space-y-6">
               <div className="flex items-center justify-between pb-4 border-b border-border/40">
