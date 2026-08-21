@@ -1,7 +1,6 @@
 const MARKETING_FOOTER_ROUTES = new Set([
   "/",
   "/about",
-  "/team",
   "/faq",
   "/privacy",
   "/terms",
@@ -9,7 +8,7 @@ const MARKETING_FOOTER_ROUTES = new Set([
   "/bns-studio",
 ]);
 
-const MARKETING_FOOTER_PREFIXES = ["/team/", "/tiktok/"];
+const MARKETING_FOOTER_PREFIXES = ["/tiktok/"];
 
 /** Routes that use the marketing navbar + page transition chrome (not learn shell). */
 export function usesMarketingChrome(pathname: string): boolean {

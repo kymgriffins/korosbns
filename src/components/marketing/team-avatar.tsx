@@ -8,11 +8,13 @@ export function TeamAvatar({
   alt,
   initials,
   size = "lg",
+  className,
 }: {
   src: string;
   alt: string;
   initials: string;
   size?: "sm" | "md" | "lg";
+  className?: string;
 }) {
   const [error, setError] = useState(false);
 
