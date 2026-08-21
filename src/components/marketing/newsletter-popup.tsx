@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import { Sparkles, Inbox } from "lucide-react";
+import { CheckCircle2, Inbox } from "lucide-react";
 import { toast } from "sonner";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 
@@ -121,7 +121,7 @@ export default function NewsletterPopup() {
             <div className="md:p-16 p-6 w-full">
               <div className="space-y-4 py-2">
                 <Alert variant="default" className="border-emerald-500/30 bg-emerald-500/5">
-                  <Sparkles className="size-4 text-emerald-600" />
+                  <CheckCircle2 className="size-4 text-emerald-600" />
                   <AlertDescription className="text-emerald-800 dark:text-emerald-200">
                     <span className="font-semibold">You&apos;re subscribed!</span> Keep an eye on your inbox for our latest updates.
                   </AlertDescription>

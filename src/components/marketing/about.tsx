@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Sparkles, Briefcase } from "lucide-react";
+import { ArrowRight, Compass, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   LandingContent,
@@ -36,7 +36,7 @@ const About = () => {
         <div className="relative z-10 mx-auto w-full max-w-[1400px] px-6 pb-14 pt-28 md:px-16 md:pb-20">
           <div className="flex max-w-3xl flex-col gap-4 animate-fade-in">
             <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1 text-xs font-bold text-primary w-fit backdrop-blur-md">
-              <Sparkles className="size-3.5" />
+              <Compass className="size-3.5" />
               <span>{hero.eyebrow}</span>
             </div>
             <h1 className={cn(T.heroTitle, "max-w-3xl text-foreground font-heading tracking-tight")}>

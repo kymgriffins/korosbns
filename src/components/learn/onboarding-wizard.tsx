@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Flame, Bell, Shield, ArrowRight, ArrowLeft, Sparkles, GraduationCap } from "lucide-react";
+import { Flame, Bell, Shield, ArrowRight, ArrowLeft, GraduationCap } from "lucide-react";
 import { useUpdateProfile } from "@/hooks/use-profile";
 import { useAuth } from "@/contexts/auth-context";
 import { COUNTIES } from "@/constants/counties";
@@ -295,7 +295,7 @@ export function OnboardingWizard({ onComplete }: OnboardingWizardProps) {
               <ArrowLeft className="size-3.5" /> Back
             </Button>
             <Button type="submit" className="flex-1 rounded-lg h-10 font-bold text-xs gap-1.5">
-              Get Started <Sparkles className="size-3.5" />
+              Get Started <ArrowRight className="size-3.5" />
             </Button>
           </div>
         </form>

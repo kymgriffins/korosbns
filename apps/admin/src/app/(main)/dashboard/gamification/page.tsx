@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Pencil, Sparkles } from "lucide-react";
+import { Pencil, Zap } from "lucide-react";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
@@ -246,7 +246,7 @@ export default function AdminGamificationPage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between gap-3">
           <CardTitle className="flex items-center gap-2">
-            <Sparkles className="size-4" />
+            <Zap className="size-4" />
             Point rules
           </CardTitle>
           <div className="flex gap-2">

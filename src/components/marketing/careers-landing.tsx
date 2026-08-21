@@ -6,7 +6,6 @@ import Image from "next/image";
 import { motion } from "motion/react";
 import {
   Briefcase,
-  Sparkles,
   ArrowRight,
   CheckCircle2,
   Users,
@@ -220,7 +219,7 @@ export function CareersLanding() {
         <Wrapper className="relative z-10">
           <div className="max-w-3xl mx-auto text-center space-y-6">
             <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-bold text-primary">
-              <Sparkles className="size-3.5" />
+              <Zap className="size-3.5" />
               <span>Careers &amp; Creative Open Call (Ages 18–34)</span>
             </div>
 
@@ -443,7 +442,7 @@ export function CareersLanding() {
         <Wrapper>
           <div className="p-8 sm:p-12 rounded-3xl border border-border/80 bg-card text-center max-w-4xl mx-auto space-y-6 shadow-xs">
             <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3.5 py-1 text-xs font-bold text-primary mx-auto">
-              <Sparkles className="size-3.5" />
+              <Send className="size-3.5" />
               <span>Spontaneous Applications Welcome</span>
             </div>
 

@@ -18,7 +18,6 @@ import {
   CheckCircle2,
   Loader2,
   ClipboardList,
-  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BitmojiAvatar } from "./bitmoji-avatar";
@@ -271,7 +270,7 @@ export function LearnDashboardView({
             label="Total XP"
             value={points.toLocaleString()}
             hint={`Level ${level}`}
-            icon={Sparkles}
+            icon={Zap}
           />
           <ScoreStat
             label="Day streak"

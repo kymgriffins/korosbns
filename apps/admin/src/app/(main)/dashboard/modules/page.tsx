@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Pencil, Trash2, Wand2 } from "lucide-react";
+import { Pencil, Trash2, Sliders } from "lucide-react";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
@@ -87,7 +87,7 @@ export default function AdminModulesPage() {
         <div className="flex items-center gap-1">
           <Teachable tipId="open-builder" title="Open builder" body="Resume the guided setup for this module.">
             <Button variant="ghost" size="icon-sm" title="Open builder" onClick={() => openBuilder(m.id)}>
-              <Wand2 className="size-3.5" />
+              <Sliders className="size-3.5" />
             </Button>
           </Teachable>
           <Button variant="ghost" size="icon-sm" title="Edit details" onClick={() => openBuilder(m.id, "overview")}>

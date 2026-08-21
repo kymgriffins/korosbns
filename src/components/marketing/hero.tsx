@@ -9,7 +9,7 @@ import {
   useReducedMotion,
 } from "motion/react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Zap } from "lucide-react";
 import Balancer from "react-wrap-balancer";
 import { ease } from "@/motion/variants";
 
@@ -149,7 +149,7 @@ export default function Hero() {
           {/* Mission badge */}
           <motion.div variants={heroItem} className="flex justify-center">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/25 bg-primary/8 text-primary text-xs font-bold">
-              <Sparkles className="size-3.5 fill-current animate-pulse" />
+              <Zap className="size-3.5 fill-current" />
               <span>Bridging Youth Energy & Fiscal Policy</span>
             </div>
           </motion.div>

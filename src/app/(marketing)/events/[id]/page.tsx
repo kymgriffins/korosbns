@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ArrowLeft, ExternalLink, Loader2, Calendar, MapPin, Sparkles, Send, Mail, CheckCircle2, Building2 } from "lucide-react";
+import { ArrowLeft, ExternalLink, Loader2, Calendar, MapPin, Send, Mail, CheckCircle2, Building2 } from "lucide-react";
 import Wrapper from "@/components/global/wrapper";
 import { Routes } from "@/constants/routes";
 import { Badge } from "@/components/ui/badge";

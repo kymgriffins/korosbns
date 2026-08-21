@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import {
   CheckCircle2,
   AlertCircle,
-  Sparkles,
+  HelpCircle,
   ArrowRight,
   Lightbulb,
   X,
@@ -167,7 +167,7 @@ export function TriviaSection({
         </button>
         <div className="min-w-0 flex-1">
           <p id="trivia-title" className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide text-primary">
-            <Sparkles className="size-3.5 shrink-0" />
+            <HelpCircle className="size-3.5 shrink-0" />
             {title}
           </p>
           <p className="truncate text-xs text-muted-foreground">

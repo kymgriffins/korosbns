@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Loader2, Search, Calendar, MapPin, Sparkles, Building2 } from "lucide-react";
+import { Loader2, Search, Calendar, MapPin, Building2 } from "lucide-react";
 import Wrapper from "@/components/global/wrapper";
 import { Routes } from "@/constants/routes";
 import { Badge } from "@/components/ui/badge";
@@ -75,7 +75,7 @@ export default function EventsPage() {
             transition={{ duration: 0.5 }}
           >
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs font-semibold mb-4">
-              <Sparkles className="size-3" />
+              <Calendar className="size-3" />
               <span>Budget Ndio Story Hub</span>
             </div>
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-foreground">

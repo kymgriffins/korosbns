@@ -24,7 +24,6 @@ import {
   BarChart3,
   BookOpen,
   FileJson,
-  Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -320,7 +319,7 @@ export function HeadlessCmsStudio() {
               {isPushingAll ? (
                 <RefreshCw className="size-3.5 animate-spin" />
               ) : (
-                <Sparkles className="size-3.5 text-amber-300" />
+                <Save className="size-3.5" />
               )}
               <span>Push All to Disk</span>
             </Button>

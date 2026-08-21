@@ -1,4 +1,4 @@
-import { Lightbulb, TriangleAlert, Sparkles, Info } from "lucide-react";
+import { Lightbulb, TriangleAlert, TrendingUp, Info } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -18,7 +18,7 @@ const severityStyles: Record<AnalyticsInsight["severity"], string> = {
 
 const severityIcon: Record<AnalyticsInsight["severity"], typeof Info> = {
   info: Info,
-  positive: Sparkles,
+  positive: TrendingUp,
   warning: TriangleAlert,
   attention: Lightbulb,
 };

@@ -1,7 +1,7 @@
 "use client";
 
 import { BitmojiAvatar } from "./bitmoji-avatar";
-import { Sparkles, Flame } from "lucide-react";
+import { Zap, Flame } from "lucide-react";
 import { useLearn } from "@/contexts/learn-context";
 
 export function LearnStatsSidebar({ profile }: {
@@ -43,7 +43,7 @@ export function LearnStatsSidebar({ profile }: {
           <span className="text-[7px] font-bold text-orange-500/70 uppercase tracking-wider">Streak</span>
         </div>
         <div className="p-2.5 bg-primary/5 rounded-xl text-center shadow-xs">
-          <Sparkles className="size-4 fill-primary text-primary mx-auto" />
+          <Zap className="size-4 fill-primary text-primary mx-auto" />
           <span className="block text-sm font-black text-primary mt-0.5">{profile.sovereigns}</span>
           <span className="text-[7px] font-bold text-primary/70 uppercase tracking-wider">SVG</span>
         </div>

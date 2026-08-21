@@ -1,6 +1,6 @@
 "use client";
 
-import { TrendingDown, TrendingUp, Minus, Info, AlertTriangle, Sparkles, ArrowUpRight, ArrowDownRight, ChevronDown, ListTree } from "lucide-react";
+import { TrendingDown, TrendingUp, Minus, Info, AlertTriangle, ArrowUpRight, ArrowDownRight, ChevronDown, ListTree } from "lucide-react";
 import { cn } from "@/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -132,7 +132,7 @@ export function BudgetCalloutCard({ callout, index = 0 }: { callout: BudgetCallo
     callout.type === "warning"
       ? AlertTriangle
       : callout.type === "trend"
-        ? Sparkles
+        ? TrendingUp
         : Info;
 
   const iconColors = {

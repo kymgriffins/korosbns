@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Shield, ArrowRight, Edit3, RefreshCw, Sparkles } from "lucide-react";
+import { Shield, ArrowRight, Edit3, RefreshCw, Check } from "lucide-react";
 import { FemaleBitmoji, MaleBitmoji, type Gender } from "./bitmoji-avatar";
 
 import { writeHubProfile } from "@/lib/profile-local-storage";
@@ -114,7 +114,7 @@ export function AnonymousIdentityPicker({ onComplete }: AnonymousIdentityPickerP
                 }`}>
                 <div className="flex items-center justify-center gap-1.5">
                   <span className="truncate text-xs">{name}</span>
-                  {selected === name && <Sparkles className="size-3.5 fill-primary shrink-0" />}
+                  {selected === name && <Check className="size-3.5 text-primary shrink-0" />}
                 </div>
               </button>
             ))}

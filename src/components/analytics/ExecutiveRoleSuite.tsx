@@ -13,7 +13,7 @@ import {
   Download,
   FileSpreadsheet,
   FileText,
-  Sparkles,
+  ShieldCheck,
   ChevronDown,
   Layers,
   ArrowRight,
@@ -275,7 +275,7 @@ export function ExecutiveRoleSuite({ activeRole, onRoleChange }: Props) {
 
           <div className="p-4 rounded-xl border border-border/60 bg-muted/30 space-y-2">
             <div className="text-xs font-bold text-foreground flex items-center gap-1.5">
-              <Sparkles className="size-3.5 text-primary" />
+              <ShieldCheck className="size-3.5 text-primary" />
               <span>User Story & Authorization Scope</span>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed italic">"{currentRole.userStory}"</p>

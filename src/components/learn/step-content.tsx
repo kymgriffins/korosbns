@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/utils";
-import { Sparkles, Lightbulb, AlertTriangle, ChevronLeft, ChevronRight } from "lucide-react";
+import { Video, HelpCircle, Lightbulb, AlertTriangle, ChevronLeft, ChevronRight } from "lucide-react";
 import type { ChapterStep, StageTakeaway, ChapterVideo } from "@/types/learn";
 import { stripHtml } from "@/lib/sanitize";
 import { renderContent } from "@/lib/render-content";
@@ -69,7 +69,7 @@ function VideoPlayer({ videos, youtubeUrl, youtubeUrls, title }: { videos?: Chap
     return (
       <div className="w-full aspect-video bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl flex flex-col items-center justify-center shadow-xs">
         <div className="size-10 rounded-lg bg-muted/30 flex items-center justify-center">
-          <Sparkles className="size-5 text-muted-foreground/40" />
+          <Video className="size-5 text-muted-foreground/40" />
         </div>
         <p className="text-xs text-muted-foreground/60 font-semibold mt-2">Video coming soon</p>
       </div>
@@ -192,7 +192,7 @@ export function StepContent({ step, currentStep, totalSteps, activeFormat, showT
           {activeFormat === "text" && showTriviaCta && (
             <div className="flex justify-center pt-2">
               <Button onClick={onStartTrivia} size="sm" className="rounded-lg font-bold text-xs gap-1.5">
-                <Sparkles className="size-3.5" /> {currentStep === totalSteps ? "Check Understanding" : "Knowledge Check"}
+                <HelpCircle className="size-3.5" /> {currentStep === totalSteps ? "Check Understanding" : "Knowledge Check"}
               </Button>
             </div>
           )}

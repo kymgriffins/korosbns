@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { team } from "@/data/org";
@@ -61,7 +61,6 @@ const SocialIcon = ({ platform, href }: { platform: string; href: string }) => {
 
 const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
   const [imageError, setImageError] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
   const username = slugifyName(member.name);
 
   const initials = member.name
@@ -77,12 +76,10 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.55, delay: index * 0.08, ease: ease.expo }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
       className="group relative"
     >
       <Link href={`/team/${username}`} className="block">
-        <div className="relative rounded-3xl overflow-hidden bg-card border border-border/70 shadow-xs transition-all duration-300 group-hover:-translate-y-1.5 group-hover:border-primary/40 group-hover:shadow-md">
+        <div className="relative rounded-3xl overflow-hidden bg-card border border-border/70 shadow-xs transition-all duration-300 group-hover:-translate-y-1.5 group-hover:border-primary/50 group-hover:shadow-xl">
           {/* Image container with 3:4 aspect ratio */}
           <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted">
             {imageError ? (
@@ -97,53 +94,38 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
                 alt={member.name}
                 fill
                 onError={() => setImageError(true)}
-                className="object-cover object-top transition-all duration-500 group-hover:scale-105"
+                className="object-cover object-top transition-transform duration-500 ease-out group-hover:scale-105"
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 loading="lazy"
               />
             )}
 
-            {/* Photo contrast overlay */}
-            <motion.div
-              animate={{ opacity: isHovered ? 0.9 : 0.75 }}
-              transition={{ duration: 0.2 }}
-              className="absolute inset-0 bg-black/60"
-            />
+            {/* Bottom gradient scrim: keeps the image/face clearly visible while ensuring text readability */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent/10 transition-opacity duration-300 group-hover:from-black/95 group-hover:via-black/45" />
 
-            {/* Hover state: Show description */}
-            <AnimatePresence>
-              {isHovered && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 20 }}
-                  transition={{ duration: 0.25, ease: ease.out }}
-                  className="absolute inset-0 flex items-center justify-center p-6 bg-background/90"
-                >
-                  <p className="text-sm text-white/90 text-center leading-relaxed">
-                    {member.description}
-                  </p>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+            {/* View profile indicator (top right badge) */}
+            <div className="absolute top-4 right-4 z-20 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-white text-xs font-semibold opacity-0 -translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">
+              <span>View profile</span>
+              <ArrowUpRight className="size-3.5" />
+            </div>
 
-          {/* Info overlay (always visible) */}
-          <div className="absolute bottom-0 inset-x-0 p-5 lg:p-6">
-            <motion.div
-              animate={{ y: isHovered ? -4 : 0 }}
-              transition={{ duration: 0.3, ease: ease.out }}
-            >
-              <h3 className="text-xl lg:text-2xl font-bold text-white leading-tight mb-1">
+            {/* Bottom info content overlay */}
+            <div className="absolute bottom-0 inset-x-0 p-5 lg:p-6 z-20 flex flex-col justify-end">
+              <h3 className="text-xl lg:text-2xl font-bold text-white leading-tight mb-1 transition-colors group-hover:text-white">
                 {member.name}
               </h3>
-              <p className="text-sm text-white/75 font-medium mb-3">
+              <p className="text-sm text-primary font-semibold mb-2">
                 {member.role}
+              </p>
+
+              {/* Description preview */}
+              <p className="text-xs text-white/80 line-clamp-2 leading-relaxed transition-colors duration-300 group-hover:text-white/95">
+                {member.description}
               </p>
 
               {/* Social links */}
               {member.socials && Object.keys(member.socials).length > 0 && (
-                <div className="flex items-center gap-2">
+                <div className="mt-3 flex items-center gap-2">
                   {Object.entries(member.socials).map(([platform, href]) =>
                     href ? (
                       <SocialIcon key={platform} platform={platform} href={href} />
@@ -151,18 +133,7 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
                   )}
                 </div>
               )}
-            </motion.div>
-
-            {/* View profile indicator */}
-            <motion.div
-              initial={{ opacity: 0, x: -8 }}
-              animate={{ opacity: isHovered ? 1 : 0, x: isHovered ? 0 : -8 }}
-              transition={{ duration: 0.2 }}
-              className="absolute top-5 right-5 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-background/20 border border-white/20 text-white text-xs font-semibold"
-            >
-              View profile
-              <ArrowUpRight className="size-3.5" />
-            </motion.div>
+            </div>
           </div>
         </div>
       </Link>

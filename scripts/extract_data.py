@@ -76,7 +76,7 @@ decode_story_cards = [
   },
   {
     "id": "beta-intro",
-    "title": "Meet BETA! 🌟",
+    "title": "Meet BETA! 🚀",
     "subtitle": "The Big Plan for Kenya",
     "hook": "Hook: Five pillars, one national game plan.",
     "emoji": "🚀",

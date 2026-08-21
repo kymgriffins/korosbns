@@ -14,7 +14,6 @@ import {
   Smartphone,
   Zap,
   TrendingUp,
-  Sparkles,
   Layers,
 } from "lucide-react";
 import { TrendBadge } from "./TrendBadge";
@@ -60,7 +59,7 @@ export function DataConsumedSection({ data, period }: Props) {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold mb-3">
-              <Sparkles className="size-3.5" />
+              <BarChart3 className="size-3.5" />
               <span>Data Consumed & Interpreted</span>
             </div>
             <h2 className="text-2xl md:text-3xl font-bold font-heading tracking-tight">

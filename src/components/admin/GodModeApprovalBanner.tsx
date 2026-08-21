@@ -13,7 +13,6 @@ import {
   Share2,
   Lock,
   Key,
-  Sparkles,
 } from "lucide-react";
 import {
   godModeStore,
@@ -159,7 +158,7 @@ export function GodModeApprovalBanner({ currentEmail = GOD_MODE_EMAIL, onStateCh
       {activeTab === "submit" ? (
         <form onSubmit={handleCreateNewRequest} className="space-y-4 p-4 rounded-xl bg-muted/30 border border-border/60">
           <div className="text-xs font-bold text-foreground flex items-center gap-1.5">
-            <Sparkles className="size-3.5 text-primary" />
+            <Plus className="size-3.5 text-primary" />
             <span>Simulate User CRUD Change Request (Submitted to {GOD_MODE_EMAIL} for Approval)</span>
           </div>
 

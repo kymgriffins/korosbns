@@ -5,7 +5,7 @@ import Wrapper from '@/components/global/wrapper';
 import SectionBadge from '@/components/ui/section-badge';
 import { motion } from 'motion/react';
 import Link from 'next/link';
-import { Users, Calendar, FileText, Zap, ArrowRight, Sparkles } from 'lucide-react';
+import { Users, Calendar, FileText, Zap, ArrowRight } from 'lucide-react';
 import { AnimatedTooltip } from '@/components/ui/animated-tooltip';
 import { cn } from '@/utils';
 import { Button } from "@/components/ui/button";

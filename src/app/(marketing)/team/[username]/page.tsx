@@ -13,7 +13,6 @@ import {
   Mail,
   Compass,
   Layers,
-  Sparkles,
   MapPin,
   Building2,
   Share2,
@@ -306,7 +305,7 @@ function TeamMemberProfile({ member }: { member: OrgTeamMember }) {
             {member.focusAreas && member.focusAreas.length > 0 && (
               <section className="space-y-4 pt-6 border-t border-border/40">
                 <h2 className="text-xs font-bold uppercase tracking-widest text-primary flex items-center gap-2">
-                  <Sparkles className="size-3.5" />
+                  <Layers className="size-3.5" />
                   <span>Focus &amp; Domain Expertise</span>
                 </h2>
 

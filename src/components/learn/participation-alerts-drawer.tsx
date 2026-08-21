@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
   Bell, FileText, Send, CheckCircle2, ChevronRight, X,
-  Copy, MessageSquare, AlertTriangle, Sparkles, RefreshCw
+  Copy, MessageSquare, AlertTriangle, RefreshCw
 } from "lucide-react";
 import { cn } from "@/utils";
 
@@ -238,7 +238,7 @@ Submitted By: Anonymized Citizen (${profile.pseudoName})
                 <>Generating Draft...</>
               ) : (
                 <>
-                  <Sparkles className="size-4 fill-current" /> Generate AI Submission Draft
+                  <FileText className="size-4" /> Generate AI Submission Draft
                 </>
               )}
             </Button>

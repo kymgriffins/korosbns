@@ -10,7 +10,7 @@ import {
   ExternalLink,
   FileText,
   Search,
-  Sparkles,
+  Play,
   X,
 } from "lucide-react";
 
@@ -329,7 +329,7 @@ export function VideoGallery() {
             <div className="min-w-0 space-y-1">
               <div className="flex items-center gap-2">
                 <Badge variant="default" className="gap-1 text-[10px]">
-                  <Sparkles className="size-3" />
+                  <Play className="size-3 fill-current" />
                   Current series
                 </Badge>
                 {currentSeries.isBps ? (

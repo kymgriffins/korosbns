@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Mail, Send, CheckCircle2, Sparkles, PhoneCall } from "lucide-react";
+import { Mail, Send, CheckCircle2, PhoneCall } from "lucide-react";
 import { LANDING_SECTION_SURFACE, LandingContent, LandingSection, LandingSectionHeader } from "@/layouts/landing-section";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -94,7 +94,7 @@ export function ProgrammesContactSection() {
             <div className="flex flex-col justify-between rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/10 via-card to-card p-6 shadow-sm md:col-span-5 md:p-8">
               <div>
                 <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/15 px-3 py-1 text-xs font-semibold text-primary mb-3">
-                  <Sparkles className="size-3.5" />
+                  <Mail className="size-3.5" />
                   <span>Stay Informed</span>
                 </div>
                 <h3 className="text-xl font-bold text-foreground">

@@ -144,7 +144,7 @@ export const userData: UserDataStore = {
                 level: 8,
                 streak_days: 28,
                 badges: [
-                  { slug: "leadership", name: "Executive Leadership", icon: "⭐" },
+                  { slug: "leadership", name: "Executive Leadership", icon: "🏛️" },
                   { slug: "budget-analyst", name: "Certified Fiscal Analyst", icon: "📊" },
                   { slug: "civic-champion", name: "Civic Champion", icon: "🏆" },
                 ],

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import {
   Flame,
-  Sparkles,
+  Zap,
   Award,
   Globe,
   Trophy,
@@ -474,7 +474,7 @@ export function ProfileView({
           />
         ) : (
           <div className="flex flex-col justify-center rounded-2xl border border-dashed border-border/60 bg-muted/10 px-6 py-10 text-center">
-            <Sparkles className="mx-auto mb-3 size-8 text-muted-foreground/50" />
+            <Zap className="mx-auto mb-3 size-8 text-muted-foreground/50" />
             <p className="text-sm font-semibold">XP history</p>
             <p className="mt-1 text-xs text-muted-foreground">
               Complete a lesson to start earning XP — your chart will appear here.
@@ -489,7 +489,7 @@ export function ProfileView({
         className="overflow-hidden rounded-2xl border border-border/70 bg-gradient-to-b from-muted/40 to-transparent"
       >
         <div className="grid grid-cols-2 divide-x divide-y divide-border/60 sm:grid-cols-4 sm:divide-y-0">
-          <ScoreStat label="Total XP" value={points.toLocaleString()} icon={Sparkles} />
+          <ScoreStat label="Total XP" value={points.toLocaleString()} icon={Zap} />
           <ScoreStat label="Day streak" value={streak} icon={Flame} />
           <ScoreStat label="Badges" value={badgeStatCount} icon={Award} />
           <ScoreStat label="Level" value={level} icon={Trophy} />

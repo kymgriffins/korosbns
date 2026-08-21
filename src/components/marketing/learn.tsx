@@ -524,7 +524,7 @@ export default function Learn() {
               transition={{ duration: 2, repeat: Infinity, delay: i * 0.1 }}
               className="absolute text-2xl"
             >
-              {["🎉", "⭐", "💫", "✨", "🎊"][i % 5]}
+              {["🎉", "🎈", "🎊", "🏆", "🎯"][i % 5]}
             </motion.div>
           ))}
         </div>
