@@ -86,8 +86,74 @@ function periodValue(
   all: keyof AdminAnalyticsSummary,
   period: Period,
 ): number {
-  const map: Record<Period, keyof AdminAnalyticsSummary> = { today, "7d": _7d, "30d": _30d, all };
-  return kpiValue(s, map[period]);
+  if (!s) return 0;
+  if (period === "today") return kpiValue(s, today);
+  if (period === "7d") return kpiValue(s, _7d);
+  if (period === "30d") return kpiValue(s, _30d);
+  if (period === "90d") {
+    if (today === "visitors_today") {
+      return kpiValue(s, "visitors_period") || kpiValue(s, "unique_visitors") || kpiValue(s, "visitors_30d");
+    }
+    if (today === "pageviews_today") {
+      return kpiValue(s, "pageviews_period") || kpiValue(s, "total_pageviews") || kpiValue(s, "pageviews_30d");
+    }
+    if (today === "users_new_today") {
+      return kpiValue(s, "users_new_period") || kpiValue(s, "users_new_30d");
+    }
+    if (today === "content_published_today") {
+      return kpiValue(s, "content_published_period") || kpiValue(s, "content_published_30d");
+    }
+    if (today === "users_active_7d") return kpiValue(s, "users_active_30d");
+    return kpiValue(s, _30d);
+  }
+  if (period === "month") {
+    if (today === "visitors_today") {
+      return kpiValue(s, "visitors_period") || kpiValue(s, "unique_visitors");
+    }
+    if (today === "pageviews_today") {
+      return kpiValue(s, "pageviews_period") || kpiValue(s, "total_pageviews");
+    }
+    if (today === "users_new_today") {
+      return kpiValue(s, "users_new_period");
+    }
+    if (today === "content_published_today") {
+      return kpiValue(s, "content_published_period");
+    }
+    if (today === "users_active_7d") return kpiValue(s, "users_active_30d");
+    return kpiValue(s, _30d);
+  }
+  if (period === "all") {
+    if (today === "visitors_today") {
+      return kpiValue(s, "visitors_all") || kpiValue(s, "unique_visitors");
+    }
+    if (today === "pageviews_today") {
+      return kpiValue(s, "pageviews_all") || kpiValue(s, "total_pageviews");
+    }
+    if (today === "users_new_today") {
+      return kpiValue(s, "users_new_all") || kpiValue(s, "total_users");
+    }
+    if (today === "content_published_today") {
+      return kpiValue(s, "content_published_all") || kpiValue(s, "total_content");
+    }
+    if (today === "users_active_7d") return kpiValue(s, "total_users");
+    return kpiValue(s, all);
+  }
+  return kpiValue(s, _30d);
+}
+
+function formatChartTick(v: string, period: Period): string {
+  if (!v) return "";
+  if (period === "today") {
+    return v.length > 10 ? v.slice(11, 16) : v;
+  }
+  try {
+    const parts = v.split("-");
+    if (parts.length >= 3) {
+      const d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+      return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    }
+  } catch {}
+  return v.slice(5);
 }
 
 function MarketingTrafficCards({ pages }: { pages: Array<{ path: string; views?: number; visitors?: number }> }) {
@@ -157,18 +223,22 @@ export default function AdminAnalyticsPage() {
   const [summary, setSummary] = useState<AdminAnalyticsSummary | null>(null);
   const [moduleAnalytics, setModuleAnalytics] = useState<ModuleAnalytics | null>(null);
   const [period, setPeriod] = useState<Period>("30d");
+  const [selectedMonth, setSelectedMonth] = useState<string>("");
 
-  const fetchData = useCallback(async (p: Period) => {
+  const fetchData = useCallback(async (p: Period, monthVal?: string) => {
     setLoading(true);
     setFetchError(null);
     try {
       const [summaryRes, moduleRes] = await Promise.allSettled([
-        adminAnalyticsApi.summary(p),
+        adminAnalyticsApi.summary(p, { month: p === "month" ? monthVal : undefined }),
         adminAnalyticsApi.moduleAnalytics({ period: "weekly" }),
       ]);
 
       if (summaryRes.status === "fulfilled") {
         setSummary(summaryRes.value);
+        if (summaryRes.value.selected_month && !selectedMonth) {
+          setSelectedMonth(summaryRes.value.selected_month);
+        }
       } else {
         setSummary(null);
         setFetchError("Failed to load analytics summary from the API.");
@@ -186,26 +256,42 @@ export default function AdminAnalyticsPage() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [selectedMonth]);
 
   useEffect(() => {
-    void fetchData(period);
-  }, [period, fetchData]);
+    void fetchData(period, selectedMonth);
+  }, [period, selectedMonth, fetchData]);
 
-  const visitorTotal = periodValue(summary, "visitors_today", "visitors_7d", "visitors_30d", "total_users", period);
-  const pageviewTotal = periodValue(summary, "pageviews_today", "pageviews_7d", "pageviews_30d", "total_content", period);
-  const newUsers = periodValue(summary, "users_new_today", "users_new_7d", "users_new_30d", "total_users", period);
+  const handlePeriodChange = (newPeriod: Period) => {
+    setPeriod(newPeriod);
+  };
+
+  const handleMonthChange = (newMonth: string) => {
+    setSelectedMonth(newMonth);
+    setPeriod("month");
+  };
+
+  const visitorTotal = periodValue(summary, "visitors_today", "visitors_7d", "visitors_30d", "visitors_all", period);
+  const pageviewTotal = periodValue(summary, "pageviews_today", "pageviews_7d", "pageviews_30d", "pageviews_all", period);
+  const newUsers = periodValue(summary, "users_new_today", "users_new_7d", "users_new_30d", "users_new_all", period);
   const contentPublished = periodValue(
     summary,
     "content_published_today",
     "content_published_7d",
     "content_published_30d",
-    "total_content",
+    "content_published_all",
     period,
   );
 
+  const activeMonthObj = summary?.available_months?.find((m) => m.value === selectedMonth);
   const periodLabel =
-    period === "today" ? "today" : period === "all" ? "all time" : `last ${period}`;
+    period === "today"
+      ? "today"
+      : period === "all"
+        ? "all time"
+        : period === "month"
+          ? (activeMonthObj?.label ?? selectedMonth ?? "month")
+          : `last ${period}`;
 
   const kpiStrip = [
     {
@@ -242,10 +328,10 @@ export default function AdminAnalyticsPage() {
   const secondaryKpis = [
     {
       label: "Active users",
-      value: periodValue(summary, "users_active_7d", "users_active_7d", "users_active_30d", "total_users", period),
+      value: periodValue(summary, "users_active_7d", "users_active_7d", "users_active_30d", "users_new_all", period),
       icon: Activity,
       color: "text-amber-500",
-      sub: period === "today" ? "7d proxy" : period,
+      sub: period === "today" ? "7d proxy" : periodLabel,
     },
     {
       label: "Avg session",
@@ -322,6 +408,75 @@ export default function AdminAnalyticsPage() {
     [summary],
   );
 
+  const exportCsv = useCallback(() => {
+    if (!summary) return;
+    const rows: string[][] = [
+      ["Metric", "Value"],
+      ["Period", periodLabel],
+      ["Visitors", String(visitorTotal)],
+      ["Pageviews", String(pageviewTotal)],
+      ["New Users", String(newUsers)],
+      ["Content Published", String(contentPublished)],
+      ["Bounce Rate", `${summary.bounce_rate ?? 0}%`],
+      ["Avg Session Duration (s)", String(summary.avg_session_seconds ?? 0)],
+      [],
+      ["Date", "Visitors", "Pageviews"],
+      ...dailyData.map((d) => [d.date, String(d.count), String(d.pageviews)]),
+      [],
+      ["Top Page Path", "Views", "Visitors", "Share %"],
+      ...topPages.map((p) => [
+        p.path,
+        String(p.pageviews ?? p.views ?? 0),
+        String(p.visitors ?? 0),
+        `${p.percentage ?? 0}%`,
+      ]),
+      [],
+      ["Traffic Source", "Visitors", "Share %"],
+      ...sourceData.map((s) => [s.source, String(s.count), `${s.percentage ?? 0}%`]),
+    ];
+
+    const csvContent =
+      "data:text/csv;charset=utf-8," +
+      rows.map((r) => r.map((cell) => `"${(cell || "").replace(/"/g, '""')}"`).join(",")).join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute(
+      "download",
+      `bns-analytics-${period}-${new Date().toISOString().slice(0, 10)}.csv`,
+    );
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }, [
+    summary,
+    period,
+    periodLabel,
+    visitorTotal,
+    pageviewTotal,
+    newUsers,
+    contentPublished,
+    dailyData,
+    topPages,
+    sourceData,
+  ]);
+
+  const exportJson = useCallback(() => {
+    if (!summary) return;
+    const blob = new Blob([JSON.stringify(summary, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute(
+      "download",
+      `bns-analytics-${period}-${new Date().toISOString().slice(0, 10)}.json`,
+    );
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }, [summary, period]);
+
   const deviceIcons: Record<string, typeof Smartphone> = {
     Mobile: Smartphone,
     Desktop: Monitor,
@@ -348,8 +503,13 @@ export default function AdminAnalyticsPage() {
         </div>
         <AnalyticsToolbar
           period={period}
-          onPeriodChange={setPeriod}
-          onRefresh={() => void fetchData(period)}
+          onPeriodChange={handlePeriodChange}
+          availableMonths={summary?.available_months}
+          selectedMonth={selectedMonth}
+          onMonthChange={handleMonthChange}
+          onRefresh={() => void fetchData(period, selectedMonth)}
+          onExportCsv={exportCsv}
+          onExportJson={exportJson}
           loading={loading}
         />
       </div>
@@ -433,7 +593,7 @@ export default function AdminAnalyticsPage() {
                         tickLine={false}
                         tickMargin={8}
                         tick={{ fontSize: 10 }}
-                        tickFormatter={(v: string) => v.slice(5)}
+                        tickFormatter={(v: string) => formatChartTick(v, period)}
                       />
                       <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
                       <Area
@@ -737,7 +897,7 @@ export default function AdminAnalyticsPage() {
                       tickLine={false}
                       tickMargin={8}
                       tick={{ fontSize: 10 }}
-                      tickFormatter={(v: string) => v.slice(5)}
+                      tickFormatter={(v: string) => formatChartTick(v, period)}
                     />
                     <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
                     <Area

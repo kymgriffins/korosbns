@@ -85,6 +85,42 @@ describe("AdminAnalyticsPage", () => {
     expect(screen.getAllByText("72.5%").length).toBeGreaterThan(0);
   });
 
+  it("renders correct all-time KPIs when All Time is selected", async () => {
+    mockSummary.mockResolvedValue({
+      total_users: 150,
+      total_content: 14,
+      visitors_today: 10,
+      visitors_7d: 50,
+      visitors_30d: 200,
+      visitors_all: 1250,
+      pageviews_today: 30,
+      pageviews_7d: 150,
+      pageviews_30d: 600,
+      pageviews_all: 5400,
+      unique_visitors: 1250,
+      total_pageviews: 5400,
+      users_new_all: 150,
+      content_published_all: 14,
+      available_months: [{ value: "2026-08", label: "August 2026" }],
+      daily_visitors: [{ date: "2026-08-01", count: 125 }],
+      top_pages: [{ path: "/learn", views: 200, pageviews: 200 }],
+      device_breakdown: [{ device_type: "Desktop", percentage: 70 }],
+      traffic_sources: [{ source: "Direct", count: 100, percentage: 80 }],
+    });
+
+    const { fireEvent } = await import("@testing-library/react");
+
+    render(<AdminAnalyticsPage />);
+    expect(await screen.findByText("First-party tracker")).toBeInTheDocument();
+
+    const allTimeBtn = screen.getByRole("button", { name: "All Time" });
+    fireEvent.click(allTimeBtn);
+
+    // Verify All Time displays real pageviews (5,400) and visitors (1,250), not total_content (14)
+    expect(await screen.findByText("1,250")).toBeInTheDocument();
+    expect(await screen.findByText("5,400")).toBeInTheDocument();
+  });
+
   it("shows an error when the summary API fails", async () => {
     mockSummary.mockRejectedValue(new Error("network"));
     mockModuleAnalytics.mockResolvedValue({

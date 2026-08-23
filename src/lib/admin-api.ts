@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Canonical Django admin API client (P0.6).
  * Consumed by `apps/admin` and `src/app/admin` via `@/lib/admin-api`
  * (apps/admin tsconfig falls through `./src/*` → `../../src/*`).
@@ -1465,7 +1465,18 @@ export type AdminAnalyticsSummary = {
   content_published_today: number;
   content_published_7d: number;
   content_published_30d: number;
+  content_published_all?: number;
+  content_published_period?: number;
   content_drafts: number;
+
+  available_months?: { value: string; label: string; year: number; month: number }[];
+  selected_month?: string | null;
+  visitors_all?: number;
+  visitors_period?: number;
+  pageviews_all?: number;
+  pageviews_period?: number;
+  users_new_all?: number;
+  users_new_period?: number;
 
   monthly_trends?: { month: string; tasks_created: number; new_users: number }[];
   total_tasks?: number;
@@ -1544,9 +1555,13 @@ export type ModuleAnalytics = {
 };
 
 export const adminAnalyticsApi = {
-  summary: (period?: string) => {
-    const qs = period ? `?period=${period}` : "";
-    return adminFetch<AdminAnalyticsSummary>(`/analytics/summary/${qs}`);
+  summary: (period?: string, options?: { month?: string; refresh?: boolean }) => {
+    const q = new URLSearchParams();
+    if (period) q.set("period", period);
+    if (options?.month) q.set("month", options.month);
+    if (options?.refresh !== undefined) q.set("refresh", options.refresh ? "1" : "0");
+    const qs = q.toString();
+    return adminFetch<AdminAnalyticsSummary>(`/analytics/summary/${qs ? `?${qs}` : ""}`);
   },
   dashboard: () => adminFetch<AdminDashboardStats>("/analytics/dashboard/"),
   moduleAnalytics: (params?: { period?: "daily" | "weekly"; module_slug?: string }) => {
