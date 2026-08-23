@@ -53,8 +53,8 @@ export function ThemeSwitcher() {
       aria-label={`Current theme: ${activeMode}. Click to cycle themes`}
     >
       {activeMode === "system" && <Monitor className="size-4 text-primary" />}
-      {activeMode === "dark" && <Moon className="size-4 text-foreground" />}
-      {activeMode === "light" && <Sun className="size-4 text-foreground" />}
+      {activeMode === "dark" && <Moon className="size-4 text-sky-400" />}
+      {activeMode === "light" && <Sun className="size-4 text-amber-500" />}
     </Button>
   );
 }

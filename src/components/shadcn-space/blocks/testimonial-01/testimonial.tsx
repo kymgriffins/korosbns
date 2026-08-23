@@ -149,11 +149,11 @@ const Testimonials = () => {
                   </p>
                 </div>
                 <img
-                  src="/images/avatars/team/Movine%20Omondi_HeadShot.jpg"
-                  alt="Movine Omondi - Executive Director, Budget Ndio Story"
+                  src="/images/avatars/movine/129A4293.jpg"
+                  alt="Movine Omondi engaging with community and students - Budget Ndio Story"
                   width={"100%"}
                   height={220}
-                  className="rounded-xl object-cover h-52 w-full object-top"
+                  className="rounded-xl object-cover h-52 w-full object-center"
                 />
               </CardContent>
             </Card>

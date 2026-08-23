@@ -41,7 +41,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
         )}
         aria-hidden
       >
-        <Sun className="size-4 text-muted-foreground" />
+        <Sun className="size-4 text-amber-500/70" />
       </span>
     );
   }
@@ -78,7 +78,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
             transition={iconTransition}
             className="absolute inset-0 flex items-center justify-center"
           >
-            <Sun className="size-4 text-foreground" />
+            <Sun className="size-4 text-amber-500 dark:text-amber-400" />
           </motion.span>
         ) : null}
         {theme === "dark" ? (
@@ -90,7 +90,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
             transition={iconTransition}
             className="absolute inset-0 flex items-center justify-center"
           >
-            <Moon className="size-4 text-foreground" />
+            <Moon className="size-4 text-sky-400 dark:text-sky-300" />
           </motion.span>
         ) : null}
         {theme === "system" || !theme ? (
