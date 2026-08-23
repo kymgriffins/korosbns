@@ -12,8 +12,7 @@ import {
   SIDEBAR_VARIANT_VALUES,
 } from "@/lib/preferences/layout";
 import { THEME_MODE_VALUES, THEME_PRESET_VALUES } from "@/lib/preferences/theme";
-import { applyThemeMode, subscribeToSystemTheme } from "@/lib/preferences/theme-utils";
-
+import { useTheme } from "next-themes";
 import { createPreferencesStore, type PreferencesState } from "./preferences-store";
 
 const PreferencesStoreContext = createContext<StoreApi<PreferencesState> | null>(null);
@@ -64,9 +63,11 @@ export const PreferencesStoreProvider = ({
   sidebarCollapsible?: PreferencesState["sidebarCollapsible"];
   isSynced?: boolean;
 }) => {
+  const { theme, setTheme, resolvedTheme } = useTheme();
+
   const [store] = useState<StoreApi<PreferencesState>>(() =>
     createPreferencesStore({
-      themeMode,
+      themeMode: (theme as PreferencesState["themeMode"]) || themeMode,
       themePreset,
       font,
       contentLayout,
@@ -92,34 +93,35 @@ export const PreferencesStoreProvider = ({
     }));
   }, [store, initialSynced]);
 
+  // Sync next-themes -> PreferencesStore
   useEffect(() => {
-    let unsubscribeMedia: (() => void) | undefined;
+    if (theme) {
+      const mode = (THEME_MODE_VALUES.includes(theme as any) ? theme : "system") as PreferencesState["themeMode"];
+      const resolved = (resolvedTheme === "dark" ? "dark" : "light") as PreferencesState["resolvedThemeMode"];
+      store.setState((prev) => ({
+        ...prev,
+        themeMode: mode,
+        resolvedThemeMode: resolved,
+      }));
+      document.documentElement.setAttribute("data-theme-mode", mode);
+    }
+  }, [theme, resolvedTheme, store]);
 
-    const applyFromMode = (mode: PreferencesState["themeMode"]) => {
-      unsubscribeMedia?.();
-      const resolved = applyThemeMode(mode);
-      store.setState((prev) => ({ ...prev, resolvedThemeMode: resolved }));
-
-      if (mode === "system") {
-        unsubscribeMedia = subscribeToSystemTheme(() => {
-          const next = applyThemeMode("system");
-          store.setState((prev) => ({ ...prev, resolvedThemeMode: next }));
-        });
-      }
-    };
-
-    const startMode = domSnapshotRef.current?.themeMode ?? store.getState().themeMode;
-    applyFromMode(startMode);
-
+  // Sync PreferencesStore -> next-themes
+  useEffect(() => {
     const unsubscribeStore = store.subscribe((s, p) => {
-      if (s.themeMode !== p.themeMode) applyFromMode(s.themeMode);
+      if (s.themeMode !== p.themeMode) {
+        if (s.themeMode !== theme) {
+          setTheme(s.themeMode);
+        }
+        document.documentElement.setAttribute("data-theme-mode", s.themeMode);
+      }
     });
 
     return () => {
-      unsubscribeMedia?.();
       unsubscribeStore();
     };
-  }, [store]);
+  }, [store, theme, setTheme]);
 
   return <PreferencesStoreContext.Provider value={store}>{children}</PreferencesStoreContext.Provider>;
 };

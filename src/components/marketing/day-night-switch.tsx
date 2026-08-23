@@ -1,9 +1,32 @@
 "use client";
 
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
+
 export default function DayNightSwitch() {
+  const { resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isDark = mounted && resolvedTheme === "dark";
+
+  const toggle = () => {
+    setTheme(isDark ? "light" : "dark");
+  };
+
   return (
     <div className="toggleWrapper">
-      <input className="input" id="dn" type="checkbox" />
+      <input
+        className="input"
+        id="dn"
+        type="checkbox"
+        checked={isDark}
+        onChange={toggle}
+        aria-label="Toggle theme mode"
+      />
       <label className="toggle" htmlFor="dn">
         <span className="toggle__handler">
           <span className="crater crater--1" />
