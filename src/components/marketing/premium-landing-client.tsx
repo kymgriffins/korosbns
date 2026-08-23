@@ -12,11 +12,16 @@ const LandingYoutube = dynamic(
   },
 );
 
-const ProgrammesSection = dynamic(
-  () =>
-    import("@/components/marketing/programmes-section").then((m) => ({
-      default: m.ProgrammesSection,
-    })),
+const ImpactProofBanner = dynamic(
+  () => import("@/components/marketing/impact-proof-banner"),
+  {
+    ssr: false,
+    loading: () => <div className="h-48 w-full animate-pulse bg-muted" />,
+  },
+);
+
+const DocumentaryMethodPillars = dynamic(
+  () => import("@/components/marketing/documentary-method-pillars"),
   {
     ssr: false,
     loading: () => <div className="h-96 w-full animate-pulse bg-muted" />,
@@ -31,19 +36,27 @@ const PartnersMarquee = dynamic(
   },
 );
 
+const BudgetDecoderPreview = dynamic(
+  () => import("@/components/marketing/budget-decoder-preview"),
+  {
+    ssr: false,
+    loading: () => <div className="h-96 w-full animate-pulse bg-slate-950" />,
+  },
+);
+
+const TestimonialsSection = dynamic(
+  () => import("@/components/shadcn-space/blocks/testimonial-01/testimonial"),
+  {
+    ssr: false,
+    loading: () => <div className="h-96 w-full animate-pulse bg-muted" />,
+  },
+);
+
 const LandingTeam = dynamic(
   () => import("@/components/marketing/landing-team"),
   {
     ssr: false,
     loading: () => <div className="h-96 w-full animate-pulse bg-background" />,
-  },
-);
-
-const TimelineSection = dynamic(
-  () => import("@/components/shadcn-space/blocks/timeline-01"),
-  {
-    ssr: false,
-    loading: () => <div className="h-96 w-full animate-pulse bg-muted" />,
   },
 );
 
@@ -58,19 +71,16 @@ const BNSStudioSection = dynamic(
   },
 );
 
+const MovementTicker = dynamic(
+  () => import("@/components/marketing/movement-ticker"),
+  { ssr: false },
+);
+
 const SocialsSection = dynamic(
   () => import("@/components/marketing/socials-section"),
   {
     ssr: false,
     loading: () => <div className="h-64 w-full animate-pulse bg-muted" />,
-  },
-);
-
-const TestimonialsSection = dynamic(
-  () => import("@/components/shadcn-space/blocks/testimonial-01/testimonial"),
-  {
-    ssr: false,
-    loading: () => <div className="h-96 w-full animate-pulse bg-muted" />,
   },
 );
 
@@ -80,22 +90,30 @@ const NewsletterPopup = dynamic(
 );
 
 /**
- * Homepage spine:
- * Hero (TikTok) → Story → Programmes → Partners → Team → Timeline →
- * Testimonials → Studios (single) → Socials
- * (Field gallery temporarily hidden)
+ * 9-Chapter Documentary Spine:
+ * 01. Hook (Hero)
+ * 02. Moment (Editorial Prologue Before Budget Day)
+ * 03. Impact Proof (Verified stats + OBS context)
+ * 04. Method (STORY · TRACK · PARTICIPATE)
+ * 05. Partners (Coalition)
+ * 06. Intelligence (The Budget Decoded — Dark Engine)
+ * 07. Public Voices (What Kenyans Are Saying)
+ * 08. People (Investigators & Strategists)
+ * 09. Field & Movement (Studios, Ticker, Socials, Community)
  */
 export default function PremiumLandingClient() {
   return (
     <>
       <LandingHero />
       <LandingYoutube />
-      <ProgrammesSection />
+      <ImpactProofBanner />
+      <DocumentaryMethodPillars />
       <PartnersMarquee />
-      <LandingTeam />
-      <TimelineSection />
+      <BudgetDecoderPreview />
       <TestimonialsSection />
+      <LandingTeam />
       <BNSStudioSection />
+      <MovementTicker />
       <SocialsSection />
       <NewsletterPopup />
     </>

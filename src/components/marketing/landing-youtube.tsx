@@ -21,11 +21,21 @@ export default function LandingYoutube() {
   return (
     <LandingSection>
       <div className="mb-8 grid items-center gap-8 md:mb-10 md:grid-cols-12 md:gap-10">
-        <GsapReveal className="flex flex-col gap-5 md:col-span-5">
-          <h2 className={T.sectionTitle}>{intro.title}</h2>
-          <p className={cn(T.lead, "max-w-md text-base text-foreground/75")}>{intro.body}</p>
+        <GsapReveal className="flex flex-col gap-4 md:col-span-5">
+          <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
+            Prologue · Where It Starts
+          </span>
+          <h2 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+            Before Budget Day
+          </h2>
+          <p className="text-sm font-semibold text-foreground/90 sm:text-base leading-snug">
+            The numbers arrive long before the speech.
+          </p>
+          <p className={cn(T.lead, "max-w-md text-xs sm:text-sm text-foreground/75 leading-relaxed")}>
+            We track what happens before, during, and after — from backroom parliamentary estimates to county hearing halls, bringing you inside the real story of Kenya&apos;s money.
+          </p>
           <LandingSectionCta className="mt-0 md:mt-2">
-            <LandingSeeMore href={intro.cta.href} label="See more" />
+            <LandingSeeMore href="/budgetnews" label="Watch the series" />
           </LandingSectionCta>
         </GsapReveal>
         <GsapStaggerReveal className="grid grid-cols-2 gap-3 md:col-span-7 md:gap-4">

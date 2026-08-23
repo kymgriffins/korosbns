@@ -25,20 +25,26 @@ export default function LandingHero() {
         <GsapHeroChoreography className="grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
           <div
             data-gsap-hero-content
-            className="flex flex-col gap-5 lg:col-span-6"
+            className="flex flex-col gap-6 lg:col-span-6"
           >
-            <span className="font-heading text-sm font-semibold text-foreground">
-              {hero.brand}
-            </span>
-            <h1 id="landing-hero-heading" className={cn(T.heroTitle, "max-w-xl text-balance")}>
-              {hero.headlineBefore}{" "}
-              <span className={T.highlight}>{hero.headlineHighlight}</span>
+            <div className="inline-flex w-fit items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-primary">
+              <span>Civic Media & Budget Intelligence</span>
+            </div>
+            <h1 id="landing-hero-heading" className={cn(T.heroTitle, "max-w-xl text-balance text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.1] tracking-tight")}>
+              Follow the budget.{" "}
+              <span className={cn(T.highlight, "bg-gradient-to-r from-primary via-emerald-400 to-primary bg-clip-text text-transparent")}>
+                Find the story.
+              </span>
             </h1>
-            <p className={cn(T.lead, "max-w-lg text-base text-foreground/75")}>{hero.body}</p>
-            <LandingSectionCta className="mt-2 md:mt-4">
-              <LandingSeeMore href={hero.primaryCta.href} label={hero.primaryCta.label} />
-              <Button asChild variant="outline" className={T.btnPrimary}>
-                <Link href={hero.secondaryCta.href}>{hero.secondaryCta.label}</Link>
+            <p className={cn(T.lead, "max-w-lg text-base sm:text-lg text-foreground/80 leading-relaxed")}>
+              Kenya’s budget is a story of where public money goes, who gets heard, and what gets built. We follow the numbers before, during, and after Budget Day.
+            </p>
+            <LandingSectionCta className="mt-2 flex flex-wrap items-center gap-4">
+              <Button asChild size="lg" className="rounded-full bg-primary px-7 py-6 text-sm font-bold text-primary-foreground shadow-lg hover:bg-primary/90 transition-all hover:scale-[1.02]">
+                <Link href="/reports">Follow the Budget</Link>
+              </Button>
+              <Button asChild variant="outline" size="lg" className="rounded-full border-border/80 px-7 py-6 text-sm font-bold hover:bg-muted transition-all">
+                <Link href="/budgetnews">Explore Stories</Link>
               </Button>
             </LandingSectionCta>
           </div>

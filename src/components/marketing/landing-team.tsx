@@ -18,84 +18,64 @@ import { GsapStaggerReveal } from "@/motion/gsap";
 import { cn } from "@/utils";
 
 export default function LandingTeam() {
-  const landingMembers = team.slice(0, 6);
+  const featuredMembers = team.slice(0, 3);
 
   return (
-    <LandingSection>
+    <LandingSection id="team">
       <LandingSectionHeader
-        eyebrow={landingContent.team.eyebrow}
+        eyebrow="The Investigators & Strategists"
         title={
           <>
-            {landingContent.team.titleBefore}{" "}
-            <span className={T.highlight}>{landingContent.team.titleHighlight}</span>
-            {landingContent.team.titleAfter}
+            Meet the people following the{" "}
+            <span className={T.highlight}>money</span>
           </>
         }
-        description={landingContent.team.description}
+        description="Public finance analysts, investigative storytellers, and civic organizers dedicated to demystifying Kenya's national and county budgets."
       />
 
-      <GsapStaggerReveal className="hidden gap-x-8 gap-y-12 md:grid md:grid-cols-2 lg:grid-cols-3">
-        {landingMembers.map((member) => {
+      <GsapStaggerReveal className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        {featuredMembers.map((member) => {
           const href = `/team/${slugifyName(member.name)}`;
           return (
             <Link
               key={member.name}
               data-gsap-item
               href={href}
-              className="group block rounded-3xl outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="group flex flex-col justify-between rounded-3xl border border-border/70 bg-card p-6 outline-none transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <div className="relative mb-5 aspect-[4/5] overflow-hidden rounded-3xl border border-border/40 bg-muted">
-                <Image
-                  src={member.image}
-                  alt={member.name}
-                  fill
-                  className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.03]"
-                  sizes="(max-width: 1024px) 50vw, 33vw"
-                />
-              </div>
-              <h3 className={cn(T.cardTitle, "transition-colors group-hover:text-primary")}>
-                {member.name}
-              </h3>
-              <p className={cn(T.role, "mb-3 mt-1")}>{member.role}</p>
-              <p className={T.caption}>{member.description}</p>
-            </Link>
-          );
-        })}
-      </GsapStaggerReveal>
-
-      <GsapStaggerReveal className="flex w-full flex-col gap-6 md:hidden">
-        {landingMembers.map((member) => {
-          const href = `/team/${slugifyName(member.name)}`;
-          return (
-            <Link
-              key={member.name}
-              data-gsap-item
-              href={href}
-              className="flex w-full flex-col gap-4 rounded-3xl border border-border bg-card p-5 outline-none transition-colors hover:border-primary/40 focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-border/20 bg-muted">
-                <Image
-                  src={member.image}
-                  alt={member.name}
-                  fill
-                  className="object-cover object-top"
-                  sizes="100vw"
-                />
-              </div>
               <div>
-                <h3 className={T.cardTitle}>{member.name}</h3>
-                <p className={cn(T.role, "mb-2.5 mt-0.5")}>{member.role}</p>
-                <p className={T.caption}>{member.description}</p>
+                <div className="relative mb-5 aspect-[4/5] w-full overflow-hidden rounded-2xl border border-border/40 bg-muted">
+                  <Image
+                    src={member.image}
+                    alt={member.name}
+                    fill
+                    className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                    sizes="(max-width: 1024px) 50vw, 33vw"
+                  />
+                </div>
+                <h3 className={cn(T.cardTitle, "text-xl font-bold transition-colors group-hover:text-primary")}>
+                  {member.name}
+                </h3>
+                <p className={cn(T.role, "mb-3 mt-1 text-xs font-semibold text-primary/90 uppercase tracking-wider")}>
+                  {member.role}
+                </p>
+                <p className="text-xs leading-relaxed text-muted-foreground line-clamp-3">
+                  {member.description}
+                </p>
+              </div>
+              <div className="mt-5 pt-3 border-t border-border/40 flex items-center justify-between text-xs font-semibold text-primary">
+                <span>View Profile</span>
+                <span className="transition-transform group-hover:translate-x-1">→</span>
               </div>
             </Link>
           );
         })}
       </GsapStaggerReveal>
 
-      <LandingSectionCta>
+      <LandingSectionCta className="mt-8 flex justify-center">
         <LandingSeeMore
-          href={landingContent.team.seeMoreHref}
-          label={landingContent.team.seeMoreLabel}
+          href="/team"
+          label="Meet the entire team behind the stories"
         />
       </LandingSectionCta>
     </LandingSection>
