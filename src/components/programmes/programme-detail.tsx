@@ -229,6 +229,107 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
           </aside>
         </div>
       </section>
+
+      {/* Dedicated Mashinani Live Reports & Scorecards Section */}
+      {programme.slug === "mashinani" && (
+        <section className={cn(SECTION_SHELL_PADDING, "bg-muted/10 border-b border-border/40")}>
+          <div className={cn(SECTION_SHELL_INNER, "space-y-8")}>
+            <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                  Live County Output
+                </p>
+                <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+                  BNS Mashinani Field Reports & Scorecards
+                </h2>
+                <p className="text-sm text-muted-foreground max-w-2xl mt-1">
+                  Direct intelligence from our embedded tracking cohorts in Kakamega, Kilifi, Nakuru, and Wajir. Fully verified against County Assembly Hansards and COB implementation audits.
+                </p>
+              </div>
+              <Button asChild variant="outline" className="gap-2 self-start md:self-auto">
+                <Link href="/reports">
+                  <span>Explore All Reports Bulletin</span>
+                  <ArrowRight className="size-4" />
+                </Link>
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {[
+                {
+                  code: "037",
+                  name: "Kakamega",
+                  allocation: "KES 19.45B",
+                  execution: "92.1%",
+                  focus: "Sugar belt roads (34%) & Healthcare (33.2%)",
+                  slug: "kakamega-county-budget-execution-2026",
+                },
+                {
+                  code: "003",
+                  name: "Kilifi",
+                  allocation: "KES 16.89B",
+                  execution: "89.1%",
+                  focus: "Blue Economy marine gear & UHC clinics",
+                  slug: "kilifi-county-blue-economy-devolution",
+                },
+                {
+                  code: "032",
+                  name: "Nakuru",
+                  allocation: "KES 22.18B",
+                  execution: "93.5%",
+                  focus: "CAIPs agro-industrial parks & OSR automation",
+                  slug: "nakuru-county-revenue-agro-industrial-growth",
+                },
+                {
+                  code: "008",
+                  name: "Wajir",
+                  allocation: "KES 14.25B",
+                  execution: "87.8%",
+                  focus: "Equalisation Fund (KES 1.2B) & Solar water pans",
+                  slug: "wajir-county-equalisation-fund-climate-resilience",
+                },
+              ].map((c) => (
+                <div
+                  key={c.code}
+                  className="group relative flex flex-col justify-between rounded-2xl border border-border/70 bg-card p-5 shadow-xs transition-all hover:-translate-y-1 hover:border-primary/50 hover:shadow-md"
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="flex size-7 items-center justify-center rounded-md bg-primary/10 text-xs font-black text-primary">
+                        {c.code}
+                      </span>
+                      <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full">
+                        {c.execution} Absorbed
+                      </span>
+                    </div>
+
+                    <div>
+                      <h3 className="font-heading text-lg font-bold text-foreground group-hover:text-primary transition-colors">
+                        {c.name} County
+                      </h3>
+                      <p className="font-heading text-xl font-extrabold text-foreground mt-0.5">
+                        {c.allocation}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-2 line-clamp-2">
+                        {c.focus}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-5 pt-3 border-t border-border/40">
+                    <Button asChild variant="ghost" size="sm" className="w-full justify-between p-0 h-auto text-xs font-bold text-primary group-hover:underline">
+                      <Link href={`/reports/${c.slug}`}>
+                        <span>Read Field Dossier</span>
+                        <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 }
