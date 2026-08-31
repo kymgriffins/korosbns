@@ -2,43 +2,37 @@
 
 import { useState } from "react";
 import { StudioHero } from "@/components/studio/StudioHero";
-import { StudioContentTypesOverview } from "@/components/studio/StudioContentTypesOverview";
+import { StudioContentTypesNav } from "@/components/studio/StudioContentTypesNav";
 import { StudioFeaturedWork } from "@/components/studio/StudioFeaturedWork";
-import { StudioPortfolio } from "@/components/studio/StudioPortfolio";
-import { StudioServices } from "@/components/studio/StudioServices";
+import { StudioEvidenceByType } from "@/components/studio/StudioEvidenceByType";
+import { StudioEvidenceByOrganisation } from "@/components/studio/StudioEvidenceByOrganisation";
+import { StudioEvidenceModal } from "@/components/studio/StudioEvidenceModal";
 import { StudioBookingForm } from "@/components/studio/StudioBookingForm";
 import { StudioContactCTA } from "@/components/studio/StudioContactCTA";
 import { studiosEvidenceData } from "@/data/studios-evidence";
-import type { StudioContentType } from "@/constants/bns-studio-content";
 import type { StudioProjectEvidence } from "@/data/studios-evidence";
 
 export function BNSStudioPageClient() {
   const hasFeatured = studiosEvidenceData.getFeaturedProjects().length > 0;
-  const [portfolioContentType, setPortfolioContentType] = useState<
-    StudioContentType | undefined
-  >();
   const [selectedProject, setSelectedProject] =
     useState<StudioProjectEvidence | null>(null);
 
   return (
     <>
       <StudioHero />
-      <StudioContentTypesOverview
-        activeType={portfolioContentType ?? "All"}
-        onSelectType={setPortfolioContentType}
-      />
+      <StudioContentTypesNav />
       {hasFeatured && (
         <StudioFeaturedWork onSelectProject={setSelectedProject} />
       )}
-      <StudioPortfolio
-        initialContentType={portfolioContentType}
-        selectedProject={selectedProject}
-        onOpenProject={setSelectedProject}
-        onCloseProject={() => setSelectedProject(null)}
-      />
-      <StudioServices />
+      <StudioEvidenceByType onOpenProject={setSelectedProject} />
+      <StudioEvidenceByOrganisation onOpenProject={setSelectedProject} />
       <StudioBookingForm />
       <StudioContactCTA />
+      <StudioEvidenceModal
+        project={selectedProject}
+        onClose={() => setSelectedProject(null)}
+        onOpenProject={setSelectedProject}
+      />
     </>
   );
 }

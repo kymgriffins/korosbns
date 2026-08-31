@@ -76,7 +76,7 @@
     "seeMoreLabel": "Browse evidence",
     "seeMoreHref": "/bns-studio",
     "primaryCta": { "label": "Commission BNS Studios", "href": "/bns-studio#booking" },
-    "secondaryCta": { "label": "View Evidence Library", "href": "/bns-studio#portfolio" }
+    "secondaryCta": { "label": "Browse by content type", "href": "/bns-studio#evidence-by-type" }
   },
   "socials": {
     "eyebrow": "Stay connected",

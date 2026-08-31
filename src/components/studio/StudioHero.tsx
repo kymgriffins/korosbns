@@ -13,14 +13,14 @@ import { EmailObfuscator } from "@/components/global/email-obfuscator";
 const studios = getProgramme("studios")!;
 
 const FORMAT_LABELS = [
-  "Podcasts",
+  "Podcast & Audio",
   "Animations",
-  "Explainers",
+  "Explainer Videos",
   "Research Spotlights",
   "Documentaries",
-  "Social Series",
-  "Town Halls",
-  "Listening Circles",
+  "Social Media Series",
+  "Town Hall Design & Facilitation",
+  "Community Listening Sessions",
 ] as const;
 
 export function StudioHero() {
@@ -46,11 +46,11 @@ export function StudioHero() {
         <div className="flex flex-wrap items-center gap-2">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary backdrop-blur-md">
             <Sparkles className="size-3" />
-            BNS Studios • Evidence-Based Production
+            BNS Studios
           </span>
           <span className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-background/80 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur-md">
             <HeartHandshake className="size-3 text-primary" />
-            Double-Impact Model
+            Evidence by format and partner
           </span>
         </div>
 
@@ -64,15 +64,14 @@ export function StudioHero() {
           {studios.body}
         </p>
 
-        <div className="flex flex-wrap items-center gap-2 pt-1 text-xs text-muted-foreground">
-          <span className="font-semibold text-foreground">8 Formats:</span>
-          {FORMAT_LABELS.map((label, index) => (
-            <span key={label}>
-              {index > 0 && " • "}
-              {label}
-            </span>
+        <ul className="grid max-w-3xl gap-1 pt-1 text-xs text-muted-foreground sm:grid-cols-2">
+          {FORMAT_LABELS.map((label) => (
+            <li key={label} className="flex items-center gap-2">
+              <span className="size-1.5 shrink-0 rounded-full bg-primary" />
+              <span>{label}</span>
+            </li>
           ))}
-        </div>
+        </ul>
 
         <div className="flex flex-wrap gap-3 pt-2">
           <Button
@@ -80,11 +79,11 @@ export function StudioHero() {
             className={cn(T.btnPrimary, "px-8")}
             onClick={() =>
               document
-                .getElementById("content-types")
+                .getElementById("evidence-by-type")
                 ?.scrollIntoView({ behavior: "smooth" })
             }
           >
-            Browse by Content Type
+            Browse by content type
           </Button>
           <Button
             size="lg"
@@ -92,11 +91,11 @@ export function StudioHero() {
             className="rounded-full px-8"
             onClick={() =>
               document
-                .getElementById("portfolio")
+                .getElementById("evidence-by-organisation")
                 ?.scrollIntoView({ behavior: "smooth" })
             }
           >
-            View Evidence Library
+            Browse by organisation
           </Button>
           <EmailObfuscator
             email="info@budgetndiostory.org"
