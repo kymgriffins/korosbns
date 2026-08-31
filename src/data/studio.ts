@@ -1,13 +1,21 @@
 import { withFallback } from "@/data/adapter";
 import { citizenApi } from "@/lib/api-client";
 import type { StudioServiceApi, StudioPortfolioItemApi, StudioTestimonialApi } from "@/types/notes";
-import { BNS_STUDIO_PORTFOLIO_IMAGES, BNS_MEDIA_IMAGES, BNS_COMMUNITY_IMAGES } from "@/constants/bns-media-images";
+import {
+  BNS_STUDIO_PAGE_SERVICES,
+  BNS_STUDIO_EVIDENCE,
+  type StudioContentType,
+  type StudioOrganizationType,
+} from "@/constants/bns-studio-content";
+import { BNS_MEDIA_IMAGES, BNS_COMMUNITY_IMAGES } from "@/constants/bns-media-images";
 
 export type StudioService = {
   name: string;
   description: string;
   price: string;
   features: string[];
+  contentType?: StudioContentType;
+  bestFor?: string;
 };
 
 export type StudioPortfolioItem = {
@@ -19,6 +27,10 @@ export type StudioPortfolioItem = {
   video_url?: string;
   video_platform?: "youtube" | "vimeo" | "cloudinary" | "other";
   description?: string;
+  impactMetric?: string;
+  organizationName?: string;
+  organizationType?: StudioOrganizationType;
+  year?: string;
 };
 
 export type StudioTestimonial = {
@@ -30,20 +42,26 @@ export type StudioTestimonial = {
   avatar_url?: string;
 };
 
-const DEFAULT_SERVICES: StudioService[] = [
-  { name: "Videography", description: "Professional video production for events, commercials, and documentaries.", price: "From KES 15,000", features: ["4K/HD recording", "Professional audio", "Multi-camera setup", "Same-day edit option"] },
-  { name: "Photography", description: "High-quality photography for portraits, events, and product shoots.", price: "From KES 8,000", features: ["High-resolution RAW", "Professional lighting", "Edited gallery", "Print-ready files"] },
-  { name: "Studio Rental", description: "Fully equipped studio space for your creative projects.", price: "KES 3,000/hr", features: ["Continuous/flash lighting", "Backdrop system", "Changing room", "Audio equipment"] },
-  { name: "Post-Production", description: "Professional editing, color grading, and motion graphics.", price: "From KES 10,000", features: ["DaVinci Resolve / Premiere Pro", "Color grading", "Motion graphics", "Sound mixing"] },
-];
+const DEFAULT_SERVICES: StudioService[] = BNS_STUDIO_PAGE_SERVICES.map((s) => ({
+  name: s.name,
+  description: s.description,
+  price: s.price,
+  features: s.features,
+  contentType: s.contentType,
+  bestFor: s.bestFor,
+}));
 
-const DEFAULT_PORTFOLIO: StudioPortfolioItem[] = BNS_STUDIO_PORTFOLIO_IMAGES.map((item) => ({
+const DEFAULT_PORTFOLIO: StudioPortfolioItem[] = BNS_STUDIO_EVIDENCE.map((item) => ({
   id: item.id,
   title: item.title,
-  category: item.category,
+  category: item.contentType,
   media_type: "image" as const,
   image_url: item.image_url,
-  description: item.description,
+  description: item.summary,
+  impactMetric: item.impactMetric,
+  organizationName: item.organizationName,
+  organizationType: item.organizationType,
+  year: item.year,
 }));
 
 const DEFAULT_TESTIMONIALS: StudioTestimonial[] = [

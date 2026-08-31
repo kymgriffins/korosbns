@@ -4,6 +4,7 @@ import { buildPageMetadata } from "@/utils/page-metadata";
 import { StudioHero } from "@/components/studio/StudioHero";
 import { StudioServices } from "@/components/studio/StudioServices";
 import { StudioPortfolio } from "@/components/studio/StudioPortfolio";
+import { StudioTestimonials } from "@/components/studio/StudioTestimonials";
 import { StudioBookingForm } from "@/components/studio/StudioBookingForm";
 import { StudioContactCTA } from "@/components/studio/StudioContactCTA";
 import { getProgramme } from "@/constants/programmes-content";
@@ -44,8 +45,10 @@ export default function BNSStudioPage() {
       <StudioHero />
       <StudioServices />
       <StudioPortfolio />
+      <StudioTestimonials />
       <StudioBookingForm />
       <StudioContactCTA />
     </>
   );
 }
+
