@@ -43,7 +43,7 @@ export function ImmersiveBottomBar({
             type="button"
             disabled={nextDisabled}
             onClick={onNext}
-            className="flex items-center justify-center gap-2 rounded-xl bg-orange-600 hover:bg-orange-500 px-6 py-2.5 text-xs font-mono font-bold text-white transition-all shadow-xs disabled:opacity-40 cursor-pointer"
+            className="flex items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary/90 px-6 py-2.5 text-xs font-mono font-bold text-primary-foreground transition-all shadow-xs disabled:opacity-40 cursor-pointer"
           >
             <span>{nextLabel}</span>
             <ArrowRight className="size-3.5" />
@@ -53,7 +53,7 @@ export function ImmersiveBottomBar({
             href={nextHref}
             aria-disabled={nextDisabled}
             className={cn(
-              "flex items-center justify-center gap-2 rounded-xl bg-orange-600 hover:bg-orange-500 px-6 py-2.5 text-xs font-mono font-bold text-white transition-all shadow-xs",
+              "flex items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary/90 px-6 py-2.5 text-xs font-mono font-bold text-primary-foreground transition-all shadow-xs",
               nextDisabled && "pointer-events-none opacity-40",
             )}
           >

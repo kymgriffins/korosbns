@@ -44,7 +44,7 @@ export function ImmersiveSegment({
             )}
             aria-current={isActive ? "page" : undefined}
           >
-            <Icon className={cn("size-3.5", isActive ? "text-orange-500" : "text-muted-foreground")} aria-hidden />
+            <Icon className={cn("size-3.5", isActive ? "text-primary" : "text-muted-foreground")} aria-hidden />
             <span>{item.label}</span>
           </Link>
         );

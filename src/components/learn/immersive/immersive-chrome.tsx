@@ -37,7 +37,7 @@ export function ImmersiveChrome({
       {progress ? (
         <div className="h-1 w-full bg-muted/40 overflow-hidden">
           <div
-            className="h-full bg-orange-600 transition-all duration-500 ease-out"
+            className="h-full bg-primary transition-all duration-500 ease-out"
             style={{ width: `${pct}%` }}
           />
         </div>
@@ -45,14 +45,14 @@ export function ImmersiveChrome({
       <div className="flex items-center gap-3 px-4 py-2.5 safe-area-inset-top">
         <Link
           href={backHref}
-          className="flex size-9 shrink-0 items-center justify-center rounded-xl border border-foreground/10 bg-card/70 text-foreground transition-all hover:bg-card hover:border-orange-500/40"
+          className="flex size-9 shrink-0 items-center justify-center rounded-xl border border-foreground/10 bg-card/70 text-foreground transition-all hover:bg-card hover:border-primary/40"
           aria-label="Go back"
         >
           <ChevronLeft className="size-4" />
         </Link>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400">
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-primary">
               LEARN DESK
             </span>
             <span className="text-muted-foreground/30">/</span>

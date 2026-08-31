@@ -64,8 +64,8 @@ export function ImmersiveCurriculum({ activeStep, activeMode, open, onClose }: P
         <div className="border-b border-foreground/10 p-4 space-y-3">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <span className="flex size-2 rounded-full bg-orange-500 animate-pulse" />
-              <span className="text-[11px] font-mono font-bold tracking-widest text-orange-600 dark:text-orange-400 uppercase">
+              <span className="flex size-2 rounded-full bg-primary animate-pulse" />
+              <span className="text-[11px] font-mono font-bold tracking-widest text-primary uppercase">
                 COURSE SYLLABUS
               </span>
             </div>
@@ -90,7 +90,7 @@ export function ImmersiveCurriculum({ activeStep, activeMode, open, onClose }: P
             {/* Progress Bar */}
             <div className="h-1.5 w-full bg-muted/60 rounded-full overflow-hidden">
               <div
-                className="h-full bg-orange-600 transition-all duration-300"
+                className="h-full bg-primary transition-all duration-300"
                 style={{ width: `${completionPct}%` }}
               />
             </div>
@@ -113,7 +113,7 @@ export function ImmersiveCurriculum({ activeStep, activeMode, open, onClose }: P
                       stepDone
                         ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
                         : isCurrentStep
-                        ? "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/30"
+                        ? "bg-primary/10 text-primary border-primary/30"
                         : "bg-muted text-muted-foreground border-foreground/10",
                     )}
                   >
@@ -145,7 +145,7 @@ export function ImmersiveCurriculum({ activeStep, activeMode, open, onClose }: P
                           className={cn(
                             "flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs font-mono transition-all",
                             active
-                              ? "bg-orange-600 text-white font-bold shadow-xs"
+                              ? "bg-primary text-primary-foreground font-bold shadow-xs"
                               : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
                           )}
                           aria-current={active ? "page" : undefined}
@@ -174,7 +174,7 @@ export function CurriculumToggle({ onClick }: { onClick: () => void }) {
       className="inline-flex items-center gap-1.5 rounded-xl border border-foreground/10 bg-card/90 backdrop-blur-md px-3 py-2 text-xs font-mono font-bold text-foreground shadow-sm transition-colors hover:bg-muted md:hidden"
       aria-label="Open course content"
     >
-      <Layers className="size-3.5 text-orange-500" aria-hidden />
+      <Layers className="size-3.5 text-primary" aria-hidden />
       Syllabus
     </button>
   );

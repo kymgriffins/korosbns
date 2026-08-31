@@ -33,7 +33,7 @@ export function ImmersiveVideoStage({
       {/* Specimen Header */}
       <div className="space-y-2 border-b border-foreground/10 pb-4">
         <div className="flex items-center gap-2">
-          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
+          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">
             VIDEO SPECIMEN
           </span>
           <span className="text-xs font-mono text-muted-foreground">
@@ -75,14 +75,14 @@ export function ImmersiveVideoStage({
                 className={cn(
                   "flex items-center gap-2.5 rounded-xl border p-3 text-left transition-all cursor-pointer",
                   i === index
-                    ? "border-orange-500/50 bg-orange-500/10 text-foreground shadow-xs"
+                    ? "border-primary/50 bg-primary/10 text-foreground shadow-xs"
                     : "border-foreground/10 bg-card/60 text-muted-foreground hover:bg-card hover:text-foreground",
                 )}
               >
                 <span
                   className={cn(
                     "flex size-6 shrink-0 items-center justify-center rounded-lg font-mono text-xs font-bold",
-                    i === index ? "bg-orange-600 text-white" : "bg-muted text-muted-foreground",
+                    i === index ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground",
                   )}
                 >
                   {i + 1}

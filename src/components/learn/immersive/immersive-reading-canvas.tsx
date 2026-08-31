@@ -27,7 +27,7 @@ export function ImmersiveReadingCanvas({
       <header className="space-y-4 border-b border-foreground/10 pb-6">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">
               ARTICLE SPECIMEN
             </span>
             <span className="px-2.5 py-0.5 rounded-md text-[11px] font-mono font-semibold border border-foreground/10 bg-muted/40 text-foreground">
@@ -36,7 +36,7 @@ export function ImmersiveReadingCanvas({
           </div>
           {durationLabel ? (
             <span className="text-xs font-mono text-muted-foreground flex items-center gap-1.5 border border-foreground/10 rounded-md px-2 py-0.5 bg-muted/20">
-              <Clock className="size-3 text-orange-500" />
+              <Clock className="size-3 text-primary" />
               <span>{durationLabel} read</span>
             </span>
           ) : null}
@@ -44,7 +44,7 @@ export function ImmersiveReadingCanvas({
 
         <div className="space-y-2">
           <div className="flex items-baseline gap-3">
-            <span className="font-serif italic text-2xl sm:text-3xl text-orange-600 dark:text-orange-400 font-normal">
+            <span className="font-serif italic text-2xl sm:text-3xl text-primary font-normal">
               Lesson {String(stepNumber).padStart(2, "0")};
             </span>
             <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-foreground leading-[1.15]">
@@ -79,12 +79,12 @@ export function ImmersiveReadingCanvas({
                 className="size-16 sm:size-20 rounded-xl object-cover ring-1 ring-foreground/10 shrink-0"
               />
             ) : (
-              <div className="flex size-14 items-center justify-center rounded-xl bg-orange-500/10 text-orange-600 shrink-0">
+              <div className="flex size-14 items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0">
                 <Clapperboard className="size-6" />
               </div>
             )}
             <div className="space-y-1">
-              <p className="text-xs font-mono font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400">
+              <p className="text-xs font-mono font-bold uppercase tracking-wider text-primary">
                 Companion Video Series ({videos.length} Parts)
               </p>
               <p className="text-xs sm:text-sm font-semibold text-foreground line-clamp-1">
@@ -98,7 +98,7 @@ export function ImmersiveReadingCanvas({
 
           <Link
             href={`/learn/modules/${moduleSlug}/watch/${stepNumber}`}
-            className="shrink-0 flex items-center justify-center gap-2 w-full sm:w-auto px-4 py-2 rounded-xl text-xs font-mono font-bold bg-orange-600 hover:bg-orange-500 text-white transition-colors"
+            className="shrink-0 flex items-center justify-center gap-2 w-full sm:w-auto px-4 py-2 rounded-xl text-xs font-mono font-bold bg-primary hover:bg-primary/90 text-primary-foreground transition-colors shadow-xs"
           >
             <span>Watch Video Mode</span>
             <ArrowRight className="size-3.5" />
@@ -110,7 +110,7 @@ export function ImmersiveReadingCanvas({
       {step.learning_outcomes && step.learning_outcomes.length > 0 ? (
         <section className="rounded-2xl border border-foreground/10 bg-muted/20 p-5 space-y-3">
           <div className="flex items-center gap-2">
-            <Sparkles className="size-4 text-orange-500" />
+            <Sparkles className="size-4 text-primary" />
             <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-foreground">
               Core Civic Learning Outcomes
             </h2>
@@ -133,9 +133,9 @@ export function ImmersiveReadingCanvas({
 
       {/* Key Takeaways Section */}
       {step.takeaways && step.takeaways.length > 0 ? (
-        <section className="rounded-2xl border border-orange-500/30 bg-orange-500/5 p-6 dark:bg-orange-950/10 space-y-3">
-          <div className="flex items-center gap-2 text-orange-700 dark:text-orange-300 font-mono font-bold text-xs uppercase tracking-wider">
-            <Sparkles className="size-4 text-orange-500" />
+        <section className="rounded-2xl border border-primary/30 bg-primary/5 p-6 space-y-3">
+          <div className="flex items-center gap-2 text-primary font-mono font-bold text-xs uppercase tracking-wider">
+            <Sparkles className="size-4 text-primary" />
             <h2>Key Citizen Takeaways</h2>
           </div>
           <ul className="space-y-3">
