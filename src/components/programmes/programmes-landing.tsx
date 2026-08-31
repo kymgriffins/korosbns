@@ -5,9 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { LandingSeeMore } from "@/components/marketing/landing-see-more";
-import { ProgrammesImpactStrip } from "@/components/programmes/programmes-impact-strip";
 import { ProgrammesEcosystemBar } from "@/components/programmes/programmes-ecosystem-bar";
-import { ProgrammesTrustBar } from "@/components/programmes/programmes-trust-bar";
 import { ProgrammesTeamTeaser } from "@/components/programmes/programmes-team-teaser";
 import { ProgrammesLatestContent } from "@/components/programmes/programmes-latest-content";
 import { ProgrammesFaq } from "@/components/programmes/programmes-faq";
@@ -151,13 +149,7 @@ export function ProgrammesLanding() {
       {/* 1. Ecosystem Pipeline Diagram (TRACK -> LOCALISE -> TRAIN -> PRODUCE) */}
       <ProgrammesEcosystemBar />
 
-      {/* 2. Numbers / Impact Strip */}
-      <ProgrammesImpactStrip />
-
-      {/* 3. Institutional & Research Partners Bar */}
-      <ProgrammesTrustBar />
-
-      {/* 4. Core Four Programmes Section */}
+      {/* 2. Core Four Programmes Section */}
       <LandingSection
         id="programmes"
         aria-labelledby="programmes-heading"
