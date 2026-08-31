@@ -13,7 +13,7 @@
     "connect": "Kenya's KES 4.8 trillion national budget, tracked live from Treasury allocation to project delivery by a trained youth network.",
     "mashinani": "Sustained, embedded budget scrutiny across Kakamega, Kilifi, Nakuru, and Wajir with scorecards, town halls, and community oversight.",
     "wanahabari-lab": "Quarterly intensive training equipping mainstream journalists and digital creators to investigate, visualize, and report public finance all year round.",
-    "studios": "Commissioned podcasts, documentaries, animations, and civic campaigns that turn complex fiscal data into engaging impact storytelling."
+    "studios": "Evidence-based podcasts, documentaries, animations, and civic campaigns — browse by content type and partner organisation."
   },
   "closing": {
     "seoTitle": "Partner With BNS | Budget Ndio Story",
@@ -181,12 +181,12 @@
       "slug": "studios",
       "name": "BNS Studios",
       "eyebrow": "Impact content & storytelling",
-      "headline": "Turning complex data & institutional evidence into stories that move audiences.",
-      "body": "Your organisation's research, civic mandate, and impact evidence are only as powerful as the audience they reach and mobilize. BNS Studios bridges analytical rigor with high-production creative storytelling — turning policy data, institutional reports, and civic issues into compelling multimedia and participatory spaces. We produce content across 8 dedicated formats for county & national governments, development partners, CSOs, ESG-driven businesses, and grassroots alliances. Every commission fuels our double-impact model: world-class deliverables for your stakeholders, while directly financing BNS Foundation's civic public-participation mission.",
+      "headline": "Evidence-based production across eight civic storytelling formats.",
+      "body": "BNS Studios documents and produces commissioned work for governments, development partners, CSOs, ESG-driven businesses, and grassroots alliances. Browse our evidence library by content type or partner organisation — from podcasts and animations to town halls and community listening sessions. Every commission fuels our double-impact model: deliverables for your stakeholders, with studio proceeds reinvested into BNS Foundation's civic mission.",
       "formats": "Podcast & Audio · Animations · Explainer Videos · Research Spotlights · Documentaries · Social Media Series · Town Hall Design & Facilitation · Community Listening Sessions",
-      "highlight": "Double impact: High-fidelity creative evidence built for your stakeholders, with studio proceeds reinvested directly into Kenya's civic budget literacy.",
-      "seoTitle": "BNS Studios | Evidence-Based Impact Content & Civic Facilitation",
-      "seoDescription": "Commissioned podcasts, animations, documentaries, explainers, and town halls for governments, development partners & CSOs across Kenya.",
+      "highlight": "Double impact: evidence-based creative production for your stakeholders, with studio proceeds reinvested into Kenya's civic budget literacy.",
+      "seoTitle": "BNS Studios | Evidence Library & Civic Production",
+      "seoDescription": "Browse BNS Studios evidence by content type and organisation. Podcasts, animations, documentaries, explainers, and town halls for governments, partners and CSOs.",
       "cta": {
         "label": "Commission BNS Studios",
         "href": "/bns-studio#booking",

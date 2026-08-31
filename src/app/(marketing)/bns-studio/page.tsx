@@ -1,13 +1,7 @@
 import React from "react";
 import type { Metadata } from "next";
 import { buildPageMetadata } from "@/utils/page-metadata";
-import { StudioHero } from "@/components/studio/StudioHero";
-import { StudioFeaturedWork } from "@/components/studio/StudioFeaturedWork";
-import { StudioPortfolio } from "@/components/studio/StudioPortfolio";
-import { StudioServices } from "@/components/studio/StudioServices";
-import { StudioTestimonials } from "@/components/studio/StudioTestimonials";
-import { StudioBookingForm } from "@/components/studio/StudioBookingForm";
-import { StudioContactCTA } from "@/components/studio/StudioContactCTA";
+import { BNSStudioPageClient } from "@/components/studio/BNSStudioPageClient";
 import { getProgramme } from "@/constants/programmes-content";
 
 const studios = getProgramme("studios")!;
@@ -43,15 +37,7 @@ export default function BNSStudioPage() {
           }),
         }}
       />
-      <StudioHero />
-      <StudioFeaturedWork />
-      <StudioPortfolio />
-      <StudioServices />
-      <StudioTestimonials />
-      <StudioBookingForm />
-      <StudioContactCTA />
+      <BNSStudioPageClient />
     </>
   );
 }
-
-

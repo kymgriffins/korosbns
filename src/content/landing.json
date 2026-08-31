@@ -69,14 +69,14 @@
   },
   "studioStrip": {
     "eyebrow": "BNS Studios",
-    "titleBefore": "The stories behind the",
-    "titleHighlight": "numbers",
-    "description": "Commissioned podcasts, documentaries, animations, and campaigns for governments, funders, and CSOs — every project helps fund Kenya's leading youth budget platform.",
-    "highlight": "Every BNS Studios commission is double impact: content built for your audience, and a proportion of our profit funding BNS Foundation's civic mission permanently.",
-    "seeMoreLabel": "See more",
+    "titleBefore": "Evidence by",
+    "titleHighlight": "format and partner",
+    "description": "Browse commissioned podcasts, documentaries, animations, and civic campaigns organised by content type and organisation — every project helps fund Kenya's leading youth budget platform.",
+    "highlight": "Every BNS Studios commission is double impact: evidence-based content for your audience, with studio proceeds funding BNS Foundation's civic mission.",
+    "seeMoreLabel": "Browse evidence",
     "seeMoreHref": "/bns-studio",
     "primaryCta": { "label": "Commission BNS Studios", "href": "/bns-studio#booking" },
-    "secondaryCta": { "label": "View Portfolio", "href": "/bns-studio#portfolio" }
+    "secondaryCta": { "label": "View Evidence Library", "href": "/bns-studio#portfolio" }
   },
   "socials": {
     "eyebrow": "Stay connected",
