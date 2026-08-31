@@ -259,6 +259,9 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
                 {
                   code: "037",
                   name: "Kakamega",
+                  governor: "H.E. Fernandes Barasa, FCPA",
+                  website: "https://kakamega.go.ke",
+                  budgetUrl: "https://kakamega.go.ke/budget-documents/",
                   allocation: "KES 19.45B",
                   execution: "92.1%",
                   focus: "Sugar belt roads (34%) & Healthcare (33.2%)",
@@ -267,6 +270,9 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
                 {
                   code: "003",
                   name: "Kilifi",
+                  governor: "H.E. Gideon Mung'aro, OGW",
+                  website: "https://kilifi.go.ke",
+                  budgetUrl: "https://kilifi.go.ke/county-treasury/",
                   allocation: "KES 16.89B",
                   execution: "89.1%",
                   focus: "Blue Economy marine gear & UHC clinics",
@@ -275,6 +281,9 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
                 {
                   code: "032",
                   name: "Nakuru",
+                  governor: "H.E. Susan Kihika",
+                  website: "https://nakuru.go.ke",
+                  budgetUrl: "https://nakuru.go.ke/finance-economic-planning/",
                   allocation: "KES 22.18B",
                   execution: "93.5%",
                   focus: "CAIPs agro-industrial parks & OSR automation",
@@ -283,6 +292,9 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
                 {
                   code: "008",
                   name: "Wajir",
+                  governor: "H.E. Ahmed Abdullahi, FCPA",
+                  website: "https://wajir.go.ke",
+                  budgetUrl: "https://wajir.go.ke/county-treasury/",
                   allocation: "KES 14.25B",
                   execution: "87.8%",
                   focus: "Equalisation Fund (KES 1.2B) & Solar water pans",
@@ -295,7 +307,7 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
                 >
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="flex size-7 items-center justify-center rounded-md bg-primary/10 text-xs font-black text-primary">
+                      <span className="flex size-7 items-center justify-center rounded-md bg-primary/10 text-xs font-black text-primary border border-primary/20">
                         {c.code}
                       </span>
                       <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full">
@@ -307,12 +319,35 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
                       <h3 className="font-heading text-lg font-bold text-foreground group-hover:text-primary transition-colors">
                         {c.name} County
                       </h3>
-                      <p className="font-heading text-xl font-extrabold text-foreground mt-0.5">
+                      <p className="text-[11px] text-muted-foreground font-medium truncate mt-0.5">
+                        {c.governor}
+                      </p>
+                      <p className="font-heading text-xl font-extrabold text-foreground mt-1.5">
                         {c.allocation}
                       </p>
                       <p className="text-xs text-muted-foreground mt-2 line-clamp-2">
                         {c.focus}
                       </p>
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-1">
+                      <a
+                        href={c.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[11px] font-medium text-muted-foreground hover:text-primary transition-colors underline underline-offset-2"
+                      >
+                        Official Site ↗
+                      </a>
+                      <span className="text-muted-foreground/40">·</span>
+                      <a
+                        href={c.budgetUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[11px] font-medium text-emerald-600 dark:text-emerald-400 hover:underline underline-offset-2"
+                      >
+                        Budget Portal ↗
+                      </a>
                     </div>
                   </div>
 

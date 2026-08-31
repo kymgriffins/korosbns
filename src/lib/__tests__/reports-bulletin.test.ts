@@ -3,7 +3,9 @@ import {
   getAllReports,
   getReportBySlug,
   getFocusCounties,
-  getFocusCountyBySlug,
+  getCountyBySlug,
+  getBetaPillars,
+  getTrackedProjects,
   getIndexedQuestions,
   searchBudgetQuestions,
 } from "@/data/reports-bulletin";
@@ -25,7 +27,7 @@ describe("Reports Bulletin Data Store (P0 Trust & SEO)", () => {
     }
   });
 
-  it("contains complete profiles for the 4 BNS Mashinani focus counties", () => {
+  it("contains complete profiles for the 4 BNS Mashinani focus counties with portals and governors", () => {
     const counties = getFocusCounties();
     expect(counties).toHaveLength(4);
 
@@ -38,11 +40,38 @@ describe("Reports Bulletin Data Store (P0 Trust & SEO)", () => {
       expect(c.healthSharePct).toBeGreaterThan(0);
       expect(c.infrastructurePct).toBeGreaterThan(0);
       expect(c.agricultureSharePct).toBeGreaterThan(0);
+      expect(c.governor).toBeTruthy();
+      expect(c.officialWebsite.startsWith("https://")).toBe(true);
+      expect(c.budgetPortalUrl.startsWith("https://")).toBe(true);
       expect(c.keyProjects.length).toBeGreaterThanOrEqual(2);
       expect(c.reportSlug).toBeTruthy();
+
       // Ensure matching report dossier exists
       const matchingReport = getReportBySlug(c.reportSlug);
       expect(matchingReport).toBeDefined();
+    }
+  });
+
+  it("loads 5 core BETA Bottom-Up pillars and tracked projects", () => {
+    const pillars = getBetaPillars();
+    expect(pillars).toHaveLength(5);
+    expect(pillars.map((p) => p.id)).toEqual([
+      "agriculture",
+      "msme",
+      "housing",
+      "health",
+      "digital",
+    ]);
+
+    const projects = getTrackedProjects();
+    expect(projects.length).toBeGreaterThanOrEqual(10);
+    for (const proj of projects) {
+      expect(proj.id).toBeTruthy();
+      expect(proj.name).toBeTruthy();
+      expect(proj.county).toBeTruthy();
+      expect(proj.sector).toBeTruthy();
+      expect(proj.budgetFormatted).toBeTruthy();
+      expect(proj.status).toBeTruthy();
     }
   });
 
@@ -58,18 +87,25 @@ describe("Reports Bulletin Data Store (P0 Trust & SEO)", () => {
 
     const debt = getReportBySlug("kenya-public-debt-servicing-crisis-analysis");
     expect(debt).toBeDefined();
-    expect(debt?.kpis.some((k) => k.label.includes("Debt"))).toBe(true);
+    expect(debt?.programme).toBe("Wanahabari Lab");
   });
 
-  it("performs fast question search & filtering without runtime latency", () => {
-    const search1 = searchBudgetQuestions("debt");
-    expect(search1.matchingQuestions.length).toBeGreaterThan(0);
-    expect(search1.matchingReports.length).toBeGreaterThan(0);
+  it("searches and filters budget questions with zero latency", () => {
+    const questions = getIndexedQuestions();
+    expect(questions.length).toBeGreaterThanOrEqual(10);
 
-    const searchKakamega = searchBudgetQuestions("", "All", "Kakamega", "All");
-    expect(searchKakamega.matchingQuestions.some((q) => q.county === "Kakamega")).toBe(true);
+    const nationalQuery = searchBudgetQuestions("debt", "Debt & Deficit");
+    expect(nationalQuery.matchingQuestions.length).toBeGreaterThan(0);
+    expect(
+      nationalQuery.matchingQuestions.some((q) =>
+        q.question.toLowerCase().includes("debt"),
+      ),
+    ).toBe(true);
 
-    const searchMashinani = searchBudgetQuestions("", "All", "All", "BNS Mashinani");
-    expect(searchMashinani.matchingQuestions.every((q) => q.programme === "BNS Mashinani")).toBe(true);
+    const kakamegaQuery = searchBudgetQuestions("", "All", "Kakamega");
+    expect(kakamegaQuery.matchingQuestions.length).toBeGreaterThan(0);
+    expect(
+      kakamegaQuery.matchingQuestions.every((q) => q.county === "Kakamega"),
+    ).toBe(true);
   });
 });

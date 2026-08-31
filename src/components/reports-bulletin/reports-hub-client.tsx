@@ -19,11 +19,14 @@ import {
   getFocusCounties,
   getAllReports,
   getIndexedQuestions,
+  getBetaPillars,
+  getTrackedProjects,
   REPORTS_BULLETIN_DATA,
   searchBudgetQuestions,
 } from "@/data/reports-bulletin";
 import { CountyFocusCards } from "./county-focus-cards";
 import { QuestionSorter } from "./question-sorter";
+import { CategoryAndProjectsExplorer } from "./category-and-projects-explorer";
 
 export function ReportsHubClient() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -34,6 +37,8 @@ export function ReportsHubClient() {
   const focusCounties = useMemo(() => getFocusCounties(), []);
   const allReports = useMemo(() => getAllReports(), []);
   const allQuestions = useMemo(() => getIndexedQuestions(), []);
+  const betaPillars = useMemo(() => getBetaPillars(), []);
+  const trackedProjects = useMemo(() => getTrackedProjects(), []);
   const hubMeta = REPORTS_BULLETIN_DATA.hubMeta;
 
   const { matchingQuestions, matchingReports } = useMemo(() => {
@@ -114,8 +119,16 @@ export function ReportsHubClient() {
         </div>
       </section>
 
-      {/* Focus Counties Spotlight (BNS Mashinani) */}
+      {/* Focus Counties Spotlight (BNS Mashinani) with Official Portals */}
       <CountyFocusCards counties={focusCounties} />
+
+      {/* BETA Bottom-Up Agenda Pillars & Tracked Projects Directory */}
+      <CategoryAndProjectsExplorer
+        betaPillars={betaPillars}
+        projects={trackedProjects}
+        activeSector={selectedCategory}
+        onSectorChange={(sec) => setSelectedCategory(sec)}
+      />
 
       {/* Interactive Question Sorter Search Engine */}
       <QuestionSorter
@@ -129,7 +142,7 @@ export function ReportsHubClient() {
       />
 
       {/* Verified Report Dossiers Grid (The Blog / Bulletin Way) */}
-      <section className="space-y-6 pt-6">
+      <section className="space-y-6 pt-6" id="dossiers-grid">
         <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between border-b border-border/50 pb-4">
           <div>
             <div className="flex items-center gap-2">
@@ -156,6 +169,19 @@ export function ReportsHubClient() {
             <p className="mt-1 text-xs text-muted-foreground">
               Try searching with different keywords or resetting filters.
             </p>
+            <Button
+              variant="outline"
+              size="sm"
+              className="mt-4"
+              onClick={() => {
+                setSelectedCategory("All");
+                setSelectedCounty("All");
+                setSelectedProgramme("All");
+                setSearchQuery("");
+              }}
+            >
+              Reset All Filters
+            </Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">

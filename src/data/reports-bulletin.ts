@@ -44,6 +44,12 @@ export interface FocusCountyProfile {
   slug: string;
   name: string;
   capital: string;
+  headquarters: string;
+  governor: string;
+  officialWebsite: string;
+  budgetPortalUrl: string;
+  population: string;
+  subCountiesCount: number;
   programme: string;
   allocationKesMillion: number;
   allocationFormatted: string;
@@ -57,6 +63,29 @@ export interface FocusCountyProfile {
   keyProjects: string[];
   reportSlug: string;
   summary: string;
+}
+
+export interface BetaPillar {
+  id: string;
+  name: string;
+  icon: string;
+  tagline: string;
+  nationalAllocationKesBillion: number;
+  description: string;
+  keyCounties: string[];
+}
+
+export interface TrackedProject {
+  id: string;
+  name: string;
+  county: string;
+  sector: string;
+  betaPillar: string;
+  budgetFormatted: string;
+  status: string;
+  location: string;
+  description: string;
+  reportSlug: string;
 }
 
 export interface IndexedBudgetQuestion {
@@ -82,7 +111,9 @@ export interface HubMetadata {
 
 export interface ReportsBulletinStore {
   hubMeta: HubMetadata;
+  betaPillars: BetaPillar[];
   focusCounties: FocusCountyProfile[];
+  trackedProjects: TrackedProject[];
   reports: ReportDossier[];
   indexedQuestions: IndexedBudgetQuestion[];
 }
@@ -101,8 +132,16 @@ export function getFocusCounties(): FocusCountyProfile[] {
   return REPORTS_BULLETIN_DATA.focusCounties;
 }
 
-export function getFocusCountyBySlug(slug: string): FocusCountyProfile | undefined {
+export function getCountyBySlug(slug: string): FocusCountyProfile | undefined {
   return REPORTS_BULLETIN_DATA.focusCounties.find((c) => c.slug === slug);
+}
+
+export function getBetaPillars(): BetaPillar[] {
+  return REPORTS_BULLETIN_DATA.betaPillars || [];
+}
+
+export function getTrackedProjects(): TrackedProject[] {
+  return REPORTS_BULLETIN_DATA.trackedProjects || [];
 }
 
 export function getIndexedQuestions(): IndexedBudgetQuestion[] {
@@ -111,14 +150,14 @@ export function getIndexedQuestions(): IndexedBudgetQuestion[] {
 
 export function searchBudgetQuestions(
   query: string,
-  categoryFilter?: string,
-  countyFilter?: string,
-  programmeFilter?: string,
+  category?: string,
+  county?: string,
+  programme?: string,
 ): {
   matchingQuestions: IndexedBudgetQuestion[];
   matchingReports: ReportDossier[];
 } {
-  const q = query.trim().toLowerCase();
+  const q = (query || "").trim().toLowerCase();
 
   const matchingQuestions = REPORTS_BULLETIN_DATA.indexedQuestions.filter((item) => {
     const matchesQuery =
@@ -129,32 +168,30 @@ export function searchBudgetQuestions(
       item.county.toLowerCase().includes(q);
 
     const matchesCategory =
-      !categoryFilter || categoryFilter === "All" || item.category === categoryFilter;
+      !category || category === "All" || item.category.toLowerCase().includes(category.toLowerCase());
     const matchesCounty =
-      !countyFilter || countyFilter === "All" || item.county === countyFilter;
+      !county || county === "All" || item.county.toLowerCase().includes(county.toLowerCase());
     const matchesProgramme =
-      !programmeFilter || programmeFilter === "All" || item.programme === programmeFilter;
+      !programme || programme === "All" || item.programme === programme;
 
     return matchesQuery && matchesCategory && matchesCounty && matchesProgramme;
   });
 
-  const matchingReports = REPORTS_BULLETIN_DATA.reports.filter((report) => {
+  const matchingReports = REPORTS_BULLETIN_DATA.reports.filter((rep) => {
     const matchesQuery =
       !q ||
-      report.title.toLowerCase().includes(q) ||
-      report.content.toLowerCase().includes(q) ||
-      report.category.toLowerCase().includes(q) ||
-      report.county.toLowerCase().includes(q);
+      rep.title.toLowerCase().includes(q) ||
+      rep.seoDescription.toLowerCase().includes(q) ||
+      rep.content.toLowerCase().includes(q) ||
+      rep.category.toLowerCase().includes(q) ||
+      rep.county.toLowerCase().includes(q);
 
     const matchesCategory =
-      !categoryFilter || categoryFilter === "All" || report.category === categoryFilter;
+      !category || category === "All" || rep.category.toLowerCase().includes(category.toLowerCase());
     const matchesCounty =
-      !countyFilter ||
-      countyFilter === "All" ||
-      report.county === countyFilter ||
-      (countyFilter !== "National" && report.county === "All 47 Counties");
+      !county || county === "All" || rep.county.toLowerCase().includes(county.toLowerCase());
     const matchesProgramme =
-      !programmeFilter || programmeFilter === "All" || report.programme === programmeFilter;
+      !programme || programme === "All" || rep.programme === programme;
 
     return matchesQuery && matchesCategory && matchesCounty && matchesProgramme;
   });
