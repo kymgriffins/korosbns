@@ -49,14 +49,14 @@ export default function ConsortiumFoundersSection() {
                 href={founder.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="relative mb-6 h-16 w-full max-w-[180px] grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
+                className="relative mb-6 h-14 w-full max-w-[200px] flex items-center transition-all duration-300 group-hover:scale-105"
               >
                 <Image
                   src={founder.logoUrl}
                   alt={`${founder.name} logo`}
                   fill
                   className="object-contain object-left"
-                  sizes="180px"
+                  sizes="200px"
                 />
               </Link>
 

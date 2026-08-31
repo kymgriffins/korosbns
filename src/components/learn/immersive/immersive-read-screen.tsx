@@ -63,7 +63,12 @@ export function ImmersiveReadScreen({ stepNumber }: { stepNumber: number }) {
       />
       <ImmersiveSegment items={segments} active="read" />
       <div className="flex-1 overflow-y-auto overscroll-contain">
-        <ImmersiveReadingCanvas step={step} durationLabel={duration} />
+        <ImmersiveReadingCanvas
+          step={step}
+          durationLabel={duration}
+          moduleSlug={mod.slug}
+          stepNumber={stepNumber}
+        />
       </div>
       <ImmersiveBottomBar
         prevHref={prevHref}

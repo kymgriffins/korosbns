@@ -117,6 +117,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error("Sitemap: Failed to fetch civic modules from API", err);
   }
 
+  // Verified Report Dossiers (P0 SEO - National Budget & Focus Counties)
+  try {
+    const { getAllReports } = await import("@/data/reports-bulletin");
+    const reports = getAllReports();
+    reports.forEach((report) => {
+      if (report.slug) {
+        sitemapEntries.push({
+          url: canonicalUrl(`/reports/${report.slug}`),
+          lastModified: report.updatedDate ? new Date(report.updatedDate) : new Date(),
+          changeFrequency: "weekly",
+          priority: 0.9,
+        });
+      }
+    });
+  } catch (err) {
+    console.error("Sitemap: Failed to load report dossiers", err);
+  }
+
   return sitemapEntries;
 }
 

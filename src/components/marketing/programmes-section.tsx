@@ -36,53 +36,55 @@ export function ProgrammesSection() {
         </p>
       </GsapReveal>
 
-      <GsapStaggerReveal className="grid gap-5 sm:grid-cols-2 lg:grid-cols-12 lg:gap-6">
-        {PROGRAMMES.map((programme, idx) => {
-          const isFeatured = idx === 0;
-          return (
-            <Link
-              key={programme.slug}
-              data-gsap-item
-              href={programmeHref(programme.slug as ProgrammeSlug)}
-              className={cn(
-                "group relative block overflow-hidden transition-all duration-500 ease-out",
-                "bg-gradient-to-b from-card/90 to-card/50 text-card-foreground",
-                "shadow-[0_2px_14px_-2px_rgba(0,0,0,0.06),0_1px_4px_rgba(0,0,0,0.04)] dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)]",
-                "hover:-translate-y-1.5 hover:shadow-[0_16px_36px_-8px_rgba(0,0,0,0.12),0_4px_12px_rgba(0,0,0,0.04)]",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                isFeatured
-                  ? "lg:col-span-6 rounded-[2rem] aspect-[16/10] sm:aspect-[16/9]"
-                  : "lg:col-span-3 rounded-3xl aspect-[3/4]"
-              )}
-            >
-              <Image
-                src={programme.visual.hero}
-                alt={programme.visual.heroAlt}
-                fill
-                className="object-cover transition-transform duration-700 ease-out group-hover:scale-105 group-hover:rotate-[0.5deg]"
-                sizes={isFeatured ? "(max-width: 1024px) 100vw, 50vw" : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent transition-opacity duration-300 group-hover:opacity-90" />
+      <GsapStaggerReveal className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+        {PROGRAMMES.map((programme) => (
+          <Link
+            key={programme.slug}
+            data-gsap-item
+            href={programmeHref(programme.slug as ProgrammeSlug)}
+            className={cn(
+              "group relative block overflow-hidden rounded-2xl md:rounded-3xl transition-all duration-500 ease-out",
+              "aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4]",
+              "bg-neutral-950 text-white",
+              "border border-border/50 hover:border-primary/60",
+              "shadow-sm hover:-translate-y-2 hover:shadow-xl hover:shadow-black/10 dark:hover:shadow-black/40",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            )}
+          >
+            {/* Crisp Background Photo */}
+            <Image
+              src={programme.visual.hero}
+              alt={programme.visual.heroAlt}
+              fill
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-108"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            />
 
-              <span className="absolute right-4 top-4 flex size-10 items-center justify-center rounded-full bg-background/60 text-foreground backdrop-blur-md transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground group-hover:scale-110 group-hover:rotate-90 shadow-sm">
-                <Plus className="size-4" aria-hidden />
+            {/* Cinematic Scrim - No Milky Wash in Light Mode */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10 transition-opacity duration-300 group-hover:opacity-95" />
+
+            {/* Top Right Subtle Action Icon */}
+            <div className="absolute top-4 right-4 flex items-center justify-end pointer-events-none">
+              <span className="flex size-8 items-center justify-center rounded-full bg-black/40 text-white/90 backdrop-blur-md border border-white/15 transition-all duration-300 group-hover:bg-primary group-hover:text-white group-hover:scale-110 shadow-sm">
+                <Plus className="size-4 transition-transform duration-300 group-hover:rotate-45" aria-hidden />
                 <span className="sr-only">Open {programme.name}</span>
               </span>
+            </div>
 
-              <div className="absolute inset-x-0 bottom-0 space-y-2 p-5 md:p-6">
-                <span className="inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.18em] bg-primary/15 text-primary backdrop-blur-sm">
-                  {programme.name}
-                </span>
-                <h3 className={cn(
-                  "font-heading font-semibold leading-snug tracking-tight text-foreground transition-colors duration-300 group-hover:text-primary",
-                  isFeatured ? "text-xl md:text-2xl" : "text-base md:text-lg"
-                )}>
-                  {PROGRAMME_CARD_BLURBS[programme.slug as ProgrammeSlug]}
-                </h3>
-              </div>
-            </Link>
-          );
-        })}
+            {/* Clean, Premium Bottom Typography */}
+            <div className="absolute inset-x-0 bottom-0 space-y-1.5 p-5 md:p-6 text-left">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-emerald-400">
+                {programme.name}
+              </p>
+              <h3 className="font-heading text-base md:text-lg font-bold leading-snug tracking-tight text-white transition-colors duration-300 group-hover:text-primary-foreground line-clamp-3">
+                {PROGRAMME_CARD_BLURBS[programme.slug as ProgrammeSlug]}
+              </h3>
+              <p className="text-xs text-neutral-300/80 font-medium line-clamp-1 pt-0.5">
+                {programme.eyebrow}
+              </p>
+            </div>
+          </Link>
+        ))}
       </GsapStaggerReveal>
 
       <LandingContent>

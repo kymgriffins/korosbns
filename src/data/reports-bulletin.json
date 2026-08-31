@@ -1,0 +1,811 @@
+{
+  "hubMeta": {
+    "title": "Kenya National Budget Reports & Citizen Intelligence Bulletin | Budget Ndio Story",
+    "description": "Authoritative, verified analysis of Kenya's KES 4.82 Trillion National Budget and 47 County Devolution Allocations. Ground-verified fiscal scorecards for Kakamega, Kilifi, Nakuru, and Wajir by BNS Mashinani.",
+    "publisher": "Budget Ndio Story Research & BNS Mashinani",
+    "fiscalYear": "FY 2026/2027",
+    "totalNationalBudgetKes": "4,820,000,000,000",
+    "totalOrdinaryRevenueKes": "2,985,700,000,000",
+    "totalDebtServiceKes": "1,203,100,000,000",
+    "totalDevolutionKes": "502,000,000,000"
+  },
+  "betaPillars": [
+    {
+      "id": "agriculture",
+      "name": "Agricultural Transformation",
+      "icon": "Wheat",
+      "tagline": "Food security, subsidized inputs, value addition & CAIPs",
+      "nationalAllocationKesBillion": 62.4,
+      "description": "Lowering cost of living through fertilizer subsidies (KES 10B), County Aggregation and Industrial Parks (CAIPs), edible oils promotion, and agricultural value chains across tea, coffee, sugar, and dairy.",
+      "keyCounties": ["Kakamega", "Nakuru", "Kilifi", "Wajir"]
+    },
+    {
+      "id": "msme",
+      "name": "MSME Economy & Hustler Fund",
+      "icon": "Briefcase",
+      "tagline": "Financial inclusion, youth enterprise & market infrastructure",
+      "nationalAllocationKesBillion": 15.0,
+      "description": "De-risking credit for informal traders and small businesses via the Financial Inclusion Fund (Hustler Fund), modern county market sheds, and youth business incubation.",
+      "keyCounties": ["Nakuru", "Kakamega", "Kilifi"]
+    },
+    {
+      "id": "housing",
+      "name": "Affordable Housing & Urbanization",
+      "icon": "Home",
+      "tagline": "Low-cost housing units, slum upgrades & civil jobs",
+      "nationalAllocationKesBillion": 92.5,
+      "description": "Accelerating construction of 200,000+ affordable housing units nationally, slum upgrading infrastructure, and civil works employment for local youth.",
+      "keyCounties": ["Nakuru", "Kakamega", "Kilifi"]
+    },
+    {
+      "id": "health",
+      "name": "Universal Health Coverage (UHC / SHA)",
+      "icon": "Activity",
+      "tagline": "Social Health Authority, Level 4-6 upgrades & primary care",
+      "nationalAllocationKesBillion": 175.0,
+      "description": "Transitioning from NHIF to SHA, expanding Primary Care Networks (PCNs), compensating 107,000 Community Health Promoters (CHPs), and funding specialized medical equipment.",
+      "keyCounties": ["Kakamega", "Nakuru", "Kilifi", "Wajir"]
+    },
+    {
+      "id": "digital",
+      "name": "Digital Superhighway & Creative Hubs",
+      "icon": "Cpu",
+      "tagline": "100,000km NOFBI fibre, Jitume digital labs & studios",
+      "nationalAllocationKesBillion": 21.0,
+      "description": "Expanding national optic fibre to all wards, public Wi-Fi hotspots, Jitume digital learning centres in TVETs, and funding creative content production.",
+      "keyCounties": ["Nakuru", "Kilifi", "Kakamega", "Wajir"]
+    }
+  ],
+  "focusCounties": [
+    {
+      "code": 37,
+      "slug": "kakamega",
+      "name": "Kakamega",
+      "capital": "Kakamega Town",
+      "headquarters": "Kakamega County Headquarters, Mumias Road",
+      "governor": "H.E. Fernandes Barasa, FCPA",
+      "officialWebsite": "https://kakamega.go.ke",
+      "budgetPortalUrl": "https://kakamega.go.ke/budget-documents/",
+      "population": "1.87 Million",
+      "subCountiesCount": 12,
+      "programme": "BNS Mashinani",
+      "allocationKesMillion": 19450.7,
+      "allocationFormatted": "KES 19.45 Billion",
+      "executionRatePct": 92.1,
+      "healthSharePct": 33.2,
+      "educationSharePct": 14.1,
+      "infrastructurePct": 34.0,
+      "agricultureSharePct": 18.7,
+      "osrTargetKesMillion": 2200.0,
+      "pendingBillsKesMillion": 1100.0,
+      "keyProjects": [
+        "Kakamega Level 6 Teaching & Referral Hospital Phase II",
+        "County Dairy Farm Value Chain & Subsidised Artificial Insemination",
+        "10km Sugar Belt Feeder Road Tarmacking per Sub-county",
+        "Smart Ward Youth Agriculture Incubation Programme"
+      ],
+      "reportSlug": "kakamega-county-budget-execution-2026",
+      "summary": "Rank 4 nationally in equitable share. Strong absorption in healthcare and road networks, with focused agricultural investments in sugar belt revival."
+    },
+    {
+      "code": 3,
+      "slug": "kilifi",
+      "name": "Kilifi",
+      "capital": "Kilifi Town",
+      "headquarters": "Kilifi County Executive Complex, Bofa Road",
+      "governor": "H.E. Gideon Mung'aro, OGW",
+      "officialWebsite": "https://kilifi.go.ke",
+      "budgetPortalUrl": "https://kilifi.go.ke/county-treasury/",
+      "population": "1.45 Million",
+      "subCountiesCount": 7,
+      "programme": "BNS Mashinani",
+      "allocationKesMillion": 16890.8,
+      "allocationFormatted": "KES 16.89 Billion",
+      "executionRatePct": 89.1,
+      "healthSharePct": 29.2,
+      "educationSharePct": 15.1,
+      "infrastructurePct": 31.4,
+      "agricultureSharePct": 24.3,
+      "osrTargetKesMillion": 1850.0,
+      "pendingBillsKesMillion": 1420.0,
+      "keyProjects": [
+        "Ngomeni Artisanal Fisheries Cold Chain & Modern Fish Landing Jetty",
+        "Universal Health Coverage Community Health Promoters Co-Funding",
+        "Cashew Nut & Coconut Processing Factory Revival",
+        "Ganze & Magarini Drought-Resilience Water Pipeline Reticulation"
+      ],
+      "reportSlug": "kilifi-county-blue-economy-devolution",
+      "summary": "Pioneering blue economy financing and cashew revitalization, balanced with social safety nets across coastal fishing and arid inland zones."
+    },
+    {
+      "code": 32,
+      "slug": "nakuru",
+      "name": "Nakuru",
+      "capital": "Nakuru City",
+      "headquarters": "Nakuru County Headquarters, Moi Avenue",
+      "governor": "H.E. Susan Kihika",
+      "officialWebsite": "https://nakuru.go.ke",
+      "budgetPortalUrl": "https://nakuru.go.ke/finance-economic-planning/",
+      "population": "2.16 Million",
+      "subCountiesCount": 11,
+      "programme": "BNS Mashinani",
+      "allocationKesMillion": 22180.4,
+      "allocationFormatted": "KES 22.18 Billion",
+      "executionRatePct": 93.5,
+      "healthSharePct": 34.8,
+      "educationSharePct": 13.1,
+      "infrastructurePct": 35.8,
+      "agricultureSharePct": 16.3,
+      "osrTargetKesMillion": 3800.0,
+      "pendingBillsKesMillion": 850.0,
+      "keyProjects": [
+        "County Aggregation & Industrial Park (CAIP) Naivasha & Egerton",
+        "Geothermal Direct-Use Agricultural Drying & Cold Storage Center",
+        "Nakuru Level 5 Hospital Oncology & Trauma Center Modernization",
+        "Automated Own-Source Revenue (OSR) Digitization Platform"
+      ],
+      "reportSlug": "nakuru-county-revenue-agro-industrial-growth",
+      "summary": "Second largest devolved allocation outside Nairobi. Exceptional 93.5% execution driven by agro-processing parks and geothermal economic integration."
+    },
+    {
+      "code": 8,
+      "slug": "wajir",
+      "name": "Wajir",
+      "capital": "Wajir Town",
+      "headquarters": "Wajir County Headquarters, Airport Road",
+      "governor": "H.E. Ahmed Abdullahi, FCPA (COG Vice Chair)",
+      "officialWebsite": "https://wajir.go.ke",
+      "budgetPortalUrl": "https://wajir.go.ke/county-treasury/",
+      "population": "781,000",
+      "subCountiesCount": 6,
+      "programme": "BNS Mashinani",
+      "allocationKesMillion": 14250.7,
+      "allocationFormatted": "KES 14.25 Billion",
+      "executionRatePct": 87.8,
+      "healthSharePct": 30.1,
+      "educationSharePct": 18.0,
+      "infrastructurePct": 28.6,
+      "agricultureSharePct": 23.3,
+      "osrTargetKesMillion": 450.0,
+      "pendingBillsKesMillion": 2100.0,
+      "keyProjects": [
+        "Mega Water Pan Rainwater Harvesting & Solar Deep Borehole Network",
+        "Pastoralist Livestock Emergency Offtake & Fodder Storage Facilities",
+        "Mobile Nomadic Early Childhood Education Capitation Grant",
+        "Wajir Town Solar Street Lighting & Municipal Water Reticulation"
+      ],
+      "reportSlug": "wajir-county-equalisation-fund-climate-resilience",
+      "summary": "Strategic arid-lands budget leveraging KES 1.2B Equalisation Fund transfers for solar water infrastructure and pastoralist climate resilience."
+    }
+  ],
+  "trackedProjects": [
+    {
+      "id": "proj-kak-1",
+      "name": "Kakamega Level 6 Teaching & Referral Hospital (Phase II)",
+      "county": "Kakamega",
+      "sector": "Health & Medical",
+      "betaPillar": "health",
+      "budgetFormatted": "KES 1.20 Billion",
+      "status": "Under Construction (78%)",
+      "location": "Kakamega Town, Lurambi",
+      "description": "500-bed regional tertiary facility serving Western Kenya with specialized ICU, oncology, and radiology diagnostic suites.",
+      "reportSlug": "kakamega-county-budget-execution-2026"
+    },
+    {
+      "id": "proj-kak-2",
+      "name": "Mumias West County Aggregated Industrial Park (CAIP)",
+      "county": "Kakamega",
+      "sector": "Agriculture & Food Security",
+      "betaPillar": "agriculture",
+      "budgetFormatted": "KES 500 Million",
+      "status": "Active Civil Works",
+      "location": "Mumias West",
+      "description": "Co-funded with National Government to process sugarcane derivatives, organic fertilizer, and packaged dairy.",
+      "reportSlug": "kakamega-county-budget-execution-2026"
+    },
+    {
+      "id": "proj-kak-3",
+      "name": "Malava & Lurambi Piped Solar Water Reticulation",
+      "county": "Kakamega",
+      "sector": "Water & Sanitation",
+      "betaPillar": "agriculture",
+      "budgetFormatted": "KES 290 Million",
+      "status": "Operational",
+      "location": "Malava & Lurambi Sub-counties",
+      "description": "Solar-pumped community water network supplying over 45,000 households and schools with potable water.",
+      "reportSlug": "kakamega-county-budget-execution-2026"
+    },
+    {
+      "id": "proj-kil-1",
+      "name": "Ngomeni Marine Artisanal Fisheries & Cold Storage Jetty",
+      "county": "Kilifi",
+      "sector": "Blue Economy & Maritime",
+      "betaPillar": "agriculture",
+      "budgetFormatted": "KES 620 Million",
+      "status": "Phase 1 Complete",
+      "location": "Ngomeni, Magarini",
+      "description": "Modern fish landing site equipped with solar ice plants, boat engine workshops, and direct export cold chain logistics.",
+      "reportSlug": "kilifi-county-blue-economy-devolution"
+    },
+    {
+      "id": "proj-kil-2",
+      "name": "Ganze & Magarini Drought-Resilience Water Pipelines",
+      "county": "Kilifi",
+      "sector": "Water & Sanitation",
+      "betaPillar": "agriculture",
+      "budgetFormatted": "KES 510 Million",
+      "status": "Active Pipeline Laying",
+      "location": "Ganze & Magarini Arid Zones",
+      "description": "Extension of Baricho bulk water pipelines with 18 solar-powered community distribution kiosks.",
+      "reportSlug": "kilifi-county-blue-economy-devolution"
+    },
+    {
+      "id": "proj-kil-3",
+      "name": "Cashew Nut & Coconut Processing Factory CAIP",
+      "county": "Kilifi",
+      "sector": "Agriculture & Food Security",
+      "betaPillar": "agriculture",
+      "budgetFormatted": "KES 380 Million",
+      "status": "Machinery Installation",
+      "location": "Kaloleni / Tezo",
+      "description": "Value addition factory to process raw nuts and copra oil, providing market off-take for 28,000 coastal smallholders.",
+      "reportSlug": "kilifi-county-blue-economy-devolution"
+    },
+    {
+      "id": "proj-nak-1",
+      "name": "Naivasha & Egerton County Industrial Parks (CAIP)",
+      "county": "Nakuru",
+      "sector": "Agriculture & Food Security",
+      "betaPillar": "agriculture",
+      "budgetFormatted": "KES 750 Million",
+      "status": "Civil Construction",
+      "location": "Naivasha SEZ & Njoro",
+      "description": "Agro-processing zone for potato cold storage, avocado oil extraction, and direct geothermal heat drying.",
+      "reportSlug": "nakuru-county-revenue-agro-industrial-growth"
+    },
+    {
+      "id": "proj-nak-2",
+      "name": "Nakuru Level 5 PGH Mother and Baby Wing Enhancement",
+      "county": "Nakuru",
+      "sector": "Health & Medical",
+      "betaPillar": "health",
+      "budgetFormatted": "KES 340 Million",
+      "status": "Fully Operational",
+      "location": "Nakuru City East",
+      "description": "250-bed specialized maternal and neonatal ICU complex handling high-risk deliveries across Central Rift.",
+      "reportSlug": "nakuru-county-revenue-agro-industrial-growth"
+    },
+    {
+      "id": "proj-nak-3",
+      "name": "Itare & Chemususu Water Distribution Reticulation",
+      "county": "Nakuru",
+      "sector": "Water & Sanitation",
+      "betaPillar": "agriculture",
+      "budgetFormatted": "KES 580 Million",
+      "status": "In Progress (64%)",
+      "location": "Rongai & Kuresoi",
+      "description": "Last-mile community reticulation delivering clean gravity-fed water from Chemususu Dam to rural farms.",
+      "reportSlug": "nakuru-county-revenue-agro-industrial-growth"
+    },
+    {
+      "id": "proj-waj-1",
+      "name": "Wajir Mega Rainwater Harvesting & Solar Boreholes Masterplan",
+      "county": "Wajir",
+      "sector": "Water & Sanitation",
+      "betaPillar": "agriculture",
+      "budgetFormatted": "KES 1.10 Billion",
+      "status": "Active Drilling & Desilting",
+      "location": "Eldas, Tarbaj, Wajir South",
+      "description": "Excavation of 12 mega 100,000m³ water pans and 32 solar-converted deep strategic aquifer boreholes.",
+      "reportSlug": "wajir-county-equalisation-fund-climate-resilience"
+    },
+    {
+      "id": "proj-waj-2",
+      "name": "Climate-Smart Pastoralist Livestock Value Addition & Feedlots",
+      "county": "Wajir",
+      "sector": "Agriculture & Food Security",
+      "betaPillar": "agriculture",
+      "budgetFormatted": "KES 650 Million",
+      "status": "Underway (FLLoCA Supported)",
+      "location": "Wajir Bor & Habaswein",
+      "description": "Emergency drought buffer feedlots, veterinary disease surveillance corridor, and digital livestock weighing hub.",
+      "reportSlug": "wajir-county-equalisation-fund-climate-resilience"
+    },
+    {
+      "id": "proj-waj-3",
+      "name": "Equalisation Fund Solar Mini-Grids & Rural Electrification",
+      "county": "Wajir",
+      "sector": "Infrastructure & Energy",
+      "betaPillar": "digital",
+      "budgetFormatted": "KES 490 Million",
+      "status": "Installation Phase",
+      "location": "Off-grid Trading Centres",
+      "description": "Constitutional Equalisation Fund (Article 204) project deploying solar mini-grids to power clinics and water pumps.",
+      "reportSlug": "wajir-county-equalisation-fund-climate-resilience"
+    },
+    {
+      "id": "proj-nat-1",
+      "name": "National Fertilizer Subsidy Programme (BETA)",
+      "county": "National",
+      "sector": "Agriculture & Food Security",
+      "betaPillar": "agriculture",
+      "budgetFormatted": "KES 10.00 Billion",
+      "status": "Nationwide Rollout",
+      "location": "NCPB Depots Countrywide",
+      "description": "Delivering subsidized planting and top-dressing fertilizer at KES 2,500 per 50kg bag to registered farmers via e-vouchers.",
+      "reportSlug": "national-budget-2026-2027-breakdown"
+    },
+    {
+      "id": "proj-nat-2",
+      "name": "Junior Secondary School (CBC Grade 9) Capitation & Labs",
+      "county": "National",
+      "sector": "Education & Capitation",
+      "betaPillar": "msme",
+      "budgetFormatted": "KES 30.00 Billion",
+      "status": "Disbursed to Schools",
+      "location": "Public Comprehensive Schools",
+      "description": "Funding construction of 16,000 science laboratories and termly tuition capitation for junior school learners.",
+      "reportSlug": "education-sector-capitation-tsc-funding-gap"
+    }
+  ],
+  "reports": [
+    {
+      "slug": "national-budget-2026-2027-breakdown",
+      "title": "Kenya National Budget FY 2026/27 Breakdown: KES 4.82 Trillion Expenditure, Revenue & Deficit Gap",
+      "seoTitle": "Kenya National Budget 2026/2027: KES 4.82T Treasury Breakdown | Budget Ndio Story",
+      "seoDescription": "Authoritative analysis of Kenya's FY 2026/27 KES 4.82T national budget: KRA ordinary revenue (KES 2.99T), debt servicing (KES 1.20T), and county equitable share (KES 502B).",
+      "eyebrow": "National Budget Blueprint",
+      "category": "National Budget",
+      "programme": "BNS Connect",
+      "county": "National",
+      "publishedDate": "2026-06-15",
+      "updatedDate": "2026-08-31",
+      "readTimeMinutes": 8,
+      "author": "Budget Ndio Story Research Desk",
+      "provenance": {
+        "source": "National Treasury Budget Statement FY 2026/27 & Parliament Appropriation Act 2026",
+        "level": "Audited & Parliamentary Approved",
+        "analystSignoff": "BNS Fiscal Intelligence Desk",
+        "sourceDocumentUrl": "https://www.treasury.go.ke"
+      },
+      "kpis": [
+        { "label": "Total National Budget", "value": "KES 4.82T", "trend": "up", "change": "+6.4% YoY" },
+        { "label": "KRA Ordinary Revenue", "value": "KES 2.99T", "trend": "up", "change": "+8.1% YoY" },
+        { "label": "Annual Debt Servicing", "value": "KES 1.20T", "trend": "up", "change": "25% of total budget" },
+        { "label": "County Devolution Share", "value": "KES 502B", "trend": "up", "change": "10.4% national share" }
+      ],
+      "citizenTakeaway": [
+        "For every KES 100 collected by the government in taxes, approximately KES 40 is allocated strictly to service domestic and external public debt.",
+        "Education remains the largest single sector at KES 784.5 Billion, with over half going to Teachers Service Commission (TSC) salaries.",
+        "The 47 County Governments receive KES 502 Billion in total devolution transfers, comprising KES 428B unconditional equitable share and KES 74B in conditional grants.",
+        "The budget deficit of KES 1.15 Trillion (5.5% of GDP) will be funded predominantly through domestic borrowing (KES 1.03T) from local banks and pension funds."
+      ],
+      "content": "### 1. The Macro-Fiscal Framework: Where Does the Money Come From?\n\nKenya’s FY 2026/27 National Budget stands at a record **KES 4.82 Trillion**. The revenue framework relies on three distinct pillars:\n\n- **Ordinary Revenue (KRA Tax Receipts)**: **KES 2,985.7 Billion** (61.9% of the budget), anchored by Income Tax (PAYE and Corporate Income Tax) and Value Added Tax (VAT at 16%).\n- **Appropriations-in-Aid (A.I.A)**: **KES 644.8 Billion** (13.4%), generated directly by state departments, public universities, and regulatory authorities through user fees and licenses.\n- **Grants & Concessional Loans**: **KES 43.6 Billion** (0.9%) from bilateral development partners and multilateral facilities.\n- **The Fiscal Deficit Gap**: **KES 1,146.2 Billion** (23.8%), which must be plugged through **KES 1,030.1 Billion in domestic market borrowing** and **KES 116.2 Billion in external sovereign financing**.\n\n### 2. Tier-1 National Sector Allocations\n\nThe National Assembly approved the following sectoral allocations:\n\n1. **Education**: **KES 784.5 Billion** (16.3% of total budget) — TSC salaries (KES 421.9B), HELB loans (KES 56.7B), Free Secondary capitation (KES 54.6B), and Junior Secondary School transition (KES 30B).\n2. **Governance, Justice, Law & Order (GJLO)**: **KES 353.3 Billion** (7.3%) — National Police Service, Judiciary, and Independent Oversight Commissions.\n3. **Public Administration & International Relations**: **KES 341.2 Billion** (7.1%).\n4. **Health**: **KES 175.0 Billion** (3.6%) — Kenya Medical Supplies Authority (KEMSA), national referral hospitals (KNH, MTRH), and Primary Health Care funds.\n5. **Agriculture & Rural Development**: **KES 62.4 Billion** (1.3%) — National Fertilizer Subsidies, CAIPs shared funding, and FLLoCA climate resilience.\n\n### 3. What Happens to the Debt Service Obligation?\n\nKenya’s Consolidated Fund Services (CFS) ring-fences **KES 1,203.1 Billion** solely for public debt servicing (interest and principal redemptions). This mandatory constitutional obligation takes legal priority over all ministry spending, underscoring the tight fiscal space faced by the National Treasury.",
+      "faqs": [
+        {
+          "question": "What is the total national budget of Kenya for FY 2026/2027?",
+          "answer": "Kenya's total national budget for FY 2026/27 is KES 4.82 Trillion. It is financed through KES 2.99 Trillion in ordinary revenue, KES 645 Billion in ministerial Appropriations-in-Aid, and a KES 1.15 Trillion borrowing deficit."
+        },
+        {
+          "question": "How much money goes to Kenya's 47 counties in FY 2026/2027?",
+          "answer": "County governments receive KES 502 Billion in total devolution allocations, consisting of KES 428 Billion in unconditional equitable share, KES 74 Billion in conditional national and donor grants, and KES 9.6 Billion in Equalisation Fund transfers."
+        },
+        {
+          "question": "How much of Kenya's budget goes towards debt servicing?",
+          "answer": "Annual debt servicing stands at KES 1.20 Trillion in FY 2026/27, representing approximately 25% of the total budget and consuming over 40% of all ordinary tax revenue collected by the KRA."
+        }
+      ]
+    },
+    {
+      "slug": "kakamega-county-budget-execution-2026",
+      "title": "Kakamega County FY 2026/27 Fiscal Review: KES 19.45B Allocation, Healthcare (33.2%) & Sugar Belt Roads",
+      "seoTitle": "Kakamega County Budget 2026/2027: KES 19.45B Allocation & Projects | Budget Ndio Story",
+      "seoDescription": "BNS Mashinani field review of Kakamega County's KES 19.45B budget. Healthcare (33.2%), sugar belt road tarmacking, and own-source revenue performance.",
+      "eyebrow": "County Scorecard — BNS Mashinani",
+      "category": "County Budgets",
+      "programme": "BNS Mashinani",
+      "county": "Kakamega",
+      "publishedDate": "2026-07-10",
+      "updatedDate": "2026-08-31",
+      "readTimeMinutes": 6,
+      "author": "BNS Mashinani Western Region Desk",
+      "provenance": {
+        "source": "Kakamega County Annual Budget Estimates FY2026/27 & COB Implementation Report",
+        "level": "Ground-Verified by BNS Mashinani",
+        "analystSignoff": "Western Region Field Lead",
+        "sourceDocumentUrl": "https://www.kakamega.go.ke"
+      },
+      "kpis": [
+        { "label": "Total Devolved Budget", "value": "KES 19.45B", "trend": "up", "change": "Rank 4 in Kenya" },
+        { "label": "Execution / Absorption Rate", "value": "92.1%", "trend": "up", "change": "Top tier national ranking" },
+        { "label": "Health Sector Share", "value": "33.2%", "trend": "up", "change": "KES 6.45B total" },
+        { "label": "Roads & Infrastructure", "value": "34.0%", "trend": "flat", "change": "KES 6.61B total" }
+      ],
+      "citizenTakeaway": [
+        "Kakamega County receives KES 19.45 Billion, placing it 4th nationally in equitable share behind Nairobi, Kiambu, and Nakuru.",
+        "One-third (33.2%) of the county budget is dedicated to Health Services, centered on staffing rural health centres and operationalizing Level 4 sub-county hospitals.",
+        "Infrastructure and agricultural access roads receive 34.0% of the development envelope, specifically targeting cane transportation corridors in Butere, Mumias, and Malava.",
+        "Own-Source Revenue (OSR) collection reached KES 1.85B against a KES 2.20B target, representing an 84% revenue efficiency rating."
+      ],
+      "content": "### 1. County Overview: Balancing Scale and Service Delivery\n\nKakamega County is home to over 1.87 million residents across 12 sub-counties and 60 wards. Under the CRA 3rd Basis Formula, Kakamega was allocated **KES 19,450.7 Million** in equitable revenue share.\n\n### 2. Sectoral Allocation Priorities\n\n- **Health Services (33.2% / KES 6.45B)**: Construction of sub-county mortuaries, primary health care commodity supply, and stipend support for 2,400 Community Health Promoters.\n- **Transport & Public Works (34.0% / KES 6.61B)**: 10km of gravel-to-bitumen road upgrades per sub-county and drainage culverts across the sugar belt.\n- **Agriculture, Livestock & Fisheries (18.7% / KES 3.64B)**: Subsidized farm inputs (certified maize and tea seeds), artificial insemination kits, and fish farming ponds in Lurambi and Ikolomani.\n- **Education & Vocational Training (14.1% / KES 2.74B)**: County bursary fund (KES 240M across wards) and polytechnic infrastructure modernization.\n\n### 3. BNS Mashinani Field Verification Findings\n\nOur field trackers verified that the Kakamega Level 6 Teaching & Referral Hospital has achieved 78% civil works completion, though delays in specialized radiology equipment procurement remain a bottleneck.",
+      "faqs": [
+        {
+          "question": "How much was Kakamega County allocated in the FY 2026/2027 budget?",
+          "answer": "Kakamega County was allocated KES 19.45 Billion in equitable share from the National Treasury, ranking 4th among all 47 counties."
+        },
+        {
+          "question": "What are the biggest spending sectors in Kakamega County?",
+          "answer": "Infrastructure and Roads (34.0%) and Healthcare (33.2%) represent over two-thirds of Kakamega County's entire budget, followed by Agriculture (18.7%) and Education (14.1%)."
+        }
+      ]
+    },
+    {
+      "slug": "kilifi-county-blue-economy-devolution",
+      "title": "Kilifi County Fiscal Review: KES 16.89B Devolution Share, UHC & Blue Economy Investments",
+      "seoTitle": "Kilifi County Budget 2026/2027: KES 16.89B Blue Economy & UHC | Budget Ndio Story",
+      "seoDescription": "BNS Mashinani analysis of Kilifi County's KES 16.89B budget: artisanal marine fisheries, cashew nut revival, UHC worker grants, and Ganze water pipelines.",
+      "eyebrow": "County Scorecard — BNS Mashinani",
+      "category": "County Budgets",
+      "programme": "BNS Mashinani",
+      "county": "Kilifi",
+      "publishedDate": "2026-07-14",
+      "updatedDate": "2026-08-31",
+      "readTimeMinutes": 6,
+      "author": "BNS Mashinani Coast Region Desk",
+      "provenance": {
+        "source": "Kilifi County Fiscal Strategy Paper & County Assembly Appropriation Act",
+        "level": "Ground-Verified by BNS Mashinani",
+        "analystSignoff": "Coast Region Field Lead",
+        "sourceDocumentUrl": "https://www.kilifi.go.ke"
+      },
+      "kpis": [
+        { "label": "Total Allocation", "value": "KES 16.89B", "trend": "up", "change": "+5.2% YoY" },
+        { "label": "Execution Rate", "value": "89.1%", "trend": "up", "change": "Consistent execution" },
+        { "label": "Health Share", "value": "29.2%", "trend": "up", "change": "KES 4.93B total" },
+        { "label": "Blue Economy & Agric", "value": "24.3%", "trend": "up", "change": "KES 4.10B total" }
+      ],
+      "citizenTakeaway": [
+        "Kilifi County receives KES 16.89 Billion in equitable share, supporting an economy spanning coastal tourism, artisanal fishing, and arid hinterlands.",
+        "The county committed KES 4.10 Billion (24.3%) to Agriculture and Blue Economy, focusing on cold storage at landing beaches and modern motorized boat gear.",
+        "Universal Health Coverage grants provide KES 340M in co-funding for coastal dispensaries in Magarini, Kaloleni, and Malindi.",
+        "Drought resilience projects in Ganze sub-county absorbed KES 580M for water pan desilting and solar borehole pumping."
+      ],
+      "content": "### 1. Geographical Realities & Fiscal Balancing\n\nKilifi County faces a dual economy: a thriving coastal tourism and marine belt alongside drought-prone inland pastoralist zones in Ganze and Magarini. The **KES 16.89 Billion** allocation reflects this dual mandate.\n\n### 2. Key Investment Pillars\n\n- **Blue Economy & Agriculture (24.3%)**: Modernization of Ngomeni and Kichwa cha Kati fish landing sites, seaweed farming grants in Kibokoni, and cashew nut seedling distribution.\n- **Health Services (29.2%)**: Upgrades to Malindi Sub-County Hospital maternity wing and distribution of anti-malarial commodities.\n- **Water Infrastructure (18.5%)**: Reticulation of Baricho water supply pipelines to underserved villages.\n- **Roads & Transport (31.4%)**: Rural access road grading and beach access infrastructure.",
+      "faqs": [
+        {
+          "question": "How much does Kilifi County receive in equitable revenue share?",
+          "answer": "Kilifi County receives KES 16.89 Billion in unconditional equitable share from the national government for FY 2026/2027."
+        },
+        {
+          "question": "What is Kilifi County's primary agricultural and economic focus?",
+          "answer": "Kilifi focuses on the Blue Economy (marine fisheries cold chain and motorized boat subsidies), cashew nut/coconut revival, and water pipelines in drought-prone inland areas."
+        }
+      ]
+    },
+    {
+      "slug": "nakuru-county-revenue-agro-industrial-growth",
+      "title": "Nakuru County Budget Deep-Dive: KES 22.18B Allocation, CAIPs & Own-Source Revenue Drive",
+      "seoTitle": "Nakuru County Budget 2026/2027: KES 22.18B Allocation & CAIPs | Budget Ndio Story",
+      "seoDescription": "BNS Mashinani investigation into Nakuru County's KES 22.18B budget. Agro-industrial parks, geothermal direct-use drying, and KES 3.8B OSR target.",
+      "eyebrow": "County Scorecard — BNS Mashinani",
+      "category": "County Budgets",
+      "programme": "BNS Mashinani",
+      "county": "Nakuru",
+      "publishedDate": "2026-07-18",
+      "updatedDate": "2026-08-31",
+      "readTimeMinutes": 7,
+      "author": "BNS Mashinani Rift Valley Desk",
+      "provenance": {
+        "source": "Nakuru County Budget Estimates & COB Annual County Implementation Report",
+        "level": "Ground-Verified by BNS Mashinani",
+        "analystSignoff": "Rift Valley Field Lead",
+        "sourceDocumentUrl": "https://www.nakuru.go.ke"
+      },
+      "kpis": [
+        { "label": "Total Devolved Budget", "value": "KES 22.18B", "trend": "up", "change": "Rank 2 outside Nairobi" },
+        { "label": "Execution Rate", "value": "93.5%", "trend": "up", "change": "Highest among focus counties" },
+        { "label": "Health Share", "value": "34.8%", "trend": "up", "change": "KES 7.72B total" },
+        { "label": "Infrastructure & CAIPs", "value": "35.8%", "trend": "up", "change": "KES 7.94B total" }
+      ],
+      "citizenTakeaway": [
+        "Nakuru County commands KES 22.18 Billion, making it the highest funded county among the 4 BNS focus counties and 3rd highest nationally.",
+        "Nakuru achieved a stellar 93.5% execution rate, reflecting disciplined procurement cycles and strong project delivery in Naivasha, Nakuru Town East/West, and Rongai.",
+        "The County Aggregation & Industrial Park (CAIP) in Egerton received KES 500M in co-funding to accelerate potato and avocado value addition.",
+        "Own-Source Revenue targets were set at KES 3.80 Billion, powered by fully automated digital revenue collection across land rates, parking, and single business permits."
+      ],
+      "content": "### 1. Nakuru County's Fiscal Powerhouse\n\nAs Kenya's newest city and agricultural hub, Nakuru operates with a budget of **KES 22,180.4 Million**. It achieves the highest execution efficiency (93.5%) in the region.\n\n### 2. Industrial & Agricultural Value Chain Focus\n\n- **County Aggregation & Industrial Parks (CAIPs)**: Construction of cold storage warehouses at Egerton and Naivasha to eliminate post-harvest potato and vegetable losses.\n- **Health Modernization (34.8%)**: Operationalization of the Nakuru Level 5 Oncology Center and sub-county maternity theatres in Molo, Gilgil, and Subukia.\n- **Geothermal Direct Use**: Pilot agro-processing projects utilizing Olkaria geothermal steam for crop drying and milk pasteurization.",
+      "faqs": [
+        {
+          "question": "What is Nakuru County's budget for FY 2026/2027?",
+          "answer": "Nakuru County's budget is KES 22.18 Billion, making it the second largest county allocation outside Nairobi."
+        },
+        {
+          "question": "How does Nakuru County perform in budget execution?",
+          "answer": "Nakuru leads the region with a 93.5% budget execution rate, backed by automated revenue collection and timely development fund absorption."
+        }
+      ]
+    },
+    {
+      "slug": "wajir-county-equalisation-fund-climate-resilience",
+      "title": "Wajir County Water & Climate Budget: KES 14.25B Allocation, Equalisation Fund & Pastoralist Safety Nets",
+      "seoTitle": "Wajir County Budget 2026/2027: KES 14.25B Water & Equalisation | Budget Ndio Story",
+      "seoDescription": "BNS Mashinani investigation into Wajir County's KES 14.25B budget: solar boreholes, livestock emergency off-take, Equalisation Fund (KES 1.2B), and nomadic ECDE.",
+      "eyebrow": "County Scorecard — BNS Mashinani",
+      "category": "County Budgets",
+      "programme": "BNS Mashinani",
+      "county": "Wajir",
+      "publishedDate": "2026-07-22",
+      "updatedDate": "2026-08-31",
+      "readTimeMinutes": 7,
+      "author": "BNS Mashinani Northern Kenya Desk",
+      "provenance": {
+        "source": "Wajir County Annual Development Plan & CRA Equalisation Fund Allocation Schedule",
+        "level": "Ground-Verified by BNS Mashinani",
+        "analystSignoff": "Northern Kenya Field Lead",
+        "sourceDocumentUrl": "https://www.wajir.go.ke"
+      },
+      "kpis": [
+        { "label": "Equitable Allocation", "value": "KES 14.25B", "trend": "up", "change": "+4.8% YoY" },
+        { "label": "Equalisation Fund", "value": "KES 1.20B", "trend": "up", "change": "Ring-fenced water/health" },
+        { "label": "Execution Rate", "value": "87.8%", "trend": "up", "change": "Improving absorption" },
+        { "label": "Health Share", "value": "30.1%", "trend": "up", "change": "KES 4.29B total" }
+      ],
+      "citizenTakeaway": [
+        "Wajir County receives KES 14.25 Billion in equitable share, plus KES 1.20 Billion from the constitutional Equalisation Fund (Article 204).",
+        "Water supply and climate resilience represent the single largest capital priority, with over 45 solar-powered deep boreholes constructed across Eldas, Tarbaj, and Wajir South.",
+        "Livestock protection programmes received KES 850M for emergency drought fodder preservation and veterinary disease surveillance corridors.",
+        "Nomadic early childhood education capitation reached over 35,000 pastoralist children across mobile schooling clusters."
+      ],
+      "content": "### 1. Arid Devolution: Transforming Remote Frontiers\n\nWajir County covers over 56,000 km² in North Eastern Kenya. Its **KES 14.25 Billion** budget is augmented by **KES 1.20 Billion from the Equalisation Fund**.\n\n### 2. Water Infrastructure & Pastoralist Economy\n\n- **Mega Water Pan Network**: 12 new 100,000m³ water pans excavated to capture seasonal flash floods.\n- **Solar Pumping Conversion**: Replacement of high-cost diesel borehole generators with solar PV arrays, cutting community water tariffs by 60%.\n- **Livestock Market Digitalization**: Electronic livestock weighing bridges at Wajir Bor and Habaswein.",
+      "faqs": [
+        {
+          "question": "How much does Wajir County receive from the Equalisation Fund?",
+          "answer": "Wajir receives KES 1.20 Billion from the Equalisation Fund in addition to its KES 14.25 Billion equitable share, ring-fenced for water harvesting and rural health infrastructure."
+        },
+        {
+          "question": "What is the primary capital expenditure in Wajir County?",
+          "answer": "Water infrastructure—including mega water pans and solarized deep boreholes—is the top capital priority to mitigate drought for pastoralist communities."
+        }
+      ]
+    },
+    {
+      "slug": "kenya-public-debt-servicing-crisis-analysis",
+      "title": "Where Does Every 100 Shillings Go? Servicing Kenya's KES 1.20 Trillion Public Debt Obligation",
+      "seoTitle": "Kenya Public Debt Servicing 2026/27: KES 1.20T CFS Obligation | Budget Ndio Story",
+      "seoDescription": "Investigative analysis of Kenya's public debt servicing: domestic interest payments, Eurobond maturities, and the fiscal squeeze on essential civic services.",
+      "eyebrow": "Debt & Macro-Economy",
+      "category": "Debt & Deficit",
+      "programme": "Wanahabari Lab",
+      "county": "National",
+      "publishedDate": "2026-08-05",
+      "updatedDate": "2026-08-31",
+      "readTimeMinutes": 9,
+      "author": "Wanahabari Data Journalism Team",
+      "provenance": {
+        "source": "National Treasury Public Debt Statistical Bulletin & Central Bank of Kenya Weekly Bulletins",
+        "level": "Audited Official Data",
+        "analystSignoff": "Lead Macroeconomic Analyst",
+        "sourceDocumentUrl": "https://www.treasury.go.ke"
+      },
+      "kpis": [
+        { "label": "Annual Debt Service", "value": "KES 1.20T", "trend": "up", "change": "+14.2% YoY" },
+        { "label": "Debt-to-Tax Ratio", "value": "40.3%", "trend": "up", "change": "KES 40 per KES 100 tax" },
+        { "label": "Domestic Borrowing Target", "value": "KES 1.03T", "trend": "up", "change": "T-Bills & T-Bonds" },
+        { "label": "External Debt Target", "value": "KES 116B", "trend": "down", "change": "Concessional mix" }
+      ],
+      "citizenTakeaway": [
+        "Kenya will spend KES 1.20 Trillion on public debt service in FY 2026/27, exceeding the entire development budget of the national government.",
+        "Over 75% of the debt servicing obligation is domestic interest paid to local commercial banks and institutional bondholders.",
+        "Heavy domestic government borrowing crowds out private sector credit, keeping SME loan interest rates above 16%.",
+        "Under Article 214 of the Constitution, public debt charges are directly charged to the Consolidated Fund and cannot be voted down by Parliament."
+      ],
+      "content": "### 1. The Anatomy of Kenya’s KES 1.20T Debt Bill\n\nPublic debt servicing has grown to become the single largest expenditure block in the national budget. In FY 2026/27, the National Treasury has earmarked **KES 1,203.1 Billion** under Consolidated Fund Services (CFS).\n\n### 2. Domestic vs External Squeeze\n\n- **Domestic Debt Servicing (KES 910B)**: Interest on Treasury Bills and Fixed-Rate Treasury Bonds.\n- **External Debt Servicing (KES 293B)**: Bilateral loans, multilateral facilities (World Bank, IMF, AfDB), and commercial sovereign debt amortization.\n\n### 3. The Civic Implication\n\nBecause debt is a non-discretionary constitutional charge, any shortfall in KRA tax collection immediately results in budget cuts to education capitation, health supplies, and county equitable share disbursements.",
+      "faqs": [
+        {
+          "question": "How much does Kenya spend on debt servicing each year?",
+          "answer": "In FY 2026/27, Kenya allocates KES 1.20 Trillion to debt servicing, consuming approximately 40.3% of all ordinary tax revenue collected by the KRA."
+        },
+        {
+          "question": "Why can Parliament not reduce the debt servicing budget?",
+          "answer": "Under Article 214 of the Kenyan Constitution, public debt service is a statutory charge on the Consolidated Fund, meaning it must be paid automatically without legislative alteration."
+        }
+      ]
+    },
+    {
+      "slug": "education-sector-capitation-tsc-funding-gap",
+      "title": "Education Sector Allocation: KES 784.5B Breakdown — TSC Salaries, Junior Secondary & HELB",
+      "seoTitle": "Kenya Education Budget 2026/2027: KES 784.5B TSC, HELB & Capitation | Budget Ndio Story",
+      "seoDescription": "Comprehensive analysis of Kenya's KES 784.5B Education Budget: TSC teacher salaries (KES 421.9B), HELB loans (KES 56.7B), and Junior Secondary CBC capitation (KES 30B).",
+      "eyebrow": "Sector Intelligence",
+      "category": "Sector Allocations",
+      "programme": "BNS Connect",
+      "county": "National",
+      "publishedDate": "2026-08-12",
+      "updatedDate": "2026-08-31",
+      "readTimeMinutes": 7,
+      "author": "BNS Connect Education Policy Desk",
+      "provenance": {
+        "source": "National Treasury Budget Estimates: Vote 1064, Vote 1065, Vote 1066 & TSC Act Appropriation",
+        "level": "Parliament Approved",
+        "analystSignoff": "Education Sector Lead",
+        "sourceDocumentUrl": "https://www.education.go.ke"
+      },
+      "kpis": [
+        { "label": "Total Education Budget", "value": "KES 784.5B", "trend": "up", "change": "16.3% of National Budget" },
+        { "label": "TSC Teachers Salaries", "value": "KES 421.9B", "trend": "up", "change": "54% of education vote" },
+        { "label": "HELB & University Fund", "value": "KES 56.7B", "trend": "up", "change": "New funding model" },
+        { "label": "Junior Secondary CBC", "value": "KES 30.0B", "trend": "up", "change": "Grade 9 & 10 transition" }
+      ],
+      "citizenTakeaway": [
+        "Education is Kenya's largest national sector at KES 784.5 Billion, accounting for 16.3% of all government spending.",
+        "Over half (54%) of the education budget goes directly to teacher salaries under the Teachers Service Commission (KES 421.9B).",
+        "The Higher Education Loans Board (HELB) receives KES 56.7 Billion under the new student-centered university funding model.",
+        "Junior Secondary School (JSS) CBC transition capitation is allocated KES 30.0 Billion to support laboratory construction and textbook procurement."
+      ],
+      "content": "### 1. Education as the Pillar of Human Capital\n\nKenya’s **KES 784.5 Billion** education envelope is distributed across four primary state departments:\n\n- **Teachers Service Commission (TSC)**: **KES 421.9 Billion** (53.8%) for 400,000+ primary, secondary, and JSS teachers.\n- **State Department for Basic Education**: **KES 154.2 Billion** (Free Primary and Day Secondary capitation, school feeding).\n- **Higher Education & Research**: **KES 128.4 Billion** (HELB loans, University Fund scholarships, TVET construction).\n- **Vocational & Technical Training (TVET)**: **KES 38.0 Billion** (Dual-training curriculum, equipment grants).\n\n### 2. Capitation Realities for Parents\n\nWhile Free Day Secondary Capitation is budgeted at KES 22,244 per student, actual Treasury quarterly cash disbursements have historically averaged KES 17,000, creating operational deficits in public schools.",
+      "faqs": [
+        {
+          "question": "How much does Kenya spend on education in FY 2026/2027?",
+          "answer": "Kenya spends KES 784.5 Billion on education in FY 2026/27, representing 16.3% of the total national budget."
+        },
+        {
+          "question": "How much of the education budget goes to teacher salaries?",
+          "answer": "KES 421.9 Billion—more than 53% of the entire education budget—is allocated to teacher salaries through the Teachers Service Commission (TSC)."
+        }
+      ]
+    },
+    {
+      "slug": "devolution-equitable-share-cra-formula-explained",
+      "title": "The Devolution Envelope: How the KES 502B Equitable Share & Conditional Grants Reach 47 Counties",
+      "seoTitle": "Kenya Devolution Budget 2026/2027: KES 502B CRA Equitable Share Formula | Budget Ndio Story",
+      "seoDescription": "Detailed guide on how Kenya's KES 502B devolution funds are shared among 47 counties using the CRA 3rd Basis Formula (Population 18%, Health 17%, Agriculture 10%, Poverty 14%).",
+      "eyebrow": "Devolution Architecture",
+      "category": "Devolution & Revenue Sharing",
+      "programme": "BNS Studios",
+      "county": "All 47 Counties",
+      "publishedDate": "2026-08-20",
+      "updatedDate": "2026-08-31",
+      "readTimeMinutes": 8,
+      "author": "BNS Studios Civic Explainer Desk",
+      "provenance": {
+        "source": "Commission on Revenue Allocation (CRA) 3rd Basis Formula & Division of Revenue Act (DORA) 2026",
+        "level": "Statutory & Constitutional",
+        "analystSignoff": "Lead Devolution Analyst",
+        "sourceDocumentUrl": "https://www.cra.go.ke"
+      },
+      "kpis": [
+        { "label": "Total Devolution Pool", "value": "KES 502.0B", "trend": "up", "change": "+5.8% YoY" },
+        { "label": "Unconditional Equitable Share", "value": "KES 428.0B", "trend": "up", "change": "Direct county exchequer" },
+        { "label": "Conditional Grants", "value": "KES 74.0B", "trend": "up", "change": "CAIPs, UHC, FLLoCA" },
+        { "label": "Equalisation Fund", "value": "KES 9.6B", "trend": "up", "change": "14 marginalised counties" }
+      ],
+      "citizenTakeaway": [
+        "Under Article 202 & 203 of the Constitution, counties are guaranteed an unconditional equitable share of national revenue, set at KES 428B for FY 2026/27.",
+        "The CRA 3rd Basis Revenue Sharing Formula distributes funds based on Population (18%), Health Services (17%), Agriculture (10%), Poverty Level (14%), Land Area (8%), and Basic Equal Share (20%).",
+        "Additional conditional allocations totaling KES 74 Billion are earmarked for specific national priorities like Community Health Promoters and County Industrial Parks (CAIPs).",
+        "The Equalisation Fund distributes KES 9.6 Billion to 14 marginalized arid and semi-arid counties to provide basic water, roads, and electricity."
+      ],
+      "content": "### 1. The Division of Revenue Architecture\n\nBefore counties receive any funds, Parliament passes the **Division of Revenue Act (DORA)**, which divides nationally raised ordinary revenue between the National Government and County Governments.\n\n### 2. The CRA 3rd Basis Allocation Parameters\n\nThe Commission on Revenue Allocation distributes the unconditional equitable share among the 47 counties using the following audited parameters:\n\n1. **Basic Equal Share (20%)**: Shared equally across all 47 counties regardless of size.\n2. **Population Index (18%)**: Sourced from the official KNBS census.\n3. **Health Services Index (17%)**: Sourced from inpatient/outpatient hospital attendance and health facilities.\n4. **Poverty Index (14%)**: Poverty gap metric to lift economically disadvantaged regions.\n5. **Agriculture Index (10%)**: Value of crop and livestock production per county.\n6. **Land Area Index (8%)**: Geographic land size requiring infrastructure.\n7. **Road Network Index (8%)**: Maintained road kilometers.\n8. **Fiscal Effort & Prudence (5%)**: Reward for counties improving Own-Source Revenue (OSR).",
+      "faqs": [
+        {
+          "question": "How is the county equitable share calculated in Kenya?",
+          "answer": "The Commission on Revenue Allocation (CRA) 3rd Basis formula uses 8 weighted parameters: Basic Equal Share (20%), Population (18%), Health (17%), Poverty (14%), Agriculture (10%), Land Area (8%), Roads (8%), and Fiscal Effort (5%)."
+        },
+        {
+          "question": "What is the difference between Equitable Share and Conditional Grants?",
+          "answer": "Equitable Share is unconditional—county assemblies decide how to budget it freely. Conditional grants are earmarked for specific national projects like CAIPs, Universal Health Coverage, or donor-funded climate initiatives."
+        }
+      ]
+    }
+  ],
+  "indexedQuestions": [
+    {
+      "id": "q1",
+      "question": "How much is Kenya's total national budget for FY 2026/2027?",
+      "answer": "Kenya's total national budget for FY 2026/27 is KES 4.82 Trillion. It comprises KES 2.99T in ordinary tax revenues, KES 645B in Appropriations-in-Aid, and a KES 1.15T fiscal deficit financed by domestic and external borrowing.",
+      "category": "National Budget",
+      "county": "National",
+      "programme": "BNS Connect",
+      "relatedSlug": "national-budget-2026-2027-breakdown"
+    },
+    {
+      "id": "q2",
+      "question": "How much money does Kakamega County get from the national budget?",
+      "answer": "Kakamega County receives KES 19.45 Billion in equitable share for FY 2026/27, ranking 4th nationally. It allocates 34.0% to roads & infrastructure and 33.2% to healthcare.",
+      "category": "County Budgets",
+      "county": "Kakamega",
+      "programme": "BNS Mashinani",
+      "relatedSlug": "kakamega-county-budget-execution-2026"
+    },
+    {
+      "id": "q3",
+      "question": "What is Kilifi County's budget and how is it spent?",
+      "answer": "Kilifi County receives KES 16.89 Billion in equitable share, prioritizing Blue Economy fisheries (KES 4.10B), health (KES 4.93B), and water pipelines in drought-prone inland zones.",
+      "category": "County Budgets",
+      "county": "Kilifi",
+      "programme": "BNS Mashinani",
+      "relatedSlug": "kilifi-county-blue-economy-devolution"
+    },
+    {
+      "id": "q4",
+      "question": "What are Nakuru County's biggest budget projects for FY 2026/2027?",
+      "answer": "Nakuru County receives KES 22.18 Billion. Its major projects include the County Aggregation & Industrial Park (CAIP) at Egerton, geothermal direct-use agro-processing, and Nakuru Level 5 Oncology Center.",
+      "category": "County Budgets",
+      "county": "Nakuru",
+      "programme": "BNS Mashinani",
+      "relatedSlug": "nakuru-county-revenue-agro-industrial-growth"
+    },
+    {
+      "id": "q5",
+      "question": "How much does Wajir County receive from the Equalisation Fund?",
+      "answer": "Wajir receives KES 1.20 Billion from the constitutional Equalisation Fund on top of its KES 14.25 Billion equitable share, targeting solar deep boreholes, mega water pans, and nomadic education.",
+      "category": "County Budgets",
+      "county": "Wajir",
+      "programme": "BNS Mashinani",
+      "relatedSlug": "wajir-county-equalisation-fund-climate-resilience"
+    },
+    {
+      "id": "q6",
+      "question": "Why does Kenya spend KES 1.2 Trillion on public debt?",
+      "answer": "Under Article 214 of the Constitution, public debt service is a mandatory statutory charge on the Consolidated Fund. KES 910B goes to domestic Treasury bonds and KES 293B to external sovereign facilities.",
+      "category": "Debt & Deficit",
+      "county": "National",
+      "programme": "Wanahabari Lab",
+      "relatedSlug": "kenya-public-debt-servicing-crisis-analysis"
+    },
+    {
+      "id": "q7",
+      "question": "How much is allocated to Education and Teacher Salaries (TSC)?",
+      "answer": "Education receives KES 784.5 Billion (16.3% of the total budget). Over 53% (KES 421.9B) goes directly to teacher salaries through the Teachers Service Commission (TSC).",
+      "category": "Sector Allocations",
+      "county": "National",
+      "programme": "BNS Connect",
+      "relatedSlug": "education-sector-capitation-tsc-funding-gap"
+    },
+    {
+      "id": "q8",
+      "question": "How does the CRA revenue sharing formula work in Kenya?",
+      "answer": "The CRA 3rd Basis formula shares KES 428B equitable share across 47 counties using: Basic Equal Share (20%), Population (18%), Health (17%), Poverty (14%), Agriculture (10%), Land Area (8%), Roads (8%), and Fiscal Effort (5%).",
+      "category": "Devolution & Revenue Sharing",
+      "county": "All 47 Counties",
+      "programme": "BNS Studios",
+      "relatedSlug": "devolution-equitable-share-cra-formula-explained"
+    },
+    {
+      "id": "q9",
+      "question": "What is the fertilizer subsidy budget in Kenya's agriculture sector?",
+      "answer": "The National Government allocates KES 10.0 Billion for the National Fertilizer Subsidy Programme, complemented by KES 3.25 Billion in shared County Aggregation & Industrial Parks (CAIPs) funding.",
+      "category": "Agriculture & BETA",
+      "county": "National",
+      "programme": "BNS Connect",
+      "relatedSlug": "national-budget-2026-2027-breakdown"
+    },
+    {
+      "id": "q10",
+      "question": "What are the 5 BETA Pillars and how much money do they get?",
+      "answer": "The Bottom-Up Economic Transformation Agenda (BETA) spans: 1) Agricultural Transformation (KES 62.4B), 2) MSMEs & Hustler Fund (KES 15B), 3) Affordable Housing (KES 92.5B), 4) Universal Health Coverage (KES 175B), and 5) Digital Superhighway (KES 21B).",
+      "category": "Agriculture & BETA",
+      "county": "National",
+      "programme": "BNS Connect",
+      "relatedSlug": "national-budget-2026-2027-breakdown"
+    },
+    {
+      "id": "q11",
+      "question": "What is the budget for Water and Irrigation projects in arid and semi-arid counties?",
+      "answer": "Water infrastructure receives KES 48.5 Billion nationally, augmented by County Equitable Shares and KES 9.6 Billion Equalisation Fund allocations for solar deep boreholes and mega water pans in Wajir, Kilifi, and northern frontiers.",
+      "category": "Water & Climate",
+      "county": "Wajir",
+      "programme": "BNS Mashinani",
+      "relatedSlug": "wajir-county-equalisation-fund-climate-resilience"
+    },
+    {
+      "id": "q12",
+      "question": "Where does Kenya National Treasury get its revenue figures?",
+      "answer": "The National Treasury compiles revenue from KRA ordinary tax receipts (PAYE, VAT 16%, Excise, Customs), ministerial Appropriations-in-Aid (AIA), commercial and concessional domestic/external borrowing, and foreign grants.",
+      "category": "National Budget",
+      "county": "National",
+      "programme": "BNS Connect",
+      "relatedSlug": "national-budget-2026-2027-breakdown"
+    }
+  ]
+}

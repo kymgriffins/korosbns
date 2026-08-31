@@ -2,15 +2,15 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 
-vi.mock("../reports-client", () => ({
-  ReportsClientPage: () => <div data-testid="reports-client-page">Reports Client Page</div>,
+vi.mock("@/components/reports-bulletin/reports-hub-client", () => ({
+  ReportsHubClient: () => <div data-testid="reports-hub-client">Reports Hub Client</div>,
 }));
 
 import ReportsPage from "../page";
 
-describe("ReportsPage", () => {
-  it("renders ReportsClientPage cleanly", () => {
+describe("ReportsPage (P0 SEO & Bulletin Hub)", () => {
+  it("renders ReportsHubClient cleanly with structured data script", () => {
     render(<ReportsPage />);
-    expect(screen.getByTestId("reports-client-page")).toBeInTheDocument();
+    expect(screen.getByTestId("reports-hub-client")).toBeInTheDocument();
   });
 });

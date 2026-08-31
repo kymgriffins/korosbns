@@ -26,7 +26,7 @@ export function ImmersiveSegment({
 
   return (
     <nav
-      className="immersive-segment mx-4 mb-4 flex rounded-[0.875rem] bg-muted/70 p-1"
+      className="immersive-segment mx-auto my-3 flex w-full max-w-md rounded-xl border border-foreground/10 bg-muted/40 p-1 backdrop-blur-xs"
       aria-label="Learning mode"
     >
       {visible.map((item) => {
@@ -37,15 +37,15 @@ export function ImmersiveSegment({
             key={item.mode}
             href={item.href}
             className={cn(
-              "flex flex-1 items-center justify-center gap-1.5 rounded-xl px-3 py-2.5 text-[13px] font-semibold transition-all",
+              "flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-mono font-bold transition-all",
               isActive
-                ? "bg-background text-foreground shadow-sm"
+                ? "bg-card text-foreground shadow-xs border border-foreground/10"
                 : "text-muted-foreground hover:text-foreground",
             )}
             aria-current={isActive ? "page" : undefined}
           >
-            <Icon className="size-4" aria-hidden />
-            {item.label}
+            <Icon className={cn("size-3.5", isActive ? "text-primary" : "text-muted-foreground")} aria-hidden />
+            <span>{item.label}</span>
           </Link>
         );
       })}

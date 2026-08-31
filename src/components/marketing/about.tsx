@@ -19,32 +19,73 @@ const About = () => {
 
   return (
     <div className="w-full bg-background min-h-screen">
-      {/* Hero Section — SSR-visible immediately, no flash of blank screen */}
-      <section className="relative min-h-[70svh] overflow-hidden border-b border-border/40 md:min-h-[80svh] flex items-end">
-        <div className="absolute inset-0 z-0">
-          <Image
-            src={hero.image}
-            alt={hero.imageAlt}
-            fill
-            priority
-            className="object-cover transition-transform duration-1000 ease-out scale-100"
-            sizes="100vw"
-          />
-          <div className="absolute inset-0 bg-background/85" />
-        </div>
+      {/* Hero Section */}
+      <section className="relative overflow-hidden border-b border-border/40 bg-gradient-to-b from-muted/30 via-background to-background pt-24 pb-16 md:pt-32 md:pb-24">
+        {/* Subtle ambient accent glow */}
+        <div className="pointer-events-none absolute left-1/2 top-1/4 -z-10 h-72 w-full max-w-4xl -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[120px]" />
 
-        <div className="relative z-10 mx-auto w-full max-w-[1400px] px-6 pb-14 pt-28 md:px-16 md:pb-20">
-          <div className="flex max-w-3xl flex-col gap-4 animate-fade-in">
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1 text-xs font-bold text-primary w-fit backdrop-blur-md">
-              <Compass className="size-3.5" />
-              <span>{hero.eyebrow}</span>
+        <div className="mx-auto w-full max-w-[1400px] px-6 md:px-16">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+            {/* Left Column */}
+            <div className="lg:col-span-7 flex flex-col gap-5 animate-fade-in">
+              <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1 text-xs font-bold text-primary w-fit backdrop-blur-md">
+                <Compass className="size-3.5" />
+                <span>{hero.eyebrow}</span>
+              </div>
+              <h1 className={cn(T.heroTitle, "text-foreground font-heading tracking-tight leading-[1.08]")}>
+                {hero.title}
+              </h1>
+              <p className={cn(T.lead, "max-w-2xl text-base text-muted-foreground md:text-lg leading-relaxed")}>
+                {hero.body}
+              </p>
+
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <Button asChild size="lg" className="gap-2 font-bold shadow-xs">
+                  <Link href="/programmes">
+                    <span>Explore Programmes</span>
+                    <ArrowRight className="size-4" />
+                  </Link>
+                </Button>
+                <Button asChild size="lg" variant="outline">
+                  <Link href="#consortium-founders">
+                    <span>Meet Our Founders</span>
+                  </Link>
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4 pt-4 border-t border-border/40 max-w-lg">
+                <div>
+                  <p className="font-heading text-2xl md:text-3xl font-extrabold text-foreground">100%</p>
+                  <p className="text-xs text-muted-foreground mt-0.5 font-medium">Youth-Led</p>
+                </div>
+                <div>
+                  <p className="font-heading text-2xl md:text-3xl font-extrabold text-primary">47</p>
+                  <p className="text-xs text-muted-foreground mt-0.5 font-medium">Counties Tracked</p>
+                </div>
+                <div>
+                  <p className="font-heading text-2xl md:text-3xl font-extrabold text-foreground">20k+</p>
+                  <p className="text-xs text-muted-foreground mt-0.5 font-medium">Civic Reach</p>
+                </div>
+              </div>
             </div>
-            <h1 className={cn(T.heroTitle, "max-w-3xl text-foreground font-heading tracking-tight")}>
-              {hero.title}
-            </h1>
-            <p className={cn(T.lead, "max-w-2xl text-base text-foreground/85 md:text-lg leading-relaxed")}>
-              {hero.body}
-            </p>
+
+            {/* Right Column: Sharp, framed hero visual */}
+            <div className="lg:col-span-5 relative">
+              <div className="relative aspect-[4/3] sm:aspect-[16/11] lg:aspect-[4/3] w-full overflow-hidden rounded-3xl border border-border/70 bg-muted shadow-xl">
+                <Image
+                  src={hero.image}
+                  alt={hero.imageAlt}
+                  fill
+                  priority
+                  className="object-cover object-top hover:scale-102 transition-transform duration-700 ease-out"
+                  sizes="(max-width: 1024px) 100vw, 45vw"
+                />
+              </div>
+              <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground px-1">
+                <span>Youth Civic Engagement Session</span>
+                <span className="font-medium text-primary">Nairobi, Kenya</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
