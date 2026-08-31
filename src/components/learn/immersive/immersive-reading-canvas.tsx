@@ -1,59 +1,147 @@
 "use client";
 
+import Link from "next/link";
+import { BookOpen, Clapperboard, Clock, ShieldCheck, Sparkles, CheckCircle2, ArrowRight } from "lucide-react";
 import { renderContent } from "@/lib/render-content";
 import { applyLearnGlossary } from "@/lib/learn-glossary";
+import { parseStepVideos } from "@/lib/immersive-module";
 import type { ChapterStep } from "@/types/learn";
 
-export function ImmersiveReadingCanvas({ step, durationLabel }: { step: ChapterStep; durationLabel?: string }) {
+export function ImmersiveReadingCanvas({
+  step,
+  durationLabel,
+  moduleSlug,
+  stepNumber = 1,
+}: {
+  step: ChapterStep;
+  durationLabel?: string;
+  moduleSlug?: string;
+  stepNumber?: number;
+}) {
+  const videos = parseStepVideos(step);
+  const heroImage = step.image_urls?.[0];
+
   return (
-    <article className="mx-auto max-w-2xl px-5 pb-8 pt-2">
-      <header className="mb-6 space-y-2">
-        <p className="text-[13px] font-medium uppercase tracking-wide text-primary">Reading</p>
-        <h1 className="text-[length:var(--immersive-title)] font-semibold leading-tight tracking-tight">
-          {step.title}
-        </h1>
-        {durationLabel ? (
-          <p className="text-[13px] text-muted-foreground">{durationLabel} read</p>
-        ) : null}
+    <article className="mx-auto max-w-3xl px-5 py-6 space-y-8">
+      {/* Specimen Header */}
+      <header className="space-y-4 border-b border-foreground/10 pb-6">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
+              ARTICLE SPECIMEN
+            </span>
+            <span className="px-2.5 py-0.5 rounded-md text-[11px] font-mono font-semibold border border-foreground/10 bg-muted/40 text-foreground">
+              CIVIC LITERACY DESK
+            </span>
+          </div>
+          {durationLabel ? (
+            <span className="text-xs font-mono text-muted-foreground flex items-center gap-1.5 border border-foreground/10 rounded-md px-2 py-0.5 bg-muted/20">
+              <Clock className="size-3 text-orange-500" />
+              <span>{durationLabel} read</span>
+            </span>
+          ) : null}
+        </div>
+
+        <div className="space-y-2">
+          <div className="flex items-baseline gap-3">
+            <span className="font-serif italic text-2xl sm:text-3xl text-orange-600 dark:text-orange-400 font-normal">
+              Lesson {String(stepNumber).padStart(2, "0")};
+            </span>
+            <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-foreground leading-[1.15]">
+              {step.title}
+            </h1>
+          </div>
+          {step.article_summary ? (
+            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed pt-1">
+              {step.article_summary}
+            </p>
+          ) : null}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3 text-xs font-mono text-muted-foreground pt-1">
+          <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold">
+            <ShieldCheck className="size-3.5" /> PFM Act § 25 · Art. 201 Verified
+          </span>
+          <span>·</span>
+          <span>Budget Ndio Story Research Series</span>
+        </div>
       </header>
 
+      {/* Companion Video Series Callout Banner (if step has videos) */}
+      {videos.length > 0 && moduleSlug ? (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl border border-foreground/10 bg-card/60 p-4 sm:p-5 shadow-xs">
+          <div className="flex items-center gap-3.5 w-full sm:w-auto">
+            {heroImage ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={heroImage}
+                alt=""
+                className="size-16 sm:size-20 rounded-xl object-cover ring-1 ring-foreground/10 shrink-0"
+              />
+            ) : (
+              <div className="flex size-14 items-center justify-center rounded-xl bg-orange-500/10 text-orange-600 shrink-0">
+                <Clapperboard className="size-6" />
+              </div>
+            )}
+            <div className="space-y-1">
+              <p className="text-xs font-mono font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400">
+                Companion Video Series ({videos.length} Parts)
+              </p>
+              <p className="text-xs sm:text-sm font-semibold text-foreground line-clamp-1">
+                Watch the companion visual breakdown on YouTube
+              </p>
+              <p className="text-[11px] font-mono text-muted-foreground">
+                High-definition visual explanations &amp; podcast discussions
+              </p>
+            </div>
+          </div>
+
+          <Link
+            href={`/learn/modules/${moduleSlug}/watch/${stepNumber}`}
+            className="shrink-0 flex items-center justify-center gap-2 w-full sm:w-auto px-4 py-2 rounded-xl text-xs font-mono font-bold bg-orange-600 hover:bg-orange-500 text-white transition-colors"
+          >
+            <span>Watch Video Mode</span>
+            <ArrowRight className="size-3.5" />
+          </Link>
+        </div>
+      ) : null}
+
+      {/* Learning Outcomes Specimen Card */}
       {step.learning_outcomes && step.learning_outcomes.length > 0 ? (
-        <section className="mb-6 rounded-[var(--immersive-radius)] bg-primary/5 p-4 ring-1 ring-primary/10">
-          <h2 className="mb-2 text-[13px] font-semibold uppercase tracking-wide text-primary">
-            You will learn
-          </h2>
+        <section className="rounded-2xl border border-foreground/10 bg-muted/20 p-5 space-y-3">
+          <div className="flex items-center gap-2">
+            <Sparkles className="size-4 text-orange-500" />
+            <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-foreground">
+              Core Civic Learning Outcomes
+            </h2>
+          </div>
           <ul className="space-y-2">
             {step.learning_outcomes.map((o) => (
-              <li key={o.id} className="text-[15px] leading-snug text-foreground/90">
-                {o.description}
+              <li key={o.id} className="flex items-start gap-2 text-xs sm:text-sm text-muted-foreground leading-snug">
+                <CheckCircle2 className="size-4 shrink-0 text-emerald-500 mt-0.5" />
+                <span>{o.description}</span>
               </li>
             ))}
           </ul>
         </section>
       ) : null}
 
-      {step.image_urls?.map((url, i) => (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          key={url + i}
-          src={url}
-          alt=""
-          className="mb-6 w-full rounded-[var(--immersive-radius)] object-cover ring-1 ring-border/30"
-          loading="lazy"
-        />
-      ))}
-
-      <div className="immersive-prose max-w-none">
+      {/* Main Narrative Markdown Prose */}
+      <div className="prose dark:prose-invert max-w-none text-foreground/90 leading-relaxed text-sm sm:text-base border-t border-foreground/10 pt-6">
         {renderContent(step.text, { transformHtml: applyLearnGlossary })}
       </div>
 
-      {step.takeaways?.length > 0 ? (
-        <section className="mt-8 rounded-[var(--immersive-radius)] border border-border/60 bg-card p-5">
-          <h2 className="mb-3 text-[15px] font-semibold">Key takeaways</h2>
+      {/* Key Takeaways Section */}
+      {step.takeaways && step.takeaways.length > 0 ? (
+        <section className="rounded-2xl border border-orange-500/30 bg-orange-500/5 p-6 dark:bg-orange-950/10 space-y-3">
+          <div className="flex items-center gap-2 text-orange-700 dark:text-orange-300 font-mono font-bold text-xs uppercase tracking-wider">
+            <Sparkles className="size-4 text-orange-500" />
+            <h2>Key Citizen Takeaways</h2>
+          </div>
           <ul className="space-y-3">
             {step.takeaways.map((t, i) => (
-              <li key={i} className="text-[15px] leading-relaxed text-muted-foreground">
-                {t.title ? <span className="font-semibold text-foreground">{t.title}: </span> : null}
+              <li key={i} className="text-xs sm:text-sm leading-relaxed text-foreground/90">
+                {t.title ? <strong className="font-bold text-foreground">{t.title}: </strong> : null}
                 {t.text}
               </li>
             ))}
@@ -61,10 +149,13 @@ export function ImmersiveReadingCanvas({ step, durationLabel }: { step: ChapterS
         </section>
       ) : null}
 
+      {/* Collapsible Transcript */}
       {step.transcript ? (
-        <details className="mt-6 rounded-[var(--immersive-radius)] border border-border/50 bg-muted/30">
-          <summary className="cursor-pointer px-4 py-3 text-[15px] font-medium">Transcript</summary>
-          <p className="border-t px-4 py-3 text-[15px] leading-relaxed text-muted-foreground">
+        <details className="rounded-2xl border border-foreground/10 bg-card/60 overflow-hidden text-xs">
+          <summary className="cursor-pointer px-5 py-3 font-mono font-semibold text-muted-foreground hover:text-foreground">
+            View Full Lesson Transcript
+          </summary>
+          <p className="border-t border-foreground/10 px-5 py-4 leading-relaxed text-muted-foreground font-mono text-xs">
             {step.transcript}
           </p>
         </details>

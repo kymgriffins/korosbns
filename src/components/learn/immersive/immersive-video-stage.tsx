@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Play, Clapperboard } from "lucide-react";
 import { cn } from "@/utils";
 
 function buildEmbedUrl(videoId: string) {
@@ -22,24 +22,34 @@ export function ImmersiveVideoStage({
 
   if (!videos.length) {
     return (
-      <div className="flex flex-1 flex-col items-center justify-center px-6 text-center">
-        <p className="text-[15px] font-medium text-muted-foreground">Video for this step is coming soon.</p>
+      <div className="flex flex-1 flex-col items-center justify-center p-8 text-center">
+        <p className="text-sm font-mono text-muted-foreground">Video for this lesson is coming soon.</p>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-1 flex-col">
-      <div className="px-5 pt-2">
-        <p className="text-[13px] font-medium uppercase tracking-wide text-primary">Watch</p>
-        <h1 className="mt-1 text-[length:var(--immersive-title)] font-semibold tracking-tight">{stepTitle}</h1>
-        <p className="mt-1 text-[13px] text-muted-foreground">
-          {current.title}
-          {videos.length > 1 ? ` · ${index + 1} of ${videos.length}` : ""}
+    <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col px-4 py-4 space-y-5">
+      {/* Specimen Header */}
+      <div className="space-y-2 border-b border-foreground/10 pb-4">
+        <div className="flex items-center gap-2">
+          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
+            VIDEO SPECIMEN
+          </span>
+          <span className="text-xs font-mono text-muted-foreground">
+            Part {index + 1} of {videos.length}
+          </span>
+        </div>
+        <h1 className="font-heading text-2xl sm:text-3xl font-black tracking-tight text-foreground">
+          {stepTitle}
+        </h1>
+        <p className="text-xs sm:text-sm font-mono text-muted-foreground">
+          Now Playing: <strong className="text-foreground">{current.title}</strong>
         </p>
       </div>
 
-      <div className="relative mx-4 mt-4 aspect-video overflow-hidden rounded-[var(--immersive-radius)] bg-black shadow-lg ring-1 ring-border/20">
+      {/* 16:9 Video Frame */}
+      <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-black shadow-2xl border border-foreground/10">
         <iframe
           key={current.videoId}
           src={buildEmbedUrl(current.videoId)}
@@ -50,37 +60,37 @@ export function ImmersiveVideoStage({
         />
       </div>
 
+      {/* Playlist Navigation Strip */}
       {videos.length > 1 ? (
-        <div className="mt-4 flex items-center justify-center gap-4 px-4">
-          <button
-            type="button"
-            disabled={index === 0}
-            onClick={() => setIndex((i) => Math.max(0, i - 1))}
-            className="flex size-11 items-center justify-center rounded-full bg-muted disabled:opacity-30"
-            aria-label="Previous video"
-          >
-            <ChevronLeft className="size-5" />
-          </button>
-          <div className="flex gap-2">
-            {videos.map((_, i) => (
-              <span
-                key={i}
+        <div className="space-y-2 pt-2">
+          <p className="text-[11px] font-mono font-bold uppercase tracking-wider text-muted-foreground">
+            Playlist Series ({videos.length} Episodes)
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            {videos.map((vid, i) => (
+              <button
+                key={vid.videoId}
+                type="button"
+                onClick={() => setIndex(i)}
                 className={cn(
-                  "block h-1.5 rounded-full transition-all",
-                  i === index ? "w-6 bg-primary" : "w-1.5 bg-muted-foreground/30",
+                  "flex items-center gap-2.5 rounded-xl border p-3 text-left transition-all cursor-pointer",
+                  i === index
+                    ? "border-orange-500/50 bg-orange-500/10 text-foreground shadow-xs"
+                    : "border-foreground/10 bg-card/60 text-muted-foreground hover:bg-card hover:text-foreground",
                 )}
-              />
+              >
+                <span
+                  className={cn(
+                    "flex size-6 shrink-0 items-center justify-center rounded-lg font-mono text-xs font-bold",
+                    i === index ? "bg-orange-600 text-white" : "bg-muted text-muted-foreground",
+                  )}
+                >
+                  {i + 1}
+                </span>
+                <span className="truncate text-xs font-mono font-semibold">{vid.title}</span>
+              </button>
             ))}
           </div>
-          <button
-            type="button"
-            disabled={index >= videos.length - 1}
-            onClick={() => setIndex((i) => Math.min(videos.length - 1, i + 1))}
-            className="flex size-11 items-center justify-center rounded-full bg-muted disabled:opacity-30"
-            aria-label="Next video"
-          >
-            <ChevronRight className="size-5" />
-          </button>
         </div>
       ) : null}
     </div>

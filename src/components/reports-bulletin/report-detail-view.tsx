@@ -21,7 +21,6 @@ import {
   Minus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import type { ReportDossier } from "@/data/reports-bulletin";
 
 export function ReportDetailView({
@@ -56,7 +55,7 @@ export function ReportDetailView({
         return (
           <h3
             key={idx}
-            className="font-heading text-xl font-bold tracking-tight text-foreground mt-8 mb-3"
+            className="font-heading text-lg sm:text-xl font-bold tracking-tight text-foreground mt-8 mb-3"
           >
             {trimmed.replace(/^###\s+/, "")}
           </h3>
@@ -64,12 +63,12 @@ export function ReportDetailView({
       }
       if (trimmed.startsWith("## ")) {
         return (
-          <h2
-            key={idx}
-            className="font-heading text-2xl font-bold tracking-tight text-foreground mt-10 mb-4 pb-2 border-b border-border/50"
-          >
-            {trimmed.replace(/^##\s+/, "")}
-          </h2>
+          <div key={idx} className="mt-10 mb-4 pb-2 border-b border-foreground/10 flex items-baseline gap-2">
+            <span className="font-serif italic text-lg text-orange-600 dark:text-orange-400 font-normal">§</span>
+            <h2 className="font-heading text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+              {trimmed.replace(/^##\s+/, "")}
+            </h2>
+          </div>
         );
       }
       if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
@@ -85,7 +84,7 @@ export function ReportDetailView({
       if (trimmed.startsWith("1. ") || trimmed.startsWith("2. ")) {
         const items = trimmed.split(/\n\d+\.\s+/).filter(Boolean);
         return (
-          <ol key={idx} className="my-4 space-y-2 pl-5 list-decimal text-muted-foreground text-sm md:text-base leading-relaxed">
+          <ol key={idx} className="my-4 space-y-2 pl-5 list-decimal text-muted-foreground text-sm md:text-base leading-relaxed font-mono text-xs sm:text-sm">
             {items.map((it, i) => (
               <li key={i}>{it.replace(/^\d+\.\s+/, "")}</li>
             ))}
@@ -101,13 +100,13 @@ export function ReportDetailView({
   };
 
   return (
-    <article className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-      {/* Back Navigation & Meta Strip */}
-      <div className="flex items-center justify-between gap-4 border-b border-border/40 pb-4">
-        <Button asChild variant="ghost" size="sm" className="gap-2 text-xs font-semibold">
+    <article className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8 space-y-8">
+      {/* Back Navigation & Specimen Meta Header */}
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-foreground/10 pb-4">
+        <Button asChild variant="ghost" size="sm" className="gap-2 text-xs font-mono font-semibold hover:text-orange-600">
           <Link href="/reports">
             <ArrowLeft className="size-4" />
-            <span>Back to Reports Bulletin</span>
+            <span>← Back to Report Bulletins</span>
           </Link>
         </Button>
 
@@ -116,16 +115,16 @@ export function ReportDetailView({
             variant="outline"
             size="sm"
             onClick={handleShare}
-            className="h-8 gap-1.5 text-xs font-medium"
+            className="h-8 gap-1.5 text-xs font-mono font-medium border-foreground/10 bg-card/60"
           >
             <Share2 className="size-3.5" />
-            <span>{copied ? "Link Copied!" : "Share"}</span>
+            <span>{copied ? "Link Copied!" : "Share Dossier"}</span>
           </Button>
           <Button
             variant="outline"
             size="sm"
             onClick={handlePrint}
-            className="h-8 gap-1.5 text-xs font-medium hidden sm:flex"
+            className="h-8 gap-1.5 text-xs font-mono font-medium border-foreground/10 bg-card/60 hidden sm:flex"
           >
             <Download className="size-3.5" />
             <span>Export Brief</span>
@@ -133,29 +132,34 @@ export function ReportDetailView({
         </div>
       </div>
 
-      {/* Hero Header */}
-      <header className="mt-8 space-y-4">
-        <div className="flex flex-wrap items-center gap-2">
-          <Badge variant="default" className="text-xs font-bold uppercase tracking-wider">
-            {report.eyebrow}
-          </Badge>
-          <Badge variant="outline" className="text-xs font-semibold border-primary/30 text-primary">
-            {report.programme}
-          </Badge>
-          {report.county !== "National" && report.county !== "All 47 Counties" && (
-            <Badge variant="secondary" className="gap-1 text-xs font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300">
-              <MapPin className="size-3" />
-              <span>{report.county}</span>
-            </Badge>
-          )}
+      {/* Editorial Specimen Masthead */}
+      <header className="space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-foreground/10">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
+              {report.eyebrow}
+            </span>
+            <span className="px-2.5 py-0.5 rounded-md text-[10px] font-mono font-semibold border border-foreground/10 bg-muted/40 text-foreground">
+              {report.programme}
+            </span>
+            {report.county !== "National" && report.county !== "All 47 Counties" && (
+              <span className="px-2.5 py-0.5 rounded-md text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
+                <MapPin className="size-3" />
+                <span>{report.county}</span>
+              </span>
+            )}
+          </div>
+          <span className="text-[11px] font-mono text-muted-foreground">
+            SPECIMEN // FY 2026/27
+          </span>
         </div>
 
-        <h1 className="font-heading text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl md:text-5xl leading-tight">
+        <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-foreground leading-[1.1]">
           {report.title}
         </h1>
 
-        <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground pt-2">
-          <span className="font-medium text-foreground">{report.author}</span>
+        <div className="flex flex-wrap items-center gap-4 text-xs font-mono text-muted-foreground pt-1 border-t border-foreground/10">
+          <span className="font-semibold text-foreground">{report.author}</span>
           <span>·</span>
           <span className="flex items-center gap-1">
             <Calendar className="size-3.5" /> Published {report.publishedDate}
@@ -166,32 +170,32 @@ export function ReportDetailView({
           </span>
           <span>·</span>
           <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold">
-            <ShieldCheck className="size-3.5" /> Audited Provenance
+            <ShieldCheck className="size-3.5" /> Audited Intelligence
           </span>
         </div>
       </header>
 
-      {/* Official Provenance Box */}
-      <section className="mt-8 rounded-2xl border border-primary/20 bg-primary/5 p-5">
+      {/* Official Provenance & Hansard Verification Stamp */}
+      <section className="rounded-2xl border border-foreground/10 bg-card/60 p-5 space-y-2">
         <div className="flex items-start justify-between gap-3">
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <div className="flex items-center gap-2">
-              <ShieldCheck className="size-4 text-primary" />
-              <h2 className="text-xs font-bold uppercase tracking-wider text-primary">
-                Official Provenance & Verification Stamp
+              <ShieldCheck className="size-4 text-emerald-500" />
+              <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-foreground">
+                Official Provenance &amp; Verification Stamp
               </h2>
             </div>
-            <p className="text-xs font-medium text-foreground">
-              <strong>Source:</strong> {report.provenance.source}
+            <p className="text-xs font-mono text-muted-foreground">
+              <strong className="text-foreground">Source:</strong> {report.provenance.source}
             </p>
-            <p className="text-xs text-muted-foreground">
-              <strong>Verification Standard:</strong> {report.provenance.level} · <strong>Sign-off:</strong> {report.provenance.analystSignoff}
+            <p className="text-xs font-mono text-muted-foreground">
+              <strong className="text-foreground">Standard:</strong> {report.provenance.level} · <strong className="text-foreground">Analyst Signoff:</strong> {report.provenance.analystSignoff}
             </p>
           </div>
           {report.provenance.sourceDocumentUrl && (
-            <Button asChild variant="outline" size="sm" className="h-8 gap-1 text-xs shrink-0 bg-background">
+            <Button asChild variant="outline" size="sm" className="h-8 gap-1 text-xs font-mono shrink-0 bg-background border-foreground/10">
               <a href={report.provenance.sourceDocumentUrl} target="_blank" rel="noopener noreferrer">
-                <span>View Source</span>
+                <span>View Gazetted Document</span>
                 <ExternalLink className="size-3" />
               </a>
             </Button>
@@ -199,21 +203,21 @@ export function ReportDetailView({
         </div>
       </section>
 
-      {/* KPI Stats Grid */}
+      {/* Hairline KPI Specimen Grid */}
       {report.kpis && report.kpis.length > 0 && (
-        <section className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <section className="grid grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-foreground/10 border border-foreground/10 rounded-2xl bg-card/60 sm:grid-cols-4 overflow-hidden">
           {report.kpis.map((kpi, idx) => (
             <div
               key={idx}
-              className="rounded-2xl border border-border/70 bg-card p-4 shadow-xs"
+              className="p-4 space-y-1"
             >
-              <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground truncate">
+              <p className="text-[10px] font-mono font-bold uppercase tracking-wider text-muted-foreground truncate">
                 {kpi.label}
               </p>
-              <p className="mt-1 font-heading text-xl md:text-2xl font-extrabold text-foreground">
+              <p className="font-heading text-xl md:text-2xl font-black text-foreground tabular-nums">
                 {kpi.value}
               </p>
-              <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+              <p className="flex items-center gap-1 text-[11px] font-mono text-muted-foreground">
                 {kpi.trend === "up" && <TrendingUp className="size-3 text-emerald-500" />}
                 {kpi.trend === "down" && <TrendingDown className="size-3 text-amber-500" />}
                 {kpi.trend === "flat" && <Minus className="size-3 text-muted-foreground" />}
@@ -224,17 +228,17 @@ export function ReportDetailView({
         </section>
       )}
 
-      {/* Citizen Key Takeaways Box */}
+      {/* Citizen Key Takeaways Pullquote Box */}
       {report.citizenTakeaway && report.citizenTakeaway.length > 0 && (
-        <section className="mt-8 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-6 dark:bg-emerald-950/20">
-          <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300 font-bold text-sm uppercase tracking-wider">
-            <Sparkles className="size-4" />
-            <h2>What This Means for You (Citizen Summary)</h2>
+        <section className="rounded-2xl border border-orange-500/30 bg-orange-500/5 p-6 dark:bg-orange-950/10 space-y-3">
+          <div className="flex items-center gap-2 text-orange-700 dark:text-orange-300 font-mono font-bold text-xs uppercase tracking-wider">
+            <Sparkles className="size-4 text-orange-500" />
+            <h2>What This Means For You (Citizen Summary)</h2>
           </div>
-          <ul className="mt-3 space-y-2 text-xs md:text-sm text-foreground/90 leading-relaxed">
+          <ul className="space-y-2 text-xs sm:text-sm text-foreground/90 leading-relaxed">
             {report.citizenTakeaway.map((point, idx) => (
               <li key={idx} className="flex items-start gap-2.5">
-                <CheckCircle2 className="size-4 shrink-0 text-emerald-600 dark:text-emerald-400 mt-0.5" />
+                <CheckCircle2 className="size-4 shrink-0 text-orange-600 dark:text-orange-400 mt-0.5" />
                 <span>{point}</span>
               </li>
             ))}
@@ -242,30 +246,30 @@ export function ReportDetailView({
         </section>
       )}
 
-      {/* Main Narrative Article Content */}
-      <section className="mt-10 pt-6 border-t border-border/50 prose dark:prose-invert max-w-none">
+      {/* Main Narrative Content */}
+      <section className="pt-4 border-t border-foreground/10 prose dark:prose-invert max-w-none">
         {renderContentParagraphs(report.content)}
       </section>
 
-      {/* Schema.org FAQ Section */}
+      {/* Schema.org FAQ Section in Hairline Cards */}
       {report.faqs && report.faqs.length > 0 && (
-        <section className="mt-12 rounded-3xl border border-border/80 bg-muted/20 p-6 md:p-8">
-          <div className="space-y-1">
-            <Badge variant="outline" className="text-xs font-bold uppercase tracking-wider border-primary/30 text-primary">
+        <section className="rounded-2xl border border-foreground/10 bg-card/60 p-6 md:p-8 space-y-4">
+          <div className="space-y-1 pb-3 border-b border-foreground/10">
+            <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider bg-muted text-foreground">
               Frequently Asked Questions
-            </Badge>
-            <h2 className="font-heading text-2xl font-bold tracking-tight text-foreground">
-              Questions Answered in this Report
+            </span>
+            <h2 className="font-heading text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+              Questions Answered in this Dossier
             </h2>
           </div>
 
-          <div className="mt-6 space-y-3">
+          <div className="space-y-2.5">
             {report.faqs.map((faq, idx) => {
               const isOpen = openFaqIndex === idx;
               return (
                 <div
                   key={idx}
-                  className="rounded-xl border border-border/70 bg-card p-4 transition-colors"
+                  className="rounded-xl border border-foreground/10 bg-card p-4 transition-colors"
                 >
                   <button
                     type="button"
@@ -281,7 +285,7 @@ export function ReportDetailView({
                   </button>
 
                   {isOpen && (
-                    <div className="mt-3 pt-3 border-t border-border/40 text-xs md:text-sm text-muted-foreground leading-relaxed animate-in fade-in-50 duration-150">
+                    <div className="mt-3 pt-3 border-t border-foreground/10 text-xs md:text-sm text-muted-foreground leading-relaxed animate-in fade-in-50 duration-150">
                       <p>{faq.answer}</p>
                     </div>
                   )}
@@ -294,17 +298,17 @@ export function ReportDetailView({
 
       {/* Related Reports Navigation */}
       {relatedReports && relatedReports.length > 0 && (
-        <footer className="mt-14 pt-8 border-t border-border/50 space-y-6">
+        <footer className="pt-8 border-t border-foreground/10 space-y-6">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="font-heading text-xl font-bold text-foreground">
-                Related Verified Reports & Scorecards
+                Related Verified Reports &amp; Scorecards
               </h2>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs font-mono text-muted-foreground">
                 Continue following public money across national and county chapters.
               </p>
             </div>
-            <Button asChild variant="outline" size="sm" className="text-xs font-semibold">
+            <Button asChild variant="outline" size="sm" className="text-xs font-mono font-semibold border-foreground/10">
               <Link href="/reports">View All Bulletins</Link>
             </Button>
           </div>
@@ -314,17 +318,17 @@ export function ReportDetailView({
               <Link
                 key={rel.slug}
                 href={`/reports/${rel.slug}`}
-                className="group rounded-2xl border border-border/60 bg-card p-4 transition-all hover:border-primary/50 hover:shadow-xs"
+                className="group rounded-2xl border border-foreground/10 bg-card/60 p-5 transition-all hover:border-orange-500/40 hover:shadow-xs space-y-2"
               >
-                <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-primary">
+                <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400">
                   <span>{rel.eyebrow}</span>
                   <span>·</span>
                   <span>{rel.county}</span>
                 </div>
-                <h3 className="mt-1 font-heading text-sm font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2">
+                <h3 className="font-heading text-sm font-bold text-foreground group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors line-clamp-2">
                   {rel.title}
                 </h3>
-                <p className="mt-2 text-xs text-muted-foreground line-clamp-2">
+                <p className="text-xs text-muted-foreground line-clamp-2">
                   {rel.citizenTakeaway[0]}
                 </p>
               </Link>

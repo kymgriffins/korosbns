@@ -1,4 +1,3 @@
-import FlareCursor from "@/components/global/flare-cursor";
 import LoadingScreen from "@/components/global/loading-screen";
 import Providers from "@/components/global/providers";
 import WhatsAppSupport from "@/components/global/whatsapp-support";
@@ -120,7 +119,6 @@ export default function RootLayout({
       >
         <Providers>
           <LoadingScreen />
-          <FlareCursor />
           <WhatsAppSupport />
           {children}
           <CookieConsentWrapper />

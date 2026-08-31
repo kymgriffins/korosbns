@@ -108,4 +108,22 @@ describe("Reports Bulletin Data Store (P0 Trust & SEO)", () => {
       kakamegaQuery.matchingQuestions.every((q) => q.county === "Kakamega"),
     ).toBe(true);
   });
+
+  it("loads all 47 counties allocations and resolves lookups by code and name", async () => {
+    const { getAllCountiesAllocations, getCountyAllocationByCode, getCountyAllocationByName } =
+      await import("@/data/reports-bulletin");
+
+    const counties = getAllCountiesAllocations();
+    expect(counties).toHaveLength(47);
+
+    const nairobi = getCountyAllocationByCode(47);
+    expect(nairobi).toBeDefined();
+    expect(nairobi?.name).toBe("Nairobi");
+    expect(nairobi?.allocationKesMillion).toBeGreaterThan(40000);
+
+    const mombasa = getCountyAllocationByName("Mombasa");
+    expect(mombasa).toBeDefined();
+    expect(mombasa?.code).toBe(1);
+  });
 });
+

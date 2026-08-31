@@ -1,4 +1,16 @@
 import reportsData from "./reports-bulletin.json";
+import countiesData from "./counties-allocations.json";
+
+export interface CountyAllocationRecord {
+  code: number;
+  name: string;
+  capital: string;
+  allocationKesMillion: number;
+  healthSharePct: number;
+  educationSharePct: number;
+  infrastructurePct: number;
+  executionRatePct: number;
+}
 
 export interface ProvenanceInfo {
   source: string;
@@ -198,3 +210,19 @@ export function searchBudgetQuestions(
 
   return { matchingQuestions, matchingReports };
 }
+
+export function getAllCountiesAllocations(): CountyAllocationRecord[] {
+  return (countiesData.counties as CountyAllocationRecord[]) || [];
+}
+
+export function getCountyAllocationByCode(code: number): CountyAllocationRecord | undefined {
+  return getAllCountiesAllocations().find((c) => c.code === code);
+}
+
+export function getCountyAllocationByName(name: string): CountyAllocationRecord | undefined {
+  const norm = name.trim().toLowerCase();
+  return getAllCountiesAllocations().find(
+    (c) => c.name.toLowerCase() === norm || c.capital.toLowerCase() === norm,
+  );
+}
+
