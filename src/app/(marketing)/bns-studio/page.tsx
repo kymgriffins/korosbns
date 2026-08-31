@@ -2,8 +2,9 @@ import React from "react";
 import type { Metadata } from "next";
 import { buildPageMetadata } from "@/utils/page-metadata";
 import { StudioHero } from "@/components/studio/StudioHero";
-import { StudioServices } from "@/components/studio/StudioServices";
+import { StudioFeaturedWork } from "@/components/studio/StudioFeaturedWork";
 import { StudioPortfolio } from "@/components/studio/StudioPortfolio";
+import { StudioServices } from "@/components/studio/StudioServices";
 import { StudioTestimonials } from "@/components/studio/StudioTestimonials";
 import { StudioBookingForm } from "@/components/studio/StudioBookingForm";
 import { StudioContactCTA } from "@/components/studio/StudioContactCTA";
@@ -43,12 +44,14 @@ export default function BNSStudioPage() {
         }}
       />
       <StudioHero />
-      <StudioServices />
+      <StudioFeaturedWork />
       <StudioPortfolio />
+      <StudioServices />
       <StudioTestimonials />
       <StudioBookingForm />
       <StudioContactCTA />
     </>
   );
 }
+
 

@@ -12,15 +12,28 @@ import {
   ExternalLink,
   CheckCircle2,
   Filter,
+  Search,
+  ArrowRight,
+  Mic,
+  Video,
+  FileText,
+  Film,
+  Share2,
+  Users,
+  MessagesSquare,
+  MapPin,
+  Calendar,
+  ChevronRight,
 } from "lucide-react";
 import {
-  BNS_STUDIO_EVIDENCE,
-  STUDIO_CONTENT_TYPES,
-  STUDIO_ORGANIZATION_TYPES,
+  studiosEvidenceData,
+  STUDIO_ORGANIZATIONS,
   type StudioContentType,
-  type StudioOrganizationType,
-  type StudioEvidenceItem,
-} from "@/constants/bns-studio-content";
+  type StudioSectorType,
+  type StudioProjectEvidence,
+  type StudioPartnerOrg,
+} from "@/data/studios-evidence";
+import { STUDIO_CONTENT_TYPES } from "@/constants/bns-studio-content";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import {
   LandingContent,
@@ -29,175 +42,386 @@ import {
 } from "@/layouts/landing-section";
 import { cn } from "@/utils";
 
-export function StudioPortfolio() {
-  const [selectedContentType, setSelectedContentType] = useState<string>("All Content Types");
-  const [selectedOrgType, setSelectedOrgType] = useState<string>("All Organisations");
-  const [activeItem, setActiveItem] = useState<StudioEvidenceItem | null>(null);
+type NavigationMode = "all" | "content-type" | "organisation";
 
-  const filteredEvidence = BNS_STUDIO_EVIDENCE.filter((item) => {
+type Props = {
+  selectedProject?: StudioProjectEvidence | null;
+  onCloseProject?: () => void;
+  onOpenProject?: (project: StudioProjectEvidence) => void;
+};
+
+export function StudioPortfolio({
+  selectedProject: externalSelectedProject,
+  onCloseProject: externalOnCloseProject,
+  onOpenProject: externalOnOpenProject,
+}: Props) {
+  const allProjects = studiosEvidenceData.getAllProjects();
+  const allOrganizations = studiosEvidenceData.getAllOrganizations();
+
+  const [navMode, setNavMode] = useState<NavigationMode>("all");
+  const [selectedContentType, setSelectedContentType] = useState<string>("All");
+  const [selectedOrgSlug, setSelectedOrgSlug] = useState<string>("All");
+  const [selectedSector, setSelectedSector] = useState<string>("All Sectors");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [internalActiveItem, setInternalActiveItem] = useState<StudioProjectEvidence | null>(null);
+
+  const activeModalItem = externalSelectedProject !== undefined ? externalSelectedProject : internalActiveItem;
+
+  const handleOpenProject = (item: StudioProjectEvidence) => {
+    if (externalOnOpenProject) {
+      externalOnOpenProject(item);
+    } else {
+      setInternalActiveItem(item);
+    }
+  };
+
+  const handleCloseProject = () => {
+    if (externalOnCloseProject) {
+      externalOnCloseProject();
+    } else {
+      setInternalActiveItem(null);
+    }
+  };
+
+  // Filter projects according to current active mode & criteria
+  const filteredProjects = allProjects.filter((item) => {
+    const matchesSearch =
+      !searchQuery.trim() ||
+      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.organization.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.briefChallenge.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.tags.some((t) => t.toLowerCase().includes(searchQuery.toLowerCase()));
+
     const matchesContent =
-      selectedContentType === "All Content Types" ||
-      item.contentType === selectedContentType;
+      navMode === "content-type"
+        ? selectedContentType === "All" || item.contentType === selectedContentType
+        : selectedContentType === "All" || item.contentType === selectedContentType;
+
     const matchesOrg =
-      selectedOrgType === "All Organisations" ||
-      item.organizationType === selectedOrgType;
-    return matchesContent && matchesOrg;
+      navMode === "organisation"
+        ? selectedOrgSlug === "All" || item.organization.slug === selectedOrgSlug
+        : true;
+
+    const matchesSector =
+      selectedSector === "All Sectors" || item.organization.sector === selectedSector;
+
+    return matchesSearch && matchesContent && matchesOrg && matchesSector;
   });
 
+  const selectedOrgData =
+    selectedOrgSlug !== "All"
+      ? allOrganizations.find((o) => o.slug === selectedOrgSlug)
+      : null;
+
+  const currentContentConfig =
+    selectedContentType !== "All"
+      ? STUDIO_CONTENT_TYPES.find((c) => c.id === selectedContentType)
+      : null;
+
   return (
-    <LandingSection id="portfolio" className="bg-muted/20">
+    <LandingSection id="portfolio" className="border-t-0 bg-muted/20">
       <LandingSectionHeader
-        eyebrow="Evidence of Recent Work"
+        eyebrow="Explore the Evidence"
         title={
           <>
-            Impact evidence by <span className={T.highlight}>format & organisation</span>
+            Curated evidence library: <span className={T.highlight}>Work that speaks</span>
           </>
         }
-        description="Explore documented productions, policy multimedia briefs, and civic facilitations delivered for public institutions, development partners, CSOs, and community networks."
+        description="Here is the work. Here is who we did it for. Here is what we made. Here is the verifiable evidence across 8 specialized content formats and our partners."
       />
 
       <LandingContent>
-        {/* Dual Filtering Controls */}
-        <div className="mb-8 space-y-5 rounded-2xl border border-border/80 bg-card/60 p-4 backdrop-blur-sm sm:p-6">
-          {/* 1. Filter by Content Type */}
-          <div>
-            <div className="mb-3 flex items-center justify-between">
-              <span className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                <Layers className="size-3.5 text-primary" />
-                Filter by Content Type ({STUDIO_CONTENT_TYPES.length} Formats)
-              </span>
-              {selectedContentType !== "All Content Types" && (
-                <button
-                  type="button"
-                  onClick={() => setSelectedContentType("All Content Types")}
-                  className="text-xs font-medium text-primary hover:underline"
-                >
-                  Reset Content Filter
-                </button>
+        {/* Top 3 Navigation Mode Switcher */}
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-border/80 pb-6">
+          <div className="flex items-center gap-1 rounded-2xl border border-border/80 bg-card p-1.5 shadow-xs">
+            <button
+              type="button"
+              onClick={() => {
+                setNavMode("all");
+                setSelectedContentType("All");
+                setSelectedOrgSlug("All");
+              }}
+              className={cn(
+                "rounded-xl px-4 py-2 text-xs font-semibold transition-all",
+                navMode === "all"
+                  ? "bg-primary text-primary-foreground shadow-xs"
+                  : "text-muted-foreground hover:text-foreground",
               )}
-            </div>
-            <div className="flex flex-wrap gap-2">
+            >
+              All Work ({allProjects.length})
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setNavMode("content-type");
+                if (selectedContentType === "All") setSelectedContentType("Podcast & Audio");
+              }}
+              className={cn(
+                "rounded-xl px-4 py-2 text-xs font-semibold transition-all",
+                navMode === "content-type"
+                  ? "bg-primary text-primary-foreground shadow-xs"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              By Content Type (8)
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setNavMode("organisation");
+                if (selectedOrgSlug === "All") setSelectedOrgSlug("national-treasury-youth");
+              }}
+              className={cn(
+                "rounded-xl px-4 py-2 text-xs font-semibold transition-all",
+                navMode === "organisation"
+                  ? "bg-primary text-primary-foreground shadow-xs"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              By Organisation ({allOrganizations.length})
+            </button>
+          </div>
+
+          {/* Global Search Bar */}
+          <div className="relative w-full max-w-xs">
+            <Search className="absolute left-3.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search evidence, topics, partners..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="h-10 w-full rounded-2xl border border-border/80 bg-card pl-9 pr-4 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            />
+            {searchQuery && (
               <button
                 type="button"
-                onClick={() => setSelectedContentType("All Content Types")}
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground hover:text-foreground"
+              >
+                <X className="size-3.5" />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* MODE 1: ALL WORK VIEW */}
+        {navMode === "all" && (
+          <div className="mb-8 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/80 bg-card/60 p-4 backdrop-blur-sm">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs font-semibold text-muted-foreground">Filter Format:</span>
+              <button
+                type="button"
+                onClick={() => setSelectedContentType("All")}
                 className={cn(
-                  "rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors",
-                  selectedContentType === "All Content Types"
-                    ? "border-primary bg-primary text-primary-foreground font-semibold shadow-xs"
-                    : "border-border/70 bg-background/80 text-muted-foreground hover:border-primary/50 hover:text-foreground",
+                  "rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+                  selectedContentType === "All"
+                    ? "border-primary bg-primary text-primary-foreground font-semibold"
+                    : "border-border/70 bg-background/80 text-muted-foreground hover:border-primary/50",
                 )}
               >
                 All Formats
               </button>
-              {STUDIO_CONTENT_TYPES.map((type) => {
-                const Icon = type.icon;
-                const isSelected = selectedContentType === type.id;
+              {STUDIO_CONTENT_TYPES.map((t) => (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => setSelectedContentType(t.id)}
+                  className={cn(
+                    "rounded-full border px-3 py-1 text-xs font-medium transition-colors",
+                    selectedContentType === t.id
+                      ? "border-primary bg-primary text-primary-foreground font-semibold"
+                      : "border-border/70 bg-background/80 text-muted-foreground hover:border-primary/50",
+                  )}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold text-muted-foreground">Sector:</span>
+              <select
+                value={selectedSector}
+                onChange={(e) => setSelectedSector(e.target.value)}
+                className="h-8 rounded-xl border border-border bg-background px-2.5 text-xs text-foreground focus:outline-none"
+              >
+                <option value="All Sectors">All Sectors</option>
+                <option value="Governments & Public Sector">Governments & Public Sector</option>
+                <option value="Development Partners & INGOs">Development Partners & INGOs</option>
+                <option value="Civil Society & CSOs">Civil Society & CSOs</option>
+                <option value="Private Sector & ESG">Private Sector & ESG</option>
+                <option value="Grassroots & Community Alliances">Grassroots & Community Alliances</option>
+              </select>
+            </div>
+          </div>
+        )}
+
+        {/* MODE 2: BY CONTENT TYPE TABS VIEW */}
+        {navMode === "content-type" && (
+          <div className="mb-10 space-y-6">
+            {/* 8 Horizontal Nav Tabs */}
+            <div className="flex flex-wrap gap-2 rounded-2xl border border-border/80 bg-card p-3 shadow-xs">
+              {STUDIO_CONTENT_TYPES.map((format) => {
+                const Icon = format.icon;
+                const isSelected = selectedContentType === format.id;
+                const count = allProjects.filter((p) => p.contentType === format.id).length;
                 return (
                   <button
-                    key={type.id}
+                    key={format.id}
                     type="button"
-                    onClick={() => setSelectedContentType(type.id)}
+                    onClick={() => setSelectedContentType(format.id)}
                     className={cn(
-                      "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors",
+                      "flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-semibold transition-all",
                       isSelected
-                        ? "border-primary bg-primary text-primary-foreground font-semibold shadow-xs"
-                        : "border-border/70 bg-background/80 text-muted-foreground hover:border-primary/50 hover:text-foreground",
+                        ? "bg-primary text-primary-foreground shadow-xs"
+                        : "border border-border/60 bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground",
                     )}
                   >
-                    <Icon className={cn("size-3.5", isSelected ? "text-primary-foreground" : "text-primary")} />
-                    <span>{type.label}</span>
+                    <Icon className="size-3.5" />
+                    <span>{format.label}</span>
+                    <span
+                      className={cn(
+                        "rounded-full px-1.5 py-0.2 text-[10px]",
+                        isSelected ? "bg-primary-foreground/20 text-white" : "bg-muted text-muted-foreground",
+                      )}
+                    >
+                      {count}
+                    </span>
                   </button>
                 );
               })}
             </div>
-          </div>
 
-          {/* 2. Filter by Organisation */}
-          <div className="border-t border-border/60 pt-4">
-            <div className="mb-3 flex items-center justify-between">
-              <span className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                <Building2 className="size-3.5 text-primary" />
-                Filter by Organisation Sector
-              </span>
-              {selectedOrgType !== "All Organisations" && (
-                <button
-                  type="button"
-                  onClick={() => setSelectedOrgType("All Organisations")}
-                  className="text-xs font-medium text-primary hover:underline"
-                >
-                  Reset Sector Filter
-                </button>
-              )}
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => setSelectedOrgType("All Organisations")}
-                className={cn(
-                  "rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors",
-                  selectedOrgType === "All Organisations"
-                    ? "border-foreground/80 bg-foreground text-background font-semibold"
-                    : "border-border/70 bg-background/80 text-muted-foreground hover:border-foreground/40 hover:text-foreground",
-                )}
-              >
-                All Sectors
-              </button>
-              {STUDIO_ORGANIZATION_TYPES.map((org) => {
-                const isSelected = selectedOrgType === org.id;
+            {/* Selected Format Explanatory Banner */}
+            {currentContentConfig && (
+              <div className="flex flex-col gap-2 rounded-2xl border border-primary/25 bg-primary/5 p-4 sm:p-5">
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
+                  <Sparkles className="size-3.5" />
+                  <span>Production Capability & Framework</span>
+                </div>
+                <h3 className="text-lg font-bold text-foreground sm:text-xl">
+                  {currentContentConfig.label}
+                </h3>
+                <p className="text-xs leading-relaxed text-muted-foreground sm:text-sm">
+                  {currentContentConfig.shortDesc}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* MODE 3: BY ORGANISATION VIEW */}
+        {navMode === "organisation" && (
+          <div className="mb-10 space-y-6">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {allOrganizations.map((org) => {
+                const isSelected = selectedOrgSlug === org.slug;
+                const orgWorkCount = allProjects.filter((p) => p.organization.slug === org.slug).length;
                 return (
                   <button
                     key={org.id}
                     type="button"
-                    onClick={() => setSelectedOrgType(org.id)}
+                    onClick={() => setSelectedOrgSlug(org.slug)}
                     className={cn(
-                      "rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors",
+                      "flex flex-col justify-between rounded-2xl border p-4 text-left transition-all",
                       isSelected
-                        ? "border-foreground/80 bg-foreground text-background font-semibold"
-                        : "border-border/70 bg-background/80 text-muted-foreground hover:border-foreground/40 hover:text-foreground",
+                        ? "border-primary bg-primary/10 shadow-md ring-1 ring-primary"
+                        : "border-border bg-card hover:border-primary/50 hover:bg-muted/30",
                     )}
                   >
-                    {org.label}
+                    <div>
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="rounded-full bg-muted px-2.5 py-0.5 text-[10px] font-semibold text-foreground/80">
+                          {org.sector}
+                        </span>
+                        <span className="text-[11px] font-semibold text-primary">
+                          {orgWorkCount} {orgWorkCount === 1 ? "project" : "projects"}
+                        </span>
+                      </div>
+                      <h4 className="mt-2 text-sm font-bold text-foreground line-clamp-1">
+                        {org.name}
+                      </h4>
+                      <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
+                        {org.description}
+                      </p>
+                    </div>
+                    <div className="mt-3 flex items-center gap-1.5 text-[11px] text-muted-foreground border-t border-border/50 pt-2">
+                      <MapPin className="size-3" />
+                      <span>{org.location}</span>
+                    </div>
                   </button>
                 );
               })}
             </div>
-          </div>
-        </div>
 
-        {/* Results Counter & Active Filter Tags */}
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground">
+            {/* Selected Organization Profile Banner */}
+            {selectedOrgData && (
+              <div className="rounded-2xl border border-border bg-card p-5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-primary">
+                      Selected Partner / Client Dossier
+                    </span>
+                    <h3 className="text-xl font-bold text-foreground">
+                      {selectedOrgData.name}
+                    </h3>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {selectedOrgData.description} • {selectedOrgData.location}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedOrgSlug("All")}
+                    className="text-xs font-semibold text-primary hover:underline"
+                  >
+                    View all organisations
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Results Counter & Search indicator */}
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
           <p className="font-medium">
-            Showing <span className="font-semibold text-foreground">{filteredEvidence.length}</span> evidence projects
+            Showing <span className="font-bold text-foreground">{filteredProjects.length}</span> evidence projects
+            {selectedContentType !== "All" && ` in ${selectedContentType}`}
+            {selectedOrgData && ` for ${selectedOrgData.name}`}
           </p>
-          {(selectedContentType !== "All Content Types" || selectedOrgType !== "All Organisations") && (
+          {(searchQuery || selectedContentType !== "All" || selectedSector !== "All Sectors") && (
             <button
               type="button"
               onClick={() => {
-                setSelectedContentType("All Content Types");
-                setSelectedOrgType("All Organisations");
+                setSearchQuery("");
+                setSelectedContentType("All");
+                setSelectedSector("All Sectors");
+                setSelectedOrgSlug("All");
               }}
               className="inline-flex items-center gap-1 text-primary hover:underline"
             >
-              <Filter className="size-3" /> Clear all filters
+              <Filter className="size-3" /> Reset all active filters
             </button>
           )}
         </div>
 
         {/* Evidence Grid */}
-        {filteredEvidence.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border p-12 text-center">
+        {filteredProjects.length === 0 ? (
+          <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-border p-12 text-center">
             <Layers className="mb-3 size-8 text-muted-foreground/60" />
-            <h4 className="text-base font-semibold text-foreground">No evidence items match this combination</h4>
+            <h4 className="text-base font-bold text-foreground">No evidence projects match your criteria</h4>
             <p className="mt-1 text-xs text-muted-foreground max-w-md">
-              Try selecting a different content format or organization sector to view our published works.
+              Try adjusting your search terms or selecting another format or organization to view documented work.
             </p>
             <button
               type="button"
               onClick={() => {
-                setSelectedContentType("All Content Types");
-                setSelectedOrgType("All Organisations");
+                setSearchQuery("");
+                setSelectedContentType("All");
+                setSelectedSector("All Sectors");
+                setSelectedOrgSlug("All");
               }}
-              className="mt-4 rounded-full border border-primary bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground"
+              className="mt-4 rounded-full border border-primary bg-primary px-5 py-2 text-xs font-semibold text-primary-foreground"
             >
               Reset Filters
             </button>
@@ -205,76 +429,84 @@ export function StudioPortfolio() {
         ) : (
           <motion.div layout className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             <AnimatePresence mode="popLayout">
-              {filteredEvidence.map((item) => (
+              {filteredProjects.map((project) => (
                 <motion.article
-                  key={item.id}
+                  key={project.id}
                   layout
-                  initial={{ opacity: 0, scale: 0.96 }}
+                  initial={{ opacity: 0, scale: 0.97 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.96 }}
-                  transition={{ duration: 0.22 }}
-                  onClick={() => setActiveItem(item)}
-                  className="group relative flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-border/80 bg-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  exit={{ opacity: 0, scale: 0.97 }}
+                  transition={{ duration: 0.2 }}
+                  onClick={() => handleOpenProject(project)}
+                  className="group relative flex cursor-pointer flex-col overflow-hidden rounded-3xl border border-border/80 bg-card transition-all duration-300 hover:-translate-y-1 hover:border-primary/60 hover:shadow-xl hover:shadow-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  {/* Card Media Preview */}
+                  {/* Poster Thumbnail */}
                   <div className="relative aspect-16/10 w-full overflow-hidden bg-muted">
                     <Image
-                      src={item.image_url}
-                      alt={item.title}
+                      src={project.media.posterUrl}
+                      alt={project.title}
                       fill
-                      className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                      className={cn(
+                        "object-cover transition-transform duration-500 group-hover:scale-105",
+                        project.media.posterPosition || "object-center",
+                      )}
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
 
                     {/* Top Badges */}
-                    <div className="absolute inset-x-3 top-3 flex items-center justify-between gap-2">
-                      <span className="inline-flex items-center gap-1 rounded-full bg-black/75 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur-md">
+                    <div className="absolute inset-x-3.5 top-3.5 flex items-center justify-between gap-2">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-black/80 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur-md">
                         <Sparkles className="size-3 text-primary" />
-                        {item.contentType}
+                        {project.contentType}
                       </span>
                       <span className="rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-medium text-white/90 backdrop-blur-md">
-                        {item.year}
+                        {project.year}
                       </span>
                     </div>
 
-                    {/* Bottom Partner Pill */}
-                    <div className="absolute inset-x-3 bottom-3">
-                      <p className="line-clamp-1 text-xs font-semibold text-white/90">
-                        {item.organizationName}
+                    {/* Bottom Client Tag */}
+                    <div className="absolute inset-x-3.5 bottom-3">
+                      <p className="line-clamp-1 text-xs font-semibold text-white/95">
+                        {project.organization.name}
                       </p>
                     </div>
                   </div>
 
-                  {/* Card Content & Impact Metric */}
-                  <div className="flex flex-1 flex-col justify-between p-5">
+                  {/* Body Content */}
+                  <div className="flex flex-1 flex-col justify-between p-5 sm:p-6">
                     <div className="space-y-2.5">
-                      <div className="flex items-center gap-1.5 text-[11px] font-medium text-primary">
+                      <div className="flex items-center gap-1.5 text-[11px] font-semibold text-primary">
                         <Building2 className="size-3" />
-                        <span>{item.organizationType}</span>
+                        <span>{project.organization.sector}</span>
                       </div>
                       <h3 className="text-base font-bold leading-snug tracking-tight text-foreground transition-colors group-hover:text-primary">
-                        {item.title}
+                        {project.title}
                       </h3>
                       <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
-                        {item.summary}
+                        {project.briefChallenge}
                       </p>
                     </div>
 
-                    {/* Impact Metric Banner */}
-                    <div className="mt-4 rounded-xl border border-primary/20 bg-primary/5 p-2.5">
+                    {/* Verified Outcome Banner */}
+                    <div className="mt-4 rounded-2xl border border-primary/25 bg-primary/10 p-3">
                       <div className="flex items-start gap-2">
                         <TrendingUp className="mt-0.5 size-3.5 shrink-0 text-primary" />
-                        <p className="text-[11px] font-medium leading-tight text-foreground">
-                          {item.impactMetric}
-                        </p>
+                        <div>
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-primary">
+                            Measurable Evidence
+                          </p>
+                          <p className="text-xs font-bold leading-tight text-foreground">
+                            {project.impactEvidence.primaryMetric}
+                          </p>
+                        </div>
                       </div>
                     </div>
 
-                    {/* Footer CTA Hint */}
-                    <div className="mt-4 flex items-center justify-between border-t border-border/50 pt-3 text-xs font-medium text-primary">
-                      <span>View case brief</span>
-                      <ExternalLink className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+                    {/* Footer Trigger */}
+                    <div className="mt-4 flex items-center justify-between border-t border-border/50 pt-3 text-xs font-semibold text-primary">
+                      <span>View case dossier & outputs</span>
+                      <ChevronRight className="size-4 transition-transform group-hover:translate-x-1" />
                     </div>
                   </div>
                 </motion.article>
@@ -283,132 +515,227 @@ export function StudioPortfolio() {
           </motion.div>
         )}
 
-        <div className="mt-12 flex justify-center">
-          <button
-            type="button"
-            onClick={() => document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" })}
-            className={cn(T.btnPrimary, "px-8 py-3 rounded-full text-xs font-semibold shadow-md")}
-          >
-            Commission Work in Any Format
-          </button>
+        {/* Global Commission Trigger */}
+        <div className="mt-14 flex flex-col items-center justify-center rounded-3xl border border-border/80 bg-card/60 p-8 text-center sm:p-12">
+          <h3 className="text-xl font-bold text-foreground sm:text-2xl">
+            Have a project or policy evidence to translate?
+          </h3>
+          <p className="mt-2 max-w-xl text-xs sm:text-sm text-muted-foreground">
+            We partner with governments, INGOs, CSOs, and commercial leaders to produce high-trust content across all 8 formats.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3 justify-center">
+            <button
+              type="button"
+              onClick={() => document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" })}
+              className={cn(T.btnPrimary, "rounded-full px-8 py-3 text-xs font-semibold shadow-md")}
+            >
+              Commission BNS Studios
+            </button>
+            <a
+              href="mailto:info@budgetndiostory.org"
+              className="inline-flex items-center justify-center rounded-full border border-input bg-background px-6 py-3 text-xs font-semibold hover:bg-accent"
+            >
+              Contact Producers Directly
+            </a>
+          </div>
         </div>
       </LandingContent>
 
-      {/* Case Brief Lightbox Modal */}
+      {/* Deep Case / Evidence Dossier Modal */}
       <AnimatePresence>
-        {activeItem && (
+        {activeModalItem && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
-            onClick={() => setActiveItem(null)}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-md"
+            onClick={handleCloseProject}
           >
             <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="relative max-w-3xl w-full max-h-[90vh] overflow-y-auto rounded-3xl border border-border bg-card shadow-2xl"
+              initial={{ scale: 0.94, opacity: 0, y: 15 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.94, opacity: 0, y: 15 }}
+              transition={{ duration: 0.22 }}
+              className="relative max-w-4xl w-full max-h-[92vh] overflow-y-auto rounded-3xl border border-border bg-card shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Modal Image Header */}
-              <div className="relative aspect-16/9 w-full bg-muted">
+              {/* Media Header Banner */}
+              <div className="relative aspect-16/9 w-full bg-muted sm:aspect-21/9">
                 <Image
-                  src={activeItem.image_url}
-                  alt={activeItem.title}
+                  src={activeModalItem.media.posterUrl}
+                  alt={activeModalItem.title}
                   fill
-                  className="object-cover object-center"
-                  sizes="(max-width: 896px) 100vw, 896px"
+                  className={cn(
+                    "object-cover",
+                    activeModalItem.media.posterPosition || "object-center",
+                  )}
+                  sizes="(max-width: 1024px) 100vw, 1024px"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-card via-black/30 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-card via-black/40 to-transparent" />
                 <button
                   type="button"
-                  onClick={() => setActiveItem(null)}
-                  className="absolute top-4 right-4 flex size-9 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-md transition-colors hover:bg-black/80"
-                  aria-label="Close case study"
+                  onClick={handleCloseProject}
+                  className="absolute top-4 right-4 flex size-9 items-center justify-center rounded-full bg-black/70 text-white backdrop-blur-md transition-colors hover:bg-black/90"
+                  aria-label="Close dossier"
                 >
                   <X className="size-4" />
                 </button>
                 <div className="absolute bottom-4 left-6 right-6">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
-                      {activeItem.contentType}
+                      {activeModalItem.contentType}
                     </span>
                     <span className="rounded-full bg-black/70 px-3 py-1 text-xs font-medium text-white backdrop-blur-md">
-                      {activeItem.organizationType}
+                      {activeModalItem.organization.sector}
+                    </span>
+                    <span className="rounded-full bg-black/60 px-2.5 py-1 text-xs font-medium text-white/80 backdrop-blur-md">
+                      {activeModalItem.year}
                     </span>
                   </div>
                 </div>
               </div>
 
-              {/* Modal Body */}
+              {/* Dossier Body */}
               <div className="space-y-6 p-6 sm:p-8">
+                {/* Title & Client Summary */}
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                    Client & Partner: <span className="text-foreground">{activeItem.organizationName}</span> • {activeItem.year}
-                  </p>
+                  <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary">
+                    <Building2 className="size-3.5" />
+                    <span>{activeModalItem.organization.name}</span>
+                  </div>
                   <h2 className="mt-1 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                    {activeItem.title}
+                    {activeModalItem.title}
                   </h2>
+                  {activeModalItem.subtitle && (
+                    <p className="mt-1 text-sm font-medium text-muted-foreground">
+                      {activeModalItem.subtitle}
+                    </p>
+                  )}
                 </div>
 
-                {/* Impact Highlight Box */}
-                <div className="rounded-2xl border border-primary/30 bg-primary/10 p-4 sm:p-5">
+                {/* Evidence & Metric Highlight Box */}
+                <div className="rounded-2xl border border-primary/30 bg-primary/10 p-5">
                   <div className="flex items-start gap-3">
                     <TrendingUp className="mt-1 size-5 shrink-0 text-primary" />
-                    <div>
+                    <div className="space-y-1">
                       <p className="text-xs font-bold uppercase tracking-wider text-primary">
-                        Documented Impact & Evidence
+                        Measurable Impact & Reach
                       </p>
-                      <p className="mt-1 text-sm font-semibold text-foreground">
-                        {activeItem.impactMetric}
+                      <p className="text-base font-bold text-foreground">
+                        {activeModalItem.impactEvidence.primaryMetric}
+                        {activeModalItem.impactEvidence.secondaryMetric && ` • ${activeModalItem.impactEvidence.secondaryMetric}`}
                       </p>
+                      <p className="text-xs leading-relaxed text-muted-foreground">
+                        {activeModalItem.impactEvidence.context}
+                      </p>
+                      {activeModalItem.impactEvidence.verificationOutcome && (
+                        <p className="text-xs font-medium text-foreground/90 pt-1">
+                          <span className="font-bold text-primary">Verification: </span>
+                          {activeModalItem.impactEvidence.verificationOutcome}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
 
-                {/* Description */}
-                <div className="space-y-3">
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
-                    Project Brief & Execution
-                  </h3>
+                {/* Challenge vs Solution Breakdown */}
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="rounded-2xl border border-border bg-muted/20 p-4 space-y-2">
+                    <p className="text-xs font-bold uppercase tracking-wider text-foreground">
+                      The Brief & Challenge
+                    </p>
+                    <p className="text-xs leading-relaxed text-muted-foreground">
+                      {activeModalItem.briefChallenge}
+                    </p>
+                  </div>
+                  <div className="rounded-2xl border border-border bg-muted/20 p-4 space-y-2">
+                    <p className="text-xs font-bold uppercase tracking-wider text-foreground">
+                      What BNS Studios Produced
+                    </p>
+                    <p className="text-xs leading-relaxed text-muted-foreground">
+                      {activeModalItem.whatWeProduced}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Full Editorial Description */}
+                <div className="space-y-2">
+                  <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    Project Narrative & Strategy
+                  </p>
                   <p className="text-sm leading-relaxed text-foreground/80">
-                    {activeItem.description}
+                    {activeModalItem.description}
                   </p>
                 </div>
 
-                {/* Deliverables */}
-                {activeItem.deliverables && activeItem.deliverables.length > 0 && (
+                {/* Outputs Checklist */}
+                {activeModalItem.outputs && activeModalItem.outputs.length > 0 && (
                   <div className="space-y-3 border-t border-border pt-4">
-                    <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">
-                      Key Deliverables
-                    </h3>
+                    <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                      Delivered Outputs & Formats
+                    </p>
                     <ul className="grid gap-2 sm:grid-cols-2">
-                      {activeItem.deliverables.map((del, idx) => (
-                        <li key={idx} className="flex items-center gap-2 text-xs text-foreground/80">
-                          <CheckCircle2 className="size-4 shrink-0 text-primary" />
-                          <span>{del}</span>
+                      {activeModalItem.outputs.map((output, idx) => (
+                        <li key={idx} className="flex items-start gap-2 text-xs text-foreground/85">
+                          <CheckCircle2 className="mt-0.5 size-3.5 shrink-0 text-primary" />
+                          <span>{output}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
                 )}
 
-                {/* Action CTA inside modal */}
-                <div className="flex flex-wrap items-center justify-between gap-4 border-t border-border pt-5">
-                  <p className="text-xs text-muted-foreground">
-                    Need a similar production for your organization?
+                {/* Related Work from the same Organisation or Format */}
+                <div className="space-y-3 border-t border-border pt-5">
+                  <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    Related Evidence Works
                   </p>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {studiosEvidenceData.getRelatedProjects(activeModalItem.id, 2).map((rel) => (
+                      <button
+                        key={rel.id}
+                        type="button"
+                        onClick={() => handleOpenProject(rel)}
+                        className="flex items-center gap-3 rounded-2xl border border-border bg-card p-3 text-left transition-all hover:border-primary/50 hover:bg-muted/30"
+                      >
+                        <div className="relative size-12 shrink-0 overflow-hidden rounded-xl bg-muted">
+                          <Image
+                            src={rel.media.posterUrl}
+                            alt={rel.title}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <span className="text-[10px] font-semibold text-primary line-clamp-1">
+                            {rel.contentType}
+                          </span>
+                          <p className="text-xs font-bold text-foreground line-clamp-1">
+                            {rel.title}
+                          </p>
+                          <p className="text-[11px] text-muted-foreground line-clamp-1">
+                            {rel.organization.name}
+                          </p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Action Footer */}
+                <div className="flex flex-wrap items-center justify-between gap-4 border-t border-border pt-5">
+                  <div className="text-xs text-muted-foreground">
+                    Need a similar production for your team?
+                  </div>
                   <button
                     type="button"
                     onClick={() => {
-                      setActiveItem(null);
+                      handleCloseProject();
                       document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" });
                     }}
-                    className={cn(T.btnPrimary, "rounded-full px-6 py-2 text-xs font-semibold")}
+                    className={cn(T.btnPrimary, "rounded-full px-6 py-2.5 text-xs font-semibold shadow-sm")}
                   >
-                    Commission a Project
+                    Commission this Format
                   </button>
                 </div>
               </div>
@@ -419,4 +746,5 @@ export function StudioPortfolio() {
     </LandingSection>
   );
 }
+
 
