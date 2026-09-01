@@ -15,7 +15,7 @@ export function StudioContactCTA() {
         <span className="hidden sm:inline text-muted-foreground">
           Ready to commission impact content?
         </span>
-        <span className="font-semibold ml-1">Talk to BNS Studios.</span>
+        <span className="font-semibold ml-1">Talk to our production team.</span>
       </div>
       <div className="flex items-center gap-3">
         <a href={`tel:${phone}`}>

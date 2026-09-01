@@ -1,6 +1,6 @@
 import {
   Mic,
-  Sparkles,
+  Clapperboard,
   Video,
   FileText,
   Film,
@@ -49,7 +49,7 @@ export const STUDIO_CONTENT_TYPES: {
     label: "Animations",
     shortDesc:
       "High-engagement 2D and motion explainers that demystify complex legislation and budget cycles.",
-    icon: Sparkles,
+    icon: Clapperboard,
   },
   {
     id: "Explainer Videos",

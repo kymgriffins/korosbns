@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Send, Sparkles } from "lucide-react";
+import { Loader2, Send } from "lucide-react";
 import { citizenApi } from "@/lib/api-client";
 import { toast } from "sonner";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
@@ -87,7 +87,7 @@ export function StudioBookingForm() {
     <LandingSection id="booking">
       <LandingSectionHeader
         align="center"
-        eyebrow="Commission BNS Studios"
+        eyebrow="Commission impact production"
         title="Start your impact production"
         description="Tell us about your organization's goals, desired format, and target timeline. We will structure an evidence treatment and quote within 24 hours."
       />
@@ -219,7 +219,7 @@ export function StudioBookingForm() {
                 <Loader2 className="size-4 animate-spin" />
               ) : (
                 <>
-                  <Sparkles className="size-4" />
+                  <Send className="size-4" />
                   <span>Submit Commission Request</span>
                 </>
               )}

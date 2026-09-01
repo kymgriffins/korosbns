@@ -47,11 +47,8 @@ const TimelineSection = dynamic(
   },
 );
 
-const BNSStudioSection = dynamic(
-  () =>
-    import("@/components/marketing/bns-studio-section").then((m) => ({
-      default: m.BNSStudioSection,
-    })),
+const TestimonialsSection = dynamic(
+  () => import("@/components/shadcn-space/blocks/testimonial-01/testimonial"),
   {
     ssr: false,
     loading: () => <div className="h-96 w-full animate-pulse bg-muted" />,
@@ -66,14 +63,6 @@ const SocialsSection = dynamic(
   },
 );
 
-const TestimonialsSection = dynamic(
-  () => import("@/components/shadcn-space/blocks/testimonial-01/testimonial"),
-  {
-    ssr: false,
-    loading: () => <div className="h-96 w-full animate-pulse bg-muted" />,
-  },
-);
-
 const NewsletterPopup = dynamic(
   () => import("@/components/marketing/newsletter-popup"),
   { ssr: false },
@@ -82,8 +71,8 @@ const NewsletterPopup = dynamic(
 /**
  * Homepage spine:
  * Hero (TikTok) → Story → Programmes → Partners → Team → Timeline →
- * Testimonials → Studios (single) → Socials
- * (Field gallery temporarily hidden)
+ * Testimonials → Socials
+ * (Field gallery temporarily hidden; studio evidence lives at /bns-studio)
  */
 export default function PremiumLandingClient() {
   return (
@@ -95,7 +84,6 @@ export default function PremiumLandingClient() {
       <LandingTeam />
       <TimelineSection />
       <TestimonialsSection />
-      <BNSStudioSection />
       <SocialsSection />
       <NewsletterPopup />
     </>

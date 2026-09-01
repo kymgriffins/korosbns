@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Sparkles, HeartHandshake } from "lucide-react";
+import { HeartHandshake } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BNS_STUDIO_HERO_IMAGE } from "@/constants/bns-studio-content";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
@@ -43,16 +43,10 @@ export function StudioHero() {
         data-gsap-hero-content
         className="relative z-10 mx-auto flex w-full max-w-[1400px] flex-col gap-5 px-6 pt-28 pb-14 md:px-16 md:pb-20"
       >
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary backdrop-blur-md">
-            <Sparkles className="size-3" />
-            BNS Studios
-          </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-background/80 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur-md">
-            <HeartHandshake className="size-3 text-primary" />
-            Evidence by format and partner
-          </span>
-        </div>
+        <span className="inline-flex w-fit items-center gap-1.5 rounded-full border border-border/80 bg-background/80 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur-md">
+          <HeartHandshake className="size-3 text-primary" />
+          Impact production and evidence library
+        </span>
 
         <h1 className={cn(T.heroTitle, "max-w-3xl")}>{studios.headline}</h1>
         <p

@@ -21,7 +21,7 @@ export default function BNSStudioPage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "LocalBusiness",
-            name: "BNS Studios",
+            name: "Budget Ndio Story — Impact Production",
             description: studios.seoDescription,
             url: "https://budgetndiostory.org/bns-studio",
             email: "info@budgetndiostory.org",

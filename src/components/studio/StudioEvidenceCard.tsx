@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Building2, ChevronRight, Sparkles, TrendingUp } from "lucide-react";
+import { Building2, ChevronRight, TrendingUp } from "lucide-react";
 import type { StudioProjectEvidence } from "@/data/studios-evidence";
 import { cn } from "@/utils";
 
@@ -37,8 +37,7 @@ export function StudioEvidenceCard({ project, onOpen }: Props) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
         <div className="absolute inset-x-3.5 top-3.5 flex items-center justify-between gap-2">
-          <span className="inline-flex items-center gap-1 rounded-full bg-black/80 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur-md">
-            <Sparkles className="size-3 text-primary" />
+          <span className="rounded-full bg-black/80 px-2.5 py-1 text-[11px] font-semibold text-white backdrop-blur-md">
             {project.contentType}
           </span>
           <span className="rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-medium text-white/90 backdrop-blur-md">

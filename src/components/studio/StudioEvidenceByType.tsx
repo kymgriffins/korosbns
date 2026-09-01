@@ -1,12 +1,15 @@
 "use client";
 
-import { STUDIO_CONTENT_TYPES } from "@/constants/bns-studio-content";
+import { useMemo, useState } from "react";
+import {
+  STUDIO_CONTENT_TYPES,
+  type StudioContentType,
+} from "@/constants/bns-studio-content";
 import {
   studiosEvidenceData,
   type StudioProjectEvidence,
 } from "@/data/studios-evidence";
 import { StudioEvidenceCard } from "@/components/studio/StudioEvidenceCard";
-import { contentTypeSlug } from "@/components/studio/studio-evidence-utils";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import {
   LandingContent,
@@ -18,52 +21,114 @@ import { cn } from "@/utils";
 
 type Props = {
   onOpenProject: (project: StudioProjectEvidence) => void;
+  activeFormat?: StudioContentType;
+  onFormatChange?: (format: StudioContentType) => void;
 };
 
-function TypeSection({
-  format,
-  index,
+function firstFormatWithProjects(): StudioContentType {
+  const counts = studiosEvidenceData.getContentTypeCounts();
+  const withWork = STUDIO_CONTENT_TYPES.find((format) => (counts[format.id] ?? 0) > 0);
+  return withWork?.id ?? STUDIO_CONTENT_TYPES[0].id;
+}
+
+export function StudioEvidenceByType({
   onOpenProject,
-}: {
-  format: (typeof STUDIO_CONTENT_TYPES)[number];
-  index: number;
-  onOpenProject: (project: StudioProjectEvidence) => void;
-}) {
-  const Icon = format.icon;
-  const projects = studiosEvidenceData.getProjectsByContentType(format.id);
-  const slug = contentTypeSlug(format.id);
+  activeFormat: controlledFormat,
+  onFormatChange,
+}: Props) {
+  const [internalFormat, setInternalFormat] = useState<StudioContentType>(
+    firstFormatWithProjects,
+  );
+
+  const activeFormat = controlledFormat ?? internalFormat;
+  const setActiveFormat = onFormatChange ?? setInternalFormat;
+
+  const counts = studiosEvidenceData.getContentTypeCounts();
+  const activeMeta = STUDIO_CONTENT_TYPES.find((f) => f.id === activeFormat);
+  const projects = useMemo(
+    () => studiosEvidenceData.getProjectsByContentType(activeFormat),
+    [activeFormat],
+  );
 
   return (
-    <LandingSection
-      id={`evidence-${slug}`}
-      className={cn(
-        "border-t-0 scroll-mt-24",
-        index % 2 === 0 ? "bg-background" : "bg-muted/20",
-      )}
-    >
-      <LandingContent>
-        <GsapReveal className="mb-8 flex flex-col gap-4 border-b border-border/60 pb-6 sm:flex-row sm:items-end sm:justify-between">
-          <div className="flex items-start gap-4">
-            <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-              <Icon className="size-6" />
+    <LandingSection id="evidence-by-type" className="border-t-0 bg-background">
+      <LandingSectionHeader
+        eyebrow="Evidence library"
+        title={
+          <>
+            Recent work across{" "}
+            <span className={T.highlight}>eight formats</span>
+          </>
+        }
+        description="Select a format to browse documented commissions. One catalogue at a time — no endless scroll through every category."
+      />
+
+      <LandingContent className="space-y-8">
+        <div
+          role="tablist"
+          aria-label="Content format filter"
+          className="flex gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        >
+          {STUDIO_CONTENT_TYPES.map((format) => {
+            const Icon = format.icon;
+            const count = counts[format.id] ?? 0;
+            const isActive = activeFormat === format.id;
+
+            return (
+              <button
+                key={format.id}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                onClick={() => setActiveFormat(format.id)}
+                className={cn(
+                  "flex shrink-0 items-center gap-2 rounded-full border px-4 py-2.5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                  isActive
+                    ? "border-primary bg-primary/10 text-foreground"
+                    : "border-border/80 bg-card text-foreground hover:border-primary/50 hover:bg-primary/5",
+                )}
+              >
+                <Icon className="size-4 text-primary" />
+                <span className="text-xs font-semibold">{format.label}</span>
+                <span
+                  className={cn(
+                    "rounded-full px-2 py-0.5 text-[10px] font-semibold",
+                    count > 0
+                      ? "bg-primary/15 text-primary"
+                      : "bg-muted text-muted-foreground",
+                  )}
+                >
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {activeMeta && (
+          <GsapReveal
+            key={activeFormat}
+            className="flex flex-col gap-6 border-b border-border/60 pb-8 sm:flex-row sm:items-end sm:justify-between"
+          >
+            <div className="flex items-start gap-4">
+              <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                <activeMeta.icon className="size-6" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-foreground sm:text-2xl">
+                  {activeMeta.label}
+                </h3>
+                <p className="mt-1 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                  {activeMeta.shortDesc}
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-[11px] font-bold uppercase tracking-wider text-primary">
-                Content type {index + 1} of 8
-              </p>
-              <h3 className="text-xl font-bold text-foreground sm:text-2xl">
-                {format.label}
-              </h3>
-              <p className="mt-1 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-                {format.shortDesc}
-              </p>
-            </div>
-          </div>
-          <p className="text-xs font-semibold text-muted-foreground">
-            {projects.length}{" "}
-            {projects.length === 1 ? "case study" : "case studies"}
-          </p>
-        </GsapReveal>
+            <p className="text-xs font-semibold text-muted-foreground">
+              {projects.length}{" "}
+              {projects.length === 1 ? "case study" : "case studies"}
+            </p>
+          </GsapReveal>
+        )}
 
         {projects.length > 0 ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -78,11 +143,11 @@ function TypeSection({
         ) : (
           <div className="rounded-2xl border border-dashed border-border bg-card/50 p-8 text-center">
             <p className="text-sm font-semibold text-foreground">
-              Evidence for {format.label} is being catalogued
+              Evidence for {activeMeta?.label} is being catalogued
             </p>
             <p className="mx-auto mt-2 max-w-md text-xs leading-relaxed text-muted-foreground">
               Recent commissions in this format will appear here as they are
-              documented. Have work to share or need this format produced?
+              documented.
             </p>
             <button
               type="button"
@@ -96,39 +161,11 @@ function TypeSection({
                 "mt-5 rounded-full px-6 py-2.5 text-xs font-semibold",
               )}
             >
-              Commission {format.label}
+              Commission {activeMeta?.label}
             </button>
           </div>
         )}
       </LandingContent>
     </LandingSection>
-  );
-}
-
-export function StudioEvidenceByType({ onOpenProject }: Props) {
-  return (
-    <>
-      <LandingSection id="evidence-by-type" className="border-t-0 bg-background">
-        <LandingSectionHeader
-          eyebrow="Evidence by content type"
-          title={
-            <>
-              Recent work across{" "}
-              <span className={T.highlight}>eight formats</span>
-            </>
-          }
-          description="Each section below surfaces documented commissions for one production format — podcasts, animations, explainers, research spotlights, documentaries, social series, town halls, and listening sessions."
-        />
-      </LandingSection>
-
-      {STUDIO_CONTENT_TYPES.map((format, index) => (
-        <TypeSection
-          key={format.id}
-          format={format}
-          index={index}
-          onOpenProject={onOpenProject}
-        />
-      ))}
-    </>
   );
 }

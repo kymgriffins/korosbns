@@ -1,14 +1,8 @@
 /*
- * Learn design tokens — civic ledger palette (white / blue / black).
- * Scoped to `.learn-app` (CitizenSyllabusShell) and `.learn-immersive`
- * (full-screen read/watch/quiz) so Home/Reports/Forum marketing pages
- * are unaffected. Overrides map onto the existing semantic vars
- * (--primary, --foreground, --muted, --border, --ring) so every
- * bg-primary/text-primary/border usage in Learn components picks up
- * the new palette without per-component edits.
+ * Learn design tokens — civic ledger palette for immersive player only.
+ * Hub chrome (.learn-app) uses site-wide landing tokens for marketing parity.
  */
 
-.learn-app,
 .learn-immersive {
   /* Raw palette */
   --ink: #0b0e14;
@@ -38,26 +32,18 @@
 }
 
 /* Leaderboard podium rank colours (Trophy components) */
-.learn-app,
 .learn-immersive {
   --rank-1: #c77d26;
   --rank-2: #94a3b8;
   --rank-3: #b45309;
 }
-.learn-app .text-rank-1,
 .learn-immersive .text-rank-1 { color: var(--rank-1); }
-.learn-app .text-rank-2,
 .learn-immersive .text-rank-2 { color: var(--rank-2); }
-.learn-app .text-rank-3,
 .learn-immersive .text-rank-3 { color: var(--rank-3); }
-.learn-app .bg-rank-1\/60,
 .learn-immersive .bg-rank-1\/60 { background-color: color-mix(in srgb, var(--rank-1) 60%, transparent); }
-.learn-app .bg-rank-2\/30,
 .learn-immersive .bg-rank-2\/30 { background-color: color-mix(in srgb, var(--rank-2) 30%, transparent); }
-.learn-app .bg-rank-3\/50,
 .learn-immersive .bg-rank-3\/50 { background-color: color-mix(in srgb, var(--rank-3) 50%, transparent); }
 
-.dark .learn-app,
 .dark .learn-immersive {
   --ink: #f5f7fb;
   --paper: #0b0e14;
@@ -166,151 +152,4 @@
     transparent 14px
   );
   opacity: 0.4;
-}
-
-/* Learning hub redesign: editorial surface, progress theatre, and module deck. */
-.learn-app .learn-hub-stage {
-  isolation: isolate;
-}
-
-.learn-app .learn-hub-hero {
-  background:
-    linear-gradient(135deg, rgb(255 255 255 / 0.92), rgb(245 247 251 / 0.72)),
-    radial-gradient(circle at 18% 20%, color-mix(in srgb, var(--civic-amber) 20%, transparent), transparent 30%),
-    linear-gradient(120deg, color-mix(in srgb, var(--civic-blue) 14%, transparent), color-mix(in srgb, #4f7d6b 13%, transparent));
-  box-shadow: 0 24px 80px rgb(11 14 20 / 8%);
-}
-
-.dark .learn-app .learn-hub-hero {
-  background:
-    linear-gradient(135deg, rgb(11 14 20 / 0.94), rgb(18 21 29 / 0.82)),
-    radial-gradient(circle at 18% 20%, color-mix(in srgb, var(--civic-amber) 18%, transparent), transparent 32%),
-    linear-gradient(120deg, color-mix(in srgb, var(--civic-blue) 20%, transparent), color-mix(in srgb, #4f7d6b 17%, transparent));
-}
-
-.learn-app .learn-hub-grain {
-  opacity: 0.28;
-  background-image:
-    linear-gradient(90deg, rgb(11 14 20 / 3%) 1px, transparent 1px),
-    linear-gradient(0deg, rgb(11 14 20 / 3%) 1px, transparent 1px);
-  background-size: 28px 28px;
-  mask-image: linear-gradient(135deg, black, transparent 78%);
-}
-
-.learn-app .learn-featured-panel {
-  transform: perspective(900px) rotateY(-4deg) rotateX(1.5deg);
-  transform-origin: center;
-  transition: transform 500ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 500ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.learn-app .learn-featured-panel:hover {
-  transform: perspective(900px) rotateY(0deg) rotateX(0deg) translateY(-4px);
-  box-shadow: 0 28px 90px rgb(11 14 20 / 20%);
-}
-
-.learn-app .learn-hub-primary-action {
-  overflow: hidden;
-  position: relative;
-}
-
-.learn-app .learn-hub-primary-action::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 25% 50%, rgb(255 255 255 / 28%), transparent 42%);
-  opacity: 0;
-  transform: translateX(-24%);
-  transition: opacity 300ms ease, transform 450ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.learn-app .learn-hub-primary-action:hover::before {
-  opacity: 1;
-  transform: translateX(12%);
-}
-
-.learn-app .learn-progress-tile {
-  position: relative;
-  overflow: hidden;
-}
-
-.learn-app .learn-progress-tile::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(120deg, transparent, rgb(255 255 255 / 22%), transparent);
-  opacity: 0;
-  transform: translateX(-70%);
-  transition: transform 650ms cubic-bezier(0.16, 1, 0.3, 1), opacity 220ms ease;
-}
-
-.learn-app .learn-progress-tile:hover::after {
-  opacity: 1;
-  transform: translateX(70%);
-}
-
-.learn-app .learn-charged-progress [data-slot="progress-indicator"] {
-  background: linear-gradient(90deg, var(--civic-blue), #5c86ff, var(--civic-amber));
-  box-shadow: 0 0 18px color-mix(in srgb, var(--civic-blue) 40%, transparent);
-}
-
-.learn-app .learn-module-card {
-  position: relative;
-  will-change: transform;
-}
-
-.learn-app .learn-module-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  border-radius: inherit;
-  border: 1px solid transparent;
-  background: linear-gradient(120deg, transparent, color-mix(in srgb, var(--civic-amber) 55%, transparent), transparent) border-box;
-  mask: linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
-  mask-composite: exclude;
-  opacity: 0;
-  transition: opacity 300ms ease;
-}
-
-.learn-app .learn-module-card.is-in-progress::before,
-.learn-app .learn-module-card:hover::before {
-  opacity: 1;
-}
-
-.learn-app .learn-module-card.is-not-started {
-  filter: saturate(0.88);
-  opacity: 0.95;
-}
-
-.learn-app .learn-module-card.is-not-started:hover {
-  filter: saturate(1);
-  opacity: 1;
-}
-
-.learn-app .learn-lesson-badge {
-  animation: lesson-badge-float 4s ease-in-out infinite;
-}
-
-@keyframes lesson-badge-float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-4px);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .learn-app .learn-featured-panel,
-  .learn-app .learn-featured-panel:hover,
-  .learn-app .learn-module-card,
-  .learn-app .learn-module-card:hover {
-    transform: none;
-  }
-
-  .learn-app .learn-lesson-badge {
-    animation: none;
-  }
 }

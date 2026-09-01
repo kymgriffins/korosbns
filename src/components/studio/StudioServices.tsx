@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { CheckCircle2, Sparkles } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BNS_STUDIO_PAGE_SERVICES } from "@/constants/bns-studio-content";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
@@ -137,8 +137,7 @@ export function StudioServices() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                     <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white">
-                      <span className="inline-flex items-center gap-1 text-xs font-semibold backdrop-blur-md bg-black/60 px-3 py-1 rounded-full">
-                        <Sparkles className="size-3 text-primary" />
+                      <span className="text-xs font-semibold backdrop-blur-md bg-black/60 px-3 py-1 rounded-full">
                         {service.contentType}
                       </span>
                     </div>
