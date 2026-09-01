@@ -64,16 +64,6 @@ function ProgrammeCard({ programme, index }: ProgrammeCardProps) {
           sizes="(max-width: 768px) 100vw, 50vw"
           priority={index === 0}
         />
-        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent p-4 md:p-5">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-full bg-background/90 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-foreground">
-              {meta.step}
-            </span>
-            <span className="rounded-full border border-white/30 bg-black/40 px-2.5 py-0.5 text-[10px] font-semibold text-white/90 backdrop-blur-sm">
-              {meta.tag}
-            </span>
-          </div>
-        </div>
       </Link>
 
       <div className={cn(alignEnd && "md:order-1")}>

@@ -192,14 +192,14 @@ export function Header() {
                 <Link
                   href={joinHref}
                   className={cn(
-                    "inline-flex h-9 max-w-[12rem] items-center justify-center gap-1.5 truncate rounded-full bg-foreground px-4 text-sm font-medium text-background outline-none transition-colors duration-200",
-                    "hover:bg-foreground/90",
+                    "inline-flex h-9 max-w-[12rem] items-center justify-center gap-1.5 truncate rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground outline-none transition-colors duration-200",
+                    "hover:bg-primary/90",
                     "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                   )}
                 >
                   {isLoggedIn ? (
                     <>
-                      <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-background/20 text-[10px] font-bold text-background">
+                      <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary-foreground/20 text-[10px] font-bold text-primary-foreground">
                         {user?.email?.charAt(0).toUpperCase() ?? "?"}
                       </span>
                       <span className="truncate">{joinLabel}</span>

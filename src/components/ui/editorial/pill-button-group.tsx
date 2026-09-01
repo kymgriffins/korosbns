@@ -28,8 +28,8 @@ export function PillButtonGroup({
         href={href}
         {...linkProps}
         className={cn(
-          "inline-flex h-11 items-center justify-center rounded-full bg-foreground px-6 text-sm font-semibold text-background",
-          "transition-colors hover:bg-foreground/90",
+          "inline-flex h-11 items-center justify-center rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground",
+          "transition-colors hover:bg-primary/90",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         )}
       >
@@ -40,8 +40,8 @@ export function PillButtonGroup({
         {...linkProps}
         aria-label={label}
         className={cn(
-          "inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-foreground text-background",
-          "transition-colors hover:bg-foreground/90",
+          "inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground",
+          "transition-colors hover:bg-primary/90",
           "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         )}
       >
