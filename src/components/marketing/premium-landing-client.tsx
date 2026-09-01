@@ -3,6 +3,9 @@
 import React from "react";
 import dynamic from "next/dynamic";
 import LandingHero from "@/components/marketing/landing-hero";
+import { EditorialCtaBand } from "@/components/ui/editorial";
+import { LandingSection } from "@/layouts/landing-section";
+import { PROGRAMMES } from "@/content";
 
 const LandingYoutube = dynamic(
   () => import("@/components/marketing/landing-youtube"),
@@ -85,6 +88,19 @@ export default function PremiumLandingClient() {
       <TimelineSection />
       <TestimonialsSection />
       <SocialsSection />
+      <LandingSection>
+        <EditorialCtaBand
+          eyebrow="Start now"
+          title="Discover Kenya's budget through stories that stay with you."
+          description="Free civic modules, verified reports, and county intelligence — no paywall on learning."
+          ctaHref="/learn"
+          ctaLabel="Start Learning"
+          images={PROGRAMMES.slice(0, 2).map((p) => ({
+            src: p.visual.hero,
+            alt: p.visual.heroAlt,
+          }))}
+        />
+      </LandingSection>
       <NewsletterPopup />
     </>
   );

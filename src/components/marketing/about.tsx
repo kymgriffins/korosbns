@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Briefcase } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Briefcase } from "lucide-react";
+import { PillButtonGroup } from "@/components/ui/editorial";
 import {
   LandingContent,
   LandingSection,
@@ -22,7 +22,7 @@ const About = () => {
   return (
     <div className="w-full bg-background min-h-screen">
       {/* Hero Section */}
-      <section className={cn(SECTION_SHELL_PADDING, "border-b border-border/40 bg-background pt-24 md:pt-28")}>
+      <section className={cn(SECTION_SHELL_PADDING, "border-b border-border/30 bg-background pt-24 md:pt-28")}>
         <div className={SECTION_SHELL_INNER}>
           <GsapHeroChoreography className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-14">
             <div data-gsap-hero-content className="flex flex-col gap-5 lg:col-span-7">
@@ -35,17 +35,8 @@ const About = () => {
               </p>
 
               <div className="flex flex-wrap items-center gap-3 pt-2">
-                <Button asChild size="lg" className="gap-2 font-bold shadow-xs">
-                  <Link href="/programmes">
-                    <span>Explore Programmes</span>
-                    <ArrowRight className="size-4" />
-                  </Link>
-                </Button>
-                <Button asChild size="lg" variant="outline">
-                  <Link href="#consortium-founders">
-                    <span>Meet Our Founders</span>
-                  </Link>
-                </Button>
+                <PillButtonGroup href="/programmes" label="Explore Programmes" />
+                <PillButtonGroup href="#consortium-founders" label="Meet Our Founders" />
               </div>
 
               <div className="grid max-w-lg grid-cols-3 gap-4 border-t border-border/40 pt-6">
@@ -65,7 +56,7 @@ const About = () => {
             </div>
 
             <div data-gsap-hero-media className="lg:col-span-5">
-              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-3xl border border-border/70 bg-muted shadow-xl sm:aspect-[16/11] lg:aspect-[4/3]">
+              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-3xl border border-border/40 bg-muted md:aspect-[16/11] lg:aspect-[4/3]">
                 <Image
                   src={hero.image}
                   alt={hero.imageAlt}
@@ -106,7 +97,7 @@ const About = () => {
           {photoStrip.images.map((src, index) => (
             <div
               key={src + index}
-              className="group relative aspect-[4/3] overflow-hidden rounded-xl border border-border/40 bg-muted/20 md:rounded-2xl transition-all duration-300 hover:border-primary/40 hover:shadow-md"
+              className="group relative aspect-[4/3] overflow-hidden rounded-2xl border border-border/30 bg-muted/20 md:rounded-3xl transition-all duration-300 hover:border-foreground/20"
             >
               <Image
                 src={src}
@@ -128,31 +119,21 @@ const About = () => {
       <TeamSection />
 
       {/* Careers & Creative Network Invitation Banner */}
-      <LandingSection spacing="default" className="bg-muted/30 border-t border-border/40">
-        <LandingContent className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 p-8 md:p-12 rounded-3xl border border-border/60 bg-card shadow-sm">
+      <LandingSection spacing="default">
+        <LandingContent className="editorial-surface">
+          <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
           <div className="space-y-3 max-w-2xl">
-            <span className={cn(T.eyebrow, "inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1")}>
+            <span className={cn(T.eyebrow, "inline-flex items-center gap-2")}>
               <Briefcase className="size-3.5" />
               Careers and opportunities
             </span>
             <h2 className={T.sectionTitle}>Work with Budget Ndio Story</h2>
-            <p className={cn(T.lead, "text-sm text-foreground/75")}>
+            <p className={cn(T.lead)}>
               We are constantly seeking passionate podcast hosts, scriptwriters, videographers, animators, and civic technologists to join our youth-led creative network.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 shrink-0">
-            <Button asChild size="lg" className="gap-2 font-bold shadow-xs">
-              <Link href="/careers">
-                <span>Explore Careers</span>
-                <ArrowRight className="size-4" />
-              </Link>
-            </Button>
-            <Button asChild size="lg" variant="outline">
-              <Link href="/contact?intent=partner">
-                <span>Partner With Us</span>
-              </Link>
-            </Button>
+          <PillButtonGroup href="/careers" label="Explore Careers" className="shrink-0" />
           </div>
         </LandingContent>
       </LandingSection>

@@ -1,5 +1,6 @@
 "use client";
 
+import { EditorialPill } from "@/components/ui/editorial";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import { GsapReveal } from "@/motion/gsap";
 import { cn } from "@/utils";
@@ -31,7 +32,7 @@ export function LearnPageHeader({
 }: LearnPageHeaderProps) {
   return (
     <GsapReveal className={cn("space-y-5", className)}>
-      {eyebrow ? <span className={T.eyebrow}>{eyebrow}</span> : null}
+      {eyebrow ? <EditorialPill className="mb-4">{eyebrow}</EditorialPill> : null}
       <div className="space-y-4">
         <h1 className={cn(T.heroTitle, "max-w-3xl text-balance")}>{title}</h1>
         {description ? (
@@ -60,7 +61,7 @@ export function LearnSection({
 }: LearnSectionProps) {
   return (
     <section
-      className={cn("border-t border-border/40 py-16 md:py-24", className)}
+      className={cn("border-t border-border/30 py-16 md:py-24", className)}
       aria-label={title}
     >
       <GsapReveal className="mb-8 flex flex-col gap-4 md:mb-10 md:flex-row md:items-end md:justify-between">

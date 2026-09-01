@@ -69,25 +69,25 @@ select:focus-visible,
   @apply font-base text-base md:text-lg text-foreground/80 leading-relaxed;
 }
 
-/* Landing page typography tokens — use across all premium-landing sections */
+/* Landing page typography tokens — editorial Marwa-inspired scale */
 .landing-eyebrow {
-  @apply mb-4 block text-xs font-semibold text-primary;
+  @apply mb-4 inline-flex items-center rounded-full bg-muted px-3.5 py-1 text-xs font-semibold text-foreground/70;
 }
 
 .landing-eyebrow-muted {
-  @apply block text-xs font-semibold uppercase tracking-wider text-muted-foreground;
+  @apply inline-flex items-center rounded-full bg-muted/80 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground;
 }
 
 .landing-highlight {
-  @apply font-heading italic text-primary;
+  @apply font-heading italic text-foreground;
 }
 
 .landing-lead {
-  @apply max-w-sm text-sm leading-relaxed text-foreground/60;
+  @apply max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg;
 }
 
 .landing-body {
-  @apply max-w-2xl text-sm leading-relaxed text-foreground/60 md:text-base;
+  @apply max-w-2xl text-base leading-relaxed text-muted-foreground;
 }
 
 .landing-card-title {
@@ -99,31 +99,49 @@ select:focus-visible,
 }
 
 .landing-role {
-  @apply text-xs font-semibold text-primary;
+  @apply text-xs font-semibold text-foreground/60;
 }
 
 .landing-caption {
-  @apply text-sm leading-relaxed text-foreground/60;
+  @apply text-sm leading-relaxed text-muted-foreground;
 }
 
 .landing-marquee-label {
-  @apply text-xs font-semibold uppercase tracking-wider text-foreground/40;
+  @apply text-xs font-semibold uppercase tracking-wider text-muted-foreground;
 }
 
 .landing-btn-primary {
-  @apply h-auto gap-2 rounded-full px-6 py-3 text-sm font-semibold;
+  @apply h-auto gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-semibold text-background hover:bg-foreground/90;
 }
 
 .landing-btn-hero {
-  @apply w-full gap-2 rounded-full px-8 py-6 text-base font-bold sm:w-auto;
+  @apply w-full gap-2 rounded-full bg-foreground px-8 py-6 text-base font-bold text-background sm:w-auto;
 }
 
 .landing-btn-outline {
-  @apply inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-semibold transition-colors hover:bg-muted;
+  @apply inline-flex items-center gap-2 rounded-full border border-border bg-background px-5 py-2.5 text-sm font-semibold transition-colors hover:bg-muted;
 }
 
 .landing-media-frame {
-  @apply relative rounded-2xl border border-border bg-card p-2 md:rounded-3xl;
+  @apply relative overflow-hidden rounded-2xl border border-border/50 bg-card md:rounded-3xl;
+}
+
+/* Editorial surface bands — light gray CTA sections */
+.editorial-surface {
+  @apply rounded-3xl bg-surface-muted p-8 md:rounded-[2rem] md:p-12 lg:p-16;
+}
+
+.editorial-surface-invert {
+  @apply relative overflow-hidden rounded-3xl bg-surface-invert text-surface-invert-foreground md:rounded-[2rem];
+}
+
+/* Image cards with bottom overlay — blog/programme grids */
+.editorial-image-card {
+  @apply relative block overflow-hidden rounded-2xl md:rounded-3xl;
+}
+
+.editorial-image-card-overlay {
+  @apply absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent p-5 md:p-6;
 }
 
 .landing-inline-icon {

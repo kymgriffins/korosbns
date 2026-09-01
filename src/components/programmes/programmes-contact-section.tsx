@@ -19,16 +19,13 @@ export function ProgrammesContactSection() {
     <div className={LANDING_SECTION_SURFACE}>
       <LandingSection id="contact" aria-labelledby="contact-heading">
         <LandingSectionHeader
-          title={
-            <>
-              <span className="text-primary">Partner with Budget Ndio Story</span>
-            </>
-          }
+          eyebrow="Partner with us"
+          title="Collaborate on civic impact"
           description="Whether you are a funder, government agency, newsroom, or creator — connect with us to collaborate on civic impact."
           className="mb-10 md:mb-14"
         />
         <LandingContent>
-          <div className="mx-auto max-w-2xl rounded-3xl border border-border/60 bg-card p-6 shadow-sm md:p-8">
+          <div className="mx-auto max-w-2xl rounded-3xl border border-border/40 bg-background p-6 md:p-10">
             <h3 id="contact-heading" className="text-lg font-bold text-foreground">
               Choose your inquiry area
             </h3>

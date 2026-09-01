@@ -18,7 +18,7 @@ const hero = landingContent.hero;
 export default function LandingHero() {
   return (
     <section
-      className={cn(SECTION_SHELL_PADDING, "border-b border-border/40 bg-background")}
+      className={cn(SECTION_SHELL_PADDING, "border-b border-border/30 bg-background")}
       aria-labelledby="landing-hero-heading"
     >
       <div className={SECTION_SHELL_INNER}>
@@ -34,7 +34,7 @@ export default function LandingHero() {
               {hero.headlineBefore}{" "}
               <span className={T.highlight}>{hero.headlineHighlight}</span>
             </h1>
-            <p className={cn(T.lead, "max-w-lg text-base text-foreground/75")}>{hero.body}</p>
+            <p className={cn(T.lead, "max-w-xl")}>{hero.body}</p>
             <LandingSectionCta className="mt-2 md:mt-4">
               <LandingSeeMore href={hero.primaryCta.href} label={hero.primaryCta.label} />
               <Button asChild variant="outline" className={T.btnPrimary}>

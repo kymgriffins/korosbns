@@ -17,6 +17,7 @@ import { CountyIntelligenceExplorer } from "./county-intelligence-explorer";
 import { FollowTheMoneyPipeline } from "./follow-the-money-pipeline";
 import { FeaturedInvestigationsSpread } from "./featured-investigations-spread";
 import { CitizenIntelligenceHeroSearch } from "./citizen-intelligence-hero-search";
+import { EditorialCtaBand } from "@/components/ui/editorial";
 import { ReportLibraryArchive } from "./report-library-archive";
 
 export function ReportsHubClient() {
@@ -41,8 +42,8 @@ export function ReportsHubClient() {
   }, [searchQuery, selectedCategory, selectedCounty, selectedProgramme]);
 
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-primary/20">
-      <main className={cn(SECTION_SHELL_PADDING, SECTION_SHELL_INNER, "space-y-16 pt-24 md:pt-28")}>
+    <div className="min-h-screen bg-background text-foreground selection:bg-foreground/10">
+      <main className={cn(SECTION_SHELL_PADDING, SECTION_SHELL_INNER, "space-y-20 pt-24 md:space-y-28 md:pt-28")}>
         {/* HERO STATEMENT & NARRATIVE SPINE NAV */}
         <ReportsHeroStatement hubMeta={hubMeta} />
 
@@ -71,6 +72,14 @@ export function ReportsHubClient() {
 
         {/* 07: REPORT LIBRARY ARCHIVE */}
         <ReportLibraryArchive reports={allReports} />
+
+        <EditorialCtaBand
+          eyebrow="Citizen intelligence"
+          title="Turn budget numbers into stories you can use."
+          description="Explore free learning modules and verified county reports — built for young Kenyans tracking public spending."
+          ctaHref="/learn"
+          ctaLabel="Start Learning"
+        />
       </main>
     </div>
   );
