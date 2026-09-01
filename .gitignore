@@ -49,5 +49,7 @@ next-env.d.ts
 # turbo
 .turbo/
 
-# npm lockfiles (pnpm workspace)
+# npm/yarn lockfiles (pnpm workspace)
 package-lock.json
+yarn.lock
+bun.lockb
