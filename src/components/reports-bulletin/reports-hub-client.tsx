@@ -9,6 +9,8 @@ import {
   REPORTS_BULLETIN_DATA,
   searchBudgetQuestions,
 } from "@/data/reports-bulletin";
+import { SECTION_SHELL_INNER, SECTION_SHELL_PADDING } from "@/layouts/section-shell";
+import { cn } from "@/utils";
 import { ReportsHeroStatement } from "./reports-hero-statement";
 import { NationalPictureSpread } from "./national-picture-spread";
 import { CountyIntelligenceExplorer } from "./county-intelligence-explorer";
@@ -40,7 +42,7 @@ export function ReportsHubClient() {
 
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary/20">
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-16">
+      <main className={cn(SECTION_SHELL_PADDING, SECTION_SHELL_INNER, "space-y-16 pt-24 md:pt-28")}>
         {/* HERO STATEMENT & NARRATIVE SPINE NAV */}
         <ReportsHeroStatement hubMeta={hubMeta} />
 

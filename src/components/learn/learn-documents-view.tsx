@@ -8,6 +8,8 @@ import {
   RefreshCw, BookOpen, Download, ExternalLink,
 } from "lucide-react";
 import { cn } from "@/utils";
+import { LearnPageHeader } from "@/components/learn/learn-page-frame";
+import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import { BitmojiAvatar } from "./bitmoji-avatar";
 import {
   type DocumentType,
@@ -425,17 +427,12 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
         {!selectedFolder ? (
           <>
             {/* Collections view */}
-            <div className="space-y-1 pb-1 lg:hidden">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                Library
-              </p>
-              <h1 className="font-heading text-[2rem] font-bold tracking-tight sm:text-4xl">
-                Documents
-              </h1>
-              <p className="mt-1.5 text-[15px] text-muted-foreground">
-                {`${documents.length} collections in the repository`}
-              </p>
-            </div>
+            <LearnPageHeader
+              eyebrow="Library"
+              title="Documents"
+              description={`${documents.length} collections in the repository`}
+              className="lg:hidden"
+            />
 
             {/* Tabs */}
             <div className="flex w-fit items-center gap-0.5 rounded-xl bg-muted/40 p-1 ring-1 ring-border/40">

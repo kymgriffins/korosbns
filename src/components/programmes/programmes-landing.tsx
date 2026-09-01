@@ -25,18 +25,9 @@ import {
   type ProgrammeBlock,
   type ProgrammeSlug,
 } from "@/content";
-import {
-  GsapHeroChoreography,
-  GsapReveal,
-  gsap,
-  registerGsap,
-  useGSAP,
-  usePrefersReducedMotion,
-} from "@/motion/gsap";
+import { GsapHeroChoreography, GsapReveal } from "@/motion/gsap";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 import { cn } from "@/utils";
-
-registerGsap();
 
 type ProgrammeCardProps = {
   programme: ProgrammeBlock;
@@ -48,9 +39,7 @@ function ProgrammeCard({ programme, index }: ProgrammeCardProps) {
   const blurb = PROGRAMME_CARD_BLURBS[programme.slug as ProgrammeSlug];
 
   return (
-    <div
-      className="group grid gap-8 md:grid-cols-2 md:items-center md:gap-12 lg:gap-16"
-    >
+    <GsapReveal className="group grid gap-8 md:grid-cols-2 md:items-center md:gap-12 lg:gap-16">
       <div
         data-card-media
         className={cn(
@@ -92,7 +81,7 @@ function ProgrammeCard({ programme, index }: ProgrammeCardProps) {
           </Link>
         </div>
       </div>
-    </div>
+    </GsapReveal>
   );
 }
 
@@ -126,23 +115,23 @@ export function ProgrammesLanding() {
         <div className="pointer-events-none absolute left-1/2 top-1/4 -z-10 h-72 w-full max-w-4xl -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[120px]" />
         
         <div className={cn(SECTION_SHELL_INNER, "relative z-10")}>
-          <div className="max-w-3xl">
-            <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3.5 py-1 text-xs font-semibold text-primary mb-4">
+          <GsapHeroChoreography className="max-w-3xl">
+            <span data-gsap-hero-content className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3.5 py-1 text-xs font-semibold text-primary mb-4">
               Our Initiatives & Impact Ecosystem
             </span>
-            <h1 className={cn(T.heroTitle, "max-w-3xl text-balance text-foreground")}>
+            <h1 data-gsap-hero-content className={cn(T.heroTitle, "max-w-3xl text-balance text-foreground")}>
               {PROGRAMMES_LANDING.headline}
             </h1>
-            <p className={cn(T.lead, "mt-4 max-w-2xl text-base text-muted-foreground md:text-lg")}>
+            <p data-gsap-hero-content className={cn(T.lead, "mt-4 max-w-2xl text-base text-muted-foreground md:text-lg")}>
               {PROGRAMMES_LANDING.body}
             </p>
-            <div className="mt-6">
+            <div data-gsap-hero-content className="mt-6">
               <LandingSeeMore
                 href={PROGRAMMES_LANDING.exploreCta.href}
                 label={PROGRAMMES_LANDING.exploreCta.label}
               />
             </div>
-          </div>
+          </GsapHeroChoreography>
         </div>
       </section>
 

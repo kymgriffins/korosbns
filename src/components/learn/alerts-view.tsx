@@ -5,6 +5,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Bell, Loader2, CheckCircle2, FileText, MessageSquare, RefreshCw } from "lucide-react";
 import { useGamificationMe } from "@/hooks/use-gamification";
 import { safeArray, safeLen, safeMap } from "@/lib/safe-data";
+import { LearnPageHeader } from "@/components/learn/learn-page-frame";
+import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
+import { cn } from "@/utils";
 
 interface AlertsViewProps {
   profile: any;
@@ -25,25 +28,33 @@ export function AlertsView({ profile }: AlertsViewProps) {
   const [refreshing, setRefreshing] = useState(false);
 
   return (
-    <div className="w-full space-y-4 py-10 sm:py-14 md:space-y-6">
-      <div className="flex items-start justify-between gap-3">
-        <div className="space-y-1">
-          <h2 className="text-xl font-black uppercase tracking-tight">Participation Alerts</h2>
-          <p className="text-xs text-muted-foreground">Hyper-local alerts matching your county and tracked documents.</p>
-        </div>
-        <button
-          onClick={async () => { setRefreshing(true); try { await queryClient.invalidateQueries({ queryKey: ["gamification", "me"] }); } finally { setRefreshing(false); } }}
-          disabled={refreshing}
-          className="p-1.5 hover:bg-muted/50 rounded-lg transition-colors text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring shrink-0 mt-1"
-          title="Refresh activity"
-        >
-          <RefreshCw className={`size-4 ${refreshing ? "animate-spin" : ""}`} />
-        </button>
-      </div>
+    <div className="w-full space-y-8 md:space-y-10">
+      <LearnPageHeader
+        title="Participation alerts"
+        description="Hyper-local alerts matching your county and tracked documents."
+        actions={
+          <button
+            onClick={async () => {
+              setRefreshing(true);
+              try {
+                await queryClient.invalidateQueries({ queryKey: ["gamification", "me"] });
+              } finally {
+                setRefreshing(false);
+              }
+            }}
+            disabled={refreshing}
+            className="inline-flex items-center gap-2 rounded-lg border border-border/60 px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+            title="Refresh activity"
+          >
+            <RefreshCw className={cn("size-4", refreshing && "animate-spin")} />
+            Refresh
+          </button>
+        }
+      />
 
       {gamification && !gamificationLoading && (
         <div className="space-y-4">
-          <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Recent Activity</h3>
+          <h3 className={cn(T.eyebrow, "text-muted-foreground")}>Recent activity</h3>
           {safeLen(gamification.recent_progress) > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {safeMap(safeArray(gamification.recent_progress).slice(0, 6), (item, idx) => (

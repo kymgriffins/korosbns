@@ -2,54 +2,40 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
-import Wrapper from "@/components/global/wrapper";
-import SectionBadge from "@/components/ui/section-badge";
+import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
+import {
+  SECTION_SHELL_INNER,
+  SECTION_SHELL_PADDING,
+} from "@/layouts/section-shell";
+import { GsapReveal, GsapStaggerReveal } from "@/motion/gsap";
 import { CONSORTIUM_FOUNDERS, CONSORTIUM_SUMMARY } from "@/constants/consortium-founders";
-import { ease } from "@/motion/variants";
+import { cn } from "@/utils";
 
 export default function ConsortiumFoundersSection() {
   return (
-    <section id="consortium-founders" className="relative w-full py-16 lg:py-24 bg-muted/30 border-y border-border/40">
-      <Wrapper>
-        <div className="max-w-3xl mx-auto text-center mb-12 lg:mb-16">
-          <SectionBadge title="Consortium Founders" />
-          <motion.h2
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1, ease: ease.expo }}
-            className="text-3xl md:text-4xl lg:text-5xl font-bold font-heading tracking-tight mt-6"
-          >
-            The founding partners behind BNS
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2, ease: ease.expo }}
-            className="text-base md:text-lg text-muted-foreground mt-4 leading-relaxed"
-          >
-            {CONSORTIUM_SUMMARY}
-          </motion.p>
-        </div>
+    <section
+      id="consortium-founders"
+      className={cn(SECTION_SHELL_PADDING, "border-y border-border/40 bg-muted/30")}
+    >
+      <div className={SECTION_SHELL_INNER}>
+        <GsapReveal className="mx-auto mb-12 max-w-3xl space-y-4 text-center lg:mb-16">
+          <span className={T.eyebrow}>Consortium founders</span>
+          <h2 className={T.sectionTitle}>The founding partners behind BNS</h2>
+          <p className={cn(T.lead, "text-foreground/75")}>{CONSORTIUM_SUMMARY}</p>
+        </GsapReveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
-          {CONSORTIUM_FOUNDERS.map((founder, index) => (
-            <motion.article
+        <GsapStaggerReveal className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:gap-8">
+          {CONSORTIUM_FOUNDERS.map((founder) => (
+            <article
               key={founder.id}
-              initial={{ opacity: 0, y: 32 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.55, delay: index * 0.08, ease: ease.expo }}
-              className="group flex flex-col rounded-2xl lg:rounded-3xl border border-border bg-card p-6 lg:p-8 shadow-sm hover:border-primary/30 hover:shadow-md transition-all duration-300"
+              className="group flex flex-col rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:border-primary/30 hover:shadow-md lg:rounded-3xl lg:p-8"
             >
               <Link
                 href={founder.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="relative mb-6 h-14 w-full max-w-[200px] flex items-center transition-all duration-300 group-hover:scale-105"
+                className="relative mb-6 flex h-14 w-full max-w-[200px] items-center transition-transform duration-300 group-hover:scale-105"
               >
                 <Image
                   src={founder.logoUrl}
@@ -62,7 +48,7 @@ export default function ConsortiumFoundersSection() {
 
               <h3 className="text-xl font-bold text-foreground">{founder.name}</h3>
               <p className="mt-2 text-sm font-medium text-primary">{founder.role}</p>
-              <p className="mt-4 text-sm text-muted-foreground leading-relaxed flex-1">
+              <p className="mt-4 flex-1 text-sm leading-relaxed text-muted-foreground">
                 {founder.description}
               </p>
 
@@ -70,15 +56,15 @@ export default function ConsortiumFoundersSection() {
                 href={founder.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-foreground hover:text-primary transition-colors"
+                className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-foreground transition-colors hover:text-primary"
               >
                 Visit website
                 <ArrowUpRight className="size-4" />
               </Link>
-            </motion.article>
+            </article>
           ))}
-        </div>
-      </Wrapper>
+        </GsapStaggerReveal>
+      </div>
     </section>
   );
 }
