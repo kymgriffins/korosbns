@@ -15,6 +15,23 @@ export function usesMarketingChrome(pathname: string): boolean {
   return !pathname.startsWith("/learn");
 }
 
+function normalizeMarketingPath(pathname: string): string {
+  if (pathname.length > 1 && pathname.endsWith("/")) {
+    return pathname.slice(0, -1);
+  }
+  return pathname;
+}
+
+/** Top-of-page breadcrumbs are noisy on immersive studio and programmes flows. */
+export function shouldShowPageBreadcrumbs(pathname: string): boolean {
+  const normalized = normalizeMarketingPath(pathname);
+  if (normalized === "/bns-studio") return false;
+  if (normalized === "/programmes" || normalized.startsWith("/programmes/")) {
+    return false;
+  }
+  return true;
+}
+
 /**
  * Marketing-site footer only — not learn, contact, surveys, projects, news, etc.
  */

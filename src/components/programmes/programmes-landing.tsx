@@ -7,8 +7,6 @@ import { ArrowRight } from "lucide-react";
 import { LandingSeeMore } from "@/components/marketing/landing-see-more";
 import { ProgrammesEcosystemBar } from "@/components/programmes/programmes-ecosystem-bar";
 import { ProgrammesTeamTeaser } from "@/components/programmes/programmes-team-teaser";
-import { ProgrammesLatestContent } from "@/components/programmes/programmes-latest-content";
-import { ProgrammesFaq } from "@/components/programmes/programmes-faq";
 import { ProgrammesContactSection } from "@/components/programmes/programmes-contact-section";
 import {
   LANDING_SECTION_SURFACE,
@@ -165,16 +163,10 @@ export function ProgrammesLanding() {
         </LandingContent>
       </LandingSection>
 
-      {/* 5. Team & Leadership Teaser */}
+      {/* Team & Leadership Teaser */}
       <ProgrammesTeamTeaser />
 
-      {/* 6. Latest Stories & Reports Preview */}
-      <ProgrammesLatestContent />
-
-      {/* 7. FAQ Block + FAQ Schema */}
-      <ProgrammesFaq />
-
-      {/* 8. Dedicated Contact & Newsletter Section */}
+      {/* Partner contact routing */}
       <ProgrammesContactSection />
     </div>
   );

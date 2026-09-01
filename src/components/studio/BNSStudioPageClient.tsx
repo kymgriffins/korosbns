@@ -21,6 +21,14 @@ export function BNSStudioPageClient() {
   const [selectedProject, setSelectedProject] =
     useState<StudioProjectEvidence | null>(null);
   const [evidenceView, setEvidenceView] = useState<EvidenceView>("format");
+  const [bookingOpen, setBookingOpen] = useState(false);
+
+  const openBooking = () => {
+    setBookingOpen(true);
+    requestAnimationFrame(() => {
+      document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" });
+    });
+  };
 
   return (
     <>
@@ -38,12 +46,13 @@ export function BNSStudioPageClient() {
       ) : (
         <StudioEvidenceByOrganisation onOpenProject={setSelectedProject} />
       )}
-      <StudioBookingForm />
-      <StudioContactCTA />
+      <StudioBookingForm open={bookingOpen} onOpenChange={setBookingOpen} />
+      <StudioContactCTA onCommissionClick={openBooking} />
       <StudioEvidenceModal
         project={selectedProject}
         onClose={() => setSelectedProject(null)}
         onOpenProject={setSelectedProject}
+        onCommissionClick={openBooking}
       />
     </>
   );
