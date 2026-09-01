@@ -3,7 +3,6 @@
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "motion/react";
 import {
   Briefcase,
   ArrowRight,
@@ -25,9 +24,11 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import Wrapper from "@/components/global/wrapper";
+import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
+import { SECTION_SHELL_INNER, SECTION_SHELL_PADDING } from "@/layouts/section-shell";
+import { GsapHeroChoreography } from "@/motion/gsap";
+import { cn } from "@/utils";
 import SectionBadge from "@/components/ui/section-badge";
-import { ease } from "@/motion/variants";
 
 type Department = "All" | "Media & Audio" | "Visual & Video" | "Research & Editorial" | "Creative Tech" | "Grassroots Outreach";
 
@@ -214,24 +215,29 @@ export function CareersLanding() {
   return (
     <div className="w-full bg-background min-h-screen">
       {/* Hero Banner */}
-      <section className="relative overflow-hidden border-b border-border/60 bg-muted/20 py-20 lg:py-28">
-        <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:32px]" />
-        <Wrapper className="relative z-10">
-          <div className="max-w-3xl mx-auto text-center space-y-6">
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-bold text-primary">
+      <section className={cn(SECTION_SHELL_PADDING, "relative overflow-hidden border-b border-border/60 bg-muted/20 pt-24 md:pt-28")}>
+        <div className={cn(SECTION_SHELL_INNER, "relative z-10")}>
+          <GsapHeroChoreography className="mx-auto max-w-3xl space-y-6 text-center">
+            <span
+              data-gsap-hero-content
+              className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs font-bold text-primary"
+            >
               <Zap className="size-3.5" />
-              <span>Careers &amp; Creative Open Call (Ages 18–34)</span>
-            </div>
+              Careers and creative open call (ages 18–34)
+            </span>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-heading text-foreground tracking-tight leading-tight">
-              Shape How Kenya Talks About the National Budget
+            <h1
+              data-gsap-hero-content
+              className={cn(T.heroTitle, "text-balance text-foreground")}
+            >
+              Shape how Kenya talks about the national budget
             </h1>
 
-            <p className="text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed">
+            <p data-gsap-hero-content className={cn(T.lead, "text-foreground/75")}>
               Budget Ndio Story is expanding its youth-led creator network. We are looking for fearless storytellers, animators, podcast hosts, civic researchers, and technologists to make fiscal governance transparent, relatable, and impossible to ignore.
             </p>
 
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
+            <div data-gsap-hero-content className="flex flex-wrap items-center justify-center gap-3 pt-4">
               <Button asChild size="lg" className="gap-2 font-bold shadow-md">
                 <a href="#open-roles">
                   <span>Explore Open Positions</span>
@@ -244,13 +250,13 @@ export function CareersLanding() {
                 </Link>
               </Button>
             </div>
-          </div>
-        </Wrapper>
+          </GsapHeroChoreography>
+        </div>
       </section>
 
       {/* Why Work With Us */}
       <section className="py-16 lg:py-24 border-b border-border/40 bg-muted/20">
-        <Wrapper>
+        <div className={SECTION_SHELL_INNER}>
           <div className="max-w-3xl mx-auto text-center mb-12 lg:mb-16 space-y-3">
             <SectionBadge title="Why Join BNS" />
             <h2 className="text-3xl md:text-4xl font-bold font-heading text-foreground tracking-tight">
@@ -261,7 +267,7 @@ export function CareersLanding() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
             {CULTURE_PILLARS.map((pillar, idx) => {
               const Icon = pillar.icon;
               return (
@@ -278,12 +284,12 @@ export function CareersLanding() {
               );
             })}
           </div>
-        </Wrapper>
+        </div>
       </section>
 
       {/* Open Positions Grid */}
       <section id="open-roles" className="py-16 lg:py-24">
-        <Wrapper>
+        <div className={SECTION_SHELL_INNER}>
           <div className="max-w-3xl mx-auto text-center mb-10 space-y-3">
             <SectionBadge title="Open Positions" />
             <h2 className="text-3xl md:text-4xl font-bold font-heading text-foreground tracking-tight">
@@ -316,7 +322,7 @@ export function CareersLanding() {
           </div>
 
           {/* Roles Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {filteredRoles.map((role) => (
               <div
                 key={role.id}
@@ -388,12 +394,12 @@ export function CareersLanding() {
               No positions open in this department right now. Reach out with a general application below!
             </div>
           )}
-        </Wrapper>
+        </div>
       </section>
 
       {/* Application Process Section */}
       <section className="py-16 lg:py-24 border-t border-border/40 bg-muted/20">
-        <Wrapper>
+        <div className={SECTION_SHELL_INNER}>
           <div className="max-w-3xl mx-auto text-center mb-12 space-y-3">
             <SectionBadge title="How It Works" />
             <h2 className="text-3xl md:text-4xl font-bold font-heading text-foreground tracking-tight">
@@ -404,7 +410,7 @@ export function CareersLanding() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {[
               {
                 step: "01",
@@ -434,12 +440,12 @@ export function CareersLanding() {
               </div>
             ))}
           </div>
-        </Wrapper>
+        </div>
       </section>
 
       {/* General Open Call Banner */}
       <section className="py-16 lg:py-20 border-t border-border/40">
-        <Wrapper>
+        <div className={SECTION_SHELL_INNER}>
           <div className="p-8 sm:p-12 rounded-3xl border border-border/80 bg-card text-center max-w-4xl mx-auto space-y-6 shadow-xs">
             <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3.5 py-1 text-xs font-bold text-primary mx-auto">
               <Send className="size-3.5" />
@@ -468,7 +474,7 @@ export function CareersLanding() {
               </Button>
             </div>
           </div>
-        </Wrapper>
+        </div>
       </section>
     </div>
   );

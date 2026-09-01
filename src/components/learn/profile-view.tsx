@@ -27,6 +27,8 @@ import { Label } from "@/components/ui/label";
 import { PasswordInput } from "@/components/ui/password-input";
 import { BitmojiAvatar } from "./bitmoji-avatar";
 import { ProfileAvatarEditor } from "./profile-avatar-editor";
+import { LearnPageHeader } from "@/components/learn/learn-page-frame";
+import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import { cn } from "@/utils";
 import { Routes } from "@/constants/routes";
 import { useAuth } from "@/contexts/auth-context";
@@ -85,7 +87,7 @@ function ProfileSection({
       {(title || action) && (
         <div className="flex items-end justify-between gap-3">
           {title ? (
-            <h2 className="flex items-center gap-1.5 font-heading text-base font-bold tracking-tight">
+            <h2 className={cn(T.sectionTitle, "flex items-center gap-1.5 text-xl md:text-2xl")}>
               {icon}
               {title}
             </h2>
@@ -334,7 +336,7 @@ export function ProfileView({
   };
 
   return (
-    <div className="w-full space-y-10 py-10 sm:py-14">
+    <div className="w-full space-y-10">
       {/* Identity */}
       <section className="space-y-6">
         <div className="flex items-start gap-4">
@@ -392,17 +394,12 @@ export function ProfileView({
           </div>
 
           <div className="min-w-0 flex-1 pt-1">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-              Account
-            </p>
-            <h1 className="mt-1 truncate font-heading text-[2rem] font-bold leading-tight tracking-tight sm:text-4xl">
-              {displayName}
-            </h1>
-            <p className="mt-1.5 truncate text-sm text-muted-foreground">
-              {county}
-              {ward ? ` · ${ward}` : ""}
-              {streak > 0 ? ` · ${streak}-day streak` : ""}
-            </p>
+            <LearnPageHeader
+              eyebrow="Account"
+              title={displayName}
+              description={`${county}${ward ? ` · ${ward}` : ""}${streak > 0 ? ` · ${streak}-day streak` : ""}`}
+              className="!space-y-3"
+            />
             {!isLoggedIn && !authLoading ? (
               <Link
                 href={Routes.Login}

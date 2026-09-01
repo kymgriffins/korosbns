@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { LearnContentGrid } from "@/components/learn/learn-content-grid";
 import { LearnSidebar } from "@/components/learn/learn-sidebar";
+import { LearnPageFrame, LearnPageHeader } from "@/components/learn/learn-page-frame";
 import type { LearnContentType, LearnHubSummary } from "@/types/learn";
 import type { LearnHubItem } from "@/lib/learn-hub";
 import { videoData } from "@/data/videos";
@@ -82,10 +83,10 @@ export function LearnTabPage({
   }, [summary, items]);
 
   return (
-    <div className="mx-auto grid max-w-6xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-[1fr_280px]">
-      <div>
-        <h1 className="text-2xl font-bold">{title}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">{description}</p>
+    <LearnPageFrame>
+      <div className="grid gap-10 lg:grid-cols-[1fr_280px] lg:gap-12">
+        <div>
+          <LearnPageHeader title={title} description={description} />
         {error ? (
           <div className="mt-4 rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-900 dark:text-amber-100">
             <p className="font-medium">Catalogue note</p>
@@ -104,7 +105,8 @@ export function LearnTabPage({
         </div>
       </div>
       <LearnSidebar trending={(summary?.trending ?? []) as LearnHubItem[]} dailyQuest={dailyQuest as LearnHubItem | null | undefined} />
-    </div>
+      </div>
+    </LearnPageFrame>
   );
 }
 

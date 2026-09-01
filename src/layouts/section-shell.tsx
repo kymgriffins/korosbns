@@ -4,8 +4,8 @@ import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 
 export const SECTION_SHELL_INNER = "mx-auto w-full max-w-[1400px] px-6 md:px-16";
 
-/** Canonical landing vertical rhythm — same padding on every marketing fold */
-export const SECTION_SHELL_PADDING = "py-16 md:py-24";
+/** Canonical landing vertical rhythm — generous editorial whitespace */
+export const SECTION_SHELL_PADDING = "py-20 md:py-28 lg:py-32";
 
 type SectionShellProps = React.ComponentProps<"section"> & {
   /** @deprecated Prefer default — landing uses one rhythm */

@@ -18,12 +18,14 @@ type Props = {
   project: StudioProjectEvidence | null;
   onClose: () => void;
   onOpenProject: (project: StudioProjectEvidence) => void;
+  onCommissionClick?: () => void;
 };
 
 export function StudioEvidenceModal({
   project,
   onClose,
   onOpenProject,
+  onCommissionClick,
 }: Props) {
   return (
     <AnimatePresence>
@@ -219,9 +221,7 @@ export function StudioEvidenceModal({
                   type="button"
                   onClick={() => {
                     onClose();
-                    document
-                      .getElementById("booking")
-                      ?.scrollIntoView({ behavior: "smooth" });
+                    onCommissionClick?.();
                   }}
                   className={cn(
                     T.btnPrimary,

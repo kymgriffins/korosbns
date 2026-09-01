@@ -1,16 +1,16 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { team } from "@/data/org";
 import { slugifyName } from "@/lib/team";
 import { IconBrandLinkedin, IconBrandX, IconBrandInstagram } from "@tabler/icons-react";
 import { ArrowUpRight, Mail } from "lucide-react";
-import { ease } from "@/motion/variants";
-import Wrapper from "@/components/global/wrapper";
-import SectionBadge from "@/components/ui/section-badge";
+import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
+import { SECTION_SHELL_INNER, SECTION_SHELL_PADDING } from "@/layouts/section-shell";
+import { GsapReveal, GsapStaggerReveal } from "@/motion/gsap";
+import { cn } from "@/utils";
 
 interface TeamMember {
   name: string;
@@ -44,22 +44,20 @@ const SocialIcon = ({ platform, href }: { platform: string; href: string }) => {
   const link = platform === "email" && !trimmed.startsWith("mailto:") ? `mailto:${trimmed}` : trimmed;
 
   return (
-    <motion.a
+    <a
       href={link}
       target={platform === "email" ? undefined : "_blank"}
       rel={platform === "email" ? undefined : "noopener noreferrer"}
       onClick={(e) => e.stopPropagation()}
-      whileHover={{ scale: 1.1, y: -2 }}
-      whileTap={{ scale: 0.95 }}
-      className="inline-flex size-9 items-center justify-center rounded-full bg-background/10 border border-white/20 text-white/90 hover:bg-white/20 hover:border-white/40 transition-all duration-200"
+      className="inline-flex size-9 items-center justify-center rounded-full border border-white/20 bg-background/10 text-white/90 transition-all duration-200 hover:-translate-y-0.5 hover:scale-110 hover:border-white/40 hover:bg-white/20"
       aria-label={`${platform} profile`}
     >
       <Icon className="size-4" />
-    </motion.a>
+    </a>
   );
 };
 
-const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
+const TeamCard = ({ member }: { member: TeamMember }) => {
   const [imageError, setImageError] = useState(false);
   const username = slugifyName(member.name);
 
@@ -71,22 +69,13 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
     .toUpperCase();
 
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 32, scale: 0.96 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.55, delay: index * 0.08, ease: ease.expo }}
-      className="group relative"
-    >
+    <article className="group relative">
       <Link href={`/team/${username}`} className="block">
-        <div className="relative rounded-3xl overflow-hidden bg-card border border-border/70 shadow-xs transition-all duration-300 group-hover:-translate-y-1.5 group-hover:border-primary/50 group-hover:shadow-xl">
-          {/* Image container with 3:4 aspect ratio */}
+        <div className="relative overflow-hidden rounded-3xl border border-border/70 bg-card shadow-xs transition-all duration-300 group-hover:-translate-y-1.5 group-hover:border-primary/50 group-hover:shadow-xl">
           <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted">
             {imageError ? (
-              <div className="absolute inset-0 flex items-center justify-center bg-primary/10 border border-primary/20">
-                <span className="text-5xl font-bold tracking-wide text-primary">
-                  {initials}
-                </span>
+              <div className="absolute inset-0 flex items-center justify-center border border-primary/20 bg-primary/10">
+                <span className="text-5xl font-bold tracking-wide text-primary">{initials}</span>
               </div>
             ) : (
               <Image
@@ -100,36 +89,26 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
               />
             )}
 
-            {/* Bottom gradient scrim: keeps the image/face clearly visible while ensuring text readability */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent/10 transition-opacity duration-300 group-hover:from-black/95 group-hover:via-black/45" />
 
-            {/* View profile indicator (top right badge) */}
-            <div className="absolute top-4 right-4 z-20 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-white text-xs font-semibold opacity-0 -translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">
+            <div className="absolute right-4 top-4 z-20 inline-flex -translate-x-2 items-center gap-1.5 rounded-full border border-white/20 bg-black/40 px-3 py-1.5 text-xs font-semibold text-white opacity-0 backdrop-blur-md transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
               <span>View profile</span>
               <ArrowUpRight className="size-3.5" />
             </div>
 
-            {/* Bottom info content overlay */}
-            <div className="absolute bottom-0 inset-x-0 p-5 lg:p-6 z-20 flex flex-col justify-end">
-              <h3 className="text-xl lg:text-2xl font-bold text-white leading-tight mb-1 transition-colors group-hover:text-white">
+            <div className="absolute inset-x-0 bottom-0 z-20 flex flex-col justify-end p-5 lg:p-6">
+              <h3 className="mb-1 text-xl font-bold leading-tight text-white lg:text-2xl">
                 {member.name}
               </h3>
-              <p className="text-sm text-primary font-semibold mb-2">
-                {member.role}
-              </p>
-
-              {/* Description preview */}
-              <p className="text-xs text-white/80 line-clamp-2 leading-relaxed transition-colors duration-300 group-hover:text-white/95">
+              <p className="mb-2 text-sm font-semibold text-primary">{member.role}</p>
+              <p className="line-clamp-2 text-xs leading-relaxed text-white/80 transition-colors duration-300 group-hover:text-white/95">
                 {member.description}
               </p>
 
-              {/* Social links */}
               {member.socials && Object.keys(member.socials).length > 0 && (
                 <div className="mt-3 flex items-center gap-2">
                   {Object.entries(member.socials).map(([platform, href]) =>
-                    href ? (
-                      <SocialIcon key={platform} platform={platform} href={href} />
-                    ) : null
+                    href ? <SocialIcon key={platform} platform={platform} href={href} /> : null,
                   )}
                 </div>
               )}
@@ -137,84 +116,46 @@ const TeamCard = ({ member, index }: { member: TeamMember; index: number }) => {
           </div>
         </div>
       </Link>
-    </motion.article>
+    </article>
   );
 };
 
 const TeamSection = () => {
   return (
-    <section id="team" className="relative w-full py-16 lg:py-24 bg-background overflow-hidden">
-      {/* Ambient background */}
-      <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
-        <motion.div
-          animate={{ scale: [1, 1.15, 1], opacity: [0.08, 0.12, 0.08] }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-primary/10 blur-[120px] rounded-full"
-        />
-        <motion.div
-          animate={{ scale: [1.15, 1, 1.15], opacity: [0.08, 0.12, 0.08] }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-teal-500/10 blur-[120px] rounded-full"
-        />
+    <section
+      id="team"
+      className={cn(SECTION_SHELL_PADDING, "relative w-full overflow-hidden bg-background")}
+    >
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute left-[-10%] top-[-20%] h-[60%] w-[60%] rounded-full bg-primary/10 blur-[120px]" />
+        <div className="absolute bottom-[-20%] right-[-10%] h-[60%] w-[60%] rounded-full bg-teal-500/10 blur-[120px]" />
       </div>
 
-      <Wrapper>
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12 lg:mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, ease: ease.expo }}
-          >
-            <SectionBadge title="Leadership Team" />
-          </motion.div>
-
-          <motion.h2
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1, ease: ease.expo }}
-            className="text-3xl md:text-4xl lg:text-5xl font-black text-foreground tracking-tight mt-6 leading-tight"
-          >
-            The team behind the stories
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2, ease: ease.expo }}
-            className="text-base md:text-lg text-muted-foreground mt-4 leading-relaxed"
-          >
+      <div className={SECTION_SHELL_INNER}>
+        <GsapReveal className="mx-auto mb-12 max-w-3xl space-y-4 text-center lg:mb-16">
+          <span className={T.eyebrow}>Leadership team</span>
+          <h2 className={T.sectionTitle}>The team behind the stories</h2>
+          <p className={cn(T.lead, "text-foreground/75")}>
             Meet the visionaries driving budget transparency across Kenya
-          </motion.p>
-        </div>
+          </p>
+        </GsapReveal>
 
-        {/* Team grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-7xl mx-auto">
-          {team.map((member, index) => (
-            <TeamCard key={member.name} member={member} index={index} />
+        <GsapStaggerReveal className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+          {team.map((member) => (
+            <TeamCard key={member.name} member={member} />
           ))}
-        </div>
+        </GsapStaggerReveal>
 
-        {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3, ease: ease.expo }}
-          className="mt-12 lg:mt-16 text-center"
-        >
+        <GsapReveal className="mt-12 text-center lg:mt-16">
           <Link
             href="/about#join-us"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-colors shadow-md hover:shadow-lg"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-md transition-colors hover:bg-primary/90 hover:shadow-lg"
           >
             Join our team
             <ArrowUpRight className="size-4" />
           </Link>
-        </motion.div>
-      </Wrapper>
+        </GsapReveal>
+      </div>
     </section>
   );
 };

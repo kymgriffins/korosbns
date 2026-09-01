@@ -17,7 +17,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: '>=8'
+          version: 11.1.2
 
       - name: Setup Node.js 22
         uses: actions/setup-node@v4
@@ -29,19 +29,19 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: TypeScript type check
-        run: npx tsc --noEmit --pretty false
+        run: pnpm typecheck
         continue-on-error: false
 
       - name: Lint check
-        run: npx next lint --max-warnings 0
+        run: pnpm exec next lint --max-warnings 0
         continue-on-error: true
 
       - name: Unit tests
-        run: npm test
+        run: pnpm test:citizen
         continue-on-error: false
 
       - name: Production build
-        run: npm run build
+        run: pnpm build
         continue-on-error: false
 
       - name: Build output summary
@@ -63,10 +63,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.1.2
+
       - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Generate migration progress report
         run: node scripts/progress-report.mjs

@@ -44,7 +44,13 @@
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-xl: var(--bns-radius-xl);
+  --radius-2xl: var(--bns-radius-2xl);
+  --radius-3xl: var(--bns-radius-3xl);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-surface-invert: var(--surface-invert);
+  --color-surface-invert-foreground: var(--surface-invert-foreground);
 
   --animate-background-shine: background-shine 5s linear infinite;
   --animate-marquee: marquee var(--duration) infinite linear;

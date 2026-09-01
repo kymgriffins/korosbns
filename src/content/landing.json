@@ -68,14 +68,14 @@
     ]
   },
   "studioStrip": {
-    "eyebrow": "BNS Studios",
+    "eyebrow": "Impact production",
     "titleBefore": "Evidence by",
     "titleHighlight": "format and partner",
     "description": "Browse commissioned podcasts, documentaries, animations, and civic campaigns organised by content type and organisation — every project helps fund Kenya's leading youth budget platform.",
-    "highlight": "Every BNS Studios commission is double impact: evidence-based content for your audience, with studio proceeds funding BNS Foundation's civic mission.",
+    "highlight": "Every commission is double impact: evidence-based content for your audience, with proceeds reinvested into Budget Ndio Story's civic mission.",
     "seeMoreLabel": "Browse evidence",
     "seeMoreHref": "/bns-studio",
-    "primaryCta": { "label": "Commission BNS Studios", "href": "/bns-studio#booking" },
+    "primaryCta": { "label": "Start a commission", "href": "/bns-studio#booking" },
     "secondaryCta": { "label": "Browse by content type", "href": "/bns-studio#evidence-by-type" }
   },
   "socials": {

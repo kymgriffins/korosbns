@@ -7,6 +7,7 @@ import { ProfileView } from "./profile-view";
 import { AlertsView } from "./alerts-view";
 import { ForumView } from "./forum-view";
 import { DashboardSkeleton } from "./dashboard-skeleton";
+import { LearnPageFrame } from "@/components/learn/learn-page-frame";
 
 import { Button } from "@/components/ui/button";
 import { ShieldAlert, BookOpen } from "lucide-react";
@@ -233,19 +234,27 @@ export function LearnPathsHome({ tab }: Props) {
           />
         )}
 
-        {tab === "alerts" && <AlertsView profile={activeProfile} />}
+        {tab === "alerts" && (
+          <LearnPageFrame>
+            <AlertsView profile={activeProfile} />
+          </LearnPageFrame>
+        )}
 
-        {tab === "documents" && <LearnDocumentsView profile={activeProfile} />}
+        {tab === "documents" && (
+          <LearnPageFrame>
+            <LearnDocumentsView profile={activeProfile} />
+          </LearnPageFrame>
+        )}
 
         {tab === "profile" && (
-          <div className="space-y-4 pb-4 md:pb-0">
+          <LearnPageFrame>
             <ProfileView
               profile={activeProfile}
               stages={stages}
               onResetProgress={handleResetProgress}
               onUpdateProfile={handleUpdateProfile}
             />
-          </div>
+          </LearnPageFrame>
         )}
       </div>
     </div>

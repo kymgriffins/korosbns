@@ -4,7 +4,6 @@ import { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import {
-  Sparkles,
   TrendingUp,
   ArrowRight,
   ChevronLeft,
@@ -50,7 +49,7 @@ export function StudioFeaturedWork({ onSelectProject }: Props) {
             Evidence in action: <span className={T.highlight}>Featured Case Studies</span>
           </>
         }
-        description="A closer look at how BNS Studios partners with public bodies, INGOs, and grassroots coalitions to convert heavy policy data into tangible civic outcomes."
+        description="A closer look at how Budget Ndio Story partners with public bodies, INGOs, and grassroots coalitions to convert heavy policy data into tangible civic outcomes."
       />
 
       <LandingContent>
@@ -82,8 +81,7 @@ export function StudioFeaturedWork({ onSelectProject }: Props) {
 
                   {/* Top Badges */}
                   <div className="absolute top-4 left-4 flex flex-wrap items-center gap-2">
-                    <span className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground shadow-sm">
-                      <Sparkles className="size-3" />
+                    <span className="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground shadow-sm">
                       {current.contentType}
                     </span>
                     <span className="rounded-full bg-black/75 px-3 py-1 text-xs font-medium text-white backdrop-blur-md">
@@ -134,7 +132,7 @@ export function StudioFeaturedWork({ onSelectProject }: Props) {
                       <span className="text-muted-foreground">{current.briefChallenge}</span>
                     </div>
                     <div className="border-t border-border/50 pt-2">
-                      <span className="font-bold text-foreground">What BNS Produced: </span>
+                      <span className="font-bold text-foreground">What we produced: </span>
                       <span className="text-muted-foreground">{current.whatWeProduced}</span>
                     </div>
                   </div>

@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import BNSFooter from "@/components/shadcn-space/blocks/footer-02/footer";
 import {
   shouldShowMarketingFooter,
+  shouldShowPageBreadcrumbs,
   usesMarketingChrome,
 } from "@/lib/marketing-layout";
 
@@ -30,7 +31,7 @@ const MarketingLayout = ({
     >
       {!isLearnApp && <Navbar />}
 
-      {!isLearnApp && !isHome ? (
+      {!isLearnApp && !isHome && shouldShowPageBreadcrumbs(pathname) ? (
         <div className="mx-auto w-full max-w-[1400px] px-6 pt-4 md:px-16">
           <PageBreadcrumbs className="mb-2" />
         </div>

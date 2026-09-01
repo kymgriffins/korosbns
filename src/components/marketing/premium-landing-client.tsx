@@ -3,6 +3,9 @@
 import React from "react";
 import dynamic from "next/dynamic";
 import LandingHero from "@/components/marketing/landing-hero";
+import { EditorialCtaBand } from "@/components/ui/editorial";
+import { LandingSection } from "@/layouts/landing-section";
+import { PROGRAMMES } from "@/content";
 
 const LandingYoutube = dynamic(
   () => import("@/components/marketing/landing-youtube"),
@@ -47,11 +50,8 @@ const TimelineSection = dynamic(
   },
 );
 
-const BNSStudioSection = dynamic(
-  () =>
-    import("@/components/marketing/bns-studio-section").then((m) => ({
-      default: m.BNSStudioSection,
-    })),
+const TestimonialsSection = dynamic(
+  () => import("@/components/shadcn-space/blocks/testimonial-01/testimonial"),
   {
     ssr: false,
     loading: () => <div className="h-96 w-full animate-pulse bg-muted" />,
@@ -66,14 +66,6 @@ const SocialsSection = dynamic(
   },
 );
 
-const TestimonialsSection = dynamic(
-  () => import("@/components/shadcn-space/blocks/testimonial-01/testimonial"),
-  {
-    ssr: false,
-    loading: () => <div className="h-96 w-full animate-pulse bg-muted" />,
-  },
-);
-
 const NewsletterPopup = dynamic(
   () => import("@/components/marketing/newsletter-popup"),
   { ssr: false },
@@ -82,8 +74,8 @@ const NewsletterPopup = dynamic(
 /**
  * Homepage spine:
  * Hero (TikTok) → Story → Programmes → Partners → Team → Timeline →
- * Testimonials → Studios (single) → Socials
- * (Field gallery temporarily hidden)
+ * Testimonials → Socials
+ * (Field gallery temporarily hidden; studio evidence lives at /bns-studio)
  */
 export default function PremiumLandingClient() {
   return (
@@ -95,8 +87,20 @@ export default function PremiumLandingClient() {
       <LandingTeam />
       <TimelineSection />
       <TestimonialsSection />
-      <BNSStudioSection />
       <SocialsSection />
+      <LandingSection>
+        <EditorialCtaBand
+          eyebrow="Start now"
+          title="Discover Kenya's budget through stories that stay with you."
+          description="Free civic modules, verified reports, and county intelligence — no paywall on learning."
+          ctaHref="/learn"
+          ctaLabel="Start Learning"
+          images={PROGRAMMES.slice(0, 2).map((p) => ({
+            src: p.visual.hero,
+            alt: p.visual.heroAlt,
+          }))}
+        />
+      </LandingSection>
       <NewsletterPopup />
     </>
   );

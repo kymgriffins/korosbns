@@ -179,18 +179,18 @@
     },
     {
       "slug": "studios",
-      "name": "BNS Studios",
-      "eyebrow": "Impact content & storytelling",
+      "name": "Impact production",
+      "eyebrow": "Impact content and storytelling",
       "headline": "Evidence-based production across eight civic storytelling formats.",
-      "body": "BNS Studios documents and produces commissioned work for governments, development partners, CSOs, ESG-driven businesses, and grassroots alliances. Browse our evidence library by content type or partner organisation — from podcasts and animations to town halls and community listening sessions. Every commission fuels our double-impact model: deliverables for your stakeholders, with studio proceeds reinvested into BNS Foundation's civic mission.",
+      "body": "Budget Ndio Story documents and produces commissioned work for governments, development partners, CSOs, ESG-driven businesses, and grassroots alliances. Browse our evidence library by content type or partner organisation — from podcasts and animations to town halls and community listening sessions. Every commission fuels our double-impact model: deliverables for your stakeholders, with proceeds reinvested into civic budget literacy.",
       "formats": "Podcast & Audio · Animations · Explainer Videos · Research Spotlights · Documentaries · Social Media Series · Town Hall Design & Facilitation · Community Listening Sessions",
-      "highlight": "Double impact: evidence-based creative production for your stakeholders, with studio proceeds reinvested into Kenya's civic budget literacy.",
-      "seoTitle": "BNS Studios | Evidence Library & Civic Production",
-      "seoDescription": "Browse BNS Studios evidence by content type and organisation. Podcasts, animations, documentaries, explainers, and town halls for governments, partners and CSOs.",
+      "highlight": "Double impact: evidence-based creative production for your stakeholders, with proceeds reinvested into Kenya's civic budget literacy.",
+      "seoTitle": "Impact Production | Evidence Library and Civic Storytelling",
+      "seoDescription": "Browse Budget Ndio Story evidence by content type and organisation. Podcasts, animations, documentaries, explainers, and town halls for governments, partners and CSOs.",
       "cta": {
-        "label": "Commission BNS Studios",
+        "label": "Start a commission",
         "href": "/bns-studio#booking",
-        "note": "Studios services / commissioning — info@budgetndiostory.org"
+        "note": "Production services / commissioning — info@budgetndiostory.org"
       },
       "href": "/bns-studio",
       "visual": {

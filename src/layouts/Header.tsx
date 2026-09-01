@@ -29,7 +29,6 @@ const DESKTOP_NAV =
     ...(landingContent.navigation.secondary ?? []),
   ];
 
-/** Compact social set for dark SaaS chrome — real URLs only */
 const HEADER_SOCIAL = socialLinks.filter((s) =>
   ["x", "linkedin", "youtube"].includes(s.icon),
 );
@@ -51,11 +50,11 @@ function NavLink({
     <Link
       href={href}
       className={cn(
-        "rounded-md px-2.5 py-1.5 text-sm font-medium outline-none transition-colors duration-200",
-        "focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950",
+        "rounded-full px-3 py-1.5 text-sm font-medium outline-none transition-colors duration-200",
+        "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         active
-          ? "text-white"
-          : "text-white/55 hover:text-white",
+          ? "text-foreground"
+          : "text-muted-foreground hover:text-foreground",
       )}
     >
       {label}
@@ -108,7 +107,7 @@ export function Header() {
         variants={navbarEnter}
         initial={reduced ? false : "hidden"}
         animate="visible"
-        className="fixed inset-x-0 top-0 z-[100] border-b border-white/10 bg-neutral-950"
+        className="fixed inset-x-0 top-0 z-[100] border-b border-border/50 bg-background/90 backdrop-blur-md"
       >
         <div
           className={cn(
@@ -116,13 +115,12 @@ export function Header() {
             "flex h-14 items-center justify-between gap-4 md:h-16",
           )}
         >
-          {/* Left — mark + wordmark + flat links */}
-          <div className="flex min-w-0 items-center gap-6 lg:gap-8">
+          <div className="flex min-w-0 items-center gap-6 lg:gap-10">
             <Link
               href={Routes.Home}
-              className="group inline-flex shrink-0 items-center gap-2.5 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
+              className="group inline-flex shrink-0 items-center gap-2.5 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
-              <span className="relative flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white">
+              <span className="relative flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border/60 bg-background">
                 <Image
                   src="/logo.svg"
                   alt=""
@@ -132,11 +130,15 @@ export function Header() {
                   priority
                 />
               </span>
-              <span className="hidden text-sm font-semibold tracking-tight text-white sm:inline">
+              <span className="hidden text-sm font-semibold tracking-tight text-foreground sm:inline">
                 Budget Ndio Story
               </span>
               <span className="sr-only">Budget Ndio Story home</span>
             </Link>
+
+            <p className="hidden text-xs text-muted-foreground xl:block">
+              Based in: Kenya
+            </p>
 
             <nav
               className="hidden items-center gap-0.5 md:flex"
@@ -153,7 +155,6 @@ export function Header() {
             </nav>
           </div>
 
-          {/* Right — socials, Contact, Join CTA, theme, mobile menu */}
           <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
             <div className="hidden items-center gap-0.5 lg:flex">
               {HEADER_SOCIAL.map((social) => {
@@ -166,7 +167,7 @@ export function Header() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.label}
-                    className="inline-flex size-8 items-center justify-center rounded-md text-white/50 outline-none transition-colors hover:bg-white/5 hover:text-white focus-visible:ring-2 focus-visible:ring-white/40"
+                    className="inline-flex size-8 items-center justify-center rounded-full text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     <Icon className="size-3.5" />
                   </Link>
@@ -176,7 +177,7 @@ export function Header() {
 
             <Link
               href={Routes.Contact}
-              className="hidden rounded-md px-2.5 py-1.5 text-sm font-medium text-white/70 outline-none transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-white/40 sm:inline"
+              className="hidden rounded-full px-3 py-1.5 text-sm font-medium text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring sm:inline"
             >
               Contact
             </Link>
@@ -191,15 +192,14 @@ export function Header() {
                 <Link
                   href={joinHref}
                   className={cn(
-                    "inline-flex h-9 max-w-[12rem] items-center justify-center gap-1.5 truncate rounded-full border border-white/80 bg-transparent px-4 text-sm font-medium text-white outline-none transition-colors duration-200",
-                    "hover:bg-white hover:text-neutral-950",
-                    "focus-visible:ring-2 focus-visible:ring-white/40 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950",
-                    isLoggedIn && "border-white/40",
+                    "inline-flex h-9 max-w-[12rem] items-center justify-center gap-1.5 truncate rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground outline-none transition-colors duration-200",
+                    "hover:bg-primary/90",
+                    "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                   )}
                 >
                   {isLoggedIn ? (
                     <>
-                      <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-white/15 text-[10px] font-bold text-white">
+                      <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary-foreground/20 text-[10px] font-bold text-primary-foreground">
                         {user?.email?.charAt(0).toUpperCase() ?? "?"}
                       </span>
                       <span className="truncate">{joinLabel}</span>
@@ -217,15 +217,13 @@ export function Header() {
                 className={cn(
                   "hidden sm:inline-flex",
                   NAV_CONTROL_SIZE,
-                  "rounded-full border border-white/20 bg-white/5",
+                  "rounded-full border border-border/60 bg-muted/40",
                 )}
                 aria-hidden
               />
             )}
 
-            <ThemeToggle
-              className="border-white/15 bg-transparent text-white hover:border-white/30 hover:bg-white/10"
-            />
+            <ThemeToggle className="border-border/60 bg-transparent text-foreground hover:bg-muted" />
 
             <motion.button
               type="button"
@@ -235,7 +233,7 @@ export function Header() {
               className={cn(
                 NAV_CONTROL_SIZE,
                 NAV_CONTROL_BORDER,
-                "relative inline-flex items-center justify-center rounded-full border-white/15 bg-transparent text-white hover:border-white/30 hover:bg-white/10 md:hidden",
+                "relative inline-flex items-center justify-center rounded-full border-border/60 bg-transparent text-foreground hover:bg-muted md:hidden",
               )}
               aria-label={isOpen ? "Close menu" : "Open menu"}
               aria-expanded={isOpen}

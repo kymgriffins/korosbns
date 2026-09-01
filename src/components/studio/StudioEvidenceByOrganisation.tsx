@@ -132,7 +132,7 @@ export function StudioEvidenceByOrganisation({ onOpenProject }: Props) {
                     "mt-6 rounded-full px-6 py-2.5 text-xs font-semibold",
                   )}
                 >
-                  Commission BNS Studios
+                  Start a commission
                 </button>
               )}
             </div>

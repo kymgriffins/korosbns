@@ -2,6 +2,7 @@
 
 import React from "react";
 import { cn } from "@/utils/helpers";
+import { EditorialSectionHeader } from "@/components/ui/editorial";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import {
   SECTION_SHELL_INNER,
@@ -9,8 +10,8 @@ import {
   type SectionShellProps,
 } from "@/layouts/section-shell";
 
-/** Canonical landing section surface */
-export const LANDING_SECTION_SURFACE = "border-y border-border/40 bg-background";
+/** Canonical landing section surface — breathable, no heavy borders */
+export const LANDING_SECTION_SURFACE = "bg-background";
 
 type LandingSectionProps = SectionShellProps & {
   /** @deprecated Motion is opt-in via GSAP primitives — kept for API compat */
@@ -61,46 +62,16 @@ type SectionHeaderProps = {
   mutedEyebrow?: boolean;
 };
 
-export function LandingSectionHeader({
-  eyebrow,
-  title,
-  description,
-  className,
-  align = "start",
-  titleAs = "h2",
-  mutedEyebrow = false,
-}: SectionHeaderProps) {
-  const TitleTag = titleAs;
-  const isCentered = align === "center";
-
+export function LandingSectionHeader(props: SectionHeaderProps) {
   return (
-    <div
-      className={cn(
-        "mb-8 flex flex-col gap-4 md:mb-10",
-        isCentered
-          ? "items-center text-center"
-          : "items-start justify-between md:flex-row md:items-end",
-        className,
-      )}
-    >
-      <div className={cn("max-w-2xl", isCentered && "mx-auto")}>
-        {eyebrow ? (
-          <span
-            className={cn(
-              mutedEyebrow ? T.eyebrowMuted : T.eyebrow,
-              isCentered && "text-center",
-            )}
-          >
-            {eyebrow}
-          </span>
-        ) : null}
-        <TitleTag className={T.sectionTitle}>{title}</TitleTag>
-        {description && isCentered ? (
-          <p className={cn(T.lead, "mx-auto mt-4 max-w-2xl")}>{description}</p>
-        ) : null}
-      </div>
-      {description && !isCentered ? <p className={T.lead}>{description}</p> : null}
-    </div>
+    <EditorialSectionHeader
+      eyebrow={props.eyebrow}
+      title={props.title}
+      description={props.description}
+      className={props.className}
+      align={props.align}
+      titleAs={props.titleAs}
+    />
   );
 }
 

@@ -11,7 +11,7 @@ import { CreateThreadDialog } from "@/components/forum/create-thread-dialog";
 import { useAuth } from "@/contexts/auth-context";
 import Link from "next/link";
 import { Routes } from "@/constants/routes";
-import { LearnPageFrame, LearnPageHeader } from "@/components/learn/learn-page-frame";
+import { LearnPageFrame, LearnSection } from "@/components/learn/learn-page-frame";
 
 export function ForumView() {
   const { isLoggedIn } = useAuth();
@@ -43,105 +43,102 @@ export function ForumView() {
   }
 
   return (
-    <LearnPageFrame className="space-y-8">
-      <div className="flex items-start justify-between gap-4">
-        <LearnPageHeader
-          eyebrow="Community"
-          title="Forum"
-          description="Discuss budgets, ask questions, and share what you learn."
-          className="flex-1"
-        />
-        <div className="mt-1 flex shrink-0 items-center gap-2">
-          <button
-            type="button"
-            onClick={async () => {
-              setRefreshing(true);
-              try {
-                await queryClient.invalidateQueries({
-                  queryKey: ["forum", "threads"],
-                });
-              } finally {
-                setRefreshing(false);
-              }
-            }}
-            disabled={refreshing}
-            className="rounded-full p-2.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
-            title="Refresh threads"
-          >
-            <RefreshCw
-              className={`size-4 ${refreshing ? "animate-spin" : ""}`}
-            />
-          </button>
-          {isLoggedIn ? (
-            <CreateThreadDialog />
-          ) : (
-            <Link
-              href={Routes.Login}
-              className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-primary px-4 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+    <LearnPageFrame>
+      <LearnSection
+        title="Forum"
+        description="Discuss budgets, ask questions, and share what you learn."
+        className="border-t-0 pt-2"
+        action={
+          <div className="flex shrink-0 items-center gap-2">
+            <button
+              type="button"
+              onClick={async () => {
+                setRefreshing(true);
+                try {
+                  await queryClient.invalidateQueries({
+                    queryKey: ["forum", "threads"],
+                  });
+                } finally {
+                  setRefreshing(false);
+                }
+              }}
+              disabled={refreshing}
+              className="rounded-full p-2.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              title="Refresh threads"
             >
-              <MessageSquarePlus className="size-4" />
-              Sign in to post
-            </Link>
-          )}
-        </div>
-      </div>
-
-      <div className="relative">
-        <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search conversations..."
-          className="h-11 rounded-full border-border/60 bg-muted/30 pl-10 text-sm"
-        />
-      </div>
-
-      {isLoading ? (
-        <div className="flex items-center justify-center py-20">
-          <Loader2 className="size-6 animate-spin text-muted-foreground" />
-        </div>
-      ) : isError ? (
-        <div className="flex flex-col items-center justify-center gap-3 rounded-3xl border border-destructive/30 bg-destructive/5 px-6 py-14 text-center">
-          <p className="text-sm font-semibold text-destructive">
-            Could not load conversations
-          </p>
-          <p className="max-w-md text-sm text-muted-foreground">
-            {error instanceof Error
-              ? error.message
-              : "An unexpected error occurred. Please try again later."}
-          </p>
-        </div>
-      ) : filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-3 rounded-3xl border border-dashed border-border/60 bg-muted/10 px-6 py-20 text-center">
-          <div className="flex size-14 items-center justify-center rounded-full bg-primary/10">
-            <MessagesSquare className="size-6 text-primary/70" />
+              <RefreshCw className={`size-4 ${refreshing ? "animate-spin" : ""}`} />
+            </button>
+            {isLoggedIn ? (
+              <CreateThreadDialog />
+            ) : (
+              <Link
+                href={Routes.Login}
+                className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-primary px-4 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+              >
+                <MessageSquarePlus className="size-4" />
+                Sign in to post
+              </Link>
+            )}
           </div>
-          <div>
-            <p className="font-heading text-base font-semibold text-foreground">
-              {search
-                ? "No conversations match your search"
-                : "No conversations yet"}
+        }
+      >
+        <div className="relative mb-8">
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search conversations..."
+            className="h-11 rounded-full border-border/60 bg-muted/30 pl-10 text-sm"
+          />
+        </div>
+
+        {isLoading ? (
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="size-6 animate-spin text-muted-foreground" />
+          </div>
+        ) : isError ? (
+          <div className="flex flex-col items-center justify-center gap-3 rounded-3xl border border-destructive/30 bg-destructive/5 px-6 py-14 text-center">
+            <p className="text-sm font-semibold text-destructive">
+              Could not load conversations
             </p>
-            <p className="mt-1.5 text-sm text-muted-foreground">
-              {search
-                ? "Try a different keyword or browse all threads."
-                : "Be the first to start a civic budget discussion."}
+            <p className="max-w-md text-sm text-muted-foreground">
+              {error instanceof Error
+                ? error.message
+                : "An unexpected error occurred. Please try again later."}
             </p>
           </div>
-          {!search && isLoggedIn && <CreateThreadDialog />}
-        </div>
-      ) : (
-        <div className="space-y-2.5 pb-2">
-          {filtered.map((thread) => (
-            <ForumThreadCard
-              key={thread.id}
-              thread={thread}
-              selected={selectedThreadId === thread.id}
-              onSelect={() => setSelectedThreadId(thread.id)}
-            />
-          ))}
-        </div>
-      )}
+        ) : filtered.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-3 rounded-3xl border border-dashed border-border/60 bg-muted/10 px-6 py-20 text-center">
+            <div className="flex size-14 items-center justify-center rounded-full bg-primary/10">
+              <MessagesSquare className="size-6 text-primary/70" />
+            </div>
+            <div>
+              <p className="font-heading text-base font-semibold text-foreground">
+                {search
+                  ? "No conversations match your search"
+                  : "No conversations yet"}
+              </p>
+              <p className="mt-1.5 text-sm text-muted-foreground">
+                {search
+                  ? "Try a different keyword or browse all threads."
+                  : "Be the first to start a civic budget discussion."}
+              </p>
+            </div>
+            {!search && isLoggedIn && <CreateThreadDialog />}
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {filtered.map((thread) => (
+              <ForumThreadCard
+                key={thread.id}
+                thread={thread}
+                selected={selectedThreadId === thread.id}
+                onSelect={() => setSelectedThreadId(thread.id)}
+              />
+            ))}
+          </div>
+        )}
+      </LearnSection>
     </LearnPageFrame>
   );
 }

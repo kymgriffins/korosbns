@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import {
   godModeStore,
   GOD_MODE_EMAIL,
@@ -248,6 +248,11 @@ describe("Updated PRD Compliance Test Suite", () => {
    * ======================================================================== */
   describe("Real-Time Engagement & Django Sync (PRD Spec 6)", () => {
     it("synchronizes God Mode and CMS requests with bnske Django backend", async () => {
+      vi.stubGlobal(
+        "fetch",
+        vi.fn().mockResolvedValue({ ok: true } as Response),
+      );
+
       const syncGod = await bnskeSyncEngine.syncGodModeRequests();
       expect(syncGod).toBe(true);
 
@@ -257,6 +262,8 @@ describe("Updated PRD Compliance Test Suite", () => {
       const status = bnskeSyncEngine.getStatus();
       expect(status.connected).toBe(true);
       expect(status.godModeRequestsSynced).toBeGreaterThan(0);
+
+      vi.unstubAllGlobals();
     });
 
     it("generates VAPID keys and handles Web Push Subscriptions", () => {
