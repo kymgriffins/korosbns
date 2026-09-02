@@ -8,7 +8,7 @@ import { LandingSection } from "@/layouts/landing-section";
 import { ProgrammeOtherProgrammes } from "@/components/programmes/programme-other-programmes";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import { PROGRAMMES_CLOSING, type ProgrammeBlock } from "@/content";
-import { SECTION_SHELL_INNER, SECTION_SHELL_PADDING } from "@/layouts/section-shell";
+import { HERO_SECTION_PADDING, SECTION_SHELL_INNER, SECTION_SHELL_PADDING } from "@/layouts/section-shell";
 import { cn } from "@/utils";
 
 function splitBody(body: string): string[] {
@@ -40,8 +40,8 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
     <div className="w-full scroll-smooth bg-background">
       <section
         className={cn(
-          SECTION_SHELL_PADDING,
-          "border-b border-border/30 bg-background pt-24 md:pt-28",
+          HERO_SECTION_PADDING,
+          "border-b border-border/30 bg-background",
         )}
       >
         <div className={cn(SECTION_SHELL_INNER, "grid gap-8 lg:grid-cols-12 lg:gap-12")}>

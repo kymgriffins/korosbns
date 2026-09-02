@@ -7,6 +7,9 @@ export const SECTION_SHELL_INNER = "mx-auto w-full max-w-[1400px] px-6 md:px-16"
 /** Canonical landing vertical rhythm — generous editorial whitespace */
 export const SECTION_SHELL_PADDING = "py-20 md:py-28 lg:py-32";
 
+/** First-fold hero — marketing layout already clears the fixed header */
+export const HERO_SECTION_PADDING = "pt-4 pb-16 md:pt-6 md:pb-20 lg:pb-24";
+
 type SectionShellProps = React.ComponentProps<"section"> & {
   /** @deprecated Prefer default — landing uses one rhythm */
   spacing?: "default" | "loose";

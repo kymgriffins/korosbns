@@ -11,7 +11,7 @@ import {
   PROGRAMMES_LANDING,
 } from "@/content";
 import { GsapHeroChoreography, GsapReveal, GsapStaggerReveal } from "@/motion/gsap";
-import { SECTION_SHELL_INNER, SECTION_SHELL_PADDING } from "@/layouts/section-shell";
+import { HERO_SECTION_PADDING, SECTION_SHELL_INNER, SECTION_SHELL_PADDING } from "@/layouts/section-shell";
 import { cn } from "@/utils";
 
 export function ProgrammesLanding() {
@@ -19,8 +19,8 @@ export function ProgrammesLanding() {
     <div className="w-full scroll-smooth bg-background">
       <section
         className={cn(
-          SECTION_SHELL_PADDING,
-          "border-b border-border/30 bg-background pt-24 md:pt-28",
+          HERO_SECTION_PADDING,
+          "border-b border-border/30 bg-background",
         )}
       >
         <div className={SECTION_SHELL_INNER}>

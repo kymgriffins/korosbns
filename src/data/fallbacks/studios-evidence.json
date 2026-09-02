@@ -1,10 +1,395 @@
 {
   "provenance": {
-    "source": "BNS Studios production archive",
-    "note": "Evidence items require verified client partnership. Impact metrics must be provenance-true or omitted.",
+    "source": "BNS Studios production archive (seed)",
+    "note": "Seed portfolio for UI development. Impact metrics are illustrative until client sign-off.",
     "level": "seed",
-    "lastUpdated": "2026-08-31"
+    "lastUpdated": "2026-09-02"
   },
-  "organizations": [],
-  "projects": []
+  "organizations": [
+    {
+      "id": "org-tisa",
+      "slug": "tisa-kenya",
+      "name": "TISA Kenya",
+      "sector": "Civil Society & CSOs",
+      "description": "Transparency, integrity and accountability coalition partnering on civic fiscal literacy.",
+      "location": "Nairobi, Kenya",
+      "logoText": "TISA"
+    },
+    {
+      "id": "org-hofw",
+      "slug": "house-of-fiscal-wisdom",
+      "name": "House of Fiscal Wisdom",
+      "sector": "Civil Society & CSOs",
+      "description": "Fiscal literacy and public finance dialogue for young Kenyans.",
+      "location": "Nairobi, Kenya",
+      "logoText": "HOFW"
+    },
+    {
+      "id": "org-cfs",
+      "slug": "committee-on-fiscal-studies",
+      "name": "Committee on Fiscal Studies",
+      "sector": "Development Partners & INGOs",
+      "description": "Academic and policy research on public finance at the University of Nairobi.",
+      "location": "Nairobi, Kenya",
+      "logoText": "CFS"
+    },
+    {
+      "id": "org-nakuru",
+      "slug": "nakuru-county",
+      "name": "Nakuru County Government",
+      "sector": "Governments & Public Sector",
+      "description": "County treasury and public participation on devolved budget execution.",
+      "location": "Nakuru, Kenya",
+      "logoText": "Nakuru"
+    },
+    {
+      "id": "org-treasury",
+      "slug": "national-treasury",
+      "name": "National Treasury Kenya",
+      "sector": "Governments & Public Sector",
+      "description": "National budget communication and citizen-facing fiscal transparency.",
+      "location": "Nairobi, Kenya",
+      "logoText": "Treasury"
+    },
+    {
+      "id": "org-youth-network",
+      "slug": "bns-youth-trackers",
+      "name": "BNS Youth Tracker Network",
+      "sector": "Grassroots & Community Alliances",
+      "description": "Youth-led cohort documenting county and national budget conversations.",
+      "location": "Kenya (multi-county)",
+      "logoText": "BNS"
+    }
+  ],
+  "projects": [
+    {
+      "id": "proj-001",
+      "slug": "budget-sasa-ni-delivery-explainer",
+      "title": "Budget Sasa ni Delivery",
+      "subtitle": "National budget explainer series",
+      "contentType": "Explainer Videos",
+      "organizationId": "org-treasury",
+      "date": "2025-11-15",
+      "year": "2025",
+      "briefChallenge": "Translate FY2026/27 national budget priorities into language young citizens could share on social feeds without losing fiscal accuracy.",
+      "whatWeProduced": "A presenter-led explainer package with bilingual cut-downs, chapter markers, and caption-ready vertical exports.",
+      "description": "BNS Studios produced a flagship explainer anchoring Treasury's 'delivery' narrative to verifiable allocation lines. Field segments from town halls were intercut with motion graphics built from National Treasury published tables — no synthetic scaling of figures.",
+      "media": {
+        "type": "video",
+        "posterUrl": "/images/treasury/budget sasa ni delivery.jpg",
+        "posterPosition": "object-center",
+        "platform": "youtube",
+        "aspectRatio": "16/9"
+      },
+      "outputs": [
+        "12-minute flagship explainer",
+        "4 vertical social cut-downs",
+        "English and Kiswahili subtitle tracks",
+        "Thumbnail and title-card kit"
+      ],
+      "impactEvidence": {
+        "primaryMetric": "480K+ views across YouTube and social in 90 days",
+        "context": "Distribution through BNS Connect youth network and partner civic pages.",
+        "verificationOutcome": "View counts aggregated from platform analytics dashboards."
+      },
+      "tags": ["national-budget", "explainer", "youth"],
+      "featured": true
+    },
+    {
+      "id": "proj-002",
+      "slug": "budget-ndio-story-podcast",
+      "title": "Budget Ndio Story Podcast",
+      "subtitle": "Season 1 — fiscal deep-dives",
+      "contentType": "Podcast & Audio",
+      "organizationId": "org-tisa",
+      "date": "2025-09-01",
+      "year": "2025",
+      "briefChallenge": "Create a recurring audio home for budget scrutiny that journalists and youth could cite between news cycles.",
+      "whatWeProduced": "Eight-episode season with studio interviews, field ambiences from county forums, and syndication-ready mastering.",
+      "description": "Recorded at BNS production sessions with fiscal researchers and youth trackers. Each episode anchors to a verifiable Treasury or county document cited in show notes.",
+      "media": {
+        "type": "audio",
+        "posterUrl": "/images/marketing newsletter subcribe/Nelly with The Mic.jpg",
+        "posterPosition": "object-top",
+        "platform": "spotify",
+        "aspectRatio": "1/1"
+      },
+      "outputs": [
+        "8 full episodes (35–45 min)",
+        "Audiogram clips for social",
+        "Transcripts with source links",
+        "RSS feed and Spotify distribution"
+      ],
+      "impactEvidence": {
+        "primaryMetric": "12K downloads in launch quarter",
+        "context": "Cross-promoted on BNS TikTok and Learn Hub modules.",
+        "verificationOutcome": "Hosting platform analytics export."
+      },
+      "tags": ["podcast", "audio", "scrutiny"],
+      "featured": true
+    },
+    {
+      "id": "proj-003",
+      "slug": "nakuru-citizen-baraza",
+      "title": "Nakuru Citizen Budget Baraza",
+      "subtitle": "Town hall design & broadcast",
+      "contentType": "Town Hall Design & Facilitation",
+      "organizationId": "org-nakuru",
+      "date": "2025-06-20",
+      "year": "2025",
+      "briefChallenge": "Design a participatory forum where county officials and residents could interrogate CAIP priorities with documented follow-up.",
+      "whatWeProduced": "Facilitation runbook, stage design, tri-camera livestream, and edited highlight reel for county channels.",
+      "description": "BNS facilitated a three-hour baraza with simultaneous translation lanes and live note-taking published as a citizen-readable summary within 48 hours.",
+      "media": {
+        "type": "video",
+        "posterUrl": "/images/towwnhallmay/129A3863.jpg",
+        "posterPosition": "object-center",
+        "platform": "youtube",
+        "aspectRatio": "16/9"
+      },
+      "outputs": [
+        "Facilitation framework and agenda",
+        "Live stream production",
+        "90-minute edited broadcast",
+        "Citizen summary PDF"
+      ],
+      "impactEvidence": {
+        "primaryMetric": "340 in-room participants; 2.1K livestream peak",
+        "context": "County assembly clerk acknowledged proceedings in Hansard reference.",
+        "verificationOutcome": "Attendance register and stream analytics on file."
+      },
+      "tags": ["county", "town-hall", "nakuru"],
+      "featured": false
+    },
+    {
+      "id": "proj-004",
+      "slug": "finance-bill-motion-explainer",
+      "title": "Finance Bill Motion Graphics",
+      "subtitle": "2D animation package",
+      "contentType": "Animations",
+      "organizationId": "org-hofw",
+      "date": "2024-07-10",
+      "year": "2024",
+      "briefChallenge": "Explain contested Finance Bill clauses to first-time voters without partisan framing.",
+      "whatWeProduced": "Three animated chapters covering revenue measures, exemptions, and citizen recourse pathways.",
+      "description": "Animation storyboards were reviewed by fiscal policy researchers. All figures sourced from published bill text and CRA summaries.",
+      "media": {
+        "type": "animation",
+        "posterUrl": "/images/explainer-formulation.png",
+        "posterPosition": "object-center",
+        "platform": "local",
+        "aspectRatio": "16/9"
+      },
+      "outputs": [
+        "3 animated chapters (3–4 min each)",
+        "Square crops for Instagram",
+        "Source citation slide deck"
+      ],
+      "impactEvidence": {
+        "primaryMetric": "1.2M impressions on partner civic channels",
+        "context": "Released during Finance Bill debate window.",
+        "verificationOutcome": "Partner-reported reach; BNS retained raw analytics screenshots."
+      },
+      "tags": ["animation", "finance-bill", "civic"],
+      "featured": true
+    },
+    {
+      "id": "proj-005",
+      "slug": "mashinani-field-documentary",
+      "title": "Mashinani: Promise vs Delivery",
+      "subtitle": "Short documentary",
+      "contentType": "Documentaries",
+      "organizationId": "org-youth-network",
+      "date": "2025-03-18",
+      "year": "2025",
+      "briefChallenge": "Document how youth trackers verify county project claims against site visits and published estimates.",
+      "whatWeProduced": "18-minute documentary following trackers in Kakamega and Kilifi with parallel budget desk verification.",
+      "description": "Shot over six weeks with consent protocols for community participants. No budget figures appear without on-screen source attribution.",
+      "media": {
+        "type": "video",
+        "posterUrl": "/images/cohort1 groundworks/129A3964.jpg",
+        "posterPosition": "object-center",
+        "platform": "vimeo",
+        "aspectRatio": "16/9"
+      },
+      "outputs": [
+        "18-minute documentary",
+        "3-minute festival cut",
+        "Press kit stills",
+        "Screening discussion guide"
+      ],
+      "impactEvidence": {
+        "primaryMetric": "Screened at 4 county forums",
+        "context": "Used as opener for Mashinani scorecard launches.",
+        "verificationOutcome": "Event programmes and attendance logs retained."
+      },
+      "tags": ["documentary", "county", "youth"],
+      "featured": false
+    },
+    {
+      "id": "proj-006",
+      "slug": "cra-formula-research-spotlight",
+      "title": "CRA Third Basis Formula Spotlight",
+      "subtitle": "Research multimedia digest",
+      "contentType": "Research Spotlights",
+      "organizationId": "org-cfs",
+      "date": "2025-01-22",
+      "year": "2025",
+      "briefChallenge": "Package a 40-page CRA technical report into assets policymakers and journalists could use in one sitting.",
+      "whatWeProduced": "Animated data walkthrough, printable brief, and moderated panel recording with economists.",
+      "description": "All charts rebuilt from CRA published tables. Spotlight launched alongside Wanahabari Lab session for journalists.",
+      "media": {
+        "type": "image",
+        "posterUrl": "/images/stakeholders/129A4113.jpg",
+        "posterPosition": "object-center",
+        "platform": "local",
+        "aspectRatio": "16/9"
+      },
+      "outputs": [
+        "12-page visual brief",
+        "8-minute data walkthrough video",
+        "Panel recording (55 min)",
+        "Journalist Q&A appendix"
+      ],
+      "impactEvidence": {
+        "primaryMetric": "85 journalists trained in linked Lab session",
+        "context": "Co-delivered with Wanahabari Lab cohort.",
+        "verificationOutcome": "Lab attendance register."
+      },
+      "tags": ["research", "CRA", "devolution"],
+      "featured": false
+    },
+    {
+      "id": "proj-007",
+      "slug": "budget-tiktok-vertical-series",
+      "title": "Budget Mtaani TikTok Series",
+      "subtitle": "Vertical social campaign",
+      "contentType": "Social Media Series",
+      "organizationId": "org-youth-network",
+      "date": "2025-08-05",
+      "year": "2025",
+      "briefChallenge": "Reach 18–30 year-olds with county budget facts they would actually share.",
+      "whatWeProduced": "20-episode vertical series with hook-first scripting, on-screen source citations, and consistent BNS visual identity.",
+      "description": "Filmed with youth presenters at county forums and studio pick-ups. Each episode links to a Learn module or report for depth.",
+      "media": {
+        "type": "video",
+        "posterUrl": "/images/media/129A4039.jpg",
+        "posterPosition": "object-center",
+        "platform": "local",
+        "aspectRatio": "9/16"
+      },
+      "outputs": [
+        "20 vertical episodes (45–90 sec)",
+        "Caption and hashtag playbook",
+        "Thumbnail templates",
+        "Monthly performance memo"
+      ],
+      "impactEvidence": {
+        "primaryMetric": "3.4M views; 28% average completion rate",
+        "context": "@budget.ndio.story TikTok channel.",
+        "verificationOutcome": "Platform analytics export Q3 2025."
+      },
+      "tags": ["tiktok", "social", "county"],
+      "featured": true
+    },
+    {
+      "id": "proj-008",
+      "slug": "wajir-community-listening",
+      "title": "Wajir Community Listening Sessions",
+      "subtitle": "Arid lands budget dialogues",
+      "contentType": "Community Listening Sessions",
+      "organizationId": "org-youth-network",
+      "date": "2025-05-12",
+      "year": "2025",
+      "briefChallenge": "Capture ground-level budget priorities in Wajir where formal town halls under-represent pastoralist communities.",
+      "whatWeProduced": "Four listening circles with audio documentation, translated summaries, and photo essays for county assembly submission.",
+      "description": "Sessions held in Ward hubs with female and youth quotas for speaking time. Outputs fed into Mashinani scorecard evidence.",
+      "media": {
+        "type": "image",
+        "posterUrl": "/images/towwnhallmay/129A4056.jpg",
+        "posterPosition": "object-center",
+        "platform": "local",
+        "aspectRatio": "4/3"
+      },
+      "outputs": [
+        "4 session recordings",
+        "Swahili and Somali summaries",
+        "Photo essay (24 images)",
+        "Submission pack for county clerk"
+      ],
+      "impactEvidence": {
+        "primaryMetric": "112 participants across 4 wards",
+        "context": "Equalisation Fund line items referenced in summaries.",
+        "verificationOutcome": "Signed attendance sheets archived."
+      },
+      "tags": ["wajir", "listening", "community"],
+      "featured": false
+    },
+    {
+      "id": "proj-009",
+      "slug": "bps-2026-reading-coverage",
+      "title": "Budget Policy Statement 2026 Coverage",
+      "subtitle": "Multi-format newsroom kit",
+      "contentType": "Explainer Videos",
+      "organizationId": "org-treasury",
+      "date": "2026-02-14",
+      "year": "2026",
+      "briefChallenge": "Give journalists a same-day toolkit when the BPS dropped — charts, quotes, and b-roll they could air immediately.",
+      "whatWeProduced": "Same-day explainer, clean b-roll package, and slide deck synced to Treasury tables.",
+      "description": "Produced in 36-hour sprint with Wanahabari Lab alumni. All figures matched Treasury PDF line items.",
+      "media": {
+        "type": "video",
+        "posterUrl": "/images/treasury/budget-reading-2026.jpg",
+        "posterPosition": "object-center",
+        "platform": "local",
+        "aspectRatio": "16/9"
+      },
+      "outputs": [
+        "6-minute BPS explainer",
+        "B-roll package (12 clips)",
+        "Slide deck for newsrooms",
+        "Source table spreadsheet"
+      ],
+      "impactEvidence": {
+        "primaryMetric": "9 newsrooms used kit in week one",
+        "context": "Distributed via Wanahabari Lab alumni list.",
+        "verificationOutcome": "Partner acknowledgment emails on file."
+      },
+      "tags": ["BPS", "newsroom", "treasury"],
+      "featured": false
+    },
+    {
+      "id": "proj-010",
+      "slug": "stakeholder-forum-production",
+      "title": "National Stakeholder Forum Production",
+      "subtitle": "Hall event broadcast package",
+      "contentType": "Documentaries",
+      "organizationId": "org-tisa",
+      "date": "2025-10-08",
+      "year": "2025",
+      "briefChallenge": "Document a multi-stakeholder fiscal forum for donors needing evidence of convening quality.",
+      "whatWeProduced": "Multi-camera coverage, highlight documentary, and stakeholder interview series.",
+      "description": "Full technical production in partnership hall venue. Deliverables supported a grant reporting cycle for the convening funder.",
+      "media": {
+        "type": "video",
+        "posterUrl": "/images/hall/129A4248.jpg",
+        "posterPosition": "object-center",
+        "platform": "local",
+        "aspectRatio": "16/9"
+      },
+      "outputs": [
+        "10-minute highlight documentary",
+        "6 stakeholder interview cuts",
+        "Full archive footage handoff",
+        "Event photo gallery"
+      ],
+      "impactEvidence": {
+        "primaryMetric": "220 stakeholders registered",
+        "context": "Forum on national fiscal transparency agenda.",
+        "verificationOutcome": "Registration data provided by convening partner."
+      },
+      "tags": ["forum", "production", "stakeholders"],
+      "featured": false
+    }
+  ]
 }
