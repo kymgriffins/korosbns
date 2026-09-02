@@ -91,10 +91,10 @@ export default function PremiumLandingClient() {
       <LandingSection>
         <EditorialCtaBand
           eyebrow="Start now"
-          title="Discover Kenya's budget through stories that stay with you."
-          description="Free civic modules, verified reports, and county intelligence — no paywall on learning."
-          ctaHref="/learn"
-          ctaLabel="Start Learning"
+          title="Four programmes built for civic impact."
+          description="Track national spending, follow county budgets, train journalists, and commission evidence-based storytelling."
+          ctaHref="/programmes"
+          ctaLabel="Explore Programmes"
           images={PROGRAMMES.slice(0, 2).map((p) => ({
             src: p.visual.hero,
             alt: p.visual.heroAlt,

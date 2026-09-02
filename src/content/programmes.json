@@ -2,11 +2,11 @@
   "landing": {
     "seoTitle": "Kenya National & County Budget Tracking Programmes | Budget Ndio Story",
     "seoDescription": "Track Kenya's KES 4.8 trillion national budget and county spending in Kakamega, Kilifi, Nakuru & Wajir. Youth tracking network, journalist training, and impact storytelling.",
-    "headline": "Kenya National & County Budget Tracking",
-    "body": "Kenya's public money moves fast, and mostly out of sight. Budget Ndio Story tracks it nationally and in four select counties, turning complex fiscal data into verified stories, scorecards, and journalist training that young Kenyans, media, government, and partners actually use.",
+    "headline": "Four programmes. One civic ecosystem.",
+    "body": "National tracking, county depth, journalist training, and impact production — each with its own dedicated page.",
     "exploreCta": {
-      "label": "Explore our four programmes",
-      "href": "#programmes"
+      "label": "Explore Programmes",
+      "href": "/programmes"
     }
   },
   "cardBlurbs": {
