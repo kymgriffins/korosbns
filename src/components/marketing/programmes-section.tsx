@@ -1,20 +1,13 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
+import { PillButtonGroup } from "@/components/ui/editorial";
+import { ProgrammeScorecard } from "@/components/programmes/programme-scorecard";
 import {
   LandingContent,
   LandingSection,
 } from "@/layouts/landing-section";
-import { PillButtonGroup } from "@/components/ui/editorial";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
-import {
-  PROGRAMMES,
-  PROGRAMME_CARD_BLURBS,
-  programmeHref,
-  landingContent,
-  type ProgrammeSlug,
-} from "@/content";
+import { PROGRAMMES, landingContent } from "@/content";
 import { GsapReveal, GsapStaggerReveal } from "@/motion/gsap";
 import { cn } from "@/utils";
 
@@ -33,33 +26,10 @@ export function ProgrammesSection() {
       </GsapReveal>
 
       <GsapStaggerReveal className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
-        {PROGRAMMES.map((programme) => (
-          <Link
-            key={programme.slug}
-            data-gsap-item
-            href={programmeHref(programme.slug as ProgrammeSlug)}
-            className={cn(
-              "group relative block overflow-hidden rounded-3xl",
-              "aspect-[3/4] sm:aspect-[4/5]",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            )}
-          >
-            <Image
-              src={programme.visual.hero}
-              alt={programme.visual.heroAlt}
-              fill
-              className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            />
-            <div className="editorial-image-card-overlay">
-              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wider text-white/80">
-                {programme.name}
-              </p>
-              <h3 className="font-heading text-base font-bold leading-snug text-white md:text-lg line-clamp-3">
-                {PROGRAMME_CARD_BLURBS[programme.slug as ProgrammeSlug]}
-              </h3>
-            </div>
-          </Link>
+        {PROGRAMMES.map((programme, index) => (
+          <div key={programme.slug} data-gsap-item>
+            <ProgrammeScorecard programme={programme} compact priority={index < 2} />
+          </div>
         ))}
       </GsapStaggerReveal>
 

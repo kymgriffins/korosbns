@@ -1,6 +1,6 @@
-import { EditorialImageCard, EditorialSectionHeader } from "@/components/ui/editorial";
+import Link from "next/link";
 import { PROGRAMMES, programmeHref, type ProgrammeSlug } from "@/content";
-import { SECTION_SHELL_INNER, SECTION_SHELL_PADDING } from "@/layouts/section-shell";
+import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 import { cn } from "@/utils";
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
   className?: string;
 };
 
-/** Marwa "More to explore" — other programme cards linking to dedicated pages. */
+/** Minimal cross-links — secondary to the active programme page. */
 export function ProgrammeOtherProgrammes({ currentSlug, className }: Props) {
   const others = PROGRAMMES.filter((p) => p.slug !== currentSlug);
 
@@ -16,31 +16,30 @@ export function ProgrammeOtherProgrammes({ currentSlug, className }: Props) {
 
   return (
     <section
-      className={cn(SECTION_SHELL_PADDING, "border-t border-border/30 bg-background", className)}
+      className={cn("border-t border-border/30 py-8 md:py-10", className)}
       aria-labelledby="other-programmes-heading"
     >
       <div className={SECTION_SHELL_INNER}>
-        <EditorialSectionHeader
-          eyebrow="Programmes"
-          title="Other programmes"
-          description="Explore the rest of our civic ecosystem — national tracking, county depth, training, and production."
-          titleAs="h2"
-        />
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-          {others.map((programme, index) => (
-            <EditorialImageCard
-              key={programme.slug}
-              href={programmeHref(programme.slug)}
-              imageSrc={programme.visual.hero}
-              imageAlt={programme.visual.heroAlt}
-              title={programme.headline}
-              meta={programme.name}
-              priority={index === 0}
-              aspectClassName="aspect-[4/5] sm:aspect-[3/4]"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            />
-          ))}
-        </div>
+        <h2
+          id="other-programmes-heading"
+          className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+        >
+          Other programmes
+        </h2>
+        <nav aria-label="Other programmes">
+          <ul className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-x-6 sm:gap-y-2">
+            {others.map((programme) => (
+              <li key={programme.slug}>
+                <Link
+                  href={programmeHref(programme.slug)}
+                  className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                >
+                  {programme.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
     </section>
   );
