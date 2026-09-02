@@ -120,7 +120,7 @@ export function LearnModulesView({ stages }: LearnModulesViewProps) {
   return (
     <LearnPageFrame>
       <section className="border-b border-border/40 pb-16 pt-2 md:pb-24 md:pt-4">
-        <GsapHeroChoreography className="grid items-end gap-10 lg:grid-cols-12 lg:gap-12">
+        <GsapHeroChoreography className="grid items-start gap-10 lg:grid-cols-12 lg:gap-12">
           <div data-gsap-hero-content className="flex flex-col gap-6 lg:col-span-6">
             <span className={T.eyebrow}>Free civic learning</span>
             <h1 className={cn(T.heroTitle, "max-w-xl text-balance")}>

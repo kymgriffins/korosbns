@@ -4,11 +4,13 @@ import { useState } from "react";
 import Link from "next/link";
 import { Loader2, Search, Calendar, MapPin, Building2 } from "lucide-react";
 import Wrapper from "@/components/global/wrapper";
+import { HERO_SECTION_PADDING } from "@/layouts/section-shell";
 import { Routes } from "@/constants/routes";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { motion } from "motion/react";
 import { useEvents } from "@/hooks/use-events";
+import { cn } from "@/utils";
 
 import { formatInNairobi } from "@/lib/datetime";
 
@@ -59,7 +61,7 @@ export default function EventsPage() {
   });
 
   return (
-    <Wrapper className="py-20 relative min-h-screen overflow-hidden">
+    <Wrapper className={cn(HERO_SECTION_PADDING, "relative min-h-screen overflow-hidden")}>
       {/* Decorative background glows */}
       <div className="absolute top-10 left-1/2 -translate-x-1/2 w-full h-full -z-10 pointer-events-none">
         <div className="absolute top-10 left-10 size-96 bg-primary/10 rounded-full blur-[10rem] opacity-70" />

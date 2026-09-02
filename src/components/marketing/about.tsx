@@ -9,7 +9,7 @@ import {
   LandingSection,
 } from "@/layouts/landing-section";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
-import { SECTION_SHELL_INNER, SECTION_SHELL_PADDING } from "@/layouts/section-shell";
+import { HERO_SECTION_PADDING, SECTION_SHELL_INNER, SECTION_SHELL_PADDING } from "@/layouts/section-shell";
 import { GsapHeroChoreography } from "@/motion/gsap";
 import { aboutContent } from "@/content";
 import TeamSection from "@/components/marketing/team-section";
@@ -22,9 +22,9 @@ const About = () => {
   return (
     <div className="w-full bg-background min-h-screen">
       {/* Hero Section */}
-      <section className={cn(SECTION_SHELL_PADDING, "border-b border-border/30 bg-background pt-24 md:pt-28")}>
+      <section className={cn(HERO_SECTION_PADDING, "border-b border-border/30 bg-background")}>
         <div className={SECTION_SHELL_INNER}>
-          <GsapHeroChoreography className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-14">
+          <GsapHeroChoreography className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-12">
             <div data-gsap-hero-content className="flex flex-col gap-5 lg:col-span-7">
               <span className={T.eyebrow}>{hero.eyebrow}</span>
               <h1 className={cn(T.heroTitle, "text-balance text-foreground")}>

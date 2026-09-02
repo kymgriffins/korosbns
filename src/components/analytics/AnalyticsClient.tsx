@@ -15,6 +15,8 @@ import { TrafficSourcesWidget } from "./TrafficSourcesWidget";
 import { UptimeWidget } from "./UptimeWidget";
 import { ExecutiveRoleSuite, type RoleType } from "./ExecutiveRoleSuite";
 import { getComprehensiveAnalytics, type TimeRangePeriod } from "./analytics-data";
+import { HERO_SECTION_PADDING } from "@/layouts/section-shell";
+import { cn } from "@/utils";
 
 export function AnalyticsClient() {
   usePageView();
@@ -31,7 +33,7 @@ export function AnalyticsClient() {
         <div className="absolute bottom-[-10%] right-[-10%] w-[55%] h-[55%] bg-teal-500/10 blur-[140px] rounded-full opacity-60" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 lg:py-20 space-y-10">
+      <div className={cn(HERO_SECTION_PADDING, "mx-auto max-w-7xl space-y-10 px-4 sm:px-6")}>
         {/* Header Section */}
         <motion.div
           variants={staggerContainer}

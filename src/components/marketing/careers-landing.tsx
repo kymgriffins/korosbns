@@ -25,7 +25,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
-import { SECTION_SHELL_INNER, SECTION_SHELL_PADDING } from "@/layouts/section-shell";
+import { HERO_SECTION_PADDING, SECTION_SHELL_INNER, SECTION_SHELL_PADDING } from "@/layouts/section-shell";
 import { GsapHeroChoreography } from "@/motion/gsap";
 import { cn } from "@/utils";
 import SectionBadge from "@/components/ui/section-badge";
@@ -215,7 +215,7 @@ export function CareersLanding() {
   return (
     <div className="w-full bg-background min-h-screen">
       {/* Hero Banner */}
-      <section className={cn(SECTION_SHELL_PADDING, "relative overflow-hidden border-b border-border/60 bg-muted/20 pt-24 md:pt-28")}>
+      <section className={cn(HERO_SECTION_PADDING, "relative overflow-hidden border-b border-border/60 bg-muted/20")}>
         <div className={cn(SECTION_SHELL_INNER, "relative z-10")}>
           <GsapHeroChoreography className="mx-auto max-w-3xl space-y-6 text-center">
             <span

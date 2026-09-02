@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ArrowLeft, ExternalLink, Loader2, Calendar, MapPin, Send, Mail, CheckCircle2, Building2 } from "lucide-react";
 import Wrapper from "@/components/global/wrapper";
+import { HERO_SECTION_PADDING } from "@/layouts/section-shell";
 import { Routes } from "@/constants/routes";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,7 @@ import { motion } from "motion/react";
 import { useEvent } from "@/hooks/use-events";
 import { formatInNairobi } from "@/lib/datetime";
 import { sanitizeHtml, stripHtml } from "@/lib/sanitize";
+import { cn } from "@/utils";
 
 export default function EventDetailPage() {
   const params = useParams();
@@ -47,7 +49,7 @@ export default function EventDetailPage() {
   };
 
   return (
-    <Wrapper className="py-20 relative min-h-screen">
+    <Wrapper className={cn(HERO_SECTION_PADDING, "relative min-h-screen")}>
       {/* Background decorations */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full -z-10 pointer-events-none">
         <div className="absolute top-20 left-1/4 size-[30rem] bg-primary/5 rounded-full blur-[10rem] opacity-70" />

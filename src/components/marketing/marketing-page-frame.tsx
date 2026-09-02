@@ -1,7 +1,7 @@
 "use client";
 
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
-import { SECTION_SHELL_INNER, SECTION_SHELL_PADDING } from "@/layouts/section-shell";
+import { HERO_SECTION_PADDING, SECTION_SHELL_INNER, SECTION_SHELL_PADDING } from "@/layouts/section-shell";
 import { GsapReveal } from "@/motion/gsap";
 import { cn } from "@/utils";
 
@@ -36,8 +36,8 @@ export function MarketingPageHero({
   return (
     <section
       className={cn(
-        SECTION_SHELL_PADDING,
-        "border-b border-border/40 pt-24 md:pt-28",
+        HERO_SECTION_PADDING,
+        "border-b border-border/40",
         className,
       )}
     >

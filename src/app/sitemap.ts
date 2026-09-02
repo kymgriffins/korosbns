@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
 import { citizenApi } from "@/lib/api-client";
 import { learningData } from "@/data/learning";
+import { studiosEvidenceData } from "@/data/studios-evidence";
 import { team } from "@/data/org";
 import { slugifyName } from "@/lib/team";
 import { canonicalUrl } from "@/utils/metadata";
@@ -133,6 +134,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   } catch (err) {
     console.error("Sitemap: Failed to load report dossiers", err);
+  }
+
+  // BNS Studios project dossiers (seed JSON)
+  try {
+    studiosEvidenceData.getAllProjects().forEach((project) => {
+      sitemapEntries.push({
+        url: canonicalUrl(`/bns-studio/${project.slug}`),
+        lastModified: project.date ? new Date(project.date) : new Date(),
+        changeFrequency: "monthly",
+        priority: 0.65,
+      });
+    });
+  } catch (err) {
+    console.error("Sitemap: Failed to load studio project paths", err);
   }
 
   return sitemapEntries;
