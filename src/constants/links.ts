@@ -20,6 +20,7 @@ export const NAV_LINKS = [
   {
     label: "Studios",
     href: Routes.BNSStudio,
+    newTab: true,
   },
   {
     label: "Surveys & Events",

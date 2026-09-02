@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { StudioTheatreHub } from "@/components/studio/theatre/studio-theatre-hub";
+import { StudioIndexView } from "@/components/studio/theatre/studio-index-view";
 import { StudioBookingForm } from "@/components/studio/StudioBookingForm";
-import { StudioContactCTA } from "@/components/studio/StudioContactCTA";
 
 export function BNSStudioPageClient() {
   const [bookingOpen, setBookingOpen] = useState(false);
@@ -17,9 +16,10 @@ export function BNSStudioPageClient() {
 
   return (
     <>
-      <StudioTheatreHub onCommissionClick={openBooking} />
-      <StudioBookingForm open={bookingOpen} onOpenChange={setBookingOpen} />
-      <StudioContactCTA onCommissionClick={openBooking} />
+      <StudioIndexView onCommissionClick={openBooking} />
+      <div id="booking" className="border-t border-[var(--studio-theatre-border)] bg-[var(--studio-theatre-bg)] px-4 py-12 md:px-8">
+        <StudioBookingForm open={bookingOpen} onOpenChange={setBookingOpen} />
+      </div>
     </>
   );
 }

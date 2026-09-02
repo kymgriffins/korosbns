@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { buildPageMetadata } from "@/utils/page-metadata";
-import { StudioProjectDetail } from "@/components/studio/StudioProjectDetail";
+import { StudioProjectViewer } from "@/components/studio/theatre/studio-project-viewer";
 import { studiosEvidenceData } from "@/data/studios-evidence";
 
 type PageProps = {
@@ -35,5 +36,16 @@ export default async function StudioProjectPage({ params }: PageProps) {
   const { slug } = await params;
   const project = studiosEvidenceData.getProjectBySlug(slug);
   if (!project) notFound();
-  return <StudioProjectDetail project={project} />;
+
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-[50vh] items-center justify-center text-sm text-[var(--studio-theatre-muted)]">
+          Loading production…
+        </div>
+      }
+    >
+      <StudioProjectViewer project={project} />
+    </Suspense>
+  );
 }

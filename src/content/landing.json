@@ -75,8 +75,9 @@
     "highlight": "Every commission is double impact: evidence-based content for your audience, with proceeds reinvested into Budget Ndio Story's civic mission.",
     "seeMoreLabel": "Browse evidence",
     "seeMoreHref": "/bns-studio",
-    "primaryCta": { "label": "Start a commission", "href": "/bns-studio#booking" },
-    "secondaryCta": { "label": "Browse by content type", "href": "/bns-studio#evidence-by-type" }
+    "seeMoreNewTab": true,
+    "primaryCta": { "label": "Start a commission", "href": "/bns-studio#booking", "newTab": true },
+    "secondaryCta": { "label": "Browse productions", "href": "/bns-studio", "newTab": true }
   },
   "socials": {
     "eyebrow": "Stay connected",
@@ -94,13 +95,13 @@
     ],
     "secondary": [
       { "label": "Reports", "href": "/reports" },
-      { "label": "Studios", "href": "/bns-studio" }
+      { "label": "Studios", "href": "/bns-studio", "newTab": true }
     ],
     "desktop": [
       { "label": "Programmes", "href": "/programmes" },
       { "label": "Learn", "href": "/learn" },
       { "label": "Reports", "href": "/reports" },
-      { "label": "Studios", "href": "/bns-studio" },
+      { "label": "Studios", "href": "/bns-studio", "newTab": true },
       { "label": "About", "href": "/about" }
     ]
   }

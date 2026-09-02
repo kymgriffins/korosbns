@@ -150,6 +150,9 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
                     <Link
                       href={item.href}
                       onClick={() => setIsOpen(false)}
+                      {...("newTab" in item && item.newTab
+                        ? { target: "_blank", rel: "noopener noreferrer" }
+                        : {})}
                       className={cn(
                         "group flex w-full items-center justify-between rounded-2xl px-4 py-3.5 text-base font-medium transition-all duration-200 active:scale-[0.98]",
                         isActiveNav(pathname, item.href)
@@ -230,6 +233,9 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
                     <Link
                       href={item.href}
                       onClick={() => setIsOpen(false)}
+                      {...("newTab" in item && item.newTab
+                        ? { target: "_blank", rel: "noopener noreferrer" }
+                        : {})}
                       className={cn(
                         "group flex w-full items-center justify-between rounded-2xl px-4 py-3.5 text-base font-medium transition-all duration-200 active:scale-[0.98]",
                         isActiveNav(pathname, item.href)

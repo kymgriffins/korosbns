@@ -41,14 +41,21 @@ function NavLink({
   href,
   label,
   active,
+  newTab = false,
 }: {
   href: string;
   label: string;
   active: boolean;
+  newTab?: boolean;
 }) {
+  const linkProps = newTab
+    ? { target: "_blank" as const, rel: "noopener noreferrer" }
+    : {};
+
   return (
     <Link
       href={href}
+      {...linkProps}
       className={cn(
         "rounded-full px-3 py-1.5 text-sm font-medium outline-none transition-colors duration-200",
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
@@ -150,6 +157,7 @@ export function Header() {
                   href={item.href}
                   label={item.label}
                   active={isActivePath(pathname, item.href)}
+                  newTab={"newTab" in item && item.newTab === true}
                 />
               ))}
             </nav>

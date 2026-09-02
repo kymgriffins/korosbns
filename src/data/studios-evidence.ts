@@ -27,6 +27,11 @@ export interface StudioEvidenceMedia {
   platform?: "youtube" | "vimeo" | "cloudinary" | "spotify" | "local" | "other";
   aspectRatio?: "16/9" | "4/3" | "9/16" | "1/1";
   caption?: string;
+  gallery?: Array<{
+    url: string;
+    caption?: string;
+    position?: string;
+  }>;
 }
 
 export interface StudioProjectEvidence {

@@ -53,6 +53,7 @@ export function BNSStudioSection() {
               <LandingSeeMore
                 href={strip.seeMoreHref}
                 label={strip.seeMoreLabel}
+                external={"seeMoreNewTab" in strip && strip.seeMoreNewTab === true}
               />
             </LandingSectionCta>
           </GsapReveal>

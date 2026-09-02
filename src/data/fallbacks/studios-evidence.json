@@ -78,6 +78,7 @@
         "type": "video",
         "posterUrl": "/images/treasury/budget sasa ni delivery.jpg",
         "posterPosition": "object-center",
+        "videoUrl": "https://www.youtube.com/watch?v=Ed9lP0-komE",
         "platform": "youtube",
         "aspectRatio": "16/9"
       },
@@ -149,7 +150,12 @@
         "posterUrl": "/images/towwnhallmay/129A3863.jpg",
         "posterPosition": "object-center",
         "platform": "youtube",
-        "aspectRatio": "16/9"
+        "aspectRatio": "16/9",
+        "gallery": [
+          { "url": "/images/towwnhallmay/129A3863.jpg", "caption": "Main hall convening" },
+          { "url": "/images/towwnhallmay/129A4056.jpg", "caption": "Citizen participation lane" },
+          { "url": "/images/towwnhallmay/129A3863.jpg", "caption": "Facilitation team" }
+        ]
       },
       "outputs": [
         "Facilitation framework and agenda",
@@ -323,7 +329,13 @@
         "posterUrl": "/images/towwnhallmay/129A4056.jpg",
         "posterPosition": "object-center",
         "platform": "local",
-        "aspectRatio": "4/3"
+        "aspectRatio": "4/3",
+        "gallery": [
+          { "url": "/images/towwnhallmay/129A4056.jpg", "caption": "Ward listening circle" },
+          { "url": "/images/cohort1 groundworks/129A3964.jpg", "caption": "Youth facilitators" },
+          { "url": "/images/stakeholders/129A4113.jpg", "caption": "Community evidence wall" },
+          { "url": "/images/media/129A4039.jpg", "caption": "Translated summary session" }
+        ]
       },
       "outputs": [
         "4 session recordings",
@@ -393,7 +405,13 @@
         "posterUrl": "/images/hall/129A4248.jpg",
         "posterPosition": "object-center",
         "platform": "local",
-        "aspectRatio": "16/9"
+        "aspectRatio": "16/9",
+        "videoUrl": "https://www.youtube.com/watch?v=Ed9lP0-komE",
+        "gallery": [
+          { "url": "/images/hall/129A4248.jpg", "caption": "Forum hall wide" },
+          { "url": "/images/stakeholders/129A4113.jpg", "caption": "Stakeholder interviews" },
+          { "url": "/images/towwnhallmay/129A3863.jpg", "caption": "Panel session" }
+        ]
       },
       "outputs": [
         "10-minute highlight documentary",

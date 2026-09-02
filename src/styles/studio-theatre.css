@@ -18,6 +18,26 @@
   font-family: var(--font-base), system-ui, sans-serif;
 }
 
+.studio-app[data-studio-theme="light"] {
+  --studio-theatre-bg: hsl(40 25% 97%);
+  --studio-theatre-surface: hsl(40 18% 94%);
+  --studio-theatre-elevated: hsl(0 0% 100%);
+  --studio-theatre-fg: hsl(220 20% 10%);
+  --studio-theatre-muted: hsl(220 8% 42%);
+  --studio-theatre-border: hsl(220 12% 86%);
+  --studio-theatre-accent: hsl(24 90% 48%);
+}
+
+.studio-app[data-studio-theme="light"] .studio-theatre-hero-scrim {
+  background: linear-gradient(
+    to top,
+    var(--studio-theatre-bg) 0%,
+    hsl(40 25% 97% / 0.92) 28%,
+    hsl(40 25% 97% / 0.5) 62%,
+    hsl(40 25% 97% / 0.25) 100%
+  );
+}
+
 .studio-theatre .font-heading,
 .studio-theatre h1,
 .studio-theatre h2,
