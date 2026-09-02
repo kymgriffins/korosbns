@@ -10,10 +10,10 @@ describe("Learn layout chrome (modules-first nav)", () => {
     expect(src).not.toMatch(/AppSidebar/);
   });
 
-  it("desktop nav has Modules and no Syllabus label", () => {
+  it("desktop nav has Learn tab and no Syllabus label", () => {
     const shellPath = join(process.cwd(), "src/layouts/LearnAppShell.tsx");
     const src = readFileSync(shellPath, "utf8");
-    expect(src).toMatch(/label: "Modules"/);
+    expect(src).toMatch(/label: "Learn"/);
     expect(src).not.toMatch(/label: "Syllabus"/);
   });
 });

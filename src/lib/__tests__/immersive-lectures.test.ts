@@ -89,12 +89,12 @@ describe("Udemy-style lecture relay", () => {
     ]);
 
     expect(nextContentAfter(m, 1, "read")).toMatchObject({
-      label: "Watch video",
+      label: "Continue",
       completesStep: false,
       href: "/learn/modules/test-module/watch/1",
     });
     expect(nextContentAfter(m, 1, "watch")).toMatchObject({
-      label: "Take quiz",
+      label: "Continue",
       href: "/learn/modules/test-module/quiz/1/1",
     });
     expect(nextContentAfter(m, 1, "quiz")).toMatchObject({
