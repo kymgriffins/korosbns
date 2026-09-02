@@ -92,17 +92,13 @@ export function StudioIndexView({ onCommissionClick }: Props) {
 
   return (
     <div id="theatre" className="pb-16">
-      <section className="border-b border-[var(--studio-theatre-border)] px-4 py-10 md:px-8 md:py-14">
+      <section className="border-b border-[var(--studio-theatre-border)] px-4 py-8 md:px-8">
         <div className="mx-auto max-w-[90rem]">
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-[var(--studio-theatre-accent)]">
-            Theatre
-          </p>
-          <h1 className="mt-2 max-w-3xl text-3xl font-bold tracking-tight text-[var(--studio-theatre-fg)] md:text-5xl">
-            Civic storytelling in every format
-          </h1>
-          <p className="mt-3 max-w-2xl text-sm text-[var(--studio-theatre-muted)] md:text-base">
-            Watch explainers and documentaries, listen to podcasts, browse photo
-            galleries from town halls and listening sessions — all produced by BNS Studios.
+          <h2 className="text-xl font-bold tracking-tight text-[var(--studio-theatre-fg)] md:text-2xl">
+            All productions
+          </h2>
+          <p className="mt-1 max-w-2xl text-sm text-[var(--studio-theatre-muted)]">
+            Filter by format, client, or year — or open any case from the reel above.
           </p>
           {onCommissionClick ? (
             <button

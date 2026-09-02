@@ -221,3 +221,297 @@
   overflow: hidden;
   box-shadow: 0 24px 48px hsl(0 0% 0% / 0.45);
 }
+
+/* ─── Reel shooter (route loading) ───────────────────────────────────────── */
+
+.studio-reel-shooter {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: hsl(220 18% 4%);
+  color: hsl(40 20% 96%);
+}
+
+.studio-reel-shooter-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: min(100%, 20rem);
+  padding: 1.5rem;
+}
+
+.studio-reel-shooter-title {
+  font-size: clamp(2rem, 8vw, 3rem);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.studio-reel-shooter-title-accent {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.55em;
+  letter-spacing: 0.35em;
+  color: var(--studio-theatre-accent, hsl(24 95% 58%));
+}
+
+.studio-reel-shooter-track {
+  width: 100%;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: hsl(220 10% 18%);
+}
+
+.studio-reel-shooter-fill {
+  height: 100%;
+  width: 100%;
+  transform-origin: left center;
+  background: var(--studio-theatre-accent, hsl(24 95% 58%));
+}
+
+/* ─── Instagram-style format reel hero ───────────────────────────────────── */
+
+.studio-reel-floating-controls {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.studio-reel-hero {
+  position: relative;
+  min-height: 100dvh;
+  width: 100%;
+  overflow: hidden;
+  background: #000;
+}
+
+.studio-reel-hero-slide {
+  position: relative;
+  min-height: 100dvh;
+  width: 100%;
+  touch-action: pan-y;
+}
+
+.studio-reel-hero-media {
+  position: absolute;
+  inset: 0;
+}
+
+.studio-reel-hero-media-vertical img {
+  object-position: center top;
+}
+
+.studio-reel-hero-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    hsl(0 0% 0% / 0.55) 0%,
+    hsl(0 0% 0% / 0.15) 35%,
+    hsl(0 0% 0% / 0.35) 70%,
+    hsl(0 0% 0% / 0.88) 100%
+  );
+}
+
+.studio-reel-hero-chrome {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  min-height: 100dvh;
+  flex-direction: column;
+}
+
+.studio-reel-hero-top {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem 0.5rem;
+}
+
+.studio-reel-hero-brand {
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: hsl(0 0% 100% / 0.95);
+}
+
+.studio-reel-hero-nav-link {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: hsl(0 0% 100% / 0.75);
+  transition: color 0.2s;
+}
+
+.studio-reel-hero-nav-link:hover {
+  color: #fff;
+}
+
+.studio-reel-hero-top .studio-reel-hero-nav-link:last-child {
+  justify-self: end;
+}
+
+.studio-reel-hero-tap-zones {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.studio-reel-hero-center {
+  pointer-events: none;
+  width: 100%;
+  max-width: 56rem;
+  padding: 0 1.25rem;
+  text-align: center;
+}
+
+.studio-reel-hero-copy {
+  pointer-events: auto;
+}
+
+.studio-reel-hero-eyebrow {
+  margin-bottom: 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: hsl(0 0% 100% / 0.65);
+}
+
+.studio-reel-hero-title {
+  font-size: clamp(2rem, 9vw, 4.5rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: #fff;
+  text-wrap: balance;
+}
+
+.studio-reel-hero-meta {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: hsl(0 0% 100% / 0.55);
+}
+
+.studio-reel-hero-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.studio-reel-hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 999px;
+  padding: 0.65rem 1.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.studio-reel-hero-cta-primary {
+  background: #fff;
+  color: #000;
+}
+
+.studio-reel-hero-cta-ghost {
+  border: 1px solid hsl(0 0% 100% / 0.35);
+  background: hsl(0 0% 0% / 0.35);
+  color: #fff;
+  backdrop-filter: blur(8px);
+}
+
+.studio-reel-hero-footer {
+  padding: 0 1.25rem 1.25rem;
+}
+
+.studio-reel-hero-segments {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.studio-reel-hero-segment {
+  position: relative;
+  flex: 1;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: hsl(0 0% 100% / 0.25);
+}
+
+.studio-reel-hero-segment-fill {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  background: var(--studio-theatre-accent, hsl(24 95% 58%));
+}
+
+.studio-reel-hero-footer-row {
+  margin-top: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.studio-reel-hero-hint {
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: hsl(0 0% 100% / 0.45);
+}
+
+.studio-reel-hero-icon-btn {
+  display: inline-flex;
+  width: 2.25rem;
+  height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid hsl(0 0% 100% / 0.2);
+  color: hsl(0 0% 100% / 0.8);
+  background: hsl(0 0% 0% / 0.25);
+}
+
+.studio-reel-hero-icon-btn:hover {
+  color: #fff;
+  background: hsl(0 0% 0% / 0.45);
+}
+
+@media (min-width: 768px) {
+  .studio-reel-hero-top {
+    padding-inline: 2rem;
+  }
+
+  .studio-reel-hero-footer {
+    padding-inline: 2rem;
+    padding-bottom: 1.75rem;
+  }
+}
