@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { StudioHero } from "@/components/studio/StudioHero";
-import { StudioProjectsSection } from "@/components/studio/StudioProjectsSection";
+import { MissionWorkHub } from "@/components/work-hub/mission-work-hub";
 import { StudioBookingForm } from "@/components/studio/StudioBookingForm";
 import { StudioContactCTA } from "@/components/studio/StudioContactCTA";
 
@@ -19,7 +19,7 @@ export function BNSStudioPageClient() {
   return (
     <>
       <StudioHero />
-      <StudioProjectsSection />
+      <MissionWorkHub />
       <StudioBookingForm open={bookingOpen} onOpenChange={setBookingOpen} />
       <StudioContactCTA onCommissionClick={openBooking} />
     </>

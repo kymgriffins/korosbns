@@ -1,7 +1,10 @@
 import studiosEvidenceSeed from "@/data/fallbacks/studios-evidence.json";
 import type { StudioContentType, StudioOrganizationType } from "@/constants/bns-studio-content";
+import type { ProgrammeSlug } from "@/content";
 
 export type { StudioContentType };
+
+export type StudioDeliveryMode = "bns-led" | "co-produced" | "commissioned";
 
 export type StudioSectorType = StudioOrganizationType;
 
@@ -48,7 +51,20 @@ export interface StudioProjectEvidence {
   };
   tags: string[];
   featured?: boolean;
+  deliveryMode: StudioDeliveryMode;
+  programmeSlug: ProgrammeSlug;
 }
+
+export type StudioPartnerCorridor = {
+  org: StudioPartnerOrg;
+  projects: StudioProjectEvidence[];
+  dominantMode: StudioDeliveryMode;
+};
+
+export type StudioProgrammeLane = {
+  programmeSlug: ProgrammeSlug;
+  projects: StudioProjectEvidence[];
+};
 
 type StudiosEvidenceSeed = {
   organizations: StudioPartnerOrg[];
@@ -117,4 +133,52 @@ export const studiosEvidenceData = {
           p.organization.slug === current.organization.slug),
     ).slice(0, limit);
   },
+  getBnsLedProjects: () =>
+    STUDIO_PROJECTS.filter((p) => p.deliveryMode === "bns-led"),
+  getPartnerCorridors: (): StudioPartnerCorridor[] => {
+    const partnerProjects = STUDIO_PROJECTS.filter(
+      (p) => p.deliveryMode !== "bns-led",
+    );
+    const byOrg = new Map<string, StudioProjectEvidence[]>();
+    for (const project of partnerProjects) {
+      const key = project.organization.slug;
+      const list = byOrg.get(key) ?? [];
+      list.push(project);
+      byOrg.set(key, list);
+    }
+    return STUDIO_ORGANIZATIONS.filter((org) => byOrg.has(org.slug)).map(
+      (org) => {
+        const projects = byOrg.get(org.slug) ?? [];
+        const commissioned = projects.filter(
+          (p) => p.deliveryMode === "commissioned",
+        ).length;
+        const dominantMode: StudioDeliveryMode =
+          commissioned >= projects.length / 2 ? "commissioned" : "co-produced";
+        return { org, projects, dominantMode };
+      },
+    );
+  },
+  getProgrammeLanes: (): StudioProgrammeLane[] => {
+    const slugs: ProgrammeSlug[] = [
+      "connect",
+      "mashinani",
+      "wanahabari-lab",
+      "studios",
+    ];
+    return slugs.map((programmeSlug) => ({
+      programmeSlug,
+      projects: STUDIO_PROJECTS.filter((p) => p.programmeSlug === programmeSlug),
+    }));
+  },
+  getMissionStats: () => ({
+    productionCount: STUDIO_PROJECTS.length,
+    partnerCount: new Set(
+      STUDIO_PROJECTS.filter((p) => p.deliveryMode !== "bns-led").map(
+        (p) => p.organization.slug,
+      ),
+    ).size,
+    programmeCount: new Set(STUDIO_PROJECTS.map((p) => p.programmeSlug)).size,
+    bnsLedCount: STUDIO_PROJECTS.filter((p) => p.deliveryMode === "bns-led")
+      .length,
+  }),
 };

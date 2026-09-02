@@ -33,7 +33,7 @@ export function StudioHero() {
           </p>
         </GsapHeroChoreography>
         <div data-gsap-hero-content className="mt-8">
-          <PillButtonGroup href="#booking" label="Commission BNS Studios" />
+          <PillButtonGroup href="#projects" label="Explore commissioned work" />
         </div>
       </div>
     </section>

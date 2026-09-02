@@ -1,17 +1,13 @@
 "use client";
 
 import { EditorialCtaBand, EditorialPill, PillButtonGroup } from "@/components/ui/editorial";
-import { ProgrammeScorecard } from "@/components/programmes/programme-scorecard";
 import { ProgrammesPartners } from "@/components/programmes/programmes-partners";
+import { ProgrammesImpactHub } from "@/components/work-hub/programmes-impact-hub";
 import { LandingSection } from "@/layouts/landing-section";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
-import {
-  PROGRAMMES,
-  PROGRAMMES_CLOSING,
-  PROGRAMMES_LANDING,
-} from "@/content";
-import { GsapHeroChoreography, GsapReveal, GsapStaggerReveal } from "@/motion/gsap";
-import { HERO_SECTION_PADDING, SECTION_SHELL_INNER, SECTION_SHELL_PADDING } from "@/layouts/section-shell";
+import { PROGRAMMES_CLOSING, PROGRAMMES_LANDING } from "@/content";
+import { GsapHeroChoreography } from "@/motion/gsap";
+import { HERO_SECTION_PADDING, SECTION_SHELL_INNER } from "@/layouts/section-shell";
 import { cn } from "@/utils";
 
 export function ProgrammesLanding() {
@@ -47,28 +43,7 @@ export function ProgrammesLanding() {
         </div>
       </section>
 
-      <section
-        id="programmes"
-        className={cn(SECTION_SHELL_PADDING, "bg-background")}
-        aria-labelledby="programmes-scorecards-heading"
-      >
-        <div className={SECTION_SHELL_INNER}>
-          <GsapReveal className="mb-8 md:mb-10">
-            <h2 id="programmes-scorecards-heading" className="sr-only">
-              Programme scorecards
-            </h2>
-            <p className={cn(T.lead, "max-w-2xl")}>{PROGRAMMES_LANDING.subhead}</p>
-          </GsapReveal>
-
-          <GsapStaggerReveal className="grid gap-5 md:grid-cols-2 lg:gap-6">
-            {PROGRAMMES.map((programme, index) => (
-              <div key={programme.slug} data-gsap-item>
-                <ProgrammeScorecard programme={programme} priority={index < 2} />
-              </div>
-            ))}
-          </GsapStaggerReveal>
-        </div>
-      </section>
+      <ProgrammesImpactHub />
 
       <ProgrammesPartners />
 

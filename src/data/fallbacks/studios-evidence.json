@@ -93,6 +93,8 @@
         "verificationOutcome": "View counts aggregated from platform analytics dashboards."
       },
       "tags": ["national-budget", "explainer", "youth"],
+      "deliveryMode": "co-produced",
+      "programmeSlug": "connect",
       "featured": true
     },
     {
@@ -126,6 +128,8 @@
         "verificationOutcome": "Hosting platform analytics export."
       },
       "tags": ["podcast", "audio", "scrutiny"],
+      "deliveryMode": "co-produced",
+      "programmeSlug": "studios",
       "featured": true
     },
     {
@@ -159,6 +163,8 @@
         "verificationOutcome": "Attendance register and stream analytics on file."
       },
       "tags": ["county", "town-hall", "nakuru"],
+      "deliveryMode": "commissioned",
+      "programmeSlug": "mashinani",
       "featured": false
     },
     {
@@ -191,6 +197,8 @@
         "verificationOutcome": "Partner-reported reach; BNS retained raw analytics screenshots."
       },
       "tags": ["animation", "finance-bill", "civic"],
+      "deliveryMode": "co-produced",
+      "programmeSlug": "connect",
       "featured": true
     },
     {
@@ -224,6 +232,8 @@
         "verificationOutcome": "Event programmes and attendance logs retained."
       },
       "tags": ["documentary", "county", "youth"],
+      "deliveryMode": "bns-led",
+      "programmeSlug": "mashinani",
       "featured": false
     },
     {
@@ -257,6 +267,8 @@
         "verificationOutcome": "Lab attendance register."
       },
       "tags": ["research", "CRA", "devolution"],
+      "deliveryMode": "co-produced",
+      "programmeSlug": "wanahabari-lab",
       "featured": false
     },
     {
@@ -290,6 +302,8 @@
         "verificationOutcome": "Platform analytics export Q3 2025."
       },
       "tags": ["tiktok", "social", "county"],
+      "deliveryMode": "bns-led",
+      "programmeSlug": "connect",
       "featured": true
     },
     {
@@ -323,6 +337,8 @@
         "verificationOutcome": "Signed attendance sheets archived."
       },
       "tags": ["wajir", "listening", "community"],
+      "deliveryMode": "bns-led",
+      "programmeSlug": "mashinani",
       "featured": false
     },
     {
@@ -356,6 +372,8 @@
         "verificationOutcome": "Partner acknowledgment emails on file."
       },
       "tags": ["BPS", "newsroom", "treasury"],
+      "deliveryMode": "co-produced",
+      "programmeSlug": "wanahabari-lab",
       "featured": false
     },
     {
@@ -389,6 +407,8 @@
         "verificationOutcome": "Registration data provided by convening partner."
       },
       "tags": ["forum", "production", "stakeholders"],
+      "deliveryMode": "commissioned",
+      "programmeSlug": "studios",
       "featured": false
     }
   ]
