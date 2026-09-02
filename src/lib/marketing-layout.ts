@@ -22,14 +22,9 @@ function normalizeMarketingPath(pathname: string): string {
   return pathname;
 }
 
-/** Top-of-page breadcrumbs are noisy on immersive studio and programmes flows. */
-export function shouldShowPageBreadcrumbs(pathname: string): boolean {
-  const normalized = normalizeMarketingPath(pathname);
-  if (normalized === "/bns-studio") return false;
-  if (normalized === "/programmes" || normalized.startsWith("/programmes/")) {
-    return false;
-  }
-  return true;
+/** Top-of-page breadcrumbs are disabled on marketing — pages use editorial heroes and in-page back links. */
+export function shouldShowPageBreadcrumbs(_pathname: string): boolean {
+  return false;
 }
 
 /**

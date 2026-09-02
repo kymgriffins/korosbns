@@ -6,11 +6,8 @@ import { usePathname } from "next/navigation";
 import BNSFooter from "@/components/shadcn-space/blocks/footer-02/footer";
 import {
   shouldShowMarketingFooter,
-  shouldShowPageBreadcrumbs,
   usesMarketingChrome,
 } from "@/lib/marketing-layout";
-
-import { PageBreadcrumbs } from "@/components/global/page-breadcrumbs";
 
 const MarketingLayout = ({
   children,
@@ -21,7 +18,6 @@ const MarketingLayout = ({
   const isLearnApp = pathname.startsWith("/learn");
   const showMarketingChrome = usesMarketingChrome(pathname);
   const showMarketingFooter = shouldShowMarketingFooter(pathname);
-  const isHome = pathname === "/" || pathname === "";
 
   return (
     <main
@@ -30,12 +26,6 @@ const MarketingLayout = ({
       }`}
     >
       {!isLearnApp && <Navbar />}
-
-      {!isLearnApp && !isHome && shouldShowPageBreadcrumbs(pathname) ? (
-        <div className="mx-auto w-full max-w-[1400px] px-6 pt-4 md:px-16">
-          <PageBreadcrumbs className="mb-2" />
-        </div>
-      ) : null}
 
       <div className="flex flex-1 flex-col">{children}</div>
 
