@@ -1,16 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowLeft, Building2, CheckCircle2, TrendingUp } from "lucide-react";
-import { EditorialCtaBand, EditorialPill, PillButtonGroup } from "@/components/ui/editorial";
+import { EditorialCtaBand } from "@/components/ui/editorial";
+import { StudioFormatStage } from "@/components/studio/theatre/studio-format-stage";
+import { StudioTheatreRail } from "@/components/studio/theatre/studio-theatre-rail";
 import { LandingSection } from "@/layouts/landing-section";
-import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import {
   studiosEvidenceData,
   type StudioProjectEvidence,
 } from "@/data/studios-evidence";
-import { HERO_SECTION_PADDING, SECTION_SHELL_INNER, SECTION_SHELL_PADDING } from "@/layouts/section-shell";
+import { getFormatTheme } from "@/lib/studio-format-themes";
 import { cn } from "@/utils";
 
 type Props = {
@@ -18,93 +18,75 @@ type Props = {
 };
 
 export function StudioProjectDetail({ project }: Props) {
-  const related = studiosEvidenceData.getRelatedProjects(project.id, 3);
+  const related = studiosEvidenceData.getRelatedProjects(project.id, 6);
+  const theme = getFormatTheme(project.contentType);
+  const sameFormat = studiosEvidenceData
+    .getProjectsByContentType(project.contentType)
+    .filter((p) => p.id !== project.id);
 
   return (
-    <div className="w-full scroll-smooth bg-background">
-      <section
-        className={cn(
-          HERO_SECTION_PADDING,
-          "border-b border-border/30 bg-background",
-        )}
-      >
-        <div className={cn(SECTION_SHELL_INNER, "grid gap-8 lg:grid-cols-12 lg:gap-12")}>
-          <div className="space-y-5 lg:col-span-7">
+    <div className="studio-theatre w-full scroll-smooth">
+      <header className="border-b border-[var(--studio-theatre-border)] px-4 py-4 md:px-8">
+        <div className="mx-auto flex max-w-5xl items-start justify-between gap-4">
+          <div className="space-y-3">
             <Link
-              href="/bns-studio#projects"
-              className="inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+              href="/bns-studio#theatre"
+              className={cn(
+                "inline-flex w-fit items-center gap-1.5 text-sm text-[var(--studio-theatre-muted)]",
+                "transition-colors hover:text-[var(--studio-theatre-fg)]",
+              )}
             >
               <ArrowLeft className="size-4" aria-hidden />
-              All projects
+              BNS Studios
             </Link>
-            <EditorialPill className="mb-0">{project.contentType}</EditorialPill>
-            <h1 className={cn(T.heroTitle, "text-balance text-foreground")}>
-              {project.title}
-            </h1>
-            {project.subtitle ? (
-              <p className="text-base text-muted-foreground">{project.subtitle}</p>
-            ) : null}
+            <div className={theme.accentClass}>
+              <span className="text-xs font-bold uppercase tracking-wider text-[var(--studio-format-accent)]">
+                {project.contentType}
+              </span>
+              <h1 className="mt-1 text-2xl font-bold tracking-tight text-[var(--studio-theatre-fg)] md:text-4xl">
+                {project.title}
+              </h1>
+              {project.subtitle ? (
+                <p className="mt-1 text-sm text-[var(--studio-theatre-muted)] md:text-base">
+                  {project.subtitle}
+                </p>
+              ) : null}
+            </div>
           </div>
-
-          <aside className="rounded-3xl border border-border/40 bg-muted/25 p-5 lg:col-span-5 lg:self-end">
-            <div className="mb-3 flex items-center gap-2 text-xs font-semibold text-muted-foreground">
-              <Building2 className="size-3.5 text-primary" />
+          <aside className="hidden shrink-0 rounded-2xl border border-[var(--studio-theatre-border)] bg-[var(--studio-theatre-surface)] p-4 text-sm sm:block">
+            <div className="mb-2 flex items-center gap-2 text-xs text-[var(--studio-theatre-muted)]">
+              <Building2 className="size-3.5 text-[var(--studio-format-accent)]" />
               {project.organization.name}
             </div>
-            <dl className="space-y-3 text-sm">
-              <div>
-                <dt className="text-muted-foreground">Sector</dt>
-                <dd className="font-semibold text-foreground">
-                  {project.organization.sector}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-muted-foreground">Year</dt>
-                <dd className="font-semibold text-foreground">{project.year}</dd>
-              </div>
-            </dl>
-            <div className="mt-5">
-              <PillButtonGroup href="/bns-studio#booking" label="Commission BNS Studios" />
-            </div>
+            <p className="text-xs text-[var(--studio-theatre-muted)]">{project.year}</p>
           </aside>
         </div>
-      </section>
+      </header>
 
-      <div className={cn(SECTION_SHELL_INNER, "py-8 md:py-10")}>
-        <div className="relative aspect-[16/10] w-full overflow-hidden rounded-3xl border border-border/30">
-          <Image
-            src={project.media.posterUrl}
-            alt={project.title}
-            fill
-            priority
-            className={cn("object-cover", project.media.posterPosition || "object-center")}
-            sizes="(max-width: 1200px) 100vw, 1200px"
-          />
-        </div>
-      </div>
+      <StudioFormatStage project={project} />
 
-      <section className={cn(SECTION_SHELL_PADDING, "border-t border-border/30")}>
-        <div className={cn(SECTION_SHELL_INNER, "grid gap-10 lg:grid-cols-12 lg:gap-16")}>
+      <section className="px-4 py-10 md:px-8 md:py-14">
+        <div className="mx-auto grid max-w-5xl gap-10 lg:grid-cols-12 lg:gap-12">
           <div className="space-y-8 lg:col-span-7">
             {project.impactEvidence.primaryMetric ? (
-              <div className="rounded-3xl border border-primary/25 bg-primary/10 p-5">
+              <div className="rounded-2xl border border-[var(--studio-format-accent)]/30 bg-[var(--studio-theatre-surface)] p-5">
                 <div className="flex items-start gap-3">
-                  <TrendingUp className="mt-0.5 size-5 shrink-0 text-primary" />
+                  <TrendingUp className="mt-0.5 size-5 shrink-0 text-[var(--studio-format-accent)]" />
                   <div className="space-y-1">
-                    <p className="text-xs font-bold uppercase tracking-wider text-primary">
+                    <p className="text-xs font-bold uppercase tracking-wider text-[var(--studio-format-accent)]">
                       Documented outcome
                     </p>
-                    <p className="text-base font-bold text-foreground">
+                    <p className="text-base font-bold text-[var(--studio-theatre-fg)]">
                       {project.impactEvidence.primaryMetric}
                       {project.impactEvidence.secondaryMetric
                         ? ` · ${project.impactEvidence.secondaryMetric}`
                         : null}
                     </p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-[var(--studio-theatre-muted)]">
                       {project.impactEvidence.context}
                     </p>
                     {project.impactEvidence.verificationOutcome ? (
-                      <p className="text-xs text-foreground/80">
+                      <p className="text-xs text-[var(--studio-theatre-fg)]/80">
                         <span className="font-semibold">Verification: </span>
                         {project.impactEvidence.verificationOutcome}
                       </p>
@@ -115,45 +97,47 @@ export function StudioProjectDetail({ project }: Props) {
             ) : null}
 
             <div className="grid gap-5 sm:grid-cols-2">
-              <div className="rounded-2xl border border-border/40 bg-muted/20 p-5">
-                <p className="mb-2 text-xs font-bold uppercase tracking-wider text-foreground">
+              <div className="rounded-2xl border border-[var(--studio-theatre-border)] bg-[var(--studio-theatre-surface)] p-5">
+                <p className="mb-2 text-xs font-bold uppercase tracking-wider text-[var(--studio-theatre-fg)]">
                   The brief
                 </p>
-                <p className="text-sm leading-relaxed text-muted-foreground">
+                <p className="text-sm leading-relaxed text-[var(--studio-theatre-muted)]">
                   {project.briefChallenge}
                 </p>
               </div>
-              <div className="rounded-2xl border border-border/40 bg-muted/20 p-5">
-                <p className="mb-2 text-xs font-bold uppercase tracking-wider text-foreground">
+              <div className="rounded-2xl border border-[var(--studio-theatre-border)] bg-[var(--studio-theatre-surface)] p-5">
+                <p className="mb-2 text-xs font-bold uppercase tracking-wider text-[var(--studio-theatre-fg)]">
                   What we produced
                 </p>
-                <p className="text-sm leading-relaxed text-muted-foreground">
+                <p className="text-sm leading-relaxed text-[var(--studio-theatre-muted)]">
                   {project.whatWeProduced}
                 </p>
               </div>
             </div>
 
-            <div>
-              <p className="mb-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                Project narrative
-              </p>
-              <p className="text-base leading-relaxed text-foreground/85 md:text-lg">
-                {project.description}
-              </p>
-            </div>
+            {theme.experience !== "brief" ? (
+              <div>
+                <p className="mb-3 text-xs font-bold uppercase tracking-wider text-[var(--studio-theatre-muted)]">
+                  Project narrative
+                </p>
+                <p className="text-base leading-relaxed text-[var(--studio-theatre-fg)]/90 md:text-lg">
+                  {project.description}
+                </p>
+              </div>
+            ) : null}
 
             {project.outputs.length > 0 ? (
               <div>
-                <p className="mb-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                <p className="mb-3 text-xs font-bold uppercase tracking-wider text-[var(--studio-theatre-muted)]">
                   Delivered outputs
                 </p>
                 <ul className="grid gap-2 sm:grid-cols-2">
                   {project.outputs.map((output) => (
                     <li
                       key={output}
-                      className="flex items-start gap-2 text-sm text-foreground/85"
+                      className="flex items-start gap-2 text-sm text-[var(--studio-theatre-fg)]/90"
                     >
-                      <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-primary" />
+                      <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[var(--studio-format-accent)]" />
                       {output}
                     </li>
                   ))}
@@ -163,13 +147,24 @@ export function StudioProjectDetail({ project }: Props) {
           </div>
 
           <aside className="space-y-6 lg:col-span-5">
-            <div className="rounded-3xl border border-border/40 bg-muted/20 p-5 text-sm">
-              <p className="mb-2 font-semibold text-foreground">Partner</p>
-              <p className="font-medium text-primary">{project.organization.name}</p>
-              <p className="mt-2 text-muted-foreground">
+            <div className="rounded-2xl border border-[var(--studio-theatre-border)] bg-[var(--studio-theatre-surface)] p-5 text-sm sm:hidden">
+              <p className="mb-2 font-semibold text-[var(--studio-theatre-fg)]">Partner</p>
+              <p className="font-medium text-[var(--studio-format-accent)]">
+                {project.organization.name}
+              </p>
+              <p className="mt-2 text-[var(--studio-theatre-muted)]">
                 {project.organization.description}
               </p>
-              <p className="mt-2 text-xs text-muted-foreground">
+            </div>
+            <div className="hidden rounded-2xl border border-[var(--studio-theatre-border)] bg-[var(--studio-theatre-surface)] p-5 text-sm sm:block">
+              <p className="mb-2 font-semibold text-[var(--studio-theatre-fg)]">Partner</p>
+              <p className="font-medium text-[var(--studio-format-accent)]">
+                {project.organization.name}
+              </p>
+              <p className="mt-2 text-[var(--studio-theatre-muted)]">
+                {project.organization.description}
+              </p>
+              <p className="mt-2 text-xs text-[var(--studio-theatre-muted)]">
                 {project.organization.location}
               </p>
             </div>
@@ -178,7 +173,7 @@ export function StudioProjectDetail({ project }: Props) {
                 {project.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="rounded-full border border-border/60 bg-background px-3 py-1 text-xs text-muted-foreground"
+                    className="rounded-full border border-[var(--studio-theatre-border)] bg-[var(--studio-theatre-elevated)] px-3 py-1 text-xs text-[var(--studio-theatre-muted)]"
                   >
                     #{tag}
                   </span>
@@ -189,37 +184,32 @@ export function StudioProjectDetail({ project }: Props) {
         </div>
       </section>
 
-      {related.length > 0 ? (
-        <section className="border-t border-border/30 py-8 md:py-10">
-          <div className={SECTION_SHELL_INNER}>
-            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Related projects
-            </p>
-            <ul className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-x-6">
-              {related.map((item) => (
-                <li key={item.id}>
-                  <Link
-                    href={`/bns-studio/${item.slug}`}
-                    className="text-sm text-muted-foreground hover:text-primary"
-                  >
-                    {item.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
+      {sameFormat.length > 0 ? (
+        <StudioTheatreRail
+          id="related-format"
+          title={`More ${project.contentType}`}
+          contentType={project.contentType}
+          projects={sameFormat}
+        />
+      ) : related.length > 0 ? (
+        <StudioTheatreRail
+          id="related-projects"
+          title="You may also like"
+          projects={related}
+        />
       ) : null}
 
-      <LandingSection>
-        <EditorialCtaBand
-          eyebrow="BNS Studios"
-          title="Need a similar production for your organisation?"
-          description="Commission evidence-based podcasts, explainers, town halls, and campaigns — with proceeds reinvested into Kenya's civic budget literacy mission."
-          ctaHref="/bns-studio#booking"
-          ctaLabel="Commission BNS Studios"
-        />
-      </LandingSection>
+      <div className="bg-background">
+        <LandingSection>
+          <EditorialCtaBand
+            eyebrow="BNS Studios"
+            title="Need a similar production for your organisation?"
+            description="Commission evidence-based podcasts, explainers, town halls, and campaigns — with proceeds reinvested into Kenya's civic budget literacy mission."
+            ctaHref="/bns-studio#booking"
+            ctaLabel="Commission BNS Studios"
+          />
+        </LandingSection>
+      </div>
     </div>
   );
 }

@@ -1,0 +1,203 @@
+/*
+ * BNS Studios theatre — cinematic browse shell (Netflix-style rails).
+ */
+
+.studio-theatre {
+  --studio-theatre-bg: hsl(220 18% 6%);
+  --studio-theatre-surface: hsl(220 14% 10%);
+  --studio-theatre-elevated: hsl(220 12% 14%);
+  --studio-theatre-fg: hsl(40 20% 96%);
+  --studio-theatre-muted: hsl(220 8% 62%);
+  --studio-theatre-border: hsl(220 10% 20%);
+  --studio-theatre-accent: hsl(24 95% 58%);
+  --studio-rail-gap: 0.75rem;
+  --studio-rail-pad: max(1rem, calc((100vw - 72rem) / 2));
+
+  background: var(--studio-theatre-bg);
+  color: var(--studio-theatre-fg);
+  font-family: var(--font-base), system-ui, sans-serif;
+}
+
+.studio-theatre .font-heading,
+.studio-theatre h1,
+.studio-theatre h2,
+.studio-theatre h3 {
+  font-family: var(--font-base), system-ui, sans-serif;
+}
+
+.studio-theatre-rail-track {
+  display: flex;
+  gap: var(--studio-rail-gap);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--studio-rail-pad);
+  padding-inline: var(--studio-rail-pad);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.studio-theatre-rail-track::-webkit-scrollbar {
+  display: none;
+}
+
+.studio-theatre-rail-track > * {
+  scroll-snap-align: start;
+}
+
+.studio-theatre-hero-backdrop {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.06);
+  animation: studio-hero-kenburns 18s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .studio-theatre-hero-backdrop {
+    animation: none;
+    transform: scale(1);
+  }
+}
+
+@keyframes studio-hero-kenburns {
+  from {
+    transform: scale(1.04);
+  }
+  to {
+    transform: scale(1.1);
+  }
+}
+
+.studio-theatre-hero-scrim {
+  background: linear-gradient(
+    to top,
+    var(--studio-theatre-bg) 0%,
+    hsl(220 18% 6% / 0.92) 28%,
+    hsl(220 18% 6% / 0.45) 62%,
+    hsl(220 18% 6% / 0.2) 100%
+  );
+}
+
+.studio-theatre-genre-nav {
+  position: sticky;
+  top: var(--header-offset, 4rem);
+  z-index: 30;
+  background: linear-gradient(
+    to bottom,
+    var(--studio-theatre-bg) 70%,
+    transparent
+  );
+}
+
+.studio-accent-podcast {
+  --studio-format-accent: hsl(280 65% 62%);
+}
+
+.studio-accent-cinema {
+  --studio-format-accent: hsl(24 95% 58%);
+}
+
+.studio-accent-documentary {
+  --studio-format-accent: hsl(200 70% 55%);
+}
+
+.studio-accent-vertical {
+  --studio-format-accent: hsl(330 75% 58%);
+}
+
+.studio-accent-stage {
+  --studio-format-accent: hsl(145 45% 48%);
+}
+
+.studio-accent-brief {
+  --studio-format-accent: hsl(45 90% 55%);
+}
+
+.studio-theatre-card:hover,
+.studio-theatre-card:focus-visible {
+  box-shadow: 0 0 0 2px var(--studio-format-accent, var(--studio-theatre-accent));
+}
+
+.studio-format-podcast {
+  background: linear-gradient(
+    145deg,
+    hsl(280 30% 12%) 0%,
+    var(--studio-theatre-bg) 55%
+  );
+}
+
+.studio-format-cinema {
+  background: radial-gradient(
+    ellipse 120% 80% at 50% 0%,
+    hsl(220 20% 14%) 0%,
+    var(--studio-theatre-bg) 70%
+  );
+}
+
+.studio-format-vertical {
+  background: linear-gradient(
+    180deg,
+    hsl(330 25% 10%) 0%,
+    var(--studio-theatre-bg) 50%
+  );
+}
+
+.studio-format-stage {
+  background: linear-gradient(
+    180deg,
+    hsl(145 20% 10%) 0%,
+    var(--studio-theatre-bg) 60%
+  );
+}
+
+.studio-format-brief {
+  background: linear-gradient(
+    135deg,
+    hsl(45 15% 12%) 0%,
+    var(--studio-theatre-bg) 55%
+  );
+}
+
+.studio-waveform {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 2.5rem;
+}
+
+.studio-waveform span {
+  width: 4px;
+  border-radius: 2px;
+  background: var(--studio-format-accent, var(--studio-theatre-accent));
+  animation: studio-wave 1.2s ease-in-out infinite;
+}
+
+.studio-waveform span:nth-child(1) { height: 35%; animation-delay: 0s; }
+.studio-waveform span:nth-child(2) { height: 65%; animation-delay: 0.15s; }
+.studio-waveform span:nth-child(3) { height: 45%; animation-delay: 0.3s; }
+.studio-waveform span:nth-child(4) { height: 80%; animation-delay: 0.1s; }
+.studio-waveform span:nth-child(5) { height: 55%; animation-delay: 0.25s; }
+.studio-waveform span:nth-child(6) { height: 70%; animation-delay: 0.05s; }
+.studio-waveform span:nth-child(7) { height: 40%; animation-delay: 0.35s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .studio-waveform span {
+    animation: none;
+    height: 50%;
+  }
+}
+
+@keyframes studio-wave {
+  0%, 100% { transform: scaleY(0.6); }
+  50% { transform: scaleY(1); }
+}
+
+.studio-phone-frame {
+  width: min(100%, 16rem);
+  aspect-ratio: 9 / 16;
+  border-radius: 1.75rem;
+  border: 3px solid var(--studio-theatre-border);
+  overflow: hidden;
+  box-shadow: 0 24px 48px hsl(0 0% 0% / 0.45);
+}

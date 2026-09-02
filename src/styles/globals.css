@@ -3,6 +3,7 @@
 @import "./components.css";
 @import "./learn-immersive.css";
 @import "./learn-tokens.css";
+@import "./studio-theatre.css";
 
 @custom-variant dark (&:is(.dark *));
 
