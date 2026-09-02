@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { ImmersiveChrome } from "./immersive-chrome";
-import { ImmersiveSegment } from "./immersive-segment";
 import { ImmersiveBottomBar } from "./immersive-bottom-bar";
 import { ImmersiveReadingCanvas } from "./immersive-reading-canvas";
 import { ImmersiveLessonFrame } from "./immersive-lesson-frame";
@@ -11,11 +10,11 @@ import {
   awardModuleMastery,
   completeModuleStep,
   immersiveModuleHref,
+  lessonSubtitle,
   markChapterRead,
   nextContentAfter,
   parseStepVideos,
   preferredModeForStep,
-  segmentItemsForStep,
   stepReadingMinutes,
 } from "@/lib/immersive-module";
 
@@ -31,7 +30,6 @@ export function ImmersiveReadScreen({ stepNumber }: { stepNumber: number }) {
 
   const videos = parseStepVideos(step);
   const duration = stepReadingMinutes(step, videos.length);
-  const segments = segmentItemsForStep(mod, stepNumber);
   const next = nextContentAfter(mod, stepNumber, "read");
 
   const prevHref =
@@ -58,23 +56,13 @@ export function ImmersiveReadScreen({ stepNumber }: { stepNumber: number }) {
       <ImmersiveChrome
         backHref={`/learn/modules/${mod.slug}`}
         title={mod.title}
-        subtitle={`${step.title} · Article`}
+        subtitle={lessonSubtitle(mod, stepNumber)}
         progress={{ current: stepNumber, total: mod.steps.length }}
       />
-      <ImmersiveSegment items={segments} active="read" />
       <div className="flex-1 overflow-y-auto overscroll-contain">
-        <ImmersiveReadingCanvas
-          step={step}
-          durationLabel={duration}
-          moduleSlug={mod.slug}
-          stepNumber={stepNumber}
-        />
+        <ImmersiveReadingCanvas step={step} durationLabel={duration} stepNumber={stepNumber} />
       </div>
-      <ImmersiveBottomBar
-        prevHref={prevHref}
-        onNext={handleNext}
-        nextLabel={next.label}
-      />
+      <ImmersiveBottomBar prevHref={prevHref} onNext={handleNext} nextLabel={next.label} />
     </ImmersiveLessonFrame>
   );
 }

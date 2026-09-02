@@ -3,6 +3,41 @@
  * Hub chrome (.learn-app) uses site-wide landing tokens for marketing parity.
  */
 
+/* Learn hub + immersive player — Neue Montreal only (no Satoshi / mono / serif). */
+.learn-app,
+.learn-immersive {
+  font-family: var(--font-base), system-ui, sans-serif;
+}
+
+.learn-app .font-heading,
+.learn-immersive .font-heading,
+.learn-app h1,
+.learn-app h2,
+.learn-app h3,
+.learn-app h4,
+.learn-immersive h1,
+.learn-immersive h2,
+.learn-immersive h3,
+.learn-immersive h4 {
+  font-family: var(--font-base), system-ui, sans-serif;
+}
+
+.learn-app {
+  --learn-shell-max: 28rem;
+}
+
+@media (min-width: 768px) {
+  .learn-app {
+    --learn-shell-max: 40rem;
+  }
+}
+
+.learn-app-shell-inner {
+  width: 100%;
+  max-width: var(--learn-shell-max);
+  margin-inline: auto;
+}
+
 .learn-immersive {
   /* Raw palette */
   --ink: #0b0e14;

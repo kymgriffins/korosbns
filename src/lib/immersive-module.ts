@@ -154,7 +154,7 @@ export function nextContentAfter(
   if (nextMode === "watch") {
     return {
       href: immersiveModuleHref(mod.slug, "watch", stepNumber),
-      label: "Watch video",
+      label: "Continue",
       completesStep: false,
       awardsMastery: false,
     };
@@ -162,7 +162,7 @@ export function nextContentAfter(
   if (nextMode === "quiz") {
     return {
       href: immersiveModuleHref(mod.slug, "quiz", stepNumber, 1),
-      label: "Take quiz",
+      label: "Continue",
       completesStep: false,
       awardsMastery: false,
     };
@@ -208,6 +208,20 @@ export function resumeHref(mod: CivicModule): string {
   const stepNumber = resolveResumeStep(mod);
   const mode = preferredModeForStep(mod, stepNumber - 1);
   return immersiveModuleHref(mod.slug, mode, stepNumber);
+}
+
+/** Guided lesson entry — one link per step (read → watch → quiz via Continue). */
+export function lessonHref(mod: CivicModule, stepNumber: number): string {
+  return immersiveModuleHref(
+    mod.slug,
+    preferredModeForStep(mod, stepNumber - 1),
+    stepNumber,
+  );
+}
+
+export function lessonSubtitle(mod: CivicModule, stepNumber: number): string {
+  const step = mod.steps[stepNumber - 1];
+  return `Lesson ${stepNumber} of ${mod.steps.length}${step?.title ? ` · ${step.title}` : ""}`;
 }
 
 export function recordCorrectAnswer(

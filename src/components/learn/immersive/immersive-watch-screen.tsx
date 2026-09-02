@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ImmersiveChrome } from "./immersive-chrome";
-import { ImmersiveSegment } from "./immersive-segment";
 import { ImmersiveBottomBar } from "./immersive-bottom-bar";
 import { ImmersiveVideoStage } from "./immersive-video-stage";
 import { ImmersiveLessonFrame } from "./immersive-lesson-frame";
@@ -12,11 +11,11 @@ import {
   awardModuleMastery,
   completeModuleStep,
   immersiveModuleHref,
+  lessonSubtitle,
   markVideoWatched,
   nextContentAfter,
   parseStepVideos,
-  segmentItemsForStep,
-  stepHasArticle,
+  preferredModeForStep,
 } from "@/lib/immersive-module";
 
 export function ImmersiveWatchScreen({ stepNumber }: { stepNumber: number }) {
@@ -43,7 +42,6 @@ export function ImmersiveWatchScreen({ stepNumber }: { stepNumber: number }) {
     return null;
   }
 
-  const segments = segmentItemsForStep(mod, stepNumber);
   const next = nextContentAfter(mod, stepNumber, "watch");
 
   const handleNext = () => {
@@ -56,29 +54,27 @@ export function ImmersiveWatchScreen({ stepNumber }: { stepNumber: number }) {
     router.push(next.href);
   };
 
+  const prevHref =
+    stepNumber > 1
+      ? immersiveModuleHref(
+          mod.slug,
+          preferredModeForStep(mod, stepNumber - 2),
+          stepNumber - 1,
+        )
+      : `/learn/modules/${mod.slug}`;
+
   return (
     <ImmersiveLessonFrame activeStep={stepNumber} activeMode="watch">
       <ImmersiveChrome
         backHref={`/learn/modules/${mod.slug}`}
         title={mod.title}
-        subtitle={`${step.title} · Video`}
+        subtitle={lessonSubtitle(mod, stepNumber)}
         progress={{ current: stepNumber, total: mod.steps.length }}
       />
-      <ImmersiveSegment items={segments} active="watch" />
       <div className="flex flex-1 flex-col overflow-y-auto">
         <ImmersiveVideoStage videos={videos} stepTitle={step.title} />
       </div>
-      <ImmersiveBottomBar
-        prevHref={
-          stepHasArticle(step)
-            ? immersiveModuleHref(mod.slug, "read", stepNumber)
-            : stepNumber > 1
-              ? immersiveModuleHref(mod.slug, "read", stepNumber - 1)
-              : `/learn/modules/${mod.slug}`
-        }
-        onNext={handleNext}
-        nextLabel={next.label}
-      />
+      <ImmersiveBottomBar prevHref={prevHref} onNext={handleNext} nextLabel={next.label} />
     </ImmersiveLessonFrame>
   );
 }

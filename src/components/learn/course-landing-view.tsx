@@ -1,19 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { motion } from "motion/react";
-import {
-  BookOpen,
-  Brain,
-  CheckCircle2,
-  ChevronRight,
-  Clapperboard,
-  Clock,
-  Loader2,
-  Play,
-} from "lucide-react";
+import { CheckCircle2, Clock, Loader2, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { HarmonizedImage } from "@/components/ui/harmonized-image";
@@ -22,26 +12,18 @@ import { learningData } from "@/data/learning";
 import {
   isModuleFullyCompleted,
   calculateModuleProgressPct,
-  lecturesForModule,
-  modesForStep,
-  resumeHref,
+  lessonHref,
   resolveResumeStep,
-  type LectureKind,
+  resumeHref,
 } from "@/lib/immersive-module";
 import { readProgress } from "@/lib/module-progress";
 import { fadeInUp } from "@/motion/variants";
 import type { CivicModule } from "@/types/learn";
 import { cn } from "@/utils";
-
-const KIND_ICON: Record<LectureKind, typeof BookOpen> = {
-  article: BookOpen,
-  video: Clapperboard,
-  quiz: Brain,
-};
+import { useEffect, useMemo, useState } from "react";
 
 /**
- * Udemy-style course landing: overview + typed curriculum (Article / Video / Quiz)
- * + one primary Start/Continue CTA into the immersive player.
+ * Mobile-first course overview — one guided path per lesson (Continue inside player).
  */
 export function CourseLandingView() {
   const params = useParams();
@@ -75,18 +57,17 @@ export function CourseLandingView() {
     const total = mod.steps.length;
     const isCompleted = isModuleFullyCompleted(mod, p);
     const pct = calculateModuleProgressPct(mod, p);
-    const lectures = lecturesForModule(mod);
     return {
       completedCount,
       total,
       pct,
       isCompleted,
-      isInProgress: (completedCount > 0 || Object.keys(p.videosWatched ?? {}).length > 0) && !isCompleted,
+      isInProgress:
+        (completedCount > 0 || Object.keys(p.videosWatched ?? {}).length > 0) &&
+        !isCompleted,
       resumeStep: resolveResumeStep(mod),
       startHref: resumeHref(mod),
       completed: p.stepsCompleted,
-      lectures,
-      lectureCount: lectures.length,
     };
   }, [mod]);
 
@@ -101,7 +82,7 @@ export function CourseLandingView() {
   if (!mod || !progress) {
     return (
       <LearnPageFrame className="space-y-4 text-center">
-        <h1 className="font-heading text-2xl font-bold">Module not found</h1>
+        <h1 className="text-2xl font-bold">Module not found</h1>
         <p className="text-sm text-muted-foreground">This course is unavailable or was removed.</p>
         <Button asChild variant="outline">
           <Link href="/learn">Back to modules</Link>
@@ -113,7 +94,7 @@ export function CourseLandingView() {
   const ctaLabel = progress.isCompleted
     ? "Review course"
     : progress.isInProgress
-      ? "Continue learning"
+      ? "Continue"
       : "Start course";
 
   const estMinutes = mod.steps.reduce((sum, step) => {
@@ -122,81 +103,16 @@ export function CourseLandingView() {
   }, 0);
 
   return (
-    <LearnPageFrame className="space-y-10">
-      <nav aria-label="Breadcrumb" className="text-xs text-muted-foreground">
-        <Link
-          href="/learn"
-          className="hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          Modules
-        </Link>
-        <span className="mx-2" aria-hidden>
-          /
-        </span>
-        <span className="text-foreground">{mod.title}</span>
-      </nav>
-
-      <motion.section
-        className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-start"
-        variants={fadeInUp}
-        initial="hidden"
-        animate="visible"
+    <LearnPageFrame className="space-y-8 pb-8">
+      <Link
+        href="/learn"
+        className="inline-flex text-sm font-medium text-muted-foreground hover:text-foreground"
       >
-        <div className="space-y-5">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-            Free module
-          </p>
-          <h1 className="text-balance font-heading text-[2rem] font-bold leading-[1.15] tracking-tight sm:text-4xl">
-            {mod.title}
-          </h1>
-          {mod.description && mod.description.trim() !== mod.title.trim() ? (
-            <p className="max-w-2xl text-[15px] leading-relaxed text-muted-foreground sm:text-base">
-              {mod.description}
-            </p>
-          ) : (
-            <p className="max-w-2xl text-[15px] leading-relaxed text-muted-foreground sm:text-base">
-              Articles, videos, and quizzes — self-paced civic learning on Kenya&apos;s public finance.
-            </p>
-          )}
+        ← All modules
+      </Link>
 
-          <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
-            <li className="inline-flex items-center gap-1.5">
-              <BookOpen className="size-3.5" aria-hidden />
-              {progress.total} lesson{progress.total === 1 ? "" : "s"}
-            </li>
-            <li className="inline-flex items-center gap-1.5">
-              <Clapperboard className="size-3.5" aria-hidden />
-              {progress.lectureCount} lecture{progress.lectureCount === 1 ? "" : "s"}
-            </li>
-            <li className="inline-flex items-center gap-1.5">
-              <Clock className="size-3.5" aria-hidden />
-              ~{estMinutes} min
-            </li>
-            {progress.isInProgress || progress.isCompleted ? (
-              <li className="inline-flex items-center gap-1.5 tabular-nums">{progress.pct}% complete</li>
-            ) : (
-              <li>Not started</li>
-            )}
-          </ul>
-
-          {(progress.isInProgress || progress.isCompleted) && (
-            <Progress value={progress.pct} className="h-2 max-w-md" />
-          )}
-
-          <div className="flex flex-wrap gap-3 pt-1">
-            <Button asChild size="lg" className="h-11 gap-2 rounded-md px-6 text-sm font-semibold">
-              <Link href={progress.startHref}>
-                <Play className="size-4" aria-hidden />
-                {ctaLabel}
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="h-11 rounded-md px-5 text-sm font-semibold">
-              <Link href="/learn">All modules</Link>
-            </Button>
-          </div>
-        </div>
-
-        <div className="overflow-hidden rounded-2xl border border-border/60 bg-muted/20">
+      <motion.section className="space-y-5" variants={fadeInUp} initial="hidden" animate="visible">
+        <div className="overflow-hidden rounded-2xl border border-border/60">
           <HarmonizedImage
             src={mod.image_url}
             alt={mod.title}
@@ -205,16 +121,50 @@ export function CourseLandingView() {
             aspectClassName="aspect-video"
           />
         </div>
+
+        <div className="space-y-3">
+          <p className="text-xs font-semibold uppercase tracking-wider text-primary">Free module</p>
+          <h1 className="text-balance text-2xl font-bold leading-tight tracking-tight">
+            {mod.title}
+          </h1>
+          {mod.description && mod.description.trim() !== mod.title.trim() ? (
+            <p className="text-sm leading-relaxed text-muted-foreground">{mod.description}</p>
+          ) : null}
+        </div>
+
+        <ul className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+          <li className="inline-flex items-center gap-1.5">
+            <Clock className="size-3.5" aria-hidden />
+            ~{estMinutes} min
+          </li>
+          <li>
+            {progress.total} lesson{progress.total === 1 ? "" : "s"}
+          </li>
+          {progress.isInProgress || progress.isCompleted ? (
+            <li className="tabular-nums">{progress.pct}% complete</li>
+          ) : null}
+        </ul>
+
+        {(progress.isInProgress || progress.isCompleted) && (
+          <Progress value={progress.pct} className="h-2" />
+        )}
+
+        <Button asChild size="lg" className="h-12 w-full rounded-2xl text-base font-semibold">
+          <Link href={progress.startHref}>
+            <Play className="size-4" aria-hidden />
+            {ctaLabel}
+          </Link>
+        </Button>
       </motion.section>
 
       {mod.expectations?.length ? (
-        <section className="space-y-4" aria-labelledby="outcomes-heading">
-          <h2 id="outcomes-heading" className="text-[15px] font-semibold tracking-tight">
+        <section className="space-y-3" aria-labelledby="outcomes-heading">
+          <h2 id="outcomes-heading" className="text-sm font-semibold">
             What you&apos;ll learn
           </h2>
-          <ul className="grid gap-3 sm:grid-cols-2">
+          <ul className="space-y-2">
             {mod.expectations.map((item) => (
-              <li key={item} className="flex gap-2.5 text-sm leading-relaxed text-muted-foreground">
+              <li key={item} className="flex gap-2 text-sm leading-relaxed text-muted-foreground">
                 <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
                 <span>{item}</span>
               </li>
@@ -223,70 +173,43 @@ export function CourseLandingView() {
         </section>
       ) : null}
 
-      <section className="space-y-4" aria-labelledby="curriculum-heading">
-        <div className="flex items-end justify-between gap-3">
-          <h2 id="curriculum-heading" className="text-[15px] font-semibold tracking-tight">
-            Course content
-          </h2>
-          <p className="text-xs text-muted-foreground">
-            {progress.completedCount}/{progress.total} lessons · {progress.lectureCount} lectures
-          </p>
-        </div>
-
+      <section className="space-y-3" aria-labelledby="curriculum-heading">
+        <h2 id="curriculum-heading" className="text-sm font-semibold">
+          Lessons
+        </h2>
         <ol className="divide-y divide-border/50 overflow-hidden rounded-2xl border border-border/60">
           {mod.steps.map((step, index) => {
             const stepNumber = index + 1;
             const done = Boolean(progress.completed[step.order]) || progress.isCompleted;
-            const modes = modesForStep(mod, index);
-            const lectures = progress.lectures.filter((l) => l.stepNumber === stepNumber);
-            const primaryHref = lectures[0]?.href ?? progress.startHref;
+            const href = lessonHref(mod, stepNumber);
 
             return (
-              <li key={step.id} className={cn(done && "bg-muted/15")}>
-                <div className="flex flex-col gap-2 px-4 py-3.5 sm:flex-row sm:items-center sm:gap-3">
-                  <Link
-                    href={primaryHref}
-                    className="flex min-w-0 flex-1 items-center gap-3 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              <li key={step.id}>
+                <Link
+                  href={href}
+                  className={cn(
+                    "flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-muted/30",
+                    done && "bg-muted/15",
+                  )}
+                >
+                  <span
+                    className={cn(
+                      "flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-bold",
+                      done
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground",
+                    )}
                   >
-                    <span
-                      className={cn(
-                        "flex size-7 shrink-0 items-center justify-center rounded-md text-xs font-semibold",
-                        done
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted text-muted-foreground",
-                      )}
-                    >
-                      {done ? <CheckCircle2 className="size-3.5" aria-hidden /> : stepNumber}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium text-foreground">{step.title}</p>
-                      <p className="text-xs text-muted-foreground">
-                        Lesson {stepNumber}
-                        {done ? " · Done" : ""}
-                      </p>
-                    </div>
-                    <ChevronRight className="hidden size-4 shrink-0 text-muted-foreground sm:block" aria-hidden />
-                  </Link>
-
-                  <div className="flex flex-wrap gap-1.5 pl-10 sm:pl-0">
-                    {lectures.map((lec) => {
-                      const Icon = KIND_ICON[lec.kind];
-                      return (
-                        <Link
-                          key={`${lec.stepNumber}-${lec.mode}`}
-                          href={lec.href}
-                          className="inline-flex items-center gap-1 rounded-md border border-border/60 bg-background px-2 py-1 text-[11px] font-semibold text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                        >
-                          <Icon className="size-3" aria-hidden />
-                          {lec.label}
-                        </Link>
-                      );
-                    })}
-                    {modes.length === 0 ? (
-                      <span className="text-[11px] text-muted-foreground">No content yet</span>
-                    ) : null}
+                    {done ? <CheckCircle2 className="size-4" aria-hidden /> : stepNumber}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium text-foreground">{step.title}</p>
+                    <p className="text-xs text-muted-foreground">
+                      Lesson {stepNumber}
+                      {done ? " · Done" : ""}
+                    </p>
                   </div>
-                </div>
+                </Link>
               </li>
             );
           })}

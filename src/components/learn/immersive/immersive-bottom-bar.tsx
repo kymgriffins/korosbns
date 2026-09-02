@@ -20,22 +20,22 @@ export function ImmersiveBottomBar({
   onNext?: () => void;
 }) {
   return (
-    <footer className="sticky bottom-0 z-20 border-t border-foreground/10 bg-background/95 px-4 py-3 backdrop-blur-md">
-      <div className="mx-auto flex max-w-xl items-center justify-between gap-3">
+    <footer className="sticky bottom-0 z-20 border-t border-foreground/10 bg-background/95 px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur-md">
+      <div className="mx-auto flex max-w-lg items-center justify-between gap-3">
         {prevHref ? (
           <Link
             href={prevHref}
             aria-disabled={prevDisabled}
             className={cn(
-              "flex items-center gap-2 rounded-xl border border-foreground/10 bg-card px-4 py-2.5 text-xs font-mono font-bold text-foreground transition-all hover:bg-muted hover:border-foreground/20",
+              "flex size-11 items-center justify-center rounded-xl border border-foreground/10 bg-card text-foreground",
               prevDisabled && "pointer-events-none opacity-40",
             )}
+            aria-label="Previous"
           >
-            <ArrowLeft className="size-3.5" />
-            <span>Previous</span>
+            <ArrowLeft className="size-4" />
           </Link>
         ) : (
-          <div />
+          <div className="size-11" />
         )}
 
         {onNext ? (
@@ -43,22 +43,22 @@ export function ImmersiveBottomBar({
             type="button"
             disabled={nextDisabled}
             onClick={onNext}
-            className="flex items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary/90 px-6 py-2.5 text-xs font-mono font-bold text-primary-foreground transition-all shadow-xs disabled:opacity-40 cursor-pointer"
+            className="immersive-primary-action flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground disabled:opacity-40"
           >
             <span>{nextLabel}</span>
-            <ArrowRight className="size-3.5" />
+            <ArrowRight className="size-4" />
           </button>
         ) : nextHref ? (
           <Link
             href={nextHref}
             aria-disabled={nextDisabled}
             className={cn(
-              "flex items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary/90 px-6 py-2.5 text-xs font-mono font-bold text-primary-foreground transition-all shadow-xs",
+              "immersive-primary-action flex flex-1 items-center justify-center gap-2 rounded-2xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground",
               nextDisabled && "pointer-events-none opacity-40",
             )}
           >
             <span>{nextLabel}</span>
-            <ArrowRight className="size-3.5" />
+            <ArrowRight className="size-4" />
           </Link>
         ) : null}
       </div>
