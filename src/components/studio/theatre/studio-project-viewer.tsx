@@ -1,27 +1,23 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import {
-  ArrowLeft,
-  ChevronLeft,
-  ChevronRight,
-  Play,
-} from "lucide-react";
+import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import type { StudioProjectEvidence } from "@/data/studios-evidence";
+import { studiosEvidenceData } from "@/data/studios-evidence";
 import {
-  defaultStudioPanel,
-  getStudioPanels,
-  panelLabel,
   projectGallery,
   projectHasAudio,
   projectHasVideo,
-  type StudioPanelId,
 } from "@/lib/studio-presentation";
-import { getFormatTheme } from "@/lib/studio-format-themes";
-import { StudioSiteNav } from "@/components/studio/theatre/studio-site-nav";
+import {
+  StudioSiteFooter,
+  StudioSiteNav,
+} from "@/components/studio/theatre/studio-site-nav";
+import {
+  BNS_COMMUNITY_IMAGES,
+  BNS_MEDIA_IMAGES,
+} from "@/constants/bns-media-images";
 import { cn } from "@/utils";
 
 type Props = {
@@ -36,297 +32,356 @@ function youtubeEmbedUrl(url: string): string | null {
   return `https://www.youtube.com/embed/${match[1]}`;
 }
 
-function AudioPlayer({ project }: { project: StudioProjectEvidence }) {
-  const theme = getFormatTheme(project.contentType);
-  const src = project.media.audioUrl;
+const FIELD_IMAGES = [
+  { src: BNS_MEDIA_IMAGES.productionA, alt: "On-set videography during production" },
+  { src: BNS_MEDIA_IMAGES.productionB, alt: "Studio interview session" },
+  { src: BNS_MEDIA_IMAGES.hall, alt: "Hall event coverage" },
+  { src: BNS_COMMUNITY_IMAGES.forumA, alt: "Town hall forum with citizens" },
+  { src: BNS_COMMUNITY_IMAGES.forumC, alt: "Community dialogue session" },
+  { src: BNS_COMMUNITY_IMAGES.cohortA, alt: "Youth cohort groundworks" },
+];
 
-  return (
-    <div
-      className={cn(
-        "studio-format-podcast flex min-h-[min(70vh,32rem)] flex-col items-center justify-center gap-6 px-4 py-12",
-        theme.accentClass,
-      )}
-    >
-      <div className="relative size-48 overflow-hidden rounded-2xl shadow-2xl md:size-56">
-        <Image
-          src={project.media.posterUrl}
-          alt={project.title}
-          fill
-          className={cn("object-cover", project.media.posterPosition || "object-center")}
-          sizes="14rem"
-          priority
-        />
-      </div>
-      <div className="studio-waveform" aria-hidden>
-        {Array.from({ length: 7 }).map((_, i) => (
-          <span key={i} />
-        ))}
-      </div>
-      {src ? (
-        <audio
-          controls
-          className="w-full max-w-md"
-          src={src}
-          preload="metadata"
-        >
-          <track kind="captions" />
-        </audio>
-      ) : (
-        <p className="max-w-md text-center text-sm text-[var(--studio-theatre-muted)]">
-          Stream on partner platforms — contact BNS Studios for episode access.
-        </p>
-      )}
-    </div>
-  );
-}
-
-function VideoPlayer({ project }: { project: StudioProjectEvidence }) {
+export function StudioProjectViewer({ project }: Props) {
+  const gallery = projectGallery(project);
+  const hasVideo = projectHasVideo(project);
+  const hasAudio = projectHasAudio(project);
   const embed = project.media.videoUrl
     ? youtubeEmbedUrl(project.media.videoUrl)
     : null;
 
-  if (embed) {
-    return (
-      <div className="aspect-video w-full bg-black">
-        <iframe
-          src={embed}
-          title={project.title}
-          className="size-full"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        />
-      </div>
-    );
-  }
+  const galleryImages = [
+    {
+      url: project.media.posterUrl,
+      caption: project.media.caption ?? project.title,
+      position: project.media.posterPosition,
+    },
+    ...gallery,
+  ];
 
-  return (
-    <div className="relative aspect-video w-full overflow-hidden bg-black">
-      <Image
-        src={project.media.posterUrl}
-        alt={project.title}
-        fill
-        className={cn("object-cover", project.media.posterPosition || "object-center")}
-        sizes="100vw"
-        priority
-      />
-      <div className="absolute inset-0 flex items-center justify-center bg-black/35">
-        <span className="flex size-16 items-center justify-center rounded-full bg-white/95 text-black">
-          <Play className="size-7 fill-current pl-0.5" aria-hidden />
-        </span>
-      </div>
-      {project.media.caption ? (
-        <p className="absolute bottom-4 left-4 right-4 text-xs text-white/80 md:text-sm">
-          {project.media.caption}
-        </p>
-      ) : null}
-    </div>
-  );
-}
-
-function GalleryCarousel({ project }: { project: StudioProjectEvidence }) {
-  const images = projectGallery(project);
-  const [index, setIndex] = useState(0);
-  const current = images[index];
-
-  const prev = useCallback(() => {
-    setIndex((i) => (i === 0 ? images.length - 1 : i - 1));
-  }, [images.length]);
-
-  const next = useCallback(() => {
-    setIndex((i) => (i + 1) % images.length);
-  }, [images.length]);
-
-  if (!current) return null;
-
-  return (
-    <div className="relative flex min-h-[min(75vh,40rem)] flex-col items-center justify-center bg-[var(--studio-theatre-bg)] px-4 py-10">
-      <div className="relative aspect-[4/3] w-full max-w-4xl overflow-hidden rounded-2xl border border-[var(--studio-theatre-border)] bg-black shadow-2xl">
-        <Image
-          key={current.url}
-          src={current.url}
-          alt={current.caption ?? project.title}
-          fill
-          className={cn("object-cover", current.position || "object-center")}
-          sizes="(max-width: 1024px) 100vw, 896px"
-          priority
-        />
-      </div>
-      {current.caption ? (
-        <p className="mt-4 max-w-2xl text-center text-sm text-[var(--studio-theatre-muted)]">
-          {current.caption}
-        </p>
-      ) : null}
-      {images.length > 1 ? (
-        <div className="mt-6 flex items-center gap-4">
-          <button
-            type="button"
-            onClick={prev}
-            className="flex size-10 items-center justify-center rounded-full border border-[var(--studio-theatre-border)] text-[var(--studio-theatre-fg)]"
-            aria-label="Previous image"
-          >
-            <ChevronLeft className="size-5" />
-          </button>
-          <span className="text-xs font-semibold text-[var(--studio-theatre-muted)]">
-            {index + 1} / {images.length}
-          </span>
-          <button
-            type="button"
-            onClick={next}
-            className="flex size-10 items-center justify-center rounded-full border border-[var(--studio-theatre-border)] text-[var(--studio-theatre-fg)]"
-            aria-label="Next image"
-          >
-            <ChevronRight className="size-5" />
-          </button>
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
-function OverviewPanel({ project }: { project: StudioProjectEvidence }) {
-  const theme = getFormatTheme(project.contentType);
-
-  return (
-    <div className={cn("max-w-2xl space-y-5 px-4 py-8 md:px-8 md:py-12", theme.accentClass)}>
-      <h2 className="text-2xl font-bold text-[var(--studio-theatre-fg)] md:text-3xl">
-        Overview
-      </h2>
-      <p className="text-base leading-relaxed text-[var(--studio-theatre-muted)] md:text-lg">
-        {project.description}
-      </p>
-      <div className="space-y-2 text-sm">
-        <p>
-          <span className="font-semibold text-[var(--studio-format-accent)]">
-            {project.organization.name}
-          </span>
-          <span className="text-[var(--studio-theatre-muted)]">
-            {" "}
-            · {project.organization.location}
-          </span>
-        </p>
-        <p className="text-[var(--studio-theatre-muted)]">{project.year}</p>
-      </div>
-      <div className="flex flex-wrap gap-2 pt-2">
-        {project.tags.map((tag) => (
-          <span
-            key={tag}
-            className="rounded-full border border-[var(--studio-theatre-border)] px-3 py-1 text-xs text-[var(--studio-theatre-muted)]"
-          >
-            {tag}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function BehindPanel({ project }: { project: StudioProjectEvidence }) {
-  return (
-    <div className="max-w-2xl space-y-6 px-4 py-8 md:px-8 md:py-12">
-      <h2 className="text-2xl font-bold text-[var(--studio-theatre-fg)]">Behind the scenes</h2>
-      <div className="space-y-4 text-sm leading-relaxed text-[var(--studio-theatre-muted)]">
-        <p>
-          <span className="font-semibold text-[var(--studio-theatre-fg)]">Brief: </span>
-          {project.briefChallenge}
-        </p>
-        <p>
-          <span className="font-semibold text-[var(--studio-theatre-fg)]">Delivered: </span>
-          {project.whatWeProduced}
-        </p>
-      </div>
-      <ul className="grid gap-2 sm:grid-cols-2">
-        {project.outputs.map((output) => (
-          <li
-            key={output}
-            className="rounded-lg border border-[var(--studio-theatre-border)] bg-[var(--studio-theatre-surface)] px-3 py-2 text-xs text-[var(--studio-theatre-fg)]"
-          >
-            {output}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-export function StudioProjectViewer({ project }: Props) {
-  const searchParams = useSearchParams();
-  const panels = getStudioPanels(project);
-  const panelParam = searchParams.get("panel") as StudioPanelId | null;
-  const initial =
-    panelParam && panels.includes(panelParam) ? panelParam : defaultStudioPanel(project);
-  const [panel, setPanel] = useState<StudioPanelId>(initial);
-
-  const activePanel = panels.includes(panel) ? panel : defaultStudioPanel(project);
-
-  const backdropStyle = useMemo(
-    () => ({
-      backgroundImage: `url(${project.media.posterUrl})`,
-    }),
-    [project.media.posterUrl],
+  const extraImages = FIELD_IMAGES.slice(
+    0,
+    Math.max(0, 6 - galleryImages.length),
   );
 
+  const related = studiosEvidenceData.getRelatedProjects(project.id, 3);
+
+  const processSteps = [
+    {
+      title: "Listen first",
+      body: `We started inside the brief — sitting with ${project.organization.name} to understand who this had to move and what misunderstanding it had to fix. Field notes from forums and newsroom conversations shaped the treatment before a single frame was shot.`,
+    },
+    {
+      title: "Verify everything",
+      body: `Every figure traces to a published source — Treasury tables, county documents, or partner research cited in our production notes. If a line could not be verified, it did not survive the edit. That is the BNS standard for ${project.contentType.toLowerCase()} work.`,
+    },
+    {
+      title: "Produce for the feed",
+      body: project.whatWeProduced,
+    },
+    {
+      title: "Distribute with partners",
+      body: project.impactEvidence.context,
+    },
+  ];
+
   return (
-    <div className="studio-project-page">
+    <div className="studio-about-page studio-about-borderless studio-article">
       <StudioSiteNav active="work" />
-      <div className="relative min-h-dvh">
-      <div
-        className="pointer-events-none fixed inset-0 scale-105 bg-cover bg-center opacity-20 blur-2xl"
-        style={backdropStyle}
-        aria-hidden
-      />
-      <div className="relative z-10 flex min-h-dvh flex-col lg:flex-row">
-        <aside className="flex flex-col border-b border-[var(--studio-theatre-border)] bg-[var(--studio-theatre-bg)]/90 px-4 py-4 backdrop-blur-md lg:w-64 lg:border-b-0 lg:border-r lg:py-8">
-          <Link
-            href="/bns-studio"
-            className="mb-6 inline-flex w-fit items-center gap-1.5 text-sm text-[var(--studio-theatre-muted)] hover:text-[var(--studio-theatre-fg)]"
-          >
-            <ArrowLeft className="size-4" />
-            Close
+
+      <article className="studio-article-body">
+        {/* Hero */}
+        <header className="studio-article-hero">
+          <Link href="/bns-studio/work" className="studio-article-back">
+            <ArrowLeft className="size-4" aria-hidden />
+            All work
           </Link>
-          <nav className="flex flex-row gap-4 overflow-x-auto lg:flex-col lg:gap-1">
-            {panels.map((id) => (
-              <button
-                key={id}
-                type="button"
-                onClick={() => setPanel(id)}
+          <p className="studio-about-index">
+            {project.contentType} · {project.year}
+          </p>
+          <h1 className="studio-about-title-xl">{project.title}</h1>
+          {project.subtitle ? (
+            <p className="studio-article-lede">{project.subtitle}</p>
+          ) : null}
+          <div className="studio-article-meta">
+            <div>
+              <p className="studio-article-meta-label">Partner</p>
+              <p className="studio-article-meta-value">{project.organization.name}</p>
+              <p className="studio-article-meta-sub">{project.organization.location}</p>
+            </div>
+            <div>
+              <p className="studio-article-meta-label">Delivery</p>
+              <p className="studio-article-meta-value studio-article-capitalize">
+                {project.deliveryMode.replace("-", " ")}
+              </p>
+              <p className="studio-article-meta-sub">{project.date}</p>
+            </div>
+            <div>
+              <p className="studio-article-meta-label">Format</p>
+              <p className="studio-article-meta-value">{project.contentType}</p>
+              <p className="studio-article-meta-sub">
+                {project.outputs.length} deliverables
+              </p>
+            </div>
+          </div>
+        </header>
+
+        {/* Feature media */}
+        {embed ? (
+          <figure className="studio-article-feature">
+            <div className="studio-article-video">
+              <iframe
+                src={embed}
+                title={project.title}
+                className="size-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+            <figcaption className="studio-article-caption">
+              {project.media.caption ?? project.whatWeProduced}
+            </figcaption>
+          </figure>
+        ) : (
+          <figure className="studio-article-feature">
+            <div className="studio-article-hero-image">
+              <Image
+                src={project.media.posterUrl}
+                alt={project.title}
+                fill
+                priority
                 className={cn(
-                  "shrink-0 text-left text-sm font-medium transition-colors lg:px-2 lg:py-2",
-                  activePanel === id
-                    ? "text-[var(--studio-theatre-fg)] lg:border-l-2 lg:border-[var(--studio-theatre-accent)] lg:pl-3"
-                    : "text-[var(--studio-theatre-muted)] hover:text-[var(--studio-theatre-fg)]",
+                  "object-cover",
+                  project.media.posterPosition || "object-center",
                 )}
-              >
-                {activePanel === id ? (
-                  <span className="mr-2 inline-block size-1.5 rounded-full bg-[var(--studio-theatre-accent)] lg:hidden" />
-                ) : null}
-                {panelLabel(id)}
-              </button>
-            ))}
-          </nav>
-        </aside>
+                sizes="100vw"
+              />
+            </div>
+            {project.media.caption ? (
+              <figcaption className="studio-article-caption">
+                {project.media.caption}
+              </figcaption>
+            ) : null}
+          </figure>
+        )}
 
-        <div className="flex-1 bg-[var(--studio-theatre-bg)]/85 backdrop-blur-sm">
-          <header className="border-b border-[var(--studio-theatre-border)] px-4 py-4 md:px-8">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-[var(--studio-theatre-muted)]">
-              {project.contentType}
-            </p>
-            <h1 className="text-xl font-bold text-[var(--studio-theatre-fg)] md:text-2xl">
-              {project.title}
-            </h1>
-          </header>
+        {hasAudio && project.media.audioUrl ? (
+          <div className="studio-article-audio">
+            <p className="studio-about-index">Listen</p>
+            <audio
+              controls
+              className="studio-article-audio-el"
+              src={project.media.audioUrl}
+              preload="metadata"
+            >
+              <track kind="captions" />
+            </audio>
+          </div>
+        ) : null}
 
-          {activePanel === "overview" ? <OverviewPanel project={project} /> : null}
-          {activePanel === "watch" && projectHasVideo(project) ? (
-            <VideoPlayer project={project} />
-          ) : null}
-          {activePanel === "listen" && projectHasAudio(project) ? (
-            <AudioPlayer project={project} />
-          ) : null}
-          {activePanel === "gallery" ? <GalleryCarousel project={project} /> : null}
-          {activePanel === "behind" ? <BehindPanel project={project} /> : null}
+        {hasAudio && !project.media.audioUrl ? (
+          <p className="studio-article-note">
+            Full audio available on request — contact BNS Studios for episode
+            access.
+          </p>
+        ) : null}
+
+        {/* 01 — The brief */}
+        <section className="studio-article-section">
+          <p className="studio-about-index">01 / The brief</p>
+          <h2 className="studio-about-h2">What needed to change.</h2>
+          <p className="studio-article-prose-lg">{project.briefChallenge}</p>
+          <p className="studio-article-prose">{project.description}</p>
+          <blockquote className="studio-article-quote">
+            {project.organization.description}
+            <cite>— {project.organization.name}</cite>
+          </blockquote>
+        </section>
+
+        {/* Image break */}
+        <div className="studio-article-image-grid">
+          {galleryImages.slice(0, 2).map((img) => (
+            <figure key={img.url} className="studio-article-grid-item">
+              <Image
+                src={img.url}
+                alt={img.caption ?? project.title}
+                fill
+                className={cn("object-cover", img.position || "object-center")}
+                sizes="(max-width: 768px) 100vw, 40vw"
+              />
+            </figure>
+          ))}
+          {extraImages.slice(0, Math.max(0, 2 - galleryImages.length)).map((img) => (
+            <figure key={img.src} className="studio-article-grid-item">
+              <Image
+                src={img.src}
+                alt={img.alt}
+                fill
+                className="object-cover object-center"
+                sizes="(max-width: 768px) 100vw, 40vw"
+              />
+            </figure>
+          ))}
         </div>
-      </div>
-      </div>
+
+        {/* 02 — How we worked */}
+        <section className="studio-article-section">
+          <p className="studio-about-index">02 / How we worked</p>
+          <h2 className="studio-about-h2">Listen. Verify. Produce. Distribute.</h2>
+          <p className="studio-article-prose">
+            Every BNS Studios commission follows the same civic-production
+            method — built for accuracy first, reach second. Here is how it
+            played out on this {project.contentType.toLowerCase()} with{" "}
+            {project.organization.name}.
+          </p>
+          <div className="studio-article-steps">
+            {processSteps.map((step, i) => (
+              <div key={step.title} className="studio-article-step">
+                <p className="studio-article-step-num">
+                  {String(i + 1).padStart(2, "0")}
+                </p>
+                <h3 className="studio-article-step-title">{step.title}</h3>
+                <p className="studio-article-prose-sm">{step.body}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* 03 — What we delivered */}
+        <section className="studio-article-section">
+          <p className="studio-about-index">03 / What we delivered</p>
+          <h2 className="studio-about-h2">The full package.</h2>
+          <p className="studio-article-prose">{project.whatWeProduced}</p>
+          <ol className="studio-article-outputs">
+            {project.outputs.map((output, i) => (
+              <li key={output} className="studio-article-output">
+                <span className="studio-article-output-num">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span>{output}</span>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        {/* Full gallery */}
+        <section className="studio-article-section">
+          <p className="studio-about-index">04 / In pictures</p>
+          <h2 className="studio-about-h2">From set to screen.</h2>
+          <div className="studio-article-gallery">
+            {galleryImages.map((img) => (
+              <figure key={img.url} className="studio-article-gallery-item">
+                <Image
+                  src={img.url}
+                  alt={img.caption ?? project.title}
+                  fill
+                  className={cn("object-cover", img.position || "object-center")}
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+                {img.caption ? (
+                  <figcaption className="studio-article-gallery-caption">
+                    {img.caption}
+                  </figcaption>
+                ) : null}
+              </figure>
+            ))}
+            {extraImages.map((img) => (
+              <figure key={img.src} className="studio-article-gallery-item">
+                <Image
+                  src={img.src}
+                  alt={img.alt}
+                  fill
+                  className="object-cover object-center"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+              </figure>
+            ))}
+          </div>
+        </section>
+
+        {/* 05 — Impact */}
+        <section className="studio-article-section">
+          <p className="studio-about-index">05 / Impact</p>
+          <h2 className="studio-about-h2">What moved.</h2>
+          {project.impactEvidence.primaryMetric ? (
+            <p className="studio-article-metric">
+              {project.impactEvidence.primaryMetric}
+              {project.impactEvidence.secondaryMetric
+                ? ` · ${project.impactEvidence.secondaryMetric}`
+                : null}
+            </p>
+          ) : null}
+          <p className="studio-article-prose">{project.impactEvidence.context}</p>
+          {project.impactEvidence.verificationOutcome ? (
+            <p className="studio-article-prose-sm">
+              <strong>Verification: </strong>
+              {project.impactEvidence.verificationOutcome}
+            </p>
+          ) : null}
+          {project.tags.length > 0 ? (
+            <div className="studio-article-tags">
+              {project.tags.map((tag) => (
+                <span key={tag} className="studio-article-tag">
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          ) : null}
+        </section>
+
+        {/* Commission CTA */}
+        <section className="studio-article-section studio-article-cta">
+          <p className="studio-about-index">06 / Commission</p>
+          <h2 className="studio-about-h2-xl">
+            Need {project.contentType.toLowerCase()} like this?
+          </h2>
+          <p className="studio-about-standfirst">
+            Tell us your story, audience, and timeline — we respond with scope,
+            references, and a production plan.
+          </p>
+          <div className="studio-about-hero-ctas">
+            <Link href="/bns-studio/about#contact" className="studio-about-cta">
+              Commission BNS Studios
+            </Link>
+            <Link href="/bns-studio/work" className="studio-about-ghost">
+              Back to all work
+              <ArrowUpRight className="size-4" aria-hidden />
+            </Link>
+          </div>
+        </section>
+
+        {/* Keep reading */}
+        {related.length > 0 ? (
+          <section className="studio-article-section">
+            <p className="studio-about-index">Keep reading</p>
+            <div className="studio-article-related">
+              {related.map((item) => (
+                <Link
+                  key={item.id}
+                  href={`/bns-studio/${item.slug}`}
+                  className="studio-article-related-card"
+                >
+                  <div className="studio-article-related-media">
+                    <Image
+                      src={item.media.posterUrl}
+                      alt={item.title}
+                      fill
+                      className={cn(
+                        "object-cover",
+                        item.media.posterPosition || "object-center",
+                      )}
+                      sizes="(max-width: 768px) 100vw, 25vw"
+                    />
+                  </div>
+                  <p className="studio-article-related-type">{item.contentType}</p>
+                  <h3 className="studio-article-related-title">{item.title}</h3>
+                </Link>
+              ))}
+            </div>
+          </section>
+        ) : null}
+      </article>
+
+      <StudioSiteFooter />
     </div>
   );
 }

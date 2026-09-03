@@ -7,7 +7,6 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ChevronDown, Plus, Search, X } from "lucide-react";
 import { STUDIO_CONTENT_TYPES } from "@/constants/bns-studio-content";
 import { studiosEvidenceData } from "@/data/studios-evidence";
-import { defaultStudioPanel } from "@/lib/studio-presentation";
 import { StudioSiteFooter, StudioSiteNav } from "@/components/studio/theatre/studio-site-nav";
 import { cn } from "@/utils";
 
@@ -210,7 +209,7 @@ export function StudioFeaturedWorkPage() {
         {filtered.map((project) => (
           <li key={project.id}>
             <Link
-              href={`${projectHref(project.slug)}?panel=${defaultStudioPanel(project)}`}
+              href={projectHref(project.slug)}
               className="studio-work-row group"
             >
               <div className="studio-work-row-media">
