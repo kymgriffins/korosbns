@@ -1772,3 +1772,85 @@
   text-transform: uppercase;
   color: var(--studio-theatre-fg);
 }
+
+/* ─── Commission dialog (click-to-reveal, zero inline footprint) ────────── */
+
+.studio-booking-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: hsl(0 0% 0% / 0.7);
+  backdrop-filter: blur(4px);
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .studio-booking-overlay {
+    align-items: center;
+    padding: 2rem;
+  }
+}
+
+.studio-booking-dialog {
+  width: min(100%, 42rem);
+  max-height: min(90dvh, 56rem);
+  overflow-y: auto;
+  background: var(--studio-theatre-elevated);
+  color: var(--studio-theatre-fg);
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .studio-booking-dialog {
+    padding: 2rem;
+  }
+}
+
+.studio-booking-dialog-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.studio-booking-dialog-title {
+  margin-top: 0.5rem;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--studio-theatre-fg);
+}
+
+.studio-booking-dialog-lede {
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--studio-theatre-muted);
+}
+
+.studio-booking-dialog-close {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: var(--studio-theatre-muted);
+}
+
+.studio-booking-dialog-close:hover {
+  color: var(--studio-theatre-fg);
+}
+
+.studio-booking-form {
+  margin-top: 1.5rem;
+  display: grid;
+  gap: 1rem;
+}

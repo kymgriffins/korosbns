@@ -2,13 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { motion } from "motion/react";
-import { fadeInUp, staggerContainer } from "@/motion/variants";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, MessageSquare, Send } from "lucide-react";
+import { Loader2, MessageSquare, Send, X } from "lucide-react";
 import { citizenApi } from "@/lib/api-client";
 import { toast } from "sonner";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
@@ -16,11 +15,6 @@ import {
   STUDIO_CONTENT_TYPES,
   STUDIO_ORGANIZATION_TYPES,
 } from "@/constants/bns-studio-content";
-import {
-  LandingContent,
-  LandingSection,
-  LandingSectionHeader,
-} from "@/layouts/landing-section";
 import { cn } from "@/utils";
 
 type FormData = {
@@ -50,10 +44,17 @@ type StudioBookingFormProps = {
   onOpenChange?: (open: boolean) => void;
 };
 
+/**
+ * Commission enquiry form — click-to-reveal only.
+ * Controlled usage renders nothing inline until opened (dialog overlay),
+ * so embedding sections never pay whitespace for a hidden form.
+ */
 export function StudioBookingForm({ open, onOpenChange }: StudioBookingFormProps) {
   const [internalOpen, setInternalOpen] = useState(false);
+  const reduceMotion = useReducedMotion();
   const [submitting, setSubmitting] = useState(false);
-  const isOpen = open ?? internalOpen;
+  const controlled = open !== undefined;
+  const isOpen = controlled ? open : internalOpen;
 
   const setOpen = (next: boolean) => {
     if (onOpenChange) onOpenChange(next);
@@ -63,13 +64,28 @@ export function StudioBookingForm({ open, onOpenChange }: StudioBookingFormProps
   useEffect(() => {
     const syncFromHash = () => {
       if (window.location.hash !== "#booking") return;
-      if (onOpenChange) onOpenChange(true);
-      else setInternalOpen(true);
+      setOpen(true);
     };
     syncFromHash();
     window.addEventListener("hashchange", syncFromHash);
     return () => window.removeEventListener("hashchange", syncFromHash);
-  }, [onOpenChange]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   const {
     register,
@@ -112,190 +128,210 @@ export function StudioBookingForm({ open, onOpenChange }: StudioBookingFormProps
   };
 
   return (
-    <LandingSection id="booking">
-      <LandingSectionHeader
-        align="center"
-        eyebrow="Commission impact production"
-        title="Start your impact production"
-        description="Tell us about your organization's goals, desired format, and target timeline. We will structure an evidence treatment and quote within 24 hours."
-      />
-
-      <LandingContent>
-        {!isOpen ? (
-          <div className="mx-auto max-w-xl space-y-5 rounded-3xl border border-border bg-card p-8 text-center shadow-sm md:p-10">
-            <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
-              <MessageSquare className="size-5" />
-            </div>
-            <div className="space-y-2">
-              <h3 className={cn(T.sectionTitle, "text-xl md:text-2xl")}>
-                Ready to commission?
-              </h3>
-              <p className={cn(T.lead, "text-sm text-foreground/75")}>
-                Open the inquiry form when you are ready to share project scope,
-                format, and timeline. Phone and WhatsApp stay available in the
-                bar below.
-              </p>
-            </div>
-            <Button
-              type="button"
-              size="lg"
-              className={cn(T.btnPrimary, "gap-2 rounded-full px-8")}
-              onClick={() => setOpen(true)}
-            >
-              <MessageSquare className="size-4" />
-              Start commission inquiry
-            </Button>
-          </div>
-        ) : (
-          <motion.form
-            variants={staggerContainer}
-            initial="hidden"
-            animate="visible"
-            onSubmit={handleSubmit(onSubmit)}
-            className="mx-auto max-w-2xl space-y-5 rounded-3xl border border-border bg-card p-6 shadow-sm md:p-8"
+    <>
+      {!controlled && !isOpen ? (
+        <div className="mx-auto max-w-xl text-center">
+          <Button
+            type="button"
+            size="lg"
+            className={cn(T.btnPrimary, "gap-2 rounded-full px-8")}
+            onClick={() => setOpen(true)}
           >
-            <div className="grid gap-5 sm:grid-cols-2">
-              <motion.div variants={fadeInUp} className="space-y-2">
-                <Label htmlFor="name">Full Name *</Label>
-                <Input
-                  id="name"
-                  placeholder="e.g. Amani Mwangi"
-                  {...register("name", { required: "Name is required" })}
-                />
-                {errors.name ? (
-                  <p className="text-xs text-destructive">{errors.name.message}</p>
-                ) : null}
-              </motion.div>
+            <MessageSquare className="size-4" />
+            Start commission inquiry
+          </Button>
+        </div>
+      ) : null}
 
-              <motion.div variants={fadeInUp} className="space-y-2">
-                <Label htmlFor="organization_name">Organization / Project Name</Label>
-                <Input
-                  id="organization_name"
-                  placeholder="e.g. County Civic Desk, NGO, or Brand"
-                  {...register("organization_name")}
-                />
-              </motion.div>
-            </div>
-
-            <div className="grid gap-5 sm:grid-cols-2">
-              <motion.div variants={fadeInUp} className="space-y-2">
-                <Label htmlFor="email">Work Email *</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="your@organization.org"
-                  {...register("email", { required: "Email is required" })}
-                />
-                {errors.email ? (
-                  <p className="text-xs text-destructive">{errors.email.message}</p>
-                ) : null}
-              </motion.div>
-
-              <motion.div variants={fadeInUp} className="space-y-2">
-                <Label htmlFor="phone">Phone / WhatsApp *</Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  placeholder="e.g. +254 700 000000"
-                  {...register("phone", { required: "Phone number is required" })}
-                />
-                {errors.phone ? (
-                  <p className="text-xs text-destructive">{errors.phone.message}</p>
-                ) : null}
-              </motion.div>
-            </div>
-
-            <div className="grid gap-5 sm:grid-cols-2">
-              <motion.div variants={fadeInUp} className="space-y-2">
-                <Label htmlFor="organization_type">Organisation Sector</Label>
-                <select
-                  id="organization_type"
-                  className="h-10 w-full rounded-lg border border-input bg-transparent px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
-                  {...register("organization_type")}
-                >
-                  <option value="">Select organisation type</option>
-                  {orgOptions.map((org) => (
-                    <option key={org} value={org}>
-                      {org}
-                    </option>
-                  ))}
-                </select>
-              </motion.div>
-
-              <motion.div variants={fadeInUp} className="space-y-2">
-                <Label htmlFor="service_type">Content Format *</Label>
-                <select
-                  id="service_type"
-                  className="h-10 w-full rounded-lg border border-input bg-transparent px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
-                  {...register("service_type", {
-                    required: "Please select a content format",
-                  })}
-                >
-                  <option value="">Select primary format</option>
-                  {serviceOptions.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
-                    </option>
-                  ))}
-                </select>
-                {errors.service_type ? (
-                  <p className="text-xs text-destructive">
-                    {errors.service_type.message}
+      <AnimatePresence>
+        {isOpen ? (
+          <motion.div
+            key="studio-booking-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: reduceMotion ? 0 : 0.2 }}
+            className="studio-booking-overlay"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Commission BNS Studios"
+            onClick={() => setOpen(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: reduceMotion ? 0 : 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: reduceMotion ? 0 : 16 }}
+              transition={{ duration: reduceMotion ? 0 : 0.28 }}
+              className="studio-booking-dialog"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="studio-booking-dialog-head">
+                <div>
+                  <p className="studio-about-index">Commission impact production</p>
+                  <h2 className="studio-booking-dialog-title">
+                    Start your impact production
+                  </h2>
+                  <p className="studio-booking-dialog-lede">
+                    Share goals, format, and timeline — we respond with an
+                    evidence treatment and quote within 24 hours.
                   </p>
-                ) : null}
-              </motion.div>
-            </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className="studio-booking-dialog-close"
+                  aria-label="Close enquiry form"
+                  autoFocus
+                >
+                  <X className="size-5" aria-hidden />
+                </button>
+              </div>
 
-            <motion.div variants={fadeInUp} className="space-y-2">
-              <Label htmlFor="message">Project Scope & Evidence Needs *</Label>
-              <Textarea
-                id="message"
-                rows={4}
-                placeholder="Tell us about the project: the core data/policy evidence to communicate, target audience, preferred timeline, and deliverables..."
-                {...register("message", {
-                  required: "Please provide a brief project description",
-                })}
-              />
-              {errors.message ? (
-                <p className="text-xs text-destructive">{errors.message.message}</p>
-              ) : null}
-            </motion.div>
+              <form onSubmit={handleSubmit(onSubmit)} className="studio-booking-form">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="booking-name">Full Name *</Label>
+                    <Input
+                      id="booking-name"
+                      placeholder="e.g. Amani Mwangi"
+                      {...register("name", { required: "Name is required" })}
+                    />
+                    {errors.name ? (
+                      <p className="text-xs text-destructive">{errors.name.message}</p>
+                    ) : null}
+                  </div>
 
-            <motion.div variants={fadeInUp} className="flex flex-col gap-3 pt-2 sm:flex-row">
-              <Button
-                type="button"
-                variant="outline"
-                size="lg"
-                className="rounded-full"
-                onClick={() => setOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                size="lg"
-                className={cn(
-                  T.btnPrimary,
-                  "flex-1 gap-2 rounded-full text-xs font-semibold py-3",
-                )}
-                disabled={submitting}
-              >
-                {submitting ? (
-                  <Loader2 className="size-4 animate-spin" />
-                ) : (
-                  <>
-                    <Send className="size-4" />
-                    <span>Submit Commission Request</span>
-                  </>
-                )}
-              </Button>
+                  <div className="space-y-2">
+                    <Label htmlFor="booking-org">Organization / Project Name</Label>
+                    <Input
+                      id="booking-org"
+                      placeholder="e.g. County Civic Desk, NGO, or Brand"
+                      {...register("organization_name")}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="booking-email">Work Email *</Label>
+                    <Input
+                      id="booking-email"
+                      type="email"
+                      placeholder="your@organization.org"
+                      {...register("email", { required: "Email is required" })}
+                    />
+                    {errors.email ? (
+                      <p className="text-xs text-destructive">{errors.email.message}</p>
+                    ) : null}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="booking-phone">Phone / WhatsApp *</Label>
+                    <Input
+                      id="booking-phone"
+                      type="tel"
+                      placeholder="e.g. +254 700 000000"
+                      {...register("phone", { required: "Phone number is required" })}
+                    />
+                    {errors.phone ? (
+                      <p className="text-xs text-destructive">{errors.phone.message}</p>
+                    ) : null}
+                  </div>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label htmlFor="booking-sector">Organisation Sector</Label>
+                    <select
+                      id="booking-sector"
+                      className="h-10 w-full rounded-lg border border-input bg-transparent px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+                      {...register("organization_type")}
+                    >
+                      <option value="">Select organisation type</option>
+                      {orgOptions.map((org) => (
+                        <option key={org} value={org}>
+                          {org}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="booking-format">Content Format *</Label>
+                    <select
+                      id="booking-format"
+                      className="h-10 w-full rounded-lg border border-input bg-transparent px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+                      {...register("service_type", {
+                        required: "Please select a content format",
+                      })}
+                    >
+                      <option value="">Select primary format</option>
+                      {serviceOptions.map((s) => (
+                        <option key={s} value={s}>
+                          {s}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.service_type ? (
+                      <p className="text-xs text-destructive">
+                        {errors.service_type.message}
+                      </p>
+                    ) : null}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="booking-message">Project Scope & Evidence Needs *</Label>
+                  <Textarea
+                    id="booking-message"
+                    rows={4}
+                    placeholder="Tell us about the project: the core data/policy evidence to communicate, target audience, preferred timeline, and deliverables..."
+                    {...register("message", {
+                      required: "Please provide a brief project description",
+                    })}
+                  />
+                  {errors.message ? (
+                    <p className="text-xs text-destructive">{errors.message.message}</p>
+                  ) : null}
+                </div>
+
+                <div className="flex flex-col gap-3 pt-2 sm:flex-row">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="lg"
+                    className="rounded-full"
+                    onClick={() => setOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className={cn(
+                      T.btnPrimary,
+                      "flex-1 gap-2 rounded-full text-xs font-semibold py-3",
+                    )}
+                    disabled={submitting}
+                  >
+                    {submitting ? (
+                      <Loader2 className="size-4 animate-spin" />
+                    ) : (
+                      <>
+                        <Send className="size-4" />
+                        <span>Submit Commission Request</span>
+                      </>
+                    )}
+                  </Button>
+                </div>
+                <p className="text-center text-[11px] text-muted-foreground">
+                  Every commission funds BNS Foundation&apos;s civic accountability missions.
+                </p>
+              </form>
             </motion.div>
-            <p className="text-center text-[11px] text-muted-foreground">
-              Every commission funds BNS Foundation&apos;s civic accountability missions.
-            </p>
-          </motion.form>
-        )}
-      </LandingContent>
-    </LandingSection>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </>
   );
 }

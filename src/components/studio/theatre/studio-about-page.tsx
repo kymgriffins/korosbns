@@ -207,14 +207,19 @@ export function StudioAboutPage() {
             Podcasts, explainers, town halls, or full campaigns — we respond
             with scope and timeline.
           </p>
-          <StudioBookingForm open={bookingOpen} onOpenChange={setBookingOpen} />
-          <button
-            type="button"
-            onClick={() => setBookingOpen(true)}
-            className="studio-about-cta"
-          >
-            Open enquiry form
-          </button>
+          <div className="studio-about-hero-ctas">
+            <button
+              type="button"
+              onClick={() => setBookingOpen(true)}
+              className="studio-about-cta"
+            >
+              Open enquiry form
+            </button>
+            <Link href="/bns-studio/work" className="studio-about-ghost">
+              See featured work
+              <ArrowUpRight className="size-4" aria-hidden />
+            </Link>
+          </div>
         </div>
         <div className="studio-about-contact-visual">
           <Image
@@ -226,6 +231,8 @@ export function StudioAboutPage() {
           />
         </div>
       </section>
+
+      <StudioBookingForm open={bookingOpen} onOpenChange={setBookingOpen} />
 
       <StudioSiteFooter />
     </div>
