@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
-import { LearnPathsHome } from "@/components/learn/learn-paths-home";
+import { LearnHubHome } from "@/components/learn-hub/LearnHubHome";
 import { metaDescription, canonicalUrl } from "@/utils/metadata";
 import { legacyLearnTabRedirect } from "@/lib/learn-nav";
 import { BreadcrumbJsonLd, ArticleJsonLd } from "@/components/seo/json-ld";
@@ -63,7 +63,7 @@ export default async function LearnPage({ searchParams }: PageProps) {
         url="https://budgetndiostory.org/learn"
       />
       <Suspense fallback={<div className="min-h-[50vh] animate-pulse bg-muted/20" />}>
-        <LearnPathsHome tab="learn" />
+        <LearnHubHome />
       </Suspense>
     </>
   );
