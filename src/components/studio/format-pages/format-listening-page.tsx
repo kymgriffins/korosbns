@@ -11,6 +11,7 @@ import {
   FormatRelated,
   FormatShell,
 } from "@/components/studio/format-pages/format-shared";
+import { FormatReveal } from "@/components/studio/format-pages/format-motion";
 
 /** Listening page — field-notes layout: voices first, findings, sessions. */
 export function FormatListeningPage({
@@ -39,7 +40,7 @@ export function FormatListeningPage({
         <p className="studio-article-prose">{project.briefChallenge}</p>
       </header>
 
-      <section className="fpage-wide">
+      <FormatReveal experience="stage" className="fpage-wide">
         <Eyebrow>Voices</Eyebrow>
         <div className="fpage-voices">
           {voices.map((voice) => (
@@ -52,7 +53,7 @@ export function FormatListeningPage({
             </blockquote>
           ))}
         </div>
-      </section>
+      </FormatReveal>
 
       <section className="fpage-narrow">
         <Eyebrow>What we heard</Eyebrow>

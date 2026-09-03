@@ -11,6 +11,7 @@ import {
   FormatRelated,
   FormatShell,
 } from "@/components/studio/format-pages/format-shared";
+import { FormatReveal } from "@/components/studio/format-pages/format-motion";
 import { cn } from "@/utils";
 
 const PIPELINE = [
@@ -54,7 +55,7 @@ export function FormatAnimationPage({
         ) : null}
       </header>
 
-      <section className="fpage-wide">
+      <FormatReveal experience="cinema" className="fpage-wide">
         <Eyebrow>The pipeline</Eyebrow>
         <div className="fpage-pipeline">
           {PIPELINE.map((stage, i) => (
@@ -68,7 +69,7 @@ export function FormatAnimationPage({
           ))}
         </div>
         <p className="studio-article-prose">{project.whatWeProduced}</p>
-      </section>
+      </FormatReveal>
 
       <section className="fpage-wide">
         <Eyebrow>Style frames</Eyebrow>

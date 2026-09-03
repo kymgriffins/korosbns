@@ -1955,13 +1955,25 @@
   margin-inline: auto;
   padding: 5rem 1.25rem 3rem;
   display: grid;
+  gap: 1.5rem;
+  align-content: start;
+}
+
+.fpage-flow {
+  display: grid;
   gap: 3rem;
+  align-content: start;
+}
+
+@media (min-width: 1024px) {
+  .fpage-flow {
+    gap: 4rem;
+  }
 }
 
 @media (min-width: 1024px) {
   .fpage-wrap {
     padding: 6rem 2rem 4.5rem;
-    gap: 4rem;
   }
 }
 

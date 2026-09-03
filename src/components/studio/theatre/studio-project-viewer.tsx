@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import type { StudioProjectEvidence } from "@/data/studios-evidence";
+import { resolveCmsProject } from "@/data/studio-cms";
 import { FormatPodcastPage } from "@/components/studio/format-pages/format-podcast-page";
 import { FormatDocumentaryPage } from "@/components/studio/format-pages/format-documentary-page";
 import { FormatExplainerPage } from "@/components/studio/format-pages/format-explainer-page";
@@ -19,23 +21,30 @@ type Props = {
  * podcasts read like episodes, films like films, dossiers like dossiers.
  */
 export function StudioProjectViewer({ project }: Props) {
-  switch (project.contentType) {
+  // Merge CMS draft overlays on the client (localStorage previews).
+  const [live, setLive] = useState(project);
+  useEffect(() => {
+    setLive(resolveCmsProject(project.slug) ?? project);
+  }, [project]);
+  const contentType = live.contentType;
+
+  switch (contentType) {
     case "Podcast & Audio":
-      return <FormatPodcastPage project={project} />;
+      return <FormatPodcastPage project={live} />;
     case "Documentaries":
-      return <FormatDocumentaryPage project={project} />;
+      return <FormatDocumentaryPage project={live} />;
     case "Animations":
-      return <FormatAnimationPage project={project} />;
+      return <FormatAnimationPage project={live} />;
     case "Research Spotlights":
-      return <FormatDossierPage project={project} />;
+      return <FormatDossierPage project={live} />;
     case "Social Media Series":
-      return <FormatSeriesPage project={project} />;
+      return <FormatSeriesPage project={live} />;
     case "Town Hall Design & Facilitation":
-      return <FormatConveningPage project={project} />;
+      return <FormatConveningPage project={live} />;
     case "Community Listening Sessions":
-      return <FormatListeningPage project={project} />;
+      return <FormatListeningPage project={live} />;
     case "Explainer Videos":
     default:
-      return <FormatExplainerPage project={project} />;
+      return <FormatExplainerPage project={live} />;
   }
 }

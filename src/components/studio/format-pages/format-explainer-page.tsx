@@ -10,6 +10,7 @@ import {
   FormatRelated,
   FormatShell,
 } from "@/components/studio/format-pages/format-shared";
+import { FormatReveal } from "@/components/studio/format-pages/format-motion";
 import { cn } from "@/utils";
 
 function youtubeEmbedUrl(url: string): string | null {
@@ -72,7 +73,7 @@ export function FormatExplainerPage({
         <p className="studio-article-prose-lg">{project.briefChallenge}</p>
       </section>
 
-      <section className="fpage-narrow">
+      <FormatReveal experience="cinema" className="fpage-narrow">
         <Eyebrow>Chapters</Eyebrow>
         <ol className="fpage-chapters">
           {chapters.map((chapter, i) => (
@@ -89,7 +90,7 @@ export function FormatExplainerPage({
             </li>
           ))}
         </ol>
-      </section>
+      </FormatReveal>
 
       <section className="fpage-narrow">
         <Eyebrow>How it was built</Eyebrow>

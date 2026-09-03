@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import type { StudioProjectEvidence } from "@/data/studios-evidence";
 import { studiosEvidenceData } from "@/data/studios-evidence";
 import { getFormatTheme } from "@/lib/studio-format-themes";
+import { FormatPageMotion } from "@/components/studio/format-pages/format-motion";
 import {
   StudioSiteFooter,
   StudioSiteNav,
@@ -52,7 +53,9 @@ export function FormatShell({
           <ArrowLeft className="size-4" aria-hidden />
           All work
         </Link>
-        {children}
+        <FormatPageMotion experience={theme.experience}>
+          <div className="fpage-flow">{children}</div>
+        </FormatPageMotion>
       </div>
       <StudioSiteFooter />
     </div>

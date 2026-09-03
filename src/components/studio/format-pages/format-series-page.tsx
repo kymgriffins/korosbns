@@ -11,6 +11,7 @@ import {
   FormatRelated,
   FormatShell,
 } from "@/components/studio/format-pages/format-shared";
+import { FormatReveal } from "@/components/studio/format-pages/format-motion";
 
 /** Social series page — feed layout: phone hero, episode grid. */
 export function FormatSeriesPage({
@@ -54,7 +55,7 @@ export function FormatSeriesPage({
         </div>
       </header>
 
-      <section className="fpage-wide">
+      <FormatReveal experience="vertical" className="fpage-wide">
         <Eyebrow>Episodes</Eyebrow>
         <div className="fpage-episodes">
           {project.outputs.map((output, i) => {
@@ -80,7 +81,7 @@ export function FormatSeriesPage({
             );
           })}
         </div>
-      </section>
+      </FormatReveal>
 
       <section className="fpage-narrow">
         <Eyebrow>Built for the feed</Eyebrow>

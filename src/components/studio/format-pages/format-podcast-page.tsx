@@ -12,6 +12,7 @@ import {
   FormatRelated,
   FormatShell,
 } from "@/components/studio/format-pages/format-shared";
+import { FormatReveal } from "@/components/studio/format-pages/format-motion";
 import { cn } from "@/utils";
 
 /** Podcast page — episode layout: art + player, show notes, chapters. */
@@ -78,7 +79,7 @@ export function FormatPodcastPage({ project }: { project: StudioProjectEvidence 
             <cite>— {project.organization.name}</cite>
           </blockquote>
         </section>
-        <aside className="fpage-podcast-chapters">
+        <FormatReveal experience="podcast" className="fpage-podcast-chapters">
           <Eyebrow>In this episode</Eyebrow>
           <ol>
             {chapters.map((chapter, i) => (
@@ -99,7 +100,7 @@ export function FormatPodcastPage({ project }: { project: StudioProjectEvidence 
               ))}
             </div>
           ) : null}
-        </aside>
+        </FormatReveal>
       </div>
 
       <FormatMetric project={project} />

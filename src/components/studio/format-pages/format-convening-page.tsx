@@ -11,6 +11,7 @@ import {
   FormatRelated,
   FormatShell,
 } from "@/components/studio/format-pages/format-shared";
+import { FormatReveal } from "@/components/studio/format-pages/format-motion";
 import { cn } from "@/utils";
 
 /** Town hall page — event layout: banner, mandate, agenda timeline. */
@@ -54,7 +55,7 @@ export function FormatConveningPage({
         <p className="studio-article-prose">{project.description}</p>
       </section>
 
-      <section className="fpage-narrow">
+      <FormatReveal experience="stage" className="fpage-narrow">
         <Eyebrow>On the agenda</Eyebrow>
         <ol className="fpage-timeline">
           {agenda.map((item, i) => (
@@ -72,7 +73,7 @@ export function FormatConveningPage({
             </li>
           ))}
         </ol>
-      </section>
+      </FormatReveal>
 
       {roomShots.length > 0 ? (
         <section className="fpage-wide">

@@ -143,6 +143,13 @@ export const sidebarItems: NavGroup[] = [
         url: "/dashboard/cms",
         icon: Database,
       },
+      {
+        id: "studio-narratives",
+        title: "Studio Narratives",
+        url: "/dashboard/studio-narratives",
+        icon: Clapperboard,
+        badge: "new",
+      },
     ],
   },
   {

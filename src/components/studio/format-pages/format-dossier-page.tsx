@@ -11,6 +11,7 @@ import {
   FormatRelated,
   FormatShell,
 } from "@/components/studio/format-pages/format-shared";
+import { FormatReveal } from "@/components/studio/format-pages/format-motion";
 import { cn } from "@/utils";
 
 /** Research page — dossier layout: doc header, findings, methodology. */
@@ -49,7 +50,7 @@ export function FormatDossierPage({
         </dl>
       </header>
 
-      <section className="fpage-narrow">
+      <FormatReveal experience="brief" className="fpage-narrow">
         <Eyebrow>Key findings</Eyebrow>
         <ol className="fpage-findings">
           {findings.map((finding, i) => (
@@ -64,7 +65,7 @@ export function FormatDossierPage({
             </li>
           ))}
         </ol>
-      </section>
+      </FormatReveal>
 
       <section className="fpage-doc-grid">
         <div className="fpage-doc-cover">

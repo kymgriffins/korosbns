@@ -11,6 +11,7 @@ import {
   FormatRelated,
   FormatShell,
 } from "@/components/studio/format-pages/format-shared";
+import { FormatReveal } from "@/components/studio/format-pages/format-motion";
 import { cn } from "@/utils";
 
 /** Documentary page — film layout: full-bleed hero, synopsis, credits roll. */
@@ -69,7 +70,7 @@ export function FormatDocumentaryPage({
         </figure>
       ))}
 
-      <section className="fpage-narrow">
+      <FormatReveal experience="cinema" className="fpage-narrow">
         <Eyebrow>Voices in the film</Eyebrow>
         {voices.map((voice) => (
           <blockquote key={voice.name} className="fpage-film-quote">
@@ -80,7 +81,7 @@ export function FormatDocumentaryPage({
             </cite>
           </blockquote>
         ))}
-      </section>
+      </FormatReveal>
 
       <section className="fpage-narrow">
         <Eyebrow>Credits</Eyebrow>
