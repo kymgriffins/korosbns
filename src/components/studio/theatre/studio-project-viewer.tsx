@@ -21,6 +21,7 @@ import {
   type StudioPanelId,
 } from "@/lib/studio-presentation";
 import { getFormatTheme } from "@/lib/studio-format-themes";
+import { StudioSiteNav } from "@/components/studio/theatre/studio-site-nav";
 import { cn } from "@/utils";
 
 type Props = {
@@ -265,7 +266,9 @@ export function StudioProjectViewer({ project }: Props) {
   );
 
   return (
-    <div className="relative min-h-dvh">
+    <div className="studio-project-page">
+      <StudioSiteNav active="work" />
+      <div className="relative min-h-dvh">
       <div
         className="pointer-events-none fixed inset-0 scale-105 bg-cover bg-center opacity-20 blur-2xl"
         style={backdropStyle}
@@ -322,6 +325,7 @@ export function StudioProjectViewer({ project }: Props) {
           {activePanel === "gallery" ? <GalleryCarousel project={project} /> : null}
           {activePanel === "behind" ? <BehindPanel project={project} /> : null}
         </div>
+      </div>
       </div>
     </div>
   );

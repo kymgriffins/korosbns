@@ -10,21 +10,15 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { getFormatTheme } from "@/lib/studio-format-themes";
 import { getStudioReelSlides } from "@/lib/studio-reel-slides";
-import { fadeInUp } from "@/motion/variants";
 import { cn } from "@/utils";
 
 const AUTO_MS = 7000;
 const SWIPE_PX = 48;
 
-type Props = {
-  onBrowse?: () => void;
-  onCommission?: () => void;
-};
-
-export function StudioReelHero({ onBrowse, onCommission }: Props) {
+export function StudioReelHero() {
   const slides = getStudioReelSlides();
   const reduceMotion = useReducedMotion();
   const [index, setIndex] = useState(0);
@@ -100,18 +94,13 @@ export function StudioReelHero({ onBrowse, onCommission }: Props) {
     else if (x > third * 2) next();
   };
 
-  const scrollToFormat = () => {
-    document.getElementById(current.sectionId)?.scrollIntoView({ behavior: "smooth" });
-    onBrowse?.();
-  };
-
   if (!current) return null;
 
   const theme = getFormatTheme(current.contentType);
 
   return (
     <section
-      className="studio-reel-hero"
+      className="studio-reel-hero studio-reel-hero-fixed"
       aria-roledescription="carousel"
       aria-label="BNS Studios format reel"
     >
@@ -150,113 +139,55 @@ export function StudioReelHero({ onBrowse, onCommission }: Props) {
           </div>
           <div className="studio-reel-hero-scrim" aria-hidden />
 
-          <div className="studio-reel-hero-chrome">
-            <header className="studio-reel-hero-top">
-              <button
-                type="button"
-                onClick={() => onBrowse?.() ?? scrollToFormat()}
-                className="studio-reel-hero-nav-link"
-              >
-                Browse [{slides.length}]
-              </button>
-              <p className="studio-reel-hero-brand">BNS Studios</p>
-              <button
-                type="button"
-                onClick={onCommission}
-                className="studio-reel-hero-nav-link"
-              >
-                Commission
-              </button>
-            </header>
+          <div
+            className="studio-reel-hero-stage"
+            onClick={onZoneClick}
+            role="presentation"
+          >
+            <p className="studio-reel-hero-side studio-reel-hero-side-left">
+              {theme.rowEyebrow}
+            </p>
 
-            <div
-              className="studio-reel-hero-tap-zones"
-              onClick={onZoneClick}
-              role="presentation"
-            >
-              <div className="studio-reel-hero-center">
-                <motion.div
-                  variants={fadeInUp}
-                  initial="hidden"
-                  animate="visible"
-                  className="studio-reel-hero-copy"
+            <div className="studio-reel-hero-center-block">
+              <h1 className="studio-reel-hero-title">{current.label}</h1>
+              {current.projectSlug ? (
+                <Link
+                  href={`/bns-studio/${current.projectSlug}`}
+                  className="studio-reel-hero-case-link"
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  <p className="studio-reel-hero-eyebrow">{theme.rowEyebrow}</p>
-                  <h1 className="studio-reel-hero-title">{current.label}</h1>
-                  <div className="studio-reel-hero-meta">
-                    <span>Impact production</span>
-                    <span>{index + 1} / {slides.length}</span>
-                  </div>
-                  <div className="studio-reel-hero-actions">
-                    {current.projectSlug ? (
-                      <Link
-                        href={`/bns-studio/${current.projectSlug}`}
-                        className="studio-reel-hero-cta studio-reel-hero-cta-primary"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        Watch case
-                        <ArrowUpRight className="size-4" aria-hidden />
-                      </Link>
-                    ) : null}
-                    <button
-                      type="button"
-                      className="studio-reel-hero-cta studio-reel-hero-cta-ghost"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        scrollToFormat();
-                      }}
-                    >
-                      See all in this format
-                    </button>
-                  </div>
-                </motion.div>
-              </div>
+                  Open case
+                  <ArrowUpRight className="size-4" aria-hidden />
+                </Link>
+              ) : null}
             </div>
 
-            <footer className="studio-reel-hero-footer">
-              <div className="studio-reel-hero-segments" role="tablist" aria-label="Format slides">
-                {slides.map((slide, i) => (
-                  <button
-                    key={slide.contentType}
-                    type="button"
-                    role="tab"
-                    aria-selected={i === index}
-                    aria-label={slide.label}
-                    onClick={() => goTo(i)}
-                    className="studio-reel-hero-segment"
-                  >
-                    <span
-                      className="studio-reel-hero-segment-fill"
-                      style={{
-                        transform: `scaleX(${
-                          i < index ? 1 : i === index ? segmentProgress : 0
-                        })`,
-                      }}
-                    />
-                  </button>
-                ))}
-              </div>
+            <p className="studio-reel-hero-side studio-reel-hero-side-right">
+              {current.year}
+            </p>
+          </div>
 
-              <div className="studio-reel-hero-footer-row">
-                <button
-                  type="button"
-                  onClick={prev}
-                  className="studio-reel-hero-icon-btn"
-                  aria-label="Previous format"
-                >
-                  <ChevronLeft className="size-5" />
-                </button>
-                <p className="studio-reel-hero-hint">Tap sides or swipe · Auto-advances</p>
-                <button
-                  type="button"
-                  onClick={next}
-                  className="studio-reel-hero-icon-btn"
-                  aria-label="Next format"
-                >
-                  <ChevronRight className="size-5" />
-                </button>
-              </div>
-            </footer>
+          <div className="studio-reel-hero-segments" role="tablist" aria-label="Format slides">
+            {slides.map((slide, i) => (
+              <button
+                key={slide.contentType}
+                type="button"
+                role="tab"
+                aria-selected={i === index}
+                aria-label={slide.label}
+                onClick={() => goTo(i)}
+                className="studio-reel-hero-segment"
+              >
+                <span
+                  className="studio-reel-hero-segment-fill"
+                  style={{
+                    transform: `scaleX(${
+                      i < index ? 1 : i === index ? segmentProgress : 0
+                    })`,
+                  }}
+                />
+              </button>
+            ))}
           </div>
         </motion.div>
       </AnimatePresence>

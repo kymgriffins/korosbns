@@ -13,8 +13,8 @@ export type StudioReelSlide = {
   image: string;
   imagePosition?: string;
   projectSlug?: string;
+  year: string;
   sectionId: string;
-  /** Visual crop hint for the slide backdrop */
   layout: "cinema" | "vertical" | "square";
 };
 
@@ -41,6 +41,7 @@ export function getStudioReelSlides(): StudioReelSlide[] {
       image: lead?.media.posterUrl ?? service?.image ?? BNS_STUDIO_HERO_IMAGE,
       imagePosition: lead?.media.posterPosition ?? service?.imagePosition,
       projectSlug: lead?.slug,
+      year: lead?.year ?? "2025",
       sectionId: sectionIdFor(type.id),
       layout: layoutFor(type.id),
     };
