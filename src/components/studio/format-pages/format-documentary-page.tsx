@@ -4,7 +4,6 @@ import Image from "next/image";
 import type { StudioProjectEvidence } from "@/data/studios-evidence";
 import { creditsFor, galleryImagesFor, voicesFor } from "@/lib/studio-format-details";
 import {
-  Eyebrow,
   FIELD_IMAGES,
   FormatCta,
   FormatMetric,
@@ -14,7 +13,6 @@ import {
 import { FormatReveal } from "@/components/studio/format-pages/format-motion";
 import { cn } from "@/utils";
 
-/** Documentary page — film layout: full-bleed hero, synopsis, credits roll. */
 export function FormatDocumentaryPage({
   project,
 }: {
@@ -31,77 +29,88 @@ export function FormatDocumentaryPage({
 
   return (
     <FormatShell project={project}>
-      <header className="fpage-film-hero">
-        <Image
-          src={hero.url}
-          alt={project.title}
-          fill
-          priority
-          className={cn("object-cover", hero.position || "object-center")}
-          sizes="100vw"
-        />
-        <div className="fpage-film-scrim" aria-hidden />
-        <div className="fpage-film-copy">
-          <Eyebrow>
-            Documentary · {project.year} · {project.organization.location}
-          </Eyebrow>
-          <h1 className="fpage-film-title">{project.title}</h1>
-          {project.subtitle ? (
-            <p className="fpage-film-sub">{project.subtitle}</p>
-          ) : null}
-        </div>
-      </header>
-
-      <section className="fpage-narrow">
-        <Eyebrow>Synopsis</Eyebrow>
-        <p className="studio-article-prose-lg">{project.briefChallenge}</p>
-        <p className="studio-article-prose">{project.description}</p>
-      </section>
-
-      {fieldShots.slice(0, 1).map((img) => (
-        <figure key={img.src} className="fpage-fullbleed">
+      <div className="fworld-documentary">
+        {/* Cinematic letterbox hero */}
+        <header className="fw-doc-hero">
           <Image
-            src={img.src}
-            alt={img.alt}
+            src={hero.url}
+            alt={project.title}
             fill
-            className="object-cover object-center"
+            priority
+            className={cn("object-cover", hero.position || "object-center")}
             sizes="100vw"
           />
-        </figure>
-      ))}
+          <div className="fw-doc-hero-scrim" aria-hidden />
+          <div className="fw-doc-hero-copy">
+            <p className="fw-doc-hero-eyebrow">
+              Documentary · {project.year} · {project.organization.location}
+            </p>
+            <h1 className="fw-doc-hero-title">{project.title}</h1>
+            {project.subtitle ? (
+              <p className="fw-doc-hero-sub">{project.subtitle}</p>
+            ) : null}
+          </div>
+        </header>
 
-      <FormatReveal experience="cinema" className="fpage-narrow">
-        <Eyebrow>Voices in the film</Eyebrow>
-        {voices.map((voice) => (
-          <blockquote key={voice.name} className="fpage-film-quote">
-            {voice.quote}
-            <cite>
-              — {voice.name}
-              {voice.role ? ` · ${voice.role}` : ""}
-            </cite>
-          </blockquote>
-        ))}
-      </FormatReveal>
+        <div className="fpage-flow">
+          {/* Synopsis */}
+          <section className="fw-doc-synopsis">
+            <p className="fw-doc-synopsis-eyebrow">Synopsis</p>
+            <p className="fw-doc-synopsis-prose">{project.briefChallenge}</p>
+            <p className="fw-doc-synopsis-prose">{project.description}</p>
+          </section>
 
-      <section className="fpage-narrow">
-        <Eyebrow>Credits</Eyebrow>
-        <dl className="fpage-credits">
-          {credits.map((credit) => (
-            <div key={credit.role} className="fpage-credit-row">
-              <dt>{credit.role}</dt>
-              <dd>{credit.name}</dd>
-            </div>
+          {/* Full-bleed field shot */}
+          {fieldShots.slice(0, 1).map((img) => (
+            <figure key={img.src} className="fw-doc-fullbleed">
+              <Image
+                src={img.src}
+                alt={img.alt}
+                fill
+                className="object-cover object-center"
+                sizes="100vw"
+              />
+            </figure>
           ))}
-        </dl>
-      </section>
 
-      <FormatMetric project={project} />
+          {/* Voices */}
+          <FormatReveal experience="cinema" className="fw-doc-voices">
+            <p className="fw-doc-hero-eyebrow">Voices in the film</p>
+            {voices.map((voice) => (
+              <div key={voice.name} className="fw-doc-voice">
+                <blockquote>
+                  {voice.quote}
+                  <cite>
+                    — {voice.name}
+                    {voice.role ? ` · ${voice.role}` : ""}
+                  </cite>
+                </blockquote>
+              </div>
+            ))}
+          </FormatReveal>
 
-      <FormatCta
-        title="Need film like this?"
-        line="Character-driven documentary, shot on location — tell us whose reality needs a lens."
-      />
-      <FormatRelated project={project} />
+          {/* Credits roll */}
+          <section className="fw-doc-credits">
+            <p className="fw-doc-credits-title">Credits</p>
+            <dl>
+              {credits.map((credit) => (
+                <div key={credit.role} className="fw-doc-credit-row">
+                  <dt>{credit.role}</dt>
+                  <dd>{credit.name}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+
+          <FormatMetric project={project} />
+
+          <FormatCta
+            title="Need film like this?"
+            line="Character-driven documentary, shot on location — tell us whose reality needs a lens."
+          />
+          <FormatRelated project={project} />
+        </div>
+      </div>
     </FormatShell>
   );
 }

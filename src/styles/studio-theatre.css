@@ -2738,3 +2738,1314 @@
   display: grid;
   gap: 1rem;
 }
+
+/* ===================================================================
+   FORMAT WORLDS — each page is a different visual universe.
+   =================================================================== */
+
+/* --- 1. PODCAST — "The Record Store" (dark music app) --- */
+.fworld-podcast {
+  --fw-bg: hsl(280 25% 7%);
+  --fw-surface: hsl(280 18% 11%);
+  --fw-elevated: hsl(280 14% 16%);
+  --fw-accent: hsl(280 65% 62%);
+  --fw-fg: hsl(280 10% 94%);
+  --fw-muted: hsl(280 8% 58%);
+  background: var(--fw-bg);
+  color: var(--fw-fg);
+}
+
+.fworld-podcast .fpage-flow {
+  gap: 3.5rem;
+}
+
+.fworld-podcast .fpage-narrow {
+  max-width: 48rem;
+}
+
+.fworld-podcast .fpage-wide {
+  max-width: 76rem;
+}
+
+/* Podcast hero — vinyl record + copy */
+.fw-podcast-hero {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: center;
+  padding: 3rem 0;
+}
+
+@media (min-width: 768px) {
+  .fw-podcast-hero {
+    grid-template-columns: minmax(220px, 320px) 1fr;
+    gap: 3rem;
+    padding: 4rem 0;
+  }
+}
+
+.fw-podcast-vinyl {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px hsl(280 40% 30% / 0.4),
+    0 8px 40px hsl(280 60% 20% / 0.5),
+    0 0 80px hsl(280 65% 40% / 0.15);
+}
+
+.fw-podcast-vinyl::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 1rem;
+  background: radial-gradient(
+    circle at 30% 25%,
+    hsl(280 60% 70% / 0.08) 0%,
+    transparent 60%
+  );
+  pointer-events: none;
+}
+
+.fw-podcast-meta {
+  display: grid;
+  gap: 1rem;
+}
+
+.fw-podcast-title {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--fw-fg);
+}
+
+.fw-podcast-subtitle {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--fw-muted);
+  max-width: 28rem;
+}
+
+/* Waveform player bar */
+.fw-podcast-player {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--fw-surface);
+  border-radius: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.fw-podcast-wave {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 2rem;
+}
+
+.fw-podcast-wave span {
+  display: block;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--fw-accent);
+  animation: fw-wave-pulse 1.2s ease-in-out infinite;
+}
+
+.fw-podcast-wave span:nth-child(1) { height: 30%; animation-delay: 0s; }
+.fw-podcast-wave span:nth-child(2) { height: 60%; animation-delay: 0.1s; }
+.fw-podcast-wave span:nth-child(3) { height: 100%; animation-delay: 0.2s; }
+.fw-podcast-wave span:nth-child(4) { height: 45%; animation-delay: 0.3s; }
+.fw-podcast-wave span:nth-child(5) { height: 80%; animation-delay: 0.4s; }
+.fw-podcast-wave span:nth-child(6) { height: 35%; animation-delay: 0.5s; }
+.fw-podcast-wave span:nth-child(7) { height: 55%; animation-delay: 0.6s; }
+
+@keyframes fw-wave-pulse {
+  0%, 100% { opacity: 0.4; transform: scaleY(0.6); }
+  50% { opacity: 1; transform: scaleY(1); }
+}
+
+.fw-podcast-player .studio-article-audio-el {
+  flex: 1;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  filter: hue-rotate(220deg) saturate(0.6);
+}
+
+.fw-podcast-note {
+  font-size: 0.8rem;
+  color: var(--fw-muted);
+  font-style: italic;
+}
+
+/* Tracklist / show notes */
+.fw-podcast-tracklist {
+  background: var(--fw-surface);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  display: grid;
+  gap: 0;
+}
+
+.fw-podcast-tracklist ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+}
+
+.fw-podcast-track {
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid hsl(280 20% 18%);
+}
+
+.fw-podcast-track:last-child {
+  border-bottom: 0;
+}
+
+.fw-podcast-track-num {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--fw-accent);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.fw-podcast-track-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--fw-fg);
+}
+
+.fw-podcast-track:hover .fw-podcast-track-title {
+  color: var(--fw-accent);
+}
+
+.fw-podcast-about {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.fw-podcast-blockquote {
+  margin: 0;
+  padding: 1.5rem;
+  background: var(--fw-surface);
+  border-radius: 0.75rem;
+  border-left: 3px solid var(--fw-accent) !important;
+  font-size: 1rem;
+  line-height: 1.6;
+  font-style: italic;
+  color: var(--fw-muted);
+}
+
+.fw-podcast-blockquote cite {
+  display: block;
+  margin-top: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-style: normal;
+  color: var(--fw-accent);
+}
+
+/* Podcast gallery strip */
+.fw-podcast-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.fw-podcast-gallery-item {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+/* --- 2. DOCUMENTARY — "The Cinema" --- */
+.fworld-documentary {
+  --fw-bg: hsl(220 20% 4%);
+  --fw-surface: hsl(220 16% 8%);
+  --fw-accent: hsl(24 95% 58%);
+  --fw-fg: hsl(40 15% 94%);
+  --fw-muted: hsl(220 8% 56%);
+  background: var(--fw-bg);
+  color: var(--fw-fg);
+}
+
+.fworld-documentary .fpage-flow {
+  gap: 0;
+}
+
+/* Cinematic letterbox hero */
+.fw-doc-hero {
+  position: relative;
+  width: 100vw;
+  height: 70vh;
+  min-height: 28rem;
+  margin-left: calc(-50vw + 50%);
+  overflow: hidden;
+}
+
+@media (min-width: 1200px) {
+  .fw-doc-hero {
+    height: 80vh;
+    min-height: 34rem;
+  }
+}
+
+.fw-doc-hero::before,
+.fw-doc-hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 8vh;
+  background: var(--fw-bg);
+  z-index: 2;
+}
+
+.fw-doc-hero::before { top: 0; }
+.fw-doc-hero::after { bottom: 0; }
+
+.fw-doc-hero img {
+  position: absolute;
+  inset: 8vh 0;
+  height: calc(100% - 16vh);
+  width: 100%;
+  object-fit: cover;
+}
+
+.fw-doc-hero-scrim {
+  position: absolute;
+  inset: 8vh 0;
+  background: linear-gradient(
+    to top,
+    var(--fw-bg) 0%,
+    hsl(220 20% 4% / 0.7) 30%,
+    hsl(220 20% 4% / 0.2) 60%,
+    hsl(220 20% 4% / 0.6) 100%
+  );
+  z-index: 1;
+}
+
+.fw-doc-hero-copy {
+  position: absolute;
+  bottom: 10vh;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  padding: 0 2rem;
+  max-width: 76rem;
+  margin: 0 auto;
+}
+
+.fw-doc-hero-eyebrow {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fw-accent);
+  margin-bottom: 1rem;
+}
+
+.fw-doc-hero-title {
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  font-weight: 900;
+  line-height: 0.88;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.fw-doc-hero-sub {
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  color: var(--fw-muted);
+  max-width: 32rem;
+}
+
+/* Synopsis */
+.fw-doc-synopsis {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.fw-doc-synopsis-eyebrow {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fw-accent);
+}
+
+.fw-doc-synopsis-prose {
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: var(--fw-fg);
+}
+
+.fw-doc-synopsis-prose + .fw-doc-synopsis-prose {
+  color: var(--fw-muted);
+}
+
+/* Full-bleed image */
+.fw-doc-fullbleed {
+  position: relative;
+  width: 100vw;
+  height: 50vh;
+  margin-left: calc(-50vw + 50%);
+  overflow: hidden;
+}
+
+.fw-doc-fullbleed img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Voices */
+.fw-doc-voices {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+  display: grid;
+  gap: 2rem;
+}
+
+.fw-doc-voice {
+  padding: 1.5rem;
+  border-left: 3px solid var(--fw-accent) !important;
+  background: var(--fw-surface);
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.fw-doc-voice blockquote {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  font-style: italic;
+  color: var(--fw-fg);
+}
+
+.fw-doc-voice cite {
+  display: block;
+  margin-top: 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-style: normal;
+  color: var(--fw-accent);
+}
+
+/* Credits roll */
+.fw-doc-credits {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4rem;
+  display: grid;
+  gap: 0;
+}
+
+.fw-doc-credits-title {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fw-accent);
+  margin-bottom: 1.5rem;
+}
+
+.fw-doc-credit-row {
+  display: grid;
+  grid-template-columns: 8rem 1fr;
+  gap: 1rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid hsl(220 10% 14%);
+  font-size: 0.85rem;
+}
+
+.fw-doc-credit-row dt {
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  color: var(--fw-muted);
+}
+
+.fw-doc-credit-row dd {
+  font-weight: 600;
+  color: var(--fw-fg);
+}
+
+/* --- 3. EXPLAINER — "The Explainer Canvas" --- */
+.fworld-explainer {
+  --fw-bg: hsl(210 20% 98%);
+  --fw-surface: hsl(210 14% 94%);
+  --fw-elevated: hsl(0 0% 100%);
+  --fw-accent: hsl(214 100% 50%);
+  --fw-fg: hsl(220 20% 10%);
+  --fw-muted: hsl(220 8% 46%);
+  background: var(--fw-bg);
+  color: var(--fw-fg);
+}
+
+.fworld-explainer .fpage-flow {
+  gap: 3rem;
+}
+
+/* Video-first hero */
+.fw-explainer-hero {
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 0;
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .fw-explainer-hero {
+    padding: 4rem 2rem 0;
+  }
+}
+
+.fw-explainer-hero-copy {
+  max-width: 48rem;
+}
+
+.fw-explainer-hero-title {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+.fw-explainer-hero-sub {
+  margin-top: 0.75rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--fw-muted);
+}
+
+.fw-explainer-video {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: hsl(220 15% 88%);
+  box-shadow: 0 4px 24px hsl(220 20% 60% / 0.2);
+}
+
+.fw-explainer-video iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Chapter scrub bar */
+.fw-explainer-chapters {
+  display: grid;
+  gap: 0;
+  background: var(--fw-elevated);
+  border-radius: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 1px 3px hsl(220 20% 60% / 0.1);
+}
+
+.fw-explainer-chapters ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+}
+
+.fw-explainer-chapter {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: 0.75rem;
+  align-items: start;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid hsl(220 12% 90%);
+}
+
+.fw-explainer-chapter:last-child {
+  border-bottom: 0;
+}
+
+.fw-explainer-chapter-num {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--fw-accent);
+  padding: 0.2rem 0.5rem;
+  background: hsl(214 100% 50% / 0.08);
+  border-radius: 0.3rem;
+  text-align: center;
+}
+
+.fw-explainer-chapter-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.fw-explainer-chapter-note {
+  font-size: 0.8rem;
+  color: var(--fw-muted);
+  margin-top: 0.2rem;
+}
+
+/* Confusion + build sections */
+.fw-explainer-content {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: grid;
+  gap: 2rem;
+}
+
+.fw-explainer-section-title {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fw-accent);
+}
+
+/* --- 4. ANIMATION — "The Production Studio" --- */
+.fworld-animation {
+  --fw-bg: hsl(215 18% 8%);
+  --fw-surface: hsl(215 14% 12%);
+  --fw-elevated: hsl(215 12% 16%);
+  --fw-accent: hsl(24 95% 58%);
+  --fw-fg: hsl(40 15% 94%);
+  --fw-muted: hsl(215 8% 56%);
+  background: var(--fw-bg);
+  color: var(--fw-fg);
+}
+
+.fworld-animation .fpage-flow {
+  gap: 3.5rem;
+}
+
+/* Pipeline — horizontal connected stages */
+.fw-anim-pipeline {
+  display: grid;
+  gap: 0;
+  padding: 2rem 0;
+  overflow-x: auto;
+}
+
+@media (min-width: 768px) {
+  .fw-anim-pipeline {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+}
+
+.fw-anim-stage {
+  position: relative;
+  padding: 1.5rem;
+  text-align: center;
+  border-right: 2px solid hsl(215 15% 20%);
+}
+
+.fw-anim-stage:last-child {
+  border-right: 0;
+}
+
+.fw-anim-stage::after {
+  content: "→";
+  position: absolute;
+  right: -0.7rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  color: var(--fw-accent);
+  z-index: 1;
+}
+
+.fw-anim-stage:last-child::after {
+  display: none;
+}
+
+.fw-anim-stage-num {
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: var(--fw-accent);
+  margin-bottom: 0.5rem;
+}
+
+.fw-anim-stage-title {
+  font-size: 1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.fw-anim-stage-desc {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--fw-muted);
+}
+
+/* Style frames grid */
+.fw-anim-frames {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .fw-anim-frames {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.fw-anim-frame {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  border-radius: 0.3rem;
+  overflow: hidden;
+}
+
+.fw-anim-frame:hover {
+  z-index: 1;
+  transform: scale(1.02);
+  transition: transform 0.2s ease;
+}
+
+/* --- 5. DOSSIER — "The Classified Document" --- */
+.fworld-dossier {
+  --fw-bg: hsl(40 30% 94%);
+  --fw-surface: hsl(40 20% 90%);
+  --fw-elevated: hsl(40 25% 96%);
+  --fw-accent: hsl(45 90% 45%);
+  --fw-fg: hsl(220 20% 14%);
+  --fw-muted: hsl(220 8% 42%);
+  --fw-redacted: hsl(220 20% 14%);
+  background: var(--fw-bg);
+  color: var(--fw-fg);
+}
+
+.fworld-dossier .fpage-flow {
+  gap: 3rem;
+}
+
+/* Document header — typewriter style */
+.fw-dossier-header {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 2rem;
+  border-bottom: 2px solid var(--fw-fg);
+  display: grid;
+  gap: 1rem;
+}
+
+.fw-dossier-header-stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: hsl(0 70% 50%);
+  border: 2px solid hsl(0 70% 50%);
+  padding: 0.3rem 0.7rem;
+  border-radius: 0.2rem;
+  width: fit-content;
+  transform: rotate(-2deg);
+}
+
+.fw-dossier-header-title {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.fw-dossier-header-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid hsl(40 15% 78%);
+}
+
+.fw-dossier-meta-item dt {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--fw-muted);
+}
+
+.fw-dossier-meta-item dd {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-top: 0.15rem;
+}
+
+/* Findings index */
+.fw-dossier-findings {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: grid;
+  gap: 0;
+}
+
+.fw-dossier-finding {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: 1rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid hsl(40 15% 80%);
+}
+
+.fw-dossier-finding:last-child {
+  border-bottom: 0;
+}
+
+.fw-dossier-finding-num {
+  width: 2.2rem;
+  height: 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--fw-accent);
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--fw-accent);
+}
+
+.fw-dossier-finding-title {
+  font-size: 1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+}
+
+.fw-dossier-finding-detail {
+  font-size: 0.85rem;
+  color: var(--fw-muted);
+  margin-top: 0.3rem;
+  line-height: 1.5;
+}
+
+/* Methodology grid */
+.fw-dossier-method {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .fw-dossier-method {
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+}
+
+.fw-dossier-cover {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border-radius: 0.3rem;
+  overflow: hidden;
+  box-shadow: 0 4px 20px hsl(40 15% 50% / 0.2);
+}
+
+.fw-dossier-method-text {
+  display: grid;
+  gap: 1rem;
+}
+
+/* --- 6. SERIES — "The Vertical Feed" --- */
+.fworld-series {
+  --fw-bg: hsl(0 0% 4%);
+  --fw-surface: hsl(0 0% 8%);
+  --fw-elevated: hsl(0 0% 12%);
+  --fw-accent: hsl(330 75% 58%);
+  --fw-fg: hsl(0 0% 96%);
+  --fw-muted: hsl(0 0% 56%);
+  background: var(--fw-bg);
+  color: var(--fw-fg);
+}
+
+.fworld-series .fpage-flow {
+  gap: 3rem;
+}
+
+/* Series hero — phone + copy */
+.fw-series-hero {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  align-items: center;
+  padding: 2rem 0;
+}
+
+@media (min-width: 768px) {
+  .fw-series-hero {
+    grid-template-columns: minmax(200px, 280px) 1fr;
+    gap: 3rem;
+    padding: 3rem 0;
+  }
+}
+
+.fw-series-phone {
+  position: relative;
+  width: 100%;
+  max-width: 280px;
+  aspect-ratio: 9 / 16;
+  margin: 0 auto;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  border: 3px solid hsl(0 0% 20%);
+  box-shadow:
+    0 0 0 1px hsl(0 0% 15%),
+    0 12px 40px hsl(0 0% 0% / 0.6);
+}
+
+.fw-series-phone-notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40%;
+  height: 1.5rem;
+  background: hsl(0 0% 4%);
+  border-radius: 0 0 1rem 1rem;
+  z-index: 2;
+}
+
+.fw-series-phone-ui {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  padding: 1rem;
+  background: linear-gradient(to top, hsl(0 0% 0% / 0.9), transparent);
+  display: grid;
+  gap: 0.3rem;
+}
+
+.fw-series-phone-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--fw-accent);
+}
+
+.fw-series-phone-title {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: white;
+}
+
+/* Episode grid — vertical feed style */
+.fw-series-episodes {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .fw-series-episodes {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .fw-series-episodes {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.fw-series-ep {
+  position: relative;
+  aspect-ratio: 9 / 14;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.fw-series-ep:hover {
+  transform: scale(1.03);
+  transition: transform 0.2s ease;
+}
+
+.fw-series-ep-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, hsl(0 0% 0% / 0.85) 0%, transparent 50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1rem;
+}
+
+.fw-series-ep-num {
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: var(--fw-accent);
+}
+
+.fw-series-ep-title {
+  font-size: 0.85rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: white;
+  margin-top: 0.2rem;
+}
+
+/* --- 7. CONVENING — "The Live Stage" --- */
+.fworld-convening {
+  --fw-bg: hsl(155 20% 5%);
+  --fw-surface: hsl(155 16% 9%);
+  --fw-elevated: hsl(155 12% 13%);
+  --fw-accent: hsl(145 45% 48%);
+  --fw-fg: hsl(40 15% 94%);
+  --fw-muted: hsl(155 8% 54%);
+  background: var(--fw-bg);
+  color: var(--fw-fg);
+}
+
+.fworld-convening .fpage-flow {
+  gap: 0;
+}
+
+/* Stage banner */
+.fw-stage-banner {
+  position: relative;
+  width: 100vw;
+  height: 60vh;
+  min-height: 24rem;
+  margin-left: calc(-50vw + 50%);
+  overflow: hidden;
+}
+
+.fw-stage-banner-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    var(--fw-bg) 0%,
+    hsl(155 20% 5% / 0.6) 40%,
+    hsl(155 20% 5% / 0.2) 70%,
+    hsl(155 20% 5% / 0.5) 100%
+  );
+  z-index: 1;
+}
+
+.fw-stage-banner-copy {
+  position: absolute;
+  bottom: 3rem;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  padding: 0 2rem;
+  max-width: 76rem;
+  margin: 0 auto;
+}
+
+.fw-stage-banner-eyebrow {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fw-accent);
+  margin-bottom: 0.75rem;
+}
+
+.fw-stage-banner-title {
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+
+/* Agenda timeline */
+.fw-stage-agenda {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+  display: grid;
+  gap: 0;
+}
+
+.fw-stage-agenda-title {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--fw-accent);
+  margin-bottom: 1.5rem;
+}
+
+.fw-stage-agenda-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0;
+}
+
+.fw-stage-agenda-item {
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+  gap: 1rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid hsl(155 15% 14%);
+  position: relative;
+}
+
+.fw-stage-agenda-item:last-child {
+  border-bottom: 0;
+}
+
+.fw-stage-agenda-item::before {
+  content: "";
+  position: absolute;
+  left: 1.35rem;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: hsl(155 30% 18%);
+}
+
+.fw-stage-agenda-item:last-child::before {
+  bottom: 50%;
+}
+
+.fw-stage-agenda-num {
+  position: relative;
+  z-index: 1;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--fw-accent);
+  color: hsl(155 20% 5%);
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.fw-stage-agenda-title-text {
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.fw-stage-agenda-detail {
+  font-size: 0.85rem;
+  color: var(--fw-muted);
+  margin-top: 0.3rem;
+  line-height: 1.5;
+}
+
+/* Room photos */
+.fw-stage-room {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  padding: 0 1.5rem 3rem;
+  max-width: 76rem;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .fw-stage-room {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.fw-stage-room-item {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: 0.3rem;
+  overflow: hidden;
+}
+
+/* --- 8. LISTENING — "The Field Recording" --- */
+.fworld-listening {
+  --fw-bg: hsl(35 20% 94%);
+  --fw-surface: hsl(35 15% 90%);
+  --fw-elevated: hsl(35 18% 96%);
+  --fw-accent: hsl(145 40% 42%);
+  --fw-fg: hsl(220 15% 14%);
+  --fw-muted: hsl(220 8% 44%);
+  background: var(--fw-bg);
+  color: var(--fw-fg);
+}
+
+.fworld-listening .fpage-flow {
+  gap: 3rem;
+}
+
+/* Listening header */
+.fw-listen-header {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 2rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.fw-listen-header-title {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+}
+
+.fw-listen-header-sub {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--fw-muted);
+}
+
+/* Voice cards — intimate, warm */
+.fw-listen-voices {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .fw-listen-voices {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.fw-listen-voice {
+  padding: 1.5rem;
+  background: var(--fw-elevated);
+  border-radius: 0.75rem;
+  display: grid;
+  gap: 0.75rem;
+  border-left: 3px solid var(--fw-accent) !important;
+}
+
+.fw-listen-voice-quote {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  font-style: italic;
+  color: var(--fw-fg);
+}
+
+.fw-listen-voice cite {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-style: normal;
+  color: var(--fw-accent);
+}
+
+/* Findings — warm numbered list */
+.fw-listen-findings {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: grid;
+  gap: 0;
+}
+
+.fw-listen-finding {
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid hsl(35 12% 82%);
+}
+
+.fw-listen-finding:last-child {
+  border-bottom: 0;
+}
+
+.fw-listen-finding-num {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--fw-accent);
+}
+
+.fw-listen-finding-title {
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.fw-listen-finding-detail {
+  font-size: 0.85rem;
+  color: var(--fw-muted);
+  margin-top: 0.2rem;
+  line-height: 1.5;
+}
+
+/* Sessions — masonry-style gallery */
+.fw-listen-sessions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .fw-listen-sessions {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.fw-listen-session {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.fw-listen-session:first-child {
+  grid-column: 1 / -1;
+  aspect-ratio: 16 / 9;
+}
+
+/* --- Shared format world elements --- */
+.fw-eyebrow {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.fw-accent { color: var(--fw-accent); }
+.fw-muted  { color: var(--fw-muted); }

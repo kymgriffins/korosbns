@@ -4,7 +4,6 @@ import Image from "next/image";
 import type { StudioProjectEvidence } from "@/data/studios-evidence";
 import { chaptersFor } from "@/lib/studio-format-details";
 import {
-  Eyebrow,
   FormatCta,
   FormatMetric,
   FormatRelated,
@@ -21,7 +20,6 @@ function youtubeEmbedUrl(url: string): string | null {
   return `https://www.youtube.com/embed/${match[1]}`;
 }
 
-/** Explainer page — chapter layout: video, confusion, numbered chapters. */
 export function FormatExplainerPage({
   project,
 }: {
@@ -34,77 +32,106 @@ export function FormatExplainerPage({
 
   return (
     <FormatShell project={project}>
-      <header className="fpage-narrow">
-        <Eyebrow>Explainer · {project.year}</Eyebrow>
-        <h1 className="studio-about-title-xl">{project.title}</h1>
-        {project.subtitle ? (
-          <p className="studio-article-lede">{project.subtitle}</p>
-        ) : null}
-      </header>
+      <div className="fworld-explainer">
+        <div className="fpage-flow">
+          {/* Hero — copy + video */}
+          <header className="fw-explainer-hero">
+            <div className="fw-explainer-hero-copy">
+              <p className="fw-eyebrow fw-accent">
+                Explainer · {project.year}
+              </p>
+              <h1 className="fw-explainer-hero-title">
+                {project.title}
+              </h1>
+              {project.subtitle ? (
+                <p className="fw-explainer-hero-sub">{project.subtitle}</p>
+              ) : null}
+            </div>
+          </header>
 
-      <figure className="fpage-video">
-        {embed ? (
-          <iframe
-            src={embed}
-            title={project.title}
-            className="size-full"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
-        ) : (
-          <div className="relative size-full">
-            <Image
-              src={project.media.posterUrl}
-              alt={project.title}
-              fill
-              priority
-              className={cn(
-                "object-cover",
-                project.media.posterPosition || "object-center",
-              )}
-              sizes="100vw"
-            />
-          </div>
-        )}
-      </figure>
-
-      <section className="fpage-narrow">
-        <Eyebrow>The confusion</Eyebrow>
-        <p className="studio-article-prose-lg">{project.briefChallenge}</p>
-      </section>
-
-      <FormatReveal experience="cinema" className="fpage-narrow">
-        <Eyebrow>Chapters</Eyebrow>
-        <ol className="fpage-chapters">
-          {chapters.map((chapter, i) => (
-            <li key={chapter.title} className="fpage-chapter">
-              <span className="fpage-chapter-num">
-                CH {String(i + 1).padStart(2, "0")}
-              </span>
-              <div>
-                <p className="fpage-chapter-title">{chapter.title}</p>
-                {chapter.note ? (
-                  <p className="studio-article-prose-sm">{chapter.note}</p>
-                ) : null}
+          {/* Video-first */}
+          <figure className="fw-explainer-video" style={{ maxWidth: "76rem", margin: "0 auto", width: "100%", padding: "0 1.5rem" }}>
+            {embed ? (
+              <iframe
+                src={embed}
+                title={project.title}
+                className="size-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            ) : (
+              <div className="relative size-full">
+                <Image
+                  src={project.media.posterUrl}
+                  alt={project.title}
+                  fill
+                  priority
+                  className={cn(
+                    "object-cover",
+                    project.media.posterPosition || "object-center",
+                  )}
+                  sizes="100vw"
+                />
               </div>
-            </li>
-          ))}
-        </ol>
-      </FormatReveal>
+            )}
+          </figure>
 
-      <section className="fpage-narrow">
-        <Eyebrow>How it was built</Eyebrow>
-        <p className="studio-article-prose">{project.whatWeProduced}</p>
-        <p className="studio-article-prose">{project.description}</p>
-      </section>
+          {/* The confusion */}
+          <section className="fw-explainer-content">
+            <div>
+              <p className="fw-explainer-section-title">The confusion</p>
+              <p className="studio-article-prose-lg" style={{ marginTop: "0.75rem" }}>
+                {project.briefChallenge}
+              </p>
+            </div>
+          </section>
 
-      <FormatMetric project={project} />
+          {/* Chapter scrub bar */}
+          <FormatReveal experience="cinema" className="fw-explainer-content">
+            <div className="fw-explainer-chapters">
+              <p className="fw-explainer-section-title" style={{ marginBottom: "1rem" }}>
+                Chapters
+              </p>
+              <ol>
+                {chapters.map((chapter, i) => (
+                  <li key={chapter.title} className="fw-explainer-chapter">
+                    <span className="fw-explainer-chapter-num">
+                      CH {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <div>
+                      <p className="fw-explainer-chapter-title">{chapter.title}</p>
+                      {chapter.note ? (
+                        <p className="fw-explainer-chapter-note">{chapter.note}</p>
+                      ) : null}
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </FormatReveal>
 
-      <FormatCta
-        title="Need explainers like this?"
-        line="Presenter-led clarity with motion graphics from published tables — tell us what confuses your audience."
-      />
-      <FormatRelated project={project} />
+          {/* How it was built */}
+          <section className="fw-explainer-content">
+            <div>
+              <p className="fw-explainer-section-title">How it was built</p>
+              <p className="studio-article-prose" style={{ marginTop: "0.75rem" }}>
+                {project.whatWeProduced}
+              </p>
+              <p className="studio-article-prose" style={{ marginTop: "0.5rem" }}>
+                {project.description}
+              </p>
+            </div>
+          </section>
+
+          <FormatMetric project={project} />
+
+          <FormatCta
+            title="Need explainers like this?"
+            line="Presenter-led clarity with motion graphics from published tables — tell us what confuses your audience."
+          />
+          <FormatRelated project={project} />
+        </div>
+      </div>
     </FormatShell>
   );
 }

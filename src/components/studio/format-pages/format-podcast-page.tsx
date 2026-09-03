@@ -5,7 +5,6 @@ import type { StudioProjectEvidence } from "@/data/studios-evidence";
 import { projectHasAudio } from "@/lib/studio-presentation";
 import { chaptersFor, galleryImagesFor } from "@/lib/studio-format-details";
 import {
-  Eyebrow,
   FIELD_IMAGES,
   FormatCta,
   FormatMetric,
@@ -15,7 +14,6 @@ import {
 import { FormatReveal } from "@/components/studio/format-pages/format-motion";
 import { cn } from "@/utils";
 
-/** Podcast page — episode layout: art + player, show notes, chapters. */
 export function FormatPodcastPage({ project }: { project: StudioProjectEvidence }) {
   const chapters = chaptersFor(project);
   const { gallery, extra } = galleryImagesFor(project, FIELD_IMAGES, 4);
@@ -27,105 +25,129 @@ export function FormatPodcastPage({ project }: { project: StudioProjectEvidence 
 
   return (
     <FormatShell project={project}>
-      <header className="fpage-podcast-hero">
-        <div className="fpage-podcast-art">
-          <Image
-            src={poster.url}
-            alt={project.title}
-            fill
-            priority
-            className={cn("object-cover", poster.position || "object-center")}
-            sizes="(max-width: 768px) 70vw, 320px"
-          />
-        </div>
-        <div>
-          <Eyebrow>
-            Podcast & Audio · {project.year} · {project.organization.name}
-          </Eyebrow>
-          <h1 className="studio-about-title-xl">{project.title}</h1>
-          {project.subtitle ? (
-            <p className="studio-article-lede">{project.subtitle}</p>
-          ) : null}
-          <div className="studio-waveform" aria-hidden>
-            {Array.from({ length: 7 }).map((_, i) => (
-              <span key={i} />
-            ))}
-          </div>
-          {projectHasAudio(project) && project.media.audioUrl ? (
-            <audio
-              controls
-              className="studio-article-audio-el"
-              src={project.media.audioUrl}
-              preload="metadata"
-            >
-              <track kind="captions" />
-            </audio>
-          ) : (
-            <p className="studio-article-note">
-              Full episode available on request — contact BNS Studios.
-            </p>
-          )}
-        </div>
-      </header>
-
-      <div className="fpage-podcast-grid">
-        <section>
-          <Eyebrow>Show notes</Eyebrow>
-          <h2 className="fpage-h2">Why this episode exists.</h2>
-          <p className="studio-article-prose-lg">{project.briefChallenge}</p>
-          <p className="studio-article-prose">{project.description}</p>
-          <blockquote className="studio-article-quote">
-            {project.organization.description}
-            <cite>— {project.organization.name}</cite>
-          </blockquote>
-        </section>
-        <FormatReveal experience="podcast" className="fpage-podcast-chapters">
-          <Eyebrow>In this episode</Eyebrow>
-          <ol>
-            {chapters.map((chapter, i) => (
-              <li key={chapter.title} className="fpage-podcast-chapter">
-                <span className="fpage-podcast-chapter-num">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <span>{chapter.title}</span>
-              </li>
-            ))}
-          </ol>
-          {project.tags.length > 0 ? (
-            <div className="studio-article-tags">
-              {project.tags.map((tag) => (
-                <span key={tag} className="studio-article-tag">
-                  #{tag}
-                </span>
-              ))}
+      <div className="fworld-podcast">
+        <div className="fpage-flow">
+          {/* Hero — vinyl art + copy */}
+          <header className="fw-podcast-hero">
+            <div className="fw-podcast-vinyl">
+              <Image
+                src={poster.url}
+                alt={project.title}
+                fill
+                priority
+                className={cn("object-cover", poster.position || "object-center")}
+                sizes="(max-width: 768px) 70vw, 320px"
+              />
             </div>
-          ) : null}
-        </FormatReveal>
-      </div>
+            <div className="fw-podcast-meta">
+              <p className="fw-eyebrow fw-accent">
+                Podcast &amp; Audio · {project.year} · {project.organization.name}
+              </p>
+              <h1 className="fw-podcast-title">{project.title}</h1>
+              {project.subtitle ? (
+                <p className="fw-podcast-subtitle">{project.subtitle}</p>
+              ) : null}
 
-      <FormatMetric project={project} />
-
-      {(gallery.length > 1 || extra.length > 0) && (
-        <section className="fpage-gallery-strip">
-          <Eyebrow>From the booth</Eyebrow>
-          <div className="fpage-strip-row">
-            {boothShots.map((img) => (
-              <div key={img.src} className="fpage-strip-item">
-                <Image
-                  src={img.src}
-                  alt={img.alt}
-                  fill
-                  className="object-cover object-center"
-                  sizes="(max-width: 768px) 60vw, 25vw"
-                />
+              {/* Waveform player */}
+              <div className="fw-podcast-player">
+                <div className="fw-podcast-wave" aria-hidden>
+                  {Array.from({ length: 7 }).map((_, i) => (
+                    <span key={i} />
+                  ))}
+                </div>
+                {projectHasAudio(project) && project.media.audioUrl ? (
+                  <audio
+                    controls
+                    className="studio-article-audio-el"
+                    src={project.media.audioUrl}
+                    preload="metadata"
+                  >
+                    <track kind="captions" />
+                  </audio>
+                ) : (
+                  <p className="fw-podcast-note">
+                    Full episode available on request — contact BNS Studios.
+                  </p>
+                )}
               </div>
-            ))}
-          </div>
-        </section>
-      )}
+            </div>
+          </header>
 
-      <FormatCta title="Need audio like this?" />
-      <FormatRelated project={project} />
+          {/* Tracklist + show notes */}
+          <div className="fpage-wide">
+            <div className="fw-podcast-about">
+              <section>
+                <p className="fw-eyebrow fw-accent">Show notes</p>
+                <h2 className="fpage-h2" style={{ marginTop: "0.75rem" }}>
+                  Why this episode exists.
+                </h2>
+                <p className="studio-article-prose-lg" style={{ marginTop: "1rem" }}>
+                  {project.briefChallenge}
+                </p>
+                <p className="studio-article-prose" style={{ marginTop: "0.75rem" }}>
+                  {project.description}
+                </p>
+                <blockquote className="fw-podcast-blockquote">
+                  {project.organization.description}
+                  <cite>— {project.organization.name}</cite>
+                </blockquote>
+              </section>
+
+              <FormatReveal experience="podcast">
+                <div className="fw-podcast-tracklist">
+                  <p className="fw-eyebrow fw-accent" style={{ marginBottom: "1rem" }}>
+                    In this episode
+                  </p>
+                  <ol>
+                    {chapters.map((chapter, i) => (
+                      <li key={chapter.title} className="fw-podcast-track">
+                        <span className="fw-podcast-track-num">
+                          {String(i + 1).padStart(2, "0")}
+                        </span>
+                        <span className="fw-podcast-track-title">{chapter.title}</span>
+                      </li>
+                    ))}
+                  </ol>
+                  {project.tags.length > 0 ? (
+                    <div className="studio-article-tags" style={{ marginTop: "1rem" }}>
+                      {project.tags.map((tag) => (
+                        <span key={tag} className="studio-article-tag">
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+              </FormatReveal>
+            </div>
+          </div>
+
+          <FormatMetric project={project} />
+
+          {/* Booth gallery */}
+          {boothShots.length > 0 && (
+            <section className="fpage-wide">
+              <p className="fw-eyebrow fw-accent">From the booth</p>
+              <div className="fw-podcast-gallery">
+                {boothShots.map((img) => (
+                  <div key={img.src} className="fw-podcast-gallery-item">
+                    <Image
+                      src={img.src}
+                      alt={img.alt}
+                      fill
+                      className="object-cover object-center"
+                      sizes="(max-width: 768px) 50vw, 25vw"
+                    />
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          <FormatCta title="Need audio like this?" />
+          <FormatRelated project={project} />
+        </div>
+      </div>
     </FormatShell>
   );
 }

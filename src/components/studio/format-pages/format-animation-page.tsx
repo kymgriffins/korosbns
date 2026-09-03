@@ -4,7 +4,6 @@ import Image from "next/image";
 import type { StudioProjectEvidence } from "@/data/studios-evidence";
 import { galleryImagesFor } from "@/lib/studio-format-details";
 import {
-  Eyebrow,
   FIELD_IMAGES,
   FormatCta,
   FormatMetric,
@@ -12,7 +11,6 @@ import {
   FormatShell,
 } from "@/components/studio/format-pages/format-shared";
 import { FormatReveal } from "@/components/studio/format-pages/format-motion";
-import { cn } from "@/utils";
 
 const PIPELINE = [
   {
@@ -33,7 +31,6 @@ const PIPELINE = [
   },
 ];
 
-/** Animation page — pipeline layout: stages, style frames, deliverables. */
 export function FormatAnimationPage({
   project,
 }: {
@@ -47,70 +44,86 @@ export function FormatAnimationPage({
 
   return (
     <FormatShell project={project}>
-      <header className="fpage-narrow">
-        <Eyebrow>Animation · {project.year}</Eyebrow>
-        <h1 className="studio-about-title-xl">{project.title}</h1>
-        {project.subtitle ? (
-          <p className="studio-article-lede">{project.subtitle}</p>
-        ) : null}
-      </header>
+      <div className="fworld-animation">
+        <div className="fpage-flow">
+          <header className="fpage-narrow">
+            <p className="fw-eyebrow fw-accent">
+              Animation · {project.year}
+            </p>
+            <h1 className="studio-about-title-xl" style={{ marginTop: "0.75rem" }}>
+              {project.title}
+            </h1>
+            {project.subtitle ? (
+              <p className="studio-article-lede">{project.subtitle}</p>
+            ) : null}
+          </header>
 
-      <FormatReveal experience="cinema" className="fpage-wide">
-        <Eyebrow>The pipeline</Eyebrow>
-        <div className="fpage-pipeline">
-          {PIPELINE.map((stage, i) => (
-            <article key={stage.title} className="fpage-pipeline-stage">
-              <p className="fpage-pipeline-num">
-                {String(i + 1).padStart(2, "0")}
-              </p>
-              <h2 className="fpage-pipeline-title">{stage.title}</h2>
-              <p className="studio-article-prose-sm">{stage.body}</p>
-            </article>
-          ))}
+          {/* Pipeline — horizontal connected stages */}
+          <FormatReveal experience="cinema" className="fpage-wide">
+            <p className="fw-eyebrow fw-accent">The pipeline</p>
+            <div className="fw-anim-pipeline">
+              {PIPELINE.map((stage, i) => (
+                <article key={stage.title} className="fw-anim-stage">
+                  <p className="fw-anim-stage-num">
+                    {String(i + 1).padStart(2, "0")}
+                  </p>
+                  <h2 className="fw-anim-stage-title">{stage.title}</h2>
+                  <p className="fw-anim-stage-desc">{stage.body}</p>
+                </article>
+              ))}
+            </div>
+            <p className="studio-article-prose" style={{ marginTop: "1.5rem" }}>
+              {project.whatWeProduced}
+            </p>
+          </FormatReveal>
+
+          {/* Style frames grid */}
+          <section className="fpage-wide">
+            <p className="fw-eyebrow fw-accent">Style frames</p>
+            <div className="fw-anim-frames" style={{ marginTop: "1rem" }}>
+              {frames.map((img) => (
+                <figure key={img.src} className="fw-anim-frame">
+                  <Image
+                    src={img.src}
+                    alt={img.alt}
+                    fill
+                    className="object-cover object-center"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                </figure>
+              ))}
+            </div>
+          </section>
+
+          <section className="fpage-narrow">
+            <p className="fw-eyebrow fw-accent">The brief</p>
+            <p className="studio-article-prose-lg" style={{ marginTop: "0.75rem" }}>
+              {project.briefChallenge}
+            </p>
+            <p className="fw-eyebrow fw-accent" style={{ marginTop: "1.5rem" }}>
+              Deliverables
+            </p>
+            <ol className="studio-article-outputs" style={{ marginTop: "0.75rem" }}>
+              {project.outputs.map((output, i) => (
+                <li key={output} className="studio-article-output">
+                  <span className="studio-article-output-num">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span>{output}</span>
+                </li>
+              ))}
+            </ol>
+          </section>
+
+          <FormatMetric project={project} />
+
+          <FormatCta
+            title="Need motion like this?"
+            line="High-retention 2D and motion explainers — tell us what words alone can't move."
+          />
+          <FormatRelated project={project} />
         </div>
-        <p className="studio-article-prose">{project.whatWeProduced}</p>
-      </FormatReveal>
-
-      <section className="fpage-wide">
-        <Eyebrow>Style frames</Eyebrow>
-        <div className="fpage-frames">
-          {frames.map((img) => (
-            <figure key={img.src} className="fpage-frame">
-              <Image
-                src={img.src}
-                alt={img.alt}
-                fill
-                className="object-cover object-center"
-                sizes="(max-width: 768px) 100vw, 33vw"
-              />
-            </figure>
-          ))}
-        </div>
-      </section>
-
-      <section className="fpage-narrow">
-        <Eyebrow>The brief</Eyebrow>
-        <p className="studio-article-prose-lg">{project.briefChallenge}</p>
-        <Eyebrow>Deliverables</Eyebrow>
-        <ol className="studio-article-outputs">
-          {project.outputs.map((output, i) => (
-            <li key={output} className="studio-article-output">
-              <span className="studio-article-output-num">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <span>{output}</span>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      <FormatMetric project={project} />
-
-      <FormatCta
-        title="Need motion like this?"
-        line="High-retention 2D and motion explainers — tell us what words alone can't move."
-      />
-      <FormatRelated project={project} />
+      </div>
     </FormatShell>
   );
 }

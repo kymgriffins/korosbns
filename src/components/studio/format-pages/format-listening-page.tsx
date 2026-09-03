@@ -4,7 +4,6 @@ import Image from "next/image";
 import type { StudioProjectEvidence } from "@/data/studios-evidence";
 import { findingsFor, galleryImagesFor, voicesFor } from "@/lib/studio-format-details";
 import {
-  Eyebrow,
   FIELD_IMAGES,
   FormatCta,
   FormatMetric,
@@ -13,7 +12,6 @@ import {
 } from "@/components/studio/format-pages/format-shared";
 import { FormatReveal } from "@/components/studio/format-pages/format-motion";
 
-/** Listening page — field-notes layout: voices first, findings, sessions. */
 export function FormatListeningPage({
   project,
 }: {
@@ -29,79 +27,94 @@ export function FormatListeningPage({
 
   return (
     <FormatShell project={project}>
-      <header className="fpage-narrow">
-        <Eyebrow>
-          Listening · {project.organization.location} · {project.year}
-        </Eyebrow>
-        <h1 className="studio-about-title-xl">{project.title}</h1>
-        {project.subtitle ? (
-          <p className="studio-article-lede">{project.subtitle}</p>
-        ) : null}
-        <p className="studio-article-prose">{project.briefChallenge}</p>
-      </header>
+      <div className="fworld-listening">
+        <div className="fpage-flow">
+          {/* Header */}
+          <header className="fw-listen-header">
+            <p className="fw-eyebrow fw-accent">
+              Listening · {project.organization.location} · {project.year}
+            </p>
+            <h1 className="fw-listen-header-title">{project.title}</h1>
+            {project.subtitle ? (
+              <p className="fw-listen-header-sub">{project.subtitle}</p>
+            ) : null}
+            <p className="studio-article-prose">{project.briefChallenge}</p>
+          </header>
 
-      <FormatReveal experience="stage" className="fpage-wide">
-        <Eyebrow>Voices</Eyebrow>
-        <div className="fpage-voices">
-          {voices.map((voice) => (
-            <blockquote key={voice.name} className="fpage-voice-card">
-              <p className="fpage-voice-quote">“{voice.quote}”</p>
-              <cite>
-                — {voice.name}
-                {voice.role ? ` · ${voice.role}` : ""}
-              </cite>
-            </blockquote>
-          ))}
-        </div>
-      </FormatReveal>
-
-      <section className="fpage-narrow">
-        <Eyebrow>What we heard</Eyebrow>
-        <ol className="fpage-heard">
-          {findings.map((finding, i) => (
-            <li key={finding.title} className="fpage-heard-row">
-              <span className="fpage-heard-num">{i + 1}</span>
-              <div>
-                <p className="fpage-heard-title">{finding.title}</p>
-                {finding.detail ? (
-                  <p className="studio-article-prose-sm">{finding.detail}</p>
-                ) : null}
+          {/* Voices — intimate cards */}
+          <FormatReveal experience="stage" className="fpage-wide">
+            <div style={{ padding: "0 1.5rem" }}>
+              <p className="fw-eyebrow fw-accent">Voices</p>
+              <div className="fw-listen-voices" style={{ marginTop: "1rem" }}>
+                {voices.map((voice) => (
+                  <blockquote key={voice.name} className="fw-listen-voice">
+                    <p className="fw-listen-voice-quote">&ldquo;{voice.quote}&rdquo;</p>
+                    <cite>
+                      — {voice.name}
+                      {voice.role ? ` · ${voice.role}` : ""}
+                    </cite>
+                  </blockquote>
+                ))}
               </div>
-            </li>
-          ))}
-        </ol>
-        <p className="studio-article-prose">{project.description}</p>
-      </section>
+            </div>
+          </FormatReveal>
 
-      <section className="fpage-wide">
-        <Eyebrow>Sessions</Eyebrow>
-        <div className="fpage-sessions">
-          {sessions.map((img) => (
-            <figure key={img.src} className="fpage-session-item">
-              <Image
-                src={img.src}
-                alt={img.alt}
-                fill
-                className="object-cover object-center"
-                sizes="(max-width: 768px) 100vw, 33vw"
-              />
-            </figure>
-          ))}
+          {/* What we heard */}
+          <section className="fw-listen-findings">
+            <p className="fw-eyebrow fw-accent" style={{ marginBottom: "1rem" }}>
+              What we heard
+            </p>
+            {findings.map((finding, i) => (
+              <div key={finding.title} className="fw-listen-finding">
+                <span className="fw-listen-finding-num">{i + 1}</span>
+                <div>
+                  <p className="fw-listen-finding-title">{finding.title}</p>
+                  {finding.detail ? (
+                    <p className="fw-listen-finding-detail">{finding.detail}</p>
+                  ) : null}
+                </div>
+              </div>
+            ))}
+            <p className="studio-article-prose" style={{ marginTop: "1rem" }}>
+              {project.description}
+            </p>
+          </section>
+
+          {/* Sessions gallery */}
+          <section className="fpage-wide" style={{ padding: "0 1.5rem" }}>
+            <p className="fw-eyebrow fw-accent">Sessions</p>
+            <div className="fw-listen-sessions" style={{ marginTop: "1rem" }}>
+              {sessions.map((img) => (
+                <figure key={img.src} className="fw-listen-session">
+                  <Image
+                    src={img.src}
+                    alt={img.alt}
+                    fill
+                    className="object-cover object-center"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                </figure>
+              ))}
+            </div>
+          </section>
+
+          {/* How it was run */}
+          <section className="fpage-narrow" style={{ padding: "0 1.5rem" }}>
+            <p className="fw-eyebrow fw-accent">How it was run</p>
+            <p className="studio-article-prose" style={{ marginTop: "0.75rem" }}>
+              {project.whatWeProduced}
+            </p>
+          </section>
+
+          <FormatMetric project={project} />
+
+          <FormatCta
+            title="Need listening like this?"
+            line="Participatory dialogues with evidence dossiers — tell us whose ground truth is missing."
+          />
+          <FormatRelated project={project} />
         </div>
-      </section>
-
-      <section className="fpage-narrow">
-        <Eyebrow>How it was run</Eyebrow>
-        <p className="studio-article-prose">{project.whatWeProduced}</p>
-      </section>
-
-      <FormatMetric project={project} />
-
-      <FormatCta
-        title="Need listening like this?"
-        line="Participatory dialogues with evidence dossiers — tell us whose ground truth is missing."
-      />
-      <FormatRelated project={project} />
+      </div>
     </FormatShell>
   );
 }
