@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { LearnPathsHome } from "@/components/learn/learn-paths-home";
+import { LearnHubDocuments } from "@/components/learn-hub/LearnHubDocuments";
 import { canonicalUrl, metaDescription } from "@/utils/metadata";
 
 export const metadata: Metadata = {
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default function LearnDocumentsPage() {
   return (
     <Suspense fallback={<div className="min-h-[50vh] animate-pulse bg-muted/20" />}>
-      <LearnPathsHome tab="documents" />
+      <LearnHubDocuments />
     </Suspense>
   );
 }
