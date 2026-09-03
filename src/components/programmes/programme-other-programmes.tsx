@@ -1,6 +1,12 @@
 import Link from "next/link";
-import { PROGRAMMES, programmeHref, type ProgrammeSlug } from "@/content";
-import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
+import { ArrowUpRight } from "lucide-react";
+import {
+  PROGRAMMES,
+  PROGRAMME_CARD_BLURBS,
+  programmeHref,
+  type ProgrammeSlug,
+} from "@/content";
+import { SECTION_SHELL_INNER, SECTION_SHELL_PADDING } from "@/layouts/section-shell";
 import { cn } from "@/utils";
 
 type Props = {
@@ -8,7 +14,7 @@ type Props = {
   className?: string;
 };
 
-/** Minimal cross-links — secondary to the active programme page. */
+/** Keep-reading cards — secondary to the active programme page. */
 export function ProgrammeOtherProgrammes({ currentSlug, className }: Props) {
   const others = PROGRAMMES.filter((p) => p.slug !== currentSlug);
 
@@ -16,25 +22,40 @@ export function ProgrammeOtherProgrammes({ currentSlug, className }: Props) {
 
   return (
     <section
-      className={cn("border-t border-border/30 py-8 md:py-10", className)}
+      className={cn("border-t border-border/30", SECTION_SHELL_PADDING, className)}
       aria-labelledby="other-programmes-heading"
     >
       <div className={SECTION_SHELL_INNER}>
+        <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+          Keep reading
+        </p>
         <h2
           id="other-programmes-heading"
-          className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+          className="mt-2 text-2xl font-extrabold tracking-tight text-foreground md:text-3xl"
         >
           Other programmes
         </h2>
         <nav aria-label="Other programmes">
-          <ul className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:gap-x-6 sm:gap-y-2">
+          <ul className="mt-6 grid gap-4 sm:grid-cols-3">
             {others.map((programme) => (
               <li key={programme.slug}>
                 <Link
                   href={programmeHref(programme.slug)}
-                  className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                  className="group block h-full rounded-2xl border border-border/40 bg-card p-5 transition-colors hover:border-primary/50"
                 >
-                  {programme.name}
+                  <p className="text-[11px] font-semibold uppercase tracking-wider text-primary">
+                    {programme.eyebrow}
+                  </p>
+                  <p className="mt-1 text-base font-bold text-foreground">
+                    {programme.name}
+                  </p>
+                  <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+                    {PROGRAMME_CARD_BLURBS[programme.slug]}
+                  </p>
+                  <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-primary group-hover:underline">
+                    Explore
+                    <ArrowUpRight className="size-3.5" aria-hidden />
+                  </span>
                 </Link>
               </li>
             ))}

@@ -31,6 +31,26 @@ export type ProgrammeVisual = {
   gallery: { src: string; alt: string }[];
 };
 
+export type ProgrammeStat = {
+  value: string;
+  label: string;
+};
+
+export type ProgrammePillar = {
+  title: string;
+  body: string;
+};
+
+export type ProgrammeStep = {
+  title: string;
+  body: string;
+};
+
+export type ProgrammeFaq = {
+  q: string;
+  a: string;
+};
+
 export type ProgrammeBlock = {
   slug: ProgrammeSlug;
   name: string;
@@ -44,6 +64,11 @@ export type ProgrammeBlock = {
   cta: ProgrammeCta;
   href: string;
   visual: ProgrammeVisual;
+  stats?: ProgrammeStat[];
+  pillars?: ProgrammePillar[];
+  process?: ProgrammeStep[];
+  faqs?: ProgrammeFaq[];
+  audience?: string;
 };
 
 export const PROGRAMMES_LANDING = programmesContent.landing;
