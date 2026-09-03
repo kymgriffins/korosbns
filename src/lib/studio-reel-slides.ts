@@ -28,8 +28,22 @@ function layoutFor(contentType: StudioContentType): StudioReelSlide["layout"] {
   return "cinema";
 }
 
+/**
+ * Landing reel curation — 4 audio + visual formats only.
+ * Keeps the home viewport tight: audio craft + visual storytelling.
+ */
+export const STUDIO_REEL_FEATURED_TYPES: StudioContentType[] = [
+  "Podcast & Audio",
+  "Explainer Videos",
+  "Documentaries",
+  "Animations",
+];
+
 export function getStudioReelSlides(): StudioReelSlide[] {
-  return STUDIO_CONTENT_TYPES.map((type) => {
+  const types = STUDIO_CONTENT_TYPES.filter((type) =>
+    STUDIO_REEL_FEATURED_TYPES.includes(type.id),
+  );
+  return types.map((type) => {
     const service = BNS_STUDIO_PAGE_SERVICES.find((s) => s.contentType === type.id);
     const projects = studiosEvidenceData.getProjectsByContentType(type.id);
     const lead = projects.find((p) => p.featured) ?? projects[0];
@@ -48,4 +62,4 @@ export function getStudioReelSlides(): StudioReelSlide[] {
   });
 }
 
-export const STUDIO_REEL_SLIDE_COUNT = STUDIO_CONTENT_TYPES.length;
+export const STUDIO_REEL_SLIDE_COUNT = STUDIO_REEL_FEATURED_TYPES.length;

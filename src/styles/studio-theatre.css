@@ -861,3 +861,345 @@
     padding-inline: 2rem;
   }
 }
+
+/* ─── Reel hero polish (4-slide audio + visual landing) ─────────────────── */
+
+.studio-reel-hero-count {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: hsl(0 0% 100% / 0.6);
+}
+
+.studio-reel-hero-desc {
+  margin-top: 0.9rem;
+  margin-inline: auto;
+  max-width: 28rem;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: hsl(0 0% 100% / 0.78);
+  text-wrap: balance;
+}
+
+/* ─── About v2 — 5 sections, borderless, studio-editorial ───────────────── */
+
+.studio-about-borderless,
+.studio-about-borderless * {
+  border: 0 !important;
+}
+
+.studio-about-section {
+  max-width: 76rem;
+  margin-inline: auto;
+  padding: 3rem 1.25rem;
+}
+
+@media (min-width: 1024px) {
+  .studio-about-section {
+    padding: 4.5rem 2rem;
+  }
+}
+
+.studio-about-hero-v2 {
+  display: grid;
+  gap: 2rem;
+  padding-top: 6rem;
+}
+
+@media (min-width: 1024px) {
+  .studio-about-hero-v2 {
+    grid-template-columns: 1.05fr 0.95fr;
+    align-items: center;
+    gap: 3rem;
+  }
+}
+
+.studio-about-title-xl {
+  margin-top: 0.9rem;
+  font-size: clamp(2.4rem, 6vw, 4.5rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--studio-theatre-fg);
+  text-wrap: balance;
+}
+
+.studio-about-lede {
+  margin-top: 1.25rem;
+  font-size: 1.02rem;
+  line-height: 1.7;
+  color: var(--studio-theatre-fg);
+  max-width: 36rem;
+}
+
+.studio-about-formats-v2 {
+  margin-top: 1rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1.8;
+  color: var(--studio-theatre-muted);
+}
+
+.studio-about-hero-ctas {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+.studio-about-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--studio-theatre-fg);
+}
+
+.studio-about-visual-v2 {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--studio-theatre-surface);
+}
+
+.studio-about-section-head {
+  max-width: 44rem;
+}
+
+.studio-about-index {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--studio-theatre-accent);
+}
+
+.studio-about-h2 {
+  margin-top: 0.75rem;
+  font-size: clamp(1.9rem, 4.5vw, 3.2rem);
+  font-weight: 800;
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--studio-theatre-fg);
+  text-wrap: balance;
+}
+
+.studio-about-h2-xl {
+  margin-top: 0.75rem;
+  font-size: clamp(2.1rem, 5vw, 3.8rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--studio-theatre-fg);
+  text-wrap: balance;
+}
+
+.studio-about-standfirst {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--studio-theatre-muted);
+  max-width: 38rem;
+}
+
+.studio-about-craft-grid {
+  margin-top: 2rem;
+  display: grid;
+  gap: 2rem 1.25rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .studio-about-craft-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .studio-about-craft-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.studio-about-craft-media {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: var(--studio-theatre-surface);
+}
+
+.studio-about-craft-num {
+  position: absolute;
+  left: 0.9rem;
+  top: 0.75rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: hsl(0 0% 100% / 0.85);
+}
+
+.studio-about-craft-title {
+  margin-top: 0.9rem;
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1.1;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--studio-theatre-fg);
+}
+
+.studio-about-craft-desc {
+  margin-top: 0.5rem;
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: var(--studio-theatre-muted);
+}
+
+.studio-about-craft-best {
+  margin-top: 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--studio-theatre-fg);
+  opacity: 0.75;
+}
+
+.studio-about-field-grid {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+@media (min-width: 1024px) {
+  .studio-about-field-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.studio-about-field-item {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--studio-theatre-surface);
+}
+
+.studio-about-field-item:nth-child(3),
+.studio-about-field-item:nth-child(6) {
+  aspect-ratio: 4 / 3;
+}
+
+.studio-about-field-strip {
+  margin-top: 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.studio-about-field-strip-item {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--studio-theatre-surface);
+}
+
+.studio-about-why {
+  display: grid;
+  gap: 2.5rem;
+}
+
+@media (min-width: 1024px) {
+  .studio-about-why {
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: start;
+  }
+}
+
+.studio-about-lede-sm {
+  margin-top: 1.25rem;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--studio-theatre-fg);
+}
+
+.studio-about-body-sm {
+  margin-top: 1.25rem;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  color: var(--studio-theatre-muted);
+  max-width: 36rem;
+}
+
+.studio-about-stats {
+  margin-top: 1.75rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+.studio-about-stat-num {
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--studio-theatre-fg);
+}
+
+.studio-about-stat-label {
+  margin-top: 0.35rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.5;
+  color: var(--studio-theatre-muted);
+}
+
+.studio-about-why-visuals {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.studio-about-why-main {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--studio-theatre-surface);
+}
+
+.studio-about-why-sub {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--studio-theatre-surface);
+}
+
+.studio-about-contact-v2 {
+  display: grid;
+  gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .studio-about-contact-v2 {
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+  }
+}
+
+.studio-about-contact-visual {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--studio-theatre-surface);
+  min-height: 20rem;
+}

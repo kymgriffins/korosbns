@@ -149,7 +149,12 @@ export function StudioReelHero() {
             </p>
 
             <div className="studio-reel-hero-center-block">
+              <p className="studio-reel-hero-count">
+                {String(index + 1).padStart(2, "0")} /{" "}
+                {String(slides.length).padStart(2, "0")}
+              </p>
               <h1 className="studio-reel-hero-title">{current.label}</h1>
+              <p className="studio-reel-hero-desc">{current.shortDesc}</p>
               {current.projectSlug ? (
                 <Link
                   href={`/bns-studio/${current.projectSlug}`}
