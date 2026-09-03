@@ -11,6 +11,7 @@ import { PageBreadcrumbs } from "@/components/global/page-breadcrumbs";
 import { Routes } from "@/constants/routes";
 import { renderArticleBody } from "@/lib/render-content";
 import { contentData } from "@/data/content";
+import { learnItemHref, type LearnHubItem as HubNavItem } from "@/lib/learn-hub";
 import type { TriviaSetApi } from "@/lib/api-client";
 import type { LearnHubItem } from "@/types/learn";
 import { cn } from "@/utils";
@@ -158,7 +159,7 @@ export function LearnHubReader({
         <PageBreadcrumbs
           items={[
             { label: "Learn", href: Routes.Learn },
-            { label: "Stories", href: "/learn/stories" },
+            { label: "Stories", href: "/learn" },
             { label: story.title },
           ]}
         />
@@ -238,7 +239,7 @@ export function LearnHubReader({
       <PageBreadcrumbs
         items={[
           { label: "Learn", href: Routes.Learn },
-          { label: "Articles", href: "/learn/articles" },
+          { label: "Articles", href: "/learn" },
           { label: article.title },
         ]}
       />
@@ -373,7 +374,7 @@ export function LearnHubReader({
             {keepReading.map((item) => (
               <Link
                 key={item.id}
-                href={item.url ?? `/learn/${item.slug}`}
+                href={learnItemHref(item as unknown as HubNavItem)}
                 className="group rounded-2xl border border-border/40 p-5 transition-colors hover:border-primary/50"
               >
                 <span className="text-[11px] font-semibold uppercase tracking-wider text-primary">

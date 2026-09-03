@@ -8,6 +8,7 @@ import type { CivicModule, LearnHubItem } from "@/types/learn";
 import { contentData } from "@/data/content";
 import { learningData } from "@/data/learning";
 import { embedUrl, videoData } from "@/data/videos";
+import { learnItemHref, type LearnHubItem as HubNavItem } from "@/lib/learn-hub";
 import { cn } from "@/utils";
 
 function matchesQuery(item: LearnHubItem, q: string): boolean {
@@ -21,9 +22,7 @@ function matchesQuery(item: LearnHubItem, q: string): boolean {
 }
 
 function itemHref(item: LearnHubItem): string {
-  if (item.url) return item.url;
-  if (item.slug) return `/learn/${item.slug}`;
-  return "/learn";
+  return learnItemHref(item as unknown as HubNavItem);
 }
 
 function VideoCard({
