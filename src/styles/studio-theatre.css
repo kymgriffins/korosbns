@@ -1948,6 +1948,703 @@
   color: var(--studio-theatre-fg);
 }
 
+/* ─── Format pages (per-category structures) ───────────────────────────── */
+
+.fpage-wrap {
+  max-width: 76rem;
+  margin-inline: auto;
+  padding: 5rem 1.25rem 3rem;
+  display: grid;
+  gap: 3rem;
+}
+
+@media (min-width: 1024px) {
+  .fpage-wrap {
+    padding: 6rem 2rem 4.5rem;
+    gap: 4rem;
+  }
+}
+
+.fpage-narrow {
+  max-width: 48rem;
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+}
+
+.fpage-wide {
+  display: grid;
+  gap: 1.5rem;
+  align-content: start;
+}
+
+.fpage-h2 {
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--studio-theatre-fg);
+}
+
+.fpage-cta,
+.fpage-related,
+.fpage-metric {
+  max-width: 48rem;
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+}
+
+/* Podcast */
+.fpage-podcast-hero {
+  display: grid;
+  gap: 2rem;
+}
+
+@media (min-width: 900px) {
+  .fpage-podcast-hero {
+    grid-template-columns: 20rem 1fr;
+    align-items: center;
+  }
+}
+
+.fpage-podcast-art {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: var(--studio-theatre-surface);
+  box-shadow: 0 24px 48px hsl(0 0% 0% / 0.45);
+}
+
+.fpage-podcast-hero .studio-waveform {
+  margin-top: 1.25rem;
+}
+
+.fpage-podcast-hero .studio-article-audio-el {
+  margin-top: 1rem;
+  width: 100%;
+  max-width: 32rem;
+}
+
+.fpage-podcast-grid {
+  display: grid;
+  gap: 2.5rem;
+}
+
+@media (min-width: 900px) {
+  .fpage-podcast-grid {
+    grid-template-columns: 1.2fr 0.8fr;
+    align-items: start;
+  }
+}
+
+.fpage-podcast-chapters ol {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: grid;
+}
+
+.fpage-podcast-chapter {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: 0.75rem;
+  padding: 0.8rem 0;
+  font-size: 0.9rem;
+  color: var(--studio-theatre-fg);
+}
+
+.fpage-podcast-chapter-num {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: var(--studio-format-accent, var(--studio-theatre-accent));
+}
+
+.fpage-gallery-strip {
+  display: grid;
+  gap: 1rem;
+}
+
+.fpage-strip-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .fpage-strip-row {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.fpage-strip-item {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--studio-theatre-surface);
+}
+
+/* Documentary */
+.fpage-film-hero {
+  position: relative;
+  min-height: min(78vh, 36rem);
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  background: #000;
+  margin-inline: calc(-1 * 1.25rem);
+  padding-inline: 1.25rem;
+}
+
+@media (min-width: 1024px) {
+  .fpage-film-hero {
+    margin-inline: calc(-1 * 2rem);
+    padding-inline: 2rem;
+  }
+}
+
+.fpage-film-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    hsl(0 0% 0% / 0.88) 0%,
+    hsl(0 0% 0% / 0.35) 55%,
+    hsl(0 0% 0% / 0.15) 100%
+  );
+}
+
+.fpage-film-copy {
+  position: relative;
+  padding: 2rem 0;
+  max-width: 48rem;
+}
+
+.fpage-film-copy .studio-about-index {
+  color: hsl(0 0% 100% / 0.75);
+}
+
+.fpage-film-title {
+  margin-top: 0.75rem;
+  font-size: clamp(2.4rem, 7vw, 4.8rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: #fff;
+  text-wrap: balance;
+}
+
+.fpage-film-sub {
+  margin-top: 1rem;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: hsl(0 0% 100% / 0.8);
+}
+
+.fpage-fullbleed {
+  position: relative;
+  aspect-ratio: 21 / 9;
+  min-height: 16rem;
+  overflow: hidden;
+  margin-inline: calc(-1 * 1.25rem);
+}
+
+@media (min-width: 1024px) {
+  .fpage-fullbleed {
+    margin-inline: calc(-1 * 2rem);
+  }
+}
+
+.fpage-film-quote {
+  margin: 1.5rem 0 0;
+  font-size: clamp(1.3rem, 3vw, 2rem);
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  color: var(--studio-theatre-fg);
+  text-wrap: balance;
+}
+
+.fpage-film-quote cite {
+  display: block;
+  margin-top: 0.75rem;
+  font-size: 0.72rem;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--studio-theatre-muted);
+}
+
+.fpage-credits {
+  margin: 1rem 0 0;
+  display: grid;
+}
+
+.fpage-credit-row {
+  display: grid;
+  grid-template-columns: 8rem 1fr;
+  gap: 1rem;
+  padding: 0.7rem 0;
+}
+
+.fpage-credit-row dt {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--studio-theatre-muted);
+}
+
+.fpage-credit-row dd {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--studio-theatre-fg);
+}
+
+/* Explainer */
+.fpage-video {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  overflow: hidden;
+  background: #000;
+}
+
+.fpage-chapters {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.fpage-chapter {
+  display: grid;
+  grid-template-columns: 4rem 1fr;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.fpage-chapter-num {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--studio-format-accent, var(--studio-theatre-accent));
+}
+
+.fpage-chapter-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--studio-theatre-fg);
+}
+
+/* Animation */
+.fpage-pipeline {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .fpage-pipeline {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.fpage-pipeline-stage {
+  padding: 1.25rem;
+  background: var(--studio-theatre-surface);
+}
+
+.fpage-pipeline-num {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.25em;
+  color: var(--studio-format-accent, var(--studio-theatre-accent));
+}
+
+.fpage-pipeline-title {
+  margin-top: 0.4rem;
+  font-size: 1.1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--studio-theatre-fg);
+}
+
+.fpage-frames {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (min-width: 1024px) {
+  .fpage-frames {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.fpage-frame {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--studio-theatre-surface);
+}
+
+/* Dossier */
+.fpage-doc {
+  max-width: 48rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.fpage-doc-title {
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--studio-theatre-fg);
+  text-wrap: balance;
+}
+
+.fpage-doc-meta {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.fpage-doc-meta dt {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--studio-format-accent, var(--studio-theatre-accent));
+}
+
+.fpage-doc-meta dd {
+  margin: 0.3rem 0 0;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--studio-theatre-fg);
+}
+
+.fpage-findings {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.fpage-finding {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: 0.75rem;
+}
+
+.fpage-finding-num {
+  display: flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--studio-format-accent, var(--studio-theatre-accent));
+  color: #000;
+  font-weight: 800;
+}
+
+.fpage-finding-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--studio-theatre-fg);
+}
+
+.fpage-doc-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 900px) {
+  .fpage-doc-grid {
+    grid-template-columns: 0.9fr 1.1fr;
+    align-items: start;
+  }
+}
+
+.fpage-doc-cover {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--studio-theatre-surface);
+}
+
+.fpage-doc-extra {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  margin-top: 1rem;
+  overflow: hidden;
+  background: var(--studio-theatre-surface);
+}
+
+/* Series */
+.fpage-series-hero {
+  display: grid;
+  gap: 2rem;
+  justify-items: start;
+}
+
+@media (min-width: 900px) {
+  .fpage-series-hero {
+    grid-template-columns: auto 1fr;
+    align-items: center;
+  }
+}
+
+.fpage-episodes {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (min-width: 900px) {
+  .fpage-episodes {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.fpage-episode-thumb {
+  position: relative;
+  aspect-ratio: 9 / 14;
+  overflow: hidden;
+  background: var(--studio-theatre-surface);
+}
+
+.fpage-episode-num {
+  position: absolute;
+  left: 0.6rem;
+  top: 0.5rem;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: hsl(0 0% 100% / 0.9);
+}
+
+.fpage-episode-title {
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--studio-theatre-fg);
+}
+
+/* Convening */
+.fpage-stage-banner {
+  position: relative;
+  min-height: min(60vh, 28rem);
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  background: var(--studio-theatre-surface);
+  margin-inline: calc(-1 * 1.25rem);
+  padding-inline: 1.25rem;
+}
+
+@media (min-width: 1024px) {
+  .fpage-stage-banner {
+    margin-inline: calc(-1 * 2rem);
+    padding-inline: 2rem;
+  }
+}
+
+.fpage-stage-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    hsl(0 0% 0% / 0.85) 0%,
+    hsl(0 0% 0% / 0.3) 60%,
+    transparent 100%
+  );
+}
+
+.fpage-stage-copy {
+  position: relative;
+  padding: 2rem 0;
+  max-width: 48rem;
+}
+
+.fpage-stage-copy .studio-about-index {
+  color: hsl(0 0% 100% / 0.75);
+}
+
+.fpage-stage-title {
+  margin-top: 0.75rem;
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: #fff;
+  text-wrap: balance;
+}
+
+.fpage-timeline {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: grid;
+}
+
+.fpage-timeline-row {
+  display: grid;
+  grid-template-columns: 1rem 1fr;
+  gap: 1rem;
+  position: relative;
+  padding-bottom: 1.75rem;
+}
+
+.fpage-timeline-row:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 0.4375rem;
+  top: 1.25rem;
+  bottom: 0;
+  width: 2px;
+  background: var(--studio-theatre-border);
+}
+
+.fpage-timeline-dot {
+  margin-top: 0.25rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 999px;
+  background: var(--studio-format-accent, var(--studio-theatre-accent));
+}
+
+.fpage-timeline-step {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--studio-theatre-muted);
+}
+
+.fpage-timeline-title {
+  margin-top: 0.25rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--studio-theatre-fg);
+}
+
+.fpage-room-grid {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (min-width: 900px) {
+  .fpage-room-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.fpage-room-item {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--studio-theatre-surface);
+}
+
+/* Listening */
+.fpage-voices {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 900px) {
+  .fpage-voices {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.fpage-voice-card {
+  margin: 0;
+  padding: 1.5rem;
+  background: var(--studio-theatre-surface);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.fpage-voice-quote {
+  font-size: 1.02rem;
+  line-height: 1.65;
+  font-style: italic;
+  color: var(--studio-theatre-fg);
+}
+
+.fpage-voice-card cite {
+  font-size: 0.7rem;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--studio-theatre-muted);
+}
+
+.fpage-heard {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.fpage-heard-row {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: 0.75rem;
+}
+
+.fpage-heard-num {
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--studio-format-accent, var(--studio-theatre-accent));
+  line-height: 1;
+}
+
+.fpage-heard-title {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--studio-theatre-fg);
+}
+
+.fpage-sessions {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+  .fpage-sessions {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.fpage-session-item {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--studio-theatre-surface);
+}
+
 /* ─── Commission dialog (click-to-reveal, zero inline footprint) ────────── */
 
 .studio-booking-overlay {

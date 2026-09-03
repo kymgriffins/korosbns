@@ -34,6 +34,44 @@ export interface StudioEvidenceMedia {
   }>;
 }
 
+export interface StudioFormatChapter {
+  title: string;
+  note?: string;
+}
+
+export interface StudioFormatFinding {
+  title: string;
+  detail?: string;
+}
+
+export interface StudioFormatAgendaItem {
+  title: string;
+  detail?: string;
+}
+
+export interface StudioFormatVoice {
+  quote: string;
+  name: string;
+  role?: string;
+}
+
+export interface StudioFormatCredit {
+  role: string;
+  name: string;
+}
+
+/**
+ * Optional per-format editorial structures. When absent, pages derive
+ * honest defaults from outputs / brief / impact (never invented facts).
+ */
+export interface StudioFormatDetails {
+  chapters?: StudioFormatChapter[];
+  findings?: StudioFormatFinding[];
+  agenda?: StudioFormatAgendaItem[];
+  voices?: StudioFormatVoice[];
+  credits?: StudioFormatCredit[];
+}
+
 export interface StudioProjectEvidence {
   id: string;
   slug: string;
@@ -58,6 +96,7 @@ export interface StudioProjectEvidence {
   featured?: boolean;
   deliveryMode: StudioDeliveryMode;
   programmeSlug: ProgrammeSlug;
+  formatDetails?: StudioFormatDetails;
 }
 
 export type StudioPartnerCorridor = {
