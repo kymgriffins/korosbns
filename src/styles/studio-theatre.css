@@ -1773,6 +1773,181 @@
   color: var(--studio-theatre-fg);
 }
 
+.studio-article-kicker {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--studio-theatre-muted);
+}
+
+/* Per-format accent tints the article eyebrows + step numbers. */
+.studio-article .studio-about-index,
+.studio-article .studio-article-step-num,
+.studio-article .studio-article-output-num,
+.studio-article .studio-article-related-type {
+  color: var(--studio-format-accent, var(--studio-theatre-accent));
+}
+
+/* ─── Per-format heroes ────────────────────────────────────────────────── */
+
+.studio-format-hero-media-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--studio-format-accent, var(--studio-theatre-accent));
+}
+
+.studio-format-hero-podcast {
+  display: grid;
+  gap: 1.5rem;
+  padding: 2rem 1.5rem;
+  background: linear-gradient(
+    145deg,
+    hsl(280 30% 12%) 0%,
+    var(--studio-theatre-bg) 55%
+  );
+}
+
+@media (min-width: 768px) {
+  .studio-format-hero-podcast {
+    grid-template-columns: 16rem 1fr;
+    align-items: center;
+    padding: 2.5rem;
+  }
+}
+
+.studio-format-hero-podcast-art {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  width: min(100%, 16rem);
+  margin-inline: auto;
+  overflow: hidden;
+  background: var(--studio-theatre-surface);
+  box-shadow: 0 24px 48px hsl(0 0% 0% / 0.45);
+}
+
+.studio-format-hero-podcast-copy {
+  display: grid;
+  gap: 1rem;
+  justify-items: start;
+}
+
+.studio-format-hero-podcast-copy .studio-article-audio-el {
+  max-width: 32rem;
+}
+
+.studio-format-hero-vertical-wrap {
+  display: grid;
+  gap: 1.5rem;
+  justify-items: center;
+}
+
+@media (min-width: 768px) {
+  .studio-format-hero-vertical-wrap {
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    justify-items: start;
+  }
+}
+
+.studio-format-hero-vertical-copy {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 32rem;
+}
+
+.studio-format-hero-stage {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  min-height: 22rem;
+  overflow: hidden;
+  background: var(--studio-theatre-surface);
+}
+
+.studio-format-hero-stage-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    hsl(0 0% 0% / 0.85) 0%,
+    hsl(0 0% 0% / 0.35) 55%,
+    hsl(0 0% 0% / 0.1) 100%
+  );
+}
+
+.studio-format-hero-stage-copy {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  padding: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .studio-format-hero-stage-copy {
+    padding: 2.5rem;
+  }
+}
+
+.studio-format-hero-stage .studio-format-hero-media-label {
+  color: hsl(0 0% 100% / 0.85);
+}
+
+.studio-format-hero-stage-line {
+  margin-top: 0.6rem;
+  max-width: 44rem;
+  font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+  font-weight: 700;
+  line-height: 1.3;
+  color: #fff;
+}
+
+.studio-format-hero-brief-grid {
+  display: grid;
+  gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+  .studio-format-hero-brief-grid {
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: stretch;
+  }
+}
+
+.studio-format-hero-brief-media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--studio-theatre-surface);
+}
+
+.studio-format-hero-brief-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.9rem;
+  padding: 1.75rem;
+  background: var(--studio-theatre-surface);
+}
+
+.studio-format-hero-brief-text {
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: var(--studio-theatre-fg);
+}
+
+.studio-format-hero-brief-metric {
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: var(--studio-theatre-fg);
+}
+
 /* ─── Commission dialog (click-to-reveal, zero inline footprint) ────────── */
 
 .studio-booking-overlay {

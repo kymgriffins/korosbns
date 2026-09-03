@@ -8,8 +8,12 @@ import { studiosEvidenceData } from "@/data/studios-evidence";
 import {
   projectGallery,
   projectHasAudio,
-  projectHasVideo,
 } from "@/lib/studio-presentation";
+import { getFormatTheme } from "@/lib/studio-format-themes";
+import {
+  FormatHeroMedia,
+  getFormatArticleCopy,
+} from "@/components/studio/theatre/studio-format-article";
 import {
   StudioSiteFooter,
   StudioSiteNav,
@@ -24,14 +28,6 @@ type Props = {
   project: StudioProjectEvidence;
 };
 
-function youtubeEmbedUrl(url: string): string | null {
-  const match = url.match(
-    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]{6,})/,
-  );
-  if (!match?.[1]) return null;
-  return `https://www.youtube.com/embed/${match[1]}`;
-}
-
 const FIELD_IMAGES = [
   { src: BNS_MEDIA_IMAGES.productionA, alt: "On-set videography during production" },
   { src: BNS_MEDIA_IMAGES.productionB, alt: "Studio interview session" },
@@ -43,11 +39,10 @@ const FIELD_IMAGES = [
 
 export function StudioProjectViewer({ project }: Props) {
   const gallery = projectGallery(project);
-  const hasVideo = projectHasVideo(project);
   const hasAudio = projectHasAudio(project);
-  const embed = project.media.videoUrl
-    ? youtubeEmbedUrl(project.media.videoUrl)
-    : null;
+  const theme = getFormatTheme(project.contentType);
+  const copy = getFormatArticleCopy(project.contentType);
+  const isPodcast = theme.experience === "podcast";
 
   const galleryImages = [
     {
@@ -65,27 +60,32 @@ export function StudioProjectViewer({ project }: Props) {
 
   const related = studiosEvidenceData.getRelatedProjects(project.id, 3);
 
+  const stepTitles = copy.processTitle
+    .split(". ")
+    .map((s) => s.replace(/\.$/, "").trim())
+    .filter(Boolean);
+
   const processSteps = [
     {
-      title: "Listen first",
+      title: stepTitles[0] ?? "Listen first",
       body: `We started inside the brief — sitting with ${project.organization.name} to understand who this had to move and what misunderstanding it had to fix. Field notes from forums and newsroom conversations shaped the treatment before a single frame was shot.`,
     },
     {
-      title: "Verify everything",
+      title: stepTitles[1] ?? "Verify everything",
       body: `Every figure traces to a published source — Treasury tables, county documents, or partner research cited in our production notes. If a line could not be verified, it did not survive the edit. That is the BNS standard for ${project.contentType.toLowerCase()} work.`,
     },
     {
-      title: "Produce for the feed",
+      title: stepTitles[2] ?? "Produce for the feed",
       body: project.whatWeProduced,
     },
     {
-      title: "Distribute with partners",
+      title: stepTitles[3] ?? "Distribute with partners",
       body: project.impactEvidence.context,
     },
   ];
 
   return (
-    <div className="studio-about-page studio-about-borderless studio-article">
+    <div className={cn("studio-about-page studio-about-borderless studio-article", theme.accentClass)}>
       <StudioSiteNav active="work" />
 
       <article className="studio-article-body">
@@ -96,9 +96,10 @@ export function StudioProjectViewer({ project }: Props) {
             All work
           </Link>
           <p className="studio-about-index">
-            {project.contentType} · {project.year}
+            {theme.rowEyebrow} · {project.year}
           </p>
           <h1 className="studio-about-title-xl">{project.title}</h1>
+          <p className="studio-article-kicker">{copy.kicker}</p>
           {project.subtitle ? (
             <p className="studio-article-lede">{project.subtitle}</p>
           ) : null}
@@ -125,46 +126,10 @@ export function StudioProjectViewer({ project }: Props) {
           </div>
         </header>
 
-        {/* Feature media */}
-        {embed ? (
-          <figure className="studio-article-feature">
-            <div className="studio-article-video">
-              <iframe
-                src={embed}
-                title={project.title}
-                className="size-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-            <figcaption className="studio-article-caption">
-              {project.media.caption ?? project.whatWeProduced}
-            </figcaption>
-          </figure>
-        ) : (
-          <figure className="studio-article-feature">
-            <div className="studio-article-hero-image">
-              <Image
-                src={project.media.posterUrl}
-                alt={project.title}
-                fill
-                priority
-                className={cn(
-                  "object-cover",
-                  project.media.posterPosition || "object-center",
-                )}
-                sizes="100vw"
-              />
-            </div>
-            {project.media.caption ? (
-              <figcaption className="studio-article-caption">
-                {project.media.caption}
-              </figcaption>
-            ) : null}
-          </figure>
-        )}
+        {/* Feature media — per-format hero */}
+        <FormatHeroMedia project={project} />
 
-        {hasAudio && project.media.audioUrl ? (
+        {!isPodcast && hasAudio && project.media.audioUrl ? (
           <div className="studio-article-audio">
             <p className="studio-about-index">Listen</p>
             <audio
@@ -178,7 +143,7 @@ export function StudioProjectViewer({ project }: Props) {
           </div>
         ) : null}
 
-        {hasAudio && !project.media.audioUrl ? (
+        {!isPodcast && hasAudio && !project.media.audioUrl ? (
           <p className="studio-article-note">
             Full audio available on request — contact BNS Studios for episode
             access.
@@ -187,8 +152,8 @@ export function StudioProjectViewer({ project }: Props) {
 
         {/* 01 — The brief */}
         <section className="studio-article-section">
-          <p className="studio-about-index">01 / The brief</p>
-          <h2 className="studio-about-h2">What needed to change.</h2>
+          <p className="studio-about-index">{copy.briefIndex}</p>
+          <h2 className="studio-about-h2">{copy.briefTitle}</h2>
           <p className="studio-article-prose-lg">{project.briefChallenge}</p>
           <p className="studio-article-prose">{project.description}</p>
           <blockquote className="studio-article-quote">
@@ -225,13 +190,11 @@ export function StudioProjectViewer({ project }: Props) {
 
         {/* 02 — How we worked */}
         <section className="studio-article-section">
-          <p className="studio-about-index">02 / How we worked</p>
-          <h2 className="studio-about-h2">Listen. Verify. Produce. Distribute.</h2>
+          <p className="studio-about-index">{copy.processIndex}</p>
+          <h2 className="studio-about-h2">{copy.processTitle}</h2>
           <p className="studio-article-prose">
-            Every BNS Studios commission follows the same civic-production
-            method — built for accuracy first, reach second. Here is how it
-            played out on this {project.contentType.toLowerCase()} with{" "}
-            {project.organization.name}.
+            {copy.processIntro} Here is how it played out on this{" "}
+            {project.contentType.toLowerCase()} with {project.organization.name}.
           </p>
           <div className="studio-article-steps">
             {processSteps.map((step, i) => (
@@ -249,7 +212,7 @@ export function StudioProjectViewer({ project }: Props) {
         {/* 03 — What we delivered */}
         <section className="studio-article-section">
           <p className="studio-about-index">03 / What we delivered</p>
-          <h2 className="studio-about-h2">The full package.</h2>
+          <h2 className="studio-about-h2">{copy.deliverablesTitle}</h2>
           <p className="studio-article-prose">{project.whatWeProduced}</p>
           <ol className="studio-article-outputs">
             {project.outputs.map((output, i) => (
@@ -265,8 +228,8 @@ export function StudioProjectViewer({ project }: Props) {
 
         {/* Full gallery */}
         <section className="studio-article-section">
-          <p className="studio-about-index">04 / In pictures</p>
-          <h2 className="studio-about-h2">From set to screen.</h2>
+          <p className="studio-about-index">{copy.galleryIndex}</p>
+          <h2 className="studio-about-h2">{copy.galleryTitle}</h2>
           <div className="studio-article-gallery">
             {galleryImages.map((img) => (
               <figure key={img.url} className="studio-article-gallery-item">
@@ -300,8 +263,8 @@ export function StudioProjectViewer({ project }: Props) {
 
         {/* 05 — Impact */}
         <section className="studio-article-section">
-          <p className="studio-about-index">05 / Impact</p>
-          <h2 className="studio-about-h2">What moved.</h2>
+          <p className="studio-about-index">{copy.impactIndex}</p>
+          <h2 className="studio-about-h2">{copy.impactTitle}</h2>
           {project.impactEvidence.primaryMetric ? (
             <p className="studio-article-metric">
               {project.impactEvidence.primaryMetric}
@@ -332,7 +295,7 @@ export function StudioProjectViewer({ project }: Props) {
         <section className="studio-article-section studio-article-cta">
           <p className="studio-about-index">06 / Commission</p>
           <h2 className="studio-about-h2-xl">
-            Need {project.contentType.toLowerCase()} like this?
+            {copy.ctaTitle}
           </h2>
           <p className="studio-about-standfirst">
             Tell us your story, audience, and timeline — we respond with scope,
