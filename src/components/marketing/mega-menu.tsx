@@ -68,14 +68,14 @@ export const MEGA_MENU_DATA: MegaMenuSection[] = [
     items: [
       {
         title: "BNS Connect",
-        href: "/programmes/bns-connect",
+        href: "/programmes/connect",
         description: "National budget tracking, citizen bills, and Finance Act scrutiny.",
         icon: Compass,
         badge: "National",
       },
       {
         title: "BNS Mashinani",
-        href: "/programmes/bns-mashinani",
+        href: "/programmes/mashinani",
         description: "County-level budget tracking & citizen scorecards in 4 focus hubs.",
         icon: MapPin,
         badge: "Counties",

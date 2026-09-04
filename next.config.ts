@@ -243,6 +243,41 @@ const nextConfig: NextConfig = {
         destination: "/work",
         permanent: false,
       },
+      {
+        source: "/programmes/bns-connect",
+        destination: "/programmes/connect/",
+        permanent: true,
+      },
+      {
+        source: "/bns-connect",
+        destination: "/programmes/connect/",
+        permanent: true,
+      },
+      {
+        source: "/connect",
+        destination: "/programmes/connect/",
+        permanent: true,
+      },
+      {
+        source: "/programmes/bns-mashinani",
+        destination: "/programmes/mashinani/",
+        permanent: true,
+      },
+      {
+        source: "/bns-mashinani",
+        destination: "/programmes/mashinani/",
+        permanent: true,
+      },
+      {
+        source: "/mashinani",
+        destination: "/programmes/mashinani/",
+        permanent: true,
+      },
+      {
+        source: "/wanahabari",
+        destination: "/programmes/wanahabari-lab/",
+        permanent: true,
+      },
     ];
   },
 

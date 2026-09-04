@@ -8,10 +8,6 @@ import { getProgramme } from "@/content";
 import { BNS_STUDIO_PAGE_SERVICES } from "@/constants/bns-studio-content";
 import { STUDIO_REEL_FEATURED_TYPES } from "@/lib/studio-reel-slides";
 import { StudioBookingForm } from "@/components/studio/StudioBookingForm";
-import {
-  StudioSiteFooter,
-  StudioSiteNav,
-} from "@/components/studio/theatre/studio-site-nav";
 import { BNS_COMMUNITY_IMAGES, BNS_MEDIA_IMAGES } from "@/constants/bns-media-images";
 
 const studios = getProgramme("studios")!;
@@ -37,8 +33,6 @@ export function StudioAboutPage() {
 
   return (
     <div className="studio-about-page studio-about-borderless">
-      <StudioSiteNav active="about" />
-
       {/* 01 — Hero: studio statement */}
       <section className="studio-about-section studio-about-hero-v2">
         <div className="studio-about-copy">
@@ -233,8 +227,6 @@ export function StudioAboutPage() {
       </section>
 
       <StudioBookingForm open={bookingOpen} onOpenChange={setBookingOpen} />
-
-      <StudioSiteFooter />
     </div>
   );
 }

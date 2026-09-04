@@ -7,7 +7,6 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ChevronDown, Plus, Search, X, Filter } from "lucide-react";
 import { STUDIO_CONTENT_TYPES } from "@/constants/bns-studio-content";
 import { studiosEvidenceData } from "@/data/studios-evidence";
-import { StudioSiteFooter, StudioSiteNav } from "@/components/studio/theatre/studio-site-nav";
 import { cn } from "@/utils";
 
 function projectHref(slug: string) {
@@ -101,18 +100,8 @@ export function StudioFeaturedWorkPage() {
     requestAnimationFrame(() => searchRef.current?.focus());
   };
 
-  const focusSearch = () => {
-    setSearchOpen(true);
-    requestAnimationFrame(() => {
-      searchRef.current?.focus();
-      searchRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    });
-  };
-
   return (
     <div className="studio-work-page">
-      <StudioSiteNav active="work" onSearchOpen={focusSearch} />
-
       {/* Hero Header */}
       <div className="pt-24 pb-8 px-6 text-center max-w-4xl mx-auto space-y-4">
         <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1 text-xs font-bold text-primary uppercase tracking-wider">
@@ -326,8 +315,6 @@ export function StudioFeaturedWorkPage() {
           </button>
         </div>
       ) : null}
-
-      <StudioSiteFooter />
     </div>
   );
 }

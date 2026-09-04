@@ -21,7 +21,6 @@ import {
 } from "lucide-react";
 import type { StudioProjectEvidence } from "@/data/studios-evidence";
 import { studiosEvidenceData } from "@/data/studios-evidence";
-import { StudioSiteFooter, StudioSiteNav } from "@/components/studio/theatre/studio-site-nav";
 import { StudioBookingForm } from "@/components/studio/StudioBookingForm";
 import { BNS_COMMUNITY_IMAGES, BNS_MEDIA_IMAGES } from "@/constants/bns-media-images";
 import { cn } from "@/utils";
@@ -55,8 +54,6 @@ export function AgencyCaseStudyTemplate({ project }: { project: StudioProjectEvi
 
   return (
     <div className="min-h-screen bg-black text-white selection:bg-primary/30">
-      <StudioSiteNav active="work" />
-
       {/* 01 — ASYMMETRIC SPLIT HERO HEADER (Purpose Style) */}
       <section className="relative overflow-hidden border-b border-zinc-800 bg-linear-to-b from-zinc-950 via-black to-black pt-24 pb-16 md:pt-32 md:pb-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -550,8 +547,6 @@ export function AgencyCaseStudyTemplate({ project }: { project: StudioProjectEvi
 
       {/* Commission Booking Drawer Modal */}
       <StudioBookingForm open={bookingOpen} onOpenChange={setBookingOpen} />
-
-      <StudioSiteFooter />
     </div>
   );
 }

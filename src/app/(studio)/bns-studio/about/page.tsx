@@ -1,16 +1,14 @@
 import type { Metadata } from "next";
-import { buildPageMetadata } from "@/utils/page-metadata";
-import { StudioAboutPage } from "@/components/studio/theatre/studio-about-page";
-import { getProgramme } from "@/constants/programmes-content";
+import About from "@/components/marketing/about";
+import { canonicalUrl } from "@/utils/metadata";
 
-const studios = getProgramme("studios")!;
-
-export const metadata: Metadata = buildPageMetadata({
-  title: `About | ${studios.seoTitle}`,
-  description: studios.seoDescription,
-  path: "/bns-studio/about",
-});
+export const metadata: Metadata = {
+  title: "About BNS Studios & Mission | Budget Ndio Story",
+  description:
+    "Meet the youth-led watchdog behind Budget Ndio Story and BNS Studios: investigative journalism, high-craft civic media, and grassroots budget tracking across Kenya.",
+  alternates: { canonical: canonicalUrl("/bns-studio/about") },
+};
 
 export default function StudioAboutRoute() {
-  return <StudioAboutPage />;
+  return <About />;
 }

@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowUpRight, Send, Clapperboard, ShieldCheck, ChevronDown } from "lucide-react";
 import { StudioReelHero } from "@/components/studio/theatre/studio-reel-hero";
-import { StudioSiteFooter, StudioSiteNav } from "@/components/studio/theatre/studio-site-nav";
 import { StudioBookingForm } from "@/components/studio/StudioBookingForm";
 import { STUDIO_CONTENT_TYPES } from "@/constants/bns-studio-content";
 import { studiosEvidenceData } from "@/data/studios-evidence";
@@ -20,7 +19,6 @@ export function BNSStudioPageClient() {
     <div className="w-full bg-black text-white selection:bg-primary/30">
       {/* 01 — Full-screen cinematic format reel */}
       <div className="relative h-dvh w-full overflow-hidden bg-black">
-        <StudioSiteNav variant="overlay" active="home" />
         <StudioReelHero />
         <div className="absolute bottom-4 inset-x-0 z-20 flex justify-center pointer-events-none">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/50 px-3 py-1 text-[11px] font-medium text-white/80 backdrop-blur-md animate-bounce">
@@ -221,16 +219,15 @@ export function BNSStudioPageClient() {
               Open Enquiry Form
             </button>
             <Link
-              href="/"
+              href="/programmes"
               className="rounded-full border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10"
             >
-              Back to BNS Main Site
+              Explore All Programmes
             </Link>
           </div>
         </div>
       </section>
 
-      <StudioSiteFooter variant="solid" />
       <StudioBookingForm open={bookingOpen} onOpenChange={setBookingOpen} />
     </div>
   );

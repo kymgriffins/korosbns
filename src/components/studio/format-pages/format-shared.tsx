@@ -8,10 +8,6 @@ import { studiosEvidenceData } from "@/data/studios-evidence";
 import { getFormatTheme } from "@/lib/studio-format-themes";
 import { FormatPageMotion } from "@/components/studio/format-pages/format-motion";
 import {
-  StudioSiteFooter,
-  StudioSiteNav,
-} from "@/components/studio/theatre/studio-site-nav";
-import {
   BNS_COMMUNITY_IMAGES,
   BNS_MEDIA_IMAGES,
 } from "@/constants/bns-media-images";
@@ -47,7 +43,6 @@ export function FormatShell({
         theme.accentClass,
       )}
     >
-      <StudioSiteNav active="work" />
       <div className="fpage-wrap">
         <Link href="/bns-studio/work" className="studio-article-back">
           <ArrowLeft className="size-4" aria-hidden />
@@ -57,7 +52,6 @@ export function FormatShell({
           <div className="fpage-flow">{children}</div>
         </FormatPageMotion>
       </div>
-      <StudioSiteFooter />
     </div>
   );
 }
