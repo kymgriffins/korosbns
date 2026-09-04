@@ -117,6 +117,7 @@ html {
 html,
 body {
   scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
 }
 
 h1,

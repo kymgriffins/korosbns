@@ -18,6 +18,7 @@ import { ProgrammesPartners } from "@/components/programmes/programmes-partners"
 import { ProgrammesFaq } from "@/components/programmes/programmes-faq";
 import { LandingSection } from "@/layouts/landing-section";
 import { EditorialCtaBand, EditorialPill, PillButtonGroup } from "@/components/ui/editorial";
+import { GsapReveal, GsapStaggerReveal } from "@/motion/gsap";
 import {
   PROGRAMMES,
   PROGRAMMES_CLOSING,
@@ -74,10 +75,11 @@ export function ProgrammesLanding() {
           </div>
 
           {/* Macro Impact Ledger Strip */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 pt-8 border-t border-border/50">
+          <GsapStaggerReveal itemSelector="[data-gsap-metric]" className="grid grid-cols-2 lg:grid-cols-4 gap-4 pt-8 border-t border-border/50">
             {MACRO_IMPACT_METRICS.map((metric) => (
               <div
                 key={metric.label}
+                data-gsap-metric
                 className="rounded-2xl border border-border/60 bg-card/60 p-5 backdrop-blur-sm shadow-xs"
               >
                 <p className="font-heading text-2xl sm:text-3xl font-black text-primary tracking-tight">
@@ -91,13 +93,13 @@ export function ProgrammesLanding() {
                 </p>
               </div>
             ))}
-          </div>
+          </GsapStaggerReveal>
         </div>
       </section>
 
       {/* 02 — INTERACTIVE DESK SELECTOR & ARCHITECTURAL PREVIEW */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20">
-        <div className="mb-10 flex flex-col gap-4 md:mb-12 md:flex-row md:items-end md:justify-between">
+        <GsapReveal className="mb-10 flex flex-col gap-4 md:mb-12 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl space-y-3">
             <EditorialPill>The Operational Matrix</EditorialPill>
             <h2 className="font-heading text-3xl sm:text-5xl font-black text-foreground">
@@ -107,7 +109,7 @@ export function ProgrammesLanding() {
           <p className="max-w-sm text-sm text-muted-foreground md:text-right leading-relaxed">
             Select an operational desk below to inspect its focus area, methodology, target audience, and active project roster.
           </p>
-        </div>
+        </GsapReveal>
 
         {/* Desk Selector Pills */}
         <div className="flex items-center justify-start gap-2 p-1.5 rounded-full bg-muted/60 border border-border/60 overflow-x-auto mb-12 scrollbar-hide">
@@ -353,19 +355,21 @@ export function ProgrammesLanding() {
 
       {/* 06 — PARTNERSHIP / COMMISSION CTA */}
       <LandingSection>
-        <EditorialCtaBand
-          eyebrow="Join the Civic Movement"
-          title={PROGRAMMES_CLOSING.headline}
-          description={PROGRAMMES_CLOSING.body}
-          ctaHref={PROGRAMMES_CLOSING.cta.href}
-          ctaLabel={PROGRAMMES_CLOSING.cta.label}
-          secondaryHref="/contact"
-          secondaryLabel="Direct Desk Enquiry"
-          images={[
-            { src: BNS_COMMUNITY_IMAGES.forumA, alt: "Citizen Town Hall Assembly" },
-            { src: BNS_COMMUNITY_IMAGES.cohortA, alt: "Youth Budget Trackers" },
-          ]}
-        />
+        <GsapReveal>
+          <EditorialCtaBand
+            eyebrow="Join the Civic Movement"
+            title={PROGRAMMES_CLOSING.headline}
+            description={PROGRAMMES_CLOSING.body}
+            ctaHref={PROGRAMMES_CLOSING.cta.href}
+            ctaLabel={PROGRAMMES_CLOSING.cta.label}
+            secondaryHref="/contact"
+            secondaryLabel="Direct Desk Enquiry"
+            images={[
+              { src: BNS_COMMUNITY_IMAGES.forumA, alt: "Citizen Town Hall Assembly" },
+              { src: BNS_COMMUNITY_IMAGES.cohortA, alt: "Youth Budget Trackers" },
+            ]}
+          />
+        </GsapReveal>
       </LandingSection>
     </div>
   );

@@ -22,6 +22,7 @@ import { cn } from "@/utils";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 import { socialIconComponents } from "@/components/ui/social-icons";
 import { MegaMenu } from "@/components/marketing/mega-menu";
+import { ScrollMotionProgress } from "@/motion/scroll-motion-progress";
 
 const DESKTOP_NAV =
   landingContent.navigation.desktop ??
@@ -264,6 +265,7 @@ export function Header() {
             </motion.button>
           </div>
         </div>
+        <ScrollMotionProgress />
       </motion.header>
 
       <MobileMenu isOpen={isOpen} setIsOpen={setIsOpen} />

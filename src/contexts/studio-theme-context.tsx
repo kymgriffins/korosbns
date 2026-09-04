@@ -4,10 +4,9 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
-  useState,
 } from "react";
+import { useTheme } from "next-themes";
 
 export type StudioThemeMode = "dark" | "light";
 
@@ -21,35 +20,29 @@ type StudioThemeContextValue = {
 
 const StudioThemeContext = createContext<StudioThemeContextValue | null>(null);
 
-function readStoredTheme(): StudioThemeMode {
-  if (typeof window === "undefined") return "dark";
-  const stored = window.localStorage.getItem(STORAGE_KEY);
-  return stored === "light" ? "light" : "dark";
-}
-
 export function StudioThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<StudioThemeMode>("dark");
+  const { resolvedTheme, setTheme: setNextTheme } = useTheme();
 
-  useEffect(() => {
-    setThemeState(readStoredTheme());
-  }, []);
+  const currentTheme: StudioThemeMode = resolvedTheme === "light" ? "light" : "dark";
 
-  const setTheme = useCallback((mode: StudioThemeMode) => {
-    setThemeState(mode);
-    window.localStorage.setItem(STORAGE_KEY, mode);
-  }, []);
+  const setTheme = useCallback(
+    (mode: StudioThemeMode) => {
+      setNextTheme(mode);
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem(STORAGE_KEY, mode);
+      }
+    },
+    [setNextTheme],
+  );
 
   const toggleTheme = useCallback(() => {
-    setThemeState((prev) => {
-      const next: StudioThemeMode = prev === "dark" ? "light" : "dark";
-      window.localStorage.setItem(STORAGE_KEY, next);
-      return next;
-    });
-  }, []);
+    const next: StudioThemeMode = currentTheme === "dark" ? "light" : "dark";
+    setTheme(next);
+  }, [currentTheme, setTheme]);
 
   const value = useMemo(
-    () => ({ theme, setTheme, toggleTheme }),
-    [theme, setTheme, toggleTheme],
+    () => ({ theme: currentTheme, setTheme, toggleTheme }),
+    [currentTheme, setTheme, toggleTheme],
   );
 
   return (

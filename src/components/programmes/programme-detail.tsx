@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/accordion";
 import { LandingSection } from "@/layouts/landing-section";
 import { EditorialCtaBand, EditorialPill, PillButtonGroup } from "@/components/ui/editorial";
+import { GsapReveal, GsapStaggerReveal } from "@/motion/gsap";
 import { ProgrammeOtherProgrammes } from "@/components/programmes/programme-other-programmes";
 import {
   PROGRAMMES_CLOSING,
@@ -922,7 +923,7 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
       {/* 11 — FAQ */}
       {programme.faqs && programme.faqs.length > 0 && (
         <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24 border-t border-border/50">
-          <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-14">
+          <GsapReveal className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-14">
             {/* Left Column: Desk Context */}
             <div className="lg:col-span-5 lg:sticky lg:top-28 self-start space-y-5">
               <EditorialPill dot pulse>
@@ -980,7 +981,7 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
                 ))}
               </Accordion>
             </div>
-          </div>
+          </GsapReveal>
         </section>
       )}
 
@@ -989,19 +990,21 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
 
       {/* 13 — PARTNERSHIP / DIRECT ACTION CALL TO ACTION */}
       <LandingSection>
-        <EditorialCtaBand
-          eyebrow="The BNS Civic Sovereign Ecosystem"
-          title={PROGRAMMES_CLOSING.headline}
-          description={PROGRAMMES_CLOSING.body}
-          ctaHref={programme.cta?.href || PROGRAMMES_CLOSING.cta.href}
-          ctaLabel={programme.cta?.label || PROGRAMMES_CLOSING.cta.label}
-          secondaryHref="/contact"
-          secondaryLabel="Institutional Partnership"
-          images={[
-            { src: programme.visual.hero, alt: programme.visual.heroAlt },
-            { src: ext.mosaic.q1.src, alt: ext.mosaic.q1.alt },
-          ]}
-        />
+        <GsapReveal>
+          <EditorialCtaBand
+            eyebrow="The BNS Civic Sovereign Ecosystem"
+            title={PROGRAMMES_CLOSING.headline}
+            description={PROGRAMMES_CLOSING.body}
+            ctaHref={programme.cta?.href || PROGRAMMES_CLOSING.cta.href}
+            ctaLabel={programme.cta?.label || PROGRAMMES_CLOSING.cta.label}
+            secondaryHref="/contact"
+            secondaryLabel="Institutional Partnership"
+            images={[
+              { src: programme.visual.hero, alt: programme.visual.heroAlt },
+              { src: ext.mosaic.q1.src, alt: ext.mosaic.q1.alt },
+            ]}
+          />
+        </GsapReveal>
       </LandingSection>
     </div>
   );

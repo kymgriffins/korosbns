@@ -1,21 +1,21 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { ChevronDown, Plus, Search, X, Filter } from "lucide-react";
+import { ArrowUpRight, Search, X, Filter } from "lucide-react";
 import { STUDIO_CONTENT_TYPES } from "@/constants/bns-studio-content";
 import { studiosEvidenceData } from "@/data/studios-evidence";
 import { EditorialPill, PillButton } from "@/components/ui/editorial";
+import { GsapReveal, GsapStaggerReveal } from "@/motion/gsap";
 import { cn } from "@/utils";
 
 function projectHref(slug: string) {
   return `/bns-studio/${slug}`;
 }
 
-const PROGRAMME_PILLS = [
-  { id: "", label: "All Programmes" },
+const PROGRAMME_DESKS = [
+  { id: "", label: "All Desks" },
   { id: "connect", label: "BNS Connect" },
   { id: "mashinani", label: "BNS Mashinani" },
   { id: "wanahabari-lab", label: "Wanahabari Lab" },
@@ -41,13 +41,31 @@ function getProgrammeName(slug: string): string {
 export function StudioFeaturedWorkPage() {
   const projects = studiosEvidenceData.getAllProjects();
   const searchRef = useRef<HTMLInputElement>(null);
-  const reduceMotion = useReducedMotion();
-  const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [programme, setProgramme] = useState("");
   const [format, setFormat] = useState("");
   const [client, setClient] = useState("");
   const [year, setYear] = useState("");
+
+  // Keyboard shortcut listener ('/' to focus search)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "/" && document.activeElement !== searchRef.current) {
+        e.preventDefault();
+        searchRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  const programmeCounts = useMemo(() => {
+    const counts: Record<string, number> = { "": projects.length };
+    for (const p of projects) {
+      counts[p.programmeSlug] = (counts[p.programmeSlug] || 0) + 1;
+    }
+    return counts;
+  }, [projects]);
 
   const clients = useMemo(
     () =>
@@ -94,231 +112,279 @@ export function StudioFeaturedWorkPage() {
     setYear("");
   };
 
-  const activeCount = [query, programme, format, client, year].filter(Boolean).length;
-
-  const openSearch = () => {
-    setSearchOpen(true);
-    requestAnimationFrame(() => searchRef.current?.focus());
-  };
+  const activeFilters = [
+    programme ? { key: "desk", label: `Desk: ${getProgrammeName(programme)}`, clear: () => setProgramme("") } : null,
+    format ? { key: "format", label: `Format: ${format}`, clear: () => setFormat("") } : null,
+    client ? { key: "partner", label: `Partner: ${client}`, clear: () => setClient("") } : null,
+    year ? { key: "year", label: `Year: ${year}`, clear: () => setYear("") } : null,
+    query ? { key: "search", label: `Query: "${query}"`, clear: () => setQuery("") } : null,
+  ].filter(Boolean) as Array<{ key: string; label: string; clear: () => void }>;
 
   return (
-    <div className="studio-work-page">
-      {/* Hero Header */}
-      <div className="pt-24 pb-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
-        <div>
-          <EditorialPill dot pulse>
-            The Unified Evidence Engine
-          </EditorialPill>
-        </div>
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight">
-          Featured Work & Civic Proof
-        </h1>
-        <p className="text-sm sm:text-base text-zinc-400 max-w-2xl leading-relaxed">
-          Explore investigations, commissioned media, county scorecards, and viral explainers produced across our 4 operational programmes.
-        </p>
+    <div className="min-h-screen bg-background text-foreground transition-colors selection:bg-primary/20">
+      {/* 01 — Sovereign Hero Header */}
+      <section className="border-b border-border/40 bg-linear-to-b from-primary/5 via-muted/20 to-background pt-24 pb-12 sm:pt-28 sm:pb-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+          <GsapReveal className="space-y-4">
+            <div>
+              <EditorialPill dot pulse>
+                Four Operational Desks · One Sovereign Archive
+              </EditorialPill>
+            </div>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-foreground tracking-tight leading-tight">
+              Civic Evidence & Production Archive
+            </h1>
+            <p className="text-sm sm:text-base text-muted-foreground max-w-3xl leading-relaxed">
+              Explore forensic investigations, commissioned civic media, county budget scorecards, and newsroom dispatches produced across our four operational programmes: <strong>BNS Connect</strong>, <strong>BNS Mashinani</strong>, <strong>Wanahabari Lab</strong>, and <strong>BNS Studios</strong>.
+            </p>
+          </GsapReveal>
 
-        {/* Programme Segmented Filters */}
-        <div className="flex items-center justify-start gap-2 pt-4 overflow-x-auto scrollbar-hide">
-          {PROGRAMME_PILLS.map((p) => {
-            const isSelected = programme === p.id;
-            return (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => setProgramme(p.id)}
-                className={cn(
-                  "rounded-full px-4 py-2 text-xs font-bold transition-all whitespace-nowrap outline-none",
-                  "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
-                  isSelected
-                    ? "bg-primary text-white shadow-lg shadow-primary/30"
-                    : "bg-zinc-900/80 text-zinc-400 hover:bg-zinc-800 hover:text-white border border-white/10"
-                )}
-              >
-                {p.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Minimalist search bar */}
-      <div className="studio-work-mini">
-        <button
-          type="button"
-          onClick={() => (searchOpen ? setSearchOpen(false) : openSearch())}
-          className="studio-work-mini-trigger"
-          aria-expanded={searchOpen}
-          aria-label={searchOpen ? "Close search and filters" : "Open search and filters"}
-        >
-          <Search className="size-4" aria-hidden />
-          <span>Search & Filters</span>
-          {activeCount > 0 ? (
-            <span className="studio-work-mini-count">{activeCount}</span>
-          ) : (
-            <ChevronDown
-              className={cn("size-4 studio-work-mini-chevron", searchOpen && "studio-work-mini-chevron-open")}
-              aria-hidden
-            />
-          )}
-        </button>
-        <p className="studio-work-mini-result" aria-live="polite">
-          {filtered.length} {filtered.length === 1 ? "work" : "works"}
-        </p>
-      </div>
-
-      <AnimatePresence initial={false}>
-        {searchOpen ? (
-          <motion.div
-            key="studio-work-search-panel"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: reduceMotion ? 0 : 0.28 }}
-            className="studio-work-search-panel-wrap"
-          >
-            <div className="studio-work-toolbar-minimal">
-              <div className="studio-work-search-wrap-minimal">
-                <Search className="studio-work-search-icon" aria-hidden />
-                <input
-                  ref={searchRef}
-                  type="search"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search titles, clients, tags…"
-                  className="studio-work-search-minimal"
-                  aria-label="Search productions"
-                />
-                {query ? (
+          {/* 02 — Desk Segmented Filters with Live Counts */}
+          <GsapReveal delay={0.1} className="pt-2">
+            <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide py-1">
+              {PROGRAMME_DESKS.map((desk) => {
+                const isSelected = programme === desk.id;
+                const count = programmeCounts[desk.id] || 0;
+                return (
                   <button
+                    key={desk.id}
                     type="button"
-                    onClick={() => setQuery("")}
-                    className="studio-work-mini-clear-inline"
-                    aria-label="Clear search"
+                    onClick={() => setProgramme(desk.id)}
+                    className={cn(
+                      "inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold transition-all whitespace-nowrap outline-none",
+                      "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+                      isSelected
+                        ? "bg-primary text-primary-foreground shadow-xs scale-[1.02]"
+                        : "border border-border/60 bg-card hover:bg-muted text-muted-foreground hover:text-foreground"
+                    )}
                   >
-                    <X className="size-4" />
+                    <span>{desk.label}</span>
+                    <span
+                      className={cn(
+                        "inline-flex size-4 items-center justify-center rounded-full text-[10px] font-mono",
+                        isSelected
+                          ? "bg-primary-foreground/20 text-primary-foreground"
+                          : "bg-muted text-muted-foreground"
+                      )}
+                    >
+                      {count}
+                    </span>
                   </button>
-                ) : null}
-              </div>
-              <div className="studio-work-selects">
-                <label className="studio-work-select-label">
-                  <span className="sr-only">Filter by format</span>
-                  <select
-                    value={format}
-                    onChange={(e) => setFormat(e.target.value)}
-                    className="studio-work-select-minimal"
-                    aria-label="Filter by format"
-                  >
-                    <option value="">All formats</option>
-                    {STUDIO_CONTENT_TYPES.map((type) => (
-                      <option key={type.id} value={type.id}>
-                        {type.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="studio-work-select-label">
-                  <span className="sr-only">Filter by client</span>
-                  <select
-                    value={client}
-                    onChange={(e) => setClient(e.target.value)}
-                    className="studio-work-select-minimal"
-                    aria-label="Filter by client"
-                  >
-                    <option value="">All partners</option>
-                    {clients.map((c) => (
-                      <option key={c} value={c}>
-                        {c}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="studio-work-select-label">
-                  <span className="sr-only">Filter by year</span>
-                  <select
-                    value={year}
-                    onChange={(e) => setYear(e.target.value)}
-                    className="studio-work-select-minimal"
-                    aria-label="Filter by year"
-                  >
-                    <option value="">All years</option>
-                    {years.map((y) => (
-                      <option key={y} value={y}>
-                        {y}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                {activeCount > 0 ? (
+                );
+              })}
+            </div>
+          </GsapReveal>
+        </div>
+      </section>
+
+      {/* 03 — Minimalist Search & Filter Strip */}
+      <section className="sticky top-14 md:top-16 z-30 border-b border-border/40 bg-background/90 backdrop-blur-md py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            {/* Minimal Inline Search Input */}
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+              <input
+                ref={searchRef}
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search by topic, partner, keyword... (Press '/' to focus)"
+                className="w-full rounded-full border border-border/60 bg-muted/30 pl-9 pr-9 py-2 text-xs font-medium text-foreground placeholder:text-muted-foreground focus:border-primary focus:bg-background focus:outline-none focus:ring-1 focus:ring-primary transition-all"
+              />
+              {query ? (
+                <button
+                  type="button"
+                  onClick={() => setQuery("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-0.5"
+                  aria-label="Clear search"
+                >
+                  <X className="size-3.5" />
+                </button>
+              ) : null}
+            </div>
+
+            {/* Minimalist Dropdowns */}
+            <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
+              <select
+                value={format}
+                onChange={(e) => setFormat(e.target.value)}
+                aria-label="Filter by content format"
+                className="rounded-full border border-border/60 bg-card px-3.5 py-1.5 text-xs font-medium text-foreground focus:border-primary focus:outline-none transition-colors"
+              >
+                <option value="">All Formats</option>
+                {STUDIO_CONTENT_TYPES.map((type) => (
+                  <option key={type.id} value={type.id}>
+                    {type.label}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                value={client}
+                onChange={(e) => setClient(e.target.value)}
+                aria-label="Filter by partner organization"
+                className="rounded-full border border-border/60 bg-card px-3.5 py-1.5 text-xs font-medium text-foreground focus:border-primary focus:outline-none transition-colors"
+              >
+                <option value="">All Partners</option>
+                {clients.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                value={year}
+                onChange={(e) => setYear(e.target.value)}
+                aria-label="Filter by production year"
+                className="rounded-full border border-border/60 bg-card px-3.5 py-1.5 text-xs font-medium text-foreground focus:border-primary focus:outline-none transition-colors"
+              >
+                <option value="">All Years</option>
+                {years.map((y) => (
+                  <option key={y} value={y}>
+                    {y}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Active Filter Chips & Result Counter */}
+          <div className="flex flex-wrap items-center justify-between gap-2 text-xs pt-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-mono text-[11px] text-muted-foreground">
+                {filtered.length} {filtered.length === 1 ? "investigation" : "investigations"} found
+                {programme ? ` in ${getProgrammeName(programme)}` : ""}
+              </span>
+
+              {activeFilters.length > 0 && (
+                <>
+                  <span className="text-border">|</span>
+                  {activeFilters.map((f) => (
+                    <span
+                      key={f.key}
+                      className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-muted/50 px-2.5 py-0.5 text-[11px] font-medium text-foreground"
+                    >
+                      <span>{f.label}</span>
+                      <button
+                        type="button"
+                        onClick={f.clear}
+                        className="hover:text-primary transition-colors"
+                        aria-label={`Remove ${f.label}`}
+                      >
+                        <X className="size-3" />
+                      </button>
+                    </span>
+                  ))}
                   <button
                     type="button"
                     onClick={clearFilters}
-                    className="studio-work-mini-clear"
+                    className="text-[11px] font-semibold text-primary hover:underline ml-1"
                   >
-                    Clear All
+                    Clear all
                   </button>
-                ) : null}
-              </div>
+                </>
+              )}
             </div>
-          </motion.div>
-        ) : null}
-      </AnimatePresence>
 
-      <ul className="studio-work-list">
-        {filtered.map((project) => (
-          <li key={project.id}>
-            <Link
-              href={projectHref(project.slug)}
-              className="studio-work-row group"
-            >
-              <div className="studio-work-row-media">
-                <Image
-                  src={project.media.posterUrl}
-                  alt=""
-                  fill
-                  className={cn(
-                    "object-cover transition-transform duration-500 group-hover:scale-[1.02]",
-                    project.media.posterPosition || "object-center",
-                  )}
-                  sizes="(max-width: 768px) 100vw, 62vw"
-                />
-              </div>
-              <div className="studio-work-row-copy">
-                <div className="flex items-center gap-2 mb-1 flex-wrap">
-                  <EditorialPill variant="primary" size="xs">
-                    {getProgrammeName(project.programmeSlug)}
-                  </EditorialPill>
-                  <span className="text-zinc-600 text-xs">·</span>
-                  <span className="studio-work-row-type">{project.contentType}</span>
-                </div>
-                <h2 className="studio-work-row-title">{project.title}</h2>
-                <p className="studio-work-row-client">{project.organization.name}</p>
-                <p className="studio-work-row-year">{project.year}</p>
-                {project.impactEvidence?.primaryMetric && (
-                  <p className="mt-2 text-xs font-semibold text-primary">
-                    ● {project.impactEvidence.primaryMetric}
-                  </p>
-                )}
-              </div>
-              <Plus className="studio-work-row-plus" aria-hidden />
-            </Link>
-          </li>
-        ))}
-      </ul>
-
-      {filtered.length === 0 ? (
-        <div className="py-20 text-center space-y-4">
-          <p className="studio-work-empty">No productions match your selected filters.</p>
-          <div>
-            <PillButton
-              onClick={clearFilters}
-              variant="outline"
-              size="sm"
-            >
-              Reset Filters
-            </PillButton>
+            <div className="hidden sm:flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground">
+              <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Verifiable Civic Data</span>
+            </div>
           </div>
         </div>
-      ) : null}
+      </section>
+
+      {/* 04 — Evidence Dossiers List */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        {filtered.length > 0 ? (
+          <GsapStaggerReveal itemSelector="[data-gsap-row]" className="space-y-4">
+            {filtered.map((project) => (
+              <div
+                key={project.id}
+                data-gsap-row
+                className="group relative rounded-3xl border border-border/60 bg-card p-4 sm:p-6 transition-all duration-300 hover:border-primary/50 hover:shadow-md"
+              >
+                <Link
+                  href={projectHref(project.slug)}
+                  className="flex flex-col sm:flex-row items-start sm:items-center gap-6"
+                >
+                  {/* Media Poster Anchor */}
+                  <div className="relative aspect-[16/10] w-full sm:w-64 shrink-0 overflow-hidden rounded-2xl border border-border/50 bg-muted">
+                    <Image
+                      src={project.media.posterUrl}
+                      alt={project.title}
+                      fill
+                      className={cn(
+                        "object-cover transition-transform duration-500 group-hover:scale-105",
+                        project.media.posterPosition || "object-center"
+                      )}
+                      sizes="(max-width: 640px) 100vw, 256px"
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-60 pointer-events-none" />
+                    <div className="absolute top-3 left-3">
+                      <EditorialPill variant="invert" size="xs">
+                        {project.contentType}
+                      </EditorialPill>
+                    </div>
+                  </div>
+
+                  {/* Copy & Structured Impact Evidence */}
+                  <div className="flex-1 min-w-0 space-y-2">
+                    <div className="flex items-center gap-2 flex-wrap text-xs">
+                      <EditorialPill dot pulse size="xs">
+                        {getProgrammeName(project.programmeSlug)}
+                      </EditorialPill>
+                      <span className="text-muted-foreground font-medium">·</span>
+                      <span className="font-semibold text-foreground/80">{project.organization.name}</span>
+                      <span className="text-muted-foreground font-medium">·</span>
+                      <span className="font-mono text-muted-foreground">{project.year}</span>
+                    </div>
+
+                    <h2 className="text-lg sm:text-xl font-black text-foreground group-hover:text-primary transition-colors leading-snug">
+                      {project.title}
+                    </h2>
+
+                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                      {project.subtitle || project.briefChallenge}
+                    </p>
+
+                    {project.impactEvidence?.primaryMetric && (
+                      <div className="pt-1">
+                        <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary">
+                          <span className="size-1.5 rounded-full bg-primary" />
+                          <span>{project.impactEvidence.primaryMetric}</span>
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Action Link Arrow */}
+                  <div className="hidden sm:flex size-10 items-center justify-center rounded-full border border-border/60 bg-muted/20 text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-colors shrink-0">
+                    <ArrowUpRight className="size-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                  </div>
+                </Link>
+              </div>
+            ))}
+          </GsapStaggerReveal>
+        ) : (
+          <div className="py-24 text-center space-y-4 max-w-md mx-auto">
+            <div className="flex size-12 items-center justify-center rounded-full bg-muted mx-auto text-muted-foreground">
+              <Filter className="size-5" />
+            </div>
+            <h3 className="text-lg font-bold text-foreground">No civic investigations found</h3>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              No evidence matching your selected criteria. Try adjusting your query or resetting all filters.
+            </p>
+            <div className="pt-2">
+              <PillButton onClick={clearFilters} variant="outline" size="sm">
+                Reset All Filters
+              </PillButton>
+            </div>
+          </div>
+        )}
+      </main>
     </div>
   );
 }
