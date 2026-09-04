@@ -106,7 +106,7 @@ export function LearnHubDocuments() {
               type="button"
               onClick={() => setQuery("")}
               aria-label="Clear search"
-              className="absolute right-2 top-1/2 flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground hover:text-foreground"
+              className="absolute right-2 top-1/2 flex size-11 -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground hover:text-foreground"
             >
               <X className="size-4" />
             </button>
@@ -138,7 +138,7 @@ export function LearnHubDocuments() {
             return (
               <li
                 key={doc.id}
-                className="group flex gap-4 rounded-2xl border border-border/40 bg-card p-5 transition-colors hover:border-primary/50"
+                className="group flex gap-4 rounded-2xl border border-border/40 bg-card p-5 transition-colors hover:border-primary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
                   <FileText className="size-5" aria-hidden />

@@ -84,7 +84,7 @@ export function LearnHubStories() {
             type="button"
             onClick={() => setQuery("")}
             aria-label="Clear search"
-            className="absolute right-2 top-1/2 flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground hover:text-foreground"
+            className="absolute right-2 top-1/2 flex size-11 -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground hover:text-foreground"
           >
             <X className="size-4" />
           </button>
@@ -97,7 +97,7 @@ export function LearnHubStories() {
             <Link
               key={story.id}
               href={learnItemHref(story as unknown as HubNavItem)}
-              className="group flex flex-col rounded-2xl border border-border/40 bg-card p-6 transition-colors hover:border-primary/50"
+              className="group flex flex-col rounded-2xl border border-border/40 bg-card p-6 transition-colors hover:border-primary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               <p className="text-[11px] font-semibold uppercase tracking-wider text-primary">
                 {(story.difficulty ?? "Story") as string}

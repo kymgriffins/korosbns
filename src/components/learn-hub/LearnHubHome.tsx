@@ -55,7 +55,7 @@ function VideoCard({
     <button
       type="button"
       onClick={() => onPlay(videoId)}
-      className="group w-[70vw] max-w-sm shrink-0 snap-start overflow-hidden rounded-2xl border border-border/40 bg-card text-left sm:w-80"
+      className="group w-[70vw] max-w-sm shrink-0 snap-start overflow-hidden rounded-2xl border border-border/40 bg-card text-left transition-colors hover:border-primary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:w-80"
       aria-label={`Play ${video.title}`}
     >
       <div className="relative aspect-video overflow-hidden">
@@ -173,7 +173,7 @@ export function LearnHubHome() {
                   type="button"
                   onClick={() => setQuery("")}
                   aria-label="Clear search"
-                  className="absolute right-2 top-1/2 flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground hover:text-foreground"
+                  className="absolute right-2 top-1/2 flex size-11 -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground hover:text-foreground"
                 >
                   <X className="size-4" />
                 </button>
@@ -248,7 +248,7 @@ export function LearnHubHome() {
                 <Link
                   key={article.id}
                   href={itemHref(article)}
-                  className="group overflow-hidden rounded-2xl border border-border/40 bg-card transition-colors hover:border-primary/50"
+                  className="group overflow-hidden rounded-2xl border border-border/40 bg-card transition-colors hover:border-primary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
                   {article.thumbnail_url ? (
                     <div className="relative aspect-[16/9] overflow-hidden">
@@ -299,7 +299,7 @@ export function LearnHubHome() {
                 <Link
                   key={story.id}
                   href={itemHref(story)}
-                  className="group rounded-2xl border border-border/40 bg-card p-6 transition-colors hover:border-primary/50"
+                  className="group rounded-2xl border border-border/40 bg-card p-6 transition-colors hover:border-primary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
                   <p className="text-[11px] font-semibold uppercase tracking-wider text-primary">
                     {(story.difficulty ?? "Story").toString()}
@@ -347,7 +347,7 @@ export function LearnHubHome() {
                   href={`/learn/modules/${mod.slug}`}
                   className={cn(
                     "group grid gap-4 rounded-2xl border border-border/40 bg-card p-4",
-                    "transition-colors hover:border-primary/50 sm:grid-cols-[10rem_1fr]",
+                    "transition-colors hover:border-primary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:grid-cols-[10rem_1fr]",
                   )}
                 >
                   {mod.image_url ? (

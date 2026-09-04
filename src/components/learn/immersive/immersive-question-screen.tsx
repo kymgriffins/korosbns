@@ -122,6 +122,7 @@ export function ImmersiveQuestionScreen({
               ) : state.correct ? (
                 <>
                   <CheckCircle2 className="size-4 text-emerald-600" /> Correct
+                  <span className="ml-auto text-xs font-bold text-emerald-600 animate-bounce">+10 XP</span>
                 </>
               ) : (
                 <>

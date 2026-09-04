@@ -411,7 +411,7 @@ export function LearnDashboardView({
                     key={stage.slug}
                     type="button"
                     onClick={() => router.push(`/learn/modules/${stage.slug}`)}
-                    className="group flex w-[9.5rem] shrink-0 flex-col overflow-hidden rounded-2xl border border-border/70 bg-card text-left transition-colors hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-auto"
+                    className="group flex min-w-[9.5rem] shrink-0 flex-col overflow-hidden rounded-2xl border border-border/70 bg-card text-left transition-colors hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-auto"
                   >
                     <div className="relative aspect-[16/10] bg-muted">
                       {stage.image_url ? (
@@ -507,7 +507,7 @@ export function LearnDashboardView({
         </div>
 
         {/* ── Side rail ──────────────────────────────────────────────── */}
-        <aside className="space-y-6">
+        <aside className="space-y-6 md:grid md:grid-cols-2 md:gap-6 lg:block lg:space-y-6">
           <section className="space-y-3">
             <div className="flex items-center justify-between gap-2">
               <h2 className="flex items-center gap-1.5 font-heading text-base font-bold">

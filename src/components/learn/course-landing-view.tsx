@@ -6,7 +6,6 @@ import { motion } from "motion/react";
 import { CheckCircle2, Clock, Loader2, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { HarmonizedImage } from "@/components/ui/harmonized-image";
 import { LearnPageFrame } from "@/components/learn/learn-page-frame";
 import { learningData } from "@/data/learning";
 import {
@@ -22,9 +21,6 @@ import type { CivicModule } from "@/types/learn";
 import { cn } from "@/utils";
 import { useEffect, useMemo, useState } from "react";
 
-/**
- * Mobile-first course overview — one guided path per lesson (Continue inside player).
- */
 export function CourseLandingView() {
   const params = useParams();
   const slug = params.slug as string;
@@ -103,48 +99,50 @@ export function CourseLandingView() {
   }, 0);
 
   return (
-    <LearnPageFrame className="space-y-8 pb-8">
-      <Link
-        href="/learn"
-        className="inline-flex text-sm font-medium text-muted-foreground hover:text-foreground"
+    <LearnPageFrame className="space-y-0 pb-8">
+      {/* Dossier header — typewriter style */}
+      <motion.div
+        variants={fadeInUp}
+        initial="hidden"
+        animate="visible"
+        className="border-b-2 border-foreground pb-6"
       >
-        ← All modules
-      </Link>
-
-      <motion.section className="space-y-5" variants={fadeInUp} initial="hidden" animate="visible">
-        <div className="overflow-hidden rounded-2xl border border-border/60">
-          <HarmonizedImage
-            src={mod.image_url}
-            alt={mod.title}
-            className="rounded-none border-0 ring-0"
-            fallbackLabel=""
-            aspectClassName="aspect-video"
-          />
+        <Link
+          href="/learn"
+          className="mb-4 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground hover:text-foreground"
+        >
+          ← All modules
+        </Link>
+        <div className="mt-2 inline-flex items-center gap-1.5 border-2 border-primary/60 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-primary" style={{ transform: "rotate(-1deg)" }}>
+          Free module
         </div>
-
-        <div className="space-y-3">
-          <p className="text-xs font-semibold uppercase tracking-wider text-primary">Free module</p>
-          <h1 className="text-balance text-2xl font-bold leading-tight tracking-tight">
-            {mod.title}
-          </h1>
-          {mod.description && mod.description.trim() !== mod.title.trim() ? (
-            <p className="text-sm leading-relaxed text-muted-foreground">{mod.description}</p>
+        <h1 className="mt-3 text-balance text-2xl font-bold leading-tight tracking-tight md:text-3xl">
+          {mod.title}
+        </h1>
+        {mod.description && mod.description.trim() !== mod.title.trim() ? (
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{mod.description}</p>
+        ) : null}
+        <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 border-t border-border/50 pt-4 text-xs text-muted-foreground">
+          {mod.author?.name ? (
+            <span className="font-semibold">By {mod.author.name}</span>
           ) : null}
-        </div>
-
-        <ul className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-          <li className="inline-flex items-center gap-1.5">
-            <Clock className="size-3.5" aria-hidden />
-            ~{estMinutes} min
-          </li>
-          <li>
-            {progress.total} lesson{progress.total === 1 ? "" : "s"}
-          </li>
+          <span className="inline-flex items-center gap-1">
+            <Clock className="size-3" aria-hidden />~{estMinutes} min
+          </span>
+          <span>{progress.total} lesson{progress.total === 1 ? "" : "s"}</span>
           {progress.isInProgress || progress.isCompleted ? (
-            <li className="tabular-nums">{progress.pct}% complete</li>
+            <span className="tabular-nums">{progress.pct}% complete</span>
           ) : null}
-        </ul>
+        </div>
+      </motion.div>
 
+      {/* Progress + CTA */}
+      <motion.section
+        variants={fadeInUp}
+        initial="hidden"
+        animate="visible"
+        className="space-y-4 py-6"
+      >
         {(progress.isInProgress || progress.isCompleted) && (
           <Progress value={progress.pct} className="h-2" />
         )}
@@ -157,9 +155,16 @@ export function CourseLandingView() {
         </Button>
       </motion.section>
 
+      {/* What you'll learn */}
       {mod.expectations?.length ? (
-        <section className="space-y-3" aria-labelledby="outcomes-heading">
-          <h2 id="outcomes-heading" className="text-sm font-semibold">
+        <motion.section
+          variants={fadeInUp}
+          initial="hidden"
+          animate="visible"
+          className="space-y-3 border-t border-border/40 py-6"
+          aria-labelledby="outcomes-heading"
+        >
+          <h2 id="outcomes-heading" className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
             What you&apos;ll learn
           </h2>
           <ul className="space-y-2">
@@ -170,14 +175,21 @@ export function CourseLandingView() {
               </li>
             ))}
           </ul>
-        </section>
+        </motion.section>
       ) : null}
 
-      <section className="space-y-3" aria-labelledby="curriculum-heading">
-        <h2 id="curriculum-heading" className="text-sm font-semibold">
-          Lessons
+      {/* Curriculum — numbered rows */}
+      <motion.section
+        variants={fadeInUp}
+        initial="hidden"
+        animate="visible"
+        className="space-y-3 border-t border-border/40 py-6"
+        aria-labelledby="curriculum-heading"
+      >
+        <h2 id="curriculum-heading" className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
+          Curriculum
         </h2>
-        <ol className="divide-y divide-border/50 overflow-hidden rounded-2xl border border-border/60">
+        <ol className="divide-y divide-border/40">
           {mod.steps.map((step, index) => {
             const stepNumber = index + 1;
             const done = Boolean(progress.completed[step.order]) || progress.isCompleted;
@@ -188,8 +200,8 @@ export function CourseLandingView() {
                 <Link
                   href={href}
                   className={cn(
-                    "flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-muted/30",
-                    done && "bg-muted/15",
+                    "flex items-center gap-3 px-2 py-3.5 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                    done && "bg-muted/10",
                   )}
                 >
                   <span
@@ -214,7 +226,7 @@ export function CourseLandingView() {
             );
           })}
         </ol>
-      </section>
+      </motion.section>
     </LearnPageFrame>
   );
 }

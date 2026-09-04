@@ -187,7 +187,7 @@ export function LearnHubReader({
                 </h2>
               ) : null}
               {card.stat ? (
-                <p className="mt-3 text-4xl font-extrabold tracking-tight md:text-5xl">
+                <p className="mt-3 font-extrabold tracking-tight" style={{ fontSize: "clamp(2rem, 8vw, 3.5rem)" }}>
                   {card.stat.value}
                   <span className="mt-1 block text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                     {card.stat.label}
