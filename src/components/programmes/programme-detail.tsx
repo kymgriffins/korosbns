@@ -381,7 +381,7 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
             {/* Left Column: Bold Typography & Brief */}
             <div className="lg:col-span-7 space-y-6">
               <div>
-                <EditorialPill variant="primary" dot pulse className="uppercase tracking-widest font-bold">
+                <EditorialPill dot pulse>
                   {programme.eyebrow}
                 </EditorialPill>
               </div>
@@ -921,32 +921,66 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
 
       {/* 11 — FAQ */}
       {programme.faqs && programme.faqs.length > 0 && (
-        <section className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-16 border-t border-border/50">
-          <div className="mb-8 space-y-2 text-center">
-            <span className="font-mono text-xs font-bold text-primary uppercase tracking-widest">
-              10 / Frequently Asked Questions
-            </span>
-            <h2 className="font-heading text-3xl sm:text-4xl font-extrabold text-foreground">
-              Everything You Need to Know
-            </h2>
-          </div>
+        <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24 border-t border-border/50">
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-14">
+            {/* Left Column: Desk Context */}
+            <div className="lg:col-span-5 lg:sticky lg:top-28 self-start space-y-5">
+              <EditorialPill dot pulse>
+                Desk Intelligence & Advisory
+              </EditorialPill>
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-foreground">
+                Everything You Need to Know About {programme.name}.
+              </h2>
+              <p className="text-sm sm:text-base leading-relaxed text-muted-foreground">
+                Verified answers directly from the desk leads covering operational protocols, cohort recruitment, research access, and institutional collaboration.
+              </p>
 
-          <Accordion type="single" collapsible className="space-y-3">
-            {programme.faqs.map((faq, i) => (
-              <AccordionItem
-                key={faq.q}
-                value={`item-${i}`}
-                className="rounded-2xl border border-border/60 bg-card px-6 py-2"
-              >
-                <AccordionTrigger className="text-left font-bold text-foreground text-sm sm:text-base">
-                  {faq.q}
-                </AccordionTrigger>
-                <AccordionContent className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                  {faq.a}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+              <div className="pt-2">
+                <div className="rounded-2xl border border-border/60 bg-muted/30 p-5 space-y-3">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    Have Further Questions?
+                  </p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    Our desk directors and public finance researchers are available for partner briefings and citizen inquiries.
+                  </p>
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    <PillButtonGroup
+                      href="/contact"
+                      label="Contact Desk Lead"
+                      variant="primary"
+                      size="sm"
+                    />
+                    <PillButtonGroup
+                      href="/programmes"
+                      label="All Desks"
+                      variant="outline"
+                      size="sm"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Full-Width Accordion */}
+            <div className="lg:col-span-7">
+              <Accordion type="single" collapsible className="w-full space-y-3">
+                {programme.faqs.map((faq, i) => (
+                  <AccordionItem
+                    key={faq.q}
+                    value={`item-${i}`}
+                    className="rounded-2xl border border-border/60 bg-card/60 px-5 transition-all data-[state=open]:bg-primary/5 data-[state=open]:border-primary/40 data-[state=open]:shadow-xs"
+                  >
+                    <AccordionTrigger className="text-left text-sm font-bold text-foreground hover:no-underline md:text-base py-5">
+                      <span className="leading-snug">{faq.q}</span>
+                    </AccordionTrigger>
+                    <AccordionContent className="text-xs sm:text-sm text-muted-foreground leading-relaxed pl-2 pb-5 pr-2">
+                      {faq.a}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+          </div>
         </section>
       )}
 
@@ -961,6 +995,12 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
           description={PROGRAMMES_CLOSING.body}
           ctaHref={programme.cta?.href || PROGRAMMES_CLOSING.cta.href}
           ctaLabel={programme.cta?.label || PROGRAMMES_CLOSING.cta.label}
+          secondaryHref="/contact"
+          secondaryLabel="Institutional Partnership"
+          images={[
+            { src: programme.visual.hero, alt: programme.visual.heroAlt },
+            { src: ext.mosaic.q1.src, alt: ext.mosaic.q1.alt },
+          ]}
         />
       </LandingSection>
     </div>

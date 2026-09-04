@@ -46,7 +46,7 @@ export function ProgrammesLanding() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-8">
           <div className="space-y-4 max-w-4xl">
             <div>
-              <EditorialPill variant="primary" dot pulse className="uppercase tracking-widest font-bold">
+              <EditorialPill dot pulse>
                 Four Operational Desks · One Sovereign Standard
               </EditorialPill>
             </div>
@@ -97,20 +97,20 @@ export function ProgrammesLanding() {
 
       {/* 02 — INTERACTIVE DESK SELECTOR & ARCHITECTURAL PREVIEW */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center max-w-3xl mx-auto mb-12 space-y-3">
-          <span className="font-mono text-xs font-bold text-primary uppercase tracking-widest">
-            The Operational Matrix
-          </span>
-          <h2 className="font-heading text-3xl sm:text-5xl font-black text-foreground">
-            Four desks, zero shallow promises.
-          </h2>
-          <p className="text-sm sm:text-base text-muted-foreground">
+        <div className="mb-10 flex flex-col gap-4 md:mb-12 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-2xl space-y-3">
+            <EditorialPill>The Operational Matrix</EditorialPill>
+            <h2 className="font-heading text-3xl sm:text-5xl font-black text-foreground">
+              Four desks, zero shallow promises.
+            </h2>
+          </div>
+          <p className="max-w-sm text-sm text-muted-foreground md:text-right leading-relaxed">
             Select an operational desk below to inspect its focus area, methodology, target audience, and active project roster.
           </p>
         </div>
 
         {/* Desk Selector Pills */}
-        <div className="flex items-center justify-center gap-2 p-1.5 rounded-full bg-muted/60 max-w-3xl mx-auto mb-12 border border-border/60 overflow-x-auto">
+        <div className="flex items-center justify-start gap-2 p-1.5 rounded-full bg-muted/60 border border-border/60 overflow-x-auto mb-12 scrollbar-hide">
           {PROGRAMMES.map((p) => {
             const isActive = activeTab === p.slug;
             return (
@@ -359,6 +359,12 @@ export function ProgrammesLanding() {
           description={PROGRAMMES_CLOSING.body}
           ctaHref={PROGRAMMES_CLOSING.cta.href}
           ctaLabel={PROGRAMMES_CLOSING.cta.label}
+          secondaryHref="/contact"
+          secondaryLabel="Direct Desk Enquiry"
+          images={[
+            { src: BNS_COMMUNITY_IMAGES.forumA, alt: "Citizen Town Hall Assembly" },
+            { src: BNS_COMMUNITY_IMAGES.cohortA, alt: "Youth Budget Trackers" },
+          ]}
         />
       </LandingSection>
     </div>

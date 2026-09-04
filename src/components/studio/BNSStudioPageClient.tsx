@@ -35,7 +35,7 @@ export function BNSStudioPageClient() {
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-center">
             <div className="lg:col-span-7 space-y-6">
               <div>
-                <EditorialPill variant="primary" dot pulse className="uppercase tracking-wider font-semibold">
+                <EditorialPill dot pulse>
                   The Double Impact Model
                 </EditorialPill>
               </div>
@@ -200,28 +200,42 @@ export function BNSStudioPageClient() {
       </section>
 
       {/* 05 — Conversion CTA Band */}
-      <section className="border-t border-white/10 bg-black px-6 py-20 text-center">
-        <div className="mx-auto max-w-3xl space-y-6">
-          <p className="text-xs font-bold uppercase tracking-wider text-primary">Start a Production</p>
-          <h2 className="text-3xl font-extrabold text-white md:text-5xl">
-            Tell us what you need to move.
-          </h2>
-          <p className="text-base text-zinc-400">
-            Podcasts, explainers, town halls, or multi-channel campaigns — we respond with scope, team, and timeline within 24 hours.
-          </p>
-          <div className="pt-4 flex flex-wrap justify-center gap-4">
-            <PillButton
-              onClick={() => setBookingOpen(true)}
-              size="lg"
-            >
-              Open Enquiry Form
-            </PillButton>
-            <PillButtonGroup
-              href="/programmes"
-              label="Explore All Programmes"
-              variant="invert"
-              size="lg"
-            />
+      <section className="border-t border-white/10 bg-black px-6 py-20 md:py-28">
+        <div className="mx-auto max-w-7xl">
+          <div className="rounded-3xl border border-white/10 bg-zinc-950/80 p-8 sm:p-12 lg:p-16 backdrop-blur-md">
+            <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-center">
+              <div className="lg:col-span-7 space-y-5">
+                <EditorialPill dot pulse>
+                  Commission BNS Studio
+                </EditorialPill>
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
+                  Tell us what you need to move.
+                </h2>
+                <p className="text-base sm:text-lg text-zinc-400 leading-relaxed max-w-2xl">
+                  Podcasts, explainers, town halls, or multi-channel campaigns — we respond with verified scope, production team, and timeline within 24 hours.
+                </p>
+              </div>
+
+              <div className="lg:col-span-5 flex flex-col items-start lg:items-end gap-4">
+                <div className="flex flex-wrap gap-3">
+                  <PillButton
+                    onClick={() => setBookingOpen(true)}
+                    size="lg"
+                  >
+                    Open Enquiry Form
+                  </PillButton>
+                  <PillButtonGroup
+                    href="/programmes"
+                    label="Explore All Programmes"
+                    variant="invert"
+                    size="lg"
+                  />
+                </div>
+                <p className="text-xs text-zinc-500 lg:text-right">
+                  100% of studio surplus directly subsidizes grassroots civic auditing.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>

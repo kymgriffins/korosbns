@@ -79,7 +79,7 @@ export function AgencyCaseStudyTemplate({ project }: { project: StudioProjectEvi
           <div className="space-y-6">
             {/* Standardized Editorial Badges */}
             <div className="flex flex-wrap items-center gap-2">
-              <EditorialPill variant="primary" dot pulse size="xs">
+              <EditorialPill dot pulse size="xs">
                 {project.contentType}
               </EditorialPill>
               <EditorialPill variant="outline" size="xs">
@@ -354,30 +354,39 @@ export function AgencyCaseStudyTemplate({ project }: { project: StudioProjectEvi
       {/* 04 — UNIFIED ACTION CTA & ADJACENT INVESTIGATIONS */}
       <footer className="border-t border-border/40 bg-muted/10 py-16 md:py-24">
         <div className={SECTION_SHELL_INNER}>
-          <div className="mx-auto max-w-4xl space-y-12 text-center">
-            <div className="space-y-4">
-              <EditorialPill variant="primary" dot pulse>
-                Commission & Collaborate
-              </EditorialPill>
-              <h2 className={cn(T.sectionTitle, "max-w-2xl mx-auto text-foreground")}>
-                Commission forensic civic storytelling that moves public policy.
-              </h2>
-              <p className={cn(T.lead, "max-w-xl mx-auto text-muted-foreground")}>
-                We partner with development institutions, county assemblies, and grassroots organizations to translate public finance data into high-impact media.
-              </p>
-              <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
-                <PillButton
-                  onClick={() => setBookingOpen(true)}
-                  label="Commission the Studio"
-                  size="lg"
-                  icon={<Send className="size-4" />}
-                />
-                <PillButtonGroup
-                  href="/work"
-                  label="Explore All Work & Evidence"
-                  variant="outline"
-                  size="lg"
-                />
+          <div className="space-y-16">
+            <div className="rounded-3xl border border-border/60 bg-card p-8 sm:p-12 lg:p-16 shadow-xs">
+              <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-center">
+                <div className="lg:col-span-7 space-y-4">
+                  <EditorialPill dot pulse>
+                    Commission & Collaborate
+                  </EditorialPill>
+                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tracking-tight leading-tight">
+                    Commission forensic civic storytelling that moves public policy.
+                  </h2>
+                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-2xl">
+                    We partner with development institutions, county assemblies, and grassroots organizations to translate public finance data into high-impact media.
+                  </p>
+                </div>
+                <div className="lg:col-span-5 flex flex-col items-start lg:items-end gap-4">
+                  <div className="flex flex-wrap gap-3">
+                    <PillButton
+                      onClick={() => setBookingOpen(true)}
+                      label="Commission the Studio"
+                      size="lg"
+                      icon={<Send className="size-4" />}
+                    />
+                    <PillButtonGroup
+                      href="/work"
+                      label="All Work & Evidence"
+                      variant="outline"
+                      size="lg"
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground lg:text-right">
+                    100% of studio surplus directly subsidizes grassroots civic auditing.
+                  </p>
+                </div>
               </div>
             </div>
 

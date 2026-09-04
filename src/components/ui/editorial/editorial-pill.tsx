@@ -51,7 +51,7 @@ export function EditorialPill({
         size === "sm" && "gap-1.5 px-3 py-0.5 text-xs",
         size === "default" && "gap-2 px-3.5 py-1 text-xs",
         // Variants
-        variant === "default" && "bg-muted text-foreground/75 border border-border/40",
+        variant === "default" && "bg-muted text-foreground/80 border border-border/40",
         variant === "muted" &&
           "bg-muted/60 text-muted-foreground uppercase tracking-wider border border-border/30",
         variant === "primary" &&

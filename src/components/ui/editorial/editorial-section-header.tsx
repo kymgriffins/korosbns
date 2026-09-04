@@ -4,6 +4,7 @@ import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 
 type EditorialSectionHeaderProps = {
   eyebrow?: string;
+  eyebrowDot?: boolean;
   title: React.ReactNode;
   description?: string;
   className?: string;
@@ -16,6 +17,7 @@ type EditorialSectionHeaderProps = {
  */
 export function EditorialSectionHeader({
   eyebrow,
+  eyebrowDot = true,
   title,
   description,
   className,
@@ -36,7 +38,11 @@ export function EditorialSectionHeader({
       )}
     >
       <div className={cn("max-w-2xl", isCentered && "mx-auto")}>
-        {eyebrow ? <EditorialPill className="mb-4">{eyebrow}</EditorialPill> : null}
+        {eyebrow ? (
+          <EditorialPill dot={eyebrowDot} pulse={eyebrowDot} className="mb-4">
+            {eyebrow}
+          </EditorialPill>
+        ) : null}
         <TitleTag className={T.sectionTitle}>{title}</TitleTag>
         {description && isCentered ? (
           <p className={cn(T.lead, "mx-auto mt-4 max-w-2xl")}>{description}</p>

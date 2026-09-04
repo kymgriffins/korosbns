@@ -104,41 +104,41 @@ export function StudioFeaturedWorkPage() {
   return (
     <div className="studio-work-page">
       {/* Hero Header */}
-      <div className="pt-24 pb-8 px-6 text-center max-w-4xl mx-auto space-y-4">
+      <div className="pt-24 pb-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
         <div>
-          <EditorialPill variant="primary" dot pulse className="uppercase tracking-wider font-bold">
+          <EditorialPill dot pulse>
             The Unified Evidence Engine
           </EditorialPill>
         </div>
-        <h1 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight">
           Featured Work & Civic Proof
         </h1>
-        <p className="text-sm md:text-base text-zinc-400 max-w-2xl mx-auto">
+        <p className="text-sm sm:text-base text-zinc-400 max-w-2xl leading-relaxed">
           Explore investigations, commissioned media, county scorecards, and viral explainers produced across our 4 operational programmes.
         </p>
-      </div>
 
-      {/* Programme Segmented Filters */}
-      <div className="flex items-center justify-center gap-2 px-4 pb-8 overflow-x-auto scrollbar-hide">
-        {PROGRAMME_PILLS.map((p) => {
-          const isSelected = programme === p.id;
-          return (
-            <button
-              key={p.id}
-              type="button"
-              onClick={() => setProgramme(p.id)}
-              className={cn(
-                "rounded-full px-5 py-2 text-xs font-bold transition-all whitespace-nowrap outline-none",
-                "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
-                isSelected
-                  ? "bg-primary text-white shadow-lg shadow-primary/30 scale-[1.02]"
-                  : "bg-zinc-900 text-zinc-400 hover:bg-zinc-800 hover:text-white border border-white/10"
-              )}
-            >
-              {p.label}
-            </button>
-          );
-        })}
+        {/* Programme Segmented Filters */}
+        <div className="flex items-center justify-start gap-2 pt-4 overflow-x-auto scrollbar-hide">
+          {PROGRAMME_PILLS.map((p) => {
+            const isSelected = programme === p.id;
+            return (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => setProgramme(p.id)}
+                className={cn(
+                  "rounded-full px-4 py-2 text-xs font-bold transition-all whitespace-nowrap outline-none",
+                  "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+                  isSelected
+                    ? "bg-primary text-white shadow-lg shadow-primary/30"
+                    : "bg-zinc-900/80 text-zinc-400 hover:bg-zinc-800 hover:text-white border border-white/10"
+                )}
+              >
+                {p.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Minimalist search bar */}

@@ -1,7 +1,8 @@
 "use client";
 
 import { HelpCircle } from "lucide-react";
-import { LandingContent, LandingSection, LandingSectionHeader } from "@/layouts/landing-section";
+import { LandingContent, LandingSection } from "@/layouts/landing-section";
+import { EditorialPill, PillButtonGroup } from "@/components/ui/editorial";
 import {
   Accordion,
   AccordionContent,
@@ -57,43 +58,75 @@ export function ProgrammesFaq() {
   };
 
   return (
-    <LandingSection id="faq" aria-labelledby="faq-heading">
+    <LandingSection id="faq" aria-labelledby="faq-heading" className="border-t border-border/40">
       {/* FAQPage JSON-LD Schema */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
 
-      <LandingSectionHeader
-        title={
-          <>
-            <span className="text-primary">Frequently Asked Questions.</span> Clear answers.
-          </>
-        }
-        description="Everything you need to know about Budget Ndio Story programmes, eligibility, county coverage, and partnerships."
-        className="mb-10 md:mb-14"
-      />
       <LandingContent>
-        <div className="mx-auto max-w-3xl rounded-3xl border border-border/60 bg-card p-6 shadow-sm md:p-10">
-          <Accordion type="single" collapsible className="w-full space-y-3">
-            {FAQS.map((faq) => (
-              <AccordionItem
-                key={faq.id}
-                value={faq.id}
-                className="rounded-xl border border-border/40 px-4 transition-colors data-[state=open]:bg-primary/5 data-[state=open]:border-primary/30"
-              >
-                <AccordionTrigger className="text-left text-sm font-bold text-foreground hover:no-underline md:text-base">
-                  <div className="flex items-center gap-2.5">
-                    <HelpCircle className="size-4 shrink-0 text-primary" />
-                    <span>{faq.question}</span>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="text-xs leading-relaxed text-muted-foreground md:text-sm pl-6">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-14">
+          {/* Left Column: Asymmetric Sticky Desk Briefing */}
+          <div className="lg:col-span-5 lg:sticky lg:top-28 self-start space-y-5">
+            <EditorialPill dot pulse>
+              Desk Operations & Advisory
+            </EditorialPill>
+            <h2 id="faq-heading" className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-foreground">
+              Frequently Asked Questions. <span className="text-primary">Clear, verified answers.</span>
+            </h2>
+            <p className="text-sm sm:text-base leading-relaxed text-muted-foreground">
+              Everything you need to know about Budget Ndio Story programmes, eligibility, county devolution coverage, and civic media commissions.
+            </p>
+
+            <div className="pt-2">
+              <div className="rounded-2xl border border-border/60 bg-muted/30 p-5 space-y-3">
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Direct Enquiry Desk
+                </p>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Need custom research data, county scorecard access, or want to explore an institutional partnership?
+                </p>
+                <div className="flex flex-wrap gap-2 pt-1">
+                  <PillButtonGroup
+                    href="/contact"
+                    label="Reach Programmes Lead"
+                    variant="primary"
+                    size="sm"
+                  />
+                  <PillButtonGroup
+                    href="/about"
+                    label="About BNS"
+                    variant="outline"
+                    size="sm"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Full-Width Accordion */}
+          <div className="lg:col-span-7">
+            <Accordion type="single" collapsible className="w-full space-y-3">
+              {FAQS.map((faq) => (
+                <AccordionItem
+                  key={faq.id}
+                  value={faq.id}
+                  className="rounded-2xl border border-border/60 bg-card/60 px-5 transition-all data-[state=open]:bg-primary/5 data-[state=open]:border-primary/40 data-[state=open]:shadow-xs"
+                >
+                  <AccordionTrigger className="text-left text-sm font-bold text-foreground hover:no-underline md:text-base py-5">
+                    <div className="flex items-start gap-3 text-left">
+                      <HelpCircle className="size-4 shrink-0 text-primary mt-1" />
+                      <span className="leading-snug">{faq.question}</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="text-xs leading-relaxed text-muted-foreground md:text-sm pl-7 pb-5 pr-2">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
         </div>
       </LandingContent>
     </LandingSection>
