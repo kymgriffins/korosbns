@@ -60,10 +60,13 @@ export function StudioSiteNav({
   }, [pathname]);
 
   const menuLinks = [
+    { href: "/", label: "← Back to BNS Main Site", key: "main" },
     { href: "/bns-studio", label: `Formats [${STUDIO_REEL_SLIDE_COUNT}]`, key: "home" },
     { href: "/bns-studio/work", label: `Featured work [${FEATURED_COUNT}]`, key: "work" },
-    { href: "/bns-studio/about", label: "About", key: "about" },
-    { href: "/bns-studio/about#contact", label: "Contact", key: "contact" },
+    { href: "/bns-studio/about", label: "About Studios", key: "about" },
+    { href: "/programmes", label: "All Programmes", key: "programmes" },
+    { href: "/reports", label: "Budget Reports", key: "reports" },
+    { href: "/bns-studio/about#contact", label: "Commission Studio", key: "contact" },
   ];
 
   return (
@@ -76,7 +79,14 @@ export function StudioSiteNav({
       >
         <nav className="studio-site-nav-inner" aria-label="BNS Studios">
           {/* Desktop left links — hidden on mobile */}
-          <div className="studio-site-nav-left studio-nav-desktop-only">
+          <div className="studio-site-nav-left studio-nav-desktop-only flex items-center gap-3">
+            <Link
+              href="/"
+              className="studio-site-nav-link text-xs opacity-75 hover:opacity-100"
+            >
+              ← BNS Main
+            </Link>
+            <span className="text-muted-foreground/40 text-xs">/</span>
             <Link
               href="/bns-studio/work"
               className={cn(
@@ -110,8 +120,9 @@ export function StudioSiteNav({
             </button>
           </div>
 
-          <Link href="/bns-studio" className="studio-site-nav-brand">
-            BNS
+          <Link href="/bns-studio" className="studio-site-nav-brand flex items-center gap-1.5" title="Budget Ndio Story Studios">
+            <span>BNS</span>
+            <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-primary/20 text-primary">Studios</span>
           </Link>
 
           <div className="studio-site-nav-right">

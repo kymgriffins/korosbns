@@ -28,7 +28,13 @@
 
 @media (min-width: 768px) {
   .learn-app {
-    --learn-shell-max: 40rem;
+    --learn-shell-max: 48rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .learn-app {
+    --learn-shell-max: 76rem;
   }
 }
 

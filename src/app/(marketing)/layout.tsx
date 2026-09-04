@@ -25,7 +25,7 @@ const MarketingLayout = ({
         showMarketingChrome ? "pt-12 md:pt-16 lg:pt-20" : ""
       }`}
     >
-      {!isLearnApp && <Navbar />}
+      <Navbar />
 
       <div className="flex flex-1 flex-col">{children}</div>
 

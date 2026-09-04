@@ -9,7 +9,7 @@
   --studio-theatre-fg: hsl(40 20% 96%);
   --studio-theatre-muted: hsl(220 8% 62%);
   --studio-theatre-border: hsl(220 10% 20%);
-  --studio-theatre-accent: hsl(24 95% 58%);
+  --studio-theatre-accent: hsl(214 100% 54%);
   --studio-rail-gap: 0.75rem;
   --studio-rail-pad: max(1rem, calc((100vw - 72rem) / 2));
 
@@ -25,7 +25,7 @@
   --studio-theatre-fg: hsl(220 20% 10%);
   --studio-theatre-muted: hsl(220 8% 42%);
   --studio-theatre-border: hsl(220 12% 86%);
-  --studio-theatre-accent: hsl(24 90% 48%);
+  --studio-theatre-accent: hsl(214 100% 48%);
 }
 
 .studio-app[data-studio-theme="light"] .studio-theatre-hero-scrim {
@@ -115,7 +115,7 @@
 }
 
 .studio-accent-cinema {
-  --studio-format-accent: hsl(24 95% 58%);
+  --studio-format-accent: hsl(214 100% 54%);
 }
 
 .studio-accent-documentary {
@@ -257,7 +257,7 @@
   margin-top: 0.25rem;
   font-size: 0.55em;
   letter-spacing: 0.35em;
-  color: var(--studio-theatre-accent, hsl(24 95% 58%));
+  color: var(--studio-theatre-accent, hsl(214 100% 54%));
 }
 
 .studio-reel-shooter-track {
@@ -272,16 +272,15 @@
   height: 100%;
   width: 100%;
   transform-origin: left center;
-  background: var(--studio-theatre-accent, hsl(24 95% 58%));
+  background: var(--studio-theatre-accent, hsl(214 100% 54%));
 }
 
 /* ─── Full-viewport reel home ────────────────────────────────────────────── */
 
 .studio-reel-viewport {
   position: relative;
-  height: 100dvh;
-  max-height: 100dvh;
-  overflow: hidden;
+  min-height: 100dvh;
+  overflow-x: hidden;
   background: #000;
 }
 
@@ -338,7 +337,7 @@
   position: absolute;
   inset: 0;
   transform-origin: left center;
-  background: var(--studio-theatre-accent, hsl(24 95% 58%));
+  background: var(--studio-theatre-accent, hsl(214 100% 54%));
 }
 
 .studio-reel-hero-slide {
@@ -2978,7 +2977,7 @@
 .fworld-documentary {
   --fw-bg: hsl(220 20% 4%);
   --fw-surface: hsl(220 16% 8%);
-  --fw-accent: hsl(24 95% 58%);
+  --fw-accent: hsl(214 100% 54%);
   --fw-fg: hsl(40 15% 94%);
   --fw-muted: hsl(220 8% 56%);
   background: var(--fw-bg);
@@ -3335,7 +3334,7 @@
   --fw-bg: hsl(215 18% 8%);
   --fw-surface: hsl(215 14% 12%);
   --fw-elevated: hsl(215 12% 16%);
-  --fw-accent: hsl(24 95% 58%);
+  --fw-accent: hsl(214 100% 54%);
   --fw-fg: hsl(40 15% 94%);
   --fw-muted: hsl(215 8% 56%);
   background: var(--fw-bg);

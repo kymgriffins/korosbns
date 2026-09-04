@@ -21,6 +21,7 @@ import { landingContent } from "@/content";
 import { cn } from "@/utils";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 import { socialIconComponents } from "@/components/ui/social-icons";
+import { MegaMenu } from "@/components/marketing/mega-menu";
 
 const DESKTOP_NAV =
   landingContent.navigation.desktop ??
@@ -147,20 +148,9 @@ export function Header() {
               Based in: Kenya
             </p>
 
-            <nav
-              className="hidden items-center gap-0.5 md:flex"
-              aria-label="Primary"
-            >
-              {DESKTOP_NAV.map((item) => (
-                <NavLink
-                  key={item.href}
-                  href={item.href}
-                  label={item.label}
-                  active={isActivePath(pathname, item.href)}
-                  newTab={"newTab" in item && item.newTab === true}
-                />
-              ))}
-            </nav>
+            <div className="hidden items-center md:flex">
+              <MegaMenu />
+            </div>
           </div>
 
           <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">

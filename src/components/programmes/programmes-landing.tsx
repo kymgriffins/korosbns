@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Sparkles } from "lucide-react";
 import { ProgrammesPartners } from "@/components/programmes/programmes-partners";
 import { ProgrammesFaq } from "@/components/programmes/programmes-faq";
 import { ProgrammesImpactHub } from "@/components/work-hub/programmes-impact-hub";
@@ -48,6 +48,15 @@ export function ProgrammesLanding() {
         <h1 className="prog-title-xl">{PROGRAMMES_LANDING.headline}</h1>
         <p className="prog-lede">{PROGRAMMES_LANDING.body}</p>
         <p className="prog-sub">{PROGRAMMES_LANDING.subhead}</p>
+        <div className="flex flex-wrap items-center gap-3 pt-2">
+          <Link
+            href="/work"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-xs font-bold text-primary-foreground shadow-sm hover:bg-primary/90 transition-all"
+          >
+            <Sparkles className="size-3.5" />
+            Explore Unified Evidence Across 4 Desks
+          </Link>
+        </div>
         <nav aria-label="Programmes" className="prog-anchor-nav">
           {PROGRAMMES.map((p, i) => (
             <Link key={p.slug} href={programmeHref(p.slug)} className="prog-anchor">

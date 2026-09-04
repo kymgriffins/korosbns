@@ -22,8 +22,8 @@ export function ReportsHeroStatement({ hubMeta }: ReportsHeroStatementProps) {
       {/* Editorial Specimen Masthead & Metadata Line */}
       <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-foreground/10">
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
-            <span className="size-1.5 rounded-full bg-orange-500 animate-pulse" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">
+            <span className="size-1.5 rounded-full bg-primary animate-pulse" />
             {hubMeta.fiscalYear} BULLETIN
           </span>
           <span className="text-muted-foreground/30 hidden sm:inline">/</span>
@@ -47,7 +47,7 @@ export function ReportsHeroStatement({ hubMeta }: ReportsHeroStatementProps) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         <div className="lg:col-span-8 space-y-4">
           <div className="flex items-baseline gap-3">
-            <span className="font-serif italic text-3xl sm:text-4xl text-orange-600 dark:text-orange-400 font-normal">
+            <span className="font-serif italic text-3xl sm:text-4xl text-primary font-normal">
               Fig 01;
             </span>
             <h1 className="font-heading text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-foreground leading-[1.05]">
@@ -88,14 +88,14 @@ export function ReportsHeroStatement({ hubMeta }: ReportsHeroStatementProps) {
 
       {/* The Inverted Editorial Fiscal Specimen Card */}
       <div className="relative overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950 text-zinc-100 p-6 sm:p-8 lg:p-10 shadow-2xl">
-        <div className="absolute top-0 right-0 -mt-16 -mr-16 size-80 rounded-full bg-orange-500/10 blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 -mt-16 -mr-16 size-80 rounded-full bg-primary/20 blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-1/3 -mb-16 size-64 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
 
         <div className="relative space-y-6">
           <div className="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-zinc-800">
             <div className="flex items-center gap-2">
-              <span className="size-2 rounded-full bg-orange-500 animate-ping" />
-              <p className="text-xs font-mono font-bold uppercase tracking-widest text-orange-400">
+              <span className="size-2 rounded-full bg-primary animate-ping" />
+              <p className="text-xs font-mono font-bold uppercase tracking-widest text-primary">
                 FY 2026/27 Approved National Ceiling · Consolidated State Accounts
               </p>
             </div>
@@ -164,63 +164,63 @@ export function ReportsHeroStatement({ hubMeta }: ReportsHeroStatementProps) {
           <button
             type="button"
             onClick={() => scrollTo("chapter-01-national-picture")}
-            className="shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-foreground/10 bg-card/60 text-muted-foreground hover:text-foreground hover:border-orange-500/50 hover:bg-orange-500/5 transition-all cursor-pointer"
+            className="shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-foreground/10 bg-card/60 text-muted-foreground hover:text-foreground hover:border-primary/50 hover:bg-primary/5 transition-all cursor-pointer"
           >
-            <span className="text-orange-600 dark:text-orange-400 font-bold">01</span>
+            <span className="text-primary font-bold">01</span>
             <span>National Picture</span>
           </button>
 
           <button
             type="button"
             onClick={() => scrollTo("chapter-02-what-changed")}
-            className="shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-foreground/10 bg-card/60 text-muted-foreground hover:text-foreground hover:border-orange-500/50 hover:bg-orange-500/5 transition-all cursor-pointer"
+            className="shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-foreground/10 bg-card/60 text-muted-foreground hover:text-foreground hover:border-primary/50 hover:bg-primary/5 transition-all cursor-pointer"
           >
-            <span className="text-orange-600 dark:text-orange-400 font-bold">02</span>
+            <span className="text-primary font-bold">02</span>
             <span>What Changed</span>
           </button>
 
           <button
             type="button"
             onClick={() => scrollTo("chapter-03-county-explorer")}
-            className="shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-foreground/10 bg-card/60 text-muted-foreground hover:text-foreground hover:border-orange-500/50 hover:bg-orange-500/5 transition-all cursor-pointer"
+            className="shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-foreground/10 bg-card/60 text-muted-foreground hover:text-foreground hover:border-primary/50 hover:bg-primary/5 transition-all cursor-pointer"
           >
-            <span className="text-orange-600 dark:text-orange-400 font-bold">03</span>
+            <span className="text-primary font-bold">03</span>
             <span>Counties Explorer</span>
           </button>
 
           <button
             type="button"
             onClick={() => scrollTo("chapter-04-follow-the-money")}
-            className="shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-foreground/10 bg-card/60 text-muted-foreground hover:text-foreground hover:border-orange-500/50 hover:bg-orange-500/5 transition-all cursor-pointer"
+            className="shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-foreground/10 bg-card/60 text-muted-foreground hover:text-foreground hover:border-primary/50 hover:bg-primary/5 transition-all cursor-pointer"
           >
-            <span className="text-orange-600 dark:text-orange-400 font-bold">04</span>
+            <span className="text-primary font-bold">04</span>
             <span>Follow the Money</span>
           </button>
 
           <button
             type="button"
             onClick={() => scrollTo("chapter-05-investigations")}
-            className="shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-foreground/10 bg-card/60 text-muted-foreground hover:text-foreground hover:border-orange-500/50 hover:bg-orange-500/5 transition-all cursor-pointer"
+            className="shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-foreground/10 bg-card/60 text-muted-foreground hover:text-foreground hover:border-primary/50 hover:bg-primary/5 transition-all cursor-pointer"
           >
-            <span className="text-orange-600 dark:text-orange-400 font-bold">05</span>
+            <span className="text-primary font-bold">05</span>
             <span>Investigations</span>
           </button>
 
           <button
             type="button"
             onClick={() => scrollTo("chapter-06-ask-public-money")}
-            className="shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-foreground/10 bg-card/60 text-muted-foreground hover:text-foreground hover:border-orange-500/50 hover:bg-orange-500/5 transition-all cursor-pointer"
+            className="shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-foreground/10 bg-card/60 text-muted-foreground hover:text-foreground hover:border-primary/50 hover:bg-primary/5 transition-all cursor-pointer"
           >
-            <span className="text-orange-600 dark:text-orange-400 font-bold">06</span>
+            <span className="text-primary font-bold">06</span>
             <span>Citizen Intelligence</span>
           </button>
 
           <button
             type="button"
             onClick={() => scrollTo("chapter-07-report-library")}
-            className="shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-foreground/10 bg-card/60 text-muted-foreground hover:text-foreground hover:border-orange-500/50 hover:bg-orange-500/5 transition-all cursor-pointer"
+            className="shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-foreground/10 bg-card/60 text-muted-foreground hover:text-foreground hover:border-primary/50 hover:bg-primary/5 transition-all cursor-pointer"
           >
-            <span className="text-orange-600 dark:text-orange-400 font-bold">07</span>
+            <span className="text-primary font-bold">07</span>
             <span>Report Archive</span>
           </button>
         </div>

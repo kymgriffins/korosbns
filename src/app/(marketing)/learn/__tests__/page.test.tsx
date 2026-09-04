@@ -7,9 +7,9 @@ vi.mock("next/navigation", () => ({
   redirect: (url: string) => mockRedirect(url),
 }));
 
-vi.mock("@/components/learn/learn-paths-home", () => ({
-  LearnPathsHome: ({ tab }: { tab: string }) => (
-    <div data-testid="learn-paths-home">Learn Paths Home - {tab}</div>
+vi.mock("@/components/learn-hub/LearnHubHome", () => ({
+  LearnHubHome: () => (
+    <div data-testid="learn-hub-home">Learn Hub Home</div>
   ),
 }));
 
@@ -20,10 +20,10 @@ vi.mock("@/lib/learn-nav", () => ({
 import LearnPage from "../page";
 
 describe("LearnPage", () => {
-  it("renders LearnPathsHome cleanly for standard tab", async () => {
+  it("renders LearnHubHome cleanly for standard tab", async () => {
     const pageElement = await LearnPage({ searchParams: Promise.resolve({ tab: undefined }) });
     render(pageElement);
-    expect(screen.getByTestId("learn-paths-home")).toBeInTheDocument();
+    expect(screen.getByTestId("learn-hub-home")).toBeInTheDocument();
   });
 
   it("redirects when legacy tab parameter is passed", async () => {

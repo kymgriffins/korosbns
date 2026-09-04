@@ -1,17 +1,21 @@
 const MARKETING_FOOTER_ROUTES = new Set([
   "/",
   "/about",
+  "/programmes",
+  "/reports",
+  "/learn",
+  "/careers",
+  "/contact",
   "/faq",
   "/privacy",
   "/terms",
   "/security",
 ]);
 
-const MARKETING_FOOTER_PREFIXES = ["/tiktok/"];
+const MARKETING_FOOTER_PREFIXES = ["/tiktok/", "/programmes/", "/reports/"];
 
-/** Routes that use the marketing navbar + page transition chrome (not learn shell). */
+/** Routes that use the marketing navbar + page transition chrome. */
 export function usesMarketingChrome(pathname: string): boolean {
-  if (pathname.startsWith("/learn")) return false;
   if (pathname.startsWith("/bns-studio")) return false;
   return true;
 }
