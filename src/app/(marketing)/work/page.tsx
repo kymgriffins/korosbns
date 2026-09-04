@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { buildPageMetadata } from "@/utils/page-metadata";
 import { StudioFeaturedWorkPage } from "@/components/studio/theatre/studio-featured-work-page";
+import { StudioThemeProvider } from "@/contexts/studio-theme-context";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Featured Work & Evidence | Budget Ndio Story",
@@ -10,5 +11,9 @@ export const metadata: Metadata = buildPageMetadata({
 });
 
 export default function UnifiedWorkPage() {
-  return <StudioFeaturedWorkPage />;
+  return (
+    <StudioThemeProvider>
+      <StudioFeaturedWorkPage />
+    </StudioThemeProvider>
+  );
 }

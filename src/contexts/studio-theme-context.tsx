@@ -57,10 +57,13 @@ export function StudioThemeProvider({ children }: { children: React.ReactNode })
   );
 }
 
-export function useStudioTheme() {
+const DEFAULT_STUDIO_THEME_CONTEXT: StudioThemeContextValue = {
+  theme: "dark",
+  setTheme: () => {},
+  toggleTheme: () => {},
+};
+
+export function useStudioTheme(): StudioThemeContextValue {
   const ctx = useContext(StudioThemeContext);
-  if (!ctx) {
-    throw new Error("useStudioTheme must be used within StudioThemeProvider");
-  }
-  return ctx;
+  return ctx ?? DEFAULT_STUDIO_THEME_CONTEXT;
 }
