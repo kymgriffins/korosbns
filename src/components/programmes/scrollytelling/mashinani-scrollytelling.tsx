@@ -5,16 +5,13 @@ import Image from "next/image";
 import {
   ArrowLeft,
   MapPin,
-  CheckCircle2,
   FileSpreadsheet,
   Radio,
   Building,
   Quote,
-  ShieldAlert,
-  Droplets,
 } from "lucide-react";
 import { EditorialPill } from "@/components/ui/editorial/editorial-pill";
-import { PillButtonGroup } from "@/components/ui/editorial/pill-button-group";
+import { EditorialCtaBand } from "@/components/ui/editorial/editorial-cta-band";
 import { BNS_COMMUNITY_IMAGES } from "@/constants/bns-media-images";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 
@@ -24,7 +21,6 @@ export function MashinaniScrollytelling() {
       {/* 01 — EDITORIAL HERO WITH WARM EARTHY ACCENTS & MACRO-WHITE SPACE */}
       <header className="relative border-b border-border/40 bg-linear-to-b from-amber-500/5 via-muted/10 to-background pt-24 pb-20 md:pt-36 md:pb-32">
         <div className={SECTION_SHELL_INNER}>
-          {/* Breadcrumb back to programmes */}
           <nav aria-label="Breadcrumb" className="mb-8">
             <Link
               href="/programmes"
@@ -53,7 +49,7 @@ export function MashinaniScrollytelling() {
               Kenya devolved over KSh 502 Billion to 47 county governments. Yet when exchequer releases stall, maternal clinics run out of medicine and community boreholes dry up. BNS Mashinani equips resident monitors to audit ward expenditures on the ground.
             </p>
 
-            {/* Strategic Overview Strip (Warm Earthy Accents, Prose Margins, Zero Boxy Cards) */}
+            {/* Strategic Overview Strip */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 pt-8 border-t border-border/50">
               <div>
                 <p className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
@@ -145,7 +141,7 @@ export function MashinaniScrollytelling() {
                 </p>
               </div>
 
-              {/* Editorial Toolkit Ledger (Continuous Flow, Zero Monotonous Cards) */}
+              {/* Editorial Toolkit Ledger */}
               <div className="space-y-6 pt-4">
                 <div className="border-l-2 border-amber-500/60 pl-5 space-y-1">
                   <div className="flex items-center gap-2 text-sm font-bold text-foreground">
@@ -205,7 +201,7 @@ export function MashinaniScrollytelling() {
         </div>
       </section>
 
-      {/* 04 — GALLERY OF LOCALIZED VICTORIES (18vh–22vh Macro Pacing Transitions) */}
+      {/* 04 — GALLERY OF LOCALIZED VICTORIES (18vh–22vh Macro Pacing Transitions, Pure Journalistic Voice) */}
       <section className="py-24 md:py-36 border-b border-border/30">
         <div className={SECTION_SHELL_INNER}>
           <div className="max-w-3xl space-y-4 mb-20">
@@ -242,12 +238,13 @@ export function MashinaniScrollytelling() {
                   Subukia&rsquo;s newly built maternity unit sat locked for over a year due to an unverified KSh 14 Million pending bill dispute between the county health department and electrical contractors. BNS Mashinani monitors audited the physical procurement ledger and organized a tri-camera citizen baraza attended by 340 residents.
                 </p>
 
-                <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-1">
-                  <p className="font-mono text-xs font-bold text-amber-700 dark:text-amber-300 uppercase tracking-wider">
-                    Verified Outcome
+                {/* Journalistic Outcome Flow (No AI Callout Box) */}
+                <div className="pt-2 space-y-2 border-l-2 border-amber-500/80 pl-4">
+                  <p className="text-xs font-mono font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                    The Ground Impact
                   </p>
-                  <p className="text-sm font-semibold text-foreground">
-                    Nakuru County Assembly cited the BNS citizen scorecard in Hansard, releasing contractor payments and opening the facility within 60 days.
+                  <p className="text-sm sm:text-base font-semibold text-foreground leading-relaxed">
+                    Nakuru County Assembly cited the BNS citizen scorecard directly in official Hansard records. With 340 residents packing the municipal chamber, the county executive authorized contractor settlement, unlocking the maternity doors within 60 days.
                   </p>
                 </div>
               </div>
@@ -308,12 +305,13 @@ export function MashinaniScrollytelling() {
                   Official county executive progress reports listed four rural dispensaries in Kilifi as &ldquo;100% structurally complete and operational.&rdquo; Resident youth monitors visited all four coordinates, documenting roofless brick shells overgrown with brush. The photographic dossier forced an immediate county audit committee review.
                 </p>
 
-                <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-1">
-                  <p className="font-mono text-xs font-bold text-amber-700 dark:text-amber-300 uppercase tracking-wider">
-                    Verified Outcome
+                {/* Journalistic Outcome Flow (No AI Callout Box) */}
+                <div className="pt-2 space-y-2 border-l-2 border-amber-500/80 pl-4">
+                  <p className="text-xs font-mono font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                    The Ground Impact
                   </p>
-                  <p className="text-sm font-semibold text-foreground">
-                    County Executive cancelled fraudulent completion certificates and re-allocated KSh 22M in the supplementary budget to complete roofing.
+                  <p className="text-sm sm:text-base font-semibold text-foreground leading-relaxed">
+                    County Executive cancelled fraudulent completion certificates and re-allocated KSh 22M in the supplementary budget to complete roofing under resident monitor oversight.
                   </p>
                 </div>
               </div>
@@ -342,11 +340,12 @@ export function MashinaniScrollytelling() {
                   A solar-powered community borehole had remained inactive for eight months because solar pump inverters were never supplied, despite full contract sign-off. Women&rsquo;s cooperative leaders used BNS Mashinani scorecards to petition the Ward Administrator directly during public participation sessions.
                 </p>
 
-                <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-1">
-                  <p className="font-mono text-xs font-bold text-amber-700 dark:text-amber-300 uppercase tracking-wider">
-                    Verified Outcome
+                {/* Journalistic Outcome Flow (No AI Callout Box) */}
+                <div className="pt-2 space-y-2 border-l-2 border-amber-500/80 pl-4">
+                  <p className="text-xs font-mono font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                    The Ground Impact
                   </p>
-                  <p className="text-sm font-semibold text-foreground">
+                  <p className="text-sm sm:text-base font-semibold text-foreground leading-relaxed">
                     Contractor recalled under performance bond guarantee; solar pumps installed and pumping clean water to over 1,800 households.
                   </p>
                 </div>
@@ -372,50 +371,21 @@ export function MashinaniScrollytelling() {
         </div>
       </section>
 
-      {/* 05 — DESK CALL TO ACTION & ALLIED ENGAGEMENT */}
-      <footer className="border-t border-border/40 bg-muted/20 py-20 md:py-32">
+      {/* 05 — PUNCHY MOTION CTA BAND (Zero Monotonous Contact Cards) */}
+      <section className="py-20 md:py-28">
         <div className={SECTION_SHELL_INNER}>
-          <div className="rounded-3xl border border-border/60 bg-card p-8 sm:p-14 lg:p-20 shadow-xl">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-              <div className="lg:col-span-8 space-y-6">
-                <EditorialPill dot pulse>
-                  Empower Your County
-                </EditorialPill>
-                <h2 className="font-heading text-3xl sm:text-5xl font-black text-foreground tracking-tight leading-tight">
-                  Bring BNS Mashinani to your ward.
-                </h2>
-                <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl">
-                  We partner with community-based organizations, faith groups, and resident associations to train local budget monitors, host participatory scorecards, and hold duty-bearers accountable under the Constitution.
-                </p>
-
-                <div className="flex flex-wrap items-center gap-4 pt-2">
-                  <PillButtonGroup
-                    href="/contact"
-                    label="Request a Ward Baraza Session"
-                    variant="primary"
-                    size="lg"
-                  />
-                  <PillButtonGroup
-                    href="/work?programme=mashinani"
-                    label="View Mashinani Case Studies"
-                    variant="outline"
-                    size="lg"
-                  />
-                </div>
-              </div>
-
-              <div className="lg:col-span-4 flex flex-col items-start lg:items-end gap-3 text-xs font-mono text-muted-foreground">
-                <div className="p-4 rounded-2xl bg-muted/40 border border-border/60 w-full space-y-2">
-                  <p className="text-foreground font-bold text-sm">BNS Mashinani Field Desk</p>
-                  <p>Inquiries: mashinani@budgetndiostory.org</p>
-                  <p>Pilot Hubs: Nakuru, Kilifi, Kakamega, Wajir</p>
-                  <p className="text-amber-600 dark:text-amber-400 font-semibold">Decentralized Citizen Power</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <EditorialCtaBand
+            eyebrow="Decentralized Citizen Power"
+            title="Follow the shilling in your home county."
+            description="Audit ward project signboards, access verified exchequer releases, and host community barazas with BNS Mashinani."
+            ctaHref="/work?programme=mashinani"
+            ctaLabel="Explore County Evidence"
+            secondaryHref="/contact"
+            secondaryLabel="Request Field Workshop"
+            motionBackground={true}
+          />
         </div>
-      </footer>
+      </section>
     </article>
   );
 }
