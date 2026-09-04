@@ -9,7 +9,6 @@ import {
   MapPin,
   Newspaper,
   Clapperboard,
-  Sparkles,
   ShieldCheck,
   CheckCircle2,
   ArrowUpRight,
@@ -46,7 +45,7 @@ const IMPACT_STAGES = [
     title: "Translate & Package",
     description:
       "Transforming 800-page fiscal bills into bilingual podcasts, viral short-form TikToks, visual explainers, and one-page citizen briefs.",
-    icon: Sparkles,
+    icon: Clapperboard,
     badge: "Creative Media",
   },
   {

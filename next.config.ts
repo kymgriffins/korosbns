@@ -235,12 +235,12 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/projects",
-        destination: "/bns-project",
+        destination: "/work",
         permanent: false,
       },
       {
         source: "/projects/",
-        destination: "/bns-project/",
+        destination: "/work",
         permanent: false,
       },
     ];

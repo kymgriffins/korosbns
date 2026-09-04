@@ -17,7 +17,7 @@ import {
   Compass,
   ArrowUpRight,
   ChevronDown,
-  Sparkles,
+  Zap,
   ShieldCheck,
   Users,
   Target,
@@ -253,7 +253,7 @@ export const MEGA_MENU_DATA: MegaMenuSection[] = [
         title: "Theory of Change",
         href: "/about#theory-of-change",
         description: "How investigative data transforms into citizen power and policy shifts.",
-        icon: Sparkles,
+        icon: Zap,
         badge: "Impact",
       },
       {
@@ -407,8 +407,8 @@ export function MegaMenu() {
               {activeSection.featured && (
                 <div className="col-span-4 flex flex-col justify-between rounded-2xl border border-border/50 bg-muted/40 p-4 transition-colors hover:border-border">
                   <div>
-                    <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[9px] font-bold text-primary uppercase tracking-wider">
-                      <Sparkles className="size-2.5" />
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2 py-0.5 text-[9px] font-bold text-primary uppercase tracking-wider">
+                      <span className="size-1.5 rounded-full bg-primary animate-pulse" />
                       {activeSection.featured.badge}
                     </span>
                     <h4 className="mt-2 text-xs font-bold leading-snug text-foreground">

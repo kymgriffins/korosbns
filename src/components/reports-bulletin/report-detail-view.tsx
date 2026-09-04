@@ -15,7 +15,6 @@ import {
   ChevronDown,
   ChevronUp,
   MapPin,
-  Sparkles,
   TrendingUp,
   TrendingDown,
   Minus,
@@ -232,7 +231,7 @@ export function ReportDetailView({
       {report.citizenTakeaway && report.citizenTakeaway.length > 0 && (
         <section className="rounded-2xl border border-orange-500/30 bg-orange-500/5 p-6 dark:bg-orange-950/10 space-y-3">
           <div className="flex items-center gap-2 text-orange-700 dark:text-orange-300 font-mono font-bold text-xs uppercase tracking-wider">
-            <Sparkles className="size-4 text-orange-500" />
+            <FileText className="size-4 text-orange-500" />
             <h2>What This Means For You (Citizen Summary)</h2>
           </div>
           <ul className="space-y-2 text-xs sm:text-sm text-foreground/90 leading-relaxed">

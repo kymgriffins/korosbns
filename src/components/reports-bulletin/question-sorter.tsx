@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { Search, Sparkles, HelpCircle, ArrowRight, X, ChevronDown, ChevronUp } from "lucide-react";
+import { Search, Compass, HelpCircle, ArrowRight, X, ChevronDown, ChevronUp } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -59,7 +59,7 @@ export function QuestionSorter({
     <div className="rounded-3xl border border-primary/20 bg-linear-to-b from-primary/5 via-card to-background p-6 md:p-8 shadow-xs">
       <div className="max-w-3xl">
         <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider">
-          <Sparkles className="size-4 animate-spin-slow" />
+          <Compass className="size-4" />
           <span>National Budget Question Sorter & Search Engine</span>
         </div>
         <h2 className="mt-1 font-heading text-2xl font-bold tracking-tight text-foreground md:text-3xl">

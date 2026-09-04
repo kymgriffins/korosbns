@@ -17,7 +17,6 @@ import {
   Clock,
   MapPin,
   ExternalLink,
-  Sparkles,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -91,7 +90,7 @@ export function CategoryAndProjectsExplorer({
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-            <Sparkles className="size-3.5 text-primary" />
+            <Layers className="size-3.5 text-primary" />
             Core National BETA Pillars (FY 2026/27)
           </p>
           {selectedPillar && (

@@ -1,14 +1,15 @@
-import React from "react";
-import type { Metadata } from "next";
-import { buildPageMetadata } from "@/utils/page-metadata";
-import { ProjectDetailClient } from "@/components/project/ProjectDetailClient";
+import { redirect } from "next/navigation";
+import { studiosEvidenceData } from "@/data/studios-evidence";
 
-export const metadata: Metadata = buildPageMetadata({
-  title: "Project Details | Budget Ndio Story",
-  description: "Explore the milestones, timeline, and detailed breakdown of Budget Ndio Story initiatives.",
-  path: "/bns-project",
-});
+type PageProps = {
+  params: Promise<{ id: string }>;
+};
 
-export default function ProjectDetailPage() {
-  return <ProjectDetailClient />;
+export default async function ProjectDetailPage({ params }: PageProps) {
+  const { id } = await params;
+  const project = studiosEvidenceData.getProjectBySlug(id);
+  if (project) {
+    redirect(`/bns-studio/${project.slug}`);
+  }
+  redirect("/work");
 }

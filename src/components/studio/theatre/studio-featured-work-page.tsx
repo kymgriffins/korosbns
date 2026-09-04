@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { ChevronDown, Plus, Search, X, Sparkles, Filter } from "lucide-react";
+import { ChevronDown, Plus, Search, X, Filter } from "lucide-react";
 import { STUDIO_CONTENT_TYPES } from "@/constants/bns-studio-content";
 import { studiosEvidenceData } from "@/data/studios-evidence";
 import { StudioSiteFooter, StudioSiteNav } from "@/components/studio/theatre/studio-site-nav";
@@ -116,7 +116,7 @@ export function StudioFeaturedWorkPage() {
       {/* Hero Header */}
       <div className="pt-24 pb-8 px-6 text-center max-w-4xl mx-auto space-y-4">
         <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1 text-xs font-bold text-primary uppercase tracking-wider">
-          <Sparkles className="size-3" />
+          <span className="size-1.5 rounded-full bg-primary animate-pulse" />
           The Unified Evidence Engine
         </div>
         <h1 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight">

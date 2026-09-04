@@ -60,7 +60,7 @@ export const Routes = {
     Events: "/events",
     Event: (id: string) => `/events/${id}`,
 
-    Projects: "/bns-project",
+    Projects: "/work",
     Programmes: "/programmes",
     Programme: (slug: string) => `/programmes/${slug}`,
     BNSStudio: "/bns-studio",

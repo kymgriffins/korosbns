@@ -7,7 +7,6 @@ import {
   CheckCircle2,
   Clock,
   MapPin,
-  Sparkles,
   Layers,
   ChevronRight,
   Filter,
@@ -137,7 +136,7 @@ export function FollowTheMoneyPipeline({ betaPillars, projects }: FollowTheMoney
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <p className="font-mono text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-            <Sparkles className="size-3.5 text-primary" />
+            <Layers className="size-3.5 text-primary" />
             BETA Bottom-Up Agenda National Pillars
           </p>
           {selectedPillarId !== "ALL" && (

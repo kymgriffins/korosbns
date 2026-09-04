@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { ArrowUpRight, ArrowDownRight, TrendingUp, AlertTriangle, ShieldCheck, ArrowRight, Layers, Sparkles } from "lucide-react";
+import { ArrowUpRight, ArrowDownRight, TrendingUp, AlertTriangle, ShieldCheck, ArrowRight, Layers } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export function NationalPictureSpread() {

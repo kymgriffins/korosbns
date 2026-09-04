@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowUpRight, Sparkles, Send, Clapperboard, ShieldCheck, ChevronDown } from "lucide-react";
+import { ArrowUpRight, Send, Clapperboard, ShieldCheck, ChevronDown } from "lucide-react";
 import { StudioReelHero } from "@/components/studio/theatre/studio-reel-hero";
 import { StudioSiteFooter, StudioSiteNav } from "@/components/studio/theatre/studio-site-nav";
 import { StudioBookingForm } from "@/components/studio/StudioBookingForm";
@@ -36,7 +36,7 @@ export function BNSStudioPageClient() {
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-center">
             <div className="lg:col-span-7 space-y-6">
               <div className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">
-                <Sparkles className="size-3" />
+                <span className="size-1.5 rounded-full bg-primary animate-pulse" />
                 The Double Impact Model
               </div>
               <h2 className="text-3xl font-extrabold tracking-tight text-white md:text-5xl lg:leading-tight">
