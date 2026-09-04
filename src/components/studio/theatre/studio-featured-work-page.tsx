@@ -7,6 +7,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ChevronDown, Plus, Search, X, Filter } from "lucide-react";
 import { STUDIO_CONTENT_TYPES } from "@/constants/bns-studio-content";
 import { studiosEvidenceData } from "@/data/studios-evidence";
+import { EditorialPill, PillButton } from "@/components/ui/editorial";
 import { cn } from "@/utils";
 
 function projectHref(slug: string) {
@@ -104,9 +105,10 @@ export function StudioFeaturedWorkPage() {
     <div className="studio-work-page">
       {/* Hero Header */}
       <div className="pt-24 pb-8 px-6 text-center max-w-4xl mx-auto space-y-4">
-        <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1 text-xs font-bold text-primary uppercase tracking-wider">
-          <span className="size-1.5 rounded-full bg-primary animate-pulse" />
-          The Unified Evidence Engine
+        <div>
+          <EditorialPill variant="primary" dot pulse className="uppercase tracking-wider font-bold">
+            The Unified Evidence Engine
+          </EditorialPill>
         </div>
         <h1 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight">
           Featured Work & Civic Proof
@@ -282,9 +284,9 @@ export function StudioFeaturedWorkPage() {
               </div>
               <div className="studio-work-row-copy">
                 <div className="flex items-center gap-2 mb-1 flex-wrap">
-                  <span className="rounded-full bg-primary/20 px-2 py-0.5 text-[10px] font-bold text-primary uppercase tracking-wider">
+                  <EditorialPill variant="primary" size="xs">
                     {getProgrammeName(project.programmeSlug)}
-                  </span>
+                  </EditorialPill>
                   <span className="text-zinc-600 text-xs">·</span>
                   <span className="studio-work-row-type">{project.contentType}</span>
                 </div>
@@ -306,13 +308,15 @@ export function StudioFeaturedWorkPage() {
       {filtered.length === 0 ? (
         <div className="py-20 text-center space-y-4">
           <p className="studio-work-empty">No productions match your selected filters.</p>
-          <button
-            type="button"
-            onClick={clearFilters}
-            className="rounded-full bg-primary/10 px-4 py-2 text-xs font-bold text-primary hover:bg-primary/20 transition-colors"
-          >
-            Reset Filters
-          </button>
+          <div>
+            <PillButton
+              onClick={clearFilters}
+              variant="outline"
+              size="sm"
+            >
+              Reset Filters
+            </PillButton>
+          </div>
         </div>
       ) : null}
     </div>

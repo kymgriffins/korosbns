@@ -6,6 +6,7 @@ import Image from "next/image";
 import { ArrowUpRight, Send, Clapperboard, ShieldCheck, ChevronDown } from "lucide-react";
 import { StudioReelHero } from "@/components/studio/theatre/studio-reel-hero";
 import { StudioBookingForm } from "@/components/studio/StudioBookingForm";
+import { EditorialPill, PillButtonGroup, PillButton } from "@/components/ui/editorial";
 import { STUDIO_CONTENT_TYPES } from "@/constants/bns-studio-content";
 import { studiosEvidenceData } from "@/data/studios-evidence";
 import { BNS_MEDIA_IMAGES } from "@/constants/bns-media-images";
@@ -33,9 +34,10 @@ export function BNSStudioPageClient() {
         <div className="mx-auto max-w-6xl">
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-center">
             <div className="lg:col-span-7 space-y-6">
-              <div className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary uppercase tracking-wider">
-                <span className="size-1.5 rounded-full bg-primary animate-pulse" />
-                The Double Impact Model
+              <div>
+                <EditorialPill variant="primary" dot pulse className="uppercase tracking-wider font-semibold">
+                  The Double Impact Model
+                </EditorialPill>
               </div>
               <h2 className="text-3xl font-extrabold tracking-tight text-white md:text-5xl lg:leading-tight">
                 High-craft production that funds <span className="text-primary">grassroots budget tracking</span>.
@@ -58,21 +60,17 @@ export function BNSStudioPageClient() {
                 </div>
               </div>
               <div className="pt-2 flex flex-wrap items-center gap-4">
-                <button
-                  type="button"
+                <PillButton
                   onClick={() => setBookingOpen(true)}
-                  className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold text-white transition-all hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-primary"
+                  icon={<Send className="size-4" />}
                 >
-                  <Send className="size-4" />
                   Commission the Studio
-                </button>
-                <Link
+                </PillButton>
+                <PillButtonGroup
                   href="/bns-studio/work"
-                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-zinc-300 transition-colors hover:text-white"
-                >
-                  Explore Featured Work
-                  <ArrowUpRight className="size-4" />
-                </Link>
+                  label="Explore Featured Work"
+                  variant="invert"
+                />
               </div>
             </div>
 
@@ -156,13 +154,12 @@ export function BNSStudioPageClient() {
               <p className="text-xs font-bold uppercase tracking-wider text-primary">Evidence</p>
               <h2 className="mt-2 text-3xl font-extrabold text-white md:text-4xl">Featured Commissions</h2>
             </div>
-            <Link
+            <PillButtonGroup
               href="/bns-studio/work"
-              className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/5 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/10"
-            >
-              See all {studiosEvidenceData.getAllProjects().length} projects
-              <ArrowUpRight className="size-3.5" />
-            </Link>
+              label={`See all ${studiosEvidenceData.getAllProjects().length} projects`}
+              variant="invert"
+              size="sm"
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -181,9 +178,11 @@ export function BNSStudioPageClient() {
                     sizes="(max-width: 768px) 100vw, 50vw"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent opacity-80" />
-                  <span className="absolute top-4 left-4 rounded-full border border-white/20 bg-black/70 px-3 py-1 text-[10px] font-bold text-white uppercase tracking-wider backdrop-blur-md">
-                    {project.contentType}
-                  </span>
+                  <div className="absolute top-4 left-4">
+                    <EditorialPill variant="invert" size="xs">
+                      {project.contentType}
+                    </EditorialPill>
+                  </div>
                 </div>
                 <div className="p-6">
                   <p className="text-xs font-semibold text-primary">{project.organization.name} · {project.year}</p>
@@ -210,20 +209,19 @@ export function BNSStudioPageClient() {
           <p className="text-base text-zinc-400">
             Podcasts, explainers, town halls, or multi-channel campaigns — we respond with scope, team, and timeline within 24 hours.
           </p>
-          <div className="pt-4 flex justify-center gap-4">
-            <button
-              type="button"
+          <div className="pt-4 flex flex-wrap justify-center gap-4">
+            <PillButton
               onClick={() => setBookingOpen(true)}
-              className="rounded-full bg-primary px-8 py-3 text-sm font-bold text-white transition-all hover:bg-primary/90 focus-visible:ring-2 focus-visible:ring-primary"
+              size="lg"
             >
               Open Enquiry Form
-            </button>
-            <Link
+            </PillButton>
+            <PillButtonGroup
               href="/programmes"
-              className="rounded-full border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10"
-            >
-              Explore All Programmes
-            </Link>
+              label="Explore All Programmes"
+              variant="invert"
+              size="lg"
+            />
           </div>
         </div>
       </section>

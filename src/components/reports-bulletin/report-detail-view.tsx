@@ -20,6 +20,7 @@ import {
   Minus,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { EditorialPill } from "@/components/ui/editorial";
 import type { ReportDossier } from "@/data/reports-bulletin";
 
 export function ReportDetailView({
@@ -135,17 +136,17 @@ export function ReportDetailView({
       <header className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-foreground/10">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
+            <EditorialPill variant="primary" size="xs">
               {report.eyebrow}
-            </span>
-            <span className="px-2.5 py-0.5 rounded-md text-[10px] font-mono font-semibold border border-foreground/10 bg-muted/40 text-foreground">
+            </EditorialPill>
+            <EditorialPill variant="outline" size="xs">
               {report.programme}
-            </span>
+            </EditorialPill>
             {report.county !== "National" && report.county !== "All 47 Counties" && (
-              <span className="px-2.5 py-0.5 rounded-md text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
-                <MapPin className="size-3" />
-                <span>{report.county}</span>
-              </span>
+              <EditorialPill variant="success" size="xs">
+                <MapPin className="size-3 mr-1 inline" />
+                {report.county}
+              </EditorialPill>
             )}
           </div>
           <span className="text-[11px] font-mono text-muted-foreground">
@@ -229,15 +230,15 @@ export function ReportDetailView({
 
       {/* Citizen Key Takeaways Pullquote Box */}
       {report.citizenTakeaway && report.citizenTakeaway.length > 0 && (
-        <section className="rounded-2xl border border-orange-500/30 bg-orange-500/5 p-6 dark:bg-orange-950/10 space-y-3">
-          <div className="flex items-center gap-2 text-orange-700 dark:text-orange-300 font-mono font-bold text-xs uppercase tracking-wider">
-            <FileText className="size-4 text-orange-500" />
+        <section className="rounded-2xl border border-primary/30 bg-primary/5 p-6 dark:bg-primary/10 space-y-3">
+          <div className="flex items-center gap-2 text-primary font-mono font-bold text-xs uppercase tracking-wider">
+            <FileText className="size-4 text-primary" />
             <h2>What This Means For You (Citizen Summary)</h2>
           </div>
           <ul className="space-y-2 text-xs sm:text-sm text-foreground/90 leading-relaxed">
             {report.citizenTakeaway.map((point, idx) => (
               <li key={idx} className="flex items-start gap-2.5">
-                <CheckCircle2 className="size-4 shrink-0 text-orange-600 dark:text-orange-400 mt-0.5" />
+                <CheckCircle2 className="size-4 shrink-0 text-primary mt-0.5" />
                 <span>{point}</span>
               </li>
             ))}
@@ -317,14 +318,14 @@ export function ReportDetailView({
               <Link
                 key={rel.slug}
                 href={`/reports/${rel.slug}`}
-                className="group rounded-2xl border border-foreground/10 bg-card/60 p-5 transition-all hover:border-orange-500/40 hover:shadow-xs space-y-2"
+                className="group rounded-2xl border border-foreground/10 bg-card/60 p-5 transition-all hover:border-primary/40 hover:shadow-xs space-y-2"
               >
-                <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400">
+                <div className="flex items-center gap-1.5 text-[10px] font-mono font-bold uppercase tracking-wider text-primary">
                   <span>{rel.eyebrow}</span>
                   <span>·</span>
                   <span>{rel.county}</span>
                 </div>
-                <h3 className="font-heading text-sm font-bold text-foreground group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors line-clamp-2">
+                <h3 className="font-heading text-sm font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2">
                   {rel.title}
                 </h3>
                 <p className="text-xs text-muted-foreground line-clamp-2">

@@ -17,7 +17,7 @@ import {
 import { ProgrammesPartners } from "@/components/programmes/programmes-partners";
 import { ProgrammesFaq } from "@/components/programmes/programmes-faq";
 import { LandingSection } from "@/layouts/landing-section";
-import { EditorialCtaBand } from "@/components/ui/editorial";
+import { EditorialCtaBand, EditorialPill, PillButtonGroup } from "@/components/ui/editorial";
 import {
   PROGRAMMES,
   PROGRAMMES_CLOSING,
@@ -45,9 +45,10 @@ export function ProgrammesLanding() {
       <section className="relative overflow-hidden border-b border-border/50 bg-linear-to-b from-primary/5 via-muted/20 to-background pt-16 pb-20 md:pt-24 md:pb-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-8">
           <div className="space-y-4 max-w-4xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1 text-xs font-bold text-primary uppercase tracking-widest">
-              <span className="size-1.5 rounded-full bg-primary animate-pulse" />
-              Four Operational Desks · One Sovereign Standard
+            <div>
+              <EditorialPill variant="primary" dot pulse className="uppercase tracking-widest font-bold">
+                Four Operational Desks · One Sovereign Standard
+              </EditorialPill>
             </div>
 
             <h1 className="font-heading text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-foreground leading-[1.02]">
@@ -59,20 +60,16 @@ export function ProgrammesLanding() {
             </p>
 
             <div className="flex flex-wrap items-center gap-3 pt-4">
-              <Link
+              <PillButtonGroup
                 href="/work"
-                className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-xs font-bold text-primary-foreground shadow-md hover:bg-primary/90 transition-all"
-              >
-                <span>Explore Unified Evidence Across 4 Desks</span>
-                <ArrowRight className="size-4" />
-              </Link>
-              <a
+                label="Explore Unified Evidence Across 4 Desks"
+                variant="primary"
+              />
+              <PillButtonGroup
                 href="#desks-breakdown"
-                className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-background/80 px-6 py-3 text-xs font-bold text-foreground hover:bg-muted transition-colors"
-              >
-                <span>Compare Operational Mandates</span>
-                <ArrowUpRight className="size-4" />
-              </a>
+                label="Compare Operational Mandates"
+                variant="outline"
+              />
             </div>
           </div>
 
@@ -145,10 +142,13 @@ export function ProgrammesLanding() {
             >
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:items-center">
                 <div className="lg:col-span-7 space-y-4">
-                  <div className="inline-flex items-center gap-2 font-mono text-xs font-bold text-primary uppercase tracking-wider">
-                    <span>Operational Desk</span>
-                    <span>·</span>
-                    <span>{prog.eyebrow}</span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <EditorialPill variant="primary" size="xs">
+                      Operational Desk
+                    </EditorialPill>
+                    <EditorialPill variant="muted" size="xs">
+                      {prog.eyebrow}
+                    </EditorialPill>
                   </div>
 
                   <h3 className="font-heading text-3xl sm:text-4xl font-extrabold text-foreground">
@@ -159,30 +159,27 @@ export function ProgrammesLanding() {
                     {prog.body}
                   </p>
 
-                  <div className="pt-2 flex flex-wrap items-center gap-4 text-xs font-mono">
-                    <span className="rounded-md bg-muted px-3 py-1 font-bold text-foreground">
+                  <div className="pt-2 flex flex-wrap items-center gap-3 text-xs font-mono">
+                    <EditorialPill variant="default" size="xs">
                       For: {prog.audience}
-                    </span>
-                    <span className="text-primary font-bold">
+                    </EditorialPill>
+                    <EditorialPill variant="outline" size="xs">
                       {deskProjects.length} Active Verified Projects
-                    </span>
+                    </EditorialPill>
                   </div>
 
-                  <div className="pt-4 flex items-center gap-3">
-                    <Link
+                  <div className="pt-4 flex flex-wrap items-center gap-3">
+                    <PillButtonGroup
                       href={programmeHref(prog.slug)}
-                      className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-xs font-bold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
-                    >
-                      <span>Open Full {prog.name} Dossier</span>
-                      <ArrowRight className="size-3.5" />
-                    </Link>
-                    <Link
+                      label={`Open Full ${prog.name} Dossier`}
+                      size="sm"
+                    />
+                    <PillButtonGroup
                       href={`/work?programme=${prog.slug}`}
-                      className="inline-flex items-center gap-1.5 text-xs font-bold text-muted-foreground hover:text-foreground px-4 py-2"
-                    >
-                      <span>Filter evidence</span>
-                      <ArrowUpRight className="size-3.5" />
-                    </Link>
+                      label="Filter evidence"
+                      variant="outline"
+                      size="sm"
+                    />
                   </div>
                 </div>
 
@@ -226,9 +223,9 @@ export function ProgrammesLanding() {
                         className="group flex flex-col justify-between rounded-2xl border border-border/60 bg-muted/30 p-4 transition-all hover:border-primary/40 hover:bg-muted/60"
                       >
                         <div className="space-y-2">
-                          <div className="flex items-center justify-between text-[11px] font-mono">
-                            <span className="font-bold text-primary uppercase">{pj.contentType}</span>
-                            <span className="text-muted-foreground">{pj.year}</span>
+                          <div className="flex items-center justify-between text-[11px]">
+                            <EditorialPill variant="primary" size="xs">{pj.contentType}</EditorialPill>
+                            <span className="font-mono text-muted-foreground">{pj.year}</span>
                           </div>
                           <h4 className="font-heading text-sm font-bold text-foreground group-hover:text-primary transition-colors line-clamp-1">
                             {pj.title}
@@ -286,9 +283,11 @@ export function ProgrammesLanding() {
                     <h3 className="font-heading text-2xl sm:text-3xl font-extrabold text-foreground">
                       {p.name}
                     </h3>
-                    <p className="font-mono text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                      {p.eyebrow}
-                    </p>
+                    <div>
+                      <EditorialPill variant="muted" size="xs">
+                        {p.eyebrow}
+                      </EditorialPill>
+                    </div>
                     <p className="text-sm text-muted-foreground leading-relaxed">
                       {p.body}
                     </p>

@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { ArrowRight, Clock, ShieldCheck, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { EditorialPill, PillButtonGroup } from "@/components/ui/editorial";
 import type { ReportDossier } from "@/data/reports-bulletin";
 
 interface FeaturedInvestigationsSpreadProps {
@@ -26,10 +27,10 @@ export function FeaturedInvestigationsSpread({ reports }: FeaturedInvestigations
       <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3 border-b border-foreground/10 pb-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="font-serif italic text-2xl text-orange-600 dark:text-orange-400 font-normal">
+            <span className="font-serif italic text-2xl text-primary font-normal">
               Fig 04;
             </span>
-            <span className="font-mono text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-widest">
+            <span className="font-mono text-xs font-bold text-primary uppercase tracking-widest">
               INVESTIGATIVE AUDIT DOSSIERS
             </span>
           </div>
@@ -45,17 +46,17 @@ export function FeaturedInvestigationsSpread({ reports }: FeaturedInvestigations
       {/* Asymmetric Editorial Spread: 1 Large Lead + 2 Stacked Secondary */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         {/* LEAD INVESTIGATION (7 Cols) */}
-        <article className="lg:col-span-7 flex flex-col justify-between rounded-2xl border border-foreground/10 bg-card/70 p-7 sm:p-9 shadow-sm relative overflow-hidden group hover:border-orange-500/40 transition-colors">
+        <article className="lg:col-span-7 flex flex-col justify-between rounded-2xl border border-foreground/10 bg-card/70 p-7 sm:p-9 shadow-sm relative overflow-hidden group hover:border-primary/40 transition-colors">
           <div className="space-y-6">
             {/* Category Eyebrow & Specimen Pill Badges */}
             <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-foreground/10">
               <div className="flex items-center gap-2">
-                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
+                <EditorialPill variant="primary" size="xs">
                   {leadReport.eyebrow}
-                </span>
-                <span className="px-2.5 py-0.5 rounded-md text-[10px] font-mono font-semibold border border-foreground/10 bg-muted/40 text-foreground">
+                </EditorialPill>
+                <EditorialPill variant="outline" size="xs">
                   {leadReport.programme}
-                </span>
+                </EditorialPill>
               </div>
               <span className="font-mono text-xs text-muted-foreground flex items-center gap-1.5">
                 <Clock className="size-3.5" /> {leadReport.readTimeMinutes} min read
@@ -63,7 +64,7 @@ export function FeaturedInvestigationsSpread({ reports }: FeaturedInvestigations
             </div>
 
             {/* Headline */}
-            <h3 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-black text-foreground group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors leading-[1.15]">
+            <h3 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-black text-foreground group-hover:text-primary transition-colors leading-[1.15]">
               <Link href={`/reports/${leadReport.slug}`}>{leadReport.title}</Link>
             </h3>
 
@@ -74,7 +75,7 @@ export function FeaturedInvestigationsSpread({ reports }: FeaturedInvestigations
 
             {/* Primary Citizen Takeaway Pull Quote Box */}
             {leadReport.citizenTakeaway.length > 0 && (
-              <div className="border-l-2 border-orange-500 bg-orange-500/5 p-4 rounded-r-xl">
+              <div className="border-l-2 border-primary bg-primary/5 p-4 rounded-r-xl">
                 <p className="text-sm font-medium text-foreground italic leading-relaxed">
                   &ldquo;{leadReport.citizenTakeaway[0]}&rdquo;
                 </p>
@@ -108,12 +109,12 @@ export function FeaturedInvestigationsSpread({ reports }: FeaturedInvestigations
               <p className="text-[11px]">{leadReport.publishedDate} · {leadReport.provenance.level}</p>
             </div>
 
-            <Button asChild className="gap-2 font-mono text-xs font-bold bg-orange-600 hover:bg-orange-500 text-white group/btn rounded-xl">
-              <Link href={`/reports/${leadReport.slug}`}>
-                <span>Read Full Dossier</span>
-                <ArrowRight className="size-3.5 transition-transform group-hover/btn:translate-x-1" />
-              </Link>
-            </Button>
+            <PillButtonGroup
+              href={`/reports/${leadReport.slug}`}
+              label="Read Full Dossier"
+              variant="primary"
+              size="sm"
+            />
           </div>
         </article>
 
@@ -122,7 +123,7 @@ export function FeaturedInvestigationsSpread({ reports }: FeaturedInvestigations
           {secondaryReports.map((report, idx) => (
             <article
               key={report.slug}
-              className="flex-1 flex flex-col justify-between rounded-2xl border border-foreground/10 bg-card/60 hover:bg-card p-6 shadow-sm transition-all duration-200 hover:border-orange-500/40 group"
+              className="flex-1 flex flex-col justify-between rounded-2xl border border-foreground/10 bg-card/60 hover:bg-card p-6 shadow-sm transition-all duration-200 hover:border-primary/40 group"
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between gap-2 pb-2 border-b border-foreground/10">
@@ -130,9 +131,9 @@ export function FeaturedInvestigationsSpread({ reports }: FeaturedInvestigations
                     <span className="font-mono text-[10px] font-bold text-muted-foreground">
                       DOSSIER #0{idx + 2}
                     </span>
-                    <span className="px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-muted text-foreground">
+                    <EditorialPill variant="muted" size="xs">
                       {report.eyebrow}
-                    </span>
+                    </EditorialPill>
                     {report.county !== "National" && (
                       <span className="font-mono text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                         <MapPin className="size-3" /> {report.county}
@@ -144,7 +145,7 @@ export function FeaturedInvestigationsSpread({ reports }: FeaturedInvestigations
                   </span>
                 </div>
 
-                <h4 className="font-heading text-lg sm:text-xl font-bold text-foreground group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors leading-snug">
+                <h4 className="font-heading text-lg sm:text-xl font-bold text-foreground group-hover:text-primary transition-colors leading-snug">
                   <Link href={`/reports/${report.slug}`}>{report.title}</Link>
                 </h4>
 
@@ -155,17 +156,13 @@ export function FeaturedInvestigationsSpread({ reports }: FeaturedInvestigations
 
               <div className="mt-4 pt-3 border-t border-foreground/10 flex items-center justify-between text-xs font-mono">
                 <span className="text-muted-foreground">{report.publishedDate}</span>
-                <Button
-                  asChild
-                  variant="ghost"
-                  size="sm"
-                  className="gap-1 text-xs font-bold text-orange-600 dark:text-orange-400 p-0 h-auto group/link hover:bg-transparent"
+                <Link
+                  href={`/reports/${report.slug}`}
+                  className="inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline"
                 >
-                  <Link href={`/reports/${report.slug}`}>
-                    <span>Read Report</span>
-                    <ArrowRight className="size-3.5 transition-transform group-hover/link:translate-x-1" />
-                  </Link>
-                </Button>
+                  <span>Read Report</span>
+                  <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
+                </Link>
               </div>
             </article>
           ))}

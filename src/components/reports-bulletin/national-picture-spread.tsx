@@ -13,10 +13,10 @@ export function NationalPictureSpread() {
         <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3 border-b border-foreground/10 pb-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="font-serif italic text-2xl text-orange-600 dark:text-orange-400 font-normal">
+              <span className="font-serif italic text-2xl text-primary font-normal">
                 Fig 02;
               </span>
-              <span className="font-mono text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-widest">
+              <span className="font-mono text-xs font-bold text-primary uppercase tracking-widest">
                 NATIONAL APPROPRIATIONS MATRIX
               </span>
             </div>
@@ -200,10 +200,10 @@ export function NationalPictureSpread() {
         <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3 border-b border-foreground/10 pb-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="font-serif italic text-2xl text-orange-600 dark:text-orange-400 font-normal">
+              <span className="font-serif italic text-2xl text-primary font-normal">
                 Fig 03;
               </span>
-              <span className="font-mono text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-widest">
+              <span className="font-mono text-xs font-bold text-primary uppercase tracking-widest">
                 YEAR-ON-YEAR STRUCTURAL SHIFTS
               </span>
             </div>
@@ -335,8 +335,8 @@ export function NationalPictureSpread() {
         <div className="rounded-2xl border border-foreground/10 bg-zinc-950 text-zinc-100 p-8 relative overflow-hidden shadow-xl">
           <div className="space-y-3 relative z-10">
             <div className="flex items-center gap-2">
-              <span className="size-2 rounded-full bg-orange-500" />
-              <span className="font-mono text-xs font-bold uppercase tracking-widest text-orange-400">
+              <span className="size-2 rounded-full bg-primary" />
+              <span className="font-mono text-xs font-bold uppercase tracking-widest text-primary">
                 Core Citizen Audit Takeaway
               </span>
             </div>

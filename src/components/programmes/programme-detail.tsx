@@ -24,7 +24,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { LandingSection } from "@/layouts/landing-section";
-import { EditorialCtaBand } from "@/components/ui/editorial";
+import { EditorialCtaBand, EditorialPill, PillButtonGroup } from "@/components/ui/editorial";
 import { ProgrammeOtherProgrammes } from "@/components/programmes/programme-other-programmes";
 import {
   PROGRAMMES_CLOSING,
@@ -380,9 +380,10 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-start">
             {/* Left Column: Bold Typography & Brief */}
             <div className="lg:col-span-7 space-y-6">
-              <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3.5 py-1 text-xs font-bold text-primary uppercase tracking-widest">
-                <span className="size-1.5 rounded-full bg-primary animate-pulse" />
-                {programme.eyebrow}
+              <div>
+                <EditorialPill variant="primary" dot pulse className="uppercase tracking-widest font-bold">
+                  {programme.eyebrow}
+                </EditorialPill>
               </div>
 
               <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-foreground leading-[1.05]">
@@ -484,9 +485,9 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
           <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
           <div className="absolute bottom-6 left-6 right-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4 text-white">
             <div>
-              <span className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold bg-black/60 px-2.5 py-1 rounded-md border border-primary/30">
+              <EditorialPill variant="invert" size="xs">
                 Frontline Fieldwork
-              </span>
+              </EditorialPill>
               <p className="mt-2 text-base sm:text-xl font-bold max-w-2xl leading-tight">
                 {ext.mosaic.q3.caption}
               </p>
@@ -676,13 +677,12 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
             </p>
           </div>
 
-          <Link
+          <PillButtonGroup
             href={`/work?programme=${programme.slug}`}
-            className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-muted/50 px-4 py-2 text-xs font-bold text-foreground hover:bg-muted transition-colors"
-          >
-            <span>View all evidence</span>
-            <ArrowUpRight className="size-3.5" />
-          </Link>
+            label="View all evidence"
+            variant="outline"
+            size="sm"
+          />
         </div>
 
         {projects.length > 0 ? (
@@ -703,9 +703,9 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
                   />
                   <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
                   <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
-                    <span className="rounded-full bg-black/60 backdrop-blur-md px-2.5 py-0.5 font-mono text-[10px] font-bold text-white uppercase tracking-wider border border-white/20">
+                    <EditorialPill variant="invert" size="xs">
                       {proj.contentType}
-                    </span>
+                    </EditorialPill>
                   </div>
                   <div className="absolute bottom-3 left-3 right-3 text-white">
                     <p className="font-mono text-[11px] text-white/80">{proj.organization.name}</p>
@@ -741,9 +741,14 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
             <p className="text-sm text-muted-foreground">
               Additional project evidence being audited for this desk.
             </p>
-            <Link href="/work" className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-primary">
-              Browse platform evidence <ArrowUpRight className="size-3" />
-            </Link>
+            <div className="mt-4 flex justify-center">
+              <PillButtonGroup
+                href="/work"
+                label="Browse platform evidence"
+                variant="outline"
+                size="sm"
+              />
+            </div>
           </div>
         )}
       </section>
@@ -770,9 +775,11 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
                 OOH
               </div>
               <div className="space-y-3 relative z-10">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/20 px-3 py-1 font-mono text-[10px] font-bold text-primary uppercase tracking-wider border border-primary/30">
-                  Urban Billboard & Bus Shelter Installation
-                </span>
+                <div>
+                  <EditorialPill variant="primary" size="xs">
+                    Urban Billboard & Bus Shelter Installation
+                  </EditorialPill>
+                </div>
                 <h3 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-black uppercase tracking-tight text-white leading-tight">
                   {ext.collateral.billboardText}
                 </h3>
@@ -790,9 +797,11 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
             {/* Mobile / Social Activation Mockup */}
             <div className="lg:col-span-5 flex flex-col justify-between rounded-3xl border border-border/80 bg-card p-6 sm:p-8 shadow-lg">
               <div className="space-y-3">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 font-mono text-[10px] font-bold text-primary uppercase tracking-wider">
-                  Mobile Social & Vertical Series
-                </span>
+                <div>
+                  <EditorialPill variant="primary" size="xs">
+                    Mobile Social & Vertical Series
+                  </EditorialPill>
+                </div>
                 <h3 className="font-heading text-xl font-bold text-foreground">
                   {ext.collateral.posterTitle}
                 </h3>

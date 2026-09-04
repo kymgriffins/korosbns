@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Search, Filter, Calendar, Clock, MapPin, ArrowRight, FileText, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { EditorialPill, PillButtonGroup } from "@/components/ui/editorial";
 import type { ReportDossier } from "@/data/reports-bulletin";
 
 interface ReportLibraryArchiveProps {
@@ -26,25 +27,25 @@ export function ReportLibraryArchive({ reports }: ReportLibraryArchiveProps) {
   }, [reports]);
 
   const filteredReports = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
-    return reports.filter((r) => {
-      const matchQuery =
-        !q ||
-        r.title.toLowerCase().includes(q) ||
-        r.seoDescription.toLowerCase().includes(q) ||
-        r.category.toLowerCase().includes(q) ||
-        r.county.toLowerCase().includes(q);
+    return reports.filter((report) => {
+      const matchesSearch =
+        searchQuery === "" ||
+        report.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        report.seoDescription.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        report.county.toLowerCase().includes(searchQuery.toLowerCase());
 
-      const matchSector =
-        selectedSector === "All" || r.category.toLowerCase().includes(selectedSector.toLowerCase());
+      const matchesSector =
+        selectedSector === "All" ||
+        report.category === selectedSector ||
+        report.eyebrow.toLowerCase().includes(selectedSector.toLowerCase());
 
-      const matchProgramme =
-        selectedProgramme === "All" || r.programme === selectedProgramme;
+      const matchesProgramme =
+        selectedProgramme === "All" || report.programme === selectedProgramme;
 
-      const matchCounty =
-        selectedCounty === "All" || r.county.toLowerCase().includes(selectedCounty.toLowerCase());
+      const matchesCounty =
+        selectedCounty === "All" || report.county === selectedCounty;
 
-      return matchQuery && matchSector && matchProgramme && matchCounty;
+      return matchesSearch && matchesSector && matchesProgramme && matchesCounty;
     });
   }, [reports, searchQuery, selectedSector, selectedProgramme, selectedCounty]);
 
@@ -54,10 +55,10 @@ export function ReportLibraryArchive({ reports }: ReportLibraryArchiveProps) {
       <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3 border-b border-foreground/10 pb-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="font-serif italic text-2xl text-orange-600 dark:text-orange-400 font-normal">
+            <span className="font-serif italic text-2xl text-primary font-normal">
               Fig 07;
             </span>
-            <span className="font-mono text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-widest">
+            <span className="font-mono text-xs font-bold text-primary uppercase tracking-widest">
               PERMANENT AUDIT ARCHIVE
             </span>
           </div>
@@ -97,7 +98,7 @@ export function ReportLibraryArchive({ reports }: ReportLibraryArchiveProps) {
                 onClick={() => setSelectedSector(sec)}
                 className={`px-2.5 py-1 rounded-md text-xs font-mono transition-all cursor-pointer ${
                   selectedSector === sec
-                    ? "bg-orange-600 text-white font-bold"
+                    ? "bg-primary text-primary-foreground font-bold"
                     : "bg-muted/40 text-muted-foreground hover:text-foreground border border-foreground/5"
                 }`}
               >
@@ -170,12 +171,12 @@ export function ReportLibraryArchive({ reports }: ReportLibraryArchiveProps) {
                       <span className="font-mono text-[10px] font-bold text-muted-foreground">
                         CATALOG #{String(idx + 1).padStart(2, "0")}
                       </span>
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20">
+                      <EditorialPill variant="primary" size="xs">
                         {report.eyebrow}
-                      </span>
-                      <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-semibold border border-foreground/10 bg-muted/40 text-foreground">
+                      </EditorialPill>
+                      <EditorialPill variant="outline" size="xs">
                         {report.programme}
-                      </span>
+                      </EditorialPill>
                       {report.county !== "National" && (
                         <span className="font-mono text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                           <MapPin className="size-3" /> {report.county}
@@ -183,7 +184,7 @@ export function ReportLibraryArchive({ reports }: ReportLibraryArchiveProps) {
                       )}
                     </div>
 
-                    <h3 className="font-heading text-xl sm:text-2xl font-bold text-foreground group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors leading-snug">
+                    <h3 className="font-heading text-xl sm:text-2xl font-bold text-foreground group-hover:text-primary transition-colors leading-snug">
                       <Link href={`/reports/${report.slug}`}>{report.title}</Link>
                     </h3>
 
@@ -222,12 +223,12 @@ export function ReportLibraryArchive({ reports }: ReportLibraryArchiveProps) {
                       </div>
                     )}
 
-                    <Button asChild className="w-full sm:w-auto font-mono text-xs font-bold bg-foreground text-background hover:bg-orange-600 hover:text-white transition-colors group/btn rounded-xl">
-                      <Link href={`/reports/${report.slug}`}>
-                        <span>Open Dossier</span>
-                        <ArrowRight className="size-3.5 transition-transform group-hover/btn:translate-x-1" />
-                      </Link>
-                    </Button>
+                    <PillButtonGroup
+                      href={`/reports/${report.slug}`}
+                      label="Open Dossier"
+                      variant="primary"
+                      size="sm"
+                    />
                   </div>
                 </div>
               </article>
