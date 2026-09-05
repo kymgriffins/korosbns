@@ -15,14 +15,14 @@ const hero = landingContent.hero;
 export default function LandingHero() {
   return (
     <section
-      className={cn(HERO_SECTION_PADDING, "border-b border-border/30 bg-background")}
+      className={cn(HERO_SECTION_PADDING, "border-b border-border/30 bg-background overflow-hidden")}
       aria-labelledby="landing-hero-heading"
     >
-      <div className={SECTION_SHELL_INNER}>
-        <GsapHeroChoreography className="grid items-start gap-8 lg:grid-cols-12 lg:gap-10">
+      <div className={cn(SECTION_SHELL_INNER, "w-full min-w-0 max-w-full")}>
+        <GsapHeroChoreography className="grid items-start gap-8 lg:grid-cols-12 lg:gap-10 w-full min-w-0 max-w-full">
           <div
             data-gsap-hero-content
-            className="flex flex-col items-start gap-4 lg:col-span-6 lg:gap-5 lg:pt-2"
+            className="flex flex-col items-start gap-4 lg:col-span-6 lg:gap-5 lg:pt-2 w-full min-w-0 max-w-full overflow-hidden"
           >
             <EditorialPill dot pulse variant="default">
               {hero.brand} · Sovereign Citizen Watchdog

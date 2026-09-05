@@ -70,25 +70,30 @@ const TICKER_ITEMS: TickerItem[] = [
   },
 ];
 
-export function LandingHeroTicker() {
+export function LandingHeroTicker({ className }: { className?: string } = {}) {
   return (
-    <div className="w-full max-w-xl rounded-xl border border-border/70 bg-card/75 dark:bg-zinc-950/75 backdrop-blur-md shadow-xs overflow-hidden flex items-center">
+    <div
+      className={cn(
+        "w-full min-w-0 max-w-xl rounded-xl border border-border/70 bg-card/75 dark:bg-zinc-950/75 backdrop-blur-md shadow-xs overflow-hidden flex items-center",
+        className
+      )}
+    >
       {/* Live Badge Anchor */}
       <div className="shrink-0 flex items-center gap-1.5 px-2.5 py-1.5 bg-primary/10 border-r border-border/60 text-primary font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-wider select-none z-10">
-        <span className="size-2 rounded-full bg-rose-500 animate-pulse" />
+        <span className="size-2 rounded-full bg-rose-500 animate-pulse shrink-0" />
         <span>WIRE</span>
       </div>
 
       {/* Ticker Stream */}
-      <div className="relative w-full overflow-hidden">
-        <Marquee pauseOnHover repeat={3} className="py-1.5 [--duration:45s] [--gap:1.75rem]">
+      <div className="relative min-w-0 flex-1 overflow-hidden">
+        <Marquee pauseOnHover repeat={3} className="py-1.5 w-full min-w-0 max-w-full overflow-hidden [--duration:95s] [--gap:1.75rem]">
           {TICKER_ITEMS.map((item, idx) => (
             <Link
               key={idx}
               href={item.href}
-              className="inline-flex items-center gap-2 group whitespace-nowrap text-xs font-mono transition-opacity hover:opacity-100 opacity-90"
+              className="inline-flex items-center gap-2 group whitespace-nowrap text-xs font-mono transition-opacity hover:opacity-100 opacity-90 shrink-0"
             >
-              <span className={cn("px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider", item.badgeClass)}>
+              <span className={cn("px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider shrink-0", item.badgeClass)}>
                 {item.badge}
               </span>
               <span className="text-foreground/90 group-hover:text-primary transition-colors">

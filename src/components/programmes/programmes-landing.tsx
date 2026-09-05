@@ -15,6 +15,7 @@ import {
 import { EditorialCtaBand, EditorialPill, PillButtonGroup } from "@/components/ui/editorial";
 import { BNS_COMMUNITY_IMAGES, BNS_MEDIA_IMAGES } from "@/constants/bns-media-images";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
+import { ProgrammesSovereignTicker } from "@/components/programmes/programmes-sovereign-ticker";
 import {
   TelemetryHUD,
   MaskedReveal,
@@ -35,14 +36,12 @@ export function ProgrammesLanding() {
       {/* 01 — MASTER SOVEREIGN HERO: MACRO-WHITESPACE & EDITORIAL TYPOGRAPHY */}
       <header className="relative overflow-hidden pt-12 pb-20 md:pt-20 md:pb-28">
         <div className={SECTION_SHELL_INNER}>
-          <div className="space-y-6 max-w-4xl">
-            <div className="flex flex-wrap items-center gap-2">
-              <EditorialPill dot pulse>
+          <div className="space-y-5 max-w-4xl w-full min-w-0">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full min-w-0">
+              <EditorialPill dot pulse className="shrink-0">
                 Four Operational Desks
               </EditorialPill>
-              <EditorialPill variant="outline">
-                One Sovereign Standard · Article 201
-              </EditorialPill>
+              <ProgrammesSovereignTicker className="min-w-0 flex-1 w-full" />
             </div>
 
             <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-foreground leading-[1.02]">
