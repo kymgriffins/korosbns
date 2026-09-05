@@ -66,9 +66,18 @@ export function ReportLibraryArchive({ reports }: ReportLibraryArchiveProps) {
             Reports &amp; investigations library.
           </h2>
         </div>
-        <span className="text-xs font-mono text-muted-foreground border border-foreground/10 rounded-md px-2.5 py-1 bg-muted/30 self-start sm:self-auto">
-          {reports.length} Verified Dossiers Archived
-        </span>
+        <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+          <Link
+            href="/learn/documents"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:underline px-2.5 py-1 rounded-md bg-primary/10 transition-colors"
+          >
+            <FileText className="size-3.5" />
+            <span>Raw County & Treasury Docs &rarr;</span>
+          </Link>
+          <span className="text-xs font-mono text-muted-foreground border border-foreground/10 rounded-md px-2.5 py-1 bg-muted/30">
+            {reports.length} Verified Dossiers
+          </span>
+        </div>
       </div>
 
       {/* Filter Controls Bar with Hairline Borders */}

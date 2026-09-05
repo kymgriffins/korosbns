@@ -1,0 +1,446 @@
+"use client";
+
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import {
+  Heart,
+  MessageCircle,
+  Music2,
+  Pause,
+  Play,
+  Share2,
+  Volume2,
+  VolumeX,
+  ChevronDown,
+  ChevronUp,
+  Sparkles,
+  ExternalLink,
+} from "lucide-react";
+import { toast } from "sonner";
+import { cn } from "@/utils";
+import { motion, AnimatePresence } from "motion/react";
+
+export interface ReelItem {
+  id: string;
+  title: string;
+  caption: string;
+  category: string;
+  author: string;
+  videoUrl: string;
+  posterUrl: string;
+  likes: number;
+  comments: number;
+  shares: number;
+  duration: string;
+  hashtags: string[];
+}
+
+export const DEFAULT_REELS: ReelItem[] = [
+  {
+    id: "reel-01",
+    title: "County Budget Explained in 60s",
+    caption: "How KSh 420B in equitable share moves from National Treasury down to your local dispensary.",
+    category: "Devolution",
+    author: "Nelly Maina · BNS Lead",
+    videoUrl:
+      "https://pub-f17936ca338a4ebcbdaa81475beda374.r2.dev/county%20%26%20budget%20socials%20new.mp4",
+    posterUrl: "/images/marketing newsletter subcribe/Nelly with The Mic.jpg",
+    likes: 12400,
+    comments: 842,
+    shares: 320,
+    duration: "0:58",
+    hashtags: ["#BudgetNdioStory", "#Devolution", "#CountyWatch"],
+  },
+  {
+    id: "reel-02",
+    title: "Why Healthcare Wings Get Locked",
+    caption: "Auditing KSh 14M pending bills in Nakuru Subukia Ward and how youth barazas unlocked the doors.",
+    category: "Healthcare",
+    author: "Shaimaa Hassan · Auditor",
+    videoUrl:
+      "https://res.cloudinary.com/dn8lut2fc/video/upload/f_auto,q_auto/Untitled_design_maph6q.mp4",
+    posterUrl: "/images/towwnhallmay/129A4056.jpg",
+    likes: 8930,
+    comments: 412,
+    shares: 195,
+    duration: "1:04",
+    hashtags: ["#MaternalHealth", "#PendingBills", "#KilifiAudit"],
+  },
+  {
+    id: "reel-03",
+    title: "The 400-Page PDF Myth",
+    caption: "How to find your ward's school and road allocation in under 3 minutes using open PFM tables.",
+    category: "Tax & Budget",
+    author: "Grace Muthoni · Data Fellow",
+    videoUrl:
+      "https://pub-f17936ca338a4ebcbdaa81475beda374.r2.dev/county%20%26%20budget%20socials%20new.mp4",
+    posterUrl: "/images/cohort1 groundworks/129A3964.jpg",
+    likes: 15200,
+    comments: 1104,
+    shares: 560,
+    duration: "0:49",
+    hashtags: ["#FinanceBill", "#OpenTreasury", "#KenyaBudget"],
+  },
+  {
+    id: "reel-04",
+    title: "Stopping Ghost Completion Certificates",
+    caption: "Contractors signed off 100% structurally complete on empty trenches. Here's how we caught it.",
+    category: "Investigative",
+    author: "Wanahabari Lab Desk",
+    videoUrl:
+      "https://res.cloudinary.com/dn8lut2fc/video/upload/f_auto,q_auto/Untitled_design_maph6q.mp4",
+    posterUrl: "/images/media/129A3905.jpg",
+    likes: 19800,
+    comments: 1420,
+    shares: 890,
+    duration: "1:15",
+    hashtags: ["#GhostCertificates", "#PublicAudit", "#Article201"],
+  },
+];
+
+interface ReelsScrollerProps {
+  reels?: ReelItem[];
+  className?: string;
+}
+
+export function ReelsScroller({
+  reels = DEFAULT_REELS,
+  className,
+}: ReelsScrollerProps) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isMuted, setIsMuted] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [likedMap, setLikedMap] = useState<Record<string, boolean>>({});
+  const [likeCountMap, setLikeCountMap] = useState<Record<string, number>>(() =>
+    reels.reduce(
+      (acc, r) => ({ ...acc, [r.id]: r.likes }),
+      {} as Record<string, number>,
+    ),
+  );
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const videoRefs = useRef<Map<string, HTMLVideoElement>>(new Map());
+
+  // Scroll to active index on button click
+  const scrollToReel = (index: number) => {
+    if (index < 0 || index >= reels.length) return;
+    setActiveIndex(index);
+    const container = containerRef.current;
+    if (!container) return;
+    const target = container.children[index] as HTMLElement;
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  };
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowDown" || e.key === "j") {
+        e.preventDefault();
+        scrollToReel(activeIndex + 1);
+      } else if (e.key === "ArrowUp" || e.key === "k") {
+        e.preventDefault();
+        scrollToReel(activeIndex - 1);
+      } else if (e.key === " " || e.key === "Spacebar") {
+        e.preventDefault();
+        togglePlay(reels[activeIndex]?.id);
+      } else if (e.key === "m" || e.key === "M") {
+        e.preventDefault();
+        setIsMuted((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activeIndex, reels]);
+
+  // Handle intersection observer to auto-play active video and pause others
+  useEffect(() => {
+    const currentReel = reels[activeIndex];
+    videoRefs.current.forEach((videoEl, id) => {
+      if (id === currentReel?.id) {
+        videoEl.muted = isMuted;
+        videoEl
+          .play()
+          .then(() => setIsPlaying(true))
+          .catch(() => setIsPlaying(false));
+      } else {
+        videoEl.pause();
+      }
+    });
+  }, [activeIndex, isMuted, reels]);
+
+  // Sync mute state across all video elements
+  useEffect(() => {
+    videoRefs.current.forEach((videoEl) => {
+      videoEl.muted = isMuted;
+    });
+  }, [isMuted]);
+
+  const togglePlay = (id: string) => {
+    const videoEl = videoRefs.current.get(id);
+    if (!videoEl) return;
+    if (videoEl.paused) {
+      videoEl.play().then(() => setIsPlaying(true));
+    } else {
+      videoEl.pause();
+      setIsPlaying(false);
+    }
+  };
+
+  const handleLike = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const wasLiked = !!likedMap[id];
+    setLikedMap((prev) => ({ ...prev, [id]: !wasLiked }));
+    setLikeCountMap((prev) => ({
+      ...prev,
+      [id]: (prev[id] ?? 0) + (wasLiked ? -1 : 1),
+    }));
+  };
+
+  const handleShare = async (reel: ReelItem, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: reel.title,
+          text: reel.caption,
+          url: shareUrl,
+        });
+      } catch {
+        /* user dismissed share dialog */
+      }
+    } else if (navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        toast.success("Story link copied to clipboard");
+      } catch {
+        toast.error("Could not copy link");
+      }
+    }
+  };
+
+  return (
+    <div
+      className={cn(
+        "relative mx-auto flex w-full max-w-lg flex-col items-center",
+        className,
+      )}
+    >
+      {/* Desktop Navigation Floating Chevrons */}
+      <div className="absolute -right-16 top-1/2 z-30 hidden -translate-y-1/2 flex-col gap-3 lg:flex">
+        <button
+          type="button"
+          onClick={() => scrollToReel(activeIndex - 1)}
+          disabled={activeIndex === 0}
+          aria-label="Previous story reel"
+          className="flex size-11 items-center justify-center rounded-full border border-border/60 bg-card text-foreground shadow-md transition-all hover:bg-muted disabled:opacity-30"
+        >
+          <ChevronUp className="size-5" />
+        </button>
+        <div className="text-center font-mono text-xs font-bold text-muted-foreground">
+          {activeIndex + 1}/{reels.length}
+        </div>
+        <button
+          type="button"
+          onClick={() => scrollToReel(activeIndex + 1)}
+          disabled={activeIndex === reels.length - 1}
+          aria-label="Next story reel"
+          className="flex size-11 items-center justify-center rounded-full border border-border/60 bg-card text-foreground shadow-md transition-all hover:bg-muted disabled:opacity-30"
+        >
+          <ChevronDown className="size-5" />
+        </button>
+      </div>
+
+      {/* Snap-scroll container */}
+      <div
+        ref={containerRef}
+        onScroll={(e) => {
+          const el = e.currentTarget;
+          const index = Math.round(el.scrollTop / el.clientHeight);
+          if (index !== activeIndex && index >= 0 && index < reels.length) {
+            setActiveIndex(index);
+          }
+        }}
+        className="h-[78vh] max-h-[720px] min-h-[540px] w-full snap-y snap-mandatory overflow-y-auto overscroll-contain rounded-3xl border border-border/60 bg-black shadow-2xl scrollbar-none"
+      >
+        {reels.map((reel, idx) => {
+          const isCurrent = idx === activeIndex;
+          const isLiked = !!likedMap[reel.id];
+          const likesCount = likeCountMap[reel.id] ?? reel.likes;
+
+          return (
+            <div
+              key={reel.id}
+              className="relative flex h-full w-full snap-start snap-always items-center justify-center overflow-hidden bg-zinc-950"
+            >
+              {/* Background Video Element */}
+              <video
+                ref={(el) => {
+                  if (el) videoRefs.current.set(reel.id, el);
+                  else videoRefs.current.delete(reel.id);
+                }}
+                src={reel.videoUrl}
+                poster={reel.posterUrl}
+                loop
+                playsInline
+                muted={isMuted}
+                preload="metadata"
+                onClick={() => togglePlay(reel.id)}
+                className="h-full w-full object-cover cursor-pointer"
+              />
+
+              {/* Ambient Vignette Gradients */}
+              <div
+                onClick={() => togglePlay(reel.id)}
+                className="pointer-events-auto absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/90 cursor-pointer"
+              />
+
+              {/* Center Play/Pause Floating Icon Indicator */}
+              <AnimatePresence>
+                {!isPlaying && isCurrent && (
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.8, opacity: 0 }}
+                    onClick={() => togglePlay(reel.id)}
+                    className="pointer-events-none absolute inset-0 flex items-center justify-center"
+                  >
+                    <div className="flex size-16 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-md">
+                      <Play className="size-8 fill-current pl-1" />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Top Header Overlays */}
+              <div className="pointer-events-none absolute inset-x-4 top-4 flex items-center justify-between text-white">
+                <div className="flex items-center gap-2">
+                  <span className="rounded-full bg-red-600 px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider">
+                    {reel.category}
+                  </span>
+                  <span className="font-mono text-xs text-white/70">
+                    {reel.duration}
+                  </span>
+                </div>
+                <div className="pointer-events-auto flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsMuted((prev) => !prev);
+                    }}
+                    aria-label={isMuted ? "Unmute audio" : "Mute audio"}
+                    className="flex size-9 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-md transition-colors hover:bg-black/60"
+                  >
+                    {isMuted ? (
+                      <VolumeX className="size-4" />
+                    ) : (
+                      <Volume2 className="size-4" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Right Side Interactive Action Bar */}
+              <div className="pointer-events-auto absolute bottom-20 right-3 z-20 flex flex-col items-center gap-5 text-white">
+                {/* Like Button */}
+                <button
+                  type="button"
+                  onClick={(e) => handleLike(reel.id, e)}
+                  aria-label="Like story"
+                  className="group flex flex-col items-center gap-1 focus-visible:outline-none"
+                >
+                  <div
+                    className={cn(
+                      "flex size-11 items-center justify-center rounded-full bg-black/40 backdrop-blur-md transition-transform group-hover:scale-110",
+                      isLiked ? "text-rose-500" : "text-white",
+                    )}
+                  >
+                    <Heart
+                      className={cn("size-6", isLiked && "fill-current")}
+                    />
+                  </div>
+                  <span className="font-mono text-[11px] font-bold text-white/90">
+                    {likesCount > 999
+                      ? `${(likesCount / 1000).toFixed(1)}k`
+                      : likesCount}
+                  </span>
+                </button>
+
+                {/* Comments indicator */}
+                <div className="flex flex-col items-center gap-1">
+                  <div className="flex size-11 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-md">
+                    <MessageCircle className="size-5" />
+                  </div>
+                  <span className="font-mono text-[11px] font-bold text-white/90">
+                    {reel.comments}
+                  </span>
+                </div>
+
+                {/* Share Button */}
+                <button
+                  type="button"
+                  onClick={(e) => handleShare(reel, e)}
+                  aria-label="Share story"
+                  className="group flex flex-col items-center gap-1 focus-visible:outline-none"
+                >
+                  <div className="flex size-11 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-md transition-transform group-hover:scale-110">
+                    <Share2 className="size-5" />
+                  </div>
+                  <span className="font-mono text-[11px] font-bold text-white/90">
+                    {reel.shares}
+                  </span>
+                </button>
+              </div>
+
+              {/* Bottom Information Overlay */}
+              <div className="pointer-events-auto absolute inset-x-4 bottom-4 z-10 space-y-2 pr-14 text-white">
+                <div className="flex items-center gap-2">
+                  <div className="relative size-7 overflow-hidden rounded-full border border-white/40">
+                    <Image
+                      src={reel.posterUrl}
+                      alt={reel.author}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <span className="text-xs font-bold text-white/95">
+                    {reel.author}
+                  </span>
+                </div>
+
+                <h3 className="font-heading text-base font-extrabold leading-snug text-white">
+                  {reel.title}
+                </h3>
+
+                <p className="line-clamp-2 text-xs text-white/80 leading-relaxed">
+                  {reel.caption}
+                </p>
+
+                <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                  {reel.hashtags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="font-mono text-[10px] font-medium text-amber-400"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Touch swipe hint footer */}
+      <div className="mt-3 flex items-center gap-2 font-mono text-[11px] text-muted-foreground">
+        <Sparkles className="size-3 text-amber-500" />
+        <span>Swipe / Drag or use Arrow Keys to scroll</span>
+      </div>
+    </div>
+  );
+}

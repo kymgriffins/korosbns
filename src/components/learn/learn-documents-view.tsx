@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   Search, Folder, FileText, Database, Loader2,
   X, LayoutGrid, List, ChevronLeft, ChevronRight,
-  RefreshCw, BookOpen, Download, ExternalLink,
+  RefreshCw, BookOpen, Download, ExternalLink, BarChart3,
 } from "lucide-react";
 import { cn } from "@/utils";
 import { LearnPageHeader } from "@/components/learn/learn-page-frame";
@@ -352,7 +353,7 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
   return (
     <div className="flex flex-col bg-background">
       {/* Sticky header with breadcrumb */}
-      <header className="sticky top-0 z-10 hidden items-center justify-between gap-3 border-b border-border/50 bg-background/95 px-4 py-3 backdrop-blur-md md:px-5 lg:flex">
+      <header className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-border/50 bg-background/95 px-4 py-3 backdrop-blur-md md:px-5">
         <div className="flex items-center gap-2.5 min-w-0">
           <div className="bg-primary/8 p-1.5 rounded-lg shrink-0 ring-1 ring-primary/20">
             <Database className="size-4 text-primary" />
@@ -423,16 +424,24 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
         </div>
       </header>
 
-      <div className="space-y-5 py-10 sm:py-14 md:space-y-6">
+      <div className="space-y-5 py-6 sm:py-10 md:space-y-6">
         {!selectedFolder ? (
           <>
             {/* Collections view */}
-            <LearnPageHeader
-              eyebrow="Library"
-              title="Documents"
-              description={`${documents.length} collections in the repository`}
-              className="lg:hidden"
-            />
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/40 pb-5">
+              <LearnPageHeader
+                eyebrow="National & County Archives"
+                title="Document Repository"
+                description={`${documents.length} verified collections of county budgets, audit queries, and Treasury policy papers.`}
+              />
+              <Link
+                href="/reports"
+                className="inline-flex items-center gap-2 self-start sm:self-auto rounded-xl border border-border/60 bg-muted/40 px-3.5 py-2 text-xs font-semibold text-foreground hover:border-primary/50 hover:bg-muted/70 transition-all shrink-0"
+              >
+                <BarChart3 className="size-3.5 text-primary" />
+                <span>Audited Reports Bulletin &rarr;</span>
+              </Link>
+            </div>
 
             {/* Tabs */}
             <div className="flex w-fit items-center gap-0.5 rounded-xl bg-muted/40 p-1 ring-1 ring-border/40">
@@ -512,10 +521,32 @@ export function LearnDocumentsView({ profile }: { profile: any }) {
         ) : (
           /* === FOLDER VIEW — clean redesigned filter bar === */
           <section className="space-y-4">
-            {/* Description */}
-            <p className="text-sm text-muted-foreground">
-              {selectedFolder.description}
-            </p>
+            {/* Mobile & Desktop Back Button + Folder Title */}
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/40 pb-3">
+              <button
+                onClick={() => {
+                  setSelectedFolder(null);
+                  setSelectedFile(null);
+                  clearAllFilters();
+                }}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-primary/10 px-3 py-1.5 text-xs font-bold text-primary hover:bg-primary/20 transition-colors"
+              >
+                <ChevronLeft className="size-4" />
+                Back to All Collections
+              </button>
+              <span className="font-mono text-xs text-muted-foreground">
+                {selectedFolder.files.length} documents
+              </span>
+            </div>
+
+            <div>
+              <h2 className="font-heading text-xl font-bold text-foreground">
+                {selectedFolder.fullName}
+              </h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                {selectedFolder.description}
+              </p>
+            </div>
 
             {/* Stats */}
             <DocumentStatsBar

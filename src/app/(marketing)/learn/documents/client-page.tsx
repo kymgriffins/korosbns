@@ -2,24 +2,44 @@
 
 import { useEffect, useState } from "react";
 import { LearnDocumentsView } from "@/components/learn/learn-documents-view";
-import { DashboardSkeleton } from "@/components/learn/dashboard-skeleton";
 import { type LearnHubProfile } from "@/lib/learn-data";
 
+const GUEST_PROFILE: LearnHubProfile = {
+  userId: "guest",
+  breakName: "Citizen Guest",
+  pseudoName: "Guest",
+  county: "National",
+  ward: "",
+  language: "EN",
+  notifications: false,
+  whatsappFallback: false,
+  phone: "",
+  consentGranted: true,
+  consentTimestamp: null,
+  sovereigns: 0,
+  stageProgress: [],
+  streakDays: 0,
+  lastActive: Date.now(),
+  trackedDocs: [],
+  badges: [],
+  avatar_url: null,
+  participationLogs: [],
+  interests: [],
+};
+
 export function LearnDocumentsPageClient() {
-  const [profile, setProfile] = useState<LearnHubProfile | null>(null);
+  const [profile, setProfile] = useState<LearnHubProfile>(GUEST_PROFILE);
 
   useEffect(() => {
     try {
       const raw = localStorage.getItem("bns_user_profile");
-      setProfile(raw ? JSON.parse(raw) : null);
+      if (raw) {
+        setProfile({ ...GUEST_PROFILE, ...JSON.parse(raw) });
+      }
     } catch {
-      setProfile(null);
+      // Keep guest profile
     }
   }, []);
-
-  if (!profile) {
-    return <DashboardSkeleton />;
-  }
 
   return (
     <div className="h-full flex flex-col p-4 md:p-6">

@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { BookOpen, FileText, MessagesSquare } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { BookOpen, FileText, MessagesSquare, PlaySquare, BarChart3 } from "lucide-react";
 import { useLearn, type LearnTab } from "@/contexts/learn-context";
 import { learnTabToHref } from "@/lib/learn-nav";
 import {
@@ -32,6 +33,7 @@ function getDisplayName(
 
 export function LearnMobileNav() {
   const { activeTab, setActiveTab } = useLearn();
+  const pathname = usePathname();
   const { user } = useAuth();
   const onNav = (tab: LearnTab) => () => setActiveTab(tab);
   const [profile, setProfile] = useState<StoredProfile | null>(null);
@@ -94,38 +96,45 @@ export function LearnMobileNav() {
   const items: MobileBottomNavItem[] = [
     {
       id: "learn",
-      label: "Modules",
-      href: learnTabToHref("learn"),
-      active: activeTab === "learn" || activeTab === "home",
-      prominent: true,
-      ariaCurrent: activeTab === "learn" || activeTab === "home" ? "page" : undefined,
+      label: "Learn",
+      href: "/learn",
+      active: pathname === "/learn" || pathname.startsWith("/learn/modules"),
+      ariaCurrent: pathname === "/learn" || pathname.startsWith("/learn/modules") ? "page" : undefined,
       icon: <BookOpen className="size-5" aria-hidden />,
       onNavigate: onNav("learn"),
     },
     {
       id: "documents",
-      label: "Documents",
-      href: learnTabToHref("documents"),
-      active: activeTab === "documents",
-      ariaCurrent: activeTab === "documents" ? "page" : undefined,
+      label: "Docs",
+      href: "/learn/documents",
+      active: pathname.startsWith("/learn/documents"),
+      ariaCurrent: pathname.startsWith("/learn/documents") ? "page" : undefined,
       icon: <FileText className="size-5" aria-hidden />,
       onNavigate: onNav("documents"),
     },
     {
-      id: "forum",
-      label: "Forums",
-      href: learnTabToHref("forum"),
-      active: activeTab === "forum",
-      ariaCurrent: activeTab === "forum" ? "page" : undefined,
-      icon: <MessagesSquare className="size-5" aria-hidden />,
-      onNavigate: onNav("forum"),
+      id: "reels",
+      label: "Reels",
+      href: "/learn/stories",
+      active: pathname.startsWith("/learn/stories") || pathname.startsWith("/stories"),
+      prominent: true,
+      ariaCurrent: pathname.startsWith("/learn/stories") || pathname.startsWith("/stories") ? "page" : undefined,
+      icon: <PlaySquare className="size-5" aria-hidden />,
+    },
+    {
+      id: "reports",
+      label: "Reports",
+      href: "/reports",
+      active: pathname.startsWith("/reports"),
+      ariaCurrent: pathname.startsWith("/reports") ? "page" : undefined,
+      icon: <BarChart3 className="size-5" aria-hidden />,
     },
     {
       id: "profile",
-      label: "Profile",
-      href: learnTabToHref("profile"),
-      active: activeTab === "profile",
-      ariaCurrent: activeTab === "profile" ? "page" : undefined,
+      label: "You",
+      href: "/learn/profile",
+      active: pathname.startsWith("/learn/profile"),
+      ariaCurrent: pathname.startsWith("/learn/profile") ? "page" : undefined,
       icon: profileIcon,
       onNavigate: onNav("profile"),
     },
