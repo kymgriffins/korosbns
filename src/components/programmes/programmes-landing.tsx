@@ -34,11 +34,11 @@ export function ProgrammesLanding() {
       />
 
       {/* 01 — MASTER SOVEREIGN HERO: MACRO-WHITESPACE & EDITORIAL TYPOGRAPHY */}
-      <header className="relative overflow-hidden pt-12 pb-20 md:pt-20 md:pb-28">
+      <header className="relative overflow-hidden pt-8 pb-12 md:pt-16 md:pb-20">
         <div className={SECTION_SHELL_INNER}>
-          <div className="space-y-5 max-w-4xl w-full min-w-0">
+          <div className="space-y-4 max-w-4xl w-full min-w-0">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full min-w-0">
-              <EditorialPill dot pulse className="shrink-0">
+              <EditorialPill dot pulse className="hidden sm:inline-flex shrink-0">
                 Four Operational Desks
               </EditorialPill>
               <ProgrammesSovereignTicker className="min-w-0 flex-1 w-full" />
@@ -52,30 +52,32 @@ export function ProgrammesLanding() {
               </MaskedReveal>
             </h1>
 
-            <p className="text-xl sm:text-2xl font-normal text-foreground/80 leading-relaxed max-w-3xl">
+            <p className="text-lg sm:text-xl font-normal text-foreground/80 leading-relaxed max-w-3xl">
               Kenya’s national budget crosses KSh 4.82 Trillion. Budget Ndio Story deploys 4 specialized, non-replicated operational desks to audit allocations, mobilize digital youth, ground rural barazas, and produce cinematic media.
             </p>
 
-            <div className="flex flex-wrap items-center gap-4 pt-2">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2 w-full sm:w-auto">
               <PillButtonGroup
                 href="/work"
                 label="Explore Evidence Archive"
                 variant="primary"
-                size="lg"
+                size="default"
+                className="w-full sm:w-auto justify-center"
               />
               <PillButtonGroup
                 href="#desk-01"
                 label="Explore The 4 Desks"
                 variant="outline"
-                size="lg"
+                size="default"
+                className="hidden sm:inline-flex w-full sm:w-auto justify-center"
               />
             </div>
           </div>
 
           {/* Clean Editorial Impact Row — No Harsh Box Borders */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 pt-16 mt-12 border-t border-border/30">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 pt-10 mt-8 border-t border-border/30">
             <div className="space-y-1">
-              <p className="text-4xl sm:text-5xl font-black text-primary tracking-tighter">
+              <p className="text-3xl sm:text-5xl font-black text-primary tracking-tighter">
                 <MetricCounter value={4.82} prefix="KSh " suffix="T" decimals={2} />
               </p>
               <p className="text-xs font-bold uppercase tracking-wider text-foreground mt-1">
@@ -87,7 +89,7 @@ export function ProgrammesLanding() {
             </div>
 
             <div className="space-y-1">
-              <p className="text-4xl sm:text-5xl font-black text-foreground tracking-tighter flex items-center">
+              <p className="text-3xl sm:text-5xl font-black text-foreground tracking-tighter flex items-center">
                 <span>04</span>
                 <span className="text-primary ml-1.5 text-2xl font-bold">Counties</span>
               </p>
@@ -100,7 +102,7 @@ export function ProgrammesLanding() {
             </div>
 
             <div className="space-y-1">
-              <p className="text-4xl sm:text-5xl font-black text-primary tracking-tighter">
+              <p className="text-3xl sm:text-5xl font-black text-primary tracking-tighter">
                 <MetricCounter value={120} suffix="+" />
               </p>
               <p className="text-xs font-bold uppercase tracking-wider text-foreground mt-1">
@@ -112,7 +114,7 @@ export function ProgrammesLanding() {
             </div>
 
             <div className="space-y-1">
-              <p className="text-4xl sm:text-5xl font-black text-foreground tracking-tighter">
+              <p className="text-3xl sm:text-5xl font-black text-foreground tracking-tighter">
                 <MetricCounter value={100} suffix="%" />
               </p>
               <p className="text-xs font-bold uppercase tracking-wider text-foreground mt-1">
@@ -129,10 +131,10 @@ export function ProgrammesLanding() {
       {/* ========================================================================= */}
       {/* DESK 01: BNS CONNECT — TYPOGRAPHIC MANIFESTO & DIGITAL YOUTH SPREAD        */}
       {/* ========================================================================= */}
-      <section id="desk-01" className="min-h-screen py-24 md:py-32 flex flex-col justify-center border-b border-border/40">
+      <section id="desk-01" className="py-14 sm:py-18 md:py-20 border-b border-border/40">
         <div className={SECTION_SHELL_INNER}>
           {/* Section Identifier Header */}
-          <div className="flex items-center gap-3 mb-6">
+          <div className="flex items-center gap-3 mb-4">
             <span className="text-xs font-bold uppercase tracking-widest text-primary">
               Desk 01 · BNS Connect
             </span>
@@ -142,15 +144,15 @@ export function ProgrammesLanding() {
             </span>
           </div>
 
-          <div className="space-y-8 max-w-4xl mb-12">
-            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-foreground leading-[1.04] tracking-tight">
+          <div className="space-y-4 max-w-4xl mb-8">
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-foreground leading-[1.06] tracking-tight">
               Translating 400-page accounting sheets into 60-second mobile power.
             </h2>
           </div>
 
           {/* Expansive Borderless Photographic Canvas */}
           <ParallaxWrapper speed={0.15}>
-            <div className="relative aspect-[21/9] w-full overflow-hidden rounded-3xl bg-muted shadow-2xl mb-12">
+            <div className="relative aspect-[21/9] w-full overflow-hidden rounded-2xl bg-muted shadow-lg mb-8 sm:mb-10">
               <Image
                 src={BNS_COMMUNITY_IMAGES.cohortA}
                 alt="Young Kenyans interrogating national debt amortization tables"
@@ -160,11 +162,11 @@ export function ProgrammesLanding() {
                 sizes="100vw"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
-              <div className="absolute bottom-6 left-6 sm:bottom-8 sm:left-8 right-6 text-white max-w-2xl space-y-1">
+              <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 right-4 text-white max-w-2xl space-y-1">
                 <p className="text-xs uppercase tracking-widest font-bold text-primary">
                   Nairobi Youth Baraza
                 </p>
-                <p className="text-base sm:text-lg font-medium leading-snug">
+                <p className="text-sm sm:text-base font-medium leading-snug">
                   Auditing national debt amortization tables against real-time Ministry disbursements.
                 </p>
               </div>
@@ -172,8 +174,8 @@ export function ProgrammesLanding() {
           </ParallaxWrapper>
 
           {/* Two-Column Asymmetrical Narrative Spread */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
-            <div className="lg:col-span-7 space-y-6 text-base sm:text-lg text-foreground/85 leading-relaxed">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
+            <div className="lg:col-span-7 space-y-4 text-sm sm:text-base text-foreground/85 leading-relaxed">
               <p>
                 When Treasury drops the annual Budget Policy Statement, accountability historically vanished inside 400-page PDF tables written in impenetrable bureaucratic jargon. Parliamentary committees debated behind closed doors while millions of young taxpayers were locked out of the conversation.
               </p>
@@ -185,10 +187,10 @@ export function ProgrammesLanding() {
               </p>
             </div>
 
-            <div className="lg:col-span-5 space-y-8">
+            <div className="lg:col-span-5 space-y-6">
               {/* Editorial Pullquote in Neue Montreal Italic */}
-              <div className="pl-6 border-l-2 border-primary space-y-2">
-                <blockquote className="text-xl sm:text-2xl font-normal italic text-foreground leading-snug">
+              <div className="pl-5 border-l-2 border-primary space-y-1.5">
+                <blockquote className="text-lg sm:text-xl font-normal italic text-foreground leading-snug">
                   &ldquo;We don&rsquo;t summarize the budget for archives. We translate the data into immediate leverage for citizen action.&rdquo;
                 </blockquote>
                 <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground not-italic">
@@ -196,7 +198,7 @@ export function ProgrammesLanding() {
                 </p>
               </div>
 
-              <div className="space-y-4 pt-2">
+              <div className="space-y-3 pt-1">
                 <div className="flex items-center gap-3 text-sm text-foreground/90">
                   <Smartphone className="size-4 text-primary shrink-0" />
                   <span>Direct integration with our TikTok &amp; Reels format</span>
@@ -206,12 +208,13 @@ export function ProgrammesLanding() {
                   <span>80-page citizen memorandum submitted to Finance Committee</span>
                 </div>
 
-                <div className="pt-4">
+                <div className="pt-2">
                   <PillButtonGroup
                     href="/programmes/connect"
                     label="Open BNS Connect Dossier"
-                    variant="primary"
-                    size="lg"
+                    variant="outline"
+                    size="default"
+                    className="w-full sm:w-auto justify-center"
                   />
                 </div>
               </div>
@@ -223,10 +226,10 @@ export function ProgrammesLanding() {
       {/* ========================================================================= */}
       {/* DESK 02: BNS MASHINANI — GROUNDED FIELD PHOTO-ESSAY & RURAL BARAZA SPREAD */}
       {/* ========================================================================= */}
-      <section id="desk-02" className="min-h-screen py-24 md:py-32 flex flex-col justify-center bg-muted/20 border-b border-border/40">
+      <section id="desk-02" className="py-14 sm:py-18 md:py-20 bg-muted/20 border-b border-border/40">
         <div className={SECTION_SHELL_INNER}>
           {/* Section Identifier */}
-          <div className="flex items-center gap-3 mb-6">
+          <div className="flex items-center gap-3 mb-4">
             <span className="text-xs font-bold uppercase tracking-widest text-amber-600 dark:text-amber-400">
               Desk 02 · BNS Mashinani
             </span>
@@ -236,15 +239,15 @@ export function ProgrammesLanding() {
             </span>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
             {/* Left Narrative Column */}
-            <div className="lg:col-span-6 space-y-6">
-              <h2 className="text-3xl sm:text-5xl font-black text-foreground leading-[1.05] tracking-tight">
+            <div className="lg:col-span-6 space-y-5">
+              <h2 className="text-2xl sm:text-4xl font-black text-foreground leading-[1.06] tracking-tight">
                 Taking budget tracking from Nairobi boardrooms to the village baraza.
               </h2>
 
-              <div className="pl-6 border-l-2 border-amber-500/80 space-y-2">
-                <blockquote className="text-lg sm:text-xl font-normal italic text-foreground leading-snug">
+              <div className="pl-5 border-l-2 border-amber-500/80 space-y-1.5">
+                <blockquote className="text-base sm:text-lg font-normal italic text-foreground leading-snug">
                   &ldquo;In the village, the budget isn&rsquo;t numbers in a book — it is whether the dispensary has medicine and whether the borehole actually pumps clean water.&rdquo;
                 </blockquote>
                 <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground not-italic">
@@ -252,7 +255,7 @@ export function ProgrammesLanding() {
                 </p>
               </div>
 
-              <div className="space-y-4 text-base sm:text-lg text-foreground/85 leading-relaxed">
+              <div className="space-y-3 text-sm sm:text-base text-foreground/85 leading-relaxed">
                 <p>
                   Fiscal devolution was designed to place resources into the hands of local communities. Yet 78% of rural Kenyans report never seeing a ward development breakdown before projects are approved.
                 </p>
@@ -264,15 +267,16 @@ export function ProgrammesLanding() {
                 </p>
               </div>
 
-              <div className="pt-4 flex flex-wrap items-center gap-4">
+              <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <PillButtonGroup
                   href="/programmes/mashinani"
                   label="Open BNS Mashinani Dossier"
-                  variant="primary"
-                  size="lg"
+                  variant="outline"
+                  size="default"
+                  className="w-full sm:w-auto justify-center"
                 />
                 <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
-                  <Radio className="size-4" />
+                  <Radio className="size-4 shrink-0" />
                   <span>800K+ Vernacular Listeners</span>
                 </div>
               </div>
@@ -281,7 +285,7 @@ export function ProgrammesLanding() {
             {/* Right Photo-Essay Canvas — Mobile compact 16:10, desktop 4:5 */}
             <div className="lg:col-span-6">
               <ParallaxWrapper speed={0.2}>
-                <div className="relative aspect-[16/10] sm:aspect-[4/5] w-full overflow-hidden rounded-3xl bg-muted shadow-2xl">
+                <div className="relative aspect-[16/10] sm:aspect-[4/5] w-full overflow-hidden rounded-2xl bg-muted shadow-lg">
                   <Image
                     src={BNS_COMMUNITY_IMAGES.forumD}
                     alt="Community members conducting outdoor ward budget audit baraza"
@@ -290,11 +294,11 @@ export function ProgrammesLanding() {
                     sizes="(max-width: 1024px) 100vw, 50vw"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
-                  <div className="absolute bottom-8 left-8 right-8 text-white space-y-2">
+                  <div className="absolute bottom-6 left-6 right-6 text-white space-y-1.5">
                     <span className="text-xs font-bold uppercase tracking-widest text-amber-400">
                       Kilifi County Field Baraza
                     </span>
-                    <p className="text-sm sm:text-base font-medium leading-snug">
+                    <p className="text-xs sm:text-sm font-medium leading-snug">
                       Artisanal fisherfolk cross-referencing blue economy devolved funds with actual landing site infrastructure.
                     </p>
                   </div>
@@ -308,10 +312,10 @@ export function ProgrammesLanding() {
       {/* ========================================================================= */}
       {/* DESK 03: WANAHABARI LAB — AUTHORITATIVE INVESTIGATIVE NEWSROOM SPREAD      */}
       {/* ========================================================================= */}
-      <section id="desk-03" className="min-h-screen py-24 md:py-32 flex flex-col justify-center bg-background border-b border-border/40">
+      <section id="desk-03" className="py-14 sm:py-18 md:py-20 bg-background border-b border-border/40">
         <div className={SECTION_SHELL_INNER}>
           {/* Section Identifier */}
-          <div className="flex items-center gap-3 mb-6">
+          <div className="flex items-center gap-3 mb-4">
             <span className="text-xs font-bold uppercase tracking-widest text-red-500">
               Desk 03 · Wanahabari Lab
             </span>
@@ -321,37 +325,37 @@ export function ProgrammesLanding() {
             </span>
           </div>
 
-          <div className="max-w-4xl space-y-6 mb-16">
-            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-foreground leading-[1.04] tracking-tight">
+          <div className="max-w-4xl space-y-4 mb-8 sm:mb-10">
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-foreground leading-[1.06] tracking-tight">
               The budget speech is theatre. The real story begins the morning after.
             </h2>
-            <p className="text-xl text-foreground/80 font-normal leading-relaxed max-w-3xl">
+            <p className="text-base sm:text-lg text-foreground/80 font-normal leading-relaxed max-w-3xl">
               Kenyan commercial media concentrates 90% of fiscal reportage on Budget Day in June. Wanahabari Lab equips investigative reporters to track exchequer requisitions and forensic procurement for the other 364 days.
             </p>
           </div>
 
           {/* Investigative Case Studies Row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 mb-16">
-            <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 mb-8 sm:mb-10">
+            <div className="space-y-3">
               <span className="text-xs font-bold uppercase tracking-widest text-red-500">
                 Case Inquiry 01 · County Health Diversions
               </span>
-              <h3 className="text-2xl font-bold text-foreground leading-snug">
+              <h3 className="text-xl font-bold text-foreground leading-snug">
                 Uncovering KSh 1.84 Billion in locked maternity wings.
               </h3>
-              <p className="text-base text-muted-foreground leading-relaxed">
+              <p className="text-sm text-muted-foreground leading-relaxed">
                 When county health allocations were diverted to pay recurrent supplier debts, Wanahabari fellows scraped Controller of Budget quarterly releases, matched them to local contractor records, and co-published the findings in national print dailies.
               </p>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               <span className="text-xs font-bold uppercase tracking-widest text-red-500">
                 Case Inquiry 02 · Consolidated Fund Services
               </span>
-              <h3 className="text-2xl font-bold text-foreground leading-snug">
+              <h3 className="text-xl font-bold text-foreground leading-snug">
                 Exposing KSh 1,203 Billion public debt interest appetite.
               </h3>
-              <p className="text-base text-muted-foreground leading-relaxed">
+              <p className="text-sm text-muted-foreground leading-relaxed">
                 Our fellowship analyzed sovereign amortization tables to demonstrate that out of every KSh 100 collected by KRA, KSh 64 was swallowed by debt servicing before a single development grant left the exchequer account.
               </p>
             </div>
@@ -359,7 +363,7 @@ export function ProgrammesLanding() {
 
           {/* Newsroom Photography Canvas */}
           <ParallaxWrapper speed={0.15}>
-            <div className="relative aspect-[21/9] w-full overflow-hidden rounded-3xl bg-muted shadow-2xl mb-8">
+            <div className="relative aspect-[21/9] w-full overflow-hidden rounded-2xl bg-muted shadow-lg mb-6 sm:mb-8">
               <Image
                 src={BNS_MEDIA_IMAGES.productionA}
                 alt="Wanahabari investigative fellowship journalists examining fiscal leak documents"
@@ -368,23 +372,24 @@ export function ProgrammesLanding() {
                 sizes="100vw"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
-              <div className="absolute bottom-6 left-6 sm:bottom-8 sm:left-8 right-6 text-white space-y-1">
+              <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 right-4 text-white space-y-1">
                 <p className="text-xs uppercase tracking-widest font-bold text-red-400">
                   Newsroom Fellowship Cohort
                 </p>
-                <p className="text-sm sm:text-base font-medium leading-snug">
+                <p className="text-xs sm:text-sm font-medium leading-snug">
                   Fellows cross-referencing exchequer requisition tables with Auditor-General audit queries.
                 </p>
               </div>
             </div>
           </ParallaxWrapper>
 
-          <div className="flex flex-wrap items-center justify-between gap-6 pt-4">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-2">
             <PillButtonGroup
               href="/programmes/wanahabari-lab"
               label="Open Wanahabari Lab Dossier"
-              variant="primary"
-              size="lg"
+              variant="outline"
+              size="default"
+              className="w-full sm:w-auto justify-center"
             />
             <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
               120+ Reporters Trained Annually Across Kenya
@@ -396,10 +401,10 @@ export function ProgrammesLanding() {
       {/* ========================================================================= */}
       {/* DESK 04: BNS STUDIOS — MIDNIGHT 21:9 WIDESCREEN CINEMA THEATRE             */}
       {/* ========================================================================= */}
-      <section id="desk-04" className="min-h-screen py-28 md:py-36 flex flex-col justify-center bg-black text-white border-b border-zinc-800">
+      <section id="desk-04" className="py-14 sm:py-18 md:py-20 bg-black text-white border-b border-zinc-800">
         <div className={SECTION_SHELL_INNER}>
           {/* Section Identifier */}
-          <div className="flex items-center gap-3 mb-6">
+          <div className="flex items-center gap-3 mb-4">
             <span className="text-xs font-bold uppercase tracking-widest text-primary">
               Desk 04 · BNS Studios
             </span>
@@ -409,42 +414,42 @@ export function ProgrammesLanding() {
             </span>
           </div>
 
-          <div className="max-w-4xl space-y-6 mb-16">
-            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.04] tracking-tight">
+          <div className="max-w-4xl space-y-4 mb-8 sm:mb-10">
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white leading-[1.06] tracking-tight">
               Commercial creative craft that bankrolls citizen budget audits.
             </h2>
-            <p className="text-xl text-zinc-300 font-normal leading-relaxed max-w-3xl">
+            <p className="text-base sm:text-lg text-zinc-300 font-normal leading-relaxed max-w-3xl">
               We operate an independent, top-tier creative production studio producing podcasts, documentaries, 2D animations, and street campaigns for leading civic institutions.
             </p>
           </div>
 
-          {/* Cinema Impact Metrics Bar — Clean, authoritative editorial spread with zero AI slop */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 py-10 my-8 border-y border-zinc-800/80">
+          {/* Cinema Impact Metrics Bar */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 py-6 my-6 border-y border-zinc-800/80">
             <div className="space-y-1">
-              <span className="text-3xl sm:text-4xl font-black text-primary tracking-tight">480K+</span>
+              <span className="text-2xl sm:text-3xl font-black text-primary tracking-tight">480K+</span>
               <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">Reel &amp; Doc Views</p>
             </div>
             <div className="space-y-1">
-              <span className="text-3xl sm:text-4xl font-black text-white tracking-tight">100%</span>
+              <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">100%</span>
               <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">Surplus Reinvested</p>
             </div>
             <div className="space-y-1">
-              <span className="text-3xl sm:text-4xl font-black text-primary tracking-tight">47</span>
+              <span className="text-2xl sm:text-3xl font-black text-primary tracking-tight">47</span>
               <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">Counties Supported</p>
             </div>
             <div className="space-y-1">
-              <span className="text-3xl sm:text-4xl font-black text-white tracking-tight">21:9</span>
+              <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">21:9</span>
               <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">Cinematic Master Reels</p>
             </div>
           </div>
 
           {/* The Double Impact Covenant */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start pt-6">
-            <div className="lg:col-span-8 space-y-4">
-              <h3 className="text-xl sm:text-2xl font-bold text-white">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pt-4">
+            <div className="lg:col-span-8 space-y-3">
+              <h3 className="text-lg sm:text-xl font-bold text-white">
                 The Double Impact Covenant
               </h3>
-              <p className="text-base text-zinc-300 leading-relaxed">
+              <p className="text-sm sm:text-base text-zinc-300 leading-relaxed">
                 Rather than relying solely on donor cycles, BNS Studios sells premium storytelling, motion design, and video production to commercial and development partners. 100% of operating surplus is channeled directly into printing grassroots scorecards and funding investigative fellowships in all 47 counties.
               </p>
             </div>
@@ -453,8 +458,9 @@ export function ProgrammesLanding() {
               <PillButtonGroup
                 href="/bns-studio"
                 label="Open BNS Studios Theatre"
-                variant="primary"
-                size="lg"
+                variant="outline"
+                size="default"
+                className="w-full sm:w-auto justify-center border-white/30 text-white hover:bg-white/10"
               />
             </div>
           </div>
@@ -462,7 +468,7 @@ export function ProgrammesLanding() {
       </section>
 
       {/* 05 — AIRY EDITORIAL CTA BAND */}
-      <section className="py-24 md:py-36">
+      <section className="py-12 sm:py-16 md:py-20">
         <div className={SECTION_SHELL_INNER}>
           <EditorialCtaBand
             eyebrow="The Sovereign Standard"

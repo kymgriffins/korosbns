@@ -81,14 +81,20 @@ export function EditorialCtaBand({
             {description ? (
               <p className={cn(T.lead, "max-w-xl text-foreground/80 leading-relaxed")}>{description}</p>
             ) : null}
-            <div className="flex flex-wrap items-center gap-3 pt-2">
-              <PillButtonGroup href={ctaHref} label={ctaLabel} size="lg" />
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2 w-full sm:w-auto">
+              <PillButtonGroup
+                href={ctaHref}
+                label={ctaLabel}
+                size="default"
+                className="w-full sm:w-auto justify-center"
+              />
               {secondaryHref && secondaryLabel ? (
                 <PillButtonGroup
                   href={secondaryHref}
                   label={secondaryLabel}
                   variant="outline"
-                  size="lg"
+                  size="default"
+                  className="hidden sm:inline-flex w-full sm:w-auto justify-center"
                 />
               ) : null}
             </div>
@@ -125,14 +131,20 @@ export function EditorialCtaBand({
           </div>
 
           <div className="relative z-10 flex flex-col items-start gap-4 lg:col-span-4 lg:items-end lg:justify-center">
-            <div className="flex flex-wrap items-center gap-3">
-              <PillButtonGroup href={ctaHref} label={ctaLabel} size="lg" />
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+              <PillButtonGroup
+                href={ctaHref}
+                label={ctaLabel}
+                size="default"
+                className="w-full sm:w-auto justify-center"
+              />
               {secondaryHref && secondaryLabel ? (
                 <PillButtonGroup
                   href={secondaryHref}
                   label={secondaryLabel}
                   variant="outline"
-                  size="lg"
+                  size="default"
+                  className="hidden sm:inline-flex w-full sm:w-auto justify-center"
                 />
               ) : null}
             </div>
