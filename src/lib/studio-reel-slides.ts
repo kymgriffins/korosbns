@@ -51,11 +51,16 @@ export function getStudioReelSlides(): StudioReelSlide[] {
     const lead = projects.find((p) => p.featured) ?? projects[0];
 
     const isSocialReel = type.id === "Social Media Series";
+    const isExplainer = type.id === "Explainer Videos";
     const videoUrl = isSocialReel
       ? "https://bns.stratapointadvisory.org/0cd8319a419e6b3749a7206ba4d68801.mp4"
+      : isExplainer
+      ? "https://bns.stratapointadvisory.org/county%20%26%20budget%20socials%20new.mp4"
       : undefined;
     const image = isSocialReel
       ? "/images/reels/reel-01-poster.jpg"
+      : isExplainer
+      ? "/images/reels/reel-02-poster.jpg"
       : (lead?.media.posterUrl ?? service?.image ?? BNS_STUDIO_HERO_IMAGE);
 
     return {

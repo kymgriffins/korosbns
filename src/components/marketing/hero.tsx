@@ -9,7 +9,7 @@ import {
   useReducedMotion,
 } from "motion/react";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Zap } from "lucide-react";
+import { ArrowRight, Zap, PlaySquare } from "lucide-react";
 import Balancer from "react-wrap-balancer";
 import { ease } from "@/motion/variants";
 
@@ -178,21 +178,22 @@ export default function Hero() {
             variants={heroItem}
             className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2"
           >
-            <Link href="/learn" className="w-full sm:w-auto">
+            <Link href="/learn/modules" className="w-full sm:w-auto">
               <Button
-                size="lg"
-                className="w-full sm:w-auto rounded-full px-8 py-6 text-base font-bold gap-2"
+                size="default"
+                className="w-full sm:w-auto rounded-xl px-6 py-3 text-sm font-bold gap-2"
               >
                 Start Learning Path <ArrowRight className="size-4" />
               </Button>
             </Link>
-            <Link href="/learn" className="w-full sm:w-auto">
+            <Link href="/learn/stories" className="w-full sm:w-auto">
               <Button
-                size="lg"
+                size="default"
                 variant="outline"
-                className="w-full sm:w-auto rounded-full px-8 py-6 text-base font-bold border-border text-foreground/80 hover:bg-foreground/5"
+                className="w-full sm:w-auto rounded-xl px-6 py-3 text-sm font-bold border-border text-foreground/80 hover:bg-foreground/5 gap-2"
               >
-                Dive into Data
+                <PlaySquare className="size-4 text-rose-500" />
+                60s Stories &amp; Reels
               </Button>
             </Link>
           </motion.div>

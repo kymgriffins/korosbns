@@ -45,7 +45,7 @@ const FORMAT_LINKS: FormatNavLink[] = [
   },
   {
     label: "Structured",
-    href: "/learn#structured",
+    href: "/learn/modules",
     icon: Layers,
     isActive: (p) => p.startsWith("/learn/modules") || p.startsWith("/learn/articles") || p.startsWith("/learn/videos"),
   },

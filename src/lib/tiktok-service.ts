@@ -9,7 +9,7 @@ export async function getFeaturedTikTokVideos(): Promise<TikTokVideoApi[]> {
     return [
       {
         id: "reel-01",
-        caption: "County Budget Explained in 60s",
+        caption: "Kenya Owes Over 12 Trillion (Calvina Praise)",
         video_url:
           mediaContent.cloudinary.reelVideo ||
           "https://bns.stratapointadvisory.org/0cd8319a419e6b3749a7206ba4d68801.mp4",
@@ -23,7 +23,7 @@ export async function getFeaturedTikTokVideos(): Promise<TikTokVideoApi[]> {
       },
       {
         id: "reel-02",
-        caption: "County & Budget Socials In Action",
+        caption: "County & Budget Socials In Action (Nelly Maina)",
         video_url:
           mediaContent.cloudinary.countyBudgetSocialVideo ||
           "https://bns.stratapointadvisory.org/county%20%26%20budget%20socials%20new.mp4",
@@ -43,21 +43,21 @@ export async function getTikTokVideo(id: string): Promise<TikTokVideoDetailApi> 
   try {
     return await citizenApi.getTikTokVideo(id);
   } catch {
-    const isVideo2 = id.includes("2") || id.includes("social");
+    const isNellyMaina = id.includes("2") || id.includes("social") || id.includes("nelly") || id.includes("county");
     return {
       id,
-      video_url: isVideo2
+      video_url: isNellyMaina
         ? (mediaContent.cloudinary.countyBudgetSocialVideo ||
           "https://bns.stratapointadvisory.org/county%20%26%20budget%20socials%20new.mp4")
         : (mediaContent.cloudinary.reelVideo ||
           "https://bns.stratapointadvisory.org/0cd8319a419e6b3749a7206ba4d68801.mp4"),
-      cover_image_url: isVideo2
+      cover_image_url: isNellyMaina
         ? "/images/reels/reel-02-poster.jpg"
         : "/images/reels/reel-01-poster.jpg",
       embed_html: "",
-      caption: isVideo2
-        ? "County & Budget Socials - Budget Ndio Story"
-        : "County Budget Explained in 60s - Budget Ndio Story",
+      caption: isNellyMaina
+        ? "County & Budget Socials with Nelly Maina - Budget Ndio Story"
+        : "Kenya Owes Over 12 Trillion with Calvina Praise - Budget Ndio Story",
       tiktok_url: "https://www.tiktok.com/@budget.ndio.story",
       like_count: 12500,
       tiktok_like_count: 12500,

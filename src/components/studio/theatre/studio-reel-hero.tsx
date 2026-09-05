@@ -10,7 +10,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Volume2, VolumeX } from "lucide-react";
 import { getFormatTheme } from "@/lib/studio-format-themes";
 import { getStudioReelSlides } from "@/lib/studio-reel-slides";
 import { cn } from "@/utils";
@@ -24,6 +24,8 @@ export function StudioReelHero() {
   const [index, setIndex] = useState(0);
   const [segmentProgress, setSegmentProgress] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const pointerStart = useRef<{ x: number; y: number } | null>(null);
   const current = slides[index];
 
@@ -127,12 +129,20 @@ export function StudioReelHero() {
           >
             {current.videoUrl ? (
               <video
+                ref={(el) => {
+                  videoRef.current = el;
+                  if (el) {
+                    el.muted = isMuted;
+                    el.play().catch(() => {});
+                  }
+                }}
                 src={current.videoUrl}
                 poster={current.image}
                 autoPlay
-                muted
+                muted={isMuted}
                 loop
                 playsInline
+                crossOrigin="anonymous"
                 preload="metadata"
                 className={cn(
                   "absolute inset-0 size-full object-cover",
@@ -172,16 +182,38 @@ export function StudioReelHero() {
               </p>
               <h1 className="studio-reel-hero-title">{current.label}</h1>
               <p className="studio-reel-hero-desc">{current.shortDesc}</p>
-              {current.projectSlug ? (
-                <Link
-                  href={`/bns-studio/${current.projectSlug}`}
-                  className="studio-reel-hero-case-link"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  Open case
-                  <ArrowUpRight className="size-4" aria-hidden />
-                </Link>
-              ) : null}
+              
+              <div className="flex flex-wrap items-center justify-center gap-3 mt-4">
+                {current.projectSlug ? (
+                  <Link
+                    href={`/bns-studio/${current.projectSlug}`}
+                    className="studio-reel-hero-case-link"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    Open case
+                    <ArrowUpRight className="size-4" aria-hidden />
+                  </Link>
+                ) : null}
+
+                {current.videoUrl ? (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const nextMuted = !isMuted;
+                      setIsMuted(nextMuted);
+                      if (videoRef.current) {
+                        videoRef.current.muted = nextMuted;
+                        videoRef.current.play().catch(() => {});
+                      }
+                    }}
+                    className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/60 px-4 py-2 text-xs font-mono font-bold uppercase tracking-wider text-white backdrop-blur-md hover:bg-black/80 transition-colors shadow-sm cursor-pointer"
+                  >
+                    {isMuted ? <VolumeX className="size-4" /> : <Volume2 className="size-4 text-primary" />}
+                    <span>{isMuted ? "Unmute Video" : "Sound Active"}</span>
+                  </button>
+                ) : null}
+              </div>
             </div>
 
             <p className="studio-reel-hero-side studio-reel-hero-side-right">

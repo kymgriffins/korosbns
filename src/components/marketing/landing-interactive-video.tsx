@@ -96,16 +96,19 @@ const LandingInteractiveVideo = () => {
                             className="relative w-full max-w-6xl aspect-video bg-card rounded-2xl overflow-hidden border border-border"
                             onClick={(e) => e.stopPropagation()}
                         >
-                            <iframe 
-                                src="https://www.youtube.com/embed/fD3yW78uDkY?autoplay=1" 
-                                title="Budget Mtaani Series Part 1"
-                                className="w-full h-full border-0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                                allowFullScreen
-                            ></iframe>
+                            <video
+                                src="https://bns.stratapointadvisory.org/county%20%26%20budget%20socials%20new.mp4"
+                                poster="/images/reels/reel-02-poster.jpg"
+                                autoPlay
+                                controls
+                                playsInline
+                                className="w-full h-full object-contain bg-black"
+                            >
+                                Your browser does not support the video tag.
+                            </video>
                             <button 
                                 onClick={() => setIsOpen(false)}
-                                className="absolute top-6 right-6 text-muted-foreground hover:text-card-foreground text-xs font-semibold transition-colors"
+                                className="absolute top-6 right-6 text-white bg-black/60 px-3 py-1.5 rounded-full hover:bg-black text-xs font-mono font-semibold transition-colors z-20 border border-white/20"
                             >
                                 Close [esc]
                             </button>

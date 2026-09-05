@@ -8,11 +8,13 @@ const mockDisconnect = vi.fn();
 
 beforeEach(() => {
   vi.clearAllMocks();
-  window.IntersectionObserver = vi.fn().mockImplementation(() => ({
-    observe: mockObserve,
-    unobserve: vi.fn(),
-    disconnect: mockDisconnect,
-  })) as any;
+  window.IntersectionObserver = vi.fn().mockImplementation(function (this: any) {
+    return {
+      observe: mockObserve,
+      unobserve: vi.fn(),
+      disconnect: mockDisconnect,
+    };
+  }) as any;
 });
 
 import { LandingTikTokPhone } from "../landing-tiktok-phone";
