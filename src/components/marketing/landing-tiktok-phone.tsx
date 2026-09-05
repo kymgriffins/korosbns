@@ -48,12 +48,11 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
       mediaContent.cloudinary.reelVideo ||
       mediaContent.cloudinary.countyBudgetSocialVideo ||
       "https://bns.stratapointadvisory.org/0cd8319a419e6b3749a7206ba4d68801.mp4";
-    const nellyMediaPhoto =
-      "/images/marketing%20newsletter%20subcribe/Nelly%20with%20The%20Mic.jpg";
+    const reelCoverPhoto = "/images/reels/reel-01-poster.jpg";
     const mockVideo = {
       id: "tiktok-landing-video",
       video_url: videoUrl,
-      cover_image_url: nellyMediaPhoto,
+      cover_image_url: reelCoverPhoto,
       embed_html: "",
       caption: "Budget Ndio Story - County Budget Explained",
       like_count: 12500,
@@ -176,7 +175,7 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
   return (
     <div ref={phoneRef} className={cn("mx-auto flex w-full max-w-[280px] flex-col md:max-w-[320px]", className)}>
       <div className="relative aspect-[9/16] w-full overflow-hidden rounded-[2rem] border-[3px] border-foreground/10 bg-card ring-1 ring-white/10">
-        {/* Nelly Maina media cover image preview when video is paused */}
+        {/* Authentic video cover image preview when video is paused */}
         {!isPlaying && (
           <div
             className="absolute inset-0 z-0 overflow-hidden cursor-pointer bg-black/40"
@@ -185,7 +184,7 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
           >
             <Image
               src={video.cover_image_url}
-              alt="Nelly Maina - Budget Ndio Story"
+              alt="Budget Ndio Story - Reel Preview"
               fill
               sizes="(max-width: 768px) 280px, 320px"
               className="object-cover"

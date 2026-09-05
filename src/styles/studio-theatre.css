@@ -301,7 +301,8 @@ html:not(.dark) .studio-work-page,
   inset: 0;
 }
 
-.studio-reel-hero-media-vertical img {
+.studio-reel-hero-media-vertical img,
+.studio-reel-hero-media-vertical video {
   object-position: center top;
 }
 

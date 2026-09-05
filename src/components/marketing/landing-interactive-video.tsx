@@ -58,6 +58,7 @@ const LandingInteractiveVideo = () => {
                         muted
                         loop
                         playsInline
+                        poster="/images/reels/reel-02-poster.jpg"
                         onError={(e) => console.warn('Interactive video failed to load:', e)}
                         className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000"
                     >

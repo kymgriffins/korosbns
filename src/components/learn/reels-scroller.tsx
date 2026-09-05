@@ -26,6 +26,7 @@ export interface ReelItem {
   caption: string;
   category: string;
   author: string;
+  authorAvatar?: string;
   videoUrl: string;
   posterUrl: string;
   likes: number;
@@ -42,9 +43,10 @@ export const DEFAULT_REELS: ReelItem[] = [
     caption: "How KSh 420B in equitable share moves from National Treasury down to your local dispensary.",
     category: "Devolution",
     author: "Nelly Maina · BNS Lead",
+    authorAvatar: "/images/marketing newsletter subcribe/Nelly with The Mic.jpg",
     videoUrl:
       "https://bns.stratapointadvisory.org/0cd8319a419e6b3749a7206ba4d68801.mp4",
-    posterUrl: "/images/marketing newsletter subcribe/Nelly with The Mic.jpg",
+    posterUrl: "/images/reels/reel-01-poster.jpg",
     likes: 12400,
     comments: 842,
     shares: 320,
@@ -53,13 +55,14 @@ export const DEFAULT_REELS: ReelItem[] = [
   },
   {
     id: "reel-02",
-    title: "Why Healthcare Wings Get Locked",
+    title: "County & Budget Socials In Action",
     caption: "Auditing KSh 14M pending bills in Nakuru Subukia Ward and how youth barazas unlocked the doors.",
     category: "Healthcare",
     author: "Shaimaa Hassan · Auditor",
+    authorAvatar: "/images/towwnhallmay/129A4056.jpg",
     videoUrl:
       "https://bns.stratapointadvisory.org/county%20%26%20budget%20socials%20new.mp4",
-    posterUrl: "/images/towwnhallmay/129A4056.jpg",
+    posterUrl: "/images/reels/reel-02-poster.jpg",
     likes: 8930,
     comments: 412,
     shares: 195,
@@ -72,9 +75,10 @@ export const DEFAULT_REELS: ReelItem[] = [
     caption: "How to find your ward's school and road allocation in under 3 minutes using open PFM tables.",
     category: "Tax & Budget",
     author: "Grace Muthoni · Data Fellow",
+    authorAvatar: "/images/cohort1 groundworks/129A3964.jpg",
     videoUrl:
       "https://bns.stratapointadvisory.org/0cd8319a419e6b3749a7206ba4d68801.mp4",
-    posterUrl: "/images/cohort1 groundworks/129A3964.jpg",
+    posterUrl: "/images/reels/reel-03-poster.jpg",
     likes: 15200,
     comments: 1104,
     shares: 560,
@@ -87,9 +91,10 @@ export const DEFAULT_REELS: ReelItem[] = [
     caption: "Contractors signed off 100% structurally complete on empty trenches. Here's how we caught it.",
     category: "Investigative",
     author: "Wanahabari Lab Desk",
+    authorAvatar: "/images/media/129A3905.jpg",
     videoUrl:
       "https://bns.stratapointadvisory.org/county%20%26%20budget%20socials%20new.mp4",
-    posterUrl: "/images/media/129A3905.jpg",
+    posterUrl: "/images/reels/reel-04-poster.jpg",
     likes: 19800,
     comments: 1420,
     shares: 890,
@@ -192,7 +197,23 @@ export function ReelsScroller({
     const videoEl = videoRefs.current.get(id);
     if (!videoEl) return;
     if (videoEl.paused) {
-      videoEl.play().then(() => setIsPlaying(true));
+      videoEl.muted = isMuted;
+      videoEl
+        .play()
+        .then(() => setIsPlaying(true))
+        .catch((err) => {
+          console.warn("Reel video playback failed:", err);
+          if (!videoEl.muted) {
+            videoEl.muted = true;
+            setIsMuted(true);
+            videoEl
+              .play()
+              .then(() => setIsPlaying(true))
+              .catch(() => setIsPlaying(false));
+          } else {
+            setIsPlaying(false);
+          }
+        });
     } else {
       videoEl.pause();
       setIsPlaying(false);
@@ -305,6 +326,12 @@ export function ReelsScroller({
                 playsInline
                 muted={isMuted}
                 preload="metadata"
+                onPlay={() => {
+                  if (isCurrent) setIsPlaying(true);
+                }}
+                onPause={() => {
+                  if (isCurrent) setIsPlaying(false);
+                }}
                 onClick={() => togglePlay(reel.id)}
                 className="h-full w-full object-cover cursor-pointer"
               />
@@ -322,12 +349,19 @@ export function ReelsScroller({
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     exit={{ scale: 0.8, opacity: 0 }}
-                    onClick={() => togglePlay(reel.id)}
-                    className="pointer-events-none absolute inset-0 flex items-center justify-center"
+                    className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center"
                   >
-                    <div className="flex size-16 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-md">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        togglePlay(reel.id);
+                      }}
+                      aria-label="Play story reel"
+                      className="pointer-events-auto flex size-16 items-center justify-center rounded-full bg-black/60 text-white shadow-2xl backdrop-blur-md transition-transform hover:scale-110 active:scale-95 cursor-pointer"
+                    >
                       <Play className="size-8 fill-current pl-1" />
-                    </div>
+                    </button>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -418,7 +452,7 @@ export function ReelsScroller({
                 <div className="flex items-center gap-2">
                   <div className="relative size-7 overflow-hidden rounded-full border border-white/40">
                     <Image
-                      src={reel.posterUrl}
+                      src={reel.authorAvatar || reel.posterUrl}
                       alt={reel.author}
                       fill
                       className="object-cover"

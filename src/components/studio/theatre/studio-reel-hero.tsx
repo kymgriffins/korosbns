@@ -125,17 +125,34 @@ export function StudioReelHero() {
               current.layout === "vertical" && "studio-reel-hero-media-vertical",
             )}
           >
-            <Image
-              src={current.image}
-              alt=""
-              fill
-              priority
-              className={cn(
-                "object-cover",
-                current.imagePosition || "object-center",
-              )}
-              sizes="100vw"
-            />
+            {current.videoUrl ? (
+              <video
+                src={current.videoUrl}
+                poster={current.image}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                className={cn(
+                  "absolute inset-0 size-full object-cover",
+                  current.imagePosition || "object-center",
+                )}
+                aria-label={current.label}
+              />
+            ) : (
+              <Image
+                src={current.image}
+                alt=""
+                fill
+                priority
+                className={cn(
+                  "object-cover",
+                  current.imagePosition || "object-center",
+                )}
+                sizes="100vw"
+              />
+            )}
           </div>
           <div className="studio-reel-hero-scrim" aria-hidden />
 

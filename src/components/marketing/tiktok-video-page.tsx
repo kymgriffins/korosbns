@@ -130,6 +130,7 @@ export default function TikTokVideoPage({ params }: { params: Promise<{ uuid: st
           <video
             ref={videoRef}
             src={video.video_url}
+            poster={video.cover_image_url}
             className="absolute inset-0 h-full w-full object-cover"
             loop
             muted

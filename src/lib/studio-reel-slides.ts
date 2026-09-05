@@ -12,6 +12,7 @@ export type StudioReelSlide = {
   shortDesc: string;
   image: string;
   imagePosition?: string;
+  videoUrl?: string;
   projectSlug?: string;
   year: string;
   sectionId: string;
@@ -29,10 +30,11 @@ function layoutFor(contentType: StudioContentType): StudioReelSlide["layout"] {
 }
 
 /**
- * Landing reel curation — 4 audio + visual formats only.
- * Keeps the home viewport tight: audio craft + visual storytelling.
+ * Landing reel curation — formats showcased in the BNS Studio hero theatre.
+ * Features live vertical social media reels, podcasts, and cinematic formats.
  */
 export const STUDIO_REEL_FEATURED_TYPES: StudioContentType[] = [
+  "Social Media Series",
   "Podcast & Audio",
   "Explainer Videos",
   "Documentaries",
@@ -48,12 +50,21 @@ export function getStudioReelSlides(): StudioReelSlide[] {
     const projects = studiosEvidenceData.getProjectsByContentType(type.id);
     const lead = projects.find((p) => p.featured) ?? projects[0];
 
+    const isSocialReel = type.id === "Social Media Series";
+    const videoUrl = isSocialReel
+      ? "https://bns.stratapointadvisory.org/0cd8319a419e6b3749a7206ba4d68801.mp4"
+      : undefined;
+    const image = isSocialReel
+      ? "/images/reels/reel-01-poster.jpg"
+      : (lead?.media.posterUrl ?? service?.image ?? BNS_STUDIO_HERO_IMAGE);
+
     return {
       contentType: type.id,
       label: type.label,
       shortDesc: type.shortDesc,
-      image: lead?.media.posterUrl ?? service?.image ?? BNS_STUDIO_HERO_IMAGE,
-      imagePosition: lead?.media.posterPosition ?? service?.imagePosition,
+      image,
+      imagePosition: isSocialReel ? "center top" : (lead?.media.posterPosition ?? service?.imagePosition),
+      videoUrl,
       projectSlug: lead?.slug,
       year: lead?.year ?? "2025",
       sectionId: sectionIdFor(type.id),

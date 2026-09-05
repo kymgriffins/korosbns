@@ -23,15 +23,15 @@ describe("LandingTikTokPhone", () => {
 
     render(<LandingTikTokPhone />);
 
-    // 1. Verify Cover Thumbnail Image is Nelly Maina media image (Nelly with The Mic)
+    // 1. Verify Cover Thumbnail Image is authentic video frame (reel-01-poster)
     const coverImageOverlay = screen.getByTestId("tiktok-hero-cover-image");
     expect(coverImageOverlay).toBeInTheDocument();
 
-    const imgElement = screen.getByAltText("Nelly Maina - Budget Ndio Story");
+    const imgElement = screen.getByAltText("Budget Ndio Story - Reel Preview");
     expect(imgElement).toBeInTheDocument();
     expect(imgElement).toHaveAttribute(
       "src",
-      expect.stringContaining("Nelly")
+      expect.stringContaining("reel-01-poster")
     );
 
     // 2. Click play button and verify video plays inline

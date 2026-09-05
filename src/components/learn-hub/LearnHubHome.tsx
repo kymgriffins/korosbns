@@ -175,7 +175,7 @@ export function LearnHubHome() {
                 {/* 9:16 Video Poster & Live Preview */}
                 <video
                   src="https://bns.stratapointadvisory.org/0cd8319a419e6b3749a7206ba4d68801.mp4"
-                  poster="/images/marketing newsletter subcribe/Nelly with The Mic.jpg"
+                  poster="/images/reels/reel-01-poster.jpg"
                   autoPlay
                   muted
                   loop

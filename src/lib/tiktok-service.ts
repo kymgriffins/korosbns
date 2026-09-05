@@ -13,7 +13,7 @@ export async function getFeaturedTikTokVideos(): Promise<TikTokVideoApi[]> {
         video_url:
           mediaContent.cloudinary.reelVideo ||
           "https://bns.stratapointadvisory.org/0cd8319a419e6b3749a7206ba4d68801.mp4",
-        cover_image_url: "/images/marketing newsletter subcribe/Nelly with The Mic.jpg",
+        cover_image_url: "/images/reels/reel-01-poster.jpg",
         embed_html: "",
         like_count: 12400,
         tiktok_like_count: 12400,
@@ -27,7 +27,7 @@ export async function getFeaturedTikTokVideos(): Promise<TikTokVideoApi[]> {
         video_url:
           mediaContent.cloudinary.countyBudgetSocialVideo ||
           "https://bns.stratapointadvisory.org/county%20%26%20budget%20socials%20new.mp4",
-        cover_image_url: "/images/towwnhallmay/129A4056.jpg",
+        cover_image_url: "/images/reels/reel-02-poster.jpg",
         embed_html: "",
         like_count: 8930,
         tiktok_like_count: 8930,
@@ -52,8 +52,8 @@ export async function getTikTokVideo(id: string): Promise<TikTokVideoDetailApi> 
         : (mediaContent.cloudinary.reelVideo ||
           "https://bns.stratapointadvisory.org/0cd8319a419e6b3749a7206ba4d68801.mp4"),
       cover_image_url: isVideo2
-        ? "/images/towwnhallmay/129A4056.jpg"
-        : "/images/marketing newsletter subcribe/Nelly with The Mic.jpg",
+        ? "/images/reels/reel-02-poster.jpg"
+        : "/images/reels/reel-01-poster.jpg",
       embed_html: "",
       caption: isVideo2
         ? "County & Budget Socials - Budget Ndio Story"
