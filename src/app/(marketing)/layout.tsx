@@ -25,11 +25,11 @@ const MarketingLayout = ({
         showMarketingChrome ? "pt-12 md:pt-16 lg:pt-20" : ""
       }`}
     >
-      <Navbar />
+      {!isLearnApp && <Navbar />}
 
       <div className="flex flex-1 flex-col">{children}</div>
 
-      {showMarketingFooter ? (
+      {!isLearnApp && showMarketingFooter ? (
         <div className="mt-auto shrink-0">
           <BNSFooter />
         </div>

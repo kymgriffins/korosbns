@@ -244,22 +244,28 @@ export function LearnHubReader({
         ]}
       />
 
-      <header className="mt-6">
+      <header className="mt-8 space-y-4">
         {article.category ? (
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
-            {article.category}
-          </p>
+          <div className="flex items-center gap-2 font-mono text-xs">
+            <span className="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-bold uppercase tracking-wider">
+              {article.category}
+            </span>
+            <span className="text-muted-foreground font-semibold">
+              · Wanahabari Investigative Dispatch
+            </span>
+          </div>
         ) : null}
-        <h1 className="mt-3 text-balance text-3xl font-extrabold tracking-tight md:text-4xl">
+        <h1 className="text-balance font-heading text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-foreground leading-[1.08]">
           {article.title}
         </h1>
         {article.snippet ? (
-          <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
+          <p className="text-lg sm:text-xl font-medium leading-relaxed text-foreground/80 border-l-2 border-primary pl-5 py-1 bg-muted/10 rounded-r-xl">
             {article.snippet}
           </p>
         ) : null}
-        <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-          {article.readTime ? <span>{article.readTime}</span> : null}
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-mono text-muted-foreground pt-1">
+          {article.readTime ? <span className="font-semibold text-foreground">{article.readTime}</span> : null}
+          <span>·</span>
           {article.publishedAt ? (
             <span>
               {new Date(article.publishedAt).toLocaleDateString("en-KE", {
@@ -268,15 +274,19 @@ export function LearnHubReader({
                 day: "numeric",
               })}
             </span>
-          ) : null}
+          ) : (
+            <span>Audited Publication</span>
+          )}
+          <span>·</span>
+          <span className="text-primary font-bold">Article 201 Constitution</span>
         </div>
-        <div className="mt-4">
+        <div className="pt-2">
           <ArticleReaderActions slug={slug} contentId={article.id || slug} />
         </div>
       </header>
 
       {article.heroImage ? (
-        <figure className="mt-8 overflow-hidden rounded-2xl border border-border/30">
+        <figure className="mt-10 overflow-hidden rounded-3xl border border-border/60 shadow-lg">
           <div className="relative aspect-[16/9]">
             <Image
               src={article.heroImage}
@@ -290,7 +300,7 @@ export function LearnHubReader({
         </figure>
       ) : null}
 
-      <div className="mt-8 max-w-none">
+      <div className="mt-10 prose prose-lg dark:prose-invert max-w-none text-foreground/85 leading-relaxed">
         {renderArticleBody(article.body_html, article.body, article.snippet)}
       </div>
 

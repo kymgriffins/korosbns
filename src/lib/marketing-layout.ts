@@ -3,7 +3,6 @@ const MARKETING_FOOTER_ROUTES = new Set([
   "/about",
   "/programmes",
   "/reports",
-  "/learn",
   "/careers",
   "/contact",
   "/faq",
@@ -16,7 +15,7 @@ const MARKETING_FOOTER_PREFIXES = ["/tiktok/", "/programmes/", "/reports/"];
 
 /** Routes that use the marketing navbar + page transition chrome. */
 export function usesMarketingChrome(pathname: string): boolean {
-  if (pathname.startsWith("/bns-studio")) return false;
+  if (pathname.startsWith("/bns-studio") || pathname.startsWith("/learn")) return false;
   return true;
 }
 
@@ -36,6 +35,8 @@ export function shouldShowPageBreadcrumbs(_pathname: string): boolean {
  * Marketing-site footer only — not learn, contact, surveys, projects, news, etc.
  */
 export function shouldShowMarketingFooter(pathname: string): boolean {
+  if (pathname.startsWith("/learn")) return false;
+
   const normalized =
     pathname.length > 1 && pathname.endsWith("/")
       ? pathname.slice(0, -1)

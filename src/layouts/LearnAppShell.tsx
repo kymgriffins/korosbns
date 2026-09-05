@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  ArrowLeft,
   BookOpen,
   FileText,
   MessagesSquare,
   User,
   PlaySquare,
-  Video,
+  Layers,
   Radio,
   BarChart3,
 } from "lucide-react";
@@ -40,7 +41,13 @@ const FORMAT_LINKS: FormatNavLink[] = [
     label: "Learn",
     href: "/learn",
     icon: BookOpen,
-    isActive: (p) => p === "/learn" || p.startsWith("/learn/modules"),
+    isActive: (p) => p === "/learn",
+  },
+  {
+    label: "Structured",
+    href: "/learn#structured",
+    icon: Layers,
+    isActive: (p) => p.startsWith("/learn/modules") || p.startsWith("/learn/articles") || p.startsWith("/learn/videos"),
   },
   {
     label: "Reels",
@@ -49,12 +56,6 @@ const FORMAT_LINKS: FormatNavLink[] = [
     badge: "60s",
     badgeColor: "bg-rose-500/15 text-rose-600 dark:text-rose-400 border-rose-500/30",
     isActive: (p) => p.startsWith("/learn/stories") || p.startsWith("/stories"),
-  },
-  {
-    label: "Videos",
-    href: "/learn/videos",
-    icon: Video,
-    isActive: (p) => p.startsWith("/learn/videos"),
   },
   {
     label: "Podcasts",
@@ -77,7 +78,7 @@ const FORMAT_LINKS: FormatNavLink[] = [
 ];
 
 /**
- * Mobile-first learn shell — unified format navigation, breadcrumbs, responsive dock.
+ * Mobile-first learn shell — standalone header (no marketing chrome), breadcrumbs, responsive dock.
  */
 export function LearnAppShell({ children }: { children: React.ReactNode }) {
   const { activeTab } = useLearn();
@@ -88,16 +89,28 @@ export function LearnAppShell({ children }: { children: React.ReactNode }) {
       data-testid="learn-app-shell"
       className="learn-app flex min-h-svh w-full min-w-0 flex-1 flex-col bg-background"
     >
-      {/* Sub-navbar sticky below the main platform header (h-14 / md:h-16) */}
-      <header className="sticky top-14 md:top-16 z-30 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-        <div className="learn-app-shell-inner flex h-13 items-center justify-between gap-3 px-4 sm:px-6">
+      {/* Standalone Learn Navbar sticky at top-0 (marketing nav removed) */}
+      <header className="sticky top-0 z-40 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+        <div className="learn-app-shell-inner flex h-14 items-center justify-between gap-3 px-4 sm:px-6">
           <div className="flex items-center gap-3 shrink-0">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-muted-foreground transition-colors hover:text-foreground"
+              title="Return to Main Site"
+            >
+              <ArrowLeft className="size-3.5" />
+              <span className="hidden sm:inline">Main Site</span>
+            </Link>
+            <div className="h-4 w-px bg-border/60" />
             <Link
               href="/learn"
               className="flex items-center gap-2 text-xs font-bold tracking-tight text-foreground transition-opacity hover:opacity-80"
             >
               <span className="size-2 rounded-full bg-primary animate-pulse" />
-              <span className="font-heading">Learn Hub</span>
+              <span className="font-heading font-black text-sm sm:text-base">BNS Learn</span>
+              <span className="hidden md:inline-block rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-mono font-bold text-primary uppercase">
+                Civic Hub
+              </span>
             </Link>
           </div>
 
@@ -145,7 +158,7 @@ export function LearnAppShell({ children }: { children: React.ReactNode }) {
                 pathname.startsWith("/learn/forum") ? "bg-muted text-foreground border-border" : ""
               )}
             >
-              Community Forum
+              Forum
             </Link>
             <Link
               href="/learn/profile"
@@ -160,9 +173,9 @@ export function LearnAppShell({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      {/* Main Content Area with integrated Breadcrumbs */}
-      <main className="learn-app-shell-inner w-full flex-1 px-4 sm:px-6 pb-24 pt-4 md:pb-16">
-        <PageBreadcrumbs className="mb-4 text-xs" />
+      {/* Main Content Area */}
+      <main className="learn-app-shell-inner w-full flex-1 px-4 sm:px-6 pb-20 pt-2 md:pb-16">
+        {pathname !== "/learn" && <PageBreadcrumbs className="mb-4 text-xs" />}
         {children}
       </main>
 
