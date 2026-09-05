@@ -1,6 +1,5 @@
 "use client";
 
-import { useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -10,28 +9,29 @@ import {
   TrendingUp,
   FileCheck,
 } from "lucide-react";
-import { motion, useScroll, useTransform, useSpring } from "motion/react";
 import { EditorialPill } from "@/components/ui/editorial/editorial-pill";
 import { PillButtonGroup } from "@/components/ui/editorial/pill-button-group";
 import { BNS_COMMUNITY_IMAGES, BNS_MEDIA_IMAGES } from "@/constants/bns-media-images";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
+import {
+  TelemetryHUD,
+  MaskedReveal,
+  ParallaxWrapper,
+  MetricCounter,
+} from "@/components/motion";
 
 export function ConnectScrollytelling() {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // Scroll tracking for sticky progression
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
-
-  const smoothProgress = useSpring(scrollYProgress, { stiffness: 200, damping: 25 });
-  const cutoutY = useTransform(smoothProgress, [0, 1], ["0%", "15%"]);
-
   return (
-    <article ref={containerRef} className="min-h-screen bg-background text-foreground selection:bg-primary/20">
+    <article className="min-h-screen bg-background text-foreground selection:bg-primary/20">
+      {/* 00 — LOCOMOTIVE-GRADE TECHNICAL TELEMETRY HUD */}
+      <TelemetryHUD
+        activeDesk="DESK 01: BNS CONNECT"
+        focusArea="NATIONAL TREASURY & PARLIAMENT"
+        badgeLabel="SOVEREIGN LEDGER"
+      />
+
       {/* 01 — ASYMMETRICAL EDITORIAL HERO (Extreme Macro-White Space) */}
-      <header className="relative border-b border-border/40 bg-linear-to-b from-primary/5 via-muted/10 to-background pt-24 pb-20 md:pt-36 md:pb-32">
+      <header className="relative border-b border-border/40 bg-gradient-to-b from-primary/5 via-muted/10 to-background pt-20 pb-20 md:pt-32 md:pb-28 overflow-hidden">
         <div className={SECTION_SHELL_INNER}>
           {/* Breadcrumb back to programmes */}
           <nav aria-label="Breadcrumb" className="mb-8">
@@ -55,50 +55,54 @@ export function ConnectScrollytelling() {
             </div>
 
             <h1 className="font-heading text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-foreground leading-[1.03]">
-              Translating 400-page accounting sheets into 60-second digital civic power.
+              <MaskedReveal delay={0.05}>Translating 400-page</MaskedReveal>{" "}
+              <MaskedReveal delay={0.15}>accounting sheets into 60-second</MaskedReveal>{" "}
+              <MaskedReveal delay={0.25} innerClassName="text-primary">
+                digital civic power.
+              </MaskedReveal>
             </h1>
 
             <p className="text-xl sm:text-2xl font-medium text-foreground/80 leading-relaxed max-w-3xl">
               When the National Treasury drops a dense Budget Policy Statement, public scrutiny usually dies in bureaucratic silence. BNS Connect turns complex budget lines into viral explainer feeds, interactive debt meters, and youth memorandums.
             </p>
 
-            {/* Quick Strategic Ledger Strip (Prose Margins, Zero Cards) */}
+            {/* Strategic Ledger Strip with Metrics */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 pt-8 border-t border-border/50">
-              <div>
+              <div className="space-y-1">
                 <p className="text-[11px] font-mono font-bold uppercase tracking-wider text-muted-foreground">
                   Operational Altitude
                 </p>
-                <p className="mt-1 text-base font-bold text-foreground">
+                <p className="text-base font-bold text-foreground">
                   Macro Sovereign Policy
                 </p>
                 <p className="text-xs text-muted-foreground">National Treasury & Parliament</p>
               </div>
 
-              <div>
+              <div className="space-y-1">
                 <p className="text-[11px] font-mono font-bold uppercase tracking-wider text-muted-foreground">
                   Primary Demographic
                 </p>
-                <p className="mt-1 text-base font-bold text-foreground">
+                <p className="text-base font-bold text-foreground">
                   18–35 Digital Citizens
                 </p>
                 <p className="text-xs text-muted-foreground">47 County Hub Networks</p>
               </div>
 
-              <div>
+              <div className="space-y-1">
                 <p className="text-[11px] font-mono font-bold uppercase tracking-wider text-muted-foreground">
                   Flagship Vehicle
                 </p>
-                <p className="mt-1 text-base font-bold text-primary">
+                <p className="text-base font-bold text-primary">
                   Sheng & Swahili Explainers
                 </p>
                 <p className="text-xs text-muted-foreground">Vertical Video & Infographics</p>
               </div>
 
-              <div>
+              <div className="space-y-1">
                 <p className="text-[11px] font-mono font-bold uppercase tracking-wider text-muted-foreground">
                   Sovereign Standard
                 </p>
-                <p className="mt-1 text-base font-bold text-foreground">
+                <p className="text-base font-bold text-foreground">
                   Article 201 Constitution
                 </p>
                 <p className="text-xs text-muted-foreground">Public Finance Openness</p>
@@ -143,27 +147,29 @@ export function ConnectScrollytelling() {
               </blockquote>
             </div>
 
-            {/* Right Column: High-Impact Authentic Photojournalism Proof */}
-            <div className="lg:col-span-5 lg:sticky lg:top-28">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-border/60 shadow-2xl bg-muted">
-                <Image
-                  src={BNS_COMMUNITY_IMAGES.cohortA}
-                  alt="Kenyan youth tracker examining national budget lines on mobile"
-                  fill
-                  priority
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 40vw"
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
-                <div className="absolute bottom-6 left-6 right-6 text-white space-y-1">
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-primary font-bold">
-                    Nairobi Data Assembly
-                  </span>
-                  <p className="text-sm font-semibold leading-snug">
-                    Fellows cross-referencing national debt amortization tables with Ministry disbursements.
-                  </p>
+            {/* Right Column: Parallax Photojournalism Proof */}
+            <div className="lg:col-span-5 lg:sticky lg:top-24">
+              <ParallaxWrapper speed={-0.3}>
+                <div className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-border/60 shadow-2xl bg-muted group">
+                  <Image
+                    src={BNS_COMMUNITY_IMAGES.cohortA}
+                    alt="Kenyan youth tracker examining national budget lines on mobile"
+                    fill
+                    priority
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    sizes="(max-width: 1024px) 100vw, 40vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                  <div className="absolute bottom-6 left-6 right-6 text-white space-y-1">
+                    <span className="font-mono text-[10px] uppercase tracking-wider text-primary font-bold">
+                      Nairobi Data Assembly
+                    </span>
+                    <p className="text-sm font-semibold leading-snug">
+                      Fellows cross-referencing national debt amortization tables with Ministry disbursements.
+                    </p>
+                  </div>
                 </div>
-              </div>
+              </ParallaxWrapper>
             </div>
           </div>
         </div>
@@ -185,10 +191,9 @@ export function ConnectScrollytelling() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-            {/* Left Column: Sticky Isolated Mobile Cutout Anchor (top: 18vh) */}
-            <div className="lg:col-span-5 lg:sticky lg:top-[18vh]">
+            {/* Left Column: Sticky Isolated Mobile Cutout Anchor */}
+            <div className="lg:col-span-5 lg:sticky lg:top-24">
               <div className="relative aspect-[3/4] max-w-md mx-auto overflow-hidden rounded-3xl border border-primary/30 shadow-2xl bg-gradient-to-b from-card to-background p-6 flex flex-col justify-between">
-                {/* Visual Phone Frame Container with Floating Silhouette */}
                 <div className="relative w-full h-full rounded-2xl overflow-hidden border border-border/60">
                   <Image
                     src={BNS_MEDIA_IMAGES.productionB}
@@ -197,7 +202,7 @@ export function ConnectScrollytelling() {
                     className="object-cover object-top"
                     sizes="(max-width: 1024px) 100vw, 35vw"
                   />
-                  <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/20 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
 
                   {/* On-screen Live Digital Overlay */}
                   <div className="absolute top-4 left-4 right-4 flex items-center justify-between">
@@ -221,7 +226,6 @@ export function ConnectScrollytelling() {
                   </div>
                 </div>
 
-                {/* Sub-label */}
                 <div className="mt-4 flex items-center justify-between text-[11px] font-mono text-muted-foreground">
                   <span>Sovereign Mobile Engine</span>
                   <span className="text-primary font-bold">TikTok · Reels · X</span>
@@ -230,17 +234,17 @@ export function ConnectScrollytelling() {
             </div>
 
             {/* Right Column: Fluid Scrolling Narrative & Asymmetric Large Stats */}
-            <div className="lg:col-span-7 space-y-32">
+            <div className="lg:col-span-7 space-y-24">
               {/* Step 1: Reach & Impressions */}
-              <div className="space-y-6 pt-4">
+              <div className="space-y-4 pt-4 border-b border-border/40 pb-16">
                 <div className="inline-flex items-center gap-2 font-mono text-xs font-bold text-primary uppercase tracking-wider">
                   <TrendingUp className="size-4" />
                   <span>Metric 01 · Viral Citizen Scrutiny</span>
                 </div>
 
                 <div className="space-y-2">
-                  <p className="font-heading text-6xl sm:text-8xl font-black text-foreground tracking-tighter">
-                    1.4M+
+                  <p className="font-heading text-6xl sm:text-7xl font-black text-foreground tracking-tighter">
+                    <MetricCounter value={1.4} suffix="M+" decimals={1} />
                   </p>
                   <h3 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
                     Verified Video Impressions
@@ -253,15 +257,15 @@ export function ConnectScrollytelling() {
               </div>
 
               {/* Step 2: Sheng and Swahili Localization */}
-              <div className="space-y-6">
+              <div className="space-y-4 border-b border-border/40 pb-16">
                 <div className="inline-flex items-center gap-2 font-mono text-xs font-bold text-primary uppercase tracking-wider">
                   <Share2 className="size-4" />
                   <span>Metric 02 · Vernacular Demystification</span>
                 </div>
 
                 <div className="space-y-2">
-                  <p className="font-heading text-6xl sm:text-8xl font-black text-primary tracking-tighter">
-                    480K+
+                  <p className="font-heading text-6xl sm:text-7xl font-black text-primary tracking-tighter">
+                    <MetricCounter value={480} suffix="K+" />
                   </p>
                   <h3 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
                     &ldquo;Budget Sasa Ni Delivery&rdquo; Views
@@ -274,15 +278,15 @@ export function ConnectScrollytelling() {
               </div>
 
               {/* Step 3: Direct Institutional Memorandum */}
-              <div className="space-y-6">
+              <div className="space-y-4">
                 <div className="inline-flex items-center gap-2 font-mono text-xs font-bold text-primary uppercase tracking-wider">
                   <FileCheck className="size-4" />
                   <span>Metric 03 · Direct Legislative Intervention</span>
                 </div>
 
                 <div className="space-y-2">
-                  <p className="font-heading text-6xl sm:text-8xl font-black text-foreground tracking-tighter">
-                    80-Page
+                  <p className="font-heading text-6xl sm:text-7xl font-black text-foreground tracking-tighter">
+                    <MetricCounter value={80} suffix="-Page" />
                   </p>
                   <h3 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
                     Citizen Debt Memorandum Delivered
@@ -318,7 +322,7 @@ export function ConnectScrollytelling() {
               className="object-cover"
               sizes="(max-width: 1280px) 100vw, 1280px"
             />
-            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
             <div className="absolute bottom-8 left-8 right-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4 text-white">
               <div className="max-w-2xl space-y-2">
                 <EditorialPill variant="invert" size="xs">

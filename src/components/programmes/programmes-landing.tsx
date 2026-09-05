@@ -3,7 +3,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import {
-  ArrowRight,
   TrendingUp,
   MapPin,
   FileText,
@@ -12,22 +11,27 @@ import {
 } from "lucide-react";
 import { ProgrammesPartners } from "@/components/programmes/programmes-partners";
 import { EditorialCtaBand, EditorialPill, PillButtonGroup } from "@/components/ui/editorial";
-import { GsapReveal, GsapStaggerReveal } from "@/motion/gsap";
 import { BNS_COMMUNITY_IMAGES, BNS_MEDIA_IMAGES } from "@/constants/bns-media-images";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
-
-const MACRO_IMPACT_METRICS = [
-  { value: "KSh 4.82T", label: "National Budget Tracked FY26/27", sub: "Treasury to Ministry verification" },
-  { value: "04 Focus", label: "Embedded County Hubs", sub: "Kakamega, Kilifi, Nakuru, Wajir" },
-  { value: "120+ Reporters", label: "Journalists & Creators Trained", sub: "Annual Wanahabari cohorts" },
-  { value: "100% Surplus", label: "Reinvested in Grassroots Auditing", sub: "BNS Studios Double Impact" },
-];
+import {
+  TelemetryHUD,
+  MaskedReveal,
+  ParallaxWrapper,
+  MetricCounter,
+} from "@/components/motion";
 
 export function ProgrammesLanding() {
   return (
     <article className="prog-page min-h-screen bg-background text-foreground selection:bg-primary/20">
-      {/* 00 — MASTER SOVEREIGN HERO */}
-      <header className="relative overflow-hidden border-b border-border/40 bg-linear-to-b from-primary/5 via-muted/10 to-background pt-24 pb-20 md:pt-36 md:pb-32">
+      {/* 00 — PERSISTENT LOCOMOTIVE HUD */}
+      <TelemetryHUD
+        activeDesk="FOUR OPERATIONAL DESKS"
+        focusArea="NATIONAL TO DEVOLVED GRASSROOTS"
+        badgeLabel="SOVEREIGN STANDARD"
+      />
+
+      {/* 01 — MASTER SOVEREIGN HERO */}
+      <header className="relative overflow-hidden border-b border-border/40 bg-gradient-to-b from-primary/5 via-muted/10 to-background pt-20 pb-20 md:pt-32 md:pb-28">
         <div className={SECTION_SHELL_INNER}>
           <div className="space-y-6 max-w-4xl">
             <div>
@@ -37,7 +41,11 @@ export function ProgrammesLanding() {
             </div>
 
             <h1 className="font-heading text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-foreground leading-[1.02]">
-              Follow the public shilling from Treasury to the grassroots.
+              <MaskedReveal delay={0.05}>Follow the public shilling</MaskedReveal>{" "}
+              <MaskedReveal delay={0.15}>from Treasury to the</MaskedReveal>{" "}
+              <MaskedReveal delay={0.25} innerClassName="text-primary">
+                grassroots.
+              </MaskedReveal>
             </h1>
 
             <p className="text-xl sm:text-2xl font-medium text-foreground/80 leading-relaxed max-w-3xl">
@@ -60,26 +68,57 @@ export function ProgrammesLanding() {
             </div>
           </div>
 
-          {/* Macro Impact Ledger Strip */}
-          <GsapStaggerReveal itemSelector="[data-gsap-metric]" className="grid grid-cols-2 lg:grid-cols-4 gap-8 pt-12 border-t border-border/50">
-            {MACRO_IMPACT_METRICS.map((metric) => (
-              <div
-                key={metric.label}
-                data-gsap-metric
-                className="space-y-1"
-              >
-                <p className="font-heading text-4xl sm:text-5xl font-black text-primary tracking-tighter">
-                  {metric.value}
-                </p>
-                <p className="font-mono text-xs font-bold text-foreground mt-1 leading-tight">
-                  {metric.label}
-                </p>
-                <p className="text-xs text-muted-foreground leading-tight">
-                  {metric.sub}
-                </p>
-              </div>
-            ))}
-          </GsapStaggerReveal>
+          {/* Macro Impact Ledger Strip with Animated Counters */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 pt-12 border-t border-border/50">
+            <div className="space-y-1">
+              <p className="font-heading text-4xl sm:text-5xl font-black text-primary tracking-tighter">
+                <MetricCounter value={4.82} prefix="KSh " suffix="T" decimals={2} />
+              </p>
+              <p className="font-mono text-xs font-bold text-foreground mt-1 leading-tight">
+                National Budget Tracked FY26/27
+              </p>
+              <p className="text-xs text-muted-foreground leading-tight">
+                Treasury to Ministry verification
+              </p>
+            </div>
+
+            <div className="space-y-1">
+              <p className="font-heading text-4xl sm:text-5xl font-black text-foreground tracking-tighter flex items-center">
+                <span>04</span>
+                <span className="text-primary ml-1">Focus</span>
+              </p>
+              <p className="font-mono text-xs font-bold text-foreground mt-1 leading-tight">
+                Embedded County Hubs
+              </p>
+              <p className="text-xs text-muted-foreground leading-tight">
+                Kakamega, Kilifi, Nakuru, Wajir
+              </p>
+            </div>
+
+            <div className="space-y-1">
+              <p className="font-heading text-4xl sm:text-5xl font-black text-primary tracking-tighter">
+                <MetricCounter value={120} suffix="+" />
+              </p>
+              <p className="font-mono text-xs font-bold text-foreground mt-1 leading-tight">
+                Journalists & Creators Trained
+              </p>
+              <p className="text-xs text-muted-foreground leading-tight">
+                Annual Wanahabari cohorts
+              </p>
+            </div>
+
+            <div className="space-y-1">
+              <p className="font-heading text-4xl sm:text-5xl font-black text-foreground tracking-tighter">
+                <MetricCounter value={100} suffix="%" />
+              </p>
+              <p className="font-mono text-xs font-bold text-foreground mt-1 leading-tight">
+                Surplus Reinvested in Audits
+              </p>
+              <p className="text-xs text-muted-foreground leading-tight">
+                BNS Studios Double Impact
+              </p>
+            </div>
+          </div>
         </div>
       </header>
 
@@ -98,25 +137,35 @@ export function ProgrammesLanding() {
               </div>
 
               <h2 className="font-heading text-3xl sm:text-5xl font-black text-foreground leading-[1.05]">
-                Translating 400-page accounting sheets into 60-second mobile power.
+                <MaskedReveal delay={0.05}>Translating 400-page</MaskedReveal>{" "}
+                <MaskedReveal delay={0.15}>accounting sheets into</MaskedReveal>{" "}
+                <MaskedReveal delay={0.25} innerClassName="text-primary">
+                  60-second mobile power.
+                </MaskedReveal>
               </h2>
 
               <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
                 When Treasury drops the Budget Policy Statement, scrutiny dies in bureaucratic silence. BNS Connect turns complex budget lines into viral explainer feeds, interactive debt meters, and citizen memorandums submitted to Parliament.
               </p>
 
-              {/* Bold Impact Proof */}
+              {/* Bold Impact Proof with MetricCounter */}
               <div className="grid grid-cols-3 gap-6 pt-4 border-t border-border/40">
                 <div>
-                  <p className="font-heading text-3xl sm:text-4xl font-black text-foreground">1.4M+</p>
+                  <p className="font-heading text-3xl sm:text-4xl font-black text-foreground">
+                    <MetricCounter value={1.4} suffix="M+" decimals={1} />
+                  </p>
                   <p className="font-mono text-xs text-muted-foreground mt-0.5">Video Impressions</p>
                 </div>
                 <div>
-                  <p className="font-heading text-3xl sm:text-4xl font-black text-primary">480K+</p>
+                  <p className="font-heading text-3xl sm:text-4xl font-black text-primary">
+                    <MetricCounter value={480} suffix="K+" />
+                  </p>
                   <p className="font-mono text-xs text-muted-foreground mt-0.5">Explainer Views</p>
                 </div>
                 <div>
-                  <p className="font-heading text-3xl sm:text-4xl font-black text-foreground">80-Page</p>
+                  <p className="font-heading text-3xl sm:text-4xl font-black text-foreground">
+                    <MetricCounter value={80} suffix="-Page" />
+                  </p>
                   <p className="font-mono text-xs text-muted-foreground mt-0.5">Citizen Memorandum</p>
                 </div>
               </div>
@@ -132,25 +181,27 @@ export function ProgrammesLanding() {
             </div>
 
             <div className="lg:col-span-6">
-              <div className="relative aspect-[16/11] overflow-hidden rounded-3xl border border-border/60 shadow-2xl bg-muted group">
-                <Image
-                  src={BNS_COMMUNITY_IMAGES.cohortA}
-                  alt="Young Kenyans interrogating national debt amortization tables"
-                  fill
-                  priority
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent" />
-                <div className="absolute bottom-6 left-6 right-6 text-white space-y-1">
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-primary font-bold">
-                    Desk 01 Anchor
-                  </span>
-                  <p className="text-sm font-semibold leading-snug">
-                    Nairobi Youth Baraza cross-referencing national debt tables with ministry disbursements.
-                  </p>
+              <ParallaxWrapper speed={0.25}>
+                <div className="relative aspect-[16/11] overflow-hidden rounded-3xl border border-border/60 shadow-2xl bg-muted group">
+                  <Image
+                    src={BNS_COMMUNITY_IMAGES.cohortA}
+                    alt="Young Kenyans interrogating national debt amortization tables"
+                    fill
+                    priority
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                  <div className="absolute bottom-6 left-6 right-6 text-white space-y-1">
+                    <span className="font-mono text-[10px] uppercase tracking-wider text-primary font-bold">
+                      Desk 01 Anchor
+                    </span>
+                    <p className="text-sm font-semibold leading-snug">
+                      Nairobi Youth Baraza cross-referencing national debt tables with ministry disbursements.
+                    </p>
+                  </div>
                 </div>
-              </div>
+              </ParallaxWrapper>
             </div>
           </div>
         </div>
@@ -163,24 +214,26 @@ export function ProgrammesLanding() {
         <div className={SECTION_SHELL_INNER}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             <div className="lg:col-span-6 order-2 lg:order-1">
-              <div className="relative aspect-[16/11] overflow-hidden rounded-3xl border border-border/60 shadow-2xl bg-muted group">
-                <Image
-                  src={BNS_COMMUNITY_IMAGES.forumD}
-                  alt="Community members conducting outdoor ward budget audit baraza"
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent" />
-                <div className="absolute bottom-6 left-6 right-6 text-white space-y-1">
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-amber-400 font-bold">
-                    Desk 02 Anchor
-                  </span>
-                  <p className="text-sm font-semibold leading-snug">
-                    Kilifi artisanal fisherfolk verifying devolved blue economy allocations against shore landings.
-                  </p>
+              <ParallaxWrapper speed={0.25}>
+                <div className="relative aspect-[16/11] overflow-hidden rounded-3xl border border-border/60 shadow-2xl bg-muted group">
+                  <Image
+                    src={BNS_COMMUNITY_IMAGES.forumD}
+                    alt="Community members conducting outdoor ward budget audit baraza"
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                  <div className="absolute bottom-6 left-6 right-6 text-white space-y-1">
+                    <span className="font-mono text-[10px] uppercase tracking-wider text-amber-400 font-bold">
+                      Desk 02 Anchor
+                    </span>
+                    <p className="text-sm font-semibold leading-snug">
+                      Kilifi artisanal fisherfolk verifying devolved blue economy allocations against shore landings.
+                    </p>
+                  </div>
                 </div>
-              </div>
+              </ParallaxWrapper>
             </div>
 
             <div className="lg:col-span-6 order-1 lg:order-2 space-y-6">
@@ -192,7 +245,11 @@ export function ProgrammesLanding() {
               </div>
 
               <h2 className="font-heading text-3xl sm:text-5xl font-black text-foreground leading-[1.05]">
-                Taking budget tracking from Nairobi boardrooms to the village baraza.
+                <MaskedReveal delay={0.05}>Taking budget tracking from</MaskedReveal>{" "}
+                <MaskedReveal delay={0.15}>Nairobi boardrooms to the</MaskedReveal>{" "}
+                <MaskedReveal delay={0.25} innerClassName="text-amber-600 dark:text-amber-400">
+                  village baraza.
+                </MaskedReveal>
               </h2>
 
               <blockquote className="border-l-2 border-amber-500/80 pl-4 py-1 italic font-heading text-lg text-foreground/90 leading-snug">
@@ -231,7 +288,11 @@ export function ProgrammesLanding() {
               </div>
 
               <h2 className="font-heading text-3xl sm:text-5xl font-black text-foreground leading-[1.05]">
-                The budget speech is theatre. The real story begins the morning after.
+                <MaskedReveal delay={0.05}>The budget speech is theatre.</MaskedReveal>{" "}
+                <MaskedReveal delay={0.15}>The real story begins</MaskedReveal>{" "}
+                <MaskedReveal delay={0.25} innerClassName="text-red-500">
+                  the morning after.
+                </MaskedReveal>
               </h2>
 
               <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
@@ -258,24 +319,26 @@ export function ProgrammesLanding() {
             </div>
 
             <div className="lg:col-span-6">
-              <div className="relative aspect-[16/11] overflow-hidden rounded-3xl border border-border/60 shadow-2xl bg-muted group">
-                <Image
-                  src={BNS_MEDIA_IMAGES.productionA}
-                  alt="Wanahabari investigative fellowship journalists examining fiscal leak documents"
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent" />
-                <div className="absolute bottom-6 left-6 right-6 text-white space-y-1">
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-red-400 font-bold">
-                    Desk 03 Anchor
-                  </span>
-                  <p className="text-sm font-semibold leading-snug">
-                    Newsroom editors cross-referencing exchequer tables with Auditor-General records.
-                  </p>
+              <ParallaxWrapper speed={0.25}>
+                <div className="relative aspect-[16/11] overflow-hidden rounded-3xl border border-border/60 shadow-2xl bg-muted group">
+                  <Image
+                    src={BNS_MEDIA_IMAGES.productionA}
+                    alt="Wanahabari investigative fellowship journalists examining fiscal leak documents"
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                  <div className="absolute bottom-6 left-6 right-6 text-white space-y-1">
+                    <span className="font-mono text-[10px] uppercase tracking-wider text-red-400 font-bold">
+                      Desk 03 Anchor
+                    </span>
+                    <p className="text-sm font-semibold leading-snug">
+                      Newsroom editors cross-referencing exchequer tables with Auditor-General records.
+                    </p>
+                  </div>
                 </div>
-              </div>
+              </ParallaxWrapper>
             </div>
           </div>
         </div>
@@ -288,36 +351,41 @@ export function ProgrammesLanding() {
         <div className={SECTION_SHELL_INNER}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             <div className="lg:col-span-6 order-2 lg:order-1">
-              <div className="relative aspect-[16/10] overflow-hidden rounded-3xl border border-zinc-800 shadow-2xl bg-black group">
-                <Image
-                  src="/images/treasury/budget sasa ni delivery.jpg"
-                  alt="BNS Studios flagship 21:9 screening film"
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-black/85 via-transparent to-transparent" />
-                <div className="absolute bottom-6 left-6 right-6 text-white space-y-1">
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-primary font-bold">
-                    Desk 04 Anchor · 21:9 Cinema
-                  </span>
-                  <p className="text-sm font-semibold leading-snug">
-                    &ldquo;Budget Sasa Ni Delivery&rdquo; Master Explainer Reel · 480K+ Views.
-                  </p>
+              <ParallaxWrapper speed={0.25}>
+                <div className="relative aspect-[16/10] overflow-hidden rounded-3xl border border-zinc-800 shadow-2xl bg-black group">
+                  <Image
+                    src="/images/treasury/budget sasa ni delivery.jpg"
+                    alt="BNS Studios flagship 21:9 screening film"
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent" />
+                  <div className="absolute bottom-6 left-6 right-6 text-white space-y-1">
+                    <span className="font-mono text-[10px] uppercase tracking-wider text-primary font-bold">
+                      Desk 04 Anchor · 21:9 Cinema
+                    </span>
+                    <p className="text-sm font-semibold leading-snug">
+                      &ldquo;Budget Sasa Ni Delivery&rdquo; Master Explainer Reel · 480K+ Views.
+                    </p>
+                  </div>
                 </div>
-              </div>
+              </ParallaxWrapper>
             </div>
 
             <div className="lg:col-span-6 order-1 lg:order-2 space-y-6">
               <div className="flex items-center gap-3">
                 <span className="font-mono text-3xl font-black text-primary">04</span>
                 <EditorialPill variant="invert" size="xs">
-                  BNS Studios · The Creative Agency
+                  BNS Studios · Commercial Creative Craft
                 </EditorialPill>
               </div>
 
               <h2 className="font-heading text-3xl sm:text-5xl font-black text-white leading-[1.05]">
-                Commercial creative craft that bankrolls citizen budget audits.
+                <MaskedReveal delay={0.05}>Commercial creative craft that</MaskedReveal>{" "}
+                <MaskedReveal delay={0.15} innerClassName="text-primary">
+                  bankrolls citizen budget audits.
+                </MaskedReveal>
               </h2>
 
               <p className="text-base sm:text-lg text-zinc-300 leading-relaxed">
@@ -326,15 +394,21 @@ export function ProgrammesLanding() {
 
               <div className="grid grid-cols-3 gap-6 pt-4 border-t border-zinc-800 text-xs font-mono text-zinc-400">
                 <div>
-                  <p className="font-heading text-2xl sm:text-3xl font-black text-white">08</p>
+                  <p className="font-heading text-2xl sm:text-3xl font-black text-white">
+                    <MetricCounter value={8} prefix="0" />
+                  </p>
                   <p className="mt-0.5">Formats</p>
                 </div>
                 <div>
-                  <p className="font-heading text-2xl sm:text-3xl font-black text-primary">47</p>
+                  <p className="font-heading text-2xl sm:text-3xl font-black text-primary">
+                    <MetricCounter value={47} />
+                  </p>
                   <p className="mt-0.5">Counties Subsidized</p>
                 </div>
                 <div>
-                  <p className="font-heading text-2xl sm:text-3xl font-black text-white">100%</p>
+                  <p className="font-heading text-2xl sm:text-3xl font-black text-white">
+                    <MetricCounter value={100} suffix="%" />
+                  </p>
                   <p className="mt-0.5">Surplus Covenant</p>
                 </div>
               </div>
