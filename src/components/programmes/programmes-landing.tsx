@@ -16,6 +16,7 @@ import { EditorialCtaBand, EditorialPill, PillButtonGroup } from "@/components/u
 import { BNS_COMMUNITY_IMAGES, BNS_MEDIA_IMAGES } from "@/constants/bns-media-images";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 import { ProgrammesSovereignTicker } from "@/components/programmes/programmes-sovereign-ticker";
+import { ProgrammesProjectsLoop } from "@/components/programmes/programmes-projects-loop";
 import {
   TelemetryHUD,
   MaskedReveal,
@@ -467,7 +468,12 @@ export function ProgrammesLanding() {
         </div>
       </section>
 
-      {/* 05 — AIRY EDITORIAL CTA BAND */}
+      {/* ========================================================================= */}
+      {/* 05 — FLAGSHIP EVIDENCE STREAM: ENDLESS REEL OF CROSS-DESK PRODUCTIONS       */}
+      {/* ========================================================================= */}
+      <ProgrammesProjectsLoop />
+
+      {/* 06 — AIRY EDITORIAL CTA BAND */}
       <section className="py-12 sm:py-16 md:py-20">
         <div className={SECTION_SHELL_INNER}>
           <EditorialCtaBand
