@@ -64,8 +64,18 @@ export default function TikTokVideoPage({ params }: { params: Promise<{ uuid: st
   const togglePlay = () => {
     const node = videoRef.current;
     if (!node) return;
-    if (node.paused) {
-      void node.play().then(() => setIsPlaying(true));
+    if (node.paused || !isPlaying) {
+      node.muted = isMuted;
+      setIsPlaying(true);
+      node.play().catch((err) => {
+        console.warn("TikTok page video play failed, retrying muted:", err);
+        node.muted = true;
+        setIsMuted(true);
+        node.play().catch((e2) => {
+          console.warn("Playback failed completely:", e2);
+          setIsPlaying(false);
+        });
+      });
     } else {
       node.pause();
       setIsPlaying(false);
@@ -138,6 +148,7 @@ export default function TikTokVideoPage({ params }: { params: Promise<{ uuid: st
             preload="auto"
             onClick={togglePlay}
             onPlay={() => setIsPlaying(true)}
+            onPlaying={() => setIsPlaying(true)}
             onPause={() => setIsPlaying(false)}
             onCanPlay={() => setIsReady(true)}
             aria-label="TikTok video"

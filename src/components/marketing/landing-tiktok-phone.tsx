@@ -16,97 +16,101 @@ import { toast } from "sonner";
 import { cn } from "@/utils";
 import { landingContent, mediaContent } from "@/content";
 
+const DEFAULT_HERO_VIDEO = {
+  id: "tiktok-landing-video",
+  video_url:
+    mediaContent.cloudinary.reelVideo ||
+    "https://bns.stratapointadvisory.org/0cd8319a419e6b3749a7206ba4d68801.mp4",
+  cover_image_url: "/images/reels/reel-01-poster.jpg",
+  embed_html: "",
+  caption:
+    "Kenya owes over 12 Trillion shillings. Calvina Praise breaks down the national debt and Article 201 public finance accountability.",
+  like_count: 12500,
+  tiktok_like_count: 12500,
+  tiktok_comment_count: 842,
+  tiktok_share_count: 320,
+  tiktok_play_count: 250000,
+};
+
 /**
  * Phone-framed featured TikTok player — used in the landing hero.
- * Showcases Nelly Maina media cover photo when video is paused/loading,
- * and opens the TikTok page when user clicks play.
+ * Showcases Calvina Praise public debt story with authentic TikTok controls,
+ * and plays Cloudflare MP4 inline when user taps play.
  */
 export function LandingTikTokPhone({ className }: { className?: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const phoneRef = useRef<HTMLDivElement>(null);
+  const userInteractedRef = useRef(false);
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isInView, setIsInView] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(0);
-  const [video, setVideo] = useState<{
-    id: string;
-    video_url: string;
-    cover_image_url: string;
-    embed_html: string;
-    caption: string;
-    like_count: number;
-    tiktok_like_count: number;
-    tiktok_comment_count: number;
-    tiktok_share_count: number;
-    tiktok_play_count: number;
-  } | null>(null);
+  const [likeCount, setLikeCount] = useState(DEFAULT_HERO_VIDEO.like_count);
+  const [video, setVideo] = useState(DEFAULT_HERO_VIDEO);
 
   useEffect(() => {
     const videoUrl =
       mediaContent.cloudinary.reelVideo ||
-      mediaContent.cloudinary.countyBudgetSocialVideo ||
       "https://bns.stratapointadvisory.org/0cd8319a419e6b3749a7206ba4d68801.mp4";
     const reelCoverPhoto = "/images/reels/reel-01-poster.jpg";
-    const mockVideo = {
-      id: "tiktok-landing-video",
+    setVideo((prev) => ({
+      ...prev,
       video_url: videoUrl,
       cover_image_url: reelCoverPhoto,
-      embed_html: "",
-      caption: "Budget Ndio Story - County Budget Explained",
-      like_count: 12500,
-      tiktok_like_count: 12500,
-      tiktok_comment_count: 842,
-      tiktok_share_count: 320,
-      tiktok_play_count: 250000,
-    };
-    setVideo(mockVideo);
-    setLikeCount(mockVideo.like_count);
+    }));
   }, []);
 
   useEffect(() => {
     const node = phoneRef.current;
     if (!node) return;
     const observer = new IntersectionObserver(
-      ([entry]) => setIsInView(entry.isIntersecting),
-      { threshold: 0.4 },
+      ([entry]) => {
+        const videoEl = videoRef.current;
+        if (!videoEl) return;
+        if (entry.isIntersecting && !userInteractedRef.current) {
+          videoEl.muted = true;
+          videoEl
+            .play()
+            .then(() => setIsPlaying(true))
+            .catch(() => {
+              // Browser autoplay policy prevented muted playback
+            });
+        } else if (!entry.isIntersecting) {
+          videoEl.pause();
+          setIsPlaying(false);
+        }
+      },
+      { threshold: 0.2 },
     );
     observer.observe(node);
     return () => observer.disconnect();
   }, []);
 
-  const togglePlay = useCallback((e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    const node = videoRef.current;
-    if (!node) return;
-    if (node.paused) {
-      node.muted = isMuted;
-      node.play().then(() => setIsPlaying(true)).catch((err) => {
-        console.warn("Hero video playback error, retrying muted:", err);
-        node.muted = true;
-        setIsMuted(true);
-        node.play().then(() => setIsPlaying(true)).catch(console.warn);
-      });
-    } else {
-      node.pause();
-      setIsPlaying(false);
-    }
-  }, [isMuted]);
-
-  // Autoplay muted when phone enters viewport (if allowed by browser policy)
-  useEffect(() => {
-    const node = videoRef.current;
-    if (!node) return;
-    if (isInView) {
-      node.play().then(() => setIsPlaying(true)).catch(() => {
-        // Browser autoplay restriction: remain paused until user taps play
-      });
-    } else {
-      node.pause();
-      setIsPlaying(false);
-    }
-  }, [isInView]);
+  const togglePlay = useCallback(
+    (e?: React.MouseEvent) => {
+      if (e) e.stopPropagation();
+      const node = videoRef.current;
+      if (!node) return;
+      userInteractedRef.current = true;
+      if (node.paused || !isPlaying) {
+        node.muted = isMuted;
+        setIsPlaying(true);
+        node.play().catch((err) => {
+          console.warn("Hero video playback error, retrying muted:", err);
+          node.muted = true;
+          setIsMuted(true);
+          node.play().catch((e2) => {
+            console.warn("Hero video play failed completely:", e2);
+            setIsPlaying(false);
+          });
+        });
+      } else {
+        node.pause();
+        setIsPlaying(false);
+      }
+    },
+    [isMuted, isPlaying],
+  );
 
   const openTikTokPage = useCallback((e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
@@ -206,15 +210,17 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
           loop
           muted={isMuted}
           playsInline
-          crossOrigin="anonymous"
           preload="auto"
           onClick={togglePlay}
           onPlay={() => setIsPlaying(true)}
+          onPlaying={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
           onCanPlay={() => setIsReady(true)}
           onError={() => setIsReady(false)}
-          aria-label="County budget social video"
-        />
+          aria-label="Calvina Praise debt explanation video"
+        >
+          <source src={video.video_url} type="video/mp4" />
+        </video>
 
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/20" />
 
@@ -287,7 +293,7 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
           <p className="text-xs leading-relaxed text-white/90">{video.caption}</p>
           <p className="flex items-center gap-1.5 text-xs text-white/70">
             <Music2 className="size-3.5 shrink-0" />
-            <span className="truncate">Original audio · Budget Ndio Story</span>
+            <span className="truncate">Original audio · Calvina Praise · Article 201 Watchdog</span>
           </p>
         </div>
 

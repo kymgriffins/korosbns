@@ -129,6 +129,7 @@ export function StudioReelHero() {
           >
             {current.videoUrl ? (
               <video
+                key={current.videoUrl}
                 ref={(el) => {
                   videoRef.current = el;
                   if (el) {
@@ -142,14 +143,15 @@ export function StudioReelHero() {
                 muted={isMuted}
                 loop
                 playsInline
-                crossOrigin="anonymous"
                 preload="metadata"
                 className={cn(
                   "absolute inset-0 size-full object-cover",
                   current.imagePosition || "object-center",
                 )}
                 aria-label={current.label}
-              />
+              >
+                <source src={current.videoUrl} type="video/mp4" />
+              </video>
             ) : (
               <Image
                 src={current.image}

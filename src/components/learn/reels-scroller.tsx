@@ -196,23 +196,21 @@ export function ReelsScroller({
   const togglePlay = (id: string) => {
     const videoEl = videoRefs.current.get(id);
     if (!videoEl) return;
-    if (videoEl.paused) {
+    if (videoEl.paused || !isPlaying) {
       videoEl.muted = isMuted;
+      setIsPlaying(true);
       videoEl
         .play()
-        .then(() => setIsPlaying(true))
         .catch((err) => {
-          console.warn("Reel video playback failed:", err);
-          if (!videoEl.muted) {
-            videoEl.muted = true;
-            setIsMuted(true);
-            videoEl
-              .play()
-              .then(() => setIsPlaying(true))
-              .catch(() => setIsPlaying(false));
-          } else {
-            setIsPlaying(false);
-          }
+          console.warn("Reel video playback failed, retrying muted:", err);
+          videoEl.muted = true;
+          setIsMuted(true);
+          videoEl
+            .play()
+            .catch((e2) => {
+              console.warn("Playback completely failed:", e2);
+              setIsPlaying(false);
+            });
         });
     } else {
       videoEl.pause();
@@ -325,8 +323,11 @@ export function ReelsScroller({
                 loop
                 playsInline
                 muted={isMuted}
-                preload="metadata"
+                preload="auto"
                 onPlay={() => {
+                  if (isCurrent) setIsPlaying(true);
+                }}
+                onPlaying={() => {
                   if (isCurrent) setIsPlaying(true);
                 }}
                 onPause={() => {
@@ -334,7 +335,9 @@ export function ReelsScroller({
                 }}
                 onClick={() => togglePlay(reel.id)}
                 className="h-full w-full object-cover cursor-pointer"
-              />
+              >
+                <source src={reel.videoUrl} type="video/mp4" />
+              </video>
 
               {/* Ambient Vignette Gradients */}
               <div
