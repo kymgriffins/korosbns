@@ -258,7 +258,7 @@ function TeamMemberProfile({ member }: { member: OrgTeamMember }) {
             {/* Editorial Pull Quote */}
             {member.quote && (
               <figure className="relative my-8 border-l-2 border-primary pl-6 sm:pl-8 py-2">
-                <blockquote className="text-xl sm:text-2xl font-serif italic text-foreground leading-snug">
+                <blockquote className="text-xl sm:text-2xl italic font-medium text-foreground leading-snug">
                   &ldquo;{member.quote}&rdquo;
                 </blockquote>
                 <figcaption className="mt-3 text-xs font-bold uppercase tracking-wider text-muted-foreground not-italic">
@@ -281,7 +281,7 @@ function TeamMemberProfile({ member }: { member: OrgTeamMember }) {
                       <h3 className="text-sm font-bold text-foreground">
                         Driving the BNS Mandate
                       </h3>
-                      <p className="text-base text-foreground/80 leading-relaxed font-serif italic">
+                      <p className="text-base text-foreground/85 leading-relaxed italic">
                         {member.missionImpact}
                       </p>
                     </div>

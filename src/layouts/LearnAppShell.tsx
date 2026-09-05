@@ -95,7 +95,16 @@ export function LearnAppShell({ children }: { children: React.ReactNode }) {
   }, []);
 
   const isLanding = pathname === "/learn";
+  const isStories = pathname.startsWith("/learn/stories");
   const showNav = !isLanding || scrolled;
+
+  if (isStories) {
+    return (
+      <div data-testid="learn-app-shell" className="learn-app fixed inset-0 z-50 h-dvh w-screen overflow-hidden bg-black text-white">
+        {children}
+      </div>
+    );
+  }
 
   return (
     <div

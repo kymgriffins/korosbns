@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -9,10 +9,7 @@ import {
   Search,
   X,
   Sparkles,
-  TrendingUp,
 } from "lucide-react";
-import { PageBreadcrumbs } from "@/components/global/page-breadcrumbs";
-import { Routes } from "@/constants/routes";
 import { ReelsScroller, DEFAULT_REELS, type ReelItem } from "@/components/learn/reels-scroller";
 import { cn } from "@/utils";
 import Image from "next/image";
@@ -23,6 +20,15 @@ export function LearnHubStories() {
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [viewMode, setViewMode] = useState<"reel" | "grid">("reel");
+
+  // Lock body scroll so reels page is 100% fixed with zero outer page movement
+  useEffect(() => {
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, []);
 
   const filtered = useMemo(() => {
     return DEFAULT_REELS.filter((r) => {
@@ -40,84 +46,39 @@ export function LearnHubStories() {
   }, [query, selectedCategory]);
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-8 md:px-8">
-      {/* Context-aware Breadcrumbs */}
-      <PageBreadcrumbs
-        items={[
-          { label: "Learn", href: Routes.Learn },
-          { label: "Stories & Reels" },
-        ]}
-      />
-
-      {/* Header with Title & View Switcher */}
-      <div className="mt-4 flex flex-col sm:flex-row sm:items-end justify-between gap-6 border-b border-border/40 pb-6">
-        <div className="space-y-2 max-w-xl">
-          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">
-            <Sparkles className="size-3" />
-            <span>Format 01 · 60-Second Short Scrolls</span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-foreground">
-            Budget Stories in Motion
-          </h1>
-          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-            Swipeable, playable civic explainers breaking down multi-billion shilling policy decisions into 60-second clarity.
-          </p>
-        </div>
-
-        {/* Action controls: View toggle & Back to Learn */}
-        <div className="flex items-center gap-3 shrink-0">
-          <div className="inline-flex rounded-full border border-border/60 bg-muted/40 p-1">
-            <button
-              type="button"
-              onClick={() => setViewMode("reel")}
-              className={cn(
-                "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition-colors",
-                viewMode === "reel"
-                  ? "bg-primary text-primary-foreground shadow-xs"
-                  : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              <PlaySquare className="size-3.5" />
-              <span>Reel Feed</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setViewMode("grid")}
-              className={cn(
-                "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition-colors",
-                viewMode === "grid"
-                  ? "bg-primary text-primary-foreground shadow-xs"
-                  : "text-muted-foreground hover:text-foreground",
-              )}
-            >
-              <LayoutGrid className="size-3.5" />
-              <span>Grid View</span>
-            </button>
-          </div>
-
+    <div className="fixed inset-0 z-50 h-dvh w-screen overflow-hidden bg-black text-white flex flex-col select-none">
+      {/* 01 — FLOATING GLASS HEADER */}
+      <header className="absolute top-0 left-0 right-0 z-30 flex h-14 sm:h-16 items-center justify-between gap-4 px-4 sm:px-6 bg-gradient-to-b from-black/90 via-black/50 to-transparent pointer-events-auto">
+        {/* Exit to Learn */}
+        <div className="flex items-center gap-3">
           <Link
             href="/learn"
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-muted-foreground hover:text-foreground rounded-full border border-border/60 px-3 py-2"
+            className="inline-flex items-center gap-2 rounded-full bg-white/15 hover:bg-white/25 px-3.5 py-1.5 text-xs font-bold text-white transition-colors backdrop-blur-md border border-white/10"
+            title="Exit to Learn Hub"
           >
-            <ArrowLeft className="size-3.5" />
-            <span>Learn Hub</span>
+            <ArrowLeft className="size-4" />
+            <span className="hidden xs:inline">Exit to</span>
+            <span>Learn</span>
           </Link>
-        </div>
-      </div>
 
-      {/* Search & Filter Bar */}
-      <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-2">
+          <div className="hidden md:flex items-center gap-2 pl-2">
+            <span className="text-xs font-bold text-white/90">Stories &amp; Reels</span>
+            <span className="text-[11px] font-mono text-white/60">· 60s Civic Mobile</span>
+          </div>
+        </div>
+
+        {/* Category Pills */}
+        <div className="flex items-center gap-1.5 overflow-x-auto max-w-[50vw] py-1 scrollbar-none">
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
               type="button"
               onClick={() => setSelectedCategory(cat)}
               className={cn(
-                "px-3 py-1 rounded-full text-xs font-bold transition-all",
+                "px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap",
                 selectedCategory === cat
-                  ? "bg-foreground text-background"
-                  : "bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground border border-border/50",
+                  ? "bg-white text-black shadow-xs"
+                  : "bg-black/50 text-white/70 hover:bg-white/15 hover:text-white border border-white/15",
               )}
             >
               {cat}
@@ -125,69 +86,74 @@ export function LearnHubStories() {
           ))}
         </div>
 
-        <div className="relative w-full sm:w-72">
-          <Search
-            className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-            aria-hidden
-          />
-          <input
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search reels & topics…"
-            aria-label="Search reels"
-            className="h-9 w-full rounded-full border border-border/60 bg-card pl-9 pr-8 text-xs outline-none placeholder:text-muted-foreground focus:border-primary/60"
-          />
-          {query ? (
+        {/* View Switcher */}
+        <div className="flex items-center gap-2">
+          <div className="inline-flex rounded-full bg-black/60 p-0.5 border border-white/15 backdrop-blur-md">
             <button
               type="button"
-              onClick={() => setQuery("")}
-              aria-label="Clear search"
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              onClick={() => setViewMode("reel")}
+              aria-label="Feed mode"
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold transition-colors",
+                viewMode === "reel" ? "bg-white text-black" : "text-white/70 hover:text-white",
+              )}
             >
-              <X className="size-3.5" />
+              <PlaySquare className="size-3.5" />
+              <span className="hidden sm:inline">Feed</span>
             </button>
-          ) : null}
+            <button
+              type="button"
+              onClick={() => setViewMode("grid")}
+              aria-label="Grid mode"
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold transition-colors",
+                viewMode === "grid" ? "bg-white text-black" : "text-white/70 hover:text-white",
+              )}
+            >
+              <LayoutGrid className="size-3.5" />
+              <span className="hidden sm:inline">Grid</span>
+            </button>
+          </div>
         </div>
-      </div>
+      </header>
 
-      {/* Main Content Area */}
-      <div className="mt-8">
-        {filtered.length === 0 ? (
-          <div className="text-center py-16 space-y-3">
-            <p className="font-heading text-lg font-bold text-foreground">No reels found</p>
-            <p className="text-xs text-muted-foreground">Try adjusting your search query or category filter.</p>
-            <button
-              type="button"
-              onClick={() => {
-                setQuery("");
-                setSelectedCategory("All");
-              }}
-              className="text-xs font-bold text-primary hover:underline"
-            >
-              Reset filters
-            </button>
-          </div>
-        ) : viewMode === "reel" ? (
-          <div className="py-4">
-            <ReelsScroller reels={filtered} />
-          </div>
-        ) : (
+      {/* 02 — REELS FEED VIEW (FIXED FULLSCREEN) */}
+      {viewMode === "reel" ? (
+        <div className="relative flex-1 w-full h-full overflow-hidden flex items-center justify-center pt-14 sm:pt-16 pb-2">
+          {filtered.length === 0 ? (
+            <div className="text-center space-y-3 p-6 max-w-sm">
+              <p className="text-base font-bold text-white">No reels found</p>
+              <p className="text-xs text-white/60">Try selecting &ldquo;All&rdquo; categories.</p>
+              <button
+                type="button"
+                onClick={() => setSelectedCategory("All")}
+                className="text-xs font-bold text-primary hover:underline"
+              >
+                Reset filter
+              </button>
+            </div>
+          ) : (
+            <ReelsScroller reels={filtered} isFixedFullscreen={true} />
+          )}
+        </div>
+      ) : (
+        /* 03 — GRID VIEW */
+        <div className="flex-1 w-full overflow-y-auto pt-20 pb-12 px-4 sm:px-8 max-w-5xl mx-auto scrollbar-none">
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {filtered.map((reel) => (
               <div
                 key={reel.id}
                 onClick={() => setViewMode("reel")}
-                className="group relative cursor-pointer overflow-hidden rounded-2xl border border-border/60 bg-card shadow-xs transition-all hover:border-primary/50 hover:shadow-md"
+                className="group relative cursor-pointer overflow-hidden rounded-2xl border border-white/15 bg-zinc-950 shadow-md transition-all hover:border-primary/60 hover:scale-[1.01]"
               >
-                <div className="relative aspect-[9/16] max-h-[420px] w-full overflow-hidden bg-black">
+                <div className="relative aspect-[9/16] max-h-[440px] w-full overflow-hidden bg-black">
                   <Image
                     src={reel.posterUrl}
                     alt={reel.title}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/40" />
 
                   <span className="absolute top-3 left-3 rounded-full bg-red-600 px-2.5 py-0.5 text-[10px] font-mono font-bold uppercase text-white">
                     {reel.category}
@@ -198,14 +164,14 @@ export function LearnHubStories() {
                   </span>
 
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
-                    <div className="flex size-14 items-center justify-center rounded-full bg-primary/90 text-white shadow-xl">
+                    <div className="flex size-14 items-center justify-center rounded-full bg-primary text-white shadow-xl">
                       <PlaySquare className="size-7 fill-current pl-0.5" />
                     </div>
                   </div>
 
                   <div className="absolute bottom-4 left-4 right-4 text-white space-y-1.5">
                     <p className="text-xs font-semibold text-amber-400">{reel.author}</p>
-                    <h3 className="font-heading text-base font-bold leading-snug line-clamp-2">
+                    <h3 className="text-base font-bold leading-snug line-clamp-2">
                       {reel.title}
                     </h3>
                     <p className="text-xs text-white/80 line-clamp-2">{reel.caption}</p>
@@ -214,8 +180,9 @@ export function LearnHubStories() {
               </div>
             ))}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
+

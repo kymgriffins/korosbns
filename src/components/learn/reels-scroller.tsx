@@ -102,11 +102,13 @@ export const DEFAULT_REELS: ReelItem[] = [
 interface ReelsScrollerProps {
   reels?: ReelItem[];
   className?: string;
+  isFixedFullscreen?: boolean;
 }
 
 export function ReelsScroller({
   reels = DEFAULT_REELS,
   className,
+  isFixedFullscreen = false,
 }: ReelsScrollerProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
@@ -225,7 +227,9 @@ export function ReelsScroller({
   return (
     <div
       className={cn(
-        "relative mx-auto flex w-full max-w-lg flex-col items-center",
+        isFixedFullscreen
+          ? "relative mx-auto flex h-full w-full max-w-[460px] flex-col items-center justify-center"
+          : "relative mx-auto flex w-full max-w-lg flex-col items-center",
         className,
       )}
     >
@@ -236,11 +240,11 @@ export function ReelsScroller({
           onClick={() => scrollToReel(activeIndex - 1)}
           disabled={activeIndex === 0}
           aria-label="Previous story reel"
-          className="flex size-11 items-center justify-center rounded-full border border-border/60 bg-card text-foreground shadow-md transition-all hover:bg-muted disabled:opacity-30"
+          className="flex size-11 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white shadow-md backdrop-blur-md transition-all hover:bg-white/20 disabled:opacity-30"
         >
           <ChevronUp className="size-5" />
         </button>
-        <div className="text-center font-mono text-xs font-bold text-muted-foreground">
+        <div className="text-center font-mono text-xs font-bold text-white/70">
           {activeIndex + 1}/{reels.length}
         </div>
         <button
@@ -248,7 +252,7 @@ export function ReelsScroller({
           onClick={() => scrollToReel(activeIndex + 1)}
           disabled={activeIndex === reels.length - 1}
           aria-label="Next story reel"
-          className="flex size-11 items-center justify-center rounded-full border border-border/60 bg-card text-foreground shadow-md transition-all hover:bg-muted disabled:opacity-30"
+          className="flex size-11 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white shadow-md backdrop-blur-md transition-all hover:bg-white/20 disabled:opacity-30"
         >
           <ChevronDown className="size-5" />
         </button>
@@ -264,7 +268,12 @@ export function ReelsScroller({
             setActiveIndex(index);
           }
         }}
-        className="h-[78vh] max-h-[720px] min-h-[540px] w-full snap-y snap-mandatory overflow-y-auto overscroll-contain rounded-3xl border border-border/60 bg-black shadow-2xl scrollbar-none"
+        className={cn(
+          "w-full snap-y snap-mandatory overflow-y-auto overscroll-contain bg-black shadow-2xl scrollbar-none",
+          isFixedFullscreen
+            ? "h-full rounded-none sm:rounded-[2rem] border-0 sm:border sm:border-white/15"
+            : "h-[78vh] max-h-[720px] min-h-[540px] rounded-3xl border border-border/60",
+        )}
       >
         {reels.map((reel, idx) => {
           const isCurrent = idx === activeIndex;

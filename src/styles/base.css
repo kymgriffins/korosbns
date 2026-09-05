@@ -6,9 +6,10 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-base: var(--font-base);
-  --font-heading: var(--font-heading);
-  --font-handwriting: var(--font-handwriting);
+  --font-base: var(--font-base), system-ui, -apple-system, sans-serif;
+  --font-heading: var(--font-heading), var(--font-base), system-ui, sans-serif;
+  --font-sans: var(--font-base), system-ui, -apple-system, sans-serif;
+  --font-serif: var(--font-base), system-ui, -apple-system, sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);

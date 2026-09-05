@@ -64,7 +64,7 @@ export function ReportDetailView({
       if (trimmed.startsWith("## ")) {
         return (
           <div key={idx} className="mt-10 mb-4 pb-2 border-b border-foreground/10 flex items-baseline gap-2">
-            <span className="font-serif italic text-lg text-orange-600 dark:text-orange-400 font-normal">§</span>
+            <span className="italic text-lg text-orange-600 dark:text-orange-400 font-normal">§</span>
             <h2 className="font-heading text-xl sm:text-2xl font-bold tracking-tight text-foreground">
               {trimmed.replace(/^##\s+/, "")}
             </h2>

@@ -13,7 +13,7 @@ export function NationalPictureSpread() {
         <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3 border-b border-foreground/10 pb-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="font-serif italic text-2xl text-primary font-normal">
+              <span className="italic text-2xl text-primary font-normal">
                 Fig 02;
               </span>
               <span className="font-mono text-xs font-bold text-primary uppercase tracking-widest">
@@ -200,7 +200,7 @@ export function NationalPictureSpread() {
         <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3 border-b border-foreground/10 pb-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="font-serif italic text-2xl text-primary font-normal">
+              <span className="italic text-2xl text-primary font-normal">
                 Fig 03;
               </span>
               <span className="font-mono text-xs font-bold text-primary uppercase tracking-widest">

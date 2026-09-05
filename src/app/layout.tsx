@@ -2,7 +2,7 @@ import LoadingScreen from "@/components/global/loading-screen";
 import Providers from "@/components/global/providers";
 import WhatsAppSupport from "@/components/global/whatsapp-support";
 import CookieConsentWrapper from "@/components/global/cookie-consent-wrapper";
-import { base, handwriting, heading } from "@/constants";
+import { base, heading } from "@/constants";
 import "@/styles/globals.css";
 import { cn, generateMetadata } from "@/utils";
 import { SiteAnalytics } from "@/components/analytics/site-analytics";
@@ -114,7 +114,6 @@ export default function RootLayout({
           "min-h-dvh bg-background text-foreground font-base antialiased overflow-x-hidden",
           base.variable,
           heading.variable,
-          handwriting.variable,
         )}
       >
         <Providers>

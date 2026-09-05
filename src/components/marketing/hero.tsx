@@ -158,7 +158,7 @@ export default function Hero() {
           <motion.div variants={heroItem} className="space-y-4">
             <h1 className="text-4xl sm:text-6xl md:text-7xl font-black text-foreground leading-[1.05] tracking-tight">
               Translating{" "}
-              <span className="text-primary italic font-serif font-normal">
+              <span className="text-primary italic font-normal">
                 numbers
               </span>{" "}
               <br />

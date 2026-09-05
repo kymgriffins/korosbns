@@ -13,7 +13,9 @@ import {
   FileText,
   Film,
   Headphones,
+  Heart,
   Layers,
+  MessageCircle,
   Play,
   PlaySquare,
   Radio,
@@ -41,57 +43,6 @@ function matchesQuery(item: { title?: string; summary?: string; description?: st
     (item.description?.toLowerCase().includes(query) ?? false)
   );
 }
-
-const WEEKLY_HIGHLIGHTS_ARCHIVE = [
-  {
-    weekNumber: "WEEK 36 · CURRENT WINNER",
-    dateRange: "Sep 01 – Sep 07",
-    title: "County Budget Explained in 60s",
-    summary: "Tracing KSh 420B from Treasury down to dispensary counters.",
-    author: "Nelly Maina · BNS Lead",
-    views: "124K",
-    duration: "0:58",
-    posterUrl: "/images/marketing newsletter subcribe/Nelly with The Mic.jpg",
-    badge: "SITE OF THE DAY",
-    href: "/learn/stories",
-  },
-  {
-    weekNumber: "WEEK 35",
-    dateRange: "Aug 25 – Aug 31",
-    title: "Why Healthcare Wings Get Locked",
-    summary: "Auditing KSh 14M pending bills in Nakuru Subukia Ward.",
-    author: "Shaimaa Hassan · Auditor",
-    views: "89K",
-    duration: "1:04",
-    posterUrl: "/images/towwnhallmay/129A4056.jpg",
-    badge: "SCOOP PICK",
-    href: "/learn/stories",
-  },
-  {
-    weekNumber: "WEEK 34",
-    dateRange: "Aug 18 – Aug 24",
-    title: "The 400-Page PDF Myth",
-    summary: "Finding your ward's school and road allocation in 3 minutes.",
-    author: "Grace Muthoni · Data Fellow",
-    views: "152K",
-    duration: "0:49",
-    posterUrl: "/images/cohort1 groundworks/129A3964.jpg",
-    badge: "CIVIC VIRAL",
-    href: "/learn/stories",
-  },
-  {
-    weekNumber: "WEEK 33",
-    dateRange: "Aug 11 – Aug 17",
-    title: "Stopping Ghost Completion Certificates",
-    summary: "Contractors signed 100% complete on empty trenches.",
-    author: "Wanahabari Lab Desk",
-    views: "198K",
-    duration: "1:15",
-    posterUrl: "/images/media/129A3905.jpg",
-    badge: "FORENSIC LEAK",
-    href: "/learn/stories",
-  },
-];
 
 export function LearnHubHome() {
   const [query, setQuery] = useState("");
@@ -137,9 +88,9 @@ export function LearnHubHome() {
   return (
     <div className="w-full bg-background text-foreground selection:bg-primary/20">
       {/* ========================================================================= */}
-      {/* 01 — HERO LANDING: AWWWARDS-STYLE HIGHLIGHT OF THE WEEK BADGE & 4 DESKS  */}
+      {/* 01 — HERO LANDING: FULL VIEWPORT & UNNESTED TIKTOK-STYLE HIGHLIGHT        */}
       {/* ========================================================================= */}
-      <section className="relative border-b border-border/40 bg-gradient-to-b from-primary/5 via-muted/10 to-background pt-12 pb-20 md:pt-16 md:pb-28 overflow-hidden">
+      <section className="relative min-h-[calc(100dvh-4rem)] flex flex-col justify-center py-16 md:py-24 overflow-hidden bg-gradient-to-b from-primary/5 via-muted/10 to-background">
         <div className={SECTION_SHELL_INNER}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
             {/* Left Hero Content */}
@@ -153,12 +104,12 @@ export function LearnHubHome() {
                 </EditorialPill>
               </div>
 
-              <h1 className="font-heading text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-foreground leading-[1.03]">
+              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-foreground leading-[1.03]">
                 Understand the budget. <br />
                 <span className="text-primary">Protect the public shilling.</span>
               </h1>
 
-              <p className="text-lg sm:text-xl font-medium text-foreground/80 leading-relaxed max-w-2xl">
+              <p className="text-lg sm:text-xl font-normal text-foreground/80 leading-relaxed max-w-2xl">
                 Kenya’s national balance sheet spans KSh 4.82 Trillion. We translate dense exchequer releases, debt amortization tables, and county health ledgers into forensic civic power across three modern media formats.
               </p>
 
@@ -166,7 +117,7 @@ export function LearnHubHome() {
               <div className="flex flex-wrap items-center gap-3 pt-2">
                 <a
                   href="#modules"
-                  className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card px-4 py-2 text-xs font-mono font-bold uppercase tracking-wider text-foreground hover:border-primary/60 hover:bg-muted/60 transition-colors shadow-2xs"
+                  className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card px-4 py-2 text-xs font-bold uppercase tracking-wider text-foreground hover:border-primary/60 hover:bg-muted/60 transition-colors shadow-2xs"
                 >
                   <Layers className="size-3.5 text-primary" />
                   <span>01 Modules & Videos</span>
@@ -174,7 +125,7 @@ export function LearnHubHome() {
 
                 <a
                   href="#reels"
-                  className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card px-4 py-2 text-xs font-mono font-bold uppercase tracking-wider text-foreground hover:border-rose-500/60 hover:bg-muted/60 transition-colors shadow-2xs"
+                  className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card px-4 py-2 text-xs font-bold uppercase tracking-wider text-foreground hover:border-rose-500/60 hover:bg-muted/60 transition-colors shadow-2xs"
                 >
                   <PlaySquare className="size-3.5 text-rose-500" />
                   <span>02 Reels (60s)</span>
@@ -182,7 +133,7 @@ export function LearnHubHome() {
 
                 <a
                   href="#podcasts"
-                  className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card px-4 py-2 text-xs font-mono font-bold uppercase tracking-wider text-foreground hover:border-amber-500/60 hover:bg-muted/60 transition-colors shadow-2xs"
+                  className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-card px-4 py-2 text-xs font-bold uppercase tracking-wider text-foreground hover:border-amber-500/60 hover:bg-muted/60 transition-colors shadow-2xs"
                 >
                   <Radio className="size-3.5 text-amber-500" />
                   <span>03 Podcasts</span>
@@ -216,248 +167,85 @@ export function LearnHubHome() {
               </div>
             </div>
 
-            {/* Right Side: Awwwards "Site of the Day" Style Highlight of the Week Badge */}
+            {/* Right Side: Standalone TikTok Layout Without Nested Card */}
             <div className="lg:col-span-4 flex justify-center lg:justify-end">
               <Link
                 href="/learn/stories"
-                className="group relative w-full max-w-[320px] rounded-3xl border-2 border-primary/40 bg-card p-5 shadow-2xl transition-all duration-300 hover:border-primary hover:shadow-primary/10 hover:-translate-y-1"
+                className="group relative block aspect-[9/16] w-full max-w-[280px] sm:max-w-[300px] overflow-hidden rounded-[2.2rem] bg-black shadow-2xl transition-all duration-500 hover:shadow-primary/25 hover:-translate-y-1.5"
               >
-                {/* Awwwards Style Award Pill Ribbon */}
-                <div className="flex items-center justify-between border-b border-border/50 pb-3">
-                  <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 px-3 py-1 text-[11px] font-mono font-bold text-primary border border-primary/30 uppercase tracking-wider">
-                    <Trophy className="size-3 text-primary" />
-                    <span>Highlight of the Week</span>
+                {/* 9:16 Video Poster */}
+                <Image
+                  src="/images/marketing newsletter subcribe/Nelly with The Mic.jpg"
+                  alt="Highlight of the Week: County Budget in 60s"
+                  fill
+                  priority
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  sizes="300px"
+                />
+                {/* Cinematic Overlays */}
+                <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/90" />
+
+                {/* Top Badge: SOTD / Highlight of the Week */}
+                <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-10">
+                  <div className="inline-flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-md px-3 py-1 text-[11px] font-bold text-white border border-white/20">
+                    <Trophy className="size-3 text-amber-400" />
+                    <span>Highlight of Week</span>
                   </div>
-                  <div className="flex items-center gap-1 font-mono text-[10px] text-muted-foreground uppercase font-bold">
-                    <span className="size-1.5 rounded-full bg-emerald-500 animate-ping" />
-                    <span>WEEK 36</span>
+                  <div className="flex items-center gap-1 font-mono text-[10px] text-white/90 font-bold bg-black/60 backdrop-blur-md px-2 py-1 rounded-full border border-white/20">
+                    <span className="size-1.5 rounded-full bg-emerald-400 animate-ping" />
+                    <span>WK 36</span>
                   </div>
                 </div>
 
-                {/* 9:14 Poster with Play Indicator */}
-                <div className="relative aspect-[9/13] my-4 overflow-hidden rounded-2xl border border-border/60 bg-black">
-                  <Image
-                    src="/images/marketing newsletter subcribe/Nelly with The Mic.jpg"
-                    alt="Highlight of the Week: County Budget in 60s"
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="size-14 rounded-full bg-white/95 text-black flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
-                      <Play className="size-6 fill-current pl-1 text-primary" />
+                {/* Center Floating Play Glyph */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+                  <div className="size-14 rounded-full bg-white/90 text-black flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all">
+                    <Play className="size-6 fill-current pl-1" />
+                  </div>
+                </div>
+
+                {/* Floating Right Interaction Column (True TikTok UI) */}
+                <div className="absolute right-3 bottom-20 flex flex-col items-center gap-3 z-10 text-white text-[10px] font-bold">
+                  <div className="flex flex-col items-center">
+                    <div className="size-8 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center border border-white/10 group-hover:bg-rose-500/80 transition-colors">
+                      <Heart className="size-4 fill-white text-white" />
                     </div>
+                    <span className="mt-0.5">12.4K</span>
                   </div>
-                  <div className="absolute top-3 left-3 px-2 py-0.5 rounded-full bg-rose-600 text-[10px] font-mono font-bold text-white uppercase tracking-wider">
-                    REEL SOTD
-                  </div>
-                  <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-[11px] font-mono text-white font-bold">
-                    <span>0:58</span>
-                    <span>124K Views</span>
+                  <div className="flex flex-col items-center">
+                    <div className="size-8 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center border border-white/10">
+                      <MessageCircle className="size-4 text-white" />
+                    </div>
+                    <span className="mt-0.5">842</span>
                   </div>
                 </div>
 
-                {/* Title & Callout */}
-                <div className="space-y-1">
-                  <p className="font-mono text-[10px] uppercase font-bold text-primary">
-                    Format 02 · TikTok Style
-                  </p>
-                  <h3 className="font-heading text-base font-black text-foreground group-hover:text-primary transition-colors leading-snug">
+                {/* TikTok Bottom Metadata */}
+                <div className="absolute bottom-4 left-4 right-14 z-10 text-white space-y-1">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-white/90">
+                    <span>@nellymaina</span>
+                    <span className="size-1 rounded-full bg-primary" />
+                    <span className="text-[10px] text-white/70">BNS Lead</span>
+                  </div>
+                  <p className="text-sm font-bold leading-snug line-clamp-2">
                     County Budget Explained in 60s
-                  </h3>
-                  <p className="text-xs text-muted-foreground line-clamp-1">
+                  </p>
+                  <p className="text-[11px] text-white/75 line-clamp-1">
                     How KSh 420B moves from Treasury to local dispensaries.
                   </p>
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-border/40 flex items-center justify-between text-xs font-mono font-bold text-primary">
-                  <span>Watch TikTok Reel</span>
-                  <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
+                  <div className="flex items-center gap-2 pt-1 text-[10px] font-mono font-bold text-primary">
+                    <span className="bg-primary/20 text-primary-foreground/90 px-1.5 py-0.5 rounded">0:58</span>
+                    <span className="text-white/80">124K Views</span>
+                  </div>
                 </div>
               </Link>
-            </div>
-          </div>
-
-          {/* Strategic Anchor: Where the 4 Programmes Breathe */}
-          <div className="mt-16 pt-10 border-t border-border/50">
-            <div className="mb-6 flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
-              <span className="font-mono text-xs font-bold uppercase tracking-widest text-primary">
-                The 4 Operational Desks Behind The Learning Engine
-              </span>
-              <Link
-                href="/programmes"
-                className="inline-flex items-center gap-1.5 text-xs font-mono font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <span>View Full Operational Mandates</span>
-                <ArrowRight className="size-3" />
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {/* Desk 01 */}
-              <div className="p-6 rounded-2xl border border-border/60 bg-card/60 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-[10px] font-bold text-rose-500 uppercase tracking-wider">
-                    Desk 01 · BNS Connect
-                  </span>
-                  <span className="size-2 rounded-full bg-rose-500" />
-                </div>
-                <h3 className="font-heading text-base font-bold text-foreground">
-                  Youth Reels & Digital Feeds
-                </h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Translates macro treasury sheets into 60s TikTok & vertical reels for 18–35 digital citizens.
-                </p>
-                <div className="pt-2 text-[11px] font-mono text-rose-600 dark:text-rose-400 font-semibold">
-                  Powers Format 02 · Reels
-                </div>
-              </div>
-
-              {/* Desk 02 */}
-              <div className="p-6 rounded-2xl border border-border/60 bg-card/60 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-[10px] font-bold text-emerald-500 uppercase tracking-wider">
-                    Desk 02 · BNS Mashinani
-                  </span>
-                  <span className="size-2 rounded-full bg-emerald-500" />
-                </div>
-                <h3 className="font-heading text-base font-bold text-foreground">
-                  Baraza Audio & Radio
-                </h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Grassroots devolution town halls, vernacular radio dispatches, and county spending toolkits.
-                </p>
-                <div className="pt-2 text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-semibold">
-                  Powers Format 03 · Podcasts
-                </div>
-              </div>
-
-              {/* Desk 03 */}
-              <div className="p-6 rounded-2xl border border-border/60 bg-card/60 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-[10px] font-bold text-amber-500 uppercase tracking-wider">
-                    Desk 03 · Wanahabari Lab
-                  </span>
-                  <span className="size-2 rounded-full bg-amber-500" />
-                </div>
-                <h3 className="font-heading text-base font-bold text-foreground">
-                  Forensic Inquest & Leaks
-                </h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Year-round 364-day budget investigations, OCOB data scrapers, and video documentaries.
-                </p>
-                <div className="pt-2 text-[11px] font-mono text-amber-600 dark:text-amber-400 font-semibold">
-                  Powers Video Masterclasses
-                </div>
-              </div>
-
-              {/* Desk 04 */}
-              <div className="p-6 rounded-2xl border border-border/60 bg-card/60 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-[10px] font-bold text-primary uppercase tracking-wider">
-                    Desk 04 · BNS Academy
-                  </span>
-                  <span className="size-2 rounded-full bg-primary" />
-                </div>
-                <h3 className="font-heading text-base font-bold text-foreground">
-                  Systematic Civic Curriculum
-                </h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Step-by-step modular syllabi, PFM Act certifications, and public participation paths.
-                </p>
-                <div className="pt-2 text-[11px] font-mono text-primary font-semibold">
-                  Powers Format 01 · Modules
-                </div>
-              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* ========================================================================= */}
-      {/* 02 — ON SCROLL: PAST HIGHLIGHTS OF THE WEEK (WEEKLY SCOOPS ARCHIVE)       */}
-      {/* ========================================================================= */}
-      <section className="py-14 md:py-20 border-b border-border/30 bg-muted/10">
-        <div className={SECTION_SHELL_INNER}>
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
-            <div className="space-y-1">
-              <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-primary uppercase tracking-widest">
-                <Sparkles className="size-3.5" />
-                <span>Weekly Scoops Archive · Site Of The Day</span>
-              </div>
-              <h2 className="font-heading text-2xl sm:text-4xl font-black text-foreground">
-                Past Highlights of the Week
-              </h2>
-              <p className="text-sm text-muted-foreground max-w-xl">
-                Every week our newsroom awards the top citizen fiscal investigation. Scroll through past viral dispatches.
-              </p>
-            </div>
-
-            <Link
-              href="/learn/stories"
-              className="inline-flex items-center gap-1.5 text-xs font-mono font-bold uppercase tracking-wider text-primary hover:underline"
-            >
-              <span>Explore All Reel Highlights</span>
-              <ArrowRight className="size-3.5" />
-            </Link>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {WEEKLY_HIGHLIGHTS_ARCHIVE.map((item, idx) => (
-              <Link
-                key={idx}
-                href={item.href}
-                className="group rounded-3xl border border-border/60 bg-card p-5 flex flex-col justify-between shadow-xs hover:border-primary/60 hover:-translate-y-1 transition-all"
-              >
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between text-xs font-mono">
-                    <span className="font-bold text-primary">{item.weekNumber}</span>
-                    <span className="text-muted-foreground">{item.dateRange}</span>
-                  </div>
-
-                  <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-border/60 bg-black">
-                    <Image
-                      src={item.posterUrl}
-                      alt={item.title}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      sizes="(max-width: 640px) 100vw, 25vw"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="size-10 rounded-full bg-white/90 text-black flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                        <Play className="size-4 fill-current pl-0.5 text-primary" />
-                      </div>
-                    </div>
-                    <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded-full bg-black/80 text-[10px] font-mono text-white font-bold">
-                      {item.duration}
-                    </span>
-                    <span className="absolute bottom-2 right-2 text-[10px] font-mono text-white/90 font-bold">
-                      {item.views} Views
-                    </span>
-                  </div>
-
-                  <h4 className="font-heading text-base font-bold text-foreground group-hover:text-primary transition-colors leading-snug">
-                    {item.title}
-                  </h4>
-
-                  <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-                    {item.summary}
-                  </p>
-                </div>
-
-                <div className="pt-4 mt-4 border-t border-border/40 flex items-center justify-between text-xs font-mono">
-                  <span className="text-muted-foreground">{item.author}</span>
-                  <span className="font-bold text-primary">Play Reel →</span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ========================================================================= */}
-      {/* 03 — FORMAT 01: PUNCHY INTERACTIVE MODULES & VIDEO MASTERCLASSES          */}
+      {/* 02 — FORMAT 01: PUNCHY INTERACTIVE MODULES & VIDEO MASTERCLASSES          */}
       {/* ========================================================================= */}
       <section id="modules" className="py-20 md:py-32 border-b border-border/40 scroll-mt-14">
         <div className={SECTION_SHELL_INNER}>

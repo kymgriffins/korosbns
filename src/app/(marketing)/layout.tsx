@@ -15,7 +15,7 @@ const MarketingLayout = ({
   children: React.ReactNode;
 }) => {
   const pathname = usePathname();
-  const isLearnApp = pathname.startsWith("/learn");
+  const isChromeDisabled = pathname.startsWith("/learn") || pathname.startsWith("/stories");
   const showMarketingChrome = usesMarketingChrome(pathname);
   const showMarketingFooter = shouldShowMarketingFooter(pathname);
 
@@ -25,11 +25,11 @@ const MarketingLayout = ({
         showMarketingChrome ? "pt-12 md:pt-16 lg:pt-20" : ""
       }`}
     >
-      {!isLearnApp && <Navbar />}
+      {!isChromeDisabled && <Navbar />}
 
       <div className="flex flex-1 flex-col">{children}</div>
 
-      {!isLearnApp && showMarketingFooter ? (
+      {!isChromeDisabled && showMarketingFooter ? (
         <div className="mt-auto shrink-0">
           <BNSFooter />
         </div>

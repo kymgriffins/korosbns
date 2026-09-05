@@ -3,8 +3,7 @@
  * Reference section: landing-youtube (SectionShell + LandingSectionHeader + LandingContent).
  *
  * Font roles (src/constants/fonts.ts):
- * - font-base (Neue Montreal): body, UI, captions
- * - font-heading (Satoshi): titles, highlights, card headings
+ * - Neue Montreal: universal typeface across headings, body, UI, and captions
  */
 export const LANDING_TYPOGRAPHY = {
   eyebrow: "landing-eyebrow",

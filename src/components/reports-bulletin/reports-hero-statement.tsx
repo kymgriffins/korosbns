@@ -47,7 +47,7 @@ export function ReportsHeroStatement({ hubMeta }: ReportsHeroStatementProps) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         <div className="lg:col-span-8 space-y-4">
           <div className="flex items-baseline gap-3">
-            <span className="font-serif italic text-3xl sm:text-4xl text-primary font-normal">
+            <span className="italic text-3xl sm:text-4xl text-primary font-normal">
               Fig 01;
             </span>
             <h1 className="font-heading text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-foreground leading-[1.05]">
