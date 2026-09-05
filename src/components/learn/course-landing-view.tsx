@@ -1,12 +1,25 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 import { motion } from "motion/react";
-import { CheckCircle2, Clock, Loader2, Play } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  CheckCircle2,
+  Clock,
+  FileText,
+  Loader2,
+  Play,
+  Scale,
+  ShieldCheck,
+  Sparkles,
+  Zap,
+  AlertTriangle,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { EditorialPill } from "@/components/ui/editorial";
 import { LearnPageFrame } from "@/components/learn/learn-page-frame";
 import { learningData } from "@/data/learning";
 import {
@@ -15,12 +28,31 @@ import {
   lessonHref,
   resolveResumeStep,
   resumeHref,
+  stepReadingMinutes,
+  parseStepVideos,
 } from "@/lib/immersive-module";
 import { readProgress } from "@/lib/module-progress";
 import { fadeInUp } from "@/motion/variants";
 import type { CivicModule } from "@/types/learn";
 import { cn } from "@/utils";
 import { useEffect, useMemo, useState } from "react";
+import { getModuleCivicHook, getModuleEmoji } from "@/lib/learn-module-display";
+
+function getMasteryIcon(icon: string) {
+  switch (icon) {
+    case "zap":
+      return <Zap className="size-4 text-amber-500" />;
+    case "shield":
+      return <ShieldCheck className="size-4 text-emerald-500" />;
+    case "scale":
+      return <Scale className="size-4 text-blue-500" />;
+    case "alertTriangle":
+      return <AlertTriangle className="size-4 text-rose-500" />;
+    case "fileText":
+    default:
+      return <FileText className="size-4 text-primary" />;
+  }
+}
 
 export function CourseLandingView() {
   const params = useParams();
@@ -68,6 +100,10 @@ export function CourseLandingView() {
     };
   }, [mod]);
 
+  const civicHook = useMemo(() => {
+    return getModuleCivicHook(slug, mod);
+  }, [slug, mod]);
+
   if (loading) {
     return (
       <LearnPageFrame className="flex min-h-[50vh] items-center justify-center">
@@ -78,7 +114,7 @@ export function CourseLandingView() {
 
   if (!mod || !progress) {
     return (
-      <LearnPageFrame className="space-y-4 text-center">
+      <LearnPageFrame className="space-y-4 text-center py-16">
         <h1 className="text-2xl font-bold">Module not found</h1>
         <p className="text-sm text-muted-foreground">This course is unavailable or was removed.</p>
         <Button asChild variant="outline">
@@ -89,10 +125,10 @@ export function CourseLandingView() {
   }
 
   const ctaLabel = progress.isCompleted
-    ? "Review course"
+    ? "Review Module"
     : progress.isInProgress
-      ? "Continue"
-      : "Start course";
+      ? `Resume Lesson ${progress.resumeStep}`
+      : "Start Module (Lesson 1 — Free)";
 
   const estMinutes = mod.steps.reduce((sum, step) => {
     const words = (step.text || "").split(/\s+/).filter(Boolean).length;
@@ -100,136 +136,308 @@ export function CourseLandingView() {
   }, 0);
 
   return (
-    <LearnPageFrame className="space-y-0 pb-8">
-      {/* Dossier header */}
+    <LearnPageFrame className="max-w-5xl mx-auto space-y-8 pb-12 pt-2">
+      {/* ── Top Navigation & Urgency Bar ── */}
       <motion.div
         variants={fadeInUp}
         initial="hidden"
         animate="visible"
-        className="border-b border-border/40 pb-6"
+        className="flex items-center justify-between gap-3"
       >
-        <div className="flex items-center justify-between gap-3 mb-4">
-          <Link
-            href="/learn"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
-          >
-            ← All modules
-          </Link>
-          <EditorialPill variant="primary" size="xs">
-            Free Civic Module
-          </EditorialPill>
-        </div>
-        <h1 className="text-balance text-2xl md:text-3xl font-bold leading-tight tracking-tight text-foreground">
-          {mod.title}
-        </h1>
-        {mod.description && mod.description.trim() !== mod.title.trim() ? (
-          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{mod.description}</p>
-        ) : null}
-        <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border/40 pt-4 text-xs text-muted-foreground">
-          {mod.author?.name ? (
-            <span className="font-semibold text-foreground">By {mod.author.name}</span>
-          ) : null}
-          <span className="inline-flex items-center gap-1">
-            <Clock className="size-3.5" aria-hidden />~{estMinutes} min
+        <Link
+          href="/learn"
+          className="group inline-flex items-center gap-1.5 text-xs font-mono font-bold text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ArrowLeft className="size-3.5 transition-transform group-hover:-translate-x-0.5" />
+          <span>All Modules</span>
+        </Link>
+
+        <div className="flex items-center gap-2">
+          <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-[11px] font-mono font-bold text-primary">
+            <Sparkles className="size-3" />
+            <span>{civicHook.urgencyPill}</span>
           </span>
-          <span>{progress.total} lesson{progress.total === 1 ? "" : "s"}</span>
-          {progress.isInProgress || progress.isCompleted ? (
-            <span className="tabular-nums font-semibold text-primary">{progress.pct}% complete</span>
-          ) : null}
+          <span className="inline-flex items-center rounded-full border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400">
+            100% Free Access
+          </span>
         </div>
       </motion.div>
 
-      {/* Progress + CTA */}
+      {/* ── Compact Split Hero: Pitch & Enrollment ── */}
       <motion.section
         variants={fadeInUp}
         initial="hidden"
         animate="visible"
-        className="space-y-4 py-6"
+        className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start"
       >
-        {(progress.isInProgress || progress.isCompleted) && (
-          <Progress value={progress.pct} className="h-2" />
-        )}
+        {/* Left Column: Civic Hook, Fast Stats & CTA */}
+        <div className="lg:col-span-7 space-y-4">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-primary">
+              <span>{getModuleEmoji(mod.badge)}</span>
+              <span>Module {mod.order} · {mod.badgeName || "Civic Masterclass"}</span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-foreground tracking-tight leading-[1.1]">
+              {mod.title}
+            </h1>
+            <p className="text-sm sm:text-base font-bold text-foreground/90 leading-snug">
+              {civicHook.tagline}
+            </p>
+          </div>
 
-        <Button asChild size="lg" className="h-12 w-full rounded-full text-base font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm transition-all">
-          <Link href={progress.startHref}>
-            <Play className="size-4" aria-hidden />
-            {ctaLabel}
+          <p className="text-xs sm:text-sm leading-relaxed text-muted-foreground">
+            {civicHook.leadHook}
+          </p>
+
+          {/* Fast Stats Tiles */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+            <div className="rounded-xl border border-border/60 bg-card/60 p-2.5 text-center">
+              <span className="block text-[10px] font-mono font-semibold text-muted-foreground uppercase">Duration</span>
+              <span className="text-xs font-mono font-bold text-foreground">~{estMinutes || 15} Mins</span>
+            </div>
+            <div className="rounded-xl border border-border/60 bg-card/60 p-2.5 text-center">
+              <span className="block text-[10px] font-mono font-semibold text-muted-foreground uppercase">Structure</span>
+              <span className="text-xs font-mono font-bold text-foreground">{progress.total} Lessons</span>
+            </div>
+            <div className="rounded-xl border border-border/60 bg-card/60 p-2.5 text-center">
+              <span className="block text-[10px] font-mono font-semibold text-muted-foreground uppercase">Statute</span>
+              <span className="text-xs font-mono font-bold text-foreground truncate">
+                {civicHook.fastStats.statute.split("·")[0].trim()}
+              </span>
+            </div>
+            <div className="rounded-xl border border-border/60 bg-card/60 p-2.5 text-center">
+              <span className="block text-[10px] font-mono font-semibold text-muted-foreground uppercase">Access</span>
+              <span className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">Public Domain</span>
+            </div>
+          </div>
+
+          {/* High-Conversion Action Card */}
+          <div className="rounded-2xl border border-border/70 bg-card p-4 sm:p-5 shadow-xs space-y-3">
+            {progress.isInProgress && (
+              <div className="space-y-1.5 pb-1">
+                <div className="flex justify-between text-xs font-mono">
+                  <span className="text-muted-foreground">Your Progress</span>
+                  <span className="font-bold text-primary">{progress.pct}% completed</span>
+                </div>
+                <Progress value={progress.pct} className="h-2" />
+              </div>
+            )}
+
+            <Button
+              asChild
+              size="lg"
+              className="h-12 w-full rounded-xl text-sm sm:text-base font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-md transition-all group"
+            >
+              <Link href={progress.startHref} className="flex items-center justify-center gap-2">
+                <Play className="size-4 fill-current transition-transform group-hover:scale-110" />
+                <span>{ctaLabel}</span>
+                <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </Button>
+
+            <div className="flex flex-wrap items-center justify-between gap-2 pt-1 text-[11px] text-muted-foreground">
+              <span className="inline-flex items-center gap-1">
+                <CheckCircle2 className="size-3 text-emerald-500" />
+                <span>Instant access</span>
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <CheckCircle2 className="size-3 text-emerald-500" />
+                <span>3 sequential videos</span>
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <CheckCircle2 className="size-3 text-emerald-500" />
+                <span>Official reader companion</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column: Visual Video Preview Card */}
+        <div className="lg:col-span-5 space-y-3">
+          <Link
+            href={progress.startHref}
+            className="group relative aspect-video w-full overflow-hidden rounded-2xl border border-border/80 bg-zinc-950 block shadow-xl transition-all hover:border-primary/50"
+          >
+            <Image
+              src={mod.image_url || "https://i.ytimg.com/vi/Ed9lP0-komE/hqdefault.jpg"}
+              alt={mod.title}
+              fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 40vw"
+              className="object-cover transition-transform duration-500 group-hover:scale-105 opacity-90 group-hover:opacity-100"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/20 pointer-events-none" />
+
+            <div className="absolute top-3 left-3 right-3 flex items-center justify-between text-white pointer-events-none">
+              <span className="rounded-full bg-black/60 backdrop-blur-md px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-wider text-white border border-white/15">
+                Masterclass Preview
+              </span>
+              <span className="rounded-full bg-primary/90 px-2.5 py-1 text-[10px] font-mono font-bold text-white shadow-xs">
+                {progress.total} Chapters
+              </span>
+            </div>
+
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <span className="flex size-14 items-center justify-center rounded-full bg-primary text-white shadow-2xl transition-transform group-hover:scale-110 group-active:scale-95">
+                <Play className="size-6 fill-current ml-0.5" />
+              </span>
+            </div>
+
+            <div className="absolute bottom-3 inset-x-3 text-white pointer-events-none">
+              <p className="text-xs font-bold leading-tight line-clamp-1 group-hover:text-primary-foreground">
+                {mod.steps[0]?.title || mod.title}
+              </p>
+              <p className="text-[10px] text-white/70 flex items-center gap-1 mt-0.5 font-mono">
+                <span>Click to begin interactive lesson</span>
+                <span>→</span>
+              </p>
+            </div>
           </Link>
-        </Button>
+
+          <div className="rounded-xl border border-border/60 bg-card/60 p-3 flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2">
+              <div className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="font-mono font-bold text-foreground">Verified Civic Standard</span>
+            </div>
+            <span className="font-mono text-[11px] text-muted-foreground">Article 201 CoK 2010</span>
+          </div>
+        </div>
       </motion.section>
 
-      {/* What you'll learn */}
-      {mod.expectations?.length ? (
-        <motion.section
-          variants={fadeInUp}
-          initial="hidden"
-          animate="visible"
-          className="space-y-3 border-t border-border/40 py-6"
-          aria-labelledby="outcomes-heading"
-        >
-          <h2 id="outcomes-heading" className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
-            What you&apos;ll learn
-          </h2>
-          <ul className="space-y-2">
-            {mod.expectations.map((item) => (
-              <li key={item} className="flex gap-2 text-sm leading-relaxed text-muted-foreground">
-                <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        </motion.section>
-      ) : null}
-
-      {/* Curriculum — numbered rows */}
+      {/* ── What You'll Master (Actionable Core Competencies) ── */}
       <motion.section
         variants={fadeInUp}
         initial="hidden"
         animate="visible"
-        className="space-y-3 border-t border-border/40 py-6"
-        aria-labelledby="curriculum-heading"
+        className="space-y-3 pt-2"
       >
-        <h2 id="curriculum-heading" className="text-xs font-bold uppercase tracking-[0.2em] text-primary">
-          Curriculum
-        </h2>
-        <ol className="divide-y divide-border/40">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xs font-mono font-bold uppercase tracking-widest text-muted-foreground">
+            What You&apos;ll Master // Core Competencies
+          </h2>
+          <span className="text-[11px] font-mono text-primary font-bold">15-Minute Outcomes</span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {civicHook.keyMasteries.map((item, idx) => (
+            <div
+              key={idx}
+              className="rounded-xl border border-border/60 bg-card p-3.5 sm:p-4 flex items-start gap-3 hover:border-primary/40 transition-colors"
+            >
+              <div className="size-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-0.5">
+                {getMasteryIcon(item.icon)}
+              </div>
+              <div className="space-y-1 min-w-0">
+                <h3 className="text-xs sm:text-sm font-bold text-foreground leading-tight">
+                  {item.title}
+                </h3>
+                <p className="text-xs leading-relaxed text-muted-foreground">
+                  {item.description}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </motion.section>
+
+      {/* ── Curriculum / Lessons List ── */}
+      <motion.section
+        variants={fadeInUp}
+        initial="hidden"
+        animate="visible"
+        className="space-y-3 pt-2"
+      >
+        <div className="flex items-center justify-between">
+          <h2 className="text-xs font-mono font-bold uppercase tracking-widest text-muted-foreground">
+            Course Syllabus // {progress.total} Chapter{progress.total === 1 ? "" : "s"}
+          </h2>
+          <span className="text-[11px] font-mono text-muted-foreground">Sequential Reading & Video</span>
+        </div>
+
+        <div className="divide-y divide-border/40 rounded-2xl border border-border/70 bg-card overflow-hidden">
           {mod.steps.map((step, index) => {
             const stepNumber = index + 1;
             const done = Boolean(progress.completed[step.order]) || progress.isCompleted;
             const href = lessonHref(mod, stepNumber);
+            const videoCount = parseStepVideos(step).length;
+            const readTime = stepReadingMinutes(step, videoCount);
 
             return (
-              <li key={step.id}>
-                <Link
-                  href={href}
-                  className={cn(
-                    "flex items-center gap-3 px-2 py-3.5 transition-colors hover:bg-muted/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                    done && "bg-muted/10",
-                  )}
-                >
+              <Link
+                key={step.id}
+                href={href}
+                className={cn(
+                  "flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 transition-colors hover:bg-muted/30 group",
+                  done && "bg-muted/10",
+                )}
+              >
+                <div className="flex items-start sm:items-center gap-3 min-w-0">
                   <span
                     className={cn(
-                      "flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-bold",
+                      "flex size-8 shrink-0 items-center justify-center rounded-xl text-xs font-mono font-bold transition-transform group-hover:scale-105",
                       done
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-muted-foreground",
+                        ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
+                        : "bg-muted text-muted-foreground border border-border/60 group-hover:border-primary/50 group-hover:text-foreground",
                     )}
                   >
-                    {done ? <CheckCircle2 className="size-4" aria-hidden /> : stepNumber}
+                    {done ? <CheckCircle2 className="size-4" /> : `0${stepNumber}`}
                   </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-foreground">{step.title}</p>
-                    <p className="text-xs text-muted-foreground">
-                      Lesson {stepNumber}
-                      {done ? " · Done" : ""}
+                  <div className="min-w-0 space-y-0.5">
+                    <p className="text-sm font-bold text-foreground group-hover:text-primary transition-colors leading-snug">
+                      {step.title}
                     </p>
+                    {step.article_summary ? (
+                      <p className="text-xs text-muted-foreground line-clamp-1 leading-relaxed">
+                        {step.article_summary}
+                      </p>
+                    ) : null}
                   </div>
-                </Link>
-              </li>
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0 sm:self-center pl-11 sm:pl-0">
+                  {videoCount > 0 && (
+                    <span className="inline-flex items-center gap-1 rounded-md bg-muted/60 px-2 py-1 text-[10px] font-mono text-muted-foreground">
+                      <Play className="size-2.5 fill-current" />
+                      <span>{videoCount} Video{videoCount > 1 ? "s" : ""}</span>
+                    </span>
+                  )}
+                  <span className="inline-flex items-center gap-1 rounded-md bg-muted/60 px-2 py-1 text-[10px] font-mono text-muted-foreground">
+                    <Clock className="size-2.5" />
+                    <span>{readTime || "5 min"}</span>
+                  </span>
+                  <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 group-hover:bg-primary text-primary group-hover:text-primary-foreground px-2.5 py-1 text-[11px] font-mono font-bold transition-colors ml-1">
+                    <span>{done ? "Review" : "Start"}</span>
+                    <ArrowRight className="size-3" />
+                  </span>
+                </div>
+              </Link>
             );
           })}
-        </ol>
+        </div>
       </motion.section>
+
+      {/* ── Bottom Action Banner ── */}
+      <motion.div
+        variants={fadeInUp}
+        initial="hidden"
+        animate="visible"
+        className="rounded-2xl border border-primary/20 bg-primary/5 p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4"
+      >
+        <div className="space-y-1 text-center sm:text-left">
+          <h3 className="font-heading text-base sm:text-lg font-bold text-foreground">
+            Ready to hold public spending accountable?
+          </h3>
+          <p className="text-xs text-muted-foreground max-w-md">
+            Start this civic masterclass now. No sign-up barriers, 100% free under Kenya&apos;s public education mandate.
+          </p>
+        </div>
+        <Button asChild size="default" className="rounded-xl font-bold px-6 shrink-0 bg-primary text-primary-foreground hover:bg-primary/90">
+          <Link href={progress.startHref} className="inline-flex items-center gap-1.5">
+            <span>{ctaLabel}</span>
+            <ArrowRight className="size-4" />
+          </Link>
+        </Button>
+      </motion.div>
     </LearnPageFrame>
   );
 }

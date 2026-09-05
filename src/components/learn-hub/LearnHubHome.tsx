@@ -131,163 +131,192 @@ export function LearnHubHome() {
       {/* ========================================================================= */}
       {/* 03 — MEDIA & FORMAT ACCESS (IMAGE-PAIRED, ZERO CARD BLOAT)                */}
       {/* ========================================================================= */}
-      <section className="py-8 md:py-10 flex-1 flex flex-col justify-center">
+      {/* ========================================================================= */}
+      {/* 03 — MEDIA & FORMAT ACCESS (OPEN VIEWPORT, ZERO CONFINED CARDS)            */}
+      {/* ========================================================================= */}
+      <section className="py-10 md:py-16">
         <div className={SECTION_SHELL_INNER}>
-          <div className="mb-6 flex items-center justify-between">
-            <span className="font-mono text-xs font-bold text-muted-foreground uppercase tracking-widest">
-              Format Access // Choose Your Learning Pathway
-            </span>
+          <div className="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-border/40 pb-4">
+            <div>
+              <span className="font-mono text-xs font-bold text-primary uppercase tracking-widest block mb-1">
+                Learning Pathways // 0 Paywalls
+              </span>
+              <h2 className="font-heading text-2xl sm:text-3xl font-black text-foreground tracking-tight">
+                Choose How You Master The Budget
+              </h2>
+            </div>
             <Link
               href="/learn/modules"
-              className="text-xs font-mono font-bold text-primary uppercase hover:underline inline-flex items-center gap-1"
+              className="text-xs font-mono font-bold text-muted-foreground hover:text-foreground uppercase tracking-wider inline-flex items-center gap-1 transition-colors"
             >
               <span>Explore All Formats</span>
-              <ArrowUpRight className="size-3" />
+              <ArrowUpRight className="size-3 text-primary" />
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
-            {/* Format 1: Structured Masterclass Module (Paired with video masterclass thumbnail) */}
-            <div className="lg:col-span-7 rounded-2xl border border-border/60 bg-card p-5 sm:p-6 flex flex-col justify-between shadow-xs hover:border-primary/50 transition-colors">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-mono font-bold text-primary">
-                    <Layers className="size-3.5" />
-                    <span>Structured Curriculum · Format 01</span>
+          {/* Pathway 1: Structured Masterclass (Open Editorial Flow) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center py-6 border-b border-border/30">
+            {/* Visual Media Frame — unconfined, bold, with interactive play anchor */}
+            <div className="lg:col-span-6 lg:order-2">
+              <Link
+                href="/learn/modules/budget-policy-statement"
+                className="group relative aspect-video w-full overflow-hidden rounded-2xl border border-border/60 bg-zinc-950 block shadow-md hover:shadow-xl transition-all duration-300"
+              >
+                <Image
+                  src="https://i.ytimg.com/vi/Ed9lP0-komE/hqdefault.jpg"
+                  alt="Before Budget Day: The Budget Policy Statement Masterclass"
+                  fill
+                  priority
+                  className="object-cover transition-transform duration-500 group-hover:scale-105 opacity-90 group-hover:opacity-100"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/20 pointer-events-none" />
+
+                <div className="absolute top-3 left-3 flex items-center gap-2 pointer-events-none">
+                  <span className="rounded-full bg-primary px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase text-white shadow-xs">
+                    Format 01
                   </span>
-                  <span className="font-mono text-xs text-muted-foreground">
-                    3-Part Video Series
+                  <span className="rounded-full bg-black/60 backdrop-blur-md px-2.5 py-0.5 font-mono text-[10px] font-semibold text-white/90 border border-white/10">
+                    3-Part Series
                   </span>
                 </div>
 
-                {/* Masterclass Video Thumbnail Frame */}
-                <Link
-                  href="/learn/modules/budget-policy-statement"
-                  className="group relative aspect-video w-full overflow-hidden rounded-xl border border-border/60 bg-black block"
-                >
-                  <Image
-                    src="https://i.ytimg.com/vi/Ed9lP0-komE/hqdefault.jpg"
-                    alt="Before Budget Day: The Budget Policy Statement Masterclass"
-                    fill
-                    priority
-                    className="object-cover transition-transform duration-500 group-hover:scale-105 opacity-90 group-hover:opacity-100"
-                    sizes="(max-width: 1024px) 100vw, 55vw"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <span className="size-14 rounded-full bg-primary text-white flex items-center justify-center shadow-2xl transition-transform group-hover:scale-110 group-active:scale-95">
+                    <Play className="size-6 fill-current ml-0.5" />
+                  </span>
+                </div>
 
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="size-12 rounded-full bg-primary text-white flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
-                      <Play className="size-5 fill-current pl-0.5" />
-                    </div>
-                  </div>
-
-                  <div className="absolute bottom-3 left-3 right-3 text-white">
-                    <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-400">
-                      Featured Masterclass
-                    </span>
-                    <p className="text-sm font-bold leading-tight line-clamp-1">
-                      Before Budget Day: The Complete BPS Guide (Parts 1–3)
-                    </p>
-                  </div>
-                </Link>
-
-                <div className="space-y-1.5">
-                  <h3 className="font-heading text-xl font-bold text-foreground leading-snug">
-                    Before Budget Day: The Budget Policy Statement (BPS)
-                  </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    Watch the 3-part video series and read the companion guide on PFM Act Section 25, macroeconomic growth targets, sector ceilings, and formal public memorandum drafting.
+                <div className="absolute bottom-3 inset-x-3 text-white pointer-events-none">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-400">
+                    Featured Masterclass
+                  </span>
+                  <p className="text-sm font-bold leading-tight line-clamp-1 group-hover:text-primary-foreground">
+                    Before Budget Day: The Complete BPS Guide (Parts 1–3)
                   </p>
                 </div>
+              </Link>
+            </div>
+
+            {/* Content & Action — Breathing in whitespace */}
+            <div className="lg:col-span-6 lg:order-1 space-y-4">
+              <div className="space-y-2">
+                <span className="inline-flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wider text-primary">
+                  <Layers className="size-3.5" />
+                  <span>Structured Masterclass · 15 Min Fast-Track</span>
+                </span>
+                <h3 className="font-heading text-2xl sm:text-3xl font-black text-foreground tracking-tight leading-tight">
+                  Before Budget Day: The Budget Policy Statement (BPS)
+                </h3>
+                <p className="text-sm font-bold text-foreground/90 leading-snug">
+                  95% of Kenya&apos;s national budget is decided before the June briefcase photo-op.
+                </p>
               </div>
 
-              <div className="pt-4 mt-4 border-t border-border/40 flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground">
-                  <Clock className="size-3.5" />
-                  <span>15 mins reading · 3 sequential videos</span>
-                </div>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                By June, taxes are already signed into law. The real decisions happen in February under Section 25 of the PFM Act. Learn how to audit the KSh 4 Trillion national spending envelope, spot cuts to public clinics, and submit a formal public participation memorandum before line items freeze.
+              </p>
+
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-mono text-muted-foreground pt-1">
+                <span className="inline-flex items-center gap-1.5">
+                  <Clock className="size-3.5 text-primary" />
+                  <span>~15 Mins Reading</span>
+                </span>
+                <span>·</span>
+                <span>3 Sequential Videos</span>
+                <span>·</span>
+                <span className="text-emerald-600 dark:text-emerald-400 font-bold">100% Free &amp; Open</span>
+              </div>
+
+              <div className="pt-2">
                 <Link
                   href="/learn/modules/budget-policy-statement"
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-primary-foreground text-xs font-mono font-bold uppercase tracking-wider hover:bg-primary/90 transition-colors shadow-2xs"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground text-xs font-mono font-bold uppercase tracking-wider hover:bg-primary/90 transition-all shadow-sm group"
                 >
-                  <span>Start Module</span>
-                  <ArrowRight className="size-3.5" />
+                  <span>Start Module — Free</span>
+                  <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
                 </Link>
               </div>
             </div>
+          </div>
 
-            {/* Format 2: 60-Second Civic Stories & Reels (Paired with real video frame) */}
-            <div className="lg:col-span-5 rounded-2xl border border-border/60 bg-card p-5 sm:p-6 flex flex-col justify-between shadow-xs hover:border-rose-500/50 transition-colors">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-500/10 px-3 py-1 text-xs font-mono font-bold text-rose-500">
-                    <PlaySquare className="size-3.5" />
-                    <span>Vertical Stories · Format 02</span>
+          {/* Pathway 2: 60-Second Civic Stories (Open Editorial Flow) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center py-8">
+            {/* Visual Media Frame — unconfined, bold */}
+            <div className="lg:col-span-6">
+              <Link
+                href="/learn/stories"
+                className="group relative aspect-video w-full overflow-hidden rounded-2xl border border-border/60 bg-zinc-950 block shadow-md hover:shadow-xl transition-all duration-300"
+              >
+                <Image
+                  src="/images/reels/reel-01-poster.jpg"
+                  alt="Kenya Owes Over 12 Trillion with Calvina Praise"
+                  fill
+                  className="object-cover object-top transition-transform duration-500 group-hover:scale-105 opacity-90 group-hover:opacity-100"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/20 pointer-events-none" />
+
+                <div className="absolute top-3 left-3 flex items-center gap-2 pointer-events-none">
+                  <span className="rounded-full bg-rose-600 px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase text-white shadow-xs">
+                    Format 02
                   </span>
-                  <span className="font-mono text-xs text-muted-foreground">
-                    60s Mobile Feed
+                  <span className="rounded-full bg-black/60 backdrop-blur-md px-2.5 py-0.5 font-mono text-[10px] font-semibold text-white/90 border border-white/10">
+                    60s Snap-Scroll
                   </span>
                 </div>
 
-                {/* 9:16 Video Poster Card */}
-                <Link
-                  href="/learn/stories"
-                  className="group relative aspect-[16/10] sm:aspect-[16/9] w-full overflow-hidden rounded-xl border border-border/60 bg-black block"
-                >
-                  <Image
-                    src="/images/reels/reel-01-poster.jpg"
-                    alt="Kenya Owes Over 12 Trillion with Calvina Praise"
-                    fill
-                    className="object-cover object-top transition-transform duration-500 group-hover:scale-105 opacity-90 group-hover:opacity-100"
-                    sizes="(max-width: 1024px) 100vw, 40vw"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/30 pointer-events-none" />
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <span className="size-14 rounded-full bg-white text-black flex items-center justify-center shadow-2xl transition-transform group-hover:scale-110 group-active:scale-95">
+                    <Play className="size-6 fill-current ml-0.5 text-black" />
+                  </span>
+                </div>
 
-                  <div className="absolute top-3 left-3 flex items-center gap-2">
-                    <span className="rounded-full bg-rose-600 px-2 py-0.5 font-mono text-[10px] font-bold uppercase text-white">
-                      Debt &amp; Counties
-                    </span>
-                    <span className="font-mono text-[10px] text-white/80 bg-black/50 px-2 py-0.5 rounded-full backdrop-blur-xs">
-                      Calvina &amp; Nelly
-                    </span>
-                  </div>
-
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="size-12 rounded-full bg-white text-black flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
-                      <Play className="size-5 fill-current pl-0.5 text-black" />
-                    </div>
-                  </div>
-
-                  <div className="absolute bottom-3 left-3 right-3 text-white space-y-0.5 pointer-events-none">
-                    <p className="text-[11px] font-mono text-amber-400 font-semibold">
-                      Calvina Praise &amp; Nelly Maina
-                    </p>
-                    <p className="text-sm font-bold leading-tight line-clamp-1">
-                      Kenya Owes Over 12T · County Socials Feed
-                    </p>
-                  </div>
-                </Link>
-
-                <div className="space-y-1.5">
-                  <h3 className="font-heading text-xl font-bold text-foreground leading-snug">
-                    60-Second Civic Stories &amp; TikTok Reels
-                  </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    Watch Calvina Praise on the national debt and Nelly Maina on county dispensary audits. Snap-scroll video format verified against Article 201.
+                <div className="absolute bottom-3 inset-x-3 text-white pointer-events-none">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-rose-400">
+                    Active Story Feed
+                  </span>
+                  <p className="text-sm font-bold leading-tight line-clamp-1">
+                    Calvina Praise &amp; Nelly Maina · Kenya Owes Over 12T
                   </p>
                 </div>
+              </Link>
+            </div>
+
+            {/* Content & Action — Breathing in whitespace */}
+            <div className="lg:col-span-6 space-y-4">
+              <div className="space-y-2">
+                <span className="inline-flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wider text-rose-500">
+                  <PlaySquare className="size-3.5" />
+                  <span>60-Second Civic Stories &amp; Mobile Reels</span>
+                </span>
+                <h3 className="font-heading text-2xl sm:text-3xl font-black text-foreground tracking-tight leading-tight">
+                  Vertical Stories &amp; Grassroots Audits
+                </h3>
+                <p className="text-sm font-bold text-foreground/90 leading-snug">
+                  Auditing county dispensary funds and sovereign debt in under 60 seconds.
+                </p>
               </div>
 
-              <div className="pt-4 mt-4 border-t border-border/40 flex flex-wrap items-center justify-between gap-3">
-                <span className="font-mono text-xs text-muted-foreground">
-                  4 Interactive Reels Active
-                </span>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                Watch Calvina Praise break down the KES 12 Trillion national debt under Article 201, and follow Nelly Maina auditing KSh 420B in county equitable share down to ward-level health clinics. Fast, verified, and built for uninterrupted mobile swipe.
+              </p>
+
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-mono text-muted-foreground pt-1">
+                <span>📱 9:16 Vertical Canvas</span>
+                <span>·</span>
+                <span>⏱️ 60s Fast Feed</span>
+                <span>·</span>
+                <span className="text-rose-600 dark:text-rose-400 font-bold">4 Active Reels</span>
+              </div>
+
+              <div className="pt-2">
                 <Link
                   href="/learn/stories"
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-rose-600 text-white text-xs font-mono font-bold uppercase tracking-wider hover:bg-rose-700 transition-colors shadow-2xs"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-rose-600 text-white text-xs font-mono font-bold uppercase tracking-wider hover:bg-rose-700 transition-all shadow-sm group"
                 >
                   <span>Open Reels Feed</span>
-                  <ArrowRight className="size-3.5" />
+                  <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
                 </Link>
               </div>
             </div>

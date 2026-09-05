@@ -27,6 +27,9 @@ function blobKey(slug: string): string {
 }
 
 function migrateLegacy(slug: string, order: number, progress: ModuleProgress): ModuleProgress {
+  if (typeof localStorage === "undefined" || typeof localStorage.getItem !== "function") {
+    return progress;
+  }
   const migrated = { ...progress };
   let dirty = false;
 
