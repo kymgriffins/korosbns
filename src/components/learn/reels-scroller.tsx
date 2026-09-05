@@ -43,12 +43,12 @@ export const DEFAULT_REELS: ReelItem[] = [
     category: "Devolution",
     author: "Nelly Maina · BNS Lead",
     videoUrl:
-      "https://pub-f17936ca338a4ebcbdaa81475beda374.r2.dev/county%20%26%20budget%20socials%20new.mp4",
+      "https://bns.stratapointadvisory.org/0cd8319a419e6b3749a7206ba4d68801.mp4",
     posterUrl: "/images/marketing newsletter subcribe/Nelly with The Mic.jpg",
     likes: 12400,
     comments: 842,
     shares: 320,
-    duration: "0:58",
+    duration: "2:16",
     hashtags: ["#BudgetNdioStory", "#Devolution", "#CountyWatch"],
   },
   {
@@ -58,12 +58,12 @@ export const DEFAULT_REELS: ReelItem[] = [
     category: "Healthcare",
     author: "Shaimaa Hassan · Auditor",
     videoUrl:
-      "https://res.cloudinary.com/dn8lut2fc/video/upload/f_auto,q_auto/Untitled_design_maph6q.mp4",
+      "https://bns.stratapointadvisory.org/county%20%26%20budget%20socials%20new.mp4",
     posterUrl: "/images/towwnhallmay/129A4056.jpg",
     likes: 8930,
     comments: 412,
     shares: 195,
-    duration: "1:04",
+    duration: "0:49",
     hashtags: ["#MaternalHealth", "#PendingBills", "#KilifiAudit"],
   },
   {
@@ -73,12 +73,12 @@ export const DEFAULT_REELS: ReelItem[] = [
     category: "Tax & Budget",
     author: "Grace Muthoni · Data Fellow",
     videoUrl:
-      "https://pub-f17936ca338a4ebcbdaa81475beda374.r2.dev/county%20%26%20budget%20socials%20new.mp4",
+      "https://bns.stratapointadvisory.org/0cd8319a419e6b3749a7206ba4d68801.mp4",
     posterUrl: "/images/cohort1 groundworks/129A3964.jpg",
     likes: 15200,
     comments: 1104,
     shares: 560,
-    duration: "0:49",
+    duration: "2:16",
     hashtags: ["#FinanceBill", "#OpenTreasury", "#KenyaBudget"],
   },
   {
@@ -88,12 +88,12 @@ export const DEFAULT_REELS: ReelItem[] = [
     category: "Investigative",
     author: "Wanahabari Lab Desk",
     videoUrl:
-      "https://res.cloudinary.com/dn8lut2fc/video/upload/f_auto,q_auto/Untitled_design_maph6q.mp4",
+      "https://bns.stratapointadvisory.org/county%20%26%20budget%20socials%20new.mp4",
     posterUrl: "/images/media/129A3905.jpg",
     likes: 19800,
     comments: 1420,
     shares: 890,
-    duration: "1:15",
+    duration: "0:49",
     hashtags: ["#GhostCertificates", "#PublicAudit", "#Article201"],
   },
 ];

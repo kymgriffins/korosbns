@@ -61,7 +61,7 @@ const LandingInteractiveVideo = () => {
                         onError={(e) => console.warn('Interactive video failed to load:', e)}
                         className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000"
                     >
-                        <source src="https://pub-f17936ca338a4ebcbdaa81475beda374.r2.dev/county%20%26%20budget%20socials%20new.mp4" type="video/mp4" />
+                        <source src="https://bns.stratapointadvisory.org/county%20%26%20budget%20socials%20new.mp4" type="video/mp4" />
                     </video>
                 </div>
 

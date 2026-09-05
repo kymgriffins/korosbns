@@ -45,8 +45,9 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
 
   useEffect(() => {
     const videoUrl =
+      mediaContent.cloudinary.reelVideo ||
       mediaContent.cloudinary.countyBudgetSocialVideo ||
-      "https://pub-f17936ca338a4ebcbdaa81475beda374.r2.dev/county%20%26%20budget%20socials%20new.mp4";
+      "https://bns.stratapointadvisory.org/0cd8319a419e6b3749a7206ba4d68801.mp4";
     const nellyMediaPhoto =
       "/images/marketing%20newsletter%20subcribe/Nelly%20with%20The%20Mic.jpg";
     const mockVideo = {
