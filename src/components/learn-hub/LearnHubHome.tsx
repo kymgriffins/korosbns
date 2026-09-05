@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 import Image from "next/image";
@@ -24,15 +24,15 @@ export function LearnHubHome() {
       {/* ========================================================================= */}
       {/* 01 — BRUTALIST HERO & CONSTITUTIONAL MANDATE                             */}
       {/* ========================================================================= */}
-      <section className="pt-8 pb-6 md:pt-12 md:pb-8 border-b border-border/40">
+      <section className="relative overflow-hidden pt-8 pb-10 md:pt-16 md:pb-14 border-b border-border/40">
         <div className={SECTION_SHELL_INNER}>
-          <div className="flex flex-col items-start gap-4 max-w-4xl">
+          <div className="flex flex-col gap-5 max-w-4xl">
             <div className="flex flex-wrap items-center gap-2">
-              <EditorialPill dot pulse variant="default">
-                Article 201 Sovereign Standard
+              <EditorialPill variant="primary" size="xs" dot>
+                PUBLIC FINANCE MASTERY
               </EditorialPill>
               <span className="font-mono text-xs text-muted-foreground uppercase tracking-wider">
-                0 Paywalls · Public Finance Intelligence
+                Article 201 · CoK 2010
               </span>
             </div>
 
@@ -45,27 +45,29 @@ export function LearnHubHome() {
               Public money should never move in the dark. We translate complex Treasury releases, debt amortizations, and county allocations into forensic civic literacy across three disciplined media formats.
             </p>
 
-            {/* Structured Action Launchers */}
-            <div className="flex flex-wrap items-center gap-3 pt-2">
+            {/* Structured Action Launchers: Exactly 1 prominent primary on mobile */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
               <PillButtonGroup
                 href="/learn/modules/budget-policy-statement"
                 label="Start Structured Curriculum"
                 variant="primary"
-                className="text-xs"
+                className="text-xs w-full sm:w-auto"
               />
-              <PillButtonGroup
-                href="/learn/stories"
-                label="Watch 60s Reels"
-                variant="outline"
-                className="text-xs"
-              />
-              <Link
-                href="/learn/documents"
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-border/60 text-xs font-mono font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground hover:border-foreground/40 transition-colors"
-              >
-                <FileText className="size-3.5 text-primary" />
-                <span>Document Vault</span>
-              </Link>
+              <div className="flex items-center gap-2 text-xs">
+                <PillButtonGroup
+                  href="/learn/stories"
+                  label="Watch 60s Reels"
+                  variant="outline"
+                  className="text-xs flex-1 sm:flex-initial"
+                />
+                <Link
+                  href="/learn/documents"
+                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-full border border-border/60 text-xs font-mono font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground hover:border-foreground/40 transition-colors flex-1 sm:flex-initial"
+                >
+                  <FileText className="size-3.5 text-primary" />
+                  <span>Document Vault</span>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -74,50 +76,41 @@ export function LearnHubHome() {
       {/* ========================================================================= */}
       {/* 02 — THE 3 PILLARS: WHAT CITIZENS WILL UNDERSTAND                         */}
       {/* ========================================================================= */}
-      <section className="py-6 md:py-8 border-b border-border/40 bg-muted/5">
+      <section className="py-8 md:py-12 border-b border-border/30 bg-muted/20">
         <div className={SECTION_SHELL_INNER}>
-          <div className="mb-4 flex items-center justify-between">
-            <span className="font-mono text-xs font-bold text-muted-foreground uppercase tracking-widest">
-              Curriculum Core // What You Will Master
-            </span>
-            <span className="font-mono text-[11px] text-primary font-bold">
-              3 Disciplines
-            </span>
-          </div>
-
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Pillar 1 */}
-            <div className="space-y-2 border-l-2 border-primary pl-4">
-              <div className="flex items-center gap-2 font-mono text-xs font-bold text-primary uppercase tracking-wider">
-                <span>01 / Flow of Funds</span>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 font-mono text-xs font-bold text-primary uppercase">
+                <span className="flex size-6 items-center justify-center rounded-full bg-primary/10 text-primary">1</span>
+                <span>The National Debt Machine</span>
               </div>
-              <h3 className="font-heading text-lg font-bold text-foreground leading-snug">
-                Exchequer to Ward Dispensary
+              <h3 className="font-heading text-lg font-bold text-foreground">
+                KES 12 Trillion Liability
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Track how national revenue moves from KRA through the Consolidated Fund into KES 420B+ county allocations and grassroots facilities.
+                Understand how Consolidated Fund Services (CFS) prioritizes foreign debt service before a single shilling reaches health or education.
               </p>
             </div>
 
-            {/* Pillar 2 */}
-            <div className="space-y-2 border-l-2 border-amber-500 pl-4">
-              <div className="flex items-center gap-2 font-mono text-xs font-bold text-amber-500 uppercase tracking-wider">
-                <span>02 / Forensic Audits</span>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 font-mono text-xs font-bold text-primary uppercase">
+                <span className="flex size-6 items-center justify-center rounded-full bg-primary/10 text-primary">2</span>
+                <span>County Allocation Pipeline</span>
               </div>
-              <h3 className="font-heading text-lg font-bold text-foreground leading-snug">
-                Ghost Projects & Pending Bills
+              <h3 className="font-heading text-lg font-bold text-foreground">
+                KSh 420B Equitable Share
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Spot unvoted expenditures, inflated contractor completion certificates, and debt interest lines before social services are defunded.
+                Follow how Division of Revenue Act (DoRA) and County Allocation of Revenue Act (CARA) disburse citizen taxes to 47 counties.
               </p>
             </div>
 
-            {/* Pillar 3 */}
-            <div className="space-y-2 border-l-2 border-emerald-500 pl-4">
-              <div className="flex items-center gap-2 font-mono text-xs font-bold text-emerald-500 uppercase tracking-wider">
-                <span>03 / Sovereign Power</span>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 font-mono text-xs font-bold text-primary uppercase">
+                <span className="flex size-6 items-center justify-center rounded-full bg-primary/10 text-primary">3</span>
+                <span>The Civic Window</span>
               </div>
-              <h3 className="font-heading text-lg font-bold text-foreground leading-snug">
+              <h3 className="font-heading text-lg font-bold text-foreground">
                 February Over June
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
@@ -128,9 +121,6 @@ export function LearnHubHome() {
         </div>
       </section>
 
-      {/* ========================================================================= */}
-      {/* 03 — MEDIA & FORMAT ACCESS (IMAGE-PAIRED, ZERO CARD BLOAT)                */}
-      {/* ========================================================================= */}
       {/* ========================================================================= */}
       {/* 03 — MEDIA & FORMAT ACCESS (OPEN VIEWPORT, ZERO CONFINED CARDS)            */}
       {/* ========================================================================= */}
@@ -156,7 +146,7 @@ export function LearnHubHome() {
 
           {/* Pathway 1: Structured Masterclass (Open Editorial Flow) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center py-6 border-b border-border/30">
-            {/* Visual Media Frame — unconfined, bold, with interactive play anchor */}
+            {/* Visual Media Frame — unconfined, bold, with subtle media badge */}
             <div className="lg:col-span-6 lg:order-2">
               <Link
                 href="/learn/modules/budget-policy-statement"
@@ -182,8 +172,8 @@ export function LearnHubHome() {
                 </div>
 
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <span className="size-14 rounded-full bg-primary text-white flex items-center justify-center shadow-2xl transition-transform group-hover:scale-110 group-active:scale-95">
-                    <Play className="size-6 fill-current ml-0.5" />
+                  <span className="size-11 sm:size-14 rounded-full bg-black/70 backdrop-blur-md text-white border border-white/20 flex items-center justify-center shadow-2xl transition-transform group-hover:scale-110 group-active:scale-95">
+                    <Play className="size-5 sm:size-6 fill-current ml-0.5" />
                   </span>
                 </div>
 
@@ -198,7 +188,7 @@ export function LearnHubHome() {
               </Link>
             </div>
 
-            {/* Content & Action — Breathing in whitespace */}
+            {/* Content & Action — Single explicit CTA button */}
             <div className="lg:col-span-6 lg:order-1 space-y-4">
               <div className="space-y-2">
                 <span className="inline-flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wider text-primary">
@@ -267,8 +257,8 @@ export function LearnHubHome() {
                 </div>
 
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <span className="size-14 rounded-full bg-white text-black flex items-center justify-center shadow-2xl transition-transform group-hover:scale-110 group-active:scale-95">
-                    <Play className="size-6 fill-current ml-0.5 text-black" />
+                  <span className="size-11 sm:size-14 rounded-full bg-black/70 backdrop-blur-md text-white border border-white/20 flex items-center justify-center shadow-2xl transition-transform group-hover:scale-110 group-active:scale-95">
+                    <Play className="size-5 sm:size-6 fill-current ml-0.5 text-white" />
                   </span>
                 </div>
 
@@ -283,7 +273,7 @@ export function LearnHubHome() {
               </Link>
             </div>
 
-            {/* Content & Action — Breathing in whitespace */}
+            {/* Content & Action — Single explicit CTA button */}
             <div className="lg:col-span-6 space-y-4">
               <div className="space-y-2">
                 <span className="inline-flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wider text-rose-500">

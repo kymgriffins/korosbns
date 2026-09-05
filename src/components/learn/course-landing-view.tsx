@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -128,7 +128,7 @@ export function CourseLandingView() {
     ? "Review Module"
     : progress.isInProgress
       ? `Resume Lesson ${progress.resumeStep}`
-      : "Start Module (Lesson 1 — Free)";
+      : "Start Module (Lesson 1 - Free)";
 
   const estMinutes = mod.steps.reduce((sum, step) => {
     const words = (step.text || "").split(/\s+/).filter(Boolean).length;
@@ -163,28 +163,86 @@ export function CourseLandingView() {
         </div>
       </motion.div>
 
-      {/* ── Compact Split Hero: Pitch & Enrollment ── */}
+      {/* ── Header: Title & Civic Tagline ── */}
+      <motion.div
+        variants={fadeInUp}
+        initial="hidden"
+        animate="visible"
+        className="space-y-2"
+      >
+        <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-primary">
+          <span>{getModuleEmoji(mod.badge)}</span>
+          <span>Module {mod.order} · {mod.badgeName || "Civic Masterclass"}</span>
+        </div>
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-foreground tracking-tight leading-[1.1]">
+          {mod.title}
+        </h1>
+        <p className="text-sm sm:text-base font-bold text-foreground/90 leading-snug">
+          {civicHook.tagline}
+        </p>
+      </motion.div>
+
+      {/* ── Compact Split Hero: Exactly 1 Primary CTA in Mobile View ── */}
       <motion.section
         variants={fadeInUp}
         initial="hidden"
         animate="visible"
         className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start"
       >
-        {/* Left Column: Civic Hook, Fast Stats & CTA */}
-        <div className="lg:col-span-7 space-y-4">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-primary">
-              <span>{getModuleEmoji(mod.badge)}</span>
-              <span>Module {mod.order} · {mod.badgeName || "Civic Masterclass"}</span>
+        {/* Visual Video Preview Frame: On mobile appears directly below title */}
+        <div className="lg:col-span-5 space-y-3 order-first lg:order-last">
+          <div className="group relative aspect-video w-full overflow-hidden rounded-2xl border border-border/80 bg-zinc-950 block shadow-xl transition-all">
+            <Image
+              src={mod.image_url || "https://i.ytimg.com/vi/Ed9lP0-komE/hqdefault.jpg"}
+              alt={mod.title}
+              fill
+              priority
+              sizes="(max-width: 1024px) 100vw, 40vw"
+              className="object-cover transition-transform duration-500 group-hover:scale-105 opacity-90 group-hover:opacity-100"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/20 pointer-events-none" />
+
+            <div className="absolute top-3 left-3 right-3 flex items-center justify-between text-white pointer-events-none">
+              <span className="rounded-full bg-black/60 backdrop-blur-md px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-wider text-white border border-white/15">
+                Masterclass Preview
+              </span>
+              <span className="rounded-full bg-primary/90 px-2.5 py-1 text-[10px] font-mono font-bold text-white shadow-xs">
+                {progress.total} Chapters
+              </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-foreground tracking-tight leading-[1.1]">
-              {mod.title}
-            </h1>
-            <p className="text-sm sm:text-base font-bold text-foreground/90 leading-snug">
-              {civicHook.tagline}
-            </p>
+
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <span className="flex size-12 sm:size-14 items-center justify-center rounded-full bg-black/70 backdrop-blur-md text-white border border-white/20 shadow-2xl transition-transform group-hover:scale-110">
+                <Play className="size-5 sm:size-6 fill-current ml-0.5" />
+              </span>
+            </div>
+
+            <div className="absolute bottom-3 inset-x-3 text-white pointer-events-none">
+              <p className="text-xs font-bold leading-tight line-clamp-1">
+                {mod.steps[0]?.title || mod.title}
+              </p>
+              <div className="flex items-center justify-between pt-1">
+                <span className="font-mono text-[10px] text-white/80">
+                  {mod.badgeName || "Civic Public Finance"}
+                </span>
+                <span className="font-mono text-[10px] text-white/75">
+                  ~{estMinutes || 15} Mins
+                </span>
+              </div>
+            </div>
           </div>
 
+          <div className="hidden lg:flex rounded-xl border border-border/60 bg-card/60 p-3 items-center justify-between text-xs">
+            <div className="flex items-center gap-2">
+              <div className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="font-mono font-bold text-foreground">Verified Civic Standard</span>
+            </div>
+            <span className="font-mono text-[11px] text-muted-foreground">Article 201 CoK 2010</span>
+          </div>
+        </div>
+
+        {/* Left Column: Civic Hook, Fast Stats & The ONE Primary CTA Button */}
+        <div className="lg:col-span-7 space-y-4">
           <p className="text-xs sm:text-sm leading-relaxed text-muted-foreground">
             {civicHook.leadHook}
           </p>
@@ -211,7 +269,7 @@ export function CourseLandingView() {
             </div>
           </div>
 
-          {/* High-Conversion Action Card */}
+          {/* High-Conversion Action Card: Single CTA in this View */}
           <div className="rounded-2xl border border-border/70 bg-card p-4 sm:p-5 shadow-xs space-y-3">
             {progress.isInProgress && (
               <div className="space-y-1.5 pb-1">
@@ -251,57 +309,6 @@ export function CourseLandingView() {
             </div>
           </div>
         </div>
-
-        {/* Right Column: Visual Video Preview Card */}
-        <div className="lg:col-span-5 space-y-3">
-          <Link
-            href={progress.startHref}
-            className="group relative aspect-video w-full overflow-hidden rounded-2xl border border-border/80 bg-zinc-950 block shadow-xl transition-all hover:border-primary/50"
-          >
-            <Image
-              src={mod.image_url || "https://i.ytimg.com/vi/Ed9lP0-komE/hqdefault.jpg"}
-              alt={mod.title}
-              fill
-              priority
-              sizes="(max-width: 1024px) 100vw, 40vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-105 opacity-90 group-hover:opacity-100"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/20 pointer-events-none" />
-
-            <div className="absolute top-3 left-3 right-3 flex items-center justify-between text-white pointer-events-none">
-              <span className="rounded-full bg-black/60 backdrop-blur-md px-2.5 py-1 text-[10px] font-mono font-bold uppercase tracking-wider text-white border border-white/15">
-                Masterclass Preview
-              </span>
-              <span className="rounded-full bg-primary/90 px-2.5 py-1 text-[10px] font-mono font-bold text-white shadow-xs">
-                {progress.total} Chapters
-              </span>
-            </div>
-
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <span className="flex size-14 items-center justify-center rounded-full bg-primary text-white shadow-2xl transition-transform group-hover:scale-110 group-active:scale-95">
-                <Play className="size-6 fill-current ml-0.5" />
-              </span>
-            </div>
-
-            <div className="absolute bottom-3 inset-x-3 text-white pointer-events-none">
-              <p className="text-xs font-bold leading-tight line-clamp-1 group-hover:text-primary-foreground">
-                {mod.steps[0]?.title || mod.title}
-              </p>
-              <p className="text-[10px] text-white/70 flex items-center gap-1 mt-0.5 font-mono">
-                <span>Click to begin interactive lesson</span>
-                <span>→</span>
-              </p>
-            </div>
-          </Link>
-
-          <div className="rounded-xl border border-border/60 bg-card/60 p-3 flex items-center justify-between text-xs">
-            <div className="flex items-center gap-2">
-              <div className="size-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="font-mono font-bold text-foreground">Verified Civic Standard</span>
-            </div>
-            <span className="font-mono text-[11px] text-muted-foreground">Article 201 CoK 2010</span>
-          </div>
-        </div>
       </motion.section>
 
       {/* ── What You'll Master (Actionable Core Competencies) ── */}
@@ -315,14 +322,14 @@ export function CourseLandingView() {
           <h2 className="text-xs font-mono font-bold uppercase tracking-widest text-muted-foreground">
             What You&apos;ll Master // Core Competencies
           </h2>
-          <span className="text-[11px] font-mono text-primary font-bold">15-Minute Outcomes</span>
+          <span className="text-[11px] font-mono text-primary font-bold">4 Key Skills</span>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {civicHook.keyMasteries.map((item, idx) => (
             <div
               key={idx}
-              className="rounded-xl border border-border/60 bg-card p-3.5 sm:p-4 flex items-start gap-3 hover:border-primary/40 transition-colors"
+              className="rounded-xl border border-border/60 bg-card/60 p-3.5 flex items-start gap-3 transition-colors hover:border-border hover:bg-card"
             >
               <div className="size-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-0.5">
                 {getMasteryIcon(item.icon)}
@@ -416,12 +423,12 @@ export function CourseLandingView() {
         </div>
       </motion.section>
 
-      {/* ── Bottom Action Banner ── */}
+      {/* ── Bottom Action Banner (Desktop only; on mobile the syllabus rows are the direct action) ── */}
       <motion.div
         variants={fadeInUp}
         initial="hidden"
         animate="visible"
-        className="rounded-2xl border border-primary/20 bg-primary/5 p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-4"
+        className="hidden md:flex rounded-2xl border border-primary/20 bg-primary/5 p-5 sm:p-6 flex-col sm:flex-row items-center justify-between gap-4"
       >
         <div className="space-y-1 text-center sm:text-left">
           <h3 className="font-heading text-base sm:text-lg font-bold text-foreground">
