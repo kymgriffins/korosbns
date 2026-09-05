@@ -9,7 +9,6 @@ import {
   Play,
   Volume2,
   ChevronDown,
-  Sparkles,
 } from "lucide-react";
 import { StudioReelHero } from "@/components/studio/theatre/studio-reel-hero";
 import { StudioBookingForm } from "@/components/studio/StudioBookingForm";
@@ -150,7 +149,7 @@ export function BNSStudioPageClient() {
             ) : (
               <div className="relative h-full w-full group cursor-pointer" onClick={() => setIsPlayingVideo(true)}>
                 <Image
-                  src={flagshipFilm?.media.posterUrl || "/images/treasury/budget sasa ni delivery.jpg"}
+                  src={flagshipFilm?.media.posterUrl || BNS_MEDIA_IMAGES.productionA}
                   alt="Budget Sasa Ni Delivery Master Screening Reel"
                   fill
                   priority

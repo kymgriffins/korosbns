@@ -8,7 +8,6 @@ import {
   PlaySquare,
   Search,
   X,
-  Sparkles,
 } from "lucide-react";
 import { ReelsScroller, DEFAULT_REELS, type ReelItem } from "@/components/learn/reels-scroller";
 import { cn } from "@/utils";

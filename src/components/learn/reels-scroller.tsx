@@ -14,7 +14,6 @@ import {
   VolumeX,
   ChevronDown,
   ChevronUp,
-  Sparkles,
   ExternalLink,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -447,7 +446,6 @@ export function ReelsScroller({
 
       {/* Touch swipe hint footer */}
       <div className="mt-3 flex items-center gap-2 font-mono text-[11px] text-muted-foreground">
-        <Sparkles className="size-3 text-amber-500" />
         <span>Swipe / Drag or use Arrow Keys to scroll</span>
       </div>
     </div>

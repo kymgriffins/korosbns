@@ -6,7 +6,13 @@ export const neueMontreal = localFont({
   display: "swap",
 });
 
+export const headingFont = localFont({
+  src: "../../public/fonts/NeueMontreal.woff",
+  variable: "--font-heading",
+  display: "swap",
+});
+
 export const base = neueMontreal;
-export const heading = neueMontreal;
+export const heading = headingFont;
 
 

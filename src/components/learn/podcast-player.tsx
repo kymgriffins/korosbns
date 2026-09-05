@@ -1,18 +1,15 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
-import Image from "next/image";
+import React, { useState, useRef } from "react";
 import {
   Play,
   Pause,
   Volume2,
   VolumeX,
   Radio,
-  Headphones,
   SkipForward,
   SkipBack,
   Clock,
-  Sparkles,
 } from "lucide-react";
 import { cn } from "@/utils";
 
@@ -69,55 +66,53 @@ export function PodcastPlayer({ className }: { className?: string }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [progress, setProgress] = useState(24);
-  const audioRef = useRef<HTMLAudioElement>(null);
 
   const togglePlay = () => {
     setIsPlaying((prev) => !prev);
   };
 
   return (
-    <div
-      className={cn(
-        "rounded-3xl border border-border/60 bg-gradient-to-b from-card via-card to-muted/20 p-6 sm:p-8 shadow-xl",
-        className,
-      )}
-    >
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-        {/* Left: Vinyl Cover + Main Player Controller */}
-        <div className="lg:col-span-5 flex flex-col items-center sm:items-start gap-6">
-          <div className="relative aspect-square w-full max-w-[280px] overflow-hidden rounded-2xl border border-border/80 shadow-2xl bg-black group">
-            <Image
-              src={activeEpisode.coverUrl}
-              alt={activeEpisode.title}
-              fill
-              className="object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-            <div className="absolute top-3 left-3">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 text-amber-400 text-[10px] font-mono font-bold tracking-wider backdrop-blur-md">
-                <Radio className="size-3 animate-pulse" />
-                PODCAST & AUDIO
+    <div className={cn("w-full", className)}>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
+        {/* Left: Active Episode Details & Audio Console — Zero Outer Card Nesting */}
+        <div className="lg:col-span-7 space-y-6">
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-mono font-bold tracking-wider">
+                <Radio className="size-3.5 animate-pulse" />
+                <span>PODCAST & FIELD AUDIO</span>
+              </span>
+              <span className="font-mono text-xs text-muted-foreground">
+                {activeEpisode.subtitle}
               </span>
             </div>
-            <div className="absolute bottom-3 left-3 right-3 text-white">
-              <p className="font-mono text-xs text-white/80">{activeEpisode.subtitle}</p>
-              <p className="font-bold text-sm truncate">{activeEpisode.guest}</p>
-            </div>
+
+            <h3 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-black text-foreground leading-tight tracking-tight">
+              {activeEpisode.title}
+            </h3>
+
+            <p className="text-xs sm:text-sm font-mono text-amber-600 dark:text-amber-400 font-bold">
+              {activeEpisode.guest}
+            </p>
+
+            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+              {activeEpisode.summary}
+            </p>
           </div>
 
-          {/* Controls */}
-          <div className="w-full max-w-[280px] space-y-3">
+          {/* Direct Interactive Audio Scrubber & Controls */}
+          <div className="pt-2 space-y-3">
             <div className="flex items-center justify-between text-xs font-mono text-muted-foreground">
               <span>08:14</span>
               <div className="flex items-center gap-1 text-amber-600 dark:text-amber-400 font-bold">
-                <Clock className="size-3" />
+                <Clock className="size-3.5" />
                 <span>{activeEpisode.duration}</span>
               </div>
             </div>
 
-            {/* Simulated Scrubber Bar */}
+            {/* Interactive Scrubber Bar */}
             <div
-              className="relative h-2 w-full rounded-full bg-muted cursor-pointer overflow-hidden"
+              className="relative h-2.5 w-full rounded-full bg-muted cursor-pointer overflow-hidden"
               onClick={(e) => {
                 const rect = e.currentTarget.getBoundingClientRect();
                 const pct = Math.round(((e.clientX - rect.left) / rect.width) * 100);
@@ -130,124 +125,113 @@ export function PodcastPlayer({ className }: { className?: string }) {
               />
             </div>
 
-            {/* Playback Buttons */}
-            <div className="flex items-center justify-between pt-1">
+            {/* Playback Buttons Bar */}
+            <div className="flex items-center justify-between pt-2">
               <button
                 type="button"
                 onClick={() => setIsMuted((prev) => !prev)}
                 className="text-muted-foreground hover:text-foreground transition-colors p-2"
                 aria-label={isMuted ? "Unmute" : "Mute"}
               >
-                {isMuted ? <VolumeX className="size-4" /> : <Volume2 className="size-4" />}
+                {isMuted ? <VolumeX className="size-5" /> : <Volume2 className="size-5" />}
               </button>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-4">
                 <button
                   type="button"
                   onClick={() => setProgress((p) => Math.max(0, p - 10))}
-                  className="text-muted-foreground hover:text-foreground transition-colors p-1"
+                  className="text-muted-foreground hover:text-foreground transition-colors p-2 rounded-full hover:bg-muted cursor-pointer"
                   aria-label="Skip backward 10s"
                 >
-                  <SkipBack className="size-4" />
+                  <SkipBack className="size-5" />
                 </button>
 
                 <button
                   type="button"
                   onClick={togglePlay}
-                  className="flex size-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 transition-transform active:scale-95"
+                  className="flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 transition-transform active:scale-95 cursor-pointer"
                   aria-label={isPlaying ? "Pause podcast" : "Play podcast"}
                 >
                   {isPlaying ? (
-                    <Pause className="size-5 fill-current" />
+                    <Pause className="size-6 fill-current" />
                   ) : (
-                    <Play className="size-5 fill-current pl-0.5" />
+                    <Play className="size-6 fill-current pl-1" />
                   )}
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setProgress((p) => Math.min(100, p + 10))}
-                  className="text-muted-foreground hover:text-foreground transition-colors p-1"
+                  className="text-muted-foreground hover:text-foreground transition-colors p-2 rounded-full hover:bg-muted cursor-pointer"
                   aria-label="Skip forward 10s"
                 >
-                  <SkipForward className="size-4" />
+                  <SkipForward className="size-5" />
                 </button>
               </div>
 
-              <div className="size-8" />
+              <div className="w-9" />
             </div>
           </div>
         </div>
 
-        {/* Right: Active Episode Details + Episode Playlist Selector */}
-        <div className="lg:col-span-7 space-y-6">
-          <div className="space-y-2 border-b border-border/40 pb-4">
-            <span className="font-mono text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest">
-              Now Playing Episode
-            </span>
-            <h3 className="font-heading text-2xl sm:text-3xl font-extrabold text-foreground">
-              {activeEpisode.title}
-            </h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              {activeEpisode.summary}
+        {/* Right: Unnested Season 1 Playlist */}
+        <div className="lg:col-span-5 space-y-3 pt-2">
+          <div className="flex items-center justify-between pb-1">
+            <p className="font-mono text-xs font-bold text-foreground uppercase tracking-wider">
+              Season 1 Broadcasts
             </p>
+            <span className="font-mono text-xs text-muted-foreground">3 Episodes</span>
           </div>
 
-          {/* Episode List */}
-          <div className="space-y-3">
-            <p className="font-mono text-xs font-bold text-foreground uppercase tracking-wider">
-              Season 1 Episodes:
-            </p>
-            <div className="space-y-2">
-              {DEFAULT_EPISODES.map((ep) => {
-                const isActive = ep.id === activeEpisode.id;
-                return (
-                  <button
-                    key={ep.id}
-                    type="button"
-                    onClick={() => {
-                      setActiveEpisode(ep);
-                      setIsPlaying(true);
-                      setProgress(0);
-                    }}
-                    className={cn(
-                      "w-full text-left p-3.5 rounded-2xl border transition-all flex items-center justify-between gap-4",
-                      isActive
-                        ? "border-primary bg-primary/5 shadow-xs"
-                        : "border-border/60 bg-card hover:border-primary/40 hover:bg-muted/30",
-                    )}
-                  >
-                    <div className="flex items-center gap-3 overflow-hidden">
-                      <div
-                        className={cn(
-                          "size-8 rounded-full flex items-center justify-center shrink-0 font-mono text-xs font-bold",
-                          isActive
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted text-muted-foreground",
-                        )}
-                      >
-                        {isActive && isPlaying ? (
-                          <div className="flex gap-0.5 items-end h-3">
-                            <span className="w-0.5 bg-current h-2 animate-bounce" />
-                            <span className="w-0.5 bg-current h-3 animate-bounce [animation-delay:0.2s]" />
-                            <span className="w-0.5 bg-current h-1.5 animate-bounce [animation-delay:0.4s]" />
-                          </div>
-                        ) : (
-                          <Play className="size-3 fill-current pl-0.5" />
-                        )}
-                      </div>
-                      <div className="truncate">
-                        <p className="text-xs font-bold text-foreground truncate">{ep.title}</p>
-                        <p className="text-[11px] text-muted-foreground truncate">{ep.guest}</p>
-                      </div>
+          <div className="space-y-2.5">
+            {DEFAULT_EPISODES.map((ep) => {
+              const isActive = ep.id === activeEpisode.id;
+              return (
+                <button
+                  key={ep.id}
+                  type="button"
+                  onClick={() => {
+                    setActiveEpisode(ep);
+                    setIsPlaying(true);
+                    setProgress(0);
+                  }}
+                  className={cn(
+                    "w-full text-left p-4 rounded-2xl border transition-all flex items-center justify-between gap-4 cursor-pointer",
+                    isActive
+                      ? "border-primary bg-primary/5 shadow-xs"
+                      : "border-border/60 bg-card/60 hover:border-primary/40 hover:bg-muted/40",
+                  )}
+                >
+                  <div className="flex items-center gap-3.5 overflow-hidden">
+                    <div
+                      className={cn(
+                        "size-9 rounded-full flex items-center justify-center shrink-0 font-mono text-xs font-bold",
+                        isActive
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted text-muted-foreground",
+                      )}
+                    >
+                      {isActive && isPlaying ? (
+                        <div className="flex gap-0.5 items-end h-3">
+                          <span className="w-0.5 bg-current h-2 animate-bounce" />
+                          <span className="w-0.5 bg-current h-3 animate-bounce [animation-delay:0.2s]" />
+                          <span className="w-0.5 bg-current h-1.5 animate-bounce [animation-delay:0.4s]" />
+                        </div>
+                      ) : (
+                        <Play className="size-3.5 fill-current pl-0.5" />
+                      )}
                     </div>
-                    <span className="font-mono text-xs text-muted-foreground shrink-0 font-medium">
-                      {ep.duration}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
+                    <div className="truncate">
+                      <p className="text-xs sm:text-sm font-bold text-foreground truncate">{ep.title}</p>
+                      <p className="text-[11px] text-muted-foreground truncate">{ep.guest}</p>
+                    </div>
+                  </div>
+                  <span className="font-mono text-xs text-muted-foreground shrink-0 font-medium">
+                    {ep.duration}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>

@@ -20,7 +20,6 @@ import {
   PlaySquare,
   Radio,
   Search,
-  Sparkles,
   Trophy,
   X,
 } from "lucide-react";
@@ -478,20 +477,24 @@ export function LearnHubHome() {
             </Link>
           </div>
 
-          {/* 4 Sleek Vertical Reel Preview Cards (No full snap scroller inline) */}
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {DEFAULT_REELS.slice(0, 4).map((reel) => (
+          {/* Vertical Reel Preview Cards — Single on mobile to avoid squeezing, 4 on desktop */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {DEFAULT_REELS.slice(0, 4).map((reel, idx) => (
               <Link
                 key={reel.id}
                 href="/learn/stories"
-                className="group relative aspect-[9/16] overflow-hidden rounded-3xl border border-border/60 bg-black shadow-lg transition-transform hover:scale-[1.02]"
+                className={cn(
+                  "group relative aspect-[9/16] overflow-hidden rounded-3xl border border-border/60 bg-black shadow-lg transition-transform hover:scale-[1.02]",
+                  idx > 0 && "hidden sm:block",
+                  idx === 0 && "w-full max-w-[320px] mx-auto sm:max-w-none"
+                )}
               >
                 <Image
                   src={reel.posterUrl}
                   alt={reel.title}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  sizes="(max-width: 640px) 50vw, 25vw"
+                  sizes="(max-width: 640px) 100vw, 25vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/30 to-black/40" />
 
@@ -533,7 +536,6 @@ export function LearnHubHome() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div className="space-y-2 max-w-2xl">
                 <div className="inline-flex items-center gap-1.5 font-mono text-xs font-bold text-rose-500 uppercase tracking-wider">
-                  <Sparkles className="size-3.5" />
                   <span>Independent Immersive Experience</span>
                 </div>
                 <h3 className="font-heading text-2xl font-bold text-foreground">
@@ -576,10 +578,8 @@ export function LearnHubHome() {
             </p>
           </div>
 
-          {/* Interactive Waveform Podcast Player */}
-          <div className="rounded-3xl border border-border/70 bg-card p-6 sm:p-10 shadow-sm">
-            <PodcastPlayer />
-          </div>
+          {/* Interactive Waveform Podcast Player — Unnested, zero outer borders */}
+          <PodcastPlayer />
 
           {/* Civic Commons Closing Sign-Off */}
           <div className="mt-16 pt-10 border-t border-border/40 flex flex-col md:flex-row md:items-center justify-between gap-6 text-xs font-mono text-muted-foreground">

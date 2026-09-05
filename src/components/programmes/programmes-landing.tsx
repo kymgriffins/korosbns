@@ -8,7 +8,6 @@ import {
   Play,
   FileSearch,
   Radio,
-  Sparkles,
   Smartphone,
   Users2,
   Film,
@@ -280,10 +279,10 @@ export function ProgrammesLanding() {
               </div>
             </div>
 
-            {/* Right Photo-Essay Canvas */}
+            {/* Right Photo-Essay Canvas — Mobile compact 16:10, desktop 4:5 */}
             <div className="lg:col-span-6">
               <ParallaxWrapper speed={0.2}>
-                <div className="relative aspect-[4/5] w-full overflow-hidden rounded-3xl bg-muted shadow-2xl">
+                <div className="relative aspect-[16/10] sm:aspect-[4/5] w-full overflow-hidden rounded-3xl bg-muted shadow-2xl">
                   <Image
                     src={BNS_COMMUNITY_IMAGES.forumD}
                     alt="Community members conducting outdoor ward budget audit baraza"
@@ -420,33 +419,25 @@ export function ProgrammesLanding() {
             </p>
           </div>
 
-          {/* 21:9 Ultra-Wide Cinema Display */}
-          <ParallaxWrapper speed={0.15}>
-            <div className="relative aspect-[21/9] w-full overflow-hidden rounded-3xl bg-zinc-950 shadow-2xl mb-12 border border-zinc-800/60">
-              <Image
-                src="/images/treasury/budget sasa ni delivery.jpg"
-                alt="BNS Studios flagship 21:9 screening film"
-                fill
-                className="object-cover"
-                sizes="100vw"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
-              <div className="absolute bottom-6 left-6 sm:bottom-8 sm:left-8 right-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-                <div className="space-y-1">
-                  <span className="text-xs font-bold uppercase tracking-widest text-primary">
-                    Flagship Studio Reel
-                  </span>
-                  <p className="text-base sm:text-lg font-bold text-white">
-                    &ldquo;Budget Sasa Ni Delivery&rdquo; · 480K+ Views
-                  </p>
-                </div>
-                <div className="flex items-center gap-2 text-xs uppercase font-bold text-zinc-300">
-                  <Film className="size-4 text-primary" />
-                  <span>21:9 Widescreen Cinema</span>
-                </div>
-              </div>
+          {/* Cinema Impact Metrics Bar — Clean, authoritative editorial spread with zero AI slop */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 py-10 my-8 border-y border-zinc-800/80">
+            <div className="space-y-1">
+              <span className="text-3xl sm:text-4xl font-black text-primary tracking-tight">480K+</span>
+              <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">Reel &amp; Doc Views</p>
             </div>
-          </ParallaxWrapper>
+            <div className="space-y-1">
+              <span className="text-3xl sm:text-4xl font-black text-white tracking-tight">100%</span>
+              <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">Surplus Reinvested</p>
+            </div>
+            <div className="space-y-1">
+              <span className="text-3xl sm:text-4xl font-black text-primary tracking-tight">47</span>
+              <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">Counties Supported</p>
+            </div>
+            <div className="space-y-1">
+              <span className="text-3xl sm:text-4xl font-black text-white tracking-tight">21:9</span>
+              <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">Cinematic Master Reels</p>
+            </div>
+          </div>
 
           {/* The Double Impact Covenant */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start pt-6">
