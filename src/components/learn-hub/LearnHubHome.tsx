@@ -172,20 +172,23 @@ export function LearnHubHome() {
                 href="/learn/stories"
                 className="group relative block aspect-[9/16] w-full max-w-[280px] sm:max-w-[300px] overflow-hidden rounded-[2.2rem] bg-black shadow-2xl transition-all duration-500 hover:shadow-primary/25 hover:-translate-y-1.5"
               >
-                {/* 9:16 Video Poster */}
-                <Image
-                  src="/images/marketing newsletter subcribe/Nelly with The Mic.jpg"
-                  alt="Highlight of the Week: County Budget in 60s"
-                  fill
-                  priority
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  sizes="300px"
+                {/* 9:16 Video Poster & Live Preview */}
+                <video
+                  src="https://bns.stratapointadvisory.org/0cd8319a419e6b3749a7206ba4d68801.mp4"
+                  poster="/images/marketing newsletter subcribe/Nelly with The Mic.jpg"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  className="absolute inset-0 size-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  aria-label="Highlight of the Week reel video"
                 />
                 {/* Cinematic Overlays */}
-                <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/90" />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/90 pointer-events-none" />
 
                 {/* Top Badge: SOTD / Highlight of the Week */}
-                <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-10">
+                <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-10 pointer-events-none">
                   <div className="inline-flex items-center gap-1.5 rounded-full bg-black/60 backdrop-blur-md px-3 py-1 text-[11px] font-bold text-white border border-white/20">
                     <Trophy className="size-3 text-amber-400" />
                     <span>Highlight of Week</span>
@@ -204,7 +207,7 @@ export function LearnHubHome() {
                 </div>
 
                 {/* Floating Right Interaction Column (True TikTok UI) */}
-                <div className="absolute right-3 bottom-20 flex flex-col items-center gap-3 z-10 text-white text-[10px] font-bold">
+                <div className="absolute right-3 bottom-20 flex flex-col items-center gap-3 z-10 text-white text-[10px] font-bold pointer-events-none">
                   <div className="flex flex-col items-center">
                     <div className="size-8 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center border border-white/10 group-hover:bg-rose-500/80 transition-colors">
                       <Heart className="size-4 fill-white text-white" />
@@ -220,7 +223,7 @@ export function LearnHubHome() {
                 </div>
 
                 {/* TikTok Bottom Metadata */}
-                <div className="absolute bottom-4 left-4 right-14 z-10 text-white space-y-1">
+                <div className="absolute bottom-4 left-4 right-14 z-10 text-white space-y-1 pointer-events-none">
                   <div className="flex items-center gap-1.5 text-xs font-bold text-white/90">
                     <span>@nellymaina</span>
                     <span className="size-1 rounded-full bg-primary" />
@@ -233,7 +236,7 @@ export function LearnHubHome() {
                     How KSh 420B moves from Treasury to local dispensaries.
                   </p>
                   <div className="flex items-center gap-2 pt-1 text-[10px] font-mono font-bold text-primary">
-                    <span className="bg-primary/20 text-primary-foreground/90 px-1.5 py-0.5 rounded">0:58</span>
+                    <span className="bg-primary/20 text-primary-foreground/90 px-1.5 py-0.5 rounded">2:16</span>
                     <span className="text-white/80">124K Views</span>
                   </div>
                 </div>

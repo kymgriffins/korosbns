@@ -19,6 +19,7 @@ export function LearnHubStories() {
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [viewMode, setViewMode] = useState<"reel" | "grid">("reel");
+  const [activeReelIndex, setActiveReelIndex] = useState(0);
 
   // Lock body scroll so reels page is 100% fixed with zero outer page movement
   useEffect(() => {
@@ -132,17 +133,20 @@ export function LearnHubStories() {
               </button>
             </div>
           ) : (
-            <ReelsScroller reels={filtered} isFixedFullscreen={true} />
+            <ReelsScroller key={`scroller-${activeReelIndex}`} reels={filtered} isFixedFullscreen={true} initialIndex={activeReelIndex} />
           )}
         </div>
       ) : (
         /* 03 — GRID VIEW */
         <div className="flex-1 w-full overflow-y-auto pt-20 pb-12 px-4 sm:px-8 max-w-5xl mx-auto scrollbar-none">
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((reel) => (
+            {filtered.map((reel, idx) => (
               <div
                 key={reel.id}
-                onClick={() => setViewMode("reel")}
+                onClick={() => {
+                  setActiveReelIndex(idx);
+                  setViewMode("reel");
+                }}
                 className="group relative cursor-pointer overflow-hidden rounded-2xl border border-white/15 bg-zinc-950 shadow-md transition-all hover:border-primary/60 hover:scale-[1.01]"
               >
                 <div className="relative aspect-[9/16] max-h-[440px] w-full overflow-hidden bg-black">

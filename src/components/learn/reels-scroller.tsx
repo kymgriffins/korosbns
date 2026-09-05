@@ -102,14 +102,16 @@ interface ReelsScrollerProps {
   reels?: ReelItem[];
   className?: string;
   isFixedFullscreen?: boolean;
+  initialIndex?: number;
 }
 
 export function ReelsScroller({
   reels = DEFAULT_REELS,
   className,
   isFixedFullscreen = false,
+  initialIndex = 0,
 }: ReelsScrollerProps) {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(initialIndex);
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [likedMap, setLikedMap] = useState<Record<string, boolean>>({});
@@ -134,6 +136,13 @@ export function ReelsScroller({
       target.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
   };
+
+  // Scroll to initial index on mount if specified
+  useEffect(() => {
+    if (initialIndex > 0 && initialIndex < reels.length) {
+      scrollToReel(initialIndex);
+    }
+  }, [initialIndex, reels.length]);
 
   // Keyboard navigation
   useEffect(() => {
