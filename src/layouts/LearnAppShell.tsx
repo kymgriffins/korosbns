@@ -137,7 +137,7 @@ export function LearnAppShell({ children }: { children: React.ReactNode }) {
             >
               <span className="size-2 rounded-full bg-primary animate-pulse" />
               <span className="font-heading font-black text-sm sm:text-base">BNS Learn</span>
-              <span className="hidden md:inline-block rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-mono font-bold text-primary uppercase">
+              <span className="hidden md:inline-block rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary uppercase">
                 Civic Hub
               </span>
             </Link>
@@ -164,7 +164,7 @@ export function LearnAppShell({ children }: { children: React.ReactNode }) {
                   {item.badge && (
                     <span
                       className={cn(
-                        "rounded-full px-1.5 py-0.2 text-[9px] font-mono font-bold tracking-wider uppercase border",
+                        "rounded-full px-1.5 py-0.2 text-[9px] font-bold tracking-wider uppercase border",
                         active
                           ? "bg-primary-foreground/20 text-primary-foreground border-primary-foreground/30"
                           : item.badgeColor,

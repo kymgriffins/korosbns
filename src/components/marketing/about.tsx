@@ -58,9 +58,19 @@ export default function About() {
                 Budget Ndio Story was founded by young Kenyans to dismantle the culture of budget secrecy. We track KSh 4.82 Trillion in national and county spending, transforming opaque fiscal policy into forensic investigations, viral media, and citizen accountability.
               </p>
 
-              <div className="flex flex-wrap items-center gap-3 pt-2">
-                <PillButtonGroup href="/programmes" label="Explore the 4 Desks" />
-                <PillButtonGroup href="#origin-story" label="Our Origin Story" />
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2 w-full sm:w-auto">
+                <PillButtonGroup
+                  href="/programmes"
+                  label="Explore the 4 Desks"
+                  variant="primary"
+                  className="w-full sm:w-auto justify-center"
+                />
+                <PillButtonGroup
+                  href="#origin-story"
+                  label="Our Origin Story"
+                  variant="outline"
+                  className="w-full sm:w-auto justify-center"
+                />
               </div>
 
               <div className="grid max-w-lg grid-cols-3 gap-4 border-t border-border/40 pt-6">

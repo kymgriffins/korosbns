@@ -32,7 +32,7 @@ export function LearnPageHeader({
 }: LearnPageHeaderProps) {
   return (
     <GsapReveal className={cn("space-y-5", className)}>
-      {eyebrow ? <EditorialPill className="mb-4">{eyebrow}</EditorialPill> : null}
+      {eyebrow ? <EditorialPill>{eyebrow}</EditorialPill> : null}
       <div className="space-y-4">
         <h1 className={cn(T.heroTitle, "max-w-3xl text-balance")}>{title}</h1>
         {description ? (

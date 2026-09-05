@@ -91,7 +91,7 @@ export function StickyStackedCycle({
 
           {/* Interactive Stepper Navigation (Clickable to jump) */}
           <div className="space-y-2 pt-2 border-t border-border/40">
-            <p className="text-[11px] font-mono uppercase tracking-widest text-muted-foreground mb-3">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-3">
               Stages · Live Progression ({activeIndex + 1} of {items.length})
             </p>
             <div className="space-y-1.5">
@@ -112,7 +112,7 @@ export function StickyStackedCycle({
                     <div className="flex items-center gap-3">
                       <span
                         className={cn(
-                          "font-mono text-xs font-bold",
+                          "text-xs font-black",
                           isActive ? "text-primary" : "text-muted-foreground"
                         )}
                       >
@@ -125,7 +125,7 @@ export function StickyStackedCycle({
                     {item.date ? (
                       <span
                         className={cn(
-                          "text-[10px] font-mono shrink-0 hidden sm:inline",
+                          "text-[10px] font-semibold shrink-0 hidden sm:inline",
                           isActive ? "text-background/80" : "text-muted-foreground/70"
                         )}
                       >
@@ -170,28 +170,24 @@ export function StickyStackedCycle({
                 key={item.id || idx}
                 id={`cycle-stage-${item.id || idx}`}
                 className={cn(
-                  "lg:sticky transition-all duration-300 rounded-3xl border border-border/60 bg-card p-6 sm:p-8 lg:p-10 shadow-xl overflow-hidden backdrop-blur-md",
+                  "lg:sticky lg:top-28 transition-all duration-300 rounded-3xl border border-border/60 bg-card p-6 sm:p-8 lg:p-10 shadow-xl overflow-hidden backdrop-blur-md",
                   isDelivery ? "border-primary/50 ring-1 ring-primary/20" : ""
                 )}
-                style={{
-                  top: `calc(7rem + ${idx * 1.25}rem)`,
-                  zIndex: idx + 10,
-                }}
               >
                 {/* Stage Header */}
                 <div className="flex items-center justify-between gap-4 pb-6 border-b border-border/40">
                   <div className="flex items-center gap-3">
-                    <span className="font-mono text-2xl sm:text-3xl font-black text-primary">
+                    <span className="text-2xl sm:text-3xl font-black text-primary">
                       {item.step}
                     </span>
                     {item.badge && (
-                      <span className="rounded-full border border-border/40 bg-muted px-2.5 py-0.5 text-[10px] font-mono font-bold uppercase tracking-wider text-muted-foreground">
+                      <span className="rounded-full border border-border/40 bg-muted px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                         {item.badge}
                       </span>
                     )}
                   </div>
                   {item.date && (
-                    <span className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-mono font-bold text-primary">
+                    <span className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
                       {item.date}
                     </span>
                   )}
@@ -211,7 +207,7 @@ export function StickyStackedCycle({
                 {isDelivery && item.stat && (
                   <div className="mt-6 rounded-2xl border border-primary/20 bg-primary/[0.04] p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div>
-                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-primary">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
                         Delivery Metric
                       </span>
                       <p className="text-2xl sm:text-3xl font-black text-foreground">

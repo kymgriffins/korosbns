@@ -45,9 +45,9 @@ export function EditorialPill({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full font-semibold transition-colors duration-150",
+        "inline-flex items-center w-fit self-start shrink-0 rounded-full font-semibold transition-colors duration-150",
         // Sizes
-        size === "xs" && "gap-1.5 px-2.5 py-0.5 text-[10px] font-mono font-bold uppercase tracking-wider",
+        size === "xs" && "gap-1.5 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider",
         size === "sm" && "gap-1.5 px-3 py-0.5 text-xs",
         size === "default" && "gap-2 px-3.5 py-1 text-xs",
         // Variants

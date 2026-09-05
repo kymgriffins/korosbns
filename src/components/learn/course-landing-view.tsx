@@ -6,6 +6,7 @@ import { motion } from "motion/react";
 import { CheckCircle2, Clock, Loader2, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { EditorialPill } from "@/components/ui/editorial";
 import { LearnPageFrame } from "@/components/learn/learn-page-frame";
 import { learningData } from "@/data/learning";
 import {
@@ -100,38 +101,40 @@ export function CourseLandingView() {
 
   return (
     <LearnPageFrame className="space-y-0 pb-8">
-      {/* Dossier header — typewriter style */}
+      {/* Dossier header */}
       <motion.div
         variants={fadeInUp}
         initial="hidden"
         animate="visible"
-        className="border-b-2 border-foreground pb-6"
+        className="border-b border-border/40 pb-6"
       >
-        <Link
-          href="/learn"
-          className="mb-4 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground hover:text-foreground"
-        >
-          ← All modules
-        </Link>
-        <div className="mt-2 inline-flex items-center gap-1.5 border-2 border-primary/60 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-primary" style={{ transform: "rotate(-1deg)" }}>
-          Free module
+        <div className="flex items-center justify-between gap-3 mb-4">
+          <Link
+            href="/learn"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
+          >
+            ← All modules
+          </Link>
+          <EditorialPill variant="primary" size="xs">
+            Free Civic Module
+          </EditorialPill>
         </div>
-        <h1 className="mt-3 text-balance text-2xl font-bold leading-tight tracking-tight md:text-3xl">
+        <h1 className="text-balance text-2xl md:text-3xl font-bold leading-tight tracking-tight text-foreground">
           {mod.title}
         </h1>
         {mod.description && mod.description.trim() !== mod.title.trim() ? (
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{mod.description}</p>
         ) : null}
-        <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 border-t border-border/50 pt-4 text-xs text-muted-foreground">
+        <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border/40 pt-4 text-xs text-muted-foreground">
           {mod.author?.name ? (
-            <span className="font-semibold">By {mod.author.name}</span>
+            <span className="font-semibold text-foreground">By {mod.author.name}</span>
           ) : null}
           <span className="inline-flex items-center gap-1">
-            <Clock className="size-3" aria-hidden />~{estMinutes} min
+            <Clock className="size-3.5" aria-hidden />~{estMinutes} min
           </span>
           <span>{progress.total} lesson{progress.total === 1 ? "" : "s"}</span>
           {progress.isInProgress || progress.isCompleted ? (
-            <span className="tabular-nums">{progress.pct}% complete</span>
+            <span className="tabular-nums font-semibold text-primary">{progress.pct}% complete</span>
           ) : null}
         </div>
       </motion.div>
@@ -147,7 +150,7 @@ export function CourseLandingView() {
           <Progress value={progress.pct} className="h-2" />
         )}
 
-        <Button asChild size="lg" className="h-12 w-full rounded-2xl text-base font-semibold">
+        <Button asChild size="lg" className="h-12 w-full rounded-full text-base font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm transition-all">
           <Link href={progress.startHref}>
             <Play className="size-4" aria-hidden />
             {ctaLabel}
