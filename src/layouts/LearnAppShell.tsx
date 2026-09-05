@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -17,7 +18,6 @@ import { learnTabToHref } from "@/lib/learn-nav";
 import { useLearn, type LearnTab } from "@/contexts/learn-context";
 import { cn } from "@/utils";
 import { LearnMobileNav } from "@/layouts/LearnMobileNav";
-import { PageBreadcrumbs } from "@/components/global/page-breadcrumbs";
 
 /** Navigation items conforming to LearnTab type for backward compatibility */
 const NAV: { tab: LearnTab; label: string; href: string; icon: typeof BookOpen }[] = [
@@ -78,19 +78,39 @@ const FORMAT_LINKS: FormatNavLink[] = [
 ];
 
 /**
- * Mobile-first learn shell — standalone header (no marketing chrome), breadcrumbs, responsive dock.
+ * Mobile-first learn shell — standalone header (reveals on scroll), responsive dock.
  */
 export function LearnAppShell({ children }: { children: React.ReactNode }) {
   const { activeTab } = useLearn();
   const pathname = usePathname();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 40);
+    };
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const isLanding = pathname === "/learn";
+  const showNav = !isLanding || scrolled;
 
   return (
     <div
       data-testid="learn-app-shell"
       className="learn-app flex min-h-svh w-full min-w-0 flex-1 flex-col bg-background"
     >
-      {/* Standalone Learn Navbar sticky at top-0 (marketing nav removed) */}
-      <header className="sticky top-0 z-40 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+      {/* Standalone Learn Navbar — appears on scroll on landing, fixed on subpages */}
+      <header
+        className={cn(
+          "fixed top-0 left-0 right-0 z-40 w-full border-b border-border/40 bg-background/95 backdrop-blur-md transition-all duration-300",
+          showNav
+            ? "translate-y-0 opacity-100 shadow-xs pointer-events-auto"
+            : "-translate-y-full opacity-0 pointer-events-none"
+        )}
+      >
         <div className="learn-app-shell-inner flex h-14 items-center justify-between gap-3 px-4 sm:px-6">
           <div className="flex items-center gap-3 shrink-0">
             <Link
@@ -173,9 +193,13 @@ export function LearnAppShell({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      {/* Main Content Area */}
-      <main className="learn-app-shell-inner w-full flex-1 px-4 sm:px-6 pb-20 pt-2 md:pb-16">
-        {pathname !== "/learn" && <PageBreadcrumbs className="mb-4 text-xs" />}
+      {/* Main Content Area — no artificial offset on landing, pt-16 on subpages */}
+      <main
+        className={cn(
+          "learn-app-shell-inner w-full flex-1 px-4 sm:px-6 pb-20 md:pb-16",
+          isLanding ? "pt-0" : "pt-16"
+        )}
+      >
         {children}
       </main>
 
