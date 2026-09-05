@@ -14,14 +14,10 @@ vi.mock("@/components/marketing/landing-tiktok-phone", () => ({
 }));
 
 describe("LandingHero", () => {
-  it("renders brand pill, live news wire ticker, headline, and single mobile CTA", () => {
+  it("renders live news ticker, headline, and single mobile CTA", () => {
     render(<LandingHero />);
 
-    // Brand tag
-    expect(screen.getByText(/Budget Ndio Story/i)).toBeInTheDocument();
-
-    // Live news wire telemetry ticker
-    expect(screen.getByText(/WIRE/i)).toBeInTheDocument();
+    // Live news stream ticker items
     expect(screen.getAllByText(/Education Sector/i).length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText(/BNS Studio/i).length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText(/Calvina Praise/i).length).toBeGreaterThanOrEqual(1);

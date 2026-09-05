@@ -7,66 +7,51 @@ import { Marquee } from "@/components/ui/marquee";
 import { cn } from "@/utils";
 
 type TickerItem = {
-  badge: string;
-  badgeClass: string;
+  topic: string;
   text: string;
   href: string;
 };
 
 const TICKER_ITEMS: TickerItem[] = [
   {
-    badge: "EDUCATION",
-    badgeClass: "bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/20",
-    text: "📊 Education Sector: KSh 654B (PFM Act §25 allocation)",
+    topic: "Education Sector",
+    text: "KSh 654B allocated under PFM Act §25",
     href: "/reports",
   },
   {
-    badge: "BNS STUDIO",
-    badgeClass: "bg-purple-500/15 text-purple-600 dark:text-purple-400 border border-purple-500/20",
-    text: "🎙️ Commission forensic podcasts & animations · Double Impact model",
+    topic: "BNS Studio",
+    text: "Commission forensic podcasts & data animations",
     href: "/bns-studio#booking",
   },
   {
-    badge: "WATCH REEL",
-    badgeClass: "bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/20",
-    text: "📱 Calvina Praise breaks down the KES 12T Sovereign Debt",
+    topic: "Watch Reel",
+    text: "Calvina Praise breaks down the KES 12T Sovereign Debt",
     href: "/learn/stories",
   },
   {
-    badge: "HIGHLIGHT",
-    badgeClass: "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20",
-    text: "⚡ Controller of Budget: Q3 County Spending Disclosures published",
+    topic: "Controller of Budget",
+    text: "Q3 County Spending Disclosures published",
     href: "/reports",
   },
   {
-    badge: "ART. 201",
-    badgeClass: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20",
-    text: "⚖️ \"Openness, accountability and public participation in all financial matters\"",
+    topic: "Article 201",
+    text: "Openness, accountability and public participation in all financial matters",
     href: "/learn",
   },
   {
-    badge: "DEVOLUTION",
-    badgeClass: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20",
-    text: "🇰🇪 County Equitable Share: KSh 420B to 47 Counties (DoRA/CARA)",
+    topic: "Devolution Share",
+    text: "KSh 420B to 47 Counties under DoRA/CARA",
     href: "/reports",
   },
   {
-    badge: "CITIZEN AUDIT",
-    badgeClass: "bg-primary/15 text-primary border border-primary/20",
-    text: "🔍 Nelly Maina audits local dispensary funds in 4 counties",
+    topic: "Citizen Audit",
+    text: "Nelly Maina audits local dispensary funds in 4 counties",
     href: "/learn/stories",
   },
   {
-    badge: "HEALTH",
-    badgeClass: "bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20",
-    text: "🏥 Health Sector Ceiling: KSh 146B under citizen parliamentary scrutiny",
+    topic: "Health Ceiling",
+    text: "KSh 146B under citizen parliamentary scrutiny",
     href: "/reports",
-  },
-  {
-    badge: "STATUTE",
-    badgeClass: "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20",
-    text: "💡 95% of Kenya's budget is locked before June — Intervene in February",
-    href: "/learn/modules/budget-policy-statement",
   },
 ];
 
@@ -74,36 +59,41 @@ export function LandingHeroTicker({ className }: { className?: string } = {}) {
   return (
     <div
       className={cn(
-        "w-full min-w-0 max-w-xl rounded-xl border border-border/70 bg-card/75 dark:bg-zinc-950/75 backdrop-blur-md shadow-xs overflow-hidden flex items-center",
+        "w-full min-w-0 max-w-xl flex items-center gap-2.5 overflow-hidden rounded-full border border-border/60 bg-muted/40 dark:bg-zinc-900/50 py-1.5 pl-3 pr-2 backdrop-blur-xs transition-colors hover:border-border",
         className
       )}
     >
-      {/* Live Badge Anchor */}
-      <div className="shrink-0 flex items-center gap-1.5 px-2.5 py-1.5 bg-primary/10 border-r border-border/60 text-primary font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-wider select-none z-10">
-        <span className="size-2 rounded-full bg-rose-500 animate-pulse shrink-0" />
-        <span>WIRE</span>
-      </div>
+      {/* Subtle Live Pulse Dot (no obstructive pinned labels) */}
+      <span className="relative flex size-2 shrink-0 items-center justify-center">
+        <span className="absolute inline-flex size-full animate-ping rounded-full bg-rose-400 opacity-75" />
+        <span className="relative inline-flex size-1.5 rounded-full bg-rose-500" />
+      </span>
 
-      {/* Ticker Stream */}
+      {/* Full-width Unobstructed Marquee Stream */}
       <div className="relative min-w-0 flex-1 overflow-hidden">
-        <Marquee pauseOnHover repeat={3} className="py-1.5 w-full min-w-0 max-w-full overflow-hidden [--duration:95s] [--gap:1.75rem]">
+        <Marquee
+          pauseOnHover
+          repeat={3}
+          className="py-0.5 w-full min-w-0 max-w-full overflow-hidden [--duration:85s] [--gap:2.25rem]"
+        >
           {TICKER_ITEMS.map((item, idx) => (
             <Link
               key={idx}
               href={item.href}
-              className="inline-flex items-center gap-2 group whitespace-nowrap text-xs font-mono transition-opacity hover:opacity-100 opacity-90 shrink-0"
+              className="inline-flex items-center gap-1.5 group/item whitespace-nowrap text-xs text-foreground/90 hover:text-primary transition-colors shrink-0"
             >
-              <span className={cn("px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider shrink-0", item.badgeClass)}>
-                {item.badge}
+              <span className="font-semibold text-foreground tracking-tight">
+                {item.topic}
               </span>
-              <span className="text-foreground/90 group-hover:text-primary transition-colors">
-                {item.text}
+              <span className="text-muted-foreground">
+                — {item.text}
               </span>
-              <ArrowUpRight className="size-3 text-muted-foreground group-hover:text-primary transition-colors inline shrink-0" />
+              <ArrowUpRight className="size-3 text-muted-foreground/60 group-hover/item:text-primary transition-colors inline shrink-0" />
             </Link>
           ))}
         </Marquee>
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-card/90 to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-6 bg-gradient-to-l from-background/90 to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-3 bg-gradient-to-r from-background/90 to-transparent" />
       </div>
     </div>
   );

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { landingContent } from "@/content";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
-import { EditorialPill, PillButtonGroup } from "@/components/ui/editorial";
+import { PillButtonGroup } from "@/components/ui/editorial";
 import { LandingHeroTicker } from "@/components/marketing/landing-hero-ticker";
 import { LandingTikTokPhone } from "@/components/marketing/landing-tiktok-phone";
 import { HERO_SECTION_PADDING, SECTION_SHELL_INNER } from "@/layouts/section-shell";
@@ -24,11 +24,7 @@ export default function LandingHero() {
             data-gsap-hero-content
             className="flex flex-col items-start gap-4 lg:col-span-6 lg:gap-5 lg:pt-2 w-full min-w-0 max-w-full overflow-hidden"
           >
-            <EditorialPill dot pulse variant="default">
-              {hero.brand} · Sovereign Citizen Watchdog
-            </EditorialPill>
-
-            {/* Live Civic News Wire & Dynamic Ad Telemetry */}
+            {/* Live Civic News & Ad Stream — decluttered, full-width, single pill */}
             <LandingHeroTicker />
 
             <h1 id="landing-hero-heading" className={cn(T.heroTitle, "max-w-xl text-balance")}>

@@ -7,59 +7,50 @@ import { Marquee } from "@/components/ui/marquee";
 import { cn } from "@/utils";
 
 export type SovereignTickerItem = {
-  badge: string;
-  badgeClass: string;
+  topic: string;
   text: string;
   href: string;
 };
 
 export const SOVEREIGN_TICKER_ITEMS: SovereignTickerItem[] = [
   {
-    badge: "ART. 201",
-    badgeClass: "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20",
-    text: "⚖️ \"Openness, accountability and public participation in all financial matters\"",
+    topic: "Article 201 Standard",
+    text: "Openness, accountability and public participation in all financial matters",
     href: "/learn",
   },
   {
-    badge: "DESK 01 · POLICY",
-    badgeClass: "bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/20",
-    text: "📊 National Policy Desk: Auditing KES 4.82T National Budget & Sovereign Debt",
+    topic: "Desk 01 · Policy",
+    text: "Auditing KES 4.82T National Budget & Sovereign Debt",
     href: "/programmes#desk-01",
   },
   {
-    badge: "DESK 02 · COUNTY",
-    badgeClass: "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20",
-    text: "🏥 County Grassroots Desk: KES 420B Devolution tracking across 47 Counties",
+    topic: "Desk 02 · County",
+    text: "KES 420B Devolution tracking across 47 Counties",
     href: "/programmes#desk-02",
   },
   {
-    badge: "DESK 03 · WANAHABARI",
-    badgeClass: "bg-purple-500/15 text-purple-600 dark:text-purple-400 border border-purple-500/20",
-    text: "📰 Wanahabari Desk: 120+ Journalists trained in forensic fiscal reporting",
+    topic: "Desk 03 · Wanahabari",
+    text: "120+ Journalists trained in forensic fiscal reporting",
     href: "/programmes#desk-03",
   },
   {
-    badge: "DESK 04 · STUDIO",
-    badgeClass: "bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/20",
-    text: "🎬 BNS Studio Desk: Commercial commissions funding sovereign watchdog audits",
+    topic: "Desk 04 · BNS Studio",
+    text: "Commercial media commissions funding watchdog audits",
     href: "/bns-studio",
   },
   {
-    badge: "SOVEREIGN DEBT",
-    badgeClass: "bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/20",
-    text: "⚡ Out of every KES 100 collected, KES 64 is swallowed by debt servicing before services",
+    topic: "Sovereign Debt",
+    text: "KES 64 of every KES 100 collected is swallowed by debt servicing before services",
     href: "/reports",
   },
   {
-    badge: "COMMISSION BNS",
-    badgeClass: "bg-purple-500/15 text-purple-600 dark:text-purple-400 border border-purple-500/20",
-    text: "🎙️ Commission forensic explainers & podcasts · Double Impact revenue model",
+    topic: "Commission BNS",
+    text: "Commission forensic explainers & podcasts · Double Impact revenue model",
     href: "/bns-studio#booking",
   },
   {
-    badge: "CITIZEN AUDIT",
-    badgeClass: "bg-primary/15 text-primary border border-primary/20",
-    text: "🔍 Nelly Maina & Calvina Praise tracking county dispensaries & public funds",
+    topic: "Citizen Audit",
+    text: "Nelly Maina & Calvina Praise tracking county dispensaries & public funds",
     href: "/learn/stories",
   },
 ];
@@ -68,45 +59,41 @@ export function ProgrammesSovereignTicker({ className }: { className?: string } 
   return (
     <div
       className={cn(
-        "w-full min-w-0 max-w-full rounded-xl border border-border/70 bg-card/75 dark:bg-zinc-950/75 backdrop-blur-md shadow-xs overflow-hidden flex items-center",
+        "w-full min-w-0 max-w-full flex items-center gap-2.5 overflow-hidden rounded-full border border-border/60 bg-muted/40 dark:bg-zinc-900/50 py-1.5 pl-3 pr-2 backdrop-blur-xs transition-colors hover:border-border",
         className
       )}
     >
-      {/* Live Sovereign Badge Anchor */}
-      <div className="shrink-0 flex items-center gap-1.5 px-2.5 py-1.5 bg-emerald-500/10 border-r border-border/60 text-emerald-600 dark:text-emerald-400 font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-wider select-none z-10">
-        <span className="size-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-        <span>SOVEREIGN</span>
-      </div>
+      {/* Subtle Live Emerald Pulse Dot */}
+      <span className="relative flex size-2 shrink-0 items-center justify-center">
+        <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+        <span className="relative inline-flex size-1.5 rounded-full bg-emerald-500" />
+      </span>
 
-      {/* Marquee Ticker Stream */}
+      {/* Full-width Unobstructed Marquee Stream */}
       <div className="relative min-w-0 flex-1 overflow-hidden">
         <Marquee
           pauseOnHover
           repeat={3}
-          className="py-1.5 w-full min-w-0 max-w-full overflow-hidden [--duration:95s] [--gap:1.75rem]"
+          className="py-0.5 w-full min-w-0 max-w-full overflow-hidden [--duration:85s] [--gap:2.25rem]"
         >
           {SOVEREIGN_TICKER_ITEMS.map((item, idx) => (
             <Link
               key={idx}
               href={item.href}
-              className="inline-flex items-center gap-2 group whitespace-nowrap text-xs font-mono transition-opacity hover:opacity-100 opacity-90 shrink-0"
+              className="inline-flex items-center gap-1.5 group/item whitespace-nowrap text-xs text-foreground/90 hover:text-primary transition-colors shrink-0"
             >
-              <span
-                className={cn(
-                  "px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider shrink-0",
-                  item.badgeClass
-                )}
-              >
-                {item.badge}
+              <span className="font-semibold text-foreground tracking-tight">
+                {item.topic}
               </span>
-              <span className="text-foreground/90 group-hover:text-primary transition-colors">
-                {item.text}
+              <span className="text-muted-foreground">
+                — {item.text}
               </span>
-              <ArrowUpRight className="size-3 text-muted-foreground group-hover:text-primary transition-colors inline shrink-0" />
+              <ArrowUpRight className="size-3 text-muted-foreground/60 group-hover/item:text-primary transition-colors inline shrink-0" />
             </Link>
           ))}
         </Marquee>
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-card/90 to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-6 bg-gradient-to-l from-background/90 to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-3 bg-gradient-to-r from-background/90 to-transparent" />
       </div>
     </div>
   );
