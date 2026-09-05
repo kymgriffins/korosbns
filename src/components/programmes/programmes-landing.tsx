@@ -9,7 +9,6 @@ import {
   Clapperboard,
   Quote,
 } from "lucide-react";
-import { ProgrammesPartners } from "@/components/programmes/programmes-partners";
 import { EditorialCtaBand, EditorialPill, PillButtonGroup } from "@/components/ui/editorial";
 import { BNS_COMMUNITY_IMAGES, BNS_MEDIA_IMAGES } from "@/constants/bns-media-images";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
@@ -31,9 +30,9 @@ export function ProgrammesLanding() {
       />
 
       {/* 01 — MASTER SOVEREIGN HERO */}
-      <header className="relative overflow-hidden border-b border-border/40 bg-gradient-to-b from-primary/5 via-muted/10 to-background pt-20 pb-20 md:pt-32 md:pb-28">
+      <header className="relative overflow-hidden border-b border-border/40 bg-gradient-to-b from-primary/5 via-muted/10 to-background pt-4 pb-10 md:pt-6 md:pb-14">
         <div className={SECTION_SHELL_INNER}>
-          <div className="space-y-6 max-w-4xl">
+          <div className="space-y-4 max-w-4xl">
             <div>
               <EditorialPill dot pulse>
                 Four Operational Desks · One Sovereign Standard
@@ -52,7 +51,7 @@ export function ProgrammesLanding() {
               Kenya’s public budget crosses KSh 4.82 Trillion. Budget Ndio Story deploys 4 specialized operational desks to audit allocations, mobilize communities, train newsrooms, and produce cinematic media.
             </p>
 
-            <div className="flex flex-wrap items-center gap-4 pt-4">
+            <div className="flex flex-wrap items-center gap-4 pt-2">
               <PillButtonGroup
                 href="/work"
                 label="Explore Evidence Archive"
@@ -69,7 +68,7 @@ export function ProgrammesLanding() {
           </div>
 
           {/* Macro Impact Ledger Strip with Animated Counters */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 pt-12 border-t border-border/50">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 pt-8 border-t border-border/50 mt-8">
             <div className="space-y-1">
               <p className="font-heading text-4xl sm:text-5xl font-black text-primary tracking-tighter">
                 <MetricCounter value={4.82} prefix="KSh " suffix="T" decimals={2} />
@@ -125,7 +124,7 @@ export function ProgrammesLanding() {
       {/* ========================================================================= */}
       {/* SECTION 01: DESK 01 — BNS CONNECT (The Digital Hub)                      */}
       {/* ========================================================================= */}
-      <section id="desk-01" className="py-24 md:py-36 border-b border-border/40">
+      <section id="desk-01" className="min-h-screen flex items-center py-16 md:py-24 border-b border-border/40">
         <div className={SECTION_SHELL_INNER}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             <div className="lg:col-span-6 space-y-6">
@@ -210,7 +209,7 @@ export function ProgrammesLanding() {
       {/* ========================================================================= */}
       {/* SECTION 02: DESK 02 — BNS MASHINANI (The Grassroots Engine)             */}
       {/* ========================================================================= */}
-      <section id="desk-02" className="py-24 md:py-36 border-b border-border/40 bg-muted/10">
+      <section id="desk-02" className="min-h-screen flex items-center py-16 md:py-24 border-b border-border/40 bg-muted/10">
         <div className={SECTION_SHELL_INNER}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             <div className="lg:col-span-6 order-2 lg:order-1">
@@ -276,7 +275,7 @@ export function ProgrammesLanding() {
       {/* ========================================================================= */}
       {/* SECTION 03: DESK 03 — WANAHABARI LAB (The Investigative Media Arm)      */}
       {/* ========================================================================= */}
-      <section id="desk-03" className="py-24 md:py-36 border-b border-border/40">
+      <section id="desk-03" className="min-h-screen flex items-center py-16 md:py-24 border-b border-border/40">
         <div className={SECTION_SHELL_INNER}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             <div className="lg:col-span-6 space-y-6">
@@ -347,7 +346,7 @@ export function ProgrammesLanding() {
       {/* ========================================================================= */}
       {/* SECTION 04: DESK 04 — BNS STUDIOS (The Creative Agency Theatre)         */}
       {/* ========================================================================= */}
-      <section id="desk-04" className="py-24 md:py-36 border-b border-border/40 bg-zinc-950 text-white">
+      <section id="desk-04" className="min-h-screen flex items-center py-16 md:py-24 border-b border-border/40 bg-zinc-950 text-white">
         <div className={SECTION_SHELL_INNER}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             <div className="lg:col-span-6 order-2 lg:order-1">
@@ -425,9 +424,6 @@ export function ProgrammesLanding() {
           </div>
         </div>
       </section>
-
-      {/* 05 — ALLIED COALITIONS */}
-      <ProgrammesPartners />
 
       {/* 06 — PUNCHY MOTION CTA BAND */}
       <section className="py-20 md:py-32">

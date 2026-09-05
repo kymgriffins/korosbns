@@ -42,7 +42,7 @@ export function TelemetryHUD({
     <aside
       aria-label="Investigation reading telemetry"
       className={cn(
-        "sticky top-0 z-30 w-full border-b border-border/40 bg-background/80 backdrop-blur-md transition-colors",
+        "sticky top-14 md:top-16 z-30 w-full border-b border-border/40 bg-background/80 backdrop-blur-md transition-colors",
         className,
       )}
     >

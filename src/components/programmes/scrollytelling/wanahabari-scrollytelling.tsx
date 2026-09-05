@@ -1,22 +1,17 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
   ArrowLeft,
   FileText,
-  Eye,
-  ShieldCheck,
   Newspaper,
   Terminal,
-  ExternalLink,
-  Unlock,
+  Scale,
 } from "lucide-react";
-import { motion } from "motion/react";
 import { EditorialPill } from "@/components/ui/editorial/editorial-pill";
 import { PillButtonGroup } from "@/components/ui/editorial/pill-button-group";
-import { BNS_MEDIA_IMAGES, BNS_COMMUNITY_IMAGES } from "@/constants/bns-media-images";
+import { BNS_MEDIA_IMAGES } from "@/constants/bns-media-images";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 import {
   TelemetryHUD,
@@ -24,116 +19,6 @@ import {
   ParallaxWrapper,
   MetricCounter,
 } from "@/components/motion";
-
-interface RedactedItemProps {
-  redactedId: string;
-  classification: string;
-  sourceDoc: string;
-  hiddenAmount: string;
-  findingHeadline: string;
-  findingDetail: string;
-  impactNote: string;
-}
-
-function RedactedInvestigationFold({
-  redactedId,
-  classification,
-  sourceDoc,
-  hiddenAmount,
-  findingHeadline,
-  findingDetail,
-  impactNote,
-}: RedactedItemProps) {
-  const [unredacted, setUnredacted] = useState(false);
-
-  return (
-    <div className="py-16 md:py-24 border-t border-border/40 space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-2 font-mono text-xs">
-          <span className="px-2.5 py-1 rounded-sm bg-red-500/10 text-red-600 dark:text-red-400 font-bold border border-red-500/20">
-            {classification}
-          </span>
-          <span className="text-muted-foreground">REF: {redactedId}</span>
-        </div>
-
-        <button
-          onClick={() => setUnredacted(!unredacted)}
-          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold bg-muted hover:bg-muted/80 text-foreground transition-all cursor-pointer border border-border"
-        >
-          {unredacted ? (
-            <>
-              <Eye className="size-3.5 text-primary" />
-              <span>Conceal Redaction</span>
-            </>
-          ) : (
-            <>
-              <Unlock className="size-3.5 text-red-500" />
-              <span>Click or Scroll to Declassify</span>
-            </>
-          )}
-        </button>
-      </div>
-
-      {/* The Redaction Visual Box */}
-      <div className="relative rounded-2xl border border-border/70 bg-card p-6 sm:p-8 space-y-4 overflow-hidden shadow-xs">
-        <div className="flex items-center justify-between text-xs font-mono text-muted-foreground border-b border-border/40 pb-3">
-          <span>Source: {sourceDoc}</span>
-          <span className="text-primary font-bold">Wanahabari Lab Leak Desk</span>
-        </div>
-
-        {/* Animated Redaction Bar Container */}
-        <div className="relative">
-          <div className="space-y-3">
-            <h3 className="font-heading text-2xl sm:text-3xl font-black text-foreground">
-              {findingHeadline}
-            </h3>
-
-            <div className="flex items-baseline gap-3">
-              <span className="font-heading text-4xl sm:text-6xl font-black text-primary tracking-tighter">
-                {hiddenAmount}
-              </span>
-              <span className="font-mono text-xs uppercase text-muted-foreground font-bold">
-                Unaccounted Variance
-              </span>
-            </div>
-
-            <p className="text-base sm:text-lg text-foreground/85 leading-relaxed pt-2">
-              {findingDetail}
-            </p>
-          </div>
-
-          {/* Black Confidential Overlay that slides away */}
-          <motion.div
-            initial={false}
-            animate={{
-              x: unredacted ? "105%" : "0%",
-              opacity: unredacted ? 0 : 0.96,
-            }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute inset-0 bg-zinc-950/95 flex flex-col items-center justify-center p-6 text-center rounded-lg backdrop-blur-xs cursor-pointer select-none"
-            onClick={() => setUnredacted(true)}
-          >
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-600/20 text-red-400 font-mono text-xs font-bold border border-red-500/30">
-              <ShieldCheck className="size-4 text-red-400" />
-              <span>CONFIDENTIAL FISCAL LEAK RECORD</span>
-            </div>
-            <p className="font-heading text-xl sm:text-2xl font-bold text-white mt-3">
-              Classified Investigative Finding
-            </p>
-            <p className="text-xs font-mono text-zinc-400 mt-1">
-              Click to lift redaction and reveal verified financial variance
-            </p>
-          </motion.div>
-        </div>
-
-        <div className="pt-3 border-t border-border/40 flex items-center justify-between text-xs font-mono text-muted-foreground">
-          <span>{impactNote}</span>
-          <span className="text-foreground font-bold">Audited & Verified</span>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export function WanahabariScrollytelling() {
   return (
@@ -146,10 +31,10 @@ export function WanahabariScrollytelling() {
       />
 
       {/* 01 — NEWSPAPER EDITORIAL MASTHEAD HERO */}
-      <header className="relative border-b border-border/40 bg-gradient-to-b from-red-500/5 via-muted/10 to-background pt-20 pb-20 md:pt-32 md:pb-28 overflow-hidden">
+      <header className="relative border-b border-border/40 bg-gradient-to-b from-red-500/5 via-muted/10 to-background pt-4 pb-10 md:pt-6 md:pb-14 overflow-hidden">
         <div className={SECTION_SHELL_INNER}>
           {/* Breadcrumb back to programmes */}
-          <nav aria-label="Breadcrumb" className="mb-8">
+          <nav aria-label="Breadcrumb" className="mb-3">
             <Link
               href="/programmes"
               className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground"
@@ -159,7 +44,7 @@ export function WanahabariScrollytelling() {
             </Link>
           </nav>
 
-          <div className="space-y-8 max-w-5xl">
+          <div className="space-y-4 max-w-5xl">
             {/* Masthead Bar */}
             <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/60 pb-4 font-mono text-xs">
               <div className="flex items-center gap-2">
@@ -352,41 +237,115 @@ export function WanahabariScrollytelling() {
         </div>
       </section>
 
-      {/* 04 — CHAPTER 03: SCROLL-TRIGGERED REDACTED REVELATIONS */}
+      {/* 04 — CHAPTER 03: INVESTIGATIVE CASE DOSSIERS */}
       <section className="py-24 md:py-36 border-b border-border/30">
         <div className={SECTION_SHELL_INNER}>
           <div className="max-w-3xl space-y-4 mb-16">
             <span className="font-mono text-xs font-bold text-red-500 uppercase tracking-widest">
-              Chapter 03 · Leaked Evidence Ledger
+              Chapter 03 · Investigative Case Studies
             </span>
             <h2 className="font-heading text-3xl sm:text-5xl font-black text-foreground">
               What our investigative alumni uncovered.
             </h2>
             <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-              Real investigative revelations published by Wanahabari Lab fellows that forced government audits and parliamentary corrections.
+              Real forensic investigations published by Wanahabari Lab fellows that exposed fiscal diversion and forced parliamentary corrections.
             </p>
           </div>
 
-          <div className="space-y-6">
-            <RedactedInvestigationFold
-              redactedId="LEAK-2025-084"
-              classification="CLASS-A FISCAL DIVERSION"
-              sourceDoc="County Executive Supplementary Budget II · FY2024/25"
-              hiddenAmount="KSh 1,840,000,000"
-              findingHeadline="County Health Contingency Fund Diverted to Luxury Travel Vouchers"
-              findingDetail="Wanahabari fellow uncovered KSh 1.84 Billion intended for dispensary antibiotic restocking redirected to county executive per diem allowances over Christmas recess."
-              impactNote="Published on Daily Nation Front Page; sparked Senate Public Accounts Committee subpoena."
-            />
+          <div className="space-y-8">
+            {/* Case 01 */}
+            <article className="rounded-3xl border border-border/70 bg-card p-6 sm:p-10 shadow-sm space-y-6">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/40 pb-4 text-xs font-mono">
+                <div className="flex items-center gap-2">
+                  <span className="px-2.5 py-1 rounded-sm bg-red-500/10 text-red-600 dark:text-red-400 font-bold border border-red-500/20">
+                    COUNTY FISCAL AUDIT
+                  </span>
+                  <span className="text-muted-foreground">REF: LEAK-2025-084</span>
+                </div>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <FileText className="size-3.5" />
+                  <span>Source: County Executive Supplementary Budget II · FY2024/25</span>
+                </div>
+              </div>
 
-            <RedactedInvestigationFold
-              redactedId="LEAK-2025-112"
-              classification="OFF-BALANCE SHEET DEBT"
-              sourceDoc="National Treasury CFS Quarterly Expenditure Ledger"
-              hiddenAmount="KSh 1,203,000,000"
-              findingHeadline="Unpublished Commercial Bank Rollover Penalties on Eurobond Debt"
-              findingDetail="Investigation cross-referenced central bank debt servicing data to reveal undisclosed penalty interest rates charged by international syndicate lenders."
-              impactNote="Debated during National Assembly Finance Committee hearings; forced Treasury disclosure."
-            />
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <div className="lg:col-span-8 space-y-3">
+                  <h3 className="font-heading text-2xl sm:text-3xl font-black text-foreground leading-snug">
+                    County Health Contingency Fund Diverted to Luxury Travel Vouchers
+                  </h3>
+                  <p className="text-base sm:text-lg text-foreground/80 leading-relaxed">
+                    Wanahabari fellows cross-referenced quarterly exchequer disbursements against dispensary requisition sheets, uncovering KSh 1.84 Billion originally budgeted for antibiotic restocking that was secretly reallocated into executive per diem allowances and holiday travel vouchers.
+                  </p>
+                </div>
+
+                <div className="lg:col-span-4 p-5 rounded-2xl bg-muted/40 border border-border/60 space-y-1">
+                  <span className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground font-bold">
+                    Audited Variance
+                  </span>
+                  <p className="font-heading text-3xl sm:text-4xl font-black text-red-500 tracking-tight">
+                    KSh 1.84B
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Dispensary allocation redirected to executive allowances
+                  </p>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-border/40 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+                <div className="flex items-center gap-2 text-foreground font-medium">
+                  <Scale className="size-4 text-primary" />
+                  <span>Outcome: Published on Daily Nation Front Page; prompted Senate Public Accounts Committee subpoena.</span>
+                </div>
+                <span className="text-muted-foreground font-bold">Verified & Audited</span>
+              </div>
+            </article>
+
+            {/* Case 02 */}
+            <article className="rounded-3xl border border-border/70 bg-card p-6 sm:p-10 shadow-sm space-y-6">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/40 pb-4 text-xs font-mono">
+                <div className="flex items-center gap-2">
+                  <span className="px-2.5 py-1 rounded-sm bg-red-500/10 text-red-600 dark:text-red-400 font-bold border border-red-500/20">
+                    SOVEREIGN DEBT SCRUTINY
+                  </span>
+                  <span className="text-muted-foreground">REF: LEAK-2025-112</span>
+                </div>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <FileText className="size-3.5" />
+                  <span>Source: National Treasury CFS Quarterly Expenditure Ledger</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <div className="lg:col-span-8 space-y-3">
+                  <h3 className="font-heading text-2xl sm:text-3xl font-black text-foreground leading-snug">
+                    Unpublished Commercial Bank Rollover Penalties on Eurobond Debt
+                  </h3>
+                  <p className="text-base sm:text-lg text-foreground/80 leading-relaxed">
+                    Fellows cross-referenced Central Bank foreign debt servicing figures against Consolidated Fund Services releases to disclose KSh 1.20 Billion in undocumented penalty interest charges imposed by international syndicate lenders that were hidden from statutory reports.
+                  </p>
+                </div>
+
+                <div className="lg:col-span-4 p-5 rounded-2xl bg-muted/40 border border-border/60 space-y-1">
+                  <span className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground font-bold">
+                    Audited Variance
+                  </span>
+                  <p className="font-heading text-3xl sm:text-4xl font-black text-red-500 tracking-tight">
+                    KSh 1.20B
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Undisclosed syndicate rollover penalties
+                  </p>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-border/40 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+                <div className="flex items-center gap-2 text-foreground font-medium">
+                  <Scale className="size-4 text-primary" />
+                  <span>Outcome: Tabled during National Assembly Finance Committee hearings; mandated public Treasury disclosure.</span>
+                </div>
+                <span className="text-muted-foreground font-bold">Verified & Audited</span>
+              </div>
+            </article>
           </div>
         </div>
       </section>

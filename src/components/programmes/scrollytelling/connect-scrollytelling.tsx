@@ -30,11 +30,11 @@ export function ConnectScrollytelling() {
         badgeLabel="SOVEREIGN LEDGER"
       />
 
-      {/* 01 — ASYMMETRICAL EDITORIAL HERO (Extreme Macro-White Space) */}
-      <header className="relative border-b border-border/40 bg-gradient-to-b from-primary/5 via-muted/10 to-background pt-20 pb-20 md:pt-32 md:pb-28 overflow-hidden">
+      {/* 01 — ASYMMETRICAL EDITORIAL HERO */}
+      <header className="relative border-b border-border/40 bg-gradient-to-b from-primary/5 via-muted/10 to-background pt-4 pb-10 md:pt-6 md:pb-14 overflow-hidden">
         <div className={SECTION_SHELL_INNER}>
           {/* Breadcrumb back to programmes */}
-          <nav aria-label="Breadcrumb" className="mb-8">
+          <nav aria-label="Breadcrumb" className="mb-3">
             <Link
               href="/programmes"
               className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground"
@@ -44,7 +44,7 @@ export function ConnectScrollytelling() {
             </Link>
           </nav>
 
-          <div className="space-y-8 max-w-5xl">
+          <div className="space-y-4 max-w-5xl">
             <div className="flex flex-wrap items-center gap-2">
               <EditorialPill dot pulse>
                 Desk 01 · The Digital Hub
@@ -191,44 +191,42 @@ export function ConnectScrollytelling() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-            {/* Left Column: Sticky Isolated Mobile Cutout Anchor */}
-            <div className="lg:col-span-5 lg:sticky lg:top-24">
-              <div className="relative aspect-[3/4] max-w-md mx-auto overflow-hidden rounded-3xl border border-primary/30 shadow-2xl bg-gradient-to-b from-card to-background p-6 flex flex-col justify-between">
-                <div className="relative w-full h-full rounded-2xl overflow-hidden border border-border/60">
-                  <Image
-                    src={BNS_MEDIA_IMAGES.productionB}
-                    alt="Youth presenter recording vertical budget explainer for social feeds"
-                    fill
-                    className="object-cover object-top"
-                    sizes="(max-width: 1024px) 100vw, 35vw"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+            {/* Left Column: Direct Vertical Explainer Video (No Outer Nested Card) */}
+            <div className="lg:col-span-5 lg:sticky lg:top-24 flex justify-center">
+              <div className="relative aspect-[9/16] w-full max-w-[340px] overflow-hidden rounded-3xl border border-border/60 bg-muted shadow-2xl">
+                <Image
+                  src={BNS_MEDIA_IMAGES.productionB}
+                  alt="Youth presenter recording vertical budget explainer for social feeds"
+                  fill
+                  className="object-cover object-top"
+                  sizes="(max-width: 1024px) 100vw, 340px"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/30" />
 
-                  {/* On-screen Live Digital Overlay */}
-                  <div className="absolute top-4 left-4 right-4 flex items-center justify-between">
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-500/90 text-white text-[10px] font-mono font-bold tracking-wider">
-                      <span className="size-1.5 rounded-full bg-white animate-ping" />
-                      LIVE FEED
-                    </div>
-                    <span className="font-mono text-[11px] text-white/80 font-bold">
-                      #BudgetNdioStory
-                    </span>
+                {/* On-screen Live Digital Overlay */}
+                <div className="absolute top-4 left-4 right-4 flex items-center justify-between">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-600/90 text-white text-[10px] font-mono font-bold tracking-wider backdrop-blur-xs">
+                    <span className="size-1.5 rounded-full bg-white animate-ping" />
+                    LIVE FEED
                   </div>
-
-                  <div className="absolute bottom-4 left-4 right-4 text-white space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Smartphone className="size-4 text-primary" />
-                      <span className="font-mono text-xs font-bold uppercase">Vertical Explainer Hub</span>
-                    </div>
-                    <p className="text-xs text-white/90 leading-tight font-medium">
-                      Bilingual Sheng/Swahili breakdowns streaming to over 1.4M first-time voters.
-                    </p>
-                  </div>
+                  <span className="font-mono text-[11px] text-white/90 font-bold drop-shadow">
+                    #BudgetNdioStory
+                  </span>
                 </div>
 
-                <div className="mt-4 flex items-center justify-between text-[11px] font-mono text-muted-foreground">
-                  <span>Sovereign Mobile Engine</span>
-                  <span className="text-primary font-bold">TikTok · Reels · X</span>
+                {/* Bottom Explainer Overlay */}
+                <div className="absolute bottom-5 left-4 right-4 text-white space-y-2.5">
+                  <div className="flex items-center gap-2">
+                    <Smartphone className="size-4 text-primary" />
+                    <span className="font-mono text-xs font-bold uppercase tracking-wider">Vertical Explainer Hub</span>
+                  </div>
+                  <p className="text-xs text-white/90 leading-tight font-medium">
+                    Bilingual Sheng/Swahili breakdowns streaming to over 1.4M first-time voters.
+                  </p>
+                  <div className="pt-2 border-t border-white/20 flex items-center justify-between text-[11px] font-mono text-white/80">
+                    <span>Sovereign Mobile Engine</span>
+                    <span className="text-primary font-bold">TikTok · Reels · X</span>
+                  </div>
                 </div>
               </div>
             </div>

@@ -36,9 +36,9 @@ export function MashinaniScrollytelling() {
       />
 
       {/* 01 — EDITORIAL HERO WITH WARM EARTHY ACCENTS & MASKED TYPOGRAPHY */}
-      <header className="relative border-b border-border/40 bg-gradient-to-b from-amber-500/5 via-muted/10 to-background pt-20 pb-20 md:pt-32 md:pb-28 overflow-hidden">
+      <header className="relative border-b border-border/40 bg-gradient-to-b from-amber-500/5 via-muted/10 to-background pt-4 pb-10 md:pt-6 md:pb-14 overflow-hidden">
         <div className={SECTION_SHELL_INNER}>
-          <nav aria-label="Breadcrumb" className="mb-8">
+          <nav aria-label="Breadcrumb" className="mb-3">
             <Link
               href="/programmes"
               className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground"
@@ -48,7 +48,7 @@ export function MashinaniScrollytelling() {
             </Link>
           </nav>
 
-          <div className="space-y-8 max-w-5xl">
+          <div className="space-y-4 max-w-5xl">
             <div className="flex flex-wrap items-center gap-2">
               <EditorialPill dot pulse>
                 Desk 02 · The Grassroots Engine
@@ -71,7 +71,7 @@ export function MashinaniScrollytelling() {
             </p>
 
             {/* Strategic Overview Strip / Telemetry Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 pt-8 border-t border-border/50">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 pt-6 border-t border-border/50 mt-6">
               <div className="space-y-1">
                 <p className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
                   Investigative Desk
