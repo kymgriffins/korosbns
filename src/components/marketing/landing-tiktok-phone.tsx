@@ -77,6 +77,34 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
     return () => observer.disconnect();
   }, []);
 
+  const togglePlay = useCallback((e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    const node = videoRef.current;
+    if (!node) return;
+    if (node.paused) {
+      node.play().then(() => setIsPlaying(true)).catch((err) => {
+        console.warn("Hero video playback error:", err);
+      });
+    } else {
+      node.pause();
+      setIsPlaying(false);
+    }
+  }, []);
+
+  // Autoplay muted when phone enters viewport (if allowed by browser policy)
+  useEffect(() => {
+    const node = videoRef.current;
+    if (!node) return;
+    if (isInView) {
+      node.play().then(() => setIsPlaying(true)).catch(() => {
+        // Browser autoplay restriction: remain paused until user taps play
+      });
+    } else {
+      node.pause();
+      setIsPlaying(false);
+    }
+  }, [isInView]);
+
   const openTikTokPage = useCallback((e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     window.open(landingContent.tiktok.profileUrl, "_blank", "noopener,noreferrer");
@@ -148,11 +176,11 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
   return (
     <div ref={phoneRef} className={cn("mx-auto flex w-full max-w-[280px] flex-col md:max-w-[320px]", className)}>
       <div className="relative aspect-[9/16] w-full overflow-hidden rounded-[2rem] border-[3px] border-foreground/10 bg-card ring-1 ring-white/10">
-        {/* Nelly Maina media cover image preview when video is paused/loading */}
-        {(!isPlaying || !isReady) && (
+        {/* Nelly Maina media cover image preview when video is paused */}
+        {!isPlaying && (
           <div
             className="absolute inset-0 z-0 overflow-hidden cursor-pointer bg-black/40"
-            onClick={openTikTokPage}
+            onClick={togglePlay}
             data-testid="tiktok-hero-cover-image"
           >
             <Image
@@ -171,12 +199,12 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
           ref={videoRef}
           src={video.video_url}
           poster={video.cover_image_url}
-          className="absolute inset-0 size-full object-cover"
+          className="absolute inset-0 size-full object-cover cursor-pointer"
           loop
           muted={isMuted}
           playsInline
           preload="auto"
-          onClick={openTikTokPage}
+          onClick={togglePlay}
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
           onCanPlay={() => setIsReady(true)}
@@ -189,12 +217,12 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
         {!isPlaying ? (
           <button
             type="button"
-            onClick={openTikTokPage}
-            className="absolute inset-0 z-10 flex items-center justify-center"
+            onClick={togglePlay}
+            className="absolute inset-0 z-10 flex items-center justify-center cursor-pointer"
             aria-label="Play video"
           >
-            <span className="flex size-16 items-center justify-center rounded-full bg-white/20 transition-transform hover:scale-110">
-              <Play className="size-8 fill-white text-white" />
+            <span className="flex size-16 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-transform hover:scale-110 shadow-lg border border-white/20">
+              <Play className="size-8 fill-white text-white ml-0.5" />
             </span>
           </button>
         ) : null}
@@ -242,8 +270,16 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
           </div>
         </div>
 
-        <div className="absolute bottom-4 left-4 right-14 z-20 space-y-2 text-white">
-          <p className="text-sm font-bold">@budget.ndio.story</p>
+        <div className="absolute bottom-4 left-4 right-14 z-20 space-y-2 text-white pointer-events-none">
+          <a
+            href={landingContent.tiktok.profileUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm font-bold hover:underline inline-block pointer-events-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            @budget.ndio.story
+          </a>
           <p className="text-xs leading-relaxed text-white/90">{video.caption}</p>
           <p className="flex items-center gap-1.5 text-xs text-white/70">
             <Music2 className="size-3.5 shrink-0" />
@@ -267,7 +303,7 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              openTikTokPage(e);
+              togglePlay(e);
             }}
             className="pointer-events-auto flex size-9 items-center justify-center rounded-full bg-black/40 text-white transition-colors hover:bg-black/60"
             aria-label={isPlaying ? "Pause video" : "Play video"}

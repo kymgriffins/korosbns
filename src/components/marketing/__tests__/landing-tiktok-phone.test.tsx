@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // Mock IntersectionObserver
@@ -18,8 +18,8 @@ beforeEach(() => {
 import { LandingTikTokPhone } from "../landing-tiktok-phone";
 
 describe("LandingTikTokPhone", () => {
-  it("renders Nelly Maina media cover photo and opens TikTok page on play click", async () => {
-    const windowOpenSpy = vi.spyOn(window, "open").mockImplementation(() => null);
+  it("renders cover photo and plays video inline on play click", async () => {
+    const playSpy = vi.spyOn(window.HTMLMediaElement.prototype, "play").mockImplementation(async () => {});
 
     render(<LandingTikTokPhone />);
 
@@ -34,15 +34,20 @@ describe("LandingTikTokPhone", () => {
       expect.stringContaining("Nelly")
     );
 
-    // 2. Click play button and verify window.open called with TikTok URL
+    // 2. Click play button and verify video plays inline
     const playButtons = screen.getAllByRole("button", { name: "Play video" });
     expect(playButtons.length).toBeGreaterThan(0);
 
-    fireEvent.click(playButtons[0]);
-    expect(windowOpenSpy).toHaveBeenCalledWith(
-      "https://www.tiktok.com/@budget.ndio.story",
-      "_blank",
-      "noopener,noreferrer"
+    await act(async () => {
+      fireEvent.click(playButtons[0]);
+    });
+    expect(playSpy).toHaveBeenCalled();
+
+    // 3. Verify TikTok link is available on the handle
+    const tiktokLink = screen.getByText("@budget.ndio.story");
+    expect(tiktokLink.closest("a")).toHaveAttribute(
+      "href",
+      "https://www.tiktok.com/@budget.ndio.story"
     );
   });
 });
