@@ -50,7 +50,7 @@ export function MarketingPageHero({
           )}
         >
           {eyebrow ? (
-            <span className={cn(T.eyebrow, centered && "block text-center")}>{eyebrow}</span>
+            <span className={cn(T.eyebrow, centered && "mx-auto")}>{eyebrow}</span>
           ) : null}
           <h1 className={cn(T.heroTitle, "text-balance")}>{title}</h1>
           {description ? (

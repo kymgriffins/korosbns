@@ -130,7 +130,7 @@ export function ProgrammesLanding() {
       {/* ========================================================================= */}
       {/* DESK 01: BNS CONNECT — TYPOGRAPHIC MANIFESTO & DIGITAL YOUTH SPREAD        */}
       {/* ========================================================================= */}
-      <section id="desk-01" className="py-24 md:py-36">
+      <section id="desk-01" className="min-h-screen py-24 md:py-32 flex flex-col justify-center border-b border-border/40">
         <div className={SECTION_SHELL_INNER}>
           {/* Section Identifier Header */}
           <div className="flex items-center gap-3 mb-6">
@@ -224,7 +224,7 @@ export function ProgrammesLanding() {
       {/* ========================================================================= */}
       {/* DESK 02: BNS MASHINANI — GROUNDED FIELD PHOTO-ESSAY & RURAL BARAZA SPREAD */}
       {/* ========================================================================= */}
-      <section id="desk-02" className="py-28 md:py-36 bg-muted/20">
+      <section id="desk-02" className="min-h-screen py-24 md:py-32 flex flex-col justify-center bg-muted/20 border-b border-border/40">
         <div className={SECTION_SHELL_INNER}>
           {/* Section Identifier */}
           <div className="flex items-center gap-3 mb-6">
@@ -309,7 +309,7 @@ export function ProgrammesLanding() {
       {/* ========================================================================= */}
       {/* DESK 03: WANAHABARI LAB — AUTHORITATIVE INVESTIGATIVE NEWSROOM SPREAD      */}
       {/* ========================================================================= */}
-      <section id="desk-03" className="py-28 md:py-36">
+      <section id="desk-03" className="min-h-screen py-24 md:py-32 flex flex-col justify-center bg-background border-b border-border/40">
         <div className={SECTION_SHELL_INNER}>
           {/* Section Identifier */}
           <div className="flex items-center gap-3 mb-6">
@@ -397,7 +397,7 @@ export function ProgrammesLanding() {
       {/* ========================================================================= */}
       {/* DESK 04: BNS STUDIOS — MIDNIGHT 21:9 WIDESCREEN CINEMA THEATRE             */}
       {/* ========================================================================= */}
-      <section id="desk-04" className="py-32 md:py-44 bg-black text-white">
+      <section id="desk-04" className="min-h-screen py-28 md:py-36 flex flex-col justify-center bg-black text-white border-b border-zinc-800">
         <div className={SECTION_SHELL_INNER}>
           {/* Section Identifier */}
           <div className="flex items-center gap-3 mb-6">

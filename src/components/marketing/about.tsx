@@ -1,113 +1,23 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  Briefcase,
-  Compass,
-  MapPin,
-  Newspaper,
-  Clapperboard,
   ShieldCheck,
   CheckCircle2,
-  ArrowUpRight,
-  TrendingUp,
-  Landmark,
-  Users,
-  Target,
-  FileBarChart,
-  Volume2,
   HeartHandshake,
 } from "lucide-react";
-import { PillButtonGroup } from "@/components/ui/editorial";
-import { LandingContent, LandingSection } from "@/layouts/landing-section";
+import { EditorialPill, PillButtonGroup } from "@/components/ui/editorial";
+import { StickyStackedCycle, type StickyCycleItem } from "@/components/motion";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import { HERO_SECTION_PADDING, SECTION_SHELL_INNER, SECTION_SHELL_PADDING } from "@/layouts/section-shell";
 import { GsapHeroChoreography } from "@/motion/gsap";
 import { aboutContent } from "@/content";
 import TeamSection from "@/components/marketing/team-section";
 import ConsortiumFoundersSection from "@/components/marketing/consortium-founders-section";
-import { BNS_COMMUNITY_IMAGES, BNS_MEDIA_IMAGES } from "@/constants/bns-media-images";
+import { BNS_COMMUNITY_IMAGES } from "@/constants/bns-media-images";
 import { cn } from "@/utils";
-
-const IMPACT_STAGES = [
-  {
-    step: "01",
-    title: "Investigate & Mine",
-    description:
-      "Forensic scrutiny of Controller of Budget (OCOB) reports, National Treasury estimates, Auditor General findings, and county CBROPs before money disappears.",
-    icon: Landmark,
-    badge: "Primary Data",
-  },
-  {
-    step: "02",
-    title: "Translate & Package",
-    description:
-      "Transforming 800-page fiscal bills into bilingual podcasts, viral short-form TikToks, visual explainers, and one-page citizen briefs.",
-    icon: Clapperboard,
-    badge: "Creative Media",
-  },
-  {
-    step: "03",
-    title: "Mobilize on the Ground",
-    description:
-      "Hosting town halls, county civic forums, and youth assemblies across Kakamega, Kilifi, Nakuru, and Wajir to empower local taxpayers.",
-    icon: Users,
-    badge: "Grassroots Action",
-  },
-  {
-    step: "04",
-    title: "Enforce & Hold Accountable",
-    description:
-      "Filing formal public participation submissions to the National Assembly, petitioning county assemblies, and partnering with investigative newsrooms.",
-    icon: ShieldCheck,
-    badge: "Civic Power",
-  },
-];
-
-const DESKS = [
-  {
-    id: "connect",
-    name: "BNS Connect",
-    desk: "National Accountability Desk",
-    desc: "Decodes the National Budget, Finance Bill, and parliamentary appropriations. Mobilizes citizen submissions before bills become law.",
-    icon: Compass,
-    href: "/programmes/connect",
-    stat: "KES 4.82T",
-    statLabel: "National spending tracked",
-  },
-  {
-    id: "mashinani",
-    name: "BNS Mashinani",
-    desk: "County Scrutiny Desk",
-    desc: "Deep-dive budget tracking in Kakamega, Kilifi, Nakuru, and Wajir. Produces quarterly citizen scorecards and village-level town halls.",
-    icon: MapPin,
-    href: "/programmes/mashinani",
-    stat: "4 Hubs",
-    statLabel: "Focus devolution counties",
-  },
-  {
-    id: "wanahabari",
-    name: "Wanahabari Lab",
-    desk: "Investigative Newsroom Desk",
-    desc: "Trains journalists and citizen reporters to follow public funds. Provides data tools, leak-verification frameworks, and research fellowships.",
-    icon: Newspaper,
-    href: "/programmes/wanahabari-lab",
-    stat: "120+",
-    statLabel: "Journalists & fellows trained",
-  },
-  {
-    id: "studios",
-    name: "BNS Studios",
-    desk: "Impact Production Desk",
-    desc: "Commissioned audio-visual production powerhouse. Every commercial commission directly subsidizes grassroots budget tracking in 47 counties.",
-    icon: Clapperboard,
-    href: "/bns-studio",
-    stat: "100%",
-    statLabel: "Surplus funded back to mission",
-  },
-];
 
 const CHARTER_PRINCIPLES = [
   {
@@ -137,11 +47,10 @@ export default function About() {
       <section className={cn(HERO_SECTION_PADDING, "border-b border-border/30 bg-background")}>
         <div className={SECTION_SHELL_INNER}>
           <GsapHeroChoreography className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-12">
-            <div data-gsap-hero-content className="flex flex-col gap-5 lg:col-span-7">
-              <span className={cn(T.eyebrow, "inline-flex items-center gap-2")}>
-                <span className="size-2 rounded-full bg-primary animate-pulse" />
+            <div data-gsap-hero-content className="flex flex-col items-start gap-4 lg:col-span-7">
+              <EditorialPill dot pulse variant="default">
                 Kenya&apos;s Sovereign Youth Budget Watchdog
-              </span>
+              </EditorialPill>
               <h1 className={cn(T.heroTitle, "text-balance text-foreground")}>
                 We follow Kenya&apos;s public money so it cannot move in the dark.
               </h1>
@@ -247,131 +156,73 @@ export default function About() {
         </div>
       </section>
 
-      {/* 03 — The 4 Operational Desks */}
-      <section className="border-b border-border/40 py-20 md:py-28 bg-background">
+      {/* 03 — Theory of Change: The 4-Stage Impact Engine */}
+      <section id="theory-of-change" className="border-b border-border/40 py-20 md:py-28 lg:py-36 bg-muted/20 overflow-hidden">
         <div className={SECTION_SHELL_INNER}>
-          <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-            <span className={T.eyebrow}>Our Engine</span>
-            <h2 className={T.sectionTitle}>Four Desks, One Purpose.</h2>
-            <p className={cn(T.lead, "text-muted-foreground")}>
-              Each desk attacks fiscal opacity from a distinct angle, forming an unbroken loop of citizen empowerment.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {DESKS.map((desk) => {
-              const Icon = desk.icon;
-              return (
-                <div
-                  key={desk.id}
-                  className="group flex flex-col justify-between rounded-3xl border border-border/50 bg-card p-8 transition-all duration-300 hover:border-primary/50 hover:shadow-xl"
-                >
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex size-12 items-center justify-center rounded-2xl border border-border/50 bg-muted text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                        <Icon className="size-6" />
-                      </div>
-                      <span className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
-                        {desk.stat}
-                      </span>
-                    </div>
-                    <div>
-                      <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{desk.desk}</p>
-                      <h3 className="mt-1 text-2xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
-                        {desk.name}
-                      </h3>
-                    </div>
-                    <p className="text-sm leading-relaxed text-muted-foreground">
-                      {desk.desc}
-                    </p>
-                  </div>
-                  <div className="mt-8 pt-4 border-t border-border/40 flex items-center justify-between">
-                    <span className="text-xs font-medium text-muted-foreground">{desk.statLabel}</span>
-                    <Link
-                      href={desk.href}
-                      className="inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline"
-                    >
-                      Explore Desk
-                      <ArrowUpRight className="size-3.5" />
-                    </Link>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <StickyStackedCycle
+            eyebrow="Theory of Change"
+            title="How Forensic Data Becomes Citizen Power."
+            description="We do not stop at generating infographics. We build the complete institutional pathway from initial investigation to binding legal and budget revisions."
+            items={[
+              {
+                id: "theory-01",
+                step: "01",
+                title: "Investigate & Mine",
+                description:
+                  "Forensic scrutiny of Controller of Budget (OCOB) reports, National Treasury estimates, Auditor General findings, and county CBROPs before money disappears.",
+                badge: "Primary Data",
+                stat: {
+                  value: "KSh 4.82T",
+                  label: "Audited line-by-line across exchequer tables and OCOB quarterly reports",
+                },
+              },
+              {
+                id: "theory-02",
+                step: "02",
+                title: "Translate & Package",
+                description:
+                  "Transforming 800-page fiscal bills into bilingual podcasts, viral short-form TikToks, visual explainers, and one-page citizen briefs.",
+                badge: "Creative Media",
+                image: BNS_COMMUNITY_IMAGES.cohortA,
+                imageAlt: "Youth editorial team packaging budget intelligence",
+              },
+              {
+                id: "theory-03",
+                step: "03",
+                title: "Mobilize on the Ground",
+                description:
+                  "Hosting town halls, county civic forums, and youth assemblies across Kakamega, Kilifi, Nakuru, and Wajir to empower local taxpayers.",
+                badge: "Grassroots Action",
+                image: BNS_COMMUNITY_IMAGES.forumA,
+                imageAlt: "Community budget baraza in session",
+              },
+              {
+                id: "theory-04",
+                step: "04",
+                title: "Enforce & Hold Accountable",
+                description:
+                  "Filing formal public participation submissions to the National Assembly, petitioning county assemblies, and partnering with investigative newsrooms.",
+                badge: "Civic Power & Delivery",
+                stat: {
+                  value: "100%",
+                  label: "Public submissions legally grounded in Article 201 of Kenya's Constitution",
+                },
+                cta: {
+                  label: "Explore The 4 Desks",
+                  href: "/programmes",
+                },
+              },
+            ]}
+            cta={{
+              label: "Explore The 4 Desks",
+              href: "/programmes",
+            }}
+          />
         </div>
       </section>
 
-      {/* 04 — Theory of Change: The 4-Stage Impact Engine */}
-      <section id="theory-of-change" className="border-b border-border/40 py-20 md:py-28 bg-muted/20">
-        <div className={SECTION_SHELL_INNER}>
-          <div className="max-w-2xl mb-16 space-y-3">
-            <span className={T.eyebrow}>Theory of Change</span>
-            <h2 className={T.sectionTitle}>How Forensic Data Becomes Citizen Power.</h2>
-            <p className={cn(T.lead, "text-muted-foreground")}>
-              We do not stop at generating infographics. We build the complete institutional pathway from initial investigation to binding legal and budget revisions.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {IMPACT_STAGES.map((stage) => {
-              const Icon = stage.icon;
-              return (
-                <div
-                  key={stage.step}
-                  className="flex flex-col justify-between rounded-3xl border border-border/50 bg-card p-6 shadow-sm"
-                >
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-extrabold text-primary">{stage.step}</span>
-                      <span className="rounded-full border border-border/40 bg-muted px-2.5 py-0.5 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                        {stage.badge}
-                      </span>
-                    </div>
-                    <h3 className="text-lg font-bold text-foreground">{stage.title}</h3>
-                    <p className="text-xs leading-relaxed text-muted-foreground">
-                      {stage.description}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* 05 — Cumulative Impact Ledger */}
-      <section className="border-b border-border/40 py-20 md:py-28 bg-background">
-        <div className={SECTION_SHELL_INNER}>
-          <div className="rounded-3xl border border-primary/20 bg-primary/[0.03] p-8 md:p-12">
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-              <div className="space-y-2">
-                <p className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight">KSh 4.82T</p>
-                <p className="text-xs font-bold uppercase tracking-wider text-primary">National Budget Tracked</p>
-                <p className="text-xs text-muted-foreground">Audited down to sector votes, development ceilings, and KRA collections.</p>
-              </div>
-              <div className="space-y-2">
-                <p className="text-4xl md:text-5xl font-extrabold text-primary tracking-tight">KSh 1.20T</p>
-                <p className="text-xs font-bold uppercase tracking-wider text-primary">Public Debt Scrutinized</p>
-                <p className="text-xs text-muted-foreground">Tracking consolidated fund services, Eurobond amortizations, and domestic debt.</p>
-              </div>
-              <div className="space-y-2">
-                <p className="text-4xl md:text-5xl font-extrabold text-foreground tracking-tight">4 Counties</p>
-                <p className="text-xs font-bold uppercase tracking-wider text-primary">Focus County Hubs</p>
-                <p className="text-xs text-muted-foreground">Dedicated field teams in Kakamega, Kilifi, Nakuru, and Wajir.</p>
-              </div>
-              <div className="space-y-2">
-                <p className="text-4xl md:text-5xl font-extrabold text-primary tracking-tight">20,400+</p>
-                <p className="text-xs font-bold uppercase tracking-wider text-primary">Citizens Directly Reached</p>
-                <p className="text-xs text-muted-foreground">Through town halls, youth workshops, barazas, and physical scorecards.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 06 — Data Integrity & Editorial Independence Charter */}
-      <section id="methodology" className="border-b border-border/40 py-20 md:py-28 bg-muted/20">
+      {/* 04 — Data Integrity & Editorial Independence Charter */}
+      <section id="methodology" className="border-b border-border/40 py-20 md:py-28 bg-background">
         <div className={SECTION_SHELL_INNER}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-5 space-y-6">
@@ -413,7 +264,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* 07 — Photo Strip: Documenting the Movement in the Field */}
+      {/* 05 — Photo Strip: Documenting the Movement in the Field */}
       <section className={cn(SECTION_SHELL_PADDING, "border-b border-border/40 bg-background")}>
         <div className={SECTION_SHELL_INNER}>
           <div className="text-center max-w-xl mx-auto mb-10 space-y-2">
@@ -440,17 +291,17 @@ export default function About() {
         </div>
       </section>
 
-      {/* 08 — Consortium Founding Partners */}
+      {/* 06 — Consortium Founding Partners */}
       <div id="consortium-founders">
         <ConsortiumFoundersSection />
       </div>
 
-      {/* 09 — Team Roster Showcase */}
+      {/* 07 — Team Roster Showcase */}
       <div id="team">
         <TeamSection />
       </div>
 
-      {/* 10 — High-Conversion Civic Action & Partnership Portal */}
+      {/* 08 — High-Conversion Civic Action & Partnership Portal */}
       <section className="py-20 md:py-28 bg-muted/30 border-t border-border/40">
         <div className={SECTION_SHELL_INNER}>
           <div className="rounded-3xl border border-border/60 bg-card p-8 md:p-14 shadow-xl">

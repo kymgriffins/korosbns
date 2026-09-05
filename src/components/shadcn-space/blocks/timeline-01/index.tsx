@@ -1,14 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import Timeline from "@/components/shadcn-space/blocks/timeline-01/timeline";
-import { Button } from "@/components/ui/button";
+import React from "react";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
-import {
-  LandingContent,
-  LandingSection,
-  LandingSectionHeader,
-} from "@/layouts/landing-section";
+import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
+import { StickyStackedCycle, type StickyCycleItem } from "@/components/motion";
 import type { TimelineItemProps } from "@/components/shadcn-space/blocks/timeline-01/timeline";
 import { timelineContent } from "@/content";
 
@@ -19,37 +14,64 @@ export interface TimelineBlock01Props {
 }
 
 const TimelineBlock01 = ({ items = budgetCycleTimelineData }: TimelineBlock01Props) => {
+  const cycleItems: StickyCycleItem[] = items.map((item, index) => {
+    const isLast = index === items.length - 1;
+    const isDelivery = isLast || item.title.toLowerCase().includes("delivery") || item.title.toLowerCase().includes("implementation");
+
+    return {
+      id: `stage-0${index + 1}`,
+      step: `0${index + 1}`,
+      title: item.title,
+      description: item.description,
+      date: item.date,
+      badge: isDelivery
+        ? "Ground Delivery & Oversight"
+        : index === 0
+          ? "Treasury Formulation"
+          : index === 1
+            ? "Citizen Barazas"
+            : index === 2
+              ? "Parliament Review"
+              : "Executive Assent",
+      image: item.image,
+      imageAlt: item.title,
+      stat: isDelivery
+        ? {
+            value: "KSh 4.82T",
+            label: "Verified allocation-to-service execution across 47 counties",
+          }
+        : undefined,
+      cta: isDelivery
+        ? {
+            label: "Track Live Delivery",
+            href: "/reports",
+          }
+        : undefined,
+    };
+  });
+
   return (
-    <LandingSection className="overflow-hidden">
-      <LandingContent>
-        <div className="border-x border-b border-border px-6 py-10 md:px-10 md:py-16 lg:px-16 lg:py-20">
-          <LandingSectionHeader
-            eyebrow={timelineContent.eyebrow}
-            title={
-              <>
-                {timelineContent.titleBefore}{" "}
-                <span className={T.highlight}>{timelineContent.titleHighlight}</span>
-              </>
-            }
-            description={timelineContent.description}
-            className="mb-0 md:mb-0"
-          />
-        </div>
-        <div className="border-r border-border md:border-x">
-          <Timeline items={items} />
-        </div>
-        <div className="border-x border-border px-6 py-10 md:px-10 md:py-14 lg:px-16 lg:py-16">
-          <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 text-center">
-            <p className={T.body}>{timelineContent.footerBody}</p>
-            <Button asChild className={T.btnPrimary}>
-              <Link href={timelineContent.footerCta.href}>{timelineContent.footerCta.label}</Link>
-            </Button>
-          </div>
-        </div>
-        <div className="h-18 border-x border-t border-border md:h-28" />
-      </LandingContent>
-    </LandingSection>
+    <section className="py-20 md:py-28 lg:py-36 bg-background border-y border-border/40 overflow-hidden">
+      <div className={SECTION_SHELL_INNER}>
+        <StickyStackedCycle
+          eyebrow={timelineContent.eyebrow}
+          title={
+            <>
+              {timelineContent.titleBefore}{" "}
+              <span className={T.highlight}>{timelineContent.titleHighlight}</span>
+            </>
+          }
+          description={timelineContent.description}
+          items={cycleItems}
+          cta={{
+            label: timelineContent.footerCta.label,
+            href: timelineContent.footerCta.href,
+          }}
+        />
+      </div>
+    </section>
   );
 };
 
 export default TimelineBlock01;
+
