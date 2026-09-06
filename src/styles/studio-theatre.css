@@ -358,7 +358,7 @@ html:not(.dark) .studio-work-page,
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 2.5fr) minmax(0, 1fr);
   align-items: center;
-  padding: 5rem 1.25rem 4.5rem;
+  padding: 2.5rem 1.25rem 4.5rem;
   cursor: pointer;
 }
 
@@ -739,7 +739,7 @@ html:not(.dark) .studio-work-page,
   .studio-reel-hero-stage {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr auto;
-    padding-top: 4.5rem;
+    padding-top: 2rem;
     text-align: center;
   }
 

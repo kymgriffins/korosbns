@@ -10,9 +10,9 @@ import {
 } from "lucide-react";
 import { StudioReelHero } from "@/components/studio/theatre/studio-reel-hero";
 import { StudioBookingForm } from "@/components/studio/StudioBookingForm";
+import { StudioProductionSpectrum } from "@/components/studio/StudioProductionSpectrum";
 import { EditorialPill, PillButtonGroup, PillButton } from "@/components/ui/editorial";
 import { EditorialCtaBand } from "@/components/ui/editorial/editorial-cta-band";
-import { STUDIO_CONTENT_TYPES } from "@/constants/bns-studio-content";
 import { studiosEvidenceData } from "@/data/studios-evidence";
 import { BNS_MEDIA_IMAGES } from "@/constants/bns-media-images";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
@@ -25,8 +25,8 @@ export function BNSStudioPageClient() {
 
   return (
     <article className="w-full bg-background text-foreground selection:bg-primary/30">
-      {/* 01 — THE ICONIC SWIPEABLE STUDIO REEL HERO (Restored) */}
-      <div className="relative h-dvh w-full overflow-hidden bg-black text-white">
+      {/* 01 — THE ICONIC SWIPEABLE STUDIO REEL HERO (Cleared from fixed navbar) */}
+      <div className="relative h-[calc(100dvh-3.5rem)] md:h-[calc(100dvh-4rem)] mt-14 md:mt-16 w-full overflow-hidden bg-black text-white">
         <StudioReelHero />
         <div className="absolute bottom-6 inset-x-0 z-20 flex justify-center pointer-events-none">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/60 px-4 py-1.5 text-xs font-mono font-medium text-white/90 backdrop-blur-md animate-bounce">
@@ -185,58 +185,8 @@ export function BNSStudioPageClient() {
         </div>
       </section>
 
-      {/* 04 — PRODUCTION CAPABILITIES (Continuous Broadstream Ledger, Zero Repetitive Cards) */}
-      <section className="py-24 md:py-36 border-b border-border/40">
-        <div className={SECTION_SHELL_INNER}>
-          <div className="max-w-3xl space-y-4 mb-16">
-            <span className="font-mono text-xs font-bold text-primary uppercase tracking-widest">
-              Chapter 03 · Production Spectrum
-            </span>
-            <h2 className="font-heading text-3xl sm:text-5xl font-black text-foreground">
-              Eight production formats engineered for civic impact.
-            </h2>
-            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-              We do not produce 200-page donor PDFs that nobody reads. We craft media formats people argue about in matatus and share on social feeds.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            {STUDIO_CONTENT_TYPES.map((type, idx) => {
-              const Icon = type.icon;
-              return (
-                <div
-                  key={type.id}
-                  className="border-t border-border/50 pt-6 space-y-3"
-                >
-                  <div className="flex items-center justify-between font-mono text-xs">
-                    <span className="text-primary font-bold">FORMAT 0{idx + 1}</span>
-                    <Link
-                      href={`/bns-studio/work?format=${encodeURIComponent(type.id)}`}
-                      className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      <span>Explore cases</span>
-                      <ArrowUpRight className="size-3" />
-                    </Link>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                      <Icon className="size-4" />
-                    </div>
-                    <h3 className="font-heading text-xl font-bold text-foreground">
-                      {type.label}
-                    </h3>
-                  </div>
-
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {type.shortDesc}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+      {/* 04 — GROUPED PRODUCTION SPECTRUM (4 Disciplines, 3D Skeuomorphic Assets, Horizontal Carousel) */}
+      <StudioProductionSpectrum />
 
 
       {/* 06 — PUNCHY MOTION COMMISSION CTA BAND */}
