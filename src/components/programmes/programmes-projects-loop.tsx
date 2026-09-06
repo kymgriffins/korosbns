@@ -12,16 +12,8 @@ import {
   Clapperboard,
   ExternalLink,
   ArrowUpRight,
-  X,
 } from "lucide-react";
 import { Marquee } from "@/components/ui/marquee";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 import {
   studiosEvidenceData,
@@ -88,16 +80,6 @@ function getFormatIcon(type: string, contentType: string) {
   return <FileSearch className="size-3" />;
 }
 
-function getYouTubeEmbedUrl(url?: string): string | null {
-  if (!url) return null;
-  const match = url.match(
-    /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i,
-  );
-  return match
-    ? `https://www.youtube.com/embed/${match[1]}?autoplay=1&rel=0&modestbranding=1`
-    : null;
-}
-
 export function ProgrammesProjectsLoop({
   className,
 }: {
@@ -105,8 +87,6 @@ export function ProgrammesProjectsLoop({
 }) {
   const allProjects = useMemo(() => studiosEvidenceData.getAllProjects(), []);
   const [activeFilter, setActiveFilter] = useState<DeskFilter>("all");
-  const [selectedProject, setSelectedProject] =
-    useState<StudioProjectEvidence | null>(null);
 
   const filteredProjects = useMemo(() => {
     if (activeFilter === "all") return allProjects;
@@ -139,10 +119,6 @@ export function ProgrammesProjectsLoop({
     ];
   }, [allProjects]);
 
-  const embedUrl = selectedProject
-    ? getYouTubeEmbedUrl(selectedProject.media.videoUrl)
-    : null;
-
   return (
     <section
       id="public-evidence-loop"
@@ -168,7 +144,7 @@ export function ProgrammesProjectsLoop({
           </div>
 
           <p className="text-sm text-muted-foreground max-w-sm sm:text-right font-normal">
-            Swipe or hover to pause the endless public evidence stream. Click any project to inspect the work.
+            Swipe or hover to pause the endless public evidence stream. Click any project to open its dedicated case study.
           </p>
         </div>
 
@@ -221,18 +197,10 @@ export function ProgrammesProjectsLoop({
             const isAudio = project.media.type === "audio";
 
             return (
-              <div
+              <Link
                 key={`${project.id}-${idx}`}
-                onClick={() => setSelectedProject(project)}
-                className="group relative aspect-[16/10] sm:aspect-[16/9] w-[290px] sm:w-[370px] md:w-[410px] shrink-0 cursor-pointer overflow-hidden rounded-2xl bg-muted shadow-md transition-all duration-300 hover:scale-[1.02] hover:shadow-xl focus:outline-hidden"
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    setSelectedProject(project);
-                  }
-                }}
+                href={`/bns-studio/${project.slug}`}
+                className="group relative aspect-[16/10] sm:aspect-[16/9] w-[290px] sm:w-[370px] md:w-[410px] shrink-0 cursor-pointer overflow-hidden rounded-2xl bg-muted shadow-md transition-all duration-300 hover:scale-[1.02] hover:shadow-xl focus:outline-hidden block"
               >
                 {/* Visual Imagery */}
                 <Image
@@ -300,117 +268,11 @@ export function ProgrammesProjectsLoop({
                     </span>
                   </div>
                 </div>
-              </div>
+              </Link>
             );
           })}
         </Marquee>
       </div>
-
-      {/* Lightweight In-Place Video & Project Evidence Modal */}
-      <Dialog
-        open={!!selectedProject}
-        onOpenChange={(open) => !open && setSelectedProject(null)}
-      >
-        <DialogContent className="max-w-3xl sm:max-w-4xl p-0 overflow-hidden bg-background text-foreground border-border/80 rounded-2xl">
-          {selectedProject && (
-            <div className="flex flex-col">
-              {/* Media Screening Area */}
-              <div className="relative aspect-[16/9] w-full bg-black overflow-hidden">
-                {embedUrl ? (
-                  <iframe
-                    src={embedUrl}
-                    title={selectedProject.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="h-full w-full border-0"
-                  />
-                ) : (
-                  <div className="relative h-full w-full">
-                    <Image
-                      src={selectedProject.media.posterUrl}
-                      alt={selectedProject.title}
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-                    <div className="absolute bottom-4 left-4 right-4 text-white">
-                      <span className="text-xs font-mono font-bold uppercase tracking-wider text-primary">
-                        {selectedProject.contentType}
-                      </span>
-                      <h4 className="text-xl font-bold text-white mt-1">
-                        {selectedProject.title}
-                      </h4>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Editorial Metadata Spread */}
-              <div className="p-5 sm:p-7 space-y-4">
-                <DialogHeader className="space-y-2 text-left">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span
-                      className={cn(
-                        "text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full",
-                        DESK_CONFIG[selectedProject.programmeSlug]?.pillClass ||
-                          "bg-primary text-primary-foreground",
-                      )}
-                    >
-                      Desk {DESK_CONFIG[selectedProject.programmeSlug]?.number} ·{" "}
-                      {DESK_CONFIG[selectedProject.programmeSlug]?.name}
-                    </span>
-                    <span className="text-xs font-mono text-muted-foreground uppercase tracking-wider">
-                      {selectedProject.year} · {selectedProject.organization.name}
-                    </span>
-                  </div>
-
-                  <DialogTitle className="text-xl sm:text-2xl font-black text-foreground">
-                    {selectedProject.title}
-                  </DialogTitle>
-
-                  {selectedProject.subtitle && (
-                    <DialogDescription className="text-sm font-medium text-muted-foreground">
-                      {selectedProject.subtitle}
-                    </DialogDescription>
-                  )}
-                </DialogHeader>
-
-                <p className="text-sm text-foreground/85 leading-relaxed">
-                  {selectedProject.description || selectedProject.whatWeProduced}
-                </p>
-
-                {selectedProject.impactEvidence?.primaryMetric && (
-                  <div className="rounded-xl bg-muted/40 p-3.5 border border-border/40 space-y-1">
-                    <p className="text-xs font-mono font-bold uppercase tracking-wider text-primary">
-                      Verified Impact Metric
-                    </p>
-                    <p className="text-sm font-semibold text-foreground">
-                      {selectedProject.impactEvidence.primaryMetric}
-                    </p>
-                    {selectedProject.impactEvidence.context && (
-                      <p className="text-xs text-muted-foreground">
-                        {selectedProject.impactEvidence.context}
-                      </p>
-                    )}
-                  </div>
-                )}
-
-                {/* Single Contextual CTA to Dossier / Work */}
-                <div className="pt-2 flex justify-end">
-                  <Link
-                    href={`/programmes/${selectedProject.programmeSlug}`}
-                    onClick={() => setSelectedProject(null)}
-                    className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-2 text-xs font-semibold hover:opacity-90 transition-opacity"
-                  >
-                    <span>Open {DESK_CONFIG[selectedProject.programmeSlug]?.name} Dossier</span>
-                    <ArrowUpRight className="size-3.5" />
-                  </Link>
-                </div>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
     </section>
   );
 }

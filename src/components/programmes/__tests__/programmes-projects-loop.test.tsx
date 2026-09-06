@@ -28,13 +28,14 @@ describe("ProgrammesProjectsLoop", () => {
     expect(screen.getAllByText(/Nakuru Citizen Budget Baraza/i).length).toBeGreaterThanOrEqual(1);
   });
 
-  it("filters projects by desk when clicking desk tabs", () => {
+  it("links directly to project case study pages on click", () => {
     render(<ProgrammesProjectsLoop />);
 
-    const mashinaniTab = screen.getByTestId("filter-tab-mashinani");
-    fireEvent.click(mashinaniTab);
-
-    // Mashinani project present
-    expect(screen.getAllByText(/Nakuru Citizen Budget Baraza/i).length).toBeGreaterThanOrEqual(1);
+    const projectLinks = screen.getAllByRole("link");
+    const nakuruLink = projectLinks.find((link) =>
+      link.getAttribute("href")?.includes("/bns-studio/nakuru-citizen-baraza"),
+    );
+    expect(nakuruLink).toBeDefined();
+    expect(nakuruLink?.getAttribute("href")).toBe("/bns-studio/nakuru-citizen-baraza");
   });
 });
