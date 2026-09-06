@@ -14,6 +14,8 @@ import { PreferencesStoreProvider } from "@/stores/preferences/preferences-provi
 import { PREFERENCE_DEFAULTS } from "@/lib/preferences/preferences-config";
 import { PageviewBeacon } from "@/components/analytics/pageview-beacon";
 
+import { SmoothScrollProvider } from "@/components/motion/smooth-scroll-provider";
+
 const Providers = ({ children }: { children: React.ReactNode }) => {
   const [queryClient] = useState(
     () =>
@@ -48,7 +50,9 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
                     <Suspense fallback={null}>
                       <PageviewBeacon />
                     </Suspense>
-                    {children}
+                    <SmoothScrollProvider>
+                      {children}
+                    </SmoothScrollProvider>
                     <DebugLogPanel />
                   </PreferencesStoreProvider>
                 </PostHogProvider>

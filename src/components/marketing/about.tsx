@@ -9,7 +9,12 @@ import {
   HeartHandshake,
 } from "lucide-react";
 import { EditorialPill, PillButtonGroup } from "@/components/ui/editorial";
-import { StickyStackedCycle, type StickyCycleItem } from "@/components/motion";
+import {
+  StickyStackedCycle,
+  type StickyCycleItem,
+  NarrativeScrollytellingCanvas,
+  type NarrativeBeat,
+} from "@/components/motion";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import { HERO_SECTION_PADDING, SECTION_SHELL_INNER, SECTION_SHELL_PADDING } from "@/layouts/section-shell";
 import { GsapHeroChoreography } from "@/motion/gsap";
@@ -35,6 +40,73 @@ const CHARTER_PRINCIPLES = [
   {
     title: "Double-Impact Commercial Ethics",
     desc: "BNS Studios charges fair market rates to external institutions for creative productions, reinvesting 100% of proceeds into grassroots watchdog operations.",
+  },
+];
+
+const ABOUT_NARRATIVE_BEATS: NarrativeBeat[] = [
+  {
+    id: "awakening",
+    eyebrow: "The Awakening",
+    title: "From street protests to 365-day institutional oversight.",
+    paragraphs: [
+      "In June 2024, millions of young Kenyans took to the streets to reject punitive tax proposals in the Finance Bill. It was an unprecedented turning point in East African civic history.",
+      "As the teargas cleared, a deeper realization took hold among our founders: protesting after an appropriation bill is gazetted is 12 months too late. Once a budget line is passed by Parliament, the public money is already committed to contractor accounts.",
+      "Budget Ndio Story was founded to dismantle the culture of budget secrecy: intervening upstream from the first drafting sprint in August to final disbursement in June.",
+    ],
+    quote: {
+      text: "Protesting after a bill is gazetted is too late. Citizens must master the budget cycle 12 months in advance — before the money is stolen or misallocated.",
+      author: "BNS Founding Assembly",
+      role: "Nairobi",
+    },
+    metric: {
+      value: "KSh 4.82T",
+      label: "National Budget Tracked Upstream",
+    },
+    image: BNS_COMMUNITY_IMAGES.forumA,
+    imageAlt: "Town hall community forum of young Kenyans interrogating budget figures",
+    imageCaption: "Community budget hearing in Nairobi interrogating the Medium-Term Debt Strategy.",
+    imageBadge: "THE JUNE AWAKENING",
+  },
+  {
+    id: "article-201",
+    eyebrow: "The Sovereign Charter",
+    title: "Article 201 of Kenya's Constitution is our editorial director.",
+    paragraphs: [
+      "Chapter 12, Article 201 commands that there shall be openness, accountability, and public participation in all financial matters. It explicitly dictates that public money shall be used prudently and responsibly.",
+      "We do not align with political coalitions or partisan factions. Our loyalty is exclusively to Article 201 and the Kenyan taxpayer who pays VAT on fuel, food, and mobile airtime.",
+      "Every metric we publish is traced to official exchequer releases, Controller of Budget reports, and Auditor-General audit queries — never anonymous hearsay or invented claims.",
+    ],
+    quote: {
+      text: "Article 201 is not a suggestion in a textbook. It is a binding constitutional contract between the state and 54 million citizens.",
+      author: "Legal & Forensic Desk",
+      role: "Constitutional Compliance",
+    },
+    metric: {
+      value: "100%",
+      label: "Article 201 Primary Source Verification",
+    },
+    image: BNS_COMMUNITY_IMAGES.cohortA,
+    imageAlt: "Youth cohort training on budget analysis and forensic spreadsheets",
+    imageCaption: "Fellows auditing quarterly exchequer releases against audited county outcomes.",
+    imageBadge: "CONSTITUTIONAL CHARTER",
+  },
+  {
+    id: "devolved-engine",
+    eyebrow: "The Devolved Footprint",
+    title: "Budget tracking belongs under the village tree, not in Nairobi towers.",
+    paragraphs: [
+      "Fiscal devolution was meant to transfer resources to ordinary citizens. Yet without ground-level scrutiny, ward development funds frequently disappear into ghost dispensaries and unfinished roads.",
+      "BNS deploys embedded field monitors and youth trackers across Kakamega, Kilifi, Nakuru, and Wajir, arming communities with waterproof scorecards to cross-check county gazette budgets against actual physical contractor work.",
+      "Through weekly vernacular radio broadcasts and open-air barazas under village trees, we make sure public finance scrutiny happens in Swahili, Giriama, Somali, and Luhya.",
+    ],
+    metric: {
+      value: "47",
+      label: "Counties Audited by Citizen Hubs",
+    },
+    image: BNS_COMMUNITY_IMAGES.forumD,
+    imageAlt: "Artisanal fisherfolk and community members conducting field baraza",
+    imageCaption: "Kilifi County field baraza auditing devolved blue economy disbursements.",
+    imageBadge: "DEVOLVED GRASSROOTS ENGINE",
   },
 ];
 
@@ -109,62 +181,13 @@ export default function About() {
         </div>
       </section>
 
-      {/* 02 — The Origin Story: From Street Rage to Fiscal Scrutiny */}
-      <section id="origin-story" className="border-b border-border/40 py-20 md:py-28 bg-muted/20">
+      {/* 02 — The Origin Story: Narrative Scrollytelling Documentary */}
+      <section id="origin-story" className="border-b border-border/40 bg-muted/10">
         <div className={SECTION_SHELL_INNER}>
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 items-center">
-            <div className="lg:col-span-6 space-y-6">
-              <span className={T.eyebrow}>The Awakening</span>
-              <h2 className={cn(T.sectionTitle, "text-balance")}>
-                From Street Rage to Forensic Institutional Oversight.
-              </h2>
-              <div className="space-y-4 text-base leading-relaxed text-foreground/80 md:text-lg">
-                <p>
-                  In June 2024, millions of young Kenyans took to the streets to reject punitive tax proposals in the Finance Bill. It was a turning point in East African history. But as the teargas cleared, a deeper realization took hold among our founders:
-                </p>
-                <blockquote className="border-l-4 border-primary pl-4 font-semibold italic text-foreground text-lg md:text-xl py-1">
-                  &ldquo;Protesting after a bill is gazetted is too late. Citizens must master the budget cycle 12 months in advance — before the money is stolen or misallocated.&rdquo;
-                </blockquote>
-                <p>
-                  Public finance in Kenya has historically been locked behind deliberate opacity: 800-page Budget Policy Statements (BPS), confusing technical acronyms (CIDP, CFSP, CBROP), and rubber-stamp parliamentary public participation hearings.
-                </p>
-                <p>
-                  Budget Ndio Story was built to smash that barrier forever. We combine forensic accounting with street-smart creative media so that a 19-year-old in Kakamega or Kilifi has the exact same fiscal intelligence as a Member of Parliament.
-                </p>
-              </div>
-            </div>
-
-            <div className="lg:col-span-6 grid grid-cols-2 gap-4">
-              <div className="relative aspect-[3/4] rounded-2xl overflow-hidden border border-border/50 shadow-md">
-                <Image
-                  src={BNS_COMMUNITY_IMAGES.forumA}
-                  alt="Town hall community forum"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 50vw, 25vw"
-                />
-              </div>
-              <div className="space-y-4 pt-8">
-                <div className="relative aspect-square rounded-2xl overflow-hidden border border-border/50 shadow-md">
-                  <Image
-                    src={BNS_COMMUNITY_IMAGES.cohortA}
-                    alt="Youth cohort training"
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 1024px) 50vw, 25vw"
-                  />
-                </div>
-                <div className="rounded-2xl border border-border/40 bg-card p-4 shadow-sm">
-                  <p className="text-xs font-bold uppercase tracking-wider text-primary">Key Takeaway</p>
-                  <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
-                    Budget literacy is the highest form of civic defense. When citizens track the budget, governance improves.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <NarrativeScrollytellingCanvas beats={ABOUT_NARRATIVE_BEATS} mediaPosition="right" />
         </div>
       </section>
+
 
       {/* 03 — Theory of Change: The 4-Stage Impact Engine */}
       <section id="theory-of-change" className="border-b border-border/40 py-20 md:py-28 lg:py-36 bg-muted/20 overflow-hidden">

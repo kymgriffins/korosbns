@@ -4,10 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
-  ArrowRight,
   ArrowUpRight,
   Play,
-  Volume2,
   ChevronDown,
 } from "lucide-react";
 import { StudioReelHero } from "@/components/studio/theatre/studio-reel-hero";
@@ -24,7 +22,6 @@ export function BNSStudioPageClient() {
   const [isPlayingVideo, setIsPlayingVideo] = useState(false);
   const featuredProjects = studiosEvidenceData.getFeaturedProjects();
   const flagshipFilm = featuredProjects[0] || studiosEvidenceData.getAllProjects()[0];
-  const audioFlagship = featuredProjects[1] || studiosEvidenceData.getAllProjects()[1];
 
   return (
     <article className="w-full bg-background text-foreground selection:bg-primary/30">
@@ -78,18 +75,20 @@ export function BNSStudioPageClient() {
                 </div>
               </div>
 
-              <div className="pt-4 flex flex-wrap items-center gap-4">
+              <div className="pt-4 flex flex-wrap items-center gap-3">
                 <PillButton
                   onClick={() => setBookingOpen(true)}
-                  size="lg"
+                  size="default"
+                  className="w-full sm:w-auto justify-center"
                 >
                   Commission BNS Studio
                 </PillButton>
                 <PillButtonGroup
-                  href="/work"
-                  label="Inspect Evidence Archive"
+                  href="/programmes/studios"
+                  label="Read Desk 04 Narrative Dossier"
                   variant="outline"
-                  size="lg"
+                  size="default"
+                  className="hidden sm:inline-flex w-full sm:w-auto justify-center"
                 />
               </div>
             </div>
@@ -239,56 +238,6 @@ export function BNSStudioPageClient() {
         </div>
       </section>
 
-      {/* 05 — WIDESCREEN EVIDENCE DOSSIER (Audio Deep-Dive Showcase) */}
-      {audioFlagship && (
-        <section className="py-24 md:py-36 border-b border-border/40 bg-muted/10">
-          <div className={SECTION_SHELL_INNER}>
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-              <div className="lg:col-span-5 space-y-6">
-                <div className="flex items-center gap-2">
-                  <EditorialPill variant="muted" size="xs">
-                    Chapter 04 · Audio Scrutiny
-                  </EditorialPill>
-                  <span className="font-mono text-xs text-muted-foreground">{audioFlagship.year}</span>
-                </div>
-                <h3 className="font-heading text-3xl sm:text-5xl font-black text-foreground leading-tight">
-                  {audioFlagship.title}
-                </h3>
-                <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-                  {audioFlagship.description}
-                </p>
-                <div className="pt-2">
-                  <Link
-                    href={`/bns-studio/${audioFlagship.slug}`}
-                    className="inline-flex items-center gap-2 text-sm font-bold text-primary hover:underline"
-                  >
-                    <span>Read production whitepaper</span>
-                    <ArrowRight className="size-4" />
-                  </Link>
-                </div>
-              </div>
-
-              <div className="lg:col-span-7">
-                <div className="relative aspect-[16/10] overflow-hidden rounded-3xl border border-border/60 shadow-xl bg-muted group">
-                  <Image
-                    src={audioFlagship.media.posterUrl}
-                    alt={audioFlagship.title}
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    sizes="(max-width: 1024px) 100vw, 60vw"
-                  />
-                  <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="flex size-16 items-center justify-center rounded-full bg-primary/90 text-white shadow-2xl backdrop-blur-sm">
-                      <Volume2 className="size-8" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* 06 — PUNCHY MOTION COMMISSION CTA BAND */}
       <section className="py-20 md:py-32">

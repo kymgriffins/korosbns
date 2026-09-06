@@ -457,8 +457,8 @@ export function ProgrammesLanding() {
 
             <div className="lg:col-span-4 flex flex-col sm:items-start lg:items-end justify-center pt-2">
               <PillButtonGroup
-                href="/bns-studio"
-                label="Open BNS Studios Theatre"
+                href="/programmes/studios"
+                label="Open BNS Studios Dossier"
                 variant="outline"
                 size="default"
                 className="w-full sm:w-auto justify-center border-white/30 text-white hover:bg-white/10"

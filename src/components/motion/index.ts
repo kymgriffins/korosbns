@@ -3,3 +3,5 @@ export * from "./parallax-wrapper";
 export * from "./telemetry-hud";
 export * from "./metric-counter";
 export * from "./sticky-stacked-cycle";
+export * from "./smooth-scroll-provider";
+export * from "./narrative-scrollytelling-canvas";

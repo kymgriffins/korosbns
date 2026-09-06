@@ -9,17 +9,17 @@ type PageProps = {
 };
 
 export function generateStaticParams() {
-  return PROGRAMMES.filter((p) => p.slug !== "studios").map((p) => ({ slug: p.slug }));
+  return PROGRAMMES.map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   if (slug === "studios") {
     return buildPageMetadata({
-      title: "BNS Studios | Impact Content & Storytelling, Kenya",
+      title: "Desk 04: BNS Studios | Commercial Craft Subsidizing Citizen Audits",
       description:
-        "Commissioned podcasts, documentaries, and campaigns for governments, funders & CSOs — every project helps fund Kenya's leading youth budget platform.",
-      path: "/bns-studio",
+        "The sovereign economic model of Budget Ndio Story: how independent commercial creative production bankrolls citizen budget audits across 47 counties.",
+      path: "/programmes/studios",
     });
   }
   const programme = getProgramme(slug);
@@ -39,8 +39,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ProgrammeSlugPage({ params }: PageProps) {
   const { slug } = await params;
-  if (slug === "studios") redirect("/bns-studio");
   const programme = getProgramme(slug);
-  if (!programme || programme.slug === "studios") notFound();
+  if (!programme) notFound();
   return <ProgrammeDetail programme={programme} />;
 }

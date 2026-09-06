@@ -366,18 +366,20 @@ export function WanahabariScrollytelling() {
                   Open to practicing print, broadcast, and independent digital journalists in Kenya, Uganda, and Tanzania. Full bursaries provided for newsroom fellows covering public expenditure.
                 </p>
 
-                <div className="flex flex-wrap items-center gap-4 pt-2">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
                   <PillButtonGroup
                     href="/contact?intent=wanahabari-lab"
                     label="Submit Fellowship Application"
                     variant="primary"
-                    size="lg"
+                    size="default"
+                    className="w-full sm:w-auto justify-center"
                   />
                   <PillButtonGroup
                     href="/work?programme=wanahabari-lab"
                     label="Review Lab Alumni Scoops"
                     variant="outline"
-                    size="lg"
+                    size="default"
+                    className="hidden sm:inline-flex w-full sm:w-auto justify-center"
                   />
                 </div>
               </div>

@@ -5,6 +5,7 @@ import type { ProgrammeBlock } from "@/content";
 import { ConnectScrollytelling } from "@/components/programmes/scrollytelling/connect-scrollytelling";
 import { MashinaniScrollytelling } from "@/components/programmes/scrollytelling/mashinani-scrollytelling";
 import { WanahabariScrollytelling } from "@/components/programmes/scrollytelling/wanahabari-scrollytelling";
+import { StudiosScrollytelling } from "@/components/programmes/scrollytelling/studios-scrollytelling";
 
 export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
   if (programme.slug === "connect") {
@@ -29,6 +30,15 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
     return (
       <div className="prog-page bg-background text-foreground selection:bg-red-500/20">
         <WanahabariScrollytelling />
+        <ProgrammeOtherProgrammes currentSlug={programme.slug} />
+      </div>
+    );
+  }
+
+  if (programme.slug === "studios") {
+    return (
+      <div className="prog-page bg-background text-foreground selection:bg-primary/20">
+        <StudiosScrollytelling />
         <ProgrammeOtherProgrammes currentSlug={programme.slug} />
       </div>
     );

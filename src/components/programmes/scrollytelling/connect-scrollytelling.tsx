@@ -354,18 +354,20 @@ export function ConnectScrollytelling() {
                   Whether you are a university student organizing a regional budget circle or a digital creator producing fiscal explainers, BNS Connect provides vetted data sets, visual toolkits, and direct parliamentary briefing channels.
                 </p>
 
-                <div className="flex flex-wrap items-center gap-4 pt-2">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
                   <PillButtonGroup
                     href="/surveys"
                     label="Take the Civic Budget Pulse Survey"
                     variant="primary"
-                    size="lg"
+                    size="default"
+                    className="w-full sm:w-auto justify-center"
                   />
                   <PillButtonGroup
                     href="/work?programme=connect"
                     label="View Connect Evidence & Dossiers"
                     variant="outline"
-                    size="lg"
+                    size="default"
+                    className="hidden sm:inline-flex w-full sm:w-auto justify-center"
                   />
                 </div>
               </div>

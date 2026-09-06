@@ -398,11 +398,7 @@ export function ProgrammesProjectsLoop({
                 {/* Single Contextual CTA to Dossier / Work */}
                 <div className="pt-2 flex justify-end">
                   <Link
-                    href={
-                      selectedProject.programmeSlug === "studios"
-                        ? "/bns-studio"
-                        : `/programmes/${selectedProject.programmeSlug}`
-                    }
+                    href={`/programmes/${selectedProject.programmeSlug}`}
                     onClick={() => setSelectedProject(null)}
                     className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-2 text-xs font-semibold hover:opacity-90 transition-opacity"
                   >
