@@ -12,7 +12,7 @@ import {
   Users2,
   Film,
 } from "lucide-react";
-import { EditorialCtaBand, EditorialPill, PillButtonGroup } from "@/components/ui/editorial";
+import { EditorialCtaBand, PillButtonGroup } from "@/components/ui/editorial";
 import { BNS_COMMUNITY_IMAGES, BNS_MEDIA_IMAGES } from "@/constants/bns-media-images";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 import { ProgrammesProjectsLoop } from "@/components/programmes/programmes-projects-loop";
@@ -39,10 +39,6 @@ export function ProgrammesLanding() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
             {/* Left Column (7 cols): Editorial Headline & Mission */}
             <div className="lg:col-span-7 space-y-4 min-w-0">
-              <EditorialPill dot pulse className="inline-flex">
-                Four Operational Desks · Constitution Article 201
-              </EditorialPill>
-
               <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-foreground leading-[1.04]">
                 <MaskedReveal delay={0.05}>Follow the public shilling</MaskedReveal>{" "}
                 <MaskedReveal delay={0.15}>from Treasury to the</MaskedReveal>{" "}

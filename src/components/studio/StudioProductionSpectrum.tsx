@@ -136,8 +136,8 @@ export function StudioProductionSpectrum() {
             </p>
           </div>
 
-          {/* Carousel Navigation Buttons (Hidden on mobile where horizontal swipe is native) */}
-          <div className="hidden sm:flex items-center gap-3 shrink-0 self-start md:self-end">
+          {/* Carousel Navigation Buttons (Hidden on desktop where 3-column grid fits completely) */}
+          <div className="hidden sm:flex lg:hidden items-center gap-3 shrink-0 self-start md:self-end">
             <button
               type="button"
               onClick={scrollLeft}
@@ -189,15 +189,20 @@ export function StudioProductionSpectrum() {
           })}
         </div>
 
-        {/* 03 — DISCIPLINE CARDS HORIZONTAL SCROLL CAROUSEL (Strictly Zero Nested Cards) */}
+        {/* 03 — DISCIPLINE CARDS BALANCED 3-COLUMN GRID (Even Spacing & Zero Overflow) */}
         <div
           ref={scrollRef}
-          className="flex gap-5 sm:gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-none pt-6 sm:pt-8 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0"
+          className={cn(
+            "pt-6 sm:pt-8 pb-4",
+            activeTab === "all"
+              ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full"
+              : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-xl"
+          )}
         >
           {filteredDisciplines.map((discipline) => (
             <article
               key={discipline.id}
-              className="w-[85vw] max-w-[340px] sm:w-[380px] lg:w-[420px] flex-shrink-0 snap-center sm:snap-start flex flex-col justify-between rounded-3xl border border-zinc-800/90 bg-zinc-900/40 p-6 sm:p-8 backdrop-blur-md hover:border-zinc-700 transition-all shadow-2xl group"
+              className="w-full flex flex-col justify-between rounded-3xl border border-zinc-800/90 bg-zinc-900/40 p-6 sm:p-8 backdrop-blur-md hover:border-zinc-700 transition-all shadow-2xl group"
             >
               <div>
                 {/* 3D Skeuomorphic Visual Artifact (Isolated on Black, Studio Lit) */}
@@ -206,7 +211,7 @@ export function StudioProductionSpectrum() {
                     src={discipline.imageSrc}
                     alt={discipline.imageAlt}
                     fill
-                    sizes="(max-width: 640px) 144px, 192px"
+                    sizes="(max-width: 640px) 144px, (max-width: 1024px) 192px, 240px"
                     className="object-contain p-2"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
@@ -246,14 +251,14 @@ export function StudioProductionSpectrum() {
                 </div>
               </div>
 
-              {/* Card Footer Action */}
+              {/* Card Footer Action — Clean Single-Line Button With Generous Breathing Room */}
               <div className="pt-4 border-t border-zinc-800/80">
                 <Link
                   href={`/bns-studio/work?format=${encodeURIComponent(discipline.primaryFormatQuery)}`}
-                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-zinc-800/80 hover:bg-primary hover:text-primary-foreground px-4 py-3 text-xs font-heading font-bold text-white transition-all shadow-sm group-hover:bg-primary group-hover:text-primary-foreground"
+                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-zinc-800/80 hover:bg-primary hover:text-primary-foreground px-4 py-3 text-xs font-heading font-bold text-white transition-all shadow-sm group-hover:bg-primary group-hover:text-primary-foreground whitespace-nowrap"
                 >
-                  <span>Explore {discipline.title} Portfolio</span>
-                  <ArrowUpRight className="size-4" />
+                  <span>Explore Portfolio</span>
+                  <ArrowUpRight className="size-4 shrink-0" />
                 </Link>
               </div>
             </article>

@@ -190,7 +190,7 @@ export default function About() {
 
 
       {/* 03 — Theory of Change: The 4-Stage Impact Engine */}
-      <section id="theory-of-change" className="border-b border-border/40 py-20 md:py-28 lg:py-36 bg-muted/20 overflow-hidden">
+      <section id="theory-of-change" className="border-b border-border/40 py-20 md:py-28 lg:py-36 bg-muted/20">
         <div className={SECTION_SHELL_INNER}>
           <StickyStackedCycle
             eyebrow="Theory of Change"

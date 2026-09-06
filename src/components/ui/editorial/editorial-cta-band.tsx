@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { motion } from "motion/react";
 import { EditorialPill } from "./editorial-pill";
-import { PillButtonGroup } from "./pill-button-group";
+import { PillButtonGroup, PillButton } from "./pill-button-group";
 import { cn } from "@/utils";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 
@@ -11,8 +11,9 @@ type EditorialCtaBandProps = {
   eyebrow?: string;
   title: string;
   description?: string;
-  ctaHref: string;
+  ctaHref?: string;
   ctaLabel: string;
+  onCtaClick?: () => void;
   secondaryHref?: string;
   secondaryLabel?: string;
   images?: Array<{ src: string; alt: string }>;
@@ -29,6 +30,7 @@ export function EditorialCtaBand({
   description,
   ctaHref,
   ctaLabel,
+  onCtaClick,
   secondaryHref,
   secondaryLabel,
   images,
@@ -82,12 +84,21 @@ export function EditorialCtaBand({
               <p className={cn(T.lead, "max-w-xl text-foreground/80 leading-relaxed")}>{description}</p>
             ) : null}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2 w-full sm:w-auto">
-              <PillButtonGroup
-                href={ctaHref}
-                label={ctaLabel}
-                size="default"
-                className="w-full sm:w-auto justify-center"
-              />
+              {onCtaClick ? (
+                <PillButton
+                  onClick={onCtaClick}
+                  label={ctaLabel}
+                  size="default"
+                  className="w-full sm:w-auto justify-center"
+                />
+              ) : ctaHref ? (
+                <PillButtonGroup
+                  href={ctaHref}
+                  label={ctaLabel}
+                  size="default"
+                  className="w-full sm:w-auto justify-center"
+                />
+              ) : null}
               {secondaryHref && secondaryLabel ? (
                 <PillButtonGroup
                   href={secondaryHref}
@@ -132,12 +143,21 @@ export function EditorialCtaBand({
 
           <div className="relative z-10 flex flex-col items-start gap-4 lg:col-span-4 lg:items-end lg:justify-center">
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
-              <PillButtonGroup
-                href={ctaHref}
-                label={ctaLabel}
-                size="default"
-                className="w-full sm:w-auto justify-center"
-              />
+              {onCtaClick ? (
+                <PillButton
+                  onClick={onCtaClick}
+                  label={ctaLabel}
+                  size="default"
+                  className="w-full sm:w-auto justify-center"
+                />
+              ) : ctaHref ? (
+                <PillButtonGroup
+                  href={ctaHref}
+                  label={ctaLabel}
+                  size="default"
+                  className="w-full sm:w-auto justify-center"
+                />
+              ) : null}
               {secondaryHref && secondaryLabel ? (
                 <PillButtonGroup
                   href={secondaryHref}

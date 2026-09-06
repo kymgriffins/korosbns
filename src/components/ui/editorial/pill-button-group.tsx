@@ -82,14 +82,14 @@ export function PillButtonGroup({
       href={href}
       {...linkProps}
       className={cn(
-        "inline-flex items-center justify-center rounded-full transition-all duration-150 outline-none",
+        "inline-flex items-center justify-center rounded-full transition-all duration-150 outline-none whitespace-nowrap shrink-0",
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         SIZE_CLASSES[size],
         VARIANT_CLASSES[variant],
         className,
       )}
     >
-      <span>{label}</span>
+      <span className="truncate">{label}</span>
       {renderedIcon}
     </Link>
   );
@@ -125,14 +125,14 @@ export function PillButton({
       disabled={disabled}
       aria-label={ariaLabel}
       className={cn(
-        "inline-flex items-center justify-center rounded-full transition-all duration-150 outline-none cursor-pointer disabled:pointer-events-none disabled:opacity-50",
+        "inline-flex items-center justify-center rounded-full transition-all duration-150 outline-none cursor-pointer whitespace-nowrap shrink-0 disabled:pointer-events-none disabled:opacity-50",
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         SIZE_CLASSES[size],
         VARIANT_CLASSES[variant],
         className,
       )}
     >
-      <span>{content}</span>
+      <span className="truncate">{content}</span>
       {renderedIcon}
     </button>
   );

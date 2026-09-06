@@ -196,10 +196,8 @@ export function BNSStudioPageClient() {
             eyebrow="Commission the Studio"
             title="Commission forensic civic media that moves policy."
             description="Bilingual podcasts, multi-camera town halls, 2D animations, or nationwide street takeovers — verified scope and production crew within 24 hours."
-            ctaHref="#"
-            ctaLabel="Open Commission Enquiry"
-            secondaryHref="/work"
-            secondaryLabel="Explore All Evidence"
+            onCtaClick={() => setBookingOpen(true)}
+            ctaLabel="Commission BNS Studio"
             motionBackground={true}
           />
         </div>

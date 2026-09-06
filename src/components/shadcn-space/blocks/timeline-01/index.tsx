@@ -51,7 +51,7 @@ const TimelineBlock01 = ({ items = budgetCycleTimelineData }: TimelineBlock01Pro
   });
 
   return (
-    <section className="py-20 md:py-28 lg:py-36 bg-background border-y border-border/40 overflow-hidden">
+    <section className="py-20 md:py-28 lg:py-36 bg-background border-y border-border/40">
       <div className={SECTION_SHELL_INNER}>
         <StickyStackedCycle
           eyebrow={timelineContent.eyebrow}

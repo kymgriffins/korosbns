@@ -45,9 +45,7 @@ describe("StudioProductionSpectrum", () => {
     expect(screen.getByText("Broadcast Multi-Mic Studio Recording")).toBeInTheDocument();
 
     // Portfolio CTA links
-    expect(screen.getByText("Explore Animation & Visual Data Portfolio")).toBeInTheDocument();
-    expect(screen.getByText("Explore Cinema & Field Production Portfolio")).toBeInTheDocument();
-    expect(screen.getByText("Explore Audio Journalism & Podcasts Portfolio")).toBeInTheDocument();
+    expect(screen.getAllByText("Explore Portfolio").length).toBe(3);
   });
 
   it("filters cards when category tabs are clicked", () => {

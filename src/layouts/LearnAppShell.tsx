@@ -59,9 +59,11 @@ const FORMAT_LINKS: FormatNavLink[] = [
   },
   {
     label: "Podcasts",
-    href: "/learn#podcasts",
+    href: "/learn/podcasts",
     icon: Radio,
-    isActive: () => false,
+    badge: "Audio",
+    badgeColor: "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/30",
+    isActive: (p) => p.startsWith("/learn/podcasts"),
   },
   {
     label: "Docs",

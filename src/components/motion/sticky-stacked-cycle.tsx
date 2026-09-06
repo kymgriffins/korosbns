@@ -72,7 +72,7 @@ export function StickyStackedCycle({
     <div ref={containerRef} className={cn("relative w-full", className)}>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
         {/* Sticky Left Control Panel */}
-        <div className="lg:col-span-5 lg:sticky lg:top-28 space-y-8">
+        <div className="lg:col-span-5 lg:sticky lg:top-28 self-start space-y-8">
           <div className="space-y-4">
             {eyebrow && (
               <EditorialPill dot pulse variant="default">
@@ -158,7 +158,7 @@ export function StickyStackedCycle({
           )}
         </div>
 
-        {/* Right Column: Stacked Cards with Depth & Parallax */}
+        {/* Right Column: Cards Scrolling Naturally Past Sticky Left Control */}
         <div className="lg:col-span-7 space-y-8 lg:space-y-12 pb-16">
           {items.map((item, idx) => {
             const isDelivery =
@@ -170,7 +170,7 @@ export function StickyStackedCycle({
                 key={item.id || idx}
                 id={`cycle-stage-${item.id || idx}`}
                 className={cn(
-                  "lg:sticky lg:top-28 transition-all duration-300 rounded-3xl border border-border/60 bg-card p-6 sm:p-8 lg:p-10 shadow-xl overflow-hidden backdrop-blur-md",
+                  "transition-all duration-300 rounded-3xl border border-border/60 bg-card p-6 sm:p-8 lg:p-10 shadow-xl overflow-hidden backdrop-blur-md",
                   isDelivery ? "border-primary/50 ring-1 ring-primary/20" : ""
                 )}
               >

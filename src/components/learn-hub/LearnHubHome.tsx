@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React from "react";
 import Image from "next/image";
@@ -12,10 +12,12 @@ import {
   Play,
   PlaySquare,
   Clock,
+  Radio,
   ShieldCheck,
 } from "lucide-react";
 import { EditorialPill, PillButtonGroup } from "@/components/ui/editorial";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
+import { PodcastPlayer } from "@/components/learn/podcast-player";
 import { cn } from "@/utils";
 
 export function LearnHubHome() {
@@ -310,6 +312,24 @@ export function LearnHubHome() {
                 </Link>
               </div>
             </div>
+          </div>
+
+          {/* Pathway 3: Ground Soundscapes & Podcasts (Interactive Audio Console) */}
+          <div id="podcasts" className="pt-10 md:pt-14 mt-8 border-t border-border/30">
+            <div className="mb-8 space-y-2">
+              <span className="inline-flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                <Radio className="size-3.5" />
+                <span>Format 03 · Audio Journalism &amp; Podcasts</span>
+              </span>
+              <h3 className="font-heading text-2xl sm:text-3xl font-black text-foreground tracking-tight leading-tight">
+                Field Soundscapes &amp; Forensic Audio Debates
+              </h3>
+              <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">
+                Listen to investigative field audio, community baraza debates in Sheng and vernacular FM radio, and forensic budget deep-dives.
+              </p>
+            </div>
+
+            <PodcastPlayer />
           </div>
         </div>
       </section>
