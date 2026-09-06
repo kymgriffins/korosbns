@@ -21,6 +21,9 @@ const MARKETING_PATTERNS = [
   /^\/careers(?:\/|$)/,
   /^\/donate(?:\/|$)/,
   /^\/support(?:\/|$)/,
+  /^\/bns-studio(?:\/|$)/,
+  /^\/work(?:\/|$)/,
+  /^\/programmes(?:\/|$)/,
 ];
 
 const API_PATTERNS = [

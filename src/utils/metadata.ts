@@ -61,7 +61,7 @@ export function canonicalUrl(path: string): string {
 export const generateMetadata = ({
   title = `${appName} | Youth-Led Budget Literacy in Kenya`,
   description = DEFAULT_META_DESCRIPTION,
-  image = "/logo.svg",
+  image = "/og-image.jpg",
   path = "/",
   icons = [
     {
@@ -91,7 +91,16 @@ export const generateMetadata = ({
     applicationName: appName,
     keywords: [
       "Budget Ndio Story",
+      "BNS Studios",
       "Kenya budget literacy",
+      "video production company Nairobi",
+      "podcast studio Kenya",
+      "documentary production Nairobi",
+      "2D animation studio Kenya",
+      "civic media agency Kenya",
+      "explainer video production Kenya",
+      "impact storytelling production house",
+      "commission media production Nairobi",
       "youth civic engagement Kenya",
       "budget accountability",
       "public finance Kenya",

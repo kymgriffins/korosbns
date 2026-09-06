@@ -11,12 +11,18 @@ export const dynamic = "force-dynamic";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const routes = [
     { path: "", priority: 1.0, frequency: "weekly" as const },
-    { path: "/about", priority: 0.8, frequency: "monthly" as const },
-    { path: "/faq", priority: 0.7, frequency: "monthly" as const },
-    { path: "/contact", priority: 0.5, frequency: "monthly" as const },
-    { path: "/privacy", priority: 0.3, frequency: "yearly" as const },
-    { path: "/terms", priority: 0.3, frequency: "yearly" as const },
+    { path: "/bns-studio", priority: 1.0, frequency: "weekly" as const },
+    { path: "/bns-studio/work", priority: 0.95, frequency: "weekly" as const },
+    { path: "/work", priority: 0.95, frequency: "weekly" as const },
+    { path: "/bns-studio/about", priority: 0.85, frequency: "monthly" as const },
+    { path: "/programmes", priority: 0.9, frequency: "monthly" as const },
+    { path: "/programmes/connect", priority: 0.85, frequency: "monthly" as const },
+    { path: "/programmes/mashinani", priority: 0.85, frequency: "monthly" as const },
+    { path: "/programmes/wanahabari-lab", priority: 0.85, frequency: "monthly" as const },
+    { path: "/programmes/studios", priority: 0.9, frequency: "monthly" as const },
+    { path: "/about", priority: 0.85, frequency: "monthly" as const },
     { path: "/learn", priority: 0.9, frequency: "weekly" as const },
+    { path: "/learn/podcasts", priority: 0.85, frequency: "weekly" as const },
     { path: "/reports", priority: 0.9, frequency: "weekly" as const },
     { path: "/budgetnews", priority: 0.9, frequency: "weekly" as const },
     { path: "/learn/articles", priority: 0.7, frequency: "weekly" as const },
@@ -25,19 +31,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/learn/documents", priority: 0.7, frequency: "weekly" as const },
     { path: "/events", priority: 0.8, frequency: "weekly" as const },
     { path: "/surveys", priority: 0.6, frequency: "weekly" as const },
-    { path: "/programmes", priority: 0.9, frequency: "monthly" as const },
-    { path: "/programmes/connect", priority: 0.8, frequency: "monthly" as const },
-    { path: "/programmes/mashinani", priority: 0.8, frequency: "monthly" as const },
-    { path: "/programmes/wanahabari-lab", priority: 0.8, frequency: "monthly" as const },
-    { path: "/bns-project", priority: 0.6, frequency: "monthly" as const },
-    { path: "/bns-studio", priority: 0.7, frequency: "monthly" as const },
+    { path: "/faq", priority: 0.7, frequency: "monthly" as const },
+    { path: "/contact", priority: 0.6, frequency: "monthly" as const },
+    { path: "/privacy", priority: 0.3, frequency: "yearly" as const },
+    { path: "/terms", priority: 0.3, frequency: "yearly" as const },
     { path: "/analytics", priority: 0.6, frequency: "weekly" as const },
     { path: "/security", priority: 0.5, frequency: "monthly" as const },
     { path: "/weekly-notes", priority: 0.7, frequency: "weekly" as const },
     { path: "/weekly-notes/manage", priority: 0.3, frequency: "monthly" as const },
     { path: "/weekly-notes/audit", priority: 0.3, frequency: "monthly" as const },
-    { path: "/security", priority: 0.4, frequency: "yearly" as const },
-    { path: "/analytics", priority: 0.5, frequency: "weekly" as const },
     { path: "/bns-project", priority: 0.6, frequency: "monthly" as const },
   ];
 
@@ -135,14 +137,35 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error("Sitemap: Failed to load report dossiers", err);
   }
 
-  // BNS Studios project dossiers (seed JSON)
+  // BNS Studios format corridors (P0 Commercial Discovery)
+  const STUDIO_FORMATS = [
+    "Podcast & Audio",
+    "Animations",
+    "Explainer Videos",
+    "Research Spotlights",
+    "Documentaries",
+    "Social Media Series",
+    "Town Hall Design & Facilitation",
+    "Community Listening Sessions",
+  ];
+
+  STUDIO_FORMATS.forEach((format) => {
+    sitemapEntries.push({
+      url: canonicalUrl(`/bns-studio/work?format=${encodeURIComponent(format)}`),
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    });
+  });
+
+  // BNS Studios project dossiers (P0 Commercial Case Studies)
   try {
     studiosEvidenceData.getAllProjects().forEach((project) => {
       sitemapEntries.push({
         url: canonicalUrl(`/bns-studio/${project.slug}`),
         lastModified: project.date ? new Date(project.date) : new Date(),
-        changeFrequency: "monthly",
-        priority: 0.65,
+        changeFrequency: "weekly",
+        priority: 0.85,
       });
     });
   } catch (err) {

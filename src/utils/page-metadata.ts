@@ -6,39 +6,56 @@ const siteUrl =
 const appName = process.env.NEXT_PUBLIC_APP_NAME || "Budget Ndio Story";
 
 
+export const DEFAULT_PAGE_KEYWORDS = [
+  "Budget Ndio Story",
+  "BNS Studios",
+  "Kenya budget literacy",
+  "video production company Nairobi",
+  "podcast studio Kenya",
+  "documentary production Nairobi",
+  "2D animation studio Kenya",
+  "civic media agency Kenya",
+  "Finance Bill Kenya",
+  "Appropriation Bill",
+  "Kenya budget process",
+  "county budget transparency",
+  "parliamentary budget Kenya",
+  "National Assembly finance",
+  "Kenya fiscal policy",
+];
+
 export function buildPageMetadata({
   title,
   description,
   path,
   image,
+  keywords,
+  type = "website",
   noIndex = false,
 }: {
   title: string;
   description: string;
   path: string;
   image?: string | null;
+  keywords?: string[];
+  type?: "website" | "article";
   noIndex?: boolean;
 }): Metadata {
   const normalizedDescription = metaDescription(description);
   const canonical = canonicalUrl(path);
-  const ogImage = image || "/logo.svg";
+  const ogImage = image || "/og-image.jpg";
+  const mergedKeywords = keywords && keywords.length > 0
+    ? Array.from(new Set([...keywords, ...DEFAULT_PAGE_KEYWORDS]))
+    : DEFAULT_PAGE_KEYWORDS;
 
   return {
     title,
     description: normalizedDescription,
     metadataBase: new URL(siteUrl),
-    keywords: [
-      "Finance Bill Kenya",
-      "Appropriation Bill",
-      "Kenya budget process",
-      "parliamentary budget Kenya",
-      "National Assembly finance",
-      "Budget Ndio Story",
-      "Kenya fiscal policy",
-    ],
+    keywords: mergedKeywords,
     alternates: { canonical },
     openGraph: {
-      type: "article",
+      type,
       locale: "en_KE",
       url: canonical,
       siteName: appName,

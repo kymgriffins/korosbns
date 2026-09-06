@@ -48,23 +48,89 @@ const websiteSchema = {
 
 const studioSchema = {
   "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  name: "BNS Studio",
+  "@type": ["ProfessionalService", "VideoProductionService"],
+  name: "BNS Studios",
+  alternateName: ["Budget Ndio Story Studios", "BNS Impact Production"],
   parentOrganization: {
     "@type": "Organization",
     name: "Budget Ndio Story",
+    url: siteUrl,
   },
   description:
-    "Professional videography, photography, studio rental, and post-production services in Kenya.",
+    "Kenya's premier commercial civic creative agency and impact production house. Commissioning broadcast podcast series, cinema field documentaries, 2D motion graphics, explainer videos, and civic town halls across Kenya and East Africa.",
   url: `${siteUrl}/bns-studio`,
-  telephone: "+254700000000",
-  email: "studio@budgetndiostory.org",
+  logo: `${siteUrl}/logo.png`,
+  image: `${siteUrl}/og-image.jpg`,
+  email: "info@budgetndiostory.org",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Nairobi",
     addressCountry: "KE",
   },
-  priceRange: "KES 5,000 - 100,000",
+  areaServed: [
+    { "@type": "Country", "name": "Kenya" },
+    { "@type": "AdministrativeArea", "name": "East Africa" },
+  ],
+  serviceType: [
+    "Video Production",
+    "Documentary Filmmaking",
+    "Podcast Production",
+    "2D Motion Graphics & Animation",
+    "Civic Explainer Videos",
+    "Public Participation Facilitation",
+    "Strategic Communications",
+  ],
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "BNS Studios Commercial Production Spectrum",
+    itemListElement: [
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Cinema & Field Documentaries",
+          description:
+            "High-fidelity field cinematography, human interest investigations, and observational storytelling across 47 counties.",
+        },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Audio Journalism & Podcast Series",
+          description:
+            "Multi-mic studio recording, field soundscapes, and bilingual investigative debate series.",
+        },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Animation & Visual Data Design",
+          description:
+            "2D character animation, kinetic typography, and motion infographics.",
+        },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Explainer Videos & Forensic Visual Memos",
+          description:
+            "Step-by-step video dissections of national bills and budget allocations.",
+        },
+      },
+      {
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: "Town Hall Convening & Citizen Barazas",
+          description:
+            "Deliberative community town hall design, live streaming, and dialogue facilitation.",
+        },
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -99,11 +165,14 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "BreadcrumbList",
-              "itemListElement": [
-                { "@type": "ListItem", "position": 1, "name": "Home", "item": siteUrl },
-                { "@type": "ListItem", "position": 2, "name": "Learn", "item": `${siteUrl}/learn` },
-                { "@type": "ListItem", "position": 3, "name": "About", "item": `${siteUrl}/about` },
-                { "@type": "ListItem", "position": 4, "name": "FAQ", "item": `${siteUrl}/faq` },
+              itemListElement: [
+                { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+                { "@type": "ListItem", position: 2, name: "BNS Studios", item: `${siteUrl}/bns-studio` },
+                { "@type": "ListItem", position: 3, name: "Work", item: `${siteUrl}/work` },
+                { "@type": "ListItem", position: 4, name: "Programmes", item: `${siteUrl}/programmes` },
+                { "@type": "ListItem", position: 5, name: "Learn", item: `${siteUrl}/learn` },
+                { "@type": "ListItem", position: 6, name: "Reports", item: `${siteUrl}/reports` },
+                { "@type": "ListItem", position: 7, name: "About", item: `${siteUrl}/about` },
               ],
             }),
           }}
