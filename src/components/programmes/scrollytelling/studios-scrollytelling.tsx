@@ -5,7 +5,6 @@ import Image from "next/image";
 import {
   ArrowLeft,
   Film,
-  Sparkles,
   ShieldCheck,
   TrendingUp,
   ArrowUpRight,

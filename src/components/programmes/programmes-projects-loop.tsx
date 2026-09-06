@@ -9,7 +9,7 @@ import {
   FileSearch,
   Users2,
   Film,
-  Sparkles,
+  Clapperboard,
   ExternalLink,
   ArrowUpRight,
   X,
@@ -80,7 +80,7 @@ function getFormatIcon(type: string, contentType: string) {
     return <Radio className="size-3" />;
   }
   if (contentType.toLowerCase().includes("animation")) {
-    return <Sparkles className="size-3" />;
+    return <Clapperboard className="size-3" />;
   }
   if (contentType.toLowerCase().includes("town hall") || contentType.toLowerCase().includes("listening")) {
     return <Users2 className="size-3" />;

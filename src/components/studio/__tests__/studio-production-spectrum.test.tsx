@@ -1,63 +1,53 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { StudioProductionSpectrum } from "../StudioProductionSpectrum";
 
+beforeEach(() => {
+  vi.clearAllMocks();
+  window.IntersectionObserver = vi.fn().mockImplementation(function (this: any) {
+    return {
+      observe: vi.fn(),
+      unobserve: vi.fn(),
+      disconnect: vi.fn(),
+    };
+  }) as any;
+});
+
 describe("StudioProductionSpectrum", () => {
-  it("renders chapter title, 4 disciplines, and navigation controls", () => {
+  it("renders chapter SectionBadge, 3 disciplines, and navigation controls", () => {
     render(<StudioProductionSpectrum />);
 
-    // Chapter badge and headings
+    // SectionBadge and headings
     expect(screen.getByText(/Chapter 03 · Production Spectrum/i)).toBeInTheDocument();
     expect(
-      screen.getByText(/Four creative disciplines\. Engineered for civic impact\./i),
+      screen.getByText(/Three creative disciplines\. Engineered for civic impact\./i),
     ).toBeInTheDocument();
 
-    // 4 Creative Disciplines
+    // 3 Creative Disciplines
     expect(screen.getByText("Animation & Visual Data")).toBeInTheDocument();
     expect(screen.getByText("Cinema & Field Production")).toBeInTheDocument();
     expect(screen.getByText("Audio Journalism & Podcasts")).toBeInTheDocument();
-    expect(screen.getByText("Civic Convenings & Evidence")).toBeInTheDocument();
+    // 4th discipline removed
+    expect(screen.queryByText("Civic Convenings & Evidence")).not.toBeInTheDocument();
 
-    // Scroll controls
+    // Scroll controls on sm+
     expect(screen.getByLabelText("Scroll left")).toBeInTheDocument();
     expect(screen.getByLabelText("Scroll right")).toBeInTheDocument();
   });
 
-  it("renders all 8 civic production formats with explore links", () => {
+  it("renders capabilities checklists and portfolio explore links", () => {
     render(<StudioProductionSpectrum />);
 
-    // Format 01
-    expect(screen.getByText("FORMAT 01")).toBeInTheDocument();
-    expect(screen.getByText("Podcast & Audio")).toBeInTheDocument();
+    // Check capabilities are present
+    expect(screen.getByText("2D Character & Motion Explainers")).toBeInTheDocument();
+    expect(screen.getByText("Multi-Camera 4K Documentary Shoots")).toBeInTheDocument();
+    expect(screen.getByText("Broadcast Multi-Mic Studio Recording")).toBeInTheDocument();
 
-    // Format 02
-    expect(screen.getByText("FORMAT 02")).toBeInTheDocument();
-    expect(screen.getByText("Animations")).toBeInTheDocument();
-
-    // Format 03
-    expect(screen.getByText("FORMAT 03")).toBeInTheDocument();
-    expect(screen.getByText("Explainer Videos")).toBeInTheDocument();
-
-    // Format 04
-    expect(screen.getByText("FORMAT 04")).toBeInTheDocument();
-    expect(screen.getByText("Research Spotlights")).toBeInTheDocument();
-
-    // Format 05
-    expect(screen.getByText("FORMAT 05")).toBeInTheDocument();
-    expect(screen.getByText("Documentaries")).toBeInTheDocument();
-
-    // Format 06
-    expect(screen.getByText("FORMAT 06")).toBeInTheDocument();
-    expect(screen.getByText("Social Media Series")).toBeInTheDocument();
-
-    // Format 07
-    expect(screen.getByText("FORMAT 07")).toBeInTheDocument();
-    expect(screen.getByText("Town Hall Design & Facilitation")).toBeInTheDocument();
-
-    // Format 08
-    expect(screen.getByText("FORMAT 08")).toBeInTheDocument();
-    expect(screen.getByText("Community Listening Sessions")).toBeInTheDocument();
+    // Portfolio CTA links
+    expect(screen.getByText("Explore Animation & Visual Data Portfolio")).toBeInTheDocument();
+    expect(screen.getByText("Explore Cinema & Field Production Portfolio")).toBeInTheDocument();
+    expect(screen.getByText("Explore Audio Journalism & Podcasts Portfolio")).toBeInTheDocument();
   });
 
   it("filters cards when category tabs are clicked", () => {
