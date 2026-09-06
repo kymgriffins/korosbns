@@ -31,7 +31,7 @@ export function WanahabariScrollytelling() {
       />
 
       {/* 01 — NEWSPAPER EDITORIAL MASTHEAD HERO */}
-      <header className="relative border-b border-border/40 bg-gradient-to-b from-red-500/5 via-muted/10 to-background pt-4 pb-10 md:pt-6 md:pb-14 overflow-hidden">
+      <header className="relative border-b border-border/40 bg-gradient-to-b from-red-500/5 via-muted/10 to-background pt-4 pb-6 md:pt-6 md:pb-8 overflow-hidden">
         <div className={SECTION_SHELL_INNER}>
           {/* Breadcrumb back to programmes */}
           <nav aria-label="Breadcrumb" className="mb-3">
@@ -69,7 +69,7 @@ export function WanahabariScrollytelling() {
             </p>
 
             {/* Editorial Overview Strip with Numbers */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 pt-8 border-t border-border/50">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-6 border-t border-border/50">
               <div className="space-y-1">
                 <p className="text-[11px] font-mono font-bold uppercase tracking-wider text-muted-foreground">
                   Operational Altitude
@@ -115,7 +115,7 @@ export function WanahabariScrollytelling() {
       </header>
 
       {/* 02 — THE NARRATIVE ARC: CHAPTER 01 — THE 1-DAY SPECTACLE */}
-      <section className="py-24 md:py-36 border-b border-border/30">
+      <section className="py-10 sm:py-14 md:py-18 border-b border-border/30">
         <div className={SECTION_SHELL_INNER}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
             <div className="lg:col-span-7 space-y-8">

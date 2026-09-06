@@ -36,7 +36,7 @@ export function MashinaniScrollytelling() {
       />
 
       {/* 01 — EDITORIAL HERO WITH WARM EARTHY ACCENTS & MASKED TYPOGRAPHY */}
-      <header className="relative border-b border-border/40 bg-gradient-to-b from-amber-500/5 via-muted/10 to-background pt-4 pb-10 md:pt-6 md:pb-14 overflow-hidden">
+      <header className="relative border-b border-border/40 bg-gradient-to-b from-amber-500/5 via-muted/10 to-background pt-4 pb-6 md:pt-6 md:pb-8 overflow-hidden">
         <div className={SECTION_SHELL_INNER}>
           <nav aria-label="Breadcrumb" className="mb-3">
             <Link
@@ -71,7 +71,7 @@ export function MashinaniScrollytelling() {
             </p>
 
             {/* Strategic Overview Strip / Telemetry Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 pt-6 border-t border-border/50 mt-6">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-6 border-t border-border/50 mt-6">
               <div className="space-y-1">
                 <p className="text-[11px] font-mono font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
                   Investigative Desk
@@ -118,7 +118,7 @@ export function MashinaniScrollytelling() {
       </header>
 
       {/* 02 — OPENING HOOK: GRAND MONUMENTAL COMMUNITY QUOTE WITH ASYMMETRIC PARALLAX */}
-      <section className="py-24 md:py-36 border-b border-border/30 bg-muted/5 relative overflow-hidden">
+      <section className="py-10 sm:py-14 md:py-18 border-b border-border/30 bg-muted/5 relative overflow-hidden">
         <div className={SECTION_SHELL_INNER}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             <div className="lg:col-span-7 space-y-8">

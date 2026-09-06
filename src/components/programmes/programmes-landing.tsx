@@ -15,7 +15,6 @@ import {
 import { EditorialCtaBand, EditorialPill, PillButtonGroup } from "@/components/ui/editorial";
 import { BNS_COMMUNITY_IMAGES, BNS_MEDIA_IMAGES } from "@/constants/bns-media-images";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
-import { ProgrammesSovereignTicker } from "@/components/programmes/programmes-sovereign-ticker";
 import { ProgrammesProjectsLoop } from "@/components/programmes/programmes-projects-loop";
 import {
   TelemetryHUD,
@@ -27,103 +26,117 @@ import {
 export function ProgrammesLanding() {
   return (
     <article className="prog-page min-h-screen bg-background text-foreground selection:bg-primary/20">
-      {/* 00 — PERSISTENT LOCOMOTIVE HUD */}
+      {/* 00 — PERSISTENT SOVEREIGN MARQUEE TELEMETRY HUD */}
       <TelemetryHUD
         activeDesk="FOUR OPERATIONAL DESKS"
         focusArea="NATIONAL TO DEVOLVED GRASSROOTS"
         badgeLabel="SOVEREIGN STANDARD"
       />
 
-      {/* 01 — MASTER SOVEREIGN HERO: MACRO-WHITESPACE & EDITORIAL TYPOGRAPHY */}
-      <header className="relative overflow-hidden pt-8 pb-12 md:pt-16 md:pb-20">
+      {/* 01 — MASTER SOVEREIGN HERO: UNIFIED HEADLINE & IMPACT LEDGER */}
+      <header className="relative overflow-hidden pt-6 pb-8 md:pt-10 md:pb-12 border-b border-border/30">
         <div className={SECTION_SHELL_INNER}>
-          <div className="space-y-4 max-w-4xl w-full min-w-0">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full min-w-0">
-              <EditorialPill dot pulse className="hidden sm:inline-flex shrink-0">
-                Four Operational Desks
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+            {/* Left Column (7 cols): Editorial Headline & Mission */}
+            <div className="lg:col-span-7 space-y-4 min-w-0">
+              <EditorialPill dot pulse className="inline-flex">
+                Four Operational Desks · Constitution Article 201
               </EditorialPill>
-              <ProgrammesSovereignTicker className="min-w-0 flex-1 w-full" />
+
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-foreground leading-[1.04]">
+                <MaskedReveal delay={0.05}>Follow the public shilling</MaskedReveal>{" "}
+                <MaskedReveal delay={0.15}>from Treasury to the</MaskedReveal>{" "}
+                <MaskedReveal delay={0.25} innerClassName="text-primary">
+                  grassroots.
+                </MaskedReveal>
+              </h1>
+
+              <p className="text-base sm:text-lg font-normal text-foreground/80 leading-relaxed max-w-2xl">
+                Kenya’s national budget crosses KSh 4.82 Trillion. Budget Ndio Story deploys 4 specialized, non-replicated operational desks to audit allocations, mobilize digital youth, ground rural barazas, and produce cinematic media.
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1 w-full sm:w-auto">
+                <PillButtonGroup
+                  href="/work"
+                  label="Explore Evidence Archive"
+                  variant="primary"
+                  size="default"
+                  className="w-full sm:w-auto justify-center"
+                />
+                <PillButtonGroup
+                  href="#desk-01"
+                  label="Explore The 4 Desks"
+                  variant="outline"
+                  size="default"
+                  className="hidden sm:inline-flex w-full sm:w-auto justify-center"
+                />
+              </div>
             </div>
 
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-foreground leading-[1.02]">
-              <MaskedReveal delay={0.05}>Follow the public shilling</MaskedReveal>{" "}
-              <MaskedReveal delay={0.15}>from Treasury to the</MaskedReveal>{" "}
-              <MaskedReveal delay={0.25} innerClassName="text-primary">
-                grassroots.
-              </MaskedReveal>
-            </h1>
+            {/* Right Column (5 cols): Integrated Sovereign Audit Ledger */}
+            <div className="lg:col-span-5 w-full">
+              <div className="rounded-2xl border border-border/60 bg-muted/25 dark:bg-zinc-900/40 p-5 sm:p-6 backdrop-blur-xs shadow-xs">
+                <div className="flex items-center justify-between pb-3 border-b border-border/40 mb-4 font-mono text-[11px]">
+                  <span className="font-bold uppercase tracking-widest text-primary flex items-center gap-1.5">
+                    <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    Sovereign Audit Ledger
+                  </span>
+                  <span className="text-muted-foreground uppercase tracking-wider text-[10px]">
+                    Live Verification
+                  </span>
+                </div>
 
-            <p className="text-lg sm:text-xl font-normal text-foreground/80 leading-relaxed max-w-3xl">
-              Kenya’s national budget crosses KSh 4.82 Trillion. Budget Ndio Story deploys 4 specialized, non-replicated operational desks to audit allocations, mobilize digital youth, ground rural barazas, and produce cinematic media.
-            </p>
+                <div className="grid grid-cols-2 gap-4 sm:gap-5">
+                  <div className="space-y-1">
+                    <p className="text-2xl sm:text-3xl font-black text-primary tracking-tighter">
+                      <MetricCounter value={4.82} prefix="KSh " suffix="T" decimals={2} />
+                    </p>
+                    <p className="text-xs font-bold uppercase tracking-wider text-foreground">
+                      National Budget
+                    </p>
+                    <p className="text-[11px] text-muted-foreground leading-tight">
+                      Treasury to ministry line audits
+                    </p>
+                  </div>
 
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2 w-full sm:w-auto">
-              <PillButtonGroup
-                href="/work"
-                label="Explore Evidence Archive"
-                variant="primary"
-                size="default"
-                className="w-full sm:w-auto justify-center"
-              />
-              <PillButtonGroup
-                href="#desk-01"
-                label="Explore The 4 Desks"
-                variant="outline"
-                size="default"
-                className="hidden sm:inline-flex w-full sm:w-auto justify-center"
-              />
-            </div>
-          </div>
+                  <div className="space-y-1">
+                    <p className="text-2xl sm:text-3xl font-black text-foreground tracking-tighter flex items-center">
+                      <span>04</span>
+                      <span className="text-primary ml-1 text-xl font-bold">Counties</span>
+                    </p>
+                    <p className="text-xs font-bold uppercase tracking-wider text-foreground">
+                      Grassroots Hubs
+                    </p>
+                    <p className="text-[11px] text-muted-foreground leading-tight">
+                      Kilifi, Nakuru, Wajir, Kakamega
+                    </p>
+                  </div>
 
-          {/* Clean Editorial Impact Row — No Harsh Box Borders */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 pt-10 mt-8 border-t border-border/30">
-            <div className="space-y-1">
-              <p className="text-3xl sm:text-5xl font-black text-primary tracking-tighter">
-                <MetricCounter value={4.82} prefix="KSh " suffix="T" decimals={2} />
-              </p>
-              <p className="text-xs font-bold uppercase tracking-wider text-foreground mt-1">
-                National Budget Tracked
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Treasury to ministry line-item verification
-              </p>
-            </div>
+                  <div className="space-y-1 pt-3 border-t border-border/30">
+                    <p className="text-2xl sm:text-3xl font-black text-primary tracking-tighter">
+                      <MetricCounter value={120} suffix="+" />
+                    </p>
+                    <p className="text-xs font-bold uppercase tracking-wider text-foreground">
+                      Reporters Trained
+                    </p>
+                    <p className="text-[11px] text-muted-foreground leading-tight">
+                      Forensic newsroom cohorts
+                    </p>
+                  </div>
 
-            <div className="space-y-1">
-              <p className="text-3xl sm:text-5xl font-black text-foreground tracking-tighter flex items-center">
-                <span>04</span>
-                <span className="text-primary ml-1.5 text-2xl font-bold">Counties</span>
-              </p>
-              <p className="text-xs font-bold uppercase tracking-wider text-foreground mt-1">
-                Embedded Grassroots Hubs
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Kakamega, Kilifi, Nakuru, and Wajir
-              </p>
-            </div>
-
-            <div className="space-y-1">
-              <p className="text-3xl sm:text-5xl font-black text-primary tracking-tighter">
-                <MetricCounter value={120} suffix="+" />
-              </p>
-              <p className="text-xs font-bold uppercase tracking-wider text-foreground mt-1">
-                Reporters & Fellows Trained
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Year-round forensic newsroom cohorts
-              </p>
-            </div>
-
-            <div className="space-y-1">
-              <p className="text-3xl sm:text-5xl font-black text-foreground tracking-tighter">
-                <MetricCounter value={100} suffix="%" />
-              </p>
-              <p className="text-xs font-bold uppercase tracking-wider text-foreground mt-1">
-                Commercial Surplus Covenant
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Reinvested in citizen budget audits
-              </p>
+                  <div className="space-y-1 pt-3 border-t border-border/30">
+                    <p className="text-2xl sm:text-3xl font-black text-foreground tracking-tighter">
+                      <MetricCounter value={100} suffix="%" />
+                    </p>
+                    <p className="text-xs font-bold uppercase tracking-wider text-foreground">
+                      Surplus Covenant
+                    </p>
+                    <p className="text-[11px] text-muted-foreground leading-tight">
+                      Reinvested in citizen audits
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -132,7 +145,7 @@ export function ProgrammesLanding() {
       {/* ========================================================================= */}
       {/* DESK 01: BNS CONNECT — TYPOGRAPHIC MANIFESTO & DIGITAL YOUTH SPREAD        */}
       {/* ========================================================================= */}
-      <section id="desk-01" className="py-14 sm:py-18 md:py-20 border-b border-border/40">
+      <section id="desk-01" className="py-10 sm:py-14 md:py-16 border-b border-border/40">
         <div className={SECTION_SHELL_INNER}>
           {/* Section Identifier Header */}
           <div className="flex items-center gap-3 mb-4">

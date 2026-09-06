@@ -101,7 +101,7 @@ export function StudiosScrollytelling() {
       />
 
       {/* 01 — CINEMATIC MIDNIGHT MASTHEAD HERO */}
-      <header className="relative border-b border-border/40 bg-gradient-to-b from-primary/10 via-muted/10 to-background pt-4 pb-10 md:pt-6 md:pb-14 overflow-hidden">
+      <header className="relative border-b border-border/40 bg-gradient-to-b from-primary/10 via-muted/10 to-background pt-4 pb-6 md:pt-6 md:pb-8 overflow-hidden">
         <div className={SECTION_SHELL_INNER}>
           {/* Breadcrumb back to programmes */}
           <nav aria-label="Breadcrumb" className="mb-3">
@@ -137,7 +137,7 @@ export function StudiosScrollytelling() {
             </p>
 
             {/* Strategic Overview Strip */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 pt-8 border-t border-border/50">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-6 border-t border-border/50">
               <div className="space-y-1">
                 <p className="text-[11px] font-mono font-bold uppercase tracking-wider text-muted-foreground">
                   Economic Model
@@ -163,7 +163,7 @@ export function StudiosScrollytelling() {
                   Production Formats
                 </p>
                 <p className="text-base font-bold text-foreground">
-                  <MetricCounter value={8} suffix=" Disciplines" />
+                  <MetricCounter value={3} suffix=" Disciplines" />
                 </p>
                 <p className="text-xs text-muted-foreground">Podcasts, Docs, Motion</p>
               </div>

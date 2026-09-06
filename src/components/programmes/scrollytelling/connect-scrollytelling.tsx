@@ -31,7 +31,7 @@ export function ConnectScrollytelling() {
       />
 
       {/* 01 — ASYMMETRICAL EDITORIAL HERO */}
-      <header className="relative border-b border-border/40 bg-gradient-to-b from-primary/5 via-muted/10 to-background pt-4 pb-10 md:pt-6 md:pb-14 overflow-hidden">
+      <header className="relative border-b border-border/40 bg-gradient-to-b from-primary/5 via-muted/10 to-background pt-4 pb-6 md:pt-6 md:pb-8 overflow-hidden">
         <div className={SECTION_SHELL_INNER}>
           {/* Breadcrumb back to programmes */}
           <nav aria-label="Breadcrumb" className="mb-3">
@@ -67,43 +67,43 @@ export function ConnectScrollytelling() {
             </p>
 
             {/* Strategic Ledger Strip with Metrics */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 pt-8 border-t border-border/50">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-6 border-t border-border/50">
               <div className="space-y-1">
                 <p className="text-[11px] font-mono font-bold uppercase tracking-wider text-muted-foreground">
-                  Operational Altitude
+                  Operational Scale
                 </p>
-                <p className="text-base font-bold text-foreground">
-                  Macro Sovereign Policy
+                <p className="text-lg sm:text-xl font-black text-primary tracking-tight">
+                  <MetricCounter value={4.82} prefix="KSh " suffix="T" decimals={2} />
                 </p>
                 <p className="text-xs text-muted-foreground">National Treasury & Parliament</p>
               </div>
 
               <div className="space-y-1">
                 <p className="text-[11px] font-mono font-bold uppercase tracking-wider text-muted-foreground">
-                  Primary Demographic
+                  Core Demographic
                 </p>
-                <p className="text-base font-bold text-foreground">
-                  18–35 Digital Citizens
+                <p className="text-lg sm:text-xl font-black text-foreground tracking-tight">
+                  <MetricCounter value={70} suffix="% Under 35" />
                 </p>
                 <p className="text-xs text-muted-foreground">47 County Hub Networks</p>
               </div>
 
               <div className="space-y-1">
                 <p className="text-[11px] font-mono font-bold uppercase tracking-wider text-muted-foreground">
-                  Flagship Vehicle
+                  Flagship Format
                 </p>
-                <p className="text-base font-bold text-primary">
-                  Sheng & Swahili Explainers
+                <p className="text-lg sm:text-xl font-black text-primary tracking-tight">
+                  60s Mobile Reels
                 </p>
-                <p className="text-xs text-muted-foreground">Vertical Video & Infographics</p>
+                <p className="text-xs text-muted-foreground">Sheng & Swahili Explainers</p>
               </div>
 
               <div className="space-y-1">
                 <p className="text-[11px] font-mono font-bold uppercase tracking-wider text-muted-foreground">
                   Sovereign Standard
                 </p>
-                <p className="text-base font-bold text-foreground">
-                  Article 201 Constitution
+                <p className="text-lg sm:text-xl font-black text-foreground tracking-tight">
+                  Article 201
                 </p>
                 <p className="text-xs text-muted-foreground">Public Finance Openness</p>
               </div>
@@ -113,7 +113,7 @@ export function ConnectScrollytelling() {
       </header>
 
       {/* 02 — THE NARRATIVE ARC: CHAPTER 01 — THE 400-PAGE CHASM */}
-      <section className="py-24 md:py-36 border-b border-border/30">
+      <section className="py-10 sm:py-14 md:py-18 border-b border-border/30">
         <div className={SECTION_SHELL_INNER}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
             {/* Left Column: Bold Asymmetric Typography & Story */}
