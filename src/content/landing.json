@@ -31,7 +31,7 @@
   "programmesStrip": {
     "title": "Our programmes",
     "description": "National tracking, county depth, newsroom capacity, and commissioned storytelling.",
-    "seeMoreLabel": "See more",
+    "seeMoreLabel": "Explore our programmes",
     "seeMoreHref": "/programmes",
     "exploreLabel": "Explore our programmes",
     "exploreHref": "/programmes"
@@ -59,7 +59,7 @@
     "titleHighlight": "Movement",
     "titleAfter": "in the field.",
     "description": "Moments from civic workshops, town halls, and community engagements across the country.",
-    "seeMoreLabel": "See more",
+    "seeMoreLabel": "Explore field gallery",
     "seeMoreHref": "/work",
     "projectNames": [
       "Budget Literacy Programme",
@@ -84,7 +84,7 @@
     "titleBefore": "Find us where",
     "titleHighlight": "you already scroll",
     "description": "Hover a channel to see the handle and what we post — then follow in one click.",
-    "seeMoreLabel": "See more",
+    "seeMoreLabel": "Follow on TikTok",
     "seeMoreHref": "https://www.tiktok.com/@budget.ndio.story"
   },
   "navigation": {

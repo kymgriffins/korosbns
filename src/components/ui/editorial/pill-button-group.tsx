@@ -20,6 +20,7 @@ export type PillCtaProps = {
   variant?: PillButtonVariant;
   size?: PillButtonSize;
   icon?: React.ReactNode;
+  "aria-label"?: string;
 };
 
 export type PillButtonProps = {
@@ -65,6 +66,7 @@ export function PillButtonGroup({
   variant = "primary",
   size = "default",
   icon,
+  "aria-label": ariaLabel,
 }: PillCtaProps) {
   const linkProps = external
     ? { target: "_blank" as const, rel: "noopener noreferrer" }
@@ -81,6 +83,7 @@ export function PillButtonGroup({
     <Link
       href={href}
       {...linkProps}
+      aria-label={ariaLabel}
       className={cn(
         "inline-flex items-center justify-center rounded-full transition-all duration-150 outline-none whitespace-nowrap shrink-0",
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",

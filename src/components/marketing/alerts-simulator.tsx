@@ -40,7 +40,7 @@ const SECTORS: Record<string, SectorData> = {
     slides: [
       { title: "Budget Allocation", value: "KES 52.4B", body: "Total allocation to agriculture and food security for FY 2026/27", accent: "Food security" },
       { title: "The Gap", value: "68%", body: "Only 32% reaches smallholder farmers — rest lost to overhead and untracked subsidies", accent: "Last-mile leakage" },
-      { title: "Your Action", value: "Demand transparency", body: "Insist on public beneficiary lists for all fertiliser and seed programmes within 14 days of disbursement", accent: "PFM Act 2012 §25" },
+      { title: "Your Action", value: "Demand transparency", body: "Insist on public beneficiary lists for all fertiliser and seed programmes within 14 days of disbursement", accent: "PFM Act 2012 Section 25" },
     ],
   },
   MSMEs: {
@@ -64,7 +64,7 @@ const SECTORS: Record<string, SectorData> = {
     slides: [
       { title: "Budget Allocation", value: "KES 47.3B", body: "Allocated to SHA rollout and primary healthcare", accent: "UHC fund" },
       { title: "The Gap", value: "40%", body: "Flagged for admin contracts — not frontline facilities or community health worker stipends", accent: "Admin bloat" },
-      { title: "Your Action", value: "Ring-fence frontline care", body: "Push for 60% minimum of SHA allocation to direct facility improvements; cap admin at 15%", accent: "PFM Act 2012 §107" },
+      { title: "Your Action", value: "Ring-fence frontline care", body: "Push for 60% minimum of SHA allocation to direct facility improvements; cap admin at 15%", accent: "PFM Act 2012 Section 107" },
     ],
   },
   Housing: {

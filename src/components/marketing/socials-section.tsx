@@ -197,6 +197,7 @@ export function SocialsSection() {
                   href={platform.url}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label={`${platform.cta} ${platform.name} (${platform.handle})`}
                   className="flex items-center gap-3 rounded-2xl border border-border/70 bg-card px-3 py-3 transition-colors hover:border-foreground/20"
                 >
                   <span
@@ -215,7 +216,7 @@ export function SocialsSection() {
                       {platform.stat}
                     </p>
                   </div>
-                  <span className="shrink-0 text-[10px] font-bold uppercase tracking-wider text-primary">
+                  <span className="shrink-0 text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-400">
                     {platform.cta}
                   </span>
                 </Link>
@@ -228,6 +229,7 @@ export function SocialsSection() {
           <LandingSeeMore
             href={landingContent.socials.seeMoreHref}
             label={landingContent.socials.seeMoreLabel}
+            aria-label="Follow Budget Ndio Story on TikTok"
             external
           />
         </LandingSectionCta>

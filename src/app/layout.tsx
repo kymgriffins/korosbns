@@ -15,7 +15,6 @@ export const viewport: Viewport = {
   themeColor: "#020817",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
 };
 
 const siteUrl =

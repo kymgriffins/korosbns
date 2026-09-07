@@ -1,4 +1,4 @@
-﻿import type { CivicModule } from "@/types/learn";
+import type { CivicModule } from "@/types/learn";
 
 function isNumericBadge(value?: string | null): boolean {
   return /^\d+$/.test((value ?? "").trim());
@@ -50,11 +50,11 @@ const MODULE_CIVIC_HOOKS: Record<string, ModuleCivicHook> = {
     tagline: "95% of Kenya's national budget is decided before June. Learn how to change it before lines freeze.",
     leadHook:
       "Most citizens wait for the June briefcase photo-op when taxes are already law. By then, it's too late. The real fight happens in February when the National Treasury tables sector ceilings under PFM Act Section 25. Learn how to audit the KSh 4 Trillion envelope, spot cuts to healthcare, and draft a parliamentary memorandum that demands accountability.",
-    urgencyPill: "Feb 15th Statutory Deadline // PFM Act §25",
+    urgencyPill: "Feb 15th Statutory Deadline // PFM Act Section 25",
     fastStats: {
       duration: "15 Min Masterclass",
       format: "3 Sequential Videos",
-      statute: "PFM Act §25 · Art. 201",
+      statute: "PFM Act Section 25 · Art. 201",
       takeaway: "Parliamentary Memo Format",
     },
     keyMasteries: [
@@ -118,7 +118,7 @@ const MODULE_CIVIC_HOOKS: Record<string, ModuleCivicHook> = {
     tagline: "Toll roads, Eurobonds, and mega-projects: How Kenya finances multi-billion infrastructure.",
     leadHook:
       "Annual budgets expire on June 30th, but expressways, ports, and power grids take decades to repay. Unpack how Special Public Funds under PFM Act Section 24, Public-Private Partnerships (PPPs), and sovereign debt under Article 211 work — and how to ensure citizen taxes don't underwrite private corporate guarantees.",
-    urgencyPill: "Mega-Projects & Debt // PFM Act §24",
+    urgencyPill: "Mega-Projects & Debt // PFM Act Section 24",
     fastStats: {
       duration: "20 Min Masterclass",
       format: "4 Video Chapters",
@@ -128,7 +128,7 @@ const MODULE_CIVIC_HOOKS: Record<string, ModuleCivicHook> = {
     keyMasteries: [
       {
         title: "Dedicated Public Funds",
-        description: "Why major infrastructure requires ring-fenced funds outside the annual cycle (PFM §24).",
+        description: "Why major infrastructure requires ring-fenced funds outside the annual cycle (PFM Section 24).",
         icon: "zap",
       },
       {

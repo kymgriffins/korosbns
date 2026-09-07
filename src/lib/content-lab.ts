@@ -1,6 +1,6 @@
 /**
  * Admin Content Lab / Test Runner v1 — inventory + presence + suite.
- * Spec: audit/ADMIN-CONTENT-TEST-RUNNER.md · PRD §8.4
+ * Spec: audit/ADMIN-CONTENT-TEST-RUNNER.md · PRD Section 8.4
  *
  * Required keys are a hardcoded mirror of learn-hub.yaml critical surfaces
  * plus BUDGET_YEAR_CRITICAL_KEYS. Not a full CMS.

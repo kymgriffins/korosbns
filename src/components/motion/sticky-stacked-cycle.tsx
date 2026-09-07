@@ -187,7 +187,7 @@ export function StickyStackedCycle({
                     )}
                   </div>
                   {item.date && (
-                    <span className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
+                    <span className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-bold text-blue-700 dark:text-blue-300">
                       {item.date}
                     </span>
                   )}
@@ -207,7 +207,7 @@ export function StickyStackedCycle({
                 {isDelivery && item.stat && (
                   <div className="mt-6 rounded-2xl border border-primary/20 bg-primary/[0.04] p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-300">
                         Delivery Metric
                       </span>
                       <p className="text-2xl sm:text-3xl font-black text-foreground">

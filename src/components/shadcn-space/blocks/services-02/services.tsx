@@ -204,7 +204,7 @@ function Services({ data = servicesData }: ServicesProps) {
                                                 transition={{ duration: 0.3, ease: "easeOut" }}
                                                 className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary/15 text-primary"
                                             >
-                                                <Icon icon={activeService?.icon ?? "lucide:sparkles"} width={18} height={18} />
+                                                <Icon icon={activeService?.icon ?? "lucide:layers"} width={18} height={18} />
                                             </motion.div>
                                             <h3 className="text-xl font-semibold text-foreground">
                                                 {activeService?.heading}

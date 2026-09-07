@@ -25,7 +25,11 @@ export default function LandingYoutube() {
           <h2 className={T.sectionTitle}>{intro.title}</h2>
           <p className={cn(T.lead, "max-w-md text-base text-foreground/75")}>{intro.body}</p>
           <LandingSectionCta className="mt-0 md:mt-2">
-            <LandingSeeMore href={intro.cta.href} label="See more" />
+            <LandingSeeMore
+              href={intro.cta.href}
+              label="Explore stories"
+              aria-label="Explore civic stories on the learning hub"
+            />
           </LandingSectionCta>
         </GsapReveal>
         <GsapStaggerReveal className="grid grid-cols-2 gap-3 md:col-span-7 md:gap-4">

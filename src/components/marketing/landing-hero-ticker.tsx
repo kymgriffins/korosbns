@@ -15,7 +15,7 @@ type TickerItem = {
 const TICKER_ITEMS: TickerItem[] = [
   {
     topic: "Education Sector",
-    text: "KSh 654B allocated under PFM Act §25",
+    text: "KSh 654B allocated under PFM Act Section 25",
     href: "/reports",
   },
   {

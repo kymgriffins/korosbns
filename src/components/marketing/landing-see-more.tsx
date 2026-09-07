@@ -8,6 +8,7 @@ type LandingSeeMoreProps = {
   label?: string;
   className?: string;
   external?: boolean;
+  "aria-label"?: string;
 };
 
 /**
@@ -18,12 +19,14 @@ export function LandingSeeMore({
   label = "See more",
   className,
   external = false,
+  "aria-label": ariaLabel,
 }: LandingSeeMoreProps) {
   return (
     <PillButtonGroup
       href={href}
       label={label}
       external={external}
+      aria-label={ariaLabel}
       className={className}
     />
   );

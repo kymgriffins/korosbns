@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -14,7 +14,6 @@ import {
   Play,
   Scale,
   ShieldCheck,
-  Sparkles,
   Zap,
   AlertTriangle,
 } from "lucide-react";
@@ -153,8 +152,7 @@ export function CourseLandingView() {
         </Link>
 
         <div className="flex items-center gap-2">
-          <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-[11px] font-mono font-bold text-primary">
-            <Sparkles className="size-3" />
+          <span className="hidden sm:inline-flex items-center rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-[11px] font-mono font-bold text-primary">
             <span>{civicHook.urgencyPill}</span>
           </span>
           <span className="inline-flex items-center rounded-full border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400">
