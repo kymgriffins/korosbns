@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
@@ -71,9 +71,9 @@ export function CinemaTimelineStage() {
   const activeFormat = FORMAT_ITEMS.find((f) => f.id === selectedFormatId) || FORMAT_ITEMS[0];
 
   return (
-    <div className="relative my-12 overflow-hidden rounded-3xl border border-primary/40 bg-card p-6 sm:p-10 shadow-2xl">
+    <div className="relative my-10 py-8 border-y border-primary/30">
       {/* Top Cinema Slate HUD */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/50 pb-5 font-mono text-xs">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/40 pb-5 font-mono text-xs">
         <div className="flex items-center gap-2">
           <span className="inline-flex size-2 rounded-full bg-red-600 animate-ping" />
           <span className="font-bold text-red-600 uppercase tracking-widest">REC [●]</span>
@@ -108,10 +108,10 @@ export function CinemaTimelineStage() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.25 }}
-            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
+            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start"
           >
             {/* Left Narrative Column */}
-            <div className="lg:col-span-7 space-y-4">
+            <div className="lg:col-span-7 space-y-5">
               <div className="flex items-center gap-2 font-mono text-xs text-primary">
                 <Film className="size-3.5" />
                 <span className="font-bold uppercase tracking-wider">{activeFormat.aspectRatio}</span>
@@ -126,8 +126,9 @@ export function CinemaTimelineStage() {
                 {activeFormat.description}
               </p>
 
-              <div className="rounded-2xl border border-border/60 bg-muted/30 p-4 space-y-1">
-                <span className="font-mono text-[10px] uppercase font-bold text-primary">
+              {/* Commissioned Profile (Editorial Left Accent Border, No Box) */}
+              <div className="border-l-2 border-primary/80 pl-4 py-1.5 space-y-1">
+                <span className="font-mono text-[10px] uppercase font-bold tracking-wider text-primary">
                   Commissioned Procurement Profile:
                 </span>
                 <p className="text-xs text-muted-foreground leading-relaxed">
@@ -136,14 +137,14 @@ export function CinemaTimelineStage() {
               </div>
             </div>
 
-            {/* Right Stat & Covenant Card */}
-            <div className="lg:col-span-5 space-y-4">
-              <div className="rounded-2xl border border-primary/30 bg-primary/5 p-5 space-y-3">
-                <div className="flex items-center justify-between border-b border-primary/20 pb-2 text-xs font-mono">
-                  <span className="font-bold text-primary uppercase">PRODUCTION BENCHMARK</span>
+            {/* Right Stat & Covenant (Flat Editorial Sidebar) */}
+            <div className="lg:col-span-5 lg:border-l lg:border-border/40 lg:pl-8 space-y-6 divide-y divide-border/40">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between font-mono text-xs border-b border-border/40 pb-2">
+                  <span className="font-bold text-primary uppercase tracking-wider">PRODUCTION BENCHMARK</span>
                   <span className="text-muted-foreground">VERIFIED</span>
                 </div>
-                <p className="text-3xl sm:text-4xl font-black text-primary tracking-tighter">
+                <p className="text-4xl sm:text-5xl font-black text-primary tracking-tighter">
                   {activeFormat.leadStat}
                 </p>
                 <p className="text-xs text-muted-foreground leading-relaxed">
@@ -152,7 +153,7 @@ export function CinemaTimelineStage() {
               </div>
 
               {/* The Sovereign Covenant Callout */}
-              <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-4 space-y-2">
+              <div className="pt-6 space-y-2">
                 <div className="flex items-center gap-2 text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">
                   <ShieldCheck className="size-4" />
                   <span>The Double-Impact Reinvestment Covenant</span>

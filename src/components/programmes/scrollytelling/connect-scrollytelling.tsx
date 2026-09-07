@@ -304,86 +304,44 @@ export function ConnectScrollytelling() {
         </div>
       </section>
 
-      {/* 04 — CHAPTER 03: FULL-BLEED DOCUMENTARY PHOTOJOURNALISM */}
-      <section className="py-20 md:py-28">
+      {/* 04 — DESK CALL TO ACTION & ALLIED ENGAGEMENT */}
+      <footer className="border-t border-border/40 bg-muted/10 py-16 md:py-24">
         <div className={SECTION_SHELL_INNER}>
-          <div className="space-y-4 mb-10 max-w-3xl">
-            <span className="font-mono text-xs font-bold text-primary uppercase tracking-widest">
-              Chapter 03 · Ground Verification
-            </span>
-            <h2 className="font-heading text-3xl sm:text-5xl font-black text-foreground">
-              From TikTok screens to the parliamentary floor.
-            </h2>
-          </div>
-
-          <div className="relative aspect-[21/9] sm:aspect-[2.4/1] w-full overflow-hidden rounded-3xl border border-border/60 shadow-2xl">
-            <Image
-              src={BNS_COMMUNITY_IMAGES.forumA}
-              alt="National budget scrutiny assembly with young citizens and civil society"
-              fill
-              className="object-cover"
-              sizes="(max-width: 1280px) 100vw, 1280px"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-            <div className="absolute bottom-8 left-8 right-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4 text-white">
-              <div className="max-w-2xl space-y-2">
-                <EditorialPill variant="invert" size="xs">
-                  National Civic Assembly
-                </EditorialPill>
-                <p className="text-lg sm:text-2xl font-bold leading-snug">
-                  Nairobi Youth Baraza interrogating National Treasury Budget Estimates prior to parliamentary adoption.
-                </p>
-              </div>
-              <p className="font-mono text-xs text-white/70">
-                Verified BNS Connect Field Operations
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            <div className="lg:col-span-8 space-y-6">
+              <EditorialPill dot pulse>
+                Participate & Mobilize
+              </EditorialPill>
+              <h2 className="font-heading text-3xl sm:text-5xl font-black text-foreground tracking-tight leading-tight">
+                Join the youth network tracking the national budget.
+              </h2>
+              <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl font-medium">
+                Whether you are a university student organizing a regional budget circle or a digital creator producing fiscal explainers, BNS Connect provides vetted data sets, visual toolkits, and direct parliamentary briefing channels.
               </p>
+
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+                <PillButtonGroup
+                  href="/surveys"
+                  label="Take the Civic Budget Pulse Survey"
+                  variant="primary"
+                  size="default"
+                  className="w-full sm:w-auto justify-center"
+                />
+                <PillButtonGroup
+                  href="/work?programme=connect"
+                  label="View Connect Evidence & Dossiers"
+                  variant="outline"
+                  size="default"
+                  className="hidden sm:inline-flex w-full sm:w-auto justify-center"
+                />
+              </div>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* 05 — DESK CALL TO ACTION & ALLIED ENGAGEMENT */}
-      <footer className="border-t border-border/40 bg-muted/20 py-20 md:py-32">
-        <div className={SECTION_SHELL_INNER}>
-          <div className="rounded-3xl border border-border/60 bg-card p-8 sm:p-14 lg:p-20 shadow-xl">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-              <div className="lg:col-span-8 space-y-6">
-                <EditorialPill dot pulse>
-                  Participate & Mobilize
-                </EditorialPill>
-                <h2 className="font-heading text-3xl sm:text-5xl font-black text-foreground tracking-tight leading-tight">
-                  Join the youth network tracking the national budget.
-                </h2>
-                <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl">
-                  Whether you are a university student organizing a regional budget circle or a digital creator producing fiscal explainers, BNS Connect provides vetted data sets, visual toolkits, and direct parliamentary briefing channels.
-                </p>
-
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
-                  <PillButtonGroup
-                    href="/surveys"
-                    label="Take the Civic Budget Pulse Survey"
-                    variant="primary"
-                    size="default"
-                    className="w-full sm:w-auto justify-center"
-                  />
-                  <PillButtonGroup
-                    href="/work?programme=connect"
-                    label="View Connect Evidence & Dossiers"
-                    variant="outline"
-                    size="default"
-                    className="hidden sm:inline-flex w-full sm:w-auto justify-center"
-                  />
-                </div>
-              </div>
-
-              <div className="lg:col-span-4 flex flex-col items-start lg:items-end gap-3 text-xs font-mono text-muted-foreground">
-                <div className="p-4 rounded-2xl bg-muted/40 border border-border/60 w-full space-y-2">
-                  <p className="text-foreground font-bold text-sm">BNS Connect Direct Desk</p>
-                  <p>Inquiries: connect@budgetndiostory.org</p>
-                  <p>Weekly dispatch: Thursday 16:00 EAT</p>
-                  <p className="text-primary font-semibold">100% Open Civic Data</p>
-                </div>
-              </div>
+            <div className="lg:col-span-4 border-l border-border/60 pl-6 space-y-2.5 text-xs font-mono text-muted-foreground">
+              <p className="text-foreground font-bold text-sm">BNS Connect Direct Desk</p>
+              <p>Inquiries: connect@budgetndiostory.org</p>
+              <p>Weekly dispatch: Thursday 16:00 EAT</p>
+              <p className="text-primary font-semibold">100% Open Civic Data</p>
             </div>
           </div>
         </div>

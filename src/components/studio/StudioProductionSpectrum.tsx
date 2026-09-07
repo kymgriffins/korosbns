@@ -1,6 +1,6 @@
-"use client";
+﻿"use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -95,23 +95,42 @@ const DISCIPLINE_TABS = [
 export function StudioProductionSpectrum() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState("all");
-
-  const scrollLeft = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: -380, behavior: "smooth" });
-    }
-  };
-
-  const scrollRight = () => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: 380, behavior: "smooth" });
-    }
-  };
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const filteredDisciplines =
     activeTab === "all"
       ? STUDIO_DISCIPLINES
       : STUDIO_DISCIPLINES.filter((d) => d.id === activeTab);
+
+  const scrollToIndex = (index: number) => {
+    if (scrollRef.current) {
+      const container = scrollRef.current;
+      const cardWidth = container.offsetWidth * 0.88;
+      container.scrollTo({ left: index * cardWidth, behavior: "smooth" });
+      setActiveIndex(index);
+    }
+  };
+
+  const scrollLeft = () => {
+    const prev = Math.max(0, activeIndex - 1);
+    scrollToIndex(prev);
+  };
+
+  const scrollRight = () => {
+    const next = Math.min(filteredDisciplines.length - 1, activeIndex + 1);
+    scrollToIndex(next);
+  };
+
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      const { scrollLeft: sLeft, offsetWidth } = scrollRef.current;
+      const cardWidth = offsetWidth * 0.88;
+      if (cardWidth > 0) {
+        const newIdx = Math.round(sLeft / cardWidth);
+        setActiveIndex(Math.min(filteredDisciplines.length - 1, Math.max(0, newIdx)));
+      }
+    }
+  };
 
   return (
     <section className="py-16 sm:py-24 md:py-36 bg-zinc-950 text-white border-y border-zinc-800/80 relative overflow-hidden">
@@ -119,10 +138,9 @@ export function StudioProductionSpectrum() {
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[400px] bg-primary/10 blur-[150px] rounded-full pointer-events-none select-none" />
 
       <div className={SECTION_SHELL_INNER}>
-        {/* 01 — TOP HEADER & CONTROLS (Landing-aligned SectionBadge + Clean Typo) */}
+        {/* 01 — TOP HEADER & CONTROLS */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 sm:pb-12 border-b border-zinc-800/80">
           <div className="space-y-4 max-w-3xl">
-            {/* Exactly matches the landing page SectionBadge */}
             <div>
               <SectionBadge title="Chapter 03 · Production Spectrum" />
             </div>
@@ -136,13 +154,13 @@ export function StudioProductionSpectrum() {
             </p>
           </div>
 
-          {/* Carousel Navigation Buttons (Hidden on desktop where 3-column grid fits completely) */}
-          <div className="hidden sm:flex lg:hidden items-center gap-3 shrink-0 self-start md:self-end">
+          {/* Carousel Navigation Buttons (Visible on mobile/tablet to avoid vertical scrolling) */}
+          <div className="flex lg:hidden items-center gap-3 shrink-0 self-start md:self-end">
             <button
               type="button"
               onClick={scrollLeft}
               aria-label="Scroll left"
-              className="flex size-11 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900/80 text-zinc-300 hover:bg-zinc-800 hover:text-white transition-all shadow-sm active:scale-95 cursor-pointer"
+              className="flex size-10 sm:size-11 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900/80 text-zinc-300 hover:bg-zinc-800 hover:text-white transition-all shadow-sm active:scale-95 cursor-pointer"
             >
               <ChevronLeft className="size-5" />
             </button>
@@ -150,7 +168,7 @@ export function StudioProductionSpectrum() {
               type="button"
               onClick={scrollRight}
               aria-label="Scroll right"
-              className="flex size-11 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900/80 text-zinc-300 hover:bg-zinc-800 hover:text-white transition-all shadow-sm active:scale-95 cursor-pointer"
+              className="flex size-10 sm:size-11 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900/80 text-zinc-300 hover:bg-zinc-800 hover:text-white transition-all shadow-sm active:scale-95 cursor-pointer"
             >
               <ChevronRight className="size-5" />
             </button>
@@ -165,7 +183,10 @@ export function StudioProductionSpectrum() {
               <button
                 key={tab.id}
                 type="button"
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => {
+                  setActiveTab(tab.id);
+                  setActiveIndex(0);
+                }}
                 className={cn(
                   "inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 sm:px-4 sm:py-2 text-xs font-mono font-semibold transition-all whitespace-nowrap outline-none cursor-pointer",
                   isSelected
@@ -189,29 +210,29 @@ export function StudioProductionSpectrum() {
           })}
         </div>
 
-        {/* 03 — DISCIPLINE CARDS BALANCED 3-COLUMN GRID (Even Spacing & Zero Overflow) */}
+        {/* 03 — DISCIPLINE CARDS: MOBILE HORIZONTAL SNAP CAROUSEL / DESKTOP BALANCED 3-COL */}
         <div
           ref={scrollRef}
+          onScroll={handleScroll}
           className={cn(
             "pt-6 sm:pt-8 pb-4",
-            activeTab === "all"
-              ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full"
-              : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-xl"
+            "flex overflow-x-auto snap-x snap-mandatory scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0",
+            "lg:grid lg:grid-cols-3 gap-6 w-full"
           )}
         >
           {filteredDisciplines.map((discipline) => (
             <article
               key={discipline.id}
-              className="w-full flex flex-col justify-between rounded-3xl border border-zinc-800/90 bg-zinc-900/40 p-6 sm:p-8 backdrop-blur-md hover:border-zinc-700 transition-all shadow-2xl group"
+              className="w-[85vw] max-w-[360px] sm:max-w-[420px] lg:w-full shrink-0 snap-center flex flex-col justify-between rounded-3xl border border-zinc-800/90 bg-zinc-900/40 p-6 sm:p-8 backdrop-blur-md hover:border-zinc-700 transition-all shadow-2xl group"
             >
               <div>
-                {/* 3D Skeuomorphic Visual Artifact (Isolated on Black, Studio Lit) */}
-                <div className="relative w-36 h-36 sm:w-48 sm:h-48 mx-auto mb-5 sm:mb-6 flex items-center justify-center rounded-2xl overflow-hidden bg-black/70 border border-zinc-800/60 shadow-inner group-hover:scale-105 transition-transform duration-500">
+                {/* 3D Skeuomorphic Visual Artifact */}
+                <div className="relative w-32 h-32 sm:w-44 sm:h-44 mx-auto mb-5 sm:mb-6 flex items-center justify-center rounded-2xl overflow-hidden bg-black/70 border border-zinc-800/60 shadow-inner group-hover:scale-105 transition-transform duration-500">
                   <Image
                     src={discipline.imageSrc}
                     alt={discipline.imageAlt}
                     fill
-                    sizes="(max-width: 640px) 144px, (max-width: 1024px) 192px, 240px"
+                    sizes="(max-width: 640px) 128px, (max-width: 1024px) 176px, 240px"
                     className="object-contain p-2"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
@@ -235,7 +256,7 @@ export function StudioProductionSpectrum() {
                   {discipline.description}
                 </p>
 
-                {/* Capabilities Checklist (No nested cards! Clean minimalist 2-columns matching reference) */}
+                {/* Capabilities Checklist */}
                 <div className="pt-4 border-t border-zinc-800/80 mb-6">
                   <p className="font-mono text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-3">
                     Capabilities & Delivery
@@ -251,7 +272,7 @@ export function StudioProductionSpectrum() {
                 </div>
               </div>
 
-              {/* Card Footer Action — Clean Single-Line Button With Generous Breathing Room */}
+              {/* Card Footer Action */}
               <div className="pt-4 border-t border-zinc-800/80">
                 <Link
                   href={`/bns-studio/work?format=${encodeURIComponent(discipline.primaryFormatQuery)}`}
@@ -264,6 +285,26 @@ export function StudioProductionSpectrum() {
             </article>
           ))}
         </div>
+
+        {/* Mobile Pagination Indicator Dots */}
+        {filteredDisciplines.length > 1 && (
+          <div className="flex lg:hidden items-center justify-center gap-2 pt-4">
+            {filteredDisciplines.map((item, idx) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => scrollToIndex(idx)}
+                aria-label={`Go to slide ${idx + 1}`}
+                className={cn(
+                  "size-2 rounded-full transition-all cursor-pointer",
+                  activeIndex === idx
+                    ? "bg-primary w-6"
+                    : "bg-zinc-700 hover:bg-zinc-500"
+                )}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

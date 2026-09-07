@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
@@ -74,9 +74,9 @@ export function FieldNotebookSpread() {
   const activeCase = FIELD_CASES.find((c) => c.id === selectedCaseId) || FIELD_CASES[0];
 
   return (
-    <div className="relative my-12 overflow-hidden rounded-3xl border border-amber-500/30 bg-card p-6 sm:p-10 shadow-2xl">
+    <div className="relative my-10 py-8 border-y border-amber-500/30">
       {/* Top Field Telemetry Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/50 pb-5">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/40 pb-5">
         <div className="flex items-center gap-2 font-mono text-xs">
           <Compass className="size-4 text-amber-600 dark:text-amber-400 animate-spin-slow" />
           <span className="font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
@@ -150,16 +150,16 @@ export function FieldNotebookSpread() {
                 )}
               </div>
 
-              {/* Finding Narrative */}
-              <div className="space-y-3 rounded-2xl border border-border/60 bg-muted/30 p-5">
-                <p className="font-mono text-xs uppercase font-bold text-muted-foreground">
+              {/* Finding Narrative (Editorial Left Accent Line, No Nested Box) */}
+              <div className="border-l-2 border-amber-500/80 pl-5 py-2 space-y-3">
+                <p className="font-mono text-[10px] uppercase font-bold tracking-wider text-muted-foreground">
                   The Ground Reality Check:
                 </p>
                 <p className="text-sm sm:text-base text-foreground/90 leading-relaxed font-medium">
                   {activeCase.finding}
                 </p>
                 <div className="pt-2 border-t border-border/40 space-y-1">
-                  <p className="font-mono text-xs uppercase font-bold text-emerald-600 dark:text-emerald-400">
+                  <p className="font-mono text-[10px] uppercase font-bold text-emerald-600 dark:text-emerald-400">
                     Direct Community Impact:
                   </p>
                   <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
@@ -169,26 +169,26 @@ export function FieldNotebookSpread() {
               </div>
             </div>
 
-            {/* Right Page: Tactical Baraza Metadata & Field Tools */}
-            <div className="lg:col-span-5 space-y-4">
-              <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-5 space-y-4">
-                <div className="flex items-center justify-between border-b border-amber-500/20 pb-3 font-mono text-xs">
-                  <span className="font-bold text-amber-600 dark:text-amber-400 uppercase">
+            {/* Right Page: Tactical Baraza Metadata & Field Tools (Open Flat Ledger) */}
+            <div className="lg:col-span-5 lg:border-l lg:border-border/40 lg:pl-8 space-y-6 divide-y divide-border/40">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between font-mono text-xs border-b border-border/40 pb-2">
+                  <span className="font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
                     BARAZA AUDIT METRICS
                   </span>
                   <span className="text-muted-foreground">VERIFIED</span>
                 </div>
 
-                <div className="space-y-3 font-mono text-xs">
-                  <div className="flex items-center justify-between py-1 border-b border-border/30">
+                <div className="space-y-2.5 font-mono text-xs">
+                  <div className="flex items-center justify-between py-1.5 border-b border-border/30">
                     <span className="text-muted-foreground">Gazette Budget Allocation</span>
                     <span className="font-bold text-foreground">{activeCase.budgeted}</span>
                   </div>
-                  <div className="flex items-center justify-between py-1 border-b border-border/30">
+                  <div className="flex items-center justify-between py-1.5 border-b border-border/30">
                     <span className="text-muted-foreground">Direct Baraza Attendees</span>
                     <span className="font-bold text-foreground">{activeCase.barazaParticipants} Citizens</span>
                   </div>
-                  <div className="flex items-center justify-between py-1">
+                  <div className="flex items-center justify-between py-1.5">
                     <span className="text-muted-foreground">Vernacular Radio Broadcast</span>
                     <span className="font-bold text-amber-600 dark:text-amber-400">{activeCase.radioReach}</span>
                   </div>
@@ -196,7 +196,7 @@ export function FieldNotebookSpread() {
               </div>
 
               {/* The Physical Waterproof Scorecard Feature */}
-              <div className="rounded-2xl border border-border/60 bg-card p-4 space-y-2.5">
+              <div className="pt-6 space-y-2.5">
                 <div className="flex items-center gap-2 text-xs font-mono font-bold text-foreground">
                   <FileCheck className="size-4 text-amber-500" />
                   <span>The Waterproof Scorecard Standard</span>

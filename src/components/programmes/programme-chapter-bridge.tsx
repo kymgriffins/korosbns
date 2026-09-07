@@ -1,8 +1,7 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
-import Image from "next/image";
-import { ArrowRight, Sparkles, Layers, ArrowUpRight } from "lucide-react";
+import { ArrowRight, Layers } from "lucide-react";
 import {
   PROGRAMMES,
   programmeHref,
@@ -98,61 +97,36 @@ export function ProgrammeChapterBridge({
         </div>
 
         {/* Next Chapter Narrative Portal */}
-        <div className="mt-12 rounded-3xl border border-border/70 bg-card overflow-hidden shadow-2xl">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch">
-            {/* Left Narrative Column */}
-            <div className="lg:col-span-7 p-8 sm:p-12 lg:p-14 flex flex-col justify-between space-y-6">
-              <div className="space-y-4">
-                <div className="flex items-center gap-2.5 font-mono text-xs">
-                  <span className="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-bold">
-                    {chapter.chapterNumber}
-                  </span>
-                  <span className="text-muted-foreground">NEXT OPERATIONAL DESK</span>
-                  <span className="text-foreground/40">·</span>
-                  <span className="text-muted-foreground">{chapter.leadEyebrow}</span>
-                </div>
-
-                <h2 className="font-heading text-2xl sm:text-4xl font-black text-foreground leading-[1.08] tracking-tight">
-                  {chapter.hookHeadline}
-                </h2>
-
-                <p className="text-sm sm:text-base text-foreground/80 leading-relaxed max-w-2xl font-medium">
-                  {chapter.narrativeBridge}
-                </p>
-              </div>
-
-              <div className="pt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                <Link
-                  href={programmeHref(nextProgramme.slug)}
-                  className="inline-flex items-center justify-center gap-2.5 rounded-full bg-primary px-7 py-3.5 text-sm font-bold text-white shadow-lg hover:bg-primary/90 transition-all group"
-                >
-                  <span>Enter {nextProgramme.name}</span>
-                  <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
-                </Link>
-                <span className="text-xs font-mono text-muted-foreground">
-                  {chapter.tagline}
-                </span>
-              </div>
+        <div className="mt-12 py-8 sm:py-12 border-t border-border/60">
+          <div className="max-w-4xl space-y-6">
+            <div className="flex flex-wrap items-center gap-2.5 font-mono text-xs">
+              <span className="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-bold">
+                {chapter.chapterNumber}
+              </span>
+              <span className="text-muted-foreground uppercase tracking-wider">NEXT OPERATIONAL DESK</span>
+              <span className="text-foreground/40">·</span>
+              <span className="text-muted-foreground">{chapter.leadEyebrow}</span>
             </div>
 
-            {/* Right Visual Teaser Column */}
-            <div className="lg:col-span-5 relative min-h-[280px] lg:min-h-auto bg-muted">
-              <Image
-                src={nextProgramme.visual.hero}
-                alt={nextProgramme.visual.heroAlt}
-                fill
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 40vw"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent lg:bg-gradient-to-r lg:from-card lg:via-transparent lg:to-transparent" />
-              <div className="absolute bottom-6 left-6 right-6 text-white space-y-1">
-                <p className="font-mono text-[10px] uppercase font-bold text-primary">
-                  Previewing Next Dossier
-                </p>
-                <p className="text-sm font-bold leading-snug">
-                  {nextProgramme.headline}
-                </p>
-              </div>
+            <h2 className="font-heading text-2xl sm:text-4xl lg:text-5xl font-black text-foreground leading-[1.08] tracking-tight">
+              {chapter.hookHeadline}
+            </h2>
+
+            <p className="text-base sm:text-lg text-foreground/80 leading-relaxed font-medium">
+              {chapter.narrativeBridge}
+            </p>
+
+            <div className="pt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+              <Link
+                href={programmeHref(nextProgramme.slug)}
+                className="inline-flex items-center justify-center gap-2.5 rounded-full bg-primary px-8 py-4 text-sm font-bold text-white shadow-lg hover:bg-primary/90 transition-all group"
+              >
+                <span>Enter {nextProgramme.name}</span>
+                <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+              </Link>
+              <span className="text-xs font-mono text-muted-foreground">
+                {chapter.tagline}
+              </span>
             </div>
           </div>
         </div>
