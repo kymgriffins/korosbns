@@ -40,7 +40,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/weekly-notes", priority: 0.7, frequency: "weekly" as const },
     { path: "/weekly-notes/manage", priority: 0.3, frequency: "monthly" as const },
     { path: "/weekly-notes/audit", priority: 0.3, frequency: "monthly" as const },
-    { path: "/bns-project", priority: 0.6, frequency: "monthly" as const },
+    { path: "/bns-project", priority: 0.7, frequency: "monthly" as const },
+    { path: "/bns-project/terra", priority: 0.9, frequency: "weekly" as const },
   ];
 
   const sitemapEntries: MetadataRoute.Sitemap = routes.map((route) => ({

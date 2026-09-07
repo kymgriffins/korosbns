@@ -20,7 +20,7 @@
       "slug": "house-of-fiscal-wisdom",
       "name": "House of Fiscal Wisdom",
       "sector": "Civil Society & CSOs",
-      "description": "Fiscal literacy and public finance dialogue for young Kenyans.",
+      "description": "Global Commission on Financing Development in Nairobi co-founded with Prof. Attiya Waris, pioneering institutional alternatives to Bretton Woods and advancing digital fiscal justice.",
       "location": "Nairobi, Kenya",
       "logoText": "HOFW"
     },
@@ -62,6 +62,43 @@
     }
   ],
   "projects": [
+    {
+      "id": "proj-terra",
+      "slug": "project-terra",
+      "title": "Project TERRA: Technology, Equality, Regulatory Risk Assessment",
+      "subtitle": "In conjunction with House of Fiscal Wisdom & Luminate",
+      "contentType": "Documentaries",
+      "organizationId": "org-hofw",
+      "date": "2026-07-25",
+      "year": "2026",
+      "briefChallenge": "Expose how platform architectures, algorithms, and tax concessions systematically render African women workers invisible in public revenue systems.",
+      "whatWeProduced": "Flagship research documentary film, verbatim transcript intelligence archive, interactive data maps, and regulatory sandbox framework.",
+      "description": "Hosted by the House of Fiscal Wisdom and led by Dr. Lyla Latif with funding from Luminate, Project TERRA establishes an empirical 5-mechanism framework interrogating algorithmic gender bias, data center tax holidays, and proactive regulatory sandbox models across Africa.",
+      "media": {
+        "type": "video",
+        "posterUrl": "/images/marketing newsletter subcribe/Nelly with The Mic.jpg",
+        "posterPosition": "object-center",
+        "videoUrl": "https://www.youtube.com/watch?v=it8rOKSYKnc",
+        "platform": "youtube",
+        "aspectRatio": "16/9"
+      },
+      "outputs": [
+        "Launch Documentary & Audio Master",
+        "Full Timestamped Transcript Intelligence JSON",
+        "Algorithmic Gender Bias Analytical Framework",
+        "Data Centre Risk Assessment Sandbox (Kenya pilot)",
+        "Cross-Continental Tax Foregone Calculator"
+      ],
+      "impactEvidence": {
+        "primaryMetric": "2-year pan-African research & regulatory deployment (2026–2027)",
+        "context": "Anchoring fiscal reform for platform domestic workers and tech infrastructure across Africa.",
+        "verificationOutcome": "House of Fiscal Wisdom & Luminate research governance archive."
+      },
+      "tags": ["algorithmic-governance", "fiscal-justice", "data-centres", "care-economy", "house-of-fiscal-wisdom"],
+      "deliveryMode": "co-produced",
+      "programmeSlug": "studios",
+      "featured": true
+    },
     {
       "id": "proj-001",
       "slug": "budget-sasa-ni-delivery-explainer",

@@ -20,6 +20,50 @@ const projectDetails: Record<string, {
   documents: { name: string; url: string }[];
   objectives: string[];
 }> = {
+  "terra": {
+    id: "terra",
+    title: "Project TERRA: Technology, Equality, Regulatory Risk Assessment",
+    description: "In conjunction with House of Fiscal Wisdom & Luminate: A two-year pan-African research programme led by Dr. Lyla Latif investigating algorithmic gender bias in platform labor and data center fiscal impact.",
+    image: "/images/marketing newsletter subcribe/Nelly with The Mic.jpg",
+    location: "Nairobi, Kenya & Pan-African",
+    gallery: [
+      "/images/towwnhallmay/129A3912.jpg",
+      "/images/towwnhallmay/129A3863.jpg",
+      "/images/towwnhallmay/129A3923.jpg",
+    ],
+    documents: [
+      { name: "Project TERRA Transcript JSON", url: "/bns-project/terra" },
+      { name: "House of Fiscal Wisdom Research Secretariat", url: "https://www.house-of-fiscal-wisdom.org" },
+      { name: "Kenya Data Centre Risk Assessment Sandbox Protocol", url: "/bns-project/terra" },
+    ],
+    objectives: [
+      "Interrogate algorithmic gender bias and the structural invisibility of women platform workers in African revenue systems",
+      "Quantify public revenue foregone and natural resource draw from hyperscale data center tax holidays",
+      "Deploy the Kenya Data Centre Risk Assessment Sandbox to test fiscal accountability before permanent legislation is codified",
+    ],
+  },
+  "project-terra": {
+    id: "project-terra",
+    title: "Project TERRA: Technology, Equality, Regulatory Risk Assessment",
+    description: "In conjunction with House of Fiscal Wisdom & Luminate: A two-year pan-African research programme led by Dr. Lyla Latif investigating algorithmic gender bias in platform labor and data center fiscal impact.",
+    image: "/images/marketing newsletter subcribe/Nelly with The Mic.jpg",
+    location: "Nairobi, Kenya & Pan-African",
+    gallery: [
+      "/images/towwnhallmay/129A3912.jpg",
+      "/images/towwnhallmay/129A3863.jpg",
+      "/images/towwnhallmay/129A3923.jpg",
+    ],
+    documents: [
+      { name: "Project TERRA Transcript JSON", url: "/bns-project/terra" },
+      { name: "House of Fiscal Wisdom Research Secretariat", url: "https://www.house-of-fiscal-wisdom.org" },
+      { name: "Kenya Data Centre Risk Assessment Sandbox Protocol", url: "/bns-project/terra" },
+    ],
+    objectives: [
+      "Interrogate algorithmic gender bias and the structural invisibility of women platform workers in African revenue systems",
+      "Quantify public revenue foregone and natural resource draw from hyperscale data center tax holidays",
+      "Deploy the Kenya Data Centre Risk Assessment Sandbox to test fiscal accountability before permanent legislation is codified",
+    ],
+  },
   "budget-literacy": {
     id: "budget-literacy",
     title: "Budget Literacy Programme",
