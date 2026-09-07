@@ -19,6 +19,7 @@ import {
   ParallaxWrapper,
   MetricCounter,
   TransformationStage,
+  TextRevealOnScroll,
 } from "@/components/motion";
 
 export function ConnectScrollytelling() {
@@ -139,9 +140,11 @@ export function ConnectScrollytelling() {
 
               {/* Frontline Voice Pull */}
               <blockquote className="border-l-2 border-primary pl-6 py-2 my-8 space-y-3 bg-muted/20 rounded-r-2xl pr-6">
-                <p className="font-heading text-xl font-medium italic text-foreground md:text-2xl leading-relaxed">
-                  &ldquo;When you understand the debt repayment schedule, you stop looking at broken roads as bad luck and start seeing them as fiscal diversion.&rdquo;
-                </p>
+                <TextRevealOnScroll
+                  as="p"
+                  text="When you understand the debt repayment schedule, you stop looking at broken roads as bad luck and start seeing them as fiscal diversion."
+                  className="font-heading text-xl font-medium italic text-foreground md:text-2xl leading-relaxed"
+                />
                 <footer className="text-xs font-mono font-bold text-primary uppercase tracking-wider">
                   — Grace Muthoni, Youth Tracker Lead, Nairobi Hub
                 </footer>

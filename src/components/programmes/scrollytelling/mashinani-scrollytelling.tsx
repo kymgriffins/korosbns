@@ -24,6 +24,7 @@ import {
   ParallaxWrapper,
   MetricCounter,
   FieldNotebookSpread,
+  TextRevealOnScroll,
 } from "@/components/motion";
 
 export function MashinaniScrollytelling() {
@@ -125,7 +126,12 @@ export function MashinaniScrollytelling() {
             <div className="lg:col-span-7 space-y-8">
               <Quote className="size-16 text-amber-500/30" />
               <blockquote className="font-heading text-3xl sm:text-5xl lg:text-6xl font-black text-foreground tracking-tight leading-[1.15]">
-                &ldquo;In the village, the budget isn&rsquo;t numbers in a book — it is whether the dispensary has medicine and whether the borehole actually pumps clean water.&rdquo;
+                &ldquo;
+                <TextRevealOnScroll
+                  as="span"
+                  text="In the village, the budget isn't numbers in a book — it is whether the dispensary has medicine and whether the borehole actually pumps clean water."
+                />
+                &rdquo;
               </blockquote>
               <div className="pt-4 border-t border-border/40 space-y-1">
                 <p className="text-lg font-bold text-foreground">Shaimaa Hassan</p>

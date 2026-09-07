@@ -1,4 +1,4 @@
-﻿export * from "./masked-reveal";
+export * from "./masked-reveal";
 export * from "./parallax-wrapper";
 export * from "./telemetry-hud";
 export * from "./metric-counter";
@@ -9,3 +9,5 @@ export * from "./transformation-stage";
 export * from "./field-notebook-spread";
 export * from "./forensic-light-table";
 export * from "./cinema-timeline-stage";
+export * from "./text-reveal-on-scroll";
+export * from "./scroll-gallery";

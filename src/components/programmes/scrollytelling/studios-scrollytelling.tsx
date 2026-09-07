@@ -22,6 +22,9 @@ import {
   NarrativeScrollytellingCanvas,
   type NarrativeBeat,
   CinemaTimelineStage,
+  ScrollGallery,
+  type GalleryItem,
+  TextRevealOnScroll,
 } from "@/components/motion";
 
 const STUDIOS_BEATS: NarrativeBeat[] = [
@@ -91,6 +94,81 @@ const STUDIOS_BEATS: NarrativeBeat[] = [
   },
 ];
 
+const STUDIOS_GALLERY_ITEMS: GalleryItem[] = [
+  {
+    id: "audio-engineering",
+    title: "Acoustic Audio Engineering",
+    subtitle: "Dolby broadcast mastering & sound design",
+    src: "/images/studio/studio_audio_mic.jpg",
+    category: "Audio",
+    badge: "PODCAST DESK",
+  },
+  {
+    id: "field-investigative",
+    title: "Frontline Audio Scrutiny",
+    subtitle: "Investigative recordings & vox pops",
+    src: "/images/marketing newsletter subcribe/Nelly with The Mic.jpg",
+    category: "Field Audio",
+    badge: "VOX POP & PODCASTS",
+  },
+  {
+    id: "script-writers-room",
+    title: "Narrative & Writers Room",
+    subtitle: "Translating 400-page fiscal debt amortizations",
+    src: "/images/studio/studio_convening_pencils.png",
+    category: "Scripting",
+    badge: "WRITERS ROOM",
+  },
+  {
+    id: "motion-visuals",
+    title: "2D & Cel Motion Graphics",
+    subtitle: "Bite-sized data reels with 82% completion rates",
+    src: "/images/studio/studio_motion_vfx.jpg",
+    category: "Animation",
+    badge: "MOTION GRAPHICS",
+  },
+  {
+    id: "flagship-cinema",
+    title: "4K Anamorphic Cinema Unit",
+    subtitle: "Investigative documentaries shot in 21:9",
+    src: "/images/studio/studio_cinema_cam.jpg",
+    category: "Cinema Master",
+    badge: "FLAGSHIP MASTER",
+  },
+  {
+    id: "hall-broadcast",
+    title: "Multi-Camera Town Hall",
+    subtitle: "Broadcast-grade live event staging",
+    src: "/images/hall/129A4248.jpg",
+    category: "Live Broadcast",
+    badge: "NATIONAL BROADCAST",
+  },
+  {
+    id: "production-unit-a",
+    title: "On-Set Lighting & Direction",
+    subtitle: "Behind-the-scenes grassroots documentary coverage",
+    src: BNS_MEDIA_IMAGES.productionA,
+    category: "Set Direction",
+    badge: "FIELD UNIT",
+  },
+  {
+    id: "production-unit-b",
+    title: "Studio Interview Portfolios",
+    subtitle: "High-contrast leadership & policy dialogues",
+    src: BNS_MEDIA_IMAGES.productionB,
+    category: "Interviews",
+    badge: "EXECUTIVE INTERVIEWS",
+  },
+  {
+    id: "county-screenings",
+    title: "County Baraza Media Feeds",
+    subtitle: "Screening fiscal audits in rural grassroots forums",
+    src: "/images/towwnhallmay/129A3863.jpg",
+    category: "Public Screenings",
+    badge: "47 COUNTIES",
+  },
+];
+
 export function StudiosScrollytelling() {
   return (
     <article className="min-h-screen bg-background text-foreground selection:bg-primary/20">
@@ -133,9 +211,14 @@ export function StudiosScrollytelling() {
               </MaskedReveal>
             </h1>
 
-            <p className="text-xl sm:text-2xl font-medium text-foreground/80 leading-relaxed max-w-3xl">
-              We operate an independent, broadcast-grade production studio delivering podcasts, documentaries, 2D motion graphics, and town hall broadcasts for institutional partners. 100% of operating surplus is channeled into grassroots watchdog operations across all 47 counties.
-            </p>
+            <div className="max-w-3xl">
+              <TextRevealOnScroll
+                text="We operate an independent, broadcast-grade production studio delivering podcasts, documentaries, 2D motion graphics, and town hall broadcasts for institutional partners. 100% of operating surplus is channeled into grassroots watchdog operations across all 47 counties."
+                by="word"
+                as="p"
+                className="text-xl sm:text-2xl font-medium text-foreground/80 leading-relaxed"
+              />
+            </div>
 
             {/* Strategic Overview Strip */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-6 border-t border-border/50">
@@ -187,12 +270,30 @@ export function StudiosScrollytelling() {
         </div>
       </header>
 
-      {/* 02 — THE NARRATIVE SCROLLYTELLING CANVAS & CINEMA TIMELINE */}
+      {/* 02 — THE NARRATIVE SCROLLYTELLING CANVAS */}
       <section className="border-b border-border/40 pb-16">
         <div className={SECTION_SHELL_INNER}>
           <NarrativeScrollytellingCanvas beats={STUDIOS_BEATS} mediaPosition="right" />
+        </div>
+      </section>
 
-          {/* Interactive Cinema Timeline & 8-Format Production Spectrum */}
+      {/* 03 — 3X3 KINETIC EXPANDING PRODUCTION DESK GALLERY */}
+      <section className="border-b border-border/40 bg-zinc-950 text-white overflow-hidden py-12 md:py-16">
+        <div className={SECTION_SHELL_INNER}>
+          <ScrollGallery
+            items={STUDIOS_GALLERY_ITEMS}
+            pinDistance={260}
+            playThreshold={0.65}
+            eyebrow="COMMERCIAL CRAFT ARCHITECTURE"
+            headline="The 3x3 Sovereign Production Suite"
+            subheadline="Scroll down to expand our flagship 4K anamorphic cinema unit. 9 multidisciplinary formats powering sovereign public budget transparency."
+          />
+        </div>
+      </section>
+
+      {/* 04 — INTERACTIVE CINEMA TIMELINE & FORMAT SPECTRUM */}
+      <section className="border-b border-border/40 py-16">
+        <div className={SECTION_SHELL_INNER}>
           <CinemaTimelineStage />
         </div>
       </section>
