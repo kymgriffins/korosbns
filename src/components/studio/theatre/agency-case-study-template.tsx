@@ -35,7 +35,10 @@ function youtubeEmbedUrl(url: string): string | null {
 
 export function AgencyCaseStudyTemplate({ project }: { project: StudioProjectEvidence }) {
   const [bookingOpen, setBookingOpen] = useState(false);
-  const embed = project.media.videoUrl ? youtubeEmbedUrl(project.media.videoUrl) : null;
+  const [selectedLang, setSelectedLang] = useState(project.multilingual?.defaultLang || "en");
+  const activeLang = project.multilingual?.languages.find((l) => l.code === selectedLang) || project.multilingual?.languages[0];
+  const activeVideoUrl = activeLang ? `https://www.youtube.com/watch?v=${activeLang.videoId}` : project.media.videoUrl;
+  const embed = activeVideoUrl ? youtubeEmbedUrl(activeVideoUrl) : null;
   const related = studiosEvidenceData.getRelatedProjects(project.id, 3);
 
   const getProgrammeLabel = (slug: string) => {
@@ -157,12 +160,47 @@ export function AgencyCaseStudyTemplate({ project }: { project: StudioProjectEvi
       {/* 02 — CINEMATIC WIDESCREEN MEDIA CANVAS */}
       <section className="border-b border-border/30 bg-muted/20 py-8 md:py-12">
         <div className={SECTION_SHELL_INNER}>
-          <div className="mx-auto max-w-5xl">
+          <div className="mx-auto max-w-5xl space-y-4">
+            {/* Multilingual Track Selector if available */}
+            {project.multilingual?.isMultilingual && (
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3.5 rounded-2xl bg-card border border-border/70 shadow-xs">
+                <div className="flex items-center gap-2">
+                  <span className="size-2 rounded-full bg-primary animate-pulse" />
+                  <span className="text-xs font-bold font-mono uppercase tracking-wider text-foreground">
+                    Multilingual Edition Track:
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  {project.multilingual.languages.map((lang) => {
+                    const isCurrent = activeLang?.code === lang.code;
+                    return (
+                      <button
+                        key={lang.code}
+                        type="button"
+                        onClick={() => setSelectedLang(lang.code)}
+                        className={cn(
+                          "inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer",
+                          isCurrent
+                            ? "bg-primary text-primary-foreground shadow-xs scale-[1.02]"
+                            : "bg-muted text-muted-foreground hover:text-foreground border border-border/60"
+                        )}
+                      >
+                        <span>{lang.flag}</span>
+                        <span>{lang.label}</span>
+                        <span className="text-[10px] font-mono opacity-85">({lang.duration})</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {embed ? (
               <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-border/60 bg-black shadow-xl md:rounded-3xl">
                 <iframe
+                  key={embed}
                   src={`${embed}?rel=0&modestbranding=1`}
-                  title={project.title}
+                  title={activeLang?.title || project.title}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                   className="h-full w-full"
@@ -203,6 +241,23 @@ export function AgencyCaseStudyTemplate({ project }: { project: StudioProjectEvi
                     )}
                   </div>
                 </div>
+              </div>
+            )}
+
+            {/* Multilingual Country Pills if available */}
+            {activeLang?.countries && activeLang.countries.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
+                <span className="text-muted-foreground font-mono text-[11px] uppercase tracking-wider">
+                  Featured Nations ({activeLang.label}):
+                </span>
+                {activeLang.countries.map((country) => (
+                  <span
+                    key={country}
+                    className="inline-flex items-center rounded-full bg-primary/10 border border-primary/20 px-2.5 py-0.5 text-[11px] font-semibold text-primary"
+                  >
+                    {country}
+                  </span>
+                ))}
               </div>
             )}
           </div>

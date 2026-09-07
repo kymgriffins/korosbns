@@ -59,9 +59,124 @@
       "description": "Youth-led cohort documenting county and national budget conversations.",
       "location": "Kenya (multi-county)",
       "logoText": "BNS"
+    },
+    {
+      "id": "org-cabri",
+      "slug": "cabri",
+      "name": "Collaborative Africa Budget Reform Initiative (CABRI)",
+      "sector": "Pan-African Intergovernmental Bodies",
+      "description": "Pan-African intergovernmental organization supporting senior budget officials and ministries of finance across Africa in developing and implementing public financial management reforms.",
+      "location": "Pretoria, South Africa & Pan-African",
+      "logoText": "CABRI"
+    },
+    {
+      "id": "org-afrodad",
+      "slug": "afrodad",
+      "name": "AFRODAD",
+      "sector": "Civil Society & CSOs",
+      "description": "African Forum and Network on Debt and Development championing debt cancellation, responsible borrowing, and sovereign fiscal independence across Africa.",
+      "location": "Harare, Zimbabwe & Nairobi, Kenya",
+      "logoText": "AFRODAD"
     }
   ],
   "projects": [
+    {
+      "id": "proj-cabri-digital-pfm",
+      "slug": "cabri-digital-pfm-reforms",
+      "title": "Digital PFM Reform Stories: Continental Country Experiences",
+      "subtitle": "A BNS Studios Continental Production · In Partnership with CABRI",
+      "contentType": "Documentaries",
+      "organizationId": "org-cabri",
+      "date": "2026-04-28",
+      "year": "2026",
+      "briefChallenge": "Documenting real-world digital public financial management (GFPn) transformations, institutional bottlenecks, and transparency gains across 10 African nations.",
+      "whatWeProduced": "Pan-African bilingual documentary production featuring an interactive dual-language video player (English & Français), country case studies, and digital reform matrices.",
+      "description": "Produced under BNS Studios in strategic partnership with the Collaborative Africa Budget Reform Initiative (CABRI), this flagship continental production documents peer-learning and digital PFM breakthroughs across Anglophone and Francophone Africa. From Kenya's REFORMiS and Rwanda's Smart IFMIS to Benin's e-procurement and Côte d'Ivoire's SIGFiP, the production captures how ministries of finance are deploying digital architectures to build resilient, transparent public financial systems.",
+      "media": {
+        "type": "video",
+        "posterUrl": "/images/marketing newsletter subcribe/Nelly with The Mic.jpg",
+        "posterPosition": "object-center",
+        "videoUrl": "https://www.youtube.com/watch?v=kWpY4K1uI20",
+        "videoUrlFr": "https://www.youtube.com/watch?v=GPebC3wHTus",
+        "platform": "youtube",
+        "aspectRatio": "16/9"
+      },
+      "multilingual": {
+        "isMultilingual": true,
+        "defaultLang": "en",
+        "languages": [
+          {
+            "code": "en",
+            "label": "English Edition",
+            "flag": "🇬🇧",
+            "videoId": "kWpY4K1uI20",
+            "duration": "19:41",
+            "countries": ["South Africa", "Ghana", "Namibia", "Kenya", "Rwanda", "Malawi"],
+            "title": "Digital PF Reform Stories: Country Experiences (Anglophone Africa)"
+          },
+          {
+            "code": "fr",
+            "label": "Édition Française",
+            "flag": "🇫🇷",
+            "videoId": "GPebC3wHTus",
+            "duration": "12:14",
+            "countries": ["Bénin", "Côte d'Ivoire", "République centrafricaine", "Tunisie"],
+            "title": "Récits de GFPn : Expériences-pays (Afrique Francophone)"
+          }
+        ]
+      },
+      "outputs": [
+        "Bilingual Continental Documentary Feature (English & French Masters)",
+        "Country Reform Profiles (10 African Nations)",
+        "Comparative Digital PFM Architecture Matrix",
+        "Public Procurement Transparency Tracker"
+      ],
+      "impactEvidence": {
+        "primaryMetric": "10 African Ministries of Finance Documented",
+        "context": "Anchoring peer-to-peer technical knowledge exchange on digital budget systems across Africa.",
+        "verificationOutcome": "CABRI Ministerial Peer Learning & BNS Studios Archive."
+      },
+      "tags": ["digital-pfm", "cabri", "public-procurement", "ifmis", "pan-african", "bilingual"],
+      "deliveryMode": "co-produced",
+      "programmeSlug": "studios",
+      "featured": true
+    },
+    {
+      "id": "proj-hofw-iff",
+      "slug": "illicit-financial-flows-benin-cabo-verde",
+      "title": "Illicit Financial Flows & Sovereign Resource Governance",
+      "subtitle": "A Wanahabari Lab Forensic Investigation · In Partnership with House of Fiscal Wisdom",
+      "contentType": "Research Spotlights",
+      "organizationId": "org-hofw",
+      "date": "2026-08-08",
+      "year": "2026",
+      "briefChallenge": "Investigating how trade misinvoicing, tax haven secrecy, and unmonitored maritime extractive agreements drain sovereign revenue from Benin and Cabo Verde.",
+      "whatWeProduced": "Forensic research video dossier led by Dr. Lyla Latif, legal framework analysis, and open-source citizen contract investigation tools.",
+      "description": "Conducted under BNS Wanahabari Lab in conjunction with the House of Fiscal Wisdom, Dr. Lyla Latif delivers an empirical forensic briefing exposing how multinational resource extraction contracts systematically disguise capital flight as allowable business expense deductions. Tied to the investigative monograph 'Red Flags in Government Contracts', this production equips civil society with actionable methodologies to detect revenue bleeding before long-term sovereign concessions are finalized.",
+      "media": {
+        "type": "video",
+        "posterUrl": "/images/events/red-flags-book-launch/dr-lyla-latif.jpeg",
+        "posterPosition": "object-center",
+        "videoUrl": "https://www.youtube.com/watch?v=G5ddu4I6mNs",
+        "platform": "youtube",
+        "aspectRatio": "16/9"
+      },
+      "outputs": [
+        "Forensic Video Briefing & Verbatim Analysis",
+        "Extractive Contract Misinvoicing Taxonomy",
+        "West African Maritime Fiscal Concession Map",
+        "Citizen Contract Oversight Checklist"
+      ],
+      "impactEvidence": {
+        "primaryMetric": "Forensic Monograph & Open-Source Civic Framework",
+        "context": "Mobilizing parliamentary budget committees and investigative journalists against transfer mispricing.",
+        "verificationOutcome": "House of Fiscal Wisdom & Wanahabari Lab Research Dossier."
+      },
+      "tags": ["illicit-financial-flows", "house-of-fiscal-wisdom", "tax-justice", "red-flags", "dr-lyla-latif"],
+      "deliveryMode": "commissioned",
+      "programmeSlug": "wanahabari-lab",
+      "featured": true
+    },
     {
       "id": "proj-terra",
       "slug": "project-terra",

@@ -82,19 +82,80 @@ export default function EventDetailPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* Left Column: Event Body Content */}
             <div className="lg:col-span-8 space-y-8">
+              {/* BNS Programme Sovereign Banner */}
+              {event.programme_label && (
+                <div className="flex flex-wrap items-center gap-2 p-3.5 rounded-xl border border-primary/20 bg-primary/5 text-primary text-xs font-semibold">
+                  <span className="size-2 rounded-full bg-primary animate-pulse" />
+                  <span>A {event.programme_label} Initiative</span>
+                  {event.sponsors && event.sponsors.length > 0 && (
+                    <>
+                      <span className="text-muted-foreground">·</span>
+                      <span className="text-muted-foreground font-normal">
+                        Co-produced with {event.sponsors.map(s => s.name.split("(")[0].trim()).join(", ")}
+                      </span>
+                    </>
+                  )}
+                </div>
+              )}
+
+              {/* Cover Showcase: Height & Aspect Ratio Considered */}
               {event.image_url && (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.98 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.4 }}
-                  className="relative w-full h-72 sm:h-80 overflow-hidden rounded-2xl bg-muted border border-border/40 shadow-sm"
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={event.image_url}
-                    alt={event.title}
-                    className="w-full h-full object-cover object-center sm:object-top"
-                  />
+                  {event.image_orientation === "portrait" || (event.image_aspect_ratio && event.image_aspect_ratio < 1) ? (
+                    // Portrait Publication / Book Showcase Layout
+                    <div className="relative overflow-hidden rounded-3xl border border-border/80 bg-linear-to-br from-card via-muted/30 to-card p-6 sm:p-8 shadow-md">
+                      <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
+                        {/* 3D-styled Portrait Book Display */}
+                        <div className="relative shrink-0 w-48 sm:w-56 aspect-[2/3] rounded-xl shadow-2xl overflow-hidden border border-border/70 bg-card group">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={event.image_url}
+                            alt={event.title}
+                            className="w-full h-full object-contain bg-background"
+                          />
+                          <div className="absolute inset-y-0 left-0 w-2.5 bg-linear-to-r from-black/40 to-transparent pointer-events-none" />
+                        </div>
+
+                        {/* Monograph Metadata Callout */}
+                        <div className="flex-1 space-y-3 text-center sm:text-left">
+                          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold font-mono">
+                            <span>Forensic Monograph Publication</span>
+                          </div>
+                          <h3 className="text-xl sm:text-2xl font-black text-foreground tracking-tight">
+                            Investigative Text & Procurement Dossier
+                          </h3>
+                          <p className="text-sm text-muted-foreground leading-relaxed">
+                            Published in physical and digital editions. Features forensic taxonomy of contract manipulation, single-sourced corruption indicators, and legal frameworks for citizen public auditing.
+                          </p>
+                          {event.video_url && (
+                            <div className="pt-2">
+                              <a
+                                href="#forensic-briefing-video"
+                                className="inline-flex items-center gap-2 text-xs font-semibold text-primary hover:underline"
+                              >
+                                <span>Jump to Video Briefing by Author</span>
+                                <ExternalLink className="size-3" />
+                              </a>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    // Cinematic Landscape Photo Display (3:2 Aspect Ratio Preserved)
+                    <div className="relative w-full aspect-[3/2] max-h-[460px] overflow-hidden rounded-2xl bg-muted border border-border/60 shadow-sm">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={event.image_url}
+                        alt={event.title}
+                        className="w-full h-full object-cover object-center sm:object-top"
+                      />
+                    </div>
+                  )}
                 </motion.div>
               )}
 
@@ -105,8 +166,13 @@ export default function EventDetailPage() {
               >
                 <div className="flex flex-wrap items-center gap-2 mb-3">
                   <Badge variant="default" className="text-xs font-semibold uppercase px-2.5 py-0.5 tracking-wider">
-                    Event details
+                    Event Details
                   </Badge>
+                  {event.programme_label && (
+                    <Badge variant="outline" className="text-xs font-bold border-primary/40 bg-primary/5 text-primary">
+                      {event.programme_label}
+                    </Badge>
+                  )}
                   {event.starts_at && (
                     <Badge variant="outline" className="text-xs font-semibold px-2.5 py-0.5 border-primary/20 text-primary">
                       {new Date(event.starts_at) > new Date() ? "Upcoming" : "Past"}
@@ -145,6 +211,28 @@ export default function EventDetailPage() {
                 </div>
               </motion.div>
 
+              {/* Embedded Video: House of Fiscal Wisdom or Keynote */}
+              {event.video_url && (
+                <div id="forensic-briefing-video" className="space-y-3 pt-2">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+                      <span className="size-2 rounded-full bg-red-600 animate-pulse" />
+                      {event.video_title || "Official Investigative Video Presentation"}
+                    </h3>
+                  </div>
+                  <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-border/80 shadow-lg bg-black">
+                    <iframe
+                      src={`https://www.youtube-nocookie.com/embed/${event.video_url.includes("v=") ? event.video_url.split("v=")[1].split("&")[0] : event.video_url.split("/").pop()}?rel=0`}
+                      title={event.video_title || event.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="absolute inset-0 size-full border-0"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Event Body Content */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -162,6 +250,90 @@ export default function EventDetailPage() {
                   </div>
                 )}
               </motion.div>
+
+              {/* Key Speakers & Delegates */}
+              {event.key_speakers && event.key_speakers.length > 0 && (
+                <div className="border-t border-border/60 pt-8 space-y-4">
+                  <h3 className="text-xl font-bold text-foreground">
+                    Distinguished Speakers & Plenary Leaders
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {event.key_speakers.map((spk, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center gap-3.5 p-4 rounded-2xl border border-border/70 bg-card/60"
+                      >
+                        {spk.image_url ? (
+                          <div className="size-14 rounded-full overflow-hidden border border-border/80 shrink-0 bg-muted">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={spk.image_url}
+                              alt={spk.name}
+                              className="size-full object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <div className="size-14 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-lg shrink-0 border border-primary/20">
+                            {spk.name.charAt(0)}
+                          </div>
+                        )}
+                        <div>
+                          <h4 className="text-sm font-bold text-foreground">{spk.name}</h4>
+                          <p className="text-xs text-primary font-medium">{spk.role}</p>
+                          <p className="text-[11px] text-muted-foreground mt-0.5">{spk.organization}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Event Photo Dossier (Aspect Ratio Aware) */}
+              {event.gallery_images && event.gallery_images.length > 0 && (
+                <div className="border-t border-border/60 pt-8 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-xl font-bold text-foreground">
+                        Event Photo Dossier & Verification Archive
+                      </h3>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        High-resolution field documentation. Natural aspect ratio preserved for both landscape and monograph portrait records.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {event.gallery_images.map((img, idx) => (
+                      <div
+                        key={idx}
+                        className="group relative flex flex-col overflow-hidden rounded-2xl border border-border/80 bg-card p-3 transition-all hover:border-primary/50"
+                      >
+                        <div
+                          className={cn(
+                            "relative w-full overflow-hidden rounded-xl bg-muted/50 flex items-center justify-center",
+                            img.aspect_ratio < 1 ? "aspect-[2/3] max-h-[420px]" : "aspect-[3/2]"
+                          )}
+                        >
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={img.url}
+                            alt={img.alt}
+                            className={cn(
+                              "w-full h-full transition-transform duration-500 group-hover:scale-103",
+                              img.aspect_ratio < 1 ? "object-contain p-2" : "object-cover"
+                            )}
+                          />
+                        </div>
+                        {img.caption && (
+                          <p className="text-xs text-muted-foreground mt-2 px-1 leading-relaxed">
+                            {img.caption}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Right Column: Sidebar (Sponsors & Community Connect) */}

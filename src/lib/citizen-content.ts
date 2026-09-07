@@ -23,12 +23,36 @@ export type EventSponsor = {
   description?: string;
 };
 
+export type EventGalleryImage = {
+  url: string;
+  alt: string;
+  caption?: string;
+  width: number;
+  height: number;
+  aspect_ratio: number;
+};
+
+export type EventSpeaker = {
+  name: string;
+  role: string;
+  organization: string;
+  image_url?: string;
+};
+
 export type HubEvent = {
   id: string;
   title: string;
   starts_at: string;
   location: string;
   location_url?: string;
+  programme?: string;
+  programme_label?: string;
+  image_aspect_ratio?: number;
+  image_orientation?: "portrait" | "landscape" | "square";
+  video_url?: string;
+  video_title?: string;
+  key_speakers?: EventSpeaker[];
+  gallery_images?: EventGalleryImage[];
   galleries?: EventGalleryLink[];
   sponsors?: EventSponsor[];
   snippet: string;

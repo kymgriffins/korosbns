@@ -23,6 +23,7 @@ export interface StudioEvidenceMedia {
   posterUrl: string;
   posterPosition?: string;
   videoUrl?: string;
+  videoUrlFr?: string;
   audioUrl?: string;
   platform?: "youtube" | "vimeo" | "cloudinary" | "spotify" | "local" | "other";
   aspectRatio?: "16/9" | "4/3" | "9/16" | "1/1";
@@ -72,6 +73,22 @@ export interface StudioFormatDetails {
   credits?: StudioFormatCredit[];
 }
 
+export interface StudioMultilingualLanguage {
+  code: string;
+  label: string;
+  flag: string;
+  videoId: string;
+  duration: string;
+  countries: string[];
+  title: string;
+}
+
+export interface StudioMultilingualConfig {
+  isMultilingual: boolean;
+  defaultLang: string;
+  languages: StudioMultilingualLanguage[];
+}
+
 export interface StudioProjectEvidence {
   id: string;
   slug: string;
@@ -85,6 +102,7 @@ export interface StudioProjectEvidence {
   whatWeProduced: string;
   description: string;
   media: StudioEvidenceMedia;
+  multilingual?: StudioMultilingualConfig;
   outputs: string[];
   impactEvidence: {
     primaryMetric?: string;

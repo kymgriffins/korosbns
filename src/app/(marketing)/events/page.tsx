@@ -141,6 +141,8 @@ export default function EventsPage() {
               const status = getEventStatus(event.starts_at);
               const { day, month, year } = parseDateParts(event.starts_at);
               
+              const isPortrait = event.image_orientation === "portrait" || (event.image_aspect_ratio && event.image_aspect_ratio < 1);
+              
               return (
                 <motion.div
                   key={event.id}
@@ -155,22 +157,54 @@ export default function EventsPage() {
                   >
                     {event.image_url ? (
                       <>
-                        {/* Cover Image */}
-                        <div className="relative w-full h-48 sm:h-52 overflow-hidden bg-muted border-b border-border/40 shrink-0">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={event.image_url}
-                            alt={event.title}
-                            className="w-full h-full object-cover object-center sm:object-top group-hover:scale-103 transition-transform duration-500"
-                          />
-                          {/* Floated Date Badge */}
-                          {day && month && (
-                            <div className="absolute top-4 left-4 flex flex-col items-center justify-center size-14 rounded-xl bg-card text-primary font-black border border-border/50">
-                              <span className="text-xl leading-none">{day}</span>
-                              <span className="text-[9px] tracking-wider mt-0.5">{month}</span>
+                        {/* Cover Image: Height & Aspect Ratio Considered */}
+                        {isPortrait ? (
+                          <div className="relative w-full h-64 sm:h-72 overflow-hidden bg-muted/60 border-b border-border/40 shrink-0 flex items-center justify-center p-4">
+                            {/* Ambient blurred backdrop so the container is filled gracefully */}
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={event.image_url}
+                              alt=""
+                              aria-hidden="true"
+                              className="absolute inset-0 w-full h-full object-cover blur-xl opacity-35 scale-125 pointer-events-none"
+                            />
+                            {/* Uncropped, natural-ratio portrait image with elevation shadow */}
+                            <div className="relative z-10 h-full max-h-full aspect-[2/3] rounded-lg shadow-xl overflow-hidden border border-border/60 bg-card transition-transform duration-500 group-hover:scale-105">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={event.image_url}
+                                alt={event.title}
+                                className="w-full h-full object-contain"
+                              />
                             </div>
-                          )}
-                        </div>
+                            <div className="absolute bottom-3 right-3 z-20 px-2 py-0.5 rounded-full bg-background/90 backdrop-blur-xs border border-border/80 text-[10px] font-mono font-semibold text-foreground">
+                              Monograph Cover
+                            </div>
+                            {/* Floated Date Badge */}
+                            {day && month && (
+                              <div className="absolute top-4 left-4 z-20 flex flex-col items-center justify-center size-14 rounded-xl bg-card text-primary font-black border border-border/50 shadow-sm">
+                                <span className="text-xl leading-none">{day}</span>
+                                <span className="text-[9px] tracking-wider mt-0.5">{month}</span>
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="relative w-full h-48 sm:h-56 overflow-hidden bg-muted border-b border-border/40 shrink-0">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={event.image_url}
+                              alt={event.title}
+                              className="w-full h-full object-cover object-center group-hover:scale-103 transition-transform duration-500"
+                            />
+                            {/* Floated Date Badge */}
+                            {day && month && (
+                              <div className="absolute top-4 left-4 flex flex-col items-center justify-center size-14 rounded-xl bg-card text-primary font-black border border-border/50 shadow-sm">
+                                <span className="text-xl leading-none">{day}</span>
+                                <span className="text-[9px] tracking-wider mt-0.5">{month}</span>
+                              </div>
+                            )}
+                          </div>
+                        )}
 
                         {/* Content */}
                         <div className="p-6 flex flex-col flex-1">
@@ -181,16 +215,15 @@ export default function EventsPage() {
                             >
                               {status}
                             </Badge>
-                            {event.sponsors && event.sponsors.length > 0 ? (
-                              <Badge variant="outline" className="text-[10px] font-semibold border-primary/20 text-primary flex items-center gap-1">
-                                <Building2 className="size-3" />
-                                <span>Sponsored</span>
+                            {event.programme_label && (
+                              <Badge variant="outline" className="text-[10px] font-bold border-primary/40 bg-primary/5 text-primary">
+                                {event.programme_label}
                               </Badge>
-                            ) : (
-                              <Badge variant="outline" className="text-[10px] font-semibold border-primary/20 text-primary/70 flex items-center gap-1">
-                                <Building2 className="size-3" />
-                                <span>BNS</span>
-                              </Badge>
+                            )}
+                            {event.sponsors && event.sponsors.length > 0 && (
+                              <span className="text-[11px] text-muted-foreground font-medium truncate max-w-[200px]">
+                                in partnership with {event.sponsors[0].name.split("(")[0].trim()}
+                              </span>
                             )}
                           </div>
 
