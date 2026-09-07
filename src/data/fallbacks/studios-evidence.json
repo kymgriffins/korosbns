@@ -7,7 +7,7 @@
   },
   "organizations": [
     {
-      "id": "org-tisa",
+      "id": "tisa-kenya",
       "slug": "tisa-kenya",
       "name": "TISA Kenya",
       "sector": "Civil Society & CSOs",
@@ -16,7 +16,7 @@
       "logoText": "TISA"
     },
     {
-      "id": "org-hofw",
+      "id": "house-of-fiscal-wisdom",
       "slug": "house-of-fiscal-wisdom",
       "name": "House of Fiscal Wisdom",
       "sector": "Civil Society & CSOs",
@@ -25,7 +25,7 @@
       "logoText": "HOFW"
     },
     {
-      "id": "org-cfs",
+      "id": "committee-on-fiscal-studies",
       "slug": "committee-on-fiscal-studies",
       "name": "Committee on Fiscal Studies",
       "sector": "Development Partners & INGOs",
@@ -34,7 +34,7 @@
       "logoText": "CFS"
     },
     {
-      "id": "org-nakuru",
+      "id": "nakuru-county",
       "slug": "nakuru-county",
       "name": "Nakuru County Government",
       "sector": "Governments & Public Sector",
@@ -43,7 +43,7 @@
       "logoText": "Nakuru"
     },
     {
-      "id": "org-treasury",
+      "id": "national-treasury",
       "slug": "national-treasury",
       "name": "National Treasury Kenya",
       "sector": "Governments & Public Sector",
@@ -52,7 +52,7 @@
       "logoText": "Treasury"
     },
     {
-      "id": "org-youth-network",
+      "id": "bns-youth-trackers",
       "slug": "bns-youth-trackers",
       "name": "BNS Youth Tracker Network",
       "sector": "Grassroots & Community Alliances",
@@ -61,7 +61,7 @@
       "logoText": "BNS"
     },
     {
-      "id": "org-cabri",
+      "id": "cabri",
       "slug": "cabri",
       "name": "Collaborative Africa Budget Reform Initiative (CABRI)",
       "sector": "Pan-African Intergovernmental Bodies",
@@ -70,7 +70,7 @@
       "logoText": "CABRI"
     },
     {
-      "id": "org-afrodad",
+      "id": "afrodad",
       "slug": "afrodad",
       "name": "AFRODAD",
       "sector": "Civil Society & CSOs",
@@ -81,12 +81,12 @@
   ],
   "projects": [
     {
-      "id": "proj-cabri-digital-pfm",
+      "id": "cabri-digital-pfm-reforms",
       "slug": "cabri-digital-pfm-reforms",
       "title": "Digital PFM Reform Stories: Continental Country Experiences",
       "subtitle": "A BNS Studios Continental Production · In Partnership with CABRI",
       "contentType": "Documentaries",
-      "organizationId": "org-cabri",
+      "organizationId": "cabri",
       "date": "2026-04-28",
       "year": "2026",
       "briefChallenge": "Documenting real-world digital public financial management (GFPn) transformations, institutional bottlenecks, and transparency gains across 10 African nations.",
@@ -111,7 +111,14 @@
             "flag": "🇬🇧",
             "videoId": "kWpY4K1uI20",
             "duration": "19:41",
-            "countries": ["South Africa", "Ghana", "Namibia", "Kenya", "Rwanda", "Malawi"],
+            "countries": [
+              "South Africa",
+              "Ghana",
+              "Namibia",
+              "Kenya",
+              "Rwanda",
+              "Malawi"
+            ],
             "title": "Digital PF Reform Stories: Country Experiences (Anglophone Africa)"
           },
           {
@@ -120,7 +127,12 @@
             "flag": "🇫🇷",
             "videoId": "GPebC3wHTus",
             "duration": "12:14",
-            "countries": ["Bénin", "Côte d'Ivoire", "République centrafricaine", "Tunisie"],
+            "countries": [
+              "Bénin",
+              "Côte d'Ivoire",
+              "République centrafricaine",
+              "Tunisie"
+            ],
             "title": "Récits de GFPn : Expériences-pays (Afrique Francophone)"
           }
         ]
@@ -136,18 +148,25 @@
         "context": "Anchoring peer-to-peer technical knowledge exchange on digital budget systems across Africa.",
         "verificationOutcome": "CABRI Ministerial Peer Learning & BNS Studios Archive."
       },
-      "tags": ["digital-pfm", "cabri", "public-procurement", "ifmis", "pan-african", "bilingual"],
+      "tags": [
+        "digital-pfm",
+        "cabri",
+        "public-procurement",
+        "ifmis",
+        "pan-african",
+        "bilingual"
+      ],
       "deliveryMode": "co-produced",
       "programmeSlug": "studios",
       "featured": true
     },
     {
-      "id": "proj-hofw-iff",
+      "id": "illicit-financial-flows-benin-cabo-verde",
       "slug": "illicit-financial-flows-benin-cabo-verde",
       "title": "Illicit Financial Flows & Sovereign Resource Governance",
       "subtitle": "A Wanahabari Lab Forensic Investigation · In Partnership with House of Fiscal Wisdom",
       "contentType": "Research Spotlights",
-      "organizationId": "org-hofw",
+      "organizationId": "house-of-fiscal-wisdom",
       "date": "2026-08-08",
       "year": "2026",
       "briefChallenge": "Investigating how trade misinvoicing, tax haven secrecy, and unmonitored maritime extractive agreements drain sovereign revenue from Benin and Cabo Verde.",
@@ -172,18 +191,24 @@
         "context": "Mobilizing parliamentary budget committees and investigative journalists against transfer mispricing.",
         "verificationOutcome": "House of Fiscal Wisdom & Wanahabari Lab Research Dossier."
       },
-      "tags": ["illicit-financial-flows", "house-of-fiscal-wisdom", "tax-justice", "red-flags", "dr-lyla-latif"],
+      "tags": [
+        "illicit-financial-flows",
+        "house-of-fiscal-wisdom",
+        "tax-justice",
+        "red-flags",
+        "dr-lyla-latif"
+      ],
       "deliveryMode": "commissioned",
       "programmeSlug": "wanahabari-lab",
       "featured": true
     },
     {
-      "id": "proj-terra",
+      "id": "project-terra",
       "slug": "project-terra",
       "title": "Project TERRA: Technology, Equality, Regulatory Risk Assessment",
       "subtitle": "In conjunction with House of Fiscal Wisdom & Luminate",
       "contentType": "Documentaries",
-      "organizationId": "org-hofw",
+      "organizationId": "house-of-fiscal-wisdom",
       "date": "2026-07-25",
       "year": "2026",
       "briefChallenge": "Expose how platform architectures, algorithms, and tax concessions systematically render African women workers invisible in public revenue systems.",
@@ -209,18 +234,24 @@
         "context": "Anchoring fiscal reform for platform domestic workers and tech infrastructure across Africa.",
         "verificationOutcome": "House of Fiscal Wisdom & Luminate research governance archive."
       },
-      "tags": ["algorithmic-governance", "fiscal-justice", "data-centres", "care-economy", "house-of-fiscal-wisdom"],
+      "tags": [
+        "algorithmic-governance",
+        "fiscal-justice",
+        "data-centres",
+        "care-economy",
+        "house-of-fiscal-wisdom"
+      ],
       "deliveryMode": "co-produced",
       "programmeSlug": "studios",
       "featured": true
     },
     {
-      "id": "proj-001",
+      "id": "budget-sasa-ni-delivery-explainer",
       "slug": "budget-sasa-ni-delivery-explainer",
       "title": "Budget Sasa ni Delivery",
       "subtitle": "National budget explainer series",
       "contentType": "Explainer Videos",
-      "organizationId": "org-treasury",
+      "organizationId": "national-treasury",
       "date": "2025-11-15",
       "year": "2025",
       "briefChallenge": "Translate FY2026/27 national budget priorities into language young citizens could share on social feeds without losing fiscal accuracy.",
@@ -245,18 +276,22 @@
         "context": "Distribution through BNS Connect youth network and partner civic pages.",
         "verificationOutcome": "View counts aggregated from platform analytics dashboards."
       },
-      "tags": ["national-budget", "explainer", "youth"],
+      "tags": [
+        "national-budget",
+        "explainer",
+        "youth"
+      ],
       "deliveryMode": "co-produced",
       "programmeSlug": "connect",
       "featured": true
     },
     {
-      "id": "proj-002",
+      "id": "budget-ndio-story-podcast",
       "slug": "budget-ndio-story-podcast",
       "title": "Budget Ndio Story Podcast",
       "subtitle": "Season 1 — fiscal deep-dives",
       "contentType": "Podcast & Audio",
-      "organizationId": "org-tisa",
+      "organizationId": "tisa-kenya",
       "date": "2025-09-01",
       "year": "2025",
       "briefChallenge": "Create a recurring audio home for budget scrutiny that journalists and youth could cite between news cycles.",
@@ -280,18 +315,22 @@
         "context": "Cross-promoted on BNS TikTok and Learn Hub modules.",
         "verificationOutcome": "Hosting platform analytics export."
       },
-      "tags": ["podcast", "audio", "scrutiny"],
+      "tags": [
+        "podcast",
+        "audio",
+        "scrutiny"
+      ],
       "deliveryMode": "co-produced",
       "programmeSlug": "studios",
       "featured": true
     },
     {
-      "id": "proj-003",
+      "id": "nakuru-citizen-baraza",
       "slug": "nakuru-citizen-baraza",
       "title": "Nakuru Citizen Budget Baraza",
       "subtitle": "Town hall design & broadcast",
       "contentType": "Town Hall Design & Facilitation",
-      "organizationId": "org-nakuru",
+      "organizationId": "nakuru-county",
       "date": "2025-06-20",
       "year": "2025",
       "briefChallenge": "Design a participatory forum where county officials and residents could interrogate CAIP priorities with documented follow-up.",
@@ -304,9 +343,18 @@
         "platform": "youtube",
         "aspectRatio": "16/9",
         "gallery": [
-          { "url": "/images/towwnhallmay/129A3863.jpg", "caption": "Main hall convening" },
-          { "url": "/images/towwnhallmay/129A4056.jpg", "caption": "Citizen participation lane" },
-          { "url": "/images/towwnhallmay/129A3863.jpg", "caption": "Facilitation team" }
+          {
+            "url": "/images/towwnhallmay/129A3863.jpg",
+            "caption": "Main hall convening"
+          },
+          {
+            "url": "/images/towwnhallmay/129A4056.jpg",
+            "caption": "Citizen participation lane"
+          },
+          {
+            "url": "/images/towwnhallmay/129A3863.jpg",
+            "caption": "Facilitation team"
+          }
         ]
       },
       "outputs": [
@@ -320,18 +368,22 @@
         "context": "County assembly clerk acknowledged proceedings in Hansard reference.",
         "verificationOutcome": "Attendance register and stream analytics on file."
       },
-      "tags": ["county", "town-hall", "nakuru"],
+      "tags": [
+        "county",
+        "town-hall",
+        "nakuru"
+      ],
       "deliveryMode": "commissioned",
       "programmeSlug": "mashinani",
       "featured": false
     },
     {
-      "id": "proj-004",
+      "id": "finance-bill-motion-explainer",
       "slug": "finance-bill-motion-explainer",
       "title": "Finance Bill Motion Graphics",
       "subtitle": "2D animation package",
       "contentType": "Animations",
-      "organizationId": "org-hofw",
+      "organizationId": "house-of-fiscal-wisdom",
       "date": "2024-07-10",
       "year": "2024",
       "briefChallenge": "Explain contested Finance Bill clauses to first-time voters without partisan framing.",
@@ -354,18 +406,22 @@
         "context": "Released during Finance Bill debate window.",
         "verificationOutcome": "Partner-reported reach; BNS retained raw analytics screenshots."
       },
-      "tags": ["animation", "finance-bill", "civic"],
+      "tags": [
+        "animation",
+        "finance-bill",
+        "civic"
+      ],
       "deliveryMode": "co-produced",
       "programmeSlug": "connect",
       "featured": true
     },
     {
-      "id": "proj-005",
+      "id": "mashinani-field-documentary",
       "slug": "mashinani-field-documentary",
       "title": "Mashinani: Promise vs Delivery",
       "subtitle": "Short documentary",
       "contentType": "Documentaries",
-      "organizationId": "org-youth-network",
+      "organizationId": "bns-youth-trackers",
       "date": "2025-03-18",
       "year": "2025",
       "briefChallenge": "Document how youth trackers verify county project claims against site visits and published estimates.",
@@ -389,18 +445,22 @@
         "context": "Used as opener for Mashinani scorecard launches.",
         "verificationOutcome": "Event programmes and attendance logs retained."
       },
-      "tags": ["documentary", "county", "youth"],
+      "tags": [
+        "documentary",
+        "county",
+        "youth"
+      ],
       "deliveryMode": "bns-led",
       "programmeSlug": "mashinani",
       "featured": false
     },
     {
-      "id": "proj-006",
+      "id": "cra-formula-research-spotlight",
       "slug": "cra-formula-research-spotlight",
       "title": "CRA Third Basis Formula Spotlight",
       "subtitle": "Research multimedia digest",
       "contentType": "Research Spotlights",
-      "organizationId": "org-cfs",
+      "organizationId": "committee-on-fiscal-studies",
       "date": "2025-01-22",
       "year": "2025",
       "briefChallenge": "Package a 40-page CRA technical report into assets policymakers and journalists could use in one sitting.",
@@ -424,18 +484,22 @@
         "context": "Co-delivered with Wanahabari Lab cohort.",
         "verificationOutcome": "Lab attendance register."
       },
-      "tags": ["research", "CRA", "devolution"],
+      "tags": [
+        "research",
+        "CRA",
+        "devolution"
+      ],
       "deliveryMode": "co-produced",
       "programmeSlug": "wanahabari-lab",
       "featured": false
     },
     {
-      "id": "proj-007",
+      "id": "budget-tiktok-vertical-series",
       "slug": "budget-tiktok-vertical-series",
       "title": "Budget Mtaani TikTok Series",
       "subtitle": "Vertical social campaign",
       "contentType": "Social Media Series",
-      "organizationId": "org-youth-network",
+      "organizationId": "bns-youth-trackers",
       "date": "2025-08-05",
       "year": "2025",
       "briefChallenge": "Reach 18–30 year-olds with county budget facts they would actually share.",
@@ -459,18 +523,22 @@
         "context": "@budget.ndio.story TikTok channel.",
         "verificationOutcome": "Platform analytics export Q3 2025."
       },
-      "tags": ["tiktok", "social", "county"],
+      "tags": [
+        "tiktok",
+        "social",
+        "county"
+      ],
       "deliveryMode": "bns-led",
       "programmeSlug": "connect",
       "featured": true
     },
     {
-      "id": "proj-008",
+      "id": "wajir-community-listening",
       "slug": "wajir-community-listening",
       "title": "Wajir Community Listening Sessions",
       "subtitle": "Arid lands budget dialogues",
       "contentType": "Community Listening Sessions",
-      "organizationId": "org-youth-network",
+      "organizationId": "bns-youth-trackers",
       "date": "2025-05-12",
       "year": "2025",
       "briefChallenge": "Capture ground-level budget priorities in Wajir where formal town halls under-represent pastoralist communities.",
@@ -483,10 +551,22 @@
         "platform": "local",
         "aspectRatio": "4/3",
         "gallery": [
-          { "url": "/images/towwnhallmay/129A4056.jpg", "caption": "Ward listening circle" },
-          { "url": "/images/cohort1 groundworks/129A3964.jpg", "caption": "Youth facilitators" },
-          { "url": "/images/stakeholders/129A4113.jpg", "caption": "Community evidence wall" },
-          { "url": "/images/media/129A4039.jpg", "caption": "Translated summary session" }
+          {
+            "url": "/images/towwnhallmay/129A4056.jpg",
+            "caption": "Ward listening circle"
+          },
+          {
+            "url": "/images/cohort1 groundworks/129A3964.jpg",
+            "caption": "Youth facilitators"
+          },
+          {
+            "url": "/images/stakeholders/129A4113.jpg",
+            "caption": "Community evidence wall"
+          },
+          {
+            "url": "/images/media/129A4039.jpg",
+            "caption": "Translated summary session"
+          }
         ]
       },
       "outputs": [
@@ -500,18 +580,22 @@
         "context": "Equalisation Fund line items referenced in summaries.",
         "verificationOutcome": "Signed attendance sheets archived."
       },
-      "tags": ["wajir", "listening", "community"],
+      "tags": [
+        "wajir",
+        "listening",
+        "community"
+      ],
       "deliveryMode": "bns-led",
       "programmeSlug": "mashinani",
       "featured": false
     },
     {
-      "id": "proj-009",
+      "id": "bps-2026-reading-coverage",
       "slug": "bps-2026-reading-coverage",
       "title": "Budget Policy Statement 2026 Coverage",
       "subtitle": "Multi-format newsroom kit",
       "contentType": "Explainer Videos",
-      "organizationId": "org-treasury",
+      "organizationId": "national-treasury",
       "date": "2026-02-14",
       "year": "2026",
       "briefChallenge": "Give journalists a same-day toolkit when the BPS dropped — charts, quotes, and b-roll they could air immediately.",
@@ -535,18 +619,22 @@
         "context": "Distributed via Wanahabari Lab alumni list.",
         "verificationOutcome": "Partner acknowledgment emails on file."
       },
-      "tags": ["BPS", "newsroom", "treasury"],
+      "tags": [
+        "BPS",
+        "newsroom",
+        "treasury"
+      ],
       "deliveryMode": "co-produced",
       "programmeSlug": "wanahabari-lab",
       "featured": false
     },
     {
-      "id": "proj-010",
+      "id": "stakeholder-forum-production",
       "slug": "stakeholder-forum-production",
       "title": "National Stakeholder Forum Production",
       "subtitle": "Hall event broadcast package",
       "contentType": "Documentaries",
-      "organizationId": "org-tisa",
+      "organizationId": "tisa-kenya",
       "date": "2025-10-08",
       "year": "2025",
       "briefChallenge": "Document a multi-stakeholder fiscal forum for donors needing evidence of convening quality.",
@@ -560,9 +648,18 @@
         "aspectRatio": "16/9",
         "videoUrl": "https://www.youtube.com/watch?v=Ed9lP0-komE",
         "gallery": [
-          { "url": "/images/hall/129A4248.jpg", "caption": "Forum hall wide" },
-          { "url": "/images/stakeholders/129A4113.jpg", "caption": "Stakeholder interviews" },
-          { "url": "/images/towwnhallmay/129A3863.jpg", "caption": "Panel session" }
+          {
+            "url": "/images/hall/129A4248.jpg",
+            "caption": "Forum hall wide"
+          },
+          {
+            "url": "/images/stakeholders/129A4113.jpg",
+            "caption": "Stakeholder interviews"
+          },
+          {
+            "url": "/images/towwnhallmay/129A3863.jpg",
+            "caption": "Panel session"
+          }
         ]
       },
       "outputs": [
@@ -576,7 +673,11 @@
         "context": "Forum on national fiscal transparency agenda.",
         "verificationOutcome": "Registration data provided by convening partner."
       },
-      "tags": ["forum", "production", "stakeholders"],
+      "tags": [
+        "forum",
+        "production",
+        "stakeholders"
+      ],
       "deliveryMode": "commissioned",
       "programmeSlug": "studios",
       "featured": false

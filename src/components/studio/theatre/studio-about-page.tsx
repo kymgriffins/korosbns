@@ -39,7 +39,9 @@ export function StudioAboutPage() {
           <p className="studio-about-eyebrow">{studios.eyebrow}</p>
           <h1 className="studio-about-title-xl">{studios.headline}</h1>
           <p className="studio-about-lede">{studios.body}</p>
-          <p className="studio-about-formats-v2">{studios.formats}</p>
+          {studios.highlight ? (
+            <p className="studio-about-formats-v2">{studios.highlight}</p>
+          ) : null}
           <div className="studio-about-hero-ctas">
             <button
               type="button"

@@ -24,9 +24,9 @@ export function TransformationStage() {
         <div className="flex items-center gap-2 font-mono text-xs">
           <span className="inline-flex size-2 rounded-full bg-primary animate-pulse" />
           <span className="font-bold uppercase tracking-wider text-primary">
-            Interception Engine
+            Distillation stage
           </span>
-          <span className="text-muted-foreground">· Fiscal Compression v2.4</span>
+          <span className="text-muted-foreground">· PDF to phone</span>
         </div>
 
         {/* Narrative Flow Navigation */}
@@ -111,9 +111,9 @@ export function TransformationStage() {
                 <div className="flex items-center justify-between border-b border-destructive/20 pb-2 text-[11px] text-destructive font-bold">
                   <span className="flex items-center gap-1.5">
                     <FileSpreadsheet className="size-4" />
-                    VOTE 1021: CONSOLIDATED FUND SERVICES
+                    ILLUSTRATIVE DENSE ESTIMATE LANGUAGE
                   </span>
-                  <span>CONFIDENTIAL ESTIMATE</span>
+                  <span>PUBLIC PDF SAMPLE</span>
                 </div>
                 <div className="border-l-2 border-destructive/70 pl-4 py-1 space-y-1.5 text-[11px] leading-relaxed">
                   <p className="line-through opacity-70">Sub-Program 042: External Debt Amortization (Semi-Concessional)</p>

@@ -8,64 +8,57 @@ import {
   FileCheck,
   AlertOctagon,
   CheckCircle,
-  Clock,
   Compass,
-  Volume2,
 } from "lucide-react";
 
 interface FieldAuditCase {
   id: string;
   county: string;
   ward: string;
-  coordinates: string;
   project: string;
-  budgeted: string;
-  status: "FLAGGED_DISCREPANCY" | "RECTIFIED" | "ACTION_ENFORCED";
+  status: "SITE_CHECK" | "ASSEMBLY_BRIEF" | "FOLLOW_UP";
   finding: string;
   actionTaken: string;
-  barazaParticipants: number;
-  radioReach: string;
+  methodNote: string;
 }
 
+/** Method vignettes for Mashinani — no invented budget amounts. */
 const FIELD_CASES: FieldAuditCase[] = [
   {
     id: "kilifi-water",
     county: "Kilifi County",
     ward: "Kaloleni Ward",
-    coordinates: "3°48'12\"S 39°39'24\"E",
-    project: "Solar Hybrid Borehole & Water Kiosk",
-    budgeted: "KSh 14,800,000",
-    status: "ACTION_ENFORCED",
-    finding: "County Gazette recorded project at '95% Commissioned'. Field monitors discovered dry bore shaft, missing solar inverter, and disconnected plastic holding tank.",
-    actionTaken: "BNS Mashinani hosted village baraza with Ward Representative. Community withheld completion sign-off; contractor returned and installed functional 5.5kW solar array.",
-    barazaParticipants: 240,
-    radioReach: "180K listeners on Kaya FM",
+    project: "Solar borehole and water kiosk",
+    status: "FOLLOW_UP",
+    finding:
+      "County progress notes described the site as nearly commissioned. Field monitors found a dry shaft, missing inverter hardware, and a disconnected holding tank — photographed and dated for the public dossier.",
+    actionTaken:
+      "Community withheld completion sign-off at a ward baraza until the contractor returned with working solar pumping equipment. Attendance and photo evidence archived.",
+    methodNote: "Signboard checklist · Site photos · Baraza summary",
   },
   {
     id: "nakuru-maternity",
     county: "Nakuru County",
     ward: "Subukia Ward",
-    coordinates: "0°04'30\"N 36°14'45\"E",
-    project: "Level 3 Dispensary Maternity Wing",
-    budgeted: "KSh 22,500,000",
-    status: "FLAGGED_DISCREPANCY",
-    finding: "Budget line allocated KSh 22.5M over 2 fiscal years. Physical inspection revealed structure roofed but unpainted, with zero plumbing, no staff housing, and overgrown weeds.",
-    actionTaken: "Youth monitors compiled verified photo dossier and presented it before County Assembly Health Committee. Supplementary budget re-allocated KSh 6.2M for immediate completion.",
-    barazaParticipants: 310,
-    radioReach: "240K listeners on Radio Amani",
+    project: "Dispensary maternity wing",
+    status: "ASSEMBLY_BRIEF",
+    finding:
+      "A facility listed as ready for service was roofed but unfinished — no plumbing, no staff housing, weeds at the entrance. Monitors compared the physical state to the county's published progress language.",
+    actionTaken:
+      "Youth monitors tabled a photo dossier with the County Assembly health conversation and published a citizen-readable summary within days of the baraza.",
+    methodNote: "Photo dossier · Hansard-ready brief · Public summary",
   },
   {
     id: "wajir-feeder",
     county: "Wajir County",
     ward: "Tarbaj Ward",
-    coordinates: "1°45'22\"N 40°03'15\"E",
-    project: "Bush Clearing & Rural Feeder Road Murraming",
-    budgeted: "KSh 18,200,000",
-    status: "RECTIFIED",
-    finding: "Heavy grader clocked only 4 days on site before departing. 18km stretch remained impassable sand, blocking emergency clinic access for livestock pastoralists.",
-    actionTaken: "Community elders held tree-shade baraza broadcast live on local vernacular radio. County Roads Executive summoned contractor back to site; full 18km graded and compacted.",
-    barazaParticipants: 185,
-    radioReach: "120K listeners on Star FM",
+    project: "Rural feeder road grading",
+    status: "SITE_CHECK",
+    finding:
+      "Heavy equipment appeared briefly, then left an impassable stretch that blocked clinic access for pastoral households. Elders convened a tree-shade baraza; monitors recorded claims against what the road still looked like.",
+    actionTaken:
+      "Vernacular radio carried the community account; county roads officials were pressed to return the contractor. Mashinani kept the paper trail public rather than inventing completion kilometres.",
+    methodNote: "Listening circle · Radio note · Follow-up visit",
   },
 ];
 
@@ -75,17 +68,15 @@ export function FieldNotebookSpread() {
 
   return (
     <div className="relative my-10 py-8 border-y border-amber-500/30">
-      {/* Top Field Telemetry Header */}
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/40 pb-5">
         <div className="flex items-center gap-2 font-mono text-xs">
           <Compass className="size-4 text-amber-600 dark:text-amber-400 animate-spin-slow" />
           <span className="font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
-            Field Monitor Dossier
+            Field notebook
           </span>
-          <span className="text-muted-foreground">· 47-County Grassroots Ledger</span>
+          <span className="text-muted-foreground">· Four-county method</span>
         </div>
 
-        {/* Coordinate / County Selector Pills */}
         <div className="flex flex-wrap gap-1.5 font-mono text-xs">
           {FIELD_CASES.map((item) => (
             <button
@@ -104,7 +95,6 @@ export function FieldNotebookSpread() {
         </div>
       </div>
 
-      {/* Main Field Journal Notebook View */}
       <div className="mt-8">
         <AnimatePresence mode="wait">
           <motion.div
@@ -115,52 +105,50 @@ export function FieldNotebookSpread() {
             transition={{ duration: 0.25 }}
             className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start"
           >
-            {/* Left Page: Forensic Investigation Log */}
             <div className="lg:col-span-7 space-y-5">
               <div className="space-y-1">
                 <div className="flex items-center gap-2 font-mono text-xs text-amber-600 dark:text-amber-400">
                   <MapPin className="size-3.5" />
-                  <span>{activeCase.ward}, {activeCase.county}</span>
-                  <span className="text-muted-foreground">· [{activeCase.coordinates}]</span>
+                  <span>
+                    {activeCase.ward}, {activeCase.county}
+                  </span>
                 </div>
                 <h3 className="font-heading text-2xl sm:text-3xl font-black text-foreground leading-tight">
                   {activeCase.project}
                 </h3>
               </div>
 
-              {/* Status Badge */}
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-bold bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/30">
-                {activeCase.status === "ACTION_ENFORCED" && (
+                {activeCase.status === "FOLLOW_UP" && (
                   <>
                     <CheckCircle className="size-3.5 text-emerald-500" />
-                    <span>STATUS: COMMUNITY SIGN-OFF WITHHELD → CONTRACTOR RETURNED</span>
+                    <span>STATUS: COMMUNITY FOLLOW-UP</span>
                   </>
                 )}
-                {activeCase.status === "FLAGGED_DISCREPANCY" && (
+                {activeCase.status === "ASSEMBLY_BRIEF" && (
                   <>
                     <AlertOctagon className="size-3.5 text-destructive" />
-                    <span>STATUS: BUDGET LINE DISCREPANCY TABLED IN ASSEMBLY</span>
+                    <span>STATUS: ASSEMBLY BRIEF FILED</span>
                   </>
                 )}
-                {activeCase.status === "RECTIFIED" && (
+                {activeCase.status === "SITE_CHECK" && (
                   <>
                     <CheckCircle className="size-3.5 text-emerald-500" />
-                    <span>STATUS: PHYSICAL WORKS COMPLETED &amp; AUDITED</span>
+                    <span>STATUS: SITE CHECK + RADIO NOTE</span>
                   </>
                 )}
               </div>
 
-              {/* Finding Narrative (Editorial Left Accent Line, No Nested Box) */}
               <div className="border-l-2 border-amber-500/80 pl-5 py-2 space-y-3">
                 <p className="font-mono text-[10px] uppercase font-bold tracking-wider text-muted-foreground">
-                  The Ground Reality Check:
+                  What monitors saw
                 </p>
                 <p className="text-sm sm:text-base text-foreground/90 leading-relaxed font-medium">
                   {activeCase.finding}
                 </p>
                 <div className="pt-2 border-t border-border/40 space-y-1">
                   <p className="font-mono text-[10px] uppercase font-bold text-emerald-600 dark:text-emerald-400">
-                    Direct Community Impact:
+                    What happened next
                   </p>
                   <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                     {activeCase.actionTaken}
@@ -169,44 +157,44 @@ export function FieldNotebookSpread() {
               </div>
             </div>
 
-            {/* Right Page: Tactical Baraza Metadata & Field Tools (Open Flat Ledger) */}
             <div className="lg:col-span-5 lg:border-l lg:border-border/40 lg:pl-8 space-y-6 divide-y divide-border/40">
               <div className="space-y-4">
                 <div className="flex items-center justify-between font-mono text-xs border-b border-border/40 pb-2">
                   <span className="font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
-                    BARAZA AUDIT METRICS
+                    Method kit
                   </span>
-                  <span className="text-muted-foreground">VERIFIED</span>
+                  <span className="text-muted-foreground">ILLUSTRATIVE</span>
                 </div>
 
                 <div className="space-y-2.5 font-mono text-xs">
                   <div className="flex items-center justify-between py-1.5 border-b border-border/30">
-                    <span className="text-muted-foreground">Gazette Budget Allocation</span>
-                    <span className="font-bold text-foreground">{activeCase.budgeted}</span>
+                    <span className="text-muted-foreground">Tools used</span>
+                    <span className="font-bold text-foreground text-right max-w-[55%]">
+                      {activeCase.methodNote}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between py-1.5 border-b border-border/30">
-                    <span className="text-muted-foreground">Direct Baraza Attendees</span>
-                    <span className="font-bold text-foreground">{activeCase.barazaParticipants} Citizens</span>
+                    <span className="text-muted-foreground">Budget figures</span>
+                    <span className="font-bold text-foreground">Cited only when published</span>
                   </div>
                   <div className="flex items-center justify-between py-1.5">
-                    <span className="text-muted-foreground">Vernacular Radio Broadcast</span>
-                    <span className="font-bold text-amber-600 dark:text-amber-400">{activeCase.radioReach}</span>
+                    <span className="text-muted-foreground">Unavailable lines</span>
+                    <span className="font-bold text-amber-600 dark:text-amber-400">Labelled, never invented</span>
                   </div>
                 </div>
               </div>
 
-              {/* The Physical Waterproof Scorecard Feature */}
               <div className="pt-6 space-y-2.5">
                 <div className="flex items-center gap-2 text-xs font-mono font-bold text-foreground">
                   <FileCheck className="size-4 text-amber-500" />
-                  <span>The Waterproof Scorecard Standard</span>
+                  <span>Waterproof scorecard standard</span>
                 </div>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  We don&rsquo;t ask rural citizens to download 20MB apps in areas with intermittent 2G signal. We print laminated Swahili checklists with 5 simple visual verification benchmarks.
+                  We do not ask rural residents to download heavy apps on intermittent signal. Laminated checklists with simple visual benchmarks travel farther than a dashboard alone.
                 </p>
                 <div className="pt-1 flex items-center gap-2 text-[11px] font-mono text-amber-600 dark:text-amber-400 font-semibold">
                   <Radio className="size-3.5" />
-                  <span>Syndicated across 14 community radio stations</span>
+                  <span>Paired with vernacular radio notes where useful</span>
                 </div>
               </div>
             </div>

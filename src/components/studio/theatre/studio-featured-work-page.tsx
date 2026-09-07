@@ -9,12 +9,14 @@ import { studiosEvidenceData } from "@/data/studios-evidence";
 import { EditorialPill, PillButton } from "@/components/ui/editorial";
 import { GsapReveal, GsapStaggerReveal } from "@/motion/gsap";
 import { cn } from "@/utils";
+import { resolveProjectId } from "@/lib/programme-project-ids";
 
 function projectHref(slug: string) {
-  if (slug === "project-terra" || slug === "terra") {
+  const canonical = resolveProjectId(slug);
+  if (canonical === "project-terra") {
     return "/bns-project/terra";
   }
-  return `/bns-studio/${slug}`;
+  return `/bns-studio/${canonical}`;
 }
 
 const PROGRAMME_DESKS = [

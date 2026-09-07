@@ -19,26 +19,44 @@ describe("ProgrammeDetail", () => {
   it("renders ConnectScrollytelling for connect", () => {
     const p = getProgramme("connect")!;
     render(<ProgrammeDetail programme={p} />);
-    expect(screen.getByText(/Desk 01: BNS CONNECT/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/BNS CONNECT/i).length).toBeGreaterThanOrEqual(1);
+    expect(
+      screen.getByRole("heading", {
+        name: /The budget lands as a PDF\.\s*We put it back on the phone\./i,
+      }),
+    ).toBeInTheDocument();
   });
 
   it("renders MashinaniScrollytelling for mashinani", () => {
     const p = getProgramme("mashinani")!;
     render(<ProgrammeDetail programme={p} />);
-    expect(screen.getByText(/DESK 02: COUNTY ACCOUNTABILITY/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/BNS MASHINANI/i).length).toBeGreaterThanOrEqual(1);
+    expect(
+      screen.getByRole("heading", {
+        name: /Kakamega\. Kilifi\. Nakuru\. Wajir\.\s*Stay long enough to matter\./i,
+      }),
+    ).toBeInTheDocument();
   });
 
   it("renders WanahabariScrollytelling for wanahabari-lab", () => {
     const p = getProgramme("wanahabari-lab")!;
     render(<ProgrammeDetail programme={p} />);
-    expect(screen.getByText(/DESK 03: WANAHABARI LAB/i)).toBeInTheDocument();
+    expect(screen.getAllByText(/WANAHABARI LAB/i).length).toBeGreaterThanOrEqual(1);
+    expect(
+      screen.getByRole("heading", {
+        name: /Budget Day is theatre\.\s*The story starts the morning after\./i,
+      }),
+    ).toBeInTheDocument();
   });
 
   it("renders StudiosScrollytelling for studios", () => {
     const p = getProgramme("studios")!;
     render(<ProgrammeDetail programme={p} />);
-    expect(screen.getByText(/DESK 04: BNS STUDIOS/i)).toBeInTheDocument();
-    expect(screen.getAllByText(/Commercial creative craft/i).length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText(/budget audits/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/BNS STUDIOS/i).length).toBeGreaterThanOrEqual(1);
+    expect(
+      screen.getByRole("heading", {
+        name: /High-craft media\.\s*A civic surplus attached\./i,
+      }),
+    ).toBeInTheDocument();
   });
 });

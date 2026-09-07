@@ -52,13 +52,14 @@ export type ProgrammeFaq = {
 };
 
 export type ProgrammeBlock = {
+  /** Canonical stable id — always mirrors `slug`. */
+  id: ProgrammeSlug;
   slug: ProgrammeSlug;
   name: string;
   eyebrow: string;
   headline: string;
   body: string;
   highlight?: string;
-  formats?: string;
   seoTitle: string;
   seoDescription: string;
   cta: ProgrammeCta;
@@ -85,7 +86,8 @@ export const PROGRAMME_CARD_BLURBS = programmesContent.cardBlurbs as Record<
 export const BNS_PARTNERS_NAMED = programmesContent.partners;
 
 export function getProgramme(slug: string): ProgrammeBlock | undefined {
-  return PROGRAMMES.find((p) => p.slug === slug);
+  const key = slug.trim().toLowerCase();
+  return PROGRAMMES.find((p) => p.slug === key || p.id === key);
 }
 
 export function programmeHref(slug: ProgrammeSlug): string {

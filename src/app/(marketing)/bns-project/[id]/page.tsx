@@ -3,14 +3,19 @@ import type { Metadata } from "next";
 import { studiosEvidenceData } from "@/data/studios-evidence";
 import { ProjectTerraEditorial } from "@/components/project/project-terra-editorial";
 import { buildPageMetadata } from "@/utils/page-metadata";
+import { resolveProjectId } from "@/lib/programme-project-ids";
 
 type PageProps = {
   params: Promise<{ id: string }>;
 };
 
+function isTerraProject(id: string): boolean {
+  return resolveProjectId(id) === "project-terra";
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
-  if (id === "terra" || id === "project-terra" || id === "proj-terra") {
+  if (isTerraProject(id)) {
     return buildPageMetadata({
       title:
         "Project TERRA: Technology, Equality, Regulatory Risk Assessment | Budget Ndio Story",
@@ -40,7 +45,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function ProjectDetailPage({ params }: PageProps) {
   const { id } = await params;
 
-  if (id === "terra" || id === "project-terra" || id === "proj-terra") {
+  if (isTerraProject(id)) {
     return <ProjectTerraEditorial />;
   }
 

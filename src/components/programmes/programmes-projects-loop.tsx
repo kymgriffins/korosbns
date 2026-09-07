@@ -23,6 +23,7 @@ import {
   type StudioProjectEvidence,
 } from "@/data/studios-evidence";
 import { cn } from "@/utils";
+import { resolveProjectId } from "@/lib/programme-project-ids";
 
 type DeskFilter = "all" | "connect" | "mashinani" | "wanahabari-lab" | "studios";
 
@@ -84,10 +85,11 @@ function getFormatIcon(type: string, contentType: string) {
 }
 
 function getProjectLink(slug: string) {
-  if (slug === "project-terra" || slug === "terra") {
+  const canonical = resolveProjectId(slug);
+  if (canonical === "project-terra") {
     return "/bns-project/terra";
   }
-  return `/bns-studio/${slug}`;
+  return `/bns-studio/${canonical}`;
 }
 
 export function ProgrammesProjectsLoop({

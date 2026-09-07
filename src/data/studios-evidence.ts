@@ -1,6 +1,10 @@
 import studiosEvidenceSeed from "@/data/fallbacks/studios-evidence.json";
 import type { StudioContentType, StudioOrganizationType } from "@/constants/bns-studio-content";
 import type { ProgrammeSlug } from "@/content";
+import {
+  resolveOrganizationId,
+  resolveProjectId,
+} from "@/lib/programme-project-ids";
 
 export type { StudioContentType };
 
@@ -143,16 +147,25 @@ function hydrateProjects(
 
   return seed.projects
     .map((project) => {
-      const organization = orgById.get(project.organizationId);
+      const organization = orgById.get(
+        resolveOrganizationId(project.organizationId),
+      );
       if (!organization) return null;
       const { organizationId: _orgId, ...rest } = project;
-      return { ...rest, organization };
+      // Canonical rule: id mirrors the human-readable slug.
+      const canonicalId = resolveProjectId(rest.slug || rest.id);
+      return { ...rest, id: canonicalId, slug: canonicalId, organization };
     })
     .filter((project): project is StudioProjectEvidence => project !== null);
 }
 
 const seed = studiosEvidenceSeed as StudiosEvidenceSeed;
-const STUDIO_ORGANIZATIONS: StudioPartnerOrg[] = seed.organizations;
+const STUDIO_ORGANIZATIONS: StudioPartnerOrg[] = seed.organizations.map(
+  (org) => ({
+    ...org,
+    id: resolveOrganizationId(org.slug || org.id),
+  }),
+);
 const STUDIO_PROJECTS: StudioProjectEvidence[] = hydrateProjects(
   seed,
   STUDIO_ORGANIZATIONS,
@@ -163,12 +176,24 @@ export { STUDIO_ORGANIZATIONS, STUDIO_PROJECTS };
 export const studiosEvidenceData = {
   getAllProjects: () => STUDIO_PROJECTS,
   getFeaturedProjects: () => STUDIO_PROJECTS.filter((p) => p.featured),
-  getProjectBySlug: (slug: string) =>
-    STUDIO_PROJECTS.find((p) => p.slug === slug),
+  getProjectBySlug: (slug: string) => {
+    const canonical = resolveProjectId(slug);
+    return STUDIO_PROJECTS.find(
+      (p) => p.slug === canonical || p.id === canonical,
+    );
+  },
+  getProjectById: (id: string) => {
+    const canonical = resolveProjectId(id);
+    return STUDIO_PROJECTS.find(
+      (p) => p.id === canonical || p.slug === canonical,
+    );
+  },
   getProjectsByContentType: (contentType: StudioContentType) =>
     STUDIO_PROJECTS.filter((p) => p.contentType === contentType),
   getProjectsByOrgSlug: (orgSlug: string) =>
-    STUDIO_PROJECTS.filter((p) => p.organization.slug === orgSlug),
+    STUDIO_PROJECTS.filter(
+      (p) => p.organization.slug === resolveOrganizationId(orgSlug),
+    ),
   getProjectsBySector: (sector: StudioSectorType) =>
     STUDIO_PROJECTS.filter((p) => p.organization.sector === sector),
   getAllOrganizations: () => STUDIO_ORGANIZATIONS,
@@ -186,11 +211,14 @@ export const studiosEvidenceData = {
     return counts;
   },
   getRelatedProjects: (currentProjectId: string, limit = 3) => {
-    const current = STUDIO_PROJECTS.find((p) => p.id === currentProjectId);
+    const canonical = resolveProjectId(currentProjectId);
+    const current = STUDIO_PROJECTS.find(
+      (p) => p.id === canonical || p.slug === canonical,
+    );
     if (!current) return STUDIO_PROJECTS.slice(0, limit);
     return STUDIO_PROJECTS.filter(
       (p) =>
-        p.id !== currentProjectId &&
+        p.id !== current.id &&
         (p.contentType === current.contentType ||
           p.organization.slug === current.organization.slug),
     ).slice(0, limit);
