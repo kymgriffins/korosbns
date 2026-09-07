@@ -18,6 +18,7 @@ import {
   MaskedReveal,
   ParallaxWrapper,
   MetricCounter,
+  ForensicLightTable,
 } from "@/components/motion";
 
 export function WanahabariScrollytelling() {
@@ -252,101 +253,8 @@ export function WanahabariScrollytelling() {
             </p>
           </div>
 
-          <div className="space-y-8">
-            {/* Case 01 */}
-            <article className="rounded-3xl border border-border/70 bg-card p-6 sm:p-10 shadow-sm space-y-6">
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/40 pb-4 text-xs font-mono">
-                <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-1 rounded-sm bg-red-500/10 text-red-600 dark:text-red-400 font-bold border border-red-500/20">
-                    COUNTY FISCAL AUDIT
-                  </span>
-                  <span className="text-muted-foreground">REF: LEAK-2025-084</span>
-                </div>
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <FileText className="size-3.5" />
-                  <span>Source: County Executive Supplementary Budget II · FY2024/25</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                <div className="lg:col-span-8 space-y-3">
-                  <h3 className="font-heading text-2xl sm:text-3xl font-black text-foreground leading-snug">
-                    County Health Contingency Fund Diverted to Luxury Travel Vouchers
-                  </h3>
-                  <p className="text-base sm:text-lg text-foreground/80 leading-relaxed">
-                    Wanahabari fellows cross-referenced quarterly exchequer disbursements against dispensary requisition sheets, uncovering KSh 1.84 Billion originally budgeted for antibiotic restocking that was secretly reallocated into executive per diem allowances and holiday travel vouchers.
-                  </p>
-                </div>
-
-                <div className="lg:col-span-4 p-5 rounded-2xl bg-muted/40 border border-border/60 space-y-1">
-                  <span className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground font-bold">
-                    Audited Variance
-                  </span>
-                  <p className="font-heading text-3xl sm:text-4xl font-black text-red-500 tracking-tight">
-                    KSh 1.84B
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    Dispensary allocation redirected to executive allowances
-                  </p>
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-border/40 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
-                <div className="flex items-center gap-2 text-foreground font-medium">
-                  <Scale className="size-4 text-primary" />
-                  <span>Outcome: Published on Daily Nation Front Page; prompted Senate Public Accounts Committee subpoena.</span>
-                </div>
-                <span className="text-muted-foreground font-bold">Verified & Audited</span>
-              </div>
-            </article>
-
-            {/* Case 02 */}
-            <article className="rounded-3xl border border-border/70 bg-card p-6 sm:p-10 shadow-sm space-y-6">
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/40 pb-4 text-xs font-mono">
-                <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-1 rounded-sm bg-red-500/10 text-red-600 dark:text-red-400 font-bold border border-red-500/20">
-                    SOVEREIGN DEBT SCRUTINY
-                  </span>
-                  <span className="text-muted-foreground">REF: LEAK-2025-112</span>
-                </div>
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <FileText className="size-3.5" />
-                  <span>Source: National Treasury CFS Quarterly Expenditure Ledger</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                <div className="lg:col-span-8 space-y-3">
-                  <h3 className="font-heading text-2xl sm:text-3xl font-black text-foreground leading-snug">
-                    Unpublished Commercial Bank Rollover Penalties on Eurobond Debt
-                  </h3>
-                  <p className="text-base sm:text-lg text-foreground/80 leading-relaxed">
-                    Fellows cross-referenced Central Bank foreign debt servicing figures against Consolidated Fund Services releases to disclose KSh 1.20 Billion in undocumented penalty interest charges imposed by international syndicate lenders that were hidden from statutory reports.
-                  </p>
-                </div>
-
-                <div className="lg:col-span-4 p-5 rounded-2xl bg-muted/40 border border-border/60 space-y-1">
-                  <span className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground font-bold">
-                    Audited Variance
-                  </span>
-                  <p className="font-heading text-3xl sm:text-4xl font-black text-red-500 tracking-tight">
-                    KSh 1.20B
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    Undisclosed syndicate rollover penalties
-                  </p>
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-border/40 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
-                <div className="flex items-center gap-2 text-foreground font-medium">
-                  <Scale className="size-4 text-primary" />
-                  <span>Outcome: Tabled during National Assembly Finance Committee hearings; mandated public Treasury disclosure.</span>
-                </div>
-                <span className="text-muted-foreground font-bold">Verified & Audited</span>
-              </div>
-            </article>
-          </div>
+          {/* Interactive Forensic Newsroom Light-Table */}
+          <ForensicLightTable />
         </div>
       </section>
 

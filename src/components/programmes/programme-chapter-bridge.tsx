@@ -1,0 +1,162 @@
+﻿"use client";
+
+import Link from "next/link";
+import Image from "next/image";
+import { ArrowRight, Sparkles, Layers, ArrowUpRight } from "lucide-react";
+import {
+  PROGRAMMES,
+  programmeHref,
+  type ProgrammeSlug,
+} from "@/content";
+import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
+
+interface NextChapterMeta {
+  nextSlug: ProgrammeSlug;
+  chapterNumber: string;
+  leadEyebrow: string;
+  hookHeadline: string;
+  narrativeBridge: string;
+  tagline: string;
+}
+
+const CHAPTER_FLOW: Record<ProgrammeSlug, NextChapterMeta> = {
+  connect: {
+    nextSlug: "mashinani",
+    chapterNumber: "CHAPTER 02",
+    leadEyebrow: "Devolving to the 47 Counties",
+    hookHeadline: "Taking budget tracking from Nairobi boardrooms to the village baraza.",
+    narrativeBridge: "Scrutinizing national debt schedules in Nairobi is only half the battle. Discover how our embedded field fellows empower rural ward residents in Kilifi, Nakuru, and Wajir to cross-check county gazette lines against physical water pumps and maternity wings.",
+    tagline: "47 Counties · Tree-Shade Barazas · Waterproof Scorecards",
+  },
+  mashinani: {
+    nextSlug: "wanahabari-lab",
+    chapterNumber: "CHAPTER 03",
+    leadEyebrow: "The Forensic Newsroom Desk",
+    hookHeadline: "Training reporters to follow the public shilling for the other 364 days.",
+    narrativeBridge: "When local communities uncover tender irregularities, they need fearless journalism to hold county executives accountable. Discover how Wanahabari Lab equips newsrooms with forensic accounting and encrypted leak channels.",
+    tagline: "120+ Journalist Fellows · Leaks Desk · EACC Recovery Inquiries",
+  },
+  "wanahabari-lab": {
+    nextSlug: "studios",
+    chapterNumber: "CHAPTER 04",
+    leadEyebrow: "The Sovereign Revenue Engine",
+    hookHeadline: "Commercial craft bankrolling grassroots citizen audits.",
+    narrativeBridge: "Watchdog organizations collapse when 12-month foreign grants pivot. Discover how BNS Studios sells broadcast-grade 4K films, 2D animations, and town hall broadcasts to fund citizen scorecards with zero aid dependency.",
+    tagline: "100% Commercial Surplus Reinvested · 21:9 Anamorphic Cinema · Broadcast Audio",
+  },
+  studios: {
+    nextSlug: "connect",
+    chapterNumber: "CHAPTER 01",
+    leadEyebrow: "The Digital Mobilization Hub",
+    hookHeadline: "Translating 400-page accounting sheets into 60-second mobile power.",
+    narrativeBridge: "Return to the digital engine: see how commercial revenue powers viral video explainers, TikTok carousels, and formal legislative submissions reaching 1.4 million first-time voters.",
+    tagline: "Macro Treasury Ledger · Sheng Explainers · 70% Youth Scrutiny",
+  },
+};
+
+export function ProgrammeChapterBridge({
+  currentSlug,
+}: {
+  currentSlug: ProgrammeSlug;
+}) {
+  const chapter = CHAPTER_FLOW[currentSlug];
+  const nextProgramme = PROGRAMMES.find((p) => p.slug === chapter.nextSlug);
+
+  if (!nextProgramme) return null;
+
+  return (
+    <section className="relative overflow-hidden border-t border-border/50 bg-gradient-to-b from-background via-muted/20 to-background py-16 sm:py-24">
+      <div className={SECTION_SHELL_INNER}>
+        {/* Desk Quick-Switch Navigation Strip (No generic boxes) */}
+        <div className="flex flex-wrap items-center justify-between gap-4 pb-8 border-b border-border/40 font-mono text-xs">
+          <div className="flex items-center gap-2">
+            <Layers className="size-3.5 text-primary" />
+            <span className="font-bold text-foreground uppercase tracking-widest">
+              The 4 Operational Desks
+            </span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            {PROGRAMMES.map((p, idx) => {
+              const isActive = p.slug === currentSlug;
+              return (
+                <Link
+                  key={p.slug}
+                  href={programmeHref(p.slug)}
+                  className={`rounded-full px-3.5 py-1.5 transition-all flex items-center gap-1.5 ${
+                    isActive
+                      ? "bg-primary text-white font-bold shadow-xs"
+                      : "bg-muted/70 text-muted-foreground hover:text-foreground hover:bg-muted"
+                  }`}
+                >
+                  <span className="text-[10px] opacity-70">0{idx + 1}</span>
+                  <span>{p.name.replace("BNS ", "")}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Next Chapter Narrative Portal */}
+        <div className="mt-12 rounded-3xl border border-border/70 bg-card overflow-hidden shadow-2xl">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-0 items-stretch">
+            {/* Left Narrative Column */}
+            <div className="lg:col-span-7 p-8 sm:p-12 lg:p-14 flex flex-col justify-between space-y-6">
+              <div className="space-y-4">
+                <div className="flex items-center gap-2.5 font-mono text-xs">
+                  <span className="px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-bold">
+                    {chapter.chapterNumber}
+                  </span>
+                  <span className="text-muted-foreground">NEXT OPERATIONAL DESK</span>
+                  <span className="text-foreground/40">·</span>
+                  <span className="text-muted-foreground">{chapter.leadEyebrow}</span>
+                </div>
+
+                <h2 className="font-heading text-2xl sm:text-4xl font-black text-foreground leading-[1.08] tracking-tight">
+                  {chapter.hookHeadline}
+                </h2>
+
+                <p className="text-sm sm:text-base text-foreground/80 leading-relaxed max-w-2xl font-medium">
+                  {chapter.narrativeBridge}
+                </p>
+              </div>
+
+              <div className="pt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+                <Link
+                  href={programmeHref(nextProgramme.slug)}
+                  className="inline-flex items-center justify-center gap-2.5 rounded-full bg-primary px-7 py-3.5 text-sm font-bold text-white shadow-lg hover:bg-primary/90 transition-all group"
+                >
+                  <span>Enter {nextProgramme.name}</span>
+                  <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+                </Link>
+                <span className="text-xs font-mono text-muted-foreground">
+                  {chapter.tagline}
+                </span>
+              </div>
+            </div>
+
+            {/* Right Visual Teaser Column */}
+            <div className="lg:col-span-5 relative min-h-[280px] lg:min-h-auto bg-muted">
+              <Image
+                src={nextProgramme.visual.hero}
+                alt={nextProgramme.visual.heroAlt}
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 40vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent lg:bg-gradient-to-r lg:from-card lg:via-transparent lg:to-transparent" />
+              <div className="absolute bottom-6 left-6 right-6 text-white space-y-1">
+                <p className="font-mono text-[10px] uppercase font-bold text-primary">
+                  Previewing Next Dossier
+                </p>
+                <p className="text-sm font-bold leading-snug">
+                  {nextProgramme.headline}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

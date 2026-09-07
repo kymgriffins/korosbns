@@ -18,6 +18,7 @@ import {
   MaskedReveal,
   ParallaxWrapper,
   MetricCounter,
+  TransformationStage,
 } from "@/components/motion";
 
 export function ConnectScrollytelling() {
@@ -172,6 +173,9 @@ export function ConnectScrollytelling() {
               </ParallaxWrapper>
             </div>
           </div>
+
+          {/* Interactive Transformation Stage */}
+          <TransformationStage />
         </div>
       </section>
 

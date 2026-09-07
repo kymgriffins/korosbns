@@ -21,6 +21,7 @@ import {
   MetricCounter,
   NarrativeScrollytellingCanvas,
   type NarrativeBeat,
+  CinemaTimelineStage,
 } from "@/components/motion";
 
 const STUDIOS_BEATS: NarrativeBeat[] = [
@@ -186,10 +187,13 @@ export function StudiosScrollytelling() {
         </div>
       </header>
 
-      {/* 02 — THE NARRATIVE SCROLLYTELLING CANVAS */}
-      <section className="border-b border-border/40">
+      {/* 02 — THE NARRATIVE SCROLLYTELLING CANVAS & CINEMA TIMELINE */}
+      <section className="border-b border-border/40 pb-16">
         <div className={SECTION_SHELL_INNER}>
           <NarrativeScrollytellingCanvas beats={STUDIOS_BEATS} mediaPosition="right" />
+
+          {/* Interactive Cinema Timeline & 8-Format Production Spectrum */}
+          <CinemaTimelineStage />
         </div>
       </section>
 

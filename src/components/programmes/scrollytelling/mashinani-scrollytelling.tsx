@@ -23,6 +23,7 @@ import {
   MaskedReveal,
   ParallaxWrapper,
   MetricCounter,
+  FieldNotebookSpread,
 } from "@/components/motion";
 
 export function MashinaniScrollytelling() {
@@ -193,49 +194,8 @@ export function MashinaniScrollytelling() {
                 </p>
               </div>
 
-              {/* Staggered Takeaway Cards */}
-              <div className="space-y-4 pt-4">
-                {[
-                  {
-                    icon: FileSpreadsheet,
-                    num: "01",
-                    title: "The Ward Project Signboard Checklist",
-                    desc: "By law, every public project must display a signboard stating the contractor name, allocated amount, and completion timeline. Our monitors photograph every missing or abandoned signboard.",
-                  },
-                  {
-                    icon: Radio,
-                    num: "02",
-                    title: "Vernacular Radio Syndication",
-                    desc: "15-minute weekly civic audio dispatches breaking down county exchequer releases, aired across 12 community radio stations in Dholuo, Kikuyu, Giriama, Somali, and Luhya.",
-                  },
-                  {
-                    icon: Building,
-                    num: "03",
-                    title: "Town Hall Baraza Facilitation Runbooks",
-                    desc: "Step-by-step participatory agendas enabling grassroots residents to question County Executive Committee Members without political intimidation.",
-                  },
-                ].map((item, idx) => (
-                  <motion.div
-                    key={item.num}
-                    initial={{ opacity: 0, y: 24 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-10% 0px" }}
-                    transition={{ duration: 0.6, delay: idx * 0.12 }}
-                    className="p-6 rounded-2xl border border-border/60 bg-card shadow-xs space-y-2 hover:border-amber-500/40 transition-colors"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2.5 text-sm font-bold text-foreground">
-                        <item.icon className="size-4 text-amber-600 dark:text-amber-400" />
-                        <span>{item.title}</span>
-                      </div>
-                      <span className="font-mono text-xs font-bold text-amber-600/70">{item.num}</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed pl-6">
-                      {item.desc}
-                    </p>
-                  </motion.div>
-                ))}
-              </div>
+              {/* Interactive Tactical Field Journal & Coordinate Dossier */}
+              <FieldNotebookSpread />
             </div>
           </div>
         </div>
