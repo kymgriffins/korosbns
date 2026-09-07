@@ -43,7 +43,7 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   return (
-    <div className="w-full min-h-dvh bg-background overflow-x-hidden">
+    <div className="w-full min-h-dvh bg-background overflow-x-clip">
       <Background />
       <PremiumLandingClient />
     </div>

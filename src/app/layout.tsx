@@ -179,7 +179,7 @@ export default function RootLayout({
       </head>
       <body
         className={cn(
-          "min-h-dvh bg-background text-foreground font-base antialiased overflow-x-hidden",
+          "min-h-dvh bg-background text-foreground font-base antialiased overflow-x-clip",
           base.variable,
           heading.variable,
         )}
