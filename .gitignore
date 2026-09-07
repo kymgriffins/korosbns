@@ -52,6 +52,12 @@ next-env.d.ts
 # turbo
 .turbo/
 
+# lighthouse profiles & reports
+.lh-profile/
+.lh-chrome-profile/
+reports/lighthouse/*.json
+!reports/lighthouse/summary.json
+
 # npm/yarn lockfiles (pnpm workspace)
 package-lock.json
 yarn.lock

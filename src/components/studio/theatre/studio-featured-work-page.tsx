@@ -11,6 +11,9 @@ import { GsapReveal, GsapStaggerReveal } from "@/motion/gsap";
 import { cn } from "@/utils";
 
 function projectHref(slug: string) {
+  if (slug === "project-terra" || slug === "terra") {
+    return "/bns-project/terra";
+  }
   return `/bns-studio/${slug}`;
 }
 
@@ -41,6 +44,7 @@ function getProgrammeName(slug: string): string {
 export function StudioFeaturedWorkPage() {
   const projects = studiosEvidenceData.getAllProjects();
   const searchRef = useRef<HTMLInputElement>(null);
+  const searchContainerRef = useRef<HTMLElement>(null);
   const [query, setQuery] = useState("");
   const [programme, setProgramme] = useState("");
   const [format, setFormat] = useState("");
@@ -123,7 +127,7 @@ export function StudioFeaturedWorkPage() {
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors selection:bg-primary/20">
       {/* 01 — Sovereign Hero Header */}
-      <section className="border-b border-border/40 bg-linear-to-b from-primary/5 via-muted/20 to-background pt-24 pb-12 sm:pt-28 sm:pb-16">
+      <section className="border-b border-border/40 bg-linear-to-b from-primary/5 via-muted/20 to-background pt-16 pb-6 sm:pt-24 sm:pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           <GsapReveal className="space-y-4">
             <div>
@@ -178,9 +182,9 @@ export function StudioFeaturedWorkPage() {
       </section>
 
       {/* 03 — Minimalist Search & Filter Strip */}
-      <section className="sticky top-14 md:top-16 z-30 border-b border-border/40 bg-background/90 backdrop-blur-md py-4">
+      <section ref={searchContainerRef} className="sticky top-14 md:top-16 z-30 border-b border-border/40 bg-background/90 backdrop-blur-md py-3 sm:py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-3">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
             {/* Minimal Inline Search Input */}
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
@@ -188,6 +192,11 @@ export function StudioFeaturedWorkPage() {
                 ref={searchRef}
                 type="text"
                 value={query}
+                onFocus={() => {
+                  if (typeof window !== "undefined" && window.innerWidth < 768) {
+                    searchContainerRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                  }
+                }}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search by topic, partner, keyword... (Press '/' to focus)"
                 className="w-full rounded-full border border-border/60 bg-muted/30 pl-9 pr-9 py-2 text-xs font-medium text-foreground placeholder:text-muted-foreground focus:border-primary focus:bg-background focus:outline-none focus:ring-1 focus:ring-primary transition-all"
@@ -204,13 +213,48 @@ export function StudioFeaturedWorkPage() {
               ) : null}
             </div>
 
-            {/* Minimalist Dropdowns */}
-            <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
+            {/* Touch-Friendly Year Pills & Filter Dropdowns */}
+            <div className="flex flex-wrap items-center gap-2">
+              {/* Year Pills for instant touch selection without OS modal picker */}
+              <div className="inline-flex items-center rounded-full bg-muted/40 p-1 border border-border/60 text-xs shrink-0 overflow-x-auto">
+                <button
+                  type="button"
+                  onClick={() => setYear("")}
+                  className={cn(
+                    "rounded-full px-3 py-1 font-semibold text-xs transition-all",
+                    !year
+                      ? "bg-foreground text-background shadow-xs"
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  All Years
+                </button>
+                {years.map((y) => {
+                  const isSelected = year === y;
+                  return (
+                    <button
+                      key={y}
+                      type="button"
+                      onClick={() => setYear(isSelected ? "" : y)}
+                      className={cn(
+                        "rounded-full px-2.5 py-1 font-semibold text-xs transition-all",
+                        isSelected
+                          ? "bg-foreground text-background shadow-xs"
+                          : "text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      {y}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Minimalist Dropdowns */}
               <select
                 value={format}
                 onChange={(e) => setFormat(e.target.value)}
                 aria-label="Filter by content format"
-                className="rounded-full border border-border/60 bg-card px-3.5 py-1.5 text-xs font-medium text-foreground focus:border-primary focus:outline-none transition-colors"
+                className="rounded-full border border-border/60 bg-card px-3.5 py-1.5 text-xs font-medium text-foreground focus:border-primary focus:outline-none transition-colors shrink-0"
               >
                 <option value="">All Formats</option>
                 {STUDIO_CONTENT_TYPES.map((type) => (
@@ -224,26 +268,12 @@ export function StudioFeaturedWorkPage() {
                 value={client}
                 onChange={(e) => setClient(e.target.value)}
                 aria-label="Filter by partner organization"
-                className="rounded-full border border-border/60 bg-card px-3.5 py-1.5 text-xs font-medium text-foreground focus:border-primary focus:outline-none transition-colors"
+                className="rounded-full border border-border/60 bg-card px-3.5 py-1.5 text-xs font-medium text-foreground focus:border-primary focus:outline-none transition-colors shrink-0"
               >
                 <option value="">All Partners</option>
                 {clients.map((c) => (
                   <option key={c} value={c}>
                     {c}
-                  </option>
-                ))}
-              </select>
-
-              <select
-                value={year}
-                onChange={(e) => setYear(e.target.value)}
-                aria-label="Filter by production year"
-                className="rounded-full border border-border/60 bg-card px-3.5 py-1.5 text-xs font-medium text-foreground focus:border-primary focus:outline-none transition-colors"
-              >
-                <option value="">All Years</option>
-                {years.map((y) => (
-                  <option key={y} value={y}>
-                    {y}
                   </option>
                 ))}
               </select>

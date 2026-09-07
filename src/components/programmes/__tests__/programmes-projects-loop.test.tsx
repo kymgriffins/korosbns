@@ -38,4 +38,37 @@ describe("ProgrammesProjectsLoop", () => {
     expect(nakuruLink).toBeDefined();
     expect(nakuruLink?.getAttribute("href")).toBe("/bns-studio/nakuru-citizen-baraza");
   });
+
+  it("filters productions when typing in the search input and routes Project TERRA to /bns-project/terra", () => {
+    render(<ProgrammesProjectsLoop />);
+
+    const searchInput = screen.getByPlaceholderText(/Search projects/i);
+    expect(searchInput).toBeInTheDocument();
+
+    // Type 'Terra'
+    fireEvent.change(searchInput, { target: { value: "Terra" } });
+
+    // Should find Project TERRA
+    expect(screen.getByText(/Project TERRA/i)).toBeInTheDocument();
+
+    // Verify it links directly to /bns-project/terra
+    const terraLink = screen.getAllByRole("link").find((link) =>
+      link.getAttribute("href") === "/bns-project/terra"
+    );
+    expect(terraLink).toBeDefined();
+  });
+
+  it("shows empty state when no productions match search query", () => {
+    render(<ProgrammesProjectsLoop />);
+
+    const searchInput = screen.getByPlaceholderText(/Search projects/i);
+    fireEvent.change(searchInput, { target: { value: "xyznonexistent999" } });
+
+    expect(screen.getByText(/No productions found matching/i)).toBeInTheDocument();
+    expect(screen.getByText(/Clear Search Query/i)).toBeInTheDocument();
+
+    // Reset search
+    fireEvent.click(screen.getByText(/Clear Search Query/i));
+    expect(screen.getAllByText(/Budget Sasa ni Delivery/i).length).toBeGreaterThanOrEqual(1);
+  });
 });

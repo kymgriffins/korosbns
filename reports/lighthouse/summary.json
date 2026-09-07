@@ -1,0 +1,191 @@
+[
+  {
+    "route": "/",
+    "name": "Homepage",
+    "performance": 36,
+    "accessibility": 93,
+    "bestPractices": 92,
+    "seo": 100,
+    "status": "SUCCESS"
+  },
+  {
+    "route": "/bns-project",
+    "name": "Projects Index",
+    "performance": 41,
+    "accessibility": 96,
+    "bestPractices": 92,
+    "seo": 100,
+    "status": "SUCCESS"
+  },
+  {
+    "route": "/bns-project/terra",
+    "name": "Project Terra Case Study",
+    "performance": 41,
+    "accessibility": 95,
+    "bestPractices": 92,
+    "seo": 100,
+    "status": "SUCCESS"
+  },
+  {
+    "route": "/work",
+    "name": "Evidence & Production Archive",
+    "performance": 39,
+    "accessibility": 96,
+    "bestPractices": 92,
+    "seo": 100,
+    "status": "SUCCESS"
+  },
+  {
+    "route": "/bns-studio",
+    "name": "BNS Studios Overview",
+    "performance": 41,
+    "accessibility": 93,
+    "bestPractices": 92,
+    "seo": 100,
+    "status": "SUCCESS"
+  },
+  {
+    "route": "/programmes",
+    "name": "Operational Programmes",
+    "performance": 34,
+    "accessibility": 96,
+    "bestPractices": 92,
+    "seo": 100,
+    "status": "SUCCESS"
+  },
+  {
+    "route": "/programmes/connect",
+    "name": "BNS Connect Programme",
+    "performance": 40,
+    "accessibility": 96,
+    "bestPractices": 92,
+    "seo": 100,
+    "status": "SUCCESS"
+  },
+  {
+    "route": "/programmes/mashinani",
+    "name": "BNS Mashinani Programme",
+    "performance": 41,
+    "accessibility": 96,
+    "bestPractices": 92,
+    "seo": 100,
+    "status": "SUCCESS"
+  },
+  {
+    "route": "/programmes/wanahabari-lab",
+    "name": "Wanahabari Lab Programme",
+    "performance": 40,
+    "accessibility": 96,
+    "bestPractices": 92,
+    "seo": 100,
+    "status": "SUCCESS"
+  },
+  {
+    "route": "/programmes/studios",
+    "name": "BNS Studios Programme",
+    "performance": 39,
+    "accessibility": 95,
+    "bestPractices": 92,
+    "seo": 100,
+    "status": "SUCCESS"
+  },
+  {
+    "route": "/about",
+    "name": "About BNS",
+    "performance": 39,
+    "accessibility": 95,
+    "bestPractices": 92,
+    "seo": 100,
+    "status": "SUCCESS"
+  },
+  {
+    "route": "/reports",
+    "name": "Reports Bulletin",
+    "performance": 41,
+    "accessibility": 90,
+    "bestPractices": 92,
+    "seo": 100,
+    "status": "SUCCESS"
+  },
+  {
+    "route": "/budgetnews",
+    "name": "Budget News Portal",
+    "performance": 44,
+    "accessibility": 100,
+    "bestPractices": 92,
+    "seo": 100,
+    "status": "SUCCESS"
+  },
+  {
+    "route": "/learn",
+    "name": "Learn Hub",
+    "performance": 39,
+    "accessibility": 94,
+    "bestPractices": 92,
+    "seo": 100,
+    "status": "SUCCESS"
+  },
+  {
+    "route": "/events",
+    "name": "Events & Townhalls",
+    "performance": 42,
+    "accessibility": 94,
+    "bestPractices": 92,
+    "seo": 100,
+    "status": "SUCCESS"
+  },
+  {
+    "route": "/contact",
+    "name": "Contact & Inquiries",
+    "performance": 44,
+    "accessibility": 92,
+    "bestPractices": 92,
+    "seo": 100,
+    "status": "SUCCESS"
+  },
+  {
+    "route": "/faq",
+    "name": "Frequently Asked Questions",
+    "performance": 43,
+    "accessibility": 95,
+    "bestPractices": 92,
+    "seo": 100,
+    "status": "SUCCESS"
+  },
+  {
+    "route": "/privacy",
+    "name": "Privacy Policy",
+    "performance": 43,
+    "accessibility": 95,
+    "bestPractices": 92,
+    "seo": 100,
+    "status": "SUCCESS"
+  },
+  {
+    "route": "/terms",
+    "name": "Terms of Service",
+    "performance": 51,
+    "accessibility": 96,
+    "bestPractices": 92,
+    "seo": 100,
+    "status": "SUCCESS"
+  },
+  {
+    "route": "/security",
+    "name": "Security Standards",
+    "performance": 49,
+    "accessibility": 100,
+    "bestPractices": 92,
+    "seo": 100,
+    "status": "SUCCESS"
+  },
+  {
+    "route": "/analytics",
+    "name": "Civic Analytics",
+    "performance": 39,
+    "accessibility": 96,
+    "bestPractices": 92,
+    "seo": 100,
+    "status": "SUCCESS"
+  }
+]
