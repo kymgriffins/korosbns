@@ -214,7 +214,7 @@ describe("Updated PRD Compliance Test Suite", () => {
       expect(mashinani?.body).toContain("Kilifi");
       expect(mashinani?.body).toContain("Nakuru");
       expect(mashinani?.body).toContain("Wajir");
-      expect(mashinani?.highlight).toContain("4 counties");
+      expect(mashinani?.highlight).toContain("Four counties");
     });
   });
 
