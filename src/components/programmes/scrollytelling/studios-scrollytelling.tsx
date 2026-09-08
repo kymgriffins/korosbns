@@ -16,11 +16,10 @@ import {
   NarrativeScrollytellingCanvas,
   type NarrativeBeat,
   CinemaTimelineStage,
-  ScrollGallery,
-  type GalleryItem,
   TextRevealOnScroll,
 } from "@/components/motion";
 import { ProgrammeProjectGrid } from "@/components/programmes/programme-project-grid";
+import { ProgrammeChapterBridge } from "@/components/programmes/programme-chapter-bridge";
 
 const STUDIOS_BEATS: NarrativeBeat[] = [
   {
@@ -86,81 +85,6 @@ const STUDIOS_BEATS: NarrativeBeat[] = [
     imageAlt: "Multi-camera hall production at a stakeholder forum",
     imageCaption: "Multi-camera setup for a national stakeholder fiscal forum.",
     imageBadge: "TOWN HALL & BROADCAST",
-  },
-];
-
-const STUDIOS_GALLERY_ITEMS: GalleryItem[] = [
-  {
-    id: "audio-engineering",
-    title: "Acoustic Audio Engineering",
-    subtitle: "Dolby broadcast mastering & sound design",
-    src: "/images/studio/studio_audio_mic.jpg",
-    category: "Audio",
-    badge: "PODCAST DESK",
-  },
-  {
-    id: "field-investigative",
-    title: "Frontline Audio Scrutiny",
-    subtitle: "Investigative recordings & vox pops",
-    src: "/images/marketing newsletter subcribe/Nelly with The Mic.jpg",
-    category: "Field Audio",
-    badge: "VOX POP & PODCASTS",
-  },
-  {
-    id: "script-writers-room",
-    title: "Narrative & Writers Room",
-    subtitle: "Translating 400-page fiscal debt amortizations",
-    src: "/images/studio/studio_convening_pencils.png",
-    category: "Scripting",
-    badge: "WRITERS ROOM",
-  },
-  {
-    id: "motion-visuals",
-    title: "2D & Cel Motion Graphics",
-    subtitle: "Bite-sized data reels with 82% completion rates",
-    src: "/images/studio/studio_motion_vfx.jpg",
-    category: "Animation",
-    badge: "MOTION GRAPHICS",
-  },
-  {
-    id: "flagship-cinema",
-    title: "4K Anamorphic Cinema Unit",
-    subtitle: "Investigative documentaries shot in 21:9",
-    src: "/images/studio/studio_cinema_cam.jpg",
-    category: "Cinema Master",
-    badge: "FLAGSHIP MASTER",
-  },
-  {
-    id: "hall-broadcast",
-    title: "Multi-Camera Town Hall",
-    subtitle: "Broadcast-grade live event staging",
-    src: "/images/hall/129A4248.jpg",
-    category: "Live Broadcast",
-    badge: "NATIONAL BROADCAST",
-  },
-  {
-    id: "production-unit-a",
-    title: "On-Set Lighting & Direction",
-    subtitle: "Behind-the-scenes grassroots documentary coverage",
-    src: BNS_MEDIA_IMAGES.productionA,
-    category: "Set Direction",
-    badge: "FIELD UNIT",
-  },
-  {
-    id: "production-unit-b",
-    title: "Studio Interview Portfolios",
-    subtitle: "High-contrast leadership & policy dialogues",
-    src: BNS_MEDIA_IMAGES.productionB,
-    category: "Interviews",
-    badge: "EXECUTIVE INTERVIEWS",
-  },
-  {
-    id: "county-screenings",
-    title: "County Baraza Media Feeds",
-    subtitle: "Screening fiscal audits in rural grassroots forums",
-    src: "/images/towwnhallmay/129A3863.jpg",
-    category: "Public Screenings",
-    badge: "47 COUNTIES",
   },
 ];
 
@@ -268,22 +192,8 @@ export function StudiosScrollytelling() {
         </div>
       </section>
 
-      {/* 03 — 3X3 KINETIC EXPANDING PRODUCTION DESK GALLERY */}
-      <section className="border-b border-border/40 bg-zinc-950 text-white overflow-hidden py-12 md:py-16">
-        <div className={SECTION_SHELL_INNER}>
-          <ScrollGallery
-            items={STUDIOS_GALLERY_ITEMS}
-            pinDistance={260}
-            playThreshold={0.65}
-            eyebrow="PRODUCTION SUITE"
-            headline="Nine craft surfaces. One civic job."
-            subheadline="Scroll to expand the production suite — audio, cinema, motion, and live convenings that keep public-finance stories watchable."
-          />
-        </div>
-      </section>
-
-      {/* 04 — INTERACTIVE CINEMA TIMELINE & FORMAT SPECTRUM */}
-      <section className="border-b border-border/40 py-16">
+      {/* 03 — INTERACTIVE CINEMA TIMELINE & FORMAT SPECTRUM */}
+      <section className="border-b border-border/40 py-16 sm:py-24 md:py-32">
         <div className={SECTION_SHELL_INNER}>
           <CinemaTimelineStage />
         </div>
@@ -295,6 +205,9 @@ export function StudiosScrollytelling() {
         headline="Commissioned Storytelling, Documentaries & Broadcasts"
         description="Pan-African documentaries, podcast seasons, and broadcast event coverage supporting public-interest civic tracking."
       />
+
+      {/* Seamless flow to next chapter */}
+      <ProgrammeChapterBridge currentSlug="studios" />
 
       {/* 03 — COMMERCIAL INTAKE CALLOUT BAND */}
       <section className="py-16 md:py-24">

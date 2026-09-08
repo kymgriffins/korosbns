@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Quote } from "lucide-react";
+import { motion } from "motion/react";
 import { EditorialPill } from "@/components/ui/editorial/editorial-pill";
 import { EditorialCtaBand } from "@/components/ui/editorial/editorial-cta-band";
 import { BNS_COMMUNITY_IMAGES } from "@/constants/bns-media-images";
@@ -12,9 +13,9 @@ import {
   MaskedReveal,
   ParallaxWrapper,
   FieldNotebookSpread,
-  TextRevealOnScroll,
 } from "@/components/motion";
 import { ProgrammeProjectGrid } from "@/components/programmes/programme-project-grid";
+import { ProgrammeChapterBridge } from "@/components/programmes/programme-chapter-bridge";
 
 /**
  * Narrative arc: place essay — four counties as characters, embed → track → score.
@@ -99,30 +100,50 @@ export function MashinaniScrollytelling() {
         </div>
       </header>
 
-      <section className="py-10 sm:py-14 md:py-18 border-b border-border/30 bg-muted/5 relative overflow-hidden">
+      {/* 02 — THE OFFLINE-FIRST FIELD METHOD */}
+      <section className="py-16 sm:py-24 md:py-32 border-b border-border/30 bg-muted/5 relative overflow-hidden">
         <div className={SECTION_SHELL_INNER}>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-            <div className="lg:col-span-7 space-y-8">
-              <Quote className="size-16 text-amber-500/30" />
-              <blockquote className="font-heading text-3xl sm:text-5xl lg:text-6xl font-black text-foreground tracking-tight leading-[1.15]">
-                &ldquo;
-                <TextRevealOnScroll
-                  as="span"
-                  text="In the village, the budget is not a book. It is whether the dispensary has medicine and whether the borehole actually pumps."
-                />
-                &rdquo;
-              </blockquote>
-              <div className="pt-4 border-t border-border/40 space-y-1">
-                <p className="text-lg font-bold text-foreground">Field voice · Coastal hub</p>
-                <p className="font-mono text-xs text-amber-600 dark:text-amber-400 uppercase tracking-wider">
-                  Documented at a citizen hearing
-                </p>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center mb-16 sm:mb-20">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              className="lg:col-span-7 space-y-6"
+            >
+              <div className="flex flex-wrap items-center gap-2">
+                <EditorialPill dot pulse>
+                  Method · Offline-First Grassroots Scrutiny
+                </EditorialPill>
               </div>
-            </div>
 
-            <div className="lg:col-span-5">
-              <ParallaxWrapper speed={-0.35}>
-                <div className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-border/60 shadow-2xl bg-muted group">
+              <h2 className="font-heading text-3xl sm:text-5xl font-black text-foreground tracking-tight leading-tight">
+                A dashboard is useless when the power is out.
+              </h2>
+
+              <blockquote className="border-l-2 border-amber-500 pl-6 py-2 my-4 space-y-2 bg-muted/30 rounded-r-2xl pr-6">
+                <p className="font-heading text-xl sm:text-2xl font-medium italic text-foreground leading-relaxed">
+                  &ldquo;In the village, the budget is not a book. It is whether the dispensary has medicine and whether the borehole actually pumps.&rdquo;
+                </p>
+                <footer className="text-xs font-mono font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
+                  — Citizen testimony · Coastal baraza hearing
+                </footer>
+              </blockquote>
+
+              <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
+                National platforms assume reliable broadband. Mashinani works offline-first across four focus counties: pairing contractor signboard inspections and waterproof ward scorecards with vernacular community radio briefings.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.6, delay: 0.15 }}
+              className="lg:col-span-5"
+            >
+              <ParallaxWrapper speed={-0.2}>
+                <div className="relative aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/5] overflow-hidden rounded-3xl border border-border/60 shadow-2xl bg-muted group">
                   <Image
                     src={BNS_COMMUNITY_IMAGES.forumD}
                     alt="Community member speaking at a county budget baraza"
@@ -142,39 +163,18 @@ export function MashinaniScrollytelling() {
                   </div>
                 </div>
               </ParallaxWrapper>
-            </div>
+            </motion.div>
           </div>
-        </div>
-      </section>
 
-      <section className="py-24 md:py-36 border-b border-border/30 relative">
-        <div className={SECTION_SHELL_INNER}>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-            <aside className="lg:col-span-4 lg:sticky lg:top-24 space-y-4">
-              <span className="font-mono text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest">
-                Method · Offline first
-              </span>
-              <h2 className="font-heading text-3xl sm:text-4xl font-black text-foreground leading-tight">
-                A dashboard is useless when the power is out.
-              </h2>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                Why Mashinani pairs document checks with laminated ward scorecards, signboard inspections, and vernacular radio — not only apps.
-              </p>
-            </aside>
-
-            <div className="lg:col-span-8 space-y-8">
-              <div className="prose prose-lg dark:prose-invert max-w-none text-base sm:text-lg leading-relaxed text-foreground/80 space-y-6">
-                <p className="first-letter:float-left first-letter:mr-3 first-letter:font-heading first-letter:text-6xl first-letter:font-black first-letter:text-amber-600 dark:first-letter:text-amber-400">
-                  National transparency platforms often assume fluent English literacy and reliable broadband. The communities most affected by delayed or diverted county projects frequently have neither.
-                </p>
-                <p>
-                  Mashinani works offline-first where it must: waterproof ward scorecards, contractor signboard checklists, and community radio briefings alongside digital trackers. The goal is the same in every county — match the gazette line to the physical site, then publish what can be verified.
-                </p>
-              </div>
-
-              <FieldNotebookSpread />
-            </div>
-          </div>
+          {/* Interactive Field Notebook (County Switcher) */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6 }}
+          >
+            <FieldNotebookSpread />
+          </motion.div>
         </div>
       </section>
 
@@ -185,6 +185,9 @@ export function MashinaniScrollytelling() {
         headline="Devolved Scorecards, Barazas & Field Documentaries"
         description="Evidence-backed field productions, community listening circles, and county budget scorecards from Kakamega, Kilifi, Nakuru, and Wajir."
       />
+
+      {/* Seamless flow to next chapter */}
+      <ProgrammeChapterBridge currentSlug="mashinani" />
 
       <section className="py-20 md:py-28">
         <div className={SECTION_SHELL_INNER}>

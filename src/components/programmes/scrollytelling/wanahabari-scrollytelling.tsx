@@ -1,25 +1,24 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import {
   ArrowLeft,
   FileText,
   Newspaper,
   Scale,
 } from "lucide-react";
+import { motion } from "motion/react";
 import { EditorialPill } from "@/components/ui/editorial/editorial-pill";
 import { PillButtonGroup } from "@/components/ui/editorial/pill-button-group";
-import { BNS_MEDIA_IMAGES } from "@/constants/bns-media-images";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 import {
   TelemetryHUD,
   MaskedReveal,
-  ParallaxWrapper,
   MetricCounter,
   ForensicLightTable,
 } from "@/components/motion";
 import { ProgrammeProjectGrid } from "@/components/programmes/programme-project-grid";
+import { ProgrammeChapterBridge } from "@/components/programmes/programme-chapter-bridge";
 
 /**
  * Narrative arc: newsroom masthead — Budget Day theatre → the other 364 days → craft.
@@ -107,137 +106,109 @@ export function WanahabariScrollytelling() {
         </div>
       </header>
 
-      <section className="py-10 sm:py-14 md:py-18 border-b border-border/30">
+      {/* 02 — THE LAB CURRICULUM: THREE PRACTICAL CRAFTS */}
+      <section className="py-16 sm:py-24 md:py-32 border-b border-border/30 bg-muted/5">
         <div className={SECTION_SHELL_INNER}>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-            <div className="lg:col-span-7 space-y-8">
-              <div className="space-y-2">
-                <span className="font-mono text-xs font-bold text-primary uppercase tracking-widest">
-                  Scene · The June spectacle
-                </span>
-                <h2 className="font-heading text-3xl sm:text-5xl font-black text-foreground leading-tight">
-                  Cameras follow the briefcase. Spending happens after the credits roll.
-                </h2>
-              </div>
-
-              <div className="prose prose-lg dark:prose-invert max-w-none text-base sm:text-lg leading-relaxed text-foreground/80 space-y-6">
-                <p className="first-letter:float-left first-letter:mr-3 first-letter:font-heading first-letter:text-6xl first-letter:font-black first-letter:text-primary">
-                  Every June, television anchors dress for Budget Day, newspapers print commemorative inserts, and camera crews trail the Cabinet Secretary into Parliament. For twenty-four hours the nation argues tax.
-                </p>
-                <p>
-                  By early July, coverage thins. Quarterly releases, late-night supplementary budgets, and pending-bill settlements move with far less scrutiny. Wanahabari Lab exists because newsrooms need a bench that can read those documents — and still write for the front page and the feed.
-                </p>
-              </div>
-
-              <blockquote className="border-l-2 border-primary pl-6 py-2 my-8 space-y-3 bg-muted/20 rounded-r-2xl pr-6">
-                <p className="font-heading text-xl font-medium italic text-foreground md:text-2xl leading-relaxed">
-                  &ldquo;The budget story does not end on Budget Day. That is when the spending begins. Journalists must stay in the room for the other three hundred and sixty-four.&rdquo;
-                </p>
-                <footer className="text-xs font-mono font-bold text-primary uppercase tracking-wider">
-                  — Wanahabari Lab alumni voice
-                </footer>
-              </blockquote>
-            </div>
-
-            <div className="lg:col-span-5 lg:sticky lg:top-24">
-              <ParallaxWrapper speed={-0.3}>
-                <div className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-border/60 shadow-2xl bg-muted group">
-                  <Image
-                    src={BNS_MEDIA_IMAGES.productionA}
-                    alt="Journalism fellow reviewing budget evidence on set"
-                    fill
-                    priority
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    sizes="(max-width: 1024px) 100vw, 40vw"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
-                  <div className="absolute bottom-6 left-6 right-6 text-white space-y-1">
-                    <span className="font-mono text-[10px] uppercase tracking-wider text-primary font-bold">
-                      Lab session
-                    </span>
-                    <p className="text-sm font-semibold leading-snug">
-                      Reporters and creators cross-referencing published Treasury and audit tables.
-                    </p>
-                  </div>
-                </div>
-              </ParallaxWrapper>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-24 md:py-36 border-b border-border/30 bg-muted/10">
-        <div className={SECTION_SHELL_INNER}>
-          <div className="max-w-3xl space-y-4 mb-16">
-            <span className="font-mono text-xs font-bold text-primary uppercase tracking-widest">
-              Curriculum · Three crafts
-            </span>
-            <h2 className="font-heading text-3xl sm:text-5xl font-black text-foreground">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="max-w-3xl space-y-4 mb-12 sm:mb-16"
+          >
+            <EditorialPill dot pulse>
+              Curriculum · Three Newsroom Crafts
+            </EditorialPill>
+            <h2 className="font-heading text-3xl sm:text-5xl font-black text-foreground tracking-tight leading-tight">
               What a one-day Lab actually teaches.
             </h2>
             <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-              No jargon dump. Three practical pillars journalists can take back to a newsroom the same week.
+              No academic jargon. Three practical pillars journalists and digital creators take back to newsrooms and social feeds the same week.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            <div className="space-y-4 border-t-2 border-primary pt-6">
-              <div className="flex items-center gap-2 font-mono text-xs font-bold text-primary">
+          {/* 3-Crafts Motion Strip */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 mb-20 sm:mb-28">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.05 }}
+              className="rounded-2xl border border-border/60 bg-card p-6 sm:p-8 space-y-3 shadow-xs hover:border-red-500/40 transition-colors"
+            >
+              <div className="flex items-center gap-2 font-mono text-xs font-bold text-red-500">
                 <FileText className="size-4" />
-                <span>Read the release</span>
+                <span>01 · Read the Release</span>
               </div>
-              <h3 className="font-heading text-2xl font-bold text-foreground">
+              <h3 className="font-heading text-xl font-bold text-foreground">
                 Parse public finance documents fast
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Fellows practise turning Controller of Budget and Treasury tables into searchable notes — without inventing figures when a cell is blank or a PDF is locked.
+                Fellows practise turning Controller of Budget and Treasury tables into searchable notes — without guessing figures when cells are blank or PDFs are locked.
               </p>
-            </div>
+            </motion.div>
 
-            <div className="space-y-4 border-t-2 border-primary pt-6">
-              <div className="flex items-center gap-2 font-mono text-xs font-bold text-primary">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.15 }}
+              className="rounded-2xl border border-border/60 bg-card p-6 sm:p-8 space-y-3 shadow-xs hover:border-red-500/40 transition-colors"
+            >
+              <div className="flex items-center gap-2 font-mono text-xs font-bold text-red-500">
                 <Scale className="size-4" />
-                <span>Follow the off-cycle money</span>
+                <span>02 · Off-Cycle Money</span>
               </div>
-              <h3 className="font-heading text-2xl font-bold text-foreground">
+              <h3 className="font-heading text-xl font-bold text-foreground">
                 Pending bills and contingent claims
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                How to report obligations that sit beside the headline budget — with source discipline and legal caution, not rumour.
+                How to report obligations that sit beside headline budgets — with source discipline, statutory cross-referencing, and legal caution, not rumour.
               </p>
-            </div>
+            </motion.div>
 
-            <div className="space-y-4 border-t-2 border-primary pt-6">
-              <div className="flex items-center gap-2 font-mono text-xs font-bold text-primary">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.25 }}
+              className="rounded-2xl border border-border/60 bg-card p-6 sm:p-8 space-y-3 shadow-xs hover:border-red-500/40 transition-colors"
+            >
+              <div className="flex items-center gap-2 font-mono text-xs font-bold text-red-500">
                 <Newspaper className="size-4" />
-                <span>Package for the desk</span>
+                <span>03 · Feed & Broadcast</span>
               </div>
-              <h3 className="font-heading text-2xl font-bold text-foreground">
+              <h3 className="font-heading text-xl font-bold text-foreground">
                 Front page, broadcast, and feed
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Turning forensic notes into headlines, packages, and bilingual social cuts that still cite the underlying document.
+                Turning forensic evidence into headlines, packages, and bilingual social cuts that never strip the underlying document provenance.
               </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-24 md:py-36 border-b border-border/30">
-        <div className={SECTION_SHELL_INNER}>
-          <div className="max-w-3xl space-y-4 mb-16">
-            <span className="font-mono text-xs font-bold text-red-500 uppercase tracking-widest">
-              Light-table · How scoops are built
-            </span>
-            <h2 className="font-heading text-3xl sm:text-5xl font-black text-foreground">
-              Method first. Headlines second.
-            </h2>
-            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-              Illustrative reporting workflows fellows practise in Lab — not claimed case outcomes with invented amounts.
-            </p>
+            </motion.div>
           </div>
 
-          <ForensicLightTable />
+          {/* 03 — FORENSIC LIGHT-TABLE */}
+          <div className="pt-12 border-t border-border/40">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.6 }}
+              className="max-w-3xl space-y-4 mb-12 sm:mb-16"
+            >
+              <span className="font-mono text-xs font-bold text-red-500 uppercase tracking-widest">
+                Light-table · How scoops are built
+              </span>
+              <h2 className="font-heading text-3xl sm:text-5xl font-black text-foreground">
+                Method first. Headlines second.
+              </h2>
+              <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
+                Illustrative reporting workflows fellows practise in Lab — not claimed case outcomes with invented amounts.
+              </p>
+            </motion.div>
+
+            <ForensicLightTable />
+          </div>
         </div>
       </section>
 
@@ -247,6 +218,9 @@ export function WanahabariScrollytelling() {
         headline="Investigative Research & Newsroom Toolkits"
         description="Forensic briefings, legal frameworks, and same-day budget reading kits co-produced with journalists and research partners."
       />
+
+      {/* Seamless flow to next chapter */}
+      <ProgrammeChapterBridge currentSlug="wanahabari-lab" />
 
       <footer className="border-t border-border/40 bg-muted/20 py-20 md:py-32">
         <div className={SECTION_SHELL_INNER}>

@@ -1,21 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowLeft } from "lucide-react";
+import { motion } from "motion/react";
 import { EditorialPill } from "@/components/ui/editorial/editorial-pill";
 import { PillButtonGroup } from "@/components/ui/editorial/pill-button-group";
-import { BNS_COMMUNITY_IMAGES } from "@/constants/bns-media-images";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 import {
   TelemetryHUD,
   MaskedReveal,
-  ParallaxWrapper,
   MetricCounter,
   TransformationStage,
-  TextRevealOnScroll,
 } from "@/components/motion";
 import { ProgrammeProjectGrid } from "@/components/programmes/programme-project-grid";
+import { ProgrammeChapterBridge } from "@/components/programmes/programme-chapter-bridge";
 
 /**
  * Narrative arc: feed brief — short cadence, PDF → phone → Parliament.
@@ -108,64 +106,26 @@ export function ConnectScrollytelling() {
         </div>
       </header>
 
-      <section className="py-10 sm:py-14 md:py-18 border-b border-border/30">
+      {/* 02 — TRANSFORMATION STAGE: THE BNS DISTILLATION */}
+      <section className="py-16 sm:py-24 md:py-32 border-b border-border/30">
         <div className={SECTION_SHELL_INNER}>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-            <div className="lg:col-span-7 space-y-8">
-              <div className="space-y-2">
-                <span className="font-mono text-xs font-bold text-primary uppercase tracking-widest">
-                  Opening · The download folder problem
-                </span>
-                <h2 className="font-heading text-3xl sm:text-5xl font-black text-foreground leading-tight">
-                  Secrecy no longer needs a locked vault. A four-hundred-page PDF will do.
-                </h2>
-              </div>
-
-              <div className="prose prose-lg dark:prose-invert max-w-none text-base sm:text-lg leading-relaxed text-foreground/80 space-y-6">
-                <p className="first-letter:float-left first-letter:mr-3 first-letter:font-heading first-letter:text-6xl first-letter:font-black first-letter:text-primary">
-                  Every June, Parliament debates a national budget that crosses into the trillions of shillings. The documents that explain where that money is meant to go — Budget Estimates, the Medium-Term Debt Strategy, the Finance Bill — arrive dense, technical, and easy to abandon after page twelve.
-                </p>
-                <p>
-                  A generation that lives on mobile feeds will not wait for a seminar to decode a PAYE deduction. Connect meets them where attention already is: short verified explainers, live trackers, and an annual Youth Budget Survey that keeps pressure on after the Budget Day headlines fade.
-                </p>
-              </div>
-
-              <blockquote className="border-l-2 border-primary pl-6 py-2 my-8 space-y-3 bg-muted/20 rounded-r-2xl pr-6">
-                <TextRevealOnScroll
-                  as="p"
-                  text="When you understand the debt repayment schedule, you stop looking at broken roads as bad luck and start asking which line item moved."
-                  className="font-heading text-xl font-medium italic text-foreground md:text-2xl leading-relaxed"
-                />
-                <footer className="text-xs font-mono font-bold text-primary uppercase tracking-wider">
-                  — Youth Tracker voice, Nairobi hub
-                </footer>
-              </blockquote>
-            </div>
-
-            <div className="lg:col-span-5 lg:sticky lg:top-24">
-              <ParallaxWrapper speed={-0.3}>
-                <div className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-border/60 shadow-2xl bg-muted group">
-                  <Image
-                    src={BNS_COMMUNITY_IMAGES.cohortA}
-                    alt="Kenyan youth tracker examining national budget lines on mobile"
-                    fill
-                    priority
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    sizes="(max-width: 1024px) 100vw, 40vw"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                  <div className="absolute bottom-6 left-6 right-6 text-white space-y-1">
-                    <span className="font-mono text-[10px] uppercase tracking-wider text-primary font-bold">
-                      Tracker assembly
-                    </span>
-                    <p className="text-sm font-semibold leading-snug">
-                      Fellows cross-checking published Treasury tables against ministry disbursement claims.
-                    </p>
-                  </div>
-                </div>
-              </ParallaxWrapper>
-            </div>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="max-w-3xl space-y-4 mb-12 sm:mb-16"
+          >
+            <EditorialPill dot pulse>
+              Methodology · PDF to Mobile Feed
+            </EditorialPill>
+            <h2 className="font-heading text-3xl sm:text-5xl font-black text-foreground tracking-tight leading-tight">
+              Secrecy doesn&apos;t need a locked vault. A 400-page PDF will do.
+            </h2>
+            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
+              We ingest raw exchequer tables within four hours of release, verify line items against Hansard, and deliver three actionable signals direct to your phone.
+            </p>
+          </motion.div>
 
           <TransformationStage />
         </div>
@@ -178,6 +138,9 @@ export function ConnectScrollytelling() {
         headline="National Budget Explainers & Series"
         description="Verified video explainers, animated breakdowns, and short-form fiscal series published by the BNS Connect desk."
       />
+
+      {/* Seamless flow to next chapter */}
+      <ProgrammeChapterBridge currentSlug="connect" />
 
       <footer className="border-t border-border/40 bg-muted/10 py-16 md:py-24">
         <div className={SECTION_SHELL_INNER}>
