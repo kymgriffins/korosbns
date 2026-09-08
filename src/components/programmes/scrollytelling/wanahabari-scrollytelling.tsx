@@ -19,6 +19,7 @@ import {
   MetricCounter,
   ForensicLightTable,
 } from "@/components/motion";
+import { ProgrammeProjectGrid } from "@/components/programmes/programme-project-grid";
 
 /**
  * Narrative arc: newsroom masthead — Budget Day theatre → the other 364 days → craft.
@@ -239,6 +240,13 @@ export function WanahabariScrollytelling() {
           <ForensicLightTable />
         </div>
       </section>
+
+      <ProgrammeProjectGrid
+        programmeSlug="wanahabari-lab"
+        eyebrow="Wanahabari Lab Outputs"
+        headline="Investigative Research & Newsroom Toolkits"
+        description="Forensic briefings, legal frameworks, and same-day budget reading kits co-produced with journalists and research partners."
+      />
 
       <footer className="border-t border-border/40 bg-muted/20 py-20 md:py-32">
         <div className={SECTION_SHELL_INNER}>

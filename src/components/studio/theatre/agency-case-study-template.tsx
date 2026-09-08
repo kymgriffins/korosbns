@@ -439,7 +439,7 @@ export function AgencyCaseStudyTemplate({ project }: { project: StudioProjectEvi
                     />
                   </div>
                   <p className="text-xs text-muted-foreground lg:text-right">
-                    100% of studio surplus directly subsidizes grassroots civic auditing.
+                    Operating studio surplus supports grassroots civic tracking across our focus counties.
                   </p>
                 </div>
               </div>

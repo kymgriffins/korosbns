@@ -192,8 +192,8 @@ export const MEGA_MENU_DATA: MegaMenuSection[] = [
     ctaLabel: "Commission the Studio",
     ctaHref: "/bns-studio/about#contact",
     featured: {
-      title: "The Double Impact Engine",
-      description: "100% of studio surplus directly subsidizes grassroots budget tracking in 47 counties.",
+      title: "The Double Impact Model",
+      description: "Operating studio surplus directly supports grassroots budget tracking across our focus counties.",
       badge: "Civic Model",
       href: "/bns-studio/about",
     },

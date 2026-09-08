@@ -2,16 +2,10 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import {
-  ArrowLeft,
-  Smartphone,
-  Share2,
-  TrendingUp,
-  FileCheck,
-} from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { EditorialPill } from "@/components/ui/editorial/editorial-pill";
 import { PillButtonGroup } from "@/components/ui/editorial/pill-button-group";
-import { BNS_COMMUNITY_IMAGES, BNS_MEDIA_IMAGES } from "@/constants/bns-media-images";
+import { BNS_COMMUNITY_IMAGES } from "@/constants/bns-media-images";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 import {
   TelemetryHUD,
@@ -21,6 +15,7 @@ import {
   TransformationStage,
   TextRevealOnScroll,
 } from "@/components/motion";
+import { ProgrammeProjectGrid } from "@/components/programmes/programme-project-grid";
 
 /**
  * Narrative arc: feed brief — short cadence, PDF → phone → Parliament.
@@ -176,122 +171,13 @@ export function ConnectScrollytelling() {
         </div>
       </section>
 
-      <section className="py-24 md:py-40 relative overflow-hidden bg-muted/10 border-b border-border/40">
-        <div className={SECTION_SHELL_INNER}>
-          <div className="mb-16 space-y-3 max-w-2xl">
-            <span className="font-mono text-xs font-bold text-primary uppercase tracking-widest">
-              Method · How Connect moves
-            </span>
-            <h2 className="font-heading text-3xl sm:text-5xl font-black text-foreground">
-              Mobile speed. Forensic sources. No vibes publishing.
-            </h2>
-            <p className="text-base text-muted-foreground leading-relaxed">
-              How Connect intercepts public Treasury releases and turns verified lines into civic reach.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-            <div className="lg:col-span-5 lg:sticky lg:top-24 flex justify-center">
-              <div className="relative aspect-[9/16] w-full max-w-[340px] overflow-hidden rounded-3xl border border-border/60 bg-muted shadow-2xl">
-                <Image
-                  src={BNS_MEDIA_IMAGES.productionB}
-                  alt="Youth presenter recording vertical budget explainer for social feeds"
-                  fill
-                  className="object-cover object-top"
-                  sizes="(max-width: 1024px) 100vw, 340px"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-black/30" />
-
-                <div className="absolute top-4 left-4 right-4 flex items-center justify-between">
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-600/90 text-white text-[10px] font-mono font-bold tracking-wider backdrop-blur-xs">
-                    <span className="size-1.5 rounded-full bg-white animate-ping" />
-                    LIVE FEED
-                  </div>
-                  <span className="font-mono text-[11px] text-white/90 font-bold drop-shadow">
-                    #BudgetNdioStory
-                  </span>
-                </div>
-
-                <div className="absolute bottom-5 left-4 right-4 text-white space-y-2.5">
-                  <div className="flex items-center gap-2">
-                    <Smartphone className="size-4 text-primary" />
-                    <span className="font-mono text-xs font-bold uppercase tracking-wider">Vertical explainer</span>
-                  </div>
-                  <p className="text-xs text-white/90 leading-tight font-medium">
-                    Bilingual breakdowns built for first-time voters and busy workers — sourced to published tables.
-                  </p>
-                  <div className="pt-2 border-t border-white/20 flex items-center justify-between text-[11px] font-mono text-white/80">
-                    <span>Connect distribution</span>
-                    <span className="text-primary font-bold">TikTok · Reels · X</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="lg:col-span-7 space-y-24">
-              <div className="space-y-4 pt-4 border-b border-border/40 pb-16">
-                <div className="inline-flex items-center gap-2 font-mono text-xs font-bold text-primary uppercase tracking-wider">
-                  <TrendingUp className="size-4" />
-                  <span>Reach · Shared scrutiny</span>
-                </div>
-
-                <div className="space-y-2">
-                  <p className="font-heading text-6xl sm:text-7xl font-black text-foreground tracking-tighter">
-                    Short-form first
-                  </p>
-                  <h3 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
-                    Explainers that survive the scroll
-                  </h3>
-                </div>
-
-                <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-                  During Finance Bill debates and budget readings, Connect packages contested clauses into short verified videos and threads. Reach matters only when the underlying figures still match the published source — we do not invent or scale numbers for drama.
-                </p>
-              </div>
-
-              <div className="space-y-4 border-b border-border/40 pb-16">
-                <div className="inline-flex items-center gap-2 font-mono text-xs font-bold text-primary uppercase tracking-wider">
-                  <Share2 className="size-4" />
-                  <span>Flagship · Budget Sasa Ni Delivery</span>
-                </div>
-
-                <div className="space-y-2">
-                  <p className="font-heading text-6xl sm:text-7xl font-black text-primary tracking-tighter">
-                    Provenance
-                  </p>
-                  <h3 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
-                    Every figure has a table behind it
-                  </h3>
-                </div>
-
-                <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-                  Our flagship national explainer anchors Treasury&rsquo;s delivery narrative to allocation lines you can check. Field segments sit beside motion graphics rebuilt from published tables — never silent synthetic county weights.
-                </p>
-              </div>
-
-              <div className="space-y-4">
-                <div className="inline-flex items-center gap-2 font-mono text-xs font-bold text-primary uppercase tracking-wider">
-                  <FileCheck className="size-4" />
-                  <span>Bridge · From feed to committee</span>
-                </div>
-
-                <div className="space-y-2">
-                  <p className="font-heading text-6xl sm:text-7xl font-black text-foreground tracking-tighter">
-                    Citizen briefs
-                  </p>
-                  <h3 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
-                    Digital mobilisation that still files paper
-                  </h3>
-                </div>
-
-                <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-                  Connect consolidates youth inputs into forensic citizen submissions for the Budget and Appropriations Committee and related hearings — so viral attention can still land as a document someone in Parliament has to answer.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Connect Desk Flagship Projects Grid (Grouped by Content Type) */}
+      <ProgrammeProjectGrid
+        programmeSlug="connect"
+        eyebrow="Connect Flagship Outputs"
+        headline="National Budget Explainers & Series"
+        description="Verified video explainers, animated breakdowns, and short-form fiscal series published by the BNS Connect desk."
+      />
 
       <footer className="border-t border-border/40 bg-muted/10 py-16 md:py-24">
         <div className={SECTION_SHELL_INNER}>

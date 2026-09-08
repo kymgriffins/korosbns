@@ -190,6 +190,8 @@ export const studiosEvidenceData = {
   },
   getProjectsByContentType: (contentType: StudioContentType) =>
     STUDIO_PROJECTS.filter((p) => p.contentType === contentType),
+  getProjectsByProgramme: (programmeSlug: ProgrammeSlug) =>
+    STUDIO_PROJECTS.filter((p) => p.programmeSlug === programmeSlug),
   getProjectsByOrgSlug: (orgSlug: string) =>
     STUDIO_PROJECTS.filter(
       (p) => p.organization.slug === resolveOrganizationId(orgSlug),

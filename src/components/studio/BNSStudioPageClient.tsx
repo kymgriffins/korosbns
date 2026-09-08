@@ -55,7 +55,7 @@ export function BNSStudioPageClient() {
                   Most civic tech initiatives depend entirely on unpredictable donor grants that expire after 12 months. BNS Studios was engineered to provide sovereign financial resilience: we operate as an elite creative agency for institutional clients, but with an uncompromising mission covenant.
                 </p>
                 <p>
-                  Every Kenyan shilling of operating surplus generated from commissioned films, podcast seasons, and public campaigns is channelled directly into funding free grassroots scorecards, youth tracker stipends, and newsroom investigative training across all 47 counties.
+                  A portion of operating surplus generated from commissioned films, podcast seasons, and public campaigns is channelled directly into funding free grassroots scorecards, youth tracker stipends, and newsroom investigative training across our focus counties.
                 </p>
               </div>
 
@@ -66,12 +66,12 @@ export function BNSStudioPageClient() {
                   <p className="font-mono text-xs text-muted-foreground mt-1">Production Formats</p>
                 </div>
                 <div>
-                  <p className="font-heading text-4xl sm:text-5xl font-black text-primary tracking-tighter">47</p>
-                  <p className="font-mono text-xs text-muted-foreground mt-1">Counties Subsidized</p>
+                  <p className="font-heading text-4xl sm:text-5xl font-black text-primary tracking-tighter">04</p>
+                  <p className="font-mono text-xs text-muted-foreground mt-1">Focus Counties</p>
                 </div>
                 <div>
-                  <p className="font-heading text-4xl sm:text-5xl font-black text-foreground tracking-tighter">100%</p>
-                  <p className="font-mono text-xs text-muted-foreground mt-1">Surplus Reinvested</p>
+                  <p className="font-heading text-4xl sm:text-5xl font-black text-foreground tracking-tighter">Dual</p>
+                  <p className="font-mono text-xs text-muted-foreground mt-1">Impact Model</p>
                 </div>
               </div>
 

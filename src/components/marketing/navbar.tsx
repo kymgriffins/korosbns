@@ -110,6 +110,34 @@ const Navbar = () => {
               </Link>
             </div>
 
+            {/* Center Desktop Navigation */}
+            <nav className="hidden lg:flex items-center gap-1 xl:gap-2 mr-4" aria-label="Desktop primary navigation">
+              <Link
+                href={Routes.Programmes}
+                className="px-3.5 py-1.5 rounded-lg text-sm font-medium text-foreground/80 hover:text-primary hover:bg-muted/50 transition-colors"
+              >
+                Programmes
+              </Link>
+              <Link
+                href={Routes.Learn}
+                className="px-3.5 py-1.5 rounded-lg text-sm font-medium text-foreground/80 hover:text-primary hover:bg-muted/50 transition-colors"
+              >
+                Learn
+              </Link>
+              <Link
+                href={Routes.Reports}
+                className="px-3.5 py-1.5 rounded-lg text-sm font-medium text-foreground/80 hover:text-primary hover:bg-muted/50 transition-colors"
+              >
+                Reports
+              </Link>
+              <Link
+                href={Routes.About}
+                className="px-3.5 py-1.5 rounded-lg text-sm font-medium text-foreground/80 hover:text-primary hover:bg-muted/50 transition-colors"
+              >
+                About
+              </Link>
+            </nav>
+
             {/* Right controls */}
             <div className="flex items-center gap-2 md:gap-3">
               <ThemeToggle />

@@ -121,14 +121,14 @@ export function ProgrammesLanding() {
                   </div>
 
                   <div className="space-y-1 pt-3 border-t border-border/30">
-                    <p className="text-2xl sm:text-3xl font-black text-foreground tracking-tighter">
-                      <MetricCounter value={100} suffix="%" />
+                    <p className="text-xl sm:text-2xl font-black text-foreground tracking-tight">
+                      Article 201
                     </p>
                     <p className="text-xs font-bold uppercase tracking-wider text-foreground">
-                      Surplus Covenant
+                      Constitutional Mandate
                     </p>
                     <p className="text-[11px] text-muted-foreground leading-tight">
-                      Reinvested in citizen audits
+                      Openness in public finance
                     </p>
                   </div>
                 </div>
@@ -193,7 +193,7 @@ export function ProgrammesLanding() {
                 BNS Connect flips this dynamic. We ingest raw exchequer tables, debt amortization schedules, and tax bills, distilling them into rapid-fire 60-second video explainers, swipeable TikTok carousels, and verified WhatsApp infographics.
               </p>
               <p className="text-foreground font-medium">
-                Over 1.4 million digital citizens now track national budget allocations directly on their screens, turning passive reading into targeted public participation submissions to the National Assembly.
+                Young Kenyans nationwide track national budget allocations directly on their screens, turning passive reading into targeted public participation submissions to the National Assembly.
               </p>
             </div>
 
@@ -436,19 +436,19 @@ export function ProgrammesLanding() {
           {/* Cinema Impact Metrics Bar */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 py-6 my-6 border-y border-zinc-800/80">
             <div className="space-y-1">
-              <span className="text-2xl sm:text-3xl font-black text-primary tracking-tight">480K+</span>
-              <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">Reel &amp; Doc Views</p>
+              <span className="text-xl sm:text-2xl font-black text-primary tracking-tight">EN / FR</span>
+              <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">Bilingual Productions</p>
             </div>
             <div className="space-y-1">
-              <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">100%</span>
-              <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">Surplus Reinvested</p>
+              <span className="text-xl sm:text-2xl font-black text-white tracking-tight">Dual Impact</span>
+              <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">Craft Supporting Civic Work</p>
             </div>
             <div className="space-y-1">
-              <span className="text-2xl sm:text-3xl font-black text-primary tracking-tight">47</span>
-              <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">Counties Supported</p>
+              <span className="text-xl sm:text-2xl font-black text-primary tracking-tight">4 Counties</span>
+              <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">Embedded Grassroots Oversight</p>
             </div>
             <div className="space-y-1">
-              <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">21:9</span>
+              <span className="text-xl sm:text-2xl font-black text-white tracking-tight">21:9</span>
               <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">Cinematic Master Reels</p>
             </div>
           </div>
@@ -460,7 +460,7 @@ export function ProgrammesLanding() {
                 The Double Impact Covenant
               </h3>
               <p className="text-sm sm:text-base text-zinc-300 leading-relaxed">
-                Rather than relying solely on donor cycles, BNS Studios sells premium storytelling, motion design, and video production to commercial and development partners. 100% of operating surplus is channeled directly into printing grassroots scorecards and funding investigative fellowships in all 47 counties.
+                Rather than relying solely on donor cycles, BNS Studios sells premium storytelling, motion design, and video production to commercial and development partners. Operating surplus is channeled directly into printing grassroots scorecards and funding investigative fellowships across our focus counties.
               </p>
             </div>
 

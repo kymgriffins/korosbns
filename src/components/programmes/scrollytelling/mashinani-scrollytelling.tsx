@@ -2,14 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import {
-  ArrowLeft,
-  MapPin,
-  Quote,
-  CheckCircle2,
-  AlertTriangle,
-  Droplets,
-} from "lucide-react";
+import { ArrowLeft, Quote } from "lucide-react";
 import { EditorialPill } from "@/components/ui/editorial/editorial-pill";
 import { EditorialCtaBand } from "@/components/ui/editorial/editorial-cta-band";
 import { BNS_COMMUNITY_IMAGES } from "@/constants/bns-media-images";
@@ -21,6 +14,7 @@ import {
   FieldNotebookSpread,
   TextRevealOnScroll,
 } from "@/components/motion";
+import { ProgrammeProjectGrid } from "@/components/programmes/programme-project-grid";
 
 /**
  * Narrative arc: place essay — four counties as characters, embed → track → score.
@@ -184,168 +178,13 @@ export function MashinaniScrollytelling() {
         </div>
       </section>
 
-      <section className="py-24 md:py-36 border-b border-border/30">
-        <div className={SECTION_SHELL_INNER}>
-          <div className="max-w-3xl space-y-4 mb-16">
-            <span className="font-mono text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest">
-              Places · How the work lands
-            </span>
-            <h2 className="font-heading text-3xl sm:text-5xl font-black text-foreground">
-              Three scenes from the four-county desk.
-            </h2>
-            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-              Process stories from Mashinani work — without inventing budget figures. Where amounts matter, they come from published county documents cited on the page.
-            </p>
-          </div>
-
-          <div className="py-16 md:py-24 border-t border-border/40">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-              <div className="lg:col-span-6 space-y-6">
-                <div className="flex items-center gap-2">
-                  <EditorialPill variant="muted" size="xs">
-                    <MapPin className="size-3 text-amber-500 inline mr-1" />
-                    Nakuru · Subukia Ward
-                  </EditorialPill>
-                </div>
-
-                <h3 className="font-heading text-3xl sm:text-4xl font-black text-foreground leading-tight">
-                  When a maternity wing sits locked, the scorecard starts with the door.
-                </h3>
-
-                <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-                  Mashinani monitors document physical status against county progress claims, then convene residents and officials in a baraza that is filmed and summarised for the public record. The point is not a viral clip — it is a trail of evidence a county assembly can answer.
-                </p>
-
-                <div className="pt-2 space-y-2 border-l-2 border-amber-500/80 pl-4">
-                  <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
-                    <CheckCircle2 className="size-3.5" />
-                    <span>How we work</span>
-                  </div>
-                  <p className="text-sm sm:text-base font-semibold text-foreground leading-relaxed">
-                    Photo dossiers, attendance registers, and citizen-readable summaries within days — so a closed facility cannot hide behind a completion certificate alone.
-                  </p>
-                </div>
-              </div>
-
-              <div className="lg:col-span-6">
-                <ParallaxWrapper speed={0.25}>
-                  <div className="relative aspect-[16/10] overflow-hidden rounded-3xl border border-border/60 shadow-xl bg-muted group">
-                    <Image
-                      src={BNS_COMMUNITY_IMAGES.forumA}
-                      alt="Nakuru citizen budget baraza convening inside a municipal hall"
-                      fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
-                      sizes="(max-width: 1024px) 100vw, 50vw"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                    <div className="absolute bottom-4 left-4 right-4 text-white text-xs font-medium">
-                      Nakuru town hall: residents and county finance delegates in one room.
-                    </div>
-                  </div>
-                </ParallaxWrapper>
-              </div>
-            </div>
-          </div>
-
-          <div className="py-16 md:py-24 border-t border-border/40">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-              <div className="lg:col-span-6 order-2 lg:order-1">
-                <ParallaxWrapper speed={0.25}>
-                  <div className="relative aspect-[16/10] overflow-hidden rounded-3xl border border-border/60 shadow-xl bg-muted group">
-                    <Image
-                      src={BNS_COMMUNITY_IMAGES.forumE}
-                      alt="Dispensary site audit inspection in Kilifi"
-                      fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
-                      sizes="(max-width: 1024px) 100vw, 50vw"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                    <div className="absolute bottom-4 left-4 right-4 text-white text-xs font-medium">
-                      Kilifi field inspection: tender claims checked against foundation works.
-                    </div>
-                  </div>
-                </ParallaxWrapper>
-              </div>
-
-              <div className="lg:col-span-6 order-1 lg:order-2 space-y-6">
-                <div className="flex items-center gap-2">
-                  <EditorialPill variant="muted" size="xs">
-                    <MapPin className="size-3 text-amber-500 inline mr-1" />
-                    Kilifi · Coastal wards
-                  </EditorialPill>
-                </div>
-
-                <h3 className="font-heading text-3xl sm:text-4xl font-black text-foreground leading-tight">
-                  &ldquo;Structurally complete&rdquo; means nothing until someone walks the site.
-                </h3>
-
-                <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-                  When executive progress reports list rural facilities as finished, resident monitors visit the coordinates. Roofless shells and overgrown sites get photographed, dated, and returned to the county audit conversation — with residents in the room.
-                </p>
-
-                <div className="pt-2 space-y-2 border-l-2 border-amber-500/80 pl-4">
-                  <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
-                    <AlertTriangle className="size-3.5" />
-                    <span>How we work</span>
-                  </div>
-                  <p className="text-sm sm:text-base font-semibold text-foreground leading-relaxed">
-                    We do not invent completion percentages. We publish what the camera and the gazette can both support — and leave contested figures labelled until a source is public.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="py-16 md:py-24 border-t border-border/40">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-              <div className="lg:col-span-6 space-y-6">
-                <div className="flex items-center gap-2">
-                  <EditorialPill variant="muted" size="xs">
-                    <MapPin className="size-3 text-amber-500 inline mr-1" />
-                    Kakamega · Water access
-                  </EditorialPill>
-                </div>
-
-                <h3 className="font-heading text-3xl sm:text-4xl font-black text-foreground leading-tight">
-                  A signed contract is not a flowing tap.
-                </h3>
-
-                <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-                  Community cooperatives use Mashinani scorecards in public participation sessions to press Ward Administrators on boreholes that remain dry after sign-off. The work is patient: petition, document, return, and keep the paper trail public.
-                </p>
-
-                <div className="pt-2 space-y-2 border-l-2 border-amber-500/80 pl-4">
-                  <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
-                    <Droplets className="size-3.5" />
-                    <span>How we work</span>
-                  </div>
-                  <p className="text-sm sm:text-base font-semibold text-foreground leading-relaxed">
-                    Listening sessions and photo essays feed the county scorecard — so pastoral and rural priorities are not lost in a Nairobi summary slide.
-                  </p>
-                </div>
-              </div>
-
-              <div className="lg:col-span-6">
-                <ParallaxWrapper speed={0.25}>
-                  <div className="relative aspect-[16/10] overflow-hidden rounded-3xl border border-border/60 shadow-xl bg-muted group">
-                    <Image
-                      src={BNS_COMMUNITY_IMAGES.forumC}
-                      alt="Participatory budget mapping session with community cooperatives"
-                      fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
-                      sizes="(max-width: 1024px) 100vw, 50vw"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                    <div className="absolute bottom-4 left-4 right-4 text-white text-xs font-medium">
-                      Participatory mapping: community leaders tracing water and road priorities.
-                    </div>
-                  </div>
-                </ParallaxWrapper>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Mashinani Desk Flagship Projects Grid (Grouped by Content Type) */}
+      <ProgrammeProjectGrid
+        programmeSlug="mashinani"
+        eyebrow="Mashinani Verified Outputs"
+        headline="Devolved Scorecards, Barazas & Field Documentaries"
+        description="Evidence-backed field productions, community listening circles, and county budget scorecards from Kakamega, Kilifi, Nakuru, and Wajir."
+      />
 
       <section className="py-20 md:py-28">
         <div className={SECTION_SHELL_INNER}>

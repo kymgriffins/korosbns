@@ -159,7 +159,7 @@ export function CinemaTimelineStage() {
                   <span>The Double-Impact Reinvestment Covenant</span>
                 </div>
                 <p className="text-xs text-foreground/80 leading-relaxed">
-                  100% of operating surplus from commercial client commissions is legally pledged to fund grassroots audit scorecards and newsroom fellowships in all 47 counties.
+                  A portion of operating surplus from commercial client commissions is reinvested to fund grassroots audit scorecards and newsroom fellowships in our focus counties.
                 </p>
               </div>
             </div>

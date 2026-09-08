@@ -20,6 +20,7 @@ import {
   type GalleryItem,
   TextRevealOnScroll,
 } from "@/components/motion";
+import { ProgrammeProjectGrid } from "@/components/programmes/programme-project-grid";
 
 const STUDIOS_BEATS: NarrativeBeat[] = [
   {
@@ -287,6 +288,13 @@ export function StudiosScrollytelling() {
           <CinemaTimelineStage />
         </div>
       </section>
+
+      <ProgrammeProjectGrid
+        programmeSlug="studios"
+        eyebrow="BNS Studios Outputs"
+        headline="Commissioned Storytelling, Documentaries & Broadcasts"
+        description="Pan-African documentaries, podcast seasons, and broadcast event coverage supporting public-interest civic tracking."
+      />
 
       {/* 03 — COMMERCIAL INTAKE CALLOUT BAND */}
       <section className="py-16 md:py-24">
