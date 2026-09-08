@@ -106,14 +106,14 @@ function getMemberInitiatives(name: string) {
       ];
     case "James Maingi Mutinda":
       return [
-        { title: "Founding Consortium Alliances", link: "/about#consortium-founders", type: "Coalition Building", badge: "Founding Lead" },
+        { title: "Founding Consortium Alliances", link: "/about", type: "Coalition Building", badge: "Founding Lead" },
         { title: "Campus Fiscal Literacy Roadshows", link: "/programmes", type: "Institutional Growth", badge: "25+ Universities" },
         { title: "Strategic Terms of Reference (ToR) Dialogues", link: "/contact?intent=partner", type: "Partner Diplomacy", badge: "National" },
       ];
     case "Millicent Makina":
       return [
         { title: "5-Year Strategic Governance Framework", link: "/about", type: "Board Stewardship", badge: "Governance" },
-        { title: "Civic-Tech Consortium Transition", link: "/about#consortium-founders", type: "Institutional Oversight", badge: "Multi-Entity" },
+        { title: "Civic-Tech Consortium Transition", link: "/about", type: "Institutional Oversight", badge: "Multi-Entity" },
         { title: "Public Interest Reporting Ethics Standards", link: "/reports", type: "Compliance & Ethics", badge: "Standard Setting" },
       ];
     default:

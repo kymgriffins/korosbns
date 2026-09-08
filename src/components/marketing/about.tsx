@@ -20,7 +20,6 @@ import { HERO_SECTION_PADDING, SECTION_SHELL_INNER, SECTION_SHELL_PADDING } from
 import { GsapHeroChoreography } from "@/motion/gsap";
 import { aboutContent } from "@/content";
 import TeamSection from "@/components/marketing/team-section";
-import ConsortiumFoundersSection from "@/components/marketing/consortium-founders-section";
 import { BNS_COMMUNITY_IMAGES } from "@/constants/bns-media-images";
 import { cn } from "@/utils";
 
@@ -39,7 +38,7 @@ const CHARTER_PRINCIPLES = [
   },
   {
     title: "Double-Impact Commercial Ethics",
-    desc: "BNS Studios charges fair market rates to external institutions for creative productions, reinvesting 100% of proceeds into grassroots watchdog operations.",
+    desc: "BNS Studios charges fair market rates to external institutions for creative productions, reinvesting operating surplus into grassroots watchdog operations.",
   },
 ];
 
@@ -111,7 +110,7 @@ const ABOUT_NARRATIVE_BEATS: NarrativeBeat[] = [
 ];
 
 export default function About() {
-  const { hero, mission, photoStrip } = aboutContent;
+  const { hero, mission } = aboutContent;
 
   return (
     <div className="w-full bg-background min-h-screen text-foreground">
@@ -297,44 +296,12 @@ export default function About() {
         </div>
       </section>
 
-      {/* 05 — Photo Strip: Documenting the Movement in the Field */}
-      <section className={cn(SECTION_SHELL_PADDING, "border-b border-border/40 bg-background")}>
-        <div className={SECTION_SHELL_INNER}>
-          <div className="text-center max-w-xl mx-auto mb-10 space-y-2">
-            <span className={T.eyebrow}>In The Field</span>
-            <h3 className="text-2xl font-bold tracking-tight text-foreground">Documenting the Movement</h3>
-            <p className="text-xs text-muted-foreground">Moments from citizen town halls, county assemblies, and youth cohorts nationwide.</p>
-          </div>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
-            {photoStrip.images.map((src, index) => (
-              <div
-                key={src + index}
-                className="group relative aspect-[4/3] overflow-hidden rounded-2xl border border-border/30 bg-muted/20 md:rounded-3xl transition-all duration-300 hover:border-primary/40 hover:shadow-lg"
-              >
-                <Image
-                  src={src}
-                  alt={photoStrip.alt}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  sizes="(max-width: 768px) 50vw, 25vw"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 06 — Consortium Founding Partners */}
-      <div id="consortium-founders">
-        <ConsortiumFoundersSection />
-      </div>
-
-      {/* 07 — Team Roster Showcase */}
+      {/* 05 — Team Roster Showcase */}
       <div id="team">
         <TeamSection />
       </div>
 
-      {/* 08 — High-Conversion Civic Action & Partnership Portal */}
+      {/* 06 — Civic Action & Partnership Portal */}
       <section className="py-20 md:py-28 bg-muted/30 border-t border-border/40">
         <div className={SECTION_SHELL_INNER}>
           <div className="rounded-3xl border border-border/60 bg-card p-8 md:p-14 shadow-xl">
