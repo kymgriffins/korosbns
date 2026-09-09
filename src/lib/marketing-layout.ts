@@ -39,16 +39,35 @@ export function shouldShowPageBreadcrumbs(_pathname: string): boolean {
   return false;
 }
 
+export type FooterVariant = "marketing" | "minimal" | "none";
+
 /**
- * Marketing-site footer only — not learn, contact, surveys, projects, news, etc.
+ * Determines whether to display the heavy marketing footer (only on / and /about)
+ * or the new minimalistic footer on all ID/slug pages and most pages, or none for /learn.
+ */
+export function getFooterVariant(pathname: string): FooterVariant {
+  if (pathname.startsWith("/learn") || pathname.startsWith("/stories")) {
+    return "none";
+  }
+
+  const normalized = normalizeMarketingPath(pathname);
+
+  // Full bulky marketing footer is reserved for the primary landing page
+  if (normalized === "/" || normalized === "/about") {
+    return "marketing";
+  }
+
+  // Inside ID/slug pages and most pages, use the new minimalistic footer
+  return "minimal";
+}
+
+/**
+ * Marketing-site footer check (for backward compatibility and test suites).
  */
 export function shouldShowMarketingFooter(pathname: string): boolean {
   if (pathname.startsWith("/learn") || pathname.startsWith("/stories")) return false;
 
-  const normalized =
-    pathname.length > 1 && pathname.endsWith("/")
-      ? pathname.slice(0, -1)
-      : pathname;
+  const normalized = normalizeMarketingPath(pathname);
 
   if (MARKETING_FOOTER_ROUTES.has(normalized)) return true;
   return MARKETING_FOOTER_PREFIXES.some((prefix) =>

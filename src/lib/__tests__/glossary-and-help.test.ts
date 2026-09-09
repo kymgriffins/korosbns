@@ -128,4 +128,34 @@ describe("Route and Layout Configuration", () => {
     expect(categorizePath("/help")).toBe("marketing");
     expect(categorizePath("/glossary")).toBe("marketing");
   });
+
+  it("uses marketing footer on root landing page and minimal footer on id pages and most pages", async () => {
+    const { getFooterVariant } = await import("@/lib/marketing-layout");
+
+    // Root homepage uses full marketing footer
+    expect(getFooterVariant("/")).toBe("marketing");
+    expect(getFooterVariant("/about")).toBe("marketing");
+
+    // Dynamic ID / slug pages use new minimalistic footer
+    expect(getFooterVariant("/programmes/mashinani")).toBe("minimal");
+    expect(getFooterVariant("/programmes/connect")).toBe("minimal");
+    expect(getFooterVariant("/reports/county-health-2026")).toBe("minimal");
+    expect(getFooterVariant("/events/123")).toBe("minimal");
+    expect(getFooterVariant("/surveys/annual-budget-2026")).toBe("minimal");
+    expect(getFooterVariant("/bns-project/terra")).toBe("minimal");
+    expect(getFooterVariant("/bns-studio/cabri-multilingual-documentary")).toBe("minimal");
+
+    // Most pages (utility / content) use minimal footer
+    expect(getFooterVariant("/help")).toBe("minimal");
+    expect(getFooterVariant("/glossary")).toBe("minimal");
+    expect(getFooterVariant("/faq")).toBe("minimal");
+    expect(getFooterVariant("/careers")).toBe("minimal");
+    expect(getFooterVariant("/contact")).toBe("minimal");
+    expect(getFooterVariant("/privacy")).toBe("minimal");
+    expect(getFooterVariant("/terms")).toBe("minimal");
+
+    // Learn pages disable marketing footer entirely
+    expect(getFooterVariant("/learn")).toBe("none");
+    expect(getFooterVariant("/stories")).toBe("none");
+  });
 });

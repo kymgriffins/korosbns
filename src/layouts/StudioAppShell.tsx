@@ -3,13 +3,13 @@
 import { usePathname } from "next/navigation";
 import { useStudioTheme } from "@/contexts/studio-theme-context";
 import { Header } from "@/layouts/Header";
-import BNSFooter from "@/components/shadcn-space/blocks/footer-02/footer";
+import MinimalFooter from "@/components/global/minimal-footer";
 
 type Props = {
   children: React.ReactNode;
 };
 
-/** Unified Studio App Shell — mounts global BNS Header and Footer */
+/** Unified Studio App Shell — mounts global BNS Header and Minimal Footer */
 export function StudioAppShell({ children }: Props) {
   const { theme } = useStudioTheme();
   const pathname = usePathname();
@@ -26,7 +26,7 @@ export function StudioAppShell({ children }: Props) {
         {children}
       </main>
       <div className="mt-auto shrink-0">
-        <BNSFooter />
+        <MinimalFooter />
       </div>
     </div>
   );

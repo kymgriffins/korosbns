@@ -1,13 +1,35 @@
 "use client";
 
+import React, { useMemo } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Layers } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Layers,
+  Play,
+  Radio,
+  FileSearch,
+  Users2,
+  Clapperboard,
+  Sparkles,
+  ShieldCheck,
+  FolderGit2,
+} from "lucide-react";
 import {
   PROGRAMMES,
   programmeHref,
   type ProgrammeSlug,
 } from "@/content";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
+import {
+  studiosEvidenceData,
+  type StudioProjectEvidence,
+  type StudioContentType,
+} from "@/data/studios-evidence";
+import { resolveProjectId } from "@/lib/programme-project-ids";
+import { EditorialPill } from "@/components/ui/editorial/editorial-pill";
+import { cn } from "@/utils";
 
 interface NextChapterMeta {
   nextSlug: ProgrammeSlug;
@@ -58,19 +80,173 @@ const CHAPTER_FLOW: Record<ProgrammeSlug, NextChapterMeta> = {
   },
 };
 
+function getFormatIcon(contentType: StudioContentType) {
+  switch (contentType) {
+    case "Explainer Videos":
+    case "Documentaries":
+      return <Play className="size-3.5 fill-current" />;
+    case "Podcast & Audio":
+      return <Radio className="size-3.5" />;
+    case "Animations":
+      return <Clapperboard className="size-3.5" />;
+    case "Town Hall Design & Facilitation":
+    case "Community Listening Sessions":
+      return <Users2 className="size-3.5" />;
+    case "Research Spotlights":
+      return <FileSearch className="size-3.5" />;
+    default:
+      return <Sparkles className="size-3.5" />;
+  }
+}
+
+function getProjectUrl(slug: string) {
+  const canonical = resolveProjectId(slug);
+  if (canonical === "project-terra") {
+    return "/bns-project/terra";
+  }
+  return `/bns-studio/${canonical}`;
+}
+
 export function ProgrammeChapterBridge({
   currentSlug,
 }: {
   currentSlug: ProgrammeSlug;
 }) {
   const chapter = CHAPTER_FLOW[currentSlug];
-  const nextProgramme = PROGRAMMES.find((p) => p.slug === chapter.nextSlug);
+  const currentProgramme = PROGRAMMES.find((p) => p.slug === currentSlug);
+  const nextProgramme = PROGRAMMES.find((p) => p.slug === chapter?.nextSlug);
+
+  const relatedProjects = useMemo(() => {
+    return studiosEvidenceData.getProjectsByProgramme(currentSlug);
+  }, [currentSlug]);
 
   if (!nextProgramme) return null;
 
   return (
     <section className="relative overflow-hidden border-t border-border/50 bg-gradient-to-b from-background via-muted/20 to-background py-16 sm:py-24">
       <div className={SECTION_SHELL_INNER}>
+        {/* =========================================================================
+         * 01 — RELATED PROJECTS SHOWCASE FOR CURRENT PROGRAMME
+         * ========================================================================= */}
+        {relatedProjects.length > 0 && (
+          <div className="mb-20 pb-16 border-b border-border/50">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+              <div className="space-y-3 max-w-2xl">
+                <div className="flex items-center gap-2">
+                  <EditorialPill variant="primary" size="xs" dot>
+                    PROGRAMME FIELD DELIVERABLES
+                  </EditorialPill>
+                  <span className="font-mono text-xs text-muted-foreground uppercase tracking-wider">
+                    {currentProgramme?.name || "Active Desk"}
+                  </span>
+                </div>
+
+                <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-black text-foreground tracking-tight">
+                  Related Projects from this Desk.
+                </h2>
+
+                <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
+                  Concrete investigative briefs, field scorecards, and media productions produced
+                  under {currentProgramme?.name || "this programme"}.
+                </p>
+              </div>
+
+              <Link
+                href="/bns-studio"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline shrink-0"
+              >
+                <span>View all studio evidence</span>
+                <ArrowUpRight className="size-3.5" />
+              </Link>
+            </div>
+
+            {/* Projects Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {relatedProjects.map((project) => {
+                const href = getProjectUrl(project.slug);
+                return (
+                  <article
+                    key={project.id}
+                    className="group flex flex-col rounded-2xl border border-border/70 bg-card overflow-hidden transition-all duration-300 hover:border-primary/50 hover:shadow-lg"
+                  >
+                    {/* Media Poster */}
+                    <Link
+                      href={href}
+                      className="relative aspect-video w-full overflow-hidden bg-muted block"
+                    >
+                      <Image
+                        src={project.media.posterUrl}
+                        alt={project.title}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+                      {/* Top Pills */}
+                      <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/75 backdrop-blur-xs text-white text-[10px] font-mono font-bold uppercase tracking-wider">
+                          {getFormatIcon(project.contentType)}
+                          <span>{project.contentType}</span>
+                        </span>
+                        <span className="px-2 py-0.5 rounded-full bg-primary text-primary-foreground text-[10px] font-mono font-bold uppercase tracking-wider">
+                          {project.year}
+                        </span>
+                      </div>
+
+                      {/* Bottom Partner Pill */}
+                      <div className="absolute bottom-3 left-3 right-3">
+                        <p className="text-[11px] font-mono font-semibold text-white/90 truncate">
+                          Partner: {project.organization.name}
+                        </p>
+                      </div>
+                    </Link>
+
+                    {/* Content Body */}
+                    <div className="p-5 flex flex-col flex-1 justify-between space-y-4">
+                      <div className="space-y-2">
+                        <h3 className="font-heading text-base sm:text-lg font-bold text-foreground leading-snug group-hover:text-primary transition-colors line-clamp-2">
+                          <Link href={href}>{project.title}</Link>
+                        </h3>
+
+                        <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                          {project.briefChallenge}
+                        </p>
+                      </div>
+
+                      {/* Impact Tag & Action */}
+                      <div className="pt-3 border-t border-border/40 flex items-center justify-between gap-2">
+                        {project.impactEvidence?.primaryMetric ? (
+                          <span className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-0.5 text-[11px] font-mono font-semibold text-primary truncate max-w-[190px]">
+                            <ShieldCheck className="size-3 shrink-0" />
+                            <span className="truncate">{project.impactEvidence.primaryMetric}</span>
+                          </span>
+                        ) : (
+                          <span className="text-[11px] font-mono text-muted-foreground">
+                            {project.deliveryMode}
+                          </span>
+                        )}
+
+                        <Link
+                          href={href}
+                          className="inline-flex items-center gap-1 text-xs font-semibold text-foreground group-hover:text-primary transition-colors shrink-0"
+                        >
+                          <span>Explore</span>
+                          <ArrowUpRight className="size-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                        </Link>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* =========================================================================
+         * 02 — PROGRAMME SELECTOR STRIP
+         * ========================================================================= */}
         <div className="flex flex-wrap items-center justify-between gap-4 pb-8 border-b border-border/40 font-mono text-xs">
           <div className="flex items-center gap-2">
             <Layers className="size-3.5 text-primary" />
@@ -100,6 +276,9 @@ export function ProgrammeChapterBridge({
           </div>
         </div>
 
+        {/* =========================================================================
+         * 03 — NEXT PROGRAMME NARRATIVE TRANSITION
+         * ========================================================================= */}
         <div className="mt-12 py-8 sm:py-12 border-t border-border/60">
           <div className="max-w-4xl space-y-6">
             <div className="flex flex-wrap items-center gap-2.5 font-mono text-xs">

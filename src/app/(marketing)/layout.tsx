@@ -4,8 +4,9 @@ import React from "react";
 import { Header as Navbar } from "@/layouts/Header";
 import { usePathname } from "next/navigation";
 import BNSFooter from "@/components/shadcn-space/blocks/footer-02/footer";
+import MinimalFooter from "@/components/global/minimal-footer";
 import {
-  shouldShowMarketingFooter,
+  getFooterVariant,
   usesMarketingChrome,
 } from "@/lib/marketing-layout";
 
@@ -17,7 +18,7 @@ const MarketingLayout = ({
   const pathname = usePathname();
   const isChromeDisabled = pathname.startsWith("/learn") || pathname.startsWith("/stories");
   const showMarketingChrome = usesMarketingChrome(pathname);
-  const showMarketingFooter = shouldShowMarketingFooter(pathname);
+  const footerVariant = getFooterVariant(pathname);
 
   return (
     <main
@@ -29,9 +30,9 @@ const MarketingLayout = ({
 
       <div className="flex flex-1 flex-col">{children}</div>
 
-      {!isChromeDisabled && showMarketingFooter ? (
+      {!isChromeDisabled && footerVariant !== "none" ? (
         <div className="mt-auto shrink-0">
-          <BNSFooter />
+          {footerVariant === "marketing" ? <BNSFooter /> : <MinimalFooter />}
         </div>
       ) : null}
     </main>
