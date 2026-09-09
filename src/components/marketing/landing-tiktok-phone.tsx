@@ -58,6 +58,23 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
     }));
   }, []);
 
+  // Always run in background muted first so video motion is immediate
+  useEffect(() => {
+    const node = videoRef.current;
+    if (!node) return;
+    node.muted = true;
+    setIsMuted(true);
+    node
+      .play()
+      .then(() => {
+        setIsPlaying(true);
+        setIsReady(true);
+      })
+      .catch(() => {
+        // Handled by intersection observer or user gesture
+      });
+  }, [video.video_url]);
+
   useEffect(() => {
     const node = phoneRef.current;
     if (!node) return;
@@ -67,9 +84,13 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
         if (!videoEl) return;
         if (entry.isIntersecting && !userInteractedRef.current) {
           videoEl.muted = true;
+          setIsMuted(true);
           videoEl
             .play()
-            .then(() => setIsPlaying(true))
+            .then(() => {
+              setIsPlaying(true);
+              setIsReady(true);
+            })
             .catch(() => {
               // Browser autoplay policy prevented muted playback
             });
@@ -84,30 +105,60 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
     return () => observer.disconnect();
   }, []);
 
+  const handleUnmute = useCallback(
+    (e?: React.MouseEvent) => {
+      if (e) e.stopPropagation();
+      const node = videoRef.current;
+      if (!node) return;
+      userInteractedRef.current = true;
+      node.muted = false;
+      setIsMuted(false);
+      node
+        .play()
+        .then(() => setIsPlaying(true))
+        .catch((err) => {
+          console.warn("Unmuted play failed, falling back to muted:", err);
+          node.muted = true;
+          setIsMuted(true);
+          node.play().then(() => setIsPlaying(true)).catch(() => {});
+        });
+    },
+    [],
+  );
+
   const togglePlay = useCallback(
     (e?: React.MouseEvent) => {
       if (e) e.stopPropagation();
       const node = videoRef.current;
       if (!node) return;
       userInteractedRef.current = true;
+
+      // If already playing and muted, a click on play should unmute
+      if (!node.paused && isMuted) {
+        handleUnmute(e);
+        return;
+      }
+
       if (node.paused || !isPlaying) {
+        // Run muted first to guarantee immediate browser playback without blockage
         node.muted = isMuted;
-        setIsPlaying(true);
-        node.play().catch((err) => {
-          console.warn("Hero video playback error, retrying muted:", err);
-          node.muted = true;
-          setIsMuted(true);
-          node.play().catch((e2) => {
-            console.warn("Hero video play failed completely:", e2);
-            setIsPlaying(false);
+        node
+          .play()
+          .then(() => setIsPlaying(true))
+          .catch(() => {
+            node.muted = true;
+            setIsMuted(true);
+            node
+              .play()
+              .then(() => setIsPlaying(true))
+              .catch(() => setIsPlaying(false));
           });
-        });
       } else {
         node.pause();
         setIsPlaying(false);
       }
     },
-    [isMuted, isPlaying],
+    [handleUnmute, isMuted, isPlaying],
   );
 
   const openTikTokPage = useCallback((e?: React.MouseEvent) => {
@@ -181,57 +232,79 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
   return (
     <div ref={phoneRef} className={cn("mx-auto flex w-full max-w-[280px] flex-col md:max-w-[320px]", className)}>
       <div className="relative aspect-[9/16] w-full overflow-hidden rounded-[2rem] border-[3px] border-foreground/10 bg-card ring-1 ring-white/10">
-        {/* Authentic video cover image preview when video is paused */}
-        {!isPlaying && (
-          <div
-            className="absolute inset-0 z-0 overflow-hidden cursor-pointer bg-black/40"
-            onClick={togglePlay}
-            data-testid="tiktok-hero-cover-image"
-          >
-            <Image
-              src={video.cover_image_url}
-              alt="Budget Ndio Story - Reel Preview"
-              fill
-              sizes="(max-width: 768px) 280px, 320px"
-              className="object-cover"
-              priority
-              fetchPriority="high"
-            />
-          </div>
-        )}
-
+        {/* Native video element — autoplays muted in background first */}
         <video
           ref={videoRef}
           src={video.video_url}
           poster={video.cover_image_url}
-          className="absolute inset-0 size-full object-cover cursor-pointer"
+          autoPlay
           loop
           muted={isMuted}
           playsInline
           preload="auto"
           onClick={togglePlay}
-          onPlay={() => setIsPlaying(true)}
-          onPlaying={() => setIsPlaying(true)}
+          onPlay={() => {
+            setIsPlaying(true);
+            setIsReady(true);
+          }}
+          onPlaying={() => {
+            setIsPlaying(true);
+            setIsReady(true);
+          }}
           onPause={() => setIsPlaying(false)}
           onCanPlay={() => setIsReady(true)}
           onError={() => setIsReady(false)}
+          className="absolute inset-0 size-full object-cover cursor-pointer z-0"
           aria-label="Calvina Praise debt explanation video"
         >
           <source src={video.video_url} type="video/mp4" />
         </video>
 
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/20" />
+        {/* Thumbnail backdrop for initial load & tests — non-blocking so video streams through */}
+        <div
+          className={cn(
+            "absolute inset-0 z-0 overflow-hidden pointer-events-none transition-opacity duration-700",
+            isPlaying ? "opacity-0" : "opacity-100",
+          )}
+          data-testid="tiktok-hero-cover-image"
+        >
+          <Image
+            src={video.cover_image_url}
+            alt="Budget Ndio Story - Reel Preview"
+            fill
+            sizes="(max-width: 768px) 280px, 320px"
+            className="object-cover"
+            priority
+            fetchPriority="high"
+          />
+        </div>
 
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/20 z-10" />
+
+        {/* Center Play Button if video is paused */}
         {!isPlaying ? (
           <button
             type="button"
             onClick={togglePlay}
-            className="absolute inset-0 z-10 flex items-center justify-center cursor-pointer"
+            className="absolute inset-0 z-20 flex items-center justify-center cursor-pointer"
             aria-label="Play video"
           >
-            <span className="flex size-16 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-transform hover:scale-110 shadow-lg border border-white/20">
+            <span className="flex size-16 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-sm transition-transform hover:scale-110 shadow-lg border border-white/20">
               <Play className="size-8 fill-white text-white ml-0.5" />
             </span>
+          </button>
+        ) : null}
+
+        {/* Prominent floating unmute pill when running muted in background */}
+        {isPlaying && isMuted ? (
+          <button
+            type="button"
+            onClick={handleUnmute}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex items-center gap-2 rounded-full bg-black/70 px-4 py-2 text-xs font-semibold text-white shadow-2xl backdrop-blur-md transition-all hover:bg-black hover:scale-105 border border-white/20 pointer-events-auto cursor-pointer"
+            aria-label="Click to unmute"
+          >
+            <VolumeX className="size-4 animate-pulse text-amber-400" />
+            <span>Click to unmute</span>
           </button>
         ) : null}
 
@@ -300,12 +373,23 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              toggleMute();
+              if (isMuted) handleUnmute(e);
+              else toggleMute();
             }}
-            className="pointer-events-auto flex size-9 items-center justify-center rounded-full bg-black/40 text-white transition-colors hover:bg-black/60"
+            className="pointer-events-auto flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-1.5 text-white backdrop-blur-md transition-colors hover:bg-black/80 border border-white/10"
             aria-label={isMuted ? "Unmute video" : "Mute video"}
           >
-            {isMuted ? <VolumeX className="size-4" /> : <Volume2 className="size-4" />}
+            {isMuted ? (
+              <>
+                <VolumeX className="size-4 text-amber-400" />
+                <span className="text-[11px] font-medium">Unmute</span>
+              </>
+            ) : (
+              <>
+                <Volume2 className="size-4 text-emerald-400" />
+                <span className="text-[11px] font-medium">Mute</span>
+              </>
+            )}
           </button>
           <button
             type="button"

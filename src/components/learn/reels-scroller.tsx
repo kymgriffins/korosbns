@@ -121,7 +121,7 @@ export function ReelsScroller({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [activeIndex, reels]);
 
-  // Handle intersection observer to auto-play active video and pause others
+  // Handle intersection observer to auto-play active video in background muted first
   useEffect(() => {
     const currentReel = reels[activeIndex];
     videoRefs.current.forEach((videoEl, id) => {
@@ -130,7 +130,15 @@ export function ReelsScroller({
         videoEl
           .play()
           .then(() => setIsPlaying(true))
-          .catch(() => setIsPlaying(false));
+          .catch(() => {
+            // Autoplay with sound restricted, run in background muted first
+            videoEl.muted = true;
+            setIsMuted(true);
+            videoEl
+              .play()
+              .then(() => setIsPlaying(true))
+              .catch(() => setIsPlaying(false));
+          });
       } else {
         videoEl.pause();
       }
@@ -147,17 +155,35 @@ export function ReelsScroller({
   const togglePlay = (id: string) => {
     const videoEl = videoRefs.current.get(id);
     if (!videoEl) return;
+
+    // If currently running in background muted, clicking play or the screen unmutes
+    if (!videoEl.paused && isMuted) {
+      videoEl.muted = false;
+      setIsMuted(false);
+      videoEl
+        .play()
+        .then(() => setIsPlaying(true))
+        .catch(() => {
+          videoEl.muted = true;
+          setIsMuted(true);
+          videoEl.play().then(() => setIsPlaying(true)).catch(() => {});
+        });
+      return;
+    }
+
     if (videoEl.paused || !isPlaying) {
       videoEl.muted = isMuted;
       setIsPlaying(true);
       videoEl
         .play()
+        .then(() => setIsPlaying(true))
         .catch((err) => {
           console.warn("Reel video playback failed, retrying muted:", err);
           videoEl.muted = true;
           setIsMuted(true);
           videoEl
             .play()
+            .then(() => setIsPlaying(true))
             .catch((e2) => {
               console.warn("Playback completely failed:", e2);
               setIsPlaying(false);
@@ -319,6 +345,27 @@ export function ReelsScroller({
                   </motion.div>
                 )}
               </AnimatePresence>
+
+              {/* Prominent floating unmute pill when running muted in background */}
+              {isPlaying && isCurrent && isMuted ? (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const videoEl = videoRefs.current.get(reel.id);
+                    if (videoEl) {
+                      videoEl.muted = false;
+                      setIsMuted(false);
+                      videoEl.play().catch(() => {});
+                    }
+                  }}
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex items-center gap-2 rounded-full bg-black/75 px-4 py-2 text-xs font-semibold text-white shadow-2xl backdrop-blur-md transition-all hover:bg-black hover:scale-105 border border-white/20 pointer-events-auto cursor-pointer"
+                  aria-label="Click to unmute"
+                >
+                  <VolumeX className="size-4 animate-pulse text-amber-400" />
+                  <span>Click for sound</span>
+                </button>
+              ) : null}
 
               {/* Top Header Overlays */}
               <div className="pointer-events-none absolute inset-x-4 top-4 flex items-center justify-between text-white">

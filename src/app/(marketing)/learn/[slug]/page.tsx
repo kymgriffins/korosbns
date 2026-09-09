@@ -47,7 +47,6 @@ async function resolveContentSlug(slug: string) {
 
 export const dynamicParams = true;
 export const revalidate = 3600; // ISR revalidate every hour
-export const fallback = 'blocking';
 
 export async function generateMetadata(
   props: { params: Promise<{ slug: string }> }
