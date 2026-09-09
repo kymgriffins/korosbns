@@ -11,6 +11,7 @@ import {
 import { StudioReelHero } from "@/components/studio/theatre/studio-reel-hero";
 import { StudioBookingForm } from "@/components/studio/StudioBookingForm";
 import { StudioProductionSpectrum } from "@/components/studio/StudioProductionSpectrum";
+import { StudioProjectStory } from "@/components/studio/StudioProjectStory";
 import { EditorialPill, PillButtonGroup, PillButton } from "@/components/ui/editorial";
 import { EditorialCtaBand } from "@/components/ui/editorial/editorial-cta-band";
 import { studiosEvidenceData } from "@/data/studios-evidence";
@@ -36,8 +37,8 @@ export function BNSStudioPageClient() {
         </div>
       </div>
 
-      {/* 02 — THE DOUBLE IMPACT STORYLINE ARC (Full Section Utilization, Zero Boxy Cards) */}
-
+      {/* 02 — PROJECT STORY STRIP (YouTube thumbnails · hover "View Project") */}
+      <StudioProjectStory />
 
       {/* 03 — 21:9 CINEMATIC SCREENING THEATRE (Atmospheric Ambient Backglow) */}
       <section className="w-full bg-zinc-950 text-white py-24 md:py-36 border-y border-zinc-800/80 relative overflow-hidden">

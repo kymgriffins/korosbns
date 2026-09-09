@@ -15,6 +15,7 @@ import {
   TextRevealOnScroll,
 } from "@/components/motion";
 import { ProgrammeProjectGrid } from "@/components/programmes/programme-project-grid";
+import { ProgrammeProjectStoryStrip } from "@/components/programmes/programme-project-story-strip";
 
 /**
  * Narrative arc: place essay — four counties as characters, embed → track → score.
@@ -184,6 +185,13 @@ export function MashinaniScrollytelling() {
         eyebrow="Mashinani Verified Outputs"
         headline="Devolved Scorecards, Barazas & Field Documentaries"
         description="Evidence-backed field productions, community listening circles, and county budget scorecards from Kakamega, Kilifi, Nakuru, and Wajir."
+      />
+
+      {/* Mashinani: inline project story strip */}
+      <ProgrammeProjectStoryStrip
+        programmeSlug="mashinani"
+        eyebrow="Mashinani Projects in Story"
+        headline="Field documentaries, barazas and community evidence"
       />
 
       <section className="py-20 md:py-28">

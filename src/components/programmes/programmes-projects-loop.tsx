@@ -22,6 +22,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
 
 type DeskFilter =
   | "all"
@@ -96,6 +97,109 @@ function getProjectLink(slug: string) {
     return "/bns-project/terra";
   }
   return `/bns-studio/${canonical}`;
+}
+
+/* ── GridCard: individual archive card with hover "View Project" overlay ── */
+interface GridCardProps {
+  href: string;
+  project: ReturnType<typeof studiosEvidenceData.getAllProjects>[number];
+  desk: (typeof DESK_CONFIG)[string];
+  isVideo: boolean;
+  isAudio: boolean;
+}
+
+function GridCard({ href, project, desk, isVideo, isAudio }: GridCardProps) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <Link
+      href={href}
+      className="group relative aspect-[16/10] sm:aspect-[16/9] w-full cursor-pointer overflow-hidden rounded-2xl bg-muted shadow-md transition-all duration-300 hover:scale-[1.02] hover:shadow-xl focus:outline-hidden block"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <Image
+        src={project.media.posterUrl}
+        alt={project.title}
+        fill
+        className={cn(
+          "object-cover transition-transform duration-700 ease-out group-hover:scale-105",
+          project.media.posterPosition || "object-center",
+        )}
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20" />
+
+      {/* Format type indicator — play icon circle for video, waveform for audio */}
+      {(isVideo || isAudio) && (
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-0 pointer-events-none">
+          {/* Hidden — revealed via AnimatePresence overlay below */}
+        </div>
+      )}
+
+      <div className="absolute top-3.5 inset-x-3.5 flex items-center justify-between gap-2 z-10">
+        <span
+          className={cn(
+            "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide shadow-sm",
+            desk.pillClass,
+          )}
+        >
+          <span className="font-mono text-[9px] opacity-80">{desk.number}</span>
+          <span>{desk.name}</span>
+        </span>
+        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-mono font-semibold bg-black/60 text-white/90 backdrop-blur-md border border-white/10">
+          {getFormatIcon(project.media.type, project.contentType)}
+          <span>{project.contentType}</span>
+        </span>
+      </div>
+
+      <div className="absolute bottom-3.5 inset-x-3.5 z-10 space-y-1">
+        <p className="text-[11px] font-mono text-white/70 tracking-wider uppercase line-clamp-1">
+          {project.organization.name}
+        </p>
+        <h3 className="text-base sm:text-lg font-bold text-white tracking-tight leading-snug group-hover:text-primary-foreground transition-colors line-clamp-2">
+          {project.title}
+        </h3>
+        <div className="flex items-center justify-between text-[11px] text-white/60 pt-1 border-t border-white/10">
+          <span className="font-mono">{project.year}</span>
+          <span className="inline-flex items-center gap-1 text-white font-medium group-hover:translate-x-0.5 transition-transform">
+            Inspect <ArrowUpRight className="size-3" />
+          </span>
+        </div>
+      </div>
+
+      {/* Hover overlay: "View Project" pill */}
+      <AnimatePresence>
+        {hovered && (
+          <motion.div
+            key="hover-overlay"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 6 }}
+            transition={{ duration: 0.18, ease: "easeOut" }}
+            className="absolute inset-0 flex items-center justify-center z-20 bg-black/30 backdrop-blur-[1px]"
+          >
+            <div
+              className={cn(
+                "inline-flex items-center gap-2 rounded-full px-4 py-2 shadow-xl",
+                desk.pillClass,
+              )}
+            >
+              {isAudio ? (
+                <Radio className="size-3.5" />
+              ) : (
+                <Play className="size-3.5 fill-current" />
+              )}
+              <span className="font-heading font-bold text-xs tracking-wide">
+                View Project
+              </span>
+              <ArrowUpRight className="size-3.5" />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </Link>
+  );
 }
 
 export function ProgrammesProjectsLoop({ className }: { className?: string }) {
@@ -319,58 +423,25 @@ export function ProgrammesProjectsLoop({ className }: { className?: string }) {
                 const desk =
                   DESK_CONFIG[project.programmeSlug] || DESK_CONFIG.studios;
                 const href = getProjectLink(project.slug);
+                const isVideo =
+                  project.media.type === "video" ||
+                  project.contentType.toLowerCase().includes("video") ||
+                  project.contentType.toLowerCase().includes("animation") ||
+                  project.contentType.toLowerCase().includes("documentary");
+                const isAudio =
+                  project.media.type === "audio" ||
+                  project.contentType.toLowerCase().includes("podcast") ||
+                  project.contentType.toLowerCase().includes("audio");
 
                 return (
-                  <Link
+                  <GridCard
                     key={`${project.id}-grid-${idx}`}
                     href={href}
-                    className="group relative aspect-[16/10] sm:aspect-[16/9] w-full cursor-pointer overflow-hidden rounded-2xl bg-muted shadow-md transition-all duration-300 hover:scale-[1.02] hover:shadow-xl focus:outline-hidden block"
-                  >
-                    <Image
-                      src={project.media.posterUrl}
-                      alt={project.title}
-                      fill
-                      className={cn(
-                        "object-cover transition-transform duration-700 ease-out group-hover:scale-105",
-                        project.media.posterPosition || "object-center",
-                      )}
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20" />
-
-                    <div className="absolute top-3.5 inset-x-3.5 flex items-center justify-between gap-2 z-10">
-                      <span
-                        className={cn(
-                          "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide shadow-sm",
-                          desk.pillClass,
-                        )}
-                      >
-                        <span className="font-mono text-[9px] opacity-80">
-                          {desk.number}
-                        </span>
-                        <span>{desk.name}</span>
-                      </span>
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-mono font-semibold bg-black/60 text-white/90 backdrop-blur-md border border-white/10">
-                        {getFormatIcon(project.media.type, project.contentType)}
-                        <span>{project.contentType}</span>
-                      </span>
-                    </div>
-
-                    <div className="absolute bottom-3.5 inset-x-3.5 z-10 space-y-1">
-                      <p className="text-[11px] font-mono text-white/70 tracking-wider uppercase line-clamp-1">
-                        {project.organization.name}
-                      </p>
-                      <h3 className="text-base sm:text-lg font-bold text-white tracking-tight leading-snug group-hover:text-primary-foreground transition-colors line-clamp-2">
-                        {project.title}
-                      </h3>
-                      <div className="flex items-center justify-between text-[11px] text-white/60 pt-1 border-t border-white/10">
-                        <span className="font-mono">{project.year}</span>
-                        <span className="inline-flex items-center gap-1 text-white font-medium group-hover:translate-x-0.5 transition-transform">
-                          Inspect <ArrowUpRight className="size-3" />
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
+                    project={project}
+                    desk={desk}
+                    isVideo={isVideo}
+                    isAudio={isAudio}
+                  />
                 );
               })}
             </div>

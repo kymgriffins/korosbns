@@ -16,6 +16,7 @@ import {
   TextRevealOnScroll,
 } from "@/components/motion";
 import { ProgrammeProjectGrid } from "@/components/programmes/programme-project-grid";
+import { ProgrammeProjectStoryStrip } from "@/components/programmes/programme-project-story-strip";
 
 /**
  * Narrative arc: feed brief — short cadence, PDF → phone → Parliament.
@@ -177,6 +178,13 @@ export function ConnectScrollytelling() {
         eyebrow="Connect Flagship Outputs"
         headline="National Budget Explainers & Series"
         description="Verified video explainers, animated breakdowns, and short-form fiscal series published by the BNS Connect desk."
+      />
+
+      {/* Connect: inline project story strip */}
+      <ProgrammeProjectStoryStrip
+        programmeSlug="connect"
+        eyebrow="Connect Projects in Story"
+        headline="Watch the work — explainers, animations, social series"
       />
 
       <footer className="border-t border-border/40 bg-muted/10 py-16 md:py-24">

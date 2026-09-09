@@ -209,10 +209,10 @@ export function StudioReelHero() {
                         videoRef.current.play().catch(() => {});
                       }
                     }}
-                    className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/60 px-4 py-2 text-xs font-mono font-bold uppercase tracking-wider text-white backdrop-blur-md hover:bg-black/80 transition-colors shadow-sm cursor-pointer"
+                    aria-label={isMuted ? "Unmute video" : "Mute video"}
+                    className="inline-flex items-center justify-center size-10 rounded-full border border-white/20 bg-black/60 text-white backdrop-blur-md hover:bg-black/80 transition-colors shadow-sm cursor-pointer"
                   >
                     {isMuted ? <VolumeX className="size-4" /> : <Volume2 className="size-4 text-primary" />}
-                    <span>{isMuted ? "Unmute Video" : "Sound Active"}</span>
                   </button>
                 ) : null}
               </div>

@@ -21,6 +21,7 @@ import {
   TextRevealOnScroll,
 } from "@/components/motion";
 import { ProgrammeProjectGrid } from "@/components/programmes/programme-project-grid";
+import { ProgrammeProjectStoryStrip } from "@/components/programmes/programme-project-story-strip";
 
 const STUDIOS_BEATS: NarrativeBeat[] = [
   {
@@ -294,6 +295,13 @@ export function StudiosScrollytelling() {
         eyebrow="BNS Studios Outputs"
         headline="Commissioned Storytelling, Documentaries & Broadcasts"
         description="Pan-African documentaries, podcast seasons, and broadcast event coverage supporting public-interest civic tracking."
+      />
+
+      {/* Studios: inline project story strip (YouTube thumbnail strip) */}
+      <ProgrammeProjectStoryStrip
+        programmeSlug="studios"
+        eyebrow="Studios Portfolio in Story"
+        headline="Pan-African films, podcasts, and civic explainers"
       />
 
       {/* 03 — COMMERCIAL INTAKE CALLOUT BAND */}

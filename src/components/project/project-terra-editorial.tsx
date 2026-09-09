@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
 import {
@@ -30,45 +30,6 @@ import {
 } from "@/content/projects";
 
 export function ProjectTerraEditorial() {
-  const [activeTab, setActiveTab] = useState<"segments" | "prose">("segments");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [copied, setCopied] = useState(false);
-
-  // Filter segments by search query
-  const filteredSegments = useMemo(() => {
-    if (!searchQuery.trim()) return projectTerraTranscript.segments;
-    const query = searchQuery.toLowerCase();
-    return projectTerraTranscript.segments.filter((seg) =>
-      seg.text.toLowerCase().includes(query),
-    );
-  }, [searchQuery]);
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(projectTerraTranscript.full_transcript);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
-  };
-
-  const handleDownloadJson = () => {
-    const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(
-      JSON.stringify(projectTerraTranscript, null, 2),
-    )}`;
-    const downloadAnchor = document.createElement("a");
-    downloadAnchor.setAttribute("href", jsonString);
-    downloadAnchor.setAttribute("download", "project-terra-transcript.json");
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
-  };
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins.toString().padStart(2, "0")}:${secs
-      .toString()
-      .padStart(2, "0")}`;
-  };
-
   return (
     <article className="min-h-screen bg-background text-foreground selection:bg-primary/20">
       {/* 1. Masthead & Header */}
@@ -188,150 +149,16 @@ export function ProjectTerraEditorial() {
             />
           </div>
 
-          {/* Transcript Control Center */}
-          <div className="rounded-2xl border border-border/60 bg-card p-6 sm:p-8 shadow-sm">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-border/50">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary/10 text-primary">
-                  <FileText className="size-5" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-base text-foreground">
-                    Verbatim Audio Transcript
-                  </h3>
-                  <p className="text-xs text-muted-foreground">
-                    Synchronized speech-to-text transcript encoded in JSON
-                  </p>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex flex-wrap items-center gap-2">
-                <button
-                  onClick={handleCopy}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border/80 bg-background text-xs font-medium hover:border-primary/50 transition-colors"
-                  title="Copy complete transcript to clipboard"
-                >
-                  {copied ? (
-                    <>
-                      <Check className="size-3.5 text-emerald-500" />
-                      <span className="text-emerald-500 font-semibold">
-                        Copied
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="size-3.5" />
-                      <span>Copy Prose</span>
-                    </>
-                  )}
-                </button>
-
-                <button
-                  onClick={handleDownloadJson}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-colors"
-                  title="Download transcript JSON for research or archival"
-                >
-                  <Download className="size-3.5" />
-                  <span>Download JSON</span>
-                </button>
-
-                <a
-                  href={meta.video.watchUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-border/80 text-xs hover:text-primary transition-colors"
-                >
-                  <span>YouTube</span>
-                  <ExternalLink className="size-3" />
-                </a>
-              </div>
+          {/* Transcript Editorial Prose */}
+          <div className="max-w-3xl mx-auto mt-12 mb-8 px-4 sm:px-0">
+            <h3 className="text-xl font-bold text-foreground mb-6 font-sans border-b border-border/40 pb-2">
+              Verbatim Transcript
+            </h3>
+            <div className="text-base sm:text-lg leading-loose text-foreground/90 font-serif selection:bg-primary/20">
+              <p>{projectTerraTranscript.full_transcript}</p>
             </div>
-
-            {/* View Modes & Search */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-6 pb-4">
-              <div className="flex items-center gap-1 p-1 bg-muted/50 rounded-lg border border-border/50 text-xs self-start">
-                <button
-                  onClick={() => setActiveTab("segments")}
-                  className={`px-3 py-1 rounded-md transition-all ${
-                    activeTab === "segments"
-                      ? "bg-background text-foreground font-semibold shadow-xs"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  Timed Segments ({filteredSegments.length})
-                </button>
-                <button
-                  onClick={() => setActiveTab("prose")}
-                  className={`px-3 py-1 rounded-md transition-all ${
-                    activeTab === "prose"
-                      ? "bg-background text-foreground font-semibold shadow-xs"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  Continuous Prose
-                </button>
-              </div>
-
-              {/* Search filter in segments */}
-              {activeTab === "segments" && (
-                <div className="relative w-full sm:w-64">
-                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
-                  <input
-                    type="text"
-                    placeholder="Search keywords in transcript..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-border/60 bg-background placeholder:text-muted-foreground/60 focus:outline-hidden focus:ring-1 focus:ring-primary"
-                  />
-                  {searchQuery && (
-                    <button
-                      onClick={() => setSearchQuery("")}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground hover:text-foreground"
-                    >
-                      Clear
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* Transcript Content Area */}
-            <div className="max-h-96 overflow-y-auto pr-2 mt-2 divide-y divide-border/30 rounded-xl bg-background/50 border border-border/40 p-4">
-              {activeTab === "segments" ? (
-                filteredSegments.length > 0 ? (
-                  filteredSegments.map((seg) => (
-                    <div
-                      key={seg.id}
-                      className="py-2.5 first:pt-0 last:pb-0 flex items-start gap-4 group hover:bg-muted/20 px-2 rounded-lg transition-colors"
-                    >
-                      <span className="font-mono text-[11px] font-semibold text-primary/80 bg-primary/5 px-2 py-0.5 rounded border border-primary/15 shrink-0 mt-0.5">
-                        {formatTime(seg.start)}
-                      </span>
-                      <p className="text-sm text-foreground/90 leading-relaxed">
-                        {seg.text}
-                      </p>
-                    </div>
-                  ))
-                ) : (
-                  <div className="py-8 text-center text-sm text-muted-foreground">
-                    No segments found matching &ldquo;{searchQuery}&rdquo;
-                  </div>
-                )
-              ) : (
-                <div className="p-2 text-sm leading-loose text-foreground/90 font-serif md:text-base selection:bg-primary/20">
-                  <p>{projectTerraTranscript.full_transcript}</p>
-                </div>
-              )}
-            </div>
-
-            {/* Micro citation */}
-            <p className="mt-3 text-[11px] text-muted-foreground font-mono">
-              Source file:{" "}
-              <code className="bg-muted px-1.5 py-0.5 rounded text-foreground/80">
-                src/content/projects/project-terra-transcript.json
-              </code>{" "}
-              • Video ID: {projectTerraTranscript.videoId}
+            <p className="mt-6 text-[11px] text-muted-foreground font-mono">
+              Source file: <code className="bg-muted px-1.5 py-0.5 rounded text-foreground/80">src/content/projects/project-terra-transcript.json</code> • Video ID: {projectTerraTranscript.videoId}
             </p>
           </div>
         </div>

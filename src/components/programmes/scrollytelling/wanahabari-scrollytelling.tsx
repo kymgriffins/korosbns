@@ -20,6 +20,7 @@ import {
   ForensicLightTable,
 } from "@/components/motion";
 import { ProgrammeProjectGrid } from "@/components/programmes/programme-project-grid";
+import { ProgrammeProjectStoryStrip } from "@/components/programmes/programme-project-story-strip";
 
 /**
  * Narrative arc: newsroom masthead — Budget Day theatre → the other 364 days → craft.
@@ -246,6 +247,13 @@ export function WanahabariScrollytelling() {
         eyebrow="Wanahabari Lab Outputs"
         headline="Investigative Research & Newsroom Toolkits"
         description="Forensic briefings, legal frameworks, and same-day budget reading kits co-produced with journalists and research partners."
+      />
+
+      {/* Wanahabari: inline project story strip */}
+      <ProgrammeProjectStoryStrip
+        programmeSlug="wanahabari-lab"
+        eyebrow="Wanahabari Projects in Story"
+        headline="Research spotlights, forensic videos and investigative docs"
       />
 
       <footer className="border-t border-border/40 bg-muted/20 py-20 md:py-32">
