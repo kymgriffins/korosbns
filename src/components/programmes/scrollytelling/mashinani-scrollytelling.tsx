@@ -179,12 +179,12 @@ export function MashinaniScrollytelling() {
       </section>
 
       {/* Mashinani Desk Flagship Projects Grid (Grouped by Content Type) */}
-      <ProgrammeProjectGrid
+      {/* <ProgrammeProjectGrid
         programmeSlug="mashinani"
         eyebrow="Mashinani Verified Outputs"
         headline="Devolved Scorecards, Barazas & Field Documentaries"
         description="Evidence-backed field productions, community listening circles, and county budget scorecards from Kakamega, Kilifi, Nakuru, and Wajir."
-      />
+      /> */}
 
       <section className="py-20 md:py-28">
         <div className={SECTION_SHELL_INNER}>

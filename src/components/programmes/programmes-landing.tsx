@@ -1,147 +1,35 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
-import {
-  ArrowRight,
-  ArrowUpRight,
-  Play,
-  FileSearch,
-  Radio,
-  Smartphone,
-  Users2,
-  Film,
-} from "lucide-react";
-import { EditorialCtaBand, PillButtonGroup } from "@/components/ui/editorial";
-import { BNS_COMMUNITY_IMAGES, BNS_MEDIA_IMAGES } from "@/constants/bns-media-images";
-import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
+import { ParallaxWrapper, TelemetryHUD } from "@/components/motion";
 import { ProgrammesProjectsLoop } from "@/components/programmes/programmes-projects-loop";
+import { EditorialCtaBand, PillButtonGroup } from "@/components/ui/editorial";
 import {
-  TelemetryHUD,
-  MaskedReveal,
-  ParallaxWrapper,
-  MetricCounter,
-} from "@/components/motion";
+  BNS_COMMUNITY_IMAGES,
+  BNS_MEDIA_IMAGES,
+} from "@/constants/bns-media-images";
+import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
+import { FileSearch, Radio, Smartphone } from "lucide-react";
+import Image from "next/image";
 
 export function ProgrammesLanding() {
   return (
     <article className="prog-page min-h-screen bg-background text-foreground selection:bg-primary/20">
       {/* 00 — PERSISTENT SOVEREIGN MARQUEE TELEMETRY HUD */}
       <TelemetryHUD
-        activeDesk="FOUR OPERATIONAL DESKS"
-        focusArea="NATIONAL TO DEVOLVED GRASSROOTS"
-        badgeLabel="SOVEREIGN STANDARD"
+        activeDesk=""
+        focusArea="NATIONAL TO  GRASSROOTS"
+        badgeLabel="SOVEREIGN "
       />
 
       {/* 01 — MASTER SOVEREIGN HERO: UNIFIED HEADLINE & IMPACT LEDGER */}
-      <header className="relative overflow-hidden pt-6 pb-8 md:pt-10 md:pb-12 border-b border-border/30">
-        <div className={SECTION_SHELL_INNER}>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
-            {/* Left Column (7 cols): Editorial Headline & Mission */}
-            <div className="lg:col-span-7 space-y-4 min-w-0">
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-foreground leading-[1.04]">
-                <MaskedReveal delay={0.05}>Follow the public shilling</MaskedReveal>{" "}
-                <MaskedReveal delay={0.15}>from Treasury to the</MaskedReveal>{" "}
-                <MaskedReveal delay={0.25} innerClassName="text-primary">
-                  grassroots.
-                </MaskedReveal>
-              </h1>
-
-              <p className="text-base sm:text-lg font-normal text-foreground/80 leading-relaxed max-w-2xl">
-                Kenya’s national budget crosses KSh 4.82 Trillion. Budget Ndio Story deploys 4 specialized, non-replicated operational desks to audit allocations, mobilize digital youth, ground rural barazas, and produce cinematic media.
-              </p>
-
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-1 w-full sm:w-auto">
-                <PillButtonGroup
-                  href="/work"
-                  label="Explore Evidence Archive"
-                  variant="primary"
-                  size="default"
-                  className="w-full sm:w-auto justify-center"
-                />
-                <PillButtonGroup
-                  href="#desk-01"
-                  label="Explore The 4 Desks"
-                  variant="outline"
-                  size="default"
-                  className="hidden sm:inline-flex w-full sm:w-auto justify-center"
-                />
-              </div>
-            </div>
-
-            {/* Right Column (5 cols): Integrated Sovereign Audit Ledger */}
-            <div className="lg:col-span-5 w-full">
-              <div className="rounded-2xl border border-border/60 bg-muted/25 dark:bg-zinc-900/40 p-5 sm:p-6 backdrop-blur-xs shadow-xs">
-                <div className="flex items-center justify-between pb-3 border-b border-border/40 mb-4 font-mono text-[11px]">
-                  <span className="font-bold uppercase tracking-widest text-primary flex items-center gap-1.5">
-                    <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    Sovereign Audit Ledger
-                  </span>
-                  <span className="text-muted-foreground uppercase tracking-wider text-[10px]">
-                    Live Verification
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 sm:gap-5">
-                  <div className="space-y-1">
-                    <p className="text-2xl sm:text-3xl font-black text-primary tracking-tighter">
-                      <MetricCounter value={4.82} prefix="KSh " suffix="T" decimals={2} />
-                    </p>
-                    <p className="text-xs font-bold uppercase tracking-wider text-foreground">
-                      National Budget
-                    </p>
-                    <p className="text-[11px] text-muted-foreground leading-tight">
-                      Treasury to ministry line audits
-                    </p>
-                  </div>
-
-                  <div className="space-y-1">
-                    <p className="text-2xl sm:text-3xl font-black text-foreground tracking-tighter flex items-center">
-                      <span>04</span>
-                      <span className="text-primary ml-1 text-xl font-bold">Counties</span>
-                    </p>
-                    <p className="text-xs font-bold uppercase tracking-wider text-foreground">
-                      Grassroots Hubs
-                    </p>
-                    <p className="text-[11px] text-muted-foreground leading-tight">
-                      Kilifi, Nakuru, Wajir, Kakamega
-                    </p>
-                  </div>
-
-                  <div className="space-y-1 pt-3 border-t border-border/30">
-                    <p className="text-2xl sm:text-3xl font-black text-primary tracking-tighter">
-                      <MetricCounter value={120} suffix="+" />
-                    </p>
-                    <p className="text-xs font-bold uppercase tracking-wider text-foreground">
-                      Reporters Trained
-                    </p>
-                    <p className="text-[11px] text-muted-foreground leading-tight">
-                      Forensic newsroom cohorts
-                    </p>
-                  </div>
-
-                  <div className="space-y-1 pt-3 border-t border-border/30">
-                    <p className="text-xl sm:text-2xl font-black text-foreground tracking-tight">
-                      Article 201
-                    </p>
-                    <p className="text-xs font-bold uppercase tracking-wider text-foreground">
-                      Constitutional Mandate
-                    </p>
-                    <p className="text-[11px] text-muted-foreground leading-tight">
-                      Openness in public finance
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </header>
 
       {/* ========================================================================= */}
       {/* DESK 01: BNS CONNECT — TYPOGRAPHIC MANIFESTO & DIGITAL YOUTH SPREAD        */}
       {/* ========================================================================= */}
-      <section id="desk-01" className="py-10 sm:py-14 md:py-16 border-b border-border/40">
+      <section
+        id="desk-01"
+        className="py-10 sm:py-14 md:py-16 border-b border-border/40"
+      >
         <div className={SECTION_SHELL_INNER}>
           {/* Section Identifier Header */}
           <div className="flex items-center gap-3 mb-4">
@@ -156,7 +44,8 @@ export function ProgrammesLanding() {
 
           <div className="space-y-4 max-w-4xl mb-8">
             <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-foreground leading-[1.06] tracking-tight">
-              Translating 400-page accounting sheets into 60-second mobile power.
+              Translating 400-page accounting sheets into 60-second mobile
+              power.
             </h2>
           </div>
 
@@ -177,7 +66,8 @@ export function ProgrammesLanding() {
                   Nairobi Youth Baraza
                 </p>
                 <p className="text-sm sm:text-base font-medium leading-snug">
-                  Auditing national debt amortization tables against real-time Ministry disbursements.
+                  Auditing national debt amortization tables against real-time
+                  Ministry disbursements.
                 </p>
               </div>
             </div>
@@ -187,13 +77,22 @@ export function ProgrammesLanding() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
             <div className="lg:col-span-7 space-y-4 text-sm sm:text-base text-foreground/85 leading-relaxed">
               <p>
-                When Treasury drops the annual Budget Policy Statement, accountability historically vanished inside 400-page PDF tables written in impenetrable bureaucratic jargon. Parliamentary committees debated behind closed doors while millions of young taxpayers were locked out of the conversation.
+                When Treasury drops the annual Budget Policy Statement,
+                accountability historically vanished inside 400-page PDF tables
+                written in impenetrable bureaucratic jargon. Parliamentary
+                committees debated behind closed doors while millions of young
+                taxpayers were locked out of the conversation.
               </p>
               <p>
-                BNS Connect flips this dynamic. We ingest raw exchequer tables, debt amortization schedules, and tax bills, distilling them into rapid-fire 60-second video explainers, swipeable TikTok carousels, and verified WhatsApp infographics.
+                BNS Connect flips this dynamic. We ingest raw exchequer tables,
+                debt amortization schedules, and tax bills, distilling them into
+                rapid-fire 60-second video explainers, swipeable TikTok
+                carousels, and verified WhatsApp infographics.
               </p>
               <p className="text-foreground font-medium">
-                Young Kenyans nationwide track national budget allocations directly on their screens, turning passive reading into targeted public participation submissions to the National Assembly.
+                Young Kenyans nationwide track national budget allocations
+                directly on their screens, turning passive reading into targeted
+                public participation submissions to the National Assembly.
               </p>
             </div>
 
@@ -201,7 +100,9 @@ export function ProgrammesLanding() {
               {/* Editorial Pullquote in Neue Montreal Italic */}
               <div className="pl-5 border-l-2 border-primary space-y-1.5">
                 <blockquote className="text-lg sm:text-xl font-normal italic text-foreground leading-snug">
-                  &ldquo;We don&rsquo;t summarize the budget for archives. We translate the data into immediate leverage for citizen action.&rdquo;
+                  &ldquo;We don&rsquo;t summarize the budget for archives. We
+                  translate the data into immediate leverage for citizen
+                  action.&rdquo;
                 </blockquote>
                 <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground not-italic">
                   — BNS Digital Desk, Nairobi
@@ -211,11 +112,15 @@ export function ProgrammesLanding() {
               <div className="space-y-3 pt-1">
                 <div className="flex items-center gap-3 text-sm text-foreground/90">
                   <Smartphone className="size-4 text-primary shrink-0" />
-                  <span>Direct integration with our TikTok &amp; Reels format</span>
+                  <span>
+                    Direct integration with our TikTok &amp; Reels format
+                  </span>
                 </div>
                 <div className="flex items-center gap-3 text-sm text-foreground/90">
                   <FileSearch className="size-4 text-primary shrink-0" />
-                  <span>80-page citizen memorandum submitted to Finance Committee</span>
+                  <span>
+                    80-page citizen memorandum submitted to Finance Committee
+                  </span>
                 </div>
 
                 <div className="pt-2">
@@ -236,7 +141,10 @@ export function ProgrammesLanding() {
       {/* ========================================================================= */}
       {/* DESK 02: BNS MASHINANI — GROUNDED FIELD PHOTO-ESSAY & RURAL BARAZA SPREAD */}
       {/* ========================================================================= */}
-      <section id="desk-02" className="py-14 sm:py-18 md:py-20 bg-muted/20 border-b border-border/40">
+      <section
+        id="desk-02"
+        className="py-14 sm:py-18 md:py-20 bg-muted/20 border-b border-border/40"
+      >
         <div className={SECTION_SHELL_INNER}>
           {/* Section Identifier */}
           <div className="flex items-center gap-3 mb-4">
@@ -253,12 +161,15 @@ export function ProgrammesLanding() {
             {/* Left Narrative Column */}
             <div className="lg:col-span-6 space-y-5">
               <h2 className="text-2xl sm:text-4xl font-black text-foreground leading-[1.06] tracking-tight">
-                Taking budget tracking from Nairobi boardrooms to the village baraza.
+                Taking budget tracking from Nairobi boardrooms to the village
+                baraza.
               </h2>
 
               <div className="pl-5 border-l-2 border-amber-500/80 space-y-1.5">
                 <blockquote className="text-base sm:text-lg font-normal italic text-foreground leading-snug">
-                  &ldquo;In the village, the budget isn&rsquo;t numbers in a book — it is whether the dispensary has medicine and whether the borehole actually pumps clean water.&rdquo;
+                  &ldquo;In the village, the budget isn&rsquo;t numbers in a
+                  book — it is whether the dispensary has medicine and whether
+                  the borehole actually pumps clean water.&rdquo;
                 </blockquote>
                 <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground not-italic">
                   — Subukia Ward Community Baraza, Nakuru County
@@ -267,13 +178,22 @@ export function ProgrammesLanding() {
 
               <div className="space-y-3 text-sm sm:text-base text-foreground/85 leading-relaxed">
                 <p>
-                  Fiscal devolution was designed to place resources into the hands of local communities. Yet 78% of rural Kenyans report never seeing a ward development breakdown before projects are approved.
+                  Fiscal devolution was designed to place resources into the
+                  hands of local communities. Yet 78% of rural Kenyans report
+                  never seeing a ward development breakdown before projects are
+                  approved.
                 </p>
                 <p>
-                  BNS Mashinani deploys embedded civic field leads across Kakamega, Kilifi, Nakuru, and Wajir. We train residents with waterproof audit scorecards to cross-check county gazette budgets against actual physical contractor work.
+                  BNS Mashinani deploys embedded civic field leads across
+                  Kakamega, Kilifi, Nakuru, and Wajir. We train residents with
+                  waterproof audit scorecards to cross-check county gazette
+                  budgets against actual physical contractor work.
                 </p>
                 <p>
-                  Through weekly vernacular radio broadcasts and open-air barazas under village trees, we empower farmers, youth groups, and artisanal fisherfolk to challenge ghost allocations before completion certificates are rubber-stamped.
+                  Through weekly vernacular radio broadcasts and open-air
+                  barazas under village trees, we empower farmers, youth groups,
+                  and artisanal fisherfolk to challenge ghost allocations before
+                  completion certificates are rubber-stamped.
                 </p>
               </div>
 
@@ -309,7 +229,8 @@ export function ProgrammesLanding() {
                       Kilifi County Field Baraza
                     </span>
                     <p className="text-xs sm:text-sm font-medium leading-snug">
-                      Artisanal fisherfolk cross-referencing blue economy devolved funds with actual landing site infrastructure.
+                      Artisanal fisherfolk cross-referencing blue economy
+                      devolved funds with actual landing site infrastructure.
                     </p>
                   </div>
                 </div>
@@ -322,7 +243,10 @@ export function ProgrammesLanding() {
       {/* ========================================================================= */}
       {/* DESK 03: WANAHABARI LAB — AUTHORITATIVE INVESTIGATIVE NEWSROOM SPREAD      */}
       {/* ========================================================================= */}
-      <section id="desk-03" className="py-14 sm:py-18 md:py-20 bg-background border-b border-border/40">
+      <section
+        id="desk-03"
+        className="py-14 sm:py-18 md:py-20 bg-background border-b border-border/40"
+      >
         <div className={SECTION_SHELL_INNER}>
           {/* Section Identifier */}
           <div className="flex items-center gap-3 mb-4">
@@ -337,10 +261,14 @@ export function ProgrammesLanding() {
 
           <div className="max-w-4xl space-y-4 mb-8 sm:mb-10">
             <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-foreground leading-[1.06] tracking-tight">
-              The budget speech is theatre. The real story begins the morning after.
+              The budget speech is theatre. The real story begins the morning
+              after.
             </h2>
             <p className="text-base sm:text-lg text-foreground/80 font-normal leading-relaxed max-w-3xl">
-              Kenyan commercial media concentrates 90% of fiscal reportage on Budget Day in June. Wanahabari Lab equips investigative reporters to track exchequer requisitions and forensic procurement for the other 364 days.
+              Kenyan commercial media concentrates 90% of fiscal reportage on
+              Budget Day in June. Wanahabari Lab equips investigative reporters
+              to track exchequer requisitions and forensic procurement for the
+              other 364 days.
             </p>
           </div>
 
@@ -354,7 +282,10 @@ export function ProgrammesLanding() {
                 Uncovering KSh 1.84 Billion in locked maternity wings.
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                When county health allocations were diverted to pay recurrent supplier debts, Wanahabari fellows scraped Controller of Budget quarterly releases, matched them to local contractor records, and co-published the findings in national print dailies.
+                When county health allocations were diverted to pay recurrent
+                supplier debts, Wanahabari fellows scraped Controller of Budget
+                quarterly releases, matched them to local contractor records,
+                and co-published the findings in national print dailies.
               </p>
             </div>
 
@@ -366,7 +297,10 @@ export function ProgrammesLanding() {
                 Exposing KSh 1,203 Billion public debt interest appetite.
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Our fellowship analyzed sovereign amortization tables to demonstrate that out of every KSh 100 collected by KRA, KSh 64 was swallowed by debt servicing before a single development grant left the exchequer account.
+                Our fellowship analyzed sovereign amortization tables to
+                demonstrate that out of every KSh 100 collected by KRA, KSh 64
+                was swallowed by debt servicing before a single development
+                grant left the exchequer account.
               </p>
             </div>
           </div>
@@ -387,7 +321,8 @@ export function ProgrammesLanding() {
                   Newsroom Fellowship Cohort
                 </p>
                 <p className="text-xs sm:text-sm font-medium leading-snug">
-                  Fellows cross-referencing exchequer requisition tables with Auditor-General audit queries.
+                  Fellows cross-referencing exchequer requisition tables with
+                  Auditor-General audit queries.
                 </p>
               </div>
             </div>
@@ -411,7 +346,10 @@ export function ProgrammesLanding() {
       {/* ========================================================================= */}
       {/* DESK 04: BNS STUDIOS — MIDNIGHT 21:9 WIDESCREEN CINEMA THEATRE             */}
       {/* ========================================================================= */}
-      <section id="desk-04" className="py-14 sm:py-18 md:py-20 bg-black text-white border-b border-zinc-800">
+      <section
+        id="desk-04"
+        className="py-14 sm:py-18 md:py-20 bg-black text-white border-b border-zinc-800"
+      >
         <div className={SECTION_SHELL_INNER}>
           {/* Section Identifier */}
           <div className="flex items-center gap-3 mb-4">
@@ -429,27 +367,45 @@ export function ProgrammesLanding() {
               Commercial creative craft that bankrolls citizen budget audits.
             </h2>
             <p className="text-base sm:text-lg text-zinc-300 font-normal leading-relaxed max-w-3xl">
-              We operate an independent, top-tier creative production studio producing podcasts, documentaries, 2D animations, and street campaigns for leading civic institutions.
+              We operate an independent, top-tier creative production studio
+              producing podcasts, documentaries, 2D animations, and street
+              campaigns for leading civic institutions.
             </p>
           </div>
 
           {/* Cinema Impact Metrics Bar */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 py-6 my-6 border-y border-zinc-800/80">
             <div className="space-y-1">
-              <span className="text-xl sm:text-2xl font-black text-primary tracking-tight">EN / FR</span>
-              <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">Bilingual Productions</p>
+              <span className="text-xl sm:text-2xl font-black text-primary tracking-tight">
+                EN / FR
+              </span>
+              <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">
+                Bilingual Productions
+              </p>
             </div>
             <div className="space-y-1">
-              <span className="text-xl sm:text-2xl font-black text-white tracking-tight">Dual Impact</span>
-              <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">Craft Supporting Civic Work</p>
+              <span className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                Dual Impact
+              </span>
+              <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">
+                Craft Supporting Civic Work
+              </p>
             </div>
             <div className="space-y-1">
-              <span className="text-xl sm:text-2xl font-black text-primary tracking-tight">4 Counties</span>
-              <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">Embedded Grassroots Oversight</p>
+              <span className="text-xl sm:text-2xl font-black text-primary tracking-tight">
+                4 Counties
+              </span>
+              <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">
+                Embedded Grassroots Oversight
+              </p>
             </div>
             <div className="space-y-1">
-              <span className="text-xl sm:text-2xl font-black text-white tracking-tight">21:9</span>
-              <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">Cinematic Master Reels</p>
+              <span className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                21:9
+              </span>
+              <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">
+                Cinematic Master Reels
+              </p>
             </div>
           </div>
 
@@ -460,7 +416,11 @@ export function ProgrammesLanding() {
                 The Double Impact Covenant
               </h3>
               <p className="text-sm sm:text-base text-zinc-300 leading-relaxed">
-                Rather than relying solely on donor cycles, BNS Studios sells premium storytelling, motion design, and video production to commercial and development partners. Operating surplus is channeled directly into printing grassroots scorecards and funding investigative fellowships across our focus counties.
+                Rather than relying solely on donor cycles, BNS Studios sells
+                premium storytelling, motion design, and video production to
+                commercial and development partners. Operating surplus is
+                channeled directly into printing grassroots scorecards and
+                funding investigative fellowships across our focus counties.
               </p>
             </div>
 
@@ -488,7 +448,7 @@ export function ProgrammesLanding() {
           <EditorialCtaBand
             eyebrow="The Sovereign Standard"
             title="Follow the public shilling. Reclaim civic power."
-            description="Join over 1.4 million Kenyans auditing national debt, tracking county disbursements, and enforcing Article 201."
+            description="Join millions of Kenyans auditing national debt, tracking county disbursements, and enforcing Article 201."
             ctaHref="/work"
             ctaLabel="Explore All Evidence"
             secondaryHref="/contact"
@@ -500,4 +460,3 @@ export function ProgrammesLanding() {
     </article>
   );
 }
-

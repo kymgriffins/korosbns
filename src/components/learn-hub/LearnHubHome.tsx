@@ -33,9 +33,7 @@ export function LearnHubHome() {
               <EditorialPill variant="primary" size="xs" dot>
                 PUBLIC FINANCE MASTERY
               </EditorialPill>
-              <span className="font-mono text-xs text-muted-foreground uppercase tracking-wider">
-                Article 201 · CoK 2010
-              </span>
+              
             </div>
 
             <h1 className="font-heading text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-foreground leading-[1.04]">

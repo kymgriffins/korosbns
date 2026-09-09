@@ -1,31 +1,32 @@
 "use client";
 
-import { useState, useMemo, useRef } from "react";
-import Image from "next/image";
-import Link from "next/link";
+import { Marquee } from "@/components/ui/marquee";
 import {
+  studiosEvidenceData
+} from "@/data/studios-evidence";
+import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
+import { resolveProjectId } from "@/lib/programme-project-ids";
+import { cn } from "@/utils";
+import {
+  ArrowUpRight,
+  Clapperboard,
+  FileSearch,
   Play,
   Radio,
-  FileSearch,
-  Users2,
-  Film,
-  Clapperboard,
-  ExternalLink,
-  ArrowUpRight,
   Search,
-  X,
-  Sparkles,
+  Users2,
+  X
 } from "lucide-react";
-import { Marquee } from "@/components/ui/marquee";
-import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
-import {
-  studiosEvidenceData,
-  type StudioProjectEvidence,
-} from "@/data/studios-evidence";
-import { cn } from "@/utils";
-import { resolveProjectId } from "@/lib/programme-project-ids";
+import Image from "next/image";
+import Link from "next/link";
+import { useMemo, useRef, useState } from "react";
 
-type DeskFilter = "all" | "connect" | "mashinani" | "wanahabari-lab" | "studios";
+type DeskFilter =
+  | "all"
+  | "connect"
+  | "mashinani"
+  | "wanahabari-lab"
+  | "studios";
 
 interface FilterTab {
   id: DeskFilter;
@@ -78,7 +79,10 @@ function getFormatIcon(type: string, contentType: string) {
   if (contentType.toLowerCase().includes("animation")) {
     return <Clapperboard className="size-3" />;
   }
-  if (contentType.toLowerCase().includes("town hall") || contentType.toLowerCase().includes("listening")) {
+  if (
+    contentType.toLowerCase().includes("town hall") ||
+    contentType.toLowerCase().includes("listening")
+  ) {
     return <Users2 className="size-3" />;
   }
   return <FileSearch className="size-3" />;
@@ -92,11 +96,7 @@ function getProjectLink(slug: string) {
   return `/bns-studio/${canonical}`;
 }
 
-export function ProgrammesProjectsLoop({
-  className,
-}: {
-  className?: string;
-}) {
+export function ProgrammesProjectsLoop({ className }: { className?: string }) {
   const allProjects = useMemo(() => studiosEvidenceData.getAllProjects(), []);
   const [activeFilter, setActiveFilter] = useState<DeskFilter>("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -131,22 +131,24 @@ export function ProgrammesProjectsLoop({
       { id: "all", label: "All Productions", count: allProjects.length },
       {
         id: "connect",
-        label: "Desk 01 · Connect",
+        label: " Connect",
         count: allProjects.filter((p) => p.programmeSlug === "connect").length,
       },
       {
         id: "mashinani",
-        label: "Desk 02 · Mashinani",
-        count: allProjects.filter((p) => p.programmeSlug === "mashinani").length,
+        label: " Mashinani",
+        count: allProjects.filter((p) => p.programmeSlug === "mashinani")
+          .length,
       },
       {
         id: "wanahabari-lab",
-        label: "Desk 03 · Wanahabari",
-        count: allProjects.filter((p) => p.programmeSlug === "wanahabari-lab").length,
+        label: " Wanahabari",
+        count: allProjects.filter((p) => p.programmeSlug === "wanahabari-lab")
+          .length,
       },
       {
         id: "studios",
-        label: "Desk 04 · Studios",
+        label: " Studios",
         count: allProjects.filter((p) => p.programmeSlug === "studios").length,
       },
     ];
@@ -157,7 +159,10 @@ export function ProgrammesProjectsLoop({
   return (
     <section
       id="public-evidence-loop"
-      className={cn("py-12 sm:py-16 md:py-20 border-b border-border/40 overflow-hidden bg-background/50", className)}
+      className={cn(
+        "py-12 sm:py-16 md:py-20 border-b border-border/40 overflow-hidden bg-background/50",
+        className,
+      )}
     >
       <div className={SECTION_SHELL_INNER}>
         {/* Section Identifier & Minimalist Editorial Heading */}
@@ -179,7 +184,8 @@ export function ProgrammesProjectsLoop({
           </div>
 
           <p className="text-sm text-muted-foreground max-w-sm sm:text-right font-normal">
-            Swipe or search to inspect civic evidence. Click any project to open its dedicated case study or research dossier.
+            Swipe or search to inspect civic evidence. Click any project to open
+            its dedicated case study or research dossier.
           </p>
         </div>
 
@@ -250,7 +256,9 @@ export function ProgrammesProjectsLoop({
                   <span
                     className={cn(
                       "ml-1 font-mono text-[10px]",
-                      isActive ? "text-background/80" : "text-muted-foreground/80",
+                      isActive
+                        ? "text-background/80"
+                        : "text-muted-foreground/80",
                     )}
                   >
                     ({tab.count})
@@ -268,8 +276,10 @@ export function ProgrammesProjectsLoop({
           {filteredProjects.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredProjects.map((project, idx) => {
-                const desk = DESK_CONFIG[project.programmeSlug] || DESK_CONFIG.studios;
-                const hasVideo = !!project.media.videoUrl || project.media.type === "video";
+                const desk =
+                  DESK_CONFIG[project.programmeSlug] || DESK_CONFIG.studios;
+                const hasVideo =
+                  !!project.media.videoUrl || project.media.type === "video";
                 const isAudio = project.media.type === "audio";
                 const href = getProjectLink(project.slug);
 
@@ -292,8 +302,15 @@ export function ProgrammesProjectsLoop({
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20" />
 
                     <div className="absolute top-3.5 inset-x-3.5 flex items-center justify-between gap-2 z-10">
-                      <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide shadow-sm", desk.pillClass)}>
-                        <span className="font-mono text-[9px] opacity-80">{desk.number}</span>
+                      <span
+                        className={cn(
+                          "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide shadow-sm",
+                          desk.pillClass,
+                        )}
+                      >
+                        <span className="font-mono text-[9px] opacity-80">
+                          {desk.number}
+                        </span>
                         <span>{desk.name}</span>
                       </span>
                       <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-mono font-semibold bg-black/60 text-white/90 backdrop-blur-md border border-white/10">
@@ -327,7 +344,9 @@ export function ProgrammesProjectsLoop({
                 No productions found matching &ldquo;{searchQuery}&rdquo;
               </h3>
               <p className="text-xs text-muted-foreground max-w-sm mx-auto mb-4">
-                Try searching for another topic (e.g. &ldquo;Terra&rdquo;, &ldquo;Treasury&rdquo;, &ldquo;Podcast&rdquo;, or &ldquo;Nakuru&rdquo;).
+                Try searching for another topic (e.g. &ldquo;Terra&rdquo;,
+                &ldquo;Treasury&rdquo;, &ldquo;Podcast&rdquo;, or
+                &ldquo;Nakuru&rdquo;).
               </p>
               <button
                 type="button"
@@ -347,11 +366,15 @@ export function ProgrammesProjectsLoop({
 
           <Marquee
             pauseOnHover
-            repeat={Math.max(2, Math.ceil(8 / Math.max(1, filteredProjects.length)))}
+            repeat={Math.max(
+              2,
+              Math.ceil(8 / Math.max(1, filteredProjects.length)),
+            )}
             className="py-2 [--duration:55s] [--gap:1.5rem]"
           >
             {filteredProjects.map((project, idx) => {
-              const desk = DESK_CONFIG[project.programmeSlug] || DESK_CONFIG.studios;
+              const desk =
+                DESK_CONFIG[project.programmeSlug] || DESK_CONFIG.studios;
               const href = getProjectLink(project.slug);
 
               return (
@@ -373,8 +396,15 @@ export function ProgrammesProjectsLoop({
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/20" />
 
                   <div className="absolute top-3.5 inset-x-3.5 flex items-center justify-between gap-2 z-10">
-                    <span className={cn("inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide shadow-sm", desk.pillClass)}>
-                      <span className="font-mono text-[9px] opacity-80">{desk.number}</span>
+                    <span
+                      className={cn(
+                        "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide shadow-sm",
+                        desk.pillClass,
+                      )}
+                    >
+                      <span className="font-mono text-[9px] opacity-80">
+                        {desk.number}
+                      </span>
                       <span>{desk.name}</span>
                     </span>
                     <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-mono font-semibold bg-black/60 text-white/90 backdrop-blur-md border border-white/10">

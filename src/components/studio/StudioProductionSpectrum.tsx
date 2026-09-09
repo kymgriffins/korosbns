@@ -142,7 +142,7 @@ export function StudioProductionSpectrum() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 sm:pb-12 border-b border-zinc-800/80">
           <div className="space-y-4 max-w-3xl">
             <div>
-              <SectionBadge title="Chapter 03 · Production Spectrum" />
+              <SectionBadge title=" Production Spectrum" />
             </div>
 
             <h2 className="font-heading text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight">
@@ -175,40 +175,7 @@ export function StudioProductionSpectrum() {
           </div>
         </div>
 
-        {/* 02 — CATEGORY FILTER TABS */}
-        <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-4 sm:py-6 border-b border-zinc-800/40 -mx-4 px-4 sm:mx-0 sm:px-0">
-          {DISCIPLINE_TABS.map((tab) => {
-            const isSelected = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => {
-                  setActiveTab(tab.id);
-                  setActiveIndex(0);
-                }}
-                className={cn(
-                  "inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 sm:px-4 sm:py-2 text-xs font-mono font-semibold transition-all whitespace-nowrap outline-none cursor-pointer",
-                  isSelected
-                    ? "bg-primary text-primary-foreground shadow-md shadow-primary/20 scale-[1.02]"
-                    : "border border-zinc-800 bg-zinc-900/60 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200"
-                )}
-              >
-                <span>{tab.label}</span>
-                <span
-                  className={cn(
-                    "text-[10px] px-1.5 py-0.2 rounded-full",
-                    isSelected
-                      ? "bg-black/20 text-white font-bold"
-                      : "bg-zinc-800 text-zinc-400"
-                  )}
-                >
-                  [{tab.count}]
-                </span>
-              </button>
-            );
-          })}
-        </div>
+      
 
         {/* 03 — DISCIPLINE CARDS: MOBILE HORIZONTAL SNAP CAROUSEL / DESKTOP BALANCED 3-COL */}
         <div

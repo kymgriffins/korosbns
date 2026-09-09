@@ -37,87 +37,7 @@ export function BNSStudioPageClient() {
       </div>
 
       {/* 02 — THE DOUBLE IMPACT STORYLINE ARC (Full Section Utilization, Zero Boxy Cards) */}
-      <section className="py-24 md:py-36 border-t border-border/40">
-        <div className={SECTION_SHELL_INNER}>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
-            <div className="lg:col-span-7 space-y-8">
-              <div className="space-y-2">
-                <EditorialPill dot pulse>
-                  Chapter 01 · The Double Impact Covenant
-                </EditorialPill>
-                <h2 className="font-heading text-3xl sm:text-5xl lg:text-6xl font-black text-foreground leading-[1.05]">
-                  Commercial creative craft that bankrolls citizen budget audits.
-                </h2>
-              </div>
 
-              <div className="prose prose-lg dark:prose-invert max-w-none text-base sm:text-lg leading-relaxed text-foreground/80 space-y-6">
-                <p className="first-letter:float-left first-letter:mr-3 first-letter:font-heading first-letter:text-6xl first-letter:font-black first-letter:text-primary">
-                  Most civic tech initiatives depend entirely on unpredictable donor grants that expire after 12 months. BNS Studios was engineered to provide sovereign financial resilience: we operate as an elite creative agency for institutional clients, but with an uncompromising mission covenant.
-                </p>
-                <p>
-                  A portion of operating surplus generated from commissioned films, podcast seasons, and public campaigns is channelled directly into funding free grassroots scorecards, youth tracker stipends, and newsroom investigative training across our focus counties.
-                </p>
-              </div>
-
-              {/* Seamless Narrative Ledger (Zero Boxy Cards) */}
-              <div className="grid grid-cols-3 gap-6 pt-6 border-t border-border/50">
-                <div>
-                  <p className="font-heading text-4xl sm:text-5xl font-black text-foreground tracking-tighter">08</p>
-                  <p className="font-mono text-xs text-muted-foreground mt-1">Production Formats</p>
-                </div>
-                <div>
-                  <p className="font-heading text-4xl sm:text-5xl font-black text-primary tracking-tighter">04</p>
-                  <p className="font-mono text-xs text-muted-foreground mt-1">Focus Counties</p>
-                </div>
-                <div>
-                  <p className="font-heading text-4xl sm:text-5xl font-black text-foreground tracking-tighter">Dual</p>
-                  <p className="font-mono text-xs text-muted-foreground mt-1">Impact Model</p>
-                </div>
-              </div>
-
-              <div className="pt-4 flex flex-wrap items-center gap-3">
-                <PillButton
-                  onClick={() => setBookingOpen(true)}
-                  size="default"
-                  className="w-full sm:w-auto justify-center"
-                >
-                  Commission BNS Studio
-                </PillButton>
-                <PillButtonGroup
-                  href="/programmes/studios"
-                  label="Read Desk 04 Narrative Dossier"
-                  variant="outline"
-                  size="default"
-                  className="hidden sm:inline-flex w-full sm:w-auto justify-center"
-                />
-              </div>
-            </div>
-
-            {/* Right Column: High-Craft Documentary Photographic Proof */}
-            <div className="lg:col-span-5 lg:sticky lg:top-28">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-border/60 shadow-2xl bg-muted">
-                <Image
-                  src={BNS_MEDIA_IMAGES.productionA}
-                  alt="BNS Studio production crew filming behind the scenes"
-                  fill
-                  priority
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 40vw"
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/25 to-transparent" />
-                <div className="absolute bottom-6 left-6 right-6 text-white space-y-1">
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-primary font-bold">
-                    Behind The Lens · BNS Studios
-                  </span>
-                  <p className="text-sm font-semibold leading-snug">
-                    Field videographers capturing citizen testimonials during the Western Kenya budget hearings.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* 03 — 21:9 CINEMATIC SCREENING THEATRE (Atmospheric Ambient Backglow) */}
       <section className="w-full bg-zinc-950 text-white py-24 md:py-36 border-y border-zinc-800/80 relative overflow-hidden">
@@ -126,7 +46,7 @@ export function BNSStudioPageClient() {
         <div className={SECTION_SHELL_INNER}>
           <div className="max-w-4xl space-y-4 mb-12">
             <span className="font-mono text-xs text-primary uppercase tracking-widest font-bold">
-              Chapter 02 · The Screening Room
+              · The Screening Room
             </span>
             <h2 className="font-heading text-3xl sm:text-5xl font-black text-white leading-tight">
               Screening the flagship Treasury explainer reel.

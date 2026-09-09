@@ -331,77 +331,9 @@ export function AgencyCaseStudyTemplate({ project }: { project: StudioProjectEvi
               </p>
             </section>
 
-            {/* Chapter 3: What Was Produced & Multi-Format Delivery */}
-            <section className="space-y-6">
-              <div className="space-y-2">
-                <EditorialPill variant="muted" size="xs">
-                  Chapter 03 · Media Architecture
-                </EditorialPill>
-                <h2 className={cn(T.sectionTitle, "text-foreground")}>
-                  Production Delivery & Syndication
-                </h2>
-              </div>
 
-              <p className="text-base leading-relaxed text-foreground/80 sm:text-lg">
-                {project.whatWeProduced}
-              </p>
 
-              {/* Deliverables Pills */}
-              <div className="rounded-2xl border border-border/60 bg-card p-6 space-y-4">
-                <p className="text-xs font-mono font-bold uppercase tracking-wider text-muted-foreground">
-                  Verified Production Deliverables
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {project.outputs.map((output, idx) => (
-                    <EditorialPill key={idx} variant="default" size="sm" icon={<CheckCircle2 className="size-3.5 text-primary" />}>
-                      {output}
-                    </EditorialPill>
-                  ))}
-                </div>
-              </div>
-            </section>
 
-            {/* Chapter 4: Concrete Policy Impact & Accountability */}
-            <section className="space-y-6">
-              <div className="space-y-2">
-                <EditorialPill variant="muted" size="xs">
-                  Chapter 04 · Measurable Change
-                </EditorialPill>
-                <h2 className={cn(T.sectionTitle, "text-foreground")}>
-                  Impact & Ground Verification
-                </h2>
-              </div>
-
-              {/* 3-Part Impact Summary Ledger */}
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <div className="rounded-2xl border border-primary/25 bg-primary/5 p-5 space-y-1">
-                  <p className="text-[10px] font-mono font-bold uppercase tracking-wider text-primary">
-                    Verified Outcome
-                  </p>
-                  <p className="font-heading text-xl font-extrabold text-foreground">
-                    {project.impactEvidence.primaryMetric || "Policy Scrutinized"}
-                  </p>
-                </div>
-
-                <div className="rounded-2xl border border-border/60 bg-card p-5 space-y-1">
-                  <p className="text-[10px] font-mono font-bold uppercase tracking-wider text-muted-foreground">
-                    Citizen Mobilization
-                  </p>
-                  <p className="font-heading text-xl font-extrabold text-foreground">
-                    {project.impactEvidence.secondaryMetric || project.impactEvidence.verificationOutcome || "Active Public Oversight"}
-                  </p>
-                </div>
-
-                <div className="rounded-2xl border border-border/60 bg-card p-5 space-y-1">
-                  <p className="text-[10px] font-mono font-bold uppercase tracking-wider text-muted-foreground">
-                    Contextual Shift
-                  </p>
-                  <p className="text-xs leading-relaxed text-foreground/80">
-                    {project.impactEvidence.context}
-                  </p>
-                </div>
-              </div>
-            </section>
           </div>
         </div>
       </main>
@@ -445,37 +377,7 @@ export function AgencyCaseStudyTemplate({ project }: { project: StudioProjectEvi
               </div>
             </div>
 
-            {/* Adjacent Case Studies */}
-            {related.length > 0 && (
-              <div className="border-t border-border/40 pt-12 text-left">
-                <p className="text-xs font-mono font-bold uppercase tracking-wider text-muted-foreground mb-6">
-                  Adjacent Investigations in {getProgrammeLabel(project.programmeSlug)}
-                </p>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                  {related.map((rel) => (
-                    <Link
-                      key={rel.id}
-                      href={`/bns-studio/${rel.slug}`}
-                      className="group rounded-2xl border border-border/50 bg-card p-5 transition-all hover:border-primary/50 hover:shadow-md"
-                    >
-                      <EditorialPill variant="muted" size="xs">
-                        {rel.contentType}
-                      </EditorialPill>
-                      <h4 className="mt-3 text-sm font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2">
-                        {rel.title}
-                      </h4>
-                      <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
-                        {rel.briefChallenge}
-                      </p>
-                      <div className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-primary">
-                        <span>Read Whitepaper</span>
-                        <ArrowUpRight className="size-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
+            
           </div>
         </div>
       </footer>
