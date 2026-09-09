@@ -1,11 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
+import { useMemo } from "react";
 import { useOrg } from "@/contexts/org-context";
 import { socialLinks as defaultSocialLinks } from "@/constants/links";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 import { cn } from "@/utils";
-import { useMemo } from "react";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -16,6 +17,38 @@ const navLinks = [
   { label: "Help & FAQ", href: "/help" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
+];
+
+type FooterLogo = {
+  id: string;
+  name: string;
+  href: string;
+  logo_url: string;
+  external?: boolean;
+};
+
+const PARTNER_LOGOS: FooterLogo[] = [
+  {
+    id: "house-of-fiscal-wisdom",
+    name: "House of Fiscal Wisdom",
+    href: "https://house-of-fiscal-wisdom.org/",
+    logo_url: "/images/partners/house-of-fiscal-wisdom.png",
+    external: true,
+  },
+  {
+    id: "committee-on-fiscal-studies",
+    name: "Committee on Fiscal Studies",
+    href: "https://cfs.uonbi.ac.ke/",
+    logo_url: "/images/partners/committee-on-fiscal-studies.png",
+    external: true,
+  },
+  {
+    id: "tisa",
+    name: "TISA Kenya",
+    href: "https://newtisa.tisa.co.ke/",
+    logo_url: "/images/partners/tisa.svg",
+    external: true,
+  },
 ];
 
 export default function Footer() {
@@ -39,6 +72,17 @@ export default function Footer() {
     return defaultSocialLinks;
   }, [config.socials]);
 
+  const partnerLogos = useMemo<FooterLogo[]>(() => {
+    const bns: FooterLogo = {
+      id: "budget-ndio-story",
+      name: organizationTitle,
+      href: "/",
+      logo_url: "/logo.svg",
+      external: false,
+    };
+    return [bns, ...PARTNER_LOGOS];
+  }, [organizationTitle]);
+
   return (
     <footer className="mt-16 lg:mt-24">
       {/* Dark editorial band — Marwa-style */}
@@ -60,6 +104,49 @@ export default function Footer() {
               <p className="max-w-sm text-sm leading-relaxed text-surface-invert-foreground/70 md:text-base">
                 {footerBlurb}
               </p>
+
+              <ul
+                className="flex flex-wrap items-center gap-2.5 pt-1"
+                aria-label="BNS and partner logos"
+              >
+                {partnerLogos.map((partner) => {
+                  const logo = (
+                    <span className="relative flex h-10 w-24 items-center justify-center rounded-md bg-white px-2 py-1.5">
+                      <Image
+                        src={partner.logo_url}
+                        alt={`${partner.name} logo`}
+                        fill
+                        className="object-contain p-1"
+                        sizes="96px"
+                      />
+                    </span>
+                  );
+
+                  return (
+                    <li key={partner.id}>
+                      {partner.external ? (
+                        <a
+                          href={partner.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`Visit ${partner.name}`}
+                          className="block rounded-md outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring"
+                        >
+                          {logo}
+                        </a>
+                      ) : (
+                        <Link
+                          href={partner.href}
+                          aria-label={partner.name}
+                          className="block rounded-md outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring"
+                        >
+                          {logo}
+                        </Link>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
             </div>
 
             <div className="md:col-span-3 md:col-start-7">
