@@ -8,8 +8,9 @@ import {
   BNS_MEDIA_IMAGES,
 } from "@/constants/bns-media-images";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
-import { FileSearch, Radio, Smartphone } from "lucide-react";
+import { FileSearch, Radio, Smartphone, ArrowDown } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export function ProgrammesLanding() {
   return (
@@ -21,7 +22,38 @@ export function ProgrammesLanding() {
         badgeLabel="SOVEREIGN "
       />
 
-      {/* 01 — MASTER SOVEREIGN HERO: UNIFIED HEADLINE & IMPACT LEDGER */}
+      {/* Quick Desk Navigation & Direct All-Projects Jump Bar */}
+      <nav aria-label="Programmes Navigation" className="border-b border-border/40 bg-muted/20 py-2.5">
+        <div className={SECTION_SHELL_INNER}>
+          <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-mono text-muted-foreground uppercase tracking-wider text-[11px]">
+                Programmes:
+              </span>
+              <Link href="/programmes/connect" className="px-2.5 py-1 rounded-full bg-muted/70 hover:bg-muted text-foreground font-medium transition-colors">
+                01 Connect
+              </Link>
+              <Link href="/programmes/mashinani" className="px-2.5 py-1 rounded-full bg-muted/70 hover:bg-muted text-foreground font-medium transition-colors">
+                02 Mashinani
+              </Link>
+              <Link href="/programmes/wanahabari-lab" className="px-2.5 py-1 rounded-full bg-muted/70 hover:bg-muted text-foreground font-medium transition-colors">
+                03 Wanahabari Lab
+              </Link>
+              <Link href="/programmes/studios" className="px-2.5 py-1 rounded-full bg-muted/70 hover:bg-muted text-foreground font-medium transition-colors">
+                04 Studios
+              </Link>
+            </div>
+
+            <a
+              href="#public-evidence-loop"
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground font-mono font-bold text-[11px] transition-all"
+            >
+              <span>Explore All 13 Projects At Once</span>
+              <ArrowDown className="size-3" />
+            </a>
+          </div>
+        </div>
+      </nav>
 
       {/* ========================================================================= */}
       {/* DESK 01: BNS CONNECT — TYPOGRAPHIC MANIFESTO & DIGITAL YOUTH SPREAD        */}

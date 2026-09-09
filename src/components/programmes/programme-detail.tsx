@@ -1,6 +1,5 @@
 "use client";
 
-import { ProgrammeChapterBridge } from "@/components/programmes/programme-chapter-bridge";
 import type { ProgrammeBlock } from "@/content";
 import { ConnectScrollytelling } from "@/components/programmes/scrollytelling/connect-scrollytelling";
 import { MashinaniScrollytelling } from "@/components/programmes/scrollytelling/mashinani-scrollytelling";
@@ -12,7 +11,6 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
     return (
       <div className="prog-page bg-background text-foreground selection:bg-primary/20">
         <ConnectScrollytelling />
-        <ProgrammeChapterBridge currentSlug={programme.slug} />
       </div>
     );
   }
@@ -21,7 +19,6 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
     return (
       <div className="prog-page bg-background text-foreground selection:bg-amber-500/20">
         <MashinaniScrollytelling />
-        <ProgrammeChapterBridge currentSlug={programme.slug} />
       </div>
     );
   }
@@ -30,7 +27,6 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
     return (
       <div className="prog-page bg-background text-foreground selection:bg-red-500/20">
         <WanahabariScrollytelling />
-        <ProgrammeChapterBridge currentSlug={programme.slug} />
       </div>
     );
   }
@@ -39,7 +35,6 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
     return (
       <div className="prog-page bg-background text-foreground selection:bg-primary/20">
         <StudiosScrollytelling />
-        <ProgrammeChapterBridge currentSlug={programme.slug} />
       </div>
     );
   }
@@ -48,7 +43,6 @@ export function ProgrammeDetail({ programme }: { programme: ProgrammeBlock }) {
   return (
     <div className="prog-page bg-background text-foreground selection:bg-primary/20">
       <ConnectScrollytelling />
-      <ProgrammeChapterBridge currentSlug={programme.slug} />
     </div>
   );
 }

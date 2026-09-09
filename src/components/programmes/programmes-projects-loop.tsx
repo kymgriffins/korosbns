@@ -11,6 +11,8 @@ import {
   ArrowUpRight,
   Clapperboard,
   FileSearch,
+  Film,
+  LayoutGrid,
   Play,
   Radio,
   Search,
@@ -99,6 +101,7 @@ function getProjectLink(slug: string) {
 export function ProgrammesProjectsLoop({ className }: { className?: string }) {
   const allProjects = useMemo(() => studiosEvidenceData.getAllProjects(), []);
   const [activeFilter, setActiveFilter] = useState<DeskFilter>("all");
+  const [viewMode, setViewMode] = useState<"grid" | "reel">("grid");
   const [searchQuery, setSearchQuery] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -235,57 +238,91 @@ export function ProgrammesProjectsLoop({ className }: { className?: string }) {
             )}
           </div>
 
-          {/* Minimalist Desk Filter Tabs — Edge Scrollable on Mobile */}
-          <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
-            {filterTabs.map((tab) => {
-              const isActive = activeFilter === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  type="button"
-                  data-testid={`filter-tab-${tab.id}`}
-                  onClick={() => setActiveFilter(tab.id)}
-                  className={cn(
-                    "shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer min-h-[34px]",
-                    isActive
-                      ? "bg-foreground text-background font-semibold shadow-xs"
-                      : "bg-muted/50 border border-border/60 text-muted-foreground hover:bg-muted hover:text-foreground",
-                  )}
-                >
-                  {tab.label}{" "}
-                  <span
+          {/* Controls row: Desk filter tabs + View mode switcher (Grid / Reel) */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-1">
+            {/* Minimalist Desk Filter Tabs — Edge Scrollable on Mobile */}
+            <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
+              {filterTabs.map((tab) => {
+                const isActive = activeFilter === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    data-testid={`filter-tab-${tab.id}`}
+                    onClick={() => setActiveFilter(tab.id)}
                     className={cn(
-                      "ml-1 font-mono text-[10px]",
+                      "shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer min-h-[34px]",
                       isActive
-                        ? "text-background/80"
-                        : "text-muted-foreground/80",
+                        ? "bg-foreground text-background font-semibold shadow-xs"
+                        : "bg-muted/50 border border-border/60 text-muted-foreground hover:bg-muted hover:text-foreground",
                     )}
                   >
-                    ({tab.count})
-                  </span>
-                </button>
-              );
-            })}
+                    {tab.label}{" "}
+                    <span
+                      className={cn(
+                        "ml-1 font-mono text-[10px]",
+                        isActive
+                          ? "text-background/80"
+                          : "text-muted-foreground/80",
+                      )}
+                    >
+                      ({tab.count})
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* View Mode Toggle: Grid View vs Reel Loop */}
+            <div className="flex items-center gap-1 self-start md:self-auto shrink-0 bg-muted/40 p-1 rounded-full border border-border/60">
+              <button
+                type="button"
+                data-testid="view-toggle-grid"
+                onClick={() => setViewMode("grid")}
+                className={cn(
+                  "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-all cursor-pointer",
+                  viewMode === "grid"
+                    ? "bg-background text-foreground font-semibold shadow-xs"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+                aria-pressed={viewMode === "grid"}
+              >
+                <LayoutGrid className="size-3.5" />
+                <span>Grid View</span>
+              </button>
+              <button
+                type="button"
+                data-testid="view-toggle-reel"
+                onClick={() => setViewMode("reel")}
+                className={cn(
+                  "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-all cursor-pointer",
+                  viewMode === "reel"
+                    ? "bg-background text-foreground font-semibold shadow-xs"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+                aria-pressed={viewMode === "reel"}
+              >
+                <Film className="size-3.5" />
+                <span>Reel Loop</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* When Search Query is Active: Responsive Visual Grid */}
-      {searchQuery.trim() ? (
+      {/* Visual Projects Display: Grid View (Default & when searching) OR Reel Loop */}
+      {viewMode === "grid" || searchQuery.trim() ? (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
           {filteredProjects.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredProjects.map((project, idx) => {
                 const desk =
                   DESK_CONFIG[project.programmeSlug] || DESK_CONFIG.studios;
-                const hasVideo =
-                  !!project.media.videoUrl || project.media.type === "video";
-                const isAudio = project.media.type === "audio";
                 const href = getProjectLink(project.slug);
 
                 return (
                   <Link
-                    key={`${project.id}-search-${idx}`}
+                    key={`${project.id}-grid-${idx}`}
                     href={href}
                     className="group relative aspect-[16/10] sm:aspect-[16/9] w-full cursor-pointer overflow-hidden rounded-2xl bg-muted shadow-md transition-all duration-300 hover:scale-[1.02] hover:shadow-xl focus:outline-hidden block"
                   >
