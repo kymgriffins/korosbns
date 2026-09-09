@@ -28,7 +28,7 @@ export const bnsServices: ServiceItem[] = [
   {
     heading: "Media (Audio Visual) Agency",
     descp: "BNS Studio delivers professional videography, photography, studio rental, and post-production — turning civic and brand stories into high-quality audio-visual content.",
-    image: "/images/media/main%20media%20image.jpg",
+    image: "/images/media/main media image.jpg",
     ctaLabel: "Explore BNS Studio",
     ctaHref: "/bns-studio",
     secondaryCtaLabel: "Book Production",
