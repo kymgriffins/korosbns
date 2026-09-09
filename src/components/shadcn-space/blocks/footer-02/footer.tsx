@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useMemo } from "react";
 import { useOrg } from "@/contexts/org-context";
 import { socialLinks as defaultSocialLinks } from "@/constants/links";
+import { socialIconComponents } from "@/components/ui/social-icons";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 import { cn } from "@/utils";
 
@@ -51,6 +52,11 @@ const PARTNER_LOGOS: FooterLogo[] = [
   },
 ];
 
+function normalizeSocialIcon(platform: string): string {
+  const key = platform.trim().toLowerCase();
+  return key === "twitter" ? "x" : key;
+}
+
 export default function Footer() {
   const { config } = useOrg();
 
@@ -61,15 +67,20 @@ export default function Footer() {
   const organizationTitle = config.seo?.title || "Budget Ndio Story";
 
   const displaySocial = useMemo(() => {
-    const api = config.socials?.filter((s) => s.url && s.platform);
+    const api = config.socials?.filter(
+      (s) => s.url && s.platform && s.platform !== "website",
+    );
     if (api?.length) {
       return api.map((s) => ({
         label: s.label?.trim() || s.platform,
         href: s.url,
-        icon: s.platform === "twitter" ? "x" : s.platform,
+        icon: normalizeSocialIcon(s.platform),
       }));
     }
-    return defaultSocialLinks;
+    return defaultSocialLinks.map((s) => ({
+      ...s,
+      icon: normalizeSocialIcon(s.icon),
+    }));
   }, [config.socials]);
 
   const partnerLogos = useMemo<FooterLogo[]>(() => {
@@ -172,18 +183,24 @@ export default function Footer() {
                 Social
               </h3>
               <ul className="space-y-3">
-                {displaySocial.map((social) => (
-                  <li key={social.href}>
-                    <Link
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-surface-invert-foreground/60 transition-colors hover:text-surface-invert-foreground"
-                    >
-                      {social.label}
-                    </Link>
-                  </li>
-                ))}
+                {displaySocial.map((social) => {
+                  const Icon = socialIconComponents[social.icon];
+                  return (
+                    <li key={`${social.label}-${social.href}`}>
+                      <Link
+                        href={social.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-sm text-surface-invert-foreground/60 transition-colors hover:text-surface-invert-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      >
+                        {Icon ? (
+                          <Icon className="size-4 shrink-0 opacity-80" aria-hidden />
+                        ) : null}
+                        <span>{social.label}</span>
+                      </Link>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           </div>
