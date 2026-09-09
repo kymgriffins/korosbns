@@ -12,6 +12,8 @@ const navLinks = [
   { label: "Programmes", href: "/programmes" },
   { label: "Learn", href: "/learn" },
   { label: "Reports", href: "/reports" },
+  { label: "Budget Glossary", href: "/glossary" },
+  { label: "Help & FAQ", href: "/help" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
@@ -112,7 +114,13 @@ export default function Footer() {
           <p>
             © {new Date().getFullYear()} {organizationTitle}. All rights reserved.
           </p>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-4">
+            <Link href="/glossary" className="hover:text-foreground transition-colors">
+              Budget Glossary
+            </Link>
+            <Link href="/help" className="hover:text-foreground transition-colors">
+              Help & FAQ
+            </Link>
             <Link href="/privacy" className="hover:text-foreground transition-colors">
               Privacy Policy
             </Link>

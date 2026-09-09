@@ -44,10 +44,11 @@ export const footerLinks = {
   ],
   resources: [
     { label: "Budget Guides", href: Routes.Learn },
+    { label: "Budget Glossary", href: Routes.Glossary },
+    { label: "Help & FAQ", href: Routes.Help },
     { label: "Documents", href: Routes.Documents },
     { label: "Surveys", href: Routes.Surveys },
     { label: "Reports", href: Routes.Reports },
-    { label: "Newsletter", href: "/" },
     { label: "Contact", href: Routes.Contact },
   ],
   company: [

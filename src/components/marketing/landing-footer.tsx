@@ -37,6 +37,8 @@ export default function LandingFooter() {
                             <ul className="space-y-4">
                                 <li><Link href="/learn" className="text-base md:text-lg hover:text-primary transition-colors inline-block">Stories</Link></li>
                                 <li><Link href="/learn" className="text-base md:text-lg hover:text-primary transition-colors inline-block">Learn</Link></li>
+                                <li><Link href="/glossary" className="text-base md:text-lg hover:text-primary transition-colors inline-block">Budget Glossary</Link></li>
+                                <li><Link href="/help" className="text-base md:text-lg hover:text-primary transition-colors inline-block">Help & FAQ</Link></li>
                                 <li><Link href="/about" className="text-base md:text-lg hover:text-primary transition-colors inline-block">About</Link></li>
                                 <li><Link href="/contact" className="text-base md:text-lg hover:text-primary transition-colors inline-block">Contact</Link></li>
                             </ul>
@@ -64,7 +66,9 @@ export default function LandingFooter() {
                         <span className="text-xl font-black tracking-tighter text-card-foreground">BNS.</span>
                         <span className="text-muted-foreground/50 text-xs">© 2026 Budget Ndio Story</span>
                     </div>
-                    <div className="flex gap-6 text-muted-foreground text-xs font-semibold">
+                    <div className="flex flex-wrap gap-6 text-muted-foreground text-xs font-semibold">
+                        <Link href="/glossary" className="hover:text-card-foreground transition-colors">Budget Glossary</Link>
+                        <Link href="/help" className="hover:text-card-foreground transition-colors">Help & FAQ</Link>
                         <Link href="/privacy" className="hover:text-card-foreground transition-colors">Privacy Policy</Link>
                         <Link href="/terms" className="hover:text-card-foreground transition-colors">Terms of Service</Link>
                     </div>

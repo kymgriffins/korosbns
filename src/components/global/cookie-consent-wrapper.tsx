@@ -1,6 +1,7 @@
 "use client";
 
-/** Cookie consent UI disabled — re-enable by restoring CookieConsent import. */
+import CookieConsent from "@/components/shadcn-space/blocks/cookie-consent-01";
+
 export default function CookieConsentWrapper() {
-  return null;
+  return <CookieConsent />;
 }

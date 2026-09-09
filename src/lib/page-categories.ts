@@ -24,6 +24,8 @@ const MARKETING_PATTERNS = [
   /^\/bns-studio(?:\/|$)/,
   /^\/work(?:\/|$)/,
   /^\/programmes(?:\/|$)/,
+  /^\/help(?:\/|$)/,
+  /^\/glossary(?:\/|$)/,
 ];
 
 const API_PATTERNS = [

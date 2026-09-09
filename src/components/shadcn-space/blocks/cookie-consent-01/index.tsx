@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Cookie, Settings2 } from "lucide-react";
+import Link from "next/link";
+import { Cookie, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { cn } from "@/utils";
@@ -10,67 +11,101 @@ const CONSENT_KEY = "bns_cookie_consent";
 
 const CookieConsent = () => {
   const [visible, setVisible] = useState(false);
-  const [dismissed, setDismissed] = useState(() =>
-    typeof window !== "undefined" ? sessionStorage.getItem(CONSENT_KEY) === "true" : false
-  );
+  const [dismissed, setDismissed] = useState(true);
 
   useEffect(() => {
-    if (dismissed) return;
-    const timer = setTimeout(() => setVisible(true), 1000);
-    return () => clearTimeout(timer);
-  }, [dismissed]);
+    try {
+      const stored = localStorage.getItem(CONSENT_KEY) || sessionStorage.getItem(CONSENT_KEY);
+      if (!stored) {
+        setDismissed(false);
+        const timer = setTimeout(() => setVisible(true), 1200);
+        return () => clearTimeout(timer);
+      }
+    } catch {
+      // Fallback if storage access is restricted
+    }
+  }, []);
 
   const dismiss = (accepted: boolean) => {
     setVisible(false);
     setDismissed(true);
-    sessionStorage.setItem(CONSENT_KEY, "true");
-    if (accepted) toast.success("Cookies accepted.");
+    try {
+      localStorage.setItem(CONSENT_KEY, accepted ? "accepted" : "declined");
+    } catch {
+      try {
+        sessionStorage.setItem(CONSENT_KEY, accepted ? "accepted" : "declined");
+      } catch {
+        // no-op
+      }
+    }
+    if (accepted) {
+      toast.success("Cookie preferences saved.");
+    }
   };
 
   if (dismissed) return null;
 
   return (
-    <section className="fixed inset-0 z-[999] overflow-hidden bg-[url('https://images.shadcnspace.com/assets/hero-img/cookie-concent-bg-01.webp')] bg-no-repeat bg-bottom bg-cover">
-      <div className="relative min-h-screen max-w-7xl xl:px-16 lg:px-8 px-4 mx-auto">
-        <div
-          className={cn(
-            "absolute inset-x-0 bottom-0 pb-6 lg:px-4 px-4 transition-all duration-500",
-            visible ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
-          )}
-        >
-          <div className="bg-background rounded-xl px-5 py-6 md:p-8">
-            <div className="flex items-center justify-between md:flex-nowrap flex-wrap sm:gap-6 gap-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 items-center px-3 rounded-full bg-secondary shrink-0">
-                  <Cookie className="w-4 h-4 text-secondary-foreground" />
-                </div>
-                <p className="text-muted-foreground md:text-lg text-base">
-                  By clicking accept, you consent to our use of cookies.
-                </p>
-              </div>
-              <div className="flex items-center gap-2 shrink-0">
-                <Button variant="ghost" className="h-10 transition-colors rounded-full cursor-pointer">
-                  <Settings2 className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  className="h-10 px-6 rounded-full font-medium cursor-pointer"
-                  onClick={() => dismiss(false)}
-                >
-                  Reject all
-                </Button>
-                <Button
-                  className="h-10 px-6 rounded-full font-medium cursor-pointer hover:bg-primary/80 transition-colors duration-200"
-                  onClick={() => dismiss(true)}
-                >
-                  Accept
-                </Button>
-              </div>
+    <aside
+      aria-label="Cookie Consent Banner"
+      className={cn(
+        "fixed bottom-4 inset-x-4 sm:left-auto sm:right-6 sm:max-w-lg z-50 transition-all duration-500 ease-out",
+        visible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0 pointer-events-none"
+      )}
+    >
+      <div className="rounded-2xl border border-border/80 bg-background/95 backdrop-blur-md shadow-2xl p-5 sm:p-6 text-foreground">
+        <div className="flex items-start gap-3.5">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20">
+            <Cookie className="h-4 w-4" />
+          </div>
+          <div className="flex-1 space-y-3">
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+              This website uses cookies to improve your experience and analyze site usage. See our{" "}
+              <Link
+                href="/privacy"
+                className="font-medium text-foreground underline underline-offset-4 hover:text-primary transition-colors"
+              >
+                Privacy Policy
+              </Link>{" "}
+              and{" "}
+              <Link
+                href="/terms"
+                className="font-medium text-foreground underline underline-offset-4 hover:text-primary transition-colors"
+              >
+                Terms & Conditions
+              </Link>{" "}
+              to learn more.
+            </p>
+
+            <div className="flex items-center justify-end gap-2 pt-1">
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-full text-xs font-semibold px-4 h-8 border-border/70 hover:bg-muted"
+                onClick={() => dismiss(false)}
+              >
+                Decline
+              </Button>
+              <Button
+                size="sm"
+                className="rounded-full text-xs font-semibold px-4 h-8 bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm"
+                onClick={() => dismiss(true)}
+              >
+                Accept Cookies
+              </Button>
             </div>
           </div>
+          <button
+            type="button"
+            onClick={() => dismiss(false)}
+            aria-label="Close cookie banner"
+            className="text-muted-foreground hover:text-foreground rounded-lg p-1 transition-colors"
+          >
+            <X className="h-4 w-4" />
+          </button>
         </div>
       </div>
-    </section>
+    </aside>
   );
 };
 

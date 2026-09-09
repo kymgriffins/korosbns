@@ -25,8 +25,9 @@ const footerLinks = {
   ],
   resources: [
     { label: "Budget Guides", href: "/learn" },
+    { label: "Budget Glossary", href: "/glossary" },
+    { label: "Help & FAQ", href: "/help" },
     { label: "Surveys", href: "/surveys" },
-    { label: "FAQ", href: "/faq" },
     { label: "Contact", href: "/contact" },
   ],
   company: [
@@ -210,7 +211,21 @@ export function Footer() {
             <p className="text-center sm:text-left">
               © {new Date().getFullYear()} {organizationTitle}. All rights reserved.
             </p>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
+              <Link
+                href="/glossary"
+                className="hover:text-foreground transition-colors"
+              >
+                Glossary
+              </Link>
+              <span className="text-border">•</span>
+              <Link
+                href="/help"
+                className="hover:text-foreground transition-colors"
+              >
+                Help & FAQ
+              </Link>
+              <span className="text-border">•</span>
               <Link
                 href="/privacy"
                 className="hover:text-foreground transition-colors"

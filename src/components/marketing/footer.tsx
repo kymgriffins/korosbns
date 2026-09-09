@@ -214,7 +214,21 @@ const Footer = () => {
             ))}
           </div>
 
-          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+          <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+            <Link
+              href="/glossary"
+              className="hover:text-foreground transition-colors"
+            >
+              Glossary
+            </Link>
+            <span>•</span>
+            <Link
+              href="/help"
+              className="hover:text-foreground transition-colors"
+            >
+              Help & FAQ
+            </Link>
+            <span>•</span>
             <Link
               href="/privacy"
               className="hover:text-foreground transition-colors"

@@ -6,6 +6,8 @@ const MARKETING_FOOTER_ROUTES = new Set([
   "/careers",
   "/contact",
   "/faq",
+  "/help",
+  "/glossary",
   "/privacy",
   "/terms",
   "/security",
