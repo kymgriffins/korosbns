@@ -194,8 +194,8 @@ export default function BudgetGlossaryClient() {
 
       {/* Main Content Area */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
-        {/* Category Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-4 scrollbar-none">
+        {/* Category Tabs (Hidden on mobile to avoid horizontal scroll) */}
+        <div className="hidden sm:flex items-center gap-2 flex-wrap pb-4">
           {GLOSSARY_CATEGORIES.map((cat) => {
             const isSelected = selectedCategory === cat.id;
             const count = categoryCounts[cat.id] || 0;
@@ -228,8 +228,8 @@ export default function BudgetGlossaryClient() {
           })}
         </div>
 
-        {/* Alphabet Navigation Strip */}
-        <div className="mt-4 flex items-center gap-1.5 overflow-x-auto pb-2 border-b border-border/30 text-xs font-mono">
+        {/* Alphabet Navigation Strip (Hidden on mobile to avoid horizontal scroll) */}
+        <div className="hidden sm:flex mt-4 items-center gap-1.5 flex-wrap pb-2 border-b border-border/30 text-xs font-mono">
           <button
             type="button"
             onClick={() => setSelectedLetter(null)}

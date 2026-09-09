@@ -257,11 +257,11 @@ export const MEGA_MENU_DATA: MegaMenuSection[] = [
         badge: "Impact",
       },
       {
-        title: "Methodology & Charter",
-        href: "/about#methodology",
-        description: "Primary source verification (OCOB, Treasury) and non-partisan rigor.",
+        title: "Theory of Change",
+        href: "/about#theory-of-change",
+        description: "How forensic data and our 4 programmes complete the civic impact loop.",
         icon: ShieldCheck,
-        badge: "Ethics",
+        badge: "Architecture",
       },
       {
         title: "Team & Consortium",

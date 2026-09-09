@@ -52,4 +52,41 @@ describe("LandingTikTokPhone", () => {
       "https://www.tiktok.com/@budget.ndio.story"
     );
   });
+
+  it("ensures video element has playable attributes and valid MP4 source", () => {
+    render(<LandingTikTokPhone />);
+
+    const videoEl = screen.getByLabelText("Calvina Praise debt explanation video") as HTMLVideoElement;
+    expect(videoEl).toBeInTheDocument();
+    expect(videoEl.tagName.toLowerCase()).toBe("video");
+    expect(videoEl).toHaveAttribute("playsinline");
+    expect(videoEl).toHaveAttribute("loop");
+    expect(videoEl).toHaveAttribute("preload", "auto");
+
+    const source = videoEl.querySelector("source");
+    expect(source).not.toBeNull();
+    expect(source).toHaveAttribute("type", "video/mp4");
+    expect(source?.getAttribute("src")).toContain(".mp4");
+    expect(source?.getAttribute("src")).toContain("Calvina%20Praise%20Sovereign%20debt.mp4");
+  });
+
+  it("handles unmute toggle with clean icon button without redundant text", async () => {
+    const playSpy = vi.spyOn(window.HTMLMediaElement.prototype, "play").mockImplementation(async () => {});
+
+    render(<LandingTikTokPhone />);
+
+    // Top-right audio toggle button
+    const unmuteBtn = screen.getByRole("button", { name: "Unmute video" });
+    expect(unmuteBtn).toBeInTheDocument();
+    // Verify no redundant text is rendered inside the button
+    expect(unmuteBtn).not.toHaveTextContent("Unmute");
+    expect(unmuteBtn).not.toHaveTextContent("Mute");
+
+    await act(async () => {
+      fireEvent.click(unmuteBtn);
+    });
+
+    expect(playSpy).toHaveBeenCalled();
+  });
 });
+

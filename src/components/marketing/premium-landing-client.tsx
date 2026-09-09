@@ -4,7 +4,7 @@ import React from "react";
 import dynamic from "next/dynamic";
 import LandingHero from "@/components/marketing/landing-hero";
 import { EditorialCtaBand } from "@/components/ui/editorial";
-import { LandingSection } from "@/layouts/landing-section";
+import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 import { PROGRAMMES } from "@/content";
 
 const LandingYoutube = dynamic(
@@ -88,19 +88,21 @@ export default function PremiumLandingClient() {
       <TimelineSection />
       <TestimonialsSection />
       <SocialsSection />
-      <LandingSection>
-        <EditorialCtaBand
-          eyebrow="Start now"
-          title="Four programmes built for civic impact."
-          description="Track national spending, follow county budgets, train journalists, and commission evidence-based storytelling."
-          ctaHref="/programmes"
-          ctaLabel="Explore Programmes"
-          images={PROGRAMMES.slice(0, 2).map((p) => ({
-            src: p.visual.hero,
-            alt: p.visual.heroAlt,
-          }))}
-        />
-      </LandingSection>
+      <section className="pt-2 pb-14 sm:pb-20 lg:pb-24">
+        <div className={SECTION_SHELL_INNER}>
+          <EditorialCtaBand
+            eyebrow="Start now"
+            title="Four programmes built for civic impact."
+            description="Track national spending, follow county budgets, train journalists, and commission evidence-based storytelling."
+            ctaHref="/programmes"
+            ctaLabel="Explore Programmes"
+            images={PROGRAMMES.slice(0, 2).map((p) => ({
+              src: p.visual.hero,
+              alt: p.visual.heroAlt,
+            }))}
+          />
+        </div>
+      </section>
       <NewsletterPopup />
     </>
   );

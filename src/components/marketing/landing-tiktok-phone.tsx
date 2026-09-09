@@ -295,16 +295,15 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
           </button>
         ) : null}
 
-        {/* Prominent floating unmute pill when running muted in background */}
+        {/* Floating unmute icon indicator when running muted in background */}
         {isPlaying && isMuted ? (
           <button
             type="button"
             onClick={handleUnmute}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex items-center gap-2 rounded-full bg-black/70 px-4 py-2 text-xs font-semibold text-white shadow-2xl backdrop-blur-md transition-all hover:bg-black hover:scale-105 border border-white/20 pointer-events-auto cursor-pointer"
-            aria-label="Click to unmute"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex size-14 items-center justify-center rounded-full bg-black/65 text-white shadow-2xl backdrop-blur-md transition-all hover:scale-110 hover:bg-black/85 border border-white/20 pointer-events-auto cursor-pointer"
+            aria-label="Unmute video"
           >
-            <VolumeX className="size-4 animate-pulse text-amber-400" />
-            <span>Click to unmute</span>
+            <VolumeX className="size-7 text-amber-400" />
           </button>
         ) : null}
 
@@ -376,19 +375,13 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
               if (isMuted) handleUnmute(e);
               else toggleMute();
             }}
-            className="pointer-events-auto flex items-center gap-1.5 rounded-full bg-black/60 px-3 py-1.5 text-white backdrop-blur-md transition-colors hover:bg-black/80 border border-white/10"
+            className="pointer-events-auto flex size-9 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-md transition-colors hover:bg-black/80 border border-white/10 cursor-pointer"
             aria-label={isMuted ? "Unmute video" : "Mute video"}
           >
             {isMuted ? (
-              <>
-                <VolumeX className="size-4 text-amber-400" />
-                <span className="text-[11px] font-medium">Unmute</span>
-              </>
+              <VolumeX className="size-4.5 text-amber-400" />
             ) : (
-              <>
-                <Volume2 className="size-4 text-emerald-400" />
-                <span className="text-[11px] font-medium">Mute</span>
-              </>
+              <Volume2 className="size-4.5 text-white" />
             )}
           </button>
           <button

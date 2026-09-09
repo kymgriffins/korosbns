@@ -92,31 +92,7 @@ export function StickyStackedCycle({
 
   return (
     <div ref={containerRef} className={cn("relative w-full", className)}>
-      {/* Mobile Horizontal Quick Navigation Rail (< lg) */}
-      <div className="block lg:hidden mb-6 sticky top-16 z-20 -mx-4 px-4 py-2.5 bg-background/90 backdrop-blur-md border-y border-border/40">
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-          {items.map((item, idx) => {
-            const isActive = activeIndex === idx;
-            return (
-              <button
-                key={`mob-step-${item.id || idx}`}
-                type="button"
-                onClick={() => scrollToItem(idx)}
-                aria-current={isActive ? "step" : undefined}
-                className={cn(
-                  "shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition-all duration-200 flex items-center gap-1.5",
-                  isActive
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "bg-muted/60 text-muted-foreground hover:text-foreground"
-                )}
-              >
-                <span className="font-mono font-black">{item.step}</span>
-                <span className="truncate max-w-[120px]">{item.title.split("—")[0].trim()}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
+
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
         {/* Sticky Left Control Rail (Full-height column stretches, inner div sticks at top-24) */}

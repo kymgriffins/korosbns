@@ -267,8 +267,8 @@ export default function HelpCenterClient() {
               </p>
             </div>
 
-            {/* Topic Filter Pills */}
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+            {/* Topic Filter Pills (Hidden on mobile to avoid horizontal scrolling) */}
+            <div className="hidden sm:flex items-center gap-1.5 flex-wrap pb-1">
               <button
                 type="button"
                 onClick={() => setSelectedTopic("all")}

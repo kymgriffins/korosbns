@@ -175,8 +175,8 @@ export function StudioProductionSpectrum() {
           </div>
         </div>
 
-        {/* 02 — CATEGORY FILTER TABS */}
-        <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-6 border-b border-zinc-800/80">
+        {/* 02 — CATEGORY FILTER TABS (Hidden on mobile to prevent poor horizontal tab scrolling) */}
+        <div className="hidden sm:flex items-center gap-2 flex-wrap py-6 border-b border-zinc-800/80">
           {DISCIPLINE_TABS.map((tab) => {
             const isSelected = activeTab === tab.id;
             return (

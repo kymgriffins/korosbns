@@ -120,9 +120,9 @@ export function ProgrammeProjectGrid({
           </div>
         </div>
 
-        {/* Optional Format Filter Strip if more than 1 format exists */}
+        {/* Optional Format Filter Strip (Hidden on mobile to avoid horizontal scrolling) */}
         {availableFormats.length > 1 && (
-          <div className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-6 mb-2">
+          <div className="hidden sm:flex items-center gap-2 flex-wrap pb-6 mb-2">
             <button
               type="button"
               onClick={() => setSelectedFormat("all")}

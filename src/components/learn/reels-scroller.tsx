@@ -346,7 +346,7 @@ export function ReelsScroller({
                 )}
               </AnimatePresence>
 
-              {/* Prominent floating unmute pill when running muted in background */}
+              {/* Floating unmute icon indicator when running muted in background */}
               {isPlaying && isCurrent && isMuted ? (
                 <button
                   type="button"
@@ -359,11 +359,10 @@ export function ReelsScroller({
                       videoEl.play().catch(() => {});
                     }
                   }}
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex items-center gap-2 rounded-full bg-black/75 px-4 py-2 text-xs font-semibold text-white shadow-2xl backdrop-blur-md transition-all hover:bg-black hover:scale-105 border border-white/20 pointer-events-auto cursor-pointer"
-                  aria-label="Click to unmute"
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex size-14 items-center justify-center rounded-full bg-black/65 text-white shadow-2xl backdrop-blur-md transition-all hover:scale-110 hover:bg-black/85 border border-white/20 pointer-events-auto cursor-pointer"
+                  aria-label="Unmute audio"
                 >
-                  <VolumeX className="size-4 animate-pulse text-amber-400" />
-                  <span>Click for sound</span>
+                  <VolumeX className="size-7 text-amber-400" />
                 </button>
               ) : null}
 

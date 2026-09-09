@@ -240,8 +240,8 @@ export function ProgrammesProjectsLoop({ className }: { className?: string }) {
 
           {/* Controls row: Desk filter tabs + View mode switcher (Grid / Reel) */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-1">
-            {/* Minimalist Desk Filter Tabs — Edge Scrollable on Mobile */}
-            <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
+            {/* Minimalist Desk Filter Tabs (Hidden on mobile to avoid horizontal scrolling) */}
+            <div className="hidden sm:flex items-center gap-2 flex-wrap py-1">
               {filterTabs.map((tab) => {
                 const isActive = activeFilter === tab.id;
                 return (

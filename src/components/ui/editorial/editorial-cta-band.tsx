@@ -40,7 +40,7 @@ export function EditorialCtaBand({
   const hasImages = Boolean(images && images.length > 0);
 
   return (
-    <section className={cn("editorial-surface relative overflow-hidden", className)} aria-label={title}>
+    <section className={cn("editorial-surface relative overflow-hidden border border-border/50 shadow-sm", className)} aria-label={title}>
       {/* Subtle Premium Motion Background Glow */}
       {motionBackground && (
         <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden>
