@@ -1,21 +1,21 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
-import { ArrowLeft } from "lucide-react";
+import {
+  MaskedReveal,
+  MetricCounter,
+  ParallaxWrapper,
+  TelemetryHUD,
+  TextRevealOnScroll,
+  TransformationStage,
+} from "@/components/motion";
+import { ProgrammeProjectGrid } from "@/components/programmes/programme-project-grid";
 import { EditorialPill } from "@/components/ui/editorial/editorial-pill";
 import { PillButtonGroup } from "@/components/ui/editorial/pill-button-group";
 import { BNS_COMMUNITY_IMAGES } from "@/constants/bns-media-images";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
-import {
-  TelemetryHUD,
-  MaskedReveal,
-  ParallaxWrapper,
-  MetricCounter,
-  TransformationStage,
-  TextRevealOnScroll,
-} from "@/components/motion";
-import { ProgrammeProjectGrid } from "@/components/programmes/programme-project-grid";
+import { ArrowLeft } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 /**
  * Narrative arc: feed brief — short cadence, PDF → phone → Parliament.
@@ -53,14 +53,19 @@ export function ConnectScrollytelling() {
             </div>
 
             <h1 className="font-heading text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-foreground leading-[1.03]">
-              <MaskedReveal delay={0.05}>The budget lands as a PDF.</MaskedReveal>{" "}
+              <MaskedReveal delay={0.05}>
+                The budget lands as a PDF.
+              </MaskedReveal>{" "}
               <MaskedReveal delay={0.15} innerClassName="text-primary">
                 We put it back on the phone.
               </MaskedReveal>
             </h1>
 
             <p className="text-xl sm:text-2xl font-medium text-foreground/80 leading-relaxed max-w-3xl">
-              When the National Treasury publishes a dense Budget Policy Statement, public attention usually dies in the download folder. BNS Connect turns verified budget lines into explainers, debt meters, and youth memorandums built for mobile screens.
+              When the National Treasury publishes a dense Budget Policy
+              Statement, public attention usually dies in the download folder.
+              BNS Connect turns verified budget lines into explainers, debt
+              meters, and youth memorandums built for mobile screens.
             </p>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-6 border-t border-border/50">
@@ -69,9 +74,16 @@ export function ConnectScrollytelling() {
                   Scale we watch
                 </p>
                 <p className="text-lg sm:text-xl font-black text-primary tracking-tight">
-                  <MetricCounter value={4.8} prefix="KSh " suffix="T" decimals={1} />
+                  <MetricCounter
+                    value={4.8}
+                    prefix="KSh "
+                    suffix="T"
+                    decimals={1}
+                  />
                 </p>
-                <p className="text-xs text-muted-foreground">FY2026/27 national budget (Treasury)</p>
+                <p className="text-xs text-muted-foreground">
+                  FY2026/27 national budget (Treasury)
+                </p>
               </div>
 
               <div className="space-y-1">
@@ -81,7 +93,9 @@ export function ConnectScrollytelling() {
                 <p className="text-lg sm:text-xl font-black text-foreground tracking-tight">
                   Under 35
                 </p>
-                <p className="text-xs text-muted-foreground">Youth-first formats nationwide</p>
+                <p className="text-xs text-muted-foreground">
+                  Youth-first formats nationwide
+                </p>
               </div>
 
               <div className="space-y-1">
@@ -91,7 +105,9 @@ export function ConnectScrollytelling() {
                 <p className="text-lg sm:text-xl font-black text-primary tracking-tight">
                   Mobile explainers
                 </p>
-                <p className="text-xs text-muted-foreground">English · Kiswahili · Sheng</p>
+                <p className="text-xs text-muted-foreground">
+                  English · Kiswahili · Sheng
+                </p>
               </div>
 
               <div className="space-y-1">
@@ -101,7 +117,9 @@ export function ConnectScrollytelling() {
                 <p className="text-lg sm:text-xl font-black text-foreground tracking-tight">
                   Article 201
                 </p>
-                <p className="text-xs text-muted-foreground">Openness in public finance</p>
+                <p className="text-xs text-muted-foreground">
+                  Openness in public finance
+                </p>
               </div>
             </div>
           </div>
@@ -117,16 +135,25 @@ export function ConnectScrollytelling() {
                   Opening · The download folder problem
                 </span>
                 <h2 className="font-heading text-3xl sm:text-5xl font-black text-foreground leading-tight">
-                  Secrecy no longer needs a locked vault. A four-hundred-page PDF will do.
+                  Secrecy no longer needs a locked vault. A four-hundred-page
+                  PDF will do.
                 </h2>
               </div>
 
               <div className="prose prose-lg dark:prose-invert max-w-none text-base sm:text-lg leading-relaxed text-foreground/80 space-y-6">
                 <p className="first-letter:float-left first-letter:mr-3 first-letter:font-heading first-letter:text-6xl first-letter:font-black first-letter:text-primary">
-                  Every June, Parliament debates a national budget that crosses into the trillions of shillings. The documents that explain where that money is meant to go — Budget Estimates, the Medium-Term Debt Strategy, the Finance Bill — arrive dense, technical, and easy to abandon after page twelve.
+                  Every June, Parliament debates a national budget that crosses
+                  into the trillions of shillings. The documents that explain
+                  where that money is meant to go — Budget Estimates, the
+                  Medium-Term Debt Strategy, the Finance Bill — arrive dense,
+                  technical, and easy to abandon after page twelve.
                 </p>
                 <p>
-                  A generation that lives on mobile feeds will not wait for a seminar to decode a PAYE deduction. Connect meets them where attention already is: short verified explainers, live trackers, and an annual Youth Budget Survey that keeps pressure on after the Budget Day headlines fade.
+                  A generation that lives on mobile feeds will not wait for a
+                  seminar to decode a PAYE deduction. Connect meets them where
+                  attention already is: short verified explainers, live
+                  trackers, and an annual Youth Budget Survey that keeps
+                  pressure on after the Budget Day headlines fade.
                 </p>
               </div>
 
@@ -159,7 +186,8 @@ export function ConnectScrollytelling() {
                       Tracker assembly
                     </span>
                     <p className="text-sm font-semibold leading-snug">
-                      Fellows cross-checking published Treasury tables against ministry disbursement claims.
+                      Fellows cross-checking published Treasury tables against
+                      ministry disbursement claims.
                     </p>
                   </div>
                 </div>
@@ -190,7 +218,9 @@ export function ConnectScrollytelling() {
                 Become a Budget Tracker — or bring your campus circle with you.
               </h2>
               <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl font-medium">
-                Whether you organise a regional budget reading club or produce fiscal explainers, Connect offers vetted datasets, visual toolkits, and pathways into parliamentary briefings.
+                Whether you organise a regional budget reading club or produce
+                fiscal explainers, Connect offers vetted datasets, visual
+                toolkits, and pathways into parliamentary briefings.
               </p>
 
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
@@ -213,9 +243,11 @@ export function ConnectScrollytelling() {
 
             <div className="lg:col-span-4 border-l border-border/60 pl-6 space-y-2.5 text-xs font-mono text-muted-foreground">
               <p className="text-foreground font-bold text-sm">BNS Connect</p>
-              <p>Inquiries: connect@budgetndiostory.org</p>
+              <p>Inquiries: info@budgetndiostory.org</p>
               <p>Weekly dispatch: Thursday 16:00 EAT</p>
-              <p className="text-primary font-semibold">Open civic data standard</p>
+              <p className="text-primary font-semibold">
+                Open civic data standard
+              </p>
             </div>
           </div>
         </div>

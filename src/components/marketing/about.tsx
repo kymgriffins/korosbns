@@ -66,47 +66,6 @@ const ABOUT_NARRATIVE_BEATS: NarrativeBeat[] = [
     imageCaption: "Community budget hearing in Nairobi interrogating the Medium-Term Debt Strategy.",
     imageBadge: "THE JUNE AWAKENING",
   },
-  {
-    id: "article-201",
-    eyebrow: "The Sovereign Charter",
-    title: "Article 201 of Kenya's Constitution is our editorial director.",
-    paragraphs: [
-      "Chapter 12, Article 201 commands that there shall be openness, accountability, and public participation in all financial matters. It explicitly dictates that public money shall be used prudently and responsibly.",
-      "We do not align with political coalitions or partisan factions. Our loyalty is exclusively to Article 201 and the Kenyan taxpayer who pays VAT on fuel, food, and mobile airtime.",
-      "Every metric we publish is traced to official exchequer releases, Controller of Budget reports, and Auditor-General audit queries — never anonymous hearsay or invented claims.",
-    ],
-    quote: {
-      text: "Article 201 is not a suggestion in a textbook. It is a binding constitutional contract between the state and 54 million citizens.",
-      author: "Legal & Forensic Desk",
-      role: "Constitutional Compliance",
-    },
-    metric: {
-      value: "100%",
-      label: "Article 201 Primary Source Verification",
-    },
-    image: BNS_COMMUNITY_IMAGES.cohortA,
-    imageAlt: "Youth cohort training on budget analysis and forensic spreadsheets",
-    imageCaption: "Fellows auditing quarterly exchequer releases against audited county outcomes.",
-    imageBadge: "CONSTITUTIONAL CHARTER",
-  },
-  {
-    id: "devolved-engine",
-    eyebrow: "The Devolved Footprint",
-    title: "Budget tracking belongs under the village tree, not in Nairobi towers.",
-    paragraphs: [
-      "Fiscal devolution was meant to transfer resources to ordinary citizens. Yet without ground-level scrutiny, ward development funds frequently disappear into ghost dispensaries and unfinished roads.",
-      "BNS deploys embedded field monitors and youth trackers across Kakamega, Kilifi, Nakuru, and Wajir, arming communities with waterproof scorecards to cross-check county gazette budgets against actual physical contractor work.",
-      "Through weekly vernacular radio broadcasts and open-air barazas under village trees, we make sure public finance scrutiny happens in Swahili, Giriama, Somali, and Luhya.",
-    ],
-    metric: {
-      value: "47",
-      label: "Counties Audited by Citizen Hubs",
-    },
-    image: BNS_COMMUNITY_IMAGES.forumD,
-    imageAlt: "Artisanal fisherfolk and community members conducting field baraza",
-    imageCaption: "Kilifi County field baraza auditing devolved blue economy disbursements.",
-    imageBadge: "DEVOLVED GRASSROOTS ENGINE",
-  },
 ];
 
 export default function About() {
