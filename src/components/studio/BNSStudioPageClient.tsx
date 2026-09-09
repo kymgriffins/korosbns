@@ -1,17 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import Image from "next/image";
 import {
-  ArrowUpRight,
   Play,
   ChevronDown,
 } from "lucide-react";
 import { StudioReelHero } from "@/components/studio/theatre/studio-reel-hero";
+import { StudioViewportVideoHero } from "@/components/studio/theatre/studio-viewport-video-hero";
 import { StudioBookingForm } from "@/components/studio/StudioBookingForm";
 import { StudioProductionSpectrum } from "@/components/studio/StudioProductionSpectrum";
-import { EditorialPill, PillButtonGroup, PillButton } from "@/components/ui/editorial";
 import { EditorialCtaBand } from "@/components/ui/editorial/editorial-cta-band";
 import { studiosEvidenceData } from "@/data/studios-evidence";
 import { BNS_MEDIA_IMAGES } from "@/constants/bns-media-images";
@@ -24,24 +22,30 @@ export function BNSStudioPageClient() {
   const flagshipFilm = featuredProjects[0] || studiosEvidenceData.getAllProjects()[0];
 
   return (
-    <article className="w-full bg-background text-foreground selection:bg-primary/30">
-      {/* 01 — THE ICONIC SWIPEABLE STUDIO REEL HERO (Cleared from fixed navbar) */}
-      <div className="relative h-[calc(100dvh-3.5rem)] md:h-[calc(100dvh-4rem)] mt-14 md:mt-16 w-full overflow-hidden bg-black text-white">
+    <article className="w-full bg-black text-white selection:bg-primary/30">
+      {/* 00 — FULL-VIEWPORT DARK BACKGROUND VIDEO HERO */}
+      <StudioViewportVideoHero />
+
+      {/* 01 — SWIPEABLE STUDIO FORMAT REEL */}
+      <div
+        id="studio-formats"
+        className="relative h-[calc(100dvh-3.5rem)] md:h-[calc(100dvh-4rem)] w-full scroll-mt-16 overflow-hidden bg-black text-white"
+      >
         <StudioReelHero />
         <div className="absolute bottom-6 inset-x-0 z-20 flex justify-center pointer-events-none">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/60 px-4 py-1.5 text-xs font-mono font-medium text-white/90 backdrop-blur-md animate-bounce">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/60 px-4 py-1.5 text-xs font-mono font-medium text-white/90 backdrop-blur-md">
             <span>Swipe formats · Scroll for master theatre</span>
-            <ChevronDown className="size-3.5" />
+            <ChevronDown className="size-3.5 animate-bounce" />
           </div>
         </div>
       </div>
 
-      {/* 02 — THE DOUBLE IMPACT STORYLINE ARC (Full Section Utilization, Zero Boxy Cards) */}
-
-
-      {/* 03 — 21:9 CINEMATIC SCREENING THEATRE (Atmospheric Ambient Backglow) */}
+      {/* 03 — 21:9 CINEMATIC SCREENING THEATRE */}
       <section className="w-full bg-zinc-950 text-white py-24 md:py-36 border-y border-zinc-800/80 relative overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70vw] h-[350px] bg-primary/20 blur-[130px] rounded-full pointer-events-none select-none" />
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70vw] h-[350px] bg-primary/20 blur-[130px] rounded-full pointer-events-none select-none"
+          aria-hidden
+        />
 
         <div className={SECTION_SHELL_INNER}>
           <div className="max-w-4xl space-y-4 mb-12">
@@ -66,7 +70,12 @@ export function BNSStudioPageClient() {
                 className="h-full w-full"
               />
             ) : (
-              <div className="relative h-full w-full group cursor-pointer" onClick={() => setIsPlayingVideo(true)}>
+              <button
+                type="button"
+                className="relative h-full w-full group cursor-pointer text-left"
+                onClick={() => setIsPlayingVideo(true)}
+                aria-label="Play master film"
+              >
                 <Image
                   src={flagshipFilm?.media.posterUrl || BNS_MEDIA_IMAGES.productionA}
                   alt="Budget Sasa Ni Delivery Master Screening Reel"
@@ -99,18 +108,15 @@ export function BNSStudioPageClient() {
                     BNS Studios Production · Co-Produced with National Treasury
                   </p>
                 </div>
-              </div>
+              </button>
             )}
           </div>
         </div>
       </section>
 
-      {/* 04 — GROUPED PRODUCTION SPECTRUM (4 Disciplines, 3D Skeuomorphic Assets, Horizontal Carousel) */}
       <StudioProductionSpectrum />
 
-
-      {/* 06 — PUNCHY MOTION COMMISSION CTA BAND */}
-      <section className="py-20 md:py-32">
+      <section className="py-20 md:py-32 bg-background text-foreground">
         <div className={SECTION_SHELL_INNER}>
           <EditorialCtaBand
             eyebrow="Commission the Studio"

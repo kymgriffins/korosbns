@@ -7,53 +7,139 @@ import {
   BNS_COMMUNITY_IMAGES,
   BNS_MEDIA_IMAGES,
 } from "@/constants/bns-media-images";
+import { BNS_R2_REELS } from "@/constants/bns-r2-reels";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
+import { fadeInUp, staggerContainer } from "@/motion/variants";
 import { ArrowDown, FileSearch, Radio, Smartphone } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useRef } from "react";
+
+const STUDIOS_TEASER =
+  BNS_R2_REELS.find((r) => r.id === "reel-04") ?? BNS_R2_REELS[0]!;
+
+function DeskEyebrow({
+  index,
+  name,
+  tag,
+  tone,
+}: {
+  index: string;
+  name: string;
+  tag: string;
+  tone: "primary" | "amber" | "red" | "studio";
+}) {
+  const toneClass =
+    tone === "primary"
+      ? "text-primary"
+      : tone === "amber"
+        ? "text-amber-700 dark:text-amber-400"
+        : tone === "red"
+          ? "text-red-500 dark:text-red-400"
+          : "text-primary";
+  const ruleClass =
+    tone === "primary"
+      ? "bg-primary/50"
+      : tone === "amber"
+        ? "bg-amber-500/50"
+        : tone === "red"
+          ? "bg-red-500/60"
+          : "bg-primary/50";
+  const muted =
+    tone === "studio" || tone === "red"
+      ? "text-white/50"
+      : "text-muted-foreground";
+
+  return (
+    <div className="mb-5 flex items-center gap-3">
+      <span className={`text-xs font-bold uppercase tracking-[0.2em] ${toneClass}`}>
+        Desk {index} · {name}
+      </span>
+      <span className={`h-px w-10 sm:w-14 ${ruleClass}`} aria-hidden />
+      <span className={`text-[11px] uppercase tracking-wider ${muted}`}>{tag}</span>
+    </div>
+  );
+}
+
+function StudiosBackdropVideo() {
+  const reduceMotion = useReducedMotion();
+  const ref = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    if (reduceMotion || !ref.current) return;
+    ref.current.play().catch(() => {});
+  }, [reduceMotion]);
+
+  if (reduceMotion) {
+    return (
+      <Image
+        src={STUDIOS_TEASER.posterUrl}
+        alt=""
+        fill
+        className="object-cover opacity-40"
+        sizes="100vw"
+        aria-hidden
+      />
+    );
+  }
+
+  return (
+    <video
+      ref={ref}
+      className="absolute inset-0 size-full object-cover opacity-45"
+      src={STUDIOS_TEASER.videoUrl}
+      poster={STUDIOS_TEASER.posterUrl}
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="metadata"
+      aria-hidden
+    />
+  );
+}
 
 export function ProgrammesLanding() {
   return (
     <article className="prog-page min-h-screen bg-background text-foreground selection:bg-primary/20">
-      {/* 00 — PERSISTENT SOVEREIGN MARQUEE TELEMETRY HUD */}
       <TelemetryHUD
         activeDesk=""
         focusArea="NATIONAL TO  GRASSROOTS"
         badgeLabel="SOVEREIGN "
       />
 
-      {/* Quick Desk Navigation & Direct All-Projects Jump Bar */}
       <nav
         aria-label="Programmes Navigation"
-        className="border-b border-border/40 bg-muted/20 py-2.5"
+        className="sticky top-12 z-30 border-b border-border/40 bg-background/90 py-2.5 backdrop-blur-md md:top-16"
       >
         <div className={SECTION_SHELL_INNER}>
           <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-mono text-muted-foreground uppercase tracking-wider text-[11px]">
-                Programmes:
+              <span className="font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
+                Feel the four:
               </span>
               <Link
-                href="/programmes/connect"
-                className="px-2.5 py-1 rounded-full bg-muted/70 hover:bg-muted text-foreground font-medium transition-colors"
+                href="#desk-01"
+                className="rounded-full bg-primary/10 px-2.5 py-1 font-medium text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
               >
                 01 Connect
               </Link>
               <Link
-                href="/programmes/mashinani"
-                className="px-2.5 py-1 rounded-full bg-muted/70 hover:bg-muted text-foreground font-medium transition-colors"
+                href="#desk-02"
+                className="rounded-full bg-amber-500/10 px-2.5 py-1 font-medium text-amber-800 transition-colors hover:bg-amber-500 hover:text-white dark:text-amber-300"
               >
                 02 Mashinani
               </Link>
               <Link
-                href="/programmes/wanahabari-lab"
-                className="px-2.5 py-1 rounded-full bg-muted/70 hover:bg-muted text-foreground font-medium transition-colors"
+                href="#desk-03"
+                className="rounded-full bg-red-500/15 px-2.5 py-1 font-medium text-red-600 transition-colors hover:bg-red-600 hover:text-white dark:text-red-400"
               >
-                03 Wanahabari Lab
+                03 Wanahabari
               </Link>
               <Link
-                href="/programmes/studios"
-                className="px-2.5 py-1 rounded-full bg-muted/70 hover:bg-muted text-foreground font-medium transition-colors"
+                href="#desk-04"
+                className="rounded-full bg-foreground/10 px-2.5 py-1 font-medium text-foreground transition-colors hover:bg-foreground hover:text-background"
               >
                 04 Studios
               </Link>
@@ -61,7 +147,7 @@ export function ProgrammesLanding() {
 
             <a
               href="#public-evidence-loop"
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground font-mono font-bold text-[11px] transition-all"
+              className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 font-mono text-[11px] font-bold text-primary transition-all hover:bg-primary hover:text-primary-foreground"
             >
               <span>Explore All Projects</span>
               <ArrowDown className="size-3" />
@@ -70,35 +156,75 @@ export function ProgrammesLanding() {
         </div>
       </nav>
 
-      {/* ========================================================================= */}
-      {/* DESK 01: BNS CONNECT — TYPOGRAPHIC MANIFESTO & DIGITAL YOUTH SPREAD        */}
-      {/* ========================================================================= */}
+      {/* THEATRE OPENING */}
+      <section className="relative overflow-hidden border-b border-border/40 bg-background py-16 sm:py-24 md:py-32">
+        <div
+          className="pointer-events-none absolute -right-24 top-0 size-[28rem] rounded-full bg-primary/10 blur-[100px]"
+          aria-hidden
+        />
+        <div className={SECTION_SHELL_INNER}>
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.35 }}
+            className="max-w-5xl space-y-6"
+          >
+            <motion.p
+              variants={fadeInUp}
+              className="font-mono text-[11px] font-bold uppercase tracking-[0.24em] text-primary"
+            >
+              Four desks · One public shilling
+            </motion.p>
+            <motion.h1
+              variants={fadeInUp}
+              className="gusto-heading text-foreground"
+            >
+              Scroll the rooms.
+              <span className="mt-2 block text-primary italic">Feel each programme.</span>
+            </motion.h1>
+            <motion.p
+              variants={fadeInUp}
+              className="max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg"
+            >
+              Connect for the national feed. Mashinani for the baraza. Wanahabari
+              for the 364-day newsroom. Studios for the craft that funds the rest.
+            </motion.p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* DESK 01 — CONNECT · light / brand blue theatre */}
       <section
         id="desk-01"
-        className="py-10 sm:py-14 md:py-16 border-b border-border/40"
+        className="scroll-mt-28 border-b border-border/40 bg-background py-16 sm:py-20 md:py-28"
       >
         <div className={SECTION_SHELL_INNER}>
-          {/* Section Identifier Header */}
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-xs font-bold uppercase tracking-widest text-primary">
-              Desk 01 · BNS Connect
-            </span>
-            <span className="h-px w-12 bg-primary/40" />
-            <span className="text-xs text-muted-foreground uppercase tracking-wider">
-              Youth Digital Mobilization
-            </span>
-          </div>
+          <DeskEyebrow
+            index="01"
+            name="BNS Connect"
+            tag="Youth Digital Mobilization"
+            tone="primary"
+          />
 
-          <div className="space-y-4 max-w-4xl mb-8">
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-foreground leading-[1.06] tracking-tight">
-              Translating 400-page accounting sheets into 60-second mobile
-              power.
+          <motion.div
+            variants={fadeInUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            className="mb-10 max-w-5xl space-y-4"
+          >
+            <h2 className="font-heading text-3xl font-black leading-[1.02] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+              Translating 400-page accounting sheets into{" "}
+              <span className="text-primary">60-second mobile power.</span>
             </h2>
-          </div>
+            <p className="max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+              National money, explained for the feed — not the filing cabinet.
+            </p>
+          </motion.div>
 
-          {/* Expansive Borderless Photographic Canvas */}
           <ParallaxWrapper speed={0.15}>
-            <div className="relative aspect-[21/9] w-full overflow-hidden rounded-2xl bg-muted shadow-lg mb-8 sm:mb-10">
+            <div className="relative mb-10 aspect-[21/9] w-full overflow-hidden rounded-2xl bg-muted shadow-lg sm:mb-12">
               <Image
                 src={BNS_COMMUNITY_IMAGES.cohortA}
                 alt="Young Kenyans interrogating national debt amortization tables"
@@ -108,11 +234,11 @@ export function ProgrammesLanding() {
                 sizes="100vw"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
-              <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 right-4 text-white max-w-2xl space-y-1">
-                <p className="text-xs uppercase tracking-widest font-bold text-primary">
+              <div className="absolute bottom-4 left-4 right-4 max-w-2xl space-y-1 text-white sm:bottom-6 sm:left-6">
+                <p className="text-xs font-bold uppercase tracking-widest text-primary">
                   Nairobi Youth Baraza
                 </p>
-                <p className="text-sm sm:text-base font-medium leading-snug">
+                <p className="text-sm font-medium leading-snug sm:text-base">
                   Auditing national debt amortization tables against real-time
                   Ministry disbursements.
                 </p>
@@ -120,9 +246,8 @@ export function ProgrammesLanding() {
             </div>
           </ParallaxWrapper>
 
-          {/* Two-Column Asymmetrical Narrative Spread */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
-            <div className="lg:col-span-7 space-y-4 text-sm sm:text-base text-foreground/85 leading-relaxed">
+          <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-12 lg:gap-14">
+            <div className="space-y-4 text-sm leading-relaxed text-foreground/85 sm:text-base lg:col-span-7">
               <p>
                 When Treasury drops the annual Budget Policy Statement,
                 accountability historically vanished inside 400-page PDF tables
@@ -136,17 +261,16 @@ export function ProgrammesLanding() {
                 rapid-fire 60-second video explainers, swipeable TikTok
                 carousels, and verified WhatsApp infographics.
               </p>
-              <p className="text-foreground font-medium">
+              <p className="font-medium text-foreground">
                 Young Kenyans nationwide track national budget allocations
                 directly on their screens, turning passive reading into targeted
                 public participation submissions to the National Assembly.
               </p>
             </div>
 
-            <div className="lg:col-span-5 space-y-6">
-              {/* Editorial Pullquote in Neue Montreal Italic */}
-              <div className="pl-5 border-l-2 border-primary space-y-1.5">
-                <blockquote className="text-lg sm:text-xl font-normal italic text-foreground leading-snug">
+            <div className="space-y-6 lg:col-span-5">
+              <div className="space-y-1.5 border-l-2 border-primary pl-5">
+                <blockquote className="font-heading text-lg font-medium italic leading-snug text-foreground sm:text-xl">
                   &ldquo;We don&rsquo;t summarize the budget for archives. We
                   translate the data into immediate leverage for citizen
                   action.&rdquo;
@@ -158,25 +282,20 @@ export function ProgrammesLanding() {
 
               <div className="space-y-3 pt-1">
                 <div className="flex items-center gap-3 text-sm text-foreground/90">
-                  <Smartphone className="size-4 text-primary shrink-0" />
-                  <span>
-                    Direct integration with our TikTok &amp; Reels format
-                  </span>
+                  <Smartphone className="size-4 shrink-0 text-primary" />
+                  <span>Direct integration with our TikTok &amp; Reels format</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm text-foreground/90">
-                  <FileSearch className="size-4 text-primary shrink-0" />
-                  <span>
-                    80-page citizen memorandum submitted to Finance Committee
-                  </span>
+                  <FileSearch className="size-4 shrink-0 text-primary" />
+                  <span>80-page citizen memorandum submitted to Finance Committee</span>
                 </div>
-
                 <div className="pt-2">
                   <PillButtonGroup
                     href="/programmes/connect"
                     label="Open BNS Connect Dossier"
                     variant="outline"
                     size="default"
-                    className="w-full sm:w-auto justify-center"
+                    className="w-full justify-center sm:w-auto"
                   />
                 </div>
               </div>
@@ -185,35 +304,30 @@ export function ProgrammesLanding() {
         </div>
       </section>
 
-      {/* ========================================================================= */}
-      {/* DESK 02: BNS MASHINANI — GROUNDED FIELD PHOTO-ESSAY & RURAL BARAZA SPREAD */}
-      {/* ========================================================================= */}
+      {/* DESK 02 — MASHINANI · warm earth field */}
       <section
         id="desk-02"
-        className="py-14 sm:py-18 md:py-20 bg-muted/20 border-b border-border/40"
+        className="scroll-mt-28 border-b border-amber-900/10 bg-amber-50/70 py-16 sm:py-20 md:py-28 dark:border-amber-500/10 dark:bg-amber-950/25"
       >
         <div className={SECTION_SHELL_INNER}>
-          {/* Section Identifier */}
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-xs font-bold uppercase tracking-widest text-amber-600 dark:text-amber-400">
-              Desk 02 · BNS Mashinani
-            </span>
-            <span className="h-px w-12 bg-amber-500/40" />
-            <span className="text-xs text-muted-foreground uppercase tracking-wider">
-              The Devolved Grassroots Engine
-            </span>
-          </div>
+          <DeskEyebrow
+            index="02"
+            name="BNS Mashinani"
+            tag="The Devolved Grassroots Engine"
+            tone="amber"
+          />
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
-            {/* Left Narrative Column */}
-            <div className="lg:col-span-6 space-y-5">
-              <h2 className="text-2xl sm:text-4xl font-black text-foreground leading-[1.06] tracking-tight">
-                Taking budget tracking from Nairobi boardrooms to the village
-                baraza.
+          <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-12 lg:gap-14">
+            <div className="space-y-6 lg:col-span-6">
+              <h2 className="font-heading text-3xl font-black leading-[1.02] tracking-tight text-foreground sm:text-5xl">
+                Taking budget tracking from Nairobi boardrooms to the{" "}
+                <span className="text-amber-700 italic dark:text-amber-400">
+                  village baraza.
+                </span>
               </h2>
 
-              <div className="pl-5 border-l-2 border-amber-500/80 space-y-1.5">
-                <blockquote className="text-base sm:text-lg font-normal italic text-foreground leading-snug">
+              <div className="space-y-1.5 border-l-2 border-amber-500/80 pl-5">
+                <blockquote className="font-heading text-base font-medium italic leading-snug text-foreground sm:text-lg">
                   &ldquo;In the village, the budget isn&rsquo;t numbers in a
                   book — it is whether the dispensary has medicine and whether
                   the borehole actually pumps clean water.&rdquo;
@@ -223,7 +337,7 @@ export function ProgrammesLanding() {
                 </p>
               </div>
 
-              <div className="space-y-3 text-sm sm:text-base text-foreground/85 leading-relaxed">
+              <div className="space-y-3 text-sm leading-relaxed text-foreground/85 sm:text-base">
                 <p>
                   Fiscal devolution was designed to place resources into the
                   hands of local communities. Yet 78% of rural Kenyans report
@@ -244,25 +358,24 @@ export function ProgrammesLanding() {
                 </p>
               </div>
 
-              <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <div className="flex flex-col items-stretch gap-3 pt-2 sm:flex-row sm:items-center">
                 <PillButtonGroup
                   href="/programmes/mashinani"
                   label="Open BNS Mashinani Dossier"
                   variant="outline"
                   size="default"
-                  className="w-full sm:w-auto justify-center"
+                  className="w-full justify-center sm:w-auto"
                 />
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">
                   <Radio className="size-4 shrink-0" />
                   <span>800K+ Vernacular Listeners</span>
                 </div>
               </div>
             </div>
 
-            {/* Right Photo-Essay Canvas — Mobile compact 16:10, desktop 4:5 */}
             <div className="lg:col-span-6">
               <ParallaxWrapper speed={0.2}>
-                <div className="relative aspect-[16/10] sm:aspect-[4/5] w-full overflow-hidden rounded-2xl bg-muted shadow-lg">
+                <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl bg-muted shadow-lg sm:aspect-[4/5]">
                   <Image
                     src={BNS_COMMUNITY_IMAGES.forumD}
                     alt="Community members conducting outdoor ward budget audit baraza"
@@ -271,11 +384,11 @@ export function ProgrammesLanding() {
                     sizes="(max-width: 1024px) 100vw, 50vw"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
-                  <div className="absolute bottom-6 left-6 right-6 text-white space-y-1.5">
+                  <div className="absolute bottom-6 left-6 right-6 space-y-1.5 text-white">
                     <span className="text-xs font-bold uppercase tracking-widest text-amber-400">
                       Kilifi County Field Baraza
                     </span>
-                    <p className="text-xs sm:text-sm font-medium leading-snug">
+                    <p className="text-xs font-medium leading-snug sm:text-sm">
                       Artisanal fisherfolk cross-referencing blue economy
                       devolved funds with actual landing site infrastructure.
                     </p>
@@ -287,31 +400,32 @@ export function ProgrammesLanding() {
         </div>
       </section>
 
-      {/* ========================================================================= */}
-      {/* DESK 03: WANAHABARI LAB — AUTHORITATIVE INVESTIGATIVE NEWSROOM SPREAD      */}
-      {/* ========================================================================= */}
+      {/* DESK 03 — WANAHABARI · dark red punch / theatre */}
       <section
         id="desk-03"
-        className="py-14 sm:py-18 md:py-20 bg-background border-b border-border/40"
+        className="relative scroll-mt-28 border-b border-red-950 bg-zinc-950 py-16 text-white sm:py-20 md:py-28 dark:border-red-900/40"
       >
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-500/50 to-transparent"
+          aria-hidden
+        />
         <div className={SECTION_SHELL_INNER}>
-          {/* Section Identifier */}
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-xs font-bold uppercase tracking-widest text-red-500">
-              Desk 03 · Wanahabari Lab
-            </span>
-            <span className="h-px w-12 bg-red-500/40" />
-            <span className="text-xs text-muted-foreground uppercase tracking-wider">
-              The 364-Day Investigative Newsroom
-            </span>
-          </div>
+          <DeskEyebrow
+            index="03"
+            name="Wanahabari Lab"
+            tag="The 364-Day Investigative Newsroom"
+            tone="red"
+          />
 
-          <div className="max-w-4xl space-y-4 mb-8 sm:mb-10">
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-foreground leading-[1.06] tracking-tight">
-              The budget speech is theatre. The real story begins the morning
-              after.
+          <div className="mb-10 max-w-5xl space-y-5 sm:mb-12">
+            <h2 className="font-heading text-3xl font-black leading-[1.02] tracking-tight text-white sm:text-5xl lg:text-6xl">
+              The budget speech is{" "}
+              <span className="text-red-500 italic dark:text-red-400">theatre.</span>
+              <span className="mt-2 block text-white/90">
+                The real story begins the morning after.
+              </span>
             </h2>
-            <p className="text-base sm:text-lg text-foreground/80 font-normal leading-relaxed max-w-3xl">
+            <p className="max-w-3xl text-base font-normal leading-relaxed text-zinc-400 sm:text-lg">
               Kenyan commercial media concentrates 90% of fiscal reportage on
               Budget Day in June. Wanahabari Lab equips investigative reporters
               to track exchequer requisitions and forensic procurement for the
@@ -319,16 +433,15 @@ export function ProgrammesLanding() {
             </p>
           </div>
 
-          {/* Investigative Case Studies Row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 mb-8 sm:mb-10">
-            <div className="space-y-3">
-              <span className="text-xs font-bold uppercase tracking-widest text-red-500">
+          <div className="mb-10 grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-12 sm:mb-12">
+            <div className="space-y-3 rounded-2xl border border-red-500/20 bg-red-950/30 p-5 sm:p-6">
+              <span className="text-xs font-bold uppercase tracking-widest text-red-400">
                 Case Inquiry 01 · County Health Diversions
               </span>
-              <h3 className="text-xl font-bold text-foreground leading-snug">
+              <h3 className="font-heading text-xl font-bold leading-snug text-white">
                 Uncovering KSh 1.84 Billion in locked maternity wings.
               </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
+              <p className="text-sm leading-relaxed text-zinc-400">
                 When county health allocations were diverted to pay recurrent
                 supplier debts, Wanahabari fellows scraped Controller of Budget
                 quarterly releases, matched them to local contractor records,
@@ -336,14 +449,14 @@ export function ProgrammesLanding() {
               </p>
             </div>
 
-            <div className="space-y-3">
-              <span className="text-xs font-bold uppercase tracking-widest text-red-500">
+            <div className="space-y-3 rounded-2xl border border-red-500/20 bg-red-950/30 p-5 sm:p-6">
+              <span className="text-xs font-bold uppercase tracking-widest text-red-400">
                 Case Inquiry 02 · Consolidated Fund Services
               </span>
-              <h3 className="text-xl font-bold text-foreground leading-snug">
+              <h3 className="font-heading text-xl font-bold leading-snug text-white">
                 Exposing KSh 1,203 Billion public debt interest appetite.
               </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">
+              <p className="text-sm leading-relaxed text-zinc-400">
                 Our fellowship analyzed sovereign amortization tables to
                 demonstrate that out of every KSh 100 collected by KRA, KSh 64
                 was swallowed by debt servicing before a single development
@@ -352,9 +465,8 @@ export function ProgrammesLanding() {
             </div>
           </div>
 
-          {/* Newsroom Photography Canvas */}
           <ParallaxWrapper speed={0.15}>
-            <div className="relative aspect-[21/9] w-full overflow-hidden rounded-2xl bg-muted shadow-lg mb-6 sm:mb-8">
+            <div className="relative mb-8 aspect-[21/9] w-full overflow-hidden rounded-2xl bg-zinc-900 shadow-lg sm:mb-10">
               <Image
                 src={BNS_MEDIA_IMAGES.productionA}
                 alt="Wanahabari investigative fellowship journalists examining fiscal leak documents"
@@ -362,12 +474,12 @@ export function ProgrammesLanding() {
                 className="object-cover"
                 sizes="100vw"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
-              <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 right-4 text-white space-y-1">
-                <p className="text-xs uppercase tracking-widest font-bold text-red-400">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+              <div className="absolute bottom-4 left-4 right-4 space-y-1 text-white sm:bottom-6 sm:left-6">
+                <p className="text-xs font-bold uppercase tracking-widest text-red-400">
                   Newsroom Fellowship Cohort
                 </p>
-                <p className="text-xs sm:text-sm font-medium leading-snug">
+                <p className="text-xs font-medium leading-snug sm:text-sm">
                   Fellows cross-referencing exchequer requisition tables with
                   Auditor-General audit queries.
                 </p>
@@ -375,94 +487,91 @@ export function ProgrammesLanding() {
             </div>
           </ParallaxWrapper>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-2">
+          <div className="flex flex-col items-stretch justify-between gap-4 pt-2 sm:flex-row sm:items-center">
             <PillButtonGroup
               href="/programmes/wanahabari-lab"
               label="Open Wanahabari Lab Dossier"
               variant="outline"
               size="default"
-              className="w-full sm:w-auto justify-center"
+              className="w-full justify-center border-red-500/40 text-red-300 hover:bg-red-500/10 sm:w-auto"
             />
-            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            <span className="text-xs font-bold uppercase tracking-wider text-zinc-500">
               120+ Reporters Trained Annually Across Kenya
             </span>
           </div>
         </div>
       </section>
 
-      {/* ========================================================================= */}
-      {/* DESK 04: BNS STUDIOS — MIDNIGHT 21:9 WIDESCREEN CINEMA THEATRE             */}
-      {/* ========================================================================= */}
+      {/* DESK 04 — STUDIOS · midnight cinema + live motion */}
       <section
         id="desk-04"
-        className="py-14 sm:py-18 md:py-20 bg-black text-white border-b border-zinc-800"
+        className="relative scroll-mt-28 overflow-hidden border-b border-zinc-800 bg-black py-16 text-white sm:py-20 md:py-28"
       >
-        <div className={SECTION_SHELL_INNER}>
-          {/* Section Identifier */}
-          <div className="flex items-center gap-3 mb-4">
-            <span className="text-xs font-bold uppercase tracking-widest text-primary">
-              Desk 04 · BNS Studios
-            </span>
-            <span className="h-px w-12 bg-primary/40" />
-            <span className="text-xs text-zinc-400 uppercase tracking-wider">
-              Commercial Creative Craft
-            </span>
-          </div>
+        <StudiosBackdropVideo />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/75 to-black/95" aria-hidden />
 
-          <div className="max-w-4xl space-y-4 mb-8 sm:mb-10">
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white leading-[1.06] tracking-tight">
-              Commercial creative craft that bankrolls citizen budget audits.
+        <div className={`relative z-10 ${SECTION_SHELL_INNER}`}>
+          <DeskEyebrow
+            index="04"
+            name="BNS Studios"
+            tag="Commercial Creative Craft"
+            tone="studio"
+          />
+
+          <div className="mb-10 max-w-4xl space-y-4 sm:mb-12">
+            <h2 className="font-heading text-3xl font-black leading-[1.02] tracking-tight text-white sm:text-5xl lg:text-6xl">
+              Commercial creative craft that{" "}
+              <span className="text-primary italic">bankrolls</span> citizen
+              budget audits.
             </h2>
-            <p className="text-base sm:text-lg text-zinc-300 font-normal leading-relaxed max-w-3xl">
+            <p className="max-w-3xl text-base font-normal leading-relaxed text-zinc-300 sm:text-lg">
               We operate an independent, top-tier creative production studio
               producing podcasts, documentaries, 2D animations, and street
               campaigns for leading civic institutions.
             </p>
           </div>
 
-          {/* Cinema Impact Metrics Bar */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 py-6 my-6 border-y border-zinc-800/80">
+          <div className="my-6 grid grid-cols-2 gap-4 border-y border-white/10 py-6 lg:grid-cols-4">
             <div className="space-y-1">
-              <span className="text-xl sm:text-2xl font-black text-primary tracking-tight">
+              <span className="font-heading text-xl font-black tracking-tight text-primary sm:text-2xl">
                 EN / FR
               </span>
-              <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">
+              <p className="font-mono text-xs uppercase tracking-wider text-zinc-400">
                 Bilingual Productions
               </p>
             </div>
             <div className="space-y-1">
-              <span className="text-xl sm:text-2xl font-black text-white tracking-tight">
+              <span className="font-heading text-xl font-black tracking-tight text-white sm:text-2xl">
                 Dual Impact
               </span>
-              <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">
+              <p className="font-mono text-xs uppercase tracking-wider text-zinc-400">
                 Craft Supporting Civic Work
               </p>
             </div>
             <div className="space-y-1">
-              <span className="text-xl sm:text-2xl font-black text-primary tracking-tight">
+              <span className="font-heading text-xl font-black tracking-tight text-primary sm:text-2xl">
                 4 Counties
               </span>
-              <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">
+              <p className="font-mono text-xs uppercase tracking-wider text-zinc-400">
                 Embedded Grassroots Oversight
               </p>
             </div>
             <div className="space-y-1">
-              <span className="text-xl sm:text-2xl font-black text-white tracking-tight">
+              <span className="font-heading text-xl font-black tracking-tight text-white sm:text-2xl">
                 21:9
               </span>
-              <p className="text-xs font-mono uppercase tracking-wider text-zinc-400">
+              <p className="font-mono text-xs uppercase tracking-wider text-zinc-400">
                 Cinematic Master Reels
               </p>
             </div>
           </div>
 
-          {/* The Double Impact Covenant */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pt-4">
-            <div className="lg:col-span-8 space-y-3">
-              <h3 className="text-lg sm:text-xl font-bold text-white">
+          <div className="grid grid-cols-1 items-start gap-8 pt-4 lg:grid-cols-12">
+            <div className="space-y-3 lg:col-span-8">
+              <h3 className="font-heading text-lg font-bold text-white sm:text-xl">
                 The Double Impact Covenant
               </h3>
-              <p className="text-sm sm:text-base text-zinc-300 leading-relaxed">
+              <p className="text-sm leading-relaxed text-zinc-300 sm:text-base">
                 Rather than relying solely on donor cycles, BNS Studios sells
                 premium storytelling, motion design, and video production to
                 commercial and development partners. Operating surplus is
@@ -471,26 +580,28 @@ export function ProgrammesLanding() {
               </p>
             </div>
 
-            <div className="lg:col-span-4 flex flex-col sm:items-start lg:items-end justify-center pt-2">
+            <div className="flex flex-col justify-center gap-3 pt-2 sm:items-start lg:col-span-4 lg:items-end">
               <PillButtonGroup
                 href="/programmes/studios"
                 label="Open BNS Studios Dossier"
                 variant="outline"
                 size="default"
-                className="w-full sm:w-auto justify-center border-white/30 text-white hover:bg-white/10"
+                className="w-full justify-center border-white/30 text-white hover:bg-white/10 sm:w-auto"
               />
+              <Link
+                href="/bns-studio"
+                className="text-xs font-bold uppercase tracking-wider text-primary transition-opacity hover:opacity-80"
+              >
+                Enter full studio theatre →
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ========================================================================= */}
-      {/* 05 — FLAGSHIP EVIDENCE STREAM: ENDLESS REEL OF CROSS-DESK PRODUCTIONS       */}
-      {/* ========================================================================= */}
       <ProgrammesProjectsLoop />
 
-      {/* 06 — AIRY EDITORIAL CTA BAND */}
-      <section className="py-12 sm:py-16 md:py-20">
+      <section className="bg-background py-12 sm:py-16 md:py-20">
         <div className={SECTION_SHELL_INNER}>
           <EditorialCtaBand
             eyebrow="The Sovereign Standard"

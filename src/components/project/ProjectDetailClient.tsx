@@ -24,7 +24,7 @@ const projectDetails: Record<string, {
     id: "terra",
     title: "Project TERRA: Technology, Equality, Regulatory Risk Assessment",
     description: "In conjunction with House of Fiscal Wisdom & Luminate: A two-year pan-African research programme led by Dr. Lyla Latif investigating algorithmic gender bias in platform labor and data center fiscal impact.",
-    image: "/images/marketing newsletter subcribe/Nelly with The Mic.jpg",
+    image: "https://img.youtube.com/vi/it8rOKSYKnc/hqdefault.jpg",
     location: "Nairobi, Kenya & Pan-African",
     gallery: [
       "/images/towwnhallmay/129A3912.jpg",
@@ -46,7 +46,7 @@ const projectDetails: Record<string, {
     id: "project-terra",
     title: "Project TERRA: Technology, Equality, Regulatory Risk Assessment",
     description: "In conjunction with House of Fiscal Wisdom & Luminate: A two-year pan-African research programme led by Dr. Lyla Latif investigating algorithmic gender bias in platform labor and data center fiscal impact.",
-    image: "/images/marketing newsletter subcribe/Nelly with The Mic.jpg",
+    image: "https://img.youtube.com/vi/it8rOKSYKnc/hqdefault.jpg",
     location: "Nairobi, Kenya & Pan-African",
     gallery: [
       "/images/towwnhallmay/129A3912.jpg",
@@ -68,7 +68,7 @@ const projectDetails: Record<string, {
     id: "budget-literacy",
     title: "Budget Literacy Programme",
     description: "Interactive learning modules that break down the budget cycle, sector allocations, and parliamentary processes into digestible lessons for all Kenyans.",
-    image: "https://res.cloudinary.com/dn8lut2fc/image/upload/v1740749180/cohort-1_kcmbmm.jpg",
+    image: "/images/towwnhallmay/129A3863.jpg",
     location: "Nationwide, Kenya",
     gallery: [
       "/images/towwnhallmay/129A3912.jpg",

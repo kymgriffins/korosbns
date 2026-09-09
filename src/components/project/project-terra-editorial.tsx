@@ -1,33 +1,19 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
-import Link from "next/link";
-import { motion } from "motion/react";
 import {
-  Play,
-  FileText,
-  Download,
-  Copy,
-  Check,
-  Search,
-  ExternalLink,
-  ShieldAlert,
-  Cpu,
-  Scale,
-  Users,
-  Building2,
-  Calendar,
-  Layers,
-  Sparkles,
-  ArrowRight,
-  Database,
-  Globe2,
-  BookOpen,
-} from "lucide-react";
-import {
-  projectTerraTranscript,
   PROJECT_TERRA_METADATA as meta,
+  projectTerraTranscript,
 } from "@/content/projects";
+import {
+  ArrowRight,
+  Building2,
+  Cpu,
+  Database,
+  ExternalLink,
+  Sparkles,
+} from "lucide-react";
+import Link from "next/link";
+import { useMemo, useState } from "react";
 
 export function ProjectTerraEditorial() {
   const [activeTab, setActiveTab] = useState<"segments" | "prose">("segments");
@@ -188,151 +174,103 @@ export function ProjectTerraEditorial() {
             />
           </div>
 
-          {/* Transcript Control Center */}
-          <div className="rounded-2xl border border-border/60 bg-card p-6 sm:p-8 shadow-sm">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-border/50">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary/10 text-primary">
-                  <FileText className="size-5" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-base text-foreground">
-                    Verbatim Audio Transcript
-                  </h3>
-                  <p className="text-xs text-muted-foreground">
-                    Synchronized speech-to-text transcript encoded in JSON
-                  </p>
-                </div>
-              </div>
-
-              {/* Action Buttons */}
+          {/* Transcript Control Center (Verbatim) */}
+          <div className="rounded-2xl border border-border/70 bg-background/60 p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
               <div className="flex flex-wrap items-center gap-2">
                 <button
-                  onClick={handleCopy}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border/80 bg-background text-xs font-medium hover:border-primary/50 transition-colors"
-                  title="Copy complete transcript to clipboard"
+                  type="button"
+                  onClick={() => setActiveTab("segments")}
+                  aria-pressed={activeTab === "segments"}
+                  className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-mono font-bold transition-colors ${
+                    activeTab === "segments"
+                      ? "border-primary/40 bg-primary/10 text-primary"
+                      : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
+                  }`}
                 >
-                  {copied ? (
-                    <>
-                      <Check className="size-3.5 text-emerald-500" />
-                      <span className="text-emerald-500 font-semibold">
-                        Copied
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="size-3.5" />
-                      <span>Copy Prose</span>
-                    </>
-                  )}
+                  Verbatim cards
                 </button>
-
                 <button
-                  onClick={handleDownloadJson}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-colors"
-                  title="Download transcript JSON for research or archival"
+                  type="button"
+                  onClick={() => setActiveTab("prose")}
+                  aria-pressed={activeTab === "prose"}
+                  className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-mono font-bold transition-colors ${
+                    activeTab === "prose"
+                      ? "border-primary/40 bg-primary/10 text-primary"
+                      : "border-border/60 bg-card text-muted-foreground hover:text-foreground"
+                  }`}
                 >
-                  <Download className="size-3.5" />
-                  <span>Download JSON</span>
+                  Full transcript
                 </button>
+              </div>
 
-                <a
-                  href={meta.video.watchUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border border-border/80 text-xs hover:text-primary transition-colors"
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleCopy}
+                  className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-card px-4 py-2 text-xs font-mono font-bold text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors"
                 >
-                  <span>YouTube</span>
-                  <ExternalLink className="size-3" />
-                </a>
+                  <span>{copied ? "Copied" : "Copy full transcript"}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDownloadJson}
+                  className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background px-4 py-2 text-xs font-mono font-bold text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors"
+                >
+                  Download JSON
+                </button>
               </div>
             </div>
 
-            {/* View Modes & Search */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-6 pb-4">
-              <div className="flex items-center gap-1 p-1 bg-muted/50 rounded-lg border border-border/50 text-xs self-start">
-                <button
-                  onClick={() => setActiveTab("segments")}
-                  className={`px-3 py-1 rounded-md transition-all ${
-                    activeTab === "segments"
-                      ? "bg-background text-foreground font-semibold shadow-xs"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  Timed Segments ({filteredSegments.length})
-                </button>
-                <button
-                  onClick={() => setActiveTab("prose")}
-                  className={`px-3 py-1 rounded-md transition-all ${
-                    activeTab === "prose"
-                      ? "bg-background text-foreground font-semibold shadow-xs"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  Continuous Prose
-                </button>
-              </div>
-
-              {/* Search filter in segments */}
-              {activeTab === "segments" && (
-                <div className="relative w-full sm:w-64">
-                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
+            {activeTab === "segments" ? (
+              <>
+                <label className="block mb-3">
+                  <span className="block mb-1 text-[11px] font-mono font-bold uppercase tracking-widest text-muted-foreground">
+                    Search verbatim
+                  </span>
                   <input
-                    type="text"
-                    placeholder="Search keywords in transcript..."
+                    type="search"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-border/60 bg-background placeholder:text-muted-foreground/60 focus:outline-hidden focus:ring-1 focus:ring-primary"
+                    placeholder="e.g. women, algorithm, rules, ledger…"
+                    className="w-full rounded-xl border border-border/60 bg-card px-4 py-2 text-sm font-medium text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                   />
-                  {searchQuery && (
-                    <button
-                      onClick={() => setSearchQuery("")}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground hover:text-foreground"
-                    >
-                      Clear
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
+                </label>
 
-            {/* Transcript Content Area */}
-            <div className="max-h-96 overflow-y-auto pr-2 mt-2 divide-y divide-border/30 rounded-xl bg-background/50 border border-border/40 p-4">
-              {activeTab === "segments" ? (
-                filteredSegments.length > 0 ? (
-                  filteredSegments.map((seg) => (
+                <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {filteredSegments.slice(0, 10).map((seg) => (
                     <div
                       key={seg.id}
-                      className="py-2.5 first:pt-0 last:pb-0 flex items-start gap-4 group hover:bg-muted/20 px-2 rounded-lg transition-colors"
+                      className="rounded-xl border border-border/60 bg-card p-4 hover:border-primary/40 transition-colors"
                     >
-                      <span className="font-mono text-[11px] font-semibold text-primary/80 bg-primary/5 px-2 py-0.5 rounded border border-primary/15 shrink-0 mt-0.5">
-                        {formatTime(seg.start)}
-                      </span>
-                      <p className="text-sm text-foreground/90 leading-relaxed">
+                      <div className="flex items-center justify-between gap-3 mb-2">
+                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-muted-foreground">
+                          {formatTime(seg.start)}–{formatTime(seg.end)}
+                        </span>
+                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-primary/90">
+                          {String(seg.id).padStart(2, "0")}
+                        </span>
+                      </div>
+                      <p className="text-sm leading-relaxed text-foreground/90 font-serif">
                         {seg.text}
                       </p>
                     </div>
-                  ))
-                ) : (
-                  <div className="py-8 text-center text-sm text-muted-foreground">
-                    No segments found matching &ldquo;{searchQuery}&rdquo;
-                  </div>
-                )
-              ) : (
-                <div className="p-2 text-sm leading-loose text-foreground/90 font-serif md:text-base selection:bg-primary/20">
-                  <p>{projectTerraTranscript.full_transcript}</p>
+                  ))}
                 </div>
-              )}
-            </div>
 
-            {/* Micro citation */}
-            <p className="mt-3 text-[11px] text-muted-foreground font-mono">
-              Source file:{" "}
-              <code className="bg-muted px-1.5 py-0.5 rounded text-foreground/80">
-                src/content/projects/project-terra-transcript.json
-              </code>{" "}
-              • Video ID: {projectTerraTranscript.videoId}
-            </p>
+                {filteredSegments.length > 10 ? (
+                  <p className="mt-3 text-xs text-muted-foreground font-mono">
+                    Showing 10 of {filteredSegments.length} segments. Use search to narrow.
+                  </p>
+                ) : null}
+              </>
+            ) : (
+              <div className="mt-2 max-h-96 overflow-auto rounded-xl border border-border/60 bg-card p-4">
+                <pre className="text-sm leading-relaxed whitespace-pre-wrap font-serif">
+                  {projectTerraTranscript.full_transcript}
+                </pre>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -376,8 +314,8 @@ export function ProjectTerraEditorial() {
         <div className="my-10 border-l-4 border-primary pl-6 py-2 bg-primary/5 rounded-r-xl not-italic font-sans">
           <blockquote className="text-xl sm:text-2xl font-bold text-foreground leading-snug">
             &ldquo;The question is not whether Africa should go digital. The
-            question is who benefits, who is protected, and who gets to write the
-            rules.&rdquo;
+            question is who benefits, who is protected, and who gets to write
+            the rules.&rdquo;
           </blockquote>
           <cite className="block text-sm text-muted-foreground mt-3 font-medium">
             — Dr. Lyla Latif, Director, House of Fiscal Wisdom
@@ -413,24 +351,24 @@ export function ProjectTerraEditorial() {
             </p>
           </div>
 
-          <div className="space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {meta.pillars.map((pillar, idx) => (
               <div
                 key={pillar.id}
-                className="rounded-2xl border border-border/60 bg-card p-6 sm:p-8 shadow-xs"
+                className="rounded-2xl border border-border/60 bg-card p-5 sm:p-6 shadow-xs"
               >
                 <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
                   <span className="font-mono text-xs font-bold text-primary uppercase tracking-wider bg-primary/10 px-3 py-1 rounded-full">
                     Pillar {idx + 1} • {pillar.tag}
                   </span>
                 </div>
-                <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-1">
+                <h3 className="text-lg sm:text-xl font-bold text-foreground mb-1">
                   {pillar.title}
                 </h3>
                 <p className="text-sm font-medium text-muted-foreground italic mb-4">
                   {pillar.subtitle}
                 </p>
-                <p className="text-base text-foreground/90 leading-relaxed font-sans mb-6">
+                <p className="text-sm text-foreground/90 leading-relaxed font-sans mb-5">
                   {pillar.body}
                 </p>
 
@@ -473,11 +411,11 @@ export function ProjectTerraEditorial() {
           </p>
         </div>
 
-        <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {meta.analyticalMechanisms.map((mech) => (
             <div
               key={mech.number}
-              className="rounded-2xl border border-border/70 bg-card p-6 sm:p-8 hover:border-primary/40 transition-colors"
+              className="rounded-2xl border border-border/70 bg-card p-5 sm:p-6 hover:border-primary/40 transition-colors"
             >
               <div className="flex items-baseline gap-4 mb-3">
                 <span className="font-mono text-2xl sm:text-3xl font-black text-primary/80">
@@ -557,15 +495,15 @@ export function ProjectTerraEditorial() {
             </p>
 
             <p className="font-serif text-base sm:text-lg leading-relaxed text-foreground/90">
-              Yet, because the platform categorizes workers as &ldquo;independent
-              service providers,&rdquo; it disclaims all employer-side
-              unemployment insurance (UIF), workers&apos; compensation, and
-              payroll tax withholding obligations. The revenue authority cannot
-              trace these earnings without audited physical books that low-wage
-              informal workers cannot afford to maintain. Workers thus occupy a
-              fiscal no-man&apos;s-land: unprotected by statutory labour laws,
-              ineligible for public safety nets, yet continuously taxed through
-              regressive VAT on basic goods.
+              Yet, because the platform categorizes workers as
+              &ldquo;independent service providers,&rdquo; it disclaims all
+              employer-side unemployment insurance (UIF), workers&apos;
+              compensation, and payroll tax withholding obligations. The revenue
+              authority cannot trace these earnings without audited physical
+              books that low-wage informal workers cannot afford to maintain.
+              Workers thus occupy a fiscal no-man&apos;s-land: unprotected by
+              statutory labour laws, ineligible for public safety nets, yet
+              continuously taxed through regressive VAT on basic goods.
             </p>
 
             <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 sm:p-6 text-sm">
@@ -636,12 +574,11 @@ export function ProjectTerraEditorial() {
           </p>
           <p className="text-foreground/90 font-serif leading-relaxed text-sm sm:text-base">
             The Data Centre Risk Assessment Sandbox inverts this broken
-            chronology. By assembling tax authorities, environmental
-            regulators, community representatives, and data infrastructure
-            operators into a live simulation environment, policies can be
-            stress-tested against real kilowatt-hour consumption, cooling water
-            draws, and profit shifting routes *before* they are set in permanent
-            statute.
+            chronology. By assembling tax authorities, environmental regulators,
+            community representatives, and data infrastructure operators into a
+            live simulation environment, policies can be stress-tested against
+            real kilowatt-hour consumption, cooling water draws, and profit
+            shifting routes *before* they are set in permanent statute.
           </p>
         </div>
       </section>
@@ -685,6 +622,16 @@ export function ProjectTerraEditorial() {
                   className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-foreground text-background font-semibold hover:bg-foreground/90 transition-colors"
                 >
                   <span>Visit House of Fiscal Wisdom</span>
+                  <ExternalLink className="size-3" />
+                </a>
+
+                <a
+                  href="https://lai-latif.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-border/80 bg-card hover:border-primary/50 transition-colors font-medium"
+                >
+                  <span>Visit Dr. Lyla Latif</span>
                   <ExternalLink className="size-3" />
                 </a>
 
@@ -744,7 +691,8 @@ export function ProjectTerraEditorial() {
               Explore More Civic & Studio Dossiers
             </h3>
             <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-              Discover investigations, explainers, and forensic evidence produced by Budget Ndio Story.
+              Discover investigations, explainers, and forensic evidence
+              produced by Budget Ndio Story.
             </p>
           </div>
           <div className="flex items-center gap-3 shrink-0">

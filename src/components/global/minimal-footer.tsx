@@ -3,24 +3,11 @@
 import React, { useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import {
-  IconBrandX,
-  IconBrandLinkedin,
-  IconBrandWhatsapp,
-  IconBrandYoutube,
-} from "@tabler/icons-react";
 import { useOrg } from "@/contexts/org-context";
 import { socialLinks as defaultSocialLinks } from "@/constants/links";
+import { socialIconComponents } from "@/components/ui/social-icons";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 import { cn } from "@/utils";
-
-const socialIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-  x: IconBrandX,
-  twitter: IconBrandX,
-  linkedin: IconBrandLinkedin,
-  whatsapp: IconBrandWhatsapp,
-  youtube: IconBrandYoutube,
-};
 
 const minimalNavLinks = [
   { label: "Programmes", href: "/programmes" },
@@ -33,22 +20,30 @@ const minimalNavLinks = [
   { label: "Contact", href: "/contact" },
 ];
 
+function normalizeSocialIcon(platform: string): string {
+  const key = platform.trim().toLowerCase();
+  return key === "twitter" ? "x" : key;
+}
+
 export default function MinimalFooter() {
   const { config } = useOrg();
   const organizationTitle = config.seo?.title || "Budget Ndio Story";
 
   const displaySocial = useMemo(() => {
-    const api = config.socials?.filter((s) => s.url && s.platform && s.platform !== "website");
+    const api = config.socials?.filter(
+      (s) => s.url && s.platform && s.platform !== "website",
+    );
     if (api?.length) {
       return api.map((s) => ({
         label: s.label?.trim() || s.platform,
         href: s.url,
-        icon: s.platform === "twitter" ? "x" : s.platform,
+        icon: normalizeSocialIcon(s.platform),
       }));
     }
-    return defaultSocialLinks.filter((s) =>
-      ["x", "linkedin", "youtube", "whatsapp"].includes(s.icon)
-    );
+    return defaultSocialLinks.map((s) => ({
+      ...s,
+      icon: normalizeSocialIcon(s.icon),
+    }));
   }, [config.socials]);
 
   return (
@@ -99,7 +94,7 @@ export default function MinimalFooter() {
           {/* Compact Socials */}
           <div className="flex items-center gap-2">
             {displaySocial.map((social) => {
-              const Icon = socialIconMap[social.icon as string];
+              const Icon = socialIconComponents[social.icon];
               return (
                 <Link
                   key={`${social.label}-${social.href}`}
@@ -107,7 +102,7 @@ export default function MinimalFooter() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.label}
-                  className="size-8 rounded-full flex items-center justify-center border border-border/60 bg-muted/30 text-muted-foreground hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition-colors"
+                  className="size-8 rounded-full flex items-center justify-center border border-border/60 bg-muted/30 text-muted-foreground hover:text-primary hover:border-primary/40 hover:bg-primary/5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   title={social.label}
                 >
                   {Icon ? (

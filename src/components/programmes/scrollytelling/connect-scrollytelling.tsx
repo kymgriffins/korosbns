@@ -47,9 +47,6 @@ export function ConnectScrollytelling() {
               <EditorialPill dot pulse>
                 National desk · Youth distribution
               </EditorialPill>
-              <EditorialPill variant="outline">
-                From Treasury tables to the feed
-              </EditorialPill>
             </div>
 
             <h1 className="font-heading text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-foreground leading-[1.03]">

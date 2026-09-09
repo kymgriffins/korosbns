@@ -52,15 +52,25 @@ export function getStudioReelSlides(): StudioReelSlide[] {
 
     const isSocialReel = type.id === "Social Media Series";
     const isExplainer = type.id === "Explainer Videos";
+    const isAnimation = type.id === "Animations";
+    const isDocumentary = type.id === "Documentaries";
     const videoUrl = isSocialReel
       ? "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/Calvina%20Praise%20Sovereign%20debt.mp4"
       : isExplainer
       ? "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/county%20%26%20budget%20socials%20new.mp4"
+      : isAnimation
+      ? "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/animation%20reel%20opportunities%20.%20Where%20do%20I%20start%20(%20nyota%20programmes%20%20uwezo%20fund)%20main%20landing%20page%20.mp4"
+      : isDocumentary
+      ? "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/BNS%20Studio%20%20MYTH%20or%20FACT%20%20game%20on%20budget.mp4"
       : undefined;
     const image = isSocialReel
       ? "/images/reels/reel-01-poster.jpg"
       : isExplainer
       ? "/images/reels/reel-02-poster.jpg"
+      : isAnimation
+      ? "/images/reels/reel-05-opportunities.jpg"
+      : isDocumentary
+      ? "/images/reels/reel-04-myth-fact.jpg"
       : (lead?.media.posterUrl ?? service?.image ?? BNS_STUDIO_HERO_IMAGE);
 
     return {

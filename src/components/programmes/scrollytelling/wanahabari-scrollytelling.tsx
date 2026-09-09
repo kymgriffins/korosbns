@@ -27,19 +27,23 @@ import { ProgrammeProjectGrid } from "@/components/programmes/programme-project-
  */
 export function WanahabariScrollytelling() {
   return (
-    <article className="min-h-screen bg-background text-foreground selection:bg-red-500/20">
+    <article className="min-h-screen bg-background text-foreground selection:bg-red-500/25">
       <TelemetryHUD
         activeDesk="WANAHABARI LAB"
         focusArea="YEAR-ROUND BUDGET JOURNALISM"
         badgeLabel="NEWSROOM DESK"
       />
 
-      <header className="relative border-b border-border/40 bg-gradient-to-b from-red-500/5 via-muted/10 to-background pt-4 pb-6 md:pt-6 md:pb-8 overflow-hidden">
+      <header className="relative overflow-hidden border-b border-red-900/40 bg-zinc-950 pt-4 pb-10 text-white md:pt-6 md:pb-14 dark:border-red-800/50">
+        <div
+          className="pointer-events-none absolute -right-16 top-0 size-72 rounded-full bg-red-600/20 blur-[90px]"
+          aria-hidden
+        />
         <div className={SECTION_SHELL_INNER}>
           <nav aria-label="Breadcrumb" className="mb-3">
             <Link
               href="/programmes"
-              className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground"
+              className="inline-flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-zinc-400 transition-colors hover:text-white"
             >
               <ArrowLeft className="size-3.5" />
               <span>All programmes</span>
@@ -47,60 +51,60 @@ export function WanahabariScrollytelling() {
           </nav>
 
           <div className="space-y-4 max-w-5xl">
-            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/60 pb-4 font-mono text-xs">
+            <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4 font-mono text-xs">
               <div className="flex items-center gap-2">
                 <EditorialPill dot pulse>
                   Newsroom desk · Quarterly labs
                 </EditorialPill>
-                <span className="text-muted-foreground">EAST AFRICA PRESS BENCH</span>
+                <span className="text-zinc-400">EAST AFRICA PRESS BENCH</span>
               </div>
-              <span className="text-muted-foreground">JOURNALISTS · CREATORS · SIDE BY SIDE</span>
+              <span className="text-zinc-500">JOURNALISTS · CREATORS · SIDE BY SIDE</span>
             </div>
 
-            <h1 className="font-heading text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-foreground leading-[1.02]">
+            <h1 className="font-heading text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white leading-[1.02]">
               <MaskedReveal delay={0.05}>Budget Day is theatre.</MaskedReveal>{" "}
-              <MaskedReveal delay={0.15} innerClassName="text-red-500">
+              <MaskedReveal delay={0.15} innerClassName="text-red-500 dark:text-red-400">
                 The story starts the morning after.
               </MaskedReveal>
             </h1>
 
-            <p className="text-xl sm:text-2xl font-medium text-foreground/80 leading-relaxed max-w-3xl">
+            <p className="text-xl sm:text-2xl font-medium text-zinc-300 leading-relaxed max-w-3xl">
               Kenyan newsrooms still crowd June. Wanahabari Lab trains reporters and digital creators for the rest of the fiscal calendar — when Controller of Budget releases, supplementary votes, and pending bills decide what actually reaches wards.
             </p>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-6 border-t border-border/50">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-6 border-t border-white/10">
               <div className="space-y-1">
-                <p className="text-[11px] font-mono font-bold uppercase tracking-wider text-muted-foreground">
+                <p className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-500">
                   Cadence
                 </p>
-                <p className="text-base font-bold text-foreground">Quarterly Labs</p>
-                <p className="text-xs text-muted-foreground">Anchored to the fiscal calendar</p>
+                <p className="text-base font-bold text-white">Quarterly Labs</p>
+                <p className="text-xs text-zinc-500">Anchored to the fiscal calendar</p>
               </div>
 
               <div className="space-y-1">
-                <p className="text-[11px] font-mono font-bold uppercase tracking-wider text-muted-foreground">
+                <p className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-500">
                   Bench size
                 </p>
-                <p className="text-base font-bold text-foreground">
+                <p className="text-base font-bold text-white">
                   <MetricCounter value={120} suffix="–200 / year" />
                 </p>
-                <p className="text-xs text-muted-foreground">Journalists and creators</p>
+                <p className="text-xs text-zinc-500">Journalists and creators</p>
               </div>
 
               <div className="space-y-1">
-                <p className="text-[11px] font-mono font-bold uppercase tracking-wider text-muted-foreground">
+                <p className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-500">
                   Core craft
                 </p>
-                <p className="text-base font-bold text-primary">Evidence reading</p>
-                <p className="text-xs text-muted-foreground">OCOB · Hansard · published tables</p>
+                <p className="text-base font-bold text-red-400">Evidence reading</p>
+                <p className="text-xs text-zinc-500">OCOB · Hansard · published tables</p>
               </div>
 
               <div className="space-y-1">
-                <p className="text-[11px] font-mono font-bold uppercase tracking-wider text-muted-foreground">
+                <p className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-500">
                   Output
                 </p>
-                <p className="text-base font-bold text-foreground">Filed drafts</p>
-                <p className="text-xs text-muted-foreground">Stories + toolkit, same day</p>
+                <p className="text-base font-bold text-white">Filed drafts</p>
+                <p className="text-xs text-zinc-500">Stories + toolkit, same day</p>
               </div>
             </div>
           </div>

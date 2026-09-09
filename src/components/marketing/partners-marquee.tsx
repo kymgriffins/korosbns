@@ -23,19 +23,17 @@ const PARTNER_DEFAULTS: Record<
   "house-of-fiscal-wisdom": {
     name: "House of Fiscal Wisdom",
     website: "https://house-of-fiscal-wisdom.org/",
-    logo_url: "",
+    logo_url: "/images/partners/house-of-fiscal-wisdom.png",
   },
   "committee-on-fiscal-studies": {
     name: "Committee on Fiscal Studies",
     website: "https://cfs.uonbi.ac.ke/",
-    logo_url:
-      "https://cfs.uonbi.ac.ke/sites/default/files/inline-images/UoN_Logo_4.png",
+    logo_url: "/images/partners/committee-on-fiscal-studies.png",
   },
   tisa: {
     name: "TISA Kenya",
     website: "https://newtisa.tisa.co.ke/",
-    logo_url:
-      "https://newtisa.tisa.co.ke/wp-content/uploads/2025/03/New-TISA-logo.svg",
+    logo_url: "/images/partners/tisa.svg",
   },
 };
 
