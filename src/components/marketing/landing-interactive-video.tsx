@@ -54,7 +54,7 @@ const LandingInteractiveVideo = () => {
                 <div className="absolute inset-0 z-0">
                     <div className="absolute inset-0 bg-background/40 z-10 mix-blend-multiply group-hover:bg-background/20 transition-colors duration-700" />
                     <video
-                        src="https://bns.stratapointadvisory.org/county%20%26%20budget%20socials%20new.mp4"
+                        src="https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/county%20%26%20budget%20socials%20new.mp4"
                         autoPlay
                         muted
                         loop
@@ -63,7 +63,7 @@ const LandingInteractiveVideo = () => {
                         onError={(e) => console.warn('Interactive video failed to load:', e)}
                         className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000"
                     >
-                        <source src="https://bns.stratapointadvisory.org/county%20%26%20budget%20socials%20new.mp4" type="video/mp4" />
+                        <source src="https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/county%20%26%20budget%20socials%20new.mp4" type="video/mp4" />
                     </video>
                 </div>
 
@@ -98,7 +98,7 @@ const LandingInteractiveVideo = () => {
                             onClick={(e) => e.stopPropagation()}
                         >
                             <video
-                                src="https://bns.stratapointadvisory.org/county%20%26%20budget%20socials%20new.mp4"
+                                src="https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/county%20%26%20budget%20socials%20new.mp4"
                                 poster="/images/reels/reel-02-poster.jpg"
                                 autoPlay
                                 controls

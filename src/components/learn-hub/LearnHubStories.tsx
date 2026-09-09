@@ -13,7 +13,17 @@ import { ReelsScroller, DEFAULT_REELS, type ReelItem } from "@/components/learn/
 import { cn } from "@/utils";
 import Image from "next/image";
 
-const CATEGORIES = ["All", "Devolution", "Healthcare", "Tax & Budget", "Investigative"];
+const CATEGORIES = [
+  "All",
+  "National Debt",
+  "Devolution",
+  "National Budget",
+  "Civic Trivia",
+  "Opportunities",
+  "Citizen Voices",
+  "Personal Finance",
+  "Wanahabari",
+];
 
 export function LearnHubStories() {
   const [query, setQuery] = useState("");

@@ -15,21 +15,20 @@ import {
 import { toast } from "sonner";
 import { cn } from "@/utils";
 import { landingContent, mediaContent } from "@/content";
+import { BNS_HERO_REEL } from "@/constants/bns-r2-reels";
 
 const DEFAULT_HERO_VIDEO = {
-  id: "tiktok-landing-video",
+  id: BNS_HERO_REEL.id,
   video_url:
-    mediaContent.cloudinary.reelVideo ||
-    "https://bns.stratapointadvisory.org/0cd8319a419e6b3749a7206ba4d68801.mp4",
-  cover_image_url: "/images/reels/reel-01-poster.jpg",
+    mediaContent.cloudinary.reelVideo || BNS_HERO_REEL.videoUrl,
+  cover_image_url: BNS_HERO_REEL.posterUrl,
   embed_html: "",
-  caption:
-    "Kenya owes over 12 Trillion shillings. Calvina Praise breaks down the national debt and Article 201 public finance accountability.",
-  like_count: 12500,
-  tiktok_like_count: 12500,
-  tiktok_comment_count: 842,
-  tiktok_share_count: 320,
-  tiktok_play_count: 250000,
+  caption: BNS_HERO_REEL.caption,
+  like_count: BNS_HERO_REEL.likes,
+  tiktok_like_count: BNS_HERO_REEL.likes,
+  tiktok_comment_count: BNS_HERO_REEL.comments,
+  tiktok_share_count: BNS_HERO_REEL.shares,
+  tiktok_play_count: BNS_HERO_REEL.plays,
 };
 
 /**
@@ -50,9 +49,8 @@ export function LandingTikTokPhone({ className }: { className?: string }) {
 
   useEffect(() => {
     const videoUrl =
-      mediaContent.cloudinary.reelVideo ||
-      "https://bns.stratapointadvisory.org/0cd8319a419e6b3749a7206ba4d68801.mp4";
-    const reelCoverPhoto = "/images/reels/reel-01-poster.jpg";
+      mediaContent.cloudinary.reelVideo || BNS_HERO_REEL.videoUrl;
+    const reelCoverPhoto = BNS_HERO_REEL.posterUrl;
     setVideo((prev) => ({
       ...prev,
       video_url: videoUrl,

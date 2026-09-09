@@ -53,9 +53,9 @@ export function getStudioReelSlides(): StudioReelSlide[] {
     const isSocialReel = type.id === "Social Media Series";
     const isExplainer = type.id === "Explainer Videos";
     const videoUrl = isSocialReel
-      ? "https://bns.stratapointadvisory.org/0cd8319a419e6b3749a7206ba4d68801.mp4"
+      ? "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/Calvina%20Praise%20Sovereign%20debt.mp4"
       : isExplainer
-      ? "https://bns.stratapointadvisory.org/county%20%26%20budget%20socials%20new.mp4"
+      ? "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev/county%20%26%20budget%20socials%20new.mp4"
       : undefined;
     const image = isSocialReel
       ? "/images/reels/reel-01-poster.jpg"

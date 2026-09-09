@@ -62,3 +62,10 @@ reports/lighthouse/*.json
 package-lock.json
 yarn.lock
 bun.lockb
+
+# Large media assets (hosted on Cloudflare R2 bucket `bns`)
+*.mp4
+*.mov
+*.webm
+public/images/reels/*.mp4
+public/videos/

@@ -36,72 +36,23 @@ export interface ReelItem {
   hashtags: string[];
 }
 
-export const DEFAULT_REELS: ReelItem[] = [
-  {
-    id: "reel-01",
-    title: "Kenya Owes Over 12 Trillion",
-    caption: "Breaking down sovereign debt: how KES 12 Trillion in national obligations hits local clinics under Article 201.",
-    category: "National Debt",
-    author: "Calvina Praise · BNS Storyteller",
-    authorAvatar: "/images/reels/reel-01-poster.jpg",
-    videoUrl:
-      "https://bns.stratapointadvisory.org/0cd8319a419e6b3749a7206ba4d68801.mp4",
-    posterUrl: "/images/reels/reel-01-poster.jpg",
-    likes: 12400,
-    comments: 842,
-    shares: 320,
-    duration: "2:16",
-    hashtags: ["#BudgetNdioStory", "#CalvinaPraise", "#Article201"],
-  },
-  {
-    id: "reel-02",
-    title: "County & Budget Socials In Action",
-    caption: "Tracking KSh 420B in equitable share down to dispensary shelves and auditing pending bills with Nelly Maina.",
-    category: "Devolution",
-    author: "Nelly Maina · BNS Lead",
-    authorAvatar: "/images/marketing newsletter subcribe/Nelly with The Mic.jpg",
-    videoUrl:
-      "https://bns.stratapointadvisory.org/county%20%26%20budget%20socials%20new.mp4",
-    posterUrl: "/images/reels/reel-02-poster.jpg",
-    likes: 8930,
-    comments: 412,
-    shares: 195,
-    duration: "0:49",
-    hashtags: ["#CountyBudget", "#NellyMaina", "#BNSMashinani"],
-  },
-  {
-    id: "reel-03",
-    title: "The 400-Page PDF Myth",
-    caption: "How to find your ward's school and road allocation in under 3 minutes using open PFM tables.",
-    category: "Tax & Budget",
-    author: "Calvina Praise · BNS Storyteller",
-    authorAvatar: "/images/reels/reel-01-poster.jpg",
-    videoUrl:
-      "https://bns.stratapointadvisory.org/0cd8319a419e6b3749a7206ba4d68801.mp4",
-    posterUrl: "/images/reels/reel-01-poster.jpg",
-    likes: 15200,
-    comments: 1104,
-    shares: 560,
-    duration: "2:16",
-    hashtags: ["#FinanceBill", "#OpenTreasury", "#KenyaBudget"],
-  },
-  {
-    id: "reel-04",
-    title: "Stopping Ghost Completion Certificates",
-    caption: "Contractors signed off 100% structurally complete on empty trenches. Here's how we caught it.",
-    category: "Investigative",
-    author: "Nelly Maina · BNS Lead",
-    authorAvatar: "/images/marketing newsletter subcribe/Nelly with The Mic.jpg",
-    videoUrl:
-      "https://bns.stratapointadvisory.org/county%20%26%20budget%20socials%20new.mp4",
-    posterUrl: "/images/reels/reel-02-poster.jpg",
-    likes: 19800,
-    comments: 1420,
-    shares: 890,
-    duration: "0:49",
-    hashtags: ["#GhostCertificates", "#PublicAudit", "#Article201"],
-  },
-];
+import { BNS_R2_REELS } from "@/constants/bns-r2-reels";
+
+export const DEFAULT_REELS: ReelItem[] = BNS_R2_REELS.map((r) => ({
+  id: r.id,
+  title: r.title,
+  caption: r.caption,
+  category: r.category,
+  author: r.author,
+  authorAvatar: r.authorAvatar,
+  videoUrl: r.videoUrl,
+  posterUrl: r.posterUrl,
+  likes: r.likes,
+  comments: r.comments,
+  shares: r.shares,
+  duration: r.duration,
+  hashtags: r.hashtags,
+}));
 
 interface ReelsScrollerProps {
   reels?: ReelItem[];

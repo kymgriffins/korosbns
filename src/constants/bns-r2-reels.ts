@@ -1,0 +1,220 @@
+export const BNS_R2_BASE_URL =
+  "https://pub-96ce2eba58694b1da7f540033bdaa464.r2.dev";
+
+export interface BnsReel {
+  id: string;
+  title: string;
+  caption: string;
+  category: string;
+  author: string;
+  authorAvatar: string;
+  videoUrl: string;
+  r2Key: string;
+  posterUrl: string;
+  likes: number;
+  comments: number;
+  shares: number;
+  plays: number;
+  duration: string;
+  hashtags: string[];
+  tiktokUrl: string;
+  featuredInHero?: boolean;
+}
+
+export const BNS_R2_REELS: BnsReel[] = [
+  {
+    id: "reel-01",
+    title: "Kenya Owes Over 12 Trillion",
+    caption:
+      "Kenya owes over 12 Trillion shillings. Calvina Praise breaks down sovereign debt, Article 201 public finance accountability, and why debt service cuts hospital budgets.",
+    category: "National Debt",
+    author: "Calvina Praise · BNS Storyteller",
+    authorAvatar: "/images/reels/reel-01-poster.jpg",
+    videoUrl: `${BNS_R2_BASE_URL}/Calvina%20Praise%20Sovereign%20debt.mp4`,
+    r2Key: "Calvina Praise Sovereign debt.mp4",
+    posterUrl: "/images/reels/reel-01-poster.jpg",
+    likes: 14200,
+    comments: 842,
+    shares: 430,
+    plays: 280000,
+    duration: "2:16",
+    hashtags: ["#BudgetNdioStory", "#CalvinaPraise", "#Article201", "#SovereignDebt"],
+    tiktokUrl: "https://www.tiktok.com/@budget.ndio.story",
+    featuredInHero: true,
+  },
+  {
+    id: "reel-02",
+    title: "County & Budget Socials In Action",
+    caption:
+      "Tracking KSh 420B in equitable share down to dispensary shelves and auditing pending bills on the ground with Nelly Maina.",
+    category: "Devolution",
+    author: "Nelly Maina · BNS Lead",
+    authorAvatar: "/images/marketing newsletter subcribe/Nelly with The Mic.jpg",
+    videoUrl: `${BNS_R2_BASE_URL}/county%20%26%20budget%20socials%20new.mp4`,
+    r2Key: "county & budget socials new.mp4",
+    posterUrl: "/images/reels/reel-02-poster.jpg",
+    likes: 9800,
+    comments: 412,
+    shares: 260,
+    plays: 195000,
+    duration: "0:49",
+    hashtags: ["#CountyBudget", "#NellyMaina", "#BNSMashinani", "#Devolution"],
+    tiktokUrl: "https://www.tiktok.com/@budget.ndio.story",
+  },
+  {
+    id: "reel-03",
+    title: "Budget Day 2026: The Treasury Briefcase",
+    caption:
+      "What really happens when the CS walks into Parliament with the briefcase? Unpacking the national budget statement beyond the political theatre.",
+    category: "National Budget",
+    author: "BNS Research Desk",
+    authorAvatar: "/images/towwnhallmay/theman.jpg",
+    videoUrl: `${BNS_R2_BASE_URL}/Budget%20Day%202026%20%20National%20treasury.mp4`,
+    r2Key: "Budget Day 2026  National treasury.mp4",
+    posterUrl: "/images/reels/reel-03-budget-day.jpg",
+    likes: 16400,
+    comments: 1240,
+    shares: 680,
+    plays: 310000,
+    duration: "0:45",
+    hashtags: ["#BudgetDay2026", "#NationalTreasury", "#KenyaBudget", "#Article201"],
+    tiktokUrl: "https://www.tiktok.com/@budget.ndio.story",
+  },
+  {
+    id: "reel-04",
+    title: "BNS Studio: MYTH or FACT Budget Game",
+    caption:
+      "Testing Kenyans on the street: Does borrowing fund salaries or development? Fast-paced myth vs fact civic quiz from the studio floor.",
+    category: "Civic Trivia",
+    author: "BNS Studio Crew",
+    authorAvatar: "/images/media/129A3905.jpg",
+    videoUrl: `${BNS_R2_BASE_URL}/BNS%20Studio%20%20MYTH%20or%20FACT%20%20game%20on%20budget.mp4`,
+    r2Key: "BNS Studio  MYTH or FACT  game on budget.mp4",
+    posterUrl: "/images/reels/reel-04-myth-fact.jpg",
+    likes: 22100,
+    comments: 1890,
+    shares: 940,
+    plays: 420000,
+    duration: "1:22",
+    hashtags: ["#BNSStudio", "#MythOrFact", "#BudgetGame", "#PublicFinance"],
+    tiktokUrl: "https://www.tiktok.com/@budget.ndio.story",
+  },
+  {
+    id: "reel-05",
+    title: "Where Do I Start? (Nyota & Uwezo Fund)",
+    caption:
+      "Animated step-by-step explainer: How youth, women, and community groups can access Uwezo Fund and Nyota enterprise capital without middlemen.",
+    category: "Opportunities",
+    author: "BNS Animation Desk",
+    authorAvatar: "/images/media/main media image.jpg",
+    videoUrl: `${BNS_R2_BASE_URL}/animation%20reel%20opportunities%20.%20Where%20do%20I%20start%20(%20nyota%20programmes%20%20uwezo%20fund)%20main%20landing%20page%20.mp4`,
+    r2Key:
+      "animation reel opportunities . Where do I start ( nyota programmes  uwezo fund) main landing page .mp4",
+    posterUrl: "/images/reels/reel-05-opportunities.jpg",
+    likes: 18700,
+    comments: 950,
+    shares: 820,
+    plays: 350000,
+    duration: "0:45",
+    hashtags: ["#NyotaProgrammes", "#UwezoFund", "#YouthEmpowerment", "#Opportunities"],
+    tiktokUrl: "https://www.tiktok.com/@budget.ndio.story",
+  },
+  {
+    id: "reel-06",
+    title: "One Kenyan Speaks: Unity & Taxes",
+    caption:
+      "Grassroots citizen voice: Shared national contributions, equitable revenue distribution across all 47 counties, and demanding audit trail for tax shillings.",
+    category: "Citizen Voices",
+    author: "Citizen Voice · Wanahabari",
+    authorAvatar: "/images/towwnhallmay/129A3863.jpg",
+    videoUrl: `${BNS_R2_BASE_URL}/one%20kenyan%20speaks%20unity%20.mp4`,
+    r2Key: "one kenyan speaks unity .mp4",
+    posterUrl: "/images/reels/reel-06-unity.jpg",
+    likes: 11300,
+    comments: 580,
+    shares: 390,
+    plays: 210000,
+    duration: "0:24",
+    hashtags: ["#OneKenyan", "#Wanahabari", "#TaxJustice", "#Unity"],
+    tiktokUrl: "https://www.tiktok.com/@budget.ndio.story",
+  },
+  {
+    id: "reel-07",
+    title: "From Household Budget to Sovereign Deficit",
+    caption:
+      "Connecting the monthly household cost of living—fuel, unga, school fees—to Parliament's borrowing ceiling and sovereign debt repayments.",
+    category: "Personal Finance",
+    author: "BNS Financial Literacy Desk",
+    authorAvatar: "/images/towwnhallmay/129A3923.jpg",
+    videoUrl: `${BNS_R2_BASE_URL}/personal%20budget.mp4`,
+    r2Key: "personal budget.mp4",
+    posterUrl: "/images/reels/reel-07-personal-budget.jpg",
+    likes: 13800,
+    comments: 710,
+    shares: 450,
+    plays: 275000,
+    duration: "1:37",
+    hashtags: ["#PersonalBudget", "#CostOfLiving", "#Inflation", "#NationalDebt"],
+    tiktokUrl: "https://www.tiktok.com/@budget.ndio.story",
+  },
+  {
+    id: "reel-08",
+    title: "UoN Cohort 001: Campus Fellowship",
+    caption:
+      "Live groundworks baraza at the University of Nairobi: Student leaders dissect higher education funding models, HELB loans, and tuition band inequalities.",
+    category: "Wanahabari",
+    author: "Wanahabari Lab & UoN Fellows",
+    authorAvatar: "/images/cohort1 groundworks/129A3964.jpg",
+    videoUrl: `${BNS_R2_BASE_URL}/uon%20cohort%20001%20.mp4`,
+    r2Key: "uon cohort 001 .mp4",
+    posterUrl: "/images/reels/reel-08-uon-cohort.jpg",
+    likes: 15600,
+    comments: 1020,
+    shares: 610,
+    plays: 320000,
+    duration: "2:44",
+    hashtags: ["#UoNCohort001", "#WanahabariLab", "#HELB", "#CampusCivic"],
+    tiktokUrl: "https://www.tiktok.com/@budget.ndio.story",
+  },
+];
+
+export const BNS_HERO_REEL: BnsReel = BNS_R2_REELS[0];
+
+export function getAllBnsR2Reels(): BnsReel[] {
+  return BNS_R2_REELS;
+}
+
+export function getBnsR2Reel(idOrQuery: string): BnsReel {
+  const norm = idOrQuery.trim().toLowerCase();
+  // 1. Direct ID match
+  const direct = BNS_R2_REELS.find((r) => r.id.toLowerCase() === norm);
+  if (direct) return direct;
+
+  // 2. Title match
+  const titleMatch = BNS_R2_REELS.find((r) =>
+    r.title.toLowerCase().includes(norm),
+  );
+  if (titleMatch) return titleMatch;
+
+  // 3. r2Key match
+  const keyMatch = BNS_R2_REELS.find((r) =>
+    r.r2Key.toLowerCase().includes(norm),
+  );
+  if (keyMatch) return keyMatch;
+
+  // 4. Category or author match
+  const catMatch = BNS_R2_REELS.find(
+    (r) =>
+      r.category.toLowerCase().includes(norm) ||
+      r.author.toLowerCase().includes(norm),
+  );
+  if (catMatch) return catMatch;
+
+  // 5. Caption match
+  const captionMatch = BNS_R2_REELS.find((r) =>
+    r.caption.toLowerCase().includes(norm),
+  );
+  if (captionMatch) return captionMatch;
+
+  return BNS_HERO_REEL;
+}
