@@ -29,7 +29,7 @@ export function ProgrammesSection() {
         <p className={cn(T.lead, "max-w-sm md:text-right")}>{strip.description}</p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+      <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-12">
         {CIVIC_PROGRAMMES.map((programme, index) => (
           <ProgrammeScorecard
             key={programme.slug}
@@ -42,7 +42,7 @@ export function ProgrammesSection() {
 
       {/* Featured programme evidence — Latif / House of Fiscal Wisdom (replaces Budget Mtaani series) */}
       <LandingContent className="mt-12 md:mt-14">
-        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-primary">
+        <p className={cn(T.eyebrow, "mb-2 text-muted-foreground")}>
           Featured project
         </p>
         <p className="mb-4 font-heading text-sm font-semibold text-foreground md:text-base">
@@ -53,7 +53,7 @@ export function ProgrammesSection() {
         <p className={cn(T.caption, "mb-4 max-w-2xl text-muted-foreground")}>
           {featured.body}
         </p>
-        <div className="relative aspect-video overflow-hidden rounded-[1.5rem] border border-border/50 bg-muted md:rounded-[2rem]">
+        <div className="relative aspect-video overflow-hidden bg-muted">
           <iframe
             src={cloudinaryUrl("youtubeEmbed")}
             title={featured.youtubeTitle}

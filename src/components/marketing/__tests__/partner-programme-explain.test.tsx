@@ -30,8 +30,9 @@ describe("PartnerProgrammeExplainSections", () => {
     expect(screen.queryByText(/^How$/i)).not.toBeInTheDocument();
 
     expect(screen.getAllByText(/James Maingi Mutinda · AFRODAD/i).length).toBeGreaterThanOrEqual(1);
-    expect(screen.getAllByText(/Prof\. George Wajackoyah/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/CABRI · Digital PFM reforms/i).length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText(/Nelly Maina · Budget Mtaani/i).length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText(/Dr\. Lyla Latif · House of Fiscal Wisdom/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText(/Project TERRA · House of Fiscal Wisdom/i).length).toBeGreaterThanOrEqual(1);
   });
 });

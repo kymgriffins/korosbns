@@ -14,6 +14,7 @@
       "sections": [
         { "id": "hero", "label": "Partner hero · project reel backdrop", "visible": true },
         { "id": "programmeExplains", "label": "Three programme how/why sections", "visible": true },
+        { "id": "featuredProjects", "label": "Featured projects · YouTube evidence", "visible": true },
         { "id": "partners", "label": "Partners marquee", "visible": false },
         { "id": "cta", "label": "Editorial CTA band", "visible": true },
         { "id": "storyNearYou", "label": "Legacy story / YouTube block", "visible": false },
@@ -47,8 +48,9 @@
       "composer": "src/components/programmes/programmes-landing.tsx",
       "sections": [
         { "id": "hero", "label": "Landing-format hero", "visible": true },
-        { "id": "programmesMap", "label": "Four programme scorecards", "visible": true },
-        { "id": "partners", "label": "Partners marquee", "visible": true },
+        { "id": "programmesMap", "label": "Three programme scorecards", "visible": true },
+        { "id": "featuredProjects", "label": "Featured projects · YouTube evidence", "visible": true },
+        { "id": "partners", "label": "Partners marquee", "visible": false },
         { "id": "projectsLoop", "label": "Projects loop", "visible": false },
         { "id": "cta", "label": "Editorial CTA band", "visible": true }
       ]

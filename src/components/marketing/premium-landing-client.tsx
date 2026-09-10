@@ -4,6 +4,7 @@ import React from "react";
 import dynamic from "next/dynamic";
 import PartnerLandingHero from "@/components/marketing/partner-landing-hero";
 import { PartnerProgrammeExplainSections } from "@/components/marketing/partner-programme-explain";
+import { FeaturedProjectsSection } from "@/components/marketing/featured-projects-section";
 import { EditorialCtaBand } from "@/components/ui/editorial";
 import { CIVIC_PROGRAMMES } from "@/content";
 import { isSectionVisible } from "@/lib/partner-page-cms";
@@ -24,7 +25,7 @@ const NewsletterPopup = dynamic(
 
 /**
  * Partner homepage spine:
- * Hero reel → 3 investment-facing programme stories → CTA
+ * Hero reel → 3 programme stories → featured YouTube projects → CTA
  * Learner capture (newsletter popup) muted via SHOW_NEWSLETTER_POPUP.
  */
 export default function PremiumLandingClient() {
@@ -33,6 +34,9 @@ export default function PremiumLandingClient() {
       {isSectionVisible("home", "hero") ? <PartnerLandingHero /> : null}
       {isSectionVisible("home", "programmeExplains") ? (
         <PartnerProgrammeExplainSections />
+      ) : null}
+      {isSectionVisible("home", "featuredProjects") ? (
+        <FeaturedProjectsSection />
       ) : null}
       {isSectionVisible("home", "partners") ? <PartnersMarquee /> : null}
       {isSectionVisible("home", "cta") ? (

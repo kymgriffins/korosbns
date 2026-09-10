@@ -1,0 +1,56 @@
+{
+  "provenance": {
+    "source": "YouTube oEmbed JSON + channel RSS match for partner project URLs",
+    "note": "Featured evidence projects for partner landing — separate from Learn Hub content-videos.json series catalogue.",
+    "level": "fallback",
+    "shape": "featured_project_youtube"
+  },
+  "count": 3,
+  "results": [
+    {
+      "id": "illicit-financial-flows-benin-cabo-verde",
+      "slug": "illicit-financial-flows-benin-cabo-verde",
+      "videoId": "G5ddu4I6mNs",
+      "url": "https://www.youtube.com/watch?v=G5ddu4I6mNs",
+      "title": "Learn about illicit financial flows in Benin and Cabo Verde",
+      "prose": "Dr. Lyla Latif — with House of Fiscal Wisdom — walks newsrooms through trade misinvoicing and extractive contracts that bleed sovereign revenue. The briefing sits beside the Red Flags monograph partners can cite the same week.",
+      "thumbnail": "https://i.ytimg.com/vi/G5ddu4I6mNs/hqdefault.jpg",
+      "authorName": "Lyla Latif",
+      "programmeSlug": "wanahabari-lab",
+      "programmeLabel": "Wanahabari",
+      "href": "/bns-studio/illicit-financial-flows-benin-cabo-verde",
+      "publishedAt": "2026-08-08T00:00:00Z",
+      "channelHandle": "@lyla-latif"
+    },
+    {
+      "id": "cabri-digital-pfm-reforms",
+      "slug": "cabri-digital-pfm-reforms",
+      "videoId": "kWpY4K1uI20",
+      "url": "https://www.youtube.com/watch?v=kWpY4K1uI20",
+      "title": "Digital PF Reform Stories Country-experiences - South Africa, Ghana, Namibia, Kenya, Rwanda, Malawi",
+      "prose": "Co-produced with CABRI: ministries of finance across Anglophone Africa compare digital PFM breakthroughs — IFMIS, e-procurement, and peer learning partners can brief against without inventing a single allocation figure.",
+      "thumbnail": "https://i.ytimg.com/vi/kWpY4K1uI20/hqdefault.jpg",
+      "authorName": "Collaborative Africa Budget Reform Initiative",
+      "programmeSlug": "studios",
+      "programmeLabel": "BNS Studio",
+      "href": "/bns-studio/cabri-digital-pfm-reforms",
+      "publishedAt": "2026-04-28T00:00:00Z",
+      "channelHandle": "@WeareCABRI"
+    },
+    {
+      "id": "project-terra",
+      "slug": "project-terra",
+      "videoId": "it8rOKSYKnc",
+      "url": "https://www.youtube.com/watch?v=it8rOKSYKnc",
+      "title": "Project Terra",
+      "prose": "Project TERRA — Technology, Equality, Regulatory Risk Assessment — with House of Fiscal Wisdom and Luminate. The film opens how platform architectures and tax concessions make African women workers invisible in public revenue systems.",
+      "thumbnail": "https://i.ytimg.com/vi/it8rOKSYKnc/hqdefault.jpg",
+      "authorName": "Lyla Latif",
+      "programmeSlug": "studios",
+      "programmeLabel": "BNS Studio",
+      "href": "/bns-project/terra",
+      "publishedAt": "2026-07-25T00:00:00Z",
+      "channelHandle": "@lyla-latif"
+    }
+  ]
+}

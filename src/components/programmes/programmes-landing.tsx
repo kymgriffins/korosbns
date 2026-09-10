@@ -5,6 +5,7 @@ import Image from "next/image";
 import { EditorialCtaBand, EditorialPill, PillButtonGroup } from "@/components/ui/editorial";
 import { ProgrammeScorecard } from "@/components/programmes/programme-scorecard";
 import { ProgrammesProjectsLoop } from "@/components/programmes/programmes-projects-loop";
+import { FeaturedProjectsSection } from "@/components/marketing/featured-projects-section";
 import {
   LandingSection,
 } from "@/layouts/landing-section";
@@ -41,12 +42,12 @@ export function ProgrammesLanding() {
     <div className="w-full min-h-dvh bg-background overflow-x-clip text-foreground">
       {isSectionVisible("programmes", "hero") ? (
         <section
-          className={cn(HERO_SECTION_PADDING, "border-b border-border/30 bg-background")}
+          className={cn(HERO_SECTION_PADDING, "border-b border-border/50 bg-background")}
           aria-labelledby="programmes-hero-heading"
         >
           <div className={SECTION_SHELL_INNER}>
-            <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-12">
-              <div className="flex flex-col items-start gap-4 lg:col-span-7">
+            <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-12 lg:gap-16">
+              <div className="flex flex-col items-start gap-4 lg:col-span-5">
                 <EditorialPill dot pulse variant="default">
                   Three programmes · evidence via BNS Studio
                 </EditorialPill>
@@ -56,7 +57,7 @@ export function ProgrammesLanding() {
                 >
                   {landing.headline}
                 </h1>
-                <p className={cn(T.lead, "max-w-2xl text-foreground/75")}>
+                <p className={cn(T.lead, "max-w-md text-foreground/75")}>
                   {landing.body}
                 </p>
                 {landing.subhead ? (
@@ -80,25 +81,32 @@ export function ProgrammesLanding() {
                 </div>
               </div>
 
-              <div className="lg:col-span-5">
-                <div className="relative aspect-[4/3] w-full overflow-hidden rounded-3xl border border-border/40 bg-muted shadow-xl md:aspect-[16/11] lg:aspect-[4/3]">
+              <figure className="space-y-2.5 lg:col-span-7">
+                <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted md:aspect-[16/10]">
                   <Image
                     src={CIVIC_PROGRAMMES[0]?.visual.hero ?? "/logo.svg"}
                     alt={CIVIC_PROGRAMMES[0]?.visual.heroAlt ?? "Budget Ndio Story programmes"}
                     fill
                     priority
                     className="object-cover object-center"
-                    sizes="(max-width: 1024px) 100vw, 45vw"
+                    sizes="(max-width: 1024px) 100vw, 55vw"
                   />
                 </div>
-              </div>
+                <figcaption className={cn(T.caption, "text-muted-foreground")}>
+                  {CIVIC_PROGRAMMES[0]?.visual.heroAlt ?? "Budget Ndio Story programmes"}
+                </figcaption>
+              </figure>
             </div>
           </div>
         </section>
       ) : null}
 
       {isSectionVisible("programmes", "programmesMap") ? (
-        <LandingSection id="programmes-map" aria-labelledby="programmes-map-heading">
+        <LandingSection
+          id="programmes-map"
+          aria-labelledby="programmes-map-heading"
+          className="border-t border-border/50"
+        >
           <div className="mb-8 flex flex-col gap-4 md:mb-10 md:flex-row md:items-end md:justify-between">
             <div className="max-w-2xl">
               <h2 id="programmes-map-heading" className={T.sectionTitle}>
@@ -110,7 +118,7 @@ export function ProgrammesLanding() {
             </p>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-12">
             {CIVIC_PROGRAMMES.map((programme, index) => (
               <ProgrammeScorecard
                 key={programme.slug}
@@ -121,6 +129,13 @@ export function ProgrammesLanding() {
             ))}
           </div>
         </LandingSection>
+      ) : null}
+
+      {isSectionVisible("programmes", "featuredProjects") ? (
+        <FeaturedProjectsSection
+          headline="Featured projects across the programmes"
+          lede="Published YouTube evidence — illicit financial flows, CABRI digital PFM, and Project TERRA — with thumbnails and titles refreshed from the source URLs."
+        />
       ) : null}
 
       {isSectionVisible("programmes", "partners") ? <PartnersMarquee /> : null}

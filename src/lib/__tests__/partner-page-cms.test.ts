@@ -19,11 +19,20 @@ describe("partner-page-cms ≤5 block policy", () => {
   it("lists partner pages with expected home mutes", () => {
     expect(isSectionVisible("home", "hero")).toBe(true);
     expect(isSectionVisible("home", "programmeExplains")).toBe(true);
+    expect(isSectionVisible("home", "featuredProjects")).toBe(true);
     expect(isSectionVisible("home", "storyNearYou")).toBe(false);
     expect(isSectionVisible("home", "programmes")).toBe(false);
     expect(isSectionVisible("home", "team")).toBe(false);
     expect(isSectionVisible("home", "budgetCycle")).toBe(false);
     expect(visibleSectionCount("home")).toBeLessThanOrEqual(
+      partnerPageSectionsCms.policy.maxBlocksPartnerPages,
+    );
+  });
+
+  it("showcases featured YouTube projects on programmes hub under budget", () => {
+    expect(isSectionVisible("programmes", "featuredProjects")).toBe(true);
+    expect(isSectionVisible("programmes", "partners")).toBe(false);
+    expect(visibleSectionCount("programmes")).toBeLessThanOrEqual(
       partnerPageSectionsCms.policy.maxBlocksPartnerPages,
     );
   });
