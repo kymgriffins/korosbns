@@ -3,12 +3,31 @@
 import React from "react";
 import dynamic from "next/dynamic";
 import PartnerLandingHero from "@/components/marketing/partner-landing-hero";
-import { PartnerProgrammeExplainSections } from "@/components/marketing/partner-programme-explain";
-import { FeaturedProjectsSection } from "@/components/marketing/featured-projects-section";
 import { EditorialCtaBand } from "@/components/ui/editorial";
 import { CIVIC_PROGRAMMES } from "@/content";
 import { isSectionVisible } from "@/lib/partner-page-cms";
 import { SHOW_NEWSLETTER_POPUP } from "@/lib/marketing-chrome";
+
+/** Below-fold: defer so hero stills paint first. */
+const PartnerProgrammeExplainSections = dynamic(
+  () =>
+    import("@/components/marketing/partner-programme-explain").then((m) => ({
+      default: m.PartnerProgrammeExplainSections,
+    })),
+  { loading: () => <div className="min-h-[40vh] w-full bg-background" aria-hidden /> },
+);
+
+/**
+ * Seed JSON renders immediately; YouTube refresh runs in useEffect and must
+ * never block first paint.
+ */
+const FeaturedProjectsSection = dynamic(
+  () =>
+    import("@/components/marketing/featured-projects-section").then((m) => ({
+      default: m.FeaturedProjectsSection,
+    })),
+  { loading: () => <div className="min-h-[50vh] w-full bg-background" aria-hidden /> },
+);
 
 const PartnersMarquee = dynamic(
   () => import("@/components/marketing/partners-marquee"),

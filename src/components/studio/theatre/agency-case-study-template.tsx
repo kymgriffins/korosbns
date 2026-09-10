@@ -3,20 +3,8 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  ArrowUpRight,
-  Send,
-  CheckCircle2,
-  Calendar,
-  Building2,
-  FileText,
-  Volume2,
-  Play,
-  ShieldCheck,
-} from "lucide-react";
+import { ArrowLeft, Send, Volume2, Play } from "lucide-react";
 import type { StudioProjectEvidence } from "@/data/studios-evidence";
-import { studiosEvidenceData } from "@/data/studios-evidence";
 import { StudioBookingForm } from "@/components/studio/StudioBookingForm";
 import { EditorialPill } from "@/components/ui/editorial/editorial-pill";
 import { PillButtonGroup, PillButton } from "@/components/ui/editorial/pill-button-group";
@@ -24,6 +12,9 @@ import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 import { BNS_COMMUNITY_IMAGES, BNS_MEDIA_IMAGES } from "@/constants/bns-media-images";
 import { cn } from "@/utils";
+
+/** Hook → what → media → outcomes → CTA (≤5). */
+const SECTION_COUNT = 5;
 
 function youtubeEmbedUrl(url: string): string | null {
   const match = url.match(
@@ -39,7 +30,6 @@ export function AgencyCaseStudyTemplate({ project }: { project: StudioProjectEvi
   const activeLang = project.multilingual?.languages.find((l) => l.code === selectedLang) || project.multilingual?.languages[0];
   const activeVideoUrl = activeLang ? `https://www.youtube.com/watch?v=${activeLang.videoId}` : project.media.videoUrl;
   const embed = activeVideoUrl ? youtubeEmbedUrl(activeVideoUrl) : null;
-  const related = studiosEvidenceData.getRelatedProjects(project.id, 3);
 
   const getProgrammeLabel = (slug: string) => {
     switch (slug) {
@@ -64,9 +54,16 @@ export function AgencyCaseStudyTemplate({ project }: { project: StudioProjectEvi
     };
 
   return (
-    <article className="min-h-screen bg-background text-foreground">
-      {/* 01 — WHITEPAPER EXECUTIVE HEADER */}
-      <header className="border-b border-border/40 bg-background pt-24 pb-12 md:pt-32 md:pb-16">
+    <article
+      className="min-h-screen bg-background text-foreground"
+      data-testid="agency-case-study"
+      data-section-count={SECTION_COUNT}
+    >
+      {/* 01 — Hook */}
+      <header
+        className="border-b border-border/40 bg-background pt-24 pb-12 md:pt-32 md:pb-16"
+        data-project-section="hook"
+      >
         <div className={SECTION_SHELL_INNER}>
           {/* Breadcrumb back to repository */}
           <nav aria-label="Breadcrumb" className="mb-6">
@@ -157,8 +154,11 @@ export function AgencyCaseStudyTemplate({ project }: { project: StudioProjectEvi
         </div>
       </header>
 
-      {/* 02 — CINEMATIC WIDESCREEN MEDIA CANVAS */}
-      <section className="border-b border-border/30 bg-muted/20 py-8 md:py-12">
+      {/* 02 — Evidence media */}
+      <section
+        className="border-b border-border/30 bg-muted/20 py-8 md:py-12"
+        data-project-section="media"
+      >
         <div className={SECTION_SHELL_INNER}>
           <div className="mx-auto max-w-5xl space-y-4">
             {/* Multilingual Track Selector if available */}
@@ -264,120 +264,122 @@ export function AgencyCaseStudyTemplate({ project }: { project: StudioProjectEvi
         </div>
       </section>
 
-      {/* 03 — FLUENT EDITORIAL WHITEPAPER PROSE */}
-      <main className="py-16 md:py-24">
+      {/* 03 — What it is */}
+      <section
+        className="border-b border-border/30 py-14 md:py-20"
+        data-project-section="what"
+        aria-labelledby="case-what-heading"
+      >
         <div className={SECTION_SHELL_INNER}>
-          <div className="mx-auto max-w-3xl space-y-16">
-            {/* Chapter 1: The Fiscal Context & Challenge */}
-            <section className="space-y-6">
-              <div className="space-y-2">
-                <EditorialPill variant="muted" size="xs">
-                  Chapter 01 · The Public Finance Tension
-                </EditorialPill>
-                <h2 className={cn(T.sectionTitle, "text-foreground")}>
-                  The Challenge & Fiscal Secrecy
-                </h2>
-              </div>
-
-              <div className="prose prose-lg dark:prose-invert max-w-none text-base leading-relaxed text-foreground/80 sm:text-lg">
-                <p className="first-letter:float-left first-letter:mr-3 first-letter:font-heading first-letter:text-5xl first-letter:font-bold first-letter:text-primary">
-                  {project.briefChallenge}
-                </p>
-                <p>
-                  {project.description}
-                </p>
-              </div>
-            </section>
-
-            {/* Photojournalism In-Line Breakout */}
-            <div className="space-y-3">
-              <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl border border-border/50 bg-muted shadow-md md:rounded-3xl">
-                <Image
-                  src={BNS_COMMUNITY_IMAGES.forumA}
-                  alt="Citizen town hall discussion on public budget allocations"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 800px"
-                />
-              </div>
-              <p className="text-xs text-muted-foreground italic">
-                Grassroots budget forum: Community listening sessions translate complex line items into citizen oversight.
+          <div className="mx-auto max-w-3xl space-y-6">
+            <EditorialPill variant="muted" size="xs">
+              What it is
+            </EditorialPill>
+            <h2 id="case-what-heading" className={cn(T.sectionTitle, "text-foreground")}>
+              The challenge
+            </h2>
+            <div className="space-y-4 text-base leading-relaxed text-foreground/80 sm:text-lg">
+              <p className="first-letter:float-left first-letter:mr-3 first-letter:font-heading first-letter:text-5xl first-letter:font-bold first-letter:text-primary">
+                {project.briefChallenge}
               </p>
+              <p>{project.description}</p>
             </div>
-
-            {/* Chapter 2: Ground Reality & Stakeholder Voice */}
-            <section className="space-y-6">
-              <div className="space-y-2">
-                <EditorialPill variant="muted" size="xs">
-                  Chapter 02 · Ground Testimony
-                </EditorialPill>
-                <h2 className={cn(T.sectionTitle, "text-foreground")}>
-                  Voices From the Community
-                </h2>
-              </div>
-
-              <blockquote className="border-l-2 border-primary pl-6 py-2 my-8 space-y-3 bg-muted/20 rounded-r-2xl pr-4">
-                <p className="font-heading text-xl font-medium italic text-foreground md:text-2xl leading-relaxed">
-                  &ldquo;{primaryVoice.quote}&rdquo;
-                </p>
-                <footer className="text-xs font-mono font-bold text-primary uppercase tracking-wider">
-                  — {primaryVoice.name}
-                  {primaryVoice.role ? `, ${primaryVoice.role}` : ""}
-                </footer>
-              </blockquote>
-
-              <p className="text-base leading-relaxed text-foreground/80 sm:text-lg">
-                By grounding fiscal forensics in real human lived experience, the production dismantled the myth that budgets are too technical for ordinary citizens. The documentation exposed how delayed disbursements and uncollected county revenues directly crippled local public services.
-              </p>
-            </section>
-
-
-
-
           </div>
         </div>
-      </main>
+      </section>
 
-      {/* 04 — UNIFIED ACTION CTA & ADJACENT INVESTIGATIONS */}
-      <footer className="border-t border-border/40 bg-muted/10 py-16 md:py-24">
+      {/* 04 — Outcomes / partners voice */}
+      <section
+        className="border-b border-border/30 py-14 md:py-20"
+        data-project-section="outcomes"
+        aria-labelledby="case-outcomes-heading"
+      >
         <div className={SECTION_SHELL_INNER}>
-          <div className="space-y-16">
-            <div className="rounded-3xl border border-border/60 bg-card p-8 sm:p-12 lg:p-16 shadow-xs">
-              <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-center">
-                <div className="lg:col-span-7 space-y-4">
-                  <EditorialPill dot pulse>
-                    Commission & Collaborate
-                  </EditorialPill>
-                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tracking-tight leading-tight">
-                    Commission forensic civic storytelling that moves public policy.
-                  </h2>
-                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-2xl">
-                    We partner with development institutions, county assemblies, and grassroots organizations to translate public finance data into high-impact media.
-                  </p>
-                </div>
-                <div className="lg:col-span-5 flex flex-col items-start lg:items-end gap-4">
-                  <div className="flex flex-wrap gap-3">
-                    <PillButton
-                      onClick={() => setBookingOpen(true)}
-                      label="Commission the Studio"
-                      size="lg"
-                      icon={<Send className="size-4" />}
-                    />
-                    <PillButtonGroup
-                      href="/work"
-                      label="All Work & Evidence"
-                      variant="outline"
-                      size="lg"
-                    />
-                  </div>
-                  <p className="text-xs text-muted-foreground lg:text-right">
-                    Operating studio surplus supports grassroots civic tracking across our focus counties.
-                  </p>
-                </div>
-              </div>
+          <div className="mx-auto max-w-3xl space-y-8">
+            <div className="space-y-2">
+              <EditorialPill variant="muted" size="xs">
+                Outcomes
+              </EditorialPill>
+              <h2
+                id="case-outcomes-heading"
+                className={cn(T.sectionTitle, "text-foreground")}
+              >
+                Voices & verified outputs
+              </h2>
             </div>
 
-            
+            <div className="relative aspect-[16/9] w-full overflow-hidden border border-border/50 bg-muted">
+              <Image
+                src={BNS_COMMUNITY_IMAGES.forumA}
+                alt="Citizen town hall discussion on public budget allocations"
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 800px"
+              />
+            </div>
+
+            <blockquote className="space-y-3 border-l-2 border-primary bg-muted/20 py-2 pl-6 pr-4">
+              <p className="font-heading text-xl font-medium italic leading-relaxed text-foreground md:text-2xl">
+                &ldquo;{primaryVoice.quote}&rdquo;
+              </p>
+              <footer className="font-mono text-xs font-bold uppercase tracking-wider text-primary">
+                — {primaryVoice.name}
+                {primaryVoice.role ? `, ${primaryVoice.role}` : ""}
+              </footer>
+            </blockquote>
+
+            <p className="text-base leading-relaxed text-foreground/80 sm:text-lg">
+              {project.outputs.length} verified deliverables with{" "}
+              {project.organization.name}
+              {project.impactEvidence.primaryMetric
+                ? ` — ${project.impactEvidence.primaryMetric}`
+                : ""}
+              .
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 05 — CTA */}
+      <footer
+        className="border-t border-border/40 bg-muted/10 py-16 md:py-24"
+        data-project-section="cta"
+      >
+        <div className={SECTION_SHELL_INNER}>
+          <div className="grid grid-cols-1 gap-8 border-t border-border/50 pt-10 lg:grid-cols-12 lg:items-center">
+            <div className="space-y-4 lg:col-span-7">
+              <EditorialPill dot pulse>
+                Commission & Collaborate
+              </EditorialPill>
+              <h2 className="text-2xl font-black tracking-tight leading-tight text-foreground sm:text-3xl lg:text-4xl">
+                Commission forensic civic storytelling that moves public policy.
+              </h2>
+              <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+                We partner with development institutions, county assemblies, and
+                grassroots organizations to translate public finance data into
+                high-impact media.
+              </p>
+            </div>
+            <div className="flex flex-col items-start gap-4 lg:col-span-5 lg:items-end">
+              <div className="flex flex-wrap gap-3">
+                <PillButton
+                  onClick={() => setBookingOpen(true)}
+                  label="Commission the Studio"
+                  size="lg"
+                  icon={<Send className="size-4" />}
+                />
+                <PillButtonGroup
+                  href="/work"
+                  label="All Work & Evidence"
+                  variant="outline"
+                  size="lg"
+                />
+              </div>
+              <p className="text-xs text-muted-foreground lg:text-right">
+                Operating studio surplus supports grassroots civic tracking across
+                our focus counties.
+              </p>
+            </div>
           </div>
         </div>
       </footer>

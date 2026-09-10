@@ -37,11 +37,23 @@ export function FeaturedProjectsSection({
 
   useEffect(() => {
     let cancelled = false;
-    void featuredProjectsData.fetch().then((live) => {
-      if (!cancelled && live.length) setProjects(live);
-    });
+    const run = () => {
+      void featuredProjectsData.fetch().then((live) => {
+        if (!cancelled && live.length) setProjects(live);
+      });
+    };
+    // Seed paints first; defer YouTube refresh so partner LCP stays on hero stills.
+    const useIdle = typeof window.requestIdleCallback === "function";
+    const idle = useIdle
+      ? window.requestIdleCallback(run, { timeout: 2500 })
+      : window.setTimeout(run, 1);
     return () => {
       cancelled = true;
+      if (useIdle) {
+        window.cancelIdleCallback(idle);
+      } else {
+        window.clearTimeout(idle);
+      }
     };
   }, []);
 

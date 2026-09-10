@@ -110,7 +110,7 @@ export default function PartnerLandingHero() {
               src={current.src}
               alt=""
               fill
-              priority
+              priority={index === 0}
               className="object-cover object-center"
               sizes="100vw"
             />

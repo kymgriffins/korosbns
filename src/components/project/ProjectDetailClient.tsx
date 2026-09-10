@@ -32,7 +32,7 @@ const projectDetails: Record<string, {
       "/images/towwnhallmay/129A3923.jpg",
     ],
     documents: [
-      { name: "Project TERRA Transcript JSON", url: "/bns-project/terra" },
+      { name: "Project TERRA documentary (YouTube)", url: "https://www.youtube.com/watch?v=it8rOKSYKnc" },
       { name: "House of Fiscal Wisdom Research Secretariat", url: "https://www.house-of-fiscal-wisdom.org" },
       { name: "Kenya Data Centre Risk Assessment Sandbox Protocol", url: "/bns-project/terra" },
     ],
@@ -54,7 +54,7 @@ const projectDetails: Record<string, {
       "/images/towwnhallmay/129A3923.jpg",
     ],
     documents: [
-      { name: "Project TERRA Transcript JSON", url: "/bns-project/terra" },
+      { name: "Project TERRA documentary (YouTube)", url: "https://www.youtube.com/watch?v=it8rOKSYKnc" },
       { name: "House of Fiscal Wisdom Research Secretariat", url: "https://www.house-of-fiscal-wisdom.org" },
       { name: "Kenya Data Centre Risk Assessment Sandbox Protocol", url: "/bns-project/terra" },
     ],
