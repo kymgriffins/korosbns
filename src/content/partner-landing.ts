@@ -46,8 +46,21 @@ export const PARTNER_PROGRAMME_VOCAB = {
 } as const;
 
 /**
+ * Fixed hero narrative — stable while stills rotate.
+ * Stakes (silence after the books land) → Connect → Mashinani → Wanahabari → Studio.
+ * Programme names must match PARTNER_PROGRAMME_VOCAB; no vanity reach stats.
+ */
+export const PARTNER_HERO_NARRATIVE = {
+  eyebrow: "After Budget Day",
+  title: "The books land. Then the silence.",
+  lede:
+    "Every year the budget is read from the Treasury. Through BNS Connect we read, analyse, and interpret. In BNS Mashinani we verify in four counties. Wanahabari Lab delivers research-worthy reporting — all captured by BNS Studio.",
+} as const;
+
+/**
  * Brand-level promise + who/how — first text band after the hero reel.
  * Mirrors RF “Big Bets, Real Results” → commitment → path to proof.
+ * Expands the hero chain; does not invent a second method story.
  */
 export const PARTNER_LANDING_THESIS = {
   eyebrow: "Who we are",

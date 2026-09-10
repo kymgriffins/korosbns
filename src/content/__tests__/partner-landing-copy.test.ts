@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   PARTNER_FEATURED_INTRO,
+  PARTNER_HERO_NARRATIVE,
   PARTNER_HERO_PROGRAMME_LINES,
   PARTNER_LANDING_CTA,
   PARTNER_LANDING_STILLS,
@@ -20,6 +21,27 @@ describe("partner landing copy audit", () => {
     expect(PARTNER_LANDING_THESIS.method.toLowerCase()).toMatch(/verify/);
     expect(PARTNER_LANDING_THESIS.method.toLowerCase()).toMatch(/embed/);
     expect(PARTNER_LANDING_THESIS.body).not.toMatch(/\d{1,3}(?:,\d{3})+\s*(?:people|citizens|viewers)/i);
+  });
+
+  it("keeps a fixed hero narrative with stakes then the programme chain", () => {
+    const { eyebrow, title, lede } = PARTNER_HERO_NARRATIVE;
+    expect(eyebrow.toLowerCase()).toMatch(/budget day/);
+    expect(title.length).toBeLessThan(80);
+    expect(title.toLowerCase()).toMatch(/silence|quiet|books|pdf/);
+    expect(lede.length).toBeGreaterThan(120);
+    expect(lede.length).toBeLessThan(420);
+    expect(lede).toContain(PARTNER_PROGRAMME_VOCAB.connect.name);
+    expect(lede).toContain(PARTNER_PROGRAMME_VOCAB.mashinani.name);
+    expect(lede).toContain(PARTNER_PROGRAMME_VOCAB["wanahabari-lab"].name);
+    expect(lede.toLowerCase()).toMatch(/bns studio/);
+    expect(lede.toLowerCase()).toMatch(/four counties|4 counties/);
+    expect(lede.toLowerCase()).toMatch(/treasury/);
+    const askBan = [/invest/i, /partner on/i, /fund against/i, /co-fund/i];
+    for (const pattern of askBan) {
+      expect(title).not.toMatch(pattern);
+      expect(lede).not.toMatch(pattern);
+    }
+    expect(lede).not.toMatch(/\d{1,3}(?:,\d{3})+\s*(?:people|citizens|viewers)/i);
   });
 
   it("keeps section titles locked to the shared vocabulary phrases", () => {
@@ -60,7 +82,7 @@ describe("partner landing copy audit", () => {
     }
   });
 
-  it("keeps hero story copy observational — no investment asks or programme pitches", () => {
+  it("keeps rotating still captions observational — arc lives in PARTNER_HERO_NARRATIVE", () => {
     const banned = [
       /invest/i,
       /partner on/i,

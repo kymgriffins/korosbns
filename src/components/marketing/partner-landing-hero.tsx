@@ -11,6 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
+  PARTNER_HERO_NARRATIVE,
   PARTNER_HERO_PROGRAMME_LINES,
   PARTNER_LANDING_STILLS,
 } from "@/content/partner-landing";
@@ -22,7 +23,7 @@ const SWIPE_PX = 48;
 
 /**
  * Partner homepage hero — project reel under the marketing nav.
- * One viewport full-bleed: media + story + bottom-left programme anchors.
+ * One viewport: fixed narrative + rotating evidence + bottom-left programme anchors.
  */
 export default function PartnerLandingHero() {
   const slides = PARTNER_LANDING_STILLS;
@@ -84,6 +85,8 @@ export default function PartnerLandingHero() {
 
   if (!current) return null;
 
+  const { eyebrow, title, lede } = PARTNER_HERO_NARRATIVE;
+
   return (
     <section
       className={styles["partner-reel-hero"]}
@@ -115,20 +118,35 @@ export default function PartnerLandingHero() {
               sizes="100vw"
             />
           </div>
-          <div className={styles["partner-reel-scrim"]} aria-hidden />
-
-          <div
-            className={styles["partner-reel-stage"]}
-            onClick={onZoneClick}
-            role="presentation"
-          >
-            <div className={styles["partner-reel-story"]}>
-              <h1 className={styles["partner-reel-title"]}>{current.storyTitle}</h1>
-              <p className={styles["partner-reel-desc"]}>{current.storyLine}</p>
-            </div>
-          </div>
         </motion.div>
       </AnimatePresence>
+
+      <div className={styles["partner-reel-scrim"]} aria-hidden />
+
+      <div
+        className={styles["partner-reel-stage"]}
+        onClick={onZoneClick}
+        role="presentation"
+      >
+        <div className={styles["partner-reel-narrative"]}>
+          <p className={styles["partner-reel-eyebrow"]}>{eyebrow}</p>
+          <h1 className={styles["partner-reel-title"]}>{title}</h1>
+          <p className={styles["partner-reel-lede"]}>{lede}</p>
+        </div>
+
+        <AnimatePresence mode="wait">
+          <motion.p
+            key={current.id}
+            className={styles["partner-reel-caption"]}
+            variants={fadeIn}
+            initial={reduceMotion ? false : "hidden"}
+            animate="visible"
+            exit={reduceMotion ? undefined : "hidden"}
+          >
+            {current.storyTitle}
+          </motion.p>
+        </AnimatePresence>
+      </div>
 
       <nav className={styles["partner-reel-programmes"]} aria-label="Three programmes">
         {PARTNER_HERO_PROGRAMME_LINES.map((item) => {
