@@ -1,145 +1,228 @@
 "use client";
 
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
 import Image from "next/image";
-import { useReducedMotion } from "motion/react";
-import { EditorialPill, PillButtonGroup } from "@/components/ui/editorial";
-import { Marquee } from "@/components/ui/marquee";
-import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
-import { PARTNER_LANDING_STILLS } from "@/content/partner-landing";
-import { landingContent } from "@/content";
-import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
+import Link from "next/link";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import {
+  PARTNER_HERO_PROGRAMME_LINES,
+  PARTNER_LANDING_STILLS,
+} from "@/content/partner-landing";
+import { fadeIn } from "@/motion/variants";
 import { cn } from "@/utils";
+import styles from "./partner-landing-hero.module.css";
 
-function ProjectStillCard({
-  src,
-  alt,
-  caption,
-}: {
-  src: string;
-  alt: string;
-  caption: string;
-}) {
-  return (
-    <figure className="relative h-44 w-64 shrink-0 overflow-hidden rounded-2xl border border-white/15 bg-black/40 sm:h-52 sm:w-72 md:h-56 md:w-80">
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        className="object-cover object-center opacity-90"
-        sizes="320px"
-      />
-      <figcaption className="absolute inset-x-0 bottom-0 bg-black/65 px-3 py-2 text-[10px] font-medium leading-snug text-white/90 sm:text-[11px]">
-        {caption}
-      </figcaption>
-    </figure>
-  );
-}
+const AUTO_MS = 6500;
+const SWIPE_PX = 48;
 
 /**
- * Partner homepage hero — Studio-style moving project stills (no TikTok).
- * Evidence imagery: Maingi, Wajackoyah, Nelly (mic/reel), Latif launch.
+ * Partner homepage hero — Studio-style project story reel.
+ * Full-bleed slides + filmstrip of others + 3 minimal programme lines (bottom-left).
  */
 export default function PartnerLandingHero() {
+  const slides = PARTNER_LANDING_STILLS;
   const reduceMotion = useReducedMotion();
-  const hero = landingContent.hero;
-  const rowA = PARTNER_LANDING_STILLS.filter((_, i) => i % 2 === 0);
-  const rowB = PARTNER_LANDING_STILLS.filter((_, i) => i % 2 === 1);
+  const [index, setIndex] = useState(0);
+  const [segmentProgress, setSegmentProgress] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const pointerStart = useRef<{ x: number; y: number } | null>(null);
+  const current = slides[index];
+
+  const goTo = useCallback(
+    (next: number) => {
+      setSegmentProgress(0);
+      setIndex((next + slides.length) % slides.length);
+    },
+    [slides.length],
+  );
+
+  const next = useCallback(() => goTo(index + 1), [goTo, index]);
+  const prev = useCallback(() => goTo(index - 1), [goTo, index]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") next();
+      if (e.key === "ArrowLeft") prev();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [next, prev]);
+
+  useEffect(() => {
+    if (reduceMotion || paused) return;
+
+    const start = performance.now();
+    let frame = 0;
+
+    const tick = (now: number) => {
+      const elapsed = now - start;
+      const p = Math.min(1, elapsed / AUTO_MS);
+      setSegmentProgress(p);
+      if (p >= 1) {
+        next();
+      } else {
+        frame = requestAnimationFrame(tick);
+      }
+    };
+
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [index, next, paused, reduceMotion]);
+
+  const onPointerDown = (e: ReactPointerEvent) => {
+    pointerStart.current = { x: e.clientX, y: e.clientY };
+    setPaused(true);
+  };
+
+  const onPointerUp = (e: ReactPointerEvent) => {
+    const start = pointerStart.current;
+    pointerStart.current = null;
+    setPaused(false);
+    if (!start) return;
+    const dx = e.clientX - start.x;
+    const dy = e.clientY - start.y;
+    if (Math.abs(dx) < SWIPE_PX || Math.abs(dx) < Math.abs(dy)) return;
+    if (dx < 0) next();
+    else prev();
+  };
+
+  const onZoneClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const third = rect.width / 3;
+    if (x < third) prev();
+    else if (x > third * 2) next();
+  };
+
+  if (!current) return null;
 
   return (
     <section
-      className="relative min-h-[100dvh] overflow-hidden border-b border-border/30 bg-zinc-950 text-white"
-      aria-labelledby="partner-landing-hero-heading"
+      className={styles["partner-reel-hero"]}
+      aria-roledescription="carousel"
+      aria-label="How Budget Ndio Story programmes work"
     >
-      {/* Moving project backdrop */}
-      <div className="pointer-events-none absolute inset-0" aria-hidden>
-        {reduceMotion ? (
-          <div className="absolute inset-0 grid grid-cols-2 gap-3 p-4 opacity-40 md:grid-cols-3">
-            {PARTNER_LANDING_STILLS.slice(0, 6).map((still) => (
-              <div key={still.id} className="relative overflow-hidden rounded-2xl">
-                <Image
-                  src={still.src}
-                  alt=""
-                  fill
-                  className="object-cover"
-                  sizes="33vw"
-                  priority={still.id === "maingi-afrodad"}
-                />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="absolute inset-0 flex flex-col justify-center gap-4 py-8 opacity-45">
-            <Marquee pauseOnHover={false} repeat={3} className="[--duration:55s] [--gap:1rem] p-0">
-              {rowA.map((still) => (
-                <ProjectStillCard
-                  key={`a-${still.id}`}
-                  src={still.src}
-                  alt=""
-                  caption={still.caption}
-                />
-              ))}
-            </Marquee>
-            <Marquee reverse pauseOnHover={false} repeat={3} className="[--duration:65s] [--gap:1rem] p-0">
-              {rowB.map((still) => (
-                <ProjectStillCard
-                  key={`b-${still.id}`}
-                  src={still.src}
-                  alt=""
-                  caption={still.caption}
-                />
-              ))}
-            </Marquee>
-          </div>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/75 via-zinc-950/80 to-zinc-950" />
+      <div
+        className={styles["partner-reel-segments"]}
+        role="tablist"
+        aria-label="Project stories"
+      >
+        {slides.map((slide, i) => (
+          <button
+            key={slide.id}
+            type="button"
+            role="tab"
+            aria-selected={i === index}
+            aria-label={slide.storyTitle}
+            onClick={() => goTo(i)}
+            className={styles["partner-reel-segment"]}
+          >
+            <span
+              className={styles["partner-reel-segment-fill"]}
+              style={{
+                transform: `scaleX(${
+                  i < index ? 1 : i === index ? segmentProgress : 0
+                })`,
+              }}
+            />
+          </button>
+        ))}
       </div>
 
-      <div
-        className={cn(
-          SECTION_SHELL_INNER,
-          "relative z-10 flex min-h-[100dvh] flex-col justify-end pb-16 pt-28 md:justify-center md:pb-24 md:pt-32",
-        )}
-      >
-        <div className="max-w-3xl space-y-5">
-          <EditorialPill
-            dot
-            pulse
-            variant="invert"
-          >
-            Partner intelligence · three programmes
-          </EditorialPill>
-
-          <h1
-            id="partner-landing-hero-heading"
-            className={cn(T.heroTitle, "text-balance text-white")}
-          >
-            {hero.headlineBefore}{" "}
-            <span className="text-primary">{hero.headlineHighlight}</span>
-          </h1>
-
-          <p className={cn(T.lead, "max-w-2xl text-white/75")}>{hero.body}</p>
-
-          <p className="max-w-2xl text-sm font-medium leading-relaxed text-white/55 md:text-base">
-            Connect watches the national flow. Mashinani follows money into
-            counties. Wanahabari keeps the story alive after Budget Day. BNS
-            Studio captures the evidence.
-          </p>
-
-          <div className="flex w-full flex-col gap-3 pt-2 sm:w-auto sm:flex-row sm:items-center">
-            <PillButtonGroup
-              href={hero.primaryCta.href}
-              label={hero.primaryCta.label}
-              variant="primary"
-              className="w-full justify-center sm:w-auto"
-            />
-            <PillButtonGroup
-              href={hero.secondaryCta.href}
-              label={hero.secondaryCta.label}
-              variant="outline"
-              className="w-full justify-center border-white/30 bg-transparent text-white hover:bg-white/10 sm:w-auto"
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={current.id}
+          className={styles["partner-reel-slide"]}
+          variants={fadeIn}
+          initial={reduceMotion ? false : "hidden"}
+          animate="visible"
+          exit={reduceMotion ? undefined : "hidden"}
+          onPointerDown={onPointerDown}
+          onPointerUp={onPointerUp}
+          onPointerCancel={() => {
+            pointerStart.current = null;
+            setPaused(false);
+          }}
+        >
+          <div className={styles["partner-reel-media"]}>
+            <Image
+              src={current.src}
+              alt=""
+              fill
+              priority
+              className="object-cover object-center"
+              sizes="100vw"
             />
           </div>
-        </div>
+          <div className={styles["partner-reel-scrim"]} aria-hidden />
+
+          <div
+            className={styles["partner-reel-stage"]}
+            onClick={onZoneClick}
+            role="presentation"
+          >
+            <div className={styles["partner-reel-story"]}>
+              <p className={styles["partner-reel-count"]}>
+                {String(index + 1).padStart(2, "0")} /{" "}
+                {String(slides.length).padStart(2, "0")}
+              </p>
+              <h1 className={styles["partner-reel-title"]}>{current.storyTitle}</h1>
+              <p className={styles["partner-reel-desc"]}>{current.storyLine}</p>
+            </div>
+          </div>
+        </motion.div>
+      </AnimatePresence>
+
+      <nav className={styles["partner-reel-programmes"]} aria-label="Three programmes">
+        {PARTNER_HERO_PROGRAMME_LINES.map((item) => {
+          const active = current.programme === item.slug;
+          return (
+            <Link
+              key={item.slug}
+              href={item.href}
+              className={styles["partner-reel-programme"]}
+              data-active={active ? "true" : "false"}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <span className={styles["partner-reel-programme-label"]}>
+                {item.label}
+              </span>
+              <span className={styles["partner-reel-programme-line"]}>{item.line}</span>
+            </Link>
+          );
+        })}
+      </nav>
+
+      <div
+        className={styles["partner-reel-filmstrip"]}
+        role="group"
+        aria-label="Other project stills"
+      >
+        {slides.map((slide, i) => (
+          <button
+            key={slide.id}
+            type="button"
+            className={styles["partner-reel-thumb"]}
+            data-active={i === index ? "true" : "false"}
+            aria-label={`Show ${slide.storyTitle}`}
+            aria-current={i === index ? "true" : undefined}
+            onClick={() => goTo(i)}
+          >
+            <Image
+              src={slide.src}
+              alt=""
+              fill
+              className={cn("object-cover", slide.id === "nelly-reel" && "object-top")}
+              sizes="56px"
+            />
+          </button>
+        ))}
       </div>
     </section>
   );

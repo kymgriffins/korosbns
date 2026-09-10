@@ -1,12 +1,17 @@
 /**
  * Partner landing evidence stills — project/event imagery only (not team headshots).
+ * Hero reel uses 8 story slides; explain sections reuse keyed stills.
  */
 export type PartnerLandingStill = {
   id: string;
   src: string;
   alt: string;
   caption: string;
-  programme: "connect" | "mashinani" | "wanahabari-lab" | "studio";
+  programme: "connect" | "mashinani" | "wanahabari-lab";
+  /** Short story title for the reel (studio-style) */
+  storyTitle: string;
+  /** One-line story under the title */
+  storyLine: string;
 };
 
 export const PARTNER_LANDING_STILLS: PartnerLandingStill[] = [
@@ -14,43 +19,95 @@ export const PARTNER_LANDING_STILLS: PartnerLandingStill[] = [
     id: "maingi-afrodad",
     src: "/images/events/afrodad-2026/james-maingi-mutinda.jpeg",
     alt: "James Maingi Mutinda presenting at AFRODAD debt conference",
-    caption: "James Maingi Mutinda · AFRODAD · BNS Connect",
+    caption: "James Maingi Mutinda · AFRODAD",
     programme: "connect",
+    storyTitle: "National debt on the record",
+    storyLine: "Connect turns sovereign debt forums into briefings partners can act on.",
   },
   {
     id: "wajackoyah-afrodad",
     src: "/images/events/afrodad-2026/george-wajackoyah.jpeg",
     alt: "Prof. George Wajackoyah speaking at AFRODAD plenary",
-    caption: "Prof. George Wajackoyah · AFRODAD · national debt scrutiny",
+    caption: "Prof. George Wajackoyah · AFRODAD",
     programme: "connect",
+    storyTitle: "Public contracts, public light",
+    storyLine: "National scrutiny that stays after the plenary ends.",
+  },
+  {
+    id: "budget-reading",
+    src: "/images/treasury/budget-reading-2026.jpg",
+    alt: "Budget reading documentation still",
+    caption: "Budget reading · national cycle",
+    programme: "connect",
+    storyTitle: "When the PDF lands",
+    storyLine: "We verify Treasury releases before the conversation goes quiet.",
   },
   {
     id: "nelly-mic",
     src: "/images/marketing newsletter subcribe/Nelly with The Mic.jpg",
     alt: "Nelly Maina recording Budget Mtaani field briefing",
-    caption: "Nelly Maina · Budget Mtaani · BNS Mashinani",
+    caption: "Nelly Maina · Budget Mtaani",
     programme: "mashinani",
+    storyTitle: "County money, spoken clearly",
+    storyLine: "Mashinani follows equitable share into wards and services.",
   },
   {
     id: "nelly-reel",
     src: "/images/reels/nelly-maina-poster.jpg",
     alt: "Nelly Maina county budget tracking reel still",
-    caption: "County equitable share · ground delivery",
+    caption: "County delivery · Mashinani",
     programme: "mashinani",
+    storyTitle: "Stay through the cycle",
+    storyLine: "Estimates, assembly, disbursement — not a fly-over visit.",
+  },
+  {
+    id: "budget-sasa",
+    src: "/images/treasury/budget sasa ni delivery.jpg",
+    alt: "Budget Sasa ni Delivery project still",
+    caption: "Budget Sasa ni Delivery",
+    programme: "mashinani",
+    storyTitle: "Delivery is the proof",
+    storyLine: "County budgets only matter when services show up.",
   },
   {
     id: "latif-launch",
     src: "/images/events/red-flags-book-launch/dr-lyla-latif.jpeg",
     alt: "Dr. Lyla Latif at Red Flags in Government Contracts launch",
-    caption: "Dr. Lyla Latif · House of Fiscal Wisdom · Wanahabari Lab",
+    caption: "Dr. Lyla Latif · House of Fiscal Wisdom",
     programme: "wanahabari-lab",
+    storyTitle: "Forensics after Budget Day",
+    storyLine: "Wanahabari keeps newsrooms capable when headlines fade.",
   },
   {
     id: "latif-cover",
     src: "/images/events/red-flags-book-launch/red-flags-book-cover.jpeg",
     alt: "Red Flags in Government Contracts monograph cover",
-    caption: "Red Flags monograph · forensic procurement evidence",
+    caption: "Red Flags monograph",
     programme: "wanahabari-lab",
+    storyTitle: "Evidence partners can brief",
+    storyLine: "Investigations and launches built for institutional use.",
+  },
+];
+
+/** Three minimal programme lines for the hero (bottom-left). */
+export const PARTNER_HERO_PROGRAMME_LINES = [
+  {
+    slug: "connect" as const,
+    label: "Connect",
+    line: "Watches the national flow.",
+    href: "/programmes/connect",
+  },
+  {
+    slug: "mashinani" as const,
+    label: "Mashinani",
+    line: "Follows money into counties.",
+    href: "/programmes/mashinani",
+  },
+  {
+    slug: "wanahabari-lab" as const,
+    label: "Wanahabari",
+    line: "Keeps scrutiny after Budget Day.",
+    href: "/programmes/wanahabari-lab",
   },
 ];
 
