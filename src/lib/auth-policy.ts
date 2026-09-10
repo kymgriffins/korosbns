@@ -32,6 +32,16 @@ export const BUDGETHUB_PUBLIC_PREFIXES = [
 ] as const;
 
 /**
+ * Gated routes — temporarily restricted from public/unauthenticated access.
+ * Gated during review and restructuring phase.
+ */
+export const GATED_PATH_PREFIXES = [
+  "/learn",
+  "/learnhub",
+  "/reports",
+] as const;
+
+/**
  * Auth pages that redirect authenticated users away (already signed in).
  * Verify and reset are intentionally excluded so users with a stale cookie can finish flows.
  */

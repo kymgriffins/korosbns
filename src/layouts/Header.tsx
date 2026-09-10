@@ -103,7 +103,7 @@ export function Header() {
     };
   }, [isOpen]);
 
-  const joinHref = isLoggedIn ? Routes.Learn : Routes.Login;
+  const joinHref = isLoggedIn ? Routes.Home : Routes.Login;
   const joinLabel = isLoggedIn
     ? user?.first_name
       ? `Hi, ${user.first_name}`

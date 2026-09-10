@@ -2,6 +2,7 @@ import {
   ADMIN_PATH_PREFIXES,
   BUDGETHUB_PATH_PREFIXES,
   BUDGETHUB_PUBLIC_PREFIXES,
+  GATED_PATH_PREFIXES,
   buildLoginUrl,
   DEFAULT_POST_LOGIN_PATH,
   isAuthPage,
@@ -15,7 +16,7 @@ export type MiddlewareDecision =
 
 /**
  * Pure middleware decision function — shared by edge middleware and stress tests.
- * Only /admin and /dashboard require auth. /learn is fully public.
+ * /admin, /dashboard, and gated routes (/learn, /reports) require auth.
  */
 export function evaluateAuthMiddleware(
   pathname: string,
@@ -23,6 +24,11 @@ export function evaluateAuthMiddleware(
 ): MiddlewareDecision {
   const isAdminPath = ADMIN_PATH_PREFIXES.some((p) => pathMatchesPrefix(pathname, p));
   if (isAdminPath && !token) {
+    return { action: "redirect", location: buildLoginUrl(pathname) };
+  }
+
+  const isGatedPath = GATED_PATH_PREFIXES.some((p) => pathMatchesPrefix(pathname, p));
+  if (isGatedPath && !token) {
     return { action: "redirect", location: buildLoginUrl(pathname) };
   }
 

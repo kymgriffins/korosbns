@@ -2,23 +2,31 @@ import { describe, it, expect } from "vitest";
 import { evaluateAuthMiddleware } from "@/lib/auth-middleware";
 import { DEFAULT_POST_LOGIN_PATH } from "@/lib/auth-policy";
 
-describe("evaluateAuthMiddleware — public learn routes", () => {
-  it("allows unauthenticated users on /learn/account (protected client-side, not middleware)", () => {
-    expect(evaluateAuthMiddleware("/learn/account", null)).toEqual({ action: "next" });
+describe("evaluateAuthMiddleware — gated routes (/learn, /reports)", () => {
+  const gatedPaths = [
+    "/learn",
+    "/learn/account",
+    "/learn/quests",
+    "/learn/forum",
+    "/learn/profile",
+    "/learn/videos",
+    "/learnhub",
+    "/reports",
+  ];
+
+  it("redirects unauthenticated users on gated routes to login", () => {
+    for (const path of gatedPaths) {
+      const result = evaluateAuthMiddleware(path, null);
+      expect(result.action, path).toBe("redirect");
+      if (result.action === "redirect") {
+        expect(result.location).toContain("/auth/login?next=");
+      }
+    }
   });
 
-  it("allows unauthenticated users on /learn/quests (protected client-side, not middleware)", () => {
-    expect(evaluateAuthMiddleware("/learn/quests", null)).toEqual({ action: "next" });
-  });
-
-  it("allows authenticated users on all learn paths", () => {
-    expect(evaluateAuthMiddleware("/learn/account", "valid-token")).toEqual({ action: "next" });
-    expect(evaluateAuthMiddleware("/learn/quests", "valid-token")).toEqual({ action: "next" });
-  });
-
-  it("allows unauthenticated users on all learn paths", () => {
-    for (const path of ["/learn", "/learn/forum", "/learn/profile", "/learn/videos"]) {
-      expect(evaluateAuthMiddleware(path, null), path).toEqual({ action: "next" });
+  it("allows authenticated users on gated routes", () => {
+    for (const path of gatedPaths) {
+      expect(evaluateAuthMiddleware(path, "valid-token")).toEqual({ action: "next" });
     }
   });
 });
@@ -51,7 +59,7 @@ describe("evaluateAuthMiddleware — auth pages", () => {
 
 describe("evaluateAuthMiddleware — stress matrix", () => {
   const adminProtectedPaths = ["/admin", "/dashboard", "/dashboard/task"];
-  const publicPaths = ["/", "/about", "/learn", "/learn/account", "/learn/quests", "/events"];
+  const publicPaths = ["/", "/about", "/events", "/programmes", "/contact"];
 
   it("every admin path requires token", () => {
     for (const path of adminProtectedPaths) {
@@ -66,3 +74,4 @@ describe("evaluateAuthMiddleware — stress matrix", () => {
     }
   });
 });
+

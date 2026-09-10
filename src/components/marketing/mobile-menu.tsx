@@ -179,7 +179,7 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
                 }}
                 className="pt-4 border-t border-border/40 mt-4"
               >
-                <Link href={isLoggedIn ? Routes.Learn : Routes.Login} onClick={() => setIsOpen(false)}>
+                <Link href={isLoggedIn ? Routes.Home : Routes.Login} onClick={() => setIsOpen(false)}>
                   <Button
                     size="default"
                     variant="white"
@@ -262,7 +262,7 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
                 }}
                 className="pt-4 border-t border-border/40 mt-4"
               >
-                <Link href={isLoggedIn ? Routes.Learn : Routes.Login} onClick={() => setIsOpen(false)}>
+                <Link href={isLoggedIn ? Routes.Home : Routes.Login} onClick={() => setIsOpen(false)}>
                   <Button
                     size="default"
                     variant="white"

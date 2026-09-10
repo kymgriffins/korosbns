@@ -6,24 +6,12 @@ export const NAV_LINKS = [
     href: Routes.Programmes,
   },
   {
-    label: "Learn",
-    href: Routes.Learn,
-  },
-  {
     label: "About",
     href: Routes.About,
   },
   {
-    label: "Reports",
-    href: Routes.Reports,
-  },
-  {
     label: "Studios",
     href: Routes.BNSStudio,
-  },
-  {
-    label: "Surveys & Events",
-    href: Routes.Events,
   },
   {
     label: "FAQ",
@@ -38,17 +26,13 @@ export const NAV_LINKS = [
 export const footerLinks = {
   product: [
     { label: "Programmes", href: Routes.Programmes },
-    { label: "Stories", href: Routes.Learn },
+    { label: "Studios", href: Routes.BNSStudio },
     { label: "Explainers", href: Routes.Capabilities },
     { label: "Get Involved", href: "/about" },
   ],
   resources: [
-    { label: "Budget Guides", href: Routes.Learn },
     { label: "Budget Glossary", href: Routes.Glossary },
     { label: "Help & FAQ", href: Routes.Help },
-    { label: "Documents", href: Routes.Documents },
-    { label: "Surveys", href: Routes.Surveys },
-    { label: "Reports", href: Routes.Reports },
     { label: "Contact", href: Routes.Contact },
   ],
   company: [
@@ -60,6 +44,7 @@ export const footerLinks = {
     { label: "BNS Studios", href: Routes.BNSStudio },
   ],
 };
+
 
 export const socialLinks = [
   { label: "X", href: "https://x.com/budgetndiostory", icon: "x" },

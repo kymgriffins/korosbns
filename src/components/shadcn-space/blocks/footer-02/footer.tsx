@@ -12,13 +12,12 @@ import { cn } from "@/utils";
 const navLinks = [
   { label: "Home", href: "/" },
   { label: "Programmes", href: "/programmes" },
-  { label: "Learn", href: "/learn" },
-  { label: "Reports", href: "/reports" },
   { label: "Budget Glossary", href: "/glossary" },
   { label: "Help & FAQ", href: "/help" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
+
 
 type FooterLogo = {
   id: string;
