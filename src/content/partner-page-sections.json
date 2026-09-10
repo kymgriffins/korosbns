@@ -13,8 +13,9 @@
       "composer": "src/components/marketing/premium-landing-client.tsx",
       "sections": [
         { "id": "hero", "label": "Partner hero · project reel backdrop", "visible": true },
-        { "id": "programmeExplains", "label": "Three programme how/why sections", "visible": true },
-        { "id": "featuredProjects", "label": "Featured projects · YouTube evidence", "visible": true },
+        { "id": "whoHow", "label": "Thesis · who we are / how we work", "visible": true },
+        { "id": "programmeExplains", "label": "Three numbered big bets", "visible": true },
+        { "id": "featuredProjects", "label": "Featured projects · evidence stories", "visible": true },
         { "id": "partners", "label": "Partners marquee", "visible": false },
         { "id": "cta", "label": "Editorial CTA band", "visible": true },
         { "id": "storyNearYou", "label": "Legacy story / YouTube block", "visible": false },

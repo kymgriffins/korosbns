@@ -2,6 +2,10 @@
  * Partner landing evidence stills — project/event imagery only (not team headshots).
  * Hero reel = project moments. Programme sections = one investment lede each.
  * Shared vocabulary (do not diverge): Connect / Mashinani / Wanahabari noun phrases.
+ *
+ * Communication spine (RF-shaped, BNS-honest):
+ * thesis → who/how → three bets → featured evidence → partner CTA.
+ * No fabricated reach stats — proof is named programmes and published work.
  */
 export type PartnerLandingStill = {
   id: string;
@@ -21,6 +25,7 @@ export const PARTNER_PROGRAMME_VOCAB = {
     slug: "connect" as const,
     label: "Connect",
     name: "BNS Connect",
+    /** What we do */
     phrase: "National budget intelligence",
     href: "/programmes/connect",
   },
@@ -38,6 +43,37 @@ export const PARTNER_PROGRAMME_VOCAB = {
     phrase: "Newsroom scrutiny",
     href: "/programmes/wanahabari-lab",
   },
+} as const;
+
+/**
+ * Brand-level promise + who/how — first text band after the hero reel.
+ * Mirrors RF “Big Bets, Real Results” → commitment → path to proof.
+ */
+export const PARTNER_LANDING_THESIS = {
+  eyebrow: "Who we are",
+  title: "Three bets. Year-round accountability.",
+  body:
+    "Budget Ndio Story verifies what Treasury and counties publish, embeds where delivery happens, and trains newsrooms to stay forensic after Budget Day — so partners fund accountability they can brief and cite.",
+  /** Shared method whisper — verify → embed → train/co-produce */
+  method: "Verify → embed → train & co-produce",
+} as const;
+
+/** Featured-projects intro — stories behind the evidence (no vanity millions). */
+export const PARTNER_FEATURED_INTRO = {
+  eyebrow: "Stories behind the evidence",
+  headline: "Projects partners can brief against",
+  lede:
+    "Published films and convenings — AFRODAD debt forums, Red Flags, and Project TERRA — with local event photography as cover art. Titles stay fresh from YouTube; reach claims stay off the page.",
+} as const;
+
+/** Closing partnership band — invest against the three phrases. */
+export const PARTNER_LANDING_CTA = {
+  eyebrow: "Partner with us",
+  title: "Fund the bet that fits your mandate.",
+  description:
+    "Co-fund national budget intelligence, county delivery verification, or newsroom scrutiny — with production captured through BNS Studio.",
+  ctaLabel: "Discuss a partnership",
+  secondaryLabel: "View programmes",
 } as const;
 
 export const PARTNER_LANDING_STILLS: PartnerLandingStill[] = [
@@ -137,12 +173,16 @@ export const PARTNER_HERO_PROGRAMME_LINES = [
 
 export type PartnerProgrammeExplain = {
   slug: "connect" | "mashinani" | "wanahabari-lab";
+  /** Display index — RF-style numbered big bet */
+  number: "01" | "02" | "03";
   name: string;
   eyebrow: string;
   /** Must equal PARTNER_PROGRAMME_VOCAB[slug].phrase */
   title: string;
-  /** Single straightforward paragraph — no problem/how scaffolding */
+  /** Plain stakes — what the programme does */
   lede: string;
+  /** What success looks like — named proof, no fabricated metrics */
+  success: string;
   /** Quiet lifecycle whisper */
   cycle: string;
   href: string;
@@ -153,38 +193,47 @@ export type PartnerProgrammeExplain = {
 export const PARTNER_PROGRAMME_EXPLAINS: PartnerProgrammeExplain[] = [
   {
     slug: "connect",
+    number: "01",
     name: PARTNER_PROGRAMME_VOCAB.connect.name,
     eyebrow: PARTNER_PROGRAMME_VOCAB.connect.label,
     title: PARTNER_PROGRAMME_VOCAB.connect.phrase,
     lede:
-      "We verify what Treasury publishes and keep national debt and allocation questions alive after Budget Day — so partners have a baseline they can fund against.",
+      "We verify what Treasury publishes and keep national debt and allocation questions alive after Budget Day.",
+    success:
+      "Success looks like a baseline partners can fund and cite — AFRODAD debt forums, continental panels, continuous scrutiny.",
     cycle: "Formulation → Budget Day → continuous scrutiny",
     href: PARTNER_PROGRAMME_VOCAB.connect.href,
-    ctaLabel: "Partner on Connect",
+    ctaLabel: "Read more",
     stillIds: ["maingi-afrodad", "wajackoyah-afrodad"],
   },
   {
     slug: "mashinani",
+    number: "02",
     name: PARTNER_PROGRAMME_VOCAB.mashinani.name,
     eyebrow: PARTNER_PROGRAMME_VOCAB.mashinani.label,
     title: PARTNER_PROGRAMME_VOCAB.mashinani.phrase,
     lede:
-      "Full-cycle embeds in Kakamega, Kilifi, Nakuru, and Wajir — scorecards and field briefings that show whether equitable share reaches clinics, roads, and schools.",
+      "Full-cycle embeds in Kakamega, Kilifi, Nakuru, and Wajir track whether equitable share reaches clinics, roads, and schools.",
+    success:
+      "Success looks like scorecards, town halls, and field briefings that show delivery — not estimates alone.",
     cycle: "Estimates → assembly → disbursement & delivery",
     href: PARTNER_PROGRAMME_VOCAB.mashinani.href,
-    ctaLabel: "Partner on Mashinani",
+    ctaLabel: "Read more",
     stillIds: ["townhall-room", "townhall-brief"],
   },
   {
     slug: "wanahabari-lab",
+    number: "03",
     name: PARTNER_PROGRAMME_VOCAB["wanahabari-lab"].name,
     eyebrow: PARTNER_PROGRAMME_VOCAB["wanahabari-lab"].label,
     title: PARTNER_PROGRAMME_VOCAB["wanahabari-lab"].phrase,
     lede:
-      "Training and co-production that keep journalists forensic after Budget Day — investigations and launches partners can brief against.",
+      "Training and co-production keep journalists forensic after Budget Day — when the spending story actually begins.",
+    success:
+      "Success looks like investigations and launches partners can brief against — Red Flags, TERRA, newsroom-ready scrutiny.",
     cycle: "Post–Budget Day → investigations & public narrative",
     href: PARTNER_PROGRAMME_VOCAB["wanahabari-lab"].href,
-    ctaLabel: "Partner on Wanahabari Lab",
+    ctaLabel: "Read more",
     stillIds: ["hall-camera", "latif-launch"],
   },
 ];

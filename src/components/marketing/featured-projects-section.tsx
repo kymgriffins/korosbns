@@ -7,6 +7,7 @@ import {
   featuredProjectsData,
   type FeaturedProject,
 } from "@/data/featured-projects";
+import { PARTNER_FEATURED_INTRO } from "@/content/partner-landing";
 import {
   LandingContent,
   LandingSection,
@@ -26,9 +27,9 @@ type FeaturedProjectsSectionProps = {
  * YouTube URLs stay for playback; cover art is high-quality local photography.
  */
 export function FeaturedProjectsSection({
-  eyebrow = "Featured projects",
-  headline = "Evidence partners can brief against",
-  lede = "Three published films — illicit financial flows, digital PFM reform, and Project TERRA — with local event photography as cover art and titles kept fresh from YouTube.",
+  eyebrow = PARTNER_FEATURED_INTRO.eyebrow,
+  headline = PARTNER_FEATURED_INTRO.headline,
+  lede = PARTNER_FEATURED_INTRO.lede,
   className,
 }: FeaturedProjectsSectionProps) {
   const [projects, setProjects] = useState<FeaturedProject[]>(() =>

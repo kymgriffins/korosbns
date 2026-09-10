@@ -1,20 +1,53 @@
 import { describe, expect, it } from "vitest";
 import {
+  PARTNER_FEATURED_INTRO,
   PARTNER_HERO_PROGRAMME_LINES,
+  PARTNER_LANDING_CTA,
   PARTNER_LANDING_STILLS,
+  PARTNER_LANDING_THESIS,
   PARTNER_PROGRAMME_EXPLAINS,
   PARTNER_PROGRAMME_VOCAB,
 } from "@/content/partner-landing";
 
 /**
- * Copy audit — hero moments, programme names, and section ledes must not fight.
+ * Copy audit — thesis → who/how → three bets → evidence → CTA must not fight.
  */
 describe("partner landing copy audit", () => {
+  it("keeps a short brand thesis and who/how path to proof", () => {
+    expect(PARTNER_LANDING_THESIS.title.length).toBeLessThan(80);
+    expect(PARTNER_LANDING_THESIS.body.length).toBeGreaterThan(80);
+    expect(PARTNER_LANDING_THESIS.body.length).toBeLessThan(420);
+    expect(PARTNER_LANDING_THESIS.method.toLowerCase()).toMatch(/verify/);
+    expect(PARTNER_LANDING_THESIS.method.toLowerCase()).toMatch(/embed/);
+    expect(PARTNER_LANDING_THESIS.body).not.toMatch(/\d{1,3}(?:,\d{3})+\s*(?:people|citizens|viewers)/i);
+  });
+
   it("keeps section titles locked to the shared vocabulary phrases", () => {
     for (const explain of PARTNER_PROGRAMME_EXPLAINS) {
       expect(explain.title).toBe(PARTNER_PROGRAMME_VOCAB[explain.slug].phrase);
       expect(explain.eyebrow).toBe(PARTNER_PROGRAMME_VOCAB[explain.slug].label);
       expect(explain.href).toBe(PARTNER_PROGRAMME_VOCAB[explain.slug].href);
+    }
+  });
+
+  it("numbers the three big bets and pairs stakes with honest success lines", () => {
+    expect(PARTNER_PROGRAMME_EXPLAINS.map((e) => e.number)).toEqual([
+      "01",
+      "02",
+      "03",
+    ]);
+    for (const explain of PARTNER_PROGRAMME_EXPLAINS) {
+      expect(explain.lede.trim().length).toBeGreaterThan(40);
+      expect(explain.lede.trim().length).toBeLessThan(280);
+      expect(explain.success.trim().length).toBeGreaterThan(40);
+      expect(explain.success.trim().length).toBeLessThan(280);
+      expect(explain.success.toLowerCase()).toMatch(/success looks like/);
+      expect(explain.ctaLabel).toBe("Read more");
+      expect(explain).not.toHaveProperty("problem");
+      expect(explain).not.toHaveProperty("how");
+      expect(explain).not.toHaveProperty("why");
+      expect(explain.lede).not.toMatch(/\d{1,3}(?:,\d{3})+\s*(?:people|citizens|viewers)/i);
+      expect(explain.success).not.toMatch(/\d{1,3}(?:,\d{3})+\s*(?:people|citizens|viewers)/i);
     }
   });
 
@@ -24,16 +57,6 @@ describe("partner landing copy audit", () => {
       expect(line.label).toBe(PARTNER_PROGRAMME_VOCAB[line.slug].label);
       expect(line).not.toHaveProperty("line");
       expect(line).not.toHaveProperty("phrase");
-    }
-  });
-
-  it("uses one lede per programme with no problem/how fields", () => {
-    for (const explain of PARTNER_PROGRAMME_EXPLAINS) {
-      expect(explain.lede.trim().length).toBeGreaterThan(40);
-      expect(explain.lede.trim().length).toBeLessThan(280);
-      expect(explain).not.toHaveProperty("problem");
-      expect(explain).not.toHaveProperty("how");
-      expect(explain).not.toHaveProperty("why");
     }
   });
 
@@ -79,7 +102,7 @@ describe("partner landing copy audit", () => {
     }
   });
 
-  it("aligns CTA vocabulary with the three programme phrases", () => {
+  it("aligns CTA and featured intro with the three programme phrases", () => {
     const phrases = Object.values(PARTNER_PROGRAMME_VOCAB).map((p) =>
       p.phrase.toLowerCase(),
     );
@@ -88,5 +111,14 @@ describe("partner landing copy audit", () => {
       "county delivery verification",
       "newsroom scrutiny",
     ]);
+    const ctaBlob = `${PARTNER_LANDING_CTA.title} ${PARTNER_LANDING_CTA.description}`.toLowerCase();
+    for (const phrase of phrases) {
+      expect(ctaBlob).toContain(phrase);
+    }
+    expect(PARTNER_FEATURED_INTRO.eyebrow.toLowerCase()).toMatch(/stories/);
+    expect(PARTNER_FEATURED_INTRO.lede.toLowerCase()).toMatch(/afrodad|terra|red flags/);
+    expect(PARTNER_FEATURED_INTRO.lede).not.toMatch(
+      /\d{1,3}(?:,\d{3})+\s*(?:people|citizens|viewers)/i,
+    );
   });
 });

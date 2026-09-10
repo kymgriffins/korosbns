@@ -14,7 +14,7 @@ import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import { cn } from "@/utils";
 
 /**
- * Three programme folds — one title + one lede + quiet cycle.
+ * Three numbered big bets — stakes + what success looks like + Read more.
  * Surface matches marketing nav: background, hairline, muted type.
  */
 export function PartnerProgrammeExplainSections() {
@@ -44,6 +44,10 @@ export function PartnerProgrammeExplainSections() {
                     "text-muted-foreground",
                   )}
                 >
+                  <span className="tabular-nums">{item.number}</span>
+                  <span aria-hidden className="mx-2 text-border">
+                    ·
+                  </span>
                   {item.eyebrow}
                 </p>
                 <h2
@@ -54,6 +58,9 @@ export function PartnerProgrammeExplainSections() {
                 </h2>
                 <p className={cn(T.lead, "max-w-md text-foreground/75")}>
                   {item.lede}
+                </p>
+                <p className={cn(T.body, "max-w-md text-foreground/70")}>
+                  {item.success}
                 </p>
                 <p className="text-xs font-medium tracking-wide text-muted-foreground md:text-sm">
                   {item.cycle}

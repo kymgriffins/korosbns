@@ -3,8 +3,10 @@
 import React from "react";
 import dynamic from "next/dynamic";
 import PartnerLandingHero from "@/components/marketing/partner-landing-hero";
+import { PartnerLandingThesis } from "@/components/marketing/partner-landing-thesis";
 import { EditorialCtaBand } from "@/components/ui/editorial";
 import { CIVIC_PROGRAMMES } from "@/content";
+import { PARTNER_LANDING_CTA } from "@/content/partner-landing";
 import { isSectionVisible } from "@/lib/partner-page-cms";
 import { SHOW_NEWSLETTER_POPUP } from "@/lib/marketing-chrome";
 
@@ -43,14 +45,15 @@ const NewsletterPopup = dynamic(
 );
 
 /**
- * Partner homepage spine:
- * Hero reel → 3 programme stories → featured YouTube projects → CTA
+ * Partner homepage spine (RF-shaped, BNS-honest):
+ * Hero reel → thesis/who-how → 3 numbered bets → featured evidence → CTA
  * Learner capture (newsletter popup) muted via SHOW_NEWSLETTER_POPUP.
  */
 export default function PremiumLandingClient() {
   return (
     <>
       {isSectionVisible("home", "hero") ? <PartnerLandingHero /> : null}
+      {isSectionVisible("home", "whoHow") ? <PartnerLandingThesis /> : null}
       {isSectionVisible("home", "programmeExplains") ? (
         <PartnerProgrammeExplainSections />
       ) : null}
@@ -60,13 +63,13 @@ export default function PremiumLandingClient() {
       {isSectionVisible("home", "partners") ? <PartnersMarquee /> : null}
       {isSectionVisible("home", "cta") ? (
         <EditorialCtaBand
-          eyebrow="Partnership"
-          title="Three programmes. One accountability system."
-          description="Co-fund national budget intelligence, county delivery verification, or newsroom scrutiny — with production captured through BNS Studio."
+          eyebrow={PARTNER_LANDING_CTA.eyebrow}
+          title={PARTNER_LANDING_CTA.title}
+          description={PARTNER_LANDING_CTA.description}
           ctaHref="/contact?intent=partner"
-          ctaLabel="Discuss a partnership"
+          ctaLabel={PARTNER_LANDING_CTA.ctaLabel}
           secondaryHref="/programmes"
-          secondaryLabel="View programmes"
+          secondaryLabel={PARTNER_LANDING_CTA.secondaryLabel}
           images={CIVIC_PROGRAMMES.slice(0, 2).map((p) => ({
             src: p.visual.hero,
             alt: p.visual.heroAlt,

@@ -11,7 +11,7 @@ vi.mock("next/image", () => ({
 }));
 
 describe("PartnerProgrammeExplainSections", () => {
-  it("renders three programme folds with shared vocabulary titles and a single lede each", () => {
+  it("renders three numbered bets with stakes, success, and Read more", () => {
     render(<PartnerProgrammeExplainSections />);
 
     expect(
@@ -24,10 +24,19 @@ describe("PartnerProgrammeExplainSections", () => {
       screen.getByRole("heading", { name: /Newsroom scrutiny/i }),
     ).toBeInTheDocument();
 
+    expect(screen.getByText("01")).toBeInTheDocument();
+    expect(screen.getByText("02")).toBeInTheDocument();
+    expect(screen.getByText("03")).toBeInTheDocument();
+
     expect(screen.queryByText(/^The gap$/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/^What we deliver$/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/^Problem$/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/^How$/i)).not.toBeInTheDocument();
+
+    expect(
+      screen.getAllByText(/Success looks like/i).length,
+    ).toBeGreaterThanOrEqual(3);
+    expect(screen.getAllByRole("link", { name: /Read more/i })).toHaveLength(3);
 
     expect(screen.getAllByText(/James Maingi Mutinda · AFRODAD/i).length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText(/Prof\. George Wajackoyah · AFRODAD/i).length).toBeGreaterThanOrEqual(1);
