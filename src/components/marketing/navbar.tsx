@@ -66,10 +66,18 @@ const Navbar = () => {
 
   return (
     <div className="relative w-full h-full">
-      {/* Gradient fade behind navbar */}
-      <div className="z-[99] hidden lg:block fixed pointer-events-none inset-x-0 h-[88px] bg-background/80 backdrop-blur-sm [mask:linear-gradient(to_bottom,#000_20%,transparent_calc(100%-20%))]" />
+      {/* Light top scrim — hero stays visible under fixed nav */}
+      <div
+        className={cn(
+          "z-[99] fixed pointer-events-none inset-x-0 h-[96px] transition-[background-color,backdrop-filter] duration-300",
+          "backdrop-blur-[6px]",
+          "[mask:linear-gradient(to_bottom,#000_12%,transparent_100%)]",
+          scrolled ? "bg-background/35" : "bg-background/20"
+        )}
+        aria-hidden
+      />
 
-      {/* Navbar bar */}
+      {/* Navbar bar — fixed top; borderless chrome over hero */}
       <motion.header
         variants={navbarEnter}
         initial="hidden"
@@ -82,12 +90,7 @@ const Navbar = () => {
       >
         <div
           ref={ref}
-          className={cn(
-            "border h-full flex flex-col relative transition-all duration-300",
-            scrolled
-              ? "bg-transparent border-border/60 shadow-lg shadow-black/10"
-              : "bg-transparent border-border/30"
-          )}
+          className="h-full flex flex-col relative bg-transparent"
         >
           <div className="flex items-center justify-between w-full px-4 min-h-14 md:min-h-16 shrink-0">
             {/* Logo */}
@@ -103,7 +106,7 @@ const Navbar = () => {
                     alt="Budget Ndio Story"
                     width={180}
                     height={50}
-                    className="w-auto h-8 lg:h-10 transition-all group-hover:brightness-110"
+                    className="w-auto h-8 lg:h-10 transition-all group-hover:brightness-110 drop-shadow-[0_1px_10px_hsl(0_0%_0%/0.35)]"
                     priority
                   />
                 </motion.div>
@@ -114,26 +117,26 @@ const Navbar = () => {
             <nav className="hidden lg:flex items-center gap-1 xl:gap-2 mr-4" aria-label="Desktop primary navigation">
               <Link
                 href={Routes.Programmes}
-                className="px-3.5 py-1.5 text-sm font-medium text-foreground/80 hover:text-primary hover:bg-muted/50 transition-colors"
+                className="px-3.5 py-1.5 text-sm font-medium text-foreground drop-shadow-[0_1px_8px_hsl(0_0%_0%/0.25)] hover:text-primary hover:bg-muted/40 transition-colors"
               >
                 Programmes
               </Link>
               <Link
                 href={Routes.About}
-                className="px-3.5 py-1.5 text-sm font-medium text-foreground/80 hover:text-primary hover:bg-muted/50 transition-colors"
+                className="px-3.5 py-1.5 text-sm font-medium text-foreground drop-shadow-[0_1px_8px_hsl(0_0%_0%/0.25)] hover:text-primary hover:bg-muted/40 transition-colors"
               >
                 About
               </Link>
               <Link
                 href={Routes.Contact}
-                className="px-3.5 py-1.5 text-sm font-medium text-foreground/80 hover:text-primary hover:bg-muted/50 transition-colors"
+                className="px-3.5 py-1.5 text-sm font-medium text-foreground drop-shadow-[0_1px_8px_hsl(0_0%_0%/0.25)] hover:text-primary hover:bg-muted/40 transition-colors"
               >
                 Contact
               </Link>
             </nav>
 
             {/* Right controls */}
-            <div className="flex items-center gap-2 md:gap-3">
+            <div className="flex items-center gap-2 md:gap-3 drop-shadow-[0_1px_8px_hsl(0_0%_0%/0.28)]">
               <ThemeToggle />
               {!authLoading &&
                 (isLoggedIn ? (
@@ -154,7 +157,7 @@ const Navbar = () => {
                       variant="ghost"
                       size="sm"
                       onClick={handleLogout}
-                      className="h-9 px-3 text-muted-foreground hover:text-foreground"
+                      className="h-9 px-3 text-foreground/90 hover:text-foreground"
                       aria-label="Log out"
                     >
                       <LogOut className="size-4" />
@@ -179,7 +182,7 @@ const Navbar = () => {
                   size="icon-sm"
                   variant="ghost"
                   onClick={() => setIsOpen((prev) => !prev)}
-                  className="h-9 w-9 relative overflow-hidden"
+                  className="h-9 w-9 relative overflow-hidden text-foreground"
                   aria-label="Toggle menu"
                 >
                   <AnimatePresence mode="wait" initial={false}>

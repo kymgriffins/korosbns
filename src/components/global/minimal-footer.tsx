@@ -9,10 +9,11 @@ import { socialIconComponents } from "@/components/ui/social-icons";
 import { SECTION_SHELL_INNER } from "@/layouts/section-shell";
 import { cn } from "@/utils";
 
+/** Partner-oriented chrome: no Learn/Reports capture paths. */
 const minimalNavLinks = [
   { label: "Programmes", href: "/programmes" },
-  { label: "Reports", href: "/reports" },
-  { label: "Learn", href: "/learn" },
+  { label: "About", href: "/about" },
+  { label: "Studios", href: "/bns-studio" },
   { label: "Budget Glossary", href: "/glossary" },
   { label: "Help & FAQ", href: "/help" },
   { label: "Privacy", href: "/privacy" },

@@ -15,7 +15,13 @@ import {
   NAV_CONTROL_BORDER,
   NAV_CONTROL_SIZE,
 } from "@/components/marketing/theme-toggle";
-import { motion, AnimatePresence, useReducedMotion } from "motion/react";
+import {
+  motion,
+  AnimatePresence,
+  useReducedMotion,
+  useScroll,
+  useMotionValueEvent,
+} from "motion/react";
 import { navbarEnter } from "@/motion/variants";
 import { landingContent } from "@/content";
 import { cn } from "@/utils";
@@ -61,10 +67,11 @@ function NavLink({
       {...linkProps}
       className={cn(
         "px-3 py-1.5 text-sm font-medium outline-none transition-colors duration-200",
+        "drop-shadow-[0_1px_8px_hsl(0_0%_0%/0.28)]",
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         active
           ? "text-foreground"
-          : "text-muted-foreground hover:text-foreground",
+          : "text-foreground/80 hover:text-foreground",
       )}
     >
       {label}
@@ -75,9 +82,15 @@ function NavLink({
 export function Header() {
   const { isLoggedIn, loading: authLoading, user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const ref = useClickOutside(() => setIsOpen(false));
   const reduced = useReducedMotion();
+  const { scrollY } = useScroll();
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    setScrolled(latest > 20);
+  });
 
   useEffect(() => {
     const isMobileDevice = () => window.innerWidth < 768;
@@ -113,11 +126,15 @@ export function Header() {
 
   return (
     <div ref={ref}>
+      {/* Fixed at top — light scrim so full-bleed heroes show through */}
       <motion.header
         variants={navbarEnter}
         initial={reduced ? false : "hidden"}
         animate="visible"
-        className="fixed inset-x-0 top-0 z-[100] border-b border-border/50 bg-background/90 backdrop-blur-md"
+        className={cn(
+          "fixed inset-x-0 top-0 z-[100] border-b border-transparent backdrop-blur-[6px] transition-[background-color] duration-300",
+          scrolled ? "bg-background/35" : "bg-background/20",
+        )}
       >
         <div
           className={cn(
@@ -130,7 +147,7 @@ export function Header() {
               href={Routes.Home}
               className="group inline-flex shrink-0 items-center gap-2.5 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
-              <span className="relative flex size-8 shrink-0 items-center justify-center overflow-hidden">
+              <span className="relative flex size-8 shrink-0 items-center justify-center overflow-hidden drop-shadow-[0_1px_10px_hsl(0_0%_0%/0.35)]">
                 <Image
                   src="/logo.svg"
                   alt=""
@@ -140,13 +157,13 @@ export function Header() {
                   priority
                 />
               </span>
-              <span className="hidden text-sm font-semibold tracking-tight text-foreground sm:inline">
+              <span className="hidden text-sm font-semibold tracking-tight text-foreground drop-shadow-[0_1px_8px_hsl(0_0%_0%/0.28)] sm:inline">
                 Budget Ndio Story
               </span>
               <span className="sr-only">Budget Ndio Story home</span>
             </Link>
 
-            <p className="hidden text-xs text-muted-foreground xl:block">
+            <p className="hidden text-xs text-foreground/70 drop-shadow-[0_1px_8px_hsl(0_0%_0%/0.25)] xl:block">
               Based in: Kenya
             </p>
 
@@ -155,7 +172,7 @@ export function Header() {
             </div>
           </div>
 
-          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2 drop-shadow-[0_1px_8px_hsl(0_0%_0%/0.28)]">
             <div className="hidden items-center gap-0.5 lg:flex">
               {HEADER_SOCIAL.map((social) => {
                 const Icon = socialIconComponents[social.icon];
@@ -167,7 +184,7 @@ export function Header() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.label}
-                    className="inline-flex size-8 items-center justify-center text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                    className="inline-flex size-8 items-center justify-center text-foreground/80 outline-none transition-colors hover:bg-muted/50 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     <Icon className="size-3.5" />
                   </Link>
@@ -177,7 +194,7 @@ export function Header() {
 
             <Link
               href={Routes.Contact}
-              className="hidden px-3 py-1.5 text-sm font-medium text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring sm:inline"
+              className="hidden px-3 py-1.5 text-sm font-medium text-foreground/80 outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring sm:inline"
             >
               Contact
             </Link>
