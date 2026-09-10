@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 import PartnerLandingHero from "@/components/marketing/partner-landing-hero";
 import { PartnerProgrammeExplainSections } from "@/components/marketing/partner-programme-explain";
 import { EditorialCtaBand } from "@/components/ui/editorial";
-import { LandingSection } from "@/layouts/landing-section";
 import { CIVIC_PROGRAMMES } from "@/content";
 import { isSectionVisible } from "@/lib/partner-page-cms";
 import { SHOW_NEWSLETTER_POPUP } from "@/lib/marketing-chrome";
@@ -37,21 +36,19 @@ export default function PremiumLandingClient() {
       ) : null}
       {isSectionVisible("home", "partners") ? <PartnersMarquee /> : null}
       {isSectionVisible("home", "cta") ? (
-        <LandingSection>
-          <EditorialCtaBand
-            eyebrow="Partnership"
-            title="Three programmes. One accountability system."
-            description="Co-fund national budget intelligence, county delivery verification, or newsroom scrutiny — with production captured through BNS Studio."
-            ctaHref="/contact?intent=partner"
-            ctaLabel="Discuss a partnership"
-            secondaryHref="/programmes"
-            secondaryLabel="View programmes"
-            images={CIVIC_PROGRAMMES.slice(0, 2).map((p) => ({
-              src: p.visual.hero,
-              alt: p.visual.heroAlt,
-            }))}
-          />
-        </LandingSection>
+        <EditorialCtaBand
+          eyebrow="Partnership"
+          title="Three programmes. One accountability system."
+          description="Co-fund national budget intelligence, county delivery verification, or newsroom scrutiny — with production captured through BNS Studio."
+          ctaHref="/contact?intent=partner"
+          ctaLabel="Discuss a partnership"
+          secondaryHref="/programmes"
+          secondaryLabel="View programmes"
+          images={CIVIC_PROGRAMMES.slice(0, 2).map((p) => ({
+            src: p.visual.hero,
+            alt: p.visual.heroAlt,
+          }))}
+        />
       ) : null}
       {SHOW_NEWSLETTER_POPUP ? <NewsletterPopup /> : null}
     </>

@@ -152,7 +152,6 @@
 .partner-reel-programme:focus-visible {
   outline: 1px solid hsl(0 0% 100% / 0.7);
   outline-offset: 3px;
-  border-radius: 2px;
 }
 
 /* Minimal dot indicator — replaces filmstrip */

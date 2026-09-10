@@ -9,7 +9,6 @@ import {
 import { ProgrammeProjectGrid } from "@/components/programmes/programme-project-grid";
 import { ProgrammeScorecard } from "@/components/programmes/programme-scorecard";
 import {
-  LandingContent,
   LandingSection,
 } from "@/layouts/landing-section";
 import {
@@ -185,24 +184,20 @@ export function ProgrammeLandingLayout({
       ) : null}
 
       {isSectionVisible(pageId, "cta") ? (
-        <LandingSection>
-          <LandingContent>
-            <EditorialCtaBand
-              eyebrow="Next step"
-              title={PROGRAMMES_CLOSING.headline}
-              description={PROGRAMMES_CLOSING.body}
-              ctaHref={PROGRAMMES_CLOSING.cta.href}
-              ctaLabel={PROGRAMMES_CLOSING.cta.label}
-              images={[
-                { src: programme.visual.hero, alt: programme.visual.heroAlt },
-                ...others.slice(0, 1).map((p) => ({
-                  src: p.visual.hero,
-                  alt: p.visual.heroAlt,
-                })),
-              ]}
-            />
-          </LandingContent>
-        </LandingSection>
+        <EditorialCtaBand
+          eyebrow="Next step"
+          title={PROGRAMMES_CLOSING.headline}
+          description={PROGRAMMES_CLOSING.body}
+          ctaHref={PROGRAMMES_CLOSING.cta.href}
+          ctaLabel={PROGRAMMES_CLOSING.cta.label}
+          images={[
+            { src: programme.visual.hero, alt: programme.visual.heroAlt },
+            ...others.slice(0, 1).map((p) => ({
+              src: p.visual.hero,
+              alt: p.visual.heroAlt,
+            })),
+          ]}
+        />
       ) : null}
     </div>
   );

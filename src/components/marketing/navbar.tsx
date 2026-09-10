@@ -83,8 +83,7 @@ const Navbar = () => {
         <div
           ref={ref}
           className={cn(
-            // No pill — straight rounded-xl on all breakpoints
-            "rounded-xl border h-full flex flex-col relative transition-all duration-300",
+            "border h-full flex flex-col relative transition-all duration-300",
             scrolled
               ? "bg-transparent border-border/60 shadow-lg shadow-black/10"
               : "bg-transparent border-border/30"
@@ -115,19 +114,19 @@ const Navbar = () => {
             <nav className="hidden lg:flex items-center gap-1 xl:gap-2 mr-4" aria-label="Desktop primary navigation">
               <Link
                 href={Routes.Programmes}
-                className="px-3.5 py-1.5 rounded-lg text-sm font-medium text-foreground/80 hover:text-primary hover:bg-muted/50 transition-colors"
+                className="px-3.5 py-1.5 text-sm font-medium text-foreground/80 hover:text-primary hover:bg-muted/50 transition-colors"
               >
                 Programmes
               </Link>
               <Link
                 href={Routes.About}
-                className="px-3.5 py-1.5 rounded-lg text-sm font-medium text-foreground/80 hover:text-primary hover:bg-muted/50 transition-colors"
+                className="px-3.5 py-1.5 text-sm font-medium text-foreground/80 hover:text-primary hover:bg-muted/50 transition-colors"
               >
                 About
               </Link>
               <Link
                 href={Routes.Contact}
-                className="px-3.5 py-1.5 rounded-lg text-sm font-medium text-foreground/80 hover:text-primary hover:bg-muted/50 transition-colors"
+                className="px-3.5 py-1.5 text-sm font-medium text-foreground/80 hover:text-primary hover:bg-muted/50 transition-colors"
               >
                 Contact
               </Link>
@@ -143,7 +142,7 @@ const Navbar = () => {
                       <Button
                         variant="white"
                         size="sm"
-                        className="h-9 px-4 rounded-lg font-medium gap-2"
+                        className="h-9 px-4 rounded-full font-medium gap-2"
                       >
                         <span className="flex size-5 items-center justify-center rounded-full bg-primary/20 text-[10px] font-bold text-primary shrink-0">
                           {user?.email?.charAt(0).toUpperCase() ?? "?"}
@@ -155,7 +154,7 @@ const Navbar = () => {
                       variant="ghost"
                       size="sm"
                       onClick={handleLogout}
-                      className="h-9 px-3 rounded-lg text-muted-foreground hover:text-foreground"
+                      className="h-9 px-3 text-muted-foreground hover:text-foreground"
                       aria-label="Log out"
                     >
                       <LogOut className="size-4" />
@@ -166,7 +165,7 @@ const Navbar = () => {
                     <Button
                       variant="white"
                       size="sm"
-                      className="h-9 px-4 rounded-lg font-medium gap-2"
+                      className="h-9 px-4 rounded-full font-medium gap-2"
                     >
                       Sign in
                     </Button>
@@ -180,7 +179,7 @@ const Navbar = () => {
                   size="icon-sm"
                   variant="ghost"
                   onClick={() => setIsOpen((prev) => !prev)}
-                  className="h-9 w-9 rounded-lg relative overflow-hidden"
+                  className="h-9 w-9 relative overflow-hidden"
                   aria-label="Toggle menu"
                 >
                   <AnimatePresence mode="wait" initial={false}>

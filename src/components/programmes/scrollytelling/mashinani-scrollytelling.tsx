@@ -186,20 +186,15 @@ export function MashinaniScrollytelling() {
         description="Evidence-backed field productions, community listening circles, and county budget scorecards from Kakamega, Kilifi, Nakuru, and Wajir."
       />
 
-      <section className="py-20 md:py-28">
-        <div className={SECTION_SHELL_INNER}>
-          <EditorialCtaBand
-            eyebrow="County desk"
-            title="Follow the shilling where you live."
-            description="Audit ward project signboards, read verified scorecards, and host community barazas with BNS Mashinani."
-            ctaHref="/work?programme=mashinani"
-            ctaLabel="Explore county evidence"
-            secondaryHref="/contact"
-            secondaryLabel="Request a field workshop"
-            motionBackground={true}
-          />
-        </div>
-      </section>
+      <EditorialCtaBand
+        eyebrow="County desk"
+        title="Follow the shilling where you live."
+        description="Audit ward project signboards, read verified scorecards, and host community barazas with BNS Mashinani."
+        ctaHref="/work?programme=mashinani"
+        ctaLabel="Explore county evidence"
+        secondaryHref="/contact"
+        secondaryLabel="Request a field workshop"
+      />
     </article>
   );
 }

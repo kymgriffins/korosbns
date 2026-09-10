@@ -6,7 +6,6 @@ import { EditorialCtaBand, EditorialPill, PillButtonGroup } from "@/components/u
 import { ProgrammeScorecard } from "@/components/programmes/programme-scorecard";
 import { ProgrammesProjectsLoop } from "@/components/programmes/programmes-projects-loop";
 import {
-  LandingContent,
   LandingSection,
 } from "@/layouts/landing-section";
 import {
@@ -131,21 +130,17 @@ export function ProgrammesLanding() {
       ) : null}
 
       {isSectionVisible("programmes", "cta") ? (
-        <LandingSection>
-          <LandingContent>
-            <EditorialCtaBand
-              eyebrow="Next step"
-              title={PROGRAMMES_CLOSING.headline}
-              description={PROGRAMMES_CLOSING.body}
-              ctaHref={PROGRAMMES_CLOSING.cta.href}
-              ctaLabel={PROGRAMMES_CLOSING.cta.label}
-              images={CIVIC_PROGRAMMES.slice(0, 2).map((p) => ({
-                src: p.visual.hero,
-                alt: p.visual.heroAlt,
-              }))}
-            />
-          </LandingContent>
-        </LandingSection>
+        <EditorialCtaBand
+          eyebrow="Next step"
+          title={PROGRAMMES_CLOSING.headline}
+          description={PROGRAMMES_CLOSING.body}
+          ctaHref={PROGRAMMES_CLOSING.cta.href}
+          ctaLabel={PROGRAMMES_CLOSING.cta.label}
+          images={CIVIC_PROGRAMMES.slice(0, 2).map((p) => ({
+            src: p.visual.hero,
+            alt: p.visual.heroAlt,
+          }))}
+        />
       ) : null}
     </div>
   );

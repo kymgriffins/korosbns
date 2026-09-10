@@ -129,7 +129,7 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
                 size="icon-sm"
                 variant="ghost"
                 onClick={() => setIsOpen(false)}
-                className="h-8 w-8 rounded-lg"
+                className="h-8 w-8"
               >
                 <XIcon className="size-4" />
               </Button>
@@ -155,7 +155,7 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
                         ? { target: "_blank", rel: "noopener noreferrer" }
                         : {})}
                       className={cn(
-                        "group flex w-full items-center justify-between rounded-2xl px-4 py-3.5 text-base font-medium transition-all duration-200 active:scale-[0.98]",
+                        "group flex w-full items-center justify-between px-4 py-3.5 text-base font-medium transition-all duration-200 active:scale-[0.98]",
                         isActiveNav(pathname, item.href)
                           ? "nav-active bg-primary/10 text-primary"
                           : "text-foreground hover:bg-foreground/[0.04] hover:text-primary",
@@ -185,7 +185,7 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
                     <Button
                       size="default"
                       variant="white"
-                      className="w-full h-12 rounded-2xl font-semibold text-base shadow-md gap-2"
+                      className="w-full h-12 rounded-full font-semibold text-base shadow-md gap-2"
                     >
                       {isLoggedIn ? (
                         <>
@@ -214,7 +214,7 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ duration: 0.38, ease: ease.expo }}
-            className="fixed bottom-0 inset-x-0 z-[99] lg:hidden bg-background border-t border-border/60 rounded-t-3xl shadow-2xl shadow-black/30 flex flex-col max-h-[85dvh] overflow-hidden"
+            className="fixed bottom-0 inset-x-0 z-[99] lg:hidden bg-background border-t border-border/60 shadow-2xl shadow-black/30 flex flex-col max-h-[85dvh] overflow-hidden"
           >
             <div className="flex justify-center pt-3 pb-1 shrink-0">
               <div className="w-10 h-1 rounded-full bg-foreground/20" />
@@ -240,7 +240,7 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
                         ? { target: "_blank", rel: "noopener noreferrer" }
                         : {})}
                       className={cn(
-                        "group flex w-full items-center justify-between rounded-2xl px-4 py-3.5 text-base font-medium transition-all duration-200 active:scale-[0.98]",
+                        "group flex w-full items-center justify-between px-4 py-3.5 text-base font-medium transition-all duration-200 active:scale-[0.98]",
                         isActiveNav(pathname, item.href)
                           ? "nav-active bg-primary/10 text-primary"
                           : "text-foreground hover:bg-foreground/[0.04] hover:text-primary",
@@ -270,7 +270,7 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
                     <Button
                       size="default"
                       variant="white"
-                      className="w-full h-12 rounded-2xl font-semibold text-base shadow-md gap-2"
+                      className="w-full h-12 rounded-full font-semibold text-base shadow-md gap-2"
                     >
                       {isLoggedIn ? (
                         <>

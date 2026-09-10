@@ -60,7 +60,7 @@ function NavLink({
       href={href}
       {...linkProps}
       className={cn(
-        "rounded-full px-3 py-1.5 text-sm font-medium outline-none transition-colors duration-200",
+        "px-3 py-1.5 text-sm font-medium outline-none transition-colors duration-200",
         "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         active
           ? "text-foreground"
@@ -128,9 +128,9 @@ export function Header() {
           <div className="flex min-w-0 items-center gap-6 lg:gap-10">
             <Link
               href={Routes.Home}
-              className="group inline-flex shrink-0 items-center gap-2.5 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="group inline-flex shrink-0 items-center gap-2.5 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
-              <span className="relative flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border/60 bg-background">
+              <span className="relative flex size-8 shrink-0 items-center justify-center overflow-hidden border border-border/60 bg-background">
                 <Image
                   src="/logo.svg"
                   alt=""
@@ -167,7 +167,7 @@ export function Header() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.label}
-                    className="inline-flex size-8 items-center justify-center rounded-full text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+                    className="inline-flex size-8 items-center justify-center text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     <Icon className="size-3.5" />
                   </Link>
@@ -177,7 +177,7 @@ export function Header() {
 
             <Link
               href={Routes.Contact}
-              className="hidden rounded-full px-3 py-1.5 text-sm font-medium text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring sm:inline"
+              className="hidden px-3 py-1.5 text-sm font-medium text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring sm:inline"
             >
               Contact
             </Link>
@@ -218,7 +218,7 @@ export function Header() {
                   className={cn(
                     "hidden sm:inline-flex",
                     NAV_CONTROL_SIZE,
-                    "rounded-full border border-border/60 bg-muted/40",
+                    "border border-border/60 bg-muted/40",
                   )}
                   aria-hidden
                 />
@@ -234,7 +234,7 @@ export function Header() {
               className={cn(
                 NAV_CONTROL_SIZE,
                 NAV_CONTROL_BORDER,
-                "relative inline-flex items-center justify-center rounded-full border-border/60 bg-transparent text-foreground hover:bg-muted md:hidden",
+                "relative inline-flex items-center justify-center border-border/60 bg-transparent text-foreground hover:bg-muted md:hidden",
               )}
               aria-label={isOpen ? "Close menu" : "Open menu"}
               aria-expanded={isOpen}

@@ -106,7 +106,7 @@ function PartnerLogo({
       rel="noopener noreferrer"
       className={cn(
         "group flex shrink-0 cursor-pointer items-center justify-center px-6 md:px-10",
-        "rounded-[10px] outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "outline-none focus-visible:ring-2 focus-visible:ring-ring",
         isTextLogo && "border border-border/60 bg-card/40 px-5 py-3",
       )}
       aria-label={`Visit ${partner.name}`}

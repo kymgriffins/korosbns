@@ -109,19 +109,14 @@ export function BNSStudioPageClient() {
       <StudioProductionSpectrum />
 
 
-      {/* 06 — PUNCHY MOTION COMMISSION CTA BAND */}
-      <section className="py-20 md:py-32">
-        <div className={SECTION_SHELL_INNER}>
-          <EditorialCtaBand
-            eyebrow="Commission the Studio"
-            title="Commission forensic civic media that moves policy."
-            description="Bilingual podcasts, multi-camera town halls, 2D animations, or nationwide street takeovers — verified scope and production crew within 24 hours."
-            onCtaClick={() => setBookingOpen(true)}
-            ctaLabel="Commission BNS Studio"
-            motionBackground={true}
-          />
-        </div>
-      </section>
+      {/* 06 — Full-bleed commission CTA */}
+      <EditorialCtaBand
+        eyebrow="Commission the Studio"
+        title="Commission forensic civic media that moves policy."
+        description="Bilingual podcasts, multi-camera town halls, 2D animations, or nationwide street takeovers — verified scope and production crew within 24 hours."
+        onCtaClick={() => setBookingOpen(true)}
+        ctaLabel="Commission BNS Studio"
+      />
 
       <StudioBookingForm open={bookingOpen} onOpenChange={setBookingOpen} />
     </article>

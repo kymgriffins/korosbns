@@ -222,7 +222,7 @@ export function MegaMenu() {
               <Link
                 href={section.href}
                 className={cn(
-                  "group inline-flex items-center gap-1 rounded-full px-3.5 py-2 text-xs font-semibold tracking-tight transition-all duration-200 outline-none",
+                  "group inline-flex items-center gap-1 px-3.5 py-2 text-xs font-semibold tracking-tight transition-all duration-200 outline-none",
                   "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
                   isOpen
                     ? "bg-muted text-foreground"
@@ -255,7 +255,7 @@ export function MegaMenu() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 6, scale: 0.98 }}
             transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute left-1/2 top-full mt-2 w-[620px] -translate-x-1/2 z-50 origin-top overflow-hidden rounded-3xl border border-border/60 bg-background/95 p-5 shadow-2xl backdrop-blur-2xl ring-1 ring-black/5 dark:ring-white/10"
+            className="absolute left-1/2 top-full mt-2 w-[620px] -translate-x-1/2 z-50 origin-top overflow-hidden border border-border/60 bg-background/95 p-5 shadow-2xl backdrop-blur-2xl ring-1 ring-black/5 dark:ring-white/10"
             onMouseEnter={() => {
               if (timeoutRef.current) clearTimeout(timeoutRef.current);
             }}
@@ -284,9 +284,9 @@ export function MegaMenu() {
                     <Link
                       key={item.title}
                       href={item.href}
-                      className="group flex items-start gap-3 rounded-2xl p-2.5 transition-all duration-200 hover:bg-muted/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                      className="group flex items-start gap-3 p-2.5 transition-all duration-200 hover:bg-muted/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                     >
-                      <div className="flex size-8 shrink-0 items-center justify-center rounded-xl border border-border/50 bg-card text-foreground transition-colors group-hover:border-primary/40 group-hover:bg-primary group-hover:text-primary-foreground">
+                      <div className="flex size-8 shrink-0 items-center justify-center border border-border/50 bg-card text-foreground transition-colors group-hover:border-primary/40 group-hover:bg-primary group-hover:text-primary-foreground">
                         <Icon className="size-4" />
                       </div>
                       <div className="min-w-0 flex-1">
@@ -311,7 +311,7 @@ export function MegaMenu() {
 
               {/* Featured side pillar */}
               {activeSection.featured && (
-                <div className="col-span-4 flex flex-col justify-between rounded-2xl border border-border/50 bg-muted/40 p-4 transition-colors hover:border-border">
+                <div className="col-span-4 flex flex-col justify-between border border-border/50 bg-muted/40 p-4 transition-colors hover:border-border">
                   <div>
                     <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2 py-0.5 text-[9px] font-bold text-primary uppercase tracking-wider">
                       <span className="size-1.5 rounded-full bg-primary animate-pulse" />
