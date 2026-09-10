@@ -12,15 +12,16 @@
       "blogLike": false,
       "composer": "src/components/marketing/premium-landing-client.tsx",
       "sections": [
-        { "id": "hero", "label": "Landing hero", "visible": true },
-        { "id": "storyNearYou", "label": "Find the story near you", "visible": false },
-        { "id": "programmes", "label": "Programmes strip", "visible": true },
-        { "id": "partners", "label": "Partners marquee", "visible": true },
-        { "id": "team", "label": "Team preview", "visible": true },
-        { "id": "budgetCycle", "label": "FY 2026/27 Budget Cycle", "visible": false },
+        { "id": "hero", "label": "Partner hero · project reel backdrop", "visible": true },
+        { "id": "programmeExplains", "label": "Three programme how/why sections", "visible": true },
+        { "id": "partners", "label": "Partners marquee", "visible": false },
+        { "id": "cta", "label": "Editorial CTA band", "visible": true },
+        { "id": "storyNearYou", "label": "Legacy story / YouTube block", "visible": false },
+        { "id": "programmes", "label": "Legacy scorecard strip", "visible": false },
+        { "id": "team", "label": "Team preview", "visible": false },
+        { "id": "budgetCycle", "label": "FY Budget Cycle", "visible": false },
         { "id": "testimonials", "label": "Testimonials", "visible": false },
-        { "id": "socials", "label": "Socials strip", "visible": false },
-        { "id": "cta", "label": "Editorial CTA band", "visible": true }
+        { "id": "socials", "label": "Socials strip", "visible": false }
       ]
     },
     "about": {

@@ -3,8 +3,8 @@
     "brand": "Budget Ndio Story",
     "headlineBefore": "Follow the budget.",
     "headlineHighlight": "Find the story.",
-    "body": "Kenya's public money moves fast, and mostly out of sight. We track it nationally and in select counties — turning opaque fiscal policy into verified intelligence for partners, institutions, and newsrooms.",
-    "primaryCta": { "label": "Explore Programmes", "href": "/programmes" },
+    "body": "Kenya's public money moves fast, and mostly out of sight. We turn opaque fiscal policy into verified intelligence for partners, institutions, and newsrooms — nationally and in select counties.",
+    "primaryCta": { "label": "See how programmes work", "href": "#explain-connect" },
     "secondaryCta": { "label": "Partner with BNS", "href": "/contact?intent=partner" },
     "videoSrcKey": "heroLandingVideoMp4"
   },

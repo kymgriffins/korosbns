@@ -18,10 +18,11 @@ describe("partner-page-cms ≤5 block policy", () => {
 
   it("lists partner pages with expected home mutes", () => {
     expect(isSectionVisible("home", "hero")).toBe(true);
+    expect(isSectionVisible("home", "programmeExplains")).toBe(true);
     expect(isSectionVisible("home", "storyNearYou")).toBe(false);
+    expect(isSectionVisible("home", "programmes")).toBe(false);
+    expect(isSectionVisible("home", "team")).toBe(false);
     expect(isSectionVisible("home", "budgetCycle")).toBe(false);
-    expect(isSectionVisible("home", "testimonials")).toBe(false);
-    expect(isSectionVisible("home", "socials")).toBe(false);
     expect(visibleSectionCount("home")).toBeLessThanOrEqual(
       partnerPageSectionsCms.policy.maxBlocksPartnerPages,
     );
