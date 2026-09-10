@@ -22,12 +22,13 @@ type FeaturedProjectsSectionProps = {
 };
 
 /**
- * Partner landing featured evidence — prose + YouTube thumbnails (no card chrome).
+ * Partner landing featured evidence — prose + local event cover stills (no card chrome).
+ * YouTube URLs stay for playback; cover art is high-quality local photography.
  */
 export function FeaturedProjectsSection({
   eyebrow = "Featured projects",
   headline = "Evidence partners can brief against",
-  lede = "Three published films — illicit financial flows, digital PFM reform, and Project TERRA — with titles and thumbnails kept fresh from YouTube.",
+  lede = "Three published films — illicit financial flows, digital PFM reform, and Project TERRA — with local event photography as cover art and titles kept fresh from YouTube.",
   className,
 }: FeaturedProjectsSectionProps) {
   const [projects, setProjects] = useState<FeaturedProject[]>(() =>

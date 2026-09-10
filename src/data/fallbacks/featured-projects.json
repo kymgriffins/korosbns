@@ -1,6 +1,6 @@
 {
   "provenance": {
-    "source": "YouTube oEmbed JSON + channel RSS match for partner project URLs",
+    "source": "YouTube oEmbed JSON + channel RSS match for partner project URLs; cover art is local event stills (not hqdefault)",
     "note": "Featured evidence projects for partner landing — separate from Learn Hub content-videos.json series catalogue.",
     "level": "fallback",
     "shape": "featured_project_youtube"
@@ -14,7 +14,7 @@
       "url": "https://www.youtube.com/watch?v=G5ddu4I6mNs",
       "title": "Learn about illicit financial flows in Benin and Cabo Verde",
       "prose": "Dr. Lyla Latif — with House of Fiscal Wisdom — walks newsrooms through trade misinvoicing and extractive contracts that bleed sovereign revenue. The briefing sits beside the Red Flags monograph partners can cite the same week.",
-      "thumbnail": "https://i.ytimg.com/vi/G5ddu4I6mNs/hqdefault.jpg",
+      "thumbnail": "/images/events/red-flags-book-launch/dr-lyla-latif.jpeg",
       "authorName": "Lyla Latif",
       "programmeSlug": "wanahabari-lab",
       "programmeLabel": "Wanahabari",
@@ -29,7 +29,7 @@
       "url": "https://www.youtube.com/watch?v=kWpY4K1uI20",
       "title": "Digital PF Reform Stories Country-experiences - South Africa, Ghana, Namibia, Kenya, Rwanda, Malawi",
       "prose": "Co-produced with CABRI: ministries of finance across Anglophone Africa compare digital PFM breakthroughs — IFMIS, e-procurement, and peer learning partners can brief against without inventing a single allocation figure.",
-      "thumbnail": "https://i.ytimg.com/vi/kWpY4K1uI20/hqdefault.jpg",
+      "thumbnail": "/images/hall/129A4248.jpg",
       "authorName": "Collaborative Africa Budget Reform Initiative",
       "programmeSlug": "studios",
       "programmeLabel": "BNS Studio",
@@ -44,7 +44,7 @@
       "url": "https://www.youtube.com/watch?v=it8rOKSYKnc",
       "title": "Project Terra",
       "prose": "Project TERRA — Technology, Equality, Regulatory Risk Assessment — with House of Fiscal Wisdom and Luminate. The film opens how platform architectures and tax concessions make African women workers invisible in public revenue systems.",
-      "thumbnail": "https://i.ytimg.com/vi/it8rOKSYKnc/hqdefault.jpg",
+      "thumbnail": "/images/media/129A4039.jpg",
       "authorName": "Lyla Latif",
       "programmeSlug": "studios",
       "programmeLabel": "BNS Studio",

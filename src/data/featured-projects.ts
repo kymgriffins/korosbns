@@ -72,7 +72,8 @@ function rssByVideoId(entries: YoutubeRssEntry[]): Map<string, YoutubeRssEntry> 
 
 /**
  * Refresh titles / authors / published dates from YouTube oEmbed JSON and
- * channel RSS. Prose, href, and programme mapping stay seeded (editorial).
+ * channel RSS. Prose, href, programme mapping, and local cover thumbnails
+ * stay seeded (editorial) — never overwrite cover art with hqdefault.
  * Server-only — do not call from the browser (CSP / CORS).
  */
 export async function refreshFeaturedProjectsFromYoutube(
@@ -99,7 +100,8 @@ export async function refreshFeaturedProjectsFromYoutube(
       return {
         ...project,
         title: merged.title,
-        thumbnail: merged.thumbnail,
+        // Keep seeded local still — YT hqdefault is display-quality poor
+        thumbnail: project.thumbnail,
         authorName: merged.authorName || project.authorName,
         publishedAt: merged.publishedAt || project.publishedAt,
         url: merged.url,

@@ -32,7 +32,7 @@ beforeEach(() => {
 });
 
 describe("FeaturedProjectsSection", () => {
-  it("renders seeded featured project titles and YouTube thumbs", async () => {
+  it("renders seeded featured project titles and local cover stills", async () => {
     render(<FeaturedProjectsSection />);
 
     expect(
@@ -56,7 +56,9 @@ describe("FeaturedProjectsSection", () => {
     const thumbs = screen.getAllByTestId("project-thumb");
     expect(thumbs.length).toBe(3);
     for (const thumb of thumbs) {
-      expect(thumb.getAttribute("src")).toMatch(/i\.ytimg\.com\/vi\/[\w-]{11}\/hqdefault\.jpg/);
+      const src = thumb.getAttribute("src") ?? "";
+      expect(src.startsWith("/images/")).toBe(true);
+      expect(src).not.toMatch(/ytimg\.com|hqdefault/);
     }
   });
 });

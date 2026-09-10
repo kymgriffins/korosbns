@@ -62,6 +62,23 @@ describe("partner landing copy audit", () => {
     expect(new Set(titles).size).toBe(titles.length);
   });
 
+  it("uses local event photography — no YouTube hqdefault covers", () => {
+    for (const still of PARTNER_LANDING_STILLS) {
+      expect(still.src.startsWith("/images/")).toBe(true);
+      expect(still.src).not.toMatch(/ytimg\.com|hqdefault/);
+    }
+    const ids = PARTNER_LANDING_STILLS.map((s) => s.id);
+    for (const required of [
+      "maingi-afrodad",
+      "wajackoyah-afrodad",
+      "latif-launch",
+      "movine-floor",
+      "townhall-room",
+    ]) {
+      expect(ids).toContain(required);
+    }
+  });
+
   it("aligns CTA vocabulary with the three programme phrases", () => {
     const phrases = Object.values(PARTNER_PROGRAMME_VOCAB).map((p) =>
       p.phrase.toLowerCase(),

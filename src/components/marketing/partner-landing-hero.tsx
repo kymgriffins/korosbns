@@ -6,7 +6,6 @@ import {
   useRef,
   useState,
   type PointerEvent as ReactPointerEvent,
-  type CSSProperties,
 } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -23,20 +22,18 @@ const SWIPE_PX = 48;
 
 /**
  * Partner homepage hero — project reel under the marketing nav.
- * Minimal progress + dots; programme names only (phrases live in sections).
+ * One viewport: media + story + bottom-left programme anchors.
  */
 export default function PartnerLandingHero() {
   const slides = PARTNER_LANDING_STILLS;
   const reduceMotion = useReducedMotion();
   const [index, setIndex] = useState(0);
-  const [segmentProgress, setSegmentProgress] = useState(0);
   const [paused, setPaused] = useState(false);
   const pointerStart = useRef<{ x: number; y: number } | null>(null);
   const current = slides[index];
 
   const goTo = useCallback(
     (next: number) => {
-      setSegmentProgress(0);
       setIndex((next + slides.length) % slides.length);
     },
     [slides.length],
@@ -56,23 +53,8 @@ export default function PartnerLandingHero() {
 
   useEffect(() => {
     if (reduceMotion || paused) return;
-
-    const start = performance.now();
-    let frame = 0;
-
-    const tick = (now: number) => {
-      const elapsed = now - start;
-      const p = Math.min(1, elapsed / AUTO_MS);
-      setSegmentProgress(p);
-      if (p >= 1) {
-        next();
-      } else {
-        frame = requestAnimationFrame(tick);
-      }
-    };
-
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
+    const id = window.setTimeout(() => next(), AUTO_MS);
+    return () => window.clearTimeout(id);
   }, [index, next, paused, reduceMotion]);
 
   const onPointerDown = (e: ReactPointerEvent) => {
@@ -108,33 +90,6 @@ export default function PartnerLandingHero() {
       aria-roledescription="carousel"
       aria-label="Project evidence from Budget Ndio Story programmes"
     >
-      <div
-        className={styles["partner-reel-segments"]}
-        role="tablist"
-        aria-label="Story progress"
-      >
-        {slides.map((slide, i) => {
-          const fill =
-            i < index ? 1 : i === index ? (reduceMotion ? 1 : segmentProgress) : 0;
-          return (
-            <button
-              key={slide.id}
-              type="button"
-              role="tab"
-              aria-selected={i === index}
-              aria-label={slide.storyTitle}
-              onClick={() => goTo(i)}
-              className={styles["partner-reel-segment"]}
-            >
-              <span
-                className={styles["partner-reel-segment-fill"]}
-                style={{ "--fill": String(fill) } as CSSProperties}
-              />
-            </button>
-          );
-        })}
-      </div>
-
       <AnimatePresence mode="wait">
         <motion.div
           key={current.id}
@@ -191,24 +146,6 @@ export default function PartnerLandingHero() {
           );
         })}
       </nav>
-
-      <div
-        className={styles["partner-reel-dots"]}
-        role="group"
-        aria-label="Select project still"
-      >
-        {slides.map((slide, i) => (
-          <button
-            key={slide.id}
-            type="button"
-            className={styles["partner-reel-dot"]}
-            data-active={i === index ? "true" : "false"}
-            aria-label={slide.storyTitle}
-            aria-current={i === index ? "true" : undefined}
-            onClick={() => goTo(i)}
-          />
-        ))}
-      </div>
     </section>
   );
 }

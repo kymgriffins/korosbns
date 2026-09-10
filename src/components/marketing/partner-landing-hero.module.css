@@ -1,9 +1,23 @@
 .partner-reel-hero {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  max-height: 100dvh;
   min-height: 100dvh;
   overflow: hidden;
+  /* Clear fixed marketing nav (top-4 + bar) within the same viewport */
+  padding-top: 5rem;
+  padding-bottom: 1.5rem;
   background: #000;
   color: #fff;
+}
+
+@media (min-width: 768px) {
+  .partner-reel-hero {
+    padding-top: 5.75rem;
+    padding-bottom: 2rem;
+  }
 }
 
 .partner-reel-slide {
@@ -22,58 +36,15 @@
   inset: 0;
   background: linear-gradient(
     to bottom,
-    hsl(0 0% 0% / 0.45) 0%,
-    hsl(0 0% 0% / 0.12) 40%,
-    hsl(0 0% 0% / 0.4) 68%,
-    hsl(0 0% 0% / 0.82) 100%
+    hsl(0 0% 0% / 0.5) 0%,
+    hsl(0 0% 0% / 0.15) 38%,
+    hsl(0 0% 0% / 0.45) 62%,
+    hsl(0 0% 0% / 0.88) 100%
   );
   pointer-events: none;
 }
 
-/* Minimal progress — sits under fixed marketing nav */
-.partner-reel-segments {
-  position: absolute;
-  z-index: 4;
-  top: calc(3.5rem + 0.65rem);
-  left: 1.5rem;
-  right: 1.5rem;
-  display: flex;
-  gap: 0.2rem;
-}
-
-@media (min-width: 768px) {
-  .partner-reel-segments {
-    top: calc(4rem + 0.75rem);
-    left: 4rem;
-    right: 4rem;
-  }
-}
-
-.partner-reel-segment {
-  position: relative;
-  flex: 1;
-  height: 1px;
-  overflow: hidden;
-  border-radius: 0;
-  background: hsl(0 0% 100% / 0.18);
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-}
-
-.partner-reel-segment:focus-visible {
-  outline: 1px solid hsl(0 0% 100% / 0.7);
-  outline-offset: 3px;
-}
-
-.partner-reel-segment-fill {
-  position: absolute;
-  inset: 0;
-  transform: scaleX(var(--fill, 0));
-  transform-origin: left center;
-  background: hsl(0 0% 100% / 0.85);
-}
-
+/* Story sits above programme anchors; both stay inside 100dvh */
 .partner-reel-stage {
   position: absolute;
   inset: 0;
@@ -81,55 +52,59 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 5.5rem 1.5rem 6.5rem;
+  /* Top clears nav; bottom clears programme list */
+  padding: 5rem 1.5rem 5.25rem;
   cursor: pointer;
 }
 
 @media (min-width: 768px) {
   .partner-reel-stage {
-    padding: 6rem 4rem 7rem;
+    padding: 5.75rem 4rem 5.75rem;
   }
 }
 
 .partner-reel-story {
-  max-width: 28rem;
+  max-width: min(28rem, 100%);
   pointer-events: none;
 }
 
 .partner-reel-title {
   margin: 0;
-  font-size: clamp(1.75rem, 5.5vw, 3rem);
+  font-size: clamp(1.4rem, 4.2vw, 2.35rem);
   font-weight: 700;
-  line-height: 1.05;
+  line-height: 1.12;
   letter-spacing: -0.03em;
   text-wrap: balance;
   color: #fff;
+  text-shadow: 0 1px 18px hsl(0 0% 0% / 0.45);
 }
 
 .partner-reel-desc {
-  margin: 0.7rem 0 0;
-  max-width: 24rem;
-  font-size: 0.9rem;
+  margin: 0.55rem 0 0;
+  max-width: min(24rem, 100%);
+  font-size: clamp(0.85rem, 2.2vw, 0.95rem);
   line-height: 1.45;
-  color: hsl(0 0% 100% / 0.68);
+  color: hsl(0 0% 100% / 0.78);
+  text-wrap: pretty;
+  text-shadow: 0 1px 12px hsl(0 0% 0% / 0.4);
 }
 
-/* Quiet programme anchors — nav-like weight */
+/* Quiet programme anchors — bottom-left only */
 .partner-reel-programmes {
-  position: absolute;
+  position: relative;
   z-index: 3;
-  left: 1.5rem;
-  bottom: 2.75rem;
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   gap: 0.35rem;
+  margin-top: auto;
+  margin-left: 1.5rem;
   pointer-events: auto;
 }
 
 @media (min-width: 768px) {
   .partner-reel-programmes {
-    left: 4rem;
-    bottom: 3rem;
+    margin-left: 4rem;
   }
 }
 
@@ -137,7 +112,7 @@
   display: block;
   text-align: left;
   text-decoration: none;
-  color: hsl(0 0% 100% / 0.4);
+  color: hsl(0 0% 100% / 0.42);
   font-size: 0.72rem;
   font-weight: 500;
   letter-spacing: 0.08em;
@@ -154,49 +129,8 @@
   outline-offset: 3px;
 }
 
-/* Minimal dot indicator — replaces filmstrip */
-.partner-reel-dots {
-  position: absolute;
-  z-index: 3;
-  right: 1.5rem;
-  bottom: 2.85rem;
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-@media (min-width: 768px) {
-  .partner-reel-dots {
-    right: 4rem;
-    bottom: 3.1rem;
-  }
-}
-
-.partner-reel-dot {
-  width: 0.35rem;
-  height: 0.35rem;
-  border: 0;
-  padding: 0;
-  border-radius: 999px;
-  background: hsl(0 0% 100% / 0.28);
-  cursor: pointer;
-  transition: background 0.2s ease, width 0.2s ease;
-}
-
-.partner-reel-dot[data-active="true"] {
-  width: 1rem;
-  background: hsl(0 0% 100% / 0.9);
-}
-
-.partner-reel-dot:focus-visible {
-  outline: 1px solid hsl(0 0% 100% / 0.7);
-  outline-offset: 2px;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .partner-reel-programme,
-  .partner-reel-dot,
-  .partner-reel-segment-fill {
+  .partner-reel-programme {
     transition: none;
   }
 }

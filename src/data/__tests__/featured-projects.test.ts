@@ -26,17 +26,17 @@ afterEach(() => {
 });
 
 describe("featuredProjectsData", () => {
-  it("get() returns the three seeded YouTube project URLs", () => {
+  it("get() returns the three seeded YouTube project URLs with local covers", () => {
     const projects = getFeaturedProjects();
     expect(projects).toHaveLength(3);
     expect(projects.map((p) => p.videoId).sort()).toEqual(
       ["G5ddu4I6mNs", "it8rOKSYKnc", "kWpY4K1uI20"].sort(),
     );
     for (const project of projects) {
-      expect(project.thumbnail).toMatch(
-        new RegExp(`i\\.ytimg\\.com/vi/${project.videoId}/hqdefault\\.jpg`),
-      );
+      expect(project.thumbnail.startsWith("/images/")).toBe(true);
+      expect(project.thumbnail).not.toMatch(/ytimg\.com|hqdefault/);
       expect(project.prose.length).toBeGreaterThan(40);
+      expect(project.url).toMatch(/youtube\.com\/watch\?v=/);
     }
   });
 
@@ -51,10 +51,10 @@ describe("featuredProjectsData", () => {
     const result = await featuredProjectsData.fetch();
     expect(result).toHaveLength(3);
     expect(result[0]?.videoId).toBeTruthy();
-    expect(result.every((p) => p.thumbnail.includes("ytimg.com"))).toBe(true);
+    expect(result.every((p) => p.thumbnail.startsWith("/images/"))).toBe(true);
   });
 
-  it("refreshFeaturedProjectsFromYoutube merges oEmbed titles", async () => {
+  it("refreshFeaturedProjectsFromYoutube merges oEmbed titles and keeps local covers", async () => {
     vi.spyOn(youtubeMeta, "fetchYoutubeChannelRss").mockResolvedValue([]);
     vi.spyOn(youtubeMeta, "fetchYoutubeOembed").mockImplementation(
       async (url) => {
@@ -77,5 +77,9 @@ describe("featuredProjectsData", () => {
     const iff = live.find((p) => p.videoId === "G5ddu4I6mNs");
     expect(iff?.title).toBe("Live IFF title from oEmbed");
     expect(iff?.prose).toContain("House of Fiscal Wisdom");
+    expect(iff?.thumbnail).toBe(
+      "/images/events/red-flags-book-launch/dr-lyla-latif.jpeg",
+    );
+    expect(iff?.thumbnail).not.toMatch(/ytimg\.com/);
   });
 });
