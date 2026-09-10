@@ -16,47 +16,30 @@ beforeEach(() => {
 });
 
 describe("ProgrammeDetail", () => {
-  it("renders ConnectScrollytelling for connect", () => {
+  it("renders landing-format layout for connect", () => {
     const p = getProgramme("connect")!;
     render(<ProgrammeDetail programme={p} />);
-    expect(screen.getAllByText(/BNS CONNECT/i).length).toBeGreaterThanOrEqual(1);
-    expect(
-      screen.getByRole("heading", {
-        name: /The budget lands as a PDF\.\s*We put it back on the phone\./i,
-      }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: p.headline })).toBeInTheDocument();
+    expect(screen.getByText(/What this programme does/i)).toBeInTheDocument();
+    expect(screen.getByText(/Other programmes/i)).toBeInTheDocument();
   });
 
-  it("renders MashinaniScrollytelling for mashinani", () => {
+  it("renders landing-format layout for mashinani", () => {
     const p = getProgramme("mashinani")!;
     render(<ProgrammeDetail programme={p} />);
-    expect(screen.getAllByText(/BNS MASHINANI/i).length).toBeGreaterThanOrEqual(1);
-    expect(
-      screen.getByRole("heading", {
-        name: /Kakamega\. Kilifi\. Nakuru\. Wajir\.\s*Stay long enough to matter\./i,
-      }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: p.headline })).toBeInTheDocument();
+    expect(screen.getByText(p.name)).toBeInTheDocument();
   });
 
-  it("renders WanahabariScrollytelling for wanahabari-lab", () => {
+  it("renders landing-format layout for wanahabari-lab", () => {
     const p = getProgramme("wanahabari-lab")!;
     render(<ProgrammeDetail programme={p} />);
-    expect(screen.getAllByText(/WANAHABARI LAB/i).length).toBeGreaterThanOrEqual(1);
-    expect(
-      screen.getByRole("heading", {
-        name: /Budget Day is theatre\.\s*The story starts the morning after\./i,
-      }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: p.headline })).toBeInTheDocument();
   });
 
-  it("renders StudiosScrollytelling for studios", () => {
+  it("does not treat studios as a civic programme page", () => {
     const p = getProgramme("studios")!;
-    render(<ProgrammeDetail programme={p} />);
-    expect(screen.getAllByText(/BNS STUDIOS/i).length).toBeGreaterThanOrEqual(1);
-    expect(
-      screen.getByRole("heading", {
-        name: /High-craft media\.\s*A civic surplus attached\./i,
-      }),
-    ).toBeInTheDocument();
+    const { container } = render(<ProgrammeDetail programme={p} />);
+    expect(container).toBeEmptyDOMElement();
   });
 });

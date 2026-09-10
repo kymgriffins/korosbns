@@ -9,7 +9,7 @@ describe("ProgrammesProjectsLoop", () => {
 
     // Header and description
     expect(
-      screen.getByText(/Public Evidence Archive · All 4 Desks/i),
+      screen.getByText(/Public Evidence Archive · Programmes & Studio/i),
     ).toBeInTheDocument();
     expect(
       screen.getByText(/The work in motion. Screenings, barazas, animations, and audits./i),

@@ -61,7 +61,7 @@ function getProjectUrl(slug: string) {
 export function ProgrammeProjectGrid({
   programmeSlug,
   eyebrow = "Verified Outputs & Flagship Work",
-  headline = "Tangible Projects from This Desk",
+  headline = "Tangible projects from this programme",
   description = "Every claim is backed by a published documentary, dataset, explainer, or civic forum.",
   className,
 }: ProgrammeProjectGridProps) {

@@ -37,14 +37,14 @@ export default function LandingHero() {
             {/* Exactly 1 Primary CTA Button on mobile; secondary available on sm+ */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2 w-full sm:w-auto">
               <PillButtonGroup
-                href="/programmes"
-                label="Explore Programmes"
+                href={hero.primaryCta.href}
+                label={hero.primaryCta.label}
                 variant="primary"
                 className="w-full sm:w-auto justify-center"
               />
               <PillButtonGroup
-                href="/learn"
-                label="Civic Learning Hub"
+                href={hero.secondaryCta.href}
+                label={hero.secondaryCta.label}
                 variant="outline"
                 className="hidden sm:inline-flex w-full sm:w-auto justify-center"
               />

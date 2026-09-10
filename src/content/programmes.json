@@ -1,17 +1,17 @@
 {
   "landing": {
     "seoTitle": "Budget Ndio Story | Follow Kenya's Budget. Find the Story.",
-    "seoDescription": "Track Kenya's KSh 4.8 trillion national budget, county spending, and public accountability — built for Kenya's youth, media, and government partners.",
+    "seoDescription": "Partner with Budget Ndio Story on national and county budget accountability, newsroom capacity, and evidence production across Kenya's public finance system.",
     "headline": "Follow the budget. Find the story.",
-    "body": "Kenya's public money moves fast, and mostly out of sight. Budget Ndio Story tracks it, nationally and in four select counties, and turns it into stories, data, and training that young Kenyans, journalists, digital creators, government, private sector, and development partners actually use.",
-    "subhead": "Four programmes — national tracking, county depth, journalist training, and impact production.",
+    "body": "Kenya's public money moves fast, and mostly out of sight. Budget Ndio Story tracks it nationally and in select counties — turning opaque fiscal policy into verified intelligence partners, institutions, and newsrooms can act on.",
+    "subhead": "Three programmes — Connect, Mashinani, and Wanahabari — with evidence captured through BNS Studio.",
     "exploreCta": {
       "label": "Explore Programmes",
-      "href": "#programmes"
+      "href": "#programmes-map"
     }
   },
   "cardBlurbs": {
-    "connect": "National money, explained for the feed — not the filing cabinet.",
+    "connect": "National money, verified and published for institutional and public use.",
     "mashinani": "Four counties lived-in, not fly-over: Kakamega, Kilifi, Nakuru, Wajir.",
     "wanahabari-lab": "A newsroom bench trained for the eleven months after Budget Day.",
     "studios": "Commissioned craft that funds civic scrutiny — not the other way around."
@@ -20,7 +20,7 @@
     "seoTitle": "Partner With BNS | Budget Ndio Story",
     "seoDescription": "Partner with Budget Ndio Story on national and county budget accountability, journalist training, or commissioned impact content.",
     "headline": "Partner with BNS",
-    "body": "BNS is a true budget information ecosystem: BNS Connect monitors the national flow, BNS Mashinani dives into county-level scrutiny, and Wanahabari Lab trains the next generation of journalists and national finance storytellers — all powered by BNS Studios. Together, we transform a multi-trillion shilling budget into clear, accessible intelligence for every young Kenyan and partner.",
+    "body": "Three programmes, one evidence system: BNS Connect monitors the national flow, BNS Mashinani delivers county-level scrutiny, and Wanahabari Lab builds newsroom capacity — with production and commissions captured through BNS Studio.",
     "cta": {
       "label": "Partner with BNS",
       "href": "/contact?intent=partner",
@@ -81,7 +81,7 @@
       "name": "BNS Connect",
       "eyebrow": "National budget tracking",
       "headline": "The budget lands as a PDF. We put it back on the phone.",
-      "body": "Every June, Kenya debates a national budget measured in trillions. By July, most of that debate has left the public conversation. BNS Connect is the year-round desk that refuses the silence. Youth Budget Trackers pick up Treasury releases, verify claims against published documents, and publish what holds up — dashboards, story series, and threads in English, Kiswahili, and Sheng. The point is not another report for the archive. It is scrutiny young Kenyans can actually open between classes, shifts, and matatu rides.",
+      "body": "Every June, Kenya debates a national budget measured in trillions. By July, most of that debate has left the public conversation. BNS Connect is the year-round programme that refuses the silence. We pick up Treasury releases, verify claims against published documents, and publish what holds up — dashboards, briefing products, and story series partners and institutions can use. The point is not another report for the archive. It is scrutiny that stays available after Budget Day.",
       "highlight": "FY2026/27 national budget: about KSh 4.8 trillion, drawn from published Treasury figures — the scale Connect exists to watch.",
       "stats": [
         {

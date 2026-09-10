@@ -5,7 +5,8 @@ import dynamic from "next/dynamic";
 import LandingHero from "@/components/marketing/landing-hero";
 import { EditorialCtaBand } from "@/components/ui/editorial";
 import { LandingSection } from "@/layouts/landing-section";
-import { PROGRAMMES } from "@/content";
+import { CIVIC_PROGRAMMES } from "@/content";
+import { isSectionVisible } from "@/lib/partner-page-cms";
 
 const LandingYoutube = dynamic(
   () => import("@/components/marketing/landing-youtube"),
@@ -72,35 +73,35 @@ const NewsletterPopup = dynamic(
 );
 
 /**
- * Homepage spine:
- * Hero (TikTok) → Story → Programmes → Partners → Team → Timeline →
- * Testimonials → Socials
- * (Field gallery temporarily hidden; studio evidence lives at /bns-studio)
+ * Homepage spine driven by `partner-page-sections.json` (≤5 visible blocks).
+ * Flip section.visible in CMS — do not delete composers.
  */
 export default function PremiumLandingClient() {
   return (
     <>
-      <LandingHero />
-      <LandingYoutube />
-      <ProgrammesSection />
-      <PartnersMarquee />
-      <LandingTeam />
-      <TimelineSection />
-      <TestimonialsSection />
-      <SocialsSection />
-      <LandingSection>
-        <EditorialCtaBand
-          eyebrow="Start now"
-          title="Four programmes built for civic impact."
-          description="Track national spending, follow county budgets, train journalists, and commission evidence-based storytelling."
+      {isSectionVisible("home", "hero") ? <LandingHero /> : null}
+      {isSectionVisible("home", "storyNearYou") ? <LandingYoutube /> : null}
+      {isSectionVisible("home", "programmes") ? <ProgrammesSection /> : null}
+      {isSectionVisible("home", "partners") ? <PartnersMarquee /> : null}
+      {isSectionVisible("home", "team") ? <LandingTeam /> : null}
+      {isSectionVisible("home", "budgetCycle") ? <TimelineSection /> : null}
+      {isSectionVisible("home", "testimonials") ? <TestimonialsSection /> : null}
+      {isSectionVisible("home", "socials") ? <SocialsSection /> : null}
+      {isSectionVisible("home", "cta") ? (
+        <LandingSection>
+          <EditorialCtaBand
+            eyebrow="Start now"
+          title="Three programmes built for partner impact."
+          description="Track national spending, follow county budgets, and train newsrooms — with production captured through BNS Studio."
           ctaHref="/programmes"
           ctaLabel="Explore Programmes"
-          images={PROGRAMMES.slice(0, 2).map((p) => ({
+          images={CIVIC_PROGRAMMES.slice(0, 2).map((p) => ({
             src: p.visual.hero,
             alt: p.visual.heroAlt,
           }))}
-        />
-      </LandingSection>
+          />
+        </LandingSection>
+      ) : null}
       <NewsletterPopup />
     </>
   );

@@ -19,12 +19,12 @@ function projectHref(slug: string) {
   return `/bns-studio/${canonical}`;
 }
 
-const PROGRAMME_DESKS = [
-  { id: "", label: "All Desks" },
+const PROGRAMME_FILTERS = [
+  { id: "", label: "All programmes" },
   { id: "connect", label: "BNS Connect" },
   { id: "mashinani", label: "BNS Mashinani" },
   { id: "wanahabari-lab", label: "Wanahabari Lab" },
-  { id: "studios", label: "BNS Studios" },
+  { id: "studios", label: "BNS Studio" },
 ];
 
 function getProgrammeName(slug: string): string {
@@ -37,9 +37,9 @@ function getProgrammeName(slug: string): string {
     case "wanahabari-lab":
       return "Wanahabari Lab";
     case "studios":
-      return "BNS Studios";
+      return "BNS Studio";
     default:
-      return "BNS Programme";
+      return "Programme";
   }
 }
 
@@ -119,7 +119,7 @@ export function StudioFeaturedWorkPage() {
   };
 
   const activeFilters = [
-    programme ? { key: "desk", label: `Desk: ${getProgrammeName(programme)}`, clear: () => setProgramme("") } : null,
+    programme ? { key: "programme", label: `Programme: ${getProgrammeName(programme)}`, clear: () => setProgramme("") } : null,
     format ? { key: "format", label: `Format: ${format}`, clear: () => setFormat("") } : null,
     client ? { key: "partner", label: `Partner: ${client}`, clear: () => setClient("") } : null,
     year ? { key: "year", label: `Year: ${year}`, clear: () => setYear("") } : null,
@@ -134,7 +134,7 @@ export function StudioFeaturedWorkPage() {
           <GsapReveal className="space-y-4">
             <div>
               <EditorialPill dot pulse>
-                Four Operational Desks · One Sovereign Archive
+                Three programmes · evidence via BNS Studio
               </EditorialPill>
             </div>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-foreground tracking-tight leading-tight">
@@ -145,17 +145,17 @@ export function StudioFeaturedWorkPage() {
             </p>
           </GsapReveal>
 
-          {/* 02 — Desk Segmented Filters with Live Counts */}
+          {/* 02 — Programme filters with live counts */}
           <GsapReveal delay={0.1} className="pt-2">
             <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide py-1">
-              {PROGRAMME_DESKS.map((desk) => {
-                const isSelected = programme === desk.id;
-                const count = programmeCounts[desk.id] || 0;
+              {PROGRAMME_FILTERS.map((filter) => {
+                const isSelected = programme === filter.id;
+                const count = programmeCounts[filter.id] || 0;
                 return (
                   <button
-                    key={desk.id}
+                    key={filter.id || "all"}
                     type="button"
-                    onClick={() => setProgramme(desk.id)}
+                    onClick={() => setProgramme(filter.id)}
                     className={cn(
                       "inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold transition-all whitespace-nowrap outline-none",
                       "focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
@@ -164,7 +164,7 @@ export function StudioFeaturedWorkPage() {
                         : "border border-border/60 bg-card hover:bg-muted text-muted-foreground hover:text-foreground"
                     )}
                   >
-                    <span>{desk.label}</span>
+                    <span>{filter.label}</span>
                     <span
                       className={cn(
                         "inline-flex size-4 items-center justify-center rounded-full text-[10px] font-mono",

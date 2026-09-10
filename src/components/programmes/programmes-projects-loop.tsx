@@ -36,7 +36,7 @@ interface FilterTab {
   count: number;
 }
 
-const DESK_CONFIG: Record<
+const PROGRAMME_CONFIG: Record<
   string,
   {
     name: string;
@@ -64,8 +64,8 @@ const DESK_CONFIG: Record<
     accentClass: "text-rose-400",
   },
   studios: {
-    name: "BNS Studios",
-    number: "04",
+    name: "BNS Studio",
+    number: "Studio",
     pillClass: "bg-primary text-primary-foreground",
     accentClass: "text-primary",
   },
@@ -173,7 +173,7 @@ export function ProgrammesProjectsLoop({ className }: { className?: string }) {
           <div className="space-y-2 max-w-3xl">
             <div className="flex items-center gap-3">
               <span className="text-xs font-bold uppercase tracking-widest text-primary">
-                Public Evidence Archive · All 4 Desks
+                Public Evidence Archive · Programmes & Studio
               </span>
               <span className="h-px w-10 bg-primary/40" />
               <span className="text-xs text-muted-foreground uppercase tracking-wider font-mono">
@@ -316,8 +316,8 @@ export function ProgrammesProjectsLoop({ className }: { className?: string }) {
           {filteredProjects.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredProjects.map((project, idx) => {
-                const desk =
-                  DESK_CONFIG[project.programmeSlug] || DESK_CONFIG.studios;
+                const programmeMeta =
+                  PROGRAMME_CONFIG[project.programmeSlug] || PROGRAMME_CONFIG.studios;
                 const href = getProjectLink(project.slug);
 
                 return (
@@ -342,13 +342,13 @@ export function ProgrammesProjectsLoop({ className }: { className?: string }) {
                       <span
                         className={cn(
                           "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide shadow-sm",
-                          desk.pillClass,
+                          programmeMeta.pillClass,
                         )}
                       >
                         <span className="font-mono text-[9px] opacity-80">
-                          {desk.number}
+                          {programmeMeta.number}
                         </span>
-                        <span>{desk.name}</span>
+                        <span>{programmeMeta.name}</span>
                       </span>
                       <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-mono font-semibold bg-black/60 text-white/90 backdrop-blur-md border border-white/10">
                         {getFormatIcon(project.media.type, project.contentType)}
@@ -410,8 +410,8 @@ export function ProgrammesProjectsLoop({ className }: { className?: string }) {
             className="py-2 [--duration:55s] [--gap:1.5rem]"
           >
             {filteredProjects.map((project, idx) => {
-              const desk =
-                DESK_CONFIG[project.programmeSlug] || DESK_CONFIG.studios;
+              const programmeMeta =
+                PROGRAMME_CONFIG[project.programmeSlug] || PROGRAMME_CONFIG.studios;
               const href = getProjectLink(project.slug);
 
               return (
@@ -436,14 +436,14 @@ export function ProgrammesProjectsLoop({ className }: { className?: string }) {
                     <span
                       className={cn(
                         "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wide shadow-sm",
-                        desk.pillClass,
-                      )}
-                    >
-                      <span className="font-mono text-[9px] opacity-80">
-                        {desk.number}
+                        programmeMeta.pillClass,
+                        )}
+                      >
+                        <span className="font-mono text-[9px] opacity-80">
+                          {programmeMeta.number}
+                        </span>
+                        <span>{programmeMeta.name}</span>
                       </span>
-                      <span>{desk.name}</span>
-                    </span>
                     <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-mono font-semibold bg-black/60 text-white/90 backdrop-blur-md border border-white/10">
                       {getFormatIcon(project.media.type, project.contentType)}
                       <span>{project.contentType}</span>

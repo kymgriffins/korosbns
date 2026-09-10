@@ -71,9 +71,9 @@ const LandingInteractiveVideo = () => {
                 <div className="absolute bottom-12 left-0 right-0 z-20">
                     <div className="max-w-[1400px] mx-auto px-8 md:px-16">
                         <div className="max-w-lg">
-                            <h2 className="gusto-subheading text-white mb-4">The Budget Mtaani Series</h2>
+                            <h2 className="gusto-subheading text-white mb-4">Featured programme evidence</h2>
                             <p className="text-white/60 text-sm md:text-base tracking-wide leading-relaxed">
-                                Watch how we're changing the conversation on the streets of Nairobi. Translating outrage into understanding.
+                                Dr. Lyla Latif with House of Fiscal Wisdom — forensic briefing produced with Wanahabari Lab.
                             </p>
                         </div>
                     </div>

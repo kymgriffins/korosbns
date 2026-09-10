@@ -7,31 +7,63 @@ import {
   LandingSection,
 } from "@/layouts/landing-section";
 import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
-import { PROGRAMMES, landingContent } from "@/content";
-import { GsapReveal, GsapStaggerReveal } from "@/motion/gsap";
+import {
+  CIVIC_PROGRAMMES,
+  cloudinaryUrl,
+  landingContent,
+} from "@/content";
 import { cn } from "@/utils";
 
 const strip = landingContent.programmesStrip;
+const featured = landingContent.storyIntro;
 
 export function ProgrammesSection() {
   return (
     <LandingSection id="programmes" aria-labelledby="home-programmes-heading">
-      <GsapReveal className="mb-8 flex flex-col gap-4 md:mb-10 md:flex-row md:items-end md:justify-between">
+      <div className="mb-8 flex flex-col gap-4 md:mb-10 md:flex-row md:items-end md:justify-between">
         <div className="max-w-2xl">
           <h2 id="home-programmes-heading" className={T.sectionTitle}>
             {strip.title}
           </h2>
         </div>
         <p className={cn(T.lead, "max-w-sm md:text-right")}>{strip.description}</p>
-      </GsapReveal>
+      </div>
 
-      <GsapStaggerReveal className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
-        {PROGRAMMES.map((programme, index) => (
-          <div key={programme.slug} data-gsap-item>
-            <ProgrammeScorecard programme={programme} compact priority={index < 2} />
-          </div>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+        {CIVIC_PROGRAMMES.map((programme, index) => (
+          <ProgrammeScorecard
+            key={programme.slug}
+            programme={programme}
+            compact
+            priority={index < 2}
+          />
         ))}
-      </GsapStaggerReveal>
+      </div>
+
+      {/* Featured programme evidence — Latif / House of Fiscal Wisdom (replaces Budget Mtaani series) */}
+      <LandingContent className="mt-12 md:mt-14">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-primary">
+          Featured project
+        </p>
+        <p className="mb-4 font-heading text-sm font-semibold text-foreground md:text-base">
+          {featured.seriesLabelBefore}{" "}
+          <span className={T.highlight}>{featured.seriesHighlight}</span>{" "}
+          {featured.seriesLabelAfter}
+        </p>
+        <p className={cn(T.caption, "mb-4 max-w-2xl text-muted-foreground")}>
+          {featured.body}
+        </p>
+        <div className="relative aspect-video overflow-hidden rounded-[1.5rem] border border-border/50 bg-muted md:rounded-[2rem]">
+          <iframe
+            src={cloudinaryUrl("youtubeEmbed")}
+            title={featured.youtubeTitle}
+            className="absolute inset-0 h-full w-full border-0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+            loading="lazy"
+          />
+        </div>
+      </LandingContent>
 
       <LandingContent>
         <div className="mt-10 flex justify-center md:mt-12">

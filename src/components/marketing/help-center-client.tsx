@@ -351,7 +351,7 @@ export default function HelpCenterClient() {
               <HelpCircle className="size-10 text-muted-foreground mx-auto mb-3" />
               <h3 className="font-heading text-lg font-bold text-foreground">No matching answers found</h3>
               <p className="mt-1 text-xs text-muted-foreground">
-                We couldn&apos;t find an answer matching &quot;{searchQuery}&quot;. Try another term or contact our desk directly.
+                We couldn&apos;t find an answer matching &quot;{searchQuery}&quot;. Try another term or contact us directly.
               </p>
               <div className="mt-5 flex items-center justify-center gap-3">
                 <Button
@@ -368,7 +368,7 @@ export default function HelpCenterClient() {
                   href="/contact"
                   className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
                 >
-                  Contact Desk <ArrowRight className="size-3" />
+                  Contact us <ArrowRight className="size-3" />
                 </Link>
               </div>
             </div>
@@ -404,7 +404,7 @@ export default function HelpCenterClient() {
                   <MessageCircle className="size-4" />
                 </div>
                 <div className="text-left">
-                  <p className="text-xs font-bold text-foreground">WhatsApp Desk</p>
+                  <p className="text-xs font-bold text-foreground">WhatsApp</p>
                   <p className="text-[11px] text-muted-foreground">+254 790 631 623</p>
                 </div>
               </a>

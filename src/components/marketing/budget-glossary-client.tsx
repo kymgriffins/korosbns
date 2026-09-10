@@ -448,7 +448,7 @@ export default function BudgetGlossaryClient() {
                 href="/help"
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-background px-5 py-2.5 text-xs font-bold text-foreground hover:bg-muted transition-colors"
               >
-                <span>Visit Help & FAQ Desk</span>
+                <span>Visit Help & FAQ</span>
                 <ExternalLink className="size-3.5 text-muted-foreground" />
               </Link>
             </div>

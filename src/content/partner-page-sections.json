@@ -1,0 +1,228 @@
+{
+  "policy": {
+    "maxBlocksPartnerPages": 5,
+    "blogLikeExempt": true,
+    "notes": "Partner-attention pages must keep visible sections ≤ maxBlocks. Blog-like / long-form project & article pages are exempt. Flip section.visible — do not delete section composers."
+  },
+  "pages": {
+    "home": {
+      "route": "/",
+      "title": "Homepage",
+      "partnerAttention": true,
+      "blogLike": false,
+      "composer": "src/components/marketing/premium-landing-client.tsx",
+      "sections": [
+        { "id": "hero", "label": "Landing hero", "visible": true },
+        { "id": "storyNearYou", "label": "Find the story near you", "visible": false },
+        { "id": "programmes", "label": "Programmes strip", "visible": true },
+        { "id": "partners", "label": "Partners marquee", "visible": true },
+        { "id": "team", "label": "Team preview", "visible": true },
+        { "id": "budgetCycle", "label": "FY 2026/27 Budget Cycle", "visible": false },
+        { "id": "testimonials", "label": "Testimonials", "visible": false },
+        { "id": "socials", "label": "Socials strip", "visible": false },
+        { "id": "cta", "label": "Editorial CTA band", "visible": true }
+      ]
+    },
+    "about": {
+      "route": "/about",
+      "title": "About",
+      "partnerAttention": true,
+      "blogLike": false,
+      "composer": "src/components/marketing/about.tsx",
+      "sections": [
+        { "id": "hero", "label": "Hero & credo", "visible": true },
+        { "id": "originStory", "label": "Origin story scrollytelling", "visible": false },
+        { "id": "theoryOfChange", "label": "Theory of change cycle", "visible": false },
+        { "id": "integrityCharter", "label": "Integrity charter", "visible": false },
+        { "id": "team", "label": "Team roster", "visible": true },
+        { "id": "partnerCta", "label": "Partnership CTA", "visible": true }
+      ]
+    },
+    "programmes": {
+      "route": "/programmes",
+      "title": "Programmes hub",
+      "partnerAttention": true,
+      "blogLike": false,
+      "composer": "src/components/programmes/programmes-landing.tsx",
+      "sections": [
+        { "id": "hero", "label": "Landing-format hero", "visible": true },
+        { "id": "programmesMap", "label": "Four programme scorecards", "visible": true },
+        { "id": "partners", "label": "Partners marquee", "visible": true },
+        { "id": "projectsLoop", "label": "Projects loop", "visible": false },
+        { "id": "cta", "label": "Editorial CTA band", "visible": true }
+      ]
+    },
+    "programmeConnect": {
+      "route": "/programmes/connect",
+      "title": "BNS Connect",
+      "partnerAttention": true,
+      "blogLike": false,
+      "composer": "src/components/programmes/programme-landing-layout.tsx",
+      "sections": [
+        { "id": "hero", "label": "Landing-format hero", "visible": true },
+        { "id": "body", "label": "What this programme does", "visible": true },
+        { "id": "projects", "label": "Project grid", "visible": true },
+        { "id": "otherProgrammes", "label": "Other programmes", "visible": true },
+        { "id": "cta", "label": "Editorial CTA", "visible": true }
+      ]
+    },
+    "programmeMashinani": {
+      "route": "/programmes/mashinani",
+      "title": "BNS Mashinani",
+      "partnerAttention": true,
+      "blogLike": false,
+      "composer": "src/components/programmes/programme-landing-layout.tsx",
+      "sections": [
+        { "id": "hero", "label": "Landing-format hero", "visible": true },
+        { "id": "body", "label": "What this programme does", "visible": true },
+        { "id": "projects", "label": "Project grid", "visible": true },
+        { "id": "otherProgrammes", "label": "Other programmes", "visible": true },
+        { "id": "cta", "label": "Editorial CTA", "visible": true }
+      ]
+    },
+    "programmeWanahabari": {
+      "route": "/programmes/wanahabari-lab",
+      "title": "Wanahabari Lab",
+      "partnerAttention": true,
+      "blogLike": false,
+      "composer": "src/components/programmes/programme-landing-layout.tsx",
+      "sections": [
+        { "id": "hero", "label": "Landing-format hero", "visible": true },
+        { "id": "body", "label": "What this programme does", "visible": true },
+        { "id": "projects", "label": "Project grid", "visible": true },
+        { "id": "otherProgrammes", "label": "Other programmes", "visible": true },
+        { "id": "cta", "label": "Editorial CTA", "visible": true }
+      ]
+    },
+    "programmeStudios": {
+      "route": "/programmes/studios",
+      "title": "Redirects to BNS Studio",
+      "partnerAttention": false,
+      "blogLike": false,
+      "composer": "redirect → /bns-studio",
+      "sections": [
+        { "id": "redirect", "label": "Redirect only", "visible": false }
+      ]
+    },
+    "contact": {
+      "route": "/contact",
+      "title": "Contact",
+      "partnerAttention": true,
+      "blogLike": false,
+      "composer": "src/layouts/ContactPage.tsx",
+      "sections": [
+        { "id": "hero", "label": "Page hero", "visible": true },
+        { "id": "form", "label": "Form / socials body", "visible": true }
+      ]
+    },
+    "reports": {
+      "route": "/reports",
+      "title": "Reports hub",
+      "partnerAttention": true,
+      "blogLike": false,
+      "composer": "src/components/reports-bulletin/reports-hub-client.tsx",
+      "sections": [
+        { "id": "hero", "label": "Reports hero statement", "visible": true },
+        { "id": "nationalPicture", "label": "National picture spread", "visible": true },
+        { "id": "countyIntelligence", "label": "County intelligence", "visible": true },
+        { "id": "followTheMoney", "label": "Follow the money pipeline", "visible": false },
+        { "id": "featuredInvestigations", "label": "Featured investigations", "visible": false },
+        { "id": "citizenSearch", "label": "Citizen intelligence search", "visible": false },
+        { "id": "libraryArchive", "label": "Report library archive", "visible": true },
+        { "id": "cta", "label": "Editorial CTA", "visible": true }
+      ]
+    },
+    "careers": {
+      "route": "/careers",
+      "title": "Careers",
+      "partnerAttention": true,
+      "blogLike": false,
+      "composer": "src/components/marketing/careers-landing.tsx",
+      "sections": [
+        { "id": "hero", "label": "Hero", "visible": true },
+        { "id": "whyJoin", "label": "Why join", "visible": false },
+        { "id": "openRoles", "label": "Open roles", "visible": true },
+        { "id": "howItWorks", "label": "How it works", "visible": false },
+        { "id": "cta", "label": "Closing CTA", "visible": true }
+      ]
+    },
+    "studio": {
+      "route": "/bns-studio",
+      "title": "BNS Studio landing",
+      "partnerAttention": true,
+      "blogLike": false,
+      "composer": "src/components/studio/BNSStudioPageClient.tsx",
+      "sections": [
+        { "id": "reelHero", "label": "Viewport video hero", "visible": true },
+        { "id": "screening", "label": "Screening theatre", "visible": true },
+        { "id": "spectrum", "label": "Production spectrum", "visible": true },
+        { "id": "commissionCta", "label": "Commission CTA", "visible": true }
+      ]
+    },
+    "work": {
+      "route": "/work",
+      "title": "Work / evidence archive",
+      "partnerAttention": true,
+      "blogLike": false,
+      "composer": "src/components/studio/theatre/studio-featured-work-page.tsx",
+      "sections": [
+        { "id": "hero", "label": "Hero + programme filters", "visible": true },
+        { "id": "filters", "label": "Search / filter bar", "visible": true },
+        { "id": "grid", "label": "Project grid", "visible": true }
+      ]
+    },
+    "projectIndex": {
+      "route": "/bns-project",
+      "title": "Projects index",
+      "partnerAttention": false,
+      "blogLike": true,
+      "composer": "src/components/project/BNSProjectClient.tsx",
+      "sections": [
+        { "id": "header", "label": "Index header", "visible": true },
+        { "id": "grid", "label": "Project cards", "visible": true }
+      ]
+    },
+    "projectDetail": {
+      "route": "/bns-project/[id]",
+      "title": "Project detail (blog-like)",
+      "partnerAttention": false,
+      "blogLike": true,
+      "composer": "src/components/project/ProjectDetailClient.tsx",
+      "sections": [
+        { "id": "longForm", "label": "Long-form editorial body", "visible": true }
+      ]
+    },
+    "reportDetail": {
+      "route": "/reports/[slug]",
+      "title": "Report article (blog-like)",
+      "partnerAttention": false,
+      "blogLike": true,
+      "composer": "src/components/reports-bulletin/report-detail-view.tsx",
+      "sections": [
+        { "id": "article", "label": "Article shells", "visible": true }
+      ]
+    },
+    "learn": {
+      "route": "/learn",
+      "title": "BNS Learn hub",
+      "partnerAttention": false,
+      "blogLike": false,
+      "composer": "src/components/learn/LearnHubHome.tsx",
+      "sections": [
+        { "id": "hero", "label": "Learn hero", "visible": true },
+        { "id": "stats", "label": "Stats strip", "visible": true },
+        { "id": "catalogue", "label": "Catalogue", "visible": true }
+      ]
+    },
+    "forum": {
+      "route": "/learn/forum",
+      "title": "Forum (postpone)",
+      "partnerAttention": false,
+      "blogLike": false,
+      "composer": "learn forum",
+      "sections": [
+        { "id": "forum", "label": "Forum surface", "visible": false }
+      ]
+    }
+  }
+}

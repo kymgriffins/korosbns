@@ -30,7 +30,7 @@ describe("LandingHero", () => {
     expect(primaryCta).toBeInTheDocument();
 
     // Secondary CTA exists for sm+ viewports but is hidden on mobile
-    const secondaryCta = screen.getByRole("link", { name: /Civic Learning Hub/i });
+    const secondaryCta = screen.getByRole("link", { name: /Partner with BNS/i });
     expect(secondaryCta).toBeInTheDocument();
     expect(secondaryCta).toHaveClass("hidden", "sm:inline-flex");
   });

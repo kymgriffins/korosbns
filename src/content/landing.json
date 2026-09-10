@@ -3,34 +3,34 @@
     "brand": "Budget Ndio Story",
     "headlineBefore": "Follow the budget.",
     "headlineHighlight": "Find the story.",
-    "body": "Kenya's public money moves fast, and mostly out of sight. We track it — nationally and in four select counties — and turn it into stories, data, and training young Kenyans, journalists, government, and partners actually use.",
+    "body": "Kenya's public money moves fast, and mostly out of sight. We track it nationally and in select counties — turning opaque fiscal policy into verified intelligence for partners, institutions, and newsrooms.",
     "primaryCta": { "label": "Explore Programmes", "href": "/programmes" },
-    "secondaryCta": { "label": "Learn about budget", "href": "/learn" },
+    "secondaryCta": { "label": "Partner with BNS", "href": "/contact?intent=partner" },
     "videoSrcKey": "heroLandingVideoMp4"
   },
   "storyIntro": {
-    "title": "Find the story near you",
-    "body": "See how we translate complex fiscal policy into stories that meet youth where they are — from town halls to short-form feeds.",
-    "cta": { "label": "Get started", "href": "/learn" },
+    "title": "Featured programme evidence",
+    "body": "House of Fiscal Wisdom with Dr. Lyla Latif — forensic briefing on illicit financial flows, produced with Wanahabari Lab as evidence partners can brief against.",
+    "cta": { "label": "View programmes", "href": "/programmes" },
     "images": [
       {
         "src": "/images/towwnhallmay/129A3912.jpg",
-        "alt": "Budget Ndio Story town hall engagement"
+        "alt": "Budget Ndio Story institutional engagement"
       },
       {
         "src": "/images/cohort1 groundworks/129A3964.jpg",
-        "alt": "Youth cohort during a Budget Ndio Story session"
+        "alt": "Budget Ndio Story programme delivery session"
       }
     ],
-    "seriesLabelBefore": "The Budget",
-    "seriesHighlight": "Mtaani",
-    "seriesLabelAfter": "Series",
-    "youtubeTitle": "Budget Ndio Story overview",
+    "seriesLabelBefore": "Featured project ·",
+    "seriesHighlight": "Dr. Lyla Latif",
+    "seriesLabelAfter": "House of Fiscal Wisdom",
+    "youtubeTitle": "Dr. Lyla Latif — illicit financial flows briefing (House of Fiscal Wisdom)",
     "youtubeEmbedKey": "youtubeEmbed"
   },
   "programmesStrip": {
     "title": "Our programmes",
-    "description": "National tracking, county depth, newsroom capacity, and commissioned storytelling.",
+    "description": "Connect, Mashinani, and Wanahabari — with production and commissions captured through BNS Studio.",
     "seeMoreLabel": "Explore our programmes",
     "seeMoreHref": "/programmes",
     "exploreLabel": "Explore our programmes",

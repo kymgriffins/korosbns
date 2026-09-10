@@ -9,6 +9,7 @@ import landingJson from "@/content/landing.json";
 import aboutJson from "@/content/about.json";
 import timelineJson from "@/content/timeline.json";
 import socialsJson from "@/content/socials.json";
+import partnerPageSectionsJson from "@/content/partner-page-sections.json";
 
 export const mediaContent = mediaJson;
 export const programmesContent = programmesJson;
@@ -16,6 +17,7 @@ export const landingContent = landingJson;
 export const aboutContent = aboutJson;
 export const timelineContent = timelineJson;
 export const socialsContent = socialsJson;
+export const partnerPageSectionsContent = partnerPageSectionsJson;
 
 export type ProgrammeSlug = "connect" | "mashinani" | "wanahabari-lab" | "studios";
 
@@ -74,6 +76,8 @@ export type ProgrammeBlock = {
 
 export const PROGRAMMES_LANDING = programmesContent.landing;
 export const PROGRAMMES = programmesContent.items as ProgrammeBlock[];
+/** Civic programmes only — Connect, Mashinani, Wanahabari. BNS Studio is separate. */
+export const CIVIC_PROGRAMMES = PROGRAMMES.filter((p) => p.slug !== "studios");
 export const PROGRAMMES_CLOSING = programmesContent.closing;
 export const CONTACT_INTENT_COPY = programmesContent.contactIntents as Record<
   string,

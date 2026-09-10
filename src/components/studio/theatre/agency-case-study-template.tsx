@@ -44,14 +44,14 @@ export function AgencyCaseStudyTemplate({ project }: { project: StudioProjectEvi
   const getProgrammeLabel = (slug: string) => {
     switch (slug) {
       case "connect":
-        return "BNS Connect Desk";
+        return "BNS Connect";
       case "mashinani":
-        return "BNS Mashinani Desk";
+        return "BNS Mashinani";
       case "wanahabari-lab":
-        return "Wanahabari Lab Desk";
+        return "Wanahabari Lab";
       case "studios":
       default:
-        return "BNS Studios Desk";
+        return "BNS Studio";
     }
   };
 

@@ -2,24 +2,24 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { buildPageMetadata } from "@/utils/page-metadata";
 import { ProgrammeDetail } from "@/components/programmes/programme-detail";
-import { getProgramme, PROGRAMMES } from "@/constants/programmes-content";
+import { CIVIC_PROGRAMMES, getProgramme } from "@/content";
 
 type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
 export function generateStaticParams() {
-  return PROGRAMMES.map((p) => ({ slug: p.slug }));
+  return CIVIC_PROGRAMMES.map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   if (slug === "studios") {
     return buildPageMetadata({
-      title: "Desk 04: BNS Studios | Commercial Craft Subsidizing Citizen Audits",
+      title: "BNS Studio | Budget Ndio Story",
       description:
-        "The sovereign economic model of Budget Ndio Story: how independent commercial creative production bankrolls citizen budget audits across 47 counties.",
-      path: "/programmes/studios",
+        "Commissioned evidence production that funds Budget Ndio Story programmes.",
+      path: "/bns-studio",
     });
   }
   const programme = getProgramme(slug);
@@ -39,7 +39,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ProgrammeSlugPage({ params }: PageProps) {
   const { slug } = await params;
+  if (slug === "studios") {
+    redirect("/bns-studio");
+  }
   const programme = getProgramme(slug);
-  if (!programme) notFound();
+  if (!programme || programme.slug === "studios") notFound();
   return <ProgrammeDetail programme={programme} />;
 }
