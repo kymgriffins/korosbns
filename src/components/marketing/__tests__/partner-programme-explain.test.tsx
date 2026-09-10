@@ -11,20 +11,23 @@ vi.mock("next/image", () => ({
 }));
 
 describe("PartnerProgrammeExplainSections", () => {
-  it("renders three programme how/why sections with project evidence captions", () => {
+  it("renders three programme folds with shared vocabulary titles and a single lede each", () => {
     render(<PartnerProgrammeExplainSections />);
 
     expect(
-      screen.getByRole("heading", { name: /How Connect watches the national budget/i }),
+      screen.getByRole("heading", { name: /National budget intelligence/i }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: /How Mashinani follows money into counties/i }),
+      screen.getByRole("heading", { name: /County delivery verification/i }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("heading", {
-        name: /How Wanahabari keeps scrutiny after Budget Day/i,
-      }),
+      screen.getByRole("heading", { name: /Newsroom scrutiny/i }),
     ).toBeInTheDocument();
+
+    expect(screen.queryByText(/^The gap$/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^What we deliver$/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^Problem$/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^How$/i)).not.toBeInTheDocument();
 
     expect(screen.getAllByText(/James Maingi Mutinda · AFRODAD/i).length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText(/Prof\. George Wajackoyah/i).length).toBeGreaterThanOrEqual(1);

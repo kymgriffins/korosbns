@@ -29,6 +29,7 @@ import {
   XIcon,
 } from "lucide-react";
 import { ease } from "@/motion/variants";
+import { SHOW_MARKETING_SIGN_IN } from "@/lib/marketing-chrome";
 
 interface Props {
   isOpen: boolean;
@@ -169,38 +170,40 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
                   </motion.li>
                 ))}
               </ul>
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{
-                  delay: 0.05 + (NAV_LINKS.length + 1) * 0.06,
-                  duration: 0.35,
-                  ease: ease.expo,
-                }}
-                className="pt-4 border-t border-border/40 mt-4"
-              >
-                <Link href={isLoggedIn ? Routes.Home : Routes.Login} onClick={() => setIsOpen(false)}>
-                  <Button
-                    size="default"
-                    variant="white"
-                    className="w-full h-12 rounded-2xl font-semibold text-base shadow-md gap-2"
-                  >
-                    {isLoggedIn ? (
-                      <>
-                        <span className="flex size-6 items-center justify-center rounded-full bg-primary/20 text-xs font-bold text-primary shrink-0">
-                          {user?.email?.charAt(0).toUpperCase() ?? "?"}
-                        </span>
-                        Welcome back, {user?.first_name ?? user?.email ?? "Citizen"}
-                      </>
-                    ) : (
-                      <>
-                        <LogIn className="size-5 shrink-0" aria-hidden />
-                        Sign in
-                      </>
-                    )}
-                  </Button>
-                </Link>
-              </motion.div>
+              {(SHOW_MARKETING_SIGN_IN || isLoggedIn) ? (
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{
+                    delay: 0.05 + (NAV_LINKS.length + 1) * 0.06,
+                    duration: 0.35,
+                    ease: ease.expo,
+                  }}
+                  className="pt-4 border-t border-border/40 mt-4"
+                >
+                  <Link href={isLoggedIn ? Routes.Home : Routes.Login} onClick={() => setIsOpen(false)}>
+                    <Button
+                      size="default"
+                      variant="white"
+                      className="w-full h-12 rounded-2xl font-semibold text-base shadow-md gap-2"
+                    >
+                      {isLoggedIn ? (
+                        <>
+                          <span className="flex size-6 items-center justify-center rounded-full bg-primary/20 text-xs font-bold text-primary shrink-0">
+                            {user?.email?.charAt(0).toUpperCase() ?? "?"}
+                          </span>
+                          Welcome back, {user?.first_name ?? user?.email ?? "Citizen"}
+                        </>
+                      ) : (
+                        <>
+                          <LogIn className="size-5 shrink-0" aria-hidden />
+                          Sign in
+                        </>
+                      )}
+                    </Button>
+                  </Link>
+                </motion.div>
+              ) : null}
             </div>
           </motion.div>
 
@@ -252,38 +255,40 @@ function MenuPanel({ isOpen, setIsOpen }: Props) {
                   </motion.li>
                 ))}
               </ul>
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  delay: 0.06 + (NAV_LINKS.length + 1) * 0.05,
-                  duration: 0.3,
-                  ease: ease.expo,
-                }}
-                className="pt-4 border-t border-border/40 mt-4"
-              >
-                <Link href={isLoggedIn ? Routes.Home : Routes.Login} onClick={() => setIsOpen(false)}>
-                  <Button
-                    size="default"
-                    variant="white"
-                    className="w-full h-12 rounded-2xl font-semibold text-base shadow-md gap-2"
-                  >
-                    {isLoggedIn ? (
-                      <>
-                        <span className="flex size-6 items-center justify-center rounded-full bg-primary/20 text-xs font-bold text-primary shrink-0">
-                          {user?.email?.charAt(0).toUpperCase() ?? "?"}
-                        </span>
-                        Welcome back, {user?.first_name ?? user?.email ?? "Citizen"}
-                      </>
-                    ) : (
-                      <>
-                        <LogIn className="size-5 shrink-0" aria-hidden />
-                        Sign in
-                      </>
-                    )}
-                  </Button>
-                </Link>
-              </motion.div>
+              {(SHOW_MARKETING_SIGN_IN || isLoggedIn) ? (
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    delay: 0.06 + (NAV_LINKS.length + 1) * 0.05,
+                    duration: 0.3,
+                    ease: ease.expo,
+                  }}
+                  className="pt-4 border-t border-border/40 mt-4"
+                >
+                  <Link href={isLoggedIn ? Routes.Home : Routes.Login} onClick={() => setIsOpen(false)}>
+                    <Button
+                      size="default"
+                      variant="white"
+                      className="w-full h-12 rounded-2xl font-semibold text-base shadow-md gap-2"
+                    >
+                      {isLoggedIn ? (
+                        <>
+                          <span className="flex size-6 items-center justify-center rounded-full bg-primary/20 text-xs font-bold text-primary shrink-0">
+                            {user?.email?.charAt(0).toUpperCase() ?? "?"}
+                          </span>
+                          Welcome back, {user?.first_name ?? user?.email ?? "Citizen"}
+                        </>
+                      ) : (
+                        <>
+                          <LogIn className="size-5 shrink-0" aria-hidden />
+                          Sign in
+                        </>
+                      )}
+                    </Button>
+                  </Link>
+                </motion.div>
+              ) : null}
             </div>
           </motion.div>
         </>

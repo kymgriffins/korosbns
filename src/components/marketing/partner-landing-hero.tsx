@@ -6,6 +6,7 @@ import {
   useRef,
   useState,
   type PointerEvent as ReactPointerEvent,
+  type CSSProperties,
 } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,15 +16,14 @@ import {
   PARTNER_LANDING_STILLS,
 } from "@/content/partner-landing";
 import { fadeIn } from "@/motion/variants";
-import { cn } from "@/utils";
 import styles from "./partner-landing-hero.module.css";
 
 const AUTO_MS = 6500;
 const SWIPE_PX = 48;
 
 /**
- * Partner homepage hero — Studio-style project story reel.
- * Full-bleed slides + filmstrip of others + 3 minimal programme lines (bottom-left).
+ * Partner homepage hero — project reel under the marketing nav.
+ * Minimal progress + dots; programme names only (phrases live in sections).
  */
 export default function PartnerLandingHero() {
   const slides = PARTNER_LANDING_STILLS;
@@ -106,33 +106,33 @@ export default function PartnerLandingHero() {
     <section
       className={styles["partner-reel-hero"]}
       aria-roledescription="carousel"
-      aria-label="How Budget Ndio Story programmes work"
+      aria-label="Project evidence from Budget Ndio Story programmes"
     >
       <div
         className={styles["partner-reel-segments"]}
         role="tablist"
-        aria-label="Project stories"
+        aria-label="Story progress"
       >
-        {slides.map((slide, i) => (
-          <button
-            key={slide.id}
-            type="button"
-            role="tab"
-            aria-selected={i === index}
-            aria-label={slide.storyTitle}
-            onClick={() => goTo(i)}
-            className={styles["partner-reel-segment"]}
-          >
-            <span
-              className={styles["partner-reel-segment-fill"]}
-              style={{
-                transform: `scaleX(${
-                  i < index ? 1 : i === index ? segmentProgress : 0
-                })`,
-              }}
-            />
-          </button>
-        ))}
+        {slides.map((slide, i) => {
+          const fill =
+            i < index ? 1 : i === index ? (reduceMotion ? 1 : segmentProgress) : 0;
+          return (
+            <button
+              key={slide.id}
+              type="button"
+              role="tab"
+              aria-selected={i === index}
+              aria-label={slide.storyTitle}
+              onClick={() => goTo(i)}
+              className={styles["partner-reel-segment"]}
+            >
+              <span
+                className={styles["partner-reel-segment-fill"]}
+                style={{ "--fill": String(fill) } as CSSProperties}
+              />
+            </button>
+          );
+        })}
       </div>
 
       <AnimatePresence mode="wait">
@@ -168,10 +168,6 @@ export default function PartnerLandingHero() {
             role="presentation"
           >
             <div className={styles["partner-reel-story"]}>
-              <p className={styles["partner-reel-count"]}>
-                {String(index + 1).padStart(2, "0")} /{" "}
-                {String(slides.length).padStart(2, "0")}
-              </p>
               <h1 className={styles["partner-reel-title"]}>{current.storyTitle}</h1>
               <p className={styles["partner-reel-desc"]}>{current.storyLine}</p>
             </div>
@@ -190,38 +186,27 @@ export default function PartnerLandingHero() {
               data-active={active ? "true" : "false"}
               onClick={(e) => e.stopPropagation()}
             >
-              <span className={styles["partner-reel-programme-label"]}>
-                {item.label}
-              </span>
-              <span className={styles["partner-reel-programme-line"]}>{item.line}</span>
+              {item.label}
             </Link>
           );
         })}
       </nav>
 
       <div
-        className={styles["partner-reel-filmstrip"]}
+        className={styles["partner-reel-dots"]}
         role="group"
-        aria-label="Other project stills"
+        aria-label="Select project still"
       >
         {slides.map((slide, i) => (
           <button
             key={slide.id}
             type="button"
-            className={styles["partner-reel-thumb"]}
+            className={styles["partner-reel-dot"]}
             data-active={i === index ? "true" : "false"}
-            aria-label={`Show ${slide.storyTitle}`}
+            aria-label={slide.storyTitle}
             aria-current={i === index ? "true" : undefined}
             onClick={() => goTo(i)}
-          >
-            <Image
-              src={slide.src}
-              alt=""
-              fill
-              className={cn("object-cover", slide.id === "nelly-reel" && "object-top")}
-              sizes="56px"
-            />
-          </button>
+          />
         ))}
       </div>
     </section>

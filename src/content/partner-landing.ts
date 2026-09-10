@@ -1,6 +1,7 @@
 /**
  * Partner landing evidence stills — project/event imagery only (not team headshots).
- * Hero reel uses 8 story slides; explain sections reuse keyed stills.
+ * Hero reel = project moments. Programme sections = one investment lede each.
+ * Shared vocabulary (do not diverge): Connect / Mashinani / Wanahabari noun phrases.
  */
 export type PartnerLandingStill = {
   id: string;
@@ -8,11 +9,36 @@ export type PartnerLandingStill = {
   alt: string;
   caption: string;
   programme: "connect" | "mashinani" | "wanahabari-lab";
-  /** Short story title for the reel (studio-style) */
+  /** Project moment title — not a programme pitch */
   storyTitle: string;
-  /** One-line story under the title */
+  /** One observational line — no investment ask */
   storyLine: string;
 };
+
+/** Canonical programme noun phrases — hero, sections, and CTA must reuse these. */
+export const PARTNER_PROGRAMME_VOCAB = {
+  connect: {
+    slug: "connect" as const,
+    label: "Connect",
+    name: "BNS Connect",
+    phrase: "National budget intelligence",
+    href: "/programmes/connect",
+  },
+  mashinani: {
+    slug: "mashinani" as const,
+    label: "Mashinani",
+    name: "BNS Mashinani",
+    phrase: "County delivery verification",
+    href: "/programmes/mashinani",
+  },
+  "wanahabari-lab": {
+    slug: "wanahabari-lab" as const,
+    label: "Wanahabari",
+    name: "Wanahabari Lab",
+    phrase: "Newsroom scrutiny",
+    href: "/programmes/wanahabari-lab",
+  },
+} as const;
 
 export const PARTNER_LANDING_STILLS: PartnerLandingStill[] = [
   {
@@ -21,8 +47,8 @@ export const PARTNER_LANDING_STILLS: PartnerLandingStill[] = [
     alt: "James Maingi Mutinda presenting at AFRODAD debt conference",
     caption: "James Maingi Mutinda · AFRODAD",
     programme: "connect",
-    storyTitle: "National debt on the record",
-    storyLine: "Connect turns sovereign debt forums into briefings partners can act on.",
+    storyTitle: "Debt on the record",
+    storyLine: "James Maingi Mutinda at AFRODAD — a continental forum, held for the brief.",
   },
   {
     id: "wajackoyah-afrodad",
@@ -30,8 +56,8 @@ export const PARTNER_LANDING_STILLS: PartnerLandingStill[] = [
     alt: "Prof. George Wajackoyah speaking at AFRODAD plenary",
     caption: "Prof. George Wajackoyah · AFRODAD",
     programme: "connect",
-    storyTitle: "Public contracts, public light",
-    storyLine: "National scrutiny that stays after the plenary ends.",
+    storyTitle: "Contracts in public light",
+    storyLine: "Prof. George Wajackoyah — plenary scrutiny that outlives the room.",
   },
   {
     id: "budget-reading",
@@ -40,7 +66,7 @@ export const PARTNER_LANDING_STILLS: PartnerLandingStill[] = [
     caption: "Budget reading · national cycle",
     programme: "connect",
     storyTitle: "When the PDF lands",
-    storyLine: "We verify Treasury releases before the conversation goes quiet.",
+    storyLine: "Treasury publishes. Verification starts before the week goes quiet.",
   },
   {
     id: "nelly-mic",
@@ -48,8 +74,8 @@ export const PARTNER_LANDING_STILLS: PartnerLandingStill[] = [
     alt: "Nelly Maina recording Budget Mtaani field briefing",
     caption: "Nelly Maina · Budget Mtaani",
     programme: "mashinani",
-    storyTitle: "County money, spoken clearly",
-    storyLine: "Mashinani follows equitable share into wards and services.",
+    storyTitle: "County money, spoken",
+    storyLine: "Nelly Maina on Budget Mtaani — equitable share, in plain language.",
   },
   {
     id: "nelly-reel",
@@ -57,8 +83,8 @@ export const PARTNER_LANDING_STILLS: PartnerLandingStill[] = [
     alt: "Nelly Maina county budget tracking reel still",
     caption: "County delivery · Mashinani",
     programme: "mashinani",
-    storyTitle: "Stay through the cycle",
-    storyLine: "Estimates, assembly, disbursement — not a fly-over visit.",
+    storyTitle: "Through the cycle",
+    storyLine: "Estimates, assembly, disbursement — the embed stays.",
   },
   {
     id: "budget-sasa",
@@ -67,7 +93,7 @@ export const PARTNER_LANDING_STILLS: PartnerLandingStill[] = [
     caption: "Budget Sasa ni Delivery",
     programme: "mashinani",
     storyTitle: "Delivery is the proof",
-    storyLine: "County budgets only matter when services show up.",
+    storyLine: "County numbers only hold when clinics, roads, and schools show up.",
   },
   {
     id: "latif-launch",
@@ -76,7 +102,7 @@ export const PARTNER_LANDING_STILLS: PartnerLandingStill[] = [
     caption: "Dr. Lyla Latif · House of Fiscal Wisdom",
     programme: "wanahabari-lab",
     storyTitle: "Forensics after Budget Day",
-    storyLine: "Wanahabari keeps newsrooms capable when headlines fade.",
+    storyLine: "Dr. Lyla Latif — Red Flags, launched with House of Fiscal Wisdom.",
   },
   {
     id: "latif-cover",
@@ -84,42 +110,32 @@ export const PARTNER_LANDING_STILLS: PartnerLandingStill[] = [
     alt: "Red Flags in Government Contracts monograph cover",
     caption: "Red Flags monograph",
     programme: "wanahabari-lab",
-    storyTitle: "Evidence partners can brief",
-    storyLine: "Investigations and launches built for institutional use.",
+    storyTitle: "Evidence for the brief",
+    storyLine: "A monograph newsrooms and partners can cite the same week.",
   },
 ];
 
-/** Three minimal programme lines for the hero (bottom-left). */
+/** Hero bottom-left: programme names only — phrase lives in sections. */
 export const PARTNER_HERO_PROGRAMME_LINES = [
-  {
-    slug: "connect" as const,
-    label: "Connect",
-    line: "Watches the national flow.",
-    href: "/programmes/connect",
-  },
-  {
-    slug: "mashinani" as const,
-    label: "Mashinani",
-    line: "Follows money into counties.",
-    href: "/programmes/mashinani",
-  },
-  {
-    slug: "wanahabari-lab" as const,
-    label: "Wanahabari",
-    line: "Keeps scrutiny after Budget Day.",
-    href: "/programmes/wanahabari-lab",
-  },
-];
+  PARTNER_PROGRAMME_VOCAB.connect,
+  PARTNER_PROGRAMME_VOCAB.mashinani,
+  PARTNER_PROGRAMME_VOCAB["wanahabari-lab"],
+].map((p) => ({
+  slug: p.slug,
+  label: p.label,
+  href: p.href,
+}));
 
 export type PartnerProgrammeExplain = {
   slug: "connect" | "mashinani" | "wanahabari-lab";
   name: string;
   eyebrow: string;
+  /** Must equal PARTNER_PROGRAMME_VOCAB[slug].phrase */
   title: string;
-  problem: string;
-  how: string;
-  why: string;
-  lifecycle: string;
+  /** Single straightforward paragraph — no problem/how scaffolding */
+  lede: string;
+  /** Quiet lifecycle whisper */
+  cycle: string;
   href: string;
   ctaLabel: string;
   stillIds: string[];
@@ -128,53 +144,38 @@ export type PartnerProgrammeExplain = {
 export const PARTNER_PROGRAMME_EXPLAINS: PartnerProgrammeExplain[] = [
   {
     slug: "connect",
-    name: "BNS Connect",
-    eyebrow: "01 · National flow",
-    title: "How Connect watches the national budget.",
-    problem:
-      "Partners see a KSh 4.8T national budget land as PDFs — then go silent after Budget Day.",
-    how:
-      "We verify Treasury releases against published tables and package briefings, debt forums, and story products institutions can reuse — from AFRODAD plenaries with James Maingi Mutinda and Prof. George Wajackoyah to year-round Connect outputs.",
-    why:
-      "Without a national baseline, county embeds and newsroom work have nothing solid to measure against.",
-    lifecycle:
-      "Formulation → Budget Day → year-round national scrutiny",
-    href: "/programmes/connect",
-    ctaLabel: "Explore Connect",
+    name: PARTNER_PROGRAMME_VOCAB.connect.name,
+    eyebrow: PARTNER_PROGRAMME_VOCAB.connect.label,
+    title: PARTNER_PROGRAMME_VOCAB.connect.phrase,
+    lede:
+      "We verify what Treasury publishes and keep national debt and allocation questions alive after Budget Day — so partners have a baseline they can fund against.",
+    cycle: "Formulation → Budget Day → continuous scrutiny",
+    href: PARTNER_PROGRAMME_VOCAB.connect.href,
+    ctaLabel: "Partner on Connect",
     stillIds: ["maingi-afrodad", "wajackoyah-afrodad"],
   },
   {
     slug: "mashinani",
-    name: "BNS Mashinani",
-    eyebrow: "02 · County delivery",
-    title: "How Mashinani follows money into counties.",
-    problem:
-      "Equitable share and county budgets disappear in fly-over reporting that never stays through the cycle.",
-    how:
-      "We embed in Kakamega, Kilifi, Nakuru, and Wajir across estimates, assembly, and delivery — field briefings and scorecards partners can cite, including county tracking led on air and on the ground with Nelly Maina.",
-    why:
-      "National numbers only matter if money reaches wards, clinics, and roads.",
-    lifecycle:
-      "C-BROP / estimates → county assembly → disbursement & delivery",
-    href: "/programmes/mashinani",
-    ctaLabel: "Explore Mashinani",
+    name: PARTNER_PROGRAMME_VOCAB.mashinani.name,
+    eyebrow: PARTNER_PROGRAMME_VOCAB.mashinani.label,
+    title: PARTNER_PROGRAMME_VOCAB.mashinani.phrase,
+    lede:
+      "Full-cycle embeds in Kakamega, Kilifi, Nakuru, and Wajir — scorecards and field briefings that show whether equitable share reaches clinics, roads, and schools.",
+    cycle: "Estimates → assembly → disbursement & delivery",
+    href: PARTNER_PROGRAMME_VOCAB.mashinani.href,
+    ctaLabel: "Partner on Mashinani",
     stillIds: ["nelly-mic", "nelly-reel"],
   },
   {
     slug: "wanahabari-lab",
-    name: "Wanahabari Lab",
-    eyebrow: "03 · Newsroom capacity",
-    title: "How Wanahabari keeps scrutiny after Budget Day.",
-    problem:
-      "Newsrooms lack forensic capacity for the 364 days after Budget Day theatre.",
-    how:
-      "We train and co-produce with journalists — investigations and launches partners can brief against, including Dr. Lyla Latif’s Red Flags work with House of Fiscal Wisdom.",
-    why:
-      "Scrutiny dies if media cannot interrogate contracts, debt, and procurement once headlines fade.",
-    lifecycle:
-      "Post–Budget Day → filings, investigations, public narrative",
-    href: "/programmes/wanahabari-lab",
-    ctaLabel: "Explore Wanahabari Lab",
+    name: PARTNER_PROGRAMME_VOCAB["wanahabari-lab"].name,
+    eyebrow: PARTNER_PROGRAMME_VOCAB["wanahabari-lab"].label,
+    title: PARTNER_PROGRAMME_VOCAB["wanahabari-lab"].phrase,
+    lede:
+      "Training and co-production that keep journalists forensic after Budget Day — investigations and launches partners can brief against.",
+    cycle: "Post–Budget Day → investigations & public narrative",
+    href: PARTNER_PROGRAMME_VOCAB["wanahabari-lab"].href,
+    ctaLabel: "Partner on Wanahabari Lab",
     stillIds: ["latif-launch", "latif-cover"],
   },
 ];

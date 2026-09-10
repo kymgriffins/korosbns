@@ -8,6 +8,7 @@ import { EditorialCtaBand } from "@/components/ui/editorial";
 import { LandingSection } from "@/layouts/landing-section";
 import { CIVIC_PROGRAMMES } from "@/content";
 import { isSectionVisible } from "@/lib/partner-page-cms";
+import { SHOW_NEWSLETTER_POPUP } from "@/lib/marketing-chrome";
 
 const PartnersMarquee = dynamic(
   () => import("@/components/marketing/partners-marquee"),
@@ -23,9 +24,9 @@ const NewsletterPopup = dynamic(
 );
 
 /**
- * Partner homepage spine (≤5 blocks):
- * Hero (project reel) → 3 programme explains → partners → CTA
- * TikTok / youth education composers remain in repo but are not rendered.
+ * Partner homepage spine:
+ * Hero reel → 3 investment-facing programme stories → CTA
+ * Learner capture (newsletter popup) muted via SHOW_NEWSLETTER_POPUP.
  */
 export default function PremiumLandingClient() {
   return (
@@ -38,13 +39,13 @@ export default function PremiumLandingClient() {
       {isSectionVisible("home", "cta") ? (
         <LandingSection>
           <EditorialCtaBand
-            eyebrow="Next step"
-            title="Three programmes. One evidence system."
-            description="Partner on national tracking, county embeds, or newsroom capacity — with production captured through BNS Studio."
+            eyebrow="Partnership"
+            title="Three programmes. One accountability system."
+            description="Co-fund national budget intelligence, county delivery verification, or newsroom scrutiny — with production captured through BNS Studio."
             ctaHref="/contact?intent=partner"
-            ctaLabel="Partner with BNS"
+            ctaLabel="Discuss a partnership"
             secondaryHref="/programmes"
-            secondaryLabel="Explore Programmes"
+            secondaryLabel="View programmes"
             images={CIVIC_PROGRAMMES.slice(0, 2).map((p) => ({
               src: p.visual.hero,
               alt: p.visual.heroAlt,
@@ -52,7 +53,7 @@ export default function PremiumLandingClient() {
           />
         </LandingSection>
       ) : null}
-      <NewsletterPopup />
+      {SHOW_NEWSLETTER_POPUP ? <NewsletterPopup /> : null}
     </>
   );
 }

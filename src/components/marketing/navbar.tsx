@@ -15,6 +15,7 @@ import { ThemeToggle } from "./theme-toggle";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "motion/react";
 import { navbarEnter } from "@/motion/variants";
 import { toast } from "sonner";
+import { SHOW_MARKETING_SIGN_IN } from "@/lib/marketing-chrome";
 
 const Navbar = () => {
   const { isLoggedIn, loading: authLoading, user, logout } = useAuth();
@@ -135,8 +136,8 @@ const Navbar = () => {
             {/* Right controls */}
             <div className="flex items-center gap-2 md:gap-3">
               <ThemeToggle />
-              {!authLoading && (
-                isLoggedIn ? (
+              {!authLoading &&
+                (isLoggedIn ? (
                   <div className="flex items-center gap-2">
                     <Link href={Routes.Home}>
                       <Button
@@ -160,7 +161,7 @@ const Navbar = () => {
                       <LogOut className="size-4" />
                     </Button>
                   </div>
-                ) : (
+                ) : SHOW_MARKETING_SIGN_IN ? (
                   <Link href={Routes.Login}>
                     <Button
                       variant="white"
@@ -170,8 +171,7 @@ const Navbar = () => {
                       Sign in
                     </Button>
                   </Link>
-                )
-              )}
+                ) : null)}
               <motion.div
                 whileTap={{ scale: 0.92 }}
                 transition={{ duration: 0.3, ease: [0.25, 0.4, 0, 1] }}
