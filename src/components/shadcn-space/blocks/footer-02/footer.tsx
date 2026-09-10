@@ -121,12 +121,12 @@ export default function Footer() {
               >
                 {partnerLogos.map((partner) => {
                   const logo = (
-                    <span className="relative flex h-10 w-24 items-center justify-center rounded-md bg-white px-2 py-1.5">
+                    <span className="relative flex h-10 w-24 items-center justify-center">
                       <Image
                         src={partner.logo_url}
                         alt={`${partner.name} logo`}
                         fill
-                        className="object-contain p-1"
+                        className="object-contain"
                         sizes="96px"
                       />
                     </span>
@@ -140,7 +140,7 @@ export default function Footer() {
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label={`Visit ${partner.name}`}
-                          className="block rounded-md outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring"
+                          className="block outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring"
                         >
                           {logo}
                         </a>
@@ -148,7 +148,7 @@ export default function Footer() {
                         <Link
                           href={partner.href}
                           aria-label={partner.name}
-                          className="block rounded-md outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring"
+                          className="block outline-none transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring"
                         >
                           {logo}
                         </Link>

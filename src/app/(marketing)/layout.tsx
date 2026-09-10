@@ -7,6 +7,7 @@ import BNSFooter from "@/components/shadcn-space/blocks/footer-02/footer";
 import MinimalFooter from "@/components/global/minimal-footer";
 import {
   getFooterVariant,
+  usesFullBleedHero,
   usesMarketingChrome,
 } from "@/lib/marketing-layout";
 
@@ -18,24 +19,28 @@ const MarketingLayout = ({
   const pathname = usePathname();
   const isChromeDisabled = pathname.startsWith("/learn") || pathname.startsWith("/stories");
   const showMarketingChrome = usesMarketingChrome(pathname);
+  const fullBleedHero = usesFullBleedHero(pathname);
   const footerVariant = getFooterVariant(pathname);
+  const offsetForFixedNav =
+    showMarketingChrome && !fullBleedHero ? "pt-12 md:pt-16 lg:pt-20" : "";
 
   return (
-    <main
-      className={`relative flex min-h-dvh w-full flex-col ${
-        showMarketingChrome ? "pt-12 md:pt-16 lg:pt-20" : ""
-      }`}
-    >
+    <>
+      {/* Fixed nav sits outside <main> so layout padding / overflow never offset it */}
       {!isChromeDisabled && <Navbar />}
 
-      <div className="flex flex-1 flex-col">{children}</div>
+      <main
+        className={`relative flex min-h-dvh w-full flex-col ${offsetForFixedNav}`}
+      >
+        <div className="flex flex-1 flex-col">{children}</div>
 
-      {!isChromeDisabled && footerVariant !== "none" ? (
-        <div className="mt-auto shrink-0">
-          {footerVariant === "marketing" ? <BNSFooter /> : <MinimalFooter />}
-        </div>
-      ) : null}
-    </main>
+        {!isChromeDisabled && footerVariant !== "none" ? (
+          <div className="mt-auto shrink-0">
+            {footerVariant === "marketing" ? <BNSFooter /> : <MinimalFooter />}
+          </div>
+        ) : null}
+      </main>
+    </>
   );
 };
 

@@ -112,7 +112,7 @@ export function Header() {
     : "Sign in";
 
   return (
-    <div ref={ref} className="relative w-full">
+    <div ref={ref}>
       <motion.header
         variants={navbarEnter}
         initial={reduced ? false : "hidden"}
@@ -130,7 +130,7 @@ export function Header() {
               href={Routes.Home}
               className="group inline-flex shrink-0 items-center gap-2.5 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
-              <span className="relative flex size-8 shrink-0 items-center justify-center overflow-hidden border border-border/60 bg-background">
+              <span className="relative flex size-8 shrink-0 items-center justify-center overflow-hidden">
                 <Image
                   src="/logo.svg"
                   alt=""
@@ -218,13 +218,13 @@ export function Header() {
                   className={cn(
                     "hidden sm:inline-flex",
                     NAV_CONTROL_SIZE,
-                    "border border-border/60 bg-muted/40",
+                    "bg-muted/40",
                   )}
                   aria-hidden
                 />
               ))}
 
-            <ThemeToggle className="border-border/60 bg-transparent text-foreground hover:bg-muted" />
+            <ThemeToggle className="border-transparent bg-transparent text-foreground hover:bg-muted" />
 
             <motion.button
               type="button"
@@ -234,7 +234,7 @@ export function Header() {
               className={cn(
                 NAV_CONTROL_SIZE,
                 NAV_CONTROL_BORDER,
-                "relative inline-flex items-center justify-center border-border/60 bg-transparent text-foreground hover:bg-muted md:hidden",
+                "relative inline-flex items-center justify-center border-transparent bg-transparent text-foreground hover:bg-muted md:hidden",
               )}
               aria-label={isOpen ? "Close menu" : "Open menu"}
               aria-expanded={isOpen}

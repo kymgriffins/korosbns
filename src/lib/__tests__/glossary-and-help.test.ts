@@ -27,14 +27,19 @@ describe("Cookie Consent Copy & Banner Compliance", () => {
     expect(content).toContain('href="/terms"');
   });
 
-  it("is enabled in CookieConsentWrapper", () => {
-    const file = join(
-      process.cwd(),
-      "src/components/global/cookie-consent-wrapper.tsx"
+  it("is muted on marketing via SHOW_COOKIE_CONSENT (partners skip cookie wall)", () => {
+    const chrome = readFileSync(
+      join(process.cwd(), "src/lib/marketing-chrome.ts"),
+      "utf8",
     );
-    const content = readFileSync(file, "utf8");
-    expect(content).toContain("<CookieConsent />");
-    expect(content).not.toContain("return null;");
+    const wrapper = readFileSync(
+      join(process.cwd(), "src/components/global/cookie-consent-wrapper.tsx"),
+      "utf8",
+    );
+    expect(chrome).toContain("SHOW_COOKIE_CONSENT = false");
+    expect(wrapper).toContain("SHOW_COOKIE_CONSENT");
+    expect(wrapper).toContain("return null");
+    expect(wrapper).toContain("<CookieConsent />");
   });
 });
 

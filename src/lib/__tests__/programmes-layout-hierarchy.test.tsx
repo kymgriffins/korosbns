@@ -6,6 +6,7 @@ import { ProgrammeProjectGrid } from "@/components/programmes/programme-project-
 import { ProgrammesProjectsLoop } from "@/components/programmes/programmes-projects-loop";
 import { CIVIC_PROGRAMMES, getProgramme } from "@/constants/programmes-content";
 import { getFooterVariant } from "@/lib/marketing-layout";
+import { usesFullBleedHero } from "@/lib/marketing-layout";
 import { studiosEvidenceData } from "@/data/studios-evidence";
 
 beforeEach(() => {
@@ -70,6 +71,12 @@ describe("Programme Layout Hierarchy Audit", { timeout: 30000 }, () => {
     it("keeps programmes routes on the site footer map", () => {
       expect(getFooterVariant("/programmes")).toBeTruthy();
       expect(getFooterVariant("/programmes/connect")).toBeTruthy();
+    });
+
+    it("uses full-bleed hero only on the partner homepage", () => {
+      expect(usesFullBleedHero("/")).toBe(true);
+      expect(usesFullBleedHero("/about")).toBe(false);
+      expect(usesFullBleedHero("/programmes")).toBe(false);
     });
   });
 });

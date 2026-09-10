@@ -163,13 +163,12 @@ export const pageEnter: Variants = {
 };
 
 // ─── Navbar ────────────────────────────────────────────────────────────────────
+/** Opacity-only — avoid transform on `position: fixed` headers (breaks viewport pinning). */
 export const navbarEnter: Variants = {
-  hidden: { opacity: 0, y: -20, scale: 0.97 },
+  hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { duration: 0.6, ease: ease.expo, delay: 0.1 },
+    transition: { duration: 0.45, ease: ease.expo, delay: 0.05 },
   },
 };
 

@@ -1,23 +1,11 @@
 .partner-reel-hero {
   position: relative;
-  display: flex;
-  flex-direction: column;
   height: 100dvh;
   max-height: 100dvh;
   min-height: 100dvh;
   overflow: hidden;
-  /* Clear fixed marketing nav (top-4 + bar) within the same viewport */
-  padding-top: 5rem;
-  padding-bottom: 1.5rem;
   background: #000;
   color: #fff;
-}
-
-@media (min-width: 768px) {
-  .partner-reel-hero {
-    padding-top: 5.75rem;
-    padding-bottom: 2rem;
-  }
 }
 
 .partner-reel-slide {
@@ -44,7 +32,7 @@
   pointer-events: none;
 }
 
-/* Story sits above programme anchors; both stay inside 100dvh */
+/* Story sits above absolute programme anchors; both stay inside 100dvh */
 .partner-reel-stage {
   position: absolute;
   inset: 0;
@@ -52,14 +40,14 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  /* Top clears nav; bottom clears programme list */
-  padding: 5rem 1.5rem 5.25rem;
+  /* Top clears fixed nav hit-area; bottom clears programme list + gap */
+  padding: 5rem 1.5rem 7.75rem;
   cursor: pointer;
 }
 
 @media (min-width: 768px) {
   .partner-reel-stage {
-    padding: 5.75rem 4rem 5.75rem;
+    padding: 5.5rem 4rem 8.25rem;
   }
 }
 
@@ -91,20 +79,20 @@
 
 /* Quiet programme anchors — bottom-left only */
 .partner-reel-programmes {
-  position: relative;
+  position: absolute;
   z-index: 3;
+  left: 1.5rem;
+  bottom: 1.75rem;
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
-  gap: 0.35rem;
-  margin-top: auto;
-  margin-left: 1.5rem;
+  gap: 0.45rem;
   pointer-events: auto;
 }
 
 @media (min-width: 768px) {
   .partner-reel-programmes {
-    margin-left: 4rem;
+    left: 4rem;
+    bottom: 2.25rem;
   }
 }
 

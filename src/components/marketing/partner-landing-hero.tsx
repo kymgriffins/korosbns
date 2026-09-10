@@ -22,7 +22,7 @@ const SWIPE_PX = 48;
 
 /**
  * Partner homepage hero — project reel under the marketing nav.
- * One viewport: media + story + bottom-left programme anchors.
+ * One viewport full-bleed: media + story + bottom-left programme anchors.
  */
 export default function PartnerLandingHero() {
   const slides = PARTNER_LANDING_STILLS;

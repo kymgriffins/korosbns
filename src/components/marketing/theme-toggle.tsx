@@ -10,7 +10,7 @@ import { cn } from "@/utils";
 export const NAV_CONTROL_SIZE = "h-9 w-9";
 export const NAV_CONTROL_RADIUS = "rounded-none";
 export const NAV_CONTROL_BORDER =
-  "border border-border bg-background text-foreground transition-[border-color,background-color,color,transform] duration-200 ease-out hover:border-foreground/25 hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+  "border border-transparent bg-transparent text-foreground transition-[background-color,color,transform] duration-200 ease-out hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
 type ThemeToggleProps = {
   className?: string;
