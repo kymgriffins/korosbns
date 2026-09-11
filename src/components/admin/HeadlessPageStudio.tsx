@@ -562,7 +562,12 @@ export function HeadlessPageStudio() {
       authorName: "Budget Ndio Story Team",
       programmeSlug: "wanahabari-lab",
       programmeLabel: "Wanahabari",
-      href: `/bns-studio/${id}`,
+      href: `/bns-project/${id}`,
+      isProject: true,
+      useYoutubeThumbnail: true,
+      hostInstitution: "House of Fiscal Wisdom",
+      funder: "Supported by Consortium Partners",
+      wysiwygProse: `## Executive Overview\nForensic policy analysis and empirical revenue tracking produced by Budget Ndio Story.\n\n### 1. Statutory Framework & Fiscal Background\nEvaluating revenue allocations against the Public Finance Management (PFM) Act.\n\n- Primary expenditure ceilings and statutory compliance\n- Sub-national devolution shares and disbursement pacing\n\n### 2. Civic Impact & Monograph Evidence\nField testimonies and investigative datasets documenting public resource governance.`,
       publishedAt: new Date().toISOString(),
       channelHandle: "@BudgetNdioStory",
     };
@@ -1103,6 +1108,118 @@ export function HeadlessPageStudio() {
                         placeholder="/bns-studio/..."
                       />
                     </div>
+                  </div>
+
+                  
+                  {/* Project Promotion & Target Link */}
+                  <div className="rounded-xl border border-primary/30 bg-primary/5 p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <div className="flex items-center gap-1.5 font-bold text-xs text-foreground">
+                          <Sparkles className="size-3.5 text-primary" />
+                          <span>Promote Story as Project Dossier</span>
+                        </div>
+                        <p className="text-[11px] text-muted-foreground">
+                          Generates a live dedicated project page at <code className="font-mono text-primary">/bns-project/{selectedFeaturedStory.id}</code> with full WYSIWYG evidence and media.
+                        </p>
+                      </div>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={selectedFeaturedStory.isProject ?? true}
+                          onChange={(e) => {
+                            const isProj = e.target.checked;
+                            handleUpdateFeaturedStory(selectedFeaturedStory.id, "isProject", isProj);
+                            if (isProj) {
+                              handleUpdateFeaturedStory(
+                                selectedFeaturedStory.id,
+                                "href",
+                                `/bns-project/${selectedFeaturedStory.slug || selectedFeaturedStory.id}`
+                              );
+                            }
+                          }}
+                          className="sr-only peer"
+                        />
+                        <div className="w-9 h-5 bg-muted peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+                      </label>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 pt-2 border-t border-primary/10">
+                      <div>
+                        <label className="text-[11px] font-semibold text-foreground">Host Institution</label>
+                        <Input
+                          value={selectedFeaturedStory.hostInstitution ?? "House of Fiscal Wisdom"}
+                          onChange={(e) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "hostInstitution", e.target.value)}
+                          className="mt-1 h-7 text-xs"
+                          placeholder="e.g. House of Fiscal Wisdom"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[11px] font-semibold text-foreground">Funder / Partners</label>
+                        <Input
+                          value={selectedFeaturedStory.funder ?? "Supported by Consortium Partners"}
+                          onChange={(e) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "funder", e.target.value)}
+                          className="mt-1 h-7 text-xs"
+                          placeholder="e.g. Supported by Luminate"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between text-xs pt-1">
+                      <span className="text-muted-foreground">Target Route:</span>
+                      <a
+                        href={selectedFeaturedStory.href || `/bns-project/${selectedFeaturedStory.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 font-mono text-primary hover:underline text-[11px]"
+                      >
+                        <span>{selectedFeaturedStory.href || `/bns-project/${selectedFeaturedStory.id}`}</span>
+                        <ExternalLink className="size-3" />
+                      </a>
+                    </div>
+                  </div>
+
+                  {/* Media Settings: YouTube Thumbnail Toggle */}
+                  <div className="flex items-center justify-between rounded-xl border border-border/80 bg-muted/20 px-4 py-3">
+                    <div className="space-y-0.5">
+                      <label className="text-xs font-semibold text-foreground">
+                        Use YouTube Thumbnail with Multi-Layer Fallback
+                      </label>
+                      <p className="text-[11px] text-muted-foreground">
+                        Automatically loads maxres/hqdefault thumbnail with fallback to custom R2 poster so visuals are never blank.
+                      </p>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={selectedFeaturedStory.useYoutubeThumbnail ?? true}
+                        onChange={(e) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "useYoutubeThumbnail", e.target.checked)}
+                        className="sr-only peer"
+                      />
+                      <div className="w-9 h-5 bg-muted peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+                    </label>
+                  </div>
+
+                  {/* Full WYSIWYG Prose Editor */}
+                  <div className="space-y-2 pt-2 border-t border-border/50">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <label className="text-xs font-bold text-foreground">
+                          Full Project / Blog Dossier (WYSIWYG Editorial Copy)
+                        </label>
+                        <p className="text-[11px] text-muted-foreground">
+                          Rich formatting, headings, blockquotes, lists, links, and Cloudflare R2 media embeds rendered on the live project page.
+                        </p>
+                      </div>
+                      <Badge variant="outline" className="text-[10px] font-mono">
+                        {(selectedFeaturedStory.wysiwygProse || "").length} characters
+                      </Badge>
+                    </div>
+                    <WysiwygProseEditor
+                      value={selectedFeaturedStory.wysiwygProse ?? ""}
+                      onChange={(val) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "wysiwygProse", val)}
+                      placeholder="Write comprehensive investigation findings, methodology, fiscal data tables, or embed Cloudflare R2 / YouTube media..."
+                    />
                   </div>
 
                   {/* Visual Card Preview */}

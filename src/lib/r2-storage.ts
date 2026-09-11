@@ -293,3 +293,127 @@ export async function deleteFromR2(key: string): Promise<boolean> {
 
   return true;
 }
+
+/**
+ * Persist arbitrary JSON payload directly into Cloudflare R2 bucket.
+ */
+export async function saveJsonToR2(
+  key: string,
+  data: unknown,
+): Promise<{ url: string; key: string }> {
+  const jsonStr = JSON.stringify(data, null, 2);
+  const buffer = Buffer.from(jsonStr, "utf-8");
+  return uploadToR2(key, buffer, "application/json; charset=utf-8");
+}
+
+/**
+ * Retrieve JSON payload from Cloudflare R2 bucket.
+ */
+export async function getJsonFromR2<T = unknown>(key: string): Promise<T | null> {
+  // 1. Try fetching via public domain first (fastest CDN edge route)
+  const publicUrl = `${R2_CONFIG.publicDomain.replace(/\/$/, "")}/${encodeURI(key)}`;
+  try {
+    const res = await fetch(publicUrl, {
+      cache: "no-store",
+      headers: { Accept: "application/json" },
+    });
+    if (res.ok) {
+      const data = (await res.json()) as T;
+      return data;
+    }
+  } catch {
+    // Fall back to AWS4 signed GET
+  }
+
+  // 2. Fall back to AWS4 signed GET directly against R2 storage host
+  try {
+    const bucket = R2_CONFIG.bucketName;
+    const canonicalUri = `/${bucket}/${encodeURIComponent(key).replace(/%2F/g, "/")}`;
+    const host = `${R2_CONFIG.accountId}.r2.cloudflarestorage.com`;
+
+    const now = new Date();
+    const amzDate = now.toISOString().replace(/[:-]|\.\d{3}/g, "");
+    const dateStamp = amzDate.substring(0, 8);
+    const emptyHash = crypto.createHash("sha256").update("").digest("hex");
+
+    const headers = {
+      host,
+      "x-amz-content-sha256": emptyHash,
+      "x-amz-date": amzDate,
+    };
+
+    const { authHeader } = createSignature(
+      "GET",
+      canonicalUri,
+      "",
+      headers,
+      emptyHash,
+      amzDate,
+      dateStamp,
+    );
+
+    const getEndpoint = `https://${host}${canonicalUri}`;
+    const res = await fetch(getEndpoint, {
+      method: "GET",
+      headers: {
+        Host: host,
+        "x-amz-date": amzDate,
+        "x-amz-content-sha256": emptyHash,
+        Authorization: authHeader,
+      },
+    });
+
+    if (res.ok) {
+      return (await res.json()) as T;
+    }
+    return null;
+  } catch (err) {
+    console.warn(`[Cloudflare R2] Failed to fetch key ${key}:`, err);
+    return null;
+  }
+}
+
+/**
+ * Purge Cloudflare Edge Zone Cache so that all changes are instantly live across global CDN.
+ */
+export async function purgeCloudflareEdgeCache(files?: string[]): Promise<{
+  success: boolean;
+  message?: string;
+  error?: string;
+}> {
+  const zoneId = process.env.CLOUDFLARE_ZONE_ID || "ef1c213b96e276abef54491908de9e72";
+  const apiToken = process.env.CLOUDFLARE_API_TOKEN || "cfat_hiu5BjpjZwM28YiC50KLa8Wz3d848zhQDvEQl9BTb0e066ad";
+
+  if (!zoneId || !apiToken) {
+    return { success: false, error: "Missing Cloudflare Zone ID or API Token" };
+  }
+
+  try {
+    const purgeBody = files && files.length > 0
+      ? JSON.stringify({ files })
+      : JSON.stringify({ purge_everything: true });
+
+    const res = await fetch(`https://api.cloudflare.com/client/v4/zones/${zoneId}/purge_cache`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiToken}`,
+        "Content-Type": "application/json",
+      },
+      body: purgeBody,
+    });
+
+    const data = (await res.json()) as { success: boolean; errors?: unknown[] };
+    if (data.success) {
+      return { success: true, message: "Cloudflare Edge CDN cache purged successfully." };
+    }
+    return {
+      success: false,
+      error: `Cloudflare purge response: ${JSON.stringify(data.errors || [])}`,
+    };
+  } catch (err) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : "Cloudflare purge request failed",
+    };
+  }
+}
