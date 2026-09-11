@@ -21,6 +21,15 @@ const envSchema = z.object({
   NEXT_PUBLIC_ENABLE_WIP: booleanFromEnv.default(false),
   NEXT_PUBLIC_DEBUG_LOGS: booleanFromEnv.default(false),
   NEXT_PUBLIC_SENTRY_DSN: z.string().optional(),
+  // Cloudflare R2 & Edge Storage
+  R2_ACCOUNT_ID: z.string().optional(),
+  R2_ACCESS_KEY_ID: z.string().optional(),
+  R2_SECRET_ACCESS_KEY: z.string().optional(),
+  R2_BUCKET_NAME: z.string().optional(),
+  R2_PUBLIC_URL: optionalUrl,
+  CLOUDFLARE_ZONE_ID: z.string().optional(),
+  CLOUDFLARE_API_TOKEN: z.string().optional(),
+  CLOUDFLARE_ACCOUNT_ID: z.string().optional(),
 });
 
 const parsed = envSchema.safeParse({
@@ -33,6 +42,14 @@ const parsed = envSchema.safeParse({
   NEXT_PUBLIC_ENABLE_WIP: process.env.NEXT_PUBLIC_ENABLE_WIP,
   NEXT_PUBLIC_DEBUG_LOGS: process.env.NEXT_PUBLIC_DEBUG_LOGS,
   NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  R2_ACCOUNT_ID: process.env.R2_ACCOUNT_ID,
+  R2_ACCESS_KEY_ID: process.env.R2_ACCESS_KEY_ID,
+  R2_SECRET_ACCESS_KEY: process.env.R2_SECRET_ACCESS_KEY,
+  R2_BUCKET_NAME: process.env.R2_BUCKET_NAME,
+  R2_PUBLIC_URL: process.env.R2_PUBLIC_URL,
+  CLOUDFLARE_ZONE_ID: process.env.CLOUDFLARE_ZONE_ID,
+  CLOUDFLARE_API_TOKEN: process.env.CLOUDFLARE_API_TOKEN,
+  CLOUDFLARE_ACCOUNT_ID: process.env.CLOUDFLARE_ACCOUNT_ID,
 });
 
 if (!parsed.success) {
