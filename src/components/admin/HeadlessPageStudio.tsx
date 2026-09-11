@@ -23,6 +23,7 @@ import {
   Info,
   Play,
   Eye,
+  UploadCloud,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
@@ -145,6 +146,35 @@ export function HeadlessPageStudio() {
   // Selections for sub-studios
   const [selectedCustomPageSlug, setSelectedCustomPageSlug] = useState<string>("");
   const [selectedFeaturedId, setSelectedFeaturedId] = useState<string>("");
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleFileUploadToR2 = async (file: File, onSuccess: (url: string) => void) => {
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("folder", "thumbnails");
+
+      const res = await fetch("/api/cms/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to upload image to Cloudflare R2");
+      }
+
+      const json = await res.json();
+      onSuccess(json.url);
+      toast.success("Uploaded file directly to Cloudflare R2 bucket!", {
+        description: json.url,
+      });
+    } catch (err: any) {
+      toast.error(err.message || "Upload error");
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   // Fetch all authoritative data stores
   const loadAllData = useCallback(async () => {
@@ -786,7 +816,27 @@ export function HeadlessPageStudio() {
 
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                      <label className="text-xs font-semibold text-foreground">Thumbnail Image URL / Asset Path</label>
+                      <div className="flex items-center justify-between">
+                        <label className="text-xs font-semibold text-foreground">Thumbnail Image URL / Asset Path</label>
+                        <label className="flex items-center gap-1 cursor-pointer text-[10px] font-bold text-primary hover:underline">
+                          <UploadCloud className="size-3" />
+                          <span>{isUploading ? "Uploading..." : "Upload to R2"}</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            disabled={isUploading}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                handleFileUploadToR2(file, (url) => {
+                                  handleUpdateFeaturedStory(selectedFeaturedStory.id, "thumbnail", url);
+                                });
+                              }
+                            }}
+                          />
+                        </label>
+                      </div>
                       <Input
                         value={selectedFeaturedStory.thumbnail ?? ""}
                         onChange={(e) => handleUpdateFeaturedStory(selectedFeaturedStory.id, "thumbnail", e.target.value)}
