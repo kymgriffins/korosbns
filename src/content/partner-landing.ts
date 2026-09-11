@@ -46,6 +46,8 @@ const rawLanding = landingJson as {
     ctaHref?: string;
     secondaryLabel: string;
     secondaryHref?: string;
+    hidePrimaryButton?: boolean;
+    hideSecondaryButton?: boolean;
   };
   programmeExplains?: PartnerProgrammeExplain[];
   heroReelStills?: PartnerLandingStill[];
@@ -125,6 +127,8 @@ export const PARTNER_LANDING_CTA = {
   ctaHref: rawLanding.partnerCta?.ctaHref ?? "/contact?intent=partner",
   secondaryLabel: rawLanding.partnerCta?.secondaryLabel ?? "View programmes",
   secondaryHref: rawLanding.partnerCta?.secondaryHref ?? "/programmes",
+  hidePrimaryButton: Boolean(rawLanding.partnerCta?.hidePrimaryButton),
+  hideSecondaryButton: Boolean(rawLanding.partnerCta?.hideSecondaryButton),
 };
 
 export const DEFAULT_PARTNER_LANDING_STILLS: PartnerLandingStill[] = [
@@ -244,6 +248,7 @@ export type PartnerProgrammeExplain = {
   cycle: string;
   href: string;
   ctaLabel: string;
+  hideCta?: boolean;
   stillIds: string[];
 };
 

@@ -65,17 +65,19 @@ export function PartnerProgrammeExplainSections() {
                 <p className="text-xs font-medium tracking-wide text-muted-foreground md:text-sm">
                   {item.cycle}
                 </p>
-                <LandingContent className="pt-2">
-                  <Link
-                    href={item.href}
-                    className="inline-flex items-center text-sm font-medium text-foreground outline-none transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring"
-                  >
-                    {item.ctaLabel}
-                    <span aria-hidden className="ml-1">
-                      →
-                    </span>
-                  </Link>
-                </LandingContent>
+                {!item.hideCta && (
+                  <LandingContent className="pt-2">
+                    <Link
+                      href={item.href}
+                      className="inline-flex items-center text-sm font-medium text-foreground outline-none transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                      {item.ctaLabel}
+                      <span aria-hidden className="ml-1">
+                        →
+                      </span>
+                    </Link>
+                  </LandingContent>
+                )}
               </div>
 
               <div className="grid gap-6 sm:grid-cols-2 lg:col-span-7">

@@ -25,6 +25,7 @@ export type ProgrammeCta = {
   label: string;
   href: string;
   note?: string;
+  hidden?: boolean;
 };
 
 export type ProgrammeVisual = {

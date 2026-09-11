@@ -281,6 +281,30 @@ export function HeadlessPageStudio() {
   }, [programmesData, currentProgrammeIndex]);
 
   // Section Toggle Handler
+  const handleMoveSection = (idx: number, direction: "up" | "down") => {
+    const pageId = currentPage.sectionPageId;
+    const currentSections = [...(pageSectionsConfig.sections || [])];
+    const targetIdx = direction === "up" ? idx - 1 : idx + 1;
+    if (targetIdx < 0 || targetIdx >= currentSections.length) return;
+
+    const temp = currentSections[idx];
+    currentSections[idx] = currentSections[targetIdx];
+    currentSections[targetIdx] = temp;
+
+    setSectionsData({
+      ...sectionsData,
+      pages: {
+        ...(sectionsData.pages || {}),
+        [pageId]: {
+          ...(sectionsData.pages?.[pageId] || {}),
+          sections: currentSections,
+        },
+      },
+    });
+    setPreviewRefreshKey((k) => k + 1);
+    toast.success(`Moved section "${temp.label}" ${direction}!`);
+  };
+
   const handleToggleSection = (sectionId: string) => {
     const updatedSections = { ...sectionsData };
     const pageObj = updatedSections.pages?.[currentPage.sectionPageId];
@@ -1648,7 +1672,7 @@ export function HeadlessPageStudio() {
               )}
 
               <div className="divide-y divide-border/40 rounded-xl border border-border/60 bg-muted/20">
-                {(pageSectionsConfig.sections || []).map((sec: any) => (
+                {(pageSectionsConfig.sections || []).map((sec: any, idx: number) => (
                   <div
                     key={sec.id}
                     className="flex items-center justify-between p-3.5 transition-colors hover:bg-muted/40"
@@ -2634,7 +2658,23 @@ export function HeadlessPageStudio() {
 
                     {/* Primary Button */}
                     <div className="space-y-2 border-b border-border/40 pb-3">
-                      <div className="text-[11px] font-bold text-foreground">Primary Action Button</div>
+                      <div className="flex items-center justify-between">
+                        <div className="text-[11px] font-bold text-foreground">Primary Action Button</div>
+                        <label className="flex items-center gap-1.5 text-xs text-muted-foreground cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={!!currentProgramme.cta?.hidden}
+                            onChange={(e) => {
+                              const cta = { ...(currentProgramme.cta || {}), hidden: e.target.checked };
+                              updateCurrentProgrammeField("cta", cta);
+                            }}
+                            className="rounded border-border text-primary focus:ring-primary h-3.5 w-3.5"
+                          />
+                          <span className={currentProgramme.cta?.hidden ? "text-amber-500 font-semibold" : ""}>
+                            {currentProgramme.cta?.hidden ? "Hidden on page" : "Visible"}
+                          </span>
+                        </label>
+                      </div>
                       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                         <div>
                           <label className="text-[11px] font-semibold text-muted-foreground">Label</label>
@@ -2674,7 +2714,26 @@ export function HeadlessPageStudio() {
 
                     {/* Secondary Button */}
                     <div className="space-y-2 pt-1">
-                      <div className="text-[11px] font-bold text-foreground">Secondary Action Button (Co-Funding)</div>
+                      <div className="flex items-center justify-between">
+                        <div className="text-[11px] font-bold text-foreground">Secondary Action Button (Co-Funding)</div>
+                        <label className="flex items-center gap-1.5 text-xs text-muted-foreground cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={!!currentProgramme.secondaryCta?.hidden}
+                            onChange={(e) => {
+                              const secondary = {
+                                ...(currentProgramme.secondaryCta || {}),
+                                hidden: e.target.checked,
+                              };
+                              updateCurrentProgrammeField("secondaryCta", secondary);
+                            }}
+                            className="rounded border-border text-primary focus:ring-primary h-3.5 w-3.5"
+                          />
+                          <span className={currentProgramme.secondaryCta?.hidden ? "text-amber-500 font-semibold" : ""}>
+                            {currentProgramme.secondaryCta?.hidden ? "Hidden on page" : "Visible"}
+                          </span>
+                        </label>
+                      </div>
                       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                         <div>
                           <label className="text-[11px] font-semibold text-muted-foreground">Label</label>

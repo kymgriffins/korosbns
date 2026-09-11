@@ -66,9 +66,9 @@ export default function PremiumLandingClient() {
           eyebrow={PARTNER_LANDING_CTA.eyebrow}
           title={PARTNER_LANDING_CTA.title}
           description={PARTNER_LANDING_CTA.description}
-          ctaHref="/contact?intent=partner"
+          ctaHref={PARTNER_LANDING_CTA.hidePrimaryButton ? undefined : (PARTNER_LANDING_CTA.ctaHref || "/contact?intent=partner")}
           ctaLabel={PARTNER_LANDING_CTA.ctaLabel}
-          secondaryHref="/programmes"
+          secondaryHref={PARTNER_LANDING_CTA.hideSecondaryButton ? undefined : (PARTNER_LANDING_CTA.secondaryHref || "/programmes")}
           secondaryLabel={PARTNER_LANDING_CTA.secondaryLabel}
           images={CIVIC_PROGRAMMES.slice(0, 2).map((p) => ({
             src: p.visual.hero,

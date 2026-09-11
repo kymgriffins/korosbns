@@ -78,18 +78,22 @@ export function ProgrammeLandingLayout({
                   {programme.body}
                 </p>
                 <div className="flex w-full flex-col gap-3 pt-2 sm:w-auto sm:flex-row sm:items-center">
-                  <PillButtonGroup
-                    href={programme.secondaryCta?.href ?? `/contact?intent=partner&programme=${programme.slug}`}
-                    label={programme.secondaryCta?.label ?? "Discuss Co-Funding"}
-                    variant="primary"
-                    className="w-full justify-center sm:w-auto"
-                  />
-                  <PillButtonGroup
-                    href={primaryCta.href}
-                    label={primaryCta.label}
-                    variant="outline"
-                    className="w-full justify-center sm:w-auto"
-                  />
+                  {!programme.secondaryCta?.hidden && (
+                    <PillButtonGroup
+                      href={programme.secondaryCta?.href ?? `/contact?intent=partner&programme=${programme.slug}`}
+                      label={programme.secondaryCta?.label ?? "Discuss Co-Funding"}
+                      variant="primary"
+                      className="w-full justify-center sm:w-auto"
+                    />
+                  )}
+                  {!primaryCta?.hidden && (
+                    <PillButtonGroup
+                      href={primaryCta.href}
+                      label={primaryCta.label}
+                      variant="outline"
+                      className="w-full justify-center sm:w-auto"
+                    />
+                  )}
                   <PillButtonGroup
                     href="/programmes"
                     label="All programmes"
