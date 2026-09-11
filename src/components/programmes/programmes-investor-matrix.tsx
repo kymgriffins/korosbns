@@ -6,7 +6,7 @@ import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 import { CIVIC_PROGRAMMES, getProgramme, programmeHref } from "@/content";
 import { LandingSection } from "@/layouts/landing-section";
 import { cn } from "@/utils";
-import { ArrowRight, CheckCircle2, Shield } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -107,37 +107,6 @@ export function ProgrammesInvestorMatrix() {
                         </p>
                       </div>
                     </div>
-
-                    {/* Deliverables Partners Can Fund & Cite */}
-                    {programme.deliverables &&
-                    programme.deliverables.length > 0 ? (
-                      <div className="space-y-2.5 pt-1">
-                        <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                          Outputs Partners Fund & Cite:
-                        </h4>
-                        <ul className="space-y-2">
-                          {programme.deliverables.map((item) => (
-                            <li
-                              key={item.title}
-                              className="flex items-start gap-2.5 text-sm"
-                            >
-                              <CheckCircle2
-                                className="mt-0.5 size-4 shrink-0 text-primary"
-                                aria-hidden="true"
-                              />
-                              <div>
-                                <span className="font-semibold text-foreground">
-                                  {item.title}:
-                                </span>{" "}
-                                <span className="text-foreground/75">
-                                  {item.description}
-                                </span>
-                              </div>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ) : null}
                   </div>
 
                   {/* Actions & Metrics */}
@@ -201,7 +170,6 @@ export function ProgrammesInvestorMatrix() {
       <ProgrammesMethodologySection asSubSection />
 
       {/* The Engine: BNS Studio */}
-
     </LandingSection>
   );
 }
