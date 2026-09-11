@@ -78,9 +78,15 @@ export function ProgrammeLandingLayout({
                 </p>
                 <div className="flex w-full flex-col gap-3 pt-2 sm:w-auto sm:flex-row sm:items-center">
                   <PillButtonGroup
+                    href={`/contact?intent=partner&programme=${programme.slug}`}
+                    label="Discuss Co-Funding"
+                    variant="primary"
+                    className="w-full justify-center sm:w-auto"
+                  />
+                  <PillButtonGroup
                     href={primaryCta.href}
                     label={primaryCta.label}
-                    variant="primary"
+                    variant="outline"
                     className="w-full justify-center sm:w-auto"
                   />
                   <PillButtonGroup
@@ -117,20 +123,59 @@ export function ProgrammeLandingLayout({
           aria-labelledby={`programme-${programme.slug}-body`}
           className="border-t border-border/50"
         >
-          <div className="mx-auto max-w-3xl space-y-5">
+          {/* Header & Mandate */}
+          <div className="space-y-4">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-mono text-xs font-bold uppercase tracking-wider text-primary">
+                Mandate
+              </span>
+              {programme.mandateFit ? (
+                <>
+                  <span aria-hidden className="text-border">
+                    ·
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {programme.mandateFit}
+                  </span>
+                </>
+              ) : null}
+            </div>
             <h2
               id={`programme-${programme.slug}-body`}
               className={cn(T.sectionTitle, "text-balance text-foreground")}
             >
               What this programme does
             </h2>
-            {programme.highlight ? (
-              <p className={cn(T.lead, "text-foreground/75")}>{programme.highlight}</p>
-            ) : null}
+            <p className={cn(T.lead, "text-foreground/75")}>
+              Why this bet matters & what it delivers
+            </p>
           </div>
 
+          {/* Why & What (Minimalist scannable lines) */}
+          {(programme.investorThesis || programme.whatWeDo) ? (
+            <div className="mt-8 grid gap-6 border-y border-border/50 py-8 md:grid-cols-2 md:gap-10">
+              <div className="space-y-2 border-l-2 border-border pl-4">
+                <span className="font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  The Systemic Problem (Why):
+                </span>
+                <p className="text-sm leading-relaxed text-foreground/80 md:text-base">
+                  {programme.investorThesis || programme.highlight}
+                </p>
+              </div>
+              <div className="space-y-2 border-l-2 border-primary/60 pl-4">
+                <span className="font-mono text-xs font-semibold uppercase tracking-wider text-primary">
+                  The Core Intervention (What):
+                </span>
+                <p className="text-sm leading-relaxed text-foreground/80 md:text-base">
+                  {programme.whatWeDo || programme.body}
+                </p>
+              </div>
+            </div>
+          ) : null}
+
+          {/* Key Scale Stats */}
           {programme.stats && programme.stats.length > 0 ? (
-            <dl className="mt-12 grid gap-0 border-y border-border/50 sm:grid-cols-3">
+            <dl className="mt-8 grid gap-0 border-b border-border/50 sm:grid-cols-3">
               {programme.stats.map((stat) => (
                 <div
                   key={`${stat.value}-${stat.label}`}
@@ -147,31 +192,99 @@ export function ProgrammeLandingLayout({
             </dl>
           ) : null}
 
+          {/* 4-Stage Operational Process (How We Execute) */}
+          {programme.process && programme.process.length > 0 ? (
+            <div className="mt-14 space-y-6">
+              <div className="space-y-1">
+                <p className={cn(T.eyebrow, "text-muted-foreground")}>Operational Lifecycle</p>
+                <h3 className="font-heading text-xl font-bold text-foreground">
+                  How this programme operates
+                </h3>
+              </div>
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                {programme.process.map((step, idx) => (
+                  <div
+                    key={step.title}
+                    className="flex flex-col justify-between border border-border/60 bg-muted/10 p-5"
+                  >
+                    <div>
+                      <span className="font-mono text-xs font-bold text-primary">
+                        0{idx + 1}
+                      </span>
+                      <h4 className="mt-2 font-heading text-base font-bold text-foreground">
+                        {step.title}
+                      </h4>
+                      <p className="mt-2 text-xs leading-relaxed text-foreground/75 md:text-sm">
+                        {step.body}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          {/* Tangible Investor Deliverables */}
+          {programme.deliverables && programme.deliverables.length > 0 ? (
+            <div className="mt-14 space-y-6">
+              <div className="space-y-1">
+                <p className={cn(T.eyebrow, "text-muted-foreground")}>Partner Assets</p>
+                <h3 className="font-heading text-xl font-bold text-foreground">
+                  Deliverables partners fund & cite
+                </h3>
+              </div>
+              <div className="grid gap-6 sm:grid-cols-3">
+                {programme.deliverables.map((item) => (
+                  <div
+                    key={item.title}
+                    className="border border-border/60 bg-background p-6 space-y-2"
+                  >
+                    <h4 className="font-heading text-base font-bold text-foreground">
+                      {item.title}
+                    </h4>
+                    <p className="text-xs leading-relaxed text-foreground/75 md:text-sm">
+                      {item.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          {/* Core Operating Pillars */}
           {programme.pillars && programme.pillars.length > 0 ? (
-            <ul className="mt-12 divide-y divide-border/50 border-y border-border/50">
-              {programme.pillars.slice(0, 4).map((pillar) => (
-                <li
-                  key={pillar.title}
-                  className="grid gap-3 py-6 md:grid-cols-12 md:gap-8 md:py-8"
-                >
-                  <h3
-                    className={cn(
-                      "font-heading text-base font-bold text-foreground md:col-span-4 md:text-lg",
-                    )}
+            <div className="mt-14 space-y-6">
+              <div className="space-y-1">
+                <p className={cn(T.eyebrow, "text-muted-foreground")}>Programme Infrastructure</p>
+                <h3 className="font-heading text-xl font-bold text-foreground">
+                  Core pillars
+                </h3>
+              </div>
+              <ul className="divide-y divide-border/50 border-y border-border/50">
+                {programme.pillars.slice(0, 4).map((pillar) => (
+                  <li
+                    key={pillar.title}
+                    className="grid gap-3 py-6 md:grid-cols-12 md:gap-8 md:py-8"
                   >
-                    {pillar.title}
-                  </h3>
-                  <p
-                    className={cn(
-                      T.lead,
-                      "max-w-2xl text-foreground/75 md:col-span-8 md:text-base",
-                    )}
-                  >
-                    {pillar.body}
-                  </p>
-                </li>
-              ))}
-            </ul>
+                    <h4
+                      className={cn(
+                        "font-heading text-base font-bold text-foreground md:col-span-4 md:text-lg",
+                      )}
+                    >
+                      {pillar.title}
+                    </h4>
+                    <p
+                      className={cn(
+                        T.lead,
+                        "max-w-2xl text-foreground/75 md:col-span-8 md:text-base",
+                      )}
+                    >
+                      {pillar.body}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
           ) : null}
         </LandingSection>
       ) : null}

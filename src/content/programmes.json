@@ -83,6 +83,23 @@
       "headline": "The budget lands as a PDF. We put it back on the phone.",
       "body": "Every June, Kenya debates a national budget measured in trillions. By July, most of that debate has left the public conversation. BNS Connect is the year-round programme that refuses the silence. We pick up Treasury releases, verify claims against published documents, and publish what holds up — dashboards, briefing products, and story series partners and institutions can use. The point is not another report for the archive. It is scrutiny that stays available after Budget Day.",
       "highlight": "FY2026/27 national budget: about KSh 4.8 trillion, drawn from published Treasury figures — the scale Connect exists to watch.",
+      "investorThesis": "Trillions are debated for 48 hours in June, then disbursed and spent in silence for the other eleven months.",
+      "whatWeDo": "We track Kenya's KSh 4.8T national budget from Treasury allocation through ministry execution — verifying statutory releases against Controller of Budget records and publishing actionable intelligence for institutions and newsrooms.",
+      "mandateFit": "Macro-Fiscal Governance · Sovereign Debt Accountability · Youth Civic Technology",
+      "deliverables": [
+        {
+          "title": "Quarterly National Fiscal Briefs",
+          "description": "Independent forensic analysis tracking Treasury releases vs actual ministry absorption and sovereign debt allocations."
+        },
+        {
+          "title": "Annual National Youth Budget Survey",
+          "description": "Statistically sound, nationally representative ground-truth pulse on public spending lived reality across Kenya's youth."
+        },
+        {
+          "title": "Continuous Allocation-to-Execution Dashboards",
+          "description": "Feed-ready, verified tracking interfaces built for newsrooms, civil society advocates, and institutional research."
+        }
+      ],
       "stats": [
         {
           "value": "4.8T",
@@ -179,6 +196,23 @@
       "headline": "Kakamega. Kilifi. Nakuru. Wajir. Stay long enough to matter.",
       "body": "A map of all forty-seven counties looks impressive. It rarely tells you whether a borehole pumps, a maternity wing opened, or a road was graded after the ribbon cutting. BNS Mashinani chooses depth: embedded teams in four counties — Kakamega, Kilifi, Nakuru, and Wajir — present for the full budget cycle. We work alongside county governments as accountability partners, not adversaries, and turn what we find into public scorecards, live trackers, and Promise versus Delivery stories rooted in places people actually live.",
       "highlight": "Four counties. Full-cycle presence. A model built to be copied — not a thin tour of forty-seven.",
+      "investorThesis": "Devolution sent KSh 400B+ to counties, but oversight remained fly-over workshops with zero longitudinal ground truth.",
+      "whatWeDo": "Embedded teams in Kakamega, Kilifi, Nakuru, and Wajir track the complete 12-month budget cycle as constructive accountability partners, verifying whether allocated capital actually delivered functional clinics, classrooms, and water infrastructure.",
+      "mandateFit": "Sub-National Governance · Devolution Delivery · Public Participation (Art. 196/201)",
+      "deliverables": [
+        {
+          "title": "Quarterly County Budget Scorecards",
+          "description": "Rigorous public evaluations grading own-source revenue mobilization and development expenditure execution."
+        },
+        {
+          "title": "Promise vs. Delivery Field Dossiers",
+          "description": "On-the-ground investigative verifications matching approved procurement budgets against functional physical assets."
+        },
+        {
+          "title": "Facilitated Multi-Camera Town Halls",
+          "description": "Documented community-official forums that bring county executives, assembly members, and residents together."
+        }
+      ],
       "stats": [
         {
           "value": "04",
@@ -275,6 +309,23 @@
       "headline": "Budget Day is one day. Spending lasts the other three hundred and sixty-four.",
       "body": "Kenyan newsrooms still treat the Cabinet Secretary's briefcase as the climax of the fiscal year. Wanahabari Lab is built for what comes next. Each quarter, journalists and digital creators sit together for a one-day intensive anchored to a live moment in the budget calendar — estimates, approvals, audit releases, contested bills. Sessions run on published evidence, not hypotheticals. Participants leave with filed draft stories and a toolkit they can take back to their outlet or platform. It is one of the few Kenyan programmes that trains mainstream reporters and creators side by side on public finance.",
       "highlight": "Four Labs a year. Roughly one hundred and twenty to two hundred journalists and creators trained annually.",
+      "investorThesis": "Kenyan newsrooms treat Budget Day as a 1-day political circus, leaving the remaining 364 days of expenditure uninvestigated.",
+      "whatWeDo": "We train mainstream reporters and digital creators side-by-side on live fiscal evidence, anchoring one-day intensives to statutory milestones so cohorts leave with filed investigations, forensic media toolkits, and membership in an active alumni press bench.",
+      "mandateFit": "Investigative Journalism · Public Interest Media · Counter-Disinformation",
+      "deliverables": [
+        {
+          "title": "4 Fiscal-Calendar Intensives",
+          "description": "Quarterly hands-on training sessions equipping 120–200 journalists and digital creators annually."
+        },
+        {
+          "title": "Filed Stories & Forensic Toolkits",
+          "description": "Immediate publishable investigative drafts, source datasets, and reporting angles ready for distribution."
+        },
+        {
+          "title": "Rapid-Response Media Alumni Bench",
+          "description": "Pre-briefed press corps receiving embargoed fiscal intelligence ahead of major national fiscal milestones."
+        }
+      ],
       "stats": [
         {
           "value": "04",
@@ -371,6 +422,23 @@
       "headline": "High-craft media. A civic surplus attached.",
       "body": "If your impact story only lives in a grant PDF, it never reaches the people who need it. BNS Studios is the production house that turns institutional evidence into podcasts, documentaries, explainers, animations, social series, and facilitated town halls — for governments meeting public participation duties, development partners chasing localisation goals, companies delivering serious commercial work, and CSOs without an in-house crew. We are mission-aligned and editorially independent. A portion of Studios surplus funds Budget Ndio Story's civic work, so every commission carries a second job: keeping public-finance literacy alive beyond the client brief.",
       "highlight": "Commission once: your audience gets the film or forum; civic programmes get sustained fuel from the surplus.",
+      "investorThesis": "Impact research trapped in dry 100-page PDFs generates zero political cost or citizen engagement.",
+      "whatWeDo": "BNS Studios is the self-sustaining commercial-grade production house turning institutional evidence into cinema-grade documentaries, animated explainers, podcasts, and facilitated town halls — with production surplus directly funding BNS civic programmes.",
+      "mandateFit": "Impact Communications · Civic Media Production · Double-Impact Fiduciary Model",
+      "deliverables": [
+        {
+          "title": "Broadcast & Digital Impact Films",
+          "description": "High-craft documentaries, explainers, and animations tailored for continental and grassroots distribution."
+        },
+        {
+          "title": "End-to-End Civic Convenings",
+          "description": "Professional facilitation, multi-camera live production, and post-forum documentation for town halls."
+        },
+        {
+          "title": "Dual-Impact Surplus Engine",
+          "description": "Every commercial client brief directly cross-subsidizes independent public finance watchdogging."
+        }
+      ],
       "stats": [
         {
           "value": "08",

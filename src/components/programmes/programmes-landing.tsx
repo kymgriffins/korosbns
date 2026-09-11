@@ -3,7 +3,8 @@
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { EditorialCtaBand, EditorialPill, PillButtonGroup } from "@/components/ui/editorial";
-import { ProgrammeScorecard } from "@/components/programmes/programme-scorecard";
+import { ProgrammesEcosystemFlywheel } from "@/components/programmes/programmes-ecosystem-flywheel";
+import { ProgrammesInvestorMatrix } from "@/components/programmes/programmes-investor-matrix";
 import { ProgrammesProjectsLoop } from "@/components/programmes/programmes-projects-loop";
 import { FeaturedProjectsSection } from "@/components/marketing/featured-projects-section";
 import {
@@ -31,8 +32,8 @@ const PartnersMarquee = dynamic(
 );
 
 /**
- * Programmes hub — partner spine matching `/`:
- * Hero → three programmes → partners → (projects muted) → CTA
+ * Programmes hub — Rockefeller-clarity partner architecture:
+ * Hero → Ecosystem Flywheel → Three Big Bets (Investor Matrix) → Featured Projects → CTA
  * BNS Studio is separate at /bns-studio.
  */
 export function ProgrammesLanding() {
@@ -67,14 +68,14 @@ export function ProgrammesLanding() {
                 ) : null}
                 <div className="flex w-full flex-col gap-3 pt-2 sm:w-auto sm:flex-row sm:items-center">
                   <PillButtonGroup
-                    href="#programmes-map"
+                    href="#programmes-matrix"
                     label={landing.exploreCta?.label ?? "Explore Programmes"}
                     variant="primary"
                     className="w-full justify-center sm:w-auto"
                   />
                   <PillButtonGroup
-                    href="/bns-studio"
-                    label="BNS Studio"
+                    href="/contact?intent=partner"
+                    label="Discuss Partnership"
                     variant="outline"
                     className="w-full justify-center sm:w-auto"
                   />
@@ -101,34 +102,12 @@ export function ProgrammesLanding() {
         </section>
       ) : null}
 
-      {isSectionVisible("programmes", "programmesMap") ? (
-        <LandingSection
-          id="programmes-map"
-          aria-labelledby="programmes-map-heading"
-          className="border-t border-border/50"
-        >
-          <div className="mb-8 flex flex-col gap-4 md:mb-10 md:flex-row md:items-end md:justify-between">
-            <div className="max-w-2xl">
-              <h2 id="programmes-map-heading" className={T.sectionTitle}>
-                The three programmes
-              </h2>
-            </div>
-            <p className={cn(T.lead, "max-w-sm md:text-right")}>
-              Connect, Mashinani, and Wanahabari — one recognizable format. Production and commissions live in BNS Studio.
-            </p>
-          </div>
+      {isSectionVisible("programmes", "flywheel") ? (
+        <ProgrammesEcosystemFlywheel />
+      ) : null}
 
-          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-12">
-            {CIVIC_PROGRAMMES.map((programme, index) => (
-              <ProgrammeScorecard
-                key={programme.slug}
-                programme={programme}
-                compact
-                priority={index < 2}
-              />
-            ))}
-          </div>
-        </LandingSection>
+      {isSectionVisible("programmes", "programmesMap") ? (
+        <ProgrammesInvestorMatrix />
       ) : null}
 
       {isSectionVisible("programmes", "featuredProjects") ? (

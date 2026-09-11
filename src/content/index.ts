@@ -53,6 +53,11 @@ export type ProgrammeFaq = {
   a: string;
 };
 
+export type ProgrammeDeliverable = {
+  title: string;
+  description: string;
+};
+
 export type ProgrammeBlock = {
   /** Canonical stable id — always mirrors `slug`. */
   id: ProgrammeSlug;
@@ -62,6 +67,10 @@ export type ProgrammeBlock = {
   headline: string;
   body: string;
   highlight?: string;
+  investorThesis?: string;
+  whatWeDo?: string;
+  mandateFit?: string;
+  deliverables?: ProgrammeDeliverable[];
   seoTitle: string;
   seoDescription: string;
   cta: ProgrammeCta;

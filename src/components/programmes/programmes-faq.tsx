@@ -9,37 +9,38 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { LANDING_TYPOGRAPHY as T } from "@/constants/landing-typography";
 
-const FAQS = [
+const INVESTOR_FAQS = [
   {
     id: "item-1",
-    question: "What is Budget Ndio Story (BNS)?",
+    question: "How does Budget Ndio Story ensure editorial independence and non-partisanship?",
     answer:
-      "Budget Ndio Story is Kenya's leading youth-led civic initiative making national and county budgets transparent, understandable, and actionable. We track public finance, train journalists, embed in counties, and produce high-impact civic media.",
+      "BNS is strictly non-partisan. We do not accept funding contingent on editorial outcomes. Every claim, score, and investigation is grounded in public statutory records: National Treasury publications, Controller of Budget exchequer releases, and Auditor-General reports, backed by Article 201 of the Constitution.",
   },
   {
     id: "item-2",
-    question: "How does BNS Mashinani differ from BNS Connect?",
+    question: "Why embed deeply in four counties instead of surveying all forty-seven?",
     answer:
-      "BNS Connect focuses on national-level Treasury allocations, macro budget tracking, and national youth surveys across Kenya. BNS Mashinani provides deep-dive, embedded oversight across four select counties (Kakamega, Kilifi, Nakuru, and Wajir), producing localized scorecards and community town halls.",
+      "Covering 47 counties remotely produces superficial, fly-over data that changes nothing on the ground. BNS Mashinani chose Kakamega, Kilifi, Nakuru, and Wajir to build a full-cycle, replicable model. Embedded presence builds institutional trust with county assemblies while holding capital expenditure accountable.",
   },
   {
     id: "item-3",
-    question: "Who is eligible to apply for Wanahabari Lab?",
+    question: "What makes Wanahabari Lab different from standard newsroom training?",
     answer:
-      "Wanahabari Lab is open to mainstream journalists, reporters, newsroom editors, and digital creators across Kenya who report on governance, public finance, policy, or community affairs. Applications open quarterly.",
+      "Most media training is theoretical and spikes around Budget Day. Wanahabari Lab anchors one-day intensives to live fiscal triggers across the other eleven months. Mainstream reporters and digital creators work side-by-side on real evidence and leave with filed draft investigations and data toolkits ready for immediate broadcast.",
   },
   {
     id: "item-4",
-    question: "How can organizations or governments commission BNS Studios?",
+    question: "How does the BNS Studio commercial surplus mechanism work?",
     answer:
-      "Governments, CSOs, international development partners, and commercial entities can commission BNS Studios for podcasts, documentaries, animated explainers, or public participation campaigns. Commissions support BNS Foundation's civic mission.",
+      "BNS Studios operates as a commercial-grade impact production house. International NGOs, corporations, and governments commission broadcast documentaries, animations, and town hall productions. The commercial surplus generated directly cross-subsidizes BNS civic watchdogging, ensuring long-term financial resilience.",
   },
   {
     id: "item-5",
-    question: "Is Budget Ndio Story non-partisan and independent?",
+    question: "How can institutional donors and development partners co-invest?",
     answer:
-      "Yes. BNS is strictly non-partisan and editorially independent. All budget trackers, scorecards, and reports rely on verified public data from the National Treasury, Controller of Budget, and Auditor-General records.",
+      "Partners can support through core programme grants, co-design thematic tracking sprints (e.g. Health, Climate, Sovereign Debt), or commission BNS Studios for high-craft public participation storytelling. All partnerships include formal briefing rights and verification data access.",
   },
 ];
 
@@ -47,7 +48,7 @@ export function ProgrammesFaq() {
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: FAQS.map((faq) => ({
+    mainEntity: INVESTOR_FAQS.map((faq) => ({
       "@type": "Question",
       name: faq.question,
       acceptedAnswer: {
@@ -58,7 +59,7 @@ export function ProgrammesFaq() {
   };
 
   return (
-    <LandingSection id="faq" aria-labelledby="faq-heading" className="border-t border-border/40">
+    <LandingSection id="faq" aria-labelledby="faq-heading" className="border-t border-border/50">
       {/* FAQPage JSON-LD Schema */}
       <script
         type="application/ld+json"
@@ -67,30 +68,30 @@ export function ProgrammesFaq() {
 
       <LandingContent>
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-14">
-          {/* Left Column: Asymmetric Sticky Desk Briefing */}
-          <div className="lg:col-span-5 lg:sticky lg:top-28 self-start space-y-5">
-            <EditorialPill dot pulse>
-              Desk Operations & Advisory
+          {/* Left Column: Desk Briefing */}
+          <div className="space-y-5 self-start lg:sticky lg:top-28 lg:col-span-5">
+            <EditorialPill dot pulse variant="default">
+              Due Diligence & Governance
             </EditorialPill>
-            <h2 id="faq-heading" className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-foreground">
-              Frequently Asked Questions. <span className="text-primary">Clear, verified answers.</span>
+            <h2 id="faq-heading" className={T.sectionTitle}>
+              Investor & Partner FAQs
             </h2>
-            <p className="text-sm sm:text-base leading-relaxed text-muted-foreground">
-              Everything you need to know about Budget Ndio Story programmes, eligibility, county devolution coverage, and civic media commissions.
+            <p className={T.lead}>
+              Direct answers on fiduciary standards, non-partisanship, county government collaboration, and our dual-impact production model.
             </p>
 
             <div className="pt-2">
-              <div className="rounded-2xl border border-border/60 bg-muted/30 p-5 space-y-3">
+              <div className="border border-border/60 bg-muted/20 p-5 space-y-3">
                 <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  Direct Enquiry Desk
+                  Partner Enquiry Desk
                 </p>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Need custom research data, county scorecard access, or want to explore an institutional partnership?
+                <p className="text-xs leading-relaxed text-foreground/75">
+                  Need custom research data, county scorecard access, or want to explore an institutional co-funding arrangement?
                 </p>
                 <div className="flex flex-wrap gap-2 pt-1">
                   <PillButtonGroup
-                    href="/contact"
-                    label="Reach Programmes Lead"
+                    href="/contact?intent=partner"
+                    label="Discuss Partnership"
                     variant="primary"
                     size="sm"
                   />
@@ -108,19 +109,19 @@ export function ProgrammesFaq() {
           {/* Right Column: Full-Width Accordion */}
           <div className="lg:col-span-7">
             <Accordion type="single" collapsible className="w-full space-y-3">
-              {FAQS.map((faq) => (
+              {INVESTOR_FAQS.map((faq) => (
                 <AccordionItem
                   key={faq.id}
                   value={faq.id}
-                  className="rounded-2xl border border-border/60 bg-card/60 px-5 transition-all data-[state=open]:bg-primary/5 data-[state=open]:border-primary/40 data-[state=open]:shadow-xs"
+                  className="border border-border/60 bg-background px-5 transition-all data-[state=open]:border-primary/40 data-[state=open]:bg-muted/10"
                 >
-                  <AccordionTrigger className="text-left text-sm font-bold text-foreground hover:no-underline md:text-base py-5">
+                  <AccordionTrigger className="py-5 text-left text-sm font-bold text-foreground hover:no-underline md:text-base">
                     <div className="flex items-start gap-3 text-left">
-                      <HelpCircle className="size-4 shrink-0 text-primary mt-1" />
+                      <HelpCircle className="mt-1 size-4 shrink-0 text-primary" />
                       <span className="leading-snug">{faq.question}</span>
                     </div>
                   </AccordionTrigger>
-                  <AccordionContent className="text-xs leading-relaxed text-muted-foreground md:text-sm pl-7 pb-5 pr-2">
+                  <AccordionContent className="pb-5 pl-7 pr-2 text-xs leading-relaxed text-foreground/75 md:text-sm">
                     {faq.answer}
                   </AccordionContent>
                 </AccordionItem>
